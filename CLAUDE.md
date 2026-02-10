@@ -74,7 +74,7 @@ Layer 1: STARLIGHT PRIME (Meta-Intelligence)
   The unified mind. Orchestrates everything.
 
 Layer 2: STARLIGHT AGENTS (Specialized Intelligence)
-  Architect, Orchestrator, Sentinel, Sage, Weaver, Navigator, Forge
+  Architect, Orchestrator, Sentinel, Sage, Weaver, Navigator
 
 Layer 3: STARLIGHT SKILLS (Executable Capabilities)
   Intelligence, Orchestration, Memory, Integration skills
