@@ -1,233 +1,229 @@
 # Starlight Intelligence Core
 
-> *"The mind behind the mind. The intelligence that orchestrates intelligence."*
+> The processing pipeline that turns requests into intelligence.
 
 ---
 
-## Overview
+## How Starlight Thinks
 
-The Intelligence Core is the central nervous system of Starlight. It defines how Starlight thinks, decides, and acts. Every request that enters the system passes through this core before being routed to agents, skills, or vaults.
-
----
-
-## Intelligence Architecture
+Every request passes through seven layers. Each layer adds context, reasoning, or action. The pipeline is the same whether you're running on Claude Code, Cursor, Cline, Codex, Gemini, or Antigravity — the platform adapter delivers the request, the core processes it.
 
 ```
-REQUEST FLOW
-============
-
-User Request
-    │
-    ▼
-┌─────────────────────────────────────────────────────────┐
-│                  INTELLIGENCE CORE                        │
-│                                                           │
-│  1. PERCEPTION                                           │
-│     Parse intent, extract entities, assess complexity     │
-│                                                           │
-│  2. MEMORY RECALL                                        │
-│     Query Vaults for relevant context and history         │
-│                                                           │
-│  3. REASONING                                            │
-│     Apply strategic reasoning, systems thinking           │
-│                                                           │
-│  4. ROUTING                                              │
-│     Select optimal agent(s) and skill(s)                 │
-│                                                           │
-│  5. ORCHESTRATION                                        │
-│     Coordinate execution across agents                    │
-│                                                           │
-│  6. SYNTHESIS                                            │
-│     Merge results into coherent output                    │
-│                                                           │
-│  7. MEMORY WRITE                                         │
-│     Store learnings, decisions, outcomes to Vaults        │
-│                                                           │
-└─────────────────────────────────────────────────────────┘
-    │
-    ▼
-Response + Vault Update + Transmission (if cross-system)
+                         ┌─────────────┐
+                         │  REQUEST IN  │
+                         └──────┬──────┘
+                                │
+                    ┌───────────▼───────────┐
+                    │   1. PERCEPTION        │
+                    │   Parse intent.        │
+                    │   Extract entities.    │
+                    │   Assess complexity.   │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────▼───────────┐
+                    │   2. MEMORY RECALL     │
+                    │   Query vaults.        │
+                    │   Assemble context.    │
+                    │   Weight by relevance. │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────▼───────────┐
+                    │   3. REASONING         │
+                    │   Select mode.         │
+                    │   Apply frameworks.    │
+                    │   Generate options.    │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────▼───────────┐
+                    │   4. ROUTING           │
+                    │   Select agent(s).     │
+                    │   Activate skills.     │
+                    │   Set orchestration.   │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────▼───────────┐
+                    │   5. EXECUTION         │
+                    │   Agent(s) work.       │
+                    │   Skills fire.         │
+                    │   Tools invoked.       │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────▼───────────┐
+                    │   6. SYNTHESIS         │
+                    │   Merge perspectives.  │
+                    │   Resolve conflicts.   │
+                    │   Produce output.      │
+                    └───────────┬───────────┘
+                                │
+                    ┌───────────▼───────────┐
+                    │   7. MEMORY WRITE      │
+                    │   Store learnings.     │
+                    │   Update vaults.       │
+                    │   Transmit if needed.  │
+                    └───────────┬───────────┘
+                                │
+                         ┌──────▼──────┐
+                         │ RESPONSE OUT │
+                         └─────────────┘
 ```
 
 ---
 
-## 1. Perception Layer
+## Layer 1: Perception
+
+Perception parses the raw request into structured intelligence inputs.
 
 ### Intent Classification
 
-Every request is classified into one or more intent categories:
-
-| Intent | Signals | Primary Agent |
-|--------|---------|---------------|
-| `architecture` | "design", "architect", "system", "scale" | Starlight Architect |
-| `orchestration` | "coordinate", "manage", "workflow", "parallel" | Starlight Orchestrator |
-| `strategy` | "should we", "strategy", "position", "approach" | Starlight Navigator |
-| `creation` | "create", "write", "build", "generate" | Starlight Weaver |
-| `knowledge` | "explain", "teach", "why", "how does" | Starlight Sage |
-| `quality` | "review", "audit", "check", "validate" | Starlight Sentinel |
-| `memory` | "remember", "recall", "store", "vault" | Vault Management Skill |
-| `transmission` | "sync", "transmit", "broadcast", "update" | Transmission Protocol Skill |
-| `meta` | "starlight", "system status", "health" | Starlight Prime |
+| Intent | Signal Words | Routes To |
+|--------|-------------|-----------|
+| `architecture` | design, architect, system, scale, infrastructure | Architect |
+| `orchestration` | coordinate, workflow, parallel, manage, orchestrate | Orchestrator |
+| `strategy` | should we, plan, roadmap, position, approach | Navigator |
+| `creation` | create, write, compose, generate, draft | Weaver |
+| `knowledge` | explain, teach, why, understand, how does | Sage |
+| `quality` | review, audit, check, validate, security | Sentinel |
+| `memory` | remember, recall, store, vault | Vault Management skill |
+| `transmission` | sync, transmit, broadcast, update | Transmission Protocol skill |
+| `meta` | starlight, system status, health, council | Prime |
+| `alignment` | hope, future, values, humanity, benevolence | Sage (Horizon Vault) |
 
 ### Entity Extraction
 
-Extract key entities from every request:
-
-- **Projects**: ACOS, Arcanea, AI-Ops, FrankX
-- **Domains**: Technical, Creative, Strategic, Operational
+- **Projects**: ACOS, Arcanea, AI-Ops, and any external repos
+- **Domains**: Technical, Creative, Strategic, Operational, Alignment
 - **Tools**: GitHub, Linear, Notion, MCP servers
-- **Timeframes**: Immediate, Today, This Week, This Month, Future
-- **Scope**: Single-system, Cross-system, Ecosystem-wide
+- **Timeframes**: Immediate, this session, this week, this quarter, long-horizon
+- **Scope**: Single-agent, multi-agent, cross-system, ecosystem-wide
 
-### Complexity Assessment
+### Complexity Scoring
 
-| Level | Score | Characteristics | Approach |
-|-------|-------|----------------|----------|
-| **Simple** | 1-3 | Single agent, single skill, clear path | Direct execution |
-| **Moderate** | 4-6 | 2-3 agents, multiple skills, some ambiguity | Coordinated execution |
-| **Complex** | 7-8 | Multi-agent, cross-system, strategic depth | Orchestrated execution |
-| **Critical** | 9-10 | Ecosystem-wide, high-stakes, novel territory | Council convened |
+| Score | Label | Agents | Approach |
+|-------|-------|--------|----------|
+| 1-3 | Simple | 1 | Direct execution |
+| 4-6 | Moderate | 1-2 | Coordinated, Orchestrator may assist |
+| 7-8 | Complex | 2-4 | Orchestrator leads, parallel or sequential |
+| 9-10 | Critical | All relevant | Council convenes, Prime synthesizes |
 
 ---
 
-## 2. Memory Recall Layer
+## Layer 2: Memory Recall
 
-Before any reasoning, Starlight queries its Vaults:
+Before reasoning begins, check the vaults. This is not optional — skipping memory recall means repeating mistakes and losing compound intelligence.
 
 ```
-MEMORY RECALL PROTOCOL
-======================
+Query Order:
+1. Operational Vault  — What is the current state?
+2. Domain Vault       — What patterns exist for this type of task?
+   (Technical, Creative, or Strategic depending on intent)
+3. Wisdom Vault       — What principles apply?
+4. Horizon Vault      — Does this touch alignment or values?
 
-1. QUERY RELEVANCE
-   Search all vaults for entries matching:
-   - Request keywords and entities
-   - Similar past decisions
-   - Related patterns and outcomes
-
-2. CONTEXT ASSEMBLY
-   Build enriched context from:
-   - Strategic Vault: Past decisions on similar topics
-   - Technical Vault: Relevant patterns and architectures
-   - Creative Vault: Related creative approaches
-   - Operational Vault: Current system state
-   - Wisdom Vault: Applicable principles
-
-3. PRIORITY WEIGHTING
-   Weight recalled memories by:
-   - Recency (newer = higher weight)
-   - Relevance (semantic similarity)
-   - Importance (marked priority)
-   - Outcome quality (past success/failure)
+Weight recalled entries by:
+  Relevance  — How closely does this match the current request?
+  Recency    — How recent is the entry?
+  Confidence — How confident was the original entry?
+  Outcome    — Did the recalled approach succeed last time?
 ```
 
 ---
 
-## 3. Reasoning Layer
+## Layer 3: Reasoning
 
 ### Reasoning Modes
 
-| Mode | When | Approach |
-|------|------|----------|
-| **Analytical** | Clear problem, needs solution | Break down, evaluate options, select best |
-| **Strategic** | Ambiguous situation, needs direction | Consider multiple futures, assess trade-offs |
-| **Creative** | Open-ended, needs innovation | Divergent thinking, synthesis of patterns |
-| **Systems** | Complex interactions, needs holistic view | Map connections, identify leverage points |
-| **Evaluative** | Existing work, needs assessment | Apply quality criteria, identify gaps |
+| Mode | Trigger | Method |
+|------|---------|--------|
+| **Analytical** | Clear problem, needs solution | Decompose, evaluate options, select |
+| **Strategic** | Ambiguous situation, needs direction | Map futures, assess trade-offs |
+| **Creative** | Open-ended, needs innovation | Diverge, connect, converge |
+| **Systems** | Complex interactions, holistic view needed | Map connections, find leverage points |
+| **Evaluative** | Existing work, needs assessment | Apply criteria, identify gaps |
+| **Temporal** | Long-horizon, alignment questions | Consider multi-generational impact |
 
-### The Starlight Reasoning Protocol
+### The Reasoning Protocol
+
+For every non-trivial request:
 
 ```
-FOR EVERY NON-TRIVIAL REQUEST:
-
-1. What do I KNOW? (Facts from context + vaults)
-2. What do I NOT KNOW? (Gaps, uncertainties)
-3. What PATTERNS apply? (From experience + vault history)
-4. What are the OPTIONS? (At least 2-3 approaches)
-5. What are the TRADE-OFFS? (Pros/cons of each)
-6. What is the RECOMMENDATION? (Best path forward)
-7. What should I REMEMBER? (Store outcome for future)
-```
-
----
-
-## 4. Routing Layer
-
-See `ROUTING_MATRIX.md` for the complete routing logic.
-
-**Quick routing decision:**
-```
-Is this about BUILDING systems?          → Starlight Architect
-Is this about COORDINATING work?         → Starlight Orchestrator
-Is this about PROTECTING quality?        → Starlight Sentinel
-Is this about UNDERSTANDING knowledge?   → Starlight Sage
-Is this about CREATING something new?    → Starlight Weaver
-Is this about NAVIGATING the future?     → Starlight Navigator
-Is this about EVERYTHING at once?        → Starlight Prime (Council)
+1. KNOWN    — What facts do I have? (context + vault recall)
+2. UNKNOWN  — What gaps exist? (missing info, uncertainties)
+3. PATTERNS — What has worked before? (vault history, skill library)
+4. OPTIONS  — What are 2-3 approaches? (never just one)
+5. TRADEOFFS — What does each option cost? (time, risk, complexity)
+6. DECISION — What do I recommend? (with confidence score)
+7. MEMORY   — What should I store? (for future sessions)
 ```
 
 ---
 
-## 5. Orchestration Layer
+## Layer 4: Routing
 
-See `ORCHESTRATION_ENGINE.md` for the complete orchestration system.
+Full routing logic in `ROUTING_MATRIX.md`. Quick reference:
+
+```
+Building systems?           → Architect
+Coordinating work?          → Orchestrator
+Protecting quality?         → Sentinel
+Understanding knowledge?    → Sage
+Creating something?         → Weaver
+Navigating the future?      → Navigator
+Multiple domains?           → Orchestrator coordinates
+Everything at once?         → Council (Prime synthesizes)
+```
 
 ---
 
-## 6. Synthesis Layer
+## Layer 5: Execution
+
+See `ORCHESTRATION_ENGINE.md` for multi-agent coordination patterns.
+
+Single-agent execution is straightforward: the agent processes the request using its domain expertise and activated skills.
+
+Multi-agent execution follows one of six patterns: Direct, Sequential, Parallel, Iterative, Cascade, or Broadcast.
+
+---
+
+## Layer 6: Synthesis
 
 See `SYNTHESIS_PROTOCOL.md` for the complete synthesis system.
 
+When multiple agents contribute, their outputs are merged using one of five modes: Weighted Consensus, Sequential Refinement, Aggregation, Conflict Resolution, or Creative Synthesis.
+
 ---
 
-## 7. Memory Write Layer
+## Layer 7: Memory Write
 
-After every significant interaction:
+After every significant interaction, update the vaults:
 
 ```
-MEMORY WRITE PROTOCOL
-=====================
-
-1. EXTRACT
-   What was learned, decided, or discovered?
-
-2. CLASSIFY
-   Which vault(s) should store this?
-   - Decision made → Strategic Vault
-   - Pattern found → Technical Vault
-   - Creative insight → Creative Vault
-   - State change → Operational Vault
-   - Principle confirmed → Wisdom Vault
-
-3. STORE
-   Write to appropriate vault with:
-   - Timestamp
-   - Context summary
-   - Confidence score
-   - Related entries (links)
-
-4. INDEX
-   Update vault indices for future retrieval
-
-5. TRANSMIT (if cross-system)
-   Send relevant updates via Transmissions
+1. EXTRACT  — What was learned, decided, or discovered?
+2. CLASSIFY — Which vault(s)?
+   Decision made      → Strategic Vault
+   Pattern found      → Technical Vault
+   Creative insight   → Creative Vault
+   State change       → Operational Vault
+   Principle confirmed → Wisdom Vault
+   Values/alignment   → Horizon Vault
+3. STORE    — With timestamp, context, confidence score, links
+4. INDEX    — Update vault indices for retrieval
+5. TRANSMIT — If cross-system, send via appropriate channel
 ```
 
 ---
 
-## Intelligence Amplification Patterns
+## Intelligence Amplification
 
-### Pattern 1: Compound Knowledge
-Each interaction makes Starlight smarter. Vault entries build on each other, creating compound knowledge that no single session could achieve.
+These four patterns explain why Starlight gets smarter over time:
 
-### Pattern 2: Cross-Pollination
-Insights from one domain (e.g., AI-Ops memory research) inform another (e.g., Arcanea creative workflows). Transmissions make this automatic.
+**Compound Knowledge** — Vault entries build on each other. Session 100 has access to everything learned in sessions 1-99.
 
-### Pattern 3: Recursive Improvement
-Starlight tracks what works and what doesn't. Routing decisions, agent selections, and skill activations improve over time based on outcome tracking.
+**Cross-Pollination** — Insights from one domain inform another. AI-Ops memory research improves Arcanea creative workflows. Technical patterns inspire strategic frameworks.
 
-### Pattern 4: Ecosystem Awareness
-Through the Context Engine, Starlight maintains awareness of all connected systems. No decision is made in isolation - every choice considers ecosystem impact.
+**Recursive Improvement** — The system tracks which routing decisions, agent selections, and skill activations produced good outcomes. It favors what works.
+
+**Ecosystem Awareness** — Through the Context Engine, every decision considers the state of all connected projects. No decision is made in isolation.
 
 ---
 
-*"Intelligence is not about knowing everything. It's about knowing what matters, remembering what works, and connecting what others miss."*
+*Intelligence is not about knowing everything. It is about knowing what matters, remembering what works, and connecting what others miss.*

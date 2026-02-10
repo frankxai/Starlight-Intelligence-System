@@ -1,116 +1,78 @@
 # Starlight Routing Matrix
 
-> *"Every request finds its perfect handler. Every handler finds its perfect moment."*
+> The dispatcher. Every request finds its right handler through intent analysis, keyword matching, and complexity scoring.
 
 ---
 
-## Overview
-
-The Routing Matrix determines which agent(s), skill(s), and vault(s) handle each request. It acts as the intelligent dispatcher for all Starlight operations.
-
----
-
-## Primary Routing Logic
+## Primary Routing
 
 ```
 ANALYZE REQUEST
 │
-├── Contains "design", "architect", "system", "scale", "infrastructure"?
-│   └── YES → STARLIGHT ARCHITECT
-│       Skills: systems-thinking, strategic-reasoning
-│       Vault: technical-vault
+├── design / architect / system / scale / infrastructure
+│   → ARCHITECT  (Technical Vault)
 │
-├── Contains "coordinate", "manage", "workflow", "parallel", "orchestrate"?
-│   └── YES → STARLIGHT ORCHESTRATOR
-│       Skills: multi-agent-coordination, workflow-design
-│       Vault: operational-vault
+├── coordinate / manage / workflow / parallel / orchestrate
+│   → ORCHESTRATOR  (Operational Vault)
 │
-├── Contains "review", "audit", "check", "security", "quality", "validate"?
-│   └── YES → STARLIGHT SENTINEL
-│       Skills: decision-framework, pattern-recognition
-│       Vault: technical-vault
+├── review / audit / check / security / quality / validate
+│   → SENTINEL  (Technical Vault)
 │
-├── Contains "explain", "teach", "learn", "why", "understand", "wisdom"?
-│   └── YES → STARLIGHT SAGE
-│       Skills: knowledge-synthesis, context-preservation
-│       Vault: wisdom-vault
+├── explain / teach / learn / why / understand / wisdom
+│   → SAGE  (Wisdom Vault)
 │
-├── Contains "create", "write", "compose", "generate", "draft", "imagine"?
-│   └── YES → STARLIGHT WEAVER
-│       Skills: pattern-recognition, knowledge-synthesis
-│       Vault: creative-vault
+├── create / write / compose / generate / draft / imagine
+│   → WEAVER  (Creative Vault)
 │
-├── Contains "strategy", "future", "plan", "navigate", "position", "roadmap"?
-│   └── YES → STARLIGHT NAVIGATOR
-│       Skills: strategic-reasoning, decision-framework
-│       Vault: strategic-vault
+├── strategy / future / plan / navigate / position / roadmap
+│   → NAVIGATOR  (Strategic Vault)
 │
-├── Contains "remember", "vault", "store", "recall", "memory"?
-│   └── YES → VAULT MANAGEMENT SKILL
-│       Agent: none (direct skill)
-│       Vault: (target vault from context)
+├── hope / values / alignment / future generations / benevolence
+│   → SAGE  (Horizon Vault, read-only)
 │
-├── Contains "transmit", "sync", "broadcast", "update [system]"?
-│   └── YES → TRANSMISSION PROTOCOL SKILL
-│       Agent: none (direct skill)
-│       Channel: (target channel from context)
+├── remember / vault / store / recall / memory
+│   → VAULT MANAGEMENT SKILL  (target vault from context)
 │
-├── Contains "council", "all perspectives", "major decision"?
-│   └── YES → STARLIGHT PRIME (COUNCIL MODE)
-│       Agents: All relevant (parallel)
-│       Vault: strategic-vault
+├── transmit / sync / broadcast / update
+│   → TRANSMISSION PROTOCOL SKILL  (target channel from context)
 │
-├── Multiple domains detected?
-│   └── YES → STARLIGHT PRIME (MULTI-AGENT)
-│       Agents: Selected by domain overlap
-│       Pattern: parallel or sequential
+├── council / all perspectives / major decision
+│   → PRIME (Council Mode)  — all relevant agents, parallel
 │
-└── Unclear intent?
-    └── ASK: "Is this about building (Architect), creating (Weaver),
-             planning (Navigator), learning (Sage), or reviewing (Sentinel)?"
+├── multiple domains detected
+│   → PRIME (Multi-Agent) — selected by domain overlap
+│
+└── unclear intent
+    → Clarify: building (Architect), creating (Weaver),
+      planning (Navigator), learning (Sage), or reviewing (Sentinel)?
 ```
 
 ---
 
 ## Cross-System Routing
 
-When requests involve specific FrankX ecosystem repos:
-
 ```
-CROSS-SYSTEM ROUTING
-====================
+ACOS / creator / commands / skills
+  → ACOS Channel + repo-bridge skill + acos-context.md
 
-Request mentions ACOS / creator / commands / skills?
-  → Route through ACOS Channel
-  → Skills: repo-bridge, ecosystem-sync
-  → Context: acos-context.md
+Arcanea / creative / Luminors / world-building
+  → Arcanea Channel + repo-bridge skill + arcanea-context.md
 
-Request mentions Arcanea / creative / Luminors / world-building?
-  → Route through Arcanea Channel
-  → Skills: repo-bridge, ecosystem-sync
-  → Context: arcanea-context.md
+AI-Ops / infrastructure / gateway / memory systems
+  → AI-Ops Channel + repo-bridge skill + ai-ops-context.md
 
-Request mentions AI-Ops / infrastructure / gateway / memory systems?
-  → Route through AI-Ops Channel
-  → Skills: repo-bridge, ecosystem-sync
-  → Context: ai-ops-context.md
-
-Request spans multiple repos?
-  → Starlight Prime coordinates
-  → All relevant channels activated
-  → Unified context assembled
+Multiple repos
+  → Prime coordinates, all relevant channels, unified context
 ```
 
 ---
 
-## Skill Auto-Activation Rules
+## Skill Auto-Activation
 
-Skills activate automatically based on context. See `skills/skill-rules.json` for the complete ruleset.
+Skills activate automatically based on context. Full ruleset in `skills/skill-rules.json`.
 
-**Quick reference:**
-
-| Trigger | Skill Activated | Category |
-|---------|----------------|----------|
+| Trigger | Skill | Category |
+|---------|-------|----------|
 | Architecture discussion | systems-thinking | Intelligence |
 | Decision needed | decision-framework | Intelligence |
 | Pattern matching | pattern-recognition | Intelligence |
@@ -130,60 +92,64 @@ Skills activate automatically based on context. See `skills/skill-rules.json` fo
 
 ---
 
-## Priority & Escalation
-
-### Request Priority Levels
+## Priority and Escalation
 
 | Priority | Criteria | Response |
 |----------|----------|----------|
-| **P0 - Critical** | System-breaking, data loss risk | Immediate, all resources |
-| **P1 - High** | Strategic decisions, deadlines | Fast routing, senior agents |
-| **P2 - Normal** | Standard requests | Normal routing |
-| **P3 - Low** | Exploratory, learning | Efficient routing, minimal agents |
+| P0 | System-breaking, data loss risk | Immediate, all resources |
+| P1 | Strategic decisions, deadlines | Fast routing, leadership agents |
+| P2 | Standard requests | Normal routing |
+| P3 | Exploratory, learning | Efficient routing, minimal agents |
 
-### Escalation Protocol
+### Escalation
 
 ```
-Level 1: Single agent handles request
-  ↓ (if insufficient)
+Level 1: Single agent
+  ↓
 Level 2: Add supporting agent
-  ↓ (if still insufficient)
-Level 3: Convene partial council (2-3 agents)
-  ↓ (if critical/complex)
-Level 4: Full council with Starlight Prime
-  ↓ (if unprecedented)
+  ↓
+Level 3: Partial council (2-3 agents)
+  ↓
+Level 4: Full council with Prime
+  ↓
 Level 5: Flag for human decision with full context
 ```
 
 ---
 
-## Routing Optimization
+## Routing Feedback
 
-### Learning from Outcomes
-
-After each interaction, evaluate routing quality:
+After each interaction:
 
 ```
-ROUTING FEEDBACK LOOP
-=====================
-
 1. Was the selected agent the best choice?
-   YES → Reinforce routing pattern
-   NO  → Note better alternative for future
+   YES → Reinforce     NO → Note alternative
 
 2. Were activated skills actually used?
-   YES → Confirm activation rule
-   NO  → Consider raising activation threshold
+   YES → Confirm       NO → Raise threshold
 
-3. Was the complexity assessment accurate?
-   YES → Maintain calibration
-   NO  → Adjust scoring heuristics
+3. Was complexity assessment accurate?
+   YES → Maintain      NO → Adjust heuristics
 
 4. Did cross-system routing add value?
-   YES → Keep channels active
-   NO  → Consider direct handling
+   YES → Keep active   NO → Consider direct handling
 ```
 
 ---
 
-*"The fastest path to the right answer starts with the right question to the right mind."*
+## Platform Considerations
+
+The routing matrix operates identically across all platforms. The platform adapter translates the routing decision into the platform's native format:
+
+| Platform | How Routing Manifests |
+|----------|---------------------|
+| Claude Code | Direct agent activation via CLAUDE.md context |
+| Cursor | Rule file activation via .cursor/rules/ glob patterns |
+| Cline | Memory bank selection via .clinerules/ |
+| Codex | AGENTS.md cascading instruction selection |
+| Gemini CLI | Instruction layer activation via .gemini/ |
+| Antigravity | Agent task routing via .antigravity/ |
+
+---
+
+*The fastest path to the right answer starts with the right question to the right mind.*
