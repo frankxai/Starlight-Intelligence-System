@@ -1,212 +1,94 @@
-import Anthropic from '@anthropic-ai/sdk';
-export { Anthropic };
-interface MemoryEntry {
-    id: string;
-    content: string;
-    metadata: Record<string, unknown>;
-    created_at: Date;
-}
-interface ArcaneanSkill {
-    id: string;
-    name: string;
-    element: 'fire' | 'water' | 'earth' | 'wind' | 'void' | 'integration';
-    powerLevel: number;
-    description: string;
-    category: string;
-}
-interface ArcaneanAgent {
-    id: string;
-    name: string;
-    guardian: string;
-    element: string;
-    specialty: string;
-    personality: string;
-    command: string;
-}
-interface ArcaneanGuardian {
-    id: string;
-    name: string;
-    element: string;
-    domain: string;
-    personality: string;
-    godbeast: string;
-    wisdom: string[];
-    powers: string[];
-    gateAlignment: number;
-}
-interface EvolutionProgress {
-    userId: string;
-    currentGate: number;
-    experiencePoints: number;
-    skills: string[];
-    guardians: string[];
-    challengesCompleted: number;
-    lastUpdated: Date;
-    achievements: string[];
-}
-interface PremiumReasoningOptions {
-    guardian?: string;
-    context?: Record<string, unknown>;
-    maxTokens?: number;
-    temperature?: number;
-    systemPrompt?: string;
-}
-interface ReasoningResult {
-    reasoning: string;
-    guardian: string | null;
-    arcaneanContext: boolean;
-    tokensUsed: number;
-    executionTime: number;
-}
-interface MemorySearchResult {
-    entry: MemoryEntry;
-    arcaneanInsight: string;
-    elementResonance: string;
-    relevanceScore: number;
-}
-declare const TEN_GATES: {
-    gate: number;
-    name: string;
-    element: string;
-    threshold: number;
-}[];
-declare const GUARDIANS: ArcaneanGuardian[];
-declare const SKILLS: ArcaneanSkill[];
-declare const AGENTS: ArcaneanAgent[];
-declare class MemoryLayer {
-    private memoryManager;
-    private supabaseClient;
-    private storageType;
-    private tableName;
-    initialize(options?: {
-        supabaseUrl?: string;
-        supabaseKey?: string;
-    }): Promise<void>;
-    private initializeSupabase;
-    add(entry: Record<string, unknown>): Promise<void>;
-    search(query: string, options?: {
-        limit?: number;
-        threshold?: number;
-    }): Promise<MemoryEntry[]>;
-    getRecent(limit?: number): Promise<MemoryEntry[]>;
-    getStats(): Promise<{
-        totalEntries: number;
-        storageType: string;
-        oldestMemory: Date | null;
-        newestMemory: Date | null;
-    }>;
-}
-declare class GuardianAISystem {
-    private guardians;
-    private activeGuardian;
-    private affinityScore;
-    constructor();
-    getGuardian(name: string): ArcaneanGuardian | null;
-    getAllGuardians(): ArcaneanGuardian[];
-    getGuardianByGate(gate: number): ArcaneanGuardian | null;
-    activateGuardian(name: string): ArcaneanGuardian | null;
-    getActiveGuardian(): ArcaneanGuardian | null;
-    getAffinityScore(name: string): number;
-    getRecommendedGuardian(query: string): ArcaneanGuardian | null;
-    getGuardianPowers(name: string): string[];
-    getGuardianWisdom(name: string): string[];
-}
-declare class EvolutionTracker {
-    private userProgress;
-    initializeUser(userId: string): EvolutionProgress;
-    getProgress(userId: string): EvolutionProgress;
-    addExperience(userId: string, points: number): EvolutionProgress;
-    addSkill(userId: string, skill: string): EvolutionProgress;
-    addGuardianAffinity(userId: string, guardian: string): EvolutionProgress;
-    completeChallenge(userId: string, _challengeId: string): EvolutionProgress;
-    private calculateGate;
-    getGateInfo(gate: number): {
-        name: string;
-        element: string;
-        nextThreshold: number;
-        currentThreshold: number;
-    } | null;
-    getEvolutionPath(gate: number): string[];
-    private getGuardianForGate;
-    getLeaderboard(limit?: number): EvolutionProgress[];
-}
-declare class PremiumCommandInterface {
-    private starlight;
-    private commands;
-    constructor(starlight: StarlightIntelligence);
-    private registerCommands;
-    execute(command: string, args: string[]): Promise<unknown>;
-    getHelpText(): string;
-    getCommands(): string[];
-}
+/**
+ * Starlight Intelligence System v2.0
+ *
+ * Universal Context Standard — Portable cognitive architecture
+ * for AI-augmented creator workflows.
+ *
+ * Core capabilities:
+ * 1. Context Engine — Generate optimized system prompts for any AI tool
+ * 2. Memory Manager — Persistent cross-session knowledge
+ * 3. Agent Router — Intelligent task routing aligned with ACOS v8
+ *
+ * @example
+ * ```typescript
+ * import { StarlightIntelligence } from "@frankx/starlight-intelligence-system";
+ *
+ * const sis = new StarlightIntelligence();
+ * sis.initialize();
+ *
+ * // Generate context for Claude Code
+ * const context = sis.generateContext({
+ *   target: "claude-code",
+ *   layers: ["identity", "knowledge", "strategy", "agents"],
+ * });
+ *
+ * // Route a task to the best agent
+ * const recommendations = sis.routeTask("write a blog post about AI agents");
+ *
+ * // Store a learning
+ * sis.remember({
+ *   content: "Never use clay/claymorphic style in image generation",
+ *   category: "preference",
+ *   tags: ["design", "images", "brand"],
+ *   confidence: 1.0,
+ * });
+ * ```
+ */
+import type { ContextOptions, GeneratedContext, MemoryEntry, MemorySearchOptions, MemoryStats, AgentDefinition, SystemStats, UserProfile, TechStack, BrandSystem } from "./types.js";
+import type { AgentRecommendation } from "./agents.js";
 export declare class StarlightIntelligence {
-    private memoryLayer;
-    private guardianSystem;
-    private evolutionTracker;
-    private commandInterface;
-    private claudeClient;
-    private langChainModel;
+    private context;
+    private memory;
+    private router;
     private initialized;
-    constructor();
-    initialize(options?: {
-        supabaseUrl?: string;
-        supabaseKey?: string;
-        openaiKey?: string;
-    }): Promise<void>;
-    isInitialized(): boolean;
-    reason(query: string, options?: PremiumReasoningOptions): Promise<ReasoningResult>;
-    private createArcaneaPrompt;
-    private generateLocalReasoning;
-    sendStarlightNote(content: string, targetDate?: Date): Promise<{
-        success: boolean;
-        message: string;
-        quantumSignature: string;
-    }>;
-    private generateQuantumSignature;
-    searchMemory(query: string): Promise<MemorySearchResult[]>;
-    private analyzeArcaneanPattern;
-    private detectElementResonance;
-    trackProgress(userProgress: {
-        userId?: string;
-        guardian?: string;
-        skills?: string[];
-    }): Promise<{
-        currentGate: number;
-        nextGate: number;
-        guardianGuidance: string;
-        evolutionPath: string[];
-    }>;
-    private getProgressInsight;
-    getGuardianInfo(name: string): ArcaneanGuardian | null;
-    getAllGuardians(): ArcaneanGuardian[];
-    getEvolutionStatus(userId: string): Promise<{
-        progress: EvolutionProgress;
-        gateInfo: {
-            name: string;
-            element: string;
-            nextThreshold: number;
-            currentThreshold: number;
-        } | null;
-    } | null>;
-    recordEvolutionAction(userId: string, action: string, value: string): Promise<EvolutionProgress>;
-    getSystemStats(): Promise<{
-        version: string;
-        guardians: number;
-        skills: number;
-        agents: number;
-        gates: number;
-        initialized: boolean;
-    }>;
-    getMemoryStats(): Promise<ReturnType<typeof this.memoryLayer.getStats>>;
-    getRecentMemories(limit?: number): Promise<MemoryEntry[]>;
-    invokeAgent(agentCommand: string, _args: string[]): Promise<{
-        agent: ArcaneanAgent;
-        message: string;
-    }>;
-    executeCommand(command: string, args: string[]): Promise<unknown>;
-    getCommands(): string[];
+    constructor(options?: StarlightOptions);
+    /**
+     * Initialize the system: load persistent memories from disk.
+     */
+    initialize(): void;
+    /**
+     * Generate a context injection for the target AI tool.
+     */
+    generateContext(options: ContextOptions): GeneratedContext;
+    /**
+     * Route a task to the best agent(s).
+     */
+    routeTask(query: string, filePaths?: string[]): AgentRecommendation[];
+    /**
+     * Store a learning/memory entry.
+     */
+    remember(entry: Omit<MemoryEntry, "id" | "createdAt">): MemoryEntry;
+    /**
+     * Search stored memories.
+     */
+    searchMemories(options: MemorySearchOptions): MemoryEntry[];
+    /**
+     * Get memory statistics.
+     */
+    getMemoryStats(): MemoryStats;
+    /**
+     * Get an agent by ID.
+     */
+    getAgent(id: string): AgentDefinition | undefined;
+    /**
+     * Get system statistics.
+     */
+    getStats(): SystemStats;
+    /**
+     * Save memories to disk.
+     */
+    save(): void;
 }
-declare const starlight: StarlightIntelligence;
-export default starlight;
-export { starlight, GUARDIANS, SKILLS, AGENTS, TEN_GATES, MemoryLayer, GuardianAISystem, EvolutionTracker, PremiumCommandInterface };
+export interface StarlightOptions {
+    profile?: UserProfile;
+    stack?: TechStack;
+    brand?: BrandSystem;
+    agents?: AgentDefinition[];
+    memoryPath?: string;
+}
+export { ContextEngine, DEFAULT_PROFILE, DEFAULT_STACK, DEFAULT_BRAND } from "./context.js";
+export { MemoryManager } from "./memory.js";
+export { AgentRouter, ACOS_AGENTS } from "./agents.js";
+export type { ContextOptions, ContextLayer, GeneratedContext, UserProfile, VoiceGuidelines, TechStack, BrandSystem, AgentDefinition, AgentRegistry, SkillDefinition, MemoryEntry, MemorySearchOptions, MemoryStats, ReasoningStrategy, ProjectContext, SystemStats, } from "./types.js";
+export type { AgentRecommendation } from "./agents.js";
 //# sourceMappingURL=index.d.ts.map

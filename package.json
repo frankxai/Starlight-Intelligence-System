@@ -1,0 +1,53 @@
+{
+  "name": "@frankx/starlight-intelligence-system",
+  "version": "2.0.0",
+  "description": "Universal Context Standard — Portable cognitive architecture for AI-augmented creator workflows",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./context": {
+      "types": "./dist/context.d.ts",
+      "import": "./dist/context.js"
+    },
+    "./memory": {
+      "types": "./dist/memory.d.ts",
+      "import": "./dist/memory.js"
+    },
+    "./agents": {
+      "types": "./dist/agents.d.ts",
+      "import": "./dist/agents.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "node --test src/**/*.test.ts",
+    "generate-context": "node dist/cli.js generate",
+    "lint": "tsc --noEmit"
+  },
+  "files": [
+    "dist/",
+    "context/",
+    "README.md"
+  ],
+  "keywords": [
+    "ai",
+    "context-injection",
+    "cognitive-architecture",
+    "claude",
+    "cursor",
+    "creator-tools"
+  ],
+  "author": "FrankX <frank@frankx.ai>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "typescript": "^5.7.0"
+  }
+}
