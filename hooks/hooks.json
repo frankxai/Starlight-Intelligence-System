@@ -1,0 +1,143 @@
+{
+  "version": "1.0.0",
+  "description": "Starlight Intelligence System - Lifecycle Hooks Configuration",
+  "hooks": {
+    "pre-task": [
+      {
+        "id": "state-check",
+        "enabled": true,
+        "priority": 1,
+        "action": "Verify system health - check vault connectivity and agent availability",
+        "skill": "vault-management",
+        "condition": "always"
+      },
+      {
+        "id": "session-restore",
+        "enabled": true,
+        "priority": 2,
+        "action": "Restore context from most recent Session Note if new session",
+        "skill": "context-preservation",
+        "condition": "new-session"
+      },
+      {
+        "id": "context-load",
+        "enabled": true,
+        "priority": 3,
+        "action": "Assemble relevant context from vaults, notes, and transmissions",
+        "skill": "context-engineering",
+        "condition": "always"
+      },
+      {
+        "id": "skill-activate",
+        "enabled": true,
+        "priority": 4,
+        "action": "Auto-activate matching skills based on task analysis",
+        "skill": null,
+        "condition": "always",
+        "config_ref": "skills/skill-rules.json"
+      }
+    ],
+    "post-task": [
+      {
+        "id": "vault-write",
+        "enabled": true,
+        "priority": 1,
+        "action": "Store significant results in appropriate vault",
+        "skill": "vault-management",
+        "condition": "task-produced-insight-or-decision"
+      },
+      {
+        "id": "note-create",
+        "enabled": true,
+        "priority": 2,
+        "action": "Create appropriate note type for significant work",
+        "skill": "context-preservation",
+        "condition": "significant-work-completed"
+      },
+      {
+        "id": "transmission-send",
+        "enabled": true,
+        "priority": 3,
+        "action": "Send transmission to relevant channels if cross-system applicable",
+        "skill": "transmission-protocol",
+        "condition": "cross-system-relevant"
+      },
+      {
+        "id": "metrics-update",
+        "enabled": true,
+        "priority": 4,
+        "action": "Update Operational Vault with task metrics",
+        "skill": "vault-management",
+        "condition": "always"
+      }
+    ],
+    "on-error": [
+      {
+        "id": "error-log",
+        "enabled": true,
+        "priority": 1,
+        "action": "Log error details in Operational Vault",
+        "skill": "vault-management",
+        "condition": "any-error"
+      },
+      {
+        "id": "context-save",
+        "enabled": true,
+        "priority": 2,
+        "action": "Emergency context preservation to prevent knowledge loss",
+        "skill": "context-preservation",
+        "condition": "critical-error"
+      },
+      {
+        "id": "fallback-route",
+        "enabled": true,
+        "priority": 3,
+        "action": "Route to backup agent or escalate to Prime",
+        "skill": "multi-agent-coordination",
+        "condition": "agent-failure"
+      },
+      {
+        "id": "alert-send",
+        "enabled": true,
+        "priority": 4,
+        "action": "Send Critical priority transmission",
+        "skill": "transmission-protocol",
+        "condition": "critical-error"
+      }
+    ],
+    "on-sync": [
+      {
+        "id": "channel-check",
+        "enabled": true,
+        "priority": 1,
+        "action": "Check all transmission channels for new entries",
+        "skill": "transmission-protocol",
+        "condition": "sync-event"
+      },
+      {
+        "id": "context-refresh",
+        "enabled": true,
+        "priority": 2,
+        "action": "Update repo context files with latest information",
+        "skill": "repo-bridge",
+        "condition": "sync-event"
+      },
+      {
+        "id": "state-sync",
+        "enabled": true,
+        "priority": 3,
+        "action": "Synchronize ecosystem state across all connected repos",
+        "skill": "ecosystem-sync",
+        "condition": "sync-event"
+      },
+      {
+        "id": "consolidation-check",
+        "enabled": true,
+        "priority": 4,
+        "action": "Check if memory consolidation is needed based on vault metrics",
+        "skill": "memory-consolidation",
+        "condition": "sync-event"
+      }
+    ]
+  }
+}

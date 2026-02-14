@@ -1,0 +1,191 @@
+{
+  "version": "1.0.0",
+  "description": "Starlight Intelligence System - Skill Auto-Activation Rules",
+  "rules": [
+    {
+      "id": "intelligence-strategic-reasoning",
+      "skill": "intelligence/strategic-reasoning",
+      "triggers": {
+        "keywords": ["strategy", "strategic", "long-term", "trade-off", "prioritize", "roadmap", "vision"],
+        "agents": ["starlight-navigator", "starlight-prime"],
+        "intents": ["strategy", "planning"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "intelligence-systems-thinking",
+      "skill": "intelligence/systems-thinking",
+      "triggers": {
+        "keywords": ["system", "architecture", "holistic", "feedback", "emergent", "connected", "ecosystem"],
+        "agents": ["starlight-architect", "starlight-prime"],
+        "intents": ["architecture", "analysis"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "intelligence-pattern-recognition",
+      "skill": "intelligence/pattern-recognition",
+      "triggers": {
+        "keywords": ["pattern", "recurring", "similar", "trend", "correlation", "anti-pattern"],
+        "agents": ["starlight-sage", "starlight-sentinel"],
+        "intents": ["analysis", "review"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "intelligence-decision-framework",
+      "skill": "intelligence/decision-framework",
+      "triggers": {
+        "keywords": ["decide", "decision", "choose", "evaluate", "compare", "which", "should we"],
+        "agents": ["starlight-navigator", "starlight-prime"],
+        "intents": ["decision", "strategy"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-multi-agent-coordination",
+      "skill": "orchestration/multi-agent-coordination",
+      "triggers": {
+        "keywords": ["coordinate", "agents", "parallel", "team", "collaborate", "multi-agent"],
+        "agents": ["starlight-orchestrator"],
+        "intents": ["orchestration", "coordination"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-workflow-design",
+      "skill": "orchestration/workflow-design",
+      "triggers": {
+        "keywords": ["workflow", "process", "pipeline", "steps", "sequence", "automate"],
+        "agents": ["starlight-orchestrator"],
+        "intents": ["orchestration", "automation"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-context-engineering",
+      "skill": "orchestration/context-engineering",
+      "triggers": {
+        "keywords": ["context", "session", "continuity", "state", "handoff", "fresh context"],
+        "agents": ["starlight-orchestrator", "starlight-prime"],
+        "intents": ["orchestration", "memory"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-parallel-execution",
+      "skill": "orchestration/parallel-execution",
+      "triggers": {
+        "keywords": ["parallel", "concurrent", "simultaneously", "batch", "at the same time"],
+        "agents": ["starlight-orchestrator"],
+        "intents": ["orchestration"]
+      },
+      "priority": "medium",
+      "load_level": "summary"
+    },
+    {
+      "id": "memory-vault-management",
+      "skill": "memory/vault-management",
+      "triggers": {
+        "keywords": ["vault", "store", "remember", "recall", "persist", "save", "memory"],
+        "agents": ["starlight-prime", "starlight-sage"],
+        "intents": ["memory", "storage"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "memory-knowledge-synthesis",
+      "skill": "memory/knowledge-synthesis",
+      "triggers": {
+        "keywords": ["synthesize", "combine", "merge", "integrate", "unify", "consolidate knowledge"],
+        "agents": ["starlight-sage", "starlight-prime"],
+        "intents": ["knowledge", "synthesis"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "memory-context-preservation",
+      "skill": "memory/context-preservation",
+      "triggers": {
+        "keywords": ["preserve", "save context", "handoff", "session end", "continue later"],
+        "agents": ["starlight-orchestrator", "starlight-sage"],
+        "intents": ["memory", "continuity"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "memory-memory-consolidation",
+      "skill": "memory/memory-consolidation",
+      "triggers": {
+        "keywords": ["consolidate", "optimize memory", "clean up", "archive", "deduplicate"],
+        "agents": ["starlight-prime"],
+        "intents": ["memory", "maintenance"]
+      },
+      "priority": "low",
+      "load_level": "summary"
+    },
+    {
+      "id": "integration-repo-bridge",
+      "skill": "integration/repo-bridge",
+      "triggers": {
+        "keywords": ["repo", "repository", "cross-repo", "ACOS", "Arcanea", "AI-Ops", "other repo"],
+        "agents": ["starlight-orchestrator", "starlight-prime"],
+        "intents": ["integration", "cross-system"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "integration-ecosystem-sync",
+      "skill": "integration/ecosystem-sync",
+      "triggers": {
+        "keywords": ["sync", "synchronize", "align", "ecosystem", "all systems", "global update"],
+        "agents": ["starlight-orchestrator", "starlight-prime"],
+        "intents": ["integration", "synchronization"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "integration-transmission-protocol",
+      "skill": "integration/transmission-protocol",
+      "triggers": {
+        "keywords": ["transmit", "broadcast", "channel", "message", "notify", "transmission"],
+        "agents": ["starlight-orchestrator", "starlight-prime"],
+        "intents": ["communication", "integration"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "integration-universal-adapter",
+      "skill": "integration/universal-adapter",
+      "triggers": {
+        "keywords": ["external", "API", "MCP", "integration", "connect", "third-party"],
+        "agents": ["starlight-orchestrator", "starlight-architect"],
+        "intents": ["integration", "external"]
+      },
+      "priority": "low",
+      "load_level": "summary"
+    }
+  ],
+  "defaults": {
+    "starlight-prime": ["intelligence-strategic-reasoning", "intelligence-systems-thinking", "intelligence-decision-framework"],
+    "starlight-architect": ["intelligence-systems-thinking", "intelligence-pattern-recognition"],
+    "starlight-orchestrator": ["orchestration-multi-agent-coordination", "orchestration-workflow-design"],
+    "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework"],
+    "starlight-sage": ["memory-knowledge-synthesis", "intelligence-pattern-recognition"],
+    "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis"],
+    "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework"]
+  }
+}
