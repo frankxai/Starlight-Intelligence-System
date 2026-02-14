@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-5_Layer_Intelligence-7fffd4?style=flat-square&labelColor=0d1117" alt="Architecture"></a>
-  <a href="#agents"><img src="https://img.shields.io/badge/Agents-8_Specialist_Council-ffd700?style=flat-square&labelColor=0d1117" alt="Agents"></a>
+  <a href="#agents"><img src="https://img.shields.io/badge/Agents-7_Specialist_Council-ffd700?style=flat-square&labelColor=0d1117" alt="Agents"></a>
   <a href="#orchestration"><img src="https://img.shields.io/badge/Patterns-6_Orchestration_Modes-9966ff?style=flat-square&labelColor=0d1117" alt="Patterns"></a>
   <a href="#memory"><img src="https://img.shields.io/badge/Memory-5_Category_Vaults-78a6ff?style=flat-square&labelColor=0d1117" alt="Memory"></a>
   <a href="#acos-integration"><img src="https://img.shields.io/badge/ACOS-v10_Trajectory_Sync-ff6b6b?style=flat-square&labelColor=0d1117" alt="ACOS"></a>
@@ -292,9 +292,54 @@ Use LangGraph for execution graphs. Use CrewAI for role-based coordination. Use 
 
 ---
 
+## Current Status
+
+An honest assessment of what works today and what's planned.
+
+### What Works Now
+
+| Capability | Status | How It Works |
+|:-----------|:------:|:-------------|
+| **5-layer context architecture** | **Production** | Markdown files in `context/` — loaded by AI tools at session start |
+| **7 agent cognitive profiles** | **Production** | Markdown definitions in `agents/` — readable by any AI tool |
+| **6 memory vaults** | **Production** | Markdown files with structured entries — manually maintained |
+| **6 platform adapters** | **Production** | CLAUDE.md, .cursor/, .gemini/, .clinerules, AGENTS.md, .antigravity/ |
+| **TypeScript SDK** | **Built, not published** | Context generation, memory management, agent routing, orchestration engine |
+| **CLI** | **Built, not published** | `starlight init`, `generate`, `vault`, `sync`, `score`, `stats` |
+| **ACOS trajectory sync** | **Built, not published** | Classifies session data into memory vaults |
+| **Orchestration engine** | **Built, not published** | 6 patterns (direct, sequential, parallel, iterative, cascade, broadcast) |
+
+### How Platform Adapters Work Today
+
+Starlight currently connects to AI tools through **static markdown files** that are loaded as system context. No runtime required — just files in the right locations:
+
+```
+Your project/
+├── CLAUDE.md                    → Claude Code reads this automatically
+├── AGENTS.md                    → OpenAI Codex reads this automatically
+├── .cursor/rules/starlight.mdc  → Cursor reads this automatically
+├── .gemini/GEMINI.md            → Gemini CLI reads this automatically
+├── .clinerules/starlight.md     → Cline reads this automatically
+└── .antigravity/instructions.md → Antigravity reads this automatically
+```
+
+This is simple and it works. Copy the adapter files into your project, customize the context layers, and every AI tool picks up your identity, knowledge, and agent definitions at session start.
+
+### What's Not Built Yet
+
+- **npm package** — The SDK exists locally but isn't published. You can't `npm install` it yet.
+- **MCP server** — No Model Context Protocol server for external tool integration.
+- **LangGraph/CrewAI/Swarm adapters** — No programmatic bridge to execution frameworks. This is on the roadmap but not current priority.
+- **Automated vault consolidation** — Memory compression from operational to wisdom vaults is manual.
+- **Cross-project transmissions** — The protocol is designed but not implemented.
+
+---
+
 ## ACOS Integration (v4.0)
 
-Starlight v4 bridges the gap between ACOS session runtime and persistent intelligence. ACOS generates trajectory data during every session — tool sequences, success scores, file modifications. SIS v4 syncs this operational data into classified memory vaults for compound learning.
+The TypeScript SDK includes a bridge between ACOS (Agentic Creator OS) session data and SIS memory vaults. ACOS generates trajectory data during sessions — tool sequences, success scores, file modifications. SIS classifies and stores this as persistent memory.
+
+> **Note**: This is implemented in the SDK but requires `npm publish` before it's usable outside the monorepo.
 
 ### Trajectory Sync
 
@@ -328,24 +373,20 @@ Generates a unified intelligence report (0-100) with four components:
 - **Operational History** (25pts) — Volume and variety of completed work
 - **Learning Velocity** (25pts) — Rate of new insights over time
 
-### Hook Integration
-
-SIS v4 wires into ACOS hooks automatically:
-- **SessionStart** — Pulls memory summary and top patterns into session context
-- **SessionEnd** — Syncs new trajectories into SIS memory vaults (async)
-
 ---
 
 ## Quick Start
 
-### 1. Clone
+### Option 1: Use the Markdown Architecture (Recommended)
+
+The fastest way to use Starlight — no build step, no dependencies:
 
 ```bash
 git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
 ```
 
-### 2. Explore the Architecture
+#### Explore the 5 layers:
 
 ```
 context/
@@ -356,7 +397,22 @@ context/
 └── 04_ARCANA/       # Creative intelligence (optional)
 ```
 
-### 3. Use Programmatically
+#### Copy adapters into your project:
+
+```bash
+# For Claude Code
+cp CLAUDE.md /path/to/your-project/
+
+# For Cursor
+cp -r .cursor/ /path/to/your-project/
+
+# For Gemini CLI
+cp -r .gemini/ /path/to/your-project/
+```
+
+Customize the context layers for your domain, stack, and voice. Every AI tool session will load your intelligence automatically.
+
+### Option 2: Use the TypeScript SDK (Local Only)
 
 ```bash
 npm install
@@ -364,7 +420,7 @@ npm run build
 ```
 
 ```typescript
-import { StarlightIntelligence } from "@frankxai/starlight-intelligence-system";
+import { StarlightIntelligence } from "./dist/index.js";
 
 const sis = new StarlightIntelligence();
 sis.initialize();
@@ -377,7 +433,6 @@ const context = sis.generateContext({
 
 // Route a task to the best agent
 const routing = sis.routeTask("design a distributed caching layer");
-// → [{ agent: "Architect", score: 24, reason: "Matched: design, distributed, layer" }]
 
 // Persist a learning
 sis.remember({
@@ -388,7 +443,9 @@ sis.remember({
 });
 ```
 
-### 4. Fork and Personalize
+> **Note**: The SDK is not yet published to npm. The import path above assumes you're working within the cloned repo.
+
+### Option 3: Fork and Personalize
 
 Replace the context files with your own:
 
@@ -481,53 +538,65 @@ Starlight-Intelligence-System/
 
 ---
 
-## Powered By Starlight
+## Built With Starlight
 
-Starlight is the intelligence layer behind:
+Projects that use Starlight as their context and memory layer:
 
-- **[Arcanea](https://github.com/frankxai/arcanea)** — AI-native creative operating system with Guardian agents mapped to the Starlight council
-- **[Agentic Creator OS](https://github.com/frankxai/agentic-creator-os)** — Claude Code-native operating system for generative creators, built on Starlight context layers
-- **[Arcanea On-Chain](https://github.com/frankxai/arcanea-onchain)** — Blockchain infrastructure for creator IP and NFT systems
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/frankxai/agentic-creator-os/main/docs/infographics/v7-09-architecture-premium.png" alt="ACOS Architecture — Powered by Starlight" width="100%">
-</p>
-
-<p align="center"><em>SIS as the persistent intelligence layer underneath ACOS v10 runtime</em></p>
+| Project | How It Uses Starlight |
+|:--------|:---------------------|
+| **[Arcanea](https://github.com/frankxai/arcanea)** | 40+ agents and 65+ skills load through Starlight context layers. Guardian agents map to the Starlight council hierarchy. |
+| **[Agentic Creator OS](https://github.com/frankxai/agentic-creator-os)** | Claude Code-native operating system. Uses Starlight for identity, vault-based memory, and agent routing. |
+| **[Arcanea On-Chain](https://github.com/frankxai/arcanea-onchain)** | Blockchain strategy for creator IP. References Starlight architecture for agent coordination design. |
 
 ---
 
 ## Roadmap
 
-### v3.0 — Multi-Agent Intelligence
-- [x] 5-layer cognitive architecture
+### Completed
+
+- [x] 5-layer cognitive architecture (markdown)
 - [x] 7 specialist agents with council coordination
-- [x] 6 orchestration patterns
-- [x] 6 persistent memory vaults
-- [x] 6 platform adapters
-- [x] TypeScript SDK with context generation
-- [x] Runtime orchestration engine
-- [x] CLI for vault management
+- [x] 6 orchestration patterns (TypeScript)
+- [x] 6 persistent memory vaults (markdown)
+- [x] 6 platform adapters (Claude Code, Cursor, Codex, Gemini CLI, Cline, Antigravity)
+- [x] TypeScript SDK — context generation, memory, agent routing
+- [x] CLI — init, generate, vault, sync, score, stats
+- [x] ACOS trajectory sync and classification
+- [x] Intelligence scoring (0-100 with component breakdown)
 
-### v4.0 — ACOS Integration (Current)
-- [x] ACOS trajectory → SIS memory sync bridge
-- [x] Trajectory classification engine (5 memory categories)
-- [x] Unified intelligence scoring (0-100 with S/A/B/C/D/F grades)
-- [x] ACOS hook integration (session-start pull, session-end sync)
-- [x] CLI commands: `starlight sync`, `starlight score`
-- [x] Deduplication via sync-state tracking
-- [x] 8 specialist agents aligned with ACOS v10
-- [ ] npm publish
+### Current Priority: Claude Code Polish
+
+The primary consumer of Starlight today is Claude Code. Focus is on making this integration production-quality.
+
+- [ ] Publish `@frankxai/starlight-intelligence-system` to npm
+- [ ] Fix test suite (82 tests written, import resolution needs work)
+- [ ] Automated vault consolidation (operational → wisdom)
+- [ ] Claude Code hook integration (auto-load context at session start, auto-sync at end)
+- [ ] Improve adapter generation — programmatic CLAUDE.md generation from context layers
+
+### Next: SaaS via Vercel AI SDK
+
+Build a web-based interface for Starlight using Vercel AI SDK 6, integrated into the Arcanea platform.
+
 - [ ] MCP server for external tool integration
+- [ ] Web dashboard for vault management and intelligence scoring
+- [ ] API routes for context generation (REST + streaming)
+- [ ] Multi-user support with per-user vaults
 
-### v4.1 — Cross-System Intelligence
-- [ ] Transmission protocol for inter-project communication
+### Backlog: Execution Framework Adapters
+
+Programmatic bridges to multi-agent execution frameworks. These would let Starlight inject identity, memory, and reasoning into framework-managed agents.
+
+- [ ] LangGraph adapter — inject agent identity into graph nodes
+- [ ] CrewAI adapter — map Starlight agents to CrewAI roles with memory
+- [ ] AutoGen adapter — persistent memory across AutoGen conversations
+- [ ] Cross-project transmission protocol
 - [ ] Shared memory indices across repositories
-- [ ] Vault consolidation (compress operational memory into wisdom patterns)
 
-### v5.0 — Autonomous Intelligence
-- [ ] Recursive agent spawning (create new specialists when gaps detected)
-- [ ] Real-time consensus protocols (Raft, BFT, CRDT)
+### Future: Autonomous Intelligence
+
+- [ ] Recursive agent spawning (create specialists when gaps detected)
+- [ ] Real-time consensus protocols
 - [ ] Horizon Vault public registry
 
 ---

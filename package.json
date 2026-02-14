@@ -1,7 +1,7 @@
 {
   "name": "@frankx/starlight-intelligence-system",
   "version": "4.0.0",
-  "description": "Universal intelligence layer with ACOS integration — context engine, memory vaults, agent routing, trajectory sync, intelligence scoring",
+  "description": "Persistent context and memory layer for AI agents — 5-layer architecture, memory vaults, agent routing, platform adapters for Claude Code, Cursor, Codex, Gemini CLI",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -50,13 +50,15 @@
   ],
   "keywords": [
     "ai",
-    "multi-agent",
-    "orchestration",
+    "ai-agents",
+    "context-engineering",
+    "persistent-memory",
     "cognitive-architecture",
     "claude-code",
     "cursor",
-    "agent-framework",
-    "swarm"
+    "codex",
+    "gemini-cli",
+    "platform-adapters"
   ],
   "author": "FrankX <frank@frankx.ai>",
   "license": "MIT",

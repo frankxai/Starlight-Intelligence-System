@@ -1,6 +1,6 @@
 # Starlight Intelligence System
 
-> The open intelligence layer for AI-native development.
+> The persistent context and memory layer for AI agents.
 
 ---
 
