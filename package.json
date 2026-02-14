@@ -1,7 +1,7 @@
 {
   "name": "@frankx/starlight-intelligence-system",
-  "version": "2.0.0",
-  "description": "Universal Context Standard — Portable cognitive architecture for AI-augmented creator workflows",
+  "version": "3.0.0",
+  "description": "The open intelligence layer for multi-agent orchestration — 5 cognitive layers, 7 council agents, 6 execution patterns",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -42,11 +42,13 @@
   ],
   "keywords": [
     "ai",
-    "context-injection",
+    "multi-agent",
+    "orchestration",
     "cognitive-architecture",
-    "claude",
+    "claude-code",
     "cursor",
-    "creator-tools"
+    "agent-framework",
+    "swarm"
   ],
   "author": "FrankX <frank@frankx.ai>",
   "license": "MIT",

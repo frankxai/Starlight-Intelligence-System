@@ -37,11 +37,13 @@
 import { ContextEngine } from "./context.js";
 import { MemoryManager } from "./memory.js";
 import { AgentRouter, ACOS_AGENTS } from "./agents.js";
+import { OrchestrationEngine } from "./orchestrator.js";
 // ── Main Class ──────────────────────────────────────────────
 export class StarlightIntelligence {
     context;
     memory;
     router;
+    orchestrator;
     initialized = false;
     constructor(options) {
         this.context = new ContextEngine({
@@ -52,6 +54,11 @@ export class StarlightIntelligence {
         });
         this.memory = new MemoryManager(options?.memoryPath);
         this.router = new AgentRouter(options?.agents ?? ACOS_AGENTS);
+        this.orchestrator = new OrchestrationEngine({
+            memory: this.memory,
+            router: this.router,
+            executor: options?.executor,
+        });
     }
     /**
      * Initialize the system: load persistent memories from disk.
@@ -61,6 +68,35 @@ export class StarlightIntelligence {
             return;
         this.memory.load();
         this.initialized = true;
+    }
+    /**
+     * Execute a task through the orchestration engine.
+     * This is the primary method for multi-agent workflow execution.
+     *
+     * @example
+     * ```typescript
+     * const result = await sis.orchestrate({
+     *   intent: "Design and implement a new authentication system",
+     *   pattern: "sequential",
+     *   synthesis: "sequential-refinement",
+     * });
+     * ```
+     */
+    async orchestrate(task, executor) {
+        return this.orchestrator.execute(task, executor);
+    }
+    /**
+     * Set the agent executor for orchestration.
+     * Consumers call this to wire up their LLM integration.
+     */
+    setExecutor(executor) {
+        this.orchestrator.setExecutor(executor);
+    }
+    /**
+     * Get the orchestration engine for advanced usage.
+     */
+    getOrchestrator() {
+        return this.orchestrator;
     }
     /**
      * Generate a context injection for the target AI tool.
@@ -131,4 +167,5 @@ export class StarlightIntelligence {
 export { ContextEngine, DEFAULT_PROFILE, DEFAULT_STACK, DEFAULT_BRAND } from "./context.js";
 export { MemoryManager } from "./memory.js";
 export { AgentRouter, ACOS_AGENTS } from "./agents.js";
+export { OrchestrationEngine } from "./orchestrator.js";
 //# sourceMappingURL=index.js.map
