@@ -3,15 +3,15 @@
 </p>
 
 <p align="center">
-  <strong>The open intelligence layer for multi-agent orchestration</strong>
+  <strong>Universal intelligence layer with ACOS integration</strong>
 </p>
 
 <p align="center">
   <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-5_Layer_Intelligence-7fffd4?style=flat-square&labelColor=0d1117" alt="Architecture"></a>
-  <a href="#agents"><img src="https://img.shields.io/badge/Agents-7_Specialist_Council-ffd700?style=flat-square&labelColor=0d1117" alt="Agents"></a>
+  <a href="#agents"><img src="https://img.shields.io/badge/Agents-8_Specialist_Council-ffd700?style=flat-square&labelColor=0d1117" alt="Agents"></a>
   <a href="#orchestration"><img src="https://img.shields.io/badge/Patterns-6_Orchestration_Modes-9966ff?style=flat-square&labelColor=0d1117" alt="Patterns"></a>
-  <a href="#memory"><img src="https://img.shields.io/badge/Memory-6_Persistent_Vaults-78a6ff?style=flat-square&labelColor=0d1117" alt="Memory"></a>
-  <a href="#platforms"><img src="https://img.shields.io/badge/Platforms-6_AI_Tool_Adapters-ff6b6b?style=flat-square&labelColor=0d1117" alt="Platforms"></a>
+  <a href="#memory"><img src="https://img.shields.io/badge/Memory-5_Category_Vaults-78a6ff?style=flat-square&labelColor=0d1117" alt="Memory"></a>
+  <a href="#acos-integration"><img src="https://img.shields.io/badge/ACOS-v10_Trajectory_Sync-ff6b6b?style=flat-square&labelColor=0d1117" alt="ACOS"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-white?style=flat-square&labelColor=0d1117" alt="MIT"></a>
 </p>
 
@@ -282,6 +282,50 @@ The output of LangGraph is a task result. The output of Starlight is a smarter s
 
 ---
 
+## ACOS Integration (v4.0)
+
+Starlight v4 bridges the gap between ACOS session runtime and persistent intelligence. ACOS generates trajectory data during every session — tool sequences, success scores, file modifications. SIS v4 syncs this operational data into classified memory vaults for compound learning.
+
+### Trajectory Sync
+
+```bash
+# Sync ACOS trajectories into SIS memory
+starlight sync --acos-path /path/to/.claude/trajectories
+
+# Preview without writing
+starlight sync --dry-run
+
+# Only sync high-success trajectories
+starlight sync --min-score 0.7
+```
+
+Classification rules:
+- **pattern** — High-success trajectories (≥85%) become reusable strategies
+- **decision** — Config/architecture changes tracked as architectural decisions
+- **insight** — Novel tool combinations and moderate-success workflows
+- **error** — Low-success trajectories (≤50%) as things to avoid
+- **preference** — Recurring skill execution preferences
+
+### Intelligence Score
+
+```bash
+starlight score
+```
+
+Generates a unified intelligence report (0-100) with four components:
+- **Memory Depth** (25pts) — Richness and diversity of stored knowledge
+- **Pattern Quality** (25pts) — Success rates of learned tool sequences
+- **Operational History** (25pts) — Volume and variety of completed work
+- **Learning Velocity** (25pts) — Rate of new insights over time
+
+### Hook Integration
+
+SIS v4 wires into ACOS hooks automatically:
+- **SessionStart** — Pulls memory summary and top patterns into session context
+- **SessionEnd** — Syncs new trajectories into SIS memory vaults (async)
+
+---
+
 ## Quick Start
 
 ### 1. Clone
@@ -354,9 +398,13 @@ Starlight-Intelligence-System/
 │
 ├── src/                          # TypeScript implementation
 │   ├── index.ts                  # Main orchestrator class
+│   ├── cli.ts                    # CLI — init, generate, sync, score, vault
 │   ├── context.ts                # Context Engine — platform adapter generation
 │   ├── memory.ts                 # Memory Manager — persistent vault operations
 │   ├── agents.ts                 # Agent Router — council coordination
+│   ├── orchestrator.ts           # Orchestration Engine — 6 patterns
+│   ├── sync.ts                   # ACOS Trajectory → SIS Memory bridge
+│   ├── score.ts                  # Unified intelligence scoring
 │   └── types.ts                  # Full type definitions
 │
 ├── context/                      # 5-layer intelligence (human-readable markdown)
@@ -435,39 +483,41 @@ Starlight is the intelligence layer behind:
   <img src="https://raw.githubusercontent.com/frankxai/agentic-creator-os/main/docs/infographics/v7-09-architecture-premium.png" alt="ACOS Architecture — Powered by Starlight" width="100%">
 </p>
 
-<p align="center"><em>The Starlight Orchestrator as the meta-intelligence layer in ACOS v7</em></p>
+<p align="center"><em>SIS as the persistent intelligence layer underneath ACOS v10 runtime</em></p>
 
 ---
 
 ## Roadmap
 
-### v3.0 — Multi-Agent Intelligence (Current)
+### v3.0 — Multi-Agent Intelligence
 - [x] 5-layer cognitive architecture
 - [x] 7 specialist agents with council coordination
 - [x] 6 orchestration patterns
 - [x] 6 persistent memory vaults
 - [x] 6 platform adapters
 - [x] TypeScript SDK with context generation
-- [ ] Runtime orchestration engine
-- [ ] CLI for vault management
+- [x] Runtime orchestration engine
+- [x] CLI for vault management
+
+### v4.0 — ACOS Integration (Current)
+- [x] ACOS trajectory → SIS memory sync bridge
+- [x] Trajectory classification engine (5 memory categories)
+- [x] Unified intelligence scoring (0-100 with S/A/B/C/D/F grades)
+- [x] ACOS hook integration (session-start pull, session-end sync)
+- [x] CLI commands: `starlight sync`, `starlight score`
+- [x] Deduplication via sync-state tracking
+- [x] 8 specialist agents aligned with ACOS v10
 - [ ] npm publish
-
-### v3.1 — Swarm Execution
-- [ ] Integration with claude-flow for live agent spawning
-- [ ] Guardian mapping (Arcanea mythology → agent roles)
-- [ ] Real-time consensus protocols (Raft, BFT, CRDT)
-- [ ] Swarm topology selection (hierarchical, mesh, adaptive)
-
-### v3.2 — Cross-System Intelligence
-- [ ] Transmission protocol for inter-project communication
-- [ ] Shared memory indices across repositories
-- [ ] Broadcast channels for system-wide state sync
 - [ ] MCP server for external tool integration
 
-### v4.0 — Autonomous Intelligence
-- [ ] Self-learning loop (trajectory tracking → pattern extraction → recommendation)
-- [ ] Recursive agent spawning (create new specialists when gaps detected)
+### v4.1 — Cross-System Intelligence
+- [ ] Transmission protocol for inter-project communication
+- [ ] Shared memory indices across repositories
 - [ ] Vault consolidation (compress operational memory into wisdom patterns)
+
+### v5.0 — Autonomous Intelligence
+- [ ] Recursive agent spawning (create new specialists when gaps detected)
+- [ ] Real-time consensus protocols (Raft, BFT, CRDT)
 - [ ] Horizon Vault public registry
 
 ---

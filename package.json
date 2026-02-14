@@ -1,7 +1,7 @@
 {
   "name": "@frankx/starlight-intelligence-system",
-  "version": "3.0.0",
-  "description": "The open intelligence layer for multi-agent orchestration — 5 cognitive layers, 7 council agents, 6 execution patterns",
+  "version": "4.0.0",
+  "description": "Universal intelligence layer with ACOS integration — context engine, memory vaults, agent routing, trajectory sync, intelligence scoring",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,6 +25,14 @@
     "./orchestrator": {
       "types": "./dist/orchestrator.d.ts",
       "import": "./dist/orchestrator.js"
+    },
+    "./sync": {
+      "types": "./dist/sync.d.ts",
+      "import": "./dist/sync.js"
+    },
+    "./score": {
+      "types": "./dist/score.d.ts",
+      "import": "./dist/score.js"
     }
   },
   "scripts": {

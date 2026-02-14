@@ -48,5 +48,9 @@ export declare class MemoryManager {
      * Get the count of stored memories.
      */
     get size(): number;
+    /**
+     * Get the storage file path.
+     */
+    get path(): string;
 }
 //# sourceMappingURL=memory.d.ts.map

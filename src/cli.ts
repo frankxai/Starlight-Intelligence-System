@@ -22,6 +22,9 @@ import { parseArgs } from "node:util";
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { StarlightIntelligence } from "./index.js";
+import { MemoryManager } from "./memory.js";
+import { syncACOSToSIS } from "./sync.js";
+import { generateIntelligenceReport } from "./score.js";
 
 // ── Constants ───────────────────────────────────────────────
 
@@ -89,6 +92,8 @@ Usage:
 Commands:
   init                            Initialize .starlight/ in current project
   generate                        Generate context file from .starlight/ config
+  sync                            Sync ACOS trajectories into SIS memory
+  score                           Generate unified intelligence report
   vault list                      List all memory entries
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
@@ -101,6 +106,9 @@ Options:
   --help, -h                      Show this help message
   --target <target>               Context target: claude-code, cursor, windsurf, generic
   --output <path>                 Output file path for generate command
+  --acos-path <path>              Path to ACOS trajectories directory (for sync/score)
+  --dry-run                       Preview sync without writing (for sync)
+  --min-score <n>                 Minimum success score to sync (0.0-1.0)
   --category <cat>                Memory category: pattern, decision, insight, error, preference
   --confidence <n>                Confidence score (0.0-1.0) for vault set
   --tags <t1,t2>                  Comma-separated tags for vault set
@@ -109,6 +117,9 @@ Options:
 Examples:
   starlight init
   starlight generate --target cursor --output .cursorrules
+  starlight sync --acos-path ~/.claude/trajectories
+  starlight sync --dry-run
+  starlight score
   starlight vault set my-pattern "Always use server components" --category pattern --tags react,next
   starlight vault search "server components"
   starlight orchestrate "Design a new authentication system"
@@ -339,6 +350,72 @@ async function cmdOrchestrate(intent: string, pattern?: string): Promise<void> {
   console.log(formatJSON(result));
 }
 
+function cmdSync(acosPath?: string, options?: { dryRun?: boolean; minScore?: string }): void {
+  const resolvedPath = acosPath ?? join(process.cwd(), ".claude", "trajectories");
+
+  if (!existsSync(resolvedPath)) {
+    console.error(`[starlight] Error: ACOS trajectories not found at ${resolvedPath}`);
+    console.error("  Use --acos-path to specify the trajectories directory.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const memoryPath = join(process.cwd(), STARLIGHT_DIR, "memory.json");
+  const mem = new MemoryManager(memoryPath);
+  mem.load();
+
+  const minScore = options?.minScore ? parseFloat(options.minScore) : 0;
+
+  const result = syncACOSToSIS(mem, {
+    acosPath: resolvedPath,
+    dryRun: options?.dryRun ?? false,
+    minScore: Math.max(0, Math.min(1, minScore)),
+  });
+
+  console.log(`[starlight] Sync ${result.dryRun ? "(DRY RUN) " : ""}Complete`);
+  console.log(`  Trajectories synced: ${result.trajectoriesSynced}`);
+  console.log(`  Patterns synced:     ${result.patternsSynced}`);
+  console.log(`  Skipped (duplicate): ${result.skippedDuplicate}`);
+  console.log(`  Skipped (low value): ${result.skippedLowValue}`);
+
+  if (Object.keys(result.byCategory).length > 0) {
+    console.log("\n  By category:");
+    for (const [cat, count] of Object.entries(result.byCategory)) {
+      console.log(`    ${cat}: ${count}`);
+    }
+  }
+}
+
+function cmdScore(acosPath?: string): void {
+  const resolvedPath = acosPath ?? join(process.cwd(), ".claude", "trajectories");
+
+  const memoryPath = join(process.cwd(), STARLIGHT_DIR, "memory.json");
+  const mem = new MemoryManager(memoryPath);
+  mem.load();
+
+  const report = generateIntelligenceReport(mem, resolvedPath);
+
+  console.log("Starlight Intelligence Report");
+  console.log("═════════════════════════════════════\n");
+  console.log(`  Score: ${report.totalScore}/${report.maxScore}  Grade: ${report.grade}\n`);
+
+  for (const c of report.components) {
+    const bar = "█".repeat(Math.round(c.score)) + "░".repeat(Math.round(c.maxScore - c.score));
+    console.log(`  ${c.name.padEnd(22)} ${bar} ${c.score.toFixed(1)}/${c.maxScore}`);
+    console.log(`    ${c.details}`);
+    console.log("");
+  }
+
+  if (report.acosStats.topPatterns.length > 0) {
+    console.log("  Top Patterns:");
+    for (const p of report.acosStats.topPatterns) {
+      console.log(`    ★ ${p}`);
+    }
+  }
+
+  console.log(`\n  Generated: ${report.generatedAt}`);
+}
+
 function cmdStats(): void {
   const sis = createSIS();
   const stats = sis.getStats();
@@ -375,6 +452,9 @@ async function main(): Promise<void> {
       help: { type: "boolean", short: "h" },
       target: { type: "string" },
       output: { type: "string" },
+      "acos-path": { type: "string" },
+      "dry-run": { type: "boolean" },
+      "min-score": { type: "string" },
       category: { type: "string" },
       confidence: { type: "string" },
       tags: { type: "string" },
@@ -401,6 +481,17 @@ async function main(): Promise<void> {
 
     case "generate":
       cmdGenerate(asString(values.target), asString(values.output));
+      break;
+
+    case "sync":
+      cmdSync(asString(values["acos-path"]), {
+        dryRun: values["dry-run"] === true,
+        minScore: asString(values["min-score"]),
+      });
+      break;
+
+    case "score":
+      cmdScore(asString(values["acos-path"]));
       break;
 
     case "vault": {

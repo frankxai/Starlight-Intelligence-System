@@ -182,7 +182,7 @@ export class StarlightIntelligence {
    */
   getStats(): SystemStats {
     return {
-      version: "2.0.0",
+      version: "4.0.0",
       agents: this.router.getRegistry().agents.length,
       skills: this.router
         .getRegistry()
@@ -219,7 +219,11 @@ export { ContextEngine, DEFAULT_PROFILE, DEFAULT_STACK, DEFAULT_BRAND } from "./
 export { MemoryManager } from "./memory.js";
 export { AgentRouter, ACOS_AGENTS } from "./agents.js";
 export { OrchestrationEngine } from "./orchestrator.js";
+export { syncACOSToSIS } from "./sync.js";
+export { generateIntelligenceReport } from "./score.js";
 export type { OrchestrationEngineOptions } from "./orchestrator.js";
+export type { ACOSTrajectory, ACOSPattern, SyncState, SyncOptions, SyncResult } from "./sync.js";
+export type { ScoreComponent, IntelligenceReport } from "./score.js";
 export type {
   ContextOptions,
   ContextLayer,

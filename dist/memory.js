@@ -177,5 +177,11 @@ export class MemoryManager {
     get size() {
         return this.entries.size;
     }
+    /**
+     * Get the storage file path.
+     */
+    get path() {
+        return this.storagePath;
+    }
 }
 //# sourceMappingURL=memory.js.map

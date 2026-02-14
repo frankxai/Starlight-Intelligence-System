@@ -117,7 +117,11 @@ export { ContextEngine, DEFAULT_PROFILE, DEFAULT_STACK, DEFAULT_BRAND } from "./
 export { MemoryManager } from "./memory.js";
 export { AgentRouter, ACOS_AGENTS } from "./agents.js";
 export { OrchestrationEngine } from "./orchestrator.js";
+export { syncACOSToSIS } from "./sync.js";
+export { generateIntelligenceReport } from "./score.js";
 export type { OrchestrationEngineOptions } from "./orchestrator.js";
+export type { ACOSTrajectory, ACOSPattern, SyncState, SyncOptions, SyncResult } from "./sync.js";
+export type { ScoreComponent, IntelligenceReport } from "./score.js";
 export type { ContextOptions, ContextLayer, GeneratedContext, UserProfile, VoiceGuidelines, TechStack, BrandSystem, AgentDefinition, AgentRegistry, SkillDefinition, MemoryEntry, MemorySearchOptions, MemoryStats, ReasoningStrategy, ProjectContext, SystemStats, AgentExecutor, OrchestrationTask, OrchestrationPattern, OrchestrationResult, SynthesisStrategy, AgentExecution, PipelineStage, } from "./types.js";
 export type { AgentRecommendation } from "./agents.js";
 //# sourceMappingURL=index.d.ts.map

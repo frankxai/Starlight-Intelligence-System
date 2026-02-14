@@ -219,4 +219,11 @@ export class MemoryManager {
   get size(): number {
     return this.entries.size;
   }
+
+  /**
+   * Get the storage file path.
+   */
+  get path(): string {
+    return this.storagePath;
+  }
 }
