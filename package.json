@@ -39,9 +39,10 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "node --test src/**/*.test.ts",
+    "test": "node --import tsx --test src/**/*.test.ts",
     "generate-context": "node dist/cli.js generate",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm test"
   },
   "files": [
     "dist/",
@@ -64,7 +65,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^25.2.3",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "bin": {
     "starlight": "dist/cli.js"
