@@ -144,6 +144,101 @@ export interface ReasoningStrategy {
   bestFor: string[];
 }
 
+// ── Orchestration Layer ─────────────────────────────────────
+
+/**
+ * Callback that consumers provide to wire agents to actual LLM calls.
+ * The OrchestrationEngine provides the framework; consumers supply execution.
+ */
+export type AgentExecutor = (
+  agent: string,
+  input: string,
+  context: Record<string, unknown>
+) => Promise<string>;
+
+/** The six orchestration patterns available in the engine. */
+export type OrchestrationPattern =
+  | "direct"
+  | "sequential"
+  | "parallel"
+  | "iterative"
+  | "cascade"
+  | "broadcast";
+
+/** Synthesis strategy for combining multi-agent outputs. */
+export type SynthesisStrategy =
+  | "weighted-consensus"
+  | "sequential-refinement"
+  | "conflict-resolution";
+
+/**
+ * A task submitted to the OrchestrationEngine for execution.
+ */
+export interface OrchestrationTask {
+  /** Natural-language intent describing what needs to be done. */
+  intent: string;
+  /** Arbitrary context passed through to agents. */
+  context?: Record<string, unknown>;
+  /** Force a specific orchestration pattern (auto-selected if omitted). */
+  pattern?: OrchestrationPattern;
+  /** Maximum number of agents to involve. */
+  maxAgents?: number;
+  /** Maximum iterations for the iterative pattern. */
+  maxIterations?: number;
+  /** Strategy for synthesizing multi-agent results. */
+  synthesis?: SynthesisStrategy;
+  /** Optional file paths for agent routing. */
+  filePaths?: string[];
+}
+
+/**
+ * Record of a single agent's execution within an orchestration.
+ */
+export interface AgentExecution {
+  /** Agent ID that was executed. */
+  agent: string;
+  /** The input provided to the agent. */
+  input: string;
+  /** The output returned by the agent. */
+  output: string;
+  /** Execution duration in milliseconds. */
+  duration: number;
+  /** Confidence score from 0.0 to 1.0. */
+  confidence: number;
+}
+
+/**
+ * The structured result of an orchestration execution.
+ */
+export interface OrchestrationResult {
+  /** Which pattern was used. */
+  pattern: string;
+  /** All individual agent executions. */
+  executions: AgentExecution[];
+  /** Synthesized final output. */
+  synthesis: string;
+  /** Overall confidence score from 0.0 to 1.0. */
+  confidence: number;
+  /** Whether the result was persisted to memory. */
+  memoryWritten: boolean;
+  /** Total orchestration duration in milliseconds. */
+  duration: number;
+  /** Complexity assessment (1-10) that informed pattern selection. */
+  complexity: number;
+  /** Memory entries recalled during the pipeline. */
+  memoryRecalled: number;
+}
+
+/**
+ * Configuration for the 7-layer intelligence pipeline.
+ */
+export interface PipelineStage {
+  name: string;
+  startedAt: number;
+  completedAt?: number;
+  result?: unknown;
+}
+
 // ── System Stats ────────────────────────────────────────────
 
 export interface SystemStats {

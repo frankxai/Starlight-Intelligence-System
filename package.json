@@ -21,6 +21,10 @@
     "./agents": {
       "types": "./dist/agents.d.ts",
       "import": "./dist/agents.js"
+    },
+    "./orchestrator": {
+      "types": "./dist/orchestrator.d.ts",
+      "import": "./dist/orchestrator.js"
     }
   },
   "scripts": {

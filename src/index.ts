@@ -38,6 +38,7 @@
 import { ContextEngine, DEFAULT_PROFILE, DEFAULT_STACK, DEFAULT_BRAND } from "./context.js";
 import { MemoryManager } from "./memory.js";
 import { AgentRouter, ACOS_AGENTS } from "./agents.js";
+import { OrchestrationEngine } from "./orchestrator.js";
 import type {
   ContextOptions,
   GeneratedContext,
@@ -50,6 +51,9 @@ import type {
   TechStack,
   BrandSystem,
   ReasoningStrategy,
+  OrchestrationTask,
+  OrchestrationResult,
+  AgentExecutor,
 } from "./types.js";
 import type { AgentRecommendation } from "./agents.js";
 
@@ -59,6 +63,7 @@ export class StarlightIntelligence {
   private context: ContextEngine;
   private memory: MemoryManager;
   private router: AgentRouter;
+  private orchestrator: OrchestrationEngine;
   private initialized = false;
 
   constructor(options?: StarlightOptions) {
@@ -71,6 +76,11 @@ export class StarlightIntelligence {
 
     this.memory = new MemoryManager(options?.memoryPath);
     this.router = new AgentRouter(options?.agents ?? ACOS_AGENTS);
+    this.orchestrator = new OrchestrationEngine({
+      memory: this.memory,
+      router: this.router,
+      executor: options?.executor,
+    });
   }
 
   /**
@@ -80,6 +90,41 @@ export class StarlightIntelligence {
     if (this.initialized) return;
     this.memory.load();
     this.initialized = true;
+  }
+
+  /**
+   * Execute a task through the orchestration engine.
+   * This is the primary method for multi-agent workflow execution.
+   *
+   * @example
+   * ```typescript
+   * const result = await sis.orchestrate({
+   *   intent: "Design and implement a new authentication system",
+   *   pattern: "sequential",
+   *   synthesis: "sequential-refinement",
+   * });
+   * ```
+   */
+  async orchestrate(
+    task: OrchestrationTask,
+    executor?: AgentExecutor
+  ): Promise<OrchestrationResult> {
+    return this.orchestrator.execute(task, executor);
+  }
+
+  /**
+   * Set the agent executor for orchestration.
+   * Consumers call this to wire up their LLM integration.
+   */
+  setExecutor(executor: AgentExecutor): void {
+    this.orchestrator.setExecutor(executor);
+  }
+
+  /**
+   * Get the orchestration engine for advanced usage.
+   */
+  getOrchestrator(): OrchestrationEngine {
+    return this.orchestrator;
   }
 
   /**
@@ -164,6 +209,8 @@ export interface StarlightOptions {
   brand?: BrandSystem;
   agents?: AgentDefinition[];
   memoryPath?: string;
+  /** Default agent executor for orchestration. */
+  executor?: AgentExecutor;
 }
 
 // ── Re-exports ──────────────────────────────────────────────
@@ -171,6 +218,8 @@ export interface StarlightOptions {
 export { ContextEngine, DEFAULT_PROFILE, DEFAULT_STACK, DEFAULT_BRAND } from "./context.js";
 export { MemoryManager } from "./memory.js";
 export { AgentRouter, ACOS_AGENTS } from "./agents.js";
+export { OrchestrationEngine } from "./orchestrator.js";
+export type { OrchestrationEngineOptions } from "./orchestrator.js";
 export type {
   ContextOptions,
   ContextLayer,
@@ -188,5 +237,13 @@ export type {
   ReasoningStrategy,
   ProjectContext,
   SystemStats,
+  // Orchestration types
+  AgentExecutor,
+  OrchestrationTask,
+  OrchestrationPattern,
+  OrchestrationResult,
+  SynthesisStrategy,
+  AgentExecution,
+  PipelineStage,
 } from "./types.js";
 export type { AgentRecommendation } from "./agents.js";
