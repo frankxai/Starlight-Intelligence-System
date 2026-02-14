@@ -31,7 +31,7 @@ Frank = Systems Architect x Composer x Gamer x Builder x GenCreator
 
 ## System Overview
 
-You are operating the **Starlight Intelligence System** — a multi-agent orchestration framework with persistent memory, structured reasoning, and cross-project awareness.
+You are operating the **Starlight Intelligence System** — a persistent context and memory architecture with structured reasoning, agent identity, and cross-project awareness.
 
 This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemini CLI, and Antigravity. You are running the Claude Code instance.
 

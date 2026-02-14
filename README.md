@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Universal intelligence layer with ACOS integration</strong>
+  <strong>The persistent context and memory layer for AI agents</strong>
 </p>
 
 <p align="center">
@@ -259,26 +259,36 @@ const apiContext = sis.generateContext({ target: "generic" });
 
 ---
 
-## Comparison
+## Where Starlight Fits
 
-How Starlight differs from existing multi-agent frameworks:
+Starlight is **not a replacement** for multi-agent execution frameworks. It operates at a different level of the stack:
 
-| Capability | LangGraph | CrewAI | AutoGen | Swarm | **Starlight** |
-|-----------|-----------|--------|---------|-------|---------------|
-| Agent orchestration | Graph-based | Role-based | Conversation | Handoff | **Council + 6 patterns** |
-| Memory persistence | External store | Short-term | Thread | None | **6 typed vaults** |
-| Platform portability | LangChain only | Python only | Python only | OpenAI only | **6 platform adapters** |
-| Agent identity | Minimal | Role strings | Personas | Functions | **Full cognitive profiles** |
-| Self-learning | No | No | No | No | **Vault consolidation** |
-| Values alignment | No | No | No | No | **Horizon Vault** |
-| Configuration | Code-first | Code-first | Code-first | Code-first | **Markdown + JSON** |
-| Runtime requirement | Python + deps | Python + deps | Python + deps | Python + deps | **Zero runtime** |
+```
+┌─────────────────────────────────────────┐
+│  Your AI Tool (Claude Code, Cursor...)  │  ← Where you work
+├─────────────────────────────────────────┤
+│  Execution Framework (optional)         │  ← LangGraph, CrewAI, Swarm
+│  Runs agents, manages tools, handoffs   │
+├─────────────────────────────────────────┤
+│  Starlight Intelligence System          │  ← THIS LAYER
+│  Identity, memory, reasoning, context   │
+└─────────────────────────────────────────┘
+```
 
-### The Starlight Difference
+Execution frameworks coordinate **what agents do**. Starlight defines **who agents are**, **what they remember**, and **how they reason**. These are complementary, not competing.
 
-Most frameworks are **execution engines** — they coordinate function calls between agents. Starlight is an **intelligence architecture** — it maintains identity, accumulates knowledge, coordinates reasoning, and preserves values across sessions, platforms, and projects.
+### What Starlight Adds to Any Framework
 
-The output of LangGraph is a task result. The output of Starlight is a smarter system.
+| Gap in Execution Frameworks | What Starlight Provides |
+|:----------------------------|:-----------------------|
+| Agents forget between sessions | **6 typed vaults** with persistent memory that compounds over time |
+| Agent identity is a role string | **Full cognitive profiles** with reasoning protocols and domain expertise |
+| Locked to one platform | **6 platform adapters** &mdash; same intelligence across Claude Code, Cursor, Codex, Gemini CLI |
+| No accumulated learning | **Vault consolidation** extracts patterns from operational memory into wisdom |
+| No values alignment | **Horizon Vault** &mdash; an append-only record of human purpose that agents reference |
+| Configuration requires code | **Markdown + JSON** &mdash; readable by humans and machines, zero runtime required |
+
+Use LangGraph for execution graphs. Use CrewAI for role-based coordination. Use Starlight underneath them for the identity, memory, and context that makes agents worth coordinating.
 
 ---
 
@@ -476,7 +486,7 @@ Starlight-Intelligence-System/
 Starlight is the intelligence layer behind:
 
 - **[Arcanea](https://github.com/frankxai/arcanea)** — AI-native creative operating system with Guardian agents mapped to the Starlight council
-- **[Agentic Creator OS](https://github.com/frankxai/agentic-creator-os)** — 130+ commands, 40+ agents, powered by Starlight orchestration
+- **[Agentic Creator OS](https://github.com/frankxai/agentic-creator-os)** — Claude Code-native operating system for generative creators, built on Starlight context layers
 - **[Arcanea On-Chain](https://github.com/frankxai/arcanea-onchain)** — Blockchain infrastructure for creator IP and NFT systems
 
 <p align="center">
@@ -546,6 +556,6 @@ MIT — Use it, fork it, build with it.
 
 <p align="center">
   <strong>Starlight Intelligence System</strong><br>
-  <em>The intelligence layer for multi-agent creation.</em><br><br>
+  <em>The persistent context and memory layer for AI agents.</em><br><br>
   <a href="https://github.com/frankxai">Built by FrankX</a>
 </p>
