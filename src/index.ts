@@ -182,7 +182,7 @@ export class StarlightIntelligence {
    */
   getStats(): SystemStats {
     return {
-      version: "4.0.0",
+      version: "5.0.0",
       agents: this.router.getRegistry().agents.length,
       skills: this.router
         .getRegistry()
@@ -251,3 +251,19 @@ export type {
   PipelineStage,
 } from "./types.js";
 export type { AgentRecommendation } from "./agents.js";
+
+// Vault Layer (v5.0)
+export { VaultMemory } from './vault-memory.js';
+export type {
+  VaultType,
+  VaultEntry,
+  VaultSearchOptions,
+  VaultSearchResult,
+  VaultStats,
+  HorizonEntry,
+  Mem0Message,
+  Mem0AddRequest,
+  Mem0SearchRequest,
+  Mem0MemoryResponse,
+  VaultMemoryConfig,
+} from './types.js';
