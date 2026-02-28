@@ -146,7 +146,7 @@ export class StarlightIntelligence {
      */
     getStats() {
         return {
-            version: "4.0.0",
+            version: "5.0.0",
             agents: this.router.getRegistry().agents.length,
             skills: this.router
                 .getRegistry()
@@ -170,4 +170,9 @@ export { AgentRouter, ACOS_AGENTS } from "./agents.js";
 export { OrchestrationEngine } from "./orchestrator.js";
 export { syncACOSToSIS } from "./sync.js";
 export { generateIntelligenceReport } from "./score.js";
+// Vault Layer (v5.0)
+export { VaultMemory } from './vault-memory.js';
+// Behavioral Guidance & Federation (v5.0)
+export { generateGuidance } from "./guidance.js";
+export { registerProject, listProjects, syncAllProjects, syncProject, loadRegistry, saveRegistry } from "./multi-sync.js";
 //# sourceMappingURL=index.js.map

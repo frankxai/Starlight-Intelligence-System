@@ -194,6 +194,8 @@ export interface SyncOptions {
   maxEntries?: number;
   /** Dry run — classify but don't write */
   dryRun?: boolean;
+  /** Project name for source tagging (enables cross-project intelligence) */
+  projectName?: string;
 }
 
 export interface SyncResult {
@@ -217,7 +219,10 @@ export function syncACOSToSIS(
     minScore = 0,
     maxEntries = 200,
     dryRun = false,
+    projectName,
   } = options;
+
+  const sourcePrefix = projectName ? `project:${projectName}:` : "";
 
   const stateFile = join(
     memory.path.replace(/\/[^/]+$/, ""),
@@ -279,7 +284,7 @@ export function syncACOSToSIS(
             category,
             tags,
             confidence: traj.successScore,
-            source: `acos:trajectory:${traj.id}`,
+            source: `${sourcePrefix}acos:trajectory:${traj.id}`,
           });
           state.syncedTrajectoryIds.push(traj.id);
         }
@@ -328,7 +333,7 @@ export function syncACOSToSIS(
             category,
             tags,
             confidence: pattern.avgSuccess,
-            source: `acos:pattern:${key}`,
+            source: `${sourcePrefix}acos:pattern:${key}`,
           });
           state.syncedPatternKeys.push(key);
         }

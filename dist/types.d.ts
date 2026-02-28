@@ -190,4 +190,82 @@ export interface SystemStats {
     strategies: number;
     contextLayers: number;
 }
+/** The six semantic vault categories for Starlight Memory */
+export type VaultType = 'strategic' | 'technical' | 'creative' | 'operational' | 'wisdom' | 'horizon';
+/** A vault-classified memory entry */
+export interface VaultEntry extends MemoryEntry {
+    vault: VaultType;
+    summary?: string;
+    updatedAt: string;
+    expiresAt?: string;
+    metadata?: Record<string, unknown>;
+}
+/** Horizon Vault entry — append-only benevolent wish */
+export interface HorizonEntry {
+    id: string;
+    wish: string;
+    context: string;
+    author: string;
+    coAuthored: boolean;
+    tags: string[];
+    createdAt: string;
+}
+/** Vault search with type filtering */
+export interface VaultSearchOptions extends MemorySearchOptions {
+    vaults?: VaultType[];
+    sortBy?: 'relevance' | 'recency' | 'confidence';
+}
+/** Vault search result with relevance score */
+export interface VaultSearchResult {
+    entry: VaultEntry;
+    score: number;
+    matchedTerms: string[];
+}
+/** Vault statistics */
+export interface VaultStats {
+    vault: VaultType;
+    entryCount: number;
+    oldestEntry?: string;
+    newestEntry?: string;
+    topTags: Array<{
+        tag: string;
+        count: number;
+    }>;
+}
+/** Mem0-compatible memory message format */
+export interface Mem0Message {
+    role: 'user' | 'assistant' | 'system';
+    content: string;
+}
+/** Mem0-compatible add request */
+export interface Mem0AddRequest {
+    messages: Mem0Message[];
+    user_id?: string;
+    agent_id?: string;
+    metadata?: Record<string, unknown>;
+}
+/** Mem0-compatible search request */
+export interface Mem0SearchRequest {
+    query: string;
+    user_id?: string;
+    agent_id?: string;
+    limit?: number;
+}
+/** Mem0-compatible memory response */
+export interface Mem0MemoryResponse {
+    id: string;
+    memory: string;
+    user_id?: string;
+    metadata?: Record<string, unknown>;
+    created_at: string;
+    updated_at: string;
+}
+/** Configuration for vault-aware memory */
+export interface VaultMemoryConfig {
+    storagePath?: string;
+    enableVaults?: boolean;
+    enableHorizon?: boolean;
+    horizonAuthor?: string;
+    defaultVault?: VaultType;
+}
 //# sourceMappingURL=types.d.ts.map

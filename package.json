@@ -1,7 +1,7 @@
 {
   "name": "@frankx/starlight-intelligence-system",
   "version": "5.0.0",
-  "description": "Persistent context and memory layer for AI agents — Starlight Vaults with 6-vault semantic memory, Mem0-compatible API, agent routing, platform adapters for Claude Code, Cursor, Codex, Gemini CLI",
+  "description": "Persistent intelligence layer for AI agents — behavioral guidance, federated memory vaults, agent routing, trajectory sync, platform adapters for Claude Code, Cursor, Codex, Gemini CLI",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,6 +37,14 @@
     "./vaults": {
       "types": "./dist/vault-memory.d.ts",
       "import": "./dist/vault-memory.js"
+    },
+    "./guidance": {
+      "types": "./dist/guidance.d.ts",
+      "import": "./dist/guidance.js"
+    },
+    "./multi-sync": {
+      "types": "./dist/multi-sync.d.ts",
+      "import": "./dist/multi-sync.js"
     }
   },
   "scripts": {

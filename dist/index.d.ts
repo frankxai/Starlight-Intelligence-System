@@ -124,4 +124,10 @@ export type { ACOSTrajectory, ACOSPattern, SyncState, SyncOptions, SyncResult } 
 export type { ScoreComponent, IntelligenceReport } from "./score.js";
 export type { ContextOptions, ContextLayer, GeneratedContext, UserProfile, VoiceGuidelines, TechStack, BrandSystem, AgentDefinition, AgentRegistry, SkillDefinition, MemoryEntry, MemorySearchOptions, MemoryStats, ReasoningStrategy, ProjectContext, SystemStats, AgentExecutor, OrchestrationTask, OrchestrationPattern, OrchestrationResult, SynthesisStrategy, AgentExecution, PipelineStage, } from "./types.js";
 export type { AgentRecommendation } from "./agents.js";
+export { VaultMemory } from './vault-memory.js';
+export type { VaultType, VaultEntry, VaultSearchOptions, VaultSearchResult, VaultStats, HorizonEntry, Mem0Message, Mem0AddRequest, Mem0SearchRequest, Mem0MemoryResponse, VaultMemoryConfig, } from './types.js';
+export { generateGuidance } from "./guidance.js";
+export { registerProject, listProjects, syncAllProjects, syncProject, loadRegistry, saveRegistry } from "./multi-sync.js";
+export type { GuidanceOptions, GuidanceResult } from "./guidance.js";
+export type { ProjectRegistration, ProjectRegistry, MultiSyncResult } from "./multi-sync.js";
 //# sourceMappingURL=index.d.ts.map

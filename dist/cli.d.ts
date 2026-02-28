@@ -8,6 +8,10 @@
  * Usage:
  *   starlight init                        Initialize .starlight/ in current project
  *   starlight generate                    Generate context file from .starlight/ config
+ *   starlight guidance                    Generate behavioral guidance for session injection
+ *   starlight project register <n> <path> Register a project for multi-sync
+ *   starlight project list                List registered projects
+ *   starlight project sync-all            Sync all registered projects
  *   starlight vault list                  List all memory entries
  *   starlight vault get <key>             Get a memory entry by ID
  *   starlight vault set <key> <value>     Store a memory entry

@@ -125,7 +125,8 @@ function patternToTags(pattern) {
  * Sync ACOS trajectories and patterns into SIS memory.
  */
 export function syncACOSToSIS(memory, options) {
-    const { acosPath, minScore = 0, maxEntries = 200, dryRun = false, } = options;
+    const { acosPath, minScore = 0, maxEntries = 200, dryRun = false, projectName, } = options;
+    const sourcePrefix = projectName ? `project:${projectName}:` : "";
     const stateFile = join(memory.path.replace(/\/[^/]+$/, ""), "sync-state.json");
     const state = loadSyncState(stateFile);
     const result = {
@@ -170,7 +171,7 @@ export function syncACOSToSIS(memory, options) {
                         category,
                         tags,
                         confidence: traj.successScore,
-                        source: `acos:trajectory:${traj.id}`,
+                        source: `${sourcePrefix}acos:trajectory:${traj.id}`,
                     });
                     state.syncedTrajectoryIds.push(traj.id);
                 }
@@ -211,7 +212,7 @@ export function syncACOSToSIS(memory, options) {
                         category,
                         tags,
                         confidence: pattern.avgSuccess,
-                        source: `acos:pattern:${key}`,
+                        source: `${sourcePrefix}acos:pattern:${key}`,
                     });
                     state.syncedPatternKeys.push(key);
                 }

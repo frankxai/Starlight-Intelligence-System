@@ -267,3 +267,9 @@ export type {
   Mem0MemoryResponse,
   VaultMemoryConfig,
 } from './types.js';
+
+// Behavioral Guidance & Federation (v5.0)
+export { generateGuidance } from "./guidance.js";
+export { registerProject, listProjects, syncAllProjects, syncProject, loadRegistry, saveRegistry } from "./multi-sync.js";
+export type { GuidanceOptions, GuidanceResult } from "./guidance.js";
+export type { ProjectRegistration, ProjectRegistry, MultiSyncResult } from "./multi-sync.js";

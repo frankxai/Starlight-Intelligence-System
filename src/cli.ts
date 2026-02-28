@@ -9,6 +9,10 @@
  * Usage:
  *   starlight init                        Initialize .starlight/ in current project
  *   starlight generate                    Generate context file from .starlight/ config
+ *   starlight guidance                    Generate behavioral guidance for session injection
+ *   starlight project register <n> <path> Register a project for multi-sync
+ *   starlight project list                List registered projects
+ *   starlight project sync-all            Sync all registered projects
  *   starlight vault list                  List all memory entries
  *   starlight vault get <key>             Get a memory entry by ID
  *   starlight vault set <key> <value>     Store a memory entry
@@ -25,6 +29,8 @@ import { StarlightIntelligence } from "./index.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
 import { generateIntelligenceReport } from "./score.js";
+import { generateGuidance } from "./guidance.js";
+import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
 
 // ── Constants ───────────────────────────────────────────────
 
@@ -92,8 +98,12 @@ Usage:
 Commands:
   init                            Initialize .starlight/ in current project
   generate                        Generate context file from .starlight/ config
+  guidance                        Generate behavioral guidance for session injection
   sync                            Sync ACOS trajectories into SIS memory
   score                           Generate unified intelligence report
+  project register <name> <path>  Register a project for federated multi-sync
+  project list                    List registered projects
+  project sync-all                Sync all registered projects at once
   vault list                      List all memory entries
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
@@ -106,7 +116,9 @@ Options:
   --help, -h                      Show this help message
   --target <target>               Context target: claude-code, cursor, windsurf, generic
   --output <path>                 Output file path for generate command
-  --acos-path <path>              Path to ACOS trajectories directory (for sync/score)
+  --project <name>                Project name (for guidance)
+  --acos-path <path>              Path to ACOS trajectories directory (for sync/score/guidance)
+  --max-lines <n>                 Max lines in guidance output (default: 40)
   --dry-run                       Preview sync without writing (for sync)
   --min-score <n>                 Minimum success score to sync (0.0-1.0)
   --category <cat>                Memory category: pattern, decision, insight, error, preference
@@ -117,9 +129,13 @@ Options:
 Examples:
   starlight init
   starlight generate --target cursor --output .cursorrules
+  starlight guidance --project frankx --acos-path ~/.claude/trajectories
   starlight sync --acos-path ~/.claude/trajectories
   starlight sync --dry-run
   starlight score
+  starlight project register frankx ~/.claude/trajectories
+  starlight project list
+  starlight project sync-all
   starlight vault set my-pattern "Always use server components" --category pattern --tags react,next
   starlight vault search "server components"
   starlight orchestrate "Design a new authentication system"
@@ -416,6 +432,107 @@ function cmdScore(acosPath?: string): void {
   console.log(`\n  Generated: ${report.generatedAt}`);
 }
 
+function cmdGuidance(
+  project?: string,
+  acosPath?: string,
+  maxLinesStr?: string
+): void {
+  const resolvedProject = project ?? "default";
+  const resolvedPath = acosPath ?? join(process.cwd(), ".claude", "trajectories");
+
+  const memoryPath = join(process.cwd(), STARLIGHT_DIR, "memory.json");
+  const mem = new MemoryManager(memoryPath);
+  mem.load();
+
+  const maxLines = maxLinesStr ? parseInt(maxLinesStr, 10) : 40;
+
+  const result = generateGuidance(mem, {
+    project: resolvedProject,
+    acosPath: resolvedPath,
+    maxLines: Math.max(10, maxLines),
+  });
+
+  // Print markdown to stdout (for piping into session context)
+  console.log(result.markdown);
+
+  // Print stats to stderr so they don't pollute the piped output
+  console.error(
+    `[starlight] Guidance generated: ${result.stats.trajectoriesAnalyzed} trajectories, ` +
+    `${result.stats.patternsAnalyzed} patterns, ${result.stats.memoriesConsulted} memories. ` +
+    `Projects: ${result.stats.projectsKnown.join(", ")}`
+  );
+}
+
+function cmdProject(
+  action: string,
+  args: string[],
+  options: { dryRun?: boolean; minScore?: string }
+): void {
+  switch (action) {
+    case "register": {
+      const name = args[0];
+      const path = args[1];
+      if (!name || !path) {
+        console.error("[starlight] Error: project register requires <name> <path>.");
+        console.error("  Example: starlight project register frankx ~/.claude/trajectories");
+        process.exitCode = 1;
+        return;
+      }
+      const resolvedPath = resolve(path);
+      const reg = registerProject(name, resolvedPath);
+      console.log(`[starlight] Registered project "${reg.name}" → ${reg.acosPath}`);
+      break;
+    }
+
+    case "list": {
+      const projects = listProjects();
+      if (projects.length === 0) {
+        console.log("[starlight] No projects registered. Use: starlight project register <name> <path>");
+        return;
+      }
+      console.log(`[starlight] ${projects.length} registered project(s):\n`);
+      for (const p of projects) {
+        const synced = p.lastSyncAt ? `last sync: ${p.lastSyncAt}` : "never synced";
+        const trajs = p.trajectoriesTotal ?? 0;
+        const pats = p.patternCount ?? 0;
+        console.log(`  ${p.name.padEnd(15)} ${p.acosPath}`);
+        console.log(`${"".padEnd(17)}${synced} | ${trajs} trajectories, ${pats} patterns`);
+      }
+      break;
+    }
+
+    case "sync-all": {
+      const memoryPath = join(process.cwd(), STARLIGHT_DIR, "memory.json");
+      const mem = new MemoryManager(memoryPath);
+      mem.load();
+
+      const minScore = options.minScore ? parseFloat(options.minScore) : 0;
+
+      const result = syncAllProjects(mem, {
+        dryRun: options.dryRun,
+        minScore,
+      });
+
+      if (result.projectResults.length === 0) {
+        console.log("[starlight] No projects to sync. Use: starlight project register <name> <path>");
+        return;
+      }
+
+      console.log(`[starlight] Multi-Project Sync ${options.dryRun ? "(DRY RUN) " : ""}Complete\n`);
+      for (const pr of result.projectResults) {
+        console.log(`  ${pr.project}: ${pr.result.trajectoriesSynced} trajectories, ${pr.result.patternsSynced} patterns`);
+      }
+      console.log(`\n  Total synced: ${result.totalSynced}`);
+      break;
+    }
+
+    default:
+      console.error(`[starlight] Unknown project action: "${action}".`);
+      console.error("  Available actions: register, list, sync-all");
+      process.exitCode = 1;
+  }
+}
+
 function cmdStats(): void {
   const sis = createSIS();
   const stats = sis.getStats();
@@ -452,7 +569,9 @@ async function main(): Promise<void> {
       help: { type: "boolean", short: "h" },
       target: { type: "string" },
       output: { type: "string" },
+      project: { type: "string" },
       "acos-path": { type: "string" },
+      "max-lines": { type: "string" },
       "dry-run": { type: "boolean" },
       "min-score": { type: "string" },
       category: { type: "string" },
@@ -482,6 +601,28 @@ async function main(): Promise<void> {
     case "generate":
       cmdGenerate(asString(values.target), asString(values.output));
       break;
+
+    case "guidance":
+      cmdGuidance(
+        asString(values.project),
+        asString(values["acos-path"]),
+        asString(values["max-lines"])
+      );
+      break;
+
+    case "project": {
+      const projectAction = positionals[1];
+      if (!projectAction) {
+        console.error("[starlight] Error: project requires an action (register, list, sync-all).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdProject(projectAction, positionals.slice(2), {
+        dryRun: values["dry-run"] === true,
+        minScore: asString(values["min-score"]),
+      });
+      break;
+    }
 
     case "sync":
       cmdSync(asString(values["acos-path"]), {

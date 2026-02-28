@@ -55,6 +55,8 @@ export interface SyncOptions {
     maxEntries?: number;
     /** Dry run — classify but don't write */
     dryRun?: boolean;
+    /** Project name for source tagging (enables cross-project intelligence) */
+    projectName?: string;
 }
 export interface SyncResult {
     trajectoriesSynced: number;
