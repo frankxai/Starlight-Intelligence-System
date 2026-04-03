@@ -1,0 +1,301 @@
+{
+  "repo_notes": [
+    {
+      "content": ""
+    }
+  ],
+  "pages": [
+    {
+      "title": "Starlight Intelligence System — Overview",
+      "purpose": "High-level introduction to SIS: what it is, why it exists, its ecosystem, key architectural principles, and a map to all child pages. Covers the 5-layer cognitive architecture, the session-amnesia problem it solves, and the Universal Context Standard.",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Getting Started & Installation",
+      "purpose": "Step-by-step guide for onboarding: installing the npm package, running `starlight init`, configuring `.starlight/profile.yml`, `stack.yml`, and `config.yml`, and generating the first context file. Covers Node.js ≥18 requirement, TypeScript/ESM build, and the `generate-context` script.",
+      "parent": "Starlight Intelligence System — Overview",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "FrankX Ecosystem Architecture",
+      "purpose": "Explains the three-repo vertically integrated stack: SIS (framework layer), ACOS (implementation layer), and Arcanea (universe layer). Covers downward context flow, upward knowledge accumulation, lateral transmission channels, and the architectural invariants that prevent drift.",
+      "parent": "Starlight Intelligence System — Overview",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Core Architecture",
+      "purpose": "Overview of the 5-layer cognitive stack and the 7-layer intelligence pipeline. Introduces the main TypeScript classes and how they interconnect. Links to child pages for each major subsystem.",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "The 5-Layer Cognitive Stack",
+      "purpose": "Deep dive into the five layers: Layer 00 (IDENTITY/Luminor Constitution), Layer 01 (INTELLECT/Vaults), Layer 02 (PROTOCOL/Strategies), Layer 03 (AGENCY/Specialist Council), and Layer 04 (ARCANA/Guardian mythology). Explains how layers load in sequence during context generation.",
+      "parent": "Core Architecture",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Intelligence Pipeline (7 Layers)",
+      "purpose": "Detailed walkthrough of the 7-stage processing pipeline: Perception → Memory Recall → Reasoning → Routing → Execution → Synthesis → Memory Write. Covers complexity scoring (1-10 scale), HIGH_COMPLEXITY_SIGNALS, pattern auto-selection, and the AgentExecution feedback loop.",
+      "parent": "Core Architecture",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "StarlightIntelligence Class & TypeScript SDK",
+      "purpose": "API reference for the main facade class: initialize(), orchestrate(), generateContext(), routeTask(), remember(), setExecutor(), save(). Covers StarlightOptions, AgentExecutor callback type, OrchestrationTask, and the modular export map from package.json.",
+      "parent": "Core Architecture",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Memory & Vault System",
+      "purpose": "Overview of the persistent memory architecture: the six vaults, the MemoryManager class, VaultMemory, and the consolidation cascade. Links to child pages for vault specifications and the sync/guidance subsystems.",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "The Six Vaults",
+      "purpose": "Specification for each vault: Strategic, Technical, Creative, Operational, Wisdom, and Horizon. Covers retention policies, access control matrix (which agents can read/write each vault), entry format (timestamp, category, confidence, source, related links), and health metrics.",
+      "parent": "Memory & Vault System",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "VaultMemory & MemoryManager",
+      "purpose": "Implementation details of the VaultMemory class (extends MemoryManager): rememberInVault(), searchVaults(), appendHorizon(), classifyVault() keyword engine, and the JSONL append-only horizon.jsonl ledger. Covers MemoryEntry schema, confidence scoring, and the memory.json persistence file.",
+      "parent": "Memory & Vault System",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "ACOS Sync & Trajectory Classification",
+      "purpose": "How ACOS trajectory files are imported into SIS memory via syncACOSToSIS(). Covers the classification engine (successScore thresholds for pattern/decision/insight/error/preference), deduplication via SyncState, minScore quality filtering, and the multi-project federated sync via ProjectRegistry.",
+      "parent": "Memory & Vault System",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Behavioral Guidance & Intelligence Scoring",
+      "purpose": "Explains the Guidance Engine (src/guidance.ts): how trajectories are distilled into actionable behavioral rules (BehavioralRule, FailureLesson, DomainChecklist) injected as session-start markdown. Also covers the Intelligence Score system (0-100, four 25-point components: Memory Depth, Pattern Quality, Operational History, Learning Velocity) and the IntelligenceReport output.",
+      "parent": "Memory & Vault System",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Agent Council",
+      "purpose": "Overview of the flat council with emergent leadership model, the three tiers (Leadership, Specialist, Foundation), and how council mode activates for complexity 9-10 tasks. Links to child pages for individual agent profiles and the routing/orchestration system.",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "The Seven Starlight Agents",
+      "purpose": "Profile of each council agent: Orchestrator (coordination), Prime (synthesis), Architect (enterprise systems), Navigator (strategy), Sentinel (quality/security), Weaver (creative), and Sage (wisdom/vault guardian). Covers domain expertise, reasoning protocols, vault access permissions, and transmission channel access for each.",
+      "parent": "Agent Council",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Routing Matrix & Orchestration Patterns",
+      "purpose": "How the Routing Matrix dispatches tasks via keyword/intent matching and complexity scoring (P0-P3 priority, 5-level escalation). Covers the six orchestration patterns (Direct, Sequential, Parallel, Iterative, Cascade, Broadcast) and the three synthesis strategies (Weighted-Consensus, Sequential-Refinement, Conflict-Resolution).",
+      "parent": "Agent Council",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Arcana Layer & Guardian Mapping",
+      "purpose": "The optional Layer 04: the 10 Guardians of Arcanea mapped to SIS council agents, frequency-to-complexity model allocation (Gemini Pro/Flash vs Claude Opus), elemental routing logic, persona communication signatures, and the GUARDIAN_MODELS configuration. Explains how mythology IS the architecture.",
+      "parent": "Agent Council",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Skill System",
+      "purpose": "Overview of the 16-skill, 4-category architecture and the auto-activation system driven by skill-rules.json. Links to child pages for each skill category and the composition patterns.",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Skill Categories & Auto-Activation",
+      "purpose": "The four skill categories (Intelligence, Orchestration, Memory, Integration) with their 16 skills. Covers the four-priority auto-activation system (Exact Match → Keyword Match → Agent Default → Context Inference), token budget strategy (metadata/summary/core/full levels), and skill composition patterns (Sequential, Parallel, Nested, Conditional).",
+      "parent": "Skill System",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Intelligence & Orchestration Skills",
+      "purpose": "Deep dive into the 8 skills in the Intelligence and Orchestration categories: Strategic Reasoning, Systems Thinking, Pattern Recognition, Decision Framework, Multi-Agent Coordination, Workflow Design, Context Engineering, and Parallel Execution. Covers trigger conditions, procedures, and integration points.",
+      "parent": "Skill System",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Memory & Integration Skills",
+      "purpose": "Deep dive into the 8 skills in the Memory and Integration categories: Vault Management, Knowledge Synthesis, Context Preservation, Memory Consolidation, Repo Bridge, Ecosystem Sync, Transmission Protocol, and Universal Adapter. Covers how these skills connect to vaults, transmissions, and external systems.",
+      "parent": "Skill System",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "CLI Reference",
+      "purpose": "Overview of the `starlight` CLI binary and its command groups. Links to child pages for each command group. Covers the zero-dependency parseArgs architecture and the .starlight/ configuration directory lifecycle.",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Core CLI Commands",
+      "purpose": "Reference for init, generate, guidance, sync, score, and orchestrate commands. Covers flags, output formats, the context generation pipeline (config.yml → layers → maxTokens → output file), and the orchestrate JSON output format.",
+      "parent": "CLI Reference",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Vault & Project CLI Commands",
+      "purpose": "Reference for the `vault` subcommand suite (list, get, set, search) and the `project` subcommand suite (register, list, sync-all). Covers the ProjectRegistry (.starlight/projects.json), federated multi-sync across repos, and vault key-value operations.",
+      "parent": "CLI Reference",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Slash Commands (Agent Interface)",
+      "purpose": "The six slash commands available within AI agent sessions: /starlight (system control), /vault (memory operations), /transmit (cross-system communication), /synthesize (multi-source synthesis), /council (agent council convening), and /navigate (strategic planning). Covers command processing flow and lifecycle hooks.",
+      "parent": "CLI Reference",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Platform Adapters",
+      "purpose": "Overview of the six platform adapters and the principle of 'same intelligence, different envelope.' Links to child pages for IDE/CLI adapters and the context engine that drives generation.",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "IDE & CLI Platform Adapters",
+      "purpose": "Configuration details for all six adapters: Claude Code (CLAUDE.md, MCP, hooks), Cursor (.cursor/rules/*.mdc with MDC frontmatter and glob scoping), Cline (.clinerules/, Memory Bank compatibility), Codex (AGENTS.md cascading), Gemini CLI (.gemini/GEMINI.md), and Antigravity (.antigravity/instructions.md with browser control).",
+      "parent": "Platform Adapters",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Context Engine",
+      "purpose": "How the ContextEngine class assembles optimized system prompts from the 5 layers (identity, knowledge, strategy, agents, memory). Covers DEFAULT_PROFILE/DEFAULT_STACK/DEFAULT_BRAND fallbacks, maxTokens enforcement, the setMemories() injection of the 20 most recent MemoryManager entries, and the GeneratedContext output object.",
+      "parent": "Platform Adapters",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Transmissions & Integrations",
+      "purpose": "Overview of the cross-system communication protocol and external integrations. Links to child pages for the transmission system and MCP/infrastructure integrations.",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "Transmission Protocol",
+      "purpose": "The four transmission channels (ACOS, Arcanea, AI-Ops, Broadcast), transmission format (sender, priority, content, acknowledgment), priority levels (Critical/High/Normal/Low), send/receive/sync flows, and the rule that only Prime can authorize broadcast transmissions. Covers how transmissions log to the Operational Vault.",
+      "parent": "Transmissions & Integrations",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    },
+    {
+      "title": "MCP & Infrastructure Integrations",
+      "purpose": "The six MCP servers (filesystem, github, web-search, browser, memory) and their lazy-loading activation strategy. Optional infrastructure integrations via AI-Ops: LiteLLM gateway, Langfuse observability, Qdrant vector search, PostgreSQL, Neo4j/FalkorDB knowledge graphs, and n8n workflow orchestration. Covers standalone vs enhanced mode.",
+      "parent": "Transmissions & Integrations",
+      "page_notes": [
+        {
+          "content": ""
+        }
+      ]
+    }
+  ]
+}
