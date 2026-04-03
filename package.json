@@ -47,7 +47,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "tsc -p tsconfig.test.json && node --test .test-dist/**/*.test.js && node -e \"require('node:fs').rmSync('.test-dist', { recursive: true, force: true })\"",
+    "test": "tsc -p tsconfig.test.json && node -e \"const fs=require('node:fs');const path=require('node:path');const cp=require('node:child_process');const tests=fs.readdirSync('.test-dist').filter((file)=>file.endsWith('.test.js')).map((file)=>path.join('.test-dist',file));if(!tests.length) throw new Error('No compiled tests found in .test-dist');cp.execFileSync(process.execPath,['--test',...tests],{stdio:'inherit'});\" && node -e \"require('node:fs').rmSync('.test-dist', { recursive: true, force: true })\"",
     "generate-context": "node dist/cli.js generate",
     "lint": "tsc --noEmit",
     "prepublishOnly": "npm run build && npm test"

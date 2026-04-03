@@ -13,6 +13,11 @@
  *   starlight vault get <key>             Get a memory entry by ID
  *   starlight vault set <key> <value>     Store a memory entry
  *   starlight vault search <query>        Search memories
+ *   starlight canonical stats             Show canonical ~/.starlight stats
+ *   starlight canonical validate          Validate canonical vault rows
+ *   starlight canonical read <vault>      Read canonical vault entries
+ *   starlight canonical append <vault> <content>
+ *                                         Append a typed canonical entry
  *   starlight orchestrate <intent>        Run an orchestration (prints JSON)
  *   starlight stats                       Show system statistics
  *   starlight version                     Print version
@@ -25,6 +30,17 @@ import { StarlightIntelligence } from "./index.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
 import { generateIntelligenceReport } from "./score.js";
+import {
+  SIS_VAULT_NAMES,
+  type SisVaultName,
+  appendCanonicalSisEntry,
+  getCanonicalSisStats,
+  parseJsonl,
+  readCanonicalSisVault,
+  resolveCanonicalSisHome,
+  validateCanonicalSisVaultRows,
+  validateSisWriteInput,
+} from "./canonical-sis.js";
 
 // ── Constants ───────────────────────────────────────────────
 
@@ -98,6 +114,11 @@ Commands:
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
   vault search <query>            Search memories
+  canonical stats                 Show canonical ~/.starlight stats
+  canonical validate              Validate canonical SIS vault integrity
+  canonical read <vault>          Read canonical vault entries
+  canonical append <vault> <content>
+                                  Append a typed canonical entry
   orchestrate <intent>            Run an orchestration (prints JSON result)
   stats                           Show system statistics
   version                         Print version
@@ -111,7 +132,21 @@ Options:
   --min-score <n>                 Minimum success score to sync (0.0-1.0)
   --category <cat>                Memory category: pattern, decision, insight, error, preference
   --confidence <n>                Confidence score (0.0-1.0) for vault set
+  --confidence-level <level>      Canonical confidence: low, medium, high
   --tags <t1,t2>                  Comma-separated tags for vault set
+  --sis-home <path>               Override canonical ~/.starlight root
+  --vault <name>                  Canonical vault override for validate
+  --limit <n>                     Limit canonical read output
+  --entry-type <type>             Canonical entry type
+  --project <name>                Typed metadata for project_learning
+  --routine <name>                Typed metadata for routine_learning
+  --state <name>                  Typed metadata for state_learning
+  --pack-name <name>              Typed metadata for prompt_pack
+  --asset-name <name>             Typed metadata for creative_asset
+  --author <name>                 Canonical entry author
+  --source <source>               Canonical entry source
+  --context <text>                Canonical entry context
+  --json                          Emit machine-readable JSON
   --pattern <pattern>             Orchestration pattern: direct, sequential, parallel, iterative, cascade, broadcast
 
 Examples:
@@ -122,6 +157,8 @@ Examples:
   starlight score
   starlight vault set my-pattern "Always use server components" --category pattern --tags react,next
   starlight vault search "server components"
+  starlight canonical stats --json
+  starlight canonical append technical "Prefer durable local memory" --entry-type project_learning --project Arcanea --tags memory,sis
   starlight orchestrate "Design a new authentication system"
   starlight stats
 `);
@@ -159,6 +196,25 @@ function createSIS(): StarlightIntelligence {
 
 function formatJSON(obj: unknown): string {
   return JSON.stringify(obj, null, 2);
+}
+
+function parsePositiveInt(value: string | undefined, fallback: number): number {
+  if (!value) return fallback;
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
+  return parsed;
+}
+
+function printJsonOrValue(data: unknown, asJson: boolean): void {
+  if (asJson) {
+    console.log(formatJSON(data));
+    return;
+  }
+  if (typeof data === "string") {
+    console.log(data);
+    return;
+  }
+  console.log(formatJSON(data));
 }
 
 // ── Commands ────────────────────────────────────────────────
@@ -324,6 +380,129 @@ function cmdVault(action: string, args: string[], options: {
   }
 }
 
+function cmdCanonical(action: string, args: string[], options: {
+  sisHome?: string;
+  vault?: string;
+  limit?: string;
+  entryType?: string;
+  confidenceLevel?: string;
+  tags?: string;
+  project?: string;
+  routine?: string;
+  state?: string;
+  packName?: string;
+  assetName?: string;
+  author?: string;
+  source?: string;
+  context?: string;
+  json?: boolean;
+}): void {
+  const sisHome = resolveCanonicalSisHome(options.sisHome);
+  const asJson = options.json === true;
+
+  switch (action) {
+    case "stats": {
+      const stats = getCanonicalSisStats(sisHome);
+      printJsonOrValue(stats, asJson);
+      return;
+    }
+
+    case "validate": {
+      const vaultOption = options.vault ? String(options.vault).trim().toLowerCase() : undefined;
+      const vaults = vaultOption && SIS_VAULT_NAMES.includes(vaultOption as (typeof SIS_VAULT_NAMES)[number])
+        ? [vaultOption]
+        : [...SIS_VAULT_NAMES];
+
+      const results = vaults.map((vault) => {
+        const typedVault = vault as SisVaultName;
+        const path = join(sisHome, "vaults", `${vault}.jsonl`);
+        const rows = parseJsonl(path);
+        const validation = validateCanonicalSisVaultRows(typedVault, rows);
+        return {
+          vault,
+          path,
+          rowCount: rows.length,
+          valid: validation.valid,
+          errors: validation.errors,
+          warnings: validation.warnings,
+        };
+      });
+
+      const summary = {
+        sisHome,
+        valid: results.every((result) => result.valid),
+        vaults: results,
+      };
+
+      printJsonOrValue(summary, asJson);
+      if (!summary.valid) {
+        process.exitCode = 1;
+      }
+      return;
+    }
+
+    case "read": {
+      const vault = args[0];
+      if (!vault || !SIS_VAULT_NAMES.includes(vault as (typeof SIS_VAULT_NAMES)[number])) {
+        console.error("[starlight] Error: canonical read requires a valid vault name.");
+        console.error(`  Valid vaults: ${SIS_VAULT_NAMES.join(", ")}`);
+        process.exitCode = 1;
+        return;
+      }
+
+      const limit = parsePositiveInt(options.limit, 20);
+      const entries = readCanonicalSisVault(vault as (typeof SIS_VAULT_NAMES)[number], sisHome).slice(-limit).reverse();
+      printJsonOrValue({
+        sisHome,
+        vault,
+        count: entries.length,
+        entries,
+      }, true);
+      return;
+    }
+
+    case "append": {
+      const vault = args[0];
+      const content = args.slice(1).join(" ").trim();
+      const validation = validateSisWriteInput({
+        vault,
+        content,
+        tags: options.tags,
+        source: options.source,
+        author: options.author,
+        context: options.context,
+        confidence: options.confidenceLevel,
+        entryType: options.entryType,
+        project: options.project,
+        routine: options.routine,
+        state: options.state,
+        packName: options.packName,
+        assetName: options.assetName,
+      });
+
+      if (!validation.valid) {
+        console.error("[starlight] Error: invalid canonical SIS entry.");
+        console.error(formatJSON({ errors: validation.errors, warnings: validation.warnings }));
+        process.exitCode = 1;
+        return;
+      }
+
+      const result = appendCanonicalSisEntry(validation.normalized, sisHome);
+      printJsonOrValue({
+        sisHome,
+        entry: result,
+        warnings: validation.warnings,
+      }, true);
+      return;
+    }
+
+    default:
+      console.error(`[starlight] Unknown canonical action: "${action}".`);
+      console.error("  Available actions: stats, validate, read, append");
+      process.exitCode = 1;
+  }
+}
+
 async function cmdOrchestrate(intent: string, pattern?: string): Promise<void> {
   if (!intent) {
     console.error("[starlight] Error: orchestrate requires an intent string.");
@@ -457,8 +636,22 @@ async function main(): Promise<void> {
       "min-score": { type: "string" },
       category: { type: "string" },
       confidence: { type: "string" },
+      "confidence-level": { type: "string" },
       tags: { type: "string" },
       pattern: { type: "string" },
+      "sis-home": { type: "string" },
+      vault: { type: "string" },
+      limit: { type: "string" },
+      "entry-type": { type: "string" },
+      project: { type: "string" },
+      routine: { type: "string" },
+      state: { type: "string" },
+      "pack-name": { type: "string" },
+      "asset-name": { type: "string" },
+      author: { type: "string" },
+      source: { type: "string" },
+      context: { type: "string" },
+      json: { type: "boolean" },
     },
     strict: false,
   });
@@ -505,6 +698,33 @@ async function main(): Promise<void> {
         category: asString(values.category),
         confidence: asString(values.confidence),
         tags: asString(values.tags),
+      });
+      break;
+    }
+
+    case "canonical": {
+      const action = positionals[1];
+      if (!action) {
+        console.error("[starlight] Error: canonical requires an action (stats, validate, read, append).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdCanonical(action, positionals.slice(2), {
+        sisHome: asString(values["sis-home"]),
+        vault: asString(values.vault),
+        limit: asString(values.limit),
+        entryType: asString(values["entry-type"]),
+        confidenceLevel: asString(values["confidence-level"]),
+        tags: asString(values.tags),
+        project: asString(values.project),
+        routine: asString(values.routine),
+        state: asString(values.state),
+        packName: asString(values["pack-name"]),
+        assetName: asString(values["asset-name"]),
+        author: asString(values.author),
+        source: asString(values.source),
+        context: asString(values.context),
+        json: values.json === true,
       });
       break;
     }

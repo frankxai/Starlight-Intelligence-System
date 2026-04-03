@@ -43,6 +43,22 @@ Exports:
 - `@frankx/starlight-intelligence-system/canonical-sis`
 - `@frankx/starlight-intelligence-system/canonical-sis-mcp`
 
+Canonical CLI operators are available through the existing `starlight` binary:
+
+```bash
+starlight canonical stats --json
+starlight canonical validate --json
+starlight canonical read technical --limit 5
+starlight canonical append technical "Prefer durable local memory" \
+  --entry-type project_learning \
+  --project Arcanea \
+  --tags sis,memory \
+  --confidence-level high
+```
+
+That gives package consumers a direct operator surface for canonical `~/.starlight`
+without needing Arcanea-specific scripts.
+
 This boundary is intentional:
 
 - `starlight-intelligence-system` owns the reusable SIS contracts and package code
