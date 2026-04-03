@@ -27,6 +27,29 @@ Every multi-agent system today faces the same three failures:
 
 Existing frameworks treat agents as stateless function calls. They route tasks, execute tools, return results. The orchestration is mechanical. The memory is ephemeral. The intelligence doesn't compound.
 
+## Canonical SIS Package Surface
+
+This repo now also owns the reusable **canonical SIS** package surface used by Arcanea's live integration layer.
+
+Use it when you need:
+
+- typed vault names and entry families
+- validation for canonical `~/.starlight` writes
+- filesystem read/append helpers for canonical vaults
+- reusable MCP tool/resource helpers for canonical SIS servers
+
+Exports:
+
+- `@frankx/starlight-intelligence-system/canonical-sis`
+- `@frankx/starlight-intelligence-system/canonical-sis-mcp`
+
+This boundary is intentional:
+
+- `starlight-intelligence-system` owns the reusable SIS contracts and package code
+- `arcanea` owns machine-specific launcher/bootstrap wiring, local operator scripts, and app-specific adapters
+
+That keeps the substrate portable while avoiding hidden machine concerns in the OSS package.
+
 ## The Starlight Thesis
 
 **Intelligence is infrastructure, not application logic.**

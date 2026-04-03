@@ -33,13 +33,21 @@
     "./score": {
       "types": "./dist/score.d.ts",
       "import": "./dist/score.js"
+    },
+    "./canonical-sis": {
+      "types": "./dist/canonical-sis.d.ts",
+      "import": "./dist/canonical-sis.js"
+    },
+    "./canonical-sis-mcp": {
+      "types": "./dist/canonical-sis-mcp.d.ts",
+      "import": "./dist/canonical-sis-mcp.js"
     }
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "node --import tsx --test src/**/*.test.ts",
+    "test": "tsc -p tsconfig.test.json && node --test .test-dist/**/*.test.js && node -e \"require('node:fs').rmSync('.test-dist', { recursive: true, force: true })\"",
     "generate-context": "node dist/cli.js generate",
     "lint": "tsc --noEmit",
     "prepublishOnly": "npm run build && npm test"
@@ -62,9 +70,10 @@
     "platform-adapters"
   ],
   "author": "FrankX <frank@frankx.ai>",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "@types/node": "^25.2.3",
+    "esbuild": "^0.27.3",
     "tsx": "^4.21.0",
     "typescript": "^5.7.0"
   },

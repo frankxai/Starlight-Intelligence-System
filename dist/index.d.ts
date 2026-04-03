@@ -119,9 +119,13 @@ export { AgentRouter, ACOS_AGENTS } from "./agents.js";
 export { OrchestrationEngine } from "./orchestrator.js";
 export { syncACOSToSIS } from "./sync.js";
 export { generateIntelligenceReport } from "./score.js";
+export { SIS_VAULT_NAMES, SIS_CONFIDENCE_LEVELS, SIS_ENTRY_TYPES, ensureCanonicalSisLayout, resolveCanonicalSisHome, parseTagsValue, parseMetadataValue, buildTypedMetadata, validateSisWriteInput, normalizeSisReadEntry, validateCanonicalSisEntry, validateCanonicalSisVaultRows, safeRead, parseJsonl, getCanonicalSisVaultPath, buildCanonicalSisEntry, appendJsonl, appendCanonicalSisEntry, readCanonicalSisVault, getCanonicalSisStats, } from "./canonical-sis.js";
+export { getCanonicalSisMcpTools, getCanonicalSisMcpResources, readCanonicalSisMcpResource, callCanonicalSisMcpTool, } from "./canonical-sis-mcp.js";
 export type { OrchestrationEngineOptions } from "./orchestrator.js";
 export type { ACOSTrajectory, ACOSPattern, SyncState, SyncOptions, SyncResult } from "./sync.js";
 export type { ScoreComponent, IntelligenceReport } from "./score.js";
+export type { SisVaultName, SisConfidenceLevel, SisEntryTypeName, SisEntryTypeDefinition, SisWriteInput, SisNormalizedWriteInput, SisValidationResult, CanonicalSisEntry, CanonicalSisValidationResult, CanonicalSisVaultStats, } from "./canonical-sis.js";
+export type { CanonicalSisMcpToolDefinition, CanonicalSisMcpResourceDefinition, CanonicalSisResourcePayload, } from "./canonical-sis-mcp.js";
 export type { ContextOptions, ContextLayer, GeneratedContext, UserProfile, VoiceGuidelines, TechStack, BrandSystem, AgentDefinition, AgentRegistry, SkillDefinition, MemoryEntry, MemorySearchOptions, MemoryStats, ReasoningStrategy, ProjectContext, SystemStats, AgentExecutor, OrchestrationTask, OrchestrationPattern, OrchestrationResult, SynthesisStrategy, AgentExecution, PipelineStage, } from "./types.js";
 export type { AgentRecommendation } from "./agents.js";
 //# sourceMappingURL=index.d.ts.map

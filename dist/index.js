@@ -170,4 +170,6 @@ export { AgentRouter, ACOS_AGENTS } from "./agents.js";
 export { OrchestrationEngine } from "./orchestrator.js";
 export { syncACOSToSIS } from "./sync.js";
 export { generateIntelligenceReport } from "./score.js";
+export { SIS_VAULT_NAMES, SIS_CONFIDENCE_LEVELS, SIS_ENTRY_TYPES, ensureCanonicalSisLayout, resolveCanonicalSisHome, parseTagsValue, parseMetadataValue, buildTypedMetadata, validateSisWriteInput, normalizeSisReadEntry, validateCanonicalSisEntry, validateCanonicalSisVaultRows, safeRead, parseJsonl, getCanonicalSisVaultPath, buildCanonicalSisEntry, appendJsonl, appendCanonicalSisEntry, readCanonicalSisVault, getCanonicalSisStats, } from "./canonical-sis.js";
+export { getCanonicalSisMcpTools, getCanonicalSisMcpResources, readCanonicalSisMcpResource, callCanonicalSisMcpTool, } from "./canonical-sis-mcp.js";
 //# sourceMappingURL=index.js.map
