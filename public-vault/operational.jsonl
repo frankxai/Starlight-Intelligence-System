@@ -1,0 +1,4 @@
+﻿{"id":"ops_20260402_001","insight":"Focused sequential engineering beats multi-agent swarms for single-repo product work","category":"execution","confidence":"high","source":"session","createdAt":"2026-04-02T12:00:00Z"}
+{"id":"ops_20260402_002","insight":"Never create separate git worktrees in different folders â€” work in C:\\Users\\frank\\Arcanea always","category":"git","confidence":"high","source":"session","createdAt":"2026-04-02T12:00:01Z"}
+{"id":"ops_20260402_003","insight":"Session rhythm: /daily-ops â†’ work â†’ /session-sync. Not optional.","category":"workflow","confidence":"high","source":"session","createdAt":"2026-04-02T12:00:02Z"}
+{"id":"ops_20260402_004","insight":"Check if repos already exist before creating duplicates â€” SIS and Horizon Dataset were already live","category":"process","confidence":"high","source":"session","createdAt":"2026-04-02T12:00:03Z"}

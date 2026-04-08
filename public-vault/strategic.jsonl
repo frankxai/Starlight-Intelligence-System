@@ -1,0 +1,4 @@
+{"id":"strat_20260402_001","insight":"BYOK-first is better than managed — lower support burden, no margin pressure, power users already have keys","category":"monetization","confidence":"high","source":"session","createdAt":"2026-04-02T12:00:00Z"}
+{"id":"strat_20260402_002","insight":"LemonSqueezy pre-BV, Stripe post-BV — product truth in Supabase, payment provider is interchangeable","category":"payments","confidence":"high","source":"session","createdAt":"2026-04-02T12:00:01Z"}
+{"id":"strat_20260402_003","insight":"Moat is NOT features — it's continuity + graph memory + provenance + creator identity + social compounding","category":"competitive","confidence":"high","source":"session","createdAt":"2026-04-02T12:00:02Z"}
+{"id":"strat_20260402_004","insight":"Don't replatform around LangChain/Eliza/OpenClaw — keep product model custom, borrow subsystems selectively","category":"architecture","confidence":"high","source":"session","createdAt":"2026-04-02T12:00:03Z"}

@@ -1,0 +1,12 @@
+{
+  "vaults": [
+    {
+      "slug": "frank",
+      "name": "Frank",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "path": "public-vault",
+      "avatar": "https://github.com/frankxai.png",
+      "bio": "Builder of Arcanea — memory systems, AI agents, creative intelligence"
+    }
+  ]
+}
