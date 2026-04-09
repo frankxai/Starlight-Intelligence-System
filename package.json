@@ -1,7 +1,7 @@
 {
   "name": "@frankx/starlight-intelligence-system",
-  "version": "5.0.0",
-  "description": "Persistent intelligence layer for AI agents — behavioral guidance, federated memory vaults, agent routing, trajectory sync, platform adapters for Claude Code, Cursor, Codex, Gemini CLI",
+  "version": "6.0.0",
+  "description": "Persistent intelligence layer for AI agents — 6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, cross-tool memory via MCP, platform adapters for Claude Code, Cursor, Codex, Gemini CLI, OpenCode",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -45,6 +45,30 @@
     "./multi-sync": {
       "types": "./dist/multi-sync.d.ts",
       "import": "./dist/multi-sync.js"
+    },
+    "./retrieval": {
+      "types": "./dist/retrieval.d.ts",
+      "import": "./dist/retrieval.js"
+    },
+    "./temporal": {
+      "types": "./dist/temporal.d.ts",
+      "import": "./dist/temporal.js"
+    },
+    "./contradiction": {
+      "types": "./dist/contradiction.d.ts",
+      "import": "./dist/contradiction.js"
+    },
+    "./dreaming": {
+      "types": "./dist/dreaming.d.ts",
+      "import": "./dist/dreaming.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp-server.d.ts",
+      "import": "./dist/mcp-server.js"
     }
   },
   "scripts": {
@@ -76,14 +100,26 @@
   "author": "FrankX <frank@frankx.ai>",
   "license": "MIT",
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.2.3",
     "tsx": "^4.21.0",
     "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "@arcanea/memory-system": ">=0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@arcanea/memory-system": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "bin": {
     "starlight": "dist/cli.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.8.0"
   }
 }
