@@ -9,14 +9,27 @@ export function Header() {
       >
         <Link
           href="/"
-          className="flex items-center gap-2 transition-micro hover:opacity-80"
+          className="flex items-center gap-2.5 transition-micro hover:opacity-80"
         >
+          {/* Starlight mark */}
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle cx="9" cy="9" r="3" fill="#a78bfa" opacity="0.8" />
+            <circle cx="9" cy="9" r="7" stroke="#a78bfa" strokeWidth="0.5" opacity="0.3" />
+            <circle cx="9" cy="9" r="9" stroke="#a78bfa" strokeWidth="0.3" opacity="0.15" />
+          </svg>
           <span className="text-[15px] font-semibold tracking-tight text-white">
             Starlight
           </span>
         </Link>
 
-        <div className="flex items-center gap-1">
+        {/* Desktop nav */}
+        <div className="hidden items-center gap-1 sm:flex">
           <NavLink href="/vaults">Vaults</NavLink>
           <NavLink href="/docs">Docs</NavLink>
           <NavLink
@@ -33,6 +46,12 @@ export function Header() {
           >
             Deploy
           </a>
+        </div>
+
+        {/* Mobile nav — simple links row */}
+        <div className="flex items-center gap-3 sm:hidden">
+          <NavLink href="/vaults">Vaults</NavLink>
+          <NavLink href="/docs">Docs</NavLink>
         </div>
       </nav>
     </header>
@@ -53,12 +72,7 @@ function NavLink({
 
   if (external) {
     return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={cls}
-      >
+      <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
         {children}
       </a>
     );
