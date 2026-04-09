@@ -1,8 +1,10 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   getVaultData,
   getVaultRegistry,
   VAULT_CATEGORIES,
+  getCategoryMeta,
   type VaultCategory,
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
@@ -19,9 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, category } = await params;
   const data = await getVaultData(slug);
   if (!data) return { title: "Not Found" };
+  const meta = getCategoryMeta(category as VaultCategory);
   return {
-    title: `${category} — ${data.profile.name}'s Vault`,
-    description: `${category} vault entries from ${data.profile.name}`,
+    title: `${meta?.label || category} — ${data.profile.name}`,
+    description: `${meta?.desc || category} vault entries from ${data.profile.name}`,
   };
 }
 
@@ -48,25 +51,30 @@ export default async function CategoryPage({ params }: Props) {
   if (!data) notFound();
 
   const entries = data.entries[cat];
+  const meta = getCategoryMeta(cat);
   const counts = Object.fromEntries(
     VAULT_CATEGORIES.map((c) => [c, data.entries[c].length])
   ) as Record<VaultCategory, number>;
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16">
-      <div className="flex items-start gap-4">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+    <div className="mx-auto max-w-5xl px-6 py-16">
+      {/* Profile header */}
+      <div className="flex items-center gap-3">
+        <Image
           src={data.profile.avatar}
-          alt={data.profile.name}
-          className="h-12 w-12 rounded-full"
+          alt={`${data.profile.name}'s avatar`}
+          width={40}
+          height={40}
+          className="rounded-full"
         />
         <div>
-          <h1 className="text-2xl font-bold text-white">
-            {data.profile.name}{" "}
-            <span className="font-normal text-slate-500">/ {cat}</span>
+          <h1 className="text-xl font-bold text-white">
+            {data.profile.name}
+            <span className="ml-2 font-normal text-slate-500">
+              / {meta.icon} {meta.label}
+            </span>
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="text-[12px] text-slate-600">
             {entries.length} entries
           </p>
         </div>
@@ -76,20 +84,21 @@ export default async function CategoryPage({ params }: Props) {
         <CategoryNav slug={slug} active={cat} counts={counts} />
       </div>
 
-      <div className="mt-8 space-y-3">
+      <div className="mt-8 space-y-2">
         {entries.map((entry, i) => (
-          <EntryCard
+          <div
             key={entry.id || i}
-            entry={entry}
-            category={cat}
-            showCategory={false}
-          />
+            className="animate-fade-up"
+            style={{ animationDelay: `${i * 30}ms` }}
+          >
+            <EntryCard entry={entry} category={cat} showCategory={false} />
+          </div>
         ))}
       </div>
 
       {entries.length === 0 && (
-        <p className="mt-8 text-center text-slate-600">
-          No {cat} entries yet.
+        <p className="mt-12 text-center text-[14px] text-slate-600">
+          No {meta.label.toLowerCase()} entries yet.
         </p>
       )}
     </div>

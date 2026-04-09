@@ -49,6 +49,95 @@ export interface VaultData {
   lastUpdated: string;
 }
 
+// -- Design tokens --
+
+const CATEGORY_META: Record<
+  VaultCategory,
+  { icon: string; label: string; color: string; bg: string; desc: string }
+> = {
+  strategic: {
+    icon: "◆",
+    label: "Strategic",
+    color: "text-violet-400",
+    bg: "bg-violet-500/[0.07] border-violet-500/[0.15]",
+    desc: "Business, competitive, architecture",
+  },
+  technical: {
+    icon: "⬡",
+    label: "Technical",
+    color: "text-cyan-400",
+    bg: "bg-cyan-500/[0.07] border-cyan-500/[0.15]",
+    desc: "Implementation, stack, patterns",
+  },
+  creative: {
+    icon: "✦",
+    label: "Creative",
+    color: "text-fuchsia-400",
+    bg: "bg-fuchsia-500/[0.07] border-fuchsia-500/[0.15]",
+    desc: "Design, aesthetic, lore",
+  },
+  operational: {
+    icon: "▸",
+    label: "Operational",
+    color: "text-amber-400",
+    bg: "bg-amber-500/[0.07] border-amber-500/[0.15]",
+    desc: "Workflow, process, execution",
+  },
+  wisdom: {
+    icon: "◎",
+    label: "Wisdom",
+    color: "text-emerald-400",
+    bg: "bg-emerald-500/[0.07] border-emerald-500/[0.15]",
+    desc: "Principles, truths, deep learnings",
+  },
+  horizon: {
+    icon: "↗",
+    label: "Horizon",
+    color: "text-rose-400",
+    bg: "bg-rose-500/[0.07] border-rose-500/[0.15]",
+    desc: "Vision, aspiration, future",
+  },
+};
+
+export function getCategoryMeta(cat: VaultCategory) {
+  return CATEGORY_META[cat];
+}
+
+export function getEntryText(entry: VaultEntry): string {
+  return entry.insight || entry.wish || "";
+}
+
+export function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+export function formatDateShort(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+export function timeAgo(iso: string): string {
+  const seconds = Math.floor(
+    (Date.now() - new Date(iso).getTime()) / 1000
+  );
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return formatDateShort(iso);
+}
+
+// -- Data fetching --
+
 function githubHeaders(): HeadersInit {
   const headers: HeadersInit = {
     Accept: "application/vnd.github.v3+json",
@@ -89,14 +178,10 @@ function parseJsonl(content: string): VaultEntry[] {
 }
 
 export async function getVaultRegistry(): Promise<VaultRegistryEntry[]> {
-  const content = await fetchGitHubFile(
-    REGISTRY_REPO,
-    "vault-registry.json"
-  );
+  const content = await fetchGitHubFile(REGISTRY_REPO, "vault-registry.json");
   if (!content) return [];
   try {
-    const data = JSON.parse(content);
-    return data.vaults || [];
+    return JSON.parse(content).vaults || [];
   } catch {
     return [];
   }
@@ -117,10 +202,6 @@ export async function getVaultData(
     ? JSON.parse(profileContent)
     : { name: entry.name, bio: entry.bio, avatar: entry.avatar };
 
-  const entries: Record<string, VaultEntry[]> = {};
-  let totalEntries = 0;
-  let lastUpdated = "";
-
   const results = await Promise.all(
     VAULT_CATEGORIES.map(async (cat) => {
       const content = await fetchGitHubFile(
@@ -130,6 +211,10 @@ export async function getVaultData(
       return { cat, entries: content ? parseJsonl(content) : [] };
     })
   );
+
+  const entries: Record<string, VaultEntry[]> = {};
+  let totalEntries = 0;
+  let lastUpdated = "";
 
   for (const { cat, entries: catEntries } of results) {
     entries[cat] = catEntries.sort(
@@ -151,7 +236,11 @@ export async function getVaultData(
 }
 
 export async function getAllEntries(): Promise<
-  (VaultEntry & { vaultSlug: string; vaultName: string; vaultCategory: VaultCategory })[]
+  (VaultEntry & {
+    vaultSlug: string;
+    vaultName: string;
+    vaultCategory: VaultCategory;
+  })[]
 > {
   const registry = await getVaultRegistry();
   const all: (VaultEntry & {
@@ -164,9 +253,9 @@ export async function getAllEntries(): Promise<
     const data = await getVaultData(reg.slug);
     if (!data) continue;
     for (const cat of VAULT_CATEGORIES) {
-      for (const entry of data.entries[cat]) {
+      for (const e of data.entries[cat]) {
         all.push({
-          ...entry,
+          ...e,
           vaultSlug: reg.slug,
           vaultName: data.profile.name,
           vaultCategory: cat,
@@ -179,52 +268,4 @@ export async function getAllEntries(): Promise<
     (a, b) =>
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
-}
-
-export function getEntryText(entry: VaultEntry): string {
-  return entry.insight || entry.wish || "";
-}
-
-export function getCategoryColor(cat: VaultCategory): string {
-  const colors: Record<VaultCategory, string> = {
-    strategic: "text-blue-400",
-    technical: "text-emerald-400",
-    creative: "text-purple-400",
-    operational: "text-orange-400",
-    wisdom: "text-amber-300",
-    horizon: "text-amber-400",
-  };
-  return colors[cat] || "text-slate-400";
-}
-
-export function getCategoryBg(cat: VaultCategory): string {
-  const colors: Record<VaultCategory, string> = {
-    strategic: "bg-blue-500/10 border-blue-500/20",
-    technical: "bg-emerald-500/10 border-emerald-500/20",
-    creative: "bg-purple-500/10 border-purple-500/20",
-    operational: "bg-orange-500/10 border-orange-500/20",
-    wisdom: "bg-amber-400/10 border-amber-400/20",
-    horizon: "bg-amber-500/10 border-amber-500/20",
-  };
-  return colors[cat] || "bg-slate-500/10 border-slate-500/20";
-}
-
-export function getCategoryIcon(cat: VaultCategory): string {
-  const icons: Record<VaultCategory, string> = {
-    strategic: "◆",
-    technical: "⚙",
-    creative: "✦",
-    operational: "▶",
-    wisdom: "☉",
-    horizon: "↗",
-  };
-  return icons[cat] || "•";
-}
-
-export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 }

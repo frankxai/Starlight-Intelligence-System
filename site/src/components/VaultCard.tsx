@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { VaultRegistryEntry } from "@/lib/vault";
+import { formatDateShort } from "@/lib/vault";
 
 interface VaultCardProps {
   vault: VaultRegistryEntry;
@@ -11,32 +13,29 @@ export function VaultCard({ vault, totalEntries, lastUpdated }: VaultCardProps) 
   return (
     <Link
       href={`/vaults/${vault.slug}`}
-      className="group block rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all hover:border-white/[0.12] hover:bg-white/[0.04]"
+      className="group block rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 transition-std hover:border-white/[0.12] hover:bg-white/[0.04]"
     >
       <div className="flex items-start gap-4">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={vault.avatar}
-          alt={vault.name}
-          className="h-12 w-12 rounded-full"
+          alt={`${vault.name}'s avatar`}
+          width={48}
+          height={48}
+          className="rounded-full"
         />
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
+        <div className="min-w-0 flex-1">
+          <h3 className="text-base font-semibold text-white transition-micro group-hover:text-violet-400">
             {vault.name}
           </h3>
-          <p className="mt-1 text-sm text-slate-400">{vault.bio}</p>
-          <div className="mt-3 flex gap-4 text-xs text-slate-600">
+          <p className="mt-1 text-[13px] leading-relaxed text-slate-500 line-clamp-2">
+            {vault.bio}
+          </p>
+          <div className="mt-3 flex gap-4 text-[11px] text-slate-600">
             {totalEntries !== undefined && (
               <span>{totalEntries} entries</span>
             )}
             {lastUpdated && (
-              <span>
-                Updated{" "}
-                {new Date(lastUpdated).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
+              <span>Updated {formatDateShort(lastUpdated)}</span>
             )}
           </div>
         </div>
