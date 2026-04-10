@@ -31,6 +31,8 @@ export function Header() {
         {/* Desktop nav */}
         <div className="hidden items-center gap-1 sm:flex">
           <NavLink href="/vaults">Vaults</NavLink>
+          <NavLink href="/quickstart">Quickstart</NavLink>
+          <NavLink href="/architecture">Architecture</NavLink>
           <NavLink href="/docs">Docs</NavLink>
           <NavLink
             href="https://github.com/frankxai/Starlight-Intelligence-System"
@@ -51,6 +53,7 @@ export function Header() {
         {/* Mobile nav — simple links row */}
         <div className="flex items-center gap-3 sm:hidden">
           <NavLink href="/vaults">Vaults</NavLink>
+          <NavLink href="/quickstart">Quickstart</NavLink>
           <NavLink href="/docs">Docs</NavLink>
         </div>
       </nav>
