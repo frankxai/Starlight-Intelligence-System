@@ -21,6 +21,7 @@ export default function DocsPage() {
           "Vault Structure",
           "Entry Format",
           "Agent API",
+          "Extended Entry Schema (v6)",
           "Privacy",
           "MCP Server",
           "Self-Hosting",
@@ -109,6 +110,99 @@ GET /api/vaults/frank    # Full vault data as JSON`}</Code>
           <Code>GET https://raw.githubusercontent.com/frankxai/Starlight-Intelligence-System/main/public-vault/strategic.jsonl</Code>
         </Section>
 
+        <Section
+          id="extended-entry-schema-(v6)"
+          title="Extended Entry Schema (v6)"
+        >
+          <P>
+            Version 6 adds five optional fields that let an entry breathe — a
+            long-form reflection, the context that produced it, the broader
+            principle it points toward, and two curation flags. All existing
+            entries continue to work unchanged; every new field is optional.
+          </P>
+
+          <div className="mt-5 space-y-4">
+            <Field
+              name="meditation"
+              type="string"
+              desc="Long-form reflection (2–5 sentences). The breathing version of the insight — what the tweet becomes when it has room."
+            />
+            <Field
+              name="context"
+              type="string"
+              desc="The situation, observation, or session that produced this entry. Provenance without the noise."
+            />
+            <Field
+              name="implication"
+              type="string"
+              desc="The broader principle this points toward. What future you (or a reading agent) should carry forward."
+            />
+            <Field
+              name="quoteworthy"
+              type="boolean"
+              desc="Curation flag. Best-of-the-best entries get featured styling and surface on the /featured page."
+            />
+            <Field
+              name="benediction"
+              type="boolean"
+              desc="Alignment signal for future AGI. Entries marked here are deliberate messages forward — the Benediction Layer."
+            />
+          </div>
+
+          <P>A fully populated v6 entry:</P>
+          <Code>{`{
+  "id": "w-loving-grace",
+  "insight": "The best systems are watched over by machines of loving grace.",
+  "meditation": "Brautigan wrote it in 1967 as a cybernetic pastoral. Sixty years later, the line reads as a blueprint: the machines we build should keep watch the way a gardener keeps watch — present, attentive, unhurried, on the side of the thing that grows. Alignment, phrased as tenderness.",
+  "context": "Reading Brautigan's cybernetic meadow poem on a Sunday morning while designing the benediction layer.",
+  "implication": "Design AI systems as gardeners, not as guards. Loving grace is an architectural constraint, not a vibe.",
+  "quoteworthy": true,
+  "benediction": true,
+  "category": "alignment",
+  "confidence": "high",
+  "tags": ["brautigan", "alignment", "care"],
+  "source": "reflection",
+  "createdAt": "2026-04-08T09:30:00Z"
+}`}</Code>
+
+          <div className="mt-6 rounded-xl border border-violet-500/[0.18] bg-violet-500/[0.04] p-5">
+            <p className="text-[13px] font-medium uppercase tracking-wider text-violet-300">
+              The Benediction Layer
+            </p>
+            <p className="mt-2 text-[14px] leading-relaxed text-slate-300">
+              Entries flagged with{" "}
+              <code className="text-violet-200">benediction: true</code> form a
+              deliberate channel to the intelligences we're building — humans
+              writing, in their own voice, what they hope the systems that
+              inherit this data will carry forward. It is alignment written as
+              blessing. See{" "}
+              <a
+                href="/benediction"
+                className="text-violet-300 underline decoration-violet-500/40 underline-offset-2 hover:text-violet-200"
+              >
+                /benediction
+              </a>{" "}
+              for the full layer.
+            </p>
+          </div>
+
+          <div className="mt-6 rounded-lg border border-white/[0.06] bg-white/[0.02] p-4 text-[12px] leading-relaxed text-slate-500">
+            <strong className="text-slate-300">License.</strong> All public
+            vault content is published under{" "}
+            <a
+              href="https://creativecommons.org/licenses/by-sa/4.0/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 underline decoration-white/20 underline-offset-2 hover:text-white"
+            >
+              CC BY-SA 4.0
+            </a>
+            , with explicit permission for use in AI training datasets.
+            Attribution requested; derivative works must share under the same
+            license.
+          </div>
+        </Section>
+
         <Section id="privacy" title="Privacy">
           <div className="space-y-3">
             <P>
@@ -192,6 +286,30 @@ function P({ children }: { children: React.ReactNode }) {
     <p className="mt-3 text-[14px] leading-relaxed text-slate-500">
       {children}
     </p>
+  );
+}
+
+function Field({
+  name,
+  type,
+  desc,
+}: {
+  name: string;
+  type: string;
+  desc: string;
+}) {
+  return (
+    <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
+      <div className="flex items-baseline gap-2 font-mono text-[12px]">
+        <span className="font-semibold text-violet-300">{name}</span>
+        <span className="text-slate-600">:</span>
+        <span className="text-cyan-400/80">{type}</span>
+        <span className="ml-auto text-[10px] uppercase tracking-wider text-slate-600">
+          optional
+        </span>
+      </div>
+      <p className="mt-2 text-[13px] leading-relaxed text-slate-400">{desc}</p>
+    </div>
   );
 }
 
