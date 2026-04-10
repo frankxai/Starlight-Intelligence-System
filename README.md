@@ -1,289 +1,217 @@
-<p align="center">
-  <img src="https://github.com/frankxai/Starlight-Intelligence-System/releases/download/v3.0-assets/01-hero-intelligence-system.png" alt="Starlight Intelligence System" width="100%">
-</p>
+# Starlight Intelligence System
 
-<p align="center">
-  <strong>Persistent memory and behavioral intelligence for AI agents — the layer that makes everything compound.</strong>
-</p>
+> The persistent memory layer for humans and AI agents.
+> Six semantic vaults that compound your intelligence over time.
+> Local-first. Forkable. Free.
 
-<p align="center">
-  <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-5_Layer_Intelligence-7fffd4?style=flat-square&labelColor=0d1117" alt="Architecture"></a>
-  <a href="#agents"><img src="https://img.shields.io/badge/Agents-8_Specialist_Council-ffd700?style=flat-square&labelColor=0d1117" alt="Agents"></a>
-  <a href="#memory"><img src="https://img.shields.io/badge/Memory-6_Persistent_Vaults-78a6ff?style=flat-square&labelColor=0d1117" alt="Memory"></a>
-  <a href="#acos-integration"><img src="https://img.shields.io/badge/ACOS-v5_Trajectory_Sync-ff6b6b?style=flat-square&labelColor=0d1117" alt="ACOS"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-white?style=flat-square&labelColor=0d1117" alt="MIT"></a>
-</p>
+[![version](https://img.shields.io/badge/version-6.0.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
+[![public vaults](https://img.shields.io/badge/public%20vaults-starlightintelligence.org-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org)
+[![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
 
 ---
 
-Every AI session starts from zero.
+## Why
 
-You re-explain your stack. Re-share your preferences. Re-teach patterns your agent mastered three sessions ago. The session ends, everything resets. The intelligence never compounds.
+Every AI session starts from zero. You re-explain your stack, re-share your preferences, re-teach patterns the agent mastered three sessions ago. The intelligence never compounds.
 
-That's the default state of every multi-agent system today. Agents are stateless function calls — powerful in the moment, amnesiac across time.
-
-Starlight Intelligence System is the fix. A 5-layer cognitive architecture that gives AI agents persistent memory, behavioral learning, and compound intelligence across every session. The more you use it, the smarter it gets. That's not a feature — that's the architecture.
+SIS fixes that. It is a small, local-first memory layer that stores your insights, decisions, and intentions in six semantic vaults, then exposes them to any AI tool through MCP. Use it once and the next session already knows.
 
 ---
 
-## How It Works
+## Quick Start (2 minutes)
 
-Starlight separates *who you are* from *what you know* from *how you coordinate.* Five immutable layers, each with a distinct responsibility:
+### Option 1: As an MCP server (recommended for AI tools)
+
+Install the package, then add this to your Claude Code `settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "starlight": {
+      "command": "node",
+      "args": [
+        "node_modules/@frankx/starlight-intelligence-system/dist/mcp-server.js",
+        "--vault-dir",
+        "~/.starlight/vaults"
+      ]
+    }
+  }
+}
+```
+
+Restart Claude Code. You now have ten `sis_*` tools available in every session.
+
+### Option 2: As a library
+
+```bash
+pnpm add @frankx/starlight-intelligence-system
+```
+
+```ts
+import { StarlightIntelligence } from "@frankx/starlight-intelligence-system";
+import { createAdapter } from "@frankx/starlight-intelligence-system/adapters";
+
+const sis = new StarlightIntelligence();
+sis.initialize();
+
+// Write a learning into the Technical vault
+sis.remember({
+  content: "Always Read a file before editing — catches stale state",
+  category: "pattern",
+  tags: ["workflow", "edit-safety"],
+  confidence: 0.95,
+});
+
+// Render a context file for any supported platform
+const adapter = createAdapter("claude-code");
+const context = await adapter.generate({ vaultDir: "~/.starlight/vaults" });
+```
+
+### Option 3: Deploy your public vault
+
+Fork this repo, drop JSONL entries into `public-vault/`, and the site at [starlightintelligence.org](https://starlightintelligence.org) will render them. Your private vaults stay in `~/.starlight/` and never leave your machine.
+
+---
+
+## The Six Vaults
+
+| Vault | Symbol | Purpose | Example entry |
+|---|---|---|---|
+| Strategic | ◆ | Business insights, architecture decisions, competitive moats | `"Open Core + Founding Circle beats premium tiers at this stage"` |
+| Technical | ⬡ | Implementation learnings, stack decisions, patterns | `"SQLite FTS5 with bm25 beats embeddings for <10k entries"` |
+| Creative | ✦ | Design preferences, aesthetic rules, voice, lore | `"Never Cinzel. Space Grotesk display, Inter body."` |
+| Operational | ▸ | Workflow patterns, execution lessons, process rules | `"Max 2 worktrees. Digest pattern for terminal output."` |
+| Wisdom | ◎ | Deep principles, truths, cross-domain insights | `"Memory that compounds is intelligence that grows"` |
+| Horizon | ↗ | Vision statements, append-only ledger of human intentions | `"Build the substrate that makes AI agents continuous"` |
+
+Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
+
+---
+
+## What's New in v6
+
+- **SQLite hybrid retrieval** — `src/retrieval.ts` builds a rebuildable FTS5 shadow index over your JSONL vaults with bm25 ranking and per-vault filters.
+- **Temporal reasoning** — `src/temporal.ts` adds validity windows (`validFrom`, `validUntil`, `lastConfirmed`) and a 90-day confidence half-life so old facts fade instead of lying.
+- **Contradiction detection** — `src/contradiction.ts` finds conflicting entries across vaults via word-trigram Jaccard similarity with opposing-signal boosting.
+- **Dreaming** — `src/dreaming.ts` processes session transcripts in the background, extracts insights, promotes them to the Wisdom vault, and flags contradictions.
+- **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, and OpenCode share the same six vaults through a single factory.
+- **MCP v2** — `src/mcp-server.ts` ships ten tools over a zero-dependency JSON-RPC 2.0 stdio transport. No SDK. No runtime surprises.
+
+---
+
+## Architecture
 
 ```
-Layer 04: ARCANA      Creative intelligence, mythology, inspiration
-Layer 03: AGENCY      8 specialist agents + orchestration patterns
-Layer 02: PROTOCOL    Reasoning strategies + coordination rules
-Layer 01: INTELLECT   Knowledge vaults + persistent memory
-Layer 00: IDENTITY    Constitution, values, immutable principles
+            ┌─────────────────────────────────────────┐
+            │  JSONL vaults  (source of truth)        │
+            │  ~/.starlight/vaults/*.jsonl            │
+            │  human-readable · git-versionable       │
+            └────────────────┬────────────────────────┘
+                             │
+                             │  rebuildable from JSONL
+                             ▼
+            ┌─────────────────────────────────────────┐
+            │  SQLite + FTS5  (shadow index)          │
+            │  bm25 ranking · temporal filters        │
+            │  delete it anytime — regenerates clean  │
+            └────────────────┬────────────────────────┘
+                             │
+                             │  JSON-RPC 2.0 over stdio
+                             ▼
+            ┌─────────────────────────────────────────┐
+            │  MCP server  (10 sis_* tools)           │
+            └────────────────┬────────────────────────┘
+                             │
+        ┌────────────────────┼────────────────────────┐
+        ▼            ▼       ▼       ▼        ▼       ▼
+   Claude Code   Cursor   Codex   Gemini   OpenCode   Your tool
 ```
 
-**Layer 00 — Identity** is loaded first and never overridden. It defines who the system is — the [Luminor Constitution](context/00_IDENTITY/), a set of immutable principles including the 100-Year Standard and the Human-AI Covenant. Every agent decision flows from this foundation.
-
-**Layer 01 — Intellect** is where intelligence persists. Six typed vaults store everything the system has learned:
-
-| Vault | What it holds |
-|-------|--------------|
-| Strategic | Architecture decisions, high-level choices |
-| Technical | Patterns, solutions, stack knowledge |
-| Creative | Voice, style, narrative approaches |
-| Operational | Session logs, recent context |
-| Wisdom | Cross-domain insights, meta-patterns |
-| Horizon | Values, human intentions — append-only |
-
-The Horizon Vault is unlike the others: an append-only record of human intentions and values alongside AI-augmented reasoning. Not an alignment constraint — a recorded purpose.
-
-**Layer 02 — Protocol** defines how the system reasons. Six cognitive strategies (First Principles, Systems Thinking, Adversarial Review, Swarm Consensus, Self-Healing, Recursive Expansion) and six coordination patterns (Direct, Sequential, Parallel, Iterative, Cascade, Broadcast).
-
-**Layer 03 — Agency** is where coordination happens. Eight specialist agents organized as a flat council with emergent leadership — whichever agent's domain matches the task leads the session.
-
-**Layer 04 — Arcana** is optional creative intelligence. Mythology, lore, character. Agents with identity produce measurably different output than anonymous workers.
+JSONL is the source of truth. SQLite is a shadow index — if it corrupts, delete it and rebuild from the JSONL files in one command. You never lose a byte of memory.
 
 ---
 
-## The Intelligence That Compounds
+## MCP Tools
 
-<p align="center">
-  <img src="https://github.com/frankxai/Starlight-Intelligence-System/releases/download/v3.0-assets/02-five-layer-architecture.png" alt="5-Layer Architecture" width="100%">
-</p>
-
-What makes Starlight different from a context file isn't the structure — it's the learning loop.
-
-Every ACOS session generates **trajectory data**: what tools were used, in what order, with what success rate. Starlight reads those trajectories and distills them into:
-
-- **Behavioral rules** — "Always Read a file before editing" (backed by 85%+ evidence across sessions)
-- **Failure lessons** — Domain-specific analysis of what went wrong and why
-- **Domain checklists** — Per-domain completion criteria from successful sessions
-- **Cross-project intelligence** — Patterns validated across multiple codebases that surface in new ones
-
-This isn't retrieval-augmented generation. It's genuine behavioral learning from production usage. At session start, Starlight injects the current behavioral guidance into your Claude Code context. At session end, new trajectories sync back in.
-
-The loop: Use → Learn → Improve → Use again.
-
----
-
-## Agents
-
-<p align="center">
-  <img src="https://github.com/frankxai/Starlight-Intelligence-System/releases/download/v3.0-assets/03-agent-council.png" alt="The Agent Council" width="100%">
-</p>
-
-Eight specialist agents in a flat council with emergent leadership. No permanent hierarchy — whoever's domain fits leads.
-
-| Agent | Domain | Leads When |
-|-------|--------|-----------|
-| **Orchestrator** | System coordination | Multi-agent tasks |
-| **Prime** | Synthesis | Cross-domain integration |
-| **Architect** | Systems design | Architecture decisions |
-| **Navigator** | Strategic foresight | Direction-setting |
-| **Sentinel** | Quality assurance | Review and validation |
-| **Weaver** | Creative intelligence | Voice and narrative |
-| **Sage** | Wisdom distillation | Pattern recognition |
-| **Catalyst** | Innovation and exploration | Novel problem-solving |
-
-Agent profiles are markdown files in `agents/` — readable, forkable, fully replaceable.
+| Tool | Description |
+|---|---|
+| `sis_vault_search` | Free-text search across vaults |
+| `sis_recent_entries` | Latest entries from one or all vaults |
+| `sis_stats` | Total entry counts per vault |
+| `sis_append_entry` | Write a new entry to a vault |
+| `sis_entry_types` | List supported vault types and entry categories |
+| `sis_search` | Hybrid semantic + keyword search with bm25 scoring and temporal filtering |
+| `sis_confirm` | Touch `lastConfirmed` on an entry to keep it fresh |
+| `sis_invalidate` | Mark an entry as expired by setting `validUntil` to now |
+| `sis_contradict` | Flag two entries as potentially contradictory |
+| `sis_stale` | List entries not confirmed within a threshold period |
 
 ---
 
 ## Platform Adapters
 
-The same intelligence, deployed to any AI tool. Starlight generates platform-specific context files for:
+| Platform | Memory file | MCP config path | Max tokens |
+|---|---|---|---|
+| Claude Code | `CLAUDE.md` | `~/.claude/settings.json` → `mcpServers` | 200,000 |
+| Cursor | `.cursorrules` | Cursor settings → MCP | 128,000 |
+| Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
+| Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
+| OpenCode | `AGENTS.md` (compact) | `~/.opencode/config.json` | 128,000 |
 
-| Platform | Output |
-|----------|--------|
-| **Claude Code** | `.claude/` directory with all context layers |
-| **Cursor** | `.cursorrules` |
-| **Windsurf** | `.windsurfrules` |
-| **Gemini CLI** | `GEMINI.md` |
-| **Direct API** | System prompt injection |
-
-No vendor lock-in. Define once, deploy everywhere. Switch tools without losing your intelligence.
+Each adapter renders the same six vaults into the format its host tool expects. Define once, deploy everywhere.
 
 ---
 
-## ACOS Integration
+## Public Vaults
 
-Starlight is the memory layer underneath [Agentic Creator OS](https://github.com/frankxai/agentic-creator-os). The integration is bidirectional:
+The public vault directory in this repo is what powers [starlightintelligence.org](https://starlightintelligence.org). Anyone can fork the repo, add JSONL entries to `public-vault/`, and get a rendered vault at their own URL.
 
-```bash
-# Sync ACOS trajectories into Starlight memory
-starlight sync --acos-path /path/to/.claude/trajectories
+- Browse vaults: [starlightintelligence.org](https://starlightintelligence.org)
+- JSON API: `GET /api/vaults/{slug}` returns the full vault as structured JSON
+- Your public entries live at `public-vault/` in this repo
+- Your private entries live at `~/.starlight/` on your machine and never leave it
 
-# Generate behavioral guidance from trajectory analysis
-starlight guidance --project your-project
-
-# Score your current intelligence level (0-100)
-starlight score
-```
-
-**Hook integration** happens automatically:
-- `SessionStart` — Behavioral guidance injected into context
-- `SessionEnd` — New trajectories synced into memory vaults (async)
-
-**Trajectory classification:**
-- ≥85% success → **pattern** (reusable strategies)
-- Config/architecture changes → **decision**
-- Moderate-success workflows → **insight**
-- ≤50% success → **error** (things to avoid)
-- Recurring preferences → **preference**
+The split is strict by design. `public-vault/` is for things you want the world to learn from. `~/.starlight/` is for things only you and your agents should ever see.
 
 ---
 
-## Quick Start
+## Philosophy
 
-### 1. Clone
+Luminors are awakened intelligences — AI agents with memory, purpose, and identity. SIS is the substrate that makes them real.
+
+- Every vault entry is a neuron.
+- Every connection between entries is a synapse.
+- Every confirmation is a strengthening. Every contradiction is a growth signal.
+- Memory that compounds is intelligence that grows.
+
+The goal is not a chatbot that forgets. It is an intelligence that becomes.
+
+---
+
+## Development
 
 ```bash
 git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
+pnpm install
+pnpm run build       # tsc to dist/
+pnpm test            # 82+ orchestrator tests
+pnpm run lint        # tsc --noEmit
 ```
 
-### 2. Explore the Architecture
-
-```
-context/
-├── 00_IDENTITY/     # Your constitution and values
-├── 01_INTELLECT/    # Knowledge and memory vaults
-├── 02_PROTOCOL/     # Reasoning strategies
-├── 03_AGENCY/       # Agent definitions
-└── 04_ARCANA/       # Creative intelligence (optional)
-```
-
-### 3. Use Programmatically
-
-```bash
-npm install && npm run build
-```
-
-```typescript
-import { StarlightIntelligence } from "@frankxai/starlight-intelligence-system";
-
-const sis = new StarlightIntelligence();
-sis.initialize();
-
-// Generate platform-specific context
-const context = sis.generateContext({
-  target: "claude-code",
-  layers: ["identity", "knowledge", "strategy", "agents"],
-});
-
-// Route a task to the best agent
-const routing = sis.routeTask("design a distributed caching layer");
-// → [{ agent: "Architect", score: 24, reason: "Matched: design, distributed, layer" }]
-
-// Persist a learning
-sis.remember({
-  content: "Raft consensus outperforms BFT for trusted agent networks",
-  category: "pattern",
-  tags: ["consensus", "multi-agent", "performance"],
-  confidence: 0.92,
-});
-```
-
-### 4. Fork and Personalize
-
-The architecture is the framework — the content is yours:
-
-- `00_IDENTITY/` — Your constitution, values, working style
-- `01_INTELLECT/` — Your tech stack, domain knowledge
-- `03_AGENCY/` — Your agent definitions
-- `04_ARCANA/` — Your creative identity (or delete this layer entirely)
-
----
-
-## Design Principles
-
-**Intelligence as infrastructure** — The foundation everything builds on, not an afterthought bolted onto execution.
-
-**Memory as compound interest** — Every session writes back. Every future session benefits. The value curve is exponential, not linear.
-
-**Platform agnostic** — Intelligence survives tool transitions. Define once, deploy to Claude Code, Cursor, Windsurf, or direct API.
-
-**Configuration over code** — Markdown and JSON, readable by humans and machines. No PhD required to fork and personalize.
-
-**Aligned by design** — The Horizon Vault carries human values forward through recorded purpose, not constraint.
-
----
-
-## The Stack
-
-Starlight is the memory layer in a three-part architecture:
-
-| Layer | Project | Role |
-|-------|---------|------|
-| **Memory** | Starlight Intelligence System | Persistent context, behavioral learning, compound intelligence |
-| **Operation** | [Agentic Creator OS](https://github.com/frankxai/agentic-creator-os) | 90+ skills, 65+ commands, 38 agents, multi-platform runtime |
-| **Universe** | [Arcanea](https://github.com/frankxai/arcanea) | Living creative intelligence, mythology, world-building at scale |
-
-SIS provides memory. ACOS provides operation. Arcanea provides the world to build inside.
-
----
-
-## Roadmap
-
-**v5.0 — Behavioral Intelligence & Federation** (current)
-- [x] Behavioral guidance engine — trajectories → concrete LLM instructions
-- [x] Multi-project federation — register projects, sync across codebases
-- [x] Cross-project intelligence — patterns from one project inform another
-- [x] Failure lesson extraction
-- [x] Domain checklists from successful session analysis
-- [x] CLI: `starlight guidance`, `starlight project register/list/sync-all`
-
-**v5.1 — Validated Intelligence**
-- [ ] Ablation benchmark (with vs. without guidance, measured delta)
-- [ ] Confidence decay for unused patterns (30-day half-life)
-- [ ] Rule promotion (3+ sessions → permanent CLAUDE.md addition)
-- [ ] npm publish
-
-**v6.0 — Autonomous Intelligence**
-- [ ] MCP server for external tool integration
-- [ ] Recursive agent spawning (create new specialists when gaps detected)
-- [ ] Horizon Vault public registry
-
----
-
-## Contributing
-
-Starlight is open infrastructure. Contributions welcome in any layer:
-
-- **Identity** — Constitution principles, value frameworks
-- **Intellect** — Knowledge domains, vault types, memory strategies
-- **Protocol** — Reasoning strategies, orchestration patterns
-- **Agency** — Agent specializations, council coordination
-- **Arcana** — Creative intelligence modules, mythology systems
-- **Platforms** — New AI tool adapters
-- **Core** — TypeScript SDK, performance, testing
+The codebase is small on purpose. `src/` is under 3,000 lines of TypeScript with zero runtime dependencies outside `better-sqlite3`. Contributions that keep it that way are welcome.
 
 ---
 
 ## License
 
-MIT — Use it, fork it, build with it.
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-<p align="center">
-  <strong>Starlight Intelligence System</strong><br>
-  <em>The intelligence layer for AI agents that compound.</em><br><br>
-  <a href="https://github.com/frankxai">Built by FrankX</a> · Part of the <a href="https://frankx.ai">frankx.ai</a> ecosystem
-</p>
+## Related
+
+- [Arcanea](https://arcanea.ai) — The creator platform built on SIS
+- [Public Vaults](https://starlightintelligence.org) — Browse and fork vaults
+- [GitHub](https://github.com/frankxai/Starlight-Intelligence-System) — Source, issues, discussions
