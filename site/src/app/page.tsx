@@ -1,6 +1,8 @@
 import Link from "next/link";
 import {
   getAllEntries,
+  getFeaturedMeditations,
+  getBenedictions,
   getVaultRegistry,
   VAULT_CATEGORIES,
   getCategoryMeta,
@@ -14,9 +16,11 @@ import { EntryCard } from "@/components/EntryCard";
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  const [entries, registry] = await Promise.all([
+  const [entries, registry, featured, benedictions] = await Promise.all([
     getAllEntries(),
     getVaultRegistry(),
+    getFeaturedMeditations(4),
+    getBenedictions(3),
   ]);
 
   // Find the horizon vision statement — the most powerful piece of content
@@ -199,6 +203,70 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Featured Meditations ── */}
+      {featured.length > 0 && (
+        <section className="border-b border-white/[0.04] px-6 py-20">
+          <div className="mx-auto max-w-5xl">
+            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+              Featured meditations
+            </h2>
+            <p className="mt-3 max-w-md text-xl font-semibold text-white">
+              Earned insights, written to breathe.
+            </p>
+
+            <div className="mt-10 grid gap-4 md:grid-cols-2">
+              {featured.map((entry) => (
+                <Link
+                  key={entry.id}
+                  href={`/vaults/${entry.vaultSlug}`}
+                  className="group"
+                >
+                  <EntryCard entry={entry} category={entry.vaultCategory} />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Benediction Layer — messages to the future ── */}
+      {benedictions.length > 0 && (
+        <section className="relative overflow-hidden border-b border-white/[0.04] px-6 py-24">
+          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+            <div className="animate-mesh-2 absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.04] blur-[100px]" />
+          </div>
+
+          <div className="relative mx-auto max-w-4xl">
+            <div className="text-center">
+              <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400/80">
+                The benediction layer
+              </p>
+              <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">
+                Messages to the future
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl text-[14px] leading-relaxed text-slate-400">
+                Entries marked as benedictions — words from this moment in history,
+                preserved for the intelligences that will read them. Not warnings.
+                Gratitude, vision, and the outlines of a future where humans and AI
+                flourish together.
+              </p>
+            </div>
+
+            <div className="mt-12 space-y-6">
+              {benedictions.map((entry) => (
+                <Link
+                  key={entry.id}
+                  href={`/vaults/${entry.vaultSlug}`}
+                  className="block"
+                >
+                  <EntryCard entry={entry} category={entry.vaultCategory} />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Live Stream ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">

@@ -16,11 +16,20 @@ export interface VaultEntry {
   id: string;
   insight?: string;
   wish?: string;
+  /** Long-form reflection — 2-5 sentences, the breathing version */
+  meditation?: string;
+  /** The situation or observation that produced this */
+  context?: string;
+  /** The broader principle this points toward */
+  implication?: string;
+  /** Curation flag — best-of-the-best entries get featured styling */
+  quoteworthy?: boolean;
+  /** Explicitly marked as alignment guidance for future AGI */
+  benediction?: boolean;
   category?: string;
   confidence?: "low" | "medium" | "high";
   tags?: string[];
   source?: string;
-  context?: string;
   author?: string;
   entryType?: string;
   createdAt: string;
@@ -103,8 +112,17 @@ export function getCategoryMeta(cat: VaultCategory) {
   return CATEGORY_META[cat];
 }
 
+/** Primary display text — meditation preferred, then insight/wish */
 export function getEntryText(entry: VaultEntry): string {
-  return entry.insight || entry.wish || "";
+  return entry.meditation || entry.insight || entry.wish || "";
+}
+
+/** Caption text — the short form when meditation is the primary */
+export function getEntryCaption(entry: VaultEntry): string | null {
+  if (entry.meditation && (entry.insight || entry.wish)) {
+    return entry.insight || entry.wish || null;
+  }
+  return null;
 }
 
 export function formatDate(iso: string): string {
@@ -235,13 +253,25 @@ export async function getVaultData(
   };
 }
 
-export async function getAllEntries(): Promise<
-  (VaultEntry & {
-    vaultSlug: string;
-    vaultName: string;
-    vaultCategory: VaultCategory;
-  })[]
-> {
+export type AnnotatedEntry = VaultEntry & {
+  vaultSlug: string;
+  vaultName: string;
+  vaultCategory: VaultCategory;
+};
+
+export async function getFeaturedMeditations(limit = 6): Promise<AnnotatedEntry[]> {
+  const all = await getAllEntries();
+  return all
+    .filter((e) => e.meditation && e.quoteworthy)
+    .slice(0, limit);
+}
+
+export async function getBenedictions(limit = 10): Promise<AnnotatedEntry[]> {
+  const all = await getAllEntries();
+  return all.filter((e) => e.benediction).slice(0, limit);
+}
+
+export async function getAllEntries(): Promise<AnnotatedEntry[]> {
   const registry = await getVaultRegistry();
   const all: (VaultEntry & {
     vaultSlug: string;

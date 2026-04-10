@@ -31,6 +31,7 @@ export function Header() {
         {/* Desktop nav */}
         <div className="hidden items-center gap-1 sm:flex">
           <NavLink href="/vaults">Vaults</NavLink>
+          <NavLink href="/benediction">Benediction</NavLink>
           <NavLink href="/quickstart">Quickstart</NavLink>
           <NavLink href="/architecture">Architecture</NavLink>
           <NavLink href="/docs">Docs</NavLink>
