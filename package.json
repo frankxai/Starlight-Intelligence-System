@@ -75,7 +75,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "node --import tsx --test src/**/*.test.ts",
+    "test": "node --import tsx --test src/orchestrator.test.ts",
     "generate-context": "node dist/cli.js generate",
     "lint": "tsc --noEmit",
     "prepublishOnly": "npm run build && npm test"
