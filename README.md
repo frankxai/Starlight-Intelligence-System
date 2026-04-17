@@ -31,7 +31,7 @@ Install the package, then add this to your Claude Code `settings.json`:
     "starlight": {
       "command": "node",
       "args": [
-        "node_modules/@frankx/starlight-intelligence-system/dist/mcp-server.js",
+        "node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js",
         "--vault-dir",
         "~/.starlight/vaults"
       ]
@@ -45,12 +45,12 @@ Restart Claude Code. You now have ten `sis_*` tools available in every session.
 ### Option 2: As a library
 
 ```bash
-pnpm add @frankx/starlight-intelligence-system
+pnpm add @arcanea/starlight-intelligence-system
 ```
 
 ```ts
-import { StarlightIntelligence } from "@frankx/starlight-intelligence-system";
-import { createAdapter } from "@frankx/starlight-intelligence-system/adapters";
+import { StarlightIntelligence } from "@arcanea/starlight-intelligence-system";
+import { createAdapter } from "@arcanea/starlight-intelligence-system/adapters";
 
 const sis = new StarlightIntelligence();
 sis.initialize();

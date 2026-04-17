@@ -1,5 +1,5 @@
 {
-  "name": "@frankx/starlight-intelligence-system",
+  "name": "@arcanea/starlight-intelligence-system",
   "version": "6.0.0",
   "description": "Persistent intelligence layer for AI agents — 6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, cross-tool memory via MCP, platform adapters for Claude Code, Cursor, Codex, Gemini CLI, OpenCode",
   "type": "module",

@@ -11,7 +11,7 @@
  *
  * @example
  * ```typescript
- * import { StarlightIntelligence } from "@frankx/starlight-intelligence-system";
+ * import { StarlightIntelligence } from "@arcanea/starlight-intelligence-system";
  *
  * const sis = new StarlightIntelligence();
  * sis.initialize();
