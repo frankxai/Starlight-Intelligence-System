@@ -268,4 +268,20 @@ export interface VaultMemoryConfig {
     horizonAuthor?: string;
     defaultVault?: VaultType;
 }
+/** Temporal metadata for staleness and validity tracking */
+export interface TemporalMeta {
+    validFrom: string;
+    validUntil: string | null;
+    lastConfirmed: string;
+    confidenceDecay: number;
+}
+/** Contradiction record between two entries */
+export interface ContradictionRecord {
+    id: string;
+    entryIdA: string;
+    entryIdB: string;
+    reason: string;
+    detectedAt: string;
+    resolvedAt: string | null;
+}
 //# sourceMappingURL=types.d.ts.map

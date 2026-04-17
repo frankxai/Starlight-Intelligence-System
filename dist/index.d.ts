@@ -130,4 +130,15 @@ export { generateGuidance } from "./guidance.js";
 export { registerProject, listProjects, syncAllProjects, syncProject, loadRegistry, saveRegistry } from "./multi-sync.js";
 export type { GuidanceOptions, GuidanceResult } from "./guidance.js";
 export type { ProjectRegistration, ProjectRegistry, MultiSyncResult } from "./multi-sync.js";
+export { RetrievalIndex } from './retrieval.js';
+export type { IndexedEntry, SearchResult } from './retrieval.js';
+export { TemporalEngine } from './temporal.js';
+export type { TemporalConfig, TemporalMeta, StalenessReport } from './temporal.js';
+export { ContradictionDetector } from './contradiction.js';
+export type { Contradiction } from './contradiction.js';
+export { DreamingAgent } from './dreaming.js';
+export type { DreamResult } from './dreaming.js';
+export { createAdapter } from './adapters/index.js';
+export type { PlatformAdapter, ContextInjection, AdapterConfig } from './adapters/types.js';
+export type { TemporalMeta as TemporalMetaType, ContradictionRecord } from './types.js';
 //# sourceMappingURL=index.d.ts.map
