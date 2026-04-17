@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * Starlight Intelligence System — MCP Server (v6.0)
  *

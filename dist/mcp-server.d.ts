@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 export interface McpTool {
     name: string;
     description: string;

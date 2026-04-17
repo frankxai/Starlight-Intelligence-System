@@ -143,7 +143,7 @@ function getVersion() {
         try {
             const candidate = join(dir, "package.json");
             const pkg = JSON.parse(readFileSync(candidate, "utf-8"));
-            if (pkg.name === "@frankx/starlight-intelligence-system") {
+            if (pkg.name === "@arcanea/starlight-intelligence-system") {
                 return pkg.version;
             }
         }
@@ -470,7 +470,7 @@ function cmdStats() {
 }
 function cmdVersion() {
     const version = getVersion();
-    console.log(`@frankx/starlight-intelligence-system v${version}`);
+    console.log(`@arcanea/starlight-intelligence-system v${version}`);
 }
 // ── Main ────────────────────────────────────────────────────
 async function main() {
