@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050509;
+  --foreground: #e2e8f0;
+  --accent: #a78bfa;
+  --accent-cyan: #67e8f9;
+  --accent-magenta: #f0abfc;
+  --accent-gold: #fbbf24;
+  --surface: rgba(255, 255, 255, 0.02);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  min-height: 100dvh;
+}
+
+/* Motion */
+.transition-micro { transition: all 150ms var(--ease); }
+.transition-std { transition: all 300ms var(--ease); }
+
+/* Mesh drift — same vocabulary as site/ */
+@keyframes mesh-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-20px, 15px) scale(0.95); }
+  75% { transform: translate(10px, 25px) scale(1.02); }
+}
+.animate-mesh-1 { animation: mesh-drift 22s ease-in-out infinite; }
+.animate-mesh-2 { animation: mesh-drift 28s ease-in-out infinite reverse; }
+.animate-mesh-3 { animation: mesh-drift 34s ease-in-out infinite 5s; }
+
+/* Glow pulse */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.35; filter: blur(40px); }
+  50% { opacity: 0.55; filter: blur(50px); }
+}
+.animate-glow-pulse {
+  animation: glow-pulse 6s ease-in-out infinite;
+}
+
+/* Selection */
+::selection {
+  background: rgba(167, 139, 250, 0.3);
+  color: white;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
