@@ -1,0 +1,77 @@
+# STACK — The Recommended Sovereign Stack
+
+Default choices, not mandates. Adopt what resonates. Every vertical and alliance may override any layer — but every override should be declared in the vertical's `STACK.md`.
+
+## Design principles
+
+1. **Sovereignty over convenience.** Prefer open protocols, forkable standards, exportable data. No irrecoverable vendor capture.
+2. **Composition over replacement.** Every layer is swappable. Memory can move from Notion to a self-hosted alternative without rewriting the agent harness.
+3. **Attestation by default.** Every layer participant supports or tolerates "Built on SIP" attribution.
+4. **Rate of change tolerance.** Foundations change slowly (file contract, attestation). Harness changes fast (models, agents, tools). Pick layers with the right tempo.
+
+## Layer map
+
+### L0 — File + version control
+- **GitHub** (source of truth) — repos named per `VERTICALS.md`.
+- Canonical registry file: `arcanea-ecosystem/repos.json`.
+- Commit signing encouraged. GPG or sigstore.
+
+### L1 — Models (LLM layer)
+- **Primary:** Claude Opus 4.7 (Anthropic) — architecture, canon work, protocol reasoning.
+- **Operational:** Claude Sonnet 4.6 (Anthropic) — volume creator work, agent harness.
+- **Multi-model composition:** OpenRouter when model diversity buys robustness (e.g., Gemini for long context, GPT for specific tool chains).
+- **Offline / sovereignty fallback:** Llama 3.x or Mistral self-hosted for air-gapped canon work.
+
+Stance: Claude is primary because the reasoning quality compounds best with SIP's protocol-heavy workflows. Diversify below the protocol layer, not at it.
+
+### L2 — Memory
+- **Intent authority:** Notion (Command Center). The "why" lives here. Command Center DBs: Trinity-Cycles, Decision Log, Vertical Registry, Commitments Ledger.
+- **Durable state:** `MEMORY.md` per vertical / alliance, in Git. The "what holds now" lives here.
+- **Runtime state:** Supabase Postgres + Row-Level Security. The "what's happening now" lives here.
+- **Vector memory:** Supabase pgvector for semantic retrieval across canon and past artifacts.
+
+Stance: Notion for human authority, Git for version-controlled state, Supabase for runtime. Do not collapse these into one system — each has a different rate of change and audience.
+
+### L3 — Agent harness
+- **Development:** Claude Code for protocol-layer work. Skill files + slash commands resolve here first.
+- **Production:** Anthropic Agent SDK (TypeScript / Python) for deployed agents.
+- **Orchestration:** Custom — prefer `AGENTS.md`-defined voices over opaque multi-agent frameworks. Luminor Board pattern for high-stakes pressure-testing.
+- **MCP:** Official MCP SDK. 31-tool `arcanea-mcp` is the reference; vertical MCPs follow the same shape.
+
+Stance: Keep the harness thin. The power is in the file contract and the command taxonomy, not in an agent framework.
+
+### L4 — Infrastructure
+- **Frontend:** Vercel + Next.js for web surfaces (arcanea.ai, frankx.ai, starlightintelligence.org).
+- **Backend / auth / DB:** Supabase.
+- **Edge / proxy:** Cloudflare for DNS + DDoS + Workers where latency matters.
+- **Automation:** n8n self-hosted on Railway for cross-service workflows.
+
+### L5 — Distribution
+- **Long-form:** GitHub Pages / Next.js-rendered canonical docs at each vertical's domain.
+- **Creator distribution:** Postiz (self-hosted) + Blotato — multi-platform orchestration.
+- **Newsletter:** choice left to vertical (FrankX uses its own stack).
+- **Commerce:** LemonSqueezy for digital product launches. Gumroad discouraged — SIP artifacts should not be listed there by default (thin positioning risk).
+
+### L6 — Attestation + audit
+- **Primary:** `/sip-attest` command generates the Built on SIP block at artifact ship time.
+- **CI integration:** GitHub Actions hook runs `/sip-attest` on release tags; fails the build if attestation is missing from cross-node artifacts.
+- **Canon validation:** `arcanea-mcp.canon-validate` checks Guardian / Vel'Tara / Hz references resolve.
+- **Integrity audit:** `/openclaw-audit` for high-stakes releases (security, open/closed rulings).
+
+## Opinionated defaults
+
+- **Language for agent / script code:** TypeScript primary, Python when the ecosystem demands it (ML, data).
+- **Config format:** YAML for human-facing config (`.arc`, `.nea`), JSON for machine-only (MCP declarations, API payloads).
+- **Markdown flavor:** CommonMark + GFM tables. No proprietary extensions.
+
+## Refresh cadence
+
+- **L0–L1:** reviewed annually. Model of choice may shift with generational releases.
+- **L2:** reviewed semi-annually. Memory architecture is load-bearing.
+- **L3:** reviewed quarterly. Agent harness evolves fast.
+- **L4–L5:** reviewed as vendor terms or performance demand.
+- **L6:** reviewed per SIP major version.
+
+---
+
+**Built on SIP** · v1 · MIT
