@@ -9,3 +9,6 @@ sis files.zip
 *.zip
 noosphere/
 
+# Local Claude Code settings (per-machine)
+.claude/settings.local.json
+
