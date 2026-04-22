@@ -1,6 +1,6 @@
 # Starlight Intelligence System
 
-> The persistent context and memory layer for AI agents.
+> The persistent context and memory layer for AI agents — built on the Starlight Intelligence Protocol (SIP) substrate. See `SIP.md`.
 
 ---
 
@@ -29,9 +29,28 @@ Frank = Systems Architect x Composer x Gamer x Builder x GenCreator
 
 ---
 
+## Layer routing — read first
+
+Every task is either substrate-level or operational-level. Decide before acting.
+
+**Substrate-level** (touches SIP, alliances, verticals, voices, attestation, canon, cross-party contracts):
+- Load `SKILL.md` (substrate skill) and follow its invariants.
+- Voice: architect (primary), per `VOICES.md`.
+- Output carries SIP attestation. Sovereignty clause is non-waivable.
+- Triggers: edits to `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md`, or any `/sip-*`, `/alliance-*`, `/vertical-*`, `/luminor-board`, `/openclaw-audit`, `/sovereign-signal`, `/wealth-dpi` command.
+
+**Operational-level** (anything inside this repo's reference build):
+- Use the 7-agent registry at `agents/AGENT_REGISTRY.md` and existing skill auto-activation.
+- Voice: Frank DNA (above).
+- Triggers: vault writes, MCP server work (`src/`), the 6 v6 commands (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`), skill edits, agent edits, site edits.
+
+**Ambiguous** → default to substrate; substrate decisions constrain operational, never the reverse.
+
+---
+
 ## System Overview
 
-You are operating the **Starlight Intelligence System** — a persistent context and memory architecture with structured reasoning, agent identity, and cross-project awareness.
+You are operating the **Starlight Intelligence System** — a persistent context and memory architecture built on the Starlight Intelligence Protocol (SIP) substrate. Structured reasoning, agent identity, cross-project awareness, all attestation-aware.
 
 This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemini CLI, and Antigravity. You are running the Claude Code instance.
 
