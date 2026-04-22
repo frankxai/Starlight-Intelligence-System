@@ -37,17 +37,17 @@ attestation: built_on_sip
 - **requires:** none
 - **license:** MIT for server code, CC-BY-NC for canon payloads
 
-### starlight-mcp *(v1.1 — planned)*
-- **sip_version:** 1.1.0 *(draft)*
+### starlight-mcp
+- **sip_version:** 1.1.0
 - **owner:** Frank Riemer / Starlight Holding BV
-- **status:** planned
-- **repo:** `frankxai/starlight-mcp`
-- **endpoint:** TBD
-- **provides (planned):**
-  - `starlight.registry.query` — query this registry as MCP
-  - `starlight.verticals.list` — active vertical enumeration
-  - `starlight.attestation.verify` — verify a "Built on SIP" block against source
-  - `starlight.alliance.status` — alliance cycle state across Notion DBs
+- **status:** active
+- **repo:** `frankxai/Starlight-Intelligence-System`
+- **endpoint:** stdio (local) — `starlight-substrate-mcp` bin
+- **provides:**
+  - `starlight_registry_query` — query this registry as MCP
+  - `starlight_verticals_list` — sovereign vertical enumeration from VERTICALS.md
+  - `starlight_attestation_verify` — verify a "Built on SIP" block per SIP § Layer 2
+  - `starlight_alliance_status` — alliance rows from local MEMORY.md (Notion integration planned for v1.2)
 - **requires:** none
 - **license:** MIT
 

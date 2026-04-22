@@ -69,6 +69,10 @@
     "./mcp": {
       "types": "./dist/mcp-server.d.ts",
       "import": "./dist/mcp-server.js"
+    },
+    "./starlight-mcp": {
+      "types": "./dist/starlight-mcp.d.ts",
+      "import": "./dist/starlight-mcp.js"
     }
   },
   "scripts": {
@@ -118,7 +122,8 @@
   },
   "bin": {
     "starlight": "dist/cli.js",
-    "starlight-mcp": "dist/mcp-server.js"
+    "starlight-mcp": "dist/mcp-server.js",
+    "starlight-substrate-mcp": "dist/starlight-mcp.js"
   },
   "dependencies": {
     "better-sqlite3": "^12.8.0"
