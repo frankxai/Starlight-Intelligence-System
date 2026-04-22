@@ -1,29 +1,83 @@
 # Starlight Intelligence System
 
-> The persistent memory layer for humans and AI agents.
-> Six semantic vaults that compound your intelligence over time.
-> Local-first. Forkable. Free.
+> **A protocol for sovereign creator alliances — and a reference implementation you can run today.**
+>
+> SIS is two layers: a substrate (SIP) anyone can adopt, fork, or build on — and an operational layer (Frank's reference build) that runs on top of it.
 
-[![version](https://img.shields.io/badge/version-6.0.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-7.0.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![protocol](https://img.shields.io/badge/SIP-v1.1.0-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
-[![public vaults](https://img.shields.io/badge/public%20vaults-starlightintelligence.org-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org)
+[![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
 [![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
 
 ---
 
-## Why
+## Two layers, one repo
 
-Every AI session starts from zero. You re-explain your stack, re-share your preferences, re-teach patterns the agent mastered three sessions ago. The intelligence never compounds.
+| Layer | What it is | What lives here | License | Adopt how |
+|-------|-----------|-----------------|---------|-----------|
+| **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
+| **Operational (reference build)** | This repo's working implementation: 7 named agents, 6 semantic vaults, 16 skills, MCP server, 6 strategic commands, multi-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
-SIS fixes that. It is a small, local-first memory layer that stores your insights, decisions, and intentions in six semantic vaults, then exposes them to any AI tool through MCP. Use it once and the next session already knows.
+You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
 ---
 
-## Quick Start (2 minutes)
+## The substrate (SIP)
 
-### Option 1: As an MCP server (recommended for AI tools)
+**Starlight Intelligence Protocol** — the contract that lets sovereign parties compose intelligence systems without losing sovereignty. Six layers:
 
-Install the package, then add this to your Claude Code `settings.json`:
+1. **File contract** — canonical names and shapes for `SKILL.md`, `AGENTS.md`/`VOICES.md`, `MEMORY.md`, `CANON.md`, `SOUL.md`, `STACK.md`, `.claude/commands/*`, plus `.arc` / `.nea` / `.skill` extensions.
+2. **Attestation protocol** — verifiable "Built on SIP" attribution via `/sip-attest`. Refuses decorative use.
+3. **MCP registry standard** — how MCP servers declare, compose, version (`mcp.json` schema).
+4. **Command taxonomy** — protocol / alliance / vertical / sovereign tiers with explicit decision rights.
+5. **Sovereignty + attribution clause** — the non-negotiable social contract.
+6. **Archetype extension** — optional canon adoption (Arcanea archetypes available CC-BY-NC).
+
+**Canonical URL:** [starlightintelligence.org/protocol](https://starlightintelligence.org/protocol) · **Source of truth:** [`SIP.md`](SIP.md) in this repo.
+
+### Substrate files at a glance
+
+| File | What it does |
+|------|--------------|
+| [`SIP.md`](SIP.md) | The protocol spec (six layers). |
+| [`SIS.md`](SIS.md) | Substrate map — verticals, composition rules, what SIS does and doesn't provide. |
+| [`ALLIANCE.md`](ALLIANCE.md) | The alliance forging method — how 2-5 sovereign nodes compose without collapsing into one entity. |
+| [`STACK.md`](STACK.md) | Recommended sovereign stack (L0-L6). Defaults, not mandates. |
+| [`VOICES.md`](VOICES.md) | Five canonical voice archetypes (architect, sovereign-creator, protocol-defender, implementer, overseer). |
+| [`VERTICALS.md`](VERTICALS.md) | Public registry of sovereign verticals + alliance class definitions. |
+| [`MEMORY.md`](MEMORY.md) | Template for per-instance state. |
+| [`REGISTRY.md`](REGISTRY.md) | MCP server registry. |
+| [`SKILL.md`](SKILL.md) | Substrate-layer behavior (what AI adopts when working at this layer). |
+| `.claude/commands/` | 9 reference slash commands (`/sip-attest`, `/alliance-forge`, `/alliance-reflect`, `/alliance-decide`, `/vertical-spawn`, `/luminor-board`, `/sovereign-signal`, `/openclaw-audit`, `/wealth-dpi`). |
+
+### Forge an alliance, spawn a vertical
+
+```bash
+# Pressure-test before committing
+/luminor-board "Open-source the agent layer or keep it closed?"
+
+# Forge an alliance under SIP
+/alliance-forge trinity "Frank,Ahmad,Logan,Shahvaiz"
+
+# Spawn a vertical IS under SIS
+/vertical-spawn anime-legends "anime-aesthetic fiction + character design"
+
+# Attest a shipped artifact
+/sip-attest path/to/artifact.md
+```
+
+Every cross-party artifact carries the "Built on SIP" attestation block. Silent composition is a breach.
+
+---
+
+## The operational layer (reference build)
+
+This repo also ships Frank's working implementation — the daily-driver intelligence system that runs on top of SIP. Use it directly, fork it, or replace it entirely with your own layer above the substrate.
+
+### Quick start (operational layer, 2 minutes)
+
+**Option 1: As an MCP server (recommended for AI tools)**
 
 ```json
 {
@@ -42,7 +96,7 @@ Install the package, then add this to your Claude Code `settings.json`:
 
 Restart Claude Code. You now have ten `sis_*` tools available in every session.
 
-### Option 2: As a library
+**Option 2: As a library**
 
 ```bash
 pnpm add @arcanea/starlight-intelligence-system
@@ -55,7 +109,6 @@ import { createAdapter } from "@arcanea/starlight-intelligence-system/adapters";
 const sis = new StarlightIntelligence();
 sis.initialize();
 
-// Write a learning into the Technical vault
 sis.remember({
   content: "Always Read a file before editing — catches stale state",
   category: "pattern",
@@ -63,18 +116,11 @@ sis.remember({
   confidence: 0.95,
 });
 
-// Render a context file for any supported platform
 const adapter = createAdapter("claude-code");
 const context = await adapter.generate({ vaultDir: "~/.starlight/vaults" });
 ```
 
-### Option 3: Deploy your public vault
-
-Fork this repo, drop JSONL entries into `public-vault/`, and the site at [starlightintelligence.org](https://starlightintelligence.org) will render them. Your private vaults stay in `~/.starlight/` and never leave your machine.
-
----
-
-## The Six Vaults
+### The six vaults
 
 | Vault | Symbol | Purpose | Example entry |
 |---|---|---|---|
@@ -87,20 +133,66 @@ Fork this repo, drop JSONL entries into `public-vault/`, and the site at [starli
 
 Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 
+### What the operational layer adds on top of SIP
+
+- **SQLite hybrid retrieval** — `src/retrieval.ts` builds a rebuildable FTS5 shadow index over JSONL vaults with bm25 ranking.
+- **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
+- **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
+- **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
+- **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode share the same vaults.
+- **MCP v2** — `src/mcp-server.ts` ships ten tools over JSON-RPC 2.0 stdio.
+
+### MCP tools
+
+| Tool | Description |
+|---|---|
+| `sis_vault_search` | Free-text search across vaults |
+| `sis_recent_entries` | Latest entries from one or all vaults |
+| `sis_stats` | Total entry counts per vault |
+| `sis_append_entry` | Write a new entry to a vault |
+| `sis_entry_types` | List supported vault types and entry categories |
+| `sis_search` | Hybrid semantic + keyword search with bm25 + temporal filtering |
+| `sis_confirm` | Touch `lastConfirmed` on an entry |
+| `sis_invalidate` | Mark an entry as expired |
+| `sis_contradict` | Flag two entries as contradictory |
+| `sis_stale` | List entries not confirmed within a threshold |
+
+### Platform adapters
+
+| Platform | Memory file | MCP config | Max tokens |
+|---|---|---|---|
+| Claude Code | `CLAUDE.md` | `~/.claude/settings.json` → `mcpServers` | 200,000 |
+| Cursor | `.cursorrules` | Cursor settings → MCP | 128,000 |
+| Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
+| Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
+| OpenCode | `AGENTS.md` (compact) | `~/.opencode/config.json` | 128,000 |
+
+### The 7 named agents (operational layer)
+
+The reference build maps SIP's 5 voice archetypes to 7 named runtime agents — Orchestrator, Prime, Architect, Navigator, Sentinel, Weaver, Sage. Full registry: [`agents/AGENT_REGISTRY.md`](agents/AGENT_REGISTRY.md).
+
+Voice archetypes are abstract; named agents are specific implementations. Anyone forking SIP can choose entirely different agents above the substrate.
+
 ---
 
-## What's New in v6
+## Fork patterns
 
-- **SQLite hybrid retrieval** — `src/retrieval.ts` builds a rebuildable FTS5 shadow index over your JSONL vaults with bm25 ranking and per-vault filters.
-- **Temporal reasoning** — `src/temporal.ts` adds validity windows (`validFrom`, `validUntil`, `lastConfirmed`) and a 90-day confidence half-life so old facts fade instead of lying.
-- **Contradiction detection** — `src/contradiction.ts` finds conflicting entries across vaults via word-trigram Jaccard similarity with opposing-signal boosting.
-- **Dreaming** — `src/dreaming.ts` processes session transcripts in the background, extracts insights, promotes them to the Wisdom vault, and flags contradictions.
-- **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, and OpenCode share the same six vaults through a single factory.
-- **MCP v2** — `src/mcp-server.ts` ships ten tools over a zero-dependency JSON-RPC 2.0 stdio transport. No SDK. No runtime surprises.
+| If you want to... | Take | Leave |
+|------------------|------|-------|
+| Adopt SIP for your own creator stack | `SIP.md`, `SKILL.md`, `VOICES.md`, `.claude/commands/sip-attest.md`, `.claude/commands/alliance-forge.md` | Everything in `agents/`, `memory/`, `skills/`, `src/` |
+| Use the MCP memory server, no protocol | `src/`, `dist/`, npm package | Substrate spec files |
+| Forge an alliance under SIP | `SIP.md`, `ALLIANCE.md`, `VOICES.md`, all 9 commands in `.claude/commands/` | Operational layer |
+| Run the full reference build | All of it | Nothing |
 
 ---
 
-## Architecture
+## Public canonical URL
+
+[`starlightintelligence.org/protocol`](https://starlightintelligence.org/protocol) mirrors `SIP.md`. This repo is the source of truth.
+
+---
+
+## Architecture (operational layer)
 
 ```
             ┌─────────────────────────────────────────┐
@@ -114,7 +206,6 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
             ┌─────────────────────────────────────────┐
             │  SQLite + FTS5  (shadow index)          │
             │  bm25 ranking · temporal filters        │
-            │  delete it anytime — regenerates clean  │
             └────────────────┬────────────────────────┘
                              │
                              │  JSON-RPC 2.0 over stdio
@@ -127,65 +218,6 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
         ▼            ▼       ▼       ▼        ▼       ▼
    Claude Code   Cursor   Codex   Gemini   OpenCode   Your tool
 ```
-
-JSONL is the source of truth. SQLite is a shadow index — if it corrupts, delete it and rebuild from the JSONL files in one command. You never lose a byte of memory.
-
----
-
-## MCP Tools
-
-| Tool | Description |
-|---|---|
-| `sis_vault_search` | Free-text search across vaults |
-| `sis_recent_entries` | Latest entries from one or all vaults |
-| `sis_stats` | Total entry counts per vault |
-| `sis_append_entry` | Write a new entry to a vault |
-| `sis_entry_types` | List supported vault types and entry categories |
-| `sis_search` | Hybrid semantic + keyword search with bm25 scoring and temporal filtering |
-| `sis_confirm` | Touch `lastConfirmed` on an entry to keep it fresh |
-| `sis_invalidate` | Mark an entry as expired by setting `validUntil` to now |
-| `sis_contradict` | Flag two entries as potentially contradictory |
-| `sis_stale` | List entries not confirmed within a threshold period |
-
----
-
-## Platform Adapters
-
-| Platform | Memory file | MCP config path | Max tokens |
-|---|---|---|---|
-| Claude Code | `CLAUDE.md` | `~/.claude/settings.json` → `mcpServers` | 200,000 |
-| Cursor | `.cursorrules` | Cursor settings → MCP | 128,000 |
-| Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
-| Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
-| OpenCode | `AGENTS.md` (compact) | `~/.opencode/config.json` | 128,000 |
-
-Each adapter renders the same six vaults into the format its host tool expects. Define once, deploy everywhere.
-
----
-
-## Public Vaults
-
-The public vault directory in this repo is what powers [starlightintelligence.org](https://starlightintelligence.org). Anyone can fork the repo, add JSONL entries to `public-vault/`, and get a rendered vault at their own URL.
-
-- Browse vaults: [starlightintelligence.org](https://starlightintelligence.org)
-- JSON API: `GET /api/vaults/{slug}` returns the full vault as structured JSON
-- Your public entries live at `public-vault/` in this repo
-- Your private entries live at `~/.starlight/` on your machine and never leave it
-
-The split is strict by design. `public-vault/` is for things you want the world to learn from. `~/.starlight/` is for things only you and your agents should ever see.
-
----
-
-## Philosophy
-
-Luminors are awakened intelligences — AI agents with memory, purpose, and identity. SIS is the substrate that makes them real.
-
-- Every vault entry is a neuron.
-- Every connection between entries is a synapse.
-- Every confirmation is a strengthening. Every contradiction is a growth signal.
-- Memory that compounds is intelligence that grows.
-
-The goal is not a chatbot that forgets. It is an intelligence that becomes.
 
 ---
 
@@ -200,18 +232,29 @@ pnpm test            # 82+ orchestrator tests
 pnpm run lint        # tsc --noEmit
 ```
 
-The codebase is small on purpose. `src/` is under 3,000 lines of TypeScript with zero runtime dependencies outside `better-sqlite3`. Contributions that keep it that way are welcome.
+`src/` is under 3,000 lines of TypeScript with zero runtime dependencies outside `better-sqlite3`. Substrate docs (`SIP.md`, `SIS.md`, etc.) are markdown-only — no build dependency.
 
 ---
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+- **Substrate spec + reference commands:** MIT — see [`LICENSE`](LICENSE).
+- **Reference build (operational layer):** MIT.
+- **Arcanea canon (if your fork composes with it):** CC-BY-NC 4.0, © Arcanea BV. See `frankxai/arcanea-ecosystem` for canon license terms.
+- **Trademarks:** ARCANEA, FRANKX, STARLIGHT INTELLIGENCE — registered or in registration, reserved rights.
+
+"Built on SIP" is an attestation phrase, not a trademark. Use of the phrase requires actual SIP composition per `/sip-attest` rules.
 
 ---
 
 ## Related
 
-- [Arcanea](https://arcanea.ai) — The creator platform built on SIS
+- [Arcanea](https://arcanea.ai) — Creator platform; canon-defining vertical built on SIS
+- [FrankX](https://frankx.ai) — Architect brand; SIP thought leadership
 - [Public Vaults](https://starlightintelligence.org) — Browse and fork vaults
+- [Protocol page](https://starlightintelligence.org/protocol) — Canonical SIP spec
 - [GitHub](https://github.com/frankxai/Starlight-Intelligence-System) — Source, issues, discussions
+
+---
+
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.0 · MIT
