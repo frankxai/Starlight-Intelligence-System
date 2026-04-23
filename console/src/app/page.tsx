@@ -27,10 +27,9 @@ export default function LandingPage() {
           </h1>
 
           <p className="mt-6 max-w-xl text-[16px] leading-[1.7] text-slate-400">
-            Six vaults orbit a luminous core. Ten verticals trace the outer ring.
-            This is the Starlight substrate as a navigable 3D space — the first
-            slice of v8. Future revisions add agent harness, live vault streams,
-            and a canonical archetype layer.
+            Six vaults, ten verticals, one core. Navigate the substrate as a
+            2D force-graph (default — legible, working view) or as a 3D scene
+            (signature view, one click away). One data layer. Two render forms.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -38,14 +37,36 @@ export default function LandingPage() {
               href="/substrate"
               className="group rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#050509] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.25)]"
             >
-              Click to enter substrate
+              Enter substrate
               <span className="ml-1 inline-block transition-micro group-hover:translate-x-0.5">
                 &rarr;
               </span>
             </Link>
-            <span className="text-[12px] text-slate-600">
-              orbit · zoom · pan
-            </span>
+            <Link
+              href="/substrate?view=3d"
+              className="rounded-full border border-white/[0.1] bg-black/30 px-5 py-3 text-[13px] font-medium text-slate-300 backdrop-blur-md transition-micro hover:border-white/[0.25] hover:text-white"
+            >
+              or open 3D scene
+            </Link>
+          </div>
+        </section>
+
+        {/* Phase 2 — honest roadmap */}
+        <section className="mt-16">
+          <div className="rounded-2xl border border-white/[0.06] bg-black/30 p-6 backdrop-blur-sm">
+            <div className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-amber-400/80">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400 animate-glow-pulse" />
+              Phase 2 — coming soon
+            </div>
+            <h2 className="mt-3 text-[20px] font-semibold text-white">
+              Agent harness — real LLM responses, no pre-cached fakes.
+            </h2>
+            <p className="mt-3 max-w-2xl text-[14px] leading-[1.7] text-slate-400">
+              v0.1 ships the data layer + dual-view substrate visualization.
+              The agent harness (Phase 2) ships when it can call live LLMs
+              honestly — never as pre-cached responses pretending to be real.
+              Until then, every node you see is data, not theatre.
+            </p>
           </div>
         </section>
 
