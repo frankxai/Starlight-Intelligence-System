@@ -84,14 +84,16 @@ This is the **public registry**. Active alliances and private verticals (Family 
 - **Canon:** composes with Arcanea canon (Guardian → artist mapping for Arcanea label).
 - **Compounds:** Arcanea BV (royalties, sync licensing, catalog IP).
 
-### Vibe OS
+### Vibe OS (substrate)
 - **Class:** sovereign vertical
 - **Domain:** State engineering, ritual stack, chronotype architecture.
 - **Owner:** FrankX.
-- **Status:** `active — v0.2`.
-- **Primary repo:** `frankxai/vibe-os` *(to be created)*.
+- **Status:** `active — v0.5`.
+- **Primary repo:** [`frankxai/vibe-os-substrate`](https://github.com/frankxai/vibe-os-substrate) (SIP-conformant vertical scaffold; frameworks MIT, personal data private).
+- **Related repo:** [`frankxai/vibe-os`](https://github.com/frankxai/vibe-os) (frequency healing audio engine, Python) — composes with the substrate via Hz canon.
 - **Canon:** optional — Hz grounding composes from Arcanea.
 - **Compounds:** FrankX content + potential productized offer.
+- **SIP commands:** `/vibe-ritual` · `/vibe-chronotype` · `/vibe-state`.
 
 ### Family IS
 - **Class:** sovereign vertical (private)
