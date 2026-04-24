@@ -221,6 +221,116 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "vision-fundamentals-excavation",
+      "skill": "vision/fundamentals-excavation",
+      "triggers": {
+        "keywords": ["vision", "where am I going", "30-year", "10-year", "3-year", "purpose", "why", "north star", "long-term", "legacy", "founder vision", "axis", "trajectory", "horizon"],
+        "agents": ["starlight-visionary", "starlight-navigator"],
+        "intents": ["vision-excavation", "horizon-laddering", "founder-trajectory"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "vision-design-coherence",
+      "skill": "vision/design-coherence",
+      "triggers": {
+        "keywords": ["brand", "design system", "brand kit", "colors", "typography", "voice rules", "visual identity", "looks generic", "doesn't feel premium", "inconsistent across surfaces", "brand voice", "positioning"],
+        "agents": ["starlight-visionary", "starlight-weaver"],
+        "intents": ["brand-design", "design-system", "voice-coherence"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "memory-capture-discipline",
+      "skill": "memory/capture-discipline",
+      "triggers": {
+        "keywords": ["capture", "note-taking", "daily review", "what to capture", "second brain", "PKM", "personal knowledge management", "inbox zero for my brain", "capture moments", "daily capture"],
+        "agents": ["starlight-secondbrain", "starlight-sage"],
+        "intents": ["capture", "pkm", "second-brain"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "memory-insight-distillation",
+      "skill": "memory/insight-distillation",
+      "triggers": {
+        "keywords": ["distill", "synthesize captures", "monthly review", "what did I learn", "connect the dots", "pattern across notes", "weekly review", "quarterly review", "elevate captures", "emerging pattern"],
+        "agents": ["starlight-secondbrain", "starlight-sage", "starlight-genius"],
+        "intents": ["distillation", "pkm", "second-brain", "review"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "relational-network-architecture",
+      "skill": "relational/network-architecture",
+      "triggers": {
+        "keywords": ["network", "relationships", "connections", "contacts", "advisors", "mentors", "collaborators", "who should I partner with", "building a team", "who to hire", "who drains me", "advisory board", "introductions", "referrals", "my team", "peers", "mentees"],
+        "agents": ["starlight-relational", "starlight-concierge", "starlight-navigator"],
+        "intents": ["relational", "network-design", "team-building"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "relational-alliance-readiness",
+      "skill": "relational/alliance-readiness",
+      "triggers": {
+        "keywords": ["alliance readiness", "ready for alliance", "alliance candidate", "should we forge", "partner with", "formalize the partnership", "co-founder", "equity partner", "joint venture", "alliance"],
+        "agents": ["starlight-relational", "starlight-navigator", "starlight-sentinel"],
+        "intents": ["alliance-assessment", "relational", "decision"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "health-body-substrate",
+      "skill": "health/body-substrate",
+      "triggers": {
+        "keywords": ["body", "training", "nutrition", "sleep", "energy", "burnout", "recovery", "regimen", "habits", "stress", "substrate", "fitness", "diet", "lifting", "strength", "cardio", "rest", "de-load", "deload"],
+        "agents": ["starlight-embodiment"],
+        "intents": ["regimen-design", "embodiment", "substrate-architecture", "health"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "health-energy-architecture",
+      "skill": "health/energy-architecture",
+      "triggers": {
+        "keywords": ["energy", "energy crash", "tired", "fatigue", "burnout", "focus", "flow", "crash", "afternoon slump", "morning energy", "caffeine", "blood sugar", "creative peak", "deep work", "cognitive capacity"],
+        "agents": ["starlight-embodiment"],
+        "intents": ["energy-audit", "optimization", "flow-protection"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "business-entity-architecture",
+      "skill": "business/entity-architecture",
+      "triggers": {
+        "keywords": ["entity structure", "LLC", "BV", "sole proprietor", "corporation", "holding company", "legal entity", "tax entity", "business structure", "incorporate"],
+        "agents": ["starlight-business", "starlight-navigator"],
+        "intents": ["business", "entity", "incorporation"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "business-revenue-modeling",
+      "skill": "business/revenue-modeling",
+      "triggers": {
+        "keywords": ["revenue model", "pricing", "margin", "recurring revenue", "retainer", "productize", "concentration risk", "unit economics", "revenue streams", "monetize"],
+        "agents": ["starlight-business", "starlight-navigator"],
+        "intents": ["business", "revenue", "pricing", "monetization"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
@@ -229,10 +339,15 @@
     "starlight-orchestrator": ["orchestration-multi-agent-coordination", "orchestration-workflow-design"],
     "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework"],
     "starlight-sage": ["memory-knowledge-synthesis", "intelligence-pattern-recognition"],
-    "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis"],
-    "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework"],
+    "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis", "vision-design-coherence"],
+    "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework", "vision-fundamentals-excavation"],
     "starlight-concierge": ["integration-idea-triage", "orchestration-context-engineering"],
     "starlight-envoy": ["integration-creator-path", "memory-knowledge-synthesis"],
-    "starlight-genius": ["intelligence-genius-excavation", "intelligence-knowledge-reclamation", "intelligence-pattern-recognition"]
+    "starlight-genius": ["intelligence-genius-excavation", "intelligence-knowledge-reclamation", "intelligence-pattern-recognition"],
+    "starlight-visionary": ["vision-fundamentals-excavation", "vision-design-coherence", "intelligence-strategic-reasoning", "intelligence-pattern-recognition"],
+    "starlight-secondbrain": ["memory-capture-discipline", "memory-insight-distillation", "memory-vault-management", "memory-knowledge-synthesis"],
+    "starlight-relational": ["relational-network-architecture", "relational-alliance-readiness", "intelligence-pattern-recognition"],
+    "starlight-embodiment": ["health-body-substrate", "health-energy-architecture"],
+    "starlight-business": ["business-entity-architecture", "business-revenue-modeling", "intelligence-systems-thinking"]
   }
 }

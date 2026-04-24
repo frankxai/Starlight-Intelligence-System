@@ -56,12 +56,12 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **What you have access to:**
 
-- **9 Agents** — Specialized intelligence perspectives (7 council + 2 front-door; see below)
-- **18 Skills** — Auto-activate via `skills/skill-rules.json`
-- **6 Vaults** — Persistent memory across sessions
-- **4 Note Templates** — Structured knowledge capture
+- **15 Agents** — 7 council + 2 front-door + 1 excavation + 5 intelligence-system agents (business, visionary, embodiment, secondbrain, relational)
+- **28+ Skills** — Auto-activate via `skills/skill-rules.json` across 7 domains (intelligence, orchestration, memory, integration, business, vision, health, relational)
+- **6 core vaults** + **5 new IS namespaces** (genius/, second-brain/, vision/, business/, health/, relational/)
+- **9 intelligence system layers** — Substrate / Genius / Second Brain / Vision-Brand / Business / Creator / Wealth / Health / Relational (+ optional Spiritual) — full map at `docs/ARCHITECTURE.md`
 - **4 Transmission Channels** — Cross-system communication
-- **9 Commands** — 6 operational (starlight/vault/transmit/synthesize/council/navigate) + 3 newcomer-surface (intake/welcome/sovereign-spawn)
+- **40+ Commands** — operational + newcomer-surface + SIP-family + ecosystem-export + modality-attestation + GIS + BIS + VBIS + HIS + SBIS + RIS + composition
 - **Context Engine** — Unified cross-repo awareness
 
 **Newcomer front door (v7.3):** See `ONBOARDING.md`, `DELIVERY.md`, `SESSION_RUNBOOK.md`. Invoke `/welcome` to orient a newcomer, `/intake` to triage their ask into one of four routes (substrate / alliance / vertical / sovereign-spawn), and hand off to Concierge (builder track) or Envoy (creator track, zero-terminal).

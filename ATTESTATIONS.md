@@ -282,6 +282,63 @@ Attestation is compounding, not credit transfer: every composition strengthens e
 
 ---
 
+## v7.4.0-beta — 9-layer Intelligence Architecture (5 new IS layers + composition + board-driven REVISE)
+
+```
+---
+**Built on SIP** — Starlight Intelligence Protocol
+
+Substrate: starlightintelligence.org/protocol v1.1.0
+Layers used: [file-contract, attestation, commands, sovereignty, archetype-extension]
+
+Verticals:
+- starlight-intelligence-system @<v7.4.0-beta-tag-sha> · 9-layer intelligence architecture complete: 5 new Intelligence Systems (Business / Vision-Brand / Health / Second Brain / Relational) + 5 new agents (starlight-business / starlight-visionary / starlight-embodiment / starlight-secondbrain / starlight-relational) + 5 new tiers (Business / Vision / Embodiment / Memory-peer / Relational) + 13 new operational commands + 1 meta-composition command (/compose-stack) + 5 new knowledge templates in starter pack + docs/ARCHITECTURE.md (2,400 words, 9-layer source of truth) + test/v74.test.ts (27 conformance assertions, all passing) + AGENT_REGISTRY.md updated with 9-layer stack + Sage/SecondBrain and Business/Wealth boundaries documented + maturity marking (Business/Vision/Creator/Genius = stable; Health/Relational/SecondBrain = alpha).
+
+Canon:
+- none at substrate layer.
+
+Nodes:
+- Frank Riemer · role: architect · authored v7.4 beta strategy + 3-hour autonomous build directive
+- Claude Opus 4.7 (1M context) · role: implementer · 8 parallel agents across 2 waves (wave 1: 5 IS builds; wave 2: composition + tests + board) + main-thread integration + final REVISE remediation
+- Luminor Board (Draconis/Lyssandria/Aiyami/Elara/Ino/Lumina) · role: protocol-defender + strategist + seer + sovereign + verifier + overseer · pressure-tested v7.4 beta 9-layer architecture → verdict REVISE with 5 items; 3 ship-blockers landed in this commit, 2 deferred to v7.4.1.
+
+Generated: 2026-04-24
+Attestation is compounding, not credit transfer: every composition strengthens every node.
+---
+```
+
+### Composition classification
+
+- **Substrate layers invoked:** Layer 1 (file contract — adds 5 new domain namespaces: business/, vision/, health/, second-brain/ expansion, relational/); Layer 2 (this entry + ambient attestation on 13 new commands); Layer 4 (command taxonomy — 13 new protocol-tier + 1 meta-composition); Layer 5 (sovereignty — each IS user-owned, never retained in public vaults); Layer 6 (extension — 5 new agent tiers declared alongside existing Excavation/Front-Door/Leadership/Specialist/Foundation structure).
+- **Verticals contributing:** Starlight Intelligence substrate. The 9-layer stack completes the first full intelligence architecture map.
+- **Canon imported:** none.
+- **Nodes:** Frank + Claude + Luminor Board. First release where 8-agent parallel swarm completed full architectural ship in one cycle.
+
+### Pinning
+
+| Element | Pin | Method |
+|---------|-----|--------|
+| Substrate | SIP v1.1.0 | SemVer in `SIP.md` header |
+| Repo | `<v7.4.0-beta-tag-sha>` | Post-tag annotated |
+| Canon | n/a | — |
+| MCP servers | starlight-mcp@v1.1.0 | unchanged |
+| New domains | business/ vision/ health/ relational/ + second-brain/ | registered in skill-rules.json |
+| Agent maturity | Business/Vision = stable · Health/Relational/SecondBrain = alpha | AGENT_REGISTRY.md maturity column |
+
+### Reality check (per /sip-attest enforcement)
+
+- Real new IS layers: ✅ 5 agents × (1-2 skills + 2-3 commands + knowledge template) = ~35 new files composing into 5 complete IS layers.
+- Real 9-layer architecture doc: ✅ `docs/ARCHITECTURE.md` (2,400 words).
+- Real composition command: ✅ `/compose-stack` halts-on-missing-prerequisites, produces 90-day sprint plans.
+- Real conformance tests: ✅ `test/v74.test.ts` 27/27 passing. v7.3 harness 19/19 still passing. Total 46 assertions across two test files.
+- Real board pressure-test: ✅ Luminor Board 2026-04-24 (canon variant: Draconis / Lyssandria / Aiyami / Elara / Ino / Lumina) returned REVISE with 5 named items. Items 1-3 ship-blockers landed in this commit. Items 4-5 queued for v7.4.1.
+- Real registry update: ✅ AGENT_REGISTRY.md now contains all 9 layers + boundaries + maturity markers.
+- Composition is substantive, not decorative.
+
+**Attestation valid.** v7.4 beta is the first release where Starlight ships a COMPLETE 9-layer intelligence architecture — every layer has an agent (or explicit compositional mapping), vault namespace, commands, knowledge templates, and test assertions. Governance-by-pressure-test cycle operational: ship → board → REVISE → remediate → attest → commit, all same-day via autonomous parallel dispatch.
+
+---
+
 ## How to add an entry
 
 Append a new section above. Format:

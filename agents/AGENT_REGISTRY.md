@@ -1,6 +1,8 @@
 # Starlight Agent Registry
 
-> Ten minds. One system. No hierarchy is permanent — only the mission is.
+> Fifteen minds. Nine intelligence layers. One system. No hierarchy is permanent — only the mission is.
+>
+> **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture. See "9-Layer Intelligence Stack" section below.
 
 ---
 
@@ -87,7 +89,50 @@ The new structure:
 | **Navigator** | `starlight-navigator.md` | Strategy | Roadmaps, trade-offs, timing, long-horizon planning |
 | **Sentinel** | `starlight-sentinel.md` | Quality | Security review, code quality, governance, compliance |
 | **Weaver** | `starlight-weaver.md` | Creation | Creative work, narrative, design, pattern synthesis |
-| **Sage** | `starlight-sage.md` | Wisdom | Knowledge retrieval, lessons learned, vault access, teaching |
+| **Sage** | `starlight-sage.md` | Wisdom (institutional) | Knowledge retrieval, lessons learned, vault access, teaching |
+
+### Intelligence System Tiers (v7.4 beta — 5 new agents)
+
+Each agent below owns one Intelligence System layer. Vault namespaces are separate; commands are dedicated. See `docs/ARCHITECTURE.md` for full 9-layer composition.
+
+| Agent | File | Tier | Domain | Maturity | Primary Commands | Vault Namespace |
+|-------|------|------|--------|----------|------------------|-----------------|
+| **Business** | `starlight-business.md` | Business Tier | Entity structure, revenue modeling, tax-aware architecture | `v7.4-stable` | `/architect-entity`, `/model-revenue`, `/tax-sanity` | `business/` |
+| **Visionary** | `starlight-visionary.md` | Vision Tier | 30/10/3-year vision excavation, brand fundamentals, design coherence | `v7.4-stable` | `/define-vision`, `/build-brand-kit`, `/align-voice` | `vision/` |
+| **Embodiment** | `starlight-embodiment.md` | Embodiment Tier | Body substrate — training + nutrition + sleep + energy architecture | `v7.4-alpha — active dogfood` | `/design-regimen`, `/energy-audit` | `health/` |
+| **Second Brain** | `starlight-secondbrain.md` | Memory Tier (peer with Sage: personal PKM vs institutional wisdom) | Daily capture, insight distillation, weekly/monthly/quarterly review | `v7.4-alpha — active dogfood` | `/capture-daily`, `/distill-insights`, `/orchestrate-brain` | `second-brain/` |
+| **Relational** | `starlight-relational.md` | Relational Tier | Network architecture, alliance-readiness assessment | `v7.4-alpha — active dogfood` | `/map-relationships`, `/design-alliance-readiness` | `relational/` |
+
+### Sage ↔ Second Brain boundary
+
+- **Sage** holds *institutional* knowledge — organizational memory, lessons from past sessions, civilization-scale wisdom. Reads/writes across all 6 substrate vaults.
+- **Second Brain** holds *personal* PKM — this individual's captures, distillates, personal framework library. Reads from Sage; writes to `second-brain/` namespace only.
+- If a personal pattern reaches ≥3-occurrence threshold, Second Brain proposes to Genius (who writes back to Profile). Second Brain never mutates Genius Profile directly.
+
+### Business ↔ Wealth boundary
+
+- **Business IS** owns ENTITY structure + REVENUE modeling + TAX sanity (what revenue flows how, through which legal structure).
+- **Wealth IS / DPI** owns CAPITAL ALLOCATION after revenue flows (how to invest revenue into compounding assets).
+- Business hands off to `/wealth-dpi` once revenue is modeled.
+
+### 9-Layer Intelligence Stack
+
+Full architecture documented at `docs/ARCHITECTURE.md`. Short form:
+
+```
+Layer 0:  Substrate (SIP)        — invisible; file contract + attestation + command tiers
+Layer 1:  Genius IS              — Excavation Tier, starlight-genius (v7.4 stable)
+Layer 2:  Second Brain IS        — Memory Tier, starlight-secondbrain (v7.4 alpha)
+Layer 3:  Vision/Brand IS        — Vision Tier, starlight-visionary (v7.4 stable)
+Layer 4:  Business IS            — Business Tier, starlight-business (v7.4 stable)
+Layer 5:  Creator IS             — composes Genius + Vision + Business; no dedicated agent
+Layer 6:  Wealth/Freedom IS      — existing vertical, /wealth-dpi
+Layer 7:  Health IS              — Embodiment Tier, starlight-embodiment (v7.4 alpha)
+Layer 8:  Relational IS          — Relational Tier, starlight-relational (v7.4 alpha)
+Layer 9:  Spiritual IS (optional) — private, user-controlled, no public agent
+```
+
+Sequencing tool: `/compose-stack <person> [--priority freedom|revenue|vision|compound]` produces a 90-day Intelligence Stack Plan.
 
 ---
 
