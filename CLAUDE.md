@@ -66,6 +66,8 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **Newcomer front door (v7.3):** See `ONBOARDING.md`, `DELIVERY.md`, `SESSION_RUNBOOK.md`. Invoke `/welcome` to orient a newcomer, `/intake` to triage their ask into one of four routes (substrate / alliance / vertical / sovereign-spawn), and hand off to Concierge (builder track) or Envoy (creator track, zero-terminal).
 
+**Genius Intelligence System alpha (v7.4):** New **Excavation Tier** agent `starlight-genius` + 4 new commands — `/discover-genius` (excavates Genius Profile + Freedom Path from scattered corpus), `/reclaim-knowledge` (organizes scattered material by function not source), `/train-executor` (generates handover playbook in person's voice), `/creator-pipeline` (multi-modal content pipeline from frameworks). Vertical-tier `/arcanea-canon` now live. Public explainer at `docs/public/starlight-intelligence-system.md`. Non-technical Claude Project starter at `integrations/starter-packs/friend-starter/`. Attestation is now ambient: agents auto-embed "Built on SIP" in every generated artifact — the user never runs `/sip-attest` for forward-generated work; the command remains for retrofit.
+
 ---
 
 ## Agent Hierarchy

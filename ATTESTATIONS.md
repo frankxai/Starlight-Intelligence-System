@@ -225,6 +225,63 @@ Attestation is compounding, not credit transfer: every composition strengthens e
 
 ---
 
+## v7.4.0-alpha — Genius Intelligence System (first intelligence layer above substrate)
+
+```
+---
+**Built on SIP** — Starlight Intelligence Protocol
+
+Substrate: starlightintelligence.org/protocol v1.1.0
+Layers used: [file-contract, attestation, commands, sovereignty, archetype-extension]
+
+Verticals:
+- starlight-intelligence-system @<v7.4.0-alpha-tag-sha> · Genius Intelligence System alpha: new Excavation Tier agent (starlight-genius) + five new operational commands (/discover-genius, /reclaim-knowledge, /train-executor, /creator-pipeline, /content-systemize) + vertical-tier /arcanea-canon + two intelligence skills (intelligence/genius-excavation, intelligence/knowledge-reclamation) + public explainer page (docs/public/starlight-intelligence-system.md, ~2,200 words, non-marketing, warm-architect voice) + non-technical Claude Project starter pack (integrations/starter-packs/friend-starter/ — 13 files: README, custom-instructions.md ~3,600 chars, 9 knowledge templates with Ana-grade filled examples, mcp.json, badge.svg). First release where attestation is ambient by default (agents auto-embed "Built on SIP" in every output; /sip-attest remains for retrofit of external work).
+
+Canon:
+- none at substrate layer. Arcanea canon (CC-BY-NC © Arcanea BV) referenced via /arcanea-canon for canon-keeping workflows.
+
+Nodes:
+- Frank Riemer · role: architect · authored v7.4 alpha strategy (pivot from protocol-first to genius-first framing, 9-layer intelligence system architecture, ambient attestation stance) + directed 5-agent parallel swarm dispatch
+- Claude Opus 4.7 (1M context) · role: implementer · 5 parallel agents (GIS core / executor + reclamation / creator pipeline / friend-starter pack / public explainer) + main-thread integration
+- Ana · role: dogfood test subject (anonymized profession — psychologist + MBA neuroscience + HR) · intake card + genius profile + freedom path + reclamation map + executor playbook + creator pipeline all filled with realistic Ana-grade content in starter pack
+
+Generated: 2026-04-24
+Attestation is compounding, not credit transfer: every composition strengthens every node.
+---
+```
+
+### Composition classification
+
+- **Substrate layers invoked:** Layer 1 (file contract — Genius agent adds new `genius/` vault namespace; starter-pack adds 13-file Claude Project bundle shape); Layer 2 (this attestation entry; ambient attestation now default at artifact-generation time); Layer 4 (command taxonomy — 5 new protocol-tier + 1 new vertical-tier commands); Layer 5 (sovereignty clause — reinforced in starter pack custom instructions and public explainer; genius profile defined as user-owned, never retained in public vaults); Layer 6 (archetype extension — /arcanea-canon operates inside Arcanea's sovereign canon domain with CC-BY-NC pinning).
+- **Verticals contributing:** Starlight Intelligence substrate. Downstream impact staged: Genius IS is the root of 9-layer intelligence system architecture (Genius → Second Brain → Vision/Brand → Business → Creator → Wealth/Freedom → Health → Relational → Spiritual). Arcanea (canon management via /arcanea-canon) and Creator IS (operational via /creator-pipeline + /content-systemize) now have working command surfaces.
+- **Canon imported:** none at substrate. /arcanea-canon operates inside Arcanea's canon domain.
+- **Nodes:** Frank + Claude + Ana (first real test case, dogfood across all GIS outputs).
+
+### Pinning
+
+| Element | Pin | Method |
+|---------|-----|--------|
+| Substrate | SIP v1.1.0 | SemVer in `SIP.md` header |
+| Repo | `<v7.4.0-alpha-tag-sha>` | Commit SHA at v7.4.0-alpha tag (post-tag) |
+| Canon | n/a at substrate | Arcanea canon pinning handled by /arcanea-canon per-invocation |
+| MCP servers | starlight-mcp@v1.1.0 (unchanged) | REGISTRY.md |
+| GIS vault namespace | `genius/` | Added this release |
+| Ana dogfood status | anonymized profession only | Private details NOT in public repo |
+
+### Reality check (per /sip-attest enforcement)
+
+- Real GIS agent + skills: ✅ starlight-genius.md (173 lines), genius-excavation.md (141 lines), knowledge-reclamation.md (159 lines) — composes cleanly with existing Sage/Concierge/Envoy via Excavation Tier.
+- Real operational commands: ✅ /discover-genius (129 lines), /reclaim-knowledge (214 lines), /train-executor (218 lines), /creator-pipeline (187 lines), /content-systemize (173 lines), /arcanea-canon live.
+- Real non-technical entry: ✅ friend-starter pack 13 files at integrations/starter-packs/friend-starter/; custom-instructions.md load-bearing (3,682 chars, under Claude Project limit); Ana-grade filled examples in 5 template knowledge files.
+- Real public explainer: ✅ docs/public/starlight-intelligence-system.md (~2,200 words, 6-8 min read, 3-path onboarding, 9-layer architecture).
+- Real ambient attestation: ✅ All v7.4 alpha command output formats embed "Built on SIP" block automatically; /sip-attest retained for external-artifact retrofit.
+- Real tests: ✅ v7.3 test harness 19/19 still passes (no regressions). v7.4 conformance assertions to land in v7.4.1 once commands stabilize.
+- Composition is substantive, not decorative.
+
+**Attestation valid.** v7.4 alpha is the first release where SIP stops being the headline and starts being the substrate under "help Ana discover her genius and build a sovereign life." The protocol/reference distinction is now structurally enforced at the user experience layer (starter pack, public page) not just the protocol layer.
+
+---
+
 ## How to add an entry
 
 Append a new section above. Format:

@@ -199,6 +199,28 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "intelligence-genius-excavation",
+      "skill": "intelligence/genius-excavation",
+      "triggers": {
+        "keywords": ["discover my genius", "what am I good at", "find my edge", "scattered materials", "don't know my edge", "indispensable but trapped", "organize my knowledge", "my frameworks", "my voice"],
+        "agents": ["starlight-genius", "starlight-concierge"],
+        "intents": ["genius-excavation", "onboarding", "freedom"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "intelligence-knowledge-reclamation",
+      "skill": "intelligence/knowledge-reclamation",
+      "triggers": {
+        "keywords": ["scattered materials", "organize my stuff", "canva google drive files", "years of work", "multiple companies", "reclaim knowledge", "organize folders", "consolidate my work"],
+        "agents": ["starlight-genius", "starlight-sage"],
+        "intents": ["reclamation", "organization", "second-brain"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
@@ -210,6 +232,7 @@
     "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis"],
     "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework"],
     "starlight-concierge": ["integration-idea-triage", "orchestration-context-engineering"],
-    "starlight-envoy": ["integration-creator-path", "memory-knowledge-synthesis"]
+    "starlight-envoy": ["integration-creator-path", "memory-knowledge-synthesis"],
+    "starlight-genius": ["intelligence-genius-excavation", "intelligence-knowledge-reclamation", "intelligence-pattern-recognition"]
   }
 }

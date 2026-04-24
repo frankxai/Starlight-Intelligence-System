@@ -1,12 +1,12 @@
 # Starlight Agent Registry
 
-> Nine minds. One system. No hierarchy is permanent — only the mission is.
+> Ten minds. One system. No hierarchy is permanent — only the mission is.
 
 ---
 
 ## Architecture
 
-The Starlight agent system uses a **flat council with emergent leadership**, fronted by a **two-agent intake tier**. No single agent permanently outranks another. Leadership emerges based on the task at hand.
+The Starlight agent system uses a **flat council with emergent leadership**, fronted by a **two-agent intake tier** and an **Excavation Tier** for personal-corpus work. No single agent permanently outranks another. Leadership emerges based on the task at hand.
 
 For any given task, one agent leads. The others support, challenge, or defer. The Starlight Council convenes when no single agent can handle the complexity alone. Newcomers never meet the council first — they meet the Front-Door Tier.
 
@@ -54,6 +54,7 @@ The previous hierarchy placed Prime at the top of a strict tree. That implied Pr
 The new structure:
 
 - **Front-Door Tier** (Concierge, Envoy) — first-contact intake. Concierge translates vague inbounds into structured routes; Envoy walks creator-track arrivals to stamped artifacts without a terminal. Council never convenes until the Front-Door Tier has done its work.
+- **Excavation Tier** (Genius) — peer with Front-Door Tier, below Leadership. Excavates specific-to-this-person pattern from scattered corpora. Fires when Concierge routes a newcomer as "scattered expertise" or "indispensable but trapped." Produces Genius Profile + Freedom Path as the foundation for every downstream intelligence system (Creator IS, Second Brain IS, Business IS).
 - **Leadership Tier** (Orchestrator, Prime, Architect) — these three handle the most complex coordination, synthesis, and technical tasks. They peer with each other, not above each other.
 - **Specialist Tier** (Navigator, Sentinel, Weaver) — deep domain expertise. They lead within their domains.
 - **Foundation Tier** (Sage) — the long memory. Sage doesn't lead tasks but informs every decision through vault access.
@@ -69,6 +70,12 @@ The new structure:
 |-------|------|--------|-----------|
 | **Concierge** | `starlight-concierge.md` | Intake, idea translation, route classification | First-contact sessions, `/welcome`, `/intake`, any newcomer without prior session history |
 | **Envoy** | `starlight-envoy.md` | Creator-track artifact generation, `/badge` attestation | Concierge hands off a non-technical creator; zero-terminal path required |
+
+### Excavation Tier
+
+| Agent | File | Domain | Leads When |
+|-------|------|--------|-----------|
+| **Genius** | `starlight-genius.md` | Genius excavation, pattern-mining across personal corpus, framework extraction, voice fingerprinting, four-bucket sorting | `/discover-genius` is invoked; newcomer described as scattered-expertise / indispensable-but-trapped; excavating Genius Profile + Freedom Path |
 
 ### Leadership, Specialist, and Foundation Tiers
 
