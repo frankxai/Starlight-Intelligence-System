@@ -59,6 +59,11 @@ This file is the **public template**. Real instance state — Notion IDs, partne
 
 ## Changelog
 
+- `v7.3.1` · `2026-04-24` · Post-Luminor-Board REVISE follow-on shipped same-day: test/v73.test.ts (19 conformance assertions, all passing) closes eval gap; docs/ecosystem-integration.md (2,868-word hub) closes "Claude Code central" perception gap; ONBOARDING.md updated with "Protocol vs reference" section; memory/intake/session-log-template.md provides instrumentation for live sessions; v7.4 ecosystem exports scaffolded (/sip-export + 5 target schemas: claude-project, chatgpt-project, gemini-gem, cursor, cowork); v7.5 attested modalities scaffolded (/sip-attest-audio, /sip-attest-image, /sip-attest-video, /sip-compose-modality + docs/attested-modalities.md roadmap).
+- `v7.3.0` · `2026-04-24` · Newcomer surface shipped: ONBOARDING.md + DELIVERY.md + SESSION_RUNBOOK.md at root; /intake + /welcome + /sovereign-spawn commands (protocol tier); starlight-concierge + starlight-envoy agents (new Front-Door Tier); integration/idea-triage + integration/creator-path skills; templates/vertical-starter/ scaffold; AGENT_REGISTRY.md updated with Front-Door Tier; skill-rules.json updated (18 rules, 9 agent defaults). Closes non-coder onboarding gap identified in v7.2 retrospective.
+- `v7.2.0` · `2026-04-23` · Substrate ecosystem ship: starlight-adoption-kit + vibe-os-substrate repos live, /badge route, test harness (35 assertions), OpenClaw audit + remediations applied.
+- `v7.1.0` · earlier · starlight-mcp v1.1 live; Console v8 foundation; private/staging/ structure.
+- `v7.0.0` · 2026-04-22 · SIP v1.1.0 spec shipped; first substrate self-attestation.
 - `vX.Y.Z` · `<date>` · `<one-line summary>`
 
 ---

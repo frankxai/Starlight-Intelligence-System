@@ -114,6 +114,117 @@ Attestation is compounding, not credit transfer: every composition strengthens e
 
 ---
 
+## v7.3.0 — Newcomer surface (front-door tier ship)
+
+```
+---
+**Built on SIP** — Starlight Intelligence Protocol
+
+Substrate: starlightintelligence.org/protocol v1.1.0
+Layers used: [file-contract, attestation, commands, sovereignty]
+
+Verticals:
+- starlight-intelligence-system @<v7.3.0-tag-sha> · newcomer surface ship: ONBOARDING.md + DELIVERY.md (root-level newcomer map + delivery menu); SESSION_RUNBOOK.md (2-hour end-to-end flow playbook); /intake + /welcome + /sovereign-spawn commands (protocol tier); starlight-concierge + starlight-envoy agents (new Front-Door Tier — warm intake + no-code creator path); integration/idea-triage + integration/creator-path skills (auto-activation on first-contact keywords); templates/vertical-starter/ drop-in scaffold (7-file contract pre-wired); AGENT_REGISTRY.md restructured with Front-Door Tier; skill-rules.json updated (18 rules, 9 agent defaults); MEMORY.md changelog.
+
+Canon:
+- none · substrate declines canon at protocol layer (per CANON.md). Vertical starter template defers canon decision to each adopter.
+
+Nodes:
+- Frank Riemer · role: architect · authored front-door strategy + integration work + session runbook
+- Claude Opus 4.7 (1M context) · role: implementer · 4-agent parallel swarm dispatch for independent artifacts (onboarding docs, commands, agents, skills) + main-thread integration (sovereign-spawn command, vertical starter templates, runbook, writebacks)
+
+Generated: 2026-04-24
+Attestation is compounding, not credit transfer: every composition strengthens every node.
+---
+```
+
+### Composition classification
+
+- **Substrate layers invoked:** Layer 1 (file contract — adds templates/vertical-starter/ with all 7 canonical files pre-scaffolded); Layer 2 (this attestation entry); Layer 4 (command taxonomy — three new protocol-tier commands: `/intake`, `/welcome`, `/sovereign-spawn`; vertical command template added to starter); Layer 5 (sovereignty clause — surfaced in ONBOARDING.md, DELIVERY.md, SESSION_RUNBOOK.md, /intake output, /sovereign-spawn writeback).
+- **Verticals contributing:** Starlight Intelligence substrate (this repo). No downstream verticals yet — v7.3 is substrate-internal; downstream absorption happens when first sovereign spawns via `/sovereign-spawn`.
+- **Canon imported:** none.
+- **Nodes:** Frank (architect) + Claude Opus 4.7 (implementer, parallel-dispatch coordinator). Single-human-directed ship with multi-agent execution — first v-release to use the v7.2 parallel-dispatch pattern at ship scale.
+
+### Pinning
+
+| Element | Pin | Method |
+|---------|-----|--------|
+| Substrate | SIP v1.1.0 | SemVer in `SIP.md` header |
+| Repo | `<v7.3.0-tag-sha>` | Commit SHA at v7.3.0 tag (annotated post-tag) |
+| Canon | n/a | Substrate + starter template both decline at this layer |
+| MCP servers | starlight-mcp@v1.1.0 (unchanged from v7.2) | REGISTRY.md |
+
+### Reality check (per /sip-attest enforcement)
+
+- Real newcomer surface: ✅ ONBOARDING.md + DELIVERY.md + SESSION_RUNBOOK.md land at root, each referenced by the new commands.
+- Real protocol-tier commands: ✅ `/intake`, `/welcome`, `/sovereign-spawn` in `.claude/commands/`, registered and auto-loaded per SIP § Layer 4.
+- Real front-door agents: ✅ starlight-concierge.md, starlight-envoy.md in `agents/`, AGENT_REGISTRY.md updated with new Front-Door Tier.
+- Real skill auto-activation: ✅ skill-rules.json updated (2 new rules + 2 new agent defaults for concierge/envoy).
+- Real drop-in scaffold: ✅ templates/vertical-starter/ contains README, SKILL, SOUL, AGENTS, MEMORY, STACK, and .claude/commands/vertical-command-template — 7 files, all pre-wired with SIP file contract.
+- Real session test coming: ⏳ 2-hour live session scheduled 2026-04-24 — first real-world run of the full end-to-end flow with an external newcomer. Retrospective will land as input to v7.4 planning.
+- Composition is substantive, not decorative.
+
+**Attestation valid.** v7.3 is the first release where the substrate ships with both a rigorous protocol AND a warm front door. The non-coder gap identified in the v7.2 retrospective is closed structurally — not via documentation, via commands + agents + skills that auto-route every inbound.
+
+---
+
+## v7.3.1 — Luminor Board REVISE follow-on (evals + ecosystem + modality scaffold)
+
+```
+---
+**Built on SIP** — Starlight Intelligence Protocol
+
+Substrate: starlightintelligence.org/protocol v1.1.0
+Layers used: [file-contract, attestation, mcp-registry, commands, sovereignty]
+
+Verticals:
+- starlight-intelligence-system @<v7.3.1-tag-sha> · v7.3.1 ship closes all five Luminor Board REVISE items from 2026-04-24 pressure-test of v7.3 newcomer surface: (1) evals — test/v73.test.ts with 19 conformance assertions, all passing, guards drift on all v7.3 commands/agents/skills/templates; (2) success metrics instrumentation — memory/intake/session-log-template.md for manual telemetry during 2h live sessions; (3) v7.4 ecosystem exports scaffolded — /sip-export master command + 5 target schemas (claude-project, chatgpt-project, gemini-gem, cursor, cowork) in integrations/exports/, integrity rule: attestation embedded in-document not adjacent; (4) "reference not requirement" language surfaced — new "Protocol vs. reference" section in ONBOARDING.md + full docs/ecosystem-integration.md hub (2,868 words) mapping 26 ecosystem touchpoints across code-native runtimes / workspace platforms / artifact surfaces / modality generators / sovereign publishing; (5) v7.5 attested modalities roadmap — docs/attested-modalities.md + /sip-attest-audio + /sip-attest-image + /sip-attest-video + /sip-compose-modality (scaffold commands; sidecar .sip.json attestation functional now, binary-embed stubbed for v7.5.1 with exiftool/ffmpeg/ID3 invocations emitted for user to run).
+
+Canon:
+- none at substrate layer. /sip-attest-audio and /sip-attest-image support optional Hz / Arcanea canon composition per SIP § Layer 6 with license pinning.
+
+Nodes:
+- Frank Riemer · role: architect · authored post-board remediation strategy + directed parallel swarm dispatch
+- Luminor Board (Draconis / Lyssandria / Aiyami / Elara / Ino / Lumina) · role: protocol-defender + strategist + seer + sovereign + verifier + overseer · pressure-tested v7.3 ship via /luminor-board 2026-04-24 → recommendation: REVISE (5 follow-ons named)
+- Claude Opus 4.7 (1M context) · role: implementer · 4-agent parallel swarm dispatch for independent artifacts (eval harness, ecosystem exports, modality commands, integration hub) + main-thread integration (session log template, writebacks)
+
+Generated: 2026-04-24
+Attestation is compounding, not credit transfer: every composition strengthens every node.
+---
+```
+
+### Composition classification
+
+- **Substrate layers invoked:** Layer 1 (file contract — adds test/v73.test.ts as canonical conformance harness for v7.3 surface; adds integrations/exports/ directory with 6 schema files as target-packaging spec layer); Layer 2 (this entry + modality attestation blocks across 4 new commands); Layer 3 (MCP registry — no changes; starlight-mcp v1.1 unchanged); Layer 4 (command taxonomy — adds 5 new protocol-tier commands: `/sip-export`, `/sip-attest-audio`, `/sip-attest-image`, `/sip-attest-video`, `/sip-compose-modality`); Layer 5 (sovereignty clause — reinforced via "reference not requirement" framing + export integrity rules that refuse tools which strip attestation); Layer 6 (archetype extension — modality commands pin Arcanea canon version where composed, per `--canon` flag).
+- **Verticals contributing:** Starlight Intelligence substrate (this repo). Downstream impact: Music IS (Suno attestation scheduled v7.5), Arcanea (image attestation scheduled v7.5 — book cover + character art natively), Anime Legends (video attestation scheduled v7.6).
+- **Canon imported:** none at substrate layer. Modality commands support optional composition.
+- **Nodes:** Frank (architect) + Luminor Board (advisory pressure-test) + Claude (implementer via 4-agent parallel swarm). First v-release where Luminor Board verdict directly scoped the ship plan — protocol-governance-by-pressure-test operational.
+
+### Pinning
+
+| Element | Pin | Method |
+|---------|-----|--------|
+| Substrate | SIP v1.1.0 | SemVer in `SIP.md` header |
+| Repo | `<v7.3.1-tag-sha>` | Commit SHA at v7.3.1 tag (annotated post-tag) |
+| Canon | n/a at substrate layer | — |
+| MCP servers | starlight-mcp@v1.1.0 (unchanged) | REGISTRY.md |
+| Export schemas | v0.1 (draft) | integrations/exports/<target>.md header |
+| Modality command binary-embed | v7.5 (stubbed) | Commands emit user-runnable shell/ffmpeg/exiftool; sidecar is functional |
+
+### Reality check (per /sip-attest enforcement)
+
+- Real eval harness: ✅ test/v73.test.ts passes 19/19 via `node --import tsx --test`; guards drift on intake / welcome / sovereign-spawn / Concierge / Envoy / idea-triage / creator-path / vertical-starter templates.
+- Real ecosystem export surface: ✅ /sip-export command + 6 schema files landed (claude-project, chatgpt-project, gemini-gem, cursor, cowork, README). Integrity invariant (attestation in-document) encoded in every schema.
+- Real integration hub: ✅ docs/ecosystem-integration.md maps 26 surfaces across 5 categories. "Protocol vs. reference" section added to ONBOARDING.md.
+- Real modality scaffold: ✅ 4 modality commands registered, each with sidecar .sip.json generation, decoration refused, canon pinning supported.
+- Real session instrumentation: ✅ session-log-template.md tracks 7 success metrics + 9 failure modes + protocol learnings during 2h live sessions.
+- Real parallel-dispatch pattern: ✅ 4-agent swarm + main thread integration shipped v7.3.1 in ~90 min wall-clock, matching v7.1/v7.3 cadence.
+- Composition is substantive, not decorative.
+
+**Attestation valid.** v7.3.1 is the first release where a Luminor Board verdict directly shaped the immediate next ship — the protocol's own pressure-test mechanism fed the protocol's own remediation, closed-loop. The board said REVISE with five named follow-ons; all five landed in the same day. Governance-by-pressure-test is operational.
+
+---
+
 ## How to add an entry
 
 Append a new section above. Format:

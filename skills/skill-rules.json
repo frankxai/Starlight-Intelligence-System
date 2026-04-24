@@ -177,6 +177,28 @@
       },
       "priority": "low",
       "load_level": "summary"
+    },
+    {
+      "id": "integration-idea-triage",
+      "skill": "integration/idea-triage",
+      "triggers": {
+        "keywords": ["new here", "have an idea", "want to build", "first time", "where do I start", "can you help", "I want to create", "we want to compose", "our team wants"],
+        "agents": ["starlight-concierge", "starlight-navigator"],
+        "intents": ["intake", "onboarding", "classification"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "integration-creator-path",
+      "skill": "integration/creator-path",
+      "triggers": {
+        "keywords": ["not a coder", "don't use git", "just want to publish", "no terminal", "creator", "founder", "artist", "strategist", "just want the thing"],
+        "agents": ["starlight-envoy", "starlight-weaver"],
+        "intents": ["creator", "publishing", "non-technical-intake"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
@@ -186,6 +208,8 @@
     "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework"],
     "starlight-sage": ["memory-knowledge-synthesis", "intelligence-pattern-recognition"],
     "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis"],
-    "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework"]
+    "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework"],
+    "starlight-concierge": ["integration-idea-triage", "orchestration-context-engineering"],
+    "starlight-envoy": ["integration-creator-path", "memory-knowledge-synthesis"]
   }
 }

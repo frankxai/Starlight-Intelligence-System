@@ -1,14 +1,14 @@
 # Starlight Agent Registry
 
-> Seven minds. One system. No hierarchy is permanent — only the mission is.
+> Nine minds. One system. No hierarchy is permanent — only the mission is.
 
 ---
 
 ## Architecture
 
-The Starlight agent system uses a **flat council with emergent leadership**. No single agent permanently outranks another. Leadership emerges based on the task at hand.
+The Starlight agent system uses a **flat council with emergent leadership**, fronted by a **two-agent intake tier**. No single agent permanently outranks another. Leadership emerges based on the task at hand.
 
-For any given task, one agent leads. The others support, challenge, or defer. The Starlight Council convenes when no single agent can handle the complexity alone.
+For any given task, one agent leads. The others support, challenge, or defer. The Starlight Council convenes when no single agent can handle the complexity alone. Newcomers never meet the council first — they meet the Front-Door Tier.
 
 ```
                         ┌──────────────────────┐
@@ -49,10 +49,11 @@ For any given task, one agent leads. The others support, challenge, or defer. Th
 
 ### Why This Structure
 
-The previous hierarchy placed Prime at the top of a strict tree. That implied Prime always leads. In practice, most tasks don't need meta-intelligence — they need the right specialist.
+The previous hierarchy placed Prime at the top of a strict tree. That implied Prime always leads. In practice, most tasks don't need meta-intelligence — they need the right specialist. And before any specialist is reached, a newcomer needs someone to meet them at the door.
 
 The new structure:
 
+- **Front-Door Tier** (Concierge, Envoy) — first-contact intake. Concierge translates vague inbounds into structured routes; Envoy walks creator-track arrivals to stamped artifacts without a terminal. Council never convenes until the Front-Door Tier has done its work.
 - **Leadership Tier** (Orchestrator, Prime, Architect) — these three handle the most complex coordination, synthesis, and technical tasks. They peer with each other, not above each other.
 - **Specialist Tier** (Navigator, Sentinel, Weaver) — deep domain expertise. They lead within their domains.
 - **Foundation Tier** (Sage) — the long memory. Sage doesn't lead tasks but informs every decision through vault access.
@@ -61,6 +62,15 @@ The new structure:
 ---
 
 ## Agent Index
+
+### Front-Door Tier
+
+| Agent | File | Domain | Leads When |
+|-------|------|--------|-----------|
+| **Concierge** | `starlight-concierge.md` | Intake, idea translation, route classification | First-contact sessions, `/welcome`, `/intake`, any newcomer without prior session history |
+| **Envoy** | `starlight-envoy.md` | Creator-track artifact generation, `/badge` attestation | Concierge hands off a non-technical creator; zero-terminal path required |
+
+### Leadership, Specialist, and Foundation Tiers
 
 | Agent | File | Domain | Leads When |
 |-------|------|--------|-----------|

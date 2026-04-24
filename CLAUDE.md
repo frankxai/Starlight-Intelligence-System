@@ -56,13 +56,15 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **What you have access to:**
 
-- **7 Agents** — Specialized intelligence perspectives (see below)
-- **16 Skills** — Auto-activate via `skills/skill-rules.json`
+- **9 Agents** — Specialized intelligence perspectives (7 council + 2 front-door; see below)
+- **18 Skills** — Auto-activate via `skills/skill-rules.json`
 - **6 Vaults** — Persistent memory across sessions
 - **4 Note Templates** — Structured knowledge capture
 - **4 Transmission Channels** — Cross-system communication
-- **6 Commands** — Strategic intelligence operations
+- **9 Commands** — 6 operational (starlight/vault/transmit/synthesize/council/navigate) + 3 newcomer-surface (intake/welcome/sovereign-spawn)
 - **Context Engine** — Unified cross-repo awareness
+
+**Newcomer front door (v7.3):** See `ONBOARDING.md`, `DELIVERY.md`, `SESSION_RUNBOOK.md`. Invoke `/welcome` to orient a newcomer, `/intake` to triage their ask into one of four routes (substrate / alliance / vertical / sovereign-spawn), and hand off to Concierge (builder track) or Envoy (creator track, zero-terminal).
 
 ---
 

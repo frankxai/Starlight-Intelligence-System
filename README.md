@@ -22,6 +22,8 @@
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
 > **New here?** Don't fork this repo. Fork the **[SIP adoption kit](https://github.com/frankxai/starlight)** — eleven markdown files, no code, [ship your first attested artifact in 60 seconds](https://github.com/frankxai/starlight#readme). Compose upward when you're ready.
+>
+> **New in v7.3.1** (2026-04-24): Newcomer surface shipped — `/welcome`, `/intake`, `/sovereign-spawn` protocol commands + Concierge + Envoy front-door agents + ecosystem export schemas (Claude Projects, ChatGPT Projects, Gemini Gems, Cursor, Cowork) + attested-modality scaffolds (audio/image/video/compose). Read [`ONBOARDING.md`](ONBOARDING.md), [`DELIVERY.md`](DELIVERY.md), [`docs/ecosystem-integration.md`](docs/ecosystem-integration.md). Board-verdict driven ship — see [ATTESTATIONS.md § v7.3.1](ATTESTATIONS.md).
 
 [![Built on SIP](https://starlightintelligence.org/badge/v1.1.0)](https://starlightintelligence.org/protocol)
 
