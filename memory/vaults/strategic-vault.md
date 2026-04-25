@@ -15,6 +15,7 @@
 |------|-------|----------|------------|
 | 2026-02-10 | Starlight Intelligence System Architecture Decision | architecture | 0.95 |
 | 2026-02-10 | Ecosystem Integration Strategy | integration | 0.90 |
+| 2026-04-25 | SIS Claws Architecture Decision | architecture | 0.95 |
 
 ---
 
@@ -40,7 +41,37 @@ Rationale: This mirrors the evolved patterns from ACOS (agents + skills + comman
 
 ---
 
-### [2026-02-10] Ecosystem Integration Strategy
+### [2026-04-25] SIS Claws Architecture Decision
+
+**Category:** architecture
+**Confidence:** 0.95
+**Source:** Starlight Prime + Architect / Council Session
+**Related:** Technical Vault — Claw Contract Pattern, Strategic Vault — Ecosystem Integration Strategy
+
+Decision: SIS becomes Memory substrate + MCP server + installable Claw teams + conformance harness. Not just a repo, not just a prompt pack.
+
+Core distinction formalized:
+- **Agent** = reasoning role (Prime, Architect, Sentinel…)
+- **Skill** = callable capability (Pattern Recognition, Vault Management…)
+- **MCP** = tool interface (filesystem, github, sis-memory…)
+- **Claw** = installable operational unit with bounded lifecycle + permission surface
+- **SIS** = the sovereign memory substrate
+
+**Five founding Claws (Phase 1 + 2):**
+1. Bootstrap Claw — install, configure, verify
+2. Memory Claw — vault operations as living memory
+3. Sentinel Claw — permissions, secrets, mutation gates
+4. Genius Claw — extract distinctive intelligence from scattered sources
+5. Reclamation Claw — turn knowledge chaos into functional second brain
+
+These five create the complete founding loop: Install → Remember → Discover → Organize → Protect.
+
+**Rationale:** The substrate already has agents, vaults, MCP, skills, and platform adapters. The missing layer was packaged agency — Claws fill that gap without replacing the substrate's cognitive roles.
+
+**Phase 3 expansion (future):** Creator, Business, Attestation Claws.
+**Phase 4 meta (future):** Architect, Conformance, Release Claws (SIS builds SIS).
+
+---
 
 **Category:** integration
 **Confidence:** 0.90

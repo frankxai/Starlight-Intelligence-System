@@ -177,13 +177,57 @@
       },
       "priority": "low",
       "load_level": "summary"
+    },
+    {
+      "id": "safety-permission-gate",
+      "skill": "safety/permission-gate",
+      "triggers": {
+        "keywords": ["write", "move", "delete", "execute", "export", "send", "upload", "permission"],
+        "agents": ["starlight-sentinel"],
+        "intents": ["mutation", "security", "permission"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "safety-secret-detector",
+      "skill": "safety/secret-detector",
+      "triggers": {
+        "keywords": ["export", "publish", "share", "transmit", "credentials", "secrets", "api key"],
+        "agents": ["starlight-sentinel"],
+        "intents": ["export", "security", "secrets"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "safety-private-public-split",
+      "skill": "safety/private-public-split",
+      "triggers": {
+        "keywords": ["export", "public vault", "share memory", "platform pack", "private", "public"],
+        "agents": ["starlight-sentinel", "starlight-sage"],
+        "intents": ["export", "privacy", "vault"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "safety-mutation-approval",
+      "skill": "safety/mutation-approval",
+      "triggers": {
+        "keywords": ["apply changes", "execute plan", "confirm", "overwrite", "rename", "delete", "mutation"],
+        "agents": ["starlight-sentinel"],
+        "intents": ["mutation", "approval", "file-operation"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
     "starlight-prime": ["intelligence-strategic-reasoning", "intelligence-systems-thinking", "intelligence-decision-framework"],
     "starlight-architect": ["intelligence-systems-thinking", "intelligence-pattern-recognition"],
     "starlight-orchestrator": ["orchestration-multi-agent-coordination", "orchestration-workflow-design"],
-    "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework"],
+    "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework", "safety-permission-gate", "safety-secret-detector", "safety-private-public-split", "safety-mutation-approval"],
     "starlight-sage": ["memory-knowledge-synthesis", "intelligence-pattern-recognition"],
     "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis"],
     "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework"]

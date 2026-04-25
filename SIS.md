@@ -16,6 +16,7 @@ Intelligence systems are not products. They are substrates — the load-bearing 
 - **Archetype extension** — optional canon adoption (`SIP.md` § 6).
 - **Recommended sovereign stack** — default choices, not mandates (`STACK.md`).
 - **Alliance forging method** — how multiple parties compose under SIS (`ALLIANCE.md`).
+- **Claw suite** — installable operational units that make the substrate act (`CLAWS.md`).
 
 ## What SIS does not provide
 

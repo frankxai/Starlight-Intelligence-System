@@ -16,10 +16,10 @@ The Starlight Skill Architecture defines how capabilities are organized, activat
 STARLIGHT SKILL SYSTEM
 =======================
 
-Layer 1: CATEGORIES (4 domains)
-  Intelligence, Orchestration, Memory, Integration
+Layer 1: CATEGORIES (5 domains)
+  Intelligence, Orchestration, Memory, Integration, Safety
 
-Layer 2: SKILLS (16 capabilities)
+Layer 2: SKILLS (20 capabilities)
   4 skills per category
 
 Layer 3: PROCEDURES (within each skill)
@@ -69,6 +69,16 @@ Cross-system connection capabilities.
 | Ecosystem Sync | `integration/ecosystem-sync/SKILL.md` | Multi-system synchronization |
 | Transmission Protocol | `integration/transmission-protocol/SKILL.md` | Cross-system communication |
 | Universal Adapter | `integration/universal-adapter/SKILL.md` | External system integration |
+
+### Safety Skills
+Permission, privacy, and mutation-control capabilities. Cross-cut all Claws.
+
+| Skill | File | Purpose |
+|-------|------|---------|
+| Permission Gate | `safety/permission-gate/SKILL.md` | Gate all mutations against declared Claw permissions |
+| Secret Detector | `safety/secret-detector/SKILL.md` | Scan exports for credentials and sensitive data |
+| Private/Public Split | `safety/private-public-split/SKILL.md` | Enforce vault privacy boundaries on exports |
+| Mutation Approval | `safety/mutation-approval/SKILL.md` | Require explicit user confirmation before file changes |
 
 ---
 
