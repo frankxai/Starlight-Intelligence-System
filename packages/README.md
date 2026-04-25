@@ -76,7 +76,7 @@ Install via: `openclaw install frankxai/sis-bootstrap-claw`
 **npm:** `@arcanea/sis-skills`
 
 Compiled skill definitions and activation rules for distribution. Includes:
-- All 16 core SIS skills (intelligence, orchestration, memory, integration)
+- All 20 core SIS skills (intelligence, orchestration, memory, integration, safety)
 - 4 safety skills (permission-gate, secret-detector, private-public-split, mutation-approval)
 - `skill-rules.json` with activation triggers
 - Platform-specific skill loader adapters
