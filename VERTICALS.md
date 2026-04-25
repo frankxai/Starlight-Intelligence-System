@@ -127,6 +127,23 @@ Frank's personal posture toward alliances: **freely and abundantly.** Time and a
 
 ---
 
+## Sovereign domain sub-stacks (verticals built on SIP via /spawn-domain-stack)
+
+Domain sub-stacks are forkable reference verticals. Unlike the sovereign verticals above (operated by a specific entity), these are anonymized scaffolds that sovereign practitioners fork into their own private practice via `/sovereign-spawn` or `/spawn-domain-stack`. Attribution compounds via "Built on SIP" on shipped artifacts; no ownership claim transfers.
+
+### HR Intelligence
+- **Class:** sovereign domain sub-stack (reference vertical)
+- **Domain:** HR practiced as people-flourishing science — six sub-systems (Hiring, Performance, Training, Culture, Talent, Org) composed into one cohesive intelligence stack.
+- **Owner:** open reference (forkable by sovereign practitioners).
+- **Status:** `scaffolded — v0.1`.
+- **Primary repo:** `verticals/hr-intelligence/` in `frankxai/Starlight-Intelligence-System`.
+- **Sub-systems:** `hiring` · `performance` · `training` · `culture` · `talent` · `org`.
+- **Canon:** declines defining its own canon; optional composition with Arcanea canon (Hz grounding) where practitioner adopts.
+- **Compounds:** practitioners forking + attestation graph compounding across every forked instance.
+- **SIP commands:** 28 commands across `/hire-*` (5) · `/perf-*` (5) · `/training-*` (5) · `/culture-*` (4) · `/talent-*` (5) · `/org-*` (4) prefixes.
+
+---
+
 ## Registry rules
 
 - New verticals spawn via `/vertical-spawn`. New alliances forge via `/alliance-forge`.

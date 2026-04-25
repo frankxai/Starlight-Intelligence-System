@@ -17,6 +17,8 @@ SIP's compounding moat is attestation that travels. A "Built on SIP" block stamp
 | `gemini-gem` | Single `.md` (front-matter + instructions body) | None in web; yes via Gemini CLI | Block in Gem instructions | Single-user (web) or shared (Workspace) |
 | `cursor` | `.cursorrules` + `mcp.json` + `.cursor/knowledge/` | Native via `~/.cursor/mcp.json` | Block in `.cursorrules` header | Single-user, per-repo |
 | `cowork` | `.zip` (project-config + shared-workspace manifest + knowledge/) | Native (Claude Project variant) | Block in workspace README + collaborators' custom instructions | Multi-user, real-time collaborative |
+| `microsoft-copilot` | `.zip` (declarative agent manifest + knowledge/ + optional API plugin) | None (knowledge files cover gap) | Block in instructions (first 3000 chars) + standalone attestation.md + manifest.sip | Enterprise tenant via Copilot Studio import |
+| `custom-gpt` | Directory (`gpt-config.json` + instructions + knowledge/ up to 20 files) | None (Actions only) | Block in instructions (first 3000 chars) + standalone attestation.md + gpt-config.sip | Public / private-share / team / enterprise via GPT Builder |
 | `notion-ai` | Notion page export (`.zip` of markdown + assets) | None | Block at top of root page + in page properties | Multi-user via Notion workspace |
 
 ## Universal rule — non-negotiable

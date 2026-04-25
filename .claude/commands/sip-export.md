@@ -1,6 +1,6 @@
 ---
 name: sip-export
-description: Export a SIP artifact into a target ecosystem's native packaging while preserving "Built on SIP" attestation. Targets — claude-project, chatgpt-project, gemini-gem, cursor, cowork, notion-ai. Refuses any target that strips attestation.
+description: Export a SIP artifact into a target ecosystem's native packaging while preserving "Built on SIP" attestation. Targets — claude-project, chatgpt-project, gemini-gem, cursor, cowork, microsoft-copilot, custom-gpt, notion-ai. Refuses any target that strips attestation.
 allowed-tools: Read, Write, Grep, Glob, Bash
 argument-hint: <target> <artifact-path> [--output <dir>]
 ---
@@ -21,13 +21,13 @@ $ARGUMENTS
 
 ## Allowed targets
 
-`claude-project` · `chatgpt-project` · `gemini-gem` · `cursor` · `cowork` · `notion-ai`
+`claude-project` · `chatgpt-project` · `gemini-gem` · `cursor` · `cowork` · `microsoft-copilot` · `custom-gpt` · `notion-ai`
 
 Anything else halts at step 1.
 
 ## Process
 
-1. **Validate target.** Parse first positional arg. If not in the allowed list, halt. Emit: `Target "<arg>" not supported. Allowed: claude-project, chatgpt-project, gemini-gem, cursor, cowork, notion-ai. Unsupported targets fail loud by design.` Do not silently fall back.
+1. **Validate target.** Parse first positional arg. If not in the allowed list, halt. Emit: `Target "<arg>" not supported. Allowed: claude-project, chatgpt-project, gemini-gem, cursor, cowork, microsoft-copilot, custom-gpt, notion-ai. Unsupported targets fail loud by design.` Do not silently fall back.
 
 2. **Validate attestation.** Scan the artifact for a "Built on SIP" block matching the format in `sip-attest.md` § Output format. If absent or malformed, halt. Emit: `Artifact has no valid "Built on SIP" block. Run /sip-attest <artifact-path> first. Exporting unattested artifacts would decorate the ecosystem with hollow claims — refused.` Do not proceed.
 

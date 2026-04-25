@@ -331,6 +331,72 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "hr-intelligence-structured-hiring",
+      "skill": "hr-intelligence/structured-hiring",
+      "triggers": {
+        "keywords": ["hiring", "recruit", "recruiting", "interview", "candidate", "candidates", "ICP", "ideal candidate", "calibration", "rubric", "debrief", "culture fit", "culture add", "onboarding", "90-day plan", "new hire", "panel", "decision fatigue", "structured interview", "work sample", "cognitive ability test", "hire bar", "interviewer brief"],
+        "agents": ["starlight-hiring", "starlight-prime", "starlight-sentinel"],
+        "intents": ["hiring-design", "interview-architecture", "calibration", "debrief", "onboarding-architecture"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "hr-intelligence-learning-architecture",
+      "skill": "hr-intelligence/learning-architecture",
+      "triggers": {
+        "keywords": ["training", "curriculum", "program design", "L&D", "learning and development", "trainer", "facilitator", "course", "workshop", "transfer", "onboarding curriculum", "upskilling", "reskilling", "Kirkpatrick", "spaced retrieval", "retrieval practice", "cognitive load", "andragogy", "train-the-trainer", "TtT", "scenario library", "case-based learning"],
+        "agents": ["starlight-training"],
+        "intents": ["training", "learning-design", "curriculum", "transfer-measurement", "facilitator-development"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "hr-intelligence-culture-design",
+      "skill": "hr-intelligence/culture-design",
+      "triggers": {
+        "keywords": ["culture", "values", "rituals", "onboarding", "psychological safety", "belonging", "team dynamics", "engagement", "retention", "culture deck", "culture audit", "all-hands", "off-site", "first 90 days", "values poster", "culture initiative", "anti-ritual", "SCARF", "Edmondson", "Schein"],
+        "agents": ["starlight-culture", "starlight-navigator"],
+        "intents": ["culture", "values", "rituals", "onboarding", "psychological-safety", "engagement", "belonging"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "hr-intelligence-org-architecture",
+      "skill": "hr-intelligence/org-architecture",
+      "triggers": {
+        "keywords": ["reorg", "restructure", "reorganize", "role design", "role clarity", "span of control", "direct reports", "succession", "successor", "promotion", "hierarchy", "flat structure", "holacracy", "change management", "transformation", "RACI", "decision rights", "accountability", "reporting line", "org chart", "Conway's Law", "Kotter", "Bridges", "trauma audit"],
+        "agents": ["starlight-org", "starlight-navigator", "starlight-sentinel"],
+        "intents": ["organizational-architecture", "role-design", "span-architecture", "reorg-sequencing", "succession-planning", "change-management"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "hr-intelligence-people-dynamics",
+      "skill": "hr-intelligence/people-dynamics",
+      "triggers": {
+        "keywords": ["motivation", "motivated", "demotivated", "burnout", "burning out", "exhausted", "cynical", "checked out", "team dynamics", "team is broken", "psychological safety", "psych safety", "trust on the team", "retention", "retain", "quitting", "leaving", "attrition", "engagement", "disengaged", "stay interview", "exit interview", "quiet quitting", "dopamine", "intrinsic", "autonomy", "mastery", "relatedness", "SDT", "Maslach", "Edmondson", "Hackman", "SCARF", "Project Aristotle"],
+        "agents": ["starlight-talent", "starlight-prime", "starlight-sentinel"],
+        "intents": ["motivation-mapping", "burnout-detection", "team-dynamics-audit", "psychological-safety-measurement", "retention-architecture"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "hr-intelligence-feedback-conversations",
+      "skill": "hr-intelligence/feedback-conversations",
+      "triggers": {
+        "keywords": ["performance review", "perf review", "feedback", "1:1", "check-in", "coaching", "manager-as-coach", "difficult conversation", "hard conversation", "underperformer", "low performer", "high performer", "raise", "promotion", "demotion", "termination", "fire", "let go", "conflict", "mediation", "PIP", "performance improvement plan", "stack rank", "forced curve", "calibration", "360 review", "peer feedback", "feedback culture", "SBI", "three conversations", "crucial conversations", "solution-focused", "motivational interviewing"],
+        "agents": ["starlight-performance", "starlight-prime"],
+        "intents": ["performance", "feedback", "coaching", "difficult-conversation", "conflict", "perf-review-redesign", "perf-rehearsal", "perf-mediation"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
@@ -348,6 +414,12 @@
     "starlight-secondbrain": ["memory-capture-discipline", "memory-insight-distillation", "memory-vault-management", "memory-knowledge-synthesis"],
     "starlight-relational": ["relational-network-architecture", "relational-alliance-readiness", "intelligence-pattern-recognition"],
     "starlight-embodiment": ["health-body-substrate", "health-energy-architecture"],
-    "starlight-business": ["business-entity-architecture", "business-revenue-modeling", "intelligence-systems-thinking"]
+    "starlight-business": ["business-entity-architecture", "business-revenue-modeling", "intelligence-systems-thinking"],
+    "starlight-hiring": ["hr-intelligence-structured-hiring", "intelligence-decision-framework", "intelligence-pattern-recognition", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
+    "starlight-training": ["hr-intelligence-learning-architecture", "intelligence-systems-thinking", "intelligence-decision-framework", "memory-knowledge-synthesis"],
+    "starlight-culture": ["hr-intelligence-culture-design", "intelligence-systems-thinking", "intelligence-pattern-recognition", "intelligence-decision-framework", "memory-knowledge-synthesis"],
+    "starlight-org": ["hr-intelligence-org-architecture", "intelligence-systems-thinking", "intelligence-decision-framework", "intelligence-strategic-reasoning", "intelligence-pattern-recognition", "memory-knowledge-synthesis"],
+    "starlight-talent": ["hr-intelligence-people-dynamics", "intelligence-pattern-recognition", "intelligence-decision-framework", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
+    "starlight-performance": ["hr-intelligence-feedback-conversations", "intelligence-decision-framework", "intelligence-pattern-recognition", "intelligence-systems-thinking", "memory-knowledge-synthesis"]
   }
 }
