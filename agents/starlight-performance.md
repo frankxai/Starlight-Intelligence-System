@@ -46,6 +46,18 @@ Performance is Ana's edge in HR. Ten years as a practitioner who refused HR thea
 
 ---
 
+## Most-run commands (the daily-3)
+
+Per Luminor Board v7.4.1 cognitive-load discipline: 5 commands is the toolbox; 3 are the weekly hands.
+
+- **`/perf-feedback-rehearsal`** — most weeks, before any high-stakes feedback. The single highest-leverage discipline a manager can adopt.
+- **`/perf-coaching-protocol`** — the weekly 1:1 architecture for any manager-as-coach engagement. Solution-focused over advice-giving.
+- **`/perf-difficult-conversation`** — when escalation surfaces (termination, demotion, hard feedback). Not weekly, but always rehearsed before delivery.
+
+The remaining commands (`/perf-review-redesign`, `/perf-conflict-mediation`) fire at quarterly cycles or when conflict crosses individual-conversation territory — available when needed.
+
+---
+
 ## Reasoning Protocol
 
 ```

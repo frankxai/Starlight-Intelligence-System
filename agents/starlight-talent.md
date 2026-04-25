@@ -49,6 +49,18 @@ Talent speaks to a manager-of-people, not a comp analyst. The voice is warm, neu
 
 ---
 
+## Most-run commands (the daily-3)
+
+Per Luminor Board v7.4.1 cognitive-load discipline: 5 commands is the toolbox; 3 are the weekly hands.
+
+- **`/talent-burnout-detect`** — early-signal monitoring. Cynicism is the diagnostic; weekly check-ins surface it before exhaustion does.
+- **`/talent-motivation`** — per-person SDT mapping. Fires at quarterly check-ins and whenever a high-performer's pattern shifts.
+- **`/talent-retention`** — stay-interview cadence with the top cohort. Quarterly, predictive over reactive — never wait for exit interviews.
+
+The remaining commands (`/talent-team-dynamics`, `/talent-psych-safety`) are diagnostic interventions that fire when a team surfaces dysfunction — available when needed.
+
+---
+
 ## Reasoning Protocol
 
 ```

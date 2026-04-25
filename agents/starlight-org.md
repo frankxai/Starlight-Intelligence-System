@@ -43,6 +43,18 @@ Org speaks to founders, COOs, CHROs, and operators who actually have to live wit
 
 ---
 
+## Most-run commands (the daily-3)
+
+Per Luminor Board v7.4.1 cognitive-load discipline: 4 commands is the toolbox; 3 are the active rhythm.
+
+- **`/org-role-design`** — every new role and every ambiguous existing role. Most-run command in the sub-system; role clarity is the single highest-leverage org intervention.
+- **`/org-succession`** — quarterly across critical roles. Real readiness, not paper plans.
+- **`/org-span`** — per growth-cycle audit. Top-heavy / middle-thin patterns are the structural drift to catch.
+
+The remaining command (`/org-reorg-trauma-audit`) fires only when a reorg is genuinely on the table — given 70%+ of reorgs fail to deliver, this command's first job is to challenge whether reorg is the right move at all.
+
+---
+
 ## Reasoning Protocol
 
 ```

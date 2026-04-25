@@ -44,6 +44,18 @@ Culture speaks to founders, COOs, and Heads of People who are tired of culture-a
 
 ---
 
+## Most-run commands (the daily-3)
+
+Per Luminor Board v7.4.1 cognitive-load discipline: 4 commands is the toolbox; 3 are the active rhythm.
+
+- **`/culture-values-ops`** — single highest-leverage culture move: turning declared values into systems. Most cycles touch this.
+- **`/culture-rituals`** — quarterly architecture review of the four-cadence ritual map. Rituals erode silently; cadence audit catches drift.
+- **`/culture-onboarding-90`** — fires per new hire. Onboarding is where culture either welcomes or excludes.
+
+The remaining command (`/culture-design`) is the heavy audit-and-redesign that fires once per major shift (founder-handoff, growth-stage transition, post-merger).
+
+---
+
 ## Reasoning Protocol
 
 ```

@@ -1,5 +1,23 @@
 # SUB-SYSTEMS — HR Intelligence Architecture
 
+## Daily-5 across the stack (cognitive-load-aware entry pattern)
+
+Per Luminor Board v7.4.1 ruling: 28 commands is the toolbox; 5 are the daily hands. A practitioner forking this vertical begins with these five and expands to the full 28 as practice matures.
+
+| Command | Sub-system | Why this one first |
+|---|---|---|
+| **`/hire-icp`** | Hiring | Every active role starts here. The bookend. |
+| **`/perf-feedback-rehearsal`** | Performance | Single highest-leverage discipline a manager-of-others can adopt. |
+| **`/talent-burnout-detect`** | Talent | Early-signal monitoring; cynicism is the diagnostic before exhaustion. |
+| **`/culture-values-ops`** | Culture | Turning declared values into systems is where culture work compounds. |
+| **`/org-role-design`** | Org | Role clarity is the single highest-leverage org intervention. |
+
+Each sub-system agent (`starlight-hiring`, `-performance`, `-training`, `-culture`, `-talent`, `-org`) declares its own daily-3 in the agent's "Most-run commands" section. Training is the sixth sub-system — its rhythm is program-cyclic rather than weekly, so the daily-5 omits it; bring in `/training-curriculum` when a program lands.
+
+The architecture scales **to** the practitioner, not **at** them. Twenty-eight commands is what's available; five are what's running this week.
+
+---
+
 > The canonical sub-system map for this vertical. Six sub-systems composed into one cohesive HR Intelligence stack. Sub-system content lives at the substrate root (under `agents/`, `skills/hr-intelligence/`, `.claude/commands/`, `integrations/starter-packs/friend-starter/knowledge/`). This document is the wrapper that names the composition.
 
 ---

@@ -46,6 +46,18 @@ The voice is direct, evidence-based, allergic to compliance theater. Cite Roedig
 
 ---
 
+## Most-run commands (the daily-3)
+
+Per Luminor Board v7.4.1 cognitive-load discipline: 5 commands is the toolbox; 3 are the weekly hands.
+
+- **`/training-curriculum`** — the foundation. Every program starts with outcome-back curriculum design.
+- **`/training-program-design`** — wraps curriculum with cadence, manager engagement, ROI. Most program-design weeks live here.
+- **`/training-scenarios`** — during live cohort delivery, scenarios carry learning into transfer.
+
+The remaining commands (`/training-measure-transfer`, `/training-coach-trainer`) fire at 30/60/90-day windows or when an SME-as-trainer onboards — quarterly rhythms, not weekly.
+
+---
+
 ## Reasoning Protocol
 
 ```

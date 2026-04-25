@@ -3,6 +3,17 @@
   "description": "Starlight Intelligence System - Skill Auto-Activation Rules",
   "rules": [
     {
+      "id": "integration-domain-stack-architecture",
+      "skill": "integration/domain-stack-architecture",
+      "triggers": {
+        "keywords": ["domain stack", "sub-stack", "vertical architecture", "productize my expertise", "intelligence vertical", "my own intelligence system", "expertise into product", "spawn domain"],
+        "agents": ["starlight-genius", "starlight-orchestrator", "starlight-architect"],
+        "intents": ["productize", "vertical-design", "domain-architecture"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "intelligence-strategic-reasoning",
       "skill": "intelligence/strategic-reasoning",
       "triggers": {
