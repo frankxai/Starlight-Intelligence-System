@@ -16,7 +16,7 @@ Voice & Video IS is the layer where text becomes voice and voice becomes video �
 - **Video production.** Talking-head, b-roll, animation, Remotion templated, Veo / Runway / Sora generation. All attested via `/sip-attest-video`.
 - **Composite media.** Multi-modal compositions (music video, podcast with chapters, narrated explainer) attested via `/sip-compose-modality`.
 - **Catalog architecture.** Catalog compounding logic shared with Music IS — both verticals compose into Arcanea Records' catalog when canon-aligned.
-- **Local voice room** (Phase 2). HavenCore-style local voice loop + ElevenLabs TTS for the Orchestrator's voice mode.
+- **Local voice room.** Local voice loop + ElevenLabs TTS for the Orchestrator's voice mode. Cockpit agent: `agents/starlight-voice-operator.md`. Handoff packet contract: `skills/orchestration/agent-handoff-packet.md`. Install scaffold: `private/voice-operator/`. Engineering spec: `docs/specs/2026-04-26-voice-operator-engineering-v1.md`.
 
 ---
 
@@ -34,11 +34,22 @@ Voice & Video IS is the layer where text becomes voice and voice becomes video �
 
 ## Primary commands
 
-- **`/sip-attest-audio`** — attest a music track / voice-over / podcast / soundscape (Suno, Udio, ElevenLabs, MusicGen).
-- **`/sip-attest-video`** — attest a video clip / trailer / music video / episode teaser (Veo, Runway, Sora, Pika).
-- **`/sip-compose-modality`** — composite attestation for multi-modal artifacts.
-- **`/factory`** — content publishing pipeline (existing FrankX command, composes here).
-- **Skills:** `suno-ai-mastery`, `suno-prompt-architect`, `arcanea-book-cover` (image-side modality counterpart), `algorithmic-art`, `ui-ux-pro-max`.
+> **Substrate-canon honesty (per OpenClaw v7.5 CRITICAL-2):** Voice & Video IS surface composes commands from this substrate (Starlight), from FrankX vertical, and from Arcanea vertical. Where each command lives is named explicitly below.
+
+- **`/sip-attest-audio`** *(this substrate)* — attest a music track / voice-over / podcast / soundscape (Suno, Udio, ElevenLabs, MusicGen).
+- **`/sip-attest-video`** *(this substrate)* — attest a video clip / trailer / music video / episode teaser (Veo, Runway, Sora, Pika).
+- **`/sip-compose-modality`** *(this substrate)* — composite attestation for multi-modal artifacts.
+- **`/factory`** *(external — provided by FrankX vertical at `frankxai/frankx`, not in this substrate)* — content publishing pipeline. Composes here when the FrankX vertical is installed.
+- **Skills:** `suno-ai-mastery`, `suno-prompt-architect` *(this substrate)*; `arcanea-book-cover` *(Arcanea vertical, image-side modality)*; `algorithmic-art`, `ui-ux-pro-max` *(this substrate)*.
+
+### Required external commands
+
+To run Voice & Video IS at production scale, the practitioner needs:
+- **This substrate** for modality attestation commands (the `/sip-attest-*` family) and core production skills.
+- **FrankX vertical** (`frankxai/frankx`) for `/factory` content-publishing pipeline.
+- **Arcanea vertical** (`frankxai/arcanea-ecosystem`) for canon-aligned book covers, character art, and Hz-grounded soundscapes (CC-BY-NC license terms apply).
+
+Forking Voice & Video IS without those external repos means the practitioner reimplements the publishing pipeline + canon import per instance. Phase 1 of MASSIVE_ACTION_PLAN.md decouples cross-repo dependencies; until then this is honest documentation of which dependency lives where.
 
 ---
 

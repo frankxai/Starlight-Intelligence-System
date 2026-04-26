@@ -30,9 +30,11 @@ Calls Claude Code / Codex CLI / Gemini CLI / OpenCode / GitHub / Vercel / Supaba
 
 ## Routing chain
 
-**Today (shipped):** `/arco` (brand router) → `/ao` (CLI router) → Guardian / sub-system agent (domain).
+**Today (shipped, in `frankxai/frankx` repo per audit 2026-04-25):** `/arco` (brand router) → `/ao` (CLI router) → Guardian / sub-system agent (domain). These commands are **not** in this substrate; they live in the FrankX vertical and are the canonical brand-router implementation today.
 
-**Target (v7.5+):** Voice or text intent → Starlight Orchestrator → Memory Graph context fetch → IS team selection → CLI routing → execution → log → graph write-back → daily brief.
+**In this substrate today (v7.5.1):** command surface is staged in `core/orchestrator/harnesses/{claude,codex,gemini,opencode}/` — each harness folder ships `system-prompt.md` + `mcp-config.json` + `allowlisted-tools.md` (configuration spec, not yet executable as a wrapped CLI). See `core/orchestrator/HARNESS-STATUS.md` for per-harness readiness. Promotion to executable shell wrapper (`starlight` CLI alias) lands per Phase 1.1 of `MASSIVE_ACTION_PLAN.md`.
+
+**Target (v7.6+):** Voice or text intent → Starlight Orchestrator (`@starlight/orchestrator` npm package, decoupled from FrankX) → Memory Graph context fetch (Mem0 + Graphiti per Phase 1) → IS team selection → CLI routing → execution → log → graph write-back → daily brief.
 
 ---
 
@@ -56,7 +58,7 @@ Each CLI has its own harness folder under `harnesses/{claude,codex,gemini,openco
 - **Routing scaffolding:** present in existing `arcanea-orchestrator/` (audited 2026-04-25; v0.1.0 local, NOT on npm — to be promoted to `@starlight/orchestrator` and published per Phase 1).
 - **CLI harnesses:** stub folders present in this directory; system prompts and MCP configs land in Phase 1.
 - **Memory Graph integration:** scheduled Phase 1 (Mem0 + Graphiti install).
-- **Voice room:** scheduled Phase 2 (HavenCore-style local + Vercel mirror).
+- **Voice room:** scaffolded 2026-04-26 — agent at `agents/starlight-voice-operator.md`, handoff packet contract at `skills/orchestration/agent-handoff-packet.md`, install scaffold at `private/voice-operator/`. Phase 1 = single-device PC cockpit; Phase 2 = phone PWA + Cloudflare Tunnel. See `docs/specs/2026-04-26-voice-operator-v1.md` and `docs/specs/2026-04-26-voice-operator-engineering-v1.md`.
 - **Workspace switching:** scheduled Phase 2 (Windows virtual desktops + Switch-Workspace.ps1).
 
 See `MASSIVE_ACTION_PLAN.md` § 4 for the full multi-CLI harness specification and § 10 for the phased build order.

@@ -68,10 +68,19 @@ The new structure:
 
 ### Front-Door Tier
 
+This tier owns the surface between human intent and the deep agents. Three roles, one tier:
+
+- **Concierge** — first-contact intake (newcomer, no prior session history)
+- **Envoy** — creator-track artifact generation (zero-terminal handoff from Concierge)
+- **Voice Operator** — sessioned cockpit (real-time, executive-pace, voice or cockpit-pace text)
+
+Concierge and Voice Operator never overlap: Concierge owns *strangers*, Voice owns *sessioned users*. If a stranger reaches a voice frontend, Voice immediately hands to Concierge with a packet. Envoy receives Concierge's creator-track handoffs and is unaffected by Voice.
+
 | Agent | File | Domain | Leads When |
 |-------|------|--------|-----------|
 | **Concierge** | `starlight-concierge.md` | Intake, idea translation, route classification | First-contact sessions, `/welcome`, `/intake`, any newcomer without prior session history |
 | **Envoy** | `starlight-envoy.md` | Creator-track artifact generation, `/badge` attestation | Concierge hands off a non-technical creator; zero-terminal path required |
+| **Voice Operator** | `starlight-voice-operator.md` | Real-time intent capture, classification, handoff packet generation, approval-gate enforcement | Sessioned cockpit-pace input (voice or executive text); produces packets via `agent-handoff-packet` skill that any deep agent consumes |
 
 ### Excavation Tier
 

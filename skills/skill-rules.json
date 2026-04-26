@@ -58,6 +58,17 @@
       "load_level": "core"
     },
     {
+      "id": "orchestration-agent-handoff-packet",
+      "skill": "orchestration/agent-handoff-packet",
+      "triggers": {
+        "keywords": ["handoff packet", "route this to", "dispatch to agent", "pass to claude code", "build a packet", "hand to orchestrator", "send to council", "route the work"],
+        "agents": ["starlight-voice-operator", "starlight-orchestrator", "starlight-concierge", "starlight-prime"],
+        "intents": ["handoff", "routing", "dispatch", "agent-coordination"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "orchestration-multi-agent-coordination",
       "skill": "orchestration/multi-agent-coordination",
       "triggers": {
@@ -431,6 +442,7 @@
     "starlight-culture": ["hr-intelligence-culture-design", "intelligence-systems-thinking", "intelligence-pattern-recognition", "intelligence-decision-framework", "memory-knowledge-synthesis"],
     "starlight-org": ["hr-intelligence-org-architecture", "intelligence-systems-thinking", "intelligence-decision-framework", "intelligence-strategic-reasoning", "intelligence-pattern-recognition", "memory-knowledge-synthesis"],
     "starlight-talent": ["hr-intelligence-people-dynamics", "intelligence-pattern-recognition", "intelligence-decision-framework", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
-    "starlight-performance": ["hr-intelligence-feedback-conversations", "intelligence-decision-framework", "intelligence-pattern-recognition", "intelligence-systems-thinking", "memory-knowledge-synthesis"]
+    "starlight-performance": ["hr-intelligence-feedback-conversations", "intelligence-decision-framework", "intelligence-pattern-recognition", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
+    "starlight-voice-operator": ["orchestration-agent-handoff-packet", "orchestration-context-engineering", "memory-capture-discipline", "intelligence-decision-framework"]
   }
 }
