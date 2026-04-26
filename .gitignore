@@ -12,3 +12,6 @@ noosphere/
 # Local Claude Code settings (per-machine)
 .claude/settings.local.json
 
+# Obsidian vault config (per-machine)
+.obsidian/
+
