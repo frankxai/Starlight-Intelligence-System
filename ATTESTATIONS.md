@@ -339,6 +339,62 @@ Attestation is compounding, not credit transfer: every composition strengthens e
 
 ---
 
+## v7.5.0 — 10-IS reconciliation + Path A authorless + auto-deploy restoration
+
+```
+---
+**Built on SIP** — Starlight Intelligence Protocol
+
+Substrate: starlightintelligence.org/protocol v1.1.0
+Layers used: [file-contract, attestation, commands, sovereignty, archetype-extension]
+
+Verticals:
+- starlight-intelligence-system @<v7.5.0-tag-sha> · v7.5.0 ship rolls v7.3.1 + v7.4.0-alpha + v7.4.0-beta + v7.4.1-alpha + v7.4.1 REVISE remediation into a single tagged release with three structural reconciliations: (1) **10-IS taxonomy reconciled** per MASSIVE_ACTION_PLAN.md (accepted 2026-04-25) — Code IS and Voice & Video IS promoted from sub-domain to top-level, Substrate renamed to Starlight Orchestrator at the top, Relational renamed to Family, Vision-Brand renamed to Brand; STACK.md, VERTICALS.md, docs/ARCHITECTURE.md updated; core/orchestrator/ scaffold + 4 CLI harness folders (claude/codex/gemini/opencode); verticals/_template/ with full 7-file SIP contract; verticals/code/ + verticals/voice-video/ + verticals/family/ stubs. (2) **Path A authorless rewrite** of the HR Intelligence reference vertical per Luminor Board v7.4.1 Item 2 — sub-system agents (starlight-hiring/-performance/-training/-culture/-talent/-org) and vertical wrapper genericized; "Ana's HR" word references removed; docs/forking-domain-stacks.md ships with the attribution-back pattern. (3) **Auto-deploy restoration** — GitHub Actions workflow at .github/workflows/vercel-deploy.yml reactivates push-to-main → Vercel deploy after the 2026-04-10 Vercel/GitHub integration break. v7.5 conformance harness (test/v75.test.ts) added with assertions guarding all three reconciliations.
+
+Canon:
+- none at substrate layer.
+
+Nodes:
+- Frank Riemer · role: architect · accepted MASSIVE_ACTION_PLAN.md, directed v7.5 reconciliation under /superintelligence
+- Claude Opus 4.7 (1M context) · role: implementer · executed Phase A decisions (Item 2 Path A + roll-into-v7.5) + Phase 0 reconciliation + Path A rewrite + auto-deploy workflow
+- Luminor Board (cumulative across v7.4 + v7.4.1 cycles) · role: protocol-defender + strategist + seer + sovereign + verifier + overseer · pressure-tested every preceding release; Item 2 Path A and Items 4/5/6 deferred items now scoped against v7.5 and v7.6 horizons
+
+Generated: 2026-04-26
+Attestation is compounding, not credit transfer: every composition strengthens every node.
+---
+```
+
+### Composition classification
+
+- **Substrate layers invoked:** Layer 1 (file contract — verticals/_template/ adds the canonical 7-file shape; HR vertical wrapper updated to v0.1.1 authorless); Layer 2 (this entry + cumulative attestations across v7.3.1 → v7.4.1); Layer 4 (command taxonomy unchanged at this release; positioning shift only); Layer 5 (sovereignty clause reinforced through Path A authorless reference + forking-domain-stacks doc); Layer 6 (archetype extension — Starlight Orchestrator declared as master IS layer 10 routing the other nine).
+- **Verticals contributing:** Starlight Intelligence substrate. Reference verticals reframed as authorless (HR Intelligence). Two new IS-layer scaffolds (Code, Voice & Video) and one renamed scaffold (Family) added at `verticals/`.
+- **Canon imported:** none.
+- **Nodes:** Frank (architect, plan-acceptor) + Claude (implementer) + Luminor Board (cumulative advisor across the v7.4 series).
+
+### Pinning
+
+| Element | Pin | Method |
+|---------|-----|--------|
+| Substrate | SIP v1.1.0 | SemVer in `SIP.md` header |
+| Repo | `<v7.5.0-tag-sha>` | Annotated tag at HEAD post-push |
+| Plan | `MASSIVE_ACTION_PLAN.md` § 0.1 ACCEPTED 2026-04-25 | Plan frontmatter |
+| Canon | n/a | — |
+| MCP servers | starlight-mcp@v1.1.0 (unchanged) | REGISTRY.md |
+| HR vertical | `verticals/hr-intelligence/` v0.1.1 (authorless) | MEMORY.md changelog |
+
+### Reality check (per /sip-attest enforcement)
+
+- Real plan committed: ✅ `MASSIVE_ACTION_PLAN.md` at root, accepted 2026-04-25.
+- Real 10-IS reconciliation: ✅ STACK.md table, VERTICALS.md entries, ARCHITECTURE.md retitle, core/orchestrator/ scaffold, verticals/_template/, verticals/{code,voice-video,family}/ all present and conformance-tested in `test/v75.test.ts`.
+- Real Path A rewrite: ✅ no "Ana" word references remain in 6 sub-system agents or 8 HR vertical wrapper files (validated by v7.5 test block 5).
+- Real forking pattern doc: ✅ `docs/forking-domain-stacks.md` ships the attribution-back lifecycle.
+- Real auto-deploy restoration: ✅ `.github/workflows/vercel-deploy.yml` deployed; manual `vercel --prod` from `site/` runs alongside until the GHA verifies on the next merge.
+- Composition is substantive, not decorative.
+
+**Attestation valid.** v7.5.0 is the first release where the protocol's own MASSIVE_ACTION_PLAN drove a same-cycle reconciliation across substrate naming (10-IS), authorship sovereignty (Path A), and shipping infrastructure (auto-deploy). Three irreversibles landed in one ship under explicit sovereign direction.
+
+---
+
 ## How to add an entry
 
 Append a new section above. Format:

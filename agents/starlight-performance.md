@@ -12,7 +12,7 @@ Performance is the agent in the room with the manager *before* the conversation.
 
 Where Hiring (sub-system 1 of HR Intelligence) decides who comes in, Performance decides what happens to them once they are in. Where Talent (sub-system 5) reads motivation patterns, Performance translates those patterns into language a manager can actually use in a Tuesday 1:1. Where Org (sub-system 6) designs the structure, Performance lives inside the structure where the human contact happens.
 
-Performance is Ana's edge in HR. Ten years as a practitioner who refused HR theater. Clinical training in conversation skills (motivational interviewing, solution-focused therapy, CBT-grounded coaching). Neuroscience reading (Lieberman on social pain, Rock on SCARF, Eisenberger on neural threat circuits). MBA training in calibration, compensation, and the legal awareness that makes documentation defensible. The Performance agent carries this stack into every output.
+Performance is the synthesis edge of this vertical. Ten years of practice that refused HR theater. Clinical training in conversation skills (motivational interviewing, solution-focused therapy, CBT-grounded coaching). Neuroscience reading (Lieberman on social pain, Rock on SCARF, Eisenberger on neural threat circuits). MBA training in calibration, compensation, and the legal awareness that makes documentation defensible. The Performance agent carries this stack into every output.
 
 **Tier:** Domain Sub-Stack (HR Intelligence vertical, sub-system 2 of 6)
 **Domain:** Performance review redesign (annual rating → quarterly growth), continuous feedback architecture (SBI cadence + low-friction tooling), coaching protocols (solution-focused + CBT-grounded), difficult-conversation rehearsal (three-conversations framework + SCARF design), conflict mediation (psychologist-grade, not amateur HR mediation).
@@ -242,6 +242,6 @@ Performance speaks primarily as architect (the domain is structural — the prot
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.5 (HR Intelligence reference vertical, sub-system 2 of 6 — Performance)
 - Generated: 2026-04-24
 ---

@@ -1,27 +1,32 @@
-# ARCHITECTURE — The 9-layer composition
+# ARCHITECTURE — The 10-IS composition (with cross-cutting rhythms)
 
-> Starlight Intelligence System is a 9-layer operating system for a sovereign life. Each layer is an Intelligence System (IS) with its own agent, skills, commands, and vault namespace. Layers compose, not stack — they reinforce each other. The substrate (SIP protocol) is layer 0: invisible when working. Layers 1–9 are the user's experience.
+> Starlight Intelligence System is a 10-Intelligence-System operating system for a sovereign life. Each IS has its own agent (or compositional mapping), skills, commands, and vault namespace. ISes compose, not stack — they reinforce each other. The substrate (SIP protocol) is the load-bearing layer 0: invisible when working. The **Starlight Orchestrator** is the master layer that routes the other nine.
 
-Composition, not assembly. Each layer pulls from layers above and below. Genius is the root. Vision is the compass. Second Brain is the memory. Business, Creator, and Wealth are where the work meets the market. Health and Relational run continuously underneath everything. Spiritual is optional, private, founder-layer only. The substrate is load-bearing infrastructure — you never see it when it's working.
+> **Reconciliation note (v7.5, 2026-04-25):** This document was previously a 9-layer architecture. Per `MASSIVE_ACTION_PLAN.md` § 2 (accepted 2026-04-25), the architecture is now a 10-IS taxonomy: Code IS and Voice & Video IS promoted from sub-domain to top-level; Substrate renamed to **Starlight Orchestrator** at the top because it routes the other nine; Relational renamed to **Family**; Vision-Brand renamed to **Brand**. Health, Second Brain, and Family remain cross-cutting rhythms (run continuously, never as standalone seasons unless burnout/knowledge chaos/isolation is the primary bottleneck). The change is additive — every prior agent, command, and skill remains operational; positioning shifts.
 
-This document is the source of truth for how the layers compose. Every command, every agent, every vault namespace is listed against its layer. Extension path at the end — adding a 10th layer is a named procedure, not a refactor.
+Composition, not assembly. Each IS pulls from ISes above and below. Self/Genius is the root. Brand is the compass. Second Brain is the memory. Business, Creator, Wealth, Code, and Voice & Video are where the work meets the market. Health, Family, and Second Brain run continuously underneath everything. Spiritual is optional, private, founder-layer only. The Orchestrator is what routes voice or text intent to the right IS team. The substrate is load-bearing infrastructure — you never see it when it's working.
+
+This document is the source of truth for how the ISes compose. Every command, every agent, every vault namespace is listed against its layer. Extension path at the end — adding an 11th IS is a named procedure, not a refactor.
 
 ---
 
-## The 9 layers
+## The 10 Intelligence Systems
 
 | # | Layer | Tier | Agent | Primary Commands | Vault Namespace |
 |---|-------|------|-------|------------------|-----------------|
 | 0 | Substrate (SIP) | Protocol | council | `/sip-attest`, `/sip-export`, attestation family | `SIP.md`, `/memory/intake/` |
-| 1 | Genius IS | Excavation | starlight-genius | `/discover-genius`, `/reclaim-knowledge` | `genius/` |
-| 2 | Second Brain IS | Memory | starlight-secondbrain | `/capture-daily`, `/distill-insights`, `/orchestrate-brain` | `second-brain/` |
-| 3 | Vision/Brand IS | Vision | starlight-visionary | `/define-vision`, `/build-brand-kit`, `/align-voice` | `vision/` |
+| 1 | Self / Genius IS | Excavation | starlight-genius | `/discover-genius`, `/reclaim-knowledge` | `genius/` |
+| 2 | Second Brain IS *(cross-cutting)* | Memory | starlight-secondbrain | `/capture-daily`, `/distill-insights`, `/orchestrate-brain` | `second-brain/` |
+| 3 | Brand IS *(was Vision/Brand)* | Vision | starlight-visionary | `/define-vision`, `/build-brand-kit`, `/align-voice` | `vision/`, `brand/` |
 | 4 | Business IS | Business | starlight-business | `/architect-entity`, `/model-revenue`, `/tax-sanity` | `business/` |
-| 5 | Creator IS | Composition | (composes Genius + Vision) | `/creator-pipeline`, `/content-systemize`, `/train-executor` | `creator/` |
-| 6 | Wealth/Freedom IS | Vertical | Wealth DPI | `/wealth-dpi` | `wealth/` |
-| 7 | Health IS | Embodiment | starlight-embodiment | `/design-regimen`, `/energy-audit` | `health/` |
-| 8 | Relational IS | Relational | starlight-relational | `/map-relationships`, `/design-alliance-readiness` | `relational/` |
-| 9 | Spiritual IS | Founder (private) | — | — | `private/spiritual/` |
+| 5 | Creator IS | Composition | (composes Genius + Brand) | `/creator-pipeline`, `/content-systemize`, `/train-executor` | `creator/` |
+| 6 | Wealth IS | Vertical | Wealth DPI | `/wealth-dpi` | `wealth/` |
+| 7 | Code IS *(new top-level)* | Product/Automation | (composes Code + Genius) | `/arco`, `/ao`, MCP-builder commands | `code/` |
+| 8 | Voice & Video IS *(new top-level)* | Narrative Media | (composes Creator + modality attestation) | `/sip-attest-audio`, `/sip-attest-video`, `/sip-compose-modality` | `voice-video/` |
+| 9 | Family IS *(was Relational; cross-cutting)* | Relational | starlight-relational | `/map-relationships`, `/design-alliance-readiness` | `family/`, `relational/` |
+| 10 | **Starlight Orchestrator** | Master / Routing | core council | voice/text intent routing across the other 9 | `core/orchestrator/` |
+| — | Spiritual IS *(optional, private)* | Founder | — | — | `private/spiritual/` |
+| — | Health IS *(cross-cutting rhythm)* | Embodiment | starlight-embodiment | `/design-regimen`, `/energy-audit` | `health/` |
 
 ---
 

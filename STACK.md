@@ -2,6 +2,27 @@
 
 Default choices, not mandates. Adopt what resonates. Every vertical and alliance may override any layer — but every override should be declared in the vertical's `STACK.md`.
 
+## The 10 Intelligence Systems (per MASSIVE_ACTION_PLAN.md, accepted 2026-04-25)
+
+The substrate ships **10 universal Intelligence Systems** that compose for every sovereign person. Two additions promoted from sub-domain to top-level (Code IS, Voice & Video IS); Substrate renamed to **Starlight Orchestrator** at the top because it routes the other nine. Spiritual remains optional/private.
+
+| # | Public name | Premium label | Substrate home |
+|---|---|---|---|
+| 1 | Self IS | Founder Performance Intelligence | Genius layer + `starlight-genius` agent |
+| 2 | Wealth IS | Capital & Deal Intelligence | `verticals/wealth/` · `/wealth-dpi` |
+| 3 | Family IS | Family Office Intelligence | `verticals/family/` (was Relational layer; renamed) |
+| 4 | Business IS | Executive Operating Intelligence | `verticals/business/` · `starlight-business` |
+| 5 | Creator IS | Media & Influence Intelligence | GenCreator + `/creator-pipeline` |
+| 6 | Second Brain IS | Private Knowledge Intelligence | `starlight-secondbrain` + Brain Atlas |
+| 7 | Code IS | Product & Automation Intelligence | `verticals/code/` (extends `/arco` + `/ao`) |
+| 8 | Voice & Video IS | Narrative Media Intelligence | `verticals/voice-video/` |
+| 9 | Brand IS | Reputation & Positioning Intelligence | Vision-Brand layer (renamed) |
+| 10 | **Starlight Orchestrator** | Private Intelligence Office | `core/orchestrator/` (master layer) |
+
+Health (formerly layer 7) becomes a cross-cutting rhythm rather than a top-level IS — see `docs/ARCHITECTURE.md` § Cross-cutting layers. It still ships with `starlight-embodiment` + `/design-regimen` + `/energy-audit` and remains fully operational; the change is positioning (cross-cutting vs. top-level), not capability.
+
+Domain sub-stacks (e.g., HR Intelligence) compose **inside** the 10-IS stack — a sovereign practitioner spawns a domain vertical of 4-7 functional sub-systems via `/spawn-domain-stack` once the universal layers are running.
+
 ## Design principles
 
 1. **Sovereignty over convenience.** Prefer open protocols, forkable standards, exportable data. No irrecoverable vendor capture.

@@ -97,17 +97,37 @@ This is the **public registry**. Active alliances and private verticals (Family 
 
 ### Family IS
 - **Class:** sovereign vertical (private)
-- **Domain:** Multi-generational infrastructure, legacy systems.
+- **Domain:** Multi-generational infrastructure, family office intelligence, relational architecture, legacy systems. Renamed from "Relational IS" per MASSIVE_ACTION_PLAN.md (2026-04-25) to align with the 10-IS taxonomy. Public surface stays minimal; instance state remains private.
 - **Status:** `private — never public-facing`.
+- **Substrate home:** `verticals/family/` (scaffold; instance state stays in private/).
+- **Agent:** `starlight-relational` (agent name preserved; the layer it serves is now Family).
 
 ### Spiritual IS
 - **Class:** sovereign vertical (private, founder-layer)
 - **Domain:** Consciousness practice integration.
 - **Status:** `private`. Public compositions surface only through Vibe OS where the founder chooses. **Never imposed on adopters of SIP.**
 
+### Code IS
+- **Class:** sovereign vertical (Intelligence System layer)
+- **Domain:** Product & automation intelligence. Coding agents, MCP server design, agent harness operations, automation playbooks. Wraps existing `/arco` brand router + `/ao` CLI router into a coherent IS for sovereign builders.
+- **Owner:** Frank (open substrate, composes with operational layer).
+- **Status:** `scaffolded — v0.1`.
+- **Primary repo:** `verticals/code/` in `frankxai/Starlight-Intelligence-System`.
+- **Canon:** none.
+- **Compounds:** Code IS playbook + MCP/agent ops practice.
+
+### Voice & Video IS
+- **Class:** sovereign vertical (Intelligence System layer)
+- **Domain:** Narrative media intelligence. Voice cloning, talking-head pipelines, podcast architecture, video factory operations, ElevenLabs/Suno/Veo orchestration. Composes Creator IS with the modality attestation commands (`/sip-attest-audio`, `/sip-attest-video`).
+- **Owner:** Frank (open substrate; composes with Music IS catalog).
+- **Status:** `scaffolded — v0.1`.
+- **Primary repo:** `verticals/voice-video/` in `frankxai/Starlight-Intelligence-System`.
+- **Canon:** optional Hz / Arcanea composition for music-side workflows.
+- **Compounds:** Voice & Video IS playbook + creator pipeline outputs.
+
 ### Starlight Intelligence (the substrate)
 - **Class:** sovereign substrate (the substrate itself, not a vertical)
-- **Domain:** SIP protocol, SIS substrate, Alliance forging method, Starlight Console, canonical registry.
+- **Domain:** SIP protocol, SIS substrate, Alliance forging method, Starlight Console, canonical registry. Hosts the master **Starlight Orchestrator** layer at `core/orchestrator/` that routes the other nine universal IS.
 - **Owner:** Frank Riemer / Starlight Holding BV.
 - **Status:** `active — v1.0.0 spec shipped`.
 - **Primary repo:** `frankxai/Starlight-Intelligence-System`.
