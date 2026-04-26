@@ -1,6 +1,6 @@
 ---
 name: spawn-domain-stack
-description: Spawn a domain-specific intelligence sub-stack for a sovereign person. Analyzes their Genius Profile + Freedom Path KEEP bucket + named domain expertise, proposes 4-7 functional sub-systems with agent/skill/command structure, then scaffolds the full vertical scaffold under verticals/<vertical-slug>/. Generalizes the pattern proven by Ana's HR Intelligence sub-stack. For sovereigns who want to productize their genius into a vertical with sub-system architecture.
+description: Spawn a domain-specific intelligence sub-stack for a sovereign person. Analyzes their Genius Profile + Freedom Path KEEP bucket + named domain expertise, proposes 4-7 functional sub-systems with agent/skill/command structure, then scaffolds the full vertical scaffold under verticals/<vertical-slug>/. Generalizes the pattern proven by the HR Intelligence reference vertical. For sovereigns who want to productize their genius into a vertical with sub-system architecture.
 allowed-tools: Read, Write, Grep, Glob, Bash
 argument-hint: <person-name> <domain-name> [optional: --sub-systems "name1,name2,name3,..."] [optional: --auto-scaffold]
 ---
@@ -49,10 +49,10 @@ Halt with explicit message if any condition fails. Do not soften.
 
 Read the Genius Profile and Freedom Path end-to-end. Output the analysis as part of the proposal:
 
-- **Domain anchor.** One sentence — what this domain is in this person's hands (not the textbook definition). Example: "HR Intelligence in Ana's hands is psychologist + neuroscientist + MBA + ten years of HR-room practice — not generic people-ops".
+- **Domain anchor.** One sentence — what this domain is in this person's hands (not the textbook definition). Example: "HR Intelligence in the practitioner's hands is psychologist + neuroscientist + MBA + ten years of HR-room practice — not generic people-ops".
 - **Frameworks-in-domain.** From the Profile, the 3-7 frameworks the person already uses that belong inside this domain. Cite framework names verbatim from the Profile.
 - **Cross-domain synthesis edge.** The unique combination that justifies productization. NAME IT. If you cannot name it in one sentence, halt — without a synthesis edge, the domain stack is commodity. Examples:
-  - Ana's HR: "psychology × neuroscience × MBA × HR-decade — sees both cognitive failure modes AND the neural mechanisms behind them"
+  - HR Intelligence: "psychology × neuroscience × MBA × HR-decade — sees both cognitive failure modes AND the neural mechanisms behind them"
   - Doctor: "internal medicine × narrative competence × longitudinal care — protocol decisions that hold across decades, not visits"
   - Architect: "structural engineering × phenomenology × regulatory navigation — buildings that hold the body's experience AND clear permitting"
 - **KEEP-bucket overlap.** From the Freedom Path, which KEEP-bucket items live inside this domain? These are the highest-leverage sub-system targets — the things only this person can do, that compound when systematized.

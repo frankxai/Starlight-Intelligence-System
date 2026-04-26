@@ -35,10 +35,20 @@ Code IS is the layer where the sovereign builder operates as a builder — not a
 
 ## Primary commands
 
-- **`/arco`** — brand router for coding sessions.
-- **`/ao`** — CLI router for the four model CLIs.
-- **`/sync-repos`** — Claude Code repository sync.
-- **MCP-builder skills** — substrate's `mcp-builder` and `mcp-2025-patterns` skills auto-activate.
+> **Substrate-canon honesty (per OpenClaw v7.5 CRITICAL-2):** the Code IS surface composes commands from this substrate (Starlight) and from the FrankX vertical repo. Where a command lives is named explicitly below.
+
+- **`/arco`** *(external — provided by FrankX vertical at `frankxai/frankx`, not in this substrate)* — brand router for coding sessions. Install via Code IS adoption kit when ready.
+- **`/ao`** *(external — FrankX vertical)* — CLI router for the four model CLIs.
+- **`/sync-repos`** *(skill auto-activation in this substrate, not a slash command)* — Claude Code repository sync. Lives at `skills/integration/sync-repos.md` if registered; otherwise pending Phase 1.
+- **MCP-builder skills** *(this substrate)* — `mcp-builder` and `mcp-2025-patterns` skills auto-activate on MCP-server work.
+
+### Required external commands
+
+To run Code IS at the level the README describes, the practitioner needs both:
+- **This substrate** (`frankxai/Starlight-Intelligence-System`) — file contract, attestation, MCP-builder skills, harness scaffolds at `core/orchestrator/`.
+- **FrankX vertical** (`frankxai/frankx`) — `/arco`, `/ao`, and the brand-router-aware harness configs that resolve which brand a coding session belongs to.
+
+Forking a Code IS practice without the FrankX vertical means the brand-routing layer has to be reimplemented per practitioner. Phase 1 of `MASSIVE_ACTION_PLAN.md` § 4 promotes `arcanea-orchestrator/` to `@starlight/orchestrator` and decouples the brand-router from FrankX-specific framing — until then, `/arco` and `/ao` are FrankX-coupled.
 
 Sub-system commands per practice mature into vertical-specific files here. v0.1 scaffolds the directory; full command surface lands as Phase 1 of the MASSIVE_ACTION_PLAN.
 

@@ -1,6 +1,6 @@
 ---
 name: talent-motivation
-description: Build a per-person motivation map from observed behavior using Self-Determination Theory + dopamine-anticipation analysis. Output is a motivation hypothesis plus 1-2 leverage interventions, never a personality profile. Refuses engagement-survey-as-data; refuses generic "you should be more motivating." Sub-system 5 of 6 in Ana's HR Intelligence Domain Sub-Stack.
+description: Build a per-person motivation map from observed behavior using Self-Determination Theory + dopamine-anticipation analysis. Output is a motivation hypothesis plus 1-2 leverage interventions, never a personality profile. Refuses engagement-survey-as-data; refuses generic "you should be more motivating." Sub-system 5 of 6 in the HR Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: person's name (required) + --role <ic|manager|exec|customer-facing|other> + --signal-window <weeks> + optional context paragraph describing the observed pattern
 ---
@@ -28,7 +28,7 @@ $ARGUMENTS
 
 2. **Locate.** Confirm role-tier from `--role`. Confirm signal-window from `--signal-window`. Surface the manager's hypothesis (if any) but bracket it — the diagnostic should not pre-confirm the manager's frame.
 
-3. **Read.** If a Culture artifact exists for this team (`hr-intelligence/culture/`), read it for system context. If a Genius Profile exists for the person's manager (rare but possible in Ana's instance), note voice for the recommended manager-conversation script.
+3. **Read.** If a Culture artifact exists for this team (`hr-intelligence/culture/`), read it for system context. If a Genius Profile exists for the person's manager (rare but possible), note voice for the recommended manager-conversation script.
 
 4. **Gather observed signals across the window.** Sentiment trajectory, workload pattern, relational signal, behavioral artifacts — all observed, not self-reported. Surface what is unknown explicitly; do not invent.
 

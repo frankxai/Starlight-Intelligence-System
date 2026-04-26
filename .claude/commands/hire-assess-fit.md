@@ -7,7 +7,7 @@ argument-hint: candidate-slug (required) + role-slug (required, ICP must exist) 
 
 # /hire-assess-fit
 
-This is part of Ana's HR Intelligence sub-stack. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
 Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, the ICP (`hr-intelligence/hiring/icp-<role-slug>-*.md`), and the interview debrief if it exists. Produce a **Culture-Add Fit Assessment**. Hand off to debrief or hire decision.
 
@@ -156,7 +156,7 @@ Where will this candidate frictionally clash (and is the clash productive or des
 - **Productive tension is a feature.** Name it. The candidate who challenges the team in stage-appropriate ways is the candidate who shifts the team forward.
 - **One hand-off at close.** `/hire-debrief`.
 
-— Hiring Intelligence — part of Ana's HR Intelligence Domain Sub-Stack —
+— Hiring Intelligence — part of the HR Intelligence reference vertical —
 
 ---
 

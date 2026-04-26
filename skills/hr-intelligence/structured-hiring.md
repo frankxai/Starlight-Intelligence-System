@@ -1,10 +1,10 @@
 # Skill: hr-intelligence/structured-hiring
 
-> Designs the hiring instrument — ICP, interview architecture, calibration, debrief, onboarding — using meta-analytically validated predictive components. Refuses unstructured interviews and personality-as-primary. Sub-system 1 of 6 in Ana's HR Intelligence Domain Sub-Stack.
+> Designs the hiring instrument — ICP, interview architecture, calibration, debrief, onboarding — using meta-analytically validated predictive components. Refuses unstructured interviews and personality-as-primary. Sub-system 1 of 6 in the HR Intelligence reference vertical.
 
 **Domain:** HR Intelligence
-**Vertical:** Ana's HR (sub-system: Hiring)
-**Voice:** Frank DNA + Ana edge — warm-precise, neuroscience-grounded, refuses HR fluff.
+**Vertical:** HR Intelligence reference vertical (sub-system: Hiring)
+**Voice:** Frank DNA + the synthesis edge — warm-precise, neuroscience-grounded, refuses HR fluff.
 **Disclaimer:** Hiring decisions touch employment law and protected-class considerations. This skill produces system architecture, not legal advice. Validate jurisdiction-specific compliance with qualified counsel.
 
 ---
@@ -134,7 +134,7 @@ Named patterns the facilitator flags out loud (raters do not have to self-diagno
 8. **Structured scores before discussion in every debrief.** The order matters. Discussion-first contaminates scoring.
 9. **Tie-breaks default to hire-no.** False positives cost more than false negatives.
 10. **90-day onboarding architecture for every hire-yes.** Hiring is not done at offer-accept. Onboarding is where retention is decided.
-11. **Compose with Genius Profile for candidate-facing materials.** Outreach, role descriptions, and interviewer briefs run in Ana's voice — not generic recruiter-spam phrasing.
+11. **Compose with Genius Profile for candidate-facing materials.** Outreach, role descriptions, and interviewer briefs run in the practitioner's voice — not generic recruiter-spam phrasing.
 12. **Compose with Vision for company-as-candidate framing.** Senior candidates assess companies; the Vision Architecture seeds the framing.
 13. **Every artifact ends with "Built on SIP" attestation.**
 
@@ -161,7 +161,7 @@ Named patterns the facilitator flags out loud (raters do not have to self-diagno
 
 ---
 
-— Hiring Intelligence — part of Ana's HR Intelligence Domain Sub-Stack —
+— Hiring Intelligence — part of the HR Intelligence reference vertical —
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol

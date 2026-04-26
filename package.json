@@ -1,6 +1,6 @@
 {
   "name": "@arcanea/starlight-intelligence-system",
-  "version": "7.5.0",
+  "version": "7.5.1",
   "description": "Starlight Intelligence System — substrate (SIP protocol, alliance forging method, attestation) + reference operational layer (6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, MCP server, platform adapters)",
   "type": "module",
   "main": "dist/index.js",
@@ -80,10 +80,11 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "test": "node --import tsx --test src/orchestrator.test.ts test/substrate.test.ts test/v73.test.ts test/v74.test.ts test/v741.test.ts test/v75.test.ts",
-    "test:substrate": "node --import tsx --test test/substrate.test.ts",
+    "test:substrate": "node --import tsx --test test/substrate.test.ts test/v73.test.ts test/v74.test.ts test/v741.test.ts test/v75.test.ts",
+    "test:operational": "node --import tsx --test src/orchestrator.test.ts",
     "generate-context": "node dist/cli.js generate",
     "lint": "tsc --noEmit",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && npm run test:substrate"
   },
   "files": [
     "dist/",

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "_comment": "Gemini CLI harness MCP scope for Starlight Orchestrator. Read-only across the whole substrate + connected verticals. Gemini's leverage is the 1M context window — surgical edits route to Claude Code primary. Built on SIP — see footer.",
+  "_harness": "gemini",
+  "_role": "long-context",
+  "_loaded_when": "1M-context jobs, multi-repo cross-references, codebase-wide refactor planning, cross-vertical canon reconciliation, historical pattern surfacing",
+  "_write_policy": "READ-ONLY across substrate. Single allowed write surface: core/orchestrator/intel/<date>-gemini-<topic>.md (summary / structural diff output).",
+  "mcpServers": {
+    "starlight-substrate": {
+      "_role": "canonical — always loaded, READ-ONLY scope",
+      "_purpose": "substrate-wide read for long-context grokking — vaults, IS namespaces, attestation registry, memory graph, all 10 verticals",
+      "_read_only": true,
+      "command": "node",
+      "args": [
+        "C:\\Users\\frank\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
+      ],
+      "env": {
+        "STARLIGHT_MCP_MODE": "read-only",
+        "STARLIGHT_MCP_BREADTH": "full"
+      }
+    },
+    "arcanea-mcp": {
+      "_role": "canon-read — READ-ONLY",
+      "_purpose": "Arcanea canon read for cross-vertical reconciliation work — Guardians, Vel'Tara archetypes, Passport flow",
+      "_status": "scaffold — wire when Arcanea MCP server lands; Phase 1 dependency",
+      "_read_only": true,
+      "command": "node",
+      "args": [
+        "${ARCANEA_MCP_PATH}"
+      ],
+      "env": {
+        "ARCANEA_CANON_PATH": "${ARCANEA_CANON_PATH}",
+        "ARCANEA_MCP_MODE": "read-only"
+      },
+      "_disabled_until": "arcanea-mcp v0.1+ ships"
+    }
+  },
+  "_task_scoped_mcps": {
+    "_comment": "Gemini's task-scoped MCPs are exclusively read-only / list / search verbs. The harness never carries write tools. Surgical edits route to Claude Code primary via core/orchestrator/intel/ summaries.",
+    "examples": {
+      "github_read": {
+        "_purpose": "multi-repo log + diff read for cross-repo reconciliation",
+        "_pattern": "gh CLI read-only commands only (gh repo view, gh pr list, gh pr diff, gh pr view, gh release list, gh log)",
+        "_load_when": "multi-repo cross-references requested"
+      },
+      "google_drive_read": {
+        "_purpose": "vault parity check — does Drive mirror match canonical markdown vault?",
+        "_pattern": "mcp__claude_ai_Google_Drive__read_file_content, search_files, list_recent_files — never create_file",
+        "_load_when": "vault-vs-mirror divergence audit"
+      },
+      "linear_read": {
+        "_purpose": "alliance / cross-team historical pattern surfacing",
+        "_pattern": "list_*, get_* — never save_*",
+        "_load_when": "alliance-tier reconciliation"
+      },
+      "notion_read": {
+        "_purpose": "Ops Hub history + cross-page pattern search",
+        "_pattern": "notion-fetch, notion-search — never notion-create-* / notion-update-*",
+        "_load_when": "Ops Hub audit"
+      }
+    }
+  },
+  "_secrets_policy": {
+    "_comment": "Gemini never handles secrets. Long-context reads operate against public substrate + read-only mirrors of integrated systems. Any task that requires a token escalates to Claude Code primary.",
+    "secrets_allowed": false,
+    "env_var_refs_only": true
+  },
+  "_built_on_sip": {
+    "substrate": "starlightintelligence.org/protocol",
+    "version": "v1.1.0",
+    "layers_used": ["file-contract", "attestation", "sovereignty"],
+    "verticals": "core/orchestrator/harnesses/gemini",
+    "generated": "2026-04-26"
+  }
+}

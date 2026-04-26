@@ -15,7 +15,7 @@ $ARGUMENTS
 ## When this command fires
 
 - A candidate was surfaced via `/map-relationships` (alliance-surface step) and the person wants a rigorous assessment before forging
-- The person explicitly names a candidate: "Is Ana ready for an alliance?" / "Should we forge with Miguel?"
+- The person explicitly names a candidate: "Is X ready for an alliance?" / "Should we forge with Miguel?"
 - A candidate has been developing over a quarter and the person wants to re-assess after previous "develop first" verdicts
 
 ## When this command does NOT fire

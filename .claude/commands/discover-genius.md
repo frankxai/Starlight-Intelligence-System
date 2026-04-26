@@ -118,7 +118,7 @@ $ARGUMENTS
 - **Save both documents together.** `genius/profile-<slug>.md` and `genius/freedom-path-<slug>.md` ship as a pair. Never one without the other.
 - **Sovereignty is non-waivable.** This person owns their Genius Profile. Starlight does not retain personal-genius data in public vaults — it lives in the person's instance only. Attribution via "Built on SIP" is the sole compounding mechanism. Advice never overrides.
 - **Hand off to exactly ONE next command.** Optionality at the end of excavation re-scatters what the Path just sorted. Collapse to one.
-- **Non-technical users.** Ana-grade test: would this work for someone in Claude Desktop + Cowork, no terminal? If the excavation depends on CLI, it failed the test. Accept file drags, pastes, folder paths, screenshots.
+- **Non-technical users.** Non-technical-user-grade test: would this work for someone in Claude Desktop + Cowork, no terminal? If the excavation depends on CLI, it failed the test. Accept file drags, pastes, folder paths, screenshots.
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol

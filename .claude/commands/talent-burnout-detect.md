@@ -1,6 +1,6 @@
 ---
 name: talent-burnout-detect
-description: Run a burnout detection protocol on a person or team. Maslach 3-dimensional assessment (emotional exhaustion + cynicism + reduced personal accomplishment) plus root-cause hypothesis plus intervention plan plus reassessment cadence. Cynicism is the diagnostic. Hard clinical-boundary escalation when signals cross into clinical territory. Refuses "burnout = tired" framing. Sub-system 5 of 6 in Ana's HR Intelligence Domain Sub-Stack.
+description: Run a burnout detection protocol on a person or team. Maslach 3-dimensional assessment (emotional exhaustion + cynicism + reduced personal accomplishment) plus root-cause hypothesis plus intervention plan plus reassessment cadence. Cynicism is the diagnostic. Hard clinical-boundary escalation when signals cross into clinical territory. Refuses "burnout = tired" framing. Sub-system 5 of 6 in the HR Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: person or team identifier (required) + --target <person|team> + --signal-window <weeks> + optional context paragraph describing observable signals (sentiment, workload, behavior)
 ---
@@ -64,7 +64,7 @@ $ARGUMENTS
 
    **Individual level:**
    - Recovery cycle (named — vacation, sabbatical, reduced-load period).
-   - Manager-conversation script (research-anchored, in Ana's voice if Genius Profile available).
+   - Manager-conversation script (research-anchored, in the practitioner's voice if Genius Profile available).
    - Specific load reduction (which projects come off; which stay; for how long).
    - Reassessment cadence.
 
@@ -149,7 +149,7 @@ Most burnout has 2-3 root causes compounding. One-cause burnout exists but is ra
 ### Individual level
 
 - **Recovery cycle:** <named — vacation N days / sabbatical N weeks / reduced-load period / leave>
-- **Manager-conversation:** <when, structured around what — script reference if Ana's voice available>
+- **Manager-conversation:** <when, structured around what — script reference if the practitioner's voice available>
 - **Specific load reduction:** <which projects off / which stay / for how long>
 - **Reassessment:** <cadence per risk level>
 

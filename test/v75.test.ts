@@ -195,8 +195,15 @@ describe("v7.5 Block 5 — HR Intelligence is Path A authorless", () => {
       // MEMORY.md is permitted to reference the rewrite event in changelog
       const content = readFileSync(file, "utf8");
       const filename = file.split(/[\\/]/).pop();
-      // Allow the changelog entry that names the Path A rewrite
-      const filtered = content.replace(/Path A authorless rewrite[^.\n]*/g, "");
+      // Per OpenClaw v7.5 MEDIUM-5: tighten changelog allowance to exact-match
+      // the canonical phrasing. Previous regex (`/Path A authorless rewrite[^.\n]*/g`)
+      // over-matched any sentence containing the phrase. Real Path A violations
+      // could hide in a "(originally authored by Ana)"-shaped suffix on the
+      // same logical sentence as "Path A authorless rewrite". Strict match only.
+      const filtered = content.replace(
+        /Path A authorless rewrite applied per Luminor Board v7\.4\.1 Item 2/g,
+        ""
+      );
       const matches = filtered.match(ANA_WORD);
       assert.equal(matches, null, `${filename} contains "Ana" word reference (Path A violation)`);
     });
@@ -207,6 +214,114 @@ describe("v7.5 Block 5 — HR Intelligence is Path A authorless", () => {
     const content = readFileSync(memory, "utf8");
     assert.match(content, /Path A authorless rewrite/, "HR vertical MEMORY missing Path A changelog entry");
     assert.match(content, /v0\.1\.1/, "HR vertical MEMORY missing v0.1.1 version mark");
+  });
+});
+
+// ── Block 7 — v7.5.1 OpenClaw remediation (CRITICAL-1 + CRITICAL-2 + HIGH-1 + HIGH-6) ──
+
+describe("v7.5.1 Block 7 — OpenClaw v7.5 audit remediation", () => {
+  // CRITICAL-1: six IS-layer substrate homes scaffolded
+  const SIX_IS_VERTICALS = ["self", "wealth", "business", "creator", "secondbrain", "brand"];
+  for (const slug of SIX_IS_VERTICALS) {
+    it(`v7.5.1.7.1 verticals/${slug}/ scaffolded with README + MEMORY (CRITICAL-1)`, () => {
+      const dir = join(REPO_ROOT, "verticals", slug);
+      assert.ok(existsSync(dir), `verticals/${slug}/ directory missing`);
+      assert.ok(existsSync(join(dir, "README.md")), `verticals/${slug}/README.md missing`);
+      assert.ok(existsSync(join(dir, "MEMORY.md")), `verticals/${slug}/MEMORY.md missing`);
+    });
+  }
+
+  // CRITICAL-2: vertical READMEs mark external commands explicitly
+  it("v7.5.1.7.2 verticals/code/README.md marks /arco /ao as external (CRITICAL-2)", () => {
+    const content = readFileSync(join(REPO_ROOT, "verticals", "code", "README.md"), "utf8");
+    assert.match(content, /\(external/, "Code IS README missing external-command marker");
+    assert.match(content, /Required external commands/, "Code IS README missing required-external section");
+  });
+
+  it("v7.5.1.7.3 verticals/voice-video/README.md marks /factory as external (CRITICAL-2)", () => {
+    const content = readFileSync(join(REPO_ROOT, "verticals", "voice-video", "README.md"), "utf8");
+    assert.match(content, /\(external/, "Voice & Video IS README missing external-command marker");
+    assert.match(content, /Required external commands/, "Voice & Video IS README missing required-external section");
+  });
+
+  // HIGH-1: GHA workflow uses 40-char SHA pins for all uses: declarations
+  it("v7.5.1.7.4 .github/workflows/vercel-deploy.yml pins all third-party actions to SHAs (HIGH-1)", () => {
+    const content = readFileSync(join(REPO_ROOT, ".github", "workflows", "vercel-deploy.yml"), "utf8");
+    const usesLines = content.split("\n").filter((l) => l.match(/^\s+uses:/));
+    assert.ok(usesLines.length > 0, "no uses: lines found in workflow");
+    for (const line of usesLines) {
+      const match = line.match(/uses:\s+\S+@(\S+?)(?:\s|$)/);
+      assert.ok(match, `uses: line did not parse: ${line.trim().slice(0, 50)}`);
+      const ref = match[1];
+      // Must be 40-char hex SHA, not @vN or @branch
+      assert.match(
+        ref,
+        /^[0-9a-f]{40}$/,
+        `uses: pin must be 40-char SHA (got something else of length ${ref.length})`
+      );
+    }
+  });
+
+  it("v7.5.1.7.5 .github/dependabot.yml configures github-actions ecosystem (HIGH-1)", () => {
+    const path = join(REPO_ROOT, ".github", "dependabot.yml");
+    assert.ok(existsSync(path), "dependabot.yml missing");
+    const content = readFileSync(path, "utf8");
+    assert.match(content, /package-ecosystem:\s*"github-actions"/, "dependabot missing github-actions ecosystem");
+  });
+
+  // HIGH-6: real-instance MEMORY.md files contain no template placeholders
+  it("v7.5.1.7.6 real-instance vertical MEMORY.md files contain no template placeholders (HIGH-6)", () => {
+    const placeholders = ["<name>", "<slug>", "<commit-sha>"];
+    const realInstancePaths = [
+      "verticals/hr-intelligence/MEMORY.md",
+      "verticals/self/MEMORY.md",
+      "verticals/wealth/MEMORY.md",
+      "verticals/business/MEMORY.md",
+      "verticals/creator/MEMORY.md",
+      "verticals/secondbrain/MEMORY.md",
+      "verticals/brand/MEMORY.md",
+      "verticals/family/MEMORY.md",
+    ].map((p) => join(REPO_ROOT, p));
+
+    for (const path of realInstancePaths) {
+      if (!existsSync(path)) continue; // family/MEMORY.md may not be scaffolded yet
+      const content = readFileSync(path, "utf8");
+      const filename = path.split(/[\\/]/).slice(-2).join("/");
+      for (const placeholder of placeholders) {
+        assert.equal(
+          content.includes(placeholder),
+          false,
+          `${filename} contains template placeholder (HIGH-6 violation; placeholders allowed only in _template/)`
+        );
+      }
+    }
+  });
+
+  // MEDIUM-3: package.json test scripts split (substrate-only published gate)
+  it("v7.5.1.7.7 package.json prepublishOnly uses test:substrate not test (MEDIUM-3)", () => {
+    const content = readFileSync(join(REPO_ROOT, "package.json"), "utf8");
+    const pkg = JSON.parse(content);
+    assert.match(
+      pkg.scripts.prepublishOnly,
+      /test:substrate/,
+      "prepublishOnly should run test:substrate (substrate-only) not full test suite"
+    );
+    assert.ok(pkg.scripts["test:substrate"], "test:substrate script missing");
+    assert.ok(pkg.scripts["test:operational"], "test:operational script missing");
+  });
+
+  // LOW-2: forking doc replaces TBD with target dates
+  it("v7.5.1.7.8 docs/forking-domain-stacks.md no longer uses TBD (LOW-2)", () => {
+    const content = readFileSync(FORKING_DOC, "utf8");
+    // The doc may still reference TBD in code blocks — check the reference-verticals table only
+    const tableSection = content.match(/Reference verticals available for forking[\s\S]*?(?=\n##|$)/);
+    if (tableSection) {
+      assert.equal(
+        tableSection[0].includes("TBD"),
+        false,
+        "Reference verticals table contains TBD; replace with target date or current path"
+      );
+    }
   });
 });
 

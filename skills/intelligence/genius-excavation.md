@@ -60,7 +60,7 @@ For each source, note provenance (which source it came from) and date if visible
 
 Read the corpus for structural moves — models, methodologies, staged processes, recurring taxonomies. Any time the same structure appears ≥3 times across different corpus items, name it. Threshold is non-negotiable. Examples:
 
-- Ana's 4-stage recruiting framework (sourcing → interviewing → assessment → negotiation), observed across three employer engagements
+- A 4-stage recruiting framework (sourcing → interviewing → assessment → negotiation), observed across three employer engagements
 - Frank's substrate/operational split, observed across SIP, SIS, and alliance repos
 - A client's "translate the exec ask into a measurable outcome" pattern, observed across five strategy decks
 

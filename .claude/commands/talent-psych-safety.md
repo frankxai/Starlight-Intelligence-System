@@ -1,6 +1,6 @@
 ---
 name: talent-psych-safety
-description: Measure psychological safety on a team using Edmondson's 7-question scale (anonymous, longitudinal, team-by-team) plus interpretation rubric and intervention design. Cites Project Aristotle. Refuses "psychological safety training" as primary intervention without leader behavior change. Refuses single-snapshot scoring. Sub-system 5 of 6 in Ana's HR Intelligence Domain Sub-Stack.
+description: Measure psychological safety on a team using Edmondson's 7-question scale (anonymous, longitudinal, team-by-team) plus interpretation rubric and intervention design. Cites Project Aristotle. Refuses "psychological safety training" as primary intervention without leader behavior change. Refuses single-snapshot scoring. Sub-system 5 of 6 in the HR Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: team identifier (required) + --baseline-or-followup <baseline|followup> + --prior-survey-date <YYYY-MM-DD or none> + optional context paragraph describing observed signals or what triggered the measurement
 ---

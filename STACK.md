@@ -76,7 +76,7 @@ Stance: Keep the harness thin. The power is in the file contract and the command
 ### L6 — Attestation + audit
 - **Primary:** `/sip-attest` command generates the Built on SIP block at artifact ship time.
 - **CI integration:** GitHub Actions hook runs `/sip-attest` on release tags; fails the build if attestation is missing from cross-node artifacts.
-- **Canon validation:** `arcanea-mcp.canon-validate` checks Guardian / Vel'Tara / Hz references resolve.
+- **Canon validation:** vertical-specific MCP tools — e.g., `arcanea-mcp.canon-validate` for Arcanea canon (Guardian / Vel'Tara / Hz). Substrate does not mandate canon validation; verticals that import canon adopt their canon-source's validator.
 - **Integrity audit:** `/openclaw-audit` for high-stakes releases (security, open/closed rulings).
 
 ## Opinionated defaults

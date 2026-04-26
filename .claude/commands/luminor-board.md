@@ -7,7 +7,7 @@ argument-hint: <proposal to pressure-test>
 
 # /luminor-board
 
-Load `SIP.md`, `starlight/AGENTS.md`, and (if using Arcanea canon) query `arcanea-mcp` for the Guardian archetype set. Convene the Luminor Board. Five archetypal advisors challenge the proposal; Lumina synthesizes.
+Load `SIP.md`, `AGENTS.md`, and (if using Arcanea canon) query `arcanea-mcp` for the Guardian archetype set. Convene the Luminor Board. Five archetypal advisors challenge the proposal; Lumina synthesizes.
 
 **Note:** This command imports Arcanea canon (Guardian names) under CC-BY-NC attribution. If using in a closed-source commercial context for another vertical, swap to the functional-name variant below.
 

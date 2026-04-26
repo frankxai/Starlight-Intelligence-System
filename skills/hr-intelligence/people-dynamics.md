@@ -1,10 +1,10 @@
 # Skill: hr-intelligence/people-dynamics
 
-> The neuro-psychology layer of HR. Diagnoses individual motivation, burnout signals, team dynamics, psychological safety, and retention drivers using research-validated instruments. Refuses engagement-survey-as-data and exit-interview-as-strategy. Sub-system 5 of 6 in Ana's HR Intelligence Domain Sub-Stack.
+> The neuro-psychology layer of HR. Diagnoses individual motivation, burnout signals, team dynamics, psychological safety, and retention drivers using research-validated instruments. Refuses engagement-survey-as-data and exit-interview-as-strategy. Sub-system 5 of 6 in the HR Intelligence reference vertical.
 
 **Domain:** HR Intelligence
-**Vertical:** Ana's HR (sub-system: Talent)
-**Voice:** Frank DNA + Ana edge — clinical-psych depth, neuroscience-precise, refuses wellness-industrial fluff and engagement-survey theatre.
+**Vertical:** HR Intelligence reference vertical (sub-system: Talent)
+**Voice:** Frank DNA + the synthesis edge — clinical-psych depth, neuroscience-precise, refuses wellness-industrial fluff and engagement-survey theatre.
 **Disclaimer:** This skill produces HR system architecture, not clinical advice. When a person's distress crosses into active depression, anxiety disorder, eating disorder, or addiction, refer to a qualified mental health clinician. Not legal advice — ADA accommodations and protected-class considerations require jurisdiction-specific compliance and individualized interactive process; validate with qualified counsel.
 
 ---
@@ -176,7 +176,7 @@ If the cadence is not named, the intervention is not real.
 
 ---
 
-— Talent Intelligence — part of Ana's HR Intelligence Domain Sub-Stack —
+— Talent Intelligence — part of the HR Intelligence reference vertical —
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol

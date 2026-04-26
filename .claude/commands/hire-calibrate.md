@@ -7,7 +7,7 @@ argument-hint: role-slug (required, ICP and interview architecture must exist) +
 
 # /hire-calibrate
 
-This is part of Ana's HR Intelligence sub-stack. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
 Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, the existing ICP (`hr-intelligence/hiring/icp-<role-slug>-*.md`) and interview architecture (`hr-intelligence/hiring/interview-<role-slug>-*.md`). Produce a **Calibration Session Script** — a facilitator-ready 60-minute agenda. Hand off to running the actual loop.
 
@@ -201,10 +201,10 @@ The facilitator will name these patterns out loud during the debrief — raters 
 - **Anchor candidates must be people the rater team has actually seen.** Fictional anchors do not produce calibration; they produce abstraction.
 - **Structured scores before discussion in the calibration itself.** The calibration models the debrief discipline.
 - **The calibration session itself is the deliverable.** Without it, the loop runs uncalibrated. Refuse to advance to the loop without confirmation that the session ran.
-- **Compose with Genius Profile.** Facilitator script in Ana's voice when available.
+- **Compose with Genius Profile.** Facilitator script in the practitioner's voice when available.
 - **One hand-off at close.** Run the loop. Then `/hire-debrief`.
 
-— Hiring Intelligence — part of Ana's HR Intelligence Domain Sub-Stack —
+— Hiring Intelligence — part of the HR Intelligence reference vertical —
 
 ---
 

@@ -111,9 +111,9 @@ Forks should **not**:
 | Vertical | Domain | Status | Reference path |
 |---|---|---|---|
 | **HR Intelligence** | People-flourishing science (Hiring · Performance · Training · Culture · Talent · Org) | `scaffolded — v0.1.1` (authorless) | `verticals/hr-intelligence/` |
-| **(future)** Capital Intelligence | Capital allocation, deal flow, DPI | Planned per `MASSIVE_ACTION_PLAN.md` | TBD |
-| **(future)** Sound Intelligence | Music production, catalog, sync | Planned per `MASSIVE_ACTION_PLAN.md` | TBD |
-| **(future)** Clinical Intelligence | Healthcare practice operations | Planned · awaiting practitioner partner | TBD |
+| **(future)** Capital Intelligence | Capital allocation, deal flow, DPI | Planned · target Q3 2026 — see `MASSIVE_ACTION_PLAN.md` § 5 capture-stack adoption gate (Phase 1 must land before second domain stacks compound). | Pending Phase 1 |
+| **Sound Intelligence** | Music production, catalog, sync, performance, audience | `scaffolded — v0.1` (in flight per v7.5.1, see `verticals/sound-intelligence/`) | `verticals/sound-intelligence/` |
+| **(future)** Clinical Intelligence | Healthcare practice operations | Planned · target Q4 2026 — awaiting practitioner partner with the synthesis (clinician + ML/data + system architect) | Pending partner |
 
 Each new reference vertical follows the authorless pattern (Path A) by default. A practitioner who wants their fork to be co-attributed to them in public marketing can choose Path B in their fork — but the reference vertical itself stays authorless.
 

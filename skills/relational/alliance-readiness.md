@@ -33,7 +33,7 @@ All three are legitimate outcomes. Most candidates land in option 2 or 3. That i
 **Fires when:**
 - `/design-alliance-readiness` is invoked with a named candidate
 - `/map-relationships` has surfaced an alliance-candidate relationship (pre-filter passed in the network architecture step)
-- The person explicitly asks about a specific relationship: "Is Ana ready for an alliance?"
+- The person explicitly asks about a specific relationship: "Is X ready for an alliance?"
 
 **Does NOT fire when:**
 - No specific candidate is named — this is not "should I form an alliance" in the abstract; it is "is [named person] ready to forge with"

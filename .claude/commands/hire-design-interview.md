@@ -7,7 +7,7 @@ argument-hint: role-slug (required, ICP must exist) + --slot-count <3|4|5|6> + -
 
 # /hire-design-interview
 
-This is part of Ana's HR Intelligence sub-stack. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
 Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, the existing ICP at `hr-intelligence/hiring/icp-<role-slug>-*.md`, and if present the company's Genius Profile (`genius/profile-<company-slug>.md`). Produce a **Structured Interview Architecture**. Hand off to exactly one next command.
 
@@ -15,7 +15,7 @@ Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligenc
 
 **Hiring decisions touch employment law and protected-class considerations. This is system architecture, not legal advice. Question stems must be reviewed by qualified counsel for jurisdiction-specific compliance before the loop runs.**
 
-This command produces the instrument. Legal counsel signs off on jurisdiction-specific question wording. The interviewer briefs run in Ana's voice via the Genius Profile when available — they are tools for the interviewer, not scripts the candidate sees.
+This command produces the instrument. Legal counsel signs off on jurisdiction-specific question wording. The interviewer briefs run in the practitioner's voice via the Genius Profile when available — they are tools for the interviewer, not scripts the candidate sees.
 
 ## Input
 $ARGUMENTS
@@ -54,7 +54,7 @@ $ARGUMENTS
    - If multi-day loop, alternate cognitively-heavy and conversationally-heavy slots
    - Schedule a 60-minute calibration session BEFORE day 1 of the loop (separate command: `/hire-calibrate`)
 
-7. **Voice composition.** Interviewer briefs should sound like Ana (or whoever the company's Genius Profile fingerprints), not generic HR-tech. Warm-precise. "Here is what we're trying to learn in this slot" beats "Assess the candidate's competency in X."
+7. **Voice composition.** Interviewer briefs should sound like the practitioner (the company's Genius Profile fingerprints), not generic HR-tech. Warm-precise. "Here is what we're trying to learn in this slot" beats "Assess the candidate's competency in X."
 
 8. **Compliance review flag.** Forward all question stems to legal counsel for jurisdiction-specific review before the loop runs. Non-negotiable.
 
@@ -209,11 +209,11 @@ Interviewer briefs (the prep document each interviewer reads before their slot) 
 - **Personality assessments are not allowed as primary signal.** Tertiary only, flagged as such.
 - **Unstructured slots are not allowed.** Replace with structured behavioral or remove.
 - **Decision-fatigue mitigations in the schedule.** Max 4 panels/day; no post-lunch decision panels; front-load high-stakes.
-- **Compose with Genius Profile.** Interviewer briefs in Ana's voice when available.
+- **Compose with Genius Profile.** Interviewer briefs in the practitioner's voice when available.
 - **All question stems reviewed by counsel before the loop runs.** Surface this in compliance review section.
 - **One hand-off at close.** `/hire-calibrate`.
 
-— Hiring Intelligence — part of Ana's HR Intelligence Domain Sub-Stack —
+— Hiring Intelligence — part of the HR Intelligence reference vertical —
 
 ---
 

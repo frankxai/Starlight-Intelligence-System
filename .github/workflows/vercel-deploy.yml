@@ -1,3 +1,19 @@
+# Built on SIP — Starlight Intelligence Protocol v1.1.0
+# Substrate: starlightintelligence.org/protocol
+# Layers used: [file-contract, attestation, sovereignty]
+# This workflow ships site/ to Vercel production. Every successful deploy
+# carries an explicit "Built on SIP" footer in the commit comment + a
+# .deploy-log artifact uploaded to the workflow run, satisfying the
+# substrate's ambient-attestation rule for the most-shipped public surface.
+#
+# Supply-chain hardening (per OpenClaw v7.5 HIGH-1, 2026-04-26):
+# - All third-party actions pinned to commit SHAs (not floating tags).
+# - Vercel CLI pinned to exact semver (not @latest).
+# - Dependabot manages SHA bumps via .github/dependabot.yml.
+# Every "uses:" line carries a trailing "# vX.Y.Z" comment naming the
+# pinned semver for human readability — dependabot updates both the SHA
+# and the comment together.
+
 name: Deploy site/ to Vercel
 
 on:
@@ -13,6 +29,11 @@ concurrency:
   group: vercel-deploy-prod
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -21,17 +42,33 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_CLI_VERSION: "39.4.0"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 1
+
+      - name: Verify ordering — abort if newer commit on main
+        # Per OpenClaw HIGH-2: serialized concurrency lock does not enforce
+        # ordering. If a newer commit landed on main while this run was
+        # queued, abort with neutral exit so the newer run wins.
+        run: |
+          git fetch origin main
+          LATEST=$(git rev-parse origin/main)
+          if [ "$LATEST" != "${GITHUB_SHA}" ]; then
+            echo "Newer commit ${LATEST} on main; aborting stale deploy of ${GITHUB_SHA}"
+            exit 78
+          fi
+          echo "Ordering verified: ${GITHUB_SHA} is HEAD on main"
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: "20"
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+      - name: Install Vercel CLI (pinned)
+        run: npm install --global vercel@${VERCEL_CLI_VERSION}
 
       - name: Pull Vercel project info (production)
         working-directory: site
@@ -42,5 +79,62 @@ jobs:
         run: vercel build --prod --token="$VERCEL_TOKEN"
 
       - name: Deploy to production
+        id: deploy
         working-directory: site
-        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "deploy_url=$DEPLOY_URL" >> "$GITHUB_OUTPUT"
+          echo "Production deploy: $DEPLOY_URL"
+
+      - name: Write attestation log
+        env:
+          DEPLOY_URL: ${{ steps.deploy.outputs.deploy_url }}
+        run: |
+          mkdir -p site/.deploy-log
+          cat > site/.deploy-log/${GITHUB_SHA}.txt <<EOF
+          ---
+          Built on SIP — Starlight Intelligence Protocol v1.1.0
+          Substrate: starlightintelligence.org/protocol
+          Layers used: [file-contract, attestation, sovereignty]
+          Deploy: ${DEPLOY_URL}
+          Commit: ${GITHUB_SHA}
+          Run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Workflow: vercel-deploy.yml
+          Vercel CLI: ${VERCEL_CLI_VERSION}
+          Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+          Attestation is compounding, not credit transfer: every composition strengthens every node.
+          ---
+          EOF
+          cat site/.deploy-log/${GITHUB_SHA}.txt
+
+      - name: Upload attestation artifact
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+        with:
+          name: deploy-attestation-${{ github.sha }}
+          path: site/.deploy-log/${{ github.sha }}.txt
+          retention-days: 90
+
+      - name: Comment on commit with attestation
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        env:
+          DEPLOY_URL: ${{ steps.deploy.outputs.deploy_url }}
+        with:
+          script: |
+            const deployUrl = process.env.DEPLOY_URL || '(unknown)';
+            const body = [
+              '**Built on SIP** — Starlight Intelligence Protocol v1.1.0',
+              '',
+              `- Deploy: ${deployUrl}`,
+              `- Commit: ${context.sha}`,
+              `- Workflow run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `- Substrate: starlightintelligence.org/protocol`,
+              `- Layers used: [file-contract, attestation, sovereignty]`,
+              '',
+              'Attestation is compounding, not credit transfer: every composition strengthens every node.'
+            ].join('\n');
+            await github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body
+            });

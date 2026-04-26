@@ -38,7 +38,7 @@ $ARGUMENTS
    - If a focus domain was passed as third argument, filter DELEGATE items to that domain. If the filter yields zero items, halt and name the mismatch.
 
 2. **Inventory DELEGATE tasks by functional domain.**
-   - Group every DELEGATE item by the functional category it belongs to — not by the source it came from. For an HR leader like Ana this typically yields: recruiting, onboarding, performance management, training, comp/ben, offboarding, compliance, culture.
+   - Group every DELEGATE item by the functional category it belongs to — not by the source it came from. For an HR leader this typically yields: recruiting, onboarding, performance management, training, comp/ben, offboarding, compliance, culture.
    - Each functional domain becomes one chapter in the Executor Playbook. Domains with only one task collapse into an adjacent domain unless the task is structurally distinct.
    - Order domains by cognitive load on the person today, highest first. The domain draining them most is the first one the executor takes.
 

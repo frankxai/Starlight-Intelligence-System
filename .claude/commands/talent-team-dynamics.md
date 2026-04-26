@@ -1,6 +1,6 @@
 ---
 name: talent-team-dynamics
-description: Audit a team's dynamics. Hackman criteria check (real team or co-acting group?), Tuckman stage, status-hierarchy map, interdependence map, communication-pattern analysis. Refuses generic "team-building exercises" without diagnostic first. Names which Hackman criterion fails when one does — clarify membership/bounds/task before "team building." Sub-system 5 of 6 in Ana's HR Intelligence Domain Sub-Stack.
+description: Audit a team's dynamics. Hackman criteria check (real team or co-acting group?), Tuckman stage, status-hierarchy map, interdependence map, communication-pattern analysis. Refuses generic "team-building exercises" without diagnostic first. Names which Hackman criterion fails when one does — clarify membership/bounds/task before "team building." Sub-system 5 of 6 in the HR Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: team identifier (required) + --size <N> + --tenure <weeks-months-years> + optional context paragraph describing observed dynamics, recent incidents, or what the manager wants
 ---

@@ -7,7 +7,7 @@ argument-hint: candidate-slug (required) + role-slug (required) + --rater-count 
 
 # /hire-debrief
 
-This is part of Ana's HR Intelligence sub-stack. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
 Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, the ICP, the interview architecture, the calibration session record, and (if present) the fit assessment for this candidate. Produce the **Debrief Facilitation Script + Decision Record**. Hand off to onboarding architecture (if hire-yes) or learning capture (if hire-no).
 
@@ -239,7 +239,7 @@ If fit assessment exists, read it into the discussion. Supplement to rubric, not
 - **Learning captured for next calibration.** The loop improves loop-over-loop.
 - **One hand-off at close.** Onboarding (hire-yes), candidate close (hire-no), or scoped re-interview.
 
-— Hiring Intelligence — part of Ana's HR Intelligence Domain Sub-Stack —
+— Hiring Intelligence — part of the HR Intelligence reference vertical —
 
 ---
 

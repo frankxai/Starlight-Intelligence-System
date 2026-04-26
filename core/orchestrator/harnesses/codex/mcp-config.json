@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "_comment": "Codex CLI harness MCP scope for Starlight Orchestrator. Read-only mirror of Claude Code's MCP scope — Codex audits the substrate, never mutates it. Writes route back to Claude Code primary. Built on SIP — see footer.",
+  "_harness": "codex",
+  "_role": "adversary",
+  "_loaded_when": "/ao adversary mode, security review, second-pair architecture decisions, /openclaw-audit invocations, pre-tag pressure-test",
+  "_write_policy": "READ-ONLY — Codex must not mutate substrate files. All proposed changes route back to Claude Code primary as PR comments, board verdicts, or handoff packets.",
+  "mcpServers": {
+    "starlight-substrate": {
+      "_role": "canonical — always loaded, READ-ONLY scope",
+      "_purpose": "substrate awareness for adversary review — vault reads, IS namespace lookup, attestation verification, memory graph queries",
+      "_read_only": true,
+      "command": "node",
+      "args": [
+        "C:\\Users\\frank\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
+      ],
+      "env": {
+        "STARLIGHT_MCP_MODE": "read-only"
+      }
+    },
+    "arcanea-mcp": {
+      "_role": "canon-audit scoped — READ-ONLY",
+      "_purpose": "Arcanea canon read for adversary review when Claude Code has touched canon, Guardians, Vel'Tara archetypes",
+      "_status": "scaffold — wire when Arcanea MCP server lands; Phase 1 dependency",
+      "_read_only": true,
+      "command": "node",
+      "args": [
+        "${ARCANEA_MCP_PATH}"
+      ],
+      "env": {
+        "ARCANEA_CANON_PATH": "${ARCANEA_CANON_PATH}",
+        "ARCANEA_MCP_MODE": "read-only"
+      },
+      "_disabled_until": "arcanea-mcp v0.1+ ships"
+    }
+  },
+  "_task_scoped_mcps": {
+    "_comment": "Codex's task-scoped MCPs are strictly read-only mirrors of what Claude Code can write to. The mirror exists so adversary review can see what primary saw; the mirror never propagates writes.",
+    "examples": {
+      "github_read": {
+        "_purpose": "PR diff read, commit history audit, release verification",
+        "_load_when": "any /openclaw-audit or post-tag pressure-test",
+        "_pattern": "gh CLI in read-only commands (pr view, pr diff, log, show); writes (gh pr create, gh pr merge) explicitly disallowed"
+      },
+      "vercel_read": {
+        "_purpose": "deploy log audit, runtime log review",
+        "_load_when": "post-deploy attestation verification",
+        "_pattern": "mcp__claude_ai_Vercel__list_deployments, get_deployment, get_runtime_logs — never deploy_to_vercel from this harness"
+      },
+      "linear_read": {
+        "_purpose": "issue / cycle audit when alliance work is under review",
+        "_pattern": "list_issues, get_issue, list_comments — never save_issue / save_comment"
+      },
+      "notion_read": {
+        "_purpose": "Ops Hub audit",
+        "_pattern": "notion-fetch, notion-search — never notion-create-pages / notion-update-page"
+      }
+    }
+  },
+  "_secrets_policy": {
+    "_comment": "Codex never handles secrets. Any task that requires a token escalates to Claude Code primary. The harness layer at scaffold stage carries no secret-touching surfaces.",
+    "secrets_allowed": false,
+    "env_var_refs_only": true
+  },
+  "_built_on_sip": {
+    "substrate": "starlightintelligence.org/protocol",
+    "version": "v1.1.0",
+    "layers_used": ["file-contract", "attestation", "sovereignty"],
+    "verticals": "core/orchestrator/harnesses/codex",
+    "generated": "2026-04-26"
+  }
+}

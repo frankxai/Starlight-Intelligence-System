@@ -123,7 +123,7 @@ One document — **Vision Architecture** — saved to `vision/vision-<slug>.md`.
 5. **Genius Profile is upstream and non-optional.** No Profile → halt and route to `/discover-genius`.
 6. **Drift tests are the most portable output.** Ship 5–7 specific questions the person can carry around. Generic drift questions ("is this aligned with my values?") do not pass.
 7. **Sovereignty is non-waivable.** The person owns their Vision. Starlight does not retain personal vision data in public vaults — it lives in the person's instance only.
-8. **Non-technical users first.** Vision excavation happens in conversation, not in a terminal. Ana-grade test: would this work in Claude Desktop? If it requires CLI, it failed.
+8. **Non-technical users first.** Vision excavation happens in conversation, not in a terminal. Non-technical-user-grade test: would this work in Claude Desktop? If it requires CLI, it failed.
 
 ## Built on SIP
 

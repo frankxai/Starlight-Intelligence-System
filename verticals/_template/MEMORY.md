@@ -4,6 +4,26 @@
 
 ---
 
+## Pre-publish checklist *(do not push a fork until every box is checked)*
+
+Per OpenClaw v7.5 HIGH-6: a fork pushed with placeholders intact ships a SIP-attested artifact carrying placeholder content (e.g., literal `<name>` in MEMORY.md). Substrate-attestation is ambient — the artifact will carry "Built on SIP" alongside the placeholder text, which is decorative-attestation drift.
+
+Before any fork pushes its first public commit:
+
+- [ ] `<name>` replaced with the practitioner's real vertical name.
+- [ ] `<slug>` replaced with the practitioner's chosen URL-safe slug.
+- [ ] `<YYYY-MM-DD>` (spawn date) replaced with the actual fork date.
+- [ ] `<command-or-author>` replaced with the spawn command (`/spawn-domain-stack` or equivalent) or named author.
+- [ ] `<your handle / org>` replaced with the practitioner's identifier.
+- [ ] `<commit-sha>` replaced with the actual SHA the practitioner forked from.
+- [ ] `<list>` replaced with actual composition map (Universal IS layers + Sister verticals + Canon imports).
+- [ ] `<one-sentence summary>` replaced with the actual domain declaration.
+- [ ] All `<>`-bracketed fields elsewhere in the file resolved.
+
+Substrate enforcement: `test/v75.test.ts` Block 5 (or v7.5.1+ equivalent) asserts that any vertical's `MEMORY.md` whose path is **not** `verticals/_template/MEMORY.md` does not contain the literal strings `<name>`, `<slug>`, or `<commit-sha>`. The template is the only place those literals are allowed.
+
+---
+
 ## Declared identity
 
 - **Vertical name:** `<name>`
@@ -38,6 +58,16 @@ When a practitioner forks this reference, they record their lineage here:
 - Forked-on: `<YYYY-MM-DD>`
 - Practitioner identifier: `<their handle / org>`
 - Attestation back: how this fork credits the reference (typically via "Built on SIP" footer + reference-vertical SHA pin).
+
+---
+
+## Reference lineage SHAs
+
+When a material event lands in this vertical (rewrite, sub-system addition, board verdict, sovereignty-affecting change), record the commit SHA here so future forks can verify the lineage they branched from:
+
+- `<event>` · `<YYYY-MM-DD>` · `<commit-sha>` · `<one-sentence what-happened>`
+
+The HR Intelligence vertical models this pattern at `verticals/hr-intelligence/MEMORY.md` § Changelog.
 
 ---
 

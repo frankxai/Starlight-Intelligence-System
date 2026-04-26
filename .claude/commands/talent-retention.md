@@ -1,6 +1,6 @@
 ---
 name: talent-retention
-description: Retention architecture for a high-performer cohort. Stay-interview script (Ana's voice), per-person leverage analysis (1-2 changes that would make this person 5x more likely to stay another 24 months), aggregate pattern across the cohort, system redesign recommendations. Cites stay-interview research (Beverly Kaye). Refuses exit-interview-as-strategy. Sub-system 5 of 6 in Ana's HR Intelligence Domain Sub-Stack.
+description: Retention architecture for a high-performer cohort. Stay-interview script (the practitioner's voice), per-person leverage analysis (1-2 changes that would make this person 5x more likely to stay another 24 months), aggregate pattern across the cohort, system redesign recommendations. Cites stay-interview research (Beverly Kaye). Refuses exit-interview-as-strategy. Sub-system 5 of 6 in the HR Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: cohort identifier (required) + --cohort-size <N> + --org-context <consultancy|product-co|agency|other> + optional context paragraph describing recent attrition signals or what triggered the retention review
 ---
@@ -32,7 +32,7 @@ $ARGUMENTS
 
 4. **REFUSE exit-interview-as-strategy.** Exit interviews are useful for pattern triangulation across past departures, never as a primary intervention. By the time someone is exiting, the leverage is gone. The artifact may reference past exit signals as data; the strategy is stay-interview-driven.
 
-5. **Stay-interview script (in Ana's voice).** Quarterly cadence. 30-45 minutes per high-performer. Manager-led, with HR design support but not HR-led. The two structural questions:
+5. **Stay-interview script (in the practitioner's voice).** Quarterly cadence. 30-45 minutes per high-performer. Manager-led, with HR design support but not HR-led. The two structural questions:
 
    **Question 1 — what would make you leave?**
    - "If you were going to leave in the next 18 months, what would have to happen — or stop happening — for that to feel like the right move?"
@@ -44,7 +44,7 @@ $ARGUMENTS
    - Follow-up: "If [specific thing they named] went away, what's left?"
    - Follow-up: "What would make this the place you stay another two years even if a strong recruiter call came in?"
 
-   **Voice rules (Ana edge):** direct, warm, refuses small-talk-opening, refuses "rate your engagement 1-10," refuses scripted sales pitch about company benefits. The script asks open questions, lets silence sit, and writes down specific phrases for follow-up.
+   **Voice rules (the synthesis edge):** direct, warm, refuses small-talk-opening, refuses "rate your engagement 1-10," refuses scripted sales pitch about company benefits. The script asks open questions, lets silence sit, and writes down specific phrases for follow-up.
 
    **Confidentiality protocol:** what's said in the stay interview stays with the manager + 1-up unless the person explicitly authorizes broader sharing. Aggregate patterns can be shared without attribution. Specific quotes only with consent.
 
@@ -108,7 +108,7 @@ This retention architecture is grounded in stay-interview research (Beverly Kaye
 
 **Refused approach:** exit-interview-as-strategy. Exits are useful for pattern triangulation; they are not the leverage point.
 
-## Stay-interview script (Ana's voice)
+## Stay-interview script (the practitioner's voice)
 
 **Cadence:** quarterly. **Duration:** 30-45 minutes. **Lead:** manager, with HR design support.
 
@@ -213,7 +213,7 @@ This pattern is a **system-redesign signal**, not <N> individual conversations.
 - **Manager relationship quality is the #1 retention predictor.** Anchor leverage interventions accordingly.
 - **Comp is last consideration, not first.** Comp adjustments rarely save engaged-but-leaving; they're table stakes for fairness.
 - **Confidentiality protocol explicit.** Stay interviews are confidential; aggregate patterns are shareable without attribution.
-- **Voice composes with Ana's Genius Profile** for the stay-interview script.
+- **Voice composes with the practitioner's Genius Profile** for the stay-interview script.
 - **Quarterly rhythm initiated, not one-off.**
 - **Built on SIP attestation at end of every artifact.**
 

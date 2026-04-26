@@ -45,7 +45,7 @@ Parse `$ARGUMENTS` for:
 
 4. **Default sequencing by `--priority` flag.** Override step 2 diagnosis if priority is stated; otherwise diagnosis leads.
 
-   - **freedom priority** (indispensable-but-trapped case, e.g. Ana): Genius → Second Brain → Freedom Path execution → Train Executor → Creator Pipeline → Business → Wealth
+   - **freedom priority** (indispensable-but-trapped case): Genius → Second Brain → Freedom Path execution → Train Executor → Creator Pipeline → Business → Wealth
    - **revenue priority** (founder under revenue pressure): Genius → Vision → Business → Creator → Wealth
    - **vision priority** (drift, no North Star): Genius → Second Brain → Vision → Brand Kit → everything else derivative
    - **compound priority** (stable operator, long-game): Genius → Health → Vision → Second Brain → everything else

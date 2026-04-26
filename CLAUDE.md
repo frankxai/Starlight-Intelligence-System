@@ -46,6 +46,8 @@ Every task is either substrate-level or operational-level. Decide before acting.
 
 **Ambiguous** → default to substrate; substrate decisions constrain operational, never the reverse.
 
+**Substrate-tier governance gate (v7.5.1+):** Substrate-level changes invoke `/luminor-board` BEFORE commit/tag, not after. `/superintelligence` "execute" mode does NOT displace this gate. v7.5.0 shipped under `/superintelligence` without pre-board — post-hoc Board verdict was PROCEED-WITH-REVISE; v7.5.1 closed the REVISE items and logged v7.5 as the recovery exception. From v7.6 onward, board-before-tag is structural-not-discretionary for any change touching `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md` / file-contract / attestation rules / sovereignty clause / 10-IS taxonomy / domain sub-stack pattern. Operational-tier work continues under `/superintelligence` without pre-board. See `docs/boards/luminor-v75-ship.md` for the precedent record.
+
 ---
 
 ## System Overview

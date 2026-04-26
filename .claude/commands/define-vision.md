@@ -139,7 +139,7 @@ $ARGUMENTS
 - **Drift tests are specific.** Generic drift questions ("is this aligned with my values?") fail. Tests reference the person's actual horizons.
 - **Sovereignty is non-waivable.** The person owns their Vision. Starlight retains no private vision data in public vaults — it lives in the person's instance only. Attribution via "Built on SIP" is the sole compounding mechanism.
 - **Hand off to exactly ONE next command.** Typical: `/build-brand-kit`. Optionality re-scatters what the Vision just aligned.
-- **Non-technical users.** Vision excavation happens in conversation, not a terminal. Ana-grade: works in Claude Desktop + Cowork with no CLI. Accept free-form answers.
+- **Non-technical users.** Vision excavation happens in conversation, not a terminal. Non-technical-user-grade: works in Claude Desktop + Cowork with no CLI. Accept free-form answers.
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol

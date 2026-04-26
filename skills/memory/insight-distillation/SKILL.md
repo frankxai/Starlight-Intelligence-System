@@ -42,12 +42,12 @@ Read all captures in the window. Do not skim — clustering requires reading in 
 
 Group captures that touch the same underlying theme. A theme is not a category — it's an emerging *thing the person has been thinking about repeatedly*.
 
-Example (Ana's monthly distillation):
+Example (a practitioner's monthly distillation):
 - Cluster A: 5 captures about client-calls where the framework worked even when the client resisted → theme: "framework resilience under client friction"
 - Cluster B: 3 captures about why one vocabulary word kept returning across unrelated coaching conversations → theme: "vocabulary as diagnostic"
 - Cluster C: 2 captures about a new energy-management observation → theme: still emerging, watch next month
 
-Clusters are named in the person's own voice, not a generic category. "Framework resilience under client friction" is what Ana would say; "client-handling patterns" is what a template would say. Voice matters.
+Clusters are named in the person's own voice, not a generic category. "Framework resilience under client friction" is what the practitioner would say; "client-handling patterns" is what a template would say. Voice matters.
 
 ### Procedure 3: Identify Emerging Patterns (≥3 Threshold)
 

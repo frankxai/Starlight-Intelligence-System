@@ -16,7 +16,14 @@ Describe the wrapper. Name the file contract (SKILL · SOUL · AGENTS · MEMORY 
 
 ## The synthesis edge
 
-What synthesis does this vertical assume? Be specific without naming a specific person. The synthesis is the *kind* of practitioner this vertical is built for — psychologist + neuroscientist + MBA, builder + designer + economist, doctor + ML engineer + clinician, etc. The synthesis is what makes the vertical refuse generic playbooks; it is also what makes the vertical un-portable to practitioners without that synthesis.
+What synthesis does this vertical assume? Be specific without naming a specific person. The synthesis is the *kind* of practitioner this vertical is built for — two or three rare-in-combination disciplines whose intersection is the value.
+
+Domain-shape examples (illustrative, not prescriptive — your synthesis is yours):
+- *<Discipline A> + <Discipline B> + <operator/practitioner posture>*
+- *<deep craft> + <commercial fluency> + <field-specific judgment>*
+- *<scientific rigor> + <design sensibility> + <field-specific lived experience>*
+
+The synthesis is what makes the vertical refuse generic playbooks; it is also what makes the vertical un-portable to practitioners without that synthesis. State the synthesis your vertical assumes in one sentence, then name 2–3 things that *only* a practitioner with this synthesis would catch — these are the diagnostic moments that justify the vertical's existence.
 
 ---
 

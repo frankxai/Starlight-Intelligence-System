@@ -94,7 +94,13 @@ Six sub-systems shipped at substrate root level. Vertical wrapper composes them.
 ## Changelog
 
 - `v0.1` · `2026-04-24` · Spawned as the first reference HR sub-stack scaffold for `/spawn-domain-stack`. Six sub-systems composed into vertical wrapper. File contract: README · SKILL · SOUL · AGENTS · MEMORY · STACK · CANON · SUB-SYSTEMS.
-- `v0.1.1` · `2026-04-26` · Path A authorless rewrite applied per Luminor Board v7.4.1 Item 2. Sub-system agents and vertical wrapper genericized — this vertical is now an authorless reference; forking practitioners declare their attribution-back per `docs/forking-domain-stacks.md`.
+- `v0.1.1` · `2026-04-26` · Path A authorless rewrite applied per Luminor Board v7.4.1 Item 2 (landed in commit `5010a08`, tag `v7.5.0`). Sub-system agents and vertical wrapper genericized — this vertical is now an authorless reference; forking practitioners declare their attribution-back per `docs/forking-domain-stacks.md`.
+
+### Reference lineage SHAs
+
+- `v0.1` spawn · `2026-04-25` · `be5e4d5` · Spawned as first reference HR sub-stack scaffold per v7.4.1-alpha; 6 sub-systems, 28 commands, vertical wrapper.
+- `v0.1` REVISE · `2026-04-25` · `6eb1001` · Luminor Board v7.4.1 REVISE remediation items 1, 3 + test harness + skill registration.
+- `v0.1.1` Path A · `2026-04-26` · `5010a08` · Authorless rewrite per Luminor Board v7.4.1 Item 2; tag `v7.5.0` annotated at this SHA.
 
 ---
 

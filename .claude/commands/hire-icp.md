@@ -7,7 +7,7 @@ argument-hint: role title (required) + --jurisdiction <US-state|EU-country|UK|ot
 
 # /hire-icp
 
-This is part of Ana's HR Intelligence sub-stack. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
 Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, and if present the company's Genius Profile (`genius/profile-<company-slug>.md`) and Vision Architecture (`vision/vision-<company-slug>.md`). Produce an **Ideal Candidate Profile** for the named role. Hand off to exactly one next command.
 
@@ -178,7 +178,7 @@ Alternative next moves (only if upstream gap surfaced):
 - **Compose with Vision when available.** Senior roles especially benefit from company-as-candidate framing.
 - **One hand-off at close.** Default: `/hire-design-interview`. Alternatives only on real upstream gap.
 
-— Hiring Intelligence — part of Ana's HR Intelligence Domain Sub-Stack —
+— Hiring Intelligence — part of the HR Intelligence reference vertical —
 
 ---
 
