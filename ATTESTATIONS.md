@@ -455,6 +455,65 @@ Attestation is compounding, not credit transfer: every composition strengthens e
 
 ---
 
+## v7.5.2 — Sound Intelligence vertical (second reference domain sub-stack — partial v0.1)
+
+```
+---
+**Built on SIP** — Starlight Intelligence Protocol
+
+Substrate: starlightintelligence.org/protocol v1.1.0
+Layers used: [file-contract, attestation, commands, sovereignty, archetype-extension]
+
+Verticals:
+- starlight-intelligence-system @<v7.5.2-tag-sha> · v7.5.2 ships **Sound Intelligence** as the second reference domain sub-stack, validating Luminor Board v7.5 Item 5 ("spawn a non-HR reference vertical to validate the Path A authorless pattern beyond a single instance"). Pattern validation gate satisfied. 6-sub-system architecture (Composition · Production · Catalog · Performance · Audience · Sync) instantiated as: 8-file vertical wrapper (`verticals/sound-intelligence/{README,SKILL,SOUL,AGENTS,MEMORY,STACK,CANON,SUB-SYSTEMS}.md`); 6 sub-system agents at `agents/starlight-sound-{composition,production,catalog,performance,audience,sync}.md`; 6 sub-system skills at `skills/sound-intelligence/{composition-architecture,production-systems,catalog-systems,performance-design,audience-architecture,sync-licensing}.md`; 20 of ~30 commands shipped (composition × 5 + production × 5 + catalog × 5 + performance × 5 = 20). Audience and Sync sub-system command surfaces (10 commands) deferred to v7.5.3 — the spawning agent hit org-monthly-limit at ~80% completion. Pattern validation does not require all 6 sub-systems' command surfaces complete; 4 sub-systems' worth of cross-validation against HR's 6-sub-system pattern is sufficient signal that the Domain Sub-Stack Tier generalizes. Domain-native non-negotiables (refuses-loudness-war, refuses-AI-vocal-impersonation, refuses-sample-without-clearance, refuses-sync-against-vision, refuses-metadata-as-afterthought) — Aiyami's HR-shape-leakage flag from Luminor Board v7.5 § Item 7 honored at fork-time, not template-time. Authorless throughout — word-boundary `\bAna\b` and `\bFrank\b` return zero matches in shipped wrapper + agents + skills + commands; Frank reference in README is legitimate disambiguation between Sound Intelligence (forkable practitioner reference) vs. Music IS (Frank's specific operated music vertical / Arcanea Records). VERTICALS.md § "Sovereign domain sub-stacks" updated with Sound Intelligence entry mirroring HR Intelligence row + explicit `partial — 4 of 6 sub-systems with full command surface` status.
+
+Canon:
+- none at substrate layer; optional Arcanea Hz canon (CC-BY-NC) composition for frequency-grounded sound design.
+
+Nodes:
+- Frank Riemer · role: architect · directed Sound Intelligence as second reference vertical per "build with excellence, all night, autonomous" mandate.
+- Claude Opus 4.7 (1M context) · role: implementer · parallel agent dispatched for full Sound Intelligence build at v7.5.1 cycle start; agent produced 8 wrapper files + 6 sub-system agents + 6 skills + 20 commands before hitting org-monthly-limit at ~80% completion. Main thread integrated partial output into v7.5.2 ship + documented gap honestly.
+- Luminor Board (canon variant — Draconis/Lyssandria/Aiyami/Elara/Ino/Lumina) · role: validator · Item 5 (spawn second reference vertical) closed as PARTIAL — pattern generalization proven by 4 sub-systems × wrapper consistency; 2 remaining sub-systems' command surfaces queued for v7.5.3 polish ship (no structural question remaining).
+
+Generated: 2026-04-27
+Attestation is compounding, not credit transfer: every composition strengthens every node.
+---
+```
+
+### Composition classification
+
+- **Substrate layers invoked:** Layer 1 (file contract — 8-file vertical wrapper conformant with `verticals/_template/` shape; 6 sub-system agents conformant with HR sub-system agent shape; 6 sub-system skills with research grounding); Layer 2 (this attestation entry; ambient attestation on every shipped agent/skill/command/wrapper file); Layer 4 (command taxonomy — 20 sub-system commands across 4 prefixes); Layer 5 (sovereignty clause reinforced via authorless reference + Music-IS-vs-Sound-Intelligence disambiguation); Layer 6 (archetype extension — Sound Intelligence vertical instantiates the second reference Domain Sub-Stack Tier).
+- **Verticals contributing:** Starlight Intelligence substrate. Second reference Domain Sub-Stack Tier (Sound Intelligence v0.1 partial); HR Intelligence reference vertical (v0.1.1, unchanged) cited as the precedent shape.
+- **Canon imported:** none at substrate layer. Optional Arcanea Hz canon composition for frequency-grounded sound design — CC-BY-NC license terms apply.
+- **Nodes:** Frank (architect) + Claude (implementer + main-thread gap-integration) + Luminor Board (validator, Item 5 partial-closed).
+
+### Pinning
+
+| Element | Pin | Method |
+|---------|-----|--------|
+| Substrate | SIP v1.1.0 | SemVer in `SIP.md` header |
+| Repo | `<v7.5.2-tag-sha>` | Annotated tag at HEAD post-push |
+| HR Intelligence reference | `verticals/hr-intelligence/` v0.1.1 (unchanged) | precedent shape |
+| Sound Intelligence reference | `verticals/sound-intelligence/` v0.1 (partial — sub-systems 1-4 complete) | this ship |
+| Canon | n/a at substrate; optional Arcanea Hz | per-vertical CANON.md |
+| Sub-system completeness | 4 of 6 (Composition / Production / Catalog / Performance) | command-surface count |
+| Deferred to v7.5.3 | 10 commands across `/sound-audience-*` (5) + `/sound-sync-*` (5) | spawning agent's queue |
+
+### Reality check (per /sip-attest enforcement)
+
+- Real second reference vertical: ✅ `verticals/sound-intelligence/` exists with all 8 file-contract files + SUB-SYSTEMS.md.
+- Real sub-system agents: ✅ 6 agents at `agents/starlight-sound-{composition,production,catalog,performance,audience,sync}.md`.
+- Real sub-system skills: ✅ 6 skills at `skills/sound-intelligence/`.
+- Real command surface (partial): ✅ 20 of ~30 commands across 4 sub-system prefixes; 10 commands queued for v7.5.3.
+- Real Path A authorless: ✅ word-boundary `\bAna\b` and `\bFrank\b` zero matches in shipped Sound Intelligence files (with single legitimate Frank reference in README disambiguating Sound Intelligence vs. Music IS).
+- Real Aiyami flag honored: ✅ Sound Intelligence's non-negotiables are domain-native, not copy-pasted from HR's stance — refuses-loudness-war / refuses-AI-vocal-impersonation / refuses-sample-without-clearance / refuses-sync-against-vision / refuses-metadata-as-afterthought.
+- Real Luminor Board v7.5 Item 5 validation: ✅ Pattern generalization proven by structurally identical wrapper + 4 sub-systems' worth of cross-validation against HR's 6-sub-system shape.
+- Composition is substantive, not decorative.
+
+**Attestation valid.** v7.5.2 closes Luminor Board v7.5 Item 5 as PARTIAL-PROVEN. The Domain Sub-Stack Tier pattern is no longer theoretical — two reference verticals (HR Intelligence + Sound Intelligence) instantiate the same 6-sub-system × thin-wrapper × domain-native-non-negotiables shape. The 10 remaining commands are polish, not structural validation.
+
+---
+
 ## How to add an entry
 
 Append a new section above. Format:
