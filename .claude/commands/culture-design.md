@@ -7,7 +7,7 @@ argument-hint: org name (required) + --size <S|M|L> + --declared-values "v1,v2,v
 
 # /culture-design
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-culture.md`, `skills/hr-intelligence/culture-design.md`. Produce a **Culture Audit & Redesign Plan**. Hand off to exactly one next move.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-culture.md`, `skills/people-intelligence/culture-design.md`. Produce a **Culture Audit & Redesign Plan**. Hand off to exactly one next move.
 
 ## Refusal frame (non-waivable)
 

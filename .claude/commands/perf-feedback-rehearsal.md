@@ -7,7 +7,7 @@ argument-hint: <topic-slug> --manager <manager-name> --recipient <recipient-name
 
 # /perf-feedback-rehearsal
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/hr-intelligence/feedback-conversations.md`, and the manager's Genius Profile if available. Produce a **Feedback Rehearsal** — multiple openings, SCARF-aware adjustments, three reaction trees with the manager's response to each, and aftercare. Save to `hr-intelligence/performance/rehearsal-<topic-slug>-<YYYY-MM-DD>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the manager's Genius Profile if available. Produce a **Feedback Rehearsal** — multiple openings, SCARF-aware adjustments, three reaction trees with the manager's response to each, and aftercare. Save to `hr-intelligence/performance/rehearsal-<topic-slug>-<YYYY-MM-DD>.md`.
 
 ## Disclaimer (non-waivable)
 

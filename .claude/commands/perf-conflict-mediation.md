@@ -7,7 +7,7 @@ argument-hint: <conflict-slug> --party-a <name> --party-b <name> --mediator <nam
 
 # /perf-conflict-mediation
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/hr-intelligence/feedback-conversations.md`. Produce a **Conflict Mediation Plan** — separate prep sessions with each party (each producing a three-conversations narrative privately) + joint 90-minute session structure + commitments framework + follow-up plan + escalation criteria. Save to `hr-intelligence/performance/mediation-<conflict-slug>-<YYYY-MM-DD>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`. Produce a **Conflict Mediation Plan** — separate prep sessions with each party (each producing a three-conversations narrative privately) + joint 90-minute session structure + commitments framework + follow-up plan + escalation criteria. Save to `hr-intelligence/performance/mediation-<conflict-slug>-<YYYY-MM-DD>.md`.
 
 ## Disclaimer (non-waivable)
 

@@ -7,7 +7,7 @@ argument-hint: <topic-slug> --manager <manager-name> --recipient <recipient-name
 
 # /perf-difficult-conversation
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/hr-intelligence/feedback-conversations.md`, and the manager's Genius Profile if available. Produce a **Difficult Conversation Rehearsal** structured around the three-conversations framework. Save to `hr-intelligence/performance/difficult-<topic-slug>-<YYYY-MM-DD>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the manager's Genius Profile if available. Produce a **Difficult Conversation Rehearsal** structured around the three-conversations framework. Save to `hr-intelligence/performance/difficult-<topic-slug>-<YYYY-MM-DD>.md`.
 
 ## Disclaimer (non-waivable, heavy)
 

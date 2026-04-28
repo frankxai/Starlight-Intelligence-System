@@ -7,7 +7,7 @@ argument-hint: program slug (required, from /training-curriculum) + --cohort-siz
 
 # /training-program-design
 
-Load `agents/starlight-training.md`, `skills/hr-intelligence/learning-architecture.md`, and the Curriculum Design at `hr-intelligence/training/<program-slug>/curriculum-<program-slug>-*.md`. If no curriculum exists for this program, halt and route to `/training-curriculum`. Produce a **Program Design** wrapping curriculum into deliverable.
+Load `agents/starlight-training.md`, `skills/people-intelligence/learning-architecture.md`, and the Curriculum Design at `hr-intelligence/training/<program-slug>/curriculum-<program-slug>-*.md`. If no curriculum exists for this program, halt and route to `/training-curriculum`. Produce a **Program Design** wrapping curriculum into deliverable.
 
 ## Input
 $ARGUMENTS

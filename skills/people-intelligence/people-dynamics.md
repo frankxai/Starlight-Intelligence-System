@@ -1,9 +1,9 @@
-# Skill: hr-intelligence/people-dynamics
+# Skill: people-intelligence/people-dynamics
 
-> The neuro-psychology layer of HR. Diagnoses individual motivation, burnout signals, team dynamics, psychological safety, and retention drivers using research-validated instruments. Refuses engagement-survey-as-data and exit-interview-as-strategy. Sub-system 5 of 6 in the HR Intelligence reference vertical.
+> The neuro-psychology layer of HR. Diagnoses individual motivation, burnout signals, team dynamics, psychological safety, and retention drivers using research-validated instruments. Refuses engagement-survey-as-data and exit-interview-as-strategy. Sub-system 5 of 6 in the People Intelligence reference vertical.
 
-**Domain:** HR Intelligence
-**Vertical:** HR Intelligence reference vertical (sub-system: Talent)
+**Domain:** People Intelligence
+**Vertical:** People Intelligence reference vertical (sub-system: Talent)
 **Voice:** Frank DNA + the synthesis edge — clinical-psych depth, neuroscience-precise, refuses wellness-industrial fluff and engagement-survey theatre.
 **Disclaimer:** This skill produces HR system architecture, not clinical advice. When a person's distress crosses into active depression, anxiety disorder, eating disorder, or addiction, refer to a qualified mental health clinician. Not legal advice — ADA accommodations and protected-class considerations require jurisdiction-specific compliance and individualized interactive process; validate with qualified counsel.
 
@@ -158,11 +158,11 @@ If the cadence is not named, the intervention is not real.
 
 | Artifact | Command | Storage |
 |----------|---------|---------|
-| Motivation map | `/talent-motivation` | `hr-intelligence/talent/motivation-<person>-<date>.md` |
-| Burnout detection | `/talent-burnout-detect` | `hr-intelligence/talent/burnout-<person-or-team>-<date>.md` |
-| Team dynamics audit | `/talent-team-dynamics` | `hr-intelligence/talent/team-dynamics-<team>-<date>.md` |
-| Psych safety measurement | `/talent-psych-safety` | `hr-intelligence/talent/psych-safety-<team>-<date>.md` |
-| Retention plan | `/talent-retention` | `hr-intelligence/talent/retention-<cohort>-<date>.md` |
+| Motivation map | `/talent-motivation` | `people-intelligence/talent/motivation-<person>-<date>.md` |
+| Burnout detection | `/talent-burnout-detect` | `people-intelligence/talent/burnout-<person-or-team>-<date>.md` |
+| Team dynamics audit | `/talent-team-dynamics` | `people-intelligence/talent/team-dynamics-<team>-<date>.md` |
+| Psych safety measurement | `/talent-psych-safety` | `people-intelligence/talent/psych-safety-<team>-<date>.md` |
+| Retention plan | `/talent-retention` | `people-intelligence/talent/retention-<cohort>-<date>.md` |
 
 ---
 
@@ -172,16 +172,16 @@ If the cadence is not named, the intervention is not real.
 - `intelligence/pattern-recognition` — longitudinal sentiment trajectory; cynicism signal in burnout; status-hierarchy in team dynamics
 - `intelligence/systems-thinking` — team dynamics as system; psych safety as emergent property; retention as system output
 - `memory/knowledge-synthesis` — composing motivation + burnout + team + safety + retention into coherent per-person or per-team record
-- `hr-intelligence/structured-hiring` (sister) — exports retention pattern as ICP signal; imports motivation map for onboarding architecture
+- `people-intelligence/structured-hiring` (sister) — exports retention pattern as ICP signal; imports motivation map for onboarding architecture
 
 ---
 
-— Talent Intelligence — part of the HR Intelligence reference vertical —
+— Talent Intelligence — part of the People Intelligence reference vertical —
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: 2026-04-24
 ---

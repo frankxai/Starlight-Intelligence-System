@@ -7,7 +7,7 @@ argument-hint: <coachee-name> --coach <manager-name> [--issue "presenting issue 
 
 # /perf-coaching-protocol
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/hr-intelligence/feedback-conversations.md`, and the coach's Genius Profile if available. Produce a **Coaching Session Protocol** — a 60-minute session structure the manager will use, plus follow-up prompts and the manager-as-coach training notes. Save to `hr-intelligence/performance/coaching-<coachee-slug>-<YYYY-MM-DD>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the coach's Genius Profile if available. Produce a **Coaching Session Protocol** — a 60-minute session structure the manager will use, plus follow-up prompts and the manager-as-coach training notes. Save to `hr-intelligence/performance/coaching-<coachee-slug>-<YYYY-MM-DD>.md`.
 
 ## Disclaimer (non-waivable)
 

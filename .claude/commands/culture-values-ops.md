@@ -7,7 +7,7 @@ argument-hint: org name (required) + --values "v1,v2,v3" + --current-systems "hi
 
 # /culture-values-ops
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-culture.md`, `skills/hr-intelligence/culture-design.md`. Produce a **Values Operationalization Matrix**.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-culture.md`, `skills/people-intelligence/culture-design.md`. Produce a **Values Operationalization Matrix**.
 
 ## Refusal frame
 

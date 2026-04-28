@@ -7,7 +7,7 @@ argument-hint: <organization-name> [--size <small|mid|large>] [--current-ritual 
 
 # /perf-review-redesign
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/hr-intelligence/feedback-conversations.md`. If a Hiring sub-system calibration protocol exists at `hr-intelligence/hiring/calibration-*.md`, read it for grammar transfer. Produce a **Performance Review Redesign Plan** that replaces a broken annual ritual with continuous SBI + quarterly growth + separated annual comp/promotion architecture. Save to `hr-intelligence/performance/redesign-<org-slug>-<date>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`. If a Hiring sub-system calibration protocol exists at `hr-intelligence/hiring/calibration-*.md`, read it for grammar transfer. Produce a **Performance Review Redesign Plan** that replaces a broken annual ritual with continuous SBI + quarterly growth + separated annual comp/promotion architecture. Save to `hr-intelligence/performance/redesign-<org-slug>-<date>.md`.
 
 ## Disclaimer (non-waivable)
 

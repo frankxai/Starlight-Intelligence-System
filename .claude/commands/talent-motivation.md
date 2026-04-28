@@ -7,7 +7,7 @@ argument-hint: person's name (required) + --role <ic|manager|exec|customer-facin
 
 # /talent-motivation
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/hr-intelligence/people-dynamics.md`, and if present prior motivation maps for this person and the team's culture artifact (`hr-intelligence/culture/`) for system-context. Produce a **Motivation Map**. Hand off to exactly one next move.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and if present prior motivation maps for this person and the team's culture artifact (`hr-intelligence/culture/`) for system-context. Produce a **Motivation Map**. Hand off to exactly one next move.
 
 ## Disclaimer (non-waivable)
 

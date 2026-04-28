@@ -7,7 +7,7 @@ argument-hint: program name (required) + --behavior "<L3 behavior change>" + --o
 
 # /training-curriculum
 
-Load `agents/starlight-training.md`, `skills/hr-intelligence/learning-architecture.md`, and if present any upstream Performance Intelligence behavior-gap report or Hiring rubric for the role. Produce a **Curriculum Design** for the program. Hand off to exactly one next command.
+Load `agents/starlight-training.md`, `skills/people-intelligence/learning-architecture.md`, and if present any upstream Performance Intelligence behavior-gap report or Hiring rubric for the role. Produce a **Curriculum Design** for the program. Hand off to exactly one next command.
 
 ## Required reading at activation
 

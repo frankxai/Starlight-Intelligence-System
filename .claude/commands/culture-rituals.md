@@ -7,7 +7,7 @@ argument-hint: org name (required) + --size <S|M|L> + --pattern <onsite|hybrid|r
 
 # /culture-rituals
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-culture.md`, `skills/hr-intelligence/culture-design.md`. Produce a **Ritual Architecture**.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-culture.md`, `skills/people-intelligence/culture-design.md`. Produce a **Ritual Architecture**.
 
 ## Refusal frame
 

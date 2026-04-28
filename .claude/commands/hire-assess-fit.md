@@ -9,7 +9,7 @@ argument-hint: candidate-slug (required) + role-slug (required, ICP must exist) 
 
 This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, the ICP (`hr-intelligence/hiring/icp-<role-slug>-*.md`), and the interview debrief if it exists. Produce a **Culture-Add Fit Assessment**. Hand off to debrief or hire decision.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the ICP (`hr-intelligence/hiring/icp-<role-slug>-*.md`), and the interview debrief if it exists. Produce a **Culture-Add Fit Assessment**. Hand off to debrief or hire decision.
 
 ## Disclaimer (non-waivable)
 

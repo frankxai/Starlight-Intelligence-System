@@ -7,7 +7,7 @@ argument-hint: program slug + SME identifier (required) + --delivery-date <YYYY-
 
 # /training-coach-trainer
 
-Load `agents/starlight-training.md`, `skills/hr-intelligence/learning-architecture.md`, and the Curriculum + Program Design for the program the SME will deliver. Produce a **Train-the-Trainer Plan** that converts a subject-matter-expert into a facilitator.
+Load `agents/starlight-training.md`, `skills/people-intelligence/learning-architecture.md`, and the Curriculum + Program Design for the program the SME will deliver. Produce a **Train-the-Trainer Plan** that converts a subject-matter-expert into a facilitator.
 
 ## Why this exists
 

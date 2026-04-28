@@ -1,4 +1,4 @@
-# Skill — HR Intelligence / Org Architecture
+# Skill — People Intelligence / Org Architecture
 
 > Designing role, span, sequencing, succession, and change with the human cost honestly accounted. Composes Marquet on decision rights, Kniberg on role-clarity, span-of-control research, McKinsey on reorg failure, Kotter on change-management steps, Bridges on psychological transitions, SCARF on threat circuits, and Conway's Law on structure-product coupling.
 
@@ -102,10 +102,10 @@ This skill leans on real bodies of research. Cite directionally; never fabricate
 
 ## Outputs (per command)
 
-- **`/org-role-design`** → `hr-intelligence/org/role-<title>-<date>.md` — decision rights matrix, accountabilities with measurable outcomes, success criteria, escalation path, interfaces with adjacent roles, common failure modes, anti-pattern flags
-- **`/org-span`** → `hr-intelligence/org/span-audit-<date>.md` — per-manager audit, pattern flags (top-heavy / middle-thin / over-spanned ICs), redesign recommendations, sequencing
-- **`/org-reorg-trauma-audit`** → `hr-intelligence/org/reorg-audit-<date>.md` — trauma score + risk assessment, sequencing plan in waves, communication architecture (Kotter + Bridges), per-team mitigation, aftercare monitoring cadence
-- **`/org-succession`** → `hr-intelligence/org/succession-<date>.md` — per-role succession plan (named successor + readiness gap + development plan + tested partial + timeline + transparency strategy), aggregate bench-strength, single-point-of-failure flags
+- **`/org-role-design`** → `people-intelligence/org/role-<title>-<date>.md` — decision rights matrix, accountabilities with measurable outcomes, success criteria, escalation path, interfaces with adjacent roles, common failure modes, anti-pattern flags
+- **`/org-span`** → `people-intelligence/org/span-audit-<date>.md` — per-manager audit, pattern flags (top-heavy / middle-thin / over-spanned ICs), redesign recommendations, sequencing
+- **`/org-reorg-trauma-audit`** → `people-intelligence/org/reorg-audit-<date>.md` — trauma score + risk assessment, sequencing plan in waves, communication architecture (Kotter + Bridges), per-team mitigation, aftercare monitoring cadence
+- **`/org-succession`** → `people-intelligence/org/succession-<date>.md` — per-role succession plan (named successor + readiness gap + development plan + tested partial + timeline + transparency strategy), aggregate bench-strength, single-point-of-failure flags
 
 ---
 
@@ -132,6 +132,6 @@ This skill leans on real bodies of research. Cite directionally; never fabricate
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: 2026-04-24
 ---

@@ -1,6 +1,6 @@
 ---
-name: hr-intelligence/learning-architecture
-domain: hr-intelligence
+name: people-intelligence/learning-architecture
+domain: people-intelligence
 description: Design adult-learning programs that actually transfer to the job. Outcome-back curriculum, spaced retrieval, encoding-specificity, cognitive-load discipline, Kirkpatrick L3+L4 measurement, train-the-trainer protocols. Refuses one-off-workshop theater and L1-only smile-sheet evaluation.
 triggers:
   keywords: ["training", "curriculum", "program design", "L&D", "learning and development", "trainer", "facilitator", "course", "workshop", "transfer", "onboarding curriculum", "upskilling", "reskilling", "Kirkpatrick", "spaced retrieval", "retrieval practice", "cognitive load", "andragogy", "train-the-trainer", "TtT", "scenario library", "case-based learning"]
@@ -156,6 +156,6 @@ Does not duplicate: existing instructional-design or LMS-authoring skills. This 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
 - Generated: 2026-04-24
 ---

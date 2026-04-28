@@ -7,7 +7,7 @@ argument-hint: skill domain (required) + --difficulty-levels <e.g., "intro,mid,a
 
 # /training-scenarios
 
-Load `agents/starlight-training.md`, `skills/hr-intelligence/learning-architecture.md`, and (if it exists) the Hiring sub-system's structured-interview rubric pattern for the same skill domain. Produce a **Scenario Library** — case-based, decision-rich, rubric-scored.
+Load `agents/starlight-training.md`, `skills/people-intelligence/learning-architecture.md`, and (if it exists) the Hiring sub-system's structured-interview rubric pattern for the same skill domain. Produce a **Scenario Library** — case-based, decision-rich, rubric-scored.
 
 ## Why scenarios
 

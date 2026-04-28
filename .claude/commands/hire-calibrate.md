@@ -9,7 +9,7 @@ argument-hint: role-slug (required, ICP and interview architecture must exist) +
 
 This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, the existing ICP (`hr-intelligence/hiring/icp-<role-slug>-*.md`) and interview architecture (`hr-intelligence/hiring/interview-<role-slug>-*.md`). Produce a **Calibration Session Script** — a facilitator-ready 60-minute agenda. Hand off to running the actual loop.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the existing ICP (`hr-intelligence/hiring/icp-<role-slug>-*.md`) and interview architecture (`hr-intelligence/hiring/interview-<role-slug>-*.md`). Produce a **Calibration Session Script** — a facilitator-ready 60-minute agenda. Hand off to running the actual loop.
 
 ## Disclaimer (non-waivable)
 

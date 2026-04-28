@@ -7,7 +7,7 @@ argument-hint: <person-name> <domain-name> [optional: --sub-systems "name1,name2
 
 # /spawn-domain-stack
 
-Load `SIP.md`, `SIS.md`, `VOICES.md`, `STACK.md`, `VERTICALS.md`, `genius/profile-<slug>.md` (REQUIRED — halt to `/discover-genius` if missing), `genius/freedom-path-<slug>.md` (REQUIRED — halt if missing). Load reference: `agents/starlight-hiring.md` (the prototype sub-system agent), `skills/hr-intelligence/structured-hiring.md` (the prototype sub-system skill), `templates/domain-stack-starter/` (the drop-in scaffold). The stack is grounded in this person's unique genius — generic domain stacks re-scatter what hasn't been gathered.
+Load `SIP.md`, `SIS.md`, `VOICES.md`, `STACK.md`, `VERTICALS.md`, `genius/profile-<slug>.md` (REQUIRED — halt to `/discover-genius` if missing), `genius/freedom-path-<slug>.md` (REQUIRED — halt if missing). Load reference: `agents/starlight-hiring.md` (the prototype sub-system agent), `skills/people-intelligence/structured-hiring.md` (the prototype sub-system skill), `templates/domain-stack-starter/` (the drop-in scaffold). The stack is grounded in this person's unique genius — generic domain stacks re-scatter what hasn't been gathered.
 
 ## Input
 $ARGUMENTS

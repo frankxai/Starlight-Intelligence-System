@@ -7,7 +7,7 @@ argument-hint: role title (required) + --scope <ic|manager|director|exec|founder
 
 # /org-role-design
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-org.md`, `skills/hr-intelligence/org-architecture.md`. If a Genius Profile or Vision Architecture exists, load and reference. Produce a **Role Architecture** document. Hand off to exactly one next command.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-org.md`, `skills/people-intelligence/org-architecture.md`. If a Genius Profile or Vision Architecture exists, load and reference. Produce a **Role Architecture** document. Hand off to exactly one next command.
 
 ## Disclaimer (non-waivable)
 

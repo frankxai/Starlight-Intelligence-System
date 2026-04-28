@@ -57,7 +57,7 @@ const SKILL_RULES_FILE = join(SKILLS_DIR, "skill-rules.json");
 const ATTESTATIONS_FILE = join(REPO_ROOT, "ATTESTATIONS.md");
 const VERTICALS_FILE = join(REPO_ROOT, "VERTICALS.md");
 const HR_VERTICAL_DIR = join(REPO_ROOT, "verticals", "people-intelligence");
-const HR_SKILLS_DIR = join(SKILLS_DIR, "hr-intelligence");
+const HR_SKILLS_DIR = join(SKILLS_DIR, "people-intelligence");
 const TEMPLATES_DIR = join(REPO_ROOT, "templates", "domain-stack-starter");
 const EXPORTS_DIR = join(REPO_ROOT, "integrations", "exports");
 const KNOWLEDGE_DIR = join(
@@ -144,12 +144,12 @@ const V741_HR_KNOWLEDGE_TEMPLATES = [
 ];
 
 const V741_HR_RULE_IDS = [
-  "hr-intelligence-structured-hiring",
-  "hr-intelligence-feedback-conversations",
-  "hr-intelligence-learning-architecture",
-  "hr-intelligence-culture-design",
-  "hr-intelligence-people-dynamics",
-  "hr-intelligence-org-architecture",
+  "people-intelligence-structured-hiring",
+  "people-intelligence-feedback-conversations",
+  "people-intelligence-learning-architecture",
+  "people-intelligence-culture-design",
+  "people-intelligence-people-dynamics",
+  "people-intelligence-org-architecture",
 ];
 
 // ── Tests ───────────────────────────────────────────────────
@@ -170,11 +170,11 @@ describe("v7.4.1 — Domain Sub-Stack Tier (HR Intelligence vertical)", () => {
 
   describe("Block 2 — HR sub-system skills", () => {
     for (const skill of V741_HR_SKILLS) {
-      it(`v7.4.1.2.${skill}: skills/hr-intelligence/${skill}.md present with skill header or YAML frontmatter`, () => {
+      it(`v7.4.1.2.${skill}: skills/people-intelligence/${skill}.md present with skill header or YAML frontmatter`, () => {
         const path = join(HR_SKILLS_DIR, `${skill}.md`);
         assert.ok(
           isFile(path),
-          `skills/hr-intelligence/${skill}.md missing — HR sub-system skill unwired.`,
+          `skills/people-intelligence/${skill}.md missing — HR sub-system skill unwired.`,
         );
         // RELAXED: parallel-agent output varied — some skills use YAML
         // frontmatter (feedback-conversations / learning-architecture /
@@ -188,7 +188,7 @@ describe("v7.4.1 — Domain Sub-Stack Tier (HR Intelligence vertical)", () => {
         const hasSkillHeader = /^#\s+Skill/i.test(firstNonEmpty);
         assert.ok(
           hasYaml || hasSkillHeader,
-          `skills/hr-intelligence/${skill}.md identity missing — expected YAML frontmatter with name+description OR H1 '# Skill …' header.`,
+          `skills/people-intelligence/${skill}.md identity missing — expected YAML frontmatter with name+description OR H1 '# Skill …' header.`,
         );
       });
     }

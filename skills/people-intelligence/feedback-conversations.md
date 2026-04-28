@@ -1,6 +1,6 @@
 ---
-name: hr-intelligence/feedback-conversations
-domain: hr-intelligence
+name: people-intelligence/feedback-conversations
+domain: people-intelligence
 description: Architect any high-stakes conversation between a manager and a report — feedback, coaching, performance review, difficult conversation, or conflict mediation. Sorts the conversation type first, applies the matched protocol (SBI / solution-focused / three-conversations / mediation), overlays SCARF threat-response analysis, and produces a rehearsed script. Refuses theater patterns (PIPs-as-firing, stack rank, annual-rating-as-growth). Not legal advice; rehearsal architecture for the manager.
 triggers:
   keywords:
@@ -211,13 +211,13 @@ This skill informs the five `/perf-*` commands. See:
 - `.claude/commands/perf-difficult-conversation.md` — three-conversations rehearsal for terminations, demotions, hard feedback
 - `.claude/commands/perf-conflict-mediation.md` — psychologist-grade mediation between two parties
 
-All artifacts saved to `hr-intelligence/performance/` namespace in the organization's instance only — never in a public vault.
+All artifacts saved to `people-intelligence/performance/` namespace in the organization's instance only — never in a public vault.
 
 ## Built on SIP
 
 Composes with SIP protocol elements:
 - Sovereignty clause (the person owns their conversation; Performance rehearses, does not transfer)
-- File contract (`hr-intelligence/performance/` namespace)
+- File contract (`people-intelligence/performance/` namespace)
 - Attestation (every artifact ships with "Built on SIP" block)
 - Voice archetypes — architect primary, sovereign-creator warmth, protocol-defender when refusing theater
 
@@ -225,6 +225,6 @@ Composes with SIP protocol elements:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: 2026-04-24
 ---

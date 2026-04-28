@@ -9,7 +9,7 @@ argument-hint: candidate-slug (required) + role-slug (required) + --rater-count 
 
 This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, the ICP, the interview architecture, the calibration session record, and (if present) the fit assessment for this candidate. Produce the **Debrief Facilitation Script + Decision Record**. Hand off to onboarding architecture (if hire-yes) or learning capture (if hire-no).
+Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the ICP, the interview architecture, the calibration session record, and (if present) the fit assessment for this candidate. Produce the **Debrief Facilitation Script + Decision Record**. Hand off to onboarding architecture (if hire-yes) or learning capture (if hire-no).
 
 ## Disclaimer (non-waivable)
 

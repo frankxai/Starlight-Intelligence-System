@@ -1,6 +1,6 @@
 ---
-name: hr-intelligence/culture-design
-domain: hr-intelligence
+name: people-intelligence/culture-design
+domain: people-intelligence
 description: Design culture as a system — audit what behavior is rewarded/punished/ignored, gap-map declared values vs lived behavior, redesign the six high-leverage systems (hire/promote/celebrate/fire/measure/pay), architect rituals across four cadences, measure psychological safety team-by-team, and produce a 90-day onboarding plan tied to retention. Refuses values-poster theater.
 triggers:
   keywords: ["culture", "values", "rituals", "onboarding", "psychological safety", "belonging", "team dynamics", "engagement", "retention", "culture deck", "culture audit", "all-hands", "off-site", "first 90 days", "new hire", "team meeting"]
@@ -152,7 +152,7 @@ The 90-day window predicts retention better than the entire interview process. D
 
 ## Output Shape
 
-Each command produces a specific artifact written to `hr-intelligence/culture/`:
+Each command produces a specific artifact written to `people-intelligence/culture/`:
 
 - `/culture-design` → `audit-redesign-<org>-<date>.md`
 - `/culture-values-ops` → `values-ops-<org>-<date>.md`
@@ -186,7 +186,7 @@ See command files for full schemas.
 
 This skill composes with SIP protocol elements:
 - Sovereignty clause (the org owns its culture; Culture surfaces gaps and designs systems, never imposes external values)
-- File contract (`hr-intelligence/culture/` namespace)
+- File contract (`people-intelligence/culture/` namespace)
 - Attestation (every artifact ships with "Built on SIP" block)
 - Voice archetypes — architect primary, sovereign-creator warmth
 
@@ -194,6 +194,6 @@ This skill composes with SIP protocol elements:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: 2026-04-24
 ---

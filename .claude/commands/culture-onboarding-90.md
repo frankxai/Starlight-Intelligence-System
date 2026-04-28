@@ -7,7 +7,7 @@ argument-hint: role name (required) + --size <S|M|L> + --pattern <onsite|hybrid|
 
 # /culture-onboarding-90
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-culture.md`, `skills/hr-intelligence/culture-design.md`. Produce a **90-Day Onboarding Architecture**.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-culture.md`, `skills/people-intelligence/culture-design.md`. Produce a **90-Day Onboarding Architecture**.
 
 ## Why this matters
 

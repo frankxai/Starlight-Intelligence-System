@@ -7,7 +7,7 @@ argument-hint: cohort identifier (required) + --cohort-size <N> + --org-context 
 
 # /talent-retention
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/hr-intelligence/people-dynamics.md`, prior motivation maps and burnout detections (`hr-intelligence/talent/`), Culture artifact for system context, Performance artifacts for calibration context, Genius Profile for voice samples in the stay-interview script. Produce a **Retention Architecture** — stay-interview script + per-person leverage + aggregate pattern + system redesign request. Hand off to exactly one next move.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, prior motivation maps and burnout detections (`hr-intelligence/talent/`), Culture artifact for system context, Performance artifacts for calibration context, Genius Profile for voice samples in the stay-interview script. Produce a **Retention Architecture** — stay-interview script + per-person leverage + aggregate pattern + system redesign request. Hand off to exactly one next move.
 
 ## Disclaimer (non-waivable)
 

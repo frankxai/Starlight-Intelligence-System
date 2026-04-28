@@ -7,7 +7,7 @@ argument-hint: program slug (required) + --post-window <30|60|90|180> + optional
 
 # /training-measure-transfer
 
-Load `agents/starlight-training.md`, `skills/hr-intelligence/learning-architecture.md`, the Curriculum Design, and the Program Design. Produce the **Transfer Measurement Plan** — the load-bearing artifact that determines whether the program can prove transfer.
+Load `agents/starlight-training.md`, `skills/people-intelligence/learning-architecture.md`, the Curriculum Design, and the Program Design. Produce the **Transfer Measurement Plan** — the load-bearing artifact that determines whether the program can prove transfer.
 
 ## Input
 $ARGUMENTS

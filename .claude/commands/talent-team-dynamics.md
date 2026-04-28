@@ -7,7 +7,7 @@ argument-hint: team identifier (required) + --size <N> + --tenure <weeks-months-
 
 # /talent-team-dynamics
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/hr-intelligence/people-dynamics.md`, and any prior team artifacts (`hr-intelligence/talent/team-*`, `hr-intelligence/culture/`). Produce a **Team Dynamics Audit**. Hand off to exactly one next move — usually NOT "team-building exercises."
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and any prior team artifacts (`hr-intelligence/talent/team-*`, `hr-intelligence/culture/`). Produce a **Team Dynamics Audit**. Hand off to exactly one next move — usually NOT "team-building exercises."
 
 ## Disclaimer (non-waivable)
 

@@ -7,7 +7,7 @@ argument-hint: team identifier (required) + --baseline-or-followup <baseline|fol
 
 # /talent-psych-safety
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/hr-intelligence/people-dynamics.md`, prior team-dynamics audits if any (`hr-intelligence/talent/team-dynamics-*`), and Culture artifact for system-context (`hr-intelligence/culture/`). Produce a **Psychological Safety Measurement Plan** plus interpretation rubric plus intervention design (if measuring follow-up). Hand off to exactly one next move.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, prior team-dynamics audits if any (`hr-intelligence/talent/team-dynamics-*`), and Culture artifact for system-context (`hr-intelligence/culture/`). Produce a **Psychological Safety Measurement Plan** plus interpretation rubric plus intervention design (if measuring follow-up). Hand off to exactly one next move.
 
 ## Disclaimer (non-waivable)
 

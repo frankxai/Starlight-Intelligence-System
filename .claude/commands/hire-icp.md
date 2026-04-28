@@ -9,7 +9,7 @@ argument-hint: role title (required) + --jurisdiction <US-state|EU-country|UK|ot
 
 This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/hr-intelligence/structured-hiring.md`, and if present the company's Genius Profile (`genius/profile-<company-slug>.md`) and Vision Architecture (`vision/vision-<company-slug>.md`). Produce an **Ideal Candidate Profile** for the named role. Hand off to exactly one next command.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, and if present the company's Genius Profile (`genius/profile-<company-slug>.md`) and Vision Architecture (`vision/vision-<company-slug>.md`). Produce an **Ideal Candidate Profile** for the named role. Hand off to exactly one next command.
 
 ## Disclaimer (non-waivable)
 

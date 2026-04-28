@@ -7,7 +7,7 @@ argument-hint: org name (required) + --reorg-scope <team|department|division|com
 
 # /org-reorg-trauma-audit
 
-Load `SIP.md`, `agents/starlight-org.md`, `skills/hr-intelligence/org-architecture.md`. Read any prior `hr-intelligence/org/` outputs and any Talent IS signals available. Produce a **Reorg Trauma Audit + Sequencing Plan**. May refuse the reorg outright. Hand off to exactly one next command.
+Load `SIP.md`, `agents/starlight-org.md`, `skills/people-intelligence/org-architecture.md`. Read any prior `hr-intelligence/org/` outputs and any Talent IS signals available. Produce a **Reorg Trauma Audit + Sequencing Plan**. May refuse the reorg outright. Hand off to exactly one next command.
 
 ## Disclaimer (non-waivable)
 

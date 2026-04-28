@@ -7,7 +7,7 @@ argument-hint: org name (required) + --size <under-10|10-50|50-200|200-1000|1000
 
 # /org-span
 
-Load `SIP.md`, `agents/starlight-org.md`, `skills/hr-intelligence/org-architecture.md`. If org chart exists in repo or attached, read it. Produce a **Span-of-Control Architecture Audit + Redesign**. Hand off to exactly one next command.
+Load `SIP.md`, `agents/starlight-org.md`, `skills/people-intelligence/org-architecture.md`. If org chart exists in repo or attached, read it. Produce a **Span-of-Control Architecture Audit + Redesign**. Hand off to exactly one next command.
 
 ## Disclaimer (non-waivable)
 

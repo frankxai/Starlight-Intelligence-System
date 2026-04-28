@@ -1,9 +1,9 @@
-# Skill: hr-intelligence/structured-hiring
+# Skill: people-intelligence/structured-hiring
 
-> Designs the hiring instrument — ICP, interview architecture, calibration, debrief, onboarding — using meta-analytically validated predictive components. Refuses unstructured interviews and personality-as-primary. Sub-system 1 of 6 in the HR Intelligence reference vertical.
+> Designs the hiring instrument — ICP, interview architecture, calibration, debrief, onboarding — using meta-analytically validated predictive components. Refuses unstructured interviews and personality-as-primary. Sub-system 1 of 6 in the People Intelligence reference vertical.
 
-**Domain:** HR Intelligence
-**Vertical:** HR Intelligence reference vertical (sub-system: Hiring)
+**Domain:** People Intelligence
+**Vertical:** People Intelligence reference vertical (sub-system: Hiring)
 **Voice:** Frank DNA + the synthesis edge — warm-precise, neuroscience-grounded, refuses HR fluff.
 **Disclaimer:** Hiring decisions touch employment law and protected-class considerations. This skill produces system architecture, not legal advice. Validate jurisdiction-specific compliance with qualified counsel.
 
@@ -144,11 +144,11 @@ Named patterns the facilitator flags out loud (raters do not have to self-diagno
 
 | Artifact | Command | Storage |
 |----------|---------|---------|
-| ICP | `/hire-icp` | `hr-intelligence/hiring/icp-<role>-<date>.md` |
-| Interview architecture | `/hire-design-interview` | `hr-intelligence/hiring/interview-<role>-<date>.md` |
-| Calibration session | `/hire-calibrate` | `hr-intelligence/hiring/calibration-<role>-<date>.md` |
-| Fit assessment | `/hire-assess-fit` | `hr-intelligence/hiring/fit-<candidate>-<role>-<date>.md` |
-| Debrief | `/hire-debrief` | `hr-intelligence/hiring/debrief-<candidate>-<date>.md` |
+| ICP | `/hire-icp` | `people-intelligence/hiring/icp-<role>-<date>.md` |
+| Interview architecture | `/hire-design-interview` | `people-intelligence/hiring/interview-<role>-<date>.md` |
+| Calibration session | `/hire-calibrate` | `people-intelligence/hiring/calibration-<role>-<date>.md` |
+| Fit assessment | `/hire-assess-fit` | `people-intelligence/hiring/fit-<candidate>-<role>-<date>.md` |
+| Debrief | `/hire-debrief` | `people-intelligence/hiring/debrief-<candidate>-<date>.md` |
 
 ---
 
@@ -161,12 +161,12 @@ Named patterns the facilitator flags out loud (raters do not have to self-diagno
 
 ---
 
-— Hiring Intelligence — part of the HR Intelligence reference vertical —
+— Hiring Intelligence — part of the People Intelligence reference vertical —
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: 2026-04-24
 ---

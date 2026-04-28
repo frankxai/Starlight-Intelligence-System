@@ -7,7 +7,7 @@ argument-hint: org name (required) + --critical-roles <comma-separated list> + -
 
 # /org-succession
 
-Load `SIP.md`, `agents/starlight-org.md`, `skills/hr-intelligence/org-architecture.md`. Read any prior `hr-intelligence/org/` outputs. Produce a **Succession Architecture** document. Hand off to exactly one next command.
+Load `SIP.md`, `agents/starlight-org.md`, `skills/people-intelligence/org-architecture.md`. Read any prior `hr-intelligence/org/` outputs. Produce a **Succession Architecture** document. Hand off to exactly one next command.
 
 ## Disclaimer (non-waivable)
 

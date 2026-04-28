@@ -7,7 +7,7 @@ argument-hint: person or team identifier (required) + --target <person|team> + -
 
 # /talent-burnout-detect
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/hr-intelligence/people-dynamics.md`, and any prior motivation maps for this person (`hr-intelligence/talent/motivation-*`) and team-context (`hr-intelligence/culture/`). Produce a **Burnout Detection Protocol**. Hand off to exactly one next move — clinical referral if applicable, otherwise system + individual intervention.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and any prior motivation maps for this person (`hr-intelligence/talent/motivation-*`) and team-context (`hr-intelligence/culture/`). Produce a **Burnout Detection Protocol**. Hand off to exactly one next move — clinical referral if applicable, otherwise system + individual intervention.
 
 ## Disclaimer (non-waivable)
 
