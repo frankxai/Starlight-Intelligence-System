@@ -7,7 +7,7 @@ argument-hint: org name (required) + --critical-roles <comma-separated list> + -
 
 # /org-succession
 
-Load `SIP.md`, `agents/starlight-org.md`, `skills/people-intelligence/org-architecture.md`. Read any prior `hr-intelligence/org/` outputs. Produce a **Succession Architecture** document. Hand off to exactly one next command.
+Load `SIP.md`, `agents/starlight-org.md`, `skills/people-intelligence/org-architecture.md`. Read any prior `people-intelligence/org/` outputs. Produce a **Succession Architecture** document. Hand off to exactly one next command.
 
 ## Disclaimer (non-waivable)
 
@@ -93,7 +93,7 @@ $ARGUMENTS
    - **With Hiring:** if no internal successor, route to external candidate sourcing with the role design as ICP
    - **With Founder / Genius:** founder-shaped roles route through `/discover-genius` for the founder to clarify what is truly KEEP-bucket (cannot be succeeded) vs DELEGATE-bucket (can be developed and transferred)
 
-8. **Save.** Write to `hr-intelligence/org/succession-<YYYY-MM-DD>.md`.
+8. **Save.** Write to `people-intelligence/org/succession-<YYYY-MM-DD>.md`.
 
 9. **Hand off.** Exactly one next move:
     - `/org-role-design` — if a critical role is founder-shaped and needs structural redesign before succession is feasible
@@ -212,7 +212,7 @@ Real succession requires, per role:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: <ISO date>
 ---
 ```
@@ -225,7 +225,7 @@ Real succession requires, per role:
 - **Transparent communication is non-negotiable.** The successor has been told. Silent succession erodes trust when discovered.
 - **Founder-shaped role flag.** Some roles cannot be succeeded without first being redesigned. Route to `/org-role-design`.
 - **Protected-class promotion-pattern check.** Pattern-blind succession can produce pattern-laden outcomes. Flag for legal review if applicable.
-- **Per-instance only.** Write to `hr-intelligence/org/`.
+- **Per-instance only.** Write to `people-intelligence/org/`.
 - **One hand-off at close.**
 
 ---
@@ -233,6 +233,6 @@ Real succession requires, per role:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: 2026-04-24
 ---

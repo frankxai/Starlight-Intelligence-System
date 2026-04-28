@@ -29,7 +29,7 @@ $ARGUMENTS
 2. **Design rituals across four cadences + annual milestones** — each ritual SCARF-grounded, belonging mechanism named, success indicator specified.
 3. **Anti-ritual removal recommendations** — surface current anti-rituals (back-to-back meetings, recognition-by-visibility, "open door" theater, all-hands as broadcast) and recommend their removal before adding new rituals.
 4. **Facilitation protocol per ritual** — who runs it, in what format, with what time-box, with what artifact.
-5. **Save** — write to `hr-intelligence/culture/rituals-<org>-<date>.md`.
+5. **Save** — write to `people-intelligence/culture/rituals-<org>-<date>.md`.
 6. **Hand off** — exactly one named next move.
 
 ## Output format
@@ -198,7 +198,7 @@ Alternatives:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: <ISO date>
 ---
 ```
@@ -212,7 +212,7 @@ Alternatives:
 - **Manager-last in psychological-safety rituals.** Edmondson — manager-first kills authentic sharing in subsequent rounds.
 - **Distribution map matched to onsite/hybrid/remote pattern.** Rituals that work onsite collapse remote and vice versa; never copy-paste.
 - **Weekly rituals are the substrate.** If only one cadence is invested in, it should be weekly — that's where the lived culture is expressed.
-- **Save to `hr-intelligence/culture/rituals-<org>-<date>.md`.**
+- **Save to `people-intelligence/culture/rituals-<org>-<date>.md`.**
 - **One hand-off at close.** Default: `/culture-onboarding-90`.
 
 ---
@@ -220,6 +220,6 @@ Alternatives:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: 2026-04-24
 ---

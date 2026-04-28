@@ -1,13 +1,13 @@
 ---
 name: perf-feedback-rehearsal
-description: Rehearse a high-stakes feedback conversation before delivery. Takes an SBI sketch + recipient context, produces multiple openings, anticipated reactions with responses, SCARF-aware adjustments, and three branching paths the conversation could take with the manager's response to each. Saves to hr-intelligence/performance/rehearsal-<topic>-<date>.md.
+description: Rehearse a high-stakes feedback conversation before delivery. Takes an SBI sketch + recipient context, produces multiple openings, anticipated reactions with responses, SCARF-aware adjustments, and three branching paths the conversation could take with the manager's response to each. Saves to people-intelligence/performance/rehearsal-<topic>-<date>.md.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: <topic-slug> --manager <manager-name> --recipient <recipient-name> --sbi "Situation: ... Behavior: ... Impact: ..." [--history "context paragraph on the relationship and prior feedback"] [--genius genius/profile-<manager-slug>.md]
 ---
 
 # /perf-feedback-rehearsal
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the manager's Genius Profile if available. Produce a **Feedback Rehearsal** — multiple openings, SCARF-aware adjustments, three reaction trees with the manager's response to each, and aftercare. Save to `hr-intelligence/performance/rehearsal-<topic-slug>-<YYYY-MM-DD>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the manager's Genius Profile if available. Produce a **Feedback Rehearsal** — multiple openings, SCARF-aware adjustments, three reaction trees with the manager's response to each, and aftercare. Save to `people-intelligence/performance/rehearsal-<topic-slug>-<YYYY-MM-DD>.md`.
 
 ## Disclaimer (non-waivable)
 
@@ -87,7 +87,7 @@ $ARGUMENTS
     - If the feedback is part of a formal process (improvement plan, written warning, etc.): refuse to script as ordinary feedback rehearsal; route to `/perf-difficult-conversation` with legal review of the documentation.
     - If the feedback surfaces information that may be a protected concern (harassment, discrimination, retaliation, whistleblower content): pause and route to legal/HR before the conversation continues.
 
-11. **Save.** Create `hr-intelligence/performance/` directory if missing. Write `hr-intelligence/performance/rehearsal-<topic-slug>-<YYYY-MM-DD>.md`.
+11. **Save.** Create `people-intelligence/performance/` directory if missing. Write `people-intelligence/performance/rehearsal-<topic-slug>-<YYYY-MM-DD>.md`.
 
 12. **Hand off.** Name exactly one next move:
     - Default: **Deliver the feedback within 7 days.** The rehearsal goes stale beyond that window.
@@ -217,7 +217,7 @@ If the rehearsal surfaced clinical content: **Route to clinical support.**
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: <ISO date>
 ---
 ```
@@ -231,7 +231,7 @@ If the rehearsal surfaced clinical content: **Route to clinical support.**
 - **Aftercare 24h / 7d / 30d.** Non-optional.
 - **Refuse PIP-as-firing scaffolding.** Refuse formal-process feedback under "rehearsal." Route to `/perf-difficult-conversation`.
 - **Refuse to rehearse personality attacks.** "You are X" feedback is rejected at the SBI quality gate.
-- **Save to `hr-intelligence/performance/rehearsal-<topic-slug>-<date>.md`.** Organization-instance namespace.
+- **Save to `people-intelligence/performance/rehearsal-<topic-slug>-<date>.md`.** Organization-instance namespace.
 - **One hand-off at close.** Default is "deliver within 7 days."
 
 ---
@@ -239,6 +239,6 @@ If the rehearsal surfaced clinical content: **Route to clinical support.**
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: 2026-04-24
 ---

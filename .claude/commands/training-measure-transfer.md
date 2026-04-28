@@ -49,7 +49,7 @@ $ARGUMENTS
    - What was forgotten (which content is missing from R3/R4 that should have been there)?
    - Curriculum + Program redesign for cohort 2.
 
-7. **Save.** Write `hr-intelligence/training/<program-slug>/transfer-plan-<program-slug>-<YYYY-MM-DD>.md`.
+7. **Save.** Write `people-intelligence/training/<program-slug>/transfer-plan-<program-slug>-<YYYY-MM-DD>.md`.
 
 8. **Hand off.** Default: launch the program (no further design needed). Exceptions:
    - If TtT incomplete and SME is delivering → `/training-coach-trainer <program-slug>`
@@ -64,7 +64,7 @@ $ARGUMENTS
 
 ## Anchor
 
-- **Program:** `hr-intelligence/training/<slug>/program-design-<slug>-<date>.md`
+- **Program:** `people-intelligence/training/<slug>/program-design-<slug>-<date>.md`
 - **L3 behavior:** <pulled from curriculum>
 - **L4 outcome:** <pulled from curriculum>
 - **Post-window:** <30|60|90|180> days
@@ -169,7 +169,7 @@ Alternative next moves (only if a gap surfaces):
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
 - Generated: <ISO date>
 ---
 ```
@@ -188,6 +188,6 @@ Alternative next moves (only if a gap surfaces):
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3)
 - Generated: 2026-04-24
 ---

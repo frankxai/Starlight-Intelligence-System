@@ -1,6 +1,6 @@
 ---
 name: spawn-domain-stack
-description: Spawn a domain-specific intelligence sub-stack for a sovereign person. Analyzes their Genius Profile + Freedom Path KEEP bucket + named domain expertise, proposes 4-7 functional sub-systems with agent/skill/command structure, then scaffolds the full vertical scaffold under verticals/<vertical-slug>/. Generalizes the pattern proven by the HR Intelligence reference vertical. For sovereigns who want to productize their genius into a vertical with sub-system architecture.
+description: Spawn a domain-specific intelligence sub-stack for a sovereign person. Analyzes their Genius Profile + Freedom Path KEEP bucket + named domain expertise, proposes 4-7 functional sub-systems with agent/skill/command structure, then scaffolds the full vertical scaffold under verticals/<vertical-slug>/. Generalizes the pattern proven by the People Intelligence reference vertical. For sovereigns who want to productize their genius into a vertical with sub-system architecture.
 allowed-tools: Read, Write, Grep, Glob, Bash
 argument-hint: <person-name> <domain-name> [optional: --sub-systems "name1,name2,name3,..."] [optional: --auto-scaffold]
 ---
@@ -14,7 +14,7 @@ $ARGUMENTS
 
 Parse `$ARGUMENTS` for:
 - `<person-name>` — required. Slug = kebab-case of name.
-- `<domain-name>` — required. Specific ("HR Intelligence", "Capital Intelligence", "Sound Intelligence"). Generic terms ("consulting", "coaching", "business") halt with rename request.
+- `<domain-name>` — required. Specific ("People Intelligence", "Capital Intelligence", "Sound Intelligence"). Generic terms ("consulting", "coaching", "business") halt with rename request.
 - `--sub-systems "n1,n2,..."` — optional. Pre-declares the sub-system list. If absent, the command proposes one from the Genius Profile.
 - `--auto-scaffold` — optional. Skips the confirm-or-iterate gate. Use only when proposal is reviewed in advance.
 
@@ -41,7 +41,7 @@ Halt with explicit message if any condition fails. Do not soften.
   > *"No Genius Profile on file for <person-name>. The domain stack composes around what only this person uniquely sees. Generic decomposition produces commodity sub-systems. Run `/discover-genius <person-name>` first."*
 - **Freedom Path present** at `genius/freedom-path-<slug>.md`. If missing:
   > *"No Freedom Path on file. The KEEP bucket names which work this person uniquely owns — without it, sub-systems collapse into delegation territory. Run `/discover-genius <person-name>` to generate Path with Profile."*
-- **Domain name is specific.** Reject "consulting", "coaching", "advisory", "business", "tech". Accept "HR Intelligence", "Clinical Intelligence", "Sound Intelligence", "Capital Intelligence", "Spatial Intelligence". Test: can you name 4-7 functional sub-systems within it without resorting to topic taxonomy?
+- **Domain name is specific.** Reject "consulting", "coaching", "advisory", "business", "tech". Accept "People Intelligence", "Clinical Intelligence", "Sound Intelligence", "Capital Intelligence", "Spatial Intelligence". Test: can you name 4-7 functional sub-systems within it without resorting to topic taxonomy?
 - **≥3 frameworks in Genius Profile mappable to the domain.** Read the Profile's "frameworks I use repeatedly" section. If the domain doesn't intersect with their existing genius, halt — productization without lived practice produces generic content.
 - **Vertical name + slug available.** Grep `VERTICALS.md` for collision; check `verticals/<slug>/` directory does not exist. Collision → halt, require rename.
 
@@ -49,10 +49,10 @@ Halt with explicit message if any condition fails. Do not soften.
 
 Read the Genius Profile and Freedom Path end-to-end. Output the analysis as part of the proposal:
 
-- **Domain anchor.** One sentence — what this domain is in this person's hands (not the textbook definition). Example: "HR Intelligence in the practitioner's hands is psychologist + neuroscientist + MBA + ten years of HR-room practice — not generic people-ops".
+- **Domain anchor.** One sentence — what this domain is in this person's hands (not the textbook definition). Example: "People Intelligence in the practitioner's hands is psychologist + neuroscientist + MBA + ten years of HR-room practice — not generic people-ops".
 - **Frameworks-in-domain.** From the Profile, the 3-7 frameworks the person already uses that belong inside this domain. Cite framework names verbatim from the Profile.
 - **Cross-domain synthesis edge.** The unique combination that justifies productization. NAME IT. If you cannot name it in one sentence, halt — without a synthesis edge, the domain stack is commodity. Examples:
-  - HR Intelligence: "psychology × neuroscience × MBA × HR-decade — sees both cognitive failure modes AND the neural mechanisms behind them"
+  - People Intelligence: "psychology × neuroscience × MBA × HR-decade — sees both cognitive failure modes AND the neural mechanisms behind them"
   - Doctor: "internal medicine × narrative competence × longitudinal care — protocol decisions that hold across decades, not visits"
   - Architect: "structural engineering × phenomenology × regulatory navigation — buildings that hold the body's experience AND clear permitting"
 - **KEEP-bucket overlap.** From the Freedom Path, which KEEP-bucket items live inside this domain? These are the highest-leverage sub-system targets — the things only this person can do, that compound when systematized.
@@ -289,7 +289,7 @@ Built on SIP — Starlight Intelligence Protocol
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence sub-stack reference)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence sub-stack reference)
 - Generated: 2026-04-24
 - Attestation is compounding, not credit transfer: every composition strengthens every node.
 ---

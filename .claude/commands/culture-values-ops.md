@@ -28,7 +28,7 @@ $ARGUMENTS
 2. **Per-value matrix build** — for each value, populate the six-system matrix with current state and target state.
 3. **Operational test per value** — write the test sentence ("Can an outsider deduce '<value>' from these systems alone, without being told?"). If the answer is no, the value is lip service; flag and recommend the smallest change that would flip the answer.
 4. **Cross-value coherence check** — surface contradictions (e.g., "innovation" + "no failure tolerance" — a known impossibility).
-5. **Save** — write to `hr-intelligence/culture/values-ops-<org>-<date>.md`.
+5. **Save** — write to `people-intelligence/culture/values-ops-<org>-<date>.md`.
 6. **Hand off** — exactly one named next move.
 
 ## Output format
@@ -133,7 +133,7 @@ Alternatives:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: <ISO date>
 ---
 ```
@@ -145,7 +145,7 @@ Alternatives:
 - **Cross-value coherence check non-optional.** Surface contradictions explicitly; "innovation" + "zero-defect" is a known impossibility, not an aspiration.
 - **Sequencing rule: max two values per quarter.** Operationalizing more dilutes the signal.
 - **Promote-criteria change is the lead move by default.** Promotions are the loudest cultural signal an org sends.
-- **Save to `hr-intelligence/culture/values-ops-<org>-<date>.md`.**
+- **Save to `people-intelligence/culture/values-ops-<org>-<date>.md`.**
 - **One hand-off at close.** Default: `/culture-rituals` for the reinforcement layer.
 
 ---
@@ -153,6 +153,6 @@ Alternatives:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: 2026-04-24
 ---

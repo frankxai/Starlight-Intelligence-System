@@ -1,13 +1,13 @@
 ---
 name: talent-retention
-description: Retention architecture for a high-performer cohort. Stay-interview script (the practitioner's voice), per-person leverage analysis (1-2 changes that would make this person 5x more likely to stay another 24 months), aggregate pattern across the cohort, system redesign recommendations. Cites stay-interview research (Beverly Kaye). Refuses exit-interview-as-strategy. Sub-system 5 of 6 in the HR Intelligence reference vertical.
+description: Retention architecture for a high-performer cohort. Stay-interview script (the practitioner's voice), per-person leverage analysis (1-2 changes that would make this person 5x more likely to stay another 24 months), aggregate pattern across the cohort, system redesign recommendations. Cites stay-interview research (Beverly Kaye). Refuses exit-interview-as-strategy. Sub-system 5 of 6 in the People Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: cohort identifier (required) + --cohort-size <N> + --org-context <consultancy|product-co|agency|other> + optional context paragraph describing recent attrition signals or what triggered the retention review
 ---
 
 # /talent-retention
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, prior motivation maps and burnout detections (`hr-intelligence/talent/`), Culture artifact for system context, Performance artifacts for calibration context, Genius Profile for voice samples in the stay-interview script. Produce a **Retention Architecture** — stay-interview script + per-person leverage + aggregate pattern + system redesign request. Hand off to exactly one next move.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, prior motivation maps and burnout detections (`people-intelligence/talent/`), Culture artifact for system context, Performance artifacts for calibration context, Genius Profile for voice samples in the stay-interview script. Produce a **Retention Architecture** — stay-interview script + per-person leverage + aggregate pattern + system redesign request. Hand off to exactly one next move.
 
 ## Disclaimer (non-waivable)
 
@@ -78,7 +78,7 @@ $ARGUMENTS
    - Q3: full cohort interviewed; pattern shift assessed.
    - Q4: annual retention review with leadership; system-redesign decisions.
 
-10. **Save.** Write to `hr-intelligence/talent/retention-<cohort>-<YYYY-MM-DD>.md`. Save stay-interview script as reusable artifact for managers.
+10. **Save.** Write to `people-intelligence/talent/retention-<cohort>-<YYYY-MM-DD>.md`. Save stay-interview script as reusable artifact for managers.
 
 11. **Hand off.** Name exactly one next move:
     - Stay interviews not yet run → schedule first-cohort stay interviews within 4 weeks; managers receive script + protocol.
@@ -197,7 +197,7 @@ This pattern is a **system-redesign signal**, not <N> individual conversations.
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -222,6 +222,6 @@ This pattern is a **system-redesign signal**, not <N> individual conversations.
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: 2026-04-24
 ---

@@ -7,9 +7,9 @@ argument-hint: candidate-slug (required) + role-slug (required, ICP must exist) 
 
 # /hire-assess-fit
 
-This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the People Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the ICP (`hr-intelligence/hiring/icp-<role-slug>-*.md`), and the interview debrief if it exists. Produce a **Culture-Add Fit Assessment**. Hand off to debrief or hire decision.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the ICP (`people-intelligence/hiring/icp-<role-slug>-*.md`), and the interview debrief if it exists. Produce a **Culture-Add Fit Assessment**. Hand off to debrief or hire decision.
 
 ## Disclaimer (non-waivable)
 
@@ -48,7 +48,7 @@ $ARGUMENTS
    - Are any of the "gaps" actually about the candidate not being similar enough to the team? If yes, that's similarity-attraction inverted; REMOVE.
    - Is the assessment overriding a strong rubric score? If yes, halt — flag for debrief facilitator to surface.
 
-10. **Save.** Write `hr-intelligence/hiring/fit-<candidate-slug>-<role-slug>-<YYYY-MM-DD>.md`.
+10. **Save.** Write `people-intelligence/hiring/fit-<candidate-slug>-<role-slug>-<YYYY-MM-DD>.md`.
 
 11. **Hand off.** Default: `/hire-debrief <candidate>` — fit assessment is read INTO the debrief, never standalone.
 
@@ -65,7 +65,7 @@ $ARGUMENTS
 
 - **Candidate:** <slug, name redacted in shared instances>
 - **Role:** <title>
-- **ICP file:** `hr-intelligence/hiring/icp-<role-slug>-<date>.md`
+- **ICP file:** `people-intelligence/hiring/icp-<role-slug>-<date>.md`
 - **Rubric scores referenced:** <yes — debrief in progress / no — fit assessed pre-debrief, will be re-anchored>
 
 ## Refusal of generic framing
@@ -141,7 +141,7 @@ Where will this candidate frictionally clash (and is the clash productive or des
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -156,13 +156,13 @@ Where will this candidate frictionally clash (and is the clash productive or des
 - **Productive tension is a feature.** Name it. The candidate who challenges the team in stage-appropriate ways is the candidate who shifts the team forward.
 - **One hand-off at close.** `/hire-debrief`.
 
-— Hiring Intelligence — part of the HR Intelligence reference vertical —
+— Hiring Intelligence — part of the People Intelligence reference vertical —
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: 2026-04-24
 ---

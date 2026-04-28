@@ -7,9 +7,9 @@ argument-hint: role-slug (required, ICP must exist) + --slot-count <3|4|5|6> + -
 
 # /hire-design-interview
 
-This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the People Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the existing ICP at `hr-intelligence/hiring/icp-<role-slug>-*.md`, and if present the company's Genius Profile (`genius/profile-<company-slug>.md`). Produce a **Structured Interview Architecture**. Hand off to exactly one next command.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the existing ICP at `people-intelligence/hiring/icp-<role-slug>-*.md`, and if present the company's Genius Profile (`genius/profile-<company-slug>.md`). Produce a **Structured Interview Architecture**. Hand off to exactly one next command.
 
 ## Disclaimer (non-waivable)
 
@@ -58,7 +58,7 @@ $ARGUMENTS
 
 8. **Compliance review flag.** Forward all question stems to legal counsel for jurisdiction-specific review before the loop runs. Non-negotiable.
 
-9. **Save.** Write `hr-intelligence/hiring/interview-<role-slug>-<YYYY-MM-DD>.md`.
+9. **Save.** Write `people-intelligence/hiring/interview-<role-slug>-<YYYY-MM-DD>.md`.
 
 10. **Hand off.** Default: `/hire-calibrate <role-slug>`. The calibration session must run before the loop.
 
@@ -72,7 +72,7 @@ $ARGUMENTS
 ## Context
 
 - **Role:** <title>
-- **ICP file:** `hr-intelligence/hiring/icp-<role-slug>-<date>.md`
+- **ICP file:** `people-intelligence/hiring/icp-<role-slug>-<date>.md`
 - **Slot count:** <3 | 4 | 5 | 6>
 - **Cognitive component:** <ability assessment | work sample | role-play | none — flagged>
 - **Voice signature:** <referenced from Genius Profile / generic — flagged>
@@ -195,7 +195,7 @@ Interviewer briefs (the prep document each interviewer reads before their slot) 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -213,13 +213,13 @@ Interviewer briefs (the prep document each interviewer reads before their slot) 
 - **All question stems reviewed by counsel before the loop runs.** Surface this in compliance review section.
 - **One hand-off at close.** `/hire-calibrate`.
 
-— Hiring Intelligence — part of the HR Intelligence reference vertical —
+— Hiring Intelligence — part of the People Intelligence reference vertical —
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: 2026-04-24
 ---

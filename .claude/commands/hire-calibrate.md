@@ -7,9 +7,9 @@ argument-hint: role-slug (required, ICP and interview architecture must exist) +
 
 # /hire-calibrate
 
-This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the People Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the existing ICP (`hr-intelligence/hiring/icp-<role-slug>-*.md`) and interview architecture (`hr-intelligence/hiring/interview-<role-slug>-*.md`). Produce a **Calibration Session Script** — a facilitator-ready 60-minute agenda. Hand off to running the actual loop.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the existing ICP (`people-intelligence/hiring/icp-<role-slug>-*.md`) and interview architecture (`people-intelligence/hiring/interview-<role-slug>-*.md`). Produce a **Calibration Session Script** — a facilitator-ready 60-minute agenda. Hand off to running the actual loop.
 
 ## Disclaimer (non-waivable)
 
@@ -46,7 +46,7 @@ $ARGUMENTS
    - Tie-breaks default to hire-no
    - Inter-rater dispersion ≥2 points on a load-bearing dimension triggers re-interview, not vibes-resolution
 
-7. **Save.** Write `hr-intelligence/hiring/calibration-<role-slug>-<YYYY-MM-DD>.md`.
+7. **Save.** Write `people-intelligence/hiring/calibration-<role-slug>-<YYYY-MM-DD>.md`.
 
 8. **Hand off.** Run the loop. After the loop, run `/hire-debrief <candidate>`.
 
@@ -60,8 +60,8 @@ $ARGUMENTS
 ## Context
 
 - **Role:** <title>
-- **ICP file:** `hr-intelligence/hiring/icp-<role-slug>-<date>.md`
-- **Interview architecture file:** `hr-intelligence/hiring/interview-<role-slug>-<date>.md`
+- **ICP file:** `people-intelligence/hiring/icp-<role-slug>-<date>.md`
+- **Interview architecture file:** `people-intelligence/hiring/interview-<role-slug>-<date>.md`
 - **Rater count:** <3 | 4 | 5 | 6+>
 - **Facilitator:** <name — typically the hiring manager or an HR partner>
 - **Anchor candidates selected:** <yes — names redacted in this artifact / no — flagged>
@@ -189,7 +189,7 @@ The facilitator will name these patterns out loud during the debrief — raters 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -204,13 +204,13 @@ The facilitator will name these patterns out loud during the debrief — raters 
 - **Compose with Genius Profile.** Facilitator script in the practitioner's voice when available.
 - **One hand-off at close.** Run the loop. Then `/hire-debrief`.
 
-— Hiring Intelligence — part of the HR Intelligence reference vertical —
+— Hiring Intelligence — part of the People Intelligence reference vertical —
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: 2026-04-24
 ---

@@ -48,7 +48,7 @@ $ARGUMENTS
 
 7. **Per-module evaluation rubric.** L2 (learning) per module — can the learner demonstrate the sub-skill in scenario? L3 (behavior) per module group — does the on-job application happen? Build the rubrics now, before delivery.
 
-8. **Save.** Create `hr-intelligence/training/<program-slug>/` if missing. Write `curriculum-<program-slug>-<YYYY-MM-DD>.md`.
+8. **Save.** Create `people-intelligence/training/<program-slug>/` if missing. Write `curriculum-<program-slug>-<YYYY-MM-DD>.md`.
 
 9. **Hand off.** Default: `/training-program-design <program-slug>` to wrap the curriculum into a deliverable program (cadence, trainer brief, manager engagement plan, ROI projection).
 
@@ -149,7 +149,7 @@ Alternative next moves (only if Curriculum surfaces a gap):
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
 - Generated: <ISO date>
 ---
 ```
@@ -169,6 +169,6 @@ Alternative next moves (only if Curriculum surfaces a gap):
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3)
 - Generated: 2026-04-24
 ---

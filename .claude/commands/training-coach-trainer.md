@@ -54,7 +54,7 @@ $ARGUMENTS
 
    If the SME fails the rubric, they don't deliver. Either re-run TtT, pair them with a co-facilitator (TtT-graduate), or replace with external vendor for cohort 1.
 
-5. **Save.** Write `hr-intelligence/training/<program-slug>/ttt-<sme-slug>-<YYYY-MM-DD>.md`.
+5. **Save.** Write `people-intelligence/training/<program-slug>/ttt-<sme-slug>-<YYYY-MM-DD>.md`.
 
 6. **Hand off.** Default: program launch (now with TtT-graduated facilitator). Alternative: `/training-measure-transfer` if measurement plan still needs detail.
 
@@ -67,7 +67,7 @@ $ARGUMENTS
 
 ## Anchor
 
-- **Program:** `hr-intelligence/training/<slug>/program-design-<slug>-<date>.md`
+- **Program:** `people-intelligence/training/<slug>/program-design-<slug>-<date>.md`
 - **SME:** <name + role + relationship to content>
 - **SME experience:** <none | some | experienced>
 - **Delivery date:** <YYYY-MM-DD>
@@ -154,7 +154,7 @@ Alternative next moves (only if a specific gap surfaces):
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
 - Generated: <ISO date>
 ---
 ```
@@ -173,6 +173,6 @@ Alternative next moves (only if a specific gap surfaces):
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3)
 - Generated: 2026-04-24
 ---

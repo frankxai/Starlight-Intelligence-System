@@ -1,13 +1,13 @@
 ---
 name: talent-team-dynamics
-description: Audit a team's dynamics. Hackman criteria check (real team or co-acting group?), Tuckman stage, status-hierarchy map, interdependence map, communication-pattern analysis. Refuses generic "team-building exercises" without diagnostic first. Names which Hackman criterion fails when one does — clarify membership/bounds/task before "team building." Sub-system 5 of 6 in the HR Intelligence reference vertical.
+description: Audit a team's dynamics. Hackman criteria check (real team or co-acting group?), Tuckman stage, status-hierarchy map, interdependence map, communication-pattern analysis. Refuses generic "team-building exercises" without diagnostic first. Names which Hackman criterion fails when one does — clarify membership/bounds/task before "team building." Sub-system 5 of 6 in the People Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: team identifier (required) + --size <N> + --tenure <weeks-months-years> + optional context paragraph describing observed dynamics, recent incidents, or what the manager wants
 ---
 
 # /talent-team-dynamics
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and any prior team artifacts (`hr-intelligence/talent/team-*`, `hr-intelligence/culture/`). Produce a **Team Dynamics Audit**. Hand off to exactly one next move — usually NOT "team-building exercises."
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and any prior team artifacts (`people-intelligence/talent/team-*`, `people-intelligence/culture/`). Produce a **Team Dynamics Audit**. Hand off to exactly one next move — usually NOT "team-building exercises."
 
 ## Disclaimer (non-waivable)
 
@@ -80,7 +80,7 @@ $ARGUMENTS
    - **Real team in performing** → protect; don't intervene.
    - **REFUSE generic team-building exercise** if the diagnosis hasn't run.
 
-9. **Save.** Write to `hr-intelligence/talent/team-dynamics-<team>-<YYYY-MM-DD>.md`.
+9. **Save.** Write to `people-intelligence/talent/team-dynamics-<team>-<YYYY-MM-DD>.md`.
 
 10. **Hand off.** Name exactly one next move:
     - Failed Hackman criterion → manager runs the named structural fix.
@@ -188,7 +188,7 @@ $ARGUMENTS
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -210,6 +210,6 @@ $ARGUMENTS
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: 2026-04-24
 ---

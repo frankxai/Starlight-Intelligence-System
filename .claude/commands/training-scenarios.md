@@ -53,7 +53,7 @@ $ARGUMENTS
 
 5. **Diversity check.** Across the library: are the people in scenarios diverse (gender, race, role, seniority)? Are the contexts diverse (in-person, remote, hybrid)? Are the stakes varied (low, medium, high)? Mono-cultural scenario libraries fail in heterogeneous orgs.
 
-6. **Save.** Write `hr-intelligence/training/<program-slug>/scenarios-<skill-domain-slug>-<YYYY-MM-DD>.md`. If standalone (not tied to a program), write to `hr-intelligence/training/scenario-libraries/<skill-domain-slug>-<YYYY-MM-DD>.md`.
+6. **Save.** Write `people-intelligence/training/<program-slug>/scenarios-<skill-domain-slug>-<YYYY-MM-DD>.md`. If standalone (not tied to a program), write to `people-intelligence/training/scenario-libraries/<skill-domain-slug>-<YYYY-MM-DD>.md`.
 
 7. **Hand off.** Default: `/training-curriculum` or `/training-program-design` consumes the library when designing simulation-rich modules.
 
@@ -69,7 +69,7 @@ $ARGUMENTS
 - **Skill domain:** <e.g., "1:1 feedback conversations">
 - **On-job context:** <e.g., "managers giving developmental feedback to struggling direct reports in remote-first teams">
 - **Difficulty stratification:** <intro N> / <mid N> / <advanced N> (total <count>)
-- **Linked program (if any):** `hr-intelligence/training/<program-slug>/`
+- **Linked program (if any):** `people-intelligence/training/<program-slug>/`
 - **Format reference:** mirrors structured-interview rubric pattern from Hiring sub-system
 
 ## Scenario index
@@ -140,7 +140,7 @@ If standalone: `/training-curriculum <new-program-slug>` — if a curriculum is 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
 - Generated: <ISO date>
 ---
 ```
@@ -159,6 +159,6 @@ If standalone: `/training-curriculum <new-program-slug>` — if a curriculum is 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3)
 - Generated: 2026-04-24
 ---

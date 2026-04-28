@@ -7,7 +7,7 @@ argument-hint: <organization-name> [--size <small|mid|large>] [--current-ritual 
 
 # /perf-review-redesign
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`. If a Hiring sub-system calibration protocol exists at `hr-intelligence/hiring/calibration-*.md`, read it for grammar transfer. Produce a **Performance Review Redesign Plan** that replaces a broken annual ritual with continuous SBI + quarterly growth + separated annual comp/promotion architecture. Save to `hr-intelligence/performance/redesign-<org-slug>-<date>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`. If a Hiring sub-system calibration protocol exists at `people-intelligence/hiring/calibration-*.md`, read it for grammar transfer. Produce a **Performance Review Redesign Plan** that replaces a broken annual ritual with continuous SBI + quarterly growth + separated annual comp/promotion architecture. Save to `people-intelligence/performance/redesign-<org-slug>-<date>.md`.
 
 ## Disclaimer (non-waivable)
 
@@ -38,8 +38,8 @@ $ARGUMENTS
    - If `--start-quarter` is missing, default to the next quarter from today's date plus one (one quarter of preparation time minimum).
 
 2. **Read.**
-   - If `hr-intelligence/hiring/calibration-*.md` exists, read it to align calibration grammar between hiring and performance.
-   - If a previous redesign exists at `hr-intelligence/performance/redesign-<org-slug>-*.md`, read the most recent and note what's iterating.
+   - If `people-intelligence/hiring/calibration-*.md` exists, read it to align calibration grammar between hiring and performance.
+   - If a previous redesign exists at `people-intelligence/performance/redesign-<org-slug>-*.md`, read the most recent and note what's iterating.
 
 3. **Disclaim.** Open the output with the non-waivable disclaimer. Structurally first, always.
 
@@ -83,7 +83,7 @@ $ARGUMENTS
     - If the user wants annual-rating-as-growth-tool kept, refuse to compose; redesign is the work.
     - If the user wants PIPs scripted as termination scaffolding, route to `/perf-difficult-conversation` and surface the dishonest version's harm.
 
-11. **Save.** Create `hr-intelligence/performance/` directory if missing. Write `hr-intelligence/performance/redesign-<org-slug>-<YYYY-MM-DD>.md`.
+11. **Save.** Create `people-intelligence/performance/` directory if missing. Write `people-intelligence/performance/redesign-<org-slug>-<YYYY-MM-DD>.md`.
 
 12. **Hand off.** Name exactly one next move:
     - Default: `/perf-feedback-rehearsal` for the first manager rolling out the new cadence (because the SBI training in the abstract does not produce confidence; rehearsing one specific upcoming conversation does)
@@ -185,7 +185,7 @@ Alternatives:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: <ISO date>
 ---
 ```
@@ -199,13 +199,13 @@ Alternatives:
 - **Legal/HRIS gates are non-negotiable.** The redesign is incomplete without them. Name them on the transition plan.
 - **Manager scripts are templates, not delivery.** Real conversations get rehearsed via `/perf-feedback-rehearsal` per instance.
 - **One hand-off at close.** Default to first manager's first rehearsal.
-- **Save to `hr-intelligence/performance/redesign-<org-slug>-<date>.md`.** Organization-instance namespace; never to a public vault.
+- **Save to `people-intelligence/performance/redesign-<org-slug>-<date>.md`.** Organization-instance namespace; never to a public vault.
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: 2026-04-24
 ---

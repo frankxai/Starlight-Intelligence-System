@@ -34,7 +34,7 @@ $ARGUMENTS
 7. **Manager script** — exactly what the manager says day 1, day 7, day 30, day 90.
 8. **New-hire prep doc** — what they need before day 1.
 9. **Retention metric tie** — explicit linkage to 12-month retention probability + measurement protocol.
-10. **Save** — write to `hr-intelligence/culture/onboarding-90-<role>-<date>.md`.
+10. **Save** — write to `people-intelligence/culture/onboarding-90-<role>-<date>.md`.
 11. **Hand off** — exactly one named next move.
 
 ## Output format
@@ -253,7 +253,7 @@ Alternatives:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: <ISO date>
 ---
 ```
@@ -267,7 +267,7 @@ Alternatives:
 - **Day-90 feedback loop creates the redesign cycle.** Without it, onboarding doesn't improve.
 - **Tie to retention metric explicitly.** Cohort-by-cohort tracking; quarterly review.
 - **HR alone fails.** Onboarding is manager + HR + buddy. Single-owner failure mode is universal.
-- **Save to `hr-intelligence/culture/onboarding-90-<role>-<date>.md`.**
+- **Save to `people-intelligence/culture/onboarding-90-<role>-<date>.md`.**
 - **One hand-off at close.** Default: run the architecture and capture day-90 feedback for redesign cycle.
 
 ---
@@ -275,6 +275,6 @@ Alternatives:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: 2026-04-24
 ---

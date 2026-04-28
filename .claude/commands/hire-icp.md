@@ -7,7 +7,7 @@ argument-hint: role title (required) + --jurisdiction <US-state|EU-country|UK|ot
 
 # /hire-icp
 
-This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the People Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
 Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, and if present the company's Genius Profile (`genius/profile-<company-slug>.md`) and Vision Architecture (`vision/vision-<company-slug>.md`). Produce an **Ideal Candidate Profile** for the named role. Hand off to exactly one next command.
 
@@ -56,7 +56,7 @@ $ARGUMENTS
 
 11. **Compliance flag.** Per jurisdiction: pay-transparency requirements, salary-history bans, right-to-work, candidate-data retention rules. Surface what legal counsel needs to confirm before the JD goes live.
 
-12. **Save.** Create `hr-intelligence/hiring/` directory if missing. Write `hr-intelligence/hiring/icp-<role-slug>-<YYYY-MM-DD>.md`.
+12. **Save.** Create `people-intelligence/hiring/` directory if missing. Write `people-intelligence/hiring/icp-<role-slug>-<YYYY-MM-DD>.md`.
 
 13. **Hand off.** Default: `/hire-design-interview <role-slug>`. Alternative only if upstream gap (e.g., role design itself unclear → loop in Org Architecture sub-system).
 
@@ -162,7 +162,7 @@ Alternative next moves (only if upstream gap surfaced):
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -178,13 +178,13 @@ Alternative next moves (only if upstream gap surfaced):
 - **Compose with Vision when available.** Senior roles especially benefit from company-as-candidate framing.
 - **One hand-off at close.** Default: `/hire-design-interview`. Alternatives only on real upstream gap.
 
-— Hiring Intelligence — part of the HR Intelligence reference vertical —
+— Hiring Intelligence — part of the People Intelligence reference vertical —
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: 2026-04-24
 ---

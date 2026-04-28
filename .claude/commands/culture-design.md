@@ -30,7 +30,7 @@ $ARGUMENTS
 3. **Gap analysis** — name the divergence between declared values and lived behavior, specifically, with evidence.
 4. **Systems redesign by leverage** — for each value to be made real, surface which of the six systems (hire / promote / celebrate / fire / measure / pay) must change. Sequence by leverage; promotion criteria typically rank highest.
 5. **12-week implementation sequence** — concrete, week-numbered, owned actions. Not a 5-year strategy. The 12-week window forces sequencing discipline.
-6. **Save** — write to `hr-intelligence/culture/audit-redesign-<org>-<date>.md`.
+6. **Save** — write to `people-intelligence/culture/audit-redesign-<org>-<date>.md`.
 7. **Hand off** — exactly one named next move (default: `/culture-values-ops` to operationalize the top value first).
 
 ## Output format
@@ -181,7 +181,7 @@ Alternatives only if the Plan surfaces a gap upstream:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: <ISO date>
 ---
 ```
@@ -195,13 +195,13 @@ Alternatives only if the Plan surfaces a gap upstream:
 - **12-week implementation, not 5-year strategy.** Forces sequencing discipline.
 - **Anti-ritual audit non-optional.** Surface current anti-rituals and recommend removal before adding new rituals.
 - **One hand-off at close.** Default: `/culture-values-ops` to operationalize the top value first.
-- **Save to `hr-intelligence/culture/audit-redesign-<org>-<date>.md`.** Org-specific, not public-vault.
+- **Save to `people-intelligence/culture/audit-redesign-<org>-<date>.md`.** Org-specific, not public-vault.
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: 2026-04-24
 ---

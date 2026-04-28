@@ -57,7 +57,7 @@ $ARGUMENTS
     - **Authority-responsibility mismatch** flag if role is accountable for outcomes without authority over inputs → flag and escalate to vision/structural redesign
     - **Title inflation** flag if scope flag and actual decision rights don't match (e.g., "Director" with no decision rights and no reports)
 
-11. **Save.** Create `hr-intelligence/org/` directory if missing. Write `hr-intelligence/org/role-<role-slug>-<YYYY-MM-DD>.md`. Per-instance/operational data; not retained in public vaults.
+11. **Save.** Create `people-intelligence/org/` directory if missing. Write `people-intelligence/org/role-<role-slug>-<YYYY-MM-DD>.md`. Per-instance/operational data; not retained in public vaults.
 
 12. **Hand off.** Name exactly one next move:
     - `/org-span` — if span implications surfaced (this role's manager is over/under-spanned, or this role itself has direct reports)
@@ -152,7 +152,7 @@ For the load-bearing decisions this role touches:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: <ISO date>
 ---
 ```
@@ -164,7 +164,7 @@ For the load-bearing decisions this role touches:
 - **Accountabilities are measurable outcomes, not activities.** "Owns X" alone is rejected; "X measured by Y at cadence Z" is required.
 - **Authority-responsibility match is structural.** If the role is accountable for outcomes it cannot influence, the role cannot succeed — escalate to structural redesign, not to the role-holder.
 - **Vision-fit named.** If the role is designed only for the current quarter, name it; the design horizon is part of the design.
-- **Per-instance only.** Write to `hr-intelligence/org/`; no public vault retention.
+- **Per-instance only.** Write to `people-intelligence/org/`; no public vault retention.
 - **One hand-off at close.**
 
 ---
@@ -172,6 +172,6 @@ For the load-bearing decisions this role touches:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: 2026-04-24
 ---

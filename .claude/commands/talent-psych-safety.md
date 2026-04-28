@@ -1,13 +1,13 @@
 ---
 name: talent-psych-safety
-description: Measure psychological safety on a team using Edmondson's 7-question scale (anonymous, longitudinal, team-by-team) plus interpretation rubric and intervention design. Cites Project Aristotle. Refuses "psychological safety training" as primary intervention without leader behavior change. Refuses single-snapshot scoring. Sub-system 5 of 6 in the HR Intelligence reference vertical.
+description: Measure psychological safety on a team using Edmondson's 7-question scale (anonymous, longitudinal, team-by-team) plus interpretation rubric and intervention design. Cites Project Aristotle. Refuses "psychological safety training" as primary intervention without leader behavior change. Refuses single-snapshot scoring. Sub-system 5 of 6 in the People Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: team identifier (required) + --baseline-or-followup <baseline|followup> + --prior-survey-date <YYYY-MM-DD or none> + optional context paragraph describing observed signals or what triggered the measurement
 ---
 
 # /talent-psych-safety
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, prior team-dynamics audits if any (`hr-intelligence/talent/team-dynamics-*`), and Culture artifact for system-context (`hr-intelligence/culture/`). Produce a **Psychological Safety Measurement Plan** plus interpretation rubric plus intervention design (if measuring follow-up). Hand off to exactly one next move.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, prior team-dynamics audits if any (`people-intelligence/talent/team-dynamics-*`), and Culture artifact for system-context (`people-intelligence/culture/`). Produce a **Psychological Safety Measurement Plan** plus interpretation rubric plus intervention design (if measuring follow-up). Hand off to exactly one next move.
 
 ## Disclaimer (non-waivable)
 
@@ -84,7 +84,7 @@ $ARGUMENTS
    - 6 months for cultural shift to be measurable.
    - Annual review of intervention effectiveness with leadership.
 
-9. **Save.** Write to `hr-intelligence/talent/psych-safety-<team>-<YYYY-MM-DD>.md`. If baseline, save the survey instrument as a reusable artifact for follow-ups.
+9. **Save.** Write to `people-intelligence/talent/psych-safety-<team>-<YYYY-MM-DD>.md`. If baseline, save the survey instrument as a reusable artifact for follow-ups.
 
 10. **Hand off.** Name exactly one next move:
     - Baseline measurement designed → administer survey within 2 weeks; results land with manager.
@@ -195,7 +195,7 @@ Score each item 1-7 (or 1-5 — pick one and hold it across longitudinal measure
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -220,6 +220,6 @@ Score each item 1-7 (or 1-5 — pick one and hold it across longitudinal measure
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: 2026-04-24
 ---

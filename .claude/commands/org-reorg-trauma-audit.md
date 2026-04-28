@@ -7,7 +7,7 @@ argument-hint: org name (required) + --reorg-scope <team|department|division|com
 
 # /org-reorg-trauma-audit
 
-Load `SIP.md`, `agents/starlight-org.md`, `skills/people-intelligence/org-architecture.md`. Read any prior `hr-intelligence/org/` outputs and any Talent IS signals available. Produce a **Reorg Trauma Audit + Sequencing Plan**. May refuse the reorg outright. Hand off to exactly one next command.
+Load `SIP.md`, `agents/starlight-org.md`, `skills/people-intelligence/org-architecture.md`. Read any prior `people-intelligence/org/` outputs and any Talent IS signals available. Produce a **Reorg Trauma Audit + Sequencing Plan**. May refuse the reorg outright. Hand off to exactly one next command.
 
 ## Disclaimer (non-waivable)
 
@@ -83,7 +83,7 @@ $ARGUMENTS
     - Pause-and-diagnose trigger: if any unit's engagement drops >15% or burnout signals concentrate, halt next wave and diagnose before continuing
     - 12-month review: did the reorg deliver the promised outcomes? Honest answer, not slide-deck answer. Cited against the original case.
 
-12. **Save.** Write to `hr-intelligence/org/reorg-audit-<YYYY-MM-DD>.md`.
+12. **Save.** Write to `people-intelligence/org/reorg-audit-<YYYY-MM-DD>.md`.
 
 13. **Hand off.** Exactly one next move:
     - `/luminor-board` — pressure-test the audit before commit (default for high-threat reorgs)
@@ -226,7 +226,7 @@ Default: **`/luminor-board`** — pressure-test the audit before commit. High-th
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: <ISO date>
 ---
 ```
@@ -242,7 +242,7 @@ Default: **`/luminor-board`** — pressure-test the audit before commit. High-th
 - **Kotter + Bridges, not invented frameworks.** Cite the source.
 - **Aftercare monitoring + Performance + Culture parallel updates.** Without these, structure reverts.
 - **Employment counsel review for severance / protected-class / jurisdictional questions.** Architect the structural decision; counsel resolves the legal one.
-- **Per-instance only.** Write to `hr-intelligence/org/`.
+- **Per-instance only.** Write to `people-intelligence/org/`.
 - **Default hand-off is `/luminor-board`** for high-threat reorgs. Pressure-test before commit.
 
 ---
@@ -250,6 +250,6 @@ Default: **`/luminor-board`** — pressure-test the audit before commit. High-th
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: 2026-04-24
 ---

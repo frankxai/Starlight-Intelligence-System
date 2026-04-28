@@ -1,13 +1,13 @@
 ---
 name: talent-motivation
-description: Build a per-person motivation map from observed behavior using Self-Determination Theory + dopamine-anticipation analysis. Output is a motivation hypothesis plus 1-2 leverage interventions, never a personality profile. Refuses engagement-survey-as-data; refuses generic "you should be more motivating." Sub-system 5 of 6 in the HR Intelligence reference vertical.
+description: Build a per-person motivation map from observed behavior using Self-Determination Theory + dopamine-anticipation analysis. Output is a motivation hypothesis plus 1-2 leverage interventions, never a personality profile. Refuses engagement-survey-as-data; refuses generic "you should be more motivating." Sub-system 5 of 6 in the People Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: person's name (required) + --role <ic|manager|exec|customer-facing|other> + --signal-window <weeks> + optional context paragraph describing the observed pattern
 ---
 
 # /talent-motivation
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and if present prior motivation maps for this person and the team's culture artifact (`hr-intelligence/culture/`) for system-context. Produce a **Motivation Map**. Hand off to exactly one next move.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and if present prior motivation maps for this person and the team's culture artifact (`people-intelligence/culture/`) for system-context. Produce a **Motivation Map**. Hand off to exactly one next move.
 
 ## Disclaimer (non-waivable)
 
@@ -28,7 +28,7 @@ $ARGUMENTS
 
 2. **Locate.** Confirm role-tier from `--role`. Confirm signal-window from `--signal-window`. Surface the manager's hypothesis (if any) but bracket it — the diagnostic should not pre-confirm the manager's frame.
 
-3. **Read.** If a Culture artifact exists for this team (`hr-intelligence/culture/`), read it for system context. If a Genius Profile exists for the person's manager (rare but possible), note voice for the recommended manager-conversation script.
+3. **Read.** If a Culture artifact exists for this team (`people-intelligence/culture/`), read it for system context. If a Genius Profile exists for the person's manager (rare but possible), note voice for the recommended manager-conversation script.
 
 4. **Gather observed signals across the window.** Sentiment trajectory, workload pattern, relational signal, behavioral artifacts — all observed, not self-reported. Surface what is unknown explicitly; do not invent.
 
@@ -53,7 +53,7 @@ $ARGUMENTS
 
 11. **Clinical-boundary check.** If observed signals include severe withdrawal, suicidality language, eating-pattern disruption, persistent severe sleep disturbance, or substance-use patterns — flag clinical referral pathway as the load-bearing next move, not the motivation intervention.
 
-12. **Save.** Create `hr-intelligence/talent/` directory if missing. Write `hr-intelligence/talent/motivation-<person-slug>-<YYYY-MM-DD>.md`.
+12. **Save.** Create `people-intelligence/talent/` directory if missing. Write `people-intelligence/talent/motivation-<person-slug>-<YYYY-MM-DD>.md`.
 
 13. **Hand off.** Name exactly one next move:
     - Burnout signals overlap with motivation map → `/talent-burnout-detect`
@@ -153,7 +153,7 @@ What is unknown: <explicit list — never invented>
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -177,6 +177,6 @@ What is unknown: <explicit list — never invented>
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: 2026-04-24
 ---

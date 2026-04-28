@@ -7,7 +7,7 @@ argument-hint: candidate-slug (required) + role-slug (required) + --rater-count 
 
 # /hire-debrief
 
-This is part of the HR Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
+This is part of the People Intelligence reference vertical. Composes with Genius Profile + Vision/Brand for company-as-candidate framing.
 
 Load `SIP.md`, `VOICES.md`, `agents/starlight-hiring.md`, `skills/people-intelligence/structured-hiring.md`, the ICP, the interview architecture, the calibration session record, and (if present) the fit assessment for this candidate. Produce the **Debrief Facilitation Script + Decision Record**. Hand off to onboarding architecture (if hire-yes) or learning capture (if hire-no).
 
@@ -53,7 +53,7 @@ $ARGUMENTS
 
 8. **Learning capture.** What did this loop reveal about the rubric, the calibration, the decision rule? Feed forward into the next loop's calibration session.
 
-9. **Save.** Write `hr-intelligence/hiring/debrief-<candidate-slug>-<YYYY-MM-DD>.md`.
+9. **Save.** Write `people-intelligence/hiring/debrief-<candidate-slug>-<YYYY-MM-DD>.md`.
 
 10. **Hand off.**
     - If hire-yes: produce 90-day onboarding architecture (inline below or via separate `/hire-onboard` if specified).
@@ -71,9 +71,9 @@ $ARGUMENTS
 - **Candidate:** <slug>
 - **Role:** <title>
 - **Rater count:** <n>
-- **Calibration session:** `hr-intelligence/hiring/calibration-<role-slug>-<date>.md`
-- **Interview architecture:** `hr-intelligence/hiring/interview-<role-slug>-<date>.md`
-- **Fit assessment:** `hr-intelligence/hiring/fit-<candidate-slug>-<role-slug>-<date>.md` (if applicable)
+- **Calibration session:** `people-intelligence/hiring/calibration-<role-slug>-<date>.md`
+- **Interview architecture:** `people-intelligence/hiring/interview-<role-slug>-<date>.md`
+- **Fit assessment:** `people-intelligence/hiring/fit-<candidate-slug>-<role-slug>-<date>.md` (if applicable)
 
 ## Pre-debrief — structured scores collected
 
@@ -220,7 +220,7 @@ If fit assessment exists, read it into the discussion. Supplement to rubric, not
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -239,13 +239,13 @@ If fit assessment exists, read it into the discussion. Supplement to rubric, not
 - **Learning captured for next calibration.** The loop improves loop-over-loop.
 - **One hand-off at close.** Onboarding (hire-yes), candidate close (hire-no), or scoped re-interview.
 
-— Hiring Intelligence — part of the HR Intelligence reference vertical —
+— Hiring Intelligence — part of the People Intelligence reference vertical —
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: 2026-04-24
 ---

@@ -7,7 +7,7 @@ argument-hint: <topic-slug> --manager <manager-name> --recipient <recipient-name
 
 # /perf-difficult-conversation
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the manager's Genius Profile if available. Produce a **Difficult Conversation Rehearsal** structured around the three-conversations framework. Save to `hr-intelligence/performance/difficult-<topic-slug>-<YYYY-MM-DD>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the manager's Genius Profile if available. Produce a **Difficult Conversation Rehearsal** structured around the three-conversations framework. Save to `people-intelligence/performance/difficult-<topic-slug>-<YYYY-MM-DD>.md`.
 
 ## Disclaimer (non-waivable, heavy)
 
@@ -141,7 +141,7 @@ $ARGUMENTS
     - Termination dressed as "mutual decision" when it is not → refuse. The recipient deserves the truth.
     - "Stay strictly professional, no feelings" → refuse. Skipping the feelings conversation means it runs the conversation from underneath.
 
-12. **Save.** Create `hr-intelligence/performance/` directory if missing. Write `hr-intelligence/performance/difficult-<topic-slug>-<YYYY-MM-DD>.md`.
+12. **Save.** Create `people-intelligence/performance/` directory if missing. Write `people-intelligence/performance/difficult-<topic-slug>-<YYYY-MM-DD>.md`.
 
 13. **Hand off.** Name exactly one next move:
     - **For terminations:** **Counsel review of the documentation BEFORE delivery.** Do not skip. Do not deliver until counsel has reviewed.
@@ -285,7 +285,7 @@ If the conversation surfaces protected concern (harassment / discrimination / re
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: <ISO date>
 ---
 ```
@@ -303,7 +303,7 @@ If the conversation surfaces protected concern (harassment / discrimination / re
 - **Aftercare 1h / 24h / 1w / 1m layers.**
 - **Halt and route on protected concerns.** Harassment, discrimination, retaliation, whistleblower → legal + HR before continuing.
 - **Halt on clinical-distress emergencies.** Clinical/EAP.
-- **Save to `hr-intelligence/performance/difficult-<topic-slug>-<date>.md`.** Organization-instance namespace.
+- **Save to `people-intelligence/performance/difficult-<topic-slug>-<date>.md`.** Organization-instance namespace.
 - **One hand-off at close.** Type-specific.
 
 ---
@@ -311,6 +311,6 @@ If the conversation surfaces protected concern (harassment / discrimination / re
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: 2026-04-24
 ---

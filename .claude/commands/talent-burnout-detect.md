@@ -1,13 +1,13 @@
 ---
 name: talent-burnout-detect
-description: Run a burnout detection protocol on a person or team. Maslach 3-dimensional assessment (emotional exhaustion + cynicism + reduced personal accomplishment) plus root-cause hypothesis plus intervention plan plus reassessment cadence. Cynicism is the diagnostic. Hard clinical-boundary escalation when signals cross into clinical territory. Refuses "burnout = tired" framing. Sub-system 5 of 6 in the HR Intelligence reference vertical.
+description: Run a burnout detection protocol on a person or team. Maslach 3-dimensional assessment (emotional exhaustion + cynicism + reduced personal accomplishment) plus root-cause hypothesis plus intervention plan plus reassessment cadence. Cynicism is the diagnostic. Hard clinical-boundary escalation when signals cross into clinical territory. Refuses "burnout = tired" framing. Sub-system 5 of 6 in the People Intelligence reference vertical.
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: person or team identifier (required) + --target <person|team> + --signal-window <weeks> + optional context paragraph describing observable signals (sentiment, workload, behavior)
 ---
 
 # /talent-burnout-detect
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and any prior motivation maps for this person (`hr-intelligence/talent/motivation-*`) and team-context (`hr-intelligence/culture/`). Produce a **Burnout Detection Protocol**. Hand off to exactly one next move — clinical referral if applicable, otherwise system + individual intervention.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-talent.md`, `skills/people-intelligence/people-dynamics.md`, and any prior motivation maps for this person (`people-intelligence/talent/motivation-*`) and team-context (`people-intelligence/culture/`). Produce a **Burnout Detection Protocol**. Hand off to exactly one next move — clinical referral if applicable, otherwise system + individual intervention.
 
 ## Disclaimer (non-waivable)
 
@@ -86,7 +86,7 @@ $ARGUMENTS
    - High: 4 / 8 / 12 weeks for early signal; 3-6 months for full recovery.
    - Severe / clinical: clinician-led; HR follows clinician guidance.
 
-9. **Save.** Write to `hr-intelligence/talent/burnout-<person-or-team>-<YYYY-MM-DD>.md`.
+9. **Save.** Write to `people-intelligence/talent/burnout-<person-or-team>-<YYYY-MM-DD>.md`.
 
 10. **Hand off.** Name exactly one next move:
     - Severe / clinical signal → referral pathway named explicitly with jurisdiction-specific resource list.
@@ -185,7 +185,7 @@ Most burnout has 2-3 root causes compounding. One-cause burnout exists but is ra
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: <ISO date>
 ---
 ```
@@ -208,6 +208,6 @@ Most burnout has 2-3 root causes compounding. One-cause burnout exists but is ra
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: 2026-04-24
 ---

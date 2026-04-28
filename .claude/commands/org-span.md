@@ -73,7 +73,7 @@ $ARGUMENTS
    - Who tells them, when, and what they hear
    - First-week structural support (1:1 cadence with new manager, etc.)
 
-9. **Save.** Write to `hr-intelligence/org/span-audit-<YYYY-MM-DD>.md`.
+9. **Save.** Write to `people-intelligence/org/span-audit-<YYYY-MM-DD>.md`.
 
 10. **Hand off.** Name exactly one next move:
     - `/org-reorg-trauma-audit` — if span changes will require a meaningful reorg (>30% of headcount affected)
@@ -170,7 +170,7 @@ $ARGUMENTS
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: <ISO date>
 ---
 ```
@@ -182,7 +182,7 @@ $ARGUMENTS
 - **Sequencing in waves, not all-at-once.** Refuse one-shot span reorgs.
 - **Trauma history read.** If structural changes in last 18 months, name the cumulative cost.
 - **Employment-law footprint flagged per recommendation.** Severance / classification / protected-class concentration.
-- **Per-instance only.** Write to `hr-intelligence/org/`.
+- **Per-instance only.** Write to `people-intelligence/org/`.
 - **One hand-off at close.**
 
 ---
@@ -190,6 +190,6 @@ $ARGUMENTS
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: 2026-04-24
 ---

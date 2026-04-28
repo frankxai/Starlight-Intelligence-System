@@ -7,7 +7,7 @@ argument-hint: program slug (required, from /training-curriculum) + --cohort-siz
 
 # /training-program-design
 
-Load `agents/starlight-training.md`, `skills/people-intelligence/learning-architecture.md`, and the Curriculum Design at `hr-intelligence/training/<program-slug>/curriculum-<program-slug>-*.md`. If no curriculum exists for this program, halt and route to `/training-curriculum`. Produce a **Program Design** wrapping curriculum into deliverable.
+Load `agents/starlight-training.md`, `skills/people-intelligence/learning-architecture.md`, and the Curriculum Design at `people-intelligence/training/<program-slug>/curriculum-<program-slug>-*.md`. If no curriculum exists for this program, halt and route to `/training-curriculum`. Produce a **Program Design** wrapping curriculum into deliverable.
 
 ## Input
 $ARGUMENTS
@@ -41,7 +41,7 @@ $ARGUMENTS
 
 7. **ROI projection.** Honest unit-economics view. Total program cost (facilitator, learner-time, opportunity cost, manager-time) against L4 metric improvement (target value × business value of improvement). Acknowledge confounders. Refuse to fabricate ROI multipliers; project the metric, not a multiplier.
 
-8. **Save.** Write `hr-intelligence/training/<program-slug>/program-design-<program-slug>-<YYYY-MM-DD>.md`.
+8. **Save.** Write `people-intelligence/training/<program-slug>/program-design-<program-slug>-<YYYY-MM-DD>.md`.
 
 9. **Hand off.** Default depends on `--facilitator-type`:
    - `internal-SME` → `/training-coach-trainer <program-slug>` (mandatory before launch)
@@ -57,7 +57,7 @@ $ARGUMENTS
 
 ## Program anchor
 
-- **Curriculum:** `hr-intelligence/training/<slug>/curriculum-<slug>-<date>.md`
+- **Curriculum:** `people-intelligence/training/<slug>/curriculum-<slug>-<date>.md`
 - **L3 behavior:** <pulled from curriculum>
 - **L4 outcome:** <pulled from curriculum>
 - **Audience:** <pulled from curriculum>
@@ -89,7 +89,7 @@ $ARGUMENTS
 - <failure mode 1> — facilitator response: <coaching move>
 - <failure mode 2> — ...
 
-**Scenario answer keys:** see scenario library at `hr-intelligence/training/<slug>/scenarios-<slug>.md`
+**Scenario answer keys:** see scenario library at `people-intelligence/training/<slug>/scenarios-<slug>.md`
 
 **Debrief discussion prompts:**
 - After M1 simulation: "What did you notice about your pattern? What surprised you?"
@@ -170,7 +170,7 @@ Default depends on `--facilitator-type`:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
 - Generated: <ISO date>
 ---
 ```
@@ -189,6 +189,6 @@ Default depends on `--facilitator-type`:
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3)
 - Generated: 2026-04-24
 ---

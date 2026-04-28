@@ -7,7 +7,7 @@ argument-hint: <coachee-name> --coach <manager-name> [--issue "presenting issue 
 
 # /perf-coaching-protocol
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the coach's Genius Profile if available. Produce a **Coaching Session Protocol** — a 60-minute session structure the manager will use, plus follow-up prompts and the manager-as-coach training notes. Save to `hr-intelligence/performance/coaching-<coachee-slug>-<YYYY-MM-DD>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`, and the coach's Genius Profile if available. Produce a **Coaching Session Protocol** — a 60-minute session structure the manager will use, plus follow-up prompts and the manager-as-coach training notes. Save to `people-intelligence/performance/coaching-<coachee-slug>-<YYYY-MM-DD>.md`.
 
 ## Disclaimer (non-waivable)
 
@@ -41,7 +41,7 @@ $ARGUMENTS
 
 2. **Read.**
    - If the coach's Genius Profile exists, load voice samples — the coaching language has to be the coach's own, not generic.
-   - If a previous session exists at `hr-intelligence/performance/coaching-<coachee-slug>-*.md`, read the most recent for continuity (the coachee's previous commitments, the scaling number from last time).
+   - If a previous session exists at `people-intelligence/performance/coaching-<coachee-slug>-*.md`, read the most recent for continuity (the coachee's previous commitments, the scaling number from last time).
 
 3. **Disclaim.** Open the output with the non-waivable clinical-boundary disclaimer.
 
@@ -123,7 +123,7 @@ $ARGUMENTS
     - 1-week: "Did you take the small step? What did you learn?"
     - 1-month: "Where are you on the scale now? What moved it?"
 
-11. **Save.** Create `hr-intelligence/performance/` directory if missing. Write `hr-intelligence/performance/coaching-<coachee-slug>-<YYYY-MM-DD>.md`.
+11. **Save.** Create `people-intelligence/performance/` directory if missing. Write `people-intelligence/performance/coaching-<coachee-slug>-<YYYY-MM-DD>.md`.
 
 12. **Hand off.** Name exactly one next move:
     - Default: **Run the session in the next 7 days.** Coaching sessions go stale; the rehearsed protocol works best within a week.
@@ -263,7 +263,7 @@ If the session reveals a feedback issue: **`/perf-feedback-rehearsal`** for the 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: <ISO date>
 ---
 ```
@@ -277,7 +277,7 @@ If the session reveals a feedback issue: **`/perf-feedback-rehearsal`** for the 
 - **CBT overlay only when applicable.** Cognitive reframing is coachable; clinical distortion is not.
 - **Refuse to coach clinical distress.** Route to clinical support. No exceptions.
 - **Refuse to use coaching as documentation.** A coaching session that is secretly building a PIP record is theater. Refuse and recommend honesty.
-- **Save to `hr-intelligence/performance/coaching-<coachee-slug>-<date>.md`.** Organization-instance namespace; never to a public vault.
+- **Save to `people-intelligence/performance/coaching-<coachee-slug>-<date>.md`.** Organization-instance namespace; never to a public vault.
 - **One hand-off at close.** Default is "run the session in 7 days."
 
 ---
@@ -285,6 +285,6 @@ If the session reveals a feedback issue: **`/perf-feedback-rehearsal`** for the 
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: 2026-04-24
 ---

@@ -7,7 +7,7 @@ argument-hint: <conflict-slug> --party-a <name> --party-b <name> --mediator <nam
 
 # /perf-conflict-mediation
 
-Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`. Produce a **Conflict Mediation Plan** — separate prep sessions with each party (each producing a three-conversations narrative privately) + joint 90-minute session structure + commitments framework + follow-up plan + escalation criteria. Save to `hr-intelligence/performance/mediation-<conflict-slug>-<YYYY-MM-DD>.md`.
+Load `SIP.md`, `VOICES.md`, `agents/starlight-performance.md`, `skills/people-intelligence/feedback-conversations.md`. Produce a **Conflict Mediation Plan** — separate prep sessions with each party (each producing a three-conversations narrative privately) + joint 90-minute session structure + commitments framework + follow-up plan + escalation criteria. Save to `people-intelligence/performance/mediation-<conflict-slug>-<YYYY-MM-DD>.md`.
 
 ## Disclaimer (non-waivable)
 
@@ -167,7 +167,7 @@ $ARGUMENTS
     - **Joint session commitments:** shared with both parties for confirmation. With both parties' consent, can enter HR record. Otherwise, stay with the mediator and the parties.
     - **Escalation:** documented internally — what was tried, why it was escalated, where it went. Important if the case later becomes legal.
 
-12. **Save.** Create `hr-intelligence/performance/` directory if missing. Write `hr-intelligence/performance/mediation-<conflict-slug>-<YYYY-MM-DD>.md`.
+12. **Save.** Create `people-intelligence/performance/` directory if missing. Write `people-intelligence/performance/mediation-<conflict-slug>-<YYYY-MM-DD>.md`.
 
 13. **Hand off.** Name exactly one next move:
     - Default: **Schedule the separate prep sessions in the next 7-10 days, joint session in the 1-2 weeks following.** Mediation timing matters; too soon and parties haven't cooled; too late and the conflict has hardened.
@@ -290,7 +290,7 @@ If eligibility gate fails: **Route per failed criterion** — legal/HR for prote
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: <ISO date>
 ---
 ```
@@ -307,7 +307,7 @@ If eligibility gate fails: **Route per failed criterion** — legal/HR for prote
 - **Commitments are specific behavioral and time-bound.** Vague attitudes are not commitments.
 - **Follow-up plan with 24h / 2w / 4-6w / 3mo layers is non-optional.**
 - **Escalation criteria are real boundaries, not formalities.** The hardest skill is knowing when to pass the case.
-- **Save to `hr-intelligence/performance/mediation-<conflict-slug>-<date>.md`.** Organization-instance namespace.
+- **Save to `people-intelligence/performance/mediation-<conflict-slug>-<date>.md`.** Organization-instance namespace.
 - **One hand-off at close.** Default is "schedule preps in 7-10 days."
 
 ---
@@ -315,6 +315,6 @@ If eligibility gate fails: **Route per failed criterion** — legal/HR for prote
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack, sub-system 2 of 6 — Performance)
 - Generated: 2026-04-24
 ---
