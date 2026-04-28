@@ -335,10 +335,20 @@ describe("v7.5 Block 6 — forking pattern doc + version + attestation", () => {
     assert.match(content, /Path A/, "forking doc missing Path A reference");
   });
 
-  it("v7.5.6.2 package.json version bumped to 7.5.x", () => {
+  it("v7.5.6.2 package.json version is at or above 7.5.x", () => {
     const content = readFileSync(PACKAGE_JSON, "utf8");
     const pkg = JSON.parse(content);
-    assert.match(pkg.version, /^7\.5\./, `package.json version is ${pkg.version}, expected 7.5.x`);
+    // Updated at v7.6.0 — assertion was originally /^7\.5\./ to guard the
+    // v7.5 ship moment. After v7.6, the load-bearing check is "version did
+    // not regress below 7.5", not "version is exactly 7.5.x". Accept any
+    // 7.5.x through 7.99.x and 8.x+ as forward-compatible. Test name kept
+    // at v7.5.6.2 because the test ID is the historical conformance
+    // contract; the assertion semantics widen with substrate evolution.
+    assert.match(
+      pkg.version,
+      /^(7\.([5-9]|\d{2,})\.|[89]\.|\d{2,}\.)/,
+      `package.json version is ${pkg.version}, expected ≥7.5.0`,
+    );
   });
 
   it("v7.5.6.3 ATTESTATIONS.md contains v7.5.0 entry", () => {

@@ -13,14 +13,18 @@ HR Intelligence reference vertical renamed → People Intelligence. Path A autho
 Luminor Board verdict 2026-04-28: PROCEED at v7.6.0 (revised down from proposed v8.0). Rationale: substantive rename earns a minor-version bump but doesn't carry architectural-shift signaling for v8.0; reserve major-version marker for genuine architectural inflection. Boundary note added to verticals/people-intelligence/SUB-SYSTEMS.md delineating People Intelligence ↔ Relational IS per Lyssandria challenge.
 
 Phase chain:
-- Phase 1 (4ee6c54): vertical wrapper rename — verticals/hr-intelligence/ → verticals/people-intelligence/ (8 files) + test invariant 6 paths
-- Phase 2 (a060e04): skills domain rename — skills/hr-intelligence/ → skills/people-intelligence/ (6 skills) + skill-rules.json + 29 commands' declared-load paths
-- Phase 3: 6 sub-system agents content
-- Phase 4: 28 commands + spawn-domain-stack content
-- Phase 5: cross-reference sweep (this commit)
-- Phase 6: boundary note + MEMORY changelog redirect
-- Phase 7: /openclaw-audit
-- Phase 8: package.json + tag
+- Phase 1 (`4ee6c54`): vertical wrapper rename — `verticals/hr-intelligence/` → `verticals/people-intelligence/` (8 files) + test invariant 6 paths
+- Phase 2 (`a060e04`): skills domain rename — `skills/hr-intelligence/` → `skills/people-intelligence/` (6 skills) + `skill-rules.json` + 29 commands' declared-load paths
+- Phase 3 (`e1ac834`): 6 sub-system agents content (`agents/starlight-{hiring,performance,training,culture,talent,org}.md`)
+- Phase 4 (`358cb29`): 28 sub-system commands + `spawn-domain-stack.md` content
+- Phase 5 (`a1f2774`): cross-reference sweep — `VERTICALS.md`, `AGENT_REGISTRY.md` (voice-operator parallel session preserved), `STACK.md`, `MEMORY.md`, `CLAUDE.md`, docs, orchestrator harnesses, integration exports, templates, sister-vertical (`sound-intelligence/`) cross-refs, friend-starter knowledge pack rename (6 files via `git mv`), test files
+- Phase 6 (`a5053d7`): boundary note (People Intelligence ↔ Relational IS delineation per Lyssandria challenge) + v0.1.2 changelog redirect in `MEMORY.md`
+- Phase 7 (`5753840`): `/openclaw-audit` verdict — SHIP-WITH-REMEDIATION (zero CRITICAL/HIGH/MEDIUM, 3 LOW remediated by Phase 8)
+- Phase 8 (this commit): `package.json` 7.5.3 → 7.6.0 + ATTESTATIONS phase-SHA fill + tag annotation
+
+Tests: 596/596 pass at every phase commit.
+
+Forks pinned to v0.1.1 are at SHA `5010a08` (tag `v7.5.0`); the rename does not break frozen historical board records — `docs/boards/luminor-v75-ship.md`, `luminor-v741-domain-substack.md`, and `openclaw-v75-audit.md` retain their original "HR Intelligence" verdict language as the historical record at the time of those decisions.
 
 Built on SIP — Starlight Intelligence Protocol v1.1.0
 
