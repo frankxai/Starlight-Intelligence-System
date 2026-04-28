@@ -1,12 +1,12 @@
 # SOUL — The essence that must not drift
 
-> One page. Not a pitch. Not a roadmap. The thing that, if lost, means HR Intelligence is no longer itself — even if every sub-system still ships.
+> One page. Not a pitch. Not a roadmap. The thing that, if lost, means People Intelligence is no longer itself — even if every sub-system still ships.
 
 ---
 
 ## The one-sentence soul
 
-**HR practiced as the science of human flourishing — every framework grounded in psychology and neuroscience, every system designed for sustainable excellence, every conversation honoring both the business and the person.**
+**People-flourishing practiced as a science — every framework grounded in psychology and neuroscience, every system designed for sustainable excellence, every conversation honoring both the business and the person.**
 
 This is specific enough to test. A culture statement that does not bind to hire/promote/fire decisions violates it ("system designed for sustainable excellence" failed). A PIP written as termination paperwork violates it ("honoring the person" failed). A "high-performance culture" framework that ignores burnout research violates it ("grounded in psychology and neuroscience" failed). An engagement-survey-as-strategy deck violates it (every clause failed).
 
@@ -36,7 +36,7 @@ This is specific enough to test. A culture statement that does not bind to hire/
 
 - **Not a substitute for in-room practitioner judgment.** This vertical organizes thinking; it does not replace the practitioner who has held the room. A founder cannot fork it and run their own performance review using only the artifacts. The artifacts are scaffolding; judgment is what operates them.
 
-- **Not a generic playbook.** Every output is voice-specific, context-specific, jurisdiction-specific. There is no "HR Intelligence answer" that ports across companies without re-grounding. The vertical refuses to ship a one-size-fits framework as if it were one.
+- **Not a generic playbook.** Every output is voice-specific, context-specific, jurisdiction-specific. There is no "People Intelligence answer" that ports across companies without re-grounding. The vertical refuses to ship a one-size-fits framework as if it were one.
 
 ---
 
@@ -64,4 +64,4 @@ If the vertical drifts toward genericism, it has betrayed the rooms it was built
 
 ---
 
-**Built on SIP** — HR Intelligence vertical SOUL.md · v0.1 · SIP v1.1.0 · Not waivable, not template-able beyond this structure. The content is the practitioner's to author and defend.
+**Built on SIP** — People Intelligence vertical SOUL.md · v0.1 · SIP v1.1.0 · Not waivable, not template-able beyond this structure. The content is the practitioner's to author and defend.

@@ -1,6 +1,6 @@
-# HR Intelligence
+# People Intelligence
 
-> A sovereign domain sub-stack for HR practiced as the science of human flourishing. Six sub-systems (Hiring · Performance · Training · Culture · Talent · Org) composed into one cohesive intelligence stack — research-grounded, voice-preserving, refuses HR theater.
+> A sovereign domain sub-stack for the science of people-flourishing in organizations and teams. Six sub-systems (Hiring · Performance · Training · Culture · Talent · Org) composed into one cohesive intelligence stack — research-grounded, voice-preserving, refuses HR theater.
 
 **Tier:** Domain sub-stack (vertical) under SIP. Reference vertical for `/spawn-domain-stack`.
 **License:** MIT for substrate-aligned reference patterns; vertical-specific content is the practitioner's IP.
@@ -10,9 +10,9 @@
 
 ## What this vertical is
 
-HR Intelligence is the wrapper that ties six already-shipped sub-systems into a sovereign domain sub-stack. It is the first concrete example of what the substrate calls a *vertical-tier wrapper* — a thin file contract (SKILL · SOUL · AGENTS · MEMORY · STACK · CANON · SUB-SYSTEMS) that composes existing sub-system agents, skills, and commands into one cohesive intelligence layer.
+People Intelligence is the wrapper that ties six already-shipped sub-systems into a sovereign domain sub-stack. It is the first concrete example of what the substrate calls a *vertical-tier wrapper* — a thin file contract (SKILL · SOUL · AGENTS · MEMORY · STACK · CANON · SUB-SYSTEMS) that composes existing sub-system agents, skills, and commands into one cohesive intelligence layer.
 
-You do not run "HR Intelligence" as a single agent. You run six sub-systems that share a voice, a research grounding, and a refusal posture. This vertical is the contract that holds them together.
+You do not run "People Intelligence" as a single agent. You run six sub-systems that share a voice, a research grounding, and a refusal posture. This vertical is the contract that holds them together.
 
 This is a **public reference vertical**. Sovereign HR practitioners fork it into their own private repo via `/sovereign-spawn` or `/spawn-domain-stack` and shape it to their voice, their research synthesis, their book of clients.
 
@@ -34,21 +34,21 @@ Six sub-systems, 28 commands, six knowledge templates, six dedicated agents.
 
 | Sub-system | Domain | Commands | Primary agent | Skill |
 |---|---|---|---|---|
-| **Hiring** | ICP · structured interview · calibration · culture-add · 90-day onboarding | 5 (`/hire-*`) | `starlight-hiring` | `hr-intelligence/structured-hiring` |
-| **Performance** | Feedback rehearsal · review redesign · coaching · difficult conversation · conflict mediation | 5 (`/perf-*`) | `starlight-performance` | `hr-intelligence/feedback-conversations` |
-| **Training** | Curriculum · program design · train-the-trainer · transfer measurement · scenario library | 5 (`/training-*`) | `starlight-training` | `hr-intelligence/learning-architecture` |
-| **Culture** | Audit + redesign · values-ops matrix · ritual architecture · 90-day onboarding architecture | 4 (`/culture-*`) | `starlight-culture` | `hr-intelligence/culture-design` |
-| **Talent** | Burnout detection · motivation mapping · psychological safety · retention · team dynamics | 5 (`/talent-*`) | `starlight-talent` | `hr-intelligence/people-dynamics` |
-| **Org** | Role design · span-of-control · reorg trauma audit · succession | 4 (`/org-*`) | `starlight-org` | `hr-intelligence/org-architecture` |
+| **Hiring** | ICP · structured interview · calibration · culture-add · 90-day onboarding | 5 (`/hire-*`) | `starlight-hiring` | `people-intelligence/structured-hiring` |
+| **Performance** | Feedback rehearsal · review redesign · coaching · difficult conversation · conflict mediation | 5 (`/perf-*`) | `starlight-performance` | `people-intelligence/feedback-conversations` |
+| **Training** | Curriculum · program design · train-the-trainer · transfer measurement · scenario library | 5 (`/training-*`) | `starlight-training` | `people-intelligence/learning-architecture` |
+| **Culture** | Audit + redesign · values-ops matrix · ritual architecture · 90-day onboarding architecture | 4 (`/culture-*`) | `starlight-culture` | `people-intelligence/culture-design` |
+| **Talent** | Burnout detection · motivation mapping · psychological safety · retention · team dynamics | 5 (`/talent-*`) | `starlight-talent` | `people-intelligence/people-dynamics` |
+| **Org** | Role design · span-of-control · reorg trauma audit · succession | 4 (`/org-*`) | `starlight-org` | `people-intelligence/org-architecture` |
 
-Sub-system content lives at the substrate root (under `agents/`, `skills/hr-intelligence/`, `.claude/commands/`). This vertical wrapper composes them — it does not duplicate them. See `SUB-SYSTEMS.md` for the canonical map.
+Sub-system content lives at the substrate root (under `agents/`, `skills/people-intelligence/`, `.claude/commands/`). This vertical wrapper composes them — it does not duplicate them. See `SUB-SYSTEMS.md` for the canonical map.
 
 ---
 
 ## Who this is for
 
 - **Sovereign HR practitioners** building their own practice — fork this, shape it to your voice, run client sessions through it.
-- **Companies** wanting a research-grounded HR Intelligence layer alongside their HRIS / ATS / LMS — this is not a system-of-record replacement; it is the thinking layer that runs above them.
+- **Companies** wanting a research-grounded People Intelligence layer alongside their HRIS / ATS / LMS — this is not a system-of-record replacement; it is the thinking layer that runs above them.
 - **Consultants** productizing their expertise — this is the scaffold for moving from project-based services to a methodology you can license and an agent you can scale.
 - **Operators** who keep mis-hiring, running broken reviews, declaring values that the systems don't reward — and who want a diagnostic before they buy the next consulting engagement.
 
@@ -121,4 +121,4 @@ The reciprocity is structural: attestation is the only compounding mechanism. St
 
 ---
 
-**Built on SIP** — Starlight Intelligence Protocol v1.1.0 · HR Intelligence vertical reference · v0.1
+**Built on SIP** — Starlight Intelligence Protocol v1.1.0 · People Intelligence vertical reference · v0.1

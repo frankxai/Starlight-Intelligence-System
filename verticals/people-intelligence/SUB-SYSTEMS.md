@@ -1,4 +1,4 @@
-# SUB-SYSTEMS — HR Intelligence Architecture
+# SUB-SYSTEMS — People Intelligence Architecture
 
 ## Daily-5 across the stack (cognitive-load-aware entry pattern)
 
@@ -18,7 +18,7 @@ The architecture scales **to** the practitioner, not **at** them. Twenty-eight c
 
 ---
 
-> The canonical sub-system map for this vertical. Six sub-systems composed into one cohesive HR Intelligence stack. Sub-system content lives at the substrate root (under `agents/`, `skills/hr-intelligence/`, `.claude/commands/`, `integrations/starter-packs/friend-starter/knowledge/`). This document is the wrapper that names the composition.
+> The canonical sub-system map for this vertical. Six sub-systems composed into one cohesive People Intelligence stack. Sub-system content lives at the substrate root (under `agents/`, `skills/people-intelligence/`, `.claude/commands/`, `integrations/starter-packs/friend-starter/knowledge/`). This document is the wrapper that names the composition.
 
 ---
 
@@ -26,7 +26,7 @@ The architecture scales **to** the practitioner, not **at** them. Twenty-eight c
 
 A vertical wraps; sub-systems do work. The wrapper enforces voice, refusal patterns, attestation, and composition rules. The sub-systems carry the domain expertise — interview architecture, feedback craft, curriculum design, culture systems, team dynamics, org structure.
 
-This separation matters because the same six sub-systems could compose differently for a different practitioner — different voice, different refusal patterns, different productization. The wrapper is what makes them *this practitioner's HR Intelligence*; the sub-systems are the underlying capability.
+This separation matters because the same six sub-systems could compose differently for a different practitioner — different voice, different refusal patterns, different productization. The wrapper is what makes them *this practitioner's People Intelligence*; the sub-systems are the underlying capability.
 
 The 6 sub-systems map to the six classical HR-leadership domains, named research-first rather than function-first:
 
@@ -44,9 +44,9 @@ The 6 sub-systems map to the six classical HR-leadership domains, named research
 - **Slug:** `hiring`
 - **Name:** Starlight Hiring
 - **Agent:** `agents/starlight-hiring.md`
-- **Skill:** `skills/hr-intelligence/structured-hiring.md`
+- **Skill:** `skills/people-intelligence/structured-hiring.md`
 - **Knowledge template:** `integrations/starter-packs/friend-starter/knowledge/hr-hiring-template.md`
-- **Vault namespace:** `hr-intelligence/hiring/`
+- **Vault namespace:** `people-intelligence/hiring/`
 
 ### Commands (5)
 
@@ -88,9 +88,9 @@ The 6 sub-systems map to the six classical HR-leadership domains, named research
 - **Slug:** `performance`
 - **Name:** Starlight Performance
 - **Agent:** `agents/starlight-performance.md`
-- **Skill:** `skills/hr-intelligence/feedback-conversations.md`
+- **Skill:** `skills/people-intelligence/feedback-conversations.md`
 - **Knowledge template:** `integrations/starter-packs/friend-starter/knowledge/hr-performance-template.md`
-- **Vault namespace:** `hr-intelligence/performance/`
+- **Vault namespace:** `people-intelligence/performance/`
 
 ### Commands (5)
 
@@ -131,9 +131,9 @@ The 6 sub-systems map to the six classical HR-leadership domains, named research
 - **Slug:** `training`
 - **Name:** Starlight Training
 - **Agent:** `agents/starlight-training.md`
-- **Skill:** `skills/hr-intelligence/learning-architecture.md`
+- **Skill:** `skills/people-intelligence/learning-architecture.md`
 - **Knowledge template:** `integrations/starter-packs/friend-starter/knowledge/hr-training-template.md`
-- **Vault namespace:** `hr-intelligence/training/`
+- **Vault namespace:** `people-intelligence/training/`
 
 ### Commands (5)
 
@@ -174,9 +174,9 @@ The 6 sub-systems map to the six classical HR-leadership domains, named research
 - **Slug:** `culture`
 - **Name:** Starlight Culture
 - **Agent:** `agents/starlight-culture.md`
-- **Skill:** `skills/hr-intelligence/culture-design.md`
+- **Skill:** `skills/people-intelligence/culture-design.md`
 - **Knowledge template:** `integrations/starter-packs/friend-starter/knowledge/hr-culture-template.md`
-- **Vault namespace:** `hr-intelligence/culture/`
+- **Vault namespace:** `people-intelligence/culture/`
 
 ### Commands (4)
 
@@ -216,9 +216,9 @@ The 6 sub-systems map to the six classical HR-leadership domains, named research
 - **Slug:** `talent`
 - **Name:** Starlight Talent
 - **Agent:** `agents/starlight-talent.md`
-- **Skill:** `skills/hr-intelligence/people-dynamics.md`
+- **Skill:** `skills/people-intelligence/people-dynamics.md`
 - **Knowledge template:** `integrations/starter-packs/friend-starter/knowledge/hr-talent-template.md`
-- **Vault namespace:** `hr-intelligence/talent/`
+- **Vault namespace:** `people-intelligence/talent/`
 
 ### Commands (5)
 
@@ -260,9 +260,9 @@ The 6 sub-systems map to the six classical HR-leadership domains, named research
 - **Slug:** `org`
 - **Name:** Starlight Org
 - **Agent:** `agents/starlight-org.md`
-- **Skill:** `skills/hr-intelligence/org-architecture.md`
+- **Skill:** `skills/people-intelligence/org-architecture.md`
 - **Knowledge template:** `integrations/starter-packs/friend-starter/knowledge/hr-org-template.md`
-- **Vault namespace:** `hr-intelligence/org/`
+- **Vault namespace:** `people-intelligence/org/`
 
 ### Commands (4)
 
@@ -321,4 +321,4 @@ The 6-sub-system count is not arbitrary; it reflects the field's actual research
 
 ---
 
-**Built on SIP** — HR Intelligence vertical SUB-SYSTEMS.md · v0.1 · SIP v1.1.0
+**Built on SIP** — People Intelligence vertical SUB-SYSTEMS.md · v0.1 · SIP v1.1.0

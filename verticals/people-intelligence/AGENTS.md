@@ -1,4 +1,4 @@
-# AGENTS — HR Intelligence Voice Map
+# AGENTS — People Intelligence Voice Map
 
 > Map SIP's 5 canonical voice archetypes (per `VOICES.md`) to the six sub-system agents in this vertical. Each sub-system agent expresses one or two archetypes primarily. Empty slots are visible gaps, not failures.
 
@@ -97,4 +97,4 @@ This vertical does **not** introduce a new voice archetype. The existing five ar
 
 ---
 
-**Built on SIP** — HR Intelligence vertical AGENTS.md · v0.1 · SIP v1.1.0
+**Built on SIP** — People Intelligence vertical AGENTS.md · v0.1 · SIP v1.1.0

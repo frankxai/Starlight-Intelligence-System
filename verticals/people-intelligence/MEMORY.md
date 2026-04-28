@@ -1,4 +1,4 @@
-# MEMORY — HR Intelligence Vertical Instance State
+# MEMORY — People Intelligence Vertical Instance State
 
 > Durable state for this vertical. Updated at every cycle close or after any structural change.
 >
@@ -8,19 +8,19 @@
 
 ## Identity
 
-- **Name:** `hr-intelligence`
+- **Name:** `people-intelligence`
 - **Type:** `vertical` (sovereign domain sub-stack)
 - **Authored by:** `<practitioner>` (template field — practitioner forks fill this on `/spawn-domain-stack`)
 - **Founded:** `<year>`
 - **SIP version pinned:** `v1.1.0`
 - **Canonical public URL:** `<your URL>` (template — practitioner sets)
-- **Source of truth:** `<your repo>` (template — practitioner sets; reference scaffold lives at `frankxai/Starlight-Intelligence-System` under `verticals/hr-intelligence/`)
+- **Source of truth:** `<your repo>` (template — practitioner sets; reference scaffold lives at `frankxai/Starlight-Intelligence-System` under `verticals/people-intelligence/`)
 - **Substrate reference:** `starlightintelligence.org/protocol`
 
 ## Domain declaration
 
-- **Declared domain:** HR practiced as the science of human flourishing — six sub-systems (Hiring, Performance, Training, Culture, Talent, Org) composed into one cohesive intelligence stack.
-- **ICP (ideal customer / user):** Sovereign HR practitioners (psychologist + neuroscientist + MBA + decade-of-practice synthesis) running their own practice; companies wanting a research-grounded HR Intelligence layer alongside their HRIS / ATS / LMS; consultants productizing their HR expertise into a methodology they can license. *(Practitioner forks narrow this to their actual ICP — geography, company-stage, role-archetype.)*
+- **Declared domain:** The science of people-flourishing in organizations and teams — six sub-systems (Hiring, Performance, Training, Culture, Talent, Org) composed into one cohesive intelligence stack.
+- **ICP (ideal customer / user):** Sovereign HR practitioners (psychologist + neuroscientist + MBA + decade-of-practice synthesis) running their own practice; companies wanting a research-grounded People Intelligence layer alongside their HRIS / ATS / LMS; consultants productizing their HR expertise into a methodology they can license. *(Practitioner forks narrow this to their actual ICP — geography, company-stage, role-archetype.)*
 - **Open boundary:** MIT — substrate-aligned reference patterns (file contract, command structure, attestation format, refusal-pattern grammar).
 - **Closed boundary:** Practitioner-specific frameworks, voice samples, client-shaped artifacts, research synthesis, productized offer detail. Practitioner's IP, not the substrate's.
 
@@ -36,12 +36,12 @@ Six sub-systems shipped at substrate root level. Vertical wrapper composes them.
 
 | Sub-system | Maturity | Agent | Skill | Knowledge template | Commands |
 |---|---|---|---|---|---|
-| **Hiring** | `shipped — v1.0` | `agents/starlight-hiring.md` | `skills/hr-intelligence/structured-hiring.md` | `integrations/starter-packs/friend-starter/knowledge/hr-hiring-template.md` | 5 |
-| **Performance** | `shipped — v1.0` | `agents/starlight-performance.md` | `skills/hr-intelligence/feedback-conversations.md` | `integrations/starter-packs/friend-starter/knowledge/hr-performance-template.md` | 5 |
-| **Training** | `shipped — v1.0` | `agents/starlight-training.md` | `skills/hr-intelligence/learning-architecture.md` | `integrations/starter-packs/friend-starter/knowledge/hr-training-template.md` | 5 |
-| **Culture** | `shipped — v1.0` | `agents/starlight-culture.md` | `skills/hr-intelligence/culture-design.md` | `integrations/starter-packs/friend-starter/knowledge/hr-culture-template.md` | 4 |
-| **Talent** | `shipped — v1.0` | `agents/starlight-talent.md` | `skills/hr-intelligence/people-dynamics.md` | `integrations/starter-packs/friend-starter/knowledge/hr-talent-template.md` | 5 |
-| **Org** | `shipped — v1.0` | `agents/starlight-org.md` | `skills/hr-intelligence/org-architecture.md` | `integrations/starter-packs/friend-starter/knowledge/hr-org-template.md` | 4 |
+| **Hiring** | `shipped — v1.0` | `agents/starlight-hiring.md` | `skills/people-intelligence/structured-hiring.md` | `integrations/starter-packs/friend-starter/knowledge/hr-hiring-template.md` | 5 |
+| **Performance** | `shipped — v1.0` | `agents/starlight-performance.md` | `skills/people-intelligence/feedback-conversations.md` | `integrations/starter-packs/friend-starter/knowledge/hr-performance-template.md` | 5 |
+| **Training** | `shipped — v1.0` | `agents/starlight-training.md` | `skills/people-intelligence/learning-architecture.md` | `integrations/starter-packs/friend-starter/knowledge/hr-training-template.md` | 5 |
+| **Culture** | `shipped — v1.0` | `agents/starlight-culture.md` | `skills/people-intelligence/culture-design.md` | `integrations/starter-packs/friend-starter/knowledge/hr-culture-template.md` | 4 |
+| **Talent** | `shipped — v1.0` | `agents/starlight-talent.md` | `skills/people-intelligence/people-dynamics.md` | `integrations/starter-packs/friend-starter/knowledge/hr-talent-template.md` | 5 |
+| **Org** | `shipped — v1.0` | `agents/starlight-org.md` | `skills/people-intelligence/org-architecture.md` | `integrations/starter-packs/friend-starter/knowledge/hr-org-template.md` | 4 |
 
 **Total:** 6 sub-systems · 6 agents · 6 skills · 6 knowledge templates · 28 commands.
 
@@ -73,7 +73,7 @@ Six sub-systems shipped at substrate root level. Vertical wrapper composes them.
 ## External authorities
 
 - **Intent authority:** Notion ID `<your-id>` — why this vertical exists for this practitioner; long-horizon practice vision. *(Template field.)*
-- **Source of truth:** GitHub `<your-repo>` — what holds now (sub-system definitions, refusal patterns, vertical wrapper). Reference scaffold: `frankxai/Starlight-Intelligence-System` at `verticals/hr-intelligence/`.
+- **Source of truth:** GitHub `<your-repo>` — what holds now (sub-system definitions, refusal patterns, vertical wrapper). Reference scaffold: `frankxai/Starlight-Intelligence-System` at `verticals/people-intelligence/`.
 - **Runtime state:** practitioner's choice — Notion / Supabase / Linear / custom. Not prescribed.
 
 ## Non-negotiables (inherited from substrate)
@@ -104,4 +104,4 @@ Six sub-systems shipped at substrate root level. Vertical wrapper composes them.
 
 ---
 
-**Built on SIP** — HR Intelligence vertical MEMORY.md · v0.1 · SIP v1.1.0
+**Built on SIP** — People Intelligence vertical MEMORY.md · v0.1 · SIP v1.1.0

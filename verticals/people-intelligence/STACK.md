@@ -1,6 +1,6 @@
-# STACK — HR Intelligence
+# STACK — People Intelligence
 
-> Stack choices for the HR Intelligence vertical. Defaults inherit from Starlight's `STACK.md` (L0–L6); HR-specific overrides noted per layer.
+> Stack choices for the People Intelligence vertical. Defaults inherit from Starlight's `STACK.md` (L0–L6); HR-specific overrides noted per layer.
 
 ## Inheritance
 
@@ -41,13 +41,13 @@
    - It is the thinking layer above. It produces artifacts (ICPs, calibration sessions, debriefs, review redesigns, succession plans) that the practitioner then operates against the SoR.
    - Where integration is needed (e.g., pulling team roster for `/talent-psych-safety` measurement), it runs through the practitioner's own MCP-or-API layer — not embedded in this vertical.
 
-5. **Vault namespace pattern:** sub-system content namespaces under `hr-intelligence/<sub-system>/` per practitioner instance:
-   - `hr-intelligence/hiring/` — ICPs, interview architectures, calibration sessions, debriefs, onboarding plans (per role, dated).
-   - `hr-intelligence/performance/` — feedback rehearsals, review redesigns, coaching protocols, conflict mediations (per person/event, dated).
-   - `hr-intelligence/training/` — curricula, programs, scenarios, transfer measurements (per program, dated).
-   - `hr-intelligence/culture/` — diagnostic sessions, values-ops matrices, ritual designs, onboarding architectures (per org/cycle, dated).
-   - `hr-intelligence/talent/` — burnout detection, motivation maps, psych safety measurements, retention plans, team dynamics audits (per person/team, dated).
-   - `hr-intelligence/org/` — role designs, span audits, reorg sequencing, succession plans (per org/cycle, dated).
+5. **Vault namespace pattern:** sub-system content namespaces under `people-intelligence/<sub-system>/` per practitioner instance:
+   - `people-intelligence/hiring/` — ICPs, interview architectures, calibration sessions, debriefs, onboarding plans (per role, dated).
+   - `people-intelligence/performance/` — feedback rehearsals, review redesigns, coaching protocols, conflict mediations (per person/event, dated).
+   - `people-intelligence/training/` — curricula, programs, scenarios, transfer measurements (per program, dated).
+   - `people-intelligence/culture/` — diagnostic sessions, values-ops matrices, ritual designs, onboarding architectures (per org/cycle, dated).
+   - `people-intelligence/talent/` — burnout detection, motivation maps, psych safety measurements, retention plans, team dynamics audits (per person/team, dated).
+   - `people-intelligence/org/` — role designs, span audits, reorg sequencing, succession plans (per org/cycle, dated).
 
 ---
 
@@ -84,7 +84,7 @@
 | `starlight-mcp` | Substrate memory + attestation | `v1.1.x` (per substrate pin) |
 | `<practitioner-mcp>` | Optional — practitioner's own MCP for HRIS / ATS / Notion bridge | per-practitioner |
 
-This vertical does not declare a dedicated `hr-intelligence-mcp`. The reference scaffold runs through `starlight-mcp` and the practitioner's existing tooling. A future HR-specific MCP (for HRIS/ATS read-only integration with explicit consent) is possible but not part of v0.1.
+This vertical does not declare a dedicated `people-intelligence-mcp`. The reference scaffold runs through `starlight-mcp` and the practitioner's existing tooling. A future HR-specific MCP (for HRIS/ATS read-only integration with explicit consent) is possible but not part of v0.1.
 
 ---
 
@@ -96,4 +96,4 @@ The two HR-specific override considerations (L4 privacy/compliance and L5 distri
 
 ---
 
-**Built on SIP** — HR Intelligence vertical STACK.md · v0.1 · SIP v1.1.0
+**Built on SIP** — People Intelligence vertical STACK.md · v0.1 · SIP v1.1.0

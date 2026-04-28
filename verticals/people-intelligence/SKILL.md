@@ -1,13 +1,13 @@
 ---
-name: hr-intelligence
-description: HR Intelligence vertical — 6 sub-systems composed into a sovereign domain sub-stack. Loaded when working on hiring, performance, training, culture, talent, or org architecture work for a specific person/practice.
+name: people-intelligence
+description: People Intelligence vertical — 6 sub-systems composed into a sovereign domain sub-stack. Loaded when working on hiring, performance, training, culture, talent, or org architecture work for a specific person/practice.
 ---
 
-# HR Intelligence skill
+# People Intelligence skill
 
 ## Premise
 
-This vertical is the wrapper that composes six sub-systems — Hiring, Performance, Training, Culture, Talent, Org — into one cohesive HR Intelligence stack. It serves sovereign HR practitioners (psychologist + neuroscientist + MBA + decade-of-practice synthesis) and the companies who hire them. Working "inside this vertical" means: any task that touches hiring loop design, feedback architecture, learning programs, culture systems, team dynamics, or org structure for a specific person, team, or company.
+This vertical is the wrapper that composes six sub-systems — Hiring, Performance, Training, Culture, Talent, Org — into one cohesive People Intelligence stack. It serves sovereign HR practitioners (psychologist + neuroscientist + MBA + decade-of-practice synthesis) and the companies who hire them. Working "inside this vertical" means: any task that touches hiring loop design, feedback architecture, learning programs, culture systems, team dynamics, or org structure for a specific person, team, or company.
 
 The vertical does not own sub-system content. Sub-system agents, skills, knowledge templates, and commands live at the substrate root. This skill loads alongside the relevant sub-system agent and binds them into the vertical's voice and refusal posture.
 
@@ -89,4 +89,4 @@ Sub-system-level structural changes write back to their own sub-system files at 
 
 ---
 
-**Built on SIP** — HR Intelligence vertical SKILL.md · v0.1 · SIP v1.1.0
+**Built on SIP** — People Intelligence vertical SKILL.md · v0.1 · SIP v1.1.0

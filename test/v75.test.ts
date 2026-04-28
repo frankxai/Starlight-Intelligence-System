@@ -70,7 +70,7 @@ const HR_WRAPPER_FILES = [
   "STACK.md",
   "CANON.md",
   "SUB-SYSTEMS.md",
-].map((f) => join(REPO_ROOT, "verticals", "hr-intelligence", f));
+].map((f) => join(REPO_ROOT, "verticals", "people-intelligence", f));
 
 const TEMPLATE_FILES = [
   "README.md",
@@ -210,7 +210,7 @@ describe("v7.5 Block 5 — HR Intelligence is Path A authorless", () => {
   }
 
   it("v7.5.5.3 HR vertical MEMORY.md declares Path A rewrite in changelog", () => {
-    const memory = join(REPO_ROOT, "verticals", "hr-intelligence", "MEMORY.md");
+    const memory = join(REPO_ROOT, "verticals", "people-intelligence", "MEMORY.md");
     const content = readFileSync(memory, "utf8");
     assert.match(content, /Path A authorless rewrite/, "HR vertical MEMORY missing Path A changelog entry");
     assert.match(content, /v0\.1\.1/, "HR vertical MEMORY missing v0.1.1 version mark");
@@ -273,7 +273,7 @@ describe("v7.5.1 Block 7 — OpenClaw v7.5 audit remediation", () => {
   it("v7.5.1.7.6 real-instance vertical MEMORY.md files contain no template placeholders (HIGH-6)", () => {
     const placeholders = ["<name>", "<slug>", "<commit-sha>"];
     const realInstancePaths = [
-      "verticals/hr-intelligence/MEMORY.md",
+      "verticals/people-intelligence/MEMORY.md",
       "verticals/self/MEMORY.md",
       "verticals/wealth/MEMORY.md",
       "verticals/business/MEMORY.md",
