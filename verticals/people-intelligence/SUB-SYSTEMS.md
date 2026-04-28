@@ -321,4 +321,33 @@ The 6-sub-system count is not arbitrary; it reflects the field's actual research
 
 ---
 
-**Built on SIP** — People Intelligence vertical SUB-SYSTEMS.md · v0.1 · SIP v1.1.0
+## People Intelligence ↔ Relational IS — boundary delineation
+
+Added per Luminor Board v7.6.0 verdict (Lyssandria challenge): the rename to People Intelligence creates a name-adjacency with the universal-tier **Relational IS** (one of the 9 universal Intelligence Stack layers). Without explicit delineation, the boundary question keeps re-surfacing. Naming it here closes the loop.
+
+**People Intelligence (this vertical) studies:** people-flourishing *within organizations and teams* — org structure, role design, hiring loops, performance conversations, training programs, culture-as-system, team dynamics, talent retention, succession architecture. The unit of analysis is **the team / the role / the org**. The frame is *organizational systems that produce or destroy human flourishing in work contexts*.
+
+**Relational IS (universal layer) studies:** between-person relational dynamics in *any* context — alliances (commercial / co-creative), family systems, peer collaboration, community membership, mentorship, friendship, network architecture. The unit of analysis is **the relationship / the alliance / the network**. The frame is *how two-or-more sovereign humans architect compounding trust over time*.
+
+**Composition rule:** People Intelligence inherits relational primitives *from* Relational IS for any human-to-human surface inside an organizational frame (1:1s, debrief conversations, stay-interviews). Relational IS does not inherit from People Intelligence; it is the more general layer.
+
+**Boundary cases:**
+
+| Situation | Owner | Why |
+|---|---|---|
+| 1:1 coaching session inside a team | **People Intelligence** | Organizational performance frame; team-context drives the architecture |
+| Friendship strain affecting work | **Relational IS** primary, People consults | Relational primitive; People consults on workplace impact only |
+| Alliance forge between two founders | **Relational IS** | No organizational frame between sovereigns; pure relational architecture |
+| Co-founder dispute inside one company | **People Intelligence** + Relational | Both apply — Relational for the dispute itself, People for org-design implications |
+| Mentor relationship outside any company | **Relational IS** | No organizational frame |
+| Mentor relationship as part of internal talent program | **People Intelligence** | Organizational frame (talent retention sub-system) |
+| Family-member-as-employee dynamics | Both, sequential — **Relational IS first** | Relational primitives precede the workplace overlay |
+| Network-building for career capital | **Relational IS** | Personal network architecture; not org-internal |
+
+**The asymmetry:** Relational IS is research-grounded in attachment theory, alliance theory, social network analysis. People Intelligence is research-grounded in industrial-organizational psychology, employment-law-aware management practice, and team-effectiveness research. They share Edmondson on psychological safety (because that research itself spans both frames), but most of their literature does not overlap.
+
+**Practitioner test for which to invoke:** Ask "is the unit of analysis a *role / team / org* or a *relationship / alliance / network*?" If role / team / org — People Intelligence. If relationship / alliance / network — Relational IS. If both, sequence Relational first (it carries the underlying primitives).
+
+---
+
+**Built on SIP** — People Intelligence vertical SUB-SYSTEMS.md · v0.1.2 · SIP v1.1.0

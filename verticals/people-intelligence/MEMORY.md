@@ -95,13 +95,15 @@ Six sub-systems shipped at substrate root level. Vertical wrapper composes them.
 
 - `v0.1` · `2026-04-24` · Spawned as the first reference HR sub-stack scaffold for `/spawn-domain-stack`. Six sub-systems composed into vertical wrapper. File contract: README · SKILL · SOUL · AGENTS · MEMORY · STACK · CANON · SUB-SYSTEMS.
 - `v0.1.1` · `2026-04-26` · Path A authorless rewrite applied per Luminor Board v7.4.1 Item 2 (landed in commit `5010a08`, tag `v7.5.0`). Sub-system agents and vertical wrapper genericized — this vertical is now an authorless reference; forking practitioners declare their attribution-back per `docs/forking-domain-stacks.md`.
+- `v0.1.2` · `2026-04-28` · **Renamed HR Intelligence → People Intelligence** per Luminor Board v7.6.0 verdict 2026-04-28 (board recommendation REVISE: PROCEED at v7.6.0 over the proposed v8.0; rationale: substantive rename earns minor-version bump but does not carry architectural-shift signaling for major-version marker). Path A authorless naming pattern symmetric with Sound Intelligence (sister Domain Sub-Stack Tier reference vertical). Sheds HR-baggage; matches the people-flourishing-science SOUL framing already declared at v0.1.1. Boundary note added to `SUB-SYSTEMS.md` delineating People Intelligence ↔ Relational IS per Lyssandria challenge. Forks pinned to v0.1.1 are at SHA `5010a08` (tag `v7.5.0`); the rename does not break frozen historical board records — `docs/boards/luminor-v75-ship.md`, `luminor-v741-domain-substack.md`, and `openclaw-v75-audit.md` retain their original "HR Intelligence" verdict language as the historical record at the time of those decisions.
 
 ### Reference lineage SHAs
 
 - `v0.1` spawn · `2026-04-25` · `be5e4d5` · Spawned as first reference HR sub-stack scaffold per v7.4.1-alpha; 6 sub-systems, 28 commands, vertical wrapper.
 - `v0.1` REVISE · `2026-04-25` · `6eb1001` · Luminor Board v7.4.1 REVISE remediation items 1, 3 + test harness + skill registration.
 - `v0.1.1` Path A · `2026-04-26` · `5010a08` · Authorless rewrite per Luminor Board v7.4.1 Item 2; tag `v7.5.0` annotated at this SHA.
+- `v0.1.2` rename · `2026-04-28` · `4ee6c54..a1f2774` · 5-phase rename chain (vertical wrapper → skills domain → 6 sub-system agents → 29 commands → cross-reference sweep). Boundary note + changelog redirect at this commit. Tests 596/596 pass through every phase. Tag `v7.6.0` annotated at the close-of-rename SHA.
 
 ---
 
-**Built on SIP** — People Intelligence vertical MEMORY.md · v0.1 · SIP v1.1.0
+**Built on SIP** — People Intelligence vertical MEMORY.md · v0.1.2 · SIP v1.1.0
