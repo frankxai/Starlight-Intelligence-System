@@ -11,7 +11,7 @@ Custom GPTs are configurable ChatGPT assistants — a name, description, instruc
 
 Two distinctions that matter for SIP. **First**, Custom GPT is not the same as ChatGPT Project (which is documented separately under `chatgpt-project.md`). Project is a multi-conversation workspace with a per-project system prompt; Custom GPT is a single shareable assistant published to ChatGPT's Custom GPT surface. They have different limits and different distribution models. **Second**, Custom GPT instruction strings are capped (currently ~8000 characters); knowledge files are capped (currently 20 files, 512MB total). Both caps require the export to compress aggressively while never compromising attestation.
 
-This is the lowest-friction path to non-technical end users. A sovereign person ships their domain stack (Ana's HR Intelligence) as a Custom GPT, the user adds it to their ChatGPT, and the substrate is now in their daily workflow without a single new login. Attestation must travel intact through that path or the export is refused.
+This is the lowest-friction path to non-technical end users. A sovereign person ships their domain stack (e.g., People Intelligence) as a Custom GPT, the user adds it to their ChatGPT, and the substrate is now in their daily workflow without a single new login. Attestation must travel intact through that path or the export is refused.
 
 ## Bundle structure
 

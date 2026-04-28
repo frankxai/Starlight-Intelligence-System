@@ -106,7 +106,7 @@ This is the table the plan most needs as a single source of truth.
 
 | Vertical | Declared | Functional | Status |
 |---|---|---|---|
-| HR Intelligence | `verticals/hr-intelligence/{AGENTS,CANON,MEMORY,README,SKILL,SOUL,STACK,SUB-SYSTEMS}.md`; 6 sub-system agents (`starlight-{hiring,performance,training,culture,talent,org}.md`); 28 commands (`/hire-*`, `/perf-*`, `/training-*`, `/culture-*`, `/talent-*`, `/org-*`); `skills/hr-intelligence/` skills directory | Full file contract present; agents + 28 commands callable; reference vertical (Ana). | `live` |
+| People Intelligence | `verticals/people-intelligence/{AGENTS,CANON,MEMORY,README,SKILL,SOUL,STACK,SUB-SYSTEMS}.md`; 6 sub-system agents (`starlight-{hiring,performance,training,culture,talent,org}.md`); 28 commands (`/hire-*`, `/perf-*`, `/training-*`, `/culture-*`, `/talent-*`, `/org-*`); `skills/people-intelligence/` skills directory | Full file contract present; agents + 28 commands callable; reference vertical (Path A authorless; renamed from HR Intelligence at v7.6.0). | `live` |
 | Sound Intelligence | `verticals/sound-intelligence/README.md` only; `skills/sound-intelligence/` directory exists but **empty** (no .md skill files) | Wrapper README only; no sub-system agents, no commands. Parallel-agent in-flight per task brief. | `scaffolded` (per disk state at audit time; may advance during/after this audit) |
 
 ---
@@ -123,7 +123,7 @@ The temporal memory graph is the load-bearing primitive for daily brief (Phase 1
 The "first daily brief from Graphiti, saved to `~/captures/briefs/YYYY-MM-DD.md`" is the verification step for Phase 1 itself. Schema for the brief, the cron/scheduler that triggers it, and the Graphiti read path are all undefined. Without 1.7 working, Phase 1 cannot be marked shipped, which means Phase 2 cannot begin per the plan's gating rule.
 
 ### 4. Vertical-wrapper file contract not applied to 5 of 10 IS layers
-`verticals/{wealth,business,creator,secondbrain,brand,self}/` directories do not exist. `verticals/{code,voice-video,family}/` exist but contain only a README — they have not received the 7-file wrapper that `verticals/_template/` and `verticals/hr-intelligence/` apply (AGENTS, CANON, MEMORY, README, SKILL, SOUL, STACK). This means the 10-IS taxonomy is consistent at `STACK.md` § 1 + `docs/ARCHITECTURE.md` but **inconsistent in the file system itself.** A sovereign adopter forking the repo cannot find the substrate-tier wrapper for 5 of 10 layers — they have to read the agent files and infer the layer.
+`verticals/{wealth,business,creator,secondbrain,brand,self}/` directories do not exist. `verticals/{code,voice-video,family}/` exist but contain only a README — they have not received the 7-file wrapper that `verticals/_template/` and `verticals/people-intelligence/` apply (AGENTS, CANON, MEMORY, README, SKILL, SOUL, STACK). This means the 10-IS taxonomy is consistent at `STACK.md` § 1 + `docs/ARCHITECTURE.md` but **inconsistent in the file system itself.** A sovereign adopter forking the repo cannot find the substrate-tier wrapper for 5 of 10 layers — they have to read the agent files and infer the layer.
 
 ### 5. Codex / Gemini / OpenCode harnesses are README-only
 `core/orchestrator/harnesses/{codex,gemini,opencode}/` each have a README ending "Status: scaffolded — full system prompt + MCP config land in Phase 1." Without these, the multi-CLI orchestration narrative in `MASSIVE_ACTION_PLAN.md` § 4 is single-CLI in practice. The `starlight` shell-alias wrapping the four CLIs (plan § 4) cannot be functionally tested.
@@ -152,7 +152,7 @@ The "first daily brief from Graphiti, saved to `~/captures/briefs/YYYY-MM-DD.md`
 
 The 10-IS taxonomy is canonical in `STACK.md` § 1 and `docs/ARCHITECTURE.md`. It is referenced from `core/orchestrator/README.md`, `MASSIVE_ACTION_PLAN.md`, and every recent handover doc. As a *taxonomy*, it is locked.
 
-As a *file-system architecture*, it is half-built. Five of ten IS layers — Self, Wealth, Business, Creator, Brand — have **no `verticals/<layer>/` wrapper at all**. Three more (Family, Code, Voice & Video) have only a `README.md` with a "scaffolded v0.1" status, where the substrate's own template (`verticals/_template/`) declares a 7-file file contract (AGENTS, CANON, MEMORY, README, SKILL, SOUL, STACK). The only IS-tier vertical that actually runs the wrapper substrate it preaches is the domain sub-stack at `verticals/hr-intelligence/`, which is *not even a 10-IS layer* — it's a domain-tier wrapper one tier down.
+As a *file-system architecture*, it is half-built. Five of ten IS layers — Self, Wealth, Business, Creator, Brand — have **no `verticals/<layer>/` wrapper at all**. Three more (Family, Code, Voice & Video) have only a `README.md` with a "scaffolded v0.1" status, where the substrate's own template (`verticals/_template/`) declares a 7-file file contract (AGENTS, CANON, MEMORY, README, SKILL, SOUL, STACK). The only IS-tier vertical that actually runs the wrapper substrate it preaches is the domain sub-stack at `verticals/people-intelligence/`, which is *not even a 10-IS layer* — it's a domain-tier wrapper one tier down.
 
 What that means in practice: **5 of 10 IS layers have no executable surface beyond a README + the underlying agent + commands.** The agents and commands are real (`/discover-genius`, `/wealth-dpi`, `/architect-entity`, `/creator-pipeline`, `/capture-daily`, `/define-vision` all run today on real input). The IS *as a coherent intelligence layer with its own SKILL/SOUL/CANON/MEMORY/STACK files* is not coherent — it is positioning by reference rather than positioning by substrate.
 
@@ -168,7 +168,7 @@ The plan's Phase 1 fixes capture stack and harness depth. The plan does **not** 
 
 | Status | Count |
 |---|---|
-| `live` | 9 (Phase 0 spine-lock items where the plan only required positioning, plus Genius / Wealth / Family-agent / Business / Creator / Second Brain / Brand / Health agents+commands, Voice & Video modality attestation, HR Intelligence vertical) |
+| `live` | 9 (Phase 0 spine-lock items where the plan only required positioning, plus Genius / Wealth / Family-agent / Business / Creator / Second Brain / Brand / Health agents+commands, Voice & Video modality attestation, People Intelligence vertical) |
 | `staged` | 7 (orchestrator promotion path, claude harness alone, screenpipe playbook, meetscribe playbook, mem0 playbook, console graph viz, orchestrator-as-IS) |
 | `scaffolded` | 6 (vertical wrappers for code / voice-video / family, voice-operator service, voice-operator stt, voice-operator tts, voice-operator routing primitives) |
 | `unsurfaced` | 13 (graphiti, syncthing, daily brief, workspace switching, vercel room, voice primitives wiring, all of Phase 3 spine surfaces, all of Phase 4 except 4.1, vertical wrappers for 5 IS layers, sound-intelligence sub-systems pending parallel agent) |
@@ -181,7 +181,7 @@ The plan's Phase 1 fixes capture stack and harness depth. The plan does **not** 
 5. Codex / Gemini / OpenCode harnesses README-only — the multi-CLI promise is single-CLI in practice.
 
 **Is the system ready for the first sovereign adopter to fork it tomorrow?**
-**No.** They could fork the substrate, the SIP attestation, and the HR Intelligence reference vertical and get real value. They could not fork "the 10-IS Intelligence System" and get ten coherent IS surfaces — they would get ten positioning statements, eight working agents, and approximately twenty working commands distributed across ten layers without a unified vertical wrapper for five of them. Honest answer: the system is ready for **a sovereign adopter who is also a builder**. It is not yet ready for a sovereign adopter who expects ten file-contract-coherent IS layers off the shelf.
+**No.** They could fork the substrate, the SIP attestation, and the People Intelligence reference vertical and get real value. They could not fork "the 10-IS Intelligence System" and get ten coherent IS surfaces — they would get ten positioning statements, eight working agents, and approximately twenty working commands distributed across ten layers without a unified vertical wrapper for five of them. Honest answer: the system is ready for **a sovereign adopter who is also a builder**. It is not yet ready for a sovereign adopter who expects ten file-contract-coherent IS layers off the shelf.
 
 ---
 

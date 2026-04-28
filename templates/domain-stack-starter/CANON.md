@@ -56,7 +56,7 @@ Run `/arcanea-canon` for authoritative canon management. Do not silently import;
 
 ## Why most Domain Sub-Stacks decline
 
-Domain sub-stacks (HR Intelligence, Capital Intelligence, Clinical Intelligence, etc.) are instrument-based — their value is the structured protocol the sovereign's lived practice produces. Canon adoption adds composition overhead without adding signal. The synthesis edge does the work. Canon is for narrative domains, world-bound practices, and creative verticals where shared aesthetic substrate is the load-bearing asset.
+Domain sub-stacks (People Intelligence, Sound Intelligence, Capital Intelligence, Clinical Intelligence, etc.) are instrument-based — their value is the structured protocol the sovereign's lived practice produces. Canon adoption adds composition overhead without adding signal. The synthesis edge does the work. Canon is for narrative domains, world-bound practices, and creative verticals where shared aesthetic substrate is the load-bearing asset.
 
 If unsure: `decline`. You can always compose later; unwinding silent composition is expensive.
 

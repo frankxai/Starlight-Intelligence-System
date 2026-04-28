@@ -16,7 +16,7 @@ load_level: core
 
 ## Purpose
 
-Every sovereign person with ≥10 years of lived domain practice and a credentialed multi-discipline edge can productize their expertise into a domain-specific intelligence sub-stack — a vertical composed of 4-7 functional sub-systems, each with its own agent, skill, 4-5 commands, and knowledge template. The pattern was proven by the HR Intelligence reference vertical (Hiring / Performance / Training / Culture / Talent / Org Architecture — 6 sub-systems, ~28 commands, all anchored in psychology × neuroscience × MBA × HR-decade synthesis). This skill generalizes the pattern.
+Every sovereign person with ≥10 years of lived domain practice and a credentialed multi-discipline edge can productize their expertise into a domain-specific intelligence sub-stack — a vertical composed of 4-7 functional sub-systems, each with its own agent, skill, 4-5 commands, and knowledge template. The pattern was proven by the People Intelligence reference vertical (Hiring / Performance / Training / Culture / Talent / Org Architecture — 6 sub-systems, ~28 commands, all anchored in psychology × neuroscience × MBA × HR-decade synthesis). This skill generalizes the pattern.
 
 This is the meta-product of SIS. Excavation produces the Genius Profile; Vision sets the horizon; Business architects the entity; Creator pipelines the artifacts. Domain Stack Architecture sequences the productization of the genius into a compounding system. Every sovereign building under SIP eventually arrives here — the question is whether they arrive with a stack or with a stack of unrelated artifacts.
 
@@ -32,7 +32,7 @@ This is the meta-product of SIS. Excavation produces the Genius Profile; Vision 
 **Does NOT fire when:**
 - Genius Profile or Freedom Path is missing — halt to `/discover-genius` first. Generic decomposition without genius excavation produces commodity sub-systems. The synthesis edge is non-negotiable.
 - The user is asking for a generic consulting playbook untied to their unique synthesis (route to `/creator-pipeline` instead — content stack ≠ domain stack).
-- The "domain" is a billing category ("consulting", "coaching", "advisory") rather than a specific intelligence territory ("HR Intelligence", "Capital Intelligence", "Clinical Intelligence").
+- The "domain" is a billing category ("consulting", "coaching", "advisory") rather than a specific intelligence territory ("People Intelligence", "Capital Intelligence", "Clinical Intelligence").
 - The sovereign wants a single-output vertical (one artifact type, one customer journey) — `/vertical-spawn` is lighter and correct for that case.
 
 ## Decomposition principles
@@ -41,7 +41,7 @@ This is the meta-product of SIS. Excavation produces the Genius Profile; Vision 
 
 2. **4-7 sub-systems is the sweet spot.** Below 4: stack is thin — `/vertical-spawn` is correct. Above 7: stack is over-decomposed — sub-systems will overlap and collapse. Total command count 20-35 is the operational range.
 
-3. **Cross-domain synthesis edge appears load-bearingly in ≥3 sub-systems.** The synthesis edge is the unique discipline-combination that justifies productization. The HR Intelligence reference — psychology × neuroscience × MBA × HR-decade — appears load-bearingly in Hiring (cognitive failure modes + neural mechanisms behind them), Performance (psychologist-grade feedback + neurological cost of bad reviews), Training (andragogy + cognitive-load science), Talent (SDT + dopamine science), Culture (Edmondson safety + brain-on-belonging). If your synthesis edge appears in only one sub-system, the rest is commodity — re-decompose or accept that you have a feature, not a stack.
+3. **Cross-domain synthesis edge appears load-bearingly in ≥3 sub-systems.** The synthesis edge is the unique discipline-combination that justifies productization. The People Intelligence reference — psychology × neuroscience × MBA × HR-decade — appears load-bearingly in Hiring (cognitive failure modes + neural mechanisms behind them), Performance (psychologist-grade feedback + neurological cost of bad reviews), Training (andragogy + cognitive-load science), Talent (SDT + dopamine science), Culture (Edmondson safety + brain-on-belonging). If your synthesis edge appears in only one sub-system, the rest is commodity — re-decompose or accept that you have a feature, not a stack.
 
 4. **Each sub-system: 4-5 commands.** Below 4: the sub-system is a stub — merge with sibling. Above 5: the sub-system should split into two. The 4-5 range matches the cognitive load of mastering one sub-system in 2-4 hours of focused fill.
 
@@ -49,7 +49,7 @@ This is the meta-product of SIS. Excavation produces the Genius Profile; Vision 
 
 ## Pattern library
 
-### HR Intelligence (the prototype reference vertical)
+### People Intelligence (the prototype reference vertical — renamed from HR Intelligence at v7.6.0)
 - **Synthesis edge:** psychology × neuroscience × MBA × HR-decade — sees both the cognitive failure modes AND the neural mechanisms behind them.
 - **Sub-systems (6):** Hiring / Performance / Training / Culture / Talent / Org Architecture
 - **Total commands:** ~28
@@ -116,7 +116,7 @@ The sovereign chooses. Starlight does not pick. The decomposition supports all f
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — generalized via /spawn-domain-stack)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — generalized via /spawn-domain-stack; renamed from HR Intelligence at v7.6.0)
 - Generated: 2026-04-24
 - Attestation is compounding, not credit transfer.
 ---

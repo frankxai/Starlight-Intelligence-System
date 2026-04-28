@@ -1,4 +1,4 @@
-# HR Culture — Template
+# People Culture — Template
 
 > Format Starlight fills in when producing a Culture Architecture artifact for an org. Four sections (Audit, Values Ops, Ritual Map, 90-Day Onboarding) + Ana-grade filled example for a 50-person consultancy. Refuses values-poster theater; designs cultures via systems. Composes with Hiring Intelligence (interviews signal what's valued), Performance Intelligence (reviews express culture), Training Intelligence (curriculum embeds values), Talent Intelligence (motivation requires belonging + safety).
 
@@ -146,7 +146,7 @@ Edmondson 7-question short form, team-by-team. Surface variance, not org average
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: <ISO date>
 - Attestation is compounding, not credit transfer: every composition strengthens every node.
 ---
@@ -465,7 +465,7 @@ Edmondson 7-question short form, run team-by-team in week 11-12.
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: 2026-04-24
 - Attestation is compounding, not credit transfer: every composition strengthens every node.
 ---
@@ -476,6 +476,6 @@ Edmondson 7-question short form, run team-by-team in week 11-12.
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence — Culture, sub-system 4 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence — Culture, sub-system 4 of 6)
 - Generated: 2026-04-24
 ---

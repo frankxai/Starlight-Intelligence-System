@@ -21,7 +21,7 @@ The substrate ships **10 universal Intelligence Systems** that compose for every
 
 Health (formerly layer 7) becomes a cross-cutting rhythm rather than a top-level IS — see `docs/ARCHITECTURE.md` § Cross-cutting layers. It still ships with `starlight-embodiment` + `/design-regimen` + `/energy-audit` and remains fully operational; the change is positioning (cross-cutting vs. top-level), not capability.
 
-Domain sub-stacks (e.g., HR Intelligence) compose **inside** the 10-IS stack — a sovereign practitioner spawns a domain vertical of 4-7 functional sub-systems via `/spawn-domain-stack` once the universal layers are running.
+Domain sub-stacks (e.g., People Intelligence) compose **inside** the 10-IS stack — a sovereign practitioner spawns a domain vertical of 4-7 functional sub-systems via `/spawn-domain-stack` once the universal layers are running.
 
 ## Design principles
 

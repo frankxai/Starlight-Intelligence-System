@@ -67,7 +67,7 @@ When a material event lands in this vertical (rewrite, sub-system addition, boar
 
 - `<event>` · `<YYYY-MM-DD>` · `<commit-sha>` · `<one-sentence what-happened>`
 
-The HR Intelligence vertical models this pattern at `verticals/hr-intelligence/MEMORY.md` § Changelog.
+The People Intelligence vertical models this pattern at `verticals/people-intelligence/MEMORY.md` § Changelog.
 
 ---
 

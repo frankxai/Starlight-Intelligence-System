@@ -1,6 +1,6 @@
-# HR Performance Intelligence — Template + Filled Examples
+# People Performance Intelligence — Template + Filled Examples
 
-> Format Starlight fills in when producing HR Performance artifacts. Five sections — review redesign, coaching session, feedback rehearsal, difficult-conversation rehearsal, mediation session — each with empty template + Ana-grade filled example. Realistic anonymized. All five carry heavy disclaimers because performance work touches legal documentation, clinical boundaries, and protected concerns.
+> Format Starlight fills in when producing Performance Intelligence artifacts (People Intelligence sub-stack — renamed from HR Intelligence at v7.6.0). Five sections — review redesign, coaching session, feedback rehearsal, difficult-conversation rehearsal, mediation session — each with empty template + Ana-grade filled example. Realistic anonymized. All five carry heavy disclaimers because performance work touches legal documentation, clinical boundaries, and protected concerns.
 
 ---
 
@@ -67,7 +67,7 @@
 - **Current ritual:** annual rating with 9-box stack-rank calibration grid
 - **Start quarter:** 2026-Q3
 - **Regulatory context:** NL works council notification required; UK and DE offices have local employment counsel coordination
-- **Hiring calibration grammar referenced:** yes — `hr-intelligence/hiring/calibration-marcus-lane-2026-q1.md` (calibration vocabulary transfers from hiring debriefs)
+- **Hiring calibration grammar referenced:** yes — `people-intelligence/hiring/calibration-marcus-lane-2026-q1.md` (calibration vocabulary transfers from hiring debriefs)
 
 ## Diagnosis — what's broken
 
@@ -105,7 +105,7 @@ The current 9-box ritual was inherited from a 2019 consultancy engagement and ha
 ## Calibration protocol
 
 - **Pairing:** never within-office (NL with NL is friendly-pair). Cross-office only.
-- **Anchor cases:** session opens with two anchor cases — one promotion-ready, one not-this-year — calibrated as a group before any actual cases. Borrowed from `hr-intelligence/hiring/calibration-marcus-lane-2026-q1.md` — hiring uses anchors to align the rubric; performance uses anchors to align the calibration story.
+- **Anchor cases:** session opens with two anchor cases — one promotion-ready, one not-this-year — calibrated as a group before any actual cases. Borrowed from `people-intelligence/hiring/calibration-marcus-lane-2026-q1.md` — hiring uses anchors to align the rubric; performance uses anchors to align the calibration story.
 - **Decision-rights:** explicit per case who decides; never group consensus (consensus produces middle).
 - **Documentation:** calibration story for each case (3-4 sentences) for HR record; not for the employee directly.
 
@@ -149,7 +149,7 @@ The current 9-box ritual was inherited from a 2019 consultancy engagement and ha
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Performance)
 - Generated: 2026-04-24
 ---
 ```
@@ -303,7 +303,7 @@ If during the session Joost surfaces something larger than Boerenmarkt — clini
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Performance)
 - Generated: 2026-04-24
 ---
 ```
@@ -456,7 +456,7 @@ If Sanne raises in the conversation any concern about being treated unfairly rel
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Performance)
 - Generated: 2026-04-24
 ---
 ```
@@ -507,7 +507,7 @@ If Sanne raises in the conversation any concern about being treated unfairly rel
 - **Type:** termination
 - **Manager:** Wim de Groot (managing partner, Marcus & Lane NL)
 - **Recipient:** Pieter Janssen (senior architect, 11 years tenure)
-- **Situation summary:** Pieter has been underperforming on client-facing project leadership for the last 4 quarters. Three projects have lost client confidence under his lead; one client requested a different lead architect. Two formal coaching engagements (`hr-intelligence/performance/coaching-pieter-janssen-2025-q3.md` and `-q4.md`) and one feedback rehearsal (`hr-intelligence/performance/rehearsal-pieter-janssen-client-confidence-2026-q1.md`) have not produced the change required. Wim and the partner group have decided to end Pieter's employment. Severance offer prepared by counsel (NL standard + bonus for 11-year tenure).
+- **Situation summary:** Pieter has been underperforming on client-facing project leadership for the last 4 quarters. Three projects have lost client confidence under his lead; one client requested a different lead architect. Two formal coaching engagements (`people-intelligence/performance/coaching-pieter-janssen-2025-q3.md` and `-q4.md`) and one feedback rehearsal (`people-intelligence/performance/rehearsal-pieter-janssen-client-confidence-2026-q1.md`) have not produced the change required. Wim and the partner group have decided to end Pieter's employment. Severance offer prepared by counsel (NL standard + bonus for 11-year tenure).
 - **History:** 11 years; was the first hire after Marcus & Lane founded the NL office; close personal relationship with Wim
 - **Manager voice samples loaded:** yes — `genius/profile-wim-de-groot.md`
 
@@ -637,7 +637,7 @@ Allow Pieter to leave with dignity. No escort. No badge return today; that's Mon
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Performance)
 - Generated: 2026-04-24
 ---
 ```
@@ -811,7 +811,7 @@ If during prep Femke detects structural-only conflict (no real interpersonal rep
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Performance)
 - Generated: 2026-04-24
 ---
 ```
@@ -828,7 +828,7 @@ If during prep Femke detects structural-only conflict (no real interpersonal rep
 6. **Counsel review before terminations.** Non-waivable.
 7. **Refuse theater.** PIP-as-firing, stack rank, annual-rating-as-growth, mediation of harassment / discrimination / power-imbalance — all refused with the alternative offered.
 8. **Manager's voice, not template.** Read voice samples from Genius Profile when available.
-9. **Save to organization-instance namespace.** `hr-intelligence/performance/` — never to a public vault.
+9. **Save to organization-instance namespace.** `people-intelligence/performance/` — never to a public vault.
 10. **One hand-off at close.** Default routes per command.
 
 ---
@@ -836,6 +836,6 @@ If during prep Femke detects structural-only conflict (no real interpersonal rep
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Performance)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Performance)
 - Generated: 2026-04-24
 ---

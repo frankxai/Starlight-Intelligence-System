@@ -112,27 +112,27 @@ Each agent below owns one Intelligence System layer. Vault namespaces are separa
 | **Second Brain** | `starlight-secondbrain.md` | Memory Tier (peer with Sage: personal PKM vs institutional wisdom) | Daily capture, insight distillation, weekly/monthly/quarterly review | `v7.4-alpha — active dogfood` | `/capture-daily`, `/distill-insights`, `/orchestrate-brain` | `second-brain/` |
 | **Relational** | `starlight-relational.md` | Relational Tier | Network architecture, alliance-readiness assessment | `v7.4-alpha — active dogfood` | `/map-relationships`, `/design-alliance-readiness` | `relational/` |
 
-### Domain Sub-Stack Tier (v7.4.1 — Ana's HR Intelligence vertical = first reference)
+### Domain Sub-Stack Tier (v7.4.1 — People Intelligence vertical = first reference)
 
-Sub-systems compose **within a vertical owner**, not as universal layers. Pattern proven by Ana's HR Intelligence vertical (6 sub-systems → ~28 commands). Generalizes via `/spawn-domain-stack` for any sovereign domain (Capital / Sound / Spatial / Clinical / Legal / etc.).
+Sub-systems compose **within a vertical owner**, not as universal layers. Pattern proven by People Intelligence vertical (6 sub-systems → ~28 commands). Generalizes via `/spawn-domain-stack` for any sovereign domain (Capital / Sound / Spatial / Clinical / Legal / etc.).
 
-**HR Intelligence sub-system agents:**
+**People Intelligence sub-system agents** (renamed from HR Intelligence at v7.6.0 — Path A authorless symmetric naming with Sound Intelligence):
 
 | Agent | File | Sub-system | Vault Namespace | Commands (count) |
 |-------|------|-----------|-----------------|------------------|
-| **Hiring** | `starlight-hiring.md` | Hiring Intelligence — calibrated, structured, neuroscience-grounded | `hr-intelligence/hiring/` | `hire-icp`, `hire-design-interview`, `hire-calibrate`, `hire-assess-fit`, `hire-debrief` (5) |
-| **Performance** | `starlight-performance.md` | Performance Intelligence — review redesign, coaching, feedback, difficult conversations, mediation | `hr-intelligence/performance/` | `perf-review-redesign`, `perf-coaching-protocol`, `perf-feedback-rehearsal`, `perf-difficult-conversation`, `perf-conflict-mediation` (5) |
-| **Training** | `starlight-training.md` | Training Intelligence — outcome-back curriculum, transfer measurement, train-the-trainer | `hr-intelligence/training/` | `training-curriculum`, `training-program-design`, `training-measure-transfer`, `training-coach-trainer`, `training-scenarios` (5) |
-| **Culture** | `starlight-culture.md` | Culture Intelligence — designed not declared, values into systems, ritual architecture | `hr-intelligence/culture/` | `culture-design`, `culture-values-ops`, `culture-rituals`, `culture-onboarding-90` (4) |
-| **Talent** | `starlight-talent.md` | Talent Intelligence — motivation, burnout, team dynamics, psychological safety, retention | `hr-intelligence/talent/` | `talent-motivation`, `talent-burnout-detect`, `talent-team-dynamics`, `talent-psych-safety`, `talent-retention` (5) |
-| **Org** | `starlight-org.md` | Org Architecture — role design, span, reorg trauma audit, succession | `hr-intelligence/org/` | `org-role-design`, `org-span`, `org-reorg-trauma-audit`, `org-succession` (4) |
+| **Hiring** | `starlight-hiring.md` | Hiring Intelligence — calibrated, structured, neuroscience-grounded | `people-intelligence/hiring/` | `hire-icp`, `hire-design-interview`, `hire-calibrate`, `hire-assess-fit`, `hire-debrief` (5) |
+| **Performance** | `starlight-performance.md` | Performance Intelligence — review redesign, coaching, feedback, difficult conversations, mediation | `people-intelligence/performance/` | `perf-review-redesign`, `perf-coaching-protocol`, `perf-feedback-rehearsal`, `perf-difficult-conversation`, `perf-conflict-mediation` (5) |
+| **Training** | `starlight-training.md` | Training Intelligence — outcome-back curriculum, transfer measurement, train-the-trainer | `people-intelligence/training/` | `training-curriculum`, `training-program-design`, `training-measure-transfer`, `training-coach-trainer`, `training-scenarios` (5) |
+| **Culture** | `starlight-culture.md` | Culture Intelligence — designed not declared, values into systems, ritual architecture | `people-intelligence/culture/` | `culture-design`, `culture-values-ops`, `culture-rituals`, `culture-onboarding-90` (4) |
+| **Talent** | `starlight-talent.md` | Talent Intelligence — motivation, burnout, team dynamics, psychological safety, retention | `people-intelligence/talent/` | `talent-motivation`, `talent-burnout-detect`, `talent-team-dynamics`, `talent-psych-safety`, `talent-retention` (5) |
+| **Org** | `starlight-org.md` | Org Architecture — role design, span, reorg trauma audit, succession | `people-intelligence/org/` | `org-role-design`, `org-span`, `org-reorg-trauma-audit`, `org-succession` (4) |
 
 **Domain Sub-Stack Tier rules:**
 - Sub-system agents serve a sovereign domain (the practitioner's vertical), not the universal substrate
 - Compose within their vertical (sub-systems reference each other) and with universal IS (Genius for voice; Vision for company-as-candidate framing; Performance + Talent + Culture form an interconnected loop)
 - Vertical wrapper at `verticals/<vertical-slug>/` ties sub-systems into one cohesive domain stack
 - Pattern generalizes via `/spawn-domain-stack` — any Genius Profile + named domain expertise spawns a 4-7-sub-system vertical
-- Ana's HR vertical is the public reference at `verticals/hr-intelligence/` (anonymized, forkable)
+- People Intelligence vertical is the public reference at `verticals/people-intelligence/` (anonymized, forkable)
 
 ### Sage ↔ Second Brain boundary
 

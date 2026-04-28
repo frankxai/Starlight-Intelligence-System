@@ -1,6 +1,6 @@
-# HR Hiring Template — Worked Example
+# People Hiring Template — Worked Example
 
-> Ana-grade hiring system applied to a real role: **Senior People Operations Manager for a 50-person consultancy**. Anonymized but realistic. Demonstrates the full sub-system: ICP → interview architecture → calibration → fit assessment → debrief → onboarding. Sub-system 1 of 6 in Ana's HR Intelligence Domain Sub-Stack.
+> Ana-grade hiring system applied to a real role: **Senior People Operations Manager for a 50-person consultancy**. Anonymized but realistic. Demonstrates the full sub-system: ICP → interview architecture → calibration → fit assessment → debrief → onboarding. Sub-system 1 of 6 in the People Intelligence Domain Sub-Stack (renamed from HR Intelligence at v7.6.0).
 
 **Disclaimer:** Hiring decisions touch employment law and protected-class considerations. This template is system architecture, not legal advice. Validate jurisdiction-specific compliance with qualified counsel.
 
@@ -333,12 +333,12 @@ Candidate M is a meaningful culture-add. Closes all 4 named team gaps strongly. 
 
 This is the instrument. Most hiring rooms run on first-impression bias dressed in structured-sounding conversation; the instrument prevents what the conversation cannot.
 
-— Hiring Intelligence — part of Ana's HR Intelligence Domain Sub-Stack —
+— Hiring Intelligence — part of the People Intelligence Domain Sub-Stack —
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Hiring sub-system)
 - Generated: 2026-04-24
 ---

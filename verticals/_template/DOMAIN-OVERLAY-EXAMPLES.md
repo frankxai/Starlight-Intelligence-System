@@ -2,7 +2,7 @@
 
 > Reference fills for `SOUL.md` overlay blocks across three contrasting domains. Use as inspiration when filling your fork's overlays. Do not copy verbatim — your domain has its own evidence standards, structural risks, theater patterns, and constraints.
 
-The three examples chosen here intentionally contrast with HR Intelligence's shape (the original reference vertical) to demonstrate that the parameterized template generalizes:
+The three examples chosen here intentionally contrast with People Intelligence's shape (the original reference vertical, renamed from HR Intelligence at v7.6.0) to demonstrate that the parameterized template generalizes:
 
 - **Sound Intelligence** — consent + clearance domain, no legal-disclaimer pattern, craft-tradition evidence.
 - **Code IS** — security-review domain, fad-tracking-is-legitimate, engineering-rigor evidence.

@@ -82,7 +82,7 @@ The Orchestrator does not own intelligence — each IS owns its own. The Orchest
 | "Map my family / network / alliance" | Family IS |
 | "Audit my regimen" | Health IS (cross-cutting) |
 
-Domain sub-stacks (HR Intelligence, future verticals) compose **inside** the IS the practitioner most operates in — typically Self + Business + Creator. The Orchestrator routes domain-specific intents (`/hire-icp`, `/perf-feedback-rehearsal`, etc.) directly to the sub-system agent, bypassing universal-IS routing for that turn.
+Domain sub-stacks (People Intelligence, Sound Intelligence, future verticals) compose **inside** the IS the practitioner most operates in — typically Self + Business + Creator. The Orchestrator routes domain-specific intents (`/hire-icp`, `/perf-feedback-rehearsal`, etc.) directly to the sub-system agent, bypassing universal-IS routing for that turn.
 
 ---
 

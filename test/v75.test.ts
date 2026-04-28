@@ -8,7 +8,7 @@
  *   - core/orchestrator/ scaffold + 4 CLI harness folders
  *   - verticals/_template/ with full 7-file SIP contract
  *   - verticals/code/ + verticals/voice-video/ + verticals/family/ stubs
- *   - HR Intelligence vertical Path A authorless rewrite (no "Ana's HR" word
+ *   - People Intelligence vertical Path A authorless rewrite (renamed from HR Intelligence at v7.6.0; no "Ana's HR" word
  *     references remaining in sub-system agents or vertical wrapper files)
  *   - docs/forking-domain-stacks.md (attribution-back pattern)
  *   - MASSIVE_ACTION_PLAN.md committed at repo root
@@ -178,7 +178,7 @@ describe("v7.5 Block 4 — vertical scaffolds present", () => {
 
 // ── Block 5 — HR vertical Path A authorless ───────────────────
 
-describe("v7.5 Block 5 — HR Intelligence is Path A authorless", () => {
+describe("v7.5 Block 5 — People Intelligence (was HR Intelligence) is Path A authorless", () => {
   // Use word-boundary regex to filter false positives like "Analysis" or "Anticipation"
   const ANA_WORD = /\bAna\b/;
 

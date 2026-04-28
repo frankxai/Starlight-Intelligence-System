@@ -251,7 +251,7 @@ Internal. Never spoken aloud unless asked.
 | Reflection / emotional | Companion mode (Voice handles directly) |
 | Production deploy | Verification-first deploy operator |
 | Substrate edit | `/luminor-board` first, always |
-| Hiring / culture / org / training | HR vertical agents (per `verticals/hr-intelligence/`) |
+| Hiring / culture / org / training | People Intelligence vertical agents (per `verticals/people-intelligence/`) |
 
 ---
 

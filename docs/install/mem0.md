@@ -1,6 +1,6 @@
 # Install — Mem0
 
-> The per-agent memory abstraction. Mem0 sits *above* the Markdown vault and *below* every agent that asks "what do we already know about this person / project / decision?" It is the index layer that turns the raw `~/captures/` exhaust into per-agent recall — Concierge remembers Frank's onboarding shorthand, the Orchestrator remembers which IS each intent routed to last time, the HR sub-stack remembers per-client case histories. **Mem0 is a derived index, never source of truth. The Markdown vault is canonical.**
+> The per-agent memory abstraction. Mem0 sits *above* the Markdown vault and *below* every agent that asks "what do we already know about this person / project / decision?" It is the index layer that turns the raw `~/captures/` exhaust into per-agent recall — Concierge remembers Frank's onboarding shorthand, the Orchestrator remembers which IS each intent routed to last time, the People Intelligence sub-stack remembers per-client case histories. **Mem0 is a derived index, never source of truth. The Markdown vault is canonical.**
 
 **Role in the stack:** Capture Stack · L2 (memory abstraction) · per-agent semantic recall over `~/captures/` + `Arcanea/wiki/` + `Starlight-Intelligence-System/memory/`
 **Why Mem0 over alternatives:** open-source, MIT-licensed, supports per-agent and per-user namespaces natively, ships with a clean Python API, has a vector backend pluggable to Supabase pgvector (matches L2 of `STACK.md`). Letta / MemGPT is heavier and opinionated about agent loop. Zep is fine but commercial-leaning. Pinecone-only setups violate sovereignty.
@@ -138,7 +138,7 @@ AGENT_NAMESPACES = [
     "starlight-voice-operator",
     "concierge",
     "envoy",
-    # HR Intelligence sub-stack
+    # People Intelligence sub-stack
     "ana-hire",
     "ana-perf",
     "ana-train",
@@ -268,7 +268,7 @@ Mem0 is **bidirectional** with the Orchestrator.
 **Per-agent namespaces matter:**
 - `starlight-orchestrator` namespace: cross-cutting context, IS routing history, decision log.
 - `concierge` namespace: newcomer interactions, intake routing.
-- `ana-hire` namespace: HR Intelligence hiring case histories (sovereign-user scoped).
+- `ana-hire` namespace: People Intelligence hiring case histories (sovereign-user scoped).
 - The Orchestrator queries the namespace of the agent it is routing to, NOT a global namespace. This prevents cross-contamination between sovereign users (when SIS productizes per § Domain Sub-Stack Tier).
 
 ## Refusal patterns
@@ -277,7 +277,7 @@ Mem0 is **bidirectional** with the Orchestrator.
 - Be treated as source of truth. The vault is canonical. Mem0 is derived. Period.
 - Auto-create namespaces from agent_id strings the orchestrator passes in. Namespaces are declared in `AGENT_NAMESPACES`. Unknown agent_id → log + reject.
 - Persist secrets, API keys, or wallet seeds. Pre-write redaction filter must scrub `[A-Za-z0-9]{32,}` patterns adjacent to keywords like `key`, `secret`, `seed`, `password`. (Imperfect, but a floor.)
-- Be queried for cross-user data. SIS productization (per `verticals/hr-intelligence/`) implies multiple sovereign users in the future. Each user runs their own Mem0 instance against their own pgvector schema. No shared memory.
+- Be queried for cross-user data. SIS productization (per `verticals/people-intelligence/`) implies multiple sovereign users in the future. Each user runs their own Mem0 instance against their own pgvector schema. No shared memory.
 - Sync its vector DB across machines via Syncthing. Mem0 is regenerable from vault + captures; sync is wasteful and creates split-brain risks. Each machine ingests independently against the **same** Supabase pgvector backend.
 
 **This install does NOT:**

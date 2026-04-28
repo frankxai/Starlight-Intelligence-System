@@ -21,7 +21,7 @@
 
 ## Domain declaration
 
-- **Declared domain:** `<one-line — e.g., "HR Intelligence: structured hiring → performance → training → culture → talent → org">`
+- **Declared domain:** `<one-line — e.g., "People Intelligence: structured hiring → performance → training → culture → talent → org">`
 - **Cross-domain synthesis edge (load-bearing):** `<one-line from SOUL.md>`
 - **ICP (who this serves):** `<the specific practitioner this is for>`
 - **Open boundary:** `<what's MIT / public>`

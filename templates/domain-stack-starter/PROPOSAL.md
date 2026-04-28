@@ -11,7 +11,7 @@
 
 ## Domain anchor
 
-<ONE sentence. What this domain is in the sovereign's hands — not the textbook definition. Example: "HR Intelligence in Ana's hands is psychologist + neuroscientist + MBA + ten years of HR-room practice — not generic people-ops.">
+<ONE sentence. What this domain is in the sovereign's hands — not the textbook definition. Example: "People Intelligence in this practitioner's hands is psychologist + neuroscientist + MBA + ten years of HR-room practice — not generic people-ops.">
 
 ---
 
@@ -107,7 +107,7 @@
 
 ## Composition rules across sub-systems
 
-Name the horizontal composition rules — which sub-system gates another, which imports from another, which runs in parallel. Reference shape: `verticals/hr-intelligence/SUB-SYSTEMS.md` composition-rules section.
+Name the horizontal composition rules — which sub-system gates another, which imports from another, which runs in parallel. Reference shape: `verticals/people-intelligence/SUB-SYSTEMS.md` composition-rules section.
 
 1. **`<Sub-system X>` must define before `<Sub-system Y>` runs.** `<reason>`
 2. **`<Sub-system X>` runs upstream of `<Sub-system Y>`.** `<reason>`
@@ -137,7 +137,7 @@ Name 5 commands across the stack that a fresh forker uses first — spread acros
 4. `/<sub-4-slug>-<verb>` — `<one-line>`
 5. `/<sub-5-slug>-<verb>` — `<one-line>`
 
-Reference shape: `verticals/hr-intelligence/SUB-SYSTEMS.md` "Daily-5 across the stack" section (when added).
+Reference shape: `verticals/people-intelligence/SUB-SYSTEMS.md` "Daily-5 across the stack" section (when added).
 
 ---
 

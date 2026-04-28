@@ -1,4 +1,4 @@
-# HR Training Template — Performance Conversations Mastery
+# People Training Template — Performance Conversations Mastery
 
 > *Ana-grade filled example: a 6-week program for people-managers, designed end-to-end as Training Intelligence's reference output. Curriculum + Program Design + Transfer Measurement + Train-the-Trainer + Scenario Library, all visible in one realistic case.*
 
@@ -153,7 +153,7 @@ N/A — pure learning program. No legally-mandated compliance content bundled.
 - *Email-after-the-fact* — manager flinches in the meeting, then sends a feedback email. Coach: this is the avoidance pattern in disguise; address in M3.
 - *Vague-into-behavior* — manager *says* "let me give you behavioral feedback" then proceeds to give judgment. Coach: catch in real-time; ask "what was the specific observable?"
 
-**Scenario answer keys:** see `hr-intelligence/training/perf-conversations-mastery/scenarios-feedback-conversations-2026-04-24.md`.
+**Scenario answer keys:** see `people-intelligence/training/perf-conversations-mastery/scenarios-feedback-conversations-2026-04-24.md`.
 
 ### Manager-of-Manager engagement plan (mandatory)
 
@@ -458,6 +458,6 @@ This template is the artifact those commands produce when run end-to-end on this
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 3 — Training Intelligence)
 - Generated: 2026-04-24
 ---

@@ -58,11 +58,11 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **What you have access to:**
 
-- **21 Agents** — 7 council + 2 front-door + 1 excavation + 5 universal-IS + **6 Domain Sub-Stack Tier** (Ana's HR Intelligence: hiring/performance/training/culture/talent/org)
-- **35+ Skills** — Auto-activate via `skills/skill-rules.json` across 8+ domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **hr-intelligence**)
-- **9 universal IS layers + Domain Sub-Stack Tier** — Universal: Substrate / Genius / Second Brain / Vision-Brand / Business / Creator / Wealth / Health / Relational (+ optional Spiritual). Domain sub-stacks: Ana's HR Intelligence is first reference at `verticals/hr-intelligence/`; pattern generalizes via `/spawn-domain-stack` for any sovereign domain.
+- **21 Agents** — 7 council + 2 front-door + 1 excavation + 5 universal-IS + **6 Domain Sub-Stack Tier** (People Intelligence: hiring/performance/training/culture/talent/org)
+- **35+ Skills** — Auto-activate via `skills/skill-rules.json` across 8+ domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**)
+- **9 universal IS layers + Domain Sub-Stack Tier** — Universal: Substrate / Genius / Second Brain / Vision-Brand / Business / Creator / Wealth / Health / Relational (+ optional Spiritual). Domain sub-stacks: People Intelligence is first reference at `verticals/people-intelligence/` (renamed from HR Intelligence at v7.6.0; symmetric with Sound Intelligence); pattern generalizes via `/spawn-domain-stack` for any sovereign domain.
 - **4 Transmission Channels** — Cross-system communication
-- **70+ Commands** — universal IS + 28 HR sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
+- **70+ Commands** — universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
 - **Context Engine** — Unified cross-repo awareness
 
 **Newcomer front door (v7.3):** See `ONBOARDING.md`, `DELIVERY.md`, `SESSION_RUNBOOK.md`. Invoke `/welcome` to orient a newcomer, `/intake` to triage their ask into one of four routes (substrate / alliance / vertical / sovereign-spawn), and hand off to Concierge (builder track) or Envoy (creator track, zero-terminal).

@@ -1,6 +1,6 @@
 # Forking Domain Stacks — the attribution-back pattern
 
-> When a sovereign practitioner forks a reference vertical (HR Intelligence, future verticals) into their own private practice, this is the pattern they follow. Sovereignty stays with the practitioner; attestation flows back to the substrate.
+> When a sovereign practitioner forks a reference vertical (People Intelligence, Sound Intelligence, future verticals) into their own private practice, this is the pattern they follow. Sovereignty stays with the practitioner; attestation flows back to the substrate.
 
 ---
 
@@ -11,7 +11,7 @@ The reference verticals shipped at `verticals/<name>/` in this repo are **author
 Reasons:
 1. **No claim transfers.** The substrate makes no ownership claim on practitioner content; an authorless reference makes that structurally visible.
 2. **Forks customize without rewriting attribution.** A practitioner forking the reference does not have to first remove someone else's identity before writing their own.
-3. **Multiple forks compound the reference, not one author.** Every fork of HR Intelligence strengthens the reference vertical's pattern — not a single named author's brand.
+3. **Multiple forks compound the reference, not one author.** Every fork of People Intelligence strengthens the reference vertical's pattern — not a single named author's brand.
 
 The reference describes the *kind* of practitioner the vertical is for (e.g., "psychologist + neuroscientist + MBA + decade of in-the-room HR practice"). The fork is what becomes a specific practitioner's practice.
 
@@ -23,7 +23,7 @@ The reference describes the *kind* of practitioner the vertical is for (e.g., "p
 
 The practitioner forks the reference vertical via:
 - `/sovereign-spawn <practitioner-slug>` — creates a full SIS fork in the practitioner's private repo, with the reference vertical included as a starting scaffold.
-- `/spawn-domain-stack <domain-slug>` — generates a *new* domain sub-stack inside an existing SIS fork, using a reference vertical (e.g., HR Intelligence) as the architectural pattern.
+- `/spawn-domain-stack <domain-slug>` — generates a *new* domain sub-stack inside an existing SIS fork, using a reference vertical (e.g., People Intelligence) as the architectural pattern.
 
 The fork is the practitioner's repo, under their license terms, in their voice.
 
@@ -94,7 +94,7 @@ Upstream contributions follow normal substrate governance: PR → `/luminor-boar
 ## Naming hygiene in forks
 
 Forks may freely:
-- Rename `<vertical>/` to a practitioner-specific slug (e.g., `verticals/hr-intelligence/` → `verticals/maria-hr-practice/`).
+- Rename `<vertical>/` to a practitioner-specific slug (e.g., `verticals/people-intelligence/` → `verticals/maria-people-practice/`).
 - Add new sub-systems, agents, commands, skills.
 - Modify refusal patterns to match the practitioner's stance.
 - Replace knowledge templates with practitioner-grade real examples.
@@ -110,7 +110,7 @@ Forks should **not**:
 
 | Vertical | Domain | Status | Reference path |
 |---|---|---|---|
-| **HR Intelligence** | People-flourishing science (Hiring · Performance · Training · Culture · Talent · Org) | `scaffolded — v0.1.1` (authorless) | `verticals/hr-intelligence/` |
+| **People Intelligence** | People-flourishing science (Hiring · Performance · Training · Culture · Talent · Org) | `scaffolded — v0.1.2` (authorless; renamed from HR Intelligence at v7.6.0) | `verticals/people-intelligence/` |
 | **(future)** Capital Intelligence | Capital allocation, deal flow, DPI | Planned · target Q3 2026 — see `MASSIVE_ACTION_PLAN.md` § 5 capture-stack adoption gate (Phase 1 must land before second domain stacks compound). | Pending Phase 1 |
 | **Sound Intelligence** | Music production, catalog, sync, performance, audience | `scaffolded — v0.1` (in flight per v7.5.1, see `verticals/sound-intelligence/`) | `verticals/sound-intelligence/` |
 | **(future)** Clinical Intelligence | Healthcare practice operations | Planned · target Q4 2026 — awaiting practitioner partner with the synthesis (clinician + ML/data + system architect) | Pending partner |

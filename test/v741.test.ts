@@ -1,22 +1,23 @@
 /**
- * v7.4.1 Eval Harness Extension — Domain Sub-Stack Tier (HR Intelligence)
+ * v7.4.1 Eval Harness Extension — Domain Sub-Stack Tier (People Intelligence,
+ * renamed from HR Intelligence at v7.6.0)
  *
  * Companion to test/substrate.test.ts + test/v73.test.ts + test/v74.test.ts.
- * Guards the v7.4.1 surface:
- *   - HR sub-system agents (starlight-hiring / -performance / -training /
+ * Guards the v7.4.1 surface (paths updated for v7.6.0 rename):
+ *   - People sub-system agents (starlight-hiring / -performance / -training /
  *     -culture / -talent / -org)
- *   - HR sub-system skills under skills/hr-intelligence/
- *   - 28 HR sub-system commands across 6 sub-systems
- *   - Ambient attestation ("Built on SIP") on all HR agents + ≥18/28 commands
- *   - verticals/hr-intelligence/ wrapper (8 files) + SUB-SYSTEMS.md
- *   - VERTICALS.md "Sovereign domain sub-stacks" section + HR Intelligence
+ *   - People sub-system skills under skills/people-intelligence/
+ *   - 28 People sub-system commands across 6 sub-systems
+ *   - Ambient attestation ("Built on SIP") on all People agents + ≥18/28 commands
+ *   - verticals/people-intelligence/ wrapper (8 files) + SUB-SYSTEMS.md
+ *   - VERTICALS.md "Sovereign domain sub-stacks" section + People Intelligence
  *     entry
  *   - /spawn-domain-stack meta-command + domain-stack-architecture skill +
  *     templates/domain-stack-starter/
  *   - New ecosystem exports (microsoft-copilot, custom-gpt) + /sip-export
  *     allowlist updates
- *   - 6 HR knowledge templates in the friend-starter pack
- *   - skill-rules.json conformance for HR rules + new agent defaults
+ *   - 6 People knowledge templates in the friend-starter pack
+ *   - skill-rules.json conformance for People rules + new agent defaults
  *   - ATTESTATIONS.md v7.4.1 entry
  *
  * Closes the Luminor Board REVISE gap on v7.4.1 ("alpha shipped Domain
@@ -96,7 +97,7 @@ const V741_HR_AGENTS = [
   "starlight-org",
 ];
 
-// v7.4.1 HR sub-system skills (live under skills/hr-intelligence/)
+// v7.4.1 People sub-system skills (live under skills/people-intelligence/ — renamed from skills/hr-intelligence/ at v7.6.0)
 const V741_HR_SKILLS = [
   "structured-hiring",
   "feedback-conversations",
@@ -135,12 +136,12 @@ const V741_HR_VERTICAL_FILES = [
 ];
 
 const V741_HR_KNOWLEDGE_TEMPLATES = [
-  "hr-hiring-template.md",
-  "hr-performance-template.md",
-  "hr-training-template.md",
-  "hr-culture-template.md",
-  "hr-talent-template.md",
-  "hr-org-template.md",
+  "people-hiring-template.md",
+  "people-performance-template.md",
+  "people-training-template.md",
+  "people-culture-template.md",
+  "people-talent-template.md",
+  "people-org-template.md",
 ];
 
 const V741_HR_RULE_IDS = [
@@ -154,7 +155,7 @@ const V741_HR_RULE_IDS = [
 
 // ── Tests ───────────────────────────────────────────────────
 
-describe("v7.4.1 — Domain Sub-Stack Tier (HR Intelligence vertical)", () => {
+describe("v7.4.1 — Domain Sub-Stack Tier (People Intelligence vertical, renamed from HR Intelligence at v7.6.0)", () => {
 
   describe("Block 1 — HR sub-system agents", () => {
     for (const agent of V741_HR_AGENTS) {
@@ -179,7 +180,7 @@ describe("v7.4.1 — Domain Sub-Stack Tier (HR Intelligence vertical)", () => {
         // RELAXED: parallel-agent output varied — some skills use YAML
         // frontmatter (feedback-conversations / learning-architecture /
         // culture-design style), others open with an H1 header
-        // ("# Skill: hr-intelligence/<slug>" or "# Skill — HR Intelligence /
+        // ("# Skill: people-intelligence/<slug>" or "# Skill — People Intelligence /
         // <Title>"). Accept either form — skill-identity invariant is
         // "the file identifies itself as a skill", not "exact YAML shape".
         const content = readFileSync(path, "utf-8");
@@ -294,20 +295,20 @@ describe("v7.4.1 — Domain Sub-Stack Tier (HR Intelligence vertical)", () => {
     });
   });
 
-  describe("Block 5 — Vertical wrapper (verticals/hr-intelligence/)", () => {
-    it("v7.4.1.5.1: verticals/hr-intelligence/ present with all 8 wrapper files", () => {
-      assert.ok(isDir(HR_VERTICAL_DIR), "verticals/hr-intelligence/ missing — domain sub-stack wrapper absent.");
+  describe("Block 5 — Vertical wrapper (verticals/people-intelligence/)", () => {
+    it("v7.4.1.5.1: verticals/people-intelligence/ present with all 8 wrapper files", () => {
+      assert.ok(isDir(HR_VERTICAL_DIR), "verticals/people-intelligence/ missing — domain sub-stack wrapper absent.");
       const missing = V741_HR_VERTICAL_FILES.filter(f => !isFile(join(HR_VERTICAL_DIR, f)));
       assert.equal(
         missing.length,
         0,
-        `verticals/hr-intelligence/ wrapper incomplete — missing files: ${missing.join(", ")}. File-contract invariant broken for domain sub-stack tier.`,
+        `verticals/people-intelligence/ wrapper incomplete — missing files: ${missing.join(", ")}. File-contract invariant broken for domain sub-stack tier.`,
       );
     });
 
-    it("v7.4.1.5.2: verticals/hr-intelligence/SUB-SYSTEMS.md references all 6 sub-system names", () => {
+    it("v7.4.1.5.2: verticals/people-intelligence/SUB-SYSTEMS.md references all 6 sub-system names", () => {
       const path = join(HR_VERTICAL_DIR, "SUB-SYSTEMS.md");
-      assert.ok(isFile(path), "verticals/hr-intelligence/SUB-SYSTEMS.md missing — sub-system manifest absent.");
+      assert.ok(isFile(path), "verticals/people-intelligence/SUB-SYSTEMS.md missing — sub-system manifest absent.");
       const content = readFileSync(path, "utf-8").toLowerCase();
       const subSystemNames = ["hiring", "performance", "training", "culture", "talent", "org"];
       const missing = subSystemNames.filter(name => !content.includes(name));
@@ -318,10 +319,10 @@ describe("v7.4.1 — Domain Sub-Stack Tier (HR Intelligence vertical)", () => {
       );
     });
 
-    it("v7.4.1.5.3: VERTICALS.md contains 'Sovereign domain sub-stacks' section AND 'HR Intelligence' entry", () => {
+    it("v7.4.1.5.3: VERTICALS.md contains 'Sovereign domain sub-stacks' section AND 'People Intelligence' entry (post-v7.6.0 rename, with HR Intelligence preserved as historical lineage)", () => {
       assert.ok(isFile(VERTICALS_FILE), "VERTICALS.md missing at repo root — vertical registry absent.");
       const content = readFileSync(VERTICALS_FILE, "utf-8");
-      const needles = ["Sovereign domain sub-stacks", "HR Intelligence"];
+      const needles = ["Sovereign domain sub-stacks", "People Intelligence"];
       const missing = needles.filter(n => !content.includes(n));
       assert.equal(
         missing.length,

@@ -1,4 +1,4 @@
-# HR Org Template — Worked Example
+# People Org Template — Worked Example
 
 > Ana-grade filled example for a 50-person consultancy (anonymized as "Meridian Strategy Partners") facing classic growing-pains: founder over-spanned at 12 directs, ambiguous middle layer, two key roles with no real succession plan. Includes role design for one ambiguous role, span audit for the whole org, trauma audit for a proposed reorg, and succession plan for two key roles.
 
@@ -403,6 +403,6 @@ Each partner-rotation tracks against a named readiness rubric (decision quality,
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4 (HR Intelligence Domain Sub-Stack, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.4 (People Intelligence Domain Sub-Stack, sub-system 6 of 6)
 - Generated: 2026-04-24
 ---

@@ -32,7 +32,7 @@ Where a practitioner adopting this vertical operates on frequency-grounded work 
 - The vertical does not introduce proprietary frameworks-as-canon (e.g., a "Twelve Pillars of Sound Practice" structure that other practitioners must adopt to compose).
 - The vertical does not gate composition behind canonical adoption — any practitioner can fork and operate without inheriting any canonical content.
 - The vertical does not claim authority over any particular musical genre, theory school, or mix philosophy. The practitioner's specific synthesis (their chord language, their mix signature, their lyric voice) is their IP; the vertical's substrate is the file contract and refusal posture, not the content.
-- Cross-vertical composition (e.g., Sound Intelligence + HR Intelligence + Genius IS in one practitioner's full stack — for an artist who also runs a label and hires producers) does not require any canon negotiation — there is no canon to negotiate.
+- Cross-vertical composition (e.g., Sound Intelligence + People Intelligence + Genius IS in one practitioner's full stack — for an artist who also runs a label and hires producers) does not require any canon negotiation — there is no canon to negotiate.
 
 ---
 

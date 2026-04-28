@@ -6,6 +6,26 @@
 
 ---
 
+## v7.6.0 — 2026-04-28 — People Intelligence rename (Path A authorless symmetric naming)
+
+HR Intelligence reference vertical renamed → People Intelligence. Path A authorless naming pattern symmetric with Sound Intelligence (sister Domain Sub-Stack Tier reference). Sheds HR-baggage; matches the people-flourishing-science SOUL framing already declared in v0.1.1.
+
+Luminor Board verdict 2026-04-28: PROCEED at v7.6.0 (revised down from proposed v8.0). Rationale: substantive rename earns a minor-version bump but doesn't carry architectural-shift signaling for v8.0; reserve major-version marker for genuine architectural inflection. Boundary note added to verticals/people-intelligence/SUB-SYSTEMS.md delineating People Intelligence ↔ Relational IS per Lyssandria challenge.
+
+Phase chain:
+- Phase 1 (4ee6c54): vertical wrapper rename — verticals/hr-intelligence/ → verticals/people-intelligence/ (8 files) + test invariant 6 paths
+- Phase 2 (a060e04): skills domain rename — skills/hr-intelligence/ → skills/people-intelligence/ (6 skills) + skill-rules.json + 29 commands' declared-load paths
+- Phase 3: 6 sub-system agents content
+- Phase 4: 28 commands + spawn-domain-stack content
+- Phase 5: cross-reference sweep (this commit)
+- Phase 6: boundary note + MEMORY changelog redirect
+- Phase 7: /openclaw-audit
+- Phase 8: package.json + tag
+
+Built on SIP — Starlight Intelligence Protocol v1.1.0
+
+---
+
 ## v7.0.0 — Substrate self-attestation (the meta-test)
 
 ```

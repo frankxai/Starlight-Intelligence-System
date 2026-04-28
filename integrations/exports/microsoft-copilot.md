@@ -3,7 +3,7 @@
 Target slug: `microsoft-copilot`
 Format: `.zip` (declarative agent manifest + knowledge + optional API plugin)
 Native ecosystem: Microsoft 365 Copilot (declarative agents) and Microsoft Copilot Studio (low-code agent builder). Shipped as a single bundle that imports cleanly into Copilot Studio.
-Tier: enterprise distribution. The vector for putting a sovereign person's domain stack (Ana's HR Intelligence, 28 commands across 6 sub-systems) in front of every company already paying for M365.
+Tier: enterprise distribution. The vector for putting a sovereign person's domain stack (e.g., People Intelligence, 28 commands across 6 sub-systems) in front of every company already paying for M365.
 
 ## Overview
 

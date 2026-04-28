@@ -1,6 +1,6 @@
-# HR Talent Intelligence — Filled Example Pack
+# People Talent Intelligence — Filled Example Pack
 
-> Ana-grade filled examples for the five Talent Intelligence protocols: motivation map, burnout detection, team dynamics audit, psychological safety measurement, retention plan. Realistic, anonymized. Sub-system 5 of 6 in Ana's HR Intelligence Domain Sub-Stack. Use as reference shape; replace with your actual data.
+> Ana-grade filled examples for the five Talent Intelligence protocols: motivation map, burnout detection, team dynamics audit, psychological safety measurement, retention plan. Realistic, anonymized. Sub-system 5 of 6 in the People Intelligence Domain Sub-Stack (renamed from HR Intelligence at v7.6.0). Use as reference shape; replace with your actual data.
 
 ---
 
@@ -492,6 +492,6 @@ This pattern is a **system-redesign signal**, not 5 individual conversations.
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.4.1 (HR Intelligence Domain Sub-Stack — Talent sub-system)
+- Verticals: starlight-intelligence-system@v7.4.1 (People Intelligence Domain Sub-Stack — Talent sub-system)
 - Generated: 2026-04-24
 ---
