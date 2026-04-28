@@ -7,8 +7,13 @@
 **Date:** 2026-04-29
 **Status:** PROCEED-WITH-REVISE applied — all 6 board items closed
 **Tier:** Substrate-class (touches SIP § 5 sovereignty clause amendment, distribution architecture, attestation surface, capture/identity layers)
-**Companion doc:** [`v8-architecture.md`](./v8-architecture.md) — technical architecture and adapter contracts
-**Board record:** [`docs/boards/luminor-cockpit-v8.md`](../boards/luminor-cockpit-v8.md) *(to be written from this session's pre-pass output)*
+**Companion docs:**
+- [`v8-architecture.md`](./v8-architecture.md) — technical architecture and adapter contracts
+- [`v8-supplements.md`](./v8-supplements.md) — gap-fills (experience choreography, agent-tool-design, content remix, cross-session continuity, DPI specifics, folder-as-brain)
+- [`docs/boards/luminor-cockpit-v8.md`](../boards/luminor-cockpit-v8.md) — board pre-pass verdict + 6 REVISE items
+- [`transmissions/channels/memory-bus.md`](../../transmissions/channels/memory-bus.md) — Memory Bus MCP daemon contract
+- [`transmissions/channels/arcanea-flow-channel.md`](../../transmissions/channels/arcanea-flow-channel.md) — sibling repo channel
+- [`context/repo-contexts/arcanea-flow-context.md`](../../context/repo-contexts/arcanea-flow-context.md) — sibling repo context
 
 ---
 
@@ -26,13 +31,14 @@ Operating principles:
 
 ---
 
-## 1. Convergence with parallel session (2026-04-29)
+## 1. Convergence with parallel sessions (2026-04-29)
 
-A parallel Claude Code tab investigating cross-CLI memory surfaced three operational findings that this plan absorbs:
+Multiple parallel Claude Code tabs are executing pieces of this plan in real time. Findings absorbed:
 
 1. **AgentDB-per-tab breaks at 10+ tabs.** Embedded vector DBs spawn per Claude Code process. With 10 open tabs the system fails: RAM bloat, file-handle exhaustion, lock contention. Memory Bus singleton daemon is now Phase 0 P0, not a Phase 1+ extra. *(Memory: `project_agentdb_singleton_constraint.md`)*
 2. **arcanea-flow exists as sibling repo at `C:\Users\frank\arcanea-flow`.** Architectural decision: connect-not-absorb. SIS owns substrate; arcanea-flow owns swarm/hooks/RL execution. Bridge via MCP contract through the Memory Bus. *(Memory: `project_arcanea_flow_connect_not_absorb.md`)*
 3. **mempalace/mempalace is real and OSS.** Self-described "best-benchmarked OSS AI memory system." Enters Phase 0 audit slate alongside Letta and screenpipe. *(Memory: `reference_mempalace_oss_memory.md`)*
+4. **v7.5.3 parallel-tab build** is already underway: pluggable multi-tier cognition router (deterministic / OpenRouter / Anthropic / Claude-CLI), multi-CLI dispatchers + orchestrator router with intent classification + JSONL audit log, LCC Phase 0+1+2 shipped (Zellij cockpit + Windows-native PowerShell + dashboard at :3007), 3-tab parallel push toward Jarvis-grade across **4 surfaces**: browser autonomy + brain viz + cognition CLI + phone PWA. *(Memory: `project_v753_cognition_lcc.md`.)* Phase 1 of this master plan **integrates with** that work rather than replacing it — Cosmograph + memory palace land on the existing :3007 dashboard.
 
 These reshape Phase 0 — see § 4.
 
