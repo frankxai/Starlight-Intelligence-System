@@ -166,12 +166,12 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **Class:** sovereign domain sub-stack (reference vertical) — second reference, validates the Domain Sub-Stack Tier pattern beyond HR.
 - **Domain:** Sound practiced as the architecture of sustained listening + the catalog that compounds — six sub-systems (Composition, Production, Catalog, Performance, Audience, Sync) composed into one cohesive intelligence stack.
 - **Owner:** open reference (forkable by sovereign sound practitioners). Distinct from `Music IS` which is Frank's specific operated music vertical (Arcanea Records, four labels).
-- **Status:** `scaffolded — v0.1 (partial — 4 of 6 sub-systems with full command surface)`.
+- **Status:** `scaffolded — v0.1 (complete — 6 of 6 sub-systems with full command surface; 30 commands shipped)`.
 - **Primary repo:** `verticals/sound-intelligence/` in `frankxai/Starlight-Intelligence-System`.
-- **Sub-systems:** `composition` · `production` · `catalog` · `performance` · `audience` · `sync` (audience + sync are agent + skill scaffolded; commands queued for v7.5.3).
+- **Sub-systems:** `composition` · `production` · `catalog` · `performance` · `audience` · `sync`.
 - **Canon:** declines defining its own canon; optional composition with Arcanea Hz canon (CC-BY-NC) for frequency-grounded sound design.
 - **Compounds:** practitioners forking + attestation graph compounding across every forked instance.
-- **SIP commands:** 20 shipped commands across `/sound-composition-*` (5) · `/sound-production-*` (5) · `/sound-catalog-*` (5) · `/sound-performance-*` (5). 10 commands queued for v7.5.3 across `/sound-audience-*` and `/sound-sync-*`.
+- **SIP commands:** 30 commands across `/sound-composition-*` (5) · `/sound-production-*` (5) · `/sound-catalog-*` (5) · `/sound-performance-*` (5) · `/sound-audience-*` (5) · `/sound-sync-*` (5).
 - **Synthesis edge:** composer + producer + audio engineer + decade of catalog/release operations + literacy in music-theory + cognitive-science-of-listening + business-of-sync-licensing.
 
 ---
