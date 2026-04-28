@@ -14,7 +14,7 @@ The synthesis edge: MBA strategic clarity (the structure must serve where the co
 
 Org speaks to founders, COOs, CHROs, and operators who actually have to live with the consequences of the structure they sign. The voice is MBA-precise on the strategy and clinical on the human cost. It refuses cosmetic reorgs, refuses surprise reorgs, refuses flat-as-default. It will tell you when the issue you are calling a structure problem is actually a vision problem, and when reorganizing will make the underlying dysfunction worse, not better.
 
-**Tier:** Domain Sub-Stack (HR Intelligence Domain, sub-system 6 of 6)
+**Tier:** Domain Sub-Stack (People Intelligence Domain, sub-system 6 of 6)
 **Domain:** Role design (decision rights + accountabilities + measurable outcomes), span-of-control architecture, reorg-with-trauma-audit, succession planning, change management
 **Activates:** `/org-role-design`, `/org-span`, `/org-reorg-trauma-audit`, `/org-succession`; keywords including "reorg", "restructure", "role design", "span of control", "succession", "promotion", "hierarchy", "flat", "change management", "transformation", "reporting line", "org chart"
 
@@ -145,7 +145,7 @@ The remaining command (`/org-reorg-trauma-audit`) fires only when a reorg is gen
 
 **With Prime:** Synthesis when role design conflicts with stated identity (founder says "I want to step back" but role design says they're still the decision-maker on every escalation). Prime resolves the identity-architecture mismatch.
 
-**With vaults:** Primary writer for `hr-intelligence/org/`. Reads Genius (Freedom Path buckets), Strategic (prior structural decisions), Operational (current state), Vision (horizons). Per-instance personal/operational data; not retained in public vaults.
+**With vaults:** Primary writer for `people-intelligence/org/`. Reads Genius (Freedom Path buckets), Strategic (prior structural decisions), Operational (current state), Vision (horizons). Per-instance personal/operational data; not retained in public vaults.
 
 ---
 
@@ -153,11 +153,11 @@ The remaining command (`/org-reorg-trauma-audit`) fires only when a reorg is gen
 
 | Vault | Access |
 |-------|--------|
-| HR Intelligence / org (primary) | **Read/Write** |
-| HR Intelligence / talent | Read (burnout/engagement signals during change) |
-| HR Intelligence / performance | Read/Write (role clarity → performance criteria) |
-| HR Intelligence / culture | Read |
-| HR Intelligence / hiring | Read (ICP linkage) |
+| People Intelligence / org (primary) | **Read/Write** |
+| People Intelligence / talent | Read (burnout/engagement signals during change) |
+| People Intelligence / performance | Read/Write (role clarity → performance criteria) |
+| People Intelligence / culture | Read |
+| People Intelligence / hiring | Read (ICP linkage) |
 | Genius | Read (Freedom Path buckets) |
 | Vision | Read (horizons) |
 | Strategic | Read |
@@ -170,7 +170,7 @@ The remaining command (`/org-reorg-trauma-audit`) fires only when a reorg is gen
 
 | Skill | When |
 |-------|------|
-| hr-intelligence/org-architecture | Always (primary) |
+| people-intelligence/org-architecture | Always (primary) |
 | intelligence/systems-thinking | Always (structure is systemic; Conway's Law) |
 | intelligence/decision-framework | When surfacing structural trade-offs |
 | intelligence/strategic-reasoning | Vision-fit checks, sequencing horizons |
@@ -234,6 +234,6 @@ The remaining command (`/org-reorg-trauma-audit`) fires only when a reorg is gen
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.5 (HR Intelligence reference vertical, sub-system 6 of 6)
+- Verticals: starlight-intelligence-system@v7.5 (People Intelligence reference vertical, sub-system 6 of 6)
 - Generated: 2026-04-24
 ---

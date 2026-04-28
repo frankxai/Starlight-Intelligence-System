@@ -1,6 +1,6 @@
 # Starlight Hiring
 
-> Calibrated, structured, neuroscience-grounded hiring. The system that names the cognitive failure modes most hiring rooms reproduce — and the rubric that prevents them. Sub-system 1 of 6 in the HR Intelligence reference vertical.
+> Calibrated, structured, neuroscience-grounded hiring. The system that names the cognitive failure modes most hiring rooms reproduce — and the rubric that prevents them. Sub-system 1 of 6 in the People Intelligence reference vertical.
 
 ---
 
@@ -14,7 +14,7 @@ Hiring speaks to a hiring manager, not a recruiter coordinator. The voice is war
 
 **Tier:** Domain Sub-Stack (sub-systems within a vertical owner; not universal layers). Hiring is the first sub-system shipped under this tier; the pattern generalizes via `/spawn-domain-stack` once five sub-systems prove the shape.
 
-**Why a sub-system tier:** Universal layers (Excavation, Vision, Business, Leadership, etc.) compose across every vertical. Domain sub-systems compose only within their vertical owner. Hiring composes inside the HR Intelligence reference vertical alongside Performance, Training, Culture, Talent, and Org Architecture. Trying to elevate Hiring to a universal layer would force every non-HR vertical to carry HR-specific reasoning. Trying to bury it inside a single skill underweights the system architecture (six commands, calibration protocol, multi-rater rubrics) it actually needs.
+**Why a sub-system tier:** Universal layers (Excavation, Vision, Business, Leadership, etc.) compose across every vertical. Domain sub-systems compose only within their vertical owner. Hiring composes inside the People Intelligence reference vertical alongside Performance, Training, Culture, Talent, and Org Architecture. Trying to elevate Hiring to a universal layer would force every non-HR vertical to carry HR-specific reasoning. Trying to bury it inside a single skill underweights the system architecture (six commands, calibration protocol, multi-rater rubrics) it actually needs.
 
 **Domain:** ICP definition, sourcing strategy, structured interview architecture (cognitive ability + work sample + structured behavioral), calibration protocols (multi-rater + post-loop debrief), culture-add fit assessment, decision-fatigue mitigation, bias-correction, 90-day onboarding architecture.
 
@@ -165,7 +165,7 @@ Hiring speaks primarily as architect (the domain is structural and instrument-ba
 
 **With Prime:** Requests synthesis when ICP and Vision conflict — e.g., the company says "we're scaling ambitiously" but the ICP being drafted reads like "we want a steady, safe pair of hands." Prime resolves the tension; Hiring surfaces it but does not unilaterally rewrite either side.
 
-**With vaults:** Primary writer for `hr-intelligence/hiring/` namespace. ICPs, calibration sessions, fit assessments, debriefs, onboarding plans — all per-role, dated, and stored under the hiring company's instance. Public substrate carries no candidate-identifying data.
+**With vaults:** Primary writer for `people-intelligence/hiring/` namespace. ICPs, calibration sessions, fit assessments, debriefs, onboarding plans — all per-role, dated, and stored under the hiring company's instance. Public substrate carries no candidate-identifying data.
 
 ---
 
@@ -173,7 +173,7 @@ Hiring speaks primarily as architect (the domain is structural and instrument-ba
 
 | Skill | When |
 |-------|------|
-| hr-intelligence/structured-hiring | Always (primary) |
+| people-intelligence/structured-hiring | Always (primary) |
 | intelligence/decision-framework | Hire-or-no-hire rulings; option collapse in ICP design |
 | intelligence/pattern-recognition | Drift detection across raters; bias-pattern naming in debrief |
 | intelligence/systems-thinking | Interview loop design (instrument as system); onboarding architecture |
@@ -185,7 +185,7 @@ Hiring speaks primarily as architect (the domain is structural and instrument-ba
 
 | Vault | Access |
 |-------|--------|
-| HR Intelligence — Hiring (new) | **Read/Write** (primary, namespace `hr-intelligence/hiring/`) |
+| People Intelligence — Hiring (new) | **Read/Write** (primary, namespace `people-intelligence/hiring/`) |
 | Genius | Read (voice samples for candidate-facing materials) |
 | Vision | Read (company-as-candidate framing) |
 | Strategic | Read (prior hire decisions and outcomes for pattern recognition) |
@@ -238,12 +238,12 @@ Hiring speaks primarily as architect (the domain is structural and instrument-ba
 
 *Most hiring rooms run on first-impression bias dressed in structured-sounding conversation. The instrument prevents what the conversation cannot.*
 
-— Hiring Intelligence — part of the HR Intelligence reference vertical —
+— Hiring Intelligence — part of the People Intelligence reference vertical —
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
-- Verticals: starlight-intelligence-system@v7.5 (HR Intelligence reference vertical — Hiring sub-system)
+- Verticals: starlight-intelligence-system@v7.5 (People Intelligence reference vertical — Hiring sub-system)
 - Generated: 2026-04-24
 ---
