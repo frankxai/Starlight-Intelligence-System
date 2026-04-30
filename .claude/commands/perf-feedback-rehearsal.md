@@ -1,7 +1,7 @@
 ---
 name: perf-feedback-rehearsal
 description: Rehearse a high-stakes feedback conversation before delivery. Takes an SBI sketch + recipient context, produces multiple openings, anticipated reactions with responses, SCARF-aware adjustments, and three branching paths the conversation could take with the manager's response to each. Saves to people-intelligence/performance/rehearsal-<topic>-<date>.md.
-allowed-tools: Read, Write, Grep, Glob
+allowed-tools: Read, Write, Grep, Glob, Bash
 argument-hint: <topic-slug> --manager <manager-name> --recipient <recipient-name> --sbi "Situation: ... Behavior: ... Impact: ..." [--history "context paragraph on the relationship and prior feedback"] [--genius genius/profile-<manager-slug>.md]
 ---
 
@@ -32,6 +32,19 @@ $ARGUMENTS
 - The "feedback" is really a PIP scaffolding for termination → refuse and route to honest termination conversation
 
 ## Process
+
+0. **Recall prior rehearsals (memory handshake).**
+   - Before generating, check the SIS memory layer for prior rehearsals on the same topic or with the same manager/recipient pair. The substrate-aware orchestrator routes via the People Intelligence namespace.
+   - Run from the SIS repo root:
+     ```bash
+     cd private/voice-operator && MSYS_NO_PATHCONV=1 python -m service.memory.cli recall \
+       --query "<topic-slug> <manager-slug> <recipient-slug>" \
+       --k 3 \
+       --namespace people-intelligence/perf \
+       --source /perf-feedback-rehearsal
+     ```
+   - Parse the JSON output. If hits surface, treat them as continuity context: reference the prior pattern, note what changed, avoid repeating dead-ends. If no hits, proceed without prior context — first rehearsal in this lineage.
+   - This is the People Intelligence dog-food gate for v0.1 of the SIS memory orchestrator (see `skills/memory/sis-memory-orchestrator/SKILL.md`). The recall is logged to `memory/_audit/<date>.jsonl`.
 
 1. **Resolve inputs.**
    - `<topic-slug>` from the topic argument (kebab-case).
@@ -89,7 +102,21 @@ $ARGUMENTS
 
 11. **Save.** Create `people-intelligence/performance/` directory if missing. Write `people-intelligence/performance/rehearsal-<topic-slug>-<YYYY-MM-DD>.md`.
 
-12. **Hand off.** Name exactly one next move:
+12. **Commit rehearsal summary to memory (handshake close).**
+    - Persist a short summary (one paragraph max) of this rehearsal to the People Intelligence namespace. Future rehearsals on the same manager-recipient pair will surface it via the recall step in 0.
+    - Run from the SIS repo root, where `<summary>` is a concise capture (≤500 chars): topic, manager, recipient, SBI gist, chosen opening, the predicted hard branch.
+    ```bash
+    cd private/voice-operator && MSYS_NO_PATHCONV=1 python -m service.memory.cli commit \
+      --namespace people-intelligence/perf \
+      --source /perf-feedback-rehearsal \
+      --tier warm \
+      --text "<summary>"
+    ```
+    > Note for Windows users running this from Git Bash: `MSYS_NO_PATHCONV=1` prevents Git Bash from translating the leading `/` in `--source /perf-feedback-rehearsal` into a Windows path. PowerShell does not need this prefix.
+    - The Privacy Guardian will redact any PII shaped like email/phone/keys before write. If the SBI summary contains a real name that should not surface in retrieval, add the name to `private/voice-operator/config/redact.toml` under `[redact.private_names]` first.
+    - The audit_id returned proves the round-trip succeeded; reference it in the load-bearing next move if useful.
+
+13. **Hand off.** Name exactly one next move:
     - Default: **Deliver the feedback within 7 days.** The rehearsal goes stale beyond that window.
     - If the rehearsal surfaced this is actually a difficult conversation: **`/perf-difficult-conversation`**.
     - If the rehearsal surfaced clinical content: **Route to clinical support.**
