@@ -76,12 +76,14 @@ This is the **public registry**. Active alliances and private verticals (Family 
 - **Gate ladder:** illustrative defaults shipped with `/wealth-dpi`; each adopter sets their own gates.
 
 ### Music IS
-- **Class:** sovereign vertical
+- **Class:** sovereign vertical (hybrid — operated + scaffolded)
 - **Domain:** Catalog compounding, sync licensing, artist stack, streaming economics. Labels: Frank Riemer (neo-classical), Frank's Vibes (electronic), Arcanea (Guardian/cinematic), Nona (punk/alt).
 - **Owner:** Arcanea Records (under Arcanea BV).
-- **Status:** `active`.
-- **Primary repo:** inside `arcanea-ecosystem/labels/arcanea-records`.
-- **Canon:** composes with Arcanea canon (Guardian → artist mapping for Arcanea label).
+- **Status:** `active` (operated); `scaffolded — v0.2.0` (substrate-side at SIS).
+- **Primary repo (substrate scaffold):** `verticals/music-is/` in `frankxai/Starlight-Intelligence-System` — 6 sub-systems (Apex / Catalog / Persona / Asset / Distribution / Amplification / Monetization), 7 agents, 8 commands. Public reference for the operator-specific sub-system surface.
+- **Primary repo (operated instance):** inside `arcanea-ecosystem/labels/arcanea-records` — release calendar, catalog/royalty-graph state, persona instance state, deal history. Operator-specific; not part of the open substrate.
+- **Distinct from:** `Sound Intelligence` (open forkable reference for any sovereign sound practitioner). Music IS is operator-specific to Frank's four labels; Sound IS is the pattern any indie practitioner forks. Music IS may import patterns from Sound IS; never duplicates substrate.
+- **Canon:** composes with Arcanea canon (Guardian → artist mapping for Arcanea label) under CC-BY-NC.
 - **Compounds:** Arcanea BV (royalties, sync licensing, catalog IP).
 
 ### Vibe OS (substrate)
