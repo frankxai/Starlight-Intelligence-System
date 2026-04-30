@@ -4,10 +4,11 @@
 >
 > SIS is two layers: a substrate (SIP) anyone can adopt, fork, or build on — and an operational layer (Frank's reference build) that runs on top of it.
 
-[![version](https://img.shields.io/badge/version-7.0.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-7.6.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.0-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
+[![deploy](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml)
 [![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
 
 ---
@@ -263,4 +264,4 @@ pnpm run lint        # tsc --noEmit
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.0 · v7.5.3 cockpit-complete · MIT

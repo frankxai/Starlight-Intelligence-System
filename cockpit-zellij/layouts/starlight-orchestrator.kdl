@@ -1,0 +1,67 @@
+// Starlight Orchestrator — Zellij layout
+//
+// SIS-level workspace. Sits above all projects (Arcanea, Cowork,
+// onchain, NFT, etc.). Frank's daily cockpit.
+//
+// Launch:  zellij --layout starlight-orchestrator
+// Or via:  arc   (after PowerShell function added — see scripts/zellij-aliases.ps1)
+//
+// Pane geometry:
+//
+//   ┌─────────────────────────────────────────────────────┐
+//   │  DISPATCHER  (top, full-width, 30% height)          │
+//   │  Run: claude code --dangerously-skip-permissions    │
+//   ├──────────────┬─────────────┬────────────────────────┤
+//   │   CLAUDE     │   CODEX     │   GEMINI               │
+//   │   (Anthropic │   (OpenAI   │   (Google long-context │
+//   │    nuance)   │    refactor)│    + 2M tokens)        │
+//   └──────────────┴─────────────┴────────────────────────┘
+//
+// Each pane opens at the right cwd. You launch the CLI in each
+// pane manually — keeps the layout robust against missing CLIs
+// and lets you choose which model to engage when.
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            // Top: dispatcher pane (30% height) — open in SIS
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+
+            // Bottom row: three workers side by side, in Arcanea
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="C:\\Users\\frank\\Arcanea"
+                pane name="Codex" cwd="C:\\Users\\frank\\Arcanea"
+                pane name="Gemini" cwd="C:\\Users\\frank\\Arcanea"
+            }
+        }
+    }
+
+    // Files tab — three-pane file navigation across project roots
+    tab name="Files" {
+        pane split_direction="vertical" {
+            pane name="SIS" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+            pane name="Arcanea" cwd="C:\\Users\\frank\\Arcanea"
+            pane name="Onchain" cwd="C:\\Users\\frank\\Arcanea\\arcanea-onchain"
+        }
+    }
+
+    // Status tab — git status of both major repos
+    tab name="Status" {
+        pane split_direction="vertical" {
+            pane name="git-arcanea" cwd="C:\\Users\\frank\\Arcanea"
+            pane name="git-sis" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+        }
+    }
+
+    // Debug tab — empty pane for ad-hoc troubleshooting
+    tab name="Debug" {
+        pane name="logs"
+    }
+}

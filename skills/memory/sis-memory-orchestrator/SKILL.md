@@ -5,6 +5,16 @@ description: Substrate-aware memory orchestration for Starlight Intelligence Sys
 
 # SIS Memory Orchestrator
 
+> **v0.1 scope cut (2026-04-30) — round-trip-first.**
+>
+> This skill describes the full architecture. **What ships in v0.1 is a deliberately small subset:** 3 agents (Router, Guardian, Bencher), 2 substrates (mempalace in-tree adapter + Qdrant scaffold-disabled), replay-only benchmarks, dog-fooded through People Intelligence `/perf-feedback-rehearsal`. Implementation lives in `private/voice-operator/service/memory/`. CLI surface: `python -m service.memory.cli {commit,recall,status}`.
+>
+> The remaining agents/substrates/cron/encryption/CRDT below are **parked with falsifiable un-park triggers** in `memory/benchmarks/DECISIONS.md`. A parked item ships only when its trigger is observed on the live system — not from a roadmap.
+>
+> The v0.1 success gate: a `/perf-feedback-rehearsal` write reaches mempalace, a follow-up `recall()` returns it, Guardian blocks a PII probe, audit log records the full sequence — all green on Frank's machine before this commit (d9cc95b) is pushed.
+>
+> Plan: `docs/superpowers/plans/2026-04-30-sis-memory-orchestrator-v0.1.md`.
+
 Synthesizes the best memory patterns from across the field into one substrate-agnostic orchestration layer for SIS:
 
 - **mempalace** — episodic / semantic / procedural split, embedding-indexed, hot/warm/cold decay

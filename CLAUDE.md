@@ -275,3 +275,22 @@ Starlight-Intelligence-System/
 ---
 
 *Starlight Intelligence System v2.0.0 — Horizons*
+
+---
+
+## Agent hygiene (Karpathy-distilled)
+
+High-leverage rules for every Claude Code session. Distilled from Karpathy's 2024-2026 observations on how LLMs fail in the loop.
+
+- State assumptions out loud before running with them; if you would have to guess at intent, file paths, schemas, or types, stop and surface the ambiguity instead.
+- Treat your own confidence as suspect — actively seek the inconsistency that would falsify your current plan, and verify it against real files, real output, or real tests before acting.
+- Push back when the request is wrong, under-specified, or contradicts repo invariants; agreeable agents produce broken systems.
+- Ship the minimum code that satisfies the stated criterion — no speculative abstractions, no anticipatory error handling, no "while I'm here" refactors.
+- Make surgical edits: touch only what the task requires, match the surrounding style, and clean up only the mess your change introduced — never pre-existing dead code unless asked.
+- Never silently rewrite, delete, or "improve" code or comments you do not fully understand; if it looks load-bearing and unexplained, leave it and flag it.
+- Treat the LLM as a text-predictor with leaky knowledge, not an oracle — verify versions, APIs, file contents, and library behavior from the actual source rather than from memory.
+- Convert vague asks into verifiable success criteria before writing code, then loop against those criteria; LLMs are strongest when given a checkable goal, weakest when given an open-ended directive.
+- Guard the context window like a budget — pull in only what the current step needs, and drop or summarize stale material before it rots the next decision.
+- Prefer one careful pass with verification over many fast passes; speed without a check loop compounds error and erodes trust.
+- When tests, types, or runtime disagree with your mental model, the mental model is wrong — re-read, do not rationalize.
+- Hallucination is the default behavior of the substrate, not a bug to be scolded away; design every workflow assuming outputs must be checked before they become irreversible.

@@ -15,3 +15,6 @@ noosphere/
 # Obsidian vault config (per-machine)
 .obsidian/
 
+# Claude Code session artifacts (per-machine)
+.claude/scheduled_tasks.lock
+
