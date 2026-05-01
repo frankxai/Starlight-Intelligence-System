@@ -22,3 +22,9 @@ noosphere/
 memory/knowledge-graph/_brain-cache.json
 memory/knowledge-graph/index.jsonl
 
+# SIS memory orchestrator v0.1 runtime — operator-private state, never commit.
+# Atom store, vector index, and audit log all live here. DECISIONS.md stays tracked.
+memory/_audit/
+memory/mempalace/
+memory/benchmarks/*.json
+

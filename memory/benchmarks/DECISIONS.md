@@ -123,6 +123,38 @@
   drawer-shaped atoms, namespace `claude-code/<project>/<session>`.
 - **Owner:** new `mining/` module under `service/memory/`
 
+## PARKED-011 — Bulk-load commit throughput (defer vector persist)
+
+- **Status:** parked
+- **Surfaced by:** v0.1 validation smoke 2026-05-01 — at N=1000 atoms,
+  per-commit avg = 159.82ms because `_persist_vectors()` rewrites the full
+  `vectors.npy` file every commit (O(N) cost per commit, O(N²) total bulk-load).
+  Query latency stays excellent (P95 = 1.06ms at 1k atoms — no problem there).
+- **Why parked:** v0.1 traffic is 1 commit per slash-command invocation, not
+  bulk loads. Sub-second per commit is plenty for human-paced ops.
+- **Un-park when:** A bulk-load workflow ships (e.g., `palace_mine` from
+  PARKED-010), OR sustained commit rate > 10/s observed in audit log,
+  OR per-commit latency > 500ms surfaces user-perceptible lag.
+- **Cost if un-parked:** ~0.25 day. Defer `_persist_vectors()` behind a dirty
+  flag; flush on `__del__`, on query (read-after-write), or every N commits.
+- **Owner:** Mempalace adapter
+
+## PARKED-012 — File-locking for multi-process safety
+
+- **Status:** parked
+- **Why parked:** Voice-operator runs FastAPI as a singleton on :7373 (per
+  `project_agentdb_singleton_constraint.md`). Concurrency smoke 2026-05-01
+  showed 8 threads × 50 commits = 400/400 with zero errors under threading
+  (Python GIL serializes the critical sections enough). Multi-PROCESS access
+  is not a current pattern.
+- **Un-park when:** A second process needs to commit atoms simultaneously
+  (e.g., a CLI invocation while voice-operator is running) AND a measured
+  race surfaces — corruption of `atoms.jsonl` line boundaries, or
+  `vectors.npy` shape mismatch.
+- **Cost if un-parked:** ~0.5 day. `portalocker` or `fcntl`/`msvcrt`
+  cross-platform advisory lock around the persist sequence.
+- **Owner:** Mempalace adapter
+
 ---
 
 ## Trigger checklist (run quarterly OR on substrate-change request)
