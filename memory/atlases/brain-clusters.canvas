@@ -1,0 +1,304 @@
+{
+  "nodes": [
+    {
+      "id": "28470ddbb8e46785",
+      "type": "group",
+      "x": 0,
+      "y": 0,
+      "width": 440,
+      "height": 2070,
+      "label": "unbranded \u00b7 capture (18)",
+      "color": "#64748b"
+    },
+    {
+      "id": "f94cb17851bfa60d",
+      "type": "text",
+      "x": 40,
+      "y": 50,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-28\n\nSearching today's session log and git activity now \u2014 one moment. If nothing surfaces, I'll flag that the vault is empty for today.",
+      "color": "#64748b"
+    },
+    {
+      "id": "c0bdb7193d1e02b7",
+      "type": "text",
+      "x": 40,
+      "y": 160,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nCaptured.",
+      "color": "#64748b"
+    },
+    {
+      "id": "aec25c4c9fbb9cb0",
+      "type": "text",
+      "x": 40,
+      "y": 270,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nCaptured.",
+      "color": "#64748b"
+    },
+    {
+      "id": "58218b980a4ce1c2",
+      "type": "text",
+      "x": 40,
+      "y": 380,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nCognition layer today: pluggable multi-tier router landed (deterministic, OpenRouter, Anthropic, Claude-CLI), multi-CLI dispatchers wired to orchestrator with intent classification and JSONL audit log, plus LCC Phase 0+\u2026",
+      "color": "#64748b"
+    },
+    {
+      "id": "571a287d24a68085",
+      "type": "text",
+      "x": 40,
+      "y": 490,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nSearching session log and git activity for today's cognition-layer changes \u2014 no routing needed, pulling from operational vault now. If nothing surfaces, I'll flag it as no recorded changes today.",
+      "color": "#64748b"
+    },
+    {
+      "id": "774409c8eecdcaf8",
+      "type": "text",
+      "x": 40,
+      "y": 600,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nSearching today's captures for cognition layer references \u2014 nothing retrieved yet from this session's vault. If you've captured it in a prior session or vault file, say 'Starlight, search all vaults for cognition layer'\u2026",
+      "color": "#64748b"
+    },
+    {
+      "id": "031a1849971a9e91",
+      "type": "text",
+      "x": 40,
+      "y": 710,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nCaptured.",
+      "color": "#64748b"
+    },
+    {
+      "id": "966d72b66c690408",
+      "type": "text",
+      "x": 40,
+      "y": 820,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nCaptured.",
+      "color": "#64748b"
+    },
+    {
+      "id": "6f055ae09fbf885c",
+      "type": "text",
+      "x": 40,
+      "y": 930,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nSearching today's session log and git activity now \u2014 stand by for the delta.",
+      "color": "#64748b"
+    },
+    {
+      "id": "44f297ca5bd83212",
+      "type": "text",
+      "x": 40,
+      "y": 1040,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nCaptured.",
+      "color": "#64748b"
+    },
+    {
+      "id": "538b46173ce475d6",
+      "type": "text",
+      "x": 40,
+      "y": 1150,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nTwo captures from this session: (1) cognition bridge live 2026-04-29, (2) cockpit autonomous build pass complete \u2014 341 tests, 4 surfaces, brain graph live. Nothing else on cognition layer or cockpit this session.",
+      "color": "#64748b"
+    },
+    {
+      "id": "2ad6ad0ff974e07d",
+      "type": "text",
+      "x": 40,
+      "y": 1260,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nCaptured. Caching strategies for the cognition router \u2014 tagged and routed to scratchpad vault.",
+      "color": "#64748b"
+    },
+    {
+      "id": "08d43b15fedb626d",
+      "type": "text",
+      "x": 40,
+      "y": 1370,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nTwo captures: cognition bridge live 2026-04-29; cockpit autonomous build pass \u2014 341 tests, 4 surfaces, brain graph live.",
+      "color": "#64748b"
+    },
+    {
+      "id": "abe1b38d55a19ee9",
+      "type": "text",
+      "x": 40,
+      "y": 1480,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nHi, how can I assist you today professionally?",
+      "color": "#64748b"
+    },
+    {
+      "id": "9c7b49cd8a664bd2",
+      "type": "text",
+      "x": 40,
+      "y": 1590,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nHello, how are you today I am ready",
+      "color": "#64748b"
+    },
+    {
+      "id": "5277e9d58ffd3afc",
+      "type": "text",
+      "x": 40,
+      "y": 1700,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nConfirmed, speed profile is active for you now.",
+      "color": "#64748b"
+    },
+    {
+      "id": "ad291bdaf19599d8",
+      "type": "text",
+      "x": 40,
+      "y": 1810,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nI'm doing well, thanks for checking in.",
+      "color": "#64748b"
+    },
+    {
+      "id": "bd8f688ebc7cf3a9",
+      "type": "text",
+      "x": 40,
+      "y": 1920,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `capture` \u00b7 2026-04-29\n\nI'm here. How can I assist you today?",
+      "color": "#64748b"
+    },
+    {
+      "id": "bf4e594cc59a6f16",
+      "type": "group",
+      "x": 520,
+      "y": 0,
+      "width": 440,
+      "height": 420,
+      "label": "unbranded \u00b7 command (3)",
+      "color": "#64748b"
+    },
+    {
+      "id": "721b8af2a2704648",
+      "type": "text",
+      "x": 560,
+      "y": 50,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `command` \u00b7 2026-04-26\n\nSubstrate edit requested: add a new clause to SIP.md covering cognition routing. This requires Luminor Board review before any edit is made. Prepare a draft clause for board consideration \u2014 do not write to SIP.md until\u2026",
+      "color": "#64748b"
+    },
+    {
+      "id": "460536b1615ff7fd",
+      "type": "text",
+      "x": 560,
+      "y": 160,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `command` \u00b7 2026-04-26\n\nEscalate a proposed substrate edit to SIP.md for board review. The proposed change is: add a new clause about cognition routing. The board must review the clause content, assess sovereignty and attestation implications,\u2026",
+      "color": "#64748b"
+    },
+    {
+      "id": "bea0636583ce7a57",
+      "type": "text",
+      "x": 560,
+      "y": 270,
+      "width": 360,
+      "height": 90,
+      "text": "**unbranded** \u00b7 `command` \u00b7 2023-12-01\n\nRequest access to local machine and cloud code CLI for diagnostic purposes.",
+      "color": "#64748b"
+    },
+    {
+      "id": "cdd78c37dbf82a87",
+      "type": "group",
+      "x": 1040,
+      "y": 0,
+      "width": 440,
+      "height": 420,
+      "label": "sis \u00b7 build (3)",
+      "color": "#7c5cff"
+    },
+    {
+      "id": "66e3e3be6e973502",
+      "type": "text",
+      "x": 1080,
+      "y": 50,
+      "width": 360,
+      "height": 90,
+      "text": "**sis** \u00b7 `build` \u00b7 2026-04-26\n\nAdd a new section to the SIS repository README.md. Section topic, title, placement, and content have not been specified \u2014 pause and request clarification from Frank before writing any content. Once the section scope is\u2026",
+      "color": "#7c5cff"
+    },
+    {
+      "id": "f77bcd37b3b7a22d",
+      "type": "text",
+      "x": 1080,
+      "y": 160,
+      "width": 360,
+      "height": 90,
+      "text": "**sis** \u00b7 `build` \u00b7 2026-04-26\n\nAdd a new section to the Starlight Intelligence System README. Section content, heading, and placement are unspecified \u2014 pause before writing and surface a one-sentence proposal (section name + one-line description + pr\u2026",
+      "color": "#7c5cff"
+    },
+    {
+      "id": "6f12dc7eab23edd2",
+      "type": "text",
+      "x": 1080,
+      "y": 270,
+      "width": 360,
+      "height": 90,
+      "text": "**sis** \u00b7 `build` \u00b7 2026-04-26\n\nUpdate the README.md footer in the Starlight Intelligence System repository to include a v7.5.3 cockpit-complete badge. Locate the existing footer section (version badges, attestation line, or equivalent). Add or update\u2026",
+      "color": "#7c5cff"
+    },
+    {
+      "id": "e304339eb1cdcc35",
+      "type": "group",
+      "x": 0,
+      "y": 280,
+      "width": 440,
+      "height": 200,
+      "label": "unbranded \u00b7 uncategorized (1)",
+      "color": "#64748b"
+    },
+    {
+      "id": "cecca61579a98e95",
+      "type": "text",
+      "x": 40,
+      "y": 330,
+      "width": 360,
+      "height": 90,
+      "text": "**sis** \u00b7 `capture` \u00b7 2026-04-28\n\nCaptured.",
+      "color": "#7c5cff"
+    }
+  ],
+  "edges": [
+    {
+      "id": "ca82b9a3566bbd95",
+      "fromNode": "66e3e3be6e973502",
+      "fromSide": "right",
+      "toNode": "f77bcd37b3b7a22d",
+      "toSide": "left",
+      "toEnd": "arrow"
+    }
+  ]
+}

@@ -1,3 +1,13 @@
+---
+type: vault
+vault: creative
+retention: permanent
+writers:
+- weaver
+readers: all
+last_consolidated: '2026-05-01'
+---
+
 # Creative Vault
 
 > *"Every creative insight is a seed. Store it well, and forests grow."*
