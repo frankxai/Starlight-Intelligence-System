@@ -1,0 +1,62 @@
+# Built on SIP — Starlight Intelligence Protocol v1.1.0
+# Substrate: starlightintelligence.org/protocol
+# Layers used: [file-contract, attestation, sovereignty]
+#
+# Catches drift between docs/public/starlight-intelligence-system.md (the source-
+# of-truth) and site/content/explainer.md (the committed copy that Vercel reads
+# at runtime — see PR #7 v7.7.2). The site/scripts/sync-explainer.mjs script
+# normally runs as a predev/prebuild step, but if a contributor edits the source
+# without running build, the committed copy goes stale silently.
+#
+# This workflow runs the sync and fails if it produces a diff. The fix is to
+# either run `pnpm build` locally before pushing, or run `node site/scripts/
+# sync-explainer.mjs` directly.
+
+name: Content drift check
+
+on:
+  pull_request:
+    paths:
+      - "docs/public/starlight-intelligence-system.md"
+      - "site/content/explainer.md"
+      - "site/scripts/sync-explainer.mjs"
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/public/starlight-intelligence-system.md"
+      - "site/content/explainer.md"
+      - "site/scripts/sync-explainer.mjs"
+
+permissions:
+  contents: read
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    name: Verify site/content/explainer.md matches source
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: "20"
+
+      - name: Run sync-explainer
+        working-directory: site
+        run: node scripts/sync-explainer.mjs
+
+      - name: Verify no drift
+        run: |
+          if git diff --exit-code site/content/explainer.md; then
+            echo "site/content/explainer.md is in sync with docs/public/starlight-intelligence-system.md"
+          else
+            echo ""
+            echo "::error::Drift detected. site/content/explainer.md does not match docs/public/starlight-intelligence-system.md."
+            echo "::error::To fix: run 'node site/scripts/sync-explainer.mjs' locally and commit the result, or run 'pnpm build' from site/."
+            exit 1
+          fi
