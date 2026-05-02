@@ -29,13 +29,14 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden items-center gap-1 sm:flex">
-          <NavLink href="/vaults">Vaults</NavLink>
-          <NavLink href="/benediction">Benediction</NavLink>
-          <NavLink href="/featured">Featured</NavLink>
-          <NavLink href="/quickstart">Quickstart</NavLink>
+        <div className="hidden items-center gap-1 lg:flex">
+          <NavLink href="/verticals">Verticals</NavLink>
+          <NavLink href="/cockpit">Cockpit</NavLink>
           <NavLink href="/architecture">Architecture</NavLink>
-          <NavLink href="/docs">Docs</NavLink>
+          <NavLink href="/protocol">Protocol</NavLink>
+          <NavLink href="/quickstart">Quickstart</NavLink>
+          <NavLink href="/explainer">Explainer</NavLink>
+          <NavLink href="/vaults">Vaults</NavLink>
           <NavLink
             href="https://github.com/frankxai/Starlight-Intelligence-System"
             external
@@ -52,9 +53,23 @@ export function Header() {
           </a>
         </div>
 
+        {/* Tablet nav — condensed */}
+        <div className="hidden items-center gap-1 sm:flex lg:hidden">
+          <NavLink href="/verticals">Verticals</NavLink>
+          <NavLink href="/cockpit">Cockpit</NavLink>
+          <NavLink href="/quickstart">Quickstart</NavLink>
+          <NavLink href="/architecture">Architecture</NavLink>
+          <NavLink
+            href="https://github.com/frankxai/Starlight-Intelligence-System"
+            external
+          >
+            GitHub
+          </NavLink>
+        </div>
+
         {/* Mobile nav — simple links row */}
         <div className="flex items-center gap-3 sm:hidden">
-          <NavLink href="/vaults">Vaults</NavLink>
+          <NavLink href="/verticals">Verticals</NavLink>
           <NavLink href="/quickstart">Quickstart</NavLink>
           <NavLink href="/docs">Docs</NavLink>
         </div>

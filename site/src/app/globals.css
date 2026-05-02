@@ -95,3 +95,110 @@ body {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* Markdown body styles for /explainer (mirrors docs/public/*.md) */
+.explainer-prose {
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgb(203 213 225);
+}
+.explainer-prose > * + * { margin-top: 1.25em; }
+.explainer-prose h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  margin-top: 3rem;
+  letter-spacing: -0.01em;
+}
+.explainer-prose h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: rgb(241 245 249);
+  margin-top: 2rem;
+}
+.explainer-prose h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(165 180 252);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 1.5rem;
+}
+.explainer-prose p { color: rgb(148 163 184); }
+.explainer-prose strong { color: white; font-weight: 600; }
+.explainer-prose em { color: rgb(203 213 225); font-style: italic; }
+.explainer-prose a {
+  color: rgb(196 181 253);
+  text-decoration: underline;
+  text-decoration-color: rgba(167, 139, 250, 0.3);
+  text-underline-offset: 3px;
+  transition: all 200ms var(--ease);
+}
+.explainer-prose a:hover {
+  color: rgb(221 214 254);
+  text-decoration-color: rgba(167, 139, 250, 0.7);
+}
+.explainer-prose ul, .explainer-prose ol {
+  padding-left: 1.5rem;
+  color: rgb(148 163 184);
+}
+.explainer-prose ul { list-style-type: disc; }
+.explainer-prose ol { list-style-type: decimal; }
+.explainer-prose li { margin-top: 0.5em; }
+.explainer-prose li::marker { color: rgba(167, 139, 250, 0.5); }
+.explainer-prose code {
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: rgb(196 181 253);
+}
+.explainer-prose pre {
+  background: #0c0c12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+.explainer-prose pre code {
+  background: transparent;
+  padding: 0;
+  color: rgb(203 213 225);
+}
+.explainer-prose blockquote {
+  border-left: 2px solid rgba(167, 139, 250, 0.4);
+  padding-left: 1rem;
+  color: rgb(203 213 225);
+  font-style: italic;
+}
+.explainer-prose hr {
+  border: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 3rem 0;
+}
+.explainer-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.explainer-prose th {
+  background: rgba(255, 255, 255, 0.03);
+  text-align: left;
+  font-weight: 600;
+  color: white;
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.explainer-prose td {
+  padding: 0.625rem 0.875rem;
+  color: rgb(148 163 184);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.explainer-prose tr:last-child td { border-bottom: 0; }
