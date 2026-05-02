@@ -1,3 +1,14 @@
+---
+type: vault
+vault: strategic
+retention: permanent
+writers:
+- navigator
+- prime
+readers: all
+last_consolidated: '2026-05-01'
+---
+
 # Strategic Vault
 
 > *"Every decision shapes the future. Remember them all."*

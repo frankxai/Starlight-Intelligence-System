@@ -1,0 +1,34 @@
+filters:
+  or:
+    - 'note.type == "voice-session"'
+    - 'note.type == "vault"'
+
+formulas:
+  brand_norm: 'if(note.brand, note.brand, "unbranded")'
+  is_recent: '(now() - file.mtime).days <= 7'
+
+properties:
+  formula.brand_norm:
+    displayName: "Brand"
+  file.name:
+    displayName: "File"
+  note.type:
+    displayName: "Kind"
+  file.mtime:
+    displayName: "Last touched"
+  formula.is_recent:
+    displayName: "Last 7d"
+
+views:
+  - type: table
+    name: "Activity by brand"
+    order:
+      - file.name
+      - note.type
+      - formula.brand_norm
+      - file.mtime
+    groupBy:
+      property: formula.brand_norm
+      direction: ASC
+    summaries:
+      formula.is_recent: Checked

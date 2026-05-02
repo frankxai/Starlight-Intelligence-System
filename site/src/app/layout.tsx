@@ -19,15 +19,17 @@ const jbMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://starlightintelligence.org"),
   title: {
-    default: "Starlight Intelligence",
+    default:
+      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     template: "%s — Starlight Intelligence",
   },
   description:
-    "The memory layer for humans and AI agents. Six semantic vaults that compound your intelligence over time. Local-first. Forkable. Free.",
+    "A persistent context and memory architecture for AI agents. 9 intelligence layers, 35 agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Built on the Starlight Intelligence Protocol. Local-first. Forkable. Free.",
   openGraph: {
-    title: "Starlight Intelligence",
+    title:
+      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "Six vaults. Your insights. Readable by agents. Compounding forever.",
+      "9 intelligence layers, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
     url: "https://starlightintelligence.org",
     siteName: "Starlight Intelligence",
     type: "website",
@@ -35,9 +37,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Starlight Intelligence",
+    title:
+      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "Six vaults. Your insights. Readable by agents. Compounding forever.",
+      "9 intelligence layers, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
   },
   robots: { index: true, follow: true },
 };

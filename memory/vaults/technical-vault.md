@@ -1,3 +1,14 @@
+---
+type: vault
+vault: technical
+retention: permanent
+writers:
+- architect
+- sentinel
+readers: all
+last_consolidated: '2026-05-01'
+---
+
 # Technical Vault
 
 > *"Patterns are the currency of engineering wisdom."*

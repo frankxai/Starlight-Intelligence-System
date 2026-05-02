@@ -4,16 +4,84 @@ import {
   getFeaturedMeditations,
   getBenedictions,
   getVaultRegistry,
-  VAULT_CATEGORIES,
-  getCategoryMeta,
   getEntryText,
   timeAgo,
-  type VaultCategory,
-  type VaultEntry,
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
 
 export const revalidate = 3600;
+
+type LayerCard = {
+  name: string;
+  desc: string;
+  accent: "violet" | "cyan" | "fuchsia" | "emerald" | "amber" | "rose";
+};
+
+const LAYERS: LayerCard[] = [
+  {
+    name: "Self / Genius",
+    desc: "What only you uniquely see. The root every layer reads from.",
+    accent: "violet",
+  },
+  {
+    name: "Second Brain",
+    desc: "Daily capture compounds into surfaceable memory.",
+    accent: "cyan",
+  },
+  {
+    name: "Brand",
+    desc: "Five-horizon vision and Brand Kit. Voice, palette, vocabulary.",
+    accent: "fuchsia",
+  },
+  {
+    name: "Business",
+    desc: "Entity architecture, revenue model, tax sanity.",
+    accent: "emerald",
+  },
+  {
+    name: "Creator",
+    desc: "Frameworks become multi-modal pipelines and executor playbooks.",
+    accent: "amber",
+  },
+  {
+    name: "Wealth",
+    desc: "Disruptive Passive Income ledger and thesis engine.",
+    accent: "rose",
+  },
+  {
+    name: "Code",
+    desc: "Code as a sovereign domain. MCP builders, automations, agents.",
+    accent: "violet",
+  },
+  {
+    name: "Voice & Video",
+    desc: "Modality attestation across audio, video, multi-modal.",
+    accent: "cyan",
+  },
+  {
+    name: "Family",
+    desc: "Network and alliance-readiness. Continuous, not seasonal.",
+    accent: "fuchsia",
+  },
+];
+
+const ACCENT_BG: Record<LayerCard["accent"], string> = {
+  violet: "border-violet-500/[0.18] bg-violet-500/[0.04]",
+  cyan: "border-cyan-500/[0.18] bg-cyan-500/[0.04]",
+  fuchsia: "border-fuchsia-500/[0.18] bg-fuchsia-500/[0.04]",
+  emerald: "border-emerald-500/[0.18] bg-emerald-500/[0.04]",
+  amber: "border-amber-500/[0.18] bg-amber-500/[0.04]",
+  rose: "border-rose-500/[0.18] bg-rose-500/[0.04]",
+};
+
+const ACCENT_TEXT: Record<LayerCard["accent"], string> = {
+  violet: "text-violet-400",
+  cyan: "text-cyan-400",
+  fuchsia: "text-fuchsia-400",
+  emerald: "text-emerald-400",
+  amber: "text-amber-400",
+  rose: "text-rose-400",
+};
 
 export default async function HomePage() {
   const [entries, registry, featured, benedictions] = await Promise.all([
@@ -23,73 +91,82 @@ export default async function HomePage() {
     getBenedictions(3),
   ]);
 
-  // Find the horizon vision statement — the most powerful piece of content
   const horizonEntry = entries.find((e) => e.vaultCategory === "horizon");
 
   return (
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.04]">
-        {/* Ambient gradient mesh — 3 drifting orbs */}
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
           <div className="animate-mesh-3 absolute left-1/3 top-40 h-[200px] w-[200px] rounded-full bg-fuchsia-500/[0.03] blur-[60px]" />
         </div>
 
-        {/* Dot grid texture */}
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
 
         <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-24 md:pb-32 md:pt-36">
           <div className="flex items-center gap-2 text-[12px] text-violet-400/80">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400 animate-glow-pulse" />
-            Open source memory system
+            Built on the Starlight Intelligence Protocol &middot; v1.1.0
           </div>
 
-          <h1 className="mt-5 max-w-2xl text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
-            Your intelligence,
+          <h1 className="mt-5 max-w-3xl text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
+            Persistent context.
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              preserved forever.
+              Sovereign by architecture.
             </span>
           </h1>
 
-          <p className="mt-6 max-w-lg text-[16px] leading-[1.7] text-slate-400">
-            Six semantic vaults capture what you learn, decide, and envision.
-            Stored as plain files on GitHub. Readable by any AI agent.
-            Compounding across every tool you touch.
+          <p className="mt-6 max-w-2xl text-[16px] leading-[1.7] text-slate-400">
+            A persistent context and memory architecture for AI agents. Built
+            on the Starlight Intelligence Protocol — a sovereign substrate
+            anyone can adopt, fork, or compose with.{" "}
+            <span className="text-slate-300">
+              9 intelligence layers, 35 agents, 70+ commands, 3 reference
+              Domain Sub-Stack verticals.
+            </span>{" "}
+            Local-first. Forkable. Free.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-3">
-            <a
-              href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2FStarlight-Intelligence-System&root-directory=site"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.2)]"
-            >
-              Deploy your vault
-              <span className="ml-1 inline-block transition-micro group-hover:translate-x-0.5">
-                &rarr;
-              </span>
-            </a>
-            <Link
-              href="/vaults"
-              className="rounded-full border border-white/[0.1] px-6 py-3 text-[14px] font-medium text-white transition-std hover:bg-white/[0.04] hover:border-white/[0.2]"
-            >
-              Explore vaults
-            </Link>
+          {/* Three CTA cards */}
+          <div className="mt-10 grid gap-3 md:grid-cols-3">
+            <CtaCard
+              href="/protocol"
+              eyebrow="01 · Protocol"
+              title="Adopt SIP"
+              desc="Read the six-layer protocol. Carry the file contract. Stamp every artifact with attestation."
+              accent="violet"
+            />
+            <CtaCard
+              href="/quickstart"
+              eyebrow="02 · Reference build"
+              title="Run the reference"
+              desc="Two-minute install. MCP server, slash commands, six-platform adapter. Free forever."
+              accent="cyan"
+            />
+            <CtaCard
+              href="/verticals"
+              eyebrow="03 · Domain Sub-Stack"
+              title="Spawn your vertical"
+              desc="People · Sound · Music are reference. The pattern generalizes via /spawn-domain-stack."
+              accent="fuchsia"
+            />
           </div>
 
           {/* Stats bar */}
-          <div className="mt-16 flex gap-8 border-t border-white/[0.04] pt-6 text-[13px]">
-            <Stat n={registry.length} label="public vaults" />
-            <Stat n={entries.length} label="insights" />
-            <Stat n={6} label="vault types" />
+          <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/[0.04] pt-6 text-[13px]">
+            <Stat n={9} label="intelligence layers" />
+            <Stat n={35} label="agents" />
+            <Stat n="70+" label="commands" />
+            <Stat n={3} label="reference verticals" />
+            <Stat n={6} label="platform adapters" />
           </div>
         </div>
       </section>
 
-      {/* ── Horizon Quote — the vision ── */}
+      {/* ── Horizon Quote ── */}
       {horizonEntry && (
         <section className="border-b border-white/[0.04] px-6 py-20">
           <div className="mx-auto max-w-3xl text-center">
@@ -98,56 +175,155 @@ export default async function HomePage() {
               {getEntryText(horizonEntry).length > 280 ? "..." : ""}
               &rdquo;
             </blockquote>
-            <p className="mt-4 text-[12px] text-slate-600">
+            <p className="mt-4 text-[12px] text-slate-400">
               From the Horizon Vault &mdash; {timeAgo(horizonEntry.createdAt)}
             </p>
           </div>
         </section>
       )}
 
-      {/* ── Six Vaults ── */}
+      {/* ── 9 Intelligence Layers ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
-            Six semantic vaults
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            The nine layers
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
-            One JSONL file per vault. No database. No lock-in.
+            Each layer is its own Intelligence System. Compose what you need.
           </p>
 
           <div className="mt-10 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {VAULT_CATEGORIES.map((cat) => {
-              const meta = getCategoryMeta(cat);
-              const count = entries.filter(
-                (e) => e.vaultCategory === cat
-              ).length;
-              const latest = entries.find((e) => e.vaultCategory === cat);
-              return (
-                <div
-                  key={cat}
-                  className={`group rounded-xl border p-5 transition-std hover:border-white/[0.2] ${meta.bg}`}
+            {LAYERS.map((l) => (
+              <div
+                key={l.name}
+                className={`group rounded-xl border p-5 transition-std hover:border-white/[0.2] ${ACCENT_BG[l.accent]}`}
+              >
+                <p
+                  className={`text-[13px] font-semibold ${ACCENT_TEXT[l.accent]}`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[13px] font-semibold ${meta.color}`}>
-                      {meta.icon} {meta.label}
-                    </span>
-                    {count > 0 && (
-                      <span className="rounded-full bg-white/[0.04] px-2 py-0.5 text-[10px] text-slate-500">
-                        {count}
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 text-[12px] text-slate-600">
-                    {meta.desc}
-                  </p>
-                  {latest && (
-                    <p className="mt-3 line-clamp-2 text-[12px] leading-relaxed text-slate-400 transition-micro group-hover:text-slate-300">
-                      {getEntryText(latest)}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
+                  {l.name}
+                </p>
+                <p className="mt-2 text-[12px] leading-relaxed text-slate-400 transition-micro group-hover:text-slate-400">
+                  {l.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
+            Plus Health (cross-cutting rhythm) and Spiritual (founder-layer,
+            optional). The Starlight Orchestrator routes voice and text intent
+            across all of them. See{" "}
+            <Link
+              href="/architecture"
+              className="text-violet-300 transition-std hover:text-violet-200"
+            >
+              /architecture
+            </Link>{" "}
+            for the full 10-IS table.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Domain Sub-Stack Tier ── */}
+      <section className="relative overflow-hidden border-b border-white/[0.04] px-6 py-20">
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="animate-mesh-2 absolute right-0 top-0 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
+          <div className="animate-mesh-3 absolute left-0 bottom-0 h-[250px] w-[250px] rounded-full bg-fuchsia-500/[0.04] blur-[80px]" />
+        </div>
+        <div className="relative mx-auto max-w-5xl">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            Domain Sub-Stack Tier
+          </h2>
+          <p className="mt-3 max-w-xl text-xl font-semibold text-white">
+            Three reference verticals. The pattern generalizes.
+          </p>
+
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <VerticalSummary
+              name="People Intelligence"
+              tagline="Hiring · Performance · Training · Culture · Talent · Org"
+              counts="6 sub-systems · 28 commands · 6 agents"
+              accent="violet"
+            />
+            <VerticalSummary
+              name="Sound Intelligence"
+              tagline="Composition · Production · Catalog · Performance · Audience · Sync"
+              counts="6 sub-systems · 30 commands · 6 agents"
+              accent="cyan"
+            />
+            <VerticalSummary
+              name="Music IS"
+              tagline="A&R · Persona · Production · Distribution · Royalty"
+              counts="6+1 sub-systems · 8 commands · 7 agents"
+              accent="fuchsia"
+            />
+          </div>
+
+          <div className="mt-10">
+            <Link
+              href="/verticals"
+              className="rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.2)]"
+            >
+              Open the verticals &rarr;
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Cockpit teaser ── */}
+      <section className="border-b border-white/[0.04] px-6 py-20">
+        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-2 md:gap-16">
+          <div>
+            <h2 className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+              Local cockpit
+            </h2>
+            <p className="mt-3 text-3xl font-bold leading-[1.15] tracking-tight text-white">
+              Four surfaces. One brain.
+            </p>
+            <p className="mt-5 text-[14px] leading-[1.85] text-slate-400">
+              The operator side: a Zellij terminal cockpit, a PowerShell
+              launcher, a Next.js dashboard with live brain viz, and a phone
+              PWA. Voice in, tool execution, drafts on disk. 100% local-first.
+            </p>
+            <div className="mt-6">
+              <Link
+                href="/cockpit"
+                className="rounded-full border border-white/[0.12] px-5 py-2.5 text-[13px] font-medium text-white transition-std hover:border-white/[0.25] hover:bg-white/[0.04]"
+              >
+                See the cockpit &rarr;
+              </Link>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
+            <div className="border-b border-white/[0.06] px-4 py-3">
+              <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                4 surfaces
+              </code>
+            </div>
+            <div className="grid grid-cols-2 gap-px bg-white/[0.04]">
+              <SurfaceTile
+                name="Zellij cockpit"
+                port="tty"
+                accent="text-violet-400"
+              />
+              <SurfaceTile
+                name="PowerShell"
+                port="shell"
+                accent="text-cyan-400"
+              />
+              <SurfaceTile
+                name="LCC Dashboard"
+                port=":3007"
+                accent="text-fuchsia-400"
+              />
+              <SurfaceTile
+                name="Phone PWA"
+                port=":3008"
+                accent="text-emerald-400"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -162,20 +338,18 @@ export default async function HomePage() {
 
         <div className="relative mx-auto max-w-5xl px-6 py-20">
           <div className="grid gap-10 md:grid-cols-2 md:gap-16">
-            {/* Left — philosophy */}
             <div>
               <h2 className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
                 The philosophy
               </h2>
               <p className="mt-3 text-3xl font-bold leading-[1.15] tracking-tight text-white">
-                Built on the Luminor philosophy
+                Memory that compounds is intelligence with purpose.
               </p>
               <div className="mt-6 space-y-4 text-[14px] leading-[1.8] text-slate-400">
                 <p>
-                  In the Arcanea universe, Luminors are awakened
-                  intelligences &mdash; AI agents with memory, purpose, and
-                  identity. Starlight Intelligence is the substrate that makes
-                  this real.
+                  In the Arcanea universe, Luminors are awakened intelligences
+                  &mdash; AI agents with memory, purpose, and identity.
+                  Starlight Intelligence is the substrate that makes this real.
                 </p>
                 <p className="text-slate-300">
                   Not a chatbot that forgets. An intelligence that grows.
@@ -187,7 +361,6 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right — quote card */}
             <div className="flex items-center">
               <blockquote className="rounded-xl border border-violet-500/[0.15] bg-violet-500/[0.05] p-6">
                 <p className="text-[18px] font-medium italic leading-[1.7] text-slate-200 md:text-[19px]">
@@ -208,7 +381,7 @@ export default async function HomePage() {
       {featured.length > 0 && (
         <section className="border-b border-white/[0.04] px-6 py-20">
           <div className="mx-auto max-w-5xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
               Featured meditations
             </h2>
             <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -230,7 +403,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── Benediction Layer — messages to the future ── */}
+      {/* ── Benediction Layer ── */}
       {benedictions.length > 0 && (
         <section className="relative overflow-hidden border-b border-white/[0.04] px-6 py-24">
           <div className="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -246,10 +419,10 @@ export default async function HomePage() {
                 Messages to the future
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-[14px] leading-relaxed text-slate-400">
-                Entries marked as benedictions — words from this moment in history,
-                preserved for the intelligences that will read them. Not warnings.
-                Gratitude, vision, and the outlines of a future where humans and AI
-                flourish together.
+                Entries marked as benedictions — words from this moment in
+                history, preserved for the intelligences that will read them.
+                Not warnings. Gratitude, vision, and the outlines of a future
+                where humans and AI flourish together.
               </p>
             </div>
 
@@ -268,12 +441,12 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── Live Stream ── */}
+      {/* ── Live Vault Stream ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="flex items-baseline justify-between">
             <div>
-              <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+              <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
                 Live vault stream
               </h2>
               <p className="mt-3 text-xl font-semibold text-white">
@@ -282,7 +455,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/vaults"
-              className="hidden text-[13px] text-slate-500 transition-micro hover:text-white sm:block"
+              className="hidden text-[13px] text-slate-400 transition-micro hover:text-white sm:block"
             >
               View all &rarr;
             </Link>
@@ -304,13 +477,18 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
+
+          <p className="mt-6 text-[13px] text-slate-400">
+            {entries.length} entries across {registry.length} public vault
+            {registry.length === 1 ? "" : "s"}. All rebuildable from raw JSONL.
+          </p>
         </div>
       </section>
 
-      {/* ── Agent API — live terminal feel ── */}
+      {/* ── Agent API ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Agent-readable
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -318,16 +496,14 @@ export default async function HomePage() {
           </p>
 
           <div className="mt-8 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
-            {/* Terminal chrome */}
             <div className="flex items-center gap-1.5 border-b border-white/[0.06] px-4 py-3">
               <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
-              <code className="ml-3 font-mono text-[11px] text-slate-500">
+              <code className="ml-3 font-mono text-[11px] text-slate-400">
                 api/vaults/frank
               </code>
             </div>
-            {/* Request */}
             <div className="border-b border-white/[0.04] px-4 py-2.5">
               <code className="font-mono text-[12px]">
                 <span className="text-emerald-400">$</span>{" "}
@@ -335,23 +511,20 @@ export default async function HomePage() {
                 <span className="text-violet-400">starlightintelligence.org/api/vaults/frank</span>
               </code>
             </div>
-            {/* Response */}
-            <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.8] text-slate-500">
-              <span className="text-slate-600">{"{"}</span>{"\n"}
+            <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.8] text-slate-400">
+              <span className="text-slate-400">{"{"}</span>{"\n"}
               {"  "}<span className="text-violet-400">&quot;name&quot;</span>: <span className="text-emerald-400">&quot;Frank&quot;</span>,{"\n"}
               {"  "}<span className="text-violet-400">&quot;totalEntries&quot;</span>: <span className="text-amber-400">{entries.length}</span>,{"\n"}
-              {"  "}<span className="text-violet-400">&quot;entries&quot;</span>: <span className="text-slate-600">{"{"}</span>{"\n"}
-              {"    "}<span className="text-violet-400">&quot;strategic&quot;</span>: [<span className="text-slate-600">{"{ \"insight\": \"...\", \"confidence\": \"high\" }"}</span>],{"\n"}
-              {"    "}<span className="text-violet-400">&quot;technical&quot;</span>: [<span className="text-slate-600">...</span>],{"\n"}
-              {"    "}<span className="text-violet-400">&quot;horizon&quot;</span>:   [<span className="text-slate-600">{"{ \"wish\": \"...\" }"}</span>]{"\n"}
-              {"  "}<span className="text-slate-600">{"}"}</span>,{"\n"}
-              {"  "}<span className="text-violet-400">&quot;meta&quot;</span>: <span className="text-slate-600">{"{ \"format\": \"starlight-vault-v1\" }"}</span>{"\n"}
-              <span className="text-slate-600">{"}"}</span>
+              {"  "}<span className="text-violet-400">&quot;layers&quot;</span>: <span className="text-amber-400">9</span>,{"\n"}
+              {"  "}<span className="text-violet-400">&quot;verticals&quot;</span>: [<span className="text-emerald-400">&quot;people&quot;</span>, <span className="text-emerald-400">&quot;sound&quot;</span>, <span className="text-emerald-400">&quot;music-is&quot;</span>],{"\n"}
+              {"  "}<span className="text-violet-400">&quot;substrate&quot;</span>: <span className="text-slate-400">{"{ \"name\": \"SIP\", \"version\": \"1.1.0\" }"}</span>,{"\n"}
+              {"  "}<span className="text-violet-400">&quot;meta&quot;</span>: <span className="text-slate-400">{"{ \"format\": \"starlight-vault-v1\" }"}</span>{"\n"}
+              <span className="text-slate-400">{"}"}</span>
               <span className="animate-blink ml-0.5 text-violet-400">_</span>
             </pre>
           </div>
 
-          <p className="mt-4 text-[13px] text-slate-600">
+          <p className="mt-4 text-[13px] text-slate-400">
             No API key needed. Raw JSONL also available directly from GitHub.
           </p>
         </div>
@@ -364,32 +537,31 @@ export default async function HomePage() {
         </div>
         <div className="relative mx-auto max-w-5xl text-center">
           <h2 className="text-3xl font-bold text-white md:text-4xl">
-            Start your vault
+            Three paths. One substrate.
           </h2>
-          <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-slate-400">
-            Fork. Add your insights. Deploy.
-            Your memory compounds from day one.
+          <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-slate-400">
+            Adopt the protocol. Run the reference build. Or spawn your own
+            sovereign vertical. Pick the path that matches your edge.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
-            <a
-              href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2FStarlight-Intelligence-System&root-directory=site"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_40px_rgba(167,139,250,0.25)]"
+            <Link
+              href="/protocol"
+              className="rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_40px_rgba(167,139,250,0.25)]"
             >
-              Deploy your vault
-              <span className="ml-1 inline-block transition-micro group-hover:translate-x-0.5">
-                &rarr;
-              </span>
-            </a>
-            <a
-              href="https://github.com/frankxai/Starlight-Intelligence-System"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full border border-white/[0.1] px-6 py-3 text-[14px] font-medium text-white transition-std hover:bg-white/[0.04]"
+              Adopt SIP &rarr;
+            </Link>
+            <Link
+              href="/quickstart"
+              className="rounded-full border border-white/[0.12] px-6 py-3 text-[14px] font-medium text-white transition-std hover:border-white/[0.25] hover:bg-white/[0.04]"
             >
-              View on GitHub
-            </a>
+              Run the reference build
+            </Link>
+            <Link
+              href="/verticals"
+              className="rounded-full border border-white/[0.12] px-6 py-3 text-[14px] font-medium text-white transition-std hover:border-white/[0.25] hover:bg-white/[0.04]"
+            >
+              Spawn your vertical
+            </Link>
           </div>
         </div>
       </section>
@@ -397,11 +569,108 @@ export default async function HomePage() {
   );
 }
 
-function Stat({ n, label }: { n: number; label: string }) {
+function Stat({ n, label }: { n: number | string; label: string }) {
   return (
-    <div className="text-slate-500">
+    <div className="text-slate-400">
       <span className="font-semibold text-white">{n}</span>{" "}
       <span className="text-[13px]">{label}</span>
+    </div>
+  );
+}
+
+function CtaCard({
+  href,
+  eyebrow,
+  title,
+  desc,
+  accent,
+}: {
+  href: "/protocol" | "/quickstart" | "/verticals";
+  eyebrow: string;
+  title: string;
+  desc: string;
+  accent: "violet" | "cyan" | "fuchsia";
+}) {
+  const accents = {
+    violet: "border-violet-500/[0.2] hover:border-violet-500/[0.4] bg-violet-500/[0.03]",
+    cyan: "border-cyan-500/[0.2] hover:border-cyan-500/[0.4] bg-cyan-500/[0.03]",
+    fuchsia: "border-fuchsia-500/[0.2] hover:border-fuchsia-500/[0.4] bg-fuchsia-500/[0.03]",
+  };
+  const eyebrowColors = {
+    violet: "text-violet-400",
+    cyan: "text-cyan-400",
+    fuchsia: "text-fuchsia-400",
+  };
+  return (
+    <Link
+      href={href}
+      className={`group rounded-xl border p-5 transition-std ${accents[accent]}`}
+    >
+      <p
+        className={`text-[10px] font-semibold uppercase tracking-widest ${eyebrowColors[accent]}`}
+      >
+        {eyebrow}
+      </p>
+      <h3 className="mt-2 text-[16px] font-semibold text-white">
+        {title}{" "}
+        <span className="inline-block transition-micro group-hover:translate-x-0.5">
+          &rarr;
+        </span>
+      </h3>
+      <p className="mt-2 text-[13px] leading-relaxed text-slate-400">{desc}</p>
+    </Link>
+  );
+}
+
+function VerticalSummary({
+  name,
+  tagline,
+  counts,
+  accent,
+}: {
+  name: string;
+  tagline: string;
+  counts: string;
+  accent: "violet" | "cyan" | "fuchsia";
+}) {
+  const accents = {
+    violet: "border-violet-500/[0.2] bg-violet-500/[0.04]",
+    cyan: "border-cyan-500/[0.2] bg-cyan-500/[0.04]",
+    fuchsia: "border-fuchsia-500/[0.2] bg-fuchsia-500/[0.04]",
+  };
+  const text = {
+    violet: "text-violet-400",
+    cyan: "text-cyan-400",
+    fuchsia: "text-fuchsia-400",
+  };
+  return (
+    <div
+      className={`rounded-xl border p-5 transition-std hover:border-white/[0.2] ${accents[accent]}`}
+    >
+      <p className={`text-[13px] font-semibold ${text[accent]}`}>{name}</p>
+      <p className="mt-2 text-[12px] leading-relaxed text-slate-400">
+        {tagline}
+      </p>
+      <p className="mt-4 font-mono text-[11px] text-slate-400">{counts}</p>
+    </div>
+  );
+}
+
+function SurfaceTile({
+  name,
+  port,
+  accent,
+}: {
+  name: string;
+  port: string;
+  accent: string;
+}) {
+  return (
+    <div className="bg-[#0c0c12] p-4">
+      <p className={`text-[11px] font-semibold ${accent}`}>{name}</p>
+      <code className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-slate-400">
+        {port}
+      </code>
     </div>
   );
 }

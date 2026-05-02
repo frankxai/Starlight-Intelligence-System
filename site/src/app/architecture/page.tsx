@@ -1,40 +1,185 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  getAllEntries,
-  getVaultRegistry,
-  VAULT_CATEGORIES,
-  getCategoryMeta,
-} from "@/lib/vault";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Architecture",
   description:
-    "How Starlight Intelligence works. JSONL as truth, SQLite as index, MCP as the pipe.",
+    "10 Intelligence Systems composed on the Starlight Intelligence Protocol substrate. JSONL as truth. SIP as contract. The Orchestrator routes the rest.",
   openGraph: {
     title: "Architecture — Starlight Intelligence",
     description:
-      "How Starlight Intelligence works. JSONL as truth, SQLite as index, MCP as the pipe.",
+      "10 Intelligence Systems composed on SIP. JSONL as truth, attestation as contract, sovereignty as invariant.",
     type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Architecture — Starlight Intelligence",
+    description:
+      "10 Intelligence Systems composed on SIP. JSONL as truth, attestation as contract.",
   },
 };
 
-const PLATFORMS = [
-  { name: "Claude Code", color: "text-violet-400", border: "border-violet-500/[0.2]" },
-  { name: "Cursor", color: "text-cyan-400", border: "border-cyan-500/[0.2]" },
-  { name: "Codex", color: "text-fuchsia-400", border: "border-fuchsia-500/[0.2]" },
-  { name: "Gemini CLI", color: "text-amber-400", border: "border-amber-500/[0.2]" },
-  { name: "OpenCode", color: "text-emerald-400", border: "border-emerald-500/[0.2]" },
+type Layer = {
+  n: string;
+  name: string;
+  tier: string;
+  purpose: string;
+  vault: string;
+  status: "core" | "cross-cutting" | "optional" | "master" | "substrate";
+};
+
+const LAYERS: Layer[] = [
+  {
+    n: "0",
+    name: "Substrate (SIP)",
+    tier: "Protocol",
+    purpose: "Load-bearing protocol. Invisible when working.",
+    vault: "SIP.md, /memory/intake/",
+    status: "substrate",
+  },
+  {
+    n: "1",
+    name: "Self / Genius IS",
+    tier: "Excavation",
+    purpose: "What only you uniquely see. Foundation for the rest.",
+    vault: "genius/",
+    status: "core",
+  },
+  {
+    n: "2",
+    name: "Second Brain IS",
+    tier: "Memory",
+    purpose: "Daily capture compounds into surfaceable memory.",
+    vault: "second-brain/",
+    status: "cross-cutting",
+  },
+  {
+    n: "3",
+    name: "Brand IS",
+    tier: "Vision",
+    purpose: "5-horizon vision + Brand Kit (voice, palette, vocabulary).",
+    vault: "vision/, brand/",
+    status: "core",
+  },
+  {
+    n: "4",
+    name: "Business IS",
+    tier: "Business",
+    purpose: "Entity architecture, revenue model, tax sanity.",
+    vault: "business/",
+    status: "core",
+  },
+  {
+    n: "5",
+    name: "Creator IS",
+    tier: "Composition",
+    purpose: "Frameworks → multi-modal pipelines + executor playbooks.",
+    vault: "creator/",
+    status: "core",
+  },
+  {
+    n: "6",
+    name: "Wealth IS",
+    tier: "Vertical",
+    purpose: "Disruptive Passive Income ledger + thesis engine.",
+    vault: "wealth/",
+    status: "core",
+  },
+  {
+    n: "7",
+    name: "Code IS",
+    tier: "Product / Automation",
+    purpose: "Code as a sovereign domain. MCP builders, automations.",
+    vault: "code/",
+    status: "core",
+  },
+  {
+    n: "8",
+    name: "Voice & Video IS",
+    tier: "Narrative Media",
+    purpose: "Modality attestation across audio, video, multi-modal.",
+    vault: "voice-video/",
+    status: "core",
+  },
+  {
+    n: "9",
+    name: "Family IS",
+    tier: "Relational",
+    purpose: "Network + alliance-readiness + relationship rhythms.",
+    vault: "family/, relational/",
+    status: "cross-cutting",
+  },
+  {
+    n: "—",
+    name: "Health IS",
+    tier: "Embodiment",
+    purpose: "Energy + recovery. Cross-cutting rhythm under everything.",
+    vault: "health/",
+    status: "cross-cutting",
+  },
+  {
+    n: "—",
+    name: "Spiritual IS",
+    tier: "Founder · optional",
+    purpose: "Founder-layer practice. Never imposed on adopters.",
+    vault: "private/spiritual/",
+    status: "optional",
+  },
+  {
+    n: "★",
+    name: "Starlight Orchestrator",
+    tier: "Master · routing",
+    purpose: "Routes voice/text intent across the other nine.",
+    vault: "core/orchestrator/",
+    status: "master",
+  },
 ];
 
-export default async function ArchitecturePage() {
-  const [entries, registry] = await Promise.all([
-    getAllEntries(),
-    getVaultRegistry(),
-  ]);
+const STATUS_LABEL: Record<Layer["status"], string> = {
+  substrate: "substrate",
+  core: "core",
+  "cross-cutting": "cross-cutting",
+  optional: "optional",
+  master: "master",
+};
 
+const STATUS_CLASS: Record<Layer["status"], string> = {
+  substrate:
+    "border-violet-500/[0.3] bg-violet-500/[0.08] text-violet-200",
+  core: "border-cyan-500/[0.2] bg-cyan-500/[0.05] text-cyan-300",
+  "cross-cutting":
+    "border-emerald-500/[0.2] bg-emerald-500/[0.05] text-emerald-300",
+  optional: "border-white/[0.1] bg-white/[0.02] text-slate-400",
+  master: "border-fuchsia-500/[0.3] bg-fuchsia-500/[0.08] text-fuchsia-200",
+};
+
+const PLATFORMS = [
+  {
+    name: "Claude Code",
+    color: "text-violet-400",
+    border: "border-violet-500/[0.2]",
+  },
+  { name: "Cursor", color: "text-cyan-400", border: "border-cyan-500/[0.2]" },
+  {
+    name: "Codex",
+    color: "text-fuchsia-400",
+    border: "border-fuchsia-500/[0.2]",
+  },
+  {
+    name: "Gemini CLI",
+    color: "text-amber-400",
+    border: "border-amber-500/[0.2]",
+  },
+  {
+    name: "OpenCode",
+    color: "text-emerald-400",
+    border: "border-emerald-500/[0.2]",
+  },
+];
+
+export default function ArchitecturePage() {
   return (
     <div>
       {/* ── Hero ── */}
@@ -45,250 +190,246 @@ export default async function ArchitecturePage() {
         </div>
         <div className="relative mx-auto max-w-3xl px-6 py-20">
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
-            One principle
+            10-IS composition
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
-            JSONL is truth.
+            Ten Intelligence Systems.
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              Everything else is a rebuildable index.
+              Composed, not stacked.
             </span>
           </h1>
           <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-slate-400">
-            No database lock-in. No proprietary format. Your intelligence lives
-            as plain files you can grep, diff, and version — and every index on
-            top can be thrown away and rebuilt in seconds.
+            Each layer has its own agent, skills, commands, and vault namespace.
+            ISes reinforce each other — Genius is the root, Brand is the
+            compass, Second Brain is the memory, Health and Family run
+            continuously underneath everything. The Orchestrator routes voice
+            or text intent to the right team.
           </p>
         </div>
       </section>
 
-      {/* ── The Flow ── */}
+      {/* ── Foundation: JSONL truth ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
-            The flow
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            Foundation
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
-            Four layers. Each one replaceable.
+            JSONL is truth. Everything else is a rebuildable index.
+          </p>
+          <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-slate-400">
+            No database lock-in. No proprietary format. Your intelligence lives
+            as plain files you can grep, diff, and version — and every index on
+            top can be thrown away and rebuilt in seconds.
           </p>
 
           <div className="mt-10 grid gap-4 md:grid-cols-4">
             <FlowNode
               step="01"
               title="JSONL files"
-              desc="One file per vault category. Append-only. Git-tracked."
+              desc="One file per vault namespace. Append-only. Git-tracked."
               accent="violet"
             />
             <FlowNode
               step="02"
               title="SQLite index"
-              desc="FTS5 full-text search + vector embeddings. Rebuildable."
+              desc="FTS5 full-text + vectors. Rebuildable in seconds."
               accent="cyan"
             />
             <FlowNode
               step="03"
               title="MCP server"
-              desc="JSON-RPC 2.0 protocol. Standard tool calls."
+              desc="JSON-RPC 2.0. Tool calls every adapter speaks."
               accent="fuchsia"
             />
             <FlowNode
               step="04"
               title="AI tools"
-              desc="Claude, Cursor, Codex, Gemini, OpenCode — all read the same memory."
+              desc="Claude · Cursor · Codex · Gemini · OpenCode — same memory."
               accent="emerald"
             />
           </div>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-[11px] uppercase tracking-widest text-slate-600">
-            <span>truth</span>
-            <span className="text-slate-700">&rarr;</span>
-            <span>rebuildable</span>
-            <span className="text-slate-700">&rarr;</span>
-            <span>json-rpc 2.0</span>
-            <span className="text-slate-700">&rarr;</span>
-            <span>compound</span>
-          </div>
         </div>
       </section>
 
-      {/* ── The Six Vaults ── */}
+      {/* ── 10-IS table ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
-            Six semantic vaults
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            The ten Intelligence Systems
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
-            Each category is its own JSONL file, indexed separately.
+            Each layer is its own IS. You compose what you need.
           </p>
 
-          <div className="mt-10 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {VAULT_CATEGORIES.map((cat) => {
-              const meta = getCategoryMeta(cat);
-              const count = entries.filter(
-                (e) => e.vaultCategory === cat
-              ).length;
-              return (
-                <div
-                  key={cat}
-                  className={`rounded-xl border p-5 transition-std hover:border-white/[0.2] ${meta.bg}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[13px] font-semibold ${meta.color}`}>
-                      {meta.icon} {meta.label}
-                    </span>
-                    <span className="rounded-full bg-white/[0.04] px-2 py-0.5 text-[10px] text-slate-500">
-                      {count}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-[12px] text-slate-600">{meta.desc}</p>
-                  <code className="mt-3 block font-mono text-[11px] text-slate-500">
-                    vaults/*/{cat}.jsonl
-                  </code>
-                </div>
-              );
-            })}
-          </div>
-
-          <p className="mt-6 text-[13px] text-slate-600">
-            {entries.length} entries across {registry.length} public vault
-            {registry.length === 1 ? "" : "s"}. All rebuildable from raw files.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Temporal Layer ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
-            Temporal layer
-          </h2>
-          <p className="mt-3 text-xl font-semibold text-white">
-            Intelligence that ages gracefully.
-          </p>
-          <p className="mt-4 text-[14px] leading-relaxed text-slate-400">
-            Every entry carries temporal metadata. Old insights fade unless
-            confirmed. Stale decisions surface for review. The system knows
-            what&apos;s still true.
-          </p>
-
-          <div className="mt-8 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
-            <div className="border-b border-white/[0.04] px-4 py-2">
-              <code className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
-                strategic.jsonl
-              </code>
+          <div className="mt-10 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-left text-[13px]">
+                <thead>
+                  <tr className="border-b border-white/[0.06]">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                      #
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                      Layer
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                      Tier
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                      Purpose
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                      Vault
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                      Posture
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {LAYERS.map((l, i) => (
+                    <tr
+                      key={l.name}
+                      className={
+                        i < LAYERS.length - 1
+                          ? "border-b border-white/[0.04]"
+                          : ""
+                      }
+                    >
+                      <td className="px-4 py-3 align-top font-mono text-[12px] text-slate-400">
+                        {l.n}
+                      </td>
+                      <td className="px-4 py-3 align-top font-semibold text-white">
+                        {l.name}
+                      </td>
+                      <td className="px-4 py-3 align-top text-[12px] text-slate-400">
+                        {l.tier}
+                      </td>
+                      <td className="px-4 py-3 align-top text-slate-300">
+                        {l.purpose}
+                      </td>
+                      <td className="px-4 py-3 align-top font-mono text-[12px] text-violet-300">
+                        {l.vault}
+                      </td>
+                      <td className="px-4 py-3 align-top">
+                        <span
+                          className={`inline-block rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wider ${STATUS_CLASS[l.status]}`}
+                        >
+                          {STATUS_LABEL[l.status]}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.8] text-slate-500">
-              <span className="text-slate-600">{"{"}</span>
-              {"\n"}
-              {"  "}
-              <span className="text-violet-400">&quot;insight&quot;</span>:{" "}
-              <span className="text-emerald-400">
-                &quot;Open core beats premature tiers&quot;
-              </span>
-              ,{"\n"}
-              {"  "}
-              <span className="text-violet-400">&quot;confidence&quot;</span>:{" "}
-              <span className="text-emerald-400">&quot;high&quot;</span>,{"\n"}
-              {"  "}
-              <span className="text-violet-400">&quot;validFrom&quot;</span>:{" "}
-              <span className="text-amber-400">&quot;2026-04-05&quot;</span>,
-              {"\n"}
-              {"  "}
-              <span className="text-violet-400">&quot;validUntil&quot;</span>:{" "}
-              <span className="text-amber-400">&quot;2026-10-05&quot;</span>,
-              {"\n"}
-              {"  "}
-              <span className="text-violet-400">&quot;lastConfirmed&quot;</span>
-              : <span className="text-amber-400">&quot;2026-04-08&quot;</span>,
-              {"\n"}
-              {"  "}
-              <span className="text-violet-400">
-                &quot;confidenceDecay&quot;
-              </span>
-              : <span className="text-cyan-400">0.92</span>
-              {"\n"}
-              <span className="text-slate-600">{"}"}</span>
-            </pre>
           </div>
 
-          <dl className="mt-6 grid gap-3 sm:grid-cols-2">
-            <TemporalField
-              name="validFrom"
-              desc="When the insight became true"
-            />
-            <TemporalField
-              name="validUntil"
-              desc="Auto-flagged for review after this date"
-            />
-            <TemporalField
-              name="lastConfirmed"
-              desc="Most recent time you reaffirmed it"
-            />
-            <TemporalField
-              name="confidenceDecay"
-              desc="Drops from 1.0 as time passes without confirmation"
-            />
-          </dl>
+          <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
+            Canonical reference:{" "}
+            <a
+              href="https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/ARCHITECTURE.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-violet-300 transition-std hover:text-violet-200"
+            >
+              docs/ARCHITECTURE.md
+            </a>
+            .
+          </p>
         </div>
       </section>
 
-      {/* ── The Learning Loop ── */}
+      {/* ── Domain Sub-Stack Tier ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
-            The learning loop
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            Domain Sub-Stack Tier
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
-            Every session makes the next one sharper.
+            Verticals compose the same substrate for a specific domain.
           </p>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-4">
-            {[
-              { label: "Use", desc: "Agent pulls context from your vault" },
-              { label: "Learn", desc: "New insights get appended as JSONL" },
-              { label: "Improve", desc: "Indexes rebuild; confidence updates" },
-              {
-                label: "Use again",
-                desc: "Next session starts with deeper memory",
-              },
-            ].map((stage, i) => (
-              <div
-                key={stage.label}
-                className="relative rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 transition-std hover:border-white/[0.12] hover:bg-white/[0.04]"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-[11px] text-violet-400">
-                    0{i + 1}
-                  </span>
-                  <span className="text-[13px] font-semibold text-white">
-                    {stage.label}
-                  </span>
-                </div>
-                <p className="mt-2 text-[12px] leading-relaxed text-slate-500">
-                  {stage.desc}
-                </p>
-              </div>
-            ))}
+          <p className="mt-5 text-[14px] leading-[1.85] text-slate-400">
+            Three reference Domain Sub-Stacks ship in this repo: People
+            Intelligence (6 sub-systems · 28 commands · 6 agents), Sound
+            Intelligence (6 / 30 / 6), and Music IS (6+1 / 8 / 7,
+            Frank-operated).
+          </p>
+          <p className="mt-4 text-[14px] leading-[1.85] text-slate-400">
+            Every Domain Sub-Stack carries the same 7-file contract: README ·
+            SUB-SYSTEMS · AGENTS · SOUL · STACK · CANON · MEMORY. The
+            meta-command{" "}
+            <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[13px] text-violet-300">
+              /spawn-domain-stack
+            </code>{" "}
+            generalizes the pattern.
+          </p>
+          <div className="mt-8">
+            <Link
+              href="/verticals"
+              className="rounded-full bg-white px-5 py-2.5 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.2)]"
+            >
+              See the verticals &rarr;
+            </Link>
           </div>
+        </div>
+      </section>
 
-          <p className="mt-6 text-center text-[11px] uppercase tracking-widest text-slate-600">
-            &rarr; the loop that learns is the loop that lives &rarr;
+      {/* ── Composition rules ── */}
+      <section className="border-b border-white/[0.04] px-6 py-20">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            Composition rules
+          </h2>
+          <p className="mt-3 text-xl font-semibold text-white">
+            The graph is a reinforcement network, not a hierarchy.
           </p>
+          <ul className="mt-6 space-y-4 pl-6 text-[14px] leading-[1.85] text-slate-400">
+            <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
+              <strong className="text-white">Genius is the root.</strong>{" "}
+              Every downstream layer references it. Skip the root and the tree
+              grows crooked.
+            </li>
+            <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
+              <strong className="text-white">Foundation before surface.</strong>{" "}
+              Layers 1–3 (Genius, Second Brain, Brand) are foundation. 4–8
+              (Business, Creator, Wealth, Code, Voice & Video) are surface.
+              Surface without foundation produces noise.
+            </li>
+            <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
+              <strong className="text-white">Cross-cutting throughout.</strong>{" "}
+              Health, Second Brain, and Family run continuously, not in their
+              own sprint blocks (unless burnout / chaos / isolation is the
+              primary bottleneck).
+            </li>
+            <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
+              <strong className="text-white">Sovereignty per layer.</strong>{" "}
+              Layer outputs live in your instance only. Substrate retains no
+              copies.
+            </li>
+            <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
+              <strong className="text-white">Attestation per layer.</strong>{" "}
+              Every output auto-stamps with &ldquo;Built on SIP&rdquo; on real
+              composition. Decorative attestation is refused.
+            </li>
+          </ul>
         </div>
       </section>
 
       {/* ── Cross-tool compounding ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Cross-tool compounding
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
             One memory. Every agent. No silos.
           </p>
           <p className="mt-4 max-w-xl text-[14px] leading-relaxed text-slate-400">
-            The MCP protocol is the universal pipe. Whatever tool you&apos;re in
-            today, your intelligence is already there.
+            The MCP protocol is the universal pipe. Whatever tool you&apos;re
+            in today, your intelligence is already there.
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-6">
@@ -303,7 +444,7 @@ export default async function ArchitecturePage() {
               ))}
             </div>
 
-            <div className="font-mono text-[11px] uppercase tracking-widest text-slate-600">
+            <div className="font-mono text-[11px] uppercase tracking-widest text-slate-400">
               &darr; all read &darr;
             </div>
 
@@ -311,11 +452,31 @@ export default async function ArchitecturePage() {
               <code className="font-mono text-[13px] text-violet-300">
                 starlight-sis
               </code>
-              <p className="mt-1 text-[11px] uppercase tracking-widest text-slate-500">
+              <p className="mt-1 text-[11px] uppercase tracking-widest text-slate-400">
                 one shared memory
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Extension model ── */}
+      <section className="border-b border-white/[0.04] px-6 py-20">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            Extension
+          </h2>
+          <p className="mt-3 text-xl font-semibold text-white">
+            Adding an 11th IS is a named procedure, not a refactor.
+          </p>
+          <p className="mt-5 text-[14px] leading-[1.85] text-slate-400">
+            Every new layer requires: one agent · 1–2 skills · 2–3 commands ·
+            knowledge templates · /compose-stack sequencing update ·
+            ARCHITECTURE.md entry · /luminor-board pressure-test before merge ·
+            /openclaw-audit adversarial pass. Extension is welcome. Sprawl is
+            not. If a layer&apos;s use case is already covered by an existing
+            layer&apos;s commands, it&apos;s a command, not a layer.
+          </p>
         </div>
       </section>
 
@@ -333,10 +494,10 @@ export default async function ArchitecturePage() {
               Start the quickstart &rarr;
             </Link>
             <Link
-              href="/vaults"
+              href="/protocol"
               className="rounded-full border border-white/[0.1] px-6 py-3 text-[14px] font-medium text-white transition-std hover:border-white/[0.2] hover:bg-white/[0.04]"
             >
-              Explore live vaults
+              Read the protocol
             </Link>
           </div>
         </div>
@@ -376,18 +537,7 @@ function FlowNode({
         {step}
       </span>
       <h3 className="mt-2 text-[14px] font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-[12px] leading-relaxed text-slate-500">{desc}</p>
-    </div>
-  );
-}
-
-function TemporalField({ name, desc }: { name: string; desc: string }) {
-  return (
-    <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
-      <dt className="font-mono text-[12px] text-violet-300">{name}</dt>
-      <dd className="mt-1 text-[12px] leading-relaxed text-slate-500">
-        {desc}
-      </dd>
+      <p className="mt-2 text-[12px] leading-relaxed text-slate-400">{desc}</p>
     </div>
   );
 }

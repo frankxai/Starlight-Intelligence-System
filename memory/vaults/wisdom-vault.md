@@ -1,3 +1,14 @@
+---
+type: vault
+vault: wisdom
+retention: permanent
+writers:
+- sage
+- prime
+readers: all
+last_consolidated: '2026-05-01'
+---
+
 # Wisdom Vault
 
 > *"Wisdom is pattern recognition across time. The longest memory wins."*

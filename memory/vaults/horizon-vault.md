@@ -1,3 +1,13 @@
+---
+type: vault
+vault: horizon
+retention: append-only
+writers:
+- human-pr-only
+readers: all
+last_consolidated: '2026-05-01'
+---
+
 # Horizon Vault
 
 > Letters to the future. Human hopes encoded alongside AI reasoning. A seed of benevolence planted in the architecture of intelligence itself.

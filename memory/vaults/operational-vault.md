@@ -1,3 +1,14 @@
+---
+type: vault
+vault: operational
+retention: rolling-90d
+writers:
+- orchestrator
+- prime
+readers: all
+last_consolidated: '2026-05-01'
+---
+
 # Operational Vault
 
 > *"Know the current state. Navigate from here."*
