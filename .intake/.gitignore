@@ -1,0 +1,9 @@
+# Inbox: track conventions only. Raw drops + processed archive stay local.
+# Privacy-by-default — these may contain personal context, drafts, or other
+# instance-private material. PROCESSING-LOG.md captures the extracted public
+# trail; that's the audit surface.
+
+*
+!.gitignore
+!README.md
+!PROCESSING-LOG.md
