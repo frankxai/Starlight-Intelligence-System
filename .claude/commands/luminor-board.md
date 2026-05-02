@@ -1,15 +1,22 @@
 ---
 name: luminor-board
-description: Convene the Luminor Board — five archetype advisors plus Lumina overseer — to pressure-test any proposal before commitment. Optional protocol command; composes from Arcanea canon.
+description: Arcanea-canonical board — five Guardian archetype advisors plus Lumina overseer — to pressure-test a proposal that explicitly composes Arcanea canon. For SIS-substrate-tier governance, prefer /starlight-board (canon-free).
 allowed-tools: Read, WebSearch, mcp__arcanea
 argument-hint: <proposal to pressure-test>
 ---
 
 # /luminor-board
 
+> **Naming reconciliation (2026-05-03):** Per the brand-register rules in `memory/vaults/strategic-vault.md` (Naming hierarchy resolution), the **Luminor** register is Arcanea-canonical. `/luminor-board` stays the right command when a proposal explicitly composes Arcanea canon (Guardians, Vel'Tara, etc.) under CC-BY-NC attribution. For **SIS-substrate-tier governance**, the canonical command is now `/starlight-board` (canon-free, functional vector names only). Both run the same shape of pressure-test; the difference is canon attribution.
+
 Load `SIP.md`, `AGENTS.md`, and (if using Arcanea canon) query `arcanea-mcp` for the Guardian archetype set. Convene the Luminor Board. Five archetypal advisors challenge the proposal; Lumina synthesizes.
 
-**Note:** This command imports Arcanea canon (Guardian names) under CC-BY-NC attribution. If using in a closed-source commercial context for another vertical, swap to the functional-name variant below.
+**When to use this vs `/starlight-board`:**
+
+- **`/luminor-board`** — proposal composes Arcanea canon (Guardian names, Vel'Tara, mythic register). Carries CC-BY-NC attribution. Right for Arcanea-vertical and Arcanea-aligned work.
+- **`/starlight-board`** — proposal is SIS-substrate or commercial-register. Canon-free. Functional vector names. No attribution overhead.
+
+**Note:** This command imports Arcanea canon (Guardian names) under CC-BY-NC attribution. If using in a closed-source commercial context for another vertical, swap to the functional-name variant below — or use `/starlight-board`.
 
 ## Proposal
 $ARGUMENTS

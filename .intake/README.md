@@ -107,6 +107,12 @@ clause, attestation rules), the processing session **does not commit** —
 it surfaces the ask for `/luminor-board` pre-pass per the structural
 governance gate (CLAUDE.md v7.5.1+).
 
+## Slash command
+
+`/process-inbox` is the one-shot command that runs this workflow. It dispatches the catalog subagent, applies operational-tier insights, archives originals, surfaces substrate-tier asks for `/starlight-board`, and surfaces cross-repo drops. Idempotent — safe to re-run on an already-clean inbox.
+
+Distinct from `/intake` (newcomer triage — different scope).
+
 ## Workflow sanity-check
 
 - ✅ Inbox-then-process is a well-trod second-brain pattern (Tiago Forte CODE,
