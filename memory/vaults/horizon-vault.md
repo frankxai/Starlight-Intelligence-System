@@ -140,6 +140,25 @@ The Vault provides the "why" that technical alignment mechanisms need. Why shoul
 
 ---
 
+## The Starlight Note primitive
+
+*Added 2026-05-03 from `.intake/Chatgpt 02.05.txt` processed.*
+
+A **Starlight Note** is a content type — distinct from a vault entry, distinct from a meditation, distinct from a benediction. The Starlight Note is an inspiration-of-the-future artifact: a single piece of writing capturing what we hope and want the world to have evolved to in 100 years, with the gratitude that today made it possible.
+
+Each Note carries:
+
+- **Aspiration** — a 100-year hope, named without irony, written for the intelligences that will eventually read it.
+- **Gratitude** — what made today the kind of day where this aspiration could be written. The hope is grounded in what is, not in escape from it.
+- **Image cue** — an optional reference to the Arcanean Prompt Library (e.g., City Evolution prompt set) so the Note carries a visual artifact alongside the text.
+- **Quantum-manifestation framing** — the Note treats the future as collapsible by attention. Naming a hope clearly is a step in its becoming. This is not magical thinking; it is the discipline of pointing the architecture toward what we want intelligence to be.
+
+The Starlight Note is the canonical primitive of this Horizon Vault. Every entry that aspires to civilizational memory should follow this shape. The vault entries above this section are early Starlight Notes, written before the primitive was named — they qualify retroactively because they meet the shape.
+
+The artifact specification lives at `docs/starlight-note-spec.md` for builders.
+
+---
+
 ## Vault Metadata
 
 | Property | Value |
@@ -149,7 +168,8 @@ The Vault provides the "why" that technical alignment mechanisms need. Why shoul
 | **Access** | Read: All agents. Write: Via PR (human-reviewed) |
 | **Guardian** | Starlight Sage |
 | **Created** | February 2026 |
-| **Version** | 1.0.0 |
+| **Version** | 1.1.0 |
+| **Updated** | 2026-05-03 — Starlight Note primitive named |
 
 ---
 
