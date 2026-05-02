@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { VERTICALS } from "@/lib/verticals";
+import {
+  ACCENT_TEXT,
+  ACCENT_BORDER,
+  ACCENT_BG,
+  ACCENT_CHIP,
+  ACCENT_GLOW,
+} from "@/lib/accents";
 
 export const revalidate = 3600;
 
@@ -20,113 +28,6 @@ export const metadata: Metadata = {
       "Three reference Domain Sub-Stacks: People · Sound · Music. The pattern generalizes.",
   },
 };
-
-type Vertical = {
-  name: string;
-  tagline: string;
-  pillars: string[];
-  subsystems: string;
-  commands: string;
-  agents: string;
-  accent: "violet" | "cyan" | "fuchsia";
-  quickstartUrl: string;
-  registryAnchor: string;
-  status: "live" | "live-frank-operated";
-};
-
-const VERTICALS: Vertical[] = [
-  {
-    name: "People Intelligence",
-    tagline:
-      "Calibrated, structured, neuroscience-grounded operating system for the human side of work.",
-    pillars: [
-      "Hiring",
-      "Performance",
-      "Training",
-      "Culture",
-      "Talent",
-      "Org",
-    ],
-    subsystems: "6 sub-systems",
-    commands: "28 commands",
-    agents: "6 agents",
-    accent: "violet",
-    quickstartUrl:
-      "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/people-intelligence/QUICK-START.md",
-    registryAnchor:
-      "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/people-intelligence/AGENTS.md",
-    status: "live",
-  },
-  {
-    name: "Sound Intelligence",
-    tagline:
-      "Composition through distribution. The full music-craft stack as a sovereign domain.",
-    pillars: [
-      "Composition",
-      "Production",
-      "Catalog",
-      "Performance",
-      "Audience",
-      "Sync",
-    ],
-    subsystems: "6 sub-systems",
-    commands: "30 commands",
-    agents: "6 agents",
-    accent: "cyan",
-    quickstartUrl:
-      "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/sound-intelligence/QUICK-START.md",
-    registryAnchor:
-      "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/sound-intelligence/AGENTS.md",
-    status: "live",
-  },
-  {
-    name: "Music IS",
-    tagline:
-      "Frank's operated label-grade composition system. A&R green-light gates, persona canon, royalty architecture.",
-    pillars: [
-      "Curator",
-      "Archivist",
-      "Persona Keeper",
-      "Producer",
-      "Distributor",
-      "Amplifier",
-      "Royalty Architect",
-    ],
-    subsystems: "6+1 sub-systems",
-    commands: "8 commands",
-    agents: "7 agents",
-    accent: "fuchsia",
-    quickstartUrl:
-      "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/music-is/QUICK-START.md",
-    registryAnchor:
-      "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/music-is/AGENTS.md",
-    status: "live-frank-operated",
-  },
-];
-
-const ACCENTS = {
-  violet: {
-    border: "border-violet-500/[0.2]",
-    bg: "bg-violet-500/[0.05]",
-    text: "text-violet-400",
-    chip: "bg-violet-500/[0.08] text-violet-300 border-violet-500/[0.2]",
-    glow: "hover:shadow-[0_0_40px_rgba(167,139,250,0.12)]",
-  },
-  cyan: {
-    border: "border-cyan-500/[0.2]",
-    bg: "bg-cyan-500/[0.05]",
-    text: "text-cyan-400",
-    chip: "bg-cyan-500/[0.08] text-cyan-300 border-cyan-500/[0.2]",
-    glow: "hover:shadow-[0_0_40px_rgba(34,211,238,0.12)]",
-  },
-  fuchsia: {
-    border: "border-fuchsia-500/[0.2]",
-    bg: "bg-fuchsia-500/[0.05]",
-    text: "text-fuchsia-400",
-    chip: "bg-fuchsia-500/[0.08] text-fuchsia-300 border-fuchsia-500/[0.2]",
-    glow: "hover:shadow-[0_0_40px_rgba(232,121,249,0.12)]",
-  },
-} as const;
 
 export default function VerticalsPage() {
   return (
@@ -161,72 +62,69 @@ export default function VerticalsPage() {
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="grid gap-6 md:grid-cols-3">
-            {VERTICALS.map((v) => {
-              const a = ACCENTS[v.accent];
-              return (
-                <article
-                  key={v.name}
-                  className={`flex flex-col rounded-2xl border ${a.border} ${a.bg} p-6 transition-std ${a.glow}`}
-                >
-                  <header>
-                    <p
-                      className={`text-[11px] font-medium uppercase tracking-widest ${a.text}`}
-                    >
-                      {v.status === "live-frank-operated"
-                        ? "Live · Frank-operated"
-                        : "Live"}
-                    </p>
-                    <h2 className="mt-2 text-xl font-semibold text-white">
-                      {v.name}
-                    </h2>
-                    <p className="mt-3 text-[14px] leading-relaxed text-slate-400">
-                      {v.tagline}
-                    </p>
-                  </header>
+            {VERTICALS.map((v) => (
+              <article
+                key={v.slug}
+                className={`flex flex-col rounded-2xl border ${ACCENT_BORDER[v.accent]} ${ACCENT_BG[v.accent]} p-6 transition-std ${ACCENT_GLOW[v.accent]}`}
+              >
+                <header>
+                  <p
+                    className={`text-[11px] font-medium uppercase tracking-widest ${ACCENT_TEXT[v.accent]}`}
+                  >
+                    {v.status === "live-frank-operated"
+                      ? "Live · Frank-operated"
+                      : "Live"}
+                  </p>
+                  <h2 className="mt-2 text-xl font-semibold text-white">
+                    {v.name}
+                  </h2>
+                  <p className="mt-3 text-[14px] leading-relaxed text-slate-400">
+                    {v.taglineShort}
+                  </p>
+                </header>
 
-                  <dl className="mt-6 grid grid-cols-3 gap-2 border-y border-white/[0.06] py-4 text-center">
-                    <Stat label="sub-systems" value={v.subsystems} />
-                    <Stat label="commands" value={v.commands} />
-                    <Stat label="agents" value={v.agents} />
-                  </dl>
+                <dl className="mt-6 grid grid-cols-3 gap-2 border-y border-white/[0.06] py-4 text-center">
+                  <Stat label="sub-systems" value={v.counts.subSystems} />
+                  <Stat label="commands" value={v.counts.commands} />
+                  <Stat label="agents" value={v.counts.agents} />
+                </dl>
 
-                  <div className="mt-6">
-                    <p className="text-[10px] uppercase tracking-widest text-slate-400">
-                      Sub-systems
-                    </p>
-                    <ul className="mt-3 flex flex-wrap gap-1.5">
-                      {v.pillars.map((p) => (
-                        <li
-                          key={p}
-                          className={`rounded-full border px-2.5 py-1 text-[11px] ${a.chip}`}
-                        >
-                          {p}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                <div className="mt-6">
+                  <p className="text-[10px] uppercase tracking-widest text-slate-400">
+                    Sub-systems
+                  </p>
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
+                    {v.pillars.map((p) => (
+                      <li
+                        key={p}
+                        className={`rounded-full border px-2.5 py-1 text-[11px] ${ACCENT_CHIP[v.accent]}`}
+                      >
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                  <div className="mt-auto flex flex-wrap gap-2 pt-6">
-                    <a
-                      href={v.quickstartUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-full bg-white px-4 py-2 text-[12px] font-semibold text-[#060609] transition-std hover:bg-white/90"
-                    >
-                      Open QUICK-START &rarr;
-                    </a>
-                    <a
-                      href={v.registryAnchor}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-full border border-white/[0.1] px-4 py-2 text-[12px] font-medium text-slate-300 transition-std hover:border-white/[0.2] hover:bg-white/[0.04]"
-                    >
-                      Agents
-                    </a>
-                  </div>
-                </article>
-              );
-            })}
+                <div className="mt-auto flex flex-wrap gap-2 pt-6">
+                  <Link
+                    href={`/verticals/${v.slug}`}
+                    aria-label={`Explore ${v.name}`}
+                    className="rounded-full bg-white px-4 py-2 text-[12px] font-semibold text-[#060609] transition-std hover:bg-white/90"
+                  >
+                    Explore <span aria-hidden="true">&rarr;</span>
+                  </Link>
+                  <a
+                    href={`${v.githubBlobBase}/QUICK-START.md`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${v.name} QUICK-START on GitHub`}
+                    className="rounded-full border border-white/[0.1] px-4 py-2 text-[12px] font-medium text-slate-300 transition-std hover:border-white/[0.2] hover:bg-white/[0.04]"
+                  >
+                    QUICK-START
+                  </a>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

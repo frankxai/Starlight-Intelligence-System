@@ -8,6 +8,11 @@ import {
   timeAgo,
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
+import {
+  ACCENT_TEXT,
+  ACCENT_BORDER,
+  ACCENT_BG_SOFT,
+} from "@/lib/accents";
 
 export const revalidate = 3600;
 
@@ -65,23 +70,7 @@ const LAYERS: LayerCard[] = [
   },
 ];
 
-const ACCENT_BG: Record<LayerCard["accent"], string> = {
-  violet: "border-violet-500/[0.18] bg-violet-500/[0.04]",
-  cyan: "border-cyan-500/[0.18] bg-cyan-500/[0.04]",
-  fuchsia: "border-fuchsia-500/[0.18] bg-fuchsia-500/[0.04]",
-  emerald: "border-emerald-500/[0.18] bg-emerald-500/[0.04]",
-  amber: "border-amber-500/[0.18] bg-amber-500/[0.04]",
-  rose: "border-rose-500/[0.18] bg-rose-500/[0.04]",
-};
-
-const ACCENT_TEXT: Record<LayerCard["accent"], string> = {
-  violet: "text-violet-400",
-  cyan: "text-cyan-400",
-  fuchsia: "text-fuchsia-400",
-  emerald: "text-emerald-400",
-  amber: "text-amber-400",
-  rose: "text-rose-400",
-};
+// Accents come from @/lib/accents — see ACCENT_TEXT, ACCENT_BORDER, ACCENT_BG_SOFT.
 
 export default async function HomePage() {
   const [entries, registry, featured, benedictions] = await Promise.all([
@@ -196,7 +185,7 @@ export default async function HomePage() {
             {LAYERS.map((l) => (
               <div
                 key={l.name}
-                className={`group rounded-xl border p-5 transition-std hover:border-white/[0.2] ${ACCENT_BG[l.accent]}`}
+                className={`group rounded-xl border p-5 transition-std hover:border-white/[0.2] ${ACCENT_BORDER[l.accent]} ${ACCENT_BG_SOFT[l.accent]}`}
               >
                 <p
                   className={`text-[13px] font-semibold ${ACCENT_TEXT[l.accent]}`}
@@ -633,21 +622,11 @@ function VerticalSummary({
   counts: string;
   accent: "violet" | "cyan" | "fuchsia";
 }) {
-  const accents = {
-    violet: "border-violet-500/[0.2] bg-violet-500/[0.04]",
-    cyan: "border-cyan-500/[0.2] bg-cyan-500/[0.04]",
-    fuchsia: "border-fuchsia-500/[0.2] bg-fuchsia-500/[0.04]",
-  };
-  const text = {
-    violet: "text-violet-400",
-    cyan: "text-cyan-400",
-    fuchsia: "text-fuchsia-400",
-  };
   return (
     <div
-      className={`rounded-xl border p-5 transition-std hover:border-white/[0.2] ${accents[accent]}`}
+      className={`rounded-xl border p-5 transition-std hover:border-white/[0.2] ${ACCENT_BORDER[accent]} ${ACCENT_BG_SOFT[accent]}`}
     >
-      <p className={`text-[13px] font-semibold ${text[accent]}`}>{name}</p>
+      <p className={`text-[13px] font-semibold ${ACCENT_TEXT[accent]}`}>{name}</p>
       <p className="mt-2 text-[12px] leading-relaxed text-slate-400">
         {tagline}
       </p>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ACCENT_TEXT, ACCENT_BORDER } from "@/lib/accents";
 
 export const revalidate = 3600;
 
@@ -337,19 +338,13 @@ export default function CockpitPage() {
   );
 }
 
-const ACCENTS = {
-  violet: { text: "text-violet-400", border: "border-violet-500/[0.2]" },
-  cyan: { text: "text-cyan-400", border: "border-cyan-500/[0.2]" },
-  fuchsia: { text: "text-fuchsia-400", border: "border-fuchsia-500/[0.2]" },
-  emerald: { text: "text-emerald-400", border: "border-emerald-500/[0.2]" },
-} as const;
-
 function SurfaceCell({ surface }: { surface: Surface }) {
-  const a = ACCENTS[surface.accent];
   return (
     <div className="bg-[#0c0c12] p-5">
       <div className="flex items-center justify-between">
-        <p className={`text-[12px] font-semibold ${a.text}`}>{surface.name}</p>
+        <p className={`text-[12px] font-semibold ${ACCENT_TEXT[surface.accent]}`}>
+          {surface.name}
+        </p>
         <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
           {surface.port}
         </code>
@@ -372,12 +367,13 @@ function Stage({
   detail: string;
   accent: "violet" | "cyan" | "fuchsia";
 }) {
-  const a = ACCENTS[accent];
   return (
     <div
-      className={`flex-1 rounded-xl border ${a.border} bg-white/[0.02] p-5 text-center`}
+      className={`flex-1 rounded-xl border ${ACCENT_BORDER[accent]} bg-white/[0.02] p-5 text-center`}
     >
-      <p className={`font-mono text-[10px] uppercase tracking-widest ${a.text}`}>
+      <p
+        className={`font-mono text-[10px] uppercase tracking-widest ${ACCENT_TEXT[accent]}`}
+      >
         {n} · {label}
       </p>
       <p className="mt-2 text-[12px] leading-relaxed text-slate-400">{detail}</p>
