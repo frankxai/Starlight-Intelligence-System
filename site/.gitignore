@@ -36,9 +36,6 @@ yarn-error.log*
 # vercel
 .vercel
 
-# auto-synced from docs/public/ at build time via scripts/sync-explainer.mjs
-content/explainer.md
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
