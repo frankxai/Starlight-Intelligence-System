@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync-explainer": "node scripts/sync-explainer.mjs",
+    "predev": "node scripts/sync-explainer.mjs",
+    "prebuild": "node scripts/sync-explainer.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

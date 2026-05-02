@@ -30,15 +30,11 @@ const EXPLAINER_FALLBACK = `Explainer source temporarily unavailable.
 Read it on GitHub instead: [docs/public/starlight-intelligence-system.md](https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/public/starlight-intelligence-system.md).`;
 
 function loadExplainerSource(): string {
-  // process.cwd() resolves to site/ on Vercel and locally; ../docs/public is repo-relative.
-  // If the source is ever moved or the build invoked from a different cwd, fall back gracefully.
-  const path = join(
-    process.cwd(),
-    "..",
-    "docs",
-    "public",
-    "starlight-intelligence-system.md"
-  );
+  // The prebuild script (scripts/sync-explainer.mjs) copies the source markdown
+  // from docs/public/ into site/content/explainer.md so the file lives inside
+  // the Next.js function root and survives Vercel's serverless packaging.
+  // process.cwd() resolves to site/ on both Vercel and local builds.
+  const path = join(process.cwd(), "content", "explainer.md");
   let raw: string;
   try {
     raw = readFileSync(path, "utf-8");
