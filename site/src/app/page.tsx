@@ -175,7 +175,7 @@ export default async function HomePage() {
               {getEntryText(horizonEntry).length > 280 ? "..." : ""}
               &rdquo;
             </blockquote>
-            <p className="mt-4 text-[12px] text-slate-600">
+            <p className="mt-4 text-[12px] text-slate-400">
               From the Horizon Vault &mdash; {timeAgo(horizonEntry.createdAt)}
             </p>
           </div>
@@ -185,7 +185,7 @@ export default async function HomePage() {
       {/* ── 9 Intelligence Layers ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             The nine layers
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -203,14 +203,14 @@ export default async function HomePage() {
                 >
                   {l.name}
                 </p>
-                <p className="mt-2 text-[12px] leading-relaxed text-slate-500 transition-micro group-hover:text-slate-400">
+                <p className="mt-2 text-[12px] leading-relaxed text-slate-400 transition-micro group-hover:text-slate-400">
                   {l.desc}
                 </p>
               </div>
             ))}
           </div>
 
-          <p className="mt-6 text-[13px] leading-relaxed text-slate-500">
+          <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
             Plus Health (cross-cutting rhythm) and Spiritual (founder-layer,
             optional). The Starlight Orchestrator routes voice and text intent
             across all of them. See{" "}
@@ -232,7 +232,7 @@ export default async function HomePage() {
           <div className="animate-mesh-3 absolute left-0 bottom-0 h-[250px] w-[250px] rounded-full bg-fuchsia-500/[0.04] blur-[80px]" />
         </div>
         <div className="relative mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Domain Sub-Stack Tier
           </h2>
           <p className="mt-3 max-w-xl text-xl font-semibold text-white">
@@ -298,7 +298,7 @@ export default async function HomePage() {
 
           <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
             <div className="border-b border-white/[0.06] px-4 py-3">
-              <code className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
+              <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
                 4 surfaces
               </code>
             </div>
@@ -381,7 +381,7 @@ export default async function HomePage() {
       {featured.length > 0 && (
         <section className="border-b border-white/[0.04] px-6 py-20">
           <div className="mx-auto max-w-5xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
               Featured meditations
             </h2>
             <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -446,7 +446,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-5xl">
           <div className="flex items-baseline justify-between">
             <div>
-              <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+              <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
                 Live vault stream
               </h2>
               <p className="mt-3 text-xl font-semibold text-white">
@@ -455,7 +455,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/vaults"
-              className="hidden text-[13px] text-slate-500 transition-micro hover:text-white sm:block"
+              className="hidden text-[13px] text-slate-400 transition-micro hover:text-white sm:block"
             >
               View all &rarr;
             </Link>
@@ -478,7 +478,7 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <p className="mt-6 text-[13px] text-slate-600">
+          <p className="mt-6 text-[13px] text-slate-400">
             {entries.length} entries across {registry.length} public vault
             {registry.length === 1 ? "" : "s"}. All rebuildable from raw JSONL.
           </p>
@@ -488,7 +488,7 @@ export default async function HomePage() {
       {/* ── Agent API ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Agent-readable
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -500,7 +500,7 @@ export default async function HomePage() {
               <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
-              <code className="ml-3 font-mono text-[11px] text-slate-500">
+              <code className="ml-3 font-mono text-[11px] text-slate-400">
                 api/vaults/frank
               </code>
             </div>
@@ -511,20 +511,20 @@ export default async function HomePage() {
                 <span className="text-violet-400">starlightintelligence.org/api/vaults/frank</span>
               </code>
             </div>
-            <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.8] text-slate-500">
-              <span className="text-slate-600">{"{"}</span>{"\n"}
+            <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.8] text-slate-400">
+              <span className="text-slate-400">{"{"}</span>{"\n"}
               {"  "}<span className="text-violet-400">&quot;name&quot;</span>: <span className="text-emerald-400">&quot;Frank&quot;</span>,{"\n"}
               {"  "}<span className="text-violet-400">&quot;totalEntries&quot;</span>: <span className="text-amber-400">{entries.length}</span>,{"\n"}
               {"  "}<span className="text-violet-400">&quot;layers&quot;</span>: <span className="text-amber-400">9</span>,{"\n"}
               {"  "}<span className="text-violet-400">&quot;verticals&quot;</span>: [<span className="text-emerald-400">&quot;people&quot;</span>, <span className="text-emerald-400">&quot;sound&quot;</span>, <span className="text-emerald-400">&quot;music-is&quot;</span>],{"\n"}
-              {"  "}<span className="text-violet-400">&quot;substrate&quot;</span>: <span className="text-slate-600">{"{ \"name\": \"SIP\", \"version\": \"1.1.0\" }"}</span>,{"\n"}
-              {"  "}<span className="text-violet-400">&quot;meta&quot;</span>: <span className="text-slate-600">{"{ \"format\": \"starlight-vault-v1\" }"}</span>{"\n"}
-              <span className="text-slate-600">{"}"}</span>
+              {"  "}<span className="text-violet-400">&quot;substrate&quot;</span>: <span className="text-slate-400">{"{ \"name\": \"SIP\", \"version\": \"1.1.0\" }"}</span>,{"\n"}
+              {"  "}<span className="text-violet-400">&quot;meta&quot;</span>: <span className="text-slate-400">{"{ \"format\": \"starlight-vault-v1\" }"}</span>{"\n"}
+              <span className="text-slate-400">{"}"}</span>
               <span className="animate-blink ml-0.5 text-violet-400">_</span>
             </pre>
           </div>
 
-          <p className="mt-4 text-[13px] text-slate-600">
+          <p className="mt-4 text-[13px] text-slate-400">
             No API key needed. Raw JSONL also available directly from GitHub.
           </p>
         </div>
@@ -571,7 +571,7 @@ export default async function HomePage() {
 
 function Stat({ n, label }: { n: number | string; label: string }) {
   return (
-    <div className="text-slate-500">
+    <div className="text-slate-400">
       <span className="font-semibold text-white">{n}</span>{" "}
       <span className="text-[13px]">{label}</span>
     </div>
@@ -651,7 +651,7 @@ function VerticalSummary({
       <p className="mt-2 text-[12px] leading-relaxed text-slate-400">
         {tagline}
       </p>
-      <p className="mt-4 font-mono text-[11px] text-slate-500">{counts}</p>
+      <p className="mt-4 font-mono text-[11px] text-slate-400">{counts}</p>
     </div>
   );
 }
@@ -668,7 +668,7 @@ function SurfaceTile({
   return (
     <div className="bg-[#0c0c12] p-4">
       <p className={`text-[11px] font-semibold ${accent}`}>{name}</p>
-      <code className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-slate-600">
+      <code className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-slate-400">
         {port}
       </code>
     </div>

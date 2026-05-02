@@ -7,13 +7,13 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-[13px] font-medium text-white">Starlight Intelligence</p>
-            <p className="mt-2 text-[13px] leading-relaxed text-slate-500">
+            <p className="mt-2 text-[13px] leading-relaxed text-slate-400">
               Persistent context for AI agents. Built on the Starlight
               Intelligence Protocol. Local-first. Forkable. Free forever.
             </p>
           </div>
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-600">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
               Newcomer
             </p>
             <nav className="mt-3 flex flex-col gap-2" aria-label="Newcomer navigation">
@@ -33,7 +33,7 @@ export function Footer() {
             </nav>
           </div>
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-600">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
               Navigate
             </p>
             <nav className="mt-3 flex flex-col gap-2" aria-label="Footer navigation">
@@ -48,10 +48,10 @@ export function Footer() {
             </nav>
           </div>
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-600">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
               Connect
             </p>
-            <nav className="mt-3 flex flex-col gap-2">
+            <nav className="mt-3 flex flex-col gap-2" aria-label="Connect navigation">
               <FooterLink
                 href="https://github.com/frankxai/Starlight-Intelligence-System"
                 external
@@ -84,7 +84,7 @@ function FooterLink({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[13px] text-slate-500 transition-micro hover:text-white"
+        className="text-[13px] text-slate-400 transition-micro hover:text-white"
       >
         {children}
       </a>
@@ -93,7 +93,7 @@ function FooterLink({
   return (
     <Link
       href={href}
-      className="text-[13px] text-slate-500 transition-micro hover:text-white"
+      className="text-[13px] text-slate-400 transition-micro hover:text-white"
     >
       {children}
     </Link>

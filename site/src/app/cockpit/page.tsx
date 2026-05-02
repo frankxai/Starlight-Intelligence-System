@@ -118,7 +118,7 @@ export default function CockpitPage() {
       {/* ── 4 Surfaces ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             The four surfaces
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -128,7 +128,7 @@ export default function CockpitPage() {
           {/* SVG schematic */}
           <div className="mt-10 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c12]">
             <div className="border-b border-white/[0.04] px-4 py-3">
-              <code className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
+              <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
                 local-cockpit · schematic
               </code>
             </div>
@@ -139,7 +139,7 @@ export default function CockpitPage() {
             </div>
           </div>
 
-          <p className="mt-6 text-[13px] leading-relaxed text-slate-500">
+          <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
             All four surfaces share a single FastAPI router on{" "}
             <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-violet-300">
               :7373
@@ -152,7 +152,7 @@ export default function CockpitPage() {
       {/* ── Voice loop ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Voice loop
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -183,7 +183,7 @@ export default function CockpitPage() {
           </div>
 
           <div className="mt-12">
-            <p className="text-[11px] uppercase tracking-widest text-slate-600">
+            <p className="text-[11px] uppercase tracking-widest text-slate-400">
               Seven tools the loop can call
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -208,7 +208,7 @@ export default function CockpitPage() {
       {/* ── Brain viz ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Brain viz
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -250,7 +250,7 @@ export default function CockpitPage() {
       {/* ── Drafts on disk ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Drafts on disk
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -275,7 +275,7 @@ export default function CockpitPage() {
       {/* ── Privacy ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Privacy posture
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -350,11 +350,11 @@ function SurfaceCell({ surface }: { surface: Surface }) {
     <div className="bg-[#0c0c12] p-5">
       <div className="flex items-center justify-between">
         <p className={`text-[12px] font-semibold ${a.text}`}>{surface.name}</p>
-        <code className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
+        <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
           {surface.port}
         </code>
       </div>
-      <p className="mt-3 text-[12px] leading-relaxed text-slate-500">
+      <p className="mt-3 text-[12px] leading-relaxed text-slate-400">
         {surface.desc}
       </p>
     </div>

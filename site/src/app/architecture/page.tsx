@@ -151,7 +151,7 @@ const STATUS_CLASS: Record<Layer["status"], string> = {
   core: "border-cyan-500/[0.2] bg-cyan-500/[0.05] text-cyan-300",
   "cross-cutting":
     "border-emerald-500/[0.2] bg-emerald-500/[0.05] text-emerald-300",
-  optional: "border-white/[0.1] bg-white/[0.02] text-slate-500",
+  optional: "border-white/[0.1] bg-white/[0.02] text-slate-400",
   master: "border-fuchsia-500/[0.3] bg-fuchsia-500/[0.08] text-fuchsia-200",
 };
 
@@ -212,7 +212,7 @@ export default function ArchitecturePage() {
       {/* ── Foundation: JSONL truth ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Foundation
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -256,7 +256,7 @@ export default function ArchitecturePage() {
       {/* ── 10-IS table ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             The ten Intelligence Systems
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -268,22 +268,22 @@ export default function ArchitecturePage() {
               <table className="w-full border-collapse text-left text-[13px]">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
                       #
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
                       Layer
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
                       Tier
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
                       Purpose
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
                       Vault
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
                       Posture
                     </th>
                   </tr>
@@ -298,13 +298,13 @@ export default function ArchitecturePage() {
                           : ""
                       }
                     >
-                      <td className="px-4 py-3 align-top font-mono text-[12px] text-slate-500">
+                      <td className="px-4 py-3 align-top font-mono text-[12px] text-slate-400">
                         {l.n}
                       </td>
                       <td className="px-4 py-3 align-top font-semibold text-white">
                         {l.name}
                       </td>
-                      <td className="px-4 py-3 align-top text-[12px] text-slate-500">
+                      <td className="px-4 py-3 align-top text-[12px] text-slate-400">
                         {l.tier}
                       </td>
                       <td className="px-4 py-3 align-top text-slate-300">
@@ -327,7 +327,7 @@ export default function ArchitecturePage() {
             </div>
           </div>
 
-          <p className="mt-6 text-[13px] leading-relaxed text-slate-500">
+          <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
             Canonical reference:{" "}
             <a
               href="https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/ARCHITECTURE.md"
@@ -345,7 +345,7 @@ export default function ArchitecturePage() {
       {/* ── Domain Sub-Stack Tier ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Domain Sub-Stack Tier
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -380,7 +380,7 @@ export default function ArchitecturePage() {
       {/* ── Composition rules ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Composition rules
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -421,7 +421,7 @@ export default function ArchitecturePage() {
       {/* ── Cross-tool compounding ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Cross-tool compounding
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -444,7 +444,7 @@ export default function ArchitecturePage() {
               ))}
             </div>
 
-            <div className="font-mono text-[11px] uppercase tracking-widest text-slate-600">
+            <div className="font-mono text-[11px] uppercase tracking-widest text-slate-400">
               &darr; all read &darr;
             </div>
 
@@ -452,7 +452,7 @@ export default function ArchitecturePage() {
               <code className="font-mono text-[13px] text-violet-300">
                 starlight-sis
               </code>
-              <p className="mt-1 text-[11px] uppercase tracking-widest text-slate-500">
+              <p className="mt-1 text-[11px] uppercase tracking-widest text-slate-400">
                 one shared memory
               </p>
             </div>
@@ -463,7 +463,7 @@ export default function ArchitecturePage() {
       {/* ── Extension model ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Extension
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -537,7 +537,7 @@ function FlowNode({
         {step}
       </span>
       <h3 className="mt-2 text-[14px] font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-[12px] leading-relaxed text-slate-500">{desc}</p>
+      <p className="mt-2 text-[12px] leading-relaxed text-slate-400">{desc}</p>
     </div>
   );
 }

@@ -191,7 +191,7 @@ export default function VerticalsPage() {
                   </dl>
 
                   <div className="mt-6">
-                    <p className="text-[10px] uppercase tracking-widest text-slate-600">
+                    <p className="text-[10px] uppercase tracking-widest text-slate-400">
                       Sub-systems
                     </p>
                     <ul className="mt-3 flex flex-wrap gap-1.5">
@@ -234,7 +234,7 @@ export default function VerticalsPage() {
       {/* ── Pattern generalizes ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             The pattern
           </p>
           <h2 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
@@ -269,13 +269,13 @@ export default function VerticalsPage() {
               <span className="text-slate-400">--domain</span>{" "}
               <span className="text-emerald-400">&quot;Clinical Intelligence&quot;</span>
               {"\n\n"}
-              <span className="text-slate-500">
+              <span className="text-slate-400">
                 {
                   "// Diagnoses domain → proposes 4-7 sub-systems → scaffolds the 7-file contract"
                 }
               </span>
               {"\n"}
-              <span className="text-slate-500">
+              <span className="text-slate-400">
                 {
                   "// Generates agents, commands, vault namespaces, and SIP attestation"
                 }
@@ -283,7 +283,7 @@ export default function VerticalsPage() {
             </pre>
           </div>
 
-          <p className="mt-8 text-[13px] leading-relaxed text-slate-500">
+          <p className="mt-8 text-[13px] leading-relaxed text-slate-400">
             Forking-domain-stacks reference:{" "}
             <a
               href="https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/forking-domain-stacks.md"
@@ -326,7 +326,7 @@ export default function VerticalsPage() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-widest text-slate-600">
+      <dt className="text-[10px] uppercase tracking-widest text-slate-400">
         {label}
       </dt>
       <dd className="mt-1 font-mono text-[12px] text-white">{value}</dd>

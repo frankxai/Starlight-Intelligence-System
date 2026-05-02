@@ -25,7 +25,13 @@ export const metadata: Metadata = {
   },
 };
 
+const EXPLAINER_FALLBACK = `Explainer source temporarily unavailable.
+
+Read it on GitHub instead: [docs/public/starlight-intelligence-system.md](https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/public/starlight-intelligence-system.md).`;
+
 function loadExplainerSource(): string {
+  // process.cwd() resolves to site/ on Vercel and locally; ../docs/public is repo-relative.
+  // If the source is ever moved or the build invoked from a different cwd, fall back gracefully.
   const path = join(
     process.cwd(),
     "..",
@@ -33,12 +39,15 @@ function loadExplainerSource(): string {
     "public",
     "starlight-intelligence-system.md"
   );
-  const raw = readFileSync(path, "utf-8");
-  // Strip the leading H1 — we render our own hero above the markdown body.
+  let raw: string;
+  try {
+    raw = readFileSync(path, "utf-8");
+  } catch {
+    return EXPLAINER_FALLBACK;
+  }
   const lines = raw.split("\n");
   const firstHeadingIdx = lines.findIndex((l) => /^#\s/.test(l));
   if (firstHeadingIdx === -1) return raw;
-  // Find the first horizontal rule after the H1 to skip the title block.
   const firstHrIdx = lines.findIndex(
     (l, i) => i > firstHeadingIdx && /^---\s*$/.test(l)
   );
@@ -77,8 +86,8 @@ export default function ExplainerPage() {
 
       {/* ── Source-of-truth banner ── */}
       <section className="border-b border-white/[0.04] bg-white/[0.01] px-6 py-4">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-slate-500">
-          <span className="text-[10px] uppercase tracking-widest text-slate-600">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-slate-400">
+          <span className="text-[10px] uppercase tracking-widest text-slate-400">
             Canonical source
           </span>
           <span className="text-slate-700">·</span>

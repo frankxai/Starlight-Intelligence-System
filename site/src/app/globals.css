@@ -92,8 +92,20 @@ body {
 /* Focus */
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* Reduced motion — disable ambient + decorative animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .animate-mesh-1,
+  .animate-mesh-2,
+  .animate-mesh-3,
+  .animate-glow-pulse,
+  .animate-fade-up,
+  .animate-blink {
+    animation: none;
+  }
 }
 
 /* Markdown body styles for /explainer (mirrors docs/public/*.md) */
