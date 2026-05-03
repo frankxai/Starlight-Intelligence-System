@@ -1,0 +1,375 @@
+{
+  "nodes": [
+    {
+      "id": "group-substrate",
+      "type": "group",
+      "label": "SIS Substrate Register · MIT · canon-free",
+      "color": "6",
+      "x": -300,
+      "y": -400,
+      "width": 2700,
+      "height": 1100
+    },
+    {
+      "id": "group-domainstack",
+      "type": "group",
+      "label": "Domain Sub-Stack Tier — 4 reference verticals",
+      "color": "2",
+      "x": -100,
+      "y": 800,
+      "width": 2400,
+      "height": 320
+    },
+    {
+      "id": "group-mythic",
+      "type": "group",
+      "label": "Mythic / IP Register · Arcanea · CC-BY-NC",
+      "color": "5",
+      "x": -300,
+      "y": 1200,
+      "width": 1100,
+      "height": 380
+    },
+    {
+      "id": "group-commercial",
+      "type": "group",
+      "label": "Public Commercial Register",
+      "color": "4",
+      "x": 850,
+      "y": 1200,
+      "width": 1100,
+      "height": 380
+    },
+    {
+      "id": "group-sovereign",
+      "type": "group",
+      "label": "Sovereign Verticals · private/ · per-instance",
+      "color": "1",
+      "x": 2000,
+      "y": 1200,
+      "width": 700,
+      "height": 380
+    },
+    {
+      "id": "sip",
+      "type": "text",
+      "text": "# L0 — Substrate (SIP)\n\n**v1.1.0 · MIT**\n\nFile contract · attestation · sovereignty clause · MCP registry · command taxonomy · archetype extension",
+      "color": "6",
+      "x": -240,
+      "y": -340,
+      "width": 380,
+      "height": 220
+    },
+    {
+      "id": "orchestrator",
+      "type": "text",
+      "text": "# ★ Starlight Orchestrator\n\n**Master · routing**\n\nRoutes voice/text intent across the 9 functional ISes",
+      "color": "6",
+      "x": 200,
+      "y": -340,
+      "width": 360,
+      "height": 220
+    },
+    {
+      "id": "l1",
+      "type": "text",
+      "text": "## L1 — Genius IS\n*(Excavation · the root)*\n\n`/discover-genius` · `/reclaim-knowledge`\n\nVault: `genius/`",
+      "color": "5",
+      "x": -240,
+      "y": -50,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "l2",
+      "type": "text",
+      "text": "## L2 — Second Brain\n*(Memory · cross-cutting)*\n\n`/capture-daily` · `/distill-insights` · `/orchestrate-brain`",
+      "color": "5",
+      "x": 100,
+      "y": -50,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "l3",
+      "type": "text",
+      "text": "## L3 — Brand IS\n*(Vision · voice)*\n\n`/define-vision` · `/build-brand-kit` · `/align-voice`",
+      "color": "5",
+      "x": 440,
+      "y": -50,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "l4",
+      "type": "text",
+      "text": "## L4 — Business IS\n*(Entity · revenue · tax)*\n\n`/architect-entity` · `/model-revenue` · `/tax-sanity`",
+      "color": "5",
+      "x": 780,
+      "y": -50,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "l5",
+      "type": "text",
+      "text": "## L5 — Creator IS\n*(Composition)*\n\n`/creator-pipeline` · `/content-systemize` · `/train-executor`",
+      "color": "5",
+      "x": 1120,
+      "y": -50,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "l6",
+      "type": "text",
+      "text": "## L6 — Wealth IS\n*(DPI · freedom)*\n\n`/wealth-dpi`",
+      "color": "5",
+      "x": 1460,
+      "y": -50,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "l7",
+      "type": "text",
+      "text": "## L7 — Code IS\n*(Product · automation)*\n\n`/arco` · `/ao` · MCP-builders",
+      "color": "5",
+      "x": -240,
+      "y": 140,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "l8",
+      "type": "text",
+      "text": "## L8 — Voice & Video IS\n*(Narrative media)*\n\n`/sip-attest-audio` · `/sip-attest-video` · `/sip-compose-modality`",
+      "color": "5",
+      "x": 100,
+      "y": 140,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "l9",
+      "type": "text",
+      "text": "## L9 — Family IS\n*(Relational · cross-cutting)*\n\n`/map-relationships` · `/design-alliance-readiness`",
+      "color": "5",
+      "x": 440,
+      "y": 140,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "health",
+      "type": "text",
+      "text": "## Health IS\n*(Cross-cutting rhythm)*\n\n`/design-regimen` · `/energy-audit`",
+      "color": "3",
+      "x": 780,
+      "y": 140,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "spiritual",
+      "type": "text",
+      "text": "## Spiritual IS\n*(Founder · optional · private)*\n\nNo public commands",
+      "color": "0",
+      "x": 1120,
+      "y": 140,
+      "width": 320,
+      "height": 160
+    },
+    {
+      "id": "pkg-schemas",
+      "type": "text",
+      "text": "## @starlight/schemas\n**v0.1.0** · NEW v8.0\n\nSovereignNode (10 kinds)\n+ 6 Profiles (Energy / Compute / Storage / Workflow / Security / Cost)\n\nZod, provenance baked in",
+      "color": "6",
+      "x": 1800,
+      "y": -340,
+      "width": 380,
+      "height": 220
+    },
+    {
+      "id": "pkg-calc",
+      "type": "text",
+      "text": "## @starlight/calculators\n**v0.1.0** · NEW v8.0\n\n`Calculator<I, O>` + `CalculatorResult<T>`\n\nPipeline: shadow → live-with-warnings → live → deprecated\n\nDeterministic-not-LLM math",
+      "color": "6",
+      "x": 1800,
+      "y": -100,
+      "width": 380,
+      "height": 240
+    },
+    {
+      "id": "pkg-validation",
+      "type": "text",
+      "text": "## @starlight/validation\n**v0.1.0** · NEW v8.0\n\n6 core ValidationRequirement members\n+ jurisdiction extension API\n\nResponsibility boundary as a type",
+      "color": "6",
+      "x": 1800,
+      "y": 160,
+      "width": 380,
+      "height": 220
+    },
+    {
+      "id": "pkg-ui-runtime",
+      "type": "text",
+      "text": "## @starlight/agent-ui-runtime\n**v0.1.0-scaffold** · NEW v8.0\n\nCopilotKit wrapper · provider-pattern\n\n`BOUNDARY.md` enforced (Board REVISE)\n\nGolden-ref: Arcanea (cross-repo)",
+      "color": "6",
+      "x": 1800,
+      "y": 420,
+      "width": 380,
+      "height": 240
+    },
+    {
+      "id": "people-is",
+      "type": "text",
+      "text": "### People Intelligence\n*Reference vertical*\n\n6 sub-systems · 28 commands · 6 agents\n\nHire / Perf / Training / Culture / Talent / Org",
+      "color": "2",
+      "x": -40,
+      "y": 850,
+      "width": 380,
+      "height": 220
+    },
+    {
+      "id": "sound-is",
+      "type": "text",
+      "text": "### Sound Intelligence\n*Reference vertical*\n\n6 sub-systems · 30 commands · 6 agents\n\nComposition / Production / Catalog / Performance / Audience / Sync",
+      "color": "2",
+      "x": 380,
+      "y": 850,
+      "width": 380,
+      "height": 220
+    },
+    {
+      "id": "music-is",
+      "type": "text",
+      "text": "### Music IS\n*Frank-operated · private*\n\n6+1 sub-systems · 8 commands · 7 agents\n\nCatalog / Persona / Asset / Distribution / Amplification / Royalty / A&R",
+      "color": "2",
+      "x": 800,
+      "y": 850,
+      "width": 380,
+      "height": 220
+    },
+    {
+      "id": "energy-is",
+      "type": "text",
+      "text": "### Energy IS · NEW v8.0\n*4th reference vertical · scaffold*\n\n6+1 sub-systems · agents/commands v8.x\n\nSizing / Cost / Installer / Operations / Buyer / Grid / Recovery\n\nFirst native consumer of `@starlight/{schemas,calculators,validation}`",
+      "color": "3",
+      "x": 1220,
+      "y": 850,
+      "width": 380,
+      "height": 240
+    },
+    {
+      "id": "starlight-board",
+      "type": "text",
+      "text": "### /starlight-board\n*Canonical SIS-substrate governance*\n\n5 vectors + Overseer\n\nCanon-free · functional names\n\nBoard-before-tag invariant",
+      "color": "6",
+      "x": 1620,
+      "y": 240,
+      "width": 320,
+      "height": 220
+    },
+    {
+      "id": "luminor-board",
+      "type": "text",
+      "text": "### /luminor-board\n*Arcanea-canonical variant*\n\n5 Guardian archetypes + Lumina\n\nCC-BY-NC attribution\n\nFor proposals composing Arcanea canon",
+      "color": "5",
+      "x": 0,
+      "y": 1260,
+      "width": 320,
+      "height": 220
+    },
+    {
+      "id": "cmd-process-inbox",
+      "type": "text",
+      "text": "### /process-inbox\n*One-shot · NEW v8.0*\n\nReads `.intake/` → catalog subagent → applies operational-tier → archives → logs\n\nIdempotent",
+      "color": "6",
+      "x": 2240,
+      "y": 850,
+      "width": 320,
+      "height": 220
+    },
+    {
+      "id": "cmd-spawn",
+      "type": "text",
+      "text": "### /spawn-domain-stack\n\nScaffolds a 4–7 sub-system vertical from any sovereign domain\n\nGeneralizes the Domain Sub-Stack pattern",
+      "color": "6",
+      "x": 2240,
+      "y": 1100,
+      "width": 320,
+      "height": 200
+    },
+    {
+      "id": "frankx",
+      "type": "text",
+      "text": "### FrankX\n`C:\\Users\\frank\\FrankX`\n\nPublic commercial front · pricing · Tier-1 sprint landings",
+      "color": "4",
+      "x": 880,
+      "y": 1260,
+      "width": 320,
+      "height": 200
+    },
+    {
+      "id": "acos",
+      "type": "text",
+      "text": "### Agentic Creator OS\n`C:\\Users\\frank\\agentic-creator-os`\n\nCreator productivity · operator console",
+      "color": "4",
+      "x": 1240,
+      "y": 1260,
+      "width": 320,
+      "height": 200
+    },
+    {
+      "id": "arcanea",
+      "type": "text",
+      "text": "### Arcanea\n`C:\\Users\\frank\\Arcanea`\n\nMythic engine · Luminor sidebar · CopilotKit golden-ref impl (planned)",
+      "color": "5",
+      "x": 360,
+      "y": 1260,
+      "width": 380,
+      "height": 220
+    },
+    {
+      "id": "arcanea-flow",
+      "type": "text",
+      "text": "### arcanea-flow\n`C:\\Users\\frank\\arcanea-flow`\n\nSwarm execution · RL · consumer of `@starlight/calculators` for swarm-numerical outputs",
+      "color": "5",
+      "x": 1600,
+      "y": 1260,
+      "width": 320,
+      "height": 220
+    },
+    {
+      "id": "pv-lager",
+      "type": "text",
+      "text": "### PV-Lager · sovereign instance\n`private/verticals/pv-lager/`\n\nFrank's brother's installer business · instantiates Energy IS · gitignored",
+      "color": "1",
+      "x": 2040,
+      "y": 1260,
+      "width": 320,
+      "height": 220
+    }
+  ],
+  "edges": [
+    { "id": "e1", "fromNode": "sip", "fromSide": "right", "toNode": "orchestrator", "toSide": "left", "label": "load-bears" },
+    { "id": "e2", "fromNode": "orchestrator", "fromSide": "bottom", "toNode": "l1", "toSide": "top" },
+    { "id": "e3", "fromNode": "orchestrator", "fromSide": "bottom", "toNode": "l2", "toSide": "top" },
+    { "id": "e4", "fromNode": "orchestrator", "fromSide": "bottom", "toNode": "l3", "toSide": "top" },
+    { "id": "e5", "fromNode": "orchestrator", "fromSide": "bottom", "toNode": "l4", "toSide": "top" },
+    { "id": "e6", "fromNode": "orchestrator", "fromSide": "bottom", "toNode": "l5", "toSide": "top" },
+    { "id": "e7", "fromNode": "orchestrator", "fromSide": "bottom", "toNode": "l6", "toSide": "top" },
+    { "id": "e8", "fromNode": "l1", "fromSide": "bottom", "toNode": "people-is", "toSide": "top", "label": "domain sub-stack" },
+    { "id": "e9", "fromNode": "l8", "fromSide": "bottom", "toNode": "sound-is", "toSide": "top", "label": "domain sub-stack" },
+    { "id": "e10", "fromNode": "l8", "fromSide": "bottom", "toNode": "music-is", "toSide": "top", "label": "domain sub-stack · Frank-operated" },
+    { "id": "e11", "fromNode": "pkg-schemas", "fromSide": "left", "toNode": "energy-is", "toSide": "right", "label": "SovereignNode + Profiles" },
+    { "id": "e12", "fromNode": "pkg-calc", "fromSide": "left", "toNode": "energy-is", "toSide": "right", "label": "all numerical claims" },
+    { "id": "e13", "fromNode": "pkg-validation", "fromSide": "left", "toNode": "energy-is", "toSide": "right", "label": "all gating" },
+    { "id": "e14", "fromNode": "energy-is", "fromSide": "bottom", "toNode": "pv-lager", "toSide": "top", "label": "instantiates as private" },
+    { "id": "e15", "fromNode": "starlight-board", "fromSide": "left", "toNode": "pkg-calc", "toSide": "right", "label": "ratifies (PROCEED-WITH-REVISE)" },
+    { "id": "e16", "fromNode": "pkg-ui-runtime", "fromSide": "left", "toNode": "arcanea", "toSide": "right", "label": "golden-ref impl (cross-repo)" },
+    { "id": "e17", "fromNode": "pkg-calc", "fromSide": "bottom", "toNode": "arcanea-flow", "toSide": "top", "label": "swarm-numerical outputs" },
+    { "id": "e18", "fromNode": "cmd-process-inbox", "fromSide": "left", "toNode": "energy-is", "toSide": "right" },
+    { "id": "e19", "fromNode": "cmd-spawn", "fromSide": "left", "toNode": "energy-is", "toSide": "right", "label": "scaffolded via" }
+  ]
+}
