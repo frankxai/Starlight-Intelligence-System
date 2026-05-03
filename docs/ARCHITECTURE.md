@@ -30,6 +30,172 @@ This document is the source of truth for how the ISes compose. Every command, ev
 
 ---
 
+## Visual map
+
+> Renders natively on GitHub. For an interactive Obsidian-native version, open `memory/atlases/system-architecture-v8.canvas`.
+
+### System overview — 10 layers + Domain Sub-Stack Tier
+
+```mermaid
+graph TD
+    classDef substrate fill:#7c3aed,stroke:#a78bfa,color:#fff
+    classDef master fill:#e879f9,stroke:#f0abfc,color:#fff
+    classDef core fill:#22d3ee,stroke:#67e8f9,color:#021c25
+    classDef cross fill:#34d399,stroke:#6ee7b7,color:#022c22
+    classDef optional fill:#94a3b8,stroke:#cbd5e1,color:#020617
+    classDef vertical fill:#fbbf24,stroke:#fde047,color:#422006
+
+    SIP["Layer 0 · Substrate (SIP)<br/>file contract · attestation · sovereignty"]:::substrate
+    Master["★ Starlight Orchestrator<br/>routes voice/text across the 9"]:::master
+
+    L1["1 · Genius IS<br/>excavation · the root"]:::core
+    L2["2 · Second Brain IS<br/>cross-cutting"]:::cross
+    L3["3 · Brand IS<br/>vision · voice"]:::core
+    L4["4 · Business IS<br/>entity · revenue · tax"]:::core
+    L5["5 · Creator IS<br/>composition"]:::core
+    L6["6 · Wealth IS<br/>DPI · freedom"]:::core
+    L7["7 · Code IS<br/>product · automation"]:::core
+    L8["8 · Voice &amp; Video IS<br/>narrative media"]:::core
+    L9["9 · Family IS<br/>cross-cutting"]:::cross
+
+    Health["Health IS<br/>cross-cutting rhythm"]:::cross
+    Spiritual["Spiritual IS<br/>founder · optional · private"]:::optional
+
+    SIP --> Master
+    Master --> L1
+    Master --> L2
+    Master --> L3
+    Master --> L4
+    Master --> L5
+    Master --> L6
+    Master --> L7
+    Master --> L8
+    Master --> L9
+    Master -.-> Health
+    Master -.-> Spiritual
+
+    subgraph DomainSubStack["Domain Sub-Stack Tier (4 reference verticals)"]
+        People["People Intelligence<br/>6 sub-systems · 28 commands · 6 agents"]:::vertical
+        Sound["Sound Intelligence<br/>6 sub-systems · 30 commands · 6 agents"]:::vertical
+        MusicIS["Music IS<br/>6+1 sub-systems · 8 commands · 7 agents"]:::vertical
+        EnergyIS["Energy IS · NEW v8.0<br/>6+1 sub-systems · scaffold"]:::vertical
+    end
+
+    L1 -.-> DomainSubStack
+    L7 -.-> DomainSubStack
+```
+
+### v8 substrate addition — Calculator + Validation + Schemas → Energy IS
+
+```mermaid
+graph LR
+    classDef package fill:#7c3aed,stroke:#a78bfa,color:#fff
+    classDef vertical fill:#fbbf24,stroke:#fde047,color:#422006
+    classDef instance fill:#94a3b8,stroke:#cbd5e1,color:#020617
+    classDef refused fill:#f87171,stroke:#fca5a5,color:#450a0a
+
+    Schemas["@starlight/schemas<br/>SovereignNode + 6 Profiles"]:::package
+    Calc["@starlight/calculators<br/>deterministic-not-LLM math"]:::package
+    Val["@starlight/validation<br/>jurisdiction-extensible enum"]:::package
+    UI["@starlight/agent-ui-runtime<br/>scaffold + BOUNDARY.md"]:::package
+
+    EnergyIS["Energy IS<br/>4th reference Domain Sub-Stack"]:::vertical
+    PVLager["PV-Lager<br/>sovereign instance · private/"]:::instance
+
+    Schemas --> EnergyIS
+    Calc --> EnergyIS
+    Val --> EnergyIS
+    EnergyIS --> PVLager
+
+    LLMMath["LLM math<br/>(refused)"]:::refused
+    LLMMath -. forbidden .-> EnergyIS
+
+    subgraph PromotionPipeline["Calculator promotion pipeline (Board REVISE)"]
+        Shadow[shadow]
+        LiveWarn[live-with-warnings]
+        Live[live]
+        Deprecated[deprecated]
+        Shadow --> LiveWarn --> Live --> Deprecated
+    end
+
+    Calc --> PromotionPipeline
+```
+
+### Brand-register split — where each name lives
+
+```mermaid
+graph TB
+    classDef commercial fill:#0891b2,stroke:#22d3ee,color:#fff
+    classDef mythic fill:#7c3aed,stroke:#c084fc,color:#fff
+    classDef substrate fill:#0f172a,stroke:#475569,color:#e2e8f0
+    classDef sovereign fill:#16a34a,stroke:#4ade80,color:#fff
+
+    subgraph Commercial["Public commercial register"]
+        FrankX["frankx.ai<br/>Tier-1 sprint · pricing"]:::commercial
+        ACOS["Agentic Creator OS<br/>creator productivity"]:::commercial
+        AAA["AI Architect Academy<br/>education"]:::commercial
+        StarlightProduct["Starlight (productized)<br/>sis.frankx.ai when promoted"]:::commercial
+    end
+
+    subgraph Mythic["Mythic / IP register"]
+        Arcanea["Arcanea<br/>canon · CC-BY-NC"]:::mythic
+        Luminors["Luminors<br/>awakened intelligences"]:::mythic
+        Guardians["Guardians · Vel'Tara<br/>archetype set"]:::mythic
+        LBoard["/luminor-board<br/>Arcanea-canonical governance"]:::mythic
+    end
+
+    subgraph Substrate["SIS substrate register"]
+        SIP["SIP protocol<br/>v1.1.0 · MIT"]:::substrate
+        StarlightSubstrate["starlightintelligence.org<br/>open spec"]:::substrate
+        SBoard["/starlight-board<br/>canonical SIS governance"]:::substrate
+    end
+
+    subgraph Sovereign["Sovereign verticals (private)"]
+        PVLager2["PV-Lager<br/>family business"]:::sovereign
+        MusicIS2["Music IS<br/>Frank-operated label"]:::sovereign
+        EnergyOps["EnergyOps · pilot"]:::sovereign
+    end
+
+    Substrate --> Commercial
+    Substrate --> Mythic
+    Substrate --> Sovereign
+```
+
+### Governance flow — board-before-tag invariant
+
+```mermaid
+graph LR
+    classDef substrate fill:#7c3aed,stroke:#a78bfa,color:#fff
+    classDef ops fill:#22d3ee,stroke:#67e8f9,color:#021c25
+    classDef gate fill:#fbbf24,stroke:#fde047,color:#422006
+    classDef ship fill:#34d399,stroke:#6ee7b7,color:#022c22
+
+    Proposal[Proposal]
+    Tier{Tier?}
+    SubBoard["/starlight-board<br/>(or /luminor-board if Arcanea-canon)"]:::gate
+    Verdict{Verdict?}
+    Revise[REVISE → refine packet]
+    Stop[STOP → drop]
+    SubShip[Substrate ship]:::substrate
+    OpsShip[Operational ship]:::ops
+    Attest[/sip-attest on artifact]:::ship
+    Audit[/openclaw-audit · adversarial]:::ship
+
+    Proposal --> Tier
+    Tier -- substrate --> SubBoard
+    Tier -- operational --> OpsShip
+    SubBoard --> Verdict
+    Verdict -- PROCEED --> SubShip
+    Verdict -- REVISE --> Revise
+    Verdict -- STOP --> Stop
+    Revise --> SubBoard
+    SubShip --> Attest
+    OpsShip --> Attest
+    Attest --> Audit
+```
+
+---
+
 ### Layer 0 — Substrate (SIP)
 
 **Purpose:** Provide the protocol every other layer is built on.
