@@ -1,0 +1,15 @@
+{
+  "name": "@starlight/calculators",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Calculator interface + CalculatorResult shape + promotion-pipeline modes. Deterministic-not-LLM math contract. Substrate ratified 2026-05-03.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@starlight/validation": "0.1.0"
+  }
+}
