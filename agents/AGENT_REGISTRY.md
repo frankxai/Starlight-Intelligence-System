@@ -1,8 +1,10 @@
 # Starlight Agent Registry
 
-> Fifteen minds. Nine intelligence layers. One system. No hierarchy is permanent — only the mission is.
+> Thirty-five minds. Nine universal intelligence layers + Domain Sub-Stack Tier. One system. No hierarchy is permanent — only the mission is.
 >
-> **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture. See "9-Layer Intelligence Stack" section below.
+> **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
+> **v7.6.0 update (2026-04-28):** People Intelligence sub-stack (6 agents) registered — first reference Domain Sub-Stack vertical.
+> **v7.5.2 / v7.6.x update (2026-04-27 / 2026-04-30):** Sound Intelligence sub-stack (6 agents) and Music IS sub-stack (7 agents) registered — second + third reference Domain Sub-Stack verticals (public-reference + Frank-operated).
 
 ---
 
@@ -112,11 +114,11 @@ Each agent below owns one Intelligence System layer. Vault namespaces are separa
 | **Second Brain** | `starlight-secondbrain.md` | Memory Tier (peer with Sage: personal PKM vs institutional wisdom) | Daily capture, insight distillation, weekly/monthly/quarterly review | `v7.4-alpha — active dogfood` | `/capture-daily`, `/distill-insights`, `/orchestrate-brain` | `second-brain/` |
 | **Relational** | `starlight-relational.md` | Relational Tier | Network architecture, alliance-readiness assessment | `v7.4-alpha — active dogfood` | `/map-relationships`, `/design-alliance-readiness` | `relational/` |
 
-### Domain Sub-Stack Tier (v7.4.1 — People Intelligence vertical = first reference)
+### Domain Sub-Stack Tier (v7.4.1+ — three reference verticals)
 
-Sub-systems compose **within a vertical owner**, not as universal layers. Pattern proven by People Intelligence vertical (6 sub-systems → ~28 commands). Generalizes via `/spawn-domain-stack` for any sovereign domain (Capital / Sound / Spatial / Clinical / Legal / etc.).
+Sub-systems compose **within a vertical owner**, not as universal layers. Pattern proven across three reference verticals: People Intelligence (psychology-grounded), Sound Intelligence (craft-tradition-grounded), and Music IS (Frank-operated). Generalizes via `/spawn-domain-stack` for any sovereign domain (Capital / Spatial / Clinical / Legal / etc.).
 
-**People Intelligence sub-system agents** (renamed from HR Intelligence at v7.6.0 — Path A authorless symmetric naming with Sound Intelligence):
+**People Intelligence sub-system agents** (renamed from HR Intelligence at v7.6.0 — Path A authorless symmetric naming with Sound Intelligence). Public reference. 6 sub-systems · 6 agents · 28 commands.
 
 | Agent | File | Sub-system | Vault Namespace | Commands (count) |
 |-------|------|-----------|-----------------|------------------|
@@ -127,12 +129,37 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 | **Talent** | `starlight-talent.md` | Talent Intelligence — motivation, burnout, team dynamics, psychological safety, retention | `people-intelligence/talent/` | `talent-motivation`, `talent-burnout-detect`, `talent-team-dynamics`, `talent-psych-safety`, `talent-retention` (5) |
 | **Org** | `starlight-org.md` | Org Architecture — role design, span, reorg trauma audit, succession | `people-intelligence/org/` | `org-role-design`, `org-span`, `org-reorg-trauma-audit`, `org-succession` (4) |
 
+**Sound Intelligence sub-system agents** (v7.5.2 ship — public-reference vertical, distinct from Frank's operated Music IS). 6 sub-systems · 6 agents · 30 commands.
+
+| Agent | File | Sub-system | Vault Namespace | Commands (count) |
+|-------|------|-----------|-----------------|------------------|
+| **Composition** | `starlight-sound-composition.md` | Score, lyric, arrangement, demo, transition design | `sound-intelligence/composition/` | `sound-composition-score`, `sound-composition-lyric`, `sound-composition-arrange`, `sound-composition-demo`, `sound-composition-transition` (5) |
+| **Production** | `starlight-sound-production.md` | Mix plan, master plan, vocal chain, sound design, recall pack | `sound-intelligence/production/` | `sound-production-mix-plan`, `sound-production-master-plan`, `sound-production-vocal-chain`, `sound-production-sound-design`, `sound-production-recall` (5) |
+| **Catalog** | `starlight-sound-catalog.md` | ISRC mint, metadata pack, version map, release plan, deplatform recovery | `sound-intelligence/catalog/` | `sound-catalog-isrc-mint`, `sound-catalog-metadata-pack`, `sound-catalog-version-map`, `sound-catalog-release-plan`, `sound-catalog-deplatform-recovery` (5) |
+| **Performance** | `starlight-sound-performance.md` | Set design, audience contract, live mix, broadcast prep, residency | `sound-intelligence/performance/` | `sound-performance-set-design`, `sound-performance-audience-contract`, `sound-performance-live-mix`, `sound-performance-broadcast-prep`, `sound-performance-residency` (5) |
+| **Audience** | `starlight-sound-audience.md` | Cohort map, list architecture, sovereign publish, ritual design, fan stay-interview | `sound-intelligence/audience/` | `sound-audience-cohort-map`, `sound-audience-list-architecture`, `sound-audience-sovereign-publish`, `sound-audience-ritual-design`, `sound-audience-fan-stay-interview` (5) |
+| **Sync** | `starlight-sound-sync.md` | Brief-fit gate, placement thesis, license economics, rights pack, supervisor stay-interview | `sound-intelligence/sync/` | `sound-sync-brief-fit`, `sound-sync-placement-thesis`, `sound-sync-license-economics`, `sound-sync-rights-pack`, `sound-sync-stay-interview` (5) |
+
+**Music IS sub-system agents** (v7.6.x ship — Frank's operated Arcanea Records vertical). Operator-tier, distinct from public Sound Intelligence reference. 6 sub-systems + 1 cross-cutting gate · 7 agents · 8 commands. Imports patterns from sound-intelligence; never duplicates substrate.
+
+| Agent | File | Sub-system | Tier | Vault Namespace | Commands |
+|-------|------|-----------|------|-----------------|----------|
+| **Music Curator** | `music-curator.md` | A&R green-light gate (cross-cutting; non-waivable) | Apex (Opus 4.7) | `music-is/curator/` | `music-release` |
+| **Music Archivist** | `music-archivist.md` | Catalog — CSV master, draft/released/archived, ISRC, metadata | Mechanical (Haiku 4.5) | `music-is/catalog/` | `music-song`, `music-label-board` |
+| **Persona Keeper** | `persona-keeper.md` | Persona — spawn, canon, voice-lock, retire (one Opus instance per active persona) | Apex (Opus 4.7) | `music-is/personas/<persona>/` | `music-persona` |
+| **Music Producer** | `music-producer.md` | Asset — cover (nano banana), motion (Seedance), cinematic (Higgsfield), Canvas/shorts (Remotion) | Senior (Sonnet 4.6) | `music-is/assets/` | `music-canvas` |
+| **Music Distributor** | `music-distributor.md` | Distribution — DistroKid, Bandcamp, frankx.ai/music, Spotify Canvas, sync libraries | Senior (Sonnet 4.6) | `music-is/distribution/` | `music-release` (distro phase), `music-sync-pitch` |
+| **Music Amplifier** | `music-amplifier.md` | Amplification — OpenClaws orchestration (5 Claws/persona × Blotato + n8n) | Senior (Sonnet 4.6) | `music-is/amplification/` | `music-amplify` |
+| **Royalty Architect** | `royalty-architect.md` | Monetization — royalty-cascade graph, NFT, sync deals, fan-tier | Senior (Sonnet 4.6) | `music-is/royalty-graph/` | (cross-cutting; called by `music-release`) |
+
+`music-suno-prompt` is a cross-sub-system grounding command (composes Catalog + Persona + label-canon).
+
 **Domain Sub-Stack Tier rules:**
 - Sub-system agents serve a sovereign domain (the practitioner's vertical), not the universal substrate
 - Compose within their vertical (sub-systems reference each other) and with universal IS (Genius for voice; Vision for company-as-candidate framing; Performance + Talent + Culture form an interconnected loop)
 - Vertical wrapper at `verticals/<vertical-slug>/` ties sub-systems into one cohesive domain stack
 - Pattern generalizes via `/spawn-domain-stack` — any Genius Profile + named domain expertise spawns a 4-7-sub-system vertical
-- People Intelligence vertical is the public reference at `verticals/people-intelligence/` (anonymized, forkable)
+- Public-reference verticals (people-intelligence, sound-intelligence) are anonymized + forkable; operator-tier verticals (music-is) are Frank-specific and import patterns from public references rather than duplicating substrate
 
 ### Sage ↔ Second Brain boundary
 
