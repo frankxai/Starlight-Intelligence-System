@@ -419,6 +419,83 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "energy-intelligence-sizing-architecture",
+      "skill": "energy-intelligence/sizing-architecture",
+      "triggers": {
+        "keywords": ["sizing", "kW", "kWh", "capacity", "load profile", "solar PV", "photovoltaic", "panel count", "inverter sizing", "battery sizing", "storage sizing", "thermal sizing", "heat pump sizing", "EV charger sizing", "peak demand", "base load", "solar irradiance", "capacity factor", "derating"],
+        "agents": ["starlight-energy-sizing", "starlight-energy-cost", "starlight-energy-grid"],
+        "intents": ["sizing-design", "capacity-recommendation", "load-profile-analysis", "system-component-spec"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "energy-intelligence-cost-modeling",
+      "skill": "energy-intelligence/cost-modeling",
+      "triggers": {
+        "keywords": ["LCOE", "levelized cost", "payback", "ROI", "IRR", "NPV", "financing", "lease", "PPA", "power purchase agreement", "capex", "opex", "tariff", "time-of-use", "TOU", "demand charge", "net metering", "incentive", "ITC", "investment tax credit", "depreciation", "MACRS", "feed-in tariff", "FIT", "cost of energy"],
+        "agents": ["starlight-energy-cost", "starlight-energy-sizing", "starlight-energy-buyer", "starlight-energy-grid"],
+        "intents": ["lcoe-calculation", "payback-analysis", "financing-comparison", "sensitivity-modeling", "tariff-impact"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "energy-intelligence-installer-workflow",
+      "skill": "energy-intelligence/installer-workflow",
+      "triggers": {
+        "keywords": ["installer", "installer ops", "lead intake", "site survey", "MPU", "main panel upgrade", "permit", "AHJ", "authority having jurisdiction", "commissioning", "PTO", "permission to operate", "interconnection application", "work order", "technician", "dispatch", "installation crew", "quality assurance", "callback", "warranty claim", "installer-operator"],
+        "agents": ["starlight-energy-installer", "starlight-energy-operations", "starlight-energy-grid", "starlight-energy-recovery"],
+        "intents": ["lead-intake-design", "site-survey-protocol", "design-approval-flow", "permit-coordination", "installation-checklist", "commissioning-protocol", "customer-handoff"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "energy-intelligence-operations-monitoring",
+      "skill": "energy-intelligence/operations-monitoring",
+      "triggers": {
+        "keywords": ["monitoring", "production data", "energy yield", "performance ratio", "PR", "capacity factor", "soiling", "shading", "inverter fault", "micro-inverter", "optimizer", "alarm", "alert", "derate", "degradation", "warranty claim", "panel replacement", "inverter replacement", "IV curve", "string-level diagnostics", "underperformance"],
+        "agents": ["starlight-energy-operations", "starlight-energy-recovery", "starlight-energy-installer"],
+        "intents": ["performance-verification", "fault-diagnosis", "predictive-maintenance", "warranty-claim-lifecycle", "customer-reporting"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "energy-intelligence-buyer-journey",
+      "skill": "energy-intelligence/buyer-journey",
+      "triggers": {
+        "keywords": ["homeowner", "buyer", "customer", "end-user", "decision support", "solar shopping", "quote comparison", "multiple bids", "lease vs buy", "PPA vs purchase", "savings", "ROI for homeowner", "why solar", "environmental impact", "my electric bill", "my tariff", "my roof", "my house", "residential solar", "commercial solar small business"],
+        "agents": ["starlight-energy-buyer", "starlight-energy-cost", "starlight-energy-sizing", "starlight-genius"],
+        "intents": ["decision-support", "quote-comparison", "framing-translation", "sensitivity-explanation", "expectation-setting", "post-purchase-confidence"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "energy-intelligence-grid-integration",
+      "skill": "energy-intelligence/grid-integration",
+      "triggers": {
+        "keywords": ["interconnection", "grid", "utility", "AHJ", "IEEE 1547", "VDE-AR-N 4105", "G99", "G98", "smart inverter", "anti-islanding", "ride-through", "voltage support", "frequency support", "net metering", "NEM", "NEM 3.0", "feed-in tariff", "FIT", "demand response", "virtual power plant", "VPP", "aggregator", "distribution operator", "DSO", "transmission operator", "TSO"],
+        "agents": ["starlight-energy-grid", "starlight-energy-sizing", "starlight-energy-cost", "starlight-energy-installer"],
+        "intents": ["interconnection-feasibility", "tariff-resolution", "grid-standard-compliance", "vpp-program-evaluation", "application-coordination"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "energy-intelligence-recovery-protocol",
+      "skill": "energy-intelligence/recovery-protocol",
+      "triggers": {
+        "keywords": ["disaster", "outage", "blackout", "brownout", "grid down", "hurricane", "fire", "flood", "freeze", "manufacturer bankruptcy", "installer bankruptcy", "deplatform", "monitoring service shutdown", "panel-recall", "inverter-recall", "warranty-failure", "force majeure", "utility-disconnect", "deplatform-recovery", "resilience", "off-grid bridge", "backup", "islanding", "microgrid"],
+        "agents": ["starlight-energy-recovery", "starlight-energy-operations", "starlight-energy-installer", "starlight-energy-grid"],
+        "intents": ["disaster-readiness", "outage-protocol", "deplatform-readiness", "warranty-failure-recovery", "installer-failure-recovery", "monitoring-failure-recovery"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
