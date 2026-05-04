@@ -27,7 +27,7 @@
 - **Root cause:** Vestige from a pre-v7 layout when the substrate canon files lived under a `starlight/` subdirectory. The repo flattened during v7.0; this command was not updated.
 - **Recommended fix:** One-line edit in `.claude/commands/luminor-board.md` line 10 — change `` `starlight/AGENTS.md` `` to `` `AGENTS.md` ``.
 - **Risk if left:** None operational (the command body still describes the Board correctly), but the substrate's own conformance test now fails on every CI run until fixed.
-- **Status:** **OPEN — fix queued for v7.5.1 commit.**
+- **Status:** **RESOLVED 2026-05-05** — luminor-board.md current state declares only `AGENTS.md` (no `starlight/` prefix). Verified via grep `starlight/AGENTS\.md` returns 0 matches in `.claude/commands/luminor-board.md`. Fix landed in v7.5.1 cycle; audit-board status field was not updated then. Closing now per portfolio audit 2026-05-04.
 
 ---
 
