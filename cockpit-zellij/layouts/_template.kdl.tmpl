@@ -1,0 +1,48 @@
+// {{PROJECT_NAME}} cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc {{PROJECT_KEY}}
+// Or:     zellij --layout {{PROJECT_KEY}} --session {{PROJECT_KEY}}
+//
+// In the Dispatcher pane, run:  claude --resume {{PROJECT_KEY}}
+// for a persistent named conversation that survives sleeps.
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +---------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)         |
+//   |  Run: claude --resume {{PROJECT_KEY}}             |
+//   +-------------+-------------+-----------------------+
+//   |   CLAUDE    |   CODEX     |   GEMINI              |
+//   +-------------+-------------+-----------------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="{{PROJECT_PATH}}"
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="{{PROJECT_PATH}}"
+                pane name="Codex" cwd="{{PROJECT_PATH}}"
+                pane name="Gemini" cwd="{{PROJECT_PATH}}"
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="{{PROJECT_PATH}}"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="{{PROJECT_PATH}}"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="{{PROJECT_PATH}}"
+    }
+}
