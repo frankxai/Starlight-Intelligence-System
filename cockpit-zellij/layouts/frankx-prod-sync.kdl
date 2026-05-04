@@ -1,0 +1,49 @@
+﻿// frankx-prod-sync cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc frankx-prod-sync
+// Or:     zellij --layout frankx-prod-sync --session frankx-prod-sync
+//
+// In the Dispatcher pane, run:  claude --resume frankx-prod-sync
+// for a persistent named conversation that survives sleeps.
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +---------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)         |
+//   |  Run: claude --resume frankx-prod-sync             |
+//   +-------------+-------------+-----------------------+
+//   |   CLAUDE    |   CODEX     |   GEMINI              |
+//   +-------------+-------------+-----------------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\frankx-prod-sync"
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="C:\\Users\\frank\\frankx-prod-sync"
+                pane name="Codex" cwd="C:\\Users\\frank\\frankx-prod-sync"
+                pane name="Gemini" cwd="C:\\Users\\frank\\frankx-prod-sync"
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="C:\\Users\\frank\\frankx-prod-sync"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="C:\\Users\\frank\\frankx-prod-sync"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="C:\\Users\\frank\\frankx-prod-sync"
+    }
+}
+

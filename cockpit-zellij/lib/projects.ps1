@@ -18,7 +18,12 @@ function Get-StarlightProjects {
 
     foreach ($repo in $audit.repos) {
         if ($repo.class -ne 'active') { continue }
+        # Skip config/hidden dirs (start with dot)
+        if ($repo.name.StartsWith('.')) { continue }
+        # Build key: lowercase, replace dots with dashes, then strip any leading dot/dash
         $key = $repo.name.ToLower() -replace '\.', '-'
+        $key = $key -replace '^[\.\-]+', ''
+        if (-not $key) { continue }
         $result[$key] = [PSCustomObject]@{
             key        = $key
             name       = $repo.name
@@ -36,7 +41,8 @@ function Get-StarlightProject {
     param([string]$Key)
     $projects = Get-StarlightProjects
     if ($projects.Contains($Key)) { return $projects[$Key] }
-    $matches = $projects.Keys | Where-Object { $_ -like "*$Key*" }
-    if ($matches.Count -eq 1) { return $projects[$matches[0]] }
+    # Note: avoid $matches (PS automatic variable populated by -match)
+    $candidates = $projects.Keys | Where-Object { $_ -like "*$Key*" }
+    if ($candidates.Count -eq 1) { return $projects[$candidates[0]] }
     return $null
 }

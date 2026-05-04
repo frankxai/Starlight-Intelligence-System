@@ -60,6 +60,16 @@ Test-Assert 'arc-list-projects function defined' {
     (Get-Command arc-list-projects -ErrorAction SilentlyContinue) -ne $null
 }
 
+Test-Assert 'arc-list-projects actually runs without error' {
+    . (Join-Path $RepoRoot 'cockpit-zellij\scripts\zellij-aliases.ps1') 6>$null
+    try {
+        $output = arc-list-projects 6>$null | Out-String
+        $output.Length -gt 0
+    } catch {
+        $false
+    }
+}
+
 Test-Assert 'template not regenerated as layout' {
     -not (Test-Path (Join-Path $RepoRoot 'cockpit-zellij\layouts\_template.kdl'))
 }

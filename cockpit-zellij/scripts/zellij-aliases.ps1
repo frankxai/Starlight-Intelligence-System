@@ -41,7 +41,8 @@ function arc-attach {
     }
 
     $sessions = zellij list-sessions 2>$null
-    if ($sessions -match "^$Project") {
+    $escaped = [regex]::Escape($Project)
+    if ($sessions -match "^$escaped") {
         zellij attach $Project
     } else {
         arc $Project

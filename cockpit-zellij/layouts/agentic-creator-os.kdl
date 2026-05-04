@@ -1,0 +1,49 @@
+﻿// agentic-creator-os cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc agentic-creator-os
+// Or:     zellij --layout agentic-creator-os --session agentic-creator-os
+//
+// In the Dispatcher pane, run:  claude --resume agentic-creator-os
+// for a persistent named conversation that survives sleeps.
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +---------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)         |
+//   |  Run: claude --resume agentic-creator-os             |
+//   +-------------+-------------+-----------------------+
+//   |   CLAUDE    |   CODEX     |   GEMINI              |
+//   +-------------+-------------+-----------------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\agentic-creator-os"
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="C:\\Users\\frank\\agentic-creator-os"
+                pane name="Codex" cwd="C:\\Users\\frank\\agentic-creator-os"
+                pane name="Gemini" cwd="C:\\Users\\frank\\agentic-creator-os"
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="C:\\Users\\frank\\agentic-creator-os"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="C:\\Users\\frank\\agentic-creator-os"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="C:\\Users\\frank\\agentic-creator-os"
+    }
+}
+

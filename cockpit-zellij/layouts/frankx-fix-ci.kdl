@@ -1,0 +1,49 @@
+﻿// frankx-fix-ci cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc frankx-fix-ci
+// Or:     zellij --layout frankx-fix-ci --session frankx-fix-ci
+//
+// In the Dispatcher pane, run:  claude --resume frankx-fix-ci
+// for a persistent named conversation that survives sleeps.
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +---------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)         |
+//   |  Run: claude --resume frankx-fix-ci             |
+//   +-------------+-------------+-----------------------+
+//   |   CLAUDE    |   CODEX     |   GEMINI              |
+//   +-------------+-------------+-----------------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\frankx-fix-ci"
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="C:\\Users\\frank\\frankx-fix-ci"
+                pane name="Codex" cwd="C:\\Users\\frank\\frankx-fix-ci"
+                pane name="Gemini" cwd="C:\\Users\\frank\\frankx-fix-ci"
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="C:\\Users\\frank\\frankx-fix-ci"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="C:\\Users\\frank\\frankx-fix-ci"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="C:\\Users\\frank\\frankx-fix-ci"
+    }
+}
+

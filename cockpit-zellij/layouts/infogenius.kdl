@@ -1,0 +1,49 @@
+﻿// infogenius cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc infogenius
+// Or:     zellij --layout infogenius --session infogenius
+//
+// In the Dispatcher pane, run:  claude --resume infogenius
+// for a persistent named conversation that survives sleeps.
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +---------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)         |
+//   |  Run: claude --resume infogenius             |
+//   +-------------+-------------+-----------------------+
+//   |   CLAUDE    |   CODEX     |   GEMINI              |
+//   +-------------+-------------+-----------------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
+                pane name="Codex" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
+                pane name="Gemini" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
+    }
+}
+

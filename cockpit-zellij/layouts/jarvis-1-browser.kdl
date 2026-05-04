@@ -1,0 +1,49 @@
+﻿// jarvis-1-browser cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc jarvis-1-browser
+// Or:     zellij --layout jarvis-1-browser --session jarvis-1-browser
+//
+// In the Dispatcher pane, run:  claude --resume jarvis-1-browser
+// for a persistent named conversation that survives sleeps.
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +---------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)         |
+//   |  Run: claude --resume jarvis-1-browser             |
+//   +-------------+-------------+-----------------------+
+//   |   CLAUDE    |   CODEX     |   GEMINI              |
+//   +-------------+-------------+-----------------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\jarvis-1-browser"
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="C:\\Users\\frank\\jarvis-1-browser"
+                pane name="Codex" cwd="C:\\Users\\frank\\jarvis-1-browser"
+                pane name="Gemini" cwd="C:\\Users\\frank\\jarvis-1-browser"
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="C:\\Users\\frank\\jarvis-1-browser"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="C:\\Users\\frank\\jarvis-1-browser"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="C:\\Users\\frank\\jarvis-1-browser"
+    }
+}
+

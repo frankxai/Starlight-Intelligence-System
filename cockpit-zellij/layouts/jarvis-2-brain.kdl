@@ -1,0 +1,49 @@
+﻿// jarvis-2-brain cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc jarvis-2-brain
+// Or:     zellij --layout jarvis-2-brain --session jarvis-2-brain
+//
+// In the Dispatcher pane, run:  claude --resume jarvis-2-brain
+// for a persistent named conversation that survives sleeps.
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +---------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)         |
+//   |  Run: claude --resume jarvis-2-brain             |
+//   +-------------+-------------+-----------------------+
+//   |   CLAUDE    |   CODEX     |   GEMINI              |
+//   +-------------+-------------+-----------------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\jarvis-2-brain"
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="C:\\Users\\frank\\jarvis-2-brain"
+                pane name="Codex" cwd="C:\\Users\\frank\\jarvis-2-brain"
+                pane name="Gemini" cwd="C:\\Users\\frank\\jarvis-2-brain"
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="C:\\Users\\frank\\jarvis-2-brain"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="C:\\Users\\frank\\jarvis-2-brain"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="C:\\Users\\frank\\jarvis-2-brain"
+    }
+}
+
