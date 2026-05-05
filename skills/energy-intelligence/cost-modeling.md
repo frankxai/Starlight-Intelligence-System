@@ -1,3 +1,9 @@
+---
+name: energy-intelligence/cost-modeling
+description: Use when modeling LCOE, payback, financing structure, or total-cost-of-ownership for energy systems — every number flows through `@starlight/calculators`, with valid_as_of timestamp + assumption list. Sub-system 2 of 6 in the Energy Intelligence reference vertical. v0.1.0-scaffold.
+type: domain-vertical
+---
+
 # Skill: energy-intelligence/cost-modeling
 
 > LCOE, payback, financing structure, and total-cost-of-ownership modeling for energy systems. Every number flows through `@starlight/calculators`. Sub-system 2 of 6 in the Energy Intelligence reference vertical.

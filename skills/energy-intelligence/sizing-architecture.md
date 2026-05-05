@@ -1,3 +1,9 @@
+---
+name: energy-intelligence/sizing-architecture
+description: Use when sizing solar PV, storage, thermal, or combined energy systems — every numerical claim flows through `@starlight/calculators`, never LLM math. Sub-system 1 of 6 in the Energy Intelligence reference vertical. v0.1.0-scaffold awaiting v8.x full protocol.
+type: domain-vertical
+---
+
 # Skill: energy-intelligence/sizing-architecture
 
 > System sizing for solar PV, storage, thermal, and combined energy systems. Refuses LLM math — every numerical claim flows through `@starlight/calculators`. Sub-system 1 of 6 in the Energy Intelligence reference vertical.

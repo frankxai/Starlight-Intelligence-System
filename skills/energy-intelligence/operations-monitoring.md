@@ -1,3 +1,9 @@
+---
+name: energy-intelligence/operations-monitoring
+description: Use when designing post-install monitoring, performance verification, predictive maintenance, or warranty-claim lifecycle — the "is the system actually doing what we promised?" sub-system. Surfaces underperformance honestly. Sub-system 4 of 6 in the Energy Intelligence reference vertical. v0.1.0-scaffold.
+type: domain-vertical
+---
+
 # Skill: energy-intelligence/operations-monitoring
 
 > Post-install monitoring, performance verification, predictive maintenance, and warranty-claim lifecycle. The "is the system actually doing what we promised?" sub-system. Sub-system 4 of 6 in the Energy Intelligence reference vertical.

@@ -1,3 +1,9 @@
+---
+name: memory/memory-consolidation
+description: Use when optimizing vault storage, archiving stale data, or deduplicating entries — consolidates related entries and ensures memory remains high-quality and retrievable. Inspired by AI-Ops working/episodic/semantic/procedural patterns. Default skill for Starlight Prime.
+type: substrate
+---
+
 # Memory Consolidation
 
 > *"The art of remembering is the art of forgetting what doesn't matter."*

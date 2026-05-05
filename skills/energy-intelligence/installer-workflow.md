@@ -1,3 +1,9 @@
+---
+name: energy-intelligence/installer-workflow
+description: Use when designing operator-tier workflow for installer companies — lead intake, site survey, design, permitting, installation, commissioning, handoff. Shifts responsibility from operator toward structured self-service, installer enablement, and buyer clarity. Sub-system 3 of 6 in the Energy Intelligence reference vertical. v0.1.0-scaffold.
+type: domain-vertical
+---
+
 # Skill: energy-intelligence/installer-workflow
 
 > Operator-tier workflow design for installer companies — lead intake, site survey, design, permitting, installation, commissioning, handoff. The PV-Lager-bound skill: shifts responsibility from operator toward structured self-service, installer enablement, and buyer clarity. Sub-system 3 of 6 in the Energy Intelligence reference vertical.

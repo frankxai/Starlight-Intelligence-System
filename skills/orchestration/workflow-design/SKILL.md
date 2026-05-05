@@ -1,3 +1,9 @@
+---
+name: orchestration/workflow-design
+description: Use when creating multi-step execution plans or processes — designs reusable, efficient workflows that coordinate agents, skills, tools, and external systems into reliable execution pipelines. Default skill for Starlight Orchestrator.
+type: agent-orchestration
+---
+
 # Workflow Design
 
 > *"A workflow is a promise: do these steps, get this result."*

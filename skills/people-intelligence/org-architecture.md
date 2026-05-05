@@ -1,3 +1,9 @@
+---
+name: people-intelligence/org-architecture
+description: Use when designing role, span of control, sequencing, succession, or change management with the human cost honestly accounted — composes Marquet on decision rights, Kniberg on role-clarity, span-of-control research, McKinsey on reorg failure, Kotter on change-management steps, Bridges on psychological transitions, SCARF on threat circuits, and Conway's Law. Sub-system 6 of 6 in the People Intelligence reference vertical.
+type: domain-vertical
+---
+
 # Skill — People Intelligence / Org Architecture
 
 > Designing role, span, sequencing, succession, and change with the human cost honestly accounted. Composes Marquet on decision rights, Kniberg on role-clarity, span-of-control research, McKinsey on reorg failure, Kotter on change-management steps, Bridges on psychological transitions, SCARF on threat circuits, and Conway's Law on structure-product coupling.

@@ -1,3 +1,9 @@
+---
+name: energy-intelligence/recovery-protocol
+description: Use when designing cross-cutting resilience — disaster recovery, deplatform recovery, manufacturer-failure recovery, installer-bankruptcy recovery. The "what if everything goes wrong" sub-system. Adapted from sound-catalog-deplatform-recovery for energy. Cross-cutting (1) of the Energy Intelligence reference vertical. v0.1.0-scaffold.
+type: domain-vertical
+---
+
 # Skill: energy-intelligence/recovery-protocol
 
 > Cross-cutting resilience — disaster recovery, deplatform recovery, manufacturer-failure recovery, installer-bankruptcy recovery. The "what if everything goes wrong" sub-system. Cross-cutting (1) of the Energy Intelligence reference vertical, paired against the 6 sub-system heads.

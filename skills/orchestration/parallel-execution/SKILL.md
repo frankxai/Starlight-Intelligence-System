@@ -1,3 +1,9 @@
+---
+name: orchestration/parallel-execution
+description: Use when running multiple independent tasks concurrently across agents, tools, or systems — ensures thread safety, proper result collection, and efficient resource usage. Default skill for Starlight Orchestrator.
+type: agent-orchestration
+---
+
 # Parallel Execution
 
 > *"Why do one thing when you can do three?"*

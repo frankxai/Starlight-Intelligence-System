@@ -1,3 +1,9 @@
+---
+name: integration/ecosystem-sync
+description: Use when synchronizing intelligence, state, or knowledge across the FrankX ecosystem — ensures consistency and coherence across ACOS, Arcanea, AI-Ops, and Starlight. Default skill for Starlight Orchestrator and Starlight Prime.
+type: developer-tooling
+---
+
 # Ecosystem Sync
 
 > *"When all systems are in sync, the whole becomes unstoppable."*

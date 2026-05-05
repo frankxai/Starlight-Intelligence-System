@@ -1,3 +1,9 @@
+---
+name: energy-intelligence/grid-integration
+description: Use when designing utility interconnection, tariff structure resolution, or grid-side coordination — encodes the regulated-market reality (jurisdiction-specific rules, named grid operator, named tariff schedule, named interconnection standard). Refuses cross-jurisdiction generic advice. Sub-system 6 of 6 in the Energy Intelligence reference vertical. v0.1.0-scaffold.
+type: domain-vertical
+---
+
 # Skill: energy-intelligence/grid-integration
 
 > Utility interconnection, tariff structure resolution, and grid-side coordination. Encodes the regulated-market reality — different jurisdiction, different rules, different grid operator. Sub-system 6 of 6 in the Energy Intelligence reference vertical.

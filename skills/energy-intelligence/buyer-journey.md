@@ -1,3 +1,9 @@
+---
+name: energy-intelligence/buyer-journey
+description: Use when designing end-buyer decision support — the homeowner / business-owner / facilities-manager journey from "thinking about solar" through ownership. Refuses sales-pressure framings; encodes buyer clarity over operator margin. Sub-system 5 of 6 in the Energy Intelligence reference vertical. v0.1.0-scaffold.
+type: domain-vertical
+---
+
 # Skill: energy-intelligence/buyer-journey
 
 > End-buyer decision support — the homeowner / business-owner / facilities-manager journey from "I'm thinking about solar" through ownership. Refuses sales-pressure framings; encodes buyer clarity over operator margin. Sub-system 5 of 6 in the Energy Intelligence reference vertical.

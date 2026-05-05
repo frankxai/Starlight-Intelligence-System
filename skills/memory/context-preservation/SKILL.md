@@ -1,3 +1,9 @@
+---
+name: memory/context-preservation
+description: Use when saving context for future sessions or session handoffs — captures decisions, progress, pending work, and relevant state into persistent storage that can be restored. Default skill for Starlight Orchestrator and Starlight Sage.
+type: substrate
+---
+
 # Context Preservation
 
 > *"What you preserve today is what you can build on tomorrow."*

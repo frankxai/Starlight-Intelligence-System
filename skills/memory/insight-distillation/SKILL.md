@@ -1,3 +1,9 @@
+---
+name: memory/insight-distillation
+description: Use during periodic review sessions (weekly/monthly/quarterly) to turn raw captures into reusable frameworks — patterns captured ≥3 times become named, documented, ready-to-reuse frameworks. Default skill for Starlight Second Brain.
+type: personal-life-os
+---
+
 # Insight Distillation
 
 > *"Three captures is a pattern. Five is a framework. Seven is a signature. Count."*

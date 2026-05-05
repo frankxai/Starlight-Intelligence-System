@@ -1,3 +1,9 @@
+---
+name: people-intelligence/people-dynamics
+description: Use when diagnosing individual motivation, burnout signals, team dynamics, psychological safety, or retention drivers — applies research-validated instruments (SDT, Maslach, Edmondson, Hackman, SCARF, Project Aristotle). Refuses engagement-survey-as-data and exit-interview-as-strategy. Sub-system 5 of 6 in the People Intelligence reference vertical.
+type: domain-vertical
+---
+
 # Skill: people-intelligence/people-dynamics
 
 > The neuro-psychology layer of HR. Diagnoses individual motivation, burnout signals, team dynamics, psychological safety, and retention drivers using research-validated instruments. Refuses engagement-survey-as-data and exit-interview-as-strategy. Sub-system 5 of 6 in the People Intelligence reference vertical.

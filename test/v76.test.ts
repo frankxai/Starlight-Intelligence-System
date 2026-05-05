@@ -179,6 +179,89 @@ describe("v7.6 commands — Music IS harness loadability", () => {
   });
 });
 
+describe("v7.6 skills — frontmatter completeness", () => {
+  // Sweep S2d (Audit D, 2026-05-04): every skill markdown file under skills/ should carry
+  // YAML frontmatter so activation tooling and registries can introspect skills uniformly.
+  // Exclusions are explicit: docs files (SKILL_ARCHITECTURE.md), progressive-disclosure
+  // leaves (references/ subdirs), and skills that intentionally use prose-only activation
+  // (sound-intelligence/*.md — disk-orphans pending v7.5.3 catch-up backfill).
+
+  const SKILL_FM_EXCLUDE: ReadonlySet<string> = new Set([
+    "SKILL_ARCHITECTURE.md", // documentation file, not a skill
+    // vision/voice-anti-slop.md uses an alternate FM shape (skill:/auto_activate:/loaded_by:)
+    // intentionally — disk-orphan loaded broadly, not via skill-rules.json.
+    "vision/voice-anti-slop.md",
+    // sound-intelligence prose-only activation block (disk-orphans, intentional):
+    "sound-intelligence/audience-architecture.md",
+    "sound-intelligence/catalog-systems.md",
+    "sound-intelligence/composition-architecture.md",
+    "sound-intelligence/performance-design.md",
+    "sound-intelligence/production-systems.md",
+    "sound-intelligence/sync-licensing.md",
+  ]);
+
+  function listSkillMarkdown(): string[] {
+    const skillsDir = join(REPO_ROOT, "skills");
+    const out: string[] = [];
+    function walk(dir: string): void {
+      for (const ent of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, ent.name);
+        if (ent.isDirectory()) {
+          if (ent.name === "references") continue; // progressive-disclosure leaves
+          walk(full);
+        } else if (ent.isFile() && ent.name.endsWith(".md")) {
+          // store as forward-slash relative path for cross-platform stability
+          const rel = full.slice(skillsDir.length + 1).split(/[\\/]/).join("/");
+          out.push(rel);
+        }
+      }
+    }
+    walk(skillsDir);
+    return out.sort();
+  }
+
+  function hasFrontmatter(skillRelPath: string): boolean {
+    const full = join(REPO_ROOT, "skills", skillRelPath);
+    const buf = readFileSync(full, "utf8");
+    // Strip optional UTF-8 BOM, then check for opening --- delimiter.
+    const stripped = buf.replace(/^﻿/, "");
+    if (!stripped.startsWith("---\n") && !stripped.startsWith("---\r\n")) return false;
+    // Check there is a closing --- delimiter and at least name: + description: keys.
+    const m = stripped.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (!m) return false;
+    const fm = m[1];
+    return /^name:\s*\S+/m.test(fm) && /^description:\s*\S+/m.test(fm);
+  }
+
+  it("every skills/**/*.md (excluding references/ and architecture doc) has YAML frontmatter with name + description", () => {
+    const all = listSkillMarkdown();
+    const checked = all.filter((rel) => !SKILL_FM_EXCLUDE.has(rel));
+    const missing = checked.filter((rel) => !hasFrontmatter(rel));
+    assert.deepEqual(
+      missing,
+      [],
+      `skills missing YAML frontmatter (name + description required): ${missing.join(", ")}`,
+    );
+  });
+
+  it("frontmatter exclusions remain explicit and bounded (no creeping exemption list)", () => {
+    // Hard ceiling: SKILL_ARCHITECTURE.md + vision/voice-anti-slop + 6 sound-intelligence = 8.
+    // If anyone adds to the exemption list to silence this test, this assertion fires.
+    assert.ok(
+      SKILL_FM_EXCLUDE.size <= 8,
+      `frontmatter exemption list grew past 8 entries (size: ${SKILL_FM_EXCLUDE.size}) — backfill instead of exempting`,
+    );
+  });
+
+  it("every excluded path actually exists on disk (no stale exemptions)", () => {
+    const stale: string[] = [];
+    for (const rel of SKILL_FM_EXCLUDE) {
+      if (!existsSync(join(REPO_ROOT, "skills", rel))) stale.push(rel);
+    }
+    assert.deepEqual(stale, [], `stale frontmatter exemptions (file not found): ${stale.join(", ")}`);
+  });
+});
+
 describe("v7.6 agent-registry — coverage symmetry", () => {
   it("every file in agents/*.md is referenced in AGENT_REGISTRY.md (no orphans)", () => {
     const files = listAgentFiles();

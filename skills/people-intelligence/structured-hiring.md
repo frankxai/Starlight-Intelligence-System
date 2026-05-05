@@ -1,3 +1,9 @@
+---
+name: people-intelligence/structured-hiring
+description: Use when designing the hiring instrument — ICP, structured interview architecture, calibration, debrief, onboarding — using meta-analytically validated predictive components. Refuses unstructured interviews and personality-as-primary. Sub-system 1 of 6 in the People Intelligence reference vertical.
+type: domain-vertical
+---
+
 # Skill: people-intelligence/structured-hiring
 
 > Designs the hiring instrument — ICP, interview architecture, calibration, debrief, onboarding — using meta-analytically validated predictive components. Refuses unstructured interviews and personality-as-primary. Sub-system 1 of 6 in the People Intelligence reference vertical.

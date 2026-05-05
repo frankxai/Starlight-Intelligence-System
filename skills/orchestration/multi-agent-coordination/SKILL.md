@@ -1,3 +1,9 @@
+---
+name: orchestration/multi-agent-coordination
+description: Use when multiple Starlight agents need to collaborate on a related task — handles agent selection, task decomposition, dependency management, and result aggregation across the council. Default skill for Starlight Orchestrator.
+type: agent-orchestration
+---
+
 # Multi-Agent Coordination
 
 > *"Many minds, one mission. Coordination is the multiplier."*

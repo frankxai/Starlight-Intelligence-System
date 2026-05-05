@@ -1,3 +1,9 @@
+---
+name: memory/vault-management
+description: Use when storing, retrieving, or managing persistent memory across the Starlight Vaults — handles reading, writing, querying, and organizing entries across all vaults. Default skill for Starlight Prime and Starlight Sage.
+type: substrate
+---
+
 # Vault Management
 
 > *"Memory is the foundation of intelligence. Manage it well."*

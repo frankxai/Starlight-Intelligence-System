@@ -1,3 +1,9 @@
+---
+name: memory/capture-discipline
+description: Use when designing daily capture, note-taking, or personal-knowledge operations — defines the discipline of when, what, and where to capture. Tool-agnostic; the practice survives tool changes. Default skill for Starlight Second Brain.
+type: personal-life-os
+---
+
 # Capture Discipline
 
 > *"Lower friction beats higher structure. Every time."*

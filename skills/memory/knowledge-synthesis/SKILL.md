@@ -1,3 +1,9 @@
+---
+name: memory/knowledge-synthesis
+description: Use when combining knowledge from vaults, notes, transmissions, and external sources into coherent unified understanding — creates new knowledge from the intersection of existing knowledge. Default skill for Starlight Sage and Starlight Prime.
+type: substrate
+---
+
 # Knowledge Synthesis
 
 > *"The whole is greater than the sum of its parts."*

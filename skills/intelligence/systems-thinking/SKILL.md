@@ -1,3 +1,9 @@
+---
+name: intelligence/systems-thinking
+description: Use when reasoning about architecture, holistic analysis, feedback loops, or emergent behavior — sees components, connections, feedback loops, and emergent properties to prevent the tunnel vision of analyzing parts in isolation. Default skill for Starlight Architect and Starlight Prime.
+type: substrate
+---
+
 # Systems Thinking
 
 > *"Everything is connected. See the connections, see the truth."*
