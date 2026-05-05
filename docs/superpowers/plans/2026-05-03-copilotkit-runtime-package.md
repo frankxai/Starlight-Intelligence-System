@@ -111,6 +111,58 @@ Three decisions before this plan gets scheduled:
 2. **Golden reference impl location?** `arcanea-command-center` (Arcanea-canonical) or `starlight-agent-console` (SIS-canonical) or both?
 3. **Bespoke cockpit posture?** Keep the v7.5.3 orb + dashboard + DispatchPanel as Frank's local Jarvis surface (recommendation), or migrate to CopilotKit (would lose bespoke fit but gain portability)?
 
+---
+
+## Calls made by SIS queen 2026-05-05 under "lead with authority + make calls" directive
+
+> Frank authorized SIS queen to make these calls. Reversible: any call can be overridden by Frank with one comment in this doc. Each call carries reasoning + falsifier (the condition under which the call should be revisited).
+
+### Fork 1 — Adopt CopilotKit?
+
+**CALL: Pilot-on-one-app-first.**
+
+Reasoning:
+- The plan's own Phase 1 says "Golden reference impl (single app, ~3 weeks)". That IS the pilot. Adopting wholesale across 5 repos before the boundary holds is risky.
+- The `packages/agent-ui-runtime` scaffold already shipped in commit `9cd7996` (per the substrate ratification PR) — package shell exists, real consumer doesn't.
+- One pilot proves the boundary AND the CopilotKit-bespoke split (Fork 3 below). If the boundary leaks during pilot, that's a cheap discovery.
+
+Falsifier: pilot succeeds AND a second consuming repo (FrankX, ACOS) is ready to integrate without bespoke surgery — at that point flip to "Adopt".
+
+### Fork 2 — Golden reference impl location?
+
+**CALL: `arcanea-command-center`.**
+
+Reasoning:
+- Arcanea is the highest-traffic creative IP repo with the broadest UI surface (Luminor sidebar, worldbuilder, codex editor — per plan).
+- SIS already has bespoke cockpit (orb + dashboard + DispatchPanel) covering the local-Jarvis use case. Building a competing `starlight-agent-console` would split attention without capturing portability gain.
+- Arcanea-canonical means the package gets battle-tested by the broadest user base (creator-facing, not just Frank's daily driver).
+- The plan's Phase 3 propagation order already lists Arcanea as #1 — golden ref AT Arcanea aligns scope with priority.
+
+Falsifier: Arcanea's UI surface is on a freeze (e.g., big migration in flight) AND SIS site has a concrete external-facing UX gap CopilotKit would close — flip to `starlight-agent-console`.
+
+### Fork 3 — Bespoke cockpit posture?
+
+**CALL: Keep bespoke for local Jarvis. Adopt CopilotKit for cross-repo / SaaS / portable surfaces.**
+
+Reasoning:
+- The plan itself recommends this exact split ("keep bespoke for local, adopt CopilotKit for cross-repo apps where portability matters").
+- The orb's daily driver is Groq Orpheus 225ms TTS + 6 native tools + persona switcher (per `memory/project_jarvis_intelligence_layer.md`). That latency + tool-call density is NOT replicable in CopilotKit at the same fidelity. Migrating local would degrade Frank's daily driver.
+- CopilotKit shines for shared/multi-user/portable web surfaces (Arcanea Luminor sidebar, FrankX creator console, etc.). That's exactly its design center.
+- Architecture: orb stays local-Jarvis (SIS substrate-bound), CopilotKit becomes the SaaS-grade UI for Arcanea + FrankX consumer apps. Two surfaces, complementary, no overlap.
+
+Falsifier: local Jarvis becomes maintenance-heavy (daily breakage, Groq deprecation, etc.) AND CopilotKit-equivalent latency hits parity (sub-300ms TTS + 6+ tools) — at that point the unification economics flip.
+
+---
+
+## Net of all 3 calls
+
+The CopilotKit plan PROCEEDS with these scope guards:
+- Pilot one app (`arcanea-command-center`) for ~3 weeks
+- Bespoke cockpit (orb + dashboard + DispatchPanel) STAYS for local-Jarvis
+- Cross-repo / portable / SaaS UIs adopt the new `@arcanea/agent-ui-runtime` package once pilot proves the boundary
+
+Frank can override any of these calls in this doc — they survive only as long as nobody contradicts them. The falsifiers above name the explicit conditions under which a flip is justified.
+
 ## Out of scope (deliberately)
 
 - **Replacing the orb / dashboard for local use.** The bespoke cockpit is Frank's daily driver and is more responsive than a CopilotKit-wrapped equivalent would be.
