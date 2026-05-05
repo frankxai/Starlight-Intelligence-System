@@ -46,34 +46,9 @@ const RULES_PATH = join(SKILLS_DIR, "skill-rules.json");
 // skill-rules.json with valid triggers.
 
 const EXEMPT_PHANTOMS = new Set<string>([
-  // Music IS sub-stack — skills authored 2026-04-27 onwards, registration deferred.
-  // Each has activation triggers in its file body — registration is mechanical.
-  "music-is/amplification-mesh",
-  "music-is/asset-render",
-  "music-is/catalog-systems",
-  "music-is/distribution-flow",
-  "music-is/naming-intelligence",
-  "music-is/persona-canon",
-  "music-is/release-gate",
-  "music-is/royalty-graph",
-  "music-is/song-intake",
-  "music-is/suno-prompt",
-
-  // Sound IS sub-stack — same pattern as Music IS.
-  "sound-intelligence/audience-architecture",
-  "sound-intelligence/catalog-systems",
-  "sound-intelligence/composition-architecture",
-  "sound-intelligence/performance-design",
-  "sound-intelligence/production-systems",
-  "sound-intelligence/sync-licensing",
-
-  // Memory orchestrator — v0.1-scoped, full activation pending substrate maturity.
-  "memory/sis-memory-orchestrator",
-
-  // Vision sub-skill — frontmatter-style activation (auto_activate field), not
-  // skill-rules.json-driven. May need to either migrate to skill-rules.json or
-  // explicitly note the alternate activation path. Keep exempt until decision.
-  "vision/voice-anti-slop",
+  // Goal state. All 18 prior phantoms registered in skill-rules.json
+  // 2026-05-05 (Music IS 10 + Sound IS 6 + Memory orchestrator 1 + Vision 1).
+  // Add new entries here ONLY with a documented reason and an un-park trigger.
 ]);
 
 // ---------- helpers ----------

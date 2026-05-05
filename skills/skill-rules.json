@@ -496,6 +496,204 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "music-is-amplification-mesh",
+      "skill": "music-is/amplification-mesh",
+      "triggers": {
+        "keywords": ["amplify", "amplification", "openclaws", "claws", "drop", "social drops", "x post", "tiktok", "instagram reel", "youtube shorts", "spotify canvas", "voice-lock", "frequency cap", "blotato", "n8n", "post-release", "playlist pitch", "ai-disclosure", "/music-amplify"],
+        "agents": ["music-amplifier", "starlight-orchestrator"],
+        "intents": ["amplification", "social-drop", "post-release-scheduling", "voice-lock-check", "campaign-orchestration"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-asset-render",
+      "skill": "music-is/asset-render",
+      "triggers": {
+        "keywords": ["cover", "asset render", "asset bundle", "nano banana", "seedance", "higgsfield", "remotion", "spotify canvas", "lyric video", "motion video", "cinematic", "visual dna", "/music-canvas", "re-render", "cover art", "shorts", "9:16", "16:9"],
+        "agents": ["music-producer", "starlight-orchestrator"],
+        "intents": ["asset-generation", "cover-render", "motion-render", "canvas-render", "bundle-completeness"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-catalog-systems",
+      "skill": "music-is/catalog-systems",
+      "triggers": {
+        "keywords": ["catalog", "label-board", "/music-label-board", "master csv", "isrc index", "hygiene", "orphan rows", "stale draft", "portfolio scorecard", "release count", "persona rollup", "asset path integrity", "attestation hash", "notion mirror", "duplicate check"],
+        "agents": ["music-archivist"],
+        "intents": ["catalog-hygiene", "portfolio-scorecard", "status-check", "catalog-crud", "weekly-ritual"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-distribution-flow",
+      "skill": "music-is/distribution-flow",
+      "triggers": {
+        "keywords": ["distribute", "distribution", "distrokid", "bandcamp", "spotify canvas", "frankx.ai/music", "isrc mint", "dsp", "sync pitch", "/music-sync-pitch", "playlist pitching", "release rails", "metadata lock", "owned distribution", "spotify-for-artists", "aggregator"],
+        "agents": ["music-distributor", "starlight-orchestrator"],
+        "intents": ["distribution", "sync-pitch", "rail-routing", "isrc-pull", "post-release-mirror"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-naming-intelligence",
+      "skill": "music-is/naming-intelligence",
+      "triggers": {
+        "keywords": ["name", "naming", "/music-name", "persona name", "label name", "track name", "name candidates", "is this name available", "rename", "codename", "trademark check", "spotify search", "memorability", "searchability", "banned names", "6-axis test", "pronouncability"],
+        "agents": ["starlight-weaver", "starlight-prime"],
+        "intents": ["naming", "availability-check", "canon-fit-check", "rename-decision", "candidate-generation"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-persona-canon",
+      "skill": "music-is/persona-canon",
+      "triggers": {
+        "keywords": ["persona", "/music-persona", "spawn persona", "define artist", "lock canon", "sound dna", "visual dna", "voice dna", "audience contract", "monetization stack", "voice-check", "canon defense", "canon drift", "persona-keeper", "retire persona", "cross-persona blur", "release cadence baseline"],
+        "agents": ["persona-keeper", "starlight-prime"],
+        "intents": ["persona-spawn", "canon-lock", "canon-defense", "voice-lock-check", "persona-retirement"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-release-gate",
+      "skill": "music-is/release-gate",
+      "triggers": {
+        "keywords": ["release gate", "/music-release", "green-light", "a&r", "revise", "refuse", "gate check", "canon-anchoring", "asset bundle complete", "voice-lock check", "royalty graph entry", "ai-disclosure", "vocal-impersonation check", "sample clearance", "override", "frank-in-the-loop"],
+        "agents": ["music-curator", "starlight-prime"],
+        "intents": ["release-gate-decision", "green-light", "revise-or-refuse", "parallel-dispatch", "override-discipline"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-royalty-graph",
+      "skill": "music-is/royalty-graph",
+      "triggers": {
+        "keywords": ["royalty", "royalty graph", "royalty cascade", "splits", "contributors", "publishing share", "master rights", "pro id", "ascap", "nft mint", "fan tier", "sync deal economics", "creator forge", "attribution cascade", "wealth is", "limited edition"],
+        "agents": ["royalty-architect"],
+        "intents": ["royalty-design", "cascade-graph", "split-finalization", "nft-design", "sync-economics"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-song-intake",
+      "skill": "music-is/song-intake",
+      "triggers": {
+        "keywords": ["song intake", "/music-song", "intake suno", "suno url", "add this song to catalog", "draft row", "song id", "queue assets", "batch import suno", "legacy import", "catalog draft", "new generation", "persona attribution"],
+        "agents": ["music-archivist"],
+        "intents": ["song-capture", "catalog-write", "asset-queue", "batch-import", "metadata-extract"]
+      },
+      "priority": "medium",
+      "load_level": "core"
+    },
+    {
+      "id": "music-is-suno-prompt",
+      "skill": "music-is/suno-prompt",
+      "triggers": {
+        "keywords": ["suno prompt", "/music-suno-prompt", "suno", "generate prompt", "structure tags", "prompt pattern", "vocal control", "genre style", "style stem", "prompt synthesis", "iteration log", "prompt variants", "vocal posture", "engine version"],
+        "agents": ["music-producer", "starlight-prime"],
+        "intents": ["prompt-synthesis", "grounded-prompting", "iteration-design", "variant-generation", "knowledge-grounded"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "sound-intelligence-audience-architecture",
+      "skill": "sound-intelligence/audience-architecture",
+      "triggers": {
+        "keywords": ["audience", "fans", "fanbase", "follower", "list", "mailing list", "newsletter", "subscribers", "substack", "beehiiv", "convertkit", "patreon", "patrons", "bandcamp", "discord", "community", "true fans", "cohort", "welcome sequence", "stay-interview", "sovereign publish", "sovereign distribution"],
+        "agents": ["starlight-sound-audience", "starlight-genius", "starlight-sound-catalog"],
+        "intents": ["cohort-mapping", "ritual-design", "list-architecture", "fan-stay-interview", "sovereign-publishing"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "sound-intelligence-catalog-systems",
+      "skill": "sound-intelligence/catalog-systems",
+      "triggers": {
+        "keywords": ["release", "release date", "single", "ep", "album", "isrc", "iswc", "metadata", "contributor splits", "pro", "ascap", "bmi", "sesac", "gema", "mlc", "neighboring rights", "publishing", "distrokid", "tunecore", "ddex", "deplatform", "takedown", "sample clearance", "version map", "radio edit"],
+        "agents": ["starlight-sound-catalog", "starlight-sound-production", "starlight-sound-sync", "starlight-business"],
+        "intents": ["release-planning", "isrc-architecture", "metadata-discipline", "version-mapping", "deplatform-recovery"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "sound-intelligence-composition-architecture",
+      "skill": "sound-intelligence/composition-architecture",
+      "triggers": {
+        "keywords": ["songwriting", "composition", "compose", "arrange", "arrangement", "lyric", "lyrics", "melody", "harmony", "chord progression", "modulation", "song form", "verse", "chorus", "bridge", "transition", "drop", "build", "breakdown", "demo", "prosody", "tension and release"],
+        "agents": ["starlight-sound-composition", "starlight-genius", "starlight-prime"],
+        "intents": ["composition-architecture", "lyric-architecture", "arrangement-design", "demo-planning", "transition-design"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "sound-intelligence-performance-design",
+      "skill": "sound-intelligence/performance-design",
+      "triggers": {
+        "keywords": ["live", "show", "setlist", "set design", "opener", "closer", "peak", "tour", "venue", "festival", "residency", "tiny desk", "kexp", "soundcheck", "front of house", "foh", "monitor mix", "iem", "wedge", "broadcast", "livestream", "radio session", "hearing protection", "redundancy"],
+        "agents": ["starlight-sound-performance", "starlight-sound-composition", "starlight-sound-audience", "starlight-embodiment"],
+        "intents": ["set-architecture", "audience-contract-design", "live-mix-planning", "residency-design", "broadcast-prep", "hearing-health-protection"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "sound-intelligence-production-systems",
+      "skill": "sound-intelligence/production-systems",
+      "triggers": {
+        "keywords": ["mix", "mixing", "master", "mastering", "lufs", "loudness", "dynamic range", "psr", "true peak", "limiter", "compression", "eq", "reverb", "delay", "bus", "vocal chain", "de-essing", "autotune", "sound design", "synth", "stem", "recall", "daw", "plugin chain", "gain stage"],
+        "agents": ["starlight-sound-production", "starlight-sound-catalog", "starlight-sound-sync"],
+        "intents": ["mix-planning", "mastering", "vocal-chain-design", "sound-design", "session-recall", "loudness-war-refusal"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "sound-intelligence-sync-licensing",
+      "skill": "sound-intelligence/sync-licensing",
+      "triggers": {
+        "keywords": ["sync", "sync license", "sync placement", "music supervision", "music supervisor", "music library", "musicbed", "marmoset", "songtradr", "tv", "film", "commercial", "trailer", "brief", "placement", "cue sheet", "master use", "publishing share", "mfn", "exclusivity", "territory", "term"],
+        "agents": ["starlight-sound-sync", "starlight-sound-catalog", "starlight-sound-production", "starlight-business"],
+        "intents": ["brief-fit-evaluation", "placement-thesis", "license-economics", "rights-pack-delivery", "sync-stay-interview"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "memory-sis-memory-orchestrator",
+      "skill": "memory/sis-memory-orchestrator",
+      "triggers": {
+        "keywords": ["sis memory", "memory substrate", "mempalace", "letta", "memgpt", "mem0", "agentdb", "qdrant", "screenpipe", "swap memory backend", "benchmark substrates", "memory privacy", "leak audit", "where does this capture go", "/sis memory", "memory orchestrator", "privacy guardian", "decay sweep", "embedding", "knowledge-graph"],
+        "agents": ["starlight-sage", "starlight-orchestrator", "starlight-sentinel"],
+        "intents": ["memory-routing", "substrate-selection", "privacy-redaction", "benchmarking", "leak-audit", "adoption-setup"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "vision-voice-anti-slop",
+      "skill": "vision/voice-anti-slop",
+      "triggers": {
+        "keywords": ["voice", "tone", "anti-slop", "brand voice", "copy", "site copy", "vault entry", "handover", "plan doc", "pr description", "commit message", "user-facing prose", "unleash", "harness", "delve", "tapestry", "seamless", "synergize", "leverage", "deep dive", "paradigm shift", "game-changer"],
+        "agents": ["starlight-visionary", "starlight-weaver", "starlight-prime"],
+        "intents": ["voice-enforcement", "slop-refusal", "brand-voice-check", "operator-honesty", "prose-revision"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
