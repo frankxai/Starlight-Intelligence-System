@@ -29,13 +29,11 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join, dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { repoRootFromTestFile, walkSkills, fileToSkillKey } from "./_lib/repo.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const REPO_ROOT = resolve(__dirname, "..");
+const REPO_ROOT = repoRootFromTestFile(import.meta.url);
 const SKILLS_DIR = join(REPO_ROOT, "skills");
 const RULES_PATH = join(SKILLS_DIR, "skill-rules.json");
 
@@ -70,40 +68,8 @@ function loadRules(): Rule[] {
   return parsed.rules;
 }
 
-function listSkillFiles(): string[] {
-  // Walk skills/ recursively, return relative paths to .md files.
-  const results: string[] = [];
-  function walk(dir: string, prefix: string) {
-    for (const entry of readdirSync(dir)) {
-      const full = join(dir, entry);
-      const rel = prefix ? `${prefix}/${entry}` : entry;
-      const stat = statSync(full);
-      if (stat.isDirectory()) {
-        walk(full, rel);
-      } else if (entry.endsWith(".md")) {
-        results.push(rel);
-      }
-    }
-  }
-  walk(SKILLS_DIR, "");
-  return results.sort();
-}
-
-/**
- * Map a skill file's relative path to its candidate skill-key (the form
- * referenced in skill-rules.json). Convention:
- *   skills/foo/bar.md       -> foo/bar
- *   skills/foo/bar/SKILL.md -> foo/bar
- * Excluded: top-level architecture docs, README.md, references/ subdirs.
- */
-function fileToSkillKey(rel: string): string | null {
-  if (rel === "SKILL_ARCHITECTURE.md") return null;
-  if (rel.endsWith("/README.md")) return null;
-  if (rel.includes("/references/")) return null;
-  if (rel.endsWith("/SKILL.md")) return rel.slice(0, -"/SKILL.md".length);
-  if (rel.endsWith(".md")) return rel.slice(0, -".md".length);
-  return null;
-}
+// Note: walkSkills + fileToSkillKey now live in test/_lib/repo.ts (extracted
+// 2026-05-05 from duplicate-fn audit). v76 + others should adopt incrementally.
 
 // ---------- tests ----------
 
@@ -148,7 +114,7 @@ describe("v7.7 skill-rules.json — phantom check", () => {
     const rules = loadRules();
     const registered = new Set(rules.map((r) => r.skill));
 
-    const files = listSkillFiles();
+    const files = walkSkills(SKILLS_DIR, { excludeReferences: true });
     const candidates = files.map(fileToSkillKey).filter((k): k is string => k !== null);
 
     const phantoms: string[] = [];

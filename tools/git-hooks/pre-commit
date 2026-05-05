@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Starlight pre-commit hook — runs registry-symmetry tests on every commit.
+#
+# Catches drift fast (<5s):
+#   - test/v76.test.ts: agents/AGENT_REGISTRY.md ↔ agents/*.md symmetry
+#   - test/v77-skill-rules.test.ts: skills/skill-rules.json ↔ skills/**/*.md symmetry
+#
+# Full substrate suite (~12s) stays in CI / pre-push.
+#
+# Bypass: git commit --no-verify  (use sparingly; test failure means real drift)
+
+set -e
+
+# Skip on pure-doc commits (no substrate file touched)
+if git diff --cached --name-only | grep -qE '^(agents/|skills/|verticals/|test/|package\.json)' ; then
+    echo "→ pre-commit: substrate files touched — running symmetry tests"
+
+    # Run the two fast symmetry tests
+    if ! node --import tsx --test test/v76.test.ts test/v77-skill-rules.test.ts ; then
+        echo ""
+        echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
+        exit 1
+    fi
+    echo "✓ symmetry tests pass"
+else
+    echo "→ pre-commit: no substrate files in commit — skipping symmetry tests"
+fi
