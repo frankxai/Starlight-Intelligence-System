@@ -4,7 +4,7 @@
 
 Canonical URL: `starlightintelligence.org/protocol`
 Source of truth: `frankxai/Starlight-Intelligence-System` (this repo), file `SIP.md`.
-Version: `v1.1.0`
+Version: `v1.1.1`
 
 ## Scope
 
@@ -93,6 +93,7 @@ Non-negotiable social contract. Every party that adopts SIP accepts:
 4. **Commitment shape.** Cross-party commitments name artifacts and dates, never intentions.
 5. **Fork resolution.** Disagreements route through `/alliance-decide`. One node owns each fork per declared domain; others advise.
 6. **Exit.** Any party can leave the composition. Attribution history remains immutable.
+7. **Encoded-self forkable boundary.** The substrate pattern (agents, skills, commands, methods, governance) is forkable under each component's license. Encoded-self artifacts — founder voice clones, identity vectors, personal canon, vault-specific paths, and any artifact that fingerprints a sovereign — are non-licensable and non-transferable. Forks may inherit the pattern, never the person. *Encoded-self definition is grounded in 2026 norms; revisits quarterly starting 2026-W30 (2026-07-20) as voice-cloning and identity-vector technology shifts. Operational test for pattern-vs-encoded-self is `scripts/audit-authorlessness.ts`.*
 
 ## Layer 6 — Archetype extension (optional)
 
@@ -119,4 +120,6 @@ Archetypes are not required for SIP compliance. Protocol, attestation, and sover
 
 ---
 
-**Built on SIP** · v1.1.0 · Authored by Frank Riemer (Starlight Holding BV) · MIT
+**Built on SIP** · v1.1.1 · Authored by Frank Riemer (Starlight Holding BV) · MIT
+- v1.1.1 (2026-05-06): adds § 5 item 7 (encoded-self forkable boundary) per Luminor Board v8 REVISE #4 + Starlight Board 2026-05-06 wording-tightening REVISE
+- v1.1.0 — initial multi-vertical contract
