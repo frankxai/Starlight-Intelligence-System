@@ -24,12 +24,13 @@ export const metadata: Metadata = {
     template: "%s — Starlight Intelligence",
   },
   description:
-    "A persistent context and memory architecture for AI agents. 9 intelligence layers, 35 agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Built on the Starlight Intelligence Protocol. Local-first. Forkable. Free.",
+    "A persistent context and memory architecture for AI agents. 10 intelligence systems, 35 agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Built on the Starlight Intelligence Protocol. Local-first. Forkable. Free.",
+  alternates: { canonical: "/" },
   openGraph: {
     title:
       "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "9 intelligence layers, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
+      "10 intelligence systems, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
     url: "https://starlightintelligence.org",
     siteName: "Starlight Intelligence",
     type: "website",
@@ -40,9 +41,53 @@ export const metadata: Metadata = {
     title:
       "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "9 intelligence layers, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
+      "10 intelligence systems, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
   },
   robots: { index: true, follow: true },
+};
+
+const ORG_ID = "https://starlightintelligence.org/#organization";
+const SITE_ID = "https://starlightintelligence.org/#website";
+
+const SCHEMA_GRAPH = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: "Starlight Intelligence",
+      url: "https://starlightintelligence.org",
+      sameAs: [
+        "https://github.com/frankxai/Starlight-Intelligence-System",
+        "https://www.npmjs.com/package/@arcanea/starlight-intelligence-system",
+      ],
+      description:
+        "A persistent context and memory architecture for AI agents. Sovereign by architecture, local-first, forkable.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": SITE_ID,
+      url: "https://starlightintelligence.org",
+      name: "Starlight Intelligence",
+      publisher: { "@id": ORG_ID },
+      description:
+        "Persistent context for AI agents, built on the Starlight Intelligence Protocol.",
+      inLanguage: "en",
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": "https://starlightintelligence.org/#source",
+      name: "Starlight Intelligence System",
+      codeRepository: "https://github.com/frankxai/Starlight-Intelligence-System",
+      programmingLanguage: "TypeScript",
+      runtimePlatform: "Model Context Protocol",
+      license: "https://opensource.org/licenses/MIT",
+      author: { "@id": ORG_ID },
+      softwareVersion: "7.6.0",
+      description:
+        "Substrate (SIP protocol + attestation) + reference operational layer (semantic vaults, hybrid retrieval, MCP server, platform adapters).",
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -53,6 +98,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jbMono.variable}`}>
       <body className="flex min-h-dvh flex-col bg-[#060609] font-sans text-slate-200 antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_GRAPH) }}
+        />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-[#060609]"
