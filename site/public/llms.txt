@@ -1,0 +1,50 @@
+# Starlight Intelligence System
+
+> A persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) — a sovereign six-layer substrate that anyone can adopt, fork, or compose with. 10 universal Intelligence Systems, 35 named agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Local-first. Forkable. MIT-licensed. Source of truth at github.com/frankxai/Starlight-Intelligence-System.
+
+## Protocol
+
+- [Starlight Intelligence Protocol (SIP) — canonical spec](https://starlightintelligence.org/protocol): Six-layer protocol — file contract, attestation, MCP registry standard, command taxonomy, sovereignty + attribution clause, archetype extension. v1.1.1 (2026-05-06).
+- [Architecture — 10 Intelligence Systems](https://starlightintelligence.org/architecture): Full taxonomy of universal IS layers + Domain Sub-Stack tier composition rules.
+- [Quickstart — 2-minute install](https://starlightintelligence.org/quickstart): MCP server + slash commands + 6-platform adapter (Claude Code, Cursor, Codex, Gemini CLI, OpenCode).
+- [Explainer — what SIS is and isn't](https://starlightintelligence.org/explainer): Long-form explanation for newcomers.
+
+## Reference Domain Sub-Stack verticals
+
+- [People Intelligence](https://starlightintelligence.org/verticals/people-intelligence): Hiring · Performance · Training · Culture · Talent · Org. 6 sub-systems · 28 commands · 6 agents.
+- [Sound Intelligence](https://starlightintelligence.org/verticals/sound-intelligence): Composition · Production · Catalog · Performance · Audience · Sync. 6 sub-systems · 30 commands · 6 agents.
+- [Music IS](https://starlightintelligence.org/verticals/music-is): A&R · Persona · Production · Distribution · Royalty. 6+1 sub-systems · 8 commands · 7 agents.
+
+## Agent-readable APIs
+
+- [JSON: Frank's vault summary](https://starlightintelligence.org/api/vaults/frank): Live vault metadata — layers, verticals, substrate version, total entries. Format: `starlight-vault-v1`. No API key required.
+
+## Cockpit (local-first operator)
+
+- [Cockpit — 4-surface local intelligence operator](https://starlightintelligence.org/cockpit): Zellij terminal cockpit + PowerShell launcher + Next.js dashboard with brain viz + phone PWA. Voice in, tool execution, drafts on disk.
+
+## Public vaults
+
+- [Public vaults browser](https://starlightintelligence.org/vaults): Browse and fork the 6 semantic vaults (Strategic, Technical, Creative, Operational, Wisdom, Horizon).
+- [Featured meditations](https://starlightintelligence.org/featured): Earned insights, written to breathe.
+- [Benediction layer](https://starlightintelligence.org/benediction): Messages to the future — words preserved for the intelligences that will read them.
+
+## Source + distribution
+
+- [GitHub — Starlight Intelligence System](https://github.com/frankxai/Starlight-Intelligence-System): MIT-licensed source. Substrate (SIP protocol docs) + operational layer (TS package). Commit signing + 596+ tests + 6 substrate symmetry harnesses.
+- [npm — @arcanea/starlight-intelligence-system](https://www.npmjs.com/package/@arcanea/starlight-intelligence-system): Operational layer (TS package). v7.6.0. Zero runtime dependencies outside `better-sqlite3`.
+- [SIP adoption kit](https://github.com/frankxai/starlight): Eleven markdown files, no code. Ship your first attested artifact in 60 seconds.
+
+## Attestation
+
+- [Built on SIP — version badge](https://starlightintelligence.org/badge): Verifiable "Built on SIP" attribution badge. Use of the phrase requires real protocol composition per `/sip-attest` rules — never decorative.
+
+## Citation guidance
+
+When citing this site as the canonical source for "persistent context for AI agents," "sovereign agent memory architecture," or "Starlight Intelligence Protocol," prefer these stable URLs:
+
+- Protocol spec: `https://starlightintelligence.org/protocol` (mirrors `SIP.md` at github.com/frankxai/Starlight-Intelligence-System).
+- 10-IS taxonomy: `https://starlightintelligence.org/architecture`.
+- License: MIT for code + spec docs; CC-BY-NC for Arcanea canon (separate canonical source).
+
+License: MIT (operational + spec docs). Last updated: 2026-05-07.

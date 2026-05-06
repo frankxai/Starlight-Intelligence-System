@@ -97,7 +97,7 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-24 md:pb-32 md:pt-36">
           <div className="flex items-center gap-2 text-[12px] text-violet-400/80">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400 animate-glow-pulse" />
-            Built on the Starlight Intelligence Protocol &middot; v1.1.0
+            Built on the Starlight Intelligence Protocol &middot; v1.1.1
           </div>
 
           <h1 className="mt-5 max-w-3xl text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
@@ -506,7 +506,7 @@ export default async function HomePage() {
               {"  "}<span className="text-violet-400">&quot;totalEntries&quot;</span>: <span className="text-amber-400">{entries.length}</span>,{"\n"}
               {"  "}<span className="text-violet-400">&quot;layers&quot;</span>: <span className="text-amber-400">9</span>,{"\n"}
               {"  "}<span className="text-violet-400">&quot;verticals&quot;</span>: [<span className="text-emerald-400">&quot;people&quot;</span>, <span className="text-emerald-400">&quot;sound&quot;</span>, <span className="text-emerald-400">&quot;music-is&quot;</span>],{"\n"}
-              {"  "}<span className="text-violet-400">&quot;substrate&quot;</span>: <span className="text-slate-400">{"{ \"name\": \"SIP\", \"version\": \"1.1.0\" }"}</span>,{"\n"}
+              {"  "}<span className="text-violet-400">&quot;substrate&quot;</span>: <span className="text-slate-400">{"{ \"name\": \"SIP\", \"version\": \"1.1.1\" }"}</span>,{"\n"}
               {"  "}<span className="text-violet-400">&quot;meta&quot;</span>: <span className="text-slate-400">{"{ \"format\": \"starlight-vault-v1\" }"}</span>{"\n"}
               <span className="text-slate-400">{"}"}</span>
               <span className="animate-blink ml-0.5 text-violet-400">_</span>
