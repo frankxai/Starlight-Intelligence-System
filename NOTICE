@@ -1,0 +1,60 @@
+Starlight Intelligence System
+Copyright (c) 2026 Frank Riemer / Starlight Holding
+
+This product is licensed under the MIT License (see LICENSE).
+
+================================================================================
+SIP attestation convention
+================================================================================
+
+The Starlight Intelligence Protocol (SIP) substrate documents in this
+repository — including but not limited to SIP.md, SIS.md, ALLIANCE.md,
+STACK.md, VOICES.md, VERTICALS.md, MEMORY.md, REGISTRY.md, SKILL.md, and
+the substrate-tier commands under .claude/commands/ — are licensed under
+MIT for maximum permissiveness.
+
+As a social-layer convention (not a license restriction), forks,
+derivatives, and downstream implementations are asked to preserve the
+"Built on SIP" attestation in their artifacts when they compose with this
+substrate. The attestation pattern is specified in SIP.md and the tooling
+lives in /sip-attest. Silent composition is a breach of convention but not
+of the MIT license.
+
+This is the same shape used by Apache Foundation projects: LICENSE governs
+legal rights; NOTICE captures attribution conventions that propagate with
+forks.
+
+================================================================================
+Layered licensing summary
+================================================================================
+
+Code (skills, agents, MCP servers, the reference build):
+    MIT — see LICENSE.
+
+Substrate spec documents (SIP.md and the file-contract files listed above):
+    MIT — same LICENSE covers them. The "Built on SIP" attestation
+    request above is the social convention layer, not a legal restriction.
+
+Arcanea canon (Guardian names, Vel'Tara archetypes, Hz grounding, realm
+and essence vocabulary — when present in forks that opt-in to it):
+    CC-BY-NC 4.0, © Arcanea BV. Lives in a separate repo
+    (frankxai/arcanea-ecosystem). Compose-only; canon is not redistributed
+    under the MIT license of this repository.
+
+================================================================================
+Trademarks
+================================================================================
+
+ARCANEA, FRANKX, STARLIGHT INTELLIGENCE — registered or in registration.
+All rights reserved.
+
+"Built on SIP" is an attestation phrase, not a trademark. Use of the
+phrase requires actual SIP composition per /sip-attest rules.
+
+================================================================================
+Built on SIP
+================================================================================
+
+Attestation: Starlight Intelligence Protocol (SIP) v1.1.0
+Source of truth: SIP.md in this repository
+Canonical URL: https://starlightintelligence.org/protocol

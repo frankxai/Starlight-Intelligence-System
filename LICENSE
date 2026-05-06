@@ -22,8 +22,7 @@ SOFTWARE.
 
 ---
 
-**Note on Starlight Intelligence Protocol (SIP) attestation:** The substrate
-content in this repository is offered under MIT for code, with the request
-that derivative works carry "Built on SIP" attestation per `SIP.md`. This is a
-social convention, not a license restriction — the MIT license above governs
-all rights.
+See `NOTICE` for attribution conventions, the layered licensing summary
+(code · substrate spec · canon), and trademark notes. The MIT license above
+governs all legal rights; NOTICE captures the social-layer "Built on SIP"
+attestation convention that propagates with forks.
