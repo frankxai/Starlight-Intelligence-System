@@ -188,6 +188,7 @@ describe("v7.6 skills — frontmatter completeness", () => {
 
   const SKILL_FM_EXCLUDE: ReadonlySet<string> = new Set([
     "SKILL_ARCHITECTURE.md", // documentation file, not a skill
+    "SKILL_REGISTRY.md", // domain-specific registry (parallel to agents/AGENT_REGISTRY.md), not a skill — added 2026-05-06 per board verdict on Tier 3a
     // vision/voice-anti-slop.md uses an alternate FM shape (skill:/auto_activate:/loaded_by:)
     // intentionally — disk-orphan loaded broadly, not via skill-rules.json.
     "vision/voice-anti-slop.md",
@@ -245,11 +246,11 @@ describe("v7.6 skills — frontmatter completeness", () => {
   });
 
   it("frontmatter exclusions remain explicit and bounded (no creeping exemption list)", () => {
-    // Hard ceiling: SKILL_ARCHITECTURE.md + vision/voice-anti-slop + 6 sound-intelligence = 8.
+    // Hard ceiling: SKILL_ARCHITECTURE.md + SKILL_REGISTRY.md + vision/voice-anti-slop + 6 sound-intelligence = 9.
     // If anyone adds to the exemption list to silence this test, this assertion fires.
     assert.ok(
-      SKILL_FM_EXCLUDE.size <= 8,
-      `frontmatter exemption list grew past 8 entries (size: ${SKILL_FM_EXCLUDE.size}) — backfill instead of exempting`,
+      SKILL_FM_EXCLUDE.size <= 9,
+      `frontmatter exemption list grew past 9 entries (size: ${SKILL_FM_EXCLUDE.size}) — backfill instead of exempting`,
     );
   });
 

@@ -58,10 +58,13 @@ export function walkSkills(skillsDir: string, opts: WalkSkillsOptions = {}): str
  * Map a skill file's relative path to its canonical skill-key.
  *   skills/foo/bar.md       -> foo/bar
  *   skills/foo/bar/SKILL.md -> foo/bar
- * Returns null for files that don't represent a skill (README, architecture docs).
+ * Returns null for files that don't represent a skill (README, architecture docs,
+ * top-level meta-registries like SKILL_ARCHITECTURE.md and SKILL_REGISTRY.md).
  */
 export function fileToSkillKey(rel: string): string | null {
+  // Top-level meta-files at skills/ root — not skills, not registered in skill-rules.json
   if (rel === "SKILL_ARCHITECTURE.md") return null;
+  if (rel === "SKILL_REGISTRY.md") return null;
   if (rel.endsWith("/README.md")) return null;
   if (rel.includes("/references/")) return null;
   if (rel.endsWith("/SKILL.md")) return rel.slice(0, -"/SKILL.md".length);
