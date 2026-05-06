@@ -2,8 +2,9 @@
 # Starlight pre-commit hook — runs registry-symmetry tests on every commit.
 #
 # Catches drift fast (<5s):
-#   - test/v76.test.ts: agents/AGENT_REGISTRY.md ↔ agents/*.md symmetry
+#   - test/v76.test.ts: agents/AGENT_REGISTRY.md ↔ agents/*.md symmetry + frontmatter completeness
 #   - test/v77-skill-rules.test.ts: skills/skill-rules.json ↔ skills/**/*.md symmetry
+#   - test/v78-skill-registry.test.ts: skills/SKILL_REGISTRY.md ↔ skill-rules.json symmetry
 #
 # Full substrate suite (~12s) stays in CI / pre-push.
 #
@@ -15,8 +16,8 @@ set -e
 if git diff --cached --name-only | grep -qE '^(agents/|skills/|verticals/|test/|package\.json)' ; then
     echo "→ pre-commit: substrate files touched — running symmetry tests"
 
-    # Run the two fast symmetry tests
-    if ! node --import tsx --test test/v76.test.ts test/v77-skill-rules.test.ts ; then
+    # Run the three fast symmetry tests
+    if ! node --import tsx --test test/v76.test.ts test/v77-skill-rules.test.ts test/v78-skill-registry.test.ts ; then
         echo ""
         echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
         exit 1
