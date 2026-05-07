@@ -33,7 +33,7 @@ export default function VerticalsPage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
+      <section className="relative overflow-hidden border-b border-white/[0.08]">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
@@ -59,7 +59,7 @@ export default function VerticalsPage() {
       </section>
 
       {/* ── Vertical cards ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="grid gap-6 md:grid-cols-3">
             {VERTICALS.map((v) => (
@@ -130,7 +130,7 @@ export default function VerticalsPage() {
       </section>
 
       {/* ── Pattern generalizes ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             The pattern

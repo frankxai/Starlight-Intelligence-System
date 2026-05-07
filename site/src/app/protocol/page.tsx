@@ -157,7 +157,7 @@ export default function ProtocolPage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
+      <section className="relative overflow-hidden border-b border-white/[0.08]">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.05] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
@@ -198,7 +198,7 @@ export default function ProtocolPage() {
       </section>
 
       {/* ── Source-of-truth banner ── */}
-      <section className="border-b border-white/[0.04] bg-white/[0.01] px-6 py-4">
+      <section className="border-b border-white/[0.08] bg-white/[0.01] px-6 py-4">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-slate-500">
           <span className="text-[10px] uppercase tracking-widest text-slate-600">
             Canonical source
@@ -268,7 +268,7 @@ export default function ProtocolPage() {
                       key={row.file}
                       className={
                         i < FILE_CONTRACT_ROWS.length - 1
-                          ? "border-b border-white/[0.04]"
+                          ? "border-b border-white/[0.08]"
                           : ""
                       }
                     >
@@ -421,7 +421,7 @@ export default function ProtocolPage() {
                       key={row.tier}
                       className={
                         i < COMMAND_TIERS.length - 1
-                          ? "border-b border-white/[0.04]"
+                          ? "border-b border-white/[0.08]"
                           : ""
                       }
                     >

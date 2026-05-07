@@ -9,6 +9,7 @@ export function Header() {
       >
         <Link
           href="/"
+          aria-label="Starlight Intelligence — home"
           className="flex items-center gap-2.5 transition-micro hover:opacity-80"
         >
           {/* Starlight mark */}
@@ -67,12 +68,30 @@ export function Header() {
           </NavLink>
         </div>
 
-        {/* Mobile nav — simple links row */}
-        <div className="flex items-center gap-3 sm:hidden">
-          <NavLink href="/verticals">Verticals</NavLink>
-          <NavLink href="/quickstart">Quickstart</NavLink>
-          <NavLink href="/docs">Docs</NavLink>
-        </div>
+        {/* Mobile nav — disclosure exposing all routes (no JS, keyboard-accessible) */}
+        <details className="group relative sm:hidden">
+          <summary
+            aria-label="Open navigation menu"
+            className="flex cursor-pointer list-none items-center gap-1.5 rounded-md px-2.5 py-2 text-[13px] text-slate-300 transition-micro hover:bg-white/[0.04] [&::-webkit-details-marker]:hidden"
+          >
+            Menu
+            <span className="text-slate-500 transition-micro group-open:rotate-180" aria-hidden="true">↓</span>
+          </summary>
+          <nav
+            aria-label="Mobile navigation"
+            className="absolute right-0 top-full z-50 mt-2 flex w-48 flex-col gap-0.5 rounded-lg border border-white/[0.10] bg-[#0c0c12] p-2 shadow-2xl"
+          >
+            <NavLink href="/verticals">Verticals</NavLink>
+            <NavLink href="/cockpit">Cockpit</NavLink>
+            <NavLink href="/architecture">Architecture</NavLink>
+            <NavLink href="/protocol">Protocol</NavLink>
+            <NavLink href="/quickstart">Quickstart</NavLink>
+            <NavLink href="/explainer">Explainer</NavLink>
+            <NavLink href="/vaults">Vaults</NavLink>
+            <NavLink href="/docs">Docs</NavLink>
+            <NavLink href="https://github.com/frankxai/Starlight-Intelligence-System" external>GitHub</NavLink>
+          </nav>
+        </details>
       </nav>
     </header>
   );
@@ -88,7 +107,7 @@ function NavLink({
   external?: boolean;
 }) {
   const cls =
-    "rounded-md px-3 py-1.5 text-[13px] text-slate-400 transition-micro hover:text-white hover:bg-white/[0.04]";
+    "rounded-md px-3 py-2.5 text-[13px] text-slate-300 transition-micro hover:text-white hover:bg-white/[0.06]";
 
   if (external) {
     return (

@@ -272,7 +272,7 @@ export default function QuickstartPage() {
       </section>
 
       {/* Next steps */}
-      <section className="mt-20 border-t border-white/[0.04] pt-10">
+      <section className="mt-20 border-t border-white/[0.08] pt-10">
         <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
           Next
         </h2>
@@ -327,7 +327,7 @@ function Terminal({ children }: { children: React.ReactNode }) {
 function CodeBlock({ children }: { children: string }) {
   return (
     <div className="mt-4 overflow-hidden rounded-lg border border-white/[0.06] bg-[#0c0c12]">
-      <div className="border-b border-white/[0.04] px-4 py-2">
+      <div className="border-b border-white/[0.08] px-4 py-2">
         <code className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
           mcp config
         </code>

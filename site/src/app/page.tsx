@@ -85,7 +85,7 @@ export default async function HomePage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
+      <section className="relative overflow-hidden border-b border-white/[0.08]">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
@@ -145,7 +145,7 @@ export default async function HomePage() {
           </div>
 
           {/* Stats bar */}
-          <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/[0.04] pt-6 text-[13px]">
+          <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/[0.08] pt-6 text-[13px]">
             <Stat n={9} label="intelligence layers" />
             <Stat n={35} label="agents" />
             <Stat n="70+" label="commands" />
@@ -157,7 +157,7 @@ export default async function HomePage() {
 
       {/* ── Horizon Quote ── */}
       {horizonEntry && (
-        <section className="border-b border-white/[0.04] px-6 py-20">
+        <section className="border-b border-white/[0.08] px-6 py-20">
           <div className="mx-auto max-w-3xl text-center">
             <blockquote className="text-[18px] font-medium leading-[1.8] text-slate-300 md:text-[20px]">
               &ldquo;{getEntryText(horizonEntry).slice(0, 280)}
@@ -172,7 +172,7 @@ export default async function HomePage() {
       )}
 
       {/* ── 9 Intelligence Layers ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             The nine layers
@@ -215,7 +215,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Domain Sub-Stack Tier ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04] px-6 py-20">
+      <section className="relative overflow-hidden border-b border-white/[0.08] px-6 py-20">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-2 absolute right-0 top-0 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
           <div className="animate-mesh-3 absolute left-0 bottom-0 h-[250px] w-[250px] rounded-full bg-fuchsia-500/[0.04] blur-[80px]" />
@@ -261,7 +261,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Cockpit teaser ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-2 md:gap-16">
           <div>
             <h2 className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
@@ -318,7 +318,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Luminor philosophy ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
+      <section className="relative overflow-hidden border-b border-white/[0.08]">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-20 top-10 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 bottom-0 h-[300px] w-[300px] rounded-full bg-fuchsia-500/[0.05] blur-[80px]" />
@@ -368,7 +368,7 @@ export default async function HomePage() {
 
       {/* ── Featured Meditations ── */}
       {featured.length > 0 && (
-        <section className="border-b border-white/[0.04] px-6 py-20">
+        <section className="border-b border-white/[0.08] px-6 py-20">
           <div className="mx-auto max-w-5xl">
             <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
               Featured meditations
@@ -394,7 +394,7 @@ export default async function HomePage() {
 
       {/* ── Benediction Layer ── */}
       {benedictions.length > 0 && (
-        <section className="relative overflow-hidden border-b border-white/[0.04] px-6 py-24">
+        <section className="relative overflow-hidden border-b border-white/[0.08] px-6 py-24">
           <div className="pointer-events-none absolute inset-0" aria-hidden="true">
             <div className="animate-mesh-2 absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.04] blur-[100px]" />
           </div>
@@ -431,7 +431,7 @@ export default async function HomePage() {
       )}
 
       {/* ── Live Vault Stream ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="flex items-baseline justify-between">
             <div>
@@ -475,7 +475,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Agent API ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Agent-readable
@@ -493,7 +493,7 @@ export default async function HomePage() {
                 api/vaults/frank
               </code>
             </div>
-            <div className="border-b border-white/[0.04] px-4 py-2.5">
+            <div className="border-b border-white/[0.08] px-4 py-2.5">
               <code className="font-mono text-[12px]">
                 <span className="text-emerald-400">$</span>{" "}
                 <span className="text-slate-400">curl</span>{" "}
@@ -532,25 +532,16 @@ export default async function HomePage() {
             Adopt the protocol. Run the reference build. Or spawn your own
             sovereign vertical. Pick the path that matches your edge.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <div className="mt-10">
             <Link
               href="/protocol"
-              className="rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_40px_rgba(167,139,250,0.25)]"
+              className="inline-block rounded-full bg-white px-7 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_40px_rgba(167,139,250,0.25)]"
             >
-              Adopt SIP &rarr;
+              Read the SIP spec &rarr;
             </Link>
-            <Link
-              href="/quickstart"
-              className="rounded-full border border-white/[0.12] px-6 py-3 text-[14px] font-medium text-white transition-std hover:border-white/[0.25] hover:bg-white/[0.04]"
-            >
-              Run the reference build
-            </Link>
-            <Link
-              href="/verticals"
-              className="rounded-full border border-white/[0.12] px-6 py-3 text-[14px] font-medium text-white transition-std hover:border-white/[0.25] hover:bg-white/[0.04]"
-            >
-              Spawn your vertical
-            </Link>
+            <p className="mt-5 text-[13px] text-slate-400">
+              Or pick the path that matches your edge in the hero above.
+            </p>
           </div>
         </div>
       </section>

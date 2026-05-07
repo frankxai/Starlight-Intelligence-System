@@ -57,7 +57,7 @@ export default function ExplainerPage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
+      <section className="relative overflow-hidden border-b border-white/[0.08]">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
@@ -81,7 +81,7 @@ export default function ExplainerPage() {
       </section>
 
       {/* ── Source-of-truth banner ── */}
-      <section className="border-b border-white/[0.04] bg-white/[0.01] px-6 py-4">
+      <section className="border-b border-white/[0.08] bg-white/[0.01] px-6 py-4">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-slate-400">
           <span className="text-[10px] uppercase tracking-widest text-slate-400">
             Canonical source
@@ -108,7 +108,7 @@ export default function ExplainerPage() {
       </article>
 
       {/* ── CTA ── */}
-      <section className="border-t border-white/[0.04] px-6 py-20">
+      <section className="border-t border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-[15px] leading-relaxed text-slate-400">
             Two paths to start. Pick the one that matches how you work.

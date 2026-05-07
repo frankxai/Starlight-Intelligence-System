@@ -96,7 +96,9 @@ body {
   border-radius: 4px;
 }
 
-/* Reduced motion — disable ambient + decorative animations for users who prefer it */
+/* Reduced motion — disable ambient + decorative animations + transitions + transforms.
+   Per WCAG 2.3.3 + a11y audit (2026-05-07): the original block scoped only `animate-*`
+   utilities; transitions and hover transforms continued to fire for reduced-motion users. */
 @media (prefers-reduced-motion: reduce) {
   .animate-mesh-1,
   .animate-mesh-2,
@@ -104,7 +106,21 @@ body {
   .animate-glow-pulse,
   .animate-fade-up,
   .animate-blink {
-    animation: none;
+    animation: none !important;
+  }
+  .transition-micro,
+  .transition-std,
+  .transition-dramatic {
+    transition: none !important;
+  }
+  /* Hover transforms (e.g., translate-x on CTA arrows, group-open rotate) — neutralize. */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }
 

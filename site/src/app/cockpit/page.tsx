@@ -90,7 +90,7 @@ export default function CockpitPage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
+      <section className="relative overflow-hidden border-b border-white/[0.08]">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.07] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[320px] w-[320px] rounded-full bg-cyan-500/[0.05] blur-[80px]" />
@@ -117,7 +117,7 @@ export default function CockpitPage() {
       </section>
 
       {/* ── 4 Surfaces ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             The four surfaces
@@ -128,7 +128,7 @@ export default function CockpitPage() {
 
           {/* SVG schematic */}
           <div className="mt-10 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c12]">
-            <div className="border-b border-white/[0.04] px-4 py-3">
+            <div className="border-b border-white/[0.08] px-4 py-3">
               <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
                 local-cockpit · schematic
               </code>
@@ -151,7 +151,7 @@ export default function CockpitPage() {
       </section>
 
       {/* ── Voice loop ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Voice loop
@@ -207,7 +207,7 @@ export default function CockpitPage() {
       </section>
 
       {/* ── Brain viz ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Brain viz
@@ -249,7 +249,7 @@ export default function CockpitPage() {
       </section>
 
       {/* ── Drafts on disk ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Drafts on disk
@@ -274,7 +274,7 @@ export default function CockpitPage() {
       </section>
 
       {/* ── Privacy ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Privacy posture

@@ -183,7 +183,7 @@ export default function ArchitecturePage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
+      <section className="relative overflow-hidden border-b border-white/[0.08]">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.05] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
@@ -210,7 +210,7 @@ export default function ArchitecturePage() {
       </section>
 
       {/* ── Foundation: JSONL truth ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Foundation
@@ -254,7 +254,7 @@ export default function ArchitecturePage() {
       </section>
 
       {/* ── 10-IS table ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             The ten Intelligence Systems
@@ -294,7 +294,7 @@ export default function ArchitecturePage() {
                       key={l.name}
                       className={
                         i < LAYERS.length - 1
-                          ? "border-b border-white/[0.04]"
+                          ? "border-b border-white/[0.08]"
                           : ""
                       }
                     >
@@ -343,7 +343,7 @@ export default function ArchitecturePage() {
       </section>
 
       {/* ── Domain Sub-Stack Tier ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Domain Sub-Stack Tier
@@ -378,7 +378,7 @@ export default function ArchitecturePage() {
       </section>
 
       {/* ── Composition rules ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Composition rules
@@ -419,7 +419,7 @@ export default function ArchitecturePage() {
       </section>
 
       {/* ── Cross-tool compounding ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Cross-tool compounding
@@ -461,7 +461,7 @@ export default function ArchitecturePage() {
       </section>
 
       {/* ── Extension model ── */}
-      <section className="border-b border-white/[0.04] px-6 py-20">
+      <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
             Extension

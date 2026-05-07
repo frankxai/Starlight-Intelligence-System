@@ -28,7 +28,7 @@ export function EntryCard({
 
   if (compact) {
     return (
-      <article className="group rounded-lg border border-white/[0.04] bg-white/[0.015] px-4 py-3 transition-std hover:border-white/[0.1] hover:bg-white/[0.03]">
+      <article className="group rounded-lg border border-white/[0.08] bg-white/[0.015] px-4 py-3 transition-std hover:border-white/[0.1] hover:bg-white/[0.03]">
         <div className="flex items-center gap-2 text-[11px]">
           {showCategory && (
             <span className={`font-medium ${meta.color}`}>
@@ -153,7 +153,7 @@ export function EntryCard({
       )}
 
       {(entry.context || entry.implication) && (
-        <div className="mt-4 space-y-2 border-t border-white/[0.04] pt-4 text-[12px] leading-relaxed">
+        <div className="mt-4 space-y-2 border-t border-white/[0.08] pt-4 text-[12px] leading-relaxed">
           {entry.context && (
             <div>
               <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600">
