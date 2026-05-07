@@ -5,7 +5,7 @@
 > SIS is two layers: a substrate (SIP) anyone can adopt, fork, or build on — and an operational layer (Frank's reference build) that runs on top of it.
 
 [![version](https://img.shields.io/badge/version-7.6.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
-[![protocol](https://img.shields.io/badge/SIP-v1.1.0-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
+[![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
 [![deploy](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml)
@@ -26,7 +26,7 @@ You can adopt **just the substrate** (fork SIP for your own work), **just the op
 >
 > **New in v7.3.1** (2026-04-24): Newcomer surface shipped — `/welcome`, `/intake`, `/sovereign-spawn` protocol commands + Concierge + Envoy front-door agents + ecosystem export schemas (Claude Projects, ChatGPT Projects, Gemini Gems, Cursor, Cowork) + attested-modality scaffolds (audio/image/video/compose). Read [`ONBOARDING.md`](ONBOARDING.md), [`DELIVERY.md`](DELIVERY.md), [`docs/ecosystem-integration.md`](docs/ecosystem-integration.md). Board-verdict driven ship — see [ATTESTATIONS.md § v7.3.1](ATTESTATIONS.md).
 
-[![Built on SIP](https://starlightintelligence.org/badge/v1.1.0)](https://starlightintelligence.org/protocol)
+[![Built on SIP](https://starlightintelligence.org/badge/v1.1.1)](https://starlightintelligence.org/protocol)
 
 ---
 
@@ -264,4 +264,4 @@ pnpm run lint        # tsc --noEmit
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.0 · v7.5.3 cockpit-complete · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v7.6.0 · MIT

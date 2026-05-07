@@ -27,6 +27,7 @@ last_consolidated: '2026-05-01'
 | 2026-02-10 | Configuration-First Pattern | architecture-pattern | 0.95 |
 | 2026-02-10 | Skill Auto-Activation Pattern | skill-pattern | 0.90 |
 | 2026-02-10 | Memory Hierarchy Pattern | memory-pattern | 0.90 |
+| 2026-05-06 | Core Regression Harness Pattern | test-pattern | 0.90 |
 
 ---
 
@@ -90,5 +91,20 @@ last_consolidated: '2026-05-01'
 4. Procedural Memory → Skills + Wisdom Vault (permanent)
 
 **Consolidation:** Knowledge flows upward through the hierarchy over time. Working memory insights get captured as episodes, episodes get generalized into semantic knowledge, and proven semantic knowledge becomes procedural skill.
+
+---
+
+### [2026-05-06] Core Regression Harness Pattern
+
+**Category:** test-pattern
+**Confidence:** 0.90
+**Source:** Codex / repo quality pass
+**Related:** Technical Vault - Memory Hierarchy Pattern
+
+**Pattern:** Every core storage or retrieval bug gets a small executable regression test wired into the default root test suite.
+
+**Applied:** Added coverage for platform-native `MemoryManager.save()` paths and `RetrievalIndex.rebuildFromVaults()` indexing of MCP-style `content` entries. Also fixed SQLite FTS `MATCH` usage to avoid alias-based query failures.
+
+**Why it matters:** The repo's protocol layer is heavily conformance-tested, but runtime storage edges need the same treatment. A passing `npm test` should cover both substrate shape and operational behavior.
 
 ---
