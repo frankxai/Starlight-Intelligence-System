@@ -35,7 +35,10 @@
  * ```
  */
 
-import { ContextEngine, DEFAULT_PROFILE, DEFAULT_STACK, DEFAULT_BRAND } from "./context.js";
+// DEFAULT_PROFILE, DEFAULT_STACK, DEFAULT_BRAND are re-exported from this module
+// via the explicit re-export on line ~218; this import line only needs the values
+// the StarlightIntelligence class consumes.
+import { ContextEngine } from "./context.js";
 import { MemoryManager } from "./memory.js";
 import { AgentRouter, ACOS_AGENTS } from "./agents.js";
 import { OrchestrationEngine } from "./orchestrator.js";
@@ -50,7 +53,6 @@ import type {
   UserProfile,
   TechStack,
   BrandSystem,
-  ReasoningStrategy,
   OrchestrationTask,
   OrchestrationResult,
   AgentExecutor,

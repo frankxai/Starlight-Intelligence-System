@@ -5,7 +5,7 @@
  * recommend the best agent and skill set.
  */
 
-import type { AgentDefinition, AgentRegistry, SkillDefinition } from "./types.js";
+import type { AgentDefinition, AgentRegistry } from "./types.js";
 
 // ── ACOS v8 Agent Definitions ───────────────────────────────
 

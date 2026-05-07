@@ -14,7 +14,7 @@
  */
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join } from "node:path";
 import type { MemoryEntry } from "./types.js";
 import { MemoryManager } from "./memory.js";
 import type { ACOSPattern, ACOSTrajectory } from "./sync.js";
@@ -247,9 +247,6 @@ function distillBehavioralRules(
   const readBeforeEdit = patterns.filter(
     (p) => p.sequence.startsWith("Read > Edit") && p.avgSuccess >= 0.80 && p.count >= 2
   );
-  const editWithoutRead = patterns.filter(
-    (p) => p.sequence.startsWith("Edit") && !p.sequence.startsWith("Edit > Read > Edit") && p.avgSuccess < 0.70
-  );
   if (readBeforeEdit.length > 0) {
     rules.push({
       instruction: "Always Read a file before editing it — never edit blind",
@@ -451,7 +448,7 @@ function distillFailureLessons(trajectories: ACOSTrajectory[]): FailureLesson[] 
  */
 function generateDomainChecklists(
   trajectories: ACOSTrajectory[],
-  patterns: ACOSPattern[]
+  _patterns: ACOSPattern[]
 ): DomainChecklist[] {
   const domainGroups = new Map<string, ACOSTrajectory[]>();
   for (const traj of trajectories) {
@@ -473,7 +470,6 @@ function generateDomainChecklists(
 
     // Analyze what successful sessions in this domain do
     const successful = trajs.filter((t) => t.successScore >= 0.80);
-    const failed = trajs.filter((t) => t.successScore < 0.60);
 
     // Check 1: Do successful sessions use Read before Edit?
     const successReadFirst = successful.filter(
