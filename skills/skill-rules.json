@@ -718,6 +718,19 @@
     "starlight-org": ["people-intelligence-org-architecture", "intelligence-systems-thinking", "intelligence-decision-framework", "intelligence-strategic-reasoning", "intelligence-pattern-recognition", "memory-knowledge-synthesis"],
     "starlight-talent": ["people-intelligence-people-dynamics", "intelligence-pattern-recognition", "intelligence-decision-framework", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
     "starlight-performance": ["people-intelligence-feedback-conversations", "intelligence-decision-framework", "intelligence-pattern-recognition", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
-    "starlight-voice-operator": ["orchestration-agent-handoff-packet", "orchestration-context-engineering", "memory-capture-discipline", "intelligence-decision-framework"]
+    "starlight-voice-operator": ["orchestration-agent-handoff-packet", "orchestration-context-engineering", "memory-capture-discipline", "intelligence-decision-framework"],
+    "music-amplifier": ["music-is-amplification-mesh", "music-is-distribution-flow", "intelligence-pattern-recognition"],
+    "music-archivist": ["music-is-catalog-systems", "music-is-naming-intelligence", "memory-vault-management"],
+    "music-curator": ["music-is-release-gate", "music-is-song-intake", "intelligence-pattern-recognition", "intelligence-decision-framework"],
+    "music-distributor": ["music-is-distribution-flow", "music-is-royalty-graph", "music-is-amplification-mesh"],
+    "music-producer": ["music-is-asset-render", "music-is-suno-prompt", "music-is-catalog-systems"],
+    "persona-keeper": ["music-is-persona-canon", "music-is-naming-intelligence", "vision-design-coherence"],
+    "royalty-architect": ["music-is-royalty-graph", "business-revenue-modeling", "intelligence-decision-framework"],
+    "starlight-sound-audience": ["sound-intelligence-audience-architecture", "intelligence-pattern-recognition", "memory-knowledge-synthesis"],
+    "starlight-sound-catalog": ["sound-intelligence-catalog-systems", "memory-vault-management", "intelligence-systems-thinking"],
+    "starlight-sound-composition": ["sound-intelligence-composition-architecture", "intelligence-pattern-recognition", "vision-design-coherence"],
+    "starlight-sound-performance": ["sound-intelligence-performance-design", "intelligence-decision-framework", "memory-knowledge-synthesis"],
+    "starlight-sound-production": ["sound-intelligence-production-systems", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
+    "starlight-sound-sync": ["sound-intelligence-sync-licensing", "business-revenue-modeling", "intelligence-decision-framework"]
   }
 }
