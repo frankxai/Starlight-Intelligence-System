@@ -2,10 +2,13 @@
 # Starlight pre-commit hook — runs registry-symmetry tests on every commit.
 #
 # Catches drift fast (<5s):
-#   - test/v76.test.ts: agents/AGENT_REGISTRY.md ↔ agents/*.md symmetry + frontmatter completeness
-#   - test/v77-skill-rules.test.ts: skills/skill-rules.json ↔ skills/**/*.md symmetry
-#   - test/v78-skill-registry.test.ts: skills/SKILL_REGISTRY.md ↔ skill-rules.json symmetry
+#   - test/v76.test.ts:                  agents/AGENT_REGISTRY.md ↔ agents/*.md symmetry + frontmatter
+#   - test/v77-skill-rules.test.ts:      skills/skill-rules.json ↔ skills/**/*.md symmetry
+#   - test/v78-skill-registry.test.ts:   skills/SKILL_REGISTRY.md ↔ skill-rules.json symmetry
 #   - test/v79-vertical-coverage.test.ts: STACK.md declared verticals ↔ verticals/<slug>/ 7-file contract
+#   - test/v80-platform-prompts.test.ts: platform-prompt symmetry — CLAUDE.md, AGENTS.md,
+#                                         .cursor/rules/, .clinerules/, .gemini/, .antigravity/
+#                                         claims ↔ canonical (agent/skill/vault counts + SIP version)
 #
 # Full substrate suite (~12s) stays in CI / pre-push.
 #
@@ -13,12 +16,23 @@
 
 set -e
 
-# Skip on pure-doc commits (no substrate file touched)
-if git diff --cached --name-only | grep -qE '^(agents/|skills/|verticals/|test/|package\.json|STACK\.md)' ; then
+# Skip on pure-doc commits (no substrate file touched). Trigger surfaces:
+#   v76-v79 era: agents/, skills/, verticals/, test/, package.json, STACK.md
+#   v80 era:     AGENTS.md, CLAUDE.md, SIP.md, SIS.md, VOICES.md, VERTICALS.md,
+#                REGISTRY.md, MEMORY.md, SKILL.md (substrate file-contract roots)
+#                .cursor/rules/, .clinerules/, .gemini/, .antigravity/ (platform adapters)
+SUBSTRATE_RE='^(agents/|skills/|verticals/|test/|package\.json|STACK\.md|AGENTS\.md|CLAUDE\.md|SIP\.md|SIS\.md|VOICES\.md|VERTICALS\.md|REGISTRY\.md|MEMORY\.md|SKILL\.md|\.cursor/rules/|\.clinerules/|\.gemini/|\.antigravity/)'
+
+if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
     echo "→ pre-commit: substrate files touched — running symmetry tests"
 
-    # Run the four fast symmetry tests
-    if ! node --import tsx --test test/v76.test.ts test/v77-skill-rules.test.ts test/v78-skill-registry.test.ts test/v79-vertical-coverage.test.ts ; then
+    # Run the five fast symmetry tests
+    if ! node --import tsx --test \
+        test/v76.test.ts \
+        test/v77-skill-rules.test.ts \
+        test/v78-skill-registry.test.ts \
+        test/v79-vertical-coverage.test.ts \
+        test/v80-platform-prompts.test.ts ; then
         echo ""
         echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
         exit 1

@@ -60,8 +60,8 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **What you have access to:**
 
-- **21 Agents** — 7 council + 2 front-door + 1 excavation + 5 universal-IS + **6 Domain Sub-Stack Tier** (People Intelligence: hiring/performance/training/culture/talent/org)
-- **35+ Skills** — Auto-activate via `skills/skill-rules.json` across 8+ domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**)
+- **35 Agents** — 7 council + 2 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 1 cross-cutting. Full registry: `agents/AGENT_REGISTRY.md`.
+- **63 Skills** — Auto-activate via `skills/skill-rules.json` across 12 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy)
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
 - **70+ Commands** — universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
