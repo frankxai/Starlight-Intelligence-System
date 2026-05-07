@@ -13,6 +13,7 @@ import { join, basename } from 'node:path';
 import { homedir } from 'node:os';
 import { randomUUID } from 'node:crypto';
 import type { TemporalMeta, ContradictionRecord } from './types.js';
+import { getPackageVersion } from './version.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -302,7 +303,7 @@ export class StarlightMcpServer {
       return { jsonrpc: '2.0', id: rpcId, result: {
         protocolVersion: '2024-11-05',
         capabilities: { tools: {} },
-        serverInfo: { name: 'starlight-sis', version: '6.0.0' },
+        serverInfo: { name: 'starlight-sis', version: getPackageVersion() },
       }};
     }
     if (method === 'tools/list') {
