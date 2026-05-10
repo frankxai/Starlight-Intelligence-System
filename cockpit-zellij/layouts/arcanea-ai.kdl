@@ -1,4 +1,4 @@
-﻿// arcanea.ai cockpit -- generated from _template.kdl.tmpl
+// arcanea.ai cockpit -- generated from _template.kdl.tmpl
 //
 // Launch: arc arcanea-ai
 // Or:     zellij --layout arcanea-ai --session arcanea-ai
@@ -29,7 +29,10 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\arcanea.ai"
                 pane name="Codex" cwd="C:\\Users\\frank\\arcanea.ai"
-                pane name="Gemini" cwd="C:\\Users\\frank\\arcanea.ai"
+                pane name="Gemini" cwd="C:\\Users\\frank\\arcanea.ai" {
+                    command "gemini"
+                    args "--yolo"
+                }
             }
         }
     }
@@ -44,6 +47,13 @@ layout {
 
     tab name="Debug" {
         pane name="logs" cwd="C:\\Users\\frank\\arcanea.ai"
+    }
+
+    tab name="Audit" {
+        pane name="audit-tail" cwd="C:\\Users\\frank\\arcanea.ai" {
+            command "pwsh"
+            args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
+        }
     }
 }
 

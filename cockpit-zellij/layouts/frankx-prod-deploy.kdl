@@ -1,4 +1,4 @@
-﻿// frankx-prod-deploy cockpit -- generated from _template.kdl.tmpl
+// frankx-prod-deploy cockpit -- generated from _template.kdl.tmpl
 //
 // Launch: arc frankx-prod-deploy
 // Or:     zellij --layout frankx-prod-deploy --session frankx-prod-deploy
@@ -29,7 +29,10 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\frankx-prod-deploy"
                 pane name="Codex" cwd="C:\\Users\\frank\\frankx-prod-deploy"
-                pane name="Gemini" cwd="C:\\Users\\frank\\frankx-prod-deploy"
+                pane name="Gemini" cwd="C:\\Users\\frank\\frankx-prod-deploy" {
+                    command "gemini"
+                    args "--yolo"
+                }
             }
         }
     }
@@ -44,6 +47,13 @@ layout {
 
     tab name="Debug" {
         pane name="logs" cwd="C:\\Users\\frank\\frankx-prod-deploy"
+    }
+
+    tab name="Audit" {
+        pane name="audit-tail" cwd="C:\\Users\\frank\\frankx-prod-deploy" {
+            command "pwsh"
+            args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
+        }
     }
 }
 

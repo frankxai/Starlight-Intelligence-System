@@ -29,7 +29,10 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="{{PROJECT_PATH}}"
                 pane name="Codex" cwd="{{PROJECT_PATH}}"
-                pane name="Gemini" cwd="{{PROJECT_PATH}}"
+                pane name="Gemini" cwd="{{PROJECT_PATH}}" {
+                    command "gemini"
+                    args "--yolo"
+                }
             }
         }
     }
@@ -44,5 +47,12 @@ layout {
 
     tab name="Debug" {
         pane name="logs" cwd="{{PROJECT_PATH}}"
+    }
+
+    tab name="Audit" {
+        pane name="audit-tail" cwd="{{PROJECT_PATH}}" {
+            command "pwsh"
+            args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
+        }
     }
 }

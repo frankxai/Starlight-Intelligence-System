@@ -1,4 +1,4 @@
-﻿// jarvis-3-cognition cockpit -- generated from _template.kdl.tmpl
+// jarvis-3-cognition cockpit -- generated from _template.kdl.tmpl
 //
 // Launch: arc jarvis-3-cognition
 // Or:     zellij --layout jarvis-3-cognition --session jarvis-3-cognition
@@ -29,7 +29,10 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\jarvis-3-cognition"
                 pane name="Codex" cwd="C:\\Users\\frank\\jarvis-3-cognition"
-                pane name="Gemini" cwd="C:\\Users\\frank\\jarvis-3-cognition"
+                pane name="Gemini" cwd="C:\\Users\\frank\\jarvis-3-cognition" {
+                    command "gemini"
+                    args "--yolo"
+                }
             }
         }
     }
@@ -44,6 +47,13 @@ layout {
 
     tab name="Debug" {
         pane name="logs" cwd="C:\\Users\\frank\\jarvis-3-cognition"
+    }
+
+    tab name="Audit" {
+        pane name="audit-tail" cwd="C:\\Users\\frank\\jarvis-3-cognition" {
+            command "pwsh"
+            args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-﻿// frankx.ai-vercel-website cockpit -- generated from _template.kdl.tmpl
+// frankx.ai-vercel-website cockpit -- generated from _template.kdl.tmpl
 //
 // Launch: arc frankx-ai-vercel-website
 // Or:     zellij --layout frankx-ai-vercel-website --session frankx-ai-vercel-website
@@ -29,7 +29,10 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\frankx.ai-vercel-website"
                 pane name="Codex" cwd="C:\\Users\\frank\\frankx.ai-vercel-website"
-                pane name="Gemini" cwd="C:\\Users\\frank\\frankx.ai-vercel-website"
+                pane name="Gemini" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
+                    command "gemini"
+                    args "--yolo"
+                }
             }
         }
     }
@@ -44,6 +47,13 @@ layout {
 
     tab name="Debug" {
         pane name="logs" cwd="C:\\Users\\frank\\frankx.ai-vercel-website"
+    }
+
+    tab name="Audit" {
+        pane name="audit-tail" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
+            command "pwsh"
+            args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
+        }
     }
 }
 
