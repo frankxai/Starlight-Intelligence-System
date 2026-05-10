@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "name": "AnimeLegends.ai",
+  "panes": {
+    "dispatcher": { "command": "claude", "args": ["--resume", "animelegends-ai"] },
+    "claude":     { "command": "claude", "args": ["--model", "claude-sonnet-4-6"] },
+    "codex":      { "command": "codex" },
+    "gemini":     { "command": "gemini", "args": ["--yolo", "-m", "gemini-2.5-pro"] },
+    "opencode":   { "command": "opencode" }
+  },
+  "team": {
+    "agents": ["World Architect", "Character Psychologist", "Visionary", "Weaver"],
+    "skills": ["frontend-design:frontend-design", "ui-ux-design-expert", "brand-voice"]
+  }
+}

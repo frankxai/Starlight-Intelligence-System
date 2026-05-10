@@ -4,16 +4,15 @@
 // Or:     zellij --layout frankx-prod-sync --session frankx-prod-sync
 //
 // In the Dispatcher pane, run:  claude --resume frankx-prod-sync
-// for a persistent named conversation that survives sleeps.
+// (or auto-launched via cockpit-profile.json — see cockpit-zellij/PROFILES.md)
 //
 // Pane geometry (Orchestrator tab):
 //
-//   +---------------------------------------------------+
-//   |  DISPATCHER (top, full-width, 30% height)         |
-//   |  Run: claude --resume frankx-prod-sync             |
-//   +-------------+-------------+-----------------------+
-//   |   CLAUDE    |   CODEX     |   GEMINI              |
-//   +-------------+-------------+-----------------------+
+//   +------------------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)                  |
+//   +----------+----------+----------+----------+----------------+
+//   |  CLAUDE  |  CODEX   |  GEMINI  | OPENCODE |  (4 workers)   |
+//   +----------+----------+----------+----------+----------------+
 
 layout {
     default_tab_template {
@@ -30,9 +29,12 @@ layout {
                 pane name="Claude" cwd="C:\\Users\\frank\\frankx-prod-sync"
                 pane name="Codex" cwd="C:\\Users\\frank\\frankx-prod-sync"
                 pane name="Gemini" cwd="C:\\Users\\frank\\frankx-prod-sync" {
-                    command "gemini"
-                    args "--yolo"
-                }
+            command "gemini"
+            args "--yolo"
+        }
+                pane name="OpenCode" cwd="C:\\Users\\frank\\frankx-prod-sync" {
+            command "opencode"
+        }
             }
         }
     }

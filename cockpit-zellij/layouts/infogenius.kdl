@@ -4,16 +4,15 @@
 // Or:     zellij --layout infogenius --session infogenius
 //
 // In the Dispatcher pane, run:  claude --resume infogenius
-// for a persistent named conversation that survives sleeps.
+// (or auto-launched via cockpit-profile.json — see cockpit-zellij/PROFILES.md)
 //
 // Pane geometry (Orchestrator tab):
 //
-//   +---------------------------------------------------+
-//   |  DISPATCHER (top, full-width, 30% height)         |
-//   |  Run: claude --resume infogenius             |
-//   +-------------+-------------+-----------------------+
-//   |   CLAUDE    |   CODEX     |   GEMINI              |
-//   +-------------+-------------+-----------------------+
+//   +------------------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)                  |
+//   +----------+----------+----------+----------+----------------+
+//   |  CLAUDE  |  CODEX   |  GEMINI  | OPENCODE |  (4 workers)   |
+//   +----------+----------+----------+----------+----------------+
 
 layout {
     default_tab_template {
@@ -30,9 +29,12 @@ layout {
                 pane name="Claude" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
                 pane name="Codex" cwd="C:\\Users\\frank\\Arcanea\\infogenius"
                 pane name="Gemini" cwd="C:\\Users\\frank\\Arcanea\\infogenius" {
-                    command "gemini"
-                    args "--yolo"
-                }
+            command "gemini"
+            args "--yolo"
+        }
+                pane name="OpenCode" cwd="C:\\Users\\frank\\Arcanea\\infogenius" {
+            command "opencode"
+        }
             }
         }
     }

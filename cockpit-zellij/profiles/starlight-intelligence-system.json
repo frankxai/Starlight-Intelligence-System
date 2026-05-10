@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "name": "Starlight Intelligence System (substrate)",
+  "panes": {
+    "dispatcher": { "command": "claude", "args": ["--resume", "starlight-intelligence-system"] },
+    "claude":     { "command": "claude", "args": ["--model", "claude-opus-4-7"] },
+    "codex":      { "command": "codex" },
+    "gemini":     { "command": "gemini", "args": ["--yolo", "-m", "gemini-2.5-pro"] },
+    "opencode":   { "command": "opencode" }
+  },
+  "team": {
+    "agents": ["Starlight Orchestrator", "Starlight Architect", "Starlight Sentinel", "Starlight Sage"],
+    "skills": ["starlight-intelligence", "sparc-methodology", "agentic-orchestration"]
+  }
+}

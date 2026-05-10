@@ -4,16 +4,15 @@
 // Or:     zellij --layout frankx-ai-vercel-website --session frankx-ai-vercel-website
 //
 // In the Dispatcher pane, run:  claude --resume frankx-ai-vercel-website
-// for a persistent named conversation that survives sleeps.
+// (or auto-launched via cockpit-profile.json — see cockpit-zellij/PROFILES.md)
 //
 // Pane geometry (Orchestrator tab):
 //
-//   +---------------------------------------------------+
-//   |  DISPATCHER (top, full-width, 30% height)         |
-//   |  Run: claude --resume frankx-ai-vercel-website             |
-//   +-------------+-------------+-----------------------+
-//   |   CLAUDE    |   CODEX     |   GEMINI              |
-//   +-------------+-------------+-----------------------+
+//   +------------------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)                  |
+//   +----------+----------+----------+----------+----------------+
+//   |  CLAUDE  |  CODEX   |  GEMINI  | OPENCODE |  (4 workers)   |
+//   +----------+----------+----------+----------+----------------+
 
 layout {
     default_tab_template {
@@ -25,14 +24,25 @@ layout {
 
     tab name="Orchestrator" focus=true {
         pane split_direction="horizontal" {
-            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\frankx.ai-vercel-website"
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
+            command "claude"
+            args "--resume" "frankx-ai-vercel-website"
+        }
             pane split_direction="vertical" {
-                pane name="Claude" cwd="C:\\Users\\frank\\frankx.ai-vercel-website"
-                pane name="Codex" cwd="C:\\Users\\frank\\frankx.ai-vercel-website"
+                pane name="Claude" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
+            command "claude"
+            args "--model" "claude-sonnet-4-6"
+        }
+                pane name="Codex" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
+            command "codex"
+        }
                 pane name="Gemini" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
-                    command "gemini"
-                    args "--yolo"
-                }
+            command "gemini"
+            args "--yolo" "-m" "gemini-2.5-pro"
+        }
+                pane name="OpenCode" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
+            command "opencode"
+        }
             }
         }
     }
