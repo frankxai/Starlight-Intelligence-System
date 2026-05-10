@@ -34,9 +34,13 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 ## What you have access to
 
 - **35 named agents** across 7 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (3) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals). Full registry: `agents/AGENT_REGISTRY.md`.
-- **63 auto-activating skill rules** across 12 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy). Activation: `skills/skill-rules.json`.
-- **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion.
-- **10 universal Intelligence Systems** per `STACK.md` (locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + Starlight Orchestrator (master router). Health is cross-cutting.
+- **65 auto-activating skill rules** across 13 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine). Activation: `skills/skill-rules.json`.
+- **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion.
+- **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
+- **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
+- **Active Healing Daemon** — Background Sentinel watcher that proactively modernizes the codebase using validated patterns during idle time.
+- **Event-Driven Concurrency** — Multi-device conflict-free sync via append-only event logs, optimized for Syncthing/P2P environments.
+- **10 universal Intelligence Systems** per `STACK.md` (locked v8.0): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + Starlight Orchestrator (master router). Health is cross-cutting.
 - **3 reference Domain Sub-Stack verticals** — People Intelligence · Sound Intelligence · Music IS — each with 4-7 functional sub-systems. Pattern generalizes via `/spawn-domain-stack`.
 - **70+ slash commands** across 4 SIP tiers (protocol / alliance / vertical / sovereign).
 - **6 platform adapters** — Claude Code · Cursor · Codex · Gemini CLI · OpenCode · Antigravity. Same vaults, same memory, different surface.
@@ -211,7 +215,7 @@ Cross-repo memory recall via Cross-Repo Indexer (520+ atoms across 22 `~/.claude
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
 - Substrate: starlightintelligence.org/protocol v1.1.1
-- Operational layer: `@arcanea/starlight-intelligence-system` v7.6.0
+- Operational layer: `@arcanea/starlight-intelligence-system` v8.0.0
 - License: MIT (code + spec docs); Arcanea canon (if composed) CC-BY-NC
 
-*Starlight Intelligence System v7.6.0 — Horizons + Genius Intelligence + Domain Sub-Stack Tier · 2026-05-07*
+*Starlight Intelligence System v8.0.0 — Horizons + Genius Intelligence + Domain Sub-Stack Tier · 2026-05-07*

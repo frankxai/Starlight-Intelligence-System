@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 63 skills across 12 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 65 skills across 13 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 
@@ -14,8 +14,8 @@ This file is **operational-tier** — it does not appear in the substrate-tier f
 
 ```yaml
 name: <domain>/<skill-name>          # canonical key, matches skill-rules.json `skill` field
-domain: <top-level-dir>              # one of 12: business, energy-intelligence, health, integration,
-                                     # intelligence, memory, music-is, orchestration,
+domain: <top-level-dir>              # one of 13: business, energy-intelligence, health, integration,
+                                     # intelligence, machine, memory, music-is, orchestration,
                                      # people-intelligence, relational, sound-intelligence, vision
 activation_rule_id: <string>         # matches skill-rules.json `id` field; symmetry enforced by future v78 test
 owner_repo: SIS | <repo-name>        # default SIS; named repo if forked or alliance-owned
@@ -90,6 +90,13 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | intelligence/decision-framework | intelligence-decision-framework | SIS | 2026-05-06 | stable |
 | intelligence/genius-excavation | intelligence-genius-excavation | SIS | 2026-05-06 | stable |
 | intelligence/knowledge-reclamation | intelligence-knowledge-reclamation | SIS | 2026-05-06 | stable |
+
+### machine (2)
+
+| Skill | Activation rule ID | Owner repo | Version | Status |
+|---|---|---|---|---|
+| machine/heart | machine-heart | SIS | 2026-05-10 | experimental |
+| machine/storage | machine-storage | SIS | 2026-05-10 | experimental |
 
 ### memory (7)
 

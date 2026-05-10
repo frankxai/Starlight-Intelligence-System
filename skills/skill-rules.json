@@ -694,6 +694,28 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "machine-heart",
+      "skill": "machine/heart",
+      "triggers": {
+        "keywords": ["/heart", "ops health", "check daemons", "is everything running", "are we healthy", "memory bus alive", "dashboard alive", "voice operator alive"],
+        "agents": ["starlight-sentinel", "starlight-orchestrator"],
+        "intents": ["health-check", "pre-flight", "ops-audit"]
+      },
+      "priority": "medium",
+      "load_level": "on-demand"
+    },
+    {
+      "id": "machine-storage",
+      "skill": "machine/storage",
+      "triggers": {
+        "keywords": ["/storage", "disk usage", "what's eating my disk", "cleanup candidates", "dedup", "storage emergency", "large files", "worktree bloat", "repo size"],
+        "agents": ["starlight-sentinel", "starlight-architect"],
+        "intents": ["disk-audit", "cleanup-plan", "storage-investigation"]
+      },
+      "priority": "medium",
+      "load_level": "on-demand"
     }
   ],
   "defaults": {
