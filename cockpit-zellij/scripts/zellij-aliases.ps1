@@ -85,4 +85,67 @@ function arc-resume {
     arc-attach $Project
 }
 
-Write-Host 'Starlight aliases loaded: arc, arc-attach, arc-kill, arc-list, arc-layout, arc-list-projects, arc-resume' -ForegroundColor Cyan
+function arc-revive {
+    # Post-crash recovery helper.
+    # No args     -> list resurrectable EXITED sessions
+    # Session-name -> attach to it (revives layout + auto-resume commands)
+    # -Latest     -> attach to most-recently-created resurrectable session
+    param(
+        [string]$Session,
+        [switch]$Latest
+    )
+
+    $raw = zellij list-sessions 2>$null
+    if (-not $raw) {
+        Write-Host 'No zellij sessions found.' -ForegroundColor Yellow
+        Write-Host 'Start fresh:  arc <project-key>  (e.g. arc sis)' -ForegroundColor Cyan
+        return
+    }
+
+    # Parse lines: "name [Created N ago] (EXITED - attach to resurrect)" or "name [Created N ago]"
+    $resurrectable = $raw | Select-String -Pattern 'EXITED' | ForEach-Object {
+        # Strip ANSI codes then grab first whitespace-delimited token
+        $clean = $_.Line -replace "`e\[[\d;]*[A-Za-z]", ''
+        ($clean -split '\s+')[0]
+    }
+
+    if (-not $Session -and -not $Latest) {
+        if (-not $resurrectable) {
+            Write-Host 'No resurrectable sessions. All listed sessions are alive.' -ForegroundColor Green
+            zellij list-sessions
+            return
+        }
+        Write-Host 'Resurrectable sessions (attach to revive):' -ForegroundColor Cyan
+        foreach ($s in $resurrectable) { Write-Host "  arc-revive $s" }
+        Write-Host ''
+        Write-Host 'Or: arc-revive -Latest   (most recent crashed session)' -ForegroundColor DarkCyan
+        return
+    }
+
+    if ($Latest) {
+        if (-not $resurrectable) {
+            Write-Warning 'No resurrectable sessions found.'
+            return
+        }
+        # list-sessions output ordering may not be by recency; trust first listed
+        $Session = $resurrectable[0]
+        Write-Host "Reviving most-recent: $Session" -ForegroundColor Green
+    }
+
+    if (-not ($resurrectable -contains $Session)) {
+        # Maybe it's alive — still try to attach
+        Write-Host "'$Session' not in resurrectable list. Attempting attach anyway..." -ForegroundColor Yellow
+    }
+
+    Write-Host "Attaching to '$Session' — layout + auto-resume commands re-fire." -ForegroundColor Cyan
+    Write-Host 'Worker-pane reminders (Claude --continue + Codex resume --last auto-launch):' -ForegroundColor DarkCyan
+    Write-Host '  Dispatcher = claude --resume <key>   (named conversation)'
+    Write-Host '  Claude     = claude --continue        (last session in cwd)'
+    Write-Host '  Codex      = codex resume --last      (last codex session)'
+    Write-Host '  Gemini     = gemini --yolo            (ephemeral, no resume API)'
+    Write-Host '  OpenCode   = opencode                 (ephemeral)'
+    Write-Host ''
+    zellij attach $Session
+}
+
+Write-Host 'Starlight aliases loaded: arc, arc-attach, arc-kill, arc-list, arc-layout, arc-list-projects, arc-resume, arc-revive' -ForegroundColor Cyan
