@@ -45,6 +45,19 @@ on_open:
   # Bidirectional drift detection (Board REVISE-2)
   drift_post = read_prior_drift_log()  # from prior session's post-close drift
   drift_open = scan_for_drift_since_prior_close()  # git changes since prior session that weren't in audit
+
+  # Finance bridge (Tier 3 wiring — composes W2 cost + W3 revenue)
+  # Concrete code path lives at src/yolo/finance-bridge.ts.
+  # Conductor MUST invoke this on session-open via Bash tool:
+  #
+  #   npx tsx src/yolo/finance-bridge.ts
+  #
+  # Returns a markdown summary of MTD P&L, runway, monthly budget headroom + alerts.
+  # Severity classes:
+  #   - info   → surface in scan output, do not block
+  #   - warn   → surface prominently; Frank can override
+  #   - block  → halt session-open and ask Frank to acknowledge before proceeding
+  # Bridge NEVER throws — it degrades gracefully when registry/scope is absent.
   if drift_post + drift_open > 0:
     surface_to_frank("Drift detected since last session", drift_post + drift_open)
 
