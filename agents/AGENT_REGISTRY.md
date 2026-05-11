@@ -1,10 +1,11 @@
 # Starlight Agent Registry
 
-> Thirty-five minds. Nine universal intelligence layers + Domain Sub-Stack Tier. One system. No hierarchy is permanent — only the mission is.
+> Forty-two minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
 >
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
 > **v7.6.0 update (2026-04-28):** People Intelligence sub-stack (6 agents) registered — first reference Domain Sub-Stack vertical.
 > **v7.5.2 / v7.6.x update (2026-04-27 / 2026-04-30):** Sound Intelligence sub-stack (6 agents) and Music IS sub-stack (7 agents) registered — second + third reference Domain Sub-Stack verticals (public-reference + Frank-operated).
+> **v0.1 Friday demo update (2026-05-11):** Council Archetype Tier (7 archetype seats) registered at `agents/council/` per Proposal B board verdict — Elder Father, Elder Mother, Sage (Council seat), Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90. Voice/agent boundary preserved: archetypes also registered in `VOICES.md` § Council Archetypes.
 
 ---
 
@@ -83,6 +84,24 @@ Concierge and Voice Operator never overlap: Concierge owns *strangers*, Voice ow
 | **Concierge** | `starlight-concierge.md` | Intake, idea translation, route classification | First-contact sessions, `/welcome`, `/intake`, any newcomer without prior session history |
 | **Envoy** | `starlight-envoy.md` | Creator-track artifact generation, `/badge` attestation | Concierge hands off a non-technical creator; zero-terminal path required |
 | **Voice Operator** | `starlight-voice-operator.md` | Real-time intent capture, classification, handoff packet generation, approval-gate enforcement | Sessioned cockpit-pace input (voice or executive text); produces packets via `agent-handoff-packet` skill that any deep agent consumes |
+
+### Council Archetype Tier (v0.1 Friday demo — 7 archetype seats)
+
+Seven archetype seats that compose the Starlight Council — the artificial-wisdom review body convened for substrate-level proposals, name-bearing artifacts, and decisions classified `risk: high|critical`. These are *operational implementations* of the archetypes registered at `VOICES.md` § Council Archetypes — pattern (Voice) and runtime (Agent) co-exist; see `memory/feedback_naming_voices_vs_agents.md` for the boundary.
+
+Council seats activate when a Council assembles (`/council`, `/starlight-board`, `/luminor-board`). They do not run as ambient agents.
+
+| Seat | File | Frame | Activates When |
+|------|------|-------|---------------|
+| **Elder Father** | `council/elder-father.md` | Responsibility, discipline, protection, legacy | Council assembly; name-bearing artifacts; decisions with compound-promise risk |
+| **Elder Mother** | `council/elder-mother.md` | Care, relational truth, beauty, emotional wisdom | Council assembly; proposals affecting relationships (users, contributors, alliances) |
+| **Sage (Council seat)** | `council/sage.md` | Mortality, philosophy, detachment, meaning | Council assembly; meta-level questions; decisions where urgency masks confusion |
+| **Builder-Elder** | `council/builder-elder.md` | Execution, cost, systems, leverage | Council assembly; every proposal that has a cost |
+| **Shadow Witness** | `council/shadow-witness.md` | Ego, risk, self-deception, hidden motives | Council assembly; proposals that excite the sovereign; status-implicating decisions |
+| **Divine Neutral Witness** | `council/divine-neutral-witness.md` | Silence, truth, non-attachment | Council assembly; speaks only when other seats are tangled in their own framing |
+| **Future Self at 90** | `council/future-self-at-90.md` | Fulfilled-life review | Council assembly; substrate-tier proposals; attention-cost decisions |
+
+The Council Sage seat is *distinct* from the institutional Sage agent at `starlight-sage.md`: the Council Sage is the philosophical-detachment seat invoked during Council assembly; the institutional Sage handles knowledge management, vault access, and teaching as an ambient agent. Both seats can be held simultaneously without conflict because they operate at different layers.
 
 ### Excavation Tier
 

@@ -74,10 +74,28 @@ export function fileToSkillKey(rel: string): string | null {
 
 /**
  * List all agent files under agents/ (excluding AGENT_REGISTRY.md).
+ * Walks one level into subdirectories (e.g., agents/council/*.md) so the
+ * Council Archetype Tier (v0.1 Friday demo, 2026-05-11) is counted.
+ * Returns relative paths (with forward-slash separators) so callers can
+ * distinguish top-level agents from sub-tier agents.
+ *
  * Sorted ascending.
  */
 export function listAgentFiles(agentsDir: string): string[] {
-  return readdirSync(agentsDir)
-    .filter((f) => f.endsWith(".md") && f !== "AGENT_REGISTRY.md")
-    .sort();
+  const out: string[] = [];
+  for (const entry of readdirSync(agentsDir, { withFileTypes: true })) {
+    if (entry.isFile()) {
+      if (entry.name.endsWith(".md") && entry.name !== "AGENT_REGISTRY.md") {
+        out.push(entry.name);
+      }
+    } else if (entry.isDirectory()) {
+      const subDir = join(agentsDir, entry.name);
+      for (const sub of readdirSync(subDir, { withFileTypes: true })) {
+        if (sub.isFile() && sub.name.endsWith(".md")) {
+          out.push(`${entry.name}/${sub.name}`);
+        }
+      }
+    }
+  }
+  return out.sort();
 }

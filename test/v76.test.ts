@@ -280,15 +280,20 @@ describe("v7.6 agent-registry — coverage symmetry", () => {
     assert.deepEqual(phantoms, [], `registry references with no file: ${phantoms.join(", ")}`);
   });
 
-  it("registry header reflects current agent count (35) and 9-layer + Domain Sub-Stack architecture", () => {
+  it("registry header reflects current agent count (42 — 35 + 7 Council archetypes) and 9-layer + Domain Sub-Stack + Council Archetype architecture", () => {
     const registry = readRegistry();
-    // Header should mention either "Thirty-five" (current) or a higher count if more agents are added.
-    // We accept any "Thirty-{five..nine}" or "Forty-*" without forcing exact match — the rule is honesty.
-    const headerHonest = /Thirty-(five|six|seven|eight|nine)|Forty/i.test(registry);
-    assert.ok(headerHonest, "AGENT_REGISTRY.md header must declare current scale (≥ Thirty-five minds)");
+    // Header should mention either current count ("Forty-two") or a higher count if more agents are added.
+    // We accept "Forty-{one..nine}" or "Fifty-*" without forcing exact match — the rule is honesty.
+    // Note: pre-v0.1 the floor was "Thirty-five"; Council Archetype Tier (v0.1 Friday demo, 2026-05-11) added 7 seats → 42.
+    const headerHonest = /Forty-(one|two|three|four|five|six|seven|eight|nine)|Fifty/i.test(registry);
+    assert.ok(headerHonest, "AGENT_REGISTRY.md header must declare current scale (≥ Forty-two minds after v0.1 Council seat encoding)");
     assert.ok(
       registry.includes("Domain Sub-Stack"),
       "AGENT_REGISTRY.md must mention the Domain Sub-Stack tier",
+    );
+    assert.ok(
+      registry.includes("Council Archetype"),
+      "AGENT_REGISTRY.md must mention the Council Archetype tier (v0.1 Friday demo addition)",
     );
   });
 });

@@ -604,3 +604,78 @@ export interface EvalResult {
   evidenceRef?: string;
   createdAt: string;
 }
+
+// ── Vault Loop (v0.1 — Proposal C, board-gated 2026-05-11) ──────────────
+//
+// A VaultLoopEntry is a record TYPE that lives across the six existing
+// vaults (Strategic / Technical / Creative / Operational / Wisdom / Horizon)
+// under privacy classification — NOT a seventh vault. The locked-v7.5
+// six-vault taxonomy (see memory/VAULT_ARCHITECTURE.md) is preserved.
+//
+// The loop encodes the sequence:
+//   Desire → Gratitude → Visualization → Surrender → Intuition →
+//   Aligned Action → Evidence → Outcome → Proof
+//
+// Each stage is its OWN record. Records chain via `parent_entry_id` —
+// the root Desire has parent_entry_id = null; downstream stages point
+// to the entry they extend. This decomposition lets a single loop span
+// time, surface stale loops (no progression in 30+ days), and enforce
+// privacy at the per-stage granularity.
+//
+// Privacy is the substrate trust contract:
+//   • 'private'           — never appears in export, search, attestation,
+//                           or KG output. Local-only by structural
+//                           guarantee, not by assertion.
+//   • 'private-shareable' — may appear in scoped exports to explicitly
+//                           named recipients; never public-by-default.
+//   • 'public'            — may appear in any export, search, or
+//                           attestation surface.
+//
+// Naming convention: "VaultLoopEntry" technically, "Vault Loop" conceptually.
+// Per board REVISE-C.4.
+//
+// Schema mirrored at packages/core/schemas/vault-loop-entry.schema.json.
+
+/** The nine stages in the Vault Loop sequence. */
+export type VaultLoopStage =
+  | 'desire'           // Root — name what you actually want
+  | 'gratitude'        // What is already true that proves this is reachable
+  | 'visualization'    // The moment it is real, in sensory detail
+  | 'surrender'        // Name the fear; release attachment to outcome
+  | 'intuition'        // What the body knows; first-thought wisdom
+  | 'aligned_action'   // One step takeable in 24h
+  | 'evidence'         // First sign it is working — synchronicity, signal
+  | 'outcome'          // What actually happened, written as it lands
+  | 'proof';           // Optional public testimony — gated by privacy
+
+/** Privacy classification — substrate trust contract. */
+export type VaultLoopPrivacy = 'private' | 'private-shareable' | 'public';
+
+/**
+ * A single stage record within a Vault Loop. Records chain via
+ * `parent_entry_id` to form the loop. The root Desire has no parent.
+ *
+ * `vault` indicates which of the six existing vaults this record lives
+ * under (the loop is a record TYPE crossing vaults, not a new vault).
+ *
+ * `stale_at` is computed: a stage record is considered stale when no
+ * downstream stage record has been added within 30 days of its creation.
+ * Stale-loop visibility is a soft nudge, not an alert — see the
+ * dashboard at /vaults/loop.
+ */
+export interface VaultLoopEntry {
+  id: string;
+  vault: VaultType;
+  stage: VaultLoopStage;
+  privacy: VaultLoopPrivacy;
+  parent_entry_id: string | null;
+  payload: string;
+  created_at: string;
+  created_by: string;
+  /**
+   * Computed timestamp at which this entry becomes "stale" if no
+   * downstream stage has been added. By convention, created_at + 30d.
+   * Consumers compute or compare; not authoritative for retention.
+   */
+  stale_at: string;
+}
