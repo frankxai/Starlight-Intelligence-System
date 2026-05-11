@@ -393,7 +393,13 @@ export class SisMcpServerV01 {
       (p) => {
         const riskLevel = String(p.risk_level) as RiskLevel;
         if (riskLevel === 'high' || riskLevel === 'critical') {
-          const gate = this.openApprovalGate(riskLevel, 'Decision log gated at high/critical risk');
+          // H3: capture the full Decision payload as pendingContext so the audit
+          // trail shows what was asked, even though no Decision row was persisted.
+          const gate = this.openApprovalGate(
+            riskLevel,
+            'Decision log gated at high/critical risk',
+            { kind: 'decision', payload: { ...p } }
+          );
           return {
             status: 'approval_required' as const,
             approvalGateId: gate.id,
@@ -591,7 +597,14 @@ export class SisMcpServerV01 {
       (p) => {
         const riskLevel = String(p.risk_level) as RiskLevel;
         if (riskLevel === 'high' || riskLevel === 'critical') {
-          const gate = this.openApprovalGate(riskLevel, 'WorkPacket gated at high/critical risk');
+          // H3: capture the full WorkPacket payload as pendingContext so the
+          // audit trail shows what was asked, even though no WorkPacket row
+          // was persisted.
+          const gate = this.openApprovalGate(
+            riskLevel,
+            'WorkPacket gated at high/critical risk',
+            { kind: 'workpacket', payload: { ...p } }
+          );
           return {
             status: 'approval_required' as const,
             approvalGateId: gate.id,
@@ -624,13 +637,33 @@ export class SisMcpServerV01 {
     );
   }
 
-  private openApprovalGate(riskLevel: RiskLevel, _reason: string): ApprovalGate {
+  /**
+   * Open a pending ApprovalGate for a refused high/critical action.
+   *
+   * H3 fix (2026-05-12): persist `reason` (was silently discarded as `_reason`)
+   * + `pendingContext` so the audit trail answers "what was being approved?"
+   * without needing the (refused) Decision/WorkPacket row.
+   */
+  private openApprovalGate(
+    riskLevel: RiskLevel,
+    reason: string,
+    pendingContext?: ApprovalGate['pendingContext']
+  ): ApprovalGate {
+    // For workpacket gates, encode a short title hint into workPacketId so the
+    // ledger row is greppable without needing to read pendingContext.
+    const titleHint =
+      pendingContext?.kind === 'workpacket' && typeof pendingContext.payload.title === 'string'
+        ? String(pendingContext.payload.title).slice(0, 60).replace(/[^a-zA-Z0-9 _-]/g, '')
+        : null;
+
     const gate: ApprovalGate = {
       id: newId('gate'),
-      workPacketId: '',
+      workPacketId: titleHint ? `<pending:${titleHint}>` : '',
       requestedAt: nowIso(),
       status: 'pending',
       riskLevel,
+      reason,
+      pendingContext,
     };
     appendApprovalGate(this.repoRoot, gate);
     return gate;

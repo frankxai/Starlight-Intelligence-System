@@ -69,14 +69,34 @@ export class SanitizationGateway {
 
   /**
    * Deep sanitize a context object.
+   *
+   * H2 fix (2026-05-12): bound the recursion (depth ≤ 64) and detect cycles
+   * (WeakSet of visited refs). Without these, a deeply-nested or self-referential
+   * payload crashes the process with "Maximum call stack size exceeded".
    */
-  public sanitizeContext(context: Record<string, unknown>): Record<string, unknown> {
+  public sanitizeContext(
+    context: Record<string, unknown>,
+    depth = 0,
+    seen: WeakSet<object> = new WeakSet()
+  ): Record<string, unknown> {
+    if (depth > 64) {
+      return { __truncated: true } as Record<string, unknown>;
+    }
+    if (seen.has(context)) {
+      return { __circular: true } as Record<string, unknown>;
+    }
+    seen.add(context);
+
     const sanitized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(context)) {
       if (typeof value === 'string') {
         sanitized[key] = this.sanitize(value);
       } else if (typeof value === 'object' && value !== null) {
-        sanitized[key] = this.sanitizeContext(value as Record<string, unknown>);
+        sanitized[key] = this.sanitizeContext(
+          value as Record<string, unknown>,
+          depth + 1,
+          seen
+        );
       } else {
         sanitized[key] = value; // keep numbers, booleans, etc.
       }

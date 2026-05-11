@@ -529,6 +529,18 @@ export interface ApprovalGate {
   decidedBy?: string;
   decidedAt?: string;
   rationale?: string;
+  /** Why this gate was opened — captured from the call site at gate creation. */
+  reason?: string;
+  /**
+   * What was being approved. Captured at gate creation so the audit trail
+   * answers "what did the agent want to do?" even though no Decision /
+   * WorkPacket row was persisted (the gate REFUSED persistence). Closes
+   * the orphan-gate audit gap (H3 review finding, 2026-05-12).
+   */
+  pendingContext?: {
+    kind: 'decision' | 'workpacket';
+    payload: Record<string, unknown>;
+  };
 }
 
 /** Seven-perspective council pressure-test of a decision or work packet. */

@@ -42,23 +42,26 @@ export class EmpiricalSandbox {
     let output = "";
 
     try {
+      // H1 fix (2026-05-12): quote the file path so paths with spaces (Windows
+      // tmp under "C:\Users\First Last\…") don't shell-split. Defense-in-depth
+      // against accidental shell injection if tmpdir() ever contains metachars.
       let cmd = "";
       if (language === "javascript") {
         const file = join(sandboxDir, "index.js");
         writeFileSync(file, code, "utf-8");
-        cmd = `node ${file}`;
+        cmd = `node "${file}"`;
       } else if (language === "typescript") {
         const file = join(sandboxDir, "index.ts");
         writeFileSync(file, code, "utf-8");
-        cmd = `npx tsx ${file}`; 
+        cmd = `npx tsx "${file}"`;
       } else if (language === "python") {
         const file = join(sandboxDir, "main.py");
         writeFileSync(file, code, "utf-8");
-        cmd = `python ${file}`;
+        cmd = `python "${file}"`;
       } else if (language === "bash") {
         const file = join(sandboxDir, "script.sh");
         writeFileSync(file, code, "utf-8");
-        cmd = `bash ${file}`;
+        cmd = `bash "${file}"`;
       }
 
       // 10 second timeout to prevent infinite loops in the sandbox

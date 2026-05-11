@@ -40,12 +40,34 @@ export class ActiveHealingDaemon {
    */
   start(intervalMs = 3600000): void {
     if (this.isRunning) return;
-    this.isRunning = true;
 
-    // Initial delay so it doesn't run immediately on boot
-    this.intervalId = setInterval(() => this.heal(), intervalMs);
+    // H6 fix (2026-05-12): refuse pathological intervals; serialize heal()
+    // executions (skip if previous still running) so calls can't stack on a
+    // slow orchestrator. Defends against `start(0)` and against silent backlog.
+    const MIN_INTERVAL_MS = 60_000;
+    if (intervalMs < MIN_INTERVAL_MS) {
+      throw new Error(
+        `[Sentinel] intervalMs must be >= ${MIN_INTERVAL_MS} (got ${intervalMs})`
+      );
+    }
+
+    this.isRunning = true;
+    let inFlight = false;
+
+    this.intervalId = setInterval(async () => {
+      if (inFlight) return; // serialize — never stack heal() calls
+      inFlight = true;
+      try {
+        await this.heal();
+      } catch (err) {
+        console.error("[Sentinel] heal() failed", err);
+      } finally {
+        inFlight = false;
+      }
+    }, intervalMs);
+
     console.log(
-      `[Sentinel] Active Healing Daemon started (dryRun=${this.dryRun}). Watching Technical Vault.`
+      `[Sentinel] Active Healing Daemon started (dryRun=${this.dryRun}, interval=${intervalMs}ms). Watching Technical Vault.`
     );
   }
 
