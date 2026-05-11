@@ -4,7 +4,7 @@
 >
 > SIS is two layers: a substrate (SIP) anyone can adopt, fork, or build on — and an operational layer (Frank's reference build) that runs on top of it.
 
-[![version](https://img.shields.io/badge/version-7.6.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-8.0.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
@@ -22,7 +22,9 @@
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
-> **New here?** Don't fork this repo. Fork the **[SIP adoption kit](https://github.com/frankxai/starlight)** — eleven markdown files, no code, [ship your first attested artifact in 60 seconds](https://github.com/frankxai/starlight#readme). Compose upward when you're ready.
+> **Operator? Start at [SETUP.md](./SETUP.md)** — covers `private/` instance state, Infisical Path A vs env-var Path B, Windows + Linux cron wiring, cockpit launch, and a smoke test, end-to-end in roughly 30 min.
+>
+> **New to the protocol?** Don't fork this repo. Fork the **[SIP adoption kit](https://github.com/frankxai/starlight)** — eleven markdown files, no code, [ship your first attested artifact in 60 seconds](https://github.com/frankxai/starlight#readme). Compose upward when you're ready.
 >
 > **New in v7.3.1** (2026-04-24): Newcomer surface shipped — `/welcome`, `/intake`, `/sovereign-spawn` protocol commands + Concierge + Envoy front-door agents + ecosystem export schemas (Claude Projects, ChatGPT Projects, Gemini Gems, Cursor, Cowork) + attested-modality scaffolds (audio/image/video/compose). Read [`ONBOARDING.md`](ONBOARDING.md), [`DELIVERY.md`](DELIVERY.md), [`docs/ecosystem-integration.md`](docs/ecosystem-integration.md). Board-verdict driven ship — see [ATTESTATIONS.md § v7.3.1](ATTESTATIONS.md).
 
@@ -264,4 +266,4 @@ pnpm run lint        # tsc --noEmit
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v7.6.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.0.0 · MIT
