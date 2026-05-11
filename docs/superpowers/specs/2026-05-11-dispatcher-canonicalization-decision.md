@@ -118,3 +118,4 @@ This document parks here until Frank renders the call. No code moves until then.
 - Verticals: core/orchestrator
 - Generated: 2026-05-11
 - Tier: substrate (decision document; subsequent code-move would require board pre-pass)
+- Attestation: This decision artifact is itself a SIP file-contract participant. The chosen option (A/B/C) shall be recorded as a substrate amendment with a board verdict at decision-time.
