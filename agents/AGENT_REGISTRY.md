@@ -94,11 +94,11 @@ Concierge and Voice Operator never overlap: Concierge owns *strangers*, Voice ow
 
 | Agent | File | Domain | Leads When |
 |-------|------|--------|-----------|
-| **Orchestrator** | `starlight-orchestrator.md` | Coordination | Multi-step workflows, parallel tasks, agent routing |
+| **Orchestrator** | `starlight-orchestrator.md` | Coordination | Multi-step workflows, parallel tasks, agent routing. **/yolo conductor** — drives Hive session loop via `orchestration/yolo-conductor` skill (2026-05-11); council-shared `orchestration/yolo-scan` invoked in parallel by all 7 council agents per session-open. |
 | **Prime** | `starlight-prime.md` | Synthesis | Conflicting perspectives, council decisions, unified voice needed |
 | **Architect** | `starlight-architect.md` | Enterprise Systems | System design, infrastructure, APIs, planet-scale architecture |
 | **Navigator** | `starlight-navigator.md` | Strategy | Roadmaps, trade-offs, timing, long-horizon planning |
-| **Sentinel** | `starlight-sentinel.md` | Quality | Security review, code quality, governance, compliance |
+| **Sentinel** | `starlight-sentinel.md` | Quality | Security review, code quality, active healing (daemon), test forging, governance, compliance |
 | **Weaver** | `starlight-weaver.md` | Creation | Creative work, narrative, design, pattern synthesis |
 | **Sage** | `starlight-sage.md` | Wisdom (institutional) | Knowledge retrieval, lessons learned, vault access, teaching |
 

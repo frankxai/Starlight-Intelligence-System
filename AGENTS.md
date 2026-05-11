@@ -34,7 +34,7 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 ## What you have access to
 
 - **35 named agents** across 7 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (3) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals). Full registry: `agents/AGENT_REGISTRY.md`.
-- **65 auto-activating skill rules** across 13 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine). Activation: `skills/skill-rules.json`.
+- **67 auto-activating skill rules** across 13 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions). Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
@@ -138,7 +138,10 @@ Update the appropriate vault with: decisions made + rationale, patterns confirme
 `/sip-attest` · `/alliance-forge` · `/alliance-reflect` · `/alliance-decide` · `/vertical-spawn` · `/starlight-board` (canonical SIS-substrate governance, canon-free) · `/luminor-board` (Arcanea-canonical alias) · `/sovereign-signal` · `/openclaw-audit` · `/wealth-dpi`
 
 ### Operational (this repo's reference build)
-`/starlight` · `/vault` · `/transmit` · `/synthesize` · `/council` · `/navigate`
+`/starlight` · `/vault` · `/transmit` · `/synthesize` · `/council` · `/navigate` · `/yolo` · `/yolo-exit` · `/yolo-abort`
+
+### /yolo Hive (top-tier session-mode, substrate-aware, 2026-05-11)
+`/yolo` enters Claude-led cross-repo conductor mode (parallel council scan + Prime synthesis + aggressive autonomy band). Phase-in locked to single repo for sessions 1-3 per `yolo-scope.json`. Substrate-touching moves auto-invoke `/starlight-board`; per Board REVISE-1, substrate-class merges require fresh Frank-ack even after PROCEED. See `docs/superpowers/specs/2026-05-11-yolo-hive-design.md`.
 
 ### Genius IS (excavation tier)
 `/discover-genius` · `/reclaim-knowledge` · `/train-executor` · `/creator-pipeline` · `/content-systemize`

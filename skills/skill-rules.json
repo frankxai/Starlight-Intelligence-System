@@ -113,6 +113,28 @@
       "load_level": "summary"
     },
     {
+      "id": "orchestration-yolo-conductor",
+      "skill": "orchestration/yolo-conductor",
+      "triggers": {
+        "keywords": ["/yolo", "yolo session", "yolo hive", "yolo conductor", "cross-repo lead", "lead all my repos"],
+        "agents": ["starlight-orchestrator"],
+        "intents": ["orchestration", "cross-repo-lead", "session-mode"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-yolo-scan",
+      "skill": "orchestration/yolo-scan",
+      "triggers": {
+        "keywords": ["yolo-scan", "council scan", "domain scan", "yolo scan"],
+        "agents": ["starlight-architect", "starlight-sentinel", "starlight-sage", "starlight-navigator", "starlight-weaver", "starlight-prime", "starlight-orchestrator"],
+        "intents": ["orchestration", "scan"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "memory-vault-management",
       "skill": "memory/vault-management",
       "triggers": {

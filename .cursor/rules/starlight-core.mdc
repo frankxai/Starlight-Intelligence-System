@@ -36,7 +36,7 @@ Vaults: Strategic, Technical, Creative, Operational, Wisdom, Horizon.
 
 ## Skills
 
-65 auto-activating skill rules across 13 domains. Primary: Intelligence, Orchestration, Memory, Integration. Plus: Business, Vision, Health, Relational, People Intelligence, Sound Intelligence, Music IS, Energy, Machine. See `skills/skill-rules.json` for activation rules.
+67 auto-activating skill rules across 13 domains. Primary: Intelligence, Orchestration, Memory, Integration. Plus: Business, Vision, Health, Relational, People Intelligence, Sound Intelligence, Music IS, Energy, Machine. See `skills/skill-rules.json` for activation rules.
 
 ## Standards
 

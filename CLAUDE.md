@@ -50,6 +50,8 @@ Every task is either substrate-level or operational-level. Decide before acting.
 
 **Naming note (2026-05-03):** `/starlight-board` is the canonical SIS-substrate-tier governance command (canon-free, functional vector names). `/luminor-board` remains available as the Arcanea-canonical variant (Guardian names + CC-BY-NC) for proposals that explicitly compose Arcanea canon. Same pressure-test shape; different canon attribution. Per the brand-register rules in `memory/vaults/strategic-vault.md`, Luminor stays Arcanea-mythic; Starlight is the substrate register.
 
+**/yolo Hive substrate integration (v7.7+, 2026-05-11):** `/yolo` is a session-mode top-tier command (sibling of `/starlight`, `/superintelligence`, `/starlight-board`). Inside a /yolo session, substrate-touching moves auto-invoke `/starlight-board`. Per Board REVISE-1 verdict (2026-05-11, `docs/superpowers/specs/2026-05-11-yolo-hive-design.md` §7.3.1): even after PROCEED, substrate-class merges require fresh explicit Frank-ack via `AskUserQuestion` — the /yolo session-open grant does NOT propagate to sovereign-class decisions. Phase-in (Board REVISE-2): sessions 1-3 scope-locked to `yolo-scope.json::phase_in.phase_in_repo`; session 4 unlock requires Phase-In Review pass.
+
 ---
 
 ## System Overview
@@ -61,7 +63,7 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 **What you have access to:**
 
 - **35 Agents** — 7 council + 2 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 1 cross-cutting. Full registry: `agents/AGENT_REGISTRY.md`.
-- **65 Skills** — Auto-activate via `skills/skill-rules.json` across 13 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine)
+- **67 Skills** — Auto-activate via `skills/skill-rules.json` across 13 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions)
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
 - **70+ Commands** — universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
@@ -183,6 +185,9 @@ Skill definitions: `skills/{domain}/{skill-name}.md`
 | `/synthesize` | Multi-source intelligence synthesis |
 | `/council` | Convene the Starlight Council for major decisions |
 | `/navigate` | Strategic foresight, roadmaps, trade-off analysis |
+| `/yolo` | Enter /yolo Hive session — Claude-led cross-repo conductor with parallel council scan + Prime synthesis + aggressive autonomy. Phase-in locked to single repo for sessions 1-3 per `yolo-scope.json`. See `docs/superpowers/specs/2026-05-11-yolo-hive-design.md`. |
+| `/yolo-exit` | Graceful close of /yolo session — operational + strategic vault writes, Memory Bus session-summary atom, drift detection post-pass. |
+| `/yolo-abort` | Immediate halt of /yolo mid-action — partial state saved, in-flight git ops rolled back where reversible, drift event log. |
 
 ---
 
