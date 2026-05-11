@@ -32,20 +32,20 @@ layout {
 
     tab name="Finance" focus=true {
         pane split_direction="vertical" {
-            pane size="60%" name="Conductor" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+            pane size="60%" name="Conductor" {
                 command "claude"
                 args "--resume" "finance" "--model" "claude-opus-4-7"
             }
             pane split_direction="horizontal" {
-                pane name="RevenueTail" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                pane name="RevenueTail" {
                     command "pwsh"
-                    args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-finance.ps1"
+                    args "-NoExit" "-File" "./cockpit-zellij\\scripts\\tail-finance.ps1"
                 }
-                pane name="PnLStatus" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                pane name="PnLStatus" {
                     command "pwsh"
-                    args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\finance-status.ps1"
+                    args "-NoExit" "-File" "./cockpit-zellij\\scripts\\finance-status.ps1"
                 }
-                pane name="Cron" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                pane name="Cron" {
                     command "pwsh"
                     args "-NoExit" "-Command" "Write-Host '=== Finance cron status ===' -ForegroundColor Cyan; $log = 'memory\\_audit\\finance\\_cron.log'; if (Test-Path $log) { Get-Content -Path $log -Wait -Tail 30 } else { Write-Host 'No cron log yet — run scripts/cron/daily-revenue-snapshot.ps1' -ForegroundColor Yellow; while ($true) { Start-Sleep -Seconds 5; if (Test-Path $log) { Get-Content -Path $log -Wait -Tail 30; break } } }"
                 }
@@ -54,7 +54,7 @@ layout {
     }
 
     tab name="Entities" {
-        pane name="registry" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+        pane name="registry" {
             command "pwsh"
             args "-NoExit" "-Command" "Write-Host '=== Entity registry ===' -ForegroundColor Cyan; if (Test-Path 'private\\business-registry.json') { Get-Content -Path 'private\\business-registry.json' | ConvertFrom-Json | ConvertTo-Json -Depth 10 } else { Write-Host 'private/business-registry.json not set up.' -ForegroundColor Yellow; Write-Host ''; Write-Host 'cp business-registry.template.json private/business-registry.json'; Write-Host 'then fill in real entity values.' }"
         }

@@ -32,20 +32,20 @@ layout {
 
     tab name="Cost Plane" focus=true {
         pane split_direction="vertical" {
-            pane size="60%" name="Conductor" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+            pane size="60%" name="Conductor" {
                 command "claude"
                 args "--resume" "cost-plane" "--model" "claude-opus-4-7"
             }
             pane split_direction="horizontal" {
-                pane name="CostTail" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                pane name="CostTail" {
                     command "pwsh"
-                    args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-cost.ps1"
+                    args "-NoExit" "-File" "./cockpit-zellij\\scripts\\tail-cost.ps1"
                 }
-                pane name="MonthStatus" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                pane name="MonthStatus" {
                     command "pwsh"
-                    args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\cost-status.ps1"
+                    args "-NoExit" "-File" "./cockpit-zellij\\scripts\\cost-status.ps1"
                 }
-                pane name="Cron" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                pane name="Cron" {
                     command "pwsh"
                     args "-NoExit" "-Command" "Write-Host '=== Cost cron status ===' -ForegroundColor Cyan; $log = 'memory\\_audit\\cost\\_cron.log'; if (Test-Path $log) { Get-Content -Path $log -Wait -Tail 30 } else { Write-Host 'No cron log yet — run scripts/cron/daily-cost-snapshot.ps1' -ForegroundColor Yellow; while ($true) { Start-Sleep -Seconds 5; if (Test-Path $log) { Get-Content -Path $log -Wait -Tail 30; break } } }"
                 }

@@ -5,8 +5,11 @@
 
 $ErrorActionPreference = 'Stop'
 
-$SisRoot   = 'C:\Users\frank\Starlight-Intelligence-System'
-$ScopePath = Join-Path $SisRoot 'yolo-scope.json'
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$SisRoot   = (Resolve-Path (Join-Path $ScriptDir '..\..')).Path
+$PrivScope = Join-Path $SisRoot 'private\yolo-scope.json'
+$RootScope = Join-Path $SisRoot 'yolo-scope.json'
+$ScopePath = if (Test-Path $PrivScope) { $PrivScope } else { $RootScope }
 $DriftPath = Join-Path $SisRoot 'memory\_audit\yolo\_drift.jsonl'
 
 while ($true) {

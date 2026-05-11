@@ -8,7 +8,9 @@
 
 $ErrorActionPreference = 'Stop'
 
-$SisRoot  = 'C:\Users\frank\Starlight-Intelligence-System'
+# Resolve SIS root from script location — portable across operators/machines
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$SisRoot  = (Resolve-Path (Join-Path $ScriptDir '..\..')).Path
 $YoloDir  = Join-Path $SisRoot 'memory\_audit\yolo'
 
 if (-not (Test-Path $YoloDir)) {

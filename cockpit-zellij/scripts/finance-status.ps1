@@ -2,7 +2,8 @@
 
 $ErrorActionPreference = 'Stop'
 
-$SisRoot     = 'C:\Users\frank\Starlight-Intelligence-System'
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$SisRoot     = (Resolve-Path (Join-Path $ScriptDir '..\..')).Path
 $FinDir      = Join-Path $SisRoot 'memory\_audit\finance'
 $CostDir     = Join-Path $SisRoot 'memory\_audit\cost'
 $Registry    = Join-Path $SisRoot 'private\business-registry.json'

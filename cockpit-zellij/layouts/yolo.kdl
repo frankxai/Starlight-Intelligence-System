@@ -37,11 +37,11 @@ layout {
             pane split_direction="horizontal" {
                 pane name="AuditTail" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
                     command "pwsh"
-                    args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-yolo.ps1"
+                    args "-NoExit" "-File" "./cockpit-zellij\\scripts\\tail-yolo.ps1"
                 }
                 pane name="Status" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
                     command "pwsh"
-                    args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\yolo-status.ps1"
+                    args "-NoExit" "-File" "./cockpit-zellij\\scripts\\yolo-status.ps1"
                 }
                 pane name="Brain" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
                     command "pwsh"
@@ -54,16 +54,9 @@ layout {
     tab name="Council" {
         pane split_direction="horizontal" {
             pane size="50%" split_direction="vertical" {
-                pane name="Architect" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
-                pane name="Sentinel" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
-                pane name="Sage" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
-                pane name="Navigator" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
-            }
+                pane name="Architect"                pane name="Sentinel"                pane name="Sage"                pane name="Navigator"            }
             pane split_direction="vertical" {
-                pane name="Weaver" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
-                pane name="Prime" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
-                pane name="Orchestrator" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
-            }
+                pane name="Weaver"                pane name="Prime"                pane name="Orchestrator"            }
         }
     }
 
@@ -75,6 +68,5 @@ layout {
     }
 
     tab name="Files" {
-        pane name="files" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
-    }
+        pane name="files"    }
 }

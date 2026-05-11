@@ -2,7 +2,8 @@
 
 $ErrorActionPreference = 'Stop'
 
-$SisRoot  = 'C:\Users\frank\Starlight-Intelligence-System'
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$SisRoot  = (Resolve-Path (Join-Path $ScriptDir '..\..')).Path
 $CostDir  = Join-Path $SisRoot 'memory\_audit\cost'
 $PrivConfigPath = Join-Path $SisRoot 'private\cost-plane-config.json'
 $RootConfigPath = Join-Path $SisRoot 'cost-plane-config.json'  # back-compat fallback
