@@ -1,0 +1,44 @@
+Cockpit Continuity
+Copyright (c) 2026 Frank Riemer / Starlight Holding
+
+Built on the Starlight Intelligence Protocol (SIP) substrate.
+
+This product is licensed under the MIT License (see LICENSE).
+
+---
+
+SIP Attestation Convention
+==========================
+
+This project follows the SIP "Built on SIP" attestation convention as a social
+layer on top of the MIT license. The convention is RECOMMENDED but not legally
+required by MIT.
+
+If you fork, embed, or productize this work, please carry forward:
+
+  ┌────────────────────────────────────────────────────────────────┐
+  │ Built on SIP — Starlight Intelligence Protocol                 │
+  │ https://github.com/frankxai/Starlight-Intelligence-System      │
+  └────────────────────────────────────────────────────────────────┘
+
+This is the same convention used by Apache-licensed projects with a NOTICE
+file: legal rights are governed by LICENSE; community attestation lives here.
+
+---
+
+Sovereignty Clause
+==================
+
+Per SIP § 5 item 7 (encoded-self amendment, 2026-05-06):
+Forks inherit the pattern, not the person. You may absorb, adapt, and rebrand
+freely under MIT. Attribution is a courtesy, not a constraint.
+
+---
+
+Acknowledgments
+===============
+
+- Cockpit Continuity composes the existing `cockpit-zellij/` Zellij adapter
+  in the Starlight-Intelligence-System repository.
+- Inspired by tmux/Zellij session persistence patterns and the realization
+  that AI-agent CLI sessions need the same treatment at the workspace level.

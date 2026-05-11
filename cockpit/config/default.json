@@ -1,0 +1,21 @@
+{
+  "schema": "cockpit.config/v1",
+  "manifest_path": "~/.starlight/cockpit/sessions.jsonl",
+  "snapshot_path": "~/.starlight/cockpit/last-snapshot.json",
+  "auto_snapshot": {
+    "on_shutdown": true,
+    "periodic_minutes": 5
+  },
+  "rehydrate": {
+    "on_login": false,
+    "terminal": "auto"
+  },
+  "gc": {
+    "stop_event_retention_days": 30
+  },
+  "agents": {
+    "claude":  { "enabled": true },
+    "gemini":  { "enabled": true, "auto_save_on_exit": true },
+    "codex":   { "enabled": false }
+  }
+}
