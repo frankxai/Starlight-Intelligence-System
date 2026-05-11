@@ -6,7 +6,7 @@ writers:
 - navigator
 - prime
 readers: all
-last_consolidated: '2026-05-01'
+last_consolidated: '2026-05-11'
 ---
 
 # Strategic Vault
@@ -155,3 +155,17 @@ Candidate roadmap (when promotion earns it):
 This sequencing keeps the surface flat while a single domain still earns the visitors, and only splits when the split is paying for itself.
 
 ---
+
+## 2026-05-11 — /yolo Hive W1 substrate amendment
+
+**Decision:** Shipped `/yolo` as a new top-tier session-mode command, sibling of `/starlight`, `/superintelligence`, `/starlight-board`. Claude-led cross-repo conductor (Hive topology — parallel council scan + Prime synthesis + aggressive autonomy band gated by subagent QA + auto `/starlight-board` on substrate touch).
+
+**Rationale:** Enables Claude to lead end-to-end across 24 active sovereign repos with proper guardrails. Foundation for W2 Cost Plane + W3 Finance IS + W4 Web3 IS to ship with /yolo orchestrating — autonomous-Frank multiplier. Hive (Approach C) chosen over Lean Conductor (A) and Conductor+Auditor (B) at user direction; cost is heavier cold-start scan, value is full-council intelligence per session.
+
+**Reversibility:** Command surface and skills can be deleted; substrate doc updates revertible. yolo-scope.json operational state revertible. Strategic vault entry preserved either way as decision record.
+
+**Downstream implications:** Phase-in policy gates real use to sessions 1-3 against SIS only (per Board REVISE-2). Phase-In Review at session 4 is the next decision point. If unlock_review fails ≥3 times in first 10 sessions, escalate to Approach B (dedicated Auditor agent) — falsifier explicitly named in memory note.
+
+**Board verdict (same-session 2026-05-11):** REVISE → both items applied within the ship commit chain. Verdict log: spec §15. REVISE-1 (sovereign re-ack on substrate merges) closes the structural self-review collapse that Claude orchestrates both sides of the board call. REVISE-2 (phase-in + bidirectional drift detection) closes the cold-start unknown.
+
+**Brand-register check:** `/yolo` deliberately picks a playful/punk register that contrasts the architect-voice of `/starlight`, `/superintelligence`, `/starlight-board`. Intentional reference to Gemini's yolo-mode but Claude-led with structural gates. Conforms to Starlight substrate register (canon-free); does not invoke Arcanea canon.
