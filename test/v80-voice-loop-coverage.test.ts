@@ -39,12 +39,27 @@ const REPO_ROOT = repoRootFromTestFile(import.meta.url);
 
 const VOICE_SYSTEM_PROMPT_PATH = "private/voice-operator/service/cognition/system_prompt.py";
 
+// Identity markers that should appear in the loaded operator-DNA at RUNTIME.
+// The v80 test budget forbids subprocess (≤200ms), so we can't exec Python
+// to inspect build_system_prompt() output directly. Instead we assert the
+// load mechanism is structurally intact (LOAD_MECHANISM_MARKERS below) AND
+// that the substrate-canonical source (CLAUDE.md) actually contains the
+// identity markers — i.e., if the load works, the output will carry them.
+
 const FRANK_DNA_MARKERS = [
   "Systems Architect",
-  "Frank DNA",
   "Composer",
   "GenCreator",
   "Build abundance",
+];
+
+// Code-reviewer I2 fix: tighten the test so it can't pass just because the
+// file mentions "Frank DNA" in a docstring. These tokens prove the load
+// mechanism is wired — removing them = the test fails even if comments
+// still mention the marker strings.
+const LOAD_MECHANISM_MARKERS = [
+  "_load_operator_dna",
+  "CLAUDE.md",
 ];
 
 // ---------- exempt voice-loop debt-ledger ----------
@@ -76,22 +91,43 @@ describe("v8.0 voice-loop coverage — system prompt carries Frank DNA", () => {
     assert.ok(statSync(path).isFile(), `${VOICE_SYSTEM_PROMPT_PATH} is not a regular file`);
   });
 
-  it("voice operator system prompt references at least one Frank-DNA marker (or is exempt)", () => {
+  it("voice operator system prompt has CLAUDE.md load mechanism wired", () => {
     const path = join(REPO_ROOT, VOICE_SYSTEM_PROMPT_PATH);
     if (!existsSync(path)) {
-      // Private-only — gate not applicable. See test above for the skip note.
-      return;
+      return; // Private-only — gate skipped per the file-exists test above.
     }
     const text = readFileSync(path, "utf8");
-    const hasMarker = FRANK_DNA_MARKERS.some((m) => text.includes(m));
-    const exemptKey = `${VOICE_SYSTEM_PROMPT_PATH}:frank-dna-marker`;
-    if (!hasMarker && !EXEMPT_VOICE_LOOP.has(exemptKey)) {
+    const missing = LOAD_MECHANISM_MARKERS.filter((m) => !text.includes(m));
+    const exemptKey = `${VOICE_SYSTEM_PROMPT_PATH}:load-mechanism`;
+    if (missing.length > 0 && !EXEMPT_VOICE_LOOP.has(exemptKey)) {
       assert.fail(
-        `${VOICE_SYSTEM_PROMPT_PATH} contains no Frank-DNA marker (expected one of: ${FRANK_DNA_MARKERS.join(", ")}). ` +
-          `Either inject the marker via Wave 2 (A2 — Brand Kit composition), or add an EXEMPT_VOICE_LOOP entry with reason + unpark_trigger.`,
+        `${VOICE_SYSTEM_PROMPT_PATH} missing load-mechanism marker(s): ${missing.join(", ")}. ` +
+          `The voice agent must load operator DNA from CLAUDE.md via _load_operator_dna() ` +
+          `so substrate-canonical identity flows into the prompt. Removing the load ` +
+          `mechanism reverts the agent to generic responses.`,
       );
     }
-    // If exempt: pass quietly. The debt-ledger size gate below catches accumulation.
+  });
+
+  it("CLAUDE.md (substrate-canonical) carries the Frank-DNA identity markers", () => {
+    // Composes with the load-mechanism test above: if both pass, runtime
+    // build_system_prompt() WILL include Frank-DNA because (a) load mechanism
+    // is wired and (b) the source it loads from has the markers.
+    const claudePath = join(REPO_ROOT, "CLAUDE.md");
+    if (!existsSync(claudePath)) {
+      assert.fail("CLAUDE.md missing — substrate-canonical operator DNA source is required.");
+      return;
+    }
+    const text = readFileSync(claudePath, "utf8");
+    const missing = FRANK_DNA_MARKERS.filter((m) => !text.includes(m));
+    const exemptKey = "CLAUDE.md:frank-dna-markers";
+    if (missing.length > 0 && !EXEMPT_VOICE_LOOP.has(exemptKey)) {
+      assert.fail(
+        `CLAUDE.md missing operator-DNA marker(s): ${missing.join(", ")}. ` +
+          `Voice agent loads from CLAUDE.md — removing these markers degrades the ` +
+          `loaded prompt to generic operator-DNA fallback.`,
+      );
+    }
   });
 });
 

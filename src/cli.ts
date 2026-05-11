@@ -32,7 +32,7 @@ import { syncACOSToSIS } from "./sync.js";
 import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
-import { inspectMemoryHealth } from "./memory-health.js";
+import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
 
 // ── Constants ───────────────────────────────────────────────
 
@@ -111,6 +111,9 @@ Commands:
   project sync-all                Sync all registered projects at once
   forge                           Synthesize regression tests from vault patterns
   vault list                      List all memory entries
+  vault health                    Show repo-local memory health
+  vault refresh                   Run dreaming consolidation and stamp vault freshness
+  vault consolidate               Alias for vault refresh
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
   vault search <query>            Search memories
@@ -296,6 +299,7 @@ function cmdVault(action: string, args: string[], options: {
   tags?: string;
 }): void {
   const sis = createSIS();
+  const root = getPackageRoot();
 
   switch (action) {
     case "list": {
@@ -317,6 +321,35 @@ function cmdVault(action: string, args: string[], options: {
         console.log(`Newest: ${stats.newestEntry}`);
       }
       console.log("\nUse 'starlight vault search <query>' to find specific entries.");
+      break;
+    }
+
+    case "health": {
+      printMemoryHealth(inspectMemoryHealth(root));
+      break;
+    }
+
+    case "refresh":
+    case "consolidate": {
+      const result = runShell("node", ["--import", "tsx", "scripts/dreaming-run.ts"], false, {
+        STARLIGHT_VAULT_DIR: join(root, "memory", "vaults"),
+        STARLIGHT_SESSIONS_DIR: join(root, "memory", "voice-sessions"),
+      });
+
+      if (result.status !== 0) {
+        console.error("[starlight] Memory refresh failed.");
+        const output = `${result.stdout ?? ""}${result.stderr ?? ""}`.trim();
+        if (output) console.error(output);
+        process.exitCode = result.status ?? 1;
+        return;
+      }
+
+      const today = new Date().toISOString().slice(0, 10);
+      const updated = updateVaultConsolidationStamps(root, today);
+      console.log("[starlight] Memory refresh complete.");
+      console.log(`  Dreaming receipt: ${`${result.stdout ?? ""}${result.stderr ?? ""}`.trim() || "written"}`);
+      console.log(`  Vault stamps updated: ${updated.length}`);
+      printMemoryHealth(inspectMemoryHealth(root));
       break;
     }
 
@@ -397,8 +430,31 @@ function cmdVault(action: string, args: string[], options: {
 
     default:
       console.error(`[starlight] Unknown vault action: "${action}".`);
-      console.error("  Available actions: list, get, set, search");
+      console.error("  Available actions: list, health, refresh, consolidate, get, set, search");
       process.exitCode = 1;
+  }
+}
+
+function printMemoryHealth(memory: ReturnType<typeof inspectMemoryHealth>): void {
+  console.log("\nMemory Surfaces:");
+  console.log(`  ${memory.status === "healthy" ? "OK  " : memory.status === "attention-needed" ? "WARN" : "MISS"} overall               ${memory.status}`);
+  console.log(`  ${memory.vaults.filter((v) => v.present).length}/${memory.vaults.length} vaults present`);
+  for (const vault of memory.vaults) {
+    const age = vault.ageDays == null ? "n/a" : `${vault.ageDays}d`;
+    const stamp = vault.lastConsolidated ?? "missing";
+    console.log(
+      `  ${vault.stale ? "WARN" : "OK  "} ${vault.name.padEnd(12)} ${stamp} (${age})`
+    );
+  }
+  console.log(`  ${memory.voiceSessions.count} voice sessions${memory.voiceSessions.latest ? ` | latest: ${memory.voiceSessions.latest}` : ""}`);
+  console.log(`  KG index rows: ${memory.knowledgeGraph.indexRows} | brain cache: ${memory.knowledgeGraph.brainCachePresent ? "present" : "missing"}`);
+  console.log(`  mempalace: atoms ${memory.mempalace.atomRows ?? 0} | atoms.jsonl ${memory.mempalace.atomsPresent ? "present" : "missing"} | vectors.npy ${memory.mempalace.vectorsPresent ? "present" : "missing"}`);
+  console.log(`  consolidation log: ${memory.consolidationLog.entries} receipts${memory.consolidationLog.latestTimestamp ? ` | latest: ${memory.consolidationLog.latestTimestamp}` : ""}`);
+  if (memory.notes.length > 0) {
+    console.log("  Notes:");
+    for (const note of memory.notes) {
+      console.log(`    - ${note}`);
+    }
   }
 }
 
@@ -661,27 +717,7 @@ function cmdDoctor(): void {
   console.log(`  ${existsSync(mcpPath) ? "OK  " : "MISS"} SIS MCP build         ${mcpPath}`);
   console.log(`  ${existsSync(cockpitSmoke) ? "OK  " : "MISS"} Zellij smoke test    ${cockpitSmoke}`);
 
-  const memory = inspectMemoryHealth(root);
-  console.log("\nMemory Surfaces:");
-  console.log(`  ${memory.status === "healthy" ? "OK  " : memory.status === "attention-needed" ? "WARN" : "MISS"} overall               ${memory.status}`);
-  console.log(`  ${memory.vaults.filter((v) => v.present).length}/${memory.vaults.length} vaults present`);
-  for (const vault of memory.vaults) {
-    const age = vault.ageDays == null ? "n/a" : `${vault.ageDays}d`;
-    const stamp = vault.lastConsolidated ?? "missing";
-    console.log(
-      `  ${vault.stale ? "WARN" : "OK  "} ${vault.name.padEnd(12)} ${stamp} (${age})`
-    );
-  }
-  console.log(`  ${memory.voiceSessions.count} voice sessions${memory.voiceSessions.latest ? ` | latest: ${memory.voiceSessions.latest}` : ""}`);
-  console.log(`  KG index rows: ${memory.knowledgeGraph.indexRows} | brain cache: ${memory.knowledgeGraph.brainCachePresent ? "present" : "missing"}`);
-  console.log(`  mempalace: atoms ${memory.mempalace.atomRows ?? 0} | atoms.jsonl ${memory.mempalace.atomsPresent ? "present" : "missing"} | vectors.npy ${memory.mempalace.vectorsPresent ? "present" : "missing"}`);
-  console.log(`  consolidation log: ${memory.consolidationLog.entries} receipts${memory.consolidationLog.latestTimestamp ? ` | latest: ${memory.consolidationLog.latestTimestamp}` : ""}`);
-  if (memory.notes.length > 0) {
-    console.log("  Notes:");
-    for (const note of memory.notes) {
-      console.log(`    - ${note}`);
-    }
-  }
+  printMemoryHealth(inspectMemoryHealth(root));
 
   console.log("\nArcanea Dispatcher:");
   const arcoDoctor = runShell("arco", ["doctor"]);
@@ -728,32 +764,55 @@ function cmdDispatch(
   if (options.dryRun) args.push("--dry-run");
   args.push(prompt);
 
-  // B1 / Wave 2 (2026-05-11): load per-harness system prompt from
-  // core/orchestrator/harnesses/<harness>/system-prompt.md and pass via env
-  // var STARLIGHT_HARNESS_PROMPT. Arcanea's `arco run` reads this env (once
-  // its side ships) and prepends to the target CLI's system prompt. Until
-  // then this is no-op on the Arcanea side but instrumented on ours.
-  const harness = surface.replace(/-arcanea$/, "").replace(/^.*-/, "");
-  const harnessPromptPath = join(
-    getPackageRoot(),
-    "core",
-    "orchestrator",
-    "harnesses",
-    harness,
-    "system-prompt.md",
-  );
+  // B1 / Wave 2 (2026-05-11) — review-revised 2026-05-11: load per-harness
+  // system prompt from core/orchestrator/harnesses/<harness>/system-prompt.md
+  // and pass via env STARLIGHT_HARNESS_PROMPT. Arcanea's `arco run` reads this
+  // env (once their side ships) and prepends to the target CLI's system prompt.
+  //
+  // Code-reviewer C1 fix: explicit surface→harness map replaces the regex
+  // chain `surface.replace(/-arcanea$/, "").replace(/^.*-/, "")` which broke
+  // on multi-segment surfaces (e.g., "gemini-cli-arcanea" → "cli", wrong).
+  const SURFACE_TO_HARNESS: Record<string, string> = {
+    "claude-arcanea": "claude",
+    "codex-arcanea": "codex",
+    "gemini-arcanea": "gemini",
+    "opencode-arcanea": "opencode",
+    "claude": "claude",
+    "codex": "codex",
+    "gemini": "gemini",
+    "opencode": "opencode",
+  };
+  const harness = SURFACE_TO_HARNESS[surface];
   let harnessEnv: Record<string, string> | undefined;
-  try {
-    const promptText = readFileSync(harnessPromptPath, "utf-8");
-    harnessEnv = {
-      STARLIGHT_HARNESS_PROMPT: promptText,
-      STARLIGHT_HARNESS_PROMPT_PATH: harnessPromptPath,
-      STARLIGHT_HARNESS_NAME: harness,
-    };
-    console.log(`[starlight] Harness prompt loaded: ${harness} (${promptText.length} chars)`);
-  } catch {
-    // Harness file missing — proceed without policy injection.
-    console.log(`[starlight] No harness prompt at ${harnessPromptPath} — falling back to bare arco`);
+  if (!harness) {
+    console.log(`[starlight] Unknown surface '${surface}' — no harness prompt injection (known: ${Object.keys(SURFACE_TO_HARNESS).join(", ")})`);
+  } else {
+    const harnessPromptPath = join(
+      getPackageRoot(),
+      "core",
+      "orchestrator",
+      "harnesses",
+      harness,
+      "system-prompt.md",
+    );
+    try {
+      const promptText = readFileSync(harnessPromptPath, "utf-8");
+      harnessEnv = {
+        STARLIGHT_HARNESS_PROMPT: promptText,
+        STARLIGHT_HARNESS_PROMPT_PATH: harnessPromptPath,
+        STARLIGHT_HARNESS_NAME: harness,
+      };
+      console.log(`[starlight] Harness prompt loaded: ${harness} (${promptText.length} chars)`);
+    } catch (e: unknown) {
+      // ENOENT = expected fallback path (fresh checkout, harness not scaffolded).
+      // Other errors (EACCES, EISDIR, encoding) should surface.
+      const code = (e as { code?: string } | null)?.code;
+      if (code === "ENOENT") {
+        console.log(`[starlight] No harness prompt at ${harnessPromptPath} — falling back to bare arco`);
+      } else {
+        console.warn(`[starlight] Harness prompt read failed (code=${code}): ${(e as Error).message}`);
+      }
+    }
   }
 
   console.log("[starlight] Dispatching via Arcanea orchestrator");
