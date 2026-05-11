@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "installed": [
+    {
+      "id": "council-template-pack",
+      "name": "Council Template Pack",
+      "version": "0.1.0",
+      "kind": "prompt",
+      "permissions": [],
+      "licenseTier": "free",
+      "manifestSha": "5c4cd518309b31261fcb857bac576988b188698c899a78a7db5d15034da4f368",
+      "installedAt": "2026-05-11T07:17:12.019Z"
+    }
+  ],
+  "available": [
+    {
+      "id": "dashboard-cockpit-pack",
+      "name": "Dashboard Cockpit Pack",
+      "version": "0.1.0",
+      "kind": "agent",
+      "permissions": [
+        "fs:read:HOME/.claude",
+        "fs:write:HOME/.starlight/cockpit",
+        "task-scheduler:register"
+      ],
+      "licenseTier": "free",
+      "manifestSha": "e631ce8fcf2315c7f5b19cf4daecc97cd52ebb3c8085a66f42a2012715e57c2a"
+    },
+    {
+      "id": "claw-attestation-pack",
+      "name": "Claw Attestation Pack",
+      "version": "0.1.0",
+      "kind": "claw",
+      "permissions": [
+        "fs:read:repo"
+      ],
+      "licenseTier": "free",
+      "manifestSha": "7e39ceef388c746dd9d18b114b672cf0e92aa39846881a9d94e8b4c7971dbbd8"
+    }
+  ]
+}

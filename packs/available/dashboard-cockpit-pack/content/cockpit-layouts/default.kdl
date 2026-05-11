@@ -1,0 +1,39 @@
+// dashboard-cockpit-pack — default Zellij layout
+//
+// Panes:
+//   - claude    (left, 60%)  — Claude Code resumed against project root
+//   - opencode  (top-right)  — OpenCode CLI scratch
+//   - codex     (mid-right)  — Codex CLI scratch
+//   - watchdog  (bot-right)  — brain_watchdog tail
+//
+// Override per-project by copying to ~/.starlight/cockpit/layouts/<project>.kdl
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="cockpit" focus=true {
+        pane split_direction="vertical" {
+            pane name="claude" size="60%" {
+                command "claude"
+                args "--resume"
+            }
+            pane split_direction="horizontal" {
+                pane name="opencode" {
+                    command "opencode"
+                }
+                pane name="codex" {
+                    command "codex"
+                }
+                pane name="watchdog" {
+                    command "node"
+                    args "--import" "tsx" "src/brain_watchdog.ts"
+                }
+            }
+        }
+    }
+}

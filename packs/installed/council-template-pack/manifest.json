@@ -1,0 +1,9 @@
+{
+  "id": "council-template-pack",
+  "name": "Council Template Pack",
+  "version": "0.1.0",
+  "kind": "prompt",
+  "permissions": [],
+  "licenseTier": "free",
+  "manifestSha": "5c4cd518309b31261fcb857bac576988b188698c899a78a7db5d15034da4f368"
+}

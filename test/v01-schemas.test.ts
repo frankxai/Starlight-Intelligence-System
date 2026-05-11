@@ -255,9 +255,14 @@ const VALID: Record<string, Record<string, unknown>> = {
 // ── Tests ──
 
 describe("Track A v0.1 — JSON Schema conformance", () => {
-  it("all 13 schemas exist on disk under packages/core/schemas/", () => {
+  it("at least 13 schemas exist on disk under packages/core/schemas/", () => {
     const files = readdirSync(SCHEMAS_DIR).filter((f) => f.endsWith(".schema.json"));
-    assert.equal(files.length, 13, `expected 13 schemas, found ${files.length}: ${files.join(", ")}`);
+    // Floor: 13 Track A contracts. Additions like vault-loop-entry (Proposal C) bump
+    // the count without breaking forward-compat.
+    assert.ok(
+      files.length >= 13,
+      `expected at least 13 schemas, found ${files.length}: ${files.join(", ")}`,
+    );
   });
 
   it("every schema accepts its minimal valid fixture", () => {
