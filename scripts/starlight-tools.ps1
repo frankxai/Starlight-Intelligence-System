@@ -8,6 +8,19 @@
 # Activates zoxide (smart cd), mise (tool version mgr), and sets sensible
 # environment defaults for restic, bat, lazygit. Idempotent.
 
+# --- console encoding: force UTF-8 so the banner + emoji-adjacent chars render
+# correctly in legacy PowerShell 5.1 (which defaults to the system OEM code
+# page and prints "Â·" instead of "·"). pwsh 7+ defaults to UTF-8 already
+# but the assignment is safely idempotent. ---
+try {
+    if ([Console]::OutputEncoding.CodePage -ne 65001) {
+        [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+        $OutputEncoding = [System.Text.UTF8Encoding]::new()
+    }
+} catch {
+    # Older terminals may not allow encoding change — fall through silently.
+}
+
 # --- zoxide: smart cd that learns frecency ---
 # Replaces `cd` with `z`. Type `z sis` from anywhere to jump to SIS.
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
@@ -52,5 +65,8 @@ if (Get-Command eza -ErrorAction SilentlyContinue) {
 # No init needed; uv works standalone. Just announce it's available.
 
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
-    Write-Host 'Starlight tools loaded: zoxide(z) · mise · bat(cat) · lazygit(lg) · eza(ll/tree) · uv · restic' -ForegroundColor DarkCyan
+    # ASCII separator (`|`) instead of middle-dot to render correctly even
+    # when the console is misconfigured (some terminals decode UTF-8 multibyte
+    # chars as their CP1252 component letters → "Â·" garbling).
+    Write-Host 'Starlight tools loaded: zoxide(z) | mise | bat(cat) | lazygit(lg) | eza(ll/tree) | uv | restic' -ForegroundColor DarkCyan
 }
