@@ -55,12 +55,18 @@ function Format-LaunchBlock {
         [string[]]$ArgsList
     )
     if (-not $Command) { return '' }
+    # Escape embedded double-quotes and backslashes for KDL string literals.
+    # Without this, a profile arg containing " breaks the pane block silently.
+    $escapedCmd = $Command -replace '\\', '\\\\' -replace '"', '\"'
     $argsLine = ''
     if ($ArgsList -and $ArgsList.Count -gt 0) {
-        $quotedArgs = ($ArgsList | ForEach-Object { '"' + $_ + '"' }) -join ' '
+        $quotedArgs = ($ArgsList | ForEach-Object {
+            $escaped = $_ -replace '\\', '\\\\' -replace '"', '\"'
+            '"' + $escaped + '"'
+        }) -join ' '
         $argsLine = "`n            args $quotedArgs"
     }
-    return " {`n            command `"$Command`"$argsLine`n        }"
+    return " {`n            command `"$escapedCmd`"$argsLine`n        }"
 }
 
 function Get-CockpitProfile {

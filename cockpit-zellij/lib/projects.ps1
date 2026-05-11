@@ -3,13 +3,26 @@
 # Returns hashtable of project-key -> { key, name, path, cluster, days_since, class }
 # Filter: only 'active' (<= 14 days). Sorted by days_since asc.
 
+function Get-LatestPortfolioAuditPath {
+    # Glob for the most recent repo-portfolio-*.json so daily cron writes
+    # are picked up automatically. Falls back to the historical 2026-05-04
+    # file if no newer audits exist yet.
+    $auditDir = Join-Path $PSScriptRoot '..\..\memory\_audit'
+    if (-not (Test-Path $auditDir)) { return $null }
+    $latest = Get-ChildItem -Path $auditDir -Filter 'repo-portfolio-*.json' -File -ErrorAction SilentlyContinue |
+        Sort-Object Name -Descending |
+        Select-Object -First 1
+    if ($latest) { return $latest.FullName }
+    return $null
+}
+
 function Get-StarlightProjects {
     param(
-        [string]$AuditJsonPath = (Join-Path $PSScriptRoot '..\..\memory\_audit\repo-portfolio-2026-05-04.json')
+        [string]$AuditJsonPath = (Get-LatestPortfolioAuditPath)
     )
 
-    if (-not (Test-Path $AuditJsonPath)) {
-        Write-Warning "Audit JSON not found at $AuditJsonPath. Run tools/audit-repo-portfolio.ps1 first."
+    if (-not $AuditJsonPath -or -not (Test-Path $AuditJsonPath)) {
+        Write-Warning "No repo-portfolio-*.json found in memory/_audit/. Run tools/audit-repo-portfolio.ps1 first."
         return @{}
     }
 

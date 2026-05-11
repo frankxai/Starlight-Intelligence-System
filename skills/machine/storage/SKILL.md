@@ -33,10 +33,12 @@ Cross-cutting machine-layer skill. Where `/pp` watches RAM/CPU and `/heart` watc
 ## Quick implementation
 
 ```powershell
-# Read the canonical audit JSON for repo sizes
-$auditPath = 'C:\Users\frank\Starlight-Intelligence-System\memory\_audit\repo-portfolio-2026-05-04.json'
-if (-not (Test-Path $auditPath)) {
-    Write-Host 'Audit JSON missing — run tools/audit-repo-portfolio.ps1 first' -ForegroundColor Yellow
+# Resolve the latest portfolio audit JSON (daily cron writes a new one)
+$auditDir = 'C:\Users\frank\Starlight-Intelligence-System\memory\_audit'
+$auditPath = Get-ChildItem -Path $auditDir -Filter 'repo-portfolio-*.json' -File -ErrorAction SilentlyContinue |
+    Sort-Object Name -Descending | Select-Object -First 1 | ForEach-Object FullName
+if (-not $auditPath) {
+    Write-Host 'No repo-portfolio audit found — run tools/audit-repo-portfolio.ps1 first' -ForegroundColor Yellow
     return
 }
 $audit = Get-Content $auditPath -Raw | ConvertFrom-Json
