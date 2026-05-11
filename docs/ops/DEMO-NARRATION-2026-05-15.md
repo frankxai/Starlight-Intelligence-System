@@ -1,6 +1,7 @@
 # Demo Narration — Friday 2026-05-15
 
-> Speaker notes. ~2-3 minutes total. Read it out loud once before the call; trim what doesn't land.
+> Speaker notes. ~2:50 read at conversational pace. Read it out loud twice before the call; trim what doesn't land.
+> **Canonical reference:** `docs/ops/prompts/starlight-v01-vision.md` — Council Doctrine + Vault Doctrine sections.
 
 ---
 
@@ -35,10 +36,10 @@
 > "And here's the graph. Every decision lights up the brain."
 
 **Step 7 — Council Review.**
-> "Seven archetypes pressure-test every non-trivial move. Elder Father. Elder Mother. Sage. Builder Elder. Shadow Witness. Divine Neutral Witness. Future Self at ninety. No competitor has this. Not OpenAI. Not Anthropic. Not LangChain. It's doctrine, in source, gating the agent loop."
+> "Seven archetypes pressure-test every non-trivial move. Elder Father. Elder Mother. Sage. Builder-Elder. Shadow Witness. Divine Neutral Witness. Future Self at ninety. No competitor has this. Not OpenAI. Not Anthropic. Not LangChain. It's doctrine, in source, gating the agent loop."
 
 **Step 8 — Vault Loop.**
-> "Desire. Intention. Action. Reflection. Wisdom. Five stages. Every work packet enters at Desire and earns its way up. This is how the system metabolizes its own history."
+> "Nine stages. Desire. Gratitude. Visualization. Surrender. Intuition. Aligned action. Evidence. Outcome. Optional public Proof. Every work packet enters at Desire and earns its way through the loop. This is how the system metabolizes its own history — not as a snapshot, as a sequence. With privacy classification per stage: private, private-shareable, public. The system can keep its own counsel."
 
 **Step 9 — Pack Registry.**
 > "Capabilities ship as packs. Install. Pin. Audit. The substrate stays slim; the surface grows by composition."
@@ -50,7 +51,7 @@
 
 ## The moat — 15 sec
 
-> "Two things no one else has. Council — seven archetypes, doctrine in source, gating every move. Vault Loop — five stages, the system's own metabolism. Everything else is plumbing. These two are the moat. They took years of practice to compress into a schema."
+> "Two things no one else has. Council — seven archetypes, doctrine in source, gating every move. Vault Loop — nine stages, the system's own metabolism, privacy-classified per stage. Everything else is plumbing. These two are the moat. They took years of practice to compress into a schema."
 
 ---
 
@@ -60,4 +61,17 @@
 
 ---
 
-*Word count: ~430. Read time: ~2:50 at conversational pace.*
+*Word count: ~450. Read time: ~2:55 at conversational pace.*
+
+## Pre-demo verification — read this aloud once
+
+The five things to test as you read:
+1. Can you say "Elder Father / Elder Mother / Sage / Builder-Elder / Shadow Witness / Divine Neutral Witness / Future Self at ninety" without stumbling on the rhythm? If not, slow the cadence — three pairs and a single.
+2. Can you list nine VaultLoop stages without consulting the screen? They are anchored as **D**esire → **G**ratitude → **V**isualization → **S**urrender → **I**ntuition → **A**ligned action → **E**vidence → **O**utcome → **P**roof. Mnemonic: "**D**oes **G**od **V**isit **S**uffering **I**n **A**ligned **E**xistence, **O**ffering **P**roof?"
+3. Does "metabolizes its own history" land? If not, swap to "earns its own truth" or "compounds its own evidence."
+4. Does the close land the productization arc? laptop → OpenClaw → alliance — three steps, three time-horizons.
+5. Does any sentence feel like marketing? Cut it.
+
+## Drift-protection contract
+
+This narration MUST stay in sync with `src/types.ts` (`VaultLoopStage` type) and `docs/ops/prompts/starlight-v01-vision.md` (Council Doctrine + Vault Doctrine sections). If you change one, change both.

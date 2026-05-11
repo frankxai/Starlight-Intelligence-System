@@ -66,6 +66,33 @@ Start-Process "http://127.0.0.1:3007/mission-control"
 
 ---
 
+## Pre-call ritual — T-5 minutes
+
+You did the work. Now show up in your body. Five minutes, six moves. Do them in order.
+
+1. **Breath — 60 sec.** Box breathing: in 4, hold 4, out 4, hold 4. Four cycles. Pulse down. Voice settles.
+2. **Water — 30 sec.** Full glass. Room temperature. Cold water tightens vocal cords.
+3. **Narration card open.** `docs/ops/DEMO-NARRATION-2026-05-15.md` open in a side window. Not to read — to glance at if you blank. Three minutes of speech, twenty words you need to land. You know them.
+4. **Dashboard pre-warmed.** Open each of the seven routes once so first-paint is cached:
+   ```powershell
+   foreach ($r in 'mission-control','agents','decisions','packs','council','vaults/loop','tooling') {
+     Start-Process "http://127.0.0.1:3007/$r"
+     Start-Sleep -Milliseconds 250
+   }
+   ```
+   Then close every tab except `mission-control`. Browser cache is warm; tab strip is clean.
+5. **Terminal scrolled to clean state.** In the terminal you'll use for the live `workpacket create`:
+   ```powershell
+   Clear-Host
+   cd C:\Users\frank\Starlight-Intelligence-System
+   ```
+   Zero scrollback. Audience sees the command land on a virgin screen.
+6. **TIMING-PAD card open if Q&A might run long.** `docs/ops/TIMING-PAD-2026-05-15.md` open in a tab. Three pre-marked cuts. If the room is hot you compress to 2:30 without thinking.
+
+**Last 30 seconds before you start:** stand up. Shoulders down. One slow exhale through pursed lips. You built this. Now show them.
+
+---
+
 ## The 10-step demo path
 
 Everything below is executable. Commands in fenced blocks, clicks in italics, expected output in `> blockquote`.

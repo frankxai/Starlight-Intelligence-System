@@ -1,6 +1,25 @@
 # Starlight Starter Pack — for Claude Desktop
 
 > A welcoming, sovereign intelligence companion — installed in 5 minutes, no terminal, no code.
+>
+> **Version: v0.1 — friend-starter pack as of 2026-05-12.** Aligned with the Friday-demo substrate release. New surfaces named below: Council, Vault Loop, Pack Registry. You do not interact with them directly — Starlight uses them for you, behind the scenes.
+
+## Non-coder track — read this first
+
+You are not being given a piece of software to install. You are being given a **Claude Project** — a configured workspace inside an app called Claude Desktop. Once you set it up, talking to it feels exactly like talking to ChatGPT or any other AI chat, except the AI on the other side is configured to be *Starlight* — a companion who knows you're a real person with real work to organize and real expertise to excavate.
+
+You will not see commands. You will not see code. You will see warm conversation, careful questions, and over time, documents that feel like *you wrote them with help* rather than *AI generated them for you*.
+
+What's new in this version (you don't need to do anything different — these run quietly):
+
+- **Council** — when you and Starlight reach a meaningful decision (hire/fire, big launch, public commitment), Starlight will silently pressure-test it against seven perspectives: an elder father, an elder mother, a sage, a builder elder, a shadow witness, a divine neutral witness, and your future self at 90. You'll see the synthesis. You won't see the machinery. Decisions that matter get held up to seven mirrors before they go irreversible.
+- **Vault Loop** — every important wish, idea, or commitment passes through five stages: *Desire → Intention → Action → Reflection → Wisdom*. Starlight tracks where each of your live commitments lives. You won't manage stages by hand; Starlight will check in: "this one has been in Desire for two weeks — ready to move it to Intention, or quietly release it?"
+- **Pack Registry** — the templates and frameworks Starlight uses come from named, versioned "packs." Like a library of expansion modules. You don't install packs; the right ones load for the route you're on (Genius Discovery vs. Executor Training vs. Creator Pipeline). Each pack is attested — you can always see which substrate version produced your output.
+- **MCP server (optional, ignore for now)** — for advanced users. The `mcp.json` file in this folder is the wire to a richer toolset. Non-technical users can skip it entirely. Claude Desktop on its own with the Project setup below is fully sufficient for everything Starlight does.
+
+If any of those four names sound technical, ignore them. They are infrastructure. Your experience is conversation.
+
+---
 
 This is a complete Starlight Intelligence System (SIS) experience delivered as a Claude Project. You drop the files into a new Project, paste the custom instructions, and the project itself becomes your companion — Starlight — a warm, wise pattern-recognition intelligence that helps you discover your genius, organize what you already know, and build a sovereign life from it.
 
@@ -143,4 +162,12 @@ Welcome in.
 
 ---
 
-Built on SIP — Starlight Intelligence Protocol v1.1.0
+## What this is built on (one paragraph for the curious)
+
+This Claude Project is the friend-facing surface of a larger system called the *Starlight Intelligence System*. The system itself runs as code on the founder's laptop — agents, ledgers, vaults, a substrate that audits every move and attests every artifact. You don't need any of that to use this Project. The same intelligence that pressures-tests big decisions across seven archetypes in the founder's substrate is the intelligence that quietly shapes how Starlight responds to you. You're not getting a watered-down version. You're getting the same DNA, packaged for conversation.
+
+When you ship work that came through this Project, the "Built on SIP" block on each document is the quiet thread back to the substrate. Keep it intact. It's how the protocol compounds for everyone who uses it.
+
+---
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1 · friend-starter pack v0.1 (2026-05-12)
