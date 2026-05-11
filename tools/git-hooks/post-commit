@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+# Starlight spec-trace post-commit hook
+#
+# Parses 'Spec: <spec-id>' trailers from the HEAD commit message and dual-writes
+# the resulting provenance event to:
+#
+#   1. <repo>/memory/spec-trace/<spec-id>.md           (canonical, git-tracked)
+#   2. ~/.claude/projects/<slug>/memory/spec-trace_<spec-id>.md  (Memory Bus indexed)
+#
+# Fail-open invariant: this hook NEVER fails the commit. All error paths exit 0.
+#
+# Trailer convention (case-insensitive parse, exact-match emit):
+#
+#   feat: do the thing
+#
+#   Spec: 2026-05-11-spec-trace-design
+#
+# Multiple `Spec:` trailers in one commit → one append per matched sidecar.
+#
+# Idempotency: a short-sha already recorded in the sidecar is skipped (re-running
+# the hook on the same HEAD never double-writes).
+#
+# Why dual-write: Memory Bus's crawler.py reads only top-level .md files in
+# ~/.claude/projects/*/memory/ and does not recurse. To keep the canonical
+# artifact in git AND have it indexed by Memory Bus, we maintain two copies.
+# See docs/superpowers/specs/2026-05-11-spec-trace-design.md §3.2.
+
+set +e  # never fail the commit
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)"
+if [[ -z "$repo_root" ]]; then exit 0; fi
+
+msg="$(git log -1 --format=%B HEAD 2>/dev/null)"
+if [[ -z "$msg" ]]; then exit 0; fi
+
+# Parse Spec: trailers — case-insensitive, one spec-id per match
+spec_ids=$(printf '%s\n' "$msg" \
+    | grep -iE '^[[:space:]]*spec:[[:space:]]*[^[:space:]]+' \
+    | sed -E 's/^[[:space:]]*[Ss][Pp][Ee][Cc]:[[:space:]]*([^[:space:]]+).*/\1/')
+
+if [[ -z "$spec_ids" ]]; then exit 0; fi
+
+sha="$(git rev-parse --short HEAD 2>/dev/null)"
+branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+subject="$(git log -1 --format=%s HEAD 2>/dev/null)"
+iso_now="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+# Compute auto-memory project slug from absolute repo path.
+# Windows: C:\Users\frank\Starlight-Intelligence-System -> C-Users-frank-Starlight-Intelligence-System
+# POSIX:   /home/user/repo                              -> home-user-repo (leading-dash stripped below)
+#
+# NOTE on bash precedence: `cd && pwd -W || pwd` parses left-to-right, which
+# would run `pwd` unconditionally and concatenate both outputs. Use a subshell
+# group `(pwd -W || pwd)` to make the alternation scoped properly.
+repo_path_abs="$(cd "$repo_root" 2>/dev/null && (pwd -W 2>/dev/null || pwd))"
+slug="$(printf '%s' "$repo_path_abs" | sed -e 's/://g' -e 's,/,-,g' -e 's,\\,-,g')"
+slug="${slug#-}"
+auto_mem_dir="$HOME/.claude/projects/$slug/memory"
+
+project_name="$(basename "$repo_root")"
+
+can_dir="$repo_root/memory/spec-trace"
+mkdir -p "$can_dir" 2>/dev/null
+
+while IFS= read -r spec_id; do
+    if [[ -z "$spec_id" ]]; then continue; fi
+    can_path="$can_dir/$spec_id.md"
+
+    # Initialize canonical if missing — seed frontmatter from spec doc if found
+    if [[ ! -f "$can_path" ]]; then
+        spec_doc_path="$repo_root/docs/superpowers/specs/$spec_id.md"
+        if [[ -f "$spec_doc_path" ]]; then
+            spec_path_rel="docs/superpowers/specs/$spec_id.md"
+        else
+            spec_path_rel="UNRESOLVED"
+        fi
+
+        cat > "$can_path" <<EOF
+---
+spec_id: $spec_id
+spec_path: $spec_path_rel
+created: $iso_now
+classification: operational
+board_verdict: none
+board_verdict_at: null
+project: $project_name
+repo_root: $repo_path_abs
+---
+
+## Dispatches
+
+## Commits
+
+## PRs
+
+## Notes
+
+EOF
+    fi
+
+    # Idempotency: skip if this short-sha is already recorded
+    if grep -q "\`$sha\`" "$can_path" 2>/dev/null; then
+        continue
+    fi
+
+    # Append commit row under ## Commits header
+    commit_line="- $iso_now · \`$sha\` · \`$branch\` · $subject"
+    awk -v line="$commit_line" '
+        BEGIN { inserted = 0 }
+        /^## Commits[[:space:]]*$/ && !inserted {
+            print
+            print line
+            inserted = 1
+            next
+        }
+        { print }
+        END {
+            if (!inserted) { print ""; print "## Commits"; print line }
+        }
+    ' "$can_path" > "$can_path.tmp" 2>/dev/null && mv "$can_path.tmp" "$can_path" 2>/dev/null
+
+    # Dual-write: indexed copy (fail-open if auto-memory dir doesn't exist or write fails)
+    if [[ -d "$auto_mem_dir" ]]; then
+        idx_path="$auto_mem_dir/spec-trace_$spec_id.md"
+        cp "$can_path" "$idx_path" 2>/dev/null
+    fi
+done <<< "$spec_ids"
+
+exit 0

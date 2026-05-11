@@ -15,8 +15,25 @@ This sets `core.hooksPath = tools/git-hooks` for your local clone. Idempotent â€
 | Hook | Runs when | What it checks | Time |
 |---|---|---|---|
 | `pre-commit` | Every `git commit` that touches `agents/`, `skills/`, `verticals/`, `test/`, or `package.json` | v76 (agent registry symmetry) + v77 (skill-rules symmetry) tests | ~3-5s |
+| `post-commit` | Every `git commit` whose message contains a `Spec: <spec-id>` trailer | Appends commit metadata to `memory/spec-trace/<spec-id>.md` (canonical) + dual-writes indexed copy to `~/.claude/projects/<slug>/memory/spec-trace_<spec-id>.md` (Memory Bus recall surface) | <50ms |
 
-Pure-doc commits skip the hook automatically (no substrate touched = no drift to check).
+Pure-doc commits skip `pre-commit` automatically (no substrate touched = no drift to check). Commits without a `Spec:` trailer skip `post-commit` silently.
+
+### `Spec:` trailer convention
+
+To link a commit to a spec, include a trailer line:
+
+```
+feat(spec-trace): MVP hook + atom factory patch
+
+Phase 1 of the Spec-Trace primitive.
+
+Spec: 2026-05-11-spec-trace-design
+```
+
+Multiple `Spec:` trailers allowed â€” one commit can touch multiple sidecars. Hook is fail-open: never blocks the commit. Idempotent: re-running on the same HEAD never double-writes.
+
+See `docs/superpowers/specs/2026-05-11-spec-trace-design.md` for the full design.
 
 ## Bypass
 
