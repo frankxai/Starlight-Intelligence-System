@@ -29,14 +29,15 @@ SUBSTRATE_RE='^(agents/|skills/|verticals/|test/|package\.json|STACK\.md|AGENTS\
 if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
     echo "→ pre-commit: substrate files touched — running symmetry tests"
 
-    # Run the six fast symmetry tests
+    # Run the seven fast symmetry tests
     if ! node --import tsx --test \
         test/v76.test.ts \
         test/v77-skill-rules.test.ts \
         test/v78-skill-registry.test.ts \
         test/v79-vertical-coverage.test.ts \
         test/v80-platform-prompts.test.ts \
-        test/v81-yolo.test.ts ; then
+        test/v81-yolo.test.ts \
+        test/v82-cost-plane.test.ts ; then
         echo ""
         echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
         exit 1

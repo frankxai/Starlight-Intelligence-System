@@ -33,6 +33,8 @@ memory/knowledge-graph/index.jsonl
 
 # SIS memory orchestrator v0.1 runtime — operator-private state, never commit.
 # Atom store, vector index, and audit log all live here. DECISIONS.md stays tracked.
+# Includes /yolo session logs (memory/_audit/yolo/) and cost-plane snapshots
+# (memory/_audit/cost/) per Board REVISE-3 — cost data is operator-private.
 memory/_audit/
 memory/mempalace/
 memory/benchmarks/*.json
