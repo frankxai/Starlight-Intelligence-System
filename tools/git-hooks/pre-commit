@@ -12,6 +12,10 @@
 #   - test/v81-yolo.test.ts:              /yolo Hive substrate symmetry — yolo-scope.json schema,
 #                                         3 commands + 2 skills + skill-rules + CLAUDE/AGENTS/AGENT_REGISTRY
 #                                         coverage + conductor-encodes-audit-path + phase-in + REVISE-1 re-ack
+#   - test/v82-cost-plane.test.ts:        Cost Plane W2.1 substrate symmetry — cost-plane-config schema,
+#                                         Phase 1 source count = 2, instrumenter modules, cockpit pane
+#   - test/v83-finance-business.test.ts:  Finance & Business IS W3.1 substrate symmetry — registry template,
+#                                         StaleCashError, Stripe-only Phase 1, Arcanea BV scope, cockpit pane
 #   - test/v01-evals/*.test.ts:           Track D risk-dimension evals — permission compliance,
 #                                         pack validity, council shape, vault privacy, agent-event
 #                                         completeness, graph-edge provenance, workpacket completeness
@@ -33,7 +37,7 @@ SUBSTRATE_RE='^(agents/|skills/|verticals/|test/|package\.json|STACK\.md|AGENTS\
 if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
     echo "→ pre-commit: substrate files touched — running symmetry tests"
 
-    # Run the seven fast symmetry tests
+    # Run the eight fast symmetry tests
     if ! node --import tsx --test \
         test/v76.test.ts \
         test/v77-skill-rules.test.ts \
@@ -41,7 +45,8 @@ if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
         test/v79-vertical-coverage.test.ts \
         test/v80-platform-prompts.test.ts \
         test/v81-yolo.test.ts \
-        test/v82-cost-plane.test.ts ; then
+        test/v82-cost-plane.test.ts \
+        test/v83-finance-business.test.ts ; then
         echo ""
         echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
         exit 1

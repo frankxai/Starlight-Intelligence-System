@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "schema": "https://starlightintelligence.org/schema/business-registry.v1.json",
+  "_doc": "Schema-only template. Real values live in private/business-registry.json — never commit. Per Board REVISE-1 (2026-05-11) honoring feedback_privacy_split memory rule. Operator workflow: cp business-registry.template.json private/business-registry.json then fill in real values post-counsel-conversation.",
+  "entities": [
+    {
+      "name": "<entity-display-name>",
+      "type": "holding | operating-company | sole-trader | other",
+      "jurisdiction": "<ISO-3166-alpha2 country code, set post-counsel>",
+      "currency_base": "<ISO-4217, e.g. USD or EUR>",
+      "role": "<short role description>",
+      "operates": ["<repo-or-product-name>", "..."],
+      "current_cash": {
+        "amount": 0.00,
+        "currency": "<same as currency_base>",
+        "last_updated": "<ISO-8601 timestamp from /finance-cash-tick>"
+      }
+    }
+  ]
+}
