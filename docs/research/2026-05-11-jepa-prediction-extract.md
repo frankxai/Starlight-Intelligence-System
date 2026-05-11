@@ -8,12 +8,13 @@ attestation: Built on SIP
 
 # JEPA Prediction-Error Extract
 
-Research synthesis prompted by the OSCEN architectural-gap analysis (2026-05-11). OSCEN's
-proprietary spiking-neural brain exposes one genuine SIS gap: **no Predictive Layer that
-emits forward predictions and uses prediction-error as a learning / routing signal.** The
-most leverageable open-source analog is Meta FAIR's JEPA family (LeCun's group). This file
-extracts the prediction-error mechanism cleanly so a future Board can decide whether to
-add `prediction.error` events to the SIS brain-event-bus.
+Research synthesis prompted by the predictive-cognition substrate analysis at
+`docs/strategic/2026-05-11-predictive-cognition-substrate-analysis.md`. SIS lacks a
+**Predictive Layer** — a forward-prediction mechanism that emits prediction error as a
+learning / routing signal. The most leverageable open-source analog is Meta FAIR's JEPA
+family (LeCun's group). This file extracts the prediction-error mechanism cleanly so a
+future Board can decide whether to add `prediction.error` events to the SIS
+brain-event-bus.
 
 This is research synthesis, not a plan. No action items.
 

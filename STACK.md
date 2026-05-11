@@ -23,6 +23,17 @@ Health (formerly layer 7) becomes a cross-cutting rhythm rather than a top-level
 
 Domain sub-stacks (e.g., People Intelligence) compose **inside** the 10-IS stack — a sovereign practitioner spawns a domain vertical of 4-7 functional sub-systems via `/spawn-domain-stack` once the universal layers are running.
 
+## Starlight Orchestrator subsystems
+
+The Orchestrator is the master routing layer (#10 above). It composes additively — never as a new top-level IS. Subsystems below are slots the Orchestrator may grow into without violating the locked 10-IS taxonomy.
+
+### Subsystems (planned · sovereign-class)
+
+- **Predictive Layer** — *status: planned · sovereign-class · Sov1*. Forward-prediction mechanism that emits a new `prediction.error` event on the brain event bus when retrieve confidence falls below threshold OR when a planning layer's expected-embedding diverges from the retrieved top-hit embedding by more than a threshold. Lineage: predictive-coding research (Friston 2010, *Nature Rev. Neurosci.*) and the Joint-Embedding Predictive Architecture position paper (LeCun 2022; Meta FAIR reference implementations: [`facebookresearch/ijepa`](https://github.com/facebookresearch/ijepa), [`facebookresearch/jepa`](https://github.com/facebookresearch/jepa)). SIS adopts the **signal**, not the training loop — see `docs/research/2026-05-11-jepa-prediction-extract.md` §4. **Falsifier:** if no SIS surface consumes `prediction.error` by v0.3, this entry MUST be removed.
+- Cross-reference: `docs/strategic/2026-05-11-predictive-cognition-substrate-analysis.md` §3 (concept-mapping gap analysis) and `docs/boards/2026-05-11-predictive-cognition-substrate-bundle.md` Proposal S1 (board pre-pass).
+
+Subsystem additions do NOT change the IS count. The 10-IS table above remains the canonical taxonomy. Subsystems are routing-layer internals.
+
 ## Design principles
 
 1. **Sovereignty over convenience.** Prefer open protocols, forkable standards, exportable data. No irrecoverable vendor capture.

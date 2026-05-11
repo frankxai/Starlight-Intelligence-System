@@ -418,6 +418,76 @@ export default function ArchitecturePage() {
         </div>
       </section>
 
+      {/* ── Developmental phases ── */}
+      <section className="border-b border-white/[0.08] px-6 py-20">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            Developmental phases
+          </h2>
+          <p className="mt-3 max-w-md text-xl font-semibold text-white">
+            The substrate evolves like a living system, not a release schedule.
+          </p>
+          <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-slate-400">
+            SIS&apos;s version history mirrors what computational neuroscience
+            calls{" "}
+            <em>critical periods</em> — experience-dependent windows of
+            heightened plasticity that consolidate into durable structure.
+            Structural analog to developmental-plasticity research (Hensch
+            2005, <em>Nature Rev. Neurosci.</em>; Knudsen 2004,{" "}
+            <em>J. Cogn. Neurosci.</em>). Each phase is tied to a concrete
+            shipped invariant — not vibes.
+          </p>
+
+          <div className="mt-10 grid gap-4 md:grid-cols-5">
+            <PhaseCard
+              ord="01"
+              name="Infant"
+              status="shipped"
+              invariant="SIP.md ships as the load-bearing protocol."
+              accent="violet"
+            />
+            <PhaseCard
+              ord="02"
+              name="Toddler"
+              status="shipped"
+              invariant="10-IS taxonomy locked. Orchestrator named as the master layer."
+              accent="cyan"
+            />
+            <PhaseCard
+              ord="03"
+              name="Juvenile"
+              status="shipped"
+              invariant="Board-before-tag invariant + substrate symmetry harness."
+              accent="fuchsia"
+            />
+            <PhaseCard
+              ord="04"
+              name="Adolescent"
+              status="current"
+              invariant="Encoded-self forkable. SIP § 5: forks inherit pattern, not person."
+              accent="emerald"
+            />
+            <PhaseCard
+              ord="05"
+              name="Mature"
+              status="planned"
+              invariant="Sovereign-fork production runs + comprehensive ecosystem deployment. Not yet shipped — pending."
+              accent="amber"
+            />
+          </div>
+
+          <p className="mt-8 max-w-2xl text-[13px] leading-relaxed text-slate-400">
+            SIS is currently completing the{" "}
+            <strong className="text-white">analog of the adolescent phase</strong>{" "}
+            — the consolidation period where the substrate gains its
+            forkable identity. The mature analog remains pending. We
+            don&apos;t claim biological literalness; the phase frame is a{" "}
+            <em>structural analog</em> for talking about substrate
+            evolution.
+          </p>
+        </div>
+      </section>
+
       {/* ── Cross-tool compounding ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-4xl">
@@ -538,6 +608,64 @@ function FlowNode({
       </span>
       <h3 className="mt-2 text-[14px] font-semibold text-white">{title}</h3>
       <p className="mt-2 text-[12px] leading-relaxed text-slate-400">{desc}</p>
+    </div>
+  );
+}
+
+type PhaseAccent = "violet" | "cyan" | "fuchsia" | "emerald" | "amber";
+type PhaseStatus = "shipped" | "current" | "planned";
+
+const PHASE_ACCENTS: Record<PhaseAccent, string> = {
+  violet: "border-violet-500/[0.2] bg-violet-500/[0.05]",
+  cyan: "border-cyan-500/[0.2] bg-cyan-500/[0.05]",
+  fuchsia: "border-fuchsia-500/[0.2] bg-fuchsia-500/[0.05]",
+  emerald: "border-emerald-500/[0.2] bg-emerald-500/[0.05]",
+  amber: "border-amber-500/[0.2] bg-amber-500/[0.05]",
+};
+
+const PHASE_STEP_COLORS: Record<PhaseAccent, string> = {
+  violet: "text-violet-400",
+  cyan: "text-cyan-400",
+  fuchsia: "text-fuchsia-400",
+  emerald: "text-emerald-400",
+  amber: "text-amber-400",
+};
+
+const PHASE_STATUS_PILL: Record<PhaseStatus, string> = {
+  shipped: "border-emerald-500/[0.2] bg-emerald-500/[0.05] text-emerald-300",
+  current: "border-violet-500/[0.3] bg-violet-500/[0.08] text-violet-200",
+  planned: "border-white/[0.1] bg-white/[0.02] text-slate-400",
+};
+
+function PhaseCard({
+  ord,
+  name,
+  status,
+  invariant,
+  accent,
+}: {
+  ord: string;
+  name: string;
+  status: PhaseStatus;
+  invariant: string;
+  accent: PhaseAccent;
+}) {
+  return (
+    <div
+      className={`rounded-xl border p-5 transition-std hover:border-white/[0.2] ${PHASE_ACCENTS[accent]}`}
+    >
+      <span className={`font-mono text-[11px] ${PHASE_STEP_COLORS[accent]}`}>
+        {ord}
+      </span>
+      <h3 className="mt-2 text-[14px] font-semibold text-white">{name}</h3>
+      <span
+        className={`mt-2 inline-block rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wider ${PHASE_STATUS_PILL[status]}`}
+      >
+        {status}
+      </span>
+      <p className="mt-3 text-[12px] leading-relaxed text-slate-400">
+        {invariant}
+      </p>
     </div>
   );
 }
