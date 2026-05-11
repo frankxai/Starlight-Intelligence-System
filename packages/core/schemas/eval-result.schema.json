@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/eval-result.schema.json",
+  "title": "EvalResult",
+  "description": "Single eval-harness verdict against a target schema instance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "evalName", "targetId", "targetKind", "passed", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "evalName": { "type": "string", "minLength": 1 },
+    "targetId": { "type": "string", "minLength": 1 },
+    "targetKind": { "type": "string", "minLength": 1 },
+    "passed": { "type": "boolean" },
+    "evidenceRef": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

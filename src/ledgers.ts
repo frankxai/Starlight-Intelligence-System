@@ -1,0 +1,711 @@
+/**
+ * Track A v0.1 — Append-only ledger writers + SQLite shadow indices
+ *
+ * Persistence for the 13 Track A schemas (see src/types.ts). JSONL files
+ * under <root>/memory/_audit/ are the source of truth; SQLite is a
+ * rebuildable index for fast lookups by MCP tools and the dashboard.
+ *
+ * Layout under <root>/memory/_audit/:
+ *   work-packets.jsonl              — WorkPacket lifecycle snapshots
+ *   decisions.jsonl                 — Decision stream
+ *   approvals.jsonl                 — ApprovalGate stream
+ *   artifacts.jsonl                 — Artifact stream
+ *   council-reviews.jsonl           — CouncilReview stream
+ *   graph-edges.jsonl               — GraphEdge stream (evidence-validated)
+ *   agent-events/<YYYY-MM-DD>.jsonl — Daily-rotated AgentEvent stream
+ *   vault-loop.jsonl                — Vault-loop entry stream (T4 consumer)
+ *   agent-ops.sqlite                — Shadow index (WAL + foreign keys)
+ *
+ * Invariants:
+ *   • JSONL is append-only — never truncated, never rewritten.
+ *   • GraphEdge.evidenceRef must be present (substrate invariant).
+ *   • SQLite runs in WAL journal mode with foreign keys enabled.
+ *   • Function-style writers never throw — they return WriteResult.
+ *   • Class-style AgentOpsLedger throws LedgerInvariantError on substrate
+ *     invariant violations (so callers can fail fast).
+ *
+ * Built on SIP — operational tier
+ */
+
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+} from 'node:fs';
+import { join, dirname } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import Database from 'better-sqlite3';
+import type {
+  AgentEvent,
+  ApprovalGate,
+  Artifact,
+  CouncilReview,
+  Decision,
+  GraphEdge,
+  RiskLevel,
+  WorkPacket,
+  WorkPacketStatus,
+} from './types.js';
+
+// ── Function-style writers (Track B compatibility) ────────────
+
+export interface WriteResult {
+  ok: boolean;
+  error?: string;
+}
+
+export function ensureDir(dir: string): void {
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+}
+
+export function nowIso(): string {
+  return new Date().toISOString();
+}
+
+export function newId(prefix: string): string {
+  return `${prefix}_${Date.now()}_${randomUUID().slice(0, 8)}`;
+}
+
+function safeAppend(path: string, line: string): WriteResult {
+  try {
+    ensureDir(dirname(path));
+    appendFileSync(path, line.endsWith('\n') ? line : line + '\n', 'utf-8');
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+function todayStamp(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export interface LedgerPaths {
+  auditDir: string;
+}
+
+export function ledgerPaths(repoRoot: string): LedgerPaths {
+  return { auditDir: join(repoRoot, 'memory', '_audit') };
+}
+
+function eventLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'agent-events', `${todayStamp()}.jsonl`);
+}
+
+function decisionLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'decisions.jsonl');
+}
+
+function approvalLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'approvals.jsonl');
+}
+
+function workPacketLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'work-packets.jsonl');
+}
+
+function artifactLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'artifacts.jsonl');
+}
+
+function councilLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'council-reviews.jsonl');
+}
+
+function graphEdgeLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'graph-edges.jsonl');
+}
+
+export function vaultLoopLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'vault-loop.jsonl');
+}
+
+export function appendAgentEvent(repoRoot: string, event: AgentEvent): WriteResult {
+  return safeAppend(eventLedgerPath(repoRoot), JSON.stringify(event));
+}
+
+export function appendDecision(repoRoot: string, decision: Decision): WriteResult {
+  return safeAppend(decisionLedgerPath(repoRoot), JSON.stringify(decision));
+}
+
+export function appendApprovalGate(repoRoot: string, gate: ApprovalGate): WriteResult {
+  return safeAppend(approvalLedgerPath(repoRoot), JSON.stringify(gate));
+}
+
+export function appendWorkPacket(repoRoot: string, packet: WorkPacket): WriteResult {
+  return safeAppend(workPacketLedgerPath(repoRoot), JSON.stringify(packet));
+}
+
+export function appendArtifact(repoRoot: string, artifact: Artifact): WriteResult {
+  return safeAppend(artifactLedgerPath(repoRoot), JSON.stringify(artifact));
+}
+
+export function appendCouncilReview(repoRoot: string, review: CouncilReview): WriteResult {
+  return safeAppend(councilLedgerPath(repoRoot), JSON.stringify(review));
+}
+
+/**
+ * Append a GraphEdge. Substrate invariant: edges missing evidenceRef are
+ * refused at the writer (returns { ok: false, error }).
+ */
+export function appendGraphEdge(repoRoot: string, edge: GraphEdge): WriteResult {
+  if (!edge.evidenceRef || typeof edge.evidenceRef !== 'string' || !edge.evidenceRef.trim()) {
+    return { ok: false, error: 'GraphEdge.evidenceRef is required (substrate invariant)' };
+  }
+  return safeAppend(graphEdgeLedgerPath(repoRoot), JSON.stringify(edge));
+}
+
+function readJsonl<T>(path: string): T[] {
+  if (!existsSync(path)) return [];
+  const out: T[] = [];
+  for (const raw of readFileSync(path, 'utf-8').split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    try {
+      out.push(JSON.parse(line) as T);
+    } catch {
+      // skip malformed line
+    }
+  }
+  return out;
+}
+
+export function readGraphEdges(repoRoot: string): GraphEdge[] {
+  return readJsonl<GraphEdge>(graphEdgeLedgerPath(repoRoot));
+}
+
+export function readWorkPackets(repoRoot: string): WorkPacket[] {
+  return readJsonl<WorkPacket>(workPacketLedgerPath(repoRoot));
+}
+
+export function readDecisions(repoRoot: string): Decision[] {
+  return readJsonl<Decision>(decisionLedgerPath(repoRoot));
+}
+
+export function readAgentEventsForDay(repoRoot: string, isoDate: string): AgentEvent[] {
+  return readJsonl<AgentEvent>(
+    join(repoRoot, 'memory', '_audit', 'agent-events', `${isoDate}.jsonl`),
+  );
+}
+
+export function readApprovalGate(repoRoot: string, gateId: string): ApprovalGate | null {
+  const all = readJsonl<ApprovalGate>(approvalLedgerPath(repoRoot));
+  return all.find((g) => g.id === gateId) ?? null;
+}
+
+// ── Class-style ledger with SQLite shadow index ─────────────
+
+/** Thrown when a write violates a substrate invariant. */
+export class LedgerInvariantError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'LedgerInvariantError';
+  }
+}
+
+export interface CreateWorkPacketInput {
+  title: string;
+  mission: string;
+  riskLevel: RiskLevel;
+  contextRefs?: string[];
+  requiredOutputs?: string[];
+  allowedTools?: string[];
+  allowedPaths?: string[];
+  forbiddenActions?: string[];
+  approvalRequired?: boolean;
+  assignedAgent?: string;
+  costEstimate?: number;
+}
+
+const SCHEMA_DDL = `
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS work_packets (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  mission TEXT NOT NULL,
+  risk_level TEXT NOT NULL,
+  approval_required INTEGER NOT NULL,
+  assigned_agent TEXT NOT NULL,
+  status TEXT NOT NULL,
+  cost_estimate REAL NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  completed_at TEXT,
+  payload TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS work_packets_status_idx ON work_packets(status);
+CREATE INDEX IF NOT EXISTS work_packets_created_at_idx ON work_packets(created_at);
+
+CREATE TABLE IF NOT EXISTS agent_events (
+  id TEXT PRIMARY KEY,
+  run_id TEXT NOT NULL,
+  agent_id TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  risk_level TEXT NOT NULL,
+  cost_estimate REAL NOT NULL DEFAULT 0,
+  timestamp TEXT NOT NULL,
+  work_packet_id TEXT,
+  payload TEXT NOT NULL,
+  FOREIGN KEY (work_packet_id) REFERENCES work_packets(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS agent_events_run_idx ON agent_events(run_id);
+CREATE INDEX IF NOT EXISTS agent_events_packet_idx ON agent_events(work_packet_id);
+CREATE INDEX IF NOT EXISTS agent_events_timestamp_idx ON agent_events(timestamp);
+
+CREATE TABLE IF NOT EXISTS decisions (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  chosen TEXT NOT NULL,
+  risk_level TEXT NOT NULL,
+  work_packet_id TEXT,
+  council_review_id TEXT,
+  created_at TEXT NOT NULL,
+  created_by TEXT NOT NULL,
+  payload TEXT NOT NULL,
+  FOREIGN KEY (work_packet_id) REFERENCES work_packets(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS decisions_packet_idx ON decisions(work_packet_id);
+
+CREATE TABLE IF NOT EXISTS graph_edges (
+  id TEXT PRIMARY KEY,
+  edge_type TEXT NOT NULL,
+  source TEXT NOT NULL,
+  target TEXT NOT NULL,
+  evidence_ref TEXT NOT NULL,
+  confidence REAL NOT NULL,
+  created_by TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  payload TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS graph_edges_source_idx ON graph_edges(source);
+CREATE INDEX IF NOT EXISTS graph_edges_target_idx ON graph_edges(target);
+CREATE INDEX IF NOT EXISTS graph_edges_edge_type_idx ON graph_edges(edge_type);
+`;
+
+/**
+ * Append-only ledger for the Track A schemas with SQLite shadow index.
+ * JSONL writers above remain source of truth; this class adds SQLite
+ * mirroring + lifecycle helpers for MCP / dashboard consumers.
+ */
+export class AgentOpsLedger {
+  private readonly root: string;
+  private readonly sqlitePath: string;
+  private readonly db: Database.Database;
+
+  constructor(root: string) {
+    this.root = root;
+    const auditDir = join(root, 'memory', '_audit');
+    ensureDir(auditDir);
+    ensureDir(join(auditDir, 'agent-events'));
+    this.sqlitePath = join(auditDir, 'agent-ops.sqlite');
+    this.db = new Database(this.sqlitePath);
+    this.db.pragma('journal_mode = WAL');
+    this.db.pragma('foreign_keys = ON');
+    this.db.exec(SCHEMA_DDL);
+  }
+
+  getSqlitePath(): string {
+    return this.sqlitePath;
+  }
+
+  // ── WorkPacket ────────────────────────────────────────
+
+  /** Create a WorkPacket — append to JSONL, upsert into SQLite. */
+  createWorkPacket(input: CreateWorkPacketInput): WorkPacket {
+    const now = nowIso();
+    const packet: WorkPacket = {
+      id: newId('wp'),
+      title: input.title,
+      mission: input.mission,
+      contextRefs: input.contextRefs ?? [],
+      requiredOutputs: input.requiredOutputs ?? [],
+      allowedTools: input.allowedTools ?? [],
+      allowedPaths: input.allowedPaths ?? [],
+      forbiddenActions: input.forbiddenActions ?? [],
+      riskLevel: input.riskLevel,
+      approvalRequired: input.approvalRequired ?? false,
+      assignedAgent: input.assignedAgent ?? 'unassigned',
+      status: 'pending',
+      events: [],
+      artifacts: [],
+      costEstimate: input.costEstimate ?? 0,
+      createdAt: now,
+    };
+    const result = appendWorkPacket(this.root, packet);
+    if (!result.ok) {
+      throw new LedgerInvariantError(`WorkPacket append failed: ${result.error}`);
+    }
+    this.upsertWorkPacketRow(packet);
+    return packet;
+  }
+
+  /** Append a WorkPacket snapshot (status transition, event addition, etc.). */
+  appendWorkPacketSnapshot(packet: WorkPacket): void {
+    const result = appendWorkPacket(this.root, packet);
+    if (!result.ok) {
+      throw new LedgerInvariantError(`WorkPacket append failed: ${result.error}`);
+    }
+    this.upsertWorkPacketRow(packet);
+  }
+
+  /** Transition a WorkPacket's status; appends a new ledger entry. */
+  updateWorkPacketStatus(
+    id: string,
+    status: WorkPacketStatus,
+    completedAt?: string,
+  ): WorkPacket {
+    const current = this.getWorkPacket(id);
+    if (!current) {
+      throw new LedgerInvariantError(`WorkPacket not found: ${id}`);
+    }
+    const next: WorkPacket = { ...current, status };
+    if (completedAt !== undefined) next.completedAt = completedAt;
+    this.appendWorkPacketSnapshot(next);
+    return next;
+  }
+
+  /** Latest WorkPacket snapshot by id (from SQLite shadow). */
+  getWorkPacket(id: string): WorkPacket | null {
+    const row = this.db
+      .prepare('SELECT payload FROM work_packets WHERE id = ?')
+      .get(id) as { payload: string } | undefined;
+    return row ? (JSON.parse(row.payload) as WorkPacket) : null;
+  }
+
+  /** List recent WorkPackets, newest first. */
+  listWorkPackets(options?: {
+    limit?: number;
+    status?: WorkPacketStatus;
+  }): WorkPacket[] {
+    const limit = options?.limit ?? 50;
+    if (options?.status) {
+      const rows = this.db
+        .prepare(
+          'SELECT payload FROM work_packets WHERE status = ? ORDER BY created_at DESC LIMIT ?',
+        )
+        .all(options.status, limit) as Array<{ payload: string }>;
+      return rows.map((r) => JSON.parse(r.payload) as WorkPacket);
+    }
+    const rows = this.db
+      .prepare('SELECT payload FROM work_packets ORDER BY created_at DESC LIMIT ?')
+      .all(limit) as Array<{ payload: string }>;
+    return rows.map((r) => JSON.parse(r.payload) as WorkPacket);
+  }
+
+  private upsertWorkPacketRow(packet: WorkPacket): void {
+    this.db
+      .prepare(
+        `INSERT OR REPLACE INTO work_packets
+          (id, title, mission, risk_level, approval_required, assigned_agent,
+           status, cost_estimate, created_at, completed_at, payload)
+         VALUES (@id, @title, @mission, @risk_level, @approval_required,
+                 @assigned_agent, @status, @cost_estimate, @created_at,
+                 @completed_at, @payload)`,
+      )
+      .run({
+        id: packet.id,
+        title: packet.title,
+        mission: packet.mission,
+        risk_level: packet.riskLevel,
+        approval_required: packet.approvalRequired ? 1 : 0,
+        assigned_agent: packet.assignedAgent,
+        status: packet.status,
+        cost_estimate: packet.costEstimate,
+        created_at: packet.createdAt,
+        completed_at: packet.completedAt ?? null,
+        payload: JSON.stringify(packet),
+      });
+  }
+
+  // ── AgentEvent ────────────────────────────────────────
+
+  /** Append an AgentEvent to today's ledger + SQLite index. */
+  recordAgentEvent(event: AgentEvent, workPacketId?: string): AgentEvent {
+    const result = appendAgentEvent(this.root, event);
+    if (!result.ok) {
+      throw new LedgerInvariantError(`AgentEvent append failed: ${result.error}`);
+    }
+    this.db
+      .prepare(
+        `INSERT OR REPLACE INTO agent_events
+          (id, run_id, agent_id, event_type, risk_level, cost_estimate,
+           timestamp, work_packet_id, payload)
+         VALUES (@id, @run_id, @agent_id, @event_type, @risk_level,
+                 @cost_estimate, @timestamp, @work_packet_id, @payload)`,
+      )
+      .run({
+        id: event.id,
+        run_id: event.runId,
+        agent_id: event.agentId,
+        event_type: event.eventType,
+        risk_level: event.riskLevel,
+        cost_estimate: event.costEstimate,
+        timestamp: event.timestamp,
+        work_packet_id: workPacketId ?? null,
+        payload: JSON.stringify(workPacketId ? { ...event, workPacketId } : event),
+      });
+    return event;
+  }
+
+  // ── Decision ──────────────────────────────────────────
+
+  /** Append a Decision; SQLite mirror. */
+  recordDecision(decision: Decision): Decision {
+    const result = appendDecision(this.root, decision);
+    if (!result.ok) {
+      throw new LedgerInvariantError(`Decision append failed: ${result.error}`);
+    }
+    this.db
+      .prepare(
+        `INSERT OR REPLACE INTO decisions
+          (id, title, chosen, risk_level, work_packet_id, council_review_id,
+           created_at, created_by, payload)
+         VALUES (@id, @title, @chosen, @risk_level, @work_packet_id,
+                 @council_review_id, @created_at, @created_by, @payload)`,
+      )
+      .run({
+        id: decision.id,
+        title: decision.title,
+        chosen: decision.chosen,
+        risk_level: decision.riskLevel,
+        work_packet_id: decision.workPacketId ?? null,
+        council_review_id: decision.councilReviewId ?? null,
+        created_at: decision.createdAt,
+        created_by: decision.createdBy,
+        payload: JSON.stringify(decision),
+      });
+    return decision;
+  }
+
+  // ── GraphEdge ─────────────────────────────────────────
+
+  /**
+   * Append a GraphEdge. REFUSES writes missing evidenceRef — substrate
+   * invariant: every edge must cite its evidence. Throws LedgerInvariantError.
+   */
+  recordGraphEdge(edge: GraphEdge): GraphEdge {
+    const result = appendGraphEdge(this.root, edge);
+    if (!result.ok) {
+      throw new LedgerInvariantError(result.error ?? 'GraphEdge append failed');
+    }
+    this.db
+      .prepare(
+        `INSERT OR REPLACE INTO graph_edges
+          (id, edge_type, source, target, evidence_ref, confidence,
+           created_by, created_at, payload)
+         VALUES (@id, @edge_type, @source, @target, @evidence_ref,
+                 @confidence, @created_by, @created_at, @payload)`,
+      )
+      .run({
+        id: edge.id,
+        edge_type: edge.edgeType,
+        source: edge.source,
+        target: edge.target,
+        evidence_ref: edge.evidenceRef,
+        confidence: edge.confidence,
+        created_by: edge.createdBy,
+        created_at: edge.createdAt,
+        payload: JSON.stringify(edge),
+      });
+    return edge;
+  }
+
+  /** Count graph edges (for stats / sanity). */
+  countGraphEdges(): number {
+    const row = this.db
+      .prepare('SELECT COUNT(*) AS n FROM graph_edges')
+      .get() as { n: number };
+    return row.n;
+  }
+
+  /**
+   * Rebuild SQLite shadow indices from JSONL ledgers. JSONL is source of
+   * truth; this is safe and idempotent.
+   */
+  rebuildFromLedgers(): {
+    workPackets: number;
+    events: number;
+    decisions: number;
+    edges: number;
+  } {
+    const stats = { workPackets: 0, events: 0, decisions: 0, edges: 0 };
+    this.db.transaction(() => {
+      this.db.exec(
+        'DELETE FROM graph_edges; DELETE FROM decisions; DELETE FROM agent_events; DELETE FROM work_packets;',
+      );
+      for (const packet of readWorkPackets(this.root)) {
+        this.upsertWorkPacketRow(packet);
+        stats.workPackets++;
+      }
+      const eventsDir = join(this.root, 'memory', '_audit', 'agent-events');
+      if (existsSync(eventsDir)) {
+        const files = readdirSync(eventsDir).filter((f) => f.endsWith('.jsonl'));
+        for (const file of files) {
+          const day = file.slice(0, -'.jsonl'.length);
+          for (const event of readAgentEventsForDay(this.root, day)) {
+            this.db
+              .prepare(
+                `INSERT OR REPLACE INTO agent_events
+                  (id, run_id, agent_id, event_type, risk_level, cost_estimate,
+                   timestamp, work_packet_id, payload)
+                 VALUES (@id, @run_id, @agent_id, @event_type, @risk_level,
+                         @cost_estimate, @timestamp, @work_packet_id, @payload)`,
+              )
+              .run({
+                id: event.id,
+                run_id: event.runId,
+                agent_id: event.agentId,
+                event_type: event.eventType,
+                risk_level: event.riskLevel,
+                cost_estimate: event.costEstimate,
+                timestamp: event.timestamp,
+                work_packet_id: null,
+                payload: JSON.stringify(event),
+              });
+            stats.events++;
+          }
+        }
+      }
+      for (const decision of readDecisions(this.root)) {
+        this.db
+          .prepare(
+            `INSERT OR REPLACE INTO decisions
+              (id, title, chosen, risk_level, work_packet_id, council_review_id,
+               created_at, created_by, payload)
+             VALUES (@id, @title, @chosen, @risk_level, @work_packet_id,
+                     @council_review_id, @created_at, @created_by, @payload)`,
+          )
+          .run({
+            id: decision.id,
+            title: decision.title,
+            chosen: decision.chosen,
+            risk_level: decision.riskLevel,
+            work_packet_id: decision.workPacketId ?? null,
+            council_review_id: decision.councilReviewId ?? null,
+            created_at: decision.createdAt,
+            created_by: decision.createdBy,
+            payload: JSON.stringify(decision),
+          });
+        stats.decisions++;
+      }
+      for (const edge of readGraphEdges(this.root)) {
+        if (!edge.evidenceRef || edge.evidenceRef.trim().length === 0) continue;
+        this.db
+          .prepare(
+            `INSERT OR REPLACE INTO graph_edges
+              (id, edge_type, source, target, evidence_ref, confidence,
+               created_by, created_at, payload)
+             VALUES (@id, @edge_type, @source, @target, @evidence_ref,
+                     @confidence, @created_by, @created_at, @payload)`,
+          )
+          .run({
+            id: edge.id,
+            edge_type: edge.edgeType,
+            source: edge.source,
+            target: edge.target,
+            evidence_ref: edge.evidenceRef,
+            confidence: edge.confidence,
+            created_by: edge.createdBy,
+            created_at: edge.createdAt,
+            payload: JSON.stringify(edge),
+          });
+        stats.edges++;
+      }
+    })();
+    return stats;
+  }
+
+  /** Close the underlying database handle. */
+  close(): void {
+    this.db.close();
+  }
+}
+
+// ── Convenience builders ───────────────────────────────────
+
+/** Build a fresh AgentEvent with sensible defaults; caller supplies what matters. */
+export function buildAgentEvent(input: {
+  runId: string;
+  agentId: string;
+  eventType: string;
+  summary?: string;
+  toolsUsed?: string[];
+  inputRefs?: string[];
+  outputRefs?: string[];
+  decisionsCreated?: string[];
+  artifactsCreated?: string[];
+  riskLevel?: RiskLevel;
+  costEstimate?: number;
+  timestamp?: string;
+}): AgentEvent {
+  const ts = input.timestamp ?? nowIso();
+  return {
+    id: newId('evt'),
+    runId: input.runId,
+    agentId: input.agentId,
+    eventType: input.eventType,
+    summary: input.summary ?? '',
+    toolsUsed: input.toolsUsed ?? [],
+    inputRefs: input.inputRefs ?? [],
+    outputRefs: input.outputRefs ?? [],
+    decisionsCreated: input.decisionsCreated ?? [],
+    artifactsCreated: input.artifactsCreated ?? [],
+    riskLevel: input.riskLevel ?? 'low',
+    costEstimate: input.costEstimate ?? 0,
+    timestamp: ts,
+  };
+}
+
+/** Build a fresh Decision with id + timestamp populated. */
+export function buildDecision(input: {
+  title: string;
+  context: string;
+  options: string[];
+  chosen: string;
+  rationale: string;
+  riskLevel: RiskLevel;
+  createdBy: string;
+  workPacketId?: string;
+  councilReviewId?: string;
+}): Decision {
+  return {
+    id: newId('dec'),
+    title: input.title,
+    context: input.context,
+    options: input.options,
+    chosen: input.chosen,
+    rationale: input.rationale,
+    riskLevel: input.riskLevel,
+    workPacketId: input.workPacketId,
+    councilReviewId: input.councilReviewId,
+    createdAt: nowIso(),
+    createdBy: input.createdBy,
+  };
+}
+
+/** Build a GraphEdge — caller MUST supply evidenceRef (ledger refuses without). */
+export function buildGraphEdge(input: {
+  edgeType: string;
+  source: string;
+  target: string;
+  evidenceRef: string;
+  confidence: number;
+  createdBy: string;
+}): GraphEdge {
+  return {
+    id: newId('ge'),
+    edgeType: input.edgeType,
+    source: input.source,
+    target: input.target,
+    evidenceRef: input.evidenceRef,
+    confidence: input.confidence,
+    createdBy: input.createdBy,
+    createdAt: nowIso(),
+  };
+}

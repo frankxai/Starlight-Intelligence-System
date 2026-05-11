@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/approval-gate.schema.json",
+  "title": "ApprovalGate",
+  "description": "Human-in-the-loop gate for a WorkPacket.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "workPacketId", "requestedAt", "status", "riskLevel"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "workPacketId": { "type": "string", "minLength": 1 },
+    "requestedAt": { "type": "string", "format": "date-time" },
+    "status": { "type": "string", "enum": ["pending", "approved", "rejected", "expired"] },
+    "riskLevel": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "decidedBy": { "type": "string" },
+    "decidedAt": { "type": "string", "format": "date-time" },
+    "rationale": { "type": "string" }
+  }
+}

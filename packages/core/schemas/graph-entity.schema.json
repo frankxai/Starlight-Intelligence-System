@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/graph-entity.schema.json",
+  "title": "GraphEntity",
+  "description": "Knowledge-graph node.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "name", "attributes", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "kind": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "attributes": { "type": "object" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/work-packet.schema.json",
+  "title": "WorkPacket",
+  "description": "A unit of agent work — mission, constraints, lifecycle. Track A v0.1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "mission",
+    "contextRefs",
+    "requiredOutputs",
+    "allowedTools",
+    "allowedPaths",
+    "forbiddenActions",
+    "riskLevel",
+    "approvalRequired",
+    "assignedAgent",
+    "status",
+    "events",
+    "artifacts",
+    "costEstimate",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "mission": { "type": "string", "minLength": 1 },
+    "contextRefs": { "type": "array", "items": { "type": "string" } },
+    "requiredOutputs": { "type": "array", "items": { "type": "string" } },
+    "allowedTools": { "type": "array", "items": { "type": "string" } },
+    "allowedPaths": { "type": "array", "items": { "type": "string" } },
+    "forbiddenActions": { "type": "array", "items": { "type": "string" } },
+    "riskLevel": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "approvalRequired": { "type": "boolean" },
+    "assignedAgent": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "blocked", "completed", "cancelled"]
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "agent-event.schema.json" }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": { "$ref": "artifact.schema.json" }
+    },
+    "costEstimate": { "type": "number", "minimum": 0 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" }
+  }
+}

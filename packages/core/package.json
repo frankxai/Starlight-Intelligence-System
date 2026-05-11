@@ -1,0 +1,22 @@
+{
+  "name": "@starlight/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Track A agent-ops substrate — canonical JSON Schemas for WorkPacket / AgentRun / AgentEvent / Decision / Artifact / Pack / Permission / ApprovalGate / CouncilReview / GraphEntity / GraphEdge / CostRecord / EvalResult. Shipped 2026-05-11 for the 2026-05-15 demo. TS counterparts live in src/types.ts.",
+  "type": "module",
+  "exports": {
+    "./schemas/work-packet": "./schemas/work-packet.schema.json",
+    "./schemas/agent-run": "./schemas/agent-run.schema.json",
+    "./schemas/agent-event": "./schemas/agent-event.schema.json",
+    "./schemas/decision": "./schemas/decision.schema.json",
+    "./schemas/artifact": "./schemas/artifact.schema.json",
+    "./schemas/pack": "./schemas/pack.schema.json",
+    "./schemas/permission": "./schemas/permission.schema.json",
+    "./schemas/approval-gate": "./schemas/approval-gate.schema.json",
+    "./schemas/council-review": "./schemas/council-review.schema.json",
+    "./schemas/graph-entity": "./schemas/graph-entity.schema.json",
+    "./schemas/graph-edge": "./schemas/graph-edge.schema.json",
+    "./schemas/cost-record": "./schemas/cost-record.schema.json",
+    "./schemas/eval-result": "./schemas/eval-result.schema.json"
+  }
+}

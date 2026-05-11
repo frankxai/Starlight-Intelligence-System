@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/artifact.schema.json",
+  "title": "Artifact",
+  "description": "A produced artifact with attestation status.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "uri", "sha256", "createdBy", "createdAt", "attestation"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "kind": { "type": "string", "minLength": 1 },
+    "uri": { "type": "string", "minLength": 1 },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "createdBy": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "attestation": { "type": "string", "enum": ["sip-attested", "unattested"] }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/agent-event.schema.json",
+  "title": "AgentEvent",
+  "description": "An immutable event emitted during an AgentRun.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "runId",
+    "agentId",
+    "eventType",
+    "summary",
+    "toolsUsed",
+    "inputRefs",
+    "outputRefs",
+    "decisionsCreated",
+    "artifactsCreated",
+    "riskLevel",
+    "costEstimate",
+    "timestamp"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "agentId": { "type": "string", "minLength": 1 },
+    "eventType": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string" },
+    "toolsUsed": { "type": "array", "items": { "type": "string" } },
+    "inputRefs": { "type": "array", "items": { "type": "string" } },
+    "outputRefs": { "type": "array", "items": { "type": "string" } },
+    "decisionsCreated": { "type": "array", "items": { "type": "string" } },
+    "artifactsCreated": { "type": "array", "items": { "type": "string" } },
+    "riskLevel": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "costEstimate": { "type": "number", "minimum": 0 },
+    "timestamp": { "type": "string", "format": "date-time" }
+  }
+}
