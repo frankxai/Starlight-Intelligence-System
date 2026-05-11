@@ -12,7 +12,7 @@
 pwsh -NoProfile -File C:\Users\frank\Starlight-Intelligence-System\scripts\demo-friday-2026-05-15.ps1
 ```
 
-Expected last line: `[demo] READY — all 10 steps green.` If you see that, open `http://127.0.0.1:3007/mission-control` and walk the 10-step path live. If you don't, jump to **Recovery branches** below.
+Expected last line: `[demo] READY — all N steps green.` (current N = pre-flight + the 10 demo steps + cleanup; don't pin the integer — what matters is the word `READY` in green and zero `BAD` lines above it.) If you see that, open `http://127.0.0.1:3007/mission-control` and walk the 10-step path live. If you don't, jump to **Recovery branches** below.
 
 **What to watch for during the live run:**
 - Step 3 (WorkPacket appears) — refresh `/mission-control` once if it doesn't show. JSONL persistence is real; render is server-side.
