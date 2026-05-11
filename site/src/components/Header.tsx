@@ -89,6 +89,7 @@ export function Header() {
             <NavLink href="/explainer">Explainer</NavLink>
             <NavLink href="/vaults">Vaults</NavLink>
             <NavLink href="/docs">Docs</NavLink>
+            <NavLink href="/cockpit/spec-trace">Spec-Trace</NavLink>
             <NavLink href="https://github.com/frankxai/Starlight-Intelligence-System" external>GitHub</NavLink>
           </nav>
         </details>
