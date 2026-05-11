@@ -57,15 +57,9 @@ const EXEMPT_VOICE_LOOP = new Map<
   string,
   { reason: string; unpark_trigger: string }
 >([
-  [
-    "private/voice-operator/service/cognition/system_prompt.py:frank-dna-marker",
-    {
-      reason:
-        "Wave 1 (2026-05-11) board verdict scoped Frank-DNA injection (A2) to Wave 2. Debt ledger surfaces gap as code; Wave 2 ship removes this entry.",
-      unpark_trigger:
-        "Wave 2 ships A2 (Brand Kit + Frank DNA composed into system_prompt.py). Remove this entry when the test passes naturally.",
-    },
-  ],
+  // Wave 2 (2026-05-11) shipped A2 — FRANK_DNA prepended in build_system_prompt().
+  // The frank-dna-marker entry was removed because the test now passes naturally.
+  // Goal state: empty Map. Future drift adds new entries here with un-park triggers.
 ]);
 
 const EXEMPT_VOICE_LOOP_CEILING = 3;
