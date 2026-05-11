@@ -16,8 +16,9 @@
  * test files. The regex doesn't care about entropy — only shape.
  *
  * For prefixes that secret-scanning recognizes by shape alone (Stripe sk_live_,
- * Anthropic sk-ant-), the prefix is built piecewise from concatenated string
- * fragments so the contiguous literal never appears in source.
+ * Anthropic sk-ant-, GitHub ghp_ / github_pat_), the prefix is built piecewise
+ * from concatenated string fragments so the contiguous literal never appears
+ * in source.
  */
 
 import { test } from "node:test";
