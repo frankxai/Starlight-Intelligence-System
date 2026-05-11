@@ -52,11 +52,18 @@ def canonical_dir(root: Path) -> Path:
 def project_slug(repo_path: Path) -> str:
     """Encode an absolute repo path as a Claude auto-memory project slug.
 
-    Mirrors the convention from crawler.py:project_name_from_memory_dir —
-    drop ':', replace '\\' and '/' with '-', strip leading dash.
+    Claude Code convention (verified by inspection):
+        C:\\Users\\frank\\Starlight-Intelligence-System
+            -> C--Users-frank-Starlight-Intelligence-System
+        /home/user/repo
+            -> home-user-repo (leading dash stripped)
+
+    The colon + first separator BOTH become dashes, yielding the double-dash
+    after the drive letter. Convert ':', '/', and '\\' all to '-' (NOT dropping
+    the colon).
     """
     raw = str(repo_path.resolve())
-    slug = raw.replace(":", "").replace("\\", "-").replace("/", "-")
+    slug = raw.replace(":", "-").replace("\\", "-").replace("/", "-")
     return slug.lstrip("-")
 
 
@@ -79,7 +86,12 @@ def list_specs(args: argparse.Namespace) -> int:
     if not cdir.exists():
         print("(no spec-trace sidecars yet — first commit with `Spec:` trailer will create some)")
         return 0
-    sidecars = sorted(cdir.glob("*.md"))
+    # Exclude README.md (which documents the sidecar convention itself,
+    # not a per-spec sidecar). Sidecar names start with a 4-digit year.
+    sidecars = sorted(
+        s for s in cdir.glob("*.md")
+        if s.name != "README.md" and re.match(r"\d{4}-", s.name)
+    )
     if not sidecars:
         print("(no spec-trace sidecars)")
         return 0
@@ -93,7 +105,7 @@ def list_specs(args: argparse.Namespace) -> int:
         classification = m.group(1) if m else "?"
         m2 = re.search(r"^board_verdict:\s*(\S+)", text, re.MULTILINE)
         verdict = m2.group(1) if m2 else "?"
-        idx_present = "✓" if indexed_path_for(root, spec_id).exists() else "✗"
+        idx_present = "yes" if indexed_path_for(root, spec_id).exists() else "no"
         print(f"  {spec_id}")
         print(f"    classification: {classification}  verdict: {verdict}  commits: {commits}  indexed: {idx_present}")
     return 0
@@ -200,7 +212,11 @@ def sync(args: argparse.Namespace) -> int:
         print("Indexed copies will not be created until this directory exists.")
         return 0
 
-    sidecars = sorted(cdir.glob("*.md"))
+    # Exclude README.md from sync (only actual sidecars, which start with a year)
+    sidecars = sorted(
+        s for s in cdir.glob("*.md")
+        if s.name != "README.md" and re.match(r"\d{4}-", s.name)
+    )
     wrote = 0
     for s in sidecars:
         spec_id = s.stem
@@ -210,7 +226,7 @@ def sync(args: argparse.Namespace) -> int:
             wrote += 1
         except OSError as e:
             print(f"warning: failed to write {target}: {e}", file=sys.stderr)
-    print(f"Synced {wrote} of {len(sidecars)} sidecar(s) → {idx_dir}")
+    print(f"Synced {wrote} of {len(sidecars)} sidecar(s) -> {idx_dir}")
     return 0
 
 
