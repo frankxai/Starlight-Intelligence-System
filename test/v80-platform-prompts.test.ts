@@ -14,6 +14,10 @@
  *   - skill count   → matches `skills/skill-rules.json` rules array length
  *   - vault count   → matches `memory/vaults/` unique vault file count (= 6)
  *   - SIP version   → matches `SIP.md` `Version:` line
+ *   - SIS version   → matches `package.json::version` (instance-tier, italic-footer-anchored)
+ *                     Added 2026-05-11 after substrate audit found CLAUDE.md
+ *                     footer drifted to v2.0.0 while AGENTS.md was v8.0.0 —
+ *                     same drift class as v77 audit (q1, 2026-05-07).
  *
  * Scope (operational tier):
  *   This is a defense layer for THIS reference build. It is NOT a SIP § 1
@@ -99,6 +103,7 @@ interface Canonical {
   skillCount: number;
   vaultCount: number;
   sipVersion: string;
+  sisVersion: string;
 }
 
 function loadCanonical(): Canonical {
@@ -143,14 +148,23 @@ function loadCanonical(): Canonical {
   }
   const sipVersion = sipMatch[1]!;
 
-  return { agentCount, skillCount, vaultCount, sipVersion };
+  // SIS version: package.json::version is the canonical instance-tier source.
+  // Format normalized to "vX.Y.Z" to match the footer-italic claim shape.
+  const pkgText = readFileSync(join(REPO_ROOT, "package.json"), "utf8");
+  const pkg = JSON.parse(pkgText);
+  if (typeof pkg.version !== "string" || !/^\d+\.\d+\.\d+/.test(pkg.version)) {
+    throw new Error("package.json missing canonical 'version' field (X.Y.Z)");
+  }
+  const sisVersion = `v${pkg.version}`;
+
+  return { agentCount, skillCount, vaultCount, sipVersion, sisVersion };
 }
 
 // ---------- claim extraction ----------
 
 interface Claim {
-  kind: "agents" | "skills" | "vaults" | "sipVersion";
-  value: string; // numeric as string for agents/skills/vaults; "v1.1.1" for sipVersion
+  kind: "agents" | "skills" | "vaults" | "sipVersion" | "sisVersion";
+  value: string; // numeric as string for agents/skills/vaults; "v1.1.1" / "v8.0.0" for versions
   context: string; // surrounding ~30 chars for diagnostic
 }
 
@@ -169,6 +183,13 @@ const PATTERNS: Array<{ kind: Claim["kind"]; re: RegExp }> = [
   { kind: "vaults", re: /\b(\d+)\s+(?:semantic\s+|persistent\s+memory\s+|memory\s+)?vaults?\b/gi },
   // "SIP v1.1.1" / "SIP version 1.1.1" / "SIP-compliant"
   { kind: "sipVersion", re: /SIP\s+v(\d+\.\d+\.\d+)/g },
+  // "*Starlight Intelligence System v8.0.0*" — anchored to italic-asterisk
+  // footer/header context per Board verdict 2026-05-11 (Verifier REVISE).
+  // The leading `\*` and trailing ` —` discriminate footer claims from
+  // historical body mentions like "v7.4 alpha shipped" or "the v2.0 era".
+  // EXEMPT_DRIFT covers any legitimate historical italic mention that should
+  // not be reconciled.
+  { kind: "sisVersion", re: /\*Starlight Intelligence System v(\d+\.\d+\.\d+)/g },
 ];
 
 // Context patterns that mark a claim as LOCAL (sub-stack / tier-specific)
@@ -186,7 +207,10 @@ function extractClaims(text: string): Claim[] {
   const claims: Claim[] = [];
   for (const { kind, re } of PATTERNS) {
     for (const m of text.matchAll(re)) {
-      const value = kind === "sipVersion" ? `v${m[1]}` : m[1]!;
+      const value =
+        kind === "sipVersion" || kind === "sisVersion"
+          ? `v${m[1]}`
+          : m[1]!;
       const start = Math.max(0, m.index! - 50);
       const end = Math.min(text.length, m.index! + m[0].length + 50);
       const context = text
@@ -215,6 +239,7 @@ describe("v8.0 platform-prompt symmetry — canonical prompts match operational 
       skills: String(canon.skillCount),
       vaults: String(canon.vaultCount),
       sipVersion: canon.sipVersion,
+      sisVersion: canon.sisVersion,
     };
 
     const violations: string[] = [];
@@ -256,6 +281,7 @@ describe("v8.0 platform-prompt symmetry — canonical prompts match operational 
       skills: String(canon.skillCount),
       vaults: String(canon.vaultCount),
       sipVersion: canon.sipVersion,
+      sisVersion: canon.sisVersion,
     };
 
     const violations: string[] = [];
