@@ -23,6 +23,7 @@
  */
 
 import { parseArgs } from "node:util";
+import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { StarlightIntelligence } from "./index.js";
@@ -31,6 +32,7 @@ import { syncACOSToSIS } from "./sync.js";
 import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
+import { inspectMemoryHealth } from "./memory-health.js";
 
 // ── Constants ───────────────────────────────────────────────
 
@@ -100,10 +102,14 @@ Commands:
   generate                        Generate context file from .starlight/ config
   guidance                        Generate behavioral guidance for session injection
   sync                            Sync ACOS trajectories into SIS memory
+  doctor                          Check CLI, dispatcher, and cockpit readiness
+  dispatch <prompt>               Route a prompt through Arcanea orchestrator
+  cockpit [project]               Launch or attach to the Zellij cockpit
   score                           Generate unified intelligence report
   project register <name> <path>  Register a project for federated multi-sync
   project list                    List registered projects
   project sync-all                Sync all registered projects at once
+  forge                           Synthesize regression tests from vault patterns
   vault list                      List all memory entries
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
@@ -120,6 +126,10 @@ Options:
   --acos-path <path>              Path to ACOS trajectories directory (for sync/score/guidance)
   --max-lines <n>                 Max lines in guidance output (default: 40)
   --dry-run                       Preview sync without writing (for sync)
+  --attach                        Attach to an existing Zellij session when possible
+  --task <task>                   Arcanea task class for dispatch (default: code.debug)
+  --surface <surface>             Arcanea routing surface (default: claude-arcanea)
+  --model <model>                 Override Arcanea model selection
   --min-score <n>                 Minimum success score to sync (0.0-1.0)
   --category <cat>                Memory category: pattern, decision, insight, error, preference
   --confidence <n>                Confidence score (0.0-1.0) for vault set
@@ -132,6 +142,9 @@ Examples:
   starlight guidance --project frankx --acos-path ~/.claude/trajectories
   starlight sync --acos-path ~/.claude/trajectories
   starlight sync --dry-run
+  starlight doctor
+  starlight dispatch --task code.debug --dry-run "find the failing test"
+  starlight cockpit sis
   starlight score
   starlight project register frankx ~/.claude/trajectories
   starlight project list
@@ -166,6 +179,28 @@ function getVersion(): string {
   return "unknown";
 }
 
+function getPackageRoot(): string {
+  const searchDirs = [
+    join(import.meta.dirname ?? ".", ".."),
+    import.meta.dirname ?? ".",
+    process.cwd(),
+  ];
+
+  for (const dir of searchDirs) {
+    try {
+      const candidate = join(dir, "package.json");
+      const pkg = JSON.parse(readFileSync(candidate, "utf-8"));
+      if (pkg.name === "@arcanea/starlight-intelligence-system") {
+        return dir;
+      }
+    } catch {
+      // Continue searching
+    }
+  }
+
+  return process.cwd();
+}
+
 function createSIS(): StarlightIntelligence {
   const memoryPath = join(process.cwd(), STARLIGHT_DIR, "memory.json");
   const sis = new StarlightIntelligence({ memoryPath });
@@ -175,6 +210,33 @@ function createSIS(): StarlightIntelligence {
 
 function formatJSON(obj: unknown): string {
   return JSON.stringify(obj, null, 2);
+}
+
+function runShell(
+  command: string,
+  args: string[],
+  inherit = false,
+  extraEnv?: Record<string, string>,
+): ReturnType<typeof spawnSync> {
+  return spawnSync(command, args, {
+    shell: true,
+    encoding: "utf-8",
+    stdio: inherit ? "inherit" : "pipe",
+    timeout: 60_000,
+    env: extraEnv ? { ...process.env, ...extraEnv } : process.env,
+  });
+}
+
+function commandSummary(command: string, args: string[] = ["--version"]): {
+  ok: boolean;
+  label: string;
+} {
+  const result = runShell(command, args);
+  const output = `${result.stdout ?? ""}${result.stderr ?? ""}`.trim().split(/\r?\n/)[0] ?? "";
+  return {
+    ok: result.status === 0,
+    label: output || (result.error ? result.error.message : "available"),
+  };
 }
 
 // ── Commands ────────────────────────────────────────────────
@@ -560,6 +622,195 @@ function cmdVersion(): void {
   console.log(`@arcanea/starlight-intelligence-system v${version}`);
 }
 
+function cmdDoctor(): void {
+  console.log("Starlight Operator Doctor");
+  console.log("=========================\n");
+
+  const checks: Array<[string, string, string[]]> = [
+    ["Claude Code", "claude", ["--version"]],
+    ["Codex CLI", "codex", ["--version"]],
+    ["Gemini CLI", "gemini", ["--version"]],
+    ["OpenCode", "opencode", ["--version"]],
+    ["Zellij", "zellij", ["--version"]],
+    ["Arcanea dispatcher", "arco", ["--version"]],
+    ["ACOS", "acos", ["--version"]],
+    ["Starlight", "starlight", ["version"]],
+  ];
+
+  let failures = 0;
+  for (const [label, command, args] of checks) {
+    const result = commandSummary(command, args);
+    if (!result.ok) failures++;
+    console.log(`  ${result.ok ? "OK  " : "MISS"} ${label.padEnd(20)} ${result.label}`);
+  }
+
+  const geminiMcp = runShell("gemini", ["mcp", "list"]);
+  const geminiMcpOutput = `${geminiMcp.stdout ?? ""}${geminiMcp.stderr ?? ""}`.trim();
+  const geminiMcpLine = geminiMcpOutput
+    .split(/\r?\n/)
+    .find((line) => /starlight-substrate/i.test(line))
+    ?? geminiMcpOutput.split(/\r?\n/)[0]
+    ?? "unavailable";
+  const geminiMcpOk = geminiMcp.status === 0 && /starlight-substrate/i.test(geminiMcpOutput);
+  if (!geminiMcpOk) failures++;
+  console.log(`  ${geminiMcpOk ? "OK  " : "MISS"} Gemini MCP           ${geminiMcpLine}`);
+
+  const root = getPackageRoot();
+  const mcpPath = join(root, "dist", "mcp-server.js");
+  const cockpitSmoke = join(root, "cockpit-zellij", "test", "smoke.ps1");
+  console.log(`  ${existsSync(mcpPath) ? "OK  " : "MISS"} SIS MCP build         ${mcpPath}`);
+  console.log(`  ${existsSync(cockpitSmoke) ? "OK  " : "MISS"} Zellij smoke test    ${cockpitSmoke}`);
+
+  const memory = inspectMemoryHealth(root);
+  console.log("\nMemory Surfaces:");
+  console.log(`  ${memory.status === "healthy" ? "OK  " : memory.status === "attention-needed" ? "WARN" : "MISS"} overall               ${memory.status}`);
+  console.log(`  ${memory.vaults.filter((v) => v.present).length}/${memory.vaults.length} vaults present`);
+  for (const vault of memory.vaults) {
+    const age = vault.ageDays == null ? "n/a" : `${vault.ageDays}d`;
+    const stamp = vault.lastConsolidated ?? "missing";
+    console.log(
+      `  ${vault.stale ? "WARN" : "OK  "} ${vault.name.padEnd(12)} ${stamp} (${age})`
+    );
+  }
+  console.log(`  ${memory.voiceSessions.count} voice sessions${memory.voiceSessions.latest ? ` | latest: ${memory.voiceSessions.latest}` : ""}`);
+  console.log(`  KG index rows: ${memory.knowledgeGraph.indexRows} | brain cache: ${memory.knowledgeGraph.brainCachePresent ? "present" : "missing"}`);
+  console.log(`  mempalace: atoms ${memory.mempalace.atomRows ?? 0} | atoms.jsonl ${memory.mempalace.atomsPresent ? "present" : "missing"} | vectors.npy ${memory.mempalace.vectorsPresent ? "present" : "missing"}`);
+  console.log(`  consolidation log: ${memory.consolidationLog.entries} receipts${memory.consolidationLog.latestTimestamp ? ` | latest: ${memory.consolidationLog.latestTimestamp}` : ""}`);
+  if (memory.notes.length > 0) {
+    console.log("  Notes:");
+    for (const note of memory.notes) {
+      console.log(`    - ${note}`);
+    }
+  }
+
+  console.log("\nArcanea Dispatcher:");
+  const arcoDoctor = runShell("arco", ["doctor"]);
+  if (arcoDoctor.status === 0) {
+    const lines = `${arcoDoctor.stdout ?? ""}${arcoDoctor.stderr ?? ""}`
+      .trim()
+      .split(/\r?\n/)
+      .filter((line) => line.trim().length > 0)
+      .slice(0, 12);
+    for (const line of lines) console.log(`  ${line}`);
+  } else {
+    failures++;
+    console.log("  MISS arco doctor failed.");
+  }
+
+  console.log("");
+  if (failures > 0 || !existsSync(mcpPath) || !existsSync(cockpitSmoke)) {
+    console.log("[starlight] Operator readiness has gaps.");
+    process.exitCode = 1;
+  } else {
+    console.log("[starlight] Operator path ready: SIS + Arcanea dispatcher + Zellij cockpit.");
+  }
+}
+
+function cmdDispatch(
+  prompt: string,
+  options: {
+    task?: string;
+    surface?: string;
+    model?: string;
+    dryRun?: boolean;
+  }
+): void {
+  if (!prompt.trim()) {
+    console.error("[starlight] Error: dispatch requires a prompt.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const task = options.task ?? "code.debug";
+  const surface = options.surface ?? "claude-arcanea";
+  const args = ["run", "--task", task, "--surface", surface];
+  if (options.model) args.push("--model", options.model);
+  if (options.dryRun) args.push("--dry-run");
+  args.push(prompt);
+
+  // B1 / Wave 2 (2026-05-11): load per-harness system prompt from
+  // core/orchestrator/harnesses/<harness>/system-prompt.md and pass via env
+  // var STARLIGHT_HARNESS_PROMPT. Arcanea's `arco run` reads this env (once
+  // its side ships) and prepends to the target CLI's system prompt. Until
+  // then this is no-op on the Arcanea side but instrumented on ours.
+  const harness = surface.replace(/-arcanea$/, "").replace(/^.*-/, "");
+  const harnessPromptPath = join(
+    getPackageRoot(),
+    "core",
+    "orchestrator",
+    "harnesses",
+    harness,
+    "system-prompt.md",
+  );
+  let harnessEnv: Record<string, string> | undefined;
+  try {
+    const promptText = readFileSync(harnessPromptPath, "utf-8");
+    harnessEnv = {
+      STARLIGHT_HARNESS_PROMPT: promptText,
+      STARLIGHT_HARNESS_PROMPT_PATH: harnessPromptPath,
+      STARLIGHT_HARNESS_NAME: harness,
+    };
+    console.log(`[starlight] Harness prompt loaded: ${harness} (${promptText.length} chars)`);
+  } catch {
+    // Harness file missing — proceed without policy injection.
+    console.log(`[starlight] No harness prompt at ${harnessPromptPath} — falling back to bare arco`);
+  }
+
+  console.log("[starlight] Dispatching via Arcanea orchestrator");
+  console.log(`  task=${task}`);
+  console.log(`  surface=${surface}`);
+  console.log("");
+
+  const result = runShell("arco", args, true, harnessEnv);
+  if (result.status !== 0) {
+    process.exitCode = result.status ?? 1;
+  }
+}
+
+function quotePowerShellArg(value: string): string {
+  return `'${value.replace(/'/g, "''")}'`;
+}
+
+function cmdCockpit(project?: string, attach?: boolean, dryRun?: boolean): void {
+  const root = getPackageRoot();
+  const script = join(root, "cockpit-zellij", "scripts", "zellij-aliases.ps1");
+  const command = attach ? "arc-attach" : "arc";
+  const key = project?.trim();
+
+  if (dryRun) {
+    console.log(`[starlight] Would launch cockpit: ${command}${key ? ` ${key}` : ""}`);
+    return;
+  }
+
+  if (!existsSync(script)) {
+    console.error(`[starlight] Error: cockpit alias script not found at ${script}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  const psCommand = `. ${quotePowerShellArg(script)}; ${command}${key ? ` ${quotePowerShellArg(key)}` : ""}`;
+  const result = runShell("pwsh", ["-NoProfile", "-Command", psCommand], true);
+  if (result.status !== 0) {
+    process.exitCode = result.status ?? 1;
+  }
+}
+
+async function cmdForge(): Promise<void> {
+  const sis = new StarlightIntelligence();
+  console.log("[starlight] Initiating Test Forge...");
+  const files = await sis.forgeTests();
+  
+  if (files.length === 0) {
+    console.log("[starlight] No verified technical patterns found to forge.");
+  } else {
+    console.log(`[starlight] Successfully forged ${files.length} regression tests:`);
+    for (const file of files) {
+      console.log(`  - ${file}`);
+    }
+    console.log("\n[starlight] Run 'npm test' to execute the new tests.");
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -573,6 +824,10 @@ async function main(): Promise<void> {
       "acos-path": { type: "string" },
       "max-lines": { type: "string" },
       "dry-run": { type: "boolean" },
+      attach: { type: "boolean" },
+      task: { type: "string" },
+      surface: { type: "string" },
+      model: { type: "string" },
       "min-score": { type: "string" },
       category: { type: "string" },
       confidence: { type: "string" },
@@ -624,11 +879,34 @@ async function main(): Promise<void> {
       break;
     }
 
+    case "forge":
+      await cmdForge();
+      break;
+
     case "sync":
       cmdSync(asString(values["acos-path"]), {
         dryRun: values["dry-run"] === true,
         minScore: asString(values["min-score"]),
       });
+      break;
+
+    case "doctor":
+      cmdDoctor();
+      break;
+
+    case "dispatch": {
+      const prompt = positionals.slice(1).join(" ");
+      cmdDispatch(prompt, {
+        task: asString(values.task),
+        surface: asString(values.surface),
+        model: asString(values.model),
+        dryRun: values["dry-run"] === true,
+      });
+      break;
+    }
+
+    case "cockpit":
+      cmdCockpit(positionals[1], values.attach === true, values["dry-run"] === true);
       break;
 
     case "score":
