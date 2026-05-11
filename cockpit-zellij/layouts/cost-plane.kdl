@@ -54,9 +54,9 @@ layout {
     }
 
     tab name="Sources" {
-        pane name="config" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+        pane name="config" {
             command "pwsh"
-            args "-NoExit" "-Command" "Write-Host '=== Configured cost sources ===' -ForegroundColor Cyan; Get-Content -Path 'cost-plane-config.json' | ConvertFrom-Json | ConvertTo-Json -Depth 10"
+            args "-NoExit" "-Command" "Write-Host '=== Configured cost sources ===' -ForegroundColor Cyan; $p = if (Test-Path 'private/cost-plane-config.json') { 'private/cost-plane-config.json' } else { 'cost-plane-config.json' }; if (Test-Path $p) { Get-Content -Path $p | ConvertFrom-Json | ConvertTo-Json -Depth 10 } else { Write-Host 'No config — cp cost-plane-config.template.json private/cost-plane-config.json' -ForegroundColor Yellow }"
         }
     }
 }

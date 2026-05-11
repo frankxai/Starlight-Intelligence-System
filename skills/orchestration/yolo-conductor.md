@@ -15,7 +15,7 @@ Auto-activates when `/yolo` command runs. Attached to `starlight-orchestrator` a
 
 ## Pre-conditions
 
-1. `yolo-scope.json` exists at repo root and validates against schema (see test/v81-yolo.test.ts).
+1. `private/yolo-scope.json` exists at repo root and validates against schema (see test/v81-yolo.test.ts).
 2. Git working tree clean OR Frank explicit ack of dirty tree.
 3. Memory Bus reachable (test via `mcp__memory-bus__memory_health`). Soft-fail if unreachable — log warning, persist to vault only.
 4. `memory/_audit/yolo/` directory — gitignored, runtime-created. Conductor mkdir's it at session open if absent.

@@ -6,11 +6,11 @@ auto-board-on-substrate: true
 
 # /yolo — Session Mode (Hive)
 
-Load `yolo-scope.json`. Invoke the `yolo-conductor` skill. Use `Read`, `Glob`, `Grep`, `Bash`, `Edit`, `Write`, and the `Task` tool with parallel subagent dispatch for council scans.
+Load `private/yolo-scope.json`. Invoke the `yolo-conductor` skill. Use `Read`, `Glob`, `Grep`, `Bash`, `Edit`, `Write`, and the `Task` tool with parallel subagent dispatch for council scans.
 
 ## Behavior
 
-1. **Open session.** Read `yolo-scope.json`. If `phase_in.unlock_status === "closed"`, scope is locked to `phase_in.phase_in_repo` only. Increment `phase_in.session_count`. Read prior session's `memory/_audit/yolo/_drift.jsonl` if exists; surface accumulated drift as part of opening output.
+1. **Open session.** Read `private/yolo-scope.json`. If `phase_in.unlock_status === "closed"`, scope is locked to `phase_in.phase_in_repo` only. Increment `phase_in.session_count`. Read prior session's `memory/_audit/yolo/_drift.jsonl` if exists; surface accumulated drift as part of opening output.
 
 2. **Council scan (parallel, single-message dispatch).** Use `Task` tool to invoke the 7 council agents in parallel, each running the `yolo-scan` skill with their domain lens: `starlight-architect` (infra), `starlight-sentinel` (security), `starlight-sage` (memory/vault), `starlight-navigator` (strategy), `starlight-weaver` (creative/brand), `starlight-prime` (synthesis), `starlight-orchestrator` (workflow). Each returns a structured JSON packet per the schema in `skills/orchestration/yolo-scan.md`.
 

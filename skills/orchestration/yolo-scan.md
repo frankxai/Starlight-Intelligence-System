@@ -17,7 +17,7 @@ Invoked by `yolo-conductor` (during /yolo session open) or directly by Frank for
 
 ```yaml
 domain: <architect|sentinel|sage|navigator|weaver|prime|orchestrator>
-repos: <list of repo names from yolo-scope.json filtered by phase-in>
+repos: <list of repo names from private/yolo-scope.json filtered by phase-in>
 signals_dir: ~/.claude/projects/*/memory/  # Cross-Repo Indexer corpus
 budget_ms: 60000
 ```

@@ -4,7 +4,9 @@ $ErrorActionPreference = 'Stop'
 
 $SisRoot  = 'C:\Users\frank\Starlight-Intelligence-System'
 $CostDir  = Join-Path $SisRoot 'memory\_audit\cost'
-$ConfigPath = Join-Path $SisRoot 'cost-plane-config.json'
+$PrivConfigPath = Join-Path $SisRoot 'private\cost-plane-config.json'
+$RootConfigPath = Join-Path $SisRoot 'cost-plane-config.json'  # back-compat fallback
+$ConfigPath = if (Test-Path $PrivConfigPath) { $PrivConfigPath } else { $RootConfigPath }
 
 while ($true) {
     Clear-Host
@@ -12,7 +14,10 @@ while ($true) {
     Write-Host ''
 
     if (-not (Test-Path $ConfigPath)) {
-        Write-Host 'cost-plane-config.json not found' -ForegroundColor Red
+        Write-Host 'cost-plane-config.json not found.' -ForegroundColor Red
+        Write-Host ''
+        Write-Host 'Operator setup required:' -ForegroundColor Yellow
+        Write-Host '  cp cost-plane-config.template.json private/cost-plane-config.json'
         Start-Sleep -Seconds 30
         continue
     }

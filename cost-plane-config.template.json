@@ -1,6 +1,7 @@
 {
   "version": "1.0.0",
   "schema": "https://starlightintelligence.org/schema/cost-plane-config.v1.json",
+  "_doc": "Schema-only template for cost plane config. Real values live in private/cost-plane-config.json — never commit. Operator setup: cp cost-plane-config.template.json private/cost-plane-config.json then tune thresholds + schedule to your operating rhythm.",
   "thresholds": {
     "vercel": {
       "daily_usd_cap": 5.00,
@@ -15,7 +16,7 @@
   },
   "schedule": {
     "snapshot_cron": "30 2 * * *",
-    "timezone": "Europe/Paris"
+    "timezone": "<your-IANA-timezone-e.g.-Europe/Paris-or-UTC>"
   },
   "sources_phase_1": ["vercel", "anthropic"],
   "sources_phase_1_5_pending_validation": ["cloudflare", "langfuse"],

@@ -40,7 +40,7 @@ Close the current /yolo session cleanly. Run only when no action is in flight (i
 
 6. **Drift detection (post-session pass)**: diff committed-this-session against audit-log proposed actions. Any committed change not in audit log → append to `memory/_audit/yolo/_drift.jsonl` for next session to surface.
 
-7. **Phase-in counter**: increment `yolo-scope.json::phase_in.session_count`. If `session_count >= 3 && unlock_review_passed === false`, mark `pending_phase_in_review: true` so the next `/yolo` opens with a Phase-In Review prompt (spec §14.1).
+7. **Phase-in counter**: increment `private/yolo-scope.json::phase_in.session_count`. If `session_count >= 3 && unlock_review_passed === false`, mark `pending_phase_in_review: true` so the next `/yolo` opens with a Phase-In Review prompt (spec §14.1).
 
 8. **Monthly roll-up trigger**: if this is the first /yolo session of the calendar month closing (check operational vault for prior-month entries), produce the monthly digest per spec §8.3 (sessions count, $ spent, moves shipped, drift events, board verdicts, repos most-touched) and append to operational vault.
 

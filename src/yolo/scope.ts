@@ -48,13 +48,48 @@ export class YoloScopeError extends Error {
 }
 
 /**
+ * Resolve the active yolo-scope.json path.
+ *
+ * Reads from `private/yolo-scope.json` (operator-private, gitignored).
+ * Falls back to `yolo-scope.json` at repo root for backward compatibility
+ * with pre-Tier-1 deployments (will be removed once all callers migrate).
+ *
+ * For tests: pass full path directly to loadScopeFromPath().
+ */
+function resolveScopePath(repoRoot: string): { path: string; isPrivate: boolean } {
+  const privPath = join(repoRoot, "private", "yolo-scope.json");
+  if (existsSync(privPath)) {
+    return { path: privPath, isPrivate: true };
+  }
+  const rootPath = join(repoRoot, "yolo-scope.json");
+  if (existsSync(rootPath)) {
+    return { path: rootPath, isPrivate: false };
+  }
+  return { path: privPath, isPrivate: true }; // canonical even when missing
+}
+
+/**
  * Load and validate yolo-scope.json from the given repo root.
- * Throws YoloScopeError if file is missing or schema-invalid.
+ * Throws YoloScopeError if file is missing (with setup instructions) or schema-invalid.
  */
 export function loadScope(repoRoot: string): YoloScope {
-  const path = join(repoRoot, "yolo-scope.json");
+  const { path, isPrivate } = resolveScopePath(repoRoot);
   if (!existsSync(path)) {
-    throw new YoloScopeError(`yolo-scope.json not found at ${path}`);
+    throw new YoloScopeError(
+      `yolo-scope.json not found.\n\n` +
+        `Operator setup required:\n` +
+        `  cp yolo-scope.template.json private/yolo-scope.json\n` +
+        `Then edit repos[] to your sovereign repos.\n` +
+        `\n` +
+        `Per privacy split: operator instance data lives in private/, never committed.`,
+    );
+  }
+  if (!isPrivate) {
+    // Backward-compat path — warn but allow. Will be removed in W4.
+    console.warn(
+      `[deprecated] Loading yolo-scope.json from repo root. ` +
+        `Move to private/yolo-scope.json — see yolo-scope.template.json.`,
+    );
   }
 
   let parsed: unknown;
@@ -83,7 +118,7 @@ function atomicWrite(targetPath: string, content: string): void {
 export function incrementSessionCount(repoRoot: string): number {
   const scope = loadScope(repoRoot);
   scope.phase_in.session_count += 1;
-  const path = join(repoRoot, "yolo-scope.json");
+  const { path } = resolveScopePath(repoRoot);
   atomicWrite(path, JSON.stringify(scope, null, 2) + "\n");
   return scope.phase_in.session_count;
 }
@@ -117,7 +152,7 @@ export function unlockPhaseIn(repoRoot: string): YoloScope {
   const scope = loadScope(repoRoot);
   scope.phase_in.unlock_status = "open";
   scope.phase_in.unlock_review_passed = true;
-  const path = join(repoRoot, "yolo-scope.json");
+  const { path } = resolveScopePath(repoRoot);
   atomicWrite(path, JSON.stringify(scope, null, 2) + "\n");
   return scope;
 }

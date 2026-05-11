@@ -8,36 +8,46 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
 describe("v81 — /yolo Hive substrate symmetry", () => {
-  it("yolo-scope.json exists with required schema", () => {
-    const path = join(ROOT, "yolo-scope.json");
-    assert.ok(existsSync(path), "yolo-scope.json must exist at repo root");
-    const scope = JSON.parse(readFileSync(path, "utf8"));
-    assert.ok(Array.isArray(scope.repos), "repos must be an array");
-    assert.ok(scope.repos.length >= 1, "repos must have at least one entry");
-    assert.ok(scope.phase_in, "phase_in object required");
-    assert.equal(typeof scope.phase_in.phase_in_repo, "string", "phase_in.phase_in_repo required");
-    assert.ok(["closed", "open"].includes(scope.phase_in.unlock_status), "unlock_status must be closed or open");
-    assert.equal(typeof scope.phase_in.session_count, "number", "session_count required");
-    assert.ok(scope.budget, "budget object required");
-    assert.equal(typeof scope.budget.session_threshold_usd, "number", "session_threshold_usd required");
-    for (const repo of scope.repos) {
-      assert.equal(typeof repo.name, "string", "every repo needs a name");
-      assert.equal(typeof repo.path, "string", "every repo needs a path");
-      assert.equal(typeof repo.alliance_touched, "boolean", "alliance_touched required (hard sovereignty hygiene)");
+  it("yolo-scope.template.json exists at repo root (schema-only)", () => {
+    const path = join(ROOT, "yolo-scope.template.json");
+    assert.ok(existsSync(path), "yolo-scope.template.json must exist at repo root");
+    const tpl = JSON.parse(readFileSync(path, "utf8"));
+    assert.equal(typeof tpl.version, "string", "version required");
+    assert.ok(tpl.budget, "budget object required");
+    assert.ok(tpl.phase_in, "phase_in object required");
+    assert.ok(Array.isArray(tpl.repos), "repos array required");
+    // Template should use placeholders, not real values
+    const firstRepoName = tpl.repos[0]?.name as string;
+    assert.match(
+      firstRepoName,
+      /<.*>/,
+      "template repos[0].name must be a placeholder like <your-primary-repo-name>",
+    );
+  });
+
+  it("yolo-scope.json NOT at repo root (instance data in private/)", () => {
+    const rootPath = join(ROOT, "yolo-scope.json");
+    assert.ok(
+      !existsSync(rootPath),
+      "yolo-scope.json must NOT be at repo root — instance data lives in private/ per privacy-split memory rule",
+    );
+  });
+
+  it("private/ is gitignored", () => {
+    const gitignore = readFileSync(join(ROOT, ".gitignore"), "utf8");
+    assert.ok(/^private/m.test(gitignore), "private/ must be gitignored");
+  });
+
+  it("loader prefers private/yolo-scope.json when present (schema check via template)", () => {
+    // Template is the schema source of truth; runtime loader reads private/yolo-scope.json
+    const tpl = JSON.parse(readFileSync(join(ROOT, "yolo-scope.template.json"), "utf8"));
+    assert.equal(typeof tpl.phase_in.phase_in_repo, "string");
+    assert.ok(["closed", "open"].includes(tpl.phase_in.unlock_status));
+    assert.equal(typeof tpl.phase_in.session_count, "number");
+    assert.equal(typeof tpl.budget.session_threshold_usd, "number");
+    for (const repo of tpl.repos) {
+      assert.equal(typeof repo.alliance_touched, "boolean", "alliance_touched required");
     }
-  });
-
-  it("phase-in repo is present in repos list", () => {
-    const scope = JSON.parse(readFileSync(join(ROOT, "yolo-scope.json"), "utf8"));
-    const phaseInRepo = scope.phase_in.phase_in_repo;
-    const found = scope.repos.find((r: { name: string }) => r.name === phaseInRepo);
-    assert.ok(found, `phase_in_repo "${phaseInRepo}" must exist in repos list`);
-  });
-
-  it("no alliance-touched repo present in registry (sovereignty hygiene)", () => {
-    const scope = JSON.parse(readFileSync(join(ROOT, "yolo-scope.json"), "utf8"));
-    const alliance = scope.repos.filter((r: { alliance_touched: boolean }) => r.alliance_touched);
-    assert.equal(alliance.length, 0, "alliance-touched repos must be excluded from yolo-scope (hard rule)");
   });
 
   it("three /yolo commands exist with meaningful content + frontmatter", () => {

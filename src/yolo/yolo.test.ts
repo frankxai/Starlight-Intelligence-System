@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -52,7 +52,8 @@ const VALID_SCOPE = {
 describe("yolo/scope", () => {
   it("loadScope returns valid object for well-formed JSON", () => {
     withTempRepo((root) => {
-      writeFileSync(join(root, "yolo-scope.json"), JSON.stringify(VALID_SCOPE));
+      mkdirSync(join(root, "private"), { recursive: true });
+      writeFileSync(join(root, "private", "yolo-scope.json"), JSON.stringify(VALID_SCOPE));
       const scope = loadScope(root);
       assert.equal(scope.phase_in.phase_in_repo, "SIS");
       assert.equal(scope.repos.length, 2);
@@ -67,7 +68,8 @@ describe("yolo/scope", () => {
 
   it("loadScope throws on bad JSON", () => {
     withTempRepo((root) => {
-      writeFileSync(join(root, "yolo-scope.json"), "{ not valid json");
+      mkdirSync(join(root, "private"), { recursive: true });
+      writeFileSync(join(root, "private", "yolo-scope.json"), "{ not valid json");
       assert.throws(() => loadScope(root), YoloScopeError);
     });
   });
@@ -76,7 +78,8 @@ describe("yolo/scope", () => {
     withTempRepo((root) => {
       const bad = JSON.parse(JSON.stringify(VALID_SCOPE));
       bad.repos.push({ name: "AllianceRepo", path: "/tmp/a", alliance_touched: true, tier: "active" });
-      writeFileSync(join(root, "yolo-scope.json"), JSON.stringify(bad));
+      mkdirSync(join(root, "private"), { recursive: true });
+      writeFileSync(join(root, "private", "yolo-scope.json"), JSON.stringify(bad));
       assert.throws(() => loadScope(root), /alliance-touched/);
     });
   });
@@ -85,14 +88,16 @@ describe("yolo/scope", () => {
     withTempRepo((root) => {
       const bad = JSON.parse(JSON.stringify(VALID_SCOPE));
       bad.phase_in.phase_in_repo = "DoesNotExist";
-      writeFileSync(join(root, "yolo-scope.json"), JSON.stringify(bad));
+      mkdirSync(join(root, "private"), { recursive: true });
+      writeFileSync(join(root, "private", "yolo-scope.json"), JSON.stringify(bad));
       assert.throws(() => loadScope(root), /not found in repos/);
     });
   });
 
   it("incrementSessionCount atomically updates session_count", () => {
     withTempRepo((root) => {
-      writeFileSync(join(root, "yolo-scope.json"), JSON.stringify(VALID_SCOPE));
+      mkdirSync(join(root, "private"), { recursive: true });
+      writeFileSync(join(root, "private", "yolo-scope.json"), JSON.stringify(VALID_SCOPE));
       const newCount = incrementSessionCount(root);
       assert.equal(newCount, 1);
       const reloaded = loadScope(root);
@@ -128,7 +133,8 @@ describe("yolo/scope", () => {
 
   it("unlockPhaseIn flips status to open + passed to true", () => {
     withTempRepo((root) => {
-      writeFileSync(join(root, "yolo-scope.json"), JSON.stringify(VALID_SCOPE));
+      mkdirSync(join(root, "private"), { recursive: true });
+      writeFileSync(join(root, "private", "yolo-scope.json"), JSON.stringify(VALID_SCOPE));
       const updated = unlockPhaseIn(root);
       assert.equal(updated.phase_in.unlock_status, "open");
       assert.equal(updated.phase_in.unlock_review_passed, true);

@@ -21,34 +21,44 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
 describe("v8.2 — Cost & API Control Plane substrate symmetry", () => {
-  it("cost-plane-config.json exists with required schema", () => {
-    const path = join(ROOT, "cost-plane-config.json");
-    assert.ok(existsSync(path), "cost-plane-config.json must exist at repo root");
-    const cfg = JSON.parse(readFileSync(path, "utf8"));
-    assert.equal(typeof cfg.version, "string");
-    assert.ok(cfg.thresholds, "thresholds object required");
-    assert.ok(cfg.schedule, "schedule object required");
-    assert.equal(typeof cfg.schedule.snapshot_cron, "string");
-    assert.ok(Array.isArray(cfg.sources_phase_1));
+  it("cost-plane-config.template.json exists at repo root (schema-only)", () => {
+    const path = join(ROOT, "cost-plane-config.template.json");
+    assert.ok(existsSync(path), "cost-plane-config.template.json must exist at repo root");
+    const tpl = JSON.parse(readFileSync(path, "utf8"));
+    assert.equal(typeof tpl.version, "string");
+    assert.ok(tpl.thresholds, "thresholds object required");
+    assert.ok(tpl.schedule, "schedule object required");
+    assert.equal(typeof tpl.schedule.snapshot_cron, "string");
+    // Template uses placeholder timezone
+    assert.match(tpl.schedule.timezone, /<.*>/, "template timezone must be a placeholder");
+    assert.ok(Array.isArray(tpl.sources_phase_1));
+  });
+
+  it("cost-plane-config.json NOT at repo root (instance data in private/)", () => {
+    const rootPath = join(ROOT, "cost-plane-config.json");
+    assert.ok(
+      !existsSync(rootPath),
+      "cost-plane-config.json must NOT be at repo root — instance data lives in private/",
+    );
   });
 
   it("Phase 1 source count = 2 (Board REVISE-1)", () => {
-    const cfg = JSON.parse(readFileSync(join(ROOT, "cost-plane-config.json"), "utf8"));
+    const tpl = JSON.parse(readFileSync(join(ROOT, "cost-plane-config.template.json"), "utf8"));
     assert.equal(
-      cfg.sources_phase_1.length,
+      tpl.sources_phase_1.length,
       2,
       "Phase 1 must have exactly 2 sources per Board REVISE-1 (Vercel + Anthropic only)",
     );
-    assert.deepEqual(cfg.sources_phase_1.sort(), ["anthropic", "vercel"]);
+    assert.deepEqual(tpl.sources_phase_1.sort(), ["anthropic", "vercel"]);
   });
 
-  it("Vercel and Anthropic have threshold config entries", () => {
-    const cfg = JSON.parse(readFileSync(join(ROOT, "cost-plane-config.json"), "utf8"));
-    for (const source of cfg.sources_phase_1) {
-      assert.ok(cfg.thresholds[source], `Phase 1 source "${source}" must have threshold config`);
-      assert.equal(typeof cfg.thresholds[source].daily_usd_cap, "number");
-      assert.equal(typeof cfg.thresholds[source].wow_factor, "number");
-      assert.equal(typeof cfg.thresholds[source].mom_factor, "number");
+  it("Vercel and Anthropic have threshold config entries in template", () => {
+    const tpl = JSON.parse(readFileSync(join(ROOT, "cost-plane-config.template.json"), "utf8"));
+    for (const source of tpl.sources_phase_1) {
+      assert.ok(tpl.thresholds[source], `Phase 1 source "${source}" must have threshold config`);
+      assert.equal(typeof tpl.thresholds[source].daily_usd_cap, "number");
+      assert.equal(typeof tpl.thresholds[source].wow_factor, "number");
+      assert.equal(typeof tpl.thresholds[source].mom_factor, "number");
     }
   });
 
