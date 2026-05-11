@@ -365,3 +365,242 @@ export interface ContradictionRecord {
   detectedAt: string;
   resolvedAt: string | null;
 }
+
+// ── Track A — Agent Ops Substrate (v0.1, demo 2026-05-15) ──
+//
+// 13 schemas governing work packets, agent runs, decisions, artifacts,
+// packs, approvals, council reviews, knowledge graph entities/edges,
+// cost records, eval results. Schema-first: MCP tools (T2) and the
+// dashboard (T3) compose on top of these contracts. Persisted via
+// append-only JSONL ledgers + SQLite shadow indices (see ledgers.ts).
+//
+// Invariants:
+//   • GraphEdge.evidenceRef is REQUIRED — every edge cites its source.
+//   • All events are append-only; status transitions go through the ledger.
+//   • Risk-tiered fields use the same scale across all schemas.
+
+/** Risk classification shared across WorkPacket / Decision / AgentEvent / ApprovalGate. */
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+
+/** WorkPacket lifecycle states. */
+export type WorkPacketStatus =
+  | 'pending'
+  | 'in_progress'
+  | 'blocked'
+  | 'completed'
+  | 'cancelled';
+
+/** AgentRun lifecycle states. */
+export type AgentRunStatus =
+  | 'pending'
+  | 'in_progress'
+  | 'completed'
+  | 'failed'
+  | 'cancelled';
+
+/** ApprovalGate lifecycle states. */
+export type ApprovalGateStatus =
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'expired';
+
+/** Attestation status on an Artifact — SIP attestation or unattested. */
+export type AttestationStatus = 'sip-attested' | 'unattested';
+
+/** Pack kinds shipped through the ecosystem (Track A v0.1). */
+export type PackKind =
+  | 'prompt'
+  | 'skill'
+  | 'agent'
+  | 'knowledge'
+  | 'claw'
+  | 'white-label';
+
+/** CostRecord measurement units. */
+export type CostKind = 'tokens' | 'time' | 'api-call' | 'storage';
+
+/** GraphEntity kinds — extensible, but free-text to keep the substrate open. */
+export type GraphEntityKind = string;
+
+/** Permission scope/action descriptor used by Packs. */
+export interface Permission {
+  id: string;
+  scope: string;
+  action: string;
+  conditions: string[];
+}
+
+/** An immutable event emitted during an AgentRun. */
+export interface AgentEvent {
+  id: string;
+  runId: string;
+  agentId: string;
+  eventType: string;
+  summary: string;
+  toolsUsed: string[];
+  inputRefs: string[];
+  outputRefs: string[];
+  decisionsCreated: string[];
+  artifactsCreated: string[];
+  riskLevel: RiskLevel;
+  costEstimate: number;
+  timestamp: string;
+}
+
+/** A produced artifact with attestation status. */
+export interface Artifact {
+  id: string;
+  kind: string;
+  uri: string;
+  sha256: string;
+  createdBy: string;
+  createdAt: string;
+  attestation: AttestationStatus;
+}
+
+/** A unit of agent work — mission, constraints, lifecycle. */
+export interface WorkPacket {
+  id: string;
+  title: string;
+  mission: string;
+  contextRefs: string[];
+  requiredOutputs: string[];
+  allowedTools: string[];
+  allowedPaths: string[];
+  forbiddenActions: string[];
+  riskLevel: RiskLevel;
+  approvalRequired: boolean;
+  assignedAgent: string;
+  status: WorkPacketStatus;
+  events: AgentEvent[];
+  artifacts: Artifact[];
+  costEstimate: number;
+  createdAt: string;
+  completedAt?: string;
+}
+
+/** A single agent execution against a WorkPacket. */
+export interface AgentRun {
+  id: string;
+  workPacketId: string;
+  agentId: string;
+  startedAt: string;
+  completedAt?: string;
+  status: AgentRunStatus;
+  rootEventId?: string;
+}
+
+/** A council-eligible decision made during work. */
+export interface Decision {
+  id: string;
+  title: string;
+  context: string;
+  options: string[];
+  chosen: string;
+  rationale: string;
+  riskLevel: RiskLevel;
+  workPacketId?: string;
+  councilReviewId?: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+/** Installable pack — prompt / skill / agent / knowledge / claw / white-label. */
+export interface Pack {
+  id: string;
+  name: string;
+  version: string;
+  kind: PackKind;
+  permissions: Permission[];
+  licenseTier: string;
+  signatureRef?: string;
+  installedAt?: string;
+  manifestSha: string;
+}
+
+/** Human-in-the-loop gate for a WorkPacket. */
+export interface ApprovalGate {
+  id: string;
+  workPacketId: string;
+  requestedAt: string;
+  status: ApprovalGateStatus;
+  riskLevel: RiskLevel;
+  decidedBy?: string;
+  decidedAt?: string;
+  rationale?: string;
+}
+
+/** Seven-perspective council pressure-test of a decision or work packet. */
+export interface CouncilReviewPerspectives {
+  elderFather: string;
+  elderMother: string;
+  sage: string;
+  builderElder: string;
+  shadowWitness: string;
+  divineNeutralWitness: string;
+  futureSelf90: string;
+}
+
+/** Recorded council review with convergence + conflict + verdict. */
+export interface CouncilReview {
+  id: string;
+  workPacketId?: string;
+  decisionId?: string;
+  decision: string;
+  context: string;
+  perspectives: CouncilReviewPerspectives;
+  convergence: string;
+  conflict: string;
+  redLines: string[];
+  cleanestPath: string;
+  oneNextMove: string;
+  reviewDate: string;
+  createdAt: string;
+}
+
+/** Knowledge-graph node. */
+export interface GraphEntity {
+  id: string;
+  kind: GraphEntityKind;
+  name: string;
+  attributes: Record<string, unknown>;
+  createdAt: string;
+}
+
+/**
+ * Knowledge-graph edge. evidenceRef is REQUIRED — the substrate invariant.
+ * Every edge cites the artifact / event / decision that justifies it.
+ */
+export interface GraphEdge {
+  id: string;
+  edgeType: string;
+  source: string;
+  target: string;
+  evidenceRef: string;
+  confidence: number;
+  createdBy: string;
+  createdAt: string;
+}
+
+/** Per-run / per-packet cost ledger entry. */
+export interface CostRecord {
+  id: string;
+  agentRunId?: string;
+  workPacketId?: string;
+  kind: CostKind;
+  amount: number;
+  currencyOrUnit: string;
+  timestamp: string;
+}
+
+/** Single eval-harness verdict against a target schema instance. */
+export interface EvalResult {
+  id: string;
+  evalName: string;
+  targetId: string;
+  targetKind: string;
+  passed: boolean;
+  evidenceRef?: string;
+  createdAt: string;
+}

@@ -5,6 +5,8 @@
 
 | Prompt | Use case | Status |
 |---|---|---|
+| [`starlight-v01-vision.md`](./starlight-v01-vision.md) | Full Starlight v0.1 architecture context for Claude Code. Pair with Build Now. | current |
+| [`starlight-v01-build-now.md`](./starlight-v01-build-now.md) | Bounded Friday-demo execution prompt for Claude Code. **Use this for today's build.** | current |
 | [`unified-cockpit-execution.md`](./unified-cockpit-execution.md) | One session, runs Voice Operator Phase 1 smoke + LCC Phase 0–1 in order with stop-and-report gates. **Recommended.** | current |
 | [`voice-operator-continuation.md`](./voice-operator-continuation.md) | Voice Operator only — Phase 1 (cognitive + voice install) + Phase 2 (phone PWA via Cloudflare Tunnel) | current |
 | [`local-command-center.md`](./local-command-center.md) | Local Command Center only — 4 phases (Foundation → Multi-CLI → Next.js cockpit → Live coding-agents viz). Inherits `voice-operator-continuation.md` context. | current |

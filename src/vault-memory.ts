@@ -21,6 +21,7 @@ import type {
 } from './types.js';
 import { readFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { EmpiricalSandbox } from './sandbox.js';
 
 // ── Vault classification keywords ──────────────────────────
 
@@ -129,12 +130,41 @@ export class VaultMemory extends MemoryManager {
     source?: string,
   ): VaultEntry {
     const classifiedVault = vault ?? this.classifyVault(content);
+    let finalConfidence = confidence;
+    let finalContent = content;
+
+    // Empirical Grounding for Technical Vault
+    if (classifiedVault === 'technical') {
+      const codeBlocks = EmpiricalSandbox.extractCodeBlocks(content);
+      if (codeBlocks.length > 0) {
+        let allSuccess = true;
+        let validationLogs = [];
+        
+        for (const block of codeBlocks) {
+          const result = EmpiricalSandbox.validatePattern(block.code, block.language);
+          if (!result.success) {
+            allSuccess = false;
+            validationLogs.push(`[Validation Failed for ${block.language}]:\n${result.output}`);
+          } else {
+            validationLogs.push(`[Validation Passed for ${block.language} in ${result.durationMs}ms]`);
+          }
+        }
+        
+        if (allSuccess) {
+          finalConfidence = Math.min(1.0, finalConfidence + 0.3);
+        } else {
+          finalConfidence = Math.max(0.1, finalConfidence - 0.4);
+          finalContent += `\n\n--- Empirical Validation ---\n${validationLogs.join('\n\n')}`;
+          tags = [...tags, 'unverified-pattern'];
+        }
+      }
+    }
 
     const baseEntry = this.add({
-      content,
+      content: finalContent,
       category: vaultToCategory(classifiedVault),
       tags: [...tags, `vault:${classifiedVault}`],
-      confidence,
+      confidence: finalConfidence,
       source,
     });
 

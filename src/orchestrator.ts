@@ -13,6 +13,7 @@
 
 import { MemoryManager } from "./memory.js";
 import { AgentRouter } from "./agents.js";
+import { SanitizationGateway } from "./sanitization.js";
 import type { AgentRecommendation } from "./agents.js";
 import type {
   AgentExecutor,
@@ -73,11 +74,13 @@ export class OrchestrationEngine {
   private router: AgentRouter;
   private executor: AgentExecutor;
   private pipeline: PipelineStage[] = [];
+  private gateway: SanitizationGateway;
 
   constructor(options: OrchestrationEngineOptions) {
     this.memory = options.memory;
     this.router = options.router;
     this.executor = options.executor ?? DEFAULT_EXECUTOR;
+    this.gateway = new SanitizationGateway();
   }
 
   /**
@@ -112,26 +115,32 @@ export class OrchestrationEngine {
 
     // ── Layer 1: Perception ──
     const perception = this.startStage("perception");
-    const complexity = this.assessComplexity(task.intent);
-    const intentKeywords = this.extractKeywords(task.intent);
+    
+    // Sanitize intent and context before proceeding
+    const cleanIntent = this.gateway.sanitize(task.intent);
+    const cleanContext = task.context ? this.gateway.sanitizeContext(task.context) : undefined;
+    const cleanTask: OrchestrationTask = { ...task, intent: cleanIntent, context: cleanContext };
+
+    const complexity = this.assessComplexity(cleanTask.intent);
+    const intentKeywords = this.extractKeywords(cleanTask.intent);
     this.completeStage(perception, { complexity, keywords: intentKeywords });
 
     // ── Layer 2: Memory Recall ──
     const recallStage = this.startStage("memory-recall");
-    const recalledMemories = this.recallMemories(task.intent);
+    const recalledMemories = this.recallMemories(cleanTask.intent);
     this.completeStage(recallStage, { count: recalledMemories.length });
 
     // ── Layer 3: Reasoning ──
     const reasoningStage = this.startStage("reasoning");
-    const pattern = task.pattern ?? this.selectPattern(complexity, task);
+    const pattern = cleanTask.pattern ?? this.selectPattern(complexity, cleanTask);
     const synthesisStrategy =
-      task.synthesis ?? this.selectSynthesisStrategy(pattern);
+      cleanTask.synthesis ?? this.selectSynthesisStrategy(pattern);
     this.completeStage(reasoningStage, { pattern, synthesisStrategy });
 
     // ── Layer 4: Routing ──
     const routingStage = this.startStage("routing");
-    const recommendations = this.router.route(task.intent, task.filePaths);
-    const maxAgents = task.maxAgents ?? this.defaultAgentCount(pattern, complexity);
+    const recommendations = this.router.route(cleanTask.intent, cleanTask.filePaths);
+    const maxAgents = cleanTask.maxAgents ?? this.defaultAgentCount(pattern, complexity);
     const selectedAgents = recommendations.slice(0, maxAgents);
     this.completeStage(routingStage, {
       candidates: recommendations.length,
@@ -144,7 +153,7 @@ export class OrchestrationEngine {
 
     // Build the execution context by merging task context with pipeline state
     const executionContext: Record<string, unknown> = {
-      ...task.context,
+      ...cleanTask.context,
       complexity,
       pattern,
       recalledMemories: recalledMemories.map((m) => m.content),
@@ -153,7 +162,7 @@ export class OrchestrationEngine {
     switch (pattern) {
       case "direct":
         executions = await this.direct(
-          task,
+          cleanTask,
           selectedAgents[0],
           activeExecutor,
           executionContext
@@ -161,7 +170,7 @@ export class OrchestrationEngine {
         break;
       case "sequential":
         executions = await this.sequential(
-          task,
+          cleanTask,
           selectedAgents,
           activeExecutor,
           executionContext
@@ -169,7 +178,7 @@ export class OrchestrationEngine {
         break;
       case "parallel":
         executions = await this.parallel(
-          task,
+          cleanTask,
           selectedAgents,
           activeExecutor,
           executionContext
@@ -177,16 +186,16 @@ export class OrchestrationEngine {
         break;
       case "iterative":
         executions = await this.iterative(
-          task,
+          cleanTask,
           selectedAgents,
           activeExecutor,
           executionContext,
-          task.maxIterations ?? 3
+          cleanTask.maxIterations ?? 3
         );
         break;
       case "cascade":
         executions = await this.cascade(
-          task,
+          cleanTask,
           selectedAgents,
           activeExecutor,
           executionContext
@@ -194,7 +203,7 @@ export class OrchestrationEngine {
         break;
       case "broadcast":
         executions = await this.broadcast(
-          task,
+          cleanTask,
           selectedAgents,
           activeExecutor,
           executionContext
@@ -202,7 +211,7 @@ export class OrchestrationEngine {
         break;
       default:
         executions = await this.direct(
-          task,
+          cleanTask,
           selectedAgents[0],
           activeExecutor,
           executionContext
@@ -218,7 +227,7 @@ export class OrchestrationEngine {
 
     // ── Layer 7: Memory Write ──
     const writeStage = this.startStage("memory-write");
-    const memoryWritten = this.writeToMemory(task, pattern, executions, synthesis, overallConfidence);
+    const memoryWritten = this.writeToMemory(cleanTask, pattern, executions, synthesis, overallConfidence);
     this.completeStage(writeStage, { written: memoryWritten });
 
     return {

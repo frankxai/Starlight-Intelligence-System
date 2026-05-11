@@ -5,7 +5,7 @@ retention: append-only
 writers:
 - human-pr-only
 readers: all
-last_consolidated: '2026-05-01'
+last_consolidated: '2026-05-11'
 ---
 
 # Horizon Vault

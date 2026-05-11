@@ -1,5 +1,5 @@
 /**
- * Starlight Intelligence System v2.0
+ * Starlight Intelligence System v8.0
  *
  * Universal Context Standard — Portable cognitive architecture
  * for AI-augmented creator workflows.
@@ -39,9 +39,12 @@
 // via the explicit re-export on line ~218; this import line only needs the values
 // the StarlightIntelligence class consumes.
 import { ContextEngine } from "./context.js";
-import { MemoryManager } from "./memory.js";
+import { VaultMemory } from "./vault-memory.js";
 import { AgentRouter, ACOS_AGENTS } from "./agents.js";
 import { OrchestrationEngine } from "./orchestrator.js";
+import { ActiveHealingDaemon } from "./active-healing.js";
+import { TestForge } from "./forge.js";
+import { dirname } from "node:path";
 import type {
   ContextOptions,
   GeneratedContext,
@@ -56,6 +59,8 @@ import type {
   OrchestrationTask,
   OrchestrationResult,
   AgentExecutor,
+  VaultType,
+  VaultEntry,
 } from "./types.js";
 import type { AgentRecommendation } from "./agents.js";
 
@@ -63,9 +68,11 @@ import type { AgentRecommendation } from "./agents.js";
 
 export class StarlightIntelligence {
   private context: ContextEngine;
-  private memory: MemoryManager;
+  private memory: VaultMemory;
   private router: AgentRouter;
   private orchestrator: OrchestrationEngine;
+  private healer: ActiveHealingDaemon;
+  private forge: TestForge;
   private initialized = false;
 
   constructor(options?: StarlightOptions) {
@@ -76,13 +83,15 @@ export class StarlightIntelligence {
       agents: options?.agents ?? ACOS_AGENTS,
     });
 
-    this.memory = new MemoryManager(options?.memoryPath);
+    this.memory = new VaultMemory({ storagePath: resolveMemoryStoragePath(options?.memoryPath) });
     this.router = new AgentRouter(options?.agents ?? ACOS_AGENTS);
     this.orchestrator = new OrchestrationEngine({
       memory: this.memory,
       router: this.router,
       executor: options?.executor,
     });
+    this.healer = new ActiveHealingDaemon(this.memory, this.orchestrator);
+    this.forge = new TestForge(this.memory);
   }
 
   /**
@@ -95,28 +104,56 @@ export class StarlightIntelligence {
   }
 
   /**
+   * Run the Test Forge to synthesize regression tests from vault patterns.
+   */
+  async forgeTests(): Promise<string[]> {
+    this.initialize();
+    return this.forge.forgeTests();
+  }
+
+  /**
+   * Start the active healing background process.
+   */
+  startHealing(intervalMs?: number): void {
+    this.healer.start(intervalMs);
+  }
+
+  /**
+   * Stop the active healing background process.
+   */
+  stopHealing(): void {
+    this.healer.stop();
+  }
+
+  /**
+   * Generate a portable context packet for an AI surface.
+   */
+  generateContext(options: ContextOptions): GeneratedContext {
+    this.initialize();
+    this.context.setMemories(this.memory.getRecent(20));
+    return this.context.generate(options);
+  }
+
+  /**
+   * Route a task to the most relevant SIS agents without executing it.
+   */
+  routeTask(query: string, filePaths?: string[]): AgentRecommendation[] {
+    return this.router.route(query, filePaths);
+  }
+
+  /**
    * Execute a task through the orchestration engine.
-   * This is the primary method for multi-agent workflow execution.
-   *
-   * @example
-   * ```typescript
-   * const result = await sis.orchestrate({
-   *   intent: "Design and implement a new authentication system",
-   *   pattern: "sequential",
-   *   synthesis: "sequential-refinement",
-   * });
-   * ```
    */
   async orchestrate(
     task: OrchestrationTask,
     executor?: AgentExecutor
   ): Promise<OrchestrationResult> {
+    this.initialize();
     return this.orchestrator.execute(task, executor);
   }
 
   /**
-   * Set the agent executor for orchestration.
-   * Consumers call this to wire up their LLM integration.
+   * Set the default agent executor for future orchestrations.
    */
   setExecutor(executor: AgentExecutor): void {
     this.orchestrator.setExecutor(executor);
@@ -130,32 +167,31 @@ export class StarlightIntelligence {
   }
 
   /**
-   * Generate a context injection for the target AI tool.
+   * Store a memory entry with vault classification.
    */
-  generateContext(options: ContextOptions): GeneratedContext {
-    // If memory layer requested, inject relevant memories
-    if (options.layers.includes("memory")) {
-      const recentMemories = this.memory.getRecent(20);
-      this.context.setMemories(recentMemories);
+  remember(
+    input: string | RememberOptions,
+    vault?: VaultType,
+    tags: string[] = [],
+    confidence = 0.5
+  ): VaultEntry {
+    if (typeof input === "string") {
+      return this.memory.rememberInVault(
+        input,
+        vault,
+        tags,
+        confidence,
+        "starlight-intelligence"
+      );
     }
 
-    return this.context.generate(options);
-  }
-
-  /**
-   * Route a task to the best agent(s).
-   */
-  routeTask(query: string, filePaths?: string[]): AgentRecommendation[] {
-    return this.router.route(query, filePaths);
-  }
-
-  /**
-   * Store a learning/memory entry.
-   */
-  remember(entry: Omit<MemoryEntry, "id" | "createdAt">): MemoryEntry {
-    const stored = this.memory.add(entry);
-    this.memory.save();
-    return stored;
+    return this.memory.rememberInVault(
+      input.content,
+      input.vault ?? vaultFromCategory(input.category),
+      input.tags ?? [],
+      input.confidence ?? 0.5,
+      input.source ?? "starlight-intelligence"
+    );
   }
 
   /**
@@ -184,7 +220,7 @@ export class StarlightIntelligence {
    */
   getStats(): SystemStats {
     return {
-      version: "6.0.0",
+      version: this.router.getRegistry().version,
       agents: this.router.getRegistry().agents.length,
       skills: this.router
         .getRegistry()
@@ -213,6 +249,32 @@ export interface StarlightOptions {
   memoryPath?: string;
   /** Default agent executor for orchestration. */
   executor?: AgentExecutor;
+}
+
+export interface RememberOptions {
+  content: string;
+  category?: MemoryEntry["category"];
+  vault?: VaultType;
+  tags?: string[];
+  confidence?: number;
+  source?: string;
+}
+
+function resolveMemoryStoragePath(memoryPath?: string): string | undefined {
+  if (!memoryPath) return undefined;
+  return /\.(jsonl?|JSONL?)$/.test(memoryPath) ? dirname(memoryPath) : memoryPath;
+}
+
+function vaultFromCategory(category?: MemoryEntry["category"]): VaultType | undefined {
+  if (!category) return undefined;
+  const map: Record<MemoryEntry["category"], VaultType> = {
+    pattern: "technical",
+    decision: "strategic",
+    insight: "wisdom",
+    error: "technical",
+    preference: "creative",
+  };
+  return map[category];
 }
 
 // ── Re-exports ──────────────────────────────────────────────
@@ -288,3 +350,11 @@ export type { DreamResult } from './dreaming.js';
 export { createAdapter } from './adapters/index.js';
 export type { PlatformAdapter, ContextInjection, AdapterConfig } from './adapters/types.js';
 export type { TemporalMeta as TemporalMetaType, ContradictionRecord } from './types.js';
+
+// v7.0 — Sanitization, Sandbox, Active Healing
+export { SanitizationGateway } from "./sanitization.js";
+export type { SanitizationOptions } from "./sanitization.js";
+export { EmpiricalSandbox } from "./sandbox.js";
+export type { SandboxExecutionResult, SupportedLanguage } from "./sandbox.js";
+export { ActiveHealingDaemon } from "./active-healing.js";
+export { TestForge } from "./forge.js";

@@ -33,6 +33,8 @@ import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
 import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
+import { AgentOpsLedger } from "./ledgers.js";
+import type { RiskLevel } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
 
@@ -110,6 +112,9 @@ Commands:
   project list                    List registered projects
   project sync-all                Sync all registered projects at once
   forge                           Synthesize regression tests from vault patterns
+  workpacket create               Create a WorkPacket (--title --mission --risk)
+  workpacket list                 List recent WorkPackets
+  workpacket show <id>            Show a single WorkPacket
   vault list                      List all memory entries
   vault health                    Show repo-local memory health
   vault refresh                   Run dreaming consolidation and stamp vault freshness
@@ -138,6 +143,11 @@ Options:
   --confidence <n>                Confidence score (0.0-1.0) for vault set
   --tags <t1,t2>                  Comma-separated tags for vault set
   --pattern <pattern>             Orchestration pattern: direct, sequential, parallel, iterative, cascade, broadcast
+  --mission <text>                WorkPacket mission statement
+  --risk <level>                  WorkPacket risk: low, medium, high, critical
+  --agent <id>                    WorkPacket assigned agent (default: unassigned)
+  --status <status>               Filter workpacket list by status
+  --limit <n>                     Maximum number of items to list
 
 Examples:
   starlight init
@@ -651,6 +661,110 @@ function cmdProject(
   }
 }
 
+function isRiskLevel(value: string | undefined): value is RiskLevel {
+  return value === "low" || value === "medium" || value === "high" || value === "critical";
+}
+
+function cmdWorkpacket(
+  action: string,
+  args: string[],
+  options: {
+    title?: string;
+    mission?: string;
+    risk?: string;
+    agent?: string;
+    status?: string;
+    limit?: string;
+  },
+): void {
+  const root = getPackageRoot();
+  const ledger = new AgentOpsLedger(root);
+
+  try {
+    switch (action) {
+      case "create": {
+        const title = options.title;
+        const mission = options.mission;
+        const risk = options.risk;
+
+        if (!title || !mission || !risk) {
+          console.error("[starlight] Error: workpacket create requires --title, --mission, --risk.");
+          console.error('  Example: starlight workpacket create --title "audit" --mission "scan repo" --risk low');
+          process.exitCode = 1;
+          return;
+        }
+        if (!isRiskLevel(risk)) {
+          console.error(`[starlight] Error: invalid --risk value "${risk}". Use low|medium|high|critical.`);
+          process.exitCode = 1;
+          return;
+        }
+
+        const packet = ledger.createWorkPacket({
+          title,
+          mission,
+          riskLevel: risk,
+          assignedAgent: options.agent ?? "unassigned",
+        });
+
+        console.log(`[starlight] WorkPacket created: ${packet.id}`);
+        console.log(formatJSON(packet));
+        break;
+      }
+
+      case "list": {
+        const limit = options.limit ? parseInt(options.limit, 10) : 20;
+        const status = options.status;
+        const packets = ledger.listWorkPackets({
+          limit: Math.max(1, limit),
+          status: status === "pending" || status === "in_progress" || status === "blocked" ||
+            status === "completed" || status === "cancelled"
+            ? status
+            : undefined,
+        });
+
+        if (packets.length === 0) {
+          console.log("[starlight] No WorkPackets found.");
+          return;
+        }
+
+        console.log(`[starlight] ${packets.length} WorkPacket(s):\n`);
+        for (const p of packets) {
+          console.log(`  ${p.id}`);
+          console.log(`    [${p.status}] (${p.riskLevel}) ${p.title}`);
+          console.log(`    agent: ${p.assignedAgent} | created: ${p.createdAt}`);
+          console.log(`    mission: ${p.mission.length > 80 ? p.mission.slice(0, 80) + "..." : p.mission}`);
+          console.log("");
+        }
+        break;
+      }
+
+      case "show": {
+        const id = args[0];
+        if (!id) {
+          console.error("[starlight] Error: workpacket show requires an id.");
+          process.exitCode = 1;
+          return;
+        }
+        const packet = ledger.getWorkPacket(id);
+        if (!packet) {
+          console.error(`[starlight] WorkPacket not found: ${id}`);
+          process.exitCode = 1;
+          return;
+        }
+        console.log(formatJSON(packet));
+        break;
+      }
+
+      default:
+        console.error(`[starlight] Unknown workpacket action: "${action}".`);
+        console.error("  Available actions: create, list, show");
+        process.exitCode = 1;
+    }
+  } finally {
+    ledger.close();
+  }
+}
+
 function cmdStats(): void {
   const sis = createSIS();
   const stats = sis.getStats();
@@ -892,6 +1006,12 @@ async function main(): Promise<void> {
       confidence: { type: "string" },
       tags: { type: "string" },
       pattern: { type: "string" },
+      title: { type: "string" },
+      mission: { type: "string" },
+      risk: { type: "string" },
+      agent: { type: "string" },
+      status: { type: "string" },
+      limit: { type: "string" },
     },
     strict: false,
   });
@@ -990,6 +1110,24 @@ async function main(): Promise<void> {
     case "orchestrate": {
       const intent = positionals.slice(1).join(" ");
       await cmdOrchestrate(intent, asString(values.pattern));
+      break;
+    }
+
+    case "workpacket": {
+      const wpAction = positionals[1];
+      if (!wpAction) {
+        console.error("[starlight] Error: workpacket requires an action (create, list, show).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdWorkpacket(wpAction, positionals.slice(2), {
+        title: asString(values.title),
+        mission: asString(values.mission),
+        risk: asString(values.risk),
+        agent: asString(values.agent),
+        status: asString(values.status),
+        limit: asString(values.limit),
+      });
       break;
     }
 
