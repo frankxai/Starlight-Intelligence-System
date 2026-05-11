@@ -1,0 +1,80 @@
+// /yolo Hive cockpit — generated 2026-05-11
+//
+// Launch: arc yolo
+// Or:     zellij --layout yolo --session yolo
+//
+// In the Conductor pane, run:  claude --resume yolo  (or just /yolo)
+//
+// Pane geometry:
+//
+//   +--------------------------------------------------------------+
+//   |  CONDUCTOR (Claude /yolo session, left 60%, full-height)     |
+//   |                                              +----- AUDIT ---|
+//   |                                              |  tail latest  |
+//   |                                              |  session log  |
+//   |                                              +-- STATUS -----|
+//   |                                              |  phase-in +   |
+//   |                                              |  drift counts |
+//   |                                              +---- BRAIN ----|
+//   |                                              |  brain-viz    |
+//   |                                              |  /brain :3007 |
+//   +----------------------------------------------+---------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Conductor" focus=true {
+        pane split_direction="vertical" {
+            pane size="60%" name="Conductor" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                command "claude"
+                args "--resume" "yolo" "--model" "claude-opus-4-7"
+            }
+            pane split_direction="horizontal" {
+                pane name="AuditTail" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                    command "pwsh"
+                    args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-yolo.ps1"
+                }
+                pane name="Status" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                    command "pwsh"
+                    args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\yolo-status.ps1"
+                }
+                pane name="Brain" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+                    command "pwsh"
+                    args "-NoExit" "-Command" "Write-Host '=== Brain viz ===' -ForegroundColor Cyan; Write-Host 'Open http://localhost:3007/brain for live 3D visualization'; Write-Host ''; Write-Host 'Audit log tail (cross-project):'; Get-Content -Path 'memory\\_audit\\$((Get-Date).ToString(''yyyy-MM-dd'')).jsonl' -Wait -Tail 10 -ErrorAction SilentlyContinue"
+                }
+            }
+        }
+    }
+
+    tab name="Council" {
+        pane split_direction="horizontal" {
+            pane size="50%" split_direction="vertical" {
+                pane name="Architect" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+                pane name="Sentinel" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+                pane name="Sage" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+                pane name="Navigator" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+            }
+            pane split_direction="vertical" {
+                pane name="Weaver" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+                pane name="Prime" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+                pane name="Orchestrator" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+            }
+        }
+    }
+
+    tab name="Drift" {
+        pane name="drift-log" cwd="C:\\Users\\frank\\Starlight-Intelligence-System" {
+            command "pwsh"
+            args "-NoExit" "-Command" "Write-Host '=== Drift events ===' -ForegroundColor Yellow; if (Test-Path 'memory\\_audit\\yolo\\_drift.jsonl') { Get-Content -Path 'memory\\_audit\\yolo\\_drift.jsonl' -Wait -Tail 20 } else { Write-Host 'No drift events yet (clean)' -ForegroundColor Green; while ($true) { Start-Sleep -Seconds 5; if (Test-Path 'memory\\_audit\\yolo\\_drift.jsonl') { Get-Content -Path 'memory\\_audit\\yolo\\_drift.jsonl' -Wait -Tail 20; break } } }"
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="C:\\Users\\frank\\Starlight-Intelligence-System"
+    }
+}
