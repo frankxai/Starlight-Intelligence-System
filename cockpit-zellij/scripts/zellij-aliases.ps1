@@ -137,15 +137,18 @@ function arc-revive {
         Write-Host "'$Session' not in resurrectable list. Attempting attach anyway..." -ForegroundColor Yellow
     }
 
-    Write-Host "Attaching to '$Session' — layout + auto-resume commands re-fire." -ForegroundColor Cyan
-    Write-Host 'Worker-pane reminders (Claude --continue + Codex resume --last auto-launch):' -ForegroundColor DarkCyan
+    Write-Host "Attaching to '$Session' with -f (force re-run pane commands)." -ForegroundColor Cyan
+    Write-Host 'Auto-resume on revive:' -ForegroundColor DarkCyan
     Write-Host '  Dispatcher = claude --resume <key>   (named conversation)'
     Write-Host '  Claude     = claude --continue        (last session in cwd)'
     Write-Host '  Codex      = codex resume --last      (last codex session)'
     Write-Host '  Gemini     = gemini --yolo            (ephemeral, no resume API)'
     Write-Host '  OpenCode   = opencode                 (ephemeral)'
     Write-Host ''
-    zellij attach $Session
+    # -f / --force-run-commands re-fires the layout's pane commands on
+    # resurrection. Without it, resurrected panes are dead shells and the
+    # auto-resume profile is wasted. Verified 2026-05-11 via zellij --help.
+    zellij attach --force-run-commands $Session
 }
 
 Write-Host 'Starlight aliases loaded: arc, arc-attach, arc-kill, arc-list, arc-layout, arc-list-projects, arc-resume, arc-revive' -ForegroundColor Cyan
