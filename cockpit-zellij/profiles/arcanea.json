@@ -2,14 +2,53 @@
   "version": 1,
   "name": "Arcanea constellation",
   "panes": {
-    "dispatcher": { "command": "claude", "args": ["--resume", "arcanea"] },
-    "claude":     { "command": "claude", "args": ["--model", "claude-opus-4-7"] },
-    "codex":      { "command": "codex" },
-    "gemini":     { "command": "gemini", "args": ["--yolo", "-m", "gemini-2.5-pro"] },
-    "opencode":   { "command": "opencode" }
+    "dispatcher": {
+      "command": "claude",
+      "args": [
+        "--resume",
+        "arcanea"
+      ]
+    },
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--continue",
+        "--model",
+        "claude-opus-4-7"
+      ]
+    },
+    "codex": {
+      "command": "codex",
+      "args": [
+        "resume",
+        "--last"
+      ]
+    },
+    "gemini": {
+      "command": "gemini",
+      "args": [
+        "--yolo",
+        "-m",
+        "gemini-2.5-pro"
+      ]
+    },
+    "opencode": {
+      "command": "opencode"
+    }
   },
   "team": {
-    "agents": ["Master Story Architect", "Character Psychologist", "World Architect", "Fantasy & Sci-Fi Master", "Consciousness Fiction Master"],
-    "skills": ["arcanea-book-cover", "arcanea-infogenius", "arcanea-meta", "arcanea-canon"]
+    "agents": [
+      "Master Story Architect",
+      "Character Psychologist",
+      "World Architect",
+      "Fantasy & Sci-Fi Master",
+      "Consciousness Fiction Master"
+    ],
+    "skills": [
+      "arcanea-book-cover",
+      "arcanea-infogenius",
+      "arcanea-meta",
+      "arcanea-canon"
+    ]
   }
 }

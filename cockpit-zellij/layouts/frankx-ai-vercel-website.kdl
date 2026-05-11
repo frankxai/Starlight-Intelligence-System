@@ -31,10 +31,11 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
             command "claude"
-            args "--model" "claude-sonnet-4-6"
+            args "--continue" "--model" "claude-sonnet-4-6"
         }
                 pane name="Codex" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
             command "codex"
+            args "resume" "--last"
         }
                 pane name="Gemini" cwd="C:\\Users\\frank\\frankx.ai-vercel-website" {
             command "gemini"

@@ -2,14 +2,53 @@
   "version": 1,
   "name": "frankx.ai (Vercel production site)",
   "panes": {
-    "dispatcher": { "command": "claude", "args": ["--resume", "frankx-ai-vercel-website"] },
-    "claude":     { "command": "claude", "args": ["--model", "claude-sonnet-4-6"] },
-    "codex":      { "command": "codex" },
-    "gemini":     { "command": "gemini", "args": ["--yolo", "-m", "gemini-2.5-pro"] },
-    "opencode":   { "command": "opencode" }
+    "dispatcher": {
+      "command": "claude",
+      "args": [
+        "--resume",
+        "frankx-ai-vercel-website"
+      ]
+    },
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--continue",
+        "--model",
+        "claude-sonnet-4-6"
+      ]
+    },
+    "codex": {
+      "command": "codex",
+      "args": [
+        "resume",
+        "--last"
+      ]
+    },
+    "gemini": {
+      "command": "gemini",
+      "args": [
+        "--yolo",
+        "-m",
+        "gemini-2.5-pro"
+      ]
+    },
+    "opencode": {
+      "command": "opencode"
+    }
   },
   "team": {
-    "agents": ["nextjs-vercel-deployment", "performance-guardian", "frankx-website-builder", "UX Designer"],
-    "skills": ["nextjs-expert", "vercel:deployments-cicd", "vercel:performance-optimizer", "frankx-ai-deploy", "frankx-ai-blog"]
+    "agents": [
+      "nextjs-vercel-deployment",
+      "performance-guardian",
+      "frankx-website-builder",
+      "UX Designer"
+    ],
+    "skills": [
+      "nextjs-expert",
+      "vercel:deployments-cicd",
+      "vercel:performance-optimizer",
+      "frankx-ai-deploy",
+      "frankx-ai-blog"
+    ]
   }
 }

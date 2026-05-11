@@ -31,10 +31,11 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\FrankX" {
             command "claude"
-            args "--model" "claude-opus-4-7"
+            args "--continue" "--model" "claude-opus-4-7"
         }
                 pane name="Codex" cwd="C:\\Users\\frank\\FrankX" {
             command "codex"
+            args "resume" "--last"
         }
                 pane name="Gemini" cwd="C:\\Users\\frank\\FrankX" {
             command "gemini"

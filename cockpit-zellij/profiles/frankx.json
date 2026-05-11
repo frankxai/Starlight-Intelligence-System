@@ -2,14 +2,52 @@
   "version": 1,
   "name": "FrankX flagship",
   "panes": {
-    "dispatcher": { "command": "claude", "args": ["--resume", "frankx"] },
-    "claude":     { "command": "claude", "args": ["--model", "claude-opus-4-7"] },
-    "codex":      { "command": "codex" },
-    "gemini":     { "command": "gemini", "args": ["--yolo", "-m", "gemini-2.5-pro"] },
-    "opencode":   { "command": "opencode" }
+    "dispatcher": {
+      "command": "claude",
+      "args": [
+        "--resume",
+        "frankx"
+      ]
+    },
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--continue",
+        "--model",
+        "claude-opus-4-7"
+      ]
+    },
+    "codex": {
+      "command": "codex",
+      "args": [
+        "resume",
+        "--last"
+      ]
+    },
+    "gemini": {
+      "command": "gemini",
+      "args": [
+        "--yolo",
+        "-m",
+        "gemini-2.5-pro"
+      ]
+    },
+    "opencode": {
+      "command": "opencode"
+    }
   },
   "team": {
-    "agents": ["FrankX Content Creator", "content-polisher", "social-content-generator", "Music Producer"],
-    "skills": ["frankx-ai-blog", "frankx-ai-content-pipeline", "brand-voice", "ai-architect-newsletter"]
+    "agents": [
+      "FrankX Content Creator",
+      "content-polisher",
+      "social-content-generator",
+      "Music Producer"
+    ],
+    "skills": [
+      "frankx-ai-blog",
+      "frankx-ai-content-pipeline",
+      "brand-voice",
+      "ai-architect-newsletter"
+    ]
   }
 }

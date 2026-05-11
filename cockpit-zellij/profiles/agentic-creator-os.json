@@ -2,14 +2,51 @@
   "version": 1,
   "name": "Agentic Creator OS (ACOS)",
   "panes": {
-    "dispatcher": { "command": "claude", "args": ["--resume", "agentic-creator-os"] },
-    "claude":     { "command": "claude", "args": ["--model", "claude-opus-4-7"] },
-    "codex":      { "command": "codex" },
-    "gemini":     { "command": "gemini", "args": ["--yolo", "-m", "gemini-2.5-pro"] },
-    "opencode":   { "command": "opencode" }
+    "dispatcher": {
+      "command": "claude",
+      "args": [
+        "--resume",
+        "agentic-creator-os"
+      ]
+    },
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--continue",
+        "--model",
+        "claude-opus-4-7"
+      ]
+    },
+    "codex": {
+      "command": "codex",
+      "args": [
+        "resume",
+        "--last"
+      ]
+    },
+    "gemini": {
+      "command": "gemini",
+      "args": [
+        "--yolo",
+        "-m",
+        "gemini-2.5-pro"
+      ]
+    },
+    "opencode": {
+      "command": "opencode"
+    }
   },
   "team": {
-    "agents": ["Creation Engine", "Starlight Orchestrator", "FrankX Content Creator"],
-    "skills": ["cacos", "creator-meta", "creator-productivity", "creator-pipeline"]
+    "agents": [
+      "Creation Engine",
+      "Starlight Orchestrator",
+      "FrankX Content Creator"
+    ],
+    "skills": [
+      "cacos",
+      "creator-meta",
+      "creator-productivity",
+      "creator-pipeline"
+    ]
   }
 }
