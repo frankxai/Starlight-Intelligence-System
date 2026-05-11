@@ -74,8 +74,10 @@ export function errOf(r: unknown): string {
 /** Spin up an isolated server with a temp root, run fn, clean up. */
 export function withServer<T>(fn: (s: Server, root: string) => T): T {
   const root = mkdtempSync(join(tmpdir(), 'v01-eval-'));
-  const vaultDir = join(root, 'vaults');
-  const server = new SisMcpServerV01({ vaultDir, substrateDir: root, repoRoot: root });
+  // Constructor signature changed 2026-05-11 (Track B rebuild):
+  //   old: { vaultDir, substrateDir, repoRoot }
+  //   new: { repoRoot, vaultStoragePath?, sanitizer? }
+  const server = new SisMcpServerV01({ repoRoot: root, vaultStoragePath: join(root, '.starlight') });
   try {
     return fn(server, root);
   } finally {

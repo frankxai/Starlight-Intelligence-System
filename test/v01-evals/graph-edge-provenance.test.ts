@@ -21,7 +21,7 @@ import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { appendGraphEdge, buildGraphEdge } from '../../src/ledgers.js';
-import { SisMcpServerV01 } from '../../dist/mcp-server-v01.js';
+import { isOk, isErr, errOf, withServer } from './_helpers.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..', '..');
@@ -69,11 +69,7 @@ const VALID_EDGE = (over: Partial<Row> = {}): Row => ({
 
 describe('Track D / eval 6 — graph-edge provenance', () => {
   it('every row in memory/_audit/graph-edges.jsonl has non-empty evidenceRef + valid fields', () => {
-    if (!existsSync(EDGES_PATH)) {
-      // STUB: graph-edges.jsonl not yet on disk in this checkout. Track A
-      // creates it on first edge. Documented v0.1 state.
-      return;
-    }
+    if (!existsSync(EDGES_PATH)) return;  // STUB: not yet populated
     const edges = readEdges(EDGES_PATH);
     const errs: string[] = [];
     for (let i = 0; i < edges.length; i++) errs.push(...validateEdge(edges[i], i));
@@ -116,24 +112,23 @@ describe('Track D / eval 6 — graph-edge provenance', () => {
   });
 
   it('sis.graph.neighbors REFUSES to return when ledger contains ANY malformed row', () => {
-    withTempRoot((root) => {
+    withServer((server, root) => {
       // Bypass the writer (which would reject) to plant a malformed row.
       writeEdgeRow(root, VALID_EDGE({ id: 'ge_good' }));
       writeEdgeRow(root, VALID_EDGE({ id: 'ge_bad', target: 'shadow', evidenceRef: '' }));
-      const server = new SisMcpServerV01({ vaultDir: join(root, 'vaults'), substrateDir: root, repoRoot: root });
       const result = server.callTool('sis.graph.neighbors', { entity_id: 'frank' });
-      assert.equal(result.status, 'error', 'graph.neighbors must refuse when malformed rows present');
-      assert.match((result as { error: string }).error, /malformed|evidenceRef/i);
+      assert.ok(isErr(result), `graph.neighbors must refuse: ${JSON.stringify(result)}`);
+      assert.match(errOf(result), /malformed|evidenceRef/i);
     });
   });
 
   it('sis.graph.neighbors RETURNS results when all rows are well-formed', () => {
-    withTempRoot((root) => {
+    withServer((server, root) => {
       writeEdgeRow(root, VALID_EDGE());
-      const server = new SisMcpServerV01({ vaultDir: join(root, 'vaults'), substrateDir: root, repoRoot: root });
       const result = server.callTool('sis.graph.neighbors', { entity_id: 'frank' });
-      assert.equal(result.status, 'ok');
-      assert.equal((result as { data: unknown[] }).data.length, 1);
+      assert.ok(isOk(result), errOf(result));
+      const edges = (result as { edges: unknown[] }).edges;
+      assert.equal(edges.length, 1);
     });
   });
 });

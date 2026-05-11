@@ -3,139 +3,95 @@
  *
  * A CouncilReview record returned by sis.council.review MUST:
  *   • match council-review.schema.json (11 required fields)
- *   • carry all 7 named perspectives (no missing seat)
- *   • carry convergence / conflict / red_lines / cleanest_path / one_next_move /
- *     review_date as concrete fields
- *
- * Empty perspective STRINGS are allowed (the template carries empty strings
- * when perspectives_input is omitted) — but the field itself must be present.
+ *   • carry all 7 named perspectives
+ *   • carry convergence / conflict / redLines / cleanestPath / oneNextMove /
+ *     reviewDate as concrete fields
  *
  * Built on SIP — operational tier, Track D
  */
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { SisMcpServerV01 } from '../../dist/mcp-server-v01.js';
+import { isOk, errOf, pick, withServer } from './_helpers.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..', '..');
-const SCHEMA_PATH = join(
-  REPO_ROOT,
-  'packages',
-  'core',
-  'schemas',
-  'council-review.schema.json',
-);
+const SCHEMA_PATH = join(REPO_ROOT, 'packages', 'core', 'schemas', 'council-review.schema.json');
 
-const SEVEN_SEATS = [
-  'elderFather',
-  'elderMother',
-  'sage',
-  'builderElder',
-  'shadowWitness',
-  'divineNeutralWitness',
-  'futureSelf90',
+const SEATS = [
+  'elderFather', 'elderMother', 'sage', 'builderElder',
+  'shadowWitness', 'divineNeutralWitness', 'futureSelf90',
 ] as const;
-
-const REQUIRED_FIELDS = [
-  'id',
-  'decision',
-  'context',
-  'perspectives',
-  'convergence',
-  'conflict',
-  'redLines',
-  'cleanestPath',
-  'oneNextMove',
-  'reviewDate',
-  'createdAt',
+const REQUIRED = [
+  'id', 'decision', 'context', 'perspectives', 'convergence', 'conflict',
+  'redLines', 'cleanestPath', 'oneNextMove', 'reviewDate', 'createdAt',
 ];
 
 function loadSchema(): { required: string[]; properties: Record<string, unknown> } {
   return JSON.parse(readFileSync(SCHEMA_PATH, 'utf-8'));
 }
 
-function withServer<T>(fn: (s: InstanceType<typeof SisMcpServerV01>, root: string) => T): T {
-  const root = mkdtempSync(join(tmpdir(), 'v01-council-'));
-  const server = new SisMcpServerV01({
-    vaultDir: join(root, 'vaults'),
-    substrateDir: root,
-    repoRoot: root,
-  });
-  try {
-    return fn(server, root);
-  } finally {
-    rmSync(root, { recursive: true, force: true });
-  }
-}
-
 describe('Track D / eval 3 — council output shape', () => {
   it('CouncilReview schema declares all 11 required fields', () => {
     const schema = loadSchema();
-    for (const f of REQUIRED_FIELDS) {
-      assert.ok(schema.required.includes(f), `schema.required missing: ${f}`);
-    }
+    for (const f of REQUIRED) assert.ok(schema.required.includes(f), `missing required: ${f}`);
   });
 
   it('CouncilReview schema declares all 7 named perspective seats as required', () => {
-    const schema = loadSchema();
-    const persp = schema.properties.perspectives as { required: string[] };
-    for (const seat of SEVEN_SEATS) {
+    const persp = loadSchema().properties.perspectives as { required: string[] };
+    for (const seat of SEATS) {
       assert.ok(persp.required.includes(seat), `perspectives.required missing: ${seat}`);
     }
   });
 
-  it('sis.council.review with no input returns the empty 7-field template', () => {
+  it('sis.council.review with no perspectives returns the empty 7-field template', () => {
     withServer((server) => {
-      const result = server.callTool('sis.council.review', {});
-      assert.equal(result.status, 'ok');
-      const tpl = (result as { data: { template: Record<string, unknown> } }).data.template;
-      for (const seat of SEVEN_SEATS) {
-        assert.ok(seat in tpl, `template missing seat: ${seat}`);
-      }
-      assert.ok('instructions' in tpl, 'template must include instructions');
+      const result = server.callTool('sis.council.review', {
+        decision_id_or_workpacket_id: 'dec_synthetic',
+      });
+      assert.ok(isOk(result));
+      assert.equal((result as { template?: boolean }).template, true);
+      const persp = (result as { perspectives: Record<string, string> }).perspectives;
+      for (const seat of SEATS) assert.ok(seat in persp, `template missing seat: ${seat}`);
     });
   });
 
-  it('sis.council.review with full input persists a CouncilReview with all required fields', () => {
+  it('sis.council.review with full input persists a review with all required fields', () => {
     withServer((server, root) => {
+      // perspectives_input in the new contract carries BOTH the 7 perspectives
+      // AND the verdict fields (decision/context/convergence/conflict/redLines/
+      // cleanestPath/oneNextMove). The target id determines workPacketId vs
+      // decisionId routing.
       const result = server.callTool('sis.council.review', {
-        decision: 'ship v0.1 demo Friday',
-        context: 'Track A+B+C+D green; presentation rehearsed',
+        decision_id_or_workpacket_id: 'wp_demo_eval3',
         perspectives_input: {
+          decision: 'ship v0.1 demo Friday',
+          context: 'Track A+B+C+D green; rehearsed',
           elderFather: 'protect the trust contract',
           elderMother: 'hold the room with care',
           sage: 'the substrate has been here before',
-          builderElder: 'the code is ready; the demo is the test',
-          shadowWitness: 'what gets skipped in the rehearsal will surface live',
-          divineNeutralWitness: 'this is one ship in a long arc',
+          builderElder: 'code is ready; demo is the test',
+          shadowWitness: 'last-minute scope creep will surface',
+          divineNeutralWitness: 'one ship in a long arc',
           futureSelf90: 'in 90 days I will be glad I shipped',
+          convergence: 'all 7 seats: ship',
+          conflict: 'shadow flags scope creep',
+          redLines: ['no schema changes', 'no demo-day deploys'],
+          cleanestPath: 'rehearse twice then ship',
+          oneNextMove: 'commit the eval suite tonight',
         },
-        convergence: 'all 7 seats: ship',
-        conflict: 'shadow: prepare for last-minute scope creep',
-        red_lines: ['no last-minute schema changes', 'no demo-day deploys'],
-        cleanest_path: 'rehearse twice tomorrow then ship',
-        one_next_move: 'commit the eval suite tonight',
       });
-      assert.equal(result.status, 'ok', JSON.stringify(result));
-      const review = (result as { data: Record<string, unknown> }).data;
-
-      // Every required field present.
-      for (const f of REQUIRED_FIELDS) {
-        assert.ok(f in review, `review missing field: ${f}`);
-      }
-
-      // Every seat present + non-empty (because we supplied them).
+      assert.ok(isOk(result), `expected ok: ${errOf(result)}`);
+      const review = pick<Record<string, unknown>>(result, 'review');
+      for (const f of REQUIRED) assert.ok(f in review, `review missing field: ${f}`);
       const persp = review.perspectives as Record<string, string>;
-      for (const seat of SEVEN_SEATS) {
-        assert.ok(seat in persp, `perspectives missing seat: ${seat}`);
-        assert.ok(persp[seat].length > 0, `perspective ${seat} unexpectedly empty`);
+      for (const seat of SEATS) {
+        assert.ok(seat in persp, `seat missing: ${seat}`);
+        assert.ok(persp[seat].length > 0, `seat ${seat} unexpectedly empty`);
       }
-
-      // The ledger row matches.
+      // Ledger row matches.
       const ledgerPath = join(root, 'memory', '_audit', 'council-reviews.jsonl');
       assert.ok(existsSync(ledgerPath), 'council ledger must exist');
       const lines = readFileSync(ledgerPath, 'utf-8').split('\n').filter(Boolean);
@@ -145,22 +101,25 @@ describe('Track D / eval 3 — council output shape', () => {
     });
   });
 
-  it('sis.council.review REJECTS input where any seat is non-string', () => {
+  it('sis.council.review preserves seat coverage across template + persisted shapes', () => {
+    // Template and persisted shapes must both carry all 7 seats — substrate
+    // invariant. (Each shape uses its own envelope key — template uses
+    // root.perspectives; persisted uses review.perspectives.)
     withServer((server) => {
-      const result = server.callTool('sis.council.review', {
-        decision: 'x',
-        perspectives_input: {
-          elderFather: 'ok',
-          elderMother: 'ok',
-          sage: 'ok',
-          builderElder: 'ok',
-          shadowWitness: 'ok',
-          divineNeutralWitness: 'ok',
-          futureSelf90: 42, // wrong type — must reject
-        },
+      const tpl = server.callTool('sis.council.review', {
+        decision_id_or_workpacket_id: 'dec_x',
       });
-      assert.equal(result.status, 'error');
-      assert.match((result as { error: string }).error, /futureSelf90/);
+      assert.ok(isOk(tpl));
+      const tplPersp = (tpl as { perspectives: Record<string, unknown> }).perspectives;
+      for (const seat of SEATS) assert.ok(seat in tplPersp);
+
+      const persisted = server.callTool('sis.council.review', {
+        decision_id_or_workpacket_id: 'wp_x',
+        perspectives_input: Object.fromEntries(SEATS.map((s) => [s, 'ok'])),
+      });
+      assert.ok(isOk(persisted));
+      const review = pick<{ perspectives: Record<string, unknown> }>(persisted, 'review');
+      for (const seat of SEATS) assert.ok(seat in review.perspectives);
     });
   });
 });

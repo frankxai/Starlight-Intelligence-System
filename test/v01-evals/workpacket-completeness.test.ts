@@ -2,8 +2,8 @@
  * Track D v0.1 — eval 7: workpacket ledger completeness
  *
  * Every WorkPacket row in memory/_audit/work-packets.jsonl carries all
- * required fields. Status transitions are monotonic (no completed→pending).
- * completedAt is set iff status='completed'.
+ * required fields. Status transitions are monotonic. completedAt is set
+ * iff status='completed'.
  *
  * Append-only — transitions are new snapshots. Group by id, walk in order.
  *
@@ -16,7 +16,7 @@ import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { AgentOpsLedger } from '../../src/ledgers.js';
-import { SisMcpServerV01 } from '../../dist/mcp-server-v01.js';
+import { isOk, errOf, pick, withServer } from './_helpers.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..', '..');
@@ -32,13 +32,12 @@ const ARRAYS = [
   'forbiddenActions', 'events', 'artifacts',
 ] as const;
 const STATUSES = ['pending', 'in_progress', 'blocked', 'completed', 'cancelled'];
-// Same-state repeat is permitted (re-snapshot without status change is common).
 const SUCCESSORS: Record<string, ReadonlySet<string>> = {
   pending: new Set(['pending', 'in_progress', 'blocked', 'cancelled']),
   in_progress: new Set(['in_progress', 'blocked', 'completed', 'cancelled']),
   blocked: new Set(['blocked', 'in_progress', 'cancelled']),
-  completed: new Set(['completed']),  // terminal
-  cancelled: new Set(['cancelled']),  // terminal
+  completed: new Set(['completed']),
+  cancelled: new Set(['cancelled']),
 };
 
 type Row = Record<string, unknown>;
@@ -59,7 +58,7 @@ function validate(r: Row, where: string): string[] {
   if (typeof r.approvalRequired !== 'boolean') errs.push(`${where}: approvalRequired must be boolean`);
   if (typeof r.costEstimate !== 'number') errs.push(`${where}: costEstimate must be number`);
   if (r.status === 'completed' && !r.completedAt) errs.push(`${where}: completed must have completedAt`);
-  if (r.status !== 'completed' && r.completedAt) errs.push(`${where}: completedAt only when completed (status=${String(r.status)})`);
+  if (r.status !== 'completed' && r.completedAt) errs.push(`${where}: completedAt only when completed (got ${String(r.status)})`);
   return errs;
 }
 
@@ -76,7 +75,7 @@ function transitionErrors(rows: Row[]): string[] {
       const prev = snaps[i - 1].status as string;
       const next = snaps[i].status as string;
       const allowed = SUCCESSORS[prev];
-      if (!allowed) errs.push(`${id}: snapshot ${i - 1} has unknown status ${prev}`);
+      if (!allowed) errs.push(`${id}: unknown status ${prev}`);
       else if (!allowed.has(next)) errs.push(`${id}: illegal ${prev} → ${next} at #${i}`);
     }
   }
@@ -99,18 +98,15 @@ describe('Track D / eval 7 — workpacket ledger completeness', () => {
   });
 
   it('sis.workpacket.create writer produces rows with EVERY required field', () => {
-    const root = mkdtempSync(join(tmpdir(), 'v01-wp-'));
-    try {
-      const server = new SisMcpServerV01({ vaultDir: join(root, 'vaults'), substrateDir: root, repoRoot: root });
+    withServer((server) => {
       const result = server.callTool('sis.workpacket.create', {
         title: 'audit-test', mission: 'verify completeness',
         allowed_tools: ['fs.read'], allowed_paths: ['/'], risk_level: 'low',
       });
-      assert.equal(result.status, 'ok');
-      assert.equal(validate((result as { data: Row }).data, 'writer').length, 0);
-    } finally {
-      rmSync(root, { recursive: true, force: true });
-    }
+      assert.ok(isOk(result), errOf(result));
+      const wp = pick<Row>(result, 'workPacket');
+      assert.equal(validate(wp, 'writer').length, 0);
+    });
   });
 
   it('AgentOpsLedger.updateWorkPacketStatus enforces completedAt iff status=completed', () => {
@@ -143,9 +139,9 @@ describe('Track D / eval 7 — workpacket ledger completeness', () => {
       { id: 'wp_x', status: 'pending' },
       { id: 'wp_x', status: 'in_progress' },
       { id: 'wp_x', status: 'completed' },
-      { id: 'wp_x', status: 'pending' },  // ILLEGAL regression from terminal
+      { id: 'wp_x', status: 'pending' },
     ]);
-    assert.equal(errs.length, 1, 'monotonicity rule must catch completed→pending');
+    assert.equal(errs.length, 1);
     assert.match(errs[0], /completed → pending/);
   });
 });

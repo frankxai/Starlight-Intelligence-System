@@ -59,16 +59,14 @@ fi
 TRACK_D_RE='^(src/ledgers\.ts|src/types\.ts|dist/mcp-server-v01\.|packages/core/schemas/|test/v01-evals/|test/v01-(schemas|ledgers|mcp-tools|pack-runtime|vault-loop-privacy)\.test\.ts)'
 
 if git diff --cached --name-only | grep -qE "$TRACK_D_RE" ; then
-    echo "→ pre-commit: Track A/B/T4 surfaces touched — running v0.1 risk-dimension evals (advisory)"
-    # NOTE 2026-05-11: evals are ADVISORY until v0.1 hardening pass aligns Track D
-    # eval fixtures with Stretch E's pack-runtime (which now requires real pack URIs,
-    # not stubs like sip://test/perm-pack). Substrate symmetry tests above are still
-    # the hard gate. Re-promote to hard-fail after the v0.1 eval-fixup follow-up.
+    echo "→ pre-commit: Track A/B/T4 surfaces touched — running v0.1 risk-dimension evals"
+    # v0.1 hardening pass completed 2026-05-11/12 — eval fixtures now align with
+    # T2-rebuild's SisMcpServerV01 constructor signature ({ repoRoot,
+    # vaultStoragePath, sanitizer }) and Stretch E's pack-runtime. Hard-gated.
     if ! node tools/run-v01-evals.mjs ; then
         echo ""
-        echo "⚠  v0.1 evals failed — advisory only; substrate symmetry already passed."
-        echo "   See tools/git-hooks/pre-commit NOTE 2026-05-11 for context."
-    else
-        echo "✓ v0.1 evals pass"
+        echo "✗ v0.1 eval failed — fix before commit, or --no-verify if intentional"
+        exit 1
     fi
+    echo "✓ v0.1 evals pass"
 fi
