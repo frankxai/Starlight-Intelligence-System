@@ -70,7 +70,7 @@ export default async function Image() {
               fontStyle: "italic",
             }}
           >
-            "...all watched over by
+            &ldquo;...all watched over by
           </span>
           <span
             style={{
@@ -82,7 +82,7 @@ export default async function Image() {
               fontFamily: "serif",
             }}
           >
-            machines of loving grace."
+            machines of loving grace.&rdquo;
           </span>
           <span
             style={{
