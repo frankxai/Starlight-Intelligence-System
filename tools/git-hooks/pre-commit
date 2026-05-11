@@ -9,6 +9,9 @@
 #   - test/v80-platform-prompts.test.ts: platform-prompt symmetry — CLAUDE.md, AGENTS.md,
 #                                         .cursor/rules/, .clinerules/, .gemini/, .antigravity/
 #                                         claims ↔ canonical (agent/skill/vault counts + SIP version)
+#   - test/v81-yolo.test.ts:              /yolo Hive substrate symmetry — yolo-scope.json schema,
+#                                         3 commands + 2 skills + skill-rules + CLAUDE/AGENTS/AGENT_REGISTRY
+#                                         coverage + conductor-encodes-audit-path + phase-in + REVISE-1 re-ack
 #
 # Full substrate suite (~12s) stays in CI / pre-push.
 #
@@ -26,13 +29,14 @@ SUBSTRATE_RE='^(agents/|skills/|verticals/|test/|package\.json|STACK\.md|AGENTS\
 if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
     echo "→ pre-commit: substrate files touched — running symmetry tests"
 
-    # Run the five fast symmetry tests
+    # Run the six fast symmetry tests
     if ! node --import tsx --test \
         test/v76.test.ts \
         test/v77-skill-rules.test.ts \
         test/v78-skill-registry.test.ts \
         test/v79-vertical-coverage.test.ts \
-        test/v80-platform-prompts.test.ts ; then
+        test/v80-platform-prompts.test.ts \
+        test/v81-yolo.test.ts ; then
         echo ""
         echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
         exit 1
