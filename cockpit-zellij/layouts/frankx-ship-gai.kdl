@@ -49,8 +49,7 @@ layout {
     }
 
     tab name="Audit" {
-        pane name="audit-tail" cwd="C:\\Users\\frank\\frankx-ship-gai" {
-            command "pwsh"
+        pane name="audit-tail" cwd="C:\\Users\\frank\\frankx-ship-gai" command="pwsh" {
             args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
         }
     }

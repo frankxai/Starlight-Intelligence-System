@@ -47,8 +47,7 @@ layout {
     }
 
     tab name="Audit" {
-        pane name="audit-tail" cwd="{{PROJECT_PATH}}" {
-            command "pwsh"
+        pane name="audit-tail" cwd="{{PROJECT_PATH}}" command="pwsh" {
             args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
         }
     }

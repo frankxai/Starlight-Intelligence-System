@@ -18,14 +18,14 @@
       ]
     },
     "codex": {
-      "command": "codex",
+      "command": "codex.cmd",
       "args": [
         "resume",
         "--last"
       ]
     },
     "gemini": {
-      "command": "gemini",
+      "command": "gemini.cmd",
       "args": [
         "--yolo",
         "-m",
@@ -33,7 +33,7 @@
       ]
     },
     "opencode": {
-      "command": "opencode"
+      "command": "opencode.cmd"
     }
   },
   "team": {

@@ -31,13 +31,13 @@ layout {
                 pane name="Claude" cwd="C:\\Users\\frank\\FrankX" command="claude" {
             args "--continue" "--model" "claude-opus-4-7"
         }
-                pane name="Codex" cwd="C:\\Users\\frank\\FrankX" command="codex" {
+                pane name="Codex" cwd="C:\\Users\\frank\\FrankX" command="codex.cmd" {
             args "resume" "--last"
         }
-                pane name="Gemini" cwd="C:\\Users\\frank\\FrankX" command="gemini" {
+                pane name="Gemini" cwd="C:\\Users\\frank\\FrankX" command="gemini.cmd" {
             args "--yolo" "-m" "gemini-2.5-pro"
         }
-                pane name="OpenCode" cwd="C:\\Users\\frank\\FrankX" command="opencode"
+                pane name="OpenCode" cwd="C:\\Users\\frank\\FrankX" command="opencode.cmd"
             }
         }
     }
@@ -55,8 +55,7 @@ layout {
     }
 
     tab name="Audit" {
-        pane name="audit-tail" cwd="C:\\Users\\frank\\FrankX" {
-            command "pwsh"
+        pane name="audit-tail" cwd="C:\\Users\\frank\\FrankX" command="pwsh" {
             args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
         }
     }
