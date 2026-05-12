@@ -24,26 +24,20 @@ layout {
 
     tab name="Orchestrator" focus=true {
         pane split_direction="horizontal" {
-            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\AnimeLegends.ai" {
-            command "claude"
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\AnimeLegends.ai" command="claude" {
             args "--resume" "animelegends-ai"
         }
             pane split_direction="vertical" {
-                pane name="Claude" cwd="C:\\Users\\frank\\AnimeLegends.ai" {
-            command "claude"
+                pane name="Claude" cwd="C:\\Users\\frank\\AnimeLegends.ai" command="claude" {
             args "--continue" "--model" "claude-sonnet-4-6"
         }
-                pane name="Codex" cwd="C:\\Users\\frank\\AnimeLegends.ai" {
-            command "codex"
+                pane name="Codex" cwd="C:\\Users\\frank\\AnimeLegends.ai" command="codex" {
             args "resume" "--last"
         }
-                pane name="Gemini" cwd="C:\\Users\\frank\\AnimeLegends.ai" {
-            command "gemini"
+                pane name="Gemini" cwd="C:\\Users\\frank\\AnimeLegends.ai" command="gemini" {
             args "--yolo" "-m" "gemini-2.5-pro"
         }
-                pane name="OpenCode" cwd="C:\\Users\\frank\\AnimeLegends.ai" {
-            command "opencode"
-        }
+                pane name="OpenCode" cwd="C:\\Users\\frank\\AnimeLegends.ai" command="opencode"
             }
         }
     }

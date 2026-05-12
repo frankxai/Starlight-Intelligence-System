@@ -28,13 +28,10 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\GenCreator-Studio"
                 pane name="Codex" cwd="C:\\Users\\frank\\GenCreator-Studio"
-                pane name="Gemini" cwd="C:\\Users\\frank\\GenCreator-Studio" {
-            command "gemini"
+                pane name="Gemini" cwd="C:\\Users\\frank\\GenCreator-Studio" command="gemini" {
             args "--yolo"
         }
-                pane name="OpenCode" cwd="C:\\Users\\frank\\GenCreator-Studio" {
-            command "opencode"
-        }
+                pane name="OpenCode" cwd="C:\\Users\\frank\\GenCreator-Studio" command="opencode"
             }
         }
     }

@@ -28,13 +28,10 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\frankx-ship-gai"
                 pane name="Codex" cwd="C:\\Users\\frank\\frankx-ship-gai"
-                pane name="Gemini" cwd="C:\\Users\\frank\\frankx-ship-gai" {
-            command "gemini"
+                pane name="Gemini" cwd="C:\\Users\\frank\\frankx-ship-gai" command="gemini" {
             args "--yolo"
         }
-                pane name="OpenCode" cwd="C:\\Users\\frank\\frankx-ship-gai" {
-            command "opencode"
-        }
+                pane name="OpenCode" cwd="C:\\Users\\frank\\frankx-ship-gai" command="opencode"
             }
         }
     }

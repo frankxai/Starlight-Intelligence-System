@@ -55,18 +55,19 @@ function Format-LaunchBlock {
         [string[]]$ArgsList
     )
     if (-not $Command) { return '' }
-    # Escape embedded double-quotes and backslashes for KDL string literals.
-    # Without this, a profile arg containing " breaks the pane block silently.
+    # KDL contract for Zellij panes: `command` is a PANE ATTRIBUTE, `args`
+    # is a CHILD NODE inside the pane body. Writing `command "x"` as a
+    # body node makes Zellij silently ignore it (caught 2026-05-12 — arc sis
+    # opened panes-as-shells, no auto-launch). Escape \ and " for KDL.
     $escapedCmd = $Command -replace '\\', '\\\\' -replace '"', '\"'
-    $argsLine = ''
-    if ($ArgsList -and $ArgsList.Count -gt 0) {
-        $quotedArgs = ($ArgsList | ForEach-Object {
-            $escaped = $_ -replace '\\', '\\\\' -replace '"', '\"'
-            '"' + $escaped + '"'
-        }) -join ' '
-        $argsLine = "`n            args $quotedArgs"
+    if (-not $ArgsList -or $ArgsList.Count -eq 0) {
+        return " command=`"$escapedCmd`""
     }
-    return " {`n            command `"$escapedCmd`"$argsLine`n        }"
+    $quotedArgs = ($ArgsList | ForEach-Object {
+        $escaped = $_ -replace '\\', '\\\\' -replace '"', '\"'
+        '"' + $escaped + '"'
+    }) -join ' '
+    return " command=`"$escapedCmd`" {`n            args $quotedArgs`n        }"
 }
 
 function Get-CockpitProfile {

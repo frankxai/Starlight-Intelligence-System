@@ -28,13 +28,10 @@ layout {
             pane split_direction="vertical" {
                 pane name="Claude" cwd="C:\\Users\\frank\\vibeclubs.ai"
                 pane name="Codex" cwd="C:\\Users\\frank\\vibeclubs.ai"
-                pane name="Gemini" cwd="C:\\Users\\frank\\vibeclubs.ai" {
-            command "gemini"
+                pane name="Gemini" cwd="C:\\Users\\frank\\vibeclubs.ai" command="gemini" {
             args "--yolo"
         }
-                pane name="OpenCode" cwd="C:\\Users\\frank\\vibeclubs.ai" {
-            command "opencode"
-        }
+                pane name="OpenCode" cwd="C:\\Users\\frank\\vibeclubs.ai" command="opencode"
             }
         }
     }
