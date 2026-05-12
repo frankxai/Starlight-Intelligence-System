@@ -8,6 +8,7 @@ import {
   timeAgo,
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
+import { BrainHero } from "@/components/BrainHero";
 import {
   ACCENT_TEXT,
   ACCENT_BORDER,
@@ -91,6 +92,11 @@ export default async function HomePage() {
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
           <div className="animate-mesh-3 absolute left-1/3 top-40 h-[200px] w-[200px] rounded-full bg-fuchsia-500/[0.03] blur-[60px]" />
         </div>
+
+        {/* Decorative 10-IS topology backdrop — visible only on lg+, behind text. */}
+        <BrainHero
+          className="pointer-events-none absolute top-6 right-[-40px] hidden h-[440px] w-[440px] opacity-50 lg:block xl:right-8 xl:opacity-60"
+        />
 
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
 

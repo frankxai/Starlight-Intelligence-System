@@ -77,6 +77,29 @@ body {
   animation: glow-pulse 6s ease-in-out infinite;
 }
 
+/* Brain hero — central Orchestrator core (slow inward pulse). */
+@keyframes brain-core-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+.animate-brain-core {
+  animation: brain-core-pulse 4.5s ease-in-out infinite;
+  transform-box: fill-box;
+}
+
+/* Brain hero — peripheral layer nodes (staggered ring pulse, ~1s per
+   node × 9 = 9s total cycle). The brief bright phase makes one node
+   "fire" before the next, so the ring reads as a slow neural wave. */
+@keyframes brain-node-pulse {
+  0%, 88%, 100% { transform: scale(1); opacity: 0.55; }
+  6% { transform: scale(1.35); opacity: 1; }
+  18% { transform: scale(1.1); opacity: 0.75; }
+}
+.animate-brain-node {
+  animation: brain-node-pulse 9s ease-in-out infinite;
+  transform-box: fill-box;
+}
+
 /* Selection */
 ::selection {
   background: rgba(167, 139, 250, 0.3);
@@ -105,7 +128,9 @@ body {
   .animate-mesh-3,
   .animate-glow-pulse,
   .animate-fade-up,
-  .animate-blink {
+  .animate-blink,
+  .animate-brain-core,
+  .animate-brain-node {
     animation: none !important;
   }
   .transition-micro,

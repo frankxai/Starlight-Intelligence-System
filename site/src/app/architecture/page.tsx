@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BrainHero } from "@/components/BrainHero";
 
 export const revalidate = 3600;
 
@@ -188,6 +189,14 @@ export default function ArchitecturePage() {
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.05] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
         </div>
+
+        {/* 10-IS topology with labels — visible on lg+, slightly more prominent
+            than the home variant since the architecture page IS the topic. */}
+        <BrainHero
+          labels
+          className="pointer-events-none absolute -top-2 right-[-30px] hidden h-[460px] w-[460px] opacity-60 lg:block xl:right-12 xl:opacity-75"
+        />
+
         <div className="relative mx-auto max-w-3xl px-6 py-20">
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
             10-IS composition
