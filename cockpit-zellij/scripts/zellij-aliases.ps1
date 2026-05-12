@@ -14,7 +14,14 @@ function arc {
     param([string]$Project)
 
     if (-not $Project) {
-        zellij --layout starlight-orchestrator
+        # No-arg form: start fresh session with the default layout. Use
+        # --new-session-with-layout (-n) so we always create, never attach.
+        $LegacyLayout = Join-Path $PSScriptRoot '..\layouts\starlight-orchestrator.kdl'
+        if (Test-Path $LegacyLayout) {
+            zellij -n $LegacyLayout
+        } else {
+            zellij -n starlight-orchestrator
+        }
         return
     }
 
@@ -28,7 +35,11 @@ function arc {
         return
     }
 
-    zellij --layout $LayoutFile --session $Project
+    # Per zellij --help: `--layout FILE --session NAME` means "attach to NAME
+    # and add layout as new tab" → fails when NAME doesn't exist. Use
+    # `--session NAME --new-session-with-layout FILE` to always create.
+    # Caught 2026-05-12 — arc sis was throwing "Session 'sis' not found".
+    zellij --session $Project --new-session-with-layout $LayoutFile
 }
 
 function arc-attach {

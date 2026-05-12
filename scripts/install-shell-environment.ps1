@@ -48,28 +48,22 @@ if (Test-Path $wt) {
 }
 
 Write-Host ''
-Write-Host '=== Zellij: add default_shell "pwsh" ===' -ForegroundColor Cyan
+Write-Host '=== Zellij: default_shell intentionally NOT configured ===' -ForegroundColor Cyan
+# We deliberately do NOT add `default_shell "pwsh"` to zellij config on
+# Windows. Caught 2026-05-12: setting it caused every `arc` invocation to
+# exit immediately ("Bye from Zellij!") — Zellij 0.43.1-win32 cannot keep
+# pwsh alive in a pane via the default_shell directive (likely a shim/CMD
+# vs exec mismatch in the Windows port).
+#
+# Correct path on Windows: rely on Windows Terminal's default profile
+# being pwsh (set above). Panes spawned inside a pwsh-hosted Zellij
+# inherit pwsh implicitly via the parent process. The $PROFILE then
+# loads starlight-tools.ps1 in every pane.
 $zellij = "$HOME\.config\zellij\config.kdl"
 if (Test-Path $zellij) {
-    $content = Get-Content $zellij -Raw
-    if ($content -match 'default_shell') {
-        Write-Host '  Already has default_shell directive. Skipping.'
-    } else {
-        # Insert default_shell after the first comment block / before the first directive
-        $insert = '// Default shell for new panes — pwsh 7+ for UTF-8 + modern features' + [Environment]::NewLine +
-                  'default_shell "pwsh"' + [Environment]::NewLine + [Environment]::NewLine
-        # Place after default_layout line
-        $patched = $content -replace '(default_layout\s+"[^"]+"\s*\r?\n)', "`$1`r`n$insert"
-        if ($patched -ne $content) {
-            Copy-Item $zellij "$zellij.bak-$(Get-Date -Format yyyyMMddHHmm)"
-            Set-Content -Path $zellij -Value $patched -Encoding utf8
-            Write-Host '  Added default_shell "pwsh" to zellij config.' -ForegroundColor Green
-        } else {
-            Write-Warning '  Could not find insertion point — config layout differs from expected.'
-        }
-    }
+    Write-Host "  Skipped. Zellij will inherit shell from parent terminal (Windows Terminal default = pwsh)."
 } else {
-    Write-Warning "Zellij config not found at $zellij"
+    Write-Warning "Zellij config not found at $zellij (default install creates on first launch)"
 }
 
 Write-Host ''
