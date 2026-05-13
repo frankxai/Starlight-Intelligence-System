@@ -30,10 +30,37 @@ last_consolidated: '2026-05-11'
 | 2026-05-08 | v8.0 Build Repair + Verification | quality-state | 1.0 |
 | 2026-05-11 | SIS v0.1 Build Handoff + Memory Health Gate | execution-state | 1.0 |
 | 2026-05-12 | v0.1 Event Spine Operator Surface | execution-state | 1.0 |
+| 2026-05-13 | Overnight Deep Ship — Codex v01 integration + v84 symmetry + MEMORY.md compaction | execution-state | 1.0 |
 
 ---
 
 ## Entries
+
+### [2026-05-13] Overnight Deep Ship — Codex v01 integration + v84 symmetry + MEMORY.md compaction
+
+**Category:** execution-state
+**Confidence:** 1.0
+**Source:** Claude Opus 4.7 (1M context) — single extended turn under sovereign-class authorization
+**Related:** src/modules.ts, src/cli.ts, src/mcp-server-v01.ts, src/ledgers.ts, test/v84-modules.test.ts, test/_lib/repo.ts, skills/orchestration/gencreator-stack/, MEMORY.md (auto-memory)
+
+Three commits to main (`542076c`, `6f9703c`, `e8a0219`) under directive "continue all night, deliver end outcome after hours of well thought out decisiveness, deep action, engineering and design world class may 2026." Substrate-side ship of Codex's parallel-session Track A v0.1 WIP + the substrate symmetry-test cascade it triggered + auto-memory hygiene.
+
+**Implemented:**
+- Codex Track A v0.1 module/lifecycle WIP integrated + committed (`6f9703c`) — 7 new CLI subcommands, 5 new sis.* MCP tools, 11-module runtime registry, 49+ new conformance tests.
+- 9th substrate symmetry test shipped (`e8a0219`) — `test/v84-modules.test.ts` locks `src/modules.ts` against drift from STACK.md 10-IS + verticals/ dir + privacy invariants. EXEMPT_MODULES empty (goal state).
+- Test-infra + skill registration ship (`542076c`) — gencreator-stack skill properly slotted into `skill-rules.json` + `SKILL_REGISTRY.md`; walker normalization (assets/ exemption) in `test/_lib/repo.ts`; 5 platform-prompt files reconciled (CLAUDE.md, AGENTS.md, .cursor, .clinerules, .gemini) bumped 67 → 68 skills.
+- Auto-memory compaction — MEMORY.md 30,322 → 13,916 bytes (54% reduction). All 85 entries preserved, each tightened to <150 char index hook.
+- Infrastructure unblock — `npm rebuild better-sqlite3` fixed Node-24 NODE_MODULE_VERSION 115→137 mismatch; unblocked `RetrievalIndex.rebuildFromVaults` which had been silently failing.
+- Pre-commit hook updated — substrate test count 8 → 9.
+
+**Verification:** TypeScript build clean. Full `npm test` 0 failures across 144+ tests in 18+ suites. 86 substrate symmetry tests green in pre-commit hook (~1.9s wall-clock). 34 Track D risk-dimension evals green. EXEMPT_MODULES + EXEMPT_DRIFT + EXEMPT_PHANTOMS all empty (goal state). MEMORY.md auto-load budget 13.9 KB / 24.4 KB.
+
+**Not touched (scope boundary):** ULTRAPLAN Phase 0 items 0.1, 0.2, 0.3, 0.5, 0.6, 0.7 all live in `private/` (gitignored). Item 0.4 lives in `C:\Users\frank\Arcanea\`. None were in SIS substrate scope. Status matrix in `docs/ops/PHASE-0-EXECUTION-LOG-2026-05-13.md`. Forward dispatch pointer: run `/code-review` on `6f9703c`, then ship Phase 0.1+0.6+0.7 (private/, ~15 min total), then investigate Phase 0.5 KG indexer starvation (13× brain-data gap per ULTRAPLAN Gap 2).
+
+**Documentation shipped:**
+- `docs/superpowers/plans/2026-05-13-overnight-deep-ship.md` — the night's plan doc per writing-plans skill
+- `docs/ops/PHASE-0-EXECUTION-LOG-2026-05-13.md` — Phase 0 honest status matrix
+- `docs/ops/HANDOVER-2026-05-13-overnight-deep-ship.md` — full handover with session wisdom + Karpathy checks + falsifiers
 
 ### [2026-05-12] v0.1 Event Spine Operator Surface
 
