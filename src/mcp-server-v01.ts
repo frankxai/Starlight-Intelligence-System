@@ -1,7 +1,7 @@
 /**
  * SIS MCP Server v0.1 — Track B
  *
- * 13 sis.* tools composing on top of Track A's contracts (src/types.ts) and
+ * 19 sis.* tools composing on top of Track A's contracts (src/types.ts) and
  * ledgers (src/ledgers.ts). The sis.* prefix avoids collision with the v6
  * vault-focused sis_* server and the substrate-registry starlight_* server.
  *
@@ -12,7 +12,10 @@
  *   sis.agent.event           sis.artifact.register
  *   sis.graph.neighbors       sis.council.review
  *   sis.vault.record          sis.pack.list
- *   sis.pack.install
+ *   sis.pack.install          sis.pack.uninstall
+ *   sis.events.tail           sis.workpacket.next
+ *   sis.workpacket.complete   sis.memory.rebuild
+ *   sis.module.list
  *
  * Invariants:
  *   • Risk-tiered approval gate (decision.log / workpacket.create at high/critical)
@@ -33,6 +36,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import {
+  AgentOpsLedger,
   appendAgentEvent,
   appendApprovalGate,
   appendArtifact,
@@ -42,9 +46,11 @@ import {
   ensureDir,
   newId,
   nowIso,
+  readRecentAgentEvents,
   readGraphEdges,
   vaultLoopLedgerPath,
 } from './ledgers.js';
+import { listModules } from './modules.js';
 import {
   installPack as runtimeInstallPack,
   listPacks as runtimeListPacks,
@@ -215,6 +221,11 @@ export class SisMcpServerV01 {
     this.regPackList();
     this.regPackInstall();
     this.regPackUninstall();
+    this.regEventsTail();
+    this.regWorkPacketNext();
+    this.regWorkPacketComplete();
+    this.regMemoryRebuild();
+    this.regModuleList();
   }
 
   // 1 ── sis.memory.add ──────────────────────────────────────
@@ -911,6 +922,121 @@ export class SisMcpServerV01 {
         if (!r.ok) return errorResult(r.error ?? 'uninstall failed');
         return { ok: true as const, pack: r.pack };
       },
+    );
+  }
+
+  // 15 ── sis.events.tail ───────────────────────────────────
+
+  private regEventsTail(): void {
+    this.reg(
+      {
+        name: 'sis.events.tail',
+        description: 'Return recent AgentEvents from the append-only event ledger',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            date: { type: 'string' },
+            limit: { type: 'number' },
+          },
+        },
+      },
+      (p) => {
+        const events = readRecentAgentEvents(this.repoRoot, {
+          date: typeof p.date === 'string' ? p.date : undefined,
+          limit: typeof p.limit === 'number' ? p.limit : 20,
+        });
+        return { ok: true as const, events };
+      },
+    );
+  }
+
+  // 16 ── sis.workpacket.next ───────────────────────────────
+
+  private regWorkPacketNext(): void {
+    this.reg(
+      {
+        name: 'sis.workpacket.next',
+        description: 'Return the oldest pending WorkPacket from the SQLite shadow index',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      () => {
+        const ledger = new AgentOpsLedger(this.repoRoot);
+        try {
+          const workPacket = ledger.nextPendingWorkPacket();
+          return { ok: true as const, workPacket };
+        } finally {
+          ledger.close();
+        }
+      },
+    );
+  }
+
+  // 17 ── sis.workpacket.complete ───────────────────────────
+
+  private regWorkPacketComplete(): void {
+    this.reg(
+      {
+        name: 'sis.workpacket.complete',
+        description: 'Mark a WorkPacket completed and append the lifecycle AgentEvent',
+        inputSchema: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'string' },
+            agent_id: { type: 'string' },
+            summary: { type: 'string' },
+          },
+        },
+      },
+      (p) => {
+        const ledger = new AgentOpsLedger(this.repoRoot);
+        try {
+          const result = ledger.transitionWorkPacket({
+            id: String(p.id),
+            status: 'completed',
+            agentId: typeof p.agent_id === 'string' ? p.agent_id : undefined,
+            summary: typeof p.summary === 'string' ? p.summary : undefined,
+            toolsUsed: ['sis.workpacket.complete'],
+          });
+          return { ok: true as const, ...result };
+        } finally {
+          ledger.close();
+        }
+      },
+    );
+  }
+
+  // 18 ── sis.memory.rebuild ────────────────────────────────
+
+  private regMemoryRebuild(): void {
+    this.reg(
+      {
+        name: 'sis.memory.rebuild',
+        description: 'Rebuild SQLite shadow indices from canonical JSONL ledgers',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      () => {
+        const ledger = new AgentOpsLedger(this.repoRoot);
+        try {
+          const stats = ledger.rebuildFromLedgers();
+          return { ok: true as const, sqlitePath: ledger.getSqlitePath(), stats };
+        } finally {
+          ledger.close();
+        }
+      },
+    );
+  }
+
+  // 19 ── sis.module.list ───────────────────────────────────
+
+  private regModuleList(): void {
+    this.reg(
+      {
+        name: 'sis.module.list',
+        description: 'List Intelligence System modules and local enablement state',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      () => ({ ok: true as const, modules: listModules(this.repoRoot) }),
     );
   }
 

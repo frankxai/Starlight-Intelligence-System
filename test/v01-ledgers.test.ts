@@ -26,6 +26,7 @@ import {
   readWorkPackets,
   readDecisions,
   readAgentEventsForDay,
+  readRecentAgentEvents,
 } from "../src/ledgers.js";
 
 function withTempRoot<T>(fn: (root: string) => T): T {
@@ -92,6 +93,54 @@ describe("Track A v0.1 — AgentOpsLedger", () => {
         const pending = ledger.listWorkPackets({ status: "pending" });
         assert.equal(pending.length, 1);
         assert.equal(pending[0].id, p1.id);
+      } finally {
+        ledger.close();
+      }
+    });
+  });
+
+  it("nextPendingWorkPacket returns the oldest pending packet", () => {
+    withTempRoot((root) => {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        const first = ledger.createWorkPacket({ title: "first", mission: "m", riskLevel: "low" });
+        const second = ledger.createWorkPacket({ title: "second", mission: "m", riskLevel: "low" });
+        ledger.updateWorkPacketStatus(first.id, "in_progress");
+
+        const next = ledger.nextPendingWorkPacket();
+        assert.ok(next);
+        assert.equal(next.id, second.id);
+      } finally {
+        ledger.close();
+      }
+    });
+  });
+
+  it("transitionWorkPacket appends a lifecycle snapshot and AgentEvent", () => {
+    withTempRoot((root) => {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        const packet = ledger.createWorkPacket({
+          title: "finish",
+          mission: "complete the packet",
+          riskLevel: "low",
+          assignedAgent: "codex",
+        });
+
+        const result = ledger.transitionWorkPacket({
+          id: packet.id,
+          status: "completed",
+          summary: "done",
+        });
+
+        assert.equal(result.packet.status, "completed");
+        assert.ok(result.packet.completedAt);
+        assert.equal(result.packet.events.length, 1);
+        assert.equal(result.event.agentId, "codex");
+
+        const recent = readRecentAgentEvents(root, { limit: 5 });
+        assert.equal(recent.length, 1);
+        assert.equal(recent[0].id, result.event.id);
       } finally {
         ledger.close();
       }

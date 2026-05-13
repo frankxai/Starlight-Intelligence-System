@@ -190,6 +190,37 @@ export function readAgentEventsForDay(repoRoot: string, isoDate: string): AgentE
   );
 }
 
+export function readRecentAgentEvents(
+  repoRoot: string,
+  options: { date?: string; limit?: number } = {},
+): AgentEvent[] {
+  const limit = Math.max(1, options.limit ?? 50);
+  if (options.date) {
+    return readAgentEventsForDay(repoRoot, options.date)
+      .sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+      .slice(0, limit);
+  }
+
+  const eventsDir = join(repoRoot, 'memory', '_audit', 'agent-events');
+  if (!existsSync(eventsDir)) return [];
+
+  const events: AgentEvent[] = [];
+  const days = readdirSync(eventsDir)
+    .filter((file) => file.endsWith('.jsonl'))
+    .map((file) => file.slice(0, -'.jsonl'.length))
+    .sort()
+    .reverse();
+
+  for (const day of days) {
+    events.push(...readAgentEventsForDay(repoRoot, day));
+    if (events.length >= limit) break;
+  }
+
+  return events
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+    .slice(0, limit);
+}
+
 export function readApprovalGate(repoRoot: string, gateId: string): ApprovalGate | null {
   const all = readJsonl<ApprovalGate>(approvalLedgerPath(repoRoot));
   return all.find((g) => g.id === gateId) ?? null;
@@ -398,6 +429,61 @@ export class AgentOpsLedger {
     return rows.map((r) => JSON.parse(r.payload) as WorkPacket);
   }
 
+  /** Oldest pending WorkPacket, suitable for a single worker to pick next. */
+  nextPendingWorkPacket(): WorkPacket | null {
+    const row = this.db
+      .prepare(
+        'SELECT payload FROM work_packets WHERE status = ? ORDER BY created_at ASC LIMIT 1',
+      )
+      .get('pending') as { payload: string } | undefined;
+    return row ? (JSON.parse(row.payload) as WorkPacket) : null;
+  }
+
+  /**
+   * Transition a WorkPacket and emit the corresponding AgentEvent. This is the
+   * canonical local lifecycle helper for CLI/MCP consumers.
+   */
+  transitionWorkPacket(input: {
+    id: string;
+    status: WorkPacketStatus;
+    agentId?: string;
+    summary?: string;
+    eventType?: string;
+    toolsUsed?: string[];
+    outputRefs?: string[];
+  }): { packet: WorkPacket; event: AgentEvent } {
+    const current = this.getWorkPacket(input.id);
+    if (!current) {
+      throw new LedgerInvariantError(`WorkPacket not found: ${input.id}`);
+    }
+
+    const completedAt =
+      input.status === 'completed' || input.status === 'cancelled'
+        ? nowIso()
+        : current.completedAt;
+    const event = buildAgentEvent({
+      runId: `run_${input.id}`,
+      agentId: input.agentId ?? current.assignedAgent ?? 'unassigned',
+      eventType: input.eventType ?? `workpacket.${input.status}`,
+      summary: input.summary ?? `WorkPacket ${input.id} transitioned to ${input.status}`,
+      toolsUsed: input.toolsUsed ?? ['starlight.workpacket.transition'],
+      inputRefs: [input.id],
+      outputRefs: input.outputRefs ?? [],
+      riskLevel: current.riskLevel,
+      costEstimate: current.costEstimate,
+    });
+    const packet: WorkPacket = {
+      ...current,
+      status: input.status,
+      events: [...current.events, event],
+      completedAt,
+    };
+
+    this.appendWorkPacketSnapshot(packet);
+    this.recordAgentEvent(event, packet.id);
+    return { packet, event };
+  }
+
   private upsertWorkPacketRow(packet: WorkPacket): void {
     this.db
       .prepare(
@@ -573,6 +659,23 @@ export class AgentOpsLedger {
         }
       }
       for (const decision of readDecisions(this.root)) {
+        const legacy = decision as Decision & {
+          risk_level?: RiskLevel;
+          work_packet_id?: string;
+          council_review_id?: string;
+          created_at?: string;
+          created_by?: string;
+          options_considered?: string[];
+        };
+        const normalized: Decision = {
+          ...decision,
+          options: decision.options ?? legacy.options_considered ?? [],
+          riskLevel: decision.riskLevel ?? legacy.risk_level ?? 'low',
+          workPacketId: decision.workPacketId ?? legacy.work_packet_id,
+          councilReviewId: decision.councilReviewId ?? legacy.council_review_id,
+          createdAt: decision.createdAt ?? legacy.created_at ?? nowIso(),
+          createdBy: decision.createdBy ?? legacy.created_by ?? 'unknown',
+        };
         this.db
           .prepare(
             `INSERT OR REPLACE INTO decisions
@@ -582,15 +685,15 @@ export class AgentOpsLedger {
                      @council_review_id, @created_at, @created_by, @payload)`,
           )
           .run({
-            id: decision.id,
-            title: decision.title,
-            chosen: decision.chosen,
-            risk_level: decision.riskLevel,
-            work_packet_id: decision.workPacketId ?? null,
-            council_review_id: decision.councilReviewId ?? null,
-            created_at: decision.createdAt,
-            created_by: decision.createdBy,
-            payload: JSON.stringify(decision),
+            id: normalized.id,
+            title: normalized.title,
+            chosen: normalized.chosen,
+            risk_level: normalized.riskLevel,
+            work_packet_id: normalized.workPacketId ?? null,
+            council_review_id: normalized.councilReviewId ?? null,
+            created_at: normalized.createdAt,
+            created_by: normalized.createdBy,
+            payload: JSON.stringify(normalized),
           });
         stats.decisions++;
       }

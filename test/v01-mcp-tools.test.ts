@@ -31,6 +31,7 @@ import {
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { SisMcpServerV01 } from '../src/mcp-server-v01.js';
+import { AgentOpsLedger } from '../src/ledgers.js';
 
 function withServer<T>(fn: (server: SisMcpServerV01, root: string) => T): T {
   const dir = mkdtempSync(join(tmpdir(), 'sis-mcp-v01-'));
@@ -582,6 +583,54 @@ describe('Track B v0.1 — substrate invariants', () => {
         assert.ok('score' in item);
         assert.ok('matchedTerms' in item);
       }
+    });
+  });
+
+  it('sis.workpacket.next and sis.workpacket.complete expose the lifecycle spine', () => {
+    withServer((srv, root) => {
+      const ledger = new AgentOpsLedger(root);
+      let packetId = '';
+      try {
+        const packet = ledger.createWorkPacket({
+          title: 'lifecycle',
+          mission: 'prove next and complete',
+          riskLevel: 'low',
+          assignedAgent: 'codex',
+        });
+        packetId = packet.id;
+      } finally {
+        ledger.close();
+      }
+
+      const next = srv.call('sis.workpacket.next', {}) as OkEnvelope;
+      assert.equal(next.ok, true);
+      assert.equal((next.workPacket as { id: string }).id, packetId);
+
+      const completed = srv.call('sis.workpacket.complete', {
+        id: packetId,
+        agent_id: 'codex',
+        summary: 'completed by test',
+      }) as OkEnvelope;
+      assert.equal(completed.ok, true);
+      assert.equal((completed.packet as { status: string }).status, 'completed');
+
+      const events = srv.call('sis.events.tail', { limit: 5 }) as OkEnvelope;
+      assert.equal(events.ok, true);
+      assert.equal((events.events as unknown[]).length, 1);
+    });
+  });
+
+  it('sis.memory.rebuild rebuilds SQLite and sis.module.list returns module manifest state', () => {
+    withServer((srv) => {
+      const rebuild = srv.call('sis.memory.rebuild', {}) as OkEnvelope;
+      assert.equal(rebuild.ok, true);
+      assert.ok(typeof rebuild.sqlitePath === 'string');
+      assert.ok('stats' in rebuild);
+
+      const modules = srv.call('sis.module.list', {}) as OkEnvelope;
+      assert.equal(modules.ok, true);
+      assert.ok(Array.isArray(modules.modules));
+      assert.ok((modules.modules as Array<{ id: string }>).some((mod) => mod.id === 'code-is'));
     });
   });
 });

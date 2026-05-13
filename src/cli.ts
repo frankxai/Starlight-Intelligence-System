@@ -33,8 +33,9 @@ import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
 import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
-import { AgentOpsLedger } from "./ledgers.js";
-import type { RiskLevel } from "./types.js";
+import { AgentOpsLedger, readRecentAgentEvents } from "./ledgers.js";
+import { listModules, setModuleEnabled } from "./modules.js";
+import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
 
@@ -115,6 +116,15 @@ Commands:
   workpacket create               Create a WorkPacket (--title --mission --risk)
   workpacket list                 List recent WorkPackets
   workpacket show <id>            Show a single WorkPacket
+  workpacket next                 Show oldest pending WorkPacket
+  workpacket complete <id>        Mark a WorkPacket completed and emit AgentEvent
+  workpacket start <id>           Mark a WorkPacket in_progress and emit AgentEvent
+  workpacket block <id>           Mark a WorkPacket blocked and emit AgentEvent
+  events tail                     Show recent AgentEvents (--limit --date)
+  memory rebuild                  Rebuild SQLite shadow indices from JSONL ledgers
+  modules list                    List Intelligence System modules
+  modules enable <id>             Enable an Intelligence System module locally
+  modules disable <id>            Disable an Intelligence System module locally
   vault list                      List all memory entries
   vault health                    Show repo-local memory health
   vault refresh                   Run dreaming consolidation and stamp vault freshness
@@ -147,6 +157,8 @@ Options:
   --risk <level>                  WorkPacket risk: low, medium, high, critical
   --agent <id>                    WorkPacket assigned agent (default: unassigned)
   --status <status>               Filter workpacket list by status
+  --date <YYYY-MM-DD>             Event date for events tail
+  --summary <text>                Transition summary for workpacket lifecycle commands
   --limit <n>                     Maximum number of items to list
 
 Examples:
@@ -665,6 +677,11 @@ function isRiskLevel(value: string | undefined): value is RiskLevel {
   return value === "low" || value === "medium" || value === "high" || value === "critical";
 }
 
+function isWorkPacketStatus(value: string | undefined): value is WorkPacketStatus {
+  return value === "pending" || value === "in_progress" || value === "blocked" ||
+    value === "completed" || value === "cancelled";
+}
+
 function cmdWorkpacket(
   action: string,
   args: string[],
@@ -674,6 +691,7 @@ function cmdWorkpacket(
     risk?: string;
     agent?: string;
     status?: string;
+    summary?: string;
     limit?: string;
   },
 ): void {
@@ -716,10 +734,7 @@ function cmdWorkpacket(
         const status = options.status;
         const packets = ledger.listWorkPackets({
           limit: Math.max(1, limit),
-          status: status === "pending" || status === "in_progress" || status === "blocked" ||
-            status === "completed" || status === "cancelled"
-            ? status
-            : undefined,
+          status: isWorkPacketStatus(status) ? status : undefined,
         });
 
         if (packets.length === 0) {
@@ -735,6 +750,16 @@ function cmdWorkpacket(
           console.log(`    mission: ${p.mission.length > 80 ? p.mission.slice(0, 80) + "..." : p.mission}`);
           console.log("");
         }
+        break;
+      }
+
+      case "next": {
+        const packet = ledger.nextPendingWorkPacket();
+        if (!packet) {
+          console.log("[starlight] No pending WorkPackets.");
+          return;
+        }
+        console.log(formatJSON(packet));
         break;
       }
 
@@ -755,13 +780,121 @@ function cmdWorkpacket(
         break;
       }
 
+      case "start":
+      case "block":
+      case "complete": {
+        const id = args[0];
+        if (!id) {
+          console.error(`[starlight] Error: workpacket ${action} requires an id.`);
+          process.exitCode = 1;
+          return;
+        }
+        const status: WorkPacketStatus =
+          action === "start" ? "in_progress" : action === "block" ? "blocked" : "completed";
+        const { packet, event } = ledger.transitionWorkPacket({
+          id,
+          status,
+          agentId: options.agent,
+          summary: options.summary,
+          toolsUsed: [`starlight.workpacket.${action}`],
+        });
+        console.log(`[starlight] WorkPacket ${id} -> ${packet.status}`);
+        console.log(`[starlight] AgentEvent logged: ${event.id}`);
+        console.log(formatJSON(packet));
+        break;
+      }
+
       default:
         console.error(`[starlight] Unknown workpacket action: "${action}".`);
-        console.error("  Available actions: create, list, show");
+        console.error("  Available actions: create, list, show, next, start, block, complete");
         process.exitCode = 1;
     }
   } finally {
     ledger.close();
+  }
+}
+
+function cmdEvents(action: string, options: { date?: string; limit?: string }): void {
+  const root = getPackageRoot();
+  switch (action) {
+    case "tail": {
+      const limit = options.limit ? parseInt(options.limit, 10) : 20;
+      const events = readRecentAgentEvents(root, {
+        date: options.date,
+        limit: Math.max(1, limit),
+      });
+      if (events.length === 0) {
+        console.log("[starlight] No AgentEvents found.");
+        return;
+      }
+      for (const event of events) {
+        console.log(`${event.timestamp}  ${event.id}  ${event.agentId}  ${event.eventType}`);
+        if (event.summary) console.log(`  ${event.summary}`);
+      }
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown events action: "${action}".`);
+      console.error("  Available actions: tail");
+      process.exitCode = 1;
+  }
+}
+
+function cmdMemory(action: string): void {
+  const root = getPackageRoot();
+  switch (action) {
+    case "rebuild": {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        const stats = ledger.rebuildFromLedgers();
+        console.log("[starlight] SQLite shadow indices rebuilt from JSONL ledgers.");
+        console.log(formatJSON({ sqlite: ledger.getSqlitePath(), ...stats }));
+      } finally {
+        ledger.close();
+      }
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown memory action: "${action}".`);
+      console.error("  Available actions: rebuild");
+      process.exitCode = 1;
+  }
+}
+
+function cmdModules(action: string, args: string[]): void {
+  const root = getPackageRoot();
+  try {
+    switch (action) {
+      case "list": {
+        const modules = listModules(root);
+        console.log(`[starlight] ${modules.length} Intelligence System module(s):\n`);
+        for (const mod of modules) {
+          console.log(`  ${mod.enabled ? "ON " : "OFF"} ${mod.id.padEnd(20)} ${mod.name}`);
+          console.log(`      ${mod.kind} | views: ${mod.dashboardViews.join(", ")}`);
+        }
+        break;
+      }
+      case "enable":
+      case "disable": {
+        const id = args[0];
+        if (!id) {
+          console.error(`[starlight] Error: modules ${action} requires an id.`);
+          process.exitCode = 1;
+          return;
+        }
+        const mod = setModuleEnabled(root, id, action === "enable");
+        console.log(`[starlight] Module ${mod.id} ${mod.enabled ? "enabled" : "disabled"}.`);
+        console.log(formatJSON(mod));
+        break;
+      }
+      default:
+        console.error(`[starlight] Unknown modules action: "${action}".`);
+        console.error("  Available actions: list, enable, disable");
+        process.exitCode = 1;
+    }
+  } catch (err) {
+    console.error(`[starlight] ${err instanceof Error ? err.message : String(err)}`);
+    process.exitCode = 1;
   }
 }
 
@@ -1011,6 +1144,8 @@ async function main(): Promise<void> {
       risk: { type: "string" },
       agent: { type: "string" },
       status: { type: "string" },
+      date: { type: "string" },
+      summary: { type: "string" },
       limit: { type: "string" },
     },
     strict: false,
@@ -1116,7 +1251,7 @@ async function main(): Promise<void> {
     case "workpacket": {
       const wpAction = positionals[1];
       if (!wpAction) {
-        console.error("[starlight] Error: workpacket requires an action (create, list, show).");
+        console.error("[starlight] Error: workpacket requires an action (create, list, show, next, start, block, complete).");
         process.exitCode = 1;
         return;
       }
@@ -1126,8 +1261,45 @@ async function main(): Promise<void> {
         risk: asString(values.risk),
         agent: asString(values.agent),
         status: asString(values.status),
+        summary: asString(values.summary),
         limit: asString(values.limit),
       });
+      break;
+    }
+
+    case "events": {
+      const eventsAction = positionals[1];
+      if (!eventsAction) {
+        console.error("[starlight] Error: events requires an action (tail).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdEvents(eventsAction, {
+        date: asString(values.date),
+        limit: asString(values.limit),
+      });
+      break;
+    }
+
+    case "memory": {
+      const memoryAction = positionals[1];
+      if (!memoryAction) {
+        console.error("[starlight] Error: memory requires an action (rebuild).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdMemory(memoryAction);
+      break;
+    }
+
+    case "modules": {
+      const modulesAction = positionals[1];
+      if (!modulesAction) {
+        console.error("[starlight] Error: modules requires an action (list, enable, disable).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdModules(modulesAction, positionals.slice(2));
       break;
     }
 
