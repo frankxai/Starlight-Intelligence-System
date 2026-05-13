@@ -43,6 +43,7 @@ export function walkSkills(skillsDir: string, opts: WalkSkillsOptions = {}): str
       const stat = statSync(full);
       if (stat.isDirectory()) {
         if (excludeReferences && entry === "references") continue;
+        if (entry === "assets") continue; // template/data leaves — non-skill content (added 2026-05-13 for gencreator-stack)
         walk(full, rel);
       } else if (entry.endsWith(".md")) {
         results.push(rel);

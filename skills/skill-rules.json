@@ -135,6 +135,17 @@
       "load_level": "core"
     },
     {
+      "id": "orchestration-gencreator-stack",
+      "skill": "orchestration/gencreator-stack",
+      "triggers": {
+        "keywords": ["stack architecture", "repo inventory", "which AI assistant", "custom GPTs", "MCP routing", "browser workspaces", "tech stack across", "cross-brand stack", "STACK.md", "stack constellation", "stack drift", "gencreator stack"],
+        "agents": ["starlight-architect", "starlight-orchestrator"],
+        "intents": ["stack-architecture", "repo-inventory", "drift-detection", "cross-brand-routing"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "memory-vault-management",
       "skill": "memory/vault-management",
       "triggers": {

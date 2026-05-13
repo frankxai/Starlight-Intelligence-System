@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "description": "Frank's repo inventory — hand-maintained. Add new repos here. Used by stack.py for audit/diff walks.",
+  "brands": {
+    "arcanea": {
+      "label": "Arcanea",
+      "default_reasoning": "Claude Project: Arcanea",
+      "default_coding_primary": "Claude Code",
+      "default_coding_secondary": "Codex CLI",
+      "default_browser_space": "Arc Space: Arcanea",
+      "default_mcps": ["vercel", "supabase", "github", "linear", "notion", "figma"],
+      "repos": [
+        {"path": "C:\\Users\\frank\\Arcanea", "role": "development", "stack_md_expected": true, "notes": "Monorepo: apps/web, packages, book/, .arcanea/, arcanea-onchain/"},
+        {"path": "C:\\Users\\frank\\Arcanea\\arcanea-onchain", "role": "private", "stack_md_expected": true, "notes": "Onchain workspace, separate .mcp.json"}
+      ]
+    },
+    "frankx": {
+      "label": "FrankX",
+      "default_reasoning": "Claude Project: FrankX + GenCreator GPT",
+      "default_coding_primary": "Claude Code",
+      "default_coding_secondary": null,
+      "default_browser_space": "Arc Space: FrankX",
+      "default_mcps": ["vercel", "github", "notion"],
+      "repos": [
+        {"path": "C:\\Users\\frank\\FrankX", "role": "development", "stack_md_expected": true, "notes": "Private dev + content authoring"},
+        {"path": "C:\\Users\\frank\\FrankX\\.worktrees\\vercel-ui-ux", "role": "production", "stack_md_expected": false, "notes": "Worktree pointing at frankx.ai-vercel-website production repo"}
+      ]
+    },
+    "business": {
+      "label": "Arcanea Labs BV",
+      "default_reasoning": "ChatGPT Project: BV+Tax (Dutch ops corpus)",
+      "default_coding_primary": "minimal (docs only)",
+      "default_coding_secondary": null,
+      "default_browser_space": "Arc Space: Business",
+      "default_mcps": ["notion", "gmail", "calendar"],
+      "repos": [
+        {"path": "C:\\Users\\frank\\Business", "role": "private", "stack_md_expected": true, "notes": "Ops, finance, legal, BV formation"}
+      ]
+    },
+    "starlight": {
+      "label": "Starlight Intelligence System",
+      "default_reasoning": "Claude Project: Starlight",
+      "default_coding_primary": "Claude Code",
+      "default_coding_secondary": "Codex CLI",
+      "default_browser_space": "Arc Space: Starlight",
+      "default_mcps": ["github", "notion", "linear", "memory-bus"],
+      "repos": [
+        {"path": "C:\\Users\\frank\\Starlight-Intelligence-System", "role": "development", "stack_md_expected": true, "notes": "Substrate — SIP, agents, skills, vaults. STACK.md already exists (universal IS taxonomy) — this skill writes a sibling /STACK.md is NOT needed; treat substrate STACK.md as canonical."}
+      ]
+    }
+  }
+}

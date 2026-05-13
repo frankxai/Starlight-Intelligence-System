@@ -183,7 +183,8 @@ describe("v7.6 skills — frontmatter completeness", () => {
   // Sweep S2d (Audit D, 2026-05-04): every skill markdown file under skills/ should carry
   // YAML frontmatter so activation tooling and registries can introspect skills uniformly.
   // Exclusions are explicit: docs files (SKILL_ARCHITECTURE.md), progressive-disclosure
-  // leaves (references/ subdirs), and skills that intentionally use prose-only activation
+  // leaves (references/ subdirs), template/data leaves (assets/ subdirs, added 2026-05-13 for
+  // gencreator-stack STACK.template.md), and skills that intentionally use prose-only activation
   // (sound-intelligence/*.md — disk-orphans pending v7.5.3 catch-up backfill).
 
   const SKILL_FM_EXCLUDE: ReadonlySet<string> = new Set([
@@ -209,6 +210,7 @@ describe("v7.6 skills — frontmatter completeness", () => {
         const full = join(dir, ent.name);
         if (ent.isDirectory()) {
           if (ent.name === "references") continue; // progressive-disclosure leaves
+          if (ent.name === "assets") continue; // template/data leaves (non-skill content)
           walk(full);
         } else if (ent.isFile() && ent.name.endsWith(".md")) {
           // store as forward-slash relative path for cross-platform stability
