@@ -16,6 +16,9 @@
 #                                         Phase 1 source count = 2, instrumenter modules, cockpit pane
 #   - test/v83-finance-business.test.ts:  Finance & Business IS W3.1 substrate symmetry — registry template,
 #                                         StaleCashError, Stripe-only Phase 1, Arcanea BV scope, cockpit pane
+#   - test/v84-modules.test.ts:           Module Registry substrate symmetry — src/modules.ts ↔ STACK.md
+#                                         10-IS taxonomy + verticals/<slug>/ domain-stack coverage +
+#                                         private/future-module default-disabled invariants
 #   - test/v01-evals/*.test.ts:           Track D risk-dimension evals — permission compliance,
 #                                         pack validity, council shape, vault privacy, agent-event
 #                                         completeness, graph-edge provenance, workpacket completeness
@@ -37,7 +40,7 @@ SUBSTRATE_RE='^(agents/|skills/|verticals/|test/|package\.json|STACK\.md|AGENTS\
 if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
     echo "→ pre-commit: substrate files touched — running symmetry tests"
 
-    # Run the eight fast symmetry tests
+    # Run the nine fast symmetry tests
     if ! node --import tsx --test \
         test/v76.test.ts \
         test/v77-skill-rules.test.ts \
@@ -46,7 +49,8 @@ if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
         test/v80-platform-prompts.test.ts \
         test/v81-yolo.test.ts \
         test/v82-cost-plane.test.ts \
-        test/v83-finance-business.test.ts ; then
+        test/v83-finance-business.test.ts \
+        test/v84-modules.test.ts ; then
         echo ""
         echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
         exit 1
