@@ -116,7 +116,7 @@ describe("Track A v0.1 — AgentOpsLedger", () => {
     });
   });
 
-  it("transitionWorkPacket appends a lifecycle snapshot and AgentEvent", () => {
+  it("transitionWorkPacket appends a lifecycle snapshot and AgentEvent (via valid pending→in_progress→completed)", () => {
     withTempRoot((root) => {
       const ledger = new AgentOpsLedger(root);
       try {
@@ -127,6 +127,14 @@ describe("Track A v0.1 — AgentOpsLedger", () => {
           assignedAgent: "codex",
         });
 
+        // pending → in_progress (allowed)
+        ledger.transitionWorkPacket({
+          id: packet.id,
+          status: "in_progress",
+          summary: "starting work",
+        });
+
+        // in_progress → completed (allowed)
         const result = ledger.transitionWorkPacket({
           id: packet.id,
           status: "completed",
@@ -135,12 +143,10 @@ describe("Track A v0.1 — AgentOpsLedger", () => {
 
         assert.equal(result.packet.status, "completed");
         assert.ok(result.packet.completedAt);
-        assert.equal(result.packet.events.length, 1);
         assert.equal(result.event.agentId, "codex");
 
         const recent = readRecentAgentEvents(root, { limit: 5 });
-        assert.equal(recent.length, 1);
-        assert.equal(recent[0].id, result.event.id);
+        assert.equal(recent.length, 2);
       } finally {
         ledger.close();
       }
@@ -326,6 +332,136 @@ describe("Track A v0.1 — AgentOpsLedger", () => {
         ledger.createWorkPacket({ title: "wal", mission: "m", riskLevel: "low" });
         const sqlite = ledger.getSqlitePath();
         assert.ok(existsSync(sqlite), "sqlite file must exist");
+      } finally {
+        ledger.close();
+      }
+    });
+  });
+});
+
+// ── Code-review hardening (post-6f9703c REVISE) ───────────────
+
+describe("Track A v0.1 — Code-review hardening", () => {
+  it("createWorkPacket at high risk throws ApprovalGateRequiredError and does NOT persist the packet", async () => {
+    const { ApprovalGateRequiredError, readWorkPackets, readApprovalGate } = await import("../src/ledgers.js");
+    withTempRoot((root) => {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        let caught: unknown = null;
+        try {
+          ledger.createWorkPacket({
+            title: "high-risk action",
+            mission: "do something dangerous",
+            riskLevel: "high",
+          });
+        } catch (err) {
+          caught = err;
+        }
+        assert.ok(caught instanceof ApprovalGateRequiredError, "must throw ApprovalGateRequiredError");
+        const e = caught as InstanceType<typeof ApprovalGateRequiredError>;
+        assert.ok(e.gate.id.startsWith("gate_"), "gate id must be persisted");
+        assert.equal(e.gate.status, "pending");
+        assert.equal(e.gate.riskLevel, "high");
+
+        // Substrate invariant: NO WorkPacket row persisted
+        const packets = readWorkPackets(root);
+        assert.equal(packets.length, 0, "WorkPacket must NOT be persisted at high risk");
+
+        // But ApprovalGate row IS persisted (audit trail)
+        const persistedGate = readApprovalGate(root, e.gate.id);
+        assert.ok(persistedGate, "ApprovalGate must be persisted in JSONL audit trail");
+        assert.equal(persistedGate!.status, "pending");
+      } finally {
+        ledger.close();
+      }
+    });
+  });
+
+  it("createWorkPacket at critical risk throws (CLI cannot bypass MCP gate)", async () => {
+    const { ApprovalGateRequiredError, readWorkPackets } = await import("../src/ledgers.js");
+    withTempRoot((root) => {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        let caught: unknown = null;
+        try {
+          ledger.createWorkPacket({
+            title: "critical action",
+            mission: "system-altering work",
+            riskLevel: "critical",
+          });
+        } catch (err) {
+          caught = err;
+        }
+        assert.ok(caught instanceof ApprovalGateRequiredError, "must throw at critical");
+        const packets = readWorkPackets(root);
+        assert.equal(packets.length, 0, "critical-risk packet must NOT persist");
+      } finally {
+        ledger.close();
+      }
+    });
+  });
+
+  it("transitionWorkPacket refuses invalid state transitions (terminal states are terminal)", () => {
+    withTempRoot((root) => {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        const packet = ledger.createWorkPacket({
+          title: "t", mission: "m", riskLevel: "low",
+        });
+
+        // pending → completed (skip in_progress) — refused
+        assert.throws(() => {
+          ledger.transitionWorkPacket({ id: packet.id, status: "completed" });
+        }, /Invalid WorkPacket transition: pending → completed/);
+
+        // Move to in_progress, then completed (allowed path)
+        ledger.transitionWorkPacket({ id: packet.id, status: "in_progress" });
+        ledger.transitionWorkPacket({ id: packet.id, status: "completed" });
+
+        // completed → in_progress (terminal-to-active) — refused
+        assert.throws(() => {
+          ledger.transitionWorkPacket({ id: packet.id, status: "in_progress" });
+        }, /Invalid WorkPacket transition: completed → in_progress/);
+
+        // completed → completed (self-loop) — refused
+        assert.throws(() => {
+          ledger.transitionWorkPacket({ id: packet.id, status: "completed" });
+        }, /Invalid WorkPacket transition: completed → completed/);
+      } finally {
+        ledger.close();
+      }
+    });
+  });
+
+  it("transitionWorkPacket: pending → cancelled is allowed (mid-flight abandonment)", () => {
+    withTempRoot((root) => {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        const packet = ledger.createWorkPacket({
+          title: "t", mission: "m", riskLevel: "low",
+        });
+        const result = ledger.transitionWorkPacket({
+          id: packet.id, status: "cancelled", summary: "no longer needed",
+        });
+        assert.equal(result.packet.status, "cancelled");
+        assert.ok(result.packet.completedAt, "cancelled also stamps completedAt");
+      } finally {
+        ledger.close();
+      }
+    });
+  });
+
+  it("transitionWorkPacket: in_progress → blocked → in_progress is allowed (resumable)", () => {
+    withTempRoot((root) => {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        const packet = ledger.createWorkPacket({
+          title: "t", mission: "m", riskLevel: "low",
+        });
+        ledger.transitionWorkPacket({ id: packet.id, status: "in_progress" });
+        ledger.transitionWorkPacket({ id: packet.id, status: "blocked", summary: "waiting on dep" });
+        const result = ledger.transitionWorkPacket({ id: packet.id, status: "in_progress" });
+        assert.equal(result.packet.status, "in_progress");
       } finally {
         ledger.close();
       }

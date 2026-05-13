@@ -236,6 +236,40 @@ export class LedgerInvariantError extends Error {
   }
 }
 
+/**
+ * Thrown when a high/critical-risk WorkPacket creation is gated for approval.
+ * The gate row is persisted BEFORE the throw so the audit trail captures
+ * what was attempted, even though no WorkPacket row exists yet. Callers
+ * (CLI / MCP) should catch this and surface the gate id + reason instead
+ * of treating it as a generic error.
+ */
+export class ApprovalGateRequiredError extends Error {
+  readonly gate: ApprovalGate;
+  constructor(gate: ApprovalGate, message: string) {
+    super(message);
+    this.name = 'ApprovalGateRequiredError';
+    this.gate = gate;
+  }
+}
+
+/**
+ * WorkPacket lifecycle state machine — substrate invariant. Terminal states
+ * (completed, cancelled) accept no outgoing transitions. Pending packets
+ * cannot skip to completed without going through in_progress.
+ *
+ * Catches CRITICAL finding from code-review on 6f9703c: prior version of
+ * transitionWorkPacket accepted any source→target, allowing completed
+ * packets to revert to in_progress and pending packets to "complete" without
+ * doing the work.
+ */
+const ALLOWED_TRANSITIONS: Readonly<Record<WorkPacketStatus, ReadonlySet<WorkPacketStatus>>> = {
+  pending: new Set<WorkPacketStatus>(['in_progress', 'cancelled']),
+  in_progress: new Set<WorkPacketStatus>(['blocked', 'completed', 'cancelled']),
+  blocked: new Set<WorkPacketStatus>(['in_progress', 'cancelled']),
+  completed: new Set<WorkPacketStatus>(),
+  cancelled: new Set<WorkPacketStatus>(),
+};
+
 export interface CreateWorkPacketInput {
   title: string;
   mission: string;
@@ -347,8 +381,54 @@ export class AgentOpsLedger {
 
   // ── WorkPacket ────────────────────────────────────────
 
-  /** Create a WorkPacket — append to JSONL, upsert into SQLite. */
+  /**
+   * Create a WorkPacket — append to JSONL, upsert into SQLite.
+   *
+   * SUBSTRATE INVARIANT (chokepoint): high/critical-risk packets are gated.
+   * An ApprovalGate row is persisted with the full request payload, then
+   * ApprovalGateRequiredError is thrown. The WorkPacket itself is NOT
+   * persisted (no JSONL row, no SQLite row) until the gate is approved
+   * through a separate path. There is no DEMO_MODE override.
+   *
+   * This is the SINGLE chokepoint — both CLI and MCP surfaces flow through
+   * here. Don't add a parallel high/critical creation path that bypasses
+   * this check.
+   */
   createWorkPacket(input: CreateWorkPacketInput): WorkPacket {
+    if (input.riskLevel === 'high' || input.riskLevel === 'critical') {
+      const titleHint = input.title
+        ? input.title.slice(0, 60).replace(/[^a-zA-Z0-9 _-]/g, '')
+        : null;
+      const gate: ApprovalGate = {
+        id: newId('gate'),
+        workPacketId: titleHint ? `<pending:${titleHint}>` : '',
+        requestedAt: nowIso(),
+        status: 'pending',
+        riskLevel: input.riskLevel,
+        reason: 'WorkPacket gated at high/critical risk',
+        pendingContext: {
+          kind: 'workpacket',
+          payload: {
+            title: input.title,
+            mission: input.mission,
+            riskLevel: input.riskLevel,
+            allowedTools: input.allowedTools ?? [],
+            allowedPaths: input.allowedPaths ?? [],
+          },
+        },
+      };
+      const gateResult = appendApprovalGate(this.root, gate);
+      if (!gateResult.ok) {
+        throw new LedgerInvariantError(
+          `ApprovalGate append failed: ${gateResult.error}`,
+        );
+      }
+      throw new ApprovalGateRequiredError(
+        gate,
+        `WorkPacket creation refused at ${input.riskLevel} risk; approval gate ${gate.id} opened`,
+      );
+    }
+
     const now = nowIso();
     const packet: WorkPacket = {
       id: newId('wp'),
@@ -442,6 +522,12 @@ export class AgentOpsLedger {
   /**
    * Transition a WorkPacket and emit the corresponding AgentEvent. This is the
    * canonical local lifecycle helper for CLI/MCP consumers.
+   *
+   * SUBSTRATE INVARIANT: enforces the ALLOWED_TRANSITIONS state machine.
+   * Terminal states (completed, cancelled) accept no outgoing transitions.
+   * Pending packets cannot skip to completed without going through in_progress.
+   * Same-state self-transitions are also refused (no-op writes pollute the
+   * snapshot ledger).
    */
   transitionWorkPacket(input: {
     id: string;
@@ -455,6 +541,14 @@ export class AgentOpsLedger {
     const current = this.getWorkPacket(input.id);
     if (!current) {
       throw new LedgerInvariantError(`WorkPacket not found: ${input.id}`);
+    }
+
+    const allowed = ALLOWED_TRANSITIONS[current.status];
+    if (!allowed.has(input.status)) {
+      throw new LedgerInvariantError(
+        `Invalid WorkPacket transition: ${current.status} → ${input.status} (id=${input.id}). ` +
+          `Allowed from ${current.status}: ${[...allowed].join(', ') || '(terminal — no transitions allowed)'}`,
+      );
     }
 
     const completedAt =

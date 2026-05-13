@@ -33,7 +33,7 @@ import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
 import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
-import { AgentOpsLedger, readRecentAgentEvents } from "./ledgers.js";
+import { AgentOpsLedger, ApprovalGateRequiredError, readRecentAgentEvents } from "./ledgers.js";
 import { listModules, setModuleEnabled } from "./modules.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
@@ -717,15 +717,27 @@ function cmdWorkpacket(
           return;
         }
 
-        const packet = ledger.createWorkPacket({
-          title,
-          mission,
-          riskLevel: risk,
-          assignedAgent: options.agent ?? "unassigned",
-        });
+        try {
+          const packet = ledger.createWorkPacket({
+            title,
+            mission,
+            riskLevel: risk,
+            assignedAgent: options.agent ?? "unassigned",
+          });
 
-        console.log(`[starlight] WorkPacket created: ${packet.id}`);
-        console.log(formatJSON(packet));
+          console.log(`[starlight] WorkPacket created: ${packet.id}`);
+          console.log(formatJSON(packet));
+        } catch (err) {
+          if (err instanceof ApprovalGateRequiredError) {
+            // Substrate invariant — gate row was persisted, packet was NOT.
+            console.error(`[starlight] ${err.message}`);
+            console.error(`[starlight] Gate row: ${err.gate.id} (status: ${err.gate.status})`);
+            console.error(`[starlight] The WorkPacket itself was NOT persisted. Approve the gate to proceed.`);
+            process.exitCode = 2; // distinct exit code: gated, not error
+            return;
+          }
+          throw err;
+        }
         break;
       }
 
@@ -882,7 +894,11 @@ function cmdModules(action: string, args: string[]): void {
           process.exitCode = 1;
           return;
         }
-        const mod = setModuleEnabled(root, id, action === "enable");
+        // --acked acknowledges privacy-scoped permissions for private-module /
+        // future-module / vault:private-scoped modules. Required to enable,
+        // ignored on disable. Mirrors sis.pack.install permissions_acked.
+        const acked = args.includes("--acked");
+        const mod = setModuleEnabled(root, id, action === "enable", { permissionsAcked: acked });
         console.log(`[starlight] Module ${mod.id} ${mod.enabled ? "enabled" : "disabled"}.`);
         console.log(formatJSON(mod));
         break;

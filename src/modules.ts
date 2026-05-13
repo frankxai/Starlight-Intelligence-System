@@ -163,16 +163,77 @@ export function listModules(repoRoot: string): IntelligenceModule[] {
   }));
 }
 
+/**
+ * Permissions that require explicit acknowledgement before a module
+ * can be enabled. Mirrors the sis.pack.install permissions_acked contract
+ * from src/mcp-server-v01.ts so the substrate has one unified surface for
+ * privacy-scoped consent.
+ *
+ * Catches IMPORTANT [82%] finding from code-review on 6f9703c: prior version
+ * of setModuleEnabled silently flipped private-module entries on, breaking
+ * the privacy substrate invariant.
+ */
+const PRIVACY_SCOPED_PERMISSIONS: ReadonlySet<string> = new Set([
+  'vault:private',
+  'sensory:explicit-activation-only',
+  'people:private-records',
+]);
+
+const ACKNOWLEDGEMENT_REQUIRED_KINDS: ReadonlySet<IntelligenceModuleDefinition['kind']> = new Set([
+  'private-module',
+  'future-module',
+]);
+
+export class ModuleAcknowledgementRequiredError extends Error {
+  readonly moduleId: string;
+  readonly requiredPermissions: readonly string[];
+  constructor(moduleId: string, requiredPermissions: readonly string[]) {
+    super(
+      `Module ${moduleId} requires explicit permissions_acked: true to enable ` +
+        `(privacy-scoped permissions: ${requiredPermissions.join(', ') || '<kind-default>'})`,
+    );
+    this.name = 'ModuleAcknowledgementRequiredError';
+    this.moduleId = moduleId;
+    this.requiredPermissions = requiredPermissions;
+  }
+}
+
+export interface SetModuleEnabledOptions {
+  permissionsAcked?: boolean;
+  updatedBy?: string;
+}
+
 export function setModuleEnabled(
   repoRoot: string,
   id: string,
   enabled: boolean,
-  updatedBy = 'starlight-cli',
+  optionsOrUpdatedBy: SetModuleEnabledOptions | string = {},
 ): IntelligenceModule {
+  // Backwards-compat: prior signature took `updatedBy` as 4th positional arg.
+  const options: SetModuleEnabledOptions =
+    typeof optionsOrUpdatedBy === 'string'
+      ? { updatedBy: optionsOrUpdatedBy }
+      : optionsOrUpdatedBy;
+  const updatedBy = options.updatedBy ?? 'starlight-cli';
+
   const def = MODULES.find((mod) => mod.id === id);
   if (!def) {
     throw new Error(`Unknown module: ${id}`);
   }
+
+  // Privacy gate: enabling a module with privacy-scoped permissions OR
+  // private-module/future-module kind requires explicit ack. Disabling is
+  // always permitted (turning OFF a private surface is always safe).
+  if (enabled) {
+    const privacyPerms = def.permissions.filter((p) =>
+      PRIVACY_SCOPED_PERMISSIONS.has(p),
+    );
+    const kindRequiresAck = ACKNOWLEDGEMENT_REQUIRED_KINDS.has(def.kind);
+    if ((privacyPerms.length > 0 || kindRequiresAck) && options.permissionsAcked !== true) {
+      throw new ModuleAcknowledgementRequiredError(id, privacyPerms);
+    }
+  }
+
   const state = readState(repoRoot);
   state[id] = {
     enabled,

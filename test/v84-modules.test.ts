@@ -197,6 +197,86 @@ describe("v8.4 — modules.ts default-enabled invariants", () => {
   });
 });
 
+describe("v8.4 — privacy gate on setModuleEnabled (post-6f9703c REVISE)", () => {
+  it("enabling a private-module without permissionsAcked throws ModuleAcknowledgementRequiredError", async () => {
+    const { setModuleEnabled, ModuleAcknowledgementRequiredError } = await import("../src/modules.js");
+    const tmpRoot = await import("node:os").then((os) =>
+      import("node:fs").then((fs) => fs.mkdtempSync(`${os.tmpdir()}/sis-v84-`)),
+    );
+    try {
+      assert.throws(
+        () => setModuleEnabled(tmpRoot, "mis", true, {}),
+        ModuleAcknowledgementRequiredError,
+        "MIS (manifestation-is, vault:private) must require ack",
+      );
+      assert.throws(
+        () => setModuleEnabled(tmpRoot, "ris", true, {}),
+        ModuleAcknowledgementRequiredError,
+        "RIS (reality-is, vault:private) must require ack",
+      );
+      assert.throws(
+        () => setModuleEnabled(tmpRoot, "sensory-companion", true, {}),
+        ModuleAcknowledgementRequiredError,
+        "sensory-companion (future-module) must require ack",
+      );
+      assert.throws(
+        () => setModuleEnabled(tmpRoot, "people-is", true, {}),
+        ModuleAcknowledgementRequiredError,
+        "people-is (people:private-records) must require ack",
+      );
+    } finally {
+      const fs = await import("node:fs");
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("enabling a private-module with permissionsAcked: true succeeds", async () => {
+    const { setModuleEnabled, listModules } = await import("../src/modules.js");
+    const tmpRoot = await import("node:os").then((os) =>
+      import("node:fs").then((fs) => fs.mkdtempSync(`${os.tmpdir()}/sis-v84-`)),
+    );
+    try {
+      const mod = setModuleEnabled(tmpRoot, "mis", true, { permissionsAcked: true });
+      assert.equal(mod.enabled, true);
+      const all = listModules(tmpRoot);
+      assert.equal(all.find((m) => m.id === "mis")?.enabled, true);
+    } finally {
+      const fs = await import("node:fs");
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("disabling a private-module never requires permissionsAcked (turning off is always safe)", async () => {
+    const { setModuleEnabled } = await import("../src/modules.js");
+    const tmpRoot = await import("node:os").then((os) =>
+      import("node:fs").then((fs) => fs.mkdtempSync(`${os.tmpdir()}/sis-v84-`)),
+    );
+    try {
+      // Enable with ack, then disable without ack — must succeed
+      setModuleEnabled(tmpRoot, "mis", true, { permissionsAcked: true });
+      const disabled = setModuleEnabled(tmpRoot, "mis", false, {});
+      assert.equal(disabled.enabled, false);
+    } finally {
+      const fs = await import("node:fs");
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("enabling a universal-IS module never requires permissionsAcked (no privacy permission)", async () => {
+    const { setModuleEnabled } = await import("../src/modules.js");
+    const tmpRoot = await import("node:os").then((os) =>
+      import("node:fs").then((fs) => fs.mkdtempSync(`${os.tmpdir()}/sis-v84-`)),
+    );
+    try {
+      const mod = setModuleEnabled(tmpRoot, "code-is", true, {});
+      assert.equal(mod.enabled, true);
+    } finally {
+      const fs = await import("node:fs");
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("v8.4 — debt-ledger guardrails", () => {
   it("EXEMPT_MODULES size <= 3 (substrate-lie ceiling)", () => {
     assert.ok(

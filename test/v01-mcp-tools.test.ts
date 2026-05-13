@@ -606,6 +606,14 @@ describe('Track B v0.1 — substrate invariants', () => {
       assert.equal(next.ok, true);
       assert.equal((next.workPacket as { id: string }).id, packetId);
 
+      // pending → in_progress (substrate state-machine: cannot skip in_progress)
+      const ledger2 = new AgentOpsLedger(root);
+      try {
+        ledger2.transitionWorkPacket({ id: packetId, status: 'in_progress' });
+      } finally {
+        ledger2.close();
+      }
+
       const completed = srv.call('sis.workpacket.complete', {
         id: packetId,
         agent_id: 'codex',
@@ -616,7 +624,8 @@ describe('Track B v0.1 — substrate invariants', () => {
 
       const events = srv.call('sis.events.tail', { limit: 5 }) as OkEnvelope;
       assert.equal(events.ok, true);
-      assert.equal((events.events as unknown[]).length, 1);
+      // 2 events now: in_progress transition + completed transition
+      assert.equal((events.events as unknown[]).length, 2);
     });
   });
 
