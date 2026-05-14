@@ -144,7 +144,6 @@ Create `C:\Users\frank\starlight-voice\.gitignore`:
 # Rust
 /target/
 **/*.rs.bk
-Cargo.lock
 
 # Python
 __pycache__/
