@@ -201,6 +201,9 @@ git push
 - Create: `C:\Users\frank\starlight-voice\tauri\Cargo.toml`
 - Create: `C:\Users\frank\starlight-voice\tauri\tauri.conf.json`
 - Create: `C:\Users\frank\starlight-voice\tauri\src\main.rs`
+- Create: `C:\Users\frank\starlight-voice\tauri\build.rs` (required by tauri-build dep)
+- Create: `C:\Users\frank\starlight-voice\tauri\icons\icon.ico` (required by tauri-build for Windows resource file)
+- Create: `C:\Users\frank\starlight-voice\tauri\icons\tray-idle.png` (tray icon)
 
 - [ ] **Step 1: Create root `Cargo.toml` (workspace)**
 
@@ -271,7 +274,7 @@ Create `C:\Users\frank\starlight-voice\tauri\tauri.conf.json`:
     "category": "Utility",
     "shortDescription": "Jarvis-grade personal voice operator",
     "longDescription": "Open-source voice operator: PTT hotkey + Pipecat pipeline + MCP tools. Sub-800ms hot path.",
-    "icon": ["icons/tray-idle.png"],
+    "icon": ["icons/icon.ico", "icons/tray-idle.png"],
     "windows": {
       "webviewInstallMode": { "type": "skip" }
     }
@@ -314,19 +317,45 @@ fn main() {
 }
 ```
 
-- [ ] **Step 5: Build + verify tray icon appears**
+- [ ] **Step 4b: Create `tauri/build.rs` (required by tauri-build dep)**
 
-Place a 32×32 PNG at `tauri/icons/tray-idle.png` (any simple icon for now).
+Create `C:\Users\frank\starlight-voice\tauri\build.rs`:
+
+```rust
+fn main() {
+    tauri_build::build()
+}
+```
+
+- [ ] **Step 5: Place icons (both `icon.ico` AND `tray-idle.png`)**
+
+Tauri-build on Windows requires `tauri/icons/icon.ico` for the Windows resource file. The tray icon spec uses `tauri/icons/tray-idle.png`. Both must exist before `cargo build` succeeds.
+
+Quick path on Windows: place any 32x32 PNG at `tauri/icons/tray-idle.png`, then convert it to `.ico` via PowerShell:
+
+```powershell
+Add-Type -AssemblyName System.Drawing
+$png = [System.Drawing.Image]::FromFile('C:\Users\frank\starlight-voice\tauri\icons\tray-idle.png')
+$bmp = New-Object System.Drawing.Bitmap($png, 256, 256)
+$handle = $bmp.GetHicon()
+$icon = [System.Drawing.Icon]::FromHandle($handle)
+$fs = New-Object System.IO.FileStream('C:\Users\frank\starlight-voice\tauri\icons\icon.ico', [System.IO.FileMode]::Create)
+$icon.Save($fs); $fs.Close(); $png.Dispose(); $bmp.Dispose()
+```
 
 Run: `cd C:\Users\frank\starlight-voice; cargo build --release -p starlight-voice-tauri`
 
 Expected: Compiles. Run the binary at `target/release/starlight-voice-tauri.exe`. Tray icon appears in system tray. No window, no console. Kill process via tray right-click → Quit (we'll add the menu in Task 6).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Commit (two commits: scaffold then lockfile)**
 
 ```bash
 git add Cargo.toml tauri/
 git commit -m "feat(tauri): scaffold tray-only Tauri shell"
+git push
+
+git add Cargo.lock
+git commit -m "chore: commit Cargo.lock for reproducible builds"
 git push
 ```
 
