@@ -1,3 +1,6 @@
+[CmdletBinding()]
+param()
+
 # Install Starlight git hooks — point core.hooksPath at tools/git-hooks/
 #
 # Run once per clone:
