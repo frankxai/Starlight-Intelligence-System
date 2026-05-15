@@ -32,6 +32,44 @@ You can adopt **just the substrate** (fork SIP for your own work), **just the op
 
 ---
 
+## Why It Matters
+
+```mermaid
+flowchart TB
+  Human["Human intent"]
+  Vaults["6 semantic vaults<br/>JSONL source of truth"]
+  Index["SQLite + FTS5<br/>rebuildable index"]
+  MCP["MCP server<br/>10 sis_* tools"]
+  Adapters["Claude Code · Cursor · Codex · Gemini · OpenCode"]
+  Repos["Repo-specific agent harnesses"]
+  Output["Safer, memory-aware agent work"]
+
+  Human --> Vaults
+  Vaults --> Index
+  Index --> MCP
+  MCP --> Adapters
+  Adapters --> Repos
+  Repos --> Output
+  Output --> Vaults
+```
+
+| Capability | What It Gives Agents |
+| --- | --- |
+| Semantic vaults | Durable memory across sessions and tools |
+| Temporal confidence | Old knowledge decays unless reconfirmed |
+| Contradiction detection | Conflicting memories become visible |
+| Platform adapters | Same substrate across Claude, Cursor, Codex, Gemini, OpenCode |
+| MCP server | Tool-native access to memory and retrieval |
+| Harness checks | Prompt surfaces stay aligned with reality |
+
+Run the local harness guard:
+
+```bash
+npm run agents:harness-check
+```
+
+---
+
 ## The substrate (SIP)
 
 **Starlight Intelligence Protocol** — the contract that lets sovereign parties compose intelligence systems without losing sovereignty. Six layers:

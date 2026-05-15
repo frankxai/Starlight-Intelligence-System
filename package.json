@@ -102,6 +102,7 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "setup:gemini": "pwsh ./scripts/install-gemini-mcp.ps1",
+    "agents:harness-check": "node scripts/check-agent-harness.mjs",
     "test": "npm run test:operational && npm run test:substrate && npm run test:v01-evals",
     "test:v01-evals": "npm run build && node tools/run-v01-evals.mjs",
     "test:evals": "npm run build && node tools/run-v01-evals.mjs",
