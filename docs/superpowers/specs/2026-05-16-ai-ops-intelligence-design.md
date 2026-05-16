@@ -71,6 +71,23 @@ v0.1 ships if and only if **all** of:
 - agents/AGENT_REGISTRY.md update: add `starlight-ai-ops`
 - skills/skill-rules.json update: auto-activation triggers for `/ai-ops` and `/ai-coe`
 
+### Phase 0 gate (Verifier REVISE item 1 — added 2026-05-17 post-board)
+
+**Before any Phase 1 work begins**, a 1-day vertical slice ships only:
+
+- `verticals/ai-ops-intelligence/SKILL.md` (substrate skeleton)
+- `schemas/assistant.schema.json`
+- `excavation/walker.ts` (file-based platforms only — 6 of 11)
+- `/ai-ops-excavate` command (file-based mode)
+- `/ai-ops-list` command (basic table view)
+- `memory/ai-ops/` populated with Frank's *real* fleet
+
+**Phase 0 success criterion:** Frank can run `/ai-ops-excavate && /ai-ops-list` end-to-end and see his actual file-based AI assistants in one table. Schema survives contact with real data.
+
+**Phase 0 falsifier:** if the schema needs ≥3 field additions/removals after seeing real data, the full spec re-enters brainstorming for schema refit before Phase 1. Council and CoE surfaces are designed against a *validated* schema or not designed at all.
+
+Phases 1-5 (council, CoE surface, chat-platform excavation, Notion/Obsidian mirrors, global install, ACOS bridge) follow only after Phase 0 passes.
+
 ### Out of scope (v0.2 or later)
 
 - Notion → Git reverse sync (acknowledged; user accepted this deferral)
@@ -249,6 +266,23 @@ notion_page_id: null                         # filled after first Notion push
 - `attestation` present, ≥ `built-on-sip-v1.0.0`
 - `last_verdict` ∈ {keep, tighten, rewrite, retire, unreviewed}
 
+### 5.5 Canonical 6-pillar CoE rubric (Harmonizer REVISE item 2 — inlined post-board)
+
+The substrate is canonical for the rubric definitions. `frankx.ai/ai-coe` is a presentation surface that cites SIS, not the other way around — removing the brittle substrate ↔ vertical dependency the board flagged.
+
+| Pillar | Definition (canonical) |
+|---|---|
+| **Strategy** | Define the work AI should handle, the work humans keep, and the outcomes worth measuring. |
+| **Governance** | Set rules for review, disclosure, privacy, source quality, and final human accountability. |
+| **Talent** | Build fluency through prompts, playbooks, role-specific workflows, and repeated practice. |
+| **Technology** | Choose the tool stack deliberately: models, agents, automations, interfaces, and observability. |
+| **Data** | Turn documents, notes, research, and outputs into reusable context with clear ownership. |
+| **Ethics** | Make values operational through checks, limits, review moments, and escalation paths. |
+
+**Scoring (per pillar, per scale):** 1=absent, 2=emerging, 3=defined, 4=operating, 5=compounding. Initial weights equal across all 6 pillars; calibration happens *with* the first real assessment per Seer REVISE concern, not after — `/ai-coe-assess` records the weights used so future calibration is traceable.
+
+**Public surface contract:** `frankx.ai/ai-coe` MAY present these definitions but MUST NOT diverge without a corresponding SIS spec amendment. SIS is the source of truth.
+
 ## 6. Data flow
 
 ```
@@ -302,6 +336,23 @@ Boundary failures only — per CLAUDE.md hygiene rule "only validate at system b
 | `/ai-coe-assess` | < 1 assistant in registry | abort with "excavate first" message |
 
 **Graceful degradation invariant:** the council always produces *some* output if at least one Claude seat returned. External CLIs missing → reduced cross-family coverage, never failure.
+
+### 7.5 External CLI version contract (Verifier REVISE item 3 — added post-board)
+
+External CLIs (Gemini CLI, Codex CLI) ship rapidly; the cockpit/dispatch primitive was last validated in v7.5.3 (April 2026), and CLI surfaces may have shifted. To prevent silent breakage:
+
+- `verticals/ai-ops-intelligence/platforms/external-cli-versions.json` records validated versions:
+  ```json
+  {
+    "gemini-cli": { "validated": "X.Y.Z", "validated_on": "2026-05-XX", "command_shape": "gemini --prompt <text>" },
+    "codex-cli": { "validated": "X.Y.Z", "validated_on": "2026-05-XX", "command_shape": "codex --prompt <text>" }
+  }
+  ```
+  (X.Y.Z placeholders resolve during Phase 2 — actual versions captured at validation time.)
+
+- v86 symmetry test asserts this file exists, parses, has both CLIs.
+- Council dispatch reads `validated` field; if the live CLI reports a different version, council seat emits `cli-version-drift` warning in the readout (does not block — degrades gracefully).
+- New required integration test: `tests/council-cli-unavailable.test.ts` — both Gemini and Codex CLIs absent → council still produces readout with both POVs marked `cli-unavailable`, synthesizer notes degraded cross-family coverage verbatim.
 
 ## 8. Testing
 
@@ -388,7 +439,13 @@ Install: `npx acos install ai-ops-intelligence` (or manual via SIS install.sh)
 - New CLI verb `acos install ai-ops-intelligence` — invokes the installer
 - Updated `README.md` listing `/ai-ops` and `/ai-coe` as inherited capabilities
 
-**ACOS-side bootstrap** — when `acos init` runs in a new project and detects no `~/.claude/skills/ai-ops/`, prompt the user "Install AI Ops Intelligence (/ai-ops + /ai-coe)? [Y/n]". Default Y for new ACOS instances.
+**ACOS-side bootstrap** (Sovereign REVISE item 4 — opt-in only, post-board):
+
+- `acos init` does NOT auto-prompt for AI Ops Intelligence install by default.
+- Explicit opt-in path: `acos init --with-ai-ops-intelligence` performs the install during init.
+- Discovery path: `acos help ai-ops-intelligence` shows the install command for users who learn about it after init.
+- The CLAUDE.md note (above) is documentation, not auto-run behavior.
+- Rationale: ACOS users did not sign up for /ai-ops or /ai-coe; expanding `acos init` surface without explicit consent breaks the "least surprise" commitment. This also makes future opt-out clean — uninstall is symmetric.
 
 ### 11.3 Related agent-harness repos
 
@@ -420,6 +477,12 @@ This spec triggers the gate because it touches:
 
 Suggested phasing (real plan to be produced by `writing-plans` skill):
 
+**Phase 0 (1 day) — schema-vs-reality gate (board REVISE item 1):**
+
+0. **Vertical slice** — SKILL.md skeleton + schema JSON + walker.ts (file-based) + `/ai-ops-excavate` + `/ai-ops-list`. Run on Frank's actual fleet. If schema needs ≥3 changes → return to brainstorming for schema refit before Phase 1.
+
+**Phases 1-5 (3-4 days) — full v0.1, only if Phase 0 passes:**
+
 1. **Scaffold** — directories, SKILL.md, SIS-instance.md, STACK.md overrides, schema JSON
 2. **Excavation walker** — file-based platforms first (cheap), then manual templates
 3. **Notion + Obsidian sync** — one-way push hooks
@@ -440,7 +503,7 @@ Suggested phasing (real plan to be produced by `writing-plans` skill):
 
 - Notion DB schema fields beyond what's listed — finalize during Notion-push implementation
 - Whether `/ai-coe-frame` consumes a YAML brief or interactive prompts — pick during impl
-- **CoE maturity rubric weights across the 6 pillars (Strategy · Governance · Talent · Technology · Data · Ethics)** — start equal-weighted, calibrate after first real assessment against frankx.ai/ai-coe scoring (if any public scoring exists)
+- **CoE maturity rubric weights across the 6 pillars** — per §5.5, start equal-weighted with weights recorded per assessment; calibrate *during* the first real Personal-CoE run, not as a separate later step. This addresses Seer REVISE concern about TBD calcifying into precedent.
 - ACOS install mechanism: should `npx acos install ai-ops-intelligence` clone SIS via git, or pull from a published `@starlight/ai-ops-intelligence` npm package? Decide during impl based on which surface lands first
 - Realistic v0.1 effort: **~3-5 days of focused work** for a senior architect (scaffold 0.5d · excavation 0.5d · sync 0.5d · commands 0.5d · council seats incl. CLI dispatch 1d · CoE surface 0.5d · tests 0.5d · global install + ACOS bridge 0.5d · substrate updates + board gate 0.5d). Stretch to 1 week with proper code review per `feedback_subagent_code_needs_review_before_ship.md`.
 
@@ -459,6 +522,12 @@ Suggested phasing (real plan to be produced by `writing-plans` skill):
   - `feedback_board_before_tag.md` (substrate gate)
   - `project_v85_substrate_evolution_2026_05_14.md` (v85 symmetry test pattern; v86 continues)
 - Brainstorming session: `.superpowers/brainstorm/253084-1778966851/`
+
+## 16. Board log
+
+| Date | Verdict | Items |
+|---|---|---|
+| 2026-05-17 (round 1) | **REVISE** | (1) Phase 0 vertical-slice required — Verifier; (2) inline 6-pillar rubric into SIS — Harmonizer; (3) external CLI version contract + unavailable test — Verifier; (4) ACOS auto-bootstrap opt-in only — Sovereign. All 4 closed in spec amendments §3.5 / §5.5 / §7.5 / §11.2 plus §13 reordered around Phase 0 and §14 calibration moved up. Re-boarding for round 2. |
 
 ---
 
