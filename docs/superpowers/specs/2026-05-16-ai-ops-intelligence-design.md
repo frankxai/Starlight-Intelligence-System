@@ -528,6 +528,7 @@ Suggested phasing (real plan to be produced by `writing-plans` skill):
 | Date | Verdict | Items |
 |---|---|---|
 | 2026-05-17 (round 1) | **REVISE** | (1) Phase 0 vertical-slice required — Verifier; (2) inline 6-pillar rubric into SIS — Harmonizer; (3) external CLI version contract + unavailable test — Verifier; (4) ACOS auto-bootstrap opt-in only — Sovereign. All 4 closed in spec amendments §3.5 / §5.5 / §7.5 / §11.2 plus §13 reordered around Phase 0 and §14 calibration moved up. Re-boarding for round 2. |
+| 2026-05-17 (round 2) | **PROCEED** | All 4 round-1 items closed structurally. Two advisory residuals carried forward: (a) annual sync check between SIS canon and frankx.ai presentation surface (v0.2 backlog); (b) `external-cli-versions.json` placeholder handling — test must allow `X.Y.Z` during Phase 0/1, tighten post-Phase 2 (impl-time, document in test not spec). Spec cleared for `writing-plans` skill. |
 
 ---
 
