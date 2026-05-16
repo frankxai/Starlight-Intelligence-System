@@ -34,7 +34,7 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 ## What you have access to
 
 - **42 named agents** across 8 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (3) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`). Full registry: `agents/AGENT_REGISTRY.md`.
-- **68 auto-activating skill rules** across 13 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions). Activation: `skills/skill-rules.json`.
+- **69 auto-activating skill rules** across 13 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions). Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.

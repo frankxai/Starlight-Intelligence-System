@@ -3,6 +3,17 @@
   "description": "Starlight Intelligence System - Skill Auto-Activation Rules",
   "rules": [
     {
+      "id": "memory-mempalace-obsidian-bridge",
+      "skill": "memory/mempalace-obsidian-bridge",
+      "triggers": {
+        "keywords": ["recall", "curate", "obsidian note", "mempalace", "memory bus", "curate-recall", "/curate-recall", "atom", "vault note"],
+        "agents": ["starlight-sage", "starlight-prime"],
+        "intents": ["recall", "curate", "persist"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "integration-domain-stack-architecture",
       "skill": "integration/domain-stack-architecture",
       "triggers": {

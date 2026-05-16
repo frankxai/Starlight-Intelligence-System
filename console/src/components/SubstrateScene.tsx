@@ -2,9 +2,10 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Stars, Text } from "@react-three/drei";
-import { useMemo, useRef } from "react";
+import { Suspense, useMemo, useRef } from "react";
 import type { Group, Mesh } from "three";
 import { vaults, verticals, type VaultNode, type VerticalNode } from "@/data/substrate";
+import CanvasCluster from "./CanvasCluster";
 
 const VAULT_RING_RADIUS = 4;
 const VERTICAL_RING_RADIUS = 8.5;
@@ -197,6 +198,16 @@ export default function SubstrateScene() {
 
       <CoreOrb />
       <OrbitalSystem />
+
+      {/*
+        Obsidian Canvas atlases projected onto the substrate shell.
+        Each cluster wraps the substrate at a different radius so the user
+        can read the layers: vaults (4) < verticals (8.5) < canvas shells (14+).
+      */}
+      <Suspense fallback={null}>
+        <CanvasCluster name="brain-clusters" radius={14} height={5} />
+        <CanvasCluster name="system-architecture-v8" radius={18} height={6} />
+      </Suspense>
 
       <OrbitControls
         enablePan

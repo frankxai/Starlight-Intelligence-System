@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 68 skills across 13 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 69 skills across 13 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 
@@ -98,7 +98,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | machine/heart | machine-heart | SIS | 2026-05-10 | experimental |
 | machine/storage | machine-storage | SIS | 2026-05-10 | experimental |
 
-### memory (7)
+### memory (8)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
@@ -109,6 +109,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | memory/capture-discipline | memory-capture-discipline | SIS | 2026-05-06 | stable |
 | memory/insight-distillation | memory-insight-distillation | SIS | 2026-05-06 | stable |
 | memory/sis-memory-orchestrator | memory-sis-memory-orchestrator | SIS | 2026-05-06 | stable |
+| memory/mempalace-obsidian-bridge | memory-mempalace-obsidian-bridge | SIS | 2026-05-17 | stable |
 
 ### music-is (10)
 
