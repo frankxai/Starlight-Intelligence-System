@@ -41,7 +41,7 @@ Available vaults:
 
 ## Skills
 
-69 auto-activating skill rules fire based on context across 13 domains. See `skills/skill-rules.json` for triggers.
+71 auto-activating skill rules fire based on context across 14 domains. See `skills/skill-rules.json` for triggers.
 
 Primary domains:
 **Intelligence:** Strategic Reasoning, Systems Thinking, Pattern Recognition, Decision Framework, Genius Excavation

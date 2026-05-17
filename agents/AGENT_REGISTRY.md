@@ -173,6 +173,23 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 
 `music-suno-prompt` is a cross-sub-system grounding command (composes Catalog + Persona + label-canon).
 
+**Crypto Intelligence sub-stack agents** (v0.1 proof-of-pattern ship per Board 2026-05-17 R4 close-out). Third reference Domain Sub-Stack, first **Houses-as-sub-systems** primitive instance, first composition-layer composition under Wealth IS. House of On-Chain scaffolded; remaining 5 Houses gated on v0.1-proof-pass.
+
+| Agent | File | House | Tier | Vault Namespace | Commands (count) |
+|-------|------|------|------|-----------------|------------------|
+| **Crypto / On-Chain** | `verticals/crypto-intelligence/onchain/agent.md` | On-Chain — chain-data + wallet-flow + whale-tracking + MEV + validator econ | Domain Sub-Stack Tier · v0.1 scaffolded | `crypto-intelligence/onchain/` (instance state in `private/crypto-intelligence/onchain/artifacts/`) | `crypto-onchain-flow-snapshot`, `crypto-onchain-wallet-trace`, `crypto-onchain-mev-audit`, `crypto-onchain-validator-econ`, `crypto-onchain-contract-interaction` (5) |
+| **Crypto / Macro** | gated · v0.2 | Macro — regime detection + cycle-position thesis | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/macro/` | gated (4-5 planned) |
+| **Crypto / DeFi** | gated · v0.2 | DeFi — mechanism audit + yield architecture + risk-stack | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/defi/` | gated (4-5 planned) |
+| **Crypto / Sovereignty** | gated · v0.2 | Sovereignty — custody architecture + multisig + jurisdiction | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/sov/` | gated (4-5 planned) |
+| **Crypto / Research** | gated · v0.2 | Research — protocol thesis + tokenomics + founder DD | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/res/` | gated (4-5 planned) |
+| **Crypto / Allocation** | gated · v0.2 | Allocation — sizing + rebalance + exit + concentration | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/alloc/` | gated (4-5 planned) |
+
+**Crypto IS specifics** (per Board R5 + (c) close-outs):
+- **R5 non-advisory clause inline** in every House command output (mandatory, non-waivable)
+- **Composes under Wealth IS composition layer** — first reference instance per `STACK.md` § Composition Layer (declared 2026-05-17). Outputs feed `/wealth-portfolio-fit`, `/wealth-sovereignty-design`, `/wealth-cycle-thesis`.
+- **Sibling-repo export hook landed** — `verticals/crypto-intelligence/ATTESTATIONS.md` (vertical-local ledger) + MCP-shape declaration in `SKILL.md`. v0.2+ extraction target: `github.com/frankxai/crypto-intelligence-system`.
+- **Falsifier:** 1-week proof-of-pattern with House of On-Chain. If 4-5 named artifacts cannot ship in the week, Houses-as-sub-systems primitive failed → fall back to functional sub-systems matching People IS shape.
+
 **Domain Sub-Stack Tier rules:**
 - Sub-system agents serve a sovereign domain (the practitioner's vertical), not the universal substrate
 - Compose within their vertical (sub-systems reference each other) and with universal IS (Genius for voice; Vision for company-as-candidate framing; Performance + Talent + Culture form an interconnected loop)
@@ -180,7 +197,7 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 - Pattern generalizes via `/spawn-domain-stack` — any Genius Profile + named domain expertise spawns a 4-7-sub-system vertical
 - Public-reference verticals (people-intelligence, sound-intelligence) are anonymized + forkable; operator-tier verticals (music-is) are Frank-specific and import patterns from public references rather than duplicating substrate
 
-### SIS Extractor Tier (v8.6+ — Phase 1 extractors for /sis-forge)
+### SIS Extractor Tier (v8.x-pre-alpha+ — Phase 1 extractors for /sis-forge)
 
 Five sub-agents dispatched by `/sis-forge` to build corpus atoms from five canonical sources. Each agent produces ≤200 JSONL atoms. Not operational agents (no ambient dispatch); activated only when `/sis-forge` runs Phase 1.
 

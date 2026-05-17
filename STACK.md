@@ -34,6 +34,26 @@ The Orchestrator is the master routing layer (#10 above). It composes additively
 
 Subsystem additions do NOT change the IS count. The 10-IS table above remains the canonical taxonomy. Subsystems are routing-layer internals.
 
+## Composition Layer (substrate primitive, declared 2026-05-17)
+
+A **Composition Layer** is a tier inside a universal IS that owns cross-domain rules above a set of Domain Sub-Stacks composed under that IS. Any universal IS may evolve into a composition layer; doing so does NOT change the 10-IS count — the IS row stays, its operational shape gains a tier.
+
+**Substrate doctrine** (introduced via `docs/boards/2026-05-17-crypto-investment-spawn.md` R1.a close-out, Frank-acked):
+
+A universal IS at row #N may compose over its Domain Sub-Stacks via commands and rules declared at the IS-itself. Composition-layer commands read from sub-vertical outputs and produce cross-domain artifacts (cross-asset portfolio fit, cross-clinical-and-nutrition regimen, cross-product-and-creator pipeline, etc.). The composition layer is **not** a new top-level IS; it is the operational shape of an existing IS that has spawned Domain Sub-Stacks beneath it.
+
+**First reference instance:** Wealth IS at `verticals/wealth/` (declared 2026-05-17). Wealth IS preserves its existing DPI ledger + Thesis engine + Gate ladder framework set as its own commands (`/wealth-dpi`, `/wealth-thesis-review`, `/wealth-gate-progress`) while Crypto Intelligence + Investment Intelligence Domain Sub-Stacks compose under it via explicit `Composes-with: Wealth IS / <framework>` declarations in their SUB-SYSTEMS.md.
+
+**When to declare composition-layer evolution:**
+
+- A universal IS has spawned ≥2 Domain Sub-Stacks beneath it.
+- Cross-domain rules emerge that don't belong to any single sub-stack (e.g., cross-asset allocation rules above Crypto + Investment + future Real-Estate IS).
+- The IS-itself already had named framework content from prior versions that requires preservation.
+
+**Falsifier:** A composition layer must ship ≥3 cross-domain commands within 30 days of declaration. If `verticals/<is-name>/commands/` is empty at 30 days post-declaration, the composition concept failed for that IS — collapse to ACL-only role (declarative reference, no operational commands).
+
+**Pattern available to:** Self IS, Wealth IS, Family IS, Business IS, Creator IS, Second-Brain IS, Code IS, Voice-Video IS, Brand IS, Starlight Orchestrator. Not all will use it; the pattern is opt-in per IS.
+
 ## Design principles
 
 1. **Sovereignty over convenience.** Prefer open protocols, forkable standards, exportable data. No irrecoverable vendor capture.

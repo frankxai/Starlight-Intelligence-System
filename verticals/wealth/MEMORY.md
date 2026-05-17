@@ -31,10 +31,12 @@
 ## Changelog
 
 - `v0.1` · `2026-04-26` · Spawned as v7.5.1 OpenClaw CRITICAL-1 remediation. Operational `/wealth-dpi` command exists since pre-v7.0; this directory closes the substrate-canon gap. Frank's instance state lives in `private/` per privacy framework.
+- `v0.2` · `2026-05-17` · Evolved to **first reference instance of Composition Layer substrate primitive** per `docs/boards/2026-05-17-crypto-investment-spawn.md` R1.a close-out (Frank-acked). Composition-layer doctrine added to `STACK.md`. Existing DPI ledger + Thesis engine + Gate ladder framework set preserved as Wealth IS's own commands (R3.a close-out). Crypto Intelligence Domain Sub-Stack scaffolded at `verticals/crypto-intelligence/` (R4 proof-of-pattern via House of On-Chain only; Investment IS held until v0.1-proof-pass). New cross-asset commands declared: `/wealth-portfolio-fit`, `/wealth-sovereignty-design`, `/wealth-cycle-thesis`. Wealth IS daily-5 declared per R2 cognitive-load discipline. **Falsifier:** `verticals/wealth/commands/` must ship ≥3 cross-asset commands by 2026-06-16, else composition-layer concept failed for Wealth IS.
 
 ### Reference lineage SHAs
 
 - v0.1 spawn — pending v7.5.1 commit SHA.
+- v0.2 composition-layer evolution — pending 2026-05-17 commit SHA.
 
 ---
 

@@ -176,6 +176,21 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **SIP commands:** 30 commands across `/sound-composition-*` (5) · `/sound-production-*` (5) · `/sound-catalog-*` (5) · `/sound-performance-*` (5) · `/sound-audience-*` (5) · `/sound-sync-*` (5).
 - **Synthesis edge:** composer + producer + audio engineer + decade of catalog/release operations + literacy in music-theory + cognitive-science-of-listening + business-of-sync-licensing.
 
+### Crypto Intelligence
+- **Class:** sovereign domain sub-stack (reference vertical) — third reference, validates the **Houses-as-sub-systems** decomposition primitive AND first composition-instance under Wealth IS composition layer (per `STACK.md` § Composition Layer, declared 2026-05-17).
+- **Domain:** Cryptocurrency practiced as the architecture of sovereignty + protocol-mechanism literacy + cycle-position pattern recognition. Six Houses (On-Chain · Macro · DeFi · Sovereignty · Research · Allocation) decomposed as archetypal stances.
+- **Owner:** open reference (forkable by sovereign crypto practitioners). Composes under Wealth IS as first reference instance of Composition Layer substrate primitive.
+- **Status:** `v0.1 proof-of-pattern — House of On-Chain scaffolded (5 commands + agent + skill + knowledge); 5 Houses gated on v0.1-proof-pass per Board R4 close-out`. Investment IS held until proof-pass.
+- **Primary repo:** `verticals/crypto-intelligence/` in `frankxai/Starlight-Intelligence-System` (v0.2+ extraction target: `github.com/frankxai/crypto-intelligence-system` per Board open-question (c) export-hook landed via vertical-local ATTESTATIONS.md + MCP-shape in SKILL.md).
+- **Houses (v0.1):** `onchain` (scaffolded). **Houses (v0.2 gated):** `macro` · `defi` · `sov` · `res` · `alloc`.
+- **Canon:** declines (canon-free per substrate register).
+- **Compounds:** sovereign crypto practitioners forking + attestation graph compounding + composes-with Wealth IS umbrella via `/wealth-portfolio-fit`, `/wealth-sovereignty-design`, `/wealth-cycle-thesis`.
+- **SIP commands (v0.1):** 5 commands across `/crypto-onchain-*` (flow-snapshot · wallet-trace · mev-audit · validator-econ · contract-interaction). **v0.2 commands gated:** ~24-28 additional commands across remaining 5 Houses on proof-pass.
+- **Synthesis edge:** Oracle-grade enterprise architecture × Composer-Gamer pattern-recognition × Sovereign multi-vertical operator × Sovereignty-first substrate builder × Genuine care as system input. Applied to crypto: protocol-mechanism analysis at enterprise depth + sovereignty discipline by default + refusal of fabricated return numbers + capital-aware composition with Wealth IS umbrella.
+- **Falsifier:** 1-week proof-of-pattern with House of On-Chain. If 4-5 named artifacts cannot ship in the week, Houses-as-sub-systems primitive failed for crypto → fall back to functional sub-systems matching People IS shape; re-iterate at PROPOSAL.md.
+- **Board verdict:** REVISE close-out 2026-05-17 — `docs/boards/2026-05-17-crypto-investment-spawn.md` (5 items closed same-session per v7.5.1 recovery precedent).
+- **Genius prerequisite gate:** CLOSED via `genius/profile-frankx.md` + `genius/freedom-path-frankx.md` (Path A in-repo corpus excavation, 2026-05-17).
+
 ---
 
 ## Registry rules

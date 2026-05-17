@@ -168,6 +168,13 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | sound-intelligence/production-systems | sound-intelligence-production-systems | SIS | 2026-05-06 | stable |
 | sound-intelligence/sync-licensing | sound-intelligence-sync-licensing | SIS | 2026-05-06 | stable |
 
+### crypto-intelligence (2)
+
+| Skill | Activation rule ID | Owner repo | Version | Status |
+|---|---|---|---|---|
+| crypto-intelligence | crypto-intelligence-vertical | SIS | 2026-05-17 | experimental |
+| crypto-intelligence/onchain | crypto-intelligence-onchain | SIS | 2026-05-17 | experimental |
+
 ### vision (3)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
