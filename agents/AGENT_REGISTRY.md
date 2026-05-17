@@ -180,6 +180,20 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 - Pattern generalizes via `/spawn-domain-stack` — any Genius Profile + named domain expertise spawns a 4-7-sub-system vertical
 - Public-reference verticals (people-intelligence, sound-intelligence) are anonymized + forkable; operator-tier verticals (music-is) are Frank-specific and import patterns from public references rather than duplicating substrate
 
+### SIS Extractor Tier (v8.6+ — Phase 1 extractors for /sis-forge)
+
+Five sub-agents dispatched by `/sis-forge` to build corpus atoms from five canonical sources. Each agent produces ≤200 JSONL atoms. Not operational agents (no ambient dispatch); activated only when `/sis-forge` runs Phase 1.
+
+| Agent | File | Source | Atom Prefix | Contract |
+|-------|------|--------|------------|----------|
+| **Transcripts Extractor** | `sis-extractor-transcripts.md` | `~/.claude/projects/*` (Cross-Repo Indexer) | `t-` | ≤200 atoms from session transcripts, weight by signal clarity + repetition |
+| **Vault Extractor** | `sis-extractor-vault.md` | `memory/**/*.md` (Obsidian vault) | `v-` | ≤200 atoms from curated second brain, weight by framework-tier + backlinks |
+| **Prompts Extractor** | `sis-extractor-prompts.md` | `skills/`, `agents/`, `commands/` (user's prompt library) | `p-` | ≤200 atoms from prompt frontmatter, weight by inbound references |
+| **Repos Extractor** | `sis-extractor-repos.md` | Latest `docs/ops/REPO-PORTFOLIO-AUDIT-*.md` (shipped work) | `r-` | ≤200 atoms from active repos, weight by recency + CI green |
+| **External Extractor** | `sis-extractor-external.md` | Notion / Google Drive / Cowork (MCP adaptive) | `e-` | ≤200 atoms from external sources, silence fail gracefully |
+
+All SIS extractors follow the Genius protocol contract: pulling from known, enumerable, explicitly-configured corpus only — never corpus-guessing.
+
 ### Sage ↔ Second Brain boundary
 
 - **Sage** holds *institutional* knowledge — organizational memory, lessons from past sessions, civilization-scale wisdom. Reads/writes across all 6 substrate vaults.
