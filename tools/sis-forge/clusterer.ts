@@ -70,27 +70,27 @@ export function clusterAtoms(atoms: Atom[]): Cluster[] {
   for (let i = 0; i < sorted.length; i++) {
     if (assigned[i] !== -1) continue;
     const clusterId = `c${clusters.length + 1}`;
-    const clusterAtoms = [sorted[i]];
+    const members = [sorted[i]];
     assigned[i] = clusters.length;
     for (let j = i + 1; j < sorted.length; j++) {
       if (assigned[j] !== -1) continue;
       const sim = cosine(vectors[i], vectors[j]);
       if (sim >= SIM_THRESHOLD) {
-        clusterAtoms.push(sorted[j]);
+        members.push(sorted[j]);
         assigned[j] = clusters.length;
       }
     }
-    const sources = Array.from(new Set(clusterAtoms.map((a) => a.source))).sort();
+    const sources = Array.from(new Set(members.map((a) => a.source))).sort();
     const label = topTerms(vectors[i], 3);
     const distinctSourceCount = sources.length;
     const bucket: Cluster["bucket"] =
-      clusterAtoms.length >= 7 && distinctSourceCount >= 2 ? "signature" :
-      clusterAtoms.length >= 3 && distinctSourceCount >= 2 ? "framework" :
+      members.length >= 7 && distinctSourceCount >= 2 ? "signature" :
+      members.length >= 3 && distinctSourceCount >= 2 ? "framework" :
       "anecdote";
     clusters.push({
       id: clusterId,
       label,
-      atoms: clusterAtoms,
+      atoms: members,
       sources: sources as Cluster["sources"],
       bucket,
     });
