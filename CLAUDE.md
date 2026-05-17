@@ -188,6 +188,7 @@ Skill definitions: `skills/{domain}/{skill-name}.md`
 | `/yolo` | Enter /yolo Hive session — Claude-led cross-repo conductor with parallel council scan + Prime synthesis + aggressive autonomy. Phase-in locked to single repo for sessions 1-3 per `yolo-scope.json`. See `docs/superpowers/specs/2026-05-11-yolo-hive-design.md`. |
 | `/yolo-exit` | Graceful close of /yolo session — operational + strategic vault writes, Memory Bus session-summary atom, drift detection post-pass. |
 | `/yolo-abort` | Immediate halt of /yolo mid-action — partial state saved, in-flight git ops rolled back where reversible, drift event log. |
+| `/sis-forge` | **Pre-alpha (v8.x):** Auto-extract patterns from corpus (transcripts / vault / prompts / repos / external), emit density bucket report. Phase 1 (5 parallel extractors) + Phase 2 (TF-IDF clusterer + density classifier). No proposal doc / Board / spawn yet — those land in alpha/beta. Spec: `docs/superpowers/specs/2026-05-17-sis-forge-design.md`. |
 
 ---
 
