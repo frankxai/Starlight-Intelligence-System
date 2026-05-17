@@ -18,10 +18,10 @@ test("clusterAtoms returns empty when given no atoms", () => {
 
 test("clusterAtoms groups semantically similar atoms by cosine ≥ 0.75", () => {
   const atoms: Atom[] = [
-    atom("a1", "vault", "verticals", "build a domain sub-stack for sound intelligence"),
-    atom("a2", "vault", "verticals", "build a domain sub-stack for music intelligence"),
-    atom("a3", "vault", "verticals", "build a domain sub-stack for people intelligence"),
-    atom("a4", "transcripts", "cooking", "recipe for sourdough bread proofing"),
+    atom("a1", "vault", "verticals", "build a sovereign domain sub-stack pattern for sound intelligence using starlight protocol composition"),
+    atom("a2", "vault", "verticals", "build a sovereign domain sub-stack pattern for music intelligence using starlight protocol composition"),
+    atom("a3", "vault", "verticals", "build a sovereign domain sub-stack pattern for people intelligence using starlight protocol composition"),
+    atom("a4", "transcripts", "cooking", "recipe for sourdough bread proofing with starter feeding ratio over twelve hours fermentation"),
   ];
   const clusters = clusterAtoms(atoms);
 
@@ -36,9 +36,9 @@ test("clusterAtoms groups semantically similar atoms by cosine ≥ 0.75", () => 
 
 test("clusterAtoms is deterministic — same input → same cluster IDs and contents", () => {
   const atoms: Atom[] = [
-    atom("a1", "vault", "verticals", "build a domain sub-stack"),
-    atom("a2", "vault", "verticals", "build another domain sub-stack"),
-    atom("a3", "transcripts", "verticals", "domain sub-stack pattern again"),
+    atom("a1", "vault", "verticals", "build a sovereign domain sub-stack pattern using composition"),
+    atom("a2", "vault", "verticals", "build another sovereign domain sub-stack pattern using composition"),
+    atom("a3", "transcripts", "verticals", "sovereign domain sub-stack pattern again using composition"),
   ];
   const run1 = clusterAtoms(atoms);
   const run2 = clusterAtoms(atoms);

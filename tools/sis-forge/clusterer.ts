@@ -49,7 +49,7 @@ function cosine(a: Map<string, number>, b: Map<string, number>): number {
   return dot / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
-const SIM_THRESHOLD = 0.65;
+const SIM_THRESHOLD = 0.75;
 
 export function clusterAtoms(atoms: Atom[]): Cluster[] {
   if (atoms.length === 0) return [];
