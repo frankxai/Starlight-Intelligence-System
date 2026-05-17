@@ -36,7 +36,7 @@
 ### Reference lineage SHAs
 
 - v0.1 spawn — pending v7.5.1 commit SHA.
-- v0.2 composition-layer evolution — pending 2026-05-17 commit SHA.
+- v0.2 composition-layer evolution — `23cace2` (2026-05-17, tag `v8.1.0`).
 
 ---
 

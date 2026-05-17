@@ -48,8 +48,8 @@ Substrate: starlightintelligence.org/protocol v1.1.0
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
-- starlight-intelligence-system@<2026-05-17-commit-sha> · vertical: verticals/crypto-intelligence/ · v0.1 proof-of-pattern · House of On-Chain scaffolded · 5 commands stubbed
-- starlight-intelligence-system@<2026-05-17-commit-sha> · composition-layer: verticals/wealth/ v0.2 · first reference instance of Composition Layer substrate primitive (R1.a + R3.a close-outs)
+- starlight-intelligence-system@23cace2 · vertical: verticals/crypto-intelligence/ · v0.1 proof-of-pattern · House of On-Chain scaffolded · 5 commands stubbed
+- starlight-intelligence-system@23cace2 · composition-layer: verticals/wealth/ v0.2 · first reference instance of Composition Layer substrate primitive (R1.a + R3.a close-outs)
 
 Canon:
 - none · Crypto Intelligence declines canon at the vertical layer · composition with Arcanea canon optional but not adopted
