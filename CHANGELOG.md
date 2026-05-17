@@ -2,6 +2,25 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## v8.1.0 — 2026-05-17
+
+**Substrate doctrine evolution — Composition Layer primitive declared. Crypto IS v0.1 proof-of-pattern. Wealth IS evolved to first composition-layer reference instance.**
+
+- **Composition Layer (new substrate primitive, STACK.md doctrine):** Any universal IS may compose over its Domain Sub-Stacks via commands and rules at the IS-itself. Pattern opt-in for Self / Family / Business / Creator / Brand IS. 10-IS taxonomy NOT touched (invariant preserved); Wealth IS stays row #2.
+- **Wealth IS v0.2 (first composition-layer reference):** DPI ledger + Thesis engine + Gate ladder discipline preserved as Wealth IS's own commands with explicit lineage. Cross-asset commands declared: `/wealth-portfolio-fit`, `/wealth-sovereignty-design`, `/wealth-cycle-thesis`. Wealth IS daily-5 declared per People IS v7.4.1 cognitive-load discipline.
+- **Crypto Intelligence v0.1 proof-of-pattern (third reference Domain Sub-Stack):** `verticals/crypto-intelligence/` scaffolded with **Houses-as-sub-systems** primitive (6 archetypal stances: On-Chain · Macro · DeFi · Sovereignty · Research · Allocation). House of On-Chain shipped — agent + skill + knowledge + 5 commands (`/crypto-onchain-flow-snapshot`, `wallet-trace`, `mev-audit`, `validator-econ`, `contract-interaction`). 5 sister Houses gated on 2026-05-24 v0.1-proof-pass. Investment IS held until same proof-pass.
+- **R5 non-advisory clause:** Universal inline in every Crypto IS House command output. Non-waivable per Crypto IS SOUL.md.
+- **Sibling-repo export hook landed (Board (c) close-out):** `verticals/crypto-intelligence/ATTESTATIONS.md` (vertical-local ledger) + MCP-shape declaration in `SKILL.md`. v0.2+ extraction target: `github.com/frankxai/crypto-intelligence-system`.
+- **Genius prerequisite gate closed (Path A in-repo corpus excavation):** `genius/profile-frankx.md` (14 frameworks at ≥3 occurrences, synthesis edge named, 7 voice samples cited) + `genius/freedom-path-frankx.md` (KEEP/DELEGATE/AUTOMATE/KILL all populated).
+- **Governance gates passed:** `/starlight-board` REVISE → 5 items closed same-session (R1 + R3 Frank-acked via AskUserQuestion; R2 + R4 + R5 + (c) operational close-outs). `/openclaw-audit` SHIP-WITH-REMEDIATION (no CRITICAL/HIGH defects; 1 MEDIUM pre-existing substrate-command-design issue; 2 LOW SHA back-fills closed in `ea75c8a`). Pre-commit substrate symmetry: 90/90 green (v76+v77+v78+v79+v80+v84+v85).
+- **Skill registry:** 69 → 71 auto-activating rules across 13 → 14 domains (+ crypto-intelligence). Platform-prompt symmetry updated across CLAUDE.md, AGENTS.md, .cursor/rules/, .clinerules/, .gemini/.
+- **Chronicle infrastructure initialized:** `docs/chronicle/blessings.jsonl` + `docs/chronicle/weekly/` per /bless skill design. First W20 chronicle entry shipped.
+- **Falsifier (2026-05-24):** if House of On-Chain cannot ship 4-5 named artifacts in 1 week of actual practice, Houses-as-sub-systems primitive failed for crypto → fall back to functional sub-systems matching People IS shape; re-iterate `verticals/crypto-intelligence/PROPOSAL.md`.
+
+Verdict ledgers: `docs/boards/2026-05-17-crypto-investment-spawn.md` (Board) · `docs/boards/openclaw-2026-05-17-audit.md` (OpenClaw integrity audit) · `docs/chronicle/weekly/2026-W20.md` (week chronicle).
+
+Commits: `23cace2` (substrate landing) · `ea75c8a` (audit close-out).
+
 ## v8.0.0 — 2026-05-07
 
 - v01 Friday-demo bundle: 13 schemas + SQLite-shadowed JSONL ledgers + WorkPacket CLI, Council 7-archetype doctrine, VaultLoopEntry record type, /trace SSE.
