@@ -38,6 +38,7 @@ export function Header() {
           <NavLink href="/quickstart">Quickstart</NavLink>
           <NavLink href="/explainer">Explainer</NavLink>
           <NavLink href="/vaults">Vaults</NavLink>
+          <NavLink href="/changelog">Changelog</NavLink>
           <NavLink
             href="https://github.com/frankxai/Starlight-Intelligence-System"
             external
@@ -88,6 +89,7 @@ export function Header() {
             <NavLink href="/quickstart">Quickstart</NavLink>
             <NavLink href="/explainer">Explainer</NavLink>
             <NavLink href="/vaults">Vaults</NavLink>
+            <NavLink href="/changelog">Changelog</NavLink>
             <NavLink href="/docs">Docs</NavLink>
             <NavLink href="/cockpit/spec-trace">Spec-Trace</NavLink>
             <NavLink href="https://github.com/frankxai/Starlight-Intelligence-System" external>GitHub</NavLink>
