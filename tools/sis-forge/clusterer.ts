@@ -51,6 +51,28 @@ function cosine(a: Map<string, number>, b: Map<string, number>): number {
 
 const SIM_THRESHOLD = 0.75;
 
+const MAX_ATOMS_TOTAL = 1000;
+const MAX_ATOMS_PER_SOURCE = 200;
+
+export function applyAtomBudget(atoms: Atom[]): Atom[] {
+  const bySource = new Map<Atom["source"], Atom[]>();
+  for (const a of atoms) {
+    if (!bySource.has(a.source)) bySource.set(a.source, []);
+    bySource.get(a.source)!.push(a);
+  }
+
+  const truncatedPerSource: Atom[] = [];
+  for (const list of bySource.values()) {
+    const sorted = [...list].sort((x, y) => (y.weight ?? 1) - (x.weight ?? 1));
+    truncatedPerSource.push(...sorted.slice(0, MAX_ATOMS_PER_SOURCE));
+  }
+
+  if (truncatedPerSource.length <= MAX_ATOMS_TOTAL) return truncatedPerSource;
+
+  const globalSorted = [...truncatedPerSource].sort((x, y) => (y.weight ?? 1) - (x.weight ?? 1));
+  return globalSorted.slice(0, MAX_ATOMS_TOTAL);
+}
+
 export function clusterAtoms(atoms: Atom[]): Cluster[] {
   if (atoms.length === 0) return [];
 
