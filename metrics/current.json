@@ -1,0 +1,7 @@
+{
+  "$comment": "Living ledger of fast-moving public metrics. Read METRICS_TRUTH.md before editing. Every metric MUST carry last_verified (ISO date) and a source.",
+  "version": "0.1.0",
+  "ledger_started": "2026-05-19",
+  "last_updated": "2026-05-19",
+  "metrics": {}
+}
