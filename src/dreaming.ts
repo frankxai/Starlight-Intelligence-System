@@ -36,9 +36,11 @@ export class DreamingAgent {
     this.detector = new ContradictionDetector();
   }
 
-  dream(sessionsDir: string): DreamResult {
+  dream(sessionsDir: string, auditDir?: string): DreamResult {
     const allInsights: DreamResult["extractedInsights"] = [];
     let processedFiles = 0;
+
+    // Tier 1 — voice-operator session JSON (original path)
     if (fs.existsSync(sessionsDir)) {
       for (const file of fs.readdirSync(sessionsDir).filter((f) => f.endsWith(".json"))) {
         try {
@@ -48,12 +50,72 @@ export class DreamingAgent {
         } catch { /* skip */ }
       }
     }
+
+    // Tier 2 — audit-log JSONL (Fix A — 2026-05-20). Each daily file is one
+    // batch of substrate commits; treat as a synthetic session aggregating
+    // namespaces, redaction stats, and attestation freshness. Closes the gap
+    // when voice-operator is paused (per project_voice_operator_bridge_off.md).
+    if (auditDir && fs.existsSync(auditDir)) {
+      for (const file of fs.readdirSync(auditDir).filter((f) => f.endsWith(".jsonl"))) {
+        try {
+          const synth = this.aggregateAuditDay(path.join(auditDir, file));
+          for (const ins of this.extractInsights(synth)) allInsights.push({ ...ins, source: `audit/${file}` });
+          processedFiles++;
+        } catch { /* skip — corrupt rows shouldn't break the night */ }
+      }
+    }
+
     return {
       extractedInsights: allInsights,
       contradictions: this.detectContradictions(this.vaultDir),
       promotions: this.identifyPromotions(this.vaultDir),
       processedFiles,
       timestamp: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * Aggregate one audit-log day into synthetic SessionData so existing
+   * extractInsights() can consume it without a parallel rule-set.
+   * Maps audit-row signals to session-shaped scores:
+   *   - commits_pushed ← count of op:"commit" rows
+   *   - files_changed  ← unique namespaces touched
+   *   - duration       ← span between first and last ts
+   *   - guardian       ← any redacted-row reason (privacy posture marker)
+   */
+  private aggregateAuditDay(auditFile: string): SessionData {
+    const lines = fs.readFileSync(auditFile, "utf-8").split("\n").filter((l) => l.trim().length > 0);
+    const namespaces = new Set<string>();
+    const reasons = new Set<string>();
+    let commits = 0;
+    let firstTs: number | null = null;
+    let lastTs: number | null = null;
+
+    for (const line of lines) {
+      try {
+        const row = JSON.parse(line) as { op?: string; namespace?: string; ts?: string; reasons?: string[] };
+        if (row.op === "commit") commits++;
+        if (row.namespace) namespaces.add(row.namespace);
+        if (row.reasons) for (const r of row.reasons) reasons.add(r);
+        if (row.ts) {
+          const t = Date.parse(row.ts);
+          if (!isNaN(t)) {
+            if (firstTs === null || t < firstTs) firstTs = t;
+            if (lastTs === null || t > lastTs) lastTs = t;
+          }
+        }
+      } catch { /* skip corrupt row */ }
+    }
+
+    const duration = firstTs !== null && lastTs !== null ? Math.round((lastTs - firstTs) / 1000) : 0;
+    return {
+      scores: {
+        commits_pushed: commits,
+        files_changed: namespaces.size,
+      },
+      duration,
+      guardian: reasons.size > 0 ? `redactions:${[...reasons].join(",")}` : undefined,
+      summary: `Audit day ${path.basename(auditFile, ".jsonl")}: ${commits} commits across ${namespaces.size} namespaces`,
     };
   }
 

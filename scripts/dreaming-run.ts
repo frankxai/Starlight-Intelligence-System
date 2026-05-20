@@ -54,6 +54,12 @@ const VAULT_DIR =
 const SESSIONS_DIR =
   process.env.STARLIGHT_SESSIONS_DIR ??
   join(REPO_ROOT, "memory", "voice-sessions");
+// Fix A — 2026-05-20: also process audit-log JSONL so consolidation produces
+// non-zero output when voice-operator is paused. See
+// docs/ops/MEMORY-PIPELINE-DIAGNOSIS-2026-05-20.md.
+const AUDIT_DIR =
+  process.env.STARLIGHT_AUDIT_DIR ??
+  join(REPO_ROOT, "memory", "_audit");
 const LOG_PATH = join(REPO_ROOT, "memory", "CONSOLIDATION_LOG.md");
 
 function ensureLog(): void {
@@ -100,7 +106,7 @@ function main(): number {
 
   try {
     const agent = new DreamingAgent(VAULT_DIR);
-    const result = agent.dream(SESSIONS_DIR);
+    const result = agent.dream(SESSIONS_DIR, AUDIT_DIR);
     const line =
       `- ${ts}` +
       ` · insights: ${result.extractedInsights.length}` +

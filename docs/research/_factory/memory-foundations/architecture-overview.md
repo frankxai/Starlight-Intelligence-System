@@ -1,8 +1,8 @@
 # Memory Foundation — Architecture Overview
 
-**Date:** 2026-05-20
-**Companion to:** `synthesis.md` (full research artifact)
-**Purpose:** Mermaid-rendered diagrams of the memory architecture (current + post-Phase-0). Renders inline on GitHub + site detail page.
+**Date:** 2026-05-20 (Addendum 2 added Tier 1)
+**Companion to:** `synthesis.md` + `CHARTER-ADDENDUM-2.md`
+**Purpose:** Mermaid-rendered diagrams of the memory architecture (current + post-Phase-0 + post-Addendum-2 3-tier model). Renders inline on GitHub + site detail page.
 
 ---
 
@@ -118,6 +118,68 @@ flowchart TB
 **Resolution:** Phase 0 winner replaces the substrate slot. A2 axiom restored — every atom is filesystem-readable plain text without engine. ChromaDB demoted to 30-day fallback. mem0 becomes optional operational hot-path layer above the substrate, NOT a substrate replacement.
 
 ---
+
+---
+
+## 3-tier model (Addendum 2 — AgentDB tier added)
+
+```mermaid
+flowchart TB
+    subgraph T1["Tier 1 — Agent State DB · per-agent durable"]
+        T1S["sqlite-memory / brainctl<br/>SQLite + FTS5 + vector<br/>~/.sis/agentdb/&lt;agent-id&gt;.db<br/>📁 single-file portable"]
+    end
+
+    subgraph T2["Tier 2 — Operational hot-path · session memory"]
+        T2S["mem0 (optional)<br/>OR none-needed"]
+    end
+
+    subgraph T3["Tier 3 — Substrate canon · sovereign durable"]
+        T3S["Letta MemFS OR LangGraph+JsonlStore<br/>markdown / JSONL<br/>📁 filesystem-native<br/>SIP attestation per atom"]
+    end
+
+    subgraph CANON["Canon — Obsidian-readable"]
+        VAULTS["6 vault MD files<br/>strategic · technical · creative<br/>operational · wisdom · horizon"]
+    end
+
+    subgraph ORCH["SIS Orchestration Layer — fronts ALL tiers"]
+        BUS["Memory Bus singleton MCP"]
+        GUARD["Guardian PII redaction"]
+        AUDIT["Audit log<br/>memory/_audit/*.jsonl"]
+        ROUTER["Router contract.py"]
+        ABC["Substrate ABC (25 LOC)"]
+    end
+
+    AGENT[("Claude Code agent<br/>session")] -->|hot writes| T1
+    AGENT -->|hot writes| T2
+    AGENT -->|ratified writes| T3
+
+    T1 -->|via Memory Bus| ORCH
+    T2 -->|via Memory Bus| ORCH
+    T3 -->|via Memory Bus| ORCH
+
+    ORCH -->|attestation per write| AUDIT
+    T3 -->|filesystem-native| CANON
+    AUDIT -.dreaming pipeline.->|Fix A 2026-05-20| CANON
+
+    classDef tier1 fill:#1a2a3a,stroke:#5b9bff,color:#fff
+    classDef tier2 fill:#2a1a3a,stroke:#9b5bff,color:#fff
+    classDef tier3 fill:#1a3a2a,stroke:#5bff9b,color:#fff
+    classDef canon fill:#3a2a1a,stroke:#ffb86b,color:#fff
+    classDef orch fill:#1a3a3a,stroke:#6bffff,color:#fff
+
+    class T1S tier1
+    class T2S tier2
+    class T3S tier3
+    class VAULTS canon
+    class BUS,GUARD,AUDIT,ROUTER,ABC orch
+```
+
+**Why three tiers, not one:**
+- Tier 1 lifetime = per-agent, persistent across sessions, high-frequency (every tool call)
+- Tier 2 lifetime = cross-session, operator-scoped, medium-frequency
+- Tier 3 lifetime = substrate-tier, sovereign, low-frequency (per ratification)
+
+Same Memory Bus + Guardian + audit + router fronts all three. Substrate ABC is the seam; three concrete subclasses, one orchestration layer.
 
 ## Decision matrix as visual
 
