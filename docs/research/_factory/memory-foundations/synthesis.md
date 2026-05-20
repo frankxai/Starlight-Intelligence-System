@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-20
 **Status:** **FINAL** — all 7 candidates scored; recommendation locked pending Board pre-pass
-**Inputs:** CHARTER.md, CHARTER-ADDENDUM-1.md, memory-rubric.md, 7 candidate findings, landscape-scan.md
+**Inputs:** CHARTER.md, CHARTER-ADDENDUM-1.md, memory-rubric.md, 7 candidate findings, landscape-scan.md, [architecture-overview.md](architecture-overview.md) (Mermaid diagrams)
 **Output target:** `docs/research/published/memory-foundations-2026-05.md` (on Board PROCEED)
 **Board memo:** `docs/boards/2026-05-20-memory-foundation-spawn.md`
 

@@ -4,7 +4,13 @@
 >
 > Maintained by `scripts/dreaming-run.ts` (TS runner) and `scripts/dreaming-cron.ps1` (Windows scheduled task wrapper). Direct invocation: `node --import tsx scripts/dreaming-run.ts`.
 >
-> **Why this file exists:** the substrate's claim is "memory that compounds." If consolidation isn't observable, the claim isn't verifiable. This log makes the cadence visible. Receipt-stale > 7 days = pipeline broken (or scheduled task not registered).
+> **Why this file exists:** the substrate's claim is "memory that compounds." If consolidation isn't observable, the claim isn't verifiable. This log makes the cadence visible.
+>
+> **Reading the receipts:**
+> - **Receipt-stale > 7 days** = pipeline broken (cron not firing OR scheduled task not registered) — investigate the scheduled task
+> - **Zero counts > 7 days with fresh receipts** = upstream paused (voice-operator off OR sessions-dir misconfigured) — pipeline working, source paused
+>
+> **Current state (2026-05-20):** zero counts since 2026-05-07 reflect voice-operator intentionally disabled per memory atom `project_voice_operator_bridge_off.md` (2026-04-30). Pipeline is firing nightly; sessions-dir is empty by design. Re-enable upstream OR repoint pipeline at `memory/_audit/*.jsonl` (Fix A) to restore non-zero consolidation. See `docs/ops/MEMORY-PIPELINE-DIAGNOSIS-2026-05-20.md`.
 >
 > **Format**: `- <ISO-timestamp> · insights: N · contradictions: N · promotions: N · processed: N` (or `error: <msg>` on failure).
 >
@@ -17,3 +23,7 @@
 - 2026-05-11T04:00:02.190Z · insights: 0 · contradictions: 0 · promotions: 0 · processed: 0
 - 2026-05-11T06:30:35.461Z · insights: 0 · contradictions: 0 · promotions: 0 · processed: 0
 - 2026-05-12T04:00:03.638Z · insights: 0 · contradictions: 0 · promotions: 0 · processed: 0
+- 2026-05-13T04:00:02.680Z · insights: 0 · contradictions: 0 · promotions: 0 · processed: 0
+- 2026-05-15T04:00:02.856Z · insights: 0 · contradictions: 0 · promotions: 0 · processed: 0
+- 2026-05-16T04:00:03.333Z · insights: 0 · contradictions: 0 · promotions: 0 · processed: 0
+- 2026-05-17T04:00:03.377Z · insights: 0 · contradictions: 0 · promotions: 0 · processed: 0
