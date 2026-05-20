@@ -37,6 +37,7 @@ memory/knowledge-graph/index.jsonl
 # (memory/_audit/cost/) per Board REVISE-3 — cost data is operator-private.
 memory/_audit/
 memory/mempalace/
+memory/mempalace_upstream/
 memory/benchmarks/*.json
 
 # OSS hygiene — added by Tier 5 audit pass 2026-05-11
