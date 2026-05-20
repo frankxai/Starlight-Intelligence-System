@@ -107,6 +107,39 @@ The diagnosis confirms a finding from the mempalace baseline:
 
 This is part of the broader "incumbent layer-over" recommendation: keep the orchestration (Dreaming agent, Contradiction detector, Memory Bus, audit log), repoint the substrate (foundation research output) AND the source (Fix A above).
 
+## 5b. Update (2026-05-20 — Fix A landed, surfaced Fix B)
+
+Fix A applied to `src/dreaming.ts` + `scripts/dreaming-run.ts`. Live-run produced first non-zero consolidation receipt in pipeline history:
+
+```
+- 2026-05-20T17:43:50.434Z · insights: 43 · contradictions: 0 · promotions: 0 · processed: 17
+```
+
+**But contradictions=0 and promotions=0 remain.** Diagnosis on the spot:
+
+Both `detectContradictions(vaultDir)` and `identifyPromotions(vaultDir)` call `readVaultEntries(vaultDir)` which:
+1. Reads from `$STARLIGHT_VAULT_DIR ?? ~/.starlight/vaults`
+2. Looks for `<vaultname>.jsonl` files (not `.md`)
+3. Parses rows as `{id, vault, insight, wish, createdAt}` schema
+
+**But SIS's actual vaults are `memory/vaults/*.md`** (markdown, not JSONL, completely different schema). So the dreaming agent finds zero entries in `~/.starlight/vaults` (probably empty or non-existent), returns empty arrays, and the consolidation log shows 0 for both.
+
+### Fix B — vault format reconciliation (~30-50 LOC)
+
+Two options:
+
+**B.1 — Repoint vault dir + add .md support**
+Default `STARLIGHT_VAULT_DIR` to `memory/vaults`, and extend `readVaultEntries()` to read `.md` files. Parse front-matter (if present) or treat each `## section` as a vault entry. ~30 LOC.
+
+**B.2 — Generate JSONL companions**
+Add a build step that converts each `memory/vaults/*.md` into `~/.starlight/vaults/<name>.jsonl` with the expected schema. Cron-able. ~50 LOC.
+
+**Recommended: B.1** — fewer moving parts, no dual-source-of-truth risk, keeps Obsidian as the canonical surface.
+
+### Status (2026-05-20)
+
+Fix B documented + scoped. NOT YET APPLIED in this commit — falls under "Phase 0 sibling work" alongside the substrate decision. When SIS picks a tier-3 substrate (Letta or LangGraph), the canonical vault writer there will likely subsume Fix B (vaults become atoms in the new substrate, and the dreaming agent reads from substrate-canon directly).
+
 ## 6. Falsifier
 
 This diagnosis is wrong if:
