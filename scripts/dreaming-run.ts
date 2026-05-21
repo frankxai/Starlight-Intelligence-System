@@ -49,8 +49,14 @@ function repoRoot(): string {
 }
 
 const REPO_ROOT = repoRoot();
+// Fix B (2026-05-21): default vault dir to in-repo memory/vaults so the
+// dreaming agent reads the canonical SIS vault MD files. Fallback to
+// ~/.starlight/vaults for backward compatibility. Override via env var.
+// See docs/ops/MEMORY-PIPELINE-DIAGNOSIS-2026-05-20.md §5b.
+const REPO_VAULTS = join(REPO_ROOT, "memory", "vaults");
 const VAULT_DIR =
-  process.env.STARLIGHT_VAULT_DIR ?? join(homedir(), ".starlight", "vaults");
+  process.env.STARLIGHT_VAULT_DIR ??
+  (existsSync(REPO_VAULTS) ? REPO_VAULTS : join(homedir(), ".starlight", "vaults"));
 const SESSIONS_DIR =
   process.env.STARLIGHT_SESSIONS_DIR ??
   join(REPO_ROOT, "memory", "voice-sessions");

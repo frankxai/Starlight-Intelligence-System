@@ -122,6 +122,24 @@ Even REJECT/VIABLE candidates contributed patterns worth adopting:
 | Hybrid retrieval (vector + BM25 + entity) | mem0 | Verify each candidate's hybrid signal in Phase 0 |
 | LangMem memory manager (extract/update/forget) | LangGraph | Maps to SIS `/bless` chronicle-promotion if C7 wins |
 
+## 4b. Visual architecture
+
+Full Mermaid diagrams at [architecture-overview.md](architecture-overview.md):
+
+1. **Current state** — substrate fails A2 (ChromaDB binary not filesystem-native)
+2. **Post-Phase-0 target** — tier-3 winner restores A2 compliance
+3. **3-tier model** (Addendum 2) — Agent State + Operational + Substrate canon
+4. **Decision matrix as quadrant** — A2 × score positioning
+5. **Substrate ABC class diagram** — 25-line seam, swap is ~250 LOC adapter
+
+The 3-tier model is the canonical mental model going into Phase 0:
+
+```
+Tier 1 — Agent State DB    sqlite-memory / brainctl pattern (C8)
+Tier 2 — Operational       mem0 (optional)
+Tier 3 — Substrate canon   Letta MemFS OR LangGraph + JsonlStore (Phase 0 winner)
+```
+
 ## 5. Memory architecture diagram (post-decision, generic)
 
 ```

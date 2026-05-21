@@ -174,6 +174,8 @@ export class DreamingAgent {
   private readVaultEntries(vaultDir: string): VaultEntry[] {
     if (!fs.existsSync(vaultDir)) return [];
     const entries: VaultEntry[] = [];
+
+    // Tier 1 — original JSONL vault format ({id, vault, insight|wish, createdAt})
     for (const file of fs.readdirSync(vaultDir).filter((f) => f.endsWith(".jsonl"))) {
       const vault = path.basename(file, ".jsonl");
       for (const line of fs.readFileSync(path.join(vaultDir, file), "utf-8").split("\n")) {
@@ -185,6 +187,28 @@ export class DreamingAgent {
         } catch { /* skip */ }
       }
     }
+
+    // Tier 2 — SIS canonical vault format: memory/vaults/<vault>-vault.md (Fix B, 2026-05-21).
+    // Each MD file becomes ONE entry; vault name extracted from filename stem (strategic-vault.md → strategic).
+    // Whole file content is treated as the entry's content; cross-vault similarity drives promotions.
+    // See docs/ops/MEMORY-PIPELINE-DIAGNOSIS-2026-05-20.md §5b (Fix B.1).
+    for (const file of fs.readdirSync(vaultDir).filter((f) => f.endsWith(".md"))) {
+      const stem = path.basename(file, ".md");
+      // Accept both "strategic-vault.md" and "strategic.md"; strip trailing "-vault" if present.
+      const vault = stem.endsWith("-vault") ? stem.slice(0, -"-vault".length) : stem;
+      try {
+        const content = fs.readFileSync(path.join(vaultDir, file), "utf-8").trim();
+        if (content) {
+          entries.push({
+            id: `md:${file}`,
+            vault,
+            content,
+            createdAt: fs.statSync(path.join(vaultDir, file)).mtime.toISOString(),
+          });
+        }
+      } catch { /* skip — corrupt or unreadable file */ }
+    }
+
     return entries;
   }
 }
