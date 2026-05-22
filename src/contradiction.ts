@@ -51,6 +51,8 @@ export class ContradictionDetector {
   private readEntries(vaultDir: string): Entry[] {
     if (!fs.existsSync(vaultDir)) return [];
     const entries: Entry[] = [];
+
+    // Tier 1 — legacy JSONL vault format
     for (const file of fs.readdirSync(vaultDir).filter((f) => f.endsWith(".jsonl"))) {
       const vault = path.basename(file, ".jsonl");
       for (const line of fs.readFileSync(path.join(vaultDir, file), "utf-8").split("\n")) {
@@ -62,6 +64,33 @@ export class ContradictionDetector {
         } catch { /* skip */ }
       }
     }
+
+    // Tier 2 — SIS canonical MD vault format (Fix C, 2026-05-22).
+    // Each MD file becomes ONE entry per section (### heading)
+    // so trigram similarity has signal rather than whole-file noise.
+    // See docs/ops/MEMORY-PIPELINE-DIAGNOSIS-2026-05-20.md §5b (Fix C).
+    for (const file of fs.readdirSync(vaultDir).filter((f) => f.endsWith(".md"))) {
+      const stem = path.basename(file, ".md");
+      const vault = stem.endsWith("-vault") ? stem.slice(0, -"-vault".length) : stem;
+      try {
+        const fileMtime = fs.statSync(path.join(vaultDir, file)).mtime.toISOString();
+        const content = fs.readFileSync(path.join(vaultDir, file), "utf-8");
+        // Split by section heading (### or ##) — each section becomes one entry.
+        // Whole file as one entry caused trigram similarity to drown in noise.
+        const sections = content.split(/\n(?=#{2,3}\s)/);
+        sections.forEach((sec, i) => {
+          const trimmed = sec.trim();
+          if (trimmed.length < 100) return;  // skip tiny preamble fragments
+          entries.push({
+            id: `md:${file}#${i}`,
+            vault,
+            content: trimmed,
+            createdAt: fileMtime,
+          });
+        });
+      } catch { /* skip — corrupt or unreadable file */ }
+    }
+
     return entries;
   }
 
