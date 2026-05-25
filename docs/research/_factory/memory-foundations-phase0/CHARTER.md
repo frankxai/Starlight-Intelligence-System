@@ -5,7 +5,7 @@
 **Trigger:** Board verdict `docs/boards/2026-05-20-memory-foundation-verdict.md` (PROCEED-WITH-REVISE)
 **Scope:** Side-by-side measurement of **C3 Letta MemFS** vs **C7 LangGraph + LangMem (with JsonlStore)** as candidate SIS substrates
 **Tier:** Operational (Phase 0 spike — no Board needed for adapter scaffolds; Board fires on post-Phase-0 substrate touch)
-**Status:** **CHARTERED — ready to execute**
+**Status:** **IN EXECUTION** — R2 code-level verification filed; R1 smoke, eval results, migration script, synthesis, and Board memo remain open.
 
 ---
 
@@ -37,7 +37,7 @@ Distribution across SIS substrate ontology (all 6 vault axes covered per REVISE-
 
 Plus 3 cross-vault queries that test namespace traversal.
 
-Each query has fields: `id`, `vault`, `query_text`, `expected_atom_ids[]` (ground-truth), `query_class` (recall|disambig|cross-vault).
+Each query has fields: `id`, `vault`, `query_text`, `expected_match` (ground-truth match phrase or target), `seed_memory` (source memory excerpt), and `query_class` (recall|disambig|cross-vault). If Phase 0 later moves to atom-id scoring, migrate `eval-50.jsonl` before running precision/recall so the charter and evaluator agree.
 
 ## 4. Adapter scaffold deliverables
 
@@ -106,7 +106,7 @@ These are SKELETONS (interface + docstrings + commented impl gaps). Phase 0 exec
 
 Phase 0 produces a Phase-1-ready proposal when ALL of:
 - [ ] R1 concurrent-write smoke PASS for both candidates
-- [ ] R2 verification note filed (C7 claims confirmed or corrected)
+- [x] R2 verification note filed (C7 claims confirmed or corrected) — `phase0-c7-verification-note.md`
 - [ ] R3 eval-50 committed before adapter build (verified by git log)
 - [ ] Eval results show clear winner OR tie within ±2%
 - [ ] Migration script (ChromaDB → winner format) exists + passes attestation-preservation test

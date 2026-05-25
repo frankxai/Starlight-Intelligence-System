@@ -74,11 +74,12 @@ graph TD
     Master -.-> Health
     Master -.-> Spiritual
 
-    subgraph DomainSubStack["Domain Sub-Stack Tier (4 reference verticals)"]
+    subgraph DomainSubStack["Domain Sub-Stack Tier (5 reference verticals)"]
         People["People Intelligence<br/>6 sub-systems · 28 commands · 6 agents"]:::vertical
         Sound["Sound Intelligence<br/>6 sub-systems · 30 commands · 6 agents"]:::vertical
         MusicIS["Music IS<br/>6+1 sub-systems · 8 commands · 7 agents"]:::vertical
         EnergyIS["Energy IS · NEW v8.0<br/>6+1 sub-systems · scaffold"]:::vertical
+        CryptoIS["Crypto Intelligence<br/>v0.1 proof-of-pattern · onchain skill"]:::vertical
     end
 
     L1 -.-> DomainSubStack

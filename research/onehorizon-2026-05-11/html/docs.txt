@@ -1,0 +1,93 @@
+One Horizon Docs - One Horizon Docs
+Docs
+API Reference
+Getting Started
+Start Guide
+Beta
+Concepts
+Tasks
+Teams
+Workspace
+Enterprise
+Integrations
+Resources
+Legal
+Docs
+API Reference
+Main
+Home
+About
+Pricing
+Vault
+Changelog
+Docs
+Features
+Roadmaps
+Planning
+Standups
+Status updates
+Insights
+AI assistant / MCP
+Integrations
+Solutions
+Startups
+Dev shops / agencies
+Software teams
+Internal IT & platform teams
+Alternatives
+vs Jira
+vs Linear
+vs Asana
+vs Monday.com
+vs ClickUp
+vs Notion
+Company
+Blog
+Security
+Log in
+Sign up
+Terms of Use
+Privacy Policy
+Resources
+Docs
+API reference
+CLI
+Desktop app
+SDK
+©
+2026
+One Horizon. All rights reserved
+Facebook
+Instagram
+Threads
+X
+Reddit
+TikTok
+YouTube
+Medium
+Documentation
+Docs for setup, integrations, core concepts, and API work.
+Good starting point
+The shortest path through setup, concepts, and API basics.
+Getting started
+Set up your account and connect a tool.
+API Reference
+Endpoints, auth, schemas, and examples.
+Concepts
+How One Horizon organizes teams, work, and recaps.
+Developers
+Want to build on top of One Horizon? Start here.
+JavaScript
+JS SDK
+Use One Horizon from Node.js. TypeScript types included.
+Custom app
+Build a custom app with webhooks, OAuth, and API calls.
+CLI
+Run One Horizon commands from your terminal.
+REST API
+HTTP endpoints for direct API calls.
+Need help?
+Talk to support or join the community.
+Contact support
+Community guide
+Join Slack community

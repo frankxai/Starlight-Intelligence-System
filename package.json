@@ -103,6 +103,7 @@
     "clean": "rm -rf dist",
     "setup:gemini": "pwsh ./scripts/install-gemini-mcp.ps1",
     "agents:harness-check": "node scripts/check-agent-harness.mjs",
+    "audit:all": "npm audit && npm --prefix site audit && npm --prefix console audit",
     "test": "npm run test:operational && npm run test:substrate && npm run test:v01-evals",
     "test:v01-evals": "npm run build && node tools/run-v01-evals.mjs",
     "test:evals": "npm run build && node tools/run-v01-evals.mjs",
@@ -112,7 +113,7 @@
     "lint": "tsc --noEmit",
     "lint:site": "npm --prefix site run lint",
     "lint:console": "npm --prefix console run lint",
-    "verify": "npm run lint && npm test && npm run build && npm run lint:site && npm run build:site && npm run lint:console && npm run build:console",
+    "verify": "npm run agents:harness-check && npm run audit:all && npm run lint && npm test && npm run build && npm run lint:site && npm run build:site && npm run lint:console && npm run build:console",
     "prepare": "git config core.hooksPath tools/git-hooks 2>/dev/null || true",
     "prepublishOnly": "npm run build && npm run test:substrate"
   },

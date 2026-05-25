@@ -178,6 +178,11 @@ const PLATFORMS = [
     color: "text-emerald-400",
     border: "border-emerald-500/[0.2]",
   },
+  {
+    name: "Antigravity",
+    color: "text-rose-400",
+    border: "border-rose-500/[0.2]",
+  },
 ];
 
 export default function ArchitecturePage() {
@@ -255,7 +260,7 @@ export default function ArchitecturePage() {
             <FlowNode
               step="04"
               title="AI tools"
-              desc="Claude · Cursor · Codex · Gemini · OpenCode — same memory."
+              desc="Claude · Cursor · Codex · Gemini · OpenCode · Antigravity — same memory."
               accent="emerald"
             />
           </div>

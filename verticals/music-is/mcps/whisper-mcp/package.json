@@ -1,0 +1,44 @@
+{
+  "name": "@music-is/whisper-mcp",
+  "version": "0.1.0",
+  "description": "Music IS Whisper MCP — transcribe voice memos, audio captures, and bounced masters via OpenAI Whisper. Composes with music-is/voice-memo-to-prompt skill + Mobile Inbox + Bridge Spark Zone.",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch server.ts",
+    "start": "node dist/server.js",
+    "test": "vitest",
+    "test:integration": "vitest run --config vitest.integration.ts",
+    "test:flow": "vitest run --config vitest.flow.ts",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "openai": "^5.0.0",
+    "zod": "^3.23.0",
+    "yt-dlp-wrap": "^2.3.0",
+    "node-fetch": "^3.3.2",
+    "form-data": "^4.0.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "tsx": "^4.19.0",
+    "vitest": "^2.1.0",
+    "eslint": "^9.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0"
+  },
+  "license": "MIT",
+  "keywords": ["mcp", "whisper", "music", "transcription", "music-is", "arcanea-records"],
+  "music-is": {
+    "tier": "P0",
+    "phase": "Phase 1 W1",
+    "skill": "music-is/voice-memo-to-prompt",
+    "composes_with": ["mobile-inbox", "bridge-spark-zone", "catalog-master-csv"],
+    "refusal_triggers": ["vocal-impersonation-without-consent", "uncleared-copyright-reproduction"],
+    "attestation": "SIP v1.1.0"
+  }
+}

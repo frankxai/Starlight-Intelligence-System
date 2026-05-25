@@ -21,7 +21,7 @@ Read this as a menu. Pick the one that matches what you showed up for. Each sect
 
 ### 2. SIS fork (sovereign spawn)
 
-- **What it is:** You take the whole reference build — 7 agents, 6 vaults, 16 skills, MCP server, multi-platform adapters, full substrate docs — and run your own substrate-aware system under your own name.
+- **What it is:** You take the whole reference build — 47 named agents, 6 vaults, 71 skill rules, MCP server, multi-platform adapters, full substrate docs — and run your own substrate-aware system under your own name.
 - **Who it's for:** Operators, founders, and technical creators who want their own substrate layer rather than adopting Frank's. Competing is encouraged; composition is encouraged more.
 - **Scope:** Complete fork, rewired to your entity. Your registry. Your MCP server. Your agent names. Your vaults. All under MIT.
 - **What you bring:** An entity name. A declared substrate domain. Willingness to keep attribution to SIP as protocol author.
@@ -29,7 +29,7 @@ Read this as a menu. Pick the one that matches what you showed up for. Each sect
 - **Attestation scope:** Your fork ships its own attestation with SIP listed as substrate. Your commits compound independently; SIP compounds via attribution on every shipped artifact across every fork.
 - **Decision rights:** Entirely yours. Frank advises when asked, doesn't override, doesn't own.
 - **Typical timeline:** 2 hours to scaffolded fork. Days to weeks to rewire to your entity's voice.
-- **Next command:** `/sovereign-spawn <your-substrate-name>` (v7.3).
+- **Next command:** `/sovereign-spawn <your-substrate-name>`.
 
 ### 3. Vertical scaffold
 
@@ -116,12 +116,12 @@ Ownership stays with each node. Compounding is via attribution, not credit trans
 
 **Built on SIP** — Starlight Intelligence Protocol
 
-Substrate: starlightintelligence.org/protocol v1.1.0
+Substrate: starlightintelligence.org/protocol v1.1.1
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
-- starlight-intelligence-system@v7.3 · substrate + reference onboarding surface
+- starlight-intelligence-system@v8.0.0 · substrate + reference onboarding surface
 
-Generated: 2026-04-24
+Generated: 2026-05-20
 Attestation is compounding, not credit transfer: every composition strengthens every node.
 ---

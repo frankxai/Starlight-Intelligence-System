@@ -1,0 +1,62 @@
+Release Notes | One Horizon
+One Horizon
+open navigation menu
+Features
+Solutions
+Pricing
+Security
+Docs
+About
+Main
+Home
+About
+Pricing
+Vault
+Changelog
+Docs
+Features
+Roadmaps
+Planning
+Standups
+Status updates
+Insights
+AI assistant / MCP
+Integrations
+Solutions
+Startups
+Dev shops / agencies
+Software teams
+Internal IT & platform teams
+Alternatives
+vs Jira
+vs Linear
+vs Asana
+vs Monday.com
+vs ClickUp
+vs Notion
+Company
+Blog
+Security
+Log in
+Sign up
+Terms of Use
+Privacy Policy
+Resources
+Docs
+API reference
+CLI
+Desktop app
+SDK
+©
+2026
+One Horizon. All rights reserved
+Facebook
+Instagram
+Threads
+X
+Reddit
+TikTok
+YouTube
+Medium
+Changelog
+Additions and changes to the One Horizon platform.

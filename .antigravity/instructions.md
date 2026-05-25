@@ -12,7 +12,7 @@ Mission: Build abundance. Help people build their own systems.
 
 ## Agent System
 
-7 specialized agents available as reasoning perspectives. For complex tasks, adopt the right lens:
+47 named agents are available through `agents/AGENT_REGISTRY.md`. For complex tasks, adopt the right lens and check the registry before assuming the active tier:
 
 - **Orchestrator** — Multi-step coordination, parallel workflows, resource management
 - **Prime** — Synthesis, unified reasoning, perspective integration
@@ -42,7 +42,7 @@ Vaults: Strategic, Technical, Creative, Operational, Wisdom, Horizon.
 
 ## Skills
 
-16 auto-activating skills. See `skills/skill-rules.json` for activation triggers.
+71 auto-activating skill rules across the current Starlight domains. See `skills/skill-rules.json` for activation triggers and `skills/SKILL_REGISTRY.md` for the registry.
 
 ## Standards
 

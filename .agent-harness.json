@@ -1,6 +1,6 @@
 {
   "risk": "private",
-  "health": "pnpm test",
+  "health": "npm run verify",
   "agentFiles": [
     "AGENTS.md",
     "CLAUDE.md"

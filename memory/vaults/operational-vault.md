@@ -31,10 +31,22 @@ last_consolidated: '2026-05-11'
 | 2026-05-11 | SIS v0.1 Build Handoff + Memory Health Gate | execution-state | 1.0 |
 | 2026-05-12 | v0.1 Event Spine Operator Surface | execution-state | 1.0 |
 | 2026-05-13 | Overnight Deep Ship — Codex v01 integration + v84 symmetry + MEMORY.md compaction | execution-state | 1.0 |
+| 2026-05-20 | Site + Agent Harness Review — adapter drift and environment gate failures | quality-state | 0.95 |
 
 ---
 
 ## Entries
+
+### [2026-05-20] Site + Agent Harness Review — adapter drift and environment gate failures
+
+**Category:** quality-state
+**Confidence:** 0.95
+**Source:** Codex / in-depth review pass
+**Related:** AGENTS.md, CLAUDE.md, README.md, .gemini/GEMINI.md, .antigravity/instructions.md, scripts/check-agent-harness.mjs, test/v80-platform-prompts.test.ts, site/src/app/page.tsx, transmissions/channels/acos-channel.md, context/repo-contexts/acos-context.md
+
+Review found the buildable surfaces are strong but not fully trustworthy as published truth. Root `npm run lint`, site lint, site build, and v80 platform symmetry all pass, but `npm run agents:harness-check` fails because it still expects 68 skills while canonical rules now report 71. `npm run test:operational` fails only at `better-sqlite3` native ABI mismatch (node module 137 vs runtime 115), repeating the prior rebuild fragility. v80 symmetry has a blind spot: it does not include `.antigravity/instructions.md`, and its tier-context blacklist can skip global agent-count drift such as 35/42-agent claims. Public site builds, but homepage and rendered HTML still publish 35 agents while repo reality includes newer agent surfaces; architecture page omits Antigravity from platform chips. ACOS channel/context are stale from 2026-02-10 while ACOS repo is now v11.0.0 and ahead of origin by three commits; ACOS harness health points to `pnpm test` even though its package has no test script.
+
+Priority repair order: update harness expectations from static regex to canonical parsed counts; include Antigravity in v80 prompt inventory; tighten global/local claim extraction; reconcile public site counts/platform chips; refresh ACOS transmission/context; rebuild native deps under the active Node runtime before full verify.
 
 ### [2026-05-13] Overnight Deep Ship — Codex v01 integration + v84 symmetry + MEMORY.md compaction
 
@@ -247,3 +259,67 @@ Rebuilt `C:\Users\frank\arcanea.ai` from thin landing shell into a committed Nex
 - Added Vercel Analytics and Speed Insights hooks, loaded Google fonts through `next/font`, modern ESLint flat config, lockfile, and Turbopack root pin.
 - Verification passed: `npm run lint`, `npm run typecheck`, `npm run build`.
 - Deployment not executed because the repo has no Vercel project link or git remote configured locally.
+
+---
+
+### [2026-05-20] SIS + ACOS Harness Excellence Pass
+
+**Category:** cross-repo-harness-state
+**Confidence:** 0.95
+**Source:** Codex CLI session
+**Related:** ACOS channel, platform adapter prompts, agent harness symmetry, site/console verification
+
+Reconciled Starlight's operational truth across harness, docs, platform adapters, site copy, and ACOS context.
+
+- SIS canonical counts now derive from source: 47 agent files, 71 skill rules, 6 memory vaults. `scripts/check-agent-harness.mjs` no longer hardcodes stale agent/skill totals.
+- Platform prompt symmetry now covers Antigravity in addition to Cursor/Cline/Gemini surfaces, closing a false-pass gap in `test/v80-platform-prompts.test.ts`.
+- Site and console quality gates were tightened: site lint warnings removed, console ESLint flat config added, and both Next builds pass inside the root verify chain.
+- ACOS v11 harness health now points at a real command, `npm run build:all`; all seven MCP workspaces build on Windows through esbuild, including the fixed website MCP dependency object.
+- Verification passed: SIS `npm run verify`, `npm run agents:harness-check`, `node --import tsx --test test/v80-platform-prompts.test.ts`; ACOS `npm run build:all`.
+
+### [2026-05-20] Expanded Harness Excellence Pass
+
+**Category:** cross-repo-harness-state
+**Confidence:** 0.96
+**Source:** Codex CLI session
+**Related:** `docs/ops/HARNESS-EXCELLENCE-PASS-2026-05-20.md`, ACOS installer, SIS site/console verify
+
+Second pass expanded from repair into operations hardening.
+
+- ACOS now has a real `npm run verify` gate: harness check plus all MCP workspace builds.
+- ACOS harness checks v11 identity, platform adapter docs, Codex/Gemini/Antigravity/OpenCode installer routes, Windows-safe esbuild build scripts, and LF line endings for `install.sh`.
+- ACOS installer smoke passed for Codex (`AGENTS.md`), Gemini (`GEMINI.md`), Antigravity (`.antigravity/instructions.md`), and OpenCode (`AGENTS.md` + `opencode.json`).
+- ACOS dependency audit is clean: `npm audit --json` reports zero vulnerabilities after upgrading direct vulnerable packages and applying audit fixes.
+- SIS live onboarding/delivery/explainer/context surfaces were brought forward to SIP v1.1.1, v8.0.0, 47 agents, and 71 skill rules.
+- Verification passed: SIS `npm run verify`; ACOS `npm run verify`; ACOS `npm audit --json`.
+
+### [2026-05-21] 2026-05-21 Quality Bar: Audit-Gated Verify
+
+**Category:** cross-repo-harness-state
+**Confidence:** 0.97
+**Source:** Codex CLI session
+**Related:** `docs/ops/HARNESS-EXCELLENCE-PASS-2026-05-20.md`, SIS package scripts, site/console package locks, ACOS verify
+
+Raised the active excellence bar from build/test green to harness + audit + build green.
+
+- SIS root `npm run verify` now includes `agents:harness-check` and `audit:all` before TypeScript, tests, site build, and console build.
+- SIS `audit:all` covers root, `site`, and `console`.
+- Added lockfiles for `site` and `console` so audits are deterministic.
+- Upgraded site and console to `next@16.2.6`; added an override for Next's nested `postcss` to `8.5.10`; refreshed installed subapp dependencies with `npm ci --ignore-scripts`.
+- ACOS `npm run verify` now includes harness check, `npm audit`, and all MCP workspace builds.
+- Verification passed: SIS `npm run verify`; ACOS `npm run verify`; root/site/console/ACOS audits all report zero vulnerabilities.
+
+### [2026-05-22] Claude Support + Ecosystem Quality Ledger
+
+**Category:** cross-repo-harness-state
+**Confidence:** 0.94
+**Source:** Codex CLI session
+**Related:** `docs/ops/CODEX-CLAUDE-PICKUP-2026-05-22.md`, `docs/ops/ECOSYSTEM-QUALITY-LEDGER-2026-05-22.md`, ACOS pickup doc
+
+Supported active Claude work by writing durable handoff files and fixing safe, high-leverage drift in SIS + ACOS without touching likely active FrankX/Arcanea work.
+
+- SIS live docs corrected: `AGENTS.md` skill-rule count, `docs/ARCHITECTURE.md` Crypto Intelligence vertical, `docs/ops/readiness-v75.md` Graphiti/Syncthing status, Phase 0 memory-foundation schema/status, and memory consolidation calibration gate.
+- ACOS red harness gate fixed: `install.sh` restored after patch failure, normalized to LF, guarded by `.gitattributes`, and verified by `npm run harness:check`.
+- ACOS OpenCode install now generates repo-local `opencode.json` paths from `PROJECT_DIR` instead of copying stale FrankX absolute paths.
+- Added handoff/pickup docs for Claude in SIS and ACOS plus an ecosystem quality ledger with next gates.
+- Verification passed: ACOS `npm run verify`; SIS `npm run verify` after removing only test-created temp directories under `%TEMP%` that caused an initial `ENOSPC` failure. Targeted checks also passed: SIS `npm run agents:harness-check`, SIS `node --import tsx --test test/v80-platform-prompts.test.ts`, ACOS `bash -n install.sh`.

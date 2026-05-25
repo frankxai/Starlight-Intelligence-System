@@ -20,7 +20,7 @@
       "default_coding_primary": "Claude Code",
       "default_coding_secondary": null,
       "default_browser_space": "Arc Space: FrankX",
-      "default_mcps": ["vercel", "github", "notion"],
+      "default_mcps": ["google-analytics", "agentdb", "remotion-video", "sis", "filesystem"],
       "repos": [
         {"path": "C:\\Users\\frank\\FrankX", "role": "development", "stack_md_expected": true, "notes": "Private dev + content authoring"},
         {"path": "C:\\Users\\frank\\FrankX\\.worktrees\\vercel-ui-ux", "role": "production", "stack_md_expected": false, "notes": "Worktree pointing at frankx.ai-vercel-website production repo"}
@@ -45,7 +45,7 @@
       "default_browser_space": "Arc Space: Starlight",
       "default_mcps": ["github", "notion", "linear", "memory-bus"],
       "repos": [
-        {"path": "C:\\Users\\frank\\Starlight-Intelligence-System", "role": "development", "stack_md_expected": true, "notes": "Substrate — SIP, agents, skills, vaults. STACK.md already exists (universal IS taxonomy) — this skill writes a sibling /STACK.md is NOT needed; treat substrate STACK.md as canonical."}
+        {"path": "C:\\Users\\frank\\Starlight-Intelligence-System", "role": "development", "stack_md_expected": false, "notes": "Substrate — SIP, agents, skills, vaults. STACK.md already exists (universal IS taxonomy) — this skill writes a sibling /STACK.md is NOT needed; treat substrate STACK.md as canonical."}
       ]
     }
   }

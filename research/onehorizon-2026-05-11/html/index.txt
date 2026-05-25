@@ -1,0 +1,412 @@
+One Horizon - AI-Powered Future of Work Platform
+One Horizon
+open navigation menu
+Features
+Solutions
+Pricing
+Security
+Docs
+About
+Roadmap-first
+AI
+development
+starts
+here
+Plan what matters, hand work to AI agents, and keep every task, commit, and PR tied back to the roadmap automatically.
+Start for free
+Get a demo
+Focus
+on
+the
+roadmap.
+Let
+AI
+agents
+build
+it
+Spec-driven development is how product management works with AI. Tasks and initiatives become the prompts, and every commit and PR ties back to your roadmap.
+Write
+a
+spec.
+Send
+it
+to
+any
+agent.
+Every
+task,
+bug,
+and
+initiative
+is
+a
+spec.
+Send
+any
+of
+them
+to
+your
+tool
+of
+choice
+in
+one
+click.
+Send to app
+Codex
+Codex
+Claude Code
+Claude Code
+Cursor
+Cursor
+Open Code
+Open Code
+Windsurf
+Windsurf
+Every
+PR
+maps
+back
+to
+the
+plan
+Every
+commit
+and
+PR
+traces
+back
+to
+the
+spec
+it
+came
+from.
+Your
+roadmap
+stays
+current
+without
+manual
+updates.
+Trusted
+by
+A
+single
+view
+of
+tasks,
+issues
+and
+progress
+Replace
+disconnected
+views
+with
+one
+view
+across
+the
+tools
+your
+team
+already
+uses.
+Linear
+Jira
+GitHub
+Claude
+Cursor
+Model Context Protocol
+Linear
+Jira
+GitHub
+Claude
+Cursor
+Model Context Protocol
+Linear
+Jira
+GitHub
+Claude
+Cursor
+Model Context Protocol
+Know
+what
+gets
+built,
+automatically
+A
+work
+journal
+for
+product
+teams
+that
+writes
+itself
+Pulled in automatically
+Commits, PRs, issues, and calendar work show up automatically.
+One record of progress
+See what shipped, what is in review, and what is blocked in one running journal.
+Ready to reuse
+Turn the same record into standups, handoffs, reports, and release notes.
+Insights
+tied
+to
+product
+strategy
+Use
+dashboards
+and
+rollups
+to
+connect
+shipped
+work
+to
+goals,
+teams,
+and
+delivery
+outcomes.
+Strategic goal rollups
+Roll up shipped work by goals, products, releases, components, and skills.
+Team insights for human and AI work
+Track who is shipping, which coding tools are used per task, and where momentum is slowing.
+Leadership-ready reporting
+Turn live activity into concise updates for standups, stakeholders, and releases.
+Strategic
+alignment
+See
+how
+work
+rolls
+up
+across
+goals,
+products,
+and
+customers.
+Understand
+team
+activity
+See
+where
+time
+goes,
+what
+ships,
+and
+where
+work
+starts
+to
+slow
+down
+across
+your
+team
+and
+agents.
+Trusted
+by
+Engineering
+Leaders
+Writing progress updates always stole focus from real work. Now, One Horizon does it for me, and I can finally spend that energy building, not reporting.
+CTO @ Triagen
+One Horizon integrates so seamlessly that I don't even notice it's there; until I see my status reports already done and I can immediately get back to my actual work
+Senior ML Engineer @ Lazy Dynamics
+Clean easy to use UI. An AI tool that helps get work done efficiently.
+Software Engineer @ TechCorp
+Automating daily standups and reports saves dev teams so much time. The automatic summaries based on commits and tickets are really useful.
+Software Developer @ RJIT
+This completely eliminates the most tedious part of dev work. The automatic summaries are incredibly accurate and the time savings are massive. Every team should be using this.
+Software Engineering Student @ Fontys University
+Finally, a tool that works for me instead of creating more work. The automation is seamless and the output is actually useful.
+Engineering Ambassador @ Microsoft
+Get
+started
+with
+One
+Horizon
+for
+free.
+Download
+the
+desktop
+app
+and
+start
+using
+One
+Horizon
+right
+away.
+Download for Windows
+View all downloads
+Main
+Home
+About
+Pricing
+Vault
+Changelog
+Docs
+Features
+Roadmaps
+Planning
+Standups
+Status updates
+Insights
+AI assistant / MCP
+Integrations
+Solutions
+Startups
+Dev shops / agencies
+Software teams
+Internal IT & platform teams
+Alternatives
+vs Jira
+vs Linear
+vs Asana
+vs Monday.com
+vs ClickUp
+vs Notion
+Company
+Blog
+Security
+Log in
+Sign up
+Terms of Use
+Privacy Policy
+Resources
+Docs
+API reference
+CLI
+Desktop app
+SDK
+©
+2026
+One Horizon. All rights reserved
+Facebook
+Instagram
+Threads
+X
+Reddit
+TikTok
+YouTube
+Medium
+Plan
+what
+matters,
+hand
+work
+to
+AI
+agents,
+and
+keep
+every
+task,
+commit,
+and
+PR
+tied
+back
+to
+the
+roadmap
+automatically.
+Start for free
+Get a demo
+Spec-driven
+development
+is
+how
+product
+management
+works
+with
+AI.
+Tasks
+and
+initiatives
+become
+the
+prompts,
+and
+every
+commit
+and
+PR
+ties
+back
+to
+your
+roadmap.
+Send to app
+Codex
+Codex
+Claude Code
+Claude Code
+Cursor
+Cursor
+Open Code
+Open Code
+Windsurf
+Windsurf
+Linear
+Jira
+GitHub
+Claude
+Cursor
+Model Context Protocol
+Linear
+Jira
+GitHub
+Claude
+Cursor
+Model Context Protocol
+Linear
+Jira
+GitHub
+Claude
+Cursor
+Model Context Protocol
+Pulled in automatically
+Commits, PRs, issues, and calendar work show up automatically.
+One record of progress
+See what shipped, what is in review, and what is blocked in one running journal.
+Ready to reuse
+Turn the same record into standups, handoffs, reports, and release notes.
+Pulled in automatically
+Commits, PRs, issues, and calendar work show up automatically.
+One record of progress
+See what shipped, what is in review, and what is blocked in one running journal.
+Ready to reuse
+Turn the same record into standups, handoffs, reports, and release notes.
+Strategic goal rollups
+Roll up shipped work by goals, products, releases, components, and skills.
+Team insights for human and AI work
+Track who is shipping, which coding tools are used per task, and where momentum is slowing.
+Leadership-ready reporting
+Turn live activity into concise updates for standups, stakeholders, and releases.
+Strategic goal rollups
+Roll up shipped work by goals, products, releases, components, and skills.
+Team insights for human and AI work
+Track who is shipping, which coding tools are used per task, and where momentum is slowing.
+Leadership-ready reporting
+Turn live activity into concise updates for standups, stakeholders, and releases.
+Writing progress updates always stole focus from real work. Now, One Horizon does it for me, and I can finally spend that energy building, not reporting.
+CTO @ Triagen
+One Horizon integrates so seamlessly that I don't even notice it's there; until I see my status reports already done and I can immediately get back to my actual work
+Senior ML Engineer @ Lazy Dynamics
+Clean easy to use UI. An AI tool that helps get work done efficiently.
+Software Engineer @ TechCorp
+Automating daily standups and reports saves dev teams so much time. The automatic summaries based on commits and tickets are really useful.
+Software Developer @ RJIT
+This completely eliminates the most tedious part of dev work. The automatic summaries are incredibly accurate and the time savings are massive. Every team should be using this.
+Software Engineering Student @ Fontys University
+Finally, a tool that works for me instead of creating more work. The automation is seamless and the output is actually useful.
+Engineering Ambassador @ Microsoft
+Download for Windows

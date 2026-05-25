@@ -3,14 +3,14 @@
 > *Starlight's understanding of the Agentic Creator OS*
 
 **Repository:** frankxai/agentic-creator-os
-**Last Updated:** 2026-02-10
-**Version:** v6 (Evolved)
+**Last Updated:** 2026-05-20
+**Version:** v11.0.0
 
 ---
 
 ## What ACOS Is
 
-Agentic Creator OS is the creator productivity operating system - a markdown/JSON-based configuration system that gives Claude multi-agent orchestration, smart routing, auto-activating skills, and 25+ commands through the CLAUDE.md system prompt.
+Agentic Creator OS is the creator productivity operating system - a markdown/JSON-based configuration system that gives AI coding agents multi-agent orchestration, smart routing, auto-activating skills, commands, safety hooks, and plugin packaging through the CLAUDE.md / AGENTS.md surfaces.
 
 **Core Philosophy:** Configuration over code. Files over ephemera. Systems over tools.
 
@@ -19,15 +19,16 @@ Agentic Creator OS is the creator productivity operating system - a markdown/JSO
 ## Architecture Summary
 
 ```
-ACOS v6 Architecture
+ACOS v11 Architecture
 =====================
 
 CLAUDE.md (System Prompt)
   ├── Frank DNA (voice, values, identity)
-  ├── Agent System (40+ agents, smart routing)
-  ├── Skill System (80+ skills, auto-activation)
-  ├── Command System (25+ slash commands)
-  └── GSD Methodology (structured productivity)
+  ├── Agent System (38 agents, smart routing)
+  ├── Skill System (90+ skills, auto-activation)
+  ├── Command System (65+ slash commands)
+  ├── v10 Safety Hooks (retained baseline)
+  └── v11 Plugin Ecosystem (Claude plugin packaging)
 ```
 
 ---
@@ -35,21 +36,22 @@ CLAUDE.md (System Prompt)
 ## Key Components
 
 ### Agent System
-- **40+ specialized agents** organized by domain
+- **38 specialized agents** organized by domain
 - **Smart routing** that selects agents based on task analysis
 - **Progressive disclosure** - load only needed agent context
 - **Agent booting** via `/boot [agent-name]` command
 
 ### Skill System
-- **80+ skills** with auto-activation via `skill-rules.json`
+- **90+ skills** with auto-activation via `skill-rules.json`
 - **Keyword + intent + agent matching** for activation
 - **Four load levels:** metadata → summary → core → full
 - **Skills organized by domain categories**
 
 ### Command System
-- **25+ slash commands** including /project, /agent, /skill, /gsd, /creative
+- **65+ slash commands** including ACOS and gstack workflows
 - **Command parsing** with argument support
 - **Extensible** - new commands added via configuration
+- **Health command:** `.agent-harness.json` now points to `npm run build:all`; ACOS currently has no `test` script.
 
 ### GSD Methodology
 - **Get Stuff Done** - structured productivity framework

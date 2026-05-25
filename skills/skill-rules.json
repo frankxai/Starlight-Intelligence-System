@@ -718,6 +718,35 @@
       "load_level": "core"
     },
     {
+      "id": "crypto-intelligence-vertical",
+      "skill": "crypto-intelligence",
+      "triggers": {
+        "keywords": ["crypto intelligence", "crypto vertical", "/crypto-*", "houses-as-sub-systems", "sovereign crypto practice", "verticals/crypto-intelligence"],
+        "agents": ["starlight-crypto-onchain", "starlight-architect", "starlight-prime"],
+        "intents": ["crypto-vertical-work", "houses-composition", "wealth-composition-layer-fork"]
+      },
+      "priority": "high",
+      "load_level": "core",
+      "vertical": "crypto-intelligence",
+      "tier": "vertical",
+      "notes": "Vertical-tier skill — fires when working inside verticals/crypto-intelligence/ or on /crypto-* commands. Enforces R5 non-advisory clause, voice (architect), refusal patterns, composition with Wealth IS umbrella. Per Board 2026-05-17 R5 close-out."
+    },
+    {
+      "id": "crypto-intelligence-onchain",
+      "skill": "crypto-intelligence/onchain",
+      "triggers": {
+        "keywords": ["on-chain", "onchain", "wallet flow", "whale tracking", "mev audit", "mev exposure", "validator econ", "validator economics", "contract interaction", "tx trace", "dune analytics", "nansen", "arkham", "etherscan", "solscan", "defillama", "flashbots", "mev-inspect", "/crypto-onchain-*"],
+        "agents": ["starlight-crypto-onchain"],
+        "intents": ["wallet-flow-snapshot", "wallet-trace", "mev-audit-defensive", "validator-econ-summary", "contract-interaction-trace"]
+      },
+      "priority": "high",
+      "load_level": "core",
+      "vertical": "crypto-intelligence",
+      "house": "onchain",
+      "tier": "house",
+      "notes": "House-tier skill — fires on /crypto-onchain-* commands or on-chain-specific keywords. Inherits Crypto IS vertical-tier rules (R5 clause, voice, refusals). Adds chain-data source citation discipline, mechanism-context grounding, named-output-artifact contract."
+    },
+    {
       "id": "memory-sis-memory-orchestrator",
       "skill": "memory/sis-memory-orchestrator",
       "triggers": {

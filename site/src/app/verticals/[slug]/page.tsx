@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import {
   VERTICAL_BY_SLUG,
   VERTICAL_SLUGS,
-  type Vertical,
   type VerticalSlug,
 } from "@/lib/verticals";
 import {

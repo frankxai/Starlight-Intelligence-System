@@ -72,6 +72,7 @@ const PLATFORM_PROMPTS = [
   ".cursor/rules/starlight-memory.mdc",
   ".clinerules/starlight.md",
   ".gemini/GEMINI.md",
+  ".antigravity/instructions.md",
 ] as const;
 
 // ---------- exempt drift (technical-debt ledger) ----------
@@ -198,8 +199,7 @@ const PATTERNS: Array<{ kind: Claim["kind"]; re: RegExp }> = [
 // should NOT be compared against the global canonical count.
 const LOCAL_CONTEXT_BLACKLIST: RegExp[] = [
   /sub-stack/i,
-  /\bTier\b/i,
-  /Front-Door|Excavation|Leadership|Specialist|Foundation/i,
+  /\bFront-Door tier\b|\bExcavation tier\b|\bLeadership tier\b|\bSpecialist tier\b|\bFoundation tier\b/i,
   /\bTier:\s/i,
 ];
 

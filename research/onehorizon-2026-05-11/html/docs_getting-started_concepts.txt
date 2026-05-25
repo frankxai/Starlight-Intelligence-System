@@ -1,0 +1,130 @@
+Concepts - Docs
+Docs
+API Reference
+Getting Started
+Start Guide
+Beta
+Concepts
+Tasks
+Teams
+Workspace
+Enterprise
+Integrations
+Resources
+Legal
+Docs
+API Reference
+Main
+Home
+About
+Pricing
+Vault
+Changelog
+Docs
+Features
+Roadmaps
+Planning
+Standups
+Status updates
+Insights
+AI assistant / MCP
+Integrations
+Solutions
+Startups
+Dev shops / agencies
+Software teams
+Internal IT & platform teams
+Alternatives
+vs Jira
+vs Linear
+vs Asana
+vs Monday.com
+vs ClickUp
+vs Notion
+Company
+Blog
+Security
+Log in
+Sign up
+Terms of Use
+Privacy Policy
+Resources
+Docs
+API reference
+CLI
+Desktop app
+SDK
+©
+2026
+One Horizon. All rights reserved
+Facebook
+Instagram
+Threads
+X
+Reddit
+TikTok
+YouTube
+Medium
+Concepts
+One Horizon organizes your work around a few simple concepts.
+Workspace
+Your shared environment for teams and colleagues. Each workspace has its own settings, members, and integrations.
+People can only join a workspace through an invite.
+Team
+A group of people working together inside a workspace. Teams share standups, recaps, and insights.
+Members can only be added to a team by invite. A user may join multiple teams.
+Task
+A unit of work that is either created by AI or manually by you.
+Issue
+A work item synced from integrations like GitHub or Jira (e.g. tickets, pull requests). Issues can be completed, planned, or blocked.
+Event
+Anything scheduled in your calendar (e.g. meetings, focus time, time off). Events can also appear in Planned.
+Blocker
+Something that prevents progress. A blocker can be a task, issue, or pull request you cannot move forward with.
+Planned
+Your short-term list of what’s next. Planned items can be:
+Custom tasks
+Calendar events
+Issues
+Completed
+Work you’ve finished. Always shown as tasks, regardless of whether they came from integrations or were custom created.
+Recap
+Your AI-generated summary of what you’ve worked on, what’s planned, and any blockers. Recaps update automatically from your connected tools.
+Standup
+A recurring check-in where team members share their recap. One Horizon delivers your update before the standup and runs a focused meeting flow.
+Integration
+Connections to external tools (GitHub, Jira, Linear, Google Calendar, etc.). Integrations can be added at a personal or workspace level:
+Personal: only syncs your own data.
+Workspace: shared with all members of the workspace.
+Insights
+Automated summaries of team activity, generated from recaps, tasks, issues, and events.
+Profile
+Your personal information and settings in One Horizon.
+Identity
+The accounts you use to connect specific integrations across workspaces.
+Related Articles
+Daily Recap
+Daily recap overview and task types, states, and organization.
+Smithery
+Smithery
+Connect One Horizon through Smithery using the published One Horizon MCP server entry.
+Conductor
+Conductor
+Send One Horizon task context into Conductor with one click.
+CLI
+Use One Horizon from your terminal to manage work and send tasks to coding apps.
+Workspace
+Team
+Task
+Issue
+Event
+Blocker
+Planned
+Completed
+Recap
+Standup
+Integration
+Insights
+Profile
+Identity
+Back to top

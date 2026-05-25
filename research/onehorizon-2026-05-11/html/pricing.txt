@@ -1,0 +1,362 @@
+Pricing | One Horizon
+One Horizon
+open navigation menu
+Features
+Solutions
+Pricing
+Security
+Docs
+About
+Pricing
+Unify
+your
+roadmap,
+tasks,
+and
+team
+insights
+in
+one
+system.
+Built
+for
+the
+AI
+era.
+Yearly
+Monthly
+Cut status updates to minutes
+Automate progress tracking and keep everyone aligned without meetings or manual reports.
+Fits your existing stack
+Connect GitHub, Slack, Jira, Linear, and more in minutes. No rip & replace or maintenance.
+Enterprise-ready security
+Secure integrations and governance controls as your team scales.
+Startups
+Starter
+Core roadmap features for early teams
+Free
+Forever
+10 seats
+30 days history
+Workspace & team insights
+Initiatives, releases & periods
+Slack community
+Free during beta
+Teams
+Growth
+Full insights and roadmap scale
+$
+2
+0
+/month per user, billed annually
+20 seats
+Unlimited history
+Workspace & team insights
+Taxonomy, release notes & stack rank
+Priority support
+Organizations
+Enterprise
+Advanced reporting, governance, and data
+Custom
+Unlimited seats
+Advanced reporting
+Audit logs
+Data exports & integrations
+SLA
+Start free
+Book a demo
+Start on Starter, then upgrade when you need advanced insights and governance.
+Estimate Your ROI
+See
+how
+much
+time
+and
+tool
+spend
+One
+Horizon
+can
+save
+your
+team
+each
+year.
+Estimates only. Actual results vary by workflow and team.
+Quick ROI
+Breakdown
+Team size
+Average annual salary
+$
+Hours saved per person / week
+10.0
+hrs
+Total monthly tool spend eliminated (all seats combined)
+$
+Estimated savings
+Monthly
+Annual
+$800,400
+Labor savings
+$750,000
+Tool savings
+$55,200
+One Horizon (yearly growth plan)
+-
+$4,800
+Hours saved / week
+200
+hrs
+Starter
+Growth
+Enterprise
+Capacity
+Seats
+10
+20
+Unlimited
+Core Features
+Daily recaps
+Standups
+AI Assistant
+Initiatives
+Releases
+Periods (cycles & phases)
+Release notes
+Stack rank
+Taxonomy
+Insights
+Team insights
+Workspace insights
+Advanced reporting
+History & Retention
+History
+30 days
+Unlimited
+Custom
+Integrations
+Slack
+Google Calendar
+GitHub
+Jira
+Linear
+MCP
+Claude & Claude Code
+ChatGPT
+Cursor
+JetBrains IDEs
+Windsurf
+n8n
+Data & Governance
+Data exports & integrations
+Custom data retention
+Audit logs
+Support
+Slack community
+Priority support
+SLA
+Trusted
+by
+Trusted
+by
+Engineering
+Leaders
+Writing progress updates always stole focus from real work. Now, One Horizon does it for me, and I can finally spend that energy building, not reporting.
+CTO @ Triagen
+One Horizon integrates so seamlessly that I don't even notice it's there; until I see my status reports already done and I can immediately get back to my actual work
+Senior ML Engineer @ Lazy Dynamics
+Clean easy to use UI. An AI tool that helps get work done efficiently.
+Software Engineer @ TechCorp
+Automating daily standups and reports saves dev teams so much time. The automatic summaries based on commits and tickets are really useful.
+Software Developer @ RJIT
+This completely eliminates the most tedious part of dev work. The automatic summaries are incredibly accurate and the time savings are massive. Every team should be using this.
+Software Engineering Student @ Fontys University
+Finally, a tool that works for me instead of creating more work. The automation is seamless and the output is actually useful.
+Engineering Ambassador @ Microsoft
+Trusted
+by
+Frequently asked questions
+Main
+Home
+About
+Pricing
+Vault
+Changelog
+Docs
+Features
+Roadmaps
+Planning
+Standups
+Status updates
+Insights
+AI assistant / MCP
+Integrations
+Solutions
+Startups
+Dev shops / agencies
+Software teams
+Internal IT & platform teams
+Alternatives
+vs Jira
+vs Linear
+vs Asana
+vs Monday.com
+vs ClickUp
+vs Notion
+Company
+Blog
+Security
+Log in
+Sign up
+Terms of Use
+Privacy Policy
+Resources
+Docs
+API reference
+CLI
+Desktop app
+SDK
+©
+2026
+One Horizon. All rights reserved
+Facebook
+Instagram
+Threads
+X
+Reddit
+TikTok
+YouTube
+Medium
+Yearly
+Monthly
+Cut status updates to minutes
+Automate progress tracking and keep everyone aligned without meetings or manual reports.
+Fits your existing stack
+Connect GitHub, Slack, Jira, Linear, and more in minutes. No rip & replace or maintenance.
+Enterprise-ready security
+Secure integrations and governance controls as your team scales.
+Cut status updates to minutes
+Automate progress tracking and keep everyone aligned without meetings or manual reports.
+Fits your existing stack
+Connect GitHub, Slack, Jira, Linear, and more in minutes. No rip & replace or maintenance.
+Enterprise-ready security
+Secure integrations and governance controls as your team scales.
+Startups
+Starter
+Core roadmap features for early teams
+Free
+Forever
+10 seats
+30 days history
+Workspace & team insights
+Initiatives, releases & periods
+Slack community
+Free during beta
+Teams
+Growth
+Full insights and roadmap scale
+$
+2
+0
+/month per user, billed annually
+20 seats
+Unlimited history
+Workspace & team insights
+Taxonomy, release notes & stack rank
+Priority support
+Organizations
+Enterprise
+Advanced reporting, governance, and data
+Custom
+Unlimited seats
+Advanced reporting
+Audit logs
+Data exports & integrations
+SLA
+Start free
+Book a demo
+Start on Starter, then upgrade when you need advanced insights and governance.
+Quick ROI
+Breakdown
+Team size
+Average annual salary
+$
+Hours saved per person / week
+10.0
+hrs
+Total monthly tool spend eliminated (all seats combined)
+$
+Estimated savings
+Monthly
+Annual
+$800,400
+Labor savings
+$750,000
+Tool savings
+$55,200
+One Horizon (yearly growth plan)
+-
+$4,800
+Hours saved / week
+200
+hrs
+Starter
+Growth
+Enterprise
+Capacity
+Seats
+10
+20
+Unlimited
+Core Features
+Daily recaps
+Standups
+AI Assistant
+Initiatives
+Releases
+Periods (cycles & phases)
+Release notes
+Stack rank
+Taxonomy
+Insights
+Team insights
+Workspace insights
+Advanced reporting
+History & Retention
+History
+30 days
+Unlimited
+Custom
+Integrations
+Slack
+Google Calendar
+GitHub
+Jira
+Linear
+MCP
+Claude & Claude Code
+ChatGPT
+Cursor
+JetBrains IDEs
+Windsurf
+n8n
+Data & Governance
+Data exports & integrations
+Custom data retention
+Audit logs
+Support
+Slack community
+Priority support
+SLA
+Writing progress updates always stole focus from real work. Now, One Horizon does it for me, and I can finally spend that energy building, not reporting.
+CTO @ Triagen
+One Horizon integrates so seamlessly that I don't even notice it's there; until I see my status reports already done and I can immediately get back to my actual work
+Senior ML Engineer @ Lazy Dynamics
+Clean easy to use UI. An AI tool that helps get work done efficiently.
+Software Engineer @ TechCorp
+Automating daily standups and reports saves dev teams so much time. The automatic summaries based on commits and tickets are really useful.
+Software Developer @ RJIT
+This completely eliminates the most tedious part of dev work. The automatic summaries are incredibly accurate and the time savings are massive. Every team should be using this.
+Software Engineering Student @ Fontys University
+Finally, a tool that works for me instead of creating more work. The automation is seamless and the output is actually useful.
+Engineering Ambassador @ Microsoft

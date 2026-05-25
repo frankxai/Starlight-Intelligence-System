@@ -1,7 +1,7 @@
 # Memory Foundation Phase 0 — Dog-Food Spike
 
 **Started:** 2026-05-20
-**Status:** **CHARTERED** — eval-50 + skeletons ready; execution gated on Frank's go
+**Status:** **IN EXECUTION** — eval-50 + skeletons ready; R2 verification filed; R1 smoke, eval run, migration script, synthesis, and Board memo remain open
 **Tier:** Operational (Phase 0 spike — no Board needed for adapter scaffolds)
 **Parent research:** `../memory-foundations/` (Board PROCEED-WITH-REVISE 2026-05-20)
 
@@ -21,12 +21,12 @@ Winner becomes PRIMARY substrate post-full-Board. Loser stays available as alter
 | `eval-50.jsonl` | 50 queries covering all 6 vault axes + 3 cross-vault tests |
 | `adapter-skeletons/letta_adapter.py` | Substrate ABC subclass wiring Letta MemFS (interface complete, impl TODO) |
 | `adapter-skeletons/langgraph_adapter.py` | Substrate ABC subclass wiring LangGraph BaseStore + JsonlStore (interface complete, impl TODO) |
+| `phase0-c7-verification-note.md` | R2 code-level verification note for LangGraph BaseStore claims |
 
 ## What Phase 0 execution adds
 
 | File (added during execution) | What |
 |---|---|
-| `phase0-c7-verification-note.md` | 5-bullet note from 30-min LangGraph BaseStore source read (REVISE R2) |
 | `phase0-concurrent-write-smoke.md` | 3-tab concurrent-write test results for both candidates (REVISE R1) |
 | `phase0-eval-results.jsonl` | Per-query measurements (precision@10, latency, attestation preservation) |
 | `phase0-eval-summary.md` | Side-by-side human-readable scorecard |

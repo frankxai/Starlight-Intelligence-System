@@ -37,7 +37,7 @@ Every inbound fits exactly one of these. Pick before you run anything.
 - **Who:** You want to extend SIP itself — propose a new layer, a new command tier, an amendment to the file contract.
 - **What you get:** Co-authorship on protocol evolution. Named in the spec. Architect-tier voice in the next version cut.
 - **What you commit:** A proposed diff to `SIP.md` with rationale that survives adversarial review (architect + protocol-defender + overseer). 90-day deprecation window for anything breaking.
-- **Rarity:** Rare. Substrate is closed by design — `SIP.md` is v1.1.0 and stable. Most people who think they want this actually want Route B, C, or D.
+- **Rarity:** Rare. Substrate is closed by design — `SIP.md` is v1.1.1 and stable. Most people who think they want this actually want Route B, C, or D.
 - **First command:** Open a GitHub issue at `frankxai/Starlight-Intelligence-System` tagged `sip-proposal`. If it survives triage, we pressure-test it with `/luminor-board` before it touches the spec.
 
 ### B. Alliance forge
@@ -57,9 +57,9 @@ Every inbound fits exactly one of these. Pick before you run anything.
 ### D. Sovereign spawn
 
 - **Who:** You want the whole SIS as your starting point. Your own substrate-aware system. Your own registry. Your own MCP server. Frank advises; doesn't own.
-- **What you get:** A clean fork of the full reference build — 7 agents, 6 vaults, 16 skills, the substrate docs, the MCP server, the multi-platform adapters. Rewired to your entity. MIT.
+- **What you get:** A clean fork of the full reference build — 47 named agents, 6 vaults, 71 skill rules, the substrate docs, the MCP server, the multi-platform adapters. Rewired to your entity. MIT.
 - **What you commit:** Attribution to SIP as protocol author. Your vaults stay yours. Your canon stays yours. Every artifact you ship under your new substrate carries "Built on SIP" per the layer 2 format.
-- **First command:** `/sovereign-spawn <your-substrate-name>` — **shipping in v7.3 alongside this doc**. Generates a forked repo with your entity name wired into every file.
+- **First command:** `/sovereign-spawn <your-substrate-name>` — available in the current reference build. Generates a forked repo with your entity name wired into every file.
 
 ---
 
@@ -91,7 +91,7 @@ Literal numbered steps. First session.
 
 1. **Read the sovereignty clause above.** If the shape doesn't fit, stop here and save yourself a week.
 2. **Identify your route (A/B/C/D)** from the four above. If torn between two, default substrate — ambiguity collapses to the more conservative.
-3. **Run `/intake`** (builder) or `/welcome` (creator). Both are v7.3 commands shipping alongside this doc. `/intake` is the canonical entry point; `/welcome` is its Concierge-wrapped version for non-terminal users.
+3. **Run `/intake`** (builder) or `/welcome` (creator). Both are current front-door commands. `/intake` is the canonical entry point; `/welcome` is its Concierge-wrapped version for non-terminal users.
 4. **Answer the intake honestly.** What you're bringing, who owns what, what ships by when. Node declarations without fields are not-yet-ready nodes — don't paper over.
 5. **Ship the first artifact.** End the session with `/sip-attest <path-to-your-artifact>`. If the command refuses (no real SIP composition detected), that's the protocol telling you it's decoration — revise, compose actually, re-run.
 
@@ -105,7 +105,7 @@ Symmetric. Read both columns.
 
 | You receive | You bring |
 |---|---|
-| A substrate spec (`SIP.md`, v1.1.0) that won't silently change | A declared domain you own and won't silently drift |
+| A substrate spec (`SIP.md`, v1.1.1) that won't silently change | A declared domain you own and won't silently drift |
 | Command scaffolds (`/alliance-forge`, `/vertical-spawn`, `/sovereign-spawn`, `/sip-attest`, `/luminor-board`) that enforce the clause | Named artifacts shipped by named dates, not intentions |
 | Attestation that compounds every time you ship | Attribution on every composition, ever. Silent composition is a breach |
 | Free architectural guidance when Frank has bandwidth, per `ALLIANCE.md` § Posture | Sovereignty — you own your canon, your content, your decisions |
@@ -123,18 +123,18 @@ Symmetric. Read both columns.
 - [`VERTICALS.md`](VERTICALS.md) — public registry of sovereign verticals + alliance class definitions.
 - [`VOICES.md`](VOICES.md) — five canonical voice archetypes. You'll be assigned to at least one.
 - [`ALLIANCE.md`](ALLIANCE.md) — forging method, four conditions, posture, exit rules.
-- [`.claude/commands/`](.claude/commands/) — every reference slash command. `/intake`, `/welcome`, `/sovereign-spawn` ship with v7.3 alongside this doc.
+- [`.claude/commands/`](.claude/commands/) — every reference slash command. `/intake`, `/welcome`, `/sovereign-spawn` are current front-door commands.
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol
 
-Substrate: starlightintelligence.org/protocol v1.1.0
+Substrate: starlightintelligence.org/protocol v1.1.1
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
-- starlight-intelligence-system@v7.3 · substrate + reference onboarding surface
+- starlight-intelligence-system@v8.0.0 · substrate + reference onboarding surface
 
-Generated: 2026-04-24
+Generated: 2026-05-20
 Attestation is compounding, not credit transfer: every composition strengthens every node.
 ---
