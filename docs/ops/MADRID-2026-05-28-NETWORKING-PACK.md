@@ -32,27 +32,30 @@ These work today. Memorize the top 3.
 - **`starlightintelligence.org/verticals`** — 10 Intelligence System layers.
 - **`starlightintelligence.org/changelog`** — release log (v8.1.0 currently).
 
-### FrankX (audience-side)
+### FrankX (audience-side) — all LIVE
 - **`frankx.ai`** — root.
+- **`frankx.ai/guides/agent-card-a2a-spec`** — wire-level A2A protocol implementation guide (Agent Card schema, JSON-RPC task lifecycle). **The killer Google-facing artifact.**
+- **`frankx.ai/partnerships/google`** — Cloud Partner Advantage pursuit page (5 collaboration modes, 12-month compounding model). Hand this to Partner Advantage team contacts.
 - **`frankx.ai/workshops/build-first-ai-agent`** — 90-min workshop, ADK enterprise lane documented.
-- **`frankx.ai/guides`** — guides catalog (14 guides).
+- **`frankx.ai/guides`** — guides catalog (14+ guides).
 
 ### Social
 - **`linkedin.com/in/frankxai`** — 7,000-strong EMEA AI architect audience.
 
 ---
 
-## 2. URLs that DO NOT work today (do not hand out)
+## 2. URL audit correction (2026-05-27)
 
-Audit 2026-05-26 caught these:
+The 2026-05-26 first-pass audit reported the A2A guide and `/partnerships/google` as 404. **That was wrong** — it audited the wrong deploy repo (`frankx.ai-vercel-website` instead of the live `frankx-prod-sync` linked to Vercel project `prj_NHVIKZ...`). Both URLs return **HTTP 200** on production today (verified 2026-05-27 via `curl -sL`).
 
-| URL Frank might be tempted to give | Reality |
-|---|---|
-| `frankx.ai/guides/agent-card-a2a-spec` | **404** — source exists in FrankX/content/, not deployed |
-| `frankx.ai/partnerships/google` | **404** — 283-line playbook exists locally, not deployed |
-| `frankx.ai/ai-architecture` | Live but **stale since 2026-03-23**, no ADK reference yet |
+| URL | Status (2026-05-27) | Use confidently? |
+|---|---|---|
+| `frankx.ai/guides/agent-card-a2a-spec` | **HTTP 200** ✅ | Yes — this is the killer Google-facing artifact |
+| `frankx.ai/partnerships/google` | **HTTP 200** ✅ | Yes — hand to Partner Advantage contacts |
+| `frankx.ai/workshops/build-first-ai-agent` | **HTTP 200** ✅ | Yes — workshop landing |
+| `frankx.ai/ai-architecture` | Live but content last refreshed 2026-03-23, no ADK reference yet | Use cautiously — flag as "ADK reference coming" if asked |
 
-**If Frank wants any of these live before Thursday:** cross-repo deploy sync FrankX/content/ → frankx.ai-vercel-website. Decision pending. If skipped, route conversations to `starlightintelligence.org/research` and `frankx.ai/workshops/build-first-ai-agent` instead.
+**Lesson for this pack:** the audit that surfaced "404" was reading `C:/Users/frank/frankx.ai-vercel-website` (apparently stale fork or dev copy). Live deploy is from `C:/Users/frank/frankx-prod-sync/` — Vercel-linked. When in doubt, `curl -sL https://www.frankx.ai/<path>` from the laptop is the binary truth.
 
 ---
 
