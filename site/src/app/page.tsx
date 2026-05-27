@@ -51,7 +51,7 @@ const LAYERS: LayerCard[] = [
   },
   {
     name: "Wealth",
-    desc: "Disruptive Passive Income ledger and thesis engine.",
+    desc: "Asymmetric Passive Income (DPI) ledger and thesis engine.",
     accent: "rose",
   },
   {

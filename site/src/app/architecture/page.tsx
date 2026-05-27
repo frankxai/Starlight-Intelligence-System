@@ -86,7 +86,7 @@ const LAYERS: Layer[] = [
     n: "6",
     name: "Wealth IS",
     tier: "Vertical",
-    purpose: "Disruptive Passive Income ledger + thesis engine.",
+    purpose: "Asymmetric Passive Income (DPI) ledger + thesis engine.",
     vault: "wealth/",
     status: "core",
   },
