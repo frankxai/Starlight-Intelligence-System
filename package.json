@@ -1,6 +1,6 @@
 {
   "name": "@arcanea/starlight-intelligence-system",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "description": "Starlight Intelligence System — substrate (SIP protocol, alliance forging method, attestation) + reference operational layer (6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, MCP server, platform adapters, sanitization gateway, empirical sandbox, active healing)",
   "repository": {
     "type": "git",

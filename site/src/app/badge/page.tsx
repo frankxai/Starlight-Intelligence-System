@@ -13,12 +13,14 @@ export const metadata: Metadata = {
     description:
       "Embeddable badge for projects built on the Starlight Intelligence Protocol.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Built on SIP — attestation badge" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Built on SIP — attestation badge",
     description:
       "Embeddable badge for projects built on the Starlight Intelligence Protocol.",
+    images: ["/opengraph-image"],
   },
 };
 

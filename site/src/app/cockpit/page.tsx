@@ -13,12 +13,14 @@ export const metadata: Metadata = {
     description:
       "Four surfaces. One brain. Voice loop with 7 tools, live 3D thought-graph, drafts on disk. Local-first.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Cockpit" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Cockpit — Starlight Intelligence",
     description:
       "Four surfaces. One brain. Voice loop, brain viz, drafts on disk. Local-first.",
+    images: ["/opengraph-image"],
   },
 };
 

@@ -282,7 +282,7 @@ Starlight-Intelligence-System/
 
 ---
 
-*Starlight Intelligence System v8.0.0 — Horizons*
+*Starlight Intelligence System v8.1.0 — Horizons + Composition Layer + Crypto IS*
 
 ---
 

@@ -14,14 +14,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Explainer — Starlight Intelligence",
     description:
-      "Long-form: who it's for, the five-phase journey, the nine-layer vision, what's different from chat. Sovereign by architecture.",
+      "Long-form: who it's for, the five-phase flow, the nine-layer vision, what's different from chat. Sovereign by architecture.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Explainer" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Explainer — Starlight Intelligence",
     description:
-      "Long-form: who it's for, the five-phase journey, the nine-layer vision. Sovereign by architecture.",
+      "Long-form: who it's for, the five-phase flow, the nine-layer vision. Sovereign by architecture.",
+    images: ["/opengraph-image"],
   },
 };
 
