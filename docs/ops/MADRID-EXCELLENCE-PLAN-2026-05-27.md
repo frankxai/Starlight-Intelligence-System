@@ -762,3 +762,68 @@ Out of scope for this plan. Follows `MADRID-2026-05-28-NETWORKING-PACK.md §8` p
 
 Built on SIP — Starlight Intelligence Protocol v1.1.1
 *Generated 2026-05-26 · Companion to `MADRID-2026-05-28-NETWORKING-PACK.md` + `MADRID-2026-05-28-DEMO-RUNBOOK.md` · Falsifier: if Frank arrives in Madrid and Phase B PREFLIGHT-2026-05-27.md was not completed, this plan failed at scheduling, not at content.*
+
+---
+
+## Execution Log — Wave 1+2 (2026-05-26, autonomous Claude under Doctrine 0)
+
+### Wave 1 — 7-agent parallel intelligence (read-only)
+
+| # | Agent | Outcome |
+|---|---|---|
+| 1 | Explore — Antigravity inventory | **GREEN.** `agy` CLI on PATH (`/c/Users/frank/AppData/Local/agy/bin/agy`), Google OAuth live (frank.riemer97@gmail.com), session protobufs through 2026-05-22 (35MB + 14MB). Plugins: google-antigravity-sdk, modern-web-guidance, android-cli, chrome-devtools, firebase, science (AlphaFold). Frank can credibly demo. |
+| 2 | Explore — Deploy source content | **Both pages ALREADY LIVE.** `/partnerships/google` (`content/partnerships/_placeholders/google.ts`, 282 lines, registered) returns 200. `/guides/agent-card-a2a-spec.mdx` (346 lines) returns 200. Not new-deploy work — edit-in-place sweep. frankx-prod-sync was clean main, behind origin by 5 commits. |
+| 3 | Explore — QR + Linktree audit | **No QR files exist.** Linktree NOT linktree.ee — self-hosted at `frankx.ai/linktree` + `frankx.ai/links` (both live, May-21 commits). /connect QR landing already exists on origin (PR #92). |
+| 4 | UX Designer — Visual audit (9 URLs) | Headline finding "ZERO og:image sitewide" was WRONG (Wave 2 verified — /hero-homepage.png + /opengraph-image already wired). REAL findings: "AI Architect at Oracle" in frankx.ai hero (P0), "Disruptive Passive Income" banned-phrase in shared component (P1), "10x-ing output" in /guides/ai-writing-system (P1), /research/memory-foundations was 404 (P0). |
+| 5 | partner-google-specialist — Google content discovery | `/partnerships/google.ts` voice violations: 3x Oracle audience-network refs (lines 114, 250, 267), 5x "deep-dive" instances, ADK "enterprise lane" overstatement vs workshop reality (1-of-6 branches). A2A guide has "Oracle Open Agent Specification" section (lines 282-295) — voice issue T-6 days from Oracle exit. Verdict: deploy-with-edits (30-min sanitize), not rewrite. |
+| 6 | performance-guardian — Domain health | All 3 domains GREEN on root + sitemap + robots + llms.txt + SSL (70/42/49 days). All LLM crawlers allowed. /research/memory-foundations RED (soft 404). Skool community links 403 (likely login wall, not misconfig). |
+| 7 | aeo-engineer — AEO citation audit | Workshop 47/80, /architecture 44/80, /research/memory-foundations 8/80 (was broken). Top fix: Person JSON-LD with sameAs across all three. Workshop already had Course+Event+Breadcrumb (audit didn't catch that). Post-Madrid AEO velocity: ship dated Lab Report on Antigravity within 7 days. |
+
+### Wave 2 — Edits + deploys (parallel, all main-branch)
+
+**Voice rule refined mid-session (memory updated):** "Ex-Oracle AI Architect who helped build the EMEA AI Center of Excellence" is now the canonical pedigree framing — past-tense credit-claim is STRONGER positioning than employment-implying "at Oracle." Banned: present-tense "at Oracle." Allowed: "Ex-Oracle," "alumniOf," "helped build," "40+ AI CoEs for Fortune 500."
+
+**frankx-prod-sync commits pushed to origin/main:**
+
+| SHA | Description | Effect |
+|---|---|---|
+| 770543d5 | turbopack serverExternalPackages (Frank's pre-existing) | rebased to current HEAD |
+| 0e76d8b8 | voice(madrid): Ex-Oracle framing sweep + Google partnership honesty pass | 9 files: homepage description+FAQ, full /bio rewrite (ONE/SHORT/LONG, QUICK_FACTS, metadata, JsonLd worksFor→Arcanea+alumniOf←Oracle, long-story), /os footer, 3x email-templates, /partnerships/google 7-edit sweep (Oracle×3 + deep-dive×2 + ADK overstatement×3), A2A guide OAS softening, /guides/ai-writing-system "10x→compounding" |
+| 1d97afdf | fix(og): drop Edge runtime — was returning 0-byte responses in Next 16 prod | /api/og endpoint runtime change (didn't fix — see next) |
+| 45ec406d | fix(og): static fallback for workshop + guide pages | workshop + guide pages now use /hero-homepage.png since /api/og still returns 0b post-runtime-change |
+
+**Starlight-Intelligence-System commits pushed to origin/main:**
+
+| SHA | Description | Effect |
+|---|---|---|
+| 167b269 | voice(site): DPI — 'Disruptive Passive Income' → 'Asymmetric Passive Income (DPI)' | site/src/app/page.tsx + architecture/page.tsx — banned "disrupt" word out, DPI acronym preserved |
+
+### Live verification state (2026-05-26 evening)
+
+| URL | Status | Voice/content state |
+|---|---|---|
+| frankx.ai/ | 200 | Bio deploy LIVE (12x Ex-Oracle, 2x alumniOf, 1x "Arcanea BV") |
+| frankx.ai/bio | 200 | LIVE with refined Ex-Oracle framing across all 3 bio lengths + JsonLd |
+| frankx.ai/partnerships/google | 200 | (verify on next deploy cycle) |
+| frankx.ai/guides/agent-card-a2a-spec | 200 | Oracle/OAS section softened to "internal-spec" pattern |
+| frankx.ai/workshops/build-first-ai-agent | 200 | OG image patched to static fallback |
+| frankx.ai/connect | 200 | EXCELLENT — purpose-built event landing (date-aware ribbon, role-path cards, QR, newsletter) |
+| frankx.ai/connect/qr | 200 | Printable 720px branded QR (emerald on dark) |
+| frankx.ai/api/og?title=X | 200 / 0b | KNOWN BROKEN — Next 16 + next/og. Post-Madrid debug. Mitigated via consumer-side static fallback. |
+| starlightintelligence.org/research/memory-foundations | 200 | LIVE with full synthesis content (Wave 1 audit was pre-deploy) |
+| starlightintelligence.org/architecture | 200 | DPI rename pending GitHub Actions deploy |
+
+### Outstanding (post-this-session)
+
+- **Schema.org JSON-LD upgrade (Task #8 partial):** workshop already has Course+Event+Breadcrumb; homepage has Person+Org+FAQ; bio has Person+alumniOf. Remaining leverage: TechArticle on /architecture, sameAs comprehensive on Person across all surfaces. ~30min.
+- **Antigravity dog-foot session (Task #10):** running NOW as `agy --print` background job auditing the networking pack — output → `artifacts/antigravity-2026-05-26/audit-madrid-pack.md`. Captures real Antigravity-generated artifact Frank can reference Thursday.
+- **Comprehensive Oracle sweep:** surgical 5-file scope done. Remaining lower-viz files (design-lab variants, ai-evolution, courses/build-your-ai-creator-os, watch/shorts, workshops/for-educators, docs/strategy) deferred to next-week sweep.
+- **/api/og deeper debug:** root cause likely Next 16 + next/og incompatibility beyond runtime. Worth a focused session post-Madrid.
+
+### Doctrine update mid-session
+
+Frank added **Doctrine 0 — Lead. Don't ask permission for normal management** to `~/.claude/CLAUDE.md` at 2026-05-27. Standing authorization to commit + push + merge + sync without explicit per-action approval, with guardians as the safety net. ALWAYS still stop for: force-push to main, git reset --hard, deleting branches with unpushed commits, dropping DB tables, rotating keys, /Business/, /papa/, external-system side effects (email blasts, social posts, MCP cloud writes). This execution log was generated under that doctrine.
+
+---
+
+*Wave 1+2 log generated 2026-05-26 · Next gates: Wed AM PREFLIGHT + Wed PM optional follow-on work + Wed 18:00 freeze + Thu AM summit-day matrix*
