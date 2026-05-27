@@ -18,7 +18,7 @@
 | Layer | What it is | What lives here | License | Adopt how |
 |-------|-----------|-----------------|---------|-----------|
 | **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
-| **Operational (reference build)** | This repo's working implementation: 7 named agents, 6 semantic vaults, 16 skills, MCP server, 6 strategic commands, multi-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
+| **Operational (reference build)** | This repo's working implementation: 47 named agents, 6 semantic vaults, 71 skills, MCP server, 6 strategic commands, multi-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
@@ -40,7 +40,7 @@ flowchart TB
   Vaults["6 semantic vaults<br/>JSONL source of truth"]
   Index["SQLite + FTS5<br/>rebuildable index"]
   MCP["MCP server<br/>10 sis_* tools"]
-  Adapters["Claude Code · Cursor · Codex · Gemini · OpenCode"]
+  Adapters["Claude Code · Cursor · Cline · Codex · Gemini · Antigravity · OpenCode"]
   Repos["Repo-specific agent harnesses"]
   Output["Safer, memory-aware agent work"]
 
@@ -58,7 +58,7 @@ flowchart TB
 | Semantic vaults | Durable memory across sessions and tools |
 | Temporal confidence | Old knowledge decays unless reconfirmed |
 | Contradiction detection | Conflicting memories become visible |
-| Platform adapters | Same substrate across Claude, Cursor, Codex, Gemini, OpenCode |
+| Platform adapters | Same substrate across Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity, OpenCode |
 | MCP server | Tool-native access to memory and retrieval |
 | Harness checks | Prompt surfaces stay aligned with reality |
 
@@ -186,7 +186,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 - **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
-- **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode share the same vaults.
+- **Six platform adapters** — Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity share the same vaults. OpenCode reuses the Codex `AGENTS.md` adapter (compact mode).
 - **MCP v2** — `src/mcp-server.ts` ships ten tools over JSON-RPC 2.0 stdio.
 
 ### MCP tools
@@ -209,14 +209,16 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Platform | Memory file | MCP config | Max tokens |
 |---|---|---|---|
 | Claude Code | `CLAUDE.md` | `~/.claude/settings.json` → `mcpServers` | 200,000 |
-| Cursor | `.cursorrules` | Cursor settings → MCP | 128,000 |
+| Cursor | `.cursor/rules/` | Cursor settings → MCP | 128,000 |
+| Cline | `.clinerules/` | Cline memory bank + MCP config | varies by model |
 | Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
 | Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
+| Antigravity | `.antigravity/` | Antigravity agent config | varies by model |
 | OpenCode | `AGENTS.md` (compact) | `~/.opencode/config.json` | 128,000 |
 
-### The 7 named agents (operational layer)
+### The 7 Leadership-tier agents (named council)
 
-The reference build maps SIP's 5 voice archetypes to 7 named runtime agents — Orchestrator, Prime, Architect, Navigator, Sentinel, Weaver, Sage. Full registry: [`agents/AGENT_REGISTRY.md`](agents/AGENT_REGISTRY.md).
+Within the 47-agent registry, the reference build maps SIP's 5 voice archetypes to 7 named Leadership-tier runtime agents — Orchestrator, Prime, Architect, Navigator, Sentinel, Weaver, Sage. The other 40 agents span Front-Door (3), Excavation (1), Specialist + Foundation tiers, Universal IS (5), Domain Sub-Stack (19), Council Archetype (7), and SIS Extractor (5). Full registry: [`agents/AGENT_REGISTRY.md`](agents/AGENT_REGISTRY.md).
 
 Voice archetypes are abstract; named agents are specific implementations. Anyone forking SIP can choose entirely different agents above the substrate.
 
@@ -279,7 +281,7 @@ pnpm test            # 82+ orchestrator tests
 pnpm run lint        # tsc --noEmit
 ```
 
-`src/` is under 3,000 lines of TypeScript with zero runtime dependencies outside `better-sqlite3`. Substrate docs (`SIP.md`, `SIS.md`, etc.) are markdown-only — no build dependency.
+`src/` is roughly 13,700 lines of TypeScript across ~50 files, with zero runtime dependencies outside `better-sqlite3`. Substrate docs (`SIP.md`, `SIS.md`, etc.) are markdown-only — no build dependency.
 
 ---
 

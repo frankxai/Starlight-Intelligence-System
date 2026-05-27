@@ -38,7 +38,7 @@ attestation: built_on_sip
 - **license:** MIT for server code, CC-BY-NC for canon payloads
 
 ### starlight-mcp
-- **sip_version:** 1.1.0
+- **sip_version:** 1.1.1
 - **owner:** Frank Riemer / Starlight Holding BV
 - **status:** active
 - **repo:** `frankxai/Starlight-Intelligence-System`

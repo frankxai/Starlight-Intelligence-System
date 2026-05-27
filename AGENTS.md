@@ -96,7 +96,7 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (63 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (69 files). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
+Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (69 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (71 files). `EXEMPT_PHANTOMS` ledger drift open: 7 ghost energy agents (`starlight-energy-{buyer,cost,grid,installer,operations,recovery,sizing}`) dispatched by rules but lack agent files — pending resolution per audit 2026-05-28.
 
 | Domain | Surface (sample) |
 |--------|------------------|

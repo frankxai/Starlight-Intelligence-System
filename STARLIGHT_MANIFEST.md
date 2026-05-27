@@ -1,8 +1,8 @@
 # Starlight Intelligence System — Manifest
 
-**Version:** 2.0.0
+**Version:** 8.0.0
 **Codename:** Horizons
-**Release:** February 2026
+**Release:** May 2026
 **Author:** FrankX
 
 ---
@@ -19,7 +19,9 @@
 | Version | Codename | Focus | Date |
 |---------|----------|-------|------|
 | 1.0.0 | Infinity Engine | Core architecture: Vaults, Notes, Transmissions, Agents, Skills | Feb 2026 |
-| **2.0.0** | **Horizons** | **Multi-platform, rearchitected hierarchy, Horizon Vault, premium narrative** | **Feb 2026** |
+| 2.0.0 | Horizons (initial) | Multi-platform, rearchitected hierarchy, Horizon Vault, premium narrative | Feb 2026 |
+| 7.x | Horizons (substrate) | SIP protocol v1.1.0 ship, six-vault architecture, MCP server, multi-platform adapters expanded | Apr 2026 |
+| **8.0.0** | **Horizons** | **47-agent multi-tier registry, 71 skills, Domain Sub-Stack Tier, Council Archetype Tier, /yolo Hive, dreaming pipeline, SIP v1.1.1** | **May 2026** |
 
 ### What Changed in v2.0.0
 
@@ -35,15 +37,15 @@
 
 | Component | Count | Status |
 |-----------|-------|--------|
-| Agents | 7 | Active |
-| Skills | 16 | Active |
-| Commands | 6 | Active |
+| Agents | 47 (40 top-level + 7 Council Archetype seats) | Active |
+| Skills | 71 (69 auto-activation rules) | Active |
+| Commands | 100+ (15 in `commands/` + 107 in `.claude/commands/`) | Active |
 | Vaults | 6 (incl. Horizon) | Active |
 | Note Templates | 4 | Active |
 | Transmission Channels | 4 | Active |
-| Platform Adapters | 6 | Active |
+| Platform Adapters | 6 (Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity) | Active |
 | Hooks | 4 categories | Active |
-| MCP Integrations | 6 | Configured |
+| MCP Integrations | 3 servers in tree (cockpit/mcp, src/, starlight-substrate-mcp) | Configured |
 
 ## Dependency Map
 
@@ -71,7 +73,7 @@ Starlight Intelligence System
 │   └── AI-Ops (operational intelligence, synthesis)
 │
 └── Standalone capabilities:
-    ├── Multi-agent orchestration (7 agents, flat council)
+    ├── Multi-agent orchestration (47 agents across 9 tiers, flat council with emergent leadership)
     ├── Persistent memory (6 Vaults incl. Horizon)
     ├── Knowledge capture (Notes with 4 templates)
     ├── Cross-system communication (Transmissions)
@@ -108,4 +110,4 @@ Starlight Intelligence System
 
 ---
 
-*Starlight Intelligence System v2.0.0 — Horizons*
+*Starlight Intelligence System v8.0.0 — Horizons*
