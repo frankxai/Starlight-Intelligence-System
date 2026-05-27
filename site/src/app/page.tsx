@@ -106,7 +106,7 @@ export default async function HomePage() {
             Built on the Starlight Intelligence Protocol &middot; v1.1.1
           </div>
 
-          <h1 className="mt-5 max-w-3xl text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
+          <h1 className="mt-5 max-w-3xl font-serif text-[clamp(2.25rem,6vw,4rem)] font-semibold leading-[1.05] tracking-tight text-white">
             Persistent context.
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">

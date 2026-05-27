@@ -123,7 +123,7 @@ export default async function ResearchDetailPage({
               {r.publishedAt}
             </time>
           </div>
-          <h1 className="mt-5 text-3xl font-bold tracking-tight text-white md:text-5xl">
+          <h1 className="mt-5 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
             {r.title}
           </h1>
           <p className="mt-5 max-w-xl text-[15px] leading-[1.85] text-slate-400">

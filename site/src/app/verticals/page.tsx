@@ -45,7 +45,7 @@ export default function VerticalsPage() {
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
             Domain Sub-Stack Tier
           </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-5xl">
+          <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
             Three reference verticals.
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-cyan-400 to-fuchsia-400 bg-clip-text text-transparent">

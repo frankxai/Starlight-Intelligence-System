@@ -38,7 +38,7 @@ Directory `<artifact-slug>.sip-custom-gpt/`:
 ├── actions/                       — optional, only if any command is externally callable
 │   └── openapi.yaml               — OpenAPI 3.x spec for GPT Actions
 └── assets/
-    ├── logo.png                   — DALL-E generated or hand-designed agent avatar
+    ├── logo.png                   — generated via NB2 (Gemini 3.1 Flash Image) or GPT Image 2, or hand-designed
     └── color-tokens.json          — brand surface tokens (informational; GPT Builder accepts logo only)
 ```
 
@@ -71,7 +71,7 @@ Knowledge file concatenation strategy: GPT's 20-file cap forces bundling. Concat
     "openapi_spec_path": "actions/openapi.yaml",
     "optional": true
   },
-  "model_preference": "gpt-4o",
+  "model_preference": "gpt-5",
   "sip": {
     "substrate_version": "v1.1.0",
     "layers": ["file-contract", "attestation", "commands", "..."],

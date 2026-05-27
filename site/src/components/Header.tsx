@@ -73,7 +73,7 @@ export function Header() {
         <details className="group relative sm:hidden">
           <summary
             aria-label="Open navigation menu"
-            className="flex cursor-pointer list-none items-center gap-1.5 rounded-md px-2.5 py-2 text-[13px] text-slate-300 transition-micro hover:bg-white/[0.04] [&::-webkit-details-marker]:hidden"
+            className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-md px-3 py-3 text-[13px] text-slate-300 transition-micro hover:bg-white/[0.04] [&::-webkit-details-marker]:hidden"
           >
             Menu
             <span className="text-slate-500 transition-micro group-open:rotate-180" aria-hidden="true">↓</span>
@@ -110,7 +110,7 @@ function NavLink({
   external?: boolean;
 }) {
   const cls =
-    "rounded-md px-3 py-2.5 text-[13px] text-slate-300 transition-micro hover:text-white hover:bg-white/[0.06]";
+    "inline-flex min-h-11 items-center rounded-md px-3 py-3 text-[13px] text-slate-300 transition-micro hover:text-white hover:bg-white/[0.06]";
 
   if (external) {
     return (

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
@@ -14,6 +14,14 @@ const jbMono = JetBrains_Mono({
   variable: "--font-jbmono",
   subsets: ["latin"],
   display: "swap",
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+  axes: ["SOFT", "WONK", "opsz"],
 });
 
 export const metadata: Metadata = {
@@ -96,7 +104,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jbMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jbMono.variable} ${fraunces.variable}`}>
       <body className="flex min-h-dvh flex-col bg-[#060609] font-sans text-slate-200 antialiased">
         <script
           type="application/ld+json"

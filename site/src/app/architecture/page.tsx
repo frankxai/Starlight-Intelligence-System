@@ -203,7 +203,7 @@ export default function ArchitecturePage() {
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
             10-IS composition
           </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
+          <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
             Ten Intelligence Systems.
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
