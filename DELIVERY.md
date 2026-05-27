@@ -21,7 +21,7 @@ Read this as a menu. Pick the one that matches what you showed up for. Each sect
 
 ### 2. SIS fork (sovereign spawn)
 
-- **What it is:** You take the whole reference build — 7 agents, 6 vaults, 16 skills, MCP server, multi-platform adapters, full substrate docs — and run your own substrate-aware system under your own name.
+- **What it is:** You take the whole reference build — 47 agents (7-archetype council + specialist tiers), 6 vaults, 71 skills across 14 domains, MCP server, multi-platform adapters, full substrate docs — and run your own substrate-aware system under your own name.
 - **Who it's for:** Operators, founders, and technical creators who want their own substrate layer rather than adopting Frank's. Competing is encouraged; composition is encouraged more.
 - **Scope:** Complete fork, rewired to your entity. Your registry. Your MCP server. Your agent names. Your vaults. All under MIT.
 - **What you bring:** An entity name. A declared substrate domain. Willingness to keep attribution to SIP as protocol author.
