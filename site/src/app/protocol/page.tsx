@@ -4,20 +4,22 @@ import Link from "next/link";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Starlight Intelligence Protocol — v1.0.0",
+  title: "Starlight Intelligence Protocol — v1.1.1",
   description:
     "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
   openGraph: {
-    title: "Starlight Intelligence Protocol — v1.0.0",
+    title: "Starlight Intelligence Protocol — v1.1.1",
     description:
       "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence Protocol v1.1.1" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Starlight Intelligence Protocol — v1.0.0",
+    title: "Starlight Intelligence Protocol — v1.1.1",
     description:
       "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
+    images: ["/opengraph-image"],
   },
 };
 

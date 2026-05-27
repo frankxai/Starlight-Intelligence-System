@@ -105,6 +105,16 @@ The 2026-05-26 first-pass audit reported the A2A guide and `/partnerships/google
 
 **Ask:** Introduction to the EMEA AI architecture team for collaborative content + event speaking slots.
 
+### Antigravity team (if encountered)
+
+**Hook:** *"I've been dog-fooding Antigravity since December 2025. Twelve project brains, last live session five days ago. Native operator, not waitlist."*
+
+**Ask:** Direct feedback channel — what works for me, what I keep wishing was different, where the IDE-style install collides with the CLI-first ecosystem I live in.
+
+**Land receipt:** Name + email of an Antigravity PM or eng lead. Confirm Frank's spot in the early-feedback cohort if such a channel exists.
+
+**Land artifact:** Frank can pull up the IDE on his laptop and scroll through the May 22 brain if asked.
+
 ---
 
 ## 4. Email follow-up templates (3-5 hours after meeting)

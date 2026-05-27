@@ -13,12 +13,14 @@ export const metadata: Metadata = {
     description:
       "10 Intelligence Systems composed on SIP. JSONL as truth, attestation as contract, sovereignty as invariant.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Architecture" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Architecture — Starlight Intelligence",
     description:
       "10 Intelligence Systems composed on SIP. JSONL as truth, attestation as contract.",
+    images: ["/opengraph-image"],
   },
 };
 

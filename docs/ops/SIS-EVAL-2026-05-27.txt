@@ -1,0 +1,13 @@
+
+── Track D v0.1 — 7 risk-dimension evals (7 files) ──
+
+  OK    agent-event-completeness.test.ts          2/2 pass, 3 todo (5.21s)
+  OK    council-output-shape.test.ts              5/5 pass, 0 todo (10.93s)
+  OK    graph-edge-provenance.test.ts             6/6 pass, 0 todo (52.59s)
+  OK    pack-validity.test.ts                     2/2 pass, 2 todo (4.24s)
+  OK    permission-compliance.test.ts             7/7 pass, 2 todo (5.78s)
+  OK    vault-privacy.test.ts                     7/7 pass, 0 todo (3.74s)
+  OK    workpacket-completeness.test.ts           5/5 pass, 0 todo (3.31s)
+
+Total: 34 pass · 0 fail · 7 todo across 7 evals
+

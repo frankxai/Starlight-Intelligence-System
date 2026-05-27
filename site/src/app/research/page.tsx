@@ -13,12 +13,14 @@ export const metadata: Metadata = {
     description:
       "Substrate-tier research informing SIS foundation decisions. Rubric-first. Board-gated. SIP-attested.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Research" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Research — Starlight Intelligence",
     description:
       "Substrate-tier research informing SIS foundation decisions. Rubric-first. Board-gated.",
+    images: ["/opengraph-image"],
   },
 };
 

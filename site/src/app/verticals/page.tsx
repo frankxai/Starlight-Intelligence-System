@@ -20,12 +20,14 @@ export const metadata: Metadata = {
     description:
       "Three reference Domain Sub-Stacks: People · Sound · Music. Calibrated, structured, sovereign. The pattern generalizes via /spawn-domain-stack.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Verticals" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Verticals — Starlight Intelligence",
     description:
       "Three reference Domain Sub-Stacks: People · Sound · Music. The pattern generalizes.",
+    images: ["/opengraph-image"],
   },
 };
 

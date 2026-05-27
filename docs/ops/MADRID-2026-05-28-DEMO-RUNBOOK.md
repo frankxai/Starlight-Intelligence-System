@@ -138,10 +138,11 @@ URLs sent in-room are 10x more likely to be opened than URLs sent the next day.
 
 ## 5. Pre-flight Wednesday 2026-05-27 (checklist)
 
-- [ ] Wednesday morning: run the GEMINI_API_KEY format check (§ 2)
+- [ ] Wednesday morning: run the GEMINI_API_KEY format check (§ 2). **CONFIRMED RED 2026-05-27 — rotate via aistudio.google.com/apikey before relying on live Gemini calls.**
 - [ ] Wednesday afternoon: open all three browser URLs (§ 1) — confirm they render, screenshot if any are broken
 - [ ] Wednesday afternoon: boot cockpit once locally, confirm :3007 holds nothing on shutdown
 - [ ] Wednesday evening: pre-cache 2-3 NB2 hero images in a `madrid-demo/` folder for offline access
+- [ ] **Wednesday (10-15 min) — Antigravity warm-up:** open the Antigravity IDE, resume the 2026-05-22 brain, run one fresh agent turn (anything small — "summarize this file" works), screenshot the result into `artifacts/madrid-demo/antigravity-fresh-session.png`. Frank can now truthfully say "I ran a fresh Antigravity session yesterday" to any Google touchpoint Thursday.
 - [ ] Pack laptop charger + USB-C hub (HDMI for projection if asked to share screen)
 
 ---

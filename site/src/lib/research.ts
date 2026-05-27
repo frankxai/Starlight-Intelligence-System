@@ -91,6 +91,34 @@ export const RESEARCH_BY_SLUG: Record<ResearchSlug, Research> = Object.fromEntri
   RESEARCH_LIST.map((r) => [r.slug, r])
 ) as Record<ResearchSlug, Research>;
 
+/**
+ * Short-slug aliases — short-form URLs that resolve to canonical dated slugs.
+ * Use when sharing a research artifact externally where the dated suffix
+ * would be friction (badges, QR codes, verbal references). Keep aliases stable
+ * once published — they become external references.
+ */
+export const RESEARCH_SLUG_ALIASES: Record<string, ResearchSlug> = {
+  "memory-foundations": "memory-foundations-2026-05",
+};
+
+/** All public slugs including aliases — used by generateStaticParams. */
+export const RESEARCH_PUBLIC_SLUGS: string[] = [
+  ...RESEARCH_SLUGS,
+  ...Object.keys(RESEARCH_SLUG_ALIASES),
+];
+
+/** Resolve a public slug (canonical OR alias) to the Research entry, or undefined. */
+export function resolveResearchSlug(slug: string): Research | undefined {
+  if (slug in RESEARCH_BY_SLUG) {
+    return RESEARCH_BY_SLUG[slug as ResearchSlug];
+  }
+  const canonical = RESEARCH_SLUG_ALIASES[slug];
+  if (canonical) {
+    return RESEARCH_BY_SLUG[canonical];
+  }
+  return undefined;
+}
+
 /** Index sort: most-recent first, then chartered/in-progress last. */
 export function getResearchForIndex(): Research[] {
   return [...RESEARCH_LIST].sort((a, b) => {

@@ -6,15 +6,14 @@ import { join } from "node:path";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
-  RESEARCH_BY_SLUG,
-  RESEARCH_SLUGS,
-  type ResearchSlug,
+  RESEARCH_PUBLIC_SLUGS,
+  resolveResearchSlug,
 } from "@/lib/research";
 
 export const revalidate = 3600;
 
 export function generateStaticParams() {
-  return RESEARCH_SLUGS.map((slug) => ({ slug }));
+  return RESEARCH_PUBLIC_SLUGS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -23,7 +22,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const r = RESEARCH_BY_SLUG[slug as ResearchSlug];
+  const r = resolveResearchSlug(slug);
   if (!r) {
     return { title: "Research not found" };
   }
@@ -82,7 +81,7 @@ export default async function ResearchDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const r = RESEARCH_BY_SLUG[slug as ResearchSlug];
+  const r = resolveResearchSlug(slug);
   if (!r) notFound();
 
   const body = loadResearchBody(r.contentFile);
