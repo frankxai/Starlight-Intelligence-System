@@ -7,9 +7,9 @@
 # Idempotent. Re-run = same classification given same inputs.
 
 param(
-    [string]$ScanRoot1 = 'C:\Users\frank',
+    [string]$ScanRoot1 = 'C:\Users\frank\starlight\repos',
     [string]$ScanRoot2 = 'C:\Users\frank\Arcanea',
-    [string]$RepoRoot  = 'C:\Users\frank\Starlight-Intelligence-System',
+    [string]$RepoRoot  = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path,
     [int]$ActiveDays   = 14,
     [int]$StaleDays    = 90
 )
@@ -185,7 +185,7 @@ if ($clusters.Count -gt 0) {
 
 function Write-RepoTable {
     param($md, $repos, $title, $class)
-    $rows = $repos | Where-Object { $_.class -eq $class } | Sort-Object days_since
+    $rows = @($repos | Where-Object { $_.class -eq $class } | Sort-Object days_since)
     if ($rows.Count -eq 0) { return }
     [void]$md.AppendLine("## $title ($($rows.Count))")
     [void]$md.AppendLine('')
