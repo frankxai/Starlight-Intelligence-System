@@ -17,7 +17,11 @@
 > - **Calibration gate added 2026-05-22:** before claiming Wisdom promotion or contradiction detection is healthy, add a fixture-backed check that feeds two near-duplicate vault entries and one explicit contradiction through `ContradictionDetector.similarity`/promotion selection. Expected result: at least one promotion candidate and one contradiction candidate, or a documented threshold reason why zero is correct.
 > - **Verdict on the "memory that compounds" claim:** Now observable nightly with real signal (guardian-redaction patterns, high-output session days, broad-refactor markers). Pipeline reads from live substrate, not paused upstream.
 >
-> **Format**: `- <ISO-timestamp> · insights: N · contradictions: N · promotions: N · processed: N` (or `error: <msg>` on failure).
+> **Format**: `- <ISO-timestamp> · insights: N · contradictions: N · promotions: N · queued: N · processed: N` (or `error: <msg>` on failure).
+>
+> - `promotions` — total cross-vault patterns identified this run (may repeat across runs if vault content unchanged).
+> - `queued` — *new* candidates appended to `memory/PROMOTION_QUEUE.md` this run (after dedup vs `memory/.dreaming-state.json`). `queued: 0` with `promotions: N` means all candidates were already queued for review on a prior night.
+> - `queued` field added 2026-05-28 (writeback shipped, closes audit N3). Prior receipts have no `queued` field — the format is forward-compatible.
 >
 > Background: 2026-05-07 end-to-end excellence audit found all 6 vaults stamped `last_consolidated: 2026-05-01` (5 days stale) despite rich pipeline architecture (FTS5 + temporal half-life + dreaming + Memory-Bus singleton). This file + the cron close the observability gap.
 >
@@ -37,3 +41,7 @@
 - 2026-05-22T00:23:03.589Z · insights: 46 · contradictions: 0 · promotions: 0 · processed: 18
 - 2026-05-22T00:24:36.437Z · insights: 46 · contradictions: 0 · promotions: 0 · processed: 18
 - 2026-05-22T00:26:51.180Z · insights: 46 · contradictions: 0 · promotions: 6 · processed: 18
+- 2026-05-27T23:18:35.168Z · insights: 1 · contradictions: 0 · promotions: 6 · queued: 6 · processed: 1
+- 2026-05-27T23:19:14.268Z · insights: 1 · contradictions: 0 · promotions: 6 · queued: 0 · processed: 1
+- 2026-05-27T23:20:13.204Z · insights: 1 · contradictions: 0 · promotions: 6 · queued: 0 · processed: 1
+- 2026-05-28T02:00:01.701Z · insights: 1 · contradictions: 0 · promotions: 6 · queued: 0 · processed: 1

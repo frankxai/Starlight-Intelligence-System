@@ -40,6 +40,10 @@ memory/mempalace/
 memory/mempalace_upstream/
 memory/benchmarks/*.json
 
+# Dreaming pipeline dedup state — tracks which promotion candidates have already
+# been queued for human review. Regenerable from PROMOTION_QUEUE.md history.
+memory/.dreaming-state.json
+
 # OSS hygiene — added by Tier 5 audit pass 2026-05-11
 
 # Secret-leak guards (defense in depth — no .env should ever land in git)
