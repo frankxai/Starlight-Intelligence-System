@@ -1,6 +1,6 @@
 # Starlight Agent Registry
 
-> Forty-seven minds. Ten universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
+> Fifty-four minds. Ten universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy) + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
 >
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
 > **v7.6.0 update (2026-04-28):** People Intelligence sub-stack (6 agents) registered — first reference Domain Sub-Stack vertical.
@@ -189,6 +189,18 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 - **Composes under Wealth IS composition layer** — first reference instance per `STACK.md` § Composition Layer (declared 2026-05-17). Outputs feed `/wealth-portfolio-fit`, `/wealth-sovereignty-design`, `/wealth-cycle-thesis`.
 - **Sibling-repo export hook landed** — `verticals/crypto-intelligence/ATTESTATIONS.md` (vertical-local ledger) + MCP-shape declaration in `SKILL.md`. v0.2+ extraction target: `github.com/frankxai/crypto-intelligence-system`.
 - **Falsifier:** 1-week proof-of-pattern with House of On-Chain. If 4-5 named artifacts cannot ship in the week, Houses-as-sub-systems primitive failed → fall back to functional sub-systems matching People IS shape.
+
+**Energy Intelligence sub-stack agents** (v0.1 placeholders, 2026-05-28 — fourth reference Domain Sub-Stack, functional sub-systems matching People IS shape). Agent files staked out with scope + anti-patterns + Frank-DNA inheritance per the energy-intelligence vertical at `verticals/energy-intelligence/`; full content build pending. Dispatched by `skills/skill-rules.json` energy-intelligence/* rules. Commands planned, not yet authored.
+
+| Agent | File | Sub-system | Tier | Vault Namespace | Commands |
+|-------|------|-----------|------|-----------------|----------|
+| **Energy Sizing** | `starlight-energy-sizing.md` | Capacity + component sizing (PV, battery, EV, heat-pump) | Domain Sub-Stack · v0.1 | `energy-intelligence/sizing/` | planned |
+| **Energy Cost** | `starlight-energy-cost.md` | Economics — LCOE, payback, IRR, tariffs, incentives | Domain Sub-Stack · v0.1 | `energy-intelligence/cost/` | planned |
+| **Energy Installer** | `starlight-energy-installer.md` | Installer ops — lead intake, site survey, permit/AHJ, commissioning | Domain Sub-Stack · v0.1 | `energy-intelligence/installer/` | planned |
+| **Energy Operations** | `starlight-energy-operations.md` | Monitoring, fault diagnosis, predictive maintenance, warranty lifecycle | Domain Sub-Stack · v0.1 | `energy-intelligence/operations/` | planned |
+| **Energy Buyer** | `starlight-energy-buyer.md` | Homeowner decision support, quote comparison, framing translation | Domain Sub-Stack · v0.1 | `energy-intelligence/buyer/` | planned |
+| **Energy Grid** | `starlight-energy-grid.md` | Interconnection, IEEE 1547 / VDE-AR-N 4105, NEM/FIT, VPP | Domain Sub-Stack · v0.1 | `energy-intelligence/grid/` | planned |
+| **Energy Recovery** | `starlight-energy-recovery.md` | Disaster/outage/deplatform recovery, off-grid bridging | Domain Sub-Stack · v0.1 | `energy-intelligence/recovery/` | planned |
 
 **Domain Sub-Stack Tier rules:**
 - Sub-system agents serve a sovereign domain (the practitioner's vertical), not the universal substrate

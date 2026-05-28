@@ -18,7 +18,7 @@
 | Layer | What it is | What lives here | License | Adopt how |
 |-------|-----------|-----------------|---------|-----------|
 | **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
-| **Operational (reference build)** | This repo's working implementation: 47 named agents, 6 semantic vaults, 71 skills, MCP server, 6 strategic commands, multi-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
+| **Operational (reference build)** | This repo's working implementation: 54 named agents, 6 semantic vaults, 71 skills, MCP server, 6 strategic commands, multi-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
@@ -218,7 +218,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 
 ### The 7 Leadership-tier agents (named council)
 
-Within the 47-agent registry, the reference build maps SIP's 5 voice archetypes to 7 named Leadership-tier runtime agents — Orchestrator, Prime, Architect, Navigator, Sentinel, Weaver, Sage. The other 40 agents span Front-Door (3), Excavation (1), Specialist + Foundation tiers, Universal IS (5), Domain Sub-Stack (19), Council Archetype (7), and SIS Extractor (5). Full registry: [`agents/AGENT_REGISTRY.md`](agents/AGENT_REGISTRY.md).
+Within the 54-agent registry, the reference build maps SIP's 5 voice archetypes to 7 named legacy-council runtime agents — Orchestrator, Prime, Architect, Navigator, Sentinel, Weaver, Sage. The other 47 agents span Front-Door (3), Excavation (1), Universal IS (5), Domain Sub-Stack (26 across People + Sound + Music + Energy), Council Archetype (7), and SIS Extractor (5). Full registry: [`agents/AGENT_REGISTRY.md`](agents/AGENT_REGISTRY.md).
 
 Voice archetypes are abstract; named agents are specific implementations. Anyone forking SIP can choose entirely different agents above the substrate.
 
