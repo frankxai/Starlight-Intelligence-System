@@ -760,6 +760,28 @@
       },
       "priority": "medium",
       "load_level": "on-demand"
+    },
+    {
+      "id": "crypto-intelligence-vertical",
+      "skill": "crypto-intelligence",
+      "triggers": {
+        "keywords": ["crypto intelligence", "sovereign crypto", "houses-as-sub-systems", "wealth composition layer fork"],
+        "agents": ["starlight-architect", "starlight-orchestrator", "starlight-business"],
+        "intents": ["crypto-analysis", "wealth-composition"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "crypto-intelligence-onchain",
+      "skill": "crypto-intelligence/onchain",
+      "triggers": {
+        "keywords": ["on-chain", "onchain", "wallet flow", "whale tracking", "MEV audit", "MEV exposure", "validator econ", "validator economics", "contract interaction", "tx trace"],
+        "agents": ["starlight-architect", "starlight-business"],
+        "intents": ["onchain-trace", "mev-audit"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {

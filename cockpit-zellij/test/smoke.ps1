@@ -24,7 +24,9 @@ Write-Host '=== Cockpit smoke tests ==='
 Write-Host ''
 
 Test-Assert 'audit JSON present' {
-    Test-Path (Join-Path $RepoRoot 'memory\_audit\repo-portfolio-2026-05-04.json')
+    $auditDir = Join-Path $RepoRoot 'memory\_audit'
+    $latest = Get-ChildItem -Path $auditDir -Filter 'repo-portfolio-*.json' -File -ErrorAction SilentlyContinue
+    $null -ne $latest
 }
 
 Test-Assert 'projects.ps1 loads' {
