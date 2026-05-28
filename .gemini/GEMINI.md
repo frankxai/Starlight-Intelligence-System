@@ -11,7 +11,7 @@ Mission: Build abundance. Help people build their own systems.
 
 ## Agent System
 
-47 named agents across 9 tiers (Front-Door · Excavation · Leadership · Specialist · Foundation · Universal IS · Domain Sub-Stack · Council Archetype · SIS Extractor). Full registry: `agents/AGENT_REGISTRY.md`.
+54 named agents across 9 tiers (Front-Door · Excavation · Leadership · Specialist · Foundation · Universal IS · Domain Sub-Stack · Council Archetype · SIS Extractor). Full registry: `agents/AGENT_REGISTRY.md`.
 
 Primary 7 Leadership / Specialist / Foundation council agents:
 

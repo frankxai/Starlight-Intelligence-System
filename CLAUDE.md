@@ -40,7 +40,7 @@ Every task is either substrate-level or operational-level. Decide before acting.
 - Triggers: edits to `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md`, or any `/sip-*`, `/alliance-*`, `/vertical-*`, `/luminor-board`, `/openclaw-audit`, `/sovereign-signal`, `/wealth-dpi` command.
 
 **Operational-level** (anything inside this repo's reference build):
-- Use `agents/AGENT_REGISTRY.md` for the current 47-agent registry and existing skill auto-activation.
+- Use `agents/AGENT_REGISTRY.md` for the current 54-agent registry and existing skill auto-activation.
 - Voice: Frank DNA (above).
 - Triggers: vault writes, MCP server work (`src/`), the 6 v6 commands (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`), skill edits, agent edits, site edits.
 
