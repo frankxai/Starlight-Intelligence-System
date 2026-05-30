@@ -146,7 +146,7 @@ Restart Claude Code. You now have ten `sis_*` tools available in every session.
 **Option 2: As a library**
 
 ```bash
-pnpm add @arcanea/starlight-intelligence-system
+npm install @arcanea/starlight-intelligence-system
 ```
 
 ```ts
@@ -273,10 +273,10 @@ Voice archetypes are abstract; named agents are specific implementations. Anyone
 ```bash
 git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
-pnpm install
-pnpm run build       # tsc to dist/
-pnpm test            # 82+ orchestrator tests
-pnpm run lint        # tsc --noEmit
+npm install
+npm run build       # tsc to dist/
+npm test            # 82+ orchestrator tests
+npm run lint        # tsc --noEmit
 ```
 
 `src/` is under 3,000 lines of TypeScript with zero runtime dependencies outside `better-sqlite3`. Substrate docs (`SIP.md`, `SIS.md`, etc.) are markdown-only — no build dependency.
