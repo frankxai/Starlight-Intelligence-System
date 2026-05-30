@@ -101,8 +101,9 @@ describe("quick-start smoke — seed, boot, write, search", () => {
       for (const name of VAULT_NAMES) {
         const file = join(dir, `${name}.jsonl`);
         assert.ok(existsSync(file), `${name}.jsonl should exist`);
-        const first = readFileSync(file, "utf-8").split("\n")[0]!;
-        const entry = JSON.parse(first);
+        const lines = readFileSync(file, "utf-8").split("\n").filter((l) => l.trim());
+        assert.ok(lines.length > 0, `${name}.jsonl should not be empty`);
+        const entry = JSON.parse(lines[0]!);
         assert.equal(entry.id, `sis_welcome_${name}`, "first line is the welcome entry");
       }
       assert.ok(!vaultsAreEmpty(dir), "seeded dir should not read as empty");

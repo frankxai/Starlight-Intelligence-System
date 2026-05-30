@@ -104,7 +104,9 @@ function welcomeEntry(name: VaultName): string {
   return JSON.stringify(entry);
 }
 
-/** Read the public example lines for a vault, BOM-stripped and trimmed. */
+/** Read the public example lines for a vault, BOM-stripped and trimmed.
+ *  Blank lines are skipped (JSONL has no blank records); content lines are
+ *  copied verbatim, mirroring the source file. */
 function exampleLines(seedDir: string | null, name: VaultName): string[] {
   if (!seedDir) return [];
   const file = join(seedDir, `${name}.jsonl`);
