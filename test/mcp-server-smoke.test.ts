@@ -69,7 +69,7 @@ function driveServer(
     const timer = setTimeout(() => {
       cleanup();
       reject(new Error(`MCP server timed out; got ids ${[...responses.keys()].join(",")}`));
-    }, 20_000);
+    }, 10_000);
 
     function cleanup(): void {
       clearTimeout(timer);

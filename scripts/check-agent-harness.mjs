@@ -51,7 +51,14 @@ function requireText(file, pattern, description) {
 
 // -- Source-of-truth derivation ----------------------------------------------
 
-/** Count agent .md files under agents/ (excl. AGENT_REGISTRY.md), one level deep. */
+/**
+ * Count agent .md files under agents/ (excl. AGENT_REGISTRY.md).
+ *
+ * Walks exactly one level into sub-directories (e.g. agents/council/*.md) to
+ * match the current tier layout — agent files live either at agents/ root or in
+ * a single sub-tier folder. This mirrors listAgentFiles() in test/_lib/repo.ts;
+ * if the directory grows deeper nesting, update both in lockstep.
+ */
 function deriveAgentCount() {
   const agentsDir = path.join(root, 'agents');
   if (!existsSync(agentsDir)) return null;
@@ -87,6 +94,11 @@ function derivePackageVersion() {
   } catch {
     return null;
   }
+}
+
+/** Escape every regex metacharacter so a derived literal matches literally. */
+function escapeRegex(literal) {
+  return literal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // -- Manifest invariants ------------------------------------------------------
@@ -147,7 +159,7 @@ if (skillCount === null) {
 if (pkgVersion === null) {
   failures.push('package.json: could not derive version');
 } else {
-  const versionRe = pkgVersion.replace(/\./g, '\\.');
+  const versionRe = escapeRegex(pkgVersion);
   requireText(
     'CLAUDE.md',
     new RegExp(`Starlight Intelligence System v${versionRe}`, 'i'),
