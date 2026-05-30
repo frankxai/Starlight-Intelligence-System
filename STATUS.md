@@ -30,6 +30,8 @@
 |---|---|---|
 | 6 JSONL semantic vaults | ✅ | `memory/vaults/`, `src/vault-memory.ts` |
 | SQLite + FTS5 hybrid retrieval | ✅ | `src/retrieval.ts`, `test/core-regressions.test.ts` |
+| Retrieval recall@k baseline (keyword/bm25) | ✅ | `test/retrieval-eval.test.ts`, `npm run eval:retrieval` |
+| First-run vault seeding (`init --vaults` + MCP auto-seed) | ✅ | `src/seed.ts`, `test/smoke-quickstart.test.ts` |
 | Temporal reasoning (confidence half-life) | ✅ | `src/temporal.ts`, `src/temporal.test.ts` |
 | Contradiction detection | ✅ | `src/contradiction.ts` |
 | Dreaming (background transcript processing) | ✅ | `src/dreaming.ts`, `test/dreaming-vault-md-support.test.ts` |
@@ -62,7 +64,7 @@
 
 | Capability | State | Note |
 |---|---|---|
-| npm package `@arcanea/starlight-intelligence-system` | 🔭 | Publish target; verify on registry before relying on it |
+| npm package `@arcanea/starlight-intelligence-system` | 🔭 | Publish target; follow [`RELEASING.md`](RELEASING.md) and verify `npm view ... version` matches `package.json` before relying on it. Registry has lagged the repo before. |
 | `starlightintelligence.org/protocol` mirror | 🔭 | Canonical-URL mirror of `SIP.md`; external host |
 | Site / console (Next.js) builds | 🟡 | `npm run build:site` / `build:console` — heavier, run via `npm run verify` |
 

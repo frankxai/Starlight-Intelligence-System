@@ -219,7 +219,7 @@ Cross-repo memory recall via Cross-Repo Indexer (520+ atoms across 22 `~/.claude
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
 - Substrate: starlightintelligence.org/protocol v1.1.1
-- Operational layer: `@arcanea/starlight-intelligence-system` v8.1.0
+- Operational layer: `@arcanea/starlight-intelligence-system` v8.2.0
 - License: MIT (code + spec docs); Arcanea canon (if composed) CC-BY-NC
 
-*Starlight Intelligence System v8.1.0 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-05-17*
+*Starlight Intelligence System v8.2.0 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-05-17*
