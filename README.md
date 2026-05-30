@@ -126,6 +126,16 @@ This repo also ships Frank's working implementation — the daily-driver intelli
 
 **Option 1: As an MCP server (recommended for AI tools)**
 
+First, seed your vault directory so the system has somewhere to read from
+(a fresh install has no `~/.starlight/vaults` yet):
+
+```bash
+npx -p @arcanea/starlight-intelligence-system starlight init --vaults
+# → seeds the six JSONL vaults in ~/.starlight/vaults (welcome entry + public examples)
+```
+
+Then point your MCP client at that directory:
+
 ```json
 {
   "mcpServers": {
@@ -142,6 +152,8 @@ This repo also ships Frank's working implementation — the daily-driver intelli
 ```
 
 Restart Claude Code. You now have ten `sis_*` tools available in every session.
+(If you skip the seed step the server still works — it auto-seeds an empty
+`--vault-dir` on first boot so the empty state is never silently broken.)
 
 **Option 2: As a library**
 
@@ -180,6 +192,14 @@ const context = await adapter.generate({ vaultDir: "~/.starlight/vaults" });
 
 Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 
+> **Where memory lives.** The MCP server and `src/retrieval.ts` read **`*.jsonl`
+> files in your `--vault-dir`** (default `~/.starlight/vaults`) — that is the one
+> source of truth at runtime. The repo ships two example sets for reference only:
+> `public-vault/*.jsonl` is the canonical starter content that `starlight init
+> --vaults` copies into your vault dir; `memory/vaults/*.md` are human-readable
+> narrative snapshots and are **not** read by the engine. Seed once, then your
+> own `~/.starlight/vaults` is what counts.
+
 ### What the operational layer adds on top of SIP
 
 - **SQLite hybrid retrieval** — `src/retrieval.ts` builds a rebuildable FTS5 shadow index over JSONL vaults with bm25 ranking.
@@ -198,7 +218,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | `sis_stats` | Total entry counts per vault |
 | `sis_append_entry` | Write a new entry to a vault |
 | `sis_entry_types` | List supported vault types and entry categories |
-| `sis_search` | Hybrid semantic + keyword search with bm25 + temporal filtering |
+| `sis_search` | Keyword + temporal search (term-overlap score, tag boost, staleness penalty) |
 | `sis_confirm` | Touch `lastConfirmed` on an entry |
 | `sis_invalidate` | Mark an entry as expired |
 | `sis_contradict` | Flag two entries as contradictory |

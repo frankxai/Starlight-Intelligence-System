@@ -26,6 +26,7 @@ import { parseArgs } from "node:util";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { homedir } from "node:os";
 import { StarlightIntelligence } from "./index.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
@@ -33,6 +34,7 @@ import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
 import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
+import { seedVaults } from "./seed.js";
 import { AgentOpsLedger, ApprovalGateRequiredError, readRecentAgentEvents } from "./ledgers.js";
 import { listModules, setModuleEnabled } from "./modules.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
@@ -102,6 +104,7 @@ Usage:
 
 Commands:
   init                            Initialize .starlight/ in current project
+  init --vaults                   Seed the six JSONL memory vaults the MCP server reads
   generate                        Generate context file from .starlight/ config
   guidance                        Generate behavioral guidance for session injection
   sync                            Sync ACOS trajectories into SIS memory
@@ -160,9 +163,14 @@ Options:
   --date <YYYY-MM-DD>             Event date for events tail
   --summary <text>                Transition summary for workpacket lifecycle commands
   --limit <n>                     Maximum number of items to list
+  --vaults                        (with init) seed the six MCP memory vaults
+  --vault-dir <path>              (with init --vaults) target dir (default: ~/.starlight/vaults)
+  --force                         (with init --vaults) overwrite existing vault files
 
 Examples:
   starlight init
+  starlight init --vaults
+  starlight init --vaults --vault-dir ~/.starlight/vaults
   starlight generate --target cursor --output .cursorrules
   starlight guidance --project frankx --acos-path ~/.claude/trajectories
   starlight sync --acos-path ~/.claude/trajectories
@@ -288,6 +296,35 @@ function cmdInit(): void {
   console.log("  .starlight/memory.json   — Memory vault (empty)");
   console.log("");
   console.log("Edit these files, then run: starlight generate");
+}
+
+/**
+ * Seed the six canonical JSONL vaults that the MCP server reads. A fresh
+ * install has no `~/.starlight/vaults` directory, so this is the "make the
+ * empty state self-explaining" first-run step referenced by the README MCP
+ * quick-start. Idempotent: existing vault files are kept unless --force.
+ */
+function cmdInitVaults(vaultDirArg?: string, force = false): void {
+  const vaultDir = vaultDirArg
+    ? resolve(vaultDirArg)
+    : join(homedir(), ".starlight", "vaults");
+
+  const result = seedVaults(vaultDir, { force });
+
+  console.log(`[starlight] Vaults at ${result.vaultDir}`);
+  if (result.created.length > 0) {
+    console.log(
+      `  created: ${result.created.join(", ")}` +
+      `${result.usedExamples ? " (seeded with public examples)" : ""}`,
+    );
+  }
+  if (result.skipped.length > 0) {
+    console.log(`  kept (already present): ${result.skipped.join(", ")}`);
+    console.log("  re-run with --force to overwrite existing vaults.");
+  }
+  console.log("");
+  console.log("Point your MCP client at this directory:");
+  console.log(`  node node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js --vault-dir ${result.vaultDir}`);
 }
 
 function cmdGenerate(target?: string, outputPath?: string): void {
@@ -1163,6 +1200,9 @@ async function main(): Promise<void> {
       date: { type: "string" },
       summary: { type: "string" },
       limit: { type: "string" },
+      vaults: { type: "boolean" },
+      "vault-dir": { type: "string" },
+      force: { type: "boolean" },
     },
     strict: false,
   });
@@ -1180,7 +1220,11 @@ async function main(): Promise<void> {
 
   switch (command) {
     case "init":
-      cmdInit();
+      if (values.vaults) {
+        cmdInitVaults(asString(values["vault-dir"]), Boolean(values.force));
+      } else {
+        cmdInit();
+      }
       break;
 
     case "generate":
