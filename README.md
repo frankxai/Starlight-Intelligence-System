@@ -4,7 +4,7 @@
 >
 > SIS is two layers: a substrate (SIP) anyone can adopt, fork, or build on — and an operational layer (Frank's reference build) that runs on top of it.
 
-[![version](https://img.shields.io/badge/version-8.1.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-8.2.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
@@ -25,6 +25,8 @@ You can adopt **just the substrate** (fork SIP for your own work), **just the op
 > **Operator? Start at [SETUP.md](./SETUP.md)** — covers `private/` instance state, Infisical Path A vs env-var Path B, Windows + Linux cron wiring, cockpit launch, and a smoke test, end-to-end in roughly 30 min.
 >
 > **New to the protocol?** Don't fork this repo. Fork the **[SIP adoption kit](https://github.com/frankxai/starlight)** — eleven markdown files, no code, [ship your first attested artifact in 60 seconds](https://github.com/frankxai/starlight#readme). Compose upward when you're ready.
+>
+> **New in v8.2.0** (2026-05-30): First-run experience hardened so the package works for anyone who installs it. `starlight init --vaults` seeds the six JSONL vaults (and the MCP server auto-seeds an empty `--vault-dir` on first boot), so a fresh install is never silently empty. `sis_search` is now honestly described as **keyword + temporal** (no embeddings); a measured retrieval recall@k harness (`npm run eval:retrieval`) grounds the bm25 claim in CI; and an optional `sqlite-vec` semantic layer is roadmapped in [`docs/bring-your-own-model.md`](docs/bring-your-own-model.md). See [`CHANGELOG.md § v8.2.0`](CHANGELOG.md) and [`RELEASING.md`](RELEASING.md).
 >
 > **New in v8.1.0** (2026-05-17): Composition Layer primitive declared in `STACK.md` — universal IS may compose over its Domain Sub-Stacks via commands at the IS-itself. Wealth IS v0.2 evolved as first composition-layer reference. **Crypto Intelligence v0.1** shipped as third reference Domain Sub-Stack (after People + Sound) with **Houses-as-sub-systems** primitive — House of On-Chain live with 5 commands. `/bless` global skill + chronicle infrastructure initialized. 10-IS taxonomy invariant preserved. See [`CHANGELOG.md § v8.1.0`](CHANGELOG.md) + [`docs/boards/2026-05-17-crypto-investment-spawn.md`](docs/boards/2026-05-17-crypto-investment-spawn.md).
 
@@ -126,6 +128,16 @@ This repo also ships Frank's working implementation — the daily-driver intelli
 
 **Option 1: As an MCP server (recommended for AI tools)**
 
+First, seed your vault directory so the system has somewhere to read from
+(a fresh install has no `~/.starlight/vaults` yet):
+
+```bash
+npx -p @arcanea/starlight-intelligence-system starlight init --vaults
+# → seeds the six JSONL vaults in ~/.starlight/vaults (welcome entry + public examples)
+```
+
+Then point your MCP client at that directory:
+
 ```json
 {
   "mcpServers": {
@@ -142,6 +154,8 @@ This repo also ships Frank's working implementation — the daily-driver intelli
 ```
 
 Restart Claude Code. You now have ten `sis_*` tools available in every session.
+(If you skip the seed step the server still works — it auto-seeds an empty
+`--vault-dir` on first boot so the empty state is never silently broken.)
 
 **Option 2: As a library**
 
@@ -180,9 +194,17 @@ const context = await adapter.generate({ vaultDir: "~/.starlight/vaults" });
 
 Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 
+> **Where memory lives.** The MCP server and `src/retrieval.ts` read **`*.jsonl`
+> files in your `--vault-dir`** (default `~/.starlight/vaults`) — that is the one
+> source of truth at runtime. The repo ships two example sets for reference only:
+> `public-vault/*.jsonl` is the canonical starter content that `starlight init
+> --vaults` copies into your vault dir; `memory/vaults/*.md` are human-readable
+> narrative snapshots and are **not** read by the engine. Seed once, then your
+> own `~/.starlight/vaults` is what counts.
+
 ### What the operational layer adds on top of SIP
 
-- **SQLite hybrid retrieval** — `src/retrieval.ts` builds a rebuildable FTS5 shadow index over JSONL vaults with bm25 ranking.
+- **SQLite hybrid retrieval** — `src/retrieval.ts` builds a rebuildable FTS5 shadow index over JSONL vaults with bm25 ranking. Keyword + temporal today (measured recall in CI via `npm run eval:retrieval`); optional `sqlite-vec` semantic layer is roadmapped in [`docs/bring-your-own-model.md`](docs/bring-your-own-model.md).
 - **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
@@ -198,7 +220,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | `sis_stats` | Total entry counts per vault |
 | `sis_append_entry` | Write a new entry to a vault |
 | `sis_entry_types` | List supported vault types and entry categories |
-| `sis_search` | Hybrid semantic + keyword search with bm25 + temporal filtering |
+| `sis_search` | Keyword + temporal search (term-overlap score, tag boost, staleness penalty) |
 | `sis_confirm` | Touch `lastConfirmed` on an entry |
 | `sis_invalidate` | Mark an entry as expired |
 | `sis_contradict` | Flag two entries as contradictory |
@@ -304,4 +326,4 @@ npm run lint        # tsc --noEmit
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.1.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.2.0 · MIT

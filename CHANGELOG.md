@@ -2,6 +2,20 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## v8.2.0 — 2026-05-30
+
+**First-run hardening — "works for anyone who installs it." Vault seeding, honest retrieval labeling, measured recall, release discipline.**
+
+- **Vault seeding (`src/seed.ts`):** new `starlight init --vaults` command seeds the six canonical JSONL vaults (welcome entry + bundled `public-vault/*.jsonl` examples) in `~/.starlight/vaults`. The operational MCP server also **auto-seeds an empty `--vault-dir` on first boot** (`--no-seed` to opt out), so a fresh install is never silently empty / "looks broken." Idempotent: existing vaults are kept unless `--force`.
+- **Package ships its seed (`files`):** `public-vault/` added to package.json `files` so the starter content travels with the npm package, not just the repo.
+- **Vault-directory reconciliation (docs):** README now states the one runtime source of truth — `*.jsonl` in `--vault-dir`. `public-vault/*.jsonl` = canonical starter content (copied by seeding); `memory/vaults/*.md` = narrative snapshots, **not** read by the engine.
+- **Honest retrieval labeling (`sis_search`):** description corrected from "Hybrid semantic + keyword" to **keyword + temporal** (term-overlap score, tag boost, staleness penalty — no embeddings). README MCP-tool table updated to match. The tool's behavior never changed; the claim now matches the code.
+- **Measured retrieval baseline (`test/retrieval-eval.test.ts`, `npm run eval:retrieval`):** labeled recall@k harness over the `public-vault/` corpus (recall@1/3/5 = 100% at current corpus). Runs in CI so retrieval can't silently regress and so a future semantic layer can be scored head-to-head against the keyword baseline.
+- **Quick-start smoke (`test/smoke-quickstart.test.ts`):** end-to-end seed → boot → write → search test mirroring the README two-minute path, gated in CI.
+- **Bring-your-own-model roadmap (`docs/bring-your-own-model.md`):** documents the deliberate keyword-first default, the architecture-preserving optional `sqlite-vec` hybrid (vectors as a rebuildable artifact, JSONL stays truth), and local-vs-API embedding tradeoffs. Explicitly defers (not drops) the semantic layer with rationale: it must not cost the zero-infra install property.
+- **Release discipline (`RELEASING.md`):** documents the publish checklist so the npm registry version stops drifting from the repo version (registry served 6.0.1 while the repo was 8.1.0).
+- **Version footers reconciled** across README badge/footer, CLAUDE.md, AGENTS.md, package-lock — guarded by `npm run agents:harness-check` + `test/v80-platform-prompts.test.ts`.
+
 ## v8.1.0 — 2026-05-17
 
 **Substrate doctrine evolution — Composition Layer primitive declared. Crypto IS v0.1 proof-of-pattern. Wealth IS evolved to first composition-layer reference instance.**
