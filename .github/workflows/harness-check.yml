@@ -21,6 +21,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: harness-check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   harness:
     runs-on: ubuntu-latest
