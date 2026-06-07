@@ -9,6 +9,7 @@ const STATIC_ROUTES = [
   "/architecture",
   "/explainer",
   "/verticals",
+  "/knowledge-tree",
   "/cockpit",
   "/docs",
   "/vaults",
