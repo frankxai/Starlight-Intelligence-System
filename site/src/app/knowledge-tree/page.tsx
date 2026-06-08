@@ -38,12 +38,13 @@ export const metadata: Metadata = {
   },
 };
 
-// The public repo exists; these CTAs link to it directly. The dedicated
-// ontology document isn't published yet, so "Read the Ontology" points at the
-// repo root for now — swap ONTOLOGY_URL to `.../blob/main/ONTOLOGY.md` once
-// that file lands, to avoid a 404.
+// The public repo exists; these CTAs link to it directly.
+// - CONTRIBUTE_URL → Issues, where contribution quests / open tasks live.
+// - ONTOLOGY_URL → repo root for now; the dedicated ontology document isn't
+//   published yet, so swap to `.../blob/main/ONTOLOGY.md` once it lands (avoids a 404).
 const KNOWLEDGE_TREE_GITHUB_URL =
   "https://github.com/frankxai/starlight-knowledge-tree";
+const CONTRIBUTE_URL = `${KNOWLEDGE_TREE_GITHUB_URL}/issues`;
 const ONTOLOGY_URL = KNOWLEDGE_TREE_GITHUB_URL;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -253,7 +254,7 @@ export default function KnowledgeTreePage() {
                 Explore the Tree &rarr;
               </a>
               <a
-                href={KNOWLEDGE_TREE_GITHUB_URL}
+                href={CONTRIBUTE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-full border border-white/[0.1] px-5 py-2.5 text-[14px] font-medium text-white transition-std hover:border-white/[0.2] hover:bg-white/[0.04]"
@@ -451,7 +452,7 @@ export default function KnowledgeTreePage() {
 
         <div className="mt-8">
           <a
-            href={KNOWLEDGE_TREE_GITHUB_URL}
+            href={CONTRIBUTE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex rounded-full border border-white/[0.1] px-5 py-2.5 text-[14px] font-medium text-white transition-std hover:border-white/[0.2] hover:bg-white/[0.04]"
@@ -641,9 +642,9 @@ function CardField({
         {label}
       </p>
       <div className="mt-2 flex flex-wrap gap-1.5">
-        {items.map((item) => (
+        {items.map((item, idx) => (
           <span
-            key={item}
+            key={`${item}-${idx}`}
             className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] ${ACCENT_CHIP[accent]}`}
           >
             {item}
