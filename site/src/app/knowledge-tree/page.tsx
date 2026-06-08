@@ -38,20 +38,22 @@ export const metadata: Metadata = {
   },
 };
 
-// Placeholder until the public repo exists. Swap for the real URL once
-// `frankxai/starlight-knowledge-tree` is created.
+// The public repo exists; these CTAs link to it directly. The dedicated
+// ontology document isn't published yet, so "Read the Ontology" points at the
+// repo root for now — swap ONTOLOGY_URL to `.../blob/main/ONTOLOGY.md` once
+// that file lands, to avoid a 404.
 const KNOWLEDGE_TREE_GITHUB_URL =
   "https://github.com/frankxai/starlight-knowledge-tree";
-const ONTOLOGY_URL = `${KNOWLEDGE_TREE_GITHUB_URL}/blob/main/ONTOLOGY.md`;
+const ONTOLOGY_URL = KNOWLEDGE_TREE_GITHUB_URL;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MVP CONTENT — static.
 //
 // TODO(knowledge-tree-data): this entire surface is hand-authored for the MVP.
-// Once the `frankxai/starlight-knowledge-tree` repo exists, hydrate these
-// structures from `starlight-knowledge-tree/data` (research maps, skill trees,
-// open problems, contribution quests, progression paths) — e.g. a build-time
-// loader that reads the graph JSON, or a thin `/api/knowledge-tree` route.
+// Hydrate these structures from the `frankxai/starlight-knowledge-tree` repo's
+// `data/` directory (research maps, skill trees, open problems, contribution
+// quests, progression paths) — e.g. a build-time loader that reads the graph
+// JSON, or a thin `/api/knowledge-tree` route.
 // No auth and no database for the MVP; keep the page a static server component.
 // ─────────────────────────────────────────────────────────────────────────────
 
