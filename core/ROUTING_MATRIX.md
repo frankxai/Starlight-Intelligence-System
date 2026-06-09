@@ -33,6 +33,9 @@ ANALYZE REQUEST
 ├── remember / vault / store / recall / memory
 │   → VAULT MANAGEMENT SKILL  (target vault from context)
 │
+├── search / find / where is / look up / retrieve / what do we know / source / provenance / research / what did we
+│   → HERMES  (all vaults, repos, web — read-only, sourced)
+│
 ├── transmit / sync / broadcast / update
 │   → TRANSMISSION PROTOCOL SKILL  (target channel from context)
 │

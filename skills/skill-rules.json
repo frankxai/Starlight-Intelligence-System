@@ -2437,6 +2437,51 @@
       "load_level": "on-demand"
     },
     {
+      "id": "intelligence-hermes-search",
+      "skill": "intelligence/hermes-search",
+      "triggers": {
+        "keywords": [
+          "search",
+          "find me",
+          "where is",
+          "look up",
+          "retrieve",
+          "what do we know",
+          "source check",
+          "provenance",
+          "research",
+          "what did we decide",
+          "trace",
+          "find pattern",
+          "cross-vault",
+          "multi-source",
+          "/search",
+          "/research",
+          "/find-pattern",
+          "/audit-coverage",
+          "/trace-provenance",
+          "/find-contradiction",
+          "/source-check"
+        ],
+        "agents": [
+          "starlight-hermes",
+          "starlight-prime",
+          "starlight-sage",
+          "starlight-genius",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "search",
+          "retrieval",
+          "research",
+          "provenance",
+          "audit"
+        ]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "safety-permission-gate",
       "skill": "safety/permission-gate",
       "triggers": {
@@ -2726,6 +2771,13 @@
       "sound-intelligence-sync-licensing",
       "business-revenue-modeling",
       "intelligence-decision-framework"
+    ],
+    "starlight-hermes": [
+      "intelligence-hermes-search",
+      "memory-vault-management",
+      "memory-knowledge-synthesis",
+      "intelligence-pattern-recognition",
+      "integration-repo-bridge"
     ]
   }
 }

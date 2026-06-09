@@ -236,7 +236,78 @@ Each install:
 
 ---
 
-## Safety Invariants
+## OpenClaw Security Model
+
+**Context:** Third-party ClawHub skills have had documented security incidents in early 2026 — malicious skills targeting local credentials, wallet keys, browser session data, and shell access. SIS does not depend on the general ClawHub ecosystem.
+
+### SIS curated skill registry
+
+All SIS skills are sourced from this repository's `skills/` directory only. No skill is auto-loaded from ClawHub or external registries without passing through the following gate:
+
+```
+1. DECLARATION   — Skill declares exact permissions in SKILL.md header
+2. REVIEW        — Sentinel reviews permission surface against declared purpose
+3. SIGNING       — Skill hash registered in skills/SKILL_REGISTRY.md with signing key
+4. INSTALLATION  — openclaw install verifies hash before loading
+5. RUNTIME GATE  — Sentinel Claw monitors actual behavior vs declared permissions
+```
+
+### Permission surface model
+
+| Permission | What it covers | Claw access |
+|-----------|---------------|-------------|
+| `filesystem:read` | Read local files (no write) | Most Claws |
+| `filesystem:write` | Write to `~/.starlight/` only | Memory Claw only |
+| `filesystem:write_user` | Write outside `~/.starlight/` | Bootstrap + requires explicit approval |
+| `network:ingest` | Outbound read (Drive, Notion, web research) | Genius, Reclamation, Hermes |
+| `network:publish` | Outbound write (GitHub, social) | Creator, Attestation |
+| `shell:none` | No shell access | All SIS Claws (default) |
+| `shell:allowlist` | Specific commands only (npm, git) | Bootstrap only, hard allowlist |
+| `sis_vaults:read` | Read vault atoms | Genius, Reclamation, Creator |
+| `sis_vaults:write` | Write vault atoms | Memory Claw only |
+
+### Hermes + OpenClaw
+
+The `starlight-hermes` agent is the search backbone for all OpenClaw operations. When a Claw needs to find something — prior patterns, existing vault atoms, related files — it routes through Hermes rather than performing raw filesystem searches. This ensures:
+
+- All search results carry provenance
+- Privacy boundaries are respected (second-brain, health namespaces require explicit scope)
+- Contradictions are surfaced before a Claw acts on stale data
+
+### Install validation
+
+Every `openclaw install frankxai/sis-*-claw` performs:
+
+```
+1. Hash verification  — CLAW.md hash matches signed registry entry
+2. Permission audit   — declared permissions are the minimum needed (Sentinel review)
+3. Prerequisite check — required MCP servers present and version-compatible
+4. Isolation check    — no two installed Claws share a mutable filesystem path
+5. Conformance test   — runs sis-conformance against the installed Claw
+```
+
+Claws that fail any check are not installed. The user sees a clear rejection reason.
+
+---
+
+## Hermes Integration
+
+The Hermes agent (`starlight-hermes.md`) integrates directly with the Claw layer:
+
+| Claw | Hermes Role |
+|------|-------------|
+| Bootstrap | N/A (Hermes not yet installed at bootstrap time) |
+| Memory | Hermes provides vault search to prevent duplicate writes |
+| Sentinel | Hermes traces provenance during security audits |
+| Genius | Hermes mines corpus for pattern extraction |
+| Reclamation | Hermes detects duplicates across source folders |
+| Creator | Hermes surfaces prior voice + content assets |
+| Attestation | Hermes surfaces prior attestation records |
+| Architect | Hermes maps existing code + docs before generating new |
+
+**Architecture rule:** Claws call Hermes for all retrieval. Claws never perform raw filesystem glob searches on the vault directory. This keeps provenance intact and contradiction detection active.
+
+---
 
 1. **`mutation_default: false`** — No Claw mutates user files without explicit approval. Plans are produced first.
 2. **`private_data_export: blocked`** — No Claw exports vault content to external services without Sentinel gate approval.

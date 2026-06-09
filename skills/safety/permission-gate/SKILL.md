@@ -1,3 +1,9 @@
+---
+name: safety/permission-gate
+description: Gate every mutation request against the Claw's declared permission surface — fires before any write to filesystem, vault, or external system. No Claw bypasses this gate. Default skill for Starlight Sentinel and every Claw that carries filesystem or sis_vaults write permissions.
+type: safety
+---
+
 # Permission Gate
 
 > Every mutation request passes through this gate. No Claw bypasses it.

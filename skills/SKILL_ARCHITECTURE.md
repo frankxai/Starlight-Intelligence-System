@@ -19,8 +19,12 @@ STARLIGHT SKILL SYSTEM
 Layer 1: CATEGORIES (5 domains)
   Intelligence, Orchestration, Memory, Integration, Safety
 
-Layer 2: SKILLS (20 capabilities)
-  4 skills per category
+Layer 2: SKILLS (21 capabilities)
+  Intelligence: 5 skills (+ Hermes Search)
+  Orchestration: 4 skills
+  Memory: 4 skills
+  Integration: 4 skills
+  Safety: 4 skills
 
 Layer 3: PROCEDURES (within each skill)
   Specific step-by-step protocols
@@ -31,7 +35,7 @@ Layer 3: PROCEDURES (within each skill)
 ## Skill Categories
 
 ### Intelligence Skills
-Core reasoning and thinking capabilities.
+Core reasoning, thinking, and search capabilities.
 
 | Skill | File | Purpose |
 |-------|------|---------|
@@ -39,6 +43,7 @@ Core reasoning and thinking capabilities.
 | Systems Thinking | `intelligence/systems-thinking/SKILL.md` | Holistic analysis, feedback loops |
 | Pattern Recognition | `intelligence/pattern-recognition/SKILL.md` | Identifying recurring patterns |
 | Decision Framework | `intelligence/decision-framework/SKILL.md` | Structured decision-making |
+| Hermes Search | `intelligence/hermes-search/SKILL.md` | Semantic search across vaults + repos + web; multi-source synthesis with provenance |
 
 ### Orchestration Skills
 Coordination and execution capabilities.

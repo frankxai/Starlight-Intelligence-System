@@ -1,3 +1,9 @@
+---
+name: safety/secret-detector
+description: Scan any export, file, or vault batch for credentials, API keys, tokens, and sensitive data before they leave the local machine. Fires automatically on all Claw export operations. Default skill for Starlight Sentinel and Attestation Claw.
+type: safety
+---
+
 # Secret Detector
 
 > Nothing sensitive exits the local machine without explicit human awareness.

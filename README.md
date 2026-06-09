@@ -18,7 +18,7 @@
 | Layer | What it is | What lives here | License | Adopt how |
 |-------|-----------|-----------------|---------|-----------|
 | **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
-| **Operational (reference build)** | This repo's working implementation: 47 agents (7-archetype council + specialist tiers), 6 semantic vaults, 71 auto-activating skills across 14 domains, MCP server, 6 strategic commands + 90+ slash commands, six-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
+| **Operational (reference build)** | This repo's working implementation: 48 agents (7-archetype council + specialist tiers + Hermes search), 6 semantic vaults, 76 auto-activating skills across 15 domains, MCP server, 6 strategic commands + 90+ slash commands, six-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 

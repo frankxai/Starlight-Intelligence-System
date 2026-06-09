@@ -1,11 +1,12 @@
 # Starlight Agent Registry
 
-> Forty-two minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
+> Forty-eight minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
 >
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
 > **v7.6.0 update (2026-04-28):** People Intelligence sub-stack (6 agents) registered — first reference Domain Sub-Stack vertical.
 > **v7.5.2 / v7.6.x update (2026-04-27 / 2026-04-30):** Sound Intelligence sub-stack (6 agents) and Music IS sub-stack (7 agents) registered — second + third reference Domain Sub-Stack verticals (public-reference + Frank-operated).
 > **v0.1 Friday demo update (2026-05-11):** Council Archetype Tier (7 archetype seats) registered at `agents/council/` per Proposal B board verdict — Elder Father, Elder Mother, Sage (Council seat), Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90. Voice/agent boundary preserved: archetypes also registered in `VOICES.md` § Council Archetypes.
+> **v8.3.0 update (2026-06-09):** Hermes agent added — search & retrieval specialist (semantic search across vaults + repos + web, multi-source synthesis, provenance tracking). Read-only; zero mutation surface.
 
 ---
 
@@ -120,6 +121,7 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 | **Sentinel** | `starlight-sentinel.md` | Quality | Security review, code quality, active healing (daemon), test forging, governance, compliance |
 | **Weaver** | `starlight-weaver.md` | Creation | Creative work, narrative, design, pattern synthesis |
 | **Sage** | `starlight-sage.md` | Wisdom (institutional) | Knowledge retrieval, lessons learned, vault access, teaching |
+| **Hermes** | `starlight-hermes.md` | Search & Retrieval | Semantic search across vaults + repos + web; multi-source synthesis; provenance tracking; contradiction detection |
 
 ### Intelligence System Tiers (v7.4 beta — 5 new agents)
 

@@ -1,3 +1,9 @@
+---
+name: safety/mutation-approval
+description: Require explicit user confirmation before any Claw mutates user files outside ~/.starlight/. Produces a plan first; mutations are never the default. Fires on all Claws with filesystem:write_user permission. Default skill for Starlight Sentinel and Bootstrap Claw.
+type: safety
+---
+
 # Mutation Approval
 
 > Plans are free. Changes cost a confirmation. That's the contract.

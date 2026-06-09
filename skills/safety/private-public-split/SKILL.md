@@ -1,3 +1,9 @@
+---
+name: safety/private-public-split
+description: Enforce vault privacy boundaries on every export — only content explicitly marked public leaves the local vault. Prevents accidental private data exposure through attestation records, platform exports, or Creator Claw outputs.
+type: safety
+---
+
 # Private/Public Split
 
 > Vault content is sovereign. What goes public is the user's explicit choice, not a default.
