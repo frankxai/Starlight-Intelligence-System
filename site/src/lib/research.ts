@@ -7,7 +7,8 @@
 
 export type ResearchSlug =
   | "premium-3d-memory-palace-2026-05-17"
-  | "memory-foundations-2026-05";
+  | "memory-foundations-2026-05"
+  | "model-arena-2026-06";
 
 export type ResearchTier = "substrate" | "operational" | "reference";
 export type ResearchStatus = "published" | "in-progress" | "chartered";
@@ -31,6 +32,38 @@ export type Research = {
 };
 
 const RESEARCH_LIST: Research[] = [
+  {
+    slug: "model-arena-2026-06",
+    title: "Starlight Model Arena",
+    publishedAt: "2026-06-09",
+    tier: "operational",
+    status: "in-progress",
+    tldr:
+      "Living head-to-head LLM eval surface, run natively in Claude Code via per-agent model overrides. Round 1: Fable 5 vs Opus 4.8 — correctness parity everywhere; Fable 5's measurable edge is instruction compliance. Full receipts in-repo.",
+    contentFile: "model-arena-2026-06.md",
+    tags: [
+      "model arena",
+      "LLM evals",
+      "Fable 5",
+      "Opus 4.8",
+      "Claude Code",
+      "blind judge",
+      "promptfoo",
+      "instruction following",
+      "benchmark receipts",
+    ],
+    accent: "fuchsia",
+    primarySources: [
+      {
+        label: "Run receipt (JSON)",
+        url: "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/tools/arena/runs/2026-06-09-fable5-vs-opus48.json",
+      },
+      {
+        label: "Arena harness + methodology",
+        url: "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/tools/arena/README.md",
+      },
+    ],
+  },
   {
     slug: "memory-foundations-2026-05",
     title: "Memory Foundations for SIS",
@@ -99,6 +132,7 @@ export const RESEARCH_BY_SLUG: Record<ResearchSlug, Research> = Object.fromEntri
  */
 export const RESEARCH_SLUG_ALIASES: Record<string, ResearchSlug> = {
   "memory-foundations": "memory-foundations-2026-05",
+  "model-arena": "model-arena-2026-06",
 };
 
 /** All public slugs including aliases — used by generateStaticParams. */
