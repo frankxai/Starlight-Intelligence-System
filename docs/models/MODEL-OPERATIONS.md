@@ -22,12 +22,18 @@
 4. **Workflows** — `agent(prompt, {model})` per call; same omit-by-default rule.
 5. **API / scripts** — Anthropic SDK with exact IDs above; non-Claude models route via OpenRouter per global Doctrine 2.
 
-## Routing heuristics (post-Arena-R1)
+## Routing heuristics (post-Arena R1+R2)
 
-- **Default Fable 5** for interactive + agentic work. Its measured edge — respecting
-  output format and length constraints — is precisely what multi-agent pipelines need.
-- **Reach for Opus 4.8** when the task is one deep uninterrupted reasoning artifact
-  (strategy memo, gnarly architecture trade-off) and a human reads the output.
+- **Default Fable 5** for interactive + agentic work. Measured edge (R1+R2):
+  constraint precision — 7/7 stacked output constraints, first-try fixes,
+  cleanest injection handling. Exactly what pipelines feeding schemas/tools need.
+- **Reach for Opus 4.8** for judgment-heavy work: ambiguous or possibly-wrong specs
+  (R2: it led with the contradiction; Fable buried it), gate-sensitive contexts
+  (R2: it flagged the substrate gate; Fable executed silently), and deep
+  human-read prose. Expect it to leak past word caps and "output only" rules.
+- **R2 risk + mitigation:** the default model executed a governance-gated edit when
+  framed as a "quick task". Don't route around this — engineer it: pre-commit /
+  PreToolUse hook blocking substrate-file commits without a board receipt (queued).
 - **Never promote a routing claim without a receipt.** Run an arena round
   (`tools/arena/README.md`); n=1 rounds are directional — repeat before hardening
   a heuristic into doctrine.

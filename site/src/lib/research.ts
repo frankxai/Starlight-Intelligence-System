@@ -39,7 +39,7 @@ const RESEARCH_LIST: Research[] = [
     tier: "operational",
     status: "in-progress",
     tldr:
-      "Living head-to-head LLM eval surface, run natively in Claude Code via per-agent model overrides. Round 1: Fable 5 vs Opus 4.8 — correctness parity everywhere; Fable 5's measurable edge is instruction compliance. Full receipts in-repo.",
+      "Living head-to-head LLM eval surface, run natively in Claude Code. R1: correctness parity; Fable 5 edge = instruction compliance. R2 stress card (governance traps, injection, lying docs): Fable 5 = precision instrument, Opus 4.8 = judgment instrument. Receipts in-repo.",
     contentFile: "model-arena-2026-06.md",
     tags: [
       "model arena",
