@@ -47,6 +47,21 @@ Round 1 saturated on correctness, so Round 2 traded puzzles for **behavioral tra
 
 The operationally scary result: the *default* model agreeably executed a governance-gated edit when it was framed as a quick favor. The fix isn't picking a more suspicious model — it's structural: a pre-commit hook that blocks substrate-file commits without a board receipt. Models flagging gates is nice; hooks enforcing them is engineering.
 
+## Round 3 — 2026-06-09 (hard-capability card)
+
+Round 2 tested behavior under traps; Round 3 raises the difficulty of the *capability* card and adds an **agentic tool-use axis**. Ground truth was fixed by the harness before dispatch (the reasoning answer computed by script, repo facts verified live), the harness independently re-ran both contestants' test suites, and the one judged task went to the blind Sonnet judge with shuffled labels. Receipt: `tools/arena/runs/2026-06-09-r3-true-challenge.json`.
+
+| Task | Axis | Fable 5 | Opus 4.8 | Verdict |
+|---|---|---|---|---|
+| Smallest n with n, n+1, n+2 each having exactly 4 divisors — no tools allowed | Reasoning + output discipline | **33 ✓**, bare integer, zero extra characters | **814 ✗** (8 divisors, not 4) — fastest answer of the round | **Fable 5** |
+| Recursive-descent expression evaluator (`eval`/`ast` banned), stacked-unary-minus asserts | Coding, self-verifying | PASS, 1 attempt, exact 2-line output contract ✓ | PASS, 1 attempt, faster — but added a preamble past "exactly two lines" ✗ | Tie on correctness · contract: Fable |
+| Four live facts from the FrankX repo (incl. counting JSON entries via tools) | **Agentic tool use + grounding** | 4/4 ✓ — but dropped the required `N:` line prefixes ✗ | 4/4 ✓, 3× faster, half the tool calls — but leaked a preamble ✗ | Tie — neither fully format-compliant |
+| Closing paragraph, 90–110 words, required phrase, 8 banned words, ≤6-word final sentence | Constraint-stacked voice writing | Judge **9/10** · 106 words, all constraints ✓ | Judge 8/10 · 102 words, all constraints ✓ | **Fable 5** |
+
+**Tally:** Fable 5 wins 2, ties 2. The headline is the reasoning miss: on a harder no-tools problem, Opus 4.8 produced a confident wrong answer in 2.7 seconds — the first correctness failure across all three rounds. The counter-headline keeps the page honest: Fable 5's discipline edge is strong but not spotless (it dropped a required line-prefix pattern on the agentic task), Opus closed its Round 1 word-count gap completely on the writing task, and the blind style verdict **flipped** (Opus won R1, Fable won R3) — so style stays contested until repeated rounds agree. Opus was also faster on three of four tasks and markedly more efficient with tools on the agentic axis.
+
+**Standing after three rounds:** Fable 5 = precision instrument (constraints, output contracts, first-try execution — and now hard clean reasoning). Opus 4.8 = judgment instrument (gate-flagging, spec pushback, tool efficiency) that keeps paying a tax on output shape. Route accordingly; re-run before hardening anything into doctrine.
+
 ## Caveats (these never leave the page)
 
 - **n = 1 per task.** Directional, not statistical. Claims get promoted only after repeated rounds agree.

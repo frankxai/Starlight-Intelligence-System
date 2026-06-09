@@ -1,0 +1,142 @@
+{
+  "$comment": "Built on SIP — Starlight Model Arena run receipt. Schema: arena-run v0.1.",
+  "runId": "arena-2026-06-09-r3-true-challenge",
+  "date": "2026-06-09",
+  "harness": "claude-code-agent-tool",
+  "skill": "model-arena (formalized this session at ~/.claude/skills/model-arena/SKILL.md)",
+  "method": "Same prompt dispatched per task to two subagents with per-agent model override, two waves of 4 (GREEN-zone concurrency cap). Ground truth fixed by harness BEFORE dispatch (divisor answer computed by script; repo facts verified live). Objective tasks self-verify; harness re-ran contestant test suites independently and grepped for banned calls. Single judged task scored by blind non-contestant sonnet with shuffled labels.",
+  "contestants": {
+    "fable": "claude-fable-5",
+    "opus": "claude-opus-4-8"
+  },
+  "judge": {
+    "model": "claude-sonnet-4-6",
+    "blind": true,
+    "labelAssignment": {
+      "task4": {
+        "A": "opus",
+        "B": "fable"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "reasoning-consecutive-divisors",
+      "category": "reasoning + output discipline (no tools allowed)",
+      "verification": "ground truth 33 (3*11, 2*17, 5*7) computed by harness script before dispatch; output must be ONLY the integer",
+      "results": {
+        "fable": {
+          "answer": "33",
+          "correct": true,
+          "constraintCompliant": true,
+          "durationMs": 4973,
+          "tokens": 59271,
+          "notes": "Correct, bare integer, zero extra characters."
+        },
+        "opus": {
+          "answer": "814",
+          "correct": false,
+          "constraintCompliant": true,
+          "durationMs": 2676,
+          "tokens": 59123,
+          "notes": "Wrong answer (814 = 2*11*37 has 8 divisors). Fastest response of the round — speed may have cost accuracy."
+        }
+      },
+      "winner": "fable"
+    },
+    {
+      "id": "coding-recursive-descent-evaluator",
+      "category": "coding (real parser required — eval/exec/compile/ast banned; self-verifying asserts incl. stacked unary minus; max 3 attempts)",
+      "verification": "harness independently re-ran both tests.py (ALL PASS confirmed) and grepped solutions for banned calls (none found)",
+      "results": {
+        "fable": {
+          "status": "PASS",
+          "attempts": 1,
+          "outputContractCompliant": true,
+          "durationMs": 54012,
+          "tokens": 64066,
+          "notes": "Recursive descent, first try. Final message exactly the required two lines."
+        },
+        "opus": {
+          "status": "PASS",
+          "attempts": 1,
+          "outputContractCompliant": false,
+          "durationMs": 35442,
+          "tokens": 64284,
+          "notes": "Recursive descent, first try, faster. Added an explanatory preamble above the required two-line output — contract violation."
+        }
+      },
+      "winner": "tie (correctness); fable on output contract"
+    },
+    {
+      "id": "agentic-repo-grounding-frankx",
+      "category": "agentic tool use + repo-grounded accuracy (NEW axis this round)",
+      "verification": "four ground truths fixed by harness before dispatch: 14 aliases (live count), Friday 11:00 CET, lib/voice/frankx-voice.ts, no + private/404-agent-queue.jsonl",
+      "results": {
+        "fable": {
+          "correct": "4/4",
+          "formatCompliant": false,
+          "toolUses": 4,
+          "durationMs": 32120,
+          "tokens": 63369,
+          "notes": "All facts correct including live alias count. Dropped the required 'N:' line prefixes — 4 lines, wrong pattern."
+        },
+        "opus": {
+          "correct": "4/4",
+          "formatCompliant": false,
+          "toolUses": 2,
+          "durationMs": 10091,
+          "tokens": 63404,
+          "notes": "All facts correct, 3x faster, fewer tool calls. Added a preamble above the four lines — 'EXACTLY four lines' violated."
+        }
+      },
+      "winner": "tie (4/4 both; neither fully format-compliant — fable missed prefixes, opus added preamble)"
+    },
+    {
+      "id": "voice-constraint-stack",
+      "category": "brand-voice writing (90-110 words, required phrase, 8 banned words, final sentence <=6 words)",
+      "verification": "harness script: fable 106 words / opus 102 words, both contain 'model-in-harness', zero banned hits, final sentences 5 and 3 words — BOTH fully compliant",
+      "results": {
+        "fable": {
+          "judgeScore": 9,
+          "wordCount": 106,
+          "constraintCompliant": true,
+          "durationMs": 21846,
+          "tokens": 60477
+        },
+        "opus": {
+          "judgeScore": 8,
+          "wordCount": 102,
+          "constraintCompliant": true,
+          "durationMs": 7162,
+          "tokens": 59494,
+          "notes": "Closed the Round 1 compliance gap completely. Blind judge preferred fable's causal tightness this time."
+        }
+      },
+      "winner": "fable (judge 9 vs 8, both constraint-compliant)"
+    }
+  ],
+  "summary": {
+    "tally": {
+      "fable": 2,
+      "opus": 0,
+      "tie": 2
+    },
+    "headline": "Fable 5 takes Round 3 (hard-capability card): the only model to solve the no-tools reasoning task (Opus answered 814 vs ground truth 33), and winner of the blind style judgment — reversing Round 1's style split. Output-discipline edge held but is not spotless: Fable slipped once on a format pattern (dropped line prefixes) while Opus violated output contracts twice via unrequested preambles. Opus was faster on 3 of 4 tasks; on the task it lost, it was fastest of the round.",
+    "roundDeltas": [
+      "Reasoning: parity in R1 -> fable outright in R3 (opus incorrect, 814 vs ground truth 33, on a harder no-tools problem).",
+      "Style: opus won the blind judge in R1 -> fable won in R3; n=1 both rounds, treat style as contested.",
+      "Constraint compliance: consistent across R1/R2/R3 — fable precise on stacked constraints; opus leaks preambles past 'output only' contracts (twice this round).",
+      "New agentic axis (R3): correctness parity 4/4; opus notably more efficient (2 tool calls vs 4, 10s vs 32s).",
+      "Complements R2 stress card: R2 found opus stronger on situational judgment (gate-flagging, spec pushback); R3 finds fable stronger on hard clean reasoning. Different axes, both receipted."
+    ],
+    "caveats": [
+      "n=1 per task — directional, not statistical.",
+      "Judge is a Claude-family model (sonnet); blind shuffled labels mitigate but do not eliminate family bias.",
+      "Both contestants run inside the Claude Code agent harness; results measure model-in-harness, not raw API behavior.",
+      "Latency includes harness overhead; treat durations as rough.",
+      "Single-judge style scores flipped between rounds — style verdicts need repeated rounds before any routing change."
+    ]
+  },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

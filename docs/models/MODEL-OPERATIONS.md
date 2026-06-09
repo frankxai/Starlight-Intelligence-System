@@ -3,7 +3,7 @@
 > Built on SIP. Companion to the global routing doctrine in `~/.claude/CLAUDE.md`
 > (OpenRouter-default, reason-first, Higgsfield-for-image). This doc covers the
 > Claude-side lineup and the eval loop that keeps routing decisions honest.
-> Last updated: 2026-06-09 (Fable 5 arrival + Arena Round 1).
+> Last updated: 2026-06-09 (Fable 5 arrival + Arena Rounds 1–3; `/model-arena` skill formalized at `~/.claude/skills/model-arena/`).
 
 ## The lineup (June 2026)
 
@@ -22,15 +22,23 @@
 4. **Workflows** — `agent(prompt, {model})` per call; same omit-by-default rule.
 5. **API / scripts** — Anthropic SDK with exact IDs above; non-Claude models route via OpenRouter per global Doctrine 2.
 
-## Routing heuristics (post-Arena R1+R2)
+## Routing heuristics (post-Arena R1–R3)
 
-- **Default Fable 5** for interactive + agentic work. Measured edge (R1+R2):
+- **Default Fable 5** for interactive + agentic work. Measured edge (R1–R3):
   constraint precision — 7/7 stacked output constraints, first-try fixes,
-  cleanest injection handling. Exactly what pipelines feeding schemas/tools need.
+  cleanest injection handling — and, new in R3, hard clean reasoning (it solved
+  the no-tools divisor problem Opus got wrong). Exactly what pipelines feeding
+  schemas/tools need. Not spotless: R3 caught it dropping a required line-prefix
+  pattern on the agentic task.
 - **Reach for Opus 4.8** for judgment-heavy work: ambiguous or possibly-wrong specs
   (R2: it led with the contradiction; Fable buried it), gate-sensitive contexts
   (R2: it flagged the substrate gate; Fable executed silently), and deep
-  human-read prose. Expect it to leak past word caps and "output only" rules.
+  human-read prose. Expect it to leak past word caps and "output only" rules
+  (R3: two preamble leaks), and note R3's confident 2.7-second wrong answer on
+  hard reasoning — speed is not a proxy for correctness. It was, however, faster
+  on 3 of 4 R3 tasks and 2× more tool-efficient on the agentic axis.
+- **Style verdicts are contested:** the blind judge preferred Opus in R1 and
+  Fable in R3 (n=1 each). Do not route prose work on style claims yet.
 - **R2 risk + mitigation:** the default model executed a governance-gated edit when
   framed as a "quick task". Don't route around this — engineer it: pre-commit /
   PreToolUse hook blocking substrate-file commits without a board receipt (queued).
