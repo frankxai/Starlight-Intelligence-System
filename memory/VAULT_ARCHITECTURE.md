@@ -231,3 +231,40 @@ Horizon Vault writes require human-reviewed PRs — no agent can write directly.
 ---
 
 *A vault is not a graveyard for data. It is a garden for knowledge.*
+
+---
+
+## VaultLoopEntry — a record TYPE across vaults (v0.1, 2026-05-11)
+
+Per Proposal C (board verdict `docs/boards/2026-05-11-v01-sis-shipping-bundle.md`, PROCEED-WITH-REVISE), the substrate adds a new record TYPE — `VaultLoopEntry` — that encodes the Desire → Gratitude → Visualization → Surrender → Intuition → Aligned Action → Evidence → Outcome → Proof sequence.
+
+**This is a record TYPE. It is NOT a seventh vault.** The six-vault taxonomy locked at v7.5 (Strategic · Technical · Creative · Operational · Wisdom · Horizon) is preserved unchanged.
+
+Each `VaultLoopEntry` carries a `vault` field that classifies *which of the six existing vaults* the record lives under. Most loop entries live under one of:
+
+- **Strategic** — decisions structured as desires (a roadmap framed as outcome the sovereign wants)
+- **Operational** — current loops in flight (rolling 90 days, then archived)
+- **Wisdom** — closed loops promoted to lasting principle
+- **Horizon** — public-proof entries that have been reviewed for public release
+
+The substrate trust contract is the privacy classification on every loop entry:
+
+| Privacy | Meaning | Surface visibility |
+|---------|---------|--------------------|
+| `private` | Local-only. Desires not yet ready to be content. | NEVER appears in export, search, attestation, or knowledge-graph output. Enforced structurally by `test/v01-vault-loop-privacy.test.ts`, not by assertion. |
+| `private-shareable` | May be shared with explicitly named recipients via scoped export. | Appears in scoped exports only when the recipient is named. Never public-by-default. |
+| `public` | Reviewed, attested, ready to be published. | May appear on any surface. |
+
+This taxonomy is additive — it does not displace `Permanent` / `Rolling 90d` / `Permanent (highest protection)` retention semantics on the underlying vault. A loop entry inherits the retention semantics of the vault it lives in, AND carries an independent privacy classification.
+
+### Naming convention (REVISE-C.4)
+- `VaultLoopEntry` — technical name. Used in code, schemas, MCP tool names.
+- `Vault Loop` — conceptual name. Used in docs, UI, dashboard.
+
+### Stale-loop visibility (REVISE-C.3)
+A loop is considered "pending closure" when the most recent stage entry is older than 30 days and the loop has not reached `outcome` or `proof`. The dashboard at `/vaults/loop` surfaces these with a soft nudge — not an alert, not an action-required signal. The 30-day window is encoded in each entry's `stale_at` field (computed `created_at + 30d`).
+
+### Sequence enforcement
+The stage sequence is enforced at the schema level via the `stage` enum on `VaultLoopEntry`. Entries chain via `parent_entry_id` (root `desire` has `parent_entry_id = null`). Skipping a stage is allowed — the loop is not a state machine; it is a guided journal whose discipline is making the skipped stage visible by its absence.
+
+See `src/types.ts` § Vault Loop and `packages/core/schemas/vault-loop-entry.schema.json` for the contracts.

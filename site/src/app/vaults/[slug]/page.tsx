@@ -205,7 +205,7 @@ export default async function VaultPage({ params, searchParams }: Props) {
       )}
 
       {/* Agent API hint */}
-      <div className="mt-12 rounded-lg border border-white/[0.04] bg-white/[0.015] p-4">
+      <div className="mt-12 rounded-lg border border-white/[0.08] bg-white/[0.015] p-4">
         <code className="font-mono text-[12px] text-slate-600">
           <span className="text-emerald-400/60">GET</span>{" "}
           <span className="text-slate-500">/api/vaults/{slug}</span>

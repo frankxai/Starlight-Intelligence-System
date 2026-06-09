@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/graph-edge.schema.json",
+  "title": "GraphEdge",
+  "description": "Knowledge-graph edge. evidenceRef is REQUIRED — every edge cites the artifact / event / decision that justifies it. This is the substrate invariant; ledger writers MUST refuse edges missing evidenceRef.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "edgeType",
+    "source",
+    "target",
+    "evidenceRef",
+    "confidence",
+    "createdBy",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "edgeType": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "evidenceRef": { "type": "string", "minLength": 1 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "createdBy": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

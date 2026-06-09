@@ -13,6 +13,8 @@ import { join, basename } from 'node:path';
 import { homedir } from 'node:os';
 import { randomUUID } from 'node:crypto';
 import type { TemporalMeta, ContradictionRecord } from './types.js';
+import { getPackageVersion } from './version.js';
+import { seedVaults, vaultsAreEmpty } from './seed.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -198,9 +200,9 @@ export class StarlightMcpServer {
       confidenceLevels: ['low', 'medium', 'high'],
     }));
 
-    // 6. sis_search — hybrid ranked search with temporal awareness
+    // 6. sis_search — keyword + temporal ranked search (no embeddings)
     this.reg({
-      name: 'sis_search', description: 'Hybrid semantic + keyword search with scoring and temporal filtering',
+      name: 'sis_search', description: 'Keyword + temporal search with term-overlap scoring, tag boosting, and staleness penalty (no embeddings)',
       inputSchema: { type: 'object', required: ['query'], properties: {
         query: { type: 'string' }, vaults: { type: 'array', items: { type: 'string' } },
         limit: { type: 'number' }, includeExpired: { type: 'boolean' },
@@ -302,7 +304,7 @@ export class StarlightMcpServer {
       return { jsonrpc: '2.0', id: rpcId, result: {
         protocolVersion: '2024-11-05',
         capabilities: { tools: {} },
-        serverInfo: { name: 'starlight-sis', version: '6.0.0' },
+        serverInfo: { name: 'starlight-sis', version: getPackageVersion() },
       }};
     }
     if (method === 'tools/list') {
@@ -349,8 +351,21 @@ export class StarlightMcpServer {
 function main(): void {
   const args = process.argv.slice(2);
   let vaultDir = join(homedir(), '.starlight', 'vaults');
+  let noSeed = false;
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--vault-dir' && args[i + 1]) { vaultDir = args[++i]; }
+    else if (args[i] === '--no-seed') { noSeed = true; }
+  }
+  // First-run experience: a fresh install has no vault directory, so the very
+  // first sis_vault_search would return nothing and look broken. Seed the six
+  // canonical vaults (welcome entry + bundled public examples) when empty, so
+  // the empty state is self-explaining. Never touches non-empty vaults.
+  if (!noSeed && vaultsAreEmpty(vaultDir)) {
+    const seeded = seedVaults(vaultDir);
+    process.stderr.write(
+      `[starlight-sis] seeded ${seeded.created.length} vaults in ${vaultDir}` +
+      `${seeded.usedExamples ? ' (with public examples)' : ''}\n`,
+    );
   }
   const server = new StarlightMcpServer(vaultDir);
   server.start();

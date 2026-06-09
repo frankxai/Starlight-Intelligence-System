@@ -365,3 +365,329 @@ export interface ContradictionRecord {
   detectedAt: string;
   resolvedAt: string | null;
 }
+
+// ── Track A — Agent Ops Substrate (v0.1, demo 2026-05-15) ──
+//
+// 13 schemas governing work packets, agent runs, decisions, artifacts,
+// packs, approvals, council reviews, knowledge graph entities/edges,
+// cost records, eval results. Schema-first: MCP tools (T2) and the
+// dashboard (T3) compose on top of these contracts. Persisted via
+// append-only JSONL ledgers + SQLite shadow indices (see ledgers.ts).
+//
+// Invariants:
+//   • GraphEdge.evidenceRef is REQUIRED — every edge cites its source.
+//   • All events are append-only; status transitions go through the ledger.
+//   • Risk-tiered fields use the same scale across all schemas.
+
+/** Risk classification shared across WorkPacket / Decision / AgentEvent / ApprovalGate. */
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+
+/** WorkPacket lifecycle states. */
+export type WorkPacketStatus =
+  | 'pending'
+  | 'in_progress'
+  | 'blocked'
+  | 'completed'
+  | 'cancelled';
+
+/** AgentRun lifecycle states. */
+export type AgentRunStatus =
+  | 'pending'
+  | 'in_progress'
+  | 'completed'
+  | 'failed'
+  | 'cancelled';
+
+/** ApprovalGate lifecycle states. */
+export type ApprovalGateStatus =
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'expired';
+
+/** Attestation status on an Artifact — SIP attestation or unattested. */
+export type AttestationStatus = 'sip-attested' | 'unattested';
+
+/** Pack kinds shipped through the ecosystem (Track A v0.1). */
+export type PackKind =
+  | 'prompt'
+  | 'skill'
+  | 'agent'
+  | 'knowledge'
+  | 'claw'
+  | 'white-label';
+
+/** CostRecord measurement units. */
+export type CostKind = 'tokens' | 'time' | 'api-call' | 'storage';
+
+/** GraphEntity kinds — extensible, but free-text to keep the substrate open. */
+export type GraphEntityKind = string;
+
+/** Permission scope/action descriptor used by Packs. */
+export interface Permission {
+  id: string;
+  scope: string;
+  action: string;
+  conditions: string[];
+}
+
+/** An immutable event emitted during an AgentRun. */
+export interface AgentEvent {
+  id: string;
+  runId: string;
+  agentId: string;
+  eventType: string;
+  summary: string;
+  toolsUsed: string[];
+  inputRefs: string[];
+  outputRefs: string[];
+  decisionsCreated: string[];
+  artifactsCreated: string[];
+  riskLevel: RiskLevel;
+  costEstimate: number;
+  timestamp: string;
+}
+
+/** A produced artifact with attestation status. */
+export interface Artifact {
+  id: string;
+  kind: string;
+  uri: string;
+  sha256: string;
+  createdBy: string;
+  createdAt: string;
+  attestation: AttestationStatus;
+}
+
+/** A unit of agent work — mission, constraints, lifecycle. */
+export interface WorkPacket {
+  id: string;
+  title: string;
+  mission: string;
+  contextRefs: string[];
+  requiredOutputs: string[];
+  allowedTools: string[];
+  allowedPaths: string[];
+  forbiddenActions: string[];
+  riskLevel: RiskLevel;
+  approvalRequired: boolean;
+  assignedAgent: string;
+  status: WorkPacketStatus;
+  events: AgentEvent[];
+  artifacts: Artifact[];
+  costEstimate: number;
+  createdAt: string;
+  completedAt?: string;
+}
+
+/** A single agent execution against a WorkPacket. */
+export interface AgentRun {
+  id: string;
+  workPacketId: string;
+  agentId: string;
+  startedAt: string;
+  completedAt?: string;
+  status: AgentRunStatus;
+  rootEventId?: string;
+}
+
+/** A council-eligible decision made during work. */
+export interface Decision {
+  id: string;
+  title: string;
+  context: string;
+  options: string[];
+  chosen: string;
+  rationale: string;
+  riskLevel: RiskLevel;
+  workPacketId?: string;
+  councilReviewId?: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+/** Installable pack — prompt / skill / agent / knowledge / claw / white-label. */
+export interface Pack {
+  id: string;
+  name: string;
+  version: string;
+  kind: PackKind;
+  permissions: Permission[];
+  licenseTier: string;
+  signatureRef?: string;
+  installedAt?: string;
+  manifestSha: string;
+}
+
+/** Human-in-the-loop gate for a WorkPacket. */
+export interface ApprovalGate {
+  id: string;
+  workPacketId: string;
+  requestedAt: string;
+  status: ApprovalGateStatus;
+  riskLevel: RiskLevel;
+  decidedBy?: string;
+  decidedAt?: string;
+  rationale?: string;
+  /** Why this gate was opened — captured from the call site at gate creation. */
+  reason?: string;
+  /**
+   * What was being approved. Captured at gate creation so the audit trail
+   * answers "what did the agent want to do?" even though no Decision /
+   * WorkPacket row was persisted (the gate REFUSED persistence). Closes
+   * the orphan-gate audit gap (H3 review finding, 2026-05-12).
+   */
+  pendingContext?: {
+    kind: 'decision' | 'workpacket';
+    payload: Record<string, unknown>;
+  };
+}
+
+/** Seven-perspective council pressure-test of a decision or work packet. */
+export interface CouncilReviewPerspectives {
+  elderFather: string;
+  elderMother: string;
+  sage: string;
+  builderElder: string;
+  shadowWitness: string;
+  divineNeutralWitness: string;
+  futureSelf90: string;
+}
+
+/** Recorded council review with convergence + conflict + verdict. */
+export interface CouncilReview {
+  id: string;
+  workPacketId?: string;
+  decisionId?: string;
+  decision: string;
+  context: string;
+  perspectives: CouncilReviewPerspectives;
+  convergence: string;
+  conflict: string;
+  redLines: string[];
+  cleanestPath: string;
+  oneNextMove: string;
+  reviewDate: string;
+  createdAt: string;
+}
+
+/** Knowledge-graph node. */
+export interface GraphEntity {
+  id: string;
+  kind: GraphEntityKind;
+  name: string;
+  attributes: Record<string, unknown>;
+  createdAt: string;
+}
+
+/**
+ * Knowledge-graph edge. evidenceRef is REQUIRED — the substrate invariant.
+ * Every edge cites the artifact / event / decision that justifies it.
+ */
+export interface GraphEdge {
+  id: string;
+  edgeType: string;
+  source: string;
+  target: string;
+  evidenceRef: string;
+  confidence: number;
+  createdBy: string;
+  createdAt: string;
+}
+
+/** Per-run / per-packet cost ledger entry. */
+export interface CostRecord {
+  id: string;
+  agentRunId?: string;
+  workPacketId?: string;
+  kind: CostKind;
+  amount: number;
+  currencyOrUnit: string;
+  timestamp: string;
+}
+
+/** Single eval-harness verdict against a target schema instance. */
+export interface EvalResult {
+  id: string;
+  evalName: string;
+  targetId: string;
+  targetKind: string;
+  passed: boolean;
+  evidenceRef?: string;
+  createdAt: string;
+}
+
+// ── Vault Loop (v0.1 — Proposal C, board-gated 2026-05-11) ──────────────
+//
+// A VaultLoopEntry is a record TYPE that lives across the six existing
+// vaults (Strategic / Technical / Creative / Operational / Wisdom / Horizon)
+// under privacy classification — NOT a seventh vault. The locked-v7.5
+// six-vault taxonomy (see memory/VAULT_ARCHITECTURE.md) is preserved.
+//
+// The loop encodes the sequence:
+//   Desire → Gratitude → Visualization → Surrender → Intuition →
+//   Aligned Action → Evidence → Outcome → Proof
+//
+// Each stage is its OWN record. Records chain via `parent_entry_id` —
+// the root Desire has parent_entry_id = null; downstream stages point
+// to the entry they extend. This decomposition lets a single loop span
+// time, surface stale loops (no progression in 30+ days), and enforce
+// privacy at the per-stage granularity.
+//
+// Privacy is the substrate trust contract:
+//   • 'private'           — never appears in export, search, attestation,
+//                           or KG output. Local-only by structural
+//                           guarantee, not by assertion.
+//   • 'private-shareable' — may appear in scoped exports to explicitly
+//                           named recipients; never public-by-default.
+//   • 'public'            — may appear in any export, search, or
+//                           attestation surface.
+//
+// Naming convention: "VaultLoopEntry" technically, "Vault Loop" conceptually.
+// Per board REVISE-C.4.
+//
+// Schema mirrored at packages/core/schemas/vault-loop-entry.schema.json.
+
+/** The nine stages in the Vault Loop sequence. */
+export type VaultLoopStage =
+  | 'desire'           // Root — name what you actually want
+  | 'gratitude'        // What is already true that proves this is reachable
+  | 'visualization'    // The moment it is real, in sensory detail
+  | 'surrender'        // Name the fear; release attachment to outcome
+  | 'intuition'        // What the body knows; first-thought wisdom
+  | 'aligned_action'   // One step takeable in 24h
+  | 'evidence'         // First sign it is working — synchronicity, signal
+  | 'outcome'          // What actually happened, written as it lands
+  | 'proof';           // Optional public testimony — gated by privacy
+
+/** Privacy classification — substrate trust contract. */
+export type VaultLoopPrivacy = 'private' | 'private-shareable' | 'public';
+
+/**
+ * A single stage record within a Vault Loop. Records chain via
+ * `parent_entry_id` to form the loop. The root Desire has no parent.
+ *
+ * `vault` indicates which of the six existing vaults this record lives
+ * under (the loop is a record TYPE crossing vaults, not a new vault).
+ *
+ * `stale_at` is computed: a stage record is considered stale when no
+ * downstream stage record has been added within 30 days of its creation.
+ * Stale-loop visibility is a soft nudge, not an alert — see the
+ * dashboard at /vaults/loop.
+ */
+export interface VaultLoopEntry {
+  id: string;
+  vault: VaultType;
+  stage: VaultLoopStage;
+  privacy: VaultLoopPrivacy;
+  parent_entry_id: string | null;
+  payload: string;
+  created_at: string;
+  created_by: string;
+  /**
+   * Computed timestamp at which this entry becomes "stale" if no
+   * downstream stage has been added. By convention, created_at + 30d.
+   * Consumers compute or compare; not authoritative for retention.
+   */
+  stale_at: string;
+}

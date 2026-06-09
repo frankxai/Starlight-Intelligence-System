@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/pack.schema.json",
+  "title": "Pack",
+  "description": "Installable pack — prompt / skill / agent / knowledge / claw / white-label.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "version", "kind", "permissions", "licenseTier", "manifestSha"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "kind": {
+      "type": "string",
+      "enum": ["prompt", "skill", "agent", "knowledge", "claw", "white-label"]
+    },
+    "permissions": {
+      "type": "array",
+      "items": { "$ref": "permission.schema.json" }
+    },
+    "licenseTier": { "type": "string", "minLength": 1 },
+    "signatureRef": { "type": "string" },
+    "installedAt": { "type": "string", "format": "date-time" },
+    "manifestSha": { "type": "string", "minLength": 1 }
+  }
+}

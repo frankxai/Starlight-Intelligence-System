@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/cost-record.schema.json",
+  "title": "CostRecord",
+  "description": "Per-run / per-packet cost ledger entry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "amount", "currencyOrUnit", "timestamp"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "agentRunId": { "type": "string" },
+    "workPacketId": { "type": "string" },
+    "kind": { "type": "string", "enum": ["tokens", "time", "api-call", "storage"] },
+    "amount": { "type": "number", "minimum": 0 },
+    "currencyOrUnit": { "type": "string", "minLength": 1 },
+    "timestamp": { "type": "string", "format": "date-time" }
+  }
+}

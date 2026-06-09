@@ -1,3 +1,9 @@
+---
+name: integration/universal-adapter
+description: Use when connecting Starlight to external systems, APIs, or MCP servers — provides a standardized way to integrate with the outside world via the universal connector pattern. Default skill for Starlight Orchestrator and Starlight Architect.
+type: developer-tooling
+---
+
 # Universal Adapter
 
 > *"Connect to anything. Integrate with everything."*

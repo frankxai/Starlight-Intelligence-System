@@ -1,3 +1,14 @@
+---
+type: vault
+vault: technical
+retention: permanent
+writers:
+- architect
+- sentinel
+readers: all
+last_consolidated: '2026-05-11'
+---
+
 # Technical Vault
 
 > *"Patterns are the currency of engineering wisdom."*
@@ -16,8 +27,7 @@
 | 2026-02-10 | Configuration-First Pattern | architecture-pattern | 0.95 |
 | 2026-02-10 | Skill Auto-Activation Pattern | skill-pattern | 0.90 |
 | 2026-02-10 | Memory Hierarchy Pattern | memory-pattern | 0.90 |
-| 2026-04-25 | Claw Contract Pattern | claw-pattern | 0.95 |
-| 2026-04-25 | Local-First Ingestion Pattern | data-architecture | 0.92 |
+| 2026-05-06 | Core Regression Harness Pattern | test-pattern | 0.90 |
 
 ---
 
@@ -84,6 +94,23 @@
 
 ---
 
+### [2026-05-06] Core Regression Harness Pattern
+
+**Category:** test-pattern
+**Confidence:** 0.90
+**Source:** Codex / repo quality pass
+**Related:** Technical Vault - Memory Hierarchy Pattern
+
+**Pattern:** Every core storage or retrieval bug gets a small executable regression test wired into the default root test suite.
+
+**Applied:** Added coverage for platform-native `MemoryManager.save()` paths and `RetrievalIndex.rebuildFromVaults()` indexing of MCP-style `content` entries. Also fixed SQLite FTS `MATCH` usage to avoid alias-based query failures.
+
+**Why it matters:** The repo's protocol layer is heavily conformance-tested, but runtime storage edges need the same treatment. A passing `npm test` should cover both substrate shape and operational behavior.
+
+---
+
+---
+
 ### [2026-04-25] Claw Contract Pattern
 
 **Category:** claw-pattern
@@ -106,7 +133,7 @@
 **Benefits:**
 - Installable: `openclaw install frankxai/sis-genius-claw` reads CLAW.md to validate prerequisites
 - Auditable: Sentinel Claw compares declared permissions vs. actual runtime behavior
-- Composable: Multiple Claws can be installed; they compose through Memory Claw and Sentinel Claw, not through direct coupling
+- Composable: Multiple Claws compose through Memory Claw and Sentinel Claw, not through direct coupling
 - Sovereign: Each Claw declares minimum permissions — no runtime escalation
 
 **Anti-pattern:** Agent personas without bounded contracts — no declared permissions, no defined outputs, no mutation safety — are toy agents, not product infrastructure.
@@ -139,6 +166,4 @@ Platform exports (Claude Code, Codex, ChatGPT Projects)
 
 **Cloud boundary:** Public vault, attestation ledger, docs, and install packages are cloud-safe. The canonical agent memory layer stays local. This preserves the sovereignty contract.
 
-**Anti-pattern:** Using Google Drive or Notion as the memory substrate. These are excellent raw material stores but poor canonical memory layers — no local retrieval, no offline access, no fine-grained permission control.
-
----
+**Anti-pattern:** Using Google Drive or Notion as the memory substrate — excellent raw material stores but poor canonical memory layers.

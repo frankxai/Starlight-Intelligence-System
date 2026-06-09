@@ -40,11 +40,17 @@ Every task is either substrate-level or operational-level. Decide before acting.
 - Triggers: edits to `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md`, or any `/sip-*`, `/alliance-*`, `/vertical-*`, `/luminor-board`, `/openclaw-audit`, `/sovereign-signal`, `/wealth-dpi` command.
 
 **Operational-level** (anything inside this repo's reference build):
-- Use the 7-agent registry at `agents/AGENT_REGISTRY.md` and existing skill auto-activation.
+- Use `agents/AGENT_REGISTRY.md` for the current 47-agent registry and existing skill auto-activation.
 - Voice: Frank DNA (above).
 - Triggers: vault writes, MCP server work (`src/`), the 6 v6 commands (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`), skill edits, agent edits, site edits.
 
 **Ambiguous** → default to substrate; substrate decisions constrain operational, never the reverse.
+
+**Substrate-tier governance gate (v7.5.1+, naming reconciled v7.9.2 / 2026-05-03):** Substrate-level changes invoke `/starlight-board` BEFORE commit/tag, not after. `/superintelligence` "execute" mode does NOT displace this gate. v7.5.0 shipped under `/superintelligence` without pre-board — post-hoc Board verdict was PROCEED-WITH-REVISE; v7.5.1 closed the REVISE items and logged v7.5 as the recovery exception. From v7.6 onward, board-before-tag is structural-not-discretionary for any change touching `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md` / file-contract / attestation rules / sovereignty clause / 10-IS taxonomy / domain sub-stack pattern. Operational-tier work continues under `/superintelligence` without pre-board. See `docs/boards/luminor-v75-ship.md` for the precedent record.
+
+**Naming note (2026-05-03):** `/starlight-board` is the canonical SIS-substrate-tier governance command (canon-free, functional vector names). `/luminor-board` remains available as the Arcanea-canonical variant (Guardian names + CC-BY-NC) for proposals that explicitly compose Arcanea canon. Same pressure-test shape; different canon attribution. Per the brand-register rules in `memory/vaults/strategic-vault.md`, Luminor stays Arcanea-mythic; Starlight is the substrate register.
+
+**/yolo Hive substrate integration (v7.7+, 2026-05-11):** `/yolo` is a session-mode top-tier command (sibling of `/starlight`, `/superintelligence`, `/starlight-board`). Inside a /yolo session, substrate-touching moves auto-invoke `/starlight-board`. Per Board REVISE-1 verdict (2026-05-11, `docs/superpowers/specs/2026-05-11-yolo-hive-design.md` §7.3.1): even after PROCEED, substrate-class merges require fresh explicit Frank-ack via `AskUserQuestion` — the /yolo session-open grant does NOT propagate to sovereign-class decisions. Phase-in (Board REVISE-2): sessions 1-3 scope-locked to `yolo-scope.json::phase_in.phase_in_repo`; session 4 unlock requires Phase-In Review pass.
 
 ---
 
@@ -56,13 +62,17 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **What you have access to:**
 
-- **7 Agents** — Specialized intelligence perspectives (see below)
-- **16 Skills** — Auto-activate via `skills/skill-rules.json`
-- **6 Vaults** — Persistent memory across sessions
-- **4 Note Templates** — Structured knowledge capture
+- **47 Agents** — 7 legacy council (leadership + specialist + foundation tiers, top-level `agents/*.md`) + 7 Council Archetype seats (v0.1 Friday demo, at `agents/council/*.md` — Elder Father, Elder Mother, Sage, Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90) + 3 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 5 SIS Extractors for `/sis-forge` Phase 1. Full registry: `agents/AGENT_REGISTRY.md`.
+- **71 Skills** — Auto-activate via `skills/skill-rules.json` across 14 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`)
+- **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
-- **6 Commands** — Strategic intelligence operations
+- **Commands** — substrate commands in-repo + additional commands available per-environment installation (varies by user); covers universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
 - **Context Engine** — Unified cross-repo awareness
+- **Research surface** — Public substrate research at `starlightintelligence.org/research/`. Rubric-locked, Board-gated, SIP-attested. First two artifacts live: 3D memory palace design survey + memory foundations (Phase 0 dog-food chartered, 3-tier model w/ AgentDB tier per Addendum 2). Methodology at `docs/research/_methodology/`.
+
+**Newcomer front door (v7.3):** See `ONBOARDING.md`, `DELIVERY.md`, `SESSION_RUNBOOK.md`. Invoke `/welcome` to orient a newcomer, `/intake` to triage their ask into one of four routes (substrate / alliance / vertical / sovereign-spawn), and hand off to Concierge (builder track) or Envoy (creator track, zero-terminal).
+
+**Genius Intelligence System alpha (v7.4):** New **Excavation Tier** agent `starlight-genius` + 4 new commands — `/discover-genius` (excavates Genius Profile + Freedom Path from scattered corpus), `/reclaim-knowledge` (organizes scattered material by function not source), `/train-executor` (generates handover playbook in person's voice), `/creator-pipeline` (multi-modal content pipeline from frameworks). Vertical-tier `/arcanea-canon` now live. Public explainer at `docs/public/starlight-intelligence-system.md`. Non-technical Claude Project starter at `integrations/starter-packs/friend-starter/`. Attestation is now ambient: agents auto-embed "Built on SIP" in every generated artifact — the user never runs `/sip-attest` for forward-generated work; the command remains for retrofit.
 
 ---
 
@@ -152,14 +162,13 @@ Memory consolidation merges duplicates, elevates patterns, archives stale data, 
 
 ## Skills
 
-16 auto-activating capabilities. Skills fire based on context — keywords, active agent, detected intent.
+71 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
 
 | Domain | Skills |
 |--------|--------|
-| **Intelligence** | Strategic Reasoning, Systems Thinking, Pattern Recognition, Decision Framework |
-| **Orchestration** | Multi-Agent Coordination, Workflow Design, Context Engineering, Parallel Execution |
-| **Memory** | Vault Management, Knowledge Synthesis, Context Preservation, Memory Consolidation |
-| **Integration** | Repo Bridge, Ecosystem Sync, Transmission Protocol, Universal Adapter |
+| **Intelligence / Orchestration / Memory / Integration** | Strategic reasoning, systems thinking, orchestration, vault management, context preservation, ecosystem sync |
+| **Business / Vision / Health / Relational** | Entity architecture, revenue modeling, design coherence, body substrate, network architecture |
+| **People / Sound / Music / Energy / Machine / Crypto** | Domain Sub-Stack skills, Music IS operations, energy intelligence, machine storage/heart, crypto on-chain proof pattern |
 
 Activation rules: `skills/skill-rules.json`
 Skill definitions: `skills/{domain}/{skill-name}.md`
@@ -176,6 +185,10 @@ Skill definitions: `skills/{domain}/{skill-name}.md`
 | `/synthesize` | Multi-source intelligence synthesis |
 | `/council` | Convene the Starlight Council for major decisions |
 | `/navigate` | Strategic foresight, roadmaps, trade-off analysis |
+| `/yolo` | Enter /yolo Hive session — Claude-led cross-repo conductor with parallel council scan + Prime synthesis + aggressive autonomy. Phase-in locked to single repo for sessions 1-3 per `yolo-scope.json`. See `docs/superpowers/specs/2026-05-11-yolo-hive-design.md`. |
+| `/yolo-exit` | Graceful close of /yolo session — operational + strategic vault writes, Memory Bus session-summary atom, drift detection post-pass. |
+| `/yolo-abort` | Immediate halt of /yolo mid-action — partial state saved, in-flight git ops rolled back where reversible, drift event log. |
+| `/sis-forge` | **Pre-alpha (v8.x):** Auto-extract patterns from corpus (transcripts / vault / prompts / repos / external), emit density bucket report. Phase 1 (5 parallel extractors) + Phase 2 (TF-IDF clusterer + density classifier). No proposal doc / Board / spawn yet — those land in alpha/beta. Spec: `docs/superpowers/specs/2026-05-17-sis-forge-design.md`. |
 
 ---
 
@@ -269,4 +282,23 @@ Starlight-Intelligence-System/
 
 ---
 
-*Starlight Intelligence System v2.0.0 — Horizons*
+*Starlight Intelligence System v8.2.0 — Horizons + Composition Layer + Crypto IS*
+
+---
+
+## Agent hygiene (Karpathy-distilled)
+
+High-leverage rules for every Claude Code session. Distilled from Karpathy's 2024-2026 observations on how LLMs fail in the loop.
+
+- State assumptions out loud before running with them; if you would have to guess at intent, file paths, schemas, or types, stop and surface the ambiguity instead.
+- Treat your own confidence as suspect — actively seek the inconsistency that would falsify your current plan, and verify it against real files, real output, or real tests before acting.
+- Push back when the request is wrong, under-specified, or contradicts repo invariants; agreeable agents produce broken systems.
+- Ship the minimum code that satisfies the stated criterion — no speculative abstractions, no anticipatory error handling, no "while I'm here" refactors.
+- Make surgical edits: touch only what the task requires, match the surrounding style, and clean up only the mess your change introduced — never pre-existing dead code unless asked.
+- Never silently rewrite, delete, or "improve" code or comments you do not fully understand; if it looks load-bearing and unexplained, leave it and flag it.
+- Treat the LLM as a text-predictor with leaky knowledge, not an oracle — verify versions, APIs, file contents, and library behavior from the actual source rather than from memory.
+- Convert vague asks into verifiable success criteria before writing code, then loop against those criteria; LLMs are strongest when given a checkable goal, weakest when given an open-ended directive.
+- Guard the context window like a budget — pull in only what the current step needs, and drop or summarize stale material before it rots the next decision.
+- Prefer one careful pass with verification over many fast passes; speed without a check loop compounds error and erodes trust.
+- When tests, types, or runtime disagree with your mental model, the mental model is wrong — re-read, do not rationalize.
+- Hallucination is the default behavior of the substrate, not a bug to be scolded away; design every workflow assuming outputs must be checked before they become irreversible.

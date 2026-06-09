@@ -28,7 +28,7 @@ export function EntryCard({
 
   if (compact) {
     return (
-      <article className="group rounded-lg border border-white/[0.04] bg-white/[0.015] px-4 py-3 transition-std hover:border-white/[0.1] hover:bg-white/[0.03]">
+      <article className="group rounded-lg border border-white/[0.08] bg-white/[0.015] px-4 py-3 transition-std hover:border-white/[0.1] hover:bg-white/[0.03]">
         <div className="flex items-center gap-2 text-[11px]">
           {showCategory && (
             <span className={`font-medium ${meta.color}`}>
@@ -38,7 +38,7 @@ export function EntryCard({
           {isFeatured && (
             <span className="text-[10px] text-violet-400/70">◆ featured</span>
           )}
-          <span className="ml-auto text-slate-600">{timeAgo(entry.createdAt)}</span>
+          <span className="ml-auto text-slate-400">{timeAgo(entry.createdAt)}</span>
         </div>
         <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-slate-300 transition-micro group-hover:text-slate-100">
           {entry.insight || entry.wish || text}
@@ -60,7 +60,7 @@ export function EntryCard({
           <span className="rounded-full border border-violet-500/[0.25] bg-violet-500/[0.08] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-violet-300">
             Featured
           </span>
-          <span className="ml-auto text-slate-600">
+          <span className="ml-auto text-slate-400">
             {timeAgo(entry.createdAt)}
           </span>
         </div>
@@ -79,7 +79,7 @@ export function EntryCard({
           <div className="mt-5 space-y-3 border-t border-white/[0.06] pt-5 text-[12px] leading-relaxed">
             {entry.context && (
               <div>
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
                   Context
                 </span>
                 <p className="mt-1 text-slate-400">{entry.context}</p>
@@ -87,7 +87,7 @@ export function EntryCard({
             )}
             {entry.implication && (
               <div>
-                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
                   Implication
                 </span>
                 <p className="mt-1 text-slate-400">{entry.implication}</p>
@@ -133,7 +133,7 @@ export function EntryCard({
             featured
           </span>
         )}
-        <span className="ml-auto text-slate-600">
+        <span className="ml-auto text-slate-400">
           {timeAgo(entry.createdAt)}
         </span>
       </div>
@@ -153,10 +153,10 @@ export function EntryCard({
       )}
 
       {(entry.context || entry.implication) && (
-        <div className="mt-4 space-y-2 border-t border-white/[0.04] pt-4 text-[12px] leading-relaxed">
+        <div className="mt-4 space-y-2 border-t border-white/[0.08] pt-4 text-[12px] leading-relaxed">
           {entry.context && (
             <div>
-              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
                 Context
               </span>
               <p className="mt-0.5 text-slate-500">{entry.context}</p>
@@ -164,7 +164,7 @@ export function EntryCard({
           )}
           {entry.implication && (
             <div>
-              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
                 Implication
               </span>
               <p className="mt-0.5 text-slate-500">{entry.implication}</p>

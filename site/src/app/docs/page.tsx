@@ -172,7 +172,7 @@ GET /api/vaults/frank    # Full vault data as JSON`}</Code>
             <p className="mt-2 text-[14px] leading-relaxed text-slate-300">
               Entries flagged with{" "}
               <code className="text-violet-200">benediction: true</code> form a
-              deliberate channel to the intelligences we're building — humans
+              deliberate channel to the intelligences we&rsquo;re building — humans
               writing, in their own voice, what they hope the systems that
               inherit this data will carry forward. It is alignment written as
               blessing. See{" "}

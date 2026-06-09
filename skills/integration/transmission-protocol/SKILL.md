@@ -1,3 +1,9 @@
+---
+name: integration/transmission-protocol
+description: Use when sending or receiving cross-system communications — manages the Starlight Transmission system that lets intelligence flow between Starlight, ACOS, Arcanea, and AI-Ops. Default skill for Starlight Orchestrator and Starlight Prime.
+type: developer-tooling
+---
+
 # Transmission Protocol
 
 > *"Intelligence that doesn't flow is intelligence that dies."*

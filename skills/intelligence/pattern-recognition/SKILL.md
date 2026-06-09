@@ -1,3 +1,9 @@
+---
+name: intelligence/pattern-recognition
+description: Use when analyzing recurring behaviors, identifying trends, or spotting anti-patterns across code, architecture, strategy, content, or behavior. Distinguishes patterns (good recurring solutions) from anti-patterns (recurring problems). Default skill for Starlight Sage and Starlight Sentinel.
+type: substrate
+---
+
 # Pattern Recognition
 
 > *"What has happened before will happen again. Recognize the pattern, master the game."*

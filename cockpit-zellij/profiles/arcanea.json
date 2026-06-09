@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "name": "Arcanea constellation",
+  "panes": {
+    "dispatcher": {
+      "command": "claude",
+      "args": [
+        "--resume",
+        "arcanea"
+      ]
+    },
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--continue",
+        "--model",
+        "claude-opus-4-7"
+      ]
+    },
+    "codex": {
+      "command": "codex.cmd",
+      "args": [
+        "resume",
+        "--last"
+      ]
+    },
+    "gemini": {
+      "command": "gemini.cmd",
+      "args": [
+        "--yolo",
+        "-m",
+        "gemini-2.5-pro"
+      ]
+    },
+    "opencode": {
+      "command": "opencode.cmd"
+    }
+  },
+  "team": {
+    "agents": [
+      "Master Story Architect",
+      "Character Psychologist",
+      "World Architect",
+      "Fantasy & Sci-Fi Master",
+      "Consciousness Fiction Master"
+    ],
+    "skills": [
+      "arcanea-book-cover",
+      "arcanea-infogenius",
+      "arcanea-meta",
+      "arcanea-canon"
+    ]
+  }
+}

@@ -1,3 +1,9 @@
+---
+name: integration/repo-bridge
+description: Use when operations span multiple FrankX ecosystem repositories — bridges Starlight understanding, references, and coordination across ACOS, Arcanea, AI-Ops, and other connected repos. Default skill for Starlight Orchestrator and Starlight Prime.
+type: developer-tooling
+---
+
 # Repo Bridge
 
 > *"Across repositories, intelligence flows."*

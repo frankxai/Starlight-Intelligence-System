@@ -1,0 +1,13 @@
+{
+  "id": "dashboard-cockpit-pack",
+  "name": "Dashboard Cockpit Pack",
+  "version": "0.1.0",
+  "kind": "agent",
+  "permissions": [
+    "fs:read:HOME/.claude",
+    "fs:write:HOME/.starlight/cockpit",
+    "task-scheduler:register"
+  ],
+  "licenseTier": "free",
+  "manifestSha": "e631ce8fcf2315c7f5b19cf4daecc97cd52ebb3c8085a66f42a2012715e57c2a"
+}

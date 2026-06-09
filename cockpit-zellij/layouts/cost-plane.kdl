@@ -1,0 +1,62 @@
+// Cost & API Control Plane cockpit — generated 2026-05-11
+//
+// Launch: arc cost-plane
+// Or:     zellij --layout cost-plane --session cost-plane
+//
+// Per Board REVISE-3: cockpit-only dashboard. NO public site route.
+// Real cost numbers live here, in this Zellij workspace, reading JSONL
+// directly from memory/_audit/cost/. Never traverses network.
+//
+// Pane geometry:
+//
+//   +--------------------------------------------------------------+
+//   |  CONDUCTOR (Claude session, left 60%, full-height)           |
+//   |                                              +----- TAIL ----|
+//   |                                              |  latest day   |
+//   |                                              |  JSONL stream |
+//   |                                              +-- STATUS -----|
+//   |                                              |  month-to-date|
+//   |                                              |  anomaly count|
+//   |                                              +-- CRON --------|
+//   |                                              |  next run     |
+//   |                                              |  last result  |
+//   +----------------------------------------------+---------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Cost Plane" focus=true {
+        pane split_direction="vertical" {
+            pane size="60%" name="Conductor" {
+                command "claude"
+                args "--resume" "cost-plane" "--model" "claude-opus-4-7"
+            }
+            pane split_direction="horizontal" {
+                pane name="CostTail" {
+                    command "pwsh"
+                    args "-NoExit" "-File" "./cockpit-zellij\\scripts\\tail-cost.ps1"
+                }
+                pane name="MonthStatus" {
+                    command "pwsh"
+                    args "-NoExit" "-File" "./cockpit-zellij\\scripts\\cost-status.ps1"
+                }
+                pane name="Cron" {
+                    command "pwsh"
+                    args "-NoExit" "-Command" "Write-Host '=== Cost cron status ===' -ForegroundColor Cyan; $log = 'memory\\_audit\\cost\\_cron.log'; if (Test-Path $log) { Get-Content -Path $log -Wait -Tail 30 } else { Write-Host 'No cron log yet — run scripts/cron/daily-cost-snapshot.ps1' -ForegroundColor Yellow; while ($true) { Start-Sleep -Seconds 5; if (Test-Path $log) { Get-Content -Path $log -Wait -Tail 30; break } } }"
+                }
+            }
+        }
+    }
+
+    tab name="Sources" {
+        pane name="config" {
+            command "pwsh"
+            args "-NoExit" "-Command" "Write-Host '=== Configured cost sources ===' -ForegroundColor Cyan; $p = if (Test-Path 'private/cost-plane-config.json') { 'private/cost-plane-config.json' } else { 'cost-plane-config.json' }; if (Test-Path $p) { Get-Content -Path $p | ConvertFrom-Json | ConvertTo-Json -Depth 10 } else { Write-Host 'No config — cp cost-plane-config.template.json private/cost-plane-config.json' -ForegroundColor Yellow }"
+        }
+    }
+}

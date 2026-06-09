@@ -41,12 +41,15 @@ Available vaults:
 
 ## Skills
 
-16 auto-activating skills fire based on context. See `skills/skill-rules.json` for triggers.
+71 auto-activating skill rules fire based on context across 14 domains. See `skills/skill-rules.json` for triggers.
 
-**Intelligence:** Strategic Reasoning, Systems Thinking, Pattern Recognition, Decision Framework
-**Orchestration:** Multi-Agent Coordination, Workflow Design, Context Engineering, Parallel Execution
-**Memory:** Vault Management, Knowledge Synthesis, Context Preservation, Memory Consolidation
-**Integration:** Repo Bridge, Ecosystem Sync, Transmission Protocol, Universal Adapter
+Primary domains:
+**Intelligence:** Strategic Reasoning, Systems Thinking, Pattern Recognition, Decision Framework, Genius Excavation
+**Orchestration:** Multi-Agent Coordination, Workflow Design, Context Engineering, Parallel Execution, Agent Handoff
+**Memory:** Vault Management, Knowledge Synthesis, Context Preservation, Capture Discipline, Insight Distillation
+**Integration:** Repo Bridge, Ecosystem Sync, Transmission Protocol, Universal Adapter, Idea Triage, Domain-Stack Architecture
+
+Plus cross-vertical: Business, Vision, Health, Relational, People Intelligence, Sound Intelligence, Music IS, Energy. Full registry at `skills/SKILL_REGISTRY.md`.
 
 ## Plan and Act
 

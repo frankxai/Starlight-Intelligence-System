@@ -1,0 +1,11 @@
+{
+  "id": "claw-attestation-pack",
+  "name": "Claw Attestation Pack",
+  "version": "0.1.0",
+  "kind": "claw",
+  "permissions": [
+    "fs:read:repo"
+  ],
+  "licenseTier": "free",
+  "manifestSha": "7e39ceef388c746dd9d18b114b672cf0e92aa39846881a9d94e8b4c7971dbbd8"
+}

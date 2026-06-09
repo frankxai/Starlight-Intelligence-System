@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/permission.schema.json",
+  "title": "Permission",
+  "description": "Permission scope/action descriptor used by Packs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "scope", "action", "conditions"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "scope": { "type": "string", "minLength": 1 },
+    "action": { "type": "string", "minLength": 1 },
+    "conditions": { "type": "array", "items": { "type": "string" } }
+  }
+}

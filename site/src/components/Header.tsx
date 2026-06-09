@@ -9,6 +9,7 @@ export function Header() {
       >
         <Link
           href="/"
+          aria-label="Starlight Intelligence — home"
           className="flex items-center gap-2.5 transition-micro hover:opacity-80"
         >
           {/* Starlight mark */}
@@ -29,13 +30,16 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden items-center gap-1 sm:flex">
-          <NavLink href="/vaults">Vaults</NavLink>
-          <NavLink href="/benediction">Benediction</NavLink>
-          <NavLink href="/featured">Featured</NavLink>
-          <NavLink href="/quickstart">Quickstart</NavLink>
+        <div className="hidden items-center gap-1 lg:flex">
+          <NavLink href="/verticals">Verticals</NavLink>
+          <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
+          <NavLink href="/cockpit">Cockpit</NavLink>
           <NavLink href="/architecture">Architecture</NavLink>
-          <NavLink href="/docs">Docs</NavLink>
+          <NavLink href="/protocol">Protocol</NavLink>
+          <NavLink href="/quickstart">Quickstart</NavLink>
+          <NavLink href="/explainer">Explainer</NavLink>
+          <NavLink href="/vaults">Vaults</NavLink>
+          <NavLink href="/changelog">Changelog</NavLink>
           <NavLink
             href="https://github.com/frankxai/Starlight-Intelligence-System"
             external
@@ -52,12 +56,48 @@ export function Header() {
           </a>
         </div>
 
-        {/* Mobile nav — simple links row */}
-        <div className="flex items-center gap-3 sm:hidden">
-          <NavLink href="/vaults">Vaults</NavLink>
+        {/* Tablet nav — condensed */}
+        <div className="hidden items-center gap-1 sm:flex lg:hidden">
+          <NavLink href="/verticals">Verticals</NavLink>
+          <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
+          <NavLink href="/cockpit">Cockpit</NavLink>
           <NavLink href="/quickstart">Quickstart</NavLink>
-          <NavLink href="/docs">Docs</NavLink>
+          <NavLink href="/architecture">Architecture</NavLink>
+          <NavLink
+            href="https://github.com/frankxai/Starlight-Intelligence-System"
+            external
+          >
+            GitHub
+          </NavLink>
         </div>
+
+        {/* Mobile nav — disclosure exposing all routes (no JS, keyboard-accessible) */}
+        <details className="group relative sm:hidden">
+          <summary
+            aria-label="Open navigation menu"
+            className="flex min-h-11 cursor-pointer list-none items-center gap-1.5 rounded-md px-3 py-3 text-[13px] text-slate-300 transition-micro hover:bg-white/[0.04] [&::-webkit-details-marker]:hidden"
+          >
+            Menu
+            <span className="text-slate-500 transition-micro group-open:rotate-180" aria-hidden="true">↓</span>
+          </summary>
+          <nav
+            aria-label="Mobile navigation"
+            className="absolute right-0 top-full z-50 mt-2 flex w-48 flex-col gap-0.5 rounded-lg border border-white/[0.10] bg-[#0c0c12] p-2 shadow-2xl"
+          >
+            <NavLink href="/verticals">Verticals</NavLink>
+            <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
+            <NavLink href="/cockpit">Cockpit</NavLink>
+            <NavLink href="/architecture">Architecture</NavLink>
+            <NavLink href="/protocol">Protocol</NavLink>
+            <NavLink href="/quickstart">Quickstart</NavLink>
+            <NavLink href="/explainer">Explainer</NavLink>
+            <NavLink href="/vaults">Vaults</NavLink>
+            <NavLink href="/changelog">Changelog</NavLink>
+            <NavLink href="/docs">Docs</NavLink>
+            <NavLink href="/cockpit/spec-trace">Spec-Trace</NavLink>
+            <NavLink href="https://github.com/frankxai/Starlight-Intelligence-System" external>GitHub</NavLink>
+          </nav>
+        </details>
       </nav>
     </header>
   );
@@ -73,7 +113,7 @@ function NavLink({
   external?: boolean;
 }) {
   const cls =
-    "rounded-md px-3 py-1.5 text-[13px] text-slate-400 transition-micro hover:text-white hover:bg-white/[0.04]";
+    "inline-flex min-h-11 items-center rounded-md px-3 py-3 text-[13px] text-slate-300 transition-micro hover:text-white hover:bg-white/[0.06]";
 
   if (external) {
     return (

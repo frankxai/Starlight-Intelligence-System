@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/council-review.schema.json",
+  "title": "CouncilReview",
+  "description": "Seven-perspective council pressure-test of a decision or work packet.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "decision",
+    "context",
+    "perspectives",
+    "convergence",
+    "conflict",
+    "redLines",
+    "cleanestPath",
+    "oneNextMove",
+    "reviewDate",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "workPacketId": { "type": "string" },
+    "decisionId": { "type": "string" },
+    "decision": { "type": "string", "minLength": 1 },
+    "context": { "type": "string" },
+    "perspectives": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "elderFather",
+        "elderMother",
+        "sage",
+        "builderElder",
+        "shadowWitness",
+        "divineNeutralWitness",
+        "futureSelf90"
+      ],
+      "properties": {
+        "elderFather": { "type": "string" },
+        "elderMother": { "type": "string" },
+        "sage": { "type": "string" },
+        "builderElder": { "type": "string" },
+        "shadowWitness": { "type": "string" },
+        "divineNeutralWitness": { "type": "string" },
+        "futureSelf90": { "type": "string" }
+      }
+    },
+    "convergence": { "type": "string" },
+    "conflict": { "type": "string" },
+    "redLines": { "type": "array", "items": { "type": "string" } },
+    "cleanestPath": { "type": "string" },
+    "oneNextMove": { "type": "string" },
+    "reviewDate": { "type": "string", "format": "date-time" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}

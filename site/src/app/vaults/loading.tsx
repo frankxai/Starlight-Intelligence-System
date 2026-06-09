@@ -7,7 +7,7 @@ export default function VaultsLoading() {
         {Array.from({ length: 2 }).map((_, i) => (
           <div
             key={i}
-            className="h-32 animate-pulse rounded-xl border border-white/[0.04] bg-white/[0.02]"
+            className="h-32 animate-pulse rounded-xl border border-white/[0.08] bg-white/[0.02]"
           />
         ))}
       </div>

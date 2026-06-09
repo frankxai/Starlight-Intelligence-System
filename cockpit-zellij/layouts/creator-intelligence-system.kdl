@@ -1,0 +1,57 @@
+// creator-intelligence-system cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc creator-intelligence-system
+// Or:     zellij --layout creator-intelligence-system --session creator-intelligence-system
+//
+// In the Dispatcher pane, run:  claude --resume creator-intelligence-system
+// (or auto-launched via cockpit-profile.json — see cockpit-zellij/PROFILES.md)
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +------------------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)                  |
+//   +----------+----------+----------+----------+----------------+
+//   |  CLAUDE  |  CODEX   |  GEMINI  | OPENCODE |  (4 workers)   |
+//   +----------+----------+----------+----------+----------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="C:\\Users\\frank\\creator-intelligence-system"
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="C:\\Users\\frank\\creator-intelligence-system"
+                pane name="Codex" cwd="C:\\Users\\frank\\creator-intelligence-system"
+                pane name="Gemini" cwd="C:\\Users\\frank\\creator-intelligence-system" command="gemini" {
+            args "--yolo"
+        }
+                pane name="OpenCode" cwd="C:\\Users\\frank\\creator-intelligence-system" command="opencode"
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="C:\\Users\\frank\\creator-intelligence-system"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="C:\\Users\\frank\\creator-intelligence-system"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="C:\\Users\\frank\\creator-intelligence-system"
+    }
+
+    tab name="Audit" {
+        pane name="audit-tail" cwd="C:\\Users\\frank\\creator-intelligence-system" command="pwsh" {
+            args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
+        }
+    }
+}
+

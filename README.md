@@ -4,10 +4,11 @@
 >
 > SIS is two layers: a substrate (SIP) anyone can adopt, fork, or build on — and an operational layer (Frank's reference build) that runs on top of it.
 
-[![version](https://img.shields.io/badge/version-7.0.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
-[![protocol](https://img.shields.io/badge/SIP-v1.1.0-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
+[![version](https://img.shields.io/badge/version-8.2.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
+[![deploy](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml)
 [![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
 
 ---
@@ -17,13 +18,57 @@
 | Layer | What it is | What lives here | License | Adopt how |
 |-------|-----------|-----------------|---------|-----------|
 | **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
-| **Operational (reference build)** | This repo's working implementation: 7 named agents, 6 semantic vaults, 16 skills, MCP server, 6 strategic commands, multi-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
+| **Operational (reference build)** | This repo's working implementation: 47 agents (7-archetype council + specialist tiers), 6 semantic vaults, 71 auto-activating skills across 14 domains, MCP server, 6 strategic commands + 90+ slash commands, six-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
-> **New here?** Don't fork this repo. Fork the **[SIP adoption kit](https://github.com/frankxai/starlight)** — eleven markdown files, no code, [ship your first attested artifact in 60 seconds](https://github.com/frankxai/starlight#readme). Compose upward when you're ready.
+> **Operator? Start at [SETUP.md](./SETUP.md)** — covers `private/` instance state, Infisical Path A vs env-var Path B, Windows + Linux cron wiring, cockpit launch, and a smoke test, end-to-end in roughly 30 min.
+>
+> **New to the protocol?** Don't fork this repo. Fork the **[SIP adoption kit](https://github.com/frankxai/starlight)** — eleven markdown files, no code, [ship your first attested artifact in 60 seconds](https://github.com/frankxai/starlight#readme). Compose upward when you're ready.
+>
+> **New in v8.2.0** (2026-05-30): First-run experience hardened so the package works for anyone who installs it. `starlight init --vaults` seeds the six JSONL vaults (and the MCP server auto-seeds an empty `--vault-dir` on first boot), so a fresh install is never silently empty. `sis_search` is now honestly described as **keyword + temporal** (no embeddings); a measured retrieval recall@k harness (`npm run eval:retrieval`) grounds the bm25 claim in CI; and an optional `sqlite-vec` semantic layer is roadmapped in [`docs/bring-your-own-model.md`](docs/bring-your-own-model.md). See [`CHANGELOG.md § v8.2.0`](CHANGELOG.md) and [`RELEASING.md`](RELEASING.md).
+>
+> **New in v8.1.0** (2026-05-17): Composition Layer primitive declared in `STACK.md` — universal IS may compose over its Domain Sub-Stacks via commands at the IS-itself. Wealth IS v0.2 evolved as first composition-layer reference. **Crypto Intelligence v0.1** shipped as third reference Domain Sub-Stack (after People + Sound) with **Houses-as-sub-systems** primitive — House of On-Chain live with 5 commands. `/bless` global skill + chronicle infrastructure initialized. 10-IS taxonomy invariant preserved. See [`CHANGELOG.md § v8.1.0`](CHANGELOG.md) + [`docs/boards/2026-05-17-crypto-investment-spawn.md`](docs/boards/2026-05-17-crypto-investment-spawn.md).
 
-[![Built on SIP](https://starlightintelligence.org/badge/v1.1.0)](https://starlightintelligence.org/protocol)
+[![Built on SIP](https://starlightintelligence.org/badge/v1.1.1)](https://starlightintelligence.org/protocol)
+
+---
+
+## Why It Matters
+
+```mermaid
+flowchart TB
+  Human["Human intent"]
+  Vaults["6 semantic vaults<br/>JSONL source of truth"]
+  Index["SQLite + FTS5<br/>rebuildable index"]
+  MCP["MCP server<br/>10 sis_* tools"]
+  Adapters["Claude Code · Cursor · Codex · Gemini · OpenCode"]
+  Repos["Repo-specific agent harnesses"]
+  Output["Safer, memory-aware agent work"]
+
+  Human --> Vaults
+  Vaults --> Index
+  Index --> MCP
+  MCP --> Adapters
+  Adapters --> Repos
+  Repos --> Output
+  Output --> Vaults
+```
+
+| Capability | What It Gives Agents |
+| --- | --- |
+| Semantic vaults | Durable memory across sessions and tools |
+| Temporal confidence | Old knowledge decays unless reconfirmed |
+| Contradiction detection | Conflicting memories become visible |
+| Platform adapters | Same substrate across Claude, Cursor, Codex, Gemini, OpenCode |
+| MCP server | Tool-native access to memory and retrieval |
+| Harness checks | Prompt surfaces stay aligned with reality |
+
+Run the local harness guard:
+
+```bash
+npm run agents:harness-check
+```
 
 ---
 
@@ -83,6 +128,16 @@ This repo also ships Frank's working implementation — the daily-driver intelli
 
 **Option 1: As an MCP server (recommended for AI tools)**
 
+First, seed your vault directory so the system has somewhere to read from
+(a fresh install has no `~/.starlight/vaults` yet):
+
+```bash
+npx -p @arcanea/starlight-intelligence-system starlight init --vaults
+# → seeds the six JSONL vaults in ~/.starlight/vaults (welcome entry + public examples)
+```
+
+Then point your MCP client at that directory:
+
 ```json
 {
   "mcpServers": {
@@ -99,11 +154,13 @@ This repo also ships Frank's working implementation — the daily-driver intelli
 ```
 
 Restart Claude Code. You now have ten `sis_*` tools available in every session.
+(If you skip the seed step the server still works — it auto-seeds an empty
+`--vault-dir` on first boot so the empty state is never silently broken.)
 
 **Option 2: As a library**
 
 ```bash
-pnpm add @arcanea/starlight-intelligence-system
+npm install @arcanea/starlight-intelligence-system
 ```
 
 ```ts
@@ -137,9 +194,17 @@ const context = await adapter.generate({ vaultDir: "~/.starlight/vaults" });
 
 Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 
+> **Where memory lives.** The MCP server and `src/retrieval.ts` read **`*.jsonl`
+> files in your `--vault-dir`** (default `~/.starlight/vaults`) — that is the one
+> source of truth at runtime. The repo ships two example sets for reference only:
+> `public-vault/*.jsonl` is the canonical starter content that `starlight init
+> --vaults` copies into your vault dir; `memory/vaults/*.md` are human-readable
+> narrative snapshots and are **not** read by the engine. Seed once, then your
+> own `~/.starlight/vaults` is what counts.
+
 ### What the operational layer adds on top of SIP
 
-- **SQLite hybrid retrieval** — `src/retrieval.ts` builds a rebuildable FTS5 shadow index over JSONL vaults with bm25 ranking.
+- **SQLite hybrid retrieval** — `src/retrieval.ts` builds a rebuildable FTS5 shadow index over JSONL vaults with bm25 ranking. Keyword + temporal today (measured recall in CI via `npm run eval:retrieval`); optional `sqlite-vec` semantic layer is roadmapped in [`docs/bring-your-own-model.md`](docs/bring-your-own-model.md).
 - **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
@@ -155,7 +220,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | `sis_stats` | Total entry counts per vault |
 | `sis_append_entry` | Write a new entry to a vault |
 | `sis_entry_types` | List supported vault types and entry categories |
-| `sis_search` | Hybrid semantic + keyword search with bm25 + temporal filtering |
+| `sis_search` | Keyword + temporal search (term-overlap score, tag boost, staleness penalty) |
 | `sis_confirm` | Touch `lastConfirmed` on an entry |
 | `sis_invalidate` | Mark an entry as expired |
 | `sis_contradict` | Flag two entries as contradictory |
@@ -230,10 +295,10 @@ Voice archetypes are abstract; named agents are specific implementations. Anyone
 ```bash
 git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
-pnpm install
-pnpm run build       # tsc to dist/
-pnpm test            # 82+ orchestrator tests
-pnpm run lint        # tsc --noEmit
+npm install
+npm run build       # tsc to dist/
+npm test            # 82+ orchestrator tests
+npm run lint        # tsc --noEmit
 ```
 
 `src/` is under 3,000 lines of TypeScript with zero runtime dependencies outside `better-sqlite3`. Substrate docs (`SIP.md`, `SIS.md`, etc.) are markdown-only — no build dependency.
@@ -242,12 +307,12 @@ pnpm run lint        # tsc --noEmit
 
 ## License
 
-- **Substrate spec + reference commands:** MIT — see [`LICENSE`](LICENSE).
-- **Reference build (operational layer):** MIT.
-- **Arcanea canon (if your fork composes with it):** CC-BY-NC 4.0, © Arcanea BV. See `frankxai/arcanea-ecosystem` for canon license terms.
+- **Code (operational layer + substrate-tier commands):** MIT — see [`LICENSE`](LICENSE).
+- **Substrate spec docs** (`SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`): MIT, same `LICENSE`. The "Built on SIP" attestation request is a social-layer convention captured in [`NOTICE`](NOTICE), not a license restriction.
+- **Arcanea canon (if your fork composes with it):** CC-BY-NC 4.0, © Arcanea BV. Lives in `frankxai/arcanea-ecosystem`; canon is compose-only — not redistributed under this repo's MIT.
 - **Trademarks:** ARCANEA, FRANKX, STARLIGHT INTELLIGENCE — registered or in registration, reserved rights.
 
-"Built on SIP" is an attestation phrase, not a trademark. Use of the phrase requires actual SIP composition per `/sip-attest` rules.
+"Built on SIP" is an attestation phrase, not a trademark. Use of the phrase requires actual SIP composition per `/sip-attest` rules. Full attribution + canon + trademark summary in [`NOTICE`](NOTICE) (Apache-style — `LICENSE` for legal rights, `NOTICE` for propagation conventions).
 
 ---
 
@@ -261,4 +326,4 @@ pnpm run lint        # tsc --noEmit
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.2.0 · MIT

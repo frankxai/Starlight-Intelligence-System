@@ -1,0 +1,43 @@
+filters:
+  and:
+    - 'note.type == "voice-session"'
+    - '(now() - file.mtime).days <= 30'
+
+formulas:
+  age_days: '(now() - file.mtime).days'
+  brand_label: 'if(note.brand, note.brand, "unbranded")'
+
+properties:
+  file.name:
+    displayName: "Session"
+  note.brand:
+    displayName: "Brand"
+  note.decay_tier:
+    displayName: "Tier"
+  note.intent_class:
+    displayName: "Intent"
+  formula.age_days:
+    displayName: "Days ago"
+  file.mtime:
+    displayName: "Modified"
+
+views:
+  - type: table
+    name: "Last 30 days"
+    order:
+      - file.name
+      - note.brand
+      - note.decay_tier
+      - note.intent_class
+      - formula.age_days
+    groupBy:
+      property: note.brand
+      direction: ASC
+
+  - type: cards
+    name: "Gallery"
+    order:
+      - file.name
+      - note.brand
+      - note.intent_class
+      - formula.age_days

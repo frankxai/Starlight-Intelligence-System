@@ -1,0 +1,52 @@
+filters:
+  or:
+    - and:
+        - 'note.type == "vault"'
+        - 'note.last_consolidated'
+        - '(today() - date(note.last_consolidated)).days > 30'
+    - and:
+        - 'note.type == "voice-session"'
+        - 'note.decay_tier == "warm"'
+        - '(today() - date(note.date)).days > 90'
+
+formulas:
+  staleness_days: |
+    if(note.last_consolidated,
+       (today() - date(note.last_consolidated)).days,
+       if(note.date, (today() - date(note.date)).days, 0))
+  recommended_action: |
+    if(note.type == "vault" && (today() - date(note.last_consolidated)).days > 90,
+       "consolidate",
+       if(note.decay_tier == "warm" && (today() - date(note.date)).days > 90,
+          "promote-to-cold",
+          "review"))
+
+properties:
+  file.name:
+    displayName: "File"
+  note.type:
+    displayName: "Kind"
+  note.vault:
+    displayName: "Vault"
+  note.decay_tier:
+    displayName: "Tier"
+  formula.staleness_days:
+    displayName: "Stale (days)"
+  formula.recommended_action:
+    displayName: "Action"
+
+views:
+  - type: table
+    name: "Decay candidates"
+    order:
+      - file.name
+      - note.type
+      - note.vault
+      - note.decay_tier
+      - formula.staleness_days
+      - formula.recommended_action
+    groupBy:
+      property: formula.recommended_action
+      direction: ASC
+    summaries:
+      formula.staleness_days: Average

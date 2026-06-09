@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "_comment": "Claude Code harness MCP scope for Starlight Orchestrator. Mirrors the shape of ~/.claude/settings.json mcpServers field. Canonical: starlight-substrate is always loaded. Task-scoped MCPs declared per session via /ao or per-task config. Built on SIP — see footer.",
+  "_harness": "claude",
+  "_role": "primary",
+  "_loaded_when": "default — any task touching SIS, brand-critical writes, or > 200 LOC changes",
+  "mcpServers": {
+    "starlight-substrate": {
+      "_role": "canonical — always loaded",
+      "_purpose": "substrate awareness — vault reads, IS namespace lookup, attestation generation, memory graph queries",
+      "command": "node",
+      "args": [
+        "C:\\Users\\frank\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
+      ],
+      "env": {}
+    },
+    "arcanea-mcp": {
+      "_role": "canon-work scoped — load when editing Arcanea canon, Guardians, Vel'Tara archetypes, or vibeclubs.ai surfaces",
+      "_purpose": "Arcanea canon read/write, Guardian Passport flow, creative-intelligence transmissions",
+      "_status": "scaffold — wire when Arcanea MCP server lands; Phase 1 dependency",
+      "command": "node",
+      "args": [
+        "${ARCANEA_MCP_PATH}"
+      ],
+      "env": {
+        "ARCANEA_CANON_PATH": "${ARCANEA_CANON_PATH}"
+      },
+      "_disabled_until": "arcanea-mcp v0.1+ ships"
+    }
+  },
+  "_task_scoped_mcps": {
+    "_comment": "These MCPs declare per-session via /ao config, not loaded by default. Listed here for discovery; harness operator activates as needed. Examples are illustrative — do not treat as exhaustive.",
+    "examples": {
+      "vercel": {
+        "_purpose": "deploy + project read for site/ writes",
+        "_load_when": "Phase 3 spine surfaces ship (frankx.ai/score, arcanea.ai/passport, starlight.systems/cards)",
+        "_pattern": "use mcp__claude_ai_Vercel__* tools when available; otherwise CLI via Bash"
+      },
+      "github": {
+        "_purpose": "PR review, multi-repo coordination, release management",
+        "_load_when": "/luminor-board verdict routes to a PR ship",
+        "_pattern": "gh CLI via Bash is canonical; gh-mcp optional"
+      },
+      "linear": {
+        "_purpose": "issue tracking when alliance work crosses Linear",
+        "_load_when": "alliance-tier work invoked via /alliance-* commands",
+        "_pattern": "mcp__claude_ai_Linear__* tools"
+      },
+      "notion": {
+        "_purpose": "Ops Hub sync — daily briefs, ship logs",
+        "_load_when": "Phase 1.7 daily brief generation",
+        "_pattern": "mcp__claude_ai_Notion__* tools"
+      },
+      "remotion-video": {
+        "_purpose": "Voice & Video IS pipeline — composition, render",
+        "_load_when": "Voice & Video IS work invoked",
+        "_pattern": "mcp__remotion-video__* tools"
+      }
+    }
+  },
+  "_secrets_policy": {
+    "_comment": "No real tokens or secrets in this file. Use environment-variable references like ${VERCEL_TOKEN}. Secrets live in machine env or .env files outside the repo. The harness layer mostly does not need secrets at scaffold stage — those land per-session when the task demands.",
+    "env_var_refs_only": true,
+    "loaded_via": "process.env at MCP server start"
+  },
+  "_built_on_sip": {
+    "substrate": "starlightintelligence.org/protocol",
+    "version": "v1.1.0",
+    "layers_used": ["file-contract", "attestation", "sovereignty"],
+    "verticals": "core/orchestrator/harnesses/claude",
+    "generated": "2026-04-26"
+  }
+}

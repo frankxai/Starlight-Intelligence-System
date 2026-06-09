@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/decision.schema.json",
+  "title": "Decision",
+  "description": "A council-eligible decision made during work.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "context",
+    "options",
+    "chosen",
+    "rationale",
+    "riskLevel",
+    "createdAt",
+    "createdBy"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "context": { "type": "string" },
+    "options": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "chosen": { "type": "string", "minLength": 1 },
+    "rationale": { "type": "string" },
+    "riskLevel": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "workPacketId": { "type": "string" },
+    "councilReviewId": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "createdBy": { "type": "string", "minLength": 1 }
+  }
+}

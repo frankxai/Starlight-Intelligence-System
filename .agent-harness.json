@@ -1,0 +1,10 @@
+{
+  "risk": "private",
+  "health": "npm test",
+  "agentFiles": [
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "deployPolicy": "manual",
+  "globalHooksAllowed": false
+}

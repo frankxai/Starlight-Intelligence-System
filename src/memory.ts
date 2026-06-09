@@ -2,17 +2,23 @@
  * Memory Manager — Persistent cross-session knowledge
  *
  * Stores patterns, decisions, insights, and preferences.
- * Uses file-based storage for portability (no database required).
+ * Uses an Event-Sourced append-only JSONL format for conflict-free 
+ * multi-device synchronization.
  * Integrates with the Context Engine for memory-informed prompts.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync } from "node:fs";
+import { dirname, join } from "node:path";
 import type {
   MemoryEntry,
   MemorySearchOptions,
   MemoryStats,
 } from "./types.js";
+
+// Event Types for Event Sourcing
+export type MemoryEvent =
+  | { type: "add"; payload: MemoryEntry; timestamp: number }
+  | { type: "remove"; id: string; timestamp: number };
 
 // ── Word Index ──────────────────────────────────────────────
 
@@ -66,46 +72,127 @@ export class MemoryManager {
   private entries = new Map<string, MemoryEntry>();
   private index = new WordIndex();
   private storagePath: string;
-  private dirty = false;
+  private eventLogPath: string;
 
   constructor(storagePath?: string) {
-    this.storagePath = storagePath ?? join(process.cwd(), ".starlight", "memory.json");
-  }
-
-  /**
-   * Initialize: load existing memories from disk.
-   */
-  load(): void {
-    if (!existsSync(this.storagePath)) return;
-
-    try {
-      const raw = readFileSync(this.storagePath, "utf-8");
-      const data = JSON.parse(raw) as MemoryEntry[];
-
-      for (const entry of data) {
-        this.entries.set(entry.id, entry);
-        this.index.add(entry.id, `${entry.content} ${entry.tags.join(" ")}`);
-      }
-    } catch {
-      // Corrupted file — start fresh
-      this.entries.clear();
+    const basePath = storagePath ?? join(process.cwd(), ".starlight", "memory.json");
+    this.storagePath = basePath; // Kept for legacy compatibility
+    
+    // Derive the JSONL event log path
+    if (basePath.endsWith('.json')) {
+      this.eventLogPath = basePath + 'l';
+    } else {
+      this.eventLogPath = basePath + '.jsonl';
     }
   }
 
   /**
-   * Persist memories to disk.
+   * Initialize: load existing memories from the event log,
+   * migrating from the legacy JSON file if necessary.
    */
-  save(): void {
-    if (!this.dirty) return;
+  load(): void {
+    if (this.storageTargetIsDirectory(this.eventLogPath)) return;
 
-    const dir = this.storagePath.replace(/\/[^/]+$/, "");
+    let needsMigration = false;
+
+    // 1. If JSONL exists, read events
+    if (existsSync(this.eventLogPath)) {
+      try {
+        const raw = readFileSync(this.eventLogPath, "utf-8");
+        const lines = raw.split("\n").filter(l => l.trim().length > 0);
+        
+        for (const line of lines) {
+          const event = JSON.parse(line) as MemoryEvent;
+          this.applyEvent(event);
+        }
+      } catch (err) {
+        console.error("[MemoryManager] Failed to load event log:", err);
+      }
+    } else {
+      needsMigration = true;
+    }
+
+    // 2. If legacy JSON exists, read it (migration or initial sync)
+    if (existsSync(this.storagePath) && !this.storageTargetIsDirectory(this.storagePath)) {
+      try {
+        const raw = readFileSync(this.storagePath, "utf-8");
+        const data = JSON.parse(raw) as MemoryEntry[];
+
+        // Only migrate entries we don't already have from the JSONL
+        let migratedCount = 0;
+        for (const entry of data) {
+          if (!this.entries.has(entry.id)) {
+            this.applyEvent({ type: "add", payload: entry, timestamp: Date.now() });
+            this.appendEvent({ type: "add", payload: entry, timestamp: Date.now() });
+            migratedCount++;
+          }
+        }
+        
+        if (migratedCount > 0 && needsMigration) {
+          // Compacted save already happened via appendEvent
+        }
+      } catch (err) {
+        console.error("[MemoryManager] Failed to load legacy JSON:", err);
+      }
+    }
+  }
+
+  /**
+   * Apply an event to in-memory state
+   */
+  private applyEvent(event: MemoryEvent): void {
+    if (event.type === "add") {
+      const entry = event.payload;
+      this.entries.set(entry.id, entry);
+      this.index.add(entry.id, `${entry.content} ${entry.tags.join(" ")}`);
+    } else if (event.type === "remove") {
+      this.entries.delete(event.id);
+      this.index.remove(event.id);
+    }
+  }
+
+  /**
+   * Append an event to the JSONL log
+   */
+  private appendEvent(event: MemoryEvent): void {
+    const dir = dirname(this.eventLogPath);
     if (!existsSync(dir)) {
       mkdirSync(dir, { recursive: true });
     }
+    appendFileSync(this.eventLogPath, JSON.stringify(event) + "\n", "utf-8");
+  }
 
-    const data = Array.from(this.entries.values());
-    writeFileSync(this.storagePath, JSON.stringify(data, null, 2), "utf-8");
-    this.dirty = false;
+  /**
+   * Save is now a no-op for typical flows since we append on add/remove.
+   * However, consumers might call it expecting legacy behavior.
+   * We can use it to compact the event log if it gets too large.
+   */
+  save(): void {
+    const dir = dirname(this.eventLogPath);
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
+    
+    // Compact the log
+    const compactedEvents: MemoryEvent[] = Array.from(this.entries.values()).map(entry => ({
+      type: "add",
+      payload: entry,
+      timestamp: Date.now()
+    }));
+    
+    const lines = compactedEvents.map(e => JSON.stringify(e)).join("\n") + "\n";
+    writeFileSync(this.eventLogPath, lines, "utf-8");
+    
+    // Legacy support: update the old JSON file so other tools don't break
+    writeFileSync(this.storagePath, JSON.stringify(Array.from(this.entries.values()), null, 2), "utf-8");
+  }
+
+  private storageTargetIsDirectory(targetPath: string): boolean {
+    try {
+      return statSync(targetPath).isDirectory();
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -119,9 +206,9 @@ export class MemoryManager {
       createdAt: new Date().toISOString(),
     };
 
-    this.entries.set(id, full);
-    this.index.add(id, `${full.content} ${full.tags.join(" ")}`);
-    this.dirty = true;
+    const event: MemoryEvent = { type: "add", payload: full, timestamp: Date.now() };
+    this.applyEvent(event);
+    this.appendEvent(event);
 
     return full;
   }
@@ -177,9 +264,11 @@ export class MemoryManager {
    */
   remove(id: string): boolean {
     if (!this.entries.has(id)) return false;
-    this.entries.delete(id);
-    this.index.remove(id);
-    this.dirty = true;
+    
+    const event: MemoryEvent = { type: "remove", id, timestamp: Date.now() };
+    this.applyEvent(event);
+    this.appendEvent(event);
+    
     return true;
   }
 
@@ -224,6 +313,6 @@ export class MemoryManager {
    * Get the storage file path.
    */
   get path(): string {
-    return this.storagePath;
+    return this.eventLogPath;
   }
 }

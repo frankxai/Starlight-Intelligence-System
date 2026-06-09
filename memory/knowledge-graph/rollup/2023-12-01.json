@@ -1,0 +1,19 @@
+{
+  "entries": [
+    {
+      "entry_id": "01K4N6XMK3ZQ7HWYZF3D8R4Y2X",
+      "timestamp": "2023-12-01T12:00:00Z",
+      "intent_class": "command",
+      "brands": [],
+      "target_system": "agent:local-machine-operator",
+      "task": "Request access to local machine and cloud code CLI for diagnostic purposes.",
+      "spoken_update": "Verifying access to local machine and cloud code CLI.",
+      "packet_id": "01K4N6XMK3ZQ7HWYZF3D8R4Y2X",
+      "parent_packet_id": null,
+      "extras": {}
+    }
+  ],
+  "counts_by_intent": {
+    "command": 1
+  }
+}

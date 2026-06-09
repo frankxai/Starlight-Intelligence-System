@@ -1,0 +1,23 @@
+{
+  "name": "starlight-mcp",
+  "sip_version": "1.1.0",
+  "provides": ["sis.vault", "sis.attestation"],
+  "requires": [],
+  "attestation": { "built_on_sip": true },
+  "note": "Optional. Advanced users: install starlight-mcp from the main repo for full vault + attestation tools. The Claude Project works without it — custom instructions + knowledge files are sufficient.",
+  "advanced_install": {
+    "repo": "https://github.com/frankxai/Starlight-Intelligence-System",
+    "path_in_repo": "src/",
+    "claude_desktop_config_example": {
+      "mcpServers": {
+        "starlight": {
+          "command": "node",
+          "args": ["path/to/starlight-mcp/dist/index.js"],
+          "env": {
+            "STARLIGHT_VAULT_PATH": "~/.starlight/vaults"
+          }
+        }
+      }
+    }
+  }
+}

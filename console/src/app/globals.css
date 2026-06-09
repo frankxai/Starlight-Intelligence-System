@@ -1,23 +1,70 @@
 @import "tailwindcss";
 
+/*
+ * Vellum & Voltage tokens.
+ *
+ * The palette is built on three pillars:
+ *   - Vellum: warm-white paper tones for surfaces and ink
+ *   - Voltage: violet-indigo electric current for primary signal
+ *   - Doctrine: aged gold for sacred / canonical / attested elements
+ *
+ * Glass surfaces use very low-opacity vellum-cream tints so light bleeds
+ * through from the 3D scene behind them, creating real depth without ever
+ * resembling the plastic "frosted purple square" of generic AI UI.
+ */
 :root {
-  --background: #050509;
-  --foreground: #e2e8f0;
-  --accent: #a78bfa;
-  --accent-cyan: #67e8f9;
-  --accent-magenta: #f0abfc;
-  --accent-gold: #fbbf24;
-  --surface: rgba(255, 255, 255, 0.02);
-  --border: rgba(255, 255, 255, 0.06);
-  --border-hover: rgba(255, 255, 255, 0.12);
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Foundation */
+  --bg-0: #0a0a14;            /* midnight charcoal — true canvas */
+  --bg-1: #11111c;            /* one step lighter, for panel base */
+  --bg-2: #161624;            /* further elevation if needed */
+
+  /* Ink (text) */
+  --ink-0: #f5f0e1;           /* vellum-cream — primary text */
+  --ink-1: #c4c0b0;           /* muted vellum — secondary text */
+  --ink-2: #8a8676;           /* dim vellum — captions, meta */
+  --ink-3: #4d4a3f;           /* deep vellum — disabled, hairlines */
+
+  /* Voltage — primary signal */
+  --voltage:        #6e5cff;
+  --voltage-bright: #8c7dff;
+  --voltage-deep:   #4a3acb;
+
+  /* Doctrine — gold for canonical elements */
+  --doctrine:        #e0b656;
+  --doctrine-bright: #f5cd70;
+  --doctrine-deep:   #b08a35;
+
+  /* Glass surfaces — tints of vellum-cream behind backdrop blur */
+  --glass-0: rgba(245, 240, 225, 0.04);    /* base glass */
+  --glass-1: rgba(245, 240, 225, 0.07);    /* elevated glass */
+  --glass-2: rgba(245, 240, 225, 0.10);    /* most-prominent glass */
+  --glass-edge: rgba(245, 240, 225, 0.12); /* 1px inner ring */
+  --glass-edge-bright: rgba(245, 240, 225, 0.22);
+
+  /* Voltage-tinted glass — for active / focused */
+  --glass-volt: rgba(110, 92, 255, 0.10);
+  --glass-volt-edge: rgba(140, 125, 255, 0.30);
+
+  /* Motion */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);   /* page-load reveal */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* hover affordances */
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);     /* general transitions */
+
+  /* Vault colors — single source for HUD legend mirroring */
+  --vault-strategic:   #a78bfa;
+  --vault-technical:   #67e8f9;
+  --vault-creative:    #f0abfc;
+  --vault-operational: #34d399;
+  --vault-wisdom:      #fbbf24;
+  --vault-horizon:     #818cf8;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg-0);
+  --color-foreground: var(--ink-0);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
 * {
@@ -27,52 +74,136 @@
 
 html,
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-0);
+  color: var(--ink-0);
 }
 
 body {
   min-height: 100dvh;
+  /* Atmospheric warm pull near origin — extremely subtle. */
+  background-image:
+    radial-gradient(
+      ellipse 90% 70% at 50% 55%,
+      rgba(110, 92, 255, 0.08) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 50% 100%,
+      rgba(224, 182, 86, 0.04) 0%,
+      transparent 70%
+    );
 }
+
+/*
+ * Paper-grain noise overlay — a fixed 3% noise field across the whole
+ * viewport. The SVG is inlined so no extra HTTP roundtrip. Filter feeds
+ * a high-frequency turbulence (octaves=2) for a vellum-like grain that
+ * reads as "wet manuscript" rather than digital noise.
+ */
+.vellum-grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='240' height='240' filter='url(%23n)' opacity='0.55'/></svg>");
+}
+
+/* Subtle scanline / film grain animation for cinematic feel. */
+@keyframes grain-drift {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(-1%, 1%); }
+  50%      { transform: translate(1%, -0.5%); }
+  75%      { transform: translate(-0.5%, -1%); }
+}
+.vellum-grain { animation: grain-drift 14s var(--ease-soft) infinite; }
+
+/*
+ * Glass card primitive — the workhorse of the HUD.
+ * Real backdrop-filter blur (24px) + warm vellum-cream tint + 1px inner
+ * highlight ring. Use the .glass class on any HUD container.
+ */
+.glass {
+  background: var(--glass-0);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+    0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--glass-edge);
+}
+.glass-elevated {
+  background: var(--glass-1);
+  border-color: var(--glass-edge-bright);
+}
+.glass-volt {
+  background: var(--glass-volt);
+  border-color: var(--glass-volt-edge);
+  box-shadow:
+    inset 0 1px 0 var(--glass-volt-edge),
+    0 0 24px -4px var(--voltage);
+}
+
+/* Subtle inner reflection sheen at top of glass cards. */
+.glass::before,
+.glass-elevated::before,
+.glass-volt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    rgba(245, 240, 225, 0.08) 0%,
+    transparent 35%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+.glass, .glass-elevated, .glass-volt { position: relative; overflow: hidden; }
+.glass > *, .glass-elevated > *, .glass-volt > * { position: relative; z-index: 1; }
+
+/*
+ * Doctrine hairline — the gold-thread divider used in HUD chrome.
+ * One-pixel etching with breathing brightness.
+ */
+.doctrine-line {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--doctrine-deep) 20%,
+    var(--doctrine) 50%,
+    var(--doctrine-deep) 80%,
+    transparent 100%
+  );
+  opacity: 0.55;
+}
+
+/* HUD page-load reveal — staggered fade-up + blur-out. */
+@keyframes hud-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.hud-in {
+  animation: hud-reveal 720ms var(--ease-out) both;
+}
+
+/* Tracking utility for Fraunces display titles. */
+.tracking-display { letter-spacing: -0.022em; }
+/* Tracking utility for JetBrains technical labels. */
+.tracking-tech { letter-spacing: 0.05em; }
 
 /* Motion */
-.transition-micro { transition: all 150ms var(--ease); }
-.transition-std { transition: all 300ms var(--ease); }
-
-/* Mesh drift — same vocabulary as site/ */
-@keyframes mesh-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, -20px) scale(1.05); }
-  50% { transform: translate(-20px, 15px) scale(0.95); }
-  75% { transform: translate(10px, 25px) scale(1.02); }
-}
-.animate-mesh-1 { animation: mesh-drift 22s ease-in-out infinite; }
-.animate-mesh-2 { animation: mesh-drift 28s ease-in-out infinite reverse; }
-.animate-mesh-3 { animation: mesh-drift 34s ease-in-out infinite 5s; }
-
-/* Glow pulse */
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.35; filter: blur(40px); }
-  50% { opacity: 0.55; filter: blur(50px); }
-}
-.animate-glow-pulse {
-  animation: glow-pulse 6s ease-in-out infinite;
-}
-
-/* Selection */
-::selection {
-  background: rgba(167, 139, 250, 0.3);
-  color: white;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
-
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
+.transition-micro { transition: all 150ms var(--ease-soft); }
+.transition-std { transition: all 300ms var(--ease-soft); }

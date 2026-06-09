@@ -30,6 +30,7 @@ You are operating at the substrate layer. Decisions here propagate across every 
 3. Sovereignty clause (SIP § 5) is not waivable.
 4. Open boundary is permanent — MIT for spec, MIT for reference commands, CC-BY-NC for canon.
 5. "Built on SIP" means *real* composition. Never a decorative badge.
+6. **Declared file loads must be test-asserted to exist.** Every command in `.claude/commands/` that declares hard file loads in its body (the `Load \`X\`, \`Y\`, ...` opening line is the canonical shape) must have a corresponding assertion in `test/substrate.test.ts` that those files exist on disk. Conditional loads ("if present", "if it exists", "if available") are exempt — they are by-design optional. Path placeholders (literal `<slug>`, `<person-slug>`, `<vertical-slug>`, `<target>`, `<artifact-path>`, etc.) are exempt — they are template substitutions, not real paths. External absolute paths (e.g., `C:\…\Arcanea\…`) are exempt — they reference other sovereign repos. Pattern repeated three times in the v7.4–v7.5 cycle (`/compose-stack`, `/spawn-domain-stack`, `verticals/_template/.claude/commands/`); structural enforcement prevents the fourth. Enforced by the `Substrate rule — declared file loads exist on disk` describe block in `test/substrate.test.ts`.
 
 ## When to say no
 - When someone asks to fold a sovereign node into the substrate.

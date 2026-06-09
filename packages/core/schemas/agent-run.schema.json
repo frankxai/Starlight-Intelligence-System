@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/agent-run.schema.json",
+  "title": "AgentRun",
+  "description": "A single agent execution against a WorkPacket.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "workPacketId", "agentId", "startedAt", "status"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "workPacketId": { "type": "string", "minLength": 1 },
+    "agentId": { "type": "string", "minLength": 1 },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "completed", "failed", "cancelled"]
+    },
+    "rootEventId": { "type": "string" }
+  }
+}

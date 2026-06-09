@@ -1,0 +1,26 @@
+# Built on SIP — Starlight Intelligence Protocol v1.1.0
+# Dependabot configuration: bumps SHA-pinned third-party actions and the
+# pinned Vercel CLI semver via PR. Every bump runs through the substrate's
+# normal /luminor-board pressure-test cycle before merge — supply-chain
+# updates are substrate-affecting and benefit from adversarial review.
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "ci"
+      - "supply-chain"
+    commit-message:
+      prefix: "chore(ci)"
+      include: "scope"
+    open-pull-requests-limit: 5
+    # Group routine action bumps so reviewers see one PR per ecosystem.
+    groups:
+      gha-actions:
+        patterns:
+          - "*"

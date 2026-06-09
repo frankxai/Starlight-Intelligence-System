@@ -1,0 +1,211 @@
+{
+  "entries": [
+    {
+      "entry_id": "capture-2026-04-29T09:53:29.320604+00:00",
+      "timestamp": "2026-04-29T09:53:29.320604+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Captured.",
+      "spoken_update": "Captured.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T09:55:43.334788+00:00",
+      "timestamp": "2026-04-29T09:55:43.334788+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Captured.",
+      "spoken_update": "Captured.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T09:56:26.465418+00:00",
+      "timestamp": "2026-04-29T09:56:26.465418+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Cognition layer today: pluggable multi-tier router landed (deterministic, OpenRouter, Anthropic, Claude-CLI), multi-CLI dispatchers wired to orchestrator with intent classification and JSONL audit log, plus LCC Phase 0+1+2 cockpit at :3007. Commits 96b21aa and d70b99a; tests moved 245 to 269+.",
+      "spoken_update": "Cognition layer today: pluggable multi-tier router landed (deterministic, OpenRouter, Anthropic, Claude-CLI), multi-CLI dispatchers wired to orchestrator with intent classification and JSONL audit log, plus LCC Phase 0+1+2 cockpit at :3007. Commits 96b21aa and d70b99a; tests moved 245 to 269+.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T10:04:00.488690+00:00",
+      "timestamp": "2026-04-29T10:04:00.488690+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Searching session log and git activity for today's cognition-layer changes \u2014 no routing needed, pulling from operational vault now. If nothing surfaces, I'll flag it as no recorded changes today.",
+      "spoken_update": "Searching session log and git activity for today's cognition-layer changes \u2014 no routing needed, pulling from operational vault now. If nothing surfaces, I'll flag it as no recorded changes today.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T10:40:55.680766+00:00",
+      "timestamp": "2026-04-29T10:40:55.680766+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Searching today's captures for cognition layer references \u2014 nothing retrieved yet from this session's vault. If you've captured it in a prior session or vault file, say 'Starlight, search all vaults for cognition layer' and I'll route a deeper pull.",
+      "spoken_update": "Searching today's captures for cognition layer references \u2014 nothing retrieved yet from this session's vault. If you've captured it in a prior session or vault file, say 'Starlight, search all vaults for cognition layer' and I'll route a deeper pull.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T10:42:40.513761+00:00",
+      "timestamp": "2026-04-29T10:42:40.513761+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Captured.",
+      "spoken_update": "Captured.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T11:43:13.522602+00:00",
+      "timestamp": "2026-04-29T11:43:13.522602+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Captured.",
+      "spoken_update": "Captured.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T11:47:33.700950+00:00",
+      "timestamp": "2026-04-29T11:47:33.700950+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Searching today's session log and git activity now \u2014 stand by for the delta.",
+      "spoken_update": "Searching today's session log and git activity now \u2014 stand by for the delta.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T11:47:33.705127+00:00",
+      "timestamp": "2026-04-29T11:47:33.705127+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Captured.",
+      "spoken_update": "Captured.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T11:48:20.344297+00:00",
+      "timestamp": "2026-04-29T11:48:20.344297+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Two captures from this session: (1) cognition bridge live 2026-04-29, (2) cockpit autonomous build pass complete \u2014 341 tests, 4 surfaces, brain graph live. Nothing else on cognition layer or cockpit this session.",
+      "spoken_update": "Two captures from this session: (1) cognition bridge live 2026-04-29, (2) cockpit autonomous build pass complete \u2014 341 tests, 4 surfaces, brain graph live. Nothing else on cognition layer or cockpit this session.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T11:48:29.268773+00:00",
+      "timestamp": "2026-04-29T11:48:29.268773+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Captured. Caching strategies for the cognition router \u2014 tagged and routed to scratchpad vault.",
+      "spoken_update": "Captured. Caching strategies for the cognition router \u2014 tagged and routed to scratchpad vault.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T20:11:43.397370+00:00",
+      "timestamp": "2026-04-29T20:11:43.397370+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Two captures: cognition bridge live 2026-04-29; cockpit autonomous build pass \u2014 341 tests, 4 surfaces, brain graph live.",
+      "spoken_update": "Two captures: cognition bridge live 2026-04-29; cockpit autonomous build pass \u2014 341 tests, 4 surfaces, brain graph live.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T20:31:09.598187+00:00",
+      "timestamp": "2026-04-29T20:31:09.598187+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Hi, how can I assist you today professionally?",
+      "spoken_update": "Hi, how can I assist you today professionally?",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T20:31:11.888779+00:00",
+      "timestamp": "2026-04-29T20:31:11.888779+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Hello, how are you today I am ready",
+      "spoken_update": "Hello, how are you today I am ready",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T20:33:19.777664+00:00",
+      "timestamp": "2026-04-29T20:33:19.777664+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Confirmed, speed profile is active for you now.",
+      "spoken_update": "Confirmed, speed profile is active for you now.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T22:48:31.158547+00:00",
+      "timestamp": "2026-04-29T22:48:31.158547+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "I'm doing well, thanks for checking in.",
+      "spoken_update": "I'm doing well, thanks for checking in.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-04-29T22:49:19.713060+00:00",
+      "timestamp": "2026-04-29T22:49:19.713060+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "I'm here. How can I assist you today?",
+      "spoken_update": "I'm here. How can I assist you today?",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    }
+  ],
+  "counts_by_intent": {
+    "capture": 17
+  }
+}

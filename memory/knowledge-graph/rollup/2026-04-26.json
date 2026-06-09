@@ -1,0 +1,74 @@
+{
+  "entries": [
+    {
+      "entry_id": "01J9V8XMK3ZQ7HWYZF3D8R4Y2X",
+      "timestamp": "2026-04-26T14:33:12Z",
+      "intent_class": "command",
+      "brands": [],
+      "target_system": "agent:luminor-board",
+      "task": "Substrate edit requested: add a new clause to SIP.md covering cognition routing. This requires Luminor Board review before any edit is made. Prepare a draft clause for board consideration \u2014 do not write to SIP.md until explicit board approval is given.",
+      "spoken_update": "Hard stop \u2014 SIP.md is substrate. Escalating to Luminor Board; nothing written until board verdict.",
+      "packet_id": "01J9V8XMK3ZQ7HWYZF3D8R4Y2X",
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "01J9V8XMK3ZQ7HWYZF3D8R4Y2X",
+      "timestamp": "2026-04-26T14:33:12Z",
+      "intent_class": "build",
+      "brands": [
+        "sis"
+      ],
+      "target_system": "agent:claude-code",
+      "task": "Add a new section to the SIS repository README.md. Section topic, title, placement, and content have not been specified \u2014 pause and request clarification from Frank before writing any content. Once the section scope is confirmed, write the section in the existing README's voice and formatting conventions, insert it at the specified location, and ensure the table of contents (if one exists) is updated to reflect the addition.",
+      "spoken_update": "Packet prepared for Claude Code. Paused on section scope \u2014 Claude Code will request clarification before writing. Prepared, not executed.",
+      "packet_id": "01J9V8XMK3ZQ7HWYZF3D8R4Y2X",
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "01J9V8XMK3ZQ7HWYZF3D8R4Y2X",
+      "timestamp": "2026-04-26T14:33:12Z",
+      "intent_class": "build",
+      "brands": [
+        "sis"
+      ],
+      "target_system": "agent:claude-code",
+      "task": "Add a new section to the Starlight Intelligence System README. Section content, heading, and placement are unspecified \u2014 pause before writing and surface a one-sentence proposal (section name + one-line description + proposed placement) for Frank to confirm before making any edit. Do not write prose into the README until the proposal is approved.",
+      "spoken_update": "Packet built for Claude Code. Scope is underspecified \u2014 Claude Code will surface a section proposal for your approval before touching the file.",
+      "packet_id": "01J9V8XMK3ZQ7HWYZF3D8R4Y2X",
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "01J9W2KXNR4T8MVBZQ6P3Y1C5A",
+      "timestamp": "2026-04-26T00:00:00Z",
+      "intent_class": "build",
+      "brands": [
+        "sis"
+      ],
+      "target_system": "agent:claude-code",
+      "task": "Update the README.md footer in the Starlight Intelligence System repository to include a v7.5.3 cockpit-complete badge. Locate the existing footer section (version badges, attestation line, or equivalent). Add or update a badge that reads 'v7.5.3 cockpit-complete' using the repository's existing badge style and markup convention. If no badge exists yet, introduce one consistent with any other badges already present. Do not alter any other section of the README.",
+      "spoken_update": "Packet routed to Claude Code. Output: README footer badge diff, ready for review. Not committed.",
+      "packet_id": "01J9W2KXNR4T8MVBZQ6P3Y1C5A",
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "01J9V8XMK3ZQ7HWYZF3D8R4Y2X",
+      "timestamp": "2026-04-26T00:00:00Z",
+      "intent_class": "command",
+      "brands": [],
+      "target_system": "agent:luminor-board",
+      "task": "Escalate a proposed substrate edit to SIP.md for board review. The proposed change is: add a new clause about cognition routing. The board must review the clause content, assess sovereignty and attestation implications, and approve or reject before any edit is applied to SIP.md.",
+      "spoken_update": "Hard stop. SIP.md is substrate \u2014 routing to Luminor Board for approval before any edit. SIP.md is untouched until the board verdicts.",
+      "packet_id": "01J9V8XMK3ZQ7HWYZF3D8R4Y2X",
+      "parent_packet_id": null,
+      "extras": {}
+    }
+  ],
+  "counts_by_intent": {
+    "command": 2,
+    "build": 3
+  }
+}

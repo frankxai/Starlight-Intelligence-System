@@ -1,0 +1,166 @@
+/**
+ * v7.7 Conformance Harness — skill-rules.json registry symmetry
+ *
+ * Companion to test/v76.test.ts (which guards agent registry symmetry).
+ * Guards the symmetry between skills/skill-rules.json and skills/**\/*.md:
+ *   - Every rule's `skill` field points at a real file (no orphans)
+ *   - Every skill file is either registered in skill-rules.json
+ *     OR in the EXEMPT_PHANTOMS allow-list (with reason)
+ *
+ * EXEMPT_PHANTOMS is a deliberate technical-debt ledger. Adding a skill file
+ * to disk without a rule means: register it, OR justify its exemption here.
+ * Empty exempt list is the goal state.
+ *
+ * Background: 2026-05-04 audit found 25 skill files unregistered in
+ * skill-rules.json — substantive sub-stack skills (Music IS, Sound IS,
+ * Energy IS, Memory orchestrator, Vision) were never wired. This test
+ * catches recurrence and lets registration proceed in batches.
+ *
+ * SECURITY NOTE: per /openclaw-audit CRITICAL 2, NO assertion interpolates
+ * raw fixture content into error messages. Trusted inputs only.
+ *
+ * ---
+ * Built on SIP — Starlight Intelligence Protocol
+ * - Substrate: starlightintelligence.org/protocol v1.1.0
+ * - Layers used: [skill-activation, file-contract, attestation]
+ * - Generated: 2026-05-05
+ * ---
+ */
+
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { repoRootFromTestFile, walkSkills, fileToSkillKey } from "./_lib/repo.js";
+
+const REPO_ROOT = repoRootFromTestFile(import.meta.url);
+const SKILLS_DIR = join(REPO_ROOT, "skills");
+const RULES_PATH = join(SKILLS_DIR, "skill-rules.json");
+
+// ---------- exempt phantoms (technical-debt ledger) ----------
+//
+// Each entry: skill path WITHOUT extension or trailing /SKILL.md, with reason.
+// Goal: empty list. Removing an entry requires registering the skill in
+// skill-rules.json with valid triggers.
+
+const EXEMPT_PHANTOMS = new Set<string>([
+  // Goal state. All 18 prior phantoms registered in skill-rules.json
+  // 2026-05-05 (Music IS 10 + Sound IS 6 + Memory orchestrator 1 + Vision 1).
+  // Add new entries here ONLY with a documented reason and an un-park trigger.
+]);
+
+// ---------- helpers ----------
+
+interface Rule {
+  id: string;
+  skill: string;
+  triggers?: { keywords?: string[]; agents?: string[]; intents?: string[] };
+  priority?: string;
+  load_level?: string;
+}
+
+function loadRules(): Rule[] {
+  const raw = readFileSync(RULES_PATH, "utf8");
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed.rules)) {
+    throw new Error("skill-rules.json missing 'rules' array");
+  }
+  return parsed.rules;
+}
+
+// Note: walkSkills + fileToSkillKey now live in test/_lib/repo.ts (extracted
+// 2026-05-05 from duplicate-fn audit). v76 + others should adopt incrementally.
+
+// ---------- tests ----------
+
+describe("v7.7 skill-rules.json — orphan check", () => {
+  it("every rule's `skill` field points at a real file", () => {
+    const rules = loadRules();
+    const orphans: string[] = [];
+    for (const r of rules) {
+      const fileForm = join(SKILLS_DIR, `${r.skill}.md`);
+      const skillMdForm = join(SKILLS_DIR, r.skill, "SKILL.md");
+      if (!existsSync(fileForm) && !existsSync(skillMdForm)) {
+        orphans.push(r.skill);
+      }
+    }
+    assert.deepEqual(orphans, [], `rules pointing at missing files: ${orphans.join(", ")}`);
+  });
+
+  it("every rule has at least one trigger", () => {
+    const rules = loadRules();
+    const triggerless: string[] = [];
+    for (const r of rules) {
+      const t = r.triggers ?? {};
+      const hasAny =
+        (t.keywords && t.keywords.length > 0) ||
+        (t.agents && t.agents.length > 0) ||
+        (t.intents && t.intents.length > 0);
+      if (!hasAny) triggerless.push(r.id);
+    }
+    assert.deepEqual(triggerless, [], `rules with no triggers: ${triggerless.join(", ")}`);
+  });
+
+  it("every rule has a unique id", () => {
+    const rules = loadRules();
+    const ids = rules.map((r) => r.id);
+    const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
+    assert.deepEqual(dupes, [], `duplicate rule ids: ${[...new Set(dupes)].join(", ")}`);
+  });
+});
+
+describe("v7.7 skill-rules.json — phantom check", () => {
+  it("every skill file is either registered OR in EXEMPT_PHANTOMS allow-list", () => {
+    const rules = loadRules();
+    const registered = new Set(rules.map((r) => r.skill));
+
+    const files = walkSkills(SKILLS_DIR, { excludeReferences: true });
+    const candidates = files.map(fileToSkillKey).filter((k): k is string => k !== null);
+
+    const phantoms: string[] = [];
+    for (const c of candidates) {
+      if (registered.has(c)) continue;
+      if (EXEMPT_PHANTOMS.has(c)) continue;
+      phantoms.push(c);
+    }
+    assert.deepEqual(
+      phantoms,
+      [],
+      `skill files not registered in skill-rules.json AND not in EXEMPT_PHANTOMS: ${phantoms.join(", ")}`,
+    );
+  });
+
+  it("EXEMPT_PHANTOMS only references files that actually exist", () => {
+    const ghosts: string[] = [];
+    for (const exempt of EXEMPT_PHANTOMS) {
+      const fileForm = join(SKILLS_DIR, `${exempt}.md`);
+      const skillMdForm = join(SKILLS_DIR, exempt, "SKILL.md");
+      if (!existsSync(fileForm) && !existsSync(skillMdForm)) {
+        ghosts.push(exempt);
+      }
+    }
+    assert.deepEqual(ghosts, [], `EXEMPT_PHANTOMS entries with no file: ${ghosts.join(", ")}`);
+  });
+});
+
+describe("v7.7 skill-rules.json — Energy IS coverage (post-stub)", () => {
+  it("Energy IS skill stubs are registered in skill-rules.json (no exemption)", () => {
+    const rules = loadRules();
+    const registered = new Set(rules.map((r) => r.skill));
+    const energySkills = [
+      "energy-intelligence/sizing-architecture",
+      "energy-intelligence/cost-modeling",
+      "energy-intelligence/installer-workflow",
+      "energy-intelligence/operations-monitoring",
+      "energy-intelligence/buyer-journey",
+      "energy-intelligence/grid-integration",
+      "energy-intelligence/recovery-protocol",
+    ];
+    const missing = energySkills.filter((s) => !registered.has(s));
+    assert.deepEqual(
+      missing,
+      [],
+      `Energy IS skills must be registered in skill-rules.json (NOT exempted): ${missing.join(", ")}`,
+    );
+  });
+});

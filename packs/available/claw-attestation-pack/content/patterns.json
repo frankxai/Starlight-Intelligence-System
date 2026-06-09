@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "spec_ref": "SIP § 4 — Attestation",
+  "patterns": [
+    {
+      "id": "canonical-text",
+      "regex": "Built on SIP",
+      "contexts": ["markdown", "plaintext", "code-comment", "json-text-field"],
+      "description": "The canonical attestation phrase. Mandatory in every generated artifact."
+    },
+    {
+      "id": "html-comment",
+      "regex": "<!--\\s*Built on SIP\\s*-->",
+      "contexts": ["html", "rss", "xml"],
+      "description": "HTML/XML comment form for embeddable contexts."
+    },
+    {
+      "id": "yaml-frontmatter",
+      "regex": "^sip_attested:\\s*true$",
+      "contexts": ["markdown-frontmatter", "yaml"],
+      "description": "Frontmatter field for content-managed sites and Obsidian vaults."
+    },
+    {
+      "id": "json-manifest",
+      "regex": "\"attestation\"\\s*:\\s*\"sip-attested\"",
+      "contexts": ["json"],
+      "description": "Structured-attestation field for manifests, packs, artifacts."
+    }
+  ],
+  "context_required": {
+    "markdown": ["canonical-text"],
+    "html": ["html-comment"],
+    "yaml": ["yaml-frontmatter"],
+    "json": ["json-manifest"]
+  }
+}

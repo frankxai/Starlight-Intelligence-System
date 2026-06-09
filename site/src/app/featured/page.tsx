@@ -19,6 +19,15 @@ export const metadata: Metadata = {
     title: "Featured Meditations — Starlight Intelligence",
     description:
       "Every quoteworthy meditation from the Starlight public vaults.",
+    type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Featured Meditations" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Featured Meditations — Starlight Intelligence",
+    description:
+      "Every quoteworthy meditation from the Starlight public vaults.",
+    images: ["/opengraph-image"],
   },
 };
 

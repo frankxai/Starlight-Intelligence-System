@@ -1,0 +1,147 @@
+# Voice Operator — runs the public-substrate-touching test surface.
+#
+# The voice-operator service code itself lives under private/voice-operator/ which
+# is gitignored. The substrate-clean tests we CAN run on every push:
+#
+#   - Validate Voice Operator agent file structure
+#   - Validate handoff packet skill structure
+#   - Smoke-test that markdown frontmatter parses
+#   - Validate cross-references in skill-rules.json
+#
+# When private/voice-operator/ is included in a future commit (it won't be —
+# ever — by design), this workflow does NOT run those tests. CI is for substrate.
+
+name: Voice Operator substrate tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agents/starlight-voice-operator.md"
+      - "skills/orchestration/agent-handoff-packet.md"
+      - "skills/skill-rules.json"
+      - "agents/AGENT_REGISTRY.md"
+      - "core/orchestrator/README.md"
+      - "verticals/voice-video/README.md"
+      - ".github/workflows/voice-operator-tests.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "agents/starlight-voice-operator.md"
+      - "skills/orchestration/agent-handoff-packet.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: voice-operator-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  substrate-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install validators
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Validate Voice Operator agent file
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          p = Path('agents/starlight-voice-operator.md')
+          assert p.exists(), f"Missing {p}"
+          text = p.read_text(encoding='utf-8')
+          # Required canonical sections per the agent spec
+          required = [
+              '## Identity',
+              '## Activation Triggers',
+              '## Frontend Boundary',
+              '## Core Loop',
+              '## Intent Classes',
+              '## Approval Gates',
+              '## Surface Inventory',
+              '## Storage Doctrine',
+              '## Prime Directive',
+              '## Command Phrase Library',
+              '## Routing Table',
+              '## Memory Discipline',
+              '## Quality Gates',
+          ]
+          missing = [s for s in required if s not in text]
+          assert not missing, f"Voice Operator agent missing sections: {missing}"
+          assert 'Built on SIP' in text, 'Missing SIP attestation'
+          print(f'OK agents/starlight-voice-operator.md ({len(text)} chars, {len(required)} sections present)')
+          PY
+
+      - name: Validate handoff packet skill
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          p = Path('skills/orchestration/agent-handoff-packet.md')
+          assert p.exists(), f"Missing {p}"
+          text = p.read_text(encoding='utf-8')
+          # Frontmatter parses
+          assert text.startswith('---\n'), "Skill must start with YAML frontmatter"
+          end = text.find('---\n', 4)
+          assert end > 0, "Frontmatter not closed"
+          # Frozen contract — these MUST be present
+          required = [
+              'packet_version: 1',
+              '## Schema versioning',
+              '## Invariants',
+              'append-only',
+              'verifiable done',
+              'one target system',
+              'Built on SIP',
+          ]
+          missing = [s for s in required if s.lower() not in text.lower()]
+          assert not missing, f"Handoff packet skill missing canonical content: {missing}"
+          print(f'OK skills/orchestration/agent-handoff-packet.md ({len(text)} chars)')
+          PY
+
+      - name: Validate skill-rules.json registration
+        run: |
+          python <<'PY'
+          import json
+          rules = json.loads(open('skills/skill-rules.json').read())
+          ids = [r['id'] for r in rules['rules']]
+          assert 'orchestration-agent-handoff-packet' in ids, \
+              "Handoff packet skill not registered in skill-rules.json"
+          assert 'starlight-voice-operator' in rules['defaults'], \
+              "Voice Operator agent missing from defaults map"
+          print(f'OK skill-rules.json — handoff packet registered, agent defaults set')
+          PY
+
+      - name: Validate AGENT_REGISTRY entry
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          text = Path('agents/AGENT_REGISTRY.md').read_text(encoding='utf-8')
+          assert 'starlight-voice-operator.md' in text, \
+              "Voice Operator not entered in AGENT_REGISTRY.md"
+          assert 'Voice Operator' in text, \
+              "Voice Operator name missing from registry"
+          print('OK agents/AGENT_REGISTRY.md — Voice Operator entry present')
+          PY
+
+      - name: Validate orchestrator + voice-video cross-refs
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          orch = Path('core/orchestrator/README.md').read_text(encoding='utf-8')
+          assert 'starlight-voice-operator.md' in orch, \
+              "Orchestrator README missing voice operator anchor"
+          vv = Path('verticals/voice-video/README.md').read_text(encoding='utf-8')
+          assert 'starlight-voice-operator.md' in vv, \
+              "Voice & Video IS README missing voice operator anchor"
+          print('OK cross-references intact')
+          PY

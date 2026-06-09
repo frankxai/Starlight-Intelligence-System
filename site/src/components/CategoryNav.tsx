@@ -54,7 +54,7 @@ function Pill({
       className={`rounded-full border px-3 py-1.5 text-[12px] font-medium transition-micro ${
         active
           ? `border-white/[0.15] bg-white/[0.08] ${color || "text-white"}`
-          : "border-white/[0.04] text-slate-500 hover:border-white/[0.1] hover:text-white"
+          : "border-white/[0.08] text-slate-500 hover:border-white/[0.1] hover:text-white"
       }`}
     >
       {label}

@@ -1,152 +1,112 @@
-# SIS Packages
+# `packages/` — substrate packages
 
-> Monorepo packages for the Starlight Intelligence System. Each package is independently publishable under `@arcanea/sis-*`.
+> TypeScript packages that any Domain Sub-Stack composes with. Each package
+> declares interfaces + base classes + canonical types. Implementations live
+> per-vertical; the substrate provides the contract.
+
+## Status
+
+This directory contains two layers of packages:
+
+**Substrate packages** — ratified 2026-05-03 per the `/starlight-board` SovereignNode + Calculator + ValidationRequirement proposal. These ship interface + types + base classes.
+
+**SIS operational packages** — added as part of the SIS Claws architecture (v8.x scope). Each is independently publishable under `@arcanea/sis-*` and composes through the substrate layer.
 
 ---
 
-## Package Map
+## Substrate Packages
+
+| Package | Purpose | Status |
+|---|---|---|
+| `@starlight/schemas` | Canonical entity types — SovereignNode + Profiles (Zod) | Foundation shipped 2026-05-03 |
+| `@starlight/validation` | ValidationRequirement enum + jurisdiction extension mechanism | Foundation shipped 2026-05-03 |
+| `@starlight/calculators` | Calculator interface + CalculatorResult + promotion-pipeline modes | Foundation shipped 2026-05-03 |
+| `@starlight/agent-ui-runtime` | CopilotKit wrapper with strong-boundary enforcement | Scaffold + BOUNDARY.md only; full impl is cross-repo (Arcanea) |
+
+### Composition rules
+
+Every infra-touching Domain Sub-Stack (Energy, Home, Compute, Capital) **must** use:
+
+1. `SovereignNode` from `@starlight/schemas` as its canonical entity type
+2. `Calculator<I, O>` from `@starlight/calculators` for any numerical output (cost, sizing, ROI, capacity)
+3. `ValidationRequirement` from `@starlight/validation` to gate any irreversible action
+
+Non-infra-touching Domain Sub-Stacks (People, Sound, Music IS) opt out — their numerical claims are loose enough that LLM-prose is acceptable.
+
+### The deterministic-not-LLM principle
+
+Numerical and structural decisions never go through an LLM. The LLM does interpretation, extraction, and prose framing — never the math. This is a hard contract enforced by the package shape: a Calculator output carries `confidence` / `assumptions` / `warnings` / `required_validation` / `trace` and is auditable; an LLM output is not.
+
+### Promotion pipeline
+
+Every calculator carries a `mode` field with one of four values:
+
+| Mode | Meaning | Use |
+|---|---|---|
+| `shadow` | Runs alongside legacy path; outputs logged but not shown to user | New calculators ship here |
+| `live-with-warnings` | Outputs shown to user with explicit warning banner | After shadow corpus passes |
+| `live` | Outputs shown to user as canonical | After live-with-warnings stabilizes |
+| `deprecated` | Outputs hidden; calculator preserved for replay only | When superseded |
+
+---
+
+## SIS Operational Packages
 
 ```
 packages/
 ├── sis-core/          — Substrate types, vault schema, SIP constants, shared utilities
 ├── sis-mcp/           — MCP server implementation (sis-memory-mcp, sentinel-mcp)
 ├── sis-cli/           — `starlight` CLI binary
-├── sis-openclaw/      — OpenClaw skill pack for SIS Claws
-├── sis-skills/        — Compiled skill definitions + activation rules
+├── sis-openclaw/      — OpenClaw skill pack for SIS Claws (curated, signed registry)
+├── sis-skills/        — Compiled skill definitions + activation rules (75 rules)
 ├── sis-adapters/      — Platform adapters (Claude Code, Cursor, Codex, Gemini CLI)
 └── sis-conformance/   — SIP conformance test harness
 ```
 
----
-
-## Package Descriptions
-
 ### `sis-core`
-
 **npm:** `@arcanea/sis-core`
 
-The foundation package. Exports:
-- TypeScript types for all vault entry schemas
-- SIP protocol constants (versions, required files)
-- Vault JSONL read/write utilities
-- SQLite index initialization and query helpers
-- Workspace config schema and loader
-
-All other packages depend on `sis-core`. It has no dependencies on them.
+Foundation package. Exports TypeScript types for vault entry schemas, SIP protocol constants, and shared utilities. All other SIS packages depend on this.
 
 ### `sis-mcp`
-
 **npm:** `@arcanea/sis-mcp`
 
-MCP server implementations. Exports:
-- `sis-memory-mcp` — the canonical vault MCP server (read/write/search six vaults)
-- `sentinel-mcp` — permission gate, secret detection, audit trail MCP server
-
-These are the only MCP servers that write to canonical vault memory. External MCPs (filesystem, github, google-drive) are ingestion-only.
+MCP server implementations. Provides `sis-memory-mcp` (vault read/write/search) and `sentinel-mcp` (permission gates, secret detection, mutation approval). These are the only servers allowed to write canonical vault memory.
 
 ### `sis-cli`
-
 **npm:** `@arcanea/sis-cli`
 
-The `starlight` CLI binary. Implements:
-- `starlight install` — Bootstrap Claw entry point
-- `starlight remember` — Memory Claw `/sis-remember`
-- `starlight search` — Memory Claw `/sis-search`
-- `starlight reconcile` — Memory Claw `/sis-reconcile`
-- `starlight decay` — Memory Claw `/sis-decay`
-- `starlight promote` — Memory Claw `/sis-promote`
-- `starlight export` — Memory Claw `/sis-export`
-- `starlight verify` — Bootstrap Claw `/sis-verify`
-- `starlight audit` — Sentinel Claw `/sentinel-audit`
+The `starlight` CLI binary. Commands: `starlight init`, `starlight remember`, `starlight search`, `starlight reconcile`, `starlight export`, `starlight verify`.
 
 ### `sis-openclaw`
-
 **npm:** `@arcanea/sis-openclaw`
 
-OpenClaw skill pack for ambient execution of SIS Claws. Packages the five founding Claws as OpenClaw-compatible skills with:
-- Signed skill manifests
-- Minimal permission declarations
-- Local-first execution (no cloud dependency)
-- Integration with `sis-memory-mcp` and `sentinel-mcp`
-
-Install via: `openclaw install frankxai/sis-bootstrap-claw`
+OpenClaw skill pack for SIS Claws. Contains curated, signed skills for the OpenClaw runtime. Does **not** depend on ClawHub — skills are sourced from this repo's `skills/` directory with explicit permission declarations. See `CLAWS.md` § Security Model for the signing and curation protocol.
 
 ### `sis-skills`
-
 **npm:** `@arcanea/sis-skills`
 
-Compiled skill definitions and activation rules for distribution. Includes:
-- All 20 core SIS skills (intelligence, orchestration, memory, integration, safety)
-- 4 safety skills (permission-gate, secret-detector, private-public-split, mutation-approval)
-- `skill-rules.json` with activation triggers
-- Platform-specific skill loader adapters
+Compiled skill definitions and activation rules (75 rules across 5 domains: intelligence, orchestration, memory, integration, safety). Source of truth is `skills/skill-rules.json`.
 
 ### `sis-adapters`
-
 **npm:** `@arcanea/sis-adapters`
 
-Platform adapter configuration generators. Supports:
-- Claude Code (`.claude/` config)
-- Cursor (`.cursor/` config)
-- Codex (`AGENTS.md` + `.codex/` config)
-- Gemini CLI (`.gemini/` config)
-- OpenCode (`.opencode/` config)
-
-Each adapter configures MCP server registration, skill loading, and vault path mapping for the target platform.
+Platform adapters. Generates and validates config files for Claude Code (`.claude/`), Cursor (`.cursor/`), Codex (`.codex/`), Gemini CLI (`.gemini/`), and OpenCode.
 
 ### `sis-conformance`
-
 **npm:** `@arcanea/sis-conformance`
 
-SIP compliance test harness. Tests:
-- File contract completeness (SKILL.md, AGENTS.md, MEMORY.md present)
-- Vault schema validity (JSONL parseable, entry format correct)
-- MCP server connectivity (round-trip test per tool)
-- Attestation block format (SIP § Layer 2 compliance)
-- Claw contract schema validation
-
-Run: `npx sis-conformance --path ./`
+SIP conformance test harness. Verifies that a SIS installation satisfies all protocol requirements: vault shape, MCP tool surface, attestation discipline, agent registry integrity.
 
 ---
 
-## Dependency Graph
+## Cross-repo
 
-```
-sis-conformance
-  └── sis-core
-
-sis-adapters
-  └── sis-core
-
-sis-skills
-  └── sis-core
-
-sis-openclaw
-  ├── sis-core
-  ├── sis-mcp
-  └── sis-skills
-
-sis-cli
-  ├── sis-core
-  └── sis-mcp
-
-sis-mcp
-  └── sis-core
-
-sis-core
-  └── (no SIS dependencies)
-```
+When a sibling repo (`arcanea-flow`, `agentic-creator-os`, `arcanea`) wants to consume these packages, it imports via path resolution (today) or via npm install (v8.x). The cross-repo distribution packets at `docs/cross-repo-distributions/` name where each package consumer should land.
 
 ---
 
-## Build Order
-
-1. `sis-core`
-2. `sis-mcp`
-3. `sis-cli`, `sis-skills`, `sis-adapters` (parallel)
-4. `sis-openclaw`
-5. `sis-conformance` (depends on all above for full test coverage)
-
----
-
-*Built on SIP · packages v0.1.0 · MIT*
+**Built on SIP** · Starlight Intelligence Protocol v1.1.0
+- Layers used: [file-contract, attestation, sovereignty]
+- Substrate ratified: 2026-05-03 (Board verdict at `docs/boards/2026-05-03-calculator-validation-substrate.md`)
+- SIS Claws layer added: 2026-06-09 (CLAWS.md — Bootstrap, Memory, Sentinel, Genius, Reclamation, plus stubs for Creator, Business, Attestation, Architect)

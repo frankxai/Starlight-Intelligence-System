@@ -1,15 +1,34 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+/**
+ * Vellum & Voltage typography lockup.
+ *
+ * Fraunces — display: serif with optical-size variability, used for titles
+ *   and vault labels. The serif gives "manuscript" weight against the
+ *   electric voltage palette.
+ * Inter — body: technical neutrality where it matters.
+ * JetBrains Mono — technical labels: counts, coordinates, system status.
+ *
+ * Loaded as CSS variables (--font-display, --font-body, --font-mono) so the
+ * Tailwind theme can map them to font-display / font-sans / font-mono.
+ */
+const fraunces = Fraunces({
+  variable: "--font-display",
+  subsets: ["latin"],
+  display: "swap",
+  axes: ["opsz", "SOFT"],
+});
+
+const inter = Inter({
+  variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrains = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -30,8 +49,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="bg-[#050509] font-sans text-slate-200 antialiased">
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${inter.variable} ${jetbrains.variable}`}
+    >
+      <body className="bg-[#0a0a14] font-sans text-[color:var(--ink-0)] antialiased">
         {children}
       </body>
     </html>

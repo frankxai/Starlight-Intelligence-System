@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "name": "Starlight Intelligence System (substrate)",
+  "panes": {
+    "dispatcher": {
+      "command": "claude",
+      "args": [
+        "--resume",
+        "sis"
+      ]
+    },
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--continue",
+        "--model",
+        "claude-opus-4-7"
+      ]
+    },
+    "codex": {
+      "command": "codex.cmd",
+      "args": [
+        "resume",
+        "--last"
+      ]
+    },
+    "gemini": {
+      "command": "gemini.cmd",
+      "args": [
+        "--yolo",
+        "-m",
+        "gemini-2.5-pro"
+      ]
+    },
+    "opencode": {
+      "command": "opencode.cmd"
+    }
+  },
+  "team": {
+    "agents": [
+      "Starlight Orchestrator",
+      "Starlight Architect",
+      "Starlight Sentinel",
+      "Starlight Sage"
+    ],
+    "skills": [
+      "starlight-intelligence",
+      "sparc-methodology",
+      "agentic-orchestration"
+    ]
+  }
+}

@@ -264,6 +264,149 @@ describe("alliance scaffold conformance — Trinity (per /alliance-forge step 3)
   });
 });
 
+// ── Declared-load extraction (per SKILL.md invariant 6) ────────
+
+interface DeclaredLoad {
+  path: string;        // the path as written
+  line: number;        // 1-based line number in the source file
+  conditional: boolean; // soft load (if present / if exists / if available)
+}
+
+/**
+ * Extract declared file loads from a command body.
+ *
+ * The canonical declaration shape (per SKILL.md invariant 6):
+ *   Load `X`, `Y`, `Z`, and if present `W` ...
+ *
+ * Recognized declaration verbs (line must start with one of these):
+ *   Load / Loads / Reads / Composes / Imports
+ *
+ * Each backtick-wrapped path on the matched declaration line(s) is
+ * collected. Conditionality is detected per-path by scanning the ~80
+ * characters preceding the path on the same line for hedging clauses:
+ *   "if present" / "if it exists" / "if available" / "if they exist" /
+ *   "if the file is not yet present" / "if it is" / "if exists" /
+ *   "if any" / "(if "
+ * If the surrounding clause hedges, the path is marked conditional
+ * and exempted from the disk-existence assertion.
+ *
+ * Backtick spans that are not file-like (no `/`, no `.md`/`.json`/`.ts`
+ * extension, and contain no characters that look like paths) are dropped
+ * — these are typically command names like `arcanea-mcp` or section
+ * references like `Layer 5 sovereignty clause`.
+ */
+function extractDeclaredLoads(body: string): DeclaredLoad[] {
+  const declarationVerb = /^\s*(Load|Loads|Reads|Composes|Imports)\b/i;
+  // Conditional hedges that exempt a load from disk-existence assertion.
+  // Includes "if X" forms, "any prior", "any X if any", "(if " parentheticals,
+  // and "exists at" / "exists in" lookahead phrasing.
+  const conditionalHedge = /\b(if\s+present|if\s+it\s+exists?|if\s+exists?|if\s+available|if\s+they\s+exist|if\s+the\s+file\s+is\s+not\s+yet\s+present|if\s+it\s+is|if\s+any|if\s+a\s+\w+|exists?\s+at|exists?\s+in|exists?\s+for|any\s+prior|and\s+prior|and\s+any|prior\s+\w+|\(if\s+)/i;
+  const out: DeclaredLoad[] = [];
+  const lines = body.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (!declarationVerb.test(line)) continue;
+    // Walk every backtick-wrapped span on the line.
+    const tickRe = /`([^`\n]+)`/g;
+    let m: RegExpExecArray | null;
+    while ((m = tickRe.exec(line)) !== null) {
+      const span = m[1];
+      // File-like heuristic: must contain a `/` or `\` OR end with a known extension.
+      const fileLike = /[\/\\]/.test(span) || /\.(md|json|ts|js|yml|yaml|txt|html|csv|toml)$/i.test(span);
+      if (!fileLike) continue;
+      // Detect conditionality: scan preceding 120 chars on this line for a hedge clause.
+      // 120 (not 80) catches hedges further upstream in the same compound sentence.
+      const before = line.slice(Math.max(0, m.index - 120), m.index);
+      const conditional = conditionalHedge.test(before);
+      out.push({ path: span, line: i + 1, conditional });
+    }
+  }
+  return out;
+}
+
+/**
+ * Decide whether a declared path should be asserted to exist on disk.
+ * Returns null if the path is exempted (placeholder, external, conditional, glob);
+ * otherwise returns { resolved, isDir } — the resolved absolute path and whether
+ * the assertion should be a directory existence check rather than a file check.
+ */
+function resolveAssertablePath(load: DeclaredLoad): { resolved: string; isDir: boolean } | null {
+  if (load.conditional) return null; // soft load — by-design optional
+  const p = load.path;
+  // Placeholder substitution (template paths) — literal angle brackets in path.
+  if (/<[^>]+>/.test(p)) return null;
+  // Glob patterns — wildcards mark scan targets, not loads.
+  if (/[*?]/.test(p)) return null;
+  // External absolute paths (other sovereign repos).
+  if (/^[A-Za-z]:[\\/]/.test(p)) return null; // Windows drive
+  if (p.startsWith("/") && !p.startsWith("/c/") && !p.includes(".md")) {
+    // bare unix-style absolute paths that aren't repo-relative — skip
+    return null;
+  }
+  // Trailing slash → directory assertion. Otherwise file.
+  const isDirPath = p.endsWith("/") || p.endsWith("\\");
+  const cleaned = p.replace(/\\/g, "/").replace(/\/$/, "");
+  return { resolved: join(REPO_ROOT, cleaned), isDir: isDirPath };
+}
+
+describe("Substrate rule — declared file loads exist on disk (SKILL.md invariant 6)", () => {
+  // The canonical command surface lives at .claude/commands/. This rule
+  // also walks the universal vertical template's .claude/commands/, since
+  // the v7.5 Luminor Board flagged that directory as the third repeat of
+  // the "declared-load file missing" pattern.
+  const COMMAND_DIRS = [
+    COMMANDS_DIR,
+    join(REPO_ROOT, "verticals", "_template", ".claude", "commands"),
+  ];
+
+  // Per-command coverage counters reported in test output for traceability.
+  const coverage: Array<{ cmd: string; declared: number; asserted: number; conditional: number; placeholder: number }> = [];
+  let totalAssertions = 0;
+  const failures: Array<{ cmd: string; path: string; line: number }> = [];
+
+  for (const dir of COMMAND_DIRS) {
+    if (!isDir(dir)) continue;
+    const files = readdirSync(dir).filter(f => f.endsWith(".md"));
+    for (const file of files) {
+      const cmdPath = join(dir, file);
+      const cmdRel = cmdPath.slice(REPO_ROOT.length + 1).replace(/\\/g, "/");
+      const body = readFileSync(cmdPath, "utf-8");
+      const loads = extractDeclaredLoads(body);
+      let asserted = 0;
+      let conditional = 0;
+      let placeholder = 0;
+      for (const load of loads) {
+        if (load.conditional) { conditional++; continue; }
+        const resolution = resolveAssertablePath(load);
+        if (!resolution) { placeholder++; continue; }
+        asserted++;
+        totalAssertions++;
+        // The assertion: per-path exists-on-disk check, surfaced as its own `it` test
+        // so failures report which command + which path + which line. NEVER interpolate
+        // body content; only the declared path string (which the command author wrote).
+        it(`${cmdRel} → declared load \`${load.path}\` exists on disk`, () => {
+          const { resolved, isDir: expectDir } = resolution;
+          const ok = expectDir ? isDir(resolved) : isFile(resolved);
+          if (!ok) {
+            failures.push({ cmd: cmdRel, path: load.path, line: load.line });
+            const kind = expectDir ? "directory" : "file";
+            assert.fail(`Declared ${kind} load missing: ${cmdRel}:${load.line} declares \`${load.path}\` but the ${kind} does not exist at the resolved path. Either create the ${kind}, mark the load conditional ("if present"), or mark the path as a placeholder with angle brackets.`);
+          }
+        });
+      }
+      coverage.push({ cmd: cmdRel, declared: loads.length, asserted, conditional, placeholder });
+    }
+  }
+
+  it(`coverage report — ${coverage.length} commands scanned, ${totalAssertions} disk-existence assertions emitted`, () => {
+    // This is a no-op assertion — its purpose is to surface the coverage tally
+    // in the test output, so a reader sees the rule landed and how many paths it covers.
+    assert.ok(coverage.length > 0, "No commands scanned — .claude/commands/ should not be empty.");
+    // Soft sanity: at least one assertion should have been emitted across the surface.
+    assert.ok(totalAssertions > 0, "No declared loads found — extractor regex may have drifted from command body shapes.");
+  });
+});
+
 describe("attestation block format validation (SIP § Layer 2)", () => {
   it("ATTESTATIONS.md exists and contains a parseable Built on SIP block", () => {
     assert.ok(isFile(ATTESTATIONS_FILE), "ATTESTATIONS.md missing at substrate root — substrate must self-attest per SIP § Layer 2.");

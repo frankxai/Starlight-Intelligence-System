@@ -1,3 +1,9 @@
+---
+name: orchestration/context-engineering
+description: Use when managing AI context quality, session handoffs, or context optimization — keeps context fresh, relevant, and within optimal token budgets across agents and the intelligence system. Default skill for Starlight Orchestrator and Starlight Prime.
+type: agent-orchestration
+---
+
 # Context Engineering
 
 > *"Context is the difference between noise and signal."*

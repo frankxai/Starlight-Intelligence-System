@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/vault-loop-entry.schema.json",
+  "title": "VaultLoopEntry",
+  "description": "A single stage record within the Vault Loop. Records chain via parent_entry_id to form the loop. VaultLoopEntry is a record TYPE that lives across the six existing vaults (Strategic / Technical / Creative / Operational / Wisdom / Horizon) under privacy classification — NOT a seventh vault. Privacy is the substrate trust contract; 'private' entries MUST NOT appear in export, search, attestation, or knowledge-graph output.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "vault",
+    "stage",
+    "privacy",
+    "parent_entry_id",
+    "payload",
+    "created_at",
+    "created_by",
+    "stale_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this stage record."
+    },
+    "vault": {
+      "type": "string",
+      "enum": ["strategic", "technical", "creative", "operational", "wisdom", "horizon"],
+      "description": "Which of the six existing vaults this record lives under. The VaultLoop is a record TYPE across vaults, not a seventh vault."
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "desire",
+        "gratitude",
+        "visualization",
+        "surrender",
+        "intuition",
+        "aligned_action",
+        "evidence",
+        "outcome",
+        "proof"
+      ],
+      "description": "The stage of the loop this record represents."
+    },
+    "privacy": {
+      "type": "string",
+      "enum": ["private", "private-shareable", "public"],
+      "description": "Substrate trust contract. 'private' entries MUST NOT appear in export, search, attestation, or knowledge-graph output. 'private-shareable' may appear in scoped exports to explicitly named recipients. 'public' may appear on any surface."
+    },
+    "parent_entry_id": {
+      "type": ["string", "null"],
+      "description": "Identifier of the upstream entry this record extends. NULL for the root Desire."
+    },
+    "payload": {
+      "type": "string",
+      "description": "The content of the stage record."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the agent or sovereign that recorded this stage."
+    },
+    "stale_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Computed timestamp at which this entry is considered stale if no downstream stage has been added. Conventionally created_at + 30 days. Used for soft stale-loop nudges in the dashboard; not authoritative for retention."
+    }
+  }
+}

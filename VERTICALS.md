@@ -76,12 +76,14 @@ This is the **public registry**. Active alliances and private verticals (Family 
 - **Gate ladder:** illustrative defaults shipped with `/wealth-dpi`; each adopter sets their own gates.
 
 ### Music IS
-- **Class:** sovereign vertical
+- **Class:** sovereign vertical (hybrid — operated + scaffolded)
 - **Domain:** Catalog compounding, sync licensing, artist stack, streaming economics. Labels: Frank Riemer (neo-classical), Frank's Vibes (electronic), Arcanea (Guardian/cinematic), Nona (punk/alt).
 - **Owner:** Arcanea Records (under Arcanea BV).
-- **Status:** `active`.
-- **Primary repo:** inside `arcanea-ecosystem/labels/arcanea-records`.
-- **Canon:** composes with Arcanea canon (Guardian → artist mapping for Arcanea label).
+- **Status:** `active` (operated); `scaffolded — v0.2.0` (substrate-side at SIS).
+- **Primary repo (substrate scaffold):** `verticals/music-is/` in `frankxai/Starlight-Intelligence-System` — 6 sub-systems (Apex / Catalog / Persona / Asset / Distribution / Amplification / Monetization), 7 agents, 8 commands. Public reference for the operator-specific sub-system surface.
+- **Primary repo (operated instance):** inside `arcanea-ecosystem/labels/arcanea-records` — release calendar, catalog/royalty-graph state, persona instance state, deal history. Operator-specific; not part of the open substrate.
+- **Distinct from:** `Sound Intelligence` (open forkable reference for any sovereign sound practitioner). Music IS is operator-specific to Frank's four labels; Sound IS is the pattern any indie practitioner forks. Music IS may import patterns from Sound IS; never duplicates substrate.
+- **Canon:** composes with Arcanea canon (Guardian → artist mapping for Arcanea label) under CC-BY-NC.
 - **Compounds:** Arcanea BV (royalties, sync licensing, catalog IP).
 
 ### Vibe OS (substrate)
@@ -97,17 +99,37 @@ This is the **public registry**. Active alliances and private verticals (Family 
 
 ### Family IS
 - **Class:** sovereign vertical (private)
-- **Domain:** Multi-generational infrastructure, legacy systems.
+- **Domain:** Multi-generational infrastructure, family office intelligence, relational architecture, legacy systems. Renamed from "Relational IS" per MASSIVE_ACTION_PLAN.md (2026-04-25) to align with the 10-IS taxonomy. Public surface stays minimal; instance state remains private.
 - **Status:** `private — never public-facing`.
+- **Substrate home:** `verticals/family/` (scaffold; instance state stays in private/).
+- **Agent:** `starlight-relational` (agent name preserved; the layer it serves is now Family).
 
 ### Spiritual IS
 - **Class:** sovereign vertical (private, founder-layer)
 - **Domain:** Consciousness practice integration.
 - **Status:** `private`. Public compositions surface only through Vibe OS where the founder chooses. **Never imposed on adopters of SIP.**
 
+### Code IS
+- **Class:** sovereign vertical (Intelligence System layer)
+- **Domain:** Product & automation intelligence. Coding agents, MCP server design, agent harness operations, automation playbooks. Wraps existing `/arco` brand router + `/ao` CLI router into a coherent IS for sovereign builders.
+- **Owner:** Frank (open substrate, composes with operational layer).
+- **Status:** `scaffolded — v0.1`.
+- **Primary repo:** `verticals/code/` in `frankxai/Starlight-Intelligence-System`.
+- **Canon:** none.
+- **Compounds:** Code IS playbook + MCP/agent ops practice.
+
+### Voice & Video IS
+- **Class:** sovereign vertical (Intelligence System layer)
+- **Domain:** Narrative media intelligence. Voice cloning, talking-head pipelines, podcast architecture, video factory operations, ElevenLabs/Suno/Veo orchestration. Composes Creator IS with the modality attestation commands (`/sip-attest-audio`, `/sip-attest-video`).
+- **Owner:** Frank (open substrate; composes with Music IS catalog).
+- **Status:** `scaffolded — v0.1`.
+- **Primary repo:** `verticals/voice-video/` in `frankxai/Starlight-Intelligence-System`.
+- **Canon:** optional Hz / Arcanea composition for music-side workflows.
+- **Compounds:** Voice & Video IS playbook + creator pipeline outputs.
+
 ### Starlight Intelligence (the substrate)
 - **Class:** sovereign substrate (the substrate itself, not a vertical)
-- **Domain:** SIP protocol, SIS substrate, Alliance forging method, Starlight Console, canonical registry.
+- **Domain:** SIP protocol, SIS substrate, Alliance forging method, Starlight Console, canonical registry. Hosts the master **Starlight Orchestrator** layer at `core/orchestrator/` that routes the other nine universal IS.
 - **Owner:** Frank Riemer / Starlight Holding BV.
 - **Status:** `active — v1.0.0 spec shipped`.
 - **Primary repo:** `frankxai/Starlight-Intelligence-System`.
@@ -124,6 +146,50 @@ Alliances are multi-node coordination arrangements forged under SIP. Starlight d
 Active alliance nodes are tracked privately by each alliance — the substrate registry only declares the *class* of alliances welcome. Alliance forging is documented in `ALLIANCE.md`. New alliances spawn via `/alliance-forge`.
 
 Frank's personal posture toward alliances: **freely and abundantly.** Time and architectural guidance are gifted; ownership stays with each node. This is a chosen stance, not a default — see `ALLIANCE.md` § Posture for rationale.
+
+---
+
+## Sovereign domain sub-stacks (verticals built on SIP via /spawn-domain-stack)
+
+Domain sub-stacks are forkable reference verticals. Unlike the sovereign verticals above (operated by a specific entity), these are anonymized scaffolds that sovereign practitioners fork into their own private practice via `/sovereign-spawn` or `/spawn-domain-stack`. Attribution compounds via "Built on SIP" on shipped artifacts; no ownership claim transfers.
+
+### People Intelligence
+- **Class:** sovereign domain sub-stack (reference vertical)
+- **Domain:** People practiced as people-flourishing science — six sub-systems (Hiring, Performance, Training, Culture, Talent, Org) composed into one cohesive intelligence stack.
+- **Owner:** open reference (forkable by sovereign practitioners).
+- **Status:** `scaffolded — v0.1.2` (renamed from HR Intelligence at v7.6.0 — Path A authorless symmetric naming with Sound Intelligence).
+- **Primary repo:** `verticals/people-intelligence/` in `frankxai/Starlight-Intelligence-System`.
+- **Sub-systems:** `hiring` · `performance` · `training` · `culture` · `talent` · `org`.
+- **Canon:** declines defining its own canon; optional composition with Arcanea canon (Hz grounding) where practitioner adopts.
+- **Compounds:** practitioners forking + attestation graph compounding across every forked instance.
+- **SIP commands:** 28 commands across `/hire-*` (5) · `/perf-*` (5) · `/training-*` (5) · `/culture-*` (4) · `/talent-*` (5) · `/org-*` (4) prefixes.
+
+### Sound Intelligence
+- **Class:** sovereign domain sub-stack (reference vertical) — second reference, validates the Domain Sub-Stack Tier pattern beyond HR.
+- **Domain:** Sound practiced as the architecture of sustained listening + the catalog that compounds — six sub-systems (Composition, Production, Catalog, Performance, Audience, Sync) composed into one cohesive intelligence stack.
+- **Owner:** open reference (forkable by sovereign sound practitioners). Distinct from `Music IS` which is Frank's specific operated music vertical (Arcanea Records, four labels).
+- **Status:** `scaffolded — v0.1 (complete — 6 of 6 sub-systems with full command surface; 30 commands shipped)`.
+- **Primary repo:** `verticals/sound-intelligence/` in `frankxai/Starlight-Intelligence-System`.
+- **Sub-systems:** `composition` · `production` · `catalog` · `performance` · `audience` · `sync`.
+- **Canon:** declines defining its own canon; optional composition with Arcanea Hz canon (CC-BY-NC) for frequency-grounded sound design.
+- **Compounds:** practitioners forking + attestation graph compounding across every forked instance.
+- **SIP commands:** 30 commands across `/sound-composition-*` (5) · `/sound-production-*` (5) · `/sound-catalog-*` (5) · `/sound-performance-*` (5) · `/sound-audience-*` (5) · `/sound-sync-*` (5).
+- **Synthesis edge:** composer + producer + audio engineer + decade of catalog/release operations + literacy in music-theory + cognitive-science-of-listening + business-of-sync-licensing.
+
+### Crypto Intelligence
+- **Class:** sovereign domain sub-stack (reference vertical) — third reference, validates the **Houses-as-sub-systems** decomposition primitive AND first composition-instance under Wealth IS composition layer (per `STACK.md` § Composition Layer, declared 2026-05-17).
+- **Domain:** Cryptocurrency practiced as the architecture of sovereignty + protocol-mechanism literacy + cycle-position pattern recognition. Six Houses (On-Chain · Macro · DeFi · Sovereignty · Research · Allocation) decomposed as archetypal stances.
+- **Owner:** open reference (forkable by sovereign crypto practitioners). Composes under Wealth IS as first reference instance of Composition Layer substrate primitive.
+- **Status:** `v0.1 proof-of-pattern — House of On-Chain scaffolded (5 commands + agent + skill + knowledge); 5 Houses gated on v0.1-proof-pass per Board R4 close-out`. Investment IS held until proof-pass.
+- **Primary repo:** `verticals/crypto-intelligence/` in `frankxai/Starlight-Intelligence-System` (v0.2+ extraction target: `github.com/frankxai/crypto-intelligence-system` per Board open-question (c) export-hook landed via vertical-local ATTESTATIONS.md + MCP-shape in SKILL.md).
+- **Houses (v0.1):** `onchain` (scaffolded). **Houses (v0.2 gated):** `macro` · `defi` · `sov` · `res` · `alloc`.
+- **Canon:** declines (canon-free per substrate register).
+- **Compounds:** sovereign crypto practitioners forking + attestation graph compounding + composes-with Wealth IS umbrella via `/wealth-portfolio-fit`, `/wealth-sovereignty-design`, `/wealth-cycle-thesis`.
+- **SIP commands (v0.1):** 5 commands across `/crypto-onchain-*` (flow-snapshot · wallet-trace · mev-audit · validator-econ · contract-interaction). **v0.2 commands gated:** ~24-28 additional commands across remaining 5 Houses on proof-pass.
+- **Synthesis edge:** Oracle-grade enterprise architecture × Composer-Gamer pattern-recognition × Sovereign multi-vertical operator × Sovereignty-first substrate builder × Genuine care as system input. Applied to crypto: protocol-mechanism analysis at enterprise depth + sovereignty discipline by default + refusal of fabricated return numbers + capital-aware composition with Wealth IS umbrella.
+- **Falsifier:** 1-week proof-of-pattern with House of On-Chain. If 4-5 named artifacts cannot ship in the week, Houses-as-sub-systems primitive failed for crypto → fall back to functional sub-systems matching People IS shape; re-iterate at PROPOSAL.md.
+- **Board verdict:** REVISE close-out 2026-05-17 — `docs/boards/2026-05-17-crypto-investment-spawn.md` (5 items closed same-session per v7.5.1 recovery precedent).
+- **Genius prerequisite gate:** CLOSED via `genius/profile-frankx.md` + `genius/freedom-path-frankx.md` (Path A in-repo corpus excavation, 2026-05-17).
 
 ---
 

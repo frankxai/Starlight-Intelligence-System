@@ -1,3 +1,9 @@
+---
+name: intelligence/strategic-reasoning
+description: Use when reasoning about strategy, long-term direction, trade-offs, or roadmaps — provides structured analysis that balances ambition with reality, near-term gains with long-term value, and competing priorities. Default skill for Starlight Navigator and Starlight Prime.
+type: substrate
+---
+
 # Strategic Reasoning
 
 > *"Think in decades. Act in days."*

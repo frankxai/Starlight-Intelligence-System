@@ -1,0 +1,10 @@
+# Obsidian workspace state — user-local UI prefs, not source of truth.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/plugins/
+.obsidian/themes/
+
+# Generated runtime artifacts.
+knowledge-graph/_brain-cache.json
+_audit/

@@ -1,0 +1,54 @@
+// {{PROJECT_NAME}} cockpit -- generated from _template.kdl.tmpl
+//
+// Launch: arc {{PROJECT_KEY}}
+// Or:     zellij --layout {{PROJECT_KEY}} --session {{PROJECT_KEY}}
+//
+// In the Dispatcher pane, run:  claude --resume {{PROJECT_KEY}}
+// (or auto-launched via cockpit-profile.json — see cockpit-zellij/PROFILES.md)
+//
+// Pane geometry (Orchestrator tab):
+//
+//   +------------------------------------------------------------+
+//   |  DISPATCHER (top, full-width, 30% height)                  |
+//   +----------+----------+----------+----------+----------------+
+//   |  CLAUDE  |  CODEX   |  GEMINI  | OPENCODE |  (4 workers)   |
+//   +----------+----------+----------+----------+----------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Orchestrator" focus=true {
+        pane split_direction="horizontal" {
+            pane size="30%" name="Dispatcher" cwd="{{PROJECT_PATH}}"{{LAUNCH_DISPATCHER}}
+            pane split_direction="vertical" {
+                pane name="Claude" cwd="{{PROJECT_PATH}}"{{LAUNCH_CLAUDE}}
+                pane name="Codex" cwd="{{PROJECT_PATH}}"{{LAUNCH_CODEX}}
+                pane name="Gemini" cwd="{{PROJECT_PATH}}"{{LAUNCH_GEMINI}}
+                pane name="OpenCode" cwd="{{PROJECT_PATH}}"{{LAUNCH_OPENCODE}}
+            }
+        }
+    }
+
+    tab name="Files" {
+        pane name="files" cwd="{{PROJECT_PATH}}"
+    }
+
+    tab name="Status" {
+        pane name="git" cwd="{{PROJECT_PATH}}"
+    }
+
+    tab name="Debug" {
+        pane name="logs" cwd="{{PROJECT_PATH}}"
+    }
+
+    tab name="Audit" {
+        pane name="audit-tail" cwd="{{PROJECT_PATH}}" command="pwsh" {
+            args "-NoExit" "-File" "C:\\Users\\frank\\Starlight-Intelligence-System\\cockpit-zellij\\scripts\\tail-audit.ps1"
+        }
+    }
+}

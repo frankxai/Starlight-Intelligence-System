@@ -28,6 +28,7 @@ import { createInterface } from 'node:readline';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getSipVersion } from './version.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -485,7 +486,7 @@ export class StarlightSubstrateMcpServer {
       return { jsonrpc: '2.0', id: rpcId, result: {
         protocolVersion: '2024-11-05',
         capabilities: { tools: {} },
-        serverInfo: { name: 'starlight-substrate-mcp', version: '1.1.0' },
+        serverInfo: { name: 'starlight-substrate-mcp', version: getSipVersion().replace(/^v/, '') },
       }};
     }
     if (method === 'tools/list') {

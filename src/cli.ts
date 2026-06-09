@@ -23,14 +23,21 @@
  */
 
 import { parseArgs } from "node:util";
+import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { homedir } from "node:os";
 import { StarlightIntelligence } from "./index.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
 import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
+import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
+import { seedVaults } from "./seed.js";
+import { AgentOpsLedger, ApprovalGateRequiredError, readRecentAgentEvents } from "./ledgers.js";
+import { listModules, setModuleEnabled } from "./modules.js";
+import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
 
@@ -97,14 +104,34 @@ Usage:
 
 Commands:
   init                            Initialize .starlight/ in current project
+  init --vaults                   Seed the six JSONL memory vaults the MCP server reads
   generate                        Generate context file from .starlight/ config
   guidance                        Generate behavioral guidance for session injection
   sync                            Sync ACOS trajectories into SIS memory
+  doctor                          Check CLI, dispatcher, and cockpit readiness
+  dispatch <prompt>               Route a prompt through Arcanea orchestrator
+  cockpit [project]               Launch or attach to the Zellij cockpit
   score                           Generate unified intelligence report
   project register <name> <path>  Register a project for federated multi-sync
   project list                    List registered projects
   project sync-all                Sync all registered projects at once
+  forge                           Synthesize regression tests from vault patterns
+  workpacket create               Create a WorkPacket (--title --mission --risk)
+  workpacket list                 List recent WorkPackets
+  workpacket show <id>            Show a single WorkPacket
+  workpacket next                 Show oldest pending WorkPacket
+  workpacket complete <id>        Mark a WorkPacket completed and emit AgentEvent
+  workpacket start <id>           Mark a WorkPacket in_progress and emit AgentEvent
+  workpacket block <id>           Mark a WorkPacket blocked and emit AgentEvent
+  events tail                     Show recent AgentEvents (--limit --date)
+  memory rebuild                  Rebuild SQLite shadow indices from JSONL ledgers
+  modules list                    List Intelligence System modules
+  modules enable <id>             Enable an Intelligence System module locally
+  modules disable <id>            Disable an Intelligence System module locally
   vault list                      List all memory entries
+  vault health                    Show repo-local memory health
+  vault refresh                   Run dreaming consolidation and stamp vault freshness
+  vault consolidate               Alias for vault refresh
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
   vault search <query>            Search memories
@@ -120,18 +147,37 @@ Options:
   --acos-path <path>              Path to ACOS trajectories directory (for sync/score/guidance)
   --max-lines <n>                 Max lines in guidance output (default: 40)
   --dry-run                       Preview sync without writing (for sync)
+  --attach                        Attach to an existing Zellij session when possible
+  --task <task>                   Arcanea task class for dispatch (default: code.debug)
+  --surface <surface>             Arcanea routing surface (default: claude-arcanea)
+  --model <model>                 Override Arcanea model selection
   --min-score <n>                 Minimum success score to sync (0.0-1.0)
   --category <cat>                Memory category: pattern, decision, insight, error, preference
   --confidence <n>                Confidence score (0.0-1.0) for vault set
   --tags <t1,t2>                  Comma-separated tags for vault set
   --pattern <pattern>             Orchestration pattern: direct, sequential, parallel, iterative, cascade, broadcast
+  --mission <text>                WorkPacket mission statement
+  --risk <level>                  WorkPacket risk: low, medium, high, critical
+  --agent <id>                    WorkPacket assigned agent (default: unassigned)
+  --status <status>               Filter workpacket list by status
+  --date <YYYY-MM-DD>             Event date for events tail
+  --summary <text>                Transition summary for workpacket lifecycle commands
+  --limit <n>                     Maximum number of items to list
+  --vaults                        (with init) seed the six MCP memory vaults
+  --vault-dir <path>              (with init --vaults) target dir (default: ~/.starlight/vaults)
+  --force                         (with init --vaults) overwrite existing vault files
 
 Examples:
   starlight init
+  starlight init --vaults
+  starlight init --vaults --vault-dir ~/.starlight/vaults
   starlight generate --target cursor --output .cursorrules
   starlight guidance --project frankx --acos-path ~/.claude/trajectories
   starlight sync --acos-path ~/.claude/trajectories
   starlight sync --dry-run
+  starlight doctor
+  starlight dispatch --task code.debug --dry-run "find the failing test"
+  starlight cockpit sis
   starlight score
   starlight project register frankx ~/.claude/trajectories
   starlight project list
@@ -166,6 +212,28 @@ function getVersion(): string {
   return "unknown";
 }
 
+function getPackageRoot(): string {
+  const searchDirs = [
+    join(import.meta.dirname ?? ".", ".."),
+    import.meta.dirname ?? ".",
+    process.cwd(),
+  ];
+
+  for (const dir of searchDirs) {
+    try {
+      const candidate = join(dir, "package.json");
+      const pkg = JSON.parse(readFileSync(candidate, "utf-8"));
+      if (pkg.name === "@arcanea/starlight-intelligence-system") {
+        return dir;
+      }
+    } catch {
+      // Continue searching
+    }
+  }
+
+  return process.cwd();
+}
+
 function createSIS(): StarlightIntelligence {
   const memoryPath = join(process.cwd(), STARLIGHT_DIR, "memory.json");
   const sis = new StarlightIntelligence({ memoryPath });
@@ -175,6 +243,33 @@ function createSIS(): StarlightIntelligence {
 
 function formatJSON(obj: unknown): string {
   return JSON.stringify(obj, null, 2);
+}
+
+function runShell(
+  command: string,
+  args: string[],
+  inherit = false,
+  extraEnv?: Record<string, string>,
+): ReturnType<typeof spawnSync> {
+  return spawnSync(command, args, {
+    shell: true,
+    encoding: "utf-8",
+    stdio: inherit ? "inherit" : "pipe",
+    timeout: 60_000,
+    env: extraEnv ? { ...process.env, ...extraEnv } : process.env,
+  });
+}
+
+function commandSummary(command: string, args: string[] = ["--version"]): {
+  ok: boolean;
+  label: string;
+} {
+  const result = runShell(command, args);
+  const output = `${result.stdout ?? ""}${result.stderr ?? ""}`.trim().split(/\r?\n/)[0] ?? "";
+  return {
+    ok: result.status === 0,
+    label: output || (result.error ? result.error.message : "available"),
+  };
 }
 
 // ── Commands ────────────────────────────────────────────────
@@ -201,6 +296,35 @@ function cmdInit(): void {
   console.log("  .starlight/memory.json   — Memory vault (empty)");
   console.log("");
   console.log("Edit these files, then run: starlight generate");
+}
+
+/**
+ * Seed the six canonical JSONL vaults that the MCP server reads. A fresh
+ * install has no `~/.starlight/vaults` directory, so this is the "make the
+ * empty state self-explaining" first-run step referenced by the README MCP
+ * quick-start. Idempotent: existing vault files are kept unless --force.
+ */
+function cmdInitVaults(vaultDirArg?: string, force = false): void {
+  const vaultDir = vaultDirArg
+    ? resolve(vaultDirArg)
+    : join(homedir(), ".starlight", "vaults");
+
+  const result = seedVaults(vaultDir, { force });
+
+  console.log(`[starlight] Vaults at ${result.vaultDir}`);
+  if (result.created.length > 0) {
+    console.log(
+      `  created: ${result.created.join(", ")}` +
+      `${result.usedExamples ? " (seeded with public examples)" : ""}`,
+    );
+  }
+  if (result.skipped.length > 0) {
+    console.log(`  kept (already present): ${result.skipped.join(", ")}`);
+    console.log("  re-run with --force to overwrite existing vaults.");
+  }
+  console.log("");
+  console.log("Point your MCP client at this directory:");
+  console.log(`  node node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js --vault-dir ${result.vaultDir}`);
 }
 
 function cmdGenerate(target?: string, outputPath?: string): void {
@@ -234,6 +358,7 @@ function cmdVault(action: string, args: string[], options: {
   tags?: string;
 }): void {
   const sis = createSIS();
+  const root = getPackageRoot();
 
   switch (action) {
     case "list": {
@@ -255,6 +380,35 @@ function cmdVault(action: string, args: string[], options: {
         console.log(`Newest: ${stats.newestEntry}`);
       }
       console.log("\nUse 'starlight vault search <query>' to find specific entries.");
+      break;
+    }
+
+    case "health": {
+      printMemoryHealth(inspectMemoryHealth(root));
+      break;
+    }
+
+    case "refresh":
+    case "consolidate": {
+      const result = runShell("node", ["--import", "tsx", "scripts/dreaming-run.ts"], false, {
+        STARLIGHT_VAULT_DIR: join(root, "memory", "vaults"),
+        STARLIGHT_SESSIONS_DIR: join(root, "memory", "voice-sessions"),
+      });
+
+      if (result.status !== 0) {
+        console.error("[starlight] Memory refresh failed.");
+        const output = `${result.stdout ?? ""}${result.stderr ?? ""}`.trim();
+        if (output) console.error(output);
+        process.exitCode = result.status ?? 1;
+        return;
+      }
+
+      const today = new Date().toISOString().slice(0, 10);
+      const updated = updateVaultConsolidationStamps(root, today);
+      console.log("[starlight] Memory refresh complete.");
+      console.log(`  Dreaming receipt: ${`${result.stdout ?? ""}${result.stderr ?? ""}`.trim() || "written"}`);
+      console.log(`  Vault stamps updated: ${updated.length}`);
+      printMemoryHealth(inspectMemoryHealth(root));
       break;
     }
 
@@ -335,8 +489,31 @@ function cmdVault(action: string, args: string[], options: {
 
     default:
       console.error(`[starlight] Unknown vault action: "${action}".`);
-      console.error("  Available actions: list, get, set, search");
+      console.error("  Available actions: list, health, refresh, consolidate, get, set, search");
       process.exitCode = 1;
+  }
+}
+
+function printMemoryHealth(memory: ReturnType<typeof inspectMemoryHealth>): void {
+  console.log("\nMemory Surfaces:");
+  console.log(`  ${memory.status === "healthy" ? "OK  " : memory.status === "attention-needed" ? "WARN" : "MISS"} overall               ${memory.status}`);
+  console.log(`  ${memory.vaults.filter((v) => v.present).length}/${memory.vaults.length} vaults present`);
+  for (const vault of memory.vaults) {
+    const age = vault.ageDays == null ? "n/a" : `${vault.ageDays}d`;
+    const stamp = vault.lastConsolidated ?? "missing";
+    console.log(
+      `  ${vault.stale ? "WARN" : "OK  "} ${vault.name.padEnd(12)} ${stamp} (${age})`
+    );
+  }
+  console.log(`  ${memory.voiceSessions.count} voice sessions${memory.voiceSessions.latest ? ` | latest: ${memory.voiceSessions.latest}` : ""}`);
+  console.log(`  KG index rows: ${memory.knowledgeGraph.indexRows} | brain cache: ${memory.knowledgeGraph.brainCachePresent ? "present" : "missing"}`);
+  console.log(`  mempalace: atoms ${memory.mempalace.atomRows ?? 0} | atoms.jsonl ${memory.mempalace.atomsPresent ? "present" : "missing"} | vectors.npy ${memory.mempalace.vectorsPresent ? "present" : "missing"}`);
+  console.log(`  consolidation log: ${memory.consolidationLog.entries} receipts${memory.consolidationLog.latestTimestamp ? ` | latest: ${memory.consolidationLog.latestTimestamp}` : ""}`);
+  if (memory.notes.length > 0) {
+    console.log("  Notes:");
+    for (const note of memory.notes) {
+      console.log(`    - ${note}`);
+    }
   }
 }
 
@@ -533,6 +710,247 @@ function cmdProject(
   }
 }
 
+function isRiskLevel(value: string | undefined): value is RiskLevel {
+  return value === "low" || value === "medium" || value === "high" || value === "critical";
+}
+
+function isWorkPacketStatus(value: string | undefined): value is WorkPacketStatus {
+  return value === "pending" || value === "in_progress" || value === "blocked" ||
+    value === "completed" || value === "cancelled";
+}
+
+function cmdWorkpacket(
+  action: string,
+  args: string[],
+  options: {
+    title?: string;
+    mission?: string;
+    risk?: string;
+    agent?: string;
+    status?: string;
+    summary?: string;
+    limit?: string;
+  },
+): void {
+  const root = getPackageRoot();
+  const ledger = new AgentOpsLedger(root);
+
+  try {
+    switch (action) {
+      case "create": {
+        const title = options.title;
+        const mission = options.mission;
+        const risk = options.risk;
+
+        if (!title || !mission || !risk) {
+          console.error("[starlight] Error: workpacket create requires --title, --mission, --risk.");
+          console.error('  Example: starlight workpacket create --title "audit" --mission "scan repo" --risk low');
+          process.exitCode = 1;
+          return;
+        }
+        if (!isRiskLevel(risk)) {
+          console.error(`[starlight] Error: invalid --risk value "${risk}". Use low|medium|high|critical.`);
+          process.exitCode = 1;
+          return;
+        }
+
+        try {
+          const packet = ledger.createWorkPacket({
+            title,
+            mission,
+            riskLevel: risk,
+            assignedAgent: options.agent ?? "unassigned",
+          });
+
+          console.log(`[starlight] WorkPacket created: ${packet.id}`);
+          console.log(formatJSON(packet));
+        } catch (err) {
+          if (err instanceof ApprovalGateRequiredError) {
+            // Substrate invariant — gate row was persisted, packet was NOT.
+            console.error(`[starlight] ${err.message}`);
+            console.error(`[starlight] Gate row: ${err.gate.id} (status: ${err.gate.status})`);
+            console.error(`[starlight] The WorkPacket itself was NOT persisted. Approve the gate to proceed.`);
+            process.exitCode = 2; // distinct exit code: gated, not error
+            return;
+          }
+          throw err;
+        }
+        break;
+      }
+
+      case "list": {
+        const limit = options.limit ? parseInt(options.limit, 10) : 20;
+        const status = options.status;
+        const packets = ledger.listWorkPackets({
+          limit: Math.max(1, limit),
+          status: isWorkPacketStatus(status) ? status : undefined,
+        });
+
+        if (packets.length === 0) {
+          console.log("[starlight] No WorkPackets found.");
+          return;
+        }
+
+        console.log(`[starlight] ${packets.length} WorkPacket(s):\n`);
+        for (const p of packets) {
+          console.log(`  ${p.id}`);
+          console.log(`    [${p.status}] (${p.riskLevel}) ${p.title}`);
+          console.log(`    agent: ${p.assignedAgent} | created: ${p.createdAt}`);
+          console.log(`    mission: ${p.mission.length > 80 ? p.mission.slice(0, 80) + "..." : p.mission}`);
+          console.log("");
+        }
+        break;
+      }
+
+      case "next": {
+        const packet = ledger.nextPendingWorkPacket();
+        if (!packet) {
+          console.log("[starlight] No pending WorkPackets.");
+          return;
+        }
+        console.log(formatJSON(packet));
+        break;
+      }
+
+      case "show": {
+        const id = args[0];
+        if (!id) {
+          console.error("[starlight] Error: workpacket show requires an id.");
+          process.exitCode = 1;
+          return;
+        }
+        const packet = ledger.getWorkPacket(id);
+        if (!packet) {
+          console.error(`[starlight] WorkPacket not found: ${id}`);
+          process.exitCode = 1;
+          return;
+        }
+        console.log(formatJSON(packet));
+        break;
+      }
+
+      case "start":
+      case "block":
+      case "complete": {
+        const id = args[0];
+        if (!id) {
+          console.error(`[starlight] Error: workpacket ${action} requires an id.`);
+          process.exitCode = 1;
+          return;
+        }
+        const status: WorkPacketStatus =
+          action === "start" ? "in_progress" : action === "block" ? "blocked" : "completed";
+        const { packet, event } = ledger.transitionWorkPacket({
+          id,
+          status,
+          agentId: options.agent,
+          summary: options.summary,
+          toolsUsed: [`starlight.workpacket.${action}`],
+        });
+        console.log(`[starlight] WorkPacket ${id} -> ${packet.status}`);
+        console.log(`[starlight] AgentEvent logged: ${event.id}`);
+        console.log(formatJSON(packet));
+        break;
+      }
+
+      default:
+        console.error(`[starlight] Unknown workpacket action: "${action}".`);
+        console.error("  Available actions: create, list, show, next, start, block, complete");
+        process.exitCode = 1;
+    }
+  } finally {
+    ledger.close();
+  }
+}
+
+function cmdEvents(action: string, options: { date?: string; limit?: string }): void {
+  const root = getPackageRoot();
+  switch (action) {
+    case "tail": {
+      const limit = options.limit ? parseInt(options.limit, 10) : 20;
+      const events = readRecentAgentEvents(root, {
+        date: options.date,
+        limit: Math.max(1, limit),
+      });
+      if (events.length === 0) {
+        console.log("[starlight] No AgentEvents found.");
+        return;
+      }
+      for (const event of events) {
+        console.log(`${event.timestamp}  ${event.id}  ${event.agentId}  ${event.eventType}`);
+        if (event.summary) console.log(`  ${event.summary}`);
+      }
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown events action: "${action}".`);
+      console.error("  Available actions: tail");
+      process.exitCode = 1;
+  }
+}
+
+function cmdMemory(action: string): void {
+  const root = getPackageRoot();
+  switch (action) {
+    case "rebuild": {
+      const ledger = new AgentOpsLedger(root);
+      try {
+        const stats = ledger.rebuildFromLedgers();
+        console.log("[starlight] SQLite shadow indices rebuilt from JSONL ledgers.");
+        console.log(formatJSON({ sqlite: ledger.getSqlitePath(), ...stats }));
+      } finally {
+        ledger.close();
+      }
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown memory action: "${action}".`);
+      console.error("  Available actions: rebuild");
+      process.exitCode = 1;
+  }
+}
+
+function cmdModules(action: string, args: string[]): void {
+  const root = getPackageRoot();
+  try {
+    switch (action) {
+      case "list": {
+        const modules = listModules(root);
+        console.log(`[starlight] ${modules.length} Intelligence System module(s):\n`);
+        for (const mod of modules) {
+          console.log(`  ${mod.enabled ? "ON " : "OFF"} ${mod.id.padEnd(20)} ${mod.name}`);
+          console.log(`      ${mod.kind} | views: ${mod.dashboardViews.join(", ")}`);
+        }
+        break;
+      }
+      case "enable":
+      case "disable": {
+        const id = args[0];
+        if (!id) {
+          console.error(`[starlight] Error: modules ${action} requires an id.`);
+          process.exitCode = 1;
+          return;
+        }
+        // --acked acknowledges privacy-scoped permissions for private-module /
+        // future-module / vault:private-scoped modules. Required to enable,
+        // ignored on disable. Mirrors sis.pack.install permissions_acked.
+        const acked = args.includes("--acked");
+        const mod = setModuleEnabled(root, id, action === "enable", { permissionsAcked: acked });
+        console.log(`[starlight] Module ${mod.id} ${mod.enabled ? "enabled" : "disabled"}.`);
+        console.log(formatJSON(mod));
+        break;
+      }
+      default:
+        console.error(`[starlight] Unknown modules action: "${action}".`);
+        console.error("  Available actions: list, enable, disable");
+        process.exitCode = 1;
+    }
+  } catch (err) {
+    console.error(`[starlight] ${err instanceof Error ? err.message : String(err)}`);
+    process.exitCode = 1;
+  }
+}
+
 function cmdStats(): void {
   const sis = createSIS();
   const stats = sis.getStats();
@@ -560,6 +978,198 @@ function cmdVersion(): void {
   console.log(`@arcanea/starlight-intelligence-system v${version}`);
 }
 
+function cmdDoctor(): void {
+  console.log("Starlight Operator Doctor");
+  console.log("=========================\n");
+
+  const checks: Array<[string, string, string[]]> = [
+    ["Claude Code", "claude", ["--version"]],
+    ["Codex CLI", "codex", ["--version"]],
+    ["Gemini CLI", "gemini", ["--version"]],
+    ["OpenCode", "opencode", ["--version"]],
+    ["Zellij", "zellij", ["--version"]],
+    ["Arcanea dispatcher", "arco", ["--version"]],
+    ["ACOS", "acos", ["--version"]],
+    ["Starlight", "starlight", ["version"]],
+  ];
+
+  let failures = 0;
+  for (const [label, command, args] of checks) {
+    const result = commandSummary(command, args);
+    if (!result.ok) failures++;
+    console.log(`  ${result.ok ? "OK  " : "MISS"} ${label.padEnd(20)} ${result.label}`);
+  }
+
+  const geminiMcp = runShell("gemini", ["mcp", "list"]);
+  const geminiMcpOutput = `${geminiMcp.stdout ?? ""}${geminiMcp.stderr ?? ""}`.trim();
+  const geminiMcpLine = geminiMcpOutput
+    .split(/\r?\n/)
+    .find((line) => /starlight-substrate/i.test(line))
+    ?? geminiMcpOutput.split(/\r?\n/)[0]
+    ?? "unavailable";
+  const geminiMcpOk = geminiMcp.status === 0 && /starlight-substrate/i.test(geminiMcpOutput);
+  if (!geminiMcpOk) failures++;
+  console.log(`  ${geminiMcpOk ? "OK  " : "MISS"} Gemini MCP           ${geminiMcpLine}`);
+
+  const root = getPackageRoot();
+  const mcpPath = join(root, "dist", "mcp-server.js");
+  const cockpitSmoke = join(root, "cockpit-zellij", "test", "smoke.ps1");
+  console.log(`  ${existsSync(mcpPath) ? "OK  " : "MISS"} SIS MCP build         ${mcpPath}`);
+  console.log(`  ${existsSync(cockpitSmoke) ? "OK  " : "MISS"} Zellij smoke test    ${cockpitSmoke}`);
+
+  printMemoryHealth(inspectMemoryHealth(root));
+
+  console.log("\nArcanea Dispatcher:");
+  const arcoDoctor = runShell("arco", ["doctor"]);
+  if (arcoDoctor.status === 0) {
+    const lines = `${arcoDoctor.stdout ?? ""}${arcoDoctor.stderr ?? ""}`
+      .trim()
+      .split(/\r?\n/)
+      .filter((line) => line.trim().length > 0)
+      .slice(0, 12);
+    for (const line of lines) console.log(`  ${line}`);
+  } else {
+    failures++;
+    console.log("  MISS arco doctor failed.");
+  }
+
+  console.log("");
+  if (failures > 0 || !existsSync(mcpPath) || !existsSync(cockpitSmoke)) {
+    console.log("[starlight] Operator readiness has gaps.");
+    process.exitCode = 1;
+  } else {
+    console.log("[starlight] Operator path ready: SIS + Arcanea dispatcher + Zellij cockpit.");
+  }
+}
+
+function cmdDispatch(
+  prompt: string,
+  options: {
+    task?: string;
+    surface?: string;
+    model?: string;
+    dryRun?: boolean;
+  }
+): void {
+  if (!prompt.trim()) {
+    console.error("[starlight] Error: dispatch requires a prompt.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const task = options.task ?? "code.debug";
+  const surface = options.surface ?? "claude-arcanea";
+  const args = ["run", "--task", task, "--surface", surface];
+  if (options.model) args.push("--model", options.model);
+  if (options.dryRun) args.push("--dry-run");
+  args.push(prompt);
+
+  // B1 / Wave 2 (2026-05-11) — review-revised 2026-05-11: load per-harness
+  // system prompt from core/orchestrator/harnesses/<harness>/system-prompt.md
+  // and pass via env STARLIGHT_HARNESS_PROMPT. Arcanea's `arco run` reads this
+  // env (once their side ships) and prepends to the target CLI's system prompt.
+  //
+  // Code-reviewer C1 fix: explicit surface→harness map replaces the regex
+  // chain `surface.replace(/-arcanea$/, "").replace(/^.*-/, "")` which broke
+  // on multi-segment surfaces (e.g., "gemini-cli-arcanea" → "cli", wrong).
+  const SURFACE_TO_HARNESS: Record<string, string> = {
+    "claude-arcanea": "claude",
+    "codex-arcanea": "codex",
+    "gemini-arcanea": "gemini",
+    "opencode-arcanea": "opencode",
+    "claude": "claude",
+    "codex": "codex",
+    "gemini": "gemini",
+    "opencode": "opencode",
+  };
+  const harness = SURFACE_TO_HARNESS[surface];
+  let harnessEnv: Record<string, string> | undefined;
+  if (!harness) {
+    console.log(`[starlight] Unknown surface '${surface}' — no harness prompt injection (known: ${Object.keys(SURFACE_TO_HARNESS).join(", ")})`);
+  } else {
+    const harnessPromptPath = join(
+      getPackageRoot(),
+      "core",
+      "orchestrator",
+      "harnesses",
+      harness,
+      "system-prompt.md",
+    );
+    try {
+      const promptText = readFileSync(harnessPromptPath, "utf-8");
+      harnessEnv = {
+        STARLIGHT_HARNESS_PROMPT: promptText,
+        STARLIGHT_HARNESS_PROMPT_PATH: harnessPromptPath,
+        STARLIGHT_HARNESS_NAME: harness,
+      };
+      console.log(`[starlight] Harness prompt loaded: ${harness} (${promptText.length} chars)`);
+    } catch (e: unknown) {
+      // ENOENT = expected fallback path (fresh checkout, harness not scaffolded).
+      // Other errors (EACCES, EISDIR, encoding) should surface.
+      const code = (e as { code?: string } | null)?.code;
+      if (code === "ENOENT") {
+        console.log(`[starlight] No harness prompt at ${harnessPromptPath} — falling back to bare arco`);
+      } else {
+        console.warn(`[starlight] Harness prompt read failed (code=${code}): ${(e as Error).message}`);
+      }
+    }
+  }
+
+  console.log("[starlight] Dispatching via Arcanea orchestrator");
+  console.log(`  task=${task}`);
+  console.log(`  surface=${surface}`);
+  console.log("");
+
+  const result = runShell("arco", args, true, harnessEnv);
+  if (result.status !== 0) {
+    process.exitCode = result.status ?? 1;
+  }
+}
+
+function quotePowerShellArg(value: string): string {
+  return `'${value.replace(/'/g, "''")}'`;
+}
+
+function cmdCockpit(project?: string, attach?: boolean, dryRun?: boolean): void {
+  const root = getPackageRoot();
+  const script = join(root, "cockpit-zellij", "scripts", "zellij-aliases.ps1");
+  const command = attach ? "arc-attach" : "arc";
+  const key = project?.trim();
+
+  if (dryRun) {
+    console.log(`[starlight] Would launch cockpit: ${command}${key ? ` ${key}` : ""}`);
+    return;
+  }
+
+  if (!existsSync(script)) {
+    console.error(`[starlight] Error: cockpit alias script not found at ${script}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  const psCommand = `. ${quotePowerShellArg(script)}; ${command}${key ? ` ${quotePowerShellArg(key)}` : ""}`;
+  const result = runShell("pwsh", ["-NoProfile", "-Command", psCommand], true);
+  if (result.status !== 0) {
+    process.exitCode = result.status ?? 1;
+  }
+}
+
+async function cmdForge(): Promise<void> {
+  const sis = new StarlightIntelligence();
+  console.log("[starlight] Initiating Test Forge...");
+  const files = await sis.forgeTests();
+  
+  if (files.length === 0) {
+    console.log("[starlight] No verified technical patterns found to forge.");
+  } else {
+    console.log(`[starlight] Successfully forged ${files.length} regression tests:`);
+    for (const file of files) {
+      console.log(`  - ${file}`);
+    }
+    console.log("\n[starlight] Run 'npm test' to execute the new tests.");
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -573,11 +1183,26 @@ async function main(): Promise<void> {
       "acos-path": { type: "string" },
       "max-lines": { type: "string" },
       "dry-run": { type: "boolean" },
+      attach: { type: "boolean" },
+      task: { type: "string" },
+      surface: { type: "string" },
+      model: { type: "string" },
       "min-score": { type: "string" },
       category: { type: "string" },
       confidence: { type: "string" },
       tags: { type: "string" },
       pattern: { type: "string" },
+      title: { type: "string" },
+      mission: { type: "string" },
+      risk: { type: "string" },
+      agent: { type: "string" },
+      status: { type: "string" },
+      date: { type: "string" },
+      summary: { type: "string" },
+      limit: { type: "string" },
+      vaults: { type: "boolean" },
+      "vault-dir": { type: "string" },
+      force: { type: "boolean" },
     },
     strict: false,
   });
@@ -595,7 +1220,11 @@ async function main(): Promise<void> {
 
   switch (command) {
     case "init":
-      cmdInit();
+      if (values.vaults) {
+        cmdInitVaults(asString(values["vault-dir"]), Boolean(values.force));
+      } else {
+        cmdInit();
+      }
       break;
 
     case "generate":
@@ -624,11 +1253,34 @@ async function main(): Promise<void> {
       break;
     }
 
+    case "forge":
+      await cmdForge();
+      break;
+
     case "sync":
       cmdSync(asString(values["acos-path"]), {
         dryRun: values["dry-run"] === true,
         minScore: asString(values["min-score"]),
       });
+      break;
+
+    case "doctor":
+      cmdDoctor();
+      break;
+
+    case "dispatch": {
+      const prompt = positionals.slice(1).join(" ");
+      cmdDispatch(prompt, {
+        task: asString(values.task),
+        surface: asString(values.surface),
+        model: asString(values.model),
+        dryRun: values["dry-run"] === true,
+      });
+      break;
+    }
+
+    case "cockpit":
+      cmdCockpit(positionals[1], values.attach === true, values["dry-run"] === true);
       break;
 
     case "score":
@@ -653,6 +1305,61 @@ async function main(): Promise<void> {
     case "orchestrate": {
       const intent = positionals.slice(1).join(" ");
       await cmdOrchestrate(intent, asString(values.pattern));
+      break;
+    }
+
+    case "workpacket": {
+      const wpAction = positionals[1];
+      if (!wpAction) {
+        console.error("[starlight] Error: workpacket requires an action (create, list, show, next, start, block, complete).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdWorkpacket(wpAction, positionals.slice(2), {
+        title: asString(values.title),
+        mission: asString(values.mission),
+        risk: asString(values.risk),
+        agent: asString(values.agent),
+        status: asString(values.status),
+        summary: asString(values.summary),
+        limit: asString(values.limit),
+      });
+      break;
+    }
+
+    case "events": {
+      const eventsAction = positionals[1];
+      if (!eventsAction) {
+        console.error("[starlight] Error: events requires an action (tail).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdEvents(eventsAction, {
+        date: asString(values.date),
+        limit: asString(values.limit),
+      });
+      break;
+    }
+
+    case "memory": {
+      const memoryAction = positionals[1];
+      if (!memoryAction) {
+        console.error("[starlight] Error: memory requires an action (rebuild).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdMemory(memoryAction);
+      break;
+    }
+
+    case "modules": {
+      const modulesAction = positionals[1];
+      if (!modulesAction) {
+        console.error("[starlight] Error: modules requires an action (list, enable, disable).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdModules(modulesAction, positionals.slice(2));
       break;
     }
 

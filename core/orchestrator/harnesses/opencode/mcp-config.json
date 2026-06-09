@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "_comment": "OpenCode harness MCP scope for Starlight Orchestrator. Empty by design — OpenCode operates against text in / text out. Any structured-data need routes to Claude Code primary. Built on SIP — see footer.",
+  "_harness": "opencode",
+  "_role": "latency-bound",
+  "_model": "Groq Llama 4 Scout (free tier)",
+  "_loaded_when": "anything < 30s round-trip, free-tier-acceptable, low-stakes routing decisions, research summaries with no side effects",
+  "_write_policy": "NONE. OpenCode does not write — neither substrate nor intel/ outputs. Text-in, text-out only.",
+  "_endpoint": {
+    "_comment": "Groq endpoint configured at the CLI level, not in MCP config. Phase 1 deliverable: wire OpenCode CLI to Groq's Llama 4 Scout free-tier endpoint. No MCP layer needed — the endpoint is the entire harness surface.",
+    "provider": "groq",
+    "model": "llama-4-scout",
+    "tier": "free",
+    "configured_via": "OpenCode CLI config file (e.g. ~/.opencode/config.toml), not this MCP config",
+    "_status": "scaffold — endpoint config lands in Phase 1.2 per MASSIVE_ACTION_PLAN.md"
+  },
+  "mcpServers": {
+    "_comment": "Empty by design. OpenCode is a thinking shortcut, not an executor. Adding MCPs here would violate the harness role. If a turn needs an MCP, escalate to Claude Code primary."
+  },
+  "_secrets_policy": {
+    "_comment": "OpenCode handles no secrets. The Groq API key is the only credential, and it lives in OpenCode CLI config outside this file via environment variable. The harness layer carries no secrets surface.",
+    "secrets_allowed": false,
+    "groq_api_key_via": "${GROQ_API_KEY}"
+  },
+  "_built_on_sip": {
+    "substrate": "starlightintelligence.org/protocol",
+    "version": "v1.1.0",
+    "layers_used": ["file-contract", "attestation"],
+    "verticals": "core/orchestrator/harnesses/opencode",
+    "generated": "2026-04-26"
+  }
+}

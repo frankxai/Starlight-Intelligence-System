@@ -1,0 +1,53 @@
+# Harness + counts drift guard.
+#
+# The README advertises `npm run agents:harness-check` as the way prompt
+# surfaces "stay aligned with reality." This workflow makes that promise
+# enforceable: doc/version/count drift fails a PR here instead of reaching a
+# contributor's first command. Also runs lint, build, and the test suite so the
+# self-consistency surface (test/v80-platform-prompts.test.ts +
+# test/harness-self-check.test.ts) is gated on every change.
+#
+# Built on SIP — Starlight Intelligence Protocol
+# Layers used: [file-contract, attestation]
+
+name: Harness check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: harness-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (tsc --noEmit)
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Agent-harness drift guard
+        run: npm run agents:harness-check
+
+      - name: Tests
+        run: npm test

@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# Starlight pre-commit hook — runs registry-symmetry tests on every commit.
+#
+# Catches drift fast (<5s):
+#   - test/v76.test.ts:                  agents/AGENT_REGISTRY.md ↔ agents/*.md symmetry + frontmatter
+#   - test/v77-skill-rules.test.ts:      skills/skill-rules.json ↔ skills/**/*.md symmetry
+#   - test/v78-skill-registry.test.ts:   skills/SKILL_REGISTRY.md ↔ skill-rules.json symmetry
+#   - test/v79-vertical-coverage.test.ts: STACK.md declared verticals ↔ verticals/<slug>/ 7-file contract
+#   - test/v80-platform-prompts.test.ts: platform-prompt symmetry — CLAUDE.md, AGENTS.md,
+#                                         .cursor/rules/, .clinerules/, .gemini/, .antigravity/
+#                                         claims ↔ canonical (agent/skill/vault counts + SIP version)
+#   - test/v81-yolo.test.ts:              /yolo Hive substrate symmetry — yolo-scope.json schema,
+#                                         3 commands + 2 skills + skill-rules + CLAUDE/AGENTS/AGENT_REGISTRY
+#                                         coverage + conductor-encodes-audit-path + phase-in + REVISE-1 re-ack
+#   - test/v82-cost-plane.test.ts:        Cost Plane W2.1 substrate symmetry — cost-plane-config schema,
+#                                         Phase 1 source count = 2, instrumenter modules, cockpit pane
+#   - test/v83-finance-business.test.ts:  Finance & Business IS W3.1 substrate symmetry — registry template,
+#                                         StaleCashError, Stripe-only Phase 1, Arcanea BV scope, cockpit pane
+#   - test/v84-modules.test.ts:           Module Registry substrate symmetry — src/modules.ts ↔ STACK.md
+#                                         10-IS taxonomy + verticals/<slug>/ domain-stack coverage +
+#                                         private/future-module default-disabled invariants
+#   - test/v01-evals/*.test.ts:           Track D risk-dimension evals — permission compliance,
+#                                         pack validity, council shape, vault privacy, agent-event
+#                                         completeness, graph-edge provenance, workpacket completeness
+#                                         (only fires when Track A/B surfaces are touched)
+#
+# Full substrate suite (~12s) stays in CI / pre-push.
+#
+# Bypass: git commit --no-verify  (use sparingly; test failure means real drift)
+
+set -e
+
+# Skip on pure-doc commits (no substrate file touched). Trigger surfaces:
+#   v76-v79 era: agents/, skills/, verticals/, test/, package.json, STACK.md
+#   v80 era:     AGENTS.md, CLAUDE.md, SIP.md, SIS.md, VOICES.md, VERTICALS.md,
+#                REGISTRY.md, MEMORY.md, SKILL.md (substrate file-contract roots)
+#                .cursor/rules/, .clinerules/, .gemini/, .antigravity/ (platform adapters)
+SUBSTRATE_RE='^(agents/|skills/|verticals/|test/|package\.json|STACK\.md|AGENTS\.md|CLAUDE\.md|SIP\.md|SIS\.md|VOICES\.md|VERTICALS\.md|REGISTRY\.md|MEMORY\.md|SKILL\.md|\.cursor/rules/|\.clinerules/|\.gemini/|\.antigravity/)'
+
+if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
+    echo "→ pre-commit: substrate files touched — running symmetry tests"
+
+    # Run the nine fast symmetry tests
+    if ! node --import tsx --test \
+        test/v76.test.ts \
+        test/v77-skill-rules.test.ts \
+        test/v78-skill-registry.test.ts \
+        test/v79-vertical-coverage.test.ts \
+        test/v80-platform-prompts.test.ts \
+        test/v81-yolo.test.ts \
+        test/v82-cost-plane.test.ts \
+        test/v83-finance-business.test.ts \
+        test/v84-modules.test.ts ; then
+        echo ""
+        echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
+        exit 1
+    fi
+    echo "✓ symmetry tests pass"
+else
+    echo "→ pre-commit: no substrate files in commit — skipping symmetry tests"
+fi
+
+# Track D v0.1 evals fire on Track A/B/T4 surfaces:
+#   - src/ledgers.ts, src/types.ts (Track A schemas)
+#   - dist/mcp-server-v01.js (Track B compiled MCP server)
+#   - packages/core/schemas/ (the 13 JSON schemas)
+#   - test/v01-evals/ (the evals themselves)
+TRACK_D_RE='^(src/ledgers\.ts|src/types\.ts|dist/mcp-server-v01\.|packages/core/schemas/|test/v01-evals/|test/v01-(schemas|ledgers|mcp-tools|pack-runtime|vault-loop-privacy)\.test\.ts)'
+
+if git diff --cached --name-only | grep -qE "$TRACK_D_RE" ; then
+    echo "→ pre-commit: Track A/B/T4 surfaces touched — running v0.1 risk-dimension evals"
+    # v0.1 hardening pass completed 2026-05-11/12 — eval fixtures now align with
+    # T2-rebuild's SisMcpServerV01 constructor signature ({ repoRoot,
+    # vaultStoragePath, sanitizer }) and Stretch E's pack-runtime. Hard-gated.
+    if ! node tools/run-v01-evals.mjs ; then
+        echo ""
+        echo "✗ v0.1 eval failed — fix before commit, or --no-verify if intentional"
+        exit 1
+    fi
+    echo "✓ v0.1 evals pass"
+fi

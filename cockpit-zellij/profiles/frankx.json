@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "name": "FrankX flagship",
+  "panes": {
+    "dispatcher": {
+      "command": "claude",
+      "args": [
+        "--resume",
+        "frankx"
+      ]
+    },
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--continue",
+        "--model",
+        "claude-opus-4-7"
+      ]
+    },
+    "codex": {
+      "command": "codex.cmd",
+      "args": [
+        "resume",
+        "--last"
+      ]
+    },
+    "gemini": {
+      "command": "gemini.cmd",
+      "args": [
+        "--yolo",
+        "-m",
+        "gemini-2.5-pro"
+      ]
+    },
+    "opencode": {
+      "command": "opencode.cmd"
+    }
+  },
+  "team": {
+    "agents": [
+      "FrankX Content Creator",
+      "content-polisher",
+      "social-content-generator",
+      "Music Producer"
+    ],
+    "skills": [
+      "frankx-ai-blog",
+      "frankx-ai-content-pipeline",
+      "brand-voice",
+      "ai-architect-newsletter"
+    ]
+  }
+}

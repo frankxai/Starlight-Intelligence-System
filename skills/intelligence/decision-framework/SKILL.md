@@ -1,3 +1,9 @@
+---
+name: intelligence/decision-framework
+description: Use when making or advising on decisions with multiple options — provides structured decision-making frameworks that ensure decisions are rational, well-documented, and revisitable. Prevents decision paralysis and gut-only decisions. Default skill for Starlight Navigator and Starlight Prime.
+type: substrate
+---
+
 # Decision Framework
 
 > *"Good decisions come from good frameworks, not good luck."*

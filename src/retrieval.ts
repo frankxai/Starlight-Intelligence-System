@@ -120,7 +120,7 @@ export class RetrievalIndex {
           if (!trimmed) continue;
           let e: Record<string, unknown>;
           try { e = JSON.parse(trimmed); } catch { continue; }
-          const content = String(e.insight ?? e.wish ?? '');
+          const content = String(e.content ?? e.insight ?? e.wish ?? '');
           if (!content) continue;
           insert.run({
             id: String(e.id ?? `${vaultName}_${count}`),
@@ -173,8 +173,8 @@ export class RetrievalIndex {
 
     const where = conds.length ? 'AND ' + conds.join(' AND ') : '';
     const sql = `SELECT e.*, bm25(entries_fts) AS rank
-      FROM entries_fts fts JOIN entries e ON e.rowid = fts.rowid
-      WHERE fts MATCH @query ${where} ORDER BY rank LIMIT @limit`;
+      FROM entries_fts JOIN entries e ON e.rowid = entries_fts.rowid
+      WHERE entries_fts MATCH @query ${where} ORDER BY rank LIMIT @limit`;
 
     const rows = this.db.prepare(sql).all(params) as Array<Record<string, unknown>>;
     return rows.map(row => ({

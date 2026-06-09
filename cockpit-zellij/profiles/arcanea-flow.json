@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "name": "arcanea-flow (swarm + hooks + RL)",
+  "panes": {
+    "dispatcher": {
+      "command": "claude",
+      "args": [
+        "--resume",
+        "arcanea-flow"
+      ]
+    },
+    "claude": {
+      "command": "claude",
+      "args": [
+        "--continue",
+        "--model",
+        "claude-opus-4-7"
+      ]
+    },
+    "codex": {
+      "command": "codex.cmd",
+      "args": [
+        "resume",
+        "--last"
+      ]
+    },
+    "gemini": {
+      "command": "gemini.cmd",
+      "args": [
+        "--yolo",
+        "-m",
+        "gemini-2.5-pro"
+      ]
+    },
+    "opencode": {
+      "command": "opencode.cmd"
+    }
+  },
+  "team": {
+    "agents": [
+      "Starlight Orchestrator",
+      "Starlight Architect"
+    ],
+    "skills": [
+      "hive-mind-advanced",
+      "swarm-orchestration",
+      "swarm-advanced",
+      "reasoningbank-intelligence",
+      "hooks-automation",
+      "stream-chain"
+    ]
+  }
+}
