@@ -176,6 +176,19 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **SIP commands:** 30 commands across `/sound-composition-*` (5) · `/sound-production-*` (5) · `/sound-catalog-*` (5) · `/sound-performance-*` (5) · `/sound-audience-*` (5) · `/sound-sync-*` (5).
 - **Synthesis edge:** composer + producer + audio engineer + decade of catalog/release operations + literacy in music-theory + cognitive-science-of-listening + business-of-sync-licensing.
 
+### Energy Intelligence
+- **Class:** sovereign domain sub-stack (reference vertical) — fourth reference, first to use the Calculator + ValidationRequirement substrate (sets the precedent for infrastructure-shaped sub-stacks: Compute, Home, Capital).
+- **Domain:** Energy practiced as the architecture of sovereign infrastructure — sizing, cost, installer brief, operations, buyer, grid, plus cross-cutting recovery. Every sizing decision grounded in measurable demand; every cost projection deterministic and auditable; every irreversible action gated on the right human reviewer (licensed electrician, certified installer, grid operator).
+- **Owner:** open reference (forkable by sovereign energy practitioners).
+- **Status:** `scaffolded — v0.1.0-scaffold` (7-file contract shipped 2026-05-03; full sub-system content + agents + commands are v8.x scope).
+- **Primary repo:** `verticals/energy-intelligence/` in `frankxai/Starlight-Intelligence-System`.
+- **Sub-systems:** `sizing` · `cost` · `installer` · `operations` · `buyer` · `grid` · `recovery` (cross-cutting).
+- **Canon:** declines defining its own canon; optional composition where practitioner adopts.
+- **Compounds:** practitioners forking + attestation graph compounding across every forked instance.
+- **SIP commands (planned):** `/energy-sizing` · `/energy-cost` · `/energy-installer-brief` · `/energy-ops` · `/energy-buyer` · `/energy-grid` · `/energy-recovery`.
+- **Composes with:** `@starlight/schemas` (SovereignNode + EnergyProfile + CostProfile) · `@starlight/calculators` (deterministic sizing/cost/payback/ROI) · `@starlight/validation` (jurisdiction-extended ValidationRequirement gates).
+- **Board verdict:** PROCEED 2026-05-03 — `docs/boards/2026-05-03-energy-is-domain-substack.md` (sequencing-gated on Calculator/Validation substrate, landed same PR).
+
 ### Crypto Intelligence
 - **Class:** sovereign domain sub-stack (reference vertical) — third reference, validates the **Houses-as-sub-systems** decomposition primitive AND first composition-instance under Wealth IS composition layer (per `STACK.md` § Composition Layer, declared 2026-05-17).
 - **Domain:** Cryptocurrency practiced as the architecture of sovereignty + protocol-mechanism literacy + cycle-position pattern recognition. Six Houses (On-Chain · Macro · DeFi · Sovereignty · Research · Allocation) decomposed as archetypal stances.
