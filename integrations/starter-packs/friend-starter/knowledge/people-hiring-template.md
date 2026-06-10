@@ -1,6 +1,6 @@
 # People Hiring Template — Worked Example
 
-> Ana-grade hiring system applied to a real role: **Senior People Operations Manager for a 50-person consultancy**. Anonymized but realistic. Demonstrates the full sub-system: ICP → interview architecture → calibration → fit assessment → debrief → onboarding. Sub-system 1 of 6 in the People Intelligence Domain Sub-Stack (renamed from HR Intelligence at v7.6.0).
+> Reference-grade hiring system applied to a realistic role: **Senior People Operations Manager for a 50-person consultancy**. Anonymized but realistic. Demonstrates the full sub-system: ICP → interview architecture → calibration → fit assessment → debrief → onboarding. Sub-system 1 of 6 in the People Intelligence Domain Sub-Stack (renamed from HR Intelligence at v7.6.0).
 
 **Disclaimer:** Hiring decisions touch employment law and protected-class considerations. This template is system architecture, not legal advice. Validate jurisdiction-specific compliance with qualified counsel.
 
@@ -298,7 +298,7 @@ Candidate M is a meaningful culture-add. Closes all 4 named team gaps strongly. 
 ### Day 8-30: Learn
 
 - Weekly Manager 1:1 (45 min).
-- 30-day milestone: Hiring loop redesign for the open Senior Consultant role — calibrated rubric, structured slots, calibration session before the loop. (Ana's full hiring sub-system, applied.)
+- 30-day milestone: Hiring loop redesign for the open Senior Consultant role — calibrated rubric, structured slots, calibration session before the loop. (The full hiring sub-system, applied.)
 - Day 30: Manager + Managing Partner + 2 senior-consultant peer feedback (structured, brief).
 
 ### Day 31-60: Contribute
@@ -329,7 +329,7 @@ Candidate M is a meaningful culture-add. Closes all 4 named team gaps strongly. 
 - **Research grounding** — Schmidt & Hunter validity bundle (cognitive/work-sample + structured behavioral); Project Oxygen calibration; decision-fatigue scheduling; culture-add over culture-fit; 90-day onboarding as retention predictor.
 - **Bias-correction operationalized** — named patterns flagged in real time by the facilitator; structured scores before discussion; tie-breaks default to hire-no.
 - **Compliance discipline** — disclaimer present; protected-class proxy check explicit; all question stems flagged for counsel review.
-- **Voice composition** — interviewer briefs and stakeholder-facing materials run in Ana's voice via Genius Profile (referenced in this template; live in the actual instance).
+- **Voice composition** — interviewer briefs and stakeholder-facing materials run in the practitioner's voice via Genius Profile (referenced in this template; live in the actual instance).
 
 This is the instrument. Most hiring rooms run on first-impression bias dressed in structured-sounding conversation; the instrument prevents what the conversation cannot.
 

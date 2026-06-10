@@ -19,10 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-See `NOTICE` for attribution conventions, the layered licensing summary
-(code · substrate spec · canon), and trademark notes. The MIT license above
-governs all legal rights; NOTICE captures the social-layer "Built on SIP"
-attestation convention that propagates with forks.

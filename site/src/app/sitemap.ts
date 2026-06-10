@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { RESEARCH_SLUGS } from "@/lib/research";
 
 const BASE = "https://starlightintelligence.org";
 
@@ -9,6 +10,8 @@ const STATIC_ROUTES = [
   "/architecture",
   "/explainer",
   "/verticals",
+  "/research",
+  "/knowledge-tree",
   "/cockpit",
   "/docs",
   "/vaults",
@@ -30,7 +33,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${BASE}${path}`,
     lastModified,
     changeFrequency: path === "" ? "weekly" : "monthly",
-    priority: path === "" ? 1.0 : path === "/protocol" || path === "/quickstart" ? 0.9 : 0.7,
+    priority:
+      path === ""
+        ? 1.0
+        : path === "/protocol" || path === "/quickstart" || path === "/research"
+          ? 0.9
+          : 0.7,
   }));
 
   const verticalEntries: MetadataRoute.Sitemap = VERTICAL_SLUGS.map((slug) => ({
@@ -40,5 +48,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticEntries, ...verticalEntries];
+  const researchEntries: MetadataRoute.Sitemap = RESEARCH_SLUGS.map((slug) => ({
+    url: `${BASE}/research/${slug}`,
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  }));
+
+  return [...staticEntries, ...verticalEntries, ...researchEntries];
 }

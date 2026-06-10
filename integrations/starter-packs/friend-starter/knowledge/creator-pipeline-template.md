@@ -89,47 +89,47 @@ Built on SIP — Starlight Intelligence Protocol v1.1.0
 ---
 ```
 
-## Filled example — Ana (HR Psychologist publishing on Substack)
+## Filled example — Maya (product-ops consultant publishing a newsletter; fictional composite — any resemblance to real persons is coincidental)
 
 ```
-# Creator Pipeline — Ana Morales — 2026-04-24 (v1.0)
+# Creator Pipeline — Maya Lindqvist — 2026-04-24 (v1.0)
 
 ## Premise
-I'm writing to the small population of people who already sense that HR is a clinical-diagnostic craft pretending to be a compliance function. This pipeline takes the frameworks I keep rebuilding across every employer — Attachment-aware Recruiting, Trapdoor Compensation Conversations, Performance Reviews as Clinical Intake, the Culture Audit You Can't Unsee — and turns them into a weekly essay cadence with atomic social derivatives, so that when an exec or founder reads it, they recognize themselves and come closer.
+I'm writing to the small population of people who already sense that product operations is a behavioral-design craft pretending to be a coordination function. This pipeline takes the frameworks I keep rebuilding at every company — the Decision Debt Ledger, the Invisible Handoff Map, Friction-Budget Reviews, the Launch-Readiness Ladder — and turns them into a weekly essay cadence with atomic social derivatives, so that when a founder or product lead reads it, they recognize their own launch and come closer.
 
 ## Pillars (from Genius Profile)
 
-### Pillar 1 — Attachment-aware Recruiting
-- **Thesis**: We've been hiring for skills and surprised by how people metabolize feedback. There's a better way, and it's diagnosable before the offer.
+### Pillar 1 — The Decision Debt Ledger
+- **Thesis**: We've been tracking task debt and surprised by launches that die of decisions nobody made. Deferred decisions accrue interest, and the ledger makes the balance visible.
 - **Primary modality**: text (essay)
-- **Derivatives**: LinkedIn carousel, image card with the rubric excerpt
+- **Derivatives**: LinkedIn carousel, image card with the ledger excerpt
 - **Attestation route**: text Built on SIP block on essay; image EXIF+sidecar for card
-- **Example first piece**: "What We Were Actually Asking When We Asked for Culture Fit"
+- **Example first piece**: "What We Were Actually Deferring When We Said 'Let's Park That'"
 
-### Pillar 2 — Trapdoor Compensation Conversations
-- **Thesis**: Every comp conversation is a conversation about whether the person believes the organization sees them. Number is the symptom.
+### Pillar 2 — Friction-Budget Reviews
+- **Thesis**: Every feature spends from a finite user-friction budget. The roadmap fight is the symptom; the unpriced spend is the disease.
 - **Primary modality**: text + audio (essay + podcast episode)
 - **Derivatives**: pull-quote image cards, 60-sec audio clip
 - **Attestation route**: text stamp on essay; audio sidecar on episode; image sidecar on cards
-- **Example first piece**: "The Number Is the Symptom"
+- **Example first piece**: "The Feature List Is the Symptom"
 
-### Pillar 3 — Performance Reviews as Clinical Intake
-- **Thesis**: If you run the review as theater, you get theater back. Clinical intake is the right frame.
+### Pillar 3 — The Launch-Readiness Ladder
+- **Thesis**: If you run the gate review as a celebration, you get optimism back. Evidence audit is the right frame.
 - **Primary modality**: text
-- **Derivatives**: manager-facing one-pager (PDF), LinkedIn post
+- **Derivatives**: team-facing one-pager (PDF), LinkedIn post
 - **Attestation route**: text stamp; PDF attestation block inside
-- **Example first piece**: "Performance Review as Clinical Intake"
+- **Example first piece**: "Launch Review as Evidence Audit"
 
-### Pillar 4 — The Culture Audit You Can't Unsee
-- **Thesis**: Culture doesn't lie; it just doesn't use words. Watch what it punishes.
+### Pillar 4 — The Invisible Handoff Map
+- **Thesis**: The handoff doesn't lie; it just doesn't use words. Watch what gets dropped between design and the factory.
 - **Primary modality**: text + image
 - **Derivatives**: diagnostic framework card, thread adaptation
 - **Attestation route**: text stamp; image sidecar
-- **Example first piece**: "The Culture Doesn't Lie"
+- **Example first piece**: "The Handoff Doesn't Lie"
 
-## Flagship — Diagnostic HR (cross-domain synthesis: clinical psych x neuroscience x corporate HR)
+## Flagship — Behavioral Product Operations (cross-domain synthesis: industrial design x behavioral economics x product ops)
 
-- **Why flagship**: Nobody else in HR names the transit between individual unconscious architecture and organizational structural architecture. This is where your edge compounds.
+- **Why flagship**: Nobody else in product operations names the transit between the physical object and the organizational choice architecture that produced it. This is where your edge compounds.
 - **Format**: 3000-word anchor essay + 45-min podcast conversation + keynote deck
 - **Release**: Week 4 and Week 8 flagship slots
 
@@ -137,34 +137,34 @@ I'm writing to the small population of people who already sense that HR is a cli
 
 | Week | Anchor (essay) | Atomics (social) | Evergreen (library) |
 |------|--------|---------|-----|
-| 1 | Pillar 1 — "What We Were Actually Asking" | 3 LinkedIn cards from rubric | Recruiting framework doc v1 |
-| 2 | Pillar 3 — "Performance Review as Clinical Intake" | manager one-pager PDF + thread | Review framework doc v1 |
-| 3 | Pillar 4 — "The Culture Doesn't Lie" | diagnostic framework card | Culture audit checklist |
-| 4 | **Flagship** — "Diagnostic HR" | 4 derivative posts across the week | Flagship essay PDF |
-| 5 | Pillar 2 — "The Number Is the Symptom" | 3 pull-quote cards + 60s audio | Comp-conversation framework doc |
-| 6 | Pillar 1 — "Attachment Readiness, Scored" | rubric excerpt carousel | Scorecard template |
-| 7 | Pillar 3 — "Calibration as Diagnostic Round" | LinkedIn post + thread | Calibration framework |
-| 8 | **Flagship** — "The Architecture Underneath" (+podcast) | 45-min episode + clips | Flagship ep + transcript |
-| 9 | Pillar 4 — "Exit Interviews as Post-mortem" | framework card | Exit interview rubric |
-| 10 | Pillar 2 — "When Comp Is the Trapdoor" | 3 cards | Comp trapdoor framework |
-| 11 | Pillar 1 — "The 20 Minutes That Decide" | carousel | Interview compression framework |
-| 12 | **Flagship** — "What HR Could Be" | full-distribution blitz | Manifesto essay PDF |
+| 1 | Pillar 1 — "What We Were Actually Deferring" | 3 LinkedIn cards from ledger | Decision Debt framework doc v1 |
+| 2 | Pillar 3 — "Launch Review as Evidence Audit" | team one-pager PDF + thread | Gate framework doc v1 |
+| 3 | Pillar 4 — "The Handoff Doesn't Lie" | diagnostic framework card | Handoff audit checklist |
+| 4 | **Flagship** — "Behavioral Product Operations" | 4 derivative posts across the week | Flagship essay PDF |
+| 5 | Pillar 2 — "The Feature List Is the Symptom" | 3 pull-quote cards + 60s audio | Friction-budget framework doc |
+| 6 | Pillar 1 — "Decision Debt, Scored" | ledger excerpt carousel | Ledger template |
+| 7 | Pillar 3 — "The Gate as Evidence Round" | LinkedIn post + thread | Gate-scoring framework |
+| 8 | **Flagship** — "The Architecture Underneath the Object" (+podcast) | 45-min episode + clips | Flagship ep + transcript |
+| 9 | Pillar 4 — "Prototype Autopsies as Post-mortem" | framework card | Autopsy rubric |
+| 10 | Pillar 2 — "When Friction Is the Budget" | 3 cards | Friction-spend framework |
+| 11 | Pillar 1 — "The Decision That Decides the Launch" | carousel | Ledger compression framework |
+| 12 | **Flagship** — "What Product Ops Could Be" | full-distribution blitz | Manifesto essay PDF |
 
 ## Per-piece production plans (Week 1 detailed; later weeks follow pattern)
 
-### Week 1 · Anchor: "What We Were Actually Asking When We Asked for Culture Fit"
-- **Pillar**: 1 — Attachment-aware Recruiting
+### Week 1 · Anchor: "What We Were Actually Deferring When We Said 'Let's Park That'"
+- **Pillar**: 1 — The Decision Debt Ledger
 - **Modality**: text (essay, ~1500 words)
-- **Derivatives**: 3 LinkedIn cards, 1 rubric image
+- **Derivatives**: 3 LinkedIn cards, 1 ledger image
 - **Production**:
-  - Draft: Claude (voice-cloned from your samples — "underneath that," "metabolize," "sharp")
-  - Hero image: Nano Banana — "clinical psychology meets corporate recruitment, muted palette, 2026 editorial"
+  - Draft: Claude (voice-cloned from your samples — "downstream of that," "decision debt," "ship-shaped")
+  - Hero image: Nano Banana — "industrial design studio meets balance sheet, muted palette, 2026 editorial"
   - Derivative cards: Canva templates from your brand kit
 - **Voice check**: manual review before publish — does every paragraph sound like you? strike anything that sounds like me
 - **Attestation**: Built on SIP block at essay footer; EXIF+sidecar on image card
 - **Estimated time**: 3 hours
 
-### Week 1 · Atomic 1: "3 things hiring managers say when they mean 'please don't make me manage this person emotionally'"
+### Week 1 · Atomic 1: "3 things product leads say when they mean 'please don't make me decide this today'"
 - **Pillar**: 1
 - **Modality**: LinkedIn carousel (image)
 - **Production**: Canva from brand kit
@@ -179,8 +179,8 @@ I'm writing to the small population of people who already sense that HR is a cli
 From your Profile voice samples:
 - First-person only. No "one might say."
 - Never listicles. Always arguments.
-- "Underneath that," "metabolize," "sharp," "holding," "trapdoor," "noticing" — use.
-- "Utilize," "applicant," "employee," "stakeholder" — do not use.
+- "Downstream of that," "decision debt," "ship-shaped," "friction budget," "load-bearing assumption," "the kill is data" — use.
+- "Utilize," "resource," "deliverable," "stakeholder" — do not use.
 - Opening moves: declarative claim, never a question.
 - Em-dashes over semicolons. Short sentences for emphasis. Occasional long sentence for architectural moments.
 - Never apologize for expertise. The reader came for your frame.

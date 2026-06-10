@@ -1,7 +1,7 @@
 {
   "name": "starlight-intelligence-system",
-  "version": "8.1.0",
-  "description": "SIS — A protocol for sovereign creator alliances (SIP) + a reference implementation. Persistent context, attestation, and memory for AI agents across six platforms. Local-first. Forkable. Built on the Starlight Intelligence Protocol v1.1.1.",
+  "version": "8.2.0",
+  "description": "The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet across Claude Code, Cursor, Cline, Codex, Gemini CLI & Antigravity. Local-first. Forkable. Built on the Starlight Intelligence Protocol v1.1.1.",
   "author": {
     "name": "Frank Riemer",
     "email": "frank@frankx.ai",
@@ -57,18 +57,18 @@
     "absorbs": []
   },
   "stats": {
-    "agents": 47,
+    "agents": 48,
     "skills": 71,
-    "commands": 90,
+    "commands": 108,
     "vaults": 6,
     "intelligence_systems": 10,
     "domain_sub_stacks": 3,
     "platforms": 6,
-    "verified": "2026-05-27",
-    "note": "Counts reflect current shipped state. 47 agents = 7-archetype council + specialist tiers per agents/AGENT_REGISTRY.md. 71 skills across 14 domains per skills/skill-rules.json. 3 reference Domain Sub-Stacks: People IS, Sound IS, Music IS (Crypto IS shipped v0.1 proof-of-pattern 2026-05-17, not yet counted as reference)."
+    "verified": "2026-06-10",
+    "note": "Counts reflect current shipped state, enforced by test/v87-agent-registry.test.ts. 48 agents = 7-archetype council + specialist tiers + evaluator per agents/AGENT_REGISTRY.md. 71 skills across 14 domains per skills/skill-rules.json. 3 reference Domain Sub-Stacks: People IS, Sound IS, Music IS (Crypto IS shipped v0.1 proof-of-pattern 2026-05-17, not yet counted as reference)."
   },
   "intelligence": {
-    "version": "v8.1.0",
+    "version": "v8.2.0",
     "substrate": "SIP v1.1.1",
     "tier": "substrate + reference operational",
     "components": {

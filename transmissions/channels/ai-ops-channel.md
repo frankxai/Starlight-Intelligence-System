@@ -5,6 +5,7 @@
 **Channel Type:** Bidirectional
 **Primary Topics:** Infrastructure, AGI research, memory systems, knowledge graphs
 **Connected Repo:** frankxai/ai-ops
+**Status:** DORMANT (since 2026-02-10, reviewed 2026-06-10) — init-only log; the ai-ops repo itself is dormant (last pushed 2026-02-03, not cloned locally). No live flow exists; file retained as historical record per ECOSYSTEM_ARCHITECTURE.md § 2.3.
 
 ---
 

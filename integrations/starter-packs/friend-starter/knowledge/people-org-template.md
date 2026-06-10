@@ -1,6 +1,6 @@
 # People Org Template — Worked Example
 
-> Ana-grade filled example for a 50-person consultancy (anonymized as "Meridian Strategy Partners") facing classic growing-pains: founder over-spanned at 12 directs, ambiguous middle layer, two key roles with no real succession plan. Includes role design for one ambiguous role, span audit for the whole org, trauma audit for a proposed reorg, and succession plan for two key roles.
+> Reference-grade filled example for a 50-person consultancy (anonymized as "Meridian Strategy Partners") facing classic growing-pains: founder over-spanned at 12 directs, ambiguous middle layer, two key roles with no real succession plan. Includes role design for one ambiguous role, span audit for the whole org, trauma audit for a proposed reorg, and succession plan for two key roles.
 
 ---
 

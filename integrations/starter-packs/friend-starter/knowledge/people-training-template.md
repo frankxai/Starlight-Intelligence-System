@@ -1,8 +1,8 @@
 # People Training Template — Performance Conversations Mastery
 
-> *Ana-grade filled example: a 6-week program for people-managers, designed end-to-end as Training Intelligence's reference output. Curriculum + Program Design + Transfer Measurement + Train-the-Trainer + Scenario Library, all visible in one realistic case.*
+> *Reference-grade filled example: a 6-week program for people-managers, designed end-to-end as Training Intelligence's reference output. Curriculum + Program Design + Transfer Measurement + Train-the-Trainer + Scenario Library, all visible in one realistic case.*
 
-This is what Training Intelligence (sub-system 3 of Ana's HR Stack) produces when it operates correctly. The example below is a likely first productized offer — Performance Conversations Mastery — because (a) it sits at the intersection of Performance Intelligence (sub-system 2) and Training Intelligence (sub-system 3), so its design constraints are unusually visible, and (b) it is the highest-leverage intervention most orgs are silently failing at: managers who cannot give specific behavioral feedback in real time.
+This is what Training Intelligence (sub-system 3 of the People Intelligence reference stack) produces when it operates correctly. The example below is a likely first productized offer — Performance Conversations Mastery — because (a) it sits at the intersection of Performance Intelligence (sub-system 2) and Training Intelligence (sub-system 3), so its design constraints are unusually visible, and (b) it is the highest-leverage intervention most orgs are silently failing at: managers who cannot give specific behavioral feedback in real time.
 
 ---
 
@@ -12,7 +12,7 @@ This is what Training Intelligence (sub-system 3 of Ana's HR Stack) produces whe
 - **Audience:** People-managers (Senior Manager and below; first-line + second-line)
 - **Cohort size:** 12-16 per cohort (sweet spot for cohort dynamics + role-play pairing)
 - **Duration:** 6 weeks (4 weeks active + 2 weeks reinforcement) + 90-day measurement window
-- **Facilitator type:** Hybrid (TtT-graduated internal SME + Ana as cohort coach for cohort 1; SME-only by cohort 3)
+- **Facilitator type:** Hybrid (TtT-graduated internal SME + the practitioner as cohort coach for cohort 1; SME-only by cohort 3)
 - **Generated:** 2026-04-24
 
 ---
@@ -184,7 +184,7 @@ N/A — pure learning program. No legally-mandated compliance content bundled.
 ### ROI projection (honest)
 
 #### Costs (cohort of 12 managers)
-- Facilitator (Ana cohort 1, internal SME cohort 2+): assume €18,000 for 6 weeks plus prep
+- Facilitator (practitioner cohort 1, internal SME cohort 2+): assume €18,000 for 6 weeks plus prep
 - Learner time: 12 managers × ~20 hours over 6 weeks × €100/hr loaded = €24,000
 - Manager-of-Manager time: ~6 managers-of-managers × 4 hours = €2,400
 - Materials/tooling: €1,000
@@ -246,7 +246,7 @@ We do not project an ROI multiplier. ROI multipliers in L&D are mostly invented.
 | Week 8 | R3 cohort retrieval | Facilitator |
 | 30-day | Manager-of-Manager L3 observation cycle 1 + coaching | Manager-of-Manager |
 | 60-day | L3 observation cycle 2 | Manager-of-Manager |
-| 90-day | L3 observation cycle 3 + L4 metric pull | Manager-of-Manager + Ana |
+| 90-day | L3 observation cycle 3 + L4 metric pull | Manager-of-Manager + practitioner |
 | Week 17 (R4) | Self-reflection + light scenario | Learner |
 
 ### Redesign feedback loop
@@ -263,7 +263,7 @@ After cohort 1 closes (week 17): retrospective on what transferred / evaporated 
 
 ---
 
-## 4 — Train-the-Trainer Plan (for SME taking over from Ana for cohort 2+)
+## 4 — Train-the-Trainer Plan (for SME taking over from the practitioner for cohort 2+)
 
 ### SME baseline assessment
 
@@ -271,7 +271,7 @@ After cohort 1 closes (week 17): retrospective on what transferred / evaporated 
 - **Facilitation experience:** informal — has run team workshops, never been formally trained on adult-learning principles
 - **Adult-learning principles familiarity:** none — passing knowledge of "andragogy" word, no operating familiarity
 - **Self-awareness of failure modes:** some — knows they have a tendency to over-explain
-- **Risk profile for cohort 2:** medium — pair with Ana as observer/coach for cohort 2; SME solo for cohort 3
+- **Risk profile for cohort 2:** medium — pair with the practitioner as observer/coach for cohort 2; SME solo for cohort 3
 
 ### TtT curriculum (6 sessions, 4 weeks before cohort 2 delivery)
 
@@ -288,11 +288,11 @@ After cohort 1 closes (week 17): retrospective on what transferred / evaporated 
 - SME watches recordings of common patterns. Self-identifies their lecture-collapse tendency. Builds self-coaching plan.
 
 #### Session 5 — Live cohort facilitation practice (180 min)
-- SME facilitates M3 (the hardest module) with practice cohort of 8 peers. Recorded. Ana observes silently.
+- SME facilitates M3 (the hardest module) with practice cohort of 8 peers. Recorded. The practitioner observes silently.
 - Detailed behavioral coaching feedback after.
 
 #### Session 6 — Final readiness check + program-specific brief (90 min)
-- Rubric pass with Ana.
+- Rubric pass with the practitioner.
 - Mastered scenario answer keys, prepared learner-failure-mode responses, debrief discussion prompts internalized.
 
 ### TtT-readiness rubric
@@ -305,7 +305,7 @@ After cohort 1 closes (week 17): retrospective on what transferred / evaporated 
 | Failure-mode self-awareness | Identify own patterns | yes |
 | Module mastery | Walk through M3 with confident voice | yes — earned in session 5 |
 
-**Pass:** SME passes rubric for cohort 2 with Ana as silent observer. Solo by cohort 3.
+**Pass:** SME passes rubric for cohort 2 with the practitioner as silent observer. Solo by cohort 3.
 
 ---
 

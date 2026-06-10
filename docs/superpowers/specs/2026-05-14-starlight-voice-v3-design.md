@@ -322,7 +322,7 @@ Per-stage P50 budgets (mic-close to first speaker output):
 - Pipecat frame middleware: PII redaction, tool-call observability, retry budgets
 - WebRTC for phone with Cloudflare tunnel
 - Continuous benchmark CI enforcement; sub-800ms SLA hard gate
-- Sovereign-spawn validator (Ana one-shot installer)
+- Sovereign-spawn validator (first-sovereign one-shot installer)
 - OSS public launch: README, demo video, contributor guide, INSTALL.md
 - Positioned as "the open-source reference impl of a Jarvis-grade personal voice operator"
 
@@ -384,7 +384,7 @@ Per-stage P50 budgets (mic-close to first speaker output):
 | SC6 | Deliberation mode emits "Let me think on that..." within 500ms of activation | Tier 2.5 utterance log timestamp |
 | SC7 | 53 SIS Python tests green against new impl | `pytest sidecar/tests/` exit 0 |
 | SC8 | Legacy 11+ scheduled tasks all removed; zero `cmd.exe` flashes at logon | `Get-ScheduledTask` returns only `StarlightVoice-Tray` |
-| SC9 | Ana installs and runs starlight-voice on her own machine with <30min Frank touch | First sovereign-spawn dogfood |
+| SC9 | The first sovereign-spawn user installs and runs starlight-voice on their own machine with <30min Frank touch | First sovereign-spawn dogfood |
 | SC10 | OSS repo public, MIT-licensed, README + INSTALL.md + demo video shipped | GitHub repo public + first non-Frank star |
 
 ## 19. Appendix A — audit findings (2026-05-14)

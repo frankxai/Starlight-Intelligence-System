@@ -321,11 +321,11 @@ Per memory: Frank helps alliances freely. The right surface is **a 1-line
 spawn**:
 
 ```bash
-pwsh -c "iwr https://starlight.frankx.io/spawn | iex; spawn-friend ana"
+pwsh -c "iwr https://starlight.frankx.io/spawn | iex; spawn-friend <name>"
 ```
 
 Generates a friend's `private/voice-operator/` + `private/local-command-center/`
-+ their personalized agent registry + skill scoping. Ana's was the first;
++ their personalized agent registry + skill scoping. the first private test case's was the first;
 Sound Intelligence + People Intelligence verticals prove the pattern works.
 
 **Ship:** `/spawn-friend <name>` command (~v7.6).

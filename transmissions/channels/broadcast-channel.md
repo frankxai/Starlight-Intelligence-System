@@ -5,6 +5,7 @@
 **Channel Type:** One-to-many (Starlight Prime authorized)
 **Primary Topics:** System-wide announcements, architecture changes, new principles
 **Connected Repos:** All ecosystem repos
+**Status:** DORMANT (since 2026-02-10, reviewed 2026-06-10) — init-only log; system-wide updates actually propagate via vault writes and per-channel syncs (e.g. `acos-channel.md`). Retained as historical record.
 
 ---
 

@@ -139,12 +139,12 @@ AGENT_NAMESPACES = [
     "concierge",
     "envoy",
     # People Intelligence sub-stack
-    "ana-hire",
-    "ana-perf",
-    "ana-train",
-    "ana-culture",
-    "ana-talent",
-    "ana-org",
+    "people-hire",
+    "people-perf",
+    "people-train",
+    "people-culture",
+    "people-talent",
+    "people-org",
 ]
 ```
 
@@ -268,7 +268,7 @@ Mem0 is **bidirectional** with the Orchestrator.
 **Per-agent namespaces matter:**
 - `starlight-orchestrator` namespace: cross-cutting context, IS routing history, decision log.
 - `concierge` namespace: newcomer interactions, intake routing.
-- `ana-hire` namespace: People Intelligence hiring case histories (sovereign-user scoped).
+- `people-hire` namespace: People Intelligence hiring case histories (sovereign-user scoped).
 - The Orchestrator queries the namespace of the agent it is routing to, NOT a global namespace. This prevents cross-contamination between sovereign users (when SIS productizes per § Domain Sub-Stack Tier).
 
 ## Refusal patterns

@@ -127,6 +127,10 @@ const SOVEREIGNTY_CLAUSES: Array<{ title: string; body: string }> = [
     title: "Exit.",
     body: "Any party can leave the composition. Attribution history remains immutable.",
   },
+  {
+    title: "Encoded-self forkable boundary.",
+    body: "The substrate pattern (agents, skills, commands, methods, governance) is forkable under each component's license. Encoded-self artifacts — founder voice clones, identity vectors, personal canon, vault-specific paths, and any artifact that fingerprints a sovereign — are non-licensable and non-transferable. Forks may inherit the pattern, never the person. (Added v1.1.1, 2026-05-06; definition revisits quarterly from 2026-W30.)",
+  },
 ];
 
 const ATTESTATION_BLOCK = `---
@@ -148,7 +152,7 @@ const MCP_REGISTRY_JSON = `{
 
 const FOOTER_ATTESTATION = `---
 Built on SIP — Starlight Intelligence Protocol
-- Substrate: starlightintelligence.org/protocol v1.0.0
+- Substrate: starlightintelligence.org/protocol v1.1.1
 - Verticals: [starlight]
 - Canon: ["none"]
 - Nodes: [Starlight Holding BV]
@@ -173,7 +177,7 @@ export default function ProtocolPage() {
             Starlight Intelligence Protocol
           </h1>
           <p className="mt-4 font-mono text-[13px] uppercase tracking-widest text-slate-500">
-            v1.0.0
+            v1.1.1
           </p>
           <p className="mt-6 max-w-xl text-[15px] leading-[1.8] text-slate-400">
             The contract that lets sovereign parties compose intelligence
@@ -617,7 +621,7 @@ export default function ProtocolPage() {
           </div>
 
           <p className="mt-10 text-[11px] uppercase tracking-widest text-slate-400">
-            Built on SIP · v1.0.0 · Authored by Frank Riemer (Starlight Holding
+            Built on SIP · v1.1.1 · Authored by Frank Riemer (Starlight Holding
             BV) · MIT
           </p>
         </section>

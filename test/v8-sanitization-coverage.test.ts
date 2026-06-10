@@ -89,7 +89,7 @@ test("v8 sanitization: JSON private_key fields are scrubbed", () => {
 });
 
 test("v8 sanitization: emails are scrubbed", () => {
-  expectScrubbed("email", "Contact friemerx@gmail.com for details.");
+  expectScrubbed("email", "Contact sample.operator@example.com for details.");
 });
 
 test("v8 sanitization: phone numbers are scrubbed (US)", () => {

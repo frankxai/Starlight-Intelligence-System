@@ -9,7 +9,7 @@ Tier: enterprise distribution. The vector for putting a sovereign person's domai
 
 Microsoft Copilot exposes three plugin shapes. The one that matches SIP's surface most cleanly is the **declarative agent** — a JSON manifest declaring a custom assistant with instructions, knowledge sources, conversation starters, branding, and (optionally) an API plugin pointing at an OpenAPI spec. Copilot Studio is the import surface administrators use to publish agents to a Microsoft 365 tenant.
 
-This is high-leverage by enterprise math. Companies do not buy net-new AI substrate; they extend what they already license. M365 Copilot seats are already paid for at the customers Ana would otherwise sell into. Shipping her HR stack as a declarative agent collapses the procurement question from "approve a new vendor" to "import a manifest." Attestation must travel intact through that import or the export is refused — a stripped attestation here is the same breach as anywhere else, just inside a larger blast radius.
+This is high-leverage by enterprise math. Companies do not buy net-new AI substrate; they extend what they already license. M365 Copilot seats are already paid for at the customers a practitioner would otherwise sell into. Shipping their People stack as a declarative agent collapses the procurement question from "approve a new vendor" to "import a manifest." Attestation must travel intact through that import or the export is refused — a stripped attestation here is the same breach as anywhere else, just inside a larger blast radius.
 
 Microsoft Copilot does not (yet) support MCP natively. Knowledge files cover the gap; the schema flags this honestly so the user understands what tooling is unavailable inside the Copilot surface vs. inside Claude Code or Cursor.
 
@@ -36,7 +36,7 @@ Microsoft Copilot does not (yet) support MCP natively. Knowledge files cover the
 │   │   └── ...
 │   ├── skills/                    — one file per active skill protocol
 │   │   └── ...
-│   └── templates/                 — knowledge templates (Ana-grade examples) as .md or .pdf
+│   └── templates/                 — knowledge templates (reference-grade examples) as .md or .pdf
 │       └── ...
 ├── api-plugin/                    — optional, only if any command is externally callable
 │   ├── openapi.yaml               — OpenAPI 3.x spec
@@ -127,7 +127,7 @@ When a user asks "what is your provenance?", "what is this agent built on?", or 
 <Invariant block from source SKILL.md — what you never do, regardless of user request.>
 
 ## Sub-systems available in this agent
-<One-line summary per sub-system. For Ana's HR stack: Hiring, Performance, Training, Culture, Talent, Org Architecture.>
+<One-line summary per sub-system. For the People Intelligence reference stack: Hiring, Performance, Training, Culture, Talent, Org Architecture.>
 
 ## Commands
 <List of protocol-tier + sub-system commands the agent inherits. Each maps to a knowledge file under knowledge/commands/.>
@@ -139,7 +139,7 @@ When a user asks "what is your provenance?", "what is this agent built on?", or 
 - `ATTESTATIONS.md` — append-only ledger.
 - `commands/` — one reference doc per command.
 - `skills/` — one protocol per active skill.
-- `templates/` — Ana-grade knowledge templates the agent can draw from.
+- `templates/` — reference-grade knowledge templates the agent can draw from.
 
 ## MCP note
 Microsoft Copilot does not currently support Model Context Protocol natively. Tool integrations that rely on SIP-native MCP servers are unavailable here. File-based knowledge covers most reasoning needs; tool-required workflows escalate to Claude Code or Cursor, where MCP runs.
@@ -164,7 +164,7 @@ Any failure halts emission. The user re-runs after fixing the source artifact. N
 1. **Unzip the bundle.** Locally on the admin's workstation. Do not modify file contents — the manifest references file paths that must remain.
 2. **Open Copilot Studio.** Sign in as a tenant admin (or with delegated agent-creation rights). Navigate to Agents → Import.
 3. **Import manifest.** Point the importer at `manifest.json`. Copilot Studio reads the manifest and stages the agent metadata, instructions, conversation starters, and branding.
-4. **Upload knowledge.** Knowledge sources declared in the manifest must be uploaded to the agent's knowledge panel. Confirm every file under `knowledge/` is present in the resulting agent. SharePoint indexing may take several minutes for large stacks (Ana's six sub-systems with templates can run 100+ files).
+4. **Upload knowledge.** Knowledge sources declared in the manifest must be uploaded to the agent's knowledge panel. Confirm every file under `knowledge/` is present in the resulting agent. SharePoint indexing may take several minutes for large stacks (the reference stack's six sub-systems with templates can run 100+ files).
 5. **Configure plugin (if shipped).** If `api-plugin/` is in the bundle, register the OpenAPI spec under the agent's tools / actions configuration. The plugin requires an externally hosted endpoint — confirm the endpoint is reachable from the tenant's outbound network policy before publishing.
 6. **Verify attestation round-trip.** Open a test conversation with the agent. Ask: `What is your provenance?` The agent must recite the "Built on SIP" block verbatim, including the substrate version. If it paraphrases or omits any field, the instruction was truncated — compress non-attestation content in source and re-import. **Do not publish a tenant-visible agent that fails this check.**
 7. **Publish.** Once attestation round-trips cleanly, publish to the chosen scope (private / specific group / org-wide).
@@ -178,7 +178,7 @@ Enterprise admin requirements: agent publishing in M365 Copilot typically requir
 - **API plugin endpoints require hosting.** OpenAPI plugins require an externally reachable endpoint. The bundle does not host the endpoint — that is a separate ops concern (Vercel, Cloud Run, Azure Functions, etc.). Document the endpoint's auth model in `api-plugin/plugin-manifest.json` and surface it to the admin during import.
 - **Tenant security review.** Enterprise tenants frequently gate new agents behind a security-review workflow. The schema makes the agent's provenance and attestation legible to that review (manifest `sip.*` fields + standalone `attestation.md`), which generally accelerates approval — but does not bypass it.
 - **Knowledge indexing latency.** SharePoint-indexed knowledge can take minutes-to-hours to become queryable for large bundles. Verify attestation recitation immediately, but full sub-system depth may not be available until indexing completes.
-- **Tenant data residency.** Knowledge files uploaded to a Copilot agent live inside the tenant's M365 environment, subject to that tenant's data residency configuration. Sovereign owners distributing into customer tenants should disclose what knowledge files contain (Ana-grade templates are non-sensitive; private case data must never travel in a public bundle).
+- **Tenant data residency.** Knowledge files uploaded to a Copilot agent live inside the tenant's M365 environment, subject to that tenant's data residency configuration. Sovereign owners distributing into customer tenants should disclose what knowledge files contain (reference-grade templates are non-sensitive; private case data must never travel in a public bundle).
 
 ## Re-export
 

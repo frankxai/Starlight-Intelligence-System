@@ -89,7 +89,7 @@ This is the table the plan most needs as a single source of truth.
 
 | # | IS Layer | Declared (substrate locator) | Functional (today) | Status |
 |---|---|---|---|---|
-| 1 | Self / Genius IS | `agents/starlight-genius.md`; `/discover-genius`, `/reclaim-knowledge`; `verticals/_template/` reference but **no `verticals/self/`** | Genius excavation runs end-to-end via `/discover-genius` → `/reclaim-knowledge` → `/train-executor`. Ana dogfood example shipped in v7.4.1 alpha. | `live` (agent + commands); `unsurfaced` (vertical wrapper) |
+| 1 | Self / Genius IS | `agents/starlight-genius.md`; `/discover-genius`, `/reclaim-knowledge`; `verticals/_template/` reference but **no `verticals/self/`** | Genius excavation runs end-to-end via `/discover-genius` → `/reclaim-knowledge` → `/train-executor`. First-test-case dogfood example shipped in v7.4.1 alpha. | `live` (agent + commands); `unsurfaced` (vertical wrapper) |
 | 2 | Wealth IS | `/wealth-dpi` command; **no `verticals/wealth/`** | Single-command DPI ledger / thesis engine runs on input. | `live` (command); `unsurfaced` (vertical wrapper, no `starlight-wealth` agent) |
 | 3 | Family IS | `verticals/family/README.md`; `agents/starlight-relational.md`; `/map-relationships`, `/design-alliance-readiness` | Agent + 2 commands run. Family vertical wrapper is README-only. Multi-generational `/family-agreement` `/succession-architect` `/legacy-transfer` not yet built (named as "future" in README). | `scaffolded` (wrapper); `live` (underlying agent + 2 commands) |
 | 4 | Business IS | `agents/starlight-business.md`; `/architect-entity`, `/model-revenue`, `/tax-sanity`; **no `verticals/business/`** | Agent + 3 commands run. | `live` (agent + commands); `unsurfaced` (vertical wrapper) |

@@ -203,6 +203,16 @@ export default async function ResearchDetailPage({
               >
                 Read the protocol
               </Link>
+              {(slug.includes("arena") || slug.includes("proving-ground")) && (
+                <a
+                  href="https://github.com/frankxai/starlight-evals"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-violet-500/[0.3] bg-violet-500/[0.08] px-4 py-2 text-[12px] font-medium text-violet-200 transition-std hover:border-violet-400/[0.5] hover:bg-violet-500/[0.14]"
+                >
+                  Fork the eval harness &rarr;
+                </a>
+              )}
             </div>
           </div>
         </div>

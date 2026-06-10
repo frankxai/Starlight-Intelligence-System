@@ -31,13 +31,13 @@ export const metadata: Metadata = {
     template: "%s — Starlight Intelligence",
   },
   description:
-    "A persistent context and memory architecture for AI agents. 10 intelligence systems, 35 agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Built on the Starlight Intelligence Protocol. Local-first. Forkable. Free.",
+    "A persistent context and memory architecture for AI agents. 10 intelligence systems, 48 agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Built on the Starlight Intelligence Protocol. Local-first. Forkable. Free.",
   alternates: { canonical: "/" },
   openGraph: {
     title:
       "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "10 intelligence systems, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
+      "10 intelligence systems, 48 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
     url: "https://starlightintelligence.org",
     siteName: "Starlight Intelligence",
     type: "website",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     title:
       "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "10 intelligence systems, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
+      "10 intelligence systems, 48 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
   },
   robots: { index: true, follow: true },
 };

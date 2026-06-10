@@ -35,7 +35,34 @@ permissions:
   issues: write
 
 jobs:
+  preflight:
+    # Secrets have been empty since <=2026-06-08, failing every push red.
+    # The secrets context is not readable in job-level `if`, so this
+    # preflight job exposes presence as an output. Until VERCEL_TOKEN /
+    # VERCEL_ORG_ID / VERCEL_PROJECT_ID are set via `gh secret set`, the
+    # deploy job skips cleanly and deploys stay manual
+    # (cd site && pnpm dlx vercel deploy --prod --yes).
+    runs-on: ubuntu-latest
+    outputs:
+      has-secrets: ${{ steps.check.outputs.has }}
+    steps:
+      - name: Check Vercel secrets presence
+        id: check
+        env:
+          T: ${{ secrets.VERCEL_TOKEN }}
+          O: ${{ secrets.VERCEL_ORG_ID }}
+          P: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -n "$T" ] && [ -n "$O" ] && [ -n "$P" ]; then
+            echo "has=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Vercel secrets unset — auto-deploy skipped. Set them with 'gh secret set VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID'. Manual deploy: cd site && pnpm dlx vercel deploy --prod --yes"
+          fi
+
   deploy:
+    needs: preflight
+    if: needs.preflight.outputs.has-secrets == 'true'
     runs-on: ubuntu-latest
     name: Build + Deploy to Vercel production
     env:

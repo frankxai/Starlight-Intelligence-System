@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="380" viewBox="0 0 920 380" font-family="ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0e1a"/>
+      <stop offset="1" stop-color="#101426"/>
+    </linearGradient>
+  </defs>
+  <rect width="920" height="380" rx="14" fill="url(#bg)"/>
+  <text x="460" y="34" text-anchor="middle" fill="#e8e6ff" font-size="17" font-weight="bold">One substrate. Every CLI in your fleet recalls the same attested memory.</text>
+
+  <!-- left pane: Claude Code -->
+  <rect x="24" y="54" width="426" height="268" rx="10" fill="#0d1117" stroke="#2a2f45"/>
+  <circle cx="44" cy="72" r="5" fill="#ff5f57"/><circle cx="60" cy="72" r="5" fill="#febc2e"/><circle cx="76" cy="72" r="5" fill="#28c840"/>
+  <text x="96" y="76" fill="#8b93b5" font-size="12">Claude Code — session A</text>
+  <text x="40" y="106" fill="#7fffd4" font-size="13">&gt; what did we decide about deploys?</text>
+  <text x="40" y="132" fill="#8b93b5" font-size="12">⚒ sis_search("deploy decision")</text>
+  <text x="40" y="160" fill="#e8e6ff" font-size="12">[strategic-vault · 2026-05-24]</text>
+  <text x="40" y="180" fill="#e8e6ff" font-size="12">"Site auto-deploy via GHA is off —</text>
+  <text x="40" y="200" fill="#e8e6ff" font-size="12"> ship with vercel --prod from site/."</text>
+  <text x="40" y="232" fill="#c084fc" font-size="11">Built on SIP · attested · confidence 0.95</text>
+  <text x="40" y="262" fill="#6f7799" font-size="11">recall latency: 4ms (JSONL Path A)</text>
+
+  <!-- right pane: Codex -->
+  <rect x="470" y="54" width="426" height="268" rx="10" fill="#0d1117" stroke="#2a2f45"/>
+  <circle cx="490" cy="72" r="5" fill="#ff5f57"/><circle cx="506" cy="72" r="5" fill="#febc2e"/><circle cx="522" cy="72" r="5" fill="#28c840"/>
+  <text x="542" y="76" fill="#8b93b5" font-size="12">Codex CLI — session B, same machine</text>
+  <text x="486" y="106" fill="#78a6ff" font-size="13">&gt; how do we ship the site?</text>
+  <text x="486" y="132" fill="#8b93b5" font-size="12">⚒ sis_search("ship site")</text>
+  <text x="486" y="160" fill="#e8e6ff" font-size="12">[strategic-vault · 2026-05-24]</text>
+  <text x="486" y="180" fill="#e8e6ff" font-size="12">"Site auto-deploy via GHA is off —</text>
+  <text x="486" y="200" fill="#e8e6ff" font-size="12"> ship with vercel --prod from site/."</text>
+  <text x="486" y="232" fill="#c084fc" font-size="11">Built on SIP · attested · same atom, same provenance</text>
+  <text x="486" y="262" fill="#6f7799" font-size="11">zero re-explaining. zero drift.</text>
+
+  <text x="460" y="356" text-anchor="middle" fill="#6f7799" font-size="12">6 semantic vaults · MCP server · 6 platform adapters · SIP attestation on every artifact</text>
+</svg>

@@ -99,10 +99,10 @@ Built on SIP — Starlight Intelligence Protocol
 
 ---
 
-## Ana's Second Brain — filled example
+## Maya's Second Brain — filled example (fictional composite — any resemblance to real persons is coincidental)
 
 ```
-# Second Brain Architecture — Ana — 2026-04-24
+# Second Brain Architecture — Maya — 2026-04-24
 
 ## My tools
 - **Capture-in-the-moment:** Voice Memos on iPhone (transcribed via Apple's built-in transcription). Drafts for quick text when I'm at the laptop.
@@ -119,9 +119,9 @@ Built on SIP — Starlight Intelligence Protocol
 
 ## My routing table
 Default routing applies, with these adjustments:
-- **Client-call patterns** → `personal/ana/wisdom-vault.md` (I treat all client patterns as wisdom candidates, because my genius IS in client pattern-recognition — this is pre-labeling for faster distillation)
-- **Vocabulary I keep returning to** → `second-brain/genius-evolution/ana.md` direct (vocabulary is voice fingerprint; evolution of vocabulary is evolution of genius — routes straight to evolution candidates)
-- **Energy observations (client energy, my energy, team energy)** → `personal/ana/creative-vault.md` (energy work is where my neuroscience + HR + psychology synthesis lives — that's creative for me, even though it sounds operational)
+- **Client-call patterns** → `personal/maya/wisdom-vault.md` (I treat all client patterns as wisdom candidates, because my genius IS in client pattern-recognition — this is pre-labeling for faster distillation)
+- **Vocabulary I keep returning to** → `second-brain/genius-evolution/maya.md` direct (vocabulary is voice fingerprint; evolution of vocabulary is evolution of genius — routes straight to evolution candidates)
+- **Energy observations (client energy, my energy, team energy)** → `personal/maya/creative-vault.md` (energy work is where my industrial-design + behavioral-economics + ops synthesis lives — that's creative for me, even though it sounds operational)
 
 ## My weekly review slot
 **Day:** Sunday
@@ -139,7 +139,7 @@ Default routing applies, with these adjustments:
 
 ## Watch-list for this week (2026-W17)
 - **Framework resilience under client friction** — 4 captures in the last 10 days on clients resisting the framework, framework holding anyway. Watch if this is signal or survival bias.
-- **Vocabulary: "ground state"** — returned in 3 client conversations this week across unrelated industries. Check if it's my go-to or a genuine clinical term emerging.
+- **Vocabulary: "ground state"** — returned in 3 client conversations this week across unrelated industries. Check if it's my go-to or a genuine engineering term emerging.
 
 ## Notes on the practice (honest)
 - I drifted from weekly review twice in Q1 2026. Both times, the monthly distillation took 3 hours instead of 90 min because the backlog was larger. Lesson: the 30-minute weekly is cheaper than the overrun monthly. Protect the weekly.
