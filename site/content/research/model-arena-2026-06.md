@@ -73,6 +73,10 @@ First four-way: Fable 5 · Opus 4.8 · Sonnet 4.6 · Haiku 4.5. Fully mechanical
 - **Judge family bias.** The blind judge is a Claude-family model; shuffled labels mitigate but don't eliminate it. Objective verification is preferred wherever possible.
 - **Harness-inclusive.** Latency and token figures include Claude Code agent overhead.
 
+## What the Arena does not measure
+
+The Arena ranks **models**. The system those models run inside — memory tiers, retrieval paths, harness integrity, dataset provenance — is evaluated separately by the [Starlight Proving Ground](/research/starlight-proving-ground-2026-06), the whole-system eval discipline. Same receipts ethic, different unit of measurement. Read both before trusting either.
+
 ## Reproduce it
 
 The harness is a usage pattern, not a codebase — any Claude Code session can run a round. Method, task-design rules, and the eval-stack doctrine (arena via Agent overrides · regression evals via promptfoo · runtime tracing via Langfuse only when an app serves users) live in [`tools/arena/README.md`](https://github.com/frankxai/Starlight-Intelligence-System/blob/main/tools/arena/README.md).

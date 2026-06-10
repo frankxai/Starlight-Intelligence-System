@@ -16,7 +16,7 @@ you put numbers next to them and refuse to round up.
 
 ## Why a "Proving Ground" and not an "arena"
 
-An arena ranks models. The Proving Ground evaluates the *system the models run inside*:
+An arena ranks models — that lane exists and stays separate: the [Starlight Model Arena](/research/model-arena) runs head-to-head model rounds with its own receipts. The Proving Ground evaluates the *system the models run inside*:
 the memory tiers, the retrieval path, the trust-contract harness, the substrate
 symmetry, the datasets themselves. The model arena is one lane of seven.
 
