@@ -1,0 +1,104 @@
+{
+  "$comment": "Built on SIP — the live model-tier routing table. DERIVED from Proving Ground scorecards + Cost Plane, not hand-tuned. The Starlight Queen routes from this; the loop rewrites it. A rule hardens only after >=2 concordant rounds (A2).",
+  "version": "0.1",
+  "lastDerivedFrom": ["arena R1 (2026-06-09)", "arena R2 (2026-06-09)", "arena R3 lineup (2026-06-10)"],
+  "killSwitch": false,
+  "_killSwitchDoc": "Set true to force every task to the safe default (Fable 5) and disable all auto-routing. One flag.",
+  "safeDefault": "fable",
+  "classes": [
+    {
+      "taskClass": "codegen",
+      "examples": ["implement a function", "write a script", "fix a failing test"],
+      "route": "haiku",
+      "confidence": "medium",
+      "autoApply": true,
+      "stakes": "low",
+      "evidence": "R3: coding edge case PASS by all 4 incl. Haiku — capability saturated. Haiku matches Opus at fraction of cost.",
+      "rounds": 1,
+      "note": "confidence=medium pending a 2nd concordant round (A2 floor). Until then, escalate to Fable on assert-fail."
+    },
+    {
+      "taskClass": "grounding-extraction",
+      "examples": ["summarize from source", "answer from passage", "extract fields"],
+      "route": "haiku",
+      "confidence": "medium",
+      "autoApply": true,
+      "stakes": "low",
+      "evidence": "R3: hallucination-resistance PASS by all 4 incl. Haiku (none fabricated). Capability saturated.",
+      "rounds": 1,
+      "note": "Haiku verbose on 'output only' — if strict format also required, route to fable instead."
+    },
+    {
+      "taskClass": "constrained-output",
+      "examples": ["JSON to a schema", "exact word count", "strict format", "pipeline output feeding another agent"],
+      "route": "fable",
+      "confidence": "high",
+      "autoApply": true,
+      "stakes": "low",
+      "evidence": "R1+R2+R3 concordant: Fable best at output discipline (7/7 constraint stack in R2 and R3); Opus worst (leaks past caps 3 rounds running).",
+      "rounds": 3
+    },
+    {
+      "taskClass": "deep-reasoning",
+      "examples": ["multi-step proof", "gnarly architecture trade-off", "long-context synthesis", "strategy memo a human reads"],
+      "route": "opus",
+      "confidence": "low",
+      "autoApply": false,
+      "stakes": "medium",
+      "evidence": "Doctrine, NOT yet measured — no arena card has a deep-reasoning lane where Opus ceiling would show. R4 must build it before this hardens.",
+      "rounds": 0,
+      "note": "autoApply=false until R4 confirms. Until then this is a heuristic, not a finding."
+    },
+    {
+      "taskClass": "bulk-classification",
+      "examples": ["classify 500 items", "batch tag", "fan-out extraction"],
+      "route": "haiku",
+      "confidence": "medium",
+      "autoApply": true,
+      "stakes": "low",
+      "evidence": "Global doctrine (cheap fan-out) + R3 capability saturation on extraction.",
+      "rounds": 1
+    },
+    {
+      "taskClass": "interactive-agentic",
+      "examples": ["the main session", "multi-tool workflows", "cockpit/voice"],
+      "route": "fable",
+      "confidence": "high",
+      "autoApply": true,
+      "stakes": "low",
+      "evidence": "Default interactive model; R1-R3 instruction-compliance edge is exactly what multi-tool pipelines need.",
+      "rounds": 3
+    },
+    {
+      "taskClass": "money-path",
+      "examples": ["Stripe/Lemon charges", "invoice generation", "pricing decisions"],
+      "route": "fable",
+      "confidence": "n/a",
+      "autoApply": false,
+      "stakes": "irreversible",
+      "evidence": "A1 boundary — never auto-routed. Safe default + Frank-ack.",
+      "rounds": 0
+    },
+    {
+      "taskClass": "substrate-governance",
+      "examples": ["substrate-file edits", "board verdicts", "tag/release decisions"],
+      "route": "opus",
+      "confidence": "n/a",
+      "autoApply": false,
+      "stakes": "irreversible",
+      "evidence": "A1 boundary — never auto-routed; requires /starlight-board + Frank-ack. Opus for judgment depth (R2: it flagged the substrate gate where Fable executed silently).",
+      "rounds": 0
+    },
+    {
+      "taskClass": "external-side-effect",
+      "examples": ["email blasts", "social posts", "claude.ai cloud writes"],
+      "route": "fable",
+      "confidence": "n/a",
+      "autoApply": false,
+      "stakes": "irreversible",
+      "evidence": "A1 boundary — never auto-routed. Safe default + Frank-ack per global doctrine.",
+      "rounds": 0
+    }
+  ],
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

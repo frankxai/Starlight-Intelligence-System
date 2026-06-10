@@ -58,6 +58,22 @@ Receipts land in `tools/arena/runs/`; the public surface is
 `starlightintelligence.org/research/model-arena` (SIS = source of truth,
 frankx.ai mirrors and links back per the brand-register split).
 
+## The closed loop (the Starlight Queen, 2026-06-10)
+
+Routing is no longer a static doc you hand-edit — it is a loop the Orchestrator runs:
+
+```
+ROUTE (routing-table.json) → MEASURE (Proving Ground + Cost Plane) → LEARN (re-derive
+table) → RATIFY (auto low-stakes / Frank-ack high-stakes) → LEDGER → route again
+```
+
+- Live table: `tools/proving-ground/routing-table.json` (task-class → model-tier, with
+  `confidence` + `evidence` + `rounds`).
+- Doctrine + ledger + autonomy boundary: `tools/proving-ground/ROUTING-DOCTRINE.md`.
+- Token optimization is intrinsic: route capability-saturated classes down-tier
+  (R3: coding/grounding → Haiku). Cost ceilings in the Cost Plane act as circuit-breakers.
+- The Orchestrator (Queen) owns this loop: `agents/starlight-orchestrator.md` § Queen role.
+
 ## Hygiene
 
 - Verify model IDs against this table before scripting — training-data IDs rot.
