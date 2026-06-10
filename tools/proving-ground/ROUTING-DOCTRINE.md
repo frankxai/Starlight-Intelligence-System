@@ -97,9 +97,14 @@ These are the gaps the Queen's loop should close next, in priority order:
    Until measured, "Opus for reasoning" is a guess. Highest priority.
 2. **Cross-family judge + cross-family routing** — add GPT-5 (OpenRouter) as both a
    bias-free judge and a cost-arbitrage routing target.
-3. **Memory precision@10 = 0.20** — the system's weakest number (system scorecard).
-   Fire real embeddings (PARKED-007) and re-measure; the Queen can't route around a
-   weak memory substrate.
+3. **Memory precision@10** — PARKED-007 FIRED 2026-06-10 (receipt:
+   `scorecards/2026-06-10-memory-lane-parked007.json`). model2vec real embeddings
+   (numpy-only, no torch) vs hashing-TF on the same corpus/queries: recall@5 +3.5pp,
+   hit@10 +6.9pp, **precision@10 unchanged (0.155)**. Finding: the lexical token-overlap
+   ground-truth under-credits semantic retrieval AND single-substrate has no fusion.
+   NEXT: (a) semantic/labeled ground-truth so the judge stops handicapping semantics;
+   (b) hybrid lexical+semantic RRF (un-park PARKED-002) — the likely real precision lever.
+   Do NOT swap the primary substrate yet (gated).
 4. **Per-task cost telemetry → routing** — wire Cost Plane per-task-class spend back
    into the table so routing optimizes measured $/task, not just capability.
 5. **Drift detection** — the weekly tick; catch a tier regressing before it costs you.

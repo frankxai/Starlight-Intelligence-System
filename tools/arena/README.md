@@ -72,6 +72,15 @@ exact prompt shapes.)
 | **Runtime tracing of deployed apps** | Langfuse (Phase 2, only when an app serves real users) | Tracing/observability is a production concern, not an eval concern. Don't stand up a server for benchmarks. |
 | **Not adopted** | LangChain/LangSmith as eval layer | Adds a framework dependency for no capability we lack; LangSmith is paid + hosted where promptfoo is local + free. |
 
+## ⏸ Compliance rounds PAUSED (2026-06-10)
+
+Per exec-board call (Frank-authorized): **stop generating output-discipline / craft
+arena rounds** — 5 in 48h, the axis is saturated (R3 confirmed capability parity across
+the lineup). The next arena round is the **R4 deep-reasoning lane** (multi-step proof,
+long-context contradiction detection, architecture trade-off scored on correctness not
+format) + a **cross-family GPT-5 judge** (OpenRouter) to kill the Claude-family bias
+caveat. Do not run another compliance card until R4 ships.
+
 ## Backlog — more to consider (Round 3+)
 
 - **Cross-family judge** — add a non-Anthropic judge via OpenRouter (e.g.
