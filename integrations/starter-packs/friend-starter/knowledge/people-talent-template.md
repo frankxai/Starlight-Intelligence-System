@@ -1,6 +1,6 @@
 # People Talent Intelligence — Filled Example Pack
 
-> Ana-grade filled examples for the five Talent Intelligence protocols: motivation map, burnout detection, team dynamics audit, psychological safety measurement, retention plan. Realistic, anonymized. Sub-system 5 of 6 in the People Intelligence Domain Sub-Stack (renamed from HR Intelligence at v7.6.0). Use as reference shape; replace with your actual data.
+> Reference-grade filled examples for the five Talent Intelligence protocols: motivation map, burnout detection, team dynamics audit, psychological safety measurement, retention plan. Realistic, anonymized. Sub-system 5 of 6 in the People Intelligence Domain Sub-Stack (renamed from HR Intelligence at v7.6.0). Use as reference shape; replace with your actual data.
 
 ---
 
@@ -394,7 +394,7 @@ This retention architecture is grounded in Beverly Kaye's stay-interview researc
 
 **Refused approach:** exit-interview-as-strategy. The two recent exits provide pattern data; they are not the leverage point.
 
-## Stay-interview script (Ana's voice)
+## Stay-interview script (the practitioner's voice)
 
 **Cadence:** quarterly. **Duration:** 30-45 minutes. **Lead:** founder-CEO directly for this top-5 cohort (not delegated to HR).
 

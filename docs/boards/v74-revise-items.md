@@ -17,7 +17,7 @@ Source: `docs/boards/luminor-v74-beta-9layer.md`. Verdict: REVISE. Five items be
 ## Item 2: Update `agents/AGENT_REGISTRY.md` with the five new agents + tiers
 
 - **Board vector:** Aiyami (Harmonizer) + Ino (Verifier)
-- **Issue:** Five new agents shipped (`starlight-business`, `starlight-visionary`, `starlight-embodiment`, `starlight-secondbrain`, `starlight-relational`) with declared tiers (Business, Vision, Embodiment, Memory, Relational) — the registry that claims to be the source of truth for tier structure lists none of them. The registry's ASCII tier diagram still shows only Front-Door / Excavation / Leadership / Specialist / Foundation. On a non-technical adopter like Ana opening the registry to orient, the substrate reads as stale by five agents the day of ship, which directly undermines the "ambient attestation, invisible substrate" claim.
+- **Issue:** Five new agents shipped (`starlight-business`, `starlight-visionary`, `starlight-embodiment`, `starlight-secondbrain`, `starlight-relational`) with declared tiers (Business, Vision, Embodiment, Memory, Relational) — the registry that claims to be the source of truth for tier structure lists none of them. The registry's ASCII tier diagram still shows only Front-Door / Excavation / Leadership / Specialist / Foundation. On a non-technical adopter like the first private test case opening the registry to orient, the substrate reads as stale by five agents the day of ship, which directly undermines the "ambient attestation, invisible substrate" claim.
 - **Proposed resolution:** Update `AGENT_REGISTRY.md` to (a) add a new top-level diagram or section for the 9-layer agent layout, (b) add each new agent to the Agent Index with file path, domain, and activation trigger matching the individual agent docs, (c) add each new agent to the Capabilities Matrix with PRIMARY assignments, (d) declare vault access for each new namespace (`business/`, `vision/`, `health/`, `relational/`, `second-brain/`), (e) declare the Business↔Wealth and Second Brain↔Sage boundaries explicitly with hand-off rules, (f) update skill-rules.json to match.
 - **Effort estimate:** medium
 - **Blocker status:** ships-before-v7.4.1-tag
@@ -44,13 +44,13 @@ Source: `docs/boards/luminor-v74-beta-9layer.md`. Verdict: REVISE. Five items be
 
 ---
 
-## Item 5: Confirm Ana dogfood coverage for the 5 new layers, or mark gaps honestly
+## Item 5: Confirm first-test-case dogfood coverage for the 5 new layers, or mark gaps honestly
 
 - **Board vector:** Ino (Verifier) + Lyssandria (Seer)
-- **Issue:** v7.4 alpha attestation declared Ana as dogfood across GIS outputs (Genius Profile, Freedom Path, reclamation map, executor playbook, creator pipeline). v7.4 beta adds Business, Vision, Embodiment, Second Brain, Relational — the attestation ledger does not declare whether Ana's dogfood was extended to Entity Architecture Plan, Vision Architecture, Regimen, PKM cadence, or Network Architecture. If Ana has only 2–3 layers actually filled, Lyssandria's prediction (users run 2–3 layers, not 9) is already empirically confirmed on the system's own primary dogfood.
-- **Proposed resolution:** Either (a) run the five new commands against Ana and land the filled artifacts in the starter pack (`integrations/starter-packs/friend-starter/`) as Ana-grade examples before tag, or (b) be honest in the attestation: name which layers have real Ana content and which are aspirational, and set the expectation in the public explainer that layers 4–9 ship as scaffolds refined through real dogfood over v7.4.1–v7.5. Option (b) is the sovereignty-aligned move; option (a) is stronger positioning but requires Ana's time.
+- **Issue:** v7.4 alpha attestation declared the first private test case as dogfood across GIS outputs (Genius Profile, Freedom Path, reclamation map, executor playbook, creator pipeline). v7.4 beta adds Business, Vision, Embodiment, Second Brain, Relational — the attestation ledger does not declare whether the test case's dogfood was extended to Entity Architecture Plan, Vision Architecture, Regimen, PKM cadence, or Network Architecture. If the test case has only 2–3 layers actually filled, Lyssandria's prediction (users run 2–3 layers, not 9) is already empirically confirmed on the system's own primary dogfood.
+- **Proposed resolution:** Either (a) run the five new commands against the test case and land the filled artifacts in the starter pack (`integrations/starter-packs/friend-starter/`) as reference-grade examples before tag, or (b) be honest in the attestation: name which layers have real test-case content and which are aspirational, and set the expectation in the public explainer that layers 4–9 ship as scaffolds refined through real dogfood over v7.4.1–v7.5. Option (b) is the sovereignty-aligned move; option (a) is stronger positioning but requires the test case's time.
 - **Effort estimate:** high (option a) / low (option b)
-- **Blocker status:** v7.5-acceptable — not a v7.4.1 blocker if option (b) is taken and the attestation is honest about it; becomes a blocker if v7.4.1 ships positioning Health/Relational as "Ana is using this" when she isn't.
+- **Blocker status:** v7.5-acceptable — not a v7.4.1 blocker if option (b) is taken and the attestation is honest about it; becomes a blocker if v7.4.1 ships positioning Health/Relational as "the test case is using this" when they aren't.
 
 ---
 
@@ -62,9 +62,9 @@ Source: `docs/boards/luminor-v74-beta-9layer.md`. Verdict: REVISE. Five items be
 | 2 | Update `AGENT_REGISTRY.md` with 5 new tiers + boundaries + skill-rules sync | ships-before-v7.4.1 | medium |
 | 3 | Expand test harness — assert ambient attestation on all 5 new agents | ships-before-v7.4.1 | medium |
 | 4 | Mark layer maturity + foreground the sharp-three in public explainer | ships-before-v7.4.1 | low |
-| 5 | Ana dogfood coverage — fill or honestly mark aspirational | v7.5-acceptable | high / low |
+| 5 | First-test-case dogfood coverage — fill or honestly mark aspirational | v7.5-acceptable | high / low |
 
-Parallel-dispatch pattern from v7.3.1 applies: items 1–4 are independent and can be agent-dispatched simultaneously; item 5 is either a scheduled Ana session or a 10-minute attestation honesty pass.
+Parallel-dispatch pattern from v7.3.1 applies: items 1–4 are independent and can be agent-dispatched simultaneously; item 5 is either a scheduled test-case session or a 10-minute attestation honesty pass.
 
 ---
 

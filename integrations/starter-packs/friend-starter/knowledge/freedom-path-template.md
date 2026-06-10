@@ -42,51 +42,51 @@ Built on SIP v1.1.0 · Generated <ISO date>
 ---
 ```
 
-## Filled example — Ana (HR Psychologist)
+## Filled example — Maya (product-ops consultant; fictional composite — any resemblance to real persons is coincidental)
 
 ```
-# Freedom Path — Ana Morales — 2026-04-24
+# Freedom Path — Maya Lindqvist — 2026-04-24
 
 ## KEEP (genius work — only you can do)
-- Diagnostic intake on senior hires — reading the attachment pattern in the first 20 minutes of the interview
-- Comp-season conversations with C-suite about the real stakes under stated numbers
-- Culture audit synthesis — naming what the organization punishes out loud
-- Coaching for executives at trapdoor moments (when a conversation is about to go somewhere real)
-- Writing the frameworks themselves — the Substack, the book-in-progress, the talks
-- Designing the shape of each year's review cycle (the design, not the execution)
+- Decision Debt Ledger sessions with founders — naming the deferred decisions and pricing the interest out loud
+- Roadmap-season conversations with leadership about the funded roadmap under the published one
+- Invisible Handoff Map synthesis — walking the line from design to factory and naming where information dies
+- Advising executives at go/no-go moments (when a launch decision is about to get made by default)
+- Writing the frameworks themselves — the newsletter, the book-in-progress, the talks
+- Designing the shape of each client's gate structure (the design, not the execution)
 
 ## DELEGATE (executor work — anyone trained can do)
-- Running recruiting cycles against your rubric (intake to final interview)
-- Writing first-draft job descriptions from your framework templates
-- Onboarding schedule management and day-1 through day-30 checkpoints
-- Compiling the data for the quarterly health-of-the-team report
-- Coordinating performance review logistics (calendar, forms, manager nudges)
-- Drafting exit-interview summaries against your diagnostic frame
-- Managing the candidate pipeline CRM / ATS
-- First-pass feedback on manager calibration docs
-- Running the annual comp cycle's operational mechanics (not the conversations)
-- Coordinating with external recruiters and vendor relationships
+- Running build-readiness checklists against your gate rubric (kickoff to launch review)
+- Writing first-draft vendor briefs from your framework templates
+- Prototype-test scheduling and day-1 through day-30 pilot checkpoints
+- Compiling the data for the quarterly program health report
+- Coordinating launch-review logistics (calendar, evidence packets, team nudges)
+- Drafting prototype-autopsy summaries against your diagnostic frame
+- Managing the supplier and vendor contact pipeline
+- First-pass feedback on team gate-scoring docs
+- Running the annual roadmap cycle's operational mechanics (not the conversations)
+- Coordinating with external test labs and certification bodies
 
 ## AUTOMATE (system work — AI/workflow can do)
-- Interview scheduling (Calendly + filters)
-- Reference-check email sequences
-- Candidate-feedback collection after each stage
-- Monthly turnover dashboard generation
-- Employee-engagement survey deployment and basic sentiment summary
-- Draft job descriptions v0 (AI) that humans then tune
-- Onboarding-document delivery on day-0 (forms, handbook, tools)
-- Birthday / work-anniversary acknowledgments
-- Initial resume screening against must-haves
-- Meeting-note transcription for coaching sessions (with consent)
+- Workshop and review scheduling (Calendly + filters)
+- Vendor follow-up email sequences
+- Pilot-user feedback collection after each test stage
+- Monthly decision-debt dashboard generation
+- Team pulse-survey deployment and basic sentiment summary
+- Draft vendor briefs v0 (AI) that humans then tune
+- Engagement-kickoff document delivery on day-0 (templates, checklists, tools)
+- Renewal and milestone acknowledgments
+- Initial inbound-lead screening against fit criteria
+- Meeting-note transcription for advisory sessions (with consent)
 
 ## KILL (compounds nothing — stop doing)
-- Sitting in status meetings where HR has no decision rights
-- Re-running the same DEI training slide deck annually without redesign
-- Maintaining the vendor-of-the-month demo calls pipeline
-- Responding to every LinkedIn recruiter message personally
+- Sitting in status meetings where ops has no decision rights
+- Re-running the same kickoff slide deck for every client without redesign
+- Maintaining the tool-of-the-month demo calls pipeline
+- Responding to every cold partnership message personally
 - Attending conferences where you already know every speaker's frame
-- Writing performance-review prompts that your manager will override anyway
-- Volunteering for every internal committee that asks
+- Writing gate reports that the client sponsor will override anyway
+- Volunteering for every client steering committee that asks
 
 ## What's next
 Train your first executor on the DELEGATE bucket. You have 10 items there — that is more than enough to justify a hire, and the DELEGATE work is currently draining the hours where your KEEP work needs to live. I can turn this bucket into a 12-week executor playbook in your voice.

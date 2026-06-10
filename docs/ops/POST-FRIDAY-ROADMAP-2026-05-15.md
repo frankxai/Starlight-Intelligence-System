@@ -129,7 +129,7 @@ Each week has a named deliverable, a falsifier, and a dependency map. If a week 
 
 ## Week 4 — Jun 6-12 — First friend onboarded
 
-**Goal:** Ana OR Logan completes a real engagement against the substrate. Money changes hands. Attestation block on their first shipped artifact.
+**Goal:** the first private test case OR Logan completes a real engagement against the substrate. Money changes hands. Attestation block on their first shipped artifact.
 
 ### Named deliverables
 

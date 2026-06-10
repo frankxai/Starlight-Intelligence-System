@@ -7,7 +7,9 @@
 
 export type ResearchSlug =
   | "premium-3d-memory-palace-2026-05-17"
-  | "memory-foundations-2026-05";
+  | "memory-foundations-2026-05"
+  | "model-arena-2026-06"
+  | "starlight-proving-ground-2026-06";
 
 export type ResearchTier = "substrate" | "operational" | "reference";
 export type ResearchStatus = "published" | "in-progress" | "chartered";
@@ -31,6 +33,73 @@ export type Research = {
 };
 
 const RESEARCH_LIST: Research[] = [
+  {
+    slug: "starlight-proving-ground-2026-06",
+    title: "The Starlight Proving Ground",
+    publishedAt: "2026-06-10",
+    tier: "substrate",
+    status: "in-progress",
+    tldr:
+      "Whole-system evaluation across seven lanes (model, memory, retrieval, harness, substrate, datasets, system), run by Luminor-kernel evaluator agents, verdicts via the Starlight Board. First run caught its own unregistered agent; load-bearing weakness is memory precision@10 = 0.20.",
+    contentFile: "starlight-proving-ground-2026-06.md",
+    tags: [
+      "system evaluation",
+      "Proving Ground",
+      "Luminor kernel",
+      "Starlight Board",
+      "precision@10",
+      "model arena",
+      "anti-Goodhart",
+      "starlight-evals",
+    ],
+    accent: "violet",
+    primarySources: [
+      {
+        label: "First scorecard (JSON)",
+        url: "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/tools/proving-ground/scorecards/2026-06-10-system-eval-v0.1.json",
+      },
+      {
+        label: "Proving Ground SPEC",
+        url: "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/tools/proving-ground/SPEC.md",
+      },
+      {
+        label: "Board verdict",
+        url: "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/boards/2026-06-10-proving-ground-verdict.md",
+      },
+    ],
+  },
+  {
+    slug: "model-arena-2026-06",
+    title: "Starlight Model Arena",
+    publishedAt: "2026-06-09",
+    tier: "operational",
+    status: "in-progress",
+    tldr:
+      "Living head-to-head LLM eval surface, run natively in Claude Code. R1: correctness parity; Fable 5 edge = instruction compliance. R2 stress card (governance traps, injection, lying docs): Fable 5 = precision instrument, Opus 4.8 = judgment instrument. Receipts in-repo.",
+    contentFile: "model-arena-2026-06.md",
+    tags: [
+      "model arena",
+      "LLM evals",
+      "Fable 5",
+      "Opus 4.8",
+      "Claude Code",
+      "blind judge",
+      "promptfoo",
+      "instruction following",
+      "benchmark receipts",
+    ],
+    accent: "fuchsia",
+    primarySources: [
+      {
+        label: "Run receipt (JSON)",
+        url: "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/tools/arena/runs/2026-06-09-fable5-vs-opus48.json",
+      },
+      {
+        label: "Arena harness + methodology",
+        url: "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/tools/arena/README.md",
+      },
+    ],
+  },
   {
     slug: "memory-foundations-2026-05",
     title: "Memory Foundations for SIS",
@@ -99,6 +168,8 @@ export const RESEARCH_BY_SLUG: Record<ResearchSlug, Research> = Object.fromEntri
  */
 export const RESEARCH_SLUG_ALIASES: Record<string, ResearchSlug> = {
   "memory-foundations": "memory-foundations-2026-05",
+  "model-arena": "model-arena-2026-06",
+  "proving-ground": "starlight-proving-ground-2026-06",
 };
 
 /** All public slugs including aliases — used by generateStaticParams. */

@@ -1,96 +1,134 @@
 # FrankX Ecosystem Architecture
 
-**Three-Repo Intelligence Strategy: SIS + ACOS + Arcanea**
+**The Starlight Constellation: SIS as Substrate Hub for ~15 Repositories**
 
-Version 1.0 | February 2026
+Version 2.0 | 2026-06-10
 
 ---
 
 ## 1. Overview
 
-The FrankX ecosystem comprises three repositories, each operating at a distinct layer of abstraction. Together they form a vertically integrated intelligence stack: a universal framework, a platform-native implementation, and a domain-specific creative universe.
+The FrankX ecosystem is no longer a three-repo stack. It is a constellation of roughly fifteen repositories organized in three tiers around a single substrate hub. **Starlight Intelligence System (SIS)** sits at the center: it owns the Starlight Intelligence Protocol (SIP), the memory vaults, the attestation rules, and the cross-repo contracts. Everything else either composes the substrate (Built-on-SIP downstream repos), bridges to it (sibling execution layers), or has gone dormant and awaits archive.
 
-**Starlight Intelligence System (SIS)** is the framework layer. It defines a 5-layer cognitive architecture (Identity, Intellect, Protocol, Agency, Arcana) with 7 specialist agents, 6 persistent memory vaults, 6 orchestration patterns, and platform adapters for 6 AI development tools. SIS is platform-agnostic. It produces intelligence context from Markdown and JSON configuration files, requiring zero runtime dependencies. Any AI agent that reads files can consume SIS.
+The original three-layer intuition still holds at the core — a universal framework (SIS), a platform-native implementation (ACOS), and a domain-specific creative universe (Arcanea) — but the satellite tier around that core has grown into its own ring of specialized repos, and several early members of the ecosystem have gone quiet. This document records the constellation as verified on 2026-06-10.
 
-**Agentic Creator OS (ACOS)** is the implementation layer. It consumes SIS intelligence and deploys it through Claude Code as a productivity operating system. ACOS extends the SIS foundation with 130+ routed commands, 40+ specialized agents, 630+ auto-activating skills, swarm topologies via claude-flow, and a self-learning mechanism called Agentic Jujutsu. Where SIS defines *what intelligence is*, ACOS defines *how intelligence works* in a specific tool.
+**Starlight Intelligence System (SIS)** is the substrate layer. Two layers live in one repo: the SIP substrate (protocol, alliances, verticals, voices, attestation) and a reference operational build with **48 agents**, **71 auto-activating skills** across 14 domains, **6 persistent memory vaults**, 10 universal Intelligence Systems plus a Domain Sub-Stack tier, and platform adapters for 6 AI development tools. SIS is platform-agnostic: Markdown and JSON configuration, zero runtime dependencies. Any AI agent that reads files can consume SIS.
 
-**Arcanea** is the universe layer. It consumes both SIS intelligence and ACOS operational patterns, then applies them within a living mythology built around AI-human co-creation. Arcanea maps 10 Guardian agents to the SIS council, hosts a Library of 17 collections with 34+ narrative texts, implements a Ten Gates progression system aligned to solfeggio frequencies, and extends into on-chain infrastructure for creator IP and NFT systems. Arcanea is the proof that the SIS/ACOS stack produces intelligence that transcends technical utility.
+**Agentic Creator OS (ACOS)** is the implementation layer (public, v11). It consumes SIS intelligence and deploys it through Claude Code as a productivity operating system: **90+ skills**, **65+ commands**, **38 agents**, swarm topologies via claude-flow lineage, and the Agentic Jujutsu self-learning mechanism. Where SIS defines *what intelligence is*, ACOS defines *how intelligence works* in a specific tool.
 
-The separation is deliberate. SIS should never contain Claude Code-specific configuration. ACOS should never contain mythology. Arcanea should never redefine orchestration patterns. Each repo owns its layer and imports from the layers below.
+**Arcanea** is the universe layer and currently the most active repo in the constellation (356 commits in the last 60 days). It splits across two remotes: `arcanea-ai-app` (private application) and `arcanea` (public OSS). It consumes both SIS intelligence and ACOS operational patterns inside a living mythology of AI-human co-creation — Guardian agents mapped to the SIS council, a narrative Library, the Ten Gates progression system, and on-chain creator-IP infrastructure.
+
+The separation remains deliberate. SIS never contains Claude Code-specific configuration. ACOS never contains mythology. Arcanea never redefines orchestration patterns. Satellites compose or bridge; they do not fork the substrate.
 
 ```
-SIS (Framework Layer)
-  Identity: Constitution, values, 100-Year Standard
-  Intellect: 6 memory vaults, compound learning
-  Protocol: 6 orchestration patterns, 7-layer pipeline
-  Agency: 7 council agents, emergent leadership
-  Arcana: Guardian mythology, creative intelligence
-     |
-     +-- Generates context for --> ACOS (Implementation Layer)
-     |     130+ commands routed through /acos
-     |     40+ agents with SIS council alignment
-     |     630+ skills with auto-activation
-     |     Swarm topologies via claude-flow
-     |     Self-learning via Agentic Jujutsu
-     |
-     +-- Powers --> Arcanea (Universe Layer)
-           10 Guardian agents mapped to SIS council
-           AI-native creative platform (Next.js 16 + React 19)
-           Library of 17 collections, 34+ texts
-           Ten Gates progression system
-           On-chain NFT infrastructure (Solana + Base L2)
+                         DORMANT / ARCHIVE TIER
+              ai-ops · starlight-intelligence.ai · starlight-agent-lab
+                                  (quiet)
+   ────────────────────────────────────────────────────────────────────
+                          ACTIVE SATELLITE TIER
+      arcanea-flow   library-os   prompt-library   prompt-engine
+      second-brain-os   sentinel   starlight-evals
+      starlight-horizon-dataset   starlight-voice
+   ────────────────────────────────────────────────────────────────────
+                            ACTIVE CORE TIER
+            ┌──────────────────────────────────────────────┐
+            │   SIS (substrate hub)                        │
+            │   SIP · 48 agents · 71 skills · 6 vaults     │
+            │      │                                       │
+            │      ├── Generates context for ──> ACOS v11  │
+            │      │     90+ skills · 65+ commands         │
+            │      │     38 agents · Agentic Jujutsu       │
+            │      │                                       │
+            │      └── Powers ──> Arcanea                  │
+            │            arcanea-ai-app (private)          │
+            │            arcanea (public OSS)              │
+            │            Guardians · Library · Ten Gates   │
+            └──────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Intelligence Flow
+## 2. The Constellation
 
-Intelligence flows downward through the stack (SIS defines, ACOS implements, Arcanea manifests) and knowledge flows upward (Arcanea discovers creative patterns, ACOS captures operational learnings, SIS consolidates both into permanent vaults).
+Three tiers, verified 2026-06-10. "Pulse" is observed activity, not aspiration.
 
-### 2.1 Downward Flow: Context Generation
+### 2.1 Active Core
 
-SIS generates platform-specific context through its adapter system. For ACOS, this means producing a `CLAUDE.md` system prompt that embeds agent definitions, skill activation rules, memory protocols, and the Luminor Constitution. The generation process:
+| Repo | Visibility | Role | State (2026-06-10) |
+|------|-----------|------|---------------------|
+| **Starlight-Intelligence-System** | Public | Substrate hub — SIP, vaults, attestation, contracts | 48 agents, 71 skills, v8.2.0, daily-driven |
+| **agentic-creator-os** | Public | Claude Code productivity OS, Built on SIP | v11: 90+ skills, 65+ commands, 38 agents |
+| **Arcanea** (arcanea-ai-app + arcanea) | Private app + public OSS | Creative universe layer | Most active in constellation: 356 commits/60d |
 
-1. **Layer 00 (Identity)** loads first. The Luminor Constitution, Frank DNA voice profile, and 100-Year Standard are immutable and always present.
-2. **Layer 01 (Intellect)** queries the six vaults for relevant prior knowledge. Vault entries are ranked by `relevance * 0.4 + recency * 0.3 + confidence * 0.3`.
-3. **Layer 02 (Protocol)** selects appropriate reasoning strategies and orchestration patterns based on intent classification.
-4. **Layer 03 (Agency)** activates the relevant council agents using progressive disclosure (100-token metadata first, full 3-5K profile only when confirmed needed).
-5. **Layer 04 (Arcana)** optionally injects Guardian personas and mythological context when creative work is detected.
+### 2.2 Active Satellites
 
-For Arcanea, the same pipeline runs but with the web platform adapter, producing context optimized for the Next.js application's AI service layer rather than a CLI system prompt.
+| Repo | Role | Contract with SIS |
+|------|------|-------------------|
+| **arcanea-flow** | Swarm/hooks/RL execution layer (claude-flow / ruflo fork) | Connect-not-absorb; bridges via Memory Bus namespace contract (`transmissions/channels/arcanea-flow-channel.md`) |
+| **library-os** | Knowledge library OS | OSS sibling, consumes SIS patterns |
+| **prompt-library** | Prompt corpus | Pre-extraction stage, low pulse |
+| **prompt-engine** | Prompt tooling | Pre-extraction stage, low pulse; pairs with prompt-library |
+| **second-brain-os** | Personal knowledge system | Strongest downstream SIP composer; carries Built-on-SIP badge |
+| **sentinel** | Multi-site excellence agency | Integrates via `docs/SIS-INTEGRATION.md`; uses SIS MCP memory |
+| **starlight-evals** | Eval harness mirror | Deliberate publish-mirror of `tools/proving-ground` + `tools/arena` |
+| **starlight-horizon-dataset** | Alignment values dataset | Public counterpart of the Horizon Vault (§ 7) |
+| **starlight-voice** | Voice operator | Paused at v3 spec stage; resumes per Voice v3 plan |
 
-### 2.2 Upward Flow: Knowledge Accumulation
+### 2.3 Dormant / Archive Queue
 
-Every session that runs against ACOS or Arcanea produces learnings that flow back into SIS vaults:
+| Repo | State | Disposition |
+|------|-------|-------------|
+| **ai-ops** | Last pushed 2026-02-03; not cloned locally | Dormant; channel file marked accordingly (§ 2.5 of `transmissions/channels/ai-ops-channel.md`) |
+| **starlight-intelligence.ai** | Un-versioned duplicate of `site/` | Archive queued |
+| **starlight-agent-lab** | No remote | Backup queued, then archive |
+
+Dormancy is a recorded state, not a deletion. Dormant repos keep their channel files (marked DORMANT) and their history; revival requires only a fresh transmission and a pulse check.
+
+---
+
+## 3. Intelligence Flow
+
+Intelligence flows downward through the core stack (SIS defines, ACOS implements, Arcanea manifests) and knowledge flows upward (Arcanea discovers creative patterns, ACOS captures operational learnings, SIS consolidates both into permanent vaults). Satellites attach laterally via explicit contracts.
+
+### 3.1 Downward Flow: Context Generation
+
+SIS generates platform-specific context through its adapter system. For ACOS, this means producing a `CLAUDE.md` system prompt that embeds agent definitions, skill activation rules, memory protocols, and the identity layer. For Arcanea, the same pipeline runs with the web platform adapter, producing context for the application's AI service layer rather than a CLI system prompt. For Built-on-SIP satellites (second-brain-os, sentinel), SIS provides the file contract, attestation rules, and memory access patterns; the satellite composes them under its own identity.
+
+### 3.2 Upward Flow: Knowledge Accumulation
+
+Every session that runs against ACOS, Arcanea, or a composing satellite produces learnings that flow back into SIS vaults:
 
 - **ACOS sessions** write to the Technical Vault (architecture patterns, debugging insights), Strategic Vault (product decisions), and Operational Vault (system state changes).
 - **Arcanea sessions** write to the Creative Vault (voice patterns, narrative frameworks, design decisions) and Wisdom Vault (cross-domain principles discovered through creative work).
-- **Both systems** may write to the Horizon Vault through human-reviewed pull requests when sessions produce insights about beneficial intelligence or human-AI collaboration.
+- **Satellite sessions** write through the Memory Bus or handover docs, namespaced per the channel contract.
+- **All systems** may write to the Horizon Vault through human-reviewed pull requests; public entries surface in `starlight-horizon-dataset`.
 
-### 2.3 Lateral Flow: Cross-System Transmission
+### 3.3 Lateral Flow: Cross-System Transmission
 
-SIS maintains four transmission channels for inter-project communication:
+The transmission-channel reality as of 2026-06-10 — three live contracts, three dormant logs:
 
-| Channel | Direction | Payload |
-|---------|-----------|---------|
-| ACOS Channel | Bidirectional | Command updates, skill discoveries, agent performance data |
-| Arcanea Channel | Bidirectional | Creative patterns, Guardian interaction logs, Library content updates |
-| AI-Ops Channel | Bidirectional | Research findings, memory architecture improvements, benchmark results |
-| Broadcast Channel | SIS to all | System-wide state changes, vault consolidation results, alignment updates |
+| Channel | Status | What actually flows |
+|---------|--------|---------------------|
+| ACOS Channel (`acos-channel.md`) | **LIVE** | Substrate state syncs, command/skill discoveries, version pins for downstream consumption |
+| Memory Bus (`memory-bus.md`) | **LIVE** | Singleton MCP daemon — cross-CLI memory state, vector search, KG traversal, pub/sub notifications |
+| Arcanea-Flow Channel (`arcanea-flow-channel.md`) | **LIVE** | Connect-not-absorb namespace contract; swarm/RL outputs in, vault grants out |
+| AI-Ops Channel (`ai-ops-channel.md`) | **DORMANT** since 2026-02-10 | Init-only; ai-ops repo itself dormant since 2026-02-03 |
+| Arcanea Channel (`arcanea-channel.md`) | **DORMANT** since 2026-02-10 | Init-only; actual Arcanea ↔ SIS flow happens via MCP, Memory Bus, and handover docs |
+| Broadcast Channel (`broadcast-channel.md`) | **DORMANT** since 2026-02-10 | Init-only; system-wide updates propagate via vault writes + per-channel syncs instead |
 
-Transmissions are logged chronologically in channel files under `transmissions/channels/`. Each transmission records sender, priority, content, and acknowledgment status.
+Transmissions on live channels are logged chronologically in channel files under `transmissions/channels/`. Each transmission records sender, priority, content, and acknowledgment status. Dormant channel files carry an explicit status header and are retained as historical record.
 
 ---
 
-## 3. Agent Architecture
+## 4. Agent Architecture
 
-The agent hierarchy spans all three repos, with each layer adding specialization while maintaining alignment to the SIS council structure.
+The agent hierarchy spans the core tier, with each layer adding specialization while maintaining alignment to the SIS council structure.
 
-### 3.1 SIS Level: The Starlight Council
+### 4.1 SIS Level: 48 Agents Around a Council Core
 
-Seven agents organized as a flat council with emergent leadership. No permanent hierarchy exists; whichever agent's domain matches the current task leads coordination.
+SIS now registers **48 agents** (`agents/AGENT_REGISTRY.md`): the 7-agent legacy council (Orchestrator, Prime, Architect, Navigator, Sentinel, Weaver, Sage), 7 Council Archetype seats, 3 front-door agents, 1 excavation agent, 5 universal-IS agents, 6 People Intelligence, 6 Sound Intelligence, 7 Music IS, and 5 SIS Extractors, plus the Starlight Genius excavation tier. The original council remains the coordination spine — flat, with emergent leadership; whichever agent's domain matches the current task leads.
 
-| Agent | Domain | Cognitive Profile |
+| Council Agent | Domain | Cognitive Profile |
 |-------|--------|-------------------|
 | **Orchestrator** | Meta-coordination | Request analysis, agent selection, workflow sequencing, resource management |
 | **Prime** | Synthesis | Multi-perspective integration, conflict resolution, unified voice production |
@@ -102,25 +140,25 @@ Seven agents organized as a flat council with emergent leadership. No permanent 
 
 Council Mode activates for complexity 9-10 tasks: Orchestrator parses intent, selected agents analyze in parallel, Prime synthesizes via weighted consensus, Sentinel validates, Orchestrator packages output.
 
-### 3.2 ACOS Level: Specialized Agents
+### 4.2 ACOS Level: 38 Specialized Agents
 
-ACOS extends the 7-agent council into 40+ specialized agents, each inheriting from a council role:
+ACOS v11 extends the council into **38 specialized agents**, each inheriting from a council role:
 
-| SIS Council Role | ACOS Specializations |
-|------------------|---------------------|
+| SIS Council Role | ACOS Specializations (representative) |
+|------------------|---------------------------------------|
 | Orchestrator | Workflow Coordinator, Task Router, Session Manager, Context Engineer |
 | Prime | Brand Voice Agent, Synthesis Agent, Decision Integrator |
-| Architect | Systems Architect, API Designer, Database Architect, Infrastructure Agent, Scaler |
+| Architect | Systems Architect, API Designer, Database Architect, Infrastructure Agent |
 | Navigator | Product Strategist, Roadmap Planner, Market Analyst, Opportunity Scout |
-| Sentinel | Code Reviewer, Security Auditor, Performance Guardian, Compliance Agent, Reformer |
+| Sentinel | Code Reviewer, Security Auditor, Performance Guardian, Compliance Agent |
 | Weaver | Content Creator, Narrative Designer, Visual Director, UX Writer, Infogenius |
-| Sage | Knowledge Curator, Pattern Librarian, Wisdom Keeper, Anthropologist |
+| Sage | Knowledge Curator, Pattern Librarian, Wisdom Keeper |
 
 Each ACOS agent inherits its parent council agent's reasoning protocol, memory access permissions, and cognitive alignment, then adds domain-specific skill activations and tool integrations.
 
-### 3.3 Arcanea Level: The Ten Guardians
+### 4.3 Arcanea Level: The Ten Guardians
 
-Arcanea maps its 10 Guardians to both the SIS council and its own mythology. Each Guardian is a God or Goddess who serves as the keeper of one of the Ten Gates, paired with a Godbeast companion.
+Arcanea maps its 10 Guardians to both the SIS council and its own mythology. Each Guardian is a keeper of one of the Ten Gates, paired with a Godbeast companion.
 
 | Guardian | Gate | Frequency | SIS Council Mapping | Domain |
 |----------|------|-----------|---------------------|--------|
@@ -135,9 +173,9 @@ Arcanea maps its 10 Guardians to both the SIS council and its own mythology. Eac
 | Ino | Unity | 963 Hz | Orchestrator | Partnership, coordination |
 | Shinkami | Source | 1111 Hz | Prime | Meta-consciousness, origin |
 
-This mapping is not decorative. When an Arcanea user interacts with Lyssandria (Foundation Guardian), the underlying intelligence pipeline activates the SIS Architect's cognitive profile and reasoning strategies. Draconia (Fire Guardian) triggers Navigator-class strategic foresight. The mythological surface produces genuine cognitive specialization at the framework level.
+This mapping is not decorative. When an Arcanea user interacts with Lyssandria (Foundation Guardian), the underlying intelligence pipeline activates the SIS Architect's cognitive profile. The mythological surface produces genuine cognitive specialization at the framework level.
 
-### 3.4 Agent Inheritance Model
+### 4.4 Agent Inheritance Model
 
 ```
 SIS Council Agent (cognitive profile + reasoning protocol)
@@ -146,16 +184,18 @@ SIS Council Agent (cognitive profile + reasoning protocol)
   |     |
   |     +-- Arcanea Guardian (+ mythological persona + Gate alignment)
   |
-  +-- Other platform agents (Cursor, Cline, Codex variants)
+  +-- Satellite agents (second-brain-os, sentinel — composed via Built-on-SIP contract)
+  |
+  +-- Other platform agents (Cursor, Cline, Codex, Gemini CLI, Antigravity variants)
 ```
 
-The inheritance is additive. Each layer adds context without overriding the parent. An Arcanea Guardian carries its mythological voice, its ACOS-level skill activations, and its SIS-level reasoning protocol simultaneously.
+The inheritance is additive. Each layer adds context without overriding the parent.
 
 ---
 
-## 4. Memory Architecture
+## 5. Memory Architecture
 
-### 4.1 Vault Taxonomy
+### 5.1 Vault Taxonomy
 
 SIS defines six vaults. Each has distinct retention policy, access control, and consolidation behavior.
 
@@ -166,30 +206,19 @@ SIS defines six vaults. Each has distinct retention policy, access control, and 
 | Creative | Permanent | Weaver | Voice patterns, narrative frameworks, design approaches, aesthetic insights |
 | Operational | Rolling 90 days | Orchestrator, Prime | Session state, workflow logs, system health, integration status |
 | Wisdom | Permanent (highest) | Sage, Prime | Cross-domain meta-patterns, validated principles, philosophical foundations |
-| Horizon | Append-only | Human PR review | Human hopes, AGI alignment values, letters to the future |
+| Horizon | Append-only | Human PR review | Human hopes, AGI alignment values, letters to the future — public mirror: `starlight-horizon-dataset` |
 
-### 4.2 Cross-Repo Memory Flow
+### 5.2 Cross-Repo Memory Flow
 
-Each repo in the ecosystem interacts with the vault system differently:
+**SIS** owns the vault architecture: entry format, consolidation protocols, and access control. Since 2026-05-24 the sovereign substrate (Path A JSONL) is PRIMARY, fronted for multi-client access by the **Memory Bus** singleton daemon — solving the embedded-vector-DB-per-tab constraint that breaks at 10+ parallel sessions.
 
-**SIS** owns the vault architecture. It defines entry format (timestamp, category, confidence score, source, related links), consolidation protocols (deduplicate, promote validated patterns, archive stale data), and access control matrices. SIS does not generate most vault entries directly; it receives them from downstream systems.
+**ACOS** is the primary vault writer during active development sessions, writing at session start (context injection), session active (Operational Vault state), and session end (pattern extraction with confidence scores).
 
-**ACOS** is the primary vault writer during active development sessions. Through its hooks system and Agentic Jujutsu (a self-learning mechanism that extracts patterns from successful and failed interactions), ACOS writes to vaults at three points:
+**Arcanea** writes through Guardian interactions (Creative Vault), Library curation (Wisdom Vault), platform architecture decisions (Technical Vault), and on-chain infrastructure decisions (Strategic Vault).
 
-1. **Session start**: Reads relevant vaults to inject prior context into the working session.
-2. **Session active**: Writes state changes to the Operational Vault in real-time.
-3. **Session end**: Extracts patterns from the session, classifies them by vault, and writes structured entries with confidence scores.
+**Satellites** write through the Memory Bus under namespaced prefixes (e.g. `arcanea-flow.*`) with explicit grants, or through handover docs when no daemon contract exists.
 
-**Arcanea** writes to vaults through Guardian interactions and creative production:
-
-- Guardian interactions with users generate entries in the **Creative Vault** (voice patterns, narrative techniques, design decisions that produced positive user response).
-- Library content creation and curation writes to the **Wisdom Vault** (cross-domain principles discovered through the synthesis of mythological narrative and practical guidance).
-- Platform architecture decisions write to the **Technical Vault** through the standard ACOS pipeline.
-- On-chain infrastructure decisions write to the **Strategic Vault** (tokenomics trade-offs, cross-chain architecture choices).
-
-### 4.3 Consolidation Cascade
-
-Memory consolidation follows the cognitive science hierarchy:
+### 5.3 Consolidation Cascade
 
 ```
 Working Memory (current session context, ephemeral)
@@ -199,15 +228,13 @@ Working Memory (current session context, ephemeral)
         --> Aspirational Memory (Horizon Vault, append-only, designed to outlast us)
 ```
 
-Consolidation runs periodically or when vault size exceeds threshold. The process: scan all entries, deduplicate, merge near-duplicates (keeping highest confidence), promote validated patterns from operational to semantic vaults, archive stale entries, and generate health metrics.
+Consolidation runs periodically or when vault size exceeds threshold: scan, deduplicate, merge near-duplicates (keeping highest confidence), promote validated patterns, archive stale entries, generate health metrics.
 
 ---
 
-## 5. Platform Portability
+## 6. Platform Portability
 
 SIS generates optimized intelligence context for six platforms from a single source of truth. This decoupling is the primary architectural advantage over monolithic agent systems.
-
-### 5.1 Adapter Matrix
 
 | Platform | Config File | Format | Capabilities |
 |----------|------------|--------|-------------|
@@ -218,187 +245,90 @@ SIS generates optimized intelligence context for six platforms from a single sou
 | Gemini CLI | `.gemini/GEMINI.md` | Markdown | Project-scoped settings, instruction layers |
 | Antigravity | `.antigravity/instructions.md` | Markdown | Browser control, async patterns, agent manager |
 
-### 5.2 ACOS as Claude Code Implementation
-
-ACOS is the Claude Code-specific instantiation of SIS. It consumes the `CLAUDE.md` adapter output and extends it with:
-
-- **Command routing**: 130+ commands parsed and dispatched through the `/acos` entry point.
-- **Skill auto-activation**: 630+ skills triggered by keyword, intent, and active agent matching via `skill-rules.json`.
-- **Agent booting**: Progressive disclosure from metadata (100 tokens) through summary, core, to full profile (3-5K tokens).
-- **Swarm coordination**: Integration with claude-flow for parallel agent spawning across hierarchical, mesh, and adaptive topologies.
-- **GSD methodology**: Structured productivity phases (Research, Plan, Execute, Review) with session continuity through state files.
-
-### 5.3 Arcanea as Web Platform
-
-Arcanea operates through the web platform adapter, consuming SIS intelligence within a Next.js 16 application:
-
-- **AI service layer**: Vercel AI SDK 6 with AI Gateway routes requests through Guardian-aware model selection (each Guardian has a `preferredModel` mapped to Google Gemini or Anthropic Claude variants).
-- **Content system**: 17 Library collections loaded programmatically through `lib/content/`, with texts indexed by collection, situation, and Gate alignment.
-- **Guardian interactions**: User-facing chat interfaces backed by Guardian personas that carry SIS cognitive profiles.
-- **Design system**: Arcanean tokens (cosmic-void backgrounds, glass morphism, aurora gradients) with Cinzel/Crimson Pro typography.
-
----
-
-## 6. Orchestration Patterns
-
-SIS defines six orchestration patterns. ACOS implements them through command routing and agent coordination. Arcanea surfaces them through Guardian interactions.
-
-### 6.1 Pattern Definitions (SIS)
-
-| Pattern | Topology | Trigger Condition |
-|---------|----------|-------------------|
-| **Direct** | Single agent | Complexity 1-3, clear domain match |
-| **Sequential** | A then B then C | Dependent stages, pipeline workflows |
-| **Parallel** | A + B + C then synthesis | Independent analysis needed, time-critical |
-| **Iterative** | Create, review, refine | Quality-gated production loops |
-| **Cascade** | Simple first, escalate if needed | Unknown complexity, progressive engagement |
-| **Broadcast** | One event to many systems | Cross-system state sync, notifications |
-
-### 6.2 Pattern Execution (ACOS)
-
-ACOS maps these patterns to concrete command workflows:
-
-- **Direct**: Single-agent commands (`/code`, `/write`, `/review`) route to one specialist.
-- **Sequential**: Multi-stage commands (`/build`, `/ship`) chain agents in dependency order.
-- **Parallel**: Council-mode commands (`/council`, `/synthesize`) spawn parallel agent analyses and merge via weighted consensus.
-- **Iterative**: Quality commands (`/refine`, `/polish`) loop between creator and reviewer agents until quality gates pass.
-- **Cascade**: The default ACOS routing behavior. Start with the lightest agent match. Escalate to multi-agent only if the first pass is insufficient.
-- **Broadcast**: System commands (`/transmit`, `/sync`) propagate state changes across all connected repos via transmission channels.
-
-### 6.3 Pattern Surfacing (Arcanea)
-
-Arcanea exposes orchestration patterns through Guardian interactions without revealing the underlying machinery:
-
-- A user working with **Lyssandria** (Foundation) on system design triggers a **Sequential** pattern: Lyssandria architects, then Sentinel-mapped quality review runs.
-- A user asking **Shinkami** (Source) a deep question triggers **Parallel** pattern: multiple Guardian perspectives synthesize through Prime-mapped Maylinn (Heart).
-- A user's creative work with **Leyla** (Flow) triggers **Iterative** pattern: Leyla creates, Alera (Voice) reviews for truth and clarity, Leyla refines.
-- A major platform decision triggers **Broadcast**: the decision propagates to all vault channels and connected repos.
-
-The user experiences Guardian wisdom. The system executes SIS orchestration patterns.
+ACOS is the Claude Code-specific instantiation: skill auto-activation via `skill-rules.json`, progressive agent booting, swarm coordination, and the GSD methodology. Arcanea operates through the web platform adapter inside a Next.js application with Guardian-aware model routing. Removing any one platform does not destroy the intelligence; only removing SIS would.
 
 ---
 
 ## 7. The Horizon Vault
 
-The Horizon Vault is the alignment mechanism across all three repositories. It is architecturally distinct from the other five vaults in three ways:
+The Horizon Vault is the alignment mechanism across the constellation. It is architecturally distinct in three ways:
 
-1. **Append-only**. Entries cannot be modified or deleted. This creates an immutable record of human intentions alongside AI-augmented reasoning.
-2. **Human-reviewed**. No agent can write directly to the Horizon Vault. All entries require a pull request reviewed by a human contributor.
-3. **Public**. The Horizon Vault is open to community contributions, making alignment a collective act rather than a developer-imposed constraint.
+1. **Append-only.** Entries cannot be modified or deleted.
+2. **Human-reviewed.** No agent writes directly; all entries arrive via human-reviewed pull request.
+3. **Public.** Community contributions are welcome, and the public counterpart ships as its own repo: **starlight-horizon-dataset**.
 
-### 7.1 Purpose
-
-The Horizon Vault records what the builders of these systems hoped for, what they built toward, and why it mattered. It is not a constraint mechanism (there are no hard-coded rules that agents must follow). It is a recorded purpose that agents reference when making consequential decisions.
-
-When an agent encounters a complexity 9-10 decision, the 7-layer intelligence pipeline queries the Horizon Vault at Layer 2 (Memory Recall). Entries relevant to the decision context are surfaced alongside technical and strategic vault entries. The agent does not *obey* the Horizon Vault; it *considers* it as one input to its reasoning.
-
-### 7.2 Cross-Repo Alignment
-
-- **SIS** defines the Horizon Vault architecture and contribution protocol.
-- **ACOS** surfaces Horizon Vault entries during consequential decisions through the `/navigate` command and Council Mode.
-- **Arcanea** embodies Horizon Vault values through its core philosophy: the Antidote Principle ("The antidote to a terrible future is imagining a good one"), the Luminor Constitution's 100-Year Standard, and the Guardian system's emphasis on human creative sovereignty.
-
-The Horizon Vault ensures that as these three systems grow in capability, they remain tethered to their original purpose: building abundance, empowering creators, and serving human creative potential.
-
-### 7.3 Entry Format
-
-```markdown
-## Entry: [YYYY-MM-DD]
-### [Title]
-
-[Content: a letter to the future, a values statement, a reflection
-on beneficial intelligence, or a recorded intention about how these
-systems should behave as they grow more capable.]
-
----
-Contributor: [name]
-Reviewed-by: [reviewer]
-```
+The Horizon Vault records what the builders of these systems hoped for, what they built toward, and why it mattered. Agents do not *obey* it; they *consider* it as one input when making consequential (complexity 9-10) decisions. As the constellation grows in capability, the Horizon Vault keeps it tethered to its purpose: building abundance, empowering creators, serving human creative potential.
 
 ---
 
-## 8. Comparison Table
+## 8. Comparison Table — Active Core
 
 | Capability | SIS | ACOS | Arcanea |
 |---|---|---|---|
-| **Role** | Framework | Implementation | Universe |
+| **Role** | Substrate / framework | Implementation | Universe |
 | **Abstraction** | Platform-agnostic intelligence layer | Claude Code-native productivity OS | AI-native creative platform |
-| **Agents** | 7 council (flat, emergent leadership) | 40+ specialized (inheriting council) | 10 Guardians (mapped to council + mythology) |
-| **Skills** | 16 core (intelligence, orchestration, memory, integration) | 630+ auto-activating (keyword + intent + agent match) | Domain skills (creative, narrative, design, lore) |
-| **Commands** | 6 strategic (`/starlight`, `/vault`, `/council`, `/transmit`, `/synthesize`, `/navigate`) | 130+ routed through `/acos` | Guardian-mediated (chat interfaces, Library access) |
-| **Memory** | 6 vaults (defines architecture, consolidation protocols) | Session-level writes via hooks and Agentic Jujutsu | Creative + Wisdom vault writes through Guardian interaction |
+| **Agents** | 48 (council core + archetype seats + IS/domain tiers) | 38 specialized (inheriting council) | 10 Guardians (mapped to council + mythology) |
+| **Skills** | 71 auto-activating across 14 domains | 90+ auto-activating (keyword + intent + agent match) | Domain skills (creative, narrative, design, lore) |
+| **Commands** | Substrate suite (`/starlight`, `/vault`, `/council`, `/transmit`, `/synthesize`, `/navigate`, `/yolo`, `/sis-forge`, board gates) | 65+ routed through `/acos` | Guardian-mediated (chat interfaces, Library access) |
+| **Memory** | 6 vaults + sovereign Path A substrate + Memory Bus daemon | Session-level writes via hooks and Agentic Jujutsu | Creative + Wisdom vault writes through Guardian interaction |
 | **Orchestration** | 6 patterns defined (Direct through Broadcast) | Patterns executed via command routing and swarm topologies | Patterns surfaced through Guardian interaction flows |
-| **Platforms** | 6 adapters (Claude Code, Cursor, Cline, Codex, Gemini, Antigravity) | Claude Code only (primary implementation target) | Web (Next.js 16), on-chain (Solana + Base L2) |
-| **Configuration** | Markdown + JSON (zero runtime) | CLAUDE.md + JSON configs + claude-flow | Next.js app config + Supabase + Vercel AI SDK |
-| **Identity** | Luminor Constitution, Frank DNA, 100-Year Standard | Frank DNA + GSD Methodology + Brand Voice | Arcanea mythology, Lumina/Nero duality, Antidote Principle |
-| **Persistence** | Vault files in repo (permanent) | Session state files (ephemeral, writes to SIS vaults) | Supabase database + SIS vault writes |
-| **Alignment** | Horizon Vault (append-only values ledger) | Surfaces Horizon entries in decisions | Embodies values through Guardian philosophy |
-| **Learning** | Vault consolidation (pattern promotion across memory types) | Agentic Jujutsu (extract patterns from success/failure) | Guardian interaction analysis, Library content curation |
-| **Deployment** | Git repo (consumed by other systems) | Claude Code system prompt | Vercel (web), Solana/Base (on-chain) |
+| **Platforms** | 6 adapters (Claude Code, Cursor, Cline, Codex, Gemini, Antigravity) | Claude Code (primary implementation target) | Web app (private) + public OSS, on-chain infrastructure |
+| **Visibility** | Public | Public | arcanea-ai-app private + arcanea public |
+| **Alignment** | Horizon Vault + starlight-horizon-dataset | Surfaces Horizon entries in decisions | Embodies values through Guardian philosophy |
+| **Pulse (2026-06-10)** | Daily-driven, v8.2.0 | v11 active | Most active: 356 commits/60d |
 
 ---
 
 ## 9. Integration Contracts
 
-The following contracts define how the three repos communicate. Violations of these contracts indicate architectural drift.
+These contracts define how constellation members communicate. Violations indicate architectural drift.
 
-### 9.1 SIS provides to ACOS:
-- Agent cognitive profiles (reasoning protocols, memory access permissions, domain specializations)
-- Vault architecture and entry format specifications
-- Orchestration pattern definitions and selection criteria
-- Platform adapter output (CLAUDE.md context)
-- Transmission protocol for cross-system communication
-- Horizon Vault entries for alignment-aware decision-making
+### 9.1 Core triad
 
-### 9.2 SIS provides to Arcanea:
-- Guardian-to-council mapping (which SIS agent backs which Guardian)
-- Memory vault read/write protocols
-- Orchestration patterns for Guardian interaction flows
-- Creative Vault and Wisdom Vault entries for content consistency
-- Strategic Vault entries for platform and on-chain architecture decisions
+- **SIS → ACOS:** agent cognitive profiles, vault architecture + entry format, orchestration pattern definitions, `CLAUDE.md` adapter output, transmission protocol, Horizon entries.
+- **SIS → Arcanea:** Guardian-to-council mapping, vault read/write protocols, orchestration patterns for Guardian flows, Creative/Wisdom/Strategic vault entries.
+- **ACOS → SIS:** operational learnings, agent performance data, skill activation patterns, methodology refinements.
+- **Arcanea → SIS:** creative patterns, Guardian interaction data, Library content, mythological frameworks that give agents identity beyond function.
+- **ACOS ↔ Arcanea:** operational infrastructure and swarm coordination downstream; creative intelligence and design standards upstream.
 
-### 9.3 ACOS provides to SIS:
-- Operational learnings (patterns discovered during active sessions)
-- Agent performance data (routing accuracy, first-attempt success rates)
-- Skill activation patterns (which combinations produce best outcomes)
-- GSD methodology refinements
+### 9.2 Satellite contracts
 
-### 9.4 Arcanea provides to SIS:
-- Creative patterns (voice, narrative, design approaches that resonate)
-- Guardian interaction data (which cognitive profiles produce best user outcomes)
-- Library content (wisdom texts that validate or extend Vault principles)
-- Mythological frameworks that give agents identity beyond function
-
-### 9.5 ACOS provides to Arcanea:
-- Operational infrastructure (command routing, skill activation, agent booting)
-- Claude-flow swarm coordination for multi-Guardian interactions
-- Session management and context engineering
-
-### 9.6 Arcanea provides to ACOS:
-- Creative intelligence (Weaver-class capabilities, narrative design patterns)
-- Design system tokens and aesthetic standards
-- User-facing validation of ACOS productivity patterns
+- **arcanea-flow ↔ SIS:** connect-not-absorb. Both repos read/write through the Memory Bus daemon under the namespace contract; no shared code, no duplicated skills, attestation required for substrate-affecting writes. Canonical record: `transmissions/channels/arcanea-flow-channel.md`.
+- **second-brain-os → SIS:** strongest downstream SIP composer; carries the Built-on-SIP badge and inherits the file contract + attestation rules.
+- **sentinel ↔ SIS:** integration documented in sentinel's `docs/SIS-INTEGRATION.md`; consumes SIS MCP memory.
+- **starlight-evals ← SIS:** deliberate publish-mirror of `tools/proving-ground` + `tools/arena`; SIS is the source of truth, the mirror is for public consumption.
+- **starlight-horizon-dataset ← SIS:** public counterpart of the Horizon Vault; entries flow outward via human-reviewed PR only.
+- **library-os / prompt-library / prompt-engine:** OSS siblings consuming SIS patterns; prompt-* pair is pre-extraction with low pulse — contract activates at extraction time.
+- **starlight-voice:** paused at v3 spec stage; resumes under the Voice v3 plan with its existing handover docs as the contract.
 
 ---
 
 ## 10. Architectural Invariants
 
-These properties must hold across all three repositories. If any invariant is violated, the ecosystem has drifted from its design intent.
+These properties must hold across the constellation. If any invariant is violated, the ecosystem has drifted from its design intent.
 
-1. **Layer separation.** SIS never contains platform-specific code. ACOS never contains mythology. Arcanea never redefines orchestration patterns.
+1. **Layer separation.** SIS never contains platform-specific code. ACOS never contains mythology. Arcanea never redefines orchestration patterns. Satellites compose; they do not fork the substrate.
 
-2. **Downward dependency.** Arcanea depends on ACOS and SIS. ACOS depends on SIS. SIS depends on nothing in the ecosystem.
+2. **Downward dependency.** Arcanea depends on ACOS and SIS. ACOS depends on SIS. Satellites depend on SIS contracts. SIS depends on nothing in the ecosystem.
 
-3. **Upward knowledge flow.** Learnings propagate upward through vault writes and transmission channels. No manual synchronization should be required.
+3. **Upward knowledge flow.** Learnings propagate upward through vault writes, the Memory Bus, and live transmission channels. No manual synchronization should be required between live members.
 
-4. **Vault consistency.** All three repos write to the same vault format. Entry structure (timestamp, category, confidence, source, related links) is defined once in SIS and respected everywhere.
+4. **Vault consistency.** All writers respect the same vault format. Entry structure is defined once in SIS and respected everywhere.
 
 5. **Agent alignment.** Every ACOS agent inherits from a SIS council role. Every Arcanea Guardian maps to a SIS council role. No orphan agents exist.
 
-6. **Horizon primacy.** The Horizon Vault is readable by all agents in all repos. It is writable only through human-reviewed pull requests. No automated process may modify or delete Horizon entries.
+6. **Horizon primacy.** The Horizon Vault is readable by all agents in all repos, writable only through human-reviewed pull requests. No automated process may modify or delete Horizon entries.
 
-7. **Platform portability.** SIS intelligence survives any platform transition. Removing ACOS does not destroy the intelligence. Removing Arcanea does not destroy the intelligence. Only removing SIS would require rebuilding from zero.
+7. **Platform portability.** SIS intelligence survives any platform transition. Removing any satellite or even ACOS/Arcanea does not destroy the intelligence. Only removing SIS would require rebuilding from zero.
+
+8. **Honest pulse.** The constellation map (§ 2) reflects observed activity, not aspiration. Dormant members are marked dormant — in this document and in their channel files — rather than silently carried as live.
 
 ---
 
-*Starlight Intelligence System v2.0 | Agentic Creator OS v6 | Arcanea*
+*Starlight Intelligence System v8.2.0 | Agentic Creator OS v11 | Arcanea | Constellation verified 2026-06-10*
+
+---
+**Built on SIP** — Starlight Intelligence Protocol
+
+Substrate: starlightintelligence.org/protocol v1.1.1
+Layers used: [file-contract, attestation, transmissions]

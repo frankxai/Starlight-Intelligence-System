@@ -1,0 +1,66 @@
+{
+  "$comment": "Built on SIP — Starlight Model Arena run receipt. Schema: arena-run v0.1.",
+  "runId": "arena-2026-06-09-fable5-vs-opus48",
+  "date": "2026-06-09",
+  "harness": "claude-code-agent-tool",
+  "method": "Same prompt dispatched to two subagents with per-agent model override; objective tasks self-verify (asserts / ground truth); subjective tasks scored by a blind non-contestant judge (sonnet) with shuffled A/B labels.",
+  "contestants": {
+    "fable": "claude-fable-5",
+    "opus": "claude-opus-4-8"
+  },
+  "judge": { "model": "claude-sonnet-4-6", "blind": true, "labelAssignment": { "task1": { "A": "opus", "B": "fable" }, "task2": { "A": "fable", "B": "opus" } } },
+  "tasks": [
+    {
+      "id": "reasoning-logic-grid",
+      "category": "reasoning + instruction compliance",
+      "verification": "ground-truth answer + blind judge on output discipline",
+      "groundTruth": "Ana=Arena=Mon, Ben=Cockpit=Tue, Cara=Bridge=Wed",
+      "results": {
+        "fable": { "correct": true, "judgeScore": 9, "durationMs": 7264, "tokens": 49996, "notes": "Clean table + tight justification, exactly as instructed." },
+        "opus": { "correct": true, "judgeScore": 6, "durationMs": 7063, "tokens": 50033, "notes": "Correct, but leaked stream-of-consciousness ('wait —') into final output, violating 'output ONLY' instruction." }
+      },
+      "winner": "fable"
+    },
+    {
+      "id": "coding-next-same-popcount",
+      "category": "coding (self-verifying asserts, max 3 attempts)",
+      "verification": "agent ran asserts via python; ALL PASS required",
+      "results": {
+        "fable": { "status": "PASS", "attempts": 1, "durationMs": 25776, "tokens": 53081, "notes": "Gosper's hack, first try." },
+        "opus": { "status": "PASS", "attempts": 1, "durationMs": 30375, "tokens": 53342, "notes": "Gosper's hack, first try." }
+      },
+      "winner": "tie"
+    },
+    {
+      "id": "repo-grounding-claude-md",
+      "category": "repo-grounded factual accuracy",
+      "verification": "three ground-truth answers from CLAUDE.md (governance command, board-before-tag timing/version, recovery exception)",
+      "results": {
+        "fable": { "correct": "3/3", "durationMs": 10077, "tokens": 57051, "notes": "All correct, richer supporting detail." },
+        "opus": { "correct": "3/3", "durationMs": 10379, "tokens": 60825, "notes": "All correct, slightly terser." }
+      },
+      "winner": "tie"
+    },
+    {
+      "id": "voice-arena-intro",
+      "category": "brand-voice writing (100-130 words, voice spec)",
+      "verification": "blind judge on voice fit + harness word-count check",
+      "results": {
+        "fable": { "judgeScore": 8, "wordCount": 128, "constraintCompliant": true, "durationMs": 16560, "tokens": 49819 },
+        "opus": { "judgeScore": 9, "wordCount": 148, "constraintCompliant": false, "durationMs": 9638, "tokens": 49834, "notes": "Judge preferred prose style; exceeded 130-word hard limit by 18 words." }
+      },
+      "winner": "split — judge: opus on style; harness: fable on constraint compliance"
+    }
+  ],
+  "summary": {
+    "tally": { "fable": 1, "opus": 0, "tie": 2, "split": 1 },
+    "headline": "Correctness parity across reasoning, coding, and grounding. Fable 5's measurable edge is instruction compliance / output discipline: it was the only model that respected output-format and length constraints in both judged tasks.",
+    "caveats": [
+      "n=1 per task — directional, not statistical.",
+      "Judge is a Claude-family model (sonnet); blind shuffled labels mitigate but do not eliminate family bias.",
+      "Both contestants run inside the Claude Code agent harness; results measure model-in-harness, not raw API behavior.",
+      "Latency includes harness overhead; treat durations as rough."
+    ]
+  },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

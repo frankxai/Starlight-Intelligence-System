@@ -33,7 +33,7 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 
 ## What you have access to
 
-- **48 named agents** across 9 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (4) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`) + SIS Extractor (5 — `/sis-forge` Phase 1 only). Full registry: `agents/AGENT_REGISTRY.md`.
+- **49 named agents** across 10 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (4) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`) + SIS Extractor (5 — `/sis-forge` Phase 1 only) + Evaluator (1 — Proving Ground + Model Arena). Full registry: `agents/AGENT_REGISTRY.md`.
 - **76 auto-activating skill rules** across 15 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
@@ -42,7 +42,7 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 - **Event-Driven Concurrency** — Multi-device conflict-free sync via append-only event logs, optimized for Syncthing/P2P environments.
 - **10 universal Intelligence Systems** per `STACK.md` (locked v8.0): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + Starlight Orchestrator (master router). Health is cross-cutting.
 - **3 reference Domain Sub-Stack verticals** — People Intelligence · Sound Intelligence · Music IS — each with 4-7 functional sub-systems. Pattern generalizes via `/spawn-domain-stack`.
-- **70+ slash commands** across 4 SIP tiers (protocol / alliance / vertical / sovereign).
+- **100+ slash commands** across 4 SIP tiers (protocol / alliance / vertical / sovereign).
 - **6 platform adapters** — Claude Code · Cursor · Codex · Gemini CLI · OpenCode · Antigravity. Same vaults, same memory, different surface.
 - **6 substrate symmetry harnesses** — v75-v79 + base, plus pre-commit hook gating substrate-touching commits.
 - **Research surface** — Public substrate research at `starlightintelligence.org/research/`. Rubric-locked, Board-gated, SIP-attested. Two artifacts live: 3D memory palace design survey + memory foundations (Phase 0 dog-food chartered, 3-tier model w/ AgentDB tier per Addendum 2). Methodology at `docs/research/_methodology/`.

@@ -1,0 +1,22 @@
+{
+  "$comment": "Built on SIP — Proving Ground MEMORY LANE result. PARKED-007 head-to-head: hashing-TF vs model2vec real embeddings. Honest finding, not a clean win.",
+  "runId": "memory-lane-2026-06-10-parked007",
+  "ranAt": "2026-06-10",
+  "lane": "memory",
+  "experiment": "PARKED-007 — swap hashing-trick TF embeddings for model2vec (potion-base-8M) static embeddings. Numpy-only, no torch (matches substrate ethos + machine RAM constraints). Both substrates indexed the SAME 520-atom frozen corpus and scored on the SAME 29 scorable queries from eval-50.jsonl with the SAME ground-truth rule.",
+  "groundTruthRule": "An atom is relevant if >=50% of a query's expected_match content-tokens (len>=4) appear in the atom text. Lexical token-overlap — the same family the bencher uses. Stated limitation: a LEXICAL judge under-credits SEMANTIC retrieval, so it structurally handicaps the embedding substrate.",
+  "results": {
+    "hashing-TF (mempalace, baseline)": { "scored": 29, "hit@10": 0.621, "recall@5": 0.586, "precision@10": 0.155 },
+    "model2vec (embedding, PARKED-007)": { "scored": 29, "hit@10": 0.690, "recall@5": 0.621, "precision@10": 0.155 }
+  },
+  "deltas": { "hit@10": "+0.069", "recall@5": "+0.035", "precision@10": "+0.000" },
+  "verdict": "REVISE",
+  "finding": "Real embeddings are a MODEST, REAL improvement on RECALL (hit@10 +6.9pp, recall@5 +3.5pp) but leave precision@10 UNCHANGED (0.155). This is NOT the dramatic fix the '0.20' framing implied was needed. Two structural reasons: (1) the lexical token-overlap ground-truth under-credits exactly the semantic matches embeddings are good at, so +6.9pp likely UNDERSTATES the true gain; (2) single-substrate retrieval has no hybrid/rerank — precision@10 density is bounded without lexical+semantic fusion (RRF, PARKED-002).",
+  "weakness": "The MEASUREMENT is the bottleneck as much as the embedder. A lexical judge cannot fairly score a semantic retriever. Until a semantic/human-labeled relevance set exists, precision@10 on this rule will look flat regardless of embedder quality.",
+  "decision": {
+    "status": "GATED — do not swap the primary substrate on this evidence",
+    "recommendation": "Before committing to model2vec as primary: (1) build a small semantic ground-truth (LLM-judged or hand-labeled relevance) so the judge stops handicapping semantics; (2) test hybrid lexical+semantic fusion (RRF, un-park PARKED-002) — likely the real precision lever; (3) re-measure. model2vec is installed and proven safe (numpy-only, no torch); keep it available as a selectable substrate but do not flip the default yet."
+  },
+  "antiGoodhart": "These numbers describe the system. The flat precision@10 is a finding about the MEASUREMENT, not proof embeddings don't help — do not conclude 'embeddings useless' from a lexical judge.",
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

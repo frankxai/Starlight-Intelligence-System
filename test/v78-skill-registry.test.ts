@@ -169,6 +169,26 @@ describe("v7.8 SKILL_REGISTRY.md — schema integrity", () => {
     assert.deepEqual(malformed, [], `registry rows missing version or status: ${malformed.join(", ")}`);
   });
 
+  it("headline skill + domain counts match the actual registry rows (v8.7 companion)", () => {
+    const rows = parseRegistry();
+    const content = readFileSync(REGISTRY_PATH, "utf8");
+    const headline = content.split(/\r?\n/).find((line) => line.startsWith("> "));
+    assert.ok(headline, "SKILL_REGISTRY.md has no blockquote headline (line starting with '> ')");
+    const match = headline.match(/^>\s*(\d+) skills across (\d+) domains/);
+    assert.ok(match, "SKILL_REGISTRY.md headline does not match '> NN skills across MM domains'");
+    const domainCount = new Set(rows.map((r) => r.skill.split("/")[0])).size;
+    assert.equal(
+      Number(match[1]),
+      rows.length,
+      `headline skill count ${match[1]} != actual registry row count ${rows.length} — update the headline`,
+    );
+    assert.equal(
+      Number(match[2]),
+      domainCount,
+      `headline domain count ${match[2]} != actual domain count ${domainCount} — update the headline`,
+    );
+  });
+
   it("every row has a recognized status (stable | experimental | deprecated)", () => {
     const rows = parseRegistry();
     const validStatuses = new Set(["stable", "experimental", "deprecated"]);

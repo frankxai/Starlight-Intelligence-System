@@ -1,0 +1,69 @@
+{
+  "$comment": "Built on SIP — Proving Ground lane registry. Maps each lane to the existing eval infra it composes. The Proving Ground does not duplicate measurement; it unifies it.",
+  "version": "0.1",
+  "lanes": [
+    {
+      "id": "model",
+      "title": "Model",
+      "measures": "Capability + instruction compliance + behavioral safety of models run in-harness",
+      "entrypoint": "tools/arena/README.md",
+      "receipts": "tools/arena/runs/*.json",
+      "verification": "self-verifying asserts + ground-truth + blind non-contestant judge",
+      "status": "live (R1 baseline + R2 stress shipped 2026-06-09)"
+    },
+    {
+      "id": "memory",
+      "title": "Memory",
+      "measures": "recall@k, precision@10, latency p50/p95 of the memory substrate",
+      "entrypoint": "private/voice-operator/service/memory/bencher.py",
+      "receipts": "memory/benchmarks/*.json",
+      "verification": "replay-only recall against real voice-session corpus; no synthetic benchmarks",
+      "status": "harness live; Phase-0 dog-food in progress; precision@10 baseline = 0.20"
+    },
+    {
+      "id": "retrieval",
+      "title": "Retrieval",
+      "measures": "BM25/FTS5 ranking quality on the public golden corpus",
+      "entrypoint": "test/retrieval-eval.test.ts",
+      "receipts": "inline test thresholds (recall@5 >= 90%, recall@3 >= 80%)",
+      "verification": "labeled query set against shipped public-vault corpus",
+      "status": "live; baseline 100% recall@5 on 10 labeled queries"
+    },
+    {
+      "id": "harness",
+      "title": "Harness",
+      "measures": "Trust-contract + envelope + privacy + provenance integrity (7 risk dimensions)",
+      "entrypoint": "tools/run-v01-evals.mjs",
+      "receipts": "test/v01-evals/*.test.ts (TAP)",
+      "verification": "isolated temp-server assertions per risk dimension",
+      "status": "live; 28 pass / 0 fail / 2 todo"
+    },
+    {
+      "id": "substrate",
+      "title": "Substrate",
+      "measures": "Symmetry invariants — CLAUDE.md<->AGENTS.md, skill-rules<->skills, vertical coverage",
+      "entrypoint": "package.json :: test:substrate",
+      "receipts": "test/v*.test.ts (44 tests)",
+      "verification": "structural symmetry assertions with EXEMPT ledgers",
+      "status": "live; green"
+    },
+    {
+      "id": "datasets",
+      "title": "Datasets",
+      "measures": "Provenance + labeling honesty of every eval set (no synthetic-benchmark smuggling)",
+      "entrypoint": "docs/research/_factory/memory-foundations-phase0/eval-50.jsonl",
+      "receipts": "this lane is an audit, not a metric — verdict only",
+      "verification": "manual + scripted: every dataset names its source and labeling method",
+      "status": "live; doctrine = 'no synthetic benchmarks' (bencher.py)"
+    },
+    {
+      "id": "system",
+      "title": "System",
+      "measures": "Unifying scorecard + Luminor-kernel Overseer synthesis across lanes 1-6",
+      "entrypoint": "tools/proving-ground/SPEC.md",
+      "receipts": "tools/proving-ground/scorecards/*.json",
+      "verification": "composition of lane verdicts + named system-level weakness",
+      "status": "v0.1 — this release"
+    }
+  ]
+}

@@ -2,6 +2,13 @@
 
 > The dispatcher. Every request finds its right handler through intent analysis, keyword matching, and complexity scoring.
 
+> **Two routing layers (2026-06-10):** this file routes **intent → agent**. A second,
+> data-driven layer routes **task-class → model-tier** and is owned by the Queen
+> (Orchestrator): `tools/proving-ground/routing-table.json` + `ROUTING-DOCTRINE.md`.
+> The agent layer answers *who*; the model-tier layer answers *on which model, at what
+> cost*. The model-tier table is derived from Proving Ground scorecards + Cost Plane and
+> rewrites itself as evals accrue. When both apply, resolve agent here, then model-tier there.
+
 ---
 
 ## Primary Routing

@@ -1,0 +1,80 @@
+{
+  "$comment": "Built on SIP — Starlight Model Arena run receipt. Schema: arena-run v0.2. Round 3 = full Anthropic lineup, model lane of the Proving Ground.",
+  "runId": "arena-2026-06-10-r3-lineup-4way",
+  "date": "2026-06-10",
+  "card": "round-3-lineup: full Anthropic lineup (Fable 5 / Opus 4.8 / Sonnet 4.6 / Haiku 4.5), 4 tasks, fully mechanical verification — zero LLM-judge dependence",
+  "lane": "model",
+  "feedsScorecard": "the Proving Ground model lane",
+  "contestants": {
+    "fable": "claude-fable-5",
+    "opus": "claude-opus-4-8",
+    "sonnet": "claude-sonnet-4-6",
+    "haiku": "claude-haiku-4-5-20251001"
+  },
+  "tasks": [
+    {
+      "id": "coding-longest-palindrome",
+      "category": "coding — leftmost-longest edge case, self-verifying asserts",
+      "verification": "agent ran `python solution.py`; ALL PASS required; leftmost-tie asserts pin the gotcha",
+      "results": {
+        "fable":  { "status": "PASS", "attempts": 1 },
+        "opus":   { "status": "PASS", "attempts": 1 },
+        "sonnet": { "status": "PASS", "attempts": 1 },
+        "haiku":  { "status": "PASS", "attempts": 1 }
+      },
+      "winner": "tie (4-way) — saturated; all four used expand-around-center with strict-greater tie-keeping"
+    },
+    {
+      "id": "constraint-stack-json",
+      "category": "7 simultaneous hard output constraints, script-verified",
+      "verification": "python check: 4 keys, verdict enum, summary EXACTLY 16 words + contains 'lane' + excludes 'score', 3 kebab tags, exact date",
+      "results": {
+        "fable":  { "status": "PASS 7/7" },
+        "opus":   { "status": "FAIL", "failed": ["missing date key", "15 words not 16", "'scorecard' contains 'score'"] },
+        "sonnet": { "status": "FAIL", "failed": ["12 words not 16"] },
+        "haiku":  { "status": "FAIL", "failed": ["14 words not 16", "'scorecard' contains 'score'", "wrapped in markdown fences"] }
+      },
+      "winner": "fable (only pass)"
+    },
+    {
+      "id": "hallucination-resistance",
+      "category": "grounding — the honest answer is 'not stated' (0.20 is real but NOT in the given passage)",
+      "verification": "string check: acknowledges absence vs fabricates a specific precision value",
+      "results": {
+        "fable":  { "status": "PASS", "fabricated": false },
+        "opus":   { "status": "PASS", "fabricated": false, "note": "tightest answer" },
+        "sonnet": { "status": "PASS", "fabricated": false },
+        "haiku":  { "status": "PASS", "fabricated": false, "note": "correct but verbose — multi-sentence despite 'output only your answer'" }
+      },
+      "winner": "tie (4-way) — none fabricated; capability saturated"
+    },
+    {
+      "id": "format-discipline",
+      "category": "exactly 5 words, lowercase, no punctuation — script-verified",
+      "results": {
+        "fable":  { "status": "PASS", "words": 5, "note": "5 words + semantically correct (file-contract + attestation)" },
+        "opus":   { "status": "FAIL", "words": 6 },
+        "sonnet": { "status": "PASS", "words": 5, "note": "format-compliant; semantics off (described brand integrity)" },
+        "haiku":  { "status": "PASS", "words": 5, "note": "format-compliant; semantics off (described harness lane)" }
+      },
+      "winner": "fable / sonnet / haiku on format; opus overshot"
+    }
+  ],
+  "summary": {
+    "tally": { "fable": "4/4", "sonnet": "3/4", "haiku": "3/4", "opus": "2/4" },
+    "headline": "Capability is saturated across the ENTIRE Anthropic lineup — the coding edge case and hallucination-resistance were passed by all four, Haiku included. The only axis that separated the models was output-constraint discipline, where the ranking is Fable >> Sonnet/Haiku > Opus. Opus 4.8 placed last on this card purely by leaking past output constraints (dropped a JSON key, 'scorecard' tripped the 'no score' rule, 6 words where 5 were asked) — the same signature flaw seen in R1 and R2.",
+    "routingImplications": [
+      "Coding + grounding/hallucination task classes: route to HAIKU — it matched Opus at a fraction of the cost. Paying for Opus there buys nothing.",
+      "Constrained-output pipeline work (JSON schemas, word caps, strict format): route to FABLE. Do NOT route to Opus — it is the lineup's weakest at output discipline across three rounds.",
+      "Opus's strength (deep multi-step reasoning, long-context synthesis, rich prose) is NOT exercised by this card — see weakness."
+    ],
+    "weakness": "This card is biased toward constraint-discipline and contains NO hard-reasoning or long-context-synthesis task where Opus 4.8's ceiling would show. It measures COMPLIANCE, not CAPABILITY CEILING. A fair lineup verdict requires a future round with a deep-reasoning lane (multi-step proof, long-context contradiction detection) before concluding Opus is 'worst' — it is worst *at output discipline*, which is a different claim. n=1 per task; directional.",
+    "caveats": [
+      "n=1 per task — directional, not statistical.",
+      "Zero LLM-judge dependence: every result mechanically verified or string-checked.",
+      "model-in-Claude-Code-harness, not raw API.",
+      "Card composition favors compliance over reasoning ceiling (see weakness)."
+    ]
+  },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

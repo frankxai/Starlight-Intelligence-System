@@ -2,7 +2,7 @@
 
 > Research grounding and calibrated example for the `<SUB-SYSTEM>` sub-system inside `<DOMAIN>`. Reader fills in the `<EXAMPLE>` block with a fully calibrated instance from their lived practice. The template sections match the agent's Reasoning Protocol output shape — the knowledge file is the sovereign's reference library, not the agent's source of truth.
 >
-> Reference shape: `integrations/starter-packs/friend-starter/knowledge/hr-hiring-template.md` (Ana-grade example for Hiring).
+> Reference shape: `integrations/starter-packs/friend-starter/knowledge/people-hiring-template.md` (reference-grade example for Hiring).
 
 ---
 
@@ -101,7 +101,7 @@ The agent file carries the authoritative protocol. This is the knowledge-file mi
 
 ### Compound pattern
 
-After 3+ `<EXAMPLE>` instances fill this section, named patterns emerge. When a pattern fires in ≥3 cases, it's elevated to the agent's Quality Gates or Rules section. This is how the sub-system evolves from Ana-grade (reference) to sovereign-grade (custom).
+After 3+ `<EXAMPLE>` instances fill this section, named patterns emerge. When a pattern fires in ≥3 cases, it's elevated to the agent's Quality Gates or Rules section. This is how the sub-system evolves from reference-grade (shipped example) to sovereign-grade (custom).
 
 ---
 

@@ -14,9 +14,9 @@ This file is **operational-tier** — it does not appear in the substrate-tier f
 
 ```yaml
 name: <domain>/<skill-name>          # canonical key, matches skill-rules.json `skill` field
-domain: <top-level-dir>              # one of 15: business, energy-intelligence, health, integration,
-                                     # intelligence, machine, memory, music-is, orchestration,
-                                     # people-intelligence, relational, safety, sound-intelligence, vision
+domain: <top-level-dir>              # one of 15: business, crypto-intelligence, energy-intelligence,
+                                     # health, integration, intelligence, machine, memory, music-is,
+                                     # orchestration, people-intelligence, relational, safety, sound-intelligence, vision
 activation_rule_id: <string>         # matches skill-rules.json `id` field; symmetry enforced by future v78 test
 owner_repo: SIS | <repo-name>        # default SIS; named repo if forked or alliance-owned
 version: <YYYY-MM-DD>                # date-stamped initial; semver upgrade reserved for Tier 3b

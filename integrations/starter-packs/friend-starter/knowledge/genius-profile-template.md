@@ -48,52 +48,54 @@ Built on SIP — Starlight Intelligence Protocol
 ---
 ```
 
-## Filled example — hypothetical "Ana, HR Psychologist"
+## Filled example — "Maya, product-ops consultant" (fictional composite)
+
+> Maya Lindqvist is a fictional composite persona invented for this starter pack. She is not based on any real person; any resemblance to real persons is coincidental.
 
 ```
-# Genius Profile — Ana Morales — 2026-04-24
+# Genius Profile — Maya Lindqvist — 2026-04-24
 
 ## Signal (what only you uniquely see)
-You see the psychological architecture underneath every HR decision — the silent contracts people sign with their work that no policy document ever names. Where other HR leaders see process to execute, you see attachment patterns, unspoken authorizations, and the gap between what the organization says it wants and what it actually rewards. You've been doing clinical diagnostic work in corporate clothing for a decade.
+You see the decision architecture underneath every product launch — where choices get made by default instead of on purpose, where a handoff quietly drops the one constraint that mattered, and the gap between the roadmap the company publishes and the decisions it actually funds. Where other operators see process to execute, you see choice architecture, deferred decisions accruing interest, and incentives doing the steering. You've been doing behavioral diagnosis in operations clothing for a decade.
 
 ## Frameworks you keep rebuilding
-1. **The Silent Authorization Map** — who's allowed to break rules and why, made visible
-   - Observed in: 2022 performance review doc, 2024 exec onboarding deck, 2025 Substack draft
-2. **Attachment-aware Recruiting** — hiring for how people metabolize feedback, not just skills
-   - Observed in: 2023 interview rubric, 2024 hiring retrospective, 2025 candidate scoring sheet
-3. **Trapdoor Compensation Conversations** — designing comp talks that surface the real stakes under the stated ones
-   - Observed in: manager training deck 2023, 2024 comp-season SOP, recorded coaching session Q1 2026
-4. **The Culture Audit You Can't Unsee** — mapping what the organization punishes vs. what it celebrates, out loud
-   - Observed in: Culture deck 2024, exit interview analysis 2025, quarterly health-of-the-team report 2026
-5. **Performance Reviews as Clinical Intake** — the review as diagnostic instrument, not evaluation theater
-   - Observed in: 2022 review framework, 2024 annual cycle redesign, 2025 exec feedback doc
+1. **The Decision Debt Ledger** — deferred product decisions tracked as a balance sheet, with named owners and compounding interest
+   - Observed in: 2022 launch retrospective, 2024 program review deck, 2025 newsletter draft
+2. **The Invisible Handoff Map** — where information dies between design, engineering, and supply chain, made visible
+   - Observed in: 2023 handoff audit, 2024 build-readiness checklist, 2025 client workshop notes
+3. **Friction-Budget Reviews** — every feature spends from a finite user-friction budget; the review prices the spend out loud
+   - Observed in: feature review template 2023, 2024 roadmap-season SOP, recorded workshop session Q1 2026
+4. **The Launch-Readiness Ladder** — staged go/no-go gates scored on evidence, not optimism
+   - Observed in: gate rubric 2024, launch post-mortem analysis 2025, quarterly program health report 2026
+5. **Prototype Autopsies** — the structured post-mortem on a killed prototype, so the learning outlives the kill
+   - Observed in: 2022 autopsy format, 2024 prototype review redesign, 2025 lab notebook digest
 
 ## Distinctive vocabulary (your fingerprint)
-- "underneath that" — frequent transition into the real issue
-- "holding" — the emotional labor of senior roles
-- "authorizations" — invisible permissions the organization grants
-- "sharp" — high-praise descriptor for a good hire
-- "teammate" (never "employee") — signals your relational frame
-- "the stated ask vs. the real ask" — your go-to for decoding requests
-- "metabolize" — how someone processes feedback, change, stress
-- "trapdoor" — the moment a conversation is about to go somewhere real
-- "clinical" — your highest-quality-of-attention descriptor
-- "candidate" (never "applicant")
-- "the room" — the emotional field of a meeting
-- "noticing" — your term for the diagnostic act
+- "downstream of that" — frequent transition into the real consequence
+- "decision debt" — deferred choices accruing interest
+- "the handoff" — the moment information dies between teams
+- "ship-shaped" — high-praise descriptor for work that is genuinely ready
+- "builder" (never "resource") — signals your relational frame
+- "the published roadmap vs. the funded roadmap" — your go-to for decoding priorities
+- "friction budget" — the finite tolerance users grant a product
+- "load-bearing assumption" — the untested belief a launch rests on
+- "evidence over optimism" — your highest-quality-of-attention standard
+- "prototype" (never "deliverable")
+- "the bench" — the graveyard of killed prototypes, kept visible
+- "the kill is data" — your term for what a cancelled project still teaches
 
 ## Cross-domain synthesis (your compounding edge)
-**Clinical psychology x MBA neuroscience x corporate HR** = You translate between the unconscious architecture of individuals and the structural architecture of organizations in real time. Nobody in your field does this. Consultants can see the organization; therapists can see the person; you see both and the transit between them.
+**Industrial design x behavioral economics x product operations** = You read both the physical object and the organizational choice architecture that produced it, in real time. Nobody in your field does this. Designers can see the object; economists can see the incentives; you see both and the transit between them.
 
 ## Voice samples
-1. "Underneath that there's a question you haven't asked yet — what would have to be true for this decision to feel clean?" — coaching session transcript, Q1 2026
-2. "I'm less interested in whether she can do the job than in how she metabolizes being told no." — interview rubric, 2023
-3. "Every comp conversation is really a conversation about whether the person believes the organization sees them. The number is the symptom." — manager training deck, 2023
-4. "The culture doesn't lie. It just doesn't use words. Watch what it punishes." — 2024 culture deck
-5. "A performance review is clinical intake disguised as business theater. If you run it as theater, you get theater back." — 2022 review framework
+1. "Downstream of that there's a decision nobody has made yet — and it's accruing interest while we talk." — workshop transcript, Q1 2026
+2. "I'm less interested in whether the prototype works than in which load-bearing assumption it was built to test." — prototype review, 2023
+3. "Every roadmap fight is really a fight about which decisions the org is willing to fund. The feature list is the symptom." — program review deck, 2023
+4. "The handoff doesn't lie. It just doesn't use words. Watch what gets dropped." — 2024 handoff audit
+5. "A launch review is an evidence audit disguised as a celebration. If you run it as a celebration, you get optimism back." — 2022 gate rubric
 
 ## What's next
-Train your first executor: I can turn your DELEGATE bucket — the recruiting, onboarding, and comp-cycle SOPs you've built five times across five employers — into a 12-week playbook in your voice, so someone else can run the operational work and you can stay in the diagnostic layer where your edge actually lives.
+Train your first executor: I can turn your DELEGATE bucket — the build-readiness checklists, vendor coordination, and gate-logistics SOPs you've rebuilt across three companies — into a 12-week playbook in your voice, so someone else can run the operational work and you can stay in the diagnostic layer where your edge actually lives.
 
 ---
 Built on SIP — Starlight Intelligence Protocol

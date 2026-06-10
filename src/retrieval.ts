@@ -89,6 +89,10 @@ function str(v: unknown): string | null {
   return v != null ? String(v) : null;
 }
 
+function stripBom(text: string): string {
+  return text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
+}
+
 // ── RetrievalIndex ─────────────────────────────────────────
 
 export class RetrievalIndex {
@@ -108,22 +112,32 @@ export class RetrievalIndex {
     if (!existsSync(vaultDir)) return 0;
     const files = readdirSync(vaultDir).filter(f => f.endsWith('.jsonl'));
     const insert = this.db.prepare(UPSERT_SQL);
+    const seenIds = new Map<string, string>();
     let count = 0;
 
     this.db.transaction(() => {
       this.db.exec('DELETE FROM entries');
       for (const file of files) {
         const vaultName = basename(file, '.jsonl');
-        const raw = readFileSync(join(vaultDir, file), 'utf-8');
-        for (const line of raw.split('\n')) {
+        const raw = stripBom(readFileSync(join(vaultDir, file), 'utf-8'));
+        for (const [lineIndex, line] of raw.split('\n').entries()) {
           const trimmed = line.trim();
           if (!trimmed) continue;
           let e: Record<string, unknown>;
           try { e = JSON.parse(trimmed); } catch { continue; }
           const content = String(e.content ?? e.insight ?? e.wish ?? '');
           if (!content) continue;
+          const id = String(e.id ?? `${vaultName}_${count}`);
+          const location = `${file}:${lineIndex + 1}`;
+          const previousLocation = seenIds.get(id);
+          if (previousLocation) {
+            throw new Error(
+              `Duplicate vault entry id "${id}" in ${location}; already seen in ${previousLocation}`,
+            );
+          }
+          seenIds.set(id, location);
           insert.run({
-            id: String(e.id ?? `${vaultName}_${count}`),
+            id,
             vault: String(e.vault ?? vaultName),
             content, category: str(e.category), confidence: str(e.confidence),
             tags: e.tags ? JSON.stringify(e.tags) : null,

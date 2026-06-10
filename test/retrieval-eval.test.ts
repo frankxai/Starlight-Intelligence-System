@@ -56,6 +56,11 @@ describe("retrieval eval — keyword FTS5 recall@k", () => {
       const index = new RetrievalIndex(join(dir, "index.sqlite"));
       const total = index.rebuildFromVaults(CORPUS);
       assert.ok(total > 0, "corpus indexed with at least one entry");
+      assert.equal(
+        index.getStats().total,
+        total,
+        "indexed row count must match parsed JSONL entries",
+      );
 
       let r1 = 0;
       let r3 = 0;

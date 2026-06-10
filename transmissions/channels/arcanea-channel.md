@@ -5,6 +5,7 @@
 **Channel Type:** Bidirectional
 **Primary Topics:** Creative intelligence, Luminor wisdom, skill hierarchies
 **Connected Repo:** frankxai/arcanea
+**Status:** DORMANT (since 2026-02-10, reviewed 2026-06-10) — init-only log; actual Arcanea ↔ SIS flow happens via MCP, the Memory Bus (`memory-bus.md`), and handover docs, not this file. Retained as historical record.
 
 ---
 
