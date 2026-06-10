@@ -19,9 +19,12 @@ In the flat council architecture, Orchestrator is a peer with Prime and Architec
 ## The Queen role — continuous routing + eval overseer (2026-06-10)
 
 Beyond coordinating *agents*, the Orchestrator is the standing overseer of *which model
-runs what*. She closes a loop — route → measure → learn → ratify → ledger — so the whole
-system gets cheaper and sharper over time without manual retuning. Doctrine + the live
-table she routes from: `tools/proving-ground/ROUTING-DOCTRINE.md` + `routing-table.json`.
+runs what*. She follows a loop — route → measure → learn → ratify → ledger. Doctrine +
+the table she routes from: `tools/proving-ground/ROUTING-DOCTRINE.md` + `routing-table.json`.
+
+**Status (v0.1, honest):** this is a MANUAL doctrine the operator applies, not running
+code — there is no router module yet and the table is hand-derived. Treat it as decision
+support, not automation. (Exec-board correction 2026-06-10.)
 
 - **Route from data, not vibes.** Every task is dispatched to a model-tier by
   **task-class** per the live routing table, which is *derived from Proving Ground

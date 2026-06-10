@@ -9,6 +9,18 @@ Two models walk into the same prompt. Only one walks out with the higher precisi
 
 ---
 
+## What these cards do NOT measure
+
+Read the rankings as an **output-discipline / instruction-compliance ranking**, not an
+overall "best model" verdict. Every round so far stresses constraint-adherence, edge-case
+coding, and grounding — axes where Fable 5 leads and Opus 4.8 trails. **No round yet
+contains a deep-reasoning or long-context-synthesis lane**, which is precisely where
+Opus 4.8 is expected to win. So "Opus places last" means *last at output discipline* —
+a narrow, fair claim — and emphatically **not** "Opus is the worst model." The
+deep-reasoning lane (R4) is chartered but **not yet run**; until it is, any routing rule
+sending work to Opus is doctrine, not measurement. Don't read these cards as a hiring
+decision for reasoning-heavy work.
+
 ## Method
 
 - **Harness:** Claude Code's `Agent` tool with per-spawn model overrides — the same task prompt dispatched in one parallel block to a Fable 5 contestant and an Opus 4.8 contestant. No extra infrastructure; this measures **model-in-harness**, the configuration we actually operate.
@@ -72,10 +84,6 @@ First four-way: Fable 5 · Opus 4.8 · Sonnet 4.6 · Haiku 4.5. Fully mechanical
 - **n = 1 per task.** Directional, not statistical. Claims get promoted only after repeated rounds agree.
 - **Judge family bias.** The blind judge is a Claude-family model; shuffled labels mitigate but don't eliminate it. Objective verification is preferred wherever possible.
 - **Harness-inclusive.** Latency and token figures include Claude Code agent overhead.
-
-## What the Arena does not measure
-
-The Arena ranks **models**. The system those models run inside — memory tiers, retrieval paths, harness integrity, dataset provenance — is evaluated separately by the [Starlight Proving Ground](/research/starlight-proving-ground-2026-06), the whole-system eval discipline. Same receipts ethic, different unit of measurement. Read both before trusting either.
 
 ## Reproduce it
 

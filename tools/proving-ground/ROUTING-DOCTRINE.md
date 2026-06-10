@@ -1,9 +1,18 @@
 # The Starlight Queen — Routing Doctrine
 
 > Built on SIP. How the Orchestrator (the Queen) routes every task, measures the
-> outcome, and rewrites her own routing table from receipts. The closed loop that
-> makes the whole system get cheaper and sharper over time. Board verdict:
+> outcome, and re-derives her routing table from receipts. Board verdict:
 > `docs/boards/2026-06-10-starlight-queen-verdict.md` (PROCEED-WITH-REVISE).
+
+> **⚠ IMPLEMENTATION STATUS (v0.1, honest): this is a MANUAL doctrine, not running
+> code.** There is no router module that reads `routing-table.json` and dispatches by
+> task-class; the table is hand-derived by a human running `/starlight-eval` and editing
+> JSON; LEARN / RATIFY / LEDGER are a person updating a markdown table. Calling it a
+> "self-rewriting continuous loop" is the target architecture, NOT the current state.
+> Treat the routing table as **decision support the operator applies**, not automation
+> that runs. The actual router + derive-step is on the roadmap (and gated on the memory
+> substrate improving — see §what else). Exec board flagged this overclaim 2026-06-10;
+> framing corrected here pending the re-label decision.
 
 ## The loop
 
@@ -78,6 +87,7 @@ Every routing change is appended here: date · class · old→new · evidence ·
 | 2026-06-10 | codegen | (none→) route=haiku, confidence=medium | R3 saturation; Haiku=Opus on coding | revert: route=fable |
 | 2026-06-10 | grounding-extraction | (none→) route=haiku, confidence=medium | R3 saturation; none fabricated | revert: route=fable |
 | 2026-06-10 | deep-reasoning | (none→) route=opus, confidence=low, autoApply=false | doctrine only — UNMEASURED, awaiting R4 | n/a (not auto) |
+| 2026-06-10 | codegen, grounding-extraction, bulk-classification | autoApply true→**false** | A2 correction: exec board found these auto-routing on n=1 trivial-task evidence, violating the ≥2-round floor. Now suggestion-only. | revert when 2nd round confirms |
 
 ## What else to consider (the roadmap)
 

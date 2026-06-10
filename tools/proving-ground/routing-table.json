@@ -11,22 +11,22 @@
       "examples": ["implement a function", "write a script", "fix a failing test"],
       "route": "haiku",
       "confidence": "medium",
-      "autoApply": true,
+      "autoApply": false,
       "stakes": "low",
-      "evidence": "R3: coding edge case PASS by all 4 incl. Haiku — capability saturated. Haiku matches Opus at fraction of cost.",
+      "evidence": "R3: coding edge case PASS by all 4 incl. Haiku on ONE trivial task (palindrome) — saturation on an easy distribution, NOT proof Haiku carries production codegen. Cost edge is price-list inference, unverified in-harness.",
       "rounds": 1,
-      "note": "confidence=medium pending a 2nd concordant round (A2 floor). Until then, escalate to Fable on assert-fail."
+      "note": "autoApply=false — A2 floor (>=2 concordant rounds) NOT met; n=1 on a trivial task. Use as a SUGGESTION only; default to Fable, escalate on assert-fail. Hardens only after a non-trivial 2nd round."
     },
     {
       "taskClass": "grounding-extraction",
       "examples": ["summarize from source", "answer from passage", "extract fields"],
       "route": "haiku",
       "confidence": "medium",
-      "autoApply": true,
+      "autoApply": false,
       "stakes": "low",
-      "evidence": "R3: hallucination-resistance PASS by all 4 incl. Haiku (none fabricated). Capability saturated.",
+      "evidence": "R3: hallucination-resistance PASS by all 4 incl. Haiku on ONE 'not stated' probe. n=1, easy distribution — not proof Haiku carries production grounding.",
       "rounds": 1,
-      "note": "Haiku verbose on 'output only' — if strict format also required, route to fable instead."
+      "note": "autoApply=false — A2 floor not met (n=1). Suggestion only; Haiku verbose on 'output only', so route to Fable when strict format is also required."
     },
     {
       "taskClass": "constrained-output",
@@ -54,10 +54,11 @@
       "examples": ["classify 500 items", "batch tag", "fan-out extraction"],
       "route": "haiku",
       "confidence": "medium",
-      "autoApply": true,
+      "autoApply": false,
       "stakes": "low",
-      "evidence": "Global doctrine (cheap fan-out) + R3 capability saturation on extraction.",
-      "rounds": 1
+      "evidence": "Global doctrine (cheap fan-out) + R3 capability saturation on extraction. n=1 in-harness.",
+      "rounds": 1,
+      "note": "autoApply=false — A2 floor not met. Suggestion only until a 2nd round confirms."
     },
     {
       "taskClass": "interactive-agentic",
