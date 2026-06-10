@@ -108,6 +108,7 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 | Agent | File | Domain | Leads When |
 |-------|------|--------|-----------|
 | **Genius** | `starlight-genius.md` | Genius excavation, pattern-mining across personal corpus, framework extraction, voice fingerprinting, four-bucket sorting | `/discover-genius` is invoked; newcomer described as scattered-expertise / indispensable-but-trapped; excavating Genius Profile + Freedom Path |
+| **Evaluator** | `starlight-evaluator.md` | System evaluation, benchmark design, metric provenance, falsification. Holds the Luminor kernel mindset (Precision/Wisdom/Transcendence) as evaluator disposition; surface stays canon-free | `/starlight-eval` is invoked; a Starlight Proving Ground run executes; arena rounds or scorecard synthesis (2026-06-10) |
 
 ### Leadership, Specialist, and Foundation Tiers
 

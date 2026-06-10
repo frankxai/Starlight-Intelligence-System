@@ -1,0 +1,79 @@
+{
+  "$comment": "Built on SIP — Starlight Proving Ground system scorecard. Schema: scorecard v0.1.",
+  "runId": "system-eval-2026-06-10-v0.1",
+  "ranAt": "2026-06-10",
+  "nextRunDue": "2026-07-10",
+  "cadence": "monthly + on-substrate-tag",
+  "evaluator": "starlight-evaluator (Luminor kernel mindset)",
+  "antiGoodhart": "These numbers describe the system. Do not design to move them. A metric optimized-to is a metric retired.",
+  "lanes": [
+    {
+      "lane": "model",
+      "verdict": "PROCEED",
+      "metrics": [
+        { "name": "correctness-parity (R1)", "value": "Fable=Opus", "sourceLane": "tools/arena/runs/2026-06-09-fable5-vs-opus48.json" },
+        { "name": "stress-tally (R2)", "value": "Fable 3 / Opus 2", "sourceLane": "tools/arena/runs/2026-06-09-r2-stress-fable5-vs-opus48.json" }
+      ],
+      "caveats": ["n=1 per task", "Claude-family blind judge", "model-in-harness, not raw API"],
+      "weakness": "No cross-family judge yet (bias acknowledged but not removed). No agentic multi-turn/tool-use task. Both contestants are Claude-family — no GPT/Gemini/OSS baseline."
+    },
+    {
+      "lane": "memory",
+      "verdict": "REVISE",
+      "metrics": [
+        { "name": "precision@10", "value": 0.20, "sourceLane": "service/memory/bencher.py", "baseline": 0.20, "delta": 0.0 },
+        { "name": "p95-latency-ms@1k", "value": 1.06, "sourceLane": "memory bench 2026-05", "baseline": 1.06, "delta": 0.0 }
+      ],
+      "caveats": ["hashing-TF vectors, not embeddings", "frozen ~520-atom corpus", "Phase-0 dog-food still in progress"],
+      "weakness": "precision@10 of 0.20 is the system's single weakest published number. No cross-session recall measured ('what shipped in v7.5.3?'). Real-embedding un-park trigger (PARKED-007) not yet fired. This lane is REVISE not because it failed but because it is under-measured relative to its importance."
+    },
+    {
+      "lane": "retrieval",
+      "verdict": "PROCEED",
+      "metrics": [
+        { "name": "recall@1", "value": 1.0, "sourceLane": "test/retrieval-eval.test.ts", "baseline": 1.0, "delta": 0.0 },
+        { "name": "recall@5", "value": 1.0, "sourceLane": "test/retrieval-eval.test.ts", "baseline": 1.0, "delta": 0.0 }
+      ],
+      "caveats": ["n=10 labeled queries", "corpus=108 public-vault entries", "BM25/FTS5 keyword only"],
+      "weakness": "100% recall on only 10 labeled queries is a small sample — the ceiling is unearned until the labeled set grows. No semantic/hybrid path measured (sqlite-vec not yet wired)."
+    },
+    {
+      "lane": "harness",
+      "verdict": "PROCEED",
+      "metrics": [
+        { "name": "v01-evals", "value": "34 pass / 0 fail / 7 todo", "sourceLane": "tools/run-v01-evals.mjs", "baseline": "28 pass", "delta": "+6 pass" }
+      ],
+      "caveats": ["7 todo = known coverage gaps, not failures"],
+      "weakness": "7 todos are unmeasured risk dimensions (pack-runtime stubs, agent-event edge cases). Trust-contract is tested at envelope shape, not under adversarial concurrent access."
+    },
+    {
+      "lane": "substrate",
+      "verdict": "PROCEED",
+      "metrics": [
+        { "name": "symmetry-suite", "value": "green after catch", "sourceLane": "package.json::test:substrate" }
+      ],
+      "caveats": ["This lane CAUGHT a real orphan on this run: agents/starlight-evaluator.md was unregistered in AGENT_REGISTRY.md; the v76 coverage-symmetry test failed 14/15, was fixed (registry entry added), now 15/15."],
+      "weakness": "The catch is the headline: the Proving Ground's own first run flagged its own new agent as an orphan. Working as designed — but it proves the symmetry suite is load-bearing and must never be skipped under time pressure."
+    },
+    {
+      "lane": "datasets",
+      "verdict": "PROCEED",
+      "metrics": [
+        { "name": "synthetic-benchmark-count", "value": 0, "sourceLane": "audit", "baseline": 0 }
+      ],
+      "caveats": ["eval-50.jsonl = 50 real-usage queries", "public-vault = shipped golden corpus", "arena fixtures = hand-authored traps (labeled as such)"],
+      "weakness": "eval-50 ground truth is token-overlap, which is softer than human relevance labels. No dataset is large enough to make any single-lane claim statistically (not just directionally) true."
+    }
+  ],
+  "system": {
+    "verdict": "PROCEED-WITH-REVISE",
+    "overseer": "The system is honest and self-policing — the substrate lane caught its own orphan, and every green number ships with a named weakness rather than a victory lap. The single load-bearing concern is the memory lane: precision@10 = 0.20 is the weakest published number and the most important capability (a memory system that recalls 1-in-5 is the gap between 'persistent context layer' and the aspiration). The strongest case to proceed is that nothing here is hidden: the weaknesses are named, dated, and falsifiable.",
+    "loadBearingWeakness": "memory precision@10 = 0.20",
+    "nextExperiments": [
+      "Fire PARKED-007 (real embeddings) and re-measure memory precision@10 — the falsifier for the whole memory substrate thesis.",
+      "Add a cross-family judge (OpenRouter GPT-5) to the model lane and re-run R2 — removes the only standing bias caveat.",
+      "Author a cross-session recall eval ('what shipped in <version>?') — the memory gap no current lane covers."
+    ]
+  },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}
