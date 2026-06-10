@@ -238,6 +238,8 @@ Each install:
 
 ## OpenClaw Security Model
 
+> **v0.1 proof-of-pattern.** The security model described below is the intended design contract. The `mutation_default: false` invariant is currently enforced by convention (declared in each `CLAW.md` and checked by the Claw conformance test) and by code review gate. The full install-validation pipeline (hash verification, Sentinel runtime monitoring, openclaw CLI enforcement) is deferred to a tracked follow-up — the same ship pattern used for `crypto-intelligence/onchain` v0.1. This note will be removed when executable enforcement lands.
+
 **Context:** Third-party ClawHub skills have had documented security incidents in early 2026 — malicious skills targeting local credentials, wallet keys, browser session data, and shell access. SIS does not depend on the general ClawHub ecosystem.
 
 ### SIS curated skill registry
@@ -318,6 +320,8 @@ The Hermes agent (`starlight-hermes.md`) integrates directly with the Claw layer
 ---
 
 ## Relation to SIP
+
+**Tier classification:** The Claw suite (`CLAWS.md` + `claws/*/CLAW.md`) is an **operational-tier** construct that SIS provides on top of the substrate. It does NOT modify the SIP Layer-1 file contract — `CLAW.md` is not a required SIP file class, and the Claws architecture is not a SIP protocol mandate. Forks implementing SIP are not required to implement Claws.
 
 Claws are SIP-compliant operational units. Each Claw:
 

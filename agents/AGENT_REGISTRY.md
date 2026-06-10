@@ -6,7 +6,7 @@
 > **v7.6.0 update (2026-04-28):** People Intelligence sub-stack (6 agents) registered — first reference Domain Sub-Stack vertical.
 > **v7.5.2 / v7.6.x update (2026-04-27 / 2026-04-30):** Sound Intelligence sub-stack (6 agents) and Music IS sub-stack (7 agents) registered — second + third reference Domain Sub-Stack verticals (public-reference + Frank-operated).
 > **v0.1 Friday demo update (2026-05-11):** Council Archetype Tier (7 archetype seats) registered at `agents/council/` per Proposal B board verdict — Elder Father, Elder Mother, Sage (Council seat), Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90. Voice/agent boundary preserved: archetypes also registered in `VOICES.md` § Council Archetypes.
-> **v8.3.0 update (2026-06-09):** Hermes agent added — search & retrieval specialist (semantic search across vaults + repos + web, multi-source synthesis, provenance tracking). Read-only; zero mutation surface.
+> **v8.2.0 update (2026-06-09):** Hermes agent added — search & retrieval specialist (semantic search across vaults + repos + web, multi-source synthesis, provenance tracking). Read-only; zero mutation surface.
 
 ---
 
