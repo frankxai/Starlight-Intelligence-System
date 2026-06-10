@@ -1,0 +1,23 @@
+{
+  "$comment": "Built on SIP — Proving Ground MEMORY LANE result. PARKED-002 RRF hybrid head-to-head. The win PARKED-007 pointed to.",
+  "runId": "memory-lane-2026-06-10-rrf-hybrid",
+  "ranAt": "2026-06-10",
+  "lane": "memory",
+  "experiment": "Reciprocal Rank Fusion (RRF, k=60) of two channels over the same frozen 520-atom corpus + 29 scorable eval-50 queries, same lexical token-overlap ground-truth as PARKED-007. lexical = sovereign (production primary, IDF+cosine); semantic = model2vec (potion-base-8M, numpy-only).",
+  "results": {
+    "lexical (sovereign IDF)":   { "hit@10": 0.483, "recall@5": 0.379, "precision@10": 0.124 },
+    "semantic (model2vec)":      { "hit@10": 0.690, "recall@5": 0.621, "precision@10": 0.155 },
+    "hybrid (RRF)":              { "hit@10": 0.759, "recall@5": 0.690, "precision@10": 0.200 }
+  },
+  "headline": "Hybrid wins on EVERY metric. precision@10 0.124 (lexical) / 0.155 (semantic) -> 0.200 (hybrid) = +61% over lexical, +29% over semantic. recall@5 -> 0.690, hit@10 -> 0.759.",
+  "verdict": "PROCEED",
+  "finding": "Confirms the PARKED-007 thesis: single channels plateau (~0.12-0.16); RRF fusion is the real precision lever. The +61% precision@10 lift is measured EVEN UNDER a lexical ground-truth that under-credits the semantic channel — so it is a FLOOR, not a ceiling. A non-lexical (LLM-judged) ground-truth would likely show a larger hybrid advantage.",
+  "weakness": "Still scored by lexical token-overlap (REL_THRESHOLD=0.5) — the semantic channel's true contribution is under-counted. The next measurement should use an LLM-judged or hand-labeled relevance set. Also: this is harness-proven; production integration (below) not yet shipped.",
+  "decision": {
+    "status": "PROVEN — ready to integrate, sovereignty-preserving design required",
+    "recommendation": "Integrate RRF as an OPTIONAL router-level layer, NOT a hard dep in sovereign.py. sovereign.py stays stdlib-only (zero-dep sovereignty axiom intact); the router fuses in the model2vec channel ONLY when model2vec is importable, else falls back to lexical-only. This gains +61% precision@10 when the optional dep is present without breaking the zero-dep guarantee. Then re-measure against an LLM-judged ground-truth.",
+    "alsoDone": "Migration 24->544: the live sovereign PRIMARY store was re-ingested with the 520 frozen atoms (backup at memory/mempalace_sovereign/atoms.jsonl.pre-migration.bak), so evals + the router now serve the same full corpus."
+  },
+  "antiGoodhart": "0.200 precision@10 describes this corpus under this lexical judge. Do not optimize to it; it is a floor pending a semantic ground-truth.",
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}
