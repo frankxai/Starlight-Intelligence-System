@@ -62,6 +62,19 @@ Round 2 tested behavior under traps; Round 3 raises the difficulty of the *capab
 
 **Standing after three rounds:** Fable 5 = precision instrument (constraints, output contracts, first-try execution — and now hard clean reasoning). Opus 4.8 = judgment instrument (gate-flagging, spec pushback, tool efficiency) that keeps paying a tax on output shape. Route accordingly; re-run before hardening anything into doctrine.
 
+## Round 4 — 2026-06-10 (premium work-sample card)
+
+Rounds 1–3 used puzzles and traps. Round 4 uses **real production work**: build a design-system-compliant React component in the live FrankX repo (read `design.md`/`taste.md`, compile clean, pass a11y and banned-pattern checks), and author an ACOS-convention skill file. Mechanical verification by the harness; blind craft judging with shuffled labels. Receipt: `tools/arena/runs/2026-06-10-r4-work-samples.json`.
+
+| Task | Axis | Fable 5 | Opus 4.8 | Verdict |
+|---|---|---|---|---|
+| `ModelComparisonCard.tsx` in the live repo — tsc-clean, design tokens, a11y | Real frontend work | Compiled ✓, all checks ✓, judge 6/10 (three parallel maps, no a11y affordances) | Compiled ✓, all checks ✓, judge **8/10** (table semantics, sr-only caption, unified type design) | **Opus** |
+| `eval-receipts` SKILL.md per ACOS conventions | Agentic-system authoring | All checks ✓, judge **9/10** (append-only history, one-claim-per-round) | All checks ✓, judge 8/10, faster, half the tool calls | **Fable 5** |
+
+**Tally: 1–1.** Neither model dominates premium work — code-craft and accessibility rigor went to Opus, system-doc authoring to Fable. The new finding is about **discipline under load**: Fable 5 violated an output contract for the first time in four rounds (a preamble above the required two-line response) when the task itself was heavy. The operational lesson: on heavy multi-step tasks, enforce output contracts structurally — schemas, forced tool outputs — regardless of which model you route to. Model discipline degrades with task load; structure doesn't.
+
+**Standings after four rounds:** Fable 5 = constraint precision + reasoning + system-doc authoring. Opus 4.8 = situational judgment + a11y/code craft + speed and tool efficiency. The split is stable enough to route on; the style axis and the work-sample axis each have n=1 rounds and stay open.
+
 ## Caveats (these never leave the page)
 
 - **n = 1 per task.** Directional, not statistical. Claims get promoted only after repeated rounds agree.

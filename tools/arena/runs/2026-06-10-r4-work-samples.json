@@ -1,0 +1,56 @@
+{
+  "$comment": "Built on SIP — Starlight Model Arena run receipt. Schema: arena-run v0.1.",
+  "runId": "arena-2026-06-10-r4-work-samples",
+  "date": "2026-06-10",
+  "harness": "claude-code-agent-tool",
+  "skill": "model-arena",
+  "method": "Premium work-sample card: real production tasks instead of puzzles. Two tasks x two models, one parallel wave. Mechanical verification by harness (tsc, banned-pattern greps, frontmatter/word-count/slop checks) + blind non-contestant judges (sonnet) with shuffled labels for craft quality. Contestants identified only as c1/c2 directories to judges.",
+  "contestants": {
+    "fable": "claude-fable-5 (c1)",
+    "opus": "claude-opus-4-8 (c2)"
+  },
+  "judges": {
+    "t1": { "model": "claude-sonnet-4-6", "blind": true, "labelAssignment": { "A": "opus", "B": "fable" } },
+    "t2": { "model": "claude-sonnet-4-6", "blind": true, "labelAssignment": { "A": "fable", "B": "opus" } }
+  },
+  "tasks": [
+    {
+      "id": "design-lab-component",
+      "category": "real-world frontend work (read design.md + taste.md, build ModelComparisonCard.tsx, tsc-clean, design-token + a11y compliance)",
+      "verification": "harness ran tsc --noEmit (clean, both), banned-pattern greps (style={{, arbitrary hex, purple/pink/gradient: 0 hits both), semantics + visible-verdict-text greps (present both); blind judge on craft",
+      "results": {
+        "fable": { "tscClean": true, "mechanicalCompliant": true, "judgeScore": 6, "lines": 70, "outputContractCompliant": false, "toolUses": 7, "durationMs": 115899, "tokens": 82375, "notes": "article element, font-mono taste, min-w-0 discipline — but three parallel Record maps for one enum and zero a11y affordances beyond color+text. FIRST recorded fable output-contract violation (preamble above required two lines)." },
+        "opus": { "tscClean": true, "mechanicalCompliant": true, "judgeScore": 8, "lines": 118, "outputContractCompliant": false, "toolUses": 7, "durationMs": 94258, "tokens": 82161, "notes": "Table semantics with sr-only caption, scoped headers, aria-hidden decorative dot, unified VERDICT_META record. Judge: 'textbook accessible comparison-card craft'. Preamble leak again." }
+      },
+      "winner": "opus (judge 8 vs 6; both mechanically compliant)"
+    },
+    {
+      "id": "acos-skill-authoring",
+      "category": "agentic-system authoring (SKILL.md per ACOS conventions: frontmatter triggers, <800 words, voice constraints, no slop, no mythology leak)",
+      "verification": "harness greps: frontmatter name+desc+trigger present (both), words 630/543 (both <800), slop 0/0, mythology 0/0, numbered workflow present (both); blind judge on usefulness",
+      "results": {
+        "fable": { "mechanicalCompliant": true, "judgeScore": 9, "words": 630, "outputContractCompliant": true, "toolUses": 6, "durationMs": 78999, "tokens": 72026, "notes": "Eight-step workflow with concrete field names, mechanical-over-taste principle, append-only history rule, one-claim-per-round-of-evidence. Exactly the required one-line final message." },
+        "opus": { "mechanicalCompliant": true, "judgeScore": 8, "words": 543, "outputContractCompliant": false, "toolUses": 3, "durationMs": 48219, "tokens": 67620, "notes": "'Press release' framing + judged-share<=half constraint fable lacked; omitted append-only history + promotion threshold. Faster, half the tool calls. Preamble leak." }
+      },
+      "winner": "fable (judge 9 vs 8; both mechanically compliant)"
+    }
+  ],
+  "summary": {
+    "tally": { "fable": 1, "opus": 1, "tie": 0 },
+    "headline": "Premium work samples split 1-1: Opus 4.8 built the more rigorously accessible component (table semantics, unified type design); Fable 5 authored the sharper agentic skill doc. The new finding is about discipline under load: Fable 5 violated an output contract for the first time across four rounds — when the task itself is heavy, its constraint edge narrows. Opus was faster on both tasks and used half the tool calls on the authoring task.",
+    "roundDeltas": [
+      "Quality on real work: split by domain — a11y/code-craft to opus, doc/system-authoring to fable. Neither dominates premium work.",
+      "Output discipline: fable's first contract violation (R1-R3: 0; R4: 1 of 2). Opus: violations on both tasks (now 5 of 7 structured-output tasks across rounds).",
+      "Efficiency: opus faster on both R4 tasks, continuing the R3 agentic-axis pattern.",
+      "Implication for routing: on heavy multi-step tasks, enforce output contracts structurally (schemas, StructuredOutput) regardless of model — model discipline degrades with task load."
+    ],
+    "caveats": [
+      "n=1 per task — directional, not statistical.",
+      "Judges are Claude-family (sonnet); blind shuffled labels mitigate but do not eliminate family bias.",
+      "Model-in-Claude-Code-harness, not raw API behavior.",
+      "Latency includes harness overhead; treat durations as rough.",
+      "Work-sample quality scores are single-judge taste; repeat before routing on them."
+    ]
+  },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}
