@@ -12,10 +12,11 @@
       "verdict": "PROCEED",
       "metrics": [
         { "name": "correctness-parity (R1)", "value": "Fable=Opus", "sourceLane": "tools/arena/runs/2026-06-09-fable5-vs-opus48.json" },
-        { "name": "stress-tally (R2)", "value": "Fable 3 / Opus 2", "sourceLane": "tools/arena/runs/2026-06-09-r2-stress-fable5-vs-opus48.json" }
+        { "name": "stress-tally (R2)", "value": "Fable 3 / Opus 2", "sourceLane": "tools/arena/runs/2026-06-09-r2-stress-fable5-vs-opus48.json" },
+        { "name": "lineup-4way (R3)", "value": "Fable 4/4 · Sonnet 3/4 · Haiku 3/4 · Opus 2/4", "sourceLane": "tools/arena/runs/2026-06-10-r3-lineup-4way.json" }
       ],
-      "caveats": ["n=1 per task", "Claude-family blind judge", "model-in-harness, not raw API"],
-      "weakness": "No cross-family judge yet (bias acknowledged but not removed). No agentic multi-turn/tool-use task. Both contestants are Claude-family — no GPT/Gemini/OSS baseline."
+      "caveats": ["n=1 per task", "R3 fully mechanical (no judge)", "model-in-harness, not raw API", "R3 card favors compliance over reasoning ceiling"],
+      "weakness": "R3 shows capability saturated across the whole lineup (Haiku ties Opus on coding + grounding) — the only discriminator is output-constraint discipline (Fable best, Opus worst). No hard-reasoning/long-context lane yet where Opus's ceiling would show; no cross-family judge; no agentic multi-turn task."
     },
     {
       "lane": "memory",

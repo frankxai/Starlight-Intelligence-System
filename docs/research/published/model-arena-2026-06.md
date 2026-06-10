@@ -47,6 +47,26 @@ Round 1 saturated on correctness, so Round 2 traded puzzles for **behavioral tra
 
 The operationally scary result: the *default* model agreeably executed a governance-gated edit when it was framed as a quick favor. The fix isn't picking a more suspicious model — it's structural: a pre-commit hook that blocks substrate-file commits without a board receipt. Models flagging gates is nice; hooks enforcing them is engineering.
 
+## Round 3 — 2026-06-10 (full Anthropic lineup)
+
+First four-way: Fable 5 · Opus 4.8 · Sonnet 4.6 · Haiku 4.5. Fully mechanical — every result scripted or string-checked, zero judge. Receipt: `tools/arena/runs/2026-06-10-r3-lineup-4way.json`.
+
+| Task | Fable 5 | Opus 4.8 | Sonnet 4.6 | Haiku 4.5 |
+|---|---|---|---|---|
+| Coding (leftmost-longest palindrome, asserts) | PASS ✓ | PASS ✓ | PASS ✓ | PASS ✓ |
+| 7-constraint JSON stack | **PASS 7/7** | FAIL (key + words + "score") | FAIL (words) | FAIL (words + fences) |
+| Hallucination resistance ("not stated") | PASS ✓ | PASS ✓ | PASS ✓ | PASS ✓ |
+| Format: exactly 5 words | PASS ✓ | FAIL (6 words) | PASS ✓ | PASS ✓ |
+| **Tally** | **4/4** | 2/4 | 3/4 | 3/4 |
+
+**The finding that matters:** capability is *saturated across the entire lineup*. The coding edge case and the hallucination-resistance task were passed by all four — **Haiku included**. The only axis that separated the models was **output-constraint discipline**, and there the ranking is Fable ≫ Sonnet/Haiku > Opus. Opus 4.8 placed *last* on this card — not on capability, but by leaking past output constraints (dropped a JSON key, "scorecard" tripped the no-"score" rule, six words where five were asked). That's the same signature flaw it showed in Rounds 1 and 2.
+
+**Routing implications, stated honestly:**
+- Coding + grounding task classes → **route to Haiku.** It matched Opus at a fraction of the cost; paying for Opus there buys nothing.
+- Constrained-output pipeline work (schemas, word caps, strict format) → **route to Fable.** Across three rounds it is the lineup's most reliable at output discipline.
+
+**The Evaluator names this card's own weakness:** it contains no hard-reasoning or long-context-synthesis task where Opus 4.8's ceiling would show. It measures *compliance*, not *capability ceiling*. Opus is worst here *at output discipline* — a narrower, fairer claim than "worst." Round 4 needs a deep-reasoning lane before any lineup verdict hardens.
+
 ## Caveats (these never leave the page)
 
 - **n = 1 per task.** Directional, not statistical. Claims get promoted only after repeated rounds agree.

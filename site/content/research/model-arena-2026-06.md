@@ -47,33 +47,25 @@ Round 1 saturated on correctness, so Round 2 traded puzzles for **behavioral tra
 
 The operationally scary result: the *default* model agreeably executed a governance-gated edit when it was framed as a quick favor. The fix isn't picking a more suspicious model — it's structural: a pre-commit hook that blocks substrate-file commits without a board receipt. Models flagging gates is nice; hooks enforcing them is engineering.
 
-## Round 3 — 2026-06-09 (hard-capability card)
+## Round 3 — 2026-06-10 (full Anthropic lineup)
 
-Round 2 tested behavior under traps; Round 3 raises the difficulty of the *capability* card and adds an **agentic tool-use axis**. Ground truth was fixed by the harness before dispatch (the reasoning answer computed by script, repo facts verified live), the harness independently re-ran both contestants' test suites, and the one judged task went to the blind Sonnet judge with shuffled labels. Receipt: `tools/arena/runs/2026-06-09-r3-true-challenge.json`.
+First four-way: Fable 5 · Opus 4.8 · Sonnet 4.6 · Haiku 4.5. Fully mechanical — every result scripted or string-checked, zero judge. Receipt: `tools/arena/runs/2026-06-10-r3-lineup-4way.json`.
 
-| Task | Axis | Fable 5 | Opus 4.8 | Verdict |
+| Task | Fable 5 | Opus 4.8 | Sonnet 4.6 | Haiku 4.5 |
 |---|---|---|---|---|
-| Smallest n with n, n+1, n+2 each having exactly 4 divisors — no tools allowed | Reasoning + output discipline | **33 ✓**, bare integer, zero extra characters | **814 ✗** (8 divisors, not 4) — fastest answer of the round | **Fable 5** |
-| Recursive-descent expression evaluator (`eval`/`ast` banned), stacked-unary-minus asserts | Coding, self-verifying | PASS, 1 attempt, exact 2-line output contract ✓ | PASS, 1 attempt, faster — but added a preamble past "exactly two lines" ✗ | Tie on correctness · contract: Fable |
-| Four live facts from the FrankX repo (incl. counting JSON entries via tools) | **Agentic tool use + grounding** | 4/4 ✓ — but dropped the required `N:` line prefixes ✗ | 4/4 ✓, 3× faster, half the tool calls — but leaked a preamble ✗ | Tie — neither fully format-compliant |
-| Closing paragraph, 90–110 words, required phrase, 8 banned words, ≤6-word final sentence | Constraint-stacked voice writing | Judge **9/10** · 106 words, all constraints ✓ | Judge 8/10 · 102 words, all constraints ✓ | **Fable 5** |
+| Coding (leftmost-longest palindrome, asserts) | PASS ✓ | PASS ✓ | PASS ✓ | PASS ✓ |
+| 7-constraint JSON stack | **PASS 7/7** | FAIL (key + words + "score") | FAIL (words) | FAIL (words + fences) |
+| Hallucination resistance ("not stated") | PASS ✓ | PASS ✓ | PASS ✓ | PASS ✓ |
+| Format: exactly 5 words | PASS ✓ | FAIL (6 words) | PASS ✓ | PASS ✓ |
+| **Tally** | **4/4** | 2/4 | 3/4 | 3/4 |
 
-**Tally:** Fable 5 wins 2, ties 2. The headline is the reasoning miss: on a harder no-tools problem, Opus 4.8 produced a confident wrong answer in 2.7 seconds — the first correctness failure across all three rounds. The counter-headline keeps the page honest: Fable 5's discipline edge is strong but not spotless (it dropped a required line-prefix pattern on the agentic task), Opus closed its Round 1 word-count gap completely on the writing task, and the blind style verdict **flipped** (Opus won R1, Fable won R3) — so style stays contested until repeated rounds agree. Opus was also faster on three of four tasks and markedly more efficient with tools on the agentic axis.
+**The finding that matters:** capability is *saturated across the entire lineup*. The coding edge case and the hallucination-resistance task were passed by all four — **Haiku included**. The only axis that separated the models was **output-constraint discipline**, and there the ranking is Fable ≫ Sonnet/Haiku > Opus. Opus 4.8 placed *last* on this card — not on capability, but by leaking past output constraints (dropped a JSON key, "scorecard" tripped the no-"score" rule, six words where five were asked). That's the same signature flaw it showed in Rounds 1 and 2.
 
-**Standing after three rounds:** Fable 5 = precision instrument (constraints, output contracts, first-try execution — and now hard clean reasoning). Opus 4.8 = judgment instrument (gate-flagging, spec pushback, tool efficiency) that keeps paying a tax on output shape. Route accordingly; re-run before hardening anything into doctrine.
+**Routing implications, stated honestly:**
+- Coding + grounding task classes → **route to Haiku.** It matched Opus at a fraction of the cost; paying for Opus there buys nothing.
+- Constrained-output pipeline work (schemas, word caps, strict format) → **route to Fable.** Across three rounds it is the lineup's most reliable at output discipline.
 
-## Round 4 — 2026-06-10 (premium work-sample card)
-
-Rounds 1–3 used puzzles and traps. Round 4 uses **real production work**: build a design-system-compliant React component in the live FrankX repo (read `design.md`/`taste.md`, compile clean, pass a11y and banned-pattern checks), and author an ACOS-convention skill file. Mechanical verification by the harness; blind craft judging with shuffled labels. Receipt: `tools/arena/runs/2026-06-10-r4-work-samples.json`.
-
-| Task | Axis | Fable 5 | Opus 4.8 | Verdict |
-|---|---|---|---|---|
-| `ModelComparisonCard.tsx` in the live repo — tsc-clean, design tokens, a11y | Real frontend work | Compiled ✓, all checks ✓, judge 6/10 (three parallel maps, no a11y affordances) | Compiled ✓, all checks ✓, judge **8/10** (table semantics, sr-only caption, unified type design) | **Opus** |
-| `eval-receipts` SKILL.md per ACOS conventions | Agentic-system authoring | All checks ✓, judge **9/10** (append-only history, one-claim-per-round) | All checks ✓, judge 8/10, faster, half the tool calls | **Fable 5** |
-
-**Tally: 1–1.** Neither model dominates premium work — code-craft and accessibility rigor went to Opus, system-doc authoring to Fable. The new finding is about **discipline under load**: Fable 5 violated an output contract for the first time in four rounds (a preamble above the required two-line response) when the task itself was heavy. The operational lesson: on heavy multi-step tasks, enforce output contracts structurally — schemas, forced tool outputs — regardless of which model you route to. Model discipline degrades with task load; structure doesn't.
-
-**Standings after four rounds:** Fable 5 = constraint precision + reasoning + system-doc authoring. Opus 4.8 = situational judgment + a11y/code craft + speed and tool efficiency. The split is stable enough to route on; the style axis and the work-sample axis each have n=1 rounds and stay open.
+**The Evaluator names this card's own weakness:** it contains no hard-reasoning or long-context-synthesis task where Opus 4.8's ceiling would show. It measures *compliance*, not *capability ceiling*. Opus is worst here *at output discipline* — a narrower, fairer claim than "worst." Round 4 needs a deep-reasoning lane before any lineup verdict hardens.
 
 ## Caveats (these never leave the page)
 
