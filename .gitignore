@@ -42,6 +42,10 @@ memory/knowledge-graph/index.jsonl
 memory/_audit/
 memory/mempalace/
 memory/mempalace_upstream/
+memory/mempalace_sovereign/
+
+# Arena/eval run outputs — instance state, regenerable (mirror lives in starlight-evals)
+artifacts/
 memory/benchmarks/*.json
 
 # OSS hygiene — added by Tier 5 audit pass 2026-05-11

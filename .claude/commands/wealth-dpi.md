@@ -17,7 +17,7 @@ Load `VERTICALS.md` § Wealth IS, the Wealth IS `MEMORY.md`, and any active DPI 
 2. **Protocol attribution** — licensing fees or equity allocated to protocol authors (e.g., SIP attribution at scale).
 3. **Equity positions** — private company stakes, advisor equity, angel positions, ecosystem partner equity.
 4. **IP licensing** — canon licensing, trademark licensing, design licensing.
-5. **Yield-bearing assets** — real estate (houseboat, ocean villas), treasuries, productive holdings.
+5. **Yield-bearing assets** — real estate, treasuries, productive holdings.
 6. **Audience-as-asset** — newsletter, community, creator network; monetized via high-margin offers, not ads.
 
 Exclude: consulting revenue, employment, day-rate work. Those are labor — adjacent but not DPI.
@@ -58,17 +58,17 @@ Project DPI portfolio at horizon (6M / 12M / 24M / 60M). Emit:
 
 ## Gate ladder
 
-Canonical DPI gates (monthly net, EUR):
+Illustrative DPI gates (monthly net, EUR) — these are framework defaults, not anyone's real numbers:
 
 | Gate | Monthly DPI | Unlocks |
 |------|-------------|---------|
-| **G1 — Survival** | €2,500 | Basic living without labor income. |
-| **G2 — Sovereign** | €7,500 | Chosen lifestyle without labor income. |
-| **G3 — Amsterdam houseboat** | €15,000 | Amsterdam houseboat + reserve. |
-| **G4 — Multi-base** | €35,000 | Marbella / Fuerteventura / Lanzarote base layer. |
-| **G5 — Compound freedom** | €75,000+ | Full multi-base + autonomous EV + creative hub + investment velocity. |
+| **G1 — Survival** | €3,000 | Baseline living costs covered without labor income. |
+| **G2 — Sovereign** | €8,000 | Chosen lifestyle without labor income. |
+| **G3 — Anchor asset** | €18,000 | Primary lifestyle asset + reserve. |
+| **G4 — Multi-base** | €40,000 | Second and third base layer. |
+| **G5 — Compound freedom** | €80,000+ | Full base layer + creative hub + investment velocity. |
 
-Gates are individual; Wealth IS as a vertical ships the framework, each user defines their own gates.
+Gates are individual; Wealth IS as a vertical ships the framework, each user defines their own gates. Operators keep their real ladder in `private/VERTICALS-state.md` (gitignored instance state) — never in this public file.
 
 ## Output shape (status example)
 

@@ -1,7 +1,8 @@
 # Starlight Agent Registry
 
-> Forty-two minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
+> Forty-eight minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
 >
+> **v8.2.x update (2026-06-10):** Evaluator registered (`starlight-evaluator.md`) — Starlight Proving Ground + Model Arena measurement seat.
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
 > **v7.6.0 update (2026-04-28):** People Intelligence sub-stack (6 agents) registered — first reference Domain Sub-Stack vertical.
 > **v7.5.2 / v7.6.x update (2026-04-27 / 2026-04-30):** Sound Intelligence sub-stack (6 agents) and Music IS sub-stack (7 agents) registered — second + third reference Domain Sub-Stack verticals (public-reference + Frank-operated).
