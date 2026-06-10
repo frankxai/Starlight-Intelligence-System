@@ -1,7 +1,20 @@
 {
-  "$comment": "Living ledger of fast-moving public metrics. Read METRICS_TRUTH.md before editing. Every metric MUST carry last_verified (ISO date) and a source.",
+  "$comment": "Living ledger of fast-moving public metrics. Read METRICS_TRUTH.md before editing. Every metric MUST carry value, last_verified (ISO date), and source.",
+  "$schema_note": {
+    "shape": "metrics.<metric_key> = { value, last_verified (YYYY-MM-DD), source, ownership?, stale?, notes? }",
+    "example": {
+      "production_agents": {
+        "value": 48,
+        "last_verified": "2026-06-10",
+        "source": "agents/AGENT_REGISTRY.md",
+        "ownership": "built",
+        "stale": false,
+        "notes": "Optional context."
+      }
+    }
+  },
   "version": "0.1.0",
-  "ledger_started": "2026-05-19",
-  "last_updated": "2026-05-19",
+  "ledger_started": "2026-06-10",
+  "last_updated": "2026-06-10",
   "metrics": {}
 }

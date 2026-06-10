@@ -1,6 +1,6 @@
 # Sovereign-Spawn Validation Checklist — 2026-05-12
 
-> Pre-fork audit for `/sovereign-spawn`. Three named friends are reference candidates: **Ana** (psychologist + MBA + HR), **Logan** (OpenClaw), **Ahmad**. This document does NOT spawn anything. It surfaces the gaps that would block a real fork tomorrow.
+> Pre-fork audit for `/sovereign-spawn`. Three friends are reference candidates: **the first private test case** (profile withheld), **Logan** (OpenClaw), **Ahmad**. This document does NOT spawn anything. It surfaces the gaps that would block a real fork tomorrow.
 >
 > **Tier:** operational (no `/starlight-board` required).
 > **Verdict:** the command is **shippable for a guided fork TODAY** if Frank is in the room; **NOT shippable for autonomous fork** without closing Gap-Class A.
@@ -14,7 +14,7 @@
 | Surface | Path | State |
 |---|---|---|
 | Slash-command | `.claude/commands/sovereign-spawn.md` | **Spec only.** 150-line procedural definition, frontmatter says `allowed-tools: Read, Write, Grep, Glob, mcp__github`. No executable scaffolder. |
-| Friend-starter pack | `integrations/starter-packs/friend-starter/` | **Non-coder Claude-Project track.** 1 README + 1 custom-instructions.md + 17 knowledge .md files + 1 mcp.json + 1 badge.svg. Designed for Ana-class onboarding without forking the substrate at all. |
+| Friend-starter pack | `integrations/starter-packs/friend-starter/` | **Non-coder Claude-Project track.** 1 README + 1 custom-instructions.md + 17 knowledge .md files + 1 mcp.json + 1 badge.svg. Designed for non-coder onboarding without forking the substrate at all. |
 | Intake router | `.claude/commands/intake.md` | Routes inbound into 4 lanes: substrate / alliance / vertical / **sovereign**. `/sovereign-spawn` is the Route-D exit. |
 | Reference protocol files | `SIP.md`, `STACK.md`, `VERTICALS.md`, `VOICES.md`, `SKILL.md`, `AGENTS.md` | Frozen v8 / v7.6 / v1.1.1. These are what a fork inherits. |
 | Sovereignty clause | `SIP.md § 5` (item 7 added v1.1.1 by commit 97c7edc) | **Encoded-self is forkable, not licensable.** This is the legal/protocol root of the fork. |
@@ -38,11 +38,11 @@ These are the gates `/sovereign-spawn` itself enforces. None of them are mechani
 
 ## 3. Top 3 gaps that block a friend-fork tomorrow
 
-These are **next-week priorities** if Frank wants any of Ana / Logan / Ahmad forked autonomously.
+These are **next-week priorities** if Frank wants any of the first private test case / Logan / Ahmad forked autonomously.
 
 ### Gap A-1 — No executable scaffolder
 
-**Symptom:** `/sovereign-spawn ana "people intelligence"` today launches Claude in interactive mode, walks the spec by hand, writes ~30 files one at a time, takes ~20 minutes, and produces inconsistent output run-to-run.
+**Symptom:** `/sovereign-spawn <name> "people intelligence"` today launches Claude in interactive mode, walks the spec by hand, writes ~30 files one at a time, takes ~20 minutes, and produces inconsistent output run-to-run.
 
 **Required:** `scripts/sovereign-spawn.ts` that takes `<name> <domain> [github-org]` and emits the full scaffold (README · SIP-symlink · SIS-instance.md · SKILL.md · AGENTS.md · MEMORY.md · SOUL.md · CANON.md · STACK.md · VOICES.md · REGISTRY.md · ATTESTATIONS.md · .claude/commands/ mirrors · agents/ · memory/ · private/) in <30 seconds with deterministic output. Spec-driven, not vibe-driven.
 
@@ -52,13 +52,13 @@ These are **next-week priorities** if Frank wants any of Ana / Logan / Ahmad for
 
 ### Gap A-2 — No "fork-from-here" upstream sync contract
 
-**Symptom:** Once Ana's repo exists at `github.com/ana/ana-people-intelligence`, what happens when SIP.md v1.2 ships in the substrate? The spawn command says "pin upstream version in a comment block at each command's top" — but no `sis upgrade --substrate v1.2` command exists in Ana's spawned repo. The sovereign is on an island.
+**Symptom:** Once the test case's repo exists at `github.com/<owner>/<owner>-people-intelligence`, what happens when SIP.md v1.2 ships in the substrate? The spawn command says "pin upstream version in a comment block at each command's top" — but no `sis upgrade --substrate v1.2` command exists in the spawned repo. The sovereign is on an island.
 
 **Required:** Either (a) a `scripts/substrate-sync.ts` template that ships INSIDE the spawn so the sovereign can pull substrate updates idempotently, OR (b) a documented manual upgrade path with checksums, OR (c) explicit acceptance that v0.1 forks are version-pinned and forks-of-forks happen at each substrate release.
 
 **Effort:** ~1 day for option (a); ~2 hours for option (b).
 
-**Falsifier:** Ana's repo runs `npm run substrate:check` and gets a green/red answer about whether she's drifted.
+**Falsifier:** The spawned repo runs `npm run substrate:check` and gets a green/red answer about whether it has drifted.
 
 ### Gap A-3 — No reference fork to point friends at
 
@@ -74,13 +74,13 @@ These are **next-week priorities** if Frank wants any of Ana / Logan / Ahmad for
 
 ## 4. Per-friend readiness assessment
 
-### Ana — psychologist + MBA + HR
+### First private test case — People Intelligence practitioner (profile withheld)
 
-**What she needs:** Likely NOT a sovereign-spawn — she's better served by the **friend-starter Claude Project pack**. Her business is service-delivery (interview design, performance review redesign, culture audits), not running a sovereign intelligence system. The People Intelligence vertical (`verticals/people-intelligence/`) is already designed AS her reference stack — she could install that as a Custom GPT or Claude Project and be fully operational without forking SIS.
+**What they need:** Likely NOT a sovereign-spawn — they're better served by the **friend-starter Claude Project pack**. Their business is service-delivery, not running a sovereign intelligence system. The People Intelligence vertical (`verticals/people-intelligence/`) is already designed AS the reference stack — they could install that as a Custom GPT or Claude Project and be fully operational without forking SIS.
 
-**Spawn-fit verdict:** **DEFER.** Route her through `/intake` → Route-C (vertical) → install People Intelligence as Claude Project + Custom GPT. Revisit `/sovereign-spawn` in 6 months if her clients demand sovereign-instance hosting.
+**Spawn-fit verdict:** **DEFER.** Route them through `/intake` → Route-C (vertical) → install People Intelligence as Claude Project + Custom GPT. Revisit `/sovereign-spawn` in 6 months if their clients demand sovereign-instance hosting.
 
-**If forced to spawn:** Gap A-1 + A-3 must close first. She's non-technical; she cannot debug a partial scaffold.
+**If forced to spawn:** Gap A-1 + A-3 must close first. They're non-technical; they cannot debug a partial scaffold.
 
 ### Logan — OpenClaw
 

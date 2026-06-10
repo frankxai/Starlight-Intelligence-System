@@ -78,6 +78,77 @@ describe("core regression coverage", () => {
     });
   });
 
+  it("RetrievalIndex.rebuildFromVaults indexes a JSONL file that starts with a UTF-8 BOM", () => {
+    withTempDir("sis-retrieval-bom-", (dir) => {
+      const vaultDir = join(dir, "vaults");
+      const dbPath = join(dir, "index.sqlite");
+      mkdirSync(vaultDir, { recursive: true });
+      writeFileSync(
+        join(vaultDir, "operational.jsonl"),
+        "\uFEFF" + JSON.stringify({
+          id: "bom-entry",
+          insight: "BOM-prefixed JSONL entries should still be searchable.",
+          vault: "operational",
+          category: "regression",
+          confidence: "high",
+          createdAt: "2026-06-05T00:00:00.000Z",
+        }) + "\n",
+        "utf8",
+      );
+
+      const index = new RetrievalIndex(dbPath);
+      try {
+        assert.equal(index.rebuildFromVaults(vaultDir), 1);
+        assert.equal(index.getStats().total, 1);
+        const results = index.search("BOM searchable", { limit: 5 });
+        assert.equal(results.length, 1);
+        assert.equal(results[0].entry.id, "bom-entry");
+      } finally {
+        index.close();
+      }
+    });
+  });
+
+  it("RetrievalIndex.rebuildFromVaults rejects duplicate ids instead of replacing rows silently", () => {
+    withTempDir("sis-retrieval-duplicates-", (dir) => {
+      const vaultDir = join(dir, "vaults");
+      const dbPath = join(dir, "index.sqlite");
+      mkdirSync(vaultDir, { recursive: true });
+      writeFileSync(
+        join(vaultDir, "strategic.jsonl"),
+        [
+          JSON.stringify({
+            id: "duplicate-entry",
+            insight: "First strategic memory should not be silently replaced.",
+            vault: "strategic",
+            category: "regression",
+            confidence: "high",
+            createdAt: "2026-06-05T00:00:00.000Z",
+          }),
+          JSON.stringify({
+            id: "duplicate-entry",
+            insight: "Second strategic memory has the same id.",
+            vault: "strategic",
+            category: "regression",
+            confidence: "high",
+            createdAt: "2026-06-05T00:00:01.000Z",
+          }),
+        ].join("\n") + "\n",
+        "utf8",
+      );
+
+      const index = new RetrievalIndex(dbPath);
+      try {
+        assert.throws(
+          () => index.rebuildFromVaults(vaultDir),
+          /Duplicate vault entry id "duplicate-entry" in strategic\.jsonl:2; already seen in strategic\.jsonl:1/,
+        );
+      } finally {
+        index.close();
+      }
+    });
+  });
+
   it("README protocol badge matches the canonical SIP.md version", () => {
     const sip = readFileSync("SIP.md", "utf8");
     const readme = readFileSync("README.md", "utf8");

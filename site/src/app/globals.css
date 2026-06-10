@@ -16,6 +16,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jbmono);
+  --font-serif: var(--font-fraunces);
 }
 
 * {

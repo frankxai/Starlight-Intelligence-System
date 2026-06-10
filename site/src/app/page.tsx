@@ -51,7 +51,7 @@ const LAYERS: LayerCard[] = [
   },
   {
     name: "Wealth",
-    desc: "Disruptive Passive Income ledger and thesis engine.",
+    desc: "Asymmetric Passive Income (DPI) ledger and thesis engine.",
     accent: "rose",
   },
   {
@@ -106,7 +106,7 @@ export default async function HomePage() {
             Built on the Starlight Intelligence Protocol &middot; v1.1.1
           </div>
 
-          <h1 className="mt-5 max-w-3xl text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
+          <h1 className="mt-5 max-w-3xl font-serif text-[clamp(2.25rem,6vw,4rem)] font-semibold leading-[1.05] tracking-tight text-white">
             Persistent context.
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
@@ -119,7 +119,7 @@ export default async function HomePage() {
             on the Starlight Intelligence Protocol — a sovereign substrate
             anyone can adopt, fork, or compose with.{" "}
             <span className="text-slate-300">
-              9 intelligence layers, 35 agents, 70+ commands, 3 reference
+              10 intelligence systems, 48 agents, 70+ commands, 3 reference
               Domain Sub-Stack verticals.
             </span>{" "}
             Local-first. Forkable. Free.
@@ -152,8 +152,8 @@ export default async function HomePage() {
 
           {/* Stats bar */}
           <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/[0.08] pt-6 text-[13px]">
-            <Stat n={9} label="intelligence layers" />
-            <Stat n={35} label="agents" />
+            <Stat n={10} label="intelligence systems" />
+            <Stat n={48} label="agents" />
             <Stat n="70+" label="commands" />
             <Stat n={3} label="reference verticals" />
             <Stat n={6} label="platform adapters" />

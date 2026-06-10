@@ -4,20 +4,22 @@ import Link from "next/link";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Starlight Intelligence Protocol — v1.0.0",
+  title: "Starlight Intelligence Protocol — v1.1.1",
   description:
     "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
   openGraph: {
-    title: "Starlight Intelligence Protocol — v1.0.0",
+    title: "Starlight Intelligence Protocol — v1.1.1",
     description:
       "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence Protocol v1.1.1" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Starlight Intelligence Protocol — v1.0.0",
+    title: "Starlight Intelligence Protocol — v1.1.1",
     description:
       "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
+    images: ["/opengraph-image"],
   },
 };
 
@@ -125,6 +127,10 @@ const SOVEREIGNTY_CLAUSES: Array<{ title: string; body: string }> = [
     title: "Exit.",
     body: "Any party can leave the composition. Attribution history remains immutable.",
   },
+  {
+    title: "Encoded-self forkable boundary.",
+    body: "The substrate pattern (agents, skills, commands, methods, governance) is forkable under each component's license. Encoded-self artifacts — founder voice clones, identity vectors, personal canon, vault-specific paths, and any artifact that fingerprints a sovereign — are non-licensable and non-transferable. Forks may inherit the pattern, never the person. (Added v1.1.1, 2026-05-06; definition revisits quarterly from 2026-W30.)",
+  },
 ];
 
 const ATTESTATION_BLOCK = `---
@@ -146,7 +152,7 @@ const MCP_REGISTRY_JSON = `{
 
 const FOOTER_ATTESTATION = `---
 Built on SIP — Starlight Intelligence Protocol
-- Substrate: starlightintelligence.org/protocol v1.0.0
+- Substrate: starlightintelligence.org/protocol v1.1.1
 - Verticals: [starlight]
 - Canon: ["none"]
 - Nodes: [Starlight Holding BV]
@@ -167,11 +173,11 @@ export default function ProtocolPage() {
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
             The protocol
           </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-5xl">
+          <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
             Starlight Intelligence Protocol
           </h1>
           <p className="mt-4 font-mono text-[13px] uppercase tracking-widest text-slate-500">
-            v1.0.0
+            v1.1.1
           </p>
           <p className="mt-6 max-w-xl text-[15px] leading-[1.8] text-slate-400">
             The contract that lets sovereign parties compose intelligence
@@ -200,7 +206,7 @@ export default function ProtocolPage() {
       {/* ── Source-of-truth banner ── */}
       <section className="border-b border-white/[0.08] bg-white/[0.01] px-6 py-4">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-slate-500">
-          <span className="text-[10px] uppercase tracking-widest text-slate-600">
+          <span className="text-[10px] uppercase tracking-widest text-slate-400">
             Canonical source
           </span>
           <span className="text-slate-700">·</span>
@@ -251,13 +257,13 @@ export default function ProtocolPage() {
               <table className="w-full border-collapse text-left text-[13px]">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
                       File
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
                       Purpose
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
                       Required
                     </th>
                   </tr>
@@ -329,12 +335,12 @@ export default function ProtocolPage() {
             <em>compounding</em> across every adopter.
           </p>
 
-          <p className="mt-6 text-[14px] uppercase tracking-widest text-slate-600">
+          <p className="mt-6 text-[14px] uppercase tracking-widest text-slate-400">
             Minimum block
           </p>
           <CodeBlock label="attestation">{ATTESTATION_BLOCK}</CodeBlock>
 
-          <p className="mt-8 text-[14px] uppercase tracking-widest text-slate-600">
+          <p className="mt-8 text-[14px] uppercase tracking-widest text-slate-400">
             Pinning rules
           </p>
           <ul className="mt-4 space-y-3 pl-6 text-[14px] text-slate-400">
@@ -401,16 +407,16 @@ export default function ProtocolPage() {
               <table className="w-full border-collapse text-left text-[13px]">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
                       Tier
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
                       Prefix / location
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
                       Owner
                     </th>
-                    <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
                       Example
                     </th>
                   </tr>
@@ -614,8 +620,8 @@ export default function ProtocolPage() {
             </Link>
           </div>
 
-          <p className="mt-10 text-[11px] uppercase tracking-widest text-slate-600">
-            Built on SIP · v1.0.0 · Authored by Frank Riemer (Starlight Holding
+          <p className="mt-10 text-[11px] uppercase tracking-widest text-slate-400">
+            Built on SIP · v1.1.1 · Authored by Frank Riemer (Starlight Holding
             BV) · MIT
           </p>
         </section>
@@ -635,7 +641,7 @@ function Section({
 }) {
   return (
     <section className="mt-16 first:mt-0">
-      <p className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+      <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
         {eyebrow}
       </p>
       <h2 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
@@ -656,7 +662,7 @@ function CodeBlock({
   return (
     <div className="mt-4 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
       <div className="border-b border-white/[0.06] px-4 py-2">
-        <code className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
+        <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
           {label}
         </code>
       </div>

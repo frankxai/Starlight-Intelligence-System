@@ -1,0 +1,110 @@
+{
+  "name": "starlight-intelligence-system",
+  "version": "8.2.0",
+  "description": "The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet across Claude Code, Cursor, Cline, Codex, Gemini CLI & Antigravity. Local-first. Forkable. Built on the Starlight Intelligence Protocol v1.1.1.",
+  "author": {
+    "name": "Frank Riemer",
+    "email": "frank@frankx.ai",
+    "url": "https://frankx.ai"
+  },
+  "homepage": "https://starlightintelligence.org",
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "keywords": [
+    "starlight-intelligence",
+    "sip",
+    "starlight-intelligence-protocol",
+    "claude-code",
+    "cursor",
+    "cline",
+    "codex",
+    "gemini-cli",
+    "antigravity",
+    "ai-memory",
+    "agent-substrate",
+    "attestation",
+    "sovereign-agents",
+    "mcp",
+    "anthropic",
+    "10-intelligence-systems",
+    "domain-sub-stack"
+  ],
+  "categories": [
+    "substrate",
+    "memory",
+    "agent-orchestration",
+    "multi-platform",
+    "attestation",
+    "domain-sub-stack",
+    "research"
+  ],
+  "platforms": [
+    "claude-code",
+    "cursor",
+    "cline",
+    "codex",
+    "gemini-cli",
+    "antigravity"
+  ],
+  "engines": {
+    "claude-code": ">=2.0.0",
+    "node": ">=20"
+  },
+  "compose": {
+    "extends": [
+      "sip-protocol"
+    ],
+    "absorbs": []
+  },
+  "stats": {
+    "agents": 48,
+    "skills": 71,
+    "commands": 108,
+    "vaults": 6,
+    "intelligence_systems": 10,
+    "domain_sub_stacks": 3,
+    "platforms": 6,
+    "verified": "2026-06-10",
+    "note": "Counts reflect current shipped state, enforced by test/v87-agent-registry.test.ts. 48 agents = 7-archetype council + specialist tiers + evaluator per agents/AGENT_REGISTRY.md. 71 skills across 14 domains per skills/skill-rules.json. 3 reference Domain Sub-Stacks: People IS, Sound IS, Music IS (Crypto IS shipped v0.1 proof-of-pattern 2026-05-17, not yet counted as reference)."
+  },
+  "intelligence": {
+    "version": "v8.2.0",
+    "substrate": "SIP v1.1.1",
+    "tier": "substrate + reference operational",
+    "components": {
+      "substrate_protocol": 0.30,
+      "attestation_invariant": 0.20,
+      "memory_persistence": 0.20,
+      "agent_orchestration": 0.15,
+      "cross_platform_parity": 0.15
+    }
+  },
+  "principles": [
+    "Sovereignty is non-waivable — forks inherit pattern not person",
+    "Attestation is compounding, not credit transfer",
+    "JSONL is truth, every derived index is regenerable",
+    "Substrate edits route through SIS — brands consume",
+    "Memory vaults: semantic by domain (strategic / technical / creative / operational / wisdom / horizon)",
+    "10 Intelligence Systems composed on SIP — not stacked, composed",
+    "Local-first. Cloud is mirror, never source of truth"
+  ],
+  "surfaces": {
+    "public": "https://starlightintelligence.org",
+    "protocol": "https://starlightintelligence.org/protocol",
+    "architecture": "https://starlightintelligence.org/architecture",
+    "research": "https://starlightintelligence.org/research",
+    "verticals": "https://starlightintelligence.org/verticals",
+    "changelog": "https://starlightintelligence.org/changelog",
+    "explainer": "https://starlightintelligence.org/explainer",
+    "quickstart": "https://starlightintelligence.org/quickstart"
+  },
+  "import": {
+    "claude-code": ".claude/",
+    "cursor": ".cursor/rules/",
+    "cline": ".clinerules/",
+    "codex": "AGENTS.md",
+    "gemini-cli": ".gemini/",
+    "antigravity": ".antigravity/"
+  },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol v1.1.1. License: MIT (code + spec); Arcanea canon (if composed) CC-BY-NC."
+}

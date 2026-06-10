@@ -49,11 +49,23 @@ function repoRoot(): string {
 }
 
 const REPO_ROOT = repoRoot();
+// Fix B (2026-05-21): default vault dir to in-repo memory/vaults so the
+// dreaming agent reads the canonical SIS vault MD files. Fallback to
+// ~/.starlight/vaults for backward compatibility. Override via env var.
+// See docs/ops/MEMORY-PIPELINE-DIAGNOSIS-2026-05-20.md §5b.
+const REPO_VAULTS = join(REPO_ROOT, "memory", "vaults");
 const VAULT_DIR =
-  process.env.STARLIGHT_VAULT_DIR ?? join(homedir(), ".starlight", "vaults");
+  process.env.STARLIGHT_VAULT_DIR ??
+  (existsSync(REPO_VAULTS) ? REPO_VAULTS : join(homedir(), ".starlight", "vaults"));
 const SESSIONS_DIR =
   process.env.STARLIGHT_SESSIONS_DIR ??
   join(REPO_ROOT, "memory", "voice-sessions");
+// Fix A — 2026-05-20: also process audit-log JSONL so consolidation produces
+// non-zero output when voice-operator is paused. See
+// docs/ops/MEMORY-PIPELINE-DIAGNOSIS-2026-05-20.md.
+const AUDIT_DIR =
+  process.env.STARLIGHT_AUDIT_DIR ??
+  join(REPO_ROOT, "memory", "_audit");
 const LOG_PATH = join(REPO_ROOT, "memory", "CONSOLIDATION_LOG.md");
 
 function ensureLog(): void {
@@ -100,7 +112,7 @@ function main(): number {
 
   try {
     const agent = new DreamingAgent(VAULT_DIR);
-    const result = agent.dream(SESSIONS_DIR);
+    const result = agent.dream(SESSIONS_DIR, AUDIT_DIR);
     const line =
       `- ${ts}` +
       ` · insights: ${result.extractedInsights.length}` +

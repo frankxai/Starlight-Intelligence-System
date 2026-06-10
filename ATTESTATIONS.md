@@ -259,7 +259,7 @@ Substrate: starlightintelligence.org/protocol v1.1.0
 Layers used: [file-contract, attestation, commands, sovereignty, archetype-extension]
 
 Verticals:
-- starlight-intelligence-system @<v7.4.0-alpha-tag-sha> · Genius Intelligence System alpha: new Excavation Tier agent (starlight-genius) + five new operational commands (/discover-genius, /reclaim-knowledge, /train-executor, /creator-pipeline, /content-systemize) + vertical-tier /arcanea-canon + two intelligence skills (intelligence/genius-excavation, intelligence/knowledge-reclamation) + public explainer page (docs/public/starlight-intelligence-system.md, ~2,200 words, non-marketing, warm-architect voice) + non-technical Claude Project starter pack (integrations/starter-packs/friend-starter/ — 13 files: README, custom-instructions.md ~3,600 chars, 9 knowledge templates with Ana-grade filled examples, mcp.json, badge.svg). First release where attestation is ambient by default (agents auto-embed "Built on SIP" in every output; /sip-attest remains for retrofit of external work).
+- starlight-intelligence-system @<v7.4.0-alpha-tag-sha> · Genius Intelligence System alpha: new Excavation Tier agent (starlight-genius) + five new operational commands (/discover-genius, /reclaim-knowledge, /train-executor, /creator-pipeline, /content-systemize) + vertical-tier /arcanea-canon + two intelligence skills (intelligence/genius-excavation, intelligence/knowledge-reclamation) + public explainer page (docs/public/starlight-intelligence-system.md, ~2,200 words, non-marketing, warm-architect voice) + non-technical Claude Project starter pack (integrations/starter-packs/friend-starter/ — 13 files: README, custom-instructions.md ~3,600 chars, 9 knowledge templates with reference-grade filled examples, mcp.json, badge.svg). First release where attestation is ambient by default (agents auto-embed "Built on SIP" in every output; /sip-attest remains for retrofit of external work).
 
 Canon:
 - none at substrate layer. Arcanea canon (CC-BY-NC © Arcanea BV) referenced via /arcanea-canon for canon-keeping workflows.
@@ -267,7 +267,7 @@ Canon:
 Nodes:
 - Frank Riemer · role: architect · authored v7.4 alpha strategy (pivot from protocol-first to genius-first framing, 9-layer intelligence system architecture, ambient attestation stance) + directed 5-agent parallel swarm dispatch
 - Claude Opus 4.7 (1M context) · role: implementer · 5 parallel agents (GIS core / executor + reclamation / creator pipeline / friend-starter pack / public explainer) + main-thread integration
-- Ana · role: dogfood test subject (anonymized profession — psychologist + MBA neuroscience + HR) · intake card + genius profile + freedom path + reclamation map + executor playbook + creator pipeline all filled with realistic Ana-grade content in starter pack
+- First private test case · role: dogfood test subject (identity and profession withheld) · intake card + genius profile + freedom path + reclamation map + executor playbook + creator pipeline all filled with realistic reference-grade content in starter pack
 
 Generated: 2026-04-24
 Attestation is compounding, not credit transfer: every composition strengthens every node.
@@ -279,7 +279,7 @@ Attestation is compounding, not credit transfer: every composition strengthens e
 - **Substrate layers invoked:** Layer 1 (file contract — Genius agent adds new `genius/` vault namespace; starter-pack adds 13-file Claude Project bundle shape); Layer 2 (this attestation entry; ambient attestation now default at artifact-generation time); Layer 4 (command taxonomy — 5 new protocol-tier + 1 new vertical-tier commands); Layer 5 (sovereignty clause — reinforced in starter pack custom instructions and public explainer; genius profile defined as user-owned, never retained in public vaults); Layer 6 (archetype extension — /arcanea-canon operates inside Arcanea's sovereign canon domain with CC-BY-NC pinning).
 - **Verticals contributing:** Starlight Intelligence substrate. Downstream impact staged: Genius IS is the root of 9-layer intelligence system architecture (Genius → Second Brain → Vision/Brand → Business → Creator → Wealth/Freedom → Health → Relational → Spiritual). Arcanea (canon management via /arcanea-canon) and Creator IS (operational via /creator-pipeline + /content-systemize) now have working command surfaces.
 - **Canon imported:** none at substrate. /arcanea-canon operates inside Arcanea's canon domain.
-- **Nodes:** Frank + Claude + Ana (first real test case, dogfood across all GIS outputs).
+- **Nodes:** Frank + Claude + the first private test case (dogfood across all GIS outputs).
 
 ### Pinning
 
@@ -290,19 +290,19 @@ Attestation is compounding, not credit transfer: every composition strengthens e
 | Canon | n/a at substrate | Arcanea canon pinning handled by /arcanea-canon per-invocation |
 | MCP servers | starlight-mcp@v1.1.0 (unchanged) | REGISTRY.md |
 | GIS vault namespace | `genius/` | Added this release |
-| Ana dogfood status | anonymized profession only | Private details NOT in public repo |
+| First-test-case dogfood status | identity withheld | Private details NOT in public repo |
 
 ### Reality check (per /sip-attest enforcement)
 
 - Real GIS agent + skills: ✅ starlight-genius.md (173 lines), genius-excavation.md (141 lines), knowledge-reclamation.md (159 lines) — composes cleanly with existing Sage/Concierge/Envoy via Excavation Tier.
 - Real operational commands: ✅ /discover-genius (129 lines), /reclaim-knowledge (214 lines), /train-executor (218 lines), /creator-pipeline (187 lines), /content-systemize (173 lines), /arcanea-canon live.
-- Real non-technical entry: ✅ friend-starter pack 13 files at integrations/starter-packs/friend-starter/; custom-instructions.md load-bearing (3,682 chars, under Claude Project limit); Ana-grade filled examples in 5 template knowledge files.
+- Real non-technical entry: ✅ friend-starter pack 13 files at integrations/starter-packs/friend-starter/; custom-instructions.md load-bearing (3,682 chars, under Claude Project limit); reference-grade filled examples in 5 template knowledge files.
 - Real public explainer: ✅ docs/public/starlight-intelligence-system.md (~2,200 words, 6-8 min read, 3-path onboarding, 9-layer architecture).
 - Real ambient attestation: ✅ All v7.4 alpha command output formats embed "Built on SIP" block automatically; /sip-attest retained for external-artifact retrofit.
 - Real tests: ✅ v7.3 test harness 19/19 still passes (no regressions). v7.4 conformance assertions to land in v7.4.1 once commands stabilize.
 - Composition is substantive, not decorative.
 
-**Attestation valid.** v7.4 alpha is the first release where SIP stops being the headline and starts being the substrate under "help Ana discover her genius and build a sovereign life." The protocol/reference distinction is now structurally enforced at the user experience layer (starter pack, public page) not just the protocol layer.
+**Attestation valid.** v7.4 alpha is the first release where SIP stops being the headline and starts being the substrate under "help the first private test case discover their genius and build a sovereign life." The protocol/reference distinction is now structurally enforced at the user experience layer (starter pack, public page) not just the protocol layer.
 
 ---
 
@@ -373,7 +373,7 @@ Substrate: starlightintelligence.org/protocol v1.1.0
 Layers used: [file-contract, attestation, commands, sovereignty, archetype-extension]
 
 Verticals:
-- starlight-intelligence-system @<v7.5.0-tag-sha> · v7.5.0 ship rolls v7.3.1 + v7.4.0-alpha + v7.4.0-beta + v7.4.1-alpha + v7.4.1 REVISE remediation into a single tagged release with three structural reconciliations: (1) **10-IS taxonomy reconciled** per MASSIVE_ACTION_PLAN.md (accepted 2026-04-25) — Code IS and Voice & Video IS promoted from sub-domain to top-level, Substrate renamed to Starlight Orchestrator at the top, Relational renamed to Family, Vision-Brand renamed to Brand; STACK.md, VERTICALS.md, docs/ARCHITECTURE.md updated; core/orchestrator/ scaffold + 4 CLI harness folders (claude/codex/gemini/opencode); verticals/_template/ with full 7-file SIP contract; verticals/code/ + verticals/voice-video/ + verticals/family/ stubs. (2) **Path A authorless rewrite** of the HR Intelligence reference vertical per Luminor Board v7.4.1 Item 2 — sub-system agents (starlight-hiring/-performance/-training/-culture/-talent/-org) and vertical wrapper genericized; "Ana's HR" word references removed; docs/forking-domain-stacks.md ships with the attribution-back pattern. (3) **Auto-deploy restoration** — GitHub Actions workflow at .github/workflows/vercel-deploy.yml reactivates push-to-main → Vercel deploy after the 2026-04-10 Vercel/GitHub integration break. v7.5 conformance harness (test/v75.test.ts) added with assertions guarding all three reconciliations.
+- starlight-intelligence-system @<v7.5.0-tag-sha> · v7.5.0 ship rolls v7.3.1 + v7.4.0-alpha + v7.4.0-beta + v7.4.1-alpha + v7.4.1 REVISE remediation into a single tagged release with three structural reconciliations: (1) **10-IS taxonomy reconciled** per MASSIVE_ACTION_PLAN.md (accepted 2026-04-25) — Code IS and Voice & Video IS promoted from sub-domain to top-level, Substrate renamed to Starlight Orchestrator at the top, Relational renamed to Family, Vision-Brand renamed to Brand; STACK.md, VERTICALS.md, docs/ARCHITECTURE.md updated; core/orchestrator/ scaffold + 4 CLI harness folders (claude/codex/gemini/opencode); verticals/_template/ with full 7-file SIP contract; verticals/code/ + verticals/voice-video/ + verticals/family/ stubs. (2) **Path A authorless rewrite** of the HR Intelligence reference vertical per Luminor Board v7.4.1 Item 2 — sub-system agents (starlight-hiring/-performance/-training/-culture/-talent/-org) and vertical wrapper genericized; named-practitioner word references removed; docs/forking-domain-stacks.md ships with the attribution-back pattern. (3) **Auto-deploy restoration** — GitHub Actions workflow at .github/workflows/vercel-deploy.yml reactivates push-to-main → Vercel deploy after the 2026-04-10 Vercel/GitHub integration break. v7.5 conformance harness (test/v75.test.ts) added with assertions guarding all three reconciliations.
 
 Canon:
 - none at substrate layer.
@@ -410,7 +410,7 @@ Attestation is compounding, not credit transfer: every composition strengthens e
 
 - Real plan committed: ✅ `MASSIVE_ACTION_PLAN.md` at root, accepted 2026-04-25.
 - Real 10-IS reconciliation: ✅ STACK.md table, VERTICALS.md entries, ARCHITECTURE.md retitle, core/orchestrator/ scaffold, verticals/_template/, verticals/{code,voice-video,family}/ all present and conformance-tested in `test/v75.test.ts`.
-- Real Path A rewrite: ✅ no "Ana" word references remain in 6 sub-system agents or 8 HR vertical wrapper files (validated by v7.5 test block 5).
+- Real Path A rewrite: ✅ no named-practitioner word references remain in 6 sub-system agents or 8 HR vertical wrapper files (validated by v7.5 test block 5).
 - Real forking pattern doc: ✅ `docs/forking-domain-stacks.md` ships the attribution-back lifecycle.
 - Real auto-deploy restoration: ✅ `.github/workflows/vercel-deploy.yml` deployed; manual `vercel --prod` from `site/` runs alongside until the GHA verifies on the next merge.
 - Composition is substantive, not decorative.

@@ -40,9 +40,9 @@ Every task is either substrate-level or operational-level. Decide before acting.
 - Triggers: edits to `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md`, or any `/sip-*`, `/alliance-*`, `/vertical-*`, `/luminor-board`, `/openclaw-audit`, `/sovereign-signal`, `/wealth-dpi` command.
 
 **Operational-level** (anything inside this repo's reference build):
-- Use the 7-agent registry at `agents/AGENT_REGISTRY.md` and existing skill auto-activation.
+- Use `agents/AGENT_REGISTRY.md` for the current 48-agent registry and existing skill auto-activation.
 - Voice: Frank DNA (above).
-- Triggers: vault writes, MCP server work (`src/`), the 6 v6 commands (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`), skill edits, agent edits, site edits.
+- Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 14), skill edits, agent edits, site edits.
 
 **Ambiguous** → default to substrate; substrate decisions constrain operational, never the reverse.
 
@@ -62,12 +62,13 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **What you have access to:**
 
-- **42 Agents** — 7 legacy council (leadership + specialist + foundation tiers, top-level `agents/*.md`) + 7 Council Archetype seats (v0.1 Friday demo, at `agents/council/*.md` — Elder Father, Elder Mother, Sage, Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90) + 2 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 1 cross-cutting. Full registry: `agents/AGENT_REGISTRY.md`.
+- **48 Agents** — 7 legacy council (leadership + specialist + foundation tiers, top-level `agents/*.md`) + 7 Council Archetype seats (v0.1 Friday demo, at `agents/council/*.md` — Elder Father, Elder Mother, Sage, Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90) + 3 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 5 SIS Extractors for `/sis-forge` Phase 1 + 1 Evaluator (Proving Ground + Model Arena, 2026-06-10). Full registry: `agents/AGENT_REGISTRY.md`.
 - **71 Skills** — Auto-activate via `skills/skill-rules.json` across 14 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`)
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
 - **Commands** — substrate commands in-repo + additional commands available per-environment installation (varies by user); covers universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
 - **Context Engine** — Unified cross-repo awareness
+- **Research surface** — Public substrate research at `starlightintelligence.org/research/`. Rubric-locked, Board-gated, SIP-attested. First two artifacts live: 3D memory palace design survey + memory foundations (Phase 0 dog-food chartered, 3-tier model w/ AgentDB tier per Addendum 2). Methodology at `docs/research/_methodology/`.
 
 **Newcomer front door (v7.3):** See `ONBOARDING.md`, `DELIVERY.md`, `SESSION_RUNBOOK.md`. Invoke `/welcome` to orient a newcomer, `/intake` to triage their ask into one of four routes (substrate / alliance / vertical / sovereign-spawn), and hand off to Concierge (builder track) or Envoy (creator track, zero-terminal).
 
@@ -161,14 +162,13 @@ Memory consolidation merges duplicates, elevates patterns, archives stale data, 
 
 ## Skills
 
-16 auto-activating capabilities. Skills fire based on context — keywords, active agent, detected intent.
+71 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
 
 | Domain | Skills |
 |--------|--------|
-| **Intelligence** | Strategic Reasoning, Systems Thinking, Pattern Recognition, Decision Framework |
-| **Orchestration** | Multi-Agent Coordination, Workflow Design, Context Engineering, Parallel Execution |
-| **Memory** | Vault Management, Knowledge Synthesis, Context Preservation, Memory Consolidation |
-| **Integration** | Repo Bridge, Ecosystem Sync, Transmission Protocol, Universal Adapter |
+| **Intelligence / Orchestration / Memory / Integration** | Strategic reasoning, systems thinking, orchestration, vault management, context preservation, ecosystem sync |
+| **Business / Vision / Health / Relational** | Entity architecture, revenue modeling, design coherence, body substrate, network architecture |
+| **People / Sound / Music / Energy / Machine / Crypto** | Domain Sub-Stack skills, Music IS operations, energy intelligence, machine storage/heart, crypto on-chain proof pattern |
 
 Activation rules: `skills/skill-rules.json`
 Skill definitions: `skills/{domain}/{skill-name}.md`
@@ -189,6 +189,10 @@ Skill definitions: `skills/{domain}/{skill-name}.md`
 | `/yolo-exit` | Graceful close of /yolo session — operational + strategic vault writes, Memory Bus session-summary atom, drift detection post-pass. |
 | `/yolo-abort` | Immediate halt of /yolo mid-action — partial state saved, in-flight git ops rolled back where reversible, drift event log. |
 | `/sis-forge` | **Pre-alpha (v8.x):** Auto-extract patterns from corpus (transcripts / vault / prompts / repos / external), emit density bucket report. Phase 1 (5 parallel extractors) + Phase 2 (TF-IDF clusterer + density classifier). No proposal doc / Board / spawn yet — those land in alpha/beta. Spec: `docs/superpowers/specs/2026-05-17-sis-forge-design.md`. |
+| `/curate-recall` | Curated memory recall — writes wikilinked Obsidian notes from retrieval results (Mirror Foundation). |
+| `/dispatch` | Multi-CLI dispatch — route a task to a sibling CLI (Codex / Gemini / OpenCode) via the cognition router. |
+| `/vault-desire` | Write a desire/intention atom to the vault loop (paired with `/vault-proof`). |
+| `/vault-proof` | Write a proof/receipt atom closing a desire in the vault loop. |
 
 ---
 
@@ -298,7 +302,7 @@ Full rule and ownership-verb definitions: `metrics/METRICS_TRUTH.md`. Living led
 
 ---
 
-*Starlight Intelligence System v8.0.0 — Horizons*
+*Starlight Intelligence System v8.2.0 — Horizons + Composition Layer + Crypto IS*
 
 ---
 

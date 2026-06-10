@@ -23,7 +23,7 @@ Do not organize by where it came from (Employer A / Employer B / Project X). Org
 Where your material currently lives:
 - **<Source 1 — e.g., Google Drive "Work Archive">** — <rough size/item count>, <format mix>, <date range>
 - **<Source 2 — e.g., Canva "Old Projects" folder>** — ...
-- **<Source 3 — e.g., Notion "HR" workspace>** — ...
+- **<Source 3 — e.g., Notion "Ops" workspace>** — ...
 - **<Source N>** — ...
 
 ## Functional domains (the new structure)
@@ -72,70 +72,70 @@ Built on SIP v1.1.0 · Generated <ISO date>
 ---
 ```
 
-## Filled example — Ana (HR Psychologist across 3 past employers)
+## Filled example — Maya (product-ops consultant across 3 past employers; fictional composite — any resemblance to real persons is coincidental)
 
 ```
-# Reclamation Map — Ana Morales — 2026-04-24
+# Reclamation Map — Maya Lindqvist — 2026-04-24
 
 ## Source inventory
 Where your material currently lives:
 - **Google Drive "Company-A Work"** — ~180 items, mix of Docs/Slides/PDFs, 2019–2022
 - **Google Drive "Company-B Consulting"** — ~90 items, heavy on Slides and case studies, 2022–2024
 - **Canva "Old Projects"** — ~40 decks, visual-heavy, 2020–2025
-- **Notion "HR Playbooks"** — ~60 pages, your current working space, 2024–2026
-- **Local Documents/HR-Archive** — scattered screenshots, candidate scorecards, ~70 items, 2021–2026
-- **Substack drafts folder** — 14 drafts, 2025–2026
+- **Notion "Ops Playbooks"** — ~60 pages, your current working space, 2024–2026
+- **Local Documents/Ops-Archive** — scattered screenshots, gate scorecards, ~70 items, 2021–2026
+- **Newsletter drafts folder** — 14 drafts, 2025–2026
 
 ## Functional domains (the new structure)
 Your material clusters around seven functions:
-1. **Recruiting** — intake rubrics, interview frameworks, candidate scoring, job specs
-2. **Onboarding** — day-0 through day-90 frameworks, manager handoff guides
-3. **Performance management** — review cycles, calibration docs, coaching frames
-4. **Compensation** — comp-conversation SOPs, band design, equity primers
-5. **Culture & engagement** — audit frameworks, engagement surveys, culture decks
-6. **Training & development** — manager training decks, IC development frames
-7. **Offboarding & exit** — exit-interview rubrics, alumni-network frames
+1. **Sourcing & vendors** — vendor briefs, handoff audit checklists, supplier scoring, spec templates
+2. **Prototype & test** — test-round frameworks, pilot checklists, fixture guides
+3. **Launch readiness** — gate rubrics, evidence-packet formats, go/no-go frames
+4. **Decision ledger** — decision-debt SOPs, ledger design, deferral-pricing primers
+5. **Handoff & process audits** — audit frameworks, pulse surveys, process decks
+6. **Workshops & training** — team workshop decks, facilitator frames
+7. **Post-mortems & autopsies** — autopsy rubrics, kill-review frames
 
 ## Proposed folder tree
 ```
 /second-brain/
-├── 01-recruiting/
-│   ├── frameworks/  (Attachment-aware Recruiting, Silent Authorization Map)
-│   ├── templates/   (job specs, interview rubrics, scorecards)
-│   ├── case-examples/  (sanitized — past hires with lessons)
-│   └── outdated/    (old rubrics, 2019 comp bands, Company-A specifics)
-├── 02-onboarding/
+├── 01-sourcing-vendors/
+│   ├── frameworks/  (Invisible Handoff Map, vendor-screen patterns)
+│   ├── templates/   (vendor briefs, spec templates, scorecards)
+│   ├── case-examples/  (sanitized — past builds with lessons)
+│   └── outdated/    (old checklists, 2019 tooling refs, Company-A specifics)
+├── 02-prototype-test/
 │   ├── frameworks/
 │   ├── templates/
 │   └── outdated/
-├── 03-performance-management/
-│   ├── frameworks/  (Performance Reviews as Clinical Intake)
+├── 03-launch-readiness/
+│   ├── frameworks/  (The Launch-Readiness Ladder)
 │   ├── templates/
 │   └── outdated/
-├── 04-compensation/
-│   ├── frameworks/  (Trapdoor Compensation Conversations)
+├── 04-decision-ledger/
+│   ├── frameworks/  (The Decision Debt Ledger)
 │   ├── templates/
 │   └── outdated/
-├── 05-culture-engagement/
-│   ├── frameworks/  (The Culture Audit You Can't Unsee)
+├── 05-handoff-process-audits/
+│   ├── frameworks/  (Friction-Budget Reviews)
 │   ├── templates/
 │   └── outdated/
-├── 06-training-development/
-├── 07-offboarding-exit/
+├── 06-workshops-training/
+├── 07-postmortems-autopsies/
 └── _inbox/
 ```
 
-## Source-to-domain mapping (abbreviated — full mapping in Ana's live doc)
+## Source-to-domain mapping (abbreviated — full mapping in Maya's live doc)
 
 | Original location | Item | New home | Status |
 |-------------------|------|----------|--------|
-| GDrive "Company-A Work" | 2022 performance review framework | 03-performance-management/frameworks/ | outdated but adaptable |
-| GDrive "Company-A Work" | 2019 comp bands spreadsheet | 04-compensation/outdated/ | obsolete (reference only) |
-| GDrive "Company-B Consulting" | Attachment-aware interview rubric | 01-recruiting/frameworks/ | current |
-| Canva "Old Projects" | Exec onboarding deck 2024 | 02-onboarding/templates/ | outdated but adaptable |
-| Notion "HR Playbooks" | 2026 comp-season SOP | 04-compensation/templates/ | current |
-| Local/HR-Archive | Candidate scorecard screenshots Q1 2026 | 01-recruiting/case-examples/ | current |
-| Substack drafts folder | "The Culture Doesn't Lie" draft | _creator/drafts/ (separate tree) | current |
+| GDrive "Company-A Work" | 2022 gate rubric framework | 03-launch-readiness/frameworks/ | outdated but adaptable |
+| GDrive "Company-A Work" | 2019 tooling-cost spreadsheet | 01-sourcing-vendors/outdated/ | obsolete (reference only) |
+| GDrive "Company-B Consulting" | Handoff audit checklist | 05-handoff-process-audits/frameworks/ | current |
+| Canva "Old Projects" | Test-plan deck 2024 | 02-prototype-test/templates/ | outdated but adaptable |
+| Notion "Ops Playbooks" | 2026 roadmap-season SOP | 04-decision-ledger/templates/ | current |
+| Local/Ops-Archive | Gate scorecard screenshots Q1 2026 | 03-launch-readiness/case-examples/ | current |
+| Newsletter drafts folder | "The Handoff Doesn't Lie" draft | _creator/drafts/ (separate tree) | current |
 
 ## Outdated audit summary
 - **Current** — 112 items: transferable as-is
@@ -156,7 +156,7 @@ Built on SIP v1.1.0 · Generated 2026-04-24
 
 - **Never leave a source unmapped.** Every source the user names gets an entry in Source inventory, even if you don't have item-level detail yet.
 - **Never organize by employer or client.** That's the shape they arrived with; it's the shape that's trapping them. Function-first, always.
-- **Domains emerge from the corpus, not from a template.** If they work in something other than HR, the domains will be different. Do not impose HR's seven.
+- **Domains emerge from the corpus, not from a template.** If they work in something other than product operations, the domains will be different. Do not impose the example's seven.
 - **Outdated audit is non-optional.** Flagging decay is core value. Without it, the executor inherits silent landmines.
 - **_inbox/ folder always exists.** Life keeps arriving. A system with no inbox becomes rigid; material piles up outside it.
 - **Past-employer IP gets flagged explicitly.** Framework transfers; proprietary specifics do not. Protect the person from accidental misuse of former-employer material.

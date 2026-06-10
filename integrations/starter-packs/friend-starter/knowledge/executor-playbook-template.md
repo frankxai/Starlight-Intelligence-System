@@ -104,128 +104,128 @@ Built on SIP — Starlight Intelligence Protocol v1.1.0
 ---
 ```
 
-## Filled example — Executor for Ana (HR Psychologist)
+## Filled example — Executor for Maya (product-ops consultant; fictional composite — any resemblance to real persons is coincidental)
 
 ```
-# Executor Playbook — Maria Velez (for Ana Morales)
+# Executor Playbook — Priya Raman (for Maya Lindqvist)
 
 > Onboarding start: 2026-05-05. Target autonomous: 2026-07-28.
-> Generated from Ana's Freedom Path DELEGATE bucket + Genius Profile v2026-04-24.
-> This document is Ana's intellectual property. Stays in her Notion workspace.
+> Generated from Maya's Freedom Path DELEGATE bucket + Genius Profile v2026-04-24.
+> This document is Maya's intellectual property. Stays in her Notion workspace.
 
 ## How to use this playbook
-You're holding this because I trust your judgment. Read one domain at a time — not all at once. When you're running a task, if the SOP feels like a script instead of a frame, tell me. I don't want you reading me back to myself; I want you doing the work the way I'd do it, which means you'll have to metabolize the framework, not memorize the steps. Underneath every SOP is a question the candidate, teammate, or manager is actually asking. Your job is to hear that and respond to it, not to execute the document.
+You're holding this because I trust your judgment. Read one domain at a time — not all at once. When you're running a task, if the SOP feels like a script instead of a frame, tell me. I don't want you reading me back to myself; I want you doing the work the way I'd do it, which means you'll have to internalize the framework, not memorize the steps. Downstream of every SOP is a decision the client team is actually avoiding. Your job is to see that and surface it, not to execute the document.
 
 ## Training curriculum at a glance
 
-**Week 1–2 — Observe.** Shadow me through one full cycle of recruiting, one of onboarding, one of performance review prep. I'll narrate as I go. By end of week 2, you write each framework in your own words and we walk through them together.
+**Week 1–2 — Observe.** Shadow me through one full vendor-coordination cycle, one prototype-test round, and one launch-review prep. I'll narrate as I go. By end of week 2, you write each framework in your own words and we walk through them together.
 
-**Week 3–4 — Shadow + Execute.** You run a recruiting cycle for the Senior PM role; I review every output. You run day-0 through day-30 for one new hire; I review. Errors are framework-teaching moments — we fix the frame, not the individual output.
+**Week 3–4 — Shadow + Execute.** You run the build-readiness checklist for the Series-2 enclosure; I review every output. You run day-0 through day-30 of one pilot program; I review. Errors are framework-teaching moments — we fix the frame, not the individual output.
 
-**Week 5+ — Autonomous.** You own recruiting operations and onboarding logistics. I spot-check weekly for 4 weeks, then we move to monthly. Target end of week 8: recruiting and onboarding running without me except at escalation points.
+**Week 5+ — Autonomous.** You own vendor operations and prototype-test logistics. I spot-check weekly for 4 weeks, then we move to monthly. Target end of week 8: vendor coordination and test logistics running without me except at escalation points.
 
 ## SOPs by functional domain
 
-### Recruiting (operations, not diagnostics)
+### Vendor & supplier coordination (operations, not diagnostics)
 
-**Framework** (from Ana's Genius Profile): **Attachment-aware Recruiting** — hiring for how people metabolize feedback, not just skills.
+**Framework** (from Maya's Genius Profile): **The Invisible Handoff Map** — where information dies between design, engineering, and supply chain, made visible.
 
 **Source materials:**
-- Attachment-aware interview rubric v2025 (Notion) — current — use as-is
-- Candidate scorecard template 2026 — current
-- 2022 recruiting template from Company-A — outdated but adaptable; framework sound, remove Company-A-specific vocabulary and update comp references
-- Interview coordinator checklist — current
+- Handoff audit checklist v2025 (Notion) — current — use as-is
+- Vendor brief template 2026 — current
+- 2022 sourcing template from Company-A — outdated but adaptable; framework sound, remove Company-A-specific vocabulary and update tooling references
+- Build-coordination checklist — current
 
 **Process:**
-1. Intake the hiring manager's stated ask, and write the real ask underneath it. (Example: stated ask = "strong IC"; real ask = often "someone who will not need emotional management from me.")
-2. Screen resumes for pattern, not keyword. Prioritize candidates whose trajectory shows recovery from setback — they've metabolized before.
-3. Run first-round against the rubric. Escalate any candidate who scores 7+ on Attachment Readiness to me for second-round prep.
-4. Coordinate the panel, brief panelists on the rubric, collect scorecards within 24h.
-5. Synthesize panel feedback using the Trapdoor frame: what did each panelist not say that they wanted to say? Flag those to me.
+1. Intake the client team's stated spec, and write the real constraint underneath it. (Example: stated spec = "matte finish"; real constraint = often "the last finish failed drop-test and nobody wrote down why.")
+2. Screen vendor responses for pattern, not price. Prioritize vendors whose questions show they read the tolerance stack — they've caught a handoff drop before.
+3. Run the brief against the handoff map. Escalate any handoff where two teams describe the same deliverable differently to me for a map session.
+4. Coordinate the build review, brief participants on the map, collect evidence packets within 24h.
+5. Synthesize review feedback using the Decision Debt frame: which decisions did each team defer without logging? Flag those to me.
 
 **Decisions you own:**
-- Whether to advance a candidate from resume screen to first round — criteria: pattern match to rubric + trajectory signal.
-- Whether a panelist's scorecard is complete — criteria: all rubric dimensions addressed, no "I don't know" left unanswered.
+- Whether to advance a vendor from response screen to sample round — criteria: pattern match to brief + tolerance-stack signal.
+- Whether an evidence packet is complete — criteria: all map dimensions addressed, no "we'll confirm later" left unlogged.
 
-**Decisions that escalate to Ana:**
-- Any candidate with a 7+ Attachment Readiness score — they're not just eligible, they may be the hire, and the second round needs me.
-- Any disagreement between panelists >2 points on the rubric.
-- Any candidate who does something during the process that surprises you in a way you can't name — that "feels off but I can't say why" instinct is data; bring it to me.
+**Decisions that escalate to Maya:**
+- Any handoff where the same deliverable is described differently by two teams — that's not a logistics issue, it's the map working, and the session needs me.
+- Any disagreement between reviewers >2 points on the gate rubric.
+- Anything during the process that surprises you in a way you can't name — that "feels off but I can't say why" instinct is data; bring it to me.
 
 **Quality bar:**
-- A hiring manager can run the first-round interview from the rubric without calling me.
-- No candidate waits >48h for a next-step communication.
-- Scorecards arrive within 24h of each interview.
+- A client engineer can run the vendor-brief review from the checklist without calling me.
+- No vendor waits >48h for a next-step communication.
+- Evidence packets arrive within 24h of each review.
 
-### Onboarding (operations)
+### Prototype-test operations
 
-**Framework** (from Genius Profile): **Day-0 authorizations map** — what the new hire is allowed to do, say, and break in the first 90 days, made explicit.
+**Framework** (from Genius Profile): **Prototype Autopsies** — what a killed prototype was built to test, and what it taught, made explicit.
 
 **Source materials:**
-- Onboarding framework v2026 Notion — current
-- Day-0 through day-30 checklist — current
-- 2024 exec onboarding deck (Canva) — outdated but adaptable; refresh 2024 comp refs, update tool names
-- Manager handoff guide — current
+- Test-round framework v2026 Notion — current
+- Day-0 through day-30 pilot checklist — current
+- 2024 test-plan deck (Canva) — outdated but adaptable; refresh 2024 tool refs, update lab names
+- Team handoff guide — current
 
 **Process:**
-1. Day -5: confirm equipment, access, day-0 schedule, and welcome-lunch attendees.
-2. Day 0: run the authorizations conversation with the manager (I'll do this the first time; you shadow; by the third hire you own it).
-3. Day 7: 1:1 with new hire — what's surprising, what's unclear, what's harder than expected. You bring a summary to our weekly.
-4. Day 30: calibration check with manager. Flag gaps in expectations.
-5. Day 90: transition from onboarding to regular cycles.
+1. Day -5: confirm units, fixtures, day-0 schedule, and test-round participants.
+2. Day 0: run the load-bearing-assumption conversation with the team lead (I'll do this the first time; you shadow; by the third round you own it).
+3. Day 7: check-in with the test lead — what's surprising, what's unclear, what's harder than expected. You bring a summary to our weekly.
+4. Day 30: calibration check with the team lead. Flag gaps between what the test was meant to prove and what it measured.
+5. Day 90: transition from pilot to regular test cycles.
 
 **Decisions you own:**
-- Scheduling, logistics, equipment, calendar, welcome details.
+- Scheduling, logistics, fixtures, calendar, lab coordination details.
 - The day-7 and day-30 check-in format (stay in the framework, adjust mechanics).
 
-**Decisions that escalate to Ana:**
-- Any authorizations-conversation issue (the manager resists making things explicit, the new hire reads the room wrong, the stated role doesn't match the real role).
-- Any day-30 calibration showing expectations mismatch >20%.
+**Decisions that escalate to Maya:**
+- Any assumption-conversation issue (the team lead resists naming the assumption, the test plan doesn't match the stated goal, the prototype is testing something nobody owns).
+- Any day-30 calibration showing intent-vs-measurement mismatch >20%.
 
 **Quality bar:**
-- New hire can name, by day-30, the three things they are explicitly authorized to decide without escalation.
-- Manager can name, by day-30, the one thing they'd hire differently for if they could redo the role spec.
+- Test lead can name, by day-30, the three assumptions the round is explicitly built to test.
+- Team lead can name, by day-30, the one decision they'd log differently if they could redo the kickoff.
 
-### Performance Review Operations
+### Launch-review operations
 
-(Similar structure — framework is Performance Reviews as Clinical Intake; Maria handles logistics/forms/nudges; Ana handles the diagnostic conversations themselves.)
+(Similar structure — framework is the Launch-Readiness Ladder; Priya handles logistics/evidence packets/nudges; Maya handles the gate conversations themselves.)
 
-### Compensation Operations
+### Roadmap-cycle operations
 
-(Maria runs the mechanics of the annual cycle: calendar, forms, manager briefings, data compilation. Ana owns the trapdoor conversations.)
+(Priya runs the mechanics of the annual cycle: calendar, ledger updates, team briefings, data compilation. Maya owns the decision-debt conversations.)
 
 ## Outdated material audit
 
 | Source | Status | Note |
 |---|---|---|
-| 2022 Company-A recruiting template | outdated but adaptable | Framework sound; update job-title vocabulary, remove Company-A-specific language, replace 2021 comp bands |
-| 2019 onboarding deck | obsolete | Company defunct; extract framework only, build fresh deck |
-| Canva "Company-B brand kit" | obsolete | Not Ana's current brand; do not reuse |
-| Notion 2026 comp-season SOP | current | Use as-is |
-| 2020 exit interview rubric | outdated but adaptable | Diagnostic frame still valid; update questions that reference Company-A culture specifics |
-| Current candidate scorecards Q1 2026 | current | Best-in-class example |
+| 2022 Company-A sourcing template | outdated but adaptable | Framework sound; update vendor vocabulary, remove Company-A-specific language, replace 2021 tooling references |
+| 2019 test-plan deck | obsolete | Company defunct; extract framework only, build fresh deck |
+| Canva "Company-B brand kit" | obsolete | Not Maya's current brand; do not reuse |
+| Notion 2026 roadmap-season SOP | current | Use as-is |
+| 2020 autopsy rubric | outdated but adaptable | Diagnostic frame still valid; update questions that reference Company-A process specifics |
+| Current evidence packets Q1 2026 | current | Best-in-class example |
 
 ## Handover milestones
 
-- [ ] **Week 2** — Maria articulates the framework for Recruiting, Onboarding, Performance Ops, and Comp Ops in her own words; Ana signs off on each.
-- [ ] **Week 4** — Maria completes full recruiting cycle for Senior PM role with <10% rework from Ana.
-- [ ] **Week 8** — Maria operates autonomously on recruiting and onboarding; weekly 30-min check-in only.
-- [ ] **Week 12** — Maria owns >=80% of DELEGATE bucket; Ana in monthly check-ins; weekly hours reclaimed for KEEP work: target 20+.
+- [ ] **Week 2** — Priya articulates the framework for Vendor Coordination, Prototype-Test Ops, Launch-Review Ops, and Roadmap-Cycle Ops in her own words; Maya signs off on each.
+- [ ] **Week 4** — Priya completes full vendor cycle for the Series-2 enclosure with <10% rework from Maya.
+- [ ] **Week 8** — Priya operates autonomously on vendor coordination and test logistics; weekly 30-min check-in only.
+- [ ] **Week 12** — Priya owns >=80% of DELEGATE bucket; Maya in monthly check-ins; weekly hours reclaimed for KEEP work: target 20+.
 
 ## Escalation triggers (specific, not generic)
 
-Flag to Ana immediately:
-- Any candidate where the "feels almost right but off" signal is present — off-feeling is a framework gap, not a judgment call.
-- Any performance conversation where termination is on the table.
-- Any comp conversation where the C-suite asks for an exception and the manager resists.
-- Anything touching legal compliance, H1B/visa, or a regulated process.
-- Any authorizations-conversation where the manager and new hire describe the role differently by >30%.
-- Any exit interview where the departing teammate says something that doesn't match their stated reason for leaving.
+Flag to Maya immediately:
+- Any vendor or test result where the "feels almost right but off" signal is present — off-feeling is a framework gap, not a judgment call.
+- Any gate conversation where killing the launch is on the table.
+- Any roadmap conversation where the sponsor asks for an exception and the team resists.
+- Anything touching safety certification, regulatory compliance, or a recall-adjacent process.
+- Any assumption-conversation where the team lead and test lead describe the goal differently by >30%.
+- Any prototype autopsy where the stated kill reason doesn't match the evidence.
 
 ## Confidentiality
 
-- Past-employer material marked Company-A-specific or Company-B-specific: learn the framework, do not copy the specifics. Ana's frameworks are portable; former employers' IP is not.
-- This playbook lives in Ana's Notion workspace. Not public. Not shareable outside Ana and Maria without explicit consent.
+- Past-employer material marked Company-A-specific or Company-B-specific: learn the framework, do not copy the specifics. Maya's frameworks are portable; former employers' IP is not.
+- This playbook lives in Maya's Notion workspace. Not public. Not shareable outside Maya and Priya without explicit consent.
 
 ---
 Built on SIP — Starlight Intelligence Protocol v1.1.0

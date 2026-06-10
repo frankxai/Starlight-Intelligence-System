@@ -13,12 +13,14 @@ export const metadata: Metadata = {
     description:
       "Session-mode top-tier command. Claude leads, you ship. 7 council agents scan, Prime synthesizes, you pick, conductor drives. Gated by board + QA.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "/yolo Hive — Starlight Intelligence" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "/yolo Hive — Starlight Intelligence",
     description:
       "Session-mode top-tier command for cross-repo conductor work. Claude leads.",
+    images: ["/opengraph-image"],
   },
 };
 

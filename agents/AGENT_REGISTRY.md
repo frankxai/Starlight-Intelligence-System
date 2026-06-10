@@ -1,7 +1,8 @@
 # Starlight Agent Registry
 
-> Forty-two minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
+> Forty-eight minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
 >
+> **v8.2.x update (2026-06-10):** Evaluator registered (`starlight-evaluator.md`) — Starlight Proving Ground + Model Arena measurement seat.
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
 > **v7.6.0 update (2026-04-28):** People Intelligence sub-stack (6 agents) registered — first reference Domain Sub-Stack vertical.
 > **v7.5.2 / v7.6.x update (2026-04-27 / 2026-04-30):** Sound Intelligence sub-stack (6 agents) and Music IS sub-stack (7 agents) registered — second + third reference Domain Sub-Stack verticals (public-reference + Frank-operated).
@@ -108,6 +109,7 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 | Agent | File | Domain | Leads When |
 |-------|------|--------|-----------|
 | **Genius** | `starlight-genius.md` | Genius excavation, pattern-mining across personal corpus, framework extraction, voice fingerprinting, four-bucket sorting | `/discover-genius` is invoked; newcomer described as scattered-expertise / indispensable-but-trapped; excavating Genius Profile + Freedom Path |
+| **Evaluator** | `starlight-evaluator.md` | System evaluation, benchmark design, metric provenance, falsification. Holds the Luminor kernel mindset (Precision/Wisdom/Transcendence) as evaluator disposition; surface stays canon-free | `/starlight-eval` is invoked; a Starlight Proving Ground run executes; arena rounds or scorecard synthesis (2026-06-10) |
 
 ### Leadership, Specialist, and Foundation Tiers
 

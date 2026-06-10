@@ -33,6 +33,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: voice-operator-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   substrate-validation:
     runs-on: ubuntu-latest

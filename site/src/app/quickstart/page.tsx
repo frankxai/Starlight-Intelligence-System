@@ -10,6 +10,14 @@ export const metadata: Metadata = {
     description:
       "Install Starlight Intelligence in 2 minutes. Pick your AI tool and copy the config.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Quickstart" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Quickstart — Starlight Intelligence",
+    description:
+      "Install in 2 minutes. Pick your AI tool, copy the config.",
+    images: ["/opengraph-image"],
   },
 };
 

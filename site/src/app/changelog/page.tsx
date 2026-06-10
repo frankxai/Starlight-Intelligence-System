@@ -16,12 +16,14 @@ export const metadata: Metadata = {
     description:
       "Every notable release. v8.1.0 — Composition Layer + Crypto IS. v8.0.0 — v01 Friday-demo + Council archetypes. v7.x — substrate evolution.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Changelog" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Changelog — Starlight Intelligence",
     description:
       "Every notable release. Composition Layer, Crypto IS, Council archetypes, Domain Sub-Stack Tier. Substrate evolution dated in ISO 8601.",
+    images: ["/opengraph-image"],
   },
 };
 

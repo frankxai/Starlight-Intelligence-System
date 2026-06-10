@@ -33,7 +33,7 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 
 ## What you have access to
 
-- **42 named agents** across 8 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (3) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`). Full registry: `agents/AGENT_REGISTRY.md`.
+- **48 named agents** across 10 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (3) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`) + SIS Extractor (5 — `/sis-forge` Phase 1 only) + Evaluator (1 — Proving Ground + Model Arena). Full registry: `agents/AGENT_REGISTRY.md`.
 - **71 auto-activating skill rules** across 14 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · **crypto-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
@@ -42,9 +42,10 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 - **Event-Driven Concurrency** — Multi-device conflict-free sync via append-only event logs, optimized for Syncthing/P2P environments.
 - **10 universal Intelligence Systems** per `STACK.md` (locked v8.0): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + Starlight Orchestrator (master router). Health is cross-cutting.
 - **3 reference Domain Sub-Stack verticals** — People Intelligence · Sound Intelligence · Music IS — each with 4-7 functional sub-systems. Pattern generalizes via `/spawn-domain-stack`.
-- **70+ slash commands** across 4 SIP tiers (protocol / alliance / vertical / sovereign).
+- **100+ slash commands** across 4 SIP tiers (protocol / alliance / vertical / sovereign).
 - **6 platform adapters** — Claude Code · Cursor · Codex · Gemini CLI · OpenCode · Antigravity. Same vaults, same memory, different surface.
 - **6 substrate symmetry harnesses** — v75-v79 + base, plus pre-commit hook gating substrate-touching commits.
+- **Research surface** — Public substrate research at `starlightintelligence.org/research/`. Rubric-locked, Board-gated, SIP-attested. Two artifacts live: 3D memory palace design survey + memory foundations (Phase 0 dog-food chartered, 3-tier model w/ AgentDB tier per Addendum 2). Methodology at `docs/research/_methodology/`.
 
 ---
 
@@ -95,7 +96,7 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (63 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (69 files). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
+Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (71 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
 
 | Domain | Surface (sample) |
 |--------|------------------|
@@ -234,7 +235,7 @@ Cross-repo memory recall via Cross-Repo Indexer (520+ atoms across 22 `~/.claude
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
 - Substrate: starlightintelligence.org/protocol v1.1.1
-- Operational layer: `@arcanea/starlight-intelligence-system` v8.0.0
+- Operational layer: `@arcanea/starlight-intelligence-system` v8.2.0
 - License: MIT (code + spec docs); Arcanea canon (if composed) CC-BY-NC
 
-*Starlight Intelligence System v8.0.0 — Horizons + Genius Intelligence + Domain Sub-Stack Tier · 2026-05-07*
+*Starlight Intelligence System v8.2.0 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-05-17*

@@ -13,7 +13,7 @@ Seven pathways are supported today. Three are right for any given situation; the
 Three things travel through every supported pathway:
 
 - **Your voice.** Your interview briefs sound like you. Your performance frameworks read like you. Your training scenarios open with your warmth. The voice block from your source SKILL.md ports into every target's instruction surface.
-- **Your frameworks.** Your six sub-systems (Hiring · Performance · Training · Culture · Talent · Org Architecture, in Ana's case) and the 28 commands inside them all carry through as knowledge files or instruction commands. The exact mechanism varies; the substance does not.
+- **Your frameworks.** Your six sub-systems (Hiring · Performance · Training · Culture · Talent · Org Architecture, in the People Intelligence reference stack's case) and the 28 commands inside them all carry through as knowledge files or instruction commands. The exact mechanism varies; the substance does not.
 - **Attestation.** Every export carries the "Built on SIP" block in a place the destination ecosystem actually shows to users. If a target ecosystem changes its rules and the attestation can no longer survive, that pathway is refused — the export tool stops, names the problem, and waits for you to choose a different path.
 
 The third one matters more than it sounds. A stack without attestation is just generic AI output someone else can steal and rename. A stack with attestation traveling intact across every ecosystem is a network — every place it lands becomes a node on a trust graph that compounds for everyone in it. This is the substrate. This is why SIS exists.

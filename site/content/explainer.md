@@ -20,7 +20,7 @@ If either vignette lands, read on. SIS was designed with people like you in the 
 
 ---
 
-## How it works — the journey
+## How it works — the five phases
 
 Five phases. You don't have to commit to all of them. You just have to start.
 

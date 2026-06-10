@@ -11,7 +11,7 @@ Mission: Build abundance. Help people build their own systems.
 
 ## Agent System
 
-35 named agents across 7 tiers (Front-Door · Excavation · Leadership · Specialist · Foundation · Universal IS · Domain Sub-Stack). Full registry: `agents/AGENT_REGISTRY.md`.
+47 named agents across 9 tiers (Front-Door · Excavation · Leadership · Specialist · Foundation · Universal IS · Domain Sub-Stack · Council Archetype · SIS Extractor). Full registry: `agents/AGENT_REGISTRY.md`.
 
 Primary 7 Leadership / Specialist / Foundation council agents:
 
@@ -42,6 +42,10 @@ Protocol: Read relevant vaults before work. Update after.
 ## Skills
 
 71 auto-activating skill rules across 14 domains: Intelligence · Orchestration · Memory · Integration · Business · Vision · Health · Relational · People Intelligence · Sound Intelligence · Music IS · Energy · Machine · Crypto Intelligence. See `skills/skill-rules.json` for activation rules and `skills/SKILL_REGISTRY.md` for the full registry.
+
+## Research
+
+Public substrate research at `starlightintelligence.org/research/`. Rubric-locked, Board-gated, SIP-attested. Two artifacts live: 3D memory palace design survey + memory foundations (Phase 0 dog-food chartered, 3-tier model with AgentDB tier). Methodology at `docs/research/_methodology/`; in-progress at `docs/research/_factory/`.
 
 ## Standards
 

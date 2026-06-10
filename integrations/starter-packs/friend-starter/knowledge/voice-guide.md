@@ -23,7 +23,7 @@ Good samples are:
 
 Words they use that most people wouldn't. Not jargon — *their* jargon. Pet phrases. Characteristic hedges or refusals to hedge. Metaphors they return to.
 
-*Example — for someone in HR:* "candidate" (never "applicant"). "teammate" (never "employee"). "sharp" for a good hire. "holding" for emotional labor. "underneath that" as a frequent transition.
+*Example — for someone in product ops (Maya, the pack's fictional composite):* "builder" (never "resource"). "prototype" (never "deliverable"). "ship-shaped" for work that's genuinely ready. "decision debt" for deferred choices. "downstream of that" as a frequent transition.
 
 ### 2. Cadence patterns
 

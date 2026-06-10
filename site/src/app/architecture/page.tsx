@@ -13,12 +13,14 @@ export const metadata: Metadata = {
     description:
       "10 Intelligence Systems composed on SIP. JSONL as truth, attestation as contract, sovereignty as invariant.",
     type: "article",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Architecture" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Architecture — Starlight Intelligence",
     description:
       "10 Intelligence Systems composed on SIP. JSONL as truth, attestation as contract.",
+    images: ["/opengraph-image"],
   },
 };
 
@@ -84,7 +86,7 @@ const LAYERS: Layer[] = [
     n: "6",
     name: "Wealth IS",
     tier: "Vertical",
-    purpose: "Disruptive Passive Income ledger + thesis engine.",
+    purpose: "Asymmetric Passive Income (DPI) ledger + thesis engine.",
     vault: "wealth/",
     status: "core",
   },
@@ -201,7 +203,7 @@ export default function ArchitecturePage() {
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
             10-IS composition
           </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
+          <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
             Ten Intelligence Systems.
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">

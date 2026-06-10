@@ -1,6 +1,6 @@
 # People Performance Intelligence — Template + Filled Examples
 
-> Format Starlight fills in when producing Performance Intelligence artifacts (People Intelligence sub-stack — renamed from HR Intelligence at v7.6.0). Five sections — review redesign, coaching session, feedback rehearsal, difficult-conversation rehearsal, mediation session — each with empty template + Ana-grade filled example. Realistic anonymized. All five carry heavy disclaimers because performance work touches legal documentation, clinical boundaries, and protected concerns.
+> Format Starlight fills in when producing Performance Intelligence artifacts (People Intelligence sub-stack — renamed from HR Intelligence at v7.6.0). Five sections — review redesign, coaching session, feedback rehearsal, difficult-conversation rehearsal, mediation session — each with empty template + reference-grade filled example. Realistic anonymized. All five carry heavy disclaimers because performance work touches legal documentation, clinical boundaries, and protected concerns.
 
 ---
 
@@ -54,7 +54,7 @@
 ## Load-bearing next move
 ```
 
-## Filled example — Ana-grade
+## Filled example — reference-grade
 
 ```markdown
 # Performance Review Redesign Plan — Marcus & Lane Architects — 2026-04-24
@@ -186,7 +186,7 @@ The current 9-box ritual was inherited from a 2019 consultancy engagement and ha
 ## Load-bearing next move
 ```
 
-## Filled example — Ana-grade
+## Filled example — reference-grade
 
 ```markdown
 # Coaching Session Protocol — Joost van der Berg with Maya Aldridge — 2026-04-24
@@ -338,7 +338,7 @@ If during the session Joost surfaces something larger than Boerenmarkt — clini
 ## Load-bearing next move
 ```
 
-## Filled example — Ana-grade
+## Filled example — reference-grade
 
 ```markdown
 # Feedback Rehearsal — Design Review Interruptions — Maya Aldridge to Sanne de Vries — 2026-04-24
@@ -496,7 +496,7 @@ If Sanne raises in the conversation any concern about being treated unfairly rel
 ## Load-bearing next move
 ```
 
-## Filled example — Ana-grade
+## Filled example — reference-grade
 
 ```markdown
 # Difficult Conversation Rehearsal — Termination — Pieter Janssen — Wim de Groot to Pieter Janssen — 2026-04-24
@@ -672,7 +672,7 @@ Allow Pieter to leave with dignity. No escort. No badge return today; that's Mon
 ## Load-bearing next move
 ```
 
-## Filled example — Ana-grade
+## Filled example — reference-grade
 
 ```markdown
 # Conflict Mediation Plan — Studio-Project Allocation — Eva Brink ⇄ Lukas Janssen — 2026-04-24

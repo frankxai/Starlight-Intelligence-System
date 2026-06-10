@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
@@ -16,6 +16,13 @@ const jbMono = JetBrains_Mono({
   display: "swap",
 });
 
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  display: "swap",
+  axes: ["SOFT", "WONK", "opsz"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://starlightintelligence.org"),
   title: {
@@ -24,13 +31,13 @@ export const metadata: Metadata = {
     template: "%s — Starlight Intelligence",
   },
   description:
-    "A persistent context and memory architecture for AI agents. 10 intelligence systems, 35 agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Built on the Starlight Intelligence Protocol. Local-first. Forkable. Free.",
+    "A persistent context and memory architecture for AI agents. 10 intelligence systems, 48 agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Built on the Starlight Intelligence Protocol. Local-first. Forkable. Free.",
   alternates: { canonical: "/" },
   openGraph: {
     title:
       "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "10 intelligence systems, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
+      "10 intelligence systems, 48 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
     url: "https://starlightintelligence.org",
     siteName: "Starlight Intelligence",
     type: "website",
@@ -41,7 +48,7 @@ export const metadata: Metadata = {
     title:
       "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "10 intelligence systems, 35 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
+      "10 intelligence systems, 48 agents, 70+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
   },
   robots: { index: true, follow: true },
 };
@@ -96,7 +103,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jbMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jbMono.variable} ${fraunces.variable}`}>
       <body className="flex min-h-dvh flex-col bg-[#060609] font-sans text-slate-200 antialiased">
         <script
           type="application/ld+json"

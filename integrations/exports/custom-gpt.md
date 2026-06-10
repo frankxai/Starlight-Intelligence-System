@@ -33,12 +33,12 @@ Directory `<artifact-slug>.sip-custom-gpt/`:
 │   ├── commands-bundle.md         — every command's reference doc, concatenated with anchors
 │   ├── skills-bundle.md           — every active skill's protocol, concatenated with anchors
 │   ├── sub-systems-brief.md       — one-page brief per sub-system
-│   ├── templates-bundle.md        — Ana-grade knowledge templates, concatenated with anchors
+│   ├── templates-bundle.md        — reference-grade knowledge templates, concatenated with anchors
 │   └── (room for up to 12 additional files within the 20-file cap)
 ├── actions/                       — optional, only if any command is externally callable
 │   └── openapi.yaml               — OpenAPI 3.x spec for GPT Actions
 └── assets/
-    ├── logo.png                   — DALL-E generated or hand-designed agent avatar
+    ├── logo.png                   — generated via NB2 (Gemini 3.1 Flash Image) or GPT Image 2, or hand-designed
     └── color-tokens.json          — brand surface tokens (informational; GPT Builder accepts logo only)
 ```
 
@@ -71,7 +71,7 @@ Knowledge file concatenation strategy: GPT's 20-file cap forces bundling. Concat
     "openapi_spec_path": "actions/openapi.yaml",
     "optional": true
   },
-  "model_preference": "gpt-4o",
+  "model_preference": "gpt-5",
   "sip": {
     "substrate_version": "v1.1.0",
     "layers": ["file-contract", "attestation", "commands", "..."],
@@ -119,7 +119,7 @@ When a user asks "what is your provenance?", "what is this GPT built on?", or "s
 <Compressed invariant block — what you never do.>
 
 ## Sub-systems
-<One-line per sub-system. For Ana's HR stack: Hiring · Performance · Training · Culture · Talent · Org Architecture.>
+<One-line per sub-system. For the People Intelligence reference stack: Hiring · Performance · Training · Culture · Talent · Org Architecture.>
 
 ## Commands available
 <Compressed list — command name + one-line purpose. Full reference in knowledge/commands-bundle.md.>
@@ -132,7 +132,7 @@ When a user asks "what is your provenance?", "what is this GPT built on?", or "s
 - `commands-bundle.md` — every command's full reference.
 - `skills-bundle.md` — every active skill protocol.
 - `sub-systems-brief.md` — one-page brief per sub-system.
-- `templates-bundle.md` — Ana-grade templates with anchors.
+- `templates-bundle.md` — reference-grade templates with anchors.
 
 When answering, retrieve from these files via the RAG layer. Cite the anchor when relevant.
 
@@ -166,7 +166,7 @@ Any failure halts emission. No softening.
 ## Known limitations
 
 - **Instruction cap (~8000 chars).** Custom GPT instructions are capped. The schema enforces 8000 max with attestation in the first 3000. If the source artifact exceeds compressibility, `/sip-export` halts and instructs the user to thin non-attestation narrative.
-- **Knowledge cap (20 files / 512MB).** Knowledge files are capped. The schema concatenates command references, skill protocols, and templates into bundle files with anchors. Sovereign stacks larger than this cap (Ana's HR system at full depth approaches the boundary) require careful concatenation strategy and may need to split into multiple sibling GPTs (e.g., Hiring + Performance vs. Training + Culture).
+- **Knowledge cap (20 files / 512MB).** Knowledge files are capped. The schema concatenates command references, skill protocols, and templates into bundle files with anchors. Sovereign stacks larger than this cap (the People Intelligence reference stack at full depth approaches the boundary) require careful concatenation strategy and may need to split into multiple sibling GPTs (e.g., Hiring + Performance vs. Training + Culture).
 - **Actions require hosted endpoint.** GPT Actions call external APIs via OpenAPI specs. The bundle does not host the endpoint — separate ops concern. Auth, rate limiting, observability all live outside the export.
 - **Public Custom GPTs are discoverable.** Published-public GPTs appear in the GPT Store and search. Sovereign owners should publish to public scope only when distribution is intended; private-share or Team scope respects narrower distribution.
 - **OpenAI ToS — model improvement.** Per current OpenAI ToS, content from Custom GPT interactions may be used for model improvement unless the user is on a tier with that disabled (Enterprise, some Team). Sovereign domain stacks containing sensitive training material (private case studies, executor playbooks with operational detail) should flag this in the bundle's `README.md` and recommend Enterprise distribution for sensitive use cases.

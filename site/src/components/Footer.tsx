@@ -38,6 +38,7 @@ export function Footer() {
             </p>
             <nav className="mt-3 flex flex-col gap-2" aria-label="Footer navigation">
               <FooterLink href="/verticals">Verticals</FooterLink>
+              <FooterLink href="/knowledge-tree">Knowledge Tree</FooterLink>
               <FooterLink href="/cockpit">Cockpit</FooterLink>
               <FooterLink href="/explainer">Explainer</FooterLink>
               <FooterLink href="/architecture">Architecture</FooterLink>
