@@ -72,7 +72,10 @@ the safe default and all auto-routing stops. One flag.
 
 - **Per substrate-tag** — `/starlight-eval` runs as part of board-before-tag; the
   routing table is re-derived if any class moved.
-- **Monthly** — full system scorecard (the `StarlightProvingGround` scheduled task).
+- **Monthly** — full system scorecard. ⚠ The `StarlightProvingGround` scheduled task
+  is **NOT yet registered** (audit 2026-06-10) — monthly cadence is currently manual
+  `/starlight-eval`. Registration script exists (`scripts/cron/proving-ground-cadence.ps1`);
+  wire it via schtasks + add to Machine Sentinel to make this promise mechanically real.
 - **Weekly lightweight tick** — a single arena round on the cheapest-tier candidate
   for one task-class, to catch capability drift between full runs (proposed; wire as a
   scheduled task once R4 lands).
