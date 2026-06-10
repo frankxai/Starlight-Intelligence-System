@@ -13,7 +13,7 @@
 
 Three compounding surfaces, ranked by leverage:
 
-1. **Onboarding compound.** The friend-starter pack ships with "watch this 3-minute recording first" — a non-technical friend (Ana) sees the substrate move before reading any docs. Cuts cold-start time from ~30 minutes of reading to ~3 minutes of watching.
+1. **Onboarding compound.** The friend-starter pack ships with "watch this 3-minute recording first" — a non-technical friend sees the substrate move before reading any docs. Cuts cold-start time from ~30 minutes of reading to ~3 minutes of watching.
 2. **Distribution compound.** Twitter/X clip · LinkedIn long-form · YouTube full-length. One artifact, three surfaces. The audience that finds you through a 30-second hook ends up at a 3-minute proof or a 15-minute deep-dive without you ever opening a stream.
 3. **Archive compound.** Future-Frank in six months looks back at v0.1 origin. Future-anyone (alliance partner, sovereign fork, audit reviewer) can verify "this is what the substrate could do on day one." The recording becomes an attestation artifact in its own right.
 

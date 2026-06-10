@@ -1,6 +1,6 @@
 # People Culture — Template
 
-> Format Starlight fills in when producing a Culture Architecture artifact for an org. Four sections (Audit, Values Ops, Ritual Map, 90-Day Onboarding) + Ana-grade filled example for a 50-person consultancy. Refuses values-poster theater; designs cultures via systems. Composes with Hiring Intelligence (interviews signal what's valued), Performance Intelligence (reviews express culture), Training Intelligence (curriculum embeds values), Talent Intelligence (motivation requires belonging + safety).
+> Format Starlight fills in when producing a Culture Architecture artifact for an org. Four sections (Audit, Values Ops, Ritual Map, 90-Day Onboarding) + reference-grade filled example for a 50-person consultancy. Refuses values-poster theater; designs cultures via systems. Composes with Hiring Intelligence (interviews signal what's valued), Performance Intelligence (reviews express culture), Training Intelligence (curriculum embeds values), Talent Intelligence (motivation requires belonging + safety).
 
 ---
 

@@ -150,7 +150,7 @@ Internal sequence (REVISE #6):
 - EAS smart contract on Base — SIP attestation goes on-chain
 - Sovereignty clause + sovereignty clause amendment encoded in EAS schema
 - Sovereign Spawn Concierge service docs + onboarding flow
-- Three friends spawn (Ana, Logan/OpenClaw, Ahmad) — first externalization test
+- Three friends spawn (the first private test case, Logan/OpenClaw, Ahmad) — first externalization test
 
 **Beta milestone:** Three sovereign forks running with on-chain attested artifacts.
 

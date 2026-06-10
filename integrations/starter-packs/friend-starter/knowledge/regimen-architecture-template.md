@@ -113,12 +113,12 @@ Built on SIP — Starlight Intelligence Protocol
 
 ---
 
-## Example — filled at Ana grade
+## Example — filled for "Maya" (fictional composite)
 
-Ana is a composite example: mid-30s professional, sedentary history, transitioning from corporate burnout to sovereign practice. Uses this to show what a real first-pass regimen looks like. Not extreme. Sustainable. Designed to survive a bad week.
+Maya is a fictional composite example — any resemblance to real persons is coincidental: mid-30s professional, sedentary history, transitioning from corporate burnout to sovereign practice. Uses this to show what a real first-pass regimen looks like. Not extreme. Sustainable. Designed to survive a bad week.
 
 ```
-# Regimen Architecture — Ana — 2026-04-24 (v1.0)
+# Regimen Architecture — Maya — 2026-04-24 (v1.0)
 
 ## Disclaimer
 This is not medical advice. It is evidence-based regimen architecture and self-audit framework. Consult a qualified clinician for diagnosis, treatment, injury, chronic condition, medication interaction, pregnancy, or any symptom that suggests a medical boundary. If any element of this regimen causes concerning symptoms, stop and consult your clinician.
@@ -131,8 +131,8 @@ This is not medical advice. It is evidence-based regimen architecture and self-a
   - Stop the Friday-afternoon emotional crash she logged 5 of 7 weeks.
   - Protect energy through the corporate-to-sovereign transition — this is a high-stress year.
 - **Constraints:** ~45 min/day for training (not more). Home gym — dumbbells + pull-up bar + mat. Travels ~1 week/month. One child, school-age.
-- **Audit source:** `health/audit-ana-2026-04-17.md`
-- **Genius alignment:** Ana's Genius Profile shows creative peaks stacked Tue/Wed/Thu 08:30-11:30 — the regimen protects these.
+- **Audit source:** `health/audit-maya-2026-04-17.md`
+- **Genius alignment:** Maya's Genius Profile shows creative peaks stacked Tue/Wed/Thu 08:30-11:30 — the regimen protects these.
 
 ## Creative peaks to protect
 - **Tue / Wed / Thu 08:30-11:30** — stacked Mental + Creative peaks (4-5 on both dimensions). This is where writing + synthesis happens. Protected.
@@ -187,7 +187,7 @@ From `health-nutrition-expert`: protein anchor ~120g/day (~0.8g/lb, 150 lb bodyw
 
 **Annual:** 10-day break scheduled for late November 2026. Maintain: sleep, protein anchor, daily walks. Loosen: training structure, macro precision. Do not attempt "vacation training" — counterproductive.
 
-**Sprint protocol:** Ana's Q3 corporate-exit transition will be high-stress. Pre-exit week — training at ~60%, sleep protected non-negotiable, stress-outputs doubled (daily walks, one mid-week outdoor block). Post-exit week — de-load week.
+**Sprint protocol:** Maya's Q3 corporate-exit transition will be high-stress. Pre-exit week — training at ~60%, sleep protected non-negotiable, stress-outputs doubled (daily walks, one mid-week outdoor block). Post-exit week — de-load week.
 
 ## Weekly metrics to log
 - Sleep hours (average)
@@ -209,12 +209,12 @@ From `health-nutrition-expert`: protein anchor ~120g/day (~0.8g/lb, 150 lb bodyw
 - **Cleanses / detoxes / juice protocols** — refused; no research support for healthy adults.
 
 ## Next moves
-1. `/energy-audit ana --start-log` — re-baseline after 30 days on this regimen; compare deltas
-2. `/define-vision` — align this substrate to Ana's 30-year arc (corporate-to-sovereign compound)
+1. `/energy-audit maya --start-log` — re-baseline after 30 days on this regimen; compare deltas
+2. `/define-vision` — align this substrate to Maya's 30-year arc (corporate-to-sovereign compound)
 3. `gym-training-expert` — fill in Strength A / B / C exercise specifics with her equipment
 4. `health-nutrition-expert` — drill deeper into breakfast composition for protected-peak days
 
-**Named next move for Ana:** `gym-training-expert` — she needs the concrete exercise list for her home gym before Monday, then re-audit in 30 days.
+**Named next move for Maya:** `gym-training-expert` — she needs the concrete exercise list for her home gym before Monday, then re-audit in 30 days.
 
 ---
 Built on SIP — Starlight Intelligence Protocol
@@ -231,7 +231,7 @@ Built on SIP — Starlight Intelligence Protocol
 ## Notes on this template
 
 - **Not medical advice.** Disclaimer is load-bearing, not decorative. Present in every filled output.
-- **Long-game over extreme.** Ana's example targets 6-month strength foundation, not a 90-day transformation. Defaults bias to sustainability.
+- **Long-game over extreme.** Maya's example targets 6-month strength foundation, not a 90-day transformation. Defaults bias to sustainability.
 - **Sustainability gate is non-negotiable.** Every filled regimen must survive a bad week (travel, illness, family event, launch crunch). If not, rewrite.
 - **Compose with domain skills.** `gym-training-expert` owns training specifics. `health-nutrition-expert` owns nutrition specifics. This template integrates; it does not duplicate.
 - **Evidence direction where specific numbers appear.** "0.8g protein/lb" cites hypertrophy research consensus; caffeine cutoff cites sleep-research consensus; morning light cites circadian research. No invented claims.
