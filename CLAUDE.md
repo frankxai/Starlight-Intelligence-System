@@ -42,7 +42,7 @@ Every task is either substrate-level or operational-level. Decide before acting.
 **Operational-level** (anything inside this repo's reference build):
 - Use `agents/AGENT_REGISTRY.md` for the current 48-agent registry and existing skill auto-activation.
 - Voice: Frank DNA (above).
-- Triggers: vault writes, MCP server work (`src/`), the 6 v6 commands (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`), skill edits, agent edits, site edits.
+- Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 14), skill edits, agent edits, site edits.
 
 **Ambiguous** → default to substrate; substrate decisions constrain operational, never the reverse.
 
@@ -189,6 +189,10 @@ Skill definitions: `skills/{domain}/{skill-name}.md`
 | `/yolo-exit` | Graceful close of /yolo session — operational + strategic vault writes, Memory Bus session-summary atom, drift detection post-pass. |
 | `/yolo-abort` | Immediate halt of /yolo mid-action — partial state saved, in-flight git ops rolled back where reversible, drift event log. |
 | `/sis-forge` | **Pre-alpha (v8.x):** Auto-extract patterns from corpus (transcripts / vault / prompts / repos / external), emit density bucket report. Phase 1 (5 parallel extractors) + Phase 2 (TF-IDF clusterer + density classifier). No proposal doc / Board / spawn yet — those land in alpha/beta. Spec: `docs/superpowers/specs/2026-05-17-sis-forge-design.md`. |
+| `/curate-recall` | Curated memory recall — writes wikilinked Obsidian notes from retrieval results (Mirror Foundation). |
+| `/dispatch` | Multi-CLI dispatch — route a task to a sibling CLI (Codex / Gemini / OpenCode) via the cognition router. |
+| `/vault-desire` | Write a desire/intention atom to the vault loop (paired with `/vault-proof`). |
+| `/vault-proof` | Write a proof/receipt atom closing a desire in the vault loop. |
 
 ---
 

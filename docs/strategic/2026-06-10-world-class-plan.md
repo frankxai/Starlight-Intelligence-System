@@ -69,6 +69,13 @@ counter-move is the superpowers lesson: let people get value from ONE primitive 
 
 ### P1 — This week (operational tier; board pre-pass only where marked)
 
+> **Status update (same-day /goal execution):** items 1-5 + 7 SHIPPED 2026-06-10 —
+> board verdict PROCEED (`docs/boards/2026-06-10-sovereign-substrate-repositioning.md`),
+> README + LICENSE + description/topics + hero + v87 test + task repairs +
+> anonymization all landed. P2 items 3 (BENCHMARKS.md), 6 (constellation map), and
+> 7-partial (archive + agent-lab backup + StarlightAudio init) pulled forward and
+> shipped same-day. Item 6 (key rotation) remains ASK-CLASS with Frank.
+
 1. **Repositioning ship** *(board pre-pass: `/starlight-board`, autonomous per standing
    directive)* — GitHub description + topics to the sovereign-substrate category
    sentence; README first screen rewritten: category one-liner → 5-line quickstart →
@@ -87,7 +94,7 @@ counter-move is the superpowers lesson: let people get value from ONE primitive 
    GHA Vercel secrets decision (set via `gh secret set` or delete the cosmetic job).
 6. **Key rotation** *(ASK-CLASS — Frank executes)* — OPENAI_API_KEY revoked 24 days;
    GEMINI_API_KEY slot still holds an OpenRouter-format key. Rotate both; re-run monitor.
-7. **Ana anonymization** — friend-starter pack: rename to fully fictional persona with
+7. **Persona anonymization** — friend-starter pack: rename to fully fictional persona with
    invented frameworks (~25 mentions), or record explicit consent.
 
 ### P2 — Next 30 days (distribution + proof)

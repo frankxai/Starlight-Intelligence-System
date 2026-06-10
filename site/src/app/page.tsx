@@ -119,7 +119,7 @@ export default async function HomePage() {
             on the Starlight Intelligence Protocol — a sovereign substrate
             anyone can adopt, fork, or compose with.{" "}
             <span className="text-slate-300">
-              10 intelligence systems, 47 agents, 70+ commands, 3 reference
+              10 intelligence systems, 48 agents, 100+ commands, 3 reference
               Domain Sub-Stack verticals.
             </span>{" "}
             Local-first. Forkable. Free.

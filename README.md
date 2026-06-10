@@ -1,8 +1,8 @@
 # Starlight Intelligence System
 
-> **A protocol for sovereign creator alliances — and a reference implementation you can run today.**
+> **The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet.**
 >
-> SIS is two layers: a substrate (SIP) anyone can adopt, fork, or build on — and an operational layer (Frank's reference build) that runs on top of it.
+> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 48 agents, 71 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 968 tests keep the claims honest.
 
 [![version](https://img.shields.io/badge/version-8.2.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
@@ -10,6 +10,34 @@
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
 [![deploy](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml)
 [![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
+
+![Two CLIs recalling the same attested memory atom from one substrate](docs/assets/hero.svg)
+
+---
+
+## 60-second start
+
+```bash
+# 1. Seed the six JSONL vaults (~/.starlight/vaults)
+npx -p @arcanea/starlight-intelligence-system starlight init --vaults
+```
+
+```json
+// 2. Point any MCP client at them (Claude Code, Cursor, Codex, ...)
+{
+  "mcpServers": {
+    "starlight": {
+      "command": "node",
+      "args": [
+        "node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js",
+        "--vault-dir", "~/.starlight/vaults"
+      ]
+    }
+  }
+}
+```
+
+Restart your client: ten `sis_*` tools in every session — the same vaults, from every CLI you run. Full walkthrough below in [Quick start](#quick-start-operational-layer-2-minutes); measured receipts in [BENCHMARKS.md](BENCHMARKS.md).
 
 ---
 
