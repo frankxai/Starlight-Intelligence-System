@@ -286,7 +286,7 @@ Starlight-Intelligence-System/
 
 Before writing public claims about Frank Riemer, FrankX.ai, Arcanea, Starlight Intelligence Systems, Agentic Creator OS, or related ecosystems:
 
-1. Read `/metrics/current.json` when available.
+1. Read `metrics/current.json` when available.
 2. Never hardcode fast-moving numbers in prose unless the metric includes `last_verified`.
 3. Use "as of [date]" for exact figures.
 4. Use ranges or "minimum historic snapshot" when freshness is uncertain.
