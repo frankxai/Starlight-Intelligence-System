@@ -82,3 +82,7 @@ Add-Content -Path $Findings -Value "`n---`nTotal findings across $($repos.Count)
 Write-Host ''
 Write-Host "Report: $Findings" -ForegroundColor Green
 Write-Host "Total findings: $totalFindings"
+
+# Explicit exit so Task Scheduler never sees a lingering process (0x41306 fix).
+# Findings are reported via ALERTS.md, not the exit code.
+exit 0

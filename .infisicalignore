@@ -1,0 +1,4 @@
+# Infisical scan allowlist — known-benign findings only.
+# Format: <commit>:<file>:<rule>:<line>
+# Test fixture (fake xoxb token built piecewise per feedback_test_fixtures_secret_safe):
+51457f5fe876660cd9a31d03261b74ea56fd95e9:test/v8-sanitization-coverage.test.ts:generic-api-key:43
