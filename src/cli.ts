@@ -24,8 +24,11 @@
 
 import { parseArgs } from "node:util";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync, statSync, unlinkSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { homedir, cpus, totalmem } from "node:os";
+import { randomUUID } from "node:crypto";
+import readline from "node:readline";
 import { StarlightIntelligence } from "./index.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
@@ -35,6 +38,7 @@ import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js"
 import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
 import { AgentOpsLedger, ApprovalGateRequiredError, readRecentAgentEvents } from "./ledgers.js";
 import { listModules, setModuleEnabled } from "./modules.js";
+import { runSwarm, type SwarmTask } from "./swarm.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
@@ -102,6 +106,9 @@ Usage:
 
 Commands:
   init                            Initialize .starlight/ in current project
+  status                          Check ops health score via 6-Gate scorecard
+  run <prompt>                    Route command with dry-run and mutex safety
+  swarm <prompt...>               Fan out parallel headless agents (claude -p)
   generate                        Generate context file from .starlight/ config
   guidance                        Generate behavioral guidance for session injection
   sync                            Sync ACOS trajectories into SIS memory
@@ -138,6 +145,11 @@ Commands:
 
 Options:
   --help, -h                      Show this help message
+  --execute                       Skip interactive verification in starlight run
+  --file <path>                   Read swarm prompts from a file (one per line)
+  --concurrency <n>               Max parallel agents for swarm (default: 4)
+  --timeout <ms>                  Per-task timeout for swarm (default: 300000)
+  --json                          Emit swarm result as JSON
   --target <target>               Context target: claude-code, cursor, windsurf, generic
   --output <path>                 Output file path for generate command
   --project <name>                Project name (for guidance)
@@ -163,6 +175,8 @@ Options:
 
 Examples:
   starlight init
+  starlight swarm "audit src/ for dead code" "list TODOs across the repo" --concurrency 2
+  starlight swarm --file tasks.txt --json
   starlight generate --target cursor --output .cursorrules
   starlight guidance --project frankx --acos-path ~/.claude/trajectories
   starlight sync --acos-path ~/.claude/trajectories
@@ -267,27 +281,77 @@ function commandSummary(command: string, args: string[] = ["--version"]): {
 // ── Commands ────────────────────────────────────────────────
 
 function cmdInit(): void {
-  const dir = join(process.cwd(), STARLIGHT_DIR);
+  // 1. Initialize local project-level .starlight/ config
+  const localDir = join(process.cwd(), STARLIGHT_DIR);
 
-  if (existsSync(dir)) {
-    console.log(`[starlight] .starlight/ already exists at ${dir}`);
-    console.log("[starlight] Skipping initialization. Delete and re-run to reset.");
-    return;
+  if (!existsSync(localDir)) {
+    mkdirSync(localDir, { recursive: true });
+    writeFileSync(join(localDir, "profile.yml"), DEFAULT_PROFILE_FILE, "utf-8");
+    writeFileSync(join(localDir, "stack.yml"), DEFAULT_STACK_FILE, "utf-8");
+    writeFileSync(join(localDir, "config.yml"), DEFAULT_CONFIG_FILE, "utf-8");
+    writeFileSync(join(localDir, "memory.json"), "[]", "utf-8");
+    console.log(`[starlight] Initialized project-local .starlight/ config at ${localDir}`);
+  } else {
+    console.log(`[starlight] Project-local .starlight/ already exists at ${localDir}`);
   }
 
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "profile.yml"), DEFAULT_PROFILE_FILE, "utf-8");
-  writeFileSync(join(dir, "stack.yml"), DEFAULT_STACK_FILE, "utf-8");
-  writeFileSync(join(dir, "config.yml"), DEFAULT_CONFIG_FILE, "utf-8");
-  writeFileSync(join(dir, "memory.json"), "[]", "utf-8");
+  // 2. Initialize machine-local ~/.starlight/ telemetry subdirectories
+  const starlightHome = process.env.COCKPIT_HOME || join(homedir(), ".starlight");
+  console.log(`[starlight] Bootstrapping machine-local state at ${starlightHome}`);
 
-  console.log("[starlight] Initialized .starlight/ directory:");
-  console.log("  .starlight/profile.yml   — Your identity layer");
-  console.log("  .starlight/stack.yml     — Your tech stack");
-  console.log("  .starlight/config.yml    — Generation config");
-  console.log("  .starlight/memory.json   — Memory vault (empty)");
-  console.log("");
-  console.log("Edit these files, then run: starlight generate");
+  const subdirs = ["cockpit", "umwelt", "machine"];
+  for (const sub of subdirs) {
+    const subpath = join(starlightHome, sub);
+    if (!existsSync(subpath)) {
+      mkdirSync(subpath, { recursive: true });
+      console.log(`  Created directory: ${subpath}`);
+    }
+  }
+
+  // 3. Copy telemetry templates from core/telemetry/templates/
+  const packageRoot = getPackageRoot();
+  const templatesSrc = join(packageRoot, "core", "telemetry", "templates");
+  
+  if (existsSync(templatesSrc)) {
+    const files = ["env.json", "capacity.json"];
+    for (const file of files) {
+      const srcPath = join(templatesSrc, file);
+      const destSub = file === "env.json" ? "umwelt" : "machine";
+      const destPath = join(starlightHome, destSub, file);
+
+      if (existsSync(srcPath)) {
+        if (!existsSync(destPath)) {
+          let finalContent = readFileSync(srcPath, "utf-8");
+          if (file === "env.json") {
+            try {
+              const parsed = JSON.parse(finalContent);
+              parsed.ts = new Date().toISOString();
+              parsed.os.platform = process.platform;
+              parsed.os.arch = process.arch;
+              parsed.os.release = String(runShell("pwsh", ["-NoProfile", "-Command", "[Environment]::OSVersion.Version.ToString()"]).stdout || "").trim();
+              parsed.shell.type = "pwsh";
+              parsed.shell.version = String(runShell("pwsh", ["-NoProfile", "-Command", "$PSVersionTable.PSVersion.ToString()"]).stdout || "").trim();
+              finalContent = JSON.stringify(parsed, null, 2);
+            } catch {}
+          } else if (file === "capacity.json") {
+            try {
+              const parsed = JSON.parse(finalContent);
+              parsed.ts = new Date().toISOString();
+              parsed.cpuCores = cpus().length;
+              parsed.totalMemoryGb = Math.round(totalmem() / (1024 * 1024 * 1024));
+              finalContent = JSON.stringify(parsed, null, 2);
+            } catch {}
+          }
+          writeFileSync(destPath, finalContent, "utf-8");
+          console.log(`  Seeded: ${destPath}`);
+        } else {
+          console.log(`  State file already exists: ${destPath} (skipping seed)`);
+        }
+      }
+    }
+  }
+
+  console.log("[starlight] Initialization complete.");
 }
 
 function cmdGenerate(target?: string, outputPath?: string): void {
@@ -936,6 +1000,266 @@ function cmdStats(): void {
   }
 }
 
+export function isPidAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (err: any) {
+    return err.code === "EPERM";
+  }
+}
+
+export function checkActiveLock(starlightHome: string): { active: boolean; stale: boolean; ownerInfo?: any } {
+  const lockPath = join(starlightHome, "cockpit", "active_lock");
+  if (!existsSync(lockPath)) {
+    return { active: false, stale: false };
+  }
+
+  try {
+    const data = JSON.parse(readFileSync(lockPath, "utf-8"));
+    const lockTime = new Date(data.ts).getTime();
+    const ttlMs = (data.ttlMinutes || 30) * 60 * 1000;
+    const isStale = Date.now() > lockTime + ttlMs;
+    
+    const alive = isPidAlive(data.owner);
+    if (!alive) {
+      return { active: false, stale: true, ownerInfo: data };
+    }
+
+    return { active: true, stale: isStale, ownerInfo: data };
+  } catch {
+    return { active: false, stale: true };
+  }
+}
+
+export function checkBackupFreshness(starlightHome: string): boolean {
+  const backupsPath = join(starlightHome, "machine", "backups.jsonl");
+  if (!existsSync(backupsPath)) {
+    return false;
+  }
+
+  try {
+    const stat = statSync(backupsPath);
+    const lastBackupTime = stat.mtimeMs;
+    const twelveHoursMs = 12 * 60 * 60 * 1000;
+    return Date.now() - lastBackupTime < twelveHoursMs;
+  } catch {
+    return false;
+  }
+}
+
+export function determineHarness(prompt: string): string {
+  const normalized = prompt.toLowerCase();
+  
+  if (normalized.includes("grok")) {
+    return "grok";
+  }
+  if (normalized.includes("/audit") || normalized.includes("/security") || normalized.includes("/risk")) {
+    return "codex";
+  }
+  if (normalized.includes("/grok-context") || normalized.includes("/refactor") || normalized.includes("/summarize")) {
+    return "gemini";
+  }
+  if (normalized.includes("/scout") || normalized.includes("/check")) {
+    return "opencode";
+  }
+  if (normalized.includes("/swarm") || normalized.includes("/browse") || normalized.includes("/parallel") || normalized.includes("/run-96")) {
+    return "antigravity";
+  }
+  return "claude";
+}
+
+function askQuestion(query: string): Promise<string> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) => {
+    rl.question(query, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
+
+function cmdStatus(): void {
+  const root = getPackageRoot();
+  const scriptPath = join(root, "scripts", "heart-check.ps1");
+  
+  if (!existsSync(scriptPath)) {
+    console.error(`[starlight] Error: heart-check script not found at ${scriptPath}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  console.log("[starlight] Checking substrate ops health...");
+  const result = runShell("pwsh", ["-NoProfile", "-File", scriptPath], true);
+  if (result.status !== 0) {
+    process.exitCode = result.status ?? 1;
+  }
+}
+
+async function cmdRun(prompt: string, executeFlag: boolean): Promise<void> {
+  if (!prompt.trim()) {
+    console.error("[starlight] Error: run requires a prompt.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const starlightHome = process.env.COCKPIT_HOME || join(homedir(), ".starlight");
+  const projectKey = resolve(process.cwd()).split(/[\\/]/).pop() || "unknown";
+  const harness = determineHarness(prompt);
+
+  // 1. Mutex check
+  const lock = checkActiveLock(starlightHome);
+  if (lock.active) {
+    if (lock.stale) {
+      console.log(`[starlight] WARNING: A stale active lock was detected (held by PID ${lock.ownerInfo.owner} since ${lock.ownerInfo.ts}).`);
+      console.log("  Automatically recovering lock...");
+    } else {
+      console.log(`[starlight] WARNING: Mutex lock is held by another active process (PID ${lock.ownerInfo.owner}, Workspace: ${lock.ownerInfo.workspace}).`);
+      const ans = await askQuestion("  Do you want to override and proceed? [y/N]: ");
+      if (ans.toLowerCase() !== "y") {
+        console.log("[starlight] Aborted due to lock contention.");
+        return;
+      }
+    }
+  }
+
+  // 2. Backup check
+  const isDestructive = /\b(rm|delete|reset|overwrite)\b/i.test(prompt);
+  if (isDestructive) {
+    const fresh = checkBackupFreshness(starlightHome);
+    if (!fresh) {
+      console.log("[starlight] WARNING: Destructive command detected and no backup found in the last 12 hours.");
+      const ans = await askQuestion("  Would you like to run restic backup first? [Y/n]: ");
+      if (ans.toLowerCase() !== "n") {
+        const root = getPackageRoot();
+        const backupScript = join(root, "scripts", "run-restic-backup.ps1");
+        if (existsSync(backupScript)) {
+          console.log("[starlight] Executing restic backup...");
+          runShell("pwsh", ["-NoProfile", "-File", backupScript], true);
+        } else {
+          console.log("[starlight] Error: run-restic-backup.ps1 not found.");
+        }
+      }
+    }
+  }
+
+  // 3. Dry-run preview
+  console.log("\n========================================");
+  console.log("STARLIGHT ROUTING ENGINE (PREVIEW)");
+  console.log("========================================");
+  console.log(`  Project:         ${projectKey}`);
+  console.log(`  Harness Target:  ${harness.toUpperCase()}`);
+  console.log(`  Destructive:     ${isDestructive ? "YES" : "NO"}`);
+  console.log(`  Prompt:          "${prompt}"`);
+  console.log("========================================\n");
+
+  if (!executeFlag) {
+    const ans = await askQuestion("Dry-run preview mode. Do you want to execute? [y/N]: ");
+    if (ans.toLowerCase() !== "y") {
+      console.log("[starlight] Execution canceled.");
+      return;
+    }
+  }
+
+  // 4. Acquire Lock
+  const lockPath = join(starlightHome, "cockpit", "active_lock");
+  const sessionId = randomUUID();
+  const lockData = {
+    owner: process.pid,
+    sessionId,
+    workspace: process.cwd(),
+    ts: new Date().toISOString(),
+    ttlMinutes: 30,
+  };
+  try {
+    mkdirSync(join(starlightHome, "cockpit"), { recursive: true });
+    writeFileSync(lockPath, JSON.stringify(lockData, null, 2), "utf-8");
+  } catch (e: any) {
+    console.error(`[starlight] Warning: Failed to write active_lock: ${e.message}`);
+  }
+
+  // Write Session Start Log to sessions.jsonl
+  const sessionsPath = join(starlightHome, "cockpit", "sessions.jsonl");
+  const sessionStartRecord = {
+    schema: "cockpit.session/v1",
+    ts: new Date().toISOString(),
+    event: "start",
+    agent: harness,
+    session_id: sessionId,
+    cwd: process.cwd(),
+    pid: process.pid,
+    host: process.env.COMPUTERNAME || "",
+    user: process.env.USERNAME || "",
+    project_key: projectKey,
+  };
+  try {
+    mkdirSync(join(starlightHome, "cockpit"), { recursive: true });
+    writeFileSync(sessionsPath, JSON.stringify(sessionStartRecord) + "\n", { flag: "a", encoding: "utf-8" });
+  } catch {}
+
+  // 5. Spawn CLI Harness
+  console.log(`🚀 Routing to ${harness.toUpperCase()}...`);
+  let status = 0;
+  try {
+    if (harness === "claude") {
+      const claudeExe = "C:\\Users\\frank\\.local\\bin\\claude.exe";
+      const cmd = existsSync(claudeExe) ? claudeExe : "claude";
+      const result = runShell(cmd, [], true);
+      status = result.status ?? 0;
+    } else if (harness === "grok") {
+      const result = runShell("grok", [], true);
+      status = result.status ?? 0;
+    } else if (harness === "codex") {
+      const codexPath = "C:\\Users\\frank\\AppData\\Roaming\\npm\\codex.ps1";
+      const cmd = existsSync(codexPath) ? codexPath : "codex";
+      const result = runShell(cmd, [], true);
+      status = result.status ?? 0;
+    } else if (harness === "gemini") {
+      const result = runShell("gemini", [], true);
+      status = result.status ?? 0;
+    } else if (harness === "opencode") {
+      const result = runShell("opencode", [], true);
+      status = result.status ?? 0;
+    } else if (harness === "antigravity") {
+      const result = runShell("agy", [], true);
+      status = result.status ?? 0;
+    }
+  } catch (e: any) {
+    console.error(`[starlight] Error running harness ${harness}: ${e.message}`);
+    status = 1;
+  }
+
+  // 6. Post-flight
+  try {
+    if (existsSync(lockPath)) {
+      unlinkSync(lockPath);
+    }
+  } catch {}
+
+  const sessionStopRecord = {
+    schema: "cockpit.session/v1",
+    ts: new Date().toISOString(),
+    event: "stop",
+    agent: harness,
+    session_id: sessionId,
+    cwd: process.cwd(),
+    pid: process.pid,
+    host: process.env.COMPUTERNAME || "",
+    user: process.env.USERNAME || "",
+    project_key: projectKey,
+  };
+  try {
+    writeFileSync(sessionsPath, JSON.stringify(sessionStopRecord) + "\n", { flag: "a", encoding: "utf-8" });
+  } catch {}
+
+  if (status !== 0) {
+    process.exitCode = status;
+  }
+}
+
 function cmdVersion(): void {
   const version = getVersion();
   console.log(`@arcanea/starlight-intelligence-system v${version}`);
@@ -1133,6 +1457,65 @@ async function cmdForge(): Promise<void> {
   }
 }
 
+async function cmdSwarm(
+  prompts: string[],
+  options: { file?: string; concurrency?: string; timeout?: string; json?: boolean },
+): Promise<void> {
+  const taskPrompts = [...prompts];
+
+  if (options.file) {
+    const filePath = resolve(options.file);
+    if (!existsSync(filePath)) {
+      console.error(`[starlight] Error: swarm --file not found: ${filePath}`);
+      process.exitCode = 1;
+      return;
+    }
+    const lines = readFileSync(filePath, "utf-8")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0 && !line.startsWith("#"));
+    taskPrompts.push(...lines);
+  }
+
+  if (taskPrompts.length === 0) {
+    console.error("[starlight] Error: swarm requires at least one prompt (positional) or --file.");
+    console.error('  Example: starlight swarm "audit src/" "find TODOs" --concurrency 2');
+    process.exitCode = 1;
+    return;
+  }
+
+  const tasks: SwarmTask[] = taskPrompts.map((prompt, i) => ({ id: `t${i + 1}`, prompt }));
+  const concurrency = options.concurrency ? Math.max(1, parseInt(options.concurrency, 10)) : 4;
+  const timeoutMs = options.timeout ? Math.max(1, parseInt(options.timeout, 10)) : 300_000;
+
+  // Progress + banner go to stderr so --json keeps stdout machine-clean.
+  console.error(`[starlight] Swarm: ${tasks.length} task(s), concurrency ${concurrency}, timeout ${timeoutMs}ms`);
+  const summary = await runSwarm(tasks, {
+    concurrency,
+    timeoutMs,
+    onResult: (r) => {
+      const mark = r.ok ? "OK  " : "FAIL";
+      console.error(`  ${mark} ${r.id} (${r.durationMs}ms)${r.error ? ` — ${r.error}` : ""}`);
+    },
+  });
+
+  if (options.json) {
+    console.log(formatJSON(summary));
+  } else {
+    console.log(`\n[starlight] Swarm complete: ${summary.succeeded}/${summary.total} succeeded.\n`);
+    for (const r of summary.results) {
+      console.log(`── ${r.id} [${r.ok ? "ok" : "failed"}] ${r.durationMs}ms`);
+      const body = r.ok ? r.output : r.error ?? r.output;
+      console.log(body ? body.split(/\r?\n/).map((l) => `   ${l}`).join("\n") : "   (no output)");
+      console.log("");
+    }
+  }
+
+  if (summary.failed > 0) {
+    process.exitCode = 1;
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -1140,6 +1523,11 @@ async function main(): Promise<void> {
     allowPositionals: true,
     options: {
       help: { type: "boolean", short: "h" },
+      execute: { type: "boolean" },
+      file: { type: "string" },
+      concurrency: { type: "string" },
+      timeout: { type: "string" },
+      json: { type: "boolean" },
       target: { type: "string" },
       output: { type: "string" },
       project: { type: "string" },
@@ -1181,6 +1569,25 @@ async function main(): Promise<void> {
   switch (command) {
     case "init":
       cmdInit();
+      break;
+
+    case "status":
+      cmdStatus();
+      break;
+
+    case "run": {
+      const prompt = positionals.slice(1).join(" ");
+      await cmdRun(prompt, values.execute === true);
+      break;
+    }
+
+    case "swarm":
+      await cmdSwarm(positionals.slice(1), {
+        file: asString(values.file),
+        concurrency: asString(values.concurrency),
+        timeout: asString(values.timeout),
+        json: values.json === true,
+      });
       break;
 
     case "generate":
