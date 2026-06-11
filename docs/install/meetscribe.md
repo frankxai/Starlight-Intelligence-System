@@ -209,7 +209,7 @@ meetscribe (per meeting) ──► ~/captures/meetings/transcripts/, summaries/
 ```
 
 **Voice command primitives** (Phase 2):
-- "Starlight, what did we decide with Ahmad last week?" → Graphiti query over decisions edges from meetings tagged `participant: Ahmad`.
+- "Starlight, what did we decide with <collaborator> last week?" → Graphiti query over decisions edges from meetings tagged `participant: <name>`.
 - "Starlight, mark this meeting mattered." → emotional_salience boost on the active meeting node, surfaces in next daily brief.
 
 **Attestation:** every summary file emits a SIP attestation block at the bottom that includes `meeting_id`, `consent_confirmed: true`, participant list (initials only by default; full names require an additional flag). The Orchestrator refuses to surface a meeting that lacks a consent attestation.
@@ -222,7 +222,7 @@ meetscribe (per meeting) ──► ~/captures/meetings/transcripts/, summaries/
 - Start a recording without the consent flag set. Risk Register § 12 (esp. EU + Marbella retreats) makes this legal-grade non-negotiable.
 - Upload raw audio to vendor cloud. Groq STT is the only cloud round-trip allowed, and only the audio chunk being transcribed is sent — not stored vendor-side. Verify Groq's data retention policy at install time and re-verify quarterly.
 - Auto-summarize using a backend that retains training data. Local Llama is preferred specifically because it does not.
-- Attribute speakers without manual name confirmation on the first occurrence. Diarization gives speaker IDs (Speaker_0, Speaker_1) — the first time Frank confirms "Speaker_0 = Ahmad," meetscribe stores the voice fingerprint locally and attributes future meetings.
+- Attribute speakers without manual name confirmation on the first occurrence. Diarization gives speaker IDs (Speaker_0, Speaker_1) — the first time Frank confirms "Speaker_0 = <collaborator>," meetscribe stores the voice fingerprint locally and attributes future meetings.
 
 **This install does NOT:**
 - Capture screen content — that is screenpipe's job. meetscribe is audio-only.

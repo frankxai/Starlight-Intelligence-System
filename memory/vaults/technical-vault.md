@@ -108,3 +108,62 @@ last_consolidated: '2026-05-11'
 **Why it matters:** The repo's protocol layer is heavily conformance-tested, but runtime storage edges need the same treatment. A passing `npm test` should cover both substrate shape and operational behavior.
 
 ---
+
+---
+
+### [2026-04-25] Claw Contract Pattern
+
+**Category:** claw-pattern
+**Confidence:** 0.95
+**Source:** Starlight Architect / Claw Architecture Session
+**Related:** Strategic Vault — SIS Claws Architecture Decision
+
+**Pattern:** Every installable operational unit (Claw) carries a machine-readable contract in `CLAW.md`.
+
+**Contract fields:**
+- `name`, `version`, `purpose`, `phase`
+- `permissions` — filesystem, sis_vaults, shell, network (declared minimum surface)
+- `inputs` / `outputs` — exactly what the Claw consumes and produces
+- `commands` — slash commands the Claw registers
+- `skills.requires` / `skills.activates`
+- `mcp.required` / `mcp.optional`
+- `safety.mutation_default` (default: false), `safety.private_data_export`, `safety.requires_sentinel`
+- `agents.primary` / `agents.supporting`
+
+**Benefits:**
+- Installable: `openclaw install frankxai/sis-genius-claw` reads CLAW.md to validate prerequisites
+- Auditable: Sentinel Claw compares declared permissions vs. actual runtime behavior
+- Composable: Multiple Claws compose through Memory Claw and Sentinel Claw, not through direct coupling
+- Sovereign: Each Claw declares minimum permissions — no runtime escalation
+
+**Anti-pattern:** Agent personas without bounded contracts — no declared permissions, no defined outputs, no mutation safety — are toy agents, not product infrastructure.
+
+---
+
+### [2026-04-25] Local-First Ingestion Pattern
+
+**Category:** data-architecture
+**Confidence:** 0.92
+**Source:** Starlight Architect / Claw Architecture Session
+**Related:** Strategic Vault — SIS Claws Architecture Decision
+
+**Pattern:** External sources are ingestion points, not the memory substrate.
+
+**Correct data flow:**
+```
+External sources (Drive, Notion, PDFs, repos, Canva)
+        ↓
+Ingestion Claw (Genius, Reclamation)
+        ↓
+Classification + extraction
+        ↓
+SIS vaults (local ~/.starlight/)
+        ↓
+Platform exports (Claude Code, Codex, ChatGPT Projects)
+```
+
+**Rule:** Only `sis-memory-mcp` writes to canonical vault memory. External MCPs (filesystem-mcp, google-drive-mcp, notion-mcp) are read-only ingestion surfaces. This prevents tool chaos where multiple systems become authoritative for the same memory.
+
+**Cloud boundary:** Public vault, attestation ledger, docs, and install packages are cloud-safe. The canonical agent memory layer stays local. This preserves the sovereignty contract.
+
+**Anti-pattern:** Using Google Drive or Notion as the memory substrate — excellent raw material stores but poor canonical memory layers.

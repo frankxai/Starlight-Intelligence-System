@@ -783,12 +783,68 @@
       "priority": "medium",
       "load_level": "on-demand"
     }
+,
+    {
+      "id": "intelligence-hermes-search",
+      "skill": "intelligence/hermes-search",
+      "triggers": {
+        "keywords": ["search", "find me", "where is", "look up", "retrieve", "what do we know", "source check", "provenance", "research", "what did we decide", "trace", "find pattern", "cross-vault", "multi-source", "/search", "/research", "/find-pattern", "/audit-coverage", "/trace-provenance", "/find-contradiction", "/source-check"],
+        "agents": ["starlight-hermes", "starlight-prime", "starlight-sage", "starlight-genius", "starlight-orchestrator"],
+        "intents": ["search", "retrieval", "research", "provenance", "audit"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "safety-permission-gate",
+      "skill": "safety/permission-gate",
+      "triggers": {
+        "keywords": ["write", "move", "delete", "execute", "export", "send", "upload", "permission"],
+        "agents": ["starlight-sentinel"],
+        "intents": ["mutation", "security", "permission"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "safety-secret-detector",
+      "skill": "safety/secret-detector",
+      "triggers": {
+        "keywords": ["export", "publish", "share", "transmit", "credentials", "secrets", "api key"],
+        "agents": ["starlight-sentinel"],
+        "intents": ["export", "security", "secrets"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "safety-private-public-split",
+      "skill": "safety/private-public-split",
+      "triggers": {
+        "keywords": ["export", "public vault", "share memory", "platform pack", "private", "public"],
+        "agents": ["starlight-sentinel", "starlight-sage"],
+        "intents": ["export", "privacy", "vault"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "safety-mutation-approval",
+      "skill": "safety/mutation-approval",
+      "triggers": {
+        "keywords": ["apply changes", "execute plan", "confirm", "overwrite", "rename", "delete", "mutation"],
+        "agents": ["starlight-sentinel"],
+        "intents": ["mutation", "approval", "file-operation"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    }
   ],
   "defaults": {
     "starlight-prime": ["intelligence-strategic-reasoning", "intelligence-systems-thinking", "intelligence-decision-framework"],
     "starlight-architect": ["intelligence-systems-thinking", "intelligence-pattern-recognition"],
     "starlight-orchestrator": ["orchestration-multi-agent-coordination", "orchestration-workflow-design"],
-    "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework"],
+    "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework", "safety-permission-gate", "safety-secret-detector", "safety-private-public-split", "safety-mutation-approval"],
     "starlight-sage": ["memory-knowledge-synthesis", "intelligence-pattern-recognition"],
     "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis", "vision-design-coherence"],
     "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework", "vision-fundamentals-excavation"],
@@ -819,6 +875,7 @@
     "starlight-sound-composition": ["sound-intelligence-composition-architecture", "intelligence-pattern-recognition", "vision-design-coherence"],
     "starlight-sound-performance": ["sound-intelligence-performance-design", "intelligence-decision-framework", "memory-knowledge-synthesis"],
     "starlight-sound-production": ["sound-intelligence-production-systems", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
-    "starlight-sound-sync": ["sound-intelligence-sync-licensing", "business-revenue-modeling", "intelligence-decision-framework"]
+    "starlight-sound-sync": ["sound-intelligence-sync-licensing", "business-revenue-modeling", "intelligence-decision-framework"],
+    "starlight-hermes": ["intelligence-hermes-search", "memory-vault-management", "memory-knowledge-synthesis", "intelligence-pattern-recognition", "integration-repo-bridge"]
   }
 }

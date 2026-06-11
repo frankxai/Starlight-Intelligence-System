@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 71 skills across 14 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 76 skills across 15 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 
@@ -14,9 +14,9 @@ This file is **operational-tier** — it does not appear in the substrate-tier f
 
 ```yaml
 name: <domain>/<skill-name>          # canonical key, matches skill-rules.json `skill` field
-domain: <top-level-dir>              # one of 14: business, crypto-intelligence, energy-intelligence,
+domain: <top-level-dir>              # one of 15: business, crypto-intelligence, energy-intelligence,
                                      # health, integration, intelligence, machine, memory, music-is,
-                                     # orchestration, people-intelligence, relational, sound-intelligence, vision
+                                     # orchestration, people-intelligence, relational, safety, sound-intelligence, vision
 activation_rule_id: <string>         # matches skill-rules.json `id` field; symmetry enforced by future v78 test
 owner_repo: SIS | <repo-name>        # default SIS; named repo if forked or alliance-owned
 version: <YYYY-MM-DD>                # date-stamped initial; semver upgrade reserved for Tier 3b
@@ -80,7 +80,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | integration/idea-triage | integration-idea-triage | SIS | 2026-05-06 | stable |
 | integration/creator-path | integration-creator-path | SIS | 2026-05-06 | stable |
 
-### intelligence (6)
+### intelligence (7)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
@@ -90,6 +90,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | intelligence/decision-framework | intelligence-decision-framework | SIS | 2026-05-06 | stable |
 | intelligence/genius-excavation | intelligence-genius-excavation | SIS | 2026-05-06 | stable |
 | intelligence/knowledge-reclamation | intelligence-knowledge-reclamation | SIS | 2026-05-06 | stable |
+| intelligence/hermes-search | intelligence-hermes-search | SIS | 2026-06-09 | stable |
 
 ### machine (2)
 
@@ -182,6 +183,15 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | vision/fundamentals-excavation | vision-fundamentals-excavation | SIS | 2026-05-06 | stable |
 | vision/design-coherence | vision-design-coherence | SIS | 2026-05-06 | stable |
 | vision/voice-anti-slop | vision-voice-anti-slop | SIS | 2026-05-06 | stable |
+
+### safety (4)
+
+| Skill | Activation rule ID | Owner repo | Version | Status |
+|---|---|---|---|---|
+| safety/permission-gate | safety-permission-gate | SIS | 2026-06-09 | stable |
+| safety/secret-detector | safety-secret-detector | SIS | 2026-06-09 | stable |
+| safety/private-public-split | safety-private-public-split | SIS | 2026-06-09 | stable |
+| safety/mutation-approval | safety-mutation-approval | SIS | 2026-06-09 | stable |
 
 ---
 

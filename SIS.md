@@ -16,6 +16,7 @@ Intelligence systems are not products. They are substrates — the load-bearing 
 - **Archetype extension** — optional canon adoption (`SIP.md` § 6).
 - **Recommended sovereign stack** — default choices, not mandates (`STACK.md`).
 - **Alliance forging method** — how multiple parties compose under SIS (`ALLIANCE.md`).
+- **Claw suite** — installable operational units that make the substrate act (`CLAWS.md`).
 
 ## What SIS does not provide
 
@@ -67,8 +68,8 @@ Alliances coordinate across multiple nodes under SIP. Frank contributes to these
 
 | Alliance | Members | Frank's role |
 |----------|---------|--------------|
-| **Trinity Alliance** | Frank · Ahmad · Logan · Shahvaiz | architect (freely contributed) |
-| **EpicWays Alliance** | Frank · Estefania · [TBD] | advisor (freely contributed) |
+| **Trinity Alliance** | Frank + 3 allied nodes (private register) | architect (freely contributed) |
+| **EpicWays Alliance** | Frank + allied node (private register) | advisor (freely contributed) |
 
 ## Composition rules
 

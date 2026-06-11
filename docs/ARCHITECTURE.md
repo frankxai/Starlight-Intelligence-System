@@ -454,7 +454,7 @@ Extension is welcome. Sprawl is not. Every new layer must pass the "does this he
 
 Structural changes to the stack pressure-test through `/luminor-board` before commit. The board runs five archetype voices (architect / sovereign-creator / protocol-defender / implementer) plus Lumina overseer, each bounded to ≤3 sentences in decision mode. Outcome is a named decision, not a vote.
 
-Adversarial audit runs through `/openclaw-audit` — Logan's integrity pressure-test against architectural claims, finding loose attestations, decorative compositions, or sovereignty breaches. Closed-loop governance-by-pressure-test is operational: no structural change ships without board + audit.
+Adversarial audit runs through `/openclaw-audit` — the protocol-defender's integrity pressure-test against architectural claims, finding loose attestations, decorative compositions, or sovereignty breaches. Closed-loop governance-by-pressure-test is operational: no structural change ships without board + audit.
 
 Sovereign verticals (Arcanea, FrankX, Wealth IS, Music IS) and alliances built on SIP follow the same governance on their own artifacts. The substrate does not govern their internal decisions — it governs only the cross-party attestation contract.
 

@@ -232,7 +232,7 @@ async def smoke():
     await g.add_episode(
         name='smoke-test-meeting',
         episode_body=(
-            'On 2026-04-25, Frank and Ahmad discussed the Starlight Orchestrator '
+            'On 2026-04-25, Frank and a collaborator discussed the Starlight Orchestrator '
             'naming. Frank decided to kill Jarvis as a brand and lock Starlight '
             'Orchestrator as canonical. This led to MASSIVE_ACTION_PLAN.md being '
             'committed.'
@@ -252,7 +252,7 @@ asyncio.run(smoke())
 "@
 ```
 
-If the search returns at least one node referencing Frank, Ahmad, or the decision (with timestamps), Graphiti is live. Open http://localhost:7474, log in with neo4j/your-password, and run:
+If the search returns at least one node referencing Frank, the collaborator, or the decision (with timestamps), Graphiti is live. Open http://localhost:7474, log in with neo4j/your-password, and run:
 
 ```cypher
 MATCH (n) RETURN n LIMIT 25

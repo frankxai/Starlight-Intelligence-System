@@ -76,14 +76,14 @@ Use `/alliance-forge <alliance-name>` at a shared repo to generate the alliance 
 ## Example instances
 
 ### Trinity Alliance
-Nodes: Frank (architect) / Ahmad (sovereign creator) / Logan (protocol defender) / Shahvaiz (implementer).
+Nodes: Frank (architect) + three allied nodes — sovereign creator · protocol defender · implementer. Node identities live in the private alliance register (`private/alliance-register.md`), never in public substrate files.
 
-Note: Ahmad's **Trinity AI** is Ahmad's company. It is not the alliance. Ahmad's company is one of the first verticals **built on SIP**. The alliance is the coordination layer among the four humans; the company is Ahmad's sovereign artifact.
+Note: the sovereign-creator node's company is that node's sovereign artifact — one of the first verticals **built on SIP**. It is not the alliance. The alliance is the coordination layer among the four humans; the company belongs to its node.
 
 This distinction matters: alliances and companies are different entity types. Conflating them destroys sovereignty.
 
 ### EpicWays Alliance
-Nodes: Frank (advisor) / Estefania Badra (EpicWays) / [additional TBD]. Ad-hoc, non-transactional, ecosystem-partnership shape.
+Nodes: Frank (advisor) / EpicWays founder (private register) / [additional TBD]. Ad-hoc, non-transactional, ecosystem-partnership shape.
 
 ## Posture — help freely, compound via protocol
 

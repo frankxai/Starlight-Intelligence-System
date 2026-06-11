@@ -2,7 +2,7 @@
 name: alliance-forge
 description: Forge a new SIP alliance. Scaffolds the repo, enforces the sovereignty clause, generates alliance-scoped skill + agents + memory + commands, validates minimum viable conditions.
 allowed-tools: Read, Write, Grep, mcp__github, mcp__notion
-argument-hint: <alliance-name> [optional — comma-separated initial nodes, e.g. "Frank,Ahmad,Logan,Shahvaiz"]
+argument-hint: <alliance-name> [optional — comma-separated initial nodes, e.g. "architect,sovereign-creator,protocol-defender,implementer"]
 ---
 
 # /alliance-forge

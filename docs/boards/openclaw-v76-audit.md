@@ -54,7 +54,7 @@ The rename ship is structurally sound. Phase 8 is the standard release-mechanics
 
 ## Audit metadata
 
-- **Auditor:** OpenClaw (Logan, Layer 4 sovereign command)
+- **Auditor:** OpenClaw audit (protocol-defender node, Layer 4 sovereign command)
 - **Auditor instance:** Claude Opus 4.7 acting as substrate node, audit scope substrate-tier
 - **Date:** 2026-04-28
 - **Substrate at audit:** starlight-intelligence-system @ HEAD `a5053d7`, package.json `7.5.3` (pre-bump)

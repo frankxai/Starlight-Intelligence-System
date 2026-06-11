@@ -50,7 +50,7 @@
 |----------|--------|-------|----------------------|
 | CRITICAL | — | — | — |
 | HIGH | — | — | — |
-| MEDIUM | `/discover-genius` + `/spawn-domain-stack` hardcode `genius/<slug>.md` path with no `private/` default; OSS-fork adopters risk accidentally committing personal-genius content publicly | substrate-command-owner (Frank / Logan) | v0.2 substrate revision: add `--public` flag with private default, OR change canonical path to `private/genius/<slug>.md` with substrate-developer-only public override |
+| MEDIUM | `/discover-genius` + `/spawn-domain-stack` hardcode `genius/<slug>.md` path with no `private/` default; OSS-fork adopters risk accidentally committing personal-genius content publicly | substrate-command-owner (Frank / protocol-defender) | v0.2 substrate revision: add `--public` flag with private default, OR change canonical path to `private/genius/<slug>.md` with substrate-developer-only public override |
 | LOW | ATTESTATIONS.md references `<2026-05-17-commit-sha>` placeholder | Crypto IS vertical | back-fill `23cace2` in follow-up commit |
 | LOW | verticals/wealth/MEMORY.md v0.2 changelog references "pending 2026-05-17 commit SHA" | Wealth IS umbrella | back-fill `23cace2` in follow-up commit |
 | LOW | Commit-signing status not asserted for `23cace2` | Frank (gitconfig) | recommended-not-required at substrate-tier per SIP L0 |

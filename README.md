@@ -2,7 +2,7 @@
 
 > **The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet.**
 >
-> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 48 agents, 71 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 968 tests keep the claims honest.
+> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 49 agents, 76 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 973 tests keep the claims honest.
 
 [![version](https://img.shields.io/badge/version-8.2.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
@@ -46,7 +46,7 @@ Restart your client: ten `sis_*` tools in every session — the same vaults, fro
 | Layer | What it is | What lives here | License | Adopt how |
 |-------|-----------|-----------------|---------|-----------|
 | **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
-| **Operational (reference build)** | This repo's working implementation: 48 agents (7-archetype council + specialist tiers + evaluator), 6 semantic vaults, 71 auto-activating skills across 14 domains, MCP server, 14 strategic commands + 100+ slash commands, six-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
+| **Operational (reference build)** | This repo's working implementation: 49 agents (7-archetype council + specialist tiers + Hermes search + evaluator), 6 semantic vaults, 76 auto-activating skills across 15 domains, MCP server, 14 strategic commands + 100+ slash commands, six-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
@@ -135,7 +135,7 @@ npm run agents:harness-check
 /luminor-board "Open-source the agent layer or keep it closed?"
 
 # Forge an alliance under SIP
-/alliance-forge trinity "Frank,Ahmad,Logan,Shahvaiz"
+/alliance-forge trinity "architect,sovereign-creator,protocol-defender,implementer"
 
 # Spawn a vertical IS under SIS
 /vertical-spawn anime-legends "anime-aesthetic fiction + character design"

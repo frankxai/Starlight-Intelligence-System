@@ -50,7 +50,7 @@ Lean into what Antigravity gives you that other adapters don't:
 
 ---
 
-## Agent system (47 agents, full registry in `agents/AGENT_REGISTRY.md`)
+## Agent system (49 agents, full registry in `agents/AGENT_REGISTRY.md`)
 
 Seven legacy council agents adopt as reasoning lenses:
 
@@ -68,9 +68,9 @@ Plus 7 Council Archetype seats (v0.1 Friday demo) at `agents/council/`, 3 front-
 
 ---
 
-## Skills (71, auto-activate via `skills/skill-rules.json`)
+## Skills (76, auto-activate via `skills/skill-rules.json`)
 
-14 domains: intelligence / orchestration / memory / integration / business / vision / health / relational / people-intelligence / sound-intelligence / music-is / energy / machine / crypto-intelligence.
+15 domains: intelligence / orchestration / memory / integration / safety / business / vision / health / relational / people-intelligence / sound-intelligence / music-is / energy / machine / crypto-intelligence.
 
 Key auto-activators relevant to Antigravity:
 - `orchestration/yolo-conductor` + `orchestration/yolo-scan` — drive `/yolo` Hive sessions

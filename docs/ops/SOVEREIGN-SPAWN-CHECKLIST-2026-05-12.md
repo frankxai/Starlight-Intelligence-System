@@ -1,6 +1,6 @@
 # Sovereign-Spawn Validation Checklist — 2026-05-12
 
-> Pre-fork audit for `/sovereign-spawn`. Three friends are reference candidates: **the first private test case** (profile withheld), **Logan** (OpenClaw), **Ahmad**. This document does NOT spawn anything. It surfaces the gaps that would block a real fork tomorrow.
+> Pre-fork audit for `/sovereign-spawn`. Three friends are reference candidates: **the first private test case** (profile withheld), **the protocol-defender node** (OpenClaw adopter), **the sovereign-creator node**. This document does NOT spawn anything. It surfaces the gaps that would block a real fork tomorrow.
 >
 > **Tier:** operational (no `/starlight-board` required).
 > **Verdict:** the command is **shippable for a guided fork TODAY** if Frank is in the room; **NOT shippable for autonomous fork** without closing Gap-Class A.
@@ -38,7 +38,7 @@ These are the gates `/sovereign-spawn` itself enforces. None of them are mechani
 
 ## 3. Top 3 gaps that block a friend-fork tomorrow
 
-These are **next-week priorities** if Frank wants any of the first private test case / Logan / Ahmad forked autonomously.
+These are **next-week priorities** if Frank wants any of any of the three reference candidates forked autonomously.
 
 ### Gap A-1 — No executable scaffolder
 
@@ -82,17 +82,17 @@ These are **next-week priorities** if Frank wants any of the first private test 
 
 **If forced to spawn:** Gap A-1 + A-3 must close first. They're non-technical; they cannot debug a partial scaffold.
 
-### Logan — OpenClaw
+### Protocol-defender node — OpenClaw adopter
 
 **What he needs:** **Closest fit to actual sovereign-spawn.** OpenClaw is a sovereign-tier protocol-defense practice with its own canon, its own audit cadence, its own attestation register. The `openclaw-audit` skill already exists at `.claude/skills/` as a reference implementation. He has the substrate-awareness depth (per `feedback_run_starlight_board_autonomously`). He'd be the cleanest reference fork.
 
-**Spawn-fit verdict:** **PROCEED-WITH-GAPS.** Logan can absorb a partial scaffold + manual cleanup. He's the right first real-world fork.
+**Spawn-fit verdict:** **PROCEED-WITH-GAPS.** This node can absorb a partial scaffold + manual cleanup — the right first real-world fork.
 
 **Blocking:** Gap A-1 (autonomous scaffolder). Without it, the spawn session is ~3-4 hours of Frank's time vs. ~20 minutes. Acceptable for the FIRST reference fork; not scalable.
 
-### Ahmad
+### Sovereign-creator node
 
-**What he needs:** Insufficient information in memory layer. No `project_ahmad_*` or `feedback_ahmad_*` memory entries; only mentioned in the prompt. Need: domain declaration, current stack, why he wants a fork vs. a vertical vs. a Claude Project.
+**What he needs:** Insufficient information in memory layer. No per-node memory entries; only mentioned in the prompt. Need: domain declaration, current stack, why he wants a fork vs. a vertical vs. a Claude Project.
 
 **Spawn-fit verdict:** **NEEDS-INTAKE.** Run `/intake` first. Route classification will tell whether sovereign-spawn is even his right surface.
 
@@ -127,7 +127,7 @@ Don't oversell. Don't claim "you can fork right now" — the spawn works but it'
 2. **Tue 2026-05-19:** Test-harness `test/sovereign-spawn.test.ts`. Idempotent output check.
 3. **Wed 2026-05-20:** Spawn FIRST reference fork — either `example-sovereign` (synthetic) or `frankx-sole-trader` (Frank's second persona).
 4. **Thu 2026-05-21:** Ship `substrate-sync.ts` for fork-side upgrade path.
-5. **Fri 2026-05-22:** Live spawn Logan's OpenClaw fork end-to-end on a video call. Record it. Use the recording as the canonical reference for any future spawn.
+5. **Fri 2026-05-22:** Live spawn the protocol-defender's OpenClaw fork end-to-end on a video call. Record it. Use the recording as the canonical reference for any future spawn.
 
 ---
 

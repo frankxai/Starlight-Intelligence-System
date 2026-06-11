@@ -16,11 +16,15 @@ The Starlight Skill Architecture defines how capabilities are organized, activat
 STARLIGHT SKILL SYSTEM
 =======================
 
-Layer 1: CATEGORIES (4 domains)
-  Intelligence, Orchestration, Memory, Integration
+Layer 1: CATEGORIES (5 domains)
+  Intelligence, Orchestration, Memory, Integration, Safety
 
-Layer 2: SKILLS (16 capabilities)
-  4 skills per category
+Layer 2: SKILLS (21 capabilities)
+  Intelligence: 5 skills (+ Hermes Search)
+  Orchestration: 4 skills
+  Memory: 4 skills
+  Integration: 4 skills
+  Safety: 4 skills
 
 Layer 3: PROCEDURES (within each skill)
   Specific step-by-step protocols
@@ -31,7 +35,7 @@ Layer 3: PROCEDURES (within each skill)
 ## Skill Categories
 
 ### Intelligence Skills
-Core reasoning and thinking capabilities.
+Core reasoning, thinking, and search capabilities.
 
 | Skill | File | Purpose |
 |-------|------|---------|
@@ -39,6 +43,7 @@ Core reasoning and thinking capabilities.
 | Systems Thinking | `intelligence/systems-thinking/SKILL.md` | Holistic analysis, feedback loops |
 | Pattern Recognition | `intelligence/pattern-recognition/SKILL.md` | Identifying recurring patterns |
 | Decision Framework | `intelligence/decision-framework/SKILL.md` | Structured decision-making |
+| Hermes Search | `intelligence/hermes-search/SKILL.md` | Semantic search across vaults + repos + web; multi-source synthesis with provenance |
 
 ### Orchestration Skills
 Coordination and execution capabilities.
@@ -69,6 +74,16 @@ Cross-system connection capabilities.
 | Ecosystem Sync | `integration/ecosystem-sync/SKILL.md` | Multi-system synchronization |
 | Transmission Protocol | `integration/transmission-protocol/SKILL.md` | Cross-system communication |
 | Universal Adapter | `integration/universal-adapter/SKILL.md` | External system integration |
+
+### Safety Skills
+Permission, privacy, and mutation-control capabilities. Cross-cut all Claws.
+
+| Skill | File | Purpose |
+|-------|------|---------|
+| Permission Gate | `safety/permission-gate/SKILL.md` | Gate all mutations against declared Claw permissions |
+| Secret Detector | `safety/secret-detector/SKILL.md` | Scan exports for credentials and sensitive data |
+| Private/Public Split | `safety/private-public-split/SKILL.md` | Enforce vault privacy boundaries on exports |
+| Mutation Approval | `safety/mutation-approval/SKILL.md` | Require explicit user confirmation before file changes |
 
 ---
 
