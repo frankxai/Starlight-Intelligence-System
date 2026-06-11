@@ -31,6 +31,7 @@ export function Header() {
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-1 lg:flex">
+          <NavLink href="/cosmos">Cosmos</NavLink>
           <NavLink href="/verticals">Verticals</NavLink>
           <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
@@ -59,6 +60,7 @@ export function Header() {
 
         {/* Tablet nav — condensed */}
         <div className="hidden items-center gap-1 sm:flex lg:hidden">
+          <NavLink href="/cosmos">Cosmos</NavLink>
           <NavLink href="/verticals">Verticals</NavLink>
           <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
@@ -85,6 +87,8 @@ export function Header() {
             aria-label="Mobile navigation"
             className="absolute right-0 top-full z-50 mt-2 flex w-48 flex-col gap-0.5 rounded-lg border border-white/[0.10] bg-[#0c0c12] p-2 shadow-2xl"
           >
+            <NavLink href="/cosmos">Cosmos</NavLink>
+            <NavLink href="/asteroids">Asteroids</NavLink>
             <NavLink href="/verticals">Verticals</NavLink>
             <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
             <NavLink href="/cockpit">Cockpit</NavLink>

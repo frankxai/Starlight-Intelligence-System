@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { RESEARCH_SLUGS } from "@/lib/research";
+import { CARD_SLUGS } from "@/lib/cosmos/cards";
 
 const BASE = "https://starlightintelligence.org";
 
@@ -18,6 +19,10 @@ const STATIC_ROUTES = [
   "/featured",
   "/benediction",
   "/badge",
+  "/cosmos",
+  "/cosmos/gallery",
+  "/cosmos/cards",
+  "/asteroids",
 ] as const;
 
 const VERTICAL_SLUGS = [
@@ -55,5 +60,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticEntries, ...verticalEntries, ...researchEntries];
+  const cosmosCardEntries: MetadataRoute.Sitemap = CARD_SLUGS.map((slug) => ({
+    url: `${BASE}/cosmos/cards/${slug}`,
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticEntries,
+    ...verticalEntries,
+    ...researchEntries,
+    ...cosmosCardEntries,
+  ];
 }
