@@ -10,9 +10,14 @@
  *   1. Instantiate DreamingAgent against the operator's vault dir.
  *   2. Run agent.dream(sessionsDir) — extracts insights, identifies cross-vault
  *      Wisdom-promotion candidates, detects contradictions.
- *   3. Append a 1-line receipt to memory/CONSOLIDATION_LOG.md.
+ *   3. Run decay sweep: scan OPERATIONAL vault JSONL for entries whose decayed
+ *      confidence (90-day half-life via TemporalEngine) falls below 0.15.
+ *      Archive those entries by appending an {type:"archive"} event to the
+ *      vault JSONL (append-only; original rows are never deleted). Wisdom and
+ *      Horizon vaults are never decayed.
+ *   4. Append a 1-line receipt to memory/CONSOLIDATION_LOG.md.
  *      Format: `- <ISO-timestamp> · insights: N · contradictions: N ·
- *               promotions: N · processed: N`
+ *               promotions: N · processed: N · decayed: N · archived: N`
  *      Or on error: `- <ISO-timestamp> · error: <message>`
  *
  * Why this exists (per breadth audit O9 + day-of audit §3):
@@ -26,7 +31,7 @@
  *   - STARLIGHT_VAULT_DIR     default: $HOME/.starlight/vaults
  *   - STARLIGHT_SESSIONS_DIR  default: <repo>/memory/voice-sessions
  *
- * Built on SIP — operational tier (memory observability).
+ * Built on SIP — operational tier (memory observability + decay sweep v0.1).
  */
 
 import { homedir } from "node:os";
@@ -35,9 +40,43 @@ import {
   existsSync,
   appendFileSync,
   writeFileSync,
+  readFileSync,
+  readdirSync,
 } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { DreamingAgent } from "../src/dreaming.js";
+import { TemporalEngine } from "../src/temporal.js";
+
+// ── SweepResult export ────────────────────────────────────────────────────────
+
+/** Result returned by sweepDecay(). Consumed by tests and the receipt line. */
+export interface SweepResult {
+  /** Total entries inspected across decayable vaults. */
+  inspected: number;
+  /** Entries whose decayed confidence was computed (had temporal metadata). */
+  decayed: number;
+  /** Entries archived this run (confidence < ARCHIVE_THRESHOLD). */
+  archived: number;
+}
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+
+/**
+ * Vault names that are NEVER decayed.
+ *
+ * Wisdom: timeless principles — decay would destroy long-horizon signal.
+ * Horizon: human hopes and AGI alignment visions — append-only by design.
+ */
+const PROTECTED_VAULTS = new Set(["wisdom", "horizon"]);
+
+/**
+ * Archive threshold: entries whose decayed confidence drops below this are
+ * eligible for archival. 0.15 == after ~2.8 half-lives (90 days each ≈ 252 days).
+ * This is conservative enough to preserve genuinely durable operational facts.
+ */
+const ARCHIVE_THRESHOLD = 0.15;
+
+// ── Repo root ─────────────────────────────────────────────────────────────────
 
 function repoRoot(): string {
   try {
@@ -68,6 +107,8 @@ const AUDIT_DIR =
   join(REPO_ROOT, "memory", "_audit");
 const LOG_PATH = join(REPO_ROOT, "memory", "CONSOLIDATION_LOG.md");
 
+// ── Log helpers ───────────────────────────────────────────────────────────────
+
 function ensureLog(): void {
   if (existsSync(LOG_PATH)) return;
   const header = `# Memory Consolidation Log
@@ -78,7 +119,7 @@ function ensureLog(): void {
 >
 > **Why this file exists:** the substrate's claim is "memory that compounds." If consolidation isn't observable, the claim isn't verifiable. This log makes the cadence visible. Receipt-stale > 7 days = pipeline broken (or scheduled task not registered).
 >
-> **Format**: \`- <ISO-timestamp> · insights: N · contradictions: N · promotions: N · processed: N\` (or \`error: <msg>\` on failure).
+> **Format**: \`- <ISO-timestamp> · insights: N · contradictions: N · promotions: N · processed: N · decayed: N · archived: N\` (or \`error: <msg>\` on failure).
 >
 > Background: 2026-05-07 end-to-end excellence audit found all 6 vaults stamped \`last_consolidated: 2026-05-01\` (5 days stale) despite rich pipeline architecture (FTS5 + temporal half-life + dreaming + Memory-Bus singleton). This file + the cron close the observability gap.
 >
@@ -100,34 +141,142 @@ function escapeForLog(s: string): string {
   return s.replace(/[\r\n]+/g, " ").trim();
 }
 
-function main(): number {
+// ── Decay sweep ───────────────────────────────────────────────────────────────
+
+/**
+ * Sweep vault JSONL files for decayed entries and archive them.
+ *
+ * Rules:
+ *  - Only JSONL files are processed (vault-format requirement).
+ *  - Protected vaults (wisdom, horizon) are skipped entirely.
+ *  - An entry is eligible for archival if its decayed confidence < ARCHIVE_THRESHOLD.
+ *    Confidence is computed by TemporalEngine.scanVaults() which handles both
+ *    explicit `temporal` blocks and legacy top-level createdAt/confidence fields.
+ *  - Archival = append `{ type: "archive", id, reason, archivedAt }` to the JSONL.
+ *    The original row is NEVER deleted (JSONL canon = append-only).
+ *  - Idempotent: entries that already have an archive event in the file are
+ *    skipped — re-running same day produces zero additional archives.
+ *
+ * Exported for direct testing (test/v91-identity-drift.test.ts Suite B).
+ *
+ * @param vaultDir  Directory containing *.jsonl vault files.
+ * @returns SweepResult with inspected/decayed/archived counts.
+ */
+export async function sweepDecay(vaultDir: string): Promise<SweepResult> {
+  const engine = new TemporalEngine({ decayHalfLifeDays: 90 });
+  const result: SweepResult = { inspected: 0, decayed: 0, archived: 0 };
+
+  if (!existsSync(vaultDir)) return result;
+
+  // Use TemporalEngine.scanVaults() (public API) — reads all JSONL in vaultDir
+  // and returns staleness/confidence reports. One call; group by vault name.
+  const allReports = engine.scanVaults(vaultDir);
+
+  // Group reports by vault file name (lower-cased filename without .jsonl).
+  const byVault = new Map<string, typeof allReports>();
+  for (const r of allReports) {
+    const vaultName = r.vault.toLowerCase();
+    // Skip protected vaults at grouping stage — they must never be processed.
+    if (PROTECTED_VAULTS.has(vaultName)) continue;
+    if (!byVault.has(vaultName)) byVault.set(vaultName, []);
+    byVault.get(vaultName)!.push(r);
+  }
+
+  // Process each decayable vault.
+  for (const [vaultName, reports] of byVault) {
+    const filePath = join(vaultDir, `${vaultName}.jsonl`);
+    if (!existsSync(filePath)) continue;
+
+    // Build set of already-archived IDs for idempotency (read current file).
+    const rawBefore = readFileSync(filePath, "utf-8");
+    const alreadyArchived = new Set<string>();
+    for (const line of rawBefore.split("\n")) {
+      if (!line.trim()) continue;
+      try {
+        const evt = JSON.parse(line) as Record<string, unknown>;
+        if (evt.type === "archive" && typeof evt.id === "string") {
+          alreadyArchived.add(evt.id);
+        }
+      } catch {
+        // Skip malformed lines
+      }
+    }
+
+    for (const report of reports) {
+      result.inspected++;
+
+      // Skip already-archived entries (idempotency).
+      if (alreadyArchived.has(report.entryId)) continue;
+
+      result.decayed++;
+
+      if (report.currentConfidence < ARCHIVE_THRESHOLD) {
+        const archiveEvent = JSON.stringify({
+          type: "archive",
+          id: report.entryId,
+          reason: `decayed confidence ${report.currentConfidence.toFixed(4)} < ${ARCHIVE_THRESHOLD} threshold (90-day half-life)`,
+          archivedAt: new Date().toISOString(),
+        });
+        appendFileSync(filePath, archiveEvent + "\n", "utf-8");
+        alreadyArchived.add(report.entryId); // prevent double-archive within same run
+        result.archived++;
+      }
+    }
+  }
+
+  return result;
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+
+function main(): void {
   ensureLog();
   const ts = timestamp();
 
   if (!existsSync(VAULT_DIR)) {
     appendReceipt(`- ${ts} · error: vaultDir not found at ${VAULT_DIR}`);
     console.error(`vaultDir not found: ${VAULT_DIR}`);
-    return 2;
+    process.exit(2);
   }
 
-  try {
-    const agent = new DreamingAgent(VAULT_DIR);
-    const result = agent.dream(SESSIONS_DIR, AUDIT_DIR);
-    const line =
-      `- ${ts}` +
-      ` · insights: ${result.extractedInsights.length}` +
-      ` · contradictions: ${result.contradictions.length}` +
-      ` · promotions: ${result.promotions.length}` +
-      ` · processed: ${result.processedFiles}`;
-    appendReceipt(line);
-    console.log(line);
-    return 0;
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    appendReceipt(`- ${ts} · error: ${escapeForLog(msg)}`);
-    console.error(msg);
-    return 1;
-  }
+  (async () => {
+    try {
+      // Step 1: Dreaming agent
+      const agent = new DreamingAgent(VAULT_DIR);
+      const dreamResult = agent.dream(SESSIONS_DIR, AUDIT_DIR);
+
+      // Step 2: Decay sweep
+      const sweep = await sweepDecay(VAULT_DIR);
+
+      const line =
+        `- ${ts}` +
+        ` · insights: ${dreamResult.extractedInsights.length}` +
+        ` · contradictions: ${dreamResult.contradictions.length}` +
+        ` · promotions: ${dreamResult.promotions.length}` +
+        ` · processed: ${dreamResult.processedFiles}` +
+        ` · decayed: ${sweep.decayed}` +
+        ` · archived: ${sweep.archived}`;
+      appendReceipt(line);
+      console.log(line);
+      process.exit(0);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      appendReceipt(`- ${ts} · error: ${escapeForLog(msg)}`);
+      console.error(msg);
+      process.exit(1);
+    }
+  })();
 }
 
-process.exit(main());
+// Guard: only run main() when this script is invoked directly, not when
+// imported as a module by tests or other scripts.
+// Technique: compare the canonical script path to process.argv[1].
+// Works with tsx (which sets argv[1] to the .ts file path) and compiled Node.
+const _scriptFile = fileURLToPath(import.meta.url).replace(/\\/g, "/");
+const _argvFile = resolve(process.argv[1] ?? "").replace(/\\/g, "/");
+// Match on the last two path segments (scripts/dreaming-run) to be
+// robust against OS path separator differences.
+const _scriptSuffix = _scriptFile.split("/").slice(-2).join("/");
+if (_argvFile.replace(/\\/g, "/").endsWith(_scriptSuffix)) {
+  main();
+}
