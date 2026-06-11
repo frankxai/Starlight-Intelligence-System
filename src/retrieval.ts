@@ -3,12 +3,22 @@
  *
  * JSONL files are the source of truth. This module builds a rebuildable
  * FTS5-backed search index for hybrid keyword + vault-filtered queries.
+ *
+ * v0.2 addition: hybridSearch() fuses BM25/FTS5 with vector embeddings via
+ * Reciprocal Rank Fusion (RRF). Provider is pluggable (EmbeddingProvider);
+ * defaults to HashingTFProvider (zero deps). Real local transformer embeddings
+ * are available when STARLIGHT_EMBED=transformer and fastembed is installed.
+ * The existing search() method is unchanged — hybridSearch() is additive.
+ *
+ * JSONL canon is never touched by this module.
  */
 import Database from 'better-sqlite3';
 import { readFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs';
 import { join, basename, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import type { VaultType } from './types.js';
+import type { EmbeddingProvider } from './embedding.js';
+import { HashingTFProvider, rrfMerge } from './embedding.js';
 
 // ── Public interfaces ──────────────────────────────────────
 
@@ -93,10 +103,26 @@ function stripBom(text: string): string {
   return text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
 }
 
+/** Compose a single text string from an entry's content + tags for embedding. */
+function composeText(row: { content: string; tags: string | null; category: string | null }): string {
+  const parts = [row.content];
+  if (row.category) parts.push(row.category);
+  if (row.tags) {
+    try {
+      const tags = JSON.parse(row.tags) as string[];
+      parts.push(tags.join(' '));
+    } catch { /* ignore malformed tags */ }
+  }
+  return parts.join(' ');
+}
+
 // ── RetrievalIndex ─────────────────────────────────────────
 
 export class RetrievalIndex {
   private db: Database.Database;
+  /** In-memory vector sidecar: entry id → embedding vector */
+  private vectorIndex = new Map<string, number[]>();
+  private embeddingProvider: EmbeddingProvider = new HashingTFProvider();
 
   constructor(dbPath?: string) {
     const resolved = dbPath ?? join(homedir(), '.starlight', 'index.sqlite');
@@ -107,8 +133,174 @@ export class RetrievalIndex {
     this.db.exec(SCHEMA_DDL);
   }
 
+  /**
+   * Set the embedding provider for hybridSearch().
+   * Call before buildVectorIndex() / hybridSearch().
+   * Default: HashingTFProvider (zero deps, always available).
+   */
+  setEmbeddingProvider(provider: EmbeddingProvider): void {
+    this.embeddingProvider = provider;
+  }
+
+  /**
+   * Build the in-memory vector index from the current SQLite entries.
+   * Must be called (or awaited) before hybridSearch() for meaningful results.
+   * Re-calling rebuilds from scratch (idempotent).
+   *
+   * When using HashingTFProvider, also fits IDF on the corpus.
+   */
+  async buildVectorIndex(): Promise<number> {
+    const rows = this.db.prepare(
+      'SELECT id, content, tags, category FROM entries'
+    ).all() as Array<{ id: string; content: string; tags: string | null; category: string | null }>;
+
+    if (rows.length === 0) {
+      this.vectorIndex.clear();
+      return 0;
+    }
+
+    // For HashingTFProvider: fit IDF on the full corpus first
+    if (this.embeddingProvider instanceof HashingTFProvider) {
+      const corpus = rows.map(r => composeText(r));
+      this.embeddingProvider.fit(corpus);
+    }
+
+    this.vectorIndex.clear();
+    // Embed in batches to allow providers to optimise batch operations
+    const BATCH = 64;
+    for (let i = 0; i < rows.length; i += BATCH) {
+      const batch = rows.slice(i, i + BATCH);
+      const texts = batch.map(r => composeText(r));
+      const vecs = await this.embeddingProvider.embedBatch(texts);
+      for (let j = 0; j < batch.length; j++) {
+        this.vectorIndex.set(batch[j].id, vecs[j]);
+      }
+    }
+
+    return this.vectorIndex.size;
+  }
+
+  /**
+   * Hybrid search: fuses BM25/FTS5 (keyword) with vector (embedding) rankings
+   * via Reciprocal Rank Fusion (RRF, default k=60, weights=[0.7 vec, 0.3 bm25]).
+   *
+   * Requires buildVectorIndex() to have been called first.
+   * Falls back to keyword-only search if the vector index is empty.
+   *
+   * The proven RRF weighting [0.7, 0.3] is the configuration that achieved
+   * precision@10 = 0.200 (+61% over lexical alone) in the Python harness
+   * measurement (2026-06-10, tools/proving-ground/scorecards/2026-06-10-memory-lane-rrf-hybrid.json).
+   */
+  async hybridSearch(query: string, options?: {
+    vaults?: VaultType[];
+    limit?: number;
+    minConfidence?: string;
+    includeExpired?: boolean;
+    rrfK?: number;
+    rrfWeights?: [number, number];
+  }): Promise<SearchResult[]> {
+    const limit = options?.limit ?? 20;
+
+    // If no vector index, fall back to pure BM25
+    if (this.vectorIndex.size === 0) {
+      return this.search(query, options);
+    }
+
+    // ── BM25 channel ──────────────────────────────────────
+    // Over-fetch for RRF merging
+    const bm25Raw = this.search(query, { ...options, limit: limit * 3 });
+    const bm25Ids = bm25Raw.map(r => r.entry.id);
+
+    // ── Vector channel ────────────────────────────────────
+    const queryVec = await this.embeddingProvider.embed(query);
+    const vectorIds = this.rankByVector(queryVec, limit * 3, options);
+
+    // ── RRF fusion ────────────────────────────────────────
+    const mergedIds = rrfMerge(vectorIds, bm25Ids, limit, {
+      k: options?.rrfK,
+      weights: options?.rrfWeights,
+    });
+
+    // Look up full entries from SQLite by merged id order
+    const resultMap = new Map<string, SearchResult>();
+    for (const r of bm25Raw) resultMap.set(r.entry.id, r);
+
+    // Fetch any ids returned by vector-only that weren't in BM25 results
+    const missing = mergedIds.filter(id => !resultMap.has(id));
+    if (missing.length > 0) {
+      const placeholders = missing.map(() => '?').join(',');
+      const rows = this.db.prepare(
+        `SELECT * FROM entries WHERE id IN (${placeholders})`
+      ).all(missing) as Array<Record<string, unknown>>;
+      for (const row of rows) {
+        resultMap.set(row.id as string, {
+          entry: rowToEntry(row),
+          score: 0,
+          matchType: 'exact' as const,
+        });
+      }
+    }
+
+    // Return in RRF-merged order, attaching vector similarity as score
+    return mergedIds
+      .map(id => resultMap.get(id))
+      .filter((r): r is SearchResult => r !== undefined);
+  }
+
+  /** Rank vector index entries by cosine similarity to the query vector. */
+  private rankByVector(
+    queryVec: number[],
+    limit: number,
+    options?: { vaults?: VaultType[]; includeExpired?: boolean },
+  ): string[] {
+    if (queryVec.length === 0) return [];
+
+    const now = new Date().toISOString();
+    const vaultSet = options?.vaults?.length ? new Set(options.vaults) : null;
+
+    const scored: Array<[string, number]> = [];
+    for (const [id, vec] of this.vectorIndex) {
+      const sim = this.embeddingProvider.similarity(queryVec, vec);
+      if (sim <= 0) continue;
+
+      // Apply vault + expiry filters without a second DB lookup:
+      // we do a targeted check only for filtered queries
+      scored.push([id, sim]);
+    }
+
+    scored.sort((a, b) => b[1] - a[1]);
+    let ids = scored.slice(0, limit * 2).map(([id]) => id);
+
+    // Apply vault / expiry filters if requested (single batch DB lookup)
+    if (vaultSet || !(options?.includeExpired)) {
+      const where: string[] = [];
+      if (vaultSet) {
+        const vaults = Array.from(vaultSet);
+        where.push(`vault IN (${vaults.map(() => '?').join(',')})`);
+      }
+      if (!options?.includeExpired) {
+        where.push(`(valid_until IS NULL OR valid_until >= ?)`);
+      }
+      const params: unknown[] = [
+        ...(vaultSet ? Array.from(vaultSet) : []),
+        ...(!options?.includeExpired ? [now] : []),
+      ];
+      const sql = `SELECT id FROM entries WHERE id IN (${ids.map(() => '?').join(',')}) AND ${where.join(' AND ')}`;
+      const allowed = new Set(
+        (this.db.prepare(sql).all([...ids, ...params]) as Array<{ id: string }>).map(r => r.id)
+      );
+      ids = ids.filter(id => allowed.has(id));
+    }
+
+    return ids.slice(0, limit);
+  }
+
   /** Drop all rows and re-ingest every *.jsonl file in vaultDir. Returns entry count. */
   rebuildFromVaults(vaultDir: string): number {
+    // Clear the vector sidecar whenever the SQL index is rebuilt —
+    // caller must re-call buildVectorIndex() if hybridSearch() is needed.
+    this.vectorIndex.clear();
+
     if (!existsSync(vaultDir)) return 0;
     const files = readdirSync(vaultDir).filter(f => f.endsWith('.jsonl'));
     const insert = this.db.prepare(UPSERT_SQL);

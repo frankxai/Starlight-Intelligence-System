@@ -358,3 +358,7 @@ export { EmpiricalSandbox } from "./sandbox.js";
 export type { SandboxExecutionResult, SupportedLanguage } from "./sandbox.js";
 export { ActiveHealingDaemon } from "./active-healing.js";
 export { TestForge } from "./forge.js";
+
+// v8.2 — Embedding Provider (memory engine v0.2)
+export { HashingTFProvider, TransformerProvider, createEmbeddingProvider, rrfMerge } from './embedding.js';
+export type { EmbeddingProvider, EmbeddingVector, EmbeddingProviderConfig, RRFOptions } from './embedding.js';
