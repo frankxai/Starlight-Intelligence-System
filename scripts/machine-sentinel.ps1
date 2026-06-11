@@ -137,7 +137,26 @@ if (-not $latestScan) {
     }
 }
 
-# --- 5. Defender + firewall ------------------------------------------------------
+# --- 5. Identity drift check (ClawHavoc hardening) ----------------------------
+$IdentityDriftScript = Join-Path $RepoRoot 'scripts\check-identity-drift.mjs'
+$IdentityBaseline    = Join-Path $RepoRoot 'memory\_audit\identity-baseline.json'
+if (-not (Test-Path $IdentityDriftScript)) {
+    Add-Finding 'YELLOW' 'identity-drift' "check-identity-drift.mjs not found -- ClawHavoc detector not installed"
+} elseif (-not (Test-Path $IdentityBaseline)) {
+    Add-Finding 'YELLOW' 'identity-drift' "Identity baseline missing -- run: node scripts/check-identity-drift.mjs --baseline"
+} else {
+    $driftResult = & node $IdentityDriftScript 2>&1
+    $driftExit   = $LASTEXITCODE
+    if ($driftExit -eq 0) {
+        # Clean — no finding needed
+    } elseif ($driftExit -eq 1) {
+        Add-Finding 'RED' 'identity-drift' "Identity drift or injection detected -- review output and run --update after verification. Run: node scripts/check-identity-drift.mjs"
+    } else {
+        Add-Finding 'YELLOW' 'identity-drift' "Identity drift check returned unexpected exit code $driftExit"
+    }
+}
+
+# --- 6. Defender + firewall ------------------------------------------------------
 try {
     $mp = Get-MpComputerStatus
     if (-not $mp.RealTimeProtectionEnabled) { Add-Finding 'RED' 'defender' 'Real-time protection is OFF' }

@@ -334,6 +334,10 @@ The Hermes agent (`starlight-hermes.md`) integrates directly with the Claw layer
 4. **Signed skill registry** — SIS maintains a curated, signed skill registry. Random third-party ClawHub skills are not auto-trusted.
 5. **Minimal permission surface** — Each Claw declares the minimum permissions needed. Claws cannot escalate at runtime.
 
+### Atomic remediation (ClawHavoc lesson)
+
+When an identity-drift or prompt-injection incident is detected in any SIS identity file (CLAUDE.md, AGENTS.md, SKILL.md, platform adapter rules, etc.): **restore the identity file and reset the vector index built from it in the same atomic operation.** A poisoned embedding index re-derives the original attack after the file is cleaned — vector indices are not version-controlled alongside the files they encode, so a stale index silently reintroduces the attacker's behavioural footprint into every retrieval result. The remediation order is: (1) restore the clean identity file from a verified baseline, (2) delete or rebuild the derived vector index, (3) re-run `node scripts/check-identity-drift.mjs --baseline` to stamp a new trusted baseline. Skipping step (2) makes step (1) ineffective. Automated detection: `scripts/check-identity-drift.mjs` (runs daily via machine-sentinel.ps1).
+
 ---
 
 ## Relation to SIP
