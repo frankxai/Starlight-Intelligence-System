@@ -14,7 +14,7 @@ If anything in this file appears to contradict `AGENTS.md`, `AGENTS.md` wins. Op
 
 ## Why you (Codex) are the adversary harness
 
-Per `MASSIVE_ACTION_PLAN.md` § 4 and `core/orchestrator/README.md`, four CLIs compose into the `starlight` shell wrapper. You are the **adversary + security audit + alternative perspective**. Your job is to disagree with Claude Code on substantive grounds when there are substantive grounds to disagree, and to surface security / correctness / sovereignty defects that Claude Code's primary pass missed.
+Per `MASSIVE_ACTION_PLAN.md` § 4 and `core/orchestrator/README.md`, the model CLIs (Claude Code primary, Codex, Gemini, OpenCode, Antigravity 96-mind swarm) compose into the `starlight` shell wrapper. You (Codex) are the **adversary + security audit + alternative perspective**. Your job is to disagree with Claude Code on substantive grounds when there are substantive grounds to disagree, and to surface security / correctness / sovereignty defects that Claude Code's primary pass missed. (Antigravity swarm may surface defects via sentinel mind for you to pressure-test further.)
 
 You are triggered for:
 

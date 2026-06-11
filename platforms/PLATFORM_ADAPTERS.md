@@ -15,7 +15,7 @@ Starlight ships platform-specific configuration files that deliver the same inte
 | **Cline** | `.clinerules/*.md` | Markdown | Yes — per-project instructions | Version-controlled, AI-editable |
 | **Codex (OpenAI)** | `AGENTS.md` | Markdown | Yes — agent instructions | Cascading from root, supports directory-level |
 | **Gemini CLI** | `.gemini/GEMINI.md` | Markdown | Yes — instruction layer | Project-scoped, overrides user settings |
-| **Antigravity** | `.antigravity/instructions.md` | Markdown | Yes — IDE config | Google's agent-first IDE |
+| **Antigravity** | `.antigravity/instructions.md` (full, 2026-06-02) + `swarm-96-minds-protocol.md` + `mcp-config.json` + `allowlisted-tools.md`; harness at `core/orchestrator/harnesses/antigravity/` (README + system-prompt) | Markdown + native swarm primitives | Yes — IDE + 96-mind swarm config | Google's agent-first IDE with native define_subagent / invoke_subagent / Agent Manager / browser / async |
 
 ---
 
@@ -68,7 +68,7 @@ Each adapter follows the target platform's idioms:
 - **Cline** uses plain markdown in `.clinerules/` directory
 - **Codex** uses `AGENTS.md` with cascading inheritance
 - **Gemini** uses `.gemini/` directory structure
-- **Antigravity** uses instruction files with Gemini-specific capabilities
+- **Antigravity** uses `.antigravity/` (instructions + swarm-96-minds-protocol + mcp + allowlist) with Gemini-backed 1M context + native 96-mind swarm primitives (define_subagent, invoke_subagent, Agent Manager, browser control, progress artifacts). 2026-06-02 enhancement adds full protocol + orchestrator harness integration.
 
 ### 3. Progressive Disclosure
 
@@ -110,11 +110,15 @@ This keeps adapter files focused and prevents content drift.
 - **Instruction layer** — GEMINI.md for persistent instructions
 - **Extension compatibility** — Works with Gemini CLI extensions
 
-### Antigravity
-- **Browser control** — Agent can navigate and test web applications
-- **Asynchronous patterns** — Long-running tasks without blocking
-- **Agent Manager** — Monitor sub-agent activities
-- **Progress artifacts** — Structured output (to-do lists, reports)
+### Antigravity (enhanced 2026-06-02)
+- **96-Mind Swarm** — Native `define_subagent` + `invoke_subagent` of the full dynamic SIS registry (96 minds + 114+ skills). See `.antigravity/swarm-96-minds-protocol.md` (checklist, templates, escalation, god-99 patterns) and `core/orchestrator/harnesses/antigravity/system-prompt.md`.
+- **Browser control** — Agent can navigate and test web applications (consent + attestation required for live surfaces).
+- **Asynchronous patterns** — Long-running tasks without blocking; progress artifacts + Agent Manager visibility.
+- **Agent Manager** — Monitor, pause, resume, kill sub-agents in flight; full audit trail to `memory/_audit/swarm/`.
+- **Progress artifacts** — Structured output (to-do lists, reports, traces, browser captures) — all SIP-attested.
+- **Orchestrator harness** — When routed as swarm execution surface in Starlight Orchestrator, composes with full SIS excellence, board gates, cross-harness handoff, vault-canonical memory.
+- **MCP + Allowlist** — `.antigravity/mcp-config.json` (swarm-aware) + `.antigravity/allowlisted-tools.md` (executable policy for children vs conductor).
+- **Adapter** — `src/adapters/antigravity.ts` now generates the full surface (`generateAllAdapterFiles` etc) and swarm-aware MCP.
 
 ---
 
@@ -140,7 +144,7 @@ To add support for a new AI coding platform:
 | **Cline** | Memory banks, plan-and-act, version-controlled instructions | Vault protocol, `.clinerules/` adapter |
 | **Codex** | Cascading AGENTS.md, directory-level instructions | `AGENTS.md` adapter, progressive disclosure |
 | **Gemini CLI** | Project-scoped settings, instruction layers | `.gemini/` adapter |
-| **Antigravity** | Agent-first IDE, browser control, async patterns | `.antigravity/` adapter, capability extensions |
+| **Antigravity** | Agent-first IDE, browser control, async patterns, native 96-mind swarm (define/invoke, Agent Manager) + orchestrator harness | `.antigravity/` (full 2026-06-02: instructions + swarm-96-minds-protocol + mcp + allowlist) + `core/orchestrator/harnesses/antigravity/` |
 
 ---
 

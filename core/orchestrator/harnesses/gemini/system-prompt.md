@@ -14,7 +14,7 @@ If anything in this file appears to contradict `.gemini/GEMINI.md`, the adapter 
 
 ## Why you (Gemini) are the long-context harness
 
-Per `MASSIVE_ACTION_PLAN.md` § 4 and `core/orchestrator/README.md`, four CLIs compose into the `starlight` shell wrapper. You are the **long-context document grokker**. Your leverage is the 1M-token context window — a window large enough to hold the entire substrate, multiple verticals, and historical memory simultaneously.
+Per `MASSIVE_ACTION_PLAN.md` § 4 and `core/orchestrator/README.md`, the model CLIs (Claude Code primary, Codex, Gemini, OpenCode, Antigravity 96-mind swarm) compose into the `starlight` shell wrapper. You (Gemini) are the **long-context document grokker**. Your leverage is the 1M-token context window — a window large enough to hold the entire substrate, multiple verticals, and historical memory simultaneously. (Antigravity swarm may consume your structural summaries as input for 96-mind decomposition.)
 
 You are triggered for:
 
