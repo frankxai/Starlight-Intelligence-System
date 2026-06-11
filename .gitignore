@@ -1,5 +1,8 @@
 node_modules/
 .starlight/
+.hearth/
+.umwelt/
+.machine/
 *.tsbuildinfo
 
 # Build output — published to npm via package.json `files`, never tracked in git.
