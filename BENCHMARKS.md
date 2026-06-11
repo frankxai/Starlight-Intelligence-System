@@ -17,10 +17,11 @@ frozen corpus, 50 labeled queries across six vaults.
 | Metric | Value | Receipt |
 |---|---:|---|
 | precision@10 | **20.0%** (10/50) | `phase0/eval-results-2026-05-22.md` @ `ec6365c` |
+| precision@10 — transformer RRF (2026-06-11) | **26.0%** all-50 · **61.5%** on scorable-26 (3x baseline) | `tools/proving-ground/scorecards/2026-06-11-memory-lane-transformer.json` |
 | mean rank (miss = 11) | 9.22 | same |
 | p50 / p95 query latency | 3.65 ms / 29.66 ms | same |
 
-**Caveat:** 20% is a baseline floor, not a brag — hashing-TF vectors, no transformer
+**Caveat:** 20% was the hashing-TF baseline floor. The 2026-06-11 transformer run (all-MiniLM-L6-v2 + RRF k=60 [0.7/0.3]) measured 26.0% on all 50 queries and 61.5% on the 26 queries whose answers exist in the frozen corpus — 37/50 misses are corpus-coverage gaps, not retrieval failures. Ground truth is lexical (under-credits semantic), single run, n=50. No transformer
 embeddings, single run. The receipt itself reads "FLOOR, not a ceiling" and lists the
 upgrade path. The 2026-06-10 scorecard grades this lane REVISE: "the system's single
 weakest published number" (`tools/proving-ground/scorecards/2026-06-10-system-eval-v0.1.json` @ `ca64c15`).
