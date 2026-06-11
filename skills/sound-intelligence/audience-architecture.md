@@ -1,3 +1,8 @@
+---
+name: sound-intelligence/audience-architecture
+description: Designs the fanbase cultivation instrument — cohort map, ritual design, list architecture, fan stay-interview, sovereign publishing — using subscription-economy and stay-interview research direction. Refuses algorithmic-followers-as-audience and refuses fans-as-marketing-targets. Use when cultivating a sustainable fanbase, architecting a mailing list or community layer, running fan stay-interviews, or setting up sovereign distribution. Sub-system 5 of 6 in the Sound Intelligence reference vertical.
+---
+
 # Skill: sound-intelligence/audience-architecture
 
 > Designs the fanbase cultivation instrument — cohort map, ritual design, list architecture, fan stay-interview, sovereign publishing — using subscription-economy and stay-interview research direction. Refuses algorithmic-followers-as-audience and refuses fans-as-marketing-targets. Sub-system 5 of 6 in the Sound Intelligence reference vertical.

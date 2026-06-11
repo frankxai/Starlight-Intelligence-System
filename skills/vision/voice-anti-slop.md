@@ -1,5 +1,6 @@
 ---
-skill: voice-anti-slop
+name: vision/voice-anti-slop
+description: Enforces the anti-slop voice contract for every user-facing prose surface — refuses AI-slop signifier words and patterns, preferring architectural vocabulary that names specific files, commands, dates, and deliverables. Use whenever generating site copy, vault entries, plan documents, handover artifacts, PR descriptions, or any artifact attested with "Built on SIP." Loaded automatically by any agent emitting user-facing prose.
 domain: vision
 type: brand-voice
 auto_activate:

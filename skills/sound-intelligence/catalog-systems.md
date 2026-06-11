@@ -1,3 +1,8 @@
+---
+name: sound-intelligence/catalog-systems
+description: Designs the catalog operating instrument — release plan, ISRC mint, metadata pack, version map, deplatform recovery — using metadata-as-infrastructure discipline. Refuses metadata-as-marketing-only and refuses single-track-into-the-algorithm. Use when building a release plan, minting ISRCs, auditing catalog metadata, architecting version control for a track catalog, or preparing deplatform recovery. Sub-system 3 of 6 in the Sound Intelligence reference vertical.
+---
+
 # Skill: sound-intelligence/catalog-systems
 
 > Designs the catalog operating instrument — release plan, ISRC mint, metadata pack, version map, deplatform recovery — using metadata-as-infrastructure discipline. Refuses metadata-as-marketing-only and refuses single-track-into-the-algorithm. Sub-system 3 of 6 in the Sound Intelligence reference vertical.

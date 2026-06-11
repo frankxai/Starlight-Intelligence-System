@@ -1,3 +1,8 @@
+---
+name: sound-intelligence/composition-architecture
+description: Designs the songwriting and arrangement instrument — score, lyric, arrangement, demo, transition — using music-theory and cognitive-science direction. Refuses "fix it in the mix" for upstream-defaultable failures and refuses generic-pretty lyric language. Use when architecting a song structure, drafting or critiquing lyrics, designing an arrangement, building a demo, or composing a transition between song sections. Sub-system 1 of 6 in the Sound Intelligence reference vertical.
+---
+
 # Skill: sound-intelligence/composition-architecture
 
 > Designs the songwriting and arrangement instrument — score, lyric, arrangement, demo, transition — using music-theory and cognitive-science direction. Refuses "fix it in the mix" for upstream-defaultable failures and refuses generic-pretty lyric language. Sub-system 1 of 6 in the Sound Intelligence reference vertical.

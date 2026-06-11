@@ -1,3 +1,8 @@
+---
+name: sound-intelligence/performance-design
+description: Designs the live performance instrument — set design, audience contract, live mix, residency, broadcast prep — using tension-and-release direction extended across the live arc and live-sound-engineering grounding. Refuses every-show-same-setlist and refuses single-point-of-failure live mix. Use when designing a live set, planning a residency, architecting an audience contract, preparing broadcast mix documentation, or auditing live-sound failure points. Sub-system 4 of 6 in the Sound Intelligence reference vertical.
+---
+
 # Skill: sound-intelligence/performance-design
 
 > Designs the live performance instrument — set design, audience contract, live mix, residency, broadcast prep — using tension-and-release direction extended across the live arc and live-sound-engineering grounding. Refuses every-show-same-setlist and refuses single-point-of-failure live mix. Sub-system 4 of 6 in the Sound Intelligence reference vertical.

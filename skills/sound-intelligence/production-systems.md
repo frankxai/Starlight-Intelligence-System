@@ -1,3 +1,8 @@
+---
+name: sound-intelligence/production-systems
+description: Designs the mix-and-master-and-recall instrument — frequency budget, gain-stage hierarchy, dynamic-range envelope, vocal chain, sound-design, recall pack — using mix-architecture and mastering-theory direction. Refuses loudness-war mastering and refuses AI-vocal-impersonation without license. Use when architecting a mix session, building a vocal chain, designing sound, preparing a mastering brief, or structuring a recall pack for session continuity. Sub-system 2 of 6 in the Sound Intelligence reference vertical.
+---
+
 # Skill: sound-intelligence/production-systems
 
 > Designs the mix-and-master-and-recall instrument — frequency budget, gain-stage hierarchy, dynamic-range envelope, vocal chain, sound-design, recall pack — using mix-architecture and mastering-theory direction. Refuses loudness-war mastering and refuses AI-vocal-impersonation without license. Sub-system 2 of 6 in the Sound Intelligence reference vertical.

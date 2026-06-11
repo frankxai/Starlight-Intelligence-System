@@ -1,3 +1,8 @@
+---
+name: sound-intelligence/sync-licensing
+description: Designs the sync placement instrument — brief fit, placement thesis, license economics, rights pack, sync stay-interview — using music-supervision and licensing-economics direction. Refuses sync placements that contradict declared vision boundaries and refuses master-rights-flip-for-an-advance. Use when evaluating a sync brief, modeling license economics, building a rights pack, preparing a placement thesis, or running a sync stay-interview with a music supervisor. Sub-system 6 of 6 in the Sound Intelligence reference vertical.
+---
+
 # Skill: sound-intelligence/sync-licensing
 
 > Designs the sync placement instrument — brief fit, placement thesis, license economics, rights pack, sync stay-interview — using music-supervision and licensing-economics direction. Refuses sync placements that contradict declared vision boundaries and refuses master-rights-flip-for-an-advance. Sub-system 6 of 6 in the Sound Intelligence reference vertical.
