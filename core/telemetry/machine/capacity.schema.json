@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MachineCapacitySpec",
+  "description": "Schema for physical machine capacity limits in capacity.json",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cpuCores": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "totalMemoryGb": {
+      "type": "number",
+      "minimum": 0.5
+    },
+    "disks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "drive": { "type": "string" },
+          "totalGb": { "type": "number" },
+          "freeGb": { "type": "number" }
+        },
+        "required": ["drive", "totalGb", "freeGb"]
+      }
+    },
+    "gpu": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "vramGb": { "type": "number" }
+      },
+      "required": ["name", "vramGb"]
+    }
+  },
+  "required": ["timestamp", "cpuCores", "totalMemoryGb", "disks"]
+}
