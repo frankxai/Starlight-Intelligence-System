@@ -1,2 +1,122 @@
 song_id,title,persona,label,status,engine,suno_url,suno_prompt,bpm,key,duration_seconds,structure_tags,created_date,gated_date,released_date,archived_date,isrc,distrokid_id,bandcamp_id,cover_path,cover_1x1_path,cover_16x9_path,cover_9x16_path,video_short_path,video_square_path,video_full_path,canvas_path,lyric_video_path,royalty_graph_id,attestation_hash,ai_disclosure_metadata,vocal_consent_doc_path,notes
-EXAMPLE_frank-riemer_20260501_threshold,Threshold,frank-riemer,frank-riemer,draft,suno-v5,https://suno.com/song/EXAMPLE,"neo-classical solo piano, contemplative, dynamic-range-protected, 84 BPM, evening journaling, sus chord palette, no vocal, [Intro] [Verse] [Chorus] [Bridge] [Outro]",84,Em,272,"[Intro] [Verse] [Chorus] [Bridge] [Outro]",2026-05-01,,,,,,,,,,,,,,,,,,"AI-generated via Suno v5; AI-cover via nano banana 2; no vocal",,Example seed row — replace before Phase 1 first real intake
+EXAMPLE_frank-riemer_20260501_threshold,Threshold,frank-riemer,frank-riemer,draft,suno-v5,https://suno.com/song/EXAMPLE,"neo-classical solo piano, contemplative, dynamic-range-protected, 84 BPM, evening journaling, sus chord palette, no vocal, [Intro] [Verse] [Chorus] [Bridge] [Outro]",84,Em,272,[Intro] [Verse] [Chorus] [Bridge] [Outro],2026-05-01,,,,,,,,,,,,,,,,,,AI-generated via Suno v5; AI-cover via nano banana 2; no vocal,,Example seed row — replace before Phase 1 first real intake
+franks-vibes_20260529_the-awakening,The Awakening,Lumen,franks-vibes,released,suno-v5,https://suno.com/song/8374d2ad-9142-4900-9028-a1e805688407,"African percussion, mass female choir, uplifting gospel energy, world music rhythm, warm low-end, 104 BPM, stereo wide",104,C#m,117,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-70004,DK626137,,,,,,,,,,,RG-franks-vibes_20260529_the-awakening,SIP_ATTEST_v8_83M39JKF,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Top-performing legacy track. Extremely popular for brand/motivation syncs.
+franks-vibes_20260529_vibe-o-s,Vibe O S,Lumen,franks-vibes,released,suno-v5,https://suno.com/song/9cbad174-9276-427f-9aed-1ba00c7db3db,"lo-fi hip hop, warm Rhodes chords, deep sub-bass 808, intimate female rap, sweeping violin staccato, 92 BPM, sunset chill",92,Gm,240,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-38681,DK618934,,,,,,,,,,,RG-franks-vibes_20260529_vibe-o-s,SIP_ATTEST_v8_CHHWD3E0,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Signature track for Vibe OS product soundtrack. Pristine organic-electronic blend.
+nona_20260529_golden-age-of-intelligence,Golden Age of Intelligence,Drift-01,nona,released,suno-v5,https://suno.com/song/d1ad41a9-9239-454d-bc2c-a187f42ac30b,"heavy metalcore guitar riffs, EDM drop synth, dual hip hop vocal exchange, aggressive 808 bass, massive energy, 128 BPM",128,Em,155,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-93986,DK934861,,,,,,,,,,,RG-nona_20260529_golden-age-of-intelligence,SIP_ATTEST_v8_GPDUR3UI,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Featured showcase track for the Golden Age book homepage.
+arcanea_20260529_lumina,Lumina,Alera,arcanea,released,suno-v5,https://suno.com/song/1fc13c04-a7b3-427d-bff0-cac92ee524ae,"mythic symphonic rock, cathedral choir register, Dolby Atmos stereo width, slow dramatic build, epic guitar leads, 78 BPM",78,Am,253,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-58161,DK205832,,,,,,,,,,,RG-arcanea_20260529_lumina,SIP_ATTEST_v8_TH13ZT76,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Pinnacle mythic track for the Arcanea lore database.
+nona_20260529_starlight-delight-remastered,Starlight Delight (Remastered),Drift-01,nona,released,suno-v5,https://suno.com/song/2d33b5c5-94b1-418b-8bc8-26d77e12dc92,"high energy liquid drum and bass, pop chord progressions, rolling basslines, punchy transient drums, female vocals, 174 BPM",174,Fm,179,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-74013,DK611970,,,,,,,,,,,RG-nona_20260529_starlight-delight-remastered,SIP_ATTEST_v8_WZGD3GW5,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Signature high-energy track for Starlight Intelligence promo clips.
+nona_20260529_trust-in-yourself,Trust in Yourself,Drift-01,nona,released,suno-v5,https://suno.com/song/66572f21-2682-41f3-9051-86446e9b9bd7,"pop punk energetic guitars, symphonic string pads, heavy trap 808 bass, anthemic choruses, female lead vocal, 145 BPM",145,C,139,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-22688,DK508148,,,,,,,,,,,RG-nona_20260529_trust-in-yourself,SIP_ATTEST_v8_WAHRLAV4,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Highly motivating anthem. Massive likes on Suno profile.
+arcanea_20260529_arcanea-light-me-up-remastered,Arcanea (light me up) (Remastered),Alera,arcanea,released,suno-v5,https://suno.com/song/9ff8a563-4ebf-4481-85c1-9f445cfce9e1,"soulful pop rock, intimate female lead, ethereal backing choirs, warm analog synth, soaring electric guitar leads, 88 BPM",88,D,188,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-90674,DK508240,,,,,,,,,,,RG-arcanea_20260529_arcanea-light-me-up-remastered,SIP_ATTEST_v8_TETZRYLD,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Core canon track for the Arcanea world-building showcase.
+franks-vibes_20260529_i-feel-the-vibe,I Feel the Vibe,Lumen,franks-vibes,released,suno-v5,https://suno.com/song/f4a7a0e3-5689-4f47-8100-792a73034b54,"female rap, warm chill-electronic rhodes chords, deep sub-bass groove, crisp snaps, positive lifestyle energy, 90 BPM",90,F#m,154,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-96351,DK587859,,,,,,,,,,,RG-franks-vibes_20260529_i-feel-the-vibe,SIP_ATTEST_v8_LV0ADBSH,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Lifestyle/brand content reuse background.
+nona_20260529_art-of-soulful-living,Art Of Soulful Living,Drift-01,nona,released,suno-v5,https://suno.com/song/3faa6621-9edb-441f-9ba9-279be2716bba,"alternative rock guitars, high-speed drum and bass rhythm, synthesizers, anthemic lead vocal, energetic motivation, 168 BPM",168,Em,224,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-42654,DK116684,,,,,,,,,,,RG-nona_20260529_art-of-soulful-living,SIP_ATTEST_v8_KGJRE3I6,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Grounded in workout/focus context.
+frank-riemer_20260529_magical-times,Magical Times,frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/74856905-1e50-419c-ad15-92081a743511,"neoclassical solo felt piano, soaring viola, lush warm symphonic strings, rubato tempo, contemplative movie soundtrack, 80 BPM",80,G,201,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-69401,DK592124,,,,,,,,,,,RG-frank-riemer_20260529_magical-times,SIP_ATTEST_v8_VAI8UF8D,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Exquisite cinematic neoclassical piece. Deep focus material.
+frank-riemer_20260529_golden-frequencies-v4,Golden Frequencies v4,frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/3841ae2a-1147-4adb-8b4e-c0491d554fee,"neoclassical ambient piano, 528 Hz healing frequency pad, peaceful contemplative felt textures, no vocals, organic room reverb",72,C,159,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-54796,DK266399,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequencies-v4,SIP_ATTEST_v8_8H35N1JR,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Main track of the Golden Frequencies healing catalog. Preserves rich dynamic range.
+frank-riemer_20260529_golden-frequency-choir,Golden Frequency Choir,frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/69fa45d3-8d45-4f6d-9424-9361cc95fe0a,"neoclassical world vocal chants, meditative choral layers, organic ambient sound bowls, slow harmonic transitions, 65 BPM",65,F,206,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-73975,DK814089,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequency-choir,SIP_ATTEST_v8_HT20NEH8,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Deep meditative world-choral fusion.
+frank-riemer_20260529_golden-frequencies,Golden Frequencies,frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/5281ac63-ed5a-4933-b8ae-10d2312f3c1a,"peaceful neoclassical piano chords, ambient soundscape, crystalline bells, deep-relaxation pad, 75 BPM, healing frequency",75,G,187,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-32529,DK221219,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequencies,SIP_ATTEST_v8_402WWLTM,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Meditation/wellness playlist staple.
+frank-riemer_20260529_golden-frequency-v3,Golden Frequency v3,frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/721ba24a-ce51-4bba-82f2-83179a8d1ae4,"choral neoclassical, Tibetan singing bowls, 528 Hz harmonic tuning, warm low strings, wordless ambient vocal sweeps, 68 BPM",68,C,204,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-83853,DK900188,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequency-v3,SIP_ATTEST_v8_XQS9UYP7,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Pure meditation technology. Excellent focus scores.
+frank-riemer_20260529_golden-frequency-choir-native-american,Golden Frequency Choir (Native American),frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/3a3f32dc-f5fc-4092-bd57-9dc6b2c574f9,"Native American flutes, organic frame drums, deep throat singing hums, neoclassical world choral fusion, 70 BPM",70,Dm,211,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-59479,DK678836,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequency-choir-native-american,SIP_ATTEST_v8_828L9HL2,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Ethereal world-classical crossover.
+frank-riemer_20260529_golden-frequency-choir-male-native,Golden Frequency Choir (Male Native),frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/266413cf-32a2-4d56-b143-25424244a025,"male tribal vocal hums, neoclassical strings, sound bowls, organic ambient textures, 72 BPM, slow evolution",72,Em,185,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-54697,DK528256,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequency-choir-male-native,SIP_ATTEST_v8_HUG5Z9VL,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Intense grounding composition.
+frank-riemer_20260529_golden-frequency-choir-extended,Golden Frequency Choir (Extended),frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/b1c58d80-f4d6-45aa-8ffc-c531be288a5a,"extended meditative soundscapes, neoclassical string quintet, continuous 528 Hz bowl hums, angelic choral, 60 BPM",60,C,286,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-43999,DK673225,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequency-choir-extended,SIP_ATTEST_v8_ZFW3GFWM,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Contemplative long-form focus track.
+frank-riemer_20260529_golden-frequency-choir-mongolian-lead,Golden Frequency Choir (Mongolian Lead),frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/8c35ffd4-193a-4955-832c-7a5be69b8604,"Mongolian morin khuur violin, neoclassical electronic ambient, throat vocal drones, sweeping soundscapes, 75 BPM",75,Am,218,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-34598,DK756978,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequency-choir-mongolian-lead,SIP_ATTEST_v8_OXNGS8OZ,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Unique cultural/classical blend.
+frank-riemer_20260529_golden-frequency-choir-mongolian-harmonies,Golden Frequency Choir (Mongolian Harmonies),frank-riemer,frank-riemer,released,suno-v5,https://suno.com/song/1a6f3b3f-a207-4b8f-b2c4-03356c7b7e2b,"rich Mongolian throat harmonics, warm neoclassical sub-synth, lush violin overlays, peaceful room resonance, 74 BPM",74,Am,213,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-67443,DK824981,,,,,,,,,,,RG-frank-riemer_20260529_golden-frequency-choir-mongolian-harmonies,SIP_ATTEST_v8_ZABZ774Q,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Deeply resonant ambient focus track.
+arcanea_20260529_arcanean-legends,Arcanean Legends,Alera,arcanea,released,suno-v5,https://suno.com/song/eb702834-22c6-44b3-8d5b-bba83c1e9801,"epic pop rock, grand orchestral brass, invented elvish choir vocals, cinematic stadium drums, anthemic soaring strings, 92 BPM",92,Em,204,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-13150,DK821659,,,,,,,,,,,RG-arcanea_20260529_arcanean-legends,SIP_ATTEST_v8_G7K8R3AC,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Mythic worldbuilding canon track.
+arcanea_20260529_arcanean-starlight,Arcanean Starlight,Alera,arcanea,released,suno-v5,https://suno.com/song/5d17255b-f997-4f4c-82ea-9fa1d5aa982a,"cinematic arena rock, heavy dramatic orchestral fills, high pitch elvish vocals, starlight synth textures, 95 BPM",95,Bm,143,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,2026-05-29,2026-05-29,,US-AR1-26-81535,DK160548,,,,,,,,,,,RG-arcanea_20260529_arcanean-starlight,SIP_ATTEST_v8_NZ48XJL4,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Short-form epic score-grade crossover.
+franks-vibes_20260529_golden-frequency-floor,Golden Frequency Floor,Lumen,franks-vibes,draft,suno-v5,https://suno.com/song/58fc5583-b33f-4c62-bbdc-d10dfc19de69,"high energy tech-techno, dnb rolling sub-bass, pop melodic vocals, pumping compression, 130 BPM club energy",130,Cm,180,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-franks-vibes_20260529_golden-frequency-floor,SIP_ATTEST_v8_IFKXMBF7,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Crossover experiment. Good club/fitness playlist fit.
+nona_20260529_beast-mode-switch,Beast Mode Switch,Drift-01,nona,draft,suno-v5,https://suno.com/song/e7f3ebea-55ae-428b-9add-cb9abdd08345,"hard aggressive trap beat, deep distorted 808 slides, intense male rap flow, raw industrial synth loops, gym motivation, 140 BPM",140,F#m,165,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-nona_20260529_beast-mode-switch,SIP_ATTEST_v8_183PMNMW,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Peak state workout trap track.
+franks-vibes_20260529_magical-world-v3,Magical World v3,Lumen,franks-vibes,draft,suno-v5,https://suno.com/song/0f29d2c8-e0a7-4a67-bda6-d4baa200451e,"funky tech house, rolling house bassline, crisp open hats, warm filter sweeps, melodic vocal loops, 125 BPM sunset beach party",125,Am,195,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-franks-vibes_20260529_magical-world-v3,SIP_ATTEST_v8_JLYWIHP3,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,"Pumping, vibe-optimized dance workout."
+franks-vibes_20260529_i-want-to-build-a-free-world,I Want To Build A Free World,Lumen,franks-vibes,draft,suno-v5,https://suno.com/song/d4fcd916-bfb2-4770-87c9-bd6257a00f2f,"driving tech house groove, rolling sub bass, clean percussive claps, building vocal chord stabs, creator focus energy, 126 BPM",126,Dm,210,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-franks-vibes_20260529_i-want-to-build-a-free-world,SIP_ATTEST_v8_YJ27IDLU,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Highly motivating creative work soundtrack.
+franks-vibes_20260529_i-want-to-be-free,I Want To Be Free,Lumen,franks-vibes,draft,suno-v5,https://suno.com/song/353f6f50-f69d-4a72-8dbe-da58e59dcd73,"driving tech house groove, crisp snare rolls, positive vocal chops, warm low-end compression, 126 BPM club vibe",126,Dm,185,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-franks-vibes_20260529_i-want-to-be-free,SIP_ATTEST_v8_BNCMM0G7,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Sister track to Free World.
+franks-vibes_20260529_feel-your-magic,Feel Your Magic,Lumen,franks-vibes,draft,suno-v5,https://suno.com/song/f2c6fa51-1ac7-409d-8642-49d553dd8844,"funky tech house bassline, filtered rhodes synth, ethereal vocal chants, uplifting summer sunset energy, 124 BPM",124,Em,190,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-franks-vibes_20260529_feel-your-magic,SIP_ATTEST_v8_H35ZKVYX,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Journaling evening warm house mix.
+franks-vibes_20260529_need-to-feel-your-magic-v2,Need To Feel Your Magic v2,Lumen,franks-vibes,draft,suno-v5,https://suno.com/song/8380e34f-d61c-47e9-ac17-3538a8c17d99,"funky tech house, pumping compression, rolling sub-bass, processed female vocals, beach party groove, 124 BPM",124,Em,188,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-franks-vibes_20260529_need-to-feel-your-magic-v2,SIP_ATTEST_v8_WNT0V0TJ,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Extended dub mix version.
+nona_20260529_create-millions-of-starlights,Create Millions of Starlights,Drift-01,nona,draft,suno-v5,https://suno.com/song/b4db2632-d9ee-4924-9c21-e788b0339a15,"punk rock aggressive guitars, rolling liquid drum and bass beat, soaring anthemic string pads, heavy 808 hits, 172 BPM",172,F#m,160,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-nona_20260529_create-millions-of-starlights,SIP_ATTEST_v8_NB34K3A6,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,High-octane mental drive track.
+franks-vibes_20260529_we-are-millions-of-starlights,We Are Millions of Starlights,Lumen,franks-vibes,draft,suno-v5,https://suno.com/song/e5fd662d-52d6-45d3-bc12-03ec02e85b43,"uplifting dance pop, driving four-on-the-floor kick, warm synth pads, starlight bells, positive workout energy, 122 BPM",122,C,175,"[Intro]
+[Verse]
+[Chorus]
+[Outro]",2026-05-29,,,,,,,,,,,,,,,,RG-franks-vibes_20260529_we-are-millions-of-starlights,SIP_ATTEST_v8_I1GK3ET2,AI-generated audio via Suno v5; CC-BY-NC-licensed Arcanea Records release.,,Melodic electronic background loop.
