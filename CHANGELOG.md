@@ -2,6 +2,28 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## v8.3.0 — 2026-06-02
+
+**Antigravity / agy enhancement in SIS — full 96-mind swarm protocol, harness integration, excellence (God 99).**
+
+- **.antigravity/ expansion:** Full `instructions.md` (cleaned, excellence-integrated, 96-mind registry, Frank DNA, SIP layers, cross-references); new `swarm-96-minds-protocol.md` (executable operating manual: complexity gate, exact checklist, prompt templates for define/invoke, synthesis rules, memory commit, escalation matrix, failure modes, attestation); `mcp-config.json` (swarm-aware starlight-substrate + task-scoped, children read-heavy, conductor scoped writes); `allowlisted-tools.md` (executable policy: native primitives, browser, Agent Manager, conditional conductor writes, MCP verb boundaries, Bash unlocks, SIP non-negotiable).
+- **core/orchestrator/harnesses/antigravity/:** New `README.md` (role, default-for, MCP/allowlist refs, escalation, status) + `system-prompt.md` (composes on .antigravity/ identity + protocol; orchestrator routing, per-turn checklist, voice, cross-harness handoff, what you are not).
+- **Adapter update:** `src/adapters/antigravity.ts` enhanced — richer `formatContext` (SIP footers, swarm refs, excellence), swarm-aware `getMcpConfig`, `generateMemoryFile` now excellence-enhanced; added `generateSwarmProtocolFile`, `generateMcpConfigFile`, `generateAllowlistedToolsFile`, `generateAllAdapterFiles` for full surface sync/scaffold. Header + comments updated for god-99 integration.
+- **Orchestrator + docs integration:** Updated `core/orchestrator/README.md` (table + status + five harnesses), `HARNESS-STATUS.md` (row + detailed antigravity section + counts + coherence + 2026-06-02 close), `CLAUDE.md` (platform/harness callout + .antigravity/ tree), main `README.md`, `AGENTS.md`, `STARLIGHT_MANIFEST.md`, `platforms/PLATFORM_ADAPTERS.md` (capabilities table + Antigravity section fully expanded).
+- **Test + gating:** `test/v80-platform-prompts.test.ts` now asserts `.antigravity/instructions.md` + `swarm-96-minds-protocol.md` (plus GROK.md). Pre-commit SUBSTRATE_RE comment updated. All new artifacts carry ambient `Built on SIP` + layers + god-99 excellence.
+- **Integration:** Antigravity now first-class swarm harness in layer-10 orchestrator routing (select for 96-mind parallel, browser, async). Substrate writes still board-gated + route to Claude primary unless scoped exception. Load-definition-first + vault-canonical + attestation enforced at protocol level.
+
+Verdict: Excellence integrated. 96 minds are now a repeatable, auditable, SIP-attested machine under Antigravity native + SIS substrate.
+
+## v8.2.0 — 2026-05-29
+
+**Crypto Intelligence Domain Sub-Stack v0.2 fully shipped and integrated. Dynamic Agent Discovery upgraded system-wide.**
+
+- **Crypto Intelligence v0.2 Upgrade (Domain Sub-Stack):** Fully scaffolded, shipped, and activated all remaining 5 Houses (Macro, DeFi, Sovereignty, Research, Allocation) to match the operational excellence of On-Chain. Shipped 20 total commands (4 per House) including `/crypto-macro-regime`, `/crypto-defi-mechanism-audit`, `/crypto-sov-custody-design`, `/crypto-res-protocol-thesis`, and `/crypto-alloc-sizing`, each with the non-negotiable R5 non-advisory clause and ambient SIP v1.1.1 attestation.
+- **Ecosystem-Wide Dynamic Discovery:** Upgraded the dynamic agent routing engine (`src/agents.ts`) to recursively scan the workspace (`agents/` and `verticals/` directories) for agent definitions (`agent.md` and related command structures). The system now dynamically registers all **96 agents** and **114 skill layers** with zero hardcoded definitions, enabling instant scaling for future verticals.
+- **Antigravity Adapter and Swarm Blueprint:** Designed and registered the native Antigravity platform adapter (`src/adapters/antigravity.ts`) supporting 1M tokens, and deployed the subagent swarm orchestration blueprint (`.antigravity/instructions.md`) to drive complex, multi-agent execution within the IDE.
+- **Substrate Attestations and Registries Updated:** Promoted all 6 Crypto Intelligence Houses across `verticals/crypto-intelligence/README.md`, `SUB-SYSTEMS.md`, `AGENTS.md`, `MEMORY.md`, `ATTESTATIONS.md`, and the top-level `agents/AGENT_REGISTRY.md` to active `v0.2 shipped` status. Stamp pinned to SIP v1.1.1.
+
 ## v8.1.0 — 2026-05-17
 
 **Substrate doctrine evolution — Composition Layer primitive declared. Crypto IS v0.1 proof-of-pattern. Wealth IS evolved to first composition-layer reference instance.**

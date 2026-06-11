@@ -72,6 +72,7 @@ A universal IS at row #N may compose over its Domain Sub-Stacks via commands and
 - **Primary:** Claude Opus 4.7 (Anthropic) — architecture, canon work, protocol reasoning.
 - **Operational:** Claude Sonnet 4.6 (Anthropic) — volume creator work, agent harness.
 - **Multi-model composition:** OpenRouter when model diversity buys robustness (e.g., Gemini for long context, GPT for specific tool chains).
+- **Grok (xAI):** High-context (200k) excellence/subagent/MCP harness tier for god 99 e2e QA, parallel subagent orchestration, repo-mastery + gstack conceptual verification. Complements via src/adapters/grok.ts + core/orchestrator/harnesses/grok/.
 - **Offline / sovereignty fallback:** Llama 3.x or Mistral self-hosted for air-gapped canon work.
 
 Stance: Claude is primary because the reasoning quality compounds best with SIP's protocol-heavy workflows. Diversify below the protocol layer, not at it.

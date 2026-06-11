@@ -6,7 +6,7 @@
  * surface: cross-platform system prompts.
  *
  * Guards: every platform-prompt surface (AGENTS.md, CLAUDE.md, .cursor/rules/*,
- * .clinerules/*, .gemini/GEMINI.md, .antigravity/* if present) must reference
+ * .clinerules/*, .gemini/GEMINI.md, .antigravity/* (instructions + swarm-96-minds-protocol), GROK.md if present) must reference
  * the SAME load-bearing facts as the operational source-of-truth files.
  *
  * Facts asserted:
@@ -59,7 +59,8 @@ const REPO_ROOT = repoRootFromTestFile(import.meta.url);
 //
 // Files checked. Missing files are skipped silently (a platform may not be
 // in use); only PRESENT files are asserted. CLAUDE.md is canonical and
-// always present.
+// always present. Grok (GROK.md) integrated 2026-06-02 via src/adapters/grok.ts
+// + harnesses/grok/ + v80 excellence hook update for subagent/MCP/excellence symmetry.
 
 const CANONICAL_PROMPTS = [
   "CLAUDE.md",
@@ -72,6 +73,9 @@ const PLATFORM_PROMPTS = [
   ".cursor/rules/starlight-memory.mdc",
   ".clinerules/starlight.md",
   ".gemini/GEMINI.md",
+  "GROK.md",  // Grok high-context adapter surface (src/adapters/grok.ts generateMemoryFile) — integrated per 2026-06-02 Grok addition + excellence hook mandate
+  ".antigravity/instructions.md",  // Antigravity full instructions (96 minds, swarm, excellence) — 2026-06-02 enhancement
+  ".antigravity/swarm-96-minds-protocol.md",  // Executable 96-mind orchestration protocol + god-99 patterns
 ] as const;
 
 // ---------- exempt drift (technical-debt ledger) ----------
@@ -274,7 +278,7 @@ describe("v8.0 platform-prompt symmetry — canonical prompts match operational 
     );
   });
 
-  it("present platform-adapter prompts (.cursor/.clinerules/.gemini/.antigravity) match canonical", () => {
+  it("present platform-adapter prompts (.cursor/.clinerules/.gemini/.antigravity + grok) match canonical", () => {
     const canon = loadCanonical();
     const expected = {
       agents: String(canon.agentCount),

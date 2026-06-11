@@ -34,7 +34,7 @@ set -e
 #   v76-v79 era: agents/, skills/, verticals/, test/, package.json, STACK.md
 #   v80 era:     AGENTS.md, CLAUDE.md, SIP.md, SIS.md, VOICES.md, VERTICALS.md,
 #                REGISTRY.md, MEMORY.md, SKILL.md (substrate file-contract roots)
-#                .cursor/rules/, .clinerules/, .gemini/, .antigravity/ (platform adapters)
+#                .cursor/rules/, .clinerules/, .gemini/, .antigravity/ (platform adapters + 2026-06-02 swarm-96-minds-protocol + harness integration)
 SUBSTRATE_RE='^(agents/|skills/|verticals/|test/|package\.json|STACK\.md|AGENTS\.md|CLAUDE\.md|SIP\.md|SIS\.md|VOICES\.md|VERTICALS\.md|REGISTRY\.md|MEMORY\.md|SKILL\.md|\.cursor/rules/|\.clinerules/|\.gemini/|\.antigravity/)'
 
 if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then

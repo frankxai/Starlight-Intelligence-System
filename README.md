@@ -40,7 +40,7 @@ flowchart TB
   Vaults["6 semantic vaults<br/>JSONL source of truth"]
   Index["SQLite + FTS5<br/>rebuildable index"]
   MCP["MCP server<br/>10 sis_* tools"]
-  Adapters["Claude Code · Cursor · Cline · Codex · Gemini · Antigravity · OpenCode"]
+  Adapters["Claude Code · Cursor · Cline · Codex · Gemini · Antigravity (96-mind swarm) · OpenCode"]
   Repos["Repo-specific agent harnesses"]
   Output["Safer, memory-aware agent work"]
 
@@ -58,7 +58,7 @@ flowchart TB
 | Semantic vaults | Durable memory across sessions and tools |
 | Temporal confidence | Old knowledge decays unless reconfirmed |
 | Contradiction detection | Conflicting memories become visible |
-| Platform adapters | Same substrate across Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity, OpenCode |
+| Platform adapters | Same substrate across Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity (96-mind native swarm + harness), OpenCode |
 | MCP server | Tool-native access to memory and retrieval |
 | Harness checks | Prompt surfaces stay aligned with reality |
 
@@ -186,7 +186,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 - **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
-- **Six platform adapters** — Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity share the same vaults. OpenCode reuses the Codex `AGENTS.md` adapter (compact mode).
+- **Seven platform adapters + orchestrator harnesses** — Claude Code (primary), Cursor, Cline, Codex (adversary), Gemini CLI (long-context), Antigravity (96-mind swarm execution harness + native primitives + browser + async; `.antigravity/` expanded 2026-06-02 with full instructions, swarm-96-minds-protocol, mcp-config, allowlisted), OpenCode (latency). All share vaults + memory + SIP attestation. Antigravity harness at `core/orchestrator/harnesses/antigravity/`.
 - **MCP v2** — `src/mcp-server.ts` ships ten tools over JSON-RPC 2.0 stdio.
 
 ### MCP tools
@@ -213,7 +213,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Cline | `.clinerules/` | Cline memory bank + MCP config | varies by model |
 | Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
 | Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
-| Antigravity | `.antigravity/` | Antigravity agent config | varies by model |
+| Antigravity | `.antigravity/` (instructions + swarm-96-minds-protocol + mcp-config + allowlisted; 2026-06-02 full) + harness at `core/orchestrator/harnesses/antigravity/` | Antigravity agent + 96-mind swarm config | 1,000,000 (Gemini-backed) |
 | OpenCode | `AGENTS.md` (compact) | `~/.opencode/config.json` | 128,000 |
 
 ### The 7 Leadership-tier agents (named council)

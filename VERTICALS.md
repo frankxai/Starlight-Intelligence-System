@@ -111,9 +111,9 @@ This is the **public registry**. Active alliances and private verticals (Family 
 
 ### Code IS
 - **Class:** sovereign vertical (Intelligence System layer)
-- **Domain:** Product & automation intelligence. Coding agents, MCP server design, agent harness operations, automation playbooks. Wraps existing `/arco` brand router + `/ao` CLI router into a coherent IS for sovereign builders.
+- **Domain:** Product & automation intelligence. Coding agents, MCP server design, agent harness operations, automation playbooks. Wraps existing `/arco` brand router + `/ao` CLI router into a coherent IS for sovereign builders. Includes platform adapters (src/adapters/*) + orchestrator harnesses (core/orchestrator/harnesses/*) + Grok adapter (src/adapters/grok.ts: PlatformAdapter, high-context GROK.md subagents/MCP/excellence, getMcpConfig, generateMemoryFile) + harnesses/grok/ (README, system-prompt, mcp-config, allowlisted) + excellence hook integration.
 - **Owner:** Frank (open substrate, composes with operational layer).
-- **Status:** `scaffolded — v0.1`.
+- **Status:** `scaffolded — v0.1` + Grok adapter addition (2026-06-02).
 - **Primary repo:** `verticals/code/` in `frankxai/Starlight-Intelligence-System`.
 - **Canon:** none.
 - **Compounds:** Code IS playbook + MCP/agent ops practice.

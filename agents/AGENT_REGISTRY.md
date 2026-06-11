@@ -173,16 +173,16 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 
 `music-suno-prompt` is a cross-sub-system grounding command (composes Catalog + Persona + label-canon).
 
-**Crypto Intelligence sub-stack agents** (v0.1 proof-of-pattern ship per Board 2026-05-17 R4 close-out). Third reference Domain Sub-Stack, first **Houses-as-sub-systems** primitive instance, first composition-layer composition under Wealth IS. House of On-Chain scaffolded; remaining 5 Houses gated on v0.1-proof-pass.
+**Crypto Intelligence sub-stack agents** (v0.2 fully shipped). Third reference Domain Sub-Stack, first **Houses-as-sub-systems** primitive instance, first composition-layer composition under Wealth IS. All 6 Houses are fully scaffolded, active, and dynamically integrated.
 
 | Agent | File | House | Tier | Vault Namespace | Commands (count) |
 |-------|------|------|------|-----------------|------------------|
-| **Crypto / On-Chain** | `verticals/crypto-intelligence/onchain/agent.md` | On-Chain — chain-data + wallet-flow + whale-tracking + MEV + validator econ | Domain Sub-Stack Tier · v0.1 scaffolded | `crypto-intelligence/onchain/` (instance state in `private/crypto-intelligence/onchain/artifacts/`) | `crypto-onchain-flow-snapshot`, `crypto-onchain-wallet-trace`, `crypto-onchain-mev-audit`, `crypto-onchain-validator-econ`, `crypto-onchain-contract-interaction` (5) |
-| **Crypto / Macro** | gated · v0.2 | Macro — regime detection + cycle-position thesis | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/macro/` | gated (4-5 planned) |
-| **Crypto / DeFi** | gated · v0.2 | DeFi — mechanism audit + yield architecture + risk-stack | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/defi/` | gated (4-5 planned) |
-| **Crypto / Sovereignty** | gated · v0.2 | Sovereignty — custody architecture + multisig + jurisdiction | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/sov/` | gated (4-5 planned) |
-| **Crypto / Research** | gated · v0.2 | Research — protocol thesis + tokenomics + founder DD | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/res/` | gated (4-5 planned) |
-| **Crypto / Allocation** | gated · v0.2 | Allocation — sizing + rebalance + exit + concentration | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/alloc/` | gated (4-5 planned) |
+| **Crypto / On-Chain** | `verticals/crypto-intelligence/onchain/agent.md` | On-Chain — chain-data + wallet-flow + whale-tracking + MEV + validator econ | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/onchain/` (instance state in `private/crypto-intelligence/onchain/artifacts/`) | `crypto-onchain-flow-snapshot`, `crypto-onchain-wallet-trace`, `crypto-onchain-mev-audit`, `crypto-onchain-validator-econ`, `crypto-onchain-contract-interaction` (5) |
+| **Crypto / Macro** | `verticals/crypto-intelligence/macro/agent.md` | Macro — regime detection + correlation + cycles | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/macro/` | `crypto-macro-regime`, `crypto-macro-correlation`, `crypto-macro-rate-sensitivity`, `crypto-macro-cycle-position` (4) |
+| **Crypto / DeFi** | `verticals/crypto-intelligence/defi/agent.md` | DeFi — mechanism audit + yield architecture + risk-stack | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/defi/` | `crypto-defi-mechanism-audit`, `crypto-defi-yield-architecture`, `crypto-defi-oracle-risk`, `crypto-defi-governance-surface` (4) |
+| **Crypto / Sovereignty** | `verticals/crypto-intelligence/sov/agent.md` | Sovereignty — custody architecture + multisig + jurisdiction | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/sov/` | `crypto-sov-custody-design`, `crypto-sov-multisig`, `crypto-sov-recovery`, `crypto-sov-jurisdiction` (4) |
+| **Crypto / Research** | `verticals/crypto-intelligence/res/agent.md` | Research — protocol thesis + tokenomics + founder DD | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/res/` | `crypto-res-protocol-thesis`, `crypto-res-tokenomics`, `crypto-res-founder-dd`, `crypto-res-ecosystem-map` (4) |
+| **Crypto / Allocation** | `verticals/crypto-intelligence/alloc/agent.md` | Allocation — sizing + rebalance + exit + concentration | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/alloc/` | `crypto-alloc-sizing`, `crypto-alloc-rebalance`, `crypto-alloc-exit`, `crypto-alloc-concentration` (4) |
 
 **Crypto IS specifics** (per Board R5 + (c) close-outs):
 - **R5 non-advisory clause inline** in every House command output (mandatory, non-waivable)
