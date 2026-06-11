@@ -169,3 +169,27 @@ This sequencing keeps the surface flat while a single domain still earns the vis
 **Board verdict (same-session 2026-05-11):** REVISE → both items applied within the ship commit chain. Verdict log: spec §15. REVISE-1 (sovereign re-ack on substrate merges) closes the structural self-review collapse that Claude orchestrates both sides of the board call. REVISE-2 (phase-in + bidirectional drift detection) closes the cold-start unknown.
 
 **Brand-register check:** `/yolo` deliberately picks a playful/punk register that contrasts the architect-voice of `/starlight`, `/superintelligence`, `/starlight-board`. Intentional reference to Gemini's yolo-mode but Claude-led with structural gates. Conforms to Starlight substrate register (canon-free); does not invoke Arcanea canon.
+
+---
+
+### [2026-06-12] Brand Architecture Reconciliation: Reality Architect (RA) vs. Agentic Income (AI)
+
+**Category:** brand-architecture
+**Confidence:** 0.95
+**Source:** Codex / Swarm Coordination Session
+**Related:** Wisdom Vault - Connected Systems Principle, Strategic Vault - Subdomain Roadmap
+
+We formally reconciled the structural and branding relationship between `realityarchitect.ai` (RA) and the `agenticincome.ai` network (AI flagship + spokes):
+
+1. **Conceptual Separation**:
+   - `realityarchitect.ai` remains the high-intellect **spec and methodology substrate** (`reality.md` standard, five moves of system-building: See, Design, Build, Automate, Compound). Its audience is developers, AI architects, and systems engineers. MIT / CC0 open-source first.
+   - `agenticincome.ai` and spokes are the **pragmatic monetization engines** utilizing the methodology. Its audience is creators, marketers, and solopreneurs looking for honest affiliate comparisons.
+   
+2. **Flywheel Integration**:
+   - The Agentic Income network serves as the canonical public case study for Move 04/05 (Automate & Compound) of the Architect's Loop.
+   - RA will link to the open-source engines (`affiliate-agent-skills` and `agentic-income-template`) to demonstrate real-world scaling loops.
+   - AI will link to the `reality.md` standard to establish technical authority for its automated content curation loops.
+
+3. **Technical Symmetry**:
+   - Both networks use the identical Next.js 16 + Tailwind v4 + MDX static architecture, driven by a `lib/site.ts` single brand config, ensuring styling and build optimizations are shared directly.
+
