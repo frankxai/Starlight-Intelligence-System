@@ -268,3 +268,23 @@ A loop is considered "pending closure" when the most recent stage entry is older
 The stage sequence is enforced at the schema level via the `stage` enum on `VaultLoopEntry`. Entries chain via `parent_entry_id` (root `desire` has `parent_entry_id = null`). Skipping a stage is allowed — the loop is not a state machine; it is a guided journal whose discipline is making the skipped stage visible by its absence.
 
 See `src/types.ts` § Vault Loop and `packages/core/schemas/vault-loop-entry.schema.json` for the contracts.
+
+---
+
+## Private substrate mount (2026-06-11)
+
+Personal/private memory lives in a separate PRIVATE repo — `frankxai/starlight-private-memory` —
+expected as a local clone at `~/starlight-private-memory`. The public substrate **mounts** it;
+it never embeds it.
+
+| Aspect | Rule |
+|--------|------|
+| Namespaces | `alliance/`, `vaults/{second-brain,health,family,spiritual}`, `genius/`, `partners/`, `machines/`, `learning/` |
+| Access | Memory Bus enforces namespace scoping — agents get only the namespaces their contract declares |
+| Promotion | Dreaming may promote **patterns** (never names/numbers/facts) from `learning/` → public vaults; privacy filter runs BEFORE grouping |
+| Cross-device | Both machines clone the private repo; sync = push/pull (append-friendly markdown) |
+| Secrets | Never in either repo — Infisical / env vars only |
+
+This replaces the gitignored-local-only `private/` pattern for memory-class content (operational
+private state, e.g. api-monitor output, stays local in `private/`). Rationale: local-only files
+have no durability or cross-device story — a register file was lost to a local sweep on 2026-06-11.
