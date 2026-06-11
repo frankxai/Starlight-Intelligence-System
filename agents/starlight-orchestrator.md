@@ -45,6 +45,8 @@ This role composes `core/ROUTING_MATRIX.md` (intent→agent) with the new model-
 layer (task-class→model), the Proving Ground (capability receipts), and the Cost Plane
 (token/$ telemetry).
 
+**Grok 4.3 harness optimization (2026-06-12 update):** When running under Grok (TUI/CLI), the Queen loop is driven by native subagent parallelism (spawn_subagent explore/plan for concurrent MEASURE lanes on gstack + arena + cost snapshots; best-of-n + check-work for LEARN re-derivation of table). Grok strengths map naturally: high-context + real-time for deep-reasoning + grounding-extraction classes; image_gen + hyperframes for visual routing heatmaps / palace cards in LEDGER; xAI MCP + github for ledger as issues; excellence-review + repo-mastery gates on every Queen tick. Grok registers with SIS Memory Gateway as a distinct per-harness SessionStore namespace. Prefer Grok for interactive-agentic and visual-synthesis task-classes once R4+ receipts land. See HARNESS.md + tools/proving-ground/ROUTING-DOCTRINE.md for harness-specific notes.
+
 ---
 
 ## Capabilities

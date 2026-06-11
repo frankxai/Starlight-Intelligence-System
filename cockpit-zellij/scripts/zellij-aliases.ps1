@@ -2,7 +2,7 @@
 #
 # To install permanently:
 #   notepad $PROFILE
-#   add: . "$HOME\Starlight-Intelligence-System\cockpit-zellij\scripts\zellij-aliases.ps1"
+#   add: . "$HOME\starlight\repos\Starlight-Intelligence-System\cockpit-zellij\scripts\zellij-aliases.ps1"
 #   save, then: . $PROFILE
 #
 # Then in any terminal:  arc <project>  -- e.g. arc sis, arc arcanea, arc frankx

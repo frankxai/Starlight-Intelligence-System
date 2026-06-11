@@ -142,7 +142,7 @@ SIS is not a product with a price sheet. The substrate is free. What we ask in r
 
 If you're technical and want the architecture view:
 
-- **Protocol:** SIP v1.1.0 — six layers: file contract (SKILL.md, AGENTS.md, MEMORY.md, CANON.md, SOUL.md, STACK.md, `.claude/commands/`), attestation protocol, MCP registry standard, command taxonomy, sovereignty clause, optional archetype extension.
+- **Protocol:** SIP v1.1.1 — six layers: file contract (SKILL.md, AGENTS.md, MEMORY.md, CANON.md, SOUL.md, STACK.md, `.claude/commands/`), attestation protocol, MCP registry standard, command taxonomy, sovereignty clause, optional archetype extension.
 - **Stack:** Markdown + JSONL vaults + TypeScript MCP server (`@arcanea/starlight-intelligence-system`) + Claude Code commands as reference implementation. Zero runtime deps outside `better-sqlite3`.
 - **Runtime coverage:** Claude Code (first-class), Cursor, Codex, Gemini CLI, Cline, Antigravity, OpenCode. Workspace exports (v7.4) for Claude Projects, ChatGPT Projects, Gemini Gems, Cowork. Modality attestation (v7.5) for Suno, Udio, Imagen, Midjourney, ElevenLabs.
 - **Test harness:** 35 substrate conformance assertions + 19 v7.3 newcomer-surface assertions. Reference build runs clean.
@@ -165,11 +165,11 @@ You already have it. Let's organize it.
 
 **Built on SIP** — Starlight Intelligence Protocol
 
-Substrate: starlightintelligence.org/protocol v1.1.0
+Substrate: starlightintelligence.org/protocol v1.1.1
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
 - starlight-intelligence-system@v7.3 · public explainer surface
 
-Generated: 2026-04-24
+Generated: 2026-04-24 · re-attested: 2026-05-26 (drift sweep — SIP pin bumped after v1.1.1 spec ship)
 Attestation is compounding, not credit transfer: every composition strengthens every node.

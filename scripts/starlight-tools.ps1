@@ -2,7 +2,7 @@
 #
 # To install permanently:
 #   notepad $PROFILE
-#   add: . "$HOME\Starlight-Intelligence-System\scripts\starlight-tools.ps1"
+#   add: . "$HOME\starlight\repos\Starlight-Intelligence-System\scripts\starlight-tools.ps1"
 #   save, then: . $PROFILE
 #
 # Activates zoxide (smart cd), mise (tool version mgr), and sets sensible

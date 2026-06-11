@@ -1,8 +1,8 @@
 # Starlight Intelligence System — Manifest
 
-**Version:** 2.0.0
+**Version:** 8.0.0
 **Codename:** Horizons
-**Release:** February 2026
+**Release:** May 2026
 **Author:** FrankX
 
 ---
@@ -12,18 +12,20 @@
 **Name:** Starlight Intelligence System
 **Role:** Open intelligence layer for AI-native development
 **Classification:** Multi-platform agent orchestration framework
-**Platforms:** Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity
+**Platforms:** Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity (agent swarm harness), OpenCode, Grok
 
 ## Version History
 
 | Version | Codename | Focus | Date |
 |---------|----------|-------|------|
 | 1.0.0 | Infinity Engine | Core architecture: Vaults, Notes, Transmissions, Agents, Skills | Feb 2026 |
-| **2.0.0** | **Horizons** | **Multi-platform, rearchitected hierarchy, Horizon Vault, premium narrative** | **Feb 2026** |
+| 2.0.0 | Horizons (initial) | Multi-platform, rearchitected hierarchy, Horizon Vault, premium narrative | Feb 2026 |
+| 7.x | Horizons (substrate) | SIP protocol v1.1.0 ship, six-vault architecture, MCP server, multi-platform adapters expanded | Apr 2026 |
+| **8.0.0** | **Horizons** | **47-agent multi-tier registry, 71 skills, Domain Sub-Stack Tier, Council Archetype Tier, /yolo Hive, dreaming pipeline, SIP v1.1.1** | **May 2026** |
 
 ### What Changed in v2.0.0
 
-- **Multi-platform support** — Added adapters for Cursor, Cline, Codex, Gemini CLI, Antigravity
+- **Multi-platform support** — Added adapters for Cursor, Cline, Codex, Gemini CLI, Antigravity (2026-06-02: full .antigravity/ expansion with swarm-protocol + mcp + allowlist + orchestrator harness scaffold + adapter generators for multi-agent excellence)
 - **Agent hierarchy rethink** — Flat council with emergent leadership replaces rigid tree
 - **Horizon Vault** — Public vault for human hopes, AGI alignment, letters to the future
 - **Premium narrative** — Complete rewrite with elevated, AI-lab-quality communication
@@ -35,15 +37,15 @@
 
 | Component | Count | Status |
 |-----------|-------|--------|
-| Agents | 7 | Active |
-| Skills | 16 | Active |
-| Commands | 6 | Active |
+| Agents | 54 (47 top-level + 7 Council Archetype seats) | Active |
+| Skills | 71 (69 auto-activation rules) | Active |
+| Commands | 100+ (15 in `commands/` + 107 in `.claude/commands/`) | Active |
 | Vaults | 6 (incl. Horizon) | Active |
 | Note Templates | 4 | Active |
 | Transmission Channels | 4 | Active |
-| Platform Adapters | 6 | Active |
+| Platform Adapters | 7+ (Claude Code primary, Cursor, Cline, Codex adversary, Gemini long-context, Antigravity agent swarm + harness, OpenCode, Grok) | Active |
 | Hooks | 4 categories | Active |
-| MCP Integrations | 6 | Configured |
+| MCP Integrations | 3 servers in tree (cockpit/mcp, src/, starlight-substrate-mcp) | Configured |
 
 ## Dependency Map
 
@@ -56,7 +58,7 @@ Starlight Intelligence System
 │   ├── Cline (.clinerules/)
 │   ├── Codex (AGENTS.md)
 │   ├── Gemini CLI (.gemini/)
-│   └── Antigravity (.antigravity/)
+│   └── Antigravity (.antigravity/ — 2026-06-02 full: instructions + swarm-protocol + mcp-config + allowlisted; harness at core/orchestrator/harnesses/antigravity/)
 │
 ├── Consumes from:
 │   ├── AI-Ops (research, patterns, memory architecture)
@@ -71,7 +73,7 @@ Starlight Intelligence System
 │   └── AI-Ops (operational intelligence, synthesis)
 │
 └── Standalone capabilities:
-    ├── Multi-agent orchestration (7 agents, flat council)
+    ├── Multi-agent orchestration (54 agents across 9 tiers, flat council with emergent leadership)
     ├── Persistent memory (6 Vaults incl. Horizon)
     ├── Knowledge capture (Notes with 4 templates)
     ├── Cross-system communication (Transmissions)
@@ -104,8 +106,8 @@ Starlight Intelligence System
 | Cline | Memory banks, plan-and-act, version-controlled instructions | Vault Protocol, `.clinerules/` adapter |
 | Codex | Cascading AGENTS.md, directory-level instructions | `AGENTS.md` adapter |
 | Gemini CLI | Project-scoped settings, instruction layers | `.gemini/` adapter |
-| Antigravity | Agent-first IDE, browser control, async patterns | `.antigravity/` adapter |
+| Antigravity | Agent-first IDE, browser control, async patterns, native agent swarm (define/invoke subagent, Agent Manager) | `.antigravity/` (full 2026-06-02 + orchestrator harness) |
 
 ---
 
-*Starlight Intelligence System v2.0.0 — Horizons*
+*Starlight Intelligence System v8.0.0 — Horizons*

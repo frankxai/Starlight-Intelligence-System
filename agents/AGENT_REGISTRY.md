@@ -1,6 +1,6 @@
 # Starlight Agent Registry
 
-> Forty-nine minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
+> Fifty-six minds. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy) + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
 >
 > **v8.2.x update (2026-06-10):** Evaluator registered (`starlight-evaluator.md`) — Starlight Proving Ground + Model Arena measurement seat.
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
@@ -177,22 +177,34 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 
 `music-suno-prompt` is a cross-sub-system grounding command (composes Catalog + Persona + label-canon).
 
-**Crypto Intelligence sub-stack agents** (v0.1 proof-of-pattern ship per Board 2026-05-17 R4 close-out). Third reference Domain Sub-Stack, first **Houses-as-sub-systems** primitive instance, first composition-layer composition under Wealth IS. House of On-Chain scaffolded; remaining 5 Houses gated on v0.1-proof-pass.
+**Crypto Intelligence sub-stack agents** (v0.2 fully shipped). Third reference Domain Sub-Stack, first **Houses-as-sub-systems** primitive instance, first composition-layer composition under Wealth IS. All 6 Houses are fully scaffolded, active, and dynamically integrated.
 
 | Agent | File | House | Tier | Vault Namespace | Commands (count) |
 |-------|------|------|------|-----------------|------------------|
-| **Crypto / On-Chain** | `verticals/crypto-intelligence/onchain/agent.md` | On-Chain — chain-data + wallet-flow + whale-tracking + MEV + validator econ | Domain Sub-Stack Tier · v0.1 scaffolded | `crypto-intelligence/onchain/` (instance state in `private/crypto-intelligence/onchain/artifacts/`) | `crypto-onchain-flow-snapshot`, `crypto-onchain-wallet-trace`, `crypto-onchain-mev-audit`, `crypto-onchain-validator-econ`, `crypto-onchain-contract-interaction` (5) |
-| **Crypto / Macro** | gated · v0.2 | Macro — regime detection + cycle-position thesis | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/macro/` | gated (4-5 planned) |
-| **Crypto / DeFi** | gated · v0.2 | DeFi — mechanism audit + yield architecture + risk-stack | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/defi/` | gated (4-5 planned) |
-| **Crypto / Sovereignty** | gated · v0.2 | Sovereignty — custody architecture + multisig + jurisdiction | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/sov/` | gated (4-5 planned) |
-| **Crypto / Research** | gated · v0.2 | Research — protocol thesis + tokenomics + founder DD | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/res/` | gated (4-5 planned) |
-| **Crypto / Allocation** | gated · v0.2 | Allocation — sizing + rebalance + exit + concentration | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/alloc/` | gated (4-5 planned) |
+| **Crypto / On-Chain** | `verticals/crypto-intelligence/onchain/agent.md` | On-Chain — chain-data + wallet-flow + whale-tracking + MEV + validator econ | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/onchain/` (instance state in `private/crypto-intelligence/onchain/artifacts/`) | `crypto-onchain-flow-snapshot`, `crypto-onchain-wallet-trace`, `crypto-onchain-mev-audit`, `crypto-onchain-validator-econ`, `crypto-onchain-contract-interaction` (5) |
+| **Crypto / Macro** | `verticals/crypto-intelligence/macro/agent.md` | Macro — regime detection + correlation + cycles | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/macro/` | `crypto-macro-regime`, `crypto-macro-correlation`, `crypto-macro-rate-sensitivity`, `crypto-macro-cycle-position` (4) |
+| **Crypto / DeFi** | `verticals/crypto-intelligence/defi/agent.md` | DeFi — mechanism audit + yield architecture + risk-stack | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/defi/` | `crypto-defi-mechanism-audit`, `crypto-defi-yield-architecture`, `crypto-defi-oracle-risk`, `crypto-defi-governance-surface` (4) |
+| **Crypto / Sovereignty** | `verticals/crypto-intelligence/sov/agent.md` | Sovereignty — custody architecture + multisig + jurisdiction | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/sov/` | `crypto-sov-custody-design`, `crypto-sov-multisig`, `crypto-sov-recovery`, `crypto-sov-jurisdiction` (4) |
+| **Crypto / Research** | `verticals/crypto-intelligence/res/agent.md` | Research — protocol thesis + tokenomics + founder DD | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/res/` | `crypto-res-protocol-thesis`, `crypto-res-tokenomics`, `crypto-res-founder-dd`, `crypto-res-ecosystem-map` (4) |
+| **Crypto / Allocation** | `verticals/crypto-intelligence/alloc/agent.md` | Allocation — sizing + rebalance + exit + concentration | Domain Sub-Stack Tier · v0.2 shipped | `crypto-intelligence/alloc/` | `crypto-alloc-sizing`, `crypto-alloc-rebalance`, `crypto-alloc-exit`, `crypto-alloc-concentration` (4) |
 
 **Crypto IS specifics** (per Board R5 + (c) close-outs):
 - **R5 non-advisory clause inline** in every House command output (mandatory, non-waivable)
 - **Composes under Wealth IS composition layer** — first reference instance per `STACK.md` § Composition Layer (declared 2026-05-17). Outputs feed `/wealth-portfolio-fit`, `/wealth-sovereignty-design`, `/wealth-cycle-thesis`.
 - **Sibling-repo export hook landed** — `verticals/crypto-intelligence/ATTESTATIONS.md` (vertical-local ledger) + MCP-shape declaration in `SKILL.md`. v0.2+ extraction target: `github.com/frankxai/crypto-intelligence-system`.
 - **Falsifier:** 1-week proof-of-pattern with House of On-Chain. If 4-5 named artifacts cannot ship in the week, Houses-as-sub-systems primitive failed → fall back to functional sub-systems matching People IS shape.
+
+**Energy Intelligence sub-stack agents** (v0.1 placeholders, 2026-05-28 — fourth reference Domain Sub-Stack, functional sub-systems matching People IS shape). Agent files staked out with scope + anti-patterns + Frank-DNA inheritance per the energy-intelligence vertical at `verticals/energy-intelligence/`; full content build pending. Dispatched by `skills/skill-rules.json` energy-intelligence/* rules. Commands planned, not yet authored.
+
+| Agent | File | Sub-system | Tier | Vault Namespace | Commands |
+|-------|------|-----------|------|-----------------|----------|
+| **Energy Sizing** | `starlight-energy-sizing.md` | Capacity + component sizing (PV, battery, EV, heat-pump) | Domain Sub-Stack · v0.1 | `energy-intelligence/sizing/` | planned |
+| **Energy Cost** | `starlight-energy-cost.md` | Economics — LCOE, payback, IRR, tariffs, incentives | Domain Sub-Stack · v0.1 | `energy-intelligence/cost/` | planned |
+| **Energy Installer** | `starlight-energy-installer.md` | Installer ops — lead intake, site survey, permit/AHJ, commissioning | Domain Sub-Stack · v0.1 | `energy-intelligence/installer/` | planned |
+| **Energy Operations** | `starlight-energy-operations.md` | Monitoring, fault diagnosis, predictive maintenance, warranty lifecycle | Domain Sub-Stack · v0.1 | `energy-intelligence/operations/` | planned |
+| **Energy Buyer** | `starlight-energy-buyer.md` | Homeowner decision support, quote comparison, framing translation | Domain Sub-Stack · v0.1 | `energy-intelligence/buyer/` | planned |
+| **Energy Grid** | `starlight-energy-grid.md` | Interconnection, IEEE 1547 / VDE-AR-N 4105, NEM/FIT, VPP | Domain Sub-Stack · v0.1 | `energy-intelligence/grid/` | planned |
+| **Energy Recovery** | `starlight-energy-recovery.md` | Disaster/outage/deplatform recovery, off-grid bridging | Domain Sub-Stack · v0.1 | `energy-intelligence/recovery/` | planned |
 
 **Domain Sub-Stack Tier rules:**
 - Sub-system agents serve a sovereign domain (the practitioner's vertical), not the universal substrate

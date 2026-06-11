@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 
 Write-Host '=== Patch pwsh 7 shim ===' -ForegroundColor Cyan
 $pwshShim = 'C:\Users\frank\OneDrive\Dokumente\PowerShell\Microsoft.PowerShell_profile.ps1'
-$starlightLine = '. "$HOME\Starlight-Intelligence-System\scripts\starlight-tools.ps1"'
+$starlightLine = '. "$HOME\starlight\repos\Starlight-Intelligence-System\scripts\starlight-tools.ps1"'
 if (Test-Path $pwshShim) {
     $content = Get-Content $pwshShim -Raw
     if ($content -match 'starlight-tools') {
@@ -68,4 +68,4 @@ if (Test-Path $zellij) {
 
 Write-Host ''
 Write-Host '=== Verify UTF-8 output now (banner test) ===' -ForegroundColor Cyan
-. 'C:\Users\frank\Starlight-Intelligence-System\scripts\starlight-tools.ps1'
+. (Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..')).Path 'scripts\starlight-tools.ps1')

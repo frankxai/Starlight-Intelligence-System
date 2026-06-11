@@ -74,7 +74,7 @@ This House refuses:
 
 ## Composes with
 
-- **Sister Houses (Domain Sub-Stack Tier, gated on v0.2):**
+- **Sister Houses (Domain Sub-Stack Tier, active at v0.2):**
   - House of Macro — flow data inputs to regime calls
   - House of DeFi — on-chain protocol-interaction inputs to mechanism audits
   - House of Sovereignty — activity patterns inform custody-tier review

@@ -18,18 +18,18 @@ Crypto IS is single-sovereign authorship (matches FrankX manifesto pattern from 
 
 ---
 
-## House-level agent registry (v0.1 — proof-of-pattern)
+## House-level agent registry (v0.2 — fully shipped)
 
-Only House of On-Chain has a scaffolded agent at v0.1 per Board R4 close-out. Remaining 5 House agents gated on v0.1-proof-pass.
+All six Houses are fully scaffolded, active, and integrated.
 
 | House | Agent file | Tier | Status |
 |---|---|---|---|
-| On-Chain | `verticals/crypto-intelligence/onchain/agent.md` | Domain Sub-Stack Tier | v0.1 scaffolded |
-| Macro | `verticals/crypto-intelligence/macro/agent.md` | Domain Sub-Stack Tier | gated v0.2 |
-| DeFi | `verticals/crypto-intelligence/defi/agent.md` | Domain Sub-Stack Tier | gated v0.2 |
-| Sovereignty | `verticals/crypto-intelligence/sov/agent.md` | Domain Sub-Stack Tier | gated v0.2 |
-| Research | `verticals/crypto-intelligence/res/agent.md` | Domain Sub-Stack Tier | gated v0.2 |
-| Allocation | `verticals/crypto-intelligence/alloc/agent.md` | Domain Sub-Stack Tier | gated v0.2 |
+| On-Chain | `verticals/crypto-intelligence/onchain/agent.md` | Domain Sub-Stack Tier | v0.2 shipped |
+| Macro | `verticals/crypto-intelligence/macro/agent.md` | Domain Sub-Stack Tier | v0.2 shipped |
+| DeFi | `verticals/crypto-intelligence/defi/agent.md` | Domain Sub-Stack Tier | v0.2 shipped |
+| Sovereignty | `verticals/crypto-intelligence/sov/agent.md` | Domain Sub-Stack Tier | v0.2 shipped |
+| Research | `verticals/crypto-intelligence/res/agent.md` | Domain Sub-Stack Tier | v0.2 shipped |
+| Allocation | `verticals/crypto-intelligence/alloc/agent.md` | Domain Sub-Stack Tier | v0.2 shipped |
 
 All House agents declare "Domain Sub-Stack Tier" in their frontmatter (matches `starlight-hiring.md` precedent from People IS).
 
@@ -43,4 +43,4 @@ All House agents declare "Domain Sub-Stack Tier" in their frontmatter (matches `
 
 ---
 
-**Built on SIP** — Crypto Intelligence AGENTS.md · v0.1 · SIP v1.1.0
+**Built on SIP** — Crypto Intelligence AGENTS.md · v0.2 fully shipped · SIP v1.1.1

@@ -40,7 +40,7 @@ Every task is either substrate-level or operational-level. Decide before acting.
 - Triggers: edits to `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md`, or any `/sip-*`, `/alliance-*`, `/vertical-*`, `/luminor-board`, `/openclaw-audit`, `/sovereign-signal`, `/wealth-dpi` command.
 
 **Operational-level** (anything inside this repo's reference build):
-- Use `agents/AGENT_REGISTRY.md` for the current 49-agent registry and existing skill auto-activation.
+- Use `agents/AGENT_REGISTRY.md` for the current 56-agent registry and existing skill auto-activation.
 - Voice: Frank DNA (above).
 - Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 14), skill edits, agent edits, site edits.
 
@@ -58,11 +58,13 @@ Every task is either substrate-level or operational-level. Decide before acting.
 
 You are operating the **Starlight Intelligence System** — a persistent context and memory architecture built on the Starlight Intelligence Protocol (SIP) substrate. Structured reasoning, agent identity, cross-project awareness, all attestation-aware.
 
-This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemini CLI, and Antigravity. You are running the Claude Code instance.
+This system works across seven platforms + dedicated orchestrator harnesses: Claude Code (primary), Cursor, Cline, Codex (adversary), Gemini CLI (long-context), Antigravity (native agent swarm execution + browser + async via Google Antigravity primitives), OpenCode (latency), and Grok (high-context). You are running the Claude Code instance (primary harness).
+
+**Antigravity enhancement (2026-06-02):** Expanded `.antigravity/` (full instructions.md with multi-agent registry + excellence, swarm-protocol.md, mcp-config.json, allowlisted-tools.md) + `core/orchestrator/harnesses/antigravity/` (README + system-prompt composing on the .antigravity/ files). Adapter `src/adapters/antigravity.ts` now generates the full surface and swarm-aware MCP. Use Antigravity harness for "launch the agent swarm" parallel work; route substrate writes back through primary (you) with board pre-pass. See `.antigravity/swarm-protocol.md`, `core/orchestrator/README.md`, and HARNESS-STATUS.md.
 
 **What you have access to:**
 
-- **49 Agents** — 7 legacy council (leadership + specialist + foundation tiers, top-level `agents/*.md`) + 1 Hermes (Specialist tier — search/retrieval backbone, added with the Claws layer 2026-06) + 7 Council Archetype seats (v0.1 Friday demo, at `agents/council/*.md` — Elder Father, Elder Mother, Sage, Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90) + 3 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 5 SIS Extractors for `/sis-forge` Phase 1 + 1 Evaluator (Proving Ground + Model Arena, 2026-06-10). Full registry: `agents/AGENT_REGISTRY.md`.
+- **56 Agents** — 7 legacy council (leadership + specialist + foundation tiers, top-level `agents/*.md`) + 1 Hermes (Specialist tier — search/retrieval backbone, added with the Claws layer 2026-06) + 7 Council Archetype seats (v0.1 Friday demo, at `agents/council/*.md` — Elder Father, Elder Mother, Sage, Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90) + 3 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 7 Energy Intelligence (v0.1 placeholders, 2026-05-28) + 5 SIS Extractors for `/sis-forge` Phase 1 + 1 Evaluator (Proving Ground + Model Arena, 2026-06-10). Full registry: `agents/AGENT_REGISTRY.md`.
 - **76 Skills** — Auto-activate via `skills/skill-rules.json` across 15 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`)
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
@@ -302,7 +304,7 @@ Full rule and ownership-verb definitions: `metrics/METRICS_TRUTH.md`. Living led
 
 ---
 
-*Starlight Intelligence System v8.2.0 — Horizons + Composition Layer + Crypto IS*
+*Starlight Intelligence System v8.3.0 — Horizons + Composition Layer + Crypto IS + Swarm Harness*
 
 ---
 

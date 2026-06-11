@@ -1,15 +1,10 @@
-/**
- * Agent Registry — Aligned with ACOS v8 specialist agents
- *
- * Provides task routing logic: given a query/file path,
- * recommend the best agent and skill set.
- */
-
+import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { join, basename, extname } from "node:path";
 import type { AgentDefinition, AgentRegistry } from "./types.js";
 
-// ── ACOS v8 Agent Definitions ───────────────────────────────
+// ── Static Fallback Agent Definitions ───────────────────────
 
-const ACOS_AGENTS: AgentDefinition[] = [
+const STATIC_AGENTS: AgentDefinition[] = [
   {
     id: "content-architect",
     name: "Content Architect",
@@ -95,6 +90,182 @@ const ACOS_AGENTS: AgentDefinition[] = [
     },
   },
 ];
+
+// ── Dynamic Agent Discovery ──────────────────────────────────
+
+function loadDynamicAgents(): AgentDefinition[] {
+  const agentsList: AgentDefinition[] = [];
+  const processedIds = new Set<string>();
+
+  const scanDirs = [
+    join(process.cwd(), "agents"),
+    join(process.cwd(), "verticals")
+  ];
+
+  // Helper to recursively find .md files
+  function findMarkdownFiles(dir: string, fileList: string[] = []): string[] {
+    if (!existsSync(dir)) return fileList;
+    
+    try {
+      const files = readdirSync(dir);
+      for (const file of files) {
+        const fullPath = join(dir, file);
+        const stat = statSync(fullPath);
+        if (stat.isDirectory()) {
+          findMarkdownFiles(fullPath, fileList);
+        } else if (stat.isFile() && extname(file) === ".md") {
+          fileList.push(fullPath);
+        }
+      }
+    } catch {
+      // Ignore reading errors gracefully
+    }
+    return fileList;
+  }
+
+  // Parse a single markdown file into an AgentDefinition
+  function parseAgentFile(filePath: string): AgentDefinition | null {
+    try {
+      const content = readFileSync(filePath, "utf-8");
+      const lines = content.split(/\r?\n/);
+      
+      const filename = basename(filePath, ".md");
+      // Decide ID: if filename is "agent.md", take the parent directory name, otherwise the filename
+      let id = filename;
+      if (filename === "agent") {
+        const parentDir = basename(join(filePath, ".."));
+        id = parentDir;
+      }
+      
+      if (processedIds.has(id)) return null;
+
+      // Extract Name (e.g., "# Starlight Orchestrator" or "# Music Curator")
+      let name = "";
+      const nameLine = lines.find(l => l.startsWith("# "));
+      if (nameLine) {
+        name = nameLine.replace("# ", "").trim();
+      } else {
+        name = id.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+      }
+
+      // Extract Description (blockquote below name)
+      let description = "";
+      const descLine = lines.find(l => l.startsWith("> "));
+      if (descLine) {
+        description = descLine.replace("> ", "").trim();
+      } else {
+        description = `Specialized agent for ${name} operations.`;
+      }
+
+      // Extract Tier (to decide if "meta" or "specialist")
+      let type: "meta" | "specialist" = "specialist";
+      const tierLine = lines.find(l => l.toLowerCase().includes("**tier:**") || l.toLowerCase().includes("tier:"));
+      if (tierLine) {
+        const tierText = tierLine.toLowerCase();
+        if (tierText.includes("meta") || tierText.includes("leadership") || tierText.includes("council") || tierText.includes("apex")) {
+          type = "meta";
+        }
+      } else if (id.includes("orchestrator") || id.includes("prime") || id.includes("architect")) {
+        type = "meta";
+      }
+
+      // Extract Skills
+      const skills = new Set<string>();
+      let inSkillsSection = false;
+      for (const line of lines) {
+        if (line.startsWith("## Skill Activations") || line.startsWith("## Capabilities")) {
+          inSkillsSection = true;
+          continue;
+        }
+        if (inSkillsSection && line.startsWith("## ")) {
+          inSkillsSection = false;
+        }
+        if (inSkillsSection) {
+          // Check for bullet points
+          const bulletMatch = line.match(/^[-*]\s+`?([a-zA-Z0-9_-]+)`?/);
+          if (bulletMatch && bulletMatch[1]) {
+            skills.add(bulletMatch[1].trim());
+          }
+          // Check for table rows
+          const tableMatch = line.match(/^\|\s*`?([a-zA-Z0-9_-]+)`?\s*\|/);
+          if (tableMatch && tableMatch[1]) {
+            skills.add(tableMatch[1].trim());
+          }
+        }
+      }
+
+      // Extract Keywords for triggers
+      const keywords = new Set<string>();
+      // Base keywords from name and id
+      id.split("-").forEach(w => {
+        if (w.length > 3) keywords.add(w.toLowerCase());
+      });
+      name.toLowerCase().split(/\s+/).forEach(w => {
+        if (w.length > 3) keywords.add(w.replace(/[^a-z0-9]/g, ""));
+      });
+
+      // Parse activates keywords
+      const activatesLine = lines.find(l => l.toLowerCase().includes("**activates:**") || l.toLowerCase().includes("activates:"));
+      if (activatesLine) {
+        const text = activatesLine.replace(/[\*_]+[a-zA-Z]+[\*_]+:/i, "").replace(/activates:/i, "");
+        text.split(/[,;|]/).forEach(k => {
+          const clean = k.trim().toLowerCase().replace(/[^a-z0-9\s-]/g, "");
+          if (clean.length > 2) keywords.add(clean);
+        });
+      }
+
+      // Parse domain keywords
+      const domainLine = lines.find(l => l.toLowerCase().includes("**domain:**") || l.toLowerCase().includes("domain:"));
+      if (domainLine) {
+        const text = domainLine.replace(/[\*_]+[a-zA-Z]+[\*_]+:/i, "").replace(/domain:/i, "");
+        text.split(/[,;|]/).forEach(k => {
+          const clean = k.trim().toLowerCase().replace(/[^a-z0-9\s-]/g, "");
+          if (clean.length > 2) keywords.add(clean);
+        });
+      }
+
+      // Ensure some default keywords if set is empty
+      if (keywords.size === 0) {
+        keywords.add(id);
+      }
+
+      processedIds.add(id);
+      return {
+        id,
+        name,
+        type,
+        description,
+        skills: Array.from(skills),
+        triggers: {
+          keywords: Array.from(keywords),
+        }
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  // Scan all directories and parse files
+  for (const dir of scanDirs) {
+    const mdFiles = findMarkdownFiles(dir);
+    for (const filePath of mdFiles) {
+      // Don't parse AGENT_REGISTRY.md or other summary files
+      const base = basename(filePath).toLowerCase();
+      if (base.includes("registry") || base.includes("readme") || base.includes("skill") || base.includes("canon") || base.includes("memory") || base.includes("stack") || base.includes("soul")) {
+        continue;
+      }
+      const agent = parseAgentFile(filePath);
+      if (agent) {
+        agentsList.push(agent);
+      }
+    }
+  }
+
+  return agentsList;
+}
+
+const DYNAMIC_AGENTS = loadDynamicAgents();
+const ACOS_AGENTS: AgentDefinition[] = DYNAMIC_AGENTS.length > 0 ? DYNAMIC_AGENTS : STATIC_AGENTS;
 
 // ── Routing Engine ──────────────────────────────────────────
 

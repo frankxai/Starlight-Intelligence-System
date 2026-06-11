@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import CommandPalette from "@/components/CommandPalette";
 
 /**
  * Vellum & Voltage typography lockup.
@@ -55,6 +56,7 @@ export default function RootLayout({
     >
       <body className="bg-[#0a0a14] font-sans text-[color:var(--ink-0)] antialiased">
         {children}
+        <CommandPalette />
       </body>
     </html>
   );

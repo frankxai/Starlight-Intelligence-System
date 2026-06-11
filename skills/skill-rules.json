@@ -766,11 +766,11 @@
       "skill": "crypto-intelligence",
       "triggers": {
         "keywords": ["crypto intelligence", "sovereign crypto", "houses-as-sub-systems", "wealth composition layer fork", "/crypto-"],
-        "agents": ["starlight-business", "starlight-architect", "starlight-sentinel"],
-        "intents": ["crypto-architecture", "wealth-composition", "domain-substack-design"]
+        "agents": ["starlight-business", "starlight-architect", "starlight-sentinel", "starlight-orchestrator"],
+        "intents": ["crypto-architecture", "crypto-analysis", "wealth-composition", "domain-substack-design"]
       },
-      "priority": "medium",
-      "load_level": "on-demand"
+      "priority": "high",
+      "load_level": "core"
     },
     {
       "id": "crypto-intelligence-onchain",
@@ -778,12 +778,11 @@
       "triggers": {
         "keywords": ["/crypto-onchain-", "on-chain", "onchain", "wallet flow", "whale tracking", "MEV audit", "MEV exposure", "validator econ", "validator economics", "contract interaction", "tx trace", "Dune Analytics", "Nansen", "Arkham", "Etherscan", "Solscan", "DefiLlama", "Flashbots"],
         "agents": ["starlight-business", "starlight-architect"],
-        "intents": ["onchain-analysis", "wallet-trace", "mev-audit", "validator-econ", "chain-data-investigation"]
+        "intents": ["onchain-analysis", "onchain-trace", "wallet-trace", "mev-audit", "validator-econ", "chain-data-investigation"]
       },
-      "priority": "medium",
-      "load_level": "on-demand"
-    }
-,
+      "priority": "high",
+      "load_level": "core"
+    },
     {
       "id": "intelligence-hermes-search",
       "skill": "intelligence/hermes-search",

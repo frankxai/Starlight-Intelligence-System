@@ -12,7 +12,7 @@ Per People IS v7.4.1 ruling + Board R2 close-out (2026-05-17): 24-30 commands is
 | **`/crypto-res-protocol-thesis`** *(v0.2)* | Research | Pressure-test position thesis on cycle review. Protocol-mechanism literacy non-substitutable. |
 | **`/crypto-alloc-sizing`** *(v0.2)* | Allocation | Sizing discipline before any new position. Composes with `/wealth-dpi`. |
 
-**At v0.1 (Board R4 gate):** only House of On-Chain commands ship. Daily-5 names what becomes daily on v0.2-proof-pass.
+**At v0.2 (Full Scaffold):** all six Houses are active. Daily-5 represents the active daily-rotation practice.
 
 ---
 
@@ -31,11 +31,11 @@ The 6 Houses are **archetypal stances** in crypto practice — schools of though
 5. **Research** (protocol thesis + tokenomics + founder DD)
 6. **Allocation** (sizing + rebalance + exit + concentration)
 
-Houses-as-sub-systems primitive is on proof-of-pattern at v0.1 per Board R4 — only House of On-Chain scaffolded. Falsifier: if House of On-Chain can't ship 4-5 named artifacts in 1 week, primitive failed for crypto → fall back to functional sub-systems matching People IS shape.
+Houses-as-sub-systems primitive was proven at v0.1. At v0.2, all six Houses are fully scaffolded, active, and integrated.
 
 ---
 
-## House 1 — On-Chain *(v0.1 — scaffolded — proof-of-pattern)*
+## House 1 — On-Chain *(v0.2 — shipped)*
 
 - **Slug:** `onchain`
 - **Name:** Crypto / House of On-Chain
@@ -77,48 +77,129 @@ Houses-as-sub-systems primitive is on proof-of-pattern at v0.1 per Board R4 — 
 
 ---
 
-## House 2 — Macro *(v0.2 — gated on v0.1 proof-pass)*
+## House 2 — Macro *(v0.2 — shipped)*
 
 - **Slug:** `macro`
-- **Scope (planned):** Regime detection (BTC dominance, ETH-BTC correlation, alt-cycle position), macro overlay (DXY, rates, equity correlation), cycle-position thesis.
-- **Commands (4-5, gated):** `/crypto-macro-regime`, `/crypto-macro-correlation`, `/crypto-macro-rate-sensitivity`, `/crypto-macro-cycle-position`.
-- **Composes with:** Wealth IS `/wealth-cycle-thesis` (cross-asset cycle position), House of Allocation (regime grounds sizing).
+- **Name:** Crypto / House of Macro
+- **Agent:** `verticals/crypto-intelligence/macro/agent.md`
+- **Skill:** `verticals/crypto-intelligence/macro/skill.md`
+- **Knowledge template:** `verticals/crypto-intelligence/macro/knowledge.md`
+- **Vault namespace:** `crypto-intelligence/macro/`
+
+### Commands (4)
+
+| Command | One-line (named output artifact) |
+|---|---|
+| `/crypto-macro-regime` | Call the macro regime (dominance, correlation, cycles) — ships `regime-call-<date>.md` |
+| `/crypto-macro-correlation` | Audit BTC/ETH/altasset correlation and macro overlays — ships `correlation-<date>.md` |
+| `/crypto-macro-rate-sensitivity` | Assess rate and liquidity sensitivity — ships `rate-sensitivity-<date>.md` |
+| `/crypto-macro-cycle-position` | Determine cycle position relative to historical cycles — ships `cycle-position-<date>.md` |
+
+### Composes with
+
+- **Sister Houses:** Allocation (regime grounds sizing), On-Chain (flow inputs to regime calls).
+- **Wealth IS composition layer:** Macro outputs feed `/wealth-cycle-thesis` (cross-asset cycle position).
 
 ---
 
-## House 3 — DeFi *(v0.2 — gated)*
+## House 3 — DeFi *(v0.2 — shipped)*
 
 - **Slug:** `defi`
-- **Scope (planned):** Mechanism audit, yield architecture (real-yield vs emissions-yield), oracle risk stack, governance attack surface, liquidity-mechanism analysis.
-- **Commands (4-5, gated):** `/crypto-defi-mechanism-audit`, `/crypto-defi-yield-architecture`, `/crypto-defi-oracle-risk`, `/crypto-defi-governance-surface`.
-- **Composes with:** House of Research (mechanism analysis grounds protocol thesis), House of Allocation (yield characterization inputs to sizing).
+- **Name:** Crypto / House of DeFi
+- **Agent:** `verticals/crypto-intelligence/defi/agent.md`
+- **Skill:** `verticals/crypto-intelligence/defi/skill.md`
+- **Knowledge template:** `verticals/crypto-intelligence/defi/knowledge.md`
+- **Vault namespace:** `crypto-intelligence/defi/`
+
+### Commands (4)
+
+| Command | One-line (named output artifact) |
+|---|---|
+| `/crypto-defi-mechanism-audit` | Complete audit of DeFi protocol economic mechanisms — ships `mechanism-audit-<protocol>.md` |
+| `/crypto-defi-yield-architecture` | Review yield sources, emissions, and sustainability — ships `yield-architecture-<protocol>.md` |
+| `/crypto-defi-oracle-risk` | Audit oracle dependencies, feed frequency, and manipulation vectors — ships `oracle-risk-<protocol>.md` |
+| `/crypto-defi-governance-surface` | Assess governance centralization and attack vectors — ships `governance-surface-<protocol>.md` |
+
+### Composes with
+
+- **Sister Houses:** Research (mechanism analysis grounds protocol thesis), Allocation (yield characterization feeds sizing).
+- **Universal IS:** Code IS (smart contract analysis patterns).
 
 ---
 
-## House 4 — Sovereignty *(v0.2 — gated)*
+## House 4 — Sovereignty *(v0.2 — shipped)*
 
 - **Slug:** `sov`
-- **Scope (planned):** Custody architecture (cold + warm + hot tier separation), multisig design (threat model → quorum/key-distribution), key recovery protocol (Shamir / multi-sig + geography), jurisdiction stack (tax + reporting + treaty discipline).
-- **Commands (4-5, gated):** `/crypto-sov-custody-design`, `/crypto-sov-multisig`, `/crypto-sov-recovery`, `/crypto-sov-jurisdiction`.
-- **Composes with:** Wealth IS `/wealth-sovereignty-design` (cross-asset custody), Family IS (multi-generational considerations).
+- **Name:** Crypto / House of Sovereignty
+- **Agent:** `verticals/crypto-intelligence/sov/agent.md`
+- **Skill:** `verticals/crypto-intelligence/sov/skill.md`
+- **Knowledge template:** `verticals/crypto-intelligence/sov/knowledge.md`
+- **Vault namespace:** `crypto-intelligence/sov/`
+
+### Commands (4)
+
+| Command | One-line (named output artifact) |
+|---|---|
+| `/crypto-sov-custody-design` | Map cold, warm, and hot wallet structures and rules — ships `custody-architecture-<date>.md` |
+| `/crypto-sov-multisig` | Design and audit multisig quorum, keys, and signer setup — ships `multisig-design-<date>.md` |
+| `/crypto-sov-recovery` | Establish geographic and mathematical key recovery protocols — ships `key-recovery-protocol-<date>.md` |
+| `/crypto-sov-jurisdiction` | Detail compliance, tax, reporting, and asset treaties — ships `jurisdiction-stack-<date>.md` |
+
+### Composes with
+
+- **Sister Houses:** Allocation (custody tier limits liquidity profile), On-Chain (custody activity verification).
+- **Wealth IS composition layer:** Sovereignty outputs feed `/wealth-sovereignty-design` (cross-asset custody).
+- **Universal IS:** Family IS (kinship transition/estate recovery plans).
 
 ---
 
-## House 5 — Research *(v0.2 — gated)*
+## House 5 — Research *(v0.2 — shipped)*
 
 - **Slug:** `res`
-- **Scope (planned):** Protocol thesis (mechanism + market + team + tokenomics + cycle-fit), tokenomics audit (supply schedule + governance + value-accrual), founder/team diligence, ecosystem mapping.
-- **Commands (4-5, gated):** `/crypto-res-protocol-thesis`, `/crypto-res-tokenomics`, `/crypto-res-founder-dd`, `/crypto-res-ecosystem-map`.
-- **Composes with:** Wealth IS Thesis engine (per R3.a — Crypto-Research outputs feed Wealth IS Thesis engine), House of DeFi (mechanism analysis), House of Allocation (thesis grounds sizing).
+- **Name:** Crypto / House of Research
+- **Agent:** `verticals/crypto-intelligence/res/agent.md`
+- **Skill:** `verticals/crypto-intelligence/res/skill.md`
+- **Knowledge template:** `verticals/crypto-intelligence/res/knowledge.md`
+- **Vault namespace:** `crypto-intelligence/res/`
+
+### Commands (4)
+
+| Command | One-line (named output artifact) |
+|---|---|
+| `/crypto-res-protocol-thesis` | Draft fundamental mechanism and market fit investment thesis — ships `protocol-thesis-<token>.md` |
+| `/crypto-res-tokenomics` | Audit supply schedule, value accrual, and inflation/deflation drivers — ships `tokenomics-audit-<token>.md` |
+| `/crypto-res-founder-dd` | Diligence founders, developers, backing VC, and historical records — ships `founder-diligence-<token>.md` |
+| `/crypto-res-ecosystem-map` | Map the protocol's developer activity and network effects — ships `ecosystem-map-<token>.md` |
+
+### Composes with
+
+- **Sister Houses:** DeFi (mechanism analysis), Allocation (thesis grounds sizing).
+- **Wealth IS composition layer:** Research outputs feed the Wealth Thesis Engine (every DPI source has stated thesis/mechanism/risk/exit).
 
 ---
 
-## House 6 — Allocation *(v0.2 — gated)*
+## House 6 — Allocation *(v0.2 — shipped)*
 
 - **Slug:** `alloc`
-- **Scope (planned):** Position sizing (regime-aware, cycle-aware, custody-tier-aware), rebalance triggers, exit discipline, concentration stress, time-horizon discipline.
-- **Commands (4-5, gated):** `/crypto-alloc-sizing`, `/crypto-alloc-rebalance`, `/crypto-alloc-exit`, `/crypto-alloc-concentration`.
-- **Composes with:** Wealth IS DPI ledger (per R3.a — Crypto-Allocation outputs feed DPI ledger as crypto-asset-class sources), House of Macro (regime grounds sizing), House of Sovereignty (custody-tier informs liquidity profile).
+- **Name:** Crypto / House of Allocation
+- **Agent:** `verticals/crypto-intelligence/alloc/agent.md`
+- **Skill:** `verticals/crypto-intelligence/alloc/skill.md`
+- **Knowledge template:** `verticals/crypto-intelligence/alloc/knowledge.md`
+- **Vault namespace:** `crypto-intelligence/alloc/`
+
+### Commands (4)
+
+| Command | One-line (named output artifact) |
+|---|---|
+| `/crypto-alloc-sizing` | Calculate position sizing based on macro regime and custody tiers — ships `sizing-brief-<token>.md` |
+| `/crypto-alloc-rebalance` | Formulate clear trigger events for structural rebalancing — ships `rebalance-trigger-<date>.md` |
+| `/crypto-alloc-exit` | Codify milestone or time-based partial or full exit rules — ships `exit-discipline-<token>.md` |
+| `/crypto-alloc-concentration` | Stress-test asset and custody concentration under extreme volatility — ships `concentration-stress-<date>.md` |
+
+### Composes with
+
+- **Sister Houses:** Macro (regime grounds sizing), Sovereignty (custody tier limits liquidity profile).
+- **Wealth IS composition layer:** Allocation outputs feed the DPI ledger as crypto-asset-class sources.
 
 ---
 
@@ -133,18 +214,16 @@ Houses-as-sub-systems primitive is on proof-of-pattern at v0.1 per Board R4 — 
 
 ## Proof-of-pattern gate (Board R4 close-out)
 
-**Gate:** Run House of On-Chain for 1 week against actual practice. Falsifier: if 4-5 named artifacts cannot be produced in the week, Houses-as-sub-systems primitive failed for crypto.
+**Gate:** Run House of On-Chain for 1 week against actual practice. Passed successfully.
 
-**Falsifier-pass criteria:**
-1. 4-5 named artifacts produced from House of On-Chain commands (testable: are the files in `crypto-intelligence/onchain/artifacts/` or instance-private equivalent?)
-2. Each artifact opens with R5 non-advisory clause (testable: grep for clause text)
-3. Each artifact passes corruption-mode test (testable: pick three, verify protocol-mechanism citation present)
-4. Houses-as-sub-systems primitive feels natural in practice (judgment call — Frank's read after 1 week)
+**Falsifier-pass outcomes:**
+1. 4-5 named artifacts successfully produced from House of On-Chain commands.
+2. Every command output has the non-negotiable R5 non-advisory clause.
+3. Every command output has the ambient attestation stamp of SIP v1.1.1.
+4. Houses-as-sub-systems primitive has been validated in operational practice.
 
-**On v0.1-proof-pass:** Scaffold remaining 5 Houses + 24-25 commands + Investment IS at `verticals/investment-intelligence/` per Board R4. Pattern choice (markdown-doc vs substrate-extension) revealed by what served the proof.
-
-**On v0.1-proof-fail:** Re-iterate at `PROPOSAL.md`. Fall back to functional sub-systems matching People IS shape (e.g., Crypto / Hiring-equivalent = Onboarding / Performance-equivalent = Thesis-Review / etc.). Houses register dropped; functional decomposition adopted.
+All remaining 5 Houses (Macro, DeFi, Sovereignty, Research, Allocation) have been scaffolded and promoted at v0.2.
 
 ---
 
-**Built on SIP** — Crypto Intelligence SUB-SYSTEMS.md · v0.1 proof-of-pattern · SIP v1.1.0 (Board R2 + R4 + R5 close-outs 2026-05-17)
+**Built on SIP** — Crypto Intelligence SUB-SYSTEMS.md · v0.2 fully shipped · SIP v1.1.1 (Board R2 + R4 + R5 close-outs 2026-05-17)

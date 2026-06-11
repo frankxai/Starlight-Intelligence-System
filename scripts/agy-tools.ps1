@@ -1,45 +1,591 @@
-# Antigravity CLI wrappers — engineer-grid parity with cla/ga/cda/oaa/cura.
-# Pattern mirrors Microsoft.PowerShell_profile.ps1 (Documents primary).
-# Sourced from OneDrive\Dokumente\PowerShell\Microsoft.PowerShell_profile.ps1.
+# ==============================================================================
+# Starlight Intelligence System — Premium Antigravity CLI Integration
+# ==============================================================================
+# Built on SIP · Idempotent · Windows-optimized
+# Provides high-velocity YOLO terminal operations for the 25 local repos.
+#
+# To activate, ensure this is sourced in your $PROFILE:
+#   . "$HOME\starlight\repos\Starlight-Intelligence-System\scripts\agy-tools.ps1"
+# ==============================================================================
 
-function Invoke-Agy {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory=$true)][string]$RepoName,
-        [Parameter(Mandatory=$true)][string]$RepoPath,
-        [string]$Color = "Cyan",
-        [Parameter(ValueFromRemainingArguments)][string[]]$Rest
-    )
-
-    Write-Host ""
-    Write-Host "   [ENGINEER] Launching Antigravity in $RepoName..." -ForegroundColor $Color
-    Write-Host "   Focus: Gemini-3 agentic IDE / async exec / browser control" -ForegroundColor DarkGray
-    Write-Host "   Path: $RepoPath" -ForegroundColor DarkGray
-    Write-Host ""
-
-    if (-not (Test-Path -LiteralPath $RepoPath)) {
-        Write-Host "   [ERROR] Path not found: $RepoPath" -ForegroundColor Red
-        return
+# Force console UTF-8 support
+try {
+    if ([Console]::OutputEncoding.CodePage -ne 65001) {
+        [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+        $OutputEncoding = [System.Text.UTF8Encoding]::new()
     }
-    if (-not (Get-Command agy -ErrorAction SilentlyContinue)) {
-        Write-Host "   [ERROR] agy not on PATH. Install Antigravity CLI then re-source profile." -ForegroundColor Red
-        return
-    }
+} catch {}
 
-    Set-Location -LiteralPath $RepoPath
-    agy --dangerously-skip-permissions @Rest
+$global:AGY_EXE_PATH = "C:\Users\frank\AppData\Local\agy\bin\agy.exe"
+$global:REPOS_ROOT = "C:\Users\frank\starlight\repos"
+
+if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
+    $global:STARLIGHT_REPO_SHORTCUTS = [ordered]@{
+        sis        = "Starlight-Intelligence-System"
+        starlight  = "Starlight-Intelligence-System"
+        fx         = "FrankX"
+        frankx     = "FrankX"
+        arc        = "arcanea-ecosystem"
+        arcanea    = "arcanea-ecosystem"
+        app        = "arcanea-ai-app"
+        claw       = "arcanea-claw"
+        orchestrator = "arcanea-orchestrator"
+        studio     = "arcanea-studio"
+        author     = "author-os"
+        aco        = "agentic-creator-os"
+        acos       = "agentic-creator-os"
+        anime      = "AnimeLegends"
+        dpi        = "dpi"
+        website    = "frankx.ai-vercel-website"
+        gencreator = "gencreator.ai"
+        kura       = "kura"
+        doctor     = "mcp-doctor"
+        peak       = "peak-performance"
+        engine     = "prompt-engine"
+        prompts    = "prompt-library"
+        brain      = "second-brain-os"
+        cockpit    = "sentinel-swarm-cockpit"
+        swarm      = "starlight-swarm"
+        suno       = "suno-mcp-server"
+        visual     = "visual-intelligence"
+        clconfig   = "claude-code-config"
+        clhooks    = "claude-code-hooks"
+        clskills   = "claude-skills-library"
+    }
 }
 
-# Repo wrappers — mirror cla/ga/cda/oaa/cura naming convention.
-# Add new entries as new repos enter the engineer grid.
-function agya   { Invoke-Agy -RepoName "Arcanea"      -RepoPath "$HOME\Arcanea"                       -Color Cyan    @args }
-function agysis { Invoke-Agy -RepoName "SIS"          -RepoPath "$HOME\Starlight-Intelligence-System" -Color Cyan    @args }
-function agyfx  { Invoke-Agy -RepoName "FrankX"       -RepoPath "$HOME\FrankX"                        -Color Magenta @args }
-function agyg   { Invoke-Agy -RepoName "GenCreator"   -RepoPath "$HOME\gencreator.ai"                 -Color Yellow  @args }
-function agyvc  { Invoke-Agy -RepoName "Vibeclubs"    -RepoPath "$HOME\vibeclubs.ai"                  -Color Yellow  @args }
-function agyani { Invoke-Agy -RepoName "AnimeLegends" -RepoPath "$HOME\AnimeLegends.ai"               -Color Magenta @args }
-function agydpi { Invoke-Agy -RepoName "DPI"          -RepoPath "$HOME\dpi"                           -Color Cyan    @args }
-# NO Business wrapper by design: ~/Business is the off-limits private wealth repo
-# (global CLAUDE.md Doctrine 0 item 6). Never pair it with --dangerously-skip-permissions.
+function Get-StarlightRepo {
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
+        [string]$RepoKey,
+        [switch]$Silent
+    )
 
-Write-Host "Antigravity wrappers loaded: agya | agysis | agyfx | agyg | agyvc | agyani | agydpi" -ForegroundColor DarkCyan
+    if (-not (Test-Path $global:REPOS_ROOT)) {
+        if (-not $Silent) { Write-Error "Repository root does not exist: $global:REPOS_ROOT" }
+        return $null
+    }
+
+    $key = $RepoKey.Trim()
+    if ($global:STARLIGHT_REPO_SHORTCUTS.Contains($key.ToLowerInvariant())) {
+        $mappedPath = Join-Path $global:REPOS_ROOT $global:STARLIGHT_REPO_SHORTCUTS[$key.ToLowerInvariant()]
+        if (Test-Path $mappedPath) {
+            return Get-Item $mappedPath
+        }
+    }
+
+    $dirs = Get-ChildItem -Path $global:REPOS_ROOT -Directory
+    $match = $dirs | Where-Object { $_.Name -ieq $key } | Select-Object -First 1
+
+    if (-not $match) {
+        $match = $dirs | Where-Object { $_.Name.StartsWith($key, [System.StringComparison]::OrdinalIgnoreCase) } | Select-Object -First 1
+    }
+
+    if (-not $match) {
+        $match = $dirs | Where-Object { $_.Name -ilike "*$key*" } | Select-Object -First 1
+    }
+
+    if (-not $match) {
+        if (-not $Silent) { Write-Error "Could not resolve repository key '$RepoKey' inside $global:REPOS_ROOT." }
+        return $null
+    }
+
+    return $match
+}
+
+function Show-StarlightRepos {
+    param(
+        [string]$Verb = "run"
+    )
+
+    Write-Host "Available repositories to ${Verb}:" -ForegroundColor Cyan
+    Get-ChildItem -Path $global:REPOS_ROOT -Directory | Sort-Object Name | ForEach-Object {
+        Write-Host "  - $($_.Name)" -ForegroundColor DarkGray
+    }
+    Write-Host ""
+    Write-Host "Useful keys: sis, fx, arc, app, claw, studio, author, aco, prompts, brain, cockpit, swarm, visual" -ForegroundColor DarkCyan
+}
+
+# Helper: Invoke agy with YOLO mode in a target path, optionally seeding a prompt
+function Invoke-AgyYolo {
+    param(
+        [string]$TargetPath,
+        [string]$Prompt
+    )
+
+    if (-not (Test-Path $TargetPath)) {
+        Write-Error "Target repository path does not exist: $TargetPath"
+        return
+    }
+
+    if (-not (Test-Path $global:AGY_EXE_PATH)) {
+        Write-Error "Antigravity CLI not found at: $global:AGY_EXE_PATH"
+        return
+    }
+
+    # Switch location
+    Set-Location $TargetPath
+    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
+
+    if ($Prompt) {
+        Write-Host "🚀 Spawning YOLO Agent with pre-seeded prompt: '$Prompt'" -ForegroundColor Green
+        & $global:AGY_EXE_PATH --dangerously-skip-permissions --prompt-interactive $Prompt
+    } else {
+        Write-Host "🚀 Spawning YOLO Agent (interactive)..." -ForegroundColor Green
+        & $global:AGY_EXE_PATH --dangerously-skip-permissions
+    }
+}
+
+# ------------------------------------------------------------------------------
+# Dedicated Wrappers
+# ------------------------------------------------------------------------------
+
+# agy-sis: Starlight Intelligence System YOLO
+function agy-sis {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "sis"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+# agy-fx: FrankX YOLO
+function agy-fx {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "fx"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+# agy-arc: Arcanea Ecosystem YOLO
+function agy-arc {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "arc"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-app {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "app"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-studio {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "studio"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-brain {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "brain"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-prompts {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "prompts"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-acos {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "acos"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+# Alias for convenience
+Set-Alias -Name arcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agysis -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyfx -Value agy-fx -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyarc -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyapp -Value agy-app -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agystudio -Value agy-studio -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agybrain -Value agy-brain -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyprompts -Value agy-prompts -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyacos -Value agy-acos -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyaco -Value agy-acos -Scope Global -Force -ErrorAction SilentlyContinue
+
+# ------------------------------------------------------------------------------
+# Generalized Fuzzy Conductor
+# ------------------------------------------------------------------------------
+
+# agy-run: Dynamic lookup and run YOLO in any of the 25 repos
+function agy-run {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$RepoKey,
+        [Parameter(Mandatory=$false, Position=1)]
+        [string]$Prompt
+    )
+
+    if (-not $RepoKey) {
+        Show-StarlightRepos -Verb "run Antigravity in"
+        Write-Host "Usage: agy-run <repo-key> [prompt]" -ForegroundColor DarkCyan
+        return
+    }
+
+    $match = Get-StarlightRepo $RepoKey
+    if (-not $match) { return }
+
+    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    Invoke-AgyYolo -TargetPath $match.FullName -Prompt $Prompt
+}
+
+# Global short aliases
+Set-Alias -Name ay -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-yolo -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
+
+# Helper: Invoke Claude Code in a target path in YOLO mode
+function Invoke-ClaudeYolo {
+    param(
+        [string]$TargetPath
+    )
+
+    if (-not (Test-Path $TargetPath)) {
+        Write-Error "Target repository path does not exist: $TargetPath"
+        return
+    }
+
+    # Resolve local path
+    $claudeExe = "C:\Users\frank\.local\bin\claude.exe"
+    if (-not (Test-Path $claudeExe)) {
+        $claudeExe = "claude"
+    }
+
+    # Switch location
+    Set-Location $TargetPath
+    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
+    Write-Host "🚀 Spawning Claude Code YOLO Agent..." -ForegroundColor Green
+    & $claudeExe --dangerously-skip-permissions
+}
+
+function Invoke-CodexInRepo {
+    param(
+        [string]$TargetPath
+    )
+
+    if (-not (Test-Path $TargetPath)) {
+        Write-Error "Target repository path does not exist: $TargetPath"
+        return
+    }
+
+    $codexPath = "C:\Users\frank\AppData\Roaming\npm\codex.ps1"
+    if (-not (Test-Path $codexPath)) {
+        $codexPath = "codex"
+    }
+
+    Set-Location $TargetPath
+    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
+    Write-Host "🚀 Spawning Codex..." -ForegroundColor Green
+    & $codexPath
+}
+
+# Helper: Invoke Grok in a target path in YOLO mode
+function Invoke-GrokYolo {
+    param(
+        [string]$TargetPath
+    )
+
+    if (-not (Test-Path $TargetPath)) {
+        Write-Error "Target repository path does not exist: $TargetPath"
+        return
+    }
+
+    $grokExe = "C:\Users\frank\.grok\bin\grok.exe"
+    if (-not (Test-Path $grokExe)) {
+        $grokExe = "grok"
+    }
+
+    Set-Location $TargetPath
+    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
+    Write-Host "🚀 Spawning Grok YOLO Agent..." -ForegroundColor Green
+    & $grokExe --always-approve
+}
+
+# Dedicated wrappers for Claude Code
+function clsis {
+    $repo = Get-StarlightRepo "sis"
+    if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+}
+
+function clfx {
+    $repo = Get-StarlightRepo "fx"
+    if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+}
+
+function clarc {
+    $repo = Get-StarlightRepo "arc"
+    if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+}
+
+function clapp {
+    $repo = Get-StarlightRepo "app"
+    if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+}
+
+function clstudio {
+    $repo = Get-StarlightRepo "studio"
+    if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+}
+
+function clbrain {
+    $repo = Get-StarlightRepo "brain"
+    if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+}
+
+function clprompts {
+    $repo = Get-StarlightRepo "prompts"
+    if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+}
+
+function clacos {
+    $repo = Get-StarlightRepo "acos"
+    if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+}
+
+# Dedicated wrappers for Codex in repo context
+function cd-sis {
+    $repo = Get-StarlightRepo "sis"
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+}
+
+function cd-fx {
+    $repo = Get-StarlightRepo "fx"
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+}
+
+function cd-arc {
+    $repo = Get-StarlightRepo "arc"
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+}
+
+function cd-app {
+    $repo = Get-StarlightRepo "app"
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+}
+
+function cd-studio {
+    $repo = Get-StarlightRepo "studio"
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+}
+
+function cd-brain {
+    $repo = Get-StarlightRepo "brain"
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+}
+
+function cd-prompts {
+    $repo = Get-StarlightRepo "prompts"
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+}
+
+function cd-acos {
+    $repo = Get-StarlightRepo "acos"
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+}
+
+# General fuzzy lookup for Claude Code YOLO
+function cl-run {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$RepoKey
+    )
+
+    if (-not $RepoKey) {
+        Show-StarlightRepos -Verb "run Claude Code in"
+        Write-Host "`nUsage: cl-run <repo-key>" -ForegroundColor DarkCyan
+        return
+    }
+
+    $match = Get-StarlightRepo $RepoKey
+    if (-not $match) { return }
+
+    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    Invoke-ClaudeYolo -TargetPath $match.FullName
+}
+
+# General fuzzy lookup for Codex
+function cd-run {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$RepoKey
+    )
+
+    if (-not $RepoKey) {
+        Show-StarlightRepos -Verb "run Codex in"
+        Write-Host "`nUsage: cd-run <repo-key>" -ForegroundColor DarkCyan
+        return
+    }
+
+    $match = Get-StarlightRepo $RepoKey
+    if (-not $match) { return }
+
+    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    Invoke-CodexInRepo -TargetPath $match.FullName
+}
+
+Set-Alias -Name cdsis -Value cd-sis -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cdfx -Value cd-fx -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cdarc -Value cd-arc -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cdapp -Value cd-app -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cdstudio -Value cd-studio -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cdbrain -Value cd-brain -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cdprompts -Value cd-prompts -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cdacos -Value cd-acos -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cdaco -Value cd-acos -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cx -Value cd-run -Scope Global -Force -ErrorAction SilentlyContinue
+
+# Intelligent cl wrapper: cl with no args launches Claude in CURRENT folder, cl <repo> launches in target repo
+function cl-intelligent {
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)]
+        [string[]]$ArgsList
+    )
+    if ($ArgsList.Count -eq 0) {
+        $claudeExe = "C:\Users\frank\.local\bin\claude.exe"
+        if (-not (Test-Path $claudeExe)) { $claudeExe = "claude" }
+        & $claudeExe
+    } else {
+        cl-run ($ArgsList -join ' ')
+    }
+}
+Remove-Item -Path Alias:cl -ErrorAction SilentlyContinue
+Set-Alias -Name cl -Value cl-intelligent -Scope Global -Force -ErrorAction SilentlyContinue
+
+# Intelligent cd wrapper: cd with no args launches codex, cd <path> changes directory
+function cd-intelligent {
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)]
+        [string[]]$PathArgs
+    )
+    if ($PathArgs.Count -eq 0) {
+        $codexPath = "C:\Users\frank\AppData\Roaming\npm\codex.ps1"
+        if (-not (Test-Path $codexPath)) {
+            $codexPath = "codex"
+        }
+        & $codexPath
+    } else {
+        $target = $PathArgs -join ' '
+        $target = $target.Trim('"').Trim("'")
+        if (Test-Path $target) {
+            Set-Location $target
+        } elseif ($repo = Get-StarlightRepo $target -Silent) {
+            Set-Location $repo.FullName
+        } else {
+            if (Get-Command __zoxide_z -ErrorAction SilentlyContinue) {
+                __zoxide_z $target
+            } else {
+                Set-Location $target
+            }
+        }
+    }
+}
+Remove-Item -Path Alias:cd -ErrorAction SilentlyContinue
+Set-Alias -Name cd -Value cd-intelligent -Scope Global -Force -ErrorAction SilentlyContinue
+
+# Dedicated wrappers for Grok in repo context
+function gr-sis {
+    $repo = Get-StarlightRepo "sis"
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+}
+
+function gr-fx {
+    $repo = Get-StarlightRepo "fx"
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+}
+
+function gr-arc {
+    $repo = Get-StarlightRepo "arc"
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+}
+
+function gr-app {
+    $repo = Get-StarlightRepo "app"
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+}
+
+function gr-studio {
+    $repo = Get-StarlightRepo "studio"
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+}
+
+function gr-brain {
+    $repo = Get-StarlightRepo "brain"
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+}
+
+function gr-prompts {
+    $repo = Get-StarlightRepo "prompts"
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+}
+
+function gr-acos {
+    $repo = Get-StarlightRepo "acos"
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+}
+
+# General fuzzy lookup for Grok YOLO
+function gr-run {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$RepoKey
+    )
+
+    if (-not $RepoKey) {
+        Show-StarlightRepos -Verb "run Grok in"
+        Write-Host "`nUsage: gr-run <repo-key>" -ForegroundColor DarkCyan
+        return
+    }
+
+    $match = Get-StarlightRepo $RepoKey
+    if (-not $match) { return }
+
+    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    Invoke-GrokYolo -TargetPath $match.FullName
+}
+
+# Grok aliases
+Set-Alias -Name grsis -Value gr-sis -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gksis -Value gr-sis -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name grfx -Value gr-fx -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gkfx -Value gr-fx -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name grarc -Value gr-arc -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gkarc -Value gr-arc -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name grapp -Value gr-app -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gkapp -Value gr-app -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name grstudio -Value gr-studio -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gkstudio -Value gr-studio -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name grbrain -Value gr-brain -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gkbrain -Value gr-brain -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name grprompts -Value gr-prompts -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gkprompts -Value gr-prompts -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gracos -Value gr-acos -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name graco -Value gr-acos -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gkacos -Value gr-acos -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gkaco -Value gr-acos -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gx -Value gr-run -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name gk -Value gr-run -Scope Global -Force -ErrorAction SilentlyContinue
+
+# Intelligent gr wrapper: gr with no args launches grok in current folder, gr <repo> launches in target repo
+function gr-intelligent {
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)]
+        [string[]]$ArgsList
+    )
+    if ($ArgsList.Count -eq 0) {
+        $grokExe = "C:\Users\frank\.grok\bin\grok.exe"
+        if (-not (Test-Path $grokExe)) { $grokExe = "grok" }
+        & $grokExe
+    } else {
+        gr-run ($ArgsList -join ' ')
+    }
+}
+Remove-Item -Path Alias:gr -ErrorAction SilentlyContinue
+Set-Alias -Name gr -Value gr-intelligent -Scope Global -Force -ErrorAction SilentlyContinue
+
+if ($env:FRANK_QUIET_PROFILE -ne '1') {
+    Write-Host 'Antigravity YOLO wrappers loaded: agy-sis/agysis | agy-fx/agyfx | agy-arc/agyarc | agy-app/agyapp | agy-acos/agyacos | agy-run(ay)' -ForegroundColor Green
+    Write-Host 'Claude Code, Codex & Grok integrations active:' -ForegroundColor Green
+    Write-Host '  - cl / cd / gr (launches agent in current folder)' -ForegroundColor DarkGray
+    Write-Host '  - cl <repo> / clsis / clfx / clarc / clapp / clstudio / clbrain / clprompts / clacos' -ForegroundColor DarkGray
+    Write-Host '  - cd <repo> / cdsis / cdfx / cdarc / cdapp / cdstudio / cdbrain / cdprompts / cdacos' -ForegroundColor DarkGray
+    Write-Host '  - gr <repo> / grsis / grfx / grarc / grapp / grstudio / grbrain / grprompts / gracos (or gk*)' -ForegroundColor DarkGray
+}

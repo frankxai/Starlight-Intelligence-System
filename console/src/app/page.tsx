@@ -73,8 +73,12 @@ export default function LandingPage() {
         {/* Bottom — protocol link */}
         <footer className="mt-16 border-t border-white/[0.06] pt-6">
           <div className="flex flex-wrap items-center justify-between gap-3 text-[12px] text-slate-500">
-            <span className="font-mono uppercase tracking-widest">
+            <span className="flex items-center gap-3 font-mono uppercase tracking-widest">
               starlight console v0.1
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-black/30 px-2.5 py-1 normal-case tracking-normal backdrop-blur-sm">
+                <kbd className="text-[11px] text-slate-300">⌘K</kbd>
+                <span className="text-[11px] text-slate-500">jump to node</span>
+              </span>
             </span>
             <a
               href="https://starlightintelligence.org/protocol"

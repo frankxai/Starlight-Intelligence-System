@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "_comment": "Antigravity platform adapter + swarm harness MCP scope for Starlight Intelligence System. Native support for multi-agent subagent swarms via Antigravity primitives (define_subagent, invoke_subagent, Agent Manager). Canonical starlight-substrate always loaded. Swarm children are read-heavy + progress emitters; conductor carries scoped write surfaces. Built on SIP — see footer.",
+  "_harness": "antigravity",
+  "_role": "swarm-execution + agent-swarm-native",
+  "_loaded_when": "Complex multi-perspective work (4-10 complexity), parallel agent orchestration, browser-heavy tasks, async long-running flows, when Antigravity YOLO or Agent Manager is the velocity lever. Full Hive (13-96) for cross-IS or vertical-wide intents.",
+  "_write_policy": "Swarm children: read + progress artifacts only. Conductor / prime / sentinel: scoped writes to intel/ outputs, vault entries under memory/vaults/, and agent-manager artifacts. Substrate-tier writes still require /starlight-board pre-pass and ultimately route through Claude Code primary harness unless explicitly scoped.",
+  "mcpServers": {
+    "starlight-substrate": {
+      "_role": "canonical — always loaded for swarm context, memory, attestation, IS namespace",
+      "_purpose": "Vault reads (strategic/technical/creative/operational), agent registry discovery, skill activation lookup, attestation generation for every swarm artifact, memory graph queries for historical patterns across the agent registry",
+      "command": "node",
+      "args": [
+        "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
+      ],
+      "env": {
+        "STARLIGHT_MCP_MODE": "swarm-aware",
+        "STARLIGHT_MCP_BREADTH": "full",
+        "STARLIGHT_MCP_SWARM": "true"
+      }
+    },
+    "arcanea-mcp": {
+      "_role": "canon-read for Arcanea-touched swarms — READ + creative write under guardian rules",
+      "_purpose": "Arcanea canon (Guardians, Vel'Tara, Passport, realm vocabulary) when swarm includes music-is / arcanea vertical agents or luminor-board work",
+      "_status": "scaffold — wire when Arcanea MCP server lands; Phase 1 dependency",
+      "command": "node",
+      "args": [
+        "${ARCANEA_MCP_PATH}"
+      ],
+      "env": {
+        "ARCANEA_CANON_PATH": "${ARCANEA_CANON_PATH}",
+        "ARCANEA_MCP_MODE": "swarm"
+      },
+      "_disabled_until": "arcanea-mcp v0.1+ ships"
+    }
+  },
+  "_task_scoped_mcps": {
+    "_comment": "Declared per-swarm via Antigravity session config or parent orchestrator /ao. Swarm children get read-only subsets by default. Conductor may activate write verbs under pre-approved scope.",
+    "examples": {
+      "github_read_write_scoped": {
+        "_purpose": "multi-repo coordination for swarm members working across FrankX / Arcanea / SIS / vertical forks",
+        "_pattern": "gh repo view, pr list/diff/view, release list; gh pr create/comment only under conductor + board scope",
+        "_load_when": "cross-repo swarm (e.g. porting a pattern from SIS to a vertical)"
+      },
+      "vercel_scoped": {
+        "_purpose": "deploy status + preview for creator / site vertical swarms",
+        "_pattern": "list projects, list deployments, deploy under explicit /ao scope only",
+        "_load_when": "site/ or gencreator vertical work in swarm"
+      },
+      "linear": {
+        "_purpose": "alliance / cycle tracking when swarm crosses team boundaries",
+        "_pattern": "list_*, get_* for children; save_* only for conductor under scope",
+        "_load_when": "alliance-tier or cross-party swarm"
+      },
+      "notion": {
+        "_purpose": "Ops Hub + daily brief surfaces for operational swarm members",
+        "_pattern": "fetch, search for all; create/update only for conductor + ops vertical",
+        "_load_when": "operational swarm or handover"
+      },
+      "browser_mirror": {
+        "_purpose": "Antigravity native browser already provides; MCP Google/Drive/Figma mirrors for vault parity + design context",
+        "_pattern": "read/search/list for children; writes gated",
+        "_load_when": "web verticals, sync licensing, live testing, design sync"
+      }
+    }
+  },
+  "_secrets_policy": {
+    "_comment": "Antigravity swarms never default to secrets. Conductor may receive env-var refs (${VERCEL_TOKEN}) under explicit user or /ao unlock for that swarm only. Leaf agents never see secrets. Any secret need surfaces to Claude Code primary.",
+    "secrets_allowed": false,
+    "env_var_refs_only": true,
+    "conductor_unlock_required": true
+  },
+  "_swarm_specific": {
+    "define_subagent_mcp": "Subagent definitions may carry their own lightweight MCP stubs for domain tools (e.g. music-suno, sound-catalog) — registered at define time, cleaned on swarm close.",
+    "progress_artifact_mcp": "Antigravity progress artifacts (todo, report, trace) are emitted directly; optional MCP bridge for persisting them to memory/vaults/ under attestation.",
+    "agent_manager_hooks": "on_subagent_start, on_progress, on_complete, on_error — wire to memory/_audit/swarm/ and ops logs for full traceability."
+  },
+  "_built_on_sip": {
+    "substrate": "starlightintelligence.org/protocol",
+    "version": "v1.1.1",
+    "layers_used": ["file-contract", "attestation", "sovereignty", "agent-swarm-registry", "swarm-protocol"],
+    "verticals": ".antigravity (platform) + core/orchestrator/harnesses/antigravity",
+    "generated": "2026-06-02"
+  }
+}

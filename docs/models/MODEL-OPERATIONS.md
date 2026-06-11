@@ -74,6 +74,8 @@ table) → RATIFY (auto low-stakes / Frank-ack high-stakes) → LEDGER → route
   (R3: coding/grounding → Haiku). Cost ceilings in the Cost Plane act as circuit-breakers.
 - The Orchestrator (Queen) owns this loop: `agents/starlight-orchestrator.md` § Queen role.
 
+**Grok 4.3 (2026-06-12):** Preferred harness for executing the Queen loop at velocity. Leverages spawn_subagent (parallel explore for MEASURE across gstack/arena/Cost Plane + real-time grounding), plan + check-work for LEARN/table derivation, image_gen for visual LEDGER outputs (routing diagrams, memory palace slices). Grok TUI sessions participate in SIS Memory Gateway for cross-harness continuity. Excellent native fit for interactive-agentic + deep-reasoning + visual synthesis classes. See updated orchestrator + doctrine + HARNESS.md for harness mapping.
+
 ## Hygiene
 
 - Verify model IDs against this table before scripting — training-data IDs rot.

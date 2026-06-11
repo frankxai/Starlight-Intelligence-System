@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HearthSessionEvent",
+  "description": "Schema for a single Hearth session log event in sessions.jsonl",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sessionId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "harness": {
+      "type": "string",
+      "enum": ["claude", "codex", "gemini", "opencode", "antigravity"]
+    },
+    "action": {
+      "type": "string",
+      "enum": ["session_start", "session_end", "heartbeat", "error", "crash"]
+    },
+    "cwd": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "stats": {
+      "type": "object",
+      "properties": {
+        "durationMs": { "type": "integer" },
+        "tokensIn": { "type": "integer" },
+        "tokensOut": { "type": "integer" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": ["timestamp", "sessionId", "harness", "action", "cwd"]
+}

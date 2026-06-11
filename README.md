@@ -2,9 +2,9 @@
 
 > **The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet.**
 >
-> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 49 agents, 76 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 965 tests keep the claims honest.
+> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 56 agents, 76 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 965 tests keep the claims honest.
 
-[![version](https://img.shields.io/badge/version-8.2.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-8.3.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
@@ -46,7 +46,7 @@ Restart your client: ten `sis_*` tools in every session — the same vaults, fro
 | Layer | What it is | What lives here | License | Adopt how |
 |-------|-----------|-----------------|---------|-----------|
 | **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
-| **Operational (reference build)** | This repo's working implementation: 49 agents (7-archetype council + specialist tiers + Hermes search + evaluator), 6 semantic vaults, 76 auto-activating skills across 15 domains, MCP server, 14 strategic commands + 100+ slash commands, six-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
+| **Operational (reference build)** | This repo's working implementation: 56 named agents (7-archetype council + specialist tiers + Hermes search + evaluator), 6 semantic vaults, 76 auto-activating skills across 15 domains, MCP server, 14 strategic commands + 100+ slash commands, seven-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
@@ -263,6 +263,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
 | Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
 | OpenCode | `AGENTS.md` (compact) | `~/.opencode/config.json` | 128,000 |
+| Antigravity | `.antigravity/` (instructions + swarm-protocol + mcp-config + allowlisted; 2026-06-02 full) + harness at `core/orchestrator/harnesses/antigravity/` | Antigravity agent + agent swarm config | 1,000,000 (Gemini-backed) |
 
 ### The 7 named agents (operational layer)
 
@@ -354,4 +355,4 @@ npm run lint        # tsc --noEmit
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.2.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.3.0 · MIT

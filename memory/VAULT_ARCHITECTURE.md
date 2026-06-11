@@ -288,3 +288,5 @@ it never embeds it.
 This replaces the gitignored-local-only `private/` pattern for memory-class content (operational
 private state, e.g. api-monitor output, stays local in `private/`). Rationale: local-only files
 have no durability or cross-device story — a register file was lost to a local sweep on 2026-06-11.
+
+**Cross-harness (2026-06-12 Grok sync):** The SIS Memory Gateway v0.1 (src/gateway/* + session-store) unifies working memory across harnesses (Claude Code, Grok TUI, Antigravity, etc.) via per-harness namespaces + loopback daemon. Vaults remain the durable substrate. Grok sessions register for seamless /vault + Queen recall. Private mount (separate starlight-private-memory repo) is orthogonal — gateway drops private-tagged results by default. See memory/README.md and src/gateway/protocol.ts.

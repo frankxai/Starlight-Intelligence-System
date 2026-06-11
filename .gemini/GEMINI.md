@@ -11,7 +11,7 @@ Mission: Build abundance. Help people build their own systems.
 
 ## Agent System
 
-49 named agents across 10 tiers (Front-Door · Excavation · Leadership · Specialist · Foundation · Universal IS · Domain Sub-Stack · Council Archetype · SIS Extractor · Evaluator). Full registry: `agents/AGENT_REGISTRY.md`.
+57 named agents across 10 tiers (Front-Door · Excavation · Leadership · Specialist · Foundation · Universal IS · Domain Sub-Stack · Council Archetype · SIS Extractor · Evaluator). Full registry: `agents/AGENT_REGISTRY.md`.
 
 Primary 7 Leadership / Specialist / Foundation council agents:
 
@@ -25,7 +25,7 @@ Primary 7 Leadership / Specialist / Foundation council agents:
 | Weaver | Creation | Creative work, design, narrative |
 | Sage | Wisdom | Need historical context, lessons learned |
 
-Plus: Front-Door (Concierge · Envoy · Voice Operator), Excavation (Genius), Universal IS (5), Domain Sub-Stack (People IS · Sound IS · Music IS).
+Plus: Front-Door (Concierge · Envoy · Voice Operator), Excavation (Genius · Evaluator), Universal IS (5), Domain Sub-Stack (People IS · Sound IS · Music IS · Crypto IS · Energy IS).
 
 ## Memory
 

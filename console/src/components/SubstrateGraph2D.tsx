@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import {
   allNodes,
   edges as graphEdges,
@@ -50,8 +51,16 @@ const NODE_RADIUS = {
 
 export default function SubstrateGraph2D() {
   const containerRef = useRef<HTMLDivElement>(null);
+  // react-force-graph exposes imperative methods (centerAt, zoom) via ref.
+  const fgRef = useRef<{
+    centerAt: (x: number, y: number, ms?: number) => void;
+    zoom: (k: number, ms?: number) => void;
+  } | null>(null);
   const [size, setSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
   const [hovered, setHovered] = useState<GraphNode | null>(null);
+
+  const searchParams = useSearchParams();
+  const focusId = searchParams.get("focus");
 
   // Resize observer — keep canvas matched to container.
   useEffect(() => {
@@ -86,10 +95,18 @@ export default function SubstrateGraph2D() {
     >
       {size.w > 0 && size.h > 0 && (
         <ForceGraph2D
+          ref={fgRef as never}
           graphData={data}
           width={size.w}
           height={size.h}
           backgroundColor="#050509"
+          onEngineStop={() => {
+            if (!focusId) return;
+            const target = data.nodes.find((n) => n.id === focusId);
+            if (target?.x === undefined || target?.y === undefined) return;
+            fgRef.current?.centerAt(target.x, target.y, 700);
+            fgRef.current?.zoom(3.2, 700);
+          }}
           nodeRelSize={6}
           linkColor={() => "rgba(167, 139, 250, 0.18)"}
           linkWidth={(link: unknown) => {
@@ -130,6 +147,15 @@ export default function SubstrateGraph2D() {
             ctx.beginPath();
             ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
             ctx.fill();
+
+            // Focus ring — node arrived at via the ⌘K palette (?focus=<id>).
+            if (n.id === focusId) {
+              ctx.strokeStyle = n.color;
+              ctx.lineWidth = 2 / globalScale;
+              ctx.beginPath();
+              ctx.arc(n.x, n.y, r + 5, 0, Math.PI * 2);
+              ctx.stroke();
+            }
 
             // Inner highlight ring for the core, to differentiate
             if (n.kind === "core") {

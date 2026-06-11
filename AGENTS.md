@@ -33,9 +33,9 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 
 ## What you have access to
 
-- **49 named agents** across 10 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (4) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`) + SIS Extractor (5 — `/sis-forge` Phase 1 only) + Evaluator (1 — Proving Ground + Model Arena). Full registry: `agents/AGENT_REGISTRY.md`.
+- **56 named agents** across 10 tiers — Front-Door (3) + Excavation (2) + Leadership (3) + Specialist (4) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (26 across People + Sound + Music + Energy verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`) + SIS Extractor (5 — `/sis-forge` Phase 1 only). Full registry: `agents/AGENT_REGISTRY.md`.
 - **76 auto-activating skill rules** across 15 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
-- **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion.
+- **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) + **SIS Memory Gateway v0.1** (SessionStore + per-harness loopback daemon + RRF hybrid unification, privacy drop on private tags) + **Memory Engine v0.2** (pluggable embeddings). See memory/README.md, VAULT_ARCHITECTURE.md, src/gateway/*, src/embedding.ts. Dreaming pipeline + CONSOLIDATION_LOG + PROMOTION_QUEUE for observable compounding. Private mount: separate starlight-private-memory repo (2026-06-11).
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
 - **Active Healing Daemon** — Background Sentinel watcher that proactively modernizes the codebase using validated patterns during idle time.
@@ -43,7 +43,7 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 - **10 universal Intelligence Systems** per `STACK.md` (locked v8.0): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + Starlight Orchestrator (master router). Health is cross-cutting.
 - **3 reference Domain Sub-Stack verticals** — People Intelligence · Sound Intelligence · Music IS — each with 4-7 functional sub-systems. Pattern generalizes via `/spawn-domain-stack`.
 - **100+ slash commands** across 4 SIP tiers (protocol / alliance / vertical / sovereign).
-- **6 platform adapters** — Claude Code · Cursor · Codex · Gemini CLI · OpenCode · Antigravity. Same vaults, same memory, different surface.
+- **7 platform adapters + Antigravity agent swarm harness** — Claude Code (primary) · Cursor · Codex (adversary) · Gemini CLI (long-context) · OpenCode (latency) · Antigravity (native agent swarm via define_subagent/invoke_subagent + browser + Agent Manager; full `.antigravity/` + `core/orchestrator/harnesses/antigravity/` enhancement 2026-06-02 with swarm-protocol + mcp + allowlist) · Grok. Same vaults, same memory, SIP attestation, excellence. Antigravity harness for "launch the agent swarm" parallel execution.
 - **6 substrate symmetry harnesses** — v75-v79 + base, plus pre-commit hook gating substrate-touching commits.
 - **Research surface** — Public substrate research at `starlightintelligence.org/research/`. Rubric-locked, Board-gated, SIP-attested. Two artifacts live: 3D memory palace design survey + memory foundations (Phase 0 dog-food chartered, 3-tier model w/ AgentDB tier per Addendum 2). Methodology at `docs/research/_methodology/`.
 
@@ -97,7 +97,7 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (76 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
+Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (76 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (71 files). `EXEMPT_PHANTOMS` ledger drift open: 7 ghost energy agents (`starlight-energy-{buyer,cost,grid,installer,operations,recovery,sizing}`) dispatched by rules but lack agent files — pending resolution per audit 2026-05-28.
 
 | Domain | Surface (sample) |
 |--------|------------------|
