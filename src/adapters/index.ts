@@ -10,6 +10,8 @@ export { CursorAdapter } from './cursor.js';
 export { CodexAdapter } from './codex.js';
 export { GeminiCliAdapter } from './gemini-cli.js';
 export { OpenCodeAdapter } from './opencode.js';
+export { AntigravityAdapter } from './antigravity.js';
+export { GrokAdapter } from './grok.js';
 
 import type { PlatformAdapter, AdapterConfig } from './types.js';
 import { ClaudeCodeAdapter } from './claude-code.js';
@@ -17,6 +19,8 @@ import { CursorAdapter } from './cursor.js';
 import { CodexAdapter } from './codex.js';
 import { GeminiCliAdapter } from './gemini-cli.js';
 import { OpenCodeAdapter } from './opencode.js';
+import { AntigravityAdapter } from './antigravity.js';
+import { GrokAdapter } from './grok.js';
 
 const ADAPTERS: Record<string, new () => PlatformAdapter> = {
   'claude-code': ClaudeCodeAdapter,
@@ -24,12 +28,14 @@ const ADAPTERS: Record<string, new () => PlatformAdapter> = {
   'codex': CodexAdapter,
   'gemini-cli': GeminiCliAdapter,
   'opencode': OpenCodeAdapter,
+  'antigravity': AntigravityAdapter,
+  'grok': GrokAdapter,
 };
 
 /**
  * Create a platform adapter by name.
  *
- * @param platform - One of: claude-code, cursor, codex, gemini-cli, opencode
+ * @param platform - One of: claude-code, cursor, codex, gemini-cli, opencode, grok
  * @param _config - Reserved for future per-adapter overrides
  * @returns A configured PlatformAdapter instance
  * @throws Error if the platform is not recognized
