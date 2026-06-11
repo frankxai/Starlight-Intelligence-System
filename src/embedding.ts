@@ -151,6 +151,32 @@ export class HashingTFProvider implements EmbeddingProvider {
     return Promise.all(texts.map(t => this.embed(t)));
   }
 
+  /**
+   * Synchronous embed — same computation as embed() but without the Promise
+   * wrapper. Safe to call from synchronous contexts (e.g. searchVaults).
+   * Only available on HashingTFProvider (TransformerProvider is always async).
+   */
+  embedSync(text: string): EmbeddingVector {
+    const tokens = tokenize(text);
+    if (tokens.length === 0) return new Array(this.dim).fill(0);
+
+    const tf = new Map<number, number>();
+    for (const t of tokens) {
+      const h = this.hashToken(t);
+      tf.set(h, (tf.get(h) ?? 0) + 1);
+    }
+
+    const vec = new Array(this.dim).fill(0) as number[];
+    for (const [h, count] of tf) {
+      vec[h] = count * this.idf(h);
+    }
+    const norm = magnitude(vec);
+    if (norm > 0) {
+      for (let i = 0; i < this.dim; i++) vec[i] /= norm;
+    }
+    return vec;
+  }
+
   similarity(a: EmbeddingVector, b: EmbeddingVector): number {
     // Both vectors are L2-normalised so dot product == cosine similarity
     if (a.length === 0 || b.length === 0) return 0;
