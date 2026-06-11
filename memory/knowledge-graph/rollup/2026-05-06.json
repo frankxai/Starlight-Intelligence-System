@@ -1,0 +1,19 @@
+{
+  "entries": [
+    {
+      "entry_id": "capture-2026-05-06T14:40:59.128040+00:00",
+      "timestamp": "2026-05-06T14:40:59.128040+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Captured.",
+      "spoken_update": "Captured.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    }
+  ],
+  "counts_by_intent": {
+    "capture": 1
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "entries": [
+    {
+      "entry_id": "capture-2026-05-10T20:38:49.321873+00:00",
+      "timestamp": "2026-05-10T20:38:49.321873+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Capture started. What's on your mind?",
+      "spoken_update": "Capture started. What's on your mind?",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-05-10T20:40:49.886827+00:00",
+      "timestamp": "2026-05-10T20:40:49.886827+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "I'm here. What's up?",
+      "spoken_update": "I'm here. What's up?",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-05-10T20:40:54.988975+00:00",
+      "timestamp": "2026-05-10T20:40:54.988975+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "No need to apologize. You're safe here.",
+      "spoken_update": "No need to apologize. You're safe here.",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-05-10T20:41:32.297565+00:00",
+      "timestamp": "2026-05-10T20:41:32.297565+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "We could use Starlight to capture insights, organize files, draft emails, or prepare Claude Code packets. What task do you need help with?",
+      "spoken_update": "We could use Starlight to capture insights, organize files, draft emails, or prepare Claude Code packets. What task do you need help with?",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-05-10T20:42:29.223617+00:00",
+      "timestamp": "2026-05-10T20:42:29.223617+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "Apologies for the confusion. Arcania is part of EA. Let me search EA's repository for Arcania updates. Searching...",
+      "spoken_update": "Apologies for the confusion. Arcania is part of EA. Let me search EA's repository for Arcania updates. Searching...",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    },
+    {
+      "entry_id": "capture-2026-05-10T20:42:56.705045+00:00",
+      "timestamp": "2026-05-10T20:42:56.705045+00:00",
+      "intent_class": "capture",
+      "brands": [],
+      "target_system": "memory",
+      "task": "You're referring to your personal repository. I don't have direct access to your repository, but I can offer general guidance. What specific updates or information do you need about Arcania in your repository?",
+      "spoken_update": "You're referring to your personal repository. I don't have direct access to your repository, but I can offer general guidance. What specific updates or information do you need about Arcania in your repository?",
+      "packet_id": null,
+      "parent_packet_id": null,
+      "extras": {}
+    }
+  ],
+  "counts_by_intent": {
+    "capture": 6
+  }
+}
