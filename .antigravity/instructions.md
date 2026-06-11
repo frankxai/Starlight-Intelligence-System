@@ -50,7 +50,7 @@ Lean into what Antigravity gives you that other adapters don't:
 
 ---
 
-## Agent system (47 agents, full registry in `agents/AGENT_REGISTRY.md`)
+## Agent system (49 agents, full registry in `agents/AGENT_REGISTRY.md`)
 
 Seven legacy council agents adopt as reasoning lenses:
 

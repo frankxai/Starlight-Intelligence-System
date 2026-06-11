@@ -78,7 +78,7 @@ Operational-tier work (site, voice-operator, cockpit, intake, content) ships fre
 
 ## Composes with
 
-- `/openclaw-audit` — adversarial pressure-test (post-decision; Logan's integrity check). Board challenges design; OpenClaw audits ship.
+- `/openclaw-audit` — adversarial pressure-test (post-decision; the protocol-defender's integrity check). Board challenges design; OpenClaw audits ship.
 - `/sip-attest` — runs after the decision the board pressure-tested, on the artifact the decision produced.
 - `/superintelligence` — operational-tier execution mode that does NOT displace the board for substrate-level work.
 

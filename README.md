@@ -2,7 +2,7 @@
 
 > **The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet.**
 >
-> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 48 agents, 71 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 968 tests keep the claims honest.
+> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 49 agents, 76 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 973 tests keep the claims honest.
 
 [![version](https://img.shields.io/badge/version-8.2.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
@@ -135,7 +135,7 @@ npm run agents:harness-check
 /luminor-board "Open-source the agent layer or keep it closed?"
 
 # Forge an alliance under SIP
-/alliance-forge trinity "Frank,Ahmad,Logan,Shahvaiz"
+/alliance-forge trinity "architect,sovereign-creator,protocol-defender,implementer"
 
 # Spawn a vertical IS under SIS
 /vertical-spawn anime-legends "anime-aesthetic fiction + character design"

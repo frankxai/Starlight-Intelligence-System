@@ -68,8 +68,8 @@ Alliances coordinate across multiple nodes under SIP. Frank contributes to these
 
 | Alliance | Members | Frank's role |
 |----------|---------|--------------|
-| **Trinity Alliance** | Frank · Ahmad · Logan · Shahvaiz | architect (freely contributed) |
-| **EpicWays Alliance** | Frank · Estefania · [TBD] | advisor (freely contributed) |
+| **Trinity Alliance** | Frank + 3 allied nodes (private register) | architect (freely contributed) |
+| **EpicWays Alliance** | Frank + allied node (private register) | advisor (freely contributed) |
 
 ## Composition rules
 

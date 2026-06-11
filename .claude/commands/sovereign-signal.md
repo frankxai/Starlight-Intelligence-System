@@ -1,6 +1,6 @@
 ---
 name: sovereign-signal
-description: Reference implementation for sovereign-tier commands. Ahmad's Signal pipeline — voice memo to thesis-driven essay + post + script. Example of Layer 4 sovereign command per SIP § 4.
+description: Reference implementation for sovereign-tier commands. the sovereign-creator node's Signal pipeline — voice memo to thesis-driven essay + post + script. Example of Layer 4 sovereign command per SIP § 4.
 allowed-tools: Read, WebSearch, mcp__notion
 argument-hint: path to voice transcript, or paste raw thought
 ---
@@ -9,7 +9,7 @@ argument-hint: path to voice transcript, or paste raw thought
 
 Load this vertical's `SKILL.md` and, if present, the sovereign node's `VOICE.md`.
 
-**Positioning:** This is a Layer 4 sovereign command — owned by the individual sovereign node (originally Ahmad Hashem's Signal pipeline). Other nodes may invoke it, but voice ownership stays with the sovereign.
+**Positioning:** This is a Layer 4 sovereign command — owned by the individual sovereign node (originally the sovereign-creator node's Signal pipeline). Other nodes may invoke it, but voice ownership stays with the sovereign.
 
 ## Raw input
 $ARGUMENTS

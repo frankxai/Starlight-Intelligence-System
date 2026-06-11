@@ -78,6 +78,7 @@ Flat council with emergent leadership, fronted by Front-Door + Excavation tiers.
 | **Navigator** | Roadmaps, trade-offs, timing, long-horizon planning |
 | **Sentinel** | Security, code review, governance, vulnerability assessment |
 | **Weaver** | Creative synthesis, narrative, design, pattern weaving |
+| **Hermes** | Search and retrieval — vault lookup, cross-repo search, multi-source synthesis with provenance |
 
 ### Foundation tier
 | Agent | Leads when |

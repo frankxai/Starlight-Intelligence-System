@@ -24,7 +24,7 @@ Each week has a named deliverable, a falsifier, and a dependency map. If a week 
 
 ## Week 1 — May 16-22 — Close + first fork
 
-**Goal:** capture demo learnings into the substrate; close sovereign-spawn Gap A-1; spawn the FIRST real fork (Logan or a synthetic reference).
+**Goal:** capture demo learnings into the substrate; close sovereign-spawn Gap A-1; spawn the FIRST real fork (the protocol-defender node or a synthetic reference).
 
 ### Named deliverables
 
@@ -37,24 +37,24 @@ Each week has a named deliverable, a falsifier, and a dependency map. If a week 
 | Tue 2026-05-19 | `scripts/sovereign-spawn.ts` ships | autonomous scaffolder, 30 file templates, dry-run flag | Claude session (~1.5d) |
 | Wed 2026-05-20 | `test/sovereign-spawn.test.ts` ships | idempotency check + scaffold completeness | Claude session (~2h) |
 | Thu 2026-05-21 | `scripts/substrate-sync.ts` ships | fork-side substrate upgrade path | Claude session (~1d) |
-| Fri 2026-05-22 | **FIRST live spawn** — Logan's OpenClaw fork | `github.com/openclaw/openclaw-substrate` | Frank + Logan (2h) |
+| Fri 2026-05-22 | **FIRST live spawn** — the protocol-defender node's OpenClaw fork | `github.com/openclaw/openclaw-substrate` | Frank + node (2h) |
 
 ### Falsifiers
 
 - Recording uploaded? Public URL exists.
 - Memory pipeline working? Next dreaming run shows `processed: 4+, insights: N>0` in `CONSOLIDATION_LOG.md`.
 - Scaffolder works? `node scripts/sovereign-spawn.ts test-name "test domain"` produces byte-identical output twice in a row.
-- First fork live? Logan's repo has SOUL.md filled and first artifact attested via `/sip-attest`.
+- First fork live? the protocol-defender's repo has SOUL.md filled and first artifact attested via `/sip-attest`.
 
 ### Dependencies
 
 - Demo recording quality is independent of everything else; can land Saturday morning regardless of demo outcome.
 - Sovereign-spawn ships independent of memory-pipeline.
-- Logan's spawn depends on the scaffolder (Wed) AND on Logan's availability for the Friday call.
+- The protocol-defender spawn depends on the scaffolder (Wed) AND on the node's availability for the Friday call.
 
 ### Risks
 
-- **Logan unavailable.** Fallback: spawn `example-sovereign` synthetic fork. Less compelling reference, still proves the pattern. Or push Logan call to week 2.
+- **Node unavailable.** Fallback: spawn `example-sovereign` synthetic fork. Less compelling reference, still proves the pattern. Or push the call to week 2.
 - **Demo recording corrupted.** Re-record solo from the dashboard on Saturday or Sunday using `docs/ops/DEMO-RECORDING-PLAN-2026-05-12.md` § 9 fallback protocol.
 
 ---
@@ -129,7 +129,7 @@ Each week has a named deliverable, a falsifier, and a dependency map. If a week 
 
 ## Week 4 — Jun 6-12 — First friend onboarded
 
-**Goal:** the first private test case OR Logan completes a real engagement against the substrate. Money changes hands. Attestation block on their first shipped artifact.
+**Goal:** the first private test case OR the protocol-defender node completes a real engagement against the substrate. Money changes hands. Attestation block on their first shipped artifact.
 
 ### Named deliverables
 
@@ -174,7 +174,7 @@ W3.1 shipped 2026-05-11 (Stripe + Arcanea BV + P&L + runway). Phase 2 deferred t
 
 ### Substrate evolution (substrate-tier)
 
-If a sovereign-spawn surfaces a substrate gap (Logan's fork in week 1, or week-4 client), file a board pre-pass packet at `docs/boards/`. Never blast-fix into SIP without `/starlight-board` PROCEED.
+If a sovereign-spawn surfaces a substrate gap (the protocol-defender fork in week 1, or week-4 client), file a board pre-pass packet at `docs/boards/`. Never blast-fix into SIP without `/starlight-board` PROCEED.
 
 ---
 
@@ -185,7 +185,7 @@ These are the moments where Frank's call shapes the path.
 | When | Decision | Default | Override condition |
 |---|---|---|---|
 | Sat 2026-05-16 | Re-record solo, or accept the live recording? | Accept live unless OBS corrupted | re-record if audio is unusable |
-| Wed 2026-05-20 | First fork = Logan (real) or synthetic? | Logan | synthetic if Logan can't commit to Fri 5/22 |
+| Wed 2026-05-20 | First fork = protocol-defender (real) or synthetic? | Frank | synthetic if the node can't commit to Fri 5/22 |
 | Fri 2026-05-29 | Distribution working enough to ship pricing? | YES, ship pricing week-3 regardless | hold pricing if zero inbounds — distribution gap diagnostic first |
 | Fri 2026-06-05 | Concierge call booked? If not, extend distribution? | Extend distribution one week | declare pricing-message broken if no calls after 3 weeks of distribution |
 | Fri 2026-06-12 | Client completed sprint successfully? | Capture full session in `memory/vaults/operational-vault.md` regardless | If client churned, post-mortem into `memory/feedback_first_sprint_*.md` |
@@ -209,7 +209,7 @@ Be explicit about scope refusal:
 By 2026-06-12 the substrate has:
 
 1. One paying client (€7,500).
-2. One sovereign-spawned fork (Logan).
+2. One sovereign-spawned fork (the protocol-defender node).
 3. One distribution surface compounding (LinkedIn + Twitter + YouTube).
 4. One memory pipeline producing real insights (post-week-1 fix).
 5. One pricing page receiving inbound traffic.

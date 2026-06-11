@@ -167,3 +167,9 @@ Hermes is named for the messenger god: speed, precision, cross-boundary traversa
 ---
 
 *The fastest path to the right answer is knowing exactly where to look.*
+
+---
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1
+- Substrate: starlightintelligence.org/protocol v1.1.1
+- Layers used: [agent-registry, search-retrieval, attestation]

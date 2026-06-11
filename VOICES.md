@@ -39,7 +39,7 @@ Five canonical voices. Alliances and verticals instantiate some or all. Voices a
 
 ## Instance guidance
 
-Every alliance or vertical builds its own `AGENTS.md` from this template. Replace voice names with contributor names (e.g., Trinity's `architect → Frank`, `sovereign-creator → Ahmad`). Keep the five archetypes as the structural shape even when not all are filled — empty slots are visible gaps.
+Every alliance or vertical builds its own `AGENTS.md` from this template. Replace voice names with contributor names (e.g., Trinity's `architect → Frank`; map remaining archetypes to contributor names in your private register). Keep the five archetypes as the structural shape even when not all are filled — empty slots are visible gaps.
 
 ## Interaction rules
 

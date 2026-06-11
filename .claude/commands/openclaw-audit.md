@@ -1,6 +1,6 @@
 ---
 name: openclaw-audit
-description: Reference implementation for sovereign-tier protocol defense. Logan / OpenClaw's integrity audit — pressure-tests architecture, artifacts, releases for trust boundaries, leak surface, attestation gaps.
+description: Reference implementation for sovereign-tier protocol defense. the protocol-defender node's OpenClaw integrity audit — pressure-tests architecture, artifacts, releases for trust boundaries, leak surface, attestation gaps.
 allowed-tools: Read, Grep, Glob, WebSearch, mcp__github
 argument-hint: path to artifact / architecture doc / release candidate
 ---
@@ -9,7 +9,7 @@ argument-hint: path to artifact / architecture doc / release candidate
 
 Load `SIP.md` (especially Layer 5 sovereignty clause and Layer 2 attestation).
 
-**Positioning:** Layer 4 sovereign command. Owned by Logan (OpenClaw). Other nodes may run it; rulings on open-vs-closed and attestation format require Logan's sign-off by domain.
+**Positioning:** Layer 4 sovereign command. Owned by the protocol-defender node (an OpenClaw adopter; identity in the private alliance register). Other nodes may run it; rulings on open-vs-closed and attestation format require the protocol-defender's sign-off by domain.
 
 ## Target
 $ARGUMENTS

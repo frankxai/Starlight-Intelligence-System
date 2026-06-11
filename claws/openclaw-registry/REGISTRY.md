@@ -10,9 +10,11 @@ Third-party ClawHub skills have had documented security incidents (early 2026): 
 
 1. **Source-only from this repo** — All skills come from `skills/` in `frankxai/Starlight-Intelligence-System`
 2. **Declared minimum permissions** — Every skill's `SKILL.md` header declares exact permission requirements
-3. **Hash-verified installation** — `openclaw install` verifies SHA-256 hash against this registry before loading
-4. **Sentinel runtime monitoring** — Sentinel Claw compares declared vs actual behavior during execution
+3. **Hash-verified installation** — `openclaw install` verifies SHA-256 hash against this registry before loading *(planned v0.2 — design contract, not yet executable)*
+4. **Sentinel runtime monitoring** — Sentinel Claw compares declared vs actual behavior during execution *(planned v0.2)*
 5. **Zero shell access by default** — No SIS skill requests shell access. Bootstrap Claw is the only exception and uses a hard allowlist
+
+> **v0.1 status (Metrics Truth Rule):** Items 1, 2, and 5 are enforced today via the source-control gate and Sentinel review on PR. Items 3-4 (hash verification, runtime monitoring) are the intended design contract — executable enforcement is a tracked v0.2 follow-up. Hash fields in this registry are placeholders until then.
 
 ---
 
@@ -132,7 +134,7 @@ private_data_export: blocked
 
 ## Skill Signing
 
-Skills are signed via the GitHub commit signature of the `frankxai` account. The hash in this registry is the SHA-256 of the skill's `SKILL.md` file at the registered version. `openclaw install` verifies this before loading.
+Skills are signed via the GitHub commit signature of the `frankxai` account. The hash in this registry is the SHA-256 of the skill's `SKILL.md` file at the registered version. `openclaw install` verifying this before loading is a v0.2 deliverable; today the trust anchor is the signed commit on the canonical repo.
 
 Future: GPG key signing for independent verifiability outside GitHub.
 

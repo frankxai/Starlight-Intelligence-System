@@ -9,7 +9,7 @@ Source of truth: `frankxai/Starlight-Intelligence-System`, file `CLAWS.md`.
 
 ## The Distinction That Matters
 
-SIS has four concentric layers. Confusing them is the fastest way to build unmaintainable intelligence systems:
+SIS has six concentric layers. Confusing them is the fastest way to build unmaintainable intelligence systems:
 
 | Layer | What it is | Examples |
 |-------|-----------|---------|
@@ -23,6 +23,17 @@ SIS has four concentric layers. Confusing them is the fastest way to build unmai
 **Agents think. Skills are capabilities. MCP connects. Claws act.**
 
 A Claw owns exactly one lifecycle. One workspace contract. One permission surface. One artifact type. One measurable output. That bounded contract is what separates product infrastructure from toy agents.
+
+### Glossary — "Claw" is used three ways; don't conflate them
+
+| Term | What it means | Where it lives |
+|------|--------------|----------------|
+| **SIS Claw** | An installable operational unit defined by this spec (`claws/*/CLAW.md`) | This repo |
+| **OpenClaw** | An external open-source personal AI agent platform — one of the agentic runtimes SIS Claws can install into. Not a SIS component; SIS does not own or govern it. | OSS ecosystem |
+| **ClawHub** | OpenClaw's community skill marketplace. SIS trusts only its own curated registry, never ClawHub auto-loads. | OSS ecosystem |
+| **Music IS Claws** (`Claw-X`, `Claw-IG`) | Per-platform social distribution units inside the Music Intelligence System — unrelated to this spec | `verticals/` Music IS |
+
+**Runtime-agnostic by design:** SIS is the substrate; Claws are the packaged agency. They are built to install into *any* agentic system — Claude Code, Cursor, Codex, Gemini CLI, Antigravity, OpenCode, OpenClaw, or any AGENTS.md-compatible runtime. OpenClaw is the documented reference runtime below because it has a native install/skill model, not because SIS prefers or requires it. Adopter identities are kept in the private alliance register, never in public substrate files.
 
 ---
 
@@ -216,7 +227,9 @@ claws/
 
 ---
 
-## Installation Flow (via OpenClaw)
+## Installation Flow (reference runtime: OpenClaw)
+
+OpenClaw is the reference install runtime because it ships a native skill-install model. The same Claw contracts install into any other agentic system via its platform adapter (Claude Code skills, Cursor rules, Codex, Gemini CLI, Antigravity).
 
 ```bash
 openclaw install frankxai/sis-bootstrap-claw
@@ -276,6 +289,8 @@ The `starlight-hermes` agent is the search backbone for all OpenClaw operations.
 - Privacy boundaries are respected (second-brain, health namespaces require explicit scope)
 - Contradictions are surfaced before a Claw acts on stale data
 
+**Hermes as an OpenClaw extension (tracked follow-up):** Hermes is portable by design. The plan is to ship it as a standalone OpenClaw-compatible skill/agent (`sis-hermes`, part of the `sis-openclaw` pack) so OpenClaw users get provenance-tracked search even without the full SIS Claw suite — usable in sync with SIS or as a standalone alternative.
+
 ### Install validation
 
 Every `openclaw install frankxai/sis-*-claw` performs:
@@ -311,7 +326,9 @@ The Hermes agent (`starlight-hermes.md`) integrates directly with the Claw layer
 
 ---
 
-1. **`mutation_default: false`** — No Claw mutates user files without explicit approval. Plans are produced first.
+## Safety Invariants (default contract)
+
+1. **`mutation_default: false`** — No Claw mutates user files without explicit approval. Plans are produced first. Bootstrap is the single declared exception (`mutation_default: true` — it exists to install; every mutation is still gated by explicit install approval).
 2. **`private_data_export: blocked`** — No Claw exports vault content to external services without Sentinel gate approval.
 3. **Sentinel cross-cuts** — The Sentinel Claw's `permission-gate` and `secret-detector` skills run on every Claw that touches filesystem or network.
 4. **Signed skill registry** — SIS maintains a curated, signed skill registry. Random third-party ClawHub skills are not auto-trusted.
@@ -332,4 +349,4 @@ Claws are SIP-compliant operational units. Each Claw:
 
 ---
 
-*Built on SIP · v1.0.0 · Claws spec authored by Starlight Architect · MIT*
+*Built on SIP v1.1.1 — Starlight Claws spec v1.0.0 · authored by Starlight Architect · MIT*

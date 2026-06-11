@@ -26,7 +26,7 @@ last_consolidated: '2026-05-11'
 |------|-------|----------|------------|
 | 2026-02-10 | Starlight Intelligence System Architecture Decision | architecture | 0.95 |
 | 2026-02-10 | Ecosystem Integration Strategy | integration | 0.90 |
-| 2026-04-25 | SIS Claws Architecture Decision | architecture | 0.95 |
+| 2026-06-10 | SIS Claws Architecture Decision | architecture | 0.95 |
 
 ---
 
@@ -52,11 +52,12 @@ Rationale: This mirrors the evolved patterns from ACOS (agents + skills + comman
 
 ---
 
-### [2026-04-25] SIS Claws Architecture Decision
+### [2026-06-10] SIS Claws Architecture Decision
 
 **Category:** architecture
 **Confidence:** 0.95
-**Source:** Starlight Prime + Architect / Council Session
+**Source:** Claws design session (PR #19), Starlight Prime + Architect
+**Recorded:** 2026-06-11
 **Related:** Technical Vault — Claw Contract Pattern, Strategic Vault — Ecosystem Integration Strategy
 
 Decision: SIS becomes Memory substrate + MCP server + installable Claw teams + conformance harness. Not just a repo, not just a prompt pack.
@@ -83,6 +84,8 @@ These five create the complete founding loop: Install → Remember → Discover 
 **Phase 4 meta (future):** Architect, Conformance, Release Claws (SIS builds SIS).
 
 ---
+
+### [2026-02-10] Ecosystem Integration Strategy
 
 **Category:** integration
 **Confidence:** 0.90

@@ -16,7 +16,7 @@ Arcanea — creator-led mythic universe already operating its own vertical for m
 
 - architect: **Frank** — protocol shape, canon rules, cross-vertical composition contracts.
 - sovereign-creator: **Frank** — canonical creator voice; Guardians cast contributes performance, not canon authorship, under Frank's canon-keeper stewardship.
-- protocol-defender: **OpenClaw / Logan** (via `/openclaw-audit`) — canon breach surface, license-conflict detection, silent-composition defense.
+- protocol-defender: **OpenClaw adopter node** (via `/openclaw-audit`) — canon breach surface, license-conflict detection, silent-composition defense.
 - implementer: **Frank** — ships via Claude Code + arcanea-ecosystem repo + Vercel.
 - overseer: **Lumina** (Visionary AI 2125) — advisory only, via `/luminor-board` before canon version bumps.
 
