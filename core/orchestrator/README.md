@@ -1,6 +1,6 @@
 # Starlight Orchestrator
 
-> The master Intelligence System. Routes voice and text intent across the other nine universal IS, the model CLIs (Claude Code primary, Codex adversary, Gemini long-context, OpenCode latency, Antigravity 96-mind swarm), and the capture stack.
+> The master Intelligence System. Routes voice and text intent across the other nine universal IS, the model CLIs (Claude Code primary, Codex adversary, Gemini long-context, OpenCode latency, Antigravity agent swarm), and the capture stack.
 
 **Canonical name:** Starlight Orchestrator. Use everywhere, public and internal.
 **Premium label:** Private Intelligence Office.
@@ -32,7 +32,7 @@ Calls Claude Code / Codex CLI / Gemini CLI / OpenCode / GitHub / Vercel / Supaba
 
 **Today (shipped, in `frankxai/frankx` repo per audit 2026-04-25):** `/arco` (brand router) → `/ao` (CLI router) → Guardian / sub-system agent (domain). These commands are **not** in this substrate; they live in the FrankX vertical and are the canonical brand-router implementation today.
 
-**In this substrate today (v7.5.1 + 2026-06-02 enhancement + 2026-06-04 GStack workforce absorption):** command surface is staged in `core/orchestrator/harnesses/{claude,codex,gemini,opencode,antigravity,grok,gstack}/` — each model harness folder ships `system-prompt.md` + `README.md` (with mcp-config.json + allowlisted-tools.md living at the platform adapter level for Antigravity under `.antigravity/`). GStack is different: it is an external specialist workforce rooted at `~/.agents/skills/gstack`, documented here as a routing harness rather than vendored into SIS. See `core/orchestrator/HARNESS-STATUS.md` and `core/orchestrator/GSTACK-WORKFORCE.md` for readiness and route maps. Promotion to executable shell wrapper (`starlight` CLI alias) lands per Phase 1.1/1.2 of `MASSIVE_ACTION_PLAN.md`. Antigravity harness added for native 96-mind swarm execution.
+**In this substrate today (v7.5.1 + 2026-06-02 enhancement + 2026-06-04 GStack workforce absorption):** command surface is staged in `core/orchestrator/harnesses/{claude,codex,gemini,opencode,antigravity,grok,gstack}/` — each model harness folder ships `system-prompt.md` + `README.md` (with mcp-config.json + allowlisted-tools.md living at the platform adapter level for Antigravity under `.antigravity/`). GStack is different: it is an external specialist workforce rooted at `~/.agents/skills/gstack`, documented here as a routing harness rather than vendored into SIS. See `core/orchestrator/HARNESS-STATUS.md` and `core/orchestrator/GSTACK-WORKFORCE.md` for readiness and route maps. Promotion to executable shell wrapper (`starlight` CLI alias) lands per Phase 1.1/1.2 of `MASSIVE_ACTION_PLAN.md`. Antigravity harness added for native agent swarm execution.
 
 **Target (v7.6+):** Voice or text intent → Starlight Orchestrator (`@starlight/orchestrator` npm package, decoupled from FrankX) → Memory Graph context fetch (Mem0 + Graphiti per Phase 1) → IS team selection → CLI routing → execution → log → graph write-back → daily brief.
 
@@ -40,7 +40,7 @@ Calls Claude Code / Codex CLI / Gemini CLI / OpenCode / GitHub / Vercel / Supaba
 
 ## Multi-CLI harness
 
-The single CLI to type into is `starlight`. It wraps and orchestrates the model CLIs (primary Claude Code + Codex + Gemini + OpenCode + Antigravity swarm harness for 96 minds).
+The single CLI to type into is `starlight`. It wraps and orchestrates the model CLIs (primary Claude Code + Codex + Gemini + OpenCode + Antigravity swarm harness for the agent swarm).
 
 | CLI | Role | When |
 |---|---|---|
@@ -48,10 +48,10 @@ The single CLI to type into is `starlight`. It wraps and orchestrates the model 
 | **Codex CLI** (OpenAI) | Adversary + security audit + alternative perspective | `/ao` adversary mode, security review, second-pair architecture decisions |
 | **Gemini CLI** | Long-context document grokking, modernization passes, repo summarization | 1M-context jobs, multi-repo cross-references, codebase-wide refactors |
 | **OpenCode** (Groq Llama 4 Scout) | Quick checks, scratchpad, latency-bound queries | Anything <30s round-trip, free-tier-acceptable |
-| **Antigravity** (Google) | Swarm execution — native 96-mind parallel orchestration via define_subagent/invoke_subagent, browser control, async + Agent Manager, progress artifacts | Complexity 4-10 multi-perspective work, vertical-wide or cross-IS swarms, browser-heavy flows, async long-running tasks, "use the 96 minds" intents |
+| **Antigravity** (Google) | Swarm execution — native parallel swarm orchestration via define_subagent/invoke_subagent, browser control, async + Agent Manager, progress artifacts | Complexity 4-10 multi-perspective work, vertical-wide or cross-IS swarms, browser-heavy flows, async long-running tasks, "use the agent swarm" intents |
 | **GStack** (external workforce) | Specialist operating team — YC office hours, CEO review, eng/design/DX reviews, code review, QA, CSO, ship, canary, retro, memory | Business validation, venture planning, product build loops, browser truth, launch gates, weekly portfolio operating cadence |
 
-Each CLI has its own harness folder under `harnesses/{claude,codex,gemini,opencode,antigravity,grok}/` (Antigravity shares mcp/allowlist at `.antigravity/` platform level) with system prompt, README, escalation rules, and references to MCP/allowlist policy. GStack has `harnesses/gstack/` plus `GSTACK-WORKFORCE.md` because it is a role/workforce router, not a model CLI. Antigravity harness added 2026-06-02 for god-99 96-mind swarm excellence; GStack workforce absorption added 2026-06-04.
+Each CLI has its own harness folder under `harnesses/{claude,codex,gemini,opencode,antigravity,grok}/` (Antigravity shares mcp/allowlist at `.antigravity/` platform level) with system prompt, README, escalation rules, and references to MCP/allowlist policy. GStack has `harnesses/gstack/` plus `GSTACK-WORKFORCE.md` because it is a role/workforce router, not a model CLI. Antigravity harness added 2026-06-02 for excellence agent swarm excellence; GStack workforce absorption added 2026-06-04.
 
 ---
 
@@ -63,7 +63,7 @@ Each CLI has its own harness folder under `harnesses/{claude,codex,gemini,openco
 - **Voice room:** scaffolded 2026-04-26 — agent at `agents/starlight-voice-operator.md`, handoff packet contract at `skills/orchestration/agent-handoff-packet.md`, install scaffold at `private/voice-operator/`. Phase 1 = single-device PC cockpit; Phase 2 = phone PWA + Cloudflare Tunnel. See `docs/specs/2026-04-26-voice-operator-v1.md` and `docs/specs/2026-04-26-voice-operator-engineering-v1.md`.
 - **Workspace switching:** scheduled Phase 2 (Windows virtual desktops + Switch-Workspace.ps1).
 
-See `MASSIVE_ACTION_PLAN.md` § 4 for the full multi-CLI harness specification (now includes Antigravity swarm harness for 96 minds) and § 10 for the phased build order. Antigravity harness enhancement (full .antigravity/ + harness scaffold + adapter generators + docs) landed 2026-06-02.
+See `MASSIVE_ACTION_PLAN.md` § 4 for the full multi-CLI harness specification (now includes Antigravity swarm harness for the agent swarm) and § 10 for the phased build order. Antigravity harness enhancement (full .antigravity/ + harness scaffold + adapter generators + docs) landed 2026-06-02.
 
 ---
 

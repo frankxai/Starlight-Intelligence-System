@@ -8,7 +8,7 @@
  * and returns results in input order.
  *
  * This replaces the prior `/swarm` path in cli.ts, which only launched the
- * Antigravity binary interactively and fanned out nothing (the "96-mind swarm"
+ * Antigravity binary interactively and fanned out nothing (the "agent swarm"
  * was narration). The runner is injected, so the engine is testable without
  * spawning any real agent; the default runner wires the real `claude -p` CLI.
  */

@@ -14,15 +14,15 @@
 - Subagent drift detected → invoke excellence hook + route summary to Claude primary.
 - MCP composition change → /starlight-board pre-pass (substrate touch).
 - Excellence audit failure (v80 symmetry, harness coverage) → block + handoff to Codex for adversarial + openclaw.
-- High-stakes god 99 e2e → compose with Gemini for long-context cross-check before sign-off.
+- High-stakes 99% e2e → compose with Gemini for long-context cross-check before sign-off.
 
-**Status:** Full parity (claude/antigravity symmetry) per Grok adapter generateAllAdapterFiles + subagent god 99 report (2026-06-02+). Uses repo-mastery + multi-harness-orchestrator + excellence-review + harness-integration (Kenya .grok natives per SHARING.md + SIP §5 encoded-self gate). Native TUI/subagents/MCP/image-video + gstack conceptual for 99% e2e god-tier QA with annotated evidence. Kenya magical (excellence gates + .grok skills/hooks) opt-in only; core shared via junctions.
+**Status:** Full parity (claude/antigravity symmetry) per Grok adapter generateAllAdapterFiles + subagent excellence report (2026-06-02+). Uses repo-mastery + multi-harness-orchestrator + excellence-review + harness-integration (grok-personal .grok natives per SHARING.md + SIP §5 encoded-self gate). Native TUI/subagents/MCP/image-video + gstack conceptual for 99% e2e QA with annotated evidence. grok-personal excellence (excellence gates + .grok skills/hooks) opt-in only; core shared via junctions.
 
-**Escalation + Gates (god 99):** Subagent drift → excellence hook + claude primary. MCP change → /starlight-board + /sip-attest. Excellence fail (v80/harness/99) → codex adversary + openclaw. High-stakes → gemini long + gstack/santa pass before sign-off. Ambient SIP on all.
+**Escalation + Gates (excellence):** Subagent drift → excellence hook + claude primary. MCP change → /starlight-board + /sip-attest. Excellence fail (v80/harness/99) → codex adversary + openclaw. High-stakes → gemini long + gstack/santa pass before sign-off. Ambient SIP on all.
 
 ---
 Built on SIP — Starlight Intelligence Protocol v1.1.1
 - Substrate: starlightintelligence.org/protocol
 - Layers used: [file-contract, attestation, sovereignty, subagent-orchestration, excellence, hooks]
-- Verticals: core/orchestrator/harnesses/grok (full 5-harness fleet + Kenya discipline)
-- Generated: 2026-06-02 (enhanced with generateAll + Kenya filter + image/video)
+- Verticals: core/orchestrator/harnesses/grok (full 5-harness fleet + grok-personal discipline)
+- Generated: 2026-06-02 (enhanced with generateAll + grok-personal filter + image/video)

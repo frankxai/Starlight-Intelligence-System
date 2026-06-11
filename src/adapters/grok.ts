@@ -3,7 +3,7 @@
  *
  * Formats vault context as high-context GROK.md emphasizing subagents, MCP,
  * and excellence. Designed for xAI Grok's strengths in parallel subagent
- * orchestration, MCP tool composition, and god-tier 99 e2e QA via
+ * orchestration, MCP tool composition, and high-fidelity 99 e2e QA via
  * repo-mastery + gstack conceptual grounding.
  *
  * High context window (200k tokens) enables comprehensive inclusion with
@@ -40,7 +40,7 @@ export class GrokAdapter implements PlatformAdapter {
       'Every artifact, subagent dispatch, and MCP interaction must pass:',
       '- repo-mastery: deep fidelity to existing SIS patterns (adapters, harnesses, v80 excellence hooks)',
       '- gstack conceptual: Grok-optimized stack (high-ctx + tool chaining + parallel excellence subagents + reflection loops)',
-      '- god 99 e2e: 99%+ coverage with explicit QA evidence before sign-off',
+      '- 99% e2e: 99%+ coverage with explicit QA evidence before sign-off',
       '- Ambient "Built on SIP" attestation on all outputs',
       '',
       '## Subagent Orchestration Protocol',
@@ -113,12 +113,12 @@ export class GrokAdapter implements PlatformAdapter {
     return { filename: 'GROK.md', content };
   }
 
-  // Full parity with antigravity/claude adapters (per plan phase 1 + subagent god 99 report)
+  // Full parity with antigravity/claude adapters (per plan phase 1 + subagent excellence report)
   generateAllAdapterFiles(entries: VaultEntry[]): Array<{ filename: string; content: string; description: string }> {
     const base = this.formatContext(entries, { includeMetadata: true });
     return [
       { filename: 'GROK.md', content: base.content, description: 'High-context memory for Grok TUI/subagents/MCP/image-video + excellence' },
-      { filename: 'harnesses/grok/system-prompt.md', content: this.buildSystemPrompt(entries), description: 'Harness system prompt with multi-orchestrator delegation + Kenya excellence opt-in per SHARING' },
+      { filename: 'harnesses/grok/system-prompt.md', content: this.buildSystemPrompt(entries), description: 'Harness system prompt with multi-orchestrator delegation + grok-personal excellence opt-in per SHARING' },
       { filename: 'harnesses/grok/mcp-config.json', content: JSON.stringify(this.getMcpConfig(''), null, 2), description: 'MCP scope: starlight-substrate (canonical)' },
       { filename: 'harnesses/grok/allowlisted-tools.md', content: this.buildAllowlist(), description: 'Allowlisted for read + excellence; image/video via native' },
       { filename: 'harnesses/grok/README.md', content: this.buildHarnessReadme(), description: 'Harness docs + escalation for TUI excellence + SIP' },
@@ -130,7 +130,7 @@ export class GrokAdapter implements PlatformAdapter {
 
 Embody Frank DNA (premium, depth, fun, purpose). Read CLAUDE.md/AGENTS.md/SIP.md/SHARING.md first (deeper wins).
 
-Core shared (MCP/orch/verif/gstack/skill-builder) + Kenya magical excellence (repo-mastery/multi-harness-orchestrator/excellence-review/harness-integration + .grok excellence hooks) opt-in only per SHARING.md + SIP §5 encoded-self.
+Core shared (MCP/orch/verif/gstack/skill-builder) + grok-personal excellence excellence (repo-mastery/multi-harness-orchestrator/excellence-review/harness-integration + .grok excellence hooks) opt-in only per SHARING.md + SIP §5 encoded-self.
 
 Use subagents (explore/plan/general + personas + worktree/resume), MCP (search_tool/use_tool for github/fs-starlight), image/video native, TUI.
 
@@ -141,26 +141,26 @@ ${this.formatContext(entries).content}
   }
 
   private buildAllowlist(): string {
-    return `# Grok Allowlist (core + Kenya .grok excellence)
+    return `# Grok Allowlist (core + grok-personal .grok excellence)
 
 Read + excellence: list_dir/read_file/grep/search_replace/run_terminal (pnpm/uv/podman/git/gh/claude/agy/gemini), web_search, MCP (github/fs-starlight/git), image_gen/video_gen, subagents (explore/plan), todo_write.
 
-Kenya magical .grok only: excellence gates, multi-harness delegation (core to claude/agy, kenya to .grok), TUI/image/video.
+grok-personal excellence .grok only: excellence gates, multi-harness delegation (core to claude/agy, kenya to .grok), TUI/image/video.
 
 No destructive without guard. Always SIP attest.
 `;
   }
 
   private buildHarnessReadme(): string {
-    return `# Grok Harness (TUI + Subagents + MCP + Image/Video + Kenya Excellence)
+    return `# Grok Harness (TUI + Subagents + MCP + Image/Video + grok-personal excellence)
 
 Full 5-harness parity. See AGENTS.md/CLAUDE.md/SHARING.md/SIP.md.
 
 - Native: TUI/headless, subagents (explore/plan/general + worktree), MCP (config.toml + discovery), image/video (Imagine).
-- Excellence: repo-mastery + multi-harness-orchestrator + excellence-review + harness-integration (in .grok/skills, Kenya per SHARING).
+- Excellence: repo-mastery + multi-harness-orchestrator + excellence-review + harness-integration (in .grok/skills, grok-personal per SHARING).
 - Delegation: multi-orchestrator outputs exact shell with injected rules + core/kenya filter.
 - SIP: /sip-attest + starlight-board for substrate.
-- Gaps closed: full generateAll, Kenya tag filter, image/video sections, cockpit parity.
+- Gaps closed: full generateAll, grok-personal tag filter, image/video sections, cockpit parity.
 
 Run: grok -p "$(cat GROK.md)" --cwd ...
 `;

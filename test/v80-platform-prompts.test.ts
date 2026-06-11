@@ -6,7 +6,7 @@
  * surface: cross-platform system prompts.
  *
  * Guards: every platform-prompt surface (AGENTS.md, CLAUDE.md, .cursor/rules/*,
- * .clinerules/*, .gemini/GEMINI.md, .antigravity/* (instructions + swarm-96-minds-protocol), GROK.md if present) must reference
+ * .clinerules/*, .gemini/GEMINI.md, .antigravity/* (instructions + swarm-protocol), GROK.md if present) must reference
  * the SAME load-bearing facts as the operational source-of-truth files.
  *
  * Facts asserted:
@@ -74,8 +74,8 @@ const PLATFORM_PROMPTS = [
   ".clinerules/starlight.md",
   ".gemini/GEMINI.md",
   "GROK.md",  // Grok high-context adapter surface (src/adapters/grok.ts generateMemoryFile) — integrated per 2026-06-02 Grok addition + excellence hook mandate
-  ".antigravity/instructions.md",  // Antigravity full instructions (96 minds, swarm, excellence) — 2026-06-02 enhancement
-  ".antigravity/swarm-96-minds-protocol.md",  // Executable 96-mind orchestration protocol + god-99 patterns
+  ".antigravity/instructions.md",  // Antigravity full instructions (the agent swarm, swarm, excellence) — 2026-06-02 enhancement
+  ".antigravity/swarm-protocol.md",  // Executable multi-agent orchestration protocol + excellence patterns
 ] as const;
 
 // ---------- exempt drift (technical-debt ledger) ----------

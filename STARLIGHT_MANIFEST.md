@@ -12,7 +12,7 @@
 **Name:** Starlight Intelligence System
 **Role:** Open intelligence layer for AI-native development
 **Classification:** Multi-platform agent orchestration framework
-**Platforms:** Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity (96-mind swarm harness), OpenCode, Grok
+**Platforms:** Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity (agent swarm harness), OpenCode, Grok
 
 ## Version History
 
@@ -25,7 +25,7 @@
 
 ### What Changed in v2.0.0
 
-- **Multi-platform support** — Added adapters for Cursor, Cline, Codex, Gemini CLI, Antigravity (2026-06-02: full .antigravity/ expansion with swarm-96-minds-protocol + mcp + allowlist + orchestrator harness scaffold + adapter generators for 96-mind excellence)
+- **Multi-platform support** — Added adapters for Cursor, Cline, Codex, Gemini CLI, Antigravity (2026-06-02: full .antigravity/ expansion with swarm-protocol + mcp + allowlist + orchestrator harness scaffold + adapter generators for multi-agent excellence)
 - **Agent hierarchy rethink** — Flat council with emergent leadership replaces rigid tree
 - **Horizon Vault** — Public vault for human hopes, AGI alignment, letters to the future
 - **Premium narrative** — Complete rewrite with elevated, AI-lab-quality communication
@@ -43,7 +43,7 @@
 | Vaults | 6 (incl. Horizon) | Active |
 | Note Templates | 4 | Active |
 | Transmission Channels | 4 | Active |
-| Platform Adapters | 7+ (Claude Code primary, Cursor, Cline, Codex adversary, Gemini long-context, Antigravity 96-mind swarm + harness, OpenCode, Grok) | Active |
+| Platform Adapters | 7+ (Claude Code primary, Cursor, Cline, Codex adversary, Gemini long-context, Antigravity agent swarm + harness, OpenCode, Grok) | Active |
 | Hooks | 4 categories | Active |
 | MCP Integrations | 3 servers in tree (cockpit/mcp, src/, starlight-substrate-mcp) | Configured |
 
@@ -58,7 +58,7 @@ Starlight Intelligence System
 │   ├── Cline (.clinerules/)
 │   ├── Codex (AGENTS.md)
 │   ├── Gemini CLI (.gemini/)
-│   └── Antigravity (.antigravity/ — 2026-06-02 full: instructions + swarm-96-minds-protocol + mcp-config + allowlisted; harness at core/orchestrator/harnesses/antigravity/)
+│   └── Antigravity (.antigravity/ — 2026-06-02 full: instructions + swarm-protocol + mcp-config + allowlisted; harness at core/orchestrator/harnesses/antigravity/)
 │
 ├── Consumes from:
 │   ├── AI-Ops (research, patterns, memory architecture)
@@ -106,7 +106,7 @@ Starlight Intelligence System
 | Cline | Memory banks, plan-and-act, version-controlled instructions | Vault Protocol, `.clinerules/` adapter |
 | Codex | Cascading AGENTS.md, directory-level instructions | `AGENTS.md` adapter |
 | Gemini CLI | Project-scoped settings, instruction layers | `.gemini/` adapter |
-| Antigravity | Agent-first IDE, browser control, async patterns, native 96-mind swarm (define/invoke subagent, Agent Manager) | `.antigravity/` (full 2026-06-02 + orchestrator harness) |
+| Antigravity | Agent-first IDE, browser control, async patterns, native agent swarm (define/invoke subagent, Agent Manager) | `.antigravity/` (full 2026-06-02 + orchestrator harness) |
 
 ---
 

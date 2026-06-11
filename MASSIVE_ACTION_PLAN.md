@@ -80,7 +80,7 @@ Reconciled with existing nine universal IS layers (Substrate/Genius/Second Brain
 
 ## 4. Multi-CLI Harness — the central command layer
 
-The single CLI Frank should type into is `starlight`. It wraps and orchestrates the model CLIs (Claude Code primary + Codex adversary + Gemini long-context + OpenCode latency + Antigravity 96-mind swarm execution).
+The single CLI Frank should type into is `starlight`. It wraps and orchestrates the model CLIs (Claude Code primary + Codex adversary + Gemini long-context + OpenCode latency + Antigravity agent swarm execution).
 
 | CLI | Role in harness | Routing rule |
 |---|---|---|
@@ -92,7 +92,7 @@ The single CLI Frank should type into is `starlight`. It wraps and orchestrates 
 **Implementation:**
 - `arcanea-orchestrator/` already has the routing scaffolding (audited, v0.1.0 local, NOT on npm — memory was stale). Promote to canonical and rename package to `@starlight/orchestrator` aligned with the Orchestrator IS.
 - Extend `/ao` command to expose `starlight` as a global shell alias on both Lenovo + Acer.
-- Each CLI gets its own agent harness folder under `core/orchestrator/harnesses/{claude,codex,gemini,opencode,antigravity}/` with: system prompt, README (escalation), MCP/allowlist (Antigravity's live at `.antigravity/` platform level for swarm reuse). Antigravity harness added for native 96-mind parallel swarm execution (2026-06-02).
+- Each CLI gets its own agent harness folder under `core/orchestrator/harnesses/{claude,codex,gemini,opencode,antigravity}/` with: system prompt, README (escalation), MCP/allowlist (Antigravity's live at `.antigravity/` platform level for swarm reuse). Antigravity harness added for native parallel swarm swarm execution (2026-06-02).
 - `mco` (the open-source primitive identified) is the reference for the routing logic. Either fork it or absorb its routing patterns into the existing orchestrator.
 
 ---
@@ -198,7 +198,7 @@ The single CLI Frank should type into is `starlight`. It wraps and orchestrates 
 | # | Action | Owner | Verifies |
 |---|---|---|---|
 | 1.1 | Promote `arcanea-orchestrator` to `@starlight/orchestrator`, publish v0.2.0 to npm | Codex CLI | npm view |
-| 1.2 | Add `harnesses/{claude,codex,gemini,opencode,antigravity}/` with system prompts + MCP/allowlist per CLI (Antigravity: platform-level mcp+allowlist + swarm-96-minds-protocol + harness scaffold) | Claude Code / Antigravity for swarm | Delivered (original + 2026-06-02 Antigravity enhancement) |
+| 1.2 | Add `harnesses/{claude,codex,gemini,opencode,antigravity}/` with system prompts + MCP/allowlist per CLI (Antigravity: platform-level mcp+allowlist + swarm-protocol + harness scaffold) | Claude Code / Antigravity for swarm | Delivered (original + 2026-06-02 Antigravity enhancement) |
 | 1.3 | Install screenpipe on Lenovo + Acer, configure to write to `~/captures/screen/` | Frank + Claude Code script | Capture files appear |
 | 1.4 | Install meetscribe (or Meetily), wire to `~/captures/meetings/` | Frank | Test recording transcribed |
 | 1.5 | Install Mem0 (Python) + Graphiti (Python), point at `~/captures/` and `Arcanea/wiki/` | Claude Code | Graph nodes ingested |

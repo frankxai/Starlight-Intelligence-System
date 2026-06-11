@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "_comment": "Antigravity platform adapter + swarm harness MCP scope for Starlight Intelligence System. Native support for 96-mind subagent swarms via Antigravity primitives (define_subagent, invoke_subagent, Agent Manager). Canonical starlight-substrate always loaded. Swarm children are read-heavy + progress emitters; conductor carries scoped write surfaces. Built on SIP — see footer.",
+  "_comment": "Antigravity platform adapter + swarm harness MCP scope for Starlight Intelligence System. Native support for multi-agent subagent swarms via Antigravity primitives (define_subagent, invoke_subagent, Agent Manager). Canonical starlight-substrate always loaded. Swarm children are read-heavy + progress emitters; conductor carries scoped write surfaces. Built on SIP — see footer.",
   "_harness": "antigravity",
-  "_role": "swarm-execution + 96-minds-native",
+  "_role": "swarm-execution + agent-swarm-native",
   "_loaded_when": "Complex multi-perspective work (4-10 complexity), parallel agent orchestration, browser-heavy tasks, async long-running flows, when Antigravity YOLO or Agent Manager is the velocity lever. Full Hive (13-96) for cross-IS or vertical-wide intents.",
   "_write_policy": "Swarm children: read + progress artifacts only. Conductor / prime / sentinel: scoped writes to intel/ outputs, vault entries under memory/vaults/, and agent-manager artifacts. Substrate-tier writes still require /starlight-board pre-pass and ultimately route through Claude Code primary harness unless explicitly scoped.",
   "mcpServers": {
     "starlight-substrate": {
       "_role": "canonical — always loaded for swarm context, memory, attestation, IS namespace",
-      "_purpose": "Vault reads (strategic/technical/creative/operational), agent registry discovery, skill activation lookup, attestation generation for every swarm artifact, memory graph queries for historical patterns across 96 minds",
+      "_purpose": "Vault reads (strategic/technical/creative/operational), agent registry discovery, skill activation lookup, attestation generation for every swarm artifact, memory graph queries for historical patterns across the agent registry",
       "command": "node",
       "args": [
         "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
@@ -78,7 +78,7 @@
   "_built_on_sip": {
     "substrate": "starlightintelligence.org/protocol",
     "version": "v1.1.1",
-    "layers_used": ["file-contract", "attestation", "sovereignty", "96-minds-dynamic-registry", "swarm-protocol"],
+    "layers_used": ["file-contract", "attestation", "sovereignty", "agent-swarm-registry", "swarm-protocol"],
     "verticals": ".antigravity (platform) + core/orchestrator/harnesses/antigravity",
     "generated": "2026-06-02"
   }

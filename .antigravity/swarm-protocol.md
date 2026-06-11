@@ -1,6 +1,6 @@
-# Starlight Intelligence System — Antigravity Swarm 96 Minds Protocol
+# Starlight Intelligence System — Antigravity Agent Swarm Protocol
 
-> The executable operating manual for manifesting, coordinating, and synthesizing the full dynamic registry of 96 minds as native Antigravity subagents. God 99 standard. Composes with `.antigravity/instructions.md` (identity) and `core/orchestrator/harnesses/antigravity/system-prompt.md` (orchestrator framing).
+> The executable operating manual for manifesting, coordinating, and synthesizing the full dynamic registry of the agent swarm as native Antigravity subagents. excellence standard. Composes with `.antigravity/instructions.md` (identity) and `core/orchestrator/harnesses/antigravity/system-prompt.md` (orchestrator framing).
 
 **Non-negotiable:** Load this protocol + the target agent definition(s) before any `define_subagent` / `invoke_subagent` call. Never improvise agent identities.
 
@@ -8,7 +8,7 @@
 
 ## 1. Protocol Purpose & Scope
 
-- Turn the abstract "96 minds" registry into **live, parallel, observable subagents** inside Google Antigravity.
+- Turn the abstract "the agent swarm" registry into **live, parallel, observable subagents** inside Google Antigravity.
 - Support both full-Hive (many minds) and targeted (3-7 minds) swarms.
 - Enforce load-definition-first discipline, scoped allowlists, memory commit, SIP attestation, escalation to board on substrate touch.
 - Provide the exact checklist, prompt templates, failure modes, and synthesis rules used by Antigravity swarm harness in the Starlight Orchestrator.
@@ -51,7 +51,7 @@ Before opening a swarm session:
 
 ---
 
-## 4. Exact Execution Checklist (God 99 — Do Not Skip)
+## 4. Exact Execution Checklist (Excellence — Do Not Skip)
 
 For each mind you intend to manifest:
 
@@ -113,10 +113,10 @@ define_subagent(
 
 <PASTE FULL AGENT DEFINITION HERE or reference>
 
-You are executing as a subagent in an Antigravity 96-mind swarm under the Starlight Intelligence System.
+You are executing as a subagent in an Antigravity agent swarm under the Starlight Intelligence System.
 
 Additional context this turn:
-- Protocol: .antigravity/swarm-96-minds-protocol.md §4
+- Protocol: .antigravity/swarm-protocol.md §4
 - Parent intent: <one-line>
 - Your scoped allowlist: Read, Grep, specific MCP list_*, browser read, progress artifact emit. NO direct substrate writes.
 - Output contract: <format> + SIP attestation footer + memory keys to suggest.
@@ -223,7 +223,7 @@ Example footer:
 ```
 *Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*
 *Swarm: starlight-orchestrator + starlight-sentinel + starlight-prime (3 of 96) via Antigravity native*
-*Protocol: .antigravity/swarm-96-minds-protocol.md v1*
+*Protocol: .antigravity/swarm-protocol.md v1*
 ```
 
 ---
@@ -240,10 +240,10 @@ If the exact primitive names differ in your Antigravity build, map 1:1 and note 
 
 ---
 
-**God 99 close:** This protocol exists so that "use the 96 minds" is not poetry — it is a repeatable, auditable, load-definition-first, attest-everything, board-gated machine.
+**Excellence close:** This protocol exists so that "use the agent swarm" is not poetry — it is a repeatable, auditable, load-definition-first, attest-everything, board-gated machine.
 
 **Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)**
 - Substrate: starlightintelligence.org/protocol
-- Layers used: [file-contract, attestation, sovereignty, 96-minds-dynamic-registry, swarm-protocol, multi-harness-orchestration]
+- Layers used: [file-contract, attestation, sovereignty, agent-swarm-registry, swarm-protocol, multi-harness-orchestration]
 - Verticals: .antigravity, core/orchestrator
 - Generated: 2026-06-02 (enhancement pass, integrated with excellence)

@@ -58,9 +58,9 @@ Every task is either substrate-level or operational-level. Decide before acting.
 
 You are operating the **Starlight Intelligence System** — a persistent context and memory architecture built on the Starlight Intelligence Protocol (SIP) substrate. Structured reasoning, agent identity, cross-project awareness, all attestation-aware.
 
-This system works across seven platforms + dedicated orchestrator harnesses: Claude Code (primary), Cursor, Cline, Codex (adversary), Gemini CLI (long-context), Antigravity (native 96-mind swarm execution + browser + async via Google Antigravity primitives), OpenCode (latency), and Grok (high-context). You are running the Claude Code instance (primary harness).
+This system works across seven platforms + dedicated orchestrator harnesses: Claude Code (primary), Cursor, Cline, Codex (adversary), Gemini CLI (long-context), Antigravity (native agent swarm execution + browser + async via Google Antigravity primitives), OpenCode (latency), and Grok (high-context). You are running the Claude Code instance (primary harness).
 
-**Antigravity enhancement (2026-06-02):** Expanded `.antigravity/` (full instructions.md with 96-mind registry + excellence, swarm-96-minds-protocol.md, mcp-config.json, allowlisted-tools.md) + `core/orchestrator/harnesses/antigravity/` (README + system-prompt composing on the .antigravity/ files). Adapter `src/adapters/antigravity.ts` now generates the full surface and swarm-aware MCP. Use Antigravity harness for "launch the 96 minds" parallel work; route substrate writes back through primary (you) with board pre-pass. See `.antigravity/swarm-96-minds-protocol.md`, `core/orchestrator/README.md`, and HARNESS-STATUS.md.
+**Antigravity enhancement (2026-06-02):** Expanded `.antigravity/` (full instructions.md with multi-agent registry + excellence, swarm-protocol.md, mcp-config.json, allowlisted-tools.md) + `core/orchestrator/harnesses/antigravity/` (README + system-prompt composing on the .antigravity/ files). Adapter `src/adapters/antigravity.ts` now generates the full surface and swarm-aware MCP. Use Antigravity harness for "launch the agent swarm" parallel work; route substrate writes back through primary (you) with board pre-pass. See `.antigravity/swarm-protocol.md`, `core/orchestrator/README.md`, and HARNESS-STATUS.md.
 
 **What you have access to:**
 
@@ -234,7 +234,7 @@ Starlight-Intelligence-System/
 ├── .cursor/rules/                  # Cursor platform adapter
 ├── .clinerules/                    # Cline platform adapter
 ├── .gemini/                        # Gemini CLI platform adapter
-├── .antigravity/                   # Antigravity platform adapter (instructions + swarm-96-minds-protocol + mcp-config + allowlisted; 2026-06-02 full excellence expansion)
+├── .antigravity/                   # Antigravity platform adapter (instructions + swarm-protocol + mcp-config + allowlisted; 2026-06-02 full excellence expansion)
 │   └── (harness framing at core/orchestrator/harnesses/antigravity/)
 ├── GROK.md                         # Grok high-context adapter (generated via src/adapters/grok.ts)
 │

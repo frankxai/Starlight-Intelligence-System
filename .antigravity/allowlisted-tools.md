@@ -1,9 +1,9 @@
 # Antigravity Swarm — allowlisted tools (Starlight Intelligence System)
 
-> Executable permission policy for Antigravity agents operating under SIS 96-mind swarm protocol. Read as policy, not narrative. Every tool listed = allowed under constraints; everything else = default-deny, requires explicit per-swarm unlock or escalation.
+> Executable permission policy for Antigravity agents operating under SIS agent swarm protocol. Read as policy, not narrative. Every tool listed = allowed under constraints; everything else = default-deny, requires explicit per-swarm unlock or escalation.
 
-**Harness / Role:** Antigravity native swarm execution (define_subagent + invoke_subagent + Agent Manager + browser + async). 96 minds as parallel subagents.
-**Reference protocol:** `.antigravity/swarm-96-minds-protocol.md`
+**Harness / Role:** Antigravity native swarm execution (define_subagent + invoke_subagent + Agent Manager + browser + async). the agent registry as parallel subagents.
+**Reference protocol:** `.antigravity/swarm-protocol.md`
 **Identity:** `.antigravity/instructions.md`
 **Orchestrator framing (when used as harness):** `core/orchestrator/harnesses/antigravity/system-prompt.md`
 **Write posture:** Children = read + progress artifacts + scoped domain tools. Conductor/Prime/Sentinel = scoped vault/intel writes + define/invoke. Substrate-tier always gated by `/starlight-board`.
@@ -19,7 +19,7 @@
 | `view_file` / `Read` | yes | Load agent defs, skills, STACKs, vaults, code, docs | Primary mechanism for "load definition first". Prefer over dumping entire context. |
 | `Glob` | yes | Discover agent files, skill files, vertical artifacts by pattern | Use for dynamic registry validation and selection. |
 | `Grep` | yes | Content search across substrate for patterns, triggers, prior art | Multi-line + path scoping allowed. |
-| `Agent Manager` (list/status/cancel/monitor) | yes | Observe, pause, resume, kill in-flight swarm members; collect progress artifacts | Use proactively for long-running 96-mind Hives. Log all state changes to `memory/_audit/swarm/`. |
+| `Agent Manager` (list/status/cancel/monitor) | yes | Observe, pause, resume, kill in-flight swarm members; collect progress artifacts | Use proactively for long-running swarm Hives. Log all state changes to `memory/_audit/swarm/`. |
 | `emit_progress` / progress artifacts (todo, report, trace) | yes | Structured output from subagents without blocking | All progress artifacts must carry SIP attestation footer or sidecar. |
 | `browser_control` (navigate, inspect, screenshot, console, interact) | yes (with scope) | Web verticals, live testing, sync pitches, audience research, demo capture | Consent + attestation required for any user-facing or production surface. Never exfil secrets. |
 | `Write` (new files) | conditional (conductor + scoped) | New vault entries, intel drops, swarm session summaries, progress reports | Path must be under `memory/vaults/`, `core/orchestrator/intel/`, `docs/ops/`, or vertical output dirs. Substrate core files require board pre-pass. |
@@ -97,15 +97,15 @@ When a swarm conductor needs shell:
 
 ## Read This Before Any Large Swarm Launch
 
-Your value in Antigravity is **native parallel 96-mind execution + browser + async + Agent Manager visibility**. If you are doing single-file surgical edits, you are under-using the platform — route to Claude Code primary.
+Your value in Antigravity is **native parallel swarm execution + browser + async + Agent Manager visibility**. If you are doing single-file surgical edits, you are under-using the platform — route to Claude Code primary.
 
-The signature of god-99 Antigravity swarm work: 12 minds loaded from exact definitions, launched concurrently, each scoped tightly, progress visible in real time, synthesis by Prime, every artifact attested, memory committed, board gated on substrate touch, zero cached belief.
+The signature of excellence Antigravity swarm work: 12 minds loaded from exact definitions, launched concurrently, each scoped tightly, progress visible in real time, synthesis by Prime, every artifact attested, memory committed, board gated on substrate touch, zero cached belief.
 
 ---
 
 **Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)**
 - Substrate: starlightintelligence.org/protocol
-- Layers used: [file-contract, attestation, sovereignty, 96-minds-dynamic-registry, swarm-protocol]
+- Layers used: [file-contract, attestation, sovereignty, agent-swarm-registry, swarm-protocol]
 - Verticals: .antigravity (platform adapter + swarm harness)
 - Generated: 2026-06-02
-- Policy posture: executable permission policy for Antigravity when running SIS 96-mind swarms.
+- Policy posture: executable permission policy for Antigravity when running SIS agent swarms.

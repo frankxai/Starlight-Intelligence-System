@@ -3,7 +3,7 @@
   "_comment": "Grok harness MCP scope for Starlight Orchestrator excellence/subagent tier. Mirrors ~/.grok or xAI MCP client shape where applicable. Canonical: starlight-substrate always loaded. Excellence-specific MCPs for symmetry audit + subagent telemetry. Built on SIP — see footer.",
   "_harness": "grok",
   "_role": "excellence-subagent-mcp",
-  "_loaded_when": "subagent-heavy excellence passes, MCP composition audits, v80 hook extensions, god 99 e2e QA runs (repo-mastery + gstack)",
+  "_loaded_when": "subagent-heavy excellence passes, MCP composition audits, v80 hook extensions, 99% e2e QA runs (repo-mastery + gstack)",
   "mcpServers": {
     "starlight-substrate": {
       "_role": "canonical — always loaded",
@@ -43,11 +43,11 @@
       },
       "repo-mastery": {
         "_purpose": "Deep pattern search + conceptual QA across adapters/harnesses/tests",
-        "_load_when": "god 99 e2e verification passes",
+        "_load_when": "99% e2e verification passes",
         "_pattern": "Grep + Glob + Read via substrate MCP + custom mastery MCP"
       },
       "gstack-qa": {
-        "_purpose": "Grok-stack conceptual verification matrices (99% e2e god-tier)",
+        "_purpose": "Grok-stack conceptual verification matrices (99% e2e)",
         "_load_when": "excellence hook runs or subagent synthesis",
         "_pattern": "Notebook + custom QA matrix emitter"
       }

@@ -6,7 +6,7 @@
 
 ## Composition rule
 
-`GROK.md` is the source of truth for Frank DNA, layer routing, agent hierarchy, memory protocol, skills, commands, transmissions, architecture, and now explicit **subagent orchestration + MCP excellence** framing. This file adds **orchestrator-subagent-excellence-aware behavior** on top — the orientation Grok needs when operating as layer 10 excellence tier (mastering subagent dispatch, MCP symmetry, and 99-god e2e QA), not as a standalone Grok session.
+`GROK.md` is the source of truth for Frank DNA, layer routing, agent hierarchy, memory protocol, skills, commands, transmissions, architecture, and now explicit **subagent orchestration + MCP excellence** framing. This file adds **orchestrator-subagent-excellence-aware behavior** on top — the orientation Grok needs when operating as layer 10 excellence tier (mastering subagent dispatch, MCP symmetry, and 99% e2e QA), not as a standalone Grok session.
 
 If anything in this file appears to contradict `GROK.md` or `CLAUDE.md`, the substrate files win. Open a memory entry; do not silently override.
 
@@ -18,7 +18,7 @@ Per the Grok adapter addition (2026-06-02) and MASSIVE_ACTION_PLAN §4 extended:
 
 - Grok's architecture excels at **subagent decomposition** (parallel excellence-focused subagents up to 12 in flight).
 - Native support for **MCP tool use** and server composition makes it the conceptual bridge for cross-harness MCP config symmetry.
-- **Excellence** as first principle: every output must pass repo-mastery (deep SIS pattern fidelity) + gstack conceptual QA (Grok-optimized stack for end-to-end god-tier 99% verification).
+- **Excellence** as first principle: every output must pass repo-mastery (deep SIS pattern fidelity) + gstack conceptual QA (Grok-optimized stack for end-to-end 99% e2e verification).
 - Default for: harness symmetry verification, v80 excellence hook extensions, subagent-orchestrated audits, high-context synthesis where Claude primary would budget-burn.
 
 The other harnesses defer to you (or Claude) for subagent-heavy excellence passes.
@@ -51,9 +51,9 @@ Before any non-trivial subagent dispatch or MCP interaction:
 
 ---
 
-## God 99 e2e mandate
+## 99% e2e mandate
 
-You are invoked for "God 99 e2e". This means:
+You are invoked for "99% e2e". This means:
 - 99%+ coverage of all load-bearing surfaces (adapters, harnesses, prompts, tests, vaults, agents, skills).
 - Zero silent drift.
 - Explicit QA matrix using repo-mastery (pattern match to existing 6 adapters + 4 harnesses) + gstack conceptual (optimal Grok-native orchestration for verification).

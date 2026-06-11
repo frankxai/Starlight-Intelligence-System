@@ -1,15 +1,15 @@
 /**
  * Starlight Intelligence System — Antigravity Adapter
  *
- * Formats vault context for Google Antigravity (agent-first IDE with native 96-mind swarm support).
+ * Formats vault context for Google Antigravity (agent-first IDE with native agent swarm support).
  * Leverages Gemini's high context window + Antigravity primitives (define_subagent, invoke_subagent,
  * Agent Manager, browser control, async progress artifacts).
  *
  * Part of the multi-platform adapter set (Claude Code, Cursor, Cline, Codex, Gemini CLI, OpenCode, Antigravity).
- * See .antigravity/instructions.md (full), swarm-96-minds-protocol.md, mcp-config.json, allowlisted-tools.md.
+ * See .antigravity/instructions.md (full), swarm-protocol.md, mcp-config.json, allowlisted-tools.md.
  * When used as Starlight Orchestrator harness: core/orchestrator/harnesses/antigravity/ (README + system-prompt).
  *
- * Excellence standard: God 99. Every output carries ambient SIP attestation. Load definitions before use.
+ * Excellence standard: Excellence. Every output carries ambient SIP attestation. Load definitions before use.
  */
 
 import type {
@@ -33,11 +33,11 @@ export class AntigravityAdapter implements PlatformAdapter {
       '# Starlight Intelligence System — Antigravity Context',
       '',
       '> Persistent context for Google Antigravity native agentic runtime.',
-      '> 96 minds + 114+ skills dynamically discovered from agents/, verticals/, skills/.',
+      '> the agent registry + skills dynamically discovered from agents/, verticals/, skills/.',
       `> Loaded ${filtered.length} entries across ${new Set(filtered.map(e => e.vault)).size} vaults.`,
       '',
       'Reference: .antigravity/instructions.md (full sovereign mandate + registry),',
-      '.antigravity/swarm-96-minds-protocol.md (executable 96-mind orchestration),',
+      '.antigravity/swarm-protocol.md (executable multi-agent orchestration),',
       '.antigravity/mcp-config.json and allowlisted-tools.md (MCP + permissions).',
       'When acting as orchestrator swarm harness: core/orchestrator/harnesses/antigravity/.',
       '',
@@ -65,7 +65,7 @@ export class AntigravityAdapter implements PlatformAdapter {
     lines.push('');
     lines.push('---');
     lines.push('*Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*');
-    lines.push('Layers: file-contract, attestation, sovereignty, 96-minds-dynamic-registry, swarm-protocol');
+    lines.push('Layers: file-contract, attestation, sovereignty, agent-swarm-registry, swarm-protocol');
     lines.push('Verticals: .antigravity (platform adapter + core/orchestrator swarm harness)');
 
     const content = truncateToFit(lines.join('\n'), maxTokens);
@@ -78,7 +78,7 @@ export class AntigravityAdapter implements PlatformAdapter {
     return {
       mcpServers: {
         'starlight-substrate': {
-          _role: 'canonical — always loaded for 96-mind swarms',
+          _role: 'canonical — always loaded for agent swarms',
           _purpose: 'vaults, agent registry, skills, attestation, memory graph, IS namespaces',
           command: 'node',
           args: [serverCommand],
@@ -110,19 +110,19 @@ export class AntigravityAdapter implements PlatformAdapter {
   /** Generate the full swarm protocol file content (for scaffolding / sync). */
   generateSwarmProtocolFile(): { filename: string; content: string } {
     // In production this would synthesize from canonical sources; here we return a marker
-    // that the hand-maintained .antigravity/swarm-96-minds-protocol.md is authoritative.
+    // that the hand-maintained .antigravity/swarm-protocol.md is authoritative.
     const content = [
-      '# Starlight Intelligence System — Antigravity Swarm 96 Minds Protocol',
+      '# Starlight Intelligence System — Antigravity Agent Swarm Protocol',
       '',
-      '> Authoritative copy lives at `.antigravity/swarm-96-minds-protocol.md`.',
-      '> This is the executable manual for define_subagent / invoke_subagent of the 96 minds.',
+      '> Authoritative copy lives at `.antigravity/swarm-protocol.md`.',
+      '> This is the executable manual for define_subagent / invoke_subagent of the agent swarm.',
       '',
       'See `.antigravity/instructions.md` for identity + registry.',
       'See `core/orchestrator/harnesses/antigravity/system-prompt.md` for orchestrator framing.',
       '',
       '*Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*',
     ].join('\n');
-    return { filename: '.antigravity/swarm-96-minds-protocol.md', content };
+    return { filename: '.antigravity/swarm-protocol.md', content };
   }
 
   /** Generate Antigravity MCP config file (matches the checked-in .antigravity/mcp-config.json). */
@@ -137,7 +137,7 @@ export class AntigravityAdapter implements PlatformAdapter {
     const content = [
       '# Antigravity Swarm — allowlisted tools (Starlight Intelligence System)',
       '',
-      '> See `.antigravity/allowlisted-tools.md` (authoritative, hand-curated for god-99 fidelity).',
+      '> See `.antigravity/allowlisted-tools.md` (authoritative, hand-curated for excellence-grade fidelity).',
       '> Contains native primitives (define_subagent, invoke_subagent, Agent Manager, browser_control)',
       '> plus substrate tools, MCP verbs, per-child vs conductor scoping, escalation, and SIP rules.',
       '',
@@ -160,7 +160,7 @@ export class AntigravityAdapter implements PlatformAdapter {
     const ctx = this.formatContext(entries, { includeMetadata: true });
     return [
       { ...this.generateMemoryFile(entries), description: 'Antigravity memory / instructions surface' },
-      { ...this.generateSwarmProtocolFile(), description: '96-mind swarm protocol' },
+      { ...this.generateSwarmProtocolFile(), description: 'agent swarm protocol' },
       { ...this.generateMcpConfigFile(serverCommand), description: 'Swarm-aware MCP scope' },
       { ...this.generateAllowlistedToolsFile(), description: 'Allowlisted tools + escalation' },
       { filename: '.antigravity/context-injection.md', content: ctx.content, description: 'Vault context injection' },
