@@ -362,3 +362,25 @@ export { TestForge } from "./forge.js";
 // v8.2 — Embedding Provider (memory engine v0.2)
 export { HashingTFProvider, TransformerProvider, createEmbeddingProvider, rrfMerge } from './embedding.js';
 export type { EmbeddingProvider, EmbeddingVector, EmbeddingProviderConfig, RRFOptions } from './embedding.js';
+
+// v8.3 — Memory Gateway + Session Store
+export { SessionStore } from './session-store.js';
+export type { SessionItem } from './session-store.js';
+export { SisGatewayCore } from './gateway/server.js';
+export { InProcessTransport, HttpTransport, SisMemoryClient } from './gateway/client.js';
+export { SisGatewayDaemon } from './gateway/daemon.js';
+export { parseRoute, ok, err } from './gateway/protocol.js';
+export type {
+  GatewayRequest,
+  GatewayResponse,
+  GatewaySuccessResponse,
+  GatewayErrorResponse,
+  AuthContext,
+  ParsedRoute,
+  MemoryAddBody,
+  MemorySearchBody,
+  SessionAddBody,
+} from './gateway/protocol.js';
+export type { GatewayTransport, HttpTransportOptions } from './gateway/client.js';
+export type { GatewayCoreOptions } from './gateway/server.js';
+export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';

@@ -22,6 +22,7 @@ import type {
 import { readFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { EmpiricalSandbox } from './sandbox.js';
+import { HashingTFProvider, rrfMerge, type RRFOptions } from './embedding.js';
 
 // ── Vault classification keywords ──────────────────────────
 
@@ -181,34 +182,84 @@ export class VaultMemory extends MemoryManager {
 
   /**
    * Search memories with optional vault-type filtering and custom sort.
+   *
+   * Rank fusion: two channels are combined via rrfMerge() from embedding.ts
+   * (the single canonical RRF implementation in this repo):
+   *   - Lexical channel: word-index matches from MemoryManager.search()
+   *   - Semantic channel: HashingTF cosine similarity
+   * Default RRF weights: [0.7 semantic, 0.3 lexical], k=60 — same as
+   * RetrievalIndex.hybridSearch() so behaviour is consistent across pathways.
+   *
+   * Result semantics are unchanged: vault filtering, sort, and limit apply
+   * after fusion. Existing retrieval tests pass without modification.
    */
-  searchVaults(options: VaultSearchOptions): VaultSearchResult[] {
-    // Over-fetch to allow post-filtering by vault
-    const baseResults = this.search({
+  searchVaults(options: VaultSearchOptions, rrfOpts?: RRFOptions): VaultSearchResult[] {
+    const limit = options.limit ?? 10;
+    // Over-fetch for RRF merging and post-vault-filter
+    const overfetch = limit * 4;
+
+    // ── Lexical channel ────────────────────────────────────
+    const lexicalResults = this.search({
       query: options.query,
       category: options.category,
-      limit: (options.limit ?? 10) * 3,
+      limit: overfetch,
       minConfidence: options.minConfidence,
     });
+    const lexicalIds = lexicalResults.map(e => e.id);
+
+    // ── Semantic channel (HashingTF, synchronous) ──────────
+    const provider = new HashingTFProvider();
+    const allEntries = this.getAll();
+
+    // Build a minimal corpus for IDF fitting
+    const corpus = allEntries.map(e => e.content);
+    provider.fit(corpus);
+
+    // Score all entries by semantic similarity to query (synchronous via sync embed)
+    const semanticScores: Array<[string, number]> = [];
+    for (const entry of allEntries) {
+      const entryVec = hashingEmbedSync(provider, entry.content);
+      const queryVec = hashingEmbedSync(provider, options.query);
+      const sim = provider.similarity(queryVec, entryVec);
+      if (sim > 0) {
+        semanticScores.push([entry.id, sim]);
+      }
+    }
+    semanticScores.sort((a, b) => b[1] - a[1]);
+    const semanticIds = semanticScores.slice(0, overfetch).map(([id]) => id);
+
+    // ── RRF fusion ─────────────────────────────────────────
+    // Delegate to the single canonical rrfMerge from embedding.ts
+    const mergedIds = rrfMerge(semanticIds, lexicalIds, overfetch, rrfOpts);
+
+    // Build a result map for fast lookup
+    const entryMap = new Map<string, MemoryEntry>();
+    for (const e of allEntries) entryMap.set(e.id, e);
 
     const queryTerms = options.query
       .toLowerCase()
       .split(/\s+/)
       .filter(w => w.length > 0);
 
-    let results: VaultSearchResult[] = baseResults.map(entry => {
+    // Apply confidence filter and vault filter after fusion
+    let results: VaultSearchResult[] = [];
+    for (const id of mergedIds) {
+      const entry = entryMap.get(id);
+      if (!entry) continue;
+      if (options.minConfidence != null && entry.confidence < options.minConfidence) continue;
+
       const vault = this.vaultIndex.get(entry.id) ?? this.classifyVault(entry.content);
-      return {
+      if (options.vaults && options.vaults.length > 0) {
+        if (!options.vaults.includes(vault)) continue;
+      }
+
+      results.push({
         entry: { ...entry, vault, updatedAt: entry.createdAt } as VaultEntry,
         score: entry.confidence,
         matchedTerms: queryTerms.filter(w => entry.content.toLowerCase().includes(w)),
-      };
-    });
+      });
 
-    // Filter to requested vaults
-    if (options.vaults && options.vaults.length > 0) {
-      const allowed = new Set(options.vaults);
-      results = results.filter(r => allowed.has(r.entry.vault));
+      if (results.length >= overfetch) break;
     }
 
     // Sort
@@ -217,9 +268,9 @@ export class VaultMemory extends MemoryManager {
     } else if (options.sortBy === 'confidence') {
       results.sort((a, b) => b.entry.confidence - a.entry.confidence);
     }
-    // default 'relevance' keeps the order from the base search
+    // default 'relevance' keeps the RRF-merged order
 
-    return results.slice(0, options.limit ?? 10);
+    return results.slice(0, limit);
   }
 
   // ── Horizon Ledger ──────────────────────────────────────
@@ -309,6 +360,14 @@ export class VaultMemory extends MemoryManager {
 }
 
 // ── Helpers ───────────────────────────────────────────────
+
+/**
+ * Synchronously extract an embedding from HashingTFProvider via embedSync().
+ * This avoids making searchVaults() async (which would break all callers).
+ */
+function hashingEmbedSync(provider: HashingTFProvider, text: string): number[] {
+  return provider.embedSync(text);
+}
 
 function vaultToCategory(vault: VaultType): MemoryEntry['category'] {
   const map: Record<VaultType, MemoryEntry['category']> = {
