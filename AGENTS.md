@@ -188,6 +188,22 @@ Every task is **substrate-level** or **operational-level**. Decide before acting
 
 ---
 
+## Metrics Truth Rule
+
+Before writing public claims about Frank Riemer, FrankX.ai, Arcanea, Starlight Intelligence Systems, Agentic Creator OS, or related ecosystems:
+
+1. Read `metrics/current.json` when available.
+2. Never hardcode fast-moving numbers in prose unless the metric includes `last_verified`.
+3. Use "as of [date]" for exact figures.
+4. Use ranges or "minimum historic snapshot" when freshness is uncertain.
+5. Distinguish ownership: **built / contributed to / influenced / supported / advised / experimented with**.
+6. For enterprise/commercial impact, avoid claiming ownership of full deals unless explicitly verified.
+7. Prefer phrasing that shows compounding velocity: "tracked snapshot," "living ledger," "minimum public count," "production velocity," "as of last verified update."
+
+Full rule: `metrics/METRICS_TRUTH.md`. Living ledger: `metrics/current.json`.
+
+---
+
 ## Agent hygiene (Karpathy-distilled)
 
 - State assumptions before running with them; ambiguity surfaces, not guesses
