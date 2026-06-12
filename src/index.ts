@@ -358,6 +358,27 @@ export { EmpiricalSandbox } from "./sandbox.js";
 export type { SandboxExecutionResult, SupportedLanguage } from "./sandbox.js";
 export { ActiveHealingDaemon } from "./active-healing.js";
 export { TestForge } from "./forge.js";
+export {
+  DEFAULT_SWARM_CONFIG,
+  appendSwarmAudit,
+  createSwarmPlan,
+  inspectSwarmProviders,
+  inspectSwarmRepos,
+} from "./swarm.js";
+export type {
+  SwarmAutonomy,
+  SwarmConfig,
+  SwarmExternalRisk,
+  SwarmMutationRisk,
+  SwarmPacket,
+  SwarmPlan,
+  SwarmProviderConfig,
+  SwarmProviderMode,
+  SwarmProviderStatusReport,
+  SwarmRepoConfig,
+  SwarmRepoStatusReport,
+  SwarmRuntimeOptions,
+} from "./swarm.js";
 
 // v8.2 — Embedding Provider (memory engine v0.2)
 export { HashingTFProvider, TransformerProvider, createEmbeddingProvider, rrfMerge } from './embedding.js';

@@ -374,3 +374,18 @@ Conflict policy: hot core files favored the newer local/mainline memory and gate
 Windows hardening pattern confirmed: directory-lock contention can surface as transient `EPERM`/`EACCES`, not only `EEXIST`. `src/jsonl-lock.ts` now treats those lock-acquisition codes as retryable so multi-process JSONL appends pass the Phase 0 concurrent-write smoke on Windows.
 
 Verification passed: `npm run build`; `npm run test:operational`; `npm run test:substrate`; focused `test/phase0-concurrent-write-smoke.test.ts`; focused v76, v80, and v87 harnesses during repair.
+
+## 2026-06-12 — Main governance pass and approval-gated swarm planner
+
+**Category:** orchestration-state
+**Confidence:** 0.95
+**Source:** Codex CLI session
+**Related:** `src/swarm.ts`, `src/cli.ts`, `commands/starlight-swarm.md`, `test/swarm.test.ts`, `/starlight-board`, Antigravity CLI
+
+Ran a Starlight Board pass for pushing the integrated SIS `main` plus the new `/starlight-swarm` planner. Board recommendation: PROCEED, bounded by keeping swarm v1 as dry-run packet planning only, with no repo mutation or live external provider calls.
+
+Added `starlight starlight-swarm` CLI support and command docs. The planner inspects the v1 repo ring, checks provider availability, emits approval-gated packets, and writes audit JSONL under `private/voice-operator/logs/swarm.jsonl`. It preserves the existing real `runSwarm` executor while adding a safer planning surface for multi-CLI orchestration.
+
+Antigravity was invoked for input using non-interactive `agy --print`; it authenticated silently but returned no usable review text before print-mode timeout. Local verification therefore remained the deciding gate.
+
+Verification passed: `npm run build`; `node --import tsx --test test/swarm.test.ts`; `npm run test:operational`; `npm run test:substrate`; `node dist/cli.js starlight-swarm status`; `node dist/cli.js starlight-swarm providers`.

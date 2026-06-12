@@ -22,6 +22,7 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 | `/navigate` | Strategic planning | Navigator |
 | `/si` | Route work to the right CLI or native generation tool | Orchestrator |
 | `/so` | Orchestrate multi-lane dispatch, packets, and verification | Orchestrator |
+| `/starlight-swarm` | Create approval-gated multi-CLI swarm packets | Orchestrator |
 
 ---
 
@@ -114,6 +115,15 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 /si --repo <key> [task]            Route against arc/sis/fx/g/vc/ani/dpi
 /si --tool <tool> [task]           Force claude/codex/gemini/opencode/cursor/agy/grok/image
 /si --dry-run [task]               Show route without execution
+```
+
+### /starlight-swarm - Approval-Gated Swarm Planning
+
+```
+/starlight-swarm [goal]            Emit dry-run multi-repo swarm packets
+/starlight-swarm status            Show repo/provider readiness
+/starlight-swarm providers         Show dry-run provider adapters
+/starlight-swarm repos             Show configured v1 repo ring
 ```
 
 ### /so - Starlight Orchestrator Dispatch

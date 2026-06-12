@@ -38,6 +38,12 @@ import { runMemoryEval } from "./memory-eval.js";
 import { seedVaults } from "./seed.js";
 import { AgentOpsLedger, ApprovalGateRequiredError, readRecentAgentEvents } from "./ledgers.js";
 import { listModules, setModuleEnabled } from "./modules.js";
+import {
+  appendSwarmAudit,
+  createSwarmPlan,
+  inspectSwarmProviders,
+  inspectSwarmRepos,
+} from "./swarm.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
@@ -111,6 +117,10 @@ Commands:
   sync                            Sync ACOS trajectories into SIS memory
   doctor                          Check CLI, dispatcher, and cockpit readiness
   dispatch <prompt>               Route a prompt through Arcanea orchestrator
+  starlight-swarm <goal>           Create approval-gated multi-CLI swarm packets
+  starlight-swarm status           Show swarm repo/provider readiness
+  starlight-swarm providers        Show dry-run provider adapters
+  starlight-swarm repos            Show configured v1 repo ring
   cockpit [project]               Launch or attach to the Zellij cockpit
   score                           Generate unified intelligence report
   project register <name> <path>  Register a project for federated multi-sync
@@ -179,6 +189,8 @@ Examples:
   starlight sync --dry-run
   starlight doctor
   starlight dispatch --task code.debug --dry-run "find the failing test"
+  starlight starlight-swarm --dry-run "build the cosmos MCP plan"
+  starlight starlight-swarm providers
   starlight cockpit sis
   starlight score
   starlight project register frankx ~/.claude/trajectories
@@ -1175,6 +1187,65 @@ function cmdDispatch(
   }
 }
 
+function cmdStarlightSwarm(actionOrGoal: string | undefined, rest: string[], options: { dryRun?: boolean }): void {
+  const action = actionOrGoal?.trim();
+
+  if (!action) {
+    console.error("[starlight] Error: starlight-swarm requires a goal or action (status, providers, repos).");
+    process.exitCode = 1;
+    return;
+  }
+
+  if (action === "providers") {
+    const providers = inspectSwarmProviders();
+    console.log("[starlight-swarm] Provider adapters (v1 dry-run stubs):\n");
+    for (const provider of providers) {
+      console.log(`  ${provider.status === "available" ? "OK  " : "MISS"} ${provider.id.padEnd(12)} ${provider.name}`);
+      console.log(`      mode=${provider.mode} live=${provider.liveCallsEnabled} ${provider.detail}`);
+    }
+    return;
+  }
+
+  if (action === "repos") {
+    const repos = inspectSwarmRepos();
+    console.log("[starlight-swarm] Repo ring (v1):\n");
+    for (const repo of repos) {
+      console.log(`  ${repo.status === "available" ? "OK  " : "MISS"} ${repo.id.padEnd(16)} ${repo.path}`);
+      console.log(`      ${repo.role}; ${repo.detail}`);
+    }
+    return;
+  }
+
+  if (action === "status") {
+    const repos = inspectSwarmRepos();
+    const providers = inspectSwarmProviders();
+    console.log("[starlight-swarm] Status");
+    console.log("========================\n");
+    console.log(`  autonomy:      plan_approve`);
+    console.log(`  provider mode: adapter_stubs`);
+    console.log(`  repos:         ${repos.filter((repo) => repo.status === "available").length}/${repos.length} available`);
+    console.log(`  providers:     ${providers.filter((provider) => provider.status === "available").length}/${providers.length} available`);
+    console.log(`  approval:      required for every mutation or external call`);
+    return;
+  }
+
+  const goal = [action, ...rest].join(" ").trim();
+  if (!goal) {
+    console.error("[starlight] Error: starlight-swarm requires a non-empty goal.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const plan = createSwarmPlan(goal);
+  appendSwarmAudit(plan);
+
+  if (!options.dryRun) {
+    console.log("[starlight-swarm] v1 is plan-and-approve only; emitting dry-run packets.");
+    console.log("");
+  }
+  console.log(formatJSON(plan));
+}
+
 function quotePowerShellArg(value: string): string {
   return `'${value.replace(/'/g, "''")}'`;
 }
@@ -1323,6 +1394,13 @@ async function main(): Promise<void> {
         task: asString(values.task),
         surface: asString(values.surface),
         model: asString(values.model),
+        dryRun: values["dry-run"] === true,
+      });
+      break;
+    }
+
+    case "starlight-swarm": {
+      cmdStarlightSwarm(positionals[1], positionals.slice(2), {
         dryRun: values["dry-run"] === true,
       });
       break;
