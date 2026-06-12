@@ -299,6 +299,7 @@ export const DEFAULT_SWARM_CONFIG: SwarmConfig = {
       id: "antigravity",
       name: "Antigravity",
       kind: "powershell-function",
+      command: "agy",
       wrappers: ["agya", "agysis", "agyfx", "agyg", "agyvc", "agydpi"],
       capability: "repo-scoped Antigravity launch wrappers for configured workspaces",
       mode: "adapter_stubs",

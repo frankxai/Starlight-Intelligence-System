@@ -22,13 +22,13 @@ function withTempDir<T>(prefix: string, fn: (dir: string) => T): T {
 describe("starlight swarm planner", () => {
   it("reports available, wrapper, and missing provider adapters without live calls", () => {
     const providers = inspectSwarmProviders(undefined, {
-      commandExists: (name) => ["claude", "codex", "opencode", "grok", "agysis"].includes(name),
+      commandExists: (name) => ["claude", "codex", "opencode", "grok", "agy", "agysis"].includes(name),
     });
 
     const byId = new Map(providers.map((provider) => [provider.id, provider]));
     assert.equal(byId.get("grok")?.status, "available");
     assert.equal(byId.get("antigravity")?.status, "available");
-    assert.match(byId.get("antigravity")?.detail ?? "", /agysis/);
+    assert.match(byId.get("antigravity")?.detail ?? "", /agy|agysis/);
     assert.equal(byId.get("gemini")?.status, "missing");
     assert.equal(byId.get("higgsfield")?.status, "missing");
     assert.equal(byId.get("grok")?.liveCallsEnabled, false);
@@ -73,7 +73,7 @@ describe("starlight swarm planner", () => {
         {
           homeDir: home,
           now: new Date("2026-06-12T12:00:00.000Z"),
-          commandExists: (name) => ["claude", "codex", "opencode", "grok", "agysis"].includes(name),
+          commandExists: (name) => ["claude", "codex", "opencode", "grok", "agy", "agysis"].includes(name),
           runCommand: (_command, args) => {
             if (args.join(" ") === "branch --show-current") return { status: 0, stdout: "main\n", stderr: "" };
             if (args.join(" ") === "status --porcelain") return { status: 0, stdout: "", stderr: "" };
