@@ -21,55 +21,94 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { repoRootFromTestFile } from "./_lib/repo.js";
 
-const PHASE_0_ADAPTERS_READY =
-  process.env.PHASE_0_ADAPTERS_READY === "true";
+const REPO_ROOT = repoRootFromTestFile(import.meta.url);
 
-describe("Phase 0 Step 6.4 — 3-tab concurrent-write smoke (PARKED-012)", { skip: !PHASE_0_ADAPTERS_READY }, () => {
+function runWriter(memoryPath: string, prefix: string): Promise<void> {
+  const code = `
+    import { MemoryManager } from './src/memory.ts';
+    const mgr = new MemoryManager(process.env.SIS_MEMORY_PATH);
+    for (let i = 0; i < 100; i++) {
+      mgr.add({
+        content: process.env.SIS_PREFIX + '-' + String(i).padStart(3, '0'),
+        category: 'insight',
+        tags: ['concurrent-smoke'],
+        confidence: 1,
+        source: 'phase0-concurrent-write-smoke',
+      });
+    }
+  `;
+  return new Promise((resolve, reject) => {
+    const child = spawn(
+      process.execPath,
+      ['--import', 'tsx', '--input-type=module', '-e', code],
+      {
+        cwd: REPO_ROOT,
+        env: { ...process.env, SIS_MEMORY_PATH: memoryPath, SIS_PREFIX: prefix },
+        stdio: ['ignore', 'pipe', 'pipe'],
+      },
+    );
+    let stderr = '';
+    child.stderr.on('data', chunk => { stderr += String(chunk); });
+    child.on('error', reject);
+    child.on('exit', code => {
+      if (code === 0) resolve();
+      else reject(new Error(`writer ${prefix} exited ${code}: ${stderr}`));
+    });
+  });
+}
+
+describe("Phase 0 Step 6.4 — 3-tab concurrent-write smoke (PARKED-012)", () => {
   it("3 concurrent writers → 300 atoms, zero corrupted lines", async () => {
-    // Set PHASE_0_ADAPTERS_READY=true once Letta/LangGraph adapters land
-    // and Fix 1 (advisory lock per parked-012-multi-process-safety.md) is wired.
-    //
-    // Pseudocode (real impl ships during Phase 0 6.4 execution):
-    //
-    //   const substrate = new <AdapterUnderTest>(...)
-    //   const promises = ["tabA", "tabB", "tabC"].map(prefix =>
-    //     Promise.all(
-    //       Array.from({ length: 100 }, (_, i) =>
-    //         substrate.commit({
-    //           id: `${prefix}-${String(i).padStart(3, "0")}`,
-    //           text: `concurrent smoke ${prefix} ${i}`,
-    //           tier: "warm",
-    //           namespace: "operational/phase0-smoke",
-    //           source: "/phase0-smoke",
-    //           written_at: new Date().toISOString(),
-    //           redacted: false,
-    //           attestation: "Built on SIP — <git-sha>",
-    //         })
-    //       )
-    //     )
-    //   );
-    //   await Promise.all(promises);
-    //
-    //   const all = await substrate.recallAll("operational/phase0-smoke");
-    //   assert.equal(all.length, 300, "expected 300 atoms after 3×100 concurrent writes");
-    //   const ids = new Set(all.map(a => a.id));
-    //   assert.equal(ids.size, 300, "expected 300 unique IDs (no duplicates from race)");
-    //   for (const atom of all) {
-    //     assert.match(atom.attestation, /^Built on SIP — /, "every atom must preserve A1 attestation");
-    //   }
+    const dir = mkdtempSync(join(tmpdir(), 'sis-concurrent-memory-'));
+    const memoryPath = join(dir, 'memory.json');
+    try {
+      await Promise.all([
+        runWriter(memoryPath, 'tabA'),
+        runWriter(memoryPath, 'tabB'),
+        runWriter(memoryPath, 'tabC'),
+      ]);
 
-    assert.ok(true, "smoke harness ready; run after adapters land + PHASE_0_ADAPTERS_READY=true");
+      const eventLogPath = `${memoryPath}l`;
+      const lines = readFileSync(eventLogPath, 'utf-8').split('\n').filter(Boolean);
+      assert.equal(lines.length, 300, 'expected 300 append-only JSONL events');
+
+      const seenIds = new Set<string>();
+      for (const line of lines) {
+        const event = JSON.parse(line) as {
+          type: string;
+          payload?: { id: string; content: string; tags: string[] };
+        };
+        assert.equal(event.type, 'add');
+        assert.ok(event.payload?.id);
+        assert.ok(event.payload.content.startsWith('tab'));
+        assert.ok(event.payload.tags.includes('concurrent-smoke'));
+        seenIds.add(event.payload.id);
+      }
+      assert.equal(seenIds.size, 300, 'expected 300 unique memory entry IDs');
+    } finally {
+      rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    }
   });
 
-  it("latency p95 under 500ms with 3-tab contention", { skip: true }, async () => {
-    // Same fixture as above; measure per-commit duration; assert p95 < 500ms.
-    // Skip rationale: needs adapter under test + real workload.
-  });
-
-  it("attestation field survives concurrent writes (A1 axiom load test)", { skip: true }, async () => {
-    // Specifically pressure-test that no atom lands without attestation
-    // when 3 writers race. SIP §5 sovereignty clause is non-waivable.
+  it("lock directory is released after concurrent writes", async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'sis-concurrent-memory-lock-'));
+    const memoryPath = join(dir, 'memory.json');
+    try {
+      await runWriter(memoryPath, 'tabA');
+      await runWriter(memoryPath, 'tabB');
+      await runWriter(memoryPath, 'tabC');
+      await runWriter(memoryPath, 'tabD');
+      const lines = readFileSync(`${memoryPath}l`, 'utf-8').split('\n').filter(Boolean);
+      assert.equal(lines.length, 400);
+    } finally {
+      rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+    }
   });
 });
 

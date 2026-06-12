@@ -221,11 +221,16 @@ describe("core regression coverage", () => {
       const voiceDir = join(memoryRoot, "voice-sessions");
       const kgDir = join(memoryRoot, "knowledge-graph");
       const mempalaceDir = join(memoryRoot, "mempalace");
+      const sovereignDir = join(memoryRoot, "mempalace_sovereign");
+      const evalDir = join(dir, "docs", "research", "_factory", "memory-foundations-phase0");
 
       mkdirSync(vaultDir, { recursive: true });
       mkdirSync(voiceDir, { recursive: true });
       mkdirSync(kgDir, { recursive: true });
       mkdirSync(mempalaceDir, { recursive: true });
+      mkdirSync(sovereignDir, { recursive: true });
+      mkdirSync(evalDir, { recursive: true });
+      mkdirSync(join(dir, "test"), { recursive: true });
 
       const freshVault = (name: string) => `---\ntype: vault\nvault: ${name}\nretention: permanent\nwriters: [test]\nreaders: all\nlast_consolidated: 2026-05-11\n---\n\n# ${name}\n`;
 
@@ -239,6 +244,9 @@ describe("core regression coverage", () => {
       writeFileSync(join(memoryRoot, "CONSOLIDATION_LOG.md"), "- 2026-05-11T04:00:02.190Z · insights: 0 · contradictions: 0 · promotions: 0 · processed: 0\n", "utf8");
       writeFileSync(join(mempalaceDir, "atoms.jsonl"), "{\"id\":\"a\"}\n{\"id\":\"b\"}\n", "utf8");
       writeFileSync(join(mempalaceDir, "vectors.npy"), "placeholder", "utf8");
+      writeFileSync(join(sovereignDir, "atoms.jsonl"), "{\"id\":\"a\"}\n{\"id\":\"b\"}\n", "utf8");
+      writeFileSync(join(evalDir, "eval-50.jsonl"), "{\"id\":\"q1\",\"query_text\":\"alpha\",\"expected_match\":\"alpha\"}\n", "utf8");
+      writeFileSync(join(dir, "test", "retrieval-eval.test.ts"), "", "utf8");
 
       const report = inspectMemoryHealth(dir, new Date("2026-05-11T12:00:00Z"));
 
@@ -248,6 +256,10 @@ describe("core regression coverage", () => {
       assert.equal(report.knowledgeGraph.indexRows, 2);
       assert.equal(report.knowledgeGraph.brainCachePresent, true);
       assert.equal(report.mempalace.atomRows, 2);
+      assert.equal(report.corpora.sovereign.rows, 2);
+      assert.equal(report.drift.status, "ok");
+      assert.equal(report.evals.eval50Rows, 1);
+      assert.equal(report.memoryBus.status, "not-declared");
       assert.equal(report.consolidationLog.stale, false);
     });
   });

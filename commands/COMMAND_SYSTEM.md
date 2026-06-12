@@ -20,6 +20,8 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 | `/synthesize` | Multi-source synthesis | Prime + Council |
 | `/council` | Convene agent council | Prime |
 | `/navigate` | Strategic planning | Navigator |
+| `/si` | Route work to the right CLI or native generation tool | Orchestrator |
+| `/so` | Orchestrate multi-lane dispatch, packets, and verification | Orchestrator |
 
 ---
 
@@ -37,6 +39,8 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 /synthesize --sources vault,notes --topic "memory patterns"
 /council --topic "ecosystem integration strategy"
 /navigate --horizon 6months --domain technical
+/si --tool agy --repo arc "open this in Antigravity"
+/so --fanout "audit this flow across Codex, Gemini, and Grok"
 ```
 
 ---
@@ -101,6 +105,24 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 /navigate decide [options]     Navigate a decision with trade-offs
 /navigate roadmap [horizon]    Create a strategic roadmap
 /navigate priorities           Review and update priorities
+```
+
+### /si - Starlight Intelligence Routing
+
+```
+/si [task]                         Pick the best local CLI/tool lane
+/si --repo <key> [task]            Route against arc/sis/fx/g/vc/ani/dpi
+/si --tool <tool> [task]           Force claude/codex/gemini/opencode/cursor/agy/grok/image
+/si --dry-run [task]               Show route without execution
+```
+
+### /so - Starlight Orchestrator Dispatch
+
+```
+/so [task]                         Decide, dispatch, verify
+/so --fanout [task]                Split work across multiple lanes
+/so --packet [task]                Emit a durable handoff packet
+/so --tool image [prompt]          Use native image generation/editing tools
 ```
 
 ---

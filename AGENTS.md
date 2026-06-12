@@ -34,7 +34,7 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 ## What you have access to
 
 - **49 named agents** across 10 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (4) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (19 across People + Sound + Music verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`) + SIS Extractor (5 — `/sis-forge` Phase 1 only) + Evaluator (1 — Proving Ground + Model Arena). Full registry: `agents/AGENT_REGISTRY.md`.
-- **76 auto-activating skill rules** across 15 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
+- **77 auto-activating skill rules** across 15 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
@@ -97,12 +97,12 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (76 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
+Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (77 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
 
 | Domain | Surface (sample) |
 |--------|------------------|
 | Intelligence | strategic-reasoning · systems-thinking · pattern-recognition · decision-framework · genius-excavation |
-| Orchestration | multi-agent-coordination · workflow-design · context-engineering · parallel-execution · agent-handoff-packet |
+| Orchestration | multi-agent-coordination · workflow-design · context-engineering · parallel-execution · agent-handoff-packet · cli-tool-router |
 | Memory | vault-management · knowledge-synthesis · context-preservation · capture-discipline · insight-distillation |
 | Integration | repo-bridge · ecosystem-sync · transmission-protocol · universal-adapter · idea-triage · creator-path · domain-stack-architecture |
 | Business / Vision | entity-architecture · revenue-modeling · fundamentals-excavation · design-coherence · voice-anti-slop |

@@ -34,6 +34,7 @@ import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
 import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
+import { runMemoryEval } from "./memory-eval.js";
 import { seedVaults } from "./seed.js";
 import { AgentOpsLedger, ApprovalGateRequiredError, readRecentAgentEvents } from "./ledgers.js";
 import { listModules, setModuleEnabled } from "./modules.js";
@@ -125,6 +126,7 @@ Commands:
   workpacket block <id>           Mark a WorkPacket blocked and emit AgentEvent
   events tail                     Show recent AgentEvents (--limit --date)
   memory rebuild                  Rebuild SQLite shadow indices from JSONL ledgers
+  memory eval                     Run live sovereign memory eval scoreboard
   modules list                    List Intelligence System modules
   modules enable <id>             Enable an Intelligence System module locally
   modules disable <id>            Disable an Intelligence System module locally
@@ -497,6 +499,8 @@ function cmdVault(action: string, args: string[], options: {
 function printMemoryHealth(memory: ReturnType<typeof inspectMemoryHealth>): void {
   console.log("\nMemory Surfaces:");
   console.log(`  ${memory.status === "healthy" ? "OK  " : memory.status === "attention-needed" ? "WARN" : "MISS"} overall               ${memory.status}`);
+  console.log(`  primary: ${memory.architecture.primaryRuntime}`);
+  console.log(`  canon:   ${memory.architecture.canonical}`);
   console.log(`  ${memory.vaults.filter((v) => v.present).length}/${memory.vaults.length} vaults present`);
   for (const vault of memory.vaults) {
     const age = vault.ageDays == null ? "n/a" : `${vault.ageDays}d`;
@@ -507,7 +511,13 @@ function printMemoryHealth(memory: ReturnType<typeof inspectMemoryHealth>): void
   }
   console.log(`  ${memory.voiceSessions.count} voice sessions${memory.voiceSessions.latest ? ` | latest: ${memory.voiceSessions.latest}` : ""}`);
   console.log(`  KG index rows: ${memory.knowledgeGraph.indexRows} | brain cache: ${memory.knowledgeGraph.brainCachePresent ? "present" : "missing"}`);
-  console.log(`  mempalace: atoms ${memory.mempalace.atomRows ?? 0} | atoms.jsonl ${memory.mempalace.atomsPresent ? "present" : "missing"} | vectors.npy ${memory.mempalace.vectorsPresent ? "present" : "missing"}`);
+  console.log(`  sovereign corpus: ${memory.corpora.sovereign.rows} rows | ${memory.corpora.sovereign.present ? "present" : "missing"}`);
+  console.log(`  frozen mempalace: ${memory.corpora.frozenMempalace.rows} rows | ${memory.corpora.frozenMempalace.present ? "present" : "missing"}`);
+  console.log(`  corpus drift: ${memory.drift.status}${memory.drift.coverageRatio == null ? "" : ` | coverage ${memory.drift.coverageRatio}`}`);
+  console.log(`  memory-bus: ${memory.memoryBus.status} | launcher ${memory.memoryBus.launcherPresent ? "present" : "missing"} | private ${memory.memoryBus.privatePathPresent ? "present" : "missing"}`);
+  console.log(`  evals: eval-50 ${memory.evals.eval50Present ? `${memory.evals.eval50Rows} rows` : "missing"} | concurrency ${memory.evals.concurrencyGatePresent ? "present" : "missing"} | retrieval ${memory.evals.retrievalEvalPresent ? "present" : "missing"}`);
+  console.log(`  privacy: MCP search private-by-default = ${memory.privacy.defaultMcpSearchIncludesPrivate}`);
+  console.log(`  mempalace legacy vectors: atoms ${memory.mempalace.atomRows ?? 0} | atoms.jsonl ${memory.mempalace.atomsPresent ? "present" : "missing"} | vectors.npy ${memory.mempalace.vectorsPresent ? "present" : "missing"}`);
   console.log(`  consolidation log: ${memory.consolidationLog.entries} receipts${memory.consolidationLog.latestTimestamp ? ` | latest: ${memory.consolidationLog.latestTimestamp}` : ""}`);
   if (memory.notes.length > 0) {
     console.log("  Notes:");
@@ -889,7 +899,34 @@ function cmdEvents(action: string, options: { date?: string; limit?: string }): 
   }
 }
 
-function cmdMemory(action: string): void {
+function printMemoryEval(result: ReturnType<typeof runMemoryEval>): void {
+  console.log("\nMemory Eval:");
+  console.log(`  available: ${result.available}`);
+  console.log(`  mode:      ${result.retrieval.mode}`);
+  console.log(`  corpus:    ${result.corpus.atoms} atoms | ${result.corpus.queries} queries`);
+  if (!result.available) {
+    console.log(`  reason:    ${result.reason ?? "unknown"}`);
+    return;
+  }
+  const metrics = result.metrics;
+  if (metrics) {
+    console.log(`  hit@10:    ${metrics.hit10}`);
+    console.log(`  recall@5:  ${metrics.recall5}`);
+    console.log(`  precision@10: ${metrics.precision10}`);
+    console.log(`  mrr@10:    ${metrics.mrr10}`);
+    console.log(`  latency:   p50 ${metrics.latencyMs.p50}ms | p95 ${metrics.latencyMs.p95}ms | max ${metrics.latencyMs.max}ms`);
+  }
+  if (result.byClass) {
+    console.log("  by class:");
+    for (const [klass, bucket] of Object.entries(result.byClass)) {
+      console.log(`    ${klass}: n=${bucket.queries} hit@10=${bucket.hit10} recall@5=${bucket.recall5} precision@10=${bucket.precision10}`);
+    }
+  }
+  console.log(`  judge:     ${result.retrieval.judge}`);
+  console.log(`  weakness:  ${result.retrieval.weakness}`);
+}
+
+function cmdMemory(action: string, options: { limit?: string; output?: string }): void {
   const root = getPackageRoot();
   switch (action) {
     case "rebuild": {
@@ -903,9 +940,21 @@ function cmdMemory(action: string): void {
       }
       break;
     }
+    case "eval": {
+      const limit = options.limit ? parseInt(options.limit, 10) : 50;
+      const result = runMemoryEval(root, { limit: Number.isFinite(limit) ? limit : 50 });
+      if (options.output) {
+        const out = resolve(options.output);
+        writeFileSync(out, JSON.stringify(result, null, 2), "utf-8");
+        console.log(`[starlight] Memory eval scorecard written to ${out}`);
+      }
+      printMemoryEval(result);
+      if (!result.available) process.exitCode = 1;
+      break;
+    }
     default:
       console.error(`[starlight] Unknown memory action: "${action}".`);
-      console.error("  Available actions: rebuild");
+      console.error("  Available actions: rebuild, eval");
       process.exitCode = 1;
   }
 }
@@ -1344,11 +1393,14 @@ async function main(): Promise<void> {
     case "memory": {
       const memoryAction = positionals[1];
       if (!memoryAction) {
-        console.error("[starlight] Error: memory requires an action (rebuild).");
+        console.error("[starlight] Error: memory requires an action (rebuild, eval).");
         process.exitCode = 1;
         return;
       }
-      cmdMemory(memoryAction);
+      cmdMemory(memoryAction, {
+        limit: asString(values.limit),
+        output: asString(values.output),
+      });
       break;
     }
 

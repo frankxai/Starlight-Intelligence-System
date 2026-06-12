@@ -68,7 +68,7 @@ Plus 7 Council Archetype seats (v0.1 Friday demo) at `agents/council/`, 3 front-
 
 ---
 
-## Skills (76, auto-activate via `skills/skill-rules.json`)
+## Skills (77, auto-activate via `skills/skill-rules.json`)
 
 15 domains: intelligence / orchestration / memory / integration / safety / business / vision / health / relational / people-intelligence / sound-intelligence / music-is / energy / machine / crypto-intelligence.
 

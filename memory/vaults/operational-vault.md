@@ -188,6 +188,49 @@ Context files maintained for each repo in `context/repo-contexts/`.
 
 ---
 
+### [2026-06-11] Substrate MCP Registry Parser Fixed
+
+**Category:** mcp-maintenance
+**Confidence:** 0.95
+**Source:** Codex CLI session
+**Related:** `src/starlight-mcp.ts`, `test/starlight-substrate-mcp-smoke.test.ts`
+
+Fixed `starlight_registry_query` parser drift: it was reading every `###` heading in `REGISTRY.md`, causing Claw Registry headings (`Schema`, `Active`, `Planned`) to appear as phantom MCP servers. Parser now scopes to the `## Active servers` section only. Added an end-to-end stdio MCP regression test and wired it into `npm run test:substrate`.
+
+Verification: `npm run build`, focused operational MCP smoke, focused substrate MCP smoke, and full `npm run test:substrate` passed. Note: any already-running MCP server process may continue serving the old parser until the host session/server restarts.
+
+---
+
+### [2026-06-11] Memory Hybrid Retrieval + Concurrency Gate
+
+**Category:** memory-architecture
+**Confidence:** 0.93
+**Source:** Codex CLI session
+**Related:** `src/vault-memory.ts`, `src/memory.ts`, `src/jsonl-lock.ts`, `src/mcp-server-v01.ts`, `test/phase0-concurrent-write-smoke.test.ts`, `test/v01-mcp-tools.test.ts`
+
+SIS remains the primary sovereign memory layer. The repo is not treated as a full MemPalace fork; MemPalace, mem0, and Graphiti are benchmark/harvest sources rather than replacement architecture.
+
+Implemented a zero-dependency memory hardening slice: JSONL append/save operations now use a portable advisory lock, vault search defaults to hybrid lexical + deterministic semantic RRF ranking, private memory is hidden unless explicitly requested, and MCP v0.1 exposes `sis.memory.health` plus `sis.memory.eval` so memory state can be inspected and scored from the tool surface.
+
+Verification: `npm run build`, `node --import tsx --test test/v01-mcp-tools.test.ts`, `node --import tsx --test test/phase0-concurrent-write-smoke.test.ts`, `node --import tsx --test test/mcp-server-smoke.test.ts`, and full `npm run test:substrate` passed.
+
+---
+
+### [2026-06-12] Memory Control Plane Unified Across CLI + MCP
+
+**Category:** memory-observability
+**Confidence:** 0.94
+**Source:** Codex CLI session
+**Related:** `src/memory-health.ts`, `src/cli.ts`, `src/mcp-server-v01.ts`, `test/core-regressions.test.ts`, `test/v01-mcp-tools.test.ts`
+
+Extended SIS memory health from a surface checklist into a control-plane report. `starlight vault health` and `sis.memory.health` now share one inspector that states the architecture verdict, canonical source, optional/derived substrates, sovereign-vs-frozen corpus drift, memory-bus launcher/private-path status, eval readiness, concurrency gate, retrieval gate, and privacy-by-default posture.
+
+Live finding: sovereign corpus is aligned or ahead of frozen MemPalace rows (`556/520`, coverage `1.069`), eval-50 and concurrency/retrieval gates are present, but vault consolidation stamps are stale and `private/memory-bus` is absent in this checkout despite launcher/docs references. Memory-bus remains the right singleton mediator pattern, but the current connected implementation must either be restored from private state or replaced by the now-hardened SIS MCP memory tools.
+
+Verification: `npm run build`, focused core + MCP tests, `node dist/cli.js vault health`, full `npm run test:operational`, and full `npm run test:substrate` passed.
+
+---
+
 
 ## Voice capture 2026-05-10T20:41:06.300157+00:00
 
@@ -247,3 +290,72 @@ Rebuilt `C:\Users\frank\arcanea.ai` from thin landing shell into a committed Nex
 - Added Vercel Analytics and Speed Insights hooks, loaded Google fonts through `next/font`, modern ESLint flat config, lockfile, and Turbopack root pin.
 - Verification passed: `npm run lint`, `npm run typecheck`, `npm run build`.
 - Deployment not executed because the repo has no Vercel project link or git remote configured locally.
+
+## 2026-06-11 — Starlight Cosmos v1 shipped (operational)
+
+- **What**: /cosmos (hub + gallery + 19-card knowledge library) + /asteroids (live NeoWs + mining lens) live on starlightintelligence.org. Commit f5da2b1; deployed via `vercel --prod` from site/ (GHA still manual).
+- **Pattern confirmed**: registry + content/*.md + ISR + committed fallback snapshots = external-data pages that cannot go dark. DEMO_KEY rate-limited during build (10 req/hr measured) and the fallback rendered exactly as designed; production flipped to live data on Vercel.
+- **Dead upstream**: api.spacexdata.com (522; repo archived 2026-06-06) → Launch Library 2 is the launch feed now.
+- **Next**: card population each session (19 → 100+), cosmos MCP v0.1 in starlight-cosmos-engine (S+2), asteroid-economics engine (S+3 — Asterank frozen since ~2013, open lane). Spec: docs/superpowers/specs/2026-06-11-starlight-cosmos-design.md
+- **Note**: vault entry left uncommitted intentionally — sibling session has pending edits in this file; next ops commit sweeps it.
+
+## 2026-06-11 — Voice / Orchestrator Portability Audit
+
+- `starlight-voice` is clean on `origin/main` at `624444d`; repo is GitHub-portable but still a scaffold/MVR plan, not a complete one-command daily-driver install.
+- `@arcanea/orchestrator` source lives in `Arcanea/packages/orchestrator`, tracked by `frankxai/arcanea-ai-app` on `chore/models-opus-4-7`; npm latest is `1.2.1`, but the CLI hardcoded version still reports `1.2.0`.
+- Global Claude Code config at `C:\Users\frank\.claude` is not portable as-is: many commands/skills, including `commands/ao.md`, are untracked in `frankxai/claude-code-config`.
+- `/ao` command docs are stale: they point at nonexistent `C:\Users\frank\arcanea-orchestrator`; current installed `arco` links to `C:\Users\frank\Arcanea\packages\orchestrator`.
+
+### Follow-up shipped same session
+
+- `frankxai/starlight-voice@f0161d8`: added README + second-laptop install guide; cleaned Tauri scaffold warnings; `cargo build --release -p starlight-voice-tauri` passes.
+- `frankxai/arcanea-ai-app@b5b580f` on `chore/models-opus-4-7`: fixed `arco --version` to report `1.2.1`; `pnpm --filter @arcanea/orchestrator test` passes; pushed branch to GitHub.
+- `frankxai/claude-code-config@508cc82`: updated `/ao` to point at `@arcanea/orchestrator` / `arco`, documented second-laptop bootstrap, ignored local runtime/auth files, removed `mcp-needs-auth-cache.json` from Git tracking, restored `starlight-queen` skill.
+
+### Starlight Voice foundation upgrade
+
+- `frankxai/starlight-voice@f05b462`: added Python sidecar package, JSON-lines IPC (`health`, `utterance`, `browser.task`), cognition router tiers, browser-use dry-run adapter seam, benchmark smoke scripts, GitHub Actions CI, `docs/ARCHITECTURE.md`, and `docs/NEXT-BEST-STANDARD.md`.
+- Tauri shell now performs a non-fatal Python sidecar health probe at startup; failure degrades to a warning until the bundled sidecar lands.
+- Verification: `cargo build --release -p starlight-voice-tauri`; `PYTHONPATH=sidecar/src python -m pytest sidecar/tests` (11 passed); `python benchmarks/run.py --probe router --n 25`; `python benchmarks/run.py --probe browser-dry-run --n 25`.
+
+### Starlight Voice operationalization pass
+
+- `frankxai/starlight-voice@6092e0d`: added `docs/USAGE.md`, `docs/CAPABILITIES.md`, `docs/FLOWS.md`, `scripts/doctor.ps1`, `scripts/smoke-sidecar.ps1`, `scripts/test-local.ps1`, and a sidecar `doctor` command.
+- Machine truth: Python 3.13, uv, Rust/Cargo, Node/npm, PowerShell 7, Claude Code, Codex, OpenCode, `arco`, browser-use, Anthropic SDK, OpenAI SDK, and sounddevice are present. Gemini CLI and Pipecat are missing.
+- Verification: `pwsh -File scripts/smoke-sidecar.ps1`; `PYTHONPATH=sidecar/src python -m pytest sidecar/tests` (12 passed); `pwsh -File scripts/doctor.ps1`; `pwsh -File scripts/test-local.ps1`.
+
+### Starlight Voice provider dashboard
+
+- `frankxai/starlight-voice@a7ca825`: added a local provider-options dashboard for choosing/rating the Starlight Voice architecture path.
+- Dashboard runs with `pwsh -File scripts/open-dashboard.ps1` and serves `http://127.0.0.1:8765` from `dashboard/server.py`.
+- Options shown: Hybrid Starlight, ElevenLabs Agent, OpenAI Realtime, and OSS Experiment Stack. Recommendation remains hybrid: Tauri local shell + provider-neutral sidecar/Pipecat lane + ElevenLabs for voice beauty + OpenAI Realtime for unified realtime/tool flows + browser-use for browser execution + `arco`/Codex/Claude/OpenCode lanes for engineering execution.
+- Ratings save locally to `dashboard/ratings.jsonl`; file is gitignored so Frank's preference log stays local.
+- Verification: `pwsh -File scripts/test-local.ps1` passed after dashboard addition: 12 Python tests, router benchmark, browser dry-run benchmark, and Rust/Tauri release build.
+
+### Starlight Voice spoken cockpit upgrade
+
+- `frankxai/starlight-voice@595081d`: upgraded the dashboard into a spoken workflow cockpit with browser-native speech synthesis, voice picker, cool-factor control, Arcanea Business / Starlight Systems / Builder Ops briefings, and four predefined workflow previews.
+- Predefined workflows: Arcanea Business Update, Starlight Intelligence Check, Browser Builder Run, and Voice Provider Bakeoff.
+- `frankxai/starlight-voice@2fbf4c1`: hardened `scripts/open-dashboard.ps1` so repeated launches reuse an existing local dashboard server instead of spawning a duplicate.
+- Recommendation preserved: hybrid architecture first, with OpenAI Realtime as low-latency browser voice lane, ElevenLabs as premium voice-beauty lane, browser-use gated behind explicit approval/audit logs, and Pipecat as the next provider-neutral voice orchestration install.
+- Verification: `python -m py_compile dashboard/server.py`; `pwsh -File scripts/test-local.ps1` passed; `agent-browser` opened `http://127.0.0.1:8765`, confirmed content rendered, no framework overlay, 13 buttons, 4 workflows, `speechSynthesis` available, and workflow/briefing interactions updated text correctly.
+
+### Starlight Voice secrets setup
+
+- `frankxai/starlight-voice@47e4ce7`: added local provider key setup via `pwsh -File scripts/set-secrets.ps1`, refreshed `.env.example`, and documented the local `.env.local` / LiteLLM / Infisical strategy in `docs/SECRETS.md`.
+- Secret policy: do not paste keys into chat. Use `.env.local` for this laptop now; use LiteLLM later for model/provider routing; use Infisical before multi-machine sync, production, audit, or rotation requirements.
+- `frankxai/starlight-voice@ffb155f`: added dependency-free sidecar `.env.local` / `.env` loading and redacted doctor key readiness booleans. Process env wins over file values.
+- Verification: PowerShell script parses; focused Python tests passed; `pwsh -File scripts/test-local.ps1` passed with 13 Python tests, router benchmark, browser dry-run benchmark, and Rust/Tauri release build.
+
+### [2026-06-12] Antigravity + Grok Shortcut Grid and `/si` `/so` Router
+
+**Category:** orchestration-state
+**Confidence:** 0.96
+**Source:** Codex CLI session
+**Related:** `scripts/agy-tools.ps1`, `commands/si.md`, `commands/so.md`, `skills/orchestration/cli-tool-router.md`, `skills/skill-rules.json`
+
+Extended the local engineer grid so Antigravity and Grok mirror the repo shortcut posture used by `clsis` / `cdsis` / sibling CLI commands. Antigravity now exposes `agyarc` plus legacy `agya`, `agysis`, `agyfx`, `agyg`, `agyvc`, `agyani`, and `agydpi`. Grok now exposes `grarc`, `grsis`, `grfx`, `grg`, `grvc`, `grani`, and `grdpi`. `Test-AgentGridCli` verifies both binaries and all repo targets.
+
+Added `/si` and `/so` command surfaces plus `orchestration/cli-tool-router` so operator requests can route across Claude, Codex, Gemini, OpenCode, Cursor, Antigravity, Grok, or native image generation tools. Image requests route to native image tooling first unless the operator explicitly asks for a text CLI. Skill rule count is now 77.
+
+Verification: `node --import tsx --test test/v77-skill-rules.test.ts` passed; `skills/skill-rules.json` parses; PowerShell no-profile load confirms all new wrapper functions resolve; `Test-AgentGridCli` confirms `agy.exe`, `grok.exe`, and all seven repo paths exist locally.

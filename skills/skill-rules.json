@@ -80,6 +80,17 @@
       "load_level": "core"
     },
     {
+      "id": "orchestration-cli-tool-router",
+      "skill": "orchestration/cli-tool-router",
+      "triggers": {
+        "keywords": ["/si", "/so", "route to cli", "send to cli", "which cli", "antigravity", "grok", "claude", "codex", "gemini", "opencode", "cursor", "generate image", "image tool", "dispatch"],
+        "agents": ["starlight-orchestrator", "starlight-prime", "starlight-voice-operator"],
+        "intents": ["cli-routing", "tool-routing", "image-generation", "agent-dispatch"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "orchestration-multi-agent-coordination",
       "skill": "orchestration/multi-agent-coordination",
       "triggers": {

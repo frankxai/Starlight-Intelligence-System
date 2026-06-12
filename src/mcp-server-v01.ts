@@ -1,12 +1,13 @@
 /**
  * SIS MCP Server v0.1 — Track B
  *
- * 19 sis.* tools composing on top of Track A's contracts (src/types.ts) and
+ * 21 sis.* tools composing on top of Track A's contracts (src/types.ts) and
  * ledgers (src/ledgers.ts). The sis.* prefix avoids collision with the v6
  * vault-focused sis_* server and the substrate-registry starlight_* server.
  *
  * Tool surface:
- *   sis.memory.add            sis.memory.search
+ *   sis.memory.add            sis.memory.search        sis.memory.health
+ *   sis.memory.eval
  *   sis.project.context       sis.repo.context
  *   sis.decision.log          sis.workpacket.create
  *   sis.agent.event           sis.artifact.register
@@ -51,6 +52,8 @@ import {
   vaultLoopLedgerPath,
 } from './ledgers.js';
 import { listModules } from './modules.js';
+import { inspectMemoryHealth } from './memory-health.js';
+import { runMemoryEval, type MemoryEvalResult } from './memory-eval.js';
 import {
   installPack as runtimeInstallPack,
   listPacks as runtimeListPacks,
@@ -209,6 +212,8 @@ export class SisMcpServerV01 {
   private registerTools(): void {
     this.regMemoryAdd();
     this.regMemorySearch();
+    this.regMemoryHealth();
+    this.regMemoryEval();
     this.regProjectContext();
     this.regRepoContext();
     this.regDecisionLog();
@@ -274,6 +279,8 @@ export class SisMcpServerV01 {
             vaults: { type: 'array' },
             limit: { type: 'number' },
             minConfidence: { type: 'number' },
+            include_private: { type: 'boolean' },
+            retrieval_mode: { type: 'string', enum: ['lexical', 'hybrid'] },
           },
         },
       },
@@ -282,8 +289,51 @@ export class SisMcpServerV01 {
         const vaults = Array.isArray(p.vaults) ? (p.vaults.map(String) as VaultType[]) : undefined;
         const limit = typeof p.limit === 'number' ? p.limit : 10;
         const minConfidence = typeof p.minConfidence === 'number' ? p.minConfidence : 0;
-        const results = this.vault.searchVaults({ query, vaults, limit, minConfidence });
-        return { ok: true as const, results };
+        const includePrivate = p.include_private === true;
+        const retrievalMode = p.retrieval_mode === 'lexical' ? 'lexical' : 'hybrid';
+        const results = this.vault.searchVaults({
+          query,
+          vaults,
+          limit,
+          minConfidence,
+          includePrivate,
+          retrievalMode,
+        });
+        return { ok: true as const, retrievalMode, results };
+      },
+    );
+  }
+
+  // 3 ── sis.memory.health ─────────────────────────────────
+
+  private regMemoryHealth(): void {
+    this.reg(
+      {
+        name: 'sis.memory.health',
+        description: 'Report SIS memory corpus, vault, and substrate health',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      () => ({ ok: true as const, health: this.memoryHealth() }),
+    );
+  }
+
+  // 4 ── sis.memory.eval ───────────────────────────────────
+
+  private regMemoryEval(): void {
+    this.reg(
+      {
+        name: 'sis.memory.eval',
+        description: 'Run a lightweight memory retrieval eval against the live sovereign corpus',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            limit: { type: 'number' },
+          },
+        },
+      },
+      (p) => {
+        const limit = typeof p.limit === 'number' ? p.limit : 50;
+        return { ok: true as const, eval: this.memoryEval(limit) };
       },
     );
   }
@@ -1038,6 +1088,19 @@ export class SisMcpServerV01 {
       },
       () => ({ ok: true as const, modules: listModules(this.repoRoot) }),
     );
+  }
+
+  private memoryHealth(): Record<string, unknown> {
+    return {
+      ...inspectMemoryHealth(this.repoRoot),
+      retrievalDefault: 'hybrid-rrf',
+      zeroDependencySubstrate: true,
+      vaultStats: this.vault.getVaultStats(),
+    };
+  }
+
+  private memoryEval(limit: number): MemoryEvalResult {
+    return runMemoryEval(this.repoRoot, { limit });
   }
 
   private loadPackManifest(
