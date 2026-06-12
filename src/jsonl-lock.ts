@@ -12,6 +12,8 @@ export interface JsonlLockOptions {
   retryMs?: number;
 }
 
+const RETRYABLE_LOCK_CODES = new Set(['EEXIST', 'EPERM', 'EACCES']);
+
 function sleep(ms: number): void {
   Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 }
@@ -33,7 +35,7 @@ export function withJsonlLock<T>(
       acquired = true;
     } catch (err) {
       const code = (err as NodeJS.ErrnoException).code;
-      if (code !== 'EEXIST') throw err;
+      if (!code || !RETRYABLE_LOCK_CODES.has(code)) throw err;
       if (Date.now() - started > timeoutMs) {
         throw new Error(`Timed out acquiring JSONL lock: ${lockDir}`);
       }

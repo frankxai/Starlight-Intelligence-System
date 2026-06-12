@@ -1,11 +1,12 @@
 # Starlight Agent Registry
 
-> Forty-nine minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
+> Fifty-six minds. Nine universal intelligence layers + Domain Sub-Stack Tier + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
 >
 > **v8.2.x update (2026-06-10):** Evaluator registered (`starlight-evaluator.md`) — Starlight Proving Ground + Model Arena measurement seat.
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
 > **v7.6.0 update (2026-04-28):** People Intelligence sub-stack (6 agents) registered — first reference Domain Sub-Stack vertical.
 > **v7.5.2 / v7.6.x update (2026-04-27 / 2026-04-30):** Sound Intelligence sub-stack (6 agents) and Music IS sub-stack (7 agents) registered — second + third reference Domain Sub-Stack verticals (public-reference + Frank-operated).
+> **v8.2.x merge update (2026-06-12):** Energy Intelligence sub-stack (7 agents) registered from the drift-fixes branch — sizing, cost, installer, operations, buyer, grid, recovery.
 > **v0.1 Friday demo update (2026-05-11):** Council Archetype Tier (7 archetype seats) registered at `agents/council/` per Proposal B board verdict — Elder Father, Elder Mother, Sage (Council seat), Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90. Voice/agent boundary preserved: archetypes also registered in `VOICES.md` § Council Archetypes.
 > **v8.2.0 update (2026-06-09):** Hermes agent added — search & retrieval specialist (semantic search across vaults + repos + web, multi-source synthesis, provenance tracking). Read-only; zero mutation surface.
 
@@ -176,6 +177,18 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 | **Royalty Architect** | `royalty-architect.md` | Monetization — royalty-cascade graph, NFT, sync deals, fan-tier | Senior (Sonnet 4.6) | `music-is/royalty-graph/` | (cross-cutting; called by `music-release`) |
 
 `music-suno-prompt` is a cross-sub-system grounding command (composes Catalog + Persona + label-canon).
+
+**Energy Intelligence sub-system agents** (v0.1 placeholder merge — operator-grade energy stack scaffold). 7 sub-systems · 7 agents. Full skill files remain a follow-up; current agents close the audited router-to-agent drift and define the bounded Energy IS surface.
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **Energy Sizing** | `starlight-energy-sizing.md` | Capacity and component sizing — PV, battery, EV charging, heat pumps | `energy-intelligence/sizing/` | `energy-intelligence/sizing-architecture` |
+| **Energy Cost** | `starlight-energy-cost.md` | LCOE, payback, IRR/NPV, tariffs, incentives, financing structures | `energy-intelligence/cost/` | `energy-intelligence/cost-modeling` |
+| **Energy Installer** | `starlight-energy-installer.md` | Lead intake, site survey, permits, installation checklist, commissioning | `energy-intelligence/installer/` | `energy-intelligence/installer-workflow` |
+| **Energy Operations** | `starlight-energy-operations.md` | Monitoring, performance ratio, fault diagnosis, maintenance, reporting | `energy-intelligence/operations/` | `energy-intelligence/operations-monitoring` |
+| **Energy Buyer** | `starlight-energy-buyer.md` | Buyer journey, quote comparison, lease-vs-buy framing, expectation setting | `energy-intelligence/buyer/` | `energy-intelligence/buyer-journey` |
+| **Energy Grid** | `starlight-energy-grid.md` | Interconnection, utility standards, net metering, VPP/grid-program fit | `energy-intelligence/grid/` | `energy-intelligence/grid-integration` |
+| **Energy Recovery** | `starlight-energy-recovery.md` | Outage, disaster, warranty failure, installer failure, monitoring shutdown recovery | `energy-intelligence/recovery/` | `energy-intelligence/recovery-protocol` |
 
 **Crypto Intelligence sub-stack agents** (v0.1 proof-of-pattern ship per Board 2026-05-17 R4 close-out). Third reference Domain Sub-Stack, first **Houses-as-sub-systems** primitive instance, first composition-layer composition under Wealth IS. House of On-Chain scaffolded; remaining 5 Houses gated on v0.1-proof-pass.
 

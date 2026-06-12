@@ -207,3 +207,21 @@ body {
 /* Motion */
 .transition-micro { transition: all 150ms var(--ease-soft); }
 .transition-std { transition: all 300ms var(--ease-soft); }
+
+/* Command palette — backdrop fade + spring-up panel reveal. */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.97);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}

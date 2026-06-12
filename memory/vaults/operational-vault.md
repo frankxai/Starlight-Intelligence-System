@@ -359,3 +359,18 @@ Extended the local engineer grid so Antigravity and Grok mirror the repo shortcu
 Added `/si` and `/so` command surfaces plus `orchestration/cli-tool-router` so operator requests can route across Claude, Codex, Gemini, OpenCode, Cursor, Antigravity, Grok, or native image generation tools. Image requests route to native image tooling first unless the operator explicitly asks for a text CLI. Skill rule count is now 77.
 
 Verification: `node --import tsx --test test/v77-skill-rules.test.ts` passed; `skills/skill-rules.json` parses; PowerShell no-profile load confirms all new wrapper functions resolve; `Test-AgentGridCli` confirms `agy.exe`, `grok.exe`, and all seven repo paths exist locally.
+
+## 2026-06-12 — SIS branch integration and memory control-plane hardening
+
+**Category:** orchestration-state
+**Confidence:** 0.97
+**Source:** Codex CLI integration session
+**Related:** `src/vault-memory.ts`, `src/jsonl-lock.ts`, `src/mcp-server-v01.ts`, `agents/AGENT_REGISTRY.md`, `verticals/crypto-intelligence/`, `verticals/music-is/`, `core/orchestrator/`, `core/telemetry/`
+
+Integrated the outstanding SIS session work onto `main` from the remote mainline, the music intelligence context branch, and the drift-fixes capability branch. The resulting build now carries the v9 memory/gateway control plane, session store, hybrid retrieval, privacy-locked gateway search, Antigravity/Grok adapters, swarm runtime, `/yolo` command docs, Energy Intelligence agents, expanded crypto-intelligence sub-systems, music catalog/workflows, telemetry schemas, harness docs, and portfolio audit history.
+
+Conflict policy: hot core files favored the newer local/mainline memory and gateway implementation while preserving additive branch capabilities. Count surfaces were reconciled to the derived truth: 56 agents and 77 skill rules. Energy Intelligence was registered as a first-class sub-stack.
+
+Windows hardening pattern confirmed: directory-lock contention can surface as transient `EPERM`/`EACCES`, not only `EEXIST`. `src/jsonl-lock.ts` now treats those lock-acquisition codes as retryable so multi-process JSONL appends pass the Phase 0 concurrent-write smoke on Windows.
+
+Verification passed: `npm run build`; `npm run test:operational`; `npm run test:substrate`; focused `test/phase0-concurrent-write-smoke.test.ts`; focused v76, v80, and v87 harnesses during repair.

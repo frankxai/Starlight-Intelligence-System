@@ -4,7 +4,7 @@
 
 **Tier:** Domain sub-stack (vertical) under Wealth IS composition-layer. Third reference vertical for `/spawn-domain-stack`.
 **License:** MIT for substrate-aligned reference patterns; instance content (real wallet addresses, positions, € amounts) stays private.
-**Status:** `v0.1 proof-of-pattern — House of On-Chain scaffolded; 5 Houses gated on v0.1-proof-pass per Board R4 close-out`.
+**Status:** `v0.2 full scaffold — All 6 Houses successfully shipped and dynamically integrated on v0.1-proof-pass`.
 
 ---
 
@@ -32,16 +32,16 @@ This is **not** the "smart money" influencer voice. It is **not** the institutio
 
 ## Sub-system map (Houses)
 
-Six Houses, each a sub-system that ships named output artifacts per command. Only House of On-Chain scaffolded at v0.1 per Board R4 (proof-of-pattern). Remaining 5 Houses gated on v0.1-proof-pass.
+Six Houses, each a sub-system that ships named output artifacts per command. All six Houses are fully scaffolded, shipped, and active at v0.2.
 
 | House | Slug | Status | Named output artifacts (commands ship these) |
 |---|---|---|---|
-| **On-Chain** | `onchain` | **v0.1 — scaffolded** | wallet-flow-snapshot · whale-tracking-brief · validator-econ-summary · MEV-audit · contract-interaction-trace |
-| **Macro** | `macro` | gated on v0.1-proof-pass | regime-call · BTC-ETH-correlation-report · rate-sensitivity-brief · cycle-position-thesis |
-| **DeFi** | `defi` | gated on v0.1-proof-pass | mechanism-audit · yield-architecture-review · oracle-risk-stack · governance-attack-surface |
-| **Sovereignty** | `sov` | gated on v0.1-proof-pass | custody-architecture · multisig-design · key-recovery-protocol · jurisdiction-stack |
-| **Research** | `res` | gated on v0.1-proof-pass | protocol-thesis · tokenomics-audit · founder-diligence · ecosystem-map |
-| **Allocation** | `alloc` | gated on v0.1-proof-pass | sizing-brief · rebalance-trigger · exit-discipline · concentration-stress |
+| **On-Chain** | `onchain` | **v0.2 — shipped** | wallet-flow-snapshot · whale-tracking-brief · validator-econ-summary · MEV-audit · contract-interaction-trace |
+| **Macro** | `macro` | **v0.2 — shipped** | regime-call · BTC-ETH-correlation-report · rate-sensitivity-brief · cycle-position-thesis |
+| **DeFi** | `defi` | **v0.2 — shipped** | mechanism-audit · yield-architecture-review · oracle-risk-stack · governance-attack-surface |
+| **Sovereignty** | `sov` | **v0.2 — shipped** | custody-architecture · multisig-design · key-recovery-protocol · jurisdiction-stack |
+| **Research** | `res` | **v0.2 — shipped** | protocol-thesis · tokenomics-audit · founder-diligence · ecosystem-map |
+| **Allocation** | `alloc` | **v0.2 — shipped** | sizing-brief · rebalance-trigger · exit-discipline · concentration-stress |
 
 Falsifier per House: if a House can't ship a *named output artifact* per command (testable: did the artifact get produced?), it's a topic → collapse or rename per `/spawn-domain-stack` functional-decomposition rule.
 

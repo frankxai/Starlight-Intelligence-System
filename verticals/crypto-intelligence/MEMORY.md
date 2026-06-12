@@ -24,7 +24,7 @@
 ## Composition map
 
 - **Universal IS layers composed with:** Self, Wealth (composition layer — primary), Business, Family, Brand.
-- **Sister Domain Sub-Stacks:** Future Investment IS (gated on v0.1-proof-pass per Board R4), future Real-Estate IS.
+- **Sister Domain Sub-Stacks:** Future Investment IS (promoted post-v0.1-proof-pass), future Real-Estate IS.
 - **Canon imports:** none. Crypto IS declines canon at the vertical layer.
 
 ---
@@ -40,11 +40,13 @@ Applied to crypto: protocol-mechanism analysis at enterprise depth + cycle-posit
 ## Changelog
 
 - `v0.1` · `2026-05-17` · Spawned per Board R4 close-out (proof-of-pattern, House of On-Chain only). Composes under Wealth IS composition layer (declared same-session). Genius prerequisite gate closed via `genius/profile-frankx.md` + `genius/freedom-path-frankx.md` (Path A in-repo corpus excavation). Falsifier: 1 week of practice; if 4-5 named artifacts can't ship from House of On-Chain, primitive failed → fall back to functional sub-systems matching People IS shape. Investment IS held until v0.1-proof-pass.
+- `v0.2` · `2026-05-29` · Fully shipped remaining 5 Houses (Macro, DeFi, Sovereignty, Research, Allocation) to form a complete 6-House scaffold with 20 active commands. Dynamically integrated via workspace-wide agent discovery.
 
 ### Reference lineage SHAs
 
 - v0.1 spawn — pending 2026-05-17 commit SHA.
+- v0.2 ship — pending 2026-05-29 commit SHA.
 
 ---
 
-**Built on SIP** — Crypto Intelligence MEMORY.md · v0.1 · SIP v1.1.0
+**Built on SIP** — Crypto Intelligence MEMORY.md · v0.2 fully shipped · SIP v1.1.1

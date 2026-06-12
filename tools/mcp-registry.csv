@@ -1,0 +1,7 @@
+RepositoryName,GitHubURL,Role,Tier,ExecutionScope,PrimaryLanguage,Dependencies,Description
+google-mcp,https://github.com/google/mcp.git,central-mcp-hub,Foundation,Local/Remote,TypeScript,npm,Official central Google Model Context Protocol hub and examples
+gcloud-mcp,https://github.com/googleapis/gcloud-mcp.git,gcp-infra-controller,Specialist,Local/Remote,TypeScript,gcloud-cli,Official Google Cloud Platform resource and service management
+mcp-toolbox,https://github.com/googleapis/mcp-toolbox.git,database-query,Specialist,Remote,Python,better-sqlite3,Official Google Database Toolbox AlloyDB Cloud SQL Spanner BigQuery
+science-skills,https://github.com/google-deepmind/science-skills.git,science-researcher,Domain-Stack,Local,Python,uv,Official Google DeepMind agent skills for life sciences genomics and Pubmed research
+starlight-swarm,https://github.com/frankxai/starlight-swarm.git,swarm-orchestrator,Leadership,Local,TypeScript,npm-workspaces,Multi-agent execution engine dashboard cockpit and swarm routing
+awesome-mcp-servers,https://github.com/punkpeye/awesome-mcp-servers.git,community-registry,Foundation,Local,Markdown,none,Curated list of model context protocol servers and tools

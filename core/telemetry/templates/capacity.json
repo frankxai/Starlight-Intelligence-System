@@ -1,0 +1,7 @@
+{
+  "schema": "machine.capacity/v1",
+  "ts": "",
+  "cpuCores": 0,
+  "totalMemoryGb": 0,
+  "disks": []
+}

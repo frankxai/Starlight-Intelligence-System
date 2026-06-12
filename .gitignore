@@ -1,5 +1,8 @@
 node_modules/
 .starlight/
+.hearth/
+.umwelt/
+.machine/
 *.tsbuildinfo
 
 # Build output — published to npm via package.json `files`, never tracked in git.
@@ -47,6 +50,10 @@ memory/mempalace_sovereign/
 # Arena/eval run outputs — instance state, regenerable (mirror lives in starlight-evals)
 artifacts/
 memory/benchmarks/*.json
+
+# Dreaming pipeline dedup state — tracks which promotion candidates have already
+# been queued for human review. Regenerable from PROMOTION_QUEUE.md history.
+memory/.dreaming-state.json
 
 # OSS hygiene — added by Tier 5 audit pass 2026-05-11
 

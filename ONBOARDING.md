@@ -37,7 +37,7 @@ Every inbound fits exactly one of these. Pick before you run anything.
 - **Who:** You want to extend SIP itself — propose a new layer, a new command tier, an amendment to the file contract.
 - **What you get:** Co-authorship on protocol evolution. Named in the spec. Architect-tier voice in the next version cut.
 - **What you commit:** A proposed diff to `SIP.md` with rationale that survives adversarial review (architect + protocol-defender + overseer). 90-day deprecation window for anything breaking.
-- **Rarity:** Rare. Substrate is closed by design — `SIP.md` is v1.1.0 and stable. Most people who think they want this actually want Route B, C, or D.
+- **Rarity:** Rare. Substrate is closed by design — `SIP.md` is v1.1.1 and stable. Most people who think they want this actually want Route B, C, or D.
 - **First command:** Open a GitHub issue at `frankxai/Starlight-Intelligence-System` tagged `sip-proposal`. If it survives triage, we pressure-test it with `/luminor-board` before it touches the spec.
 
 ### B. Alliance forge
@@ -105,7 +105,7 @@ Symmetric. Read both columns.
 
 | You receive | You bring |
 |---|---|
-| A substrate spec (`SIP.md`, v1.1.0) that won't silently change | A declared domain you own and won't silently drift |
+| A substrate spec (`SIP.md`, v1.1.1) that won't silently change | A declared domain you own and won't silently drift |
 | Command scaffolds (`/alliance-forge`, `/vertical-spawn`, `/sovereign-spawn`, `/sip-attest`, `/luminor-board`) that enforce the clause | Named artifacts shipped by named dates, not intentions |
 | Attestation that compounds every time you ship | Attribution on every composition, ever. Silent composition is a breach |
 | Free architectural guidance when Frank has bandwidth, per `ALLIANCE.md` § Posture | Sovereignty — you own your canon, your content, your decisions |
@@ -129,12 +129,12 @@ Symmetric. Read both columns.
 
 **Built on SIP** — Starlight Intelligence Protocol
 
-Substrate: starlightintelligence.org/protocol v1.1.0
+Substrate: starlightintelligence.org/protocol v1.1.1
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
 - starlight-intelligence-system@v7.3 · substrate + reference onboarding surface
 
-Generated: 2026-04-24
+Generated: 2026-04-24 · re-attested: 2026-05-26 (drift sweep — SIP pin bumped after v1.1.1 spec ship)
 Attestation is compounding, not credit transfer: every composition strengthens every node.
 ---

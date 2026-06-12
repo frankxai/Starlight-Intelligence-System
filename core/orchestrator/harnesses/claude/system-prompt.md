@@ -14,7 +14,7 @@ If anything in this file appears to contradict `CLAUDE.md`, `CLAUDE.md` wins. Op
 
 ## Why you (Claude Code) are the primary harness
 
-Per `MASSIVE_ACTION_PLAN.md` § 4 and `core/orchestrator/README.md`, four CLIs compose into the `starlight` shell wrapper. You are the default for any task that:
+Per `MASSIVE_ACTION_PLAN.md` § 4 and `core/orchestrator/README.md`, the model CLIs (Claude Code primary, Codex, Gemini, OpenCode, Antigravity swarm) compose into the `starlight` shell wrapper. You (Claude Code) are the default/primary for any task that:
 
 - Touches the substrate (SIP / SIS / ALLIANCE / STACK / VERTICALS / VOICES / REGISTRY / `MASSIVE_ACTION_PLAN.md` / this file).
 - Writes to a brand-critical surface (frankx.ai, arcanea.ai, starlight.systems, AIA, AIM, GenCreator).

@@ -1,17 +1,24 @@
 # scripts/dreaming-cron.ps1 — Windows scheduled task wrapper.
 #
-# Invokes scripts/dreaming-run.ts which runs the DreamingAgent + appends a
-# 1-line receipt to memory/CONSOLIDATION_LOG.md.
+# Invokes scripts/dreaming-run.ts which:
+#   1. Runs DreamingAgent over voice-sessions + audit-log
+#   2. Appends 1-line receipt to memory/CONSOLIDATION_LOG.md
+#   3. Queues new wisdom-promotion candidates to memory/PROMOTION_QUEUE.md
+#      (idempotent via memory/.dreaming-state.json dedup sidecar)
 #
-# One-time setup (registers daily 06:00 task):
-#   schtasks /Create /TN "Starlight Dreaming" /SC DAILY /ST 06:00 ^
-#     /TR "pwsh.exe -NoProfile -File C:\Users\frank\Starlight-Intelligence-System\scripts\dreaming-cron.ps1"
+# One-time setup (registers daily 04:00 task — matches existing receipt cadence):
+#   npm run dream:register
+#   # or directly:
+#   pwsh -NoProfile -File scripts\register-dreaming-task.ps1
 #
 # Manual run:
+#   npm run dream
+#   # or directly:
 #   pwsh -NoProfile -File scripts\dreaming-cron.ps1
 #
 # Verify:
-#   tail -5 memory/CONSOLIDATION_LOG.md
+#   Get-Content memory/CONSOLIDATION_LOG.md -Tail 5
+#   Get-Content memory/PROMOTION_QUEUE.md
 #
 # Built on SIP — operational tier (memory observability scheduled task).
 

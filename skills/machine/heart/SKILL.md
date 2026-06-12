@@ -34,52 +34,8 @@ Score: 6/6 = green. 4-5/6 = yellow (note degraded surface but proceed). <4 = red
 ## Implementation (PowerShell)
 
 ```powershell
-# Gate 1: Memory Bus
-$bus = Get-Process -Name python -ErrorAction SilentlyContinue | Where-Object {
-    $_.MainWindowTitle -match 'memory-bus' -or
-    (Get-CimInstance Win32_Process -Filter "ProcessId = $($_.Id)").CommandLine -match 'memory-bus.server'
-}
-"Gate 1 Memory Bus: $(if ($bus) { 'GREEN' } else { 'RED (not running)' })"
-
-# Gate 2: brain_watchdog
-$brain = Get-Process -Name python -ErrorAction SilentlyContinue | Where-Object {
-    (Get-CimInstance Win32_Process -Filter "ProcessId = $($_.Id)").CommandLine -match 'brain_watchdog'
-}
-"Gate 2 brain_watchdog: $(if ($brain) { 'GREEN' } else { 'YELLOW (not running)' })"
-
-# Gate 3: Voice Operator
-try {
-    $vo = Invoke-WebRequest -Uri 'http://localhost:8000/health' -TimeoutSec 2 -ErrorAction Stop
-    "Gate 3 Voice Operator: GREEN"
-} catch {
-    "Gate 3 Voice Operator: YELLOW (no response on :8000)"
-}
-
-# Gate 4: Dashboard
-try {
-    $dash = Invoke-WebRequest -Uri 'http://localhost:3007/' -TimeoutSec 2 -ErrorAction Stop
-    "Gate 4 Dashboard: GREEN"
-} catch {
-    "Gate 4 Dashboard: YELLOW (no response on :3007)"
-}
-
-# Gate 5: Audit log freshness
-$today = (Get-Date).ToString('yyyy-MM-dd')
-$audit = "C:\Users\frank\Starlight-Intelligence-System\memory\_audit\$today.jsonl"
-if (Test-Path $audit) {
-    $age = (Get-Date) - (Get-Item $audit).LastWriteTime
-    $state = if ($age.TotalHours -lt 1) { 'GREEN' } elseif ($age.TotalHours -lt 24) { 'YELLOW' } else { 'RED' }
-    "Gate 5 Audit log: $state (last write $([int]$age.TotalMinutes)m ago)"
-} else {
-    "Gate 5 Audit log: RED (today's file missing)"
-}
-
-# Gate 6: Scheduled tasks
-$tasks = @('StarlightCockpit', 'StarlightCrossRepoIndexer', 'Starlight Dreaming')
-foreach ($t in $tasks) {
-    $st = Get-ScheduledTask -TaskName $t -ErrorAction SilentlyContinue
-    "Gate 6 Task '$t': $(if ($st) { $st.State } else { 'MISSING' })"
-}
+# Run the shared heart-check script
+& "$PSScriptRoot/../../../scripts/heart-check.ps1"
 ```
 
 ## What to do per state

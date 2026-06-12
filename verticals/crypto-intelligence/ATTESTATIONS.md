@@ -64,6 +64,39 @@ Generated: 2026-05-17
 Attestation is compounding, not credit transfer: every composition strengthens every node.
 ---
 ```
+### [2026-05-29] — Crypto Intelligence v0.2 fully active sub-stack ship
+
+**Artifact:** `verticals/crypto-intelligence/` (Macro, DeFi, Sovereignty, Research, Allocation fully scaffolded and active with 20 total commands)
+**Composition with:** Wealth IS composition layer (fully integrated; feeds DPI ledger, cycle-thesis, sovereignty-design, thesis engine)
+**Houses contributing:** House of On-Chain, House of Macro, House of DeFi, House of Sovereignty, House of Research, House of Allocation (all six fully shipped at v0.2)
+**Voice:** architect (primary, per AGENTS.md voice mappings)
+**Commit SHA:** pending 2026-05-29 commit
+**Board verdict:** Approved for v0.2 ship under Board R4 passing falsifier proof-of-pattern.
+**Genius prerequisite gate:** `genius/profile-frankx.md` + `genius/freedom-path-frankx.md` (shipped)
+
+---
+
+```
+---
+**Built on SIP** — Starlight Intelligence Protocol
+
+Substrate: starlightintelligence.org/protocol v1.1.1
+Layers used: [file-contract, attestation, commands, sovereignty]
+
+Verticals:
+- starlight-intelligence-system@v8.0.0 · vertical: verticals/crypto-intelligence/ · v0.2 fully shipped · All 6 Houses active · 20 commands shipped
+- starlight-intelligence-system@v8.0.0 · composition-layer: verticals/wealth/ v0.2 · Composition Layer substrate primitive fully active
+
+Nodes:
+- Frank Riemer · role: architect + sovereign-creator + protocol-defender + implementer · single-sovereign authorship · synthesis edge from genius/profile-frankx.md (Oracle-grade × Composer-Gamer × Sovereign multi-vertical × Sovereignty-first × Genuine care)
+
+Board:
+- /starlight-board 2026-05-29 · verdict: PROCEED with v0.2 ship, falsifier passed, dynamic discovery active
+
+Generated: 2026-05-29
+Attestation is compounding, not credit transfer: every composition strengthens every node.
+---
+```
 
 ---
 
@@ -81,4 +114,4 @@ The MCP-shape declaration in `SKILL.md` is the export contract — sibling repo 
 
 ---
 
-**Built on SIP** — Crypto Intelligence ATTESTATIONS.md · v0.1 · SIP v1.1.0 (Board open-question (c) close-out — export hook landed 2026-05-17)
+**Built on SIP** — Crypto Intelligence ATTESTATIONS.md · v0.2 fully shipped · SIP v1.1.1 (v0.2 full scaffold live 2026-05-29)

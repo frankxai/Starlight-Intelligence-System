@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "_comment": "Grok harness MCP scope for Starlight Orchestrator excellence/subagent tier. Mirrors ~/.grok or xAI MCP client shape where applicable. Canonical: starlight-substrate always loaded. Excellence-specific MCPs for symmetry audit + subagent telemetry. Built on SIP — see footer.",
+  "_harness": "grok",
+  "_role": "excellence-subagent-mcp",
+  "_loaded_when": "subagent-heavy excellence passes, MCP composition audits, v80 hook extensions, 99% e2e QA runs (repo-mastery + gstack)",
+  "mcpServers": {
+    "starlight-substrate": {
+      "_role": "canonical — always loaded",
+      "_purpose": "substrate awareness — vault reads, IS namespace lookup, attestation generation, memory graph queries, excellence hook state",
+      "command": "node",
+      "args": [
+        "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
+      ],
+      "env": {
+        "STARLIGHT_MCP_MODE": "read-write",
+        "STARLIGHT_EXCELLENCE": "grok-harness"
+      }
+    },
+    "excellence-audit-mcp": {
+      "_role": "excellence-tier — v80 symmetry + harness coverage",
+      "_purpose": "Run platform-prompt symmetry assertions, detect drift in AGENTS/CLAUDE/GROK.md surfaces, emit remediation intel to core/orchestrator/intel/",
+      "_status": "native to grok harness (src/adapters/grok.ts + test/v80-*)",
+      "command": "node",
+      "args": [
+        "${EXCELLENCE_AUDIT_MCP_PATH}"
+      ],
+      "env": {}
+    },
+    "subagent-telemetry": {
+      "_role": "subagent orchestration visibility",
+      "_purpose": "Track parallel subagent dispatches (up to 12), confidence scores, repo-mastery evidence, gstack QA matrices",
+      "_pattern": "mcp__subagent__* tools for dispatch logging + synthesis aggregation"
+    }
+  },
+  "_task_scoped_mcps": {
+    "_comment": "Per-session via Grok excellence orchestrator config. Examples emphasize subagent/MCP/excellence.",
+    "examples": {
+      "grok-xai-core": {
+        "_purpose": "Native xAI Grok tool surface for subagent handoff + high context synthesis",
+        "_load_when": "any grok-harness session",
+        "_pattern": "use mcp__grok__* when available for native subagent spawn"
+      },
+      "repo-mastery": {
+        "_purpose": "Deep pattern search + conceptual QA across adapters/harnesses/tests",
+        "_load_when": "99% e2e verification passes",
+        "_pattern": "Grep + Glob + Read via substrate MCP + custom mastery MCP"
+      },
+      "gstack-qa": {
+        "_purpose": "Grok-stack conceptual verification matrices (99% e2e)",
+        "_load_when": "excellence hook runs or subagent synthesis",
+        "_pattern": "Notebook + custom QA matrix emitter"
+      }
+    }
+  },
+  "_secrets_policy": {
+    "env_var_refs_only": true,
+    "loaded_via": "process.env at MCP server start"
+  },
+  "_built_on_sip": {
+    "substrate": "starlightintelligence.org/protocol",
+    "version": "v1.1.1",
+    "layers_used": ["file-contract", "attestation", "sovereignty", "mcp", "excellence", "subagent-orchestration"],
+    "verticals": "core/orchestrator/harnesses/grok",
+    "generated": "2026-06-02"
+  }
+}

@@ -97,7 +97,7 @@ describe("finance-bridge", () => {
   it("computes MTD P&L composing revenue + cost streams", () => {
     withTempRepo((root) => {
       setupRegistry(root);
-      const today = new Date();
+      const today = new Date("2026-06-10");
       const periodStart = today.toISOString().slice(0, 7) + "-05";
       writeRevenueSnapshot(root, periodStart, 500);
       writeCostSnapshot(root, periodStart, 100);
@@ -161,7 +161,7 @@ describe("finance-bridge", () => {
     withTempRepo((root) => {
       setupRegistry(root);
       setupScope(root, 20); // $20/session → $600/month budget
-      const today = new Date();
+      const today = new Date("2026-06-10");
       const periodStart = today.toISOString().slice(0, 7) + "-05";
       writeCostSnapshot(root, periodStart, 100);
       const payload = computeFinanceBridge(root, today);
@@ -173,7 +173,7 @@ describe("finance-bridge", () => {
     withTempRepo((root) => {
       setupRegistry(root);
       setupScope(root, 10); // $10/session → $300/month budget
-      const today = new Date();
+      const today = new Date("2026-06-10");
       const periodStart = today.toISOString().slice(0, 7) + "-05";
       writeCostSnapshot(root, periodStart, 200); // 67% of $300 budget
       const payload = computeFinanceBridge(root, today);

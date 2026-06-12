@@ -215,3 +215,67 @@ This contract is `cockpit-contracts/v1`. Schema bumps require:
 1. New `schema` value (e.g. `cockpit.session/v2`).
 2. Consumer updates all read sites.
 3. Migration script in `cockpit/scripts/migrate-vN-to-vN1.ps1`.
+
+---
+
+## 10. Umwelt Manifest (`env.json`)
+
+**Location:** `~/.starlight/umwelt/env.json` (override via `COCKPIT_HOME` env var).
+
+**Format:** Single JSON document representing the local host's tool capabilities.
+
+**Schema (v1):**
+```json
+{
+  "schema": "umwelt.capability/v1",
+  "ts": "2026-05-07T03:14:22.123Z",
+  "os": {
+    "platform": "win32",
+    "release": "10.0.22631",
+    "arch": "x64"
+  },
+  "shell": {
+    "type": "pwsh",
+    "version": "7.4.2"
+  },
+  "tools": {
+    "git": "2.45.0",
+    "node": "20.12.2",
+    "bun": "1.1.4",
+    "uv": "0.1.39",
+    "mise": "2024.5.1",
+    "bat": "0.24.0",
+    "lazygit": "0.42.0",
+    "agy": "0.1.0",
+    "grok": "0.1.0",
+    "claude": "0.1.0"
+  }
+}
+```
+
+---
+
+## 11. Machine Telemetry
+
+**Location:** `~/.starlight/machine/` (override via `COCKPIT_HOME` env var).
+
+**Files:**
+- `capacity.json` (v1) — Hardware capacity specifications.
+- `telemetry.jsonl` (v1) — Resource usage watchdog logs.
+
+**Capacity Schema (v1):**
+```json
+{
+  "schema": "machine.capacity/v1",
+  "ts": "2026-05-07T03:14:22.123Z",
+  "cpuCores": 16,
+  "totalMemoryGb": 32,
+  "disks": [
+    {
+      "drive": "C:",
+      "totalGb": 1024,
+      "freeGb": 450
+    }
+  ]
+}
+```
