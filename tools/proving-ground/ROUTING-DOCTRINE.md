@@ -116,4 +116,6 @@ These are the gaps the Queen's loop should close next, in priority order:
 7. **Observability (Langfuse, phase 2)** — only once an app serves real users; trace
    production routing decisions end-to-end.
 
+**Grok 4.3 harness (2026-06-12):** Grok's subagent primitives (explore for parallel eval, plan for doctrine synthesis, check-work for verification) + gstack (live harness/site proving-ground MEASURE) + native image/video gen make it an excellent driver for the Queen loop — especially interactive-agentic, deep-reasoning (high context), and any visual/creative grounding classes. Register Grok TUI sessions explicitly with the SIS Memory Gateway (per-harness namespace) so session working memory is unified across harnesses. Add Grok-specific rows to future arena rounds for cross-harness table derivation. Route saturated low-stakes classes (codegen, bulk) to cheapest capable; reserve Grok for high-leverage synthesis where its TUI + subagent parallelism + real-time tools shine.
+
 Built on SIP — Starlight Intelligence Protocol.

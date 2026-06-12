@@ -44,3 +44,18 @@ node dist/mcp-server.js   # JSON-RPC 2.0 over stdio, 10 sis_* tools
 The MCP servers are real, tool claims are accurate, and there is genuine, extensive test
 coverage — this is the most mature repo in the ecosystem. The only blocker to a clean
 "green" is the 2-line `cli.ts` type error on the current WIP branch.
+
+## Grok 4.3 harness integration (2026-06-12 update — post Memory Gateway v0.1 + Starlight Queen)
+
+Grok harness (TUI + subagents + gstack + imagine + excellence gates + MCP github/notion + harness-integration skill) is first-class for SIS:
+
+- **Memory:** Registers TUI sessions with SIS Memory Gateway (src/gateway/*) per-harness namespace for unified SessionStore + vault search across all harnesses (Claude/Grok/Antigravity/etc.). VaultMemory + RRF hybrid + session loopback fully available. Use Grok's memory tools + repo-mastery for cross-repo recall.
+- **/si (/starlight):** Master command enhanced for Grok — health checks run excellence-review + gstack + subagent swarm (parallel agents/skills/vault scan). Visual outputs (status dashboards, routing maps) via image_gen.
+- **/starlight-queen (Queen role in orchestrator):** Best harness for driving the continuous loop. Grok subagents (explore/plan/best-of-n/check-work) execute parallel MEASURE (gstack for proving-ground/arena/cost on harness + site; real-time search for grounding), LEARN (synthesis + table re-derive), LEDGER (github issues or vault). Image gen for visual Queen artifacts (heatmaps, palace cards). Strong for deep-reasoning + interactive-agentic classes. See agents/starlight-orchestrator.md (Grok section), tools/proving-ground/ROUTING-DOCTRINE.md, routing-table.json.
+- **Palace / MemPalace:** /curate-recall + mempalace-obsidian-bridge skill work natively. Grok adds visual layer (generated palace cards / 3D memory viz concepts via imagine + three/hyperframes skills). Weekly Palace Review (docs/chronicle/) benefits from Grok visual + chronicle synthesis.
+- **Excellence:** All Queen/memory work under Grok runs mandatory excellence-review + gstack verification + repo-mastery. Multi-harness-orchestrator skill delegates substrate vs operational cleanly.
+- **MCP/Adapters:** Gateway + existing 10+ sis_* MCP tools + src/adapters/grok.ts surface make Grok a full peer (generate GROK.md surface on demand).
+
+Grok is the high-parallelism, visual, real-time, subagent-native driver that makes the Queen "continuous" promise more executable than manual doctrine alone. Update routing-table with Grok-specific arena receipts when available. See also .antigravity/ (swarm peer) and core/orchestrator/harnesses/.
+
+Last verified with gateway + queen: 2026-06-12 (Grok sync).

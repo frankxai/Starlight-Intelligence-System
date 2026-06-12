@@ -4,7 +4,7 @@
 >
 > One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 56 agents, 77 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 965 tests keep the claims honest.
 
-[![version](https://img.shields.io/badge/version-8.2.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-8.3.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
@@ -54,7 +54,7 @@ You can adopt **just the substrate** (fork SIP for your own work), **just the op
 >
 > **New to the protocol?** Don't fork this repo. Fork the **[SIP adoption kit](https://github.com/frankxai/starlight)** — eleven markdown files, no code, [ship your first attested artifact in 60 seconds](https://github.com/frankxai/starlight#readme). Compose upward when you're ready.
 >
-> **New in v8.2.0** (2026-05-30): First-run experience hardened so the package works for anyone who installs it. `starlight init --vaults` seeds the six JSONL vaults (and the MCP server auto-seeds an empty `--vault-dir` on first boot), so a fresh install is never silently empty. `sis_search` is now honestly described as **keyword + temporal** (no embeddings); a measured retrieval recall@k harness (`npm run eval:retrieval`) grounds the bm25 claim in CI; and an optional `sqlite-vec` semantic layer is roadmapped in [`docs/bring-your-own-model.md`](docs/bring-your-own-model.md). See [`CHANGELOG.md § v8.2.0`](CHANGELOG.md) and [`RELEASING.md`](RELEASING.md).
+> **New in v8.3.0** (2026-06-12): First-run experience hardened so the package works for anyone who installs it. `starlight init --vaults` seeds the six JSONL vaults (and the MCP server auto-seeds an empty `--vault-dir` on first boot), so a fresh install is never silently empty. `sis_search` is now honestly described as **keyword + temporal** (no embeddings); a measured retrieval recall@k harness (`npm run eval:retrieval`) grounds the bm25 claim in CI; and an optional `sqlite-vec` semantic layer is roadmapped in [`docs/bring-your-own-model.md`](docs/bring-your-own-model.md). See [`CHANGELOG.md § v8.3.0`](CHANGELOG.md) and [`RELEASING.md`](RELEASING.md).
 >
 > **New in v8.1.0** (2026-05-17): Composition Layer primitive declared in `STACK.md` — universal IS may compose over its Domain Sub-Stacks via commands at the IS-itself. Wealth IS v0.2 evolved as first composition-layer reference. **Crypto Intelligence v0.1** shipped as third reference Domain Sub-Stack (after People + Sound) with **Houses-as-sub-systems** primitive — House of On-Chain live with 5 commands. `/bless` global skill + chronicle infrastructure initialized. 10-IS taxonomy invariant preserved. See [`CHANGELOG.md § v8.1.0`](CHANGELOG.md) + [`docs/boards/2026-05-17-crypto-investment-spawn.md`](docs/boards/2026-05-17-crypto-investment-spawn.md).
 
@@ -354,4 +354,4 @@ npm run lint        # tsc --noEmit
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.2.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.3.0 · MIT

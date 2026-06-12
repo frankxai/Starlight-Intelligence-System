@@ -82,3 +82,5 @@ Reset to fresh context while preserving all vault data.
   → Return formatted output
   → Log in Operational Vault
 ```
+
+**Grok harness note (2026-06-12):** When invoked under Grok 4.3 (this TUI), /starlight (the /si surface) activates Grok-native excellence gates (excellence-review, gstack for health/proving-ground, subagent swarm for agents/skills scan, repo-mastery for cross-repo context). Memory Gateway v0.1 provides unified session state; Queen routing table consulted for model-tier decisions inside the harness. Visuals (routing diagrams, palace cards) auto-offered via image_gen. Full Queen loop driveable via Grok subagents. See agents/starlight-orchestrator.md §Grok and HARNESS.md.

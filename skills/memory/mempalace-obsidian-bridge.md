@@ -82,4 +82,6 @@ tags: [curated, mempalace, recall]
 
 ## Cross-platform
 
-The bridge is a Node script (`curate-recall.mjs`) that spawns the python memory-bus MCP via stdio. It runs from any environment that has `python` on PATH — Claude Code, Codex, Cursor, plain shell. The Obsidian vault is filesystem-native; no daemon needed.
+The bridge is a Node script (`curate-recall.mjs`) that spawns the python memory-bus MCP via stdio. It runs from any environment that has `python` on PATH — Claude Code, Codex, Cursor, plain shell, Grok TUI. The Obsidian vault is filesystem-native; no daemon needed.
+
+**Grok 4.3 note:** When the active harness is Grok, the bridge offers an additional visual palace card (image_gen of the curated atoms as infographic or 3D memory palace slice) alongside the Obsidian note. Use gstack or subagents for high-signal atom selection before curation. Ties into weekly Palace Review ritual (docs/chronicle/).
