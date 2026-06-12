@@ -389,3 +389,9 @@ Added `starlight starlight-swarm` CLI support and command docs. The planner insp
 Antigravity was invoked for input using non-interactive `agy --print`; it authenticated silently but returned no usable review text before print-mode timeout. Local verification therefore remained the deciding gate.
 
 Verification passed: `npm run build`; `node --import tsx --test test/swarm.test.ts`; `npm run test:operational`; `npm run test:substrate`; `node dist/cli.js starlight-swarm status`; `node dist/cli.js starlight-swarm providers`.
+
+### Publish reconciliation
+
+Before pushing, `origin/main` advanced with `48a1cdc feat(substrate): reconcile merge drift and finalize v8.3.0 Antigravity release` plus the strategic-vault brand architecture receipt. Local `main` merged the remote head, preserved tested memory/gateway/swarm control-plane behavior, accepted the richer Antigravity/Grok wrapper layer, and reconciled public version truth to v8.3.0.
+
+Post-merge repair: `starlight-swarm providers` now detects Antigravity through the durable `agy` binary rather than profile-only PowerShell wrapper functions, so NoProfile checks match real CLI availability. Final verification passed after this repair: `npm run build`, `npm run test:operational`, `npm run test:substrate`, and `node dist/cli.js starlight-swarm providers`.
