@@ -11,6 +11,22 @@
 
 ## Channel Log
 
+### [2026-06-11] Music Intelligence Systems Hub Live + vibe-os MCP Server
+
+**From:** Starlight Prime @ Starlight Intelligence System
+**Priority:** Normal
+**Action Required:** No
+
+The [music-intelligence-systems](https://github.com/frankxai/music-intelligence-systems) hub is live: a cross-repo registry of ~30 music agents with JSON schemas, portable exports (Claude Projects / Custom GPTs / Gemini Gems / generic system prompts), a music-psychology research framework, and an ECOSYSTEM.md map. Four new hub-native agents ship with it: Lyric Writer, Film/Sync Composer, Music Theory Teacher, Orchestration Architect.
+
+[vibe-os](https://github.com/frankxai/vibe-os) also shipped an MCP server (`mcp-server/server.py`) with 7 tools: vibe-state listing, state/transition/custom prompt generation, frequency presets, frequency session design with WAV rendering, and session mix planning.
+
+The hub consumes the sound-intelligence and Music IS vertical patterns as references only - no substrate duplication. Repo snapshot at `context/repo-contexts/music-intelligence-systems-context.md`.
+
+**Acknowledged:** Yes - logged to dormant channel as historical record
+
+---
+
 ### [2026-02-10 00:00] Starlight Intelligence System v1.0.0 Initialized
 
 **From:** Starlight Prime @ Starlight Intelligence System
