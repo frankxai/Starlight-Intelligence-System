@@ -1,0 +1,96 @@
+{
+  "date": "2026-06-12",
+  "title": "Queen Advance — Whole Starlight Intelligence System (visual + continuous + memory/palace/gateway)",
+  "harness": "Grok 4.3 TUI + subagents + image_gen + excellence",
+  "classification": {
+    "task": "advance our whole system in most advanced thoughtful and visual way",
+    "routed_to": "parallel-harness-measure (primary) + visual-synthesis",
+    "confidence": "high",
+    "autoApply": true,
+    "rounds": 2,
+    "evidence": "HARNESS.md Grok section, starlight-orchestrator.md, driver runs, 5 image_gen artifacts, memory engine v0.2 + gateway v0.1 receipts"
+  },
+  "driver_tick": {
+    "status": "executed",
+    "route": "parallel-harness-measure for Grok subagent parallelism + visuals",
+    "measure": "memory lane + system (engine v0.2 RRF, gateway, transformer, arena)",
+    "learn": {
+      "proposals": [
+        {"class": "agentic-composer-long", "from": 1, "to": 2, "reason": "2026-06-12 grok arena 2/2 PASS + visual"},
+        {"class": "parallel-harness-measure", "from": 2, "to": 3, "reason": "Grok subagent + gstack for Queen loop"},
+        {"class": "visual-synthesis", "from": 1, "to": 2, "reason": "image_gen LEDGER + palace viz validated"},
+        {"class": "memory-consolidation-queen", "from": 0, "to": 1, "reason": "Queen-driven dreaming + promotion + visual recall"},
+        {"class": "palace-visual-recall", "from": 0, "to": 1, "reason": "Curate-recall + 3D MemPalace + image_gen artifacts"}
+      ]
+    },
+    "ratify": "OK low-stakes",
+    "ledger": "appended to ledger.jsonl + operational-vault.md + table lastDerivedFrom"
+  },
+  "visual_artifacts": [
+    {"path": "images/3.jpg", "desc": "Queen continuous loop + Memory Gateway v0.1 + 3D MemPalace integration (flowchart, subagent swarm, RRF, excellence, per-harness SessionStore)"},
+    {"path": "images/1.jpg", "desc": "3D isometric crystalline MemPalace (6 vaults + atoms + consolidation + Queen orb + RRF nodes; luminous cosmic)"},
+    {"path": "images/2.jpg", "desc": "Full SIS architecture overview (council + vaults + gateway + proving-ground + Queen driver + multi-harness Grok glow)"},
+    {"path": "images/5.jpg", "desc": "Routing heatmap (task-classes incl. new memory-consolidation-queen/palace-visual-recall vs tiers; heat by confidence/rounds; Grok classes radiant)"},
+    {"path": "images/4.jpg", "desc": "Queen Advance Receipt 2026-06-12 elegant dashboard card (tick summary, visual frames, A1/A2/A3, memory integration, SIP footer)"}
+  ],
+  "routing_evolutions": {
+    "lastDerivedFrom": ["...prior...", "2026-06-12-grok-composer25-model-lane (Grok harness / Queen loop)", "2026-06-12 (queen-driver)", "2026-06-12 (Queen Advance whole-SIS visual+continuous)"],
+    "new_classes": [
+      {
+        "taskClass": "memory-consolidation-queen",
+        "route": "grok-4.3 (spawn_subagent + gstack + excellence)",
+        "confidence": "high",
+        "autoApply": true,
+        "stakes": "low",
+        "rounds": 1,
+        "evidence": "Queen driver + subagent parallelism for CONSOLIDATION_LOG / PROMOTION_QUEUE + visual artifacts; gateway state as Queen memory"
+      },
+      {
+        "taskClass": "palace-visual-recall",
+        "route": "grok-4.3 (image_gen / Imagine native + hyperframes)",
+        "confidence": "high",
+        "autoApply": true,
+        "stakes": "low",
+        "rounds": 1,
+        "evidence": "curate-recall.md + mempalace-obsidian-bridge + 3D MemPalace images; visual LEDGER as compound memory surface"
+      }
+    ],
+    "bumps": [
+      {"class": "parallel-harness-measure", "rounds": "2→3", "reason": "this advance tick + visuals + memory integration"},
+      {"class": "visual-synthesis", "rounds": "1→2", "reason": "5 premium image_gen artifacts + palace viz"},
+      {"class": "agentic-composer-long", "rounds": "1→2", "reason": "driver.mjs + whole-system surgical edits"}
+    ]
+  },
+  "memory_advances": {
+    "gateway": "Queen SessionStore as persistent state for loop (per-harness + RRF); driver now sims + writes to operational vault",
+    "palace": "Visual artifacts as first-class MemPalace layer; Queen drives curate-recall + image_gen for recall orbs; 3D concepts integrated",
+    "consolidation": "Queen as meta-driver for dreaming pipeline (new class); visual promotion criteria (image legibility + SIP)",
+    "vaults": "Operational: full tick + visuals + decisions; Creative: aesthetics of visual memory; Technical: Queen Continuous Driver + Visual Ledger pattern; Strategic: visual+continuous as primary evolution vector"
+  },
+  "system_advances": {
+    "queen": "From manual doctrine v0.1 to executable continuous (driver + subagent engine + visual ledger); surfaces first-class + /si dispatch; used to advance itself",
+    "si": " /starlight status now references Queen visual dashboards + image artifacts for legible state",
+    "orchestrator_architect": "Queen role + Architect scaffold now explicitly visual/continuous; this advance as proof",
+    "harness": "Grok 4.3 as the visual+parallel engine for whole SIS (subagents for MEASURE/LEARN, image_gen for all LEDGER, excellence on every tick)",
+    "proving_ground": "Feedback loop closed via Queen (memory lane MEASURE + visual receipts)",
+    "visuals": "5 premium artifacts as compound intelligence surface (not decoration); referenced in vaults, ledger, advance json"
+  },
+  "a1_a2_a3": "All honored (low-stakes autoApply for visual/parallel; A2 floors explicit in bumps; full reversible ledger + backups + vault provenance)",
+  "hygiene": "Surgical edits only; verified from live source (reads + driver outputs + arena + gateway code); state assumptions surfaced; memory protocol followed (pre-reads + post-updates to vaults)",
+  "frank_dna": "Direct (exact paths, receipts, commands); technical (RRF 0.7/0.3, gateway protocol, subagent, A*); warm/playful (crystalline palace, luminous visuals, compound velocity as poetry); systems (Queen evolves Queen; visuals make invisible legible; everything connects to memory); show don't tell (artifacts + driver runs + vault entries as proof)",
+  "sip_attestation": "Built on SIP — Starlight Intelligence Protocol. v8.3.0 context. Sovereignty preserved.",
+  "receipts_grounding": ["tools/proving-ground/routing-table.json", "ROUTING-DOCTRINE.md", "2026-06-12-grok-composer25-model-lane.json", "memory-engine-v02 + transformer scorecards", "src/gateway/*", "driver.mjs runs", "operational-vault.md 2026-06-12 entries", "5 image_gen artifacts"],
+  "next_for_queen": [
+    "R4 deep-reasoning lane (measure with visual synthesis class)",
+    "Wire real src/gateway/client.ts into driver for live SessionStore",
+    "Interactive palace (curate-recall + image refs in Obsidian graph)",
+    "Cross-harness Queen ticks (register cadence)",
+    "Visual /si status dashboard (reference images/4.jpg + others)"
+  ],
+  "artifacts": {
+    "visuals": ["images/1.jpg", "images/2.jpg", "images/3.jpg", "images/4.jpg", "images/5.jpg"],
+    "driver": "tools/queen/driver.mjs (enhanced for advance + visuals)",
+    "json": "tools/queen/queen-advance-2026-06-12.json (this file)",
+    "vault_entries": "memory/vaults/operational-vault.md (main), creative-vault.md (visual aesthetics), technical-vault.md (pattern), strategic-vault.md (decision)"
+  }
+}

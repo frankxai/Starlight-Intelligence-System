@@ -125,6 +125,15 @@ export default async function HomePage() {
             Local-first. Forkable. Free.
           </p>
 
+          <div className="mt-4">
+            <Link
+              href="/palace"
+              className="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition"
+            >
+              → Explore the living Memory Palace (L99 Jarvis-style viz seed)
+            </Link>
+          </div>
+
           {/* Three CTA cards */}
           <div className="mt-10 grid gap-3 md:grid-cols-3">
             <CtaCard

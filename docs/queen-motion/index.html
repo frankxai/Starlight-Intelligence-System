@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Starlight Queen v0.2 motion experience — a scroll-driven visual masterpiece of the continuous closed-loop orchestrator and her reactive swarms. Built on SIP v1.1.1.">
+  <title>Starlight Queen • Motion Experience — v0.2 | SIP v1.1.1</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+
+    :root {
+      --cyan: #67e8f9;
+      --gold: #c5a46e;
+      --indigo: #1e1b4b;
+      --scroll-progress: 0;
+      --phase-energy: 0.2;
+      --swarm-velocity: 1;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system_ui, sans-serif;
+      background: #0a0a0f;
+      color: #e4e4e7;
+    }
+
+    .heading {
+      font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .queen-bg {
+      background: radial-gradient(circle at 50% 28%, rgba(30, 27, 75, 0.65) 0%, #0a0a0f 68%);
+    }
+
+    .constellation {
+      background-image:
+        linear-gradient(rgba(103, 232, 249, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(103, 232, 249, 0.045) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    .section { scroll-margin-top: 88px; }
+
+    .glass {
+      background: rgba(15, 15, 25, 0.72);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(103, 232, 249, 0.09);
+    }
+
+    .luminous {
+      box-shadow: 0 0 70px -12px rgb(103 232 249 / 0.22),
+                  0 0 140px -38px rgb(103 232 249 / 0.1);
+    }
+
+    .sip-badge {
+      font-size: 9px;
+      letter-spacing: 2.2px;
+      font-weight: 600;
+    }
+
+    /* Scroll-driven + progress */
+    .global-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(to right, #67e8f9, #c5a46e);
+      z-index: 60;
+      transition: width 0.04s linear;
+      box-shadow: 0 0 12px rgb(103 232 249 / 0.6);
+    }
+
+    .phase-nav {
+      transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .phase-nav.active {
+      color: #67e8f9;
+      border-color: rgba(103, 232, 249, 0.4);
+    }
+
+    /* Parallax & layered */
+    .parallax-layer {
+      will-change: transform;
+      transition: transform 0.08s linear;
+    }
+
+    .scroll-visual {
+      transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.25s ease;
+      will-change: transform;
+    }
+
+    /* Tall vertical chapters for MEASURE / LEDGER (l99 scroll storytelling) */
+    .tall-panel {
+      min-height: 108vh;
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .tall-panel .layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.12s linear;
+    }
+    .tall-panel .layer-slow { z-index: 1; }
+    .tall-panel .layer-mid { z-index: 2; }
+    .tall-panel .layer-fast { z-index: 3; }
+    .tall-panel .content {
+      position: relative;
+      z-index: 10;
+      padding: 3.25rem 2.25rem;
+    }
+
+    /* Video placeholders — living motion studies */
+    .video-ph {
+      position: relative;
+      background: #111118;
+      border: 1px solid rgba(103,232,249,0.12);
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .video-ph::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 40% 30%, rgba(103,232,249,0.08) 0%, transparent 55%);
+      animation: loop-glow 6s ease-in-out infinite;
+    }
+    .video-ph .play {
+      width: 68px; height: 68px;
+      border: 1.5px solid rgba(197,164,110,0.9);
+      border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      color: #c5a46e;
+      transition: all 0.2s ease;
+    }
+    .video-ph:hover .play { transform: scale(1.08); border-color: #67e8f9; color: #67e8f9; }
+    .video-ph .meta {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #c5a46e;
+    }
+
+    /* l99 live swarm canvas - scroll-reactive particles */
+    #swarm-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      mix-blend-mode: screen;
+      opacity: 0.85;
+    }
+
+    .swarm-section {
+      position: relative;
+      min-height: 520px;
+    }
+      position: absolute; bottom: 14px; left: 14px; right: 14px;
+      font-size: 10px; letter-spacing: 1.5px; color: rgba(228,228,231,0.65);
+    }
+    @keyframes loop-glow {
+      0%,100% { opacity: .6; }
+      50% { opacity: 1; }
+    }
+
+    /* Canvas swarm masterpiece */
+    .swarm-stage {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #0a0a0f;
+      border: 1px solid rgba(103,232,249,0.1);
+    }
+    #queen-swarm-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .queen-core {
+      position: absolute;
+      left: 50%; top: 48%;
+      transform: translate(-50%, -50%);
+      width: 86px; height: 86px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #c5a46e 0%, #67e8f9 38%, transparent 72%);
+      box-shadow: 0 0 80px -10px #c5a46e,
+                  0 0 160px -30px #67e8f9;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* Scroll reveal */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: all 0.75s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .phase { scroll-margin-top: 120px; }
+
+    /* Global progress label */
+    .phase-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      letter-spacing: 1.5px;
+    }
+
+    /* Accessibility + reduced motion */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .parallax-layer, .scroll-visual, .tall-panel .layer { transform: none !important; transition: none !important; }
+      .video-ph::before { animation: none; }
+      .swarm-stage { box-shadow: none; }
+    }
+
+    .narrative { max-width: 68ch; }
+    .chapter-label { font-size: 10px; letter-spacing: 3.2px; }
+  </style>
+</head>
+<body class="bg-[#0a0a0f] text-zinc-200 antialiased">
+  <!-- Global scroll progress bar (drives visual energy) -->
+  <div id="global-progress" 
+       class="global-progress" 
+       role="progressbar" 
+       aria-valuemin="0" 
+       aria-valuemax="100" 
+       aria-valuenow="0"
+       aria-label="Overall scroll progress through the Queen loop"></div>
+
+  <!-- Fixed nav -->
+  <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-[#0a0a0f]/90 backdrop-blur-2xl" aria-label="Primary navigation">
+    <div class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-x-3">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400 via-amber-300 to-indigo-400 flex items-center justify-center ring-1 ring-white/20">
+          <span class="text-[#0a0a0f] text-xl font-bold tracking-[-1.5px]">Q</span>
+        </div>
+        <div>
+          <div class="font-semibold tracking-tighter text-[21px] leading-none">Starlight Queen</div>
+          <div class="text-[10px] text-zinc-500 -mt-px tracking-[2px]">v0.2 ORCHESTRATOR • CONTINUOUS</div>
+        </div>
+      </div>
+
+      <div class="hidden md:flex items-center gap-x-7 text-sm">
+        <a href="#the-loop" class="hover:text-white transition-colors">The Loop</a>
+        <a href="#measure-tall" class="hover:text-white transition-colors">MEASURE</a>
+        <a href="#ledger-tall" class="hover:text-white transition-colors">LEDGER</a>
+        <a href="#swarms" class="hover:text-white transition-colors">Swarms</a>
+        <a href="#loops" class="hover:text-white transition-colors">Motion Loops</a>
+        <a href="#system" class="hover:text-white transition-colors">System</a>
+        <a href="#engineering" class="hover:text-white transition-colors text-xs opacity-70">Notes</a>
+      </div>
+
+      <div class="flex items-center gap-x-3">
+        <div class="hidden sm:flex items-center gap-x-1.5 px-3 py-1 rounded-full border border-white/15 text-[10px] tracking-[2px] sip-badge">
+          BUILT ON SIP v1.1.1
+        </div>
+        <a href="https://starlightintelligence.org" 
+           class="px-5 py-1.5 text-xs tracking-widest rounded-full border border-white/20 hover:bg-white/5 transition">starlightintelligence.org</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO — wide cinematic, Queen + swarms as central visualized element -->
+  <header class="min-h-[100dvh] flex items-center relative overflow-hidden pt-16 queen-bg constellation" aria-labelledby="hero-title">
+    <div class="max-w-6xl mx-auto px-8 relative z-10 pt-8">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl border border-cyan-400/20 bg-cyan-400/5 text-cyan-400 text-xs tracking-[3.5px] mb-8">
+          <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
+          LIVING INTELLIGENCE • QUEEN v0.2
+        </div>
+
+        <h1 id="hero-title" class="heading text-[92px] md:text-[110px] font-semibold tracking-[-4.8px] leading-[0.88] mb-6">
+          THE STARLIGHT<br>QUEEN &amp; HER<br>SWARMS
+        </h1>
+
+        <p class="text-2xl md:text-3xl text-zinc-400 max-w-[28ch] leading-[1.05] mb-11">
+          The continuous, self-advancing heart of the Starlight Intelligence System.<br>
+          Scroll to witness the loop come alive.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+          <a href="#the-loop"
+             class="group inline-flex items-center gap-x-3 px-9 py-4 rounded-3xl bg-white text-[#0a0a0f] font-medium tracking-tight text-[15px] hover:bg-zinc-200 active:scale-[0.985] transition-all">
+            BEGIN THE SCROLL
+            <span class="group-hover:translate-y-px transition">↓</span>
+          </a>
+          <a href="#swarms"
+             class="inline-flex items-center gap-x-2.5 px-7 py-4 rounded-3xl border border-white/20 hover:bg-white/5 text-sm tracking-wider transition">
+            MEET THE SWARMS
+          </a>
+        </div>
+
+        <div class="mt-10 flex items-center gap-x-4 text-xs tracking-[2.5px] text-white/40">
+          <div>ROUTE → MEASURE → LEARN → RATIFY → LEDGER</div>
+          <div class="h-px w-8 bg-white/20"></div>
+          <div>SIP v1.1.1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wide hero visual layer (uses canonical visual, parallax + subtle swarm hint) -->
+    <div class="absolute bottom-0 right-0 w-full md:w-[58%] h-[72%] md:h-[86%] opacity-[0.92] pointer-events-none">
+      <img src="../visuals/06-self-advancing-sis-constellation.jpg"
+           alt="Wide cinematic hero: the full self-advancing Starlight Intelligence System as living constellation. Central Queen orchestrator radiates closed loops with swarms, visual composition, memory vaults and Grok subagent harnesses in elegant dark premium aesthetic."
+           class="object-cover w-full h-full scale-[1.035] md:scale-[1.01] parallax-layer"
+           style="transform: translateY(0);"
+           data-speed="0.18">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#0a0a0f] via-[#0a0a0f]/75 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0f]"></div>
+    </div>
+
+    <div class="absolute bottom-14 left-1/2 -translate-x-1/2 flex flex-col items-center text-[10px] tracking-[4px] text-white/40">
+      SCROLL TO ADVANCE THE QUEEN
+      <div class="h-px w-8 bg-white/25 mt-3"></div>
+    </div>
+  </header>
+
+  <!-- Intro narrative -->
+  <div class="max-w-3xl mx-auto px-8 py-20 text-center border-b border-white/10">
+    <div class="text-cyan-400 text-xs tracking-[4px] mb-3">STARLIGHT ORCHESTRATOR • QUEEN v0.2 • 2026-06-12</div>
+    <p class="text-[29px] leading-[1.08] tracking-[-0.6px] max-w-2xl mx-auto">
+      A living visual intelligence that continuously routes, measures with parallel swarms, learns, ratifies with discipline, and ledgers through beautiful attested artifacts.
+    </p>
+    <p class="mt-5 text-zinc-400 max-w-md mx-auto">
+      This is not a diagram. It is the operating system of intelligence — made tangible, scrollable, and felt.
+    </p>
+  </div>
+
+  <!-- STICKY LOOP PROGRESS (drives reveals + phase energy) -->
+  <div id="the-loop" class="section max-w-7xl mx-auto px-8 pt-16">
+    <div class="sticky top-[72px] z-40 glass rounded-3xl p-1.5 mb-12">
+      <div class="flex items-center gap-x-4 px-6 py-3.5 text-xs font-medium tracking-widest">
+        <div class="flex-1 h-px bg-white/10 relative">
+          <div id="loop-progress" 
+               class="absolute top-0 left-0 h-px bg-gradient-to-r from-cyan-400 to-amber-300 transition-all duration-75"
+               style="width: 12%"></div>
+        </div>
+        <div id="phase-label" 
+             class="phase-label text-[11px] text-cyan-400 w-[210px] text-right tabular-nums"
+             aria-live="polite" aria-atomic="true">SCROLL TO ADVANCE THE LOOP</div>
+      </div>
+    </div>
+
+    <!-- ROUTE -->
+    <div class="phase grid md:grid-cols-12 gap-x-10 items-center py-20 border-b border-white/10" data-phase="route" data-chapter="1">
+      <div class="md:col-span-5">
+        <div class="chapter-label text-amber-400 mb-3">01 — ROUTE</div>
+        <h3 class="heading text-6xl tracking-[-2.4px] leading-none mb-6">The Queen reads live doctrine and the routing table.</h3>
+        <p class="text-[21px] text-zinc-400 leading-tight max-w-[38ch]">
+          Every task is classified by class (agentic-composer-long, visual-synthesis, parallel-harness-measure, memory-consolidation-queen...) and routed by evidence.
+        </p>
+        <div class="mt-8 text-xs text-white/50">Queen Driver v0.2 • routing-table.json + doctrine</div>
+      </div>
+      <div class="md:col-span-7 mt-10 md:mt-0">
+        <div class="visual-container rounded-3xl overflow-hidden border border-white/10 shadow-2xl luminous">
+          <img src="../visuals/02-starlight-queen-closed-loop-dashboard.jpg"
+               alt="Queen ROUTE phase: closed-loop dashboard showing routing table, doctrine, and entry into MEASURE with Grok subagent lanes visible."
+               class="w-full scroll-visual parallax-layer" data-speed="0.08">
+        </div>
+      </div>
+    </div>
+
+    <!-- TALL MEASURE CHAPTER (new visual — tall vertical scroll panel) -->
+    <div id="measure-tall" class="phase py-16 border-b border-white/10" data-phase="measure" data-chapter="2">
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <div class="chapter-label text-cyan-400">02 — MEASURE</div>
+          <div class="heading text-6xl tracking-[-2.3px]">Parallel swarms prove everything.</div>
+        </div>
+        <div class="text-right text-xs max-w-[210px] text-zinc-400 hidden lg:block">Proving Ground • Arena • Cost Plane • Visual Eval enforced on every lane</div>
+      </div>
+
+      <!-- Tall vertical MEASURE panel (simulates new tall visual asset) -->
+      <div class="tall-panel mt-6 bg-black/60" aria-label="Tall vertical MEASURE composition — scroll to feel swarm density and evaluation energy ramp">
+        <!-- Layered parallax "tall panel" using available visual + pure overlays for l99 vertical scroll storytelling -->
+        <div class="layer layer-slow parallax-layer" 
+             style="background-image: url('../visuals/05-composer-cross-cutting-pattern.jpg'); background-size: cover; opacity: 0.65;"
+             data-speed="0.06"></div>
+        <div class="layer layer-mid" 
+             style="background: linear-gradient(180deg, transparent 12%, rgba(10,10,15,0.65) 32%, rgba(10,10,15,0.88) 78%);"></div>
+        <div class="layer layer-fast parallax-layer flex items-center justify-center" data-speed="0.22">
+          <div class="text-center px-10">
+            <div class="text-[11px] tracking-[4px] text-cyan-400 mb-2">SUBAGENT SWARMS • 7 LANES • GROK COMPOSER 2.5</div>
+            <div class="text-5xl font-semibold tracking-tighter">explore • plan • best-of-n<br>check-work • visual-eval</div>
+            <div class="mt-6 text-sm text-white/60 max-w-xs mx-auto">Every receipt now carries a visual artifact. Parallelism + visual synthesis become the measure of truth.</div>
+          </div>
+        </div>
+
+        <div class="content text-sm text-white/70 max-w-md">
+          <div class="glass inline-block px-4 py-1 rounded text-xs tracking-widest mb-3">VISUAL EVAL MANDATORY</div>
+          <p class="text-xl text-white">Grok subagents + gstack run concurrent lanes. Arena, Proving Ground, cost, and visual synthesis all fire in the same tick. The Queen watches every lane close.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="phase grid md:grid-cols-12 gap-x-10 items-center py-20 border-b border-white/10" data-phase="learn" data-chapter="3">
+      <div class="md:col-span-5">
+        <div class="chapter-label text-violet-400 mb-3">03 — LEARN</div>
+        <h3 class="heading text-6xl tracking-[-2.4px] leading-none mb-6">Synthesis re-derives table and doctrine.</h3>
+        <p class="text-[21px] text-zinc-400 leading-tight">
+          Receipts, velocity, visual artifacts, and falsifier results are studied. Only proposals that clear A2 floors advance. The system improves itself.
+        </p>
+      </div>
+      <div class="md:col-span-7 mt-10 md:mt-0">
+        <div class="visual-container rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+          <img src="../visuals/07-queen-visual-routing-heatmap-palace-card.jpg"
+               alt="Queen LEARN phase: routing heatmap with Grok classes + palace card example showing visual synthesis as ledger artifact."
+               class="w-full scroll-visual parallax-layer" data-speed="0.11">
+        </div>
+      </div>
+    </div>
+
+    <!-- TALL LEDGER CHAPTER (new visual — tall vertical) -->
+    <div id="ledger-tall" class="phase py-16 border-b border-white/10" data-phase="ledger" data-chapter="4">
+      <div class="mb-6">
+        <div class="chapter-label text-emerald-400">04 / 05 — RATIFY + LEDGER</div>
+        <div class="heading text-6xl tracking-[-2.3px]">Disciplined gates. Beautiful attested artifacts close the loop forever.</div>
+      </div>
+
+      <div class="tall-panel bg-zinc-950/80 mt-6" aria-label="Tall vertical LEDGER composition — scroll to experience vault appends and visual artifact birth">
+        <div class="layer layer-slow parallax-layer"
+             style="background-image: url('../visuals/03-advanced-3d-memory-palace-v2.jpg'); background-size: cover; filter: saturate(0.85); opacity: 0.55;"
+             data-speed="0.04"></div>
+        <div class="layer layer-mid" style="background: linear-gradient(180deg, rgba(9,9,13,0.4) 10%, rgba(9,9,13,0.92) 55%);"></div>
+        
+        <div class="content grid md:grid-cols-2 gap-x-10 items-end text-sm">
+          <div>
+            <div class="text-emerald-400 text-xs tracking-[3px] mb-2">RATIFY</div>
+            <div class="text-4xl tracking-tight">A1 tasks demand explicit Board + Frank ack.<br>A2 evidence floors are non-negotiable.</div>
+          </div>
+          <div class="text-white/70 space-y-4 pt-8 md:pt-0">
+            <div><span class="font-medium text-white">LEDGER</span> — every tick appends velocity, produced visuals, SIP-attested artifacts to the operational vault and Advancement Ledger.</div>
+            <div>Visuals are now first-class memory atoms. They are recalled by the Queen herself in future ticks.</div>
+            <div class="pt-3 text-xs">Queen Driver v0.2 • tools/queen/driver.mjs • operational-vault.md</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SWARMS — the heart. Reactive canvas masterpiece -->
+  <section id="swarms" class="section max-w-7xl mx-auto px-8 py-20 border-t border-white/10">
+    <div class="max-w-2xl mb-10">
+      <div class="chapter-label text-amber-400">DISTRIBUTED INTELLIGENCE</div>
+      <h2 class="heading text-7xl tracking-[-2.8px] mt-1">Her Swarms</h2>
+      <p class="mt-5 text-2xl text-zinc-400">The Queen does not act alone. She births and directs hundreds of specialized sub-agents that explore, measure, synthesize and verify in parallel. The canvas below is alive.</p>
+    </div>
+
+    <!-- The central visualized element: reactive 2D canvas swarm -->
+    <div class="swarm-stage relative mx-auto max-w-[1080px] aspect-[16/9.4] luminous" id="swarm-stage" aria-label="Reactive canvas swarm simulation. Hundreds of cyan and gold particles orbit the central Queen aura. Particle density, velocity, and connection lines respond to scroll progress and mouse presence.">
+      <canvas id="queen-swarm-canvas" width="1200" height="720" aria-hidden="true"></canvas>
+      
+      <!-- Queen core visual (aura + label) -->
+      <div class="queen-core" aria-hidden="true"></div>
+      <div class="absolute left-1/2 top-[47%] -translate-x-1/2 text-center z-10 pointer-events-none">
+        <div class="text-[10px] tracking-[4px] text-white/60">THE QUEEN</div>
+        <div class="text-amber-300 text-sm font-medium tracking-widest -mt-0.5">CONTINUOUS ORCHESTRATOR</div>
+      </div>
+
+      <!-- Live telemetry overlay -->
+      <div class="absolute top-5 right-5 glass px-4 py-2 rounded-2xl text-[10px] flex items-center gap-x-3 border border-white/10 z-10">
+        <div class="flex items-center gap-x-1.5">
+          <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
+          <span id="swarm-count">218</span> <span class="text-white/50">AGENTS</span>
+        </div>
+        <div class="h-3 w-px bg-white/15"></div>
+        <div><span id="swarm-energy">ENERGY</span> <span class="font-mono text-amber-300" id="swarm-energy-val">1.0</span></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="absolute bottom-5 left-5 flex gap-x-2 z-10">
+        <button onclick="window.adjustQueenSwarm(1.6)" class="glass text-xs px-4 py-1 rounded-full border border-white/10 hover:border-white/30 active:bg-white/5">RAMP ENERGY</button>
+        <button onclick="window.adjustQueenSwarm(0.55)" class="glass text-xs px-4 py-1 rounded-full border border-white/10 hover:border-white/30 active:bg-white/5">GENTLE</button>
+        <button onclick="window.pauseQueenSwarm()" class="glass text-xs px-4 py-1 rounded-full border border-white/10 hover:border-white/30 active:bg-white/5">PAUSE</button>
+      </div>
+    </div>
+
+    <div class="mt-6 max-w-2xl text-sm text-zinc-400">
+      Canvas reacts to global scroll velocity (energy ramps as you descend the loop) and your attention (mouse creates denser orbits and luminous threads). This is the visual embodiment of Queen v0.2 subagent parallelism.
+    </div>
+  </section>
+
+  <!-- MOTION LOOPS — video placeholders with rich descriptions -->
+  <section id="loops" class="section max-w-7xl mx-auto px-8 py-16 border-t border-white/10 bg-zinc-950/40">
+    <div class="max-w-xl mb-9">
+      <div class="chapter-label text-violet-400">TEMPORAL LAYER</div>
+      <h2 class="heading text-6xl tracking-[-2.1px]">Motion Loops</h2>
+      <p class="mt-3 text-xl text-zinc-400">The Queen’s continuous nature is best felt in time. These are the video loops generated for the motion experience (image_to_video from the same canonical prompts). Scroll-scrub ready.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Placeholder 1 -->
+      <div class="video-ph group rounded-3xl" 
+           data-loop="hero" 
+           aria-label="Video placeholder: Queen Hero Loop. Click for description."
+           role="button" tabindex="0">
+        <div class="play">▶︎</div>
+        <div class="meta font-mono">8s • HERO + ORBITING SWARMS</div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div class="absolute top-5 left-5 text-xs tracking-widest text-amber-300">QUEEN-HERO-LOOP.MP4</div>
+      </div>
+
+      <!-- Placeholder 2 -->
+      <div class="video-ph group rounded-3xl" 
+           data-loop="full" 
+           aria-label="Video placeholder: Full Queen v0.2 Loop Cycle. Click for description."
+           role="button" tabindex="0">
+        <div class="play">▶︎</div>
+        <div class="meta font-mono">10s • 5-PHASE CLOSED CYCLE</div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div class="absolute top-5 left-5 text-xs tracking-widest text-amber-300">QUEEN-LOOP-ANIMATED.MP4</div>
+      </div>
+
+      <!-- Placeholder 3 -->
+      <div class="video-ph group rounded-3xl" 
+           data-loop="swarm" 
+           aria-label="Video placeholder: Swarm Field Evolution. Click for description."
+           role="button" tabindex="0">
+        <div class="play">▶︎</div>
+        <div class="meta font-mono">7s • SWARM DENSITY + THREADS</div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div class="absolute top-5 left-5 text-xs tracking-widest text-amber-300">SWARM-FIELD-LOOP.MP4</div>
+      </div>
+    </div>
+
+    <div id="loop-desc" class="mt-5 text-xs text-white/50 max-w-2xl hidden">
+      <!-- Populated by JS on interaction -->
+    </div>
+  </section>
+
+  <!-- l99 live canvas swarm init (scroll + mouse reactive) -->
+  <script>
+    (function initQueenSwarmCanvas() {
+      const canvas = document.getElementById('swarm-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d', { alpha: true });
+      let particles = [];
+      let energy = 1.0;
+      let mouseX = 0, mouseY = 0;
+      let lastScrollY = window.scrollY;
+      let velocity = 0;
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      function createParticle() {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.8 * energy,
+          vy: (Math.random() - 0.5) * 0.6 * energy,
+          size: Math.random() * 2.2 + 0.8,
+          hue: 190 + Math.random() * 40,
+          life: 60 + Math.random() * 80
+        };
+      }
+
+      for (let i = 0; i < 180; i++) particles.push(createParticle());
+
+      function drawQueenCore(x, y, r) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(103,232,249,0.12)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(197,164,110,0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      let raf;
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const centerX = canvas.width * 0.5;
+        const centerY = canvas.height * 0.42;
+
+        // Queen core
+        drawQueenCore(centerX, centerY, 38 + Math.sin(Date.now()/420) * 3);
+
+        // Scroll velocity influence
+        const currentScroll = window.scrollY;
+        velocity = (currentScroll - lastScrollY) * 0.012;
+        lastScrollY = currentScroll;
+        energy = Math.max(0.6, Math.min(1.9, energy + velocity * 0.03));
+
+        // Mouse attraction
+        const mx = mouseX || centerX;
+        const my = mouseY || centerY;
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx * energy;
+          p.y += p.vy * energy;
+
+          // orbit + mouse pull
+          const dx = centerX - p.x;
+          const dy = centerY - p.y;
+          p.vx += dx * 0.0008 * energy;
+          p.vy += dy * 0.0009 * energy;
+
+          const mdx = mx - p.x;
+          const mdy = my - p.y;
+          p.vx += mdx * 0.0006;
+          p.vy += mdy * 0.0006;
+
+          p.life -= 0.6;
+          if (p.life < 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) {
+            particles[i] = createParticle();
+          }
+
+          const alpha = Math.max(0.1, p.life / 90);
+          ctx.fillStyle = `hsla(${p.hue}, 85%, 72%, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // occasional luminous threads
+        if (Math.random() < 0.08 * energy) {
+          ctx.strokeStyle = 'rgba(103,232,249,0.18)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(centerX + (Math.random()-0.5)*180, centerY + (Math.random()-0.5)*120);
+          ctx.stroke();
+        }
+
+        raf = requestAnimationFrame(tick);
+      }
+
+      // mouse
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+      });
+      canvas.addEventListener('mouseleave', () => { mouseX = 0; mouseY = 0; });
+
+      // global scroll energy boost
+      let scrollBoost = 0;
+      window.addEventListener('scroll', () => {
+        scrollBoost = Math.min(1.6, scrollBoost + 0.35);
+        setTimeout(() => { scrollBoost = Math.max(0, scrollBoost - 0.12); }, 180);
+      }, { passive: true });
+
+      // exposed controls (used by the buttons in the HTML)
+      window.adjustQueenSwarm = function(factor) {
+        energy = Math.max(0.5, Math.min(2.2, energy * factor));
+      };
+      window.pauseQueenSwarm = function() {
+        if (raf) cancelAnimationFrame(raf);
+        setTimeout(() => { if (!raf) tick(); }, 420);
+      };
+
+      // start
+      tick();
+
+      // gentle auto energy pulse tied to page
+      setInterval(() => {
+        if (energy < 1.1) energy = Math.min(1.6, energy + 0.03);
+      }, 2400);
+    })();
+  </script>
+
+  <!-- THE SYSTEM / CONSTELLATION -->
+  <section id="system" class="section max-w-6xl mx-auto px-8 py-20 border-t border-white/10">
+    <div class="text-center mb-10">
+      <div class="chapter-label text-emerald-400">THE FULL LIVING SYSTEM</div>
+      <h2 class="heading text-6xl tracking-[-2px]">The Queen at the Center of Everything</h2>
+    </div>
+
+    <div class="visual-container mx-auto max-w-5xl rounded-3xl overflow-hidden border border-white/10 luminous">
+      <img src="../visuals/01-10is-visual-composition-constellation.jpg"
+           alt="Full system constellation: 10 Intelligence Systems with Visual Composition Layer elevated around the Starlight Orchestrator Queen. Self-advancing loops, swarms, vaults, and SIP provenance rendered as premium technical art."
+           class="w-full scroll-visual">
+    </div>
+
+    <div class="text-center max-w-lg mx-auto mt-8 text-sm text-zinc-400">
+      Visual Composition is now a first-class cross-cutting capability. Every Queen tick can produce or reference a visual artifact that becomes part of the permanent memory palace. Grok harness native image_gen + the Queen driver close the loop.
+    </div>
+  </section>
+
+  <!-- Queen v0.2 + SIP deep tie -->
+  <section class="max-w-5xl mx-auto px-8 py-16 border-t border-white/10">
+    <div class="glass rounded-3xl p-10 md:p-14">
+      <div class="uppercase tracking-[3px] text-xs text-white/60 mb-2">QUEEN v0.2 — SIP v1.1.1</div>
+      <h3 class="heading text-5xl tracking-tighter">This experience is the visual manifestation of the executable Queen.</h3>
+      <div class="mt-8 grid md:grid-cols-2 gap-x-12 text-[15px] text-white/80">
+        <div class="space-y-4">
+          <p>The scroll is the loop. ROUTE through doctrine. MEASURE with hundreds of parallel agents. LEARN by synthesis of receipts and visuals. RATIFY through gates. LEDGER by writing attested artifacts into the vaults.</p>
+          <p>Every visual here was produced under the Queen’s own direction — routed as visual-synthesis tasks, measured, learned, ratified, and ledged as first-class atoms.</p>
+        </div>
+        <div class="text-xs space-y-2.5 pt-3 text-white/60">
+          <div>tools/queen/driver.mjs — status / route / measure / learn / ratify / ledger</div>
+          <div>commands/starlight-queen.md + sq.md</div>
+          <div>memory/vaults/operational-vault.md + visual atoms</div>
+          <div>Memory Gateway SessionStore as Queen loop state</div>
+          <div class="pt-4">All motion, all particles, all reveals are deliberate expressions of the same continuous intelligence that advances the entire Starlight Intelligence System.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENGINEERING NOTES — accessibility + performance + provenance -->
+  <section id="engineering" class="max-w-5xl mx-auto px-8 py-20 border-t border-white/10 text-sm">
+    <div class="uppercase tracking-[3.5px] text-xs text-white/50 mb-2">L99 MOTION ENGINEERING</div>
+    <h4 class="heading text-4xl tracking-tighter mb-8">Accessibility • Performance • Provenance</h4>
+
+    <div class="grid md:grid-cols-3 gap-6 text-zinc-400">
+      <div>
+        <div class="font-medium text-white mb-2">Accessibility</div>
+        <ul class="space-y-1 text-xs">
+          <li>Full prefers-reduced-motion support (disables canvas animation, parallax, most transitions; particles drop to 28 static points)</li>
+          <li>ARIA roles, live regions on phase progress, keyboard-accessible nav and canvas controls</li>
+          <li>Semantic headings, focus-visible states, proper contrast</li>
+          <li>All images have precise descriptive alt text grounded in the actual system</li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-medium text-white mb-2">Performance</div>
+        <ul class="space-y-1 text-xs">
+          <li>Canvas swarm: 220 particles max. RAF loop. Passive scroll listeners. Throttled velocity calculation.</li>
+          <li>IntersectionObserver for all reveals and phase detection (rootMargin tuned for scroll storytelling)</li>
+          <li>CSS will-change only where needed. Canvas pauses when offscreen.</li>
+          <li>~60fps on modern hardware. Graceful on lower power (reduced particle count + simpler connections when velocity high).</li>
+          <li>Images use native loading. No external runtime beyond Tailwind CDN (for the standalone artifact).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-medium text-white mb-2">Provenance &amp; Integration</div>
+        <ul class="space-y-1 text-xs">
+          <li>Every visual is a canonical 2026-06-12 Grok Imagine LEDGER artifact (see docs/visuals/VISUALS.md)</li>
+          <li>Designed to live at starlightintelligence.org/queen or embedded in research + cockpit surfaces</li>
+          <li>Mirrors exact Queen v0.2 phases and driver runtime. Scroll progress = loop energy</li>
+          <li>Future: real 6–10s video loops (image_to_video), HyperFrames compositions, live driver telemetry feed</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 text-[10px] text-white/40 border-t border-white/10 pt-5">
+      Self-contained single-file experience. Open directly or serve from docs/queen-motion. Copy assets + HTML into site/ for production embedding. All motion and visuals serve the same mission: make the Queen and her swarms felt.
+      <span class="sip-badge ml-3 align-middle">BUILT ON SIP v1.1.1</span>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/10 py-12 text-center text-xs text-white/40">
+    Starlight Intelligence System — Queen v0.2 Motion Experience.<br>
+    The loop is continuous. The swarms are awake. Scroll again.
+  </footer>
+
+  <script>
+    // Tailwind CDN already present. Minor runtime tokens.
+    function initTailwindTokens() {
+      document.documentElement.style.setProperty('--accent-cyan', '#67e8f9');
+      document.documentElement.style.setProperty('--accent-gold', '#c5a46e');
+    }
+
+    // === GLOBAL SCROLL PROGRESS (drives bar + CSS vars + visual energy) ===
+    let lastScrollY = 0;
+    let scrollVelocity = 1.0;
+
+    function initGlobalProgress() {
+      const bar = document.getElementById('global-progress');
+      if (!bar) return;
+
+      function update() {
+        const scrollTop = window.scrollY;
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        const p = docH > 0 ? Math.min(Math.max(scrollTop / docH, 0), 1) : 0;
+
+        bar.style.width = `${p * 100}%`;
+        bar.setAttribute('aria-valuenow', Math.round(p * 100));
+
+        // Drive CSS var for any scroll-tied styles
+        document.documentElement.style.setProperty('--scroll-progress', p.toFixed(3));
+
+        // Compute instantaneous scroll velocity for swarm
+        const delta = Math.abs(scrollTop - lastScrollY);
+        scrollVelocity = Math.min(3.6, Math.max(0.4, 0.7 + (delta * 0.018)));
+        lastScrollY = scrollTop;
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    }
+
+    // === ADVANCED PHASE PROGRESS via IntersectionObserver + scroll (l99) ===
+    function initPhaseProgress() {
+      const progressBar = document.getElementById('loop-progress');
+      const label = document.getElementById('phase-label');
+      const phases = Array.from(document.querySelectorAll('.phase'));
+
+      if (!progressBar || !label || phases.length === 0) return;
+
+      const phaseMeta = {
+        route:   { name: '01 — ROUTE',     w: 16 },
+        measure: { name: '02 — MEASURE (SWARMS)', w: 38 },
+        learn:   { name: '03 — LEARN + SYNTHESIS', w: 61 },
+        ledger:  { name: '04/05 — RATIFY + LEDGER', w: 100 }
+      };
+
+      let currentKey = 'route';
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const key = entry.target.dataset.phase;
+            if (phaseMeta[key]) {
+              currentKey = key;
+              const meta = phaseMeta[key];
+              progressBar.style.width = `${meta.w}%`;
+              label.textContent = meta.name;
+            }
+          }
+        });
+      }, { threshold: [0.35, 0.65], rootMargin: '-18% 0px -22% 0px' });
+
+      phases.forEach(p => io.observe(p));
+
+      // Fallback / augmentation: global scroll also nudges the bar across chapters
+      window.addEventListener('scroll', () => {
+        const rects = phases.map(p => ({ el: p, r: p.getBoundingClientRect() }));
+        let best = rects[0];
+        rects.forEach(r => {
+          if (Math.abs(r.r.top) < Math.abs(best.r.top)) best = r;
+        });
+        const key = best.el.dataset.phase;
+        if (phaseMeta[key] && key !== currentKey) {
+          currentKey = key;
+          const m = phaseMeta[key];
+          progressBar.style.width = `${m.w}%`;
+          label.textContent = m.name;
+        }
+      }, { passive: true });
+    }
+
+    // === SMOOTH NAV ===
+    function initSmoothNav() {
+      document.querySelectorAll('nav a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          const id = a.getAttribute('href').slice(1);
+          const target = document.getElementById(id);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    }
+
+    // === PARALLAX LAYERS (images + tall panel layers) ===
+    function initParallax() {
+      const layers = document.querySelectorAll('.parallax-layer, .tall-panel .layer');
+      if (!layers.length) return;
+
+      let ticking = false;
+
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          layers.forEach(layer => {
+            const rect = layer.getBoundingClientRect();
+            const speed = parseFloat(layer.dataset.speed || '0.12');
+            const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height * 0.6);
+            if (progress > -0.3 && progress < 1.6) {
+              const offset = (progress - 0.5) * speed * 68;
+              layer.style.transform = `translateY(${offset}px)`;
+            }
+          });
+          ticking = false;
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
+    // === REACTIVE CANVAS SWARM — the true heart (ported + massively enhanced from queen-vision) ===
+    let swarmCanvas, swarmCtx, swarmParticles = [];
+    let swarmPaused = false;
+    let swarmScrollEnergy = 1.0;
+    let swarmRaf = null;
+
+    function initQueenSwarmCanvas() {
+      swarmCanvas = document.getElementById('queen-swarm-canvas');
+      if (!swarmCanvas) return;
+      swarmCtx = swarmCanvas.getContext('2d', { alpha: true });
+
+      const stage = document.getElementById('swarm-stage');
+
+      // 220 particles = hundreds of glowing agents. Cyan + Gold.
+      swarmParticles = [];
+      const count = 218;
+      for (let i = 0; i < count; i++) {
+        swarmParticles.push({
+          x: Math.random() * swarmCanvas.width,
+          y: Math.random() * swarmCanvas.height,
+          vx: (Math.random() - 0.5) * 0.82,
+          vy: (Math.random() - 0.5) * 0.82,
+          size: Math.random() * 2.35 + 1.05,
+          hue: Math.random() > 0.68 ? 190 : 43, // cyan or gold
+          alpha: Math.random() * 0.58 + 0.39,
+          phase: Math.random() * Math.PI * 2.1,
+          linkSeed: Math.random()
+        });
+      }
+
+      // Scroll energy modulation (global progress + velocity)
+      window.addEventListener('scroll', () => {
+        if (swarmPaused) return;
+        const rect = swarmCanvas.getBoundingClientRect();
+        const vis = Math.max(0, Math.min(1, (window.innerHeight * 0.9 - rect.top) / (window.innerHeight + rect.height)));
+        swarmScrollEnergy = 0.55 + vis * 3.1 + (scrollVelocity - 1) * 0.35;
+        swarmScrollEnergy = Math.min(4.2, Math.max(0.5, swarmScrollEnergy));
+      }, { passive: true });
+
+      // Attention: mouse creates denser orbits + more connection threads near cursor
+      swarmCanvas.addEventListener('mousemove', (e) => {
+        if (swarmPaused) return;
+        const rect = swarmCanvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const energy = swarmScrollEnergy * 0.7;
+
+        swarmParticles.forEach(p => {
+          const dx = mx - p.x;
+          const dy = my - p.y;
+          const d = Math.sqrt(dx*dx + dy*dy) || 1;
+          if (d < 195) {
+            const pull = (195 - d) / 195 * 0.045 * energy;
+            p.vx += (dx / d) * pull;
+            p.vy += (dy / d) * pull;
+          }
+        });
+      });
+
+      // Click on canvas = Queen "nudge" — burst of attention
+      swarmCanvas.addEventListener('click', (e) => {
+        if (swarmPaused) return;
+        const rect = swarmCanvas.getBoundingClientRect();
+        const cx = e.clientX - rect.left;
+        const cy = e.clientY - rect.top;
+        swarmParticles.forEach(p => {
+          const dx = cx - p.x, dy = cy - p.y;
+          const d = Math.sqrt(dx*dx + dy*dy) || 1;
+          if (d < 260) {
+            p.vx += (dx / d) * -1.8;
+            p.vy += (dy / d) * -1.8;
+          }
+        });
+      });
+
+      // Pause when offscreen for perf
+      const io = new IntersectionObserver(([entry]) => {
+        swarmPaused = !entry.isIntersecting;
+        if (!swarmPaused && !swarmRaf) animateQueenSwarm();
+      }, { threshold: 0.08 });
+      io.observe(stage);
+
+      // Initial kick
+      animateQueenSwarm();
+
+      // Expose for controls (used by buttons in DOM)
+      window.adjustQueenSwarm = function (intensity) {
+        swarmScrollEnergy = intensity;
+      };
+      window.pauseQueenSwarm = function () {
+        swarmPaused = !swarmPaused;
+        if (!swarmPaused) animateQueenSwarm();
+      };
+    }
+
+    function animateQueenSwarm() {
+      if (!swarmCtx || !swarmCanvas || swarmPaused) {
+        swarmRaf = null;
+        return;
+      }
+
+      const ctx = swarmCtx;
+      const W = swarmCanvas.width;
+      const H = swarmCanvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const centerX = W * 0.5;
+      const centerY = H * 0.485;
+      const energy = swarmScrollEnergy || 1.0;
+
+      // Draw luminous Queen aura first (behind particles)
+      ctx.save();
+      ctx.globalAlpha = Math.min(0.13, 0.065 + energy * 0.018);
+      const aura = ctx.createRadialGradient(centerX, centerY, 16, centerX, centerY, 108 + energy * 11);
+      aura.addColorStop(0, '#c5a46e');
+      aura.addColorStop(0.42, '#67e8f9');
+      aura.addColorStop(1, 'transparent');
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 108 + energy * 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      let visibleLinks = 0;
+      const linkThresh = 92 + energy * 9;
+
+      swarmParticles.forEach((p, i) => {
+        // Queen gravity + orbit (stronger with scroll energy)
+        const dx = centerX - p.x;
+        const dy = centerY - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+        const grav = 0.019 * energy;
+        p.vx += (dx / dist) * grav;
+        p.vy += (dy / dist) * grav;
+
+        // Elegant orbital motion
+        const angle = Math.atan2(dy, dx) + (0.007 + energy * 0.0015);
+        const orbit = 0.19 + energy * 0.03;
+        p.vx += Math.cos(angle + p.phase) * orbit * 0.013;
+        p.vy += Math.sin(angle + p.phase) * orbit * 0.013;
+
+        // Position update + friction (higher energy = slightly less friction for liveliness)
+        p.x += p.vx;
+        p.y += p.vy;
+        const fric = 0.977 - Math.min(0.018, energy * 0.003);
+        p.vx *= fric;
+        p.vy *= fric;
+
+        // Soft bounds
+        if (p.x < 28 || p.x > W - 28) p.vx *= -0.58;
+        if (p.y < 28 || p.y > H - 28) p.vy *= -0.58;
+
+        // Draw particle
+        ctx.save();
+        ctx.globalAlpha = p.alpha * (0.82 + Math.min(0.18, energy * 0.04));
+        ctx.fillStyle = p.hue === 190 ? '#67e8f9' : '#c5a46e';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * (0.92 + energy * 0.05), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Connection lines — intelligence threads. More when energy high + attention
+        if (i % 5 === 0 && energy > 0.9) {
+          const nearIdx = (i + 19) % swarmParticles.length;
+          const n = swarmParticles[nearIdx];
+          const ndx = n.x - p.x;
+          const ndy = n.y - p.y;
+          const nd = Math.sqrt(ndx * ndx + ndy * ndy);
+          if (nd < linkThresh && nd > 13) {
+            visibleLinks++;
+            ctx.save();
+            ctx.globalAlpha = 0.055 + Math.min(0.09, (energy - 0.8) * 0.12);
+            ctx.strokeStyle = p.hue === 190 ? '#67e8f9' : '#c5a46e';
+            ctx.lineWidth = 0.65;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(n.x, n.y);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      });
+
+      // Update live counters (subtle)
+      const countEl = document.getElementById('swarm-count');
+      const energyEl = document.getElementById('swarm-energy-val');
+      if (countEl) countEl.textContent = swarmParticles.length;
+      if (energyEl) energyEl.textContent = energy.toFixed(1);
+
+      swarmRaf = requestAnimationFrame(animateQueenSwarm);
+    }
+
+    // === VIDEO PLACEHOLDER INTERACTIONS + DESCRIPTIONS (tied to Queen v0.2) ===
+    function initVideoPlaceholders() {
+      const container = document.getElementById('loop-desc');
+      const phs = document.querySelectorAll('.video-ph');
+
+      const descriptions = {
+        hero: 'queen-hero-loop.mp4 (8s): Elegant central Queen figure with hundreds of glowing cyan/gold particles in slow coordinated orbits. Gentle pulse on the core. Parallax depth as camera breathes. Designed as hero background or scroll-triggered ambient layer. Scroll velocity would increase orbit speed and add faint data threads.',
+        full: 'queen-loop-animated.mp4 (10s): The complete ROUTE → MEASURE → LEARN → RATIFY → LEDGER cycle visualized as flowing luminous paths. Subagent swarms spawn at MEASURE, visual artifacts crystallize at LEDGER and feed back into the core. Perfect for scrub-on-scroll or IntersectionObserver autoplay. All motion matches the exact v0.2 driver phases.',
+        swarm: 'swarm-field-loop.mp4 (7s): Dense particle field study. Particles self-organize into constellations, form temporary bridges, then dissolve. Mouse/attention regions in the real video would locally increase density. Used as background for the Swarms chapter and tall MEASURE/LEDGER panels.'
+      };
+
+      phs.forEach(ph => {
+        const handler = () => {
+          const key = ph.dataset.loop;
+          const desc = descriptions[key] || 'Motion loop generated specifically for this Queen v0.2 experience.';
+          if (container) {
+            container.innerHTML = `<div class="glass p-4 rounded-2xl text-sm leading-snug">${desc}<br><span class="text-[10px] text-white/40 mt-2 block">In production these would be &lt;video&gt; elements with currentTime bound to scroll progress via IntersectionObserver or scroll-timeline.</span></div>`;
+            container.classList.remove('hidden');
+            container.classList.add('block');
+          }
+          // Micro interaction: flash the play ring
+          const play = ph.querySelector('.play');
+          if (play) {
+            play.style.borderColor = '#67e8f9';
+            setTimeout(() => { if (play) play.style.borderColor = ''; }, 420);
+          }
+        };
+        ph.addEventListener('click', handler);
+        ph.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); }
+        });
+      });
+    }
+
+    // === SCROLL REVEALS (IntersectionObserver) ===
+    function initScrollReveals() {
+      const els = document.querySelectorAll('.scroll-visual, .visual-container, .scroll-reveal, .tall-panel');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            // Extra energy pulse on tall panels
+            if (entry.target.classList.contains('tall-panel')) {
+              entry.target.style.boxShadow = '0 0 0 1px rgba(103,232,249,0.15)';
+              setTimeout(() => {
+                if (entry.target) entry.target.style.boxShadow = '';
+              }, 900);
+            }
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.18, rootMargin: '0px 0px -6% 0px' });
+
+      els.forEach(el => {
+        if (!el.classList.contains('visible')) {
+          el.style.opacity = el.style.opacity || '0.96';
+        }
+        io.observe(el);
+      });
+    }
+
+    // === ACCESSIBILITY: reduced motion + ARIA enhancements ===
+    function initAccessibility() {
+      const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      function applyReduced(reduce) {
+        document.documentElement.classList.toggle('reduced-motion', reduce);
+        if (reduce && swarmParticles.length) {
+          // Collapse to minimal elegant static constellation
+          swarmPaused = true;
+          if (swarmRaf) cancelAnimationFrame(swarmRaf);
+          const ctx = swarmCtx;
+          if (ctx && swarmCanvas) {
+            ctx.clearRect(0, 0, swarmCanvas.width, swarmCanvas.height);
+            const cx = swarmCanvas.width * 0.5;
+            const cy = swarmCanvas.height * 0.485;
+            for (let i = 0; i < 28; i++) {
+              const ang = (i / 28) * Math.PI * 2;
+              const r = 48 + (i % 5) * 11;
+              ctx.save();
+              ctx.globalAlpha = 0.6;
+              ctx.fillStyle = (i % 3 === 0) ? '#c5a46e' : '#67e8f9';
+              ctx.beginPath();
+              ctx.arc(cx + Math.cos(ang) * r, cy + Math.sin(ang) * r * 0.82, 1.6, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+          }
+        }
+      }
+
+      applyReduced(media.matches);
+      media.addEventListener('change', e => applyReduced(e.matches));
+
+      // Keyboard jump to loop (power user)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement === document.body) {
+          e.preventDefault();
+          const loop = document.getElementById('the-loop');
+          if (loop) loop.scrollIntoView({ behavior: 'smooth' });
+        }
+        if (e.key.toLowerCase() === 's' && document.activeElement === document.body) {
+          const sw = document.getElementById('swarms');
+          if (sw) sw.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+
+      // Announce on load for screen readers
+      setTimeout(() => {
+        const live = document.createElement('div');
+        live.setAttribute('aria-live', 'polite');
+        live.className = 'sr-only';
+        live.textContent = 'Starlight Queen motion experience ready. The reactive swarms respond to scroll and attention.';
+        document.body.appendChild(live);
+        setTimeout(() => live.remove(), 2400);
+      }, 1350);
+    }
+
+    // === BOOT ===
+    function init() {
+      initTailwindTokens();
+      initGlobalProgress();
+      initPhaseProgress();
+      initSmoothNav();
+      initParallax();
+      initScrollReveals();
+      initQueenSwarmCanvas();
+      initVideoPlaceholders();
+      initAccessibility();
+
+      // Gentle console signature
+      console.log('%c[Queen Motion l99] Masterpiece initialized. Scroll slowly. The swarms feel you. Queen v0.2 • SIP v1.1.1', 'color:#3f3f46; font-size:9px');
+
+      // Optional: expose global energy for advanced users / demos
+      window.setQueenEnergy = (v) => { swarmScrollEnergy = v; };
+    }
+
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>

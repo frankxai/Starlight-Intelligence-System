@@ -124,6 +124,8 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 | **Weaver** | `starlight-weaver.md` | Creation | Creative work, narrative, design, pattern synthesis |
 | **Sage** | `starlight-sage.md` | Wisdom (institutional) | Knowledge retrieval, lessons learned, vault access, teaching |
 | **Hermes** | `starlight-hermes.md` | Search & Retrieval | Semantic search across vaults + repos + web; multi-source synthesis; provenance tracking; contradiction detection |
+| **Social Strategist** | `starlight-social-strategist.md` | Social Campaign | Translating blogs/releases into threads/posts, copywriting, hook engineering |
+| **Social Sentinel** | `starlight-social-sentinel.md` | Tone & Publication Gating | Auditing social copy for brand voice, scrubbing secrets, cryptographic signing, enforcing approval gates |
 
 ### Intelligence System Tiers (v7.4 beta — 5 new agents)
 

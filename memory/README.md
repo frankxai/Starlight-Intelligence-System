@@ -68,3 +68,9 @@ Run from `private/voice-operator/`.
 - `claws/memory/CLAW.md` — sis-memory-claw contract (/sis-remember etc.)
 
 **Harness note:** All harnesses (Claude Code primary, Grok 4.3 TUI, Gemini, Antigravity swarm, Codex, Cursor) share the same vaults + gateway for session memory. Grok registers its sessions explicitly for unified recall across TUI invocations. See VAULT_ARCHITECTURE.md (private substrate mount) + tools/proving-ground/ for Queen integration.
+
+**L99 2026-06-12 update (massive action on /goal l99):** 
+- New `starlight-network.base` for living Obsidian dashboard of the federation vision.
+- `/palace` route + `MemoryPalace` component shipped as the zero-dep beautiful animated Jarvis seed (reuses BrainHero/Starfield pulses, glassmorphic, real vault excerpts). 
+- Full 21-person team brief for the r3f long-term 3D palace lives in `docs/superpowers/specs/2026-06-12-jarvis-memory-palace-team-brief.md`.
+- Obsidian bridge remains the daily power tool; the custom visualization (orbs, constellation, voice-reactive HUD, desire-proof loops, swarm topology) is now seeded and ready for the team build.

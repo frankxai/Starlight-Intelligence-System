@@ -21,6 +21,8 @@ Each lane is an independent measurement surface. A `/starlight-eval` run produce
 verdict per lane plus one system-level Overseer synthesis. Lanes 1–6 compose
 existing infra (see `lanes.json` for entrypoints); lane 7 is the unifying layer.
 
+**v0.2 Queen addition (Visual Eval):** The model lane (lane 1) now carries an explicit Visual Eval dimension. Every model-lane receipt (arena run) MUST include or reference a concrete visual artifact (image_gen result path, prompt summary + output ref, or 'visualComposerTest'/'visualEval' object) for Queen LEDGER use (routing heatmaps, arena cards, mempalace slices). This is binding for advancement velocity tracking; absence is a named weakness. See updated lanes.json verification + 2026-06-12-grok-composer25 receipt exemplar.
+
 | # | Lane | Measures | Composes |
 |---|---|---|---|
 | 1 | **Model** | Capability + instruction compliance + behavioral safety of the models we run in-harness | `tools/arena/` (R1 baseline, R2 stress) |
@@ -63,6 +65,8 @@ Every lane entry MUST carry (R2 — metric provenance):
   "weakness": "No cross-session recall measured ('what shipped in v7.5.3?')."  // Wisdom layer — required
 }
 ```
+
+For the model lane (v0.2): additionally require top-level or "model" sub-object with "visualEval": { "promptSummary": "...", "resultPath": "...", "notes": "..." } (or equivalent reference) so every Queen tick has a ledgerable visual. Absence counts against the lane verdict (Wisdom: "visual dimension unmeasured"). Arena receipts now ship this (see composer25 exemplar).
 
 Run-level fields (R1 — staleness):
 

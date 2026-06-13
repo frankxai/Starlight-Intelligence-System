@@ -1,0 +1,26 @@
+---
+type: base
+name: Starlight Network Vision
+description: Live dashboard over the six vaults + network atoms. Shows compounding, SIP-attested contributions, cross-vault links, and the emergent federation of sovereign intelligence systems.
+icon: 🌌
+---
+
+**Starlight Network — the federation of systems built on SIP**
+
+- **Vaults** (6 permanent)
+- **Atoms promoted** (via consolidation / dreaming / RRF)
+- **Network connections** (alliances, transmissions, cross-repo index, other sovereign nodes)
+- **Attestation health** (every public artifact carries "Built on SIP")
+- **Last consolidated**
+
+This base is the immediate human surface for the Network vision. Pair it with the /palace visualization (the custom long-term animated layer) and the mempalace-obsidian-bridge for curated wikilinked notes.
+
+Query examples for Obsidian:
+- `vault != ""` sorted by last_consolidated desc
+- `tags includes "sip-attested"`
+- Filter by writer (Navigator, Architect, Sage, etc.)
+
+Open the graph view — [[atom-id]] backlinks from curated/ notes will surface the machine-captured memory as first-class nodes in the human graph.
+
+*Part of L99 2026-06-12 massive action on /goal l99. Built on SIP.*
+---

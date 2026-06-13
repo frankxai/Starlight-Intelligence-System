@@ -2,6 +2,21 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## 2026-06-12 — Queen v0.2 + L99 Visual Intelligence Push (Whole-SIS Advance)
+
+**Queen self-advancing closed loop (ROUTE→MEASURE→LEARN→RATIFY→LEDGER) becomes first-class executable with mandatory visuals, Grok harness integration, public surfaces, and memory compounding.**
+
+- **Command surfaces:** New primary `/starlight-queen` (full v0.2 contract) + thin aliases `/sq` + `/so` (orchestrator Queen posture) + supporting `/starlight-architect` (scaffolding). Wired into `/starlight` (si), COMMAND_SYSTEM.md, starlight.md. All SIP-attested, executable via `node tools/queen/driver.mjs` (or `npm run queen`).
+- **Driver v0.2 (tools/queen/driver.mjs + state/ledger):** Full tick automation. Classifies (new: agentic-composer-long, visual-synthesis, parallel-harness-measure, memory-consolidation-queen, palace-visual-recall). MEASURE supports parallel subagent recipes + gstack/excellence + Visual Eval (model lanes now require image artifact ref per lanes.json/SPEC). LEARN synth + safe patches (A1/A2). LEDGER always emits visual ref + velocity + vault. Grok: prints exact spawn_subagent + image_gen prompts.
+- **Visual experiences (site/):** `/queen` — cinematic scroll-driven narrative of the loop with ROUTE/MEASURE/LEARN/RATIFY/LEDGER chapters + swarms + Visual Composition Layer (glass, serif typography, constellation bg, progress). `/palace` — interactive living Memory Palace (6 glowing vault orbs + constellation SVG lines + central Core + focus excerpts from real vaults + voice-reactive "Speak to focus" sim + Jarvis HUD + SIP). Reuses Starfield/BrainHero/CSS (zero new deps). Header nav updated (desktop/tablet/mobile).
+- **Standalone + research:** site/queen-vision.html (full l99 motion HTML with canvas swarms, scroll sync, embedded Grok visuals); docs/queen-motion/ (reference); docs/visuals/ + 5+ premium Grok Imagine artifacts (loop, gateway, palace, arch, heatmap, receipt) now first-class ledger/palace atoms.
+- **Memory + Queen integration:** Queen now drives visual palace recall + consolidation. Gateway SessionStore as loop state. 5 visuals + velocity snapshots in operational-vault + curated. mempalace-obsidian-bridge skill surfaces visual palace cards on Grok. New starlight-network.base for Obsidian. Vaults/VAULT_ARCHITECTURE/README updated.
+- **Harness + proving-ground:** ROUTING-DOCTRINE.md + routing-table v0.2 + lanes/SPEC updates (Visual Eval mandatory). Grok harness (core/orchestrator/harnesses/grok) formalizes Composer 2.5 preference for visual/agentic-long + queen bindings. HARNESS.md, agents/*-orchestrator + *-architect, core/ROUTING_MATRIX updated.
+- **Docs + naming + roadmap:** Full L99 handover (docs/ops/HANDOVER-2026-06-12-l99-viz-network-protocol-massive-action.md); STATE-AND-ROADMAP + NAMING.md (Fork 7: Starlight Intelligence Network); strategic/ visual-composition + network vision; research/proving-ground + site content refreshed. SIP ambient on every new artifact.
+- **Excellence gates:** Surgical (reuse only), a11y (aria, labels), perf (css/svg only for palace), DX (driver + commands immediate), no drift from prior (additive). All receipts in vaults + driver ledger.
+
+**Verdict:** The Queen is now continuous, visual, and self-improving. Visuals are memory, not decoration. /palace is the experiential wedge for sovereign adoption. Drive with `npm run queen -- tick [--full]`. See commands/starlight-queen.md + tools/queen/ + operational-vault 2026-06-12 entries.
+
 ## v8.3.0 — 2026-06-02
 
 **Antigravity / agy enhancement in SIS — full agent swarm protocol, harness integration, excellence (Excellence Standard).**

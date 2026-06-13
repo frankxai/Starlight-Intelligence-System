@@ -70,6 +70,16 @@ These numbers describe the system. They are not targets. The moment a metric bec
 something to optimize *to*, it stops measuring and we retire it. Read the scorecard to
 understand the system's real shape — then go build your own, and measure it honestly.
 
+## Queen: visual heart of the Proving Ground & Model Arena
+
+The Queen (Starlight Orchestrator v0.2) is the continuous visual intelligence driving the entire evaluation surface. Every tick — whether in the seven-lane Proving Ground or the Model Arena stress cards — now produces first-class visual artifacts: routing heatmaps, synthesis panels, swarm fields, and attested ledger receipts. These are not illustrations. They are the living memory of measurement.
+
+The public face of this discipline is the scroll experience at `/queen`: a production-grade React narrative using the same tall vertical ROUTE→MEASURE panels, the full v0.2 loop diagram, swarm-field backgrounds, and LEARN synthesis cards that the Queen herself generates and ledgers. The motion HTML in `docs/queen-motion/` is the reference choreography; the site version is the canonical, always-live surface.
+
+Visual composition is now load-bearing substrate. The weakest lane (memory precision@10) is visualized alongside the strongest. The Queen makes the invisible mechanics of self-advancement *felt*. Every Board verdict, every falsifier, every visual receipt closes the loop through her.
+
+See the full visual loop at [starlightintelligence.org/queen](/queen). The proving ground and arena are no longer numbers alone — they are now witnessed.
+
 ## Reproduce / fork
 
 The discipline is a usage pattern plus a scorecard contract, not a black box. Spec,

@@ -837,6 +837,17 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "vision-queen-swarms-visual",
+      "skill": "vision/queen-swarms-visual",
+      "triggers": {
+        "keywords": ["queen visual", "queen swarms", "swarm canvas", "queen motion", "l99 vision", "visual composition queen", "queen ledger visual", "swarm visual skill", "queen canvas", "scroll swarm", "starlight queen visual", "visual skill queen", "activate queen visual"],
+        "agents": ["starlight-visionary", "starlight-orchestrator", "starlight-queen", "starlight-weaver", "starlight-prime"],
+        "intents": ["visual", "motion", "swarm-render", "queen-ledger", "visual-artifact", "canvas-experience", "l99-visual", "activate-skill"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {

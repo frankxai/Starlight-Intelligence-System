@@ -23,6 +23,8 @@ const STATIC_ROUTES = [
   "/cosmos/gallery",
   "/cosmos/cards",
   "/asteroids",
+  "/queen",
+  "/palace",
 ] as const;
 
 const VERTICAL_SLUGS = [

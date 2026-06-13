@@ -176,13 +176,14 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | crypto-intelligence | crypto-intelligence-vertical | SIS | 2026-05-17 | experimental |
 | crypto-intelligence/onchain | crypto-intelligence-onchain | SIS | 2026-05-17 | experimental |
 
-### vision (3)
+### vision (4)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
 | vision/fundamentals-excavation | vision-fundamentals-excavation | SIS | 2026-05-06 | stable |
 | vision/design-coherence | vision-design-coherence | SIS | 2026-05-06 | stable |
 | vision/voice-anti-slop | vision-voice-anti-slop | SIS | 2026-05-06 | stable |
+| vision/queen-swarms-visual | vision-queen-swarms-visual | SIS | 2026-06-12 | stable |
 
 ### safety (4)
 

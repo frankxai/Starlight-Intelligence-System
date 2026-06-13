@@ -58,6 +58,8 @@ You can adopt **just the substrate** (fork SIP for your own work), **just the op
 >
 > **New in v8.1.0** (2026-05-17): Composition Layer primitive declared in `STACK.md` — universal IS may compose over its Domain Sub-Stacks via commands at the IS-itself. Wealth IS v0.2 evolved as first composition-layer reference. **Crypto Intelligence v0.1** shipped as third reference Domain Sub-Stack (after People + Sound) with **Houses-as-sub-systems** primitive — House of On-Chain live with 5 commands. `/bless` global skill + chronicle infrastructure initialized. 10-IS taxonomy invariant preserved. See [`CHANGELOG.md § v8.1.0`](CHANGELOG.md) + [`docs/boards/2026-05-17-crypto-investment-spawn.md`](docs/boards/2026-05-17-crypto-investment-spawn.md).
 
+> **2026-06-12 Grok Queen visual + continuous advance (whole SIS):** First-class surfaces (`/starlight-queen` /sq /so /starlight architect/queen) + executable driver making ROUTE→MEASURE→LEARN→RATIFY→LEDGER live. 5 parallel premium visuals (Queen loop+gateway+3D MemPalace, SIS arch, routing heatmap, advance receipt). Routing evo (Grok classes + memory-consolidation-queen + palace-visual-recall). /si now visual surface. Memory deeper (Queen drives consolidation + visual recall + gateway state). Surgical updates across vaults, HARNESS, agents, VAULT_ARCH, docs. This advance Queen-driven end-to-end. Drive with `npm run queen ...`. All Built on SIP. See operational-vault.md [2026-06-12 Queen Advance], tools/queen/queen-advance-2026-06-12.json, commands/starlight-queen.md.
+
 [![Built on SIP](https://starlightintelligence.org/badge/v1.1.1)](https://starlightintelligence.org/protocol)
 
 ---

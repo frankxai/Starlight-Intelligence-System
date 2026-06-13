@@ -38,12 +38,14 @@ Turn sovereign-by-design into sovereign-in-practice:
 - **Queen → real router module** — replace the manual doctrine with code that reads `routing-table.json` and dispatches (gated until memory precision is integrated).
 - **Automatic SIS → mirror sync** — replace manual `cp` with a post-commit hook so the public mirror never lags.
 - **Auto-deploy fixed** — CI secrets set + post-deploy canary, so shipping isn't manual `vercel --prod`.
+- **L99 2026-06-12 viz wedge** — `/palace` + MemoryPalace component shipped (beautiful animated Jarvis-style seed reusing BrainHero/Starfield/CSS brain pulses + glassmorphic). Full 21-dev/UI-UX team brief in `docs/superpowers/specs/2026-06-12-jarvis-memory-palace-team-brief.md`. This is the experience layer that makes "anyone wants to build their IS/OS on SIP" real. Obsidian bridge (mempalace-obsidian-bridge + /curate-recall + new starlight-network.base) is the immediate daily tool; r3f 3D palace is the long-term custom visualization.
 
 ### H3 — The network (months)
 SIP as a real standard with multiple sovereign nodes:
 - **Others publish their own scorecards** — the Proving Ground methodology adopted beyond Frank. A scorecard registry.
 - **Contribution loop** — patterns, lanes, and adapters submitted back.
-- The mission realized: people **building their own systems**, attested with SIP, not consuming Frank's.
+- **Starlight Intelligence Network / Starlight Network registered** (NAMING.md Fork 7, L99 2026-06-12). The open federation of sovereign humans + their IS/OS instances + attested artifacts + privacy-respecting memory + shared beautiful viz + transmissions. "Starlight Intelligence Network" for the full living network; "Starlight Network" for the protocol graph. Always SIP-attested. Build open for anyone.
+- The mission realized: people **building their own systems**, attested with SIP, not consuming Frank's. The viz + gateway + memory compounding is the 10x that makes the substrate the obvious foundation.
 
 ## How the pieces connect (the wiring)
 
