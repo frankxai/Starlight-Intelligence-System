@@ -241,4 +241,13 @@ full graph against it.
 
 ---
 
+### 11.6 Build status (2026-06-15, cloud-first)
+SHIPPED + tested (starlight-voice, 32/32 green): Settings schema · adapter seams · `voice_loop.py`
+in-process cloud graph (assembles, verified vs pipecat 1.3.0) · `voice --selftest|--run` · first-audio
+bench gate · **dispatch** (`cognition/fleet.py`+`dispatch.py`, handoff-packet v1, approval tiers,
+`dispatch` CLI, wired into pipeline) · **proactive** (`proactive/analyzer.py`, ranked brief, `brief` CLI).
+REMAINING (need on-device / heavy install — handed off): live mic run + first-audio latency bench
+(`voice --run`) · Rust `hotkey.rs` PTT (needs cargo) · deepagents P3 workflows (heavy install, deferrable)
+· `StarlightMorningBrief` 04:30 task registration · `settings=` API migration + provider-pin wire-check.
+
 *Built on SIP. v2.1 validated by adversarial research swarm. Bench-first: prove P50≤800ms on the 1650 before scaling.*
