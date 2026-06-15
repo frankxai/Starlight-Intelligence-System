@@ -8,13 +8,15 @@ This registry tracks the active AI coding agent fleet installed on this workstat
 
 | Agent CLI/IDE | Primary LLM | Input Cost (per M) | Output Cost (per M) | Context Window (In / Out) | TTFT Class | Reliability Rating | Primary Failure Modes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Claude Code** | `claude-3-5-sonnet` | $3.00 | $15.00 | 200k / 8k | Medium (~1.5s) | **High** (9.2/10) | Context exhaustion on massive file reads; prompt injection from web logs. |
-| **DeepAgent (dcode)** | `claude-3-5-sonnet` / `gpt-4o` | Model-specific | Model-specific | Pluggable (compaction enabled) | Dependent | **High** (9.0/10) | Loop timeouts in deep sub-agent delegation queues. |
-| **Cursor** | Pluggable (Sonnet/GPT-4o) | Subscription | Subscription | 100k / 4k (Composer) | Fast (~500ms) | **High** (8.8/10) | Write collisions with active editor states; file locking on Windows. |
-| **Codex CLI** | `gpt-4o` | $5.00 | $15.00 | 128k / 4k | Fast (~600ms) | **Medium-High** (8.5/10) | Code hallucinations on newly released APIs. |
-| **Grok CLI** | `grok-2` | $2.00 | $10.00 | 128k / 4k | Fast (~700ms) | **Medium** (7.8/10) | Missing edge cases in deep recursive directory scans. |
+| **Claude Code** | `claude-fable-5` (default) / `claude-opus-4-8` | $3.00 | $15.00 | 200k / 8k | Medium (~1.5s) | **High** (9.2/10) | Context exhaustion on massive file reads; prompt injection from web logs. |
+| **DeepAgent (dcode)** | `claude-opus-4-8` / `openai/gpt-5` | Model-specific | Model-specific | Pluggable (compaction enabled) | Dependent | **High** (9.0/10) | Loop timeouts in deep sub-agent delegation queues. |
+| **Cursor** | Pluggable (Opus 4.8 / GPT-5) | Subscription | Subscription | 100k / 4k (Composer) | Fast (~500ms) | **High** (8.8/10) | Write collisions with active editor states; file locking on Windows. |
+| **Codex CLI** | `openai/gpt-5` | $5.00 | $15.00 | 128k / 4k | Fast (~600ms) | **Medium-High** (8.5/10) | Code hallucinations on newly released APIs. |
+| **Grok CLI** | `x-ai/grok-4` | $2.00 | $10.00 | 128k / 4k | Fast (~700ms) | **Medium** (7.8/10) | Missing edge cases in deep recursive directory scans. |
 | **OpenCode** | `groq/llama-4-scout` | Free / Groq API | Free / Groq API | 8k / 2k (Default) | Ultra-Fast (<200ms) | **Medium** (7.5/10) | Inability to ingest large repositories due to context size limits. |
-| **Antigravity (agy)** | `gemini-1.5-pro` | $1.25 | $3.75 | 1M - 2M / 8k | Medium-Fast | **High** (8.9/10) | Output style drift (requires strict system prompt constraints). |
+| **Antigravity (agy)** | `gemini-3-pro` | $1.25 | $3.75 | 1M - 2M / 8k | Medium-Fast | **High** (8.9/10) | Output style drift (requires strict system prompt constraints). |
+
+> **Model-ID currency (2026-06-15, verified via arena round + web):** Claude Code default is **Fable 5** (`claude-fable-5`) — leads Terminal-Bench 2.1 at **88.0%** (vs GPT-5.5 83.4%, Opus 4.8 82.7%), so it takes the complexity-7–10 coding seat; Opus 4.8 is the deep-prose/reasoning alternate. **Gemini CLI shuts down 2026-06-18** — do NOT route to a live `gemini` CLI target; the Gemini-family seat is **Antigravity (`agy`)**. OpenRouter model strings are canonical per `~/.claude/CLAUDE.md`.
 
 ---
 

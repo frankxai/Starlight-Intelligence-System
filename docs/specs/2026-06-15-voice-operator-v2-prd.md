@@ -165,4 +165,67 @@ awesome-jarvis no-remote, arcanea-opencode archived) — productize that audit i
 
 ---
 
-*Built on SIP. Review this doc, resolve §9, then P0→P1 execution begins.*
+## 11. v2.1 — Validated architecture (research swarm wf_33ae075a-60a, 2026-06-15)
+
+13-agent best-of-breed research + adversarial verify + synthesis. All 6 layer recommendations held *with corrections*.
+The corrections changed two load-bearing things in §4–§5 above — this section supersedes them where they conflict.
+
+### 11.1 Architecture flip — audio runs IN-PROCESS, not over IPC
+The v2 diagram (§4) had audio crossing the stdio IPC. **Wrong.** `ipc.py` and `pipeline.py` are fully *synchronous*
+request/response; the realtime loop is async. So: **run the whole Pipecat graph in-process inside the Python sidecar**
+(PyAudio/WASAPI mic→STT→LLM→TTS→speakers), and let Rust/Tauri do **only** PTT hotkey + tray + lifecycle. This avoids
+the sync→async IPC rewrite and the persistent-piped-child `sidecar.rs` rewrite (the two riskiest seams) for the MVP.
+
+### 11.2 Validated stack
+| Layer | Choice | Fallback |
+|---|---|---|
+| Framework | **Pipecat 1.0+** in-process (new async `voice_loop.py`) | hand-rolled async loop reusing `CognitionRouter`; not LiveKit/Vocode |
+| Turn/barge-in | **LocalSmartTurnAnalyzerV3** (ONNX, CPU, ~12–65ms) | Silero VAD |
+| STT default | **faster-whisper large-v3-turbo INT8** (CUDA) | base/small INT8, or CPU if VRAM-bound |
+| STT cloud lane | **Groq whisper-large-v3-turbo** via OpenRouter `/audio/transcriptions` (not chat) | Deepgram Nova-3 WS |
+| LLM | **OpenRouter streaming, FAST tier provider-PINNED to Cerebras** (`order`/`only` in request body, in `llm.py`) | other colocated fast provider; cloud S2S as deliberation-only |
+| TTS default | **Kokoro-82M** (kokoro-onnx, Apache-2.0) — *gated on on-device latency+VRAM bench* | promote Cartesia; Piper (CPU) always-works |
+| TTS cloud tier | **Cartesia Sonic 3.5** streaming (Sonic-2 is deprecated, cutover passed) | ElevenLabs Flash v2.5 (tightest IQR) |
+| Workflow engine | **deepagents 0.6.10** on LangGraph 1.x + SqliteSaver, behind router for non-audio tiers only | raw LangGraph 1.x |
+| Proactive + dispatch | **plain Python** (httpx + ulid-py); NO LangGraph for MVP | git+approval-scan only if MCP OAuth flaky |
+
+### 11.3 Corrections folded in (these were wrong in v2 / the brief)
+- `config.py` has **no Settings schema** — only `load_local_env()`. A `Settings` schema must exist *before* anything
+  can select STT/TTS engine. **Build it first.**
+- `router.decide()` does **not** select engine/provider and must not — it only classifies tier. Provider-pin-by-tier
+  lives in `llm.py`; TTS engine selection is a separate function.
+- **`ctranslate2>=4.8.0` is mandatory** — the cp313 Windows wheel only landed 2026-06-06; older pins fail to install on
+  Python 3.13. Needs cuDNN 9 / CUDA 12.3+.
+- deepagents **silently defaults to Anthropic** unless the model is explicitly constructed as
+  `ChatOpenAI(base_url=OpenRouter, api_key=OPENROUTER_API_KEY)`. RCE fix lives in `langgraph-checkpoint(-sqlite)`, not core.
+- Registry model IDs were **never actually staged** — fixed fresh this session (Fable 5 takes the 7–10 seat; Gemini CLI
+  dies 2026-06-18 → `agy`).
+
+### 11.4 The #1 risk — the SLO is tight, so bench FIRST
+P50 ≤800ms first-audio is **achievable but not comfortable** on the GTX 1650 (Turing, 4GB, no Tensor cores). Realistic
+summed latency can reach ~1100ms once OpenRouter TTFT variance (~640ms observed) stacks on local STT+TTS GPU contention,
+and **Whisper INT8 + Kokoro do not comfortably co-reside in 4GB VRAM** (plan to put one on CPU). Therefore the
+**first deliverable is the on-device e2e first-audio probe** (`benchmarks/` + a `voice` subcommand), measured to
+*playable* audio (past WAV/Ogg/ID3 container headers that falsely report ~50ms). Prove the number before building the
+full graph against it.
+
+### 11.5 Implementation sequence (validated)
+1. **Bench-first gate:** `voice` subcommand + e2e first-audio probe. *(foundation laid this session)*
+2. `config.py` **Settings** schema. *(this session)*
+3. `pyproject.toml` deps: pipecat-ai≥1.0, pyaudio, ctranslate2≥4.8.0, cuDNN9, faster-whisper, kokoro-onnx, piper. *(this session)*
+4. `adapters/stt.py` + measure **peak** VRAM.
+5. `adapters/llm.py` with explicit Cerebras provider-pin for FAST.
+6. `adapters/tts.py`: Kokoro first; measure first-chunk under Whisper contention; Piper fallback.
+7. `voice_loop.py`: in-process Pipecat graph wrapping `CognitionRouter` as a FrameProcessor. **Closes P1.**
+8. `ipc.py` async migration (or run runner in a thread) + server-push notifications (contract-safe).
+9. Rust `hotkey.rs` + `autostart.rs`; `tauri-plugin-global-shortcut`. **[P1 complete]**
+10. Proactive `analyzer.py` + `StarlightMorningBrief` 04:30. **[P2]**
+11. Dispatch `fleet.py` + `dispatch.py`; replace `pipeline.py:52` CLI_AGENT stub. **[P2]**
+12. Workflows: deepagents behind DELIBERATION/WORKFLOW tiers. **[P3]**
+
+> Full machine-readable synthesis (dependency manifest, reuse list, build_new list, open_risks) archived at
+> `docs/specs/2026-06-15-voice-operator-research-synthesis.json`.
+
+---
+
+*Built on SIP. v2.1 validated by adversarial research swarm. Bench-first: prove P50≤800ms on the 1650 before scaling.*
