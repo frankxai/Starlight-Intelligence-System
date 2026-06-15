@@ -849,6 +849,17 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "marine-intelligence-contribute",
+      "skill": "marine-intelligence/contribute",
+      "triggers": {
+        "keywords": ["marine", "ocean", "blue life commons", "species page", "cetacean", "whale", "dolphin", "pinniped", "seal", "sea lion", "sea turtle", "shark", "ray", "reef", "coral", "field mission", "marine conservation", "IUCN", "hydrophone", "citizen science"],
+        "agents": ["starlight-sentinel", "starlight-sage"],
+        "intents": ["marine-contribution", "species-documentation", "field-mission-design", "marine-research", "ethics-review"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {

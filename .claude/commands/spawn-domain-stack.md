@@ -2,7 +2,7 @@
 name: spawn-domain-stack
 description: Spawn a domain-specific intelligence sub-stack for a sovereign person. Analyzes their Genius Profile + Freedom Path KEEP bucket + named domain expertise, proposes 4-7 functional sub-systems with agent/skill/command structure, then scaffolds the full vertical scaffold under verticals/<vertical-slug>/. Generalizes the pattern proven by the People Intelligence reference vertical. For sovereigns who want to productize their genius into a vertical with sub-system architecture.
 allowed-tools: Read, Write, Grep, Glob, Bash
-argument-hint: <person-name> <domain-name> [optional: --sub-systems "name1,name2,name3,..."] [optional: --auto-scaffold]
+argument-hint: <person-name> <domain-name> [optional: --sub-systems "name1,name2,name3,..."] [optional: --auto-scaffold] [optional: --public-corpus]
 ---
 
 # /spawn-domain-stack
@@ -17,6 +17,7 @@ Parse `$ARGUMENTS` for:
 - `<domain-name>` — required. Specific ("People Intelligence", "Capital Intelligence", "Sound Intelligence"). Generic terms ("consulting", "coaching", "business") halt with rename request.
 - `--sub-systems "n1,n2,..."` — optional. Pre-declares the sub-system list. If absent, the command proposes one from the Genius Profile.
 - `--auto-scaffold` — optional. Skips the confirm-or-iterate gate. Use only when proposal is reviewed in advance.
+- `--public-corpus` — optional. Emits the **Commons/IS/OS triad** variant instead of the default in-repo anonymized scaffold. Use when the domain is an *operated public-good initiative* (a public corpus others contribute to), not a private sovereign practice. See § Public-corpus variant. Reference instance: Ocean / Marine Intelligence (`blue-life-commons` + `marine-mcp` + `marine-agent-skills` + `ocean-intelligence-system`).
 
 ## When this command fires
 
@@ -220,6 +221,29 @@ Sovereignty clause acknowledged:
 - You may take the stack private or fork it out of this SIS at any time.
 - Advice ≠ override. Frank's input is advisory, not authoritative, inside your declared domain.
 ```
+
+## Public-corpus variant (`--public-corpus`)
+
+The default flow produces an **in-repo, anonymized, forkable scaffold** under `verticals/<slug>/` — right for a *private sovereign practice* one person productizes. Some domains are instead **operated public goods**: a free corpus that many people contribute to, with a separate productized layer that funds it. For those, the sub-stack takes a different *shape* — the **Commons/IS/OS triad** — proven by the reference instance **Ocean / Marine Intelligence** (2026-06-15, Board PROCEED-WITH-REVISE).
+
+When `--public-corpus` is passed, the spawn emits **three external repos**, not one in-repo scaffold:
+
+| Layer | Repo shape | Owns | Role |
+|---|---|---|---|
+| **Commons** | `<domain>-commons` (PUBLIC) | The reviewed corpus + governance: artifact schema, JSON-Schema CI validator, integrity lint, ETHICS/SOURCES/STYLE, PR-not-direct-commit review. | Creates **trust** |
+| **IS-engine** | `<domain>-mcp` (PUBLIC) + `<domain>-agent-skills` (PUBLIC) | A **review-gated MCP** that serves only approved corpus content (source-attributed, never serves drafts as fact) + a contributor skill pack that produces schema-valid, sourced artifacts. | Serves the corpus to agents |
+| **OS-runtime** | `<domain>-intelligence-system` (PRIVATE/productized) | Dashboard, partner gateway, portals — *consumes* the IS-engine. | Creates **continuity** + revenue |
+
+Non-waivable rules specific to this variant (in addition to the base rules):
+
+- **The commons stays free, forever.** The OS/business layer sells speed, implementation, integration, institutional reliability — **never access to the knowledge.** Write this firewall into the commons README and the funding doc.
+- **The IS-engine is review-gated.** The MCP serves a corpus body *as fact* only when it is review-approved; unapproved artifacts return a typed refusal, never prose. Every response carries its sources.
+- **Standards are not votes.** Ethics, citation, and (for science domains) sensitivity/location rules are standards, not popularity contests — never subject to community vote.
+- **In-repo surface still required.** Register the domain in `skills/skill-rules.json` pointing at a real in-repo pointer skill (`skills/<domain>/contribute.md`), so activation resolves — the external repos are the working surfaces, the pointer is the substrate anchor.
+- **Classify correctly in `VERTICALS.md`.** A public-corpus domain is a *sovereign operated vertical that publishes a commons* (sibling to Music IS), **not** an anonymized reference sub-stack. Do not file it under "anonymized forkable references."
+- **Funding posture default.** Mature public-good rails front-stage (Open Collective, GitHub Sponsors, Zenodo); defer speculative/web3 primitives backstage until traction. No premature token.
+
+Steps 6–7 adapt: instead of `verticals/<slug>/`, scaffold the three repos (or register already-shipped ones, as Ocean did), and Step 7's `VERTICALS.md` entry uses the **operated-vertical** shape with a "triad (external repos)" block.
 
 ## Output shape
 

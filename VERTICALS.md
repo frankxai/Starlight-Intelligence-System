@@ -86,6 +86,22 @@ This is the **public registry**. Active alliances and private verticals (Family 
 - **Canon:** composes with Arcanea canon (Guardian → artist mapping for Arcanea label) under CC-BY-NC.
 - **Compounds:** Arcanea BV (royalties, sync licensing, catalog IP).
 
+### Ocean Intelligence (Marine)
+- **Class:** sovereign vertical (operated + public commons) — **first Commons/IS/OS triad on SIP.**
+- **Domain:** Marine-life intelligence as a public good — species guides, field missions, regional briefings, research summaries, datasets, MCP tools. Guilds: cetaceans, pinnipeds, turtles, sharks-rays, reefs.
+- **Owner:** Starlight Marine Intelligence Systems (operated). The commons stays free forever; the business sells implementation/integration, never access to ocean knowledge.
+- **Status:** `active — v0.1 (founding corpus + IS-engine shipped 2026-06-15)`.
+- **The triad (external repos):**
+  - **Commons** → [`frankxai/blue-life-commons`](https://github.com/frankxai/blue-life-commons) (PUBLIC) — reviewed artifact corpus, JSON-Schema + CI validator + integrity lint, ETHICS/SOURCES/STYLE governance. *Creates trust.*
+  - **IS-engine** → [`frankxai/marine-mcp`](https://github.com/frankxai/marine-mcp) (PUBLIC, review-gated MCP serving the corpus, source-attributed) + [`frankxai/marine-agent-skills`](https://github.com/frankxai/marine-agent-skills) (PUBLIC, contributor skill pack). *Serves the corpus to agents.*
+  - **OS-runtime** → `frankxai/ocean-intelligence-system` (PRIVATE) — dashboard + partner gateway; consumes marine-mcp. *Creates continuity.*
+- **Substrate home (in-repo surface):** `skills/marine-intelligence/` — pointer skill + `marine-intelligence` domain registration in `skills/skill-rules.json`.
+- **Distinct from anonymized reference sub-stacks (People/Sound/Crypto):** Ocean is an *operated* public initiative with a named entity and external repos, not an in-repo forkable scaffold. It is the reference *instance* of the Commons/IS/OS triad pattern, which any operator can spawn via `/spawn-domain-stack --public-corpus`.
+- **Canon:** none (canon-free; SIP attestation ambient via "Built on SIP · Blue Life Commons").
+- **Funding posture:** mature public-good rails (Open Collective, GitHub Sponsors, Zenodo) front-stage; web3 (Gitcoin/Hypercerts) backstage. First grant target: WILDLABS. Wedge: one charismatic-species (cetacean) research community.
+- **Compounds:** Starlight Marine Intelligence Systems (implementation/portal revenue) + SIP attribution across every public marine artifact.
+- **Board:** PROCEED-WITH-REVISE 2026-06-15 — `docs/boards/2026-06-15-ocean-marine-substack.md` (3 REVISE items honored: classified as operated-vertical-publishing-commons; skill-rules resolves in-repo; `/spawn-domain-stack` public-corpus variant added).
+
 ### Vibe OS (substrate)
 - **Class:** sovereign vertical
 - **Domain:** State engineering, ritual stack, chronotype architecture.
