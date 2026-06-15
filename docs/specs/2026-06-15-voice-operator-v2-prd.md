@@ -170,6 +170,19 @@ awesome-jarvis no-remote, arcanea-opencode archived) — productize that audit i
 13-agent best-of-breed research + adversarial verify + synthesis. All 6 layer recommendations held *with corrections*.
 The corrections changed two load-bearing things in §4–§5 above — this section supersedes them where they conflict.
 
+### 11.0 CLOUD-FIRST decision (2026-06-15, supersedes the local-first default below)
+The research defaulted local-first (privacy + zero per-min cost). **Frank's call: cloud-first.** On the GTX 1650
+(4GB, no Tensor cores) cloud is *faster*, frees the GPU for parallel sessions, and removes the multi-GB CUDA install.
+Verified live keys (OpenRouter, Groq, OpenAI, ElevenLabs) make a full cloud loop runnable **today with no new keys**:
+- **STT** = Groq `whisper-large-v3-turbo` via OpenRouter `/audio/transcriptions`
+- **LLM** = OpenRouter, FAST tier pinned to Cerebras *through* OpenRouter (no direct Cerebras key needed)
+- **TTS** = ElevenLabs Flash v2.5 streaming (Cartesia Sonic-3.5 when a key is added)
+
+Local engines (faster-whisper / Kokoro / Piper) remain selectable as an **optional offline/private tier** via env vars
++ the `voice-local` extra. Cloud-first makes the install LIGHT (`pipecat-ai` + `pyaudio`, no CUDA) — the only missing
+dep on Frank's machine is now `pipecat` itself. The §11.2 table below lists the local choices as the *fallback* tier;
+the cloud rows are the **default**.
+
 ### 11.1 Architecture flip — audio runs IN-PROCESS, not over IPC
 The v2 diagram (§4) had audio crossing the stdio IPC. **Wrong.** `ipc.py` and `pipeline.py` are fully *synchronous*
 request/response; the realtime loop is async. So: **run the whole Pipecat graph in-process inside the Python sidecar**
