@@ -26,7 +26,7 @@
 
 > [!NOTE]
 > **The Ultimate Substrate for Swarm Fleets & Agent Harnesses.**
-> What your multi-agent fleet is missing is a shared cognitive model. SIS is designed to solve this, exposing a unified memory plane of **56 specialized agents**, **78 auto-activating skills**, **6 semantic vaults**, an **MCP server**, and a **provenance protocol (SIP)**. It serves as the single source of truth and coordination layer across all IDE clients.
+> What your multi-agent fleet is missing is a shared cognitive model. SIS is designed to solve this, exposing a unified memory plane of **56 agents**, **78 auto-activating skills**, **6 semantic vaults**, an **MCP server**, and a **provenance protocol (SIP)**. It serves as the single source of truth and coordination layer across all IDE clients.
 
 ---
 
