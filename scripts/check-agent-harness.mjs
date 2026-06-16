@@ -65,7 +65,7 @@ function deriveAgentCount() {
   let count = 0;
   for (const entry of readdirSync(agentsDir, { withFileTypes: true })) {
     if (entry.isFile()) {
-      if (entry.name.endsWith('.md') && entry.name !== 'AGENT_REGISTRY.md') count += 1;
+      if (entry.name.endsWith('.md') && entry.name !== 'AGENT_REGISTRY.md' && entry.name !== 'CODING_AGENTS_REGISTRY.md') count += 1;
     } else if (entry.isDirectory()) {
       const subDir = path.join(agentsDir, entry.name);
       for (const sub of readdirSync(subDir, { withFileTypes: true })) {

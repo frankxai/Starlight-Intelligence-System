@@ -45,7 +45,8 @@ $GuardTasks = @(
     @{ Name = 'StarlightSecretScan';       MaxAgeHours = 48 },
     @{ Name = 'StarlightSubstrateBackup';  MaxAgeHours = 48 },
     @{ Name = 'StarlightCrossRepoIndexer'; MaxAgeHours = 48 },
-    @{ Name = 'FrankXMachineMonitor';      MaxAgeHours = 6  }
+    @{ Name = 'FrankXMachineMonitor';      MaxAgeHours = 6  },
+    @{ Name = 'StarlightAgentWatchdog';    MaxAgeHours = 24 }
 )
 # 0 = success, 267009 = currently running, 267045 = queued
 $OkResults = @(0, 267009, 267045)

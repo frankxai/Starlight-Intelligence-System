@@ -17,7 +17,7 @@ try {
 } catch {}
 
 $global:AGY_EXE_PATH = "C:\Users\frank\AppData\Local\agy\bin\agy.exe"
-$global:REPOS_ROOT = "C:\Users\frank\starlight\repos"
+$global:REPOS_ROOT = "C:\Users\frank"
 
 if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
     $global:STARLIGHT_REPO_SHORTCUTS = [ordered]@{
@@ -51,6 +51,9 @@ if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
         clconfig   = "claude-code-config"
         clhooks    = "claude-code-hooks"
         clskills   = "claude-skills-library"
+        deepagent  = "deepagent"
+        da         = "deepagent"
+        agenticops = "agentic-ops"
     }
 }
 
@@ -299,6 +302,87 @@ function Invoke-GrokYolo {
     Write-Host "🚀 Spawning Grok YOLO Agent..." -ForegroundColor Green
     & $grokExe --always-approve
 }
+
+# Helper: Invoke DeepAgent Code in a target path in YOLO mode
+function Invoke-DeepAgentYolo {
+    param(
+        [string]$TargetPath
+    )
+
+    if (-not (Test-Path $TargetPath)) {
+        Write-Error "Target repository path does not exist: $TargetPath"
+        return
+    }
+
+    # Switch location
+    Set-Location $TargetPath
+    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
+    Write-Host "🚀 Spawning DeepAgent YOLO Agent (interactive)..." -ForegroundColor Green
+    dcode --auto-approve --shell-allow-list all
+}
+
+# Dedicated wrappers for DeepAgent (dcode)
+function dasis {
+    $repo = Get-StarlightRepo "sis"
+    if ($repo) { Invoke-DeepAgentYolo -TargetPath $repo.FullName }
+}
+
+function dafx {
+    $repo = Get-StarlightRepo "fx"
+    if ($repo) { Invoke-DeepAgentYolo -TargetPath $repo.FullName }
+}
+
+function daarc {
+    $repo = Get-StarlightRepo "arc"
+    if ($repo) { Invoke-DeepAgentYolo -TargetPath $repo.FullName }
+}
+
+function daapp {
+    $repo = Get-StarlightRepo "app"
+    if ($repo) { Invoke-DeepAgentYolo -TargetPath $repo.FullName }
+}
+
+function dastudio {
+    $repo = Get-StarlightRepo "studio"
+    if ($repo) { Invoke-DeepAgentYolo -TargetPath $repo.FullName }
+}
+
+function dabrain {
+    $repo = Get-StarlightRepo "brain"
+    if ($repo) { Invoke-DeepAgentYolo -TargetPath $repo.FullName }
+}
+
+function daprompts {
+    $repo = Get-StarlightRepo "prompts"
+    if ($repo) { Invoke-DeepAgentYolo -TargetPath $repo.FullName }
+}
+
+function daacos {
+    $repo = Get-StarlightRepo "acos"
+    if ($repo) { Invoke-DeepAgentYolo -TargetPath $repo.FullName }
+}
+
+# General fuzzy lookup for DeepAgent YOLO
+function da-run {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$RepoKey
+    )
+
+    if (-not $RepoKey) {
+        Show-StarlightRepos -Verb "run DeepAgent in"
+        Write-Host "`nUsage: da-run <repo-key>" -ForegroundColor DarkCyan
+        return
+    }
+
+    $match = Get-StarlightRepo $RepoKey
+    if (-not $match) { return }
+
+    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    Invoke-DeepAgentYolo -TargetPath $match.FullName
+}
+
+Set-Alias -Name da -Value da-run -Scope Global -Force -ErrorAction SilentlyContinue
 
 # Dedicated wrappers for Claude Code
 function clsis {
@@ -583,9 +667,10 @@ Set-Alias -Name gr -Value gr-intelligent -Scope Global -Force -ErrorAction Silen
 
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
     Write-Host 'Antigravity YOLO wrappers loaded: agy-sis/agysis | agy-fx/agyfx | agy-arc/agyarc | agy-app/agyapp | agy-acos/agyacos | agy-run(ay)' -ForegroundColor Green
-    Write-Host 'Claude Code, Codex & Grok integrations active:' -ForegroundColor Green
-    Write-Host '  - cl / cd / gr (launches agent in current folder)' -ForegroundColor DarkGray
+    Write-Host 'Claude Code, Codex, Grok & DeepAgent integrations active:' -ForegroundColor Green
+    Write-Host '  - cl / cd / gr / da (launches agent in current folder)' -ForegroundColor DarkGray
     Write-Host '  - cl <repo> / clsis / clfx / clarc / clapp / clstudio / clbrain / clprompts / clacos' -ForegroundColor DarkGray
     Write-Host '  - cd <repo> / cdsis / cdfx / cdarc / cdapp / cdstudio / cdbrain / cdprompts / cdacos' -ForegroundColor DarkGray
     Write-Host '  - gr <repo> / grsis / grfx / grarc / grapp / grstudio / grbrain / grprompts / gracos (or gk*)' -ForegroundColor DarkGray
+    Write-Host '  - da <repo> / dasis / dafx / daarc / daapp / dastudio / dabrain / daprompts / daacos' -ForegroundColor DarkGray
 }
