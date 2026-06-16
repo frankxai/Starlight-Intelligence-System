@@ -15,6 +15,7 @@ import { randomUUID } from 'node:crypto';
 import type { TemporalMeta, ContradictionRecord } from './types.js';
 import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
+import { GoalOrchestrator } from './goal.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -291,6 +292,57 @@ export class StarlightMcpServer {
           return { ...r, vault: _vault, daysSinceConfirmed: c ? Math.round((Date.now() - new Date(c).getTime()) / MS_PER_DAY) : -1, isExpired: isExpired(r as RawEntry) };
         });
       return { threshold: th, count: stale.length, entries: stale };
+    });
+
+    // 11. sis_goal_status
+    this.reg({
+      name: 'sis_goal_status', description: 'Get the active SAGE goal execution status',
+      inputSchema: { type: 'object', properties: {} },
+    }, () => {
+      const orchestrator = new GoalOrchestrator();
+      const state = orchestrator.loadState();
+      if (!state) {
+        return { active: false, message: 'No active SAGE goal found.' };
+      }
+      return { active: true, state };
+    });
+
+    // 12. sis_goal_update
+    this.reg({
+      name: 'sis_goal_update', description: 'Update a task status in the active SAGE goal checklist',
+      inputSchema: { type: 'object', required: ['taskId', 'status'], properties: {
+        taskId: { type: 'string' },
+        status: { type: 'string', enum: ['pending', 'in-progress', 'completed'] },
+      }},
+    }, (p) => {
+      const orchestrator = new GoalOrchestrator();
+      const state = orchestrator.loadState();
+      if (!state) {
+        return { success: false, error: 'No active SAGE goal found.' };
+      }
+      const taskId = String(p.taskId);
+      const status = p.status as any;
+      orchestrator.updateTaskStatus(taskId, status);
+      return { success: true, taskId, status };
+    });
+
+    // 13. sis_goal_log
+    this.reg({
+      name: 'sis_goal_log', description: 'Log a status message to the active SAGE goal',
+      inputSchema: { type: 'object', required: ['message'], properties: {
+        message: { type: 'string' },
+        type: { type: 'string' },
+      }},
+    }, (p) => {
+      const orchestrator = new GoalOrchestrator();
+      const state = orchestrator.loadState();
+      if (!state) {
+        return { success: false, error: 'No active SAGE goal found.' };
+      }
+      const message = String(p.message);
+      const type = p.type ? String(p.type) : 'info';
+      orchestrator.addLog(type, message);
+      return { success: true, message, type };
     });
   }
 

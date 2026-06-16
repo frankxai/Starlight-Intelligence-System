@@ -9,7 +9,7 @@
 
 | Tier | Name | Price | What it produces | When to add |
 |---|---|---|---|---|
-| **1** | Build Your Company Brain — 10-Day Sprint | €7,500 | Genius Profile + Freedom Path + reclaimed second brain + first executor playbook + first creator pipeline draft | NOW (flagship) |
+| **1** | Build Your Company Brain — 10-Day Sprint (or full Estate / Agent Army Commission) | €7,500 (sprint) or €25k–€75k+ scoped (full Estate commission to Pilot/Standing) | Genius Profile + Freedom Path + reclaimed second brain + first executor playbook + first creator pipeline + Stack + (for full Estate) 4-layer blueprint + scaffolded sovereign instance + production agent army (Mind + Mesh via orchestrator + /si + claws + memory + attestation) standing + pilot live workflows + path to Steward retainer | NOW (flagship). Full Estate path is the commercial elevation for clients wanting the complete "agent army" (the biggest pull). See `docs/delivery/estate-army-commissioning-workflow.md` and `docs/strategic/sip-web4-substrate-strategy.md`. |
 | **2** | Templates + Packs | €149-€500 | Reusable patterns crystallized from sprint client work | After 5+ sprints with repeatable structure |
 | **3** | Community / Cohort | €750-€2,500/yr | Cohort-of-sovereigns running their own systems with shared rituals + monthly synthesis | After 10+ template buyers asking for community |
 | **4** | Platform (self-serve) | €/usage TBD | Productized self-serve version of Tier 1-3 patterns | After Tier 1-3 patterns are stable enough that the platform isn't fragile |

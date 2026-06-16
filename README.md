@@ -2,6 +2,9 @@
 
 <div align="center">
   <p align="center">
+    <img src="docs/images/starlight_system_hero.jpg" alt="Starlight Intelligence System Hero Visual" width="800" style="border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 20px;" />
+  </p>
+  <p align="center">
     <strong>The Sovereign Multi-Agent Substrate & Memory Engine for AI Fleets</strong>
   </p>
   <p align="center">
@@ -22,8 +25,8 @@
 ---
 
 > [!NOTE]
-> **Cross-Tool, Cross-Repo, Attested & Governed Memory.**
-> While per-tool memory is now table stakes, what your fleet is missing is a cross-tool, cross-repo, governed, and attested context system. SIS bridges this gap, exposing a unified memory plane of **56 agents**, **78 auto-activating skills**, **6 semantic vaults**, an **MCP server**, and a **provenance protocol (SIP)**. 
+> **The Ultimate Substrate for Swarm Fleets & Agent Harnesses.**
+> What your multi-agent fleet is missing is a shared cognitive model. SIS is designed to solve this, exposing a unified memory plane of **56 specialized agents**, **78 auto-activating skills**, **6 semantic vaults**, an **MCP server**, and a **provenance protocol (SIP)**. It serves as the single source of truth and coordination layer across all IDE clients.
 
 ---
 
@@ -76,6 +79,38 @@ flowchart TB
   Repos --> Output
   Output --> Vaults
 ```
+
+---
+
+## 🛠️ Multi-Agent Swarms & Agent Harnessing
+
+SIS is engineered specifically to build, harness, and run multi-agent fleets:
+
+### 1. What Makes SIS Unique
+* **Shared Cognitive Architecture**: Rather than hardcoding distinct personality specs or memory configurations into each individual agent, agents share the same flat, queryable memory vaults and active skill registries.
+* **Sovereign Substrate (SIP)**: Verifiable attestation footer (`Built on SIP`), cryptographic-friendly credentials scans, and multi-fleet alliance coordination.
+* **Event-Sourced SQLite Hybrid indexing**: Allows memory sync across P2P networks (like Syncthing) using append-only JSONL files indexed locally in SQLite with full-text search.
+* **SAGE Self-Healing Loops**: Protects agents against context exhaustion, error accumulation, and repeating failures using checklist state serialization, context compression backups, Sentinel test-audits, and automatic git rollbacks.
+
+### 2. The Swarm Harness Process
+```mermaid
+flowchart TD
+    Registry["1. Define Agent personality<br/>in agents/starlight-*.md"] --> Skills["2. Write Skill rules<br/>in skills/skill-rules.json"]
+    Skills --> Mount["3. Mount MCP Server<br/>inject 10 sis_* tools into IDE"]
+    Mount --> SAGEInit["4. Run starlight goal init<br/>create checklist and state"]
+    SAGEInit --> Exec["5. Agent execution loop<br/>edits, backups, compression"]
+    Exec --> Audit{"6. Sentinel adversarial audit<br/>passes secret & test scans?"}
+    Audit -- Yes --> Commit["7. LGTM-SIS approval tag<br/>merge and push changes"]
+    Audit -- No --> Rollback["8. git restore workspace<br/>self-debug and retry"]
+    Rollback --> Exec
+```
+
+### 3. Future Engineering Roadmap
+To build out a truly state-of-the-art swarming ecosystem, we are actively engineering:
+* **P2P SQLite Vault Syncing (CRDTs)**: Conflict-free state synchronization across multiple developer devices using Syncthing event hooks and SQLite delta tracking.
+* **Adversarial Sentinel Guards**: Autonomous hooks checking context outputs for secrets leakages, package integrity, and structural code violations.
+* **Smart Context Window Compression**: Dynamic token reduction filters that compress memory vaults based on client-specific window constraints.
+* **The Dreaming Background Loops**: Background daemons that synthesize past chat logs, extract developer workflows, and automatically compile them into new reusable skills.
 
 ---
 
@@ -150,6 +185,9 @@ Starlight Intelligence System provides complete operational coverage for multi-a
 | `sis_invalidate` | Manually expire an entry |
 | `sis_contradict` | Flag two conflicting entries |
 | `sis_stale` | Scan entries requiring re-confirmation |
+| `sis_goal_status` | Retrieve the active SAGE goal checklist and log state |
+| `sis_goal_update` | Update status of a SAGE goal checklist task |
+| `sis_goal_log` | Append log messages to the active SAGE goal |
 </details>
 
 <details>

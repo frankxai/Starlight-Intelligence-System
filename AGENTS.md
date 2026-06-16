@@ -29,6 +29,58 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 6. Check memory first — vaults exist for a reason
 7. Update memory after — future sessions depend on what you record now
 
+## Multi-Agent Systems & Agent Harnesses
+
+SIS is engineered to enable the orchestration of specialized, autonomous LLM swarms. By sharing a unified memory substrate and decoupling skills from application code, developers can coordinate multi-agent fleets across different tasks.
+
+### 1. What Makes SIS Unique
+* **Shared Cognitive Architecture**: Rather than hardcoding distinct personality specs or memory configurations into each individual agent, agents share the same flat, queryable memory vaults and active skill registries.
+* **Sovereign Substrate (SIP)**: Verifiable attestation footer (`Built on SIP`), cryptographic-friendly credentials scans, and multi-fleet alliance coordination.
+* **Event-Sourced SQLite Hybrid indexing**: Allows memory sync across P2P networks (like Syncthing) using append-only JSONL files indexed locally in SQLite with full-text search.
+* **SAGE Self-Healing Loops**: Protects agents against context exhaustion, error accumulation, and repeating failures using checklist state serialization, context compression backups, Sentinel test-audits, and automatic git rollbacks.
+
+### 2. The Swarm Harness Process
+1. **Define Swarm Personalities**: Author markdown profiles in `agents/starlight-*.md` outlining an agent's Tier, Scope, Invariants, and Voice. Register them under the flat council registry `agents/AGENT_REGISTRY.md`.
+2. **Spawn Skills & Triggers**: Write skill specifications under `skills/<domain>/<skill-name>.md` and associate them with activation keywords in `skills/skill-rules.json`.
+3. **Mount the MCP Server**: Expose the server using Node (`mcp-server.js`). This injects memory management tools (`sis_vault_search`, `sis_append_entry`) and SAGE orchestration tools directly into the agents' execution context.
+4. **Execute Goal Checklists**: Spin up a goal session using `starlight goal init "<goal-description>"`. SAGE automatically generates a checklist, tracks state, takes git checkpoints, and triggers automated rollbacks if Sentinel audits fail.
+
+### 3. Practical Example: Swarm Node Specification
+
+To spin up a new agent, write a Markdown file `agents/starlight-my-agent.md`:
+```markdown
+---
+name: my-agent
+tier: specialist
+domain: code-intelligence
+voice: architect
+---
+# Starlight Specialist: My Agent
+
+## Mission
+Analyze files and coordinate technical workflows.
+
+## Active Skills
+- `memory/vault-management`
+- `orchestration/multi-agent-coordination`
+
+## Interaction Trigger Rules
+Activated when prompt context contains "refactor", "database schemas", or touches `src/core/`.
+```
+
+And configure its activation rule inside `skills/skill-rules.json`:
+```json
+{
+  "id": "my-agent-activation",
+  "skill": "orchestration/multi-agent-coordination",
+  "agents": ["my-agent"],
+  "triggers": {
+    "keywords": ["refactor", "schema"],
+    "files": ["src/core/**"]
+  }
+}
+```
+
 ---
 
 ## What you have access to
