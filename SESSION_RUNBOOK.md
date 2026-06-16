@@ -48,6 +48,8 @@ All should exist. If any missing — stop, fix, don't run the session on a broke
 └──────────────────────────────────────────────────────────────┘
 ```
 
+**Note (2026-06-16 Starlight Board PROCEED-WITH-REVISE):** For high-value clients wanting the full "sovereign intelligence estate / agent army" (Mind + production Mesh + Steward), the 2h session is the front door only. It routes into the longer gated commissioning workflow (Genius excavation → 4-layer Blueprint → scaffold + /si-routed build of real swarm → Pilot → Steward retainer). See `docs/delivery/estate-army-commissioning-workflow.md` and DELIVERY.md §7. The open 2h surface for pure protocol adopters remains unchanged.
+
 ---
 
 ## Phase 1 — Welcome (T+0:00 → T+0:10)

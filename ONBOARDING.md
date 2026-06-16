@@ -32,6 +32,8 @@ This repo uses Claude Code because that's where Frank builds. The commands you'l
 
 Every inbound fits exactly one of these. Pick before you run anything.
 
+**Note (post 2026-06-16 Starlight Board PROCEED-WITH-REVISE):** The "full sovereign estate / agent army commission" (Mind + production Mesh + Steward) is the repeatable commercial elevation of Route D (sovereign spawn) + custom advisory + concierge. It uses the same front door and triage but adds the 4-layer blueprint, Genius grounding, production swarm substrate build, and Steward retainer. See `docs/delivery/estate-army-commissioning-workflow.md` and DELIVERY.md §7. The open protocol surface (pure attribution adopters, free four routes) remains untouched.
+
 ### A. Substrate contribution
 
 - **Who:** You want to extend SIP itself — propose a new layer, a new command tier, an amendment to the file contract.

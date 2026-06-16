@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starlight Agent Control Center</title>
+<style>
+:root {
+  --bg: #03030e;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --bg-card-hover: rgba(255, 255, 255, 0.06);
+  --border: rgba(127, 255, 212, 0.1);
+  --border-hover: rgba(127, 255, 212, 0.3);
+  --teal: #7fffd4;
+  --blue: #78a6ff;
+  --purple: #bf95fc;
+  --green: #50e3c2;
+  --red: #ff5e7e;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-bright: #f8fafc;
+  --font-mono: 'Fira Code', 'SF Mono', 'JetBrains Mono', Consolas, monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --radius: 16px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Aurora Backdrop Grid */
+.aurora-container {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 0; pointer-events: none; overflow: hidden;
+}
+.aurora {
+  position: absolute;
+  width: 80vw; height: 80vh;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.08;
+  animation: float 20s infinite alternate;
+}
+.aurora-1 {
+  background: radial-gradient(circle, var(--teal), transparent 70%);
+  top: -20vh; left: -10vw;
+}
+.aurora-2 {
+  background: radial-gradient(circle, var(--purple), transparent 70%);
+  bottom: -20vh; right: -10vw;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5vw, -5vh) scale(1.1); }
+  100% { transform: translate(-3vw, 3vh) scale(0.95); }
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+header h1 {
+  font-family: var(--font-mono);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--teal), var(--blue), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+
+header p {
+  color: var(--text-dim);
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+header p span {
+  color: var(--teal);
+  font-family: var(--font-mono);
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 1000px) {
+  .layout-grid { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+}
+
+.card-title {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-bright);
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title .badge {
+  font-size: 11px;
+  background: rgba(127, 255, 212, 0.1);
+  color: var(--teal);
+  padding: 2px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(127, 255, 212, 0.2);
+}
+
+/* Agent List Layout */
+.agent-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.agent-item {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: var(--transition);
+}
+
+.agent-item:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(127, 255, 212, 0.15);
+  transform: translateX(4px);
+}
+
+.agent-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+}
+.status-indicator.running {
+  color: var(--green);
+  background: var(--green);
+}
+.status-indicator.stopped {
+  color: var(--red);
+  background: var(--red);
+}
+
+.agent-details h3 {
+  font-size: 16px;
+  color: var(--text-bright);
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+}
+
+.agent-details p.role {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.agent-details .meta-tags {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.meta-tags span {
+  background: rgba(255,255,255,0.04);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--text-dim);
+}
+.meta-tags span.cmd-tag {
+  color: var(--blue);
+  background: rgba(120, 166, 255, 0.1);
+}
+
+.pid-tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--teal);
+}
+
+/* Strategy Panel styling */
+.strategy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.strategy-item h4 {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.strategy-item p {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.strategy-item ul {
+  margin-left: 16px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+/* Control Panel Actions */
+.control-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 14px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.action-btn:hover {
+  border-color: var(--teal);
+  background: rgba(127, 255, 212, 0.05);
+  color: var(--teal);
+}
+
+.action-btn .cmd-preview {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: rgba(0,0,0,0.4);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--teal);
+  color: var(--bg);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: bold;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: var(--transition);
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(127, 255, 212, 0.2);
+}
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="aurora-container">
+  <div class="aurora aurora-1"></div>
+  <div class="aurora aurora-2"></div>
+</div>
+
+<div class="container">
+  <header>
+    <h1>Starlight Agent Control Center</h1>
+    <p>Host: <span id="current-hostname">DETECTING...</span> | State: <span id="last-updated">NEVER UPDATED</span></p>
+  </header>
+
+  <div class="layout-grid">
+    <!-- Main Left Column -->
+    <main class="card">
+      <div class="card-title">
+        <span>Active Agent Repositories</span>
+        <span class="badge" id="machine-role-badge">Unknown Machine</span>
+      </div>
+
+      <div class="agent-grid" id="agent-list-container">
+        <!-- Render warning/uninitialized state by default -->
+        <div style="text-align: center; padding: 40px 0; color: var(--text-dim);">
+          <p style="margin-bottom: 16px; font-family: var(--font-mono);">No status data found.</p>
+          <p style="font-size: 13px;">Please run the status check command in your terminal to initialize:<br>
+          <code style="display: inline-block; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 6px; margin-top: 8px; color: var(--teal); font-size: 12px;">agent-status</code></p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Sidebar Right Column -->
+    <aside style="display: flex; flex-direction: column; gap: 32px;">
+      <!-- Operations card -->
+      <section class="card">
+        <div class="card-title">Quick Actions</div>
+        <div class="control-actions">
+          <button class="action-btn" onclick="copyCommand('start-agents')">
+            <span>Start Missing</span>
+            <span class="cmd-preview">start-agents</span>
+          </button>
+          <button class="action-btn" onclick="copyCommand('restart-agents')">
+            <span>Restart Clean</span>
+            <span class="cmd-preview">restart-agents</span>
+          </button>
+          <button class="action-btn" onclick="copyCommand('agent-status')">
+            <span>Refresh Status</span>
+            <span class="cmd-preview">agent-status</span>
+          </button>
+          <button class="action-btn" onclick="copyCommand('kill-agents')">
+            <span>Kill All Agents</span>
+            <span class="cmd-preview">kill-agents</span>
+          </button>
+        </div>
+        <p style="font-size: 12px; color: var(--text-dim); text-align: center;">Click any action to copy the command to your clipboard. Run it in your terminal.</p>
+      </section>
+
+      <!-- Strategy card -->
+      <section class="card">
+        <div class="card-title">Multi-Laptop Strategy</div>
+        <div class="strategy-list">
+          <div class="strategy-item">
+            <h4>Laptop 1: Primary Workhorse</h4>
+            <p><strong>Host: DESKTOP-1B4ICID</strong></p>
+            <p>Used for heavy development, running local command center servers, building and debugging models, and coordinating agent swarms across repos:</p>
+            <ul>
+              <li>Starlight-Intelligence-System (clsis / stsis)</li>
+              <li>Arcanea Core (cla / sta / agyarc)</li>
+              <li>FrankX (cfx / stfx / agyfx)</li>
+              <li>agentic-creator-os (acos / aco)</li>
+            </ul>
+          </div>
+          <div class="strategy-item">
+            <h4>Laptop 2: Field Operator</h4>
+            <p><strong>Host: Secondary / Field</strong></p>
+            <p>Focuses on memory capture, strategic review, vault updates, and mobile operations. Spawns minimal agents to conserve resources:</p>
+            <ul>
+              <li>Starlight-Intelligence-System (clsis)</li>
+              <li>FrankX notes & logs (cfx)</li>
+            </ul>
+          </div>
+          <div class="strategy-item">
+            <h4>Sync Doctrine</h4>
+            <p>Append-only vault events sync via Syncthing/P2P immediately. Private credentials live strictly in local <code>.env.local</code>. Never commit raw API keys.</p>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<div class="toast" id="toast-message">Command copied to clipboard!</div>
+
+<!-- Load dynamic status file -->
+<script src="agent-status-data.js"></script>
+
+<script>
+function copyCommand(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('toast-message');
+    toast.innerText = 'Copied: ' + text.substring(0, 30) + '...';
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2500);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.STARLIGHT_AGENT_STATUS) {
+    const data = window.STARLIGHT_AGENT_STATUS;
+    
+    // Update headers
+    document.getElementById('current-hostname').innerText = data.hostname;
+    document.getElementById('machine-role-badge').innerText = data.machine_role;
+    
+    const localTime = new Date(data.last_updated).toLocaleString();
+    document.getElementById('last-updated').innerText = localTime;
+    
+    // Render list
+    const container = document.getElementById('agent-list-container');
+    container.innerHTML = ''; // Clear uninitialized state
+    
+    data.agents.forEach(agent => {
+      const item = document.createElement('div');
+      item.className = 'agent-item';
+      
+      const statusClass = agent.running ? 'running' : 'stopped';
+      const pidMarkup = agent.running ? `<span class="pid-tag">PID ${agent.pid}</span>` : '';
+      
+      item.innerHTML = `
+        <div class="agent-info">
+          <div class="status-indicator ${statusClass}"></div>
+          <div class="agent-details">
+            <h3>${agent.name}</h3>
+            <p class="role">${agent.role}</p>
+            <div class="meta-tags">
+              <span class="cmd-tag">${agent.command}</span>
+              <span>Agent: ${agent.agent}</span>
+              <span>${agent.path}</span>
+            </div>
+          </div>
+        </div>
+        ${pidMarkup}
+      `;
+      container.appendChild(item);
+    });
+  }
+});
+</script>
+
+</body>
+</html>

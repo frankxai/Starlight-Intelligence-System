@@ -143,6 +143,8 @@ Flat council with emergent leadership, fronted by Front-Door + Excavation tiers.
 **Sound Intelligence sub-stack:** 6 agents (composition, production, catalog, performance, audience, sync).
 **Music IS sub-stack:** 7 agents (A&R, persona, production, distribution, royalty, persona-keeper, royalty-architect).
 
+**Estate / Agent Army commissioning extensions (post 2026-06-16 Board PROCEED-WITH-REVISE):** When building or operating full sovereign estates, compose the base registry here with the `starlight-estate-os` profile (`templates/estate-os/AGENTS.md`) + client's 4-layer Blueprint (Persona mapping, Topology/swarm shapes from ORCHESTRATION_ENGINE + /si router, Kernel selection, Modules/domain sub-stacks). Hermes, council, and new Steward primitives become central for the production Mesh. See `docs/delivery/estate-army-commissioning-workflow.md`, `estate-blueprint.md`, and `estate-steward.md` commands. Genius grounding and encoded-self boundaries (SIP §5.7) are non-negotiable.
+
 Full per-agent file: `agents/<agent-name>.md`.
 
 ---
