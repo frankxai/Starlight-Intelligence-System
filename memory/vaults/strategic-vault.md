@@ -27,6 +27,7 @@ last_consolidated: '2026-05-11'
 | 2026-02-10 | Starlight Intelligence System Architecture Decision | architecture | 0.95 |
 | 2026-02-10 | Ecosystem Integration Strategy | integration | 0.90 |
 | 2026-06-10 | SIS Claws Architecture Decision | architecture | 0.95 |
+| 2026-06-16 | SAGE Autonomous Goal Execution (SAGE) Framework | architecture | 0.95 |
 
 ---
 
@@ -226,4 +227,21 @@ We formally reconciled the structural and branding relationship between `reality
 
 3. **Technical Symmetry**:
    - Both networks use the identical Next.js 16 + Tailwind v4 + MDX static architecture, driven by a `lib/site.ts` single brand config, ensuring styling and build optimizations are shared directly.
+
+---
+
+### [2026-06-16] SAGE Autonomous Goal Execution (SAGE) Framework
+
+**Category:** architecture
+**Confidence:** 0.95
+**Source:** SAGE design session, Starlight Prime + Sentinel
+**Related:** Technical Vault — SAGE Engine, Strategic Vault — SIS Claws Architecture Decision
+
+Decision: Formally implement the **SAGE (Starlight Autonomous Goal Execution)** engine to support long-running `/goal` execution loops in production-ready environments. SAGE mitigates context window limits, early-declaration confirmation bias, and error propagation.
+
+Core framework components implemented:
+1. **Goal Checkpointing & State Persistence**: Maintained in `.starlight/goal-state.json` to enable recovery and resumption of execution loops across model or environment reboots.
+2. **Context Compression**: Periodically flushes extracted coding patterns to Technical/Operational vaults and strategic milestones to Strategic vaults before clearing local history to avoid token window decay.
+3. **Adversarial Audit**: Leverages the Sentinel Auditor subagent pattern to run secret scanning and unit tests (`npm test`), refusing to declare completion without an explicit `LGTM-SIS` approval tag.
+4. **Git-Backed Rollback & Recovery**: Backs up state to local `sage/checkpoint-N` branches and runs `git restore .` on test failures to prevent compound code errors.
 
