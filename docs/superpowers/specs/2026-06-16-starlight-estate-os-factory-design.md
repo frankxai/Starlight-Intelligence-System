@@ -25,7 +25,7 @@ and gated distribution.
 The cowork "spawn from `starlight-estate-os` template" brief describes the **output** (a configured client
 estate) but that template **does not exist** — verified: `git ls-files` finds none of
 `ARCHITECTURE-OPTIONS.md`, `agent-model.md`, `config/squads.yaml`, `client/_template/`,
-`naming-profiles.yaml`. This repo is the **substrate** (56 agents, 78 skills, 10-IS, cockpit, voice, memory
+`naming-profiles.yaml`. This repo is the **substrate** (56 agents, 79 skills, 10-IS, cockpit, voice, memory
 engine, attestation), not the assembly line.
 
 **Therefore this project builds the factory (assembly line), not a single artifact.** Build it once; each

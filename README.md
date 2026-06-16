@@ -26,7 +26,7 @@
 
 > [!NOTE]
 > **The Ultimate Substrate for Swarm Fleets & Agent Harnesses.**
-> What your multi-agent fleet is missing is a shared cognitive model. SIS is designed to solve this, exposing a unified memory plane of **56 agents**, **78 auto-activating skills**, **6 semantic vaults**, an **MCP server**, and a **provenance protocol (SIP)**. It serves as the single source of truth and coordination layer across all IDE clients.
+> What your multi-agent fleet is missing is a shared cognitive model. SIS is designed to solve this, exposing a unified memory plane of **56 agents**, **79 auto-activating skills**, **6 semantic vaults**, an **MCP server**, and a **provenance protocol (SIP)**. It serves as the single source of truth and coordination layer across all IDE clients.
 
 ---
 
@@ -132,7 +132,7 @@ Starlight Intelligence System provides complete operational coverage for multi-a
 
 ### 3. Multi-Agent Council
 *   **56 Specialized Agents**: Named agents across 10 tiers (Leadership, Specialist, Foundation, domain sub-stacks like People, Sound, and Music).
-*   **78 Auto-Activating Skill Rules**: Auto-injects domain rules (e.g. `structured-hiring`, `systems-thinking`, `onchain-crypto`) based on prompt context and files modified.
+*   **79 Auto-Activating Skill Rules**: Auto-injects domain rules (e.g. `structured-hiring`, `systems-thinking`, `onchain-crypto`) based on prompt context and files modified.
 *   **Platform Portability**: Custom adapters format rules and context natively for each LLM client.
 
 ### 4. Sandbox & Hardening

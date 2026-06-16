@@ -860,12 +860,23 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "orchestration-sage-autonomous-execution",
+      "skill": "orchestration/sage-autonomous-execution",
+      "triggers": {
+        "keywords": ["goal", "sage", "/goal", "autonomous loop", "checkpoint", "rollback", "sentinel audit", "context compression"],
+        "agents": ["starlight-orchestrator", "starlight-sentinel", "starlight-sage"],
+        "intents": ["autonomous-goal", "checkpointing", "self-healing"]
+      },
+      "priority": "critical",
+      "load_level": "core"
     }
   ],
   "defaults": {
     "starlight-prime": ["intelligence-strategic-reasoning", "intelligence-systems-thinking", "intelligence-decision-framework"],
     "starlight-architect": ["intelligence-systems-thinking", "intelligence-pattern-recognition"],
-    "starlight-orchestrator": ["orchestration-multi-agent-coordination", "orchestration-workflow-design"],
+    "starlight-orchestrator": ["orchestration-multi-agent-coordination", "orchestration-workflow-design", "orchestration-sage-autonomous-execution"],
     "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework", "safety-permission-gate", "safety-secret-detector", "safety-private-public-split", "safety-mutation-approval"],
     "starlight-sage": ["memory-knowledge-synthesis", "intelligence-pattern-recognition"],
     "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis", "vision-design-coherence"],
