@@ -28,6 +28,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { StarlightIntelligence } from "./index.js";
+import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
 import { generateIntelligenceReport } from "./score.js";
@@ -150,6 +151,14 @@ Commands:
   orchestrate <intent>            Run an orchestration (prints JSON result)
   stats                           Show system statistics
   version                         Print version
+  goal init <intent>              Initiate a SAGE goal checklist (--checklist)
+  goal status                     Show current goal checklist & logs
+  goal update <id> <status>       Update goal task status
+  goal log <message>              Log status update to active goal
+  goal compress                   Consolidate context and findings to vaults (--findings --summary)
+  goal checkpoint                 Backup local changes to git branch
+  goal audit                      Verify workspace builds and tests (--no-tests)
+  goal rollback                   Rollback local edits to recover clean workspace
 
 Options:
   --help, -h                      Show this help message
@@ -178,6 +187,9 @@ Options:
   --vaults                        (with init) seed the six MCP memory vaults
   --vault-dir <path>              (with init --vaults) target dir (default: ~/.starlight/vaults)
   --force                         (with init --vaults) overwrite existing vault files
+  --checklist <tasks>             Comma-separated checklist tasks for goal init
+  --findings <text>               Findings to consolidate during goal compress
+  --no-tests                      Skip test execution during goal audit
 
 Examples:
   starlight init
@@ -1290,6 +1302,152 @@ async function cmdForge(): Promise<void> {
   }
 }
 
+async function cmdGoal(
+  action: string,
+  args: string[],
+  options: {
+    checklist?: string;
+    findings?: string;
+    summary?: string;
+    "no-tests"?: boolean;
+  }
+): Promise<void> {
+  const orchestrator = new GoalOrchestrator();
+
+  switch (action) {
+    case "init": {
+      const intent = args.join(" ");
+      if (!intent) {
+        console.error("[starlight] Error: goal init requires an intent description.");
+        process.exitCode = 1;
+        return;
+      }
+      const tasks = options.checklist
+        ? options.checklist.split(",").map((t) => t.trim())
+        : [
+            "Decompose and plan execution",
+            "Implement initial implementation",
+            "Verify code with local test suite",
+            "Run adversarial Sentinel audit",
+            "Commit and push final code to main",
+          ];
+      const state = orchestrator.createChecklist(intent, tasks);
+      console.log(`[starlight] Goal initialized and checkpoint saved to .starlight/goal-state.json:`);
+      console.log(JSON.stringify(state, null, 2));
+      break;
+    }
+
+    case "status": {
+      const state = orchestrator.loadState();
+      if (!state) {
+        console.log("[starlight] No active goal tracking file found.");
+        return;
+      }
+      console.log(`[starlight] SAGE Goal Status:\n`);
+      console.log(`Objective: ${state.objective}`);
+      console.log(`Current Step: ${state.currentStepIndex}`);
+      if (state.gitCheckpointBranch) {
+        console.log(`Checkpoint Branch: ${state.gitCheckpointBranch}`);
+      }
+      console.log("\nChecklist:");
+      for (const task of state.checklist) {
+        const statusChar = task.status === "completed" ? "✓" : task.status === "in-progress" ? "→" : " ";
+        console.log(`  [${statusChar}] ${task.id}: ${task.task} (${task.status})`);
+      }
+      console.log("\nRecent Logs:");
+      const recentLogs = state.logs.slice(-5);
+      for (const log of recentLogs) {
+        console.log(`  [${log.timestamp}] [${log.type.toUpperCase()}] ${log.message}`);
+      }
+      break;
+    }
+
+    case "update": {
+      const taskId = args[0];
+      const status = args[1] as any;
+      if (!taskId || !status) {
+        console.error("[starlight] Error: goal update requires <taskId> <status>.");
+        console.error("  Example: starlight goal update task-1 completed");
+        process.exitCode = 1;
+        return;
+      }
+      if (!["pending", "in-progress", "completed"].includes(status)) {
+        console.error(`[starlight] Error: invalid status "${status}". Must be pending, in-progress, or completed.`);
+        process.exitCode = 1;
+        return;
+      }
+      orchestrator.updateTaskStatus(taskId, status);
+      console.log(`[starlight] Updated task ${taskId} to ${status}.`);
+      break;
+    }
+
+    case "log": {
+      const message = args.join(" ");
+      if (!message) {
+        console.error("[starlight] Error: goal log requires a message.");
+        process.exitCode = 1;
+        return;
+      }
+      orchestrator.addLog("info", message);
+      console.log("[starlight] Log entry added.");
+      break;
+    }
+
+    case "compress": {
+      const findings = options.findings;
+      const summary = options.summary;
+      if (!findings || !summary) {
+        console.error("[starlight] Error: goal compress requires --findings and --summary.");
+        process.exitCode = 1;
+        return;
+      }
+      orchestrator.compressContext(findings, summary);
+      console.log("[starlight] Context compressed. Findings saved to Technical, Operational, and Strategic vaults.");
+      break;
+    }
+
+    case "checkpoint": {
+      try {
+        const branchName = orchestrator.createGitCheckpoint();
+        console.log(`[starlight] Git checkpoint branch created: ${branchName}`);
+      } catch (err: any) {
+        console.error(`[starlight] Checkpoint failed: ${err.message}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "audit": {
+      const runTests = options["no-tests"] !== true;
+      const result = await orchestrator.runAudit({ runTests });
+      console.log(`[starlight] Audit result: ${result.success ? "PASSED" : "FAILED"}`);
+      console.log(`\nAudit Logs:\n${result.output}`);
+      if (result.success && result.approvalTag) {
+        console.log(`\nStructured Approval: ${result.approvalTag}`);
+      } else {
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "rollback": {
+      try {
+        orchestrator.rollbackGit();
+        console.log("[starlight] Git rollback completed. Workspace restored.");
+      } catch (err: any) {
+        console.error(`[starlight] Rollback failed: ${err.message}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    default:
+      console.error(`[starlight] Unknown goal action: "${action}"`);
+      console.error("Available actions: init, status, update, log, compress, checkpoint, audit, rollback");
+      process.exitCode = 1;
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -1323,6 +1481,9 @@ async function main(): Promise<void> {
       vaults: { type: "boolean" },
       "vault-dir": { type: "string" },
       force: { type: "boolean" },
+      checklist: { type: "string" },
+      findings: { type: "string" },
+      "no-tests": { type: "boolean" },
     },
     strict: false,
   });
@@ -1500,6 +1661,22 @@ async function main(): Promise<void> {
     case "version":
       cmdVersion();
       break;
+
+    case "goal": {
+      const goalAction = positionals[1];
+      if (!goalAction) {
+        console.error("[starlight] Error: goal requires an action (init, status, update, log, compress, checkpoint, audit, rollback).");
+        process.exitCode = 1;
+        return;
+      }
+      await cmdGoal(goalAction, positionals.slice(2), {
+        checklist: asString(values.checklist),
+        findings: asString(values.findings),
+        summary: asString(values.summary),
+        "no-tests": values["no-tests"] === true,
+      });
+      break;
+    }
 
     default:
       console.error(`[starlight] Unknown command: "${command}"`);

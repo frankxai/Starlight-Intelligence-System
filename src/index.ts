@@ -405,3 +405,7 @@ export type {
 export type { GatewayTransport, HttpTransportOptions } from './gateway/client.js';
 export type { GatewayCoreOptions } from './gateway/server.js';
 export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';
+
+// v8.8 — SAGE Autonomous Goal Execution (Autonomous Loops)
+export { GoalOrchestrator } from './goal.js';
+export type { GoalTask, GoalLog, GoalState, AuditResult } from './goal.js';
