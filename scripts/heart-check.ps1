@@ -26,7 +26,7 @@ if ($bus) {
     $gates["Memory Bus"] = "GREEN"
     $score++
 } else {
-    $gates["Memory Bus"] = "RED (not running — run: pwsh scripts/start-memory-bus-watcher.ps1)"
+    $gates["Memory Bus"] = "RED (not running - run: pwsh scripts/start-memory-bus-watcher.ps1)"
 }
 
 # Gate 2: brain_watchdog
@@ -55,7 +55,7 @@ try {
     $gates["Dashboard"] = "GREEN"
     $score++
 } catch {
-    $gates["Dashboard"] = "YELLOW (no response on :3007 — run: cd private/local-command-center/apps/dashboard && npm run dev)"
+    $gates["Dashboard"] = "YELLOW (no response on :3007 - run: cd private/local-command-center/apps/dashboard && npm run dev)"
 }
 
 # Gate 5: Audit log freshness
@@ -88,7 +88,7 @@ foreach ($t in $tasks) {
             $tasksScore++
         }
     } else {
-        $tasksDetail += "$t (MISSING — run scripts/register-*.ps1 files)"
+        $tasksDetail += "$t (MISSING - run scripts/register-*.ps1 files)"
     }
 }
 if ($tasksScore -eq $tasks.Count) {
@@ -100,28 +100,29 @@ if ($tasksScore -eq $tasks.Count) {
 
 # Render Score Card
 $statusLabel = if ($score -eq $totalGates) { "GREEN" } elseif ($score -ge 4) { "YELLOW" } else { "RED" }
+$statusColor = if ($statusLabel -eq "GREEN") { "Green" } elseif ($statusLabel -eq "YELLOW") { "Yellow" } else { "Red" }
 Write-Host ""
-Write-Host "/heart — Ops health: $score/$totalGates ($statusLabel)" -ForegroundColor (if ($statusLabel -eq "GREEN") { "Green" } elseif ($statusLabel -eq "YELLOW") { "Yellow" } else { "Red" })
+Write-Host "/heart - Ops health: $score/$totalGates ($statusLabel)" -ForegroundColor $statusColor
 Write-Host ""
 
 foreach ($g in $gates.Keys) {
     $val = $gates[$g]
-    $icon = "✓"
+    $icon = "OK"
     $color = "DarkGray"
     if ($val -match '^GREEN') {
-        $icon = "✓"
+        $icon = "OK"
         $color = "Green"
     } elseif ($val -match '^YELLOW') {
-        $icon = "⚠"
+        $icon = "WARN"
         $color = "Yellow"
     } else {
-        $icon = "✗"
+        $icon = "FAIL"
         $color = "Red"
     }
     Write-Host "  $icon $g : $val" -ForegroundColor $color
 }
 Write-Host ""
-Write-Host "Built on SIP — operational-tier · machine substrate check" -ForegroundColor DarkCyan
+Write-Host "Built on SIP - operational-tier - machine substrate check" -ForegroundColor DarkCyan
 Write-Host ""
 
 # Exit code reflects health: 0 if green/yellow, 1 if critical red
