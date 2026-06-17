@@ -1,31 +1,29 @@
-﻿# Memory Bus Watcher launcher
-# Singleton via PID file. If watcher already running (~/.memory-bus-watcher.pid + process alive),
-# this no-ops cleanly. Otherwise launches detached background process.
+# Memory Bus health probe
+# Memory Bus is a stdio MCP server. It should be launched by an MCP host, not
+# detached as a daemon. This script validates that the server can answer a
+# one-shot JSON-RPC health request.
 
 $ErrorActionPreference = "Stop"
-$pidFile = Join-Path $HOME ".memory-bus-watcher.pid"
 $repoRoot = (Resolve-Path "$PSScriptRoot\..").Path
-$busDir = Join-Path $repoRoot "private\memory-bus"
+$serverPath = Join-Path $repoRoot "private\memory-bus\server.py"
 
-# Check existing PID file — silent no-op if watcher is already alive
-if (Test-Path $pidFile) {
-    $existingPid = Get-Content $pidFile -ErrorAction SilentlyContinue
-    if ($existingPid -and (Get-Process -Id $existingPid -ErrorAction SilentlyContinue)) {
-        exit 0
-    }
+if (-not (Test-Path $serverPath)) {
+    Write-Error "Memory Bus server.py not found at: $serverPath"
+    exit 1
 }
 
-# Launch detached background — no console window, survives parent exit
-$pythonExe = (Get-Command python).Source
-$logOut = Join-Path $HOME ".memory-bus-watcher.log"
-$logErr = Join-Path $HOME ".memory-bus-watcher.err"
+$request = '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"memory_health","arguments":{}}}'
+$requestPath = [System.IO.Path]::GetTempFileName()
+try {
+    Set-Content -LiteralPath $requestPath -Value $request -Encoding ASCII -NoNewline
+    $response = cmd /c "type ""$requestPath"" | python ""$serverPath""" | Select-Object -First 1
+} finally {
+    Remove-Item -LiteralPath $requestPath -Force -ErrorAction SilentlyContinue
+}
 
-Start-Process -FilePath $pythonExe `
-    -ArgumentList @("-m", "watcher.daemon") `
-    -WorkingDirectory $busDir `
-    -WindowStyle Hidden `
-    -RedirectStandardOutput $logOut `
-    -RedirectStandardError $logErr | Out-Null
+if ($response -notmatch 'healthy') {
+    Write-Error "Memory Bus health probe failed: $response"
+    exit 1
+}
 
-# Brief grace for daemon to write its PID file
-Start-Sleep -Milliseconds 500
+Write-Host "Memory Bus health probe passed" -ForegroundColor Green

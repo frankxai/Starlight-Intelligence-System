@@ -19,15 +19,28 @@ $totalGates = 6
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 
 # Gate 1: Memory Bus
-$bus = Get-Process -Name python -ErrorAction SilentlyContinue | Where-Object {
-    $_.MainWindowTitle -match 'memory-bus' -or
-    (Get-CimInstance Win32_Process -Filter "ProcessId = $($_.Id)").CommandLine -match 'memory-bus.server'
-}
-if ($bus) {
-    $gates["Memory Bus"] = "GREEN"
-    $score++
+$memoryBusServer = Join-Path $RepoRoot "private\memory-bus\server.py"
+$memoryBusRequest = '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"memory_health","arguments":{}}}'
+if (Test-Path $memoryBusServer) {
+    try {
+        $memoryBusRequestPath = [System.IO.Path]::GetTempFileName()
+        try {
+            Set-Content -LiteralPath $memoryBusRequestPath -Value $memoryBusRequest -Encoding ASCII -NoNewline
+            $memoryBusResponse = cmd /c "type ""$memoryBusRequestPath"" | python ""$memoryBusServer""" | Select-Object -First 1
+        } finally {
+            Remove-Item -LiteralPath $memoryBusRequestPath -Force -ErrorAction SilentlyContinue
+        }
+        if ($memoryBusResponse -match 'healthy') {
+            $gates["Memory Bus"] = "GREEN (stdio health probe)"
+            $score++
+        } else {
+            $gates["Memory Bus"] = "RED (health probe failed)"
+        }
+    } catch {
+        $gates["Memory Bus"] = "RED (health probe error: $($_.Exception.Message))"
+    }
 } else {
-    $gates["Memory Bus"] = "RED (not running - run: pwsh scripts/start-memory-bus-watcher.ps1)"
+    $gates["Memory Bus"] = "RED (server missing at private\memory-bus\server.py)"
 }
 
 # Gate 2: brain_watchdog
