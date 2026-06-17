@@ -1,5 +1,5 @@
 # =============================================================================
-# api-secret-scan.ps1 — Daily secret leak scan across active repos
+# api-secret-scan.ps1 - Daily secret leak scan across active repos
 # =============================================================================
 #
 # Runs Infisical's built-in secret scanner against Frank's active repos. Looks
@@ -12,29 +12,31 @@
 # Schedule: daily 04:30 via StarlightSecretScan task.
 # Manual run: pwsh -File scripts/api-secret-scan.ps1
 #
-# Built on SIP — operational tier (secret leak prevention).
+# Built on SIP - operational tier (secret leak prevention).
 # =============================================================================
 
-$ErrorActionPreference = 'Continue'
+$ErrorActionPreference = "Continue"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$OutDir = Join-Path $RepoRoot 'private\api-monitor'
-$Today = Get-Date -Format 'yyyy-MM-dd'
+$OutDir = Join-Path $RepoRoot "private\api-monitor"
+$Today = Get-Date -Format "yyyy-MM-dd"
 $Findings = Join-Path $OutDir "secret-findings-$Today.md"
-$AlertsFile = Join-Path $OutDir 'ALERTS.md'
+$AlertsFile = Join-Path $OutDir "ALERTS.md"
+$Backticks = [char]96 + [char]96 + [char]96
 
 if (-not (Test-Path $OutDir)) { New-Item -ItemType Directory -Path $OutDir -Force | Out-Null }
 
-# Scan targets — Frank's active repos with credentials risk
+# Scan targets - Frank's active repos with credentials risk
 $repos = @(
-  'C:\Users\frank\Starlight-Intelligence-System',
-  'C:\Users\frank\FrankX',
-  'C:\Users\frank\Arcanea'
+  "C:\Users\frank\Starlight-Intelligence-System",
+  "C:\Users\frank\FrankX",
+  "C:\Users\frank\Arcanea"
 )
 
-$infisical = Get-Command infisical -ErrorAction SilentlyContinue
+$infisical = Get-Command "infisical" -ErrorAction SilentlyContinue
 if (-not $infisical) {
-  $msg = 'infisical CLI not found in PATH — install via `winget install Infisical.CLI`'
-  Add-Content -Path $AlertsFile -Value "[ERROR] $((Get-Date).ToString('o')) secret-scan :: $msg"
+  $msg = "infisical CLI not found in PATH - install via winget install Infisical.CLI"
+  $dateStr = (Get-Date).ToString("o")
+  Add-Content -Path $AlertsFile -Value "[ERROR] $dateStr secret-scan :: $msg"
   Write-Host $msg -ForegroundColor Red
   exit 1
 }
@@ -59,15 +61,16 @@ foreach ($repo in $repos) {
     Remove-Item $tmpOut -ErrorAction SilentlyContinue
 
     if ($rc -eq 0) {
-      Add-Content -Path $Findings -Value "OK — no secrets found.`n"
-      Write-Host '  OK — no findings' -ForegroundColor Green
+      Add-Content -Path $Findings -Value "OK - no secrets found.`n"
+      Write-Host "  OK - no findings" -ForegroundColor Green
     } else {
       # Infisical exits non-zero when findings exist
-      $findingCount = ([regex]::Matches($out, 'Finding:|secret')).Count
+      $findingCount = ([regex]::Matches($out, "Finding:|secret")).Count
       $totalFindings += $findingCount
-      Add-Content -Path $Findings -Value "`n``````n$out`n``````n"
-      Add-Content -Path $AlertsFile -Value "[LEAK] $((Get-Date).ToString('o')) secret-scan :: $repo - findings (see $Findings)"
-      Write-Host "  LEAK SUSPECT — see $Findings" -ForegroundColor Red
+      Add-Content -Path $Findings -Value "`n$Backticks`n$out`n$Backticks"
+      $dateStr = (Get-Date).ToString("o")
+      Add-Content -Path $AlertsFile -Value "[LEAK] $dateStr secret-scan :: $repo - findings (see $Findings)"
+      Write-Host "  LEAK SUSPECT - see $Findings" -ForegroundColor Red
     }
   } catch {
     $msg = $_.Exception.Message
@@ -79,7 +82,7 @@ foreach ($repo in $repos) {
 }
 
 Add-Content -Path $Findings -Value "`n---`nTotal findings across $($repos.Count) repos: $totalFindings"
-Write-Host ''
+Write-Host ""
 Write-Host "Report: $Findings" -ForegroundColor Green
 Write-Host "Total findings: $totalFindings"
 
