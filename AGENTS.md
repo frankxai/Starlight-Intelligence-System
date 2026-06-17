@@ -29,13 +29,65 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 6. Check memory first — vaults exist for a reason
 7. Update memory after — future sessions depend on what you record now
 
+## Multi-Agent Systems & Agent Harnesses
+
+SIS is engineered to enable the orchestration of specialized, autonomous LLM swarms. By sharing a unified memory substrate and decoupling skills from application code, developers can coordinate multi-agent fleets across different tasks.
+
+### 1. What Makes SIS Unique
+* **Shared Cognitive Architecture**: Rather than hardcoding distinct personality specs or memory configurations into each individual agent, agents share the same flat, queryable memory vaults and active skill registries.
+* **Sovereign Substrate (SIP)**: Verifiable attestation footer (`Built on SIP`), cryptographic-friendly credentials scans, and multi-fleet alliance coordination.
+* **Event-Sourced SQLite Hybrid indexing**: Allows memory sync across P2P networks (like Syncthing) using append-only JSONL files indexed locally in SQLite with full-text search.
+* **SAGE Self-Healing Loops**: Protects agents against context exhaustion, error accumulation, and repeating failures using checklist state serialization, context compression backups, Sentinel test-audits, and automatic git rollbacks.
+
+### 2. The Swarm Harness Process
+1. **Define Swarm Personalities**: Author markdown profiles in `agents/starlight-*.md` outlining an agent's Tier, Scope, Invariants, and Voice. Register them under the flat council registry `agents/AGENT_REGISTRY.md`.
+2. **Spawn Skills & Triggers**: Write skill specifications under `skills/<domain>/<skill-name>.md` and associate them with activation keywords in `skills/skill-rules.json`.
+3. **Mount the MCP Server**: Expose the server using Node (`mcp-server.js`). This injects memory management tools (`sis_vault_search`, `sis_append_entry`) and SAGE orchestration tools directly into the agents' execution context.
+4. **Execute Goal Checklists**: Spin up a goal session using `starlight goal init "<goal-description>"`. SAGE automatically generates a checklist, tracks state, takes git checkpoints, and triggers automated rollbacks if Sentinel audits fail.
+
+### 3. Practical Example: Swarm Node Specification
+
+To spin up a new agent, write a Markdown file `agents/starlight-my-agent.md`:
+```markdown
+---
+name: my-agent
+tier: specialist
+domain: code-intelligence
+voice: architect
+---
+# Starlight Specialist: My Agent
+
+## Mission
+Analyze files and coordinate technical workflows.
+
+## Active Skills
+- `memory/vault-management`
+- `orchestration/multi-agent-coordination`
+
+## Interaction Trigger Rules
+Activated when prompt context contains "refactor", "database schemas", or touches `src/core/`.
+```
+
+And configure its activation rule inside `skills/skill-rules.json`:
+```json
+{
+  "id": "my-agent-activation",
+  "skill": "orchestration/multi-agent-coordination",
+  "agents": ["my-agent"],
+  "triggers": {
+    "keywords": ["refactor", "schema"],
+    "files": ["src/core/**"]
+  }
+}
+```
+
 ---
 
 ## What you have access to
 
-- **63 named agents** across 10 tiers — Front-Door (3) + Excavation (2) + Leadership (3) + Specialist (4) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (26 across People + Sound + Music + Energy verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`) + SIS Extractor (5 — `/sis-forge` Phase 1 only). Full registry: `agents/AGENT_REGISTRY.md`.
-- **78 auto-activating skill rules** across 15 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety**). Includes the new `vision/queen-swarms-visual` (canonical L99 Queen + swarms motion skill, packaged from site/queen-vision.html + docs/queen-motion/ + site /queen live demo). Also `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
-- **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) + **SIS Memory Gateway v0.1** (SessionStore + per-harness loopback daemon + RRF hybrid unification, privacy drop on private tags) + **Memory Engine v0.2** (pluggable embeddings). See memory/README.md, VAULT_ARCHITECTURE.md, src/gateway/*, src/embedding.ts. Dreaming pipeline + CONSOLIDATION_LOG + PROMOTION_QUEUE for observable compounding. Private mount: separate starlight-private-memory repo (2026-06-11). **2026-06-12:** Queen (via driver + surfaces) now drives visual palace recall + consolidation; gateway SessionStore as Queen loop state; 5 image_gen visuals (loop/gateway/palace/arch/heatmap/receipt) integrated as first-class artifacts. See operational-vault Queen Advance + tools/queen/queen-advance-2026-06-12.json.
+- **63 named agents** across 10 tiers — Front-Door (3) + Excavation (1) + Leadership (3) + Specialist (4) + Foundation (1) + Universal IS (5) + Domain Sub-Stack (26 across People + Sound + Music + Energy verticals) + Council Archetype (7 — v0.1 Friday demo, `agents/council/*.md`) + SIS Extractor (5 — `/sis-forge` Phase 1 only) + Evaluator (1 — Proving Ground + Model Arena) + 7 Social Intelligence (strategist, sentinel, psychologist, vibetracker, factcheck, cinematic, news-analyst). Full registry: `agents/AGENT_REGISTRY.md`.
+- **81 auto-activating skill rules** across 16 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety** · **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
+- **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion. SIS Memory Gateway v0.1 (SessionStore + per-harness loopback daemon + RRF hybrid unification, privacy drop on private tags) + Memory Engine v0.2 (pluggable embeddings). See memory/README.md, VAULT_ARCHITECTURE.md, src/gateway/*, src/embedding.ts. Dreaming pipeline + CONSOLIDATION_LOG + PROMOTION_QUEUE for observable compounding. Private mount: separate starlight-private-memory repo (2026-06-11). **2026-06-12:** Queen (via driver + surfaces) now drives visual palace recall + consolidation; gateway SessionStore as Queen loop state; 5 image_gen visuals (loop/gateway/palace/arch/heatmap/receipt) integrated as first-class artifacts. See operational-vault Queen Advance + tools/queen/queen-advance-2026-06-12.json.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
 - **Active Healing Daemon** — Background Sentinel watcher that proactively modernizes the codebase using validated patterns during idle time.
@@ -43,7 +95,7 @@ Frank = Systems Architect × Composer × Gamer × Builder × GenCreator
 - **10 universal Intelligence Systems** per `STACK.md` (locked v8.0): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + Starlight Orchestrator (master router). Health is cross-cutting.
 - **3 reference Domain Sub-Stack verticals** — People Intelligence · Sound Intelligence · Music IS — each with 4-7 functional sub-systems. Pattern generalizes via `/spawn-domain-stack`.
 - **100+ slash commands** across 4 SIP tiers (protocol / alliance / vertical / sovereign).
-- **7 platform adapters + Antigravity agent swarm harness** — Claude Code (primary) · Cursor · Codex (adversary) · Gemini CLI (long-context) · OpenCode (latency) · Antigravity (native agent swarm via define_subagent/invoke_subagent + browser + Agent Manager; full `.antigravity/` + `core/orchestrator/harnesses/antigravity/` enhancement 2026-06-02 with swarm-protocol + mcp + allowlist) · Grok. Same vaults, same memory, SIP attestation, excellence. Antigravity harness for "launch the agent swarm" parallel execution.
+- **6 platform adapters** — Claude Code · Cursor · Codex · Gemini CLI · OpenCode · Antigravity. Same vaults, same memory, different surface.
 - **6 substrate symmetry harnesses** — v75-v79 + base, plus pre-commit hook gating substrate-touching commits.
 - **Research surface** — Public substrate research at `starlightintelligence.org/research/`. Rubric-locked, Board-gated, SIP-attested. Two artifacts live: 3D memory palace design survey + memory foundations (Phase 0 dog-food chartered, 3-tier model w/ AgentDB tier per Addendum 2). Methodology at `docs/research/_methodology/`.
 
@@ -98,18 +150,20 @@ Flat council with emergent leadership, fronted by Front-Door + Excavation tiers.
 **Sound Intelligence sub-stack:** 6 agents (composition, production, catalog, performance, audience, sync).
 **Music IS sub-stack:** 7 agents (A&R, persona, production, distribution, royalty, persona-keeper, royalty-architect).
 
+**Estate / Agent Army commissioning extensions (post 2026-06-16 Board PROCEED-WITH-REVISE):** When building or operating full sovereign estates, compose the base registry here with the `starlight-estate-os` profile (`templates/estate-os/AGENTS.md`) + client's 4-layer Blueprint (Persona mapping, Topology/swarm shapes from ORCHESTRATION_ENGINE + /si router, Kernel selection, Modules/domain sub-stacks). Hermes, council, and new Steward primitives become central for the production Mesh. See `docs/delivery/estate-army-commissioning-workflow.md`, `estate-blueprint.md`, and `estate-steward.md` commands. Genius grounding and encoded-self boundaries (SIP §5.7) are non-negotiable.
+
 Full per-agent file: `agents/<agent-name>.md`.
 
 ---
 
 ## Skills (auto-activating)
 
-Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (78 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (71 files). `EXEMPT_PHANTOMS` ledger drift open: 7 ghost energy agents (`starlight-energy-{buyer,cost,grid,installer,operations,recovery,sizing}`) dispatched by rules but lack agent files — pending resolution per audit 2026-05-28.
+Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (81 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
 
 | Domain | Surface (sample) |
 |--------|------------------|
 | Intelligence | strategic-reasoning · systems-thinking · pattern-recognition · decision-framework · genius-excavation |
-| Orchestration | multi-agent-coordination · workflow-design · context-engineering · parallel-execution · agent-handoff-packet |
+| Orchestration | multi-agent-coordination · workflow-design · context-engineering · parallel-execution · agent-handoff-packet · cli-tool-router |
 | Memory | vault-management · knowledge-synthesis · context-preservation · capture-discipline · insight-distillation |
 | Integration | repo-bridge · ecosystem-sync · transmission-protocol · universal-adapter · idea-triage · creator-path · domain-stack-architecture |
 | Business / Vision | entity-architecture · revenue-modeling · fundamentals-excavation · design-coherence · voice-anti-slop |
@@ -243,7 +297,7 @@ Cross-repo memory recall via Cross-Repo Indexer (520+ atoms across 22 `~/.claude
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
 - Substrate: starlightintelligence.org/protocol v1.1.1
-- Operational layer: `@arcanea/starlight-intelligence-system` v8.2.0
+- Operational layer: `@arcanea/starlight-intelligence-system` v8.3.0
 - License: MIT (code + spec docs); Arcanea canon (if composed) CC-BY-NC
 
-*Starlight Intelligence System v8.2.0 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-05-17*
+*Starlight Intelligence System v8.3.0 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-06-12*

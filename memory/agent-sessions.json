@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "updated": "2026-06-13",
+  "machines": {
+    "DESKTOP-1B4ICID": {
+      "role": "Primary Dev Machine (Heavy Orchestration & Coding)",
+      "description": "High-perf laptop used for deep coding, Next.js dashboard/console execution, and full agent swarms.",
+      "auto_start_repos": [
+        {
+          "name": "Starlight-Intelligence-System",
+          "path": "C:\\Users\\frank\\Starlight-Intelligence-System",
+          "agent": "claude",
+          "command": "clsis",
+          "role": "Core memory, MCP tools, and cross-agent substrate"
+        },
+        {
+          "name": "Arcanea",
+          "path": "C:\\Users\\frank\\Arcanea",
+          "agent": "antigravity",
+          "command": "agyarc",
+          "role": "Creative mythology, orchestrator, and design language"
+        },
+        {
+          "name": "FrankX",
+          "path": "C:\\Users\\frank\\FrankX",
+          "agent": "antigravity",
+          "command": "agyfx",
+          "role": "Private dev and content authoring"
+        },
+        {
+          "name": "agentic-creator-os",
+          "path": "C:\\Users\\frank\\agentic-creator-os",
+          "agent": "codex",
+          "command": "acos",
+          "role": "Execution engine for skills, agents, commands, and hooks"
+        }
+      ]
+    },
+    "DEFAULT_SECONDARY": {
+      "role": "Secondary / Field Operator Laptop",
+      "description": "Sovereign vault sync, lightweight writing, reading, and isolated agent tasks.",
+      "auto_start_repos": [
+        {
+          "name": "Starlight-Intelligence-System",
+          "path": "C:\\Users\\frank\\Starlight-Intelligence-System",
+          "agent": "claude",
+          "command": "clsis",
+          "role": "Vault sync and memory query hub"
+        },
+        {
+          "name": "FrankX",
+          "path": "C:\\Users\\frank\\FrankX",
+          "agent": "antigravity",
+          "command": "agyfx",
+          "role": "Lightweight content review and notes"
+        }
+      ]
+    }
+  }
+}

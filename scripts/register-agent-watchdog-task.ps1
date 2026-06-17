@@ -31,6 +31,7 @@ $Action = New-ScheduledTaskAction `
     -Execute $pwshPath `
     -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$LauncherPs1`""
 
+# Trigger: daily at 08:00 AM and 08:00 PM
 $Trigger1 = New-ScheduledTaskTrigger -Daily -At 8:00am
 $Trigger2 = New-ScheduledTaskTrigger -Daily -At 8:00pm
 $Triggers = @($Trigger1, $Trigger2)

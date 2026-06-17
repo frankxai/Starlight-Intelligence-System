@@ -6,7 +6,7 @@
  * coupling it to any one runtime daemon.
  */
 
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export type MemorySurfaceStatus = "healthy" | "attention-needed" | "critical";
@@ -21,6 +21,12 @@ export interface VaultHealth {
 
 export interface MemoryHealthReport {
   repoRoot: string;
+  architecture: {
+    canonical: string;
+    primaryRuntime: string;
+    derived: string[];
+    decision: string;
+  };
   vaults: VaultHealth[];
   voiceSessions: {
     count: number;
@@ -41,8 +47,52 @@ export interface MemoryHealthReport {
     vectorsPresent: boolean;
     atomRows?: number;
   };
+  corpora: {
+    sovereign: MemoryCorpusHealth;
+    frozenMempalace: MemoryCorpusHealth;
+    chromaFallback: {
+      path: string;
+      present: boolean;
+      bytes?: number;
+    };
+  };
+  memoryBus: {
+    expected: boolean;
+    privatePath: string;
+    privatePathPresent: boolean;
+    launcherPath: string;
+    launcherPresent: boolean;
+    registeredInHarnesses: string[];
+    status: "connected-surface-present" | "declared-but-private-missing" | "not-declared";
+  };
+  evals: {
+    eval50Path: string;
+    eval50Present: boolean;
+    eval50Rows: number;
+    concurrencyGatePresent: boolean;
+    retrievalEvalPresent: boolean;
+  };
+  drift: {
+    status: "ok" | "attention-needed" | "unknown";
+    sovereignRows: number;
+    frozenRows: number;
+    coverageRatio: number | null;
+    recommendation: string;
+  };
+  privacy: {
+    defaultMcpSearchIncludesPrivate: false;
+    privateOverrideParameter: "include_private";
+    policy: string;
+  };
   status: MemorySurfaceStatus;
   notes: string[];
+}
+
+export interface MemoryCorpusHealth {
+  path: string;
+  present: boolean;
+  rows: number;
+  bytes?: number;
 }
 
 interface Frontmatter {
@@ -80,6 +130,24 @@ function countJsonlRows(path: string): number {
   return raw.split(/\r?\n/).filter((line) => line.trim().length > 0).length;
 }
 
+function fileBytes(path: string): number | undefined {
+  if (!existsSync(path)) return undefined;
+  try {
+    return statSync(path).size;
+  } catch {
+    return undefined;
+  }
+}
+
+function corpusHealth(path: string): MemoryCorpusHealth {
+  return {
+    path,
+    present: existsSync(path),
+    rows: countJsonlRows(path),
+    bytes: fileBytes(path),
+  };
+}
+
 function latestFileName(dir: string): string | undefined {
   if (!existsSync(dir)) return undefined;
   const files = readdirSync(dir)
@@ -94,6 +162,14 @@ export function inspectMemoryHealth(repoRoot: string, now = new Date()): MemoryH
   const voiceSessionDir = join(memoryRoot, "voice-sessions");
   const kgDir = join(memoryRoot, "knowledge-graph");
   const mempalaceDir = join(memoryRoot, "mempalace");
+  const sovereignPath = join(memoryRoot, "mempalace_sovereign", "atoms.jsonl");
+  const frozenMempalacePath = join(memoryRoot, "mempalace", "atoms.jsonl");
+  const chromaFallbackPath = join(memoryRoot, "mempalace_upstream", "chroma.sqlite3");
+  const eval50Path = join(repoRoot, "docs", "research", "_factory", "memory-foundations-phase0", "eval-50.jsonl");
+  const concurrencyGatePath = join(repoRoot, "test", "phase0-concurrent-write-smoke.test.ts");
+  const retrievalEvalPath = join(repoRoot, "test", "retrieval-eval.test.ts");
+  const memoryBusPrivatePath = join(repoRoot, "private", "memory-bus");
+  const memoryBusLauncherPath = join(repoRoot, "scripts", "start-memory-bus.ps1");
 
   const vaultNames = [
     "strategic",
@@ -146,6 +222,32 @@ export function inspectMemoryHealth(repoRoot: string, now = new Date()): MemoryH
   const atomsPath = join(mempalaceDir, "atoms.jsonl");
   const vectorsPath = join(mempalaceDir, "vectors.npy");
   const atomRows = countJsonlRows(atomsPath);
+  const sovereign = corpusHealth(sovereignPath);
+  const frozenMempalace = corpusHealth(frozenMempalacePath);
+  const coverageRatio = frozenMempalace.rows > 0
+    ? Math.round((sovereign.rows / frozenMempalace.rows) * 1000) / 1000
+    : null;
+  const driftStatus = coverageRatio == null
+    ? "unknown"
+    : coverageRatio >= 0.95
+      ? "ok"
+      : "attention-needed";
+
+  const harnesses = [
+    join(repoRoot, "core", "orchestrator", "harnesses", "claude", "mcp-config.json"),
+    join(repoRoot, "core", "orchestrator", "harnesses", "codex", "mcp-config.json"),
+    join(repoRoot, "core", "orchestrator", "harnesses", "gemini", "mcp-config.json"),
+    join(repoRoot, "core", "orchestrator", "harnesses", "opencode", "mcp-config.json"),
+  ];
+  const registeredInHarnesses = harnesses
+    .filter((path) => existsSync(path) && readFileSync(path, "utf8").includes("memory-bus"))
+    .map((path) => path.replace(repoRoot, "").replace(/^[/\\]/, ""));
+  const memoryBusExpected = existsSync(memoryBusLauncherPath) || registeredInHarnesses.length > 0;
+  const memoryBusStatus = memoryBusExpected
+    ? existsSync(memoryBusPrivatePath)
+      ? "connected-surface-present"
+      : "declared-but-private-missing"
+    : "not-declared";
 
   const notes: string[] = [];
   if (vaults.some((v) => !v.present)) {
@@ -160,6 +262,15 @@ export function inspectMemoryHealth(repoRoot: string, now = new Date()): MemoryH
   if (!voiceSessions.latest) {
     notes.push("no voice-session capture found");
   }
+  if (driftStatus === "attention-needed") {
+    notes.push(`sovereign corpus covers ${sovereign.rows}/${frozenMempalace.rows} frozen rows; re-ingest or mark frozen corpus retired`);
+  }
+  if (memoryBusStatus === "declared-but-private-missing") {
+    notes.push("memory-bus is documented/launchable, but private/memory-bus is absent in this checkout");
+  }
+  if (!existsSync(eval50Path)) {
+    notes.push("memory eval-50 ground truth is missing");
+  }
 
   const status: MemorySurfaceStatus =
     vaults.every((v) => v.present && !v.stale) &&
@@ -168,6 +279,8 @@ export function inspectMemoryHealth(repoRoot: string, now = new Date()): MemoryH
     existsSync(brainCachePath) &&
     existsSync(atomsPath) &&
     existsSync(vectorsPath) &&
+    driftStatus !== "attention-needed" &&
+    existsSync(eval50Path) &&
     (logAgeDays == null || logAgeDays <= 7)
       ? "healthy"
       : notes.length > 0
@@ -176,6 +289,12 @@ export function inspectMemoryHealth(repoRoot: string, now = new Date()): MemoryH
 
   return {
     repoRoot,
+    architecture: {
+      canonical: "markdown vaults + append-only JSONL ledgers",
+      primaryRuntime: "SIS sovereign memory; external systems remain derived/optional",
+      derived: ["mempalace frozen corpus", "mempalace_upstream Chroma fallback", "future mem0/Graphiti projections"],
+      decision: "Keep SIS as primary. Harvest MemPalace/mem0/Graphiti patterns behind SIS contracts, do not replace canon.",
+    },
     vaults,
     voiceSessions,
     knowledgeGraph: {
@@ -192,6 +311,45 @@ export function inspectMemoryHealth(repoRoot: string, now = new Date()): MemoryH
       atomsPresent: existsSync(atomsPath),
       vectorsPresent: existsSync(vectorsPath),
       atomRows,
+    },
+    corpora: {
+      sovereign,
+      frozenMempalace,
+      chromaFallback: {
+        path: chromaFallbackPath,
+        present: existsSync(chromaFallbackPath),
+        bytes: fileBytes(chromaFallbackPath),
+      },
+    },
+    memoryBus: {
+      expected: memoryBusExpected,
+      privatePath: memoryBusPrivatePath,
+      privatePathPresent: existsSync(memoryBusPrivatePath),
+      launcherPath: memoryBusLauncherPath,
+      launcherPresent: existsSync(memoryBusLauncherPath),
+      registeredInHarnesses,
+      status: memoryBusStatus,
+    },
+    evals: {
+      eval50Path,
+      eval50Present: existsSync(eval50Path),
+      eval50Rows: countJsonlRows(eval50Path),
+      concurrencyGatePresent: existsSync(concurrencyGatePath),
+      retrievalEvalPresent: existsSync(retrievalEvalPath),
+    },
+    drift: {
+      status: driftStatus,
+      sovereignRows: sovereign.rows,
+      frozenRows: frozenMempalace.rows,
+      coverageRatio,
+      recommendation: driftStatus === "ok"
+        ? "live sovereign corpus is broadly aligned with frozen corpus"
+        : "before claiming benchmark quality, re-ingest frozen/canonical memory into the sovereign store or retire the frozen corpus explicitly",
+    },
+    privacy: {
+      defaultMcpSearchIncludesPrivate: false,
+      privateOverrideParameter: "include_private",
+      policy: "private memory is hidden by default; external MCP access must opt in explicitly and should remain local-first",
     },
     status,
     notes,

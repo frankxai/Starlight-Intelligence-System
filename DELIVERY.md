@@ -76,6 +76,19 @@ Read this as a menu. Pick the one that matches what you showed up for. Each sect
 - **Typical timeline:** Weeks to months.
 - **Next command:** `/intake` → routes to Concierge → Frank reviews and responds.
 
+### 7. Full Sovereign Estate / Agent Army Commission (premium commercial path — evolution of Route D + concierge)
+
+- **What it is:** Complete commissioning of a sovereign intelligence estate (Mind + production Mesh/agent army + Steward): Genius-grounded excavation, 4-layer blueprint (Persona/Topology/Kernel/Modules), attested scaffold (via sovereign-spawn or estate-os profile), advanced swarm substrate build (orchestrator patterns, /si multi-CLI routing, Hermes, claws, memory bus, voice, attestation, evals), Pilot with live workflows → Scale → Standing Steward retainer. The "how to setup this agent army" delivered E2E at production grade.
+- **Who it's for:** High-agency principals, alliances (e.g. Trinity), or organizations who want a reliable, compounding, ownable agent army as a true extension — not DIY glue or rented vendor agents. The biggest pull for serious operator fleets.
+- **Scope:** Full gated arc per `docs/delivery/estate-army-commissioning-workflow.md`. IP terms explicit in SOW (client owns tuned estate; Starlight owns generalized process + delivery IP; encoded-self boundaries non-negotiable). See also `docs/strategic/sip-web4-substrate-strategy.md` for Web4/Ethereum-like positioning and layered IP model (open protocol for adoption flywheel + protected canon/encoded-self/commercial delivery layers).
+- **What you bring:** Clear domain ownership, Genius/Vision readiness (or willingness to excavate), commitment to the full build + retainer, sovereignty posture.
+- **Reciprocity:** Written SOW with named artifacts/dates. Build fee scoped to Pilot-to-Standing + retainer for Steward/ops/evolution + Frank access. Attestation on everything. Generalized improvements promote back to substrate (factory economics).
+- **Attestation scope:** Full estate + all serious swarm outputs carry "Built on SIP". Boards on major moves.
+- **Typical timeline:** Blueprint 1-2 weeks; Pilot standing 2-6 weeks depending on scope; retainer ongoing.
+- **Next:** `/intake` or direct architect conversation → excavation (if needed) → 4-layer Blueprint → SOW → scaffold + build using the substrate at its best (/si routing, ORCHESTRATION_ENGINE swarm patterns, claws, etc.) → handover + retainer. Full details and benefits vs DIY/competitors in the workflow doc.
+
+This is the repeatable commercial "Estate Factory" / Olympus delivery that makes marginal estates high-margin while preserving the open protocol surface for pure adopters. Trinity is instance #1 (alliance governance + commercial delivery layer).
+
 ---
 
 ## Tier table

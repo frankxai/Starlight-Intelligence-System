@@ -58,6 +58,7 @@ export default function CommandPalette() {
       .map((r) => r.node);
   }, [query]);
 
+
   const close = useCallback(() => {
     setOpen(false);
     setQuery("");

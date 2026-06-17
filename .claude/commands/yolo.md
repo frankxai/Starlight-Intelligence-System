@@ -6,7 +6,7 @@ auto-board-on-substrate: true
 
 # /yolo — Session Mode (Hive)
 
-Load `private/yolo-scope.json`. Invoke the `yolo-conductor` skill. Use `Read`, `Glob`, `Grep`, `Bash`, `Edit`, `Write`, and the `Task` tool with parallel subagent dispatch for council scans.
+Load if present `private/yolo-scope.json`. Invoke the `yolo-conductor` skill. Use `Read`, `Glob`, `Grep`, `Bash`, `Edit`, `Write`, and the `Task` tool with parallel subagent dispatch for council scans.
 
 ## Behavior
 

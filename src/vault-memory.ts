@@ -195,58 +195,59 @@ export class VaultMemory extends MemoryManager {
    */
   searchVaults(options: VaultSearchOptions, rrfOpts?: RRFOptions): VaultSearchResult[] {
     const limit = options.limit ?? 10;
-    // Over-fetch for RRF merging and post-vault-filter
     const overfetch = limit * 4;
-
-    // ── Lexical channel ────────────────────────────────────
     const lexicalResults = this.search({
       query: options.query,
       category: options.category,
       limit: overfetch,
       minConfidence: options.minConfidence,
-    });
-    const lexicalIds = lexicalResults.map(e => e.id);
+    }).filter(entry => options.includePrivate || !isPrivateEntry(entry));
+    const lexicalIds = lexicalResults.map(entry => entry.id);
+    const lexicalRanks = new Map<string, number>();
+    lexicalIds.forEach((id, idx) => lexicalRanks.set(id, idx + 1));
 
-    // ── Semantic channel (HashingTF, synchronous) ──────────
     const provider = new HashingTFProvider();
-    const allEntries = this.getAll();
+    const allEntries = this.getAll()
+      .filter(entry => !options.category || entry.category === options.category)
+      .filter(entry => options.minConfidence == null || entry.confidence >= options.minConfidence)
+      .filter(entry => options.includePrivate || !isPrivateEntry(entry));
 
-    // Build a minimal corpus for IDF fitting
     const corpus = allEntries.map(e => e.content);
     provider.fit(corpus);
 
-    // Score all entries by semantic similarity to query (synchronous via sync embed)
-    const semanticScores: Array<[string, number]> = [];
-    for (const entry of allEntries) {
-      const entryVec = hashingEmbedSync(provider, entry.content);
+    let semanticIds: string[] = [];
+    const semanticRanks = new Map<string, number>();
+    if ((options.retrievalMode ?? 'hybrid') === 'hybrid') {
       const queryVec = hashingEmbedSync(provider, options.query);
-      const sim = provider.similarity(queryVec, entryVec);
-      if (sim > 0) {
-        semanticScores.push([entry.id, sim]);
+      const semanticScores: Array<[string, number]> = [];
+      for (const entry of allEntries) {
+        const entryVec = hashingEmbedSync(provider, entry.content);
+        const sim = provider.similarity(queryVec, entryVec);
+        if (sim > 0) {
+          semanticScores.push([entry.id, sim]);
+        }
       }
+      semanticScores.sort((a, b) => b[1] - a[1]);
+      semanticIds = semanticScores.slice(0, overfetch).map(([id]) => id);
+      semanticIds.forEach((id, idx) => semanticRanks.set(id, idx + 1));
     }
-    semanticScores.sort((a, b) => b[1] - a[1]);
-    const semanticIds = semanticScores.slice(0, overfetch).map(([id]) => id);
 
-    // ── RRF fusion ─────────────────────────────────────────
-    // Delegate to the single canonical rrfMerge from embedding.ts
-    const mergedIds = rrfMerge(semanticIds, lexicalIds, overfetch, rrfOpts);
+    const mergedIds = semanticIds.length > 0
+      ? rrfMerge(semanticIds, lexicalIds, overfetch, rrfOpts)
+      : lexicalIds.slice(0, overfetch);
 
-    // Build a result map for fast lookup
     const entryMap = new Map<string, MemoryEntry>();
-    for (const e of allEntries) entryMap.set(e.id, e);
+    for (const entry of allEntries) entryMap.set(entry.id, entry);
 
     const queryTerms = options.query
       .toLowerCase()
       .split(/\s+/)
       .filter(w => w.length > 0);
 
-    // Apply confidence filter and vault filter after fusion
     let results: VaultSearchResult[] = [];
     for (const id of mergedIds) {
       const entry = entryMap.get(id);
       if (!entry) continue;
-      if (options.minConfidence != null && entry.confidence < options.minConfidence) continue;
 
       const vault = this.vaultIndex.get(entry.id) ?? this.classifyVault(entry.content);
       if (options.vaults && options.vaults.length > 0) {
@@ -255,8 +256,12 @@ export class VaultMemory extends MemoryManager {
 
       results.push({
         entry: { ...entry, vault, updatedAt: entry.createdAt } as VaultEntry,
-        score: entry.confidence,
+        score: rrfScore([lexicalRanks.get(entry.id), semanticRanks.get(entry.id)]),
         matchedTerms: queryTerms.filter(w => entry.content.toLowerCase().includes(w)),
+        channels: {
+          lexicalRank: lexicalRanks.get(entry.id),
+          semanticRank: semanticRanks.get(entry.id),
+        },
       });
 
       if (results.length >= overfetch) break;
@@ -267,8 +272,9 @@ export class VaultMemory extends MemoryManager {
       results.sort((a, b) => b.entry.createdAt.localeCompare(a.entry.createdAt));
     } else if (options.sortBy === 'confidence') {
       results.sort((a, b) => b.entry.confidence - a.entry.confidence);
+    } else {
+      results.sort((a, b) => b.score - a.score || b.entry.createdAt.localeCompare(a.entry.createdAt));
     }
-    // default 'relevance' keeps the RRF-merged order
 
     return results.slice(0, limit);
   }
@@ -380,3 +386,21 @@ function vaultToCategory(vault: VaultType): MemoryEntry['category'] {
   };
   return map[vault];
 }
+
+function isPrivateEntry(entry: MemoryEntry): boolean {
+  const tags = entry.tags.map(tag => tag.toLowerCase());
+  const source = (entry.source ?? '').toLowerCase();
+  const content = entry.content.toLowerCase();
+  return (
+    tags.includes('privacy:private') ||
+    tags.includes('private') ||
+    source.includes('/private') ||
+    content.includes('privacy: private') ||
+    content.includes('privacy_status: private')
+  );
+}
+
+function rrfScore(ranks: Array<number | undefined>, k = 60): number {
+  return ranks.reduce<number>((sum, rank) => sum + (rank ? 1 / (k + rank) : 0), 0);
+}
+

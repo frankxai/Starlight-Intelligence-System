@@ -358,6 +358,27 @@ export { EmpiricalSandbox } from "./sandbox.js";
 export type { SandboxExecutionResult, SupportedLanguage } from "./sandbox.js";
 export { ActiveHealingDaemon } from "./active-healing.js";
 export { TestForge } from "./forge.js";
+export {
+  DEFAULT_SWARM_CONFIG,
+  appendSwarmAudit,
+  createSwarmPlan,
+  inspectSwarmProviders,
+  inspectSwarmRepos,
+} from "./swarm.js";
+export type {
+  SwarmAutonomy,
+  SwarmConfig,
+  SwarmExternalRisk,
+  SwarmMutationRisk,
+  SwarmPacket,
+  SwarmPlan,
+  SwarmProviderConfig,
+  SwarmProviderMode,
+  SwarmProviderStatusReport,
+  SwarmRepoConfig,
+  SwarmRepoStatusReport,
+  SwarmRuntimeOptions,
+} from "./swarm.js";
 
 // v8.2 — Embedding Provider (memory engine v0.2)
 export { HashingTFProvider, TransformerProvider, createEmbeddingProvider, rrfMerge } from './embedding.js';
@@ -384,3 +405,7 @@ export type {
 export type { GatewayTransport, HttpTransportOptions } from './gateway/client.js';
 export type { GatewayCoreOptions } from './gateway/server.js';
 export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';
+
+// v8.8 — SAGE Autonomous Goal Execution (Autonomous Loops)
+export { GoalOrchestrator } from './goal.js';
+export type { GoalTask, GoalLog, GoalState, AuditResult } from './goal.js';

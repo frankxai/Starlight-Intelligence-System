@@ -2,8 +2,8 @@
  * Track B v0.1 — MCP tool conformance harness
  *
  * Tests src/mcp-server-v01.ts:
- *   • Each of 13 sis.* tools: valid input → expected shape (13 tests)
- *   • Each tool: invalid input → schema rejection (13 tests)
+ *   • Core sis.* tools: valid input → expected shape
+ *   • Core sis.* tools: invalid input → schema rejection
  *   • Approval-gate enforcement for decision.log + workpacket.create at
  *     high/critical risk (4 tests, both shape AND no-persistence asserted)
  *   • sis.graph.neighbors refuses on malformed edge (1 test)
@@ -12,7 +12,7 @@
  *   • sis.vault.record appends to vault-loop.jsonl (1 test)
  *   • sis.memory.search returns documented shape (1 test)
  *
- * 35 tests total.
+ * Keep this harness focused on externally visible tool behavior.
  *
  * Built on SIP — operational tier
  */
@@ -82,7 +82,61 @@ describe('Track B v0.1 — sis.* MCP tools (valid input → expected shape)', ()
       srv.call('sis.memory.add', { content: 'token efficient routing pattern' });
       const r = srv.call('sis.memory.search', { query: 'routing' }) as OkEnvelope;
       assert.equal(r.ok, true);
+      assert.equal(r.retrievalMode, 'hybrid');
       assert.ok(Array.isArray(r.results));
+    });
+  });
+
+  it('sis.memory.search uses hybrid RRF metadata and hides private entries by default', () => {
+    withServer((srv) => {
+      srv.call('sis.memory.add', {
+        content: 'privacy: private hidden founder strategy memory',
+        tags: ['privacy:private'],
+      });
+      srv.call('sis.memory.add', {
+        content: 'founder strategy memory public operating doctrine',
+        tags: ['public'],
+      });
+
+      const hidden = srv.call('sis.memory.search', {
+        query: 'founder strategy memory',
+        limit: 5,
+      }) as OkEnvelope;
+      assert.equal(hidden.ok, true);
+      const hiddenResults = hidden.results as Array<{ entry: { content: string }; channels?: object }>;
+      assert.ok(hiddenResults.every((r) => !r.entry.content.includes('hidden')));
+      assert.ok(hiddenResults.some((r) => r.channels));
+
+      const included = srv.call('sis.memory.search', {
+        query: 'founder strategy memory',
+        include_private: true,
+        limit: 5,
+      }) as OkEnvelope;
+      assert.equal(included.ok, true);
+      const includedResults = included.results as Array<{ entry: { content: string } }>;
+      assert.ok(includedResults.some((r) => r.entry.content.includes('hidden')));
+    });
+  });
+
+  it('sis.memory.health and sis.memory.eval expose memory control-plane status', () => {
+    withServer((srv) => {
+      const health = srv.call('sis.memory.health', {}) as OkEnvelope;
+      assert.equal(health.ok, true);
+      assert.ok(typeof health.health === 'object');
+      const healthBody = health.health as {
+        architecture?: { decision?: string };
+        memoryBus?: { status?: string };
+        drift?: { status?: string };
+        privacy?: { defaultMcpSearchIncludesPrivate?: boolean };
+      };
+      assert.match(healthBody.architecture?.decision ?? '', /Keep SIS as primary/);
+      assert.ok(['connected-surface-present', 'declared-but-private-missing', 'not-declared'].includes(healthBody.memoryBus?.status ?? ''));
+      assert.ok(['ok', 'attention-needed', 'unknown'].includes(healthBody.drift?.status ?? ''));
+      assert.equal(healthBody.privacy?.defaultMcpSearchIncludesPrivate, false);
+
+      const evalResult = srv.call('sis.memory.eval', { limit: 3 }) as OkEnvelope;
+      assert.equal(evalResult.ok, true);
+      assert.ok(typeof evalResult.eval === 'object');
     });
   });
 

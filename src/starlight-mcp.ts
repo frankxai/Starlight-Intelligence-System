@@ -139,8 +139,12 @@ function parseMarkdownTable(block: string): Record<string, string>[] {
  * lines of the shape `- **key:** value` (per Layer 3 schema).
  */
 export function parseRegistry(md: string): RegistryEntry[] {
-  // Split on H3 headings; first segment is preamble.
-  const sections = md.split(/^###\s+/m).slice(1);
+  // Only parse server entries inside the registry's "Active servers" section.
+  // Later H3 headings ("Schema", "Active", "Planned") describe Claws and
+  // registration mechanics; treating every H3 in REGISTRY.md as an MCP server
+  // creates phantom registry rows.
+  const activeServers = md.match(/##\s+Active servers[\s\S]*?(?=\n##\s+|$)/i)?.[0] ?? '';
+  const sections = activeServers.split(/^###\s+/m).slice(1);
   const out: RegistryEntry[] = [];
   for (const section of sections) {
     const lines = section.split('\n');

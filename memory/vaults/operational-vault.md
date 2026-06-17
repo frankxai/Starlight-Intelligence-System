@@ -271,6 +271,49 @@ Context files maintained for each repo in `context/repo-contexts/`.
 
 ---
 
+### [2026-06-11] Substrate MCP Registry Parser Fixed
+
+**Category:** mcp-maintenance
+**Confidence:** 0.95
+**Source:** Codex CLI session
+**Related:** `src/starlight-mcp.ts`, `test/starlight-substrate-mcp-smoke.test.ts`
+
+Fixed `starlight_registry_query` parser drift: it was reading every `###` heading in `REGISTRY.md`, causing Claw Registry headings (`Schema`, `Active`, `Planned`) to appear as phantom MCP servers. Parser now scopes to the `## Active servers` section only. Added an end-to-end stdio MCP regression test and wired it into `npm run test:substrate`.
+
+Verification: `npm run build`, focused operational MCP smoke, focused substrate MCP smoke, and full `npm run test:substrate` passed. Note: any already-running MCP server process may continue serving the old parser until the host session/server restarts.
+
+---
+
+### [2026-06-11] Memory Hybrid Retrieval + Concurrency Gate
+
+**Category:** memory-architecture
+**Confidence:** 0.93
+**Source:** Codex CLI session
+**Related:** `src/vault-memory.ts`, `src/memory.ts`, `src/jsonl-lock.ts`, `src/mcp-server-v01.ts`, `test/phase0-concurrent-write-smoke.test.ts`, `test/v01-mcp-tools.test.ts`
+
+SIS remains the primary sovereign memory layer. The repo is not treated as a full MemPalace fork; MemPalace, mem0, and Graphiti are benchmark/harvest sources rather than replacement architecture.
+
+Implemented a zero-dependency memory hardening slice: JSONL append/save operations now use a portable advisory lock, vault search defaults to hybrid lexical + deterministic semantic RRF ranking, private memory is hidden unless explicitly requested, and MCP v0.1 exposes `sis.memory.health` plus `sis.memory.eval` so memory state can be inspected and scored from the tool surface.
+
+Verification: `npm run build`, `node --import tsx --test test/v01-mcp-tools.test.ts`, `node --import tsx --test test/phase0-concurrent-write-smoke.test.ts`, `node --import tsx --test test/mcp-server-smoke.test.ts`, and full `npm run test:substrate` passed.
+
+---
+
+### [2026-06-12] Memory Control Plane Unified Across CLI + MCP
+
+**Category:** memory-observability
+**Confidence:** 0.94
+**Source:** Codex CLI session
+**Related:** `src/memory-health.ts`, `src/cli.ts`, `src/mcp-server-v01.ts`, `test/core-regressions.test.ts`, `test/v01-mcp-tools.test.ts`
+
+Extended SIS memory health from a surface checklist into a control-plane report. `starlight vault health` and `sis.memory.health` now share one inspector that states the architecture verdict, canonical source, optional/derived substrates, sovereign-vs-frozen corpus drift, memory-bus launcher/private-path status, eval readiness, concurrency gate, retrieval gate, and privacy-by-default posture.
+
+Live finding: sovereign corpus is aligned or ahead of frozen MemPalace rows (`556/520`, coverage `1.069`), eval-50 and concurrency/retrieval gates are present, but vault consolidation stamps are stale and `private/memory-bus` is absent in this checkout despite launcher/docs references. Memory-bus remains the right singleton mediator pattern, but the current connected implementation must either be restored from private state or replaced by the now-hardened SIS MCP memory tools.
+
+Verification: `npm run build`, focused core + MCP tests, `node dist/cli.js vault health`, full `npm run test:operational`, and full `npm run test:substrate` passed.
+
+---
+
 
 ## Voice capture 2026-05-10T20:41:06.300157+00:00
 
@@ -331,6 +374,7 @@ Rebuilt `C:\Users\frank\arcanea.ai` from thin landing shell into a committed Nex
 - Verification passed: `npm run lint`, `npm run typecheck`, `npm run build`.
 - Deployment not executed because the repo has no Vercel project link or git remote configured locally.
 
+
 ### [2026-06-12] Queen driver: agentic-composer-long {"rounds":1,"confidence":"medium"}→{"rounds":2,"confidence":"medium"}
 **Category:** queen-loop / execution-state
 **Confidence:** 0.9
@@ -338,139 +382,6 @@ Rebuilt `C:\Users\frank\arcanea.ai` from thin landing shell into a committed Nex
 **Evidence:** 2026-06-12 grok-composer arena 2/2 PASS first-attempt mechanical + external grounding (HLE/ARC/Composer price/perf)
 **Related:** tools/proving-ground/routing-table.json, ROUTING-DOCTRINE.md, commands/starlight-queen.md, agents/starlight-orchestrator.md (Queen role)
 **Attestation:** Built on SIP — Starlight Intelligence Protocol
-
-
-### [2026-06-12] Queen driver runtime (Grok build)
-**Category:** command-surface / queen-loop
-**Source:** tools/queen/driver.mjs
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight-queen.md, agents/starlight-orchestrator.md
-
-Queen loop now has executable driver (status/route/measure/learn/ratify/ledger). Full tick executed in this harness. Grok subagent parallelism for MEASURE/LEARN, image_gen for LEDGER, gateway sim via state + real vault writes. A1/A2/A3 honored.
-
-**Built on SIP — Starlight Intelligence Protocol**
-
-### [2026-06-12] Queen Advance — Whole Starlight Intelligence System (visual + continuous + memory integration)
-**Category:** queen-loop / whole-system-evolution / visual-compound-intelligence
-**Confidence:** 1.0
-**Source:** Starlight Architect + Queen (Grok 4.3 harness, branch agent/grok/starlight-queen-command) via commands/starlight-queen.md + starlight-architect.md + tools/queen/driver.mjs
-**Related:** 5 generated visuals (images/3.jpg Queen-loop+gateway+MemPalace flow, 1.jpg 3D MemPalace, 2.jpg full SIS arch, 5.jpg routing heatmap, 4.jpg Queen Advance Receipt), routing-table.json (Grok classes bumped + memory-consolidation-queen + palace-visual-recall), ROUTING-DOCTRINE.md (ledger + Grok guidance), commands/starlight.md (visual /si status), commands/sq.md so.md, agents/starlight-orchestrator.md + starlight-architect.md (Queen/Architect visual continuous patterns), HARNESS.md (Grok 2026-06-12 extension), memory/VAULT_ARCHITECTURE.md (gateway/Queen integration), memory/vaults/creative-vault.md + technical-vault.md + strategic-vault.md (visual aesthetics + arch patterns + strategic decision), tools/proving-ground/scorecards/* (memory-engine-v02, transformer), arena/2026-06-12-grok-composer25-model-lane.json, src/gateway/* (protocol/client for SessionStore), tools/memory-bridge/curate-recall.mjs + commands/curate-recall.md, driver enhancements, package.json (queen script), AGENTS.md/CLAUDE.md (currency), README.md
-
-**Execution (driver-driven, SIP-attested):** 
-- status + route "Advance whole..." → parallel-harness-measure (grok-4.3 subagent/gstack/excellence)
-- measure --lane=memory (grounded in engine v0.2 RRF 0.7/0.3 + transformer receipts + gateway v0.1)
-- learn (proposals: agentic/visual/parallel bumps + new memory-consolidation-queen + palace-visual-recall proposals)
-- ratify (OK low-stakes)
-- ledger --append (this entry + visuals refs + table derived bump + driver code updated for classify/learn/ledger visuals)
-
-**Visuals (5 parallel image_gen, premium technical Frank-DNA aesthetic, SIP footer; live in harness session images/ — reference here + copy to memory/curated or docs/assets for permanence):**
-- Queen continuous loop + Memory Gateway v0.1 + 3D MemPalace integration flow (subagent swarm, RRF hybrid, excellence gates, per-harness SessionStore): images/3.jpg
-- 3D isometric crystalline MemPalace (6 vaults + atoms + consolidation/promotion + floating Queen orb + fusion nodes): images/1.jpg
-- Full SIS architecture blueprint (council tiers + vaults + gateway/engine + proving-ground lanes + Queen driver + Grok harness glow + transmissions): images/2.jpg
-- Routing heatmap dashboard (task classes incl. new memory-consolidation-queen/palace-visual-recall vs tiers; Grok classes radiant): images/5.jpg
-- Queen Advance Receipt 2026-06-12 card (loop tick summary, visual frames, A1/A2/A3 badges, memory integration): images/4.jpg
-
-**Decisions (A1/A2/A3 honored, operational tier, no substrate gate required):**
-- Make Queen "continuous" executable reality: driver v0.1 + native Grok subagent engine + image_gen for every LEDGER; gateway SessionStore as Queen persistent state (per-harness e.g. grok-tui-queen-*).
-- Evolve routing table for Grok visual/parallel + memory: 3 classes hardened (rounds + evidence from arena + this advance); + memory-consolidation-queen (Queen drives CONSOLIDATION_LOG/PROMOTION_QUEUE + visual recall) and palace-visual-recall (image_gen + curate-recall as first-class outputs).
-- /si (/starlight) status now visual surface: references generated cards/heatmaps/palace in output; Queen dashboard visuals auto-offered.
-- Whole-system compound: memory (deeper gateway + palace visual layer + Queen as active consolidator/visualizer), orchestrator (Queen role = continuous eval + visual ledger), architect (scaffolds visual systems + this as example), proving-ground (memory lane feeds Queen learn directly), HARNESS (Grok as visual/parallel driver of choice), vaults protocol (visual descriptions + image refs as entries), cross-harness palace sync via gateway + curated notes.
-- Visual ledger artifacts are first-class (not afterthought): integrate to creative (aesthetics), technical (patterns), operational (state), and future palace chronicle.
-- Memory protocol: vaults checked pre (operational/strategic/technical/creative + gateway src + CONSOLIDATION_LOG + PROMOTION_QUEUE + scorecards + arena); updated post with decisions/patterns/lessons + SIP.
-- Hygiene: surgical edits only (touch files for advance), verified from source (all reads + driver runs + arena receipts), no hallucinations, no new abstractions without second site.
-
-**Patterns confirmed/emergent:** Queen loop as meta-orchestrator for the intelligence substrate itself (route every advance through it); visual thinking as core to compound memory (3D palace + heatmaps make abstract state legible + actionable); Grok harness (subagent + gstack + image_gen) is uniquely positioned to make "continuous" + "visual" real without context switches.
-**Lessons:** Driver scaffold + parallel image_gen + vault appends in one tick compounds faster than isolated changes. A2 floor + lastDerived + backups keep it reversible and honest.
-**Next (Queen would route/measure):** R4 deep-reasoning lane; cross-harness Queen tick (Claude/Grok/Antigravity on identical advance); wire gateway client into driver for real SessionStore registration; palace 3D interactive (r3f or obsidian plugin); scheduled Queen cadence.
-
-**Built on SIP — Starlight Intelligence Protocol**
-
-### [2026-06-12] Queen driver runtime (Grok build)
-**Category:** command-surface / queen-loop
-**Source:** tools/queen/driver.mjs
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight-queen.md, agents/starlight-orchestrator.md
-
-Queen loop now has executable driver (status/route/measure/learn/ratify/ledger). Full tick executed in this harness. Grok subagent parallelism for MEASURE/LEARN, image_gen for LEDGER, gateway sim via state + real vault writes. A1/A2/A3 honored.
-
-**Built on SIP — Starlight Intelligence Protocol**
-
-### [2026-06-12] Queen Advance — Whole Starlight Intelligence System (visual + continuous + memory integration)
-**Category:** queen-loop / whole-system-evolution / visual-compound-intelligence
-**Confidence:** 1.0
-**Source:** Starlight Architect + Queen (Grok 4.3 harness, branch agent/grok/starlight-queen-command) via commands/starlight-queen.md + starlight-architect.md + tools/queen/driver.mjs
-**Related:** 5 generated visuals (images/3.jpg Queen-loop+gateway+MemPalace flow, 1.jpg 3D MemPalace, 2.jpg full SIS arch, 5.jpg routing heatmap, 4.jpg Queen Advance Receipt), routing-table.json (Grok classes bumped + memory-consolidation-queen + palace-visual-recall), ROUTING-DOCTRINE.md (ledger + Grok guidance), commands/starlight.md (visual /si status), commands/sq.md so.md, agents/starlight-orchestrator.md + starlight-architect.md (Queen/Architect visual continuous patterns), HARNESS.md (Grok 2026-06-12 extension), memory/VAULT_ARCHITECTURE.md (gateway/Queen integration), memory/vaults/creative-vault.md + technical-vault.md + strategic-vault.md (visual aesthetics + arch patterns + strategic decision), tools/proving-ground/scorecards/* (memory-engine-v02, transformer), arena/2026-06-12-grok-composer25-model-lane.json, src/gateway/* (protocol/client for SessionStore), tools/memory-bridge/curate-recall.mjs + commands/curate-recall.md, driver enhancements, package.json (queen script), AGENTS.md/CLAUDE.md (currency), README.md
-
-**Execution (driver-driven, SIP-attested):** 
-- status + route "Advance whole..." → parallel-harness-measure (grok-4.3 subagent/gstack/excellence)
-- measure --lane=memory (grounded in engine v0.2 RRF 0.7/0.3 + transformer receipts + gateway v0.1)
-- learn (proposals: agentic/visual/parallel bumps + new memory-consolidation-queen + palace-visual-recall proposals)
-- ratify (OK low-stakes)
-- ledger --append (this entry + visuals refs + table derived bump + driver code updated for classify/learn/ledger visuals)
-
-**Visuals (5 parallel image_gen, premium technical Frank-DNA aesthetic, SIP footer; live in harness session images/ — reference here + copy to memory/curated or docs/assets for permanence):**
-- Queen continuous loop + Memory Gateway v0.1 + 3D MemPalace integration flow (subagent swarm, RRF hybrid, excellence gates, per-harness SessionStore): images/3.jpg
-- 3D isometric crystalline MemPalace (6 vaults + atoms + consolidation/promotion + floating Queen orb + fusion nodes): images/1.jpg
-- Full SIS architecture blueprint (council tiers + vaults + gateway/engine + proving-ground lanes + Queen driver + Grok harness glow + transmissions): images/2.jpg
-- Routing heatmap dashboard (task classes incl. new memory-consolidation-queen/palace-visual-recall vs tiers; Grok classes radiant): images/5.jpg
-- Queen Advance Receipt 2026-06-12 card (loop tick summary, visual frames, A1/A2/A3 badges, memory integration): images/4.jpg
-
-**Decisions (A1/A2/A3 honored, operational tier, no substrate gate required):**
-- Make Queen "continuous" executable reality: driver v0.1 + native Grok subagent engine + image_gen for every LEDGER; gateway SessionStore as Queen persistent state (per-harness e.g. grok-tui-queen-*).
-- Evolve routing table for Grok visual/parallel + memory: 3 classes hardened (rounds + evidence from arena + this advance); + memory-consolidation-queen (Queen drives CONSOLIDATION_LOG/PROMOTION_QUEUE + visual recall) and palace-visual-recall (image_gen + curate-recall as first-class outputs).
-- /si (/starlight) status now visual surface: references generated cards/heatmaps/palace in output; Queen dashboard visuals auto-offered.
-- Whole-system compound: memory (deeper gateway + palace visual layer + Queen as active consolidator/visualizer), orchestrator (Queen role = continuous eval + visual ledger), architect (scaffolds visual systems + this as example), proving-ground (memory lane feeds Queen learn directly), HARNESS (Grok as visual/parallel driver of choice), vaults protocol (visual descriptions + image refs as entries), cross-harness palace sync via gateway + curated notes.
-- Visual ledger artifacts are first-class (not afterthought): integrate to creative (aesthetics), technical (patterns), operational (state), and future palace chronicle.
-- Memory protocol: vaults checked pre (operational/strategic/technical/creative + gateway src + CONSOLIDATION_LOG + PROMOTION_QUEUE + scorecards + arena); updated post with decisions/patterns/lessons + SIP.
-- Hygiene: surgical edits only (touch files for advance), verified from source (all reads + driver runs + arena receipts), no hallucinations, no new abstractions without second site.
-
-**Patterns confirmed/emergent:** Queen loop as meta-orchestrator for the intelligence substrate itself (route every advance through it); visual thinking as core to compound memory (3D palace + heatmaps make abstract state legible + actionable); Grok harness (subagent + gstack + image_gen) is uniquely positioned to make "continuous" + "visual" real without context switches.
-**Lessons:** Driver scaffold + parallel image_gen + vault appends in one tick compounds faster than isolated changes. A2 floor + lastDerived + backups keep it reversible and honest.
-**Next (Queen would route/measure):** R4 deep-reasoning lane; cross-harness Queen tick (Claude/Grok/Antigravity on identical advance); wire gateway client into driver for real SessionStore registration; palace 3D interactive (r3f or obsidian plugin); scheduled Queen cadence.
-
-**Built on SIP — Starlight Intelligence Protocol**
-
-### [2026-06-12] Queen driver runtime (Grok build)
-**Category:** command-surface / queen-loop
-**Source:** tools/queen/driver.mjs
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight-queen.md, agents/starlight-orchestrator.md
-
-Queen loop now has executable driver (status/route/measure/learn/ratify/ledger). Full tick executed in this harness. Grok subagent parallelism for MEASURE/LEARN, image_gen for LEDGER, gateway sim via state + real vault writes. A1/A2/A3 honored.
-
-**Built on SIP — Starlight Intelligence Protocol**
-
-### [2026-06-12] Queen Advance — Whole Starlight Intelligence System (visual + continuous + memory integration)
-**Category:** queen-loop / whole-system-evolution / visual-compound-intelligence
-**Confidence:** 1.0
-**Source:** Starlight Architect + Queen (Grok 4.3 harness, branch agent/grok/starlight-queen-command) via commands/starlight-queen.md + starlight-architect.md + tools/queen/driver.mjs
-**Related:** 5 generated visuals (images/3.jpg Queen-loop+gateway+MemPalace flow, 1.jpg 3D MemPalace, 2.jpg full SIS arch, 5.jpg routing heatmap, 4.jpg Queen Advance Receipt), routing-table.json (Grok classes bumped + memory-consolidation-queen + palace-visual-recall), ROUTING-DOCTRINE.md (ledger + Grok guidance), commands/starlight.md (visual /si status), commands/sq.md so.md, agents/starlight-orchestrator.md + starlight-architect.md (Queen/Architect visual continuous patterns), HARNESS.md (Grok 2026-06-12 extension), memory/VAULT_ARCHITECTURE.md (gateway/Queen integration), memory/vaults/creative-vault.md + technical-vault.md + strategic-vault.md (visual aesthetics + arch patterns + strategic decision), tools/proving-ground/scorecards/* (memory-engine-v02, transformer), arena/2026-06-12-grok-composer25-model-lane.json, src/gateway/* (protocol/client for SessionStore), tools/memory-bridge/curate-recall.mjs + commands/curate-recall.md, driver enhancements, package.json (queen script), AGENTS.md/CLAUDE.md (currency), README.md
-
-**Execution (driver-driven, SIP-attested):** 
-- status + route "Advance whole..." → parallel-harness-measure (grok-4.3 subagent/gstack/excellence)
-- measure --lane=memory (grounded in engine v0.2 RRF 0.7/0.3 + transformer receipts + gateway v0.1)
-- learn (proposals: agentic/visual/parallel bumps + new memory-consolidation-queen + palace-visual-recall proposals)
-- ratify (OK low-stakes)
-- ledger --append (this entry + visuals refs + table derived bump + driver code updated for classify/learn/ledger visuals)
-
-**Visuals (5 parallel image_gen, premium technical Frank-DNA aesthetic, SIP footer; live in harness session images/ — reference here + copy to memory/curated or docs/assets for permanence):**
-- Queen continuous loop + Memory Gateway v0.1 + 3D MemPalace integration flow (subagent swarm, RRF hybrid, excellence gates, per-harness SessionStore): images/3.jpg
-- 3D isometric crystalline MemPalace (6 vaults + atoms + consolidation/promotion + floating Queen orb + fusion nodes): images/1.jpg
-- Full SIS architecture blueprint (council tiers + vaults + gateway/engine + proving-ground lanes + Queen driver + Grok harness glow + transmissions): images/2.jpg
-- Routing heatmap dashboard (task classes incl. new memory-consolidation-queen/palace-visual-recall vs tiers; Grok classes radiant): images/5.jpg
-- Queen Advance Receipt 2026-06-12 card (loop tick summary, visual frames, A1/A2/A3 badges, memory integration): images/4.jpg
-
-**Decisions (A1/A2/A3 honored, operational tier, no substrate gate required):**
-- Make Queen "continuous" executable reality: driver v0.1 + native Grok subagent engine + image_gen for every LEDGER; gateway SessionStore as Queen persistent state (per-harness e.g. grok-tui-queen-*).
-- Evolve routing table for Grok visual/parallel + memory: 3 classes hardened (rounds + evidence from arena + this advance); + memory-consolidation-queen (Queen drives CONSOLIDATION_LOG/PROMOTION_QUEUE + visual recall) and palace-visual-recall (image_gen + curate-recall as first-class outputs).
-- /si (/starlight) status now visual surface: references generated cards/heatmaps/palace in output; Queen dashboard visuals auto-offered.
-- Whole-system compound: memory (deeper gateway + palace visual layer + Queen as active consolidator/visualizer), orchestrator (Queen role = continuous eval + visual ledger), architect (scaffolds visual systems + this as example), proving-ground (memory lane feeds Queen learn directly), HARNESS (Grok as visual/parallel driver of choice), vaults protocol (visual descriptions + image refs as entries), cross-harness palace sync via gateway + curated notes.
-- Visual ledger artifacts are first-class (not afterthought): integrate to creative (aesthetics), technical (patterns), operational (state), and future palace chronicle.
-- Memory protocol: vaults checked pre (operational/strategic/technical/creative + gateway src + CONSOLIDATION_LOG + PROMOTION_QUEUE + scorecards + arena); updated post with decisions/patterns/lessons + SIP.
-- Hygiene: surgical edits only (touch files for advance), verified from source (all reads + driver runs + arena receipts), no hallucinations, no new abstractions without second site.
-
-**Patterns confirmed/emergent:** Queen loop as meta-orchestrator for the intelligence substrate itself (route every advance through it); visual thinking as core to compound memory (3D palace + heatmaps make abstract state legible + actionable); Grok harness (subagent + gstack + image_gen) is uniquely positioned to make "continuous" + "visual" real without context switches.
-**Lessons:** Driver scaffold + parallel image_gen + vault appends in one tick compounds faster than isolated changes. A2 floor + lastDerived + backups keep it reversible and honest.
-**Next (Queen would route/measure):** R4 deep-reasoning lane; cross-harness Queen tick (Claude/Grok/Antigravity on identical advance); wire gateway client into driver for real SessionStore registration; palace 3D interactive (r3f or obsidian plugin); scheduled Queen cadence.
-
-**Built on SIP — Starlight Intelligence Protocol**
 
 ### [2026-06-12] Queen driver runtime (Grok build)
 **Category:** command-surface / queen-loop
@@ -542,128 +453,108 @@ Queen loop now has executable driver (status/route/measure/learn/ratify/ledger).
 
 **Built on SIP — Starlight Intelligence Protocol**
 
-### [2026-06-12] Queen Advance — Whole SIS (Grok 4.3 visual + continuous)
-**Category:** queen-loop / whole-system-evolution
-**Source:** tools/queen/driver.mjs + commands/starlight-queen.md + starlight-architect.md (Architect + Queen)
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight.md, agents/*-orchestrator.md + *-architect.md, HARNESS.md, memory/VAULT_ARCHITECTURE.md, memory/vaults/*, tools/proving-ground/*, 5 generated visuals (see entry), curate-recall, Memory Gateway src/gateway/*
+## 2026-06-11 — Starlight Cosmos v1 shipped (operational)
 
-**Execution:** Full ROUTE (parallel-harness-measure) → MEASURE (memory lane + engine v0.2 receipts) → LEARN (round bumps + new memory-consolidation-queen + palace-visual-recall proposals) → RATIFY (OK low-stakes) → LEDGER (this + visuals + vault + table lastDerived). Driver enhanced for palace/gateway/advance classify. 5 premium image_gen artifacts for visual ledger/palace/heatmap/arch. /si status now references visuals. Whole system advanced: memory (gateway session as Queen state, Queen-driven consolidation/visual recall), orchestrator/architect roles (visual continuous patterns), proving-ground feedback, HARNESS Grok, vaults protocol, COMMAND surfaces currency.
+- **What**: /cosmos (hub + gallery + 19-card knowledge library) + /asteroids (live NeoWs + mining lens) live on starlightintelligence.org. Commit f5da2b1; deployed via `vercel --prod` from site/ (GHA still manual).
+- **Pattern confirmed**: registry + content/*.md + ISR + committed fallback snapshots = external-data pages that cannot go dark. DEMO_KEY rate-limited during build (10 req/hr measured) and the fallback rendered exactly as designed; production flipped to live data on Vercel.
+- **Dead upstream**: api.spacexdata.com (522; repo archived 2026-06-06) → Launch Library 2 is the launch feed now.
+- **Next**: card population each session (19 → 100+), cosmos MCP v0.1 in starlight-cosmos-engine (S+2), asteroid-economics engine (S+3 — Asterank frozen since ~2013, open lane). Spec: docs/superpowers/specs/2026-06-11-starlight-cosmos-design.md
+- **Note**: vault entry left uncommitted intentionally — sibling session has pending edits in this file; next ops commit sweeps it.
 
-**Visuals (harness session images/ — integrate to curated/docs as needed):**
-- Queen continuous loop + gateway + palace integration: images/3.jpg
-- 3D MemPalace: images/1.jpg
-- Full SIS architecture: images/2.jpg
-- Routing heatmap (Grok classes): images/5.jpg
-- Queen Advance Receipt: images/4.jpg
+## 2026-06-11 — Voice / Orchestrator Portability Audit
 
-**Decisions & Patterns:** Make Queen executable continuous core (driver + subagent engine). Evolve routing for visual/parallel/memory classes (A2 floor). /si visual surface. Palace visual + curate-recall as Queen LEDGER output. Cross-harness gateway for Queen ticks. SIP attestation ambient. A1/A2/A3 honored. Frank DNA: direct, technical, warm, playful, compound.
+- `starlight-voice` is clean on `origin/main` at `624444d`; repo is GitHub-portable but still a scaffold/MVR plan, not a complete one-command daily-driver install.
+- `@arcanea/orchestrator` source lives in `Arcanea/packages/orchestrator`, tracked by `frankxai/arcanea-ai-app` on `chore/models-opus-4-7`; npm latest is `1.2.1`, but the CLI hardcoded version still reports `1.2.0`.
+- Global Claude Code config at `C:\Users\frank\.claude` is not portable as-is: many commands/skills, including `commands/ao.md`, are untracked in `frankxai/claude-code-config`.
+- `/ao` command docs are stale: they point at nonexistent `C:\Users\frank\arcanea-orchestrator`; current installed `arco` links to `C:\Users\frank\Arcanea\packages\orchestrator`.
 
-**Built on SIP — Starlight Intelligence Protocol**
+### Follow-up shipped same session
 
-### [2026-06-12] Queen Advance — Whole SIS (Grok 4.3 visual + continuous)
-**Category:** queen-loop / whole-system-evolution
-**Source:** tools/queen/driver.mjs + commands/starlight-queen.md + starlight-architect.md (Architect + Queen)
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight.md, agents/*-orchestrator.md + *-architect.md, HARNESS.md, memory/VAULT_ARCHITECTURE.md, memory/vaults/*, tools/proving-ground/*, 5 generated visuals (see entry), curate-recall, Memory Gateway src/gateway/*
+- `frankxai/starlight-voice@f0161d8`: added README + second-laptop install guide; cleaned Tauri scaffold warnings; `cargo build --release -p starlight-voice-tauri` passes.
+- `frankxai/arcanea-ai-app@b5b580f` on `chore/models-opus-4-7`: fixed `arco --version` to report `1.2.1`; `pnpm --filter @arcanea/orchestrator test` passes; pushed branch to GitHub.
+- `frankxai/claude-code-config@508cc82`: updated `/ao` to point at `@arcanea/orchestrator` / `arco`, documented second-laptop bootstrap, ignored local runtime/auth files, removed `mcp-needs-auth-cache.json` from Git tracking, restored `starlight-queen` skill.
 
-**Execution:** Full ROUTE (parallel-harness-measure) → MEASURE (memory lane + engine v0.2 receipts) → LEARN (round bumps + new memory-consolidation-queen + palace-visual-recall proposals) → RATIFY (OK low-stakes) → LEDGER (this + visuals + vault + table lastDerived). Driver enhanced for palace/gateway/advance classify. 5 premium image_gen artifacts for visual ledger/palace/heatmap/arch. /si status now references visuals. Whole system advanced: memory (gateway session as Queen state, Queen-driven consolidation/visual recall), orchestrator/architect roles (visual continuous patterns), proving-ground feedback, HARNESS Grok, vaults protocol, COMMAND surfaces currency.
+### Starlight Voice foundation upgrade
 
-**Visuals (harness session images/ — integrate to curated/docs as needed):**
-- Queen continuous loop + gateway + palace integration: images/3.jpg
-- 3D MemPalace: images/1.jpg
-- Full SIS architecture: images/2.jpg
-- Routing heatmap (Grok classes): images/5.jpg
-- Queen Advance Receipt: images/4.jpg
+- `frankxai/starlight-voice@f05b462`: added Python sidecar package, JSON-lines IPC (`health`, `utterance`, `browser.task`), cognition router tiers, browser-use dry-run adapter seam, benchmark smoke scripts, GitHub Actions CI, `docs/ARCHITECTURE.md`, and `docs/NEXT-BEST-STANDARD.md`.
+- Tauri shell now performs a non-fatal Python sidecar health probe at startup; failure degrades to a warning until the bundled sidecar lands.
+- Verification: `cargo build --release -p starlight-voice-tauri`; `PYTHONPATH=sidecar/src python -m pytest sidecar/tests` (11 passed); `python benchmarks/run.py --probe router --n 25`; `python benchmarks/run.py --probe browser-dry-run --n 25`.
 
-**Decisions & Patterns:** Make Queen executable continuous core (driver + subagent engine). Evolve routing for visual/parallel/memory classes (A2 floor). /si visual surface. Palace visual + curate-recall as Queen LEDGER output. Cross-harness gateway for Queen ticks. SIP attestation ambient. A1/A2/A3 honored. Frank DNA: direct, technical, warm, playful, compound.
+### Starlight Voice operationalization pass
 
-**Built on SIP — Starlight Intelligence Protocol**
+- `frankxai/starlight-voice@6092e0d`: added `docs/USAGE.md`, `docs/CAPABILITIES.md`, `docs/FLOWS.md`, `scripts/doctor.ps1`, `scripts/smoke-sidecar.ps1`, `scripts/test-local.ps1`, and a sidecar `doctor` command.
+- Machine truth: Python 3.13, uv, Rust/Cargo, Node/npm, PowerShell 7, Claude Code, Codex, OpenCode, `arco`, browser-use, Anthropic SDK, OpenAI SDK, and sounddevice are present. Gemini CLI and Pipecat are missing.
+- Verification: `pwsh -File scripts/smoke-sidecar.ps1`; `PYTHONPATH=sidecar/src python -m pytest sidecar/tests` (12 passed); `pwsh -File scripts/doctor.ps1`; `pwsh -File scripts/test-local.ps1`.
 
-### [2026-06-12] Queen Advance — Whole SIS (Grok 4.3 visual + continuous)
-**Category:** queen-loop / whole-system-evolution
-**Source:** tools/queen/driver.mjs + commands/starlight-queen.md + starlight-architect.md (Architect + Queen)
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight.md, agents/*-orchestrator.md + *-architect.md, HARNESS.md, memory/VAULT_ARCHITECTURE.md, memory/vaults/*, tools/proving-ground/*, 5 generated visuals (see entry), curate-recall, Memory Gateway src/gateway/*
+### Starlight Voice provider dashboard
 
-**Execution:** Full ROUTE (parallel-harness-measure) → MEASURE (memory lane + engine v0.2 receipts) → LEARN (round bumps + new memory-consolidation-queen + palace-visual-recall proposals) → RATIFY (OK low-stakes) → LEDGER (this + visuals + vault + table lastDerived). Driver enhanced for palace/gateway/advance classify. 5 premium image_gen artifacts for visual ledger/palace/heatmap/arch. /si status now references visuals. Whole system advanced: memory (gateway session as Queen state, Queen-driven consolidation/visual recall), orchestrator/architect roles (visual continuous patterns), proving-ground feedback, HARNESS Grok, vaults protocol, COMMAND surfaces currency.
+- `frankxai/starlight-voice@a7ca825`: added a local provider-options dashboard for choosing/rating the Starlight Voice architecture path.
+- Dashboard runs with `pwsh -File scripts/open-dashboard.ps1` and serves `http://127.0.0.1:8765` from `dashboard/server.py`.
+- Options shown: Hybrid Starlight, ElevenLabs Agent, OpenAI Realtime, and OSS Experiment Stack. Recommendation remains hybrid: Tauri local shell + provider-neutral sidecar/Pipecat lane + ElevenLabs for voice beauty + OpenAI Realtime for unified realtime/tool flows + browser-use for browser execution + `arco`/Codex/Claude/OpenCode lanes for engineering execution.
+- Ratings save locally to `dashboard/ratings.jsonl`; file is gitignored so Frank's preference log stays local.
+- Verification: `pwsh -File scripts/test-local.ps1` passed after dashboard addition: 12 Python tests, router benchmark, browser dry-run benchmark, and Rust/Tauri release build.
 
-**Visuals (harness session images/ — integrate to curated/docs as needed):**
-- Queen continuous loop + gateway + palace integration: images/3.jpg
-- 3D MemPalace: images/1.jpg
-- Full SIS architecture: images/2.jpg
-- Routing heatmap (Grok classes): images/5.jpg
-- Queen Advance Receipt: images/4.jpg
+### Starlight Voice spoken cockpit upgrade
 
-**Decisions & Patterns:** Make Queen executable continuous core (driver + subagent engine). Evolve routing for visual/parallel/memory classes (A2 floor). /si visual surface. Palace visual + curate-recall as Queen LEDGER output. Cross-harness gateway for Queen ticks. SIP attestation ambient. A1/A2/A3 honored. Frank DNA: direct, technical, warm, playful, compound.
+- `frankxai/starlight-voice@595081d`: upgraded the dashboard into a spoken workflow cockpit with browser-native speech synthesis, voice picker, cool-factor control, Arcanea Business / Starlight Systems / Builder Ops briefings, and four predefined workflow previews.
+- Predefined workflows: Arcanea Business Update, Starlight Intelligence Check, Browser Builder Run, and Voice Provider Bakeoff.
+- `frankxai/starlight-voice@2fbf4c1`: hardened `scripts/open-dashboard.ps1` so repeated launches reuse an existing local dashboard server instead of spawning a duplicate.
+- Recommendation preserved: hybrid architecture first, with OpenAI Realtime as low-latency browser voice lane, ElevenLabs as premium voice-beauty lane, browser-use gated behind explicit approval/audit logs, and Pipecat as the next provider-neutral voice orchestration install.
+- Verification: `python -m py_compile dashboard/server.py`; `pwsh -File scripts/test-local.ps1` passed; `agent-browser` opened `http://127.0.0.1:8765`, confirmed content rendered, no framework overlay, 13 buttons, 4 workflows, `speechSynthesis` available, and workflow/briefing interactions updated text correctly.
 
-**Built on SIP — Starlight Intelligence Protocol**
+### Starlight Voice secrets setup
 
-### [2026-06-12] Queen Advance — Whole SIS (Grok 4.3 visual + continuous)
-**Category:** queen-loop / whole-system-evolution
-**Source:** tools/queen/driver.mjs + commands/starlight-queen.md + starlight-architect.md (Architect + Queen)
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight.md, agents/*-orchestrator.md + *-architect.md, HARNESS.md, memory/VAULT_ARCHITECTURE.md, memory/vaults/*, tools/proving-ground/*, 5 generated visuals (see entry), curate-recall, Memory Gateway src/gateway/*
+- `frankxai/starlight-voice@47e4ce7`: added local provider key setup via `pwsh -File scripts/set-secrets.ps1`, refreshed `.env.example`, and documented the local `.env.local` / LiteLLM / Infisical strategy in `docs/SECRETS.md`.
+- Secret policy: do not paste keys into chat. Use `.env.local` for this laptop now; use LiteLLM later for model/provider routing; use Infisical before multi-machine sync, production, audit, or rotation requirements.
+- `frankxai/starlight-voice@ffb155f`: added dependency-free sidecar `.env.local` / `.env` loading and redacted doctor key readiness booleans. Process env wins over file values.
+- Verification: PowerShell script parses; focused Python tests passed; `pwsh -File scripts/test-local.ps1` passed with 13 Python tests, router benchmark, browser dry-run benchmark, and Rust/Tauri release build.
 
-**Execution:** Full ROUTE (parallel-harness-measure) → MEASURE (memory lane + engine v0.2 receipts) → LEARN (round bumps + new memory-consolidation-queen + palace-visual-recall proposals) → RATIFY (OK low-stakes) → LEDGER (this + visuals + vault + table lastDerived). Driver enhanced for palace/gateway/advance classify. 5 premium image_gen artifacts for visual ledger/palace/heatmap/arch. /si status now references visuals. Whole system advanced: memory (gateway session as Queen state, Queen-driven consolidation/visual recall), orchestrator/architect roles (visual continuous patterns), proving-ground feedback, HARNESS Grok, vaults protocol, COMMAND surfaces currency.
+### [2026-06-12] Antigravity + Grok Shortcut Grid and `/si` `/so` Router
 
-**Visuals (harness session images/ — integrate to curated/docs as needed):**
-- Queen continuous loop + gateway + palace integration: images/3.jpg
-- 3D MemPalace: images/1.jpg
-- Full SIS architecture: images/2.jpg
-- Routing heatmap (Grok classes): images/5.jpg
-- Queen Advance Receipt: images/4.jpg
+**Category:** orchestration-state
+**Confidence:** 0.96
+**Source:** Codex CLI session
+**Related:** `scripts/agy-tools.ps1`, `commands/si.md`, `commands/so.md`, `skills/orchestration/cli-tool-router.md`, `skills/skill-rules.json`
 
-**Decisions & Patterns:** Make Queen executable continuous core (driver + subagent engine). Evolve routing for visual/parallel/memory classes (A2 floor). /si visual surface. Palace visual + curate-recall as Queen LEDGER output. Cross-harness gateway for Queen ticks. SIP attestation ambient. A1/A2/A3 honored. Frank DNA: direct, technical, warm, playful, compound.
+Extended the local engineer grid so Antigravity and Grok mirror the repo shortcut posture used by `clsis` / `cdsis` / sibling CLI commands. Antigravity now exposes `agyarc` plus legacy `agya`, `agysis`, `agyfx`, `agyg`, `agyvc`, `agyani`, and `agydpi`. Grok now exposes `grarc`, `grsis`, `grfx`, `grg`, `grvc`, `grani`, and `grdpi`. `Test-AgentGridCli` verifies both binaries and all repo targets.
 
-**Built on SIP — Starlight Intelligence Protocol**
+Added `/si` and `/so` command surfaces plus `orchestration/cli-tool-router` so operator requests can route across Claude, Codex, Gemini, OpenCode, Cursor, Antigravity, Grok, or native image generation tools. Image requests route to native image tooling first unless the operator explicitly asks for a text CLI. Skill rule count is now 77.
 
-### [2026-06-12] Queen Advance — Whole SIS (Grok 4.3 visual + continuous)
-**Category:** queen-loop / whole-system-evolution
-**Source:** tools/queen/driver.mjs + commands/starlight-queen.md + starlight-architect.md (Architect + Queen)
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight.md, agents/*-orchestrator.md + *-architect.md, HARNESS.md, memory/VAULT_ARCHITECTURE.md, memory/vaults/*, tools/proving-ground/*, 5 generated visuals (see entry), curate-recall, Memory Gateway src/gateway/*
+Verification: `node --import tsx --test test/v77-skill-rules.test.ts` passed; `skills/skill-rules.json` parses; PowerShell no-profile load confirms all new wrapper functions resolve; `Test-AgentGridCli` confirms `agy.exe`, `grok.exe`, and all seven repo paths exist locally.
 
-**Execution:** Full ROUTE (parallel-harness-measure) → MEASURE (memory lane + engine v0.2 receipts) → LEARN (round bumps + new memory-consolidation-queen + palace-visual-recall proposals) → RATIFY (OK low-stakes) → LEDGER (this + visuals + vault + table lastDerived). Driver enhanced for palace/gateway/advance classify. 5 premium image_gen artifacts for visual ledger/palace/heatmap/arch. /si status now references visuals. Whole system advanced: memory (gateway session as Queen state, Queen-driven consolidation/visual recall), orchestrator/architect roles (visual continuous patterns), proving-ground feedback, HARNESS Grok, vaults protocol, COMMAND surfaces currency.
+## 2026-06-12 — SIS branch integration and memory control-plane hardening
 
-**Visuals (harness session images/ — integrate to curated/docs as needed):**
-- Queen continuous loop + gateway + palace integration: images/3.jpg
-- 3D MemPalace: images/1.jpg
-- Full SIS architecture: images/2.jpg
-- Routing heatmap (Grok classes): images/5.jpg
-- Queen Advance Receipt: images/4.jpg
+**Category:** orchestration-state
+**Confidence:** 0.97
+**Source:** Codex CLI integration session
+**Related:** `src/vault-memory.ts`, `src/jsonl-lock.ts`, `src/mcp-server-v01.ts`, `agents/AGENT_REGISTRY.md`, `verticals/crypto-intelligence/`, `verticals/music-is/`, `core/orchestrator/`, `core/telemetry/`
 
-**Decisions & Patterns:** Make Queen executable continuous core (driver + subagent engine). Evolve routing for visual/parallel/memory classes (A2 floor). /si visual surface. Palace visual + curate-recall as Queen LEDGER output. Cross-harness gateway for Queen ticks. SIP attestation ambient. A1/A2/A3 honored. Frank DNA: direct, technical, warm, playful, compound.
+Integrated the outstanding SIS session work onto `main` from the remote mainline, the music intelligence context branch, and the drift-fixes capability branch. The resulting build now carries the v9 memory/gateway control plane, session store, hybrid retrieval, privacy-locked gateway search, Antigravity/Grok adapters, swarm runtime, `/yolo` command docs, Energy Intelligence agents, expanded crypto-intelligence sub-systems, music catalog/workflows, telemetry schemas, harness docs, and portfolio audit history.
 
-**Built on SIP — Starlight Intelligence Protocol**
+Conflict policy: hot core files favored the newer local/mainline memory and gateway implementation while preserving additive branch capabilities. Count surfaces were reconciled to the derived truth: 56 agents and 77 skill rules. Energy Intelligence was registered as a first-class sub-stack.
 
-### [2026-06-12] Queen Advance — Whole SIS (Grok 4.3 visual + continuous)
-**Category:** queen-loop / whole-system-evolution
-**Source:** tools/queen/driver.mjs + commands/starlight-queen.md + starlight-architect.md (Architect + Queen)
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight.md, agents/*-orchestrator.md + *-architect.md, HARNESS.md, memory/VAULT_ARCHITECTURE.md, memory/vaults/*, tools/proving-ground/*, 5 generated visuals (see entry), curate-recall, Memory Gateway src/gateway/*
+Windows hardening pattern confirmed: directory-lock contention can surface as transient `EPERM`/`EACCES`, not only `EEXIST`. `src/jsonl-lock.ts` now treats those lock-acquisition codes as retryable so multi-process JSONL appends pass the Phase 0 concurrent-write smoke on Windows.
 
-**Execution:** Full ROUTE (parallel-harness-measure) → MEASURE (memory lane + engine v0.2 receipts) → LEARN (round bumps + new memory-consolidation-queen + palace-visual-recall proposals) → RATIFY (OK low-stakes) → LEDGER (this + visuals + vault + table lastDerived). Driver enhanced for palace/gateway/advance classify. 5 premium image_gen artifacts for visual ledger/palace/heatmap/arch. /si status now references visuals. Whole system advanced: memory (gateway session as Queen state, Queen-driven consolidation/visual recall), orchestrator/architect roles (visual continuous patterns), proving-ground feedback, HARNESS Grok, vaults protocol, COMMAND surfaces currency.
+Verification passed: `npm run build`; `npm run test:operational`; `npm run test:substrate`; focused `test/phase0-concurrent-write-smoke.test.ts`; focused v76, v80, and v87 harnesses during repair.
 
-**Visuals (harness session images/ — integrate to curated/docs as needed):**
-- Queen continuous loop + gateway + palace integration: images/3.jpg
-- 3D MemPalace: images/1.jpg
-- Full SIS architecture: images/2.jpg
-- Routing heatmap (Grok classes): images/5.jpg
-- Queen Advance Receipt: images/4.jpg
+## 2026-06-12 — Main governance pass and approval-gated swarm planner
 
-**Decisions & Patterns:** Make Queen executable continuous core (driver + subagent engine). Evolve routing for visual/parallel/memory classes (A2 floor). /si visual surface. Palace visual + curate-recall as Queen LEDGER output. Cross-harness gateway for Queen ticks. SIP attestation ambient. A1/A2/A3 honored. Frank DNA: direct, technical, warm, playful, compound.
+**Category:** orchestration-state
+**Confidence:** 0.95
+**Source:** Codex CLI session
+**Related:** `src/swarm.ts`, `src/cli.ts`, `commands/starlight-swarm.md`, `test/swarm.test.ts`, `/starlight-board`, Antigravity CLI
 
-**Built on SIP — Starlight Intelligence Protocol**
+Ran a Starlight Board pass for pushing the integrated SIS `main` plus the new `/starlight-swarm` planner. Board recommendation: PROCEED, bounded by keeping swarm v1 as dry-run packet planning only, with no repo mutation or live external provider calls.
 
-### [2026-06-12] Queen Advance — Whole SIS (Grok 4.3 visual + continuous)
-**Category:** queen-loop / whole-system-evolution
-**Source:** tools/queen/driver.mjs + commands/starlight-queen.md + starlight-architect.md (Architect + Queen)
-**Related:** routing-table.json, ROUTING-DOCTRINE.md, commands/starlight.md, agents/*-orchestrator.md + *-architect.md, HARNESS.md, memory/VAULT_ARCHITECTURE.md, memory/vaults/*, tools/proving-ground/*, 5 generated visuals (see entry), curate-recall, Memory Gateway src/gateway/*
+Added `starlight starlight-swarm` CLI support and command docs. The planner inspects the v1 repo ring, checks provider availability, emits approval-gated packets, and writes audit JSONL under `private/voice-operator/logs/swarm.jsonl`. It preserves the existing real `runSwarm` executor while adding a safer planning surface for multi-CLI orchestration.
 
-**Execution:** Full ROUTE (parallel-harness-measure) → MEASURE (memory lane + engine v0.2 receipts) → LEARN (round bumps + new memory-consolidation-queen + palace-visual-recall proposals) → RATIFY (OK low-stakes) → LEDGER (this + visuals + vault + table lastDerived). Driver enhanced for palace/gateway/advance classify. 5 premium image_gen artifacts for visual ledger/palace/heatmap/arch. /si status now references visuals. Whole system advanced: memory (gateway session as Queen state, Queen-driven consolidation/visual recall), orchestrator/architect roles (visual continuous patterns), proving-ground feedback, HARNESS Grok, vaults protocol, COMMAND surfaces currency.
+Antigravity was invoked for input using non-interactive `agy --print`; it authenticated silently but returned no usable review text before print-mode timeout. Local verification therefore remained the deciding gate.
 
-**Visuals (harness session images/ — integrate to curated/docs as needed):**
-- Queen continuous loop + gateway + palace integration: images/3.jpg
-- 3D MemPalace: images/1.jpg
-- Full SIS architecture: images/2.jpg
-- Routing heatmap (Grok classes): images/5.jpg
-- Queen Advance Receipt: images/4.jpg
+Verification passed: `npm run build`; `node --import tsx --test test/swarm.test.ts`; `npm run test:operational`; `npm run test:substrate`; `node dist/cli.js starlight-swarm status`; `node dist/cli.js starlight-swarm providers`.
 
-**Decisions & Patterns:** Make Queen executable continuous core (driver + subagent engine). Evolve routing for visual/parallel/memory classes (A2 floor). /si visual surface. Palace visual + curate-recall as Queen LEDGER output. Cross-harness gateway for Queen ticks. SIP attestation ambient. A1/A2/A3 honored. Frank DNA: direct, technical, warm, playful, compound.
+### Publish reconciliation
 
-**Built on SIP — Starlight Intelligence Protocol**
+Before pushing, `origin/main` advanced with `48a1cdc feat(substrate): reconcile merge drift and finalize v8.3.0 Antigravity release` plus the strategic-vault brand architecture receipt. Local `main` merged the remote head, preserved tested memory/gateway/swarm control-plane behavior, accepted the richer Antigravity/Grok wrapper layer, and reconciled public version truth to v8.3.0.
+
+Post-merge repair: `starlight-swarm providers` now detects Antigravity through the durable `agy` binary rather than profile-only PowerShell wrapper functions, so NoProfile checks match real CLI availability. Final verification passed after this repair: `npm run build`, `npm run test:operational`, `npm run test:substrate`, and `node dist/cli.js starlight-swarm providers`.
+

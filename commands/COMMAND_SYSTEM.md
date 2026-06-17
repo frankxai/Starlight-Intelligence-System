@@ -24,6 +24,9 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 | `/synthesize` | Multi-source synthesis | Prime + Council |
 | `/council` | Convene agent council | Prime |
 | `/navigate` | Strategic planning | Navigator |
+| `/si` | Route work to the right CLI or native generation tool | Orchestrator |
+| `/so` | Orchestrate multi-lane dispatch, packets, and verification | Orchestrator |
+| `/starlight-swarm` | Create approval-gated multi-CLI swarm packets | Orchestrator |
 
 ---
 
@@ -41,6 +44,8 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 /synthesize --sources vault,notes --topic "memory patterns"
 /council --topic "ecosystem integration strategy"
 /navigate --horizon 6months --domain technical
+/si --tool agy --repo arc "open this in Antigravity"
+/so --fanout "audit this flow across Codex, Gemini, and Grok"
 ```
 
 ---
@@ -111,30 +116,33 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 /navigate priorities           Review and update priorities
 ```
 
-### /starlight-queen (/sq) - Queen Loop Driver
+### /si - Starlight Intelligence Routing
 
 ```
-/starlight-queen status
-/starlight-queen route <task-class>
-/starlight-queen measure [--lane=...]
-/starlight-queen learn
-/starlight-queen ratify
-/starlight-queen ledger [--append]
-/sq [same subs]   # thin alias
-/so [queen|status]   # Orchestrator quick-activate with Queen posture
+/si [task]                         Pick the best local CLI/tool lane
+/si --repo <key> [task]            Route against arc/sis/fx/g/vc/ani/dpi
+/si --tool <tool> [task]           Force claude/codex/gemini/opencode/cursor/agy/grok/image
+/si --dry-run [task]               Show route without execution
 ```
 
-Continuous ROUTE (table) → MEASURE (eval + gstack + Cost) → LEARN → RATIFY (A1/A2) → LEDGER. Grok: subagent parallelism + image_gen visuals. See dedicated `commands/starlight-queen.md` + `tools/proving-ground/ROUTING-DOCTRINE.md` + `routing-table.json` + `agents/starlight-orchestrator.md`.
-
-### /starlight-architect - Design & Scaffold
+### /starlight-swarm - Approval-Gated Swarm Planning
 
 ```
-/starlight-architect design <objective>
-/starlight-architect review <artifact>
-/starlight-architect scaffold <system>   # e.g. --for=queen
+/starlight-swarm [goal]            Emit dry-run multi-repo swarm packets
+/starlight-swarm status            Show repo/provider readiness
+/starlight-swarm providers         Show dry-run provider adapters
+/starlight-swarm repos             Show configured v1 repo ring
 ```
 
-Leadership-tier enterprise architecture per agent protocol. This Queen command surface was Architect-scaffolded live under Grok. Full: `commands/starlight-architect.md` + `agents/starlight-architect.md`.
+### /so - Starlight Orchestrator Dispatch
+
+```
+/so [task]                         Decide, dispatch, verify
+/so --fanout [task]                Split work across multiple lanes
+/so --packet [task]                Emit a durable handoff packet
+/so --tool image [prompt]          Use native image generation/editing tools
+```
+
 ### /starlight-queen ( /sq ) - Continuous Queen Loop (Orchestrator Queen Role)
 
 Model-tier routing + eval overseer. The closed loop: ROUTE (from routing-table.json + doctrine) → MEASURE (Proving Ground 7 lanes via /starlight-eval + gstack/arena/cost) → LEARN (re-derive table from receipts) → RATIFY (A1 stakes gate) → LEDGER (doctrine + vault + visuals).

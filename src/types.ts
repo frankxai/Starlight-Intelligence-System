@@ -285,6 +285,8 @@ export interface HorizonEntry {
 export interface VaultSearchOptions extends MemorySearchOptions {
   vaults?: VaultType[];
   sortBy?: 'relevance' | 'recency' | 'confidence';
+  includePrivate?: boolean;
+  retrievalMode?: 'lexical' | 'hybrid';
 }
 
 /** Vault search result with relevance score */
@@ -292,6 +294,10 @@ export interface VaultSearchResult {
   entry: VaultEntry;
   score: number;
   matchedTerms: string[];
+  channels?: {
+    lexicalRank?: number;
+    semanticRank?: number;
+  };
 }
 
 /** Vault statistics */

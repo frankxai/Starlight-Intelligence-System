@@ -2,7 +2,7 @@
 
 > **The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet.**
 >
-> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 63 agents, 78 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 965 tests keep the claims honest.
+> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 63 agents, 81 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 965 tests keep the claims honest.
 
 [![version](https://img.shields.io/badge/version-8.3.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
@@ -14,6 +14,18 @@
 ![Two CLIs recalling the same attested memory atom from one substrate](docs/assets/hero.svg)
 
 ---
+
+> [!NOTE]
+> **The Ultimate Substrate for Sovereign Agent Armies & Web4 Intelligence Fabrics.**
+> SIS is the open protocol (SIP) + reference build for building, governing, and operating production-grade "Mind + Mesh + Steward" agent armies — persistent, attested, Genius-grounded swarms across every surface. The unclaimed category: the operator's full sovereign intelligence estate (not rented vendor agents or brittle glue frameworks). 
+> 
+> **Ethereum for intelligence**: Open SIP protocol for adoption flywheel + layered value capture (protected canon/encoded-self + commercial Estate Factory delivery). Trinity is instance #1. Factory economics: 80% reuse after first estate.
+>
+> Exposing: **56 agents**, **79 auto-activating skills**, **6 semantic vaults**, **MCP server**, **provenance (SIP)**, and now the repeatable **Estate Factory** (4-layer blueprint, starlight-estate-os profile, /estate-blueprint + /estate-steward commands, full E2E commissioning workflow).
+>
+> See `docs/strategic/sip-web4-substrate-strategy.md` (IP/Web4 model), `docs/delivery/estate-army-commissioning-workflow.md` (full client workflow + benefits vs DIY/competitors), `templates/estate-os/` (thin reusable profile), `docs/boards/2026-06-16-estate-factory-web4-positioning-verdict.md` (PROCEED-WITH-REVISE, REVISE items closed).
+>
+> **The pull**: "Help me set up and run a real, reliable, compounding agent army that acts as an extension of me — with memory that lasts, rules I control, production reliability." SIS + your depth delivers it E2E at world-class standards.
 
 ## 60-second start
 
@@ -46,7 +58,7 @@ Restart your client: ten `sis_*` tools in every session — the same vaults, fro
 | Layer | What it is | What lives here | License | Adopt how |
 |-------|-----------|-----------------|---------|-----------|
 | **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
-| **Operational (reference build)** | This repo's working implementation: 63 named agents (7-archetype council + specialist tiers + Hermes search + evaluator), 6 semantic vaults, 78 auto-activating skills across 15 domains, MCP server, 14 strategic commands + 100+ slash commands, seven-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
+| **Operational (reference build)** | This repo's working implementation: 63 named agents (7-archetype council + specialist tiers + Hermes search + evaluator + Energy Intelligence + Social Intelligence), 6 semantic vaults, 81 auto-activating skills across 16 domains, MCP server, 14 strategic commands + 100+ slash commands, seven-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
@@ -54,7 +66,7 @@ You can adopt **just the substrate** (fork SIP for your own work), **just the op
 >
 > **New to the protocol?** Don't fork this repo. Fork the **[SIP adoption kit](https://github.com/frankxai/starlight)** — eleven markdown files, no code, [ship your first attested artifact in 60 seconds](https://github.com/frankxai/starlight#readme). Compose upward when you're ready.
 >
-> **New in v8.2.0** (2026-05-30): First-run experience hardened so the package works for anyone who installs it. `starlight init --vaults` seeds the six JSONL vaults (and the MCP server auto-seeds an empty `--vault-dir` on first boot), so a fresh install is never silently empty. `sis_search` is now honestly described as **keyword + temporal** (no embeddings); a measured retrieval recall@k harness (`npm run eval:retrieval`) grounds the bm25 claim in CI; and an optional `sqlite-vec` semantic layer is roadmapped in [`docs/bring-your-own-model.md`](docs/bring-your-own-model.md). See [`CHANGELOG.md § v8.2.0`](CHANGELOG.md) and [`RELEASING.md`](RELEASING.md).
+> **New in v8.3.0** (2026-06-12): First-run experience hardened so the package works for anyone who installs it. `starlight init --vaults` seeds the six JSONL vaults (and the MCP server auto-seeds an empty `--vault-dir` on first boot), so a fresh install is never silently empty. `sis_search` is now honestly described as **keyword + temporal** (no embeddings); a measured retrieval recall@k harness (`npm run eval:retrieval`) grounds the bm25 claim in CI; and an optional `sqlite-vec` semantic layer is roadmapped in [`docs/bring-your-own-model.md`](docs/bring-your-own-model.md). See [`CHANGELOG.md § v8.3.0`](CHANGELOG.md) and [`RELEASING.md`](RELEASING.md).
 >
 > **New in v8.1.0** (2026-05-17): Composition Layer primitive declared in `STACK.md` — universal IS may compose over its Domain Sub-Stacks via commands at the IS-itself. Wealth IS v0.2 evolved as first composition-layer reference. **Crypto Intelligence v0.1** shipped as third reference Domain Sub-Stack (after People + Sound) with **Houses-as-sub-systems** primitive — House of On-Chain live with 5 commands. `/bless` global skill + chronicle infrastructure initialized. 10-IS taxonomy invariant preserved. See [`CHANGELOG.md § v8.1.0`](CHANGELOG.md) + [`docs/boards/2026-05-17-crypto-investment-spawn.md`](docs/boards/2026-05-17-crypto-investment-spawn.md).
 
@@ -93,6 +105,30 @@ flowchart TB
 | Platform adapters | Same substrate across Claude, Cursor, Codex, Gemini, OpenCode |
 | MCP server | Tool-native access to memory and retrieval |
 | Harness checks | Prompt surfaces stay aligned with reality |
+
+## 🛠️ Sovereign Agent Armies & Production Swarms (The Agent Army Substrate)
+
+SIS + the new **Estate Factory** (post 2026-06-16 Board) is the repeatable system to commission and run full "Mind + Mesh + Steward" sovereign intelligence estates / agent armies for principals, alliances, communities.
+
+- **Mind**: Grounded 10-IS (Genius excavation, Second Brain, Brand, Wealth DPI, Creator pipelines, etc.) + Orchestrator as router.
+- **Mesh**: Production swarms — 6 orchestration patterns, /si multi-CLI routing (Claude/Codex/Gemini/Antigravity/Grok...), Hermes retrieval, council/Prime synthesis, claws for ops/attestation/sentinel, yolo/hive for autonomy, amplification Claws with voice-lock/frequency caps.
+- **Steward**: Ongoing ops, health (evals/drift), evolution, board facilitation. Retainer annuity.
+
+**4-Layer Blueprint** (Persona/Naming, Topology/Swarm shape, Kernel/insight density, Modules/verticals via spawn-domain-stack) + Genius + Freedom Path grounding = the "thin tuned 20%" that makes it *yours*, not generic.
+
+**Reusable 80%**: `templates/estate-os/` profile (file contract, 10-IS, orchestrator harnesses, claws, Memory Bus + Veil, attestation, naming skins, module scaffolds). Fork per client as estate-<name>.
+
+Commands: `/estate-blueprint` (4-layer config + build brief), `/estate-steward` (setup/health/evolve/report for Standing phase), `/estate-army-deploy` (production deploy, Steward runtime harness, scale hooks — see evolutions).
+
+Full E2E + Factory evolutions: `docs/strategic/estate-factory-evolutions.md` (post-REVISE track). See PR #22 for the complete delivery.
+
+Full E2E: Front door → Excavation → Blueprint → SOW (with alliance vs commercial split) → Scaffold (sovereign-spawn or estate-os) → /si-routed build + Pilot → Scale → Handover + Steward retainer.
+
+**Benefits vs DIY/competitors**: True sovereignty + encoded-self protection (SIP §5.7), human-grounded (not commodity), full life stack + domain depth (proven verticals: People/Sound/Music IS/Crypto/Energy), production substrate (not toys), compounding via "Built on SIP" + promotion loop, E2E process with gates/boards at highest standards. Factory: estate #2 fraction of effort.
+
+Trinity: Instance #1 (alliance governance abundant + separate commercial SOW for advanced tech/army). See `docs/delivery/trinity-management-playbook.md`, `docs/delivery/estate-sow-template.md`.
+
+See full: `docs/strategic/sip-web4-substrate-strategy.md`, `docs/delivery/estate-army-commissioning-workflow.md`, upgrades track, hero plan.
 
 Run the local harness guard:
 
@@ -265,7 +301,6 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
 | Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
 | OpenCode | `AGENTS.md` (compact) | `~/.opencode/config.json` | 128,000 |
-| Antigravity | `.antigravity/` (instructions + swarm-protocol + mcp-config + allowlisted; 2026-06-02 full) + harness at `core/orchestrator/harnesses/antigravity/` | Antigravity agent + agent swarm config | 1,000,000 (Gemini-backed) |
 
 ### The 7 named agents (operational layer)
 
@@ -319,6 +354,13 @@ Voice archetypes are abstract; named agents are specific implementations. Anyone
    Claude Code   Cursor   Codex   Gemini   OpenCode   Your tool
 ```
 
+### Guides
+
+- [Architecture Guide](docs/ARCHITECTURE-GUIDE.md) — full stack map, 10 IS taxonomy, agent architecture, MCP architecture, infrastructure topology, deployment runbook
+- [MCP Setup Guide](docs/guides/MCP-SETUP-GUIDE.md) — register the SIS MCP server with every coding agent (Claude Code, Cursor, Windsurf, Codex, Gemini CLI, Antigravity, Hermes) + Railway shared server
+- [Hermes + Claude Code + OpenClaw Guide](docs/guides/HERMES-CLAUDE-CODE-GUIDE.md) — dual-stack setup: Hermes on VPS + Claude Code local + OpenClaw on Railway + phone integration
+- [Infrastructure Deployment Guide](docs/guides/INFRA-DEPLOYMENT-GUIDE.md) — full 5-surface deployment: Vercel + Railway + VPS + local + phone
+
 ---
 
 ## Development
@@ -358,3 +400,42 @@ npm run lint        # tsc --noEmit
 ---
 
 **Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.3.0 · MIT
+
+---
+
+## 🏭 Estate Factory / Web4 Sovereign Intelligence Delivery (New — 2026)
+
+**The product is the repeatable system that delivers a sovereign intelligence estate** (personal Mind + 144-agent-class Mesh + Steward) to any principal/alliance/community on SIP. Trinity AI is instance #1.
+
+**Positioning**: Category owned by Starlight. Program: Olympus. Asset: appreciating, owned intelligence estate — not subscription.
+
+**Architecture**:
+- SIS (substrate: protocol, agent model, catalog, design standard, kernels) — consumed, never forked.
+- starlight-estate-os (template repo: scaffold, playbook, generator, module scaffolds, naming profiles).
+- estate-<client> (per engagement: tuned contracts, data, fleet, brand voice, modules, CEO assets, private strategy).
+
+**The 80/20 reuse boundary** (makes margin): Reusable in template/SIS (SIP layers, 4-layer agent model, naming profiles plain/pantheon/luminor/chess, architecture-options catalog + matrix, registry generator, module scaffolds, engagement playbook, offer/PRD/handover templates). Per-client: their data/vaults/prompts, tuned roles, chosen persona+names, selected topology+kernels, fleet config+integrations, tuned module workflows, SOW/pricing/brand voice, filled offer+handover.
+
+Rule: If it isn't theirs specifically, promote to template/SIS so next estate gets free.
+
+**Repeatable engagement** (one process): Discovery (Mandate) → Blueprint (Mandate) → Pilot (Mind+1st Mesh) → Scale (Full Mesh) → Run (Steward retainer).
+
+**Roles in factory**: Command center (Cowork) thinks/sequences; Architect/Frank (client rel, blueprint, SOW); Claude Code + claws (build from template+brief); Operator/Steward (provisioning, day-2, evolution). Leverage: Frank sells next while current executes itself.
+
+**Tooling**: Claude Code (build executor), Cowork (command center + principal Mind), Hermes (local-mesh envelope), SIP (licensed substrate), open standards (AGENTS.md, Skills, MCP), Local LLM (Ollama/MLX on fleet; frontier on command), Design standard (liquid glass, never all-caps, validated).
+
+**Economics**: Estate #1 amortizes substrate. #2 reuses ~80% → higher margin, faster. Retainer = compounding annuity. Moat = library of reusable estates/modules. Track reuse ruthlessly.
+
+**How SIS absorbs**: Promote client-agnostic to SIS canon (docs/architecture/, docs/delivery/). Trinity consumes from SIS (licensing clean).
+
+**Estate lifecycle**: Prospect → Mandate sprint (Phase I, paid) → fork estate-os → configure 4 layers + fork modules → Claude Code builds (Mind → 1st Mesh → full) → handover → Steward retainer → reusable learnings promoted back.
+
+**SIP as Web4**: Open protocol for self-sovereign intelligence fabrics (like Ethereum for value transfer). Layered: protocol open (MIT, attribution compounds); canon/IP protected (CC-BY-NC, encoded-self non-licensable per SIP §5.7); commercial delivery (factories, retainers, verticals) captures value. Not dumb about open core: adoption flywheel + moat in your unique synthesis (Genius excavation, operated vertical patterns, production harnesses, taste).
+
+See full model, workflow, Trinity split, IP posture, benefits, tech upgrades in the linked strategy + delivery docs above. Board (2026-06-16): PROCEED-WITH-REVISE (REVISE items closed this night — extraction, profile, commands, upgrades track, hero plan, time split).
+
+**Trinity management**: Alliance layer (governance per ALLIANCE.md, abundant Frank architectural) + separate commercial SOW (scoped build for advanced army using substrate + Frank depth). Explicit time split enforced. 
+
+This is how we deliver world-class sovereign agent armies at scale with highest standards. 
+
+**All foundations verified this night**: Harness passed (56 agents, 79 skills, v8.3.0), tests green, SIP/SIS consistent (sovereignty, attestation, 10-IS, encoded-self, no drift), new artifacts integrated with "Built on SIP", excellence on prod branches (main/ship/* clean post-merge/PR).

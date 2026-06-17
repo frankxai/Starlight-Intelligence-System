@@ -24,22 +24,27 @@
 
 import { parseArgs } from "node:util";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, writeFileSync, readFileSync, statSync, unlinkSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
-import { randomUUID } from "node:crypto";
-import readline from "node:readline";
 import { StarlightIntelligence } from "./index.js";
+import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
 import { generateIntelligenceReport } from "./score.js";
 import { generateGuidance } from "./guidance.js";
 import { registerProject, listProjects, syncAllProjects } from "./multi-sync.js";
 import { inspectMemoryHealth, updateVaultConsolidationStamps } from "./memory-health.js";
+import { runMemoryEval } from "./memory-eval.js";
 import { seedVaults } from "./seed.js";
 import { AgentOpsLedger, ApprovalGateRequiredError, readRecentAgentEvents } from "./ledgers.js";
 import { listModules, setModuleEnabled } from "./modules.js";
-import { runSwarm, type SwarmTask } from "./swarm.js";
+import {
+  appendSwarmAudit,
+  createSwarmPlan,
+  inspectSwarmProviders,
+  inspectSwarmRepos,
+} from "./swarm.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
@@ -107,15 +112,16 @@ Usage:
 
 Commands:
   init                            Initialize .starlight/ in current project
-  status                          Check ops health score via 6-Gate scorecard
-  run <prompt>                    Route command with dry-run and mutex safety
-  swarm <prompt...>               Fan out parallel headless agents (claude -p)
   init --vaults                   Seed the six JSONL memory vaults the MCP server reads
   generate                        Generate context file from .starlight/ config
   guidance                        Generate behavioral guidance for session injection
   sync                            Sync ACOS trajectories into SIS memory
   doctor                          Check CLI, dispatcher, and cockpit readiness
   dispatch <prompt>               Route a prompt through Arcanea orchestrator
+  starlight-swarm <goal>           Create approval-gated multi-CLI swarm packets
+  starlight-swarm status           Show swarm repo/provider readiness
+  starlight-swarm providers        Show dry-run provider adapters
+  starlight-swarm repos            Show configured v1 repo ring
   cockpit [project]               Launch or attach to the Zellij cockpit
   score                           Generate unified intelligence report
   project register <name> <path>  Register a project for federated multi-sync
@@ -131,6 +137,7 @@ Commands:
   workpacket block <id>           Mark a WorkPacket blocked and emit AgentEvent
   events tail                     Show recent AgentEvents (--limit --date)
   memory rebuild                  Rebuild SQLite shadow indices from JSONL ledgers
+  memory eval                     Run live sovereign memory eval scoreboard
   modules list                    List Intelligence System modules
   modules enable <id>             Enable an Intelligence System module locally
   modules disable <id>            Disable an Intelligence System module locally
@@ -144,6 +151,14 @@ Commands:
   orchestrate <intent>            Run an orchestration (prints JSON result)
   stats                           Show system statistics
   version                         Print version
+  goal init <intent>              Initiate a SAGE goal checklist (--checklist)
+  goal status                     Show current goal checklist & logs
+  goal update <id> <status>       Update goal task status
+  goal log <message>              Log status update to active goal
+  goal compress                   Consolidate context and findings to vaults (--findings --summary)
+  goal checkpoint                 Backup local changes to git branch
+  goal audit                      Verify workspace builds and tests (--no-tests)
+  goal rollback                   Rollback local edits to recover clean workspace
 
 Options:
   --help, -h                      Show this help message
@@ -172,6 +187,9 @@ Options:
   --vaults                        (with init) seed the six MCP memory vaults
   --vault-dir <path>              (with init --vaults) target dir (default: ~/.starlight/vaults)
   --force                         (with init --vaults) overwrite existing vault files
+  --checklist <tasks>             Comma-separated checklist tasks for goal init
+  --findings <text>               Findings to consolidate during goal compress
+  --no-tests                      Skip test execution during goal audit
 
 Examples:
   starlight init
@@ -183,6 +201,8 @@ Examples:
   starlight sync --dry-run
   starlight doctor
   starlight dispatch --task code.debug --dry-run "find the failing test"
+  starlight starlight-swarm --dry-run "build the cosmos MCP plan"
+  starlight starlight-swarm providers
   starlight cockpit sis
   starlight score
   starlight project register frankx ~/.claude/trajectories
@@ -503,6 +523,8 @@ function cmdVault(action: string, args: string[], options: {
 function printMemoryHealth(memory: ReturnType<typeof inspectMemoryHealth>): void {
   console.log("\nMemory Surfaces:");
   console.log(`  ${memory.status === "healthy" ? "OK  " : memory.status === "attention-needed" ? "WARN" : "MISS"} overall               ${memory.status}`);
+  console.log(`  primary: ${memory.architecture.primaryRuntime}`);
+  console.log(`  canon:   ${memory.architecture.canonical}`);
   console.log(`  ${memory.vaults.filter((v) => v.present).length}/${memory.vaults.length} vaults present`);
   for (const vault of memory.vaults) {
     const age = vault.ageDays == null ? "n/a" : `${vault.ageDays}d`;
@@ -513,7 +535,13 @@ function printMemoryHealth(memory: ReturnType<typeof inspectMemoryHealth>): void
   }
   console.log(`  ${memory.voiceSessions.count} voice sessions${memory.voiceSessions.latest ? ` | latest: ${memory.voiceSessions.latest}` : ""}`);
   console.log(`  KG index rows: ${memory.knowledgeGraph.indexRows} | brain cache: ${memory.knowledgeGraph.brainCachePresent ? "present" : "missing"}`);
-  console.log(`  mempalace: atoms ${memory.mempalace.atomRows ?? 0} | atoms.jsonl ${memory.mempalace.atomsPresent ? "present" : "missing"} | vectors.npy ${memory.mempalace.vectorsPresent ? "present" : "missing"}`);
+  console.log(`  sovereign corpus: ${memory.corpora.sovereign.rows} rows | ${memory.corpora.sovereign.present ? "present" : "missing"}`);
+  console.log(`  frozen mempalace: ${memory.corpora.frozenMempalace.rows} rows | ${memory.corpora.frozenMempalace.present ? "present" : "missing"}`);
+  console.log(`  corpus drift: ${memory.drift.status}${memory.drift.coverageRatio == null ? "" : ` | coverage ${memory.drift.coverageRatio}`}`);
+  console.log(`  memory-bus: ${memory.memoryBus.status} | launcher ${memory.memoryBus.launcherPresent ? "present" : "missing"} | private ${memory.memoryBus.privatePathPresent ? "present" : "missing"}`);
+  console.log(`  evals: eval-50 ${memory.evals.eval50Present ? `${memory.evals.eval50Rows} rows` : "missing"} | concurrency ${memory.evals.concurrencyGatePresent ? "present" : "missing"} | retrieval ${memory.evals.retrievalEvalPresent ? "present" : "missing"}`);
+  console.log(`  privacy: MCP search private-by-default = ${memory.privacy.defaultMcpSearchIncludesPrivate}`);
+  console.log(`  mempalace legacy vectors: atoms ${memory.mempalace.atomRows ?? 0} | atoms.jsonl ${memory.mempalace.atomsPresent ? "present" : "missing"} | vectors.npy ${memory.mempalace.vectorsPresent ? "present" : "missing"}`);
   console.log(`  consolidation log: ${memory.consolidationLog.entries} receipts${memory.consolidationLog.latestTimestamp ? ` | latest: ${memory.consolidationLog.latestTimestamp}` : ""}`);
   if (memory.notes.length > 0) {
     console.log("  Notes:");
@@ -895,7 +923,34 @@ function cmdEvents(action: string, options: { date?: string; limit?: string }): 
   }
 }
 
-function cmdMemory(action: string): void {
+function printMemoryEval(result: ReturnType<typeof runMemoryEval>): void {
+  console.log("\nMemory Eval:");
+  console.log(`  available: ${result.available}`);
+  console.log(`  mode:      ${result.retrieval.mode}`);
+  console.log(`  corpus:    ${result.corpus.atoms} atoms | ${result.corpus.queries} queries`);
+  if (!result.available) {
+    console.log(`  reason:    ${result.reason ?? "unknown"}`);
+    return;
+  }
+  const metrics = result.metrics;
+  if (metrics) {
+    console.log(`  hit@10:    ${metrics.hit10}`);
+    console.log(`  recall@5:  ${metrics.recall5}`);
+    console.log(`  precision@10: ${metrics.precision10}`);
+    console.log(`  mrr@10:    ${metrics.mrr10}`);
+    console.log(`  latency:   p50 ${metrics.latencyMs.p50}ms | p95 ${metrics.latencyMs.p95}ms | max ${metrics.latencyMs.max}ms`);
+  }
+  if (result.byClass) {
+    console.log("  by class:");
+    for (const [klass, bucket] of Object.entries(result.byClass)) {
+      console.log(`    ${klass}: n=${bucket.queries} hit@10=${bucket.hit10} recall@5=${bucket.recall5} precision@10=${bucket.precision10}`);
+    }
+  }
+  console.log(`  judge:     ${result.retrieval.judge}`);
+  console.log(`  weakness:  ${result.retrieval.weakness}`);
+}
+
+function cmdMemory(action: string, options: { limit?: string; output?: string }): void {
   const root = getPackageRoot();
   switch (action) {
     case "rebuild": {
@@ -909,9 +964,21 @@ function cmdMemory(action: string): void {
       }
       break;
     }
+    case "eval": {
+      const limit = options.limit ? parseInt(options.limit, 10) : 50;
+      const result = runMemoryEval(root, { limit: Number.isFinite(limit) ? limit : 50 });
+      if (options.output) {
+        const out = resolve(options.output);
+        writeFileSync(out, JSON.stringify(result, null, 2), "utf-8");
+        console.log(`[starlight] Memory eval scorecard written to ${out}`);
+      }
+      printMemoryEval(result);
+      if (!result.available) process.exitCode = 1;
+      break;
+    }
     default:
       console.error(`[starlight] Unknown memory action: "${action}".`);
-      console.error("  Available actions: rebuild");
+      console.error("  Available actions: rebuild, eval");
       process.exitCode = 1;
   }
 }
@@ -1132,6 +1199,65 @@ function cmdDispatch(
   }
 }
 
+function cmdStarlightSwarm(actionOrGoal: string | undefined, rest: string[], options: { dryRun?: boolean }): void {
+  const action = actionOrGoal?.trim();
+
+  if (!action) {
+    console.error("[starlight] Error: starlight-swarm requires a goal or action (status, providers, repos).");
+    process.exitCode = 1;
+    return;
+  }
+
+  if (action === "providers") {
+    const providers = inspectSwarmProviders();
+    console.log("[starlight-swarm] Provider adapters (v1 dry-run stubs):\n");
+    for (const provider of providers) {
+      console.log(`  ${provider.status === "available" ? "OK  " : "MISS"} ${provider.id.padEnd(12)} ${provider.name}`);
+      console.log(`      mode=${provider.mode} live=${provider.liveCallsEnabled} ${provider.detail}`);
+    }
+    return;
+  }
+
+  if (action === "repos") {
+    const repos = inspectSwarmRepos();
+    console.log("[starlight-swarm] Repo ring (v1):\n");
+    for (const repo of repos) {
+      console.log(`  ${repo.status === "available" ? "OK  " : "MISS"} ${repo.id.padEnd(16)} ${repo.path}`);
+      console.log(`      ${repo.role}; ${repo.detail}`);
+    }
+    return;
+  }
+
+  if (action === "status") {
+    const repos = inspectSwarmRepos();
+    const providers = inspectSwarmProviders();
+    console.log("[starlight-swarm] Status");
+    console.log("========================\n");
+    console.log(`  autonomy:      plan_approve`);
+    console.log(`  provider mode: adapter_stubs`);
+    console.log(`  repos:         ${repos.filter((repo) => repo.status === "available").length}/${repos.length} available`);
+    console.log(`  providers:     ${providers.filter((provider) => provider.status === "available").length}/${providers.length} available`);
+    console.log(`  approval:      required for every mutation or external call`);
+    return;
+  }
+
+  const goal = [action, ...rest].join(" ").trim();
+  if (!goal) {
+    console.error("[starlight] Error: starlight-swarm requires a non-empty goal.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const plan = createSwarmPlan(goal);
+  appendSwarmAudit(plan);
+
+  if (!options.dryRun) {
+    console.log("[starlight-swarm] v1 is plan-and-approve only; emitting dry-run packets.");
+    console.log("");
+  }
+  console.log(formatJSON(plan));
+}
+
 function quotePowerShellArg(value: string): string {
   return `'${value.replace(/'/g, "''")}'`;
 }
@@ -1176,322 +1302,149 @@ async function cmdForge(): Promise<void> {
   }
 }
 
-export function isPidAlive(pid: number): boolean {
-  try {
-    process.kill(pid, 0);
-    return true;
-  } catch (err: any) {
-    return err.code === "EPERM";
+async function cmdGoal(
+  action: string,
+  args: string[],
+  options: {
+    checklist?: string;
+    findings?: string;
+    summary?: string;
+    "no-tests"?: boolean;
   }
-}
+): Promise<void> {
+  const orchestrator = new GoalOrchestrator();
 
-export function checkActiveLock(starlightHome: string): { active: boolean; stale: boolean; ownerInfo?: any } {
-  const lockPath = join(starlightHome, "cockpit", "active_lock");
-  if (!existsSync(lockPath)) {
-    return { active: false, stale: false };
-  }
-
-  try {
-    const data = JSON.parse(readFileSync(lockPath, "utf-8"));
-    const lockTime = new Date(data.ts).getTime();
-    const ttlMs = (data.ttlMinutes || 30) * 60 * 1000;
-    const isStale = Date.now() > lockTime + ttlMs;
-    
-    const alive = isPidAlive(data.owner);
-    if (!alive) {
-      return { active: false, stale: true, ownerInfo: data };
-    }
-
-    return { active: true, stale: isStale, ownerInfo: data };
-  } catch {
-    return { active: false, stale: true };
-  }
-}
-
-export function checkBackupFreshness(starlightHome: string): boolean {
-  const backupsPath = join(starlightHome, "machine", "backups.jsonl");
-  if (!existsSync(backupsPath)) {
-    return false;
-  }
-
-  try {
-    const stat = statSync(backupsPath);
-    const lastBackupTime = stat.mtimeMs;
-    const twelveHoursMs = 12 * 60 * 60 * 1000;
-    return Date.now() - lastBackupTime < twelveHoursMs;
-  } catch {
-    return false;
-  }
-}
-
-export function determineHarness(prompt: string): string {
-  const normalized = prompt.toLowerCase();
-  
-  if (normalized.includes("grok")) {
-    return "grok";
-  }
-  if (normalized.includes("/audit") || normalized.includes("/security") || normalized.includes("/risk")) {
-    return "codex";
-  }
-  if (normalized.includes("/grok-context") || normalized.includes("/refactor") || normalized.includes("/summarize")) {
-    return "gemini";
-  }
-  if (normalized.includes("/scout") || normalized.includes("/check")) {
-    return "opencode";
-  }
-  if (normalized.includes("/swarm") || normalized.includes("/browse") || normalized.includes("/parallel") || normalized.includes("/run-96")) {
-    return "antigravity";
-  }
-  return "claude";
-}
-
-function askQuestion(query: string): Promise<string> {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  return new Promise((resolve) => {
-    rl.question(query, (answer) => {
-      rl.close();
-      resolve(answer);
-    });
-  });
-}
-
-function cmdStatus(): void {
-  const root = getPackageRoot();
-  const scriptPath = join(root, "scripts", "heart-check.ps1");
-  
-  if (!existsSync(scriptPath)) {
-    console.error(`[starlight] Error: heart-check script not found at ${scriptPath}`);
-    process.exitCode = 1;
-    return;
-  }
-
-  console.log("[starlight] Checking substrate ops health...");
-  const result = runShell("pwsh", ["-NoProfile", "-File", scriptPath], true);
-  if (result.status !== 0) {
-    process.exitCode = result.status ?? 1;
-  }
-}
-
-async function cmdRun(prompt: string, executeFlag: boolean): Promise<void> {
-  if (!prompt.trim()) {
-    console.error("[starlight] Error: run requires a prompt.");
-    process.exitCode = 1;
-    return;
-  }
-
-  const starlightHome = process.env.COCKPIT_HOME || join(homedir(), ".starlight");
-  const projectKey = resolve(process.cwd()).split(/[\\/]/).pop() || "unknown";
-  const harness = determineHarness(prompt);
-
-  // 1. Mutex check
-  const lock = checkActiveLock(starlightHome);
-  if (lock.active) {
-    if (lock.stale) {
-      console.log(`[starlight] WARNING: A stale active lock was detected (held by PID ${lock.ownerInfo.owner} since ${lock.ownerInfo.ts}).`);
-      console.log("  Automatically recovering lock...");
-    } else {
-      console.log(`[starlight] WARNING: Mutex lock is held by another active process (PID ${lock.ownerInfo.owner}, Workspace: ${lock.ownerInfo.workspace}).`);
-      const ans = await askQuestion("  Do you want to override and proceed? [y/N]: ");
-      if (ans.toLowerCase() !== "y") {
-        console.log("[starlight] Aborted due to lock contention.");
+  switch (action) {
+    case "init": {
+      const intent = args.join(" ");
+      if (!intent) {
+        console.error("[starlight] Error: goal init requires an intent description.");
+        process.exitCode = 1;
         return;
       }
+      const tasks = options.checklist
+        ? options.checklist.split(",").map((t) => t.trim())
+        : [
+            "Decompose and plan execution",
+            "Implement initial implementation",
+            "Verify code with local test suite",
+            "Run adversarial Sentinel audit",
+            "Commit and push final code to main",
+          ];
+      const state = orchestrator.createChecklist(intent, tasks);
+      console.log(`[starlight] Goal initialized and checkpoint saved to .starlight/goal-state.json:`);
+      console.log(JSON.stringify(state, null, 2));
+      break;
     }
-  }
 
-  // 2. Backup check
-  const isDestructive = /\b(rm|delete|reset|overwrite)\b/i.test(prompt);
-  if (isDestructive) {
-    const fresh = checkBackupFreshness(starlightHome);
-    if (!fresh) {
-      console.log("[starlight] WARNING: Destructive command detected and no backup found in the last 12 hours.");
-      const ans = await askQuestion("  Would you like to run restic backup first? [Y/n]: ");
-      if (ans.toLowerCase() !== "n") {
-        const root = getPackageRoot();
-        const backupScript = join(root, "scripts", "run-restic-backup.ps1");
-        if (existsSync(backupScript)) {
-          console.log("[starlight] Executing restic backup...");
-          runShell("pwsh", ["-NoProfile", "-File", backupScript], true);
-        } else {
-          console.log("[starlight] Error: run-restic-backup.ps1 not found.");
-        }
+    case "status": {
+      const state = orchestrator.loadState();
+      if (!state) {
+        console.log("[starlight] No active goal tracking file found.");
+        return;
       }
+      console.log(`[starlight] SAGE Goal Status:\n`);
+      console.log(`Objective: ${state.objective}`);
+      console.log(`Current Step: ${state.currentStepIndex}`);
+      if (state.gitCheckpointBranch) {
+        console.log(`Checkpoint Branch: ${state.gitCheckpointBranch}`);
+      }
+      console.log("\nChecklist:");
+      for (const task of state.checklist) {
+        const statusChar = task.status === "completed" ? "✓" : task.status === "in-progress" ? "→" : " ";
+        console.log(`  [${statusChar}] ${task.id}: ${task.task} (${task.status})`);
+      }
+      console.log("\nRecent Logs:");
+      const recentLogs = state.logs.slice(-5);
+      for (const log of recentLogs) {
+        console.log(`  [${log.timestamp}] [${log.type.toUpperCase()}] ${log.message}`);
+      }
+      break;
     }
-  }
 
-  // 3. Dry-run preview
-  console.log("\n========================================");
-  console.log("STARLIGHT ROUTING ENGINE (PREVIEW)");
-  console.log("========================================");
-  console.log(`  Project:         ${projectKey}`);
-  console.log(`  Harness Target:  ${harness.toUpperCase()}`);
-  console.log(`  Destructive:     ${isDestructive ? "YES" : "NO"}`);
-  console.log(`  Prompt:          "${prompt}"`);
-  console.log("========================================\n");
-
-  if (!executeFlag) {
-    const ans = await askQuestion("Dry-run preview mode. Do you want to execute? [y/N]: ");
-    if (ans.toLowerCase() !== "y") {
-      console.log("[starlight] Execution canceled.");
-      return;
+    case "update": {
+      const taskId = args[0];
+      const status = args[1] as any;
+      if (!taskId || !status) {
+        console.error("[starlight] Error: goal update requires <taskId> <status>.");
+        console.error("  Example: starlight goal update task-1 completed");
+        process.exitCode = 1;
+        return;
+      }
+      if (!["pending", "in-progress", "completed"].includes(status)) {
+        console.error(`[starlight] Error: invalid status "${status}". Must be pending, in-progress, or completed.`);
+        process.exitCode = 1;
+        return;
+      }
+      orchestrator.updateTaskStatus(taskId, status);
+      console.log(`[starlight] Updated task ${taskId} to ${status}.`);
+      break;
     }
-  }
 
-  // 4. Acquire Lock
-  const lockPath = join(starlightHome, "cockpit", "active_lock");
-  const sessionId = randomUUID();
-  const lockData = {
-    owner: process.pid,
-    sessionId,
-    workspace: process.cwd(),
-    ts: new Date().toISOString(),
-    ttlMinutes: 30,
-  };
-  try {
-    mkdirSync(join(starlightHome, "cockpit"), { recursive: true });
-    writeFileSync(lockPath, JSON.stringify(lockData, null, 2), "utf-8");
-  } catch (e: any) {
-    console.error(`[starlight] Warning: Failed to write active_lock: ${e.message}`);
-  }
-
-  // Write Session Start Log to sessions.jsonl
-  const sessionsPath = join(starlightHome, "cockpit", "sessions.jsonl");
-  const sessionStartRecord = {
-    schema: "cockpit.session/v1",
-    ts: new Date().toISOString(),
-    event: "start",
-    agent: harness,
-    session_id: sessionId,
-    cwd: process.cwd(),
-    pid: process.pid,
-    host: process.env.COMPUTERNAME || "",
-    user: process.env.USERNAME || "",
-    project_key: projectKey,
-  };
-  try {
-    mkdirSync(join(starlightHome, "cockpit"), { recursive: true });
-    writeFileSync(sessionsPath, JSON.stringify(sessionStartRecord) + "\n", { flag: "a", encoding: "utf-8" });
-  } catch {}
-
-  // 5. Spawn CLI Harness
-  console.log(`🚀 Routing to ${harness.toUpperCase()}...`);
-  let status = 0;
-  try {
-    if (harness === "claude") {
-      const claudeExe = "C:\\Users\\frank\\.local\\bin\\claude.exe";
-      const cmd = existsSync(claudeExe) ? claudeExe : "claude";
-      const result = runShell(cmd, [], true);
-      status = result.status ?? 0;
-    } else if (harness === "grok") {
-      const result = runShell("grok", [], true);
-      status = result.status ?? 0;
-    } else if (harness === "codex") {
-      const codexPath = "C:\\Users\\frank\\AppData\\Roaming\\npm\\codex.ps1";
-      const cmd = existsSync(codexPath) ? codexPath : "codex";
-      const result = runShell(cmd, [], true);
-      status = result.status ?? 0;
-    } else if (harness === "gemini") {
-      const result = runShell("gemini", [], true);
-      status = result.status ?? 0;
-    } else if (harness === "opencode") {
-      const result = runShell("opencode", [], true);
-      status = result.status ?? 0;
-    } else if (harness === "antigravity") {
-      const result = runShell("agy", [], true);
-      status = result.status ?? 0;
+    case "log": {
+      const message = args.join(" ");
+      if (!message) {
+        console.error("[starlight] Error: goal log requires a message.");
+        process.exitCode = 1;
+        return;
+      }
+      orchestrator.addLog("info", message);
+      console.log("[starlight] Log entry added.");
+      break;
     }
-  } catch (e: any) {
-    console.error(`[starlight] Error running harness ${harness}: ${e.message}`);
-    status = 1;
-  }
 
-  // 6. Post-flight
-  try {
-    if (existsSync(lockPath)) {
-      unlinkSync(lockPath);
+    case "compress": {
+      const findings = options.findings;
+      const summary = options.summary;
+      if (!findings || !summary) {
+        console.error("[starlight] Error: goal compress requires --findings and --summary.");
+        process.exitCode = 1;
+        return;
+      }
+      orchestrator.compressContext(findings, summary);
+      console.log("[starlight] Context compressed. Findings saved to Technical, Operational, and Strategic vaults.");
+      break;
     }
-  } catch {}
 
-  const sessionStopRecord = {
-    schema: "cockpit.session/v1",
-    ts: new Date().toISOString(),
-    event: "stop",
-    agent: harness,
-    session_id: sessionId,
-    cwd: process.cwd(),
-    pid: process.pid,
-    host: process.env.COMPUTERNAME || "",
-    user: process.env.USERNAME || "",
-    project_key: projectKey,
-  };
-  try {
-    writeFileSync(sessionsPath, JSON.stringify(sessionStopRecord) + "\n", { flag: "a", encoding: "utf-8" });
-  } catch {}
+    case "checkpoint": {
+      try {
+        const branchName = orchestrator.createGitCheckpoint();
+        console.log(`[starlight] Git checkpoint branch created: ${branchName}`);
+      } catch (err: any) {
+        console.error(`[starlight] Checkpoint failed: ${err.message}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
 
-  if (status !== 0) {
-    process.exitCode = status;
-  }
-}
+    case "audit": {
+      const runTests = options["no-tests"] !== true;
+      const result = await orchestrator.runAudit({ runTests });
+      console.log(`[starlight] Audit result: ${result.success ? "PASSED" : "FAILED"}`);
+      console.log(`\nAudit Logs:\n${result.output}`);
+      if (result.success && result.approvalTag) {
+        console.log(`\nStructured Approval: ${result.approvalTag}`);
+      } else {
+        process.exitCode = 1;
+      }
+      break;
+    }
 
-async function cmdSwarm(
-  prompts: string[],
-  options: { file?: string; concurrency?: string; timeout?: string; json?: boolean },
-): Promise<void> {
-  const taskPrompts = [...prompts];
+    case "rollback": {
+      try {
+        orchestrator.rollbackGit();
+        console.log("[starlight] Git rollback completed. Workspace restored.");
+      } catch (err: any) {
+        console.error(`[starlight] Rollback failed: ${err.message}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
 
-  if (options.file) {
-    const filePath = resolve(options.file);
-    if (!existsSync(filePath)) {
-      console.error(`[starlight] Error: swarm --file not found: ${filePath}`);
+    default:
+      console.error(`[starlight] Unknown goal action: "${action}"`);
+      console.error("Available actions: init, status, update, log, compress, checkpoint, audit, rollback");
       process.exitCode = 1;
-      return;
-    }
-    const lines = readFileSync(filePath, "utf-8")
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0 && !line.startsWith("#"));
-    taskPrompts.push(...lines);
-  }
-
-  if (taskPrompts.length === 0) {
-    console.error("[starlight] Error: swarm requires at least one prompt (positional) or --file.");
-    console.error('  Example: starlight swarm "audit src/" "find TODOs" --concurrency 2');
-    process.exitCode = 1;
-    return;
-  }
-
-  const tasks: SwarmTask[] = taskPrompts.map((prompt, i) => ({ id: `t${i + 1}`, prompt }));
-  const concurrency = options.concurrency ? Math.max(1, parseInt(options.concurrency, 10)) : 4;
-  const timeoutMs = options.timeout ? Math.max(1, parseInt(options.timeout, 10)) : 300_000;
-
-  // Progress + banner go to stderr so --json keeps stdout machine-clean.
-  console.error(`[starlight] Swarm: ${tasks.length} task(s), concurrency ${concurrency}, timeout ${timeoutMs}ms`);
-  const summary = await runSwarm(tasks, {
-    concurrency,
-    timeoutMs,
-    onResult: (r) => {
-      const mark = r.ok ? "OK  " : "FAIL";
-      console.error(`  ${mark} ${r.id} (${r.durationMs}ms)${r.error ? ` — ${r.error}` : ""}`);
-    },
-  });
-
-  if (options.json) {
-    console.log(formatJSON(summary));
-  } else {
-    console.log(`\n[starlight] Swarm complete: ${summary.succeeded}/${summary.total} succeeded.\n`);
-    for (const r of summary.results) {
-      console.log(`── ${r.id} [${r.ok ? "ok" : "failed"}] ${r.durationMs}ms`);
-      const body = r.ok ? r.output : r.error ?? r.output;
-      console.log(body ? body.split(/\r?\n/).map((l) => `   ${l}`).join("\n") : "   (no output)");
-      console.log("");
-    }
-  }
-
-  if (summary.failed > 0) {
-    process.exitCode = 1;
   }
 }
 
@@ -1502,11 +1455,6 @@ async function main(): Promise<void> {
     allowPositionals: true,
     options: {
       help: { type: "boolean", short: "h" },
-      execute: { type: "boolean" },
-      file: { type: "string" },
-      concurrency: { type: "string" },
-      timeout: { type: "string" },
-      json: { type: "boolean" },
       target: { type: "string" },
       output: { type: "string" },
       project: { type: "string" },
@@ -1533,6 +1481,9 @@ async function main(): Promise<void> {
       vaults: { type: "boolean" },
       "vault-dir": { type: "string" },
       force: { type: "boolean" },
+      checklist: { type: "string" },
+      findings: { type: "string" },
+      "no-tests": { type: "boolean" },
     },
     strict: false,
   });
@@ -1555,25 +1506,6 @@ async function main(): Promise<void> {
       } else {
         cmdInit();
       }
-      break;
-
-    case "status":
-      cmdStatus();
-      break;
-
-    case "run": {
-      const prompt = positionals.slice(1).join(" ");
-      await cmdRun(prompt, values.execute === true);
-      break;
-    }
-
-    case "swarm":
-      await cmdSwarm(positionals.slice(1), {
-        file: asString(values.file),
-        concurrency: asString(values.concurrency),
-        timeout: asString(values.timeout),
-        json: values.json === true,
-      });
       break;
 
     case "generate":
@@ -1623,6 +1555,13 @@ async function main(): Promise<void> {
         task: asString(values.task),
         surface: asString(values.surface),
         model: asString(values.model),
+        dryRun: values["dry-run"] === true,
+      });
+      break;
+    }
+
+    case "starlight-swarm": {
+      cmdStarlightSwarm(positionals[1], positionals.slice(2), {
         dryRun: values["dry-run"] === true,
       });
       break;
@@ -1693,11 +1632,14 @@ async function main(): Promise<void> {
     case "memory": {
       const memoryAction = positionals[1];
       if (!memoryAction) {
-        console.error("[starlight] Error: memory requires an action (rebuild).");
+        console.error("[starlight] Error: memory requires an action (rebuild, eval).");
         process.exitCode = 1;
         return;
       }
-      cmdMemory(memoryAction);
+      cmdMemory(memoryAction, {
+        limit: asString(values.limit),
+        output: asString(values.output),
+      });
       break;
     }
 
@@ -1719,6 +1661,22 @@ async function main(): Promise<void> {
     case "version":
       cmdVersion();
       break;
+
+    case "goal": {
+      const goalAction = positionals[1];
+      if (!goalAction) {
+        console.error("[starlight] Error: goal requires an action (init, status, update, log, compress, checkpoint, audit, rollback).");
+        process.exitCode = 1;
+        return;
+      }
+      await cmdGoal(goalAction, positionals.slice(2), {
+        checklist: asString(values.checklist),
+        findings: asString(values.findings),
+        summary: asString(values.summary),
+        "no-tests": values["no-tests"] === true,
+      });
+      break;
+    }
 
     default:
       console.error(`[starlight] Unknown command: "${command}"`);

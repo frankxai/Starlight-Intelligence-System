@@ -23,6 +23,8 @@ Health (formerly layer 7) becomes a cross-cutting rhythm rather than a top-level
 
 Domain sub-stacks (e.g., People Intelligence) compose **inside** the 10-IS stack — a sovereign practitioner spawns a domain vertical of 4-7 functional sub-systems via `/spawn-domain-stack` once the universal layers are running.
 
+Domain sub-stacks come in two **shapes**: (a) the default in-repo anonymized forkable scaffold for a private sovereign practice (People / Sound / Crypto); and (b) the **Commons/IS/OS triad** for an *operated public-good initiative* — a free public corpus (Commons), a review-gated MCP + contributor skill pack that serve it (IS-engine), and a productized runtime that consumes them (OS). The triad ships via `/spawn-domain-stack --public-corpus`. Reference instance: **Ocean / Marine Intelligence** (`blue-life-commons` + `marine-mcp` + `marine-agent-skills` + `ocean-intelligence-system`, 2026-06-15) — see `VERTICALS.md` § Ocean Intelligence and `docs/boards/2026-06-15-ocean-marine-substack.md`.
+
 ## Starlight Orchestrator subsystems
 
 The Orchestrator is the master routing layer (#10 above). It composes additively — never as a new top-level IS. Subsystems below are slots the Orchestrator may grow into without violating the locked 10-IS taxonomy.

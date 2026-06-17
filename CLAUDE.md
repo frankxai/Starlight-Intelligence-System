@@ -58,14 +58,12 @@ Every task is either substrate-level or operational-level. Decide before acting.
 
 You are operating the **Starlight Intelligence System** — a persistent context and memory architecture built on the Starlight Intelligence Protocol (SIP) substrate. Structured reasoning, agent identity, cross-project awareness, all attestation-aware.
 
-This system works across seven platforms + dedicated orchestrator harnesses: Claude Code (primary), Cursor, Cline, Codex (adversary), Gemini CLI (long-context), Antigravity (native agent swarm execution + browser + async via Google Antigravity primitives), OpenCode (latency), and Grok (high-context). You are running the Claude Code instance (primary harness).
-
-**Antigravity enhancement (2026-06-02):** Expanded `.antigravity/` (full instructions.md with multi-agent registry + excellence, swarm-protocol.md, mcp-config.json, allowlisted-tools.md) + `core/orchestrator/harnesses/antigravity/` (README + system-prompt composing on the .antigravity/ files). Adapter `src/adapters/antigravity.ts` now generates the full surface and swarm-aware MCP. Use Antigravity harness for "launch the agent swarm" parallel work; route substrate writes back through primary (you) with board pre-pass. See `.antigravity/swarm-protocol.md`, `core/orchestrator/README.md`, and HARNESS-STATUS.md.
+This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemini CLI, and Antigravity. You are running the Claude Code instance.
 
 **What you have access to:**
 
-- **63 Agents** — 7 legacy council (leadership + specialist + foundation tiers, top-level `agents/*.md`) + 1 Hermes (Specialist tier — search/retrieval backbone, added with the Claws layer 2026-06) + 7 Council Archetype seats (v0.1 Friday demo, at `agents/council/*.md` — Elder Father, Elder Mother, Sage, Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90) + 3 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 7 Energy Intelligence (v0.1 placeholders, 2026-05-28) + 5 SIS Extractors for `/sis-forge` Phase 1 + 1 Evaluator (Proving Ground + Model Arena, 2026-06-10). Full registry: `agents/AGENT_REGISTRY.md`.
-- **78 Skills** — Auto-activate via `skills/skill-rules.json` across 15 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions) + `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`)
+- **63 Agents** — 7 legacy council (leadership + specialist + foundation tiers, top-level `agents/*.md`) + 1 Hermes (Specialist tier — search/retrieval backbone, added with the Claws layer 2026-06) + 7 Council Archetype seats (v0.1 Friday demo, at `agents/council/*.md` — Elder Father, Elder Mother, Sage, Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90) + 3 front-door + 1 excavation + 5 universal-IS + 6 People Intelligence + 6 Sound Intelligence + 7 Music IS + 7 Energy Intelligence + 7 Social Intelligence (strategist, sentinel, psychologist, vibetracker, factcheck, cinematic, news-analyst) + 5 SIS Extractors for `/sis-forge` Phase 1 + 1 Evaluator (Proving Ground + Model Arena, 2026-06-10). Full registry: `agents/AGENT_REGISTRY.md`.
+- **81 Skills** — Auto-activate via `skills/skill-rules.json` across 16 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`).
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
 - **Commands** — substrate commands in-repo + additional commands available per-environment installation (varies by user); covers universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
@@ -73,6 +71,8 @@ This system works across seven platforms + dedicated orchestrator harnesses: Cla
 - **Research surface** — Public substrate research at `starlightintelligence.org/research/`. Rubric-locked, Board-gated, SIP-attested. First two artifacts live: 3D memory palace design survey + memory foundations (Phase 0 dog-food chartered, 3-tier model w/ AgentDB tier per Addendum 2). Methodology at `docs/research/_methodology/`.
 
 **Newcomer front door (v7.3):** See `ONBOARDING.md`, `DELIVERY.md`, `SESSION_RUNBOOK.md`. Invoke `/welcome` to orient a newcomer, `/intake` to triage their ask into one of four routes (substrate / alliance / vertical / sovereign-spawn), and hand off to Concierge (builder track) or Envoy (creator track, zero-terminal).
+
+**Estate / Agent Army commissioning (post 2026-06-16 Board):** The full "sovereign intelligence estate" (Mind + production Mesh/agent army + Steward) is the repeatable commercial elevation of Route D + custom advisory. Uses the same front door but adds Genius excavation, 4-layer Blueprint (/estate-blueprint), starlight-estate-os profile scaffold, /si-routed production swarm build (ORCHESTRATION_ENGINE + claws + multi-CLI), Pilot-to-Standing, and Steward retainer. See `docs/delivery/estate-army-commissioning-workflow.md`, `docs/strategic/sip-web4-substrate-strategy.md`, and DELIVERY.md §7. Trinity is instance #1 (alliance governance + commercial delivery). All major moves gated by /starlight-board. The open protocol surface for pure attribution adopters is preserved.
 
 **Genius Intelligence System alpha (v7.4):** New **Excavation Tier** agent `starlight-genius` + 4 new commands — `/discover-genius` (excavates Genius Profile + Freedom Path from scattered corpus), `/reclaim-knowledge` (organizes scattered material by function not source), `/train-executor` (generates handover playbook in person's voice), `/creator-pipeline` (multi-modal content pipeline from frameworks). Vertical-tier `/arcanea-canon` now live. Public explainer at `docs/public/starlight-intelligence-system.md`. Non-technical Claude Project starter at `integrations/starter-packs/friend-starter/`. Attestation is now ambient: agents auto-embed "Built on SIP" in every generated artifact — the user never runs `/sip-attest` for forward-generated work; the command remains for retrofit.
 
@@ -164,13 +164,13 @@ Memory consolidation merges duplicates, elevates patterns, archives stale data, 
 
 ## Skills
 
-78 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
+81 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
 
 | Domain | Skills |
 |--------|--------|
 | **Intelligence / Orchestration / Memory / Integration** | Strategic reasoning, systems thinking, orchestration, vault management, context preservation, ecosystem sync |
 | **Business / Vision / Health / Relational** | Entity architecture, revenue modeling, design coherence, body substrate, network architecture |
-| **People / Sound / Music / Energy / Machine / Crypto** | Domain Sub-Stack skills, Music IS operations, energy intelligence, machine storage/heart, crypto on-chain proof pattern |
+| **People / Sound / Music / Energy / Machine / Crypto / Marine** | Domain Sub-Stack skills, Music IS operations, energy intelligence, machine storage/heart, crypto on-chain proof pattern |
 
 Activation rules: `skills/skill-rules.json`
 Skill definitions: `skills/{domain}/{skill-name}.md`
@@ -304,7 +304,7 @@ Full rule and ownership-verb definitions: `metrics/METRICS_TRUTH.md`. Living led
 
 ---
 
-*Starlight Intelligence System v8.3.0 — Horizons + Composition Layer + Crypto IS + Swarm Harness*
+*Starlight Intelligence System v8.3.0 — Horizons + Composition Layer + Crypto IS*
 
 ---
 

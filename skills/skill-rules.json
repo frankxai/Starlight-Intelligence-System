@@ -188,6 +188,17 @@
       "load_level": "core"
     },
     {
+      "id": "orchestration-cli-tool-router",
+      "skill": "orchestration/cli-tool-router",
+      "triggers": {
+        "keywords": ["/si", "/so", "route to cli", "send to cli", "which cli", "antigravity", "grok", "claude", "codex", "gemini", "opencode", "cursor", "generate image", "image tool", "dispatch"],
+        "agents": ["starlight-orchestrator", "starlight-prime", "starlight-voice-operator"],
+        "intents": ["cli-routing", "tool-routing", "image-generation", "agent-dispatch"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "orchestration-multi-agent-coordination",
       "skill": "orchestration/multi-agent-coordination",
       "triggers": {
@@ -2396,8 +2407,8 @@
           "domain-substack-design"
         ]
       },
-      "priority": "high",
-      "load_level": "core"
+      "priority": "medium",
+      "load_level": "on-demand"
     },
     {
       "id": "crypto-intelligence-onchain",
@@ -2436,9 +2447,10 @@
           "chain-data-investigation"
         ]
       },
-      "priority": "high",
-      "load_level": "core"
-    },
+      "priority": "medium",
+      "load_level": "on-demand"
+    }
+,
     {
       "id": "intelligence-hermes-search",
       "skill": "intelligence/hermes-search",
@@ -2705,6 +2717,28 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "marine-intelligence-contribute",
+      "skill": "marine-intelligence/contribute",
+      "triggers": {
+        "keywords": ["marine", "ocean", "blue life commons", "species page", "cetacean", "whale", "dolphin", "pinniped", "seal", "sea lion", "sea turtle", "shark", "ray", "reef", "coral", "field mission", "marine conservation", "IUCN", "hydrophone", "citizen science"],
+        "agents": ["starlight-sentinel", "starlight-sage"],
+        "intents": ["marine-contribution", "species-documentation", "field-mission-design", "marine-research", "ethics-review"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-sage-autonomous-execution",
+      "skill": "orchestration/sage-autonomous-execution",
+      "triggers": {
+        "keywords": ["goal", "sage", "/goal", "autonomous loop", "checkpoint", "rollback", "sentinel audit", "context compression"],
+        "agents": ["starlight-orchestrator", "starlight-sentinel", "starlight-sage"],
+        "intents": ["autonomous-goal", "checkpointing", "self-healing"]
+      },
+      "priority": "critical",
+      "load_level": "core"
     }
   ],
   "defaults": {
@@ -2720,6 +2754,7 @@
     "starlight-orchestrator": [
       "orchestration-multi-agent-coordination",
       "orchestration-workflow-design",
+      "orchestration-sage-autonomous-execution",
       "orchestration-hermes-swarm"
     ],
     "starlight-sentinel": [

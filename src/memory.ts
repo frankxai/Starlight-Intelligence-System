@@ -14,6 +14,7 @@ import type {
   MemorySearchOptions,
   MemoryStats,
 } from "./types.js";
+import { withJsonlLock } from "./jsonl-lock.js";
 
 // Event Types for Event Sourcing
 export type MemoryEvent =
@@ -159,7 +160,9 @@ export class MemoryManager {
     if (!existsSync(dir)) {
       mkdirSync(dir, { recursive: true });
     }
-    appendFileSync(this.eventLogPath, JSON.stringify(event) + "\n", "utf-8");
+    withJsonlLock(this.eventLogPath, () => {
+      appendFileSync(this.eventLogPath, JSON.stringify(event) + "\n", "utf-8");
+    });
   }
 
   /**
@@ -181,7 +184,9 @@ export class MemoryManager {
     }));
     
     const lines = compactedEvents.map(e => JSON.stringify(e)).join("\n") + "\n";
-    writeFileSync(this.eventLogPath, lines, "utf-8");
+    withJsonlLock(this.eventLogPath, () => {
+      writeFileSync(this.eventLogPath, lines, "utf-8");
+    });
     
     // Legacy support: update the old JSON file so other tools don't break
     writeFileSync(this.storagePath, JSON.stringify(Array.from(this.entries.values()), null, 2), "utf-8");

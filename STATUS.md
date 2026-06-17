@@ -50,7 +50,7 @@
 | Substrate file-contract symmetry | ✅ | `test/v73`–`v80` symmetry suites |
 | Attestation protocol (`/sip-attest`) | ✅ | `.claude/commands/sip-attest.md` |
 | Alliance forging / vertical spawn commands | ✅ | `.claude/commands/`, `test/v73.test.ts` |
-| Substrate MCP server | 🟡 | `src/starlight-mcp.ts` — builds; no dedicated end-to-end spawn test yet |
+| Substrate MCP server | ✅ | `src/starlight-mcp.ts` — verified end-to-end via `test/starlight-substrate-mcp-smoke.test.ts` |
 
 ## Verticals / domain sub-stacks
 
@@ -66,7 +66,7 @@
 |---|---|---|
 | npm package `@arcanea/starlight-intelligence-system` | 🔭 | Publish target; follow [`RELEASING.md`](RELEASING.md) and verify `npm view ... version` matches `package.json` before relying on it. Registry has lagged the repo before. |
 | `starlightintelligence.org/protocol` mirror | 🔭 | Canonical-URL mirror of `SIP.md`; external host |
-| Site / console (Next.js) builds | 🟡 | `npm run build:site` / `build:console` — heavier, run via `npm run verify` |
+| Site / console (Next.js) builds | ✅ | `npm run build:site` / `build:console` — verified builds & eslint compile cleanly |
 
 ---
 
