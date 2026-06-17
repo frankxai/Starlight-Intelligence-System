@@ -58,12 +58,17 @@ if (-not (Test-Path $watchdogScript)) {
 }
 
 # Gate 3: Voice Operator
-try {
-    $vo = Invoke-WebRequest -Uri 'http://localhost:8000/health' -TimeoutSec 2 -ErrorAction Stop
-    $gates["Voice Operator"] = "GREEN"
-    $score++
-} catch {
-    $gates["Voice Operator"] = "YELLOW (no response on :8000)"
+$voiceOperatorRoot = Join-Path $RepoRoot 'private\voice-operator'
+if (-not (Test-Path $voiceOperatorRoot)) {
+    $gates["Voice Operator"] = "YELLOW (private\voice-operator not installed in this checkout)"
+} else {
+    try {
+        $vo = Invoke-WebRequest -Uri 'http://localhost:8000/health' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+        $gates["Voice Operator"] = "GREEN"
+        $score++
+    } catch {
+        $gates["Voice Operator"] = "YELLOW (no response on :8000)"
+    }
 }
 
 # Gate 4: Dashboard
@@ -92,10 +97,25 @@ if (Test-Path (Join-Path $RepoRoot 'site\package.json')) {
 
 $dashboardGreen = $false
 $dashboardHints = @()
+$repoRootForMatch = $RepoRoot -replace '\\','/'
 foreach ($candidate in $dashboardCandidates) {
     $dashboardHints += "$($candidate.Name): $($candidate.Hint)"
     try {
-        $dash = Invoke-WebRequest -Uri $candidate.Url -TimeoutSec 2 -ErrorAction Stop
+        $candidateUri = [Uri]$candidate.Url
+        $dash = Invoke-WebRequest -Uri $candidate.Url -UseBasicParsing -TimeoutSec 8 -ErrorAction Stop
+        $ownedByRepo = $false
+        $listeners = @(Get-NetTCPConnection -LocalPort $candidateUri.Port -State Listen -ErrorAction SilentlyContinue)
+        foreach ($listener in $listeners) {
+            $owner = Get-CimInstance Win32_Process -Filter "ProcessId = $($listener.OwningProcess)" -ErrorAction SilentlyContinue
+            $ownerCommand = $owner.CommandLine -replace '\\','/'
+            if ($ownerCommand -and $ownerCommand -like "*$repoRootForMatch*") {
+                $ownedByRepo = $true
+                break
+            }
+        }
+        if (-not $ownedByRepo) {
+            continue
+        }
         $gates["Dashboard"] = "GREEN ($($candidate.Name) at $($candidate.Url))"
         $score++
         $dashboardGreen = $true
