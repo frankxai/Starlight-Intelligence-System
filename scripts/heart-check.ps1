@@ -2,7 +2,7 @@
 # Starlight Intelligence System — Substrate Ops Health Monitor (6-Gates)
 # ==============================================================================
 # Built on SIP · Idempotent · Windows-optimized
-# Checks Memory Bus, brain_watchdog, Voice Operator, dashboard, audit log, and scheduled tasks.
+# Checks Memory Bus, agent watchdog, Voice Operator, dashboard, audit log, and scheduled tasks.
 # ==============================================================================
 
 # Force console UTF-8 support
@@ -43,15 +43,18 @@ if (Test-Path $memoryBusServer) {
     $gates["Memory Bus"] = "RED (server missing at private\memory-bus\server.py)"
 }
 
-# Gate 2: brain_watchdog
-$brain = Get-Process -Name python -ErrorAction SilentlyContinue | Where-Object {
-    (Get-CimInstance Win32_Process -Filter "ProcessId = $($_.Id)").CommandLine -match 'brain_watchdog'
-}
-if ($brain) {
-    $gates["brain_watchdog"] = "GREEN"
+# Gate 2: Agent Watchdog
+$watchdogScript = Join-Path $RepoRoot "scripts\agent-watchdog.ps1"
+$watchdogTask = Get-ScheduledTask -TaskName 'StarlightAgentWatchdog' -ErrorAction SilentlyContinue
+if (-not (Test-Path $watchdogScript)) {
+    $gates["Agent Watchdog"] = "RED (script missing at scripts\agent-watchdog.ps1)"
+} elseif ($watchdogTask -and ($watchdogTask.State -eq "Ready" -or $watchdogTask.State -eq "Running")) {
+    $gates["Agent Watchdog"] = "GREEN ($($watchdogTask.State))"
     $score++
+} elseif ($watchdogTask) {
+    $gates["Agent Watchdog"] = "YELLOW ($($watchdogTask.State))"
 } else {
-    $gates["brain_watchdog"] = "YELLOW (not running)"
+    $gates["Agent Watchdog"] = "YELLOW (task missing - run scripts\register-agent-watchdog-task.ps1)"
 }
 
 # Gate 3: Voice Operator
@@ -64,12 +67,47 @@ try {
 }
 
 # Gate 4: Dashboard
-try {
-    $dash = Invoke-WebRequest -Uri 'http://localhost:3007/' -TimeoutSec 2 -ErrorAction Stop
-    $gates["Dashboard"] = "GREEN"
-    $score++
-} catch {
-    $gates["Dashboard"] = "YELLOW (no response on :3007 - run: cd private/local-command-center/apps/dashboard && npm run dev)"
+$dashboardCandidates = @()
+if (Test-Path (Join-Path $RepoRoot 'private\local-command-center\apps\dashboard')) {
+    $dashboardCandidates += [PSCustomObject]@{
+        Name = 'legacy dashboard'
+        Url = 'http://localhost:3007/'
+        Hint = 'cd private\local-command-center\apps\dashboard; npm run dev'
+    }
+}
+if (Test-Path (Join-Path $RepoRoot 'console\package.json')) {
+    $dashboardCandidates += [PSCustomObject]@{
+        Name = 'console'
+        Url = 'http://localhost:3001/'
+        Hint = 'npm --prefix console run dev'
+    }
+}
+if (Test-Path (Join-Path $RepoRoot 'site\package.json')) {
+    $dashboardCandidates += [PSCustomObject]@{
+        Name = 'site cockpit'
+        Url = 'http://localhost:3000/cockpit'
+        Hint = 'npm --prefix site run dev'
+    }
+}
+
+$dashboardGreen = $false
+$dashboardHints = @()
+foreach ($candidate in $dashboardCandidates) {
+    $dashboardHints += "$($candidate.Name): $($candidate.Hint)"
+    try {
+        $dash = Invoke-WebRequest -Uri $candidate.Url -TimeoutSec 2 -ErrorAction Stop
+        $gates["Dashboard"] = "GREEN ($($candidate.Name) at $($candidate.Url))"
+        $score++
+        $dashboardGreen = $true
+        break
+    } catch {}
+}
+if (-not $dashboardGreen) {
+    if ($dashboardHints.Count -gt 0) {
+        $gates["Dashboard"] = "YELLOW (no local dashboard response - run one of: $($dashboardHints -join ' | '))"
+    } else {
+        $gates["Dashboard"] = "YELLOW (no dashboard app found in this checkout)"
+    }
 }
 
 # Gate 5: Audit log freshness
@@ -91,7 +129,13 @@ if (Test-Path $audit) {
 }
 
 # Gate 6: Scheduled tasks
-$tasks = @('StarlightCockpit', 'StarlightCrossRepoIndexer', 'Starlight Dreaming')
+$tasks = @(
+    'StarlightAgentWatchdog',
+    'StarlightMachineSentinel',
+    'StarlightPortfolioAudit',
+    'StarlightCrossRepoIndexer',
+    'StarlightDreaming'
+)
 $tasksScore = 0
 $tasksDetail = @()
 foreach ($t in $tasks) {
