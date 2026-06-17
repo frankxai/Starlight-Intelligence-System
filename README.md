@@ -116,7 +116,9 @@ SIS + the new **Estate Factory** (post 2026-06-16 Board) is the repeatable syste
 
 **Reusable 80%**: `templates/estate-os/` profile (file contract, 10-IS, orchestrator harnesses, claws, Memory Bus + Veil, attestation, naming skins, module scaffolds). Fork per client as estate-<name>.
 
-Commands: `/estate-blueprint` (4-layer config + build brief), `/estate-steward` (setup/health/evolve/report for Standing phase).
+Commands: `/estate-blueprint` (4-layer config + build brief), `/estate-steward` (setup/health/evolve/report for Standing phase), `/estate-army-deploy` (production deploy, Steward runtime harness, scale hooks — see evolutions).
+
+Full E2E + Factory evolutions: `docs/strategic/estate-factory-evolutions.md` (post-REVISE track). See PR #22 for the complete delivery.
 
 Full E2E: Front door → Excavation → Blueprint → SOW (with alliance vs commercial split) → Scaffold (sovereign-spawn or estate-os) → /si-routed build + Pilot → Scale → Handover + Steward retainer.
 
