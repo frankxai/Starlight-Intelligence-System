@@ -16,6 +16,7 @@ try {
 $gates = [ordered]@{}
 $score = 0
 $totalGates = 6
+$RepoRoot = Split-Path -Parent $PSScriptRoot
 
 # Gate 1: Memory Bus
 $bus = Get-Process -Name python -ErrorAction SilentlyContinue | Where-Object {
@@ -60,7 +61,7 @@ try {
 
 # Gate 5: Audit log freshness
 $today = (Get-Date).ToString('yyyy-MM-dd')
-$audit = "C:\Users\frank\Starlight-Intelligence-System\memory\_audit\$today.jsonl"
+$audit = Join-Path $RepoRoot "memory\_audit\$today.jsonl"
 if (Test-Path $audit) {
     $age = (Get-Date) - (Get-Item $audit).LastWriteTime
     if ($age.TotalHours -lt 1) {
