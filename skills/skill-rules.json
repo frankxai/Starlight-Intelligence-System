@@ -2739,6 +2739,28 @@
       },
       "priority": "critical",
       "load_level": "core"
+    },
+    {
+      "id": "orchestration-agent-creator",
+      "skill": "orchestration/agent-creator",
+      "triggers": {
+        "keywords": ["agent-creator", "/agent-creator", "create agent", "spawn agent", "scaffold agent", "register agent"],
+        "agents": ["starlight-architect", "starlight-orchestrator", "starlight-prime"],
+        "intents": ["agent-creation", "scaffolding", "agent-registration"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-workflow-skill-creator",
+      "skill": "orchestration/workflow-skill-creator",
+      "triggers": {
+        "keywords": ["workflow-skill-creator", "/workflow-skill-creator", "make this a skill", "create a skill", "package this workflow", "workflow-to-skill"],
+        "agents": ["starlight-orchestrator", "starlight-prime", "starlight-sage"],
+        "intents": ["skill-creation", "workflow-distillation", "skill-registration"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
@@ -2749,13 +2771,16 @@
     ],
     "starlight-architect": [
       "intelligence-systems-thinking",
-      "intelligence-pattern-recognition"
+      "intelligence-pattern-recognition",
+      "orchestration-agent-creator"
     ],
     "starlight-orchestrator": [
       "orchestration-multi-agent-coordination",
       "orchestration-workflow-design",
       "orchestration-sage-autonomous-execution",
-      "orchestration-hermes-swarm"
+      "orchestration-hermes-swarm",
+      "orchestration-agent-creator",
+      "orchestration-workflow-skill-creator"
     ],
     "starlight-sentinel": [
       "intelligence-pattern-recognition",
