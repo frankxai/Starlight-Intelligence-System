@@ -10,6 +10,21 @@ last_consolidated: '2026-05-11'
 
 # Creative Vault
 
+### [2026-06-14] SIS Nexus Desktop Hub Visual Pattern
+**Category:** visual-aesthetic / command-surface / ecosystem-map
+**Source:** Desktop `visual-home.html` rebuild after local repo + portal survey
+**Related:** operational-vault 2026-06-14 entry, `private/visual-home/session-snapshot-2026-06-14.md`, Queen Swarms Visual skill, 2026-06-12 visual ledger entries
+
+Pattern confirmed: the premium Starlight home surface should feel like an operating room, not a landing page. One compact identity mark is enough; the rest of the UI should earn its space through function. The strongest visual language is cool dark technical glass, cyan/gold/green/rose category signal, restrained 8px components, source-backed cards, and motion that explains topology instead of decorating it.
+
+The Desktop hub now uses: single brand anchor ("SIS Nexus"), honest static-page capabilities, Queen visual imagery as an evidence-backed hero, repo/portal topology canvas, local action queue, JSON export for private persistence, and explicit anti-fake-validation copy. This becomes a reusable pattern for future local command surfaces: "make the system visible, useful, and truthful."
+
+**Correction lesson:** Do not flatten Starlight surfaces into generic ops dashboards. Frank wants useful, but the usefulness has to be embodied as premium motion and network visualization. First viewport should show the intelligence moving. The menu should preserve ritual structure (Core Layers, Interconnected Portals, L99), while source-backed operations sit inside that living frame.
+
+**Restore lesson:** The backup's concrete design language wins: larger glowing infinity logo, more cinematic dark-blue liquid glass, rounded 2xl navigation/cards, visible Starlight Network band on the homepage, and the denser portal/registry card system. Future changes should preserve that baseline and evolve surgically rather than replacing the whole visual grammar.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
 ### [2026-06-12] Visual MemPalace + Queen LEDGER as Compound Surface (Grok Advance)
 **Category:** aesthetics / visual-memory / compound-intelligence
 **Source:** Queen Advance tick + 5 image_gen artifacts + curate-recall + mempalace-obsidian-bridge

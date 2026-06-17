@@ -38,6 +38,7 @@ export function Header() {
           <NavLink href="/cockpit">Cockpit</NavLink>
           <NavLink href="/architecture">Architecture</NavLink>
           <NavLink href="/protocol">Protocol</NavLink>
+          <NavLink href="/download">Download</NavLink>
           <NavLink href="/research">Research</NavLink>
           <NavLink href="/queen">Queen</NavLink>
           <NavLink href="/quickstart">Quickstart</NavLink>
@@ -68,6 +69,7 @@ export function Header() {
           <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
           <NavLink href="/quickstart">Quickstart</NavLink>
+          <NavLink href="/download">Download</NavLink>
           <NavLink href="/architecture">Architecture</NavLink>
           <NavLink href="/queen">Queen</NavLink>
           <NavLink
@@ -99,6 +101,7 @@ export function Header() {
             <NavLink href="/cockpit">Cockpit</NavLink>
             <NavLink href="/architecture">Architecture</NavLink>
             <NavLink href="/protocol">Protocol</NavLink>
+            <NavLink href="/download">Download</NavLink>
             <NavLink href="/research">Research</NavLink>
             <NavLink href="/queen">Queen</NavLink>
             <NavLink href="/quickstart">Quickstart</NavLink>

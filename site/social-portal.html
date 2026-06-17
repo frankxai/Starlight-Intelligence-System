@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starlight Sovereign Social Swarm Command Portal</title>
+  
+  <!-- Outfit & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-space: #03050c;
+      --bg-glass: rgba(10, 14, 30, 0.7);
+      --border-light: rgba(255, 255, 255, 0.05);
+      --border-glow: rgba(99, 102, 241, 0.15);
+      
+      --glow-blue: #3b82f6;
+      --glow-indigo: #6366f1;
+      --glow-emerald: #10b981;
+      --glow-purple: #a855f7;
+      --glow-red: #ef4444;
+      
+      --text-glow: #e2e8f0;
+      --text-muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-space);
+      color: var(--text-glow);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.08) 0%, transparent 45%);
+    }
+
+    header {
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+      background: rgba(3, 5, 12, 0.85);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--glow-indigo);
+      border-radius: 50%;
+      box-shadow: 0 0 16px var(--glow-indigo);
+      animation: breathe 3s infinite alternate;
+    }
+
+    .logo-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .system-status {
+      display: flex;
+      gap: 16px;
+    }
+
+    .status-badge {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-light);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-badge span.pulse-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--glow-emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--glow-emerald);
+      animation: blink 1.2s infinite alternate;
+    }
+
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr 380px;
+      gap: 20px;
+      padding: 20px 40px;
+      height: calc(100vh - 65px);
+    }
+
+    /* Bento Cards */
+    .bento-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .bento-card:hover {
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+
+    .card-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Agent list cards */
+    .agent-item {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .agent-item:hover {
+      background: rgba(99, 102, 241, 0.04);
+      border-color: rgba(99, 102, 241, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .agent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .agent-label {
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .agent-role {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .role-cognitive { background: rgba(59, 130, 246, 0.15); color: var(--glow-blue); }
+    .role-specialist { background: rgba(129, 140, 248, 0.15); color: var(--glow-indigo); }
+    .role-sentinel { background: rgba(16, 185, 129, 0.15); color: var(--glow-emerald); }
+
+    .agent-summary {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Canvas Area */
+    .workspace-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .canvas-box {
+      flex: 1;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+
+    .canvas-overlay-tip {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border: 1px solid var(--border-light);
+      pointer-events: none;
+    }
+
+    /* Smartphone UI Simulator */
+    .phone-mockup {
+      width: 250px;
+      height: 440px;
+      background: #000;
+      border: 8px solid #1e293b;
+      border-radius: 36px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #0b0f19;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      font-size: 11px;
+      color: #fff;
+    }
+
+    .phone-notch {
+      width: 110px;
+      height: 15px;
+      background: #1e293b;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    .phone-header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 9px;
+      margin-bottom: 20px;
+      padding-top: 4px;
+    }
+
+    .mock-post {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+
+    .mock-comment-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+    }
+
+    .comment-bubble {
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: 8px;
+      padding: 8px;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .comment-bubble.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .phone-notification {
+      background: rgba(13, 17, 33, 0.95);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 12px;
+      padding: 10px;
+      position: absolute;
+      bottom: 20px;
+      left: 10px;
+      right: 10px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .phone-notification.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Action buttons & Shell console */
+    .action-btn {
+      background: linear-gradient(135deg, var(--glow-indigo), #4f46e5);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
+    }
+
+    .console-box {
+      background: #000;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #38bdf8;
+      height: 120px;
+      overflow-y: auto;
+    }
+
+    /* Keyframes */
+    @keyframes breathe {
+      from { box-shadow: 0 0 10px var(--glow-indigo); opacity: 0.8; }
+      to { box-shadow: 0 0 20px var(--glow-indigo); opacity: 1; }
+    }
+
+    @keyframes blink {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-box">
+      <div class="logo-dot"></div>
+      <div class="logo-title">Starlight Sovereign Social Swarm Command Portal</div>
+    </div>
+    <div class="system-status">
+      <div class="status-badge"><span class="pulse-dot"></span>Google Workspace API: Active</div>
+      <div class="status-badge"><span class="pulse-dot"></span>Sovereign RPA: Operational</div>
+    </div>
+  </header>
+
+  <div class="layout-grid">
+    <!-- Left panel: Social Swarm Registry -->
+    <div class="bento-card">
+      <div class="card-header">
+        <span>Sovereign Swarm Tiers</span>
+        <span style="font-size: 11px; color: var(--glow-indigo);">8 Active Nodes</span>
+      </div>
+      <div class="card-body">
+        <div class="agent-item" onclick="highlightNode('Orchestrator')">
+          <div class="agent-header">
+            <span class="agent-label">Orchestrator</span>
+            <span class="agent-role role-cognitive">Cognitive</span>
+          </div>
+          <div class="agent-summary">Routes sequences and manages dynamic parallel agent dispatch loops.</div>
+        </div>
+
+        <div class="agent-item" onclick="highlightNode('Strategist')">
+          <div class="agent-header">
+            <span class="agent-label">Social Strategist</span>
+            <span class="agent-role role-cognitive">Cognitive</span>
+          </div>
+          <div class="agent-summary">Formats blog drafts and releases into structured social threads.</div>
+        </div>
+
+        <div class="agent-item" onclick="highlightNode('Psychologist')">
+          <div class="agent-header">
+            <span class="agent-label">Psychologist</span>
+            <span class="agent-role role-specialist">Specialist</span>
+          </div>
+          <div class="agent-summary">Audits emotional hooks and spacing to minimize cognitive load.</div>
+        </div>
+
+        <div class="agent-item" onclick="highlightNode('VibeTracker')">
+          <div class="agent-header">
+            <span class="agent-label">Vibe Tracker</span>
+            <span class="agent-role role-specialist">Specialist</span>
+          </div>
+          <div class="agent-summary">Aligns visual frames and copywriting with brand aesthetic lanes.</div>
+        </div>
+
+        <div class="agent-item" onclick="highlightNode('FactChecker')">
+          <div class="agent-header">
+            <span class="agent-label">Fact Checker</span>
+            <span class="agent-role role-specialist">Specialist</span>
+          </div>
+          <div class="agent-summary">Runs automated searches to check assertions, numbers, and link resolution.</div>
+        </div>
+
+        <div class="agent-item" onclick="highlightNode('NewsAnalyst')">
+          <div class="agent-header">
+            <span class="agent-label">News Analyst</span>
+            <span class="agent-role role-specialist">Specialist</span>
+          </div>
+          <div class="agent-summary">Tracks model releases, partner feature announcements, and affiliate specs.</div>
+        </div>
+
+        <div class="agent-item" onclick="highlightNode('VisualDirector')">
+          <div class="agent-header">
+            <span class="agent-label">Visual Director</span>
+            <span class="agent-role role-specialist">Specialist</span>
+          </div>
+          <div class="agent-summary">Engineers visual prompts for Flux/Higgsfield generative media loops.</div>
+        </div>
+
+        <div class="agent-item" onclick="highlightNode('Sentinel')">
+          <div class="agent-header">
+            <span class="agent-label">Social Sentinel</span>
+            <span class="agent-role role-sentinel">Sentinel</span>
+          </div>
+          <div class="agent-summary">Scrubs credentials, verifies signatures, and manages the operator gate.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center panel: Interactive Swarm Force-directed Canvas Node Graph -->
+    <div class="workspace-wrapper">
+      <div class="canvas-box" id="canvas-container">
+        <div class="canvas-overlay-tip">Interactive Swarm Graph (Drag nodes to explore spring physics)</div>
+        <canvas id="physics-canvas"></canvas>
+      </div>
+
+      <!-- Bottom Panel: File Staging & Configurations -->
+      <div class="bento-card" style="flex: 0 0 160px;">
+        <div class="card-header" style="padding: 10px 20px;">
+          <span>Staging Deck & Local Files</span>
+          <span style="font-size: 11px; color: var(--glow-emerald);">● Staged Queue</span>
+        </div>
+        <div class="card-body" style="padding: 12px 20px; flex-direction: row; gap: 20px; overflow: hidden; align-items: center;">
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-family: monospace; font-size: 11px; color: var(--glow-emerald); margin-bottom: 6px;">$ staged content paths:</div>
+            <div style="display: flex; gap: 10px; overflow-x: auto;">
+              <a href="file:///C:/Users/frank/starlight/repos/FrankX/scripts/social-cockpit.mjs" style="text-decoration: none; font-size: 12px; padding: 6px 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); border-radius: 8px; color: #fff;">social-cockpit.mjs</a>
+              <a href="file:///C:/Users/frank/starlight/repos/agentic-creator-os/scripts/comment-dm-engine.mjs" style="text-decoration: none; font-size: 12px; padding: 6px 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); border-radius: 8px; color: #fff;">comment-dm-engine.mjs</a>
+              <a href="file:///C:/Users/frank/starlight/repos/agentic-creator-os/private/social/links.json" style="text-decoration: none; font-size: 12px; padding: 6px 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-light); border-radius: 8px; color: #fff;">links.json</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel: Smartphone Comment-to-DM loop simulator -->
+    <div class="bento-card">
+      <div class="card-header">
+        <span>Sovereign comment-to-DM loop</span>
+        <span style="font-size: 11px; color: var(--glow-emerald);">local crawler engine</span>
+      </div>
+      <div class="card-body">
+        <div class="phone-mockup">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-header">
+              <span>9:41 AM</span>
+              <span>100%</span>
+            </div>
+            
+            <div class="mock-post">
+              <span style="font-weight:600; color:var(--glow-indigo);">@FrankX</span>
+              <p style="margin-top: 4px; font-size: 10px;">The faceless YouTube stack costs under $60/month. Comment 'SYSTEM' for the full map.</p>
+            </div>
+            
+            <div class="mock-comment-list" id="phone-comments">
+              <!-- Animated comment bubble will slide in -->
+            </div>
+            
+            <div class="phone-notification" id="phone-notif">
+              <span style="font-weight: 600; color: var(--glow-emerald);">✉️ DM Sent to @bob</span>
+              <p style="font-size: 9px; margin-top: 2px;">"Here is the map: frankx.ai/blog/faceless-..."</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="action-btn" onclick="triggerSimulation()">Simulate Keyword Comment</button>
+        
+        <div class="console-box" id="shell-logs">
+          $ awaiting keyword trigger...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------
+    // Canvas Spring-Physics Engine (Interconnected Node Simulation)
+    // -------------------------------------------------------------
+    const canvas = document.getElementById("physics-canvas");
+    const ctx = canvas.getContext("2d");
+    const container = document.getElementById("canvas-container");
+
+    let width, height;
+    function resize() {
+      width = canvas.width = container.clientWidth;
+      height = canvas.height = container.clientHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    // Node definitions
+    const nodes = [
+      { id: "Orchestrator", label: "Orchestrator", color: "#3b82f6", x: 200, y: 100, vx: 0, vy: 0, r: 24, targetGlow: 0, glow: 0 },
+      { id: "Strategist", label: "Social Strategist", color: "#3b82f6", x: 120, y: 220, vx: 0, vy: 0, r: 24, targetGlow: 0, glow: 0 },
+      { id: "Psychologist", label: "Psychologist", color: "#818cf8", x: 280, y: 220, vx: 0, vy: 0, r: 24, targetGlow: 0, glow: 0 },
+      { id: "VibeTracker", label: "Vibe Tracker", color: "#818cf8", x: 420, y: 220, vx: 0, vy: 0, r: 24, targetGlow: 0, glow: 0 },
+      { id: "FactChecker", label: "Fact Checker", color: "#818cf8", x: 180, y: 340, vx: 0, vy: 0, r: 24, targetGlow: 0, glow: 0 },
+      { id: "NewsAnalyst", label: "News Analyst", color: "#818cf8", x: 300, y: 340, vx: 0, vy: 0, r: 24, targetGlow: 0, glow: 0 },
+      { id: "VisualDirector", label: "Visual Director", color: "#818cf8", x: 440, y: 340, vx: 0, vy: 0, r: 24, targetGlow: 0, glow: 0 },
+      { id: "Sentinel", label: "Social Sentinel", color: "#10b981", x: 300, y: 440, vx: 0, vy: 0, r: 24, targetGlow: 0, glow: 0 }
+    ];
+
+    const links = [
+      { source: "Orchestrator", target: "Strategist" },
+      { source: "Strategist", target: "Psychologist" },
+      { source: "Psychologist", target: "VibeTracker" },
+      { source: "VibeTracker", target: "FactChecker" },
+      { source: "FactChecker", target: "NewsAnalyst" },
+      { source: "NewsAnalyst", target: "VisualDirector" },
+      { source: "VisualDirector", target: "Sentinel" }
+    ];
+
+    const particles = [];
+    const k = 0.04; // Spring stiffness
+    const restLength = 120; // Rest length of connections
+    const damp = 0.85; // Viscous damping
+    const repulsion = 1200; // Repulsive force strength between nodes
+
+    // Interactivity state
+    let draggedNode = null;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    canvas.addEventListener("mousedown", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      // Find selected node
+      nodes.forEach(n => {
+        const dist = Math.hypot(n.x - mx, n.y - my);
+        if (dist < n.r) {
+          draggedNode = n;
+        }
+      });
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    });
+
+    window.addEventListener("mouseup", () => {
+      draggedNode = null;
+    });
+
+    // Particle emitter along connection paths
+    setInterval(() => {
+      let index = Math.floor(Math.random() * links.length);
+      particles.push({
+        source: nodes.find(n => n.id === links[index].source),
+        target: nodes.find(n => n.id === links[index].target),
+        progress: 0,
+        speed: 0.015
+      });
+    }, 1000);
+
+    function physicsLoop() {
+      // 1. Calculate repulsion forces (node-to-node separation)
+      for (let i = 0; i < nodes.length; i++) {
+        const n1 = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const n2 = nodes[j];
+          const dx = n2.x - n1.x;
+          const dy = n2.y - n1.y;
+          const dist = Math.hypot(dx, dy) || 1;
+          if (dist < 300) {
+            const force = repulsion / (dist * dist);
+            const fx = (dx / dist) * force;
+            const fy = (dy / dist) * force;
+            
+            n1.vx -= fx;
+            n1.vy -= fy;
+            n2.vx += fx;
+            n2.vy += fy;
+          }
+        }
+      }
+
+      // 2. Calculate spring forces (along links)
+      links.forEach(l => {
+        const n1 = nodes.find(n => n.id === l.source);
+        const n2 = nodes.find(n => n.id === l.target);
+        
+        const dx = n2.x - n1.x;
+        const dy = n2.y - n1.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        
+        const displacement = dist - restLength;
+        const force = k * displacement;
+        
+        const fx = (dx / dist) * force;
+        const fy = (dy / dist) * force;
+        
+        n1.vx += fx;
+        n1.vy += fy;
+        n2.vx -= fx;
+        n2.vy -= fy;
+      });
+
+      // 3. Integrate position & handle drag/boundaries
+      nodes.forEach(n => {
+        if (n === draggedNode) {
+          n.x = mouseX;
+          n.y = mouseY;
+          n.vx = 0;
+          n.vy = 0;
+        } else {
+          n.vx *= damp;
+          n.vy *= damp;
+          n.x += n.vx;
+          n.y += n.vy;
+
+          // Stay in boundaries
+          n.x = Math.max(n.r, Math.min(width - n.r, n.x));
+          n.y = Math.max(n.r, Math.min(height - n.r, n.y));
+        }
+
+        // Handle highlight animation transitions
+        n.glow += (n.targetGlow - n.glow) * 0.1;
+      });
+
+      // 4. Render frame
+      ctx.clearRect(0, 0, width, height);
+
+      // Grid background
+      ctx.strokeStyle = "rgba(255,255,255,0.015)";
+      ctx.lineWidth = 1;
+      const gridSize = 45;
+      for (let x = 0; x < width; x += gridSize) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+      }
+      for (let y = 0; y < height; y += gridSize) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+      }
+
+      // Render links
+      ctx.lineWidth = 2;
+      links.forEach(l => {
+        const n1 = nodes.find(n => n.id === l.source);
+        const n2 = nodes.find(n => n.id === l.target);
+        ctx.strokeStyle = "rgba(255,255,255,0.05)";
+        ctx.beginPath();
+        ctx.moveTo(n1.x, n1.y);
+        ctx.lineTo(n2.x, n2.y);
+        ctx.stroke();
+      });
+
+      // Render flying packets
+      particles.forEach((p, idx) => {
+        p.progress += p.speed;
+        if (p.progress >= 1) {
+          particles.splice(idx, 1);
+          return;
+        }
+        const px = p.source.x + (p.target.x - p.source.x) * p.progress;
+        const py = p.source.y + (p.target.y - p.source.y) * p.progress;
+        
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fillStyle = "#a855f7";
+        ctx.shadowColor = "#818cf8";
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      // Render Nodes
+      nodes.forEach(n => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.shadowColor = n.color;
+        ctx.shadowBlur = n.glow * 25 + 10;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.strokeStyle = "rgba(255,255,255,0.15)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 11px Outfit";
+        ctx.textAlign = "center";
+        ctx.fillText(n.label, n.x, n.y - n.r - 8);
+      });
+
+      requestAnimationFrame(physicsLoop);
+    }
+    physicsLoop();
+
+    // Trigger highlight on node when clicked in registry
+    function highlightNode(nodeId) {
+      nodes.forEach(n => {
+        n.targetGlow = n.id === nodeId ? 1 : 0;
+      });
+      setTimeout(() => {
+        nodes.forEach(n => n.targetGlow = 0);
+      }, 2000);
+    }
+
+    // -------------------------------------------------------------
+    // Lead Magnet Smartphone Simulator
+    // -------------------------------------------------------------
+    const commentsList = document.getElementById("phone-comments");
+    const notification = document.getElementById("phone-notif");
+    const consoleBox = document.getElementById("shell-logs");
+
+    function printLog(msg) {
+      consoleBox.innerHTML += `<br>=> ${msg}`;
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
+
+    const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+    async function triggerSimulation() {
+      // Reset simulator
+      commentsList.innerHTML = "";
+      notification.classList.remove("active");
+      printLog("Launching comment monitoring crawler loop...");
+
+      await sleep(1000);
+      
+      // 1. Comment slide-in
+      const bubble = document.createElement("div");
+      bubble.className = "comment-bubble";
+      bubble.innerHTML = `<span style="font-weight:600; color:var(--glow-blue);">@bob</span><br>SYSTEM`;
+      commentsList.appendChild(bubble);
+      await sleep(100);
+      bubble.classList.add("visible");
+      printLog("Found new comment trigger: @bob -> 'SYSTEM'");
+
+      await sleep(1200);
+
+      // 2. n8n / Playwright processing log
+      printLog("Resolving dynamic link from database (links.json)...");
+      await sleep(800);
+      printLog("Link matched: frankx.ai/blog/faceless-youtube-ai-tools-2026");
+
+      await sleep(1000);
+
+      // 3. Notification slides up
+      printLog("Sending Direct Message via browser context profile.");
+      notification.classList.add("active");
+      printLog("✅ Delivery recorded. Crawler idle.");
+    }
+  </script>
+</body>
+</html>

@@ -42,7 +42,6 @@ function buildSvg(version: string, theme: Theme): string {
   const adjustedRightWidth = totalWidth - leftWidth;
 
   const leftBg = theme === "light" ? "#f4f4f7" : "#0c0c12";
-  const leftText = theme === "light" ? "#1a1a1f" : "#e2e8f0";
   const leftTextMuted = theme === "light" ? "#52525b" : "#94a3b8";
   const leftStroke = theme === "light" ? "#e2e2e8" : "#1a1a22";
 

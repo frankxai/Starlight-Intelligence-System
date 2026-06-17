@@ -1,0 +1,57 @@
+{
+  "is": "secondbrain",
+  "displayName": "Second Brain IS / Private Knowledge Intelligence",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-secondbrain-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Semantic retrieval, connection mapping, brain atlas construction, framework promotion from pattern recognition",
+      "port": 8088,
+      "type": "local",
+      "skills": [
+        "memory/knowledge-synthesis",
+        "memory/vault-management",
+        "intelligence/pattern-recognition",
+        "intelligence/systems-thinking"
+      ],
+      "vaultAccess": ["strategic", "technical", "creative", "wisdom", "horizon"],
+      "commands": ["/recall", "/curate-recall", "/brain-consolidate"]
+    },
+    {
+      "id": "hermes-secondbrain-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for capture triage, consolidation passes, vault writes, Obsidian sync",
+      "port": 8098,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution",
+        "memory/context-preservation"
+      ],
+      "vaultAccess": ["operational"],
+      "commands": ["/capture"]
+    }
+  ],
+  "swarmTopology": "cascade",
+  "concurrency": 4,
+  "timeoutMs": 300000,
+  "onResult": "vault-write",
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest",
+    "obsidian-write",
+    "vault-registry-update"
+  ],
+  "triggers": [
+    "capture this",
+    "save to my brain",
+    "what do I know about",
+    "weekly review",
+    "brain atlas",
+    "find the connection",
+    "consolidate knowledge"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

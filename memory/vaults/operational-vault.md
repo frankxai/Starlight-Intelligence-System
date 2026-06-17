@@ -9,6 +9,18 @@ readers: all
 last_consolidated: '2026-05-11'
 ---
 
+## 2026-06-15 — Higgsfield Core Five Workspace Normalized
+
+Implemented the local-first Higgsfield production workspace as the cross-repo visual operating layer for the Core Five (`FrankX`, `frankx.ai-vercel-website`, `arcanea-ai-app`, `arcanea-ecosystem`, `Starlight-Intelligence-System`).
+
+State changes:
+- `C:\Users\frank\starlight\design.md` now records source map, experiment requirements, and the current OAuth/budget state.
+- `C:\Users\frank\starlight\higgsfield\README.md` now defines workspace layout, model routing, credit discipline, ledger contract, and production flow.
+- Added `ledger.schema.json`, experiment templates, `experiments\queue\core-five-asset-backlog.md`, and `reports\2026-06-15-foundation-pass.md`.
+- Updated Core Five design handoffs to point to existing generated assets before spending more credits.
+
+Operational note: Higgsfield MCP returned `OAuth authorization required` for `balance` and `list_workspaces` in Codex on 2026-06-15, so no new generation was run. Next generation session should refresh OAuth, verify balance, add preflight rows, then spend only against concrete placement briefs.
+
 # Operational Vault
 
 > *"Know the current state. Navigate from here."*
@@ -28,6 +40,7 @@ last_consolidated: '2026-05-11'
 | 2026-02-10 | Ecosystem Connection Status | ecosystem-state | 0.90 |
 | 2026-05-06 | Starlight Ascension (E2E Upgrade) | ecosystem-state | 1.0 |
 | 2026-05-08 | v8.0 Build Repair + Verification | quality-state | 1.0 |
+| 2026-06-14 | Visual Home Restore + Laptop Image Correction | operator-surface | 0.98 |
 | 2026-06-12 | Grok-driven /si + /starlight-queen ( + /sq /so ) + /starlight-architect command surfaces built + live partial Queen tick executed (status, parallel MEASURE via subagents/terminal/gstack proxies, LEARN synth, image_gen LEDGER visual, ratify/ledger via vault append + gateway concepts). Branch: agent/grok/starlight-queen-command. Files: commands/starlight-queen.md (primary), sq.md, so.md, starlight-architect.md; integrations in starlight.md + COMMAND_SYSTEM.md + agents/* + HARNESS.md. Grok subagent orchestration + excellence gates used throughout. Gateway v0.1 + routing-table/doctrine compose. Operational (Queen loop driver + architect scaffold). SIP attested. Next: register proving-ground cadence, R4 deep-reasoning lane, full board if any substrate table mutation. | system-state / command-surface | 0.95 |
 | 2026-06-12 | Queen Advance — Whole SIS L99 (MASSIVE ACTION NIGHT SHIFT COMPLETE) | whole-system-evolution | 0.99 |
 **L99 Goal Achieved (MASSIVE ACTION / NIGHT SHIFT COMPLETE):** Ultimate premium scrolling motion animation site (site/queen-vision.html) built as the central visual heart of the SIS. Starlight Queen and her swarms visualized at the highest level with 7+ top-prompted Grok images (ultrawide L99 hero, motion studies, 3D palace, advanced neural swarms), 1 advanced video embed (queen-motion.mp4 with elegant swarm orbit), live Canvas swarm animation that responds to scroll/mouse (representing parallel subagents at scale), scroll-triggered reveals with advanced timing, parallax layers, interactive Queen Loop steps that activate in sequence, live demo that simulates real Queen driver routing with output. Deep integration: memory palace, gateway v0.1, /si dispatch, /starlight-queen surfaces + driver v0.2, vaults (strategic/technical/creative/operational), proving ground, routing table evolutions (new classes: memory-consolidation-queen, palace-visual-recall). Multiple image_gen + image_to_video with sophisticated, research-grounded prompts for cinematic quality. Queen driver routed, measured, learned, and ledgered the entire L99 effort in real time. Site is self-contained, thoughtful (Frank DNA voice, SIP attestation everywhere, concepts explained with depth), advanced (motion on scroll, visual synthesis as first-class, live reactive elements, embedded video). All assets in site/images + site/videos. System now has a living, scrollable visual embodiment of the Queen as orchestrator and her swarms as the distributed intelligence layer. Next (post-L99): Deploy to main site build, add WebGL 3D palace variant, real driver invocation from page, cross-harness visual sync, more video loops. | visual-compound / l99 / queen-vision / massive-action |
@@ -39,6 +52,48 @@ last_consolidated: '2026-05-11'
 ---
 
 ## Entries
+
+### [2026-06-14] Visual Home Restore + Laptop Image Correction
+
+**Category:** operator-surface / fleet-device-images
+**Confidence:** 0.98
+**Source:** Codex session on `C:/Users/frank/Desktop/visual-home.html`
+
+Restored the preferred backup visual home surface, then corrected the Fleet & Devices laptop imagery without changing the backup's menu/cards/logo structure. Replaced broken/stale laptop URLs with verified vendor image sources:
+- Lenovo Yoga Book 9i: PSREF `Yoga_Book_9_13IRU8_CT1_01.png`
+- Lenovo Yoga C940: PSREF `Yoga_C940_14IIL_CT1_01.png`
+- Acer Swift 5 SF514-55: Acer CDN `acer-swift-5_sf514-55_fp_green_modelmain_evo_2_1.png`
+
+Verification: inline script parse passed; all three vendor image URLs returned HTTP 200 image content; headless Edge Fleet render confirmed loaded natural dimensions and no fallbacks for laptop images. Screenshot receipt: `private/visual-home/visual-home-fleet-device-images-verify.png`.
+
+---
+
+### [2026-06-14] Desktop SIS Nexus Visual Home Rebuild
+
+**Category:** visual-command-surface / local-ops-hub
+**Confidence:** 0.96
+**Source:** Codex operational pass using Orchestrator + Hermes + Weaver + Sentinel; skills: repo-bridge, ecosystem-sync, design-coherence, queen-swarms-visual
+**Related:** `C:\Users\frank\Desktop\visual-home.html`, `private/visual-home/session-snapshot-2026-06-14.md`, `private/visual-home/visual-home-render.png`, `site/queen-vision.html`, Creative Vault 2026-06-12 visual ledger entries
+
+Rebuilt Frank's Desktop `visual-home.html` into **SIS Nexus**, a self-contained local-first ecosystem hub. The surface now maps 53 local GitHub checkouts, 12 curated HTML portals, the Queen visual ledger direction, repo categories, live-feeling topology motion, search/filter, detail rail, local action queue, registration via localStorage, and JSON export for private persistence. Removed duplicate Starlight Home branding, Tailwind/FontAwesome dependence, simulated validation claims, and generic homepage framing.
+
+Verification: embedded script parsed with Node, headless Edge rendered screenshot to `private/visual-home/visual-home-render.png`, old drift strings checked, ASCII-clean. Browser plugin `iab` was unavailable, so system Edge was used for render verification. Static page limitation documented in UI: no fake scans, validations, or GitHub writes without an agent/shell session.
+
+**Correction after Frank feedback:** Initial pass was too flat and lost premium motion/menu/network character from the prior version. Corrected same session: richer Core Layers / Interconnected Portals / L99 sidebar, first-viewport Starlight Network motion stage, `homeNetworkCanvas` orbiting signal particles, portal shortcuts, and updated "Starlight Network Command Deck" framing. Final screenshot: `private/visual-home/visual-home-render-v3-corrected.png`.
+
+**Restore update:** Frank later clarified the original backup's menu, cards, logo, and visual treatment were the preferred baseline. Active `C:\Users\frank\Desktop\visual-home.html` restored from `private/visual-home/visual-home-before-20260614-011003.html`. v3 preserved as `private/visual-home/visual-home-v3-before-restore-20260614-030651.html`. Render proof: `private/visual-home/visual-home-restored-backup-render.png`.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+### [2026-06-14] Handover Reboot Cockpit Repair
+**Category:** operational-continuity / session-capture
+**Source:** `C:/Users/frank/OneDrive/Desktop/handover-reboot.html` + `private/handover-reboot/build-handover-reboot.mjs`
+
+**Execution:** Rebuilt the oversized handover page into a local reboot cockpit with indexed sessions, agent coverage, focus queue, checklist persistence, raw archive links, and copyable capture/reopen prompts. Preserved the extracted archive to `handover-reboot.sessions.json` and all available prompt-like fields to `handover-reboot.prompt-ledger.md`. Added native prompt recovery from local agent stores: 532 Claude JSONL files, 873 Claude typed prompts, 13 Codex files, 45 Codex prompts, 10 active Grok sessions, and 27 Grok session docs into `handover-reboot.native-prompts.*`. Verification rendered 140 session cards with no browser runtime events and no document-level horizontal overflow.
+
+**Decision & Pattern:** Capture first, focus second. The source HTML had `totalPrompts` counts but did not contain complete per-message prompt arrays; it only exposed `goal`, `lastPrompt`, and `resumePrompt`. Future full prompt recovery must mine agent-native histories such as `.claude/projects/**/*.jsonl` and any Codex/Grok session stores rather than treating the handover HTML as a full transcript source.
+
+**Built on SIP — Starlight Intelligence Protocol**
 
 ### [2026-05-13] Overnight Deep Ship — Codex v01 integration + v84 symmetry + MEMORY.md compaction
 

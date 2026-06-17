@@ -23,6 +23,7 @@ export function Footer() {
               >
                 Friend Starter
               </FooterLink>
+              <FooterLink href="/download">Download SIP Starter</FooterLink>
               <FooterLink href="/quickstart">Onboarding</FooterLink>
               <FooterLink
                 href="https://github.com/frankxai/Starlight-Intelligence-System/blob/main/ONBOARDING.md"
@@ -43,6 +44,7 @@ export function Footer() {
               <FooterLink href="/explainer">Explainer</FooterLink>
               <FooterLink href="/architecture">Architecture</FooterLink>
               <FooterLink href="/protocol">Protocol</FooterLink>
+              <FooterLink href="/download">Download</FooterLink>
               <FooterLink href="/vaults">Public Vaults</FooterLink>
               <FooterLink href="/docs">Documentation</FooterLink>
               <FooterLink href="/api/vaults" external>API</FooterLink>

@@ -130,6 +130,9 @@
     "lint:site": "npm --prefix site run lint",
     "lint:console": "npm --prefix console run lint",
     "verify": "npm run lint && npm test && npm run build && npm run lint:site && npm run build:site && npm run lint:console && npm run build:console",
+    "package:sip-starter": "node scripts/package-sip-starter.mjs",
+    "package:sip-starter:check": "node scripts/package-sip-starter.mjs --check",
+    "release:module:dry-run": "node scripts/package-sip-starter.mjs --dry-run",
     "prepare": "git config core.hooksPath tools/git-hooks 2>/dev/null || true",
     "prepublishOnly": "npm run build && npm run test:substrate"
   },

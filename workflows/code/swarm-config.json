@@ -1,0 +1,57 @@
+{
+  "is": "code",
+  "displayName": "Code IS / Product & Automation Intelligence",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-code-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Architecture design, complex system reasoning, security review, automation design, multi-repo coordination",
+      "port": 8089,
+      "type": "local",
+      "skills": [
+        "intelligence/systems-thinking",
+        "intelligence/pattern-recognition",
+        "orchestration/workflow-design",
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["strategic", "technical", "wisdom"],
+      "commands": ["/build", "/code-review", "/automate", "/repo-audit"]
+    },
+    {
+      "id": "hermes-code-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for code review, vault writes, repo state tracking, fast build loops",
+      "port": 8099,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["operational"],
+      "commands": []
+    }
+  ],
+  "swarmTopology": "cascade",
+  "concurrency": 4,
+  "timeoutMs": 300000,
+  "onResult": "vault-write",
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest",
+    "git-status",
+    "file-edit",
+    "file-read"
+  ],
+  "triggers": [
+    "build this",
+    "review this code",
+    "automate this",
+    "state of my repos",
+    "something is broken",
+    "debug this",
+    "architecture design"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

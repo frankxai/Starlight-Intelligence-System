@@ -1,6 +1,6 @@
 # Starlight Agent Registry
 
-> Fifty-six minds. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy) + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
+> Sixty-three minds. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy) + Council Archetype Tier. One system. No hierarchy is permanent — only the mission is.
 >
 > **v8.2.x update (2026-06-10):** Evaluator registered (`starlight-evaluator.md`) — Starlight Proving Ground + Model Arena measurement seat.
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
@@ -126,6 +126,11 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 | **Hermes** | `starlight-hermes.md` | Search & Retrieval | Semantic search across vaults + repos + web; multi-source synthesis; provenance tracking; contradiction detection |
 | **Social Strategist** | `starlight-social-strategist.md` | Social Campaign | Translating blogs/releases into threads/posts, copywriting, hook engineering |
 | **Social Sentinel** | `starlight-social-sentinel.md` | Tone & Publication Gating | Auditing social copy for brand voice, scrubbing secrets, cryptographic signing, enforcing approval gates |
+| **Social Psychologist** | `starlight-social-psychologist.md` | Cognitive Psychology | Auditing audience dynamics, cognitive load, structuring hooks for organic curiosity |
+| **Social Vibe Tracker** | `starlight-social-vibetracker.md` | Vibe Curation | Tracking cultural vibes, trend matching, aligning drafts with brand aesthetic lanes |
+| **Social Fact Checker** | `starlight-social-factcheck.md` | Claim Verification | Running searches, verifying claims/citations, checking links and logical math accuracy |
+| **Social Visual Director** | `starlight-social-cinematic.md` | Visual Production | Engineering cinematic visuals, image/video prompts, directing Higgsfield/Vee asset generation |
+| **Social News Analyst** | `starlight-social-news-analyst.md` | Real-Time News | Scanning AI lab releases, partner updates, tracking affiliate feature sets and tech trends |
 
 ### Intelligence System Tiers (v7.4 beta — 5 new agents)
 

@@ -1,0 +1,55 @@
+{
+  "is": "family",
+  "displayName": "Family IS / Family Office Intelligence",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-family-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Legacy architecture, governance design, multi-generational planning, family constitution authoring",
+      "port": 8085,
+      "type": "local",
+      "skills": [
+        "intelligence/strategic-reasoning",
+        "intelligence/systems-thinking",
+        "business/entity-architecture"
+      ],
+      "vaultAccess": ["strategic", "wisdom"],
+      "commands": ["/family-council", "/legacy-plan", "/family-governance"]
+    },
+    {
+      "id": "hermes-family-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for commitment tracking, capital math, vault writes",
+      "port": 8095,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["operational", "technical"],
+      "commands": ["/family-capital"]
+    }
+  ],
+  "swarmTopology": "sequential",
+  "concurrency": 2,
+  "timeoutMs": 300000,
+  "onResult": "vault-write",
+  "sovereignPrivacy": true,
+  "noExternalTransmission": true,
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest"
+  ],
+  "triggers": [
+    "family office review",
+    "estate planning",
+    "family council",
+    "legacy structure",
+    "family capital",
+    "governance design",
+    "family constitution"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

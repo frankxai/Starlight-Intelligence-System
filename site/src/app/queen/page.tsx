@@ -193,11 +193,6 @@ export default function QueenPage() {
             <a 
               href="/queen-vision.html" 
               className="group block rounded-3xl border border-white/20 bg-white/[0.015] px-10 py-8 text-center hover:border-cyan-400/50 hover:bg-white/[0.03] active:scale-[0.985] transition-all"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  console.log('[Queen Swarms Visual Skill] Activated from /queen live demo. Config-driven variant generation ready. Canonical: site/queen-vision.html + skills/vision/queen-swarms-visual.md');
-                }
-              }}
             >
               <div className="text-xs tracking-[3.5px] text-cyan-400 mb-2">VISION / QUEEN-SWARMS-VISUAL • L99 PACKAGED</div>
               <div className="text-3xl tracking-tighter font-semibold text-white group-hover:text-cyan-300 transition-colors">ACTIVATE QUEEN VISUAL SKILL</div>

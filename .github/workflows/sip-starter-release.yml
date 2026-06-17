@@ -1,0 +1,107 @@
+name: SIP starter release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish, for example v8.3.0"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sip-starter-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set release tag
+        id: vars
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            tag="${{ inputs.tag }}"
+          else
+            tag="${GITHUB_REF_NAME}"
+          fi
+          version="${tag#v}"
+          package_version="$(node -p "require('./package.json').version")"
+          if [ "$version" != "$package_version" ]; then
+            echo "Tag $tag does not match package.json version $package_version" >&2
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify repository
+        run: npm run verify
+
+      - name: Package SIP starter
+        run: npm run package:sip-starter:check
+
+      - name: Write release notes
+        shell: bash
+        run: |
+          cat > artifacts/releases/sip-starter/release-notes.md <<'NOTES'
+          ## Starlight SIP Starter
+
+          Open-core starter package for adopting the Starlight Intelligence Protocol in any repo or workspace.
+
+          Canonical human download page: https://starlightintelligence.org/download
+
+          Included release assets:
+          - starlight-sip-starter ZIP archive
+          - starlight-sip-starter TAR.GZ archive
+          - SHA256 checksum file
+          - release-manifest.json
+
+          Included in the starter:
+          - Unix/macOS/Linux installer: install.sh
+          - Windows PowerShell installer: install.ps1
+          - Local validation script: validate-sip-starter.mjs
+          - Excellence checklist and release notes
+
+          Automation index: https://starlightintelligence.org/download/latest.json
+
+          Validate the files by comparing the SHA256 checksums before installing.
+          NOTES
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.vars.outputs.tag }}
+        shell: bash
+        run: |
+          files=(
+            artifacts/releases/sip-starter/starlight-sip-starter-*.zip
+            artifacts/releases/sip-starter/starlight-sip-starter-*.tar.gz
+            artifacts/releases/sip-starter/starlight-sip-starter-*.sha256
+            artifacts/releases/sip-starter/release-manifest.json
+          )
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${files[@]}" --clobber
+          else
+            gh release create "$TAG" "${files[@]}" \
+              --title "Starlight Intelligence System $TAG" \
+              --notes-file artifacts/releases/sip-starter/release-notes.md
+          fi

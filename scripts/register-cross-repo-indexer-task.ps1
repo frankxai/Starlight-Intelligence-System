@@ -3,10 +3,10 @@
 # Runs run-cross-repo-indexer.ps1 daily at 03:00 local time. Idempotent --
 # safe to re-run; deletes existing task with same name before recreating.
 #
-# Why this exists: the cross-repo indexer crawls ~/.claude/projects/*/memory/
-# into Memory Bus. It ran ONCE on 2026-05-03 (per project memory). Without
-# a schedule, the substrate goes stale fast. Daily 03:00 keeps it fresh
-# without competing with active work hours.
+# Why this exists: the cross-repo indexer crawls memory directories from
+# Claude, Grok, and Antigravity into the Memory Bus. It ran ONCE on 2026-05-03
+# (per project memory). Without a schedule, the substrate goes stale fast.
+# Daily 03:00 keeps it fresh without competing with active work hours.
 
 $ErrorActionPreference = 'Stop'
 
@@ -54,7 +54,7 @@ Register-ScheduledTask `
     -Trigger $Trigger `
     -Settings $Settings `
     -Principal $Principal `
-    -Description 'Daily Cross-Repo Memory Indexer: crawls ~/.claude/projects/*/memory/ into Memory Bus. Built on SIP.' | Out-Null
+    -Description 'Daily Cross-Repo Memory Indexer: crawls memory files across Claude, Grok, and Antigravity into Memory Bus. Built on SIP.' | Out-Null
 
 Write-Host "[OK] Registered scheduled task '$TaskName'" -ForegroundColor Green
 Write-Host "     Runs daily at 03:00 (local time)"

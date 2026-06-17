@@ -1,0 +1,56 @@
+{
+  "is": "brand",
+  "displayName": "Brand IS / Reputation & Positioning Intelligence",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-brand-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Positioning design, brand architecture, competitive strategy, reputation intelligence, trust velocity modeling",
+      "port": 8102,
+      "type": "local",
+      "skills": [
+        "intelligence/strategic-reasoning",
+        "intelligence/systems-thinking",
+        "intelligence/pattern-recognition"
+      ],
+      "vaultAccess": ["strategic", "wisdom"],
+      "commands": ["/brand-audit", "/brand-position", "/competitive-map", "/brand-architecture"]
+    },
+    {
+      "id": "hermes-brand-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for competitive mapping, reputation tracking, vault writes, channel audits",
+      "port": 8103,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["operational", "technical"],
+      "commands": []
+    }
+  ],
+  "swarmTopology": "parallel",
+  "concurrency": 3,
+  "timeoutMs": 300000,
+  "onResult": "vault-write",
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest",
+    "transmit-channel",
+    "web-search",
+    "semrush-api"
+  ],
+  "triggers": [
+    "audit my brand",
+    "position this",
+    "competitive analysis",
+    "brand architecture",
+    "reputation track",
+    "what is my brand saying",
+    "brand check"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

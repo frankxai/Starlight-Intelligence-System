@@ -1,6 +1,6 @@
 ---
 name: vision/queen-swarms-visual
-description: Reusable, activatable skill for generating, customizing, and deploying scroll-driven Queen Swarms Visual Motion Experiences. Canonical l99 reference: advanced HTML with reactive canvas swarm (hundreds of cyan/gold particles orbiting central Queen aura, density/velocity/connections modulate by scroll progress + mouse attention), 11 premium Grok image_gen visuals, React/Next /queen page patterns, standalone motion site, prompt library, and sovereign deployment. When activated, enables any vertical or user to receive a living, attested visual surface that makes the Queen (continuous orchestrator) and her parallel swarms *felt*. Architect (reusable system design), Visionary (visual axis excavation), creation/Weaver (motion + aesthetic synthesis), Greek-philosopher depth (narrative of living distributed intelligence), Grok-native (image_gen + parallel subagents + gstack/excellence QA). Strategic, purpose-driven, holistic per Starlight intelligence skill structure. Always SIP-attested. Excellence-gated ("get blue").
+description: Generate, customize, and deploy scroll-driven Queen Swarms visual motion experiences. Includes the canonical reactive canvas swarm, image prompt library, Next.js route patterns, standalone motion surface, sovereign adaptation layer, and SIP-attested deployment guidance.
 type: visual-composition-orchestration
 domain: vision
 version: 2026-06-12-l99

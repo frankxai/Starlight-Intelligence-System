@@ -12,6 +12,9 @@ export { GeminiCliAdapter } from './gemini-cli.js';
 export { OpenCodeAdapter } from './opencode.js';
 export { AntigravityAdapter } from './antigravity.js';
 export { GrokAdapter } from './grok.js';
+export { HermesAdapter } from './hermes.js';
+export type { HermesAgentProfile, HermesSwarmConfig, ISDomain } from './hermes.js';
+export { IS_DOMAINS } from './hermes.js';
 
 import type { PlatformAdapter, AdapterConfig } from './types.js';
 import { ClaudeCodeAdapter } from './claude-code.js';
@@ -21,6 +24,7 @@ import { GeminiCliAdapter } from './gemini-cli.js';
 import { OpenCodeAdapter } from './opencode.js';
 import { AntigravityAdapter } from './antigravity.js';
 import { GrokAdapter } from './grok.js';
+import { HermesAdapter } from './hermes.js';
 
 const ADAPTERS: Record<string, new () => PlatformAdapter> = {
   'claude-code': ClaudeCodeAdapter,
@@ -30,6 +34,7 @@ const ADAPTERS: Record<string, new () => PlatformAdapter> = {
   'opencode': OpenCodeAdapter,
   'antigravity': AntigravityAdapter,
   'grok': GrokAdapter,
+  'hermes': HermesAdapter,
 };
 
 /**

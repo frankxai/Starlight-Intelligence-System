@@ -18,7 +18,7 @@ import {
 } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import { Suspense, useMemo, useRef, useState } from "react";
-import type { Group, Mesh } from "three";
+import type { Group } from "three";
 import { Vector2 } from "three";
 import {
   vaults,
@@ -281,7 +281,7 @@ function MembershipThreads() {
   return (
     <group>
       {items.map((it, i) => {
-        const [x, _y, z] = it.pos;
+        const [x, , z] = it.pos;
         const len = Math.sqrt(x * x + z * z);
         const angle = Math.atan2(z, x);
         return (

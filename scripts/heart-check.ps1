@@ -2,7 +2,7 @@
 # Starlight Intelligence System — Substrate Ops Health Monitor (6-Gates)
 # ==============================================================================
 # Built on SIP · Idempotent · Windows-optimized
-# Checks Memory Bus, brain_watchdog, Voice Operator, dashboard, audit log, and scheduled tasks.
+# Checks Memory Bus, agent watchdog, Voice Operator, dashboard, audit log, and scheduled tasks.
 # ==============================================================================
 
 # Force console UTF-8 support
@@ -16,51 +16,123 @@ try {
 $gates = [ordered]@{}
 $score = 0
 $totalGates = 6
+$RepoRoot = Split-Path -Parent $PSScriptRoot
 
 # Gate 1: Memory Bus
-$bus = Get-Process -Name python -ErrorAction SilentlyContinue | Where-Object {
-    $_.MainWindowTitle -match 'memory-bus' -or
-    (Get-CimInstance Win32_Process -Filter "ProcessId = $($_.Id)").CommandLine -match 'memory-bus.server'
-}
-if ($bus) {
-    $gates["Memory Bus"] = "GREEN"
-    $score++
+$memoryBusServer = Join-Path $RepoRoot "private\memory-bus\server.py"
+$memoryBusRequest = '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"memory_health","arguments":{}}}'
+if (Test-Path $memoryBusServer) {
+    try {
+        $memoryBusRequestPath = [System.IO.Path]::GetTempFileName()
+        try {
+            Set-Content -LiteralPath $memoryBusRequestPath -Value $memoryBusRequest -Encoding ASCII -NoNewline
+            $memoryBusResponse = cmd /c "type ""$memoryBusRequestPath"" | python ""$memoryBusServer""" | Select-Object -First 1
+        } finally {
+            Remove-Item -LiteralPath $memoryBusRequestPath -Force -ErrorAction SilentlyContinue
+        }
+        if ($memoryBusResponse -match 'healthy') {
+            $gates["Memory Bus"] = "GREEN (stdio health probe)"
+            $score++
+        } else {
+            $gates["Memory Bus"] = "RED (health probe failed)"
+        }
+    } catch {
+        $gates["Memory Bus"] = "RED (health probe error: $($_.Exception.Message))"
+    }
 } else {
-    $gates["Memory Bus"] = "RED (not running — run: pwsh scripts/start-memory-bus-watcher.ps1)"
+    $gates["Memory Bus"] = "RED (server missing at private\memory-bus\server.py)"
 }
 
-# Gate 2: brain_watchdog
-$brain = Get-Process -Name python -ErrorAction SilentlyContinue | Where-Object {
-    (Get-CimInstance Win32_Process -Filter "ProcessId = $($_.Id)").CommandLine -match 'brain_watchdog'
-}
-if ($brain) {
-    $gates["brain_watchdog"] = "GREEN"
+# Gate 2: Agent Watchdog
+$watchdogScript = Join-Path $RepoRoot "scripts\agent-watchdog.ps1"
+$watchdogTask = Get-ScheduledTask -TaskName 'StarlightAgentWatchdog' -ErrorAction SilentlyContinue
+if (-not (Test-Path $watchdogScript)) {
+    $gates["Agent Watchdog"] = "RED (script missing at scripts\agent-watchdog.ps1)"
+} elseif ($watchdogTask -and ($watchdogTask.State -eq "Ready" -or $watchdogTask.State -eq "Running")) {
+    $gates["Agent Watchdog"] = "GREEN ($($watchdogTask.State))"
     $score++
+} elseif ($watchdogTask) {
+    $gates["Agent Watchdog"] = "YELLOW ($($watchdogTask.State))"
 } else {
-    $gates["brain_watchdog"] = "YELLOW (not running)"
+    $gates["Agent Watchdog"] = "YELLOW (task missing - run scripts\register-agent-watchdog-task.ps1)"
 }
 
 # Gate 3: Voice Operator
-try {
-    $vo = Invoke-WebRequest -Uri 'http://localhost:8000/health' -TimeoutSec 2 -ErrorAction Stop
-    $gates["Voice Operator"] = "GREEN"
-    $score++
-} catch {
-    $gates["Voice Operator"] = "YELLOW (no response on :8000)"
+$voiceOperatorRoot = Join-Path $RepoRoot 'private\voice-operator'
+if (-not (Test-Path $voiceOperatorRoot)) {
+    $gates["Voice Operator"] = "YELLOW (private\voice-operator not installed in this checkout)"
+} else {
+    try {
+        $vo = Invoke-WebRequest -Uri 'http://localhost:8000/health' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+        $gates["Voice Operator"] = "GREEN"
+        $score++
+    } catch {
+        $gates["Voice Operator"] = "YELLOW (no response on :8000)"
+    }
 }
 
 # Gate 4: Dashboard
-try {
-    $dash = Invoke-WebRequest -Uri 'http://localhost:3007/' -TimeoutSec 2 -ErrorAction Stop
-    $gates["Dashboard"] = "GREEN"
-    $score++
-} catch {
-    $gates["Dashboard"] = "YELLOW (no response on :3007 — run: cd private/local-command-center/apps/dashboard && npm run dev)"
+$dashboardCandidates = @()
+if (Test-Path (Join-Path $RepoRoot 'private\local-command-center\apps\dashboard')) {
+    $dashboardCandidates += [PSCustomObject]@{
+        Name = 'legacy dashboard'
+        Url = 'http://localhost:3007/'
+        Hint = 'cd private\local-command-center\apps\dashboard; npm run dev'
+    }
+}
+if (Test-Path (Join-Path $RepoRoot 'console\package.json')) {
+    $dashboardCandidates += [PSCustomObject]@{
+        Name = 'console'
+        Url = 'http://localhost:3001/'
+        Hint = 'npm --prefix console run dev'
+    }
+}
+if (Test-Path (Join-Path $RepoRoot 'site\package.json')) {
+    $dashboardCandidates += [PSCustomObject]@{
+        Name = 'site cockpit'
+        Url = 'http://localhost:3000/cockpit'
+        Hint = 'npm --prefix site run dev'
+    }
+}
+
+$dashboardGreen = $false
+$dashboardHints = @()
+$repoRootForMatch = $RepoRoot -replace '\\','/'
+foreach ($candidate in $dashboardCandidates) {
+    $dashboardHints += "$($candidate.Name): $($candidate.Hint)"
+    try {
+        $candidateUri = [Uri]$candidate.Url
+        $dash = Invoke-WebRequest -Uri $candidate.Url -UseBasicParsing -TimeoutSec 8 -ErrorAction Stop
+        $ownedByRepo = $false
+        $listeners = @(Get-NetTCPConnection -LocalPort $candidateUri.Port -State Listen -ErrorAction SilentlyContinue)
+        foreach ($listener in $listeners) {
+            $owner = Get-CimInstance Win32_Process -Filter "ProcessId = $($listener.OwningProcess)" -ErrorAction SilentlyContinue
+            $ownerCommand = $owner.CommandLine -replace '\\','/'
+            if ($ownerCommand -and $ownerCommand -like "*$repoRootForMatch*") {
+                $ownedByRepo = $true
+                break
+            }
+        }
+        if (-not $ownedByRepo) {
+            continue
+        }
+        $gates["Dashboard"] = "GREEN ($($candidate.Name) at $($candidate.Url))"
+        $score++
+        $dashboardGreen = $true
+        break
+    } catch {}
+}
+if (-not $dashboardGreen) {
+    if ($dashboardHints.Count -gt 0) {
+        $gates["Dashboard"] = "YELLOW (no local dashboard response - run one of: $($dashboardHints -join ' | '))"
+    } else {
+        $gates["Dashboard"] = "YELLOW (no dashboard app found in this checkout)"
+    }
 }
 
 # Gate 5: Audit log freshness
 $today = (Get-Date).ToString('yyyy-MM-dd')
-$audit = "C:\Users\frank\Starlight-Intelligence-System\memory\_audit\$today.jsonl"
+$audit = Join-Path $RepoRoot "memory\_audit\$today.jsonl"
 if (Test-Path $audit) {
     $age = (Get-Date) - (Get-Item $audit).LastWriteTime
     if ($age.TotalHours -lt 1) {
@@ -77,7 +149,13 @@ if (Test-Path $audit) {
 }
 
 # Gate 6: Scheduled tasks
-$tasks = @('StarlightCockpit', 'StarlightCrossRepoIndexer', 'Starlight Dreaming')
+$tasks = @(
+    'StarlightAgentWatchdog',
+    'StarlightMachineSentinel',
+    'StarlightPortfolioAudit',
+    'StarlightCrossRepoIndexer',
+    'StarlightDreaming'
+)
 $tasksScore = 0
 $tasksDetail = @()
 foreach ($t in $tasks) {
@@ -88,7 +166,7 @@ foreach ($t in $tasks) {
             $tasksScore++
         }
     } else {
-        $tasksDetail += "$t (MISSING — run scripts/register-*.ps1 files)"
+        $tasksDetail += "$t (MISSING - run scripts/register-*.ps1 files)"
     }
 }
 if ($tasksScore -eq $tasks.Count) {
@@ -100,28 +178,29 @@ if ($tasksScore -eq $tasks.Count) {
 
 # Render Score Card
 $statusLabel = if ($score -eq $totalGates) { "GREEN" } elseif ($score -ge 4) { "YELLOW" } else { "RED" }
+$statusColor = if ($statusLabel -eq "GREEN") { "Green" } elseif ($statusLabel -eq "YELLOW") { "Yellow" } else { "Red" }
 Write-Host ""
-Write-Host "/heart — Ops health: $score/$totalGates ($statusLabel)" -ForegroundColor (if ($statusLabel -eq "GREEN") { "Green" } elseif ($statusLabel -eq "YELLOW") { "Yellow" } else { "Red" })
+Write-Host "/heart - Ops health: $score/$totalGates ($statusLabel)" -ForegroundColor $statusColor
 Write-Host ""
 
 foreach ($g in $gates.Keys) {
     $val = $gates[$g]
-    $icon = "✓"
+    $icon = "OK"
     $color = "DarkGray"
     if ($val -match '^GREEN') {
-        $icon = "✓"
+        $icon = "OK"
         $color = "Green"
     } elseif ($val -match '^YELLOW') {
-        $icon = "⚠"
+        $icon = "WARN"
         $color = "Yellow"
     } else {
-        $icon = "✗"
+        $icon = "FAIL"
         $color = "Red"
     }
     Write-Host "  $icon $g : $val" -ForegroundColor $color
 }
 Write-Host ""
-Write-Host "Built on SIP — operational-tier · machine substrate check" -ForegroundColor DarkCyan
+Write-Host "Built on SIP - operational-tier - machine substrate check" -ForegroundColor DarkCyan
 Write-Host ""
 
 # Exit code reflects health: 0 if green/yellow, 1 if critical red

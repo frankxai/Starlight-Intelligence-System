@@ -14,11 +14,11 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Verticals",
   description:
-    "Three reference Domain Sub-Stacks built on the Starlight Intelligence Protocol: People Intelligence, Sound Intelligence, and Music IS. The pattern generalizes — spawn your own.",
+    "Four reference Domain Sub-Stacks built on the Starlight Intelligence Protocol: Health, People, Sound, and Music. The pattern generalizes — spawn your own.",
   openGraph: {
     title: "Verticals — Starlight Intelligence",
     description:
-      "Three reference Domain Sub-Stacks: People · Sound · Music. Calibrated, structured, sovereign. The pattern generalizes via /spawn-domain-stack.",
+      "Four reference Domain Sub-Stacks: Health · People · Sound · Music. Calibrated, structured, sovereign. The pattern generalizes via /spawn-domain-stack.",
     type: "article",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Verticals" }],
   },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Verticals — Starlight Intelligence",
     description:
-      "Three reference Domain Sub-Stacks: People · Sound · Music. The pattern generalizes.",
+      "Four reference Domain Sub-Stacks: Health · People · Sound · Music. The pattern generalizes.",
     images: ["/opengraph-image"],
   },
 };
@@ -46,7 +46,7 @@ export default function VerticalsPage() {
             Domain Sub-Stack Tier
           </p>
           <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
-            Three reference verticals.
+            Four reference verticals.
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-cyan-400 to-fuchsia-400 bg-clip-text text-transparent">
               The pattern generalizes.
@@ -63,7 +63,7 @@ export default function VerticalsPage() {
       {/* ── Vertical cards ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {VERTICALS.map((v) => (
               <article
                 key={v.slug}
@@ -73,9 +73,7 @@ export default function VerticalsPage() {
                   <p
                     className={`text-[11px] font-medium uppercase tracking-widest ${ACCENT_TEXT[v.accent]}`}
                   >
-                    {v.status === "live-frank-operated"
-                      ? "Live · Frank-operated"
-                      : "Live"}
+                    {verticalStatusLabel(v.status)}
                   </p>
                   <h2 className="mt-2 text-xl font-semibold text-white">
                     {v.name}
@@ -201,7 +199,7 @@ export default function VerticalsPage() {
       <section className="px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-[15px] leading-relaxed text-slate-400">
-            Three references. Infinite domains. One sovereign substrate.
+            Four references. Infinite domains. One sovereign substrate.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
@@ -232,4 +230,10 @@ function Stat({ label, value }: { label: string; value: string }) {
       <dd className="mt-1 font-mono text-[12px] text-white">{value}</dd>
     </div>
   );
+}
+
+function verticalStatusLabel(status: (typeof VERTICALS)[number]["status"]) {
+  if (status === "live-frank-operated") return "Live · Frank-operated";
+  if (status === "preclinical-prerelease") return "Preclinical prerelease";
+  return "Live";
 }

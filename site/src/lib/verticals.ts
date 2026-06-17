@@ -1,13 +1,14 @@
-// Built on SIP — structured data for the 3 reference Domain Sub-Stack verticals.
+// Built on SIP — structured data for the reference Domain Sub-Stack verticals.
 // Source-of-truth for vertical metadata. Read by /verticals (index) and
 // /verticals/[slug] (detail). Updates here ripple to both surfaces.
 
 export type VerticalSlug =
   | "people-intelligence"
   | "sound-intelligence"
-  | "music-is";
+  | "music-is"
+  | "health-intelligence";
 
-export type Accent = "violet" | "cyan" | "fuchsia";
+export type Accent = "violet" | "cyan" | "fuchsia" | "emerald";
 
 export type SubSystem = {
   name: string;
@@ -23,7 +24,7 @@ export type VerticalAgent = {
 export type Vertical = {
   slug: VerticalSlug;
   name: string;
-  status: "live" | "live-frank-operated";
+  status: "live" | "live-frank-operated" | "preclinical-prerelease";
   accent: Accent;
   taglineShort: string;
   heroQuote: string;
@@ -38,9 +39,113 @@ export type Vertical = {
   quickStartSteps: string[];
   refusals: string[];
   githubBlobBase: string;
+  releaseUrl?: string;
+  downloadUrl?: string;
 };
 
 const VERTICAL_LIST: Vertical[] = [
+  {
+    slug: "health-intelligence",
+    name: "Health Intelligence",
+    status: "preclinical-prerelease",
+    accent: "emerald",
+    taglineShort:
+      "Cancer detection prep, treatment discussion packets, privacy discipline, and clinician handoff. Decision support, not medical advice.",
+    heroQuote:
+      "Health decisions deserve organized memory, evidence freshness, privacy discipline, and clinical humility. The system prepares care conversations; clinicians make care decisions.",
+    pillars: [
+      "Risk",
+      "Screening",
+      "Diagnostics",
+      "Treatment Prep",
+      "Survivorship",
+      "Evidence",
+    ],
+    counts: {
+      subSystems: "6 sub-systems",
+      commands: "5 commands",
+      agents: "5 agents",
+    },
+    subSystems: [
+      {
+        name: "Prevention & Risk",
+        purpose:
+          "Family history, known risk factors, prior abnormal results, exposure inventory, and genetic-counseling questions without turning public guidance into personal advice.",
+        primaryCommand: "/cancer-screening-plan",
+      },
+      {
+        name: "Screening & Detection",
+        purpose:
+          "Average-risk screening checklist, gap list, follow-up ownership, and evidence-check date for clinician conversations.",
+        primaryCommand: "/cancer-screening-plan",
+      },
+      {
+        name: "Diagnostic Navigation",
+        purpose:
+          "Abnormal-result timeline, records request, appointment questions, and urgency handoff. No result interpretation.",
+        primaryCommand: "/cancer-diagnostic-brief",
+      },
+      {
+        name: "Treatment Planning",
+        purpose:
+          "Oncology discussion packet, options table, second-opinion records, clinical-trial questions, and logistics comparison.",
+        primaryCommand: "/cancer-treatment-board-prep",
+      },
+      {
+        name: "Supportive Care & Survivorship",
+        purpose:
+          "Side-effect tracking, follow-up questions, late-effect watch list, and treatment-summary recordkeeping.",
+        primaryCommand: "/cancer-follow-up-plan",
+      },
+      {
+        name: "Evidence & Clinician Interface",
+        purpose:
+          "Source ledger, validation checklist, privacy rule, safety boundary, and release review gate.",
+        primaryCommand: "/cancer-second-opinion-packet",
+      },
+    ],
+    agents: [
+      {
+        name: "cancer-screening-navigator",
+        role: "Average-risk screening prep and gap lists; refuses personal screening orders.",
+      },
+      {
+        name: "diagnostic-brief-builder",
+        role: "Abnormal-result packets, timelines, and appointment questions; refuses result interpretation.",
+      },
+      {
+        name: "oncology-decision-scribe",
+        role: "Treatment discussion packets and second-opinion organization; refuses treatment recommendations.",
+      },
+      {
+        name: "trial-question-builder",
+        role: "Clinical trial logistics and eligibility questions; does not determine eligibility.",
+      },
+      {
+        name: "survivorship-record-keeper",
+        role: "Follow-up and late-effect recordkeeping; does not prescribe surveillance schedules.",
+      },
+    ],
+    quickStartSteps: [
+      "Read SAFETY.md before using the module; the pack is preclinical prerelease until review is logged.",
+      "Pick one workflow: screening, abnormal-result brief, treatment-board prep, second-opinion packet, or follow-up plan.",
+      "Copy the matching template into a private workspace; never commit real health data to public git.",
+      "Add evidence-check date and clinician questions before sharing any artifact.",
+      "Run VALIDATION.md before exporting or sending the summary to a care team.",
+    ],
+    refusals: [
+      "Diagnosis or reassurance",
+      "Pathology, imaging, lab, or genetic interpretation",
+      "Treatment, medication, supplement, or delay recommendations",
+      "Public storage of private health data",
+    ],
+    githubBlobBase:
+      "https://github.com/frankxai/health-intelligence-system/blob/main",
+    releaseUrl:
+      "https://github.com/frankxai/health-intelligence-system/releases/tag/v0.1.1",
+    downloadUrl:
+      "https://github.com/frankxai/health-intelligence-system/releases/download/v0.1.1/health-intelligence-system-v0.1.1.zip",
+  },
   {
     slug: "people-intelligence",
     name: "People Intelligence",

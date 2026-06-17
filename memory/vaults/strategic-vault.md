@@ -29,6 +29,8 @@ last_consolidated: '2026-05-11'
 | 2026-06-10 | SIS Claws Architecture Decision | architecture | 0.95 |
 | 2026-06-12 | Queen visual + continuous advance (whole SIS) | strategy | 1.0 |
 | 2026-06-12 | Cross-Repo Visual Production Workspace Strategy | integration | 0.95 |
+| 2026-06-14 | Automated Premium Prompt Compiler & Virality Analysis | strategy | 0.95 |
+| 2026-06-15 | Starlight Visual Director (SVD) E2E Efficacy | execution | 0.98 |
 
 ---
 
@@ -297,3 +299,56 @@ For the Core Five repositories (FrankX, frankx.ai-vercel-website, arcanea-ai-app
 
 **Rationale:**
 This design prevents style drift across separate website, application, or system repositories, maintains brand alignment (Tech, Soul, and Cinematic spectra), and keeps credit expenditure transparent across multi-agent sessions.
+
+---
+
+### [2026-06-14] Automated Premium Prompt Compiler & Virality Analysis
+
+**Category:** strategy / visual-intelligence / quality-assurance
+**Confidence:** 0.95
+**Source:** Antigravity / Gemini 3.5 Visual Enhancement Session
+**Related:** [starlight/higgsfield-handover.md](file:///C:/Users/frank/starlight/higgsfield-handover.md), [starlight/higgsfield/ledger.jsonl](file:///C:/Users/frank/starlight/higgsfield/ledger.jsonl), [prompt_creator_council.js](file:///C:/Users/frank/.gemini/antigravity-cli/scratch/prompt_creator_council.js)
+
+**Decision:**
+Implement a pre-flight prompt compiler and evaluation system (Prompt Creator Council) for all high-value asset generations to enforce world-class quality before spending credits, and run a post-generation virality prediction gate to audit visual engagement and attention metrics.
+
+**Core Principles:**
+1. **Pre-flight Design Integrity:** Never generate assets from raw user text. Synthesize detailed, structured prompt cards that define Organizing Metaphors, Style DNA, 4+ exact physical Components, and an Organic Anchor.
+2. **Double-Loop Quality Gate:** 
+   - *Loop 1 (Pre-generation):* Enforce a simulated Visual Creation Council score (minimum 8.0/10 rating) checking for visual coherence, details, and aesthetic richness.
+   - *Loop 2 (Post-generation):* Run the generated assets through a neural virality predictor (`brain_activity` model) to measure Occipital Cortex activation (attention hook) and Default Mode Network (DMN) suppression (boredom prevention).
+3. **Aesthetic/Engagement Trade-off:** Premium cinematic and architectural loops (high detail, Da Vinci Codex style) prioritize high-sustain, low-arousal immersion, resulting in a higher DMN (e.g. 67.7% activation) and lower hook score (e.g. 31%). Social reels require high-contrast, unexpected scene cuts to suppress DMN and maximize immediate occipital activation.
+
+**Evidence:**
+Successful compilation, generation, 4K upscaling, and download of the Core Five premium suite:
+- FrankX Landing Hero (`landing_hero_premium_upscaled.png`, Job `ccd03924-7066-4982-b2a5-7fb801ed8d2f`)
+- Arcanea Dashboard Hero (`dashboard_hero_premium_upscaled.png`, Job `db916602-0bce-4aae-9167-10bfbe607023`)
+- Palace Schema (`palace_schema_premium.png`, Job `d0f492d5-7f66-4ca5-95dd-1e59c07419ac`)
+- Game Collectible (`collectible_reliquary_premium.png`, Job `13bbd433-c2f5-4f56-a793-b74d6346be36`)
+- Virality analysis of the premium loop video (`6d74a31a-4459-4407-b38e-b4f4e106d4c7`) yielding 96/100 sustain.
+
+**Attestation:** Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+---
+
+### [2026-06-15] Starlight Visual Director (SVD) E2E Efficacy
+
+**Category:** execution / quality-assurance / automation
+**Confidence:** 0.98
+**Source:** Antigravity / Gemini 3.5 Verification Session
+**Related:** [technical-vault.md](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/memory/vaults/technical-vault.md), [visual-director.mjs](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/tools/visual-director/visual-director.mjs), [higgsfield-handover.md](file:///C:/Users/frank/starlight/higgsfield-handover.md)
+
+**Decision:**
+Consolidate and verify the end-to-end execution of the Starlight Visual Director (SVD) CLI. Resolve the critical JSON-RPC parsing defect where the neuro-engagement scorecard scores were misaligned under `generation.params.analysis.scores` (rather than `generation.analysis.scores`), resulting in a fallback print of `0/100`.
+
+**Key Actions & Outcomes:**
+1. **Tool Defect Resolution:** Modified the `auditVideo` function in `visual-director.mjs` to fetch scores dynamically from `generation.params.analysis` first, allowing the true predictive scores to be correctly parsed and printed.
+2. **E2E Asset Generation & Audit:**
+   - Generated `system-architecture-cover_premium.png` (Job `562a7b31-9e44-4f75-a4a8-bdd5acd85d42`, 2.0 credits).
+   - Generated 4K Upscale `system-architecture-cover_premium_upscaled.png` (Job `cab4afb2-4f2c-40be-9df7-b51025af0cec`, 2.0 credits).
+   - Compiled premium video loop `system-architecture-cover_premium.mp4` (Job `8a00f54e-552d-49c0-a484-6f910806bf86`, 8.0 credits).
+   - Audited the resulting video using the neuro-engagement predictor (Job `734b1802-4997-499a-9a84-dcf9ed1d7b6d`), extracting a verified scorecard: Overall 45, Hook 32, Sustain 90, Viral Potential 44, Brain Engagement 38.
+3. **Credit Threshold Governance:** Spent 12.0 credits, leaving a total balance of 127.48 credits. Logged a warning that the balance is below the critical 400 credit threshold.
+
+**Attestation:** Built on SIP — Starlight Intelligence Protocol v1.1.1.
+

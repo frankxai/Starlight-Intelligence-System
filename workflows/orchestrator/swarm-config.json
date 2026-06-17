@@ -1,0 +1,72 @@
+{
+  "is": "orchestrator",
+  "displayName": "Starlight Orchestrator / Private Intelligence Office",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-orchestrator-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Cross-IS synthesis, council facilitation, sovereign intelligence production, substrate governance gate, yolo session orchestration",
+      "port": 8104,
+      "type": "local",
+      "skills": [
+        "intelligence/systems-thinking",
+        "intelligence/strategic-reasoning",
+        "memory/knowledge-synthesis",
+        "memory/ecosystem-sync",
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["strategic", "technical", "wisdom", "horizon"],
+      "commands": ["/starlight", "/council", "/yolo", "/synthesize"]
+    },
+    {
+      "id": "hermes-orchestrator-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for status checks, routing decisions, vault writes, transmission dispatch, IS task coordination",
+      "port": 8105,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution",
+        "memory/context-preservation"
+      ],
+      "vaultAccess": ["operational"],
+      "commands": []
+    }
+  ],
+  "swarmTopology": "cascade",
+  "concurrency": 10,
+  "timeoutMs": 600000,
+  "onResult": "vault-write",
+  "isMasterOrchestrator": true,
+  "routesTo": [
+    "hermes-self-specialist",
+    "hermes-wealth-specialist",
+    "hermes-family-specialist",
+    "hermes-business-specialist",
+    "hermes-creator-specialist",
+    "hermes-secondbrain-specialist",
+    "hermes-code-specialist",
+    "hermes-vv-specialist",
+    "hermes-brand-specialist"
+  ],
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest",
+    "transmit-channel",
+    "transmit-broadcast",
+    "unified-context-write",
+    "starlight-board-gate"
+  ],
+  "triggers": [
+    "/starlight",
+    "sovereign intelligence sweep",
+    "coordinate across IS",
+    "system status",
+    "yolo mode",
+    "convene the council",
+    "full intelligence review"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

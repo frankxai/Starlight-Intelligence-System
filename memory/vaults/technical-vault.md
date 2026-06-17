@@ -29,6 +29,8 @@ last_consolidated: '2026-05-11'
 | 2026-02-10 | Memory Hierarchy Pattern | memory-pattern | 0.90 |
 | 2026-05-06 | Core Regression Harness Pattern | test-pattern | 0.90 |
 | 2026-06-12 | Cross-Repo Visual Production Pattern | design-pattern | 0.95 |
+| 2026-06-14 | Double-Loop Visual Quality Control Pattern | process-pattern | 0.95 |
+| 2026-06-15 | SVD Double-Loop CLI Pipeline & Nested API Parsing | tool-pattern | 0.98 |
 
 ---
 
@@ -210,4 +212,73 @@ Platform exports (Claude Code, Codex, ChatGPT Projects)
 - **Zero Duplication:** Ensures brand style guidelines (Tech spectrum, soul spectrum, cinematic style) do not drift across separate website, application, or system repositories.
 - **Portability:** Simplifies pipeline jobs by letting any agent harness (Codex, Antigravity, Claude Code) read a single unified directory for asset reference.
 - **Cost Safety:** Centralized ledger keeps credit expenditure transparent across multi-agent sessions.
+
+---
+
+### [2026-06-14] Double-Loop Visual Quality Control Pattern
+
+**Category:** process-pattern / quality-pattern / design-pattern
+**Confidence:** 0.95
+**Source:** Antigravity / Gemini 3.5 Visual Enhancement Session
+**Related:** [strategic-vault.md](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/memory/vaults/strategic-vault.md), [prompt_creator_council.js](file:///C:/Users/frank/.gemini/antigravity-cli/scratch/prompt_creator_council.js), [run_virality_predictor.js](file:///C:/Users/frank/.gemini/antigravity-cli/scratch/run_virality_predictor.js)
+
+**Pattern:**
+A systematic pipeline for media asset creation that inserts automated pre-generation verification (prompt compilation with structural rules & evaluation) and post-generation verification (biological engagement prediction) to ensure high-fidelity outputs and eliminate bad credit spend.
+
+**Key Components:**
+1. **Prompt Compiler Rules:**
+   - *Organizing Metaphor:* Ground the composition in a concrete real-world setup (e.g. cockpit, clockwork model).
+   - *Style DNA:* Explicitly declare color codes, texture rules (e.g., copper-brass filigree, glowing cyan terminals), and rendering methods (e.g., Da Vinci Codex, Cyberpunk Neon).
+   - *Components:* Detail 4+ specific objects with lighting instructions.
+   - *Organic Anchor:* Anchor the digital/artificial with an organic detail (e.g. leather straps, dust particles).
+2. **Pre-Flight Council Evaluation:**
+   - Execute a programmatic evaluator testing the prompt string for Style DNA inclusion, metaphor depth, and structural complexity.
+   - Assign a simulated score. Reject any prompt scoring < 8.0/10.
+3. **Upscale Polling Strategy:**
+   - Upscale 2D stills to 4K using the `upscale_image` tool by parsing the source image's exact dimensions first.
+   - *Failure Avoidance:* Implement long-polling (up to 60-120 seconds, with exponential backoff or 8s intervals) to prevent premature timeouts since 4K upscaling takes significantly longer than standard image generations.
+4. **Post-Generation Virality Loop:**
+   - Submit the finished MP4 video/image to the `virality_predictor` tool.
+   - Parse occipital activation values across frames (measuring visual arousal) and Default Mode Network activation (measuring cognitive task-wandering).
+   - Use high DMN and low hook score as indicators for loop-friendly atmospheric looping (perfect for headers/dashboards), and low DMN/high hook score for attention-grabbing reels.
+
+**Benefits:**
+- **Guaranteed Quality:** Eliminates poorly thought-out assets by rejecting weak prompts before they ever call the generative API.
+- **Data-Driven Optimization:** Replaces guesswork about "what looks good" with predictive brain activation maps.
+
+---
+
+### [2026-06-15] SVD Double-Loop CLI Pipeline & Nested API Parsing
+
+**Category:** tool-pattern / process-pattern / api-integration
+**Confidence:** 0.98
+**Source:** Antigravity / Gemini 3.5 Verification Session
+**Related:** [strategic-vault.md](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/memory/vaults/strategic-vault.md), [visual-director.mjs](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/tools/visual-director/visual-director.mjs)
+
+**Pattern:**
+When developing autonomous client bridges to JSON-RPC tools and services (such as Higgsfield MCP) that emit structured content, implement robust fallbacks in the JSON path resolution hierarchy to handle variable structure formats (such as nested parameters vs. root-level arrays) and prevent silent failures.
+
+**Mechanism:**
+1. **OAuth Auto-Refresh:** Keep credentials valid by checking token expiry dynamically before every API call and performing refreshing on-demand:
+   ```javascript
+   const isExpired = !credentials.expiresAt || (Date.now() + 300000 >= credentials.expiresAt);
+   ```
+2. **Accept Header Streaming:** Ensure that JSON-RPC transports that return SSE streams accept both JSON and event-streams explicitly:
+   ```javascript
+   'Accept': 'application/json, text/event-stream'
+   ```
+3. **Structured Scorecard Extraction:** Always traverse nested metadata paths when querying predictive scores:
+   ```javascript
+   const analysis = statusSc.generation?.params?.analysis || statusSc.generation?.analysis || statusSc.analysis || {};
+   const scores = analysis.scores || {};
+   ```
+4. **Programmatic Quality Gate Council:** Replicate human check criteria (Metaphor, DNA, Components, Organic Anchor, Slop prevention) in local validator checks before submission to protect the budget cap.
+
+**Benefits:**
+- **Reliable Score Logging:** Prevents tools from printing default or 0/100 outputs when the underlying service successfully returns rich cortical activation metadata.
+- **Cost Minimization:** Evaluates prompt style code offline before wasting API credits.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+
 

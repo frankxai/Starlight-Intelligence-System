@@ -41,7 +41,7 @@ Protocol: Read relevant vaults before work. Update after.
 
 ## Skills
 
-76 auto-activating skill rules across 15 domains: Intelligence · Orchestration · Memory · Integration · Safety · Business · Vision · Health · Relational · People Intelligence · Sound Intelligence · Music IS · Energy · Machine · Crypto Intelligence. See `skills/skill-rules.json` for activation rules and `skills/SKILL_REGISTRY.md` for the full registry.
+78 auto-activating skill rules across 15 domains: Intelligence · Orchestration · Memory · Integration · Safety · Business · Vision · Health · Relational · People Intelligence · Sound Intelligence · Music IS · Energy · Machine · Crypto Intelligence. See `skills/skill-rules.json` for activation rules and `skills/SKILL_REGISTRY.md` for the full registry.
 
 ## Research
 

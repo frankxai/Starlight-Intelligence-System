@@ -106,6 +106,15 @@ function Show-StarlightRepos {
     Write-Host "Useful keys: sis, fx, arc, app, claw, studio, author, aco, prompts, brain, cockpit, swarm, visual" -ForegroundColor DarkCyan
 }
 
+# Helper: Run history sync across harnesses
+function Invoke-HistorySync {
+    $syncScript = "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js"
+    if (Test-Path $syncScript) {
+        Write-Host "🔄 Syncing harness histories..." -ForegroundColor DarkGray
+        node $syncScript | Out-Null
+    }
+}
+
 # Helper: Invoke agy with YOLO mode in a target path, optionally seeding a prompt
 function Invoke-AgyYolo {
     param(
@@ -122,6 +131,9 @@ function Invoke-AgyYolo {
         Write-Error "Antigravity CLI not found at: $global:AGY_EXE_PATH"
         return
     }
+
+    # Sync history from other harnesses
+    Invoke-HistorySync
 
     # Switch location
     Set-Location $TargetPath
@@ -250,6 +262,9 @@ function Invoke-ClaudeYolo {
         $claudeExe = "claude"
     }
 
+    # Sync history from other harnesses
+    Invoke-HistorySync
+
     # Switch location
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
@@ -272,6 +287,9 @@ function Invoke-CodexInRepo {
         $codexPath = "codex"
     }
 
+    # Sync history from other harnesses
+    Invoke-HistorySync
+
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
     Write-Host "🚀 Spawning Codex..." -ForegroundColor Green
@@ -293,6 +311,9 @@ function Invoke-GrokYolo {
     if (-not (Test-Path $grokExe)) {
         $grokExe = "grok"
     }
+
+    # Sync history from other harnesses
+    Invoke-HistorySync
 
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
@@ -580,6 +601,67 @@ function gr-intelligent {
 }
 Remove-Item -Path Alias:gr -ErrorAction SilentlyContinue
 Set-Alias -Name gr -Value gr-intelligent -Scope Global -Force -ErrorAction SilentlyContinue
+
+# ------------------------------------------------------------------------------
+# ASPH & Starlight Lifecycle Aliases
+# ------------------------------------------------------------------------------
+
+function asph-cp {
+    powershell.exe -ExecutionPolicy Bypass -File "C:\Users\frank\agentic-ops\lifecycle\asph-checkpoint.ps1"
+}
+
+function asph-rs {
+    powershell.exe -ExecutionPolicy Bypass -File "C:\Users\frank\agentic-ops\lifecycle\asph-resume.ps1"
+}
+
+function asph-sync {
+    node "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js"
+}
+
+function starlight-status-all {
+    $RegistryPath = "C:\Users\frank\repo-registry.json"
+    $ReposRoot = "C:\Users\frank\starlight\repos"
+    
+    if (-not (Test-Path $RegistryPath)) {
+        Write-Error "Repo registry not found."
+        return
+    }
+    
+    $currentPath = Get-Location
+    $registry = Get-Content $RegistryPath -Raw | ConvertFrom-Json
+    $results = @()
+    
+    foreach ($r in $registry.repos) {
+        if ($r.status -eq "active" -or $r.agentStatus -eq "active") {
+            $path = Join-Path $ReposRoot $r.name
+            if (Test-Path "$path\.git") {
+                Set-Location $path
+                $branch = git branch --show-current 2>$null
+                $lastCommit = git log -1 --format=%s 2>$null
+                $dirtyLines = (git status --porcelain 2>$null | Measure-Object -Line).Lines
+                
+                $results += [PSCustomObject]@{
+                    Name       = $r.name
+                    Branch     = $branch
+                    Status     = if ($dirtyLines -gt 0) { "Dirty ($dirtyLines files)" } else { "Clean" }
+                    LastCommit = $lastCommit
+                }
+            }
+        }
+    }
+    
+    # Restore original directory location
+    Set-Location $currentPath
+    
+    Write-Host "`n🧠 Starlight Fleet Repository Status" -ForegroundColor Cyan
+    Write-Host "==========================================================" -ForegroundColor DarkGray
+    $results | Format-Table -AutoSize
+}
+
+Set-Alias -Name checkpoint -Value asph-cp -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name resume -Value asph-rs -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name hsync -Value asph-sync -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name status-all -Value starlight-status-all -Scope Global -Force -ErrorAction SilentlyContinue
 
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
     Write-Host 'Antigravity YOLO wrappers loaded: agy-sis/agysis | agy-fx/agyfx | agy-arc/agyarc | agy-app/agyapp | agy-acos/agyacos | agy-run(ay)' -ForegroundColor Green

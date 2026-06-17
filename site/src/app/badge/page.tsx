@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { getCanonicalSipVersion } from "@/lib/sip";
 
@@ -64,11 +65,13 @@ export default async function BadgePage() {
 
           {/* Hero badge preview */}
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <img
+            <Image
+              unoptimized
               src={`/badge/${version}`}
               alt={`Built on SIP ${version}`}
+              width={200}
               height={28}
-              style={{ height: 28 }}
+              style={{ height: 28, width: "auto" }}
             />
             <code className="font-mono text-[12px] text-slate-500">
               /badge/{version}
@@ -99,44 +102,52 @@ export default async function BadgePage() {
         <Section eyebrow="01 / Preview" heading="Renders cleanly at any width">
           <div className="space-y-6 rounded-xl border border-white/[0.08] bg-[#0c0c12] p-6">
             <div className="flex items-center gap-4">
-              <img
+              <Image
+                unoptimized
                 src={`/badge/${version}`}
                 alt={`Built on SIP ${version}`}
+                width={200}
                 height={28}
-                style={{ height: 28 }}
+                style={{ height: 28, width: "auto" }}
               />
               <span className="font-mono text-[11px] text-slate-600">
                 native (28px)
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <img
+              <Image
+                unoptimized
                 src={`/badge/${version}`}
                 alt={`Built on SIP ${version}`}
+                width={143}
                 height={20}
-                style={{ height: 20 }}
+                style={{ height: 20, width: "auto" }}
               />
               <span className="font-mono text-[11px] text-slate-600">
                 small (20px)
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <img
+              <Image
+                unoptimized
                 src={`/badge/${version}`}
                 alt={`Built on SIP ${version}`}
+                width={286}
                 height={40}
-                style={{ height: 40 }}
+                style={{ height: 40, width: "auto" }}
               />
               <span className="font-mono text-[11px] text-slate-600">
                 large (40px)
               </span>
             </div>
             <div className="flex items-center gap-4 rounded-lg bg-white p-4">
-              <img
+              <Image
+                unoptimized
                 src={`/badge/${version}?theme=light`}
                 alt={`Built on SIP ${version}`}
+                width={200}
                 height={28}
-                style={{ height: 28 }}
+                style={{ height: 28, width: "auto" }}
               />
               <span className="font-mono text-[11px] text-slate-500">
                 ?theme=light (for light README backgrounds)

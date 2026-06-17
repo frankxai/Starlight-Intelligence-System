@@ -30,3 +30,9 @@
       Cross-vault pattern: found in strategic + creative, technical
 - [ ] **`md:technical-vault.md#1`** — technical → wisdom  
       Cross-vault pattern: found in technical + creative, strategic
+### 2026-06-16T02:02:05.420Z
+
+- [ ] **`md:strategic-vault.md#14`** — strategic → wisdom  
+      Cross-vault pattern: found in strategic + technical
+- [ ] **`md:technical-vault.md#10`** — technical → wisdom  
+      Cross-vault pattern: found in technical + strategic
