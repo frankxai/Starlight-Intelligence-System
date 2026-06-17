@@ -44,6 +44,7 @@ import {
   createSwarmPlan,
   inspectSwarmProviders,
   inspectSwarmRepos,
+  formatAgyToolCalls,
 } from "./swarm.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
@@ -1256,6 +1257,7 @@ function cmdStarlightSwarm(actionOrGoal: string | undefined, rest: string[], opt
     console.log("");
   }
   console.log(formatJSON(plan));
+  console.log("\n" + formatAgyToolCalls(plan));
 }
 
 function quotePowerShellArg(value: string): string {

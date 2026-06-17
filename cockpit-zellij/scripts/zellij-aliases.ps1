@@ -10,8 +10,41 @@
 
 . (Join-Path $PSScriptRoot '..\lib\projects.ps1')
 
+function Test-StarlightZellij {
+    return [bool](Get-Command zellij -ErrorAction SilentlyContinue)
+}
+
+function Invoke-StarlightAoFallback {
+    param(
+        [string]$Project,
+        [switch]$Start
+    )
+
+    $ConfigPath = 'C:\Users\frank\starlight\repos\agent-orchestrator.yaml'
+    if (Test-Path $ConfigPath) {
+        $env:AO_CONFIG_PATH = $ConfigPath
+        Set-Location 'C:\Users\frank\starlight\repos'
+    }
+
+    Write-Warning 'zellij is not available in this PowerShell session; using AO/process runtime fallback.'
+    if ($Start) {
+        if ($Project) {
+            ao start $Project
+        } else {
+            ao start
+        }
+    } else {
+        ao status
+    }
+}
+
 function arc {
     param([string]$Project)
+
+    if (-not (Test-StarlightZellij)) {
+        Invoke-StarlightAoFallback -Project $Project -Start
+        return
+    }
 
     if (-not $Project) {
         # No-arg form: start fresh session with the default layout. Use
@@ -45,6 +78,11 @@ function arc {
 function arc-attach {
     param([string]$Project)
 
+    if (-not (Test-StarlightZellij)) {
+        Invoke-StarlightAoFallback -Project $Project
+        return
+    }
+
     if (-not $Project) {
         $sessions = zellij list-sessions 2>$null
         if ($sessions) { zellij attach } else { arc }
@@ -61,15 +99,27 @@ function arc-attach {
 }
 
 function arc-kill {
+    if (-not (Test-StarlightZellij)) {
+        ao stop
+        return
+    }
     zellij kill-all-sessions --yes
 }
 
 function arc-list {
+    if (-not (Test-StarlightZellij)) {
+        ao status
+        return
+    }
     zellij list-sessions
 }
 
 function arc-layout {
     param([string]$Layout = 'starlight-orchestrator')
+    if (-not (Test-StarlightZellij)) {
+        Invoke-StarlightAoFallback
+        return
+    }
     zellij --layout $Layout
 }
 
@@ -105,6 +155,11 @@ function arc-revive {
         [string]$Session,
         [switch]$Latest
     )
+
+    if (-not (Test-StarlightZellij)) {
+        Invoke-StarlightAoFallback
+        return
+    }
 
     $raw = zellij list-sessions 2>$null
     if (-not $raw) {
