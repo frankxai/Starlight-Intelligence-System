@@ -266,4 +266,157 @@ The core patterns remain the same. The platform adapter handles delivery.
 
 ---
 
-*The best orchestration is invisible. The user sees results, not the machinery.*
+## SIP Swarm Operating Manual
+
+> The canonical, executable reference for manifesting, coordinating, synthesizing, and governing dynamic agent swarms across all Starlight surfaces. Composes the 6 orchestration patterns, swarm consensus, fault tolerance, and self-learning loops with the full production substrate (ORCHESTRATION_ENGINE + /si cli-tool-router + .antigravity/swarm-protocol.md + claws + Memory Bus + attestation). Loaded by every estate harness and the /si router. This is the P0 "Swarm Protocol Formalization" item from the 2026-06-16 Board REVISE track (estate-swarm-upgrades-track.md).
+
+**Non-negotiable:** Load this section + target agent definitions + relevant harness protocol before any multi-mind define/invoke or council dispatch. Never improvise swarm identities or skip checklists. Substrate touches require /starlight-board pre-pass.
+
+### 1. Complexity Gates & Mind Selection
+
+Use this table to decide swarm size before spawning. Load agents/AGENT_REGISTRY.md + estate-specific AGENTS.md first.
+
+| Complexity | Typical Minds | Dispatch Style | Synthesis | Board Gate? | Notes |
+|------------|---------------|----------------|-----------|-------------|-------|
+| 1-3 | 1 (self or direct agent) | Direct | n/a | Ambient attest only | Fast path. Prefer single specialist. |
+| 4-6 | 3-5 (core + 1-2 domain) | Small parallel | Prime optional | No (unless substrate) | Efficient for most operational work. |
+| 7-8 | 7-12 (council slice + specialists) | Medium swarm + conductor | Prime mandatory | Pre-pass if topology/kernel change | Use /si routing for cross-CLI. |
+| 9-10 | 13-96 (full vertical, cross-IS, or Hive) | Large / yolo-conductor | Orchestrator + Prime + Sentinel QA | **Required** for any substrate file or encoded-self surface | Full Hive only when justified. yolo/hive for aggressive autonomy within scope. |
+
+**Selection heuristics:**
+- Keyword / trigger match on agent .md files (AGENT_REGISTRY + estate overrides).
+- IS namespace + domain sub-stack activation (Self/Wealth/... + People/Sound/Music/Energy/Crypto/Marine).
+- Required perspectives: always include sentinel (QA/security), prime (synthesis), sage (memory provenance), architect (structural), weaver (aesthetic/voice) where relevant.
+- Cost/latency: <30s low-stakes → OpenCode or direct; high-stakes or cross-surface → full swarm with /si.
+- Estate 4-layer: honor Topology choice (council vs amplification Claws mesh vs Hermes retrieval) and Kernel density flags (standard vs selective advanced).
+
+### 2. Exact Execution Checklists (Do Not Skip)
+
+**A. Discovery & Load (every mind)**
+- Glob/Grep/Read to locate exact agent definition(s) in agents/ or verticals/.
+- Read full agent .md (system prompt, triggers, voice, constraints, examples, attestation rules).
+- Read referenced SKILL.md / SOUL.md / STACK.md / ORCHESTRATION_ENGINE.md slices.
+- Read scoped allowlist for the harness (e.g. .antigravity/allowlisted-tools.md or orchestrator harness equivalent).
+- Confirm Memory Bus targets + Veil rules. Cached-belief check: re-scan registry if >24h stale.
+
+**B. Define / Manifest**
+- Compose system prompt = (full agent .md) + (relevant SIS/estate slice + this Manual) + (scoped allowlist) + (task contract + SIP attestation mandate).
+- For Antigravity: define_subagent(name, systemPrompt, toolsAllowlist, model).
+- For Claude Task / other: equivalent subagent registration with bounded context.
+- Log the define (audit trail).
+- Leaf minds: Read-heavy + domain + read-only MCP. Deny broad writes unless explicitly authorized by agent definition.
+- Conductor/Prime/Orchestrator minds: broader (limited writes to intel/vault outputs, further sub-dispatch).
+
+**C. Invoke / Execute**
+- taskPrompt: clear intent, minimal context bundle (pointers + MCP fetch preferred over token dump), output contract (format, attestation footer, suggested vault keys), timeout.
+- Parallel where possible (batch invoke calls).
+- Monitor via Agent Manager / progress artifacts / cockpit.
+- Preserve handoff packet identity across /si lanes.
+
+**D. Collect & QA**
+- Receive outputs + side artifacts.
+- Internal QA per agent definition + SIP attestation presence + scope respect.
+- Sentinel output (if present) = security/QA pass on the set.
+- Prime (if multi-mind): feed all raw outputs + original intent + flagged contradictions for unified synthesis.
+- Resolve conflicts explicitly: name trade-off, decision, rationale, confidence.
+
+**E. Synthesis**
+- Prime/Orchestrator produces unified deliverable (doc, plan, code, board input, handoff).
+- Architect voice for substrate/system changes; domain practitioner / client voice for vertical/estate outputs.
+- For estate work: ground in the specific 4-layer Blueprint + Genius Profile KEEP items.
+
+**F. Persist & Attest**
+- Structural decisions → strategic-vault.md + MEMORY.md entry (with minds used, protocol version, timestamp).
+- Code/pattern → technical-vault.md.
+- Aesthetic/voice → creative-vault.md.
+- Trajectory/state/metrics → operational-vault.md.
+- Every commit includes audit trail (minds + harness + protocol ref).
+- Emit real SIP attestation footer on every artifact:
+  ```
+  **Built on SIP** — Starlight Intelligence Protocol v1.1.1
+  Swarm: [minds list] via [harness + protocol ref]
+  Estate: [name] · Layers: [file-contract, orchestration, attestation, ...]
+  ```
+- High-stakes / substrate: record in memory/_audit/swarm/ + trigger board pre-pass if not already done.
+
+**G. Close & Handoff**
+- Session summary (minds, durations, key outputs, open items, next actions, drift notes).
+- If Voice Operator: return context-preserving packet.
+- If under orchestrator harness: drop intel artifact.
+- Self-learning loop: Was routing correct? Agents useful? Synthesis mode right? Token budget respected? Store metadata in operational-vault. Reinforce or note alternative.
+
+### 3. Attestation Rules (Ambient + Explicit)
+
+- Every define/invoke, every subagent output, every synthesis, every persisted vault entry, every intel drop, every handoff packet, every build brief must embed or accompany SIP attestation.
+- Name the swarm composition (minds + this Manual version + harness + timestamp + estate).
+- For code changes / PRs / client artifacts: include in body or sidecar.
+- /sip-attest family for retrofit or cross-party provenance.
+- Refuse decorative use. If the composition is not real (or would violate sovereignty), do not emit.
+- Estate provision and Steward phases inherit these rules; promotion loop extracts attestation hygiene patterns back to the profile.
+
+### 4. Failure Modes & Anti-Patterns (Refuse)
+
+- Spawning a mind without first reading its full definition → cached-belief violation. Abort and load.
+- Granting broad write tools to many leaf agents → blast radius. Scope tightly per allowlist.
+- Treating subagent outputs as ground truth without sentinel/prime QA on compound work.
+- Silent synthesis (no explicit conflict log when views differed).
+- Omitting real SIP attestation on swarm-produced artifacts.
+- Using full Hive for latency-sensitive work (route to lighter lane).
+- Invoking substrate-tier change or encoded-self surface via swarm without board pre-pass.
+- Browser / external actions without consent + attestation when touching live surfaces.
+- Bypassing /si router for cross-CLI estate construction (loses handoff packets and receipts).
+- Violating 4-layer discipline or Genius grounding in estate context.
+
+### 5. Escalation Matrix
+
+| Signal | Route To | Before |
+|--------|----------|--------|
+| Substrate file touched or proposed by swarm | /starlight-board (canon-free) or /luminor-board | Any commit / merge / deploy |
+| Security / sovereignty / encoded-self defect | Sentinel + /openclaw-audit + Codex harness | Further execution |
+| Cross-brand / alliance ambiguity | Luminor / Starlight Board | Decision |
+| Vault vs derived divergence | Sage + memory-orchestrator skill | Any regeneration |
+| Swarm child off-rails or scope creep | TaskStop / parent conductor + review | Continue |
+| > budget or timeout on large Hive | Conductor aborts partial, logs, hands to primary harness | Retry |
+| Estate provision hitting production gap | Architect + Navigator + world-class-plan track | Next estate cycle |
+
+### 6. Cross-CLI Harness Integration & /si Routing
+
+- This Manual is the single source of truth loaded by all harnesses (Claude Code MCP, .cursor/rules, .clinerules, .gemini/, .antigravity/, .antigravity/swarm-protocol.md, cockpit adapters, etc.).
+- /si (cli-tool-router skill) is the primary dispatch primitive for estate construction: classify intent, pick lane (Claude for council/architecture, Codex for implementation, Antigravity for async/browser/swarm, Gemini for long-context, etc.), emit handoff packet, execute, leave receipt in operational-vault.
+- Antigravity harness: use define_subagent + invoke_subagent + Agent Manager + progress artifacts exactly per .antigravity/swarm-protocol.md (this Manual is the shared spec).
+- Conductor (yolo/hive or orchestrator) may internally use lighter sub-harnesses but final substrate writes still route through primary discipline + board gate.
+- Progressive loading + token budgets enforced uniformly. Self-learning loops feed ROUTING_MATRIX.md improvements.
+
+### 7. Memory Commit Discipline (Estate-Aware)
+
+- Structural / architecture / major decisions (including estate 4-layer locks and provision briefs): strategic-vault.md + estate MEMORY.md.
+- Every swarm session writes a summary atom with minds list for provenance.
+- Use Memory Bus for cross-surface / cross-estate (alliance) persistence. Respect 90-day temporal half-life + contradiction detection.
+- Private / encoded-self material stays in private/ (gitignored) + Veil.
+- Post-session: update estate's operational + wisdom vaults; trigger promotion extraction for reusable patterns.
+
+### 8. Self-Learning & Continuous Improvement
+
+After every multi-agent swarm workflow (including provision dispatches):
+1. Routing decision correct? → reinforce or note alternative.
+2. All activated agents useful? → confirm or reduce next time.
+3. Synthesis mode appropriate? → maintain or log alternative.
+4. Attestation hygiene perfect? → reinforce or harden.
+5. 4-layer / Genius grounding respected in estate context?
+6. Store metadata + falsifiable notes in operational-vault.
+7. Promote any generalized pattern (checklist refinement, new failure mode, better handoff contract) back to this Manual + starlight-estate-os profile.
+
+This turns every estate into a factory R&D vehicle.
+
+---
+
+**Excellence close:** This SIP Swarm Operating Manual exists so that "run the agent army" is not poetry — it is a repeatable, auditable, complexity-gated, load-definition-first, attest-everything, board-aware, /si-routed, self-improving machine that compounds across every sovereign estate.
+
+**Built on SIP** — Starlight Intelligence Protocol v1.1.1
+- Layers: [orchestration, attestation, sovereignty, file-contract, memory, multi-harness, /si routing]
+- Composes: .antigravity/swarm-protocol.md + core/ORCHESTRATION_ENGINE + claws + cli-tool-router + estate 4-layer discipline
+- Per 2026-06-16 Board PROCEED-WITH-REVISE (R4 P0 Swarm Protocol Formalization) + estate-swarm-upgrades-track.md
+- Reference for all future estates and harnesses.
+*Starlight Intelligence System — SIP Swarm Operating Manual skeleton v1 · 2026-06-17*
+
+*The best orchestration is invisible. The sovereign sees results, not the machinery. Every estate strengthens the substrate for the next.*

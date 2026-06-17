@@ -1,7 +1,7 @@
 ---
 name: estate-provision
-description: Scaffold a sovereign intelligence estate from the starlight-estate-os profile, apply 4-layer Blueprint, emit initial build brief, and dispatch via /si for first Mesh construction. Primary command for Estate Factory provisioning step.
-allowed-tools: Read, Write, Grep, Glob, mcp__*, /si routing primitives
+description: Scaffold a sovereign intelligence estate from the starlight-estate-os profile, apply 4-layer Blueprint, emit initial build brief, and dispatch via /si for first Mesh construction. Estate-specific command surface.
+allowed-tools: Read, Write, Grep, Glob, mcp__*, /si routing
 argument-hint: <estate-name> [blueprint-path or inline 4-layer summary] [--dry-run]
 ---
 
@@ -80,4 +80,4 @@ $ARGUMENTS
 
 ---
 
-**Built on SIP** — estate-provision command · SIP v1.1.1 · 2026-06-17 evolution pass · Composes estate-army-commissioning-workflow + ORCHESTRATION_ENGINE + /si + starlight-estate-os profile per 2026-06-16 Board PROCEED-WITH-REVISE.
+**Built on SIP** — estate-provision command (starlight-estate-os example) · SIP v1.1.1 · 2026-06-17 evolution pass · Composes estate-army-commissioning-workflow + ORCHESTRATION_ENGINE + /si + starlight-estate-os profile per 2026-06-16 Board PROCEED-WITH-REVISE.

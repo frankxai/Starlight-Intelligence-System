@@ -82,7 +82,9 @@ $listeners = Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue |
     Where-Object { $_.LocalAddress -notin $loopback } |
     ForEach-Object {
         $proc = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue
-        '{0}:{1}' -f ($proc.ProcessName ?? 'unknown'), $_.LocalPort
+        $pname = 'unknown'
+        if ($proc -and $proc.ProcessName) { $pname = $proc.ProcessName }
+        '{0}:{1}' -f $pname, $_.LocalPort
     } | Sort-Object -Unique
 
 # --- 3. Autostart surface ------------------------------------------------------
@@ -132,7 +134,20 @@ if (-not $latestScan) {
     Add-Finding 'RED' 'secrets' "Secret scan stale -- latest output $($latestScan.Name) from $($latestScan.LastWriteTime)"
 } else {
     $leakLines = Select-String -Path $latestScan.FullName -Pattern 'leaks found: (\d+)' -AllMatches
-    $total = ($leakLines.Matches | ForEach-Object { [int]$_.Groups[1].Value } | Measure-Object -Sum).Sum
+    $total = 0
+    if ($leakLines) {
+        $matches = @()
+        foreach ($line in $leakLines) {
+            if ($line.Matches) {
+                foreach ($m in $line.Matches) {
+                    $matches += [int]$m.Groups[1].Value
+                }
+            }
+        }
+        if ($matches.Count -gt 0) {
+            $total = ($matches | Measure-Object -Sum).Sum
+        }
+    }
     if ($total -gt 0) {
         Add-Finding 'YELLOW' 'secrets' "Latest scan ($($latestScan.Name)) reports $total leak finding(s) -- triage required"
     }

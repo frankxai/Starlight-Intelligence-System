@@ -1,6 +1,6 @@
 # Starlight Intelligence System
 
-> A persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) — a sovereign six-layer substrate that anyone can adopt, fork, or compose with. 10 universal Intelligence Systems, 35 named agents, 70+ commands, 3 reference Domain Sub-Stack verticals. Local-first. Forkable. MIT-licensed. Source of truth at github.com/frankxai/Starlight-Intelligence-System.
+> A persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) — a sovereign six-layer substrate that anyone can adopt, fork, or compose with. 10 universal Intelligence Systems, 56 named agents, 100+ commands, 3 reference Domain Sub-Stack verticals. Local-first. Forkable. MIT-licensed. Source of truth at github.com/frankxai/Starlight-Intelligence-System.
 
 ## Protocol
 

@@ -119,9 +119,9 @@ export default async function HomePage() {
             on the Starlight Intelligence Protocol — a sovereign substrate
             anyone can adopt, fork, or compose with.{" "}
             <span className="text-slate-300">
-              10 intelligence systems, 48 agents, 70+ commands, 3 reference
+              10 intelligence systems, 56 agents, 100+ commands, 3 reference
               Domain Sub-Stack verticals.
-            </span>{" "}
+            </span> {" "}
             Local-first. Forkable. Free.
           </p>
 
@@ -153,8 +153,8 @@ export default async function HomePage() {
           {/* Stats bar */}
           <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/[0.08] pt-6 text-[13px]">
             <Stat n={10} label="intelligence systems" />
-            <Stat n={48} label="agents" />
-            <Stat n="70+" label="commands" />
+            <Stat n={56} label="agents" />
+            <Stat n="100+" label="commands" />
             <Stat n={3} label="reference verticals" />
             <Stat n={6} label="platform adapters" />
           </div>
