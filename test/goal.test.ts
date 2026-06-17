@@ -7,18 +7,18 @@ import { execSync } from "node:child_process";
 import { GoalOrchestrator } from "../src/goal.js";
 import { VaultMemory } from "../src/vault-memory.js";
 
-function withTempDir<T>(prefix: string, fn: (dir: string) => T): T {
+async function withTempDir<T>(prefix: string, fn: (dir: string) => T | Promise<T>): Promise<T> {
   const dir = mkdtempSync(join(tmpdir(), prefix));
   try {
-    return fn(dir);
+    return await fn(dir);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
 }
 
 describe("SAGE Goal Engine", () => {
-  it("creates and updates checkpoints correctly", () => {
-    withTempDir("sage-goal-", (dir) => {
+  it("creates and updates checkpoints correctly", async () => {
+    await withTempDir("sage-goal-", (dir) => {
       const orchestrator = new GoalOrchestrator({ starlightDir: dir });
       
       const objective = "Test goal execution";
@@ -43,8 +43,8 @@ describe("SAGE Goal Engine", () => {
     });
   });
 
-  it("compresses context and consolidates to vaults", () => {
-    withTempDir("sage-compress-", (dir) => {
+  it("compresses context and consolidates to vaults", async () => {
+    await withTempDir("sage-compress-", (dir) => {
       const orchestrator = new GoalOrchestrator({ starlightDir: dir });
       
       orchestrator.createChecklist("Compress Test", ["Task 1"]);
@@ -78,7 +78,7 @@ describe("SAGE Goal Engine", () => {
   });
 
   it("runs adversarial Sentinel audit", async () => {
-    withTempDir("sage-audit-", async (dir) => {
+    await withTempDir("sage-audit-", async (dir) => {
       const orchestrator = new GoalOrchestrator({ starlightDir: dir });
       orchestrator.createChecklist("Audit Test", ["Task 1"]);
       
@@ -88,8 +88,8 @@ describe("SAGE Goal Engine", () => {
     });
   });
 
-  it("performs git checkpoint creation and rollback in a temporary git repository", () => {
-    withTempDir("sage-git-", (dir) => {
+  it("performs git checkpoint creation and rollback in a temporary git repository", async () => {
+    await withTempDir("sage-git-", (dir) => {
       // Initialize a real temp git repo
       execSync("git init -b main", { cwd: dir, stdio: "ignore" });
       execSync('git config user.name "SAGE Test"', { cwd: dir, stdio: "ignore" });
