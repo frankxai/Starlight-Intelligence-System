@@ -331,10 +331,72 @@ function Invoke-CodexInRepo {
     & $codexPath
 }
 
-# Helper: Invoke Grok in a target path in YOLO mode
+# Helper: headless single-turn dispatch (used by /si fanout)
+function Invoke-AgentDispatch {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('grok','codex','claude','opencode','deepagent','antigravity')]
+        [string]$Lane,
+        [Parameter(Mandatory=$true)]
+        [string]$TargetPath,
+        [Parameter(Mandatory=$true)]
+        [string]$Prompt
+    )
+
+    if (-not (Test-Path $TargetPath)) {
+        Write-Error "Target repository path does not exist: $TargetPath"
+        return
+    }
+
+    Set-Location $TargetPath
+    Write-Host "⚡ Dispatch [$Lane] → $TargetPath" -ForegroundColor DarkCyan
+
+    switch ($Lane) {
+        'grok' {
+            $grokExe = "C:\Users\frank\.grok\bin\grok.exe"
+            if (-not (Test-Path $grokExe)) { $grokExe = "grok" }
+            & $grokExe -p $Prompt --cwd $TargetPath --disable-web-search --max-turns 8 --output-format plain
+        }
+        'codex' {
+            $codexPath = "C:\Users\frank\AppData\Roaming\npm\codex.ps1"
+            if (-not (Test-Path $codexPath)) { $codexPath = "codex" }
+            & $codexPath exec --sandbox workspace-write $Prompt
+        }
+        'claude' {
+            $claudeExe = "C:\Users\frank\.local\bin\claude.exe"
+            if (-not (Test-Path $claudeExe)) { $claudeExe = "claude" }
+            & $claudeExe -p $Prompt --model claude-haiku-4-5
+        }
+        'opencode' {
+            $oa = "C:\Users\frank\AppData\Roaming\npm\opencode.ps1"
+            if (-not (Test-Path $oa)) { $oa = "opencode" }
+            & $oa run $Prompt
+        }
+        'deepagent' {
+            $dcode = "C:\Users\frank\.local\bin\dcode.exe"
+            if (-not (Test-Path $dcode)) { $dcode = "dcode" }
+            & $dcode -m $Prompt -y -M claude-haiku-4-5
+        }
+        'antigravity' {
+            $script = Join-Path $PSScriptRoot 'si-dispatch.ps1'
+            if (Test-Path $script) {
+                & $script -Lanes antigravity -RepoPath $TargetPath -Task $Prompt
+                return
+            }
+            if (-not (Test-Path $global:AGY_EXE_PATH)) {
+                Write-Error "Antigravity CLI not found at: $global:AGY_EXE_PATH"
+                return
+            }
+            & $global:AGY_EXE_PATH -p $Prompt --dangerously-skip-permissions --add-dir $TargetPath
+        }
+    }
+}
+
+# Helper: Invoke Grok in a target path in YOLO mode (interactive) or headless when -Prompt given
 function Invoke-GrokYolo {
     param(
-        [string]$TargetPath
+        [string]$TargetPath,
+        [string]$Prompt
     )
 
     if (-not (Test-Path $TargetPath)) {
@@ -352,8 +414,13 @@ function Invoke-GrokYolo {
 
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
-    Write-Host "🚀 Spawning Grok YOLO Agent..." -ForegroundColor Green
-    & $grokExe --always-approve
+    if ($Prompt) {
+        Write-Host "🚀 Grok headless dispatch..." -ForegroundColor Green
+        & $grokExe -p $Prompt --cwd $TargetPath --disable-web-search --max-turns 8 --output-format plain
+    } else {
+        Write-Host "🚀 Spawning Grok YOLO Agent..." -ForegroundColor Green
+        & $grokExe --always-approve
+    }
 }
 
 # Helper: Invoke DeepAgent Code in a target path in YOLO mode
@@ -688,8 +755,9 @@ Set-Alias -Name cd -Value cd-intelligent -Scope Global -Force -ErrorAction Silen
 
 # Dedicated wrappers for Grok in repo context
 function gr-sis {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "sis"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 # Dedicated wrappers for Grok in repo context
@@ -895,7 +963,10 @@ function Test-AgentGridCli {
         "Claude Code" = @{ Path = "C:\Users\frank\.local\bin\claude.exe"; Command = "claude" }
         "Codex"       = @{ Path = "C:\Users\frank\AppData\Roaming\npm\codex.ps1"; Command = "codex" }
         "Grok"        = @{ Path = "C:\Users\frank\.grok\bin\grok.exe"; Command = "grok" }
+        "OpenCode"    = @{ Path = "C:\Users\frank\AppData\Roaming\npm\opencode.ps1"; Command = "opencode" }
+        "DeepAgent"   = @{ Path = "C:\Users\frank\.local\bin\dcode.exe"; Command = "dcode" }
         "Antigravity" = @{ Path = $global:AGY_EXE_PATH; Command = "agy" }
+        "Arco"        = @{ Path = "C:\Users\frank\AppData\Roaming\npm\arco.ps1"; Command = "arco" }
     }
 
     Write-Host "`n--- AI Binaries Status ---" -ForegroundColor Yellow
@@ -942,6 +1013,73 @@ function Test-AgentGridCli {
     }
     Write-Host "======================================================================" -ForegroundColor Cyan
 }
+
+# ------------------------------------------------------------------------------
+# Starlight /si fanout + council orchestration
+# ------------------------------------------------------------------------------
+
+function Invoke-SiFanout {
+    param(
+        [string]$Task,
+        [string]$TaskFile,
+        [string[]]$Lanes = @('grok', 'codex'),
+        [string]$RepoKey = 'sis',
+        [string]$RepoPath,
+        [switch]$Parallel,
+        [switch]$Ledger,
+        [string]$LedgerPath,
+        [string]$ReceiptPath,
+        [int]$TimeoutSec = 180,
+        [switch]$UseArco,
+        [switch]$Json
+    )
+    $script = Join-Path $PSScriptRoot 'si-dispatch.ps1'
+    if (-not (Test-Path $script)) {
+        Write-Error "si-dispatch.ps1 not found at $script"
+        return
+    }
+    $args = @('-Lanes', $Lanes, '-Repo', $RepoKey, '-TimeoutSec', $TimeoutSec)
+    if ($Task) { $args += @('-Task', $Task) }
+    if ($TaskFile) { $args += @('-TaskFile', $TaskFile) }
+    if ($RepoPath) { $args += @('-RepoPath', $RepoPath) }
+    if ($Parallel) { $args += '-Parallel' }
+    if ($Ledger) { $args += '-Ledger' }
+    if ($LedgerPath) { $args += @('-LedgerPath', $LedgerPath) }
+    if ($ReceiptPath) { $args += @('-ReceiptPath', $ReceiptPath) }
+    if ($UseArco) { $args += '-UseArco' }
+    if ($Json) { $args += '-Json' }
+    & $script @args
+}
+
+function Invoke-SiCouncil {
+    param(
+        [string[]]$Seats = @('grok', 'codex', 'antigravity'),
+        [ValidateSet('audit', 'ping', 'custom')]
+        [string]$Mode = 'audit',
+        [string]$Task,
+        [string]$RepoKey = 'sis',
+        [string]$RepoPath,
+        [string]$OutDir,
+        [switch]$Parallel,
+        [int]$TimeoutSec = 240,
+        [switch]$Json,
+        [switch]$Synthesize
+    )
+    $script = Join-Path $PSScriptRoot 'si-council.ps1'
+    if (-not (Test-Path $script)) {
+        Write-Error "si-council.ps1 not found at $script"
+        return
+    }
+    $args = @('-Seats', $Seats, '-Mode', $Mode, '-Repo', $RepoKey, '-TimeoutSec', $TimeoutSec)
+    if ($Task) { $args += @('-Task', $Task) }
+    if ($RepoPath) { $args += @('-RepoPath', $RepoPath) }
+    if ($OutDir) { $args += @('-OutDir', $OutDir) }
+    if ($Parallel) { $args += '-Parallel' }
+    if ($Json) { $args += '-Json' }
+    if ($Synthesize) { $args += '-Synthesize' }
+    & $script @args
+}
+
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
     Write-Host 'Antigravity YOLO wrappers loaded: agy-sis/agysis | agy-fx/agyfx | agy-arc/agyarc | agy-app/agyapp | agy-acos/agyacos | agy-run(ay)' -ForegroundColor Green
     Write-Host 'Claude Code, Codex, Grok & DeepAgent integrations active:' -ForegroundColor Green
@@ -950,4 +1088,5 @@ if ($env:FRANK_QUIET_PROFILE -ne '1') {
     Write-Host '  - cd <repo> / cdsis / cdfx / cdarc / cdapp / cdstudio / cdbrain / cdprompts / cdacos' -ForegroundColor DarkGray
     Write-Host '  - gr <repo> / grsis / grfx / grarc / grapp / grstudio / grbrain / grprompts / gracos (or gk*)' -ForegroundColor DarkGray
     Write-Host '  - da <repo> / dasis / dafx / daarc / daapp / dastudio / dabrain / daprompts / daacos' -ForegroundColor DarkGray
+    Write-Host 'Starlight fanout + council: Invoke-SiFanout | Invoke-SiCouncil (si-dispatch.ps1 / si-council.ps1)' -ForegroundColor Green
 }

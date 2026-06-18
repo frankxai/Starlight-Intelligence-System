@@ -49,6 +49,12 @@ memory/mempalace_sovereign/
 
 # Arena/eval run outputs — instance state, regenerable (mirror lives in starlight-evals)
 artifacts/
+
+# Local dispatch/council runtime receipts (scripts are committed)
+agent-tools/*.json
+agent-tools/*.jsonl
+agent-tools/*.txt
+!agent-tools/README.md
 memory/benchmarks/*.json
 
 # Dreaming pipeline dedup state — tracks which promotion candidates have already

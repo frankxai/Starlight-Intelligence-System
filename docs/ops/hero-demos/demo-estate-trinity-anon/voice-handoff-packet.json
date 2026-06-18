@@ -1,0 +1,22 @@
+{
+  "packetVersion": "1.0",
+  "estate": "trinity-anon-demo",
+  "source": "starlight-voice-operator",
+  "intent": "synthesize_decision_brief",
+  "voiceTranscript": "Synthesize the last three weeks of estate-factory research into a decision brief. Flag contradictions. Cite prior atoms. Emit Built on SIP attestation.",
+  "routing": {
+    "primary": "claude",
+    "fanout": ["grok", "codex"],
+    "browser": "antigravity"
+  },
+  "constraints": {
+    "readOnly": true,
+    "encodedSelfFirewall": true,
+    "attestationRequired": true
+  },
+  "priorAtomIds": [
+    "atom-trinity-anon-001",
+    "atom-trinity-anon-002",
+    "atom-trinity-anon-003"
+  ]
+}

@@ -93,3 +93,18 @@ Attach a short JSON receipt (similar to existing arena/benchmarks style) with th
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
 
 (Plan per 2026-06-16 Board R5. Execute, verify, commit — then the real marketing can begin.)
+
+---
+
+## Mechanical receipt (2026-06-18)
+
+Scripted cross-CLI replay landed:
+
+- Runbook: `docs/ops/hero-demos/RUNBOOK.md`
+- Fixture: `docs/ops/hero-demos/demo-estate-trinity-anon/`
+- Executor: `scripts/run-estate-hero-demo.ps1`
+- Latest receipt: `docs/ops/hero-demos/receipt-20260618-155957.json`
+- Synthesis artifact: `docs/ops/hero-demos/synthesis-20260618-155957.md`
+- Lanes activated: grok:grok-composer-2.5-fast, codex:gpt-5.5 @ git `1a1ed53`
+
+Public README hero / site positioning **still gated** per board. Screen recording optional follow-up.

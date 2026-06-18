@@ -1,0 +1,40 @@
+{
+  "demoId": "hero-estate-trinity-anon-20260618-155957",
+  "title": "Speak to my estate. It remembers. It acts. It attests.",
+  "gitSha": "1a1ed53",
+  "dispatchId": "dc392916-9d27-4ed2-8994-897a88ac2fea",
+  "started": "2026-06-18T15:59:58.6956579+02:00",
+  "completed": "2026-06-18T16:02:57.2223415+02:00",
+  "lanes": [
+    "grok",
+    "codex"
+  ],
+  "activated": [
+    "grok:grok-composer-2.5-fast",
+    "codex:gpt-5.5"
+  ],
+  "passed": 2,
+  "failed": 0,
+  "fixtureDir": "docs/ops/hero-demos/demo-estate-trinity-anon",
+  "voiceHandoff": "docs/ops/hero-demos/demo-estate-trinity-anon/voice-handoff-packet.json",
+  "synthesisArtifact": "docs/ops/hero-demos/synthesis-20260618-155957.md",
+  "priorAtoms": [
+    "atom-trinity-anon-001",
+    "atom-trinity-anon-002",
+    "atom-trinity-anon-003"
+  ],
+  "metrics": {
+    "routingAccuracy": "pass",
+    "firstAttemptSuccess": "pass",
+    "attestationPresent": true,
+    "humanMidFlight": false,
+    "encodedSelfLeakage": false
+  },
+  "evolutionUnblocks": [
+    7,
+    12,
+    15
+  ],
+  "boardGate": "R5 mechanical receipt committed; public README hero still gated",
+  "builtOnSIP": "v1.1.1"
+}
