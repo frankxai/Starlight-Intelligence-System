@@ -1,0 +1,14 @@
+{
+  "attestation": "Built on SIP — Starlight Intelligence Protocol v1.1.1",
+  "artifact": "estate-factory-scroll",
+  "type": "motion-composition",
+  "created": "2026-06-18",
+  "harness": "grok-build",
+  "composition": "site/motion/estate-factory-scroll/index.html",
+  "duration_seconds": 45,
+  "chapters": ["intro", "mind", "mesh", "steward", "cta"],
+  "cta": "/download#codex-plugin-starter",
+  "narrative_source": "docs/delivery/estate-army-commissioning-workflow.md",
+  "license": "MIT",
+  "board_gate": "homepage-embed-pending"
+}

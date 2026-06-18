@@ -342,3 +342,11 @@ All Queen visuals are sovereign, SIP-attested, receipt-grounded first-class arti
 These 11 (7 diagrams + 4 motion) form the complete current Queen visual system. They turn abstract doctrine into scrollable, embeddable, ledger-native beauty that compounds the substrate.
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1. l99 Visual Asset Curator delivery. Excellence-gated.
+
+---
+
+## Motion assets (P0 wave 2026-06-18)
+
+HyperFrames compositions and keyframe plates for `starlightintelligence.org` motion wedges live in **`docs/visuals/MOTION_REGISTRY.md`** (living ledger with SHA-256, provenance, dev commands).
+
+**First ship:** `estate-hero-loop` — 10s constellation → vault orbs → `/si` routing pulse at `site/motion/estate-hero-loop/`. Keyframe mirrors: `docs/visuals/motion/`, `site/public/motion/hero-loop/`. Homepage embed remains board-gated.

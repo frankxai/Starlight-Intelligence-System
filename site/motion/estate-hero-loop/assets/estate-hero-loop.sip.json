@@ -1,0 +1,34 @@
+{
+  "attestation": "Built on SIP — Starlight Intelligence Protocol v1.1.1",
+  "artifact": "estate-hero-loop",
+  "type": "motion-composition",
+  "created": "2026-06-18",
+  "harness": "grok-build",
+  "composition": "site/motion/estate-hero-loop/index.html",
+  "duration_seconds": 10,
+  "keyframes": [
+    {
+      "file": "kf1-constellation.jpg",
+      "sha256": "912ade541975101c8d49a28c9298521393c0f68b2a198917936974391cf30729",
+      "phase": "constellation"
+    },
+    {
+      "file": "kf2-vault-orbs.jpg",
+      "sha256": "a21d92dc1f1a7b4af635d2e038f09ceb029b46a0e76fbd4bc2a6efb646952358",
+      "phase": "vault-orbs"
+    },
+    {
+      "file": "kf3-si-pulse.jpg",
+      "sha256": "fa983eae9e956ad194624ec10b52ba316606681c38d1749007a268e2d3e946c5",
+      "phase": "si-routing-pulse"
+    }
+  ],
+  "palette": {
+    "background": "#060609",
+    "foreground": "#e2e8f0",
+    "accent": "#a78bfa",
+    "accent_cyan": "#67e8f9"
+  },
+  "license": "MIT",
+  "board_gate": "homepage-hero-embed-pending"
+}

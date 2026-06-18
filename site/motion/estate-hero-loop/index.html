@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #060609;
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #060609;
+        font-family: system-ui, "Segoe UI", sans-serif;
+        color: #e2e8f0;
+      }
+      .dot-grid {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.03) 1px,
+          transparent 1px
+        );
+        background-size: 24px 24px;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .mesh {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        pointer-events: none;
+        z-index: 2;
+      }
+      .mesh-1 {
+        left: -128px;
+        top: 0;
+        width: 400px;
+        height: 400px;
+        background: rgba(124, 58, 237, 0.06);
+        animation: mesh-drift-a 10s ease-in-out infinite;
+      }
+      .mesh-2 {
+        right: 0;
+        top: 80px;
+        width: 300px;
+        height: 300px;
+        background: rgba(6, 182, 212, 0.04);
+        animation: mesh-drift-b 10s ease-in-out infinite reverse;
+      }
+      @keyframes mesh-drift-a {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(30px, -20px) scale(1.05);
+        }
+      }
+      @keyframes mesh-drift-b {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-20px, 15px) scale(0.95);
+        }
+      }
+      .kf-layer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        z-index: 3;
+      }
+      .vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          transparent 40%,
+          rgba(6, 6, 9, 0.55) 100%
+        );
+        z-index: 4;
+        pointer-events: none;
+      }
+      .overlay {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 80px 96px 96px;
+        z-index: 6;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        background: linear-gradient(
+          to top,
+          rgba(6, 6, 9, 0.92) 0%,
+          rgba(6, 6, 9, 0.55) 55%,
+          transparent 100%
+        );
+      }
+      .phase-tag {
+        font-family: ui-monospace, monospace;
+        font-size: 14px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #67e8f9;
+      }
+      .title {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        max-width: 900px;
+      }
+      .phase-desc {
+        font-size: 24px;
+        font-weight: 400;
+        color: rgba(226, 232, 240, 0.78);
+        max-width: 720px;
+        line-height: 1.45;
+      }
+      .vault-row {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        gap: 28px;
+        z-index: 5;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .vault-orb {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 0 32px rgba(167, 139, 250, 0.25);
+      }
+      .vault-orb:nth-child(1) {
+        background: radial-gradient(circle at 30% 30%, #c4b5fd, #7c3aed);
+      }
+      .vault-orb:nth-child(2) {
+        background: radial-gradient(circle at 30% 30%, #67e8f9, #0891b2);
+      }
+      .vault-orb:nth-child(3) {
+        background: radial-gradient(circle at 30% 30%, #f0abfc, #c026d3);
+      }
+      .vault-orb:nth-child(4) {
+        background: radial-gradient(circle at 30% 30%, #6ee7b7, #059669);
+      }
+      .vault-orb:nth-child(5) {
+        background: radial-gradient(circle at 30% 30%, #fcd34d, #d97706);
+      }
+      .vault-orb:nth-child(6) {
+        background: radial-gradient(circle at 30% 30%, #fda4af, #e11d48);
+      }
+      .pulse-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120px;
+        height: 120px;
+        margin: -60px 0 0 -60px;
+        border-radius: 50%;
+        border: 2px solid rgba(103, 232, 249, 0.35);
+        z-index: 5;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .sip-footer {
+        position: absolute;
+        right: 48px;
+        bottom: 36px;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(226, 232, 240, 0.45);
+        z-index: 7;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="10"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div class="dot-grid" aria-hidden="true"></div>
+      <div class="mesh mesh-1" aria-hidden="true"></div>
+      <div class="mesh mesh-2" aria-hidden="true"></div>
+
+      <img
+        id="kf1"
+        class="kf-layer"
+        src="assets/kf1-constellation.jpg"
+        alt=""
+        data-layout-ignore
+      />
+      <img
+        id="kf2"
+        class="kf-layer"
+        src="assets/kf2-vault-orbs.jpg"
+        alt=""
+        data-layout-ignore
+      />
+      <img
+        id="kf3"
+        class="kf-layer"
+        src="assets/kf3-si-pulse.jpg"
+        alt=""
+        data-layout-ignore
+      />
+
+      <div class="vignette" aria-hidden="true"></div>
+
+      <div class="vault-row" id="vault-row" aria-hidden="true">
+        <div class="vault-orb"></div>
+        <div class="vault-orb"></div>
+        <div class="vault-orb"></div>
+        <div class="vault-orb"></div>
+        <div class="vault-orb"></div>
+        <div class="vault-orb"></div>
+      </div>
+
+      <div class="pulse-ring" id="pulse-a" aria-hidden="true"></div>
+      <div class="pulse-ring" id="pulse-b" aria-hidden="true"></div>
+
+      <div class="overlay">
+        <p class="phase-tag" id="phase-tag">01 — Constellation</p>
+        <h1 class="title">Starlight Intelligence</h1>
+        <p class="phase-desc" id="phase-desc">
+          Ten gates. One substrate. Intelligence that compounds.
+        </p>
+      </div>
+
+      <p class="sip-footer">Built on SIP v1.1.1</p>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const phaseTag = document.getElementById("phase-tag");
+      const phaseDesc = document.getElementById("phase-desc");
+
+      // Phase 1: Constellation
+      tl.set("#kf1", { opacity: 1 }, 0);
+      tl.set("#kf2, #kf3", { opacity: 0 }, 0);
+      tl.from(".title", { y: 24, opacity: 0, duration: 0.8, ease: "power3.out" }, 0.2);
+      tl.from("#phase-tag, #phase-desc", { y: 16, opacity: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }, 0.35);
+
+      // Crossfade → Vault orbs
+      tl.to("#kf1", { opacity: 0, duration: 0.7, ease: "power2.inOut" }, 2.8);
+      tl.to("#kf2", { opacity: 1, duration: 0.7, ease: "power2.inOut" }, 2.8);
+      tl.call(
+        () => {
+          phaseTag.textContent = "02 — Vault Orbs";
+          phaseDesc.textContent =
+            "Strategic ◆ Technical ⬡ Creative ✦ Operational ▸ Wisdom ◎ Horizon ↗";
+        },
+        null,
+        3.2
+      );
+      tl.to("#vault-row", { opacity: 1, duration: 0.5, ease: "power2.out" }, 3.4);
+      tl.from(
+        ".vault-orb",
+        { scale: 0.6, opacity: 0, duration: 0.45, stagger: 0.08, ease: "back.out(1.4)" },
+        3.5
+      );
+      tl.to(
+        ".vault-orb",
+        { y: -6, duration: 1.2, stagger: 0.1, ease: "sine.inOut", yoyo: true, repeat: 1 },
+        4.2
+      );
+
+      // Crossfade → /si routing pulse
+      tl.to("#kf2", { opacity: 0, duration: 0.7, ease: "power2.inOut" }, 6.3);
+      tl.to("#kf3", { opacity: 1, duration: 0.7, ease: "power2.inOut" }, 6.3);
+      tl.to("#vault-row", { opacity: 0, duration: 0.4 }, 6.3);
+      tl.call(
+        () => {
+          phaseTag.textContent = "03 — /si Routing";
+          phaseDesc.textContent = "grok · codex · claude · gemini — parallel dispatch with provenance.";
+        },
+        null,
+        6.7
+      );
+      tl.to("#pulse-a", { opacity: 1, scale: 2.2, duration: 1.1, ease: "power1.out" }, 6.8);
+      tl.to("#pulse-a", { opacity: 0, duration: 0.2, ease: "power1.in" }, 7.95);
+      tl.fromTo(
+        "#pulse-b",
+        { opacity: 0.8, scale: 0.6 },
+        { opacity: 0, scale: 2.8, duration: 1.6, ease: "power1.out" },
+        7.2
+      );
+
+      // Loop seam: fade back to constellation
+      tl.to("#kf3", { opacity: 0, duration: 0.7, ease: "power2.inOut" }, 9.0);
+      tl.to("#kf1", { opacity: 1, duration: 0.7, ease: "power2.inOut" }, 9.0);
+      tl.call(
+        () => {
+          phaseTag.textContent = "01 — Constellation";
+          phaseDesc.textContent =
+            "Ten gates. One substrate. Intelligence that compounds.";
+        },
+        null,
+        9.2
+      );
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
