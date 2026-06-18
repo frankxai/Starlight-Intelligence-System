@@ -309,7 +309,9 @@ Initial implementation in this repo now encodes this policy under `src/memory-pr
 - `types.ts` — provider-neutral SIS record, route, policy, and capability types.
 - `resources.ts` — default provider resource profiles and singleton/shared-daemon requirements.
 - `router.ts` — privacy-aware routing that keeps `local_core` canonical and mirrors only when policy allows.
-- `test/memory-provider-router.test.ts` — regression tests for local-first authority, secret blocking, graph/cloud routing, and no per-agent heavyweight provider spawning.
+- `local-core-provider.ts` — zero-dependency in-memory `local_core` provider for tests/dev and hot-path API proof.
+- `docs/memory-provider/ADAPTER_CONTRACT.md` — required adapter interface and process/RAM metadata doctrine.
+- `test/memory-provider-*.test.ts` — regression tests for local-first authority, secret blocking, graph/cloud routing, tenant isolation, recall/forget, and no per-agent heavyweight provider spawning.
 
 ---
 

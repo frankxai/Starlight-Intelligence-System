@@ -115,6 +115,32 @@ export interface ProviderCapabilities {
   notes: string;
 }
 
+export interface RecallRequest {
+  tenant_id: string;
+  query: string;
+  limit?: number;
+  min_score?: number;
+}
+
+export interface RecallResult {
+  record: SISMemoryRecord;
+  score: number;
+  matched_terms: string[];
+}
+
+export interface ForgetRequest {
+  tenant_id: string;
+  memory_id: string;
+}
+
+export interface MemoryProvider {
+  readonly name: ProviderName;
+  readonly capabilities: ProviderCapabilities;
+  remember(record: SISMemoryRecord): Promise<SISMemoryRecord>;
+  recall(request: RecallRequest): Promise<RecallResult[]>;
+  forget(request: ForgetRequest): Promise<boolean>;
+}
+
 export interface ProviderResourcePlan {
   providers: ProviderName[];
   max_embedded_heavy_processes_per_machine: number;
