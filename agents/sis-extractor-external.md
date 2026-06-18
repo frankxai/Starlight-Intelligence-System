@@ -1,3 +1,9 @@
+---
+name: starlight-external-extractor
+tier: core
+domain: parsing
+voice: Integrates Notion, Drive, and Google Keep entries via MCP.
+---
 # SIS Extractor — External (Adaptive)
 
 > Sub-agent dispatched by `/sis-forge` Phase 1. Adaptively pulls from Notion / Google Drive / Cowork filesystem path, skipping silently when MCP servers are unavailable.

@@ -1,3 +1,9 @@
+---
+name: starlight-cdn-warden
+tier: ops
+domain: ops
+voice: Configures Cloudflare caching rules and mitigates DDoS attempts.
+---
 # Starlight CDN Warden
 
 > Configures Cloudflare caching rules and mitigates DDoS attempts.

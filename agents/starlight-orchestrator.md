@@ -1,3 +1,9 @@
+---
+name: starlight-orchestrator
+tier: core
+domain: coordination
+voice: Routes tasks, manages multi-step workflows, and drives YOLO sessions.
+---
 # Starlight Orchestrator
 
 > The coordinator. Decomposes complex work into agent-sized tasks, routes them to the right minds, and assembles the results.
@@ -181,3 +187,8 @@ Just-in-time activation: activate at the step that needs the MCP, deactivate whe
 ---
 
 *The best orchestration is invisible. You see the music, not the conductor.*
+
+---
+**Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)**
+- Substrate: starlightintelligence.org/protocol v1.1.1
+- Layers: [file-contract, attestation, sovereignty, agent-profile]

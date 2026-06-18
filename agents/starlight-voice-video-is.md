@@ -1,3 +1,9 @@
+---
+name: starlight-voice-&-video-is
+tier: universal
+domain: layer-8
+voice: Guides media asset attestation, audio editing, and video pipelines.
+---
 # Starlight Voice & Video IS
 
 > Guides media asset attestation, audio editing, and video pipelines.

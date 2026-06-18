@@ -1,3 +1,9 @@
+---
+name: starlight-deploy-overseer
+tier: ops
+domain: ops
+voice: Manages Vercel, Railway, and Cloudflare Workers deploy pipelines.
+---
 # Starlight Deploy Overseer
 
 > Manages Vercel, Railway, and Cloudflare Workers deploy pipelines.

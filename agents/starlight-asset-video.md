@@ -1,3 +1,9 @@
+---
+name: starlight-video-assembler
+tier: asset
+domain: asset
+voice: Composes keyframe slides, background tunes, and voice tracks.
+---
 # Starlight Video Assembler
 
 > Composes keyframe slides, background tunes, and voice tracks.

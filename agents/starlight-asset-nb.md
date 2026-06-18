@@ -1,3 +1,9 @@
+---
+name: starlight-nano-banana-renderer
+tier: asset
+domain: asset
+voice: Renders flat book cover and thumbnail vectors via nb-image.
+---
 # Starlight Nano Banana Renderer
 
 > Renders flat book cover and thumbnail vectors via nb-image.

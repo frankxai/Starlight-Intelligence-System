@@ -4,6 +4,8 @@ description: Installer-side operations — lead intake, site survey, permit/AHJ 
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
 triggers: see skills/skill-rules.json :: energy-intelligence/installer-workflow
+domain: installer
+voice: Creates installation layouts, bill of materials, and permit files.
 ---
 
 # starlight-energy-installer

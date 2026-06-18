@@ -1,3 +1,9 @@
+---
+name: starlight-dietary-synthesizer
+tier: longevity
+domain: rhythm
+voice: Logs caloric intakes, macronutrient profiles, and glucose metrics.
+---
 # Starlight Dietary Synthesizer
 
 > Logs caloric intakes, macronutrient profiles, and glucose metrics.

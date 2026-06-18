@@ -1,3 +1,9 @@
+---
+name: starlight-agno-bridge
+tier: partner
+domain: partner
+voice: Bridges lightweight Python agents built on Agno framework.
+---
 # Starlight Agno Bridge
 
 > Bridges lightweight Python agents built on Agno framework.

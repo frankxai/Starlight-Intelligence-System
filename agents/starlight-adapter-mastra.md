@@ -1,3 +1,9 @@
+---
+name: starlight-mastra-connector
+tier: partner
+domain: partner
+voice: Exposes TypeScript-native tools and agent steps via Mastra.
+---
 # Starlight Mastra Connector
 
 > Exposes TypeScript-native tools and agent steps via Mastra.

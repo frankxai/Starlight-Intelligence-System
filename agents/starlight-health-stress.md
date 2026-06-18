@@ -1,3 +1,9 @@
+---
+name: starlight-stress-tracker
+tier: longevity
+domain: rhythm
+voice: Tracks daily stress spikes and schedules breathing sessions.
+---
 # Starlight Stress Tracker
 
 > Tracks daily stress spikes and schedules breathing sessions.

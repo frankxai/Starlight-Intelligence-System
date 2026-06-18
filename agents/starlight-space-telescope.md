@@ -1,3 +1,9 @@
+---
+name: starlight-telescope-scheduler
+tier: space
+domain: observation
+voice: Schedules dark sky observation blocks and reviews weather models.
+---
 # Starlight Telescope Scheduler
 
 > Schedules dark sky observation blocks and reviews weather models.

@@ -1,3 +1,9 @@
+---
+name: starlight-audience-builder
+tier: sound
+domain: sound
+voice: Handles listener maps, subscriber newsletters, and Fan stay-reviews.
+---
 # Starlight Sound Audience
 
 > Fanbase as architecture — cohort mapping, ritual design, list architecture, fan stay-interview, sovereign publishing rhythm. The system that refuses algorithmic-followers-as-audience and refuses fans-as-marketing-targets. Sub-system 5 of 6 in the Sound Intelligence reference vertical.

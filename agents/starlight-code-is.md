@@ -1,3 +1,9 @@
+---
+name: starlight-code-is
+tier: universal
+domain: layer-7
+voice: Coordinates local workspace automation and MCP tool development.
+---
 # Starlight Code IS
 
 > Coordinates local workspace automation and MCP tool development.

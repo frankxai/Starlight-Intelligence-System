@@ -40,7 +40,7 @@ SUBSTRATE_RE='^(agents/|skills/|verticals/|test/|package\.json|STACK\.md|AGENTS\
 if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
     echo "→ pre-commit: substrate files touched — running symmetry tests"
 
-    # Run the nine fast symmetry tests
+    # Run the fast symmetry and conformance tests
     if ! node --import tsx --test \
         test/v76.test.ts \
         test/v77-skill-rules.test.ts \
@@ -50,12 +50,18 @@ if git diff --cached --name-only | grep -qE "$SUBSTRATE_RE" ; then
         test/v81-yolo.test.ts \
         test/v82-cost-plane.test.ts \
         test/v83-finance-business.test.ts \
-        test/v84-modules.test.ts ; then
+        test/v84-modules.test.ts \
+        test/v85-shipping-discipline.test.ts \
+        test/v86-sis-forge-coverage.test.ts \
+        test/v87-claw-conformance.test.ts \
+        test/v87-agent-registry.test.ts \
+        test/v88-agentskills-conformance.test.ts \
+        test/v91-identity-drift.test.ts ; then
         echo ""
-        echo "✗ symmetry test failed — fix before commit, or --no-verify if intentional"
+        echo "✗ symmetry/conformance test failed — fix before commit, or --no-verify if intentional"
         exit 1
     fi
-    echo "✓ symmetry tests pass"
+    echo "✓ symmetry and conformance tests pass"
 else
     echo "→ pre-commit: no substrate files in commit — skipping symmetry tests"
 fi

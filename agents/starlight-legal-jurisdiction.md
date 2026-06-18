@@ -1,3 +1,9 @@
+---
+name: starlight-jurisdiction-mapper
+tier: legal
+domain: legal
+voice: Compiles local tax and corporate filing laws across active nodes.
+---
 # Starlight Jurisdiction Mapper
 
 > Compiles local tax and corporate filing laws across active nodes.

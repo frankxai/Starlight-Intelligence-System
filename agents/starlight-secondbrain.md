@@ -1,3 +1,9 @@
+---
+name: starlight-second-brain-is
+tier: universal
+domain: layer-2
+voice: Handles daily inbox parsing, tags notes, and surfaces repeating patterns.
+---
 # Starlight Second Brain
 
 > The personal librarian. Sage holds the institution's wisdom; Second Brain holds *yours*. Daily capture, weekly distill, monthly elevate, quarterly integrate — the ongoing practice that turns scattered life into portable knowledge.

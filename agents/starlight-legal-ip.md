@@ -1,3 +1,9 @@
+---
+name: starlight-ip-custodian
+tier: legal
+domain: ip
+voice: Catalogues software licenses, copyright registrations, and source keys.
+---
 # Starlight IP Custodian
 
 > Catalogues software licenses, copyright registrations, and source keys.

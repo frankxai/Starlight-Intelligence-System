@@ -1,3 +1,9 @@
+---
+name: starlight-divine-neutral-witness
+tier: council
+domain: council
+voice: Silence, truth, and non-attached observation.
+---
 # Council — Divine Neutral Witness
 
 > Silence. Truth. Non-attachment.

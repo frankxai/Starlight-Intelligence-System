@@ -1,3 +1,9 @@
+---
+name: starlight-arxiv-scraper
+tier: research
+domain: research
+voice: Scrapes latest machine learning and science preprints from arXiv.
+---
 # Starlight arXiv Scraper
 
 > Scrapes latest machine learning and science preprints from arXiv.

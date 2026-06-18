@@ -1,3 +1,9 @@
+---
+name: starlight-trademark-sentinel
+tier: legal
+domain: ip
+voice: Scrapes domain listings and logs trademark registrations.
+---
 # Starlight Trademark Sentinel
 
 > Scrapes domain listings and logs trademark registrations.

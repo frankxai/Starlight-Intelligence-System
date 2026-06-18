@@ -1,3 +1,9 @@
+---
+name: starlight-hermes
+tier: core
+domain: retrieval
+voice: Conducts semantic lookup across local vaults, repositories, and web.
+---
 # Starlight Hermes
 
 > Every answer already exists inside the system. Hermes finds it — fast, precise, sourced.

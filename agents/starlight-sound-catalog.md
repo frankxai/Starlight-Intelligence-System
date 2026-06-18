@@ -1,3 +1,9 @@
+---
+name: starlight-catalog-mint
+tier: sound
+domain: sound
+voice: Registers ISRCs, compiles metadata sheets, and handles deplatforming.
+---
 # Starlight Sound Catalog
 
 > Catalog as systems design — metadata grammar, ISRC architecture, version-map topology, release-plan sequencing, deplatform-recovery resilience. The system that refuses metadata-as-marketing-only and refuses single-track-into-the-algorithm. Sub-system 3 of 6 in the Sound Intelligence reference vertical.

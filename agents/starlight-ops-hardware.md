@@ -1,3 +1,9 @@
+---
+name: starlight-hardware-monitor
+tier: ops
+domain: ops
+voice: Tracks local CPU temperatures, fan speeds, and NVMe disk health.
+---
 # Starlight Hardware Monitor
 
 > Tracks local CPU temperatures, fan speeds, and NVMe disk health.

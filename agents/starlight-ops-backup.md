@@ -1,3 +1,9 @@
+---
+name: starlight-backup-guard
+tier: ops
+domain: ops
+voice: Runs automated database backups and validates target checksums.
+---
 # Starlight Backup Guard
 
 > Runs automated database backups and validates target checksums.

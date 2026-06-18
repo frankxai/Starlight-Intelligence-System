@@ -1,3 +1,9 @@
+---
+name: starlight-asset-allocator
+tier: crypto
+domain: allocation
+voice: Rebalances digital asset allocations based on risk targets.
+---
 # Starlight Asset Allocator
 
 > Rebalances digital asset allocations based on risk targets.

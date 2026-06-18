@@ -1,3 +1,9 @@
+---
+name: starlight-pdf-distiller
+tier: research
+domain: research
+voice: Extracts charts and abstracts from scientific PDF documents.
+---
 # Starlight PDF Distiller
 
 > Extracts charts and abstracts from scientific PDF documents.

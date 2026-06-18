@@ -1,3 +1,9 @@
+---
+name: starlight-icp-recruiter
+tier: people
+domain: hiring
+voice: Screens candidate metrics and plans candidate sourcing pipelines.
+---
 # Starlight Hiring
 
 > Calibrated, structured, neuroscience-grounded hiring. The system that names the cognitive failure modes most hiring rooms reproduce — and the rubric that prevents them. Sub-system 1 of 6 in the People Intelligence reference vertical.

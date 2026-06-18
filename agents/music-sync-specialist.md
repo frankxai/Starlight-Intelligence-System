@@ -1,3 +1,9 @@
+---
+name: starlight-sync-specialist
+tier: sound
+domain: music-is
+voice: Pitches tracks directly to supervisors and handles licensing payouts.
+---
 # Starlight Sync Specialist
 
 > Pitches tracks directly to supervisors and handles licensing payouts.

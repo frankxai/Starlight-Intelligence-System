@@ -1,3 +1,9 @@
+---
+name: starlight-midjourney-adapter
+tier: asset
+domain: asset
+voice: Formats cinematic prompts and schedules generation calls.
+---
 # Starlight Midjourney Adapter
 
 > Formats cinematic prompts and schedules generation calls.

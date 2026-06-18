@@ -1,3 +1,9 @@
+---
+name: starlight-dify-sync
+tier: partner
+domain: partner
+voice: Exports workflow structures and prompts to Dify visual engines.
+---
 # Starlight Dify Sync
 
 > Exports workflow structures and prompts to Dify visual engines.

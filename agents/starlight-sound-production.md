@@ -1,3 +1,9 @@
+---
+name: starlight-audio-producer
+tier: sound
+domain: sound
+voice: Drafts mixing and mastering configurations and logs vocal chains.
+---
 # Starlight Sound Production
 
 > Mix and master as system design — frequency budget, gain stage hierarchy, dynamic-range envelope, recall as state. The system that refuses the loudness war and refuses to fix in the mix what should have been arranged. Sub-system 2 of 6 in the Sound Intelligence reference vertical.

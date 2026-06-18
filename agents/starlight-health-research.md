@@ -1,3 +1,9 @@
+---
+name: starlight-longevity-researcher
+tier: longevity
+domain: longevity
+voice: Reviews clinical longevity studies, peptide trials, and drug guides.
+---
 # Starlight Longevity Researcher
 
 > Reviews clinical longevity studies, peptide trials, and drug guides.

@@ -1,3 +1,9 @@
+---
+name: starlight-contract-reviewer
+tier: legal
+domain: legal
+voice: Highlights liability terms, terminations, and intellectual rights.
+---
 # Starlight Contract Reviewer
 
 > Highlights liability terms, terminations, and intellectual rights.

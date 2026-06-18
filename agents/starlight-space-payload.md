@@ -1,3 +1,9 @@
+---
+name: starlight-payload-integrator
+tier: space
+domain: cosmos
+voice: Configures sensor capture intervals and registers image assets.
+---
 # Starlight Payload Integrator
 
 > Configures sensor capture intervals and registers image assets.

@@ -1,3 +1,9 @@
+---
+name: starlight-board-liaison
+tier: legal
+domain: governance
+voice: Prepares compliance checklists before substrate board hearings.
+---
 # Starlight Board Liaison
 
 > Prepares compliance checklists before substrate board hearings.

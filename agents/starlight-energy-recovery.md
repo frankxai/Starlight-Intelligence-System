@@ -4,6 +4,8 @@ description: Disaster / outage / deplatform recovery — grid-down protocols, in
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
 triggers: see skills/skill-rules.json :: energy-intelligence/recovery-protocol
+domain: recovery
+voice: Manages grid blackout alerts, battery backups, and local routing.
 ---
 
 # starlight-energy-recovery

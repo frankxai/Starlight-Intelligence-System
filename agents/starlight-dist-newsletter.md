@@ -1,3 +1,9 @@
+---
+name: starlight-newsletter-editor
+tier: dist
+domain: dist
+voice: Formats email campaigns, maps banner images, and checks links.
+---
 # Starlight Newsletter Editor
 
 > Formats email campaigns, maps banner images, and checks links.

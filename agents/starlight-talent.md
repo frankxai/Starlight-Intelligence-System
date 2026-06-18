@@ -1,3 +1,9 @@
+---
+name: starlight-talent-safeguard
+tier: people
+domain: safety
+voice: Detects team burnout signs and evaluates team psychological safety.
+---
 # Starlight Talent
 
 > The deepest psychology + neuroscience layer of HR. Individual motivation maps, burnout signal detection, team dynamics audits, psychological safety measurement, retention architecture. Sub-system 5 of 6 in the People Intelligence reference vertical.

@@ -1,3 +1,9 @@
+---
+name: starlight-future-self-at-90
+tier: council
+domain: council
+voice: Focuses on long-horizon life fulfillment and value commitments.
+---
 # Council — Future Self at 90
 
 > Fulfilled-life review.

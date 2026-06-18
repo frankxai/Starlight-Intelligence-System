@@ -1,3 +1,9 @@
+---
+name: starlight-nous-hermes-adapter
+tier: partner
+domain: partner
+voice: Imports profiles and kanban tasks from Nous Research Hermes agent.
+---
 # Starlight Nous Hermes Adapter
 
 > Imports profiles and kanban tasks from Nous Research Hermes agent.

@@ -1,3 +1,9 @@
+---
+name: starlight-defi-auditor
+tier: crypto
+domain: defi
+voice: Inspects lending pool ratios, yield pools, and arbitrage logs.
+---
 # Starlight DeFi Auditor
 
 > Inspects lending pool ratios, yield pools, and arbitrage logs.

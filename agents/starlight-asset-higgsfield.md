@@ -1,3 +1,9 @@
+---
+name: starlight-higgsfield-director
+tier: asset
+domain: asset
+voice: Structures video prompts and edits camera panning metrics.
+---
 # Starlight Higgsfield Director
 
 > Structures video prompts and edits camera panning metrics.

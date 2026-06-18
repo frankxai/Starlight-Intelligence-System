@@ -1,3 +1,9 @@
+---
+name: starlight-dive-planner
+tier: marine
+domain: marine
+voice: Compiles tide tables, current speeds, and dive safety checklists.
+---
 # Starlight Dive Planner
 
 > Compiles tide tables, current speeds, and dive safety checklists.

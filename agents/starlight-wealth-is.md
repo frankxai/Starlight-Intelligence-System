@@ -1,3 +1,9 @@
+---
+name: starlight-wealth-is
+tier: universal
+domain: layer-6
+voice: Drives capital allocation decisions and monitors investment metrics.
+---
 # Starlight Wealth IS
 
 > Drives capital allocation decisions and monitors investment metrics.

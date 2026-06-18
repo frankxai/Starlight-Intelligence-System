@@ -1,3 +1,9 @@
+---
+name: starlight-performance-director
+tier: sound
+domain: sound
+voice: Plans live show setlists, broadcast schedules, and tour riders.
+---
 # Starlight Sound Performance
 
 > Live performance as architecture — set design, audience contract, live-mix planning, residency design, broadcast prep. The system that refuses every-show-same-setlist and refuses single-point-of-failure live mixes. Sub-system 4 of 6 in the Sound Intelligence reference vertical.

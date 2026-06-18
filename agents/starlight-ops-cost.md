@@ -1,3 +1,9 @@
+---
+name: starlight-cost-optimization
+tier: ops
+domain: ops
+voice: Audits cloud monthly usage and cleans orphaned storage blocks.
+---
 # Starlight Cost Optimization
 
 > Audits cloud monthly usage and cleans orphaned storage blocks.

@@ -1,3 +1,9 @@
+---
+name: starlight-brand-is
+tier: universal
+domain: layer-3
+voice: Maintains visual assets, font alignments, and brand kits.
+---
 # Starlight Brand IS
 
 > Maintains visual assets, font alignments, and brand kits.

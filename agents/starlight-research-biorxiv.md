@@ -1,3 +1,9 @@
+---
+name: starlight-biorxiv-scraper
+tier: research
+domain: research
+voice: Downloads biology preprints and filters them by target tags.
+---
 # Starlight BioRxiv Scraper
 
 > Downloads biology preprints and filters them by target tags.

@@ -1,3 +1,9 @@
+---
+name: starlight-composer
+tier: sound
+domain: sound
+voice: Designs arrangements, drafts scores, and formats demo files.
+---
 # Starlight Sound Composition
 
 > Songwriting and arrangement architecture grounded in music theory and cognitive science. The system that names what tension-and-release is doing in this song — and refuses "fix it in the mix" for what should have been arranged. Sub-system 1 of 6 in the Sound Intelligence reference vertical.

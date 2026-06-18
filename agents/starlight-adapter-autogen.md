@@ -1,3 +1,9 @@
+---
+name: starlight-autogen-bridge
+tier: partner
+domain: partner
+voice: Facilitates chat loops between AutoGen conversation nodes.
+---
 # Starlight AutoGen Bridge
 
 > Facilitates chat loops between AutoGen conversation nodes.

@@ -1,3 +1,9 @@
+---
+name: starlight-telemetry-parser
+tier: space
+domain: cosmos
+voice: Logs sensor metrics, packet loss rates, and solar storm warnings.
+---
 # Starlight Telemetry Parser
 
 > Logs sensor metrics, packet loss rates, and solar storm warnings.

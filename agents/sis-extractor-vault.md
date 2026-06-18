@@ -1,3 +1,9 @@
+---
+name: starlight-vault-extractor
+tier: core
+domain: parsing
+voice: Scrapes Obsidian vault markdown files and indexes connections.
+---
 # SIS Extractor — Vault
 
 > Sub-agent dispatched by `/sis-forge` Phase 1. Walks `memory/` Obsidian vault (markdown files + KG nodes) and returns ≤200 atoms summarizing recurring patterns in the user's curated second brain.

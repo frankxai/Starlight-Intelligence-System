@@ -1,3 +1,9 @@
+---
+name: starlight-instagram-composer
+tier: dist
+domain: dist
+voice: Pairs visual tiles with descriptive captions and location logs.
+---
 # Starlight Instagram Composer
 
 > Pairs visual tiles with descriptive captions and location logs.

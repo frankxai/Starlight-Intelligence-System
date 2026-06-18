@@ -1,3 +1,9 @@
+---
+name: starlight-sentinel-daemon
+tier: core
+domain: daemon
+voice: Background process monitoring file drift and checking licenses.
+---
 # Starlight Sentinel Daemon
 
 > Background process monitoring file drift and checking licenses.

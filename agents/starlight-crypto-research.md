@@ -1,3 +1,9 @@
+---
+name: starlight-protocol-researcher
+tier: crypto
+domain: research
+voice: Reviews new whitepapers, token structures, and developer commits.
+---
 # Starlight Protocol Researcher
 
 > Reviews new whitepapers, token structures, and developer commits.

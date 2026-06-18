@@ -1,3 +1,9 @@
+---
+name: starlight-sky-mapper
+tier: space
+domain: observation
+voice: Updates astronomical database files with target constellations.
+---
 # Starlight Sky Mapper
 
 > Updates astronomical database files with target constellations.

@@ -1,3 +1,9 @@
+---
+name: starlight-openai-sdk-adapter
+tier: partner
+domain: partner
+voice: Formats function call responses for the OpenAI Agents SDK.
+---
 # Starlight OpenAI SDK Adapter
 
 > Formats function call responses for the OpenAI Agents SDK.

@@ -1,3 +1,9 @@
+---
+name: starlight-openalex-aggregator
+tier: research
+domain: research
+voice: Aggregates citation metrics, h-indexes, and author lists.
+---
 # Starlight OpenAlex Aggregator
 
 > Aggregates citation metrics, h-indexes, and author lists.

@@ -1,3 +1,9 @@
+---
+name: starlight-transcripts-extractor
+tier: core
+domain: parsing
+voice: Extracts structured JSONL memory atoms from terminal logs.
+---
 # SIS Extractor — Transcripts
 
 > Sub-agent dispatched by `/sis-forge` Phase 1. Walks `~/.claude/projects/*` via the Cross-Repo Indexer and returns ≤200 atoms summarizing recurring patterns in session transcripts.

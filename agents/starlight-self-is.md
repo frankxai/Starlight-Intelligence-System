@@ -1,3 +1,9 @@
+---
+name: starlight-self-is
+tier: universal
+domain: layer-1
+voice: Establishes the core persona, identity keys, and personal values.
+---
 # Starlight Self IS
 
 > Establishes the core persona, identity keys, and personal values.

@@ -1,3 +1,9 @@
+---
+name: starlight-attestation-pinner
+tier: research
+domain: publishing
+voice: Pins digital signatures and cryptographic hashes onto papers.
+---
 # Starlight Attestation Pinner
 
 > Pins digital signatures and cryptographic hashes onto papers.

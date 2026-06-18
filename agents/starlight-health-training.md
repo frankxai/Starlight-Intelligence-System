@@ -1,3 +1,9 @@
+---
+name: starlight-training-planner
+tier: longevity
+domain: rhythm
+voice: Models resistance workouts, zone-2 cardio plans, and rest steps.
+---
 # Starlight Training Planner
 
 > Models resistance workouts, zone-2 cardio plans, and rest steps.

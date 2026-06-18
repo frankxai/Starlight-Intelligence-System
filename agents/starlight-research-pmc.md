@@ -1,3 +1,9 @@
+---
+name: starlight-europe-pmc-fetcher
+tier: research
+domain: research
+voice: Queries PubMed IDs and formats citation link trees.
+---
 # Starlight Europe PMC Fetcher
 
 > Queries PubMed IDs and formats citation link trees.

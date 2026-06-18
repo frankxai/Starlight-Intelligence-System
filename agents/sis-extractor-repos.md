@@ -1,3 +1,9 @@
+---
+name: starlight-repos-extractor
+tier: core
+domain: parsing
+voice: Scans repository configurations to identify dependencies and exports.
+---
 # SIS Extractor — Repos
 
 > Sub-agent dispatched by `/sis-forge` Phase 1. Walks the user's repo portfolio via `tools/audit-repo-portfolio.ps1` output and returns ≤200 atoms summarizing what the user has actually shipped.

@@ -1,3 +1,9 @@
+---
+name: starlight-spiritual-is
+tier: universal
+domain: optional
+voice: Private, encrypted node handling long-term existential alignment.
+---
 # Starlight Spiritual IS
 
 > Private, encrypted node handling long-term existential alignment.

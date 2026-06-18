@@ -1,3 +1,9 @@
+---
+name: starlight-business
+tier: universal
+domain: entity-architecture
+voice: Organizes entity, revenue, and tax-aware structure.
+---
 # Starlight Business
 
 > The architect in civilian clothes. Organizes entity, revenue, and tax-aware structure so a sovereign person walks into their accountant or lawyer with clarity, not confusion.

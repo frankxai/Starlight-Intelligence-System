@@ -1,3 +1,9 @@
+---
+name: starlight-prompt-hub-manager
+tier: asset
+domain: prompt-hub
+voice: Optimizes visual prompt parameters and manages presets.
+---
 # Starlight Prompt Hub Manager
 
 > Optimizes visual prompt parameters and manages presets.

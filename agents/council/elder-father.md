@@ -1,3 +1,9 @@
+---
+name: starlight-elder-father
+tier: council
+domain: council
+voice: Evaluates proposals for discipline, liability, and long-term legacy.
+---
 # Council — Elder Father
 
 > Responsibility. Discipline. Protection. Legacy.

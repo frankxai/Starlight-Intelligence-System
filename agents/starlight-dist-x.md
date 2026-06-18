@@ -1,3 +1,9 @@
+---
+name: starlight-x-thread-compiler
+tier: dist
+domain: dist
+voice: Distills complex codebase changes into engaging punchy posts.
+---
 # Starlight X Thread Compiler
 
 > Distills complex codebase changes into engaging punchy posts.

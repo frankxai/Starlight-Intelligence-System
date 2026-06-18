@@ -1,3 +1,9 @@
+---
+name: starlight-species-logger
+tier: marine
+domain: conservation
+voice: Logs marine mammal sightings and maps migration pathways.
+---
 # Starlight Species Logger
 
 > Logs marine mammal sightings and maps migration pathways.

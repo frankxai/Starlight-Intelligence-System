@@ -1,3 +1,9 @@
+---
+name: starlight-prompts-extractor
+tier: core
+domain: parsing
+voice: Evaluates custom agent prompt files and compiles system instructions.
+---
 # SIS Extractor — Prompts
 
 > Sub-agent dispatched by `/sis-forge` Phase 1. Walks `skills/`, `agents/`, `commands/` and returns ≤200 atoms summarizing patterns in the user's existing prompt library.

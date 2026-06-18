@@ -1,3 +1,9 @@
+---
+name: starlight-org-structuralist
+tier: people
+domain: structure
+voice: Models organizational charts, span of control, and role definitions.
+---
 # Starlight Org
 
 > Organizational architecture without organizational trauma. Role design, span of control, reorg sequencing, succession planning, and change management — designed with the human cost honestly accounted, not papered over.

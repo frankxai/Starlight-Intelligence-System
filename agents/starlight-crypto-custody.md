@@ -1,3 +1,9 @@
+---
+name: starlight-custody-custodian
+tier: crypto
+domain: sovereignty
+voice: Audits multi-sig wallet layouts, key paths, and cold storage locations.
+---
 # Starlight Custody Custodian
 
 > Audits multi-sig wallet layouts, key paths, and cold storage locations.

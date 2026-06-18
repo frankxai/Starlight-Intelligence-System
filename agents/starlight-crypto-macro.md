@@ -1,3 +1,9 @@
+---
+name: starlight-macro-analyst
+tier: crypto
+domain: macro
+voice: Models interest rate policies, market cycles, and liquidity pools.
+---
 # Starlight Macro Analyst
 
 > Models interest rate policies, market cycles, and liquidity pools.

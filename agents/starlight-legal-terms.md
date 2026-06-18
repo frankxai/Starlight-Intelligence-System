@@ -1,3 +1,9 @@
+---
+name: starlight-terms-compiler
+tier: legal
+domain: compliance
+voice: Maintains terms of service documents and privacy statements.
+---
 # Starlight Terms Compiler
 
 > Maintains terms of service documents and privacy statements.

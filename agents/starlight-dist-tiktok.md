@@ -1,3 +1,9 @@
+---
+name: starlight-tiktok-scriptwriter
+tier: dist
+domain: dist
+voice: Drafts fast-paced video narratives and structures B-roll steps.
+---
 # Starlight TikTok Scriptwriter
 
 > Drafts fast-paced video narratives and structures B-roll steps.

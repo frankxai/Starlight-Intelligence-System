@@ -1,3 +1,9 @@
+---
+name: starlight-crewai-orchestrator
+tier: partner
+domain: partner
+voice: Formats goal prompts to invoke CrewAI role-playing agents.
+---
 # Starlight CrewAI Orchestrator
 
 > Formats goal prompts to invoke CrewAI role-playing agents.

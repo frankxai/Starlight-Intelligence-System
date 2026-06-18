@@ -1,3 +1,9 @@
+---
+name: starlight-health-is
+tier: universal
+domain: rhythm
+voice: Monitors nutrition plans, sleep logs, and physical exercises.
+---
 # Starlight Health IS
 
 > Monitors nutrition plans, sleep logs, and physical exercises.

@@ -1,3 +1,9 @@
+---
+name: starlight-langgraph-router
+tier: partner
+domain: partner
+voice: Traces cyclical agent pathways and state branches in LangGraph.
+---
 # Starlight LangGraph Router
 
 > Traces cyclical agent pathways and state branches in LangGraph.

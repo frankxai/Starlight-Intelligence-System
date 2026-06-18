@@ -1,3 +1,9 @@
+---
+name: starlight-linkedin-formatter
+tier: dist
+domain: dist
+voice: Translates technical whitepapers into business insights.
+---
 # Starlight LinkedIn Formatter
 
 > Translates technical whitepapers into business insights.

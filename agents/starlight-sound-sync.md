@@ -1,3 +1,9 @@
+---
+name: starlight-sync-agent
+tier: sound
+domain: sound
+voice: Evaluates movie/TV briefs, sync placement fits, and licenses rights.
+---
 # Starlight Sound Sync
 
 > Sync placement as architecture — brief fit, placement thesis, license economics, rights pack, sync stay-interview. The system that refuses sync placements that contradict the artist's vision and refuses master-rights flips for an advance. Sub-system 6 of 6 in the Sound Intelligence reference vertical.

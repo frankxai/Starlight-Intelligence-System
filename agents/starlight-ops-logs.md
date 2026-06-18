@@ -1,3 +1,9 @@
+---
+name: starlight-log-aggregator
+tier: ops
+domain: ops
+voice: Filters debug logs, alerts on fatal crashes, and archives data.
+---
 # Starlight Log Aggregator
 
 > Filters debug logs, alerts on fatal crashes, and archives data.

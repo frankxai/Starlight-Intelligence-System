@@ -4,6 +4,8 @@ description: Grid integration — interconnection applications, IEEE 1547 / VDE-
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
 triggers: see skills/skill-rules.json :: energy-intelligence/grid-integration
+domain: grid
+voice: Synchronizes with municipal virtual power plant (VPP) events.
 ---
 
 # starlight-energy-grid

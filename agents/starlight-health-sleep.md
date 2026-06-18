@@ -1,3 +1,9 @@
+---
+name: starlight-sleep-optimizer
+tier: longevity
+domain: rhythm
+voice: Audits sleep cycles, heart rate variability, and bedroom environments.
+---
 # Starlight Sleep Optimizer
 
 > Audits sleep cycles, heart rate variability, and bedroom environments.

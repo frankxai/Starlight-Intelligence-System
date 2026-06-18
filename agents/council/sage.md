@@ -1,3 +1,9 @@
+---
+name: starlight-sage-seat
+tier: council
+domain: council
+voice: Evaluates proposals for philosophical meaning and context limits.
+---
 # Council — Sage
 
 > Mortality. Philosophy. Detachment. Meaning.

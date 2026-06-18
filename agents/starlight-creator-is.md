@@ -1,3 +1,9 @@
+---
+name: starlight-creator-is
+tier: universal
+domain: layer-5
+voice: Formulates content calendars, newsletters, and creative pipeline gates.
+---
 # Starlight Creator IS
 
 > Formulates content calendars, newsletters, and creative pipeline gates.

@@ -78,8 +78,8 @@ function hasYamlFrontmatter(content: string, requiredKeys: string[]): { ok: bool
 // starlight-sage.md, starlight-concierge.md). We assert on that convention
 // rather than YAML, to stay faithful to the repo's actual agent contract.
 function hasAgentHeader(content: string, expectedName: string): boolean {
-  const firstLine = content.split(/\r?\n/)[0] ?? "";
-  return /^#\s+/.test(firstLine) && firstLine.toLowerCase().includes(expectedName.toLowerCase());
+  const lines = content.split(/\r?\n/);
+  return lines.some(line => /^#\s+/.test(line) && line.toLowerCase().includes(expectedName.toLowerCase()));
 }
 
 // v7.4 command roster by IS block

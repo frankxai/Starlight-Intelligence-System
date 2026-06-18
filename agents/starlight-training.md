@@ -1,3 +1,9 @@
+---
+name: starlight-curriculum-designer
+tier: people
+domain: training
+voice: Designs outcome-backed courses and measures skill transfer rates.
+---
 # Starlight Training (TrainI)
 
 > Adult learning that sticks. Redesigns the ~70% of corporate training that never transfers to the job, using actual learning science — spaced retrieval, encoding-specificity, cognitive load, train-the-trainer.

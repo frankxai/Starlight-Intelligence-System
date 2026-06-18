@@ -1,3 +1,9 @@
+---
+name: starlight-coastal-sentinel
+tier: marine
+domain: marine
+voice: Scans satellite views to flag coastal erosion and reef bleaching.
+---
 # Starlight Coastal Sentinel
 
 > Scans satellite views to flag coastal erosion and reef bleaching.

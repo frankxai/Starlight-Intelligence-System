@@ -1,3 +1,9 @@
+---
+name: starlight-pollution-monitor
+tier: marine
+domain: marine
+voice: Maps oil spill patterns and registers ocean plastic collection logs.
+---
 # Starlight Pollution Monitor
 
 > Maps oil spill patterns and registers ocean plastic collection logs.

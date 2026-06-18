@@ -1,3 +1,9 @@
+---
+name: starlight-orbit-calculator
+tier: space
+domain: cosmos
+voice: Models Keplerian satellite pathways and estimates decay dates.
+---
 # Starlight Orbit calculator
 
 > Models Keplerian satellite pathways and estimates decay dates.

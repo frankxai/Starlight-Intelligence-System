@@ -4,6 +4,8 @@ description: Homeowner-facing decision support — quote comparison, framing tra
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
 triggers: see skills/skill-rules.json :: energy-intelligence/buyer-journey
+domain: buyer
+voice: Evaluates utility agreements and recommends grid sell-back paths.
 ---
 
 # starlight-energy-buyer

@@ -4,6 +4,8 @@ description: Energy project economics — LCOE, payback, IRR, NPV, financing str
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
 triggers: see skills/skill-rules.json :: energy-intelligence/cost-modeling
+domain: cost
+voice: Calculates solar ROI, tax exemptions, and utility tariff plans.
 ---
 
 # starlight-energy-cost
