@@ -1,6 +1,7 @@
 # Plugin Intelligence Registry
 
 Date: 2026-06-17
+Updated: 2026-06-18
 Owner: FrankX AI / Starlight Intelligence
 Marketplace: `C:\Users\frank\.agents\plugins\marketplace.json`
 Plugin source root: `C:\Users\frank\plugins`
@@ -24,12 +25,17 @@ All six are installed from `plugins-cli` as `0.1.0+codex.20260617165242`.
 
 ## Continuation Result
 
-The plugin estate has been expanded and consolidated into a 30-entry personal marketplace suite:
+The plugin estate has been expanded and consolidated into a 45-entry `plugins-cli` marketplace suite: 44 FrankX/Starlight personal plugins plus the external `vercel-plugin`.
 
 - The 15 original personal plugins were source-validated, installed, and installed-cache validated.
 - The first six strategic plugins remain installed and enabled.
 - Eight additional high-leverage plugins were created, documented, source-validated, installed, enabled, and installed-cache validated.
-- `C:\Users\frank\.agents\plugins\marketplace.json` now contains 30 plugin entries.
+- Five final operating-system plugins were created, documented, source-validated, installed, enabled, and installed-cache validated.
+- One graph-level intelligence plugin was created, documented, source-validated, installed, enabled, installed-cache validated, and used to rebuild the ecosystem graph registry.
+- `C:\Users\frank\.agents\plugins\marketplace.json` now contains 45 plugin entries.
+- `C:\Users\frank\plugins\ecosystem-intelligence.registry.json` now records the 255-repo GitHub census, 61 local git repos, 158 active GitHub repos not cloned locally, domain/business evidence, and plugin coverage.
+- The public plugin starter now has a GitHub prerelease, a Starlight download section, a FrankX download-router card, and a machine-readable Starlight manifest endpoint.
+- The Starlight download UI was browser-verified at 1366x900 and 390x844 with no page-width overflow, visible SHA-256, and all four plugin install commands rendered.
 
 New continuation plugins:
 
@@ -43,6 +49,41 @@ New continuation plugins:
 | `ai-agent-marketplace-ops` | Agentic Creator OS, Business OS, income templates | Agent packs, plugin catalogs, template offers |
 | `oracle-migration-ops` | Oracle/OCI guides, AI migration consultant | Oracle migration offers, demos, enterprise proof |
 | `visual-intelligence-ops` | Visual intelligence, screenshots, UX QA | Asset review, responsive screenshots, public visual polish |
+
+Final operating plugins:
+
+| Plugin | Business surface | Primary use |
+| --- | --- | --- |
+| `site-download-page-ops` | Starlight/FrankX download pages | Release UX, manifests, checksum display, responsive QA |
+| `plugin-publication-sanitizer` | Public-release safety | Local-path, private-data, IP, claim, and license review |
+| `partner-licensing-ops` | Partnerships and licensing | Rights matrices, partner packages, co-marketing, legal-review handoffs |
+| `customer-success-intelligence` | User onboarding and support | Activation, FAQs, retention, renewal, and upgrade paths |
+| `analytics-growth-ops` | Growth and measurement | Download analytics, funnel metrics, dashboards, and experiments |
+
+Graph intelligence plugin:
+
+| Plugin | Business surface | Primary use |
+| --- | --- | --- |
+| `ecosystem-graph-ops` | Full FrankX/Starlight estate | Cross-estate graph across GitHub repos, local clones, domains, plugins, releases, command-center risks, and business surfaces |
+
+2026-06-18 business maturity wave:
+
+| Plugin | Business surface | Primary use |
+| --- | --- | --- |
+| `pricing-packaging-ops` | Offers, bundles, cohorts, consulting, partner packages | Price ladders, packaging, tier logic, delivery promises |
+| `support-knowledge-base-ops` | Onboarding, docs, FAQs, support | Convert friction into help content, macros, product fixes, retention paths |
+| `partner-portal-ops` | Partnerships and co-marketing | Gated partner assets, onboarding, launch packets, renewal surfaces |
+| `business-data-room-ops` | Strategic review, buyers, partners | Proof, metrics, releases, testimonials, financial snapshots |
+
+2026-06-18 Arcanea excellence wave:
+
+| Plugin | Business surface | Primary use |
+| --- | --- | --- |
+| `arcanea-genesis-flow-ops` | Arcanea Layer 1 experience | Prompt-to-world first session, coherence gates, activation, share loops |
+| `arcanea-world-repo-ops` | Arcanea Fabric and world portability | Repo-canonical worlds, manifests, provenance, licensing, marketplace readiness |
+| `arcanea-canon-director` | Arcanea original IP | Story, character, Seven Pillars world logic, visual DNA, continuity |
+| `arcanea-claw-media-ops` | ArcaneaClaw media operations | Scan, classify, dedupe, TASTE score, upload, social prep, command center |
+| `arcanea-creator-forge-ops` | Arcanea Layer 2 creator/pro forge | Creator products, agent packs, assets, marketplace offers, launch systems |
 
 ## Portfolio Map
 
@@ -59,6 +100,8 @@ These plugins protect continuity, business state, and repo execution:
 | `private-memory-veil` | existing | Sensitive memory boundaries and private working-context rules |
 | `agentic-ops-harness` | new | Multi-agent process control, handoffs, machine health, and operational QA |
 | `starlight-swarm-ops` | new | Swarm roles, model lanes, long-running runs, and recovery |
+| `ecosystem-graph-ops` | new | Full-estate graph builder and execution-wave prioritizer |
+| `business-data-room-ops` | new | Strategic proof, metrics, release evidence, and partner/buyer review packets |
 
 ### Revenue and Distribution Layer
 
@@ -72,8 +115,16 @@ These plugins convert work into packages, sales motion, and repeatable publishin
 | `template-publisher` | existing | Distribution of templates, starters, and downloadable assets |
 | `creator-cohort-ops` | existing | Cohort programs, lessons, assignments, and student/customer progress |
 | `partnership-media-kit` | existing | Partner pages, bios, proof, outreach packets, and press-ready materials |
+| `pricing-packaging-ops` | new | Pricing ladders, tiers, package boundaries, and upgrade paths |
+| `support-knowledge-base-ops` | new | Onboarding, support content, FAQs, macros, and product-feedback loops |
+| `partner-portal-ops` | new | Partner onboarding, gated assets, co-marketing packets, and renewal surfaces |
+| `business-data-room-ops` | new | Strategic proof room for partners, buyers, investors, and enterprise review |
 | `release-site-ops` | new | Release artifacts, download UX, checksums, and install docs |
+| `site-download-page-ops` | new | Site download routes, release manifests, responsive QA, and cross-site routing |
 | `ai-agent-marketplace-ops` | new | Agent packs, plugin catalogs, template tiers, and onboarding |
+| `partner-licensing-ops` | new | Partner-safe rights matrices, licensing packages, and co-marketing assets |
+| `customer-success-intelligence` | new | Onboarding, support, retention, and upgrade systems |
+| `analytics-growth-ops` | new | Download analytics, growth dashboards, funnel experiments, and decision logs |
 
 ### Brand and Product Verticals
 
@@ -92,6 +143,11 @@ These plugins keep each major business line coherent:
 | `prompt-eval-lab` | new | Prompt systems, prompt products, eval loops, and quality gates |
 | `oracle-migration-ops` | new | Oracle/OCI migration guides, demos, and delivery assets |
 | `visual-intelligence-ops` | new | Screenshots, assets, visual QA, and demo polish |
+| `arcanea-genesis-flow-ops` | new | Arcanea prompt-to-world first session, coherence gates, and activation UX |
+| `arcanea-world-repo-ops` | new | Repo-canonical worlds, manifests, provenance, licensing, and portability |
+| `arcanea-canon-director` | new | Story, character, Seven Pillars world logic, continuity, and anti-trope review |
+| `arcanea-claw-media-ops` | new | ArcaneaClaw media pipeline, TASTE scoring, publish prep, and command center |
+| `arcanea-creator-forge-ops` | new | Creator products, pro offers, agent packs, and world-to-business launch paths |
 
 ### Protection and Leverage Layer
 
@@ -102,18 +158,20 @@ These plugins reduce risk and make the portfolio easier to expand:
 | `ip-shield-ops` | existing | IP provenance, license discipline, and public/private boundary review |
 | `skill-to-plugin-forge` | existing | Convert proven skills and workflows into packaged plugins |
 | `starlight-evals-lab` | new | Evidence gates, regressions, and release-quality proofs |
+| `plugin-publication-sanitizer` | new | Public-release preflight for private data, claims, IP, and licensing |
+| `arcanea-world-repo-ops` | new | World manifest, provenance, license, and private/public boundary gates |
+| `arcanea-canon-director` | new | Canon consistency gates before visual, media, product, or marketplace expansion |
 
 ## Plugins Still Worth Building
 
-The first six and the next eight have now been built. Remaining candidates are more specialized and should be created after the suite has live usage evidence:
+The first six, the next eight, the final five, the graph-level intelligence plugin, the business maturity wave, and the Arcanea excellence wave have now been built. Remaining candidates should be created only when live usage proves they need a separate operating layer:
 
 | Candidate | Trigger evidence | Why it matters |
 | --- | --- | --- |
-| `site-download-page-ops` | site download routes, release assets, analytics | Dedicated implementation/QA for Starlight and FrankX download pages |
-| `plugin-publication-sanitizer` | public/private review findings | Automates local-path, private-data, IP, claim, and license screening |
-| `partner-licensing-ops` | partnership kits, Arcanea/agent licensing | Packages partner-safe tiers, rights, collateral, and terms |
-| `customer-success-intelligence` | install docs, FAQs, onboarding loops | Turns plugin usage into retention, support, and upsell systems |
-| `analytics-growth-ops` | site analytics and release downloads | Measures downloads, conversion, funnel performance, and offer experiments |
+| `arcanea-fabric-api-ops` | repeated Layer 3 API/SDK and orchestration boundary decisions | Packages World Graph, memory, orchestration, and SDK/API readiness once Fabric stabilizes |
+| `arcanea-proof-rail-ops` | repeated provenance, content-hash, proof, and royalty questions | Makes proof rails real without forcing blockchain friction into user experience |
+| `arcanea-education-residency-ops` | repeated creator residency, course, or cohort design | Turns Arcanea learning and production programs into repeatable curriculum and operations |
+| `arcanea-game-kit-ops` | repeated quests, playable prototypes, and world-to-game exports | Converts repo-canonical worlds into game kits, quests, and playable proof artifacts |
 
 ## Distribution Architecture
 
@@ -139,14 +197,19 @@ Recommended public flow:
 | Internal six-plugin bundle | `dist/plugins/starlight-plugin-wave-2026-06-17-codex-20260617165242.zip` | Local bundle, checksum generated, contains all six plugins, private/internal only |
 | Internal bundle checksum | `dist/plugins/starlight-plugin-wave-2026-06-17-codex-20260617165242.zip.sha256` | SHA-256: `5C947CDA546502BCF2D67FF150C803F8D3FE9CD6568AD44D7167C1E71FB0C8BB` |
 | Public starter bundle | `dist/plugins/starlight-public-plugin-starter-2026-06-17-codex-20260617165242.zip` | Sanitized four-plugin public candidate |
-| Public starter checksum | `dist/plugins/starlight-public-plugin-starter-2026-06-17-codex-20260617165242.zip.sha256` | SHA-256: `047DAEE5A50B0E9DDDB991DEEEC90106FEAC4B254CA231ECC49C6978BF64D11B` |
-| GitHub draft release | `https://github.com/frankxai/Starlight-Intelligence-System/releases/tag/untagged-6cfb5897b87f5c128b0d` | Draft release with public starter zip and checksum attached |
-| Private 29-plugin suite | `dist/plugins/starlight-private-plugin-suite-2026-06-17-29.zip` | Private bundle, 29 FrankX/Starlight plugin manifests, one local marketplace |
-| Private suite checksum | `dist/plugins/starlight-private-plugin-suite-2026-06-17-29.zip.sha256` | SHA-256: `8363E89B9FFA6D7EF7DBED1B75D28395799AF95FC19791684AB8518EDE87F598` |
+| Public starter checksum | `dist/plugins/starlight-public-plugin-starter-2026-06-17-codex-20260617165242.zip.sha256` | SHA-256: `047daee5a50b0e9dddb991deeec90106feac4b254ca231ecc49c6978bf64d11b` |
+| GitHub public prerelease | `https://github.com/frankxai/Starlight-Intelligence-System/releases/tag/plugins-public-starter-2026-06-17` | Public prerelease with public starter zip and checksum attached |
+| Starlight download section | `https://starlightintelligence.org/download#codex-plugin-starter` | Human install path with release links, checksum, and four plugin install commands |
+| Plugin starter latest manifest | `https://starlightintelligence.org/download/plugins/latest.json` | Machine-readable release index for automation, docs, and downstream sites |
+| FrankX download router | `https://frankx.ai/downloads` | Business/founder download card routing users into the Starlight install path |
+| Private 44-plugin suite | `dist/plugins/starlight-private-plugin-suite-2026-06-18-44.zip` | Private bundle, 44 FrankX/Starlight plugin manifests, one local marketplace, one private README |
+| Private suite checksum | `dist/plugins/starlight-private-plugin-suite-2026-06-18-44.zip.sha256` | SHA-256: `6F750B23524F0F8718CE51B35D2AF2612BB87A591A2BE1B951554AF046AE197E` |
+| Ecosystem intelligence registry | `C:\Users\frank\plugins\ecosystem-intelligence.registry.json` | Private graph registry generated by `ecosystem-graph-ops`; not public-safe as-is |
+| Plugin portfolio changelog | `C:\Users\frank\plugins\CHANGELOG.md` | Living release ledger for plugin portfolio changes, validation notes, and distribution artifacts |
 
 The public starter includes `enterprise-ai-coe-ops`, `health-intelligence-ops`, `prompt-eval-lab`, and `vibe-os-frequency-lab`. `anime-legends-studio` and `agentic-ops-harness` stay private until franchise/IP and operational references are sanitized.
 
-The private suite includes all 29 FrankX/Starlight personal plugin source folders and excludes `vercel-plugin`. It is not public-safe as-is.
+The private suite includes all 44 FrankX/Starlight personal plugin source folders and excludes `vercel-plugin`. It is not public-safe as-is: publication sanitizer found intentional local source attribution and private operating references, so the correct status is `private-only`.
 
 ## Guide Experience
 
@@ -157,6 +220,17 @@ Every plugin bundle should ship with the same user journey:
 3. Run first workflow: a prompt starter that produces a real deliverable in under ten minutes.
 4. Validate output: checklist for evidence, privacy, claims, attribution, and release readiness.
 5. Upgrade path: where to get templates, cohort, consulting, or the full Starlight system.
+
+Public plugin starter first-run commands:
+
+```bash
+unzip starlight-public-plugin-starter-2026-06-17-codex-20260617165242.zip
+codex plugin marketplace add <path-to-extracted-bundle>
+codex plugin add enterprise-ai-coe-ops@starlight-public
+codex plugin add health-intelligence-ops@starlight-public
+codex plugin add prompt-eval-lab@starlight-public
+codex plugin add vibe-os-frequency-lab@starlight-public
+```
 
 ## Validation Standard
 
@@ -171,28 +245,30 @@ Before any plugin becomes public:
 
 ## Next Execution Waves
 
-### Wave 1: Consolidate
+### Wave 1: Graph Reconciliation
 
-- Install the existing personal plugins that are still useful but not installed.
-- Add `README.md` and one example workflow to each plugin.
-- Add a portfolio changelog at `C:\Users\frank\plugins\CHANGELOG.md`.
-- Add checksums for public bundle candidates.
+- Use `ecosystem-graph-ops` to triage the 158 active GitHub repos that are not cloned locally.
+- Reconcile high-priority private repos first: `agentic-life-os`, `agentic-ops`, `ai-migration-consultant`, `gencreator.ai`, `hermes-cockpit`, `investor-intelligence`, `realityarchitect-vault`, `starlight-command-center`, and `starlight-private-memory`.
+- Use `domain-registry-ops` for every domain with unclear repo, deploy, transfer, or revenue ownership.
+- Keep the portfolio changelog at `C:\Users\frank\plugins\CHANGELOG.md` current for each plugin or suite release.
 
 ### Wave 2: Release
 
 - Create GitHub Release bundles for redacted public plugins.
-- Publish a download page on `starlightintelligence.org`.
-- Add a founder/business routing page on `frankx.ai`.
+- Keep the `starlightintelligence.org/download#codex-plugin-starter` section and `/download/plugins/latest.json` manifest current for each public plugin release.
+- Keep the founder/business routing card on `frankx.ai/downloads` pointed at the Starlight install path.
 - Add screenshots or short demo clips for the first workflow of each public plugin.
+- Run `plugin-publication-sanitizer` before any graph-derived registry, bundle, screenshot, or release note becomes public.
 
 ### Wave 3: Intelligence System Module
 
 - Package a full Starlight Intelligence System module containing install docs, plugin bundle, sample workflows, validation logs, and site download assets.
-- Add a release-site plugin or workflow that can regenerate release notes, checksums, and install snippets.
+- Use the 44-plugin private suite as the internal module source and the four-plugin public starter as the public onboarding surface.
+- Keep `ecosystem-intelligence.registry.json` private, and publish only sanitized summaries or public-safe manifests.
 - Add evals for critical workflows: business command, revenue offer, repo QA, memory/privacy review, and release packaging.
 
 ### Wave 4: Business Flywheel
 
 - Turn the strongest workflows into paid templates, cohort modules, enterprise workshops, and consulting proof assets.
-- Use `enterprise-ai-coe-ops` for B2B demand, `creator-revenue-engine` for consumer/creator offers, and `starlight-memory-ops` plus `agentic-ops-harness` for operational continuity.
+- Use `enterprise-ai-coe-ops` for B2B demand, `creator-revenue-engine` for consumer/creator offers, `ecosystem-graph-ops` for estate prioritization, and `starlight-memory-ops` plus `agentic-ops-harness` for operational continuity.
 - Keep public assets polished, private strategy protected, and all release artifacts traceable.

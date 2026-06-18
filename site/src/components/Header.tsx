@@ -4,7 +4,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#060609]/80 backdrop-blur-xl">
       <nav
-        className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6"
+        className="mx-auto flex h-14 max-w-[88rem] items-center justify-between px-6"
         aria-label="Main navigation"
       >
         <Link
@@ -30,7 +30,7 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="hidden items-center gap-0.5 min-[1500px]:flex">
           <NavLink href="/cosmos">Cosmos</NavLink>
           <NavLink href="/palace">Palace</NavLink>
           <NavLink href="/verticals">Verticals</NavLink>
@@ -62,7 +62,7 @@ export function Header() {
         </div>
 
         {/* Tablet nav — condensed */}
-        <div className="hidden items-center gap-1 sm:flex lg:hidden">
+        <div className="hidden items-center gap-1 sm:flex min-[1500px]:hidden">
           <NavLink href="/cosmos">Cosmos</NavLink>
           <NavLink href="/palace">Palace</NavLink>
           <NavLink href="/verticals">Verticals</NavLink>
@@ -128,7 +128,7 @@ function NavLink({
   external?: boolean;
 }) {
   const cls =
-    "inline-flex min-h-11 items-center rounded-md px-3 py-3 text-[13px] text-slate-300 transition-micro hover:text-white hover:bg-white/[0.06]";
+    "inline-flex min-h-11 items-center rounded-md px-2.5 py-3 text-[13px] text-slate-300 transition-micro hover:text-white hover:bg-white/[0.06]";
 
   if (external) {
     return (

@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # Starlight Intelligence System — Premium Antigravity CLI Integration
 # ==============================================================================
 # Built on SIP · Idempotent · Windows-optimized
@@ -871,10 +871,17 @@ function starlight-status-all {
     $results | Format-Table -AutoSize
 }
 
+function starlight-cockpit {
+    Write-Host "📊 Generating live Starlight Fleet Cockpit..." -ForegroundColor Cyan
+    node "C:\Users\frank\agentic-ops\lifecycle\generate-dashboard.js"
+}
+
 Set-Alias -Name checkpoint -Value asph-cp -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name resume -Value asph-rs -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name hsync -Value asph-sync -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name status-all -Value starlight-status-all -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name cockpit -Value starlight-cockpit -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name dashboard -Value starlight-cockpit -Scope Global -Force -ErrorAction SilentlyContinue
 
 # Diagnostic and Verification Tools
 # ------------------------------------------------------------------------------
@@ -933,7 +940,7 @@ function Test-AgentGridCli {
             Write-Host "$dirName does not exist under $global:REPOS_ROOT." -ForegroundColor DarkGray
         }
     }
-    Write-Host "======================================================================`n" -ForegroundColor Cyan
+    Write-Host "======================================================================" -ForegroundColor Cyan
 }
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
     Write-Host 'Antigravity YOLO wrappers loaded: agy-sis/agysis | agy-fx/agyfx | agy-arc/agyarc | agy-app/agyapp | agy-acos/agyacos | agy-run(ay)' -ForegroundColor Green

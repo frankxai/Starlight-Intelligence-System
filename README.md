@@ -2,7 +2,7 @@
 
 > **The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet.**
 >
-> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 63 agents, 81 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 965 tests keep the claims honest.
+> One brain and one rulebook shared by every coding agent you run: Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity. Per-tool memory is now table stakes; what your fleet is missing is **cross-tool, cross-repo, governed, and attested**. That's this repo — 144 agents, 83 auto-activating skills, 6 semantic vaults, an MCP server, and a provenance protocol (SIP). 965 tests keep the claims honest.
 
 [![version](https://img.shields.io/badge/version-8.3.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
@@ -21,7 +21,7 @@
 > 
 > **Ethereum for intelligence**: Open SIP protocol for adoption flywheel + layered value capture (protected canon/encoded-self + commercial Estate Factory delivery). Trinity is instance #1. Factory economics: 80% reuse after first estate.
 >
-> Exposing: **56 agents**, **79 auto-activating skills**, **6 semantic vaults**, **MCP server**, **provenance (SIP)**, and now the repeatable **Estate Factory** (4-layer blueprint, starlight-estate-os profile, /estate-blueprint + /estate-steward commands, full E2E commissioning workflow).
+> Exposing: **144 agents**, **83 auto-activating skills**, **6 semantic vaults**, **MCP server**, **provenance (SIP)**, and now the repeatable **Estate Factory** (4-layer blueprint, starlight-estate-os profile, /estate-blueprint + /estate-steward commands, full E2E commissioning workflow).
 >
 > See `docs/strategic/sip-web4-substrate-strategy.md` (IP/Web4 model), `docs/delivery/estate-army-commissioning-workflow.md` (full client workflow + benefits vs DIY/competitors), `templates/estate-os/` (thin reusable profile), `docs/boards/2026-06-16-estate-factory-web4-positioning-verdict.md` (PROCEED-WITH-REVISE, REVISE items closed).
 >
@@ -58,7 +58,7 @@ Restart your client: ten `sis_*` tools in every session — the same vaults, fro
 | Layer | What it is | What lives here | License | Adopt how |
 |-------|-----------|-----------------|---------|-----------|
 | **Substrate (SIP)** | A six-layer protocol that lets sovereign parties compose intelligence systems without losing sovereignty. | `SIP.md`, `SIS.md`, `ALLIANCE.md`, `STACK.md`, `VOICES.md`, `VERTICALS.md`, `MEMORY.md`, `REGISTRY.md`, `SKILL.md`, `.claude/commands/` | MIT | Read `SIP.md`, attest with `/sip-attest`, fork what you need. |
-| **Operational (reference build)** | This repo's working implementation: 63 named agents (7-archetype council + specialist tiers + Hermes search + evaluator + Energy Intelligence + Social Intelligence), 6 semantic vaults, 81 auto-activating skills across 16 domains, MCP server, 14 strategic commands + 100+ slash commands, seven-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
+| **Operational (reference build)** | This repo's working implementation: 144 named agents (7-archetype council + specialist tiers + Hermes search + evaluator + Energy Intelligence + Social Intelligence), 6 semantic vaults, 83 auto-activating skills across 16 domains, MCP server, 14 strategic commands + 100+ slash commands, seven-platform adapters. Frank's daily-driver. | `agents/`, `memory/`, `skills/`, `commands/`, `core/`, `context/`, `src/` (npm package) | MIT | Install `@arcanea/starlight-intelligence-system`, run the MCP server, write to your vaults. |
 
 You can adopt **just the substrate** (fork SIP for your own work), **just the operational layer** (use the MCP server for AI memory), or **the full stack** (Frank's reference build, end to end). They are independent.
 
@@ -438,4 +438,4 @@ See full model, workflow, Trinity split, IP posture, benefits, tech upgrades in 
 
 This is how we deliver world-class sovereign agent armies at scale with highest standards. 
 
-**All foundations verified this night**: Harness passed (56 agents, 79 skills, v8.3.0), tests green, SIP/SIS consistent (sovereignty, attestation, 10-IS, encoded-self, no drift), new artifacts integrated with "Built on SIP", excellence on prod branches (main/ship/* clean post-merge/PR).
+**All foundations verified this night**: Harness passed (144 agents, 83 skills, v8.3.0), tests green, SIP/SIS consistent (sovereignty, attestation, 10-IS, encoded-self, no drift), new artifacts integrated with "Built on SIP", excellence on prod branches (main/ship/* clean post-merge/PR).

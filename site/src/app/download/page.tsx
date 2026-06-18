@@ -9,11 +9,18 @@ import {
   SIP_STARTER_RELEASE_URL,
   SIP_STARTER_TAG,
 } from "@/lib/sip-download";
+import {
+  PLUGIN_STARTER_DOWNLOADS,
+  PLUGIN_STARTER_MODULE_NAME,
+  PLUGIN_STARTER_PLUGINS,
+  PLUGIN_STARTER_SHA256,
+  PLUGIN_STARTER_TAG,
+} from "@/lib/plugin-starter-download";
 
 export const metadata: Metadata = {
   title: "Download",
   description:
-    "Download the open-core Starlight SIP Starter: a portable intelligence system module with SIP files, public vault seeds, release manifest, checksums, and validation guidance.",
+    "Download open-core Starlight modules: the SIP Starter and the public Codex plugin starter with release assets, checksums, and validation guidance.",
   openGraph: {
     title: "Download — Starlight Intelligence",
     description:
@@ -39,7 +46,7 @@ export const metadata: Metadata = {
 
 export default function DownloadPage() {
   return (
-    <div>
+    <div className="overflow-x-clip">
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
         <BrainHero
@@ -80,7 +87,7 @@ export default function DownloadPage() {
             <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
               Latest
             </p>
-            <p className="mt-2 font-mono text-[22px] font-semibold text-white">
+            <p className="mt-2 break-all font-mono text-[22px] font-semibold text-white">
               {SIP_STARTER_MODULE_NAME}
             </p>
             <dl className="mt-5 grid gap-3 text-[12px]">
@@ -134,6 +141,95 @@ export default function DownloadPage() {
                 </code>
               </a>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="codex-plugin-starter"
+        className="border-b border-white/[0.08] px-6 py-16"
+      >
+        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-widest text-cyan-300">
+              Codex plugin starter
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold text-white">
+              Four public-safe operating plugins for builders.
+            </h2>
+            <p className="mt-4 text-[14px] leading-[1.8] text-slate-400">
+              A prerelease bundle for enterprise AI CoE work, health
+              intelligence safety, prompt evaluation, and Vibe OS audio/product
+              workflows. The full private suite stays internal until every
+              plugin passes publication sanitization.
+            </p>
+            <dl className="mt-6 grid gap-3 text-[12px]">
+              <Row label="Release" value={PLUGIN_STARTER_TAG} />
+              <Row label="Plugins" value="4 public starter plugins" />
+              <Row label="SHA256" value={PLUGIN_STARTER_SHA256} />
+            </dl>
+          </div>
+
+          <div className="grid gap-4">
+            <div className="grid gap-3 sm:grid-cols-3">
+              {PLUGIN_STARTER_DOWNLOADS.map((download) => (
+                <a
+                  key={download.filename}
+                  href={download.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-white/[0.08] bg-[#0c0c12] p-4 transition-std hover:border-cyan-300/[0.35] hover:bg-white/[0.04]"
+                >
+                  <p className="text-[13px] font-semibold text-white">
+                    {download.label}
+                  </p>
+                  <code className="mt-3 block break-all font-mono text-[11px] text-slate-400">
+                    {download.filename}
+                  </code>
+                  <span className="mt-4 block text-[13px] text-cyan-200 transition-micro group-hover:translate-x-0.5">
+                    Open &rarr;
+                  </span>
+                </a>
+              ))}
+            </div>
+
+            <Terminal>
+              <span className="text-emerald-400">$</span>{" "}
+              <span className="text-slate-400">unzip</span>{" "}
+              <span className="text-violet-300">
+                {`${PLUGIN_STARTER_MODULE_NAME}.zip`}
+              </span>
+              {"\n"}
+              <span className="text-emerald-400">$</span>{" "}
+              <span className="text-slate-400">codex plugin marketplace add</span>{" "}
+              <span className="text-violet-300">
+                {"<path-to-extracted-bundle>"}
+              </span>
+              {"\n"}
+              {PLUGIN_STARTER_PLUGINS.map((plugin, index) => (
+                <span key={plugin}>
+                  <span className="text-emerald-400">$</span>{" "}
+                  <span className="text-slate-400">codex plugin add</span>{" "}
+                  <span className="text-violet-300">
+                    {plugin}@starlight-public
+                  </span>
+                  {index < PLUGIN_STARTER_PLUGINS.length - 1 ? "\n" : ""}
+                </span>
+              ))}
+            </Terminal>
+            <p className="rounded-lg border border-cyan-300/[0.14] bg-cyan-300/[0.06] px-4 py-3 text-[12px] leading-relaxed text-cyan-100/80">
+              The private 29-plugin suite is packaged separately for internal
+              operators. Public distribution starts here so builders get a clean,
+              verifiable install path without exposing private business logic.
+              {" "}
+              <Link
+                href="/download/plugins/latest.json"
+                className="font-medium text-cyan-50 underline decoration-cyan-200/40 underline-offset-4 transition-std hover:text-white"
+              >
+                Machine-readable plugin manifest
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </section>
@@ -229,9 +325,11 @@ export default function DownloadPage() {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-t border-white/[0.06] pt-3">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="text-right font-mono text-slate-300">{value}</dd>
+    <div className="flex items-start justify-between gap-4 border-t border-white/[0.06] pt-3">
+      <dt className="shrink-0 text-slate-500">{label}</dt>
+      <dd className="min-w-0 break-all text-right font-mono text-slate-300">
+        {value}
+      </dd>
     </div>
   );
 }
@@ -247,7 +345,7 @@ function Terminal({ children }: { children: React.ReactNode }) {
           terminal
         </code>
       </div>
-      <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.8] text-slate-300">
+      <pre className="overflow-x-auto whitespace-pre-wrap break-words p-4 font-mono text-[12px] leading-[1.8] text-slate-300 [overflow-wrap:anywhere]">
         {children}
       </pre>
     </div>

@@ -287,7 +287,7 @@ describe("v7.6 agent-registry — coverage symmetry", () => {
     // Header should mention either current count ("Forty-two") or a higher count if more agents are added.
     // We accept "Forty-{one..nine}", "Fifty-*", or "Sixty-*" without forcing exact match — the rule is honesty.
     // Note: pre-v0.1 the floor was "Thirty-five"; Council Archetype Tier (v0.1 Friday demo, 2026-05-11) added 7 seats → 42.
-    const headerHonest = /Forty-(one|two|three|four|five|six|seven|eight|nine)|Fifty|Sixty/i.test(registry);
+    const headerHonest = /Forty-(one|two|three|four|five|six|seven|eight|nine)|Fifty|Sixty|One-hundred/i.test(registry);
     assert.ok(headerHonest, "AGENT_REGISTRY.md header must declare current scale (≥ Forty-two minds after v0.1 Council seat encoding)");
     assert.ok(
       registry.includes("Domain Sub-Stack"),

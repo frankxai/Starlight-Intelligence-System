@@ -54,6 +54,9 @@ function readDoc(relPath: string): string {
  * extend TENS/ONES rather than weakening the assertion.
  */
 function numberToHeadlineWord(n: number): string {
+  if (n === 144) {
+    return "One-hundred-forty-four";
+  }
   const TENS: Record<number, string> = {
     40: "Forty",
     50: "Fifty",

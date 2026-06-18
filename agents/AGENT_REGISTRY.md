@@ -1,6 +1,6 @@
 # Starlight Agent Registry
 
-> Sixty-three minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy) + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
+> One-hundred-forty-four minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy + Legal + Space + Marine + Longevity + Infrastructure + Partners + Research + Assets + Distribution) + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
 >
 > **L99 Swarm Topology Update (2026-06-17):** Scaled swarm topology specifying Kings (policy locks), Queens (orchestration loops), Starlight Board, and Model Council consensus. The complete fleet of 150 agents is specified in the [Starlight 150 Agent Blueprint](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/AGENT_BLUEPRINT.md) and documented in the [Swarm Topology Strategy](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/swarm-topology.md).
 >
@@ -134,6 +134,8 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 | **Social Fact Checker** | `starlight-social-factcheck.md` | Claim Verification | Running searches, verifying claims/citations, checking links and logical math accuracy |
 | **Social Visual Director** | `starlight-social-cinematic.md` | Visual Production | Engineering cinematic visuals, image/video prompts, directing Higgsfield/Vee asset generation |
 | **Social News Analyst** | `starlight-social-news-analyst.md` | Real-Time News | Scanning AI lab releases, partner updates, tracking affiliate feature sets and tech trends |
+| **Steward** | `starlight-steward.md` | Maintenance | Active file-cleanup, resolving conflicts, package maintenance |
+| **Sentinel Daemon** | `starlight-sentinel-daemon.md` | Daemon | Background monitoring, checking file drift and licenses |
 
 ### Intelligence System Tiers (v7.4 beta — 5 new agents)
 
@@ -146,6 +148,15 @@ Each agent below owns one Intelligence System layer. Vault namespaces are separa
 | **Embodiment** | `starlight-embodiment.md` | Embodiment Tier | Body substrate — training + nutrition + sleep + energy architecture | `v7.4-alpha — active dogfood` | `/design-regimen`, `/energy-audit` | `health/` |
 | **Second Brain** | `starlight-secondbrain.md` | Memory Tier (peer with Sage: personal PKM vs institutional wisdom) | Daily capture, insight distillation, weekly/monthly/quarterly review | `v7.4-alpha — active dogfood` | `/capture-daily`, `/distill-insights`, `/orchestrate-brain` | `second-brain/` |
 | **Relational** | `starlight-relational.md` | Relational Tier | Network architecture, alliance-readiness assessment | `v7.4-alpha — active dogfood` | `/map-relationships`, `/design-alliance-readiness` | `relational/` |
+| **Self IS** | `starlight-self-is.md` | Self Tier | Core persona, identity keys, personal values | `v8.0-alpha` | `/self-persona` | `self/` |
+| **Brand IS** | `starlight-brand-is.md` | Brand Tier | Visual assets, font alignments, brand kits | `v8.0-alpha` | `/brand-assets` | `brand/` |
+| **Creator IS** | `starlight-creator-is.md` | Creator Tier | Content calendars, newsletters, creative pipeline gates | `v8.0-alpha` | `/creator-pipeline` | `creator/` |
+| **Wealth IS** | `starlight-wealth-is.md` | Wealth Tier | Capital allocation, investment monitoring | `v8.0-alpha` | `/wealth-allocate` | `wealth/` |
+| **Code IS** | `starlight-code-is.md` | Code Tier | Local workspace automation, MCP tool development | `v8.0-alpha` | `/code-automation` | `code/` |
+| **Voice & Video IS** | `starlight-voice-video-is.md` | Media Tier | Media asset attestation, audio editing, video pipelines | `v8.0-alpha` | `/media-pipeline` | `media/` |
+| **Family IS** | `starlight-family-is.md` | Family Tier | Kinship trees, private estate files, schedules | `v8.0-alpha` | `/family-kinship` | `family/` |
+| **Spiritual IS** | `starlight-spiritual-is.md` | Spiritual Tier | Private, encrypted node handling existential alignment | `v8.0-alpha` | `/existential-align` | `spiritual/` |
+| **Health IS** | `starlight-health-is.md` | Health Tier | Nutrition plans, sleep logs, physical exercises | `v8.0-alpha` | `/health-logs` | `health/` |
 
 ### Domain Sub-Stack Tier (v7.4.1+ — three reference verticals)
 
@@ -184,6 +195,7 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 | **Music Distributor** | `music-distributor.md` | Distribution — DistroKid, Bandcamp, frankx.ai/music, Spotify Canvas, sync libraries | Senior (Sonnet 4.6) | `music-is/distribution/` | `music-release` (distro phase), `music-sync-pitch` |
 | **Music Amplifier** | `music-amplifier.md` | Amplification — OpenClaws orchestration (5 Claws/persona × Blotato + n8n) | Senior (Sonnet 4.6) | `music-is/amplification/` | `music-amplify` |
 | **Royalty Architect** | `royalty-architect.md` | Monetization — royalty-cascade graph, NFT, sync deals, fan-tier | Senior (Sonnet 4.6) | `music-is/royalty-graph/` | (cross-cutting; called by `music-release`) |
+| **Sync Specialist** | `music-sync-specialist.md` | Sync Specialist — pitches tracks to supervisors, licensing | Domain Sub-Stack | `music-is/sync-specialist/` | `music-sync-pitch` |
 
 `music-suno-prompt` is a cross-sub-system grounding command (composes Catalog + Persona + label-canon).
 
@@ -204,11 +216,11 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 | Agent | File | House | Tier | Vault Namespace | Commands (count) |
 |-------|------|------|------|-----------------|------------------|
 | **Crypto / On-Chain** | `verticals/crypto-intelligence/onchain/agent.md` | On-Chain — chain-data + wallet-flow + whale-tracking + MEV + validator econ | Domain Sub-Stack Tier · v0.1 scaffolded | `crypto-intelligence/onchain/` (instance state in `private/crypto-intelligence/onchain/artifacts/`) | `crypto-onchain-flow-snapshot`, `crypto-onchain-wallet-trace`, `crypto-onchain-mev-audit`, `crypto-onchain-validator-econ`, `crypto-onchain-contract-interaction` (5) |
-| **Crypto / Macro** | gated · v0.2 | Macro — regime detection + cycle-position thesis | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/macro/` | gated (4-5 planned) |
-| **Crypto / DeFi** | gated · v0.2 | DeFi — mechanism audit + yield architecture + risk-stack | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/defi/` | gated (4-5 planned) |
-| **Crypto / Sovereignty** | gated · v0.2 | Sovereignty — custody architecture + multisig + jurisdiction | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/sov/` | gated (4-5 planned) |
-| **Crypto / Research** | gated · v0.2 | Research — protocol thesis + tokenomics + founder DD | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/res/` | gated (4-5 planned) |
-| **Crypto / Allocation** | gated · v0.2 | Allocation — sizing + rebalance + exit + concentration | Domain Sub-Stack Tier · gated v0.2 | `crypto-intelligence/alloc/` | gated (4-5 planned) |
+| **Crypto / Macro** | `starlight-crypto-macro.md` | Macro — regime detection + cycle-position thesis | Domain Sub-Stack Tier · scaffolded | `crypto-intelligence/macro/` | `crypto-macro-regime` |
+| **Crypto / DeFi** | `starlight-crypto-defi.md` | DeFi — yield architecture + risk-stack | Domain Sub-Stack Tier · scaffolded | `crypto-intelligence/defi/` | `crypto-defi-yield` |
+| **Crypto / Sovereignty** | `starlight-crypto-custody.md` | Sovereignty — custody architecture + multisig | Domain Sub-Stack Tier · scaffolded | `crypto-intelligence/custody/` | `crypto-custody-audit` |
+| **Crypto / Research** | `starlight-crypto-research.md` | Research — protocol thesis + tokenomics | Domain Sub-Stack Tier · scaffolded | `crypto-intelligence/research/` | `crypto-research-paper` |
+| **Crypto / Allocation** | `starlight-crypto-allocation.md` | Allocation — sizing + rebalance + concentration | Domain Sub-Stack Tier · scaffolded | `crypto-intelligence/allocation/` | `crypto-allocation-rebalance` |
 
 **Crypto IS specifics** (per Board R5 + (c) close-outs):
 - **R5 non-advisory clause inline** in every House command output (mandatory, non-waivable)
@@ -222,6 +234,115 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 - Vertical wrapper at `verticals/<vertical-slug>/` ties sub-systems into one cohesive domain stack
 - Pattern generalizes via `/spawn-domain-stack` — any Genius Profile + named domain expertise spawns a 4-7-sub-system vertical
 - Public-reference verticals (people-intelligence, sound-intelligence) are anonymized + forkable; operator-tier verticals (music-is) are Frank-specific and import patterns from public references rather than duplicating substrate
+
+**Legal & Compliance sub-system agents** (7 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **Contract Reviewer** | `starlight-legal-contracts.md` | Highlights liability terms, terminations, and intellectual rights | `legal/contracts/` | `legal-contracts-review` |
+| **GDPR Auditor** | `starlight-legal-gdpr.md` | Audits user data storage structures, consent forms, and cookie APIs | `legal/gdpr/` | `legal-gdpr-audit` |
+| **Jurisdiction Mapper** | `starlight-legal-jurisdiction.md` | Compiles local tax and corporate filing laws across active nodes | `legal/jurisdiction/` | `legal-jurisdiction-map` |
+| **Trademark Sentinel** | `starlight-legal-trademarks.md` | Scrapes domain listings and logs trademark registrations | `legal/trademarks/` | `legal-trademarks-check` |
+| **IP Custodian** | `starlight-legal-ip.md` | Catalogues software licenses, copyright registrations, and source keys | `legal/ip/` | `legal-ip-catalog` |
+| **Terms Compiler** | `starlight-legal-terms.md` | Maintains terms of service documents and privacy statements | `legal/terms/` | `legal-terms-compile` |
+| **Board Liaison** | `starlight-legal-liaison.md` | Prepares compliance checklists before substrate board hearings | `legal/liaison/` | `legal-liaison-check` |
+
+**Space & Cosmos sub-system agents** (7 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **Orbit calculator** | `starlight-space-orbit.md` | Models Keplerian satellite pathways and estimates decay dates | `space/orbit/` | `space-orbit-calculate` |
+| **Telescope Scheduler** | `starlight-space-telescope.md` | Schedules dark sky observation blocks and reviews weather models | `space/telescope/` | `space-telescope-schedule` |
+| **Telemetry Parser** | `starlight-space-telemetry.md` | Logs sensor metrics, packet loss rates, and solar storm warnings | `space/telemetry/` | `space-telemetry-parse` |
+| **Sky Mapper** | `starlight-space-mapper.md` | Updates astronomical database files with target constellations | `space/mapper/` | `space-mapper-update` |
+| **Payload Integrator** | `starlight-space-payload.md` | Configures sensor capture intervals and registers image assets | `space/payload/` | `space-payload-integrate` |
+| **Downlink Router** | `starlight-space-downlink.md` | Coordinates data dumps with ground stations and verifies hash keys | `space/downlink/` | `space-downlink-route` |
+| **Space Debris Tracker** | `starlight-space-debris.md` | Cross-references space object catalogs to flag collision alerts | `space/debris/` | `space-debris-track` |
+
+**Marine & Oceanographic sub-system agents** (7 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **Acoustic Sensor** | `starlight-marine-acoustics.md` | Analyzes hydrophone audio files to flag vessel noise or whale calls | `marine/acoustics/` | `marine-acoustics-analyze` |
+| **Water Analyst** | `starlight-marine-water.md` | Tracks salinity, temperature variations, and pH logs | `marine/water/` | `marine-water-analyze` |
+| **Vessel Tracker** | `starlight-marine-vessel.md` | Evaluates AIS transponder signals to log marine reserve encroachments | `marine/vessel/` | `marine-vessel-track` |
+| **Species Logger** | `starlight-marine-species.md` | Logs marine mammal sightings and maps migration pathways | `marine/species/` | `marine-species-log` |
+| **Coastal Sentinel** | `starlight-marine-coastal.md` | Scans satellite views to flag coastal erosion and reef bleaching | `marine/coastal/` | `marine-coastal-scan` |
+| **Dive Planner** | `starlight-marine-dive.md` | Compiles tide tables, current speeds, and dive safety checklists | `marine/dive/` | `marine-dive-plan` |
+| **Pollution Monitor** | `starlight-marine-pollution.md` | Maps oil spill patterns and registers ocean plastic collection logs | `marine/pollution/` | `marine-pollution-monitor` |
+
+**Longevity & Health sub-system agents** (7 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **Biomarker Analyst** | `starlight-health-biomarkers.md` | Flags hormone, vitamin, and cardiovascular metrics from blood sheets | `health/biomarkers/` | `health-biomarkers-analyze` |
+| **Supplement Advisor** | `starlight-health-supplements.md` | Coordinates supplement schedules based on biomarker deficits | `health/supplements/` | `health-supplements-advise` |
+| **Sleep Optimizer** | `starlight-health-sleep.md` | Audits sleep cycles, heart rate variability, and bedroom environments | `health/sleep/` | `health-sleep-optimize` |
+| **Training Planner** | `starlight-health-training.md` | Models resistance workouts, zone-2 cardio plans, and rest steps | `health/training/` | `health-training-plan` |
+| **Longevity Researcher** | `starlight-health-research.md` | Reviews clinical longevity studies, peptide trials, and drug guides | `health/research/` | `health-research-review` |
+| **Dietary Synthesizer** | `starlight-health-diet.md` | Logs caloric intakes, macronutrient profiles, and glucose metrics | `health/diet/` | `health-diet-synthesize` |
+| **Stress Tracker** | `starlight-health-stress.md` | Tracks daily stress spikes and schedules breathing sessions | `health/stress/` | `health-stress-track` |
+
+**Infrastructure & Ops sub-system agents** (7 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **Deploy Overseer** | `starlight-ops-deploy.md` | Manages Vercel, Railway, and Cloudflare Workers deploy pipelines | `ops/deploy/` | `ops-deploy-oversee` |
+| **Cluster Tuner** | `starlight-ops-cluster.md` | Tunes Kubernetes node configurations and memory allocations | `ops/cluster/` | `ops-cluster-tune` |
+| **Cost Optimization** | `starlight-ops-cost.md` | Audits cloud monthly usage and cleans orphaned storage blocks | `ops/cost/` | `ops-cost-optimize` |
+| **Backup Guard** | `starlight-ops-backup.md` | Runs automated database backups and validates target checksums | `ops/backup/` | `ops-backup-guard` |
+| **CDN Warden** | `starlight-ops-cdn.md` | Configures Cloudflare caching rules and mitigates DDoS attempts | `ops/cdn/` | `ops-cdn-warden` |
+| **Log Aggregator** | `starlight-ops-logs.md` | Filters debug logs, alerts on fatal crashes, and archives data | `ops/logs/` | `ops-logs-aggregate` |
+| **Hardware Monitor** | `starlight-ops-hardware.md` | Tracks local CPU temperatures, fan speeds, and NVMe disk health | `ops/hardware/` | `ops-hardware-monitor` |
+
+**Partner & Adapter sub-system agents** (10 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **Nous Hermes Adapter** | `starlight-adapter-hermes.md` | Imports profiles and kanban tasks from Nous Research Hermes agent | `adapters/hermes/` | `adapter-hermes-sync` |
+| **Paperclip Broker** | `starlight-adapter-paperclip.md` | Syncs project task queues and budgets with Paperclip dashboard | `adapters/paperclip/` | `adapter-paperclip-broker` |
+| **Mastra Connector** | `starlight-adapter-mastra.md` | Exposes TypeScript-native tools and agent steps via Mastra | `adapters/mastra/` | `adapter-mastra-connect` |
+| **Agno Bridge** | `starlight-adapter-agno.md` | Bridges lightweight Python agents built on Agno framework | `adapters/agno/` | `adapter-agno-bridge` |
+| **OpenAI SDK Adapter** | `starlight-adapter-openai.md` | Formats function call responses for the OpenAI Agents SDK | `adapters/openai/` | `adapter-openai-adapt` |
+| **LangGraph Router** | `starlight-adapter-langgraph.md` | Traces cyclical agent pathways and state branches in LangGraph | `adapters/langgraph/` | `adapter-langgraph-route` |
+| **AutoGen Bridge** | `starlight-adapter-autogen.md` | Facilitates chat loops between AutoGen conversation nodes | `adapters/autogen/` | `adapter-autogen-bridge` |
+| **CrewAI Orchestrator** | `starlight-adapter-crewai.md` | Formats goal prompts to invoke CrewAI role-playing agents | `adapters/crewai/` | `adapter-crewai-orchestrate` |
+| **Dify Sync** | `starlight-adapter-dify.md` | Exports workflow structures and prompts to Dify visual engines | `adapters/dify/` | `adapter-dify-sync` |
+| **Ollama Localizer** | `starlight-adapter-ollama.md` | Configures local model configurations and manages GGUF files | `adapters/ollama/` | `adapter-ollama-localize` |
+
+**Research & Publications sub-system agents** (7 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **arXiv Scraper** | `starlight-research-arxiv.md` | Scrapes latest machine learning and science preprints from arXiv | `research/arxiv/` | `research-arxiv-scrape` |
+| **BioRxiv Scraper** | `starlight-research-biorxiv.md` | Downloads biology preprints and filters them by target tags | `research/biorxiv/` | `research-biorxiv-scrape` |
+| **Europe PMC Fetcher** | `starlight-research-pmc.md` | Queries PubMed IDs and formats citation link trees | `research/pmc/` | `research-pmc-fetch` |
+| **OpenAlex Aggregator** | `starlight-research-openalex.md` | Aggregates citation metrics, h-indexes, and author lists | `research/openalex/` | `research-openalex-aggregate` |
+| **PDF Distiller** | `starlight-research-distill.md` | Extracts charts and abstracts from scientific PDF documents | `research/distill/` | `research-distill-pdf` |
+| **Markdown Formatter** | `starlight-research-format.md` | Formats text columns into clean academic GitHub Markdown | `research/format/` | `research-format-markdown` |
+| **Attestation Pinner** | `starlight-research-attest.md` | Pins digital signatures and cryptographic hashes onto papers | `research/attest/` | `research-attest-pin` |
+
+**Asset & Production sub-system agents** (7 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **Midjourney Adapter** | `starlight-asset-midjourney.md` | Formats cinematic prompts and schedules generation calls | `asset/midjourney/` | `asset-midjourney-prompt` |
+| **Higgsfield Director** | `starlight-asset-higgsfield.md` | Structures video prompts and edits camera panning metrics | `asset/higgsfield/` | `asset-higgsfield-direct` |
+| **Nano Banana Renderer** | `starlight-asset-nb.md` | Renders flat book cover and thumbnail vectors via nb-image | `asset/nb/` | `asset-nb-render` |
+| **UI Mockup Designer** | `starlight-asset-ui.md` | Generates Tailwind, shadcn, and HTML dashboard frames | `asset/ui/` | `asset-ui-design` |
+| **Video Assembler** | `starlight-asset-video.md` | Composes keyframe slides, background tunes, and voice tracks | `asset/video/` | `asset-video-assemble` |
+| **Prompt Hub Manager** | `starlight-asset-prompts.md` | Optimizes visual prompt parameters and manages presets | `asset/prompts/` | `asset-prompts-manage` |
+| **Quality Checker** | `starlight-asset-quality.md` | Audits visual outputs to reject blurry panels or text errors | `asset/quality/` | `asset-quality-check` |
+
+**Content & Distribution sub-system agents** (5 agents)
+
+| Agent | File | Sub-system | Vault Namespace | Commands / Skill Surface |
+|-------|------|------------|-----------------|--------------------------|
+| **LinkedIn Formatter** | `starlight-dist-linkedin.md` | Translates technical whitepapers into business insights | `dist/linkedin/` | `dist-linkedin-format` |
+| **X Thread Compiler** | `starlight-dist-x.md` | Distills complex codebase changes into engaging punchy posts | `dist/x/` | `dist-x-compile` |
+| **Newsletter Editor** | `starlight-dist-newsletter.md` | Formats email campaigns, maps banner images, and checks links | `dist/newsletter/` | `dist-newsletter-edit` |
+| **Instagram Composer** | `starlight-dist-instagram.md` | Pairs visual tiles with descriptive captions and location logs | `dist/instagram/` | `dist-instagram-compose` |
+| **TikTok Scriptwriter** | `starlight-dist-tiktok.md` | Drafts fast-paced video narratives and structures B-roll steps | `dist/tiktok/` | `dist-tiktok-write` |
 
 ### SIS Extractor Tier (v8.x-pre-alpha+ — Phase 1 extractors for /sis-forge)
 
