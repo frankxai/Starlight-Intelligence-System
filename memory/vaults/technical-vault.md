@@ -28,6 +28,9 @@ last_consolidated: '2026-05-11'
 | 2026-02-10 | Skill Auto-Activation Pattern | skill-pattern | 0.90 |
 | 2026-02-10 | Memory Hierarchy Pattern | memory-pattern | 0.90 |
 | 2026-05-06 | Core Regression Harness Pattern | test-pattern | 0.90 |
+| 2026-06-12 | Cross-Repo Visual Production Pattern | design-pattern | 0.95 |
+| 2026-06-14 | Double-Loop Visual Quality Control Pattern | process-pattern | 0.95 |
+| 2026-06-15 | SVD Double-Loop CLI Pipeline & Nested API Parsing | tool-pattern | 0.98 |
 
 ---
 
@@ -38,6 +41,26 @@ last_consolidated: '2026-05-11'
 **Category:** architecture-pattern
 **Confidence:** 0.95
 **Source:** Starlight Architect / Pattern extracted from ACOS v6
+
+### [2026-06-12] Queen Continuous Driver + Visual Ledger + Memory Gateway Integration Pattern
+**Category:** architecture-pattern / orchestration-pattern / memory-pattern
+**Confidence:** 1.0
+**Source:** Starlight Architect + Queen (Grok 4.3) via 2026-06-12 whole advance (driver.mjs + routing-table + visuals + vaults + docs)
+**Related:** commands/starlight-queen.md + starlight-architect.md (scaffolded example), tools/queen/driver.mjs (enhanced classify/learn/ledger with visuals), routing-table.json (Grok + memory-consolidation-queen + palace-visual-recall), ROUTING-DOCTRINE.md (2026-06-12 entry), operational-vault (full tick receipt + 5 images), creative-vault (visual aesthetics), VAULT_ARCHITECTURE.md (Queen/gateway note), HARNESS.md (Grok visual/parallel), src/gateway/* (protocol for SessionStore + memory.add/search), memory-engine-v02 scorecard + transformer, curate-recall, 5 image_gen artifacts
+
+**Core pattern (executable + visual + stateful):**
+- Driver (tools/queen/driver.mjs) implements ROUTE (table classify) → MEASURE (lanes + gstack + receipts) → LEARN (A2 proposals from scorecards/arena) → RATIFY (A1 stakes) → LEDGER (jsonl + vault append + table derived + image refs). Grok: spawn_subagent for parallel lanes, image_gen for visuals, excellence gates.
+- Visual ledger: every significant LEDGER tick produces 1+ premium image_gen (loop diagrams, palace, heatmaps, receipts) referenced in vault entries + docs. Paths captured in ledger entry + driver code.
+- Memory integration: gateway SessionStore (per-harness namespaces) as Queen persistent working state (beyond driver state.json sim); Queen drives memory lane MEASURE + consolidation (CONSOLIDATION_LOG, PROMOTION_QUEUE review via learn); visual palace recall (3D viz + curate-recall wikilinks) as first-class output; RRF hybrid (0.7 vec/0.3 lex from engine v0.2) unifies.
+- /si visual: master command status/queen surfaces now surface generated visuals + dashboard cards (starlight.md updated).
+- New classes in table: memory-consolidation-queen, palace-visual-recall (Grok native).
+- Cross-harness: same vaults + gateway; Grok registers for unified Queen recall.
+
+**Implementation notes (surgical, verified from source):** driver classify now routes "palace|gateway|consolidation|advance|whole|memory" correctly; learn emits new proposals; ledger enriches vault with visuals list + decisions + SIP. 5 visuals generated parallel. Edits to 10+ files (table, doctrine, vaults x4, starlight.md, HARNESS, agents x2, VAULT_ARCH, README, driver) + this entry. No over-abstraction.
+
+**Elegance:** The loop now looks at itself (Queen advances the Queen). Visuals make the invisible (routing confidence, memory health, compound velocity) visible and citable. Gateway makes Queen state portable across harnesses without copy-paste.
+
+**Built on SIP — Starlight Intelligence Protocol**
 **Related:** Strategic Vault - Architecture Decision
 
 **Pattern:** Use markdown files and JSON configuration instead of executable code for AI system definition.
@@ -167,3 +190,95 @@ Platform exports (Claude Code, Codex, ChatGPT Projects)
 **Cloud boundary:** Public vault, attestation ledger, docs, and install packages are cloud-safe. The canonical agent memory layer stays local. This preserves the sovereignty contract.
 
 **Anti-pattern:** Using Google Drive or Notion as the memory substrate — excellent raw material stores but poor canonical memory layers.
+
+---
+
+### [2026-06-12] Cross-Repo Visual Production Pattern
+
+**Category:** design-pattern / workflow-pattern
+**Confidence:** 0.95
+**Source:** Antigravity / Gemini 3.5 Overnight Visual Workspace Run
+**Related:** [starlight/design.md](file:///C:/Users/frank/starlight/design.md), [starlight/higgsfield/README.md](file:///C:/Users/frank/starlight/higgsfield/README.md), [starlight/higgsfield/ledger.jsonl](file:///C:/Users/frank/starlight/higgsfield/ledger.jsonl)
+
+**Pattern:** Establish a single shared global design operating contract (`design.md`) and centralized generation directory (`higgsfield/`) at a system level, with repo-specific local `design.md` files acting as redirects and localized backlogs.
+
+**Key Components:**
+1. **Global Contract:** Defines visual spectra (colors, typography, aspect ratios, motion profiles) and model-routing parameters in one canonical place.
+2. **Local Redirects:** Individual repositories hold a minimalist `design.md` detailing localized page-level asset backlogs and pointing directly back to the global contract.
+3. **Centralized Ledger:** An append-only ledger (`ledger.jsonl`) tracking every generation (brand, job_id, cost, purpose, result_url, next_action) to prevent duplicate renders and monitor credit burn.
+4. **Download Staging:** Output media downloaded immediately to a centralized assets directory grouped by brand/repo rather than kept as transient URLs.
+
+**Benefits:**
+- **Zero Duplication:** Ensures brand style guidelines (Tech spectrum, soul spectrum, cinematic style) do not drift across separate website, application, or system repositories.
+- **Portability:** Simplifies pipeline jobs by letting any agent harness (Codex, Antigravity, Claude Code) read a single unified directory for asset reference.
+- **Cost Safety:** Centralized ledger keeps credit expenditure transparent across multi-agent sessions.
+
+---
+
+### [2026-06-14] Double-Loop Visual Quality Control Pattern
+
+**Category:** process-pattern / quality-pattern / design-pattern
+**Confidence:** 0.95
+**Source:** Antigravity / Gemini 3.5 Visual Enhancement Session
+**Related:** [strategic-vault.md](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/memory/vaults/strategic-vault.md), [prompt_creator_council.js](file:///C:/Users/frank/.gemini/antigravity-cli/scratch/prompt_creator_council.js), [run_virality_predictor.js](file:///C:/Users/frank/.gemini/antigravity-cli/scratch/run_virality_predictor.js)
+
+**Pattern:**
+A systematic pipeline for media asset creation that inserts automated pre-generation verification (prompt compilation with structural rules & evaluation) and post-generation verification (biological engagement prediction) to ensure high-fidelity outputs and eliminate bad credit spend.
+
+**Key Components:**
+1. **Prompt Compiler Rules:**
+   - *Organizing Metaphor:* Ground the composition in a concrete real-world setup (e.g. cockpit, clockwork model).
+   - *Style DNA:* Explicitly declare color codes, texture rules (e.g., copper-brass filigree, glowing cyan terminals), and rendering methods (e.g., Da Vinci Codex, Cyberpunk Neon).
+   - *Components:* Detail 4+ specific objects with lighting instructions.
+   - *Organic Anchor:* Anchor the digital/artificial with an organic detail (e.g. leather straps, dust particles).
+2. **Pre-Flight Council Evaluation:**
+   - Execute a programmatic evaluator testing the prompt string for Style DNA inclusion, metaphor depth, and structural complexity.
+   - Assign a simulated score. Reject any prompt scoring < 8.0/10.
+3. **Upscale Polling Strategy:**
+   - Upscale 2D stills to 4K using the `upscale_image` tool by parsing the source image's exact dimensions first.
+   - *Failure Avoidance:* Implement long-polling (up to 60-120 seconds, with exponential backoff or 8s intervals) to prevent premature timeouts since 4K upscaling takes significantly longer than standard image generations.
+4. **Post-Generation Virality Loop:**
+   - Submit the finished MP4 video/image to the `virality_predictor` tool.
+   - Parse occipital activation values across frames (measuring visual arousal) and Default Mode Network activation (measuring cognitive task-wandering).
+   - Use high DMN and low hook score as indicators for loop-friendly atmospheric looping (perfect for headers/dashboards), and low DMN/high hook score for attention-grabbing reels.
+
+**Benefits:**
+- **Guaranteed Quality:** Eliminates poorly thought-out assets by rejecting weak prompts before they ever call the generative API.
+- **Data-Driven Optimization:** Replaces guesswork about "what looks good" with predictive brain activation maps.
+
+---
+
+### [2026-06-15] SVD Double-Loop CLI Pipeline & Nested API Parsing
+
+**Category:** tool-pattern / process-pattern / api-integration
+**Confidence:** 0.98
+**Source:** Antigravity / Gemini 3.5 Verification Session
+**Related:** [strategic-vault.md](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/memory/vaults/strategic-vault.md), [visual-director.mjs](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/tools/visual-director/visual-director.mjs)
+
+**Pattern:**
+When developing autonomous client bridges to JSON-RPC tools and services (such as Higgsfield MCP) that emit structured content, implement robust fallbacks in the JSON path resolution hierarchy to handle variable structure formats (such as nested parameters vs. root-level arrays) and prevent silent failures.
+
+**Mechanism:**
+1. **OAuth Auto-Refresh:** Keep credentials valid by checking token expiry dynamically before every API call and performing refreshing on-demand:
+   ```javascript
+   const isExpired = !credentials.expiresAt || (Date.now() + 300000 >= credentials.expiresAt);
+   ```
+2. **Accept Header Streaming:** Ensure that JSON-RPC transports that return SSE streams accept both JSON and event-streams explicitly:
+   ```javascript
+   'Accept': 'application/json, text/event-stream'
+   ```
+3. **Structured Scorecard Extraction:** Always traverse nested metadata paths when querying predictive scores:
+   ```javascript
+   const analysis = statusSc.generation?.params?.analysis || statusSc.generation?.analysis || statusSc.analysis || {};
+   const scores = analysis.scores || {};
+   ```
+4. **Programmatic Quality Gate Council:** Replicate human check criteria (Metaphor, DNA, Components, Organic Anchor, Slop prevention) in local validator checks before submission to protect the budget cap.
+
+**Benefits:**
+- **Reliable Score Logging:** Prevents tools from printing default or 0/100 outputs when the underlying service successfully returns rich cortical activation metadata.
+- **Cost Minimization:** Evaluates prompt style code offline before wasting API credits.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+
+

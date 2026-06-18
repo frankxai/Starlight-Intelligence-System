@@ -181,6 +181,15 @@ export class SisGatewayDaemon {
     };
     writeFileSync(join(this.storageRoot, GATEWAY_JSON), JSON.stringify(info, null, 2), 'utf-8');
 
+    // GC interval (10 minutes) if --expose-gc was passed
+    if (typeof (global as any).gc === 'function') {
+      setInterval(() => {
+        try {
+          (global as any).gc();
+        } catch { /* ignore */ }
+      }, 10 * 60 * 1000).unref();
+    }
+
     // Register shutdown handlers
     const shutdown = () => {
       this.stop().finally(() => process.exit(0));

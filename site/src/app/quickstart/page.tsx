@@ -47,7 +47,7 @@ const PLATFORMS: Platform[] = [
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["node_modules/@frankx/starlight-intelligence-system/dist/mcp-server.js"]
+      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
     }
   }
 }`,
@@ -65,7 +65,7 @@ const PLATFORMS: Platform[] = [
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["node_modules/@frankx/starlight-intelligence-system/dist/mcp-server.js"]
+      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
     }
   }
 }`,
@@ -83,7 +83,7 @@ const PLATFORMS: Platform[] = [
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["node_modules/@frankx/starlight-intelligence-system/dist/mcp-server.js"]
+      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
     }
   }
 }`,
@@ -101,7 +101,7 @@ const PLATFORMS: Platform[] = [
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["node_modules/@frankx/starlight-intelligence-system/dist/mcp-server.js"]
+      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
     }
   }
 }`,
@@ -119,7 +119,7 @@ const PLATFORMS: Platform[] = [
   "mcp": {
     "starlight-sis": {
       "type": "local",
-      "command": ["node", "node_modules/@frankx/starlight-intelligence-system/dist/mcp-server.js"]
+      "command": ["node", "node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
     }
   }
 }`,
@@ -151,7 +151,7 @@ export default function QuickstartPage() {
           <span className="text-emerald-400">$</span>{" "}
           <span className="text-slate-400">npm install</span>{" "}
           <span className="text-violet-400">
-            @frankx/starlight-intelligence-system
+            @arcanea/starlight-intelligence-system
           </span>
         </Terminal>
       </section>
@@ -209,7 +209,7 @@ export default function QuickstartPage() {
         <Terminal>
           <span className="text-emerald-400">$</span>{" "}
           <span className="text-slate-400">npx</span>{" "}
-          <span className="text-violet-400">@frankx/starlight-intelligence-system</span>{" "}
+          <span className="text-violet-400">@arcanea/starlight-intelligence-system</span>{" "}
           <span className="text-slate-400">--list-tools</span>
           {"\n"}
           <span className="text-slate-600">{"→ sis_append_entry"}</span>

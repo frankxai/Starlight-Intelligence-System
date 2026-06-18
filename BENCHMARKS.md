@@ -63,9 +63,11 @@ every round writes a JSON receipt to `tools/arena/runs/`. Harness doc:
 | 3 — hard capability | 2026-06-09 | Fable 2 · Opus 0 · tie 2 | Only Fable solved the no-tools reasoning task (Opus: 814 vs ground truth 33) | `…/2026-06-09-r3-true-challenge.json` @ `049258d` |
 | 3b — 4-way lineup | 2026-06-10 | Fable 4/4 · Sonnet 3/4 · Haiku 3/4 · Opus 2/4 | Capability saturated across the lineup; output-constraint discipline is the only discriminator | `…/2026-06-10-r3-lineup-4way.json` @ `ca64c15` |
 | 4 — work samples | 2026-06-10 | Fable 1 · Opus 1 | Premium work split by domain; Fable's first contract violation on record | `…/2026-06-10-r4-work-samples.json` @ `e6a0a2f` |
+| 5 — grok-composer | 2026-06-12 | Grok 2/2 (first-attempt mechanical) | Grok 4.3 harness + Composer 2.5 pattern: 2 agentic self-verifying tasks (schema roundtrip + repo-grounded guideline derive) PASS 1-attempt. Visual composer test (image_gen arena card) + web evals grounding (Grok 4 HLE/ARC SOTA-ish; Composer 2.5 near-Opus @1/10 cost). New routing classes proposed. | `tools/arena/runs/2026-06-12-grok-composer25-model-lane.json` |
 
 **Caveats (from the receipts):** n=1 per task — directional, not statistical; judge is
 Claude-family where judged at all; results measure model-in-harness, not raw API.
+Grok-native receipt uses TUI/subagent/gstack/image execution (no Claude Agent overrides); Composer 2.5 tested via harness-analog flows + external synthesis.
 
 ## Harness scale
 

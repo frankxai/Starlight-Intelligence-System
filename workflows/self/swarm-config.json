@@ -1,0 +1,53 @@
+{
+  "is": "self",
+  "displayName": "Self IS / Founder Performance Intelligence",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-self-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Deep genius excavation, corpus synthesis, Genius Profile construction, founder identity intelligence",
+      "port": 8083,
+      "type": "local",
+      "skills": [
+        "intelligence/strategic-reasoning",
+        "intelligence/pattern-recognition",
+        "memory/vault-management"
+      ],
+      "vaultAccess": ["strategic", "wisdom", "creative"],
+      "commands": ["/discover-genius", "/self-audit", "/recalibrate"]
+    },
+    {
+      "id": "hermes-self-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for daily protocols, energy scoring, vault writes",
+      "port": 8093,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["operational"],
+      "commands": ["/daily-protocol"]
+    }
+  ],
+  "swarmTopology": "sequential",
+  "concurrency": 2,
+  "timeoutMs": 300000,
+  "onResult": "vault-write",
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest"
+  ],
+  "triggers": [
+    "audit my energy",
+    "discover my genius",
+    "morning protocol",
+    "recalibrate",
+    "what should I prioritize",
+    "I'm feeling off",
+    "founder performance"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

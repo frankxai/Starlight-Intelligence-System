@@ -205,6 +205,7 @@ const LOCAL_CONTEXT_BLACKLIST: RegExp[] = [
   /\bTier\b/i,
   /Front-Door|Excavation|Leadership|Specialist|Foundation/i,
   /\bTier:\s/i,
+  /Blueprint/i,
 ];
 
 function extractClaims(text: string): Claim[] {

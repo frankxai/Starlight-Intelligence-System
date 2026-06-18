@@ -14,7 +14,7 @@ $ErrorActionPreference = 'Stop'
 
 $Repo         = if ($env:STARLIGHT_RESTIC_REPO) { $env:STARLIGHT_RESTIC_REPO } else { Join-Path $HOME '.starlight\restic-repo' }
 $PasswordFile = if ($env:STARLIGHT_RESTIC_PASSWORD_FILE) { $env:STARLIGHT_RESTIC_PASSWORD_FILE } else { Join-Path $HOME '.starlight\restic-password.txt' }
-$SisRoot      = 'C:\Users\frank\Starlight-Intelligence-System'
+$SisRoot      = 'C:\Users\frank\starlight\repos\Starlight-Intelligence-System'
 
 # Ensure parent dirs exist for local repo + password file
 foreach ($p in @((Split-Path $PasswordFile), $Repo)) {

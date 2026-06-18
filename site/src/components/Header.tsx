@@ -4,7 +4,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#060609]/80 backdrop-blur-xl">
       <nav
-        className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6"
+        className="mx-auto flex h-14 max-w-[88rem] items-center justify-between px-6"
         aria-label="Main navigation"
       >
         <Link
@@ -30,14 +30,17 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="hidden items-center gap-0.5 min-[1500px]:flex">
           <NavLink href="/cosmos">Cosmos</NavLink>
+          <NavLink href="/palace">Palace</NavLink>
           <NavLink href="/verticals">Verticals</NavLink>
           <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
           <NavLink href="/architecture">Architecture</NavLink>
           <NavLink href="/protocol">Protocol</NavLink>
+          <NavLink href="/download">Download</NavLink>
           <NavLink href="/research">Research</NavLink>
+          <NavLink href="/queen">Queen</NavLink>
           <NavLink href="/quickstart">Quickstart</NavLink>
           <NavLink href="/explainer">Explainer</NavLink>
           <NavLink href="/vaults">Vaults</NavLink>
@@ -59,13 +62,16 @@ export function Header() {
         </div>
 
         {/* Tablet nav — condensed */}
-        <div className="hidden items-center gap-1 sm:flex lg:hidden">
+        <div className="hidden items-center gap-1 sm:flex min-[1500px]:hidden">
           <NavLink href="/cosmos">Cosmos</NavLink>
+          <NavLink href="/palace">Palace</NavLink>
           <NavLink href="/verticals">Verticals</NavLink>
           <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
           <NavLink href="/quickstart">Quickstart</NavLink>
+          <NavLink href="/download">Download</NavLink>
           <NavLink href="/architecture">Architecture</NavLink>
+          <NavLink href="/queen">Queen</NavLink>
           <NavLink
             href="https://github.com/frankxai/Starlight-Intelligence-System"
             external
@@ -88,13 +94,16 @@ export function Header() {
             className="absolute right-0 top-full z-50 mt-2 flex w-48 flex-col gap-0.5 rounded-lg border border-white/[0.10] bg-[#0c0c12] p-2 shadow-2xl"
           >
             <NavLink href="/cosmos">Cosmos</NavLink>
+            <NavLink href="/palace">Palace</NavLink>
             <NavLink href="/asteroids">Asteroids</NavLink>
             <NavLink href="/verticals">Verticals</NavLink>
             <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
             <NavLink href="/cockpit">Cockpit</NavLink>
             <NavLink href="/architecture">Architecture</NavLink>
             <NavLink href="/protocol">Protocol</NavLink>
+            <NavLink href="/download">Download</NavLink>
             <NavLink href="/research">Research</NavLink>
+            <NavLink href="/queen">Queen</NavLink>
             <NavLink href="/quickstart">Quickstart</NavLink>
             <NavLink href="/explainer">Explainer</NavLink>
             <NavLink href="/vaults">Vaults</NavLink>
@@ -119,7 +128,7 @@ function NavLink({
   external?: boolean;
 }) {
   const cls =
-    "inline-flex min-h-11 items-center rounded-md px-3 py-3 text-[13px] text-slate-300 transition-micro hover:text-white hover:bg-white/[0.06]";
+    "inline-flex min-h-11 items-center rounded-md px-2.5 py-3 text-[13px] text-slate-300 transition-micro hover:text-white hover:bg-white/[0.06]";
 
   if (external) {
     return (

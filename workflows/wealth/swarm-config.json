@@ -1,0 +1,54 @@
+{
+  "is": "wealth",
+  "displayName": "Wealth IS / Capital & Deal Intelligence",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-wealth-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Investment thesis construction, deal analysis, complex return modeling, gate ladder evaluation",
+      "port": 8084,
+      "type": "local",
+      "skills": [
+        "intelligence/strategic-reasoning",
+        "intelligence/pattern-recognition",
+        "business/revenue-modeling"
+      ],
+      "vaultAccess": ["strategic", "technical"],
+      "commands": ["/wealth-dpi", "/wealth-thesis-review", "/wealth-gate-progress", "/deal-analyze"]
+    },
+    {
+      "id": "hermes-wealth-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for DPI math, vault writes, gate scoring, deal triage",
+      "port": 8094,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["operational"],
+      "commands": []
+    }
+  ],
+  "swarmTopology": "sequential",
+  "concurrency": 2,
+  "timeoutMs": 300000,
+  "onResult": "vault-write",
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest",
+    "web-search"
+  ],
+  "triggers": [
+    "review my investment thesis",
+    "analyze this deal",
+    "update DPI",
+    "wealth gate review",
+    "deploy capital",
+    "portfolio returns",
+    "deal memo"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

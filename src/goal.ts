@@ -215,14 +215,25 @@ export class GoalOrchestrator {
     // Check for hardcoded secrets/credentials in modified files (via git diff)
     let secretCheckPassed = true;
     try {
-      const gitDiff = execSync("git diff HEAD", { encoding: "utf-8" });
+      const gitDiff = execSync("git diff HEAD", { 
+        encoding: "utf-8", 
+        cwd: join(this.starlightDir, "..") 
+      });
+      const lines = gitDiff.split("\n");
       const secretKeywords = ["api_key", "secret", "private_key", "password", "token", "auth_key"];
       
-      for (const keyword of secretKeywords) {
-        const regex = new RegExp(`^[+].*${keyword}.*=.*`, "mi");
-        if (regex.test(gitDiff)) {
-          secretCheckPassed = false;
-          auditLogs.push(`[Audit WARNING] Potential hardcoded credential/secret key found for '${keyword}' in diff!`);
+      for (const line of lines) {
+        if (!line.startsWith("+")) continue;
+        // Skip self-referential variable declarations/comments in code
+        if (line.includes("secretKeywords") || line.includes("const secretKeywords")) {
+          continue;
+        }
+        for (const keyword of secretKeywords) {
+          const regex = new RegExp(`^[+].*${keyword}.*=.*`, "i");
+          if (regex.test(line)) {
+            secretCheckPassed = false;
+            auditLogs.push(`[Audit WARNING] Potential hardcoded credential/secret key found for '${keyword}' in diff: ${line.trim()}`);
+          }
         }
       }
       if (secretCheckPassed) {

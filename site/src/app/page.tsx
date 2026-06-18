@@ -125,8 +125,17 @@ export default async function HomePage() {
             Local-first. Forkable. Free.
           </p>
 
+          <div className="mt-4">
+            <Link
+              href="/palace"
+              className="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition"
+            >
+              → Explore the living Memory Palace (L99 Jarvis-style viz seed)
+            </Link>
+          </div>
+
           {/* Three CTA cards */}
-          <div className="mt-10 grid gap-3 md:grid-cols-3">
+          <div className="mt-10 grid gap-3 md:grid-cols-4">
             <CtaCard
               href="/protocol"
               eyebrow="01 · Protocol"
@@ -142,8 +151,15 @@ export default async function HomePage() {
               accent="cyan"
             />
             <CtaCard
+              href="/download"
+              eyebrow="03 · Starter"
+              title="Download core"
+              desc="Get the open SIP Starter package with checksums, manifest, and validation guide."
+              accent="emerald"
+            />
+            <CtaCard
               href="/verticals"
-              eyebrow="03 · Domain Sub-Stack"
+              eyebrow="04 · Domain Sub-Stack"
               title="Spawn your vertical"
               desc="People · Sound · Music are reference. The pattern generalizes via /spawn-domain-stack."
               accent="fuchsia"
@@ -571,21 +587,23 @@ function CtaCard({
   desc,
   accent,
 }: {
-  href: "/protocol" | "/quickstart" | "/verticals";
+  href: "/protocol" | "/download" | "/quickstart" | "/verticals";
   eyebrow: string;
   title: string;
   desc: string;
-  accent: "violet" | "cyan" | "fuchsia";
+  accent: "violet" | "cyan" | "fuchsia" | "emerald";
 }) {
   const accents = {
     violet: "border-violet-500/[0.2] hover:border-violet-500/[0.4] bg-violet-500/[0.03]",
     cyan: "border-cyan-500/[0.2] hover:border-cyan-500/[0.4] bg-cyan-500/[0.03]",
     fuchsia: "border-fuchsia-500/[0.2] hover:border-fuchsia-500/[0.4] bg-fuchsia-500/[0.03]",
+    emerald: "border-emerald-500/[0.2] hover:border-emerald-500/[0.4] bg-emerald-500/[0.03]",
   };
   const eyebrowColors = {
     violet: "text-violet-400",
     cyan: "text-cyan-400",
     fuchsia: "text-fuchsia-400",
+    emerald: "text-emerald-400",
   };
   return (
     <Link

@@ -35,7 +35,7 @@ if ($existing) {
 
 $Action = New-ScheduledTaskAction `
     -Execute $pwshPath `
-    -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`""
+    -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$ScriptPath`""
 
 $Trigger = New-ScheduledTaskTrigger -Daily -At 4:00am
 

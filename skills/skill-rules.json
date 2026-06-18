@@ -6,9 +6,26 @@
       "id": "memory-mempalace-obsidian-bridge",
       "skill": "memory/mempalace-obsidian-bridge",
       "triggers": {
-        "keywords": ["recall", "curate", "obsidian note", "mempalace", "memory bus", "curate-recall", "/curate-recall", "atom", "vault note"],
-        "agents": ["starlight-sage", "starlight-prime"],
-        "intents": ["recall", "curate", "persist"]
+        "keywords": [
+          "recall",
+          "curate",
+          "obsidian note",
+          "mempalace",
+          "memory bus",
+          "curate-recall",
+          "/curate-recall",
+          "atom",
+          "vault note"
+        ],
+        "agents": [
+          "starlight-sage",
+          "starlight-prime"
+        ],
+        "intents": [
+          "recall",
+          "curate",
+          "persist"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -17,9 +34,26 @@
       "id": "integration-domain-stack-architecture",
       "skill": "integration/domain-stack-architecture",
       "triggers": {
-        "keywords": ["domain stack", "sub-stack", "vertical architecture", "productize my expertise", "intelligence vertical", "my own intelligence system", "expertise into product", "spawn domain"],
-        "agents": ["starlight-genius", "starlight-orchestrator", "starlight-architect"],
-        "intents": ["productize", "vertical-design", "domain-architecture"]
+        "keywords": [
+          "domain stack",
+          "sub-stack",
+          "vertical architecture",
+          "productize my expertise",
+          "intelligence vertical",
+          "my own intelligence system",
+          "expertise into product",
+          "spawn domain"
+        ],
+        "agents": [
+          "starlight-genius",
+          "starlight-orchestrator",
+          "starlight-architect"
+        ],
+        "intents": [
+          "productize",
+          "vertical-design",
+          "domain-architecture"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -28,9 +62,23 @@
       "id": "intelligence-strategic-reasoning",
       "skill": "intelligence/strategic-reasoning",
       "triggers": {
-        "keywords": ["strategy", "strategic", "long-term", "trade-off", "prioritize", "roadmap", "vision"],
-        "agents": ["starlight-navigator", "starlight-prime"],
-        "intents": ["strategy", "planning"]
+        "keywords": [
+          "strategy",
+          "strategic",
+          "long-term",
+          "trade-off",
+          "prioritize",
+          "roadmap",
+          "vision"
+        ],
+        "agents": [
+          "starlight-navigator",
+          "starlight-prime"
+        ],
+        "intents": [
+          "strategy",
+          "planning"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -39,9 +87,23 @@
       "id": "intelligence-systems-thinking",
       "skill": "intelligence/systems-thinking",
       "triggers": {
-        "keywords": ["system", "architecture", "holistic", "feedback", "emergent", "connected", "ecosystem"],
-        "agents": ["starlight-architect", "starlight-prime"],
-        "intents": ["architecture", "analysis"]
+        "keywords": [
+          "system",
+          "architecture",
+          "holistic",
+          "feedback",
+          "emergent",
+          "connected",
+          "ecosystem"
+        ],
+        "agents": [
+          "starlight-architect",
+          "starlight-prime"
+        ],
+        "intents": [
+          "architecture",
+          "analysis"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -50,9 +112,22 @@
       "id": "intelligence-pattern-recognition",
       "skill": "intelligence/pattern-recognition",
       "triggers": {
-        "keywords": ["pattern", "recurring", "similar", "trend", "correlation", "anti-pattern"],
-        "agents": ["starlight-sage", "starlight-sentinel"],
-        "intents": ["analysis", "review"]
+        "keywords": [
+          "pattern",
+          "recurring",
+          "similar",
+          "trend",
+          "correlation",
+          "anti-pattern"
+        ],
+        "agents": [
+          "starlight-sage",
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "analysis",
+          "review"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -61,9 +136,23 @@
       "id": "intelligence-decision-framework",
       "skill": "intelligence/decision-framework",
       "triggers": {
-        "keywords": ["decide", "decision", "choose", "evaluate", "compare", "which", "should we"],
-        "agents": ["starlight-navigator", "starlight-prime"],
-        "intents": ["decision", "strategy"]
+        "keywords": [
+          "decide",
+          "decision",
+          "choose",
+          "evaluate",
+          "compare",
+          "which",
+          "should we"
+        ],
+        "agents": [
+          "starlight-navigator",
+          "starlight-prime"
+        ],
+        "intents": [
+          "decision",
+          "strategy"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -72,9 +161,28 @@
       "id": "orchestration-agent-handoff-packet",
       "skill": "orchestration/agent-handoff-packet",
       "triggers": {
-        "keywords": ["handoff packet", "route this to", "dispatch to agent", "pass to claude code", "build a packet", "hand to orchestrator", "send to council", "route the work"],
-        "agents": ["starlight-voice-operator", "starlight-orchestrator", "starlight-concierge", "starlight-prime"],
-        "intents": ["handoff", "routing", "dispatch", "agent-coordination"]
+        "keywords": [
+          "handoff packet",
+          "route this to",
+          "dispatch to agent",
+          "pass to claude code",
+          "build a packet",
+          "hand to orchestrator",
+          "send to council",
+          "route the work"
+        ],
+        "agents": [
+          "starlight-voice-operator",
+          "starlight-orchestrator",
+          "starlight-concierge",
+          "starlight-prime"
+        ],
+        "intents": [
+          "handoff",
+          "routing",
+          "dispatch",
+          "agent-coordination"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -94,9 +202,21 @@
       "id": "orchestration-multi-agent-coordination",
       "skill": "orchestration/multi-agent-coordination",
       "triggers": {
-        "keywords": ["coordinate", "agents", "parallel", "team", "collaborate", "multi-agent"],
-        "agents": ["starlight-orchestrator"],
-        "intents": ["orchestration", "coordination"]
+        "keywords": [
+          "coordinate",
+          "agents",
+          "parallel",
+          "team",
+          "collaborate",
+          "multi-agent"
+        ],
+        "agents": [
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "orchestration",
+          "coordination"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -105,9 +225,21 @@
       "id": "orchestration-workflow-design",
       "skill": "orchestration/workflow-design",
       "triggers": {
-        "keywords": ["workflow", "process", "pipeline", "steps", "sequence", "automate"],
-        "agents": ["starlight-orchestrator"],
-        "intents": ["orchestration", "automation"]
+        "keywords": [
+          "workflow",
+          "process",
+          "pipeline",
+          "steps",
+          "sequence",
+          "automate"
+        ],
+        "agents": [
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "orchestration",
+          "automation"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -116,9 +248,22 @@
       "id": "orchestration-context-engineering",
       "skill": "orchestration/context-engineering",
       "triggers": {
-        "keywords": ["context", "session", "continuity", "state", "handoff", "fresh context"],
-        "agents": ["starlight-orchestrator", "starlight-prime"],
-        "intents": ["orchestration", "memory"]
+        "keywords": [
+          "context",
+          "session",
+          "continuity",
+          "state",
+          "handoff",
+          "fresh context"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-prime"
+        ],
+        "intents": [
+          "orchestration",
+          "memory"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -127,9 +272,19 @@
       "id": "orchestration-parallel-execution",
       "skill": "orchestration/parallel-execution",
       "triggers": {
-        "keywords": ["parallel", "concurrent", "simultaneously", "batch", "at the same time"],
-        "agents": ["starlight-orchestrator"],
-        "intents": ["orchestration"]
+        "keywords": [
+          "parallel",
+          "concurrent",
+          "simultaneously",
+          "batch",
+          "at the same time"
+        ],
+        "agents": [
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "orchestration"
+        ]
       },
       "priority": "medium",
       "load_level": "summary"
@@ -138,9 +293,22 @@
       "id": "orchestration-yolo-conductor",
       "skill": "orchestration/yolo-conductor",
       "triggers": {
-        "keywords": ["/yolo", "yolo session", "yolo hive", "yolo conductor", "cross-repo lead", "lead all my repos"],
-        "agents": ["starlight-orchestrator"],
-        "intents": ["orchestration", "cross-repo-lead", "session-mode"]
+        "keywords": [
+          "/yolo",
+          "yolo session",
+          "yolo hive",
+          "yolo conductor",
+          "cross-repo lead",
+          "lead all my repos"
+        ],
+        "agents": [
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "orchestration",
+          "cross-repo-lead",
+          "session-mode"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -149,9 +317,25 @@
       "id": "orchestration-yolo-scan",
       "skill": "orchestration/yolo-scan",
       "triggers": {
-        "keywords": ["yolo-scan", "council scan", "domain scan", "yolo scan"],
-        "agents": ["starlight-architect", "starlight-sentinel", "starlight-sage", "starlight-navigator", "starlight-weaver", "starlight-prime", "starlight-orchestrator"],
-        "intents": ["orchestration", "scan"]
+        "keywords": [
+          "yolo-scan",
+          "council scan",
+          "domain scan",
+          "yolo scan"
+        ],
+        "agents": [
+          "starlight-architect",
+          "starlight-sentinel",
+          "starlight-sage",
+          "starlight-navigator",
+          "starlight-weaver",
+          "starlight-prime",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "orchestration",
+          "scan"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -160,9 +344,30 @@
       "id": "orchestration-gencreator-stack",
       "skill": "orchestration/gencreator-stack",
       "triggers": {
-        "keywords": ["stack architecture", "repo inventory", "which AI assistant", "custom GPTs", "MCP routing", "browser workspaces", "tech stack across", "cross-brand stack", "STACK.md", "stack constellation", "stack drift", "gencreator stack"],
-        "agents": ["starlight-architect", "starlight-orchestrator"],
-        "intents": ["stack-architecture", "repo-inventory", "drift-detection", "cross-brand-routing"]
+        "keywords": [
+          "stack architecture",
+          "repo inventory",
+          "which AI assistant",
+          "custom GPTs",
+          "MCP routing",
+          "browser workspaces",
+          "tech stack across",
+          "cross-brand stack",
+          "STACK.md",
+          "stack constellation",
+          "stack drift",
+          "gencreator stack"
+        ],
+        "agents": [
+          "starlight-architect",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "stack-architecture",
+          "repo-inventory",
+          "drift-detection",
+          "cross-brand-routing"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -171,9 +376,23 @@
       "id": "memory-vault-management",
       "skill": "memory/vault-management",
       "triggers": {
-        "keywords": ["vault", "store", "remember", "recall", "persist", "save", "memory"],
-        "agents": ["starlight-prime", "starlight-sage"],
-        "intents": ["memory", "storage"]
+        "keywords": [
+          "vault",
+          "store",
+          "remember",
+          "recall",
+          "persist",
+          "save",
+          "memory"
+        ],
+        "agents": [
+          "starlight-prime",
+          "starlight-sage"
+        ],
+        "intents": [
+          "memory",
+          "storage"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -182,9 +401,22 @@
       "id": "memory-knowledge-synthesis",
       "skill": "memory/knowledge-synthesis",
       "triggers": {
-        "keywords": ["synthesize", "combine", "merge", "integrate", "unify", "consolidate knowledge"],
-        "agents": ["starlight-sage", "starlight-prime"],
-        "intents": ["knowledge", "synthesis"]
+        "keywords": [
+          "synthesize",
+          "combine",
+          "merge",
+          "integrate",
+          "unify",
+          "consolidate knowledge"
+        ],
+        "agents": [
+          "starlight-sage",
+          "starlight-prime"
+        ],
+        "intents": [
+          "knowledge",
+          "synthesis"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -193,9 +425,21 @@
       "id": "memory-context-preservation",
       "skill": "memory/context-preservation",
       "triggers": {
-        "keywords": ["preserve", "save context", "handoff", "session end", "continue later"],
-        "agents": ["starlight-orchestrator", "starlight-sage"],
-        "intents": ["memory", "continuity"]
+        "keywords": [
+          "preserve",
+          "save context",
+          "handoff",
+          "session end",
+          "continue later"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-sage"
+        ],
+        "intents": [
+          "memory",
+          "continuity"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -204,9 +448,20 @@
       "id": "memory-memory-consolidation",
       "skill": "memory/memory-consolidation",
       "triggers": {
-        "keywords": ["consolidate", "optimize memory", "clean up", "archive", "deduplicate"],
-        "agents": ["starlight-prime"],
-        "intents": ["memory", "maintenance"]
+        "keywords": [
+          "consolidate",
+          "optimize memory",
+          "clean up",
+          "archive",
+          "deduplicate"
+        ],
+        "agents": [
+          "starlight-prime"
+        ],
+        "intents": [
+          "memory",
+          "maintenance"
+        ]
       },
       "priority": "low",
       "load_level": "summary"
@@ -215,9 +470,23 @@
       "id": "integration-repo-bridge",
       "skill": "integration/repo-bridge",
       "triggers": {
-        "keywords": ["repo", "repository", "cross-repo", "ACOS", "Arcanea", "AI-Ops", "other repo"],
-        "agents": ["starlight-orchestrator", "starlight-prime"],
-        "intents": ["integration", "cross-system"]
+        "keywords": [
+          "repo",
+          "repository",
+          "cross-repo",
+          "ACOS",
+          "Arcanea",
+          "AI-Ops",
+          "other repo"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-prime"
+        ],
+        "intents": [
+          "integration",
+          "cross-system"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -226,9 +495,22 @@
       "id": "integration-ecosystem-sync",
       "skill": "integration/ecosystem-sync",
       "triggers": {
-        "keywords": ["sync", "synchronize", "align", "ecosystem", "all systems", "global update"],
-        "agents": ["starlight-orchestrator", "starlight-prime"],
-        "intents": ["integration", "synchronization"]
+        "keywords": [
+          "sync",
+          "synchronize",
+          "align",
+          "ecosystem",
+          "all systems",
+          "global update"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-prime"
+        ],
+        "intents": [
+          "integration",
+          "synchronization"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -237,9 +519,22 @@
       "id": "integration-transmission-protocol",
       "skill": "integration/transmission-protocol",
       "triggers": {
-        "keywords": ["transmit", "broadcast", "channel", "message", "notify", "transmission"],
-        "agents": ["starlight-orchestrator", "starlight-prime"],
-        "intents": ["communication", "integration"]
+        "keywords": [
+          "transmit",
+          "broadcast",
+          "channel",
+          "message",
+          "notify",
+          "transmission"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-prime"
+        ],
+        "intents": [
+          "communication",
+          "integration"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -248,9 +543,22 @@
       "id": "integration-universal-adapter",
       "skill": "integration/universal-adapter",
       "triggers": {
-        "keywords": ["external", "API", "MCP", "integration", "connect", "third-party"],
-        "agents": ["starlight-orchestrator", "starlight-architect"],
-        "intents": ["integration", "external"]
+        "keywords": [
+          "external",
+          "API",
+          "MCP",
+          "integration",
+          "connect",
+          "third-party"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-architect"
+        ],
+        "intents": [
+          "integration",
+          "external"
+        ]
       },
       "priority": "low",
       "load_level": "summary"
@@ -259,9 +567,26 @@
       "id": "integration-idea-triage",
       "skill": "integration/idea-triage",
       "triggers": {
-        "keywords": ["new here", "have an idea", "want to build", "first time", "where do I start", "can you help", "I want to create", "we want to compose", "our team wants"],
-        "agents": ["starlight-concierge", "starlight-navigator"],
-        "intents": ["intake", "onboarding", "classification"]
+        "keywords": [
+          "new here",
+          "have an idea",
+          "want to build",
+          "first time",
+          "where do I start",
+          "can you help",
+          "I want to create",
+          "we want to compose",
+          "our team wants"
+        ],
+        "agents": [
+          "starlight-concierge",
+          "starlight-navigator"
+        ],
+        "intents": [
+          "intake",
+          "onboarding",
+          "classification"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -270,9 +595,26 @@
       "id": "integration-creator-path",
       "skill": "integration/creator-path",
       "triggers": {
-        "keywords": ["not a coder", "don't use git", "just want to publish", "no terminal", "creator", "founder", "artist", "strategist", "just want the thing"],
-        "agents": ["starlight-envoy", "starlight-weaver"],
-        "intents": ["creator", "publishing", "non-technical-intake"]
+        "keywords": [
+          "not a coder",
+          "don't use git",
+          "just want to publish",
+          "no terminal",
+          "creator",
+          "founder",
+          "artist",
+          "strategist",
+          "just want the thing"
+        ],
+        "agents": [
+          "starlight-envoy",
+          "starlight-weaver"
+        ],
+        "intents": [
+          "creator",
+          "publishing",
+          "non-technical-intake"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -281,9 +623,26 @@
       "id": "intelligence-genius-excavation",
       "skill": "intelligence/genius-excavation",
       "triggers": {
-        "keywords": ["discover my genius", "what am I good at", "find my edge", "scattered materials", "don't know my edge", "indispensable but trapped", "organize my knowledge", "my frameworks", "my voice"],
-        "agents": ["starlight-genius", "starlight-concierge"],
-        "intents": ["genius-excavation", "onboarding", "freedom"]
+        "keywords": [
+          "discover my genius",
+          "what am I good at",
+          "find my edge",
+          "scattered materials",
+          "don't know my edge",
+          "indispensable but trapped",
+          "organize my knowledge",
+          "my frameworks",
+          "my voice"
+        ],
+        "agents": [
+          "starlight-genius",
+          "starlight-concierge"
+        ],
+        "intents": [
+          "genius-excavation",
+          "onboarding",
+          "freedom"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -292,9 +651,25 @@
       "id": "intelligence-knowledge-reclamation",
       "skill": "intelligence/knowledge-reclamation",
       "triggers": {
-        "keywords": ["scattered materials", "organize my stuff", "canva google drive files", "years of work", "multiple companies", "reclaim knowledge", "organize folders", "consolidate my work"],
-        "agents": ["starlight-genius", "starlight-sage"],
-        "intents": ["reclamation", "organization", "second-brain"]
+        "keywords": [
+          "scattered materials",
+          "organize my stuff",
+          "canva google drive files",
+          "years of work",
+          "multiple companies",
+          "reclaim knowledge",
+          "organize folders",
+          "consolidate my work"
+        ],
+        "agents": [
+          "starlight-genius",
+          "starlight-sage"
+        ],
+        "intents": [
+          "reclamation",
+          "organization",
+          "second-brain"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -303,9 +678,31 @@
       "id": "vision-fundamentals-excavation",
       "skill": "vision/fundamentals-excavation",
       "triggers": {
-        "keywords": ["vision", "where am I going", "30-year", "10-year", "3-year", "purpose", "why", "north star", "long-term", "legacy", "founder vision", "axis", "trajectory", "horizon"],
-        "agents": ["starlight-visionary", "starlight-navigator"],
-        "intents": ["vision-excavation", "horizon-laddering", "founder-trajectory"]
+        "keywords": [
+          "vision",
+          "where am I going",
+          "30-year",
+          "10-year",
+          "3-year",
+          "purpose",
+          "why",
+          "north star",
+          "long-term",
+          "legacy",
+          "founder vision",
+          "axis",
+          "trajectory",
+          "horizon"
+        ],
+        "agents": [
+          "starlight-visionary",
+          "starlight-navigator"
+        ],
+        "intents": [
+          "vision-excavation",
+          "horizon-laddering",
+          "founder-trajectory"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -314,9 +711,29 @@
       "id": "vision-design-coherence",
       "skill": "vision/design-coherence",
       "triggers": {
-        "keywords": ["brand", "design system", "brand kit", "colors", "typography", "voice rules", "visual identity", "looks generic", "doesn't feel premium", "inconsistent across surfaces", "brand voice", "positioning"],
-        "agents": ["starlight-visionary", "starlight-weaver"],
-        "intents": ["brand-design", "design-system", "voice-coherence"]
+        "keywords": [
+          "brand",
+          "design system",
+          "brand kit",
+          "colors",
+          "typography",
+          "voice rules",
+          "visual identity",
+          "looks generic",
+          "doesn't feel premium",
+          "inconsistent across surfaces",
+          "brand voice",
+          "positioning"
+        ],
+        "agents": [
+          "starlight-visionary",
+          "starlight-weaver"
+        ],
+        "intents": [
+          "brand-design",
+          "design-system",
+          "voice-coherence"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -325,9 +742,27 @@
       "id": "memory-capture-discipline",
       "skill": "memory/capture-discipline",
       "triggers": {
-        "keywords": ["capture", "note-taking", "daily review", "what to capture", "second brain", "PKM", "personal knowledge management", "inbox zero for my brain", "capture moments", "daily capture"],
-        "agents": ["starlight-secondbrain", "starlight-sage"],
-        "intents": ["capture", "pkm", "second-brain"]
+        "keywords": [
+          "capture",
+          "note-taking",
+          "daily review",
+          "what to capture",
+          "second brain",
+          "PKM",
+          "personal knowledge management",
+          "inbox zero for my brain",
+          "capture moments",
+          "daily capture"
+        ],
+        "agents": [
+          "starlight-secondbrain",
+          "starlight-sage"
+        ],
+        "intents": [
+          "capture",
+          "pkm",
+          "second-brain"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -336,9 +771,29 @@
       "id": "memory-insight-distillation",
       "skill": "memory/insight-distillation",
       "triggers": {
-        "keywords": ["distill", "synthesize captures", "monthly review", "what did I learn", "connect the dots", "pattern across notes", "weekly review", "quarterly review", "elevate captures", "emerging pattern"],
-        "agents": ["starlight-secondbrain", "starlight-sage", "starlight-genius"],
-        "intents": ["distillation", "pkm", "second-brain", "review"]
+        "keywords": [
+          "distill",
+          "synthesize captures",
+          "monthly review",
+          "what did I learn",
+          "connect the dots",
+          "pattern across notes",
+          "weekly review",
+          "quarterly review",
+          "elevate captures",
+          "emerging pattern"
+        ],
+        "agents": [
+          "starlight-secondbrain",
+          "starlight-sage",
+          "starlight-genius"
+        ],
+        "intents": [
+          "distillation",
+          "pkm",
+          "second-brain",
+          "review"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -347,9 +802,35 @@
       "id": "relational-network-architecture",
       "skill": "relational/network-architecture",
       "triggers": {
-        "keywords": ["network", "relationships", "connections", "contacts", "advisors", "mentors", "collaborators", "who should I partner with", "building a team", "who to hire", "who drains me", "advisory board", "introductions", "referrals", "my team", "peers", "mentees"],
-        "agents": ["starlight-relational", "starlight-concierge", "starlight-navigator"],
-        "intents": ["relational", "network-design", "team-building"]
+        "keywords": [
+          "network",
+          "relationships",
+          "connections",
+          "contacts",
+          "advisors",
+          "mentors",
+          "collaborators",
+          "who should I partner with",
+          "building a team",
+          "who to hire",
+          "who drains me",
+          "advisory board",
+          "introductions",
+          "referrals",
+          "my team",
+          "peers",
+          "mentees"
+        ],
+        "agents": [
+          "starlight-relational",
+          "starlight-concierge",
+          "starlight-navigator"
+        ],
+        "intents": [
+          "relational",
+          "network-design",
+          "team-building"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -358,9 +839,28 @@
       "id": "relational-alliance-readiness",
       "skill": "relational/alliance-readiness",
       "triggers": {
-        "keywords": ["alliance readiness", "ready for alliance", "alliance candidate", "should we forge", "partner with", "formalize the partnership", "co-founder", "equity partner", "joint venture", "alliance"],
-        "agents": ["starlight-relational", "starlight-navigator", "starlight-sentinel"],
-        "intents": ["alliance-assessment", "relational", "decision"]
+        "keywords": [
+          "alliance readiness",
+          "ready for alliance",
+          "alliance candidate",
+          "should we forge",
+          "partner with",
+          "formalize the partnership",
+          "co-founder",
+          "equity partner",
+          "joint venture",
+          "alliance"
+        ],
+        "agents": [
+          "starlight-relational",
+          "starlight-navigator",
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "alliance-assessment",
+          "relational",
+          "decision"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -369,9 +869,36 @@
       "id": "health-body-substrate",
       "skill": "health/body-substrate",
       "triggers": {
-        "keywords": ["body", "training", "nutrition", "sleep", "energy", "burnout", "recovery", "regimen", "habits", "stress", "substrate", "fitness", "diet", "lifting", "strength", "cardio", "rest", "de-load", "deload"],
-        "agents": ["starlight-embodiment"],
-        "intents": ["regimen-design", "embodiment", "substrate-architecture", "health"]
+        "keywords": [
+          "body",
+          "training",
+          "nutrition",
+          "sleep",
+          "energy",
+          "burnout",
+          "recovery",
+          "regimen",
+          "habits",
+          "stress",
+          "substrate",
+          "fitness",
+          "diet",
+          "lifting",
+          "strength",
+          "cardio",
+          "rest",
+          "de-load",
+          "deload"
+        ],
+        "agents": [
+          "starlight-embodiment"
+        ],
+        "intents": [
+          "regimen-design",
+          "embodiment",
+          "substrate-architecture",
+          "health"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -380,9 +907,31 @@
       "id": "health-energy-architecture",
       "skill": "health/energy-architecture",
       "triggers": {
-        "keywords": ["energy", "energy crash", "tired", "fatigue", "burnout", "focus", "flow", "crash", "afternoon slump", "morning energy", "caffeine", "blood sugar", "creative peak", "deep work", "cognitive capacity"],
-        "agents": ["starlight-embodiment"],
-        "intents": ["energy-audit", "optimization", "flow-protection"]
+        "keywords": [
+          "energy",
+          "energy crash",
+          "tired",
+          "fatigue",
+          "burnout",
+          "focus",
+          "flow",
+          "crash",
+          "afternoon slump",
+          "morning energy",
+          "caffeine",
+          "blood sugar",
+          "creative peak",
+          "deep work",
+          "cognitive capacity"
+        ],
+        "agents": [
+          "starlight-embodiment"
+        ],
+        "intents": [
+          "energy-audit",
+          "optimization",
+          "flow-protection"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -391,9 +940,27 @@
       "id": "business-entity-architecture",
       "skill": "business/entity-architecture",
       "triggers": {
-        "keywords": ["entity structure", "LLC", "BV", "sole proprietor", "corporation", "holding company", "legal entity", "tax entity", "business structure", "incorporate"],
-        "agents": ["starlight-business", "starlight-navigator"],
-        "intents": ["business", "entity", "incorporation"]
+        "keywords": [
+          "entity structure",
+          "LLC",
+          "BV",
+          "sole proprietor",
+          "corporation",
+          "holding company",
+          "legal entity",
+          "tax entity",
+          "business structure",
+          "incorporate"
+        ],
+        "agents": [
+          "starlight-business",
+          "starlight-navigator"
+        ],
+        "intents": [
+          "business",
+          "entity",
+          "incorporation"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -402,9 +969,28 @@
       "id": "business-revenue-modeling",
       "skill": "business/revenue-modeling",
       "triggers": {
-        "keywords": ["revenue model", "pricing", "margin", "recurring revenue", "retainer", "productize", "concentration risk", "unit economics", "revenue streams", "monetize"],
-        "agents": ["starlight-business", "starlight-navigator"],
-        "intents": ["business", "revenue", "pricing", "monetization"]
+        "keywords": [
+          "revenue model",
+          "pricing",
+          "margin",
+          "recurring revenue",
+          "retainer",
+          "productize",
+          "concentration risk",
+          "unit economics",
+          "revenue streams",
+          "monetize"
+        ],
+        "agents": [
+          "starlight-business",
+          "starlight-navigator"
+        ],
+        "intents": [
+          "business",
+          "revenue",
+          "pricing",
+          "monetization"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -413,9 +999,43 @@
       "id": "people-intelligence-structured-hiring",
       "skill": "people-intelligence/structured-hiring",
       "triggers": {
-        "keywords": ["hiring", "recruit", "recruiting", "interview", "candidate", "candidates", "ICP", "ideal candidate", "calibration", "rubric", "debrief", "culture fit", "culture add", "onboarding", "90-day plan", "new hire", "panel", "decision fatigue", "structured interview", "work sample", "cognitive ability test", "hire bar", "interviewer brief"],
-        "agents": ["starlight-hiring", "starlight-prime", "starlight-sentinel"],
-        "intents": ["hiring-design", "interview-architecture", "calibration", "debrief", "onboarding-architecture"]
+        "keywords": [
+          "hiring",
+          "recruit",
+          "recruiting",
+          "interview",
+          "candidate",
+          "candidates",
+          "ICP",
+          "ideal candidate",
+          "calibration",
+          "rubric",
+          "debrief",
+          "culture fit",
+          "culture add",
+          "onboarding",
+          "90-day plan",
+          "new hire",
+          "panel",
+          "decision fatigue",
+          "structured interview",
+          "work sample",
+          "cognitive ability test",
+          "hire bar",
+          "interviewer brief"
+        ],
+        "agents": [
+          "starlight-hiring",
+          "starlight-prime",
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "hiring-design",
+          "interview-architecture",
+          "calibration",
+          "debrief",
+          "onboarding-architecture"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -424,9 +1044,40 @@
       "id": "people-intelligence-learning-architecture",
       "skill": "people-intelligence/learning-architecture",
       "triggers": {
-        "keywords": ["training", "curriculum", "program design", "L&D", "learning and development", "trainer", "facilitator", "course", "workshop", "transfer", "onboarding curriculum", "upskilling", "reskilling", "Kirkpatrick", "spaced retrieval", "retrieval practice", "cognitive load", "andragogy", "train-the-trainer", "TtT", "scenario library", "case-based learning"],
-        "agents": ["starlight-training"],
-        "intents": ["training", "learning-design", "curriculum", "transfer-measurement", "facilitator-development"]
+        "keywords": [
+          "training",
+          "curriculum",
+          "program design",
+          "L&D",
+          "learning and development",
+          "trainer",
+          "facilitator",
+          "course",
+          "workshop",
+          "transfer",
+          "onboarding curriculum",
+          "upskilling",
+          "reskilling",
+          "Kirkpatrick",
+          "spaced retrieval",
+          "retrieval practice",
+          "cognitive load",
+          "andragogy",
+          "train-the-trainer",
+          "TtT",
+          "scenario library",
+          "case-based learning"
+        ],
+        "agents": [
+          "starlight-training"
+        ],
+        "intents": [
+          "training",
+          "learning-design",
+          "curriculum",
+          "transfer-measurement",
+          "facilitator-development"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -435,9 +1086,36 @@
       "id": "people-intelligence-culture-design",
       "skill": "people-intelligence/culture-design",
       "triggers": {
-        "keywords": ["culture", "values", "rituals", "onboarding", "belonging", "team dynamics", "culture deck", "culture audit", "all-hands", "off-site", "first 90 days", "values poster", "culture initiative", "anti-ritual", "Edmondson", "Schein"],
-        "agents": ["starlight-culture", "starlight-navigator"],
-        "intents": ["culture", "values", "rituals", "onboarding", "belonging", "team-dynamics-org-systems"]
+        "keywords": [
+          "culture",
+          "values",
+          "rituals",
+          "onboarding",
+          "belonging",
+          "team dynamics",
+          "culture deck",
+          "culture audit",
+          "all-hands",
+          "off-site",
+          "first 90 days",
+          "values poster",
+          "culture initiative",
+          "anti-ritual",
+          "Edmondson",
+          "Schein"
+        ],
+        "agents": [
+          "starlight-culture",
+          "starlight-navigator"
+        ],
+        "intents": [
+          "culture",
+          "values",
+          "rituals",
+          "onboarding",
+          "belonging",
+          "team-dynamics-org-systems"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -446,9 +1124,45 @@
       "id": "people-intelligence-org-architecture",
       "skill": "people-intelligence/org-architecture",
       "triggers": {
-        "keywords": ["reorg", "restructure", "reorganize", "role design", "role clarity", "span of control", "direct reports", "succession", "successor", "promotion", "hierarchy", "flat structure", "holacracy", "change management", "transformation", "RACI", "decision rights", "accountability", "reporting line", "org chart", "Conway's Law", "Kotter", "Bridges", "trauma audit"],
-        "agents": ["starlight-org", "starlight-navigator", "starlight-sentinel"],
-        "intents": ["organizational-architecture", "role-design", "span-architecture", "reorg-sequencing", "succession-planning", "change-management"]
+        "keywords": [
+          "reorg",
+          "restructure",
+          "reorganize",
+          "role design",
+          "role clarity",
+          "span of control",
+          "direct reports",
+          "succession",
+          "successor",
+          "promotion",
+          "hierarchy",
+          "flat structure",
+          "holacracy",
+          "change management",
+          "transformation",
+          "RACI",
+          "decision rights",
+          "accountability",
+          "reporting line",
+          "org chart",
+          "Conway's Law",
+          "Kotter",
+          "Bridges",
+          "trauma audit"
+        ],
+        "agents": [
+          "starlight-org",
+          "starlight-navigator",
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "organizational-architecture",
+          "role-design",
+          "span-architecture",
+          "reorg-sequencing",
+          "succession-planning",
+          "change-management"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -457,9 +1171,52 @@
       "id": "people-intelligence-people-dynamics",
       "skill": "people-intelligence/people-dynamics",
       "triggers": {
-        "keywords": ["motivation", "motivated", "demotivated", "burnout", "burning out", "exhausted", "cynical", "checked out", "team is broken", "psychological safety", "psych safety", "trust on the team", "retention", "retain", "quitting", "leaving", "attrition", "engagement", "disengaged", "stay interview", "exit interview", "quiet quitting", "dopamine", "intrinsic", "autonomy", "mastery", "relatedness", "SDT", "Maslach", "Hackman", "SCARF", "Project Aristotle"],
-        "agents": ["starlight-talent", "starlight-prime", "starlight-sentinel"],
-        "intents": ["motivation-mapping", "burnout-detection", "team-dynamics-audit", "psychological-safety-measurement", "retention-architecture"]
+        "keywords": [
+          "motivation",
+          "motivated",
+          "demotivated",
+          "burnout",
+          "burning out",
+          "exhausted",
+          "cynical",
+          "checked out",
+          "team is broken",
+          "psychological safety",
+          "psych safety",
+          "trust on the team",
+          "retention",
+          "retain",
+          "quitting",
+          "leaving",
+          "attrition",
+          "engagement",
+          "disengaged",
+          "stay interview",
+          "exit interview",
+          "quiet quitting",
+          "dopamine",
+          "intrinsic",
+          "autonomy",
+          "mastery",
+          "relatedness",
+          "SDT",
+          "Maslach",
+          "Hackman",
+          "SCARF",
+          "Project Aristotle"
+        ],
+        "agents": [
+          "starlight-talent",
+          "starlight-prime",
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "motivation-mapping",
+          "burnout-detection",
+          "team-dynamics-audit",
+          "psychological-safety-measurement",
+          "retention-architecture"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -468,9 +1225,55 @@
       "id": "people-intelligence-feedback-conversations",
       "skill": "people-intelligence/feedback-conversations",
       "triggers": {
-        "keywords": ["performance review", "perf review", "feedback", "1:1", "check-in", "coaching", "manager-as-coach", "difficult conversation", "hard conversation", "underperformer", "low performer", "high performer", "raise", "promotion", "demotion", "termination", "fire", "let go", "conflict", "mediation", "PIP", "performance improvement plan", "stack rank", "forced curve", "calibration", "360 review", "peer feedback", "feedback culture", "SBI", "three conversations", "crucial conversations", "solution-focused", "motivational interviewing"],
-        "agents": ["starlight-performance", "starlight-prime"],
-        "intents": ["performance", "feedback", "coaching", "difficult-conversation", "conflict", "perf-review-redesign", "perf-rehearsal", "perf-mediation"]
+        "keywords": [
+          "performance review",
+          "perf review",
+          "feedback",
+          "1:1",
+          "check-in",
+          "coaching",
+          "manager-as-coach",
+          "difficult conversation",
+          "hard conversation",
+          "underperformer",
+          "low performer",
+          "high performer",
+          "raise",
+          "promotion",
+          "demotion",
+          "termination",
+          "fire",
+          "let go",
+          "conflict",
+          "mediation",
+          "PIP",
+          "performance improvement plan",
+          "stack rank",
+          "forced curve",
+          "calibration",
+          "360 review",
+          "peer feedback",
+          "feedback culture",
+          "SBI",
+          "three conversations",
+          "crucial conversations",
+          "solution-focused",
+          "motivational interviewing"
+        ],
+        "agents": [
+          "starlight-performance",
+          "starlight-prime"
+        ],
+        "intents": [
+          "performance",
+          "feedback",
+          "coaching",
+          "difficult-conversation",
+          "conflict",
+          "perf-review-redesign",
+          "perf-rehearsal",
+          "perf-mediation"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -479,9 +1282,38 @@
       "id": "energy-intelligence-sizing-architecture",
       "skill": "energy-intelligence/sizing-architecture",
       "triggers": {
-        "keywords": ["sizing", "kW", "kWh", "capacity", "load profile", "solar PV", "photovoltaic", "panel count", "inverter sizing", "battery sizing", "storage sizing", "thermal sizing", "heat pump sizing", "EV charger sizing", "peak demand", "base load", "solar irradiance", "capacity factor", "derating"],
-        "agents": ["starlight-energy-sizing", "starlight-energy-cost", "starlight-energy-grid"],
-        "intents": ["sizing-design", "capacity-recommendation", "load-profile-analysis", "system-component-spec"]
+        "keywords": [
+          "sizing",
+          "kW",
+          "kWh",
+          "capacity",
+          "load profile",
+          "solar PV",
+          "photovoltaic",
+          "panel count",
+          "inverter sizing",
+          "battery sizing",
+          "storage sizing",
+          "thermal sizing",
+          "heat pump sizing",
+          "EV charger sizing",
+          "peak demand",
+          "base load",
+          "solar irradiance",
+          "capacity factor",
+          "derating"
+        ],
+        "agents": [
+          "starlight-energy-sizing",
+          "starlight-energy-cost",
+          "starlight-energy-grid"
+        ],
+        "intents": [
+          "sizing-design",
+          "capacity-recommendation",
+          "load-profile-analysis",
+          "system-component-spec"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -490,9 +1322,46 @@
       "id": "energy-intelligence-cost-modeling",
       "skill": "energy-intelligence/cost-modeling",
       "triggers": {
-        "keywords": ["LCOE", "levelized cost", "payback", "ROI", "IRR", "NPV", "financing", "lease", "PPA", "power purchase agreement", "capex", "opex", "tariff", "time-of-use", "TOU", "demand charge", "net metering", "incentive", "ITC", "investment tax credit", "depreciation", "MACRS", "feed-in tariff", "FIT", "cost of energy"],
-        "agents": ["starlight-energy-cost", "starlight-energy-sizing", "starlight-energy-buyer", "starlight-energy-grid"],
-        "intents": ["lcoe-calculation", "payback-analysis", "financing-comparison", "sensitivity-modeling", "tariff-impact"]
+        "keywords": [
+          "LCOE",
+          "levelized cost",
+          "payback",
+          "ROI",
+          "IRR",
+          "NPV",
+          "financing",
+          "lease",
+          "PPA",
+          "power purchase agreement",
+          "capex",
+          "opex",
+          "tariff",
+          "time-of-use",
+          "TOU",
+          "demand charge",
+          "net metering",
+          "incentive",
+          "ITC",
+          "investment tax credit",
+          "depreciation",
+          "MACRS",
+          "feed-in tariff",
+          "FIT",
+          "cost of energy"
+        ],
+        "agents": [
+          "starlight-energy-cost",
+          "starlight-energy-sizing",
+          "starlight-energy-buyer",
+          "starlight-energy-grid"
+        ],
+        "intents": [
+          "lcoe-calculation",
+          "payback-analysis",
+          "financing-comparison",
+          "sensitivity-modeling",
+          "tariff-impact"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -501,9 +1370,44 @@
       "id": "energy-intelligence-installer-workflow",
       "skill": "energy-intelligence/installer-workflow",
       "triggers": {
-        "keywords": ["installer", "installer ops", "lead intake", "site survey", "MPU", "main panel upgrade", "permit", "AHJ", "authority having jurisdiction", "commissioning", "PTO", "permission to operate", "interconnection application", "work order", "technician", "dispatch", "installation crew", "quality assurance", "callback", "warranty claim", "installer-operator"],
-        "agents": ["starlight-energy-installer", "starlight-energy-operations", "starlight-energy-grid", "starlight-energy-recovery"],
-        "intents": ["lead-intake-design", "site-survey-protocol", "design-approval-flow", "permit-coordination", "installation-checklist", "commissioning-protocol", "customer-handoff"]
+        "keywords": [
+          "installer",
+          "installer ops",
+          "lead intake",
+          "site survey",
+          "MPU",
+          "main panel upgrade",
+          "permit",
+          "AHJ",
+          "authority having jurisdiction",
+          "commissioning",
+          "PTO",
+          "permission to operate",
+          "interconnection application",
+          "work order",
+          "technician",
+          "dispatch",
+          "installation crew",
+          "quality assurance",
+          "callback",
+          "warranty claim",
+          "installer-operator"
+        ],
+        "agents": [
+          "starlight-energy-installer",
+          "starlight-energy-operations",
+          "starlight-energy-grid",
+          "starlight-energy-recovery"
+        ],
+        "intents": [
+          "lead-intake-design",
+          "site-survey-protocol",
+          "design-approval-flow",
+          "permit-coordination",
+          "installation-checklist",
+          "commissioning-protocol",
+          "customer-handoff"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -512,9 +1416,41 @@
       "id": "energy-intelligence-operations-monitoring",
       "skill": "energy-intelligence/operations-monitoring",
       "triggers": {
-        "keywords": ["monitoring", "production data", "energy yield", "performance ratio", "PR", "capacity factor", "soiling", "shading", "inverter fault", "micro-inverter", "optimizer", "alarm", "alert", "derate", "degradation", "warranty claim", "panel replacement", "inverter replacement", "IV curve", "string-level diagnostics", "underperformance"],
-        "agents": ["starlight-energy-operations", "starlight-energy-recovery", "starlight-energy-installer"],
-        "intents": ["performance-verification", "fault-diagnosis", "predictive-maintenance", "warranty-claim-lifecycle", "customer-reporting"]
+        "keywords": [
+          "monitoring",
+          "production data",
+          "energy yield",
+          "performance ratio",
+          "PR",
+          "capacity factor",
+          "soiling",
+          "shading",
+          "inverter fault",
+          "micro-inverter",
+          "optimizer",
+          "alarm",
+          "alert",
+          "derate",
+          "degradation",
+          "warranty claim",
+          "panel replacement",
+          "inverter replacement",
+          "IV curve",
+          "string-level diagnostics",
+          "underperformance"
+        ],
+        "agents": [
+          "starlight-energy-operations",
+          "starlight-energy-recovery",
+          "starlight-energy-installer"
+        ],
+        "intents": [
+          "performance-verification",
+          "fault-diagnosis",
+          "predictive-maintenance",
+          "warranty-claim-lifecycle",
+          "customer-reporting"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -523,9 +1459,42 @@
       "id": "energy-intelligence-buyer-journey",
       "skill": "energy-intelligence/buyer-journey",
       "triggers": {
-        "keywords": ["homeowner", "buyer", "customer", "end-user", "decision support", "solar shopping", "quote comparison", "multiple bids", "lease vs buy", "PPA vs purchase", "savings", "ROI for homeowner", "why solar", "environmental impact", "my electric bill", "my tariff", "my roof", "my house", "residential solar", "commercial solar small business"],
-        "agents": ["starlight-energy-buyer", "starlight-energy-cost", "starlight-energy-sizing", "starlight-genius"],
-        "intents": ["decision-support", "quote-comparison", "framing-translation", "sensitivity-explanation", "expectation-setting", "post-purchase-confidence"]
+        "keywords": [
+          "homeowner",
+          "buyer",
+          "customer",
+          "end-user",
+          "decision support",
+          "solar shopping",
+          "quote comparison",
+          "multiple bids",
+          "lease vs buy",
+          "PPA vs purchase",
+          "savings",
+          "ROI for homeowner",
+          "why solar",
+          "environmental impact",
+          "my electric bill",
+          "my tariff",
+          "my roof",
+          "my house",
+          "residential solar",
+          "commercial solar small business"
+        ],
+        "agents": [
+          "starlight-energy-buyer",
+          "starlight-energy-cost",
+          "starlight-energy-sizing",
+          "starlight-genius"
+        ],
+        "intents": [
+          "decision-support",
+          "quote-comparison",
+          "framing-translation",
+          "sensitivity-explanation",
+          "expectation-setting",
+          "post-purchase-confidence"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -534,9 +1503,47 @@
       "id": "energy-intelligence-grid-integration",
       "skill": "energy-intelligence/grid-integration",
       "triggers": {
-        "keywords": ["interconnection", "grid", "utility", "AHJ", "IEEE 1547", "VDE-AR-N 4105", "G99", "G98", "smart inverter", "anti-islanding", "ride-through", "voltage support", "frequency support", "net metering", "NEM", "NEM 3.0", "feed-in tariff", "FIT", "demand response", "virtual power plant", "VPP", "aggregator", "distribution operator", "DSO", "transmission operator", "TSO"],
-        "agents": ["starlight-energy-grid", "starlight-energy-sizing", "starlight-energy-cost", "starlight-energy-installer"],
-        "intents": ["interconnection-feasibility", "tariff-resolution", "grid-standard-compliance", "vpp-program-evaluation", "application-coordination"]
+        "keywords": [
+          "interconnection",
+          "grid",
+          "utility",
+          "AHJ",
+          "IEEE 1547",
+          "VDE-AR-N 4105",
+          "G99",
+          "G98",
+          "smart inverter",
+          "anti-islanding",
+          "ride-through",
+          "voltage support",
+          "frequency support",
+          "net metering",
+          "NEM",
+          "NEM 3.0",
+          "feed-in tariff",
+          "FIT",
+          "demand response",
+          "virtual power plant",
+          "VPP",
+          "aggregator",
+          "distribution operator",
+          "DSO",
+          "transmission operator",
+          "TSO"
+        ],
+        "agents": [
+          "starlight-energy-grid",
+          "starlight-energy-sizing",
+          "starlight-energy-cost",
+          "starlight-energy-installer"
+        ],
+        "intents": [
+          "interconnection-feasibility",
+          "tariff-resolution",
+          "grid-standard-compliance",
+          "vpp-program-evaluation",
+          "application-coordination"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -545,9 +1552,46 @@
       "id": "energy-intelligence-recovery-protocol",
       "skill": "energy-intelligence/recovery-protocol",
       "triggers": {
-        "keywords": ["disaster", "outage", "blackout", "brownout", "grid down", "hurricane", "fire", "flood", "freeze", "manufacturer bankruptcy", "installer bankruptcy", "deplatform", "monitoring service shutdown", "panel-recall", "inverter-recall", "warranty-failure", "force majeure", "utility-disconnect", "deplatform-recovery", "resilience", "off-grid bridge", "backup", "islanding", "microgrid"],
-        "agents": ["starlight-energy-recovery", "starlight-energy-operations", "starlight-energy-installer", "starlight-energy-grid"],
-        "intents": ["disaster-readiness", "outage-protocol", "deplatform-readiness", "warranty-failure-recovery", "installer-failure-recovery", "monitoring-failure-recovery"]
+        "keywords": [
+          "disaster",
+          "outage",
+          "blackout",
+          "brownout",
+          "grid down",
+          "hurricane",
+          "fire",
+          "flood",
+          "freeze",
+          "manufacturer bankruptcy",
+          "installer bankruptcy",
+          "deplatform",
+          "monitoring service shutdown",
+          "panel-recall",
+          "inverter-recall",
+          "warranty-failure",
+          "force majeure",
+          "utility-disconnect",
+          "deplatform-recovery",
+          "resilience",
+          "off-grid bridge",
+          "backup",
+          "islanding",
+          "microgrid"
+        ],
+        "agents": [
+          "starlight-energy-recovery",
+          "starlight-energy-operations",
+          "starlight-energy-installer",
+          "starlight-energy-grid"
+        ],
+        "intents": [
+          "disaster-readiness",
+          "outage-protocol",
+          "deplatform-readiness",
+          "warranty-failure-recovery",
+          "installer-failure-recovery",
+          "monitoring-failure-recovery"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -556,9 +1600,38 @@
       "id": "music-is-amplification-mesh",
       "skill": "music-is/amplification-mesh",
       "triggers": {
-        "keywords": ["amplify", "amplification", "openclaws", "claws", "drop", "social drops", "x post", "tiktok", "instagram reel", "youtube shorts", "spotify canvas", "voice-lock", "frequency cap", "blotato", "n8n", "post-release", "playlist pitch", "ai-disclosure", "/music-amplify"],
-        "agents": ["music-amplifier", "starlight-orchestrator"],
-        "intents": ["amplification", "social-drop", "post-release-scheduling", "voice-lock-check", "campaign-orchestration"]
+        "keywords": [
+          "amplify",
+          "amplification",
+          "openclaws",
+          "claws",
+          "drop",
+          "social drops",
+          "x post",
+          "tiktok",
+          "instagram reel",
+          "youtube shorts",
+          "spotify canvas",
+          "voice-lock",
+          "frequency cap",
+          "blotato",
+          "n8n",
+          "post-release",
+          "playlist pitch",
+          "ai-disclosure",
+          "/music-amplify"
+        ],
+        "agents": [
+          "music-amplifier",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "amplification",
+          "social-drop",
+          "post-release-scheduling",
+          "voice-lock-check",
+          "campaign-orchestration"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -567,9 +1640,37 @@
       "id": "music-is-asset-render",
       "skill": "music-is/asset-render",
       "triggers": {
-        "keywords": ["cover", "asset render", "asset bundle", "nano banana", "seedance", "higgsfield", "remotion", "spotify canvas", "lyric video", "motion video", "cinematic", "visual dna", "/music-canvas", "re-render", "cover art", "shorts", "9:16", "16:9"],
-        "agents": ["music-producer", "starlight-orchestrator"],
-        "intents": ["asset-generation", "cover-render", "motion-render", "canvas-render", "bundle-completeness"]
+        "keywords": [
+          "cover",
+          "asset render",
+          "asset bundle",
+          "nano banana",
+          "seedance",
+          "higgsfield",
+          "remotion",
+          "spotify canvas",
+          "lyric video",
+          "motion video",
+          "cinematic",
+          "visual dna",
+          "/music-canvas",
+          "re-render",
+          "cover art",
+          "shorts",
+          "9:16",
+          "16:9"
+        ],
+        "agents": [
+          "music-producer",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "asset-generation",
+          "cover-render",
+          "motion-render",
+          "canvas-render",
+          "bundle-completeness"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -578,9 +1679,33 @@
       "id": "music-is-catalog-systems",
       "skill": "music-is/catalog-systems",
       "triggers": {
-        "keywords": ["catalog", "label-board", "/music-label-board", "master csv", "isrc index", "hygiene", "orphan rows", "stale draft", "portfolio scorecard", "release count", "persona rollup", "asset path integrity", "attestation hash", "notion mirror", "duplicate check"],
-        "agents": ["music-archivist"],
-        "intents": ["catalog-hygiene", "portfolio-scorecard", "status-check", "catalog-crud", "weekly-ritual"]
+        "keywords": [
+          "catalog",
+          "label-board",
+          "/music-label-board",
+          "master csv",
+          "isrc index",
+          "hygiene",
+          "orphan rows",
+          "stale draft",
+          "portfolio scorecard",
+          "release count",
+          "persona rollup",
+          "asset path integrity",
+          "attestation hash",
+          "notion mirror",
+          "duplicate check"
+        ],
+        "agents": [
+          "music-archivist"
+        ],
+        "intents": [
+          "catalog-hygiene",
+          "portfolio-scorecard",
+          "status-check",
+          "catalog-crud",
+          "weekly-ritual"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -589,9 +1714,35 @@
       "id": "music-is-distribution-flow",
       "skill": "music-is/distribution-flow",
       "triggers": {
-        "keywords": ["distribute", "distribution", "distrokid", "bandcamp", "spotify canvas", "frankx.ai/music", "isrc mint", "dsp", "sync pitch", "/music-sync-pitch", "playlist pitching", "release rails", "metadata lock", "owned distribution", "spotify-for-artists", "aggregator"],
-        "agents": ["music-distributor", "starlight-orchestrator"],
-        "intents": ["distribution", "sync-pitch", "rail-routing", "isrc-pull", "post-release-mirror"]
+        "keywords": [
+          "distribute",
+          "distribution",
+          "distrokid",
+          "bandcamp",
+          "spotify canvas",
+          "frankx.ai/music",
+          "isrc mint",
+          "dsp",
+          "sync pitch",
+          "/music-sync-pitch",
+          "playlist pitching",
+          "release rails",
+          "metadata lock",
+          "owned distribution",
+          "spotify-for-artists",
+          "aggregator"
+        ],
+        "agents": [
+          "music-distributor",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "distribution",
+          "sync-pitch",
+          "rail-routing",
+          "isrc-pull",
+          "post-release-mirror"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -600,9 +1751,36 @@
       "id": "music-is-naming-intelligence",
       "skill": "music-is/naming-intelligence",
       "triggers": {
-        "keywords": ["name", "naming", "/music-name", "persona name", "label name", "track name", "name candidates", "is this name available", "rename", "codename", "trademark check", "spotify search", "memorability", "searchability", "banned names", "6-axis test", "pronouncability"],
-        "agents": ["starlight-weaver", "starlight-prime"],
-        "intents": ["naming", "availability-check", "canon-fit-check", "rename-decision", "candidate-generation"]
+        "keywords": [
+          "name",
+          "naming",
+          "/music-name",
+          "persona name",
+          "label name",
+          "track name",
+          "name candidates",
+          "is this name available",
+          "rename",
+          "codename",
+          "trademark check",
+          "spotify search",
+          "memorability",
+          "searchability",
+          "banned names",
+          "6-axis test",
+          "pronouncability"
+        ],
+        "agents": [
+          "starlight-weaver",
+          "starlight-prime"
+        ],
+        "intents": [
+          "naming",
+          "availability-check",
+          "canon-fit-check",
+          "rename-decision",
+          "candidate-generation"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -611,9 +1789,36 @@
       "id": "music-is-persona-canon",
       "skill": "music-is/persona-canon",
       "triggers": {
-        "keywords": ["persona", "/music-persona", "spawn persona", "define artist", "lock canon", "sound dna", "visual dna", "voice dna", "audience contract", "monetization stack", "voice-check", "canon defense", "canon drift", "persona-keeper", "retire persona", "cross-persona blur", "release cadence baseline"],
-        "agents": ["persona-keeper", "starlight-prime"],
-        "intents": ["persona-spawn", "canon-lock", "canon-defense", "voice-lock-check", "persona-retirement"]
+        "keywords": [
+          "persona",
+          "/music-persona",
+          "spawn persona",
+          "define artist",
+          "lock canon",
+          "sound dna",
+          "visual dna",
+          "voice dna",
+          "audience contract",
+          "monetization stack",
+          "voice-check",
+          "canon defense",
+          "canon drift",
+          "persona-keeper",
+          "retire persona",
+          "cross-persona blur",
+          "release cadence baseline"
+        ],
+        "agents": [
+          "persona-keeper",
+          "starlight-prime"
+        ],
+        "intents": [
+          "persona-spawn",
+          "canon-lock",
+          "canon-defense",
+          "voice-lock-check",
+          "persona-retirement"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -622,9 +1827,35 @@
       "id": "music-is-release-gate",
       "skill": "music-is/release-gate",
       "triggers": {
-        "keywords": ["release gate", "/music-release", "green-light", "a&r", "revise", "refuse", "gate check", "canon-anchoring", "asset bundle complete", "voice-lock check", "royalty graph entry", "ai-disclosure", "vocal-impersonation check", "sample clearance", "override", "frank-in-the-loop"],
-        "agents": ["music-curator", "starlight-prime"],
-        "intents": ["release-gate-decision", "green-light", "revise-or-refuse", "parallel-dispatch", "override-discipline"]
+        "keywords": [
+          "release gate",
+          "/music-release",
+          "green-light",
+          "a&r",
+          "revise",
+          "refuse",
+          "gate check",
+          "canon-anchoring",
+          "asset bundle complete",
+          "voice-lock check",
+          "royalty graph entry",
+          "ai-disclosure",
+          "vocal-impersonation check",
+          "sample clearance",
+          "override",
+          "frank-in-the-loop"
+        ],
+        "agents": [
+          "music-curator",
+          "starlight-prime"
+        ],
+        "intents": [
+          "release-gate-decision",
+          "green-light",
+          "revise-or-refuse",
+          "parallel-dispatch",
+          "override-discipline"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -633,9 +1864,34 @@
       "id": "music-is-royalty-graph",
       "skill": "music-is/royalty-graph",
       "triggers": {
-        "keywords": ["royalty", "royalty graph", "royalty cascade", "splits", "contributors", "publishing share", "master rights", "pro id", "ascap", "nft mint", "fan tier", "sync deal economics", "creator forge", "attribution cascade", "wealth is", "limited edition"],
-        "agents": ["royalty-architect"],
-        "intents": ["royalty-design", "cascade-graph", "split-finalization", "nft-design", "sync-economics"]
+        "keywords": [
+          "royalty",
+          "royalty graph",
+          "royalty cascade",
+          "splits",
+          "contributors",
+          "publishing share",
+          "master rights",
+          "pro id",
+          "ascap",
+          "nft mint",
+          "fan tier",
+          "sync deal economics",
+          "creator forge",
+          "attribution cascade",
+          "wealth is",
+          "limited edition"
+        ],
+        "agents": [
+          "royalty-architect"
+        ],
+        "intents": [
+          "royalty-design",
+          "cascade-graph",
+          "split-finalization",
+          "nft-design",
+          "sync-economics"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -644,9 +1900,31 @@
       "id": "music-is-song-intake",
       "skill": "music-is/song-intake",
       "triggers": {
-        "keywords": ["song intake", "/music-song", "intake suno", "suno url", "add this song to catalog", "draft row", "song id", "queue assets", "batch import suno", "legacy import", "catalog draft", "new generation", "persona attribution"],
-        "agents": ["music-archivist"],
-        "intents": ["song-capture", "catalog-write", "asset-queue", "batch-import", "metadata-extract"]
+        "keywords": [
+          "song intake",
+          "/music-song",
+          "intake suno",
+          "suno url",
+          "add this song to catalog",
+          "draft row",
+          "song id",
+          "queue assets",
+          "batch import suno",
+          "legacy import",
+          "catalog draft",
+          "new generation",
+          "persona attribution"
+        ],
+        "agents": [
+          "music-archivist"
+        ],
+        "intents": [
+          "song-capture",
+          "catalog-write",
+          "asset-queue",
+          "batch-import",
+          "metadata-extract"
+        ]
       },
       "priority": "medium",
       "load_level": "core"
@@ -655,9 +1933,33 @@
       "id": "music-is-suno-prompt",
       "skill": "music-is/suno-prompt",
       "triggers": {
-        "keywords": ["suno prompt", "/music-suno-prompt", "suno", "generate prompt", "structure tags", "prompt pattern", "vocal control", "genre style", "style stem", "prompt synthesis", "iteration log", "prompt variants", "vocal posture", "engine version"],
-        "agents": ["music-producer", "starlight-prime"],
-        "intents": ["prompt-synthesis", "grounded-prompting", "iteration-design", "variant-generation", "knowledge-grounded"]
+        "keywords": [
+          "suno prompt",
+          "/music-suno-prompt",
+          "suno",
+          "generate prompt",
+          "structure tags",
+          "prompt pattern",
+          "vocal control",
+          "genre style",
+          "style stem",
+          "prompt synthesis",
+          "iteration log",
+          "prompt variants",
+          "vocal posture",
+          "engine version"
+        ],
+        "agents": [
+          "music-producer",
+          "starlight-prime"
+        ],
+        "intents": [
+          "prompt-synthesis",
+          "grounded-prompting",
+          "iteration-design",
+          "variant-generation",
+          "knowledge-grounded"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -666,9 +1968,42 @@
       "id": "sound-intelligence-audience-architecture",
       "skill": "sound-intelligence/audience-architecture",
       "triggers": {
-        "keywords": ["audience", "fans", "fanbase", "follower", "list", "mailing list", "newsletter", "subscribers", "substack", "beehiiv", "convertkit", "patreon", "patrons", "bandcamp", "discord", "community", "true fans", "cohort", "welcome sequence", "stay-interview", "sovereign publish", "sovereign distribution"],
-        "agents": ["starlight-sound-audience", "starlight-genius", "starlight-sound-catalog"],
-        "intents": ["cohort-mapping", "ritual-design", "list-architecture", "fan-stay-interview", "sovereign-publishing"]
+        "keywords": [
+          "audience",
+          "fans",
+          "fanbase",
+          "follower",
+          "list",
+          "mailing list",
+          "newsletter",
+          "subscribers",
+          "substack",
+          "beehiiv",
+          "convertkit",
+          "patreon",
+          "patrons",
+          "bandcamp",
+          "discord",
+          "community",
+          "true fans",
+          "cohort",
+          "welcome sequence",
+          "stay-interview",
+          "sovereign publish",
+          "sovereign distribution"
+        ],
+        "agents": [
+          "starlight-sound-audience",
+          "starlight-genius",
+          "starlight-sound-catalog"
+        ],
+        "intents": [
+          "cohort-mapping",
+          "ritual-design",
+          "list-architecture",
+          "fan-stay-interview",
+          "sovereign-publishing"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -677,9 +2012,46 @@
       "id": "sound-intelligence-catalog-systems",
       "skill": "sound-intelligence/catalog-systems",
       "triggers": {
-        "keywords": ["release", "release date", "single", "ep", "album", "isrc", "iswc", "metadata", "contributor splits", "pro", "ascap", "bmi", "sesac", "gema", "mlc", "neighboring rights", "publishing", "distrokid", "tunecore", "ddex", "deplatform", "takedown", "sample clearance", "version map", "radio edit"],
-        "agents": ["starlight-sound-catalog", "starlight-sound-production", "starlight-sound-sync", "starlight-business"],
-        "intents": ["release-planning", "isrc-architecture", "metadata-discipline", "version-mapping", "deplatform-recovery"]
+        "keywords": [
+          "release",
+          "release date",
+          "single",
+          "ep",
+          "album",
+          "isrc",
+          "iswc",
+          "metadata",
+          "contributor splits",
+          "pro",
+          "ascap",
+          "bmi",
+          "sesac",
+          "gema",
+          "mlc",
+          "neighboring rights",
+          "publishing",
+          "distrokid",
+          "tunecore",
+          "ddex",
+          "deplatform",
+          "takedown",
+          "sample clearance",
+          "version map",
+          "radio edit"
+        ],
+        "agents": [
+          "starlight-sound-catalog",
+          "starlight-sound-production",
+          "starlight-sound-sync",
+          "starlight-business"
+        ],
+        "intents": [
+          "release-planning",
+          "isrc-architecture",
+          "metadata-discipline",
+          "version-mapping",
+          "deplatform-recovery"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -688,9 +2060,42 @@
       "id": "sound-intelligence-composition-architecture",
       "skill": "sound-intelligence/composition-architecture",
       "triggers": {
-        "keywords": ["songwriting", "composition", "compose", "arrange", "arrangement", "lyric", "lyrics", "melody", "harmony", "chord progression", "modulation", "song form", "verse", "chorus", "bridge", "transition", "drop", "build", "breakdown", "demo", "prosody", "tension and release"],
-        "agents": ["starlight-sound-composition", "starlight-genius", "starlight-prime"],
-        "intents": ["composition-architecture", "lyric-architecture", "arrangement-design", "demo-planning", "transition-design"]
+        "keywords": [
+          "songwriting",
+          "composition",
+          "compose",
+          "arrange",
+          "arrangement",
+          "lyric",
+          "lyrics",
+          "melody",
+          "harmony",
+          "chord progression",
+          "modulation",
+          "song form",
+          "verse",
+          "chorus",
+          "bridge",
+          "transition",
+          "drop",
+          "build",
+          "breakdown",
+          "demo",
+          "prosody",
+          "tension and release"
+        ],
+        "agents": [
+          "starlight-sound-composition",
+          "starlight-genius",
+          "starlight-prime"
+        ],
+        "intents": [
+          "composition-architecture",
+          "lyric-architecture",
+          "arrangement-design",
+          "demo-planning",
+          "transition-design"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -699,9 +2104,46 @@
       "id": "sound-intelligence-performance-design",
       "skill": "sound-intelligence/performance-design",
       "triggers": {
-        "keywords": ["live", "show", "setlist", "set design", "opener", "closer", "peak", "tour", "venue", "festival", "residency", "tiny desk", "kexp", "soundcheck", "front of house", "foh", "monitor mix", "iem", "wedge", "broadcast", "livestream", "radio session", "hearing protection", "redundancy"],
-        "agents": ["starlight-sound-performance", "starlight-sound-composition", "starlight-sound-audience", "starlight-embodiment"],
-        "intents": ["set-architecture", "audience-contract-design", "live-mix-planning", "residency-design", "broadcast-prep", "hearing-health-protection"]
+        "keywords": [
+          "live",
+          "show",
+          "setlist",
+          "set design",
+          "opener",
+          "closer",
+          "peak",
+          "tour",
+          "venue",
+          "festival",
+          "residency",
+          "tiny desk",
+          "kexp",
+          "soundcheck",
+          "front of house",
+          "foh",
+          "monitor mix",
+          "iem",
+          "wedge",
+          "broadcast",
+          "livestream",
+          "radio session",
+          "hearing protection",
+          "redundancy"
+        ],
+        "agents": [
+          "starlight-sound-performance",
+          "starlight-sound-composition",
+          "starlight-sound-audience",
+          "starlight-embodiment"
+        ],
+        "intents": [
+          "set-architecture",
+          "audience-contract-design",
+          "live-mix-planning",
+          "residency-design",
+          "broadcast-prep",
+          "hearing-health-protection"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -710,9 +2152,46 @@
       "id": "sound-intelligence-production-systems",
       "skill": "sound-intelligence/production-systems",
       "triggers": {
-        "keywords": ["mix", "mixing", "master", "mastering", "lufs", "loudness", "dynamic range", "psr", "true peak", "limiter", "compression", "eq", "reverb", "delay", "bus", "vocal chain", "de-essing", "autotune", "sound design", "synth", "stem", "recall", "daw", "plugin chain", "gain stage"],
-        "agents": ["starlight-sound-production", "starlight-sound-catalog", "starlight-sound-sync"],
-        "intents": ["mix-planning", "mastering", "vocal-chain-design", "sound-design", "session-recall", "loudness-war-refusal"]
+        "keywords": [
+          "mix",
+          "mixing",
+          "master",
+          "mastering",
+          "lufs",
+          "loudness",
+          "dynamic range",
+          "psr",
+          "true peak",
+          "limiter",
+          "compression",
+          "eq",
+          "reverb",
+          "delay",
+          "bus",
+          "vocal chain",
+          "de-essing",
+          "autotune",
+          "sound design",
+          "synth",
+          "stem",
+          "recall",
+          "daw",
+          "plugin chain",
+          "gain stage"
+        ],
+        "agents": [
+          "starlight-sound-production",
+          "starlight-sound-catalog",
+          "starlight-sound-sync"
+        ],
+        "intents": [
+          "mix-planning",
+          "mastering",
+          "vocal-chain-design",
+          "sound-design",
+          "session-recall",
+          "loudness-war-refusal"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -721,9 +2200,43 @@
       "id": "sound-intelligence-sync-licensing",
       "skill": "sound-intelligence/sync-licensing",
       "triggers": {
-        "keywords": ["sync", "sync license", "sync placement", "music supervision", "music supervisor", "music library", "musicbed", "marmoset", "songtradr", "tv", "film", "commercial", "trailer", "brief", "placement", "cue sheet", "master use", "publishing share", "mfn", "exclusivity", "territory", "term"],
-        "agents": ["starlight-sound-sync", "starlight-sound-catalog", "starlight-sound-production", "starlight-business"],
-        "intents": ["brief-fit-evaluation", "placement-thesis", "license-economics", "rights-pack-delivery", "sync-stay-interview"]
+        "keywords": [
+          "sync",
+          "sync license",
+          "sync placement",
+          "music supervision",
+          "music supervisor",
+          "music library",
+          "musicbed",
+          "marmoset",
+          "songtradr",
+          "tv",
+          "film",
+          "commercial",
+          "trailer",
+          "brief",
+          "placement",
+          "cue sheet",
+          "master use",
+          "publishing share",
+          "mfn",
+          "exclusivity",
+          "territory",
+          "term"
+        ],
+        "agents": [
+          "starlight-sound-sync",
+          "starlight-sound-catalog",
+          "starlight-sound-production",
+          "starlight-business"
+        ],
+        "intents": [
+          "brief-fit-evaluation",
+          "placement-thesis",
+          "license-economics",
+          "rights-pack-delivery",
+          "sync-stay-interview"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -732,9 +2245,41 @@
       "id": "memory-sis-memory-orchestrator",
       "skill": "memory/sis-memory-orchestrator",
       "triggers": {
-        "keywords": ["sis memory", "memory substrate", "mempalace", "letta", "memgpt", "mem0", "agentdb", "qdrant", "screenpipe", "swap memory backend", "benchmark substrates", "memory privacy", "leak audit", "where does this capture go", "/sis memory", "memory orchestrator", "privacy guardian", "decay sweep", "embedding", "knowledge-graph"],
-        "agents": ["starlight-sage", "starlight-orchestrator", "starlight-sentinel"],
-        "intents": ["memory-routing", "substrate-selection", "privacy-redaction", "benchmarking", "leak-audit", "adoption-setup"]
+        "keywords": [
+          "sis memory",
+          "memory substrate",
+          "mempalace",
+          "letta",
+          "memgpt",
+          "mem0",
+          "agentdb",
+          "qdrant",
+          "screenpipe",
+          "swap memory backend",
+          "benchmark substrates",
+          "memory privacy",
+          "leak audit",
+          "where does this capture go",
+          "/sis memory",
+          "memory orchestrator",
+          "privacy guardian",
+          "decay sweep",
+          "embedding",
+          "knowledge-graph"
+        ],
+        "agents": [
+          "starlight-sage",
+          "starlight-orchestrator",
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "memory-routing",
+          "substrate-selection",
+          "privacy-redaction",
+          "benchmarking",
+          "leak-audit",
+          "adoption-setup"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -743,9 +2288,42 @@
       "id": "vision-voice-anti-slop",
       "skill": "vision/voice-anti-slop",
       "triggers": {
-        "keywords": ["voice", "tone", "anti-slop", "brand voice", "copy", "site copy", "vault entry", "handover", "plan doc", "pr description", "commit message", "user-facing prose", "unleash", "harness", "delve", "tapestry", "seamless", "synergize", "leverage", "deep dive", "paradigm shift", "game-changer"],
-        "agents": ["starlight-visionary", "starlight-weaver", "starlight-prime"],
-        "intents": ["voice-enforcement", "slop-refusal", "brand-voice-check", "operator-honesty", "prose-revision"]
+        "keywords": [
+          "voice",
+          "tone",
+          "anti-slop",
+          "brand voice",
+          "copy",
+          "site copy",
+          "vault entry",
+          "handover",
+          "plan doc",
+          "pr description",
+          "commit message",
+          "user-facing prose",
+          "unleash",
+          "harness",
+          "delve",
+          "tapestry",
+          "seamless",
+          "synergize",
+          "leverage",
+          "deep dive",
+          "paradigm shift",
+          "game-changer"
+        ],
+        "agents": [
+          "starlight-visionary",
+          "starlight-weaver",
+          "starlight-prime"
+        ],
+        "intents": [
+          "voice-enforcement",
+          "slop-refusal",
+          "brand-voice-check",
+          "operator-honesty",
+          "prose-revision"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -754,9 +2332,25 @@
       "id": "machine-heart",
       "skill": "machine/heart",
       "triggers": {
-        "keywords": ["/heart", "ops health", "check daemons", "is everything running", "are we healthy", "memory bus alive", "dashboard alive", "voice operator alive"],
-        "agents": ["starlight-sentinel", "starlight-orchestrator"],
-        "intents": ["health-check", "pre-flight", "ops-audit"]
+        "keywords": [
+          "/heart",
+          "ops health",
+          "check daemons",
+          "is everything running",
+          "are we healthy",
+          "memory bus alive",
+          "dashboard alive",
+          "voice operator alive"
+        ],
+        "agents": [
+          "starlight-sentinel",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "health-check",
+          "pre-flight",
+          "ops-audit"
+        ]
       },
       "priority": "medium",
       "load_level": "on-demand"
@@ -765,9 +2359,26 @@
       "id": "machine-storage",
       "skill": "machine/storage",
       "triggers": {
-        "keywords": ["/storage", "disk usage", "what's eating my disk", "cleanup candidates", "dedup", "storage emergency", "large files", "worktree bloat", "repo size"],
-        "agents": ["starlight-sentinel", "starlight-architect"],
-        "intents": ["disk-audit", "cleanup-plan", "storage-investigation"]
+        "keywords": [
+          "/storage",
+          "disk usage",
+          "what's eating my disk",
+          "cleanup candidates",
+          "dedup",
+          "storage emergency",
+          "large files",
+          "worktree bloat",
+          "repo size"
+        ],
+        "agents": [
+          "starlight-sentinel",
+          "starlight-architect"
+        ],
+        "intents": [
+          "disk-audit",
+          "cleanup-plan",
+          "storage-investigation"
+        ]
       },
       "priority": "medium",
       "load_level": "on-demand"
@@ -776,9 +2387,25 @@
       "id": "crypto-intelligence-vertical",
       "skill": "crypto-intelligence",
       "triggers": {
-        "keywords": ["crypto intelligence", "sovereign crypto", "houses-as-sub-systems", "wealth composition layer fork", "/crypto-"],
-        "agents": ["starlight-business", "starlight-architect", "starlight-sentinel"],
-        "intents": ["crypto-architecture", "wealth-composition", "domain-substack-design"]
+        "keywords": [
+          "crypto intelligence",
+          "sovereign crypto",
+          "houses-as-sub-systems",
+          "wealth composition layer fork",
+          "/crypto-"
+        ],
+        "agents": [
+          "starlight-business",
+          "starlight-architect",
+          "starlight-sentinel",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "crypto-architecture",
+          "crypto-analysis",
+          "wealth-composition",
+          "domain-substack-design"
+        ]
       },
       "priority": "medium",
       "load_level": "on-demand"
@@ -787,9 +2414,38 @@
       "id": "crypto-intelligence-onchain",
       "skill": "crypto-intelligence/onchain",
       "triggers": {
-        "keywords": ["/crypto-onchain-", "on-chain", "onchain", "wallet flow", "whale tracking", "MEV audit", "MEV exposure", "validator econ", "validator economics", "contract interaction", "tx trace", "Dune Analytics", "Nansen", "Arkham", "Etherscan", "Solscan", "DefiLlama", "Flashbots"],
-        "agents": ["starlight-business", "starlight-architect"],
-        "intents": ["onchain-analysis", "wallet-trace", "mev-audit", "validator-econ", "chain-data-investigation"]
+        "keywords": [
+          "/crypto-onchain-",
+          "on-chain",
+          "onchain",
+          "wallet flow",
+          "whale tracking",
+          "MEV audit",
+          "MEV exposure",
+          "validator econ",
+          "validator economics",
+          "contract interaction",
+          "tx trace",
+          "Dune Analytics",
+          "Nansen",
+          "Arkham",
+          "Etherscan",
+          "Solscan",
+          "DefiLlama",
+          "Flashbots"
+        ],
+        "agents": [
+          "starlight-business",
+          "starlight-architect"
+        ],
+        "intents": [
+          "onchain-analysis",
+          "onchain-trace",
+          "wallet-trace",
+          "mev-audit",
+          "validator-econ",
+          "chain-data-investigation"
+        ]
       },
       "priority": "medium",
       "load_level": "on-demand"
@@ -799,9 +2455,43 @@
       "id": "intelligence-hermes-search",
       "skill": "intelligence/hermes-search",
       "triggers": {
-        "keywords": ["search", "find me", "where is", "look up", "retrieve", "what do we know", "source check", "provenance", "research", "what did we decide", "trace", "find pattern", "cross-vault", "multi-source", "/search", "/research", "/find-pattern", "/audit-coverage", "/trace-provenance", "/find-contradiction", "/source-check"],
-        "agents": ["starlight-hermes", "starlight-prime", "starlight-sage", "starlight-genius", "starlight-orchestrator"],
-        "intents": ["search", "retrieval", "research", "provenance", "audit"]
+        "keywords": [
+          "search",
+          "find me",
+          "where is",
+          "look up",
+          "retrieve",
+          "what do we know",
+          "source check",
+          "provenance",
+          "research",
+          "what did we decide",
+          "trace",
+          "find pattern",
+          "cross-vault",
+          "multi-source",
+          "/search",
+          "/research",
+          "/find-pattern",
+          "/audit-coverage",
+          "/trace-provenance",
+          "/find-contradiction",
+          "/source-check"
+        ],
+        "agents": [
+          "starlight-hermes",
+          "starlight-prime",
+          "starlight-sage",
+          "starlight-genius",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "search",
+          "retrieval",
+          "research",
+          "provenance",
+          "audit"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -810,9 +2500,24 @@
       "id": "safety-permission-gate",
       "skill": "safety/permission-gate",
       "triggers": {
-        "keywords": ["write", "move", "delete", "execute", "export", "send", "upload", "permission"],
-        "agents": ["starlight-sentinel"],
-        "intents": ["mutation", "security", "permission"]
+        "keywords": [
+          "write",
+          "move",
+          "delete",
+          "execute",
+          "export",
+          "send",
+          "upload",
+          "permission"
+        ],
+        "agents": [
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "mutation",
+          "security",
+          "permission"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -821,9 +2526,23 @@
       "id": "safety-secret-detector",
       "skill": "safety/secret-detector",
       "triggers": {
-        "keywords": ["export", "publish", "share", "transmit", "credentials", "secrets", "api key"],
-        "agents": ["starlight-sentinel"],
-        "intents": ["export", "security", "secrets"]
+        "keywords": [
+          "export",
+          "publish",
+          "share",
+          "transmit",
+          "credentials",
+          "secrets",
+          "api key"
+        ],
+        "agents": [
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "export",
+          "security",
+          "secrets"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -832,9 +2551,23 @@
       "id": "safety-private-public-split",
       "skill": "safety/private-public-split",
       "triggers": {
-        "keywords": ["export", "public vault", "share memory", "platform pack", "private", "public"],
-        "agents": ["starlight-sentinel", "starlight-sage"],
-        "intents": ["export", "privacy", "vault"]
+        "keywords": [
+          "export",
+          "public vault",
+          "share memory",
+          "platform pack",
+          "private",
+          "public"
+        ],
+        "agents": [
+          "starlight-sentinel",
+          "starlight-sage"
+        ],
+        "intents": [
+          "export",
+          "privacy",
+          "vault"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -843,9 +2576,144 @@
       "id": "safety-mutation-approval",
       "skill": "safety/mutation-approval",
       "triggers": {
-        "keywords": ["apply changes", "execute plan", "confirm", "overwrite", "rename", "delete", "mutation"],
-        "agents": ["starlight-sentinel"],
-        "intents": ["mutation", "approval", "file-operation"]
+        "keywords": [
+          "apply changes",
+          "execute plan",
+          "confirm",
+          "overwrite",
+          "rename",
+          "delete",
+          "mutation"
+        ],
+        "agents": [
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "mutation",
+          "approval",
+          "file-operation"
+        ]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "vision-queen-swarms-visual",
+      "skill": "vision/queen-swarms-visual",
+      "triggers": {
+        "keywords": [
+          "queen visual",
+          "queen swarms",
+          "swarm canvas",
+          "queen motion",
+          "l99 vision",
+          "visual composition queen",
+          "queen ledger visual",
+          "swarm visual skill",
+          "queen canvas",
+          "scroll swarm",
+          "starlight queen visual",
+          "visual skill queen",
+          "activate queen visual"
+        ],
+        "agents": [
+          "starlight-visionary",
+          "starlight-orchestrator",
+          "starlight-queen",
+          "starlight-weaver",
+          "starlight-prime"
+        ],
+        "intents": [
+          "visual",
+          "motion",
+          "swarm-render",
+          "queen-ledger",
+          "visual-artifact",
+          "canvas-experience",
+          "l99-visual",
+          "activate-skill"
+        ]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-hermes-swarm",
+      "skill": "orchestration/hermes-swarm",
+      "triggers": {
+        "keywords": [
+          "swarm",
+          "hermes swarm",
+          "dispatch swarm",
+          "all intelligence systems",
+          "cross-IS",
+          "cross-is",
+          "portfolio sweep",
+          "/hermes-swarm",
+          "/hermes-harvest",
+          "/hermes-boot",
+          "launch swarm",
+          "run swarm",
+          "route to hermes",
+          "hermes specialist",
+          "IS specialist",
+          "intelligence system agent",
+          "/hermes-route",
+          "which IS agent",
+          "which intelligence system",
+          "pick the right agent",
+          "run workflow",
+          "execute workflow",
+          "IS workflow",
+          "/workflow-run",
+          "/workflow-step",
+          "workflow execution",
+          "run the workflow",
+          "workflow for",
+          "execute the workflow",
+          "hermes status",
+          "agent status",
+          "swarm status",
+          "fleet status",
+          "/hermes-status",
+          "are all agents running",
+          "which agents are active",
+          "swarm health",
+          "agent fleet",
+          "across all IS",
+          "synthesize all",
+          "full portfolio",
+          "every IS",
+          "whole system view",
+          "portfolio-level",
+          "system-wide synthesis",
+          "every intelligence system",
+          "full IS sweep"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-hermes",
+          "starlight-architect",
+          "starlight-sentinel",
+          "starlight-prime"
+        ],
+        "intents": [
+          "swarm-dispatch",
+          "cross-is-orchestration",
+          "portfolio-execution",
+          "is-routing",
+          "specialist-selection",
+          "domain-dispatch",
+          "workflow-execution",
+          "is-workflow",
+          "step-execution",
+          "status-check",
+          "fleet-health",
+          "agent-audit",
+          "cross-is-synthesis",
+          "portfolio-sweep",
+          "system-wide-analysis"
+        ]
       },
       "priority": "high",
       "load_level": "core"
@@ -871,44 +2739,231 @@
       },
       "priority": "critical",
       "load_level": "core"
+    },
+    {
+      "id": "orchestration-agent-creator",
+      "skill": "orchestration/agent-creator",
+      "triggers": {
+        "keywords": ["agent-creator", "/agent-creator", "create agent", "spawn agent", "scaffold agent", "register agent"],
+        "agents": ["starlight-architect", "starlight-orchestrator", "starlight-prime"],
+        "intents": ["agent-creation", "scaffolding", "agent-registration"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "orchestration-workflow-skill-creator",
+      "skill": "orchestration/workflow-skill-creator",
+      "triggers": {
+        "keywords": ["workflow-skill-creator", "/workflow-skill-creator", "make this a skill", "create a skill", "package this workflow", "workflow-to-skill"],
+        "agents": ["starlight-orchestrator", "starlight-prime", "starlight-sage"],
+        "intents": ["skill-creation", "workflow-distillation", "skill-registration"]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
-    "starlight-prime": ["intelligence-strategic-reasoning", "intelligence-systems-thinking", "intelligence-decision-framework"],
-    "starlight-architect": ["intelligence-systems-thinking", "intelligence-pattern-recognition"],
-    "starlight-orchestrator": ["orchestration-multi-agent-coordination", "orchestration-workflow-design", "orchestration-sage-autonomous-execution"],
-    "starlight-sentinel": ["intelligence-pattern-recognition", "intelligence-decision-framework", "safety-permission-gate", "safety-secret-detector", "safety-private-public-split", "safety-mutation-approval"],
-    "starlight-sage": ["memory-knowledge-synthesis", "intelligence-pattern-recognition"],
-    "starlight-weaver": ["intelligence-pattern-recognition", "memory-knowledge-synthesis", "vision-design-coherence"],
-    "starlight-navigator": ["intelligence-strategic-reasoning", "intelligence-decision-framework", "vision-fundamentals-excavation"],
-    "starlight-concierge": ["integration-idea-triage", "orchestration-context-engineering"],
-    "starlight-envoy": ["integration-creator-path", "memory-knowledge-synthesis"],
-    "starlight-genius": ["intelligence-genius-excavation", "intelligence-knowledge-reclamation", "intelligence-pattern-recognition"],
-    "starlight-visionary": ["vision-fundamentals-excavation", "vision-design-coherence", "intelligence-strategic-reasoning", "intelligence-pattern-recognition"],
-    "starlight-secondbrain": ["memory-capture-discipline", "memory-insight-distillation", "memory-vault-management", "memory-knowledge-synthesis"],
-    "starlight-relational": ["relational-network-architecture", "relational-alliance-readiness", "intelligence-pattern-recognition"],
-    "starlight-embodiment": ["health-body-substrate", "health-energy-architecture"],
-    "starlight-business": ["business-entity-architecture", "business-revenue-modeling", "intelligence-systems-thinking"],
-    "starlight-hiring": ["people-intelligence-structured-hiring", "intelligence-decision-framework", "intelligence-pattern-recognition", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
-    "starlight-training": ["people-intelligence-learning-architecture", "intelligence-systems-thinking", "intelligence-decision-framework", "memory-knowledge-synthesis"],
-    "starlight-culture": ["people-intelligence-culture-design", "intelligence-systems-thinking", "intelligence-pattern-recognition", "intelligence-decision-framework", "memory-knowledge-synthesis"],
-    "starlight-org": ["people-intelligence-org-architecture", "intelligence-systems-thinking", "intelligence-decision-framework", "intelligence-strategic-reasoning", "intelligence-pattern-recognition", "memory-knowledge-synthesis"],
-    "starlight-talent": ["people-intelligence-people-dynamics", "intelligence-pattern-recognition", "intelligence-decision-framework", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
-    "starlight-performance": ["people-intelligence-feedback-conversations", "intelligence-decision-framework", "intelligence-pattern-recognition", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
-    "starlight-voice-operator": ["orchestration-agent-handoff-packet", "orchestration-context-engineering", "memory-capture-discipline", "intelligence-decision-framework"],
-    "music-amplifier": ["music-is-amplification-mesh", "music-is-distribution-flow", "intelligence-pattern-recognition"],
-    "music-archivist": ["music-is-catalog-systems", "music-is-naming-intelligence", "memory-vault-management"],
-    "music-curator": ["music-is-release-gate", "music-is-song-intake", "intelligence-pattern-recognition", "intelligence-decision-framework"],
-    "music-distributor": ["music-is-distribution-flow", "music-is-royalty-graph", "music-is-amplification-mesh"],
-    "music-producer": ["music-is-asset-render", "music-is-suno-prompt", "music-is-catalog-systems"],
-    "persona-keeper": ["music-is-persona-canon", "music-is-naming-intelligence", "vision-design-coherence"],
-    "royalty-architect": ["music-is-royalty-graph", "business-revenue-modeling", "intelligence-decision-framework"],
-    "starlight-sound-audience": ["sound-intelligence-audience-architecture", "intelligence-pattern-recognition", "memory-knowledge-synthesis"],
-    "starlight-sound-catalog": ["sound-intelligence-catalog-systems", "memory-vault-management", "intelligence-systems-thinking"],
-    "starlight-sound-composition": ["sound-intelligence-composition-architecture", "intelligence-pattern-recognition", "vision-design-coherence"],
-    "starlight-sound-performance": ["sound-intelligence-performance-design", "intelligence-decision-framework", "memory-knowledge-synthesis"],
-    "starlight-sound-production": ["sound-intelligence-production-systems", "intelligence-systems-thinking", "memory-knowledge-synthesis"],
-    "starlight-sound-sync": ["sound-intelligence-sync-licensing", "business-revenue-modeling", "intelligence-decision-framework"],
-    "starlight-hermes": ["intelligence-hermes-search", "memory-vault-management", "memory-knowledge-synthesis", "intelligence-pattern-recognition", "integration-repo-bridge"]
+    "starlight-prime": [
+      "intelligence-strategic-reasoning",
+      "intelligence-systems-thinking",
+      "intelligence-decision-framework"
+    ],
+    "starlight-architect": [
+      "intelligence-systems-thinking",
+      "intelligence-pattern-recognition",
+      "orchestration-agent-creator"
+    ],
+    "starlight-orchestrator": [
+      "orchestration-multi-agent-coordination",
+      "orchestration-workflow-design",
+      "orchestration-sage-autonomous-execution",
+      "orchestration-hermes-swarm",
+      "orchestration-agent-creator",
+      "orchestration-workflow-skill-creator"
+    ],
+    "starlight-sentinel": [
+      "intelligence-pattern-recognition",
+      "intelligence-decision-framework",
+      "safety-permission-gate",
+      "safety-secret-detector",
+      "safety-private-public-split",
+      "safety-mutation-approval"
+    ],
+    "starlight-sage": [
+      "memory-knowledge-synthesis",
+      "intelligence-pattern-recognition"
+    ],
+    "starlight-weaver": [
+      "intelligence-pattern-recognition",
+      "memory-knowledge-synthesis",
+      "vision-design-coherence"
+    ],
+    "starlight-navigator": [
+      "intelligence-strategic-reasoning",
+      "intelligence-decision-framework",
+      "vision-fundamentals-excavation"
+    ],
+    "starlight-concierge": [
+      "integration-idea-triage",
+      "orchestration-context-engineering"
+    ],
+    "starlight-envoy": [
+      "integration-creator-path",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-genius": [
+      "intelligence-genius-excavation",
+      "intelligence-knowledge-reclamation",
+      "intelligence-pattern-recognition"
+    ],
+    "starlight-visionary": [
+      "vision-fundamentals-excavation",
+      "vision-design-coherence",
+      "intelligence-strategic-reasoning",
+      "intelligence-pattern-recognition"
+    ],
+    "starlight-secondbrain": [
+      "memory-capture-discipline",
+      "memory-insight-distillation",
+      "memory-vault-management",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-relational": [
+      "relational-network-architecture",
+      "relational-alliance-readiness",
+      "intelligence-pattern-recognition"
+    ],
+    "starlight-embodiment": [
+      "health-body-substrate",
+      "health-energy-architecture"
+    ],
+    "starlight-business": [
+      "business-entity-architecture",
+      "business-revenue-modeling",
+      "intelligence-systems-thinking"
+    ],
+    "starlight-hiring": [
+      "people-intelligence-structured-hiring",
+      "intelligence-decision-framework",
+      "intelligence-pattern-recognition",
+      "intelligence-systems-thinking",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-training": [
+      "people-intelligence-learning-architecture",
+      "intelligence-systems-thinking",
+      "intelligence-decision-framework",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-culture": [
+      "people-intelligence-culture-design",
+      "intelligence-systems-thinking",
+      "intelligence-pattern-recognition",
+      "intelligence-decision-framework",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-org": [
+      "people-intelligence-org-architecture",
+      "intelligence-systems-thinking",
+      "intelligence-decision-framework",
+      "intelligence-strategic-reasoning",
+      "intelligence-pattern-recognition",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-talent": [
+      "people-intelligence-people-dynamics",
+      "intelligence-pattern-recognition",
+      "intelligence-decision-framework",
+      "intelligence-systems-thinking",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-performance": [
+      "people-intelligence-feedback-conversations",
+      "intelligence-decision-framework",
+      "intelligence-pattern-recognition",
+      "intelligence-systems-thinking",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-voice-operator": [
+      "orchestration-agent-handoff-packet",
+      "orchestration-context-engineering",
+      "memory-capture-discipline",
+      "intelligence-decision-framework"
+    ],
+    "music-amplifier": [
+      "music-is-amplification-mesh",
+      "music-is-distribution-flow",
+      "intelligence-pattern-recognition"
+    ],
+    "music-archivist": [
+      "music-is-catalog-systems",
+      "music-is-naming-intelligence",
+      "memory-vault-management"
+    ],
+    "music-curator": [
+      "music-is-release-gate",
+      "music-is-song-intake",
+      "intelligence-pattern-recognition",
+      "intelligence-decision-framework"
+    ],
+    "music-distributor": [
+      "music-is-distribution-flow",
+      "music-is-royalty-graph",
+      "music-is-amplification-mesh"
+    ],
+    "music-producer": [
+      "music-is-asset-render",
+      "music-is-suno-prompt",
+      "music-is-catalog-systems"
+    ],
+    "persona-keeper": [
+      "music-is-persona-canon",
+      "music-is-naming-intelligence",
+      "vision-design-coherence"
+    ],
+    "royalty-architect": [
+      "music-is-royalty-graph",
+      "business-revenue-modeling",
+      "intelligence-decision-framework"
+    ],
+    "starlight-sound-audience": [
+      "sound-intelligence-audience-architecture",
+      "intelligence-pattern-recognition",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-sound-catalog": [
+      "sound-intelligence-catalog-systems",
+      "memory-vault-management",
+      "intelligence-systems-thinking"
+    ],
+    "starlight-sound-composition": [
+      "sound-intelligence-composition-architecture",
+      "intelligence-pattern-recognition",
+      "vision-design-coherence"
+    ],
+    "starlight-sound-performance": [
+      "sound-intelligence-performance-design",
+      "intelligence-decision-framework",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-sound-production": [
+      "sound-intelligence-production-systems",
+      "intelligence-systems-thinking",
+      "memory-knowledge-synthesis"
+    ],
+    "starlight-sound-sync": [
+      "sound-intelligence-sync-licensing",
+      "business-revenue-modeling",
+      "intelligence-decision-framework"
+    ],
+    "starlight-hermes": [
+      "intelligence-hermes-search",
+      "memory-vault-management",
+      "memory-knowledge-synthesis",
+      "intelligence-pattern-recognition",
+      "integration-repo-bridge",
+      "orchestration-hermes-swarm"
+    ]
   }
 }

@@ -7,6 +7,7 @@ const BASE = "https://starlightintelligence.org";
 const STATIC_ROUTES = [
   "",
   "/protocol",
+  "/download",
   "/quickstart",
   "/architecture",
   "/explainer",
@@ -23,9 +24,12 @@ const STATIC_ROUTES = [
   "/cosmos/gallery",
   "/cosmos/cards",
   "/asteroids",
+  "/queen",
+  "/palace",
 ] as const;
 
 const VERTICAL_SLUGS = [
+  "health-intelligence",
   "people-intelligence",
   "sound-intelligence",
   "music-is",
@@ -41,7 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === ""
         ? 1.0
-        : path === "/protocol" || path === "/quickstart" || path === "/research"
+        : path === "/protocol" || path === "/download" || path === "/quickstart" || path === "/research"
           ? 0.9
           : 0.7,
   }));

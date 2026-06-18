@@ -71,11 +71,16 @@ function loadStackText(): string {
  * not by module id — module ids are kebab-case implementation labels.
  */
 const UNIVERSAL_IS_TO_STACK_NAME: Record<string, string> = {
-  "code-is": "Code IS",
-  "second-brain-is": "Second Brain IS",
-  "business-is": "Business IS",
+  "self-is": "Self IS",
   "wealth-is": "Wealth IS",
+  "family-is": "Family IS",
+  "business-is": "Business IS",
+  "creator-is": "Creator IS",
+  "second-brain-is": "Second Brain IS",
+  "code-is": "Code IS",
   "voice-video-is": "Voice & Video IS",
+  "brand-is": "Brand IS",
+  "orchestrator-is": "Starlight Orchestrator",
 };
 
 /**

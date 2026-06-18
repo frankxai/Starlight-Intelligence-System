@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starlight Sovereign Social Swarm Visualizer</title>
+  <!-- Outfit Font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #070913;
+      --bg-card: rgba(13, 17, 33, 0.75);
+      --border-glow: rgba(59, 130, 246, 0.2);
+      --color-primary: #3b82f6;
+      --color-success: #10b981;
+      --color-specialist: #818cf8;
+      --color-danger: #ef4444;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(129, 140, 248, 0.05) 0%, transparent 40%);
+    }
+
+    header {
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(7, 9, 19, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-glow {
+      width: 16px;
+      height: 16px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--color-primary);
+      animation: pulse 2s infinite alternate;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      background: linear-gradient(to right, #fff, #9ca3af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+    }
+
+    .meta-tag {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+    }
+
+    .meta-tag span {
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr 360px;
+      gap: 24px;
+      padding: 24px 40px;
+      height: calc(100vh - 73px);
+    }
+
+    /* Column Panels */
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .panel-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-weight: 600;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-content {
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Agent list cards */
+    .agent-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .agent-card:hover {
+      background: rgba(59, 130, 246, 0.03);
+      border-color: rgba(59, 130, 246, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .agent-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .agent-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .tag-cognitive { background: rgba(59, 130, 246, 0.15); color: var(--color-primary); }
+    .tag-specialist { background: rgba(129, 140, 248, 0.15); color: var(--color-specialist); }
+    .tag-sentinel { background: rgba(16, 185, 129, 0.15); color: var(--color-success); }
+
+    .agent-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Center workspace (Canvas) */
+    .workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .canvas-container {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Simulated post preview box */
+    .cockpit-view {
+      background: rgba(10, 12, 22, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--color-success);
+    }
+
+    /* Right column panels (Adapters & Link delivery simulator) */
+    .adapter-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .adapter-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .adapter-name {
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .adapter-type {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+      box-shadow: 0 0 8px var(--color-success);
+    }
+
+    .status-dot.active {
+      animation: blink 1s infinite alternate;
+    }
+
+    /* Simulator Controls */
+    .sim-button {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .sim-button:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    .sim-log {
+      background: #000;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #38bdf8;
+      height: 160px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      from { transform: scale(0.95); opacity: 0.8; }
+      to { transform: scale(1.05); opacity: 1; }
+    }
+
+    @keyframes blink {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <div class="logo-glow"></div>
+      <h1>Sovereign Social Media Swarm Visualizer</h1>
+    </div>
+    <div class="header-meta">
+      <div class="meta-tag">OS: <span>Agentic Creator OS</span></div>
+      <div class="meta-tag">IS: <span>Starlight Intelligence System</span></div>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <!-- Left panel: Social Swarm Registry -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>Sovereign Swarm Tiers</span>
+        <span style="font-size: 12px; color: var(--color-specialist);">6 Specialists</span>
+      </div>
+      <div class="panel-content">
+        <div class="agent-card">
+          <div class="agent-title">
+            <span class="agent-tag tag-cognitive">Orchestrator</span>
+            <span>Coordination</span>
+          </div>
+          <div class="agent-desc">Routes distribution sequences and manages dynamic parallel agent dispatch loops.</div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-title">
+            <span class="agent-tag tag-cognitive">Social Strategist</span>
+            <span>Draft Copy</span>
+          </div>
+          <div class="agent-desc">Translates source essays and releases into threads and posts tailored for Web2 & Web3.</div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-title">
+            <span class="agent-tag tag-specialist">Psychologist</span>
+            <span>Cognitive Load</span>
+          </div>
+          <div class="agent-desc">Checks text density, spacing, and emotional hooks to trigger genuine curiosity.</div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-title">
+            <span class="agent-tag tag-specialist">Vibe Tracker</span>
+            <span>Aesthetic Lane</span>
+          </div>
+          <div class="agent-desc">Aligns visual formats and styles with tech-noir or luxury minimalist branding filters.</div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-title">
+            <span class="agent-tag tag-specialist">Fact Checker</span>
+            <span>Verification</span>
+          </div>
+          <div class="agent-desc">Performs web searches to check statistics, citations, math, and live link resolution.</div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-title">
+            <span class="agent-tag tag-specialist">News Analyst</span>
+            <span>AI Lab Tracker</span>
+          </div>
+          <div class="agent-desc">Scans AI model drops, partner feature releases, and checks promotional specs.</div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-title">
+            <span class="agent-tag tag-sentinel">Social Sentinel</span>
+            <span>Gate & Attest</span>
+          </div>
+          <div class="agent-desc">Checks credentials, scrubs PII, enforces the operator gate, and signs content keys.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center panel: Active swarm canvas and staging review -->
+    <div class="workspace">
+      <div class="canvas-container" id="visualizer-frame">
+        <canvas id="network-canvas"></canvas>
+      </div>
+
+      <div class="panel" style="flex: 0 0 160px;">
+        <div class="panel-header" style="padding: 12px 20px;">
+          <span>Staging Deck Console</span>
+          <span style="color: var(--color-success); font-size: 11px;">● Active Staging Queue</span>
+        </div>
+        <div class="panel-content" style="padding: 12px 20px; overflow: hidden;">
+          <div class="cockpit-view" id="cockpit-text">
+            $ cat content/staging/social/faceless-youtube-ai-tools-2026/copy.md<br>
+            - Hook: 1/ You can run a faceless YouTube channel in 2026 for under $60/month...<br>
+            - Dynamic CTA: comment 'SYSTEM' for the direct system map file.<br>
+            - Attestation signature: [SIP-Attested: 0x9f2ea8c87f3b...]
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel: Adapters & Lead Loop Simulator -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>Sovereign Adapters (SDL)</span>
+        <span style="font-size: 12px; color: var(--color-success);">Active: PLAYWRIGHT & WEB3</span>
+      </div>
+      <div class="panel-content">
+        <div class="adapter-item">
+          <div class="adapter-info">
+            <span class="adapter-name">AT Protocol (Bluesky)</span>
+            <span class="adapter-type">Direct XRPC client</span>
+          </div>
+          <div class="status-dot active"></div>
+        </div>
+
+        <div class="adapter-item">
+          <div class="adapter-info">
+            <span class="adapter-name">Farcaster Neynar Hub</span>
+            <span class="adapter-type">Local Signer API</span>
+          </div>
+          <div class="status-dot active"></div>
+        </div>
+
+        <div class="adapter-item">
+          <div class="adapter-info">
+            <span class="adapter-name">Playwright Automator</span>
+            <span class="adapter-type">Headless Browser cookie post</span>
+          </div>
+          <div class="status-dot active"></div>
+        </div>
+
+        <div class="adapter-item">
+          <div class="adapter-info" style="opacity: 0.5;">
+            <span class="adapter-name">Blotato API (SaaS Bridge)</span>
+            <span class="adapter-type">Standby mode</span>
+          </div>
+          <div class="status-dot" style="background: var(--text-muted); box-shadow: none;"></div>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 8px 0;"></div>
+
+        <span style="font-size: 14px; font-weight: 600;">Sovereign Comment-to-DM Simulator</span>
+        <button class="sim-button" onclick="runCommentSimulation()">
+          Simulate User Comment
+        </button>
+
+        <div class="sim-log" id="simulation-console">
+          $ awaiting comment triggers...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Canvas Network Node Swarm
+    const canvas = document.getElementById("network-canvas");
+    const ctx = canvas.getContext("2d");
+    const container = document.getElementById("visualizer-frame");
+
+    let width, height;
+    function resize() {
+      width = canvas.width = container.clientWidth;
+      height = canvas.height = container.clientHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const nodes = [
+      { id: "Orchestrator", x: 0.5, y: 0.15, label: "Orchestrator", color: "#3b82f6", pulse: 0 },
+      { id: "Strategist", x: 0.25, y: 0.4, label: "Social Strategist", color: "#3b82f6", pulse: 0 },
+      { id: "Psychologist", x: 0.5, y: 0.4, label: "Psychologist", color: "#818cf8", pulse: 0 },
+      { id: "VibeTracker", x: 0.75, y: 0.4, label: "Vibe Tracker", color: "#818cf8", pulse: 0 },
+      { id: "FactChecker", x: 0.25, y: 0.65, label: "Fact Checker", color: "#818cf8", pulse: 0 },
+      { id: "NewsAnalyst", x: 0.5, y: 0.65, label: "News Analyst", color: "#818cf8", pulse: 0 },
+      { id: "VisualDirector", x: 0.75, y: 0.65, label: "Visual Director", color: "#818cf8", pulse: 0 },
+      { id: "Sentinel", x: 0.5, y: 0.85, label: "Social Sentinel", color: "#10b981", pulse: 0 }
+    ];
+
+    const links = [
+      { source: "Orchestrator", target: "Strategist" },
+      { source: "Strategist", target: "Psychologist" },
+      { source: "Psychologist", target: "VibeTracker" },
+      { source: "VibeTracker", target: "FactChecker" },
+      { source: "FactChecker", target: "NewsAnalyst" },
+      { source: "NewsAnalyst", target: "VisualDirector" },
+      { source: "VisualDirector", target: "Sentinel" }
+    ];
+
+    const particles = [];
+
+    function spawnParticle(sourceId, targetId) {
+      particles.push({
+        sourceId,
+        targetId,
+        progress: 0,
+        speed: 0.015
+      });
+    }
+
+    // Spawn demo packets periodically
+    setInterval(() => {
+      let index = Math.floor(Math.random() * links.length);
+      spawnParticle(links[index].source, links[index].target);
+    }, 1200);
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw grid background
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.015)";
+      ctx.lineWidth = 1;
+      const gridSize = 40;
+      for (let x = 0; x < width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // Draw links
+      ctx.lineWidth = 1.5;
+      links.forEach(l => {
+        const sourceNode = nodes.find(n => n.id === l.source);
+        const targetNode = nodes.find(n => n.id === l.target);
+        
+        const sx = sourceNode.x * width;
+        const sy = sourceNode.y * height;
+        const tx = targetNode.x * width;
+        const ty = targetNode.y * height;
+
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(tx, ty);
+        ctx.stroke();
+      });
+
+      // Update and Draw Particles
+      particles.forEach((p, idx) => {
+        p.progress += p.speed;
+        if (p.progress >= 1) {
+          particles.splice(idx, 1);
+          return;
+        }
+
+        const sourceNode = nodes.find(n => n.id === p.sourceId);
+        const targetNode = nodes.find(n => n.id === p.targetId);
+        
+        const sx = sourceNode.x * width;
+        const sy = sourceNode.y * height;
+        const tx = targetNode.x * width;
+        const ty = targetNode.y * height;
+
+        const px = sx + (tx - sx) * p.progress;
+        const py = sy + (ty - sy) * p.progress;
+
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fillStyle = "#60a5fa";
+        ctx.shadowColor = "#3b82f6";
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.shadowBlur = 0; // Reset glow
+      });
+
+      // Draw nodes
+      nodes.forEach(n => {
+        const nx = n.x * width;
+        const ny = n.y * height;
+
+        // Base circle
+        ctx.beginPath();
+        ctx.arc(nx, ny, 10, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.shadowColor = n.color;
+        ctx.shadowBlur = 15;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Node Label
+        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.font = "bold 12px Outfit";
+        ctx.textAlign = "center";
+        ctx.fillText(n.label, nx, ny - 20);
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // Comment-to-DM Simulation Log Trigger
+    const logBox = document.getElementById("simulation-console");
+    function writeToConsole(msg) {
+      logBox.innerHTML += `<br>=> ${msg}`;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    async function runCommentSimulation() {
+      writeToConsole("Triggering simulation sequence...");
+      await sleep(800);
+      writeToConsole("Reader @builder_bob comments 'SYSTEM' on X compose thread.");
+      await sleep(1000);
+      writeToConsole("Playwright Comment Crawler detects trigger on thread ID: 1982740.");
+      await sleep(1000);
+      writeToConsole("Loading links database: private/social/links.json.");
+      await sleep(800);
+      writeToConsole("Resolved slug key 'faceless-youtube-ai-tools-2026' -> target link found.");
+      await sleep(1200);
+      writeToConsole("Sovereign RPA dispatches direct DM via browser profile.");
+      writeToConsole("To: @builder_bob");
+      writeToConsole("Msg: 'Hey! Here is the complete Starlight system mapping... https://frankx.ai/blog/faceless-...'");
+      await sleep(800);
+      writeToConsole("✅ Message sent successfully! Saved log receipt to operational-vault.");
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+  </script>
+</body>
+</html>

@@ -27,7 +27,13 @@ last_consolidated: '2026-05-11'
 | 2026-02-10 | Starlight Intelligence System Architecture Decision | architecture | 0.95 |
 | 2026-02-10 | Ecosystem Integration Strategy | integration | 0.90 |
 | 2026-06-10 | SIS Claws Architecture Decision | architecture | 0.95 |
+| 2026-06-12 | Queen visual + continuous advance (whole SIS) | strategy | 1.0 |
+| 2026-06-12 | Cross-Repo Visual Production Workspace Strategy | integration | 0.95 |
+| 2026-06-14 | Automated Premium Prompt Compiler & Virality Analysis | strategy | 0.95 |
+| 2026-06-15 | Starlight Visual Director (SVD) E2E Efficacy | execution | 0.98 |
 | 2026-06-16 | SAGE Autonomous Goal Execution (SAGE) Framework | architecture | 0.95 |
+| 2026-06-17 | Estate Factory Night Decisions — Web4 Model, Factory Locked, REVISE Progress + Closure, Push/PR | strategy | 0.95 |
+| 2026-06-17 | Continue — Estate Army Deploy Stub + README Polish + MCP Sync + All-Works Verif | strategy | 0.95 |
 
 ---
 
@@ -59,6 +65,54 @@ Rationale: This mirrors the evolved patterns from ACOS (agents + skills + comman
 **Confidence:** 0.95
 **Source:** Claws design session (PR #19), Starlight Prime + Architect
 **Recorded:** 2026-06-11
+
+### [2026-06-12] Self-Advancing Visual Composition Advancement (v8.4 / target v9)
+
+**Category:** architecture + orchestration + visual + self-improvement
+**Confidence:** 0.88
+**Source:** /starlight-eval grok-composer model lane (receipt 2026-06-12-grok-composer25-model-lane.json) + parallel subagent synthesis (Architecture, Visual Artifacts, Queen v0.2) + web evals (Grok 4 Heavy + Composer 2.5) + Frank DNA + Composition Layer precedent
+**Recorded:** 2026-06-12 (this session)
+
+**Decision:** Advance the whole SIS to "Self-Advancing Visual Composition" phase.
+- Visual Intelligence as first-class cross-cutting / Orchestrator Composition Layer (native image/video memory/LEDGER/palace/attestation across 10 IS; mempalace v2; 7 canonical generated artifacts in docs/visuals/ + VISUALS.md catalog).
+- Queen closes to v0.2 semi-autonomous (subagent-driven closed ROUTE→MEASURE(Visual Eval enforced)→LEARN→RATIFY(A1/A2)→LEDGER(visuals + Advancement Ledger + velocity/falsifiers); executable via tools/queen/driver.mjs tick + /sq tick).
+- "Composer" formalized as cross-cutting pattern (agentic coding Composer 2.5 + music + creative + visual synthesis); preferred for new routing classes (agentic-composer-long, visual-synthesis, parallel-harness-measure).
+- Self-measurement: Proving Ground/Arena receipts + Queen ticks feed living Advancement Ledger (velocity metrics + named weaknesses + falsifiers). Multi-harness native (Grok strengths for parallelism/visual/cost + cross-family R5 planned).
+- Predictive + visual memory evolution (prediction.error bus consumed by palace/Queen; visual embeddings first-class).
+
+**Rationale:** Turns recent Grok Composer / Queen / arena work + harness strengths into a living, visual, self-improving substrate. Everything compounds (Queen visuals feed palace feed Composer feed routing). Substrate-safe via Composition Layer (no 10-IS break) + SIP v1.1.1 ambient attestation. Grounded in live receipts, doctrine (A1/A2/A3, Luminor kernel, anti-Goodhart), and research.
+
+**Evidence:** 2026-06-12 arena receipt + routing-table v0.2 + ROUTING-DOCTRINE v0.2 + driver tick verification (velocity, visuals=1, ledger appends, gates) + 7 image_gen artifacts + new docs/strategic/2026-06-self-advancing-visual-composition.md + STACK.md update + docs/visuals/.
+
+**Falsifiers / Next:** R5 cross-harness on new classes + bias-free judge; wire Cost Plane; real image_gen resultPaths into curated vault/palace; /starlight-board for any SIP visual-attestation or core taxonomy language; track velocity in Advancement Ledger. Named weakness: n=1 directional on many elements; loop still partly manual until cadence + R5.
+
+**Attestation:** Built on SIP — Starlight Intelligence Protocol v1.1.1. (This vault entry + all artifacts.)
+
+### [2026-06-12] l99 Massive Action Push — Queen Motion + starlightintelligence.org Site Build-out
+
+**Category:** visual intelligence + public surface + motion experience + Queen v0.2 amplification
+**Confidence:** 0.92
+**Source:** Direct operator command "take massive action, work all night on this /goal l99" following the Queen + swarms scroll experience request.
+
+**What was executed (all-night l99 mode):**
+- Deep site audit (Next.js layout, research pages, proving-ground content, navigation, globals.css, component patterns).
+- Generated 4+ new premium scroll-optimized Queen visuals (wide hero, tall MEASURE/LEDGER chapters, wide system constellation) + curated the full 11-asset suite with consistent style contract (indigo-black, cyan/gold, glassmorphic, constellation, exact doctrine labels, SIP footer).
+- Built full production React/Next `/queen` page (src/app/queen/page.tsx) — beautiful scroll symphony with sticky progress, phase chapters using the new tall/wide visuals, swarms, Visual Composition Layer, CTAs back to motion HTML + live system. Full metadata/OG.
+- Updated Header nav (Queen link in all breakpoints).
+- Updated research index with prominent featured "Starlight Queen Visual Intelligence" section (image + copy + links).
+- Updated site/content/research/starlight-proving-ground-2026-06.md with new "Queen: visual heart" section tying the proving ground/model arena directly to the motion experience and v0.2 loop.
+- Massively enhanced the standalone motion site (`docs/queen-motion/index.html`): added live canvas swarm (scroll-velocity + mouse-reactive particles), integrated all new l99 visuals with graceful fallbacks, advanced scroll techniques, video placeholders with rich descriptions, deeper SIP/Queen v0.2 narrative, accessibility.
+- Created supporting artifacts: `docs/queen-motion/ASSETS-L99.md` (placement guide + copy commands for both sites), refreshed VISUALS.md files (manifest + exhaustive prompts library for future consistent gens), `docs/queen-motion/README.md` updates.
+- Excellence gates applied throughout (consistent with site design language, reduced-motion, performance notes, SIP on every surface, direct links to /starlight-queen, proving ground, GitHub, motion HTML).
+- All changes substrate-operational (no pre-board required). Visuals positioned as first-class LEDGER artifacts that compound the Queen v0.2 self-advancing loop.
+
+**Evidence:** New images in session (hero-wide, measure-tall, ledger-tall, system-wide). Full `/queen` route now live in the Next.js site once assets land in `site/public/queen/`. The static `docs/queen-motion/index.html` is the reference choreography and portable experience. Research content and nav updated. All tied to the 2026-06-12 Queen advance, Grok Composer work, Visual Composition Layer doctrine.
+
+**Named weakness (Luminor):** Assets are still in transient session paths; operator must run the cp commands from ASSETS-L99.md for production. Video loops (image_to_video from the same prompts) were attempted but path/session limits prevented final binaries this pass — the stills + canvas + CSS scroll choreography deliver strong motion today; videos are the natural next 30-minute follow-up once assets are local.
+
+**Falsifier / next:** Drop the 4 new JPGs + previous set into the public/queen and motion/assets folders, `pnpm --filter site dev`, verify `/queen` scroll feel on desktop + mobile, add one real 6-10s video loop, consider extracting QueenScrollExperience into a reusable component, wire live Queen driver ledger data into the experience.
+
+**Attestation:** Built on SIP — Starlight Intelligence Protocol v1.1.1. (l99 overnight push — Queen and her swarms now the central, scrollable, public visual heart of the system.)
 **Related:** Technical Vault — Claw Contract Pattern, Strategic Vault — Ecosystem Integration Strategy
 
 Decision: SIS becomes Memory substrate + MCP server + installable Claw teams + conformance harness. Not just a repo, not just a prompt pack.
@@ -226,7 +280,80 @@ We formally reconciled the structural and branding relationship between `reality
    - AI will link to the `reality.md` standard to establish technical authority for its automated content curation loops.
 
 3. **Technical Symmetry**:
-   - Both networks use the identical Next.js 16 + Tailwind v4 + MDX static architecture, driven by a `lib/site.ts` single brand config, ensuring styling and build optimizations are shared directly.
+    - Both networks use the identical Next.js 16 + Tailwind v4 + MDX static architecture, driven by a `lib/site.ts` single brand config, ensuring styling and build optimizations are shared directly.
+
+---
+
+### [2026-06-12] Cross-Repo Visual Production Workspace Strategy
+
+**Category:** integration / brand-architecture / workflow-strategy
+**Confidence:** 0.95
+**Source:** Antigravity / Gemini 3.5 Overnight Visual Workspace Run
+**Related:** [starlight/design.md](file:///C:/Users/frank/starlight/design.md), [starlight/higgsfield/README.md](file:///C:/Users/frank/starlight/higgsfield/README.md), [starlight/higgsfield/ledger.jsonl](file:///C:/Users/frank/starlight/higgsfield/ledger.jsonl)
+
+**Strategy:**
+For the Core Five repositories (FrankX, frankx.ai-vercel-website, arcanea-ai-app, arcanea-ecosystem, Starlight-Intelligence-System), establish a shared visual workspace under `C:\Users\frank\starlight\` using Higgsfield as the production render layer, rather than duplicating design assets and guidelines inside each repository.
+
+**Core Decisions:**
+1. **Separation of Render and Source:** Higgsfield acts as the production render layer, while `C:\Users\frank\starlight\` serves as the unified source of truth.
+2. **Global design contract:** A single system-level design contract binds colors, typography, aspect ratios, motion profiles, and Higgsfield routing rules.
+3. **Local redirects and localized backlogs:** Individual repositories hold a minimalist `design.md` detailing localized page-level asset backlogs and redirecting back to the global contract.
+4. **Append-only ledger:** All generations are tracked in `ledger.jsonl` to ensure transparency and prevent duplicate renderings.
+
+**Rationale:**
+This design prevents style drift across separate website, application, or system repositories, maintains brand alignment (Tech, Soul, and Cinematic spectra), and keeps credit expenditure transparent across multi-agent sessions.
+
+---
+
+### [2026-06-14] Automated Premium Prompt Compiler & Virality Analysis
+
+**Category:** strategy / visual-intelligence / quality-assurance
+**Confidence:** 0.95
+**Source:** Antigravity / Gemini 3.5 Visual Enhancement Session
+**Related:** [starlight/higgsfield-handover.md](file:///C:/Users/frank/starlight/higgsfield-handover.md), [starlight/higgsfield/ledger.jsonl](file:///C:/Users/frank/starlight/higgsfield/ledger.jsonl), [prompt_creator_council.js](file:///C:/Users/frank/.gemini/antigravity-cli/scratch/prompt_creator_council.js)
+
+**Decision:**
+Implement a pre-flight prompt compiler and evaluation system (Prompt Creator Council) for all high-value asset generations to enforce world-class quality before spending credits, and run a post-generation virality prediction gate to audit visual engagement and attention metrics.
+
+**Core Principles:**
+1. **Pre-flight Design Integrity:** Never generate assets from raw user text. Synthesize detailed, structured prompt cards that define Organizing Metaphors, Style DNA, 4+ exact physical Components, and an Organic Anchor.
+2. **Double-Loop Quality Gate:** 
+   - *Loop 1 (Pre-generation):* Enforce a simulated Visual Creation Council score (minimum 8.0/10 rating) checking for visual coherence, details, and aesthetic richness.
+   - *Loop 2 (Post-generation):* Run the generated assets through a neural virality predictor (`brain_activity` model) to measure Occipital Cortex activation (attention hook) and Default Mode Network (DMN) suppression (boredom prevention).
+3. **Aesthetic/Engagement Trade-off:** Premium cinematic and architectural loops (high detail, Da Vinci Codex style) prioritize high-sustain, low-arousal immersion, resulting in a higher DMN (e.g. 67.7% activation) and lower hook score (e.g. 31%). Social reels require high-contrast, unexpected scene cuts to suppress DMN and maximize immediate occipital activation.
+
+**Evidence:**
+Successful compilation, generation, 4K upscaling, and download of the Core Five premium suite:
+- FrankX Landing Hero (`landing_hero_premium_upscaled.png`, Job `ccd03924-7066-4982-b2a5-7fb801ed8d2f`)
+- Arcanea Dashboard Hero (`dashboard_hero_premium_upscaled.png`, Job `db916602-0bce-4aae-9167-10bfbe607023`)
+- Palace Schema (`palace_schema_premium.png`, Job `d0f492d5-7f66-4ca5-95dd-1e59c07419ac`)
+- Game Collectible (`collectible_reliquary_premium.png`, Job `13bbd433-c2f5-4f56-a793-b74d6346be36`)
+- Virality analysis of the premium loop video (`6d74a31a-4459-4407-b38e-b4f4e106d4c7`) yielding 96/100 sustain.
+
+**Attestation:** Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+---
+
+### [2026-06-15] Starlight Visual Director (SVD) E2E Efficacy
+
+**Category:** execution / quality-assurance / automation
+**Confidence:** 0.98
+**Source:** Antigravity / Gemini 3.5 Verification Session
+**Related:** [technical-vault.md](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/memory/vaults/technical-vault.md), [visual-director.mjs](file:///C:/Users/frank/starlight/repos/Starlight-Intelligence-System/tools/visual-director/visual-director.mjs), [higgsfield-handover.md](file:///C:/Users/frank/starlight/higgsfield-handover.md)
+
+**Decision:**
+Consolidate and verify the end-to-end execution of the Starlight Visual Director (SVD) CLI. Resolve the critical JSON-RPC parsing defect where the neuro-engagement scorecard scores were misaligned under `generation.params.analysis.scores` (rather than `generation.analysis.scores`), resulting in a fallback print of `0/100`.
+
+**Key Actions & Outcomes:**
+1. **Tool Defect Resolution:** Modified the `auditVideo` function in `visual-director.mjs` to fetch scores dynamically from `generation.params.analysis` first, allowing the true predictive scores to be correctly parsed and printed.
+2. **E2E Asset Generation & Audit:**
+   - Generated `system-architecture-cover_premium.png` (Job `562a7b31-9e44-4f75-a4a8-bdd5acd85d42`, 2.0 credits).
+   - Generated 4K Upscale `system-architecture-cover_premium_upscaled.png` (Job `cab4afb2-4f2c-40be-9df7-b51025af0cec`, 2.0 credits).
+   - Compiled premium video loop `system-architecture-cover_premium.mp4` (Job `8a00f54e-552d-49c0-a484-6f910806bf86`, 8.0 credits).
+   - Audited the resulting video using the neuro-engagement predictor (Job `734b1802-4997-499a-9a84-dcf9ed1d7b6d`), extracting a verified scorecard: Overall 45, Hook 32, Sustain 90, Viral Potential 44, Brain Engagement 38.
+3. **Credit Threshold Governance:** Spent 12.0 credits, leaving a total balance of 127.48 credits. Logged a warning that the balance is below the critical 400 credit threshold.
+
+**Attestation:** Built on SIP — Starlight Intelligence Protocol v1.1.1.
 
 ---
 

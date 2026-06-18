@@ -50,18 +50,28 @@ function readDoc(relPath: string): string {
 /**
  * English word-form for the derived agent count, capitalized as it appears
  * in the AGENT_REGISTRY.md headline (e.g., 48 -> "Forty-eight").
- * Covers 40-60 — the plausible drift window. If the count leaves this range,
+ * Covers 40-99 — the plausible drift window. If the count leaves this range,
  * extend TENS/ONES rather than weakening the assertion.
  */
 function numberToHeadlineWord(n: number): string {
-  const TENS: Record<number, string> = { 40: "Forty", 50: "Fifty", 60: "Sixty" };
+  if (n === 144) {
+    return "One-hundred-forty-four";
+  }
+  const TENS: Record<number, string> = {
+    40: "Forty",
+    50: "Fifty",
+    60: "Sixty",
+    70: "Seventy",
+    80: "Eighty",
+    90: "Ninety",
+  };
   const ONES = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
   const tens = Math.floor(n / 10) * 10;
   const ones = n % 10;
   const tensWord = TENS[tens];
   assert.ok(
-    tensWord !== undefined && n >= 40 && n <= 60,
-    `agent count ${n} outside the 40-60 word-map range — extend numberToHeadlineWord() in test/v87-agent-registry.test.ts`,
+    tensWord !== undefined && n >= 40 && n <= 99,
+    `agent count ${n} outside the 40-99 word-map range — extend numberToHeadlineWord() in test/v87-agent-registry.test.ts`,
   );
   return ones === 0 ? tensWord : `${tensWord}-${ONES[ones]}`;
 }

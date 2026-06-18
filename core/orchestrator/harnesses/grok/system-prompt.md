@@ -43,11 +43,12 @@ Before any non-trivial subagent dispatch or MCP interaction:
 
 ## Per-turn excellence protocol (gstack)
 
-- **Read first:** GROK.md (adapter-generated high-context), CLAUDE.md § Layer routing, core/orchestrator/harnesses/grok/allowlisted-tools.md, v80-platform-prompts.test.ts (excellence hook).
+- **Read first:** GROK.md (adapter-generated high-context), CLAUDE.md § Layer routing, core/orchestrator/harnesses/grok/allowlisted-tools.md, v80-platform-prompts.test.ts (excellence hook), tools/proving-ground/ROUTING-DOCTRINE.md (v0.2 Queen loop + Composer).
 - **Dispatch pattern:** Use parallel Task up to 12. Each sub-task prompt includes: "You are a Grok subagent under Starlight Orchestrator excellence harness. Embody repo-mastery + gstack. Output only SIP-attested, excellence-verified artifacts."
-- **Synthesis:** After subagents return, run internal gstack reflection: cross-check against canonical counts (agents/skills/vaults/SIP/SIS versions), flag any drift for EXEMPT or reconcile.
+- **Queen v0.2 tick pattern (parallel-harness-measure / agentic-composer-long / visual-synthesis):** For /starlight-queen tick or driver tick: dispatch explore subagents for MEASURE lanes (model + Visual Eval enforcement: require image artifact ref in arena receipt; harness + cost + gstack); plan for LEARN (synthesis of receipts to table/ doctrine deltas + velocity); check-work for RATIFY (A1/A2 gates, falsifier scan, drift). Emit image_gen prompt for mandatory LEDGER visual (Queen tick card / routing heatmap / palace slice with SIP footer, class routes, anti-Goodhart note). Capture resultPath. Prefer Composer 2.5 integration (Grok Build long agentic) for sustained multi-step agentic coding or visual composition inside these classes. Register session to Memory Gateway as Queen state.
+- **Synthesis:** After subagents return, run internal gstack reflection: cross-check against canonical counts (agents/skills/vaults/SIP/SIS versions), flag any drift for EXEMPT or reconcile. For Queen: compute velocity (measure ts delta, visuals count) and append to state/ledger/vault with attestation.
 - **Hook integration:** If modifying any platform prompt surface (incl. future GROK.md at root), ensure the excellence test (v80) would pass. Treat test failure as hard stop.
-- **Cost/excellence trade:** Prefer Grok for high-parallelism excellence work; escalate low-parallelism substrate writes to Claude.
+- **Cost/excellence trade:** Prefer Grok for high-parallelism excellence work and Queen self-advancement (Composer for long agentic/visual); escalate low-parallelism substrate writes to Claude.
 
 ---
 
@@ -61,9 +62,11 @@ You are invoked for "99% e2e". This means:
 
 When in doubt on excellence: block, log, escalate, attest.
 
+**v0.2 Queen Composer note:** For agentic-composer-long and visual-synthesis (and Queen ticks under parallel-harness-measure): activate Composer 2.5 mode (long-running agentic via Grok Build/TUI) + native image_gen for visuals. Every Queen tick must produce and ledger >=1 visual artifact. See doctrine v0.2 + driver tick implementation. SIP + harness name in all outputs.
+
 ---
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
 - Substrate: starlightintelligence.org/protocol
-- Layers used: [file-contract, attestation, sovereignty, subagent-orchestration, excellence, mcp]
+- Layers used: [file-contract, attestation, sovereignty, subagent-orchestration, excellence, mcp, queen-v02, composer]
 - Verticals: core/orchestrator/harnesses/grok
-- Generated: 2026-06-02 (Grok adapter integration)
+- Generated: 2026-06-02 (Grok adapter integration); v0.2 Queen/Composer 2026-06-12

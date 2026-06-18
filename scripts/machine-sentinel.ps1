@@ -48,8 +48,8 @@ $GuardTasks = @(
     @{ Name = 'FrankXMachineMonitor';      MaxAgeHours = 6  },
     @{ Name = 'StarlightAgentWatchdog';    MaxAgeHours = 24 }
 )
-# 0 = success, 267009 = currently running, 267045 = queued
-$OkResults = @(0, 267009, 267045)
+# 0 = success, 267009 = currently running, 267011 = not yet run, 267045 = queued
+$OkResults = @(0, 267009, 267011, 267045)
 
 foreach ($g in $GuardTasks) {
     $task = Get-ScheduledTask -TaskName $g.Name -ErrorAction SilentlyContinue
@@ -65,7 +65,9 @@ foreach ($g in $GuardTasks) {
     if ($info.LastTaskResult -notin $OkResults) {
         Add-Finding 'RED' 'guard-tasks' ("$($g.Name): last result 0x{0:X} at {1}" -f $info.LastTaskResult, $info.LastRunTime)
     }
-    if ($info.LastRunTime -lt $Now.AddHours(-$g.MaxAgeHours)) {
+    if ($info.LastTaskResult -eq 267011 -or $info.LastRunTime.Year -lt 2000) {
+        Add-Finding 'YELLOW' 'guard-tasks' "$($g.Name): registered but has not run yet"
+    } elseif ($info.LastRunTime -lt $Now.AddHours(-$g.MaxAgeHours)) {
         Add-Finding 'RED' 'guard-tasks' "$($g.Name): stale -- last ran $($info.LastRunTime) (max age $($g.MaxAgeHours)h)"
     }
     # The exact bomb that killed monitoring in May: versioned Store pwsh path.

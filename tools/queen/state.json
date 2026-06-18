@@ -1,0 +1,51 @@
+{
+  "lastTick": "2026-06-12T10:57:32.285Z",
+  "lastSub": "ledger",
+  "lastClass": "interactive-agentic",
+  "proposals": [
+    {
+      "class": "agentic-composer-long",
+      "from": 1,
+      "to": 2,
+      "reason": "2026-06-12 grok arena 2/2 PASS mechanical + visual"
+    },
+    {
+      "class": "parallel-harness-measure",
+      "from": 2,
+      "to": 3,
+      "reason": "Grok subagent + gstack fit for Queen loop"
+    },
+    {
+      "class": "visual-synthesis",
+      "from": 1,
+      "to": 2,
+      "reason": "image_gen LEDGER artifacts validated in session"
+    },
+    {
+      "class": "memory-consolidation-queen",
+      "from": 0,
+      "to": 1,
+      "reason": "Memory Engine v0.2 + gateway v0.1 + curate-recall + Queen measure/learn on memory lane; visual palace via image_gen"
+    },
+    {
+      "class": "palace-visual-recall",
+      "from": 0,
+      "to": 1,
+      "reason": "3D MemPalace + routing heatmap + Queen LEDGER visuals generated under Grok; curate-recall bridge for obsidian"
+    }
+  ],
+  "lastMeasureTs": "2026-06-12T01:25:24.416Z",
+  "visualsProduced": 1,
+  "tickHistory": [
+    {
+      "tickId": "queen-tick-2026-06-12-01-25-24",
+      "start": "2026-06-12T01:25:24.410Z",
+      "durationMs": 9,
+      "visuals": 1,
+      "measureToLedgerDeltaMs": 3,
+      "class": "agentic-composer-long",
+      "proposals": 2,
+      "autoApplied": false
+    }
+  ]
+}

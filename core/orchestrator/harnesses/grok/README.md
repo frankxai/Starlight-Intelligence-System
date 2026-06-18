@@ -2,7 +2,7 @@
 
 **Role:** Subagent orchestration, MCP-native excellence flows, high-context synthesis with xAI Grok emphasis on rigorous multi-agent coordination and protocol fidelity.
 
-**Default for:** Tasks requiring subagent decomposition (5-12 parallel excellence-focused subagents), MCP server composition, cross-harness excellence audits, god-mode e2e verification passes using repo-mastery + gstack conceptuals.
+**Default for:** Tasks requiring subagent decomposition (5-12 parallel excellence-focused subagents), MCP server composition, cross-harness excellence audits, god-mode e2e verification passes using repo-mastery + gstack conceptuals. **v0.2 Queen:** parallel-harness-measure, agentic-composer-long (Composer 2.5 via Grok Build/TUI for sustained agentic), visual-synthesis (native image_gen for Queen LEDGER artifacts + Visual Eval on model lane receipts).
 
 **System prompt:** substrate's GROK.md (high-context) plus per-session orchestrator framing emphasizing subagents/MCP/excellence. Grok's native tool use + subagent patterns make it ideal for delegating excellence hooks and harness symmetry verification.
 
@@ -20,9 +20,16 @@
 
 **Escalation + Gates (excellence):** Subagent drift → excellence hook + claude primary. MCP change → /starlight-board + /sip-attest. Excellence fail (v80/harness/99) → codex adversary + openclaw. High-stakes → gemini long + gstack/santa pass before sign-off. Ambient SIP on all.
 
+**v0.2 Queen / Composer integration (2026-06-12+):** This harness is the canonical driver for Queen self-advancement ticks (driver.mjs tick + /starlight-queen tick). 
+- Use native spawn_subagent (explore/plan/best-of-n/check-work) + gstack + excellence for parallel MEASURE (incl. model lane Visual Eval) and LEARN.
+- Composer 2.5 (Grok Build / long TUI agentic mode) is **preferred** for agentic-composer-long and visual-synthesis taskClasses (per routing-table + v0.2 doctrine); native image_gen/Imagine for all Queen LEDGER visuals (mandatory >=1 per tick, heatmaps/cards/palace; see composer25 receipt visualComposerTest + lanes.json model update).
+- Register TUI sessions to Memory Gateway for Queen state. Every tick output carries SIP + harness attribution.
+- Update routing-table only via ratified low-stakes patches from driver (A1/A2); visuals + velocity in queen/ state + operational vault.
+See ROUTING-DOCTRINE.md v0.2, commands/starlight-queen.md, agents/starlight-orchestrator.md, tools/queen/.
+
 ---
 Built on SIP — Starlight Intelligence Protocol v1.1.1
 - Substrate: starlightintelligence.org/protocol
-- Layers used: [file-contract, attestation, sovereignty, subagent-orchestration, excellence, hooks]
+- Layers used: [file-contract, attestation, sovereignty, subagent-orchestration, excellence, hooks, queen-v02]
 - Verticals: core/orchestrator/harnesses/grok (full 5-harness fleet + grok-personal discipline)
-- Generated: 2026-06-02 (enhanced with generateAll + grok-personal filter + image/video)
+- Generated: 2026-06-02 (enhanced with generateAll + grok-personal filter + image/video); v0.2 Queen/Composer 2026-06-12

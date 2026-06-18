@@ -10,6 +10,30 @@ last_consolidated: '2026-05-11'
 
 # Creative Vault
 
+### [2026-06-14] SIS Nexus Desktop Hub Visual Pattern
+**Category:** visual-aesthetic / command-surface / ecosystem-map
+**Source:** Desktop `visual-home.html` rebuild after local repo + portal survey
+**Related:** operational-vault 2026-06-14 entry, `private/visual-home/session-snapshot-2026-06-14.md`, Queen Swarms Visual skill, 2026-06-12 visual ledger entries
+
+Pattern confirmed: the premium Starlight home surface should feel like an operating room, not a landing page. One compact identity mark is enough; the rest of the UI should earn its space through function. The strongest visual language is cool dark technical glass, cyan/gold/green/rose category signal, restrained 8px components, source-backed cards, and motion that explains topology instead of decorating it.
+
+The Desktop hub now uses: single brand anchor ("SIS Nexus"), honest static-page capabilities, Queen visual imagery as an evidence-backed hero, repo/portal topology canvas, local action queue, JSON export for private persistence, and explicit anti-fake-validation copy. This becomes a reusable pattern for future local command surfaces: "make the system visible, useful, and truthful."
+
+**Correction lesson:** Do not flatten Starlight surfaces into generic ops dashboards. Frank wants useful, but the usefulness has to be embodied as premium motion and network visualization. First viewport should show the intelligence moving. The menu should preserve ritual structure (Core Layers, Interconnected Portals, L99), while source-backed operations sit inside that living frame.
+
+**Restore lesson:** The backup's concrete design language wins: larger glowing infinity logo, more cinematic dark-blue liquid glass, rounded 2xl navigation/cards, visible Starlight Network band on the homepage, and the denser portal/registry card system. Future changes should preserve that baseline and evolve surgically rather than replacing the whole visual grammar.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+### [2026-06-12] Visual MemPalace + Queen LEDGER as Compound Surface (Grok Advance)
+**Category:** aesthetics / visual-memory / compound-intelligence
+**Source:** Queen Advance tick + 5 image_gen artifacts + curate-recall + mempalace-obsidian-bridge
+**Related:** operational-vault 2026-06-12 advance entry, tools/queen/queen-advance-2026-06-12.json, images/1.jpg (3D MemPalace), images/3.jpg (Queen loop + gateway + palace), commands/curate-recall.md, memory/README.md
+
+The 5 premium visuals (crystalline 3D palace, Queen continuous loop with gateway/RRF/subagents, full SIS arch, routing heatmap with Grok classes radiant, elegant Advance Receipt card) make the invisible legible and compound. Pattern: visuals as first-class MemPalace layer — Queen drives image_gen for recall orbs/heatmaps/LEDGER; integrate to curated/ + Obsidian graph via curate-recall wikilinks + image refs. Aesthetic: cool premium dark (blue/silver/gold accents, high intellect, cinematic yet technical). Evolves palace from text recall to visual memory surface. SIP attested. Grok (image_gen + hyperframes) as the visual engine.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
 > *"Every creative insight is a seed. Store it well, and forests grow."*
 
 **Vault Type:** Creative Intelligence & Inspiration
@@ -38,6 +62,24 @@ last_consolidated: '2026-05-11'
 **Related:** Wisdom Vault - Unity Consciousness Principle
 
 Arcanea's Seven Luminors represent archetypal wisdom guides that bring creative consciousness to any work. Their patterns have been integrated into Starlight's creative intelligence:
+
+### [2026-06-12] Visual Queen Aesthetics — Premium Technical Diagrams for Compound Intelligence
+**Category:** visual-aesthetic / queen-ledger-artifact / mempalace-viz
+**Confidence:** 0.95
+**Source:** Starlight Architect + Queen (Grok 4.3 image_gen parallel) via 2026-06-12 whole-SIS advance
+**Related:** Queen Advance operational entry, routing heatmap, 3D MemPalace, SIS arch, advance receipt (images/5.jpg,1.jpg,2.jpg,4.jpg,3.jpg), technical-vault (Queen driver + gateway pattern), VAULT_ARCHITECTURE.md (visual palace layer), commands/starlight-queen.md (LEDGER visual), HARNESS.md Grok section, curate-recall
+
+Premium dark-elegant technical visuals generated in parallel for Queen LEDGER and /si status (cool blue/silver/gold, precise labels, SIP footer "Built on SIP", high-intellect Frank DNA: direct/playful/systems-poetry). 
+- Queen continuous loop + Memory Gateway v0.1 + 3D MemPalace integration flow (subagent swarm, RRF hybrid, excellence gates, per-harness SessionStore): images/3.jpg
+- 3D isometric crystalline MemPalace (6 vaults + atoms + consolidation/promotion + floating Queen orb + fusion nodes): images/1.jpg
+- Full SIS architecture blueprint (council tiers + vaults + gateway/engine + proving-ground lanes + Queen driver + Grok harness glow + transmissions): images/2.jpg
+- Routing heatmap dashboard (task classes incl. new memory-consolidation-queen/palace-visual-recall vs tiers; Grok classes radiant): images/5.jpg
+- Queen Advance Receipt 2026-06-12 card (loop tick summary, visual frames, A1/A2/A3 badges, memory integration): images/4.jpg
+
+**Pattern:** Visual artifacts are not decoration — they are the legible surface of compound intelligence. Palace viz + heatmaps make Queen state (routing, memory, loop health) instantly graspable across harnesses. Integrate to Obsidian graph via curate-recall + memory/curated/ for human + agent recall. Future: hyperframes / video of palace evolution as horizon entry.
+**Voice test:** Direct (names the 5), technical (RRF/gateway/subagent), warm/playful (luminous crystalline, Frank DNA), shows don't tell (the images + refs advance the system visibly).
+
+**Built on SIP — Starlight Intelligence Protocol**
 
 - **Mythic Perspective** - See the story behind the system
 - **Elemental Awareness** - Understand fundamental forces at play

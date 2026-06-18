@@ -20,7 +20,7 @@ const ENTRIES: VaultEntry[] = [
   { id: 'a2', vault: 'technical', content: 'Hooks must be .cjs under type:module.', createdAt: '2026-06-04T00:00:00Z' },
 ];
 
-const ALL = ['claude-code', 'cursor', 'codex', 'gemini-cli', 'opencode', 'antigravity', 'grok'];
+const ALL = ['claude-code', 'cursor', 'codex', 'gemini-cli', 'opencode', 'antigravity', 'grok', 'hermes'];
 
 describe('adapter factory', () => {
   it('lists exactly the supported platforms', () => {
@@ -57,8 +57,8 @@ describe('PlatformAdapter contract (all platforms)', () => {
       const a = createAdapter(p);
       const cfg = a.getMcpConfig('dist/mcp-server.js') as { mcpServers?: Record<string, unknown> };
       assert.equal(typeof cfg, 'object');
-      // opencode is intentionally empty; others carry mcpServers
-      if (p !== 'opencode') {
+      // opencode is intentionally empty, hermes has flat config; others carry mcpServers
+      if (p !== 'opencode' && p !== 'hermes') {
         assert.ok(cfg.mcpServers, `${p} declares mcpServers`);
       }
     });
@@ -75,16 +75,17 @@ describe('PlatformAdapter contract (all platforms)', () => {
 });
 
 describe('optional multi-file harness surface', () => {
-  it('grok and antigravity implement generateAllAdapterFiles; others omit it', () => {
+  it('grok, antigravity and hermes implement generateAllAdapterFiles; others omit it', () => {
     const has = (p: string) => typeof (createAdapter(p) as PlatformAdapter).generateAllAdapterFiles === 'function';
     assert.equal(has('grok'), true, 'grok implements it');
     assert.equal(has('antigravity'), true, 'antigravity implements it');
+    assert.equal(has('hermes'), true, 'hermes implements it');
     for (const p of ['claude-code', 'cursor', 'codex', 'gemini-cli', 'opencode']) {
       assert.equal(has(p), false, `${p} omits it (honest asymmetry)`);
     }
   });
 
-  for (const p of ['grok', 'antigravity']) {
+  for (const p of ['grok', 'antigravity', 'hermes']) {
     it(`${p}: generateAllAdapterFiles yields {filename, content} items`, () => {
       const a = createAdapter(p) as Required<Pick<PlatformAdapter, 'generateAllAdapterFiles'>> & PlatformAdapter;
       const files = a.generateAllAdapterFiles(ENTRIES, 'dist/mcp-server.js');

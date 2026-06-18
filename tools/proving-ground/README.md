@@ -30,7 +30,7 @@ where is it weak?"** across seven lanes, with receipts, published, on a cadence.
 Each lane composes existing infra (see `lanes.json`) — the Proving Ground unifies
 measurement, it does not re-implement it.
 
-## The three bindings (Board verdict 2026-06-10)
+## The three bindings (Board verdict 2026-06-10) + v0.2 Queen extension
 
 1. **Cadence (R1)** — monthly + on-substrate-tag. Scorecards carry `ranAt` and
    `nextRunDue`. Past-due → the public surface shows STALE. A measurement that
@@ -39,6 +39,8 @@ measurement, it does not re-implement it.
    and ships caveats. **Do not optimize to the score.** A metric optimized-to is a
    metric retired.
 3. **Mirror, not origin (R3)** — SIS is canonical. `starlight-evals` publishes copies.
+
+**v0.2 (Queen Self-Advancement):** Model lane receipts now require Visual Eval artifacts (image_gen refs) for every run. Advancement velocity tracked (eval-to-table-update delta, visuals-per-tick). See lanes.json, SPEC.md, ROUTING-DOCTRINE.md §v0.2, and tools/queen/driver.mjs tick. The Proving Ground now directly feeds the closed Queen loop (MEASURE step).
 
 ## First run (2026-06-10, v0.1)
 

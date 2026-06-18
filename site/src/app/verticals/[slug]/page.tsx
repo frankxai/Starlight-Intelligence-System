@@ -90,9 +90,7 @@ export default async function VerticalPage({
             <span
               className={`rounded-full border px-2.5 py-1 uppercase tracking-widest ${a.chip}`}
             >
-              {v.status === "live-frank-operated"
-                ? "Live · Frank-operated"
-                : "Live · Reference"}
+              {verticalStatusLabel(v.status)}
             </span>
             <span className="font-mono text-slate-400">
               Domain Sub-Stack
@@ -216,6 +214,16 @@ export default async function VerticalPage({
           </ol>
 
           <div className="mt-8 flex flex-wrap gap-3">
+            {v.downloadUrl && (
+              <a
+                href={v.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-emerald-300 px-5 py-2.5 text-[14px] font-semibold text-emerald-950 transition-std hover:bg-emerald-200"
+              >
+                Download ZIP &rarr;
+              </a>
+            )}
             <a
               href={`${v.githubBlobBase}/QUICK-START.md`}
               target="_blank"
@@ -240,6 +248,16 @@ export default async function VerticalPage({
             >
               SUB-SYSTEMS.md
             </a>
+            {v.releaseUrl && (
+              <a
+                href={v.releaseUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border border-white/[0.12] px-5 py-2.5 text-[14px] font-medium text-white transition-std hover:border-white/[0.25] hover:bg-white/[0.04]"
+              >
+                GitHub Release
+              </a>
+            )}
           </div>
         </div>
       </section>
@@ -312,4 +330,10 @@ function Stat({ label, value }: { label: string; value: string }) {
       <dd className="mt-1 font-mono text-[12px] text-white">{value}</dd>
     </div>
   );
+}
+
+function verticalStatusLabel(status: Vertical["status"]) {
+  if (status === "live-frank-operated") return "Live · Frank-operated";
+  if (status === "preclinical-prerelease") return "Preclinical prerelease";
+  return "Live · Reference";
 }

@@ -14,7 +14,11 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 
 | Command | Purpose | Primary Agent |
 |---------|---------|---------------|
-| `/starlight` | System control and status | Prime |
+| `/starlight` ( /si ) | System control and status; dispatches queen/orchestrator/architect/sq/so | Prime / Orchestrator (Queen) / Architect |
+| `/starlight-queen` ( /sq ) | Continuous Queen loop (route/measure/learn/ratify/ledger for model-tier + cost optimization) | Orchestrator (Queen role) |
+| `/sq` | Alias for /starlight-queen | Orchestrator (Queen role) |
+| `/so` | Quick-activate Orchestrator with Queen role enabled | Orchestrator (Queen role) |
+| `/starlight-architect` | System design, scaffolding, trade-offs, planet-scale architecture (e.g. Queen surfaces) | Architect |
 | `/vault` | Memory operations | Sage |
 | `/transmit` | Cross-system communication | Orchestrator |
 | `/synthesize` | Multi-source synthesis | Prime + Council |
@@ -57,6 +61,10 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 /starlight health              Run system health check
 /starlight context             Show current context assembly
 /starlight reset               Reset to fresh context (preserve vaults)
+/starlight queen (or /sq)      Enter Queen loop surfaces (status/route/measure/learn/ratify/ledger)
+/starlight orchestrator        Activate Orchestrator (Queen role enabled)
+/starlight architect           Activate Architect for design/scaffold/review
+/starlight so                  Quick Orchestrator + Queen posture
 ```
 
 ### /vault - Memory Operations
@@ -134,6 +142,18 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 /so --packet [task]                Emit a durable handoff packet
 /so --tool image [prompt]          Use native image generation/editing tools
 ```
+
+### /starlight-queen ( /sq ) - Continuous Queen Loop (Orchestrator Queen Role)
+
+Model-tier routing + eval overseer. The closed loop: ROUTE (from routing-table.json + doctrine) → MEASURE (Proving Ground 7 lanes via /starlight-eval + gstack/arena/cost) → LEARN (re-derive table from receipts) → RATIFY (A1 stakes gate) → LEDGER (doctrine + vault + visuals).
+
+See dedicated `commands/starlight-queen.md` for full subcommands, Grok subagent/gstack/image_gen/gateway execution, A1/A2/A3 bindings, and immediate drive steps in this harness. Shorts `/sq` and `/so` (Queen-enabled orchestrator quick surface).
+
+### /starlight-architect - Architect Command Surface
+
+Design, scaffold, review, tradeoff analysis for enterprise systems, harnesses, command surfaces, and structures (e.g. this Queen build was Architect-designed/scaffolded). 
+
+See `commands/starlight-architect.md` + `agents/starlight-architect.md`. Dispatched via `/starlight architect`.
 
 ---
 

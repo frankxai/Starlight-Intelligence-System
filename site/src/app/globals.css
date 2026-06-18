@@ -858,3 +858,55 @@ body {
   }
 }
 
+/* =================================================================
+   Queen Visual Intelligence scroll experience — /queen
+   Premium dark technical-poetic, consistent with site mesh/glass/Inter+Fraunces.
+   Scroll progress mirroring the canonical motion HTML (l99).
+   ================================================================= */
+.queen-section {
+  scroll-margin-top: 72px;
+}
+.queen-glass {
+  background: rgba(12, 12, 18, 0.72);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(103, 232, 249, 0.12);
+}
+.queen-loop-progress {
+  transition: width 60ms linear;
+}
+.queen-phase {
+  transition: all 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.queen-visual {
+  transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1), 
+              opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform, opacity;
+}
+.queen-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+}
+.queen-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect reduced motion (a11y excellence for /queen + palace) */
+@media (prefers-reduced-motion: reduce) {
+  .animate-glow-pulse,
+  .animate-brain-core,
+  .animate-brain-node,
+  .queen-visual,
+  .queen-phase,
+  .queen-loop-progress {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.queen-constellation {
+  background-image: 
+    linear-gradient(rgba(167, 139, 250, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(103, 232, 249, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+

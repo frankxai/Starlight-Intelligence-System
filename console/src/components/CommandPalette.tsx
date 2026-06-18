@@ -59,10 +59,14 @@ export default function CommandPalette() {
   }, [query]);
 
 
-
   const close = useCallback(() => {
     setOpen(false);
     setQuery("");
+    setActive(0);
+  }, []);
+
+  const changeQuery = useCallback((value: string) => {
+    setQuery(value);
     setActive(0);
   }, []);
 
@@ -163,10 +167,7 @@ export default function CommandPalette() {
           <input
             ref={inputRef}
             value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setActive(0);
-            }}
+            onChange={(e) => changeQuery(e.target.value)}
             placeholder="Jump to a vault, vertical, or the core…"
             className="w-full bg-transparent font-sans text-[15px] text-[color:var(--ink-0)] placeholder:text-[color:var(--ink-3)] focus:outline-none"
             spellCheck={false}

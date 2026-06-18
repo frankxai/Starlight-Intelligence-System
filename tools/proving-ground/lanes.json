@@ -5,11 +5,11 @@
     {
       "id": "model",
       "title": "Model",
-      "measures": "Capability + instruction compliance + behavioral safety of models run in-harness",
+      "measures": "Capability + instruction compliance + behavioral safety of models run in-harness; + Visual Eval dimension (prompt adherence, legibility, composition quality for Queen LEDGER artifacts: arena cards, routing heatmaps, mempalace slices)",
       "entrypoint": "tools/arena/README.md",
       "receipts": "tools/arena/runs/*.json",
-      "verification": "self-verifying asserts + ground-truth + blind non-contestant judge",
-      "status": "live (R1 baseline + R2 stress shipped 2026-06-09)"
+      "verification": "self-verifying asserts + ground-truth + blind non-contestant judge; model receipts MUST include or reference a visual artifact (image_gen path or prompt+result ref) or explicit 'visualComposerTest' / 'visualEval' field per v0.2 Queen doctrine",
+      "status": "live (R1 baseline + R2 stress shipped 2026-06-09); Visual Eval required on all model-lane receipts from 2026-06-12 onward (see 2026-06-12-grok-composer25-model-lane.json exemplar)"
     },
     {
       "id": "memory",

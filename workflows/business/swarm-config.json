@@ -1,0 +1,55 @@
+{
+  "is": "business",
+  "displayName": "Business IS / Executive Operating Intelligence",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-business-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Strategic decision support, OKR architecture, scenario modeling, executive synthesis, operating playbook design",
+      "port": 8086,
+      "type": "local",
+      "skills": [
+        "intelligence/strategic-reasoning",
+        "intelligence/systems-thinking",
+        "business/revenue-modeling",
+        "orchestration/workflow-design"
+      ],
+      "vaultAccess": ["strategic", "wisdom"],
+      "commands": ["/business-review", "/exec-decision", "/okr-audit", "/operator-cadence"]
+    },
+    {
+      "id": "hermes-business-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for metrics analysis, cadence design, vault writes, review loops",
+      "port": 8096,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["operational", "technical"],
+      "commands": []
+    }
+  ],
+  "swarmTopology": "parallel",
+  "concurrency": 3,
+  "timeoutMs": 300000,
+  "onResult": "vault-write",
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest",
+    "transmit-channel"
+  ],
+  "triggers": [
+    "weekly business review",
+    "executive decision",
+    "OKR audit",
+    "operating cadence",
+    "company metrics",
+    "business problem",
+    "quarterly review"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

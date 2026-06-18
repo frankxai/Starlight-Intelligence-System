@@ -2,6 +2,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
+import { AgentRouter } from "./agents.js";
 
 export interface SwarmTask {
   id: string;
@@ -592,3 +593,174 @@ function powerShellFunctionExists(name: string): boolean {
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+
+export function formatAgyToolCalls(plan: SwarmPlan): string {
+  const router = new AgentRouter();
+  const output: string[] = [
+    "### Google Antigravity Swarm Execution Blueprint",
+    "",
+    "> [!NOTE]",
+    "> The following executable block was automatically generated from the swarm plan.",
+    "> Run these tool calls to manifest the swarm in parallel.",
+    "",
+  ];
+
+  for (const packet of plan.packets) {
+    if (packet.recommendedLane !== "antigravity") continue;
+    const agent = router.getAgent(packet.agent);
+    const systemPrompt = agent
+      ? `# Dynamic Identity: ${agent.name} (${agent.id})\n\n> ${agent.description}\n\nVoice: systems-practitioner\nSkills: ${agent.skills.join(", ")}\n\n*Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*`
+      : `# Dynamic Identity: ${packet.agent}\n\n*Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*`;
+
+    output.push(`#### 🤖 Agent: \`${packet.agent}\` (Task ID: \`${packet.id}\`)`);
+    output.push("```json");
+    output.push(JSON.stringify({
+      tool: "define_subagent",
+      arguments: {
+        name: packet.agent,
+        system_prompt: systemPrompt,
+        toolSummary: `Define ${packet.agent} swarm profile`,
+        toolAction: `Registering subagent ${packet.agent}`
+      }
+    }, null, 2));
+    output.push("```");
+    output.push("```json");
+    output.push(JSON.stringify({
+      tool: "invoke_subagent",
+      arguments: {
+        Subagents: [{
+          TypeName: packet.agent,
+          Role: agent ? agent.name : packet.agent,
+          Prompt: `${packet.goal}\n\nTarget Repo: ${packet.repo.name} (${packet.repo.path})\nRequired Context Files: ${packet.requiredContext.join(", ")}\n\n*Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*`
+        }],
+        toolSummary: `Launch ${packet.agent} swarm worker`,
+        toolAction: `Invoking subagent ${packet.agent}`
+      }
+    }, null, 2));
+    output.push("```");
+    output.push("");
+  }
+
+  if (output.length === 6) {
+    return "> No Antigravity lanes recommended in this plan. All tasks routed to other harnesses.";
+  }
+
+  return output.join("\n");
+}
+
+export interface ModelCouncilConsensus {
+  proposalId: string;
+  models: {
+    modelId: string;
+    verdict: "PROCEED" | "REVISE" | "STOP";
+    confidence: number;
+    rationale: string;
+  }[];
+  consensusCoefficient: number; // 0.0 - 1.0
+  recommendedAction: "PROCEED" | "REVISE" | "STOP";
+  isConsensusReached: boolean;
+}
+
+export interface StarlightBoardReview {
+  proposalId: string;
+  verdicts: {
+    vector: "Sovereign" | "Seer" | "Harmonizer" | "Strategist" | "Verifier";
+    verdict: string;
+    recommendation: "PROCEED" | "REVISE" | "STOP";
+  }[];
+  overseerSynthesis: string;
+  finalRecommendation: "PROCEED" | "REVISE" | "STOP";
+  rationale: string;
+  timestamp: string;
+}
+
+export function calculateModelConsensus(
+  proposalId: string,
+  modelOutputs: { modelId: string; verdict: "PROCEED" | "REVISE" | "STOP"; confidence: number; rationale: string }[]
+): ModelCouncilConsensus {
+  const count = modelOutputs.length;
+  if (count === 0) {
+    return {
+      proposalId,
+      models: [],
+      consensusCoefficient: 0,
+      recommendedAction: "STOP",
+      isConsensusReached: false
+    };
+  }
+
+  const votes = { PROCEED: 0, REVISE: 0, STOP: 0 };
+  let weightedProceed = 0;
+  let weightedRevise = 0;
+  let weightedStop = 0;
+  let totalConfidence = 0;
+
+  for (const m of modelOutputs) {
+    votes[m.verdict]++;
+    const weight = m.confidence;
+    totalConfidence += weight;
+    if (m.verdict === "PROCEED") weightedProceed += weight;
+    else if (m.verdict === "REVISE") weightedRevise += weight;
+    else if (m.verdict === "STOP") weightedStop += weight;
+  }
+
+  const proceedRatio = weightedProceed / (totalConfidence || 1);
+  const reviseRatio = weightedRevise / (totalConfidence || 1);
+  const stopRatio = weightedStop / (totalConfidence || 1);
+
+  let recommendedAction: "PROCEED" | "REVISE" | "STOP" = "STOP";
+  let consensusCoefficient = 0;
+
+  if (proceedRatio >= reviseRatio && proceedRatio >= stopRatio) {
+    recommendedAction = "PROCEED";
+    consensusCoefficient = proceedRatio;
+  } else if (reviseRatio >= proceedRatio && reviseRatio >= stopRatio) {
+    recommendedAction = "REVISE";
+    consensusCoefficient = reviseRatio;
+  } else {
+    recommendedAction = "STOP";
+    consensusCoefficient = stopRatio;
+  }
+
+  const hasHighConfidenceStop = modelOutputs.some(m => m.verdict === "STOP" && m.confidence >= 0.85);
+  const isConsensusReached = consensusCoefficient >= 0.80 && !hasHighConfidenceStop;
+
+  return {
+    proposalId,
+    models: modelOutputs,
+    consensusCoefficient,
+    recommendedAction,
+    isConsensusReached
+  };
+}
+
+export function performStarlightBoardReview(
+  proposalId: string,
+  vectorInputs: { vector: "Sovereign" | "Seer" | "Harmonizer" | "Strategist" | "Verifier"; verdict: string; recommendation: "PROCEED" | "REVISE" | "STOP" }[],
+  overseerSynthesis: string
+): StarlightBoardReview {
+  const stopCount = vectorInputs.filter(v => v.recommendation === "STOP").length;
+  const reviseCount = vectorInputs.filter(v => v.recommendation === "REVISE").length;
+
+  let finalRecommendation: "PROCEED" | "REVISE" | "STOP" = "PROCEED";
+  let rationale = "Proposal approved by the Starlight Board.";
+
+  if (stopCount >= 2) {
+    finalRecommendation = "STOP";
+    rationale = `Vetoed: ${stopCount} vectors recommended STOP.`;
+  } else if (stopCount === 1 || reviseCount >= 2) {
+    finalRecommendation = "REVISE";
+    rationale = `Revisions required: ${stopCount} STOP and ${reviseCount} REVISE vector votes.`;
+  }
+
+  return {
+    proposalId,
+    verdicts: vectorInputs,
+    overseerSynthesis,
+    finalRecommendation,
+    rationale,
+    timestamp: new Date().toISOString()
+  };
+}
+
+

@@ -27,9 +27,11 @@ if (-not (Test-Path $OutDir)) { New-Item -ItemType Directory -Path $OutDir -Forc
 
 # Scan targets - Frank's active repos with credentials risk
 $repos = @(
-  "C:\Users\frank\Starlight-Intelligence-System",
-  "C:\Users\frank\FrankX",
-  "C:\Users\frank\Arcanea"
+  "C:\Users\frank\starlight\repos\Starlight-Intelligence-System",
+  "C:\Users\frank\starlight\repos\FrankX",
+  "C:\Users\frank\starlight\repos\arcanea-ai-app",
+  "C:\Users\frank\starlight\repos\arcanea-studio",
+  "C:\Users\frank\starlight\repos\frankx.ai-vercel-website"
 )
 
 $infisical = Get-Command "infisical" -ErrorAction SilentlyContinue

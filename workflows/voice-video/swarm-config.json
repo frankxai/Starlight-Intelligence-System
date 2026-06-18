@@ -1,0 +1,55 @@
+{
+  "is": "voice-video",
+  "displayName": "Voice & Video IS / Narrative Media Intelligence",
+  "version": "0.1.0",
+  "hermesProfiles": [
+    {
+      "id": "hermes-vv-specialist",
+      "model": "nousresearch/hermes-3-llama-3.1-405b",
+      "purpose": "Narrative architecture, script production, presence coaching, show strategy design, hook engineering",
+      "port": 8100,
+      "type": "local",
+      "skills": [
+        "intelligence/strategic-reasoning",
+        "intelligence/pattern-recognition",
+        "orchestration/workflow-design"
+      ],
+      "vaultAccess": ["creative", "strategic"],
+      "commands": ["/script", "/vv-strategy"]
+    },
+    {
+      "id": "hermes-vv-executor",
+      "model": "nousresearch/hermes-3-llama-3.1-70b",
+      "purpose": "Fast execution and task decomposition for transcript editing, repurposing bundles, production briefs, vault writes",
+      "port": 8101,
+      "type": "local",
+      "skills": [
+        "orchestration/parallel-execution"
+      ],
+      "vaultAccess": ["operational", "technical"],
+      "commands": ["/edit-transcript", "/vv-repurpose"]
+    }
+  ],
+  "swarmTopology": "parallel",
+  "concurrency": 3,
+  "timeoutMs": 300000,
+  "onResult": "vault-write",
+  "mcpTools": [
+    "vault-read",
+    "vault-write",
+    "context-load",
+    "sip-attest",
+    "transmit-channel",
+    "descript-api"
+  ],
+  "triggers": [
+    "script this video",
+    "edit my transcript",
+    "podcast episode",
+    "repurpose this",
+    "YouTube strategy",
+    "production workflow",
+    "video content"
+  ],
+  "attestation": "Built on SIP v1.1.1"
+}

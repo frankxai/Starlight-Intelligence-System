@@ -38,7 +38,18 @@
    ```bash
    npm run agents:harness-check && npm test
    ```
-5. **Merge**, then publish from a clean checkout of `main`:
+5. **Build the public SIP starter module** and verify its release manifest:
+   ```bash
+   npm run package:sip-starter:check
+   ```
+   The artifacts are generated under `artifacts/releases/sip-starter/`:
+   `starlight-sip-starter-vX.Y.Z.zip`,
+   `starlight-sip-starter-vX.Y.Z.tar.gz`,
+   `starlight-sip-starter-vX.Y.Z.sha256`, and `release-manifest.json`.
+   The archives must include `install.sh`, `install.ps1`,
+   `validate-sip-starter.mjs`, `EXCELLENCE-CHECKLIST.md`, and
+   `RELEASE-NOTES.md`.
+6. **Merge**, then publish from a clean checkout of `main`:
    ```bash
    npm ci
    npm run build
@@ -46,11 +57,18 @@
    ```
    `prepublishOnly` (`npm run build && npm run test:substrate`) runs
    automatically as a final gate.
-6. **Verify the registry matches the repo:**
+7. **Verify the registry matches the repo:**
    ```bash
    npm view @arcanea/starlight-intelligence-system version   # == package.json::version
    ```
-7. **Tag the release** on GitHub (`vX.Y.Z`) so the README badge link resolves.
+8. **Tag the release** on GitHub (`vX.Y.Z`) so the README badge link resolves
+   and `.github/workflows/sip-starter-release.yml` uploads the SIP starter
+   release assets.
+9. **Check the canonical download page** at
+   `https://starlightintelligence.org/download` and confirm the GitHub Release
+   asset links, checksums, and validation guidance match the published tag.
+   Also confirm `https://starlightintelligence.org/download/latest.json`
+   reports the same tag and asset URLs for automation.
 
 ## Drift guard
 

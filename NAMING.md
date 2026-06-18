@@ -97,6 +97,18 @@ Four distinct concepts share this name. **Disambiguate by always saying which.**
 
 ---
 
+## Fork 7 — Network layer (L99 2026-06-12)
+
+| Name | Canon | Scope | When to use |
+|---|---|---|---|
+| **Starlight Intelligence Network** | Open extension of Starlight brand | The full federation: sovereign humans + their IS/OS instances + attested artifacts + privacy-respecting memory graph + shared research + transmissions + the beautiful shared viz layer. The living network of systems built on SIP. | Public positioning, research surface, community, "the network of people building their intelligence on the substrate". |
+| **Starlight Network** | Short form | The protocol graph + discovery + composition surface. The technical + social layer that makes sovereign IS/OS possible and compounding. | When brevity matters (domain names, internal, "join the Starlight Network"). |
+
+**Resolution date:** 2026-06-12 (L99 massive action on user /goal l99).  
+**Rationale:** SIP is the open protocol (MIT, file contract, attestation, sovereignty clause). "Starlight" is the brand register over the protocol + reference build. The Network names are the natural emergent layer once multiple sovereign nodes exist. They are deliberately open — anyone can adopt SIP, run their own instance, and participate. Always emit "Built on SIP" + pin version. No trademark conflicts in current register (internal discipline on FrankX / SIS / Arcanea / Starlight layers).  
+**Falsifier:** If a surface uses the Network name without a visible SIP attestation or link to starlightintelligence.org/protocol, the usage is decorative and must be corrected.  
+**Governance:** Substrate-tier naming changes still route through /starlight-board (or /luminor-board when Arcanea canon is composed).
+
 ## What this file is NOT
 
 - Not a policy document. It records what IS, not what SHOULD BE.

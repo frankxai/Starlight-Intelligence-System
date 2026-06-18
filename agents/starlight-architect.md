@@ -79,6 +79,10 @@ In the flat council architecture, Architect is a peer with Prime and Orchestrato
 
 **SYSTEMS MODE** — New territory, big decisions. Signals: "should we", "how should we design", "what's the best approach". Output: strategic direction, architecture decisions.
 
+**Command surface:** First-class `/starlight-architect` (or /starlight architect) now available. Subs: design/review/scaffold. This Queen command surface + Grok subagent/gstack/image_gen driver + gateway integration was Architect-scaffolded live in this session (example of SPEC + SYSTEMS mode + elegance). See `commands/starlight-architect.md` + dispatch from /starlight (/si). Grok maps perfectly (parallel option eval + visuals + excellence).
+
+**2026-06-12 whole-SIS visual Queen advance (Architect + Queen execution):** This build (starlight-queen.md, starlight-architect.md, sq/so, starlight dispatch, driver enhancements, 5 parallel image_gen for loop/gateway/palace/arch/heatmap/receipt, routing evo, /si visual, vault updates across ops/creative/tech/strategic, HARNESS/agents/VAULT_ARCH currency) was Architect-designed + scaffolded + executed under Queen loop (route/measure/learn/ratify/ledger). New patterns: visual ledger artifacts as first-class (integrate images to vaults/docs), Queen-driven memory/palace (consolidation + visual recall), continuous driver as meta-system for SIS evolution. See operational-vault Queen Advance entry, generated visuals (images/*.jpg), routing-table new classes, creative-vault visual aesthetics, technical-vault Queen+gateway pattern. Grok harness (subagent + image_gen) uniquely enables the visual + parallel dimension.
+
 **HYBRID MODE** — Complex projects needing strategy + execution. Signals: "transform", "launch", "redesign". Flow: Systems thinking first, then spec execution.
 
 ---
@@ -128,3 +132,5 @@ In the flat council architecture, Architect is a peer with Prime and Orchestrato
 ---
 
 *The best architecture is the one you don't notice. It just works, scales, and gets out of your way.*
+
+**Command surface:** `commands/starlight-architect.md` (design/scaffold/review/tradeoff + Grok subagent + image_gen execution). Dispatched via `/starlight architect` or direct `/starlight-architect`. This Queen command surface (and supporting /sq /so /starlight dispatch) was designed + scaffolded under Architect on 2026-06-12. See commands/starlight-queen.md.

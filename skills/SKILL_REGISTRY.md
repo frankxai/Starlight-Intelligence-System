@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 79 skills across 16 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 83 skills across 16 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 
@@ -133,7 +133,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | music-is/song-intake | music-is-song-intake | SIS | 2026-05-06 | stable |
 | music-is/suno-prompt | music-is-suno-prompt | SIS | 2026-05-06 | stable |
 
-### orchestration (10)
+### orchestration (13)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
@@ -146,7 +146,10 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | orchestration/yolo-conductor | orchestration-yolo-conductor | SIS | 2026-05-11 | stable |
 | orchestration/yolo-scan | orchestration-yolo-scan | SIS | 2026-05-11 | stable |
 | orchestration/gencreator-stack | orchestration-gencreator-stack | SIS | 2026-05-13 | stable |
+| orchestration/hermes-swarm | orchestration-hermes-swarm | SIS | 2026-06-12 | stable |
 | orchestration/sage-autonomous-execution | orchestration-sage-autonomous-execution | SIS | 2026-06-16 | stable |
+| orchestration/agent-creator | orchestration-agent-creator | SIS | 2026-06-17 | stable |
+| orchestration/workflow-skill-creator | orchestration-workflow-skill-creator | SIS | 2026-06-17 | stable |
 
 ### people-intelligence (6)
 
@@ -184,13 +187,14 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | crypto-intelligence | crypto-intelligence-vertical | SIS | 2026-05-17 | experimental |
 | crypto-intelligence/onchain | crypto-intelligence-onchain | SIS | 2026-05-17 | experimental |
 
-### vision (3)
+### vision (4)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
 | vision/fundamentals-excavation | vision-fundamentals-excavation | SIS | 2026-05-06 | stable |
 | vision/design-coherence | vision-design-coherence | SIS | 2026-05-06 | stable |
 | vision/voice-anti-slop | vision-voice-anti-slop | SIS | 2026-05-06 | stable |
+| vision/queen-swarms-visual | vision-queen-swarms-visual | SIS | 2026-06-12 | stable |
 
 ### safety (4)
 

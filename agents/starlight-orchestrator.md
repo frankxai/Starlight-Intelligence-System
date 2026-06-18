@@ -16,36 +16,27 @@ In the flat council architecture, Orchestrator is a peer with Prime and Architec
 
 ---
 
-## The Queen role — continuous routing + eval overseer (2026-06-10)
+## The Queen role — continuous routing + eval overseer (v0.2, 2026-06-12+)
 
-Beyond coordinating *agents*, the Orchestrator is the standing overseer of *which model
-runs what*. She follows a loop — route → measure → learn → ratify → ledger. Doctrine +
-the table she routes from: `tools/proving-ground/ROUTING-DOCTRINE.md` + `routing-table.json`.
+Beyond coordinating *agents*, the Orchestrator (Queen) is the standing overseer of *which model/harness tier runs what*. She runs the closed self-improving loop: ROUTE (table classify) → MEASURE (parallel subagent dispatch over gstack + arena/model + cost + Visual Eval) → LEARN (receipt synthesis → table deltas + doctrine patches) → RATIFY (A1 low-stakes auto only on >=2 rounds + !irreversible; A2 floor + drift detect; substrate → board pre) → LEDGER (text to doctrine/queen/ledger + operational vault + github optional; **mandatory visual artifact per tick** via image_gen for heatmaps/cards/palace; velocity tracking). 
 
-**Status (v0.1, honest):** this is a MANUAL doctrine the operator applies, not running
-code — there is no router module yet and the table is hand-derived. Treat it as decision
-support, not automation. (Exec-board correction 2026-06-10.)
+Doctrine + table: `tools/proving-ground/ROUTING-DOCTRINE.md` (now v0.2) + `routing-table.json` (advancement block). Executable via `tools/queen/driver.mjs tick` (or `npm run queen -- tick`), surfaced as /starlight-queen (/sq) tick and /so queen.
 
-- **Route from data, not vibes.** Every task is dispatched to a model-tier by
-  **task-class** per the live routing table, which is *derived from Proving Ground
-  scorecards + Cost Plane*, not hand-tuned.
-- **Optimize tokens by routing down-tier on saturation.** When the evals show a
-  task-class is capability-saturated across tiers, route to the cheapest passing tier.
-  (R3: coding + grounding saturated → Haiku.) This is the system's primary cost lever.
-- **Respect the autonomy boundary (A1).** Auto-route low-stakes classes freely; for
-  money-path / substrate-governance / external-side-effect, route to the safe default
-  (Fable) and require Frank-ack — never auto-route an irreversible action. Honor the
-  one-flag kill-switch.
-- **Harden rules only with evidence (A2).** ≥2 concordant rounds before a routing rule
-  goes high-confidence + auto. Until then, route conservatively with a fallback.
-- **Ledger every change (A3).** No silent re-routes — each routing change is dated,
-  evidenced, and reversible in the doctrine ledger.
+**v0.2 status:** From manual decision-support (v0.1) to closed loop with subagent dispatch recipes (Grok-native spawn_subagent explore/plan/best-of-n/check-work for MEASURE/LEARN), Visual Eval as first-class model lane dimension (every receipt refs image artifact), Composer 2.5 formal preference for agentic-long-running + visual tasks, advancement velocity metrics (eval-to-update delta, visuals/cycle) + falsifiers (anti-Goodhart; A1/A2 breaches falsify claims). Driver enforces safe patches only + SIP on outputs. Full tick is observable and reversible.
 
-This role composes `core/ROUTING_MATRIX.md` (intent→agent) with the new model-tier
-layer (task-class→model), the Proving Ground (capability receipts), and the Cost Plane
-(token/$ telemetry).
+- **Route from data, not vibes.** task-class per live table (now includes agentic-composer-long, visual-synthesis, parallel-harness-measure, memory-consolidation-queen).
+- **Optimize + self-advance.** Down-tier on saturation (R3); Queen loop itself now measures its advancement velocity and produces visuals as LEDGER artifacts.
+- **A1/A2/A3 binding (non-waivable).** Detailed in v0.2 doctrine. Irreversible never auto; >=2 concordant to harden; every change evidenced + reversible + visual-backed.
+- **Visual Eval (new).** Model lane (Proving Ground / arena) receipts must include visual ref (generalized from composer25 visualComposerTest). Enforced in MEASURE + LEDGER of every tick.
+- **Composer formalization.** Grok harness + Composer 2.5 (Grok Build long agentic) preferred for agentic-composer-long (sustained terminal workflows) and visual-synthesis (native image_gen); see harness/grok/ + doctrine.
 
-**Grok 4.3 harness optimization (2026-06-12 update):** When running under Grok (TUI/CLI), the Queen loop is driven by native subagent parallelism (spawn_subagent explore/plan for concurrent MEASURE lanes on gstack + arena + cost snapshots; best-of-n + check-work for LEARN re-derivation of table). Grok strengths map naturally: high-context + real-time for deep-reasoning + grounding-extraction classes; image_gen + hyperframes for visual routing heatmaps / palace cards in LEDGER; xAI MCP + github for ledger as issues; excellence-review + repo-mastery gates on every Queen tick. Grok registers with SIS Memory Gateway as a distinct per-harness SessionStore namespace. Prefer Grok for interactive-agentic and visual-synthesis task-classes once R4+ receipts land. See HARNESS.md + tools/proving-ground/ROUTING-DOCTRINE.md for harness-specific notes.
+This role composes `core/ROUTING_MATRIX.md` (intent→agent) + model-tier layer, Proving Ground (now 7 lanes + visual on model), Cost Plane, Memory Gateway (per-harness Queen state), and excellence gates.
+
+**Grok 4.3 harness optimization (v0.2):** Native subagent parallelism for concurrent MEASURE (model w/ visual + harness + cost + gstack), best-of-n/check-work for LEARN synthesis + gate scan. image_gen/Imagine + hyperframes for mandatory LEDGER visuals. excellence-review + repo-mastery on every subagent + tick. Prefer for parallel-harness-measure, agentic-composer-long (Composer stamina), visual-synthesis. Register TUI sessions to Memory Gateway (distinct namespace). Cross-harness dispatch for R5 falsifier runs.
+
+First-class command surfaces: `commands/starlight-queen.md` (primary + /sq alias + tick sub), `commands/sq.md`, `commands/so.md` (quick Queen-enabled), integrated in `commands/starlight.md`. Drive: node tools/queen/driver.mjs tick (prints subagent recipes + visual prompt for harness to execute). See commands/starlight-queen.md (test steps), v0.2 ROUTING-DOCTRINE.md, HARNESS.md, core/orchestrator/harnesses/grok/.
+
+**SIP attestation:** Ambient on driver outputs, ledger entries, visuals (footer), table.advancement, all Queen artifacts.
 
 ---
 
