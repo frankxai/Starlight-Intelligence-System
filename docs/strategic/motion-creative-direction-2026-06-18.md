@@ -63,14 +63,19 @@ One excellent asset per viewer beats three mediocre generic videos.
 
 ---
 
-## Open decision for Frank (one pick)
+## Frank direction (locked 2026-06-18)
 
-**Factory scroll hook — which line?**
+**Master line:** *The power of your multi-agent system, amplified.*
 
-- **A)** `Speak once. It remembers.` (conversational, hook-first)
-- **B)** `It remembers. It acts. It attests.` (hero-demo canonical, proof-first)
+**Hook (muted, 6 words):** `Your agents. Amplified.`
 
-Default recommendation: **A** for download surface (lower jargon); **B** for board/client deck cut.
+**Positioning shift:** Starlight amplifies the agents and swarms the builder **already runs** — shared memory, `/si` routing, attestation — not a greenfield replacement narrative.
+
+| Surface | How the master line shows up |
+|---------|------------------------------|
+| Homepage loop | Visual: siloed orbs → connect → collective pulse. Text: hook only. |
+| Factory scroll | Full arc: grounded Mind → parallel Mesh → proof → Steward |
+| Site copy (optional later) | Subhead under H1 — board-gated |
 
 ---
 

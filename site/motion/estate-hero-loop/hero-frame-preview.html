@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hero frame — Your agents. Amplified. (static preview)</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        width: 1920px;
+        height: 1080px;
+        background: #060609;
+        font-family: system-ui, sans-serif;
+        color: #e2e8f0;
+        overflow: hidden;
+      }
+      .dot-grid {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+      .mesh {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+      }
+      .mesh-v { left: 5%; top: 5%; width: 400px; height: 400px; background: rgba(124,58,237,0.07); }
+      .mesh-c { right: 5%; bottom: 10%; width: 320px; height: 320px; background: rgba(6,182,212,0.05); }
+      svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .hook {
+        position: absolute;
+        left: 120px;
+        bottom: 120px;
+        z-index: 10;
+      }
+      .hook-tag {
+        font-family: ui-monospace, monospace;
+        font-size: 14px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #67e8f9;
+        margin-bottom: 12px;
+      }
+      .hook-line {
+        font-family: Georgia, serif;
+        font-size: 56px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+      .hook-line span { color: #a78bfa; }
+      .sip {
+        position: absolute;
+        right: 48px;
+        bottom: 36px;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(226,232,240,0.45);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dot-grid"></div>
+    <div class="mesh mesh-v"></div>
+    <div class="mesh mesh-c"></div>
+    <!-- Hero frame = "Amplified" beat: 6 agent orbs linked, bright, shared pulse implied -->
+    <svg viewBox="0 0 1920 1080" aria-hidden="true">
+      <defs>
+        <radialGradient id="orb-v" cx="30%" cy="30%">
+          <stop offset="0%" stop-color="#c4b5fd" />
+          <stop offset="100%" stop-color="#7c3aed" />
+        </radialGradient>
+        <radialGradient id="orb-c" cx="30%" cy="30%">
+          <stop offset="0%" stop-color="#67e8f9" />
+          <stop offset="100%" stop-color="#0891b2" />
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="8" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      <!-- Substrate hub -->
+      <circle cx="960" cy="420" r="48" fill="url(#orb-v)" filter="url(#glow)" opacity="0.95" />
+      <!-- Agent orbs (abstract — no vendor logos) -->
+      <circle cx="620" cy="320" r="32" fill="url(#orb-c)" filter="url(#glow)" />
+      <circle cx="1300" cy="300" r="32" fill="url(#orb-v)" filter="url(#glow)" />
+      <circle cx="540" cy="520" r="28" fill="url(#orb-v)" filter="url(#glow)" />
+      <circle cx="1380" cy="500" r="28" fill="url(#orb-c)" filter="url(#glow)" />
+      <circle cx="760" cy="600" r="26" fill="url(#orb-c)" filter="url(#glow)" />
+      <circle cx="1160" cy="580" r="26" fill="url(#orb-v)" filter="url(#glow)" />
+      <!-- Connection threads -->
+      <g stroke="#67e8f9" stroke-width="1.5" opacity="0.45" fill="none">
+        <line x1="960" y1="420" x2="620" y2="320" />
+        <line x1="960" y1="420" x2="1300" y2="300" />
+        <line x1="960" y1="420" x2="540" y2="520" />
+        <line x1="960" y1="420" x2="1380" y2="500" />
+        <line x1="960" y1="420" x2="760" y2="600" />
+        <line x1="960" y1="420" x2="1160" y2="580" />
+        <line x1="620" y1="320" x2="1300" y2="300" opacity="0.25" />
+        <line x1="540" y1="520" x2="1380" y2="500" opacity="0.25" />
+      </g>
+    </svg>
+    <div class="hook">
+      <p class="hook-tag">Starlight Intelligence</p>
+      <p class="hook-line">Your agents. <span>Amplified.</span></p>
+    </div>
+    <p class="sip">Built on SIP v1.1.1 · static hero frame preview</p>
+  </body>
+</html>

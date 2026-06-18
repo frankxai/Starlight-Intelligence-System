@@ -1,6 +1,6 @@
 # Brief — Homepage Hero Loop
 
-**Status:** Proposed by Grok · 2026-06-18 · Awaiting Frank approval  
+**Status:** Frank direction locked 2026-06-18 — messaging approved; frame/motion pending
 **Process:** `docs/strategic/motion-process-v2.md`
 
 ---
@@ -29,17 +29,21 @@
 
 ## One message
 
-**Memory that stays. Sovereignty you keep.**
+**The power of your multi-agent system, amplified.**
 
-(Aligns with live H1: *Persistent context. Sovereign by architecture.* — motion is the **felt** version, not a second headline.)
+Starlight is not "replace your agents" — it is substrate that **multiplies** what you already run (Claude, Codex, Grok, Gemini, swarms) with shared memory, routing, and attestation.
+
+Page H1 stays *Persistent context. Sovereign by architecture.* Motion carries the **amplification** story in parallel — felt, not a second essay.
 
 ---
 
 ## 3-second hook (muted)
 
-**Visual only:** Scattered dim nodes (chaos / forgotten context) → threads draw between them (connection) → one central node holds steady pulse (persistence).
+**On-screen (max 6 words):** `Your agents. Amplified.`
 
-No on-screen text in the loop. Page H1 supplies words; loop supplies **metaphor**.
+**Visual:** Several dim agent-orbs (yours, scattered) → substrate threads connect them → **synchronized pulse** — all orbs brighten together. One rhythm, many agents.
+
+Optional: single word fade at 6–8s: `amplified` (lowercase, mono) — only if legibility test passes at 390px; otherwise visual-only.
 
 ---
 
@@ -47,9 +51,9 @@ No on-screen text in the loop. Page H1 supplies words; loop supplies **metaphor*
 
 | Phase | Time | Feeling | Show (not tell) |
 |-------|------|---------|-----------------|
-| Drift | 0–2s | Context slips away | Nodes fade, lines break |
-| Connect | 2–6s | System remembers | Lines reform, orbit stabilizes |
-| Alive | 6–10s | Compounding | Soft pulse on core; loop rhymes with frame 0 |
+| Alone | 0–2s | Agents siloed, weak | Separate dim orbs, no bridges |
+| Linked | 2–6s | Substrate connects | Threads between orbs; shared orbit |
+| Amplified | 6–10s | Combined power | Pulse hits all orbs; brightness gain; loop rhymes |
 
 ---
 
@@ -79,10 +83,10 @@ No on-screen text in the loop. Page H1 supplies words; loop supplies **metaphor*
 
 | Beat | Time | Visual | Text on loop |
 |------|------|--------|--------------|
-| Hook | 0–2s | 12–16 nodes dim, drifting | none |
-| Connect | 2–6s | Lines snap node-to-node, orbit settles | none |
-| Pulse | 6–9s | Center + ring breathe once | none |
-| Seam | 9–10s | Ease back to hook state | none |
+| Hook | 0–2s | 4–6 agent orbs, isolated, dim | `Your agents.` (3s) |
+| Link | 2–5s | Cyan/violet threads connect orbs | — |
+| Amplify | 5–8s | Shared pulse, all orbs brighten | `Amplified.` |
+| Seam | 8–10s | Hold bright state → ease to Alone | — |
 
 **Option B (rejected for v1):** Keyframe plates + crossfade — reads as slideshow; failed P0 review.
 

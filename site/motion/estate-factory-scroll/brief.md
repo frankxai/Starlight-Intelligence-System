@@ -1,6 +1,6 @@
 # Brief — Estate Factory Scroll
 
-**Status:** Proposed by Grok · 2026-06-18 · Awaiting Frank approval  
+**Status:** Frank direction locked 2026-06-18 — messaging approved; storyboard pending
 **Process:** `docs/strategic/motion-process-v2.md`
 
 ---
@@ -29,19 +29,19 @@
 
 ## One message
 
-**One voice in. An army out. You own it.**
+**The power of your multi-agent system, amplified.**
 
-(Alt from hero-demo plan, equivalent: *It remembers. It acts. It attests.*)
+Estate Factory is the **commissioned** form: your Genius-grounded Mind + production Mesh + Steward — the full amplification stack you own.
+
+Supporting line (beat 3): *One voice in. Many agents out.*
 
 ---
 
 ## 3-second hook (muted)
 
-Single line on screen (max 6 words):
+**On-screen:** `Your agents. Amplified.`
 
-**"Speak once. It remembers."**
-
-Visual: one input ripple → multiple faint trails fan out.
+Visual: one input ripple → parallel agent trails → **combined output** brighter than any single lane.
 
 ---
 
@@ -97,12 +97,12 @@ Voice: Frank DNA — direct, warm, no doc paste.
 
 | Beat | Time | Visual | On-screen text |
 |------|------|--------|----------------|
-| 1 Hook | 0–5s | Ripple from center | Speak once. It remembers. |
-| 2 Mind | 5–18s | Core brightens, prior atoms as faint specks feed in | It knows how you decide. |
-| 3 Mesh | 18–33s | 4 trails (abstract, no logos) merge to document shape | Many agents. One handoff. |
-| 4 Proof | 33–42s | Receipt card animates in (JSON → sealed) | Every output attested. |
-| 5 Steward | 42–48s | Heartbeat line + checkmarks | Still running Monday. |
-| 6 CTA | 48–52s | Logo mark + two paths | Start free · Commission your estate |
+| 1 Hook | 0–5s | Siloed orbs → flash connect | Your agents. Amplified. |
+| 2 Mind | 5–18s | Core brightens; your patterns feed in | Grounded in you. |
+| 3 Mesh | 18–33s | Parallel trails merge; output surges | Many agents. One handoff. |
+| 4 Proof | 33–42s | Receipt card (hero-demo shape) | Every output attested. |
+| 5 Steward | 42–48s | Heartbeat; all lanes stay lit | Still running Monday. |
+| 6 CTA | 48–52s | Two paths | Start free · Commission your estate |
 
 ---
 
