@@ -109,8 +109,14 @@ Optional: single word fade at 6–8s: `amplified` (lowercase, mono) — only if 
 
 ---
 
+## Design bar
+
+See `docs/strategic/motion-design-premium-2026.md`. **`hero-frame-preview.html` withdrawn** — failed premium audit.
+
+**Direction pick required:** A (Substrate Lens) · B (BrainHero evolve) · C (Glass surface) · A+B hybrid.
+
 ## Approval
 
-- [ ] Frank approves brief → proceed to static hero frame (SVG motion mock)
-- [ ] Frank approves frame → HyperFrames or inline site CSS pass
+- [ ] Frank picks design direction (premium doc § Three directions)
+- [ ] Frank approves **still** (premium-visual or evolved BrainHero) — creative lock
 - [ ] Frank approves draft MP4 → high render + registry `approved`
