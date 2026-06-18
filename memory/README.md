@@ -66,5 +66,6 @@ Run from `private/voice-operator/`.
 - `VAULT_ARCHITECTURE.md` — six-vault contract
 - `src/gateway/` (protocol, server, daemon, session-store) — SIS Memory Gateway v0.1 (cross-harness SessionStore + loopback + RRF unification, per-harness namespaces e.g. grok-tui, claude-*, antigravity). Privacy-first (private tags dropped on search).
 - `claws/memory/CLAW.md` — sis-memory-claw contract (/sis-remember etc.)
+- `docs/strategic/sis-memory-provider-strategy-2026-06-18.md` — provider strategy: SIS as sovereign router with swappable local/cloud backends.
 
 **Harness note:** All harnesses (Claude Code primary, Grok 4.3 TUI, Gemini, Antigravity swarm, Codex, Cursor) share the same vaults + gateway for session memory. Grok registers its sessions explicitly for unified recall across TUI invocations. See VAULT_ARCHITECTURE.md (private substrate mount) + tools/proving-ground/ for Queen integration.
