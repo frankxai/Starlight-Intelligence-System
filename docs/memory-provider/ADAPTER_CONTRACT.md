@@ -53,3 +53,10 @@ interface MemoryProvider {
 3. `supermemory` session/document ingest adapter — enterprise connector route only.
 
 Built on SIP — provider adapter contract.
+
+## Current state (synced 2026-06-18)
+
+- local_core + Mem0RemoteProvider implemented and tested.
+- Fan-in benchmark (50 agents) added to starlight-memory.
+- Router + resources enforce the "no per-agent heavyweight" rule.
+- Full memory-provider tests green + build passes.
