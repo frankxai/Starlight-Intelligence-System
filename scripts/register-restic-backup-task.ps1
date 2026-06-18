@@ -12,7 +12,10 @@ if (-not (Test-Path $ScriptPath)) {
     throw "Backup runner not found at $ScriptPath"
 }
 
-$pwshPath = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
+$pwshPath = Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\pwsh.exe'
+if (-not (Test-Path $pwshPath)) {
+    $pwshPath = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
+}
 if (-not $pwshPath) {
     $pwshPath = (Get-Command powershell -ErrorAction Stop).Source
 }
