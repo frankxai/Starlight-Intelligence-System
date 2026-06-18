@@ -44,6 +44,7 @@ import {
   readdirSync,
 } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 import { DreamingAgent } from "../src/dreaming.js";
 import { TemporalEngine } from "../src/temporal.js";
 
@@ -258,6 +259,26 @@ function main(): void {
         ` · archived: ${sweep.archived}`;
       appendReceipt(line);
       console.log(line);
+
+      // Step 3: Git auto-commit (absorb Git-backed versioning paradigm)
+      try {
+        if (process.env.STARLIGHT_GIT_AUTO_COMMIT !== "false") {
+          const commitMsg = `chore(memory): dreaming consolidation [insights: ${dreamResult.extractedInsights.length}, promotions: ${dreamResult.promotions.length}, archived: ${sweep.archived}]`;
+          execSync("git add memory/vaults/ memory/CONSOLIDATION_LOG.md", { cwd: REPO_ROOT, stdio: "ignore" });
+          
+          // Check if there are staged changes to commit
+          const status = execSync("git diff --cached --name-only", { cwd: REPO_ROOT }).toString().trim();
+          if (status) {
+            execSync(`git commit -m "${commitMsg}"`, { cwd: REPO_ROOT, stdio: "ignore" });
+            console.log(`  Git: Auto-committed memory changes: "${commitMsg}"`);
+          } else {
+            console.log("  Git: No memory changes to commit.");
+          }
+        }
+      } catch (gitErr) {
+        console.warn(`  Git Warning: Auto-commit skipped: ${gitErr instanceof Error ? gitErr.message : String(gitErr)}`);
+      }
+
       process.exit(0);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);

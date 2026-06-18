@@ -558,3 +558,15 @@ Before pushing, `origin/main` advanced with `48a1cdc feat(substrate): reconcile 
 
 Post-merge repair: `starlight-swarm providers` now detects Antigravity through the durable `agy` binary rather than profile-only PowerShell wrapper functions, so NoProfile checks match real CLI availability. Final verification passed after this repair: `npm run build`, `npm run test:operational`, `npm run test:substrate`, and `node dist/cli.js starlight-swarm providers`.
 
+## 2026-06-18 — Frank Vercel-first verification preference
+
+**Category:** operational-preference
+**Confidence:** 0.98
+**Source:** Frank request in Codex desktop session
+**Related:** `C:\Users\frank\.codex\AGENTS.md`, `gencreator.ai\AGENTS.md`, `gencreator.ai\CLAUDE.md`, `gencreator.ai\docs\DEPLOY.md`, Vercel connector
+
+Frank prefers Vercel-backed preview/live verification over long-running localhost sessions for web apps, especially production sites such as GenCreator. Localhost is acceptable only when it is materially faster, safer, or required for focused debugging, local unit/type/build gates, or pre-deploy sanity. Agents should stop any dev server they start before handoff unless Frank explicitly asks to keep it running.
+
+Operational rule for Codex, Claude, OpenCode, Cursor, Gemini, Antigravity, and other coding agents: use local checks as the fast inner loop, then use Vercel preview/production URLs for meaningful web verification when the repo is connected to Vercel. Use Vercel connector/plugin/CLI to inspect projects, deployments, domains, and logs before claiming a site is live. Be cost-aware: batch coherent changes into a single preview/deploy cycle, avoid repeated production deploys for speculative changes, and prefer preview + promote when appropriate.
+
+GenCreator connector check on 2026-06-18: team `Starlight Intelligence`; Vercel project `gencreator-ai`; project id `prj_nIryRFHID247Sh0DEp2oH1T4amnO`; latest production deployment READY at `gencreator-ffliufq6k-starlight-intelligence.vercel.app`; GitHub integration metadata points to `frankxai/gencreator.ai` on `main`; connector listed Vercel subdomains but did not list `gencreator.ai` custom domain, so agents must verify domain attachment before saying the apex is live.
