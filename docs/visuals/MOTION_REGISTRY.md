@@ -3,9 +3,11 @@
 > Living ledger for `starlightintelligence.org` motion wedges. P0 wave opened 2026-06-18.
 > Built on SIP — Starlight Intelligence Protocol v1.1.1
 
+**Process:** `docs/strategic/motion-process-v2.md` — viewer-first gates. Assets below marked `draft-superseded` pending brief approval + rework.
+
 ---
 
-## P0 — Estate Hero Loop (shipped scaffold)
+## P0 — Estate Hero Loop (`draft-superseded`)
 
 | Field | Value |
 |-------|-------|
@@ -55,7 +57,7 @@ See `site/motion/estate-hero-loop/assets/estate-hero-loop.sip.json`.
 
 ---
 
-## P0 — Estate Factory Scroll (shipped scaffold)
+## P0 — Estate Factory Scroll (`draft-superseded`)
 
 | Field | Value |
 |-------|-------|
