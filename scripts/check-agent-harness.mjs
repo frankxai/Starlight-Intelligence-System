@@ -34,7 +34,7 @@ const failures = [];
 
 function read(file) {
   try {
-    return readFileSync(path.join(root, file), 'utf8');
+    return readFileSync(path.join(root, file), 'utf8').replace(/^\uFEFF/, '');
   } catch {
     return '';
   }

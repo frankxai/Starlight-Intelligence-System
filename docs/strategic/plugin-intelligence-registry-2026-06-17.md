@@ -1,7 +1,7 @@
 # Plugin Intelligence Registry
 
 Date: 2026-06-17
-Updated: 2026-06-18
+Updated: 2026-06-19
 Owner: FrankX AI / Starlight Intelligence
 Marketplace: `C:\Users\frank\.agents\plugins\marketplace.json`
 Plugin source root: `C:\Users\frank\plugins`
@@ -25,14 +25,14 @@ All six are installed from `plugins-cli` as `0.1.0+codex.20260617165242`.
 
 ## Continuation Result
 
-The plugin estate has been expanded and consolidated into a 45-entry `plugins-cli` marketplace suite: 44 FrankX/Starlight personal plugins plus the external `vercel-plugin`.
+The plugin estate has been expanded and consolidated into a 46-entry `plugins-cli` marketplace suite: 45 FrankX/Starlight personal plugins plus the external `vercel-plugin`.
 
 - The 15 original personal plugins were source-validated, installed, and installed-cache validated.
 - The first six strategic plugins remain installed and enabled.
 - Eight additional high-leverage plugins were created, documented, source-validated, installed, enabled, and installed-cache validated.
 - Five final operating-system plugins were created, documented, source-validated, installed, enabled, and installed-cache validated.
 - One graph-level intelligence plugin was created, documented, source-validated, installed, enabled, installed-cache validated, and used to rebuild the ecosystem graph registry.
-- `C:\Users\frank\.agents\plugins\marketplace.json` now contains 45 plugin entries.
+- `C:\Users\frank\.agents\plugins\marketplace.json` now contains 46 plugin entries.
 - `C:\Users\frank\plugins\ecosystem-intelligence.registry.json` now records the 255-repo GitHub census, 61 local git repos, 158 active GitHub repos not cloned locally, domain/business evidence, and plugin coverage.
 - The public plugin starter now has a GitHub prerelease, a Starlight download section, a FrankX download-router card, and a machine-readable Starlight manifest endpoint.
 - The Starlight download UI was browser-verified at 1366x900 and 390x844 with no page-width overflow, visible SHA-256, and all four plugin install commands rendered.
@@ -84,6 +84,19 @@ Graph intelligence plugin:
 | `arcanea-canon-director` | Arcanea original IP | Story, character, Seven Pillars world logic, visual DNA, continuity |
 | `arcanea-claw-media-ops` | ArcaneaClaw media operations | Scan, classify, dedupe, TASTE score, upload, social prep, command center |
 | `arcanea-creator-forge-ops` | Arcanea Layer 2 creator/pro forge | Creator products, agent packs, assets, marketplace offers, launch systems |
+
+2026-06-19 naming elevation pass:
+
+| Result | Value |
+| --- | --- |
+| Product-facing plugin manifests updated | 35 |
+| Personal plugins source-validated | 45 |
+| Edited installed-cache plugins validated | 35 |
+| Product display names ending in `Ops` | 0 |
+| Product display names containing `Ops` | 1, intentionally `Agentic Ops Harness` |
+| Naming registry | `C:\Users\frank\plugins\plugin-naming.registry.json` |
+| Naming architecture doc | `docs/strategic/plugin-naming-architecture-2026-06-19.md` |
+| Product system doctrine | `docs/strategic/plugin-product-system-doctrine-2026-06-19.md` |
 
 ## Portfolio Map
 
@@ -148,6 +161,7 @@ These plugins keep each major business line coherent:
 | `arcanea-canon-director` | new | Story, character, Seven Pillars world logic, continuity, and anti-trope review |
 | `arcanea-claw-media-ops` | new | ArcaneaClaw media pipeline, TASTE scoring, publish prep, and command center |
 | `arcanea-creator-forge-ops` | new | Creator products, pro offers, agent packs, and world-to-business launch paths |
+| `motion-design-studio` | new | Product motion, scroll choreography, animation systems, and visual identity polish |
 
 ### Protection and Leverage Layer
 
@@ -168,10 +182,10 @@ The first six, the next eight, the final five, the graph-level intelligence plug
 
 | Candidate | Trigger evidence | Why it matters |
 | --- | --- | --- |
-| `arcanea-fabric-api-ops` | repeated Layer 3 API/SDK and orchestration boundary decisions | Packages World Graph, memory, orchestration, and SDK/API readiness once Fabric stabilizes |
-| `arcanea-proof-rail-ops` | repeated provenance, content-hash, proof, and royalty questions | Makes proof rails real without forcing blockchain friction into user experience |
-| `arcanea-education-residency-ops` | repeated creator residency, course, or cohort design | Turns Arcanea learning and production programs into repeatable curriculum and operations |
-| `arcanea-game-kit-ops` | repeated quests, playable prototypes, and world-to-game exports | Converts repo-canonical worlds into game kits, quests, and playable proof artifacts |
+| `arcanea-fabric` | repeated Layer 3 API/SDK and orchestration boundary decisions | Packages World Graph, memory, orchestration, and SDK/API readiness once Fabric stabilizes |
+| `arcanea-proof-rail` | repeated provenance, content-hash, proof, and royalty questions | Makes proof rails real without forcing blockchain friction into user experience |
+| `arcanea-residency` | repeated creator residency, course, or cohort design | Turns Arcanea learning and production programs into repeatable curriculum and production operations |
+| `arcanea-game-kit` | repeated quests, playable prototypes, and world-to-game exports | Converts repo-canonical worlds into game kits, quests, and playable proof artifacts |
 
 ## Distribution Architecture
 
@@ -202,14 +216,17 @@ Recommended public flow:
 | Starlight download section | `https://starlightintelligence.org/download#codex-plugin-starter` | Human install path with release links, checksum, and four plugin install commands |
 | Plugin starter latest manifest | `https://starlightintelligence.org/download/plugins/latest.json` | Machine-readable release index for automation, docs, and downstream sites |
 | FrankX download router | `https://frankx.ai/downloads` | Business/founder download card routing users into the Starlight install path |
-| Private 44-plugin suite | `dist/plugins/starlight-private-plugin-suite-2026-06-18-44.zip` | Private bundle, 44 FrankX/Starlight plugin manifests, one local marketplace, one private README |
-| Private suite checksum | `dist/plugins/starlight-private-plugin-suite-2026-06-18-44.zip.sha256` | SHA-256: `6F750B23524F0F8718CE51B35D2AF2612BB87A591A2BE1B951554AF046AE197E` |
+| Private 45-plugin suite | `dist/plugins/starlight-private-plugin-suite-2026-06-19-45.zip` | Private bundle, 45 FrankX/Starlight plugin manifests, one local marketplace, one private README |
+| Private suite checksum | `dist/plugins/starlight-private-plugin-suite-2026-06-19-45.zip.sha256` | SHA-256: `9F28B5F6E396EF2519FE713DB503756A735EA4E156DE5BC6856E898583F439F5` |
+| Plugin naming registry | `C:\Users\frank\plugins\plugin-naming.registry.json` | Machine-readable naming architecture, display names, future slug candidates, and migration risk |
+| Plugin naming architecture | `docs/strategic/plugin-naming-architecture-2026-06-19.md` | Human naming doctrine for future plugin and skill creation |
+| Plugin product system doctrine | `docs/strategic/plugin-product-system-doctrine-2026-06-19.md` | Portfolio-level doctrine for founder appeal, brand boundaries, plugin-vs-skill naming, bundles, distribution, and future roadmap |
 | Ecosystem intelligence registry | `C:\Users\frank\plugins\ecosystem-intelligence.registry.json` | Private graph registry generated by `ecosystem-graph-ops`; not public-safe as-is |
 | Plugin portfolio changelog | `C:\Users\frank\plugins\CHANGELOG.md` | Living release ledger for plugin portfolio changes, validation notes, and distribution artifacts |
 
 The public starter includes `enterprise-ai-coe-ops`, `health-intelligence-ops`, `prompt-eval-lab`, and `vibe-os-frequency-lab`. `anime-legends-studio` and `agentic-ops-harness` stay private until franchise/IP and operational references are sanitized.
 
-The private suite includes all 44 FrankX/Starlight personal plugin source folders and excludes `vercel-plugin`. It is not public-safe as-is: publication sanitizer found intentional local source attribution and private operating references, so the correct status is `private-only`.
+The private suite includes all 45 FrankX/Starlight personal plugin source folders and excludes `vercel-plugin`. It is not public-safe as-is: publication sanitizer found intentional local source attribution and private operating references, so the correct status is `private-only`.
 
 ## Guide Experience
 
@@ -263,7 +280,7 @@ Before any plugin becomes public:
 ### Wave 3: Intelligence System Module
 
 - Package a full Starlight Intelligence System module containing install docs, plugin bundle, sample workflows, validation logs, and site download assets.
-- Use the 44-plugin private suite as the internal module source and the four-plugin public starter as the public onboarding surface.
+- Use the 45-plugin private suite as the internal module source and the four-plugin public starter as the public onboarding surface.
 - Keep `ecosystem-intelligence.registry.json` private, and publish only sanitized summaries or public-safe manifests.
 - Add evals for critical workflows: business command, revenue offer, repo QA, memory/privacy review, and release packaging.
 

@@ -31,6 +31,7 @@
 ## Changelog
 
 - `v0.1` · `2026-04-26` · Spawned as v7.5.1 OpenClaw CRITICAL-1 remediation. Composition-layer IS (no dedicated agent; orchestrates Self + Brand). Commands shipped in v7.4-alpha.
+- `v0.2` · `2026-06-19` · Integrated the **Sovereign Creator Architecture (SCA)** and **Agent Service Bureau (HaaStA)** as active execution frameworks for Creator IS.
 
 ### Reference lineage SHAs
 

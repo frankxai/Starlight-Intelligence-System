@@ -128,11 +128,21 @@ export default function EchoPage() {
                   Scanning folders...
                 </>
               ) : ingestStatus === "success" ? (
-                "Ingested Successfully! ✓"
+                "Ingest Complete ✓"
               ) : (
-                "Trigger Local Ingest"
+                "Trigger Ingest Simulation"
               )}
             </button>
+          </div>
+        </div>
+
+        {/* Alignment & Strategy Banner (Local-First Static Mode) */}
+        <div className="mb-8 rounded-2xl border border-violet-500/20 bg-violet-500/5 text-violet-300 p-4 backdrop-blur-xl">
+          <div className="flex items-center gap-3">
+            <span className="h-2.5 w-2.5 rounded-full bg-violet-400 animate-pulse"></span>
+            <span className="text-sm font-medium">
+              Starlight Echo Static Template Active — Rendered via GitHub &amp; Vercel deployment pipeline. Zero local ports required.
+            </span>
           </div>
         </div>
 
