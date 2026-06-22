@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="45%" r="80%">
+    <stop offset="0%" stop-color="#080d1a"/>
+    <stop offset="100%" stop-color="#0a0a0b"/>
+  </radialGradient>
+  <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#06b6d4"/>
+    <stop offset="60%" stop-color="#818cf8"/>
+    <stop offset="100%" stop-color="#06b6d4"/>
+  </linearGradient>
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="3" result="blur"/>
+    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+  </filter>
+</defs>
+
+<!-- Background -->
+<rect width="1200" height="300" fill="url(#bg)"/>
+
+<!-- Star field -->
+<circle cx="80" cy="30" r="1" fill="white" opacity="0.5"/>
+<circle cx="180" cy="55" r="1.5" fill="white" opacity="0.4"/>
+<circle cx="320" cy="25" r="1" fill="white" opacity="0.35"/>
+<circle cx="430" cy="50" r="1" fill="#06b6d4" opacity="0.5"/>
+<circle cx="520" cy="30" r="1.5" fill="white" opacity="0.3"/>
+<circle cx="670" cy="20" r="1" fill="white" opacity="0.4"/>
+<circle cx="760" cy="45" r="1" fill="#c4b5fd" opacity="0.4"/>
+<circle cx="880" cy="28" r="1.5" fill="white" opacity="0.35"/>
+<circle cx="970" cy="50" r="1" fill="white" opacity="0.4"/>
+<circle cx="1100" cy="35" r="1" fill="#06b6d4" opacity="0.45"/>
+<circle cx="1160" cy="55" r="1.5" fill="white" opacity="0.3"/>
+<circle cx="50" cy="70" r="1" fill="white" opacity="0.25"/>
+<circle cx="260" cy="75" r="1" fill="#c4b5fd" opacity="0.3"/>
+<circle cx="740" cy="70" r="1" fill="white" opacity="0.3"/>
+<circle cx="1050" cy="65" r="1" fill="white" opacity="0.35"/>
+
+<!-- Vault pillar — far left -->
+<rect x="90" y="85" width="18" height="130" rx="2" fill="#06b6d4" opacity="0.08"/>
+<rect x="91" y="85" width="2" height="130" fill="#06b6d4" opacity="0.25">
+  <animate attributeName="opacity" values="0.25;0.55;0.25" dur="4s" repeatCount="indefinite"/>
+</rect>
+
+<!-- Vault pillar — left -->
+<rect x="240" y="70" width="18" height="150" rx="2" fill="#06b6d4" opacity="0.1"/>
+<rect x="241" y="70" width="2" height="150" fill="#06b6d4" opacity="0.3">
+  <animate attributeName="opacity" values="0.3;0.6;0.3" dur="5s" repeatCount="indefinite"/>
+</rect>
+
+<!-- Vault pillar — right -->
+<rect x="942" y="70" width="18" height="150" rx="2" fill="#06b6d4" opacity="0.1"/>
+<rect x="958" y="70" width="2" height="150" fill="#06b6d4" opacity="0.3">
+  <animate attributeName="opacity" values="0.3;0.6;0.3" dur="5s" begin="1s" repeatCount="indefinite"/>
+</rect>
+
+<!-- Vault pillar — far right -->
+<rect x="1092" y="85" width="18" height="130" rx="2" fill="#06b6d4" opacity="0.08"/>
+<rect x="1108" y="85" width="2" height="130" fill="#06b6d4" opacity="0.25">
+  <animate attributeName="opacity" values="0.25;0.55;0.25" dur="4s" begin="2s" repeatCount="indefinite"/>
+</rect>
+
+<!-- Memory constellation — center cluster -->
+<!-- Nodes in sequence (firefly pattern) -->
+<circle cx="490" cy="95" r="4" fill="#f59e0b" opacity="0">
+  <animate attributeName="opacity" values="0;1;0" dur="4s" begin="0s" repeatCount="indefinite"/>
+  <animate attributeName="r" values="4;6;4" dur="4s" begin="0s" repeatCount="indefinite"/>
+</circle>
+<circle cx="600" cy="75" r="5" fill="#06b6d4" opacity="0">
+  <animate attributeName="opacity" values="0;1;0" dur="4s" begin="0.7s" repeatCount="indefinite"/>
+  <animate attributeName="r" values="5;7;5" dur="4s" begin="0.7s" repeatCount="indefinite"/>
+</circle>
+<circle cx="710" cy="95" r="4" fill="#f59e0b" opacity="0">
+  <animate attributeName="opacity" values="0;1;0" dur="4s" begin="1.4s" repeatCount="indefinite"/>
+  <animate attributeName="r" values="4;6;4" dur="4s" begin="1.4s" repeatCount="indefinite"/>
+</circle>
+<circle cx="660" cy="125" r="3.5" fill="#06b6d4" opacity="0">
+  <animate attributeName="opacity" values="0;0.9;0" dur="4s" begin="2.1s" repeatCount="indefinite"/>
+</circle>
+<circle cx="540" cy="125" r="3.5" fill="#f59e0b" opacity="0">
+  <animate attributeName="opacity" values="0;0.9;0" dur="4s" begin="2.8s" repeatCount="indefinite"/>
+</circle>
+<circle cx="600" cy="108" r="3" fill="#c4b5fd" opacity="0">
+  <animate attributeName="opacity" values="0;1;0" dur="4s" begin="3.5s" repeatCount="indefinite"/>
+</circle>
+
+<!-- Constellation lines (subtle, always visible) -->
+<line x1="490" y1="95" x2="600" y2="75" stroke="#06b6d4" stroke-width="0.7" opacity="0.2"/>
+<line x1="600" y1="75" x2="710" y2="95" stroke="#06b6d4" stroke-width="0.7" opacity="0.2"/>
+<line x1="710" y1="95" x2="660" y2="125" stroke="#c4b5fd" stroke-width="0.6" opacity="0.18"/>
+<line x1="660" y1="125" x2="540" y2="125" stroke="#c4b5fd" stroke-width="0.6" opacity="0.18"/>
+<line x1="540" y1="125" x2="490" y2="95" stroke="#06b6d4" stroke-width="0.6" opacity="0.18"/>
+<line x1="600" y1="75" x2="600" y2="108" stroke="#f59e0b" stroke-width="0.6" opacity="0.2"/>
+
+<!-- Pillar top caps glow -->
+<ellipse cx="99" cy="85" rx="12" ry="3" fill="#06b6d4" opacity="0.2">
+  <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="249" cy="70" rx="12" ry="3" fill="#06b6d4" opacity="0.25">
+  <animate attributeName="opacity" values="0.25;0.55;0.25" dur="5s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="951" cy="70" rx="12" ry="3" fill="#06b6d4" opacity="0.25">
+  <animate attributeName="opacity" values="0.25;0.55;0.25" dur="5s" begin="1s" repeatCount="indefinite"/>
+</ellipse>
+<ellipse cx="1101" cy="85" rx="12" ry="3" fill="#06b6d4" opacity="0.2">
+  <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4s" begin="2s" repeatCount="indefinite"/>
+</ellipse>
+
+<!-- Title -->
+<text x="600" y="180"
+  font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace"
+  font-size="28" font-weight="700" text-anchor="middle" letter-spacing="2"
+  fill="url(#titleGrad)">STARLIGHT INTELLIGENCE SYSTEM</text>
+
+<!-- Tagline -->
+<text x="600" y="212"
+  font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace"
+  font-size="14" text-anchor="middle" fill="#94a3b8" letter-spacing="0.5"
+  >Persistent context and memory for AI agents</text>
+
+<!-- Built on SIP -->
+<text x="24" y="283"
+  font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace"
+  font-size="11" fill="#f59e0b" opacity="0.8">Built on SIP</text>
+</svg>
