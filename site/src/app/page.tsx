@@ -8,7 +8,7 @@ import {
   timeAgo,
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
-import { BrainHero } from "@/components/BrainHero";
+import { CommandCenterReveal } from "@/components/CommandCenterReveal";
 import {
   ACCENT_TEXT,
   ACCENT_BORDER,
@@ -93,14 +93,11 @@ export default async function HomePage() {
           <div className="animate-mesh-3 absolute left-1/3 top-40 h-[200px] w-[200px] rounded-full bg-fuchsia-500/[0.03] blur-[60px]" />
         </div>
 
-        {/* Decorative 10-IS topology backdrop — visible only on lg+, behind text. */}
-        <BrainHero
-          className="pointer-events-none absolute top-6 right-[-40px] hidden h-[440px] w-[440px] opacity-50 lg:block xl:right-8 xl:opacity-60"
-        />
+        <CommandCenterReveal />
 
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
 
-        <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-24 md:pb-32 md:pt-36">
+        <div className="relative z-10 mx-auto max-w-5xl px-6 pb-24 pt-24 md:pb-32 md:pt-36">
           <div className="flex items-center gap-2 text-[12px] text-violet-400/80">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400 animate-glow-pulse" />
             Built on the Starlight Intelligence Protocol &middot; v1.1.1
