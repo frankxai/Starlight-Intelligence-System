@@ -25,6 +25,7 @@ describe("demo smoke — examples/demo.ts runs the four engines", () => {
       { cwd: REPO_ROOT, encoding: "utf-8", timeout: 60_000 },
     );
 
+    if (run.error) throw run.error;
     assert.equal(run.status, 0, `demo exited non-zero:\n${run.stderr}`);
     const out = run.stdout.replace(/\x1b\[[0-9;]*m/g, ""); // strip ANSI
 

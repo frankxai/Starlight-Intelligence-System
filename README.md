@@ -68,7 +68,7 @@ cleans up — your real vaults are never touched.
 | Named agents | **144** | `agents/**/*.md` |
 | Auto-activating skills | **83** | `skills/skill-rules.json` |
 | Engine code | **20,440 LOC** across 73 files | `src/**/*.ts` (excl. tests) |
-| Test cases | **841** across 67 files | `src` + `test` `*.test.ts` |
+| Test cases | **760** across 67 files | `src` + `test` `*.test.ts` |
 | Version | **8.3.0** | `package.json` |
 
 _Derived from source, not hand-typed. Regenerate with `npm run metrics`; CI fails on drift via `npm run metrics -- --check`. Last verified 2026-06-22._

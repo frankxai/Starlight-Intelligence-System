@@ -80,6 +80,7 @@ const ATOMS: Atom[] = [
 
 async function main(): Promise<void> {
   const dir = mkdtempSync(join(tmpdir(), "sis-demo-"));
+  try {
   const dbPath = join(dir, "index.sqlite");
 
   console.log(c.bold("\n✦ Starlight Intelligence System — live engine demo"));
@@ -144,7 +145,9 @@ async function main(): Promise<void> {
   console.log(c.dim(`  (default executor is a no-LLM stub — wire setExecutor() to a model for real synthesis)`));
 
   console.log(c.green("\n✓ Four engines, real output, zero mocks. This is the operational core.\n"));
-  rmSync(dir, { recursive: true, force: true });
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 main().catch((err) => {

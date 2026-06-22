@@ -46,7 +46,7 @@
       "stale": false
     },
     "test_cases": {
-      "value": 841,
+      "value": 760,
       "last_verified": "2026-06-22",
       "source": "src + test *.test.ts",
       "ownership": "built",

@@ -85,7 +85,7 @@ function deriveTests() {
   const files = [...walk(path.join(root, 'src')), ...walk(path.join(root, 'test'))].filter((f) => f.endsWith('.test.ts'));
   let cases = 0;
   for (const f of files) {
-    const m = readFileSync(f, 'utf8').match(/\b(it|test)\s*\(/g);
+    const m = readFileSync(f, 'utf8').match(/\b(it|test)\s*\(\s*['"`]/g);
     if (m) cases += m.length;
   }
   return { files: files.length, cases };
