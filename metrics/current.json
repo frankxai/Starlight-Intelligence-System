@@ -15,6 +15,56 @@
   },
   "version": "0.1.0",
   "ledger_started": "2026-06-10",
-  "last_updated": "2026-06-10",
-  "metrics": {}
+  "last_updated": "2026-06-22",
+  "metrics": {
+    "named_agents": {
+      "value": 144,
+      "last_verified": "2026-06-22",
+      "source": "agents/**/*.md",
+      "ownership": "built",
+      "stale": false
+    },
+    "auto_activating_skills": {
+      "value": 83,
+      "last_verified": "2026-06-22",
+      "source": "skills/skill-rules.json",
+      "ownership": "built",
+      "stale": false
+    },
+    "engine_loc": {
+      "value": 20440,
+      "last_verified": "2026-06-22",
+      "source": "src/**/*.ts (excl. tests)",
+      "ownership": "built",
+      "stale": false
+    },
+    "engine_files": {
+      "value": 73,
+      "last_verified": "2026-06-22",
+      "source": "src/**/*.ts (excl. tests)",
+      "ownership": "built",
+      "stale": false
+    },
+    "test_cases": {
+      "value": 841,
+      "last_verified": "2026-06-22",
+      "source": "src + test *.test.ts",
+      "ownership": "built",
+      "stale": false
+    },
+    "test_files": {
+      "value": 67,
+      "last_verified": "2026-06-22",
+      "source": "src + test *.test.ts",
+      "ownership": "built",
+      "stale": false
+    },
+    "sis_version": {
+      "value": "8.3.0",
+      "last_verified": "2026-06-22",
+      "source": "package.json",
+      "ownership": "built",
+      "stale": false
+    }
+  }
 }
