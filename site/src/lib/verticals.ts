@@ -142,9 +142,9 @@ const VERTICAL_LIST: Vertical[] = [
     githubBlobBase:
       "https://github.com/frankxai/health-intelligence-system/blob/main",
     releaseUrl:
-      "https://github.com/frankxai/health-intelligence-system/releases/tag/v0.2.0",
+      "https://github.com/frankxai/health-intelligence-system/releases/tag/v0.2.1",
     downloadUrl:
-      "https://github.com/frankxai/health-intelligence-system/releases/download/v0.2.0/health-intelligence-system-v0.2.0.zip",
+      "https://github.com/frankxai/health-intelligence-system/releases/download/v0.2.1/health-intelligence-system-v0.2.1.zip",
   },
   {
     slug: "people-intelligence",
