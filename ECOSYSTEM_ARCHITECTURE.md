@@ -50,7 +50,7 @@ The separation remains deliberate. SIS never contains Claude Code-specific confi
 
 ## 2. The Constellation
 
-Three tiers, verified 2026-06-10. "Pulse" is observed activity, not aspiration.
+Four tiers, verified 2026-06-10. "Pulse" is observed activity, not aspiration.
 
 ### 2.1 Active Core
 
@@ -83,6 +83,18 @@ Three tiers, verified 2026-06-10. "Pulse" is observed activity, not aspiration.
 | **starlight-agent-lab** | No remote | Backup queued, then archive |
 
 Dormancy is a recorded state, not a deletion. Dormant repos keep their channel files (marked DORMANT) and their history; revival requires only a fresh transmission and a pulse check.
+
+### 2.4 Incubating
+
+Repos that exist with intent but no substance yet. Listed for map completeness — they carry a name and a direction but no active contracts. Distinct from dormant (which had a pulse and lost it); these have not started.
+
+| Repo | State (2026-06-10) | Intent |
+|------|--------------------|--------|
+| **starlight-swarm** | Empty shell — README only | Multi-agent orchestration on the Starlight memory substrate, guided by the Starlight Queen |
+| **starlight-agent-skills** | Empty shell — README only | Agent-facing skill registry; `claude-skills-library` is the live public skill library today |
+| **starlight-cosmos-engine** | Scaffold — full TS monorepo layout, implementations are empty stubs | Production monorepo for Cosmos systems; invest-or-archive decision pending |
+
+Each now carries an honest `STATUS` banner in its README and explicit activation criteria. Incubation is a holding state: a repo leaves it by shipping a first real spike, not by accumulating more scaffold.
 
 ---
 
