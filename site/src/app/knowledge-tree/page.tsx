@@ -247,11 +247,17 @@ export default function KnowledgeTreePage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#paths"
+              <Link
+                href="/knowledge-tree/explore"
                 className="rounded-full bg-white px-5 py-2.5 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_30px_rgba(34,211,238,0.25)]"
               >
                 Explore the Tree &rarr;
+              </Link>
+              <a
+                href="#paths"
+                className="rounded-full border border-white/[0.1] px-5 py-2.5 text-[14px] font-medium text-white transition-std hover:border-white/[0.2] hover:bg-white/[0.04]"
+              >
+                View Paths
               </a>
               <a
                 href={CONTRIBUTE_URL}
