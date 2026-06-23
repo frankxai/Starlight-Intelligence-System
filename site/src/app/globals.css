@@ -86,6 +86,9 @@ body {
 .animate-entrance {
   animation: entrance 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+@media (prefers-reduced-motion: reduce) {
+  .animate-entrance { animation: none; opacity: 1; transform: none; }
+}
 
 /* Brain hero — central Orchestrator core (slow inward pulse). */
 @keyframes brain-core-pulse {
