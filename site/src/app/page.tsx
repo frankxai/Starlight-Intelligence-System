@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   getAllEntries,
   getFeaturedMeditations,
@@ -115,8 +115,8 @@ export default async function HomePage() {
             STARLIGHT INTELLIGENCE PROTOCOL v1.1.1
           </div>
 
-          <h1 className="mt-4 max-w-[18ch] font-serif text-[clamp(2.6rem,7.2vw,5.1rem)] font-semibold leading-[0.96] tracking-[-2.8px] text-white">
-            The substrate<br />that remembers.<br />
+          <h1 className="mt-4 max-w-[20ch] font-serif text-[clamp(2.6rem,7.2vw,5.1rem)] font-semibold leading-[0.96] tracking-[-2.8px] text-white">
+            The substrate that remembers.<br />
             <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
               So agents can become.
             </span>
@@ -215,17 +215,17 @@ export default async function HomePage() {
                 One conductor.<br />Infinite parallel<br />will.
               </h2>
               <p className="mt-6 text-[15px] leading-[1.72] text-slate-300">
-                The Queen is not a model. She is the persistent sovereign conductor that classifies intent, dispatches verified swarms, enforces gates, and turns every execution into attested visual memory that compounds.
+                The Queen is not another agent. She is the sovereign conductor — the persistent intelligence that routes intent, launches parallel swarms, holds the gates, and turns every cycle into permanent, attested visual memory.
               </p>
               <p className="mt-4 text-[15px] leading-[1.72] text-slate-400">
-                Parallel subagents measure. The conductor ratifies. Visuals ledger. The loop closes — and the system becomes more itself with every cycle. This is how intelligence actually scales without losing its mind.
+                Subagents measure in parallel. The conductor ratifies. Visuals become the ledger. The loop compounds. This is how real intelligence scales without forgetting who it is.
               </p>
 
               <div className="mt-8 flex items-center gap-3">
                 <Link href="/queen" className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold tracking-[0.2px] text-[#060609] hover:bg-white/95 active:scale-[0.985]">
-                  ENTER THE QUEEN LOOP
+                  MEET THE QUEEN
                 </Link>
-                <Link href="/queen-vision.html" className="text-sm text-cyan-400 hover:text-cyan-300">Open standalone motion canvas →</Link>
+                <Link href="/queen-vision.html" className="text-sm text-cyan-400 hover:text-cyan-300">See the full motion →</Link>
               </div>
 
               <div className="mt-8 text-[11px] text-slate-500 tracking-[1px] flex gap-x-6">
@@ -237,10 +237,17 @@ export default async function HomePage() {
             {/* Right: Live premium interactive swarm + wired hero image */}
             <div className="md:col-span-7">
               <div className="relative">
-                <QueenSwarm className="w-full aspect-[16/10] md:aspect-[16/9.4]" phase="conduct" interactive />
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <QueenSwarm className="w-full aspect-[16/10] md:aspect-[16/9.4]" phase="conduct" interactive />
+                </motion.div>
                 <div className="absolute bottom-4 right-4 rounded-full bg-black/60 px-3 py-1 text-[10px] tracking-[1.5px] text-white/70 border border-white/10">DRAG OR HOVER — QUEEN DIRECTS THE SWARM</div>
               </div>
-              <div className="mt-3 text-[10px] text-slate-500">Live GSAP-orchestrated canvas. Phases mirror the closed loop running the entire Starlight system.</div>
+              <div className="mt-3 text-[10px] text-slate-500">Live GSAP canvas. The same conductor that runs the system, now in your hands.</div>
             </div>
           </div>
         </div>
