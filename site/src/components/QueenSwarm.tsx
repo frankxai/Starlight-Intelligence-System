@@ -57,6 +57,33 @@ export function QueenSwarm({ className = "", phase = "conduct", interactive = tr
     const ro = new ResizeObserver(resize);
     ro.observe(container);
 
+    // Excellence / a11y: respect reduced motion — draw elegant static state instead of RAF loop
+    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      const qx = width * 0.5;
+      const qy = height * 0.5;
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#a78bfa";
+      ctx.beginPath();
+      ctx.arc(qx, qy, 15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#f8fafc";
+      ctx.beginPath();
+      ctx.arc(qx, qy, 6, 0, Math.PI * 2);
+      ctx.fill();
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2;
+        const r = 68;
+        const px = qx + Math.cos(a) * r;
+        const py = qy + Math.sin(a) * r * 0.82;
+        ctx.fillStyle = i % 3 === 0 ? "#67e8f9" : "#a78bfa";
+        ctx.beginPath();
+        ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      return () => { ro.disconnect(); };
+    }
+
     // Seed elegant particles — fewer, higher quality
     const COUNT = 92;
     const particles: Particle[] = [];
