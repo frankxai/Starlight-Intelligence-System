@@ -8,12 +8,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Starlight Queen & Her Swarms — Queen Swarms Visual Skill",
     description: "The live public surface of the Queen Swarms Visual skill. Scroll the loop. Parallel swarms made felt. Activate to dispatch visual synthesis.",
-    images: [{ url: "/queen/queen-hero-wide.jpg", width: 1200, height: 630, alt: "Starlight Queen with coordinated swarms" }],
+    images: [{ url: "/assets/visuals/queen/7.jpg", width: 1200, height: 630, alt: "Starlight Queen conducting swarms — premium L99 visual" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "The Starlight Queen & Her Swarms — Queen Swarms Visual Skill",
     description: "Live demo + activation surface for the canonical Queen + swarms motion skill. Built on SIP.",
+    images: [{ url: "/assets/visuals/queen/7.jpg", alt: "Starlight Queen conducting swarms" }],
   },
 };
 
