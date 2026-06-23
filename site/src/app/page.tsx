@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   getAllEntries,
   getFeaturedMeditations,
@@ -237,14 +236,9 @@ export default async function HomePage() {
             {/* Right: Live premium interactive swarm + wired hero image */}
             <div className="md:col-span-7">
               <div className="relative">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                >
+                <div className="animate-entrance">
                   <QueenSwarm className="w-full aspect-[16/10] md:aspect-[16/9.4]" phase="conduct" interactive />
-                </motion.div>
+                </div>
                 <div className="absolute bottom-4 right-4 rounded-full bg-black/60 px-3 py-1 text-[10px] tracking-[1.5px] text-white/70 border border-white/10">DRAG OR HOVER — QUEEN DIRECTS THE SWARM</div>
               </div>
               <div className="mt-3 text-[10px] text-slate-500">Live GSAP canvas. The same conductor that runs the system, now in your hands.</div>

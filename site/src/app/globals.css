@@ -78,6 +78,15 @@ body {
   animation: glow-pulse 6s ease-in-out infinite;
 }
 
+/* Premium entrance for homepage swarm section */
+@keyframes entrance {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-entrance {
+  animation: entrance 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* Brain hero — central Orchestrator core (slow inward pulse). */
 @keyframes brain-core-pulse {
   0%, 100% { transform: scale(1); opacity: 0.9; }
