@@ -10,6 +10,12 @@ import {
   SIP_STARTER_TAG,
 } from "@/lib/sip-download";
 import {
+  PLUGIN_MODULES_DOWNLOADS,
+  PLUGIN_MODULES_MODULE_NAME,
+  PLUGIN_MODULES_PLUGINS,
+  PLUGIN_MODULES_SHA256,
+  PLUGIN_MODULES_TAG,
+  PLUGIN_PRODUCT_KITS,
   PLUGIN_STARTER_DOWNLOADS,
   PLUGIN_STARTER_MODULE_NAME,
   PLUGIN_STARTER_PLUGINS,
@@ -146,13 +152,108 @@ export default function DownloadPage() {
       </section>
 
       <section
+        id="starlight-intelligence-modules"
+        className="border-b border-white/[0.08] px-6 py-16"
+      >
+        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-[0.95fr_1.05fr]">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-widest text-emerald-300">
+              Starlight Intelligence Modules
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold text-white">
+              Six public-ready plugin kits for real operating work.
+            </h2>
+            <p className="mt-4 text-[14px] leading-[1.8] text-slate-400">
+              The new public suite packages founder command, revenue, system
+              release discipline, Arcanea worldbuilding, enterprise AI, and
+              creator products as clean wrapper modules. The private operating
+              suite remains internal; this is the shareable path.
+            </p>
+            <dl className="mt-6 grid gap-3 text-[12px]">
+              <Row label="Release" value={PLUGIN_MODULES_TAG} />
+              <Row label="Plugins" value="6 public wrapper modules" />
+              <Row label="SHA256" value={PLUGIN_MODULES_SHA256} />
+            </dl>
+          </div>
+
+          <div className="grid gap-4">
+            <div className="grid gap-3 sm:grid-cols-3">
+              {PLUGIN_MODULES_DOWNLOADS.map((download) => (
+                <a
+                  key={download.filename}
+                  href={download.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-white/[0.08] bg-[#0c0c12] p-4 transition-std hover:border-emerald-300/[0.35] hover:bg-white/[0.04]"
+                >
+                  <p className="text-[13px] font-semibold text-white">
+                    {download.label}
+                  </p>
+                  <code className="mt-3 block break-all font-mono text-[11px] text-slate-400">
+                    {download.filename}
+                  </code>
+                  <span className="mt-4 block text-[13px] text-emerald-200 transition-micro group-hover:translate-x-0.5">
+                    Open &rarr;
+                  </span>
+                </a>
+              ))}
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              {PLUGIN_PRODUCT_KITS.map((kit) => (
+                <div
+                  key={kit.filename}
+                  className="rounded-lg border border-white/[0.07] bg-white/[0.02] px-4 py-3"
+                >
+                  <p className="text-[13px] font-semibold text-white">
+                    {kit.label}
+                  </p>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    {kit.status}
+                  </p>
+                  <code className="mt-3 block break-all font-mono text-[11px] text-slate-400">
+                    {kit.sha256}
+                  </code>
+                </div>
+              ))}
+            </div>
+
+            <Terminal>
+              <span className="text-emerald-400">$</span>{" "}
+              <span className="text-slate-400">unzip</span>{" "}
+              <span className="text-violet-300">
+                {`${PLUGIN_MODULES_MODULE_NAME}.zip`}
+              </span>
+              {"\n"}
+              <span className="text-emerald-400">$</span>{" "}
+              <span className="text-slate-400">codex plugin marketplace add</span>{" "}
+              <span className="text-violet-300">
+                {"<path-to-extracted-bundle>"}
+              </span>
+              {"\n"}
+              {PLUGIN_MODULES_PLUGINS.map((plugin, index) => (
+                <span key={plugin}>
+                  <span className="text-emerald-400">$</span>{" "}
+                  <span className="text-slate-400">codex plugin add</span>{" "}
+                  <span className="text-violet-300">
+                    {plugin}@starlight-public-modules
+                  </span>
+                  {index < PLUGIN_MODULES_PLUGINS.length - 1 ? "\n" : ""}
+                </span>
+              ))}
+            </Terminal>
+          </div>
+        </div>
+      </section>
+
+      <section
         id="codex-plugin-starter"
         className="border-b border-white/[0.08] px-6 py-16"
       >
         <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-[0.9fr_1.1fr]">
           <div>
             <p className="text-[11px] font-medium uppercase tracking-widest text-cyan-300">
-              Codex plugin starter
+              Legacy Codex plugin starter
             </p>
             <h2 className="mt-3 text-2xl font-semibold text-white">
               Four public-safe operating plugins for builders.
@@ -218,7 +319,7 @@ export default function DownloadPage() {
               ))}
             </Terminal>
             <p className="rounded-lg border border-cyan-300/[0.14] bg-cyan-300/[0.06] px-4 py-3 text-[12px] leading-relaxed text-cyan-100/80">
-              The private 29-plugin suite is packaged separately for internal
+              The private 52-plugin suite is packaged separately for internal
               operators. Public distribution starts here so builders get a clean,
               verifiable install path without exposing private business logic.
               {" "}

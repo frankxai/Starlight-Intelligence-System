@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { QueenSwarm } from "@/components/QueenSwarm";
 
 export const metadata: Metadata = {
   title: "The Starlight Queen & Her Swarms — Queen Swarms Visual Skill",
@@ -44,16 +45,10 @@ export default function QueenPage() {
           </div>
         </div>
 
-        {/* Hero visual layer — L99 Grok-generated assets; resilient placeholder for tree health */}
-        <div className="absolute inset-y-0 right-0 w-full md:w-[58%] opacity-90 pointer-events-none">
-          <div className="queen-visual h-full w-full bg-[radial-gradient(#c084fc_0.8px,transparent_1px)] bg-[length:6px_6px] flex items-center justify-center" style={{backgroundColor: '#0a0a0f'}}>
-            <div className="text-center px-8">
-              <div className="text-[10px] tracking-[3px] text-cyan-400/70 mb-2">L99 VISUAL ARTIFACT</div>
-              <div className="text-2xl tracking-[-1px] text-white/80">Queen + Swarms</div>
-              <div className="mt-1 text-[10px] text-white/40">Grok Imagine • see docs/queen-motion/ + docs/visuals/</div>
-            </div>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent" />
+        {/* Hero visual — wired premium generated L99 asset */}
+        <div className="absolute inset-y-0 right-0 w-full md:w-[58%] opacity-90">
+          <img src="/assets/visuals/queen/7.jpg" alt="Starlight Queen conducting swarms" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f] via-[#0a0a0f]/85 to-[#0a0a0f]/40" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0f]" />
         </div>
 
@@ -102,20 +97,20 @@ export default function QueenPage() {
                 <p className="mt-5 text-xl text-zinc-400">Every task classified. Evidence, not guesswork. The three new classes (agentic-composer-long, visual-synthesis, parallel-harness-measure) are now first-class citizens.</p>
               </div>
               <div className="md:col-span-7 mt-8 md:mt-0">
-                <div className="queen-visual overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/60 p-8 text-center text-sm text-white/50">
-                  [L99 ROUTE→LEDGER Loop Visual — Grok Imagine generated]<br />
-                  <a href="/docs/queen-motion" className="underline hover:text-white/70">View full motion reference →</a> or <a href="https://github.com/frankxai/Starlight-Intelligence-System/tree/main/docs/visuals" target="_blank" className="underline hover:text-white/70">repo visuals</a>
+                <div className="overflow-hidden rounded-3xl border border-white/10">
+                  <img src="/assets/visuals/queen/3.jpg" alt="Queen route phase" className="w-full h-auto" />
                 </div>
+                <div className="mt-2 text-[10px] text-white/40 tracking-widest">L99 ROUTE — GROK IMAGINE • WIRED</div>
               </div>
             </div>
 
             {/* MEASURE - tall visual */}
             <div className="phase grid items-center gap-x-10 md:grid-cols-12" data-phase="measure">
               <div className="md:col-span-7 order-2 md:order-1 mt-8 md:mt-0">
-                <div className="queen-visual overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/60 p-8 text-center text-sm text-white/50">
-                  [L99 MEASURE — Parallel Swarms + Visual Eval]<br />
-                  <a href="/docs/queen-motion" className="underline hover:text-white/70">View full motion reference →</a>
+                <div className="overflow-hidden rounded-3xl border border-white/10">
+                  <img src="/assets/visuals/queen/2.jpg" alt="Measure phase parallel swarms" className="w-full h-auto" />
                 </div>
+                <div className="mt-2 text-[10px] text-white/40 tracking-widest">PARALLEL MEASURE — LIVE SWARM VISUALS</div>
               </div>
               <div className="md:col-span-5 order-1 md:order-2">
                 <div className="text-xs tracking-[3px] text-cyan-400">02 — MEASURE</div>
@@ -133,10 +128,10 @@ export default function QueenPage() {
                 <p className="mt-5 text-xl text-zinc-400">Subagents re-derive the table. A1/A2 discipline enforced. Visuals (heatmaps, palace cards, motion loops) become first-class atoms in the vault and the public surface.</p>
               </div>
               <div className="md:col-span-7 mt-8 md:mt-0">
-                <div className="queen-visual overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/60 p-8 text-center text-sm text-white/50">
-                  [L99 LEARN/RATIFY/LEDGER — Visual artifacts feed back into Palace + Vaults]<br />
-                  <a href="/docs/queen-motion" className="underline hover:text-white/70">View full motion reference →</a>
+                <div className="overflow-hidden rounded-3xl border border-white/10">
+                  <img src="/assets/visuals/queen/5.jpg" alt="Learn ratify ledger visual" className="w-full h-auto" />
                 </div>
+                <div className="mt-2 text-[10px] text-white/40 tracking-widest">SYNTHESIS + LEDGER — ATTESTED VISUAL ATOMS</div>
               </div>
             </div>
           </div>
@@ -152,9 +147,9 @@ export default function QueenPage() {
               <h2 className="mt-2 font-serif text-5xl tracking-[-1.8px]">Her Swarms</h2>
               <p className="mt-5 text-xl text-zinc-400">The Queen never works alone. Subagent swarms (Grok-native parallelism) execute MEASURE and LEARN concurrently while the Visual Composition Layer turns every tick into a permanent, attested artifact.</p>
             </div>
-            <div className="queen-visual rounded-3xl border border-white/10 bg-zinc-950/60 p-10 text-center text-sm text-white/50">
-              [L99 Swarms — Coordinated parallel subagents (Grok visual)]<br />
-              <a href="/docs/queen-motion" className="underline hover:text-white/70">View full motion reference →</a> or docs/visuals/07-queen-visual-routing-heatmap-palace-card.jpg
+            <div>
+              <QueenSwarm className="w-full aspect-[16/9.6] rounded-3xl border border-white/10" phase="measure" interactive />
+              <div className="mt-2 text-[10px] text-white/50 tracking-widest">LIVE INTERACTIVE — QUEEN DIRECTS 92 AGENTS. MOVE CURSOR TO CONDUCT.</div>
             </div>
           </div>
         </div>
@@ -171,9 +166,9 @@ export default function QueenPage() {
 
           <div className="mt-12 grid gap-4 md:grid-cols-3">
             {[
-              { title: "QUEEN LEDGER", desc: "Every tick produces or references a visual artifact." },
-              { title: "MEMORY PALACE", desc: "Visual embeddings live inside the six vaults as native atoms." },
-              { title: "ATTESTATION", desc: "Visuals carry full SIP provenance and can be formally attested." },
+              { title: "QUEEN LEDGER", desc: "Every execution produces or references a permanent visual artifact." },
+              { title: "MEMORY PALACE", desc: "Visuals live inside the six vaults as first-class, queryable atoms." },
+              { title: "ATTESTATION", desc: "Every frame carries SIP provenance. Forkable. Sovereign." },
             ].map((c, i) => (
               <div key={i} className="rounded-3xl border border-white/10 bg-white/[0.02] p-8 text-left">
                 <div className="text-xs tracking-[2px] text-violet-400">{c.title}</div>

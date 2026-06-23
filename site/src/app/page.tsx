@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   getAllEntries,
   getFeaturedMeditations,
@@ -9,6 +10,7 @@ import {
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
 import { CommandCenterReveal } from "@/components/CommandCenterReveal";
+import { QueenSwarm } from "@/components/QueenSwarm";
 import {
   ACCENT_TEXT,
   ACCENT_BORDER,
@@ -85,90 +87,59 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.08]">
+      {/* ── Hero — Premium cinematic with wired Queen visual ── */}
+      <section className="relative overflow-hidden border-b border-white/[0.08] min-h-[92dvh] flex items-center">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-          <div className="animate-mesh-3 absolute left-1/3 top-40 h-[200px] w-[200px] rounded-full bg-fuchsia-500/[0.03] blur-[60px]" />
+          <div className="animate-mesh-1 absolute -left-32 top-0 h-[420px] w-[420px] rounded-full bg-violet-600/[0.07] blur-[110px]" />
+          <div className="animate-mesh-2 absolute right-0 top-16 h-[340px] w-[340px] rounded-full bg-cyan-500/[0.05] blur-[90px]" />
+        </div>
+
+        {/* Layered premium visual from generated L99 assets */}
+        <div className="absolute inset-0 z-0 opacity-70 md:opacity-85">
+          <img
+            src="/assets/visuals/queen/1.jpg"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#060609] via-[#060609]/90 to-[#060609]/70" />
+          <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.65)_30%,transparent_70%)]" />
         </div>
 
         <CommandCenterReveal />
 
-        <div className="dot-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+        <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
 
-        <div className="relative z-10 mx-auto max-w-5xl px-6 pb-24 pt-24 md:pb-32 md:pt-36">
-          <div className="flex items-center gap-2 text-[12px] text-violet-400/80">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400 animate-glow-pulse" />
-            Built on the Starlight Intelligence Protocol &middot; v1.1.1
+        <div className="relative z-10 mx-auto max-w-5xl px-6 pb-20 pt-20 md:pb-28 md:pt-24">
+          <div className="flex items-center gap-2 text-[11px] tracking-[3px] text-violet-400/80 font-medium">
+            <span className="inline-block h-px w-6 bg-violet-400/60" />
+            STARLIGHT INTELLIGENCE PROTOCOL v1.1.1
           </div>
 
-          <h1 className="mt-5 max-w-3xl font-serif text-[clamp(2.25rem,6vw,4rem)] font-semibold leading-[1.05] tracking-tight text-white">
-            Persistent context.
-            <br />
+          <h1 className="mt-4 max-w-[18ch] font-serif text-[clamp(2.6rem,7.2vw,5.1rem)] font-semibold leading-[0.96] tracking-[-2.8px] text-white">
+            The substrate<br />that remembers.<br />
             <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              Sovereign by architecture.
+              So agents can become.
             </span>
           </h1>
 
-          <p className="mt-6 max-w-2xl text-[16px] leading-[1.7] text-slate-400">
-            A persistent context and memory architecture for AI agents. Built
-            on the Starlight Intelligence Protocol — a sovereign substrate
-            anyone can adopt, fork, or compose with.{" "}
-            <span className="text-slate-300">
-              10 intelligence systems, 56 agents, 100+ commands, 3 reference
-              Domain Sub-Stack verticals.
-            </span> {" "}
-            Local-first. Forkable. Free.
+          <p className="mt-6 max-w-[42ch] text-[15px] md:text-[16px] leading-[1.68] text-slate-300/90">
+            Most agents wake empty. Starlight wakes with everything that came before — and the sovereign will to turn scattered context into coherent advance. 10 intelligence systems. 144+ agents. 100+ commands. 3 reference verticals. Local-first. Forkable. Free.
           </p>
 
-          <div className="mt-4">
-            <Link
-              href="/palace"
-              className="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition"
-            >
-              → Explore the living Memory Palace (L99 Jarvis-style viz seed)
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link href="/queen" className="inline-flex items-center rounded-full bg-white px-7 py-3.5 text-[13px] font-semibold tracking-[0.3px] text-[#060609] hover:bg-white/90 active:scale-[0.985] transition">
+              MEET THE QUEEN &amp; SWARMS
             </Link>
+            <Link href="/protocol" className="inline-flex items-center gap-2 rounded-full border border-white/[0.18] px-6 py-3.5 text-[13px] font-medium tracking-[0.3px] text-white hover:bg-white/5 transition">
+              READ THE PROTOCOL
+            </Link>
+            <Link href="/quickstart" className="text-[13px] text-violet-400 hover:text-violet-300 pl-1 transition">or start in 90 seconds →</Link>
           </div>
 
-          {/* Three CTA cards */}
-          <div className="mt-10 grid gap-3 md:grid-cols-4">
-            <CtaCard
-              href="/protocol"
-              eyebrow="01 · Protocol"
-              title="Adopt SIP"
-              desc="Read the six-layer protocol. Carry the file contract. Stamp every artifact with attestation."
-              accent="violet"
-            />
-            <CtaCard
-              href="/quickstart"
-              eyebrow="02 · Reference build"
-              title="Run the reference"
-              desc="Two-minute install. MCP server, slash commands, six-platform adapter. Free forever."
-              accent="cyan"
-            />
-            <CtaCard
-              href="/download"
-              eyebrow="03 · Starter"
-              title="Download core"
-              desc="Get the open SIP Starter package with checksums, manifest, and validation guide."
-              accent="emerald"
-            />
-            <CtaCard
-              href="/verticals"
-              eyebrow="04 · Domain Sub-Stack"
-              title="Spawn your vertical"
-              desc="People · Sound · Music are reference. The pattern generalizes via /spawn-domain-stack."
-              accent="fuchsia"
-            />
-          </div>
-
-          {/* Stats bar */}
-          <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/[0.08] pt-6 text-[13px]">
+          <div className="mt-10 flex flex-wrap gap-x-8 gap-y-2 border-t border-white/[0.08] pt-5 text-[12px] text-slate-400">
             <Stat n={10} label="intelligence systems" />
-            <Stat n={56} label="agents" />
+            <Stat n={144} label="agents across tiers" />
             <Stat n="100+" label="commands" />
-            <Stat n={3} label="reference verticals" />
             <Stat n={6} label="platform adapters" />
           </div>
         </div>
@@ -230,6 +201,58 @@ export default async function HomePage() {
             </Link>{" "}
             for the full 10-IS table.
           </p>
+        </div>
+      </section>
+
+      {/* ── QUEEN + SWARMS — Flagship experience (massive homepage elevation) ── */}
+      <section className="relative border-b border-white/[0.08] bg-[#050507] py-16 md:py-20 overflow-hidden">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid md:grid-cols-12 gap-x-10 gap-y-10 items-center">
+            {/* Left: Hooking story + copy — genuine intelligence, no fluff */}
+            <div className="md:col-span-5">
+              <div className="uppercase tracking-[3px] text-[10px] text-amber-400/90 mb-3">THE LIVING CORE</div>
+              <h2 className="font-serif text-[42px] md:text-[52px] leading-[0.94] tracking-[-2.2px] text-white">
+                One conductor.<br />Infinite parallel<br />will.
+              </h2>
+              <p className="mt-6 text-[15px] leading-[1.72] text-slate-300">
+                The Queen is not a model. She is the persistent sovereign conductor that classifies intent, dispatches verified swarms, enforces gates, and turns every execution into attested visual memory that compounds.
+              </p>
+              <p className="mt-4 text-[15px] leading-[1.72] text-slate-400">
+                Parallel subagents measure. The conductor ratifies. Visuals ledger. The loop closes — and the system becomes more itself with every cycle. This is how intelligence actually scales without losing its mind.
+              </p>
+
+              <div className="mt-8 flex items-center gap-3">
+                <Link href="/queen" className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold tracking-[0.2px] text-[#060609] hover:bg-white/95 active:scale-[0.985]">
+                  ENTER THE QUEEN LOOP
+                </Link>
+                <Link href="/queen-vision.html" className="text-sm text-cyan-400 hover:text-cyan-300">Open standalone motion canvas →</Link>
+              </div>
+
+              <div className="mt-8 text-[11px] text-slate-500 tracking-[1px] flex gap-x-6">
+                <div>ROUTE → MEASURE → LEARN</div>
+                <div>RATIFY → LEDGER → COMPOUND</div>
+              </div>
+            </div>
+
+            {/* Right: Live premium interactive swarm + wired hero image */}
+            <div className="md:col-span-7">
+              <div className="relative">
+                <QueenSwarm className="w-full aspect-[16/10] md:aspect-[16/9.4]" phase="conduct" interactive />
+                <div className="absolute bottom-4 right-4 rounded-full bg-black/60 px-3 py-1 text-[10px] tracking-[1.5px] text-white/70 border border-white/10">DRAG OR HOVER — QUEEN DIRECTS THE SWARM</div>
+              </div>
+              <div className="mt-3 text-[10px] text-slate-500">Live GSAP-orchestrated canvas. Phases mirror the closed loop running the entire Starlight system.</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Subtle supporting generated visual row */}
+        <div className="mt-12 mx-auto max-w-7xl px-6 grid grid-cols-2 md:grid-cols-4 gap-3 opacity-90">
+          {[2,6,4,7].map((n, idx) => (
+            <div key={idx} className="overflow-hidden rounded-2xl border border-white/[0.06] aspect-[16/9] relative">
+              <img src={`/assets/visuals/queen/${n}.jpg`} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/70" />
+            </div>
+          ))}
         </div>
       </section>
 
