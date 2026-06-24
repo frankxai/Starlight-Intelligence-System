@@ -1,0 +1,36 @@
+{
+  "dispatchId": "aee74cf9-8c96-48ec-b183-91260ae37a68",
+  "task": "Read-only /si activation-router smoke: verify dispatcher reaches a manual lane and writes a receipt. No edits.",
+  "repo": ".",
+  "repoPath": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System",
+  "started": "2026-06-22T18:57:26.7451003+02:00",
+  "completed": "2026-06-22T18:57:26.8107801+02:00",
+  "parallel": false,
+  "lanes": [
+    {
+      "lane": "cursor",
+      "cli": "cursor",
+      "binary": null,
+      "version": null,
+      "model": null,
+      "modelSource": "default",
+      "sessionId": null,
+      "ok": true,
+      "exitCode": 0,
+      "command": "(manual) Open Cursor in repo - IDE lane has no headless exec",
+      "commandArgv": [],
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "output": "Cursor is an IDE lane. Dispatch skipped; use the editor agent surface directly.",
+      "error": "",
+      "captureNote": "manual-lane",
+      "elapsed": 0
+    }
+  ],
+  "passed": 1,
+  "failed": 0,
+  "activated": [],
+  "skipped": [
+    "cursor:manual"
+  ]
+}

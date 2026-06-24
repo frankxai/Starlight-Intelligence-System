@@ -1,0 +1,111 @@
+{
+  "version": "2026-06-24",
+  "task": "Rebuild the Starlight Intelligence System homepage from a generated Queen/Codex gallery into a premium operational intelligence product surface.",
+  "surface": "starlightintelligence.org homepage and visual brand-lab route",
+  "audience": "AI builders, operators, and technical buyers who need persistent agent memory, proof, governance, and reproducible deployment confidence.",
+  "first_read": "Starlight Intelligence System is an operational memory and proof control plane for AI agent fleets.",
+  "standards": [
+    "DESIGN_TASTE.md",
+    "WEB_EXPERIENCE_STANDARD.md",
+    "MOTION_TASTE_RUBRIC.md",
+    "VISUAL_QA_GATE.md",
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "premium-visual-design",
+    "motion-design-studio/product-motion-designer"
+  ],
+  "references": [
+    {
+      "label": "Local Next.js 16 App Router docs",
+      "source": "site/node_modules/next/dist/docs/01-app",
+      "reason": "Confirm server/client component boundaries, Link, Image, and lazy loading behavior before editing the app."
+    },
+    {
+      "label": "Vercel project state",
+      "source": "Vercel connector project prj_wDNGrb1R1rB5PJOG9cUEICSER887",
+      "reason": "Production currently deploys from commit eb26621 with gitDirty=1; redesign must become reproducible from Git."
+    }
+  ],
+  "direction": {
+    "keep": [
+      "SIS brand precision, luminous operational feel, local-first and SIP proof language",
+      "Useful non-blocking hook and reduced-motion intent already present in the dirty tree",
+      "Generated visual work as a separate inspectable brand-lab route"
+    ],
+    "avoid": [
+      "Homepage as Queen/Codex gallery",
+      "Generated hero images with fake text or unreadable labels",
+      "Fantasy language overpowering trust, logs, governance, evals, traces, and operator control",
+      "Mobile hero text clipping"
+    ],
+    "signature": "Code-rendered operational proof console: context enters, vault recall and eval gates run, operator control remains visible, and SIP attestation exits as a durable proof packet.",
+    "system": [
+      "Homepage hero uses product UI as the primary visual asset rather than generated art",
+      "Framer Motion handles entrance hierarchy; GSAP handles trace/proof-state animation inside the console",
+      "Reduced-motion users receive a stable non-spatial dashboard state",
+      "Route generated imagery to /visuals/brand-lab for inspection and future asset QA"
+    ]
+  },
+  "artifacts": [
+    {
+      "path_or_url": "site/src/app/page.tsx",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Rebuilt as an operational product homepage. Final local QA screenshot: C:/Users/frank/starlight/repos/_visual-qa/sis-operational-redesign-2026-06-24/final-clean/home-desktop-viewport.png."
+    },
+    {
+      "path_or_url": "site/src/components/OperationalProofConsole.tsx",
+      "kind": "motion",
+      "inspected": true,
+      "notes": "Code-rendered proof console verified on desktop, mobile, and reduced-motion browser contexts. GSAP trace animation is disabled when reduced motion is requested."
+    },
+    {
+      "path_or_url": "site/src/app/visuals/brand-lab/page.tsx",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Generated visual studies moved out of the homepage into a separate brand-lab route. Final local QA confirmed 18/18 images loaded after scroll."
+    }
+  ],
+  "checks": [
+    {
+      "name": "focused-security-scan",
+      "status": "pass",
+      "evidence": "Focused scans passed for site/src, site/design-evidence, and site/DESIGN.md. Full repo scan still reports pre-existing private/cache findings outside the changed web surface."
+    },
+    {
+      "name": "lint",
+      "status": "pass",
+      "evidence": "npm --prefix site run lint exited 0 with 19 existing warnings in download, queen, and research routes."
+    },
+    {
+      "name": "local-build",
+      "status": "pass",
+      "evidence": "npm --prefix site run build completed successfully with Next.js 16.2.3/Turbopack and generated 74 static pages, including /visuals/brand-lab."
+    },
+    {
+      "name": "desktop-mobile-visual-qa",
+      "status": "pass",
+      "evidence": "Playwright msedge production-server QA: desktop 1440x1000 and mobile 390x844 showed no horizontal overflow, unclipped H1, no homepage Queen/Codex copy, and proof console visible in the first viewport."
+    },
+    {
+      "name": "reduced-motion",
+      "status": "pass",
+      "evidence": "Reduced-motion mobile QA showed no page or console errors, no horizontal overflow, and the proof console remained visible as a stable surface."
+    },
+    {
+      "name": "production-deploy",
+      "status": "blocked",
+      "evidence": "Awaiting clean Git commit, push, and Vercel production verification."
+    }
+  ],
+  "score": {
+    "total": 28,
+    "max": 30,
+    "notes": "Premium gate approved for deploy. It loses two points for pre-existing lint warnings on adjacent routes and for preserving generated imagery as a lab route rather than completing asset-by-asset scoring in this pass."
+  },
+  "decision": "blocked",
+  "known_risks": [
+    "Existing dirty worktree contains many non-site changes that still require staging and commit strategy.",
+    "Production is currently reproducibility-risky because Vercel reports gitDirty=1 until the cleaned commit is deployed."
+  ]
+}

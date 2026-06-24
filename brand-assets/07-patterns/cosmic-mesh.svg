@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <!-- Premium cosmic mesh pattern - subtle, luminous. Use as background at low opacity. -->
+  <defs>
+    <pattern id="mesh" patternUnits="userSpaceOnUse" width="40" height="40">
+      <path d="M0 20 L40 20 M20 0 L20 40" stroke="#a78bfa" stroke-width="0.6" opacity="0.15"/>
+      <circle cx="20" cy="20" r="1.5" fill="#67e8f9" opacity="0.2"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="400" fill="url(#mesh)"/>
+</svg>

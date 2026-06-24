@@ -363,18 +363,45 @@ body {
   color: rgb(203 213 225);
 }
 .explainer-prose > * + * { margin-top: 1.25em; }
-.explainer-prose h2 {
-  font-size: 1.5rem;
+.explainer-prose h2,
+.research-prose h2,
+.prose h2,
+.research-hero h2 {
+  font-size: 1.75rem;
   font-weight: 600;
   color: white;
-  margin-top: 3rem;
-  letter-spacing: -0.01em;
+  margin-top: 3.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
-.explainer-prose h3 {
-  font-size: 1.15rem;
+.research-hero img,
+.blog-header img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+.research-hero,
+.blog-header {
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.explainer-prose h3,
+.research-prose h3,
+.prose h3 {
+  font-size: 1.35rem;
   font-weight: 600;
   color: rgb(241 245 249);
-  margin-top: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
 }
 .explainer-prose h4 {
   font-size: 0.875rem;
@@ -463,6 +490,40 @@ body {
 }
 .explainer-prose tr:last-child td { border-bottom: 0; }
 
+/* Enhanced blog / research / content image & header treatment for premium feel */
+.explainer-prose img,
+.research-prose img,
+.prose img,
+.content img {
+  max-width: 100%;
+  height: auto;
+  margin: 2.5rem auto;
+  border-radius: 12px;
+  display: block;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.4);
+}
+.explainer-prose figure,
+.research-prose figure,
+.prose figure {
+  margin: 2.5rem 0;
+}
+.explainer-prose figcaption,
+.research-prose figcaption {
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgb(148 163 184);
+  margin-top: 0.5rem;
+}
+
+/* Better header rhythm for blog-like pages */
+.explainer-prose h1,
+.research-prose h1 {
+  font-size: 2.25rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+}
+
 /* =================================================================
    Console of the Sovereign — /cockpit/spec-trace
    APPEND-ONLY utility classes for the spec-trace page. Do NOT touch
@@ -478,17 +539,8 @@ body {
      - ASCII separators rendered inline as text, not borders
    ================================================================= */
 
-/* Departure Mono — bitmap display font. Optional CDN load with safe fallback to
-   JetBrains Mono. If the fetch fails (CSP, offline, etc.) the @font-face entry
-   is simply unused and the .console-display class falls back to var(--font-jbmono).
-   The URL is intentionally an HTTPS CDN per the brief; tweak if you self-host. */
-@font-face {
-  font-family: "Departure Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("https://cdn.jsdelivr.net/gh/departure-mono/departure-mono@main/fonts/woff2/DepartureMono-Regular.woff2") format("woff2");
-}
+/* Console display type uses the self-hosted Next font variables so the site
+   remains compatible with the production CSP and offline review. */
 
 /* The shell wraps the whole spec-trace page and overrides the site's default
    background WITHOUT mutating layout.tsx or globals body styling. */
@@ -511,7 +563,7 @@ body {
 }
 
 .console-display {
-  font-family: "Departure Mono", var(--font-jbmono), ui-monospace, monospace;
+  font-family: var(--font-jbmono), ui-monospace, monospace;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   font-size: 13px;
@@ -980,7 +1032,7 @@ body {
 }
 .console-md > * + * { margin-top: 0.9em; }
 .console-md h1, .console-md h2, .console-md h3, .console-md h4 {
-  font-family: "Departure Mono", var(--font-jbmono), ui-monospace, monospace;
+  font-family: var(--font-jbmono), ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #E8E2D5;

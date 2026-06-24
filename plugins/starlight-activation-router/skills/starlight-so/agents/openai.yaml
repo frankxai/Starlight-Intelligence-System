@@ -1,0 +1,6 @@
+interface:
+  display_name: "Starlight Orchestrator"
+  short_description: "Build /so packets, swarm loops, fanout gates, and verification."
+  default_prompt: "Use /so or $starlight-activation-router:starlight-so to orchestrate this task."
+policy:
+  allow_implicit_invocation: true

@@ -125,8 +125,8 @@ export function MemoryPalace() {
         <Starfield seed={20260612} count={110} className="opacity-70" />
       </div>
 
-      {/* Palace container — glassmorphic, premium, alive */}
-      <div className="relative rounded-3xl border border-white/[0.08] bg-[#060609]/80 p-8 pb-10 backdrop-blur-2xl">
+      {/* Palace container — glassmorphic, premium, alive with 3D Queen/swarm visual layer for brand (SVG orbs on top) */}
+      <div className="relative rounded-3xl border border-white/[0.08] bg-[#060609]/80 p-8 pb-10 backdrop-blur-2xl" style={{ backgroundImage: 'url(/assets/visuals/queen-premium/35.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'multiply', opacity: 0.95 }}>
         <div className="mb-6 flex items-center justify-between">
           <div>
             <div className="text-xs uppercase tracking-[3px] text-white/50">LIVING MEMORY SUBSTRATE</div>

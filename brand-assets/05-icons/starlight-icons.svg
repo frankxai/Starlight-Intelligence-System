@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200" viewBox="0 0 800 200" fill="none">
+  <!-- Starlight Intelligence Icon Set - Premium elegant line + glow style. June 2026 world best. -->
+  <!-- Use stroke #a78bfa or #67e8f9, 1.5px. Add subtle glow filter in apps. -->
+
+  <!-- 1. Queen Orb (central brand icon) -->
+  <g>
+    <circle cx="50" cy="100" r="35" stroke="#a78bfa" stroke-width="2"/>
+    <circle cx="50" cy="100" r="18" stroke="#67e8f9" stroke-width="1.5"/>
+    <path d="M35 85 L65 115" stroke="#c5a46e" stroke-width="1"/>
+  </g>
+
+  <!-- 2. Swarm Particles -->
+  <g>
+    <circle cx="150" cy="80" r="4" fill="#a78bfa"/>
+    <circle cx="170" cy="100" r="5" fill="#67e8f9"/>
+    <circle cx="130" cy="110" r="3" fill="#e879f9"/>
+    <circle cx="160" cy="130" r="4" fill="#c5a46e"/>
+    <line x1="150" y1="80" x2="170" y2="100" stroke="#a78bfa" stroke-width="1" opacity="0.6"/>
+    <line x1="170" y1="100" x2="130" y2="110" stroke="#67e8f9" stroke-width="1" opacity="0.6"/>
+  </g>
+
+  <!-- 3. SIP Layers (protocol) -->
+  <g>
+    <rect x="230" y="70" width="50" height="12" rx="2" stroke="#a78bfa" stroke-width="1.5"/>
+    <rect x="240" y="90" width="50" height="12" rx="2" stroke="#67e8f9" stroke-width="1.5"/>
+    <rect x="250" y="110" width="50" height="12" rx="2" stroke="#c5a46e" stroke-width="1.5"/>
+  </g>
+
+  <!-- 4. Agent Node -->
+  <g>
+    <circle cx="380" cy="100" r="20" stroke="#a78bfa" stroke-width="2"/>
+    <circle cx="380" cy="100" r="8" fill="#67e8f9"/>
+  </g>
+
+  <!-- 5. Constellation (swarm field) -->
+  <g>
+    <circle cx="460" cy="70" r="2" fill="#a78bfa"/>
+    <circle cx="490" cy="90" r="2" fill="#67e8f9"/>
+    <circle cx="470" cy="120" r="2" fill="#e879f9"/>
+    <line x1="460" y1="70" x2="490" y2="90" stroke="#c5a46e" stroke-width="0.8"/>
+    <line x1="490" y1="90" x2="470" y2="120" stroke="#c5a46e" stroke-width="0.8"/>
+  </g>
+
+  <!-- 6. Memory Orb -->
+  <g>
+    <ellipse cx="570" cy="100" rx="22" ry="28" stroke="#a78bfa" stroke-width="2"/>
+    <ellipse cx="570" cy="100" rx="10" ry="14" stroke="#67e8f9" stroke-width="1" opacity="0.7"/>
+  </g>
+
+  <!-- 7. Conductor (Queen simplified) -->
+  <g>
+    <path d="M650 75 Q670 100 650 125" stroke="#a78bfa" stroke-width="2" fill="none"/>
+    <circle cx="650" cy="100" r="8" stroke="#c5a46e" stroke-width="1.5"/>
+  </g>
+
+  <!-- 8. SIP Attest -->
+  <g>
+    <path d="M730 85 L760 85 L760 115 L730 115 Z" stroke="#a78bfa" stroke-width="1.5" fill="none"/>
+    <path d="M740 95 L750 105" stroke="#67e8f9" stroke-width="1.5"/>
+  </g>
+</svg>

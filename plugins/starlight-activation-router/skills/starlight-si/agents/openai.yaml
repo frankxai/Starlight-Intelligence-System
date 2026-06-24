@@ -1,0 +1,6 @@
+interface:
+  display_name: "Starlight Intelligence"
+  short_description: "Route /si prompts to the right local agent lane."
+  default_prompt: "Use /si or $starlight-activation-router:starlight-si to route this task."
+policy:
+  allow_implicit_invocation: true

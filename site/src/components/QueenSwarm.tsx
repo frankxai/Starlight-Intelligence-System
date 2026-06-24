@@ -2,12 +2,17 @@
 
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface QueenSwarmProps {
   className?: string;
   phase?: "route" | "measure" | "learn" | "ratify" | "ledger" | "conduct";
   interactive?: boolean;
 }
+
+type SwarmPhase = NonNullable<QueenSwarmProps["phase"]>;
 
 interface Particle {
   x: number;
@@ -20,11 +25,20 @@ interface Particle {
   phaseOffset: number;
 }
 
+interface QueenRuntimeState {
+  x: number;
+  y: number;
+  pulse: number;
+  phase?: SwarmPhase;
+  forcedPhase?: SwarmPhase;
+  scrollIntensity?: number;
+}
+
 export function QueenSwarm({ className = "", phase = "conduct", interactive = true }: QueenSwarmProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const queenRef = useRef({ x: 0, y: 0, pulse: 0 });
+  const queenRef = useRef<QueenRuntimeState>({ x: 0, y: 0, pulse: 0 });
   const mouseRef = useRef({ x: 0, y: 0, active: false });
   const rafRef = useRef<number | null>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
@@ -48,7 +62,7 @@ export function QueenSwarm({ className = "", phase = "conduct", interactive = tr
       canvas.height = height * window.devicePixelRatio;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
       queenRef.current.x = width * 0.5;
       queenRef.current.y = height * 0.5;
     };
@@ -111,9 +125,9 @@ export function QueenSwarm({ className = "", phase = "conduct", interactive = tr
     const tl = gsap.timeline({ repeat: -1 });
     tlRef.current = tl;
 
-    const setPhase = (p: string) => {
+    const setPhase = (p: SwarmPhase) => {
       // modulate global speed/attraction via data on queen
-      (queen as any).phase = p;
+      queen.phase = p;
     };
 
     tl.call(() => setPhase("route"), [], 0)
@@ -130,10 +144,21 @@ export function QueenSwarm({ className = "", phase = "conduct", interactive = tr
       .to({}, { duration: 5.5 });
 
     // External phase prop sync (if controlled)
-    const syncPhase = (next: string) => {
-      (queen as any).forcedPhase = next;
+    const syncPhase = (next: SwarmPhase) => {
+      queen.forcedPhase = next;
     };
     if (phase && phase !== "conduct") syncPhase(phase);
+
+    // Premium GSAP ScrollSync: tie swarm intensity/spread to scroll progress for "conducted" feel
+    const scrollTrigger = ScrollTrigger.create({
+      trigger: container,
+      start: "top 80%",
+      end: "bottom 20%",
+      scrub: 0.5,
+      onUpdate: (self) => {
+        queen.scrollIntensity = 0.6 + self.progress * 1.4;
+      },
+    });
 
     let t = 0;
 
@@ -167,13 +192,17 @@ export function QueenSwarm({ className = "", phase = "conduct", interactive = tr
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      const currentPhase = (queen as any).forcedPhase || (queen as any).phase || phase || "conduct";
+      const currentPhase = queen.forcedPhase || queen.phase || phase;
 
       // Behavior params per phase
       let attract = 0.014;
       let orbitSpeed = 0.014;
       let cohesion = 0.008;
       let spread = 1.0;
+
+      const scrollI = queen.scrollIntensity ?? 1.0;
+      spread *= scrollI;
+      attract *= (0.8 + (scrollI - 1) * 0.4);
 
       if (currentPhase === "route") { attract = 0.028; orbitSpeed = 0.009; }
       else if (currentPhase === "measure") { attract = 0.008; orbitSpeed = 0.031; spread = 1.35; }
@@ -301,6 +330,7 @@ export function QueenSwarm({ className = "", phase = "conduct", interactive = tr
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       ro.disconnect();
+      scrollTrigger.kill();
       if (tlRef.current) tlRef.current.kill();
       if (interactive) {
         canvas.removeEventListener("pointermove", onPointerMove);

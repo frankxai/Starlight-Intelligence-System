@@ -3,18 +3,12 @@ import Link from "next/link";
 import { QueenSwarm } from "@/components/QueenSwarm";
 
 export const metadata: Metadata = {
-  title: "The Starlight Queen & Her Swarms — Queen Swarms Visual Skill",
-  description: "Live demo of the Queen Swarms Visual skill (vision/queen-swarms-visual). The canonical L99 motion experience of the Starlight Orchestrator v0.2 closed loop and her parallel subagent swarms — scroll-driven canvas, premium visuals, SIP-attested. Activate the skill to generate variants for ledger, research, or domain surfaces.",
+  title: "The Starlight Queen & Her Swarms",
+  description: "Live demo of the continuous Queen loop at the heart of Starlight. Scroll-driven, premium visuals, parallel subagent swarms, SIP-attested. The system made visible.",
   openGraph: {
-    title: "The Starlight Queen & Her Swarms — Queen Swarms Visual Skill",
-    description: "The live public surface of the Queen Swarms Visual skill. Scroll the loop. Parallel swarms made felt. Activate to dispatch visual synthesis.",
-    images: [{ url: "/assets/visuals/queen/7.jpg", width: 1200, height: 630, alt: "Starlight Queen conducting swarms — premium L99 visual" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "The Starlight Queen & Her Swarms — Queen Swarms Visual Skill",
-    description: "Live demo + activation surface for the canonical Queen + swarms motion skill. Built on SIP.",
-    images: [{ url: "/assets/visuals/queen/7.jpg", alt: "Starlight Queen conducting swarms" }],
+    title: "The Starlight Queen & Her Swarms",
+    description: "The living closed loop. ROUTE → MEASURE → LEARN → RATIFY → LEDGER. Premium visuals as first-class artifacts. Built on SIP.",
+    images: [{ url: "/assets/visuals/queen/7.jpg", width: 1200, height: 630, alt: "Starlight Queen conducting swarms" }],
   },
 };
 
@@ -32,7 +26,7 @@ export default function QueenPage() {
               The Starlight<br />Queen &amp; Her Swarms
             </h1>
             <p className="max-w-2xl text-2xl text-zinc-400 tracking-tight mb-10">
-              The living closed loop at the center of everything.<br />Scroll to witness the intelligence move.
+              The continuous, self-advancing intelligence at the center.<br />One substrate. Coordinated swarms. Visuals that compound.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <a href="#the-loop" className="inline-flex items-center gap-3 rounded-2xl bg-white px-9 py-4 text-lg font-medium tracking-tight text-[#0a0a0f] hover:bg-zinc-200 active:scale-[0.985] transition">
@@ -48,7 +42,7 @@ export default function QueenPage() {
 
         {/* Hero visual — wired premium generated L99 asset */}
         <div className="absolute inset-y-0 right-0 w-full md:w-[58%] opacity-90">
-          <img src="/assets/visuals/queen/7.jpg" alt="Starlight Queen conducting swarms" className="h-full w-full object-cover" />
+          <img src="/assets/visuals/08-readme-hero.jpg" alt="One substrate — every CLI shares attested memory" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f] via-[#0a0a0f]/85 to-[#0a0a0f]/40" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0f]" />
         </div>
@@ -59,9 +53,9 @@ export default function QueenPage() {
       {/* Intro */}
       <div className="mx-auto max-w-3xl px-8 py-20 text-center">
         <p className="text-3xl leading-tight tracking-[-0.5px] text-white">
-          A continuous, self-advancing intelligence that routes, measures with parallel swarms, learns, ratifies with discipline, and ledgers through beautiful native visuals.
+          A continuous loop that routes work, measures with parallel swarms and visual eval, learns, ratifies with discipline, and ledgers through native visuals that compound.
         </p>
-        <p className="mt-6 text-zinc-400">This is not documentation. This is the system made visible.</p>
+        <p className="mt-6 text-zinc-400">Scroll the loop. See the intelligence move.</p>
       </div>
 
       {/* The Loop - full scroll symphony */}
@@ -99,7 +93,7 @@ export default function QueenPage() {
               </div>
               <div className="md:col-span-7 mt-8 md:mt-0">
                 <div className="overflow-hidden rounded-3xl border border-white/10">
-                  <img src="/assets/visuals/queen/3.jpg" alt="Queen route phase" className="w-full h-auto" />
+                  <img src="/assets/visuals/15-queen-loop.jpg" alt="Queen continuous loop" className="w-full h-auto" />
                 </div>
                 <div className="mt-2 text-[10px] text-white/40 tracking-widest">L99 ROUTE — GROK IMAGINE • WIRED</div>
               </div>
@@ -109,7 +103,7 @@ export default function QueenPage() {
             <div className="phase grid items-center gap-x-10 md:grid-cols-12" data-phase="measure">
               <div className="md:col-span-7 order-2 md:order-1 mt-8 md:mt-0">
                 <div className="overflow-hidden rounded-3xl border border-white/10">
-                  <img src="/assets/visuals/queen/2.jpg" alt="Measure phase parallel swarms" className="w-full h-auto" />
+                  <img src="/assets/visuals/02-starlight-queen-closed-loop-dashboard.jpg" alt="Measure with parallel swarms and visual eval" className="w-full h-auto" />
                 </div>
                 <div className="mt-2 text-[10px] text-white/40 tracking-widest">PARALLEL MEASURE — LIVE SWARM VISUALS</div>
               </div>
@@ -130,7 +124,7 @@ export default function QueenPage() {
               </div>
               <div className="md:col-span-7 mt-8 md:mt-0">
                 <div className="overflow-hidden rounded-3xl border border-white/10">
-                  <img src="/assets/visuals/queen/5.jpg" alt="Learn ratify ledger visual" className="w-full h-auto" />
+                  <img src="/assets/visuals/06-self-advancing-sis-constellation.jpg" alt="Self-advancing system" className="w-full h-auto" />
                 </div>
                 <div className="mt-2 text-[10px] text-white/40 tracking-widest">SYNTHESIS + LEDGER — ATTESTED VISUAL ATOMS</div>
               </div>

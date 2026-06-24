@@ -1,0 +1,25 @@
+{
+  "schema_version": "agentic-music-os.distribution-manifest.v0.1",
+  "song_id": "franks-vibes_20260621_oh-chama",
+  "status": "prepared_local_only",
+  "external_uploads_performed": false,
+  "packets": {
+    "distrokid": "distribution/distrokid-packet.md",
+    "spotify_artists": "distribution/spotify-artists-packet.md",
+    "youtube": "distribution/youtube-packet.md",
+    "suno_hooks": "distribution/suno-hooks-packet.md"
+  },
+  "preferred_upload_assets": {
+    "distrokid_cover": "assets/cover/oh-chama-cover-3000x3000.jpg",
+    "spotify_canvas": "assets/motion/oh-chama-spotify-canvas-loop-6s-1080x1920.mp4",
+    "youtube_shorts": "assets/motion/oh-chama-youtube-shorts-hook-24s-1080x1920-v2.mp4",
+    "youtube_thumbnail": "assets/cover/oh-chama-thumbnail-1920x1080.jpg"
+  },
+  "manual_blocks": [
+    "rights_confirmation",
+    "persona_identity_lock",
+    "human_listen",
+    "wav_or_mastered_wav_for_distribution"
+  ]
+}
+
