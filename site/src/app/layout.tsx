@@ -31,13 +31,13 @@ export const metadata: Metadata = {
     template: "%s — Starlight Intelligence",
   },
   description:
-    "A persistent context and memory architecture for AI agents. 10 intelligence systems, 56 agents, 100+ commands, 3 reference Domain Sub-Stack verticals. Built on the Starlight Intelligence Protocol. Local-first. Forkable. Free.",
+    "Operational memory, governance, traces, evals, logs, and operator control for AI agent fleets. Built on SIP. Local-first, forkable, and proof-oriented.",
   alternates: { canonical: "/" },
   openGraph: {
     title:
       "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "10 intelligence systems, 56 agents, 100+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
+      "Persistent context, proof packets, governance gates, and reproducible agent operations. Built on SIP. Local-first and forkable.",
     url: "https://starlightintelligence.org",
     siteName: "Starlight Intelligence",
     type: "website",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     title:
       "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
     description:
-      "10 intelligence systems, 56 agents, 100+ commands, 3 reference verticals. Built on SIP. Local-first. Forkable. Free.",
+      "Persistent context, proof packets, governance gates, and reproducible agent operations. Built on SIP. Local-first and forkable.",
   },
   robots: { index: true, follow: true },
 };
@@ -90,7 +90,7 @@ const SCHEMA_GRAPH = {
       runtimePlatform: "Model Context Protocol",
       license: "https://opensource.org/licenses/MIT",
       author: { "@id": ORG_ID },
-      softwareVersion: "7.6.0",
+      softwareVersion: "8.3.0",
       description:
         "Substrate (SIP protocol + attestation) + reference operational layer (semantic vaults, hybrid retrieval, MCP server, platform adapters).",
     },

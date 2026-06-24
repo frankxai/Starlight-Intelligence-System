@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" fill="none">
+  <!-- Monochrome version for versatility - black/white/reversed -->
+  <!-- Use on any background -->
+  <circle cx="150" cy="150" r="110" stroke="currentColor" stroke-width="8"/>
+  <circle cx="150" cy="150" r="65" stroke="currentColor" stroke-width="5"/>
+  <!-- Swarm elements -->
+  <circle cx="110" cy="110" r="8" fill="currentColor"/>
+  <circle cx="190" cy="130" r="7" fill="currentColor"/>
+  <circle cx="170" cy="190" r="6" fill="currentColor"/>
+  <line x1="118" y1="118" x2="183" y2="137" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+  <line x1="183" y1="137" x2="176" y2="184" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+</svg>

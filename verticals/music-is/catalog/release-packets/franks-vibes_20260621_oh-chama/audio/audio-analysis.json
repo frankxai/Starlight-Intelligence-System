@@ -1,0 +1,56 @@
+{
+  "schema_version": "agentic-music-os.audio-analysis.v0.1",
+  "song_id": "franks-vibes_20260621_oh-chama",
+  "analyzed_at": "2026-06-22T00:00:00+02:00",
+  "input": {
+    "path": "audio/source-suno.mp3",
+    "sha256": "902953A3CA1C70129EFEC20CE6ED3BA59EED2F7608BBAA8A0CD76612B0D2911A",
+    "bytes": 6164598
+  },
+  "tooling": {
+    "ffprobe": {
+      "available": true,
+      "version": "8.1.1-full_build-www.gyan.dev"
+    },
+    "ffmpeg": {
+      "available": true,
+      "version": "8.1.1-full_build-www.gyan.dev"
+    }
+  },
+  "observed": {
+    "duration_seconds": 274.479979,
+    "codec": "mp3",
+    "bitrate_kbps": 179.673,
+    "sample_rate_hz": 48000,
+    "channels": 2,
+    "container": "mp3",
+    "lufs_integrated": -13.0,
+    "lra_lu": 4.7,
+    "true_peak_dbtp": -0.2,
+    "clipping_event_count": null
+  },
+  "estimated": {
+    "bpm": null,
+    "bpm_confidence": "not_run",
+    "key": null,
+    "key_confidence": "not_run"
+  },
+  "artifacts": {
+    "flags": [
+      "mp3_source_only",
+      "true_peak_close_to_zero_review_before_distribution_master"
+    ],
+    "notes": [
+      "Source is suitable for social preview rendering.",
+      "Distribution should prefer WAV if exported from Suno or a mastered WAV if available."
+    ],
+    "requires_human_listen": true
+  },
+  "files_written": {
+    "ffprobe": "audio/ffprobe.json",
+    "ebur128": "audio/ebur128.log",
+    "waveform": "audio/waveform.png",
+    "spectrogram": "audio/spectrogram.png"
+  }
+}
+

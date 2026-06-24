@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="200" viewBox="0 0 600 200" fill="none">
+  <defs>
+    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="50%" style="stop-color:#c5a46e"/>
+      <stop offset="100%" style="stop-color:#e879f9"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+    </filter>
+  </defs>
+  <!-- Orb / Constellation Icon -->
+  <circle cx="70" cy="100" r="55" stroke="#a78bfa" stroke-width="2" fill="none" opacity="0.9"/>
+  <circle cx="70" cy="100" r="48" fill="#050508" opacity="0.8"/>
+  <!-- Central Star / S -->
+  <path d="M70 55 L78 85 L110 85 L85 105 L95 140 L70 118 L45 140 L55 105 L30 85 L62 85 Z" fill="url(#starGradient)" filter="url(#glow)"/>
+  <!-- Subtle Swarm Particles around orb -->
+  <circle cx="40" cy="70" r="3" fill="#67e8f9" opacity="0.7"/>
+  <circle cx="100" cy="80" r="2.5" fill="#e879f9" opacity="0.6"/>
+  <circle cx="35" cy="130" r="2" fill="#c5a46e" opacity="0.7"/>
+  <circle cx="105" cy="125" r="3.5" fill="#a78bfa" opacity="0.5"/>
+  <circle cx="55" cy="155" r="2" fill="#67e8f9" opacity="0.8"/>
+  <!-- Refined Wordmark: Starlight (elegant serif inspired) Intelligence (precise sans) -->
+  <text x="145" y="95" font-family="Playfair Display, Georgia, serif" font-size="52" font-weight="700" fill="#f1f5f9" letter-spacing="-1.5">Starlight</text>
+  <text x="145" y="140" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="500" fill="#a78bfa" letter-spacing="3">INTELLIGENCE</text>
+  <!-- Subtle SIP line -->
+  <line x1="145" y1="155" x2="420" y2="155" stroke="#c5a46e" stroke-width="1" opacity="0.5"/>
+  <text x="145" y="175" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#c5a46e" letter-spacing="2">BUILT ON SIP · SOVEREIGN SUBSTRATE</text>
+</svg>

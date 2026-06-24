@@ -90,7 +90,8 @@ function Resolve-RepoPath {
     if ($Repo -eq '.') { return (Get-Location).Path }
     $dir = $RepoRoots[$Repo]
     if (-not $dir) { throw "Unknown repo key '$Repo'." }
-    $path = Join-Path $env:USERPROFILE $dir
+    $reposRoot = Join-Path $env:USERPROFILE 'starlight\repos'
+    $path = Join-Path $reposRoot $dir
     if (-not (Test-Path $path)) { throw "Repo path not found: $path" }
     return $path
 }

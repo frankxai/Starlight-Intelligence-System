@@ -350,3 +350,31 @@ These 11 (7 diagrams + 4 motion) form the complete current Queen visual system. 
 HyperFrames compositions and keyframe plates for `starlightintelligence.org` motion wedges live in **`docs/visuals/MOTION_REGISTRY.md`** (living ledger with SHA-256, provenance, dev commands).
 
 **First ship:** `estate-hero-loop` — 10s constellation → vault orbs → `/si` routing pulse at `site/motion/estate-hero-loop/`. Keyframe mirrors: `docs/visuals/motion/`, `site/public/motion/hero-loop/`. Homepage embed remains board-gated.
+
+---
+
+## 2026-06-23 God-mode README Elevation + 10 New Production Visuals
+
+**Batch:** 08–17 added to complete the visual system for the public surface (README + site).
+
+- **08-readme-hero.jpg** — Lead hero replacing the old terminal SVG. Multi-CLI fleet connected to unified luminous core. Wide cinematic.
+- **09-six-vaults.jpg** — The six orbs with symbols, purposes, and subtle atoms.
+- **10-council.jpg** — 7 named agents council formation.
+- **11-mcp-tools.jpg** — MCP inspector with exact 10 sis_* tools + adapters.
+- **12-sip-layers.jpg** — The 6 protocol layers as clean architecture.
+- **13-estate-factory.jpg** — Mind + Mesh + Steward for the Estate Factory story.
+- **14-recall-screenshot.jpg** — Elevated "actual system" dual-CLI live recall view (the screenshot-style artifact).
+- **15-queen-loop.jpg** — ROUTE→MEASURE→LEARN→RATIFY→LEDGER refined.
+- **16-architecture-flow.jpg** — End-to-end pipeline from intent to adapters.
+- **17-attestation-everywhere.jpg** — Multi-modal ambient attestation visual.
+
+All follow the exact premium style contract (cyan #67e8f9 + gold #c5a46e on #0a0a0f/#1e1b4b glass + constellation + crisp Inter/Geist + SIP v1.1.1 footer).
+
+**Wiring:**
+- README.md now leads with 08 and embeds 09/10/11/12/13/14/16 in the right sections + new Visual Intelligence callout.
+- Full set (01-17) copied to `site/public/assets/visuals/` for Next.js + queen surfaces.
+- Legacy hero.svg usage removed from lead (kept in repo only as historical reference).
+
+These + the prior 01-07 make the substrate legible at the highest visual standard. Use in queen ledgers, research, site, and future board packets. All Built on SIP.
+
+*God mode comprehensive pass complete. Best assets chosen + 10 generated + fully wired.*

@@ -44,8 +44,10 @@ export function Footer() {
               <FooterLink href="/explainer">Explainer</FooterLink>
               <FooterLink href="/architecture">Architecture</FooterLink>
               <FooterLink href="/protocol">Protocol</FooterLink>
+              <FooterLink href="/research">Research</FooterLink>
               <FooterLink href="/download">Download</FooterLink>
               <FooterLink href="/vaults">Public Vaults</FooterLink>
+              <FooterLink href="/visuals/brand-lab">Brand Lab</FooterLink>
               <FooterLink href="/docs">Documentation</FooterLink>
               <FooterLink href="/api/vaults" external>API</FooterLink>
             </nav>

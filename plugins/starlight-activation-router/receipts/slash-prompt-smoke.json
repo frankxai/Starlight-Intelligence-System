@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-06-23T10:27:35.1338927Z",
+  "tests": [
+    {
+      "name": "literal_si",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-si for /si-style routing. Start with a route packet or dry-run dispatch; only run Starlight fanout/council when the user explicitly asks for fanout, council, dispatch execution, or smoke testing. Repo hint: Starlight-Intelligence-System (C:/Users/frank/starlight/repos/Starlight-Intelligence-System). AGENTS.md=yes, harness=yes, Claude commands=121, Claude hooks=348, skills=yes.\"}}"
+    },
+    {
+      "name": "expanded_si_prompt",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-si for /si-style routing. Start with a route packet or dry-run dispatch; only run Starlight fanout/council when the user explicitly asks for fanout, council, dispatch execution, or smoke testing. Repo hint: Starlight-Intelligence-System (C:/Users/frank/starlight/repos/Starlight-Intelligence-System). AGENTS.md=yes, harness=yes, Claude commands=121, Claude hooks=348, skills=yes.\"}}"
+    },
+    {
+      "name": "literal_so_fanout",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-so for /so-style Starlight Orchestrator dispatch. Start with a durable packet or dry-run plan; execute fanout only when the prompt explicitly says /so --fanout, run fanout, dispatch, or verify across lanes. Repo hint: Starlight-Intelligence-System (C:/Users/frank/starlight/repos/Starlight-Intelligence-System). AGENTS.md=yes, harness=yes, Claude commands=121, Claude hooks=348, skills=yes.\"}}"
+    },
+    {
+      "name": "literal_acos",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:acos-router for /acos Agentic Creator Operating System and creator/content operations. Select the narrow creator lane first, then read only the relevant command or skill files. Repo hint: Starlight-Intelligence-System (C:/Users/frank/starlight/repos/Starlight-Intelligence-System). AGENTS.md=yes, harness=yes, Claude commands=121, Claude hooks=348, skills=yes.\"}}"
+    },
+    {
+      "name": "expanded_acos_prompt",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:acos-router for /acos Agentic Creator Operating System and creator/content operations. Select the narrow creator lane first, then read only the relevant command or skill files. Repo hint: Starlight-Intelligence-System (C:/Users/frank/starlight/repos/Starlight-Intelligence-System). AGENTS.md=yes, harness=yes, Claude commands=121, Claude hooks=348, skills=yes. Relevant installed capabilities: acos-router.\"}}"
+    },
+    {
+      "name": "swarm_loop",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: For Starlight Swarm work, prefer the installed starlight-swarm-ops skill. Keep one coordinator, split by capability lane and repo boundary, define each worker's input, artifact, stop condition, verification evidence, and handoff format. For skill/plugin installation work, keep source repo-backed, validate manifests, refresh the Codex activation index, then install from the local marketplace. Repo hint: Starlight-Intelligence-System (C:/Users/frank/starlight/repos/Starlight-Intelligence-System). AGENTS.md=yes, harness=yes, Claude commands=121, Claude hooks=348, skills=yes. Relevant installed capabilities: starlight-swarm, starlight-swarm-orchestration.\"}}"
+    },
+    {
+      "name": "false_also",
+      "output": null
+    },
+    {
+      "name": "pretool_block",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Starlight Activation Router blocked a high-risk command (git reset --hard). Ask Frank for explicit approval or use a scoped, audited alternative.\"}}"
+    },
+    {
+      "name": "pretool_dispatch_hint",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"Starlight tool hint: Dispatch gate: keep one coordinator, preserve a receipt path, default to read-only lanes unless the prompt authorized implementation, and summarize verification evidence after execution.\"}}"
+    }
+  ]
+}

@@ -78,6 +78,18 @@ body {
   animation: glow-pulse 6s ease-in-out infinite;
 }
 
+/* Premium entrance for homepage swarm section */
+@keyframes entrance {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-entrance {
+  animation: entrance 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-entrance { animation: none; opacity: 1; transform: none; }
+}
+
 /* Brain hero — central Orchestrator core (slow inward pulse). */
 @keyframes brain-core-pulse {
   0%, 100% { transform: scale(1); opacity: 0.9; }
@@ -99,6 +111,186 @@ body {
 .animate-brain-node {
   animation: brain-node-pulse 9s ease-in-out infinite;
   transform-box: fill-box;
+}
+
+/* Homepage command-center reveal: context moves from capture into verified action. */
+.command-reveal {
+  pointer-events: none;
+  position: absolute;
+  top: 5.5rem;
+  right: 1rem;
+  z-index: 0;
+  display: none;
+  width: min(29vw, 26rem);
+  min-width: 24rem;
+  aspect-ratio: 1;
+  opacity: 0.82;
+}
+
+@media (min-width: 1320px) {
+  .command-reveal {
+    display: block;
+  }
+}
+
+.command-reveal-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+}
+
+.command-reveal-panel {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background:
+    linear-gradient(145deg, rgba(8, 12, 22, 0.82), rgba(19, 13, 32, 0.62)),
+    radial-gradient(circle at 28% 24%, rgba(103, 232, 249, 0.12), transparent 30%),
+    radial-gradient(circle at 74% 78%, rgba(251, 191, 36, 0.08), transparent 26%);
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  clip-path: polygon(12% 0, 100% 0, 100% 82%, 88% 100%, 0 100%, 0 16%);
+}
+
+.command-reveal-panel-back {
+  transform: translate3d(28px, 28px, -90px) rotateX(5deg) rotateY(-8deg);
+  opacity: 0.32;
+  filter: blur(0.5px);
+}
+
+.command-reveal-panel-front {
+  overflow: hidden;
+  transform: rotateX(4deg) rotateY(-9deg);
+}
+
+.command-reveal-panel-front::before,
+.command-reveal-panel-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.command-reveal-panel-front::before {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+.command-reveal-panel-front::after {
+  background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.08) 42%, transparent 58%);
+  transform: translateX(-60%);
+  animation: command-panel-scan 7s ease-in-out infinite;
+}
+
+.command-reveal-map {
+  position: absolute;
+  inset: 8% 4% 4% 1%;
+  width: 94%;
+  height: 86%;
+}
+
+.command-trace-line {
+  stroke: rgba(103, 232, 249, 0.76);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 180;
+  stroke-dashoffset: 180;
+  animation: command-trace 3.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  filter: drop-shadow(0 0 6px rgba(103, 232, 249, 0.34));
+}
+
+.command-core {
+  animation: command-core-settle 4.8s ease-in-out infinite;
+}
+
+.command-node {
+  opacity: 0.64;
+  animation: command-node-settle 4.8s ease-in-out infinite;
+}
+
+.command-node-label {
+  fill: rgba(226, 232, 240, 0.72);
+  font-family: var(--font-jbmono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0;
+}
+
+.command-readout {
+  position: absolute;
+  right: 8.5%;
+  bottom: 9%;
+  width: 14rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(3, 7, 18, 0.64);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+  padding: 0.75rem;
+}
+
+.command-readout-head,
+.command-readout-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  font-family: var(--font-jbmono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0;
+}
+
+.command-readout-head {
+  grid-template-columns: 1fr auto;
+  color: rgba(167, 139, 250, 0.86);
+  font-size: 0.62rem;
+}
+
+.command-readout-rows {
+  margin-top: 0.55rem;
+  display: grid;
+  gap: 0.36rem;
+}
+
+.command-readout-row {
+  opacity: 0;
+  transform: translateY(6px);
+  color: rgba(226, 232, 240, 0.78);
+  font-size: 0.64rem;
+  animation: command-row-reveal 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.command-readout-row span:last-child {
+  color: rgba(52, 211, 153, 0.9);
+}
+
+@keyframes command-trace {
+  0%, 14% { opacity: 0.1; stroke-dashoffset: 180; }
+  44%, 74% { opacity: 0.84; stroke-dashoffset: 0; }
+  100% { opacity: 0.24; stroke-dashoffset: 0; }
+}
+
+@keyframes command-core-settle {
+  0%, 100% { opacity: 0.88; transform: scale(1); }
+  48% { opacity: 1; transform: scale(1.045); }
+}
+
+@keyframes command-node-settle {
+  0%, 22% { opacity: 0.58; transform: scale(0.94); }
+  46%, 100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes command-row-reveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes command-panel-scan {
+  0%, 34% { transform: translateX(-72%); opacity: 0; }
+  52% { opacity: 0.55; }
+  76%, 100% { transform: translateX(72%); opacity: 0; }
 }
 
 /* Selection */
@@ -131,8 +323,22 @@ body {
   .animate-fade-up,
   .animate-blink,
   .animate-brain-core,
-  .animate-brain-node {
+  .animate-brain-node,
+  .command-trace-line,
+  .command-core,
+  .command-node,
+  .command-readout-row,
+  .command-reveal-panel-front::after {
     animation: none !important;
+  }
+  .command-trace-line {
+    opacity: 0.52;
+    stroke-dashoffset: 0;
+  }
+  .command-node,
+  .command-readout-row {
+    opacity: 1;
+    transform: none;
   }
   .transition-micro,
   .transition-std,
@@ -157,18 +363,45 @@ body {
   color: rgb(203 213 225);
 }
 .explainer-prose > * + * { margin-top: 1.25em; }
-.explainer-prose h2 {
-  font-size: 1.5rem;
+.explainer-prose h2,
+.research-prose h2,
+.prose h2,
+.research-hero h2 {
+  font-size: 1.75rem;
   font-weight: 600;
   color: white;
-  margin-top: 3rem;
-  letter-spacing: -0.01em;
+  margin-top: 3.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
-.explainer-prose h3 {
-  font-size: 1.15rem;
+.research-hero img,
+.blog-header img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+.research-hero,
+.blog-header {
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.explainer-prose h3,
+.research-prose h3,
+.prose h3 {
+  font-size: 1.35rem;
   font-weight: 600;
   color: rgb(241 245 249);
-  margin-top: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
 }
 .explainer-prose h4 {
   font-size: 0.875rem;
@@ -257,6 +490,40 @@ body {
 }
 .explainer-prose tr:last-child td { border-bottom: 0; }
 
+/* Enhanced blog / research / content image & header treatment for premium feel */
+.explainer-prose img,
+.research-prose img,
+.prose img,
+.content img {
+  max-width: 100%;
+  height: auto;
+  margin: 2.5rem auto;
+  border-radius: 12px;
+  display: block;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.4);
+}
+.explainer-prose figure,
+.research-prose figure,
+.prose figure {
+  margin: 2.5rem 0;
+}
+.explainer-prose figcaption,
+.research-prose figcaption {
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgb(148 163 184);
+  margin-top: 0.5rem;
+}
+
+/* Better header rhythm for blog-like pages */
+.explainer-prose h1,
+.research-prose h1 {
+  font-size: 2.25rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+}
+
 /* =================================================================
    Console of the Sovereign — /cockpit/spec-trace
    APPEND-ONLY utility classes for the spec-trace page. Do NOT touch
@@ -272,17 +539,8 @@ body {
      - ASCII separators rendered inline as text, not borders
    ================================================================= */
 
-/* Departure Mono — bitmap display font. Optional CDN load with safe fallback to
-   JetBrains Mono. If the fetch fails (CSP, offline, etc.) the @font-face entry
-   is simply unused and the .console-display class falls back to var(--font-jbmono).
-   The URL is intentionally an HTTPS CDN per the brief; tweak if you self-host. */
-@font-face {
-  font-family: "Departure Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("https://cdn.jsdelivr.net/gh/departure-mono/departure-mono@main/fonts/woff2/DepartureMono-Regular.woff2") format("woff2");
-}
+/* Console display type uses the self-hosted Next font variables so the site
+   remains compatible with the production CSP and offline review. */
 
 /* The shell wraps the whole spec-trace page and overrides the site's default
    background WITHOUT mutating layout.tsx or globals body styling. */
@@ -305,7 +563,7 @@ body {
 }
 
 .console-display {
-  font-family: "Departure Mono", var(--font-jbmono), ui-monospace, monospace;
+  font-family: var(--font-jbmono), ui-monospace, monospace;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   font-size: 13px;
@@ -774,7 +1032,7 @@ body {
 }
 .console-md > * + * { margin-top: 0.9em; }
 .console-md h1, .console-md h2, .console-md h3, .console-md h4 {
-  font-family: "Departure Mono", var(--font-jbmono), ui-monospace, monospace;
+  font-family: var(--font-jbmono), ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #E8E2D5;
@@ -909,4 +1167,3 @@ body {
     linear-gradient(90deg, rgba(103, 232, 249, 0.035) 1px, transparent 1px);
   background-size: 56px 56px;
 }
-

@@ -94,13 +94,16 @@ export default async function ResearchDetailPage({
 
   return (
     <div>
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
+      {/* ── Hero — premium 3D Queen image header with correct blog dimensions: generous margins, padding, image sizing (contained, aspect respected, mb for spacing) — */}
+      <section className="research-hero relative overflow-hidden border-b border-white/[0.04]">
+        <div className="absolute inset-0">
+          <img className="w-full h-full object-cover" src={`/assets/visuals/queen-premium/${slug.includes('memory-foundations') ? '84' : slug.includes('proving-ground') ? '75' : slug.includes('model-arena') ? '64' : '61'}.jpg`} alt="Research header" style={{ margin: 0, padding: 0 }} />
+        </div>
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
           <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
         </div>
-        <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
+        <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28" style={{ paddingTop: '5rem', paddingBottom: '4rem' }}>
           <Link
             href="/research"
             className="text-[12px] text-slate-400 transition-micro hover:text-white"
@@ -147,7 +150,7 @@ export default async function ResearchDetailPage({
 
       {/* ── Body ── */}
       <article className="mx-auto max-w-3xl px-6 py-16 md:py-20">
-        <div className="explainer-prose">
+        <div className="research-prose explainer-prose">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
         </div>
       </article>

@@ -25,8 +25,8 @@ export default function PalacePage() {
         <div className="mb-10">
           <div className="text-5xl font-semibold tracking-tighter">Memory Palace</div>
           <p className="mt-3 max-w-2xl text-lg text-white/70">
-            The visual heart of the substrate. Six permanent vaults. Real excerpts. Animated constellation. 
-            Speak or click to focus. This is how intelligence should feel.
+            Six permanent semantic vaults. Real excerpts from live memory. Animated constellation. 
+            Speak or click to focus. The substrate you can see and feel.
           </p>
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
             <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">Obsidian bridge live now</div>
@@ -49,11 +49,10 @@ export default function PalacePage() {
             It specifies r3f + custom shaders + real gateway data + desire-proof loops + swarm topology for the production 3D experience.
           </p>
           <p className="mt-3 text-[10px] text-white/40">
-            L99 2026-06-12 • Queen v0.2 visual seed • Built on SIP v1.1.1
+            Built on SIP v1.1.1 • Visuals as first-class ledger artifacts
           </p>
           <p className="mt-4 text-xs text-white/40">
-            Research grounding: the 2026-05 premium 3D memory palace survey (Liquid Glass, Linear glassmorphic, Bruno Simon craft, NASA factuality, Obsidian Canvas spatial cards).
-            All patterns respect the Frank DNA: direct, technical, warm, playful, pattern recognition as poetry.
+            Premium dark technical aesthetic. Real memory data. The substrate made visible and interactive.
           </p>
         </div>
 
