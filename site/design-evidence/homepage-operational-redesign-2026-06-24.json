@@ -23,7 +23,7 @@
     {
       "label": "Vercel project state",
       "source": "Vercel connector project prj_wDNGrb1R1rB5PJOG9cUEICSER887",
-      "reason": "Production currently deploys from commit eb26621 with gitDirty=1; redesign must become reproducible from Git."
+      "reason": "Production previously deployed from commit eb26621 with gitDirty=1; this pass verifies a clean Git-backed production deployment."
     }
   ],
   "direction": {
@@ -51,7 +51,7 @@
       "path_or_url": "site/src/app/page.tsx",
       "kind": "web",
       "inspected": true,
-      "notes": "Rebuilt as an operational product homepage. Final local QA screenshot: C:/Users/frank/starlight/repos/_visual-qa/sis-operational-redesign-2026-06-24/final-clean/home-desktop-viewport.png."
+      "notes": "Rebuilt as an operational product homepage. Final local QA screenshot: C:/Users/frank/starlight/repos/_visual-qa/sis-operational-redesign-2026-06-24/final-clean/home-desktop-viewport.png. Live QA screenshot: C:/Users/frank/starlight/repos/_visual-qa/sis-operational-redesign-2026-06-24/production/live-home-desktop-viewport.png."
     },
     {
       "path_or_url": "site/src/components/OperationalProofConsole.tsx",
@@ -94,8 +94,8 @@
     },
     {
       "name": "production-deploy",
-      "status": "blocked",
-      "evidence": "Awaiting clean Git commit, push, and Vercel production verification."
+      "status": "pass",
+      "evidence": "Vercel production deploy for starlightintelligence.org returned READY, is aliased to the live domain, and production metadata was verified through the Vercel connector with gitDirty absent. Live browser QA returned 200 for / and /visuals/brand-lab with no console or page errors."
     }
   ],
   "score": {
@@ -103,9 +103,9 @@
     "max": 30,
     "notes": "Premium gate approved for deploy. It loses two points for pre-existing lint warnings on adjacent routes and for preserving generated imagery as a lab route rather than completing asset-by-asset scoring in this pass."
   },
-  "decision": "blocked",
+  "decision": "ship",
   "known_risks": [
-    "Existing dirty worktree contains many non-site changes that still require staging and commit strategy.",
-    "Production is currently reproducibility-risky because Vercel reports gitDirty=1 until the cleaned commit is deployed."
+    "Existing adjacent-route lint warnings remain in download, queen, and research routes, but lint exits 0.",
+    "Generated brand-lab images are preserved as research studies; they are not treated as final identity assets until each scores through the 30-point visual gate."
   ]
 }
