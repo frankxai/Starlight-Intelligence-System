@@ -3,59 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-type NavItem = { href: string; label: string; desc: string };
-type NavGroup = { label: string; items: NavItem[] };
-
-/**
- * Information architecture: the full route set grouped into three intent
- * clusters (Explore / Build / Learn) so the primary bar stays uncrowded at
- * every width. Replaces the prior flat bar whose desktop variant only
- * revealed at min-[1500px] — collapsing to a condensed 6-link tablet bar on
- * every normal laptop and silently dropping Verticals, Brand Lab and Deploy.
- * Every route remains reachable here and in the Footer.
- */
-const NAV_GROUPS: NavGroup[] = [
-  {
-    label: "Explore",
-    items: [
-      { href: "/cosmos", label: "Cosmos", desc: "Visual map of the knowledge library" },
-      { href: "/palace", label: "Memory Palace", desc: "Walk the vaults in space" },
-      { href: "/knowledge-tree", label: "Knowledge Tree", desc: "The system, branch by branch" },
-      { href: "/vaults", label: "Public Vaults", desc: "Six semantic memory vaults" },
-      { href: "/queen", label: "Queen", desc: "The visual intelligence loop" },
-      { href: "/visuals/brand-lab", label: "Brand Lab", desc: "The visual identity system" },
-      { href: "/verticals", label: "Verticals", desc: "Domain sub-stacks" },
-    ],
-  },
-  {
-    label: "Build",
-    items: [
-      { href: "/quickstart", label: "Quickstart", desc: "Five minutes to first context" },
-      { href: "/download", label: "Download", desc: "Fork the SIP Starter" },
-      { href: "/cockpit", label: "Cockpit", desc: "The spec-trace console" },
-      { href: "/architecture", label: "Architecture", desc: "How the pieces fit together" },
-    ],
-  },
-  {
-    label: "Learn",
-    items: [
-      { href: "/protocol", label: "Protocol", desc: "The open SIP substrate spec" },
-      { href: "/research", label: "Research", desc: "Substrate research surface" },
-      { href: "/explainer", label: "Explainer", desc: "Plain-language overview" },
-      { href: "/docs", label: "Documentation", desc: "Reference docs" },
-      { href: "/changelog", label: "Changelog", desc: "What shipped, and when" },
-    ],
-  },
-];
-
-const GITHUB_URL = "https://github.com/frankxai/Starlight-Intelligence-System";
-const DEPLOY_URL =
-  "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2FStarlight-Intelligence-System&root-directory=site";
-
-function isActive(pathname: string, href: string) {
-  return pathname === href || pathname.startsWith(href + "/");
-}
+import { NAV_GROUPS, GITHUB_URL, DEPLOY_URL, isActive } from "@/lib/nav";
 
 export function Header() {
   const pathname = usePathname();
