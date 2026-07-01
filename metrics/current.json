@@ -28,7 +28,7 @@
     "skill_activation_rules": {
       "value": 84,
       "last_verified": "2026-07-01",
-      "source": "skills/skill-rules.json (activation_rules entry count)",
+      "source": "skills/skill-rules.json (rules entry count)",
       "ownership": "built",
       "stale": false,
       "notes": "Count of activation rules, not distinct SKILL.md files — see skill_definition_files for the gap."
