@@ -173,7 +173,7 @@ Memory consolidation merges duplicates, elevates patterns, archives stale data, 
 | **People / Sound / Music / Energy / Machine / Crypto / Marine** | Domain Sub-Stack skills, Music IS operations, energy intelligence, machine storage/heart, crypto on-chain proof pattern |
 
 Activation rules: `skills/skill-rules.json`
-Skill definitions: `skills/{domain}/{skill-name}.md`
+Skill definitions: `skills/{domain}/{skill-name}/SKILL.md`
 
 ---
 
