@@ -1,58 +1,27 @@
-# Wealth IS — Capital & Deal Intelligence (Composition Layer)
+# Wealth IS — Capital & Deal Intelligence (ACL-only composition manifest)
 
-> Intelligence System layer 2 in the 10-IS taxonomy. **First reference instance of the Composition Layer substrate primitive** (declared `STACK.md` 2026-05-17 per `docs/boards/2026-05-17-crypto-investment-spawn.md` R1.a close-out). Disruptive Passive Income ledger, capital allocation, deal flow, compounding curves, gate-to-freedom thresholds — preserved here as Wealth IS's own commands. Crypto Intelligence + Investment Intelligence Domain Sub-Stacks compose under this layer via explicit `Composes-with: Wealth IS / <framework>` declarations.
+> Intelligence System layer 2 in the 10-IS taxonomy. **ACL-only declarative reference** since 2026-06-16: the Composition Layer falsifier (declared `STACK.md` 2026-05-17) fired as designed — `verticals/wealth/commands/` was empty at the 30-day deadline and no explicit ship decision was recorded, so Wealth IS collapsed to the falsifier's default per `docs/boards/2026-05-29-wealth-composition-falsifier.md`. Affirmed and recorded by `docs/boards/2026-07-02-investment-intelligence-vertical-spawn.md`. Re-declarable the day a real cross-asset decision earns operational commands.
 
-**Tier:** Universal Intelligence System layer (#2 in locked 10-IS taxonomy) + Composition Layer (first reference instance).
+**Tier:** Universal Intelligence System layer (#2 in locked 10-IS taxonomy) — ACL-only (declarative reference, no operational commands of its own).
 **License:** MIT for substrate-aligned reference patterns. **Instance content stays private** — real €amounts, deal flow, gate ladder values never land public.
-**Status:** `composition-layer v0.2 — substrate primitive declared 2026-05-17` (prior `v0.1` scaffolded 2026-04-26 per OpenClaw v7.5 CRITICAL-1).
+**Status:** `acl-only v0.4 — falsifier default fired 2026-06-16, recorded 2026-07-02` (prior: `composition-layer v0.2` declared 2026-05-17; `v0.1` scaffolded 2026-04-26).
 
 ---
 
-## What Wealth IS does (composition-layer expression)
+## What Wealth IS is now
 
-Wealth IS is where active income becomes Disruptive Passive Income (DPI) and where capital allocation runs as system, not impulse. As a composition layer, Wealth IS owns the **cross-asset rules** that compose over its Domain Sub-Stacks (Crypto Intelligence + Investment Intelligence + future Real-Estate IS + Stewardship IS) without duplicating their sub-system content.
+Wealth IS is where active income becomes Disruptive Passive Income (DPI) and where capital allocation runs as system, not impulse. As an ACL, this directory **owns no commands** — it names the operational surfaces where wealth intelligence actually runs and the composition relationships between them.
 
-**Composition-layer responsibilities (own commands):**
-- **DPI ledger** — tracks compounding sources across asset classes, diversification, passive-vs-active income split, gate-to-freedom thresholds. (`/wealth-dpi` shipped pre-v7.0.)
-- **Thesis engine** — every DPI source has a stated thesis, mechanism, risk profile, and exit signal. (`/wealth-thesis-review` v0.2 — composes Crypto IS House of Research output + Investment IS House of Thesis output.)
-- **Gate ladder discipline** — declared income thresholds the practitioner has committed to crossing before allowing lifestyle expansion. Instance-private (real € values stay in `private/`). (`/wealth-gate-progress` v0.2.)
-- **Capital allocation architecture** — entity-aware (Holding BV / operating BV / personal), tax-aware (jurisdiction-specific), liquidity-tiered. Composes cross-asset.
-- **Diversification map** — concentration risk flags, correlation analysis between DPI sources. Reads from sub-stack outputs.
+## The operational surfaces (where the work happens)
 
-**Cross-asset commands (composition-layer outputs):**
-- `/wealth-portfolio-fit` — composes Crypto IS House of Allocation + Investment IS House of Allocation + (future) Real-Estate IS Allocation into one cross-asset allocation review.
-- `/wealth-sovereignty-design` — composes Crypto IS House of Sovereignty (custody architecture) + Investment IS entity-aware capital flow + Family IS multi-generational considerations into one sovereignty architecture.
-- `/wealth-cycle-thesis` — cross-asset cycle-position thesis composing Crypto IS House of Macro + Investment IS regime-fit-test.
-
-**What this layer does NOT own** (lives in the Domain Sub-Stacks beneath):
-- Crypto-specific protocol/mechanism analysis (Crypto IS House of On-Chain, House of DeFi, House of Macro own these).
-- Investment-process workflow (Thesis → Sourcing → DD → Allocation → Portfolio → Exit lives in Investment IS).
-- Trade-level decisions, single-position sizing, market-timing calls (sub-stack houses own these).
-
----
-
-## Wealth IS daily-5 (cognitive-load discipline per People IS v7.4.1 ruling)
-
-Wealth IS at composition-layer tier is the toolbox; five are the daily hands:
-
-| Command | Why this one first |
-|---|---|
-| `/wealth-dpi` | The ledger that grounds every other Wealth move. Read before any allocation decision. |
-| `/wealth-thesis-review` | Quarterly thesis pressure-test across all DPI sources. Compounds vs. drift. |
-| `/wealth-portfolio-fit` | Cross-asset allocation review — Crypto + Investment + future Real-Estate composed. |
-| `/wealth-gate-progress` | Gate-ladder progress against declared thresholds. Discipline against lifestyle creep. |
-| `/wealth-sovereignty-design` | Custody + entity + jurisdiction architecture. Foundation before any new DPI source onboards. |
-
-The other 3-5 future commands (cycle thesis, tax sanity cross-asset, divestiture discipline) are toolbox-tier — bring in when the season demands.
-
-## Active Implementations & Substrates
-
-Wealth IS is implemented across the following repositories in the Starlight ecosystem:
-- **`dpi` Substrate** (`github.com/frankxai/dpi`): The open creator-facing wealth layer. Contains ledger schemas (`private/ledger.json`), platforms indices, MCP servers, and proactive challenge generator tools.
-- **Sovereign Creator Architecture (SCA)**: Unifies the ACOS execution engine and the `dpi` substrate with the `realityarchitect.ai` curriculum.
-- **`agenticincome` Network** (`github.com/frankxai/agenticincome`): The affiliate monetization spoke engine. Consumes the `affiliate-agent-skills` comparison engine to generate passive cash flows.
-
----
+| Surface | Where | What it owns |
+|---|---|---|
+| **DPI ledger** | `.claude/commands/wealth-dpi.md` (local install) | Compounding sources across asset classes, passive-vs-active split, gate ladder G1–G5, thesis stress-test, kill criteria. |
+| **Investment Intelligence** | `verticals/investment-intelligence/` | The decision engine: 11-agent analysis→risk→synthesis swarm, thesis debate, trade-gate MCP (fail-closed approve/execute), ReasoningBank trajectory memory, sovereignty routing tiers. |
+| **Crypto Intelligence** | `verticals/crypto-intelligence/` | Crypto-as-asset-class depth: 6 Houses (On-Chain / Macro / DeFi / Sovereignty / Research / Allocation). Compose as domain overlays into the Investment IS analysis layer. |
+| **Personal wealth ops (instance)** | `FrankX/.claude/skills/wealth-ops` + `frankx.ai/admin/wealth` + `/admin/bv-command-center` | Jurisdiction-specific (NL) property / mortgage / Box 3 / BV / DGA / FIRE planning. Instance-private data. |
+| **Income engine** | `agenticincome` network + `agentic-income-skills` | Cash-flow generation that feeds the DPI ledger. |
+| **Payments governance** | `payment-intelligence-system` | Fail-closed authorization for agentic payments (distinct risk domain from trading; pattern source for the trade-gate). |
 
 ## Composition with the rest of the 10-IS stack
 
@@ -64,32 +33,27 @@ Wealth IS is implemented across the following repositories in the Starlight ecos
 | **Family IS** | Multi-generational wealth transfer is Wealth × Family composition. |
 | **Starlight Orchestrator** | Routes "where does my next DPI source come from" intent. |
 
-| Composes via Domain Sub-Stacks beneath | Why |
+| Domain Sub-Stacks beneath | Why |
 |---|---|
-| **Crypto Intelligence** (`verticals/crypto-intelligence/`) | Crypto-as-asset-class with deep on-chain + protocol + sovereignty depth. Composes via House of Allocation → DPI ledger; House of Sovereignty → Wealth-sovereignty-design; House of Macro → Wealth-cycle-thesis. |
-| **Investment Intelligence** (planned per Board R4 gate) | Traditional capital allocation workflow (Thesis → Sourcing → DD → Allocation → Portfolio → Exit). Composes via House of Thesis → Thesis engine; House of Allocation → DPI ledger; House of Portfolio → Diversification map. |
-| **Real-Estate Intelligence** (future) | Real-asset class with property-specific workflow + jurisdictional tax structure. |
+| **Crypto Intelligence** (`verticals/crypto-intelligence/`) | House of Allocation → DPI ledger; House of Sovereignty → custody architecture; House of Macro → cycle thesis. |
+| **Investment Intelligence** (`verticals/investment-intelligence/`) | Traditional + cross-asset capital allocation workflow; the engine that composes crypto House outputs, DPI ledger state, and wealth-ops instance data into decisions. |
+| **Real-Estate Intelligence** (future) | Real-asset class with property-specific workflow + jurisdictional tax structure. Instance practice currently lives in FrankX wealth-ops. |
 | **Stewardship Intelligence** (future) | Multi-generational wealth architecture, gifting strategy, family office governance. |
-
----
 
 ## Refusal patterns (corruption modes this layer rejects)
 
-- **Concrete-sounding-stat-without-source.** Inventing return numbers without sourced theses. Universal across Wealth IS and its sub-stacks; named in Sound IS and _template SOUL.md.
-- **Wealth-advice-as-financial-advisor-relationship.** Wealth IS architects the system; licensed counsel reviews jurisdiction-specific instruments. Composition-layer outputs are not advice.
-- **Decisions made under emotional duress without thesis review.** The Thesis engine exists to prevent this; gating discipline matters more than thesis sophistication.
+- **Concrete-sounding-stat-without-source.** Inventing return numbers without sourced theses. Universal across Wealth IS and its sub-stacks.
+- **Wealth-advice-as-financial-advisor-relationship.** Wealth IS architects the system; licensed counsel reviews jurisdiction-specific instruments. Outputs are not advice.
+- **Decisions made under emotional duress without thesis review.** The thesis engine (Investment IS) exists to prevent this; gating discipline matters more than thesis sophistication.
 - **Public artifacts disclosing real €amounts or named third-party deal flow without consent.** Instance-private values stay in `private/`. Pattern-level reference content is MIT; €-level instance state is closed.
-- **Tax positioning relying on aggressive interpretations without specialist sign-off.** The system surfaces tax-aware structure; jurisdiction-specific instruments require qualified specialist.
-- **Cross-asset composition without lineage citation.** Composition-layer commands MUST name which sub-stack outputs they consume. Silent cross-asset rules erode trust in the composition primitive.
+- **Tax positioning relying on aggressive interpretations without specialist sign-off.**
+- **Cross-asset composition without lineage citation.** Any surface composing across sub-stacks MUST name which outputs it consumes.
+- **Ship-to-beat-a-falsifier.** Recorded corruption mode from the 2026-05-29 board: operational surface is earned by real decisions, not by deadlines.
+
+## Re-declaration condition
+
+Per the falsifier's design, Wealth IS may re-declare a composition layer (own cross-asset commands at `verticals/wealth/commands/`) when ≥1 genuine recurring cross-asset decision exists that neither Investment IS nor Crypto IS can own alone. Until then, cross-asset composition runs inside `verticals/investment-intelligence/` with explicit lineage citation.
 
 ---
 
-## Substrate primitive: Composition Layer (first reference)
-
-Wealth IS is the first reference instance of the **Composition Layer substrate primitive** (`STACK.md` § Composition Layer, 2026-05-17). The pattern is opt-in for any universal IS that has spawned ≥2 Domain Sub-Stacks and needs cross-domain rules above them.
-
-**Falsifier (Wealth IS specifically):** If `verticals/wealth/commands/` is empty at 30 days post-2026-05-17 declaration, the composition-layer concept failed for Wealth IS — collapse to ACL-only role (declarative reference, no operational commands). 30-day deadline: 2026-06-16.
-
----
-
-**Built on SIP** — Wealth IS composition-layer reference · v0.2 · SIP v1.1.0 (composition-layer primitive declared 2026-05-17 per Board R1.a close-out)
+**Built on SIP** — Wealth IS ACL manifest · v0.4 · SIP v1.1.1 (falsifier default recorded per 2026-07-02 board)
