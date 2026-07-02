@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/frankxai/investment-intelligence-system/schemas/strategy-session.schema.json",
+  "title": "Strategy Session",
+  "description": "The atomic unit of the IIS substrate. A closed, dated, append-only artifact capturing macro context, agent debate, ranked opportunities, risk flags, proposed actions, human verdict, and (retrospectively) outcome.",
+  "type": "object",
+  "required": ["schema_version", "id", "date", "mode", "author"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "id": {
+      "type": "string",
+      "description": "ISO week (e.g. 2026-W19) for weekly sessions, YYYY-MM-DD for ad-hoc",
+      "pattern": "^\\d{4}-(W\\d{2}|Q\\d|\\d{2}-\\d{2}(-\\d+)?|annual|monthly)$"
+    },
+    "date": { "type": "string", "format": "date" },
+    "mode": {
+      "type": "string",
+      "enum": ["weekly", "rebalance", "thesis-debate", "retrospective", "monthly", "annual"]
+    },
+    "author": { "type": "string", "description": "Pseudonym in OSS; real for private operators" },
+    "macro_context": {
+      "type": "object",
+      "properties": {
+        "fed_funds_rate": { "type": "number" },
+        "dxy": { "type": "number" },
+        "m2_yoy": { "type": "number" },
+        "yield_curve_2_10": { "type": "number" },
+        "fear_greed_index": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "btc_dominance": { "type": "number" },
+        "cpi_yoy": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 500 }
+      }
+    },
+    "portfolio_snapshot_ref": {
+      "type": "string",
+      "description": "Reference to private snapshot — NEVER inline real allocations in OSS"
+    },
+    "agent_debate": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["agent", "stance", "confidence"],
+        "properties": {
+          "agent": { "type": "string" },
+          "stance": { "type": "string" },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+          "counter_to": { "type": "string" }
+        }
+      }
+    },
+    "ranked_opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["thesis_id", "summary", "confidence", "risk_level"],
+        "properties": {
+          "thesis_id": { "type": "string" },
+          "summary": { "type": "string" },
+          "size_suggested_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+          "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+          "conditional_on": { "type": "string" },
+          "time_horizon": { "type": "string", "enum": ["short", "medium", "long"] }
+        }
+      }
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "proposed_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "requires_human_approval"],
+        "properties": {
+          "action": { "type": "string" },
+          "target_asset": { "type": "string" },
+          "amount_or_pct": { "type": "string" },
+          "conditional_on": { "type": "string" },
+          "deadline": { "type": "string", "format": "date" },
+          "requires_human_approval": { "type": "boolean" },
+          "execution_layer": { "type": "string", "enum": ["manual", "dca-rules", "thesis-driven"] }
+        }
+      }
+    },
+    "human_verdict": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "enum": ["approve", "modify", "reject", "pending"] },
+        "notes": { "type": "string" },
+        "reviewed_by": { "type": "string" },
+        "reviewed_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "outcome_tracking": {
+      "type": "object",
+      "properties": {
+        "filled_after": { "type": "string", "format": "date" },
+        "realized_outcome": { "type": "string" },
+        "thesis_held_up": { "type": "string", "enum": ["confirmed", "partially_confirmed", "refuted"] },
+        "lessons": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "data_integrity_flags": {
+      "type": "array",
+      "description": "Surfaced when an adapter is degraded, cache is stale, or a researcher claim couldn't be source-verified",
+      "items": { "type": "string" }
+    },
+    "errata": {
+      "type": "array",
+      "description": "Append-only correction log if the session needs amendment after settlement",
+      "items": {
+        "type": "object",
+        "required": ["date", "correction"],
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "correction": { "type": "string" },
+          "by": { "type": "string" }
+        }
+      }
+    }
+  }
+}

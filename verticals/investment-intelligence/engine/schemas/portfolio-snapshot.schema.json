@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/frankxai/investment-intelligence-system/schemas/portfolio-snapshot.schema.json",
+  "title": "Portfolio Snapshot",
+  "description": "Sanitized portfolio snapshot referenced from sessions. NEVER contains real wallet addresses, real EUR/USD amounts above example thresholds, or fingerprinting exchange specifics.",
+  "type": "object",
+  "required": ["snapshot_id", "date", "currency"],
+  "properties": {
+    "snapshot_id": { "type": "string" },
+    "date": { "type": "string", "format": "date" },
+    "currency": { "type": "string", "enum": ["EUR", "USD", "GBP", "CHF", "JPY"] },
+    "total_value": {
+      "oneOf": [
+        { "type": "number" },
+        { "type": "string", "enum": ["redacted", "private"] }
+      ]
+    },
+    "allocation": {
+      "type": "object",
+      "description": "Either archetypal percentages (50/30/20) for OSS examples, or actual percentages (private)",
+      "properties": {
+        "crypto_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "equities_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "fixed_income_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "cash_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "real_estate_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "alternatives_pct": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "target_allocation": {
+      "type": "object",
+      "description": "Target allocation for drift comparison",
+      "properties": {
+        "crypto_pct": { "type": "number" },
+        "equities_pct": { "type": "number" },
+        "fixed_income_pct": { "type": "number" },
+        "cash_pct": { "type": "number" },
+        "real_estate_pct": { "type": "number" },
+        "alternatives_pct": { "type": "number" }
+      }
+    },
+    "drift_pct": {
+      "type": "object",
+      "description": "Per-asset-class drift (current - target)"
+    },
+    "entity_split": {
+      "type": "object",
+      "description": "How holdings are split across legal entities",
+      "properties": {
+        "personal_pct": { "type": "number" },
+        "operating_bv_pct": { "type": "number" },
+        "holding_bv_pct": { "type": "number" }
+      }
+    },
+    "exchange_concentration": {
+      "type": "object",
+      "description": "Sanitized for OSS — generic 'Exchange A/B' or top-3-globally only",
+      "additionalProperties": { "type": "number" }
+    },
+    "notes": { "type": "string" }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/frankxai/investment-intelligence-system/schemas/agent.schema.json",
+  "title": "Agent Definition",
+  "description": "Schema for agents in agents/catalog.json",
+  "type": "object",
+  "required": ["id", "layer", "domain", "persona", "system_prompt_summary", "input_schema", "output_schema"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Unique agent identifier"
+    },
+    "layer": {
+      "type": "string",
+      "enum": ["analysis", "risk", "synthesis", "cross-cutting"]
+    },
+    "domain": {
+      "type": "string",
+      "description": "1-2 sentence description of the agent's expertise"
+    },
+    "persona": {
+      "type": "string",
+      "description": "Personality archetype the agent embodies"
+    },
+    "system_prompt_summary": {
+      "type": "string",
+      "description": "What the agent does in one paragraph"
+    },
+    "input_schema": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Required input fields from the strategy session"
+    },
+    "output_schema": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Fields the agent populates in the session"
+    },
+    "tools_allowed": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "tools_denied": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "recommended_model": {
+      "type": "string",
+      "description": "LLM recommended for this agent (e.g., claude-sonnet-4-6, claude-opus-4-7)"
+    },
+    "calibration_notes": {
+      "type": "string",
+      "description": "Known biases and calibration approach for retrospectives"
+    },
+    "calibration_data": {
+      "type": "object",
+      "description": "Populated over time from retrospectives",
+      "properties": {
+        "trajectories_scored": { "type": "integer" },
+        "right": { "type": "integer" },
+        "partially_right": { "type": "integer" },
+        "right_for_wrong_reason": { "type": "integer" },
+        "wrong": { "type": "integer" },
+        "hit_rate_high_confidence": { "type": "number" },
+        "hit_rate_medium_confidence": { "type": "number" },
+        "last_updated": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}

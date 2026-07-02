@@ -1,45 +1,50 @@
 {
   "is": "wealth",
   "displayName": "Wealth IS / Capital & Deal Intelligence",
-  "version": "0.1.0",
-  "hermesProfiles": [
-    {
-      "id": "hermes-wealth-specialist",
-      "model": "nousresearch/hermes-3-llama-3.1-405b",
-      "purpose": "Investment thesis construction, deal analysis, complex return modeling, gate ladder evaluation",
-      "port": 8084,
-      "type": "local",
-      "skills": [
-        "intelligence/strategic-reasoning",
-        "intelligence/pattern-recognition",
-        "business/revenue-modeling"
-      ],
-      "vaultAccess": ["strategic", "technical"],
-      "commands": ["/wealth-dpi", "/wealth-thesis-review", "/wealth-gate-progress", "/deal-analyze"]
+  "version": "0.2.0",
+  "note": "Superseded 2026-07-02: the notional hermes-3 405B/70B pair is replaced by the Investment Intelligence engine (verticals/investment-intelligence/). Routing tiers per ROUTING.md; canonical per-agent models in engine/agents/catalog.json.",
+  "engine": "verticals/investment-intelligence/engine/agents/catalog.json",
+  "routing": {
+    "t0_local": {
+      "models": ["hermes-4.3-36b", "hermes-4-14b"],
+      "runtime": "ollama | lm-studio | hermes-desktop | hermes-agent",
+      "dataClasses": ["private-financial-state", "aggregates", "public"],
+      "purpose": "Anything touching raw balances/positions/tax data; trade-gate host; Hermes Agent finance profile"
     },
-    {
-      "id": "hermes-wealth-executor",
-      "model": "nousresearch/hermes-3-llama-3.1-70b",
-      "purpose": "Fast execution and task decomposition for DPI math, vault writes, gate scoring, deal triage",
-      "port": 8094,
-      "type": "local",
-      "skills": [
-        "orchestration/parallel-execution"
-      ],
-      "vaultAccess": ["operational"],
-      "commands": []
+    "t1_frontier": {
+      "models": {
+        "analysis": "claude-sonnet-4-6",
+        "technical": "claude-haiku-4-5",
+        "risk": "claude-sonnet-4-6",
+        "portfolio_manager": "claude-opus-4-7",
+        "chief_of_staff": "claude-sonnet-4-6",
+        "researcher": "claude-sonnet-4-6"
+      },
+      "dataClasses": ["aggregates", "public"],
+      "purpose": "Strategy sessions, thesis debate, synthesis — aggregates only"
+    },
+    "t2_openrouter_hermes": {
+      "models": ["nousresearch/hermes-4-70b", "nousresearch/hermes-4-405b"],
+      "dataClasses": ["public"],
+      "purpose": "Overflow research; Hermes Agent cloud tasks. Nous Portal skipped by machine policy."
     }
-  ],
-  "swarmTopology": "sequential",
-  "concurrency": 2,
-  "timeoutMs": 300000,
-  "onResult": "vault-write",
+  },
+  "executionGate": {
+    "mcp": "verticals/investment-intelligence/mcp/trade-gate",
+    "invariant": "human approval token above the DCA whitelist; paper broker default; live adapters NOT_WIRED in-repo"
+  },
+  "swarmTopology": "layered",
+  "layers": ["analysis:blind-parallel:5", "risk:veto-on-size-not-direction:3", "synthesis:2", "researcher:cross-cutting:1"],
+  "onResult": "vault-write + trajectory-write",
   "mcpTools": [
     "vault-read",
     "vault-write",
     "context-load",
     "sip-attest",
-    "web-search"
+    "web-search",
+    "trade-gate.propose_trade",
+    "trade-gate.list_pending",
+    "trade-gate.read_audit"
   ],
   "triggers": [
     "review my investment thesis",

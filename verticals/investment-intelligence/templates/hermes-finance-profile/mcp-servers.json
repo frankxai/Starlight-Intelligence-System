@@ -1,0 +1,35 @@
+{
+  "note": "Hermes Agent MCP wiring for the finance-research profile. Paths are operator-local; adjust per RUNBOOK.md. No credentials belong in this file — brokers wire via their own official MCPs with their own local config.",
+  "servers": {
+    "trade-gate": {
+      "transport": "stdio",
+      "command": "node",
+      "args": ["<STARLIGHT_REPO>/verticals/investment-intelligence/mcp/trade-gate/dist/index.js"],
+      "env": { "TRADE_GATE_DATA_DIR": "<OPERATOR_DATA_DIR>/trade-gate" },
+      "tools_used": ["propose_trade", "list_pending", "read_audit"],
+      "tools_never_used": ["request_approval"],
+      "note": "request_approval is the human's surface. The profile must not call it."
+    },
+    "ghostfolio": {
+      "transport": "http",
+      "url": "http://localhost:3333",
+      "note": "Self-hosted portfolio tracker (T0). Read-only API token scoped to reads."
+    },
+    "actual-budget": {
+      "transport": "http",
+      "url": "http://localhost:5006",
+      "note": "Self-hosted local-first ledger (T0). Read-only."
+    },
+    "openbb": {
+      "transport": "http",
+      "url": "http://localhost:8000",
+      "note": "OpenBB ODP self-hosted (T0 host, public data). BYO data-vendor keys stay in OpenBB's own config."
+    }
+  },
+  "observability": {
+    "langfuse": {
+      "url": "http://localhost:3000",
+      "note": "Self-hosted, OTel. Traces stay on the box. See docs/OBSERVABILITY.md."
+    }
+  }
+}

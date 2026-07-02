@@ -196,7 +196,7 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **Class:** sovereign domain sub-stack (reference vertical) — third reference, validates the **Houses-as-sub-systems** decomposition primitive AND first composition-instance under Wealth IS composition layer (per `STACK.md` § Composition Layer, declared 2026-05-17).
 - **Domain:** Cryptocurrency practiced as the architecture of sovereignty + protocol-mechanism literacy + cycle-position pattern recognition. Six Houses (On-Chain · Macro · DeFi · Sovereignty · Research · Allocation) decomposed as archetypal stances.
 - **Owner:** open reference (forkable by sovereign crypto practitioners). Composes under Wealth IS as first reference instance of Composition Layer substrate primitive.
-- **Status:** `v0.1 proof-of-pattern — House of On-Chain scaffolded (5 commands + agent + skill + knowledge); 5 Houses gated on v0.1-proof-pass per Board R4 close-out`. Investment IS held until proof-pass.
+- **Status:** `v0.2 full scaffold — all 6 Houses shipped` (R4 proof-of-pattern passed via House of On-Chain). Investment IS gate released — spawned 2026-07-02, see § Investment Intelligence below.
 - **Primary repo:** `verticals/crypto-intelligence/` in `frankxai/Starlight-Intelligence-System` (v0.2+ extraction target: `github.com/frankxai/crypto-intelligence-system` per Board open-question (c) export-hook landed via vertical-local ATTESTATIONS.md + MCP-shape in SKILL.md).
 - **Houses (v0.1):** `onchain` (scaffolded). **Houses (v0.2 gated):** `macro` · `defi` · `sov` · `res` · `alloc`.
 - **Canon:** declines (canon-free per substrate register).
@@ -206,6 +206,20 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **Falsifier:** 1-week proof-of-pattern with House of On-Chain. If 4-5 named artifacts cannot ship in the week, Houses-as-sub-systems primitive failed for crypto → fall back to functional sub-systems matching People IS shape; re-iterate at PROPOSAL.md.
 - **Board verdict:** REVISE close-out 2026-05-17 — `docs/boards/2026-05-17-crypto-investment-spawn.md` (5 items closed same-session per v7.5.1 recovery precedent).
 - **Genius prerequisite gate:** CLOSED via `genius/profile-frankx.md` + `genius/freedom-path-frankx.md` (Path A in-repo corpus excavation, 2026-05-17).
+
+### Investment Intelligence
+- **Class:** sovereign domain sub-stack (reference vertical) — sibling of Crypto Intelligence under the Wealth IS ACL manifest (Wealth collapsed to ACL-only per 2026-06-16 falsifier default, recorded `docs/boards/2026-07-02-investment-intelligence-vertical-spawn.md`).
+- **Domain:** Cross-asset capital allocation practiced as system, not impulse — research → debate → risk-gate → recommend → human-approve → execute (paper-first) → learn, across stocks/ETFs/crypto/DeFi + time/labor allocation via DPI framing.
+- **Owner:** open reference (forkable by sovereign operators). Engine promoted (copied, not moved) from the private IIS operator instance — proven material, not fresh scaffold.
+- **Status:** `v0.1 — engine promoted (11-agent catalog · 5 schemas · 4 commands · 3 adapters · 2 sanitized archetypes), trade-gate MCP shipped + tested; runtime tiers 1-2 gated on operator wiring per RUNBOOK.md`.
+- **Primary repo:** `verticals/investment-intelligence/` in `frankxai/Starlight-Intelligence-System` (extraction target: `github.com/frankxai/investment-intelligence-system` per Board open-question (c) export-hook pattern — extraction is a copy, not a refactor).
+- **Layers:** `analysis` (5 agents, blind-parallel) · `risk` (3 agents, veto-on-size-not-direction) · `synthesis` (portfolio-manager Opus + chief-of-staff) · cross-cutting `researcher`.
+- **Canon:** declines (canon-free per substrate register); composes SIP + payment-intelligence-system doctrine (pattern-level).
+- **Compounds:** trajectory ReasoningBank (thesis→action→outcome→lesson) + per-agent calibration + practitioners forking + attestation graph.
+- **SIP commands:** `/invest-strategy` · `/invest-thesis-debate` · `/invest-snapshot` · `/invest-retro` (daily-5 completed by `/wealth-dpi`, R2 discipline declared at spawn).
+- **MCP:** `mcp/trade-gate/` — fail-closed approve/execute (propose_trade · request_approval · list_pending · execute_approved · read_audit); paper-broker default, live adapters NOT_WIRED stubs, human token above DCA whitelist.
+- **Non-waivable:** R5 non-advisory clause inline on every artifact; no broker credentials in repo; paper-first ladder; trajectory write-back.
+- **Board verdict:** PROCEED — `docs/boards/2026-07-02-investment-intelligence-vertical-spawn.md`.
 
 ---
 

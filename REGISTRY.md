@@ -85,6 +85,22 @@ attestation: built_on_sip
 - **requires:** none
 - **license:** MIT
 
+### trade-gate-mcp
+- **sip_version:** 1.1.1
+- **owner:** Frank Riemer / Starlight Holding BV
+- **status:** active (v0.1 — paper broker only; live adapters NOT_WIRED by design)
+- **repo:** `frankxai/Starlight-Intelligence-System` (`verticals/investment-intelligence/mcp/trade-gate/`)
+- **endpoint:** stdio (local)
+- **provides:**
+  - `propose_trade` — TradeIntent in → verdict: auto-approved (DCA whitelist, capped) | pending-approval | rejected
+  - `request_approval` — human issues a single-use approval token for a pending intent
+  - `list_pending` — pending-approval queue
+  - `execute_approved` — approved intent → broker adapter (paper default; live throws NOT_WIRED in-repo)
+  - `read_audit` — append-only JSONL audit trail
+- **requires:** none (broker MCPs — Alpaca / IBKR / Coinbase — are operator-wired downstream, never bundled)
+- **license:** MIT
+- **note:** Fail-closed by doctrine and by test (`e2e.test.ts` red case: live execute without approval must throw). Every tool output carries the R5 non-advisory footer. Pattern lineage: `payment-intelligence-system/mcp`. Board record: `docs/boards/2026-07-02-investment-intelligence-vertical-spawn.md`.
+
 ## Claw Registry
 
 SIS Claws are installable operational units built on this substrate. Each Claw declares its permission surface, skill requirements, and MCP dependencies in a `CLAW.md` contract.

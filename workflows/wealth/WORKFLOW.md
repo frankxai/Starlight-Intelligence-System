@@ -78,11 +78,17 @@ inputs:
 **Action:** Write deal verdict to strategic-vault, DPI update to technical-vault, allocation decision to operational-vault. If gate criterion cleared, advance gate ladder position. Attach SIP attestation to all vault atoms.  
 **Output:** Vault atoms x3, gate-ladder advancement (conditional).
 
-## Hermes Swarm Config
+## Engine + swarm config (superseded 2026-07-02)
 
-Which Hermes agent profiles handle tasks in this workflow:
-- Primary: hermes-wealth-specialist (405B — thesis construction, deal analysis, complex return modeling)
-- Support: hermes-wealth-executor (70B — DPI math, vault writes, gate scoring, fast deal triage)
+The notional hermes-3 405B/70B profile pair is superseded. Decision work routes through
+`verticals/investment-intelligence/` — the 11-agent engine (`engine/agents/catalog.json`)
+with model routing per `verticals/investment-intelligence/ROUTING.md`:
+- T0 local Hermes 4.3 36B / Hermes 4 14B for anything touching private financial state
+- T1 Sonnet (analysis/risk) + Opus (portfolio-manager) + Haiku (technical) for public-data work
+- T2 OpenRouter Hermes 4 70B/405B for overflow research
+
+Any resulting TradeIntent terminates at the trade-gate MCP (human token above the DCA
+whitelist). Current machine profile mapping: `swarm-config.json` in this directory.
 
 ## Output Artifacts
 

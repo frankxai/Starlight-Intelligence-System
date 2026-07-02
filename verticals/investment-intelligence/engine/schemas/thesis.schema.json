@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/frankxai/investment-intelligence-system/schemas/thesis.schema.json",
+  "title": "Thesis",
+  "description": "An indexed entry in theses/index.yaml. Every proposed_action with execution_layer=thesis-driven references a thesis_id that resolves to one of these.",
+  "type": "object",
+  "required": ["thesis_id", "opened", "status", "summary"],
+  "properties": {
+    "thesis_id": {
+      "type": "string",
+      "description": "Unique slug: <topic>-<year>-<scope>",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "opened": { "type": "string", "format": "date" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "closed", "abandoned"]
+    },
+    "closed": { "type": ["string", "null"], "format": "date" },
+    "summary": { "type": "string", "maxLength": 280 },
+    "rationale": { "type": "string" },
+    "sessions_referenced": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "outcome_due": {
+      "type": "string",
+      "format": "date",
+      "description": "When retrospective should be run (typically opened + 90 days)"
+    },
+    "outcome_recorded": { "type": ["string", "null"], "format": "date" },
+    "thesis_held_up": {
+      "type": ["string", "null"],
+      "enum": ["confirmed", "partially_confirmed", "refuted", null]
+    },
+    "size_actual_pct": { "type": "number" },
+    "exit_conditions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Pre-defined conditions under which thesis is closed"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

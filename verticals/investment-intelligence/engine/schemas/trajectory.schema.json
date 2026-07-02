@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/frankxai/investment-intelligence-system/schemas/trajectory.schema.json",
+  "title": "Trajectory",
+  "description": "ReasoningBank-shaped trajectory: a complete debate-to-outcome arc that feeds the learning loop. Each closed thesis produces one trajectory.",
+  "type": "object",
+  "required": ["trajectory_id", "type", "opened"],
+  "properties": {
+    "trajectory_id": { "type": "string" },
+    "type": {
+      "type": "string",
+      "enum": ["thesis_arc", "rebalance_arc", "tax_arc"]
+    },
+    "opened": { "type": "string", "format": "date" },
+    "closed": { "type": ["string", "null"], "format": "date" },
+    "input_state": {
+      "type": "object",
+      "description": "Macro + portfolio state at thesis open — the context for pattern matching",
+      "properties": {
+        "macro_regime": { "type": "string" },
+        "fear_greed": { "type": "integer" },
+        "btc_dominance": { "type": "number" },
+        "yield_curve_2_10": { "type": "number" },
+        "portfolio_drift": { "type": "string" }
+      }
+    },
+    "agent_debate": {
+      "type": "object",
+      "description": "Stances per agent at thesis open (snapshot, not live)",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "stance": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"] }
+        }
+      }
+    },
+    "human_verdict": {
+      "type": "string",
+      "enum": ["approve", "approve_with_modification", "reject"]
+    },
+    "modification": { "type": ["string", "null"] },
+    "outcome": {
+      "type": "object",
+      "properties": {
+        "realized_outcome": { "type": "string" },
+        "duration_days": { "type": "integer" },
+        "thesis_held_up": {
+          "type": "string",
+          "enum": ["confirmed", "partially_confirmed", "refuted"]
+        },
+        "primary_lesson": { "type": "string" }
+      }
+    },
+    "verdict_quality": {
+      "type": "object",
+      "description": "Per-agent and per-human scoring after outcome is known",
+      "properties": {
+        "agent_call_quality": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "enum": ["right", "partially_right", "right_for_wrong_reason", "wrong", "n/a"]
+          }
+        },
+        "human_verdict_quality": { "type": "string" }
+      }
+    }
+  }
+}
