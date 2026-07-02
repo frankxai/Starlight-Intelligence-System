@@ -44,10 +44,12 @@ import { listModules, setModuleEnabled } from "./modules.js";
 import {
   appendSwarmAudit,
   createSwarmPlan,
+  executeSwarmPlan,
   inspectSwarmProviders,
   inspectSwarmRepos,
   formatAgyToolCalls,
 } from "./swarm.js";
+import { runBoard } from "./board.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
@@ -122,9 +124,11 @@ Commands:
   doctor                          Check CLI, dispatcher, and cockpit readiness
   dispatch <prompt>               Route a prompt through Arcanea orchestrator
   starlight-swarm <goal>           Create approval-gated multi-CLI swarm packets
+  starlight-swarm run <goal>       Plan then (with --approve) execute the swarm
   starlight-swarm status           Show swarm repo/provider readiness
   starlight-swarm providers        Show dry-run provider adapters
   starlight-swarm repos            Show configured v1 repo ring
+  board <proposal>                 Convene the Starlight Board (dry-run; --live to vote)
   cockpit [project]               Launch or attach to the Zellij cockpit
   score                           Generate unified intelligence report
   project register <name> <path>  Register a project for federated multi-sync
@@ -171,6 +175,7 @@ Options:
   --acos-path <path>              Path to ACOS trajectories directory (for sync/score/guidance)
   --max-lines <n>                 Max lines in guidance output (default: 40)
   --dry-run                       Preview sync without writing (for sync)
+  --approve                       starlight-swarm run: execute the plan (gate is closed without it)
   --attach                        Attach to an existing Zellij session when possible
   --task <task>                   Arcanea task class for dispatch (default: code.debug)
   --surface <surface>             Arcanea routing surface (default: claude-arcanea)
@@ -206,6 +211,8 @@ Examples:
   starlight doctor
   starlight dispatch --task code.debug --dry-run "find the failing test"
   starlight starlight-swarm --dry-run "build the cosmos MCP plan"
+  starlight starlight-swarm run "wire the swarm bridge" --approve
+  starlight board "ship the v9.6 swarm bridge" --live
   starlight starlight-swarm providers
   starlight cockpit sis
   starlight score
@@ -1208,12 +1215,45 @@ function cmdDispatch(
   }
 }
 
-function cmdStarlightSwarm(actionOrGoal: string | undefined, rest: string[], options: { dryRun?: boolean }): void {
+async function cmdStarlightSwarm(
+  actionOrGoal: string | undefined,
+  rest: string[],
+  options: { dryRun?: boolean; approve?: boolean; live?: boolean },
+): Promise<void> {
   const action = actionOrGoal?.trim();
 
   if (!action) {
-    console.error("[starlight] Error: starlight-swarm requires a goal or action (status, providers, repos).");
+    console.error("[starlight] Error: starlight-swarm requires a goal or action (run, status, providers, repos).");
     process.exitCode = 1;
+    return;
+  }
+
+  if (action === "run") {
+    const goal = rest.join(" ").trim();
+    if (!goal) {
+      console.error("[starlight] Error: starlight-swarm run requires a goal.");
+      console.error('  Example: starlight starlight-swarm run "configure the swarm for SIS" --approve');
+      process.exitCode = 1;
+      return;
+    }
+
+    const plan = createSwarmPlan(goal);
+    appendSwarmAudit(plan);
+    console.log(formatJSON(plan));
+    console.log("");
+
+    if (!options.approve) {
+      console.log("[starlight-swarm] approval required — re-run with --approve to execute this plan.");
+      console.log(`  ${plan.packets.length} packet(s) planned; 0 executed.`);
+      return; // exit code 0 — the gate held, not an error.
+    }
+
+    const live = options.live === true;
+    console.log(`[starlight-swarm] Executing ${plan.packets.length} packet(s) via ${live ? "live" : "dry-run"} runner...`);
+    const outcome = await executeSwarmPlan(plan, { approve: true, live });
+    if (outcome.summary) {
+      console.log(formatJSON({ summary: outcome.record?.summary, results: outcome.summary.results }));
+    }
     return;
   }
 
@@ -1266,6 +1306,28 @@ function cmdStarlightSwarm(actionOrGoal: string | undefined, rest: string[], opt
   }
   console.log(formatJSON(plan));
   console.log("\n" + formatAgyToolCalls(plan));
+}
+
+async function cmdBoard(proposal: string, live: boolean): Promise<void> {
+  if (!proposal.trim()) {
+    console.error("[starlight] Error: board requires a proposal to pressure-test.");
+    console.error('  Example: starlight board "ship v9.6 swarm bridge" [--live]');
+    process.exitCode = 1;
+    return;
+  }
+
+  if (live) {
+    const backend = detectBackend({ backend: "auto" });
+    console.log(`[starlight] Convening the Starlight Board (live, backend=${backend})...`);
+    const executor = createClaudeExecutor({ backend: "auto", agents: ACOS_AGENTS });
+    const record = await runBoard(proposal, { executor });
+    console.log(formatJSON(record));
+    return;
+  }
+
+  console.log("[starlight] Board dry-run — surfacing the five vector prompts (no votes cast).");
+  const record = await runBoard(proposal, { dryRun: true });
+  console.log(formatJSON(record));
 }
 
 function quotePowerShellArg(value: string): string {
@@ -1471,6 +1533,7 @@ async function main(): Promise<void> {
       "acos-path": { type: "string" },
       "max-lines": { type: "string" },
       "dry-run": { type: "boolean" },
+      approve: { type: "boolean" },
       attach: { type: "boolean" },
       task: { type: "string" },
       surface: { type: "string" },
@@ -1572,9 +1635,17 @@ async function main(): Promise<void> {
     }
 
     case "starlight-swarm": {
-      cmdStarlightSwarm(positionals[1], positionals.slice(2), {
+      await cmdStarlightSwarm(positionals[1], positionals.slice(2), {
         dryRun: values["dry-run"] === true,
+        approve: values.approve === true,
+        live: values.live === true,
       });
+      break;
+    }
+
+    case "board": {
+      const proposal = positionals.slice(1).join(" ");
+      await cmdBoard(proposal, values.live === true);
       break;
     }
 

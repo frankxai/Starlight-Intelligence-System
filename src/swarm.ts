@@ -52,8 +52,13 @@ const DEFAULT_TIMEOUT_MS = 300_000;
 
 function resolveClaudeBin(): string {
   if (process.env.STARLIGHT_CLAUDE_BIN) return process.env.STARLIGHT_CLAUDE_BIN;
-  const known = "C:\\Users\\frank\\.local\\bin\\claude.exe";
-  return existsSync(known) ? known : "claude";
+  // The hardcoded install path is a Windows-only fast path. On POSIX it never
+  // existed; fall straight through to PATH resolution.
+  if (process.platform === "win32") {
+    const known = "C:\\Users\\frank\\.local\\bin\\claude.exe";
+    if (existsSync(known)) return known;
+  }
+  return "claude";
 }
 
 /**
@@ -429,13 +434,114 @@ export function createSwarmPlan(
   };
 }
 
-export function appendSwarmAudit(plan: SwarmPlan): void {
-  mkdirSync(dirname(plan.auditLogPath), { recursive: true });
-  appendFileSync(plan.auditLogPath, JSON.stringify(plan) + "\n", "utf-8");
+export function appendSwarmAudit(record: SwarmPlan | SwarmRunRecord): void {
+  mkdirSync(dirname(record.auditLogPath), { recursive: true });
+  appendFileSync(record.auditLogPath, JSON.stringify(record) + "\n", "utf-8");
 }
 
 export function getSwarmAuditLogPath(homeDir = homedir()): string {
   return join(homeDir, "Starlight-Intelligence-System", "private", "voice-operator", "logs", "swarm.jsonl");
+}
+
+// ── Plan → Run bridge ───────────────────────────────────────
+//
+// createSwarmPlan() emits SwarmPacket[] (recommendations, approval-gated).
+// runSwarm() consumes SwarmTask[] (a flat prompt per worker). packetsToTasks
+// is the seam: it folds each packet's target repo, agent, and required context
+// into a single self-contained prompt so an executor has everything it needs
+// without re-reading the plan.
+
+/** Compose a self-contained worker prompt from a planned packet. */
+function packetToPrompt(packet: SwarmPacket): string {
+  const context =
+    packet.requiredContext.length > 0
+      ? `\nRequired context files: ${packet.requiredContext.join(", ")}`
+      : "";
+  return (
+    `[${packet.agent}] ${packet.goal}\n` +
+    `Target repo: ${packet.repo.name} (${packet.repo.path})\n` +
+    `Recommended lane: ${packet.recommendedLane}${context}\n` +
+    `Rationale: ${packet.rationale}`
+  );
+}
+
+/** Map planned packets onto executable swarm tasks (preserves packet ids). */
+export function packetsToTasks(packets: SwarmPacket[]): SwarmTask[] {
+  return packets.map((packet) => ({ id: packet.id, prompt: packetToPrompt(packet) }));
+}
+
+/**
+ * Dry-run runner — echoes each prompt deterministically with a success exit.
+ * No subprocess, no model call: used when a plan is approved but --live is off,
+ * so the run path is exercisable end-to-end without touching a real harness.
+ */
+export const dryRunEchoRunner: AgentRunner = async (task) => ({
+  output: `[dry-run] ${task.prompt}`,
+  exitCode: 0,
+});
+
+/** Audit record written after an approved swarm run (distinct from the plan record). */
+export interface SwarmRunRecord {
+  command: "starlight-swarm-run";
+  goal: string;
+  mode: "live" | "dry-run";
+  generatedAt: string;
+  auditLogPath: string;
+  summary: { total: number; succeeded: number; failed: number };
+  results: SwarmResult[];
+}
+
+export interface SwarmRunOptions {
+  /** Execute the plan. Without this, executeSwarmPlan is a no-op gate. */
+  approve?: boolean;
+  /** Use the real runner instead of the deterministic dry-run echo. */
+  live?: boolean;
+  /** Override the runner (defaults: live → claude subprocess, else dry-run echo). */
+  runner?: AgentRunner;
+  /** Worker pool size. */
+  concurrency?: number;
+  /** Injectable clock for deterministic audit timestamps. */
+  now?: Date;
+}
+
+export interface SwarmRunOutcome {
+  approved: boolean;
+  executed: boolean;
+  mode: "live" | "dry-run" | "not-executed";
+  summary?: SwarmSummary;
+  record?: SwarmRunRecord;
+}
+
+/**
+ * Execute an approved plan through the worker pool and write a run-audit record.
+ * The approval gate is structural: without `approve`, nothing runs and no audit
+ * record is written — the caller gets `{ approved: false, executed: false }`.
+ */
+export async function executeSwarmPlan(
+  plan: SwarmPlan,
+  options: SwarmRunOptions = {},
+): Promise<SwarmRunOutcome> {
+  if (!options.approve) {
+    return { approved: false, executed: false, mode: "not-executed" };
+  }
+
+  const live = options.live === true;
+  const runner = options.runner ?? (live ? defaultClaudeRunner : dryRunEchoRunner);
+  const tasks = packetsToTasks(plan.packets);
+  const summary = await runSwarm(tasks, { runner, concurrency: options.concurrency });
+
+  const record: SwarmRunRecord = {
+    command: "starlight-swarm-run",
+    goal: plan.goal,
+    mode: live ? "live" : "dry-run",
+    generatedAt: (options.now ?? new Date()).toISOString(),
+    auditLogPath: plan.auditLogPath,
+    summary: { total: summary.total, succeeded: summary.succeeded, failed: summary.failed },
+    results: summary.results,
+  };
+  appendSwarmAudit(record);
+
+  return { approved: true, executed: true, mode: record.mode, summary, record };
 }
 
 function createPacket(
@@ -543,13 +649,25 @@ function expandHome(path: string, home: string): string {
 }
 
 function defaultCommandExists(name: string): boolean {
-  const result = spawnSync("where.exe", [name], {
+  if (process.platform === "win32") {
+    const result = spawnSync("where.exe", [name], {
+      shell: false,
+      encoding: "utf-8",
+      stdio: "pipe",
+      timeout: 3_000,
+    });
+    // PowerShell wrappers (agy*) are functions, not binaries — where.exe misses them.
+    return result.status === 0 || powerShellFunctionExists(name);
+  }
+  // POSIX: `which` resolves PATH binaries. Wrapper functions live in the user's
+  // shell profile and are not visible here, which matches the win32 fallback intent.
+  const result = spawnSync("which", [name], {
     shell: false,
     encoding: "utf-8",
     stdio: "pipe",
     timeout: 3_000,
   });
-  return result.status === 0 || powerShellFunctionExists(name);
+  return result.status === 0;
 }
 
 function defaultRunCommand(command: string, args: string[], cwd?: string): { status: number | null; stdout: string; stderr: string } {
