@@ -14,6 +14,7 @@
 // if ajv unavailable (substrate-friendly: no required deps).
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { join, resolve, relative } from 'node:path'
 import matter from 'gray-matter'
 
@@ -23,7 +24,7 @@ const schemasOnly = args.includes('--schemas-only')
 // Promoted copy: the engine root is this script's parent directory
 // (verticals/investment-intelligence/engine/), not <cwd>/iis as in the
 // operator instance.
-const SUBSTRATE_ROOT = resolve(new URL('..', import.meta.url).pathname)
+const SUBSTRATE_ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const targetPath = args.find((a) => !a.startsWith('--')) || SUBSTRATE_ROOT
 
 const ROOT = process.cwd()

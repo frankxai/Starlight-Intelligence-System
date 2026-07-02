@@ -52,6 +52,7 @@ export class CapLedger {
   private load(): void {
     if (!existsSync(this.path)) return;
     const raw = readFileSync(this.path, "utf8");
+    const cutoff = Date.now() - DAY_MS;
     for (const line of raw.split("\n")) {
       const trimmed = line.trim();
       if (!trimmed) continue;
@@ -62,9 +63,12 @@ export class CapLedger {
         continue; // corrupt line skipped on read, never rewritten
       }
       if (!ev.intentId || typeof ev.notional !== "number") continue;
-      // Replay protection is lifetime; the 24h window seeds from recent events.
+      // Replay protection is lifetime; only the 24h window seeds `records`
+      // (older events carry no rolling-cap signal and would grow memory unbounded).
       this.consumed.add(ev.intentId);
-      this.records.push(ev);
+      if (ev.ts > cutoff) {
+        this.records.push(ev);
+      }
     }
   }
 

@@ -84,6 +84,23 @@ test("anonymous approvals refused; unknown approval refused; denied not approvab
   }
 });
 
+test("terminal states are immutable — deny after execute or after deny is refused", () => {
+  const { queue, cleanup } = tempQueue();
+  try {
+    const ti = intent();
+    const pa = queue.propose(ti, "non-dca");
+    const token = queue.issueToken(pa.approvalId, "frank");
+    queue.consumeToken(token, ti.intentId);
+    assert.throws(() => queue.deny(pa.approvalId, "too late"), /already executed/);
+
+    const pa2 = queue.propose(intent(), "non-dca");
+    queue.deny(pa2.approvalId, "no");
+    assert.throws(() => queue.deny(pa2.approvalId, "again"), /already denied/);
+  } finally {
+    cleanup();
+  }
+});
+
 test("queue state survives a restart (durable JSONL event log)", () => {
   const dir = mkdtempSync(join(tmpdir(), "trade-gate-approvals-"));
   try {

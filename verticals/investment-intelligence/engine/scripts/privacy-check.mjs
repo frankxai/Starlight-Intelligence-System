@@ -48,7 +48,7 @@ const RULES = [
   // Tightened: requires lowercase-only words separated by single spaces (no punctuation),
   // matches typical seed phrase format (12 or 24 words) — avoids false positives on prose.
   {
-    regex: /\b(?:^|\n)([a-z]{3,8}( [a-z]{3,8}){11}|[a-z]{3,8}( [a-z]{3,8}){23})\b/m,
+    regex: /^[a-z]{3,8}( [a-z]{3,8}){11}$|^[a-z]{3,8}( [a-z]{3,8}){23}$/m,
     severity: 'block',
     reason: 'Possible BIP-39 seed phrase pattern (12 or 24 lowercase words on a single line). NEVER commit.',
     skipPaths: [/\.md$/, /\.json$/], // prose and JSON descriptions can hit length thresholds
@@ -73,14 +73,14 @@ const RULES = [
   },
 ]
 
+// Promoted copy: the engine lives under verticals/investment-intelligence/,
+// not iis/ as in the operator instance.
+const ENGINE_ROOT = 'verticals/investment-intelligence/'
+
 // Files to skip entirely (always allowed)
 const SKIP_FILES = [
-  'iis/PRIVACY-BOUNDARY.md',           // documents the patterns; will match itself
-  'iis/scripts/privacy-check.mjs',     // this file
-  'iis/LICENSE',                       // MIT license legitimately names authors
-  'iis/architecture/09-tax-overlays.md', // legitimate reference EUR amounts (Box 3 thresholds)
-  'iis/architecture/10-honest-limits.md', // documents amounts in context
-  'iis/architecture/11-ai-engineering.md', // documents cost/pricing math
+  `${ENGINE_ROOT}engine/scripts/privacy-check.mjs`, // this file (documents the patterns; matches itself)
+  `${ENGINE_ROOT}engine/architecture/10-honest-limits.md`, // documents amounts in context
 ]
 
 function getFilesToCheck() {
@@ -88,7 +88,7 @@ function getFilesToCheck() {
     return filesArg.split(',').map((p) => p.trim()).filter(Boolean)
   }
   if (mode === 'all') {
-    const out = execSync('git ls-files iis/', { encoding: 'utf8' })
+    const out = execSync(`git ls-files ${ENGINE_ROOT}`, { encoding: 'utf8' })
     return out.split('\n').filter(Boolean)
   }
   // staged (default)
@@ -96,7 +96,7 @@ function getFilesToCheck() {
   return out
     .split('\n')
     .filter(Boolean)
-    .filter((p) => p.startsWith('iis/'))
+    .filter((p) => p.startsWith(ENGINE_ROOT))
 }
 
 function readFileSafe(path) {
@@ -174,7 +174,7 @@ function main() {
     }
   }
 
-  console.log('See iis/PRIVACY-BOUNDARY.md for the full rule set.\n')
+  console.log('See the operator instance PRIVACY-BOUNDARY.md for the full rule set.\n')
   process.exit(blockers.length > 0 ? 1 : 0)
 }
 

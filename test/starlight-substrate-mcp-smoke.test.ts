@@ -105,7 +105,14 @@ describe("substrate MCP registry query", () => {
 
     assert.deepEqual(
       names,
-      ["arcanea-mcp", "sentinel-mcp", "sis-memory-mcp", "starlight-mcp"].sort(),
+      [
+        "arcanea-mcp",
+        "sentinel-mcp",
+        "sis-memory-mcp",
+        "starlight-mcp",
+        // Registered 2026-07-02 per docs/boards/2026-07-02-investment-intelligence-vertical-spawn.md
+        "trade-gate-mcp",
+      ].sort(),
     );
     assert.equal(payload.count, names.length);
     assert.ok(!names.includes("Schema"));

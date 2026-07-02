@@ -171,6 +171,9 @@ export class ApprovalQueue {
     if (!approval) {
       throw new Error(`unknown approval '${approvalId}'`);
     }
+    if (approval.status === "executed" || approval.status === "denied") {
+      throw new Error(`approval '${approvalId}' is already ${approval.status} — terminal states are immutable`);
+    }
     this.record({ type: "denied", approvalId, reason, ts: now });
   }
 

@@ -33,6 +33,7 @@ import {
   readFileSync,
 } from "node:fs";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -193,9 +194,9 @@ export function buildServer(opts: { dataDir?: string } = {}): McpServer {
     },
     async ({ intent, caps: capPolicy, dcaWhitelist }) => {
       const ti = intent as TradeIntent;
-      const capResult = caps.check(ti, capPolicy);
 
       try {
+        const capResult = caps.check(ti, capPolicy);
         if (capResult.verdict === "reject") {
           audit.append({ action: "propose_trade", intentId: ti.intentId, verdict: "rejected", reason: capResult.reason });
           return textResult(`REJECTED: ${capResult.reason}`, { verdict: "rejected", reason: capResult.reason });
@@ -405,7 +406,7 @@ async function main() {
   );
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   main().catch((err) => {
     console.error("trade-gate-mcp fatal:", err);
     process.exit(1);
