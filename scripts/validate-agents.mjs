@@ -24,7 +24,7 @@ const REPO_ROOT = resolve(__dirname, "..");
 const AGENTS_DIR = join(REPO_ROOT, "agents");
 
 // Non-agent files under agents/
-const META_FILES = new Set(["AGENT_REGISTRY.md", "CODING_AGENTS_REGISTRY.md"]);
+const META_FILES = new Set(["AGENT_REGISTRY.md", "CODING_AGENTS_REGISTRY.md", "AGENT_TEMPLATE.md"]);
 
 const REQUIRED_FM_FIELDS = ["name", "tier", "domain", "voice"];
 const REQUIRED_SECTIONS = ["## Capabilities", "## Vault Access"];

@@ -47,7 +47,7 @@ function deriveAgentCount() {
   let count = 0;
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     if (entry.isFile()) {
-      if (entry.name.endsWith('.md') && entry.name !== 'AGENT_REGISTRY.md' && entry.name !== 'CODING_AGENTS_REGISTRY.md') count += 1;
+      if (entry.name.endsWith('.md') && entry.name !== 'AGENT_REGISTRY.md' && entry.name !== 'CODING_AGENTS_REGISTRY.md' && entry.name !== 'AGENT_TEMPLATE.md') count += 1;
     } else if (entry.isDirectory()) {
       for (const sub of readdirSync(path.join(dir, entry.name), { withFileTypes: true })) {
         if (sub.isFile() && sub.name.endsWith('.md')) count += 1;

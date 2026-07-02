@@ -86,7 +86,7 @@ export function listAgentFiles(agentsDir: string): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(agentsDir, { withFileTypes: true })) {
     if (entry.isFile()) {
-      if (entry.name.endsWith(".md") && entry.name !== "AGENT_REGISTRY.md" && entry.name !== "CODING_AGENTS_REGISTRY.md") {
+      if (entry.name.endsWith(".md") && entry.name !== "AGENT_REGISTRY.md" && entry.name !== "CODING_AGENTS_REGISTRY.md" && entry.name !== "AGENT_TEMPLATE.md") {
         out.push(entry.name);
       }
     } else if (entry.isDirectory()) {
