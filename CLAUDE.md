@@ -172,8 +172,8 @@ Memory consolidation merges duplicates, elevates patterns, archives stale data, 
 | **Business / Vision / Health / Relational** | Entity architecture, revenue modeling, design coherence, body substrate, network architecture |
 | **People / Sound / Music / Energy / Machine / Crypto / Marine** | Domain Sub-Stack skills, Music IS operations, energy intelligence, machine storage/heart, crypto on-chain proof pattern |
 
-Activation rules: `skills/skill-rules.json`
-Skill definitions: `skills/{domain}/{skill-name}/SKILL.md`
+Activation rules: `skills/skill-rules.json` (84 rules)
+Skill definitions: mixed layout — `skills/{domain}/{skill-name}/SKILL.md` (31 dir-based skills) or a flat `skills/{domain}/{skill-name}.md` (53 single-file skills). Both formats are canonical; 31 + 53 = 84, matching the rule count.
 
 ---
 

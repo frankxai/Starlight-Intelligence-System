@@ -160,7 +160,7 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context â€” keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (83 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
+Skills fire based on context â€” keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (84 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (53 flat files) or `skills/<domain>/<skill-name>/SKILL.md` (31 dir-based skills), together matching the 84-rule count (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
 
 | Domain | Surface (sample) |
 |--------|------------------|

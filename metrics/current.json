@@ -20,10 +20,10 @@
     "registered_agents": {
       "value": 144,
       "last_verified": "2026-07-01",
-      "source": "agents/AGENT_REGISTRY.md + `find agents -iname '*.md'` file count",
+      "source": "`find agents -iname '*.md'` file count minus non-agent registry docs (agents/AGENT_REGISTRY.md, agents/CODING_AGENTS_REGISTRY.md)",
       "ownership": "built",
       "stale": false,
-      "notes": "144-agent core registry claim in CLAUDE.md matches actual agent .md file count in agents/ (root + agents/council/)."
+      "notes": "144-agent core registry claim in CLAUDE.md matches the actual agent-profile .md file count in agents/ (root + agents/council/) once the two registry index files are excluded."
     },
     "skill_activation_rules": {
       "value": 84,
@@ -31,15 +31,23 @@
       "source": "skills/skill-rules.json (rules entry count)",
       "ownership": "built",
       "stale": false,
-      "notes": "Count of activation rules, not distinct SKILL.md files — see skill_definition_files for the gap."
+      "notes": "Matches skill_definitions_dir_format + skill_definitions_flat_format exactly (31 + 53 = 84) — see those two entries for the underlying files."
     },
-    "skill_definition_files": {
-      "value": 53,
+    "skill_definitions_dir_format": {
+      "value": 31,
       "last_verified": "2026-07-01",
-      "source": "`find . -iname 'SKILL.md'` repo-wide count",
+      "source": "`find skills -iname 'SKILL.md'` count",
       "ownership": "built",
       "stale": false,
-      "notes": "53 actual SKILL.md files vs 84 activation rules — some rules map to shared/multi-trigger skills. Gap not yet root-caused; flagged for a future audit, not treated as a discrepancy in the 84-skill claim."
+      "notes": "Skills defined as skills/{domain}/{skill-name}/SKILL.md."
+    },
+    "skill_definitions_flat_format": {
+      "value": 53,
+      "last_verified": "2026-07-01",
+      "source": "`find skills -mindepth 2 -maxdepth 2 -iname '*.md' ! -iname 'SKILL.md'` count",
+      "ownership": "built",
+      "stale": false,
+      "notes": "Skills defined as a single flat file skills/{domain}/{skill-name}.md — the repo uses a mixed layout, both formats are canonical."
     },
     "starlight_vaults": {
       "value": 6,
