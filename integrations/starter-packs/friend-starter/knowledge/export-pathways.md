@@ -39,6 +39,8 @@ Different ecosystems have different shapes. The same stack adapts:
 | **Cowork** | Multi-user real-time collaborative workspace — your team co-edits the substrate together. | Newer ecosystem; smaller installed base. |
 | **Microsoft Copilot** | Enterprise distribution. The customer already pays for M365 Copilot seats and you want to ship as a declarative agent the IT admin imports through Copilot Studio. The zero-friction enterprise distribution path. | No native MCP. Tenant security review may gate publication. Knowledge indexing latency for large stacks. |
 
+**Restricted-pathway configurations.** Some stacks refuse pathways for safety, not just attestation. The **Wealth Guardian** configuration (`wealth-guardian-template.md` + `wealth-protection-rules.md`) exports only to **Claude Project** and **Cowork** — its hard boundaries (no credentials, no live-trade instructions, escalation rules, non-advisory clause) must live in an instruction surface long and reliable enough to hold them. Targets with tight or undocumented instruction caps are refused for this configuration the same way an attestation-stripping target is refused for any stack.
+
 ## Decision matrix — which target for which use case
 
 **Internal team (your own).** Claude Project if you live in Claude. ChatGPT Project if you live in ChatGPT. Cursor if your team is technical. Cowork if you co-edit synchronously.

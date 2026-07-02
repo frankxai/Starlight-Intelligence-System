@@ -85,6 +85,17 @@ You can drag and drop them, or click upload. Order does not matter.
 
 Done. Your Project is Starlight now.
 
+### Optional — Wealth Guardian configuration (protected investing companion)
+
+If this Project is being set up as an investing thinking-partner for someone (the "protected executor" — a sibling, parent, friend), also upload:
+
+- `wealth-guardian-template.md` — read-only portfolio review, paper-first education, DCA-only action talk, escalate-to-operator rule
+- `wealth-protection-rules.md` — the hard boundaries: no credentials in chat, no live-trade instructions, scam immunity, honest-numbers discipline
+
+Then add to the Custom Instructions: who the operator (escalation contact) is, the small-decisions band in plain currency, and the jurisdiction. **Do not wire any broker tool or action into this Project** — hands-free is the feature. Both files open with the non-advisory clause; that clause is non-waivable.
+
+Export note: the Wealth Guardian ships via **Claude Project** (canonical) and **Cowork**. Targets that cannot hold the hard boundaries in an enforceable instruction surface are not offered for this configuration.
+
 ---
 
 ## Your first message
