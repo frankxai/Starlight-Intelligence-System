@@ -23,6 +23,17 @@ import { readFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { EmpiricalSandbox } from './sandbox.js';
 import { HashingTFProvider, rrfMerge, type RRFOptions } from './embedding.js';
+import { SanitizationGateway } from './sanitization.js';
+
+// The Veil on the write path (mirrors mcp-server.ts): secrets always scrubbed,
+// PII opt-in via STARLIGHT_SCRUB_PII=1, disable entirely via STARLIGHT_SANITIZE=off.
+const WRITE_VEIL: SanitizationGateway | null =
+  process.env.STARLIGHT_SANITIZE === 'off'
+    ? null
+    : new SanitizationGateway({
+        scrubSecrets: true,
+        scrubPII: process.env.STARLIGHT_SCRUB_PII === '1',
+      });
 
 // ── Vault classification keywords ──────────────────────────
 
@@ -132,7 +143,7 @@ export class VaultMemory extends MemoryManager {
   ): VaultEntry {
     const classifiedVault = vault ?? this.classifyVault(content);
     let finalConfidence = confidence;
-    let finalContent = content;
+    let finalContent = WRITE_VEIL ? WRITE_VEIL.sanitize(content) : content;
 
     // Empirical Grounding for Technical Vault
     if (classifiedVault === 'technical') {
@@ -170,6 +181,37 @@ export class VaultMemory extends MemoryManager {
     });
 
     this.vaultIndex.set(baseEntry.id, classifiedVault);
+
+    // Unify the two stores (split-brain fix): mirror a flat vault atom into
+    // <storagePath>/vaults/<vault>.jsonl — the store the MCP server and
+    // RetrievalIndex read — so gateway/library writes surface in every client.
+    // Private-tagged entries are NOT mirrored: the gateway privacy model relies
+    // on the event store staying disjoint for them (see isPrivateEntry +
+    // test/v90-gateway-privacy.test.ts).
+    if (this.vaultConfig.enableVaults && !isPrivateEntry(baseEntry)) {
+      try {
+        const vaultsDir = join(this.vaultConfig.storagePath, 'vaults');
+        if (!existsSync(vaultsDir)) mkdirSync(vaultsDir, { recursive: true });
+        const flatAtom = {
+          id: baseEntry.id,
+          vault: classifiedVault,
+          content: finalContent,
+          category: baseEntry.category,
+          confidence: baseEntry.confidence,
+          tags: baseEntry.tags,
+          source: baseEntry.source,
+          createdAt: baseEntry.createdAt,
+        };
+        appendFileSync(
+          join(vaultsDir, `${classifiedVault}.jsonl`),
+          JSON.stringify(flatAtom) + '\n',
+          'utf-8',
+        );
+      } catch {
+        // Mirror write is best-effort — the event store remains the write-ahead
+        // source of truth; a failed mirror must never fail the remember() call.
+      }
+    }
 
     return {
       ...baseEntry,

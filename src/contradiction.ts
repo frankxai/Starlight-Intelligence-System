@@ -4,6 +4,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { atomText } from "./atom.js";
 
 export interface Contradiction {
   entryA: { id: string; vault: string; content: string; createdAt: string };
@@ -59,7 +60,9 @@ export class ContradictionDetector {
         if (!line.trim()) continue;
         try {
           const r = JSON.parse(line) as Record<string, unknown>;
-          const content = (r.insight as string) || (r.wish as string) || "";
+          // content ?? insight ?? wish via atomText — runtime atoms write `content`,
+          // seeded/starter atoms write `insight`/`wish`; all must be visible here.
+          const content = atomText(r);
           if (content) entries.push({ id: r.id as string, vault: (r.vault as string) || vault, content, createdAt: r.createdAt as string });
         } catch { /* skip */ }
       }

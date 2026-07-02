@@ -16,6 +16,23 @@ import type { TemporalMeta, ContradictionRecord } from './types.js';
 import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
 import { GoalOrchestrator } from './goal.js';
+import { SanitizationGateway } from './sanitization.js';
+
+// The Veil on the write path: secrets are always scrubbed before an atom is
+// persisted (API keys/tokens have no legitimate place in a vault). PII scrubbing
+// is opt-in (STARLIGHT_SCRUB_PII=1) — a personal memory substrate legitimately
+// stores contact details. STARLIGHT_SANITIZE=off disables entirely (dev/debug).
+const WRITE_VEIL: SanitizationGateway | null =
+  process.env.STARLIGHT_SANITIZE === 'off'
+    ? null
+    : new SanitizationGateway({
+        scrubSecrets: true,
+        scrubPII: process.env.STARLIGHT_SCRUB_PII === '1',
+      });
+
+function veilText(text: string): string {
+  return WRITE_VEIL ? WRITE_VEIL.sanitize(text) : text;
+}
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -180,7 +197,7 @@ export class StarlightMcpServer {
       const conf = p.confidence === 'high' ? 0.9 : p.confidence === 'low' ? 0.3 : 0.6;
       const entry: RawEntry = {
         id: `sis_${Date.now()}_${randomUUID().slice(0, 8)}`,
-        content: String(p.content), vault,
+        content: veilText(String(p.content)), vault,
         tags: Array.isArray(p.tags) ? p.tags.map(String) : [],
         confidence: p.confidence ? String(p.confidence) : 'medium',
         category: p.category ? String(p.category) : 'insight',

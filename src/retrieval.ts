@@ -123,6 +123,8 @@ export class RetrievalIndex {
   /** In-memory vector sidecar: entry id → embedding vector */
   private vectorIndex = new Map<string, number[]>();
   private embeddingProvider: EmbeddingProvider = new HashingTFProvider();
+  /** Duplicate-id report from the last rebuildFromVaults({onDuplicate:'skip'}) run. */
+  private lastDuplicates: Array<{ id: string; location: string; firstSeen: string }> = [];
 
   constructor(dbPath?: string) {
     const resolved = dbPath ?? join(homedir(), '.starlight', 'index.sqlite');
@@ -295,11 +297,21 @@ export class RetrievalIndex {
     return ids.slice(0, limit);
   }
 
-  /** Drop all rows and re-ingest every *.jsonl file in vaultDir. Returns entry count. */
-  rebuildFromVaults(vaultDir: string): number {
+  /**
+   * Drop all rows and re-ingest every *.jsonl file in vaultDir. Returns entry count.
+   *
+   * Duplicate ids: the default (`onDuplicate: 'throw'`) fails the whole rebuild —
+   * duplicates must never silently replace rows. Operational callers that prefer a
+   * degraded-but-searchable index over a total outage can pass
+   * `{ onDuplicate: 'skip' }`: the first occurrence wins, later duplicates are
+   * skipped and reported via getLastDuplicates().
+   */
+  rebuildFromVaults(vaultDir: string, options?: { onDuplicate?: 'throw' | 'skip' }): number {
+    const onDuplicate = options?.onDuplicate ?? 'throw';
     // Clear the vector sidecar whenever the SQL index is rebuilt —
     // caller must re-call buildVectorIndex() if hybridSearch() is needed.
     this.vectorIndex.clear();
+    this.lastDuplicates = [];
 
     if (!existsSync(vaultDir)) return 0;
     const files = readdirSync(vaultDir).filter(f => f.endsWith('.jsonl'));
@@ -323,6 +335,10 @@ export class RetrievalIndex {
           const location = `${file}:${lineIndex + 1}`;
           const previousLocation = seenIds.get(id);
           if (previousLocation) {
+            if (onDuplicate === 'skip') {
+              this.lastDuplicates.push({ id, location, firstSeen: previousLocation });
+              continue;
+            }
             throw new Error(
               `Duplicate vault entry id "${id}" in ${location}; already seen in ${previousLocation}`,
             );
@@ -409,6 +425,11 @@ export class RetrievalIndex {
       lastConfirmed: entry.lastConfirmed ?? null,
       metadata: entry.metadata ? JSON.stringify(entry.metadata) : null,
     });
+  }
+
+  /** Duplicate ids skipped by the last rebuildFromVaults({onDuplicate:'skip'}) run. */
+  getLastDuplicates(): ReadonlyArray<{ id: string; location: string; firstSeen: string }> {
+    return this.lastDuplicates;
   }
 
   /** Retrieve a single entry by ID. */
