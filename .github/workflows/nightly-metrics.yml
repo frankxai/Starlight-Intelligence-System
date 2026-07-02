@@ -1,0 +1,87 @@
+# Nightly metrics refresh.
+#
+# metrics/METRICS_TRUTH.md forbids hand-typed counts in public surfaces —
+# `npm run metrics` derives every headline number from the repo itself and
+# writes README.md + metrics/current.json. Before this workflow, that command
+# only ran on a Windows-machine-bound scheduled task, so the living ledger
+# went stale the moment the machine was off. This runs it nightly in the
+# cloud and opens a PR when the numbers drift, so a human reviews every
+# change to a public-facing surface rather than it landing unattended on
+# main.
+#
+# Built on SIP — Starlight Intelligence Protocol
+# Layers used: [file-contract, attestation]
+
+name: Nightly metrics refresh
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: nightly-metrics-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Regenerate living metrics
+        run: node scripts/sync-metrics.mjs
+
+      - name: Check for drift
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update metrics PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B bot/metrics-refresh
+          git add README.md metrics/current.json
+          git commit -m "chore(metrics): nightly refresh $(date -u +%Y-%m-%d)"
+          git push origin bot/metrics-refresh --force
+
+          PR_NUM=$(gh pr list --head bot/metrics-refresh --base main --state open --json number -q '.[0].number // empty')
+          if [ -z "$PR_NUM" ]; then
+            {
+              echo "Automated re-derivation of README.md + metrics/current.json via \`npm run metrics\` (nightly-metrics.yml, cron 17 3 * * *)."
+              echo "Review the diff before merging — this is the living-ledger enforcement described in metrics/METRICS_TRUTH.md."
+              echo ""
+              echo "Built on SIP — Starlight Intelligence Protocol."
+            } > /tmp/pr-body.md
+            gh pr create \
+              --title "chore(metrics): nightly refresh" \
+              --base main \
+              --head bot/metrics-refresh \
+              --body-file /tmp/pr-body.md
+          else
+            echo "PR #$PR_NUM already open for bot/metrics-refresh — updated by this push."
+          fi

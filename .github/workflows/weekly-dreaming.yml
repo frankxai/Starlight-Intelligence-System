@@ -1,0 +1,88 @@
+# Weekly dreaming cycle.
+#
+# scripts/dreaming-run.ts runs consolidation (insight extraction, cross-vault
+# Wisdom promotion, contradiction detection, decay sweep) against the vault
+# store. With no STARLIGHT_VAULT_DIR override and no operator ~/.starlight
+# home directory on a fresh runner, it falls back to the in-repo committed
+# surfaces at memory/vaults/ — exactly the "compounding memory" claim this
+# repo makes needs to be observable on, not a private machine's local store.
+# Previously this only ran via scripts/dreaming-cron.ps1 on a Windows
+# scheduled task. This workflow never pushes to main directly — it opens a PR
+# so a human reviews what the dreaming cycle changed before it merges.
+#
+# Built on SIP — Starlight Intelligence Protocol
+# Layers used: [file-contract, attestation]
+
+name: Weekly dreaming cycle
+
+on:
+  schedule:
+    - cron: "43 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: weekly-dreaming-cycle
+  cancel-in-progress: false
+
+jobs:
+  dream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run dreaming cycle
+        run: node --import tsx scripts/dreaming-run.ts
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update dreaming PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B bot/dreaming
+          git add -A
+          git commit -m "chore(dreaming): weekly consolidation $(date -u +%Y-%m-%d)"
+          git push origin bot/dreaming --force
+
+          PR_NUM=$(gh pr list --head bot/dreaming --base main --state open --json number -q '.[0].number // empty')
+          if [ -z "$PR_NUM" ]; then
+            {
+              echo "Automated output of \`node --import tsx scripts/dreaming-run.ts\` (weekly-dreaming.yml, cron 43 4 * * 1) against the committed memory/vaults/ surfaces — insight extraction, cross-vault Wisdom promotion, contradiction detection, decay sweep."
+              echo "Review the diff before merging; this never pushes to main directly. See memory/CONSOLIDATION_LOG.md for the receipt line this run appended."
+              echo ""
+              echo "Built on SIP — Starlight Intelligence Protocol."
+            } > /tmp/pr-body.md
+            gh pr create \
+              --title "chore(dreaming): weekly consolidation" \
+              --base main \
+              --head bot/dreaming \
+              --body-file /tmp/pr-body.md
+          else
+            echo "PR #$PR_NUM already open for bot/dreaming — updated by this push."
+          fi
