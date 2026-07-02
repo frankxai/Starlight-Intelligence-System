@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata = {
   title: "Memory Palace",
   description:
-    "The living visualization of Starlight's six-vault memory substrate. Obsidian bridge live now. This is the L99 seed for the full Jarvis-style 3D palace.",
+    "The living visualization of Starlight's six-vault memory substrate. Open memory/ in Obsidian to browse the same vaults locally.",
   openGraph: {
     title: "Starlight Memory Palace — Living Intelligence Visualization",
     description:
@@ -31,7 +31,7 @@ export default function PalacePage() {
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
             <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">Obsidian bridge live now</div>
             <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">SIP v1.1.1 attested</div>
-            <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">L99 seed for the 21-person build</div>
+            <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">Six vaults · live constellation</div>
           </div>
         </div>
 

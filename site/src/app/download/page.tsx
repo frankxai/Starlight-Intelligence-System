@@ -84,13 +84,13 @@ export default function DownloadPage() {
             Starlight Core Releases
           </span>
           <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
-            Sovereign Code.<br />
+            Download the<br />
             <span className="bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-              Engineered for Autonomy.
+              SIP Starter.
             </span>
           </h1>
           <p className="mt-6 max-w-2xl text-[15px] leading-[1.8] text-slate-400">
-            Adopt the Starlight Intelligence Protocol starter, plugin wrapper kits, books, and domain intelligence packs. Start building high-retention cognitive agents.
+            One archive: vault schema, MCP server, and adapter configs for Claude Code, Cursor, Codex, and Gemini CLI. Unzip, paste one config block, and your agents keep their memory across sessions.
           </p>
         </div>
       </section>
@@ -407,11 +407,11 @@ export default function DownloadPage() {
                 repo: "https://github.com/frankxai/psychology-research-intelligence-system",
               },
               {
-                title: "Swarm Control Cockpit",
-                desc: "Local control panel for starting, stopping, auditing, and routing commands to local and Railway Hermes agents.",
+                title: "Agentic Ops Hub",
+                desc: "Runbooks, cockpit design docs, and guarded 24/7 runtime patterns for operating a multi-brand Hermes agent fleet.",
                 img: "/assets/visuals/02-starlight-queen-closed-loop-dashboard.jpg",
                 badge: "Control Plane",
-                repo: "https://github.com/frankxai/hermes-cockpit",
+                repo: "https://github.com/frankxai/agentic-ops-hub",
               },
               {
                 title: "Memory Palace Vault Seeds",
