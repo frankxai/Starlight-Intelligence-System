@@ -28,6 +28,8 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { StarlightIntelligence } from "./index.js";
+import { createClaudeExecutor, detectBackend } from "./executors/claude-executor.js";
+import { ACOS_AGENTS } from "./agents.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
@@ -178,6 +180,7 @@ Options:
   --confidence <n>                Confidence score (0.0-1.0) for vault set
   --tags <t1,t2>                  Comma-separated tags for vault set
   --pattern <pattern>             Orchestration pattern: direct, sequential, parallel, iterative, cascade, broadcast
+  --live                          orchestrate: execute agents through a real model (api/cli auto-detect) instead of the stub
   --mission <text>                WorkPacket mission statement
   --risk <level>                  WorkPacket risk: low, medium, high, critical
   --agent <id>                    WorkPacket assigned agent (default: unassigned)
@@ -552,15 +555,20 @@ function printMemoryHealth(memory: ReturnType<typeof inspectMemoryHealth>): void
   }
 }
 
-async function cmdOrchestrate(intent: string, pattern?: string): Promise<void> {
+async function cmdOrchestrate(intent: string, pattern?: string, live?: boolean): Promise<void> {
   if (!intent) {
     console.error("[starlight] Error: orchestrate requires an intent string.");
-    console.error('  Example: starlight orchestrate "Design a new auth system"');
+    console.error('  Example: starlight orchestrate "Design a new auth system" [--live]');
     process.exitCode = 1;
     return;
   }
 
   const sis = createSIS();
+  if (live) {
+    const backend = detectBackend({ backend: "auto" });
+    console.log(`[starlight] Live execution: backend=${backend}`);
+    sis.setExecutor(createClaudeExecutor({ backend: "auto", agents: ACOS_AGENTS }));
+  }
 
   const task = {
     intent,
@@ -1472,6 +1480,7 @@ async function main(): Promise<void> {
       confidence: { type: "string" },
       tags: { type: "string" },
       pattern: { type: "string" },
+      live: { type: "boolean" },
       title: { type: "string" },
       mission: { type: "string" },
       risk: { type: "string" },
@@ -1594,7 +1603,7 @@ async function main(): Promise<void> {
 
     case "orchestrate": {
       const intent = positionals.slice(1).join(" ");
-      await cmdOrchestrate(intent, asString(values.pattern));
+      await cmdOrchestrate(intent, asString(values.pattern), values.live === true);
       break;
     }
 

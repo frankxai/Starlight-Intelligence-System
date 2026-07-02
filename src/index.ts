@@ -42,6 +42,7 @@ import { ContextEngine } from "./context.js";
 import { VaultMemory } from "./vault-memory.js";
 import { AgentRouter, ACOS_AGENTS } from "./agents.js";
 import { OrchestrationEngine } from "./orchestrator.js";
+import { createClaudeExecutor } from "./executors/claude-executor.js";
 import { ActiveHealingDaemon } from "./active-healing.js";
 import { TestForge } from "./forge.js";
 import { dirname } from "node:path";
@@ -88,7 +89,7 @@ export class StarlightIntelligence {
     this.orchestrator = new OrchestrationEngine({
       memory: this.memory,
       router: this.router,
-      executor: options?.executor,
+      executor: options?.executor ?? envExecutor(options?.agents ?? ACOS_AGENTS),
     });
     this.healer = new ActiveHealingDaemon(this.memory, this.orchestrator);
     this.forge = new TestForge(this.memory);
@@ -260,6 +261,17 @@ export interface RememberOptions {
   source?: string;
 }
 
+/**
+ * Env-driven executor pickup: STARLIGHT_EXECUTOR=cli|api|auto opts the engine
+ * into real model execution; unset (or "stub") keeps the deterministic default
+ * so demos, tests, and offline runs stay reproducible.
+ */
+function envExecutor(agents: AgentDefinition[]): AgentExecutor | undefined {
+  const mode = process.env.STARLIGHT_EXECUTOR;
+  if (mode !== "cli" && mode !== "api" && mode !== "auto") return undefined;
+  return createClaudeExecutor({ backend: mode, agents });
+}
+
 function resolveMemoryStoragePath(memoryPath?: string): string | undefined {
   if (!memoryPath) return undefined;
   return /\.(jsonl?|JSONL?)$/.test(memoryPath) ? dirname(memoryPath) : memoryPath;
@@ -409,3 +421,16 @@ export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';
 // v8.8 — SAGE Autonomous Goal Execution (Autonomous Loops)
 export { GoalOrchestrator } from './goal.js';
 export type { GoalTask, GoalLog, GoalState, AuditResult } from './goal.js';
+
+// v8.4 — Real Claude executor (execution spine)
+export {
+  createClaudeExecutor,
+  detectBackend,
+  composeSystemPrompt,
+  claudeCliAvailable,
+} from './executors/claude-executor.js';
+export type { ClaudeExecutorOptions, ExecutorBackend } from './executors/claude-executor.js';
+
+// Canonical atom (memory integrity)
+export { atomText, normalizeAtom } from './atom.js';
+export type { VaultAtom } from './atom.js';

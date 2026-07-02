@@ -26,8 +26,15 @@ import {
   RetrievalIndex,
   TemporalEngine,
   ContradictionDetector,
+  createClaudeExecutor,
+  detectBackend,
 } from "../src/index.js";
 import type { VaultType } from "../src/index.js";
+
+// `npm run demo -- --live` routes step 4 through a real model backend
+// (Anthropic API or claude CLI, auto-detected). Default stays offline and
+// deterministic so the README transcript is always reproducible.
+const LIVE = process.argv.includes("--live");
 
 // ── tiny formatting helpers ──────────────────────────────────
 const c = {
@@ -136,6 +143,11 @@ async function main(): Promise<void> {
   banner(4, "Orchestration — routing + pattern + synthesis");
   const sis = new StarlightIntelligence({ memoryPath: dir });
   sis.initialize();
+  if (LIVE) {
+    const backend = detectBackend({ backend: "auto" });
+    console.log(c.yellow(`  --live: executing agents via backend=${backend}`));
+    sis.setExecutor(createClaudeExecutor({ backend: "auto" }));
+  }
   const intent = "Review the code for security issues and quality before release";
   console.log(`  task: ${c.yellow(`"${intent}"`)}`);
   const routed = sis.routeTask(intent);
