@@ -1,0 +1,33 @@
+{
+  "name": "@frankx-ai/trade-gate-mcp",
+  "version": "0.1.0",
+  "description": "Fail-closed approve/execute MCP for the Investment Intelligence vertical. Gates every TradeIntent behind caps + a human approval token (DCA whitelist excepted, still capped + audited). Paper broker only in-repo; live adapters are NOT_WIRED stubs. UNAUDITED. NOT FOR LIVE FUNDS.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "trade-gate-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "test": "tsc --noEmit && node --test --import tsx src/*.test.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
