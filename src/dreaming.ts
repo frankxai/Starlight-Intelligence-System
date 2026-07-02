@@ -4,6 +4,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { createHash } from "node:crypto";
 import { type Contradiction, ContradictionDetector } from "./contradiction.js";
 import { atomText } from "./atom.js";
 
@@ -238,4 +239,171 @@ export class DreamingAgent {
 
     return entries;
   }
+}
+
+// ── Persistence (the write side of a dream cycle) ─────────────────────────────
+//
+// DreamingAgent stays pure-analysis: it reads vaults and returns a DreamResult
+// but never mutates disk. applyDreamResult is the write side, split out so the
+// persistence is unit-testable in isolation and the agent never grows a vault
+// dependency it can accidentally corrupt.
+//
+// Built on SIP — operational tier (memory persistence).
+
+/** Name of the idempotency ledger that guards promotions against double-write. */
+const PROMOTION_LEDGER = ".promotion-ledger.json";
+
+export interface ApplyDreamOptions {
+  /** Injectable clock for deterministic tests. Defaults to `new Date().toISOString()`. */
+  now?: () => string;
+}
+
+export interface ApplyDreamStats {
+  promotionsWritten: number;
+  promotionsSkipped: number;
+  insightsWritten: number;
+  insightsSkipped: number;
+  contradictionsWritten: number;
+}
+
+/** Read every JSONL atom in vaultDir into an id → {text, vault} lookup. */
+function readJsonlAtomIndex(vaultDir: string): Map<string, { text: string; vault: string }> {
+  const index = new Map<string, { text: string; vault: string }>();
+  if (!fs.existsSync(vaultDir)) return index;
+  for (const file of fs.readdirSync(vaultDir).filter((f) => f.endsWith(".jsonl"))) {
+    const fallbackVault = path.basename(file, ".jsonl");
+    for (const line of fs.readFileSync(path.join(vaultDir, file), "utf-8").split("\n")) {
+      if (!line.trim()) continue;
+      try {
+        const r = JSON.parse(line) as Record<string, unknown>;
+        const id = typeof r.id === "string" ? r.id : undefined;
+        if (!id) continue;
+        const text = atomText(r);
+        if (text) index.set(id, { text, vault: (r.vault as string) || fallbackVault });
+      } catch { /* skip malformed line */ }
+    }
+  }
+  return index;
+}
+
+/** Collect the set of atom ids already present in a JSONL vault file. */
+function readExistingIds(filePath: string): Set<string> {
+  const ids = new Set<string>();
+  if (!fs.existsSync(filePath)) return ids;
+  for (const line of fs.readFileSync(filePath, "utf-8").split("\n")) {
+    if (!line.trim()) continue;
+    try {
+      const r = JSON.parse(line) as Record<string, unknown>;
+      if (typeof r.id === "string") ids.add(r.id);
+    } catch { /* skip malformed line */ }
+  }
+  return ids;
+}
+
+function readLedger(ledgerPath: string): string[] {
+  if (!fs.existsSync(ledgerPath)) return [];
+  try {
+    const parsed = JSON.parse(fs.readFileSync(ledgerPath, "utf-8")) as unknown;
+    return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Persist a DreamResult to disk. Three write channels, each with its own
+ * durability contract:
+ *
+ *  - PROMOTIONS → append a `wis_promo_<sourceId>` atom to wisdom.jsonl carrying
+ *    the source atom's text + provenance. Guarded by an idempotency ledger
+ *    (.promotion-ledger.json) so a source is promoted at most once, ever.
+ *    `md:*` section ids are skipped — they are MD chunks, not atoms.
+ *  - INSIGHTS → append to <suggestedVault>.jsonl with a content-hash id, so a
+ *    repeated run never materializes the same insight twice.
+ *  - CONTRADICTIONS → overwrite contradictions.jsonl entirely (a report of the
+ *    current state, not an append-only ledger).
+ *
+ * @param result   The DreamResult produced by DreamingAgent.dream().
+ * @param vaultDir Directory of JSONL vault files to persist into.
+ * @param options  Optional injectable clock.
+ * @returns Counts of what was written vs. skipped.
+ */
+export function applyDreamResult(
+  result: DreamResult,
+  vaultDir: string,
+  options?: ApplyDreamOptions,
+): ApplyDreamStats {
+  const nowIso = options?.now ?? (() => new Date().toISOString());
+  const stats: ApplyDreamStats = {
+    promotionsWritten: 0,
+    promotionsSkipped: 0,
+    insightsWritten: 0,
+    insightsSkipped: 0,
+    contradictionsWritten: 0,
+  };
+
+  if (!fs.existsSync(vaultDir)) fs.mkdirSync(vaultDir, { recursive: true });
+
+  // ── Promotions → wisdom.jsonl (idempotent via ledger) ──────────────────────
+  const ledgerPath = path.join(vaultDir, PROMOTION_LEDGER);
+  const ledger = new Set<string>(readLedger(ledgerPath));
+  const atomIndex = readJsonlAtomIndex(vaultDir);
+  const wisdomPath = path.join(vaultDir, "wisdom.jsonl");
+
+  for (const promo of result.promotions) {
+    const sourceId = promo.entryId;
+    if (sourceId.startsWith("md:")) { stats.promotionsSkipped++; continue; } // MD chunk, not an atom
+    if (ledger.has(sourceId)) { stats.promotionsSkipped++; continue; }       // already promoted
+    const source = atomIndex.get(sourceId);
+    if (!source) { stats.promotionsSkipped++; continue; }                    // text unresolvable
+
+    const atom = {
+      id: `wis_promo_${sourceId}`,
+      vault: "wisdom",
+      content: source.text,
+      category: "insight",
+      confidence: "high",
+      source: "dreaming-promotion",
+      createdAt: nowIso(),
+      metadata: { promotedFrom: promo.fromVault, sourceId, reason: promo.reason },
+    };
+    fs.appendFileSync(wisdomPath, JSON.stringify(atom) + "\n", "utf-8");
+    ledger.add(sourceId);
+    stats.promotionsWritten++;
+  }
+  fs.writeFileSync(ledgerPath, JSON.stringify([...ledger], null, 2) + "\n", "utf-8");
+
+  // ── Insights → <suggestedVault>.jsonl (idempotent via content hash) ────────
+  const existingByFile = new Map<string, Set<string>>();
+  for (const ins of result.extractedInsights) {
+    const targetPath = path.join(vaultDir, `${ins.suggestedVault}.jsonl`);
+    let existing = existingByFile.get(targetPath);
+    if (!existing) { existing = readExistingIds(targetPath); existingByFile.set(targetPath, existing); }
+
+    const hash = createHash("sha1").update(`${ins.content}|${ins.source}`).digest("hex").slice(0, 16);
+    const id = `ins_${hash}`;
+    if (existing.has(id)) { stats.insightsSkipped++; continue; }
+
+    const atom = {
+      id,
+      vault: ins.suggestedVault,
+      content: ins.content,
+      category: "insight",
+      confidence: ins.confidence,
+      source: "dreaming-insight",
+      createdAt: nowIso(),
+      metadata: { originSource: ins.source },
+    };
+    fs.appendFileSync(targetPath, JSON.stringify(atom) + "\n", "utf-8");
+    existing.add(id);
+    stats.insightsWritten++;
+  }
+
+  // ── Contradictions → contradictions.jsonl (report; overwrite each run) ─────
+  const contradictionsPath = path.join(vaultDir, "contradictions.jsonl");
+  const body = result.contradictions.map((c) => JSON.stringify(c)).join("\n");
+  fs.writeFileSync(contradictionsPath, body ? body + "\n" : "", "utf-8");
+  stats.contradictionsWritten = result.contradictions.length;
+
+  return stats;
 }

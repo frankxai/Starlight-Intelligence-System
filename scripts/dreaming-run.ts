@@ -45,7 +45,7 @@ import {
 } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { DreamingAgent } from "../src/dreaming.js";
+import { DreamingAgent, applyDreamResult } from "../src/dreaming.js";
 import { TemporalEngine } from "../src/temporal.js";
 
 // ── SweepResult export ────────────────────────────────────────────────────────
@@ -89,14 +89,31 @@ function repoRoot(): string {
 }
 
 const REPO_ROOT = repoRoot();
-// Fix B (2026-05-21): default vault dir to in-repo memory/vaults so the
-// dreaming agent reads the canonical SIS vault MD files. Fallback to
-// ~/.starlight/vaults for backward compatibility. Override via env var.
-// See docs/ops/MEMORY-PIPELINE-DIAGNOSIS-2026-05-20.md §5b.
+
+/** Parse `--vault-dir=<path>` from argv (highest-precedence override). */
+function parseVaultDirFlag(argv: string[]): string | undefined {
+  for (const arg of argv) {
+    if (arg.startsWith("--vault-dir=")) return arg.slice("--vault-dir=".length);
+  }
+  return undefined;
+}
+
+// Vault-dir precedence (v9.5 — persistence flip):
+//   1. --vault-dir=<path>            explicit per-invocation override
+//   2. STARLIGHT_VAULT_DIR           environment override
+//   3. ~/.starlight/vaults           the operator's JSONL vault store, IF it exists
+//   4. memory/vaults                 in-repo canonical MD vaults (fallback)
+// Persistence (promotions/insights) + the decay sweep only bite on JSONL vaults.
+// memory/vaults is MD-only, so preferring the operator's ~/.starlight JSONL store
+// when present is what makes dreaming actually compound. When neither an override
+// nor the home store exists, we still read the in-repo MD vaults for analysis.
+// Supersedes Fix B (2026-05-21) which defaulted to memory/vaults unconditionally.
 const REPO_VAULTS = join(REPO_ROOT, "memory", "vaults");
+const HOME_VAULTS = join(homedir(), ".starlight", "vaults");
 const VAULT_DIR =
+  parseVaultDirFlag(process.argv.slice(2)) ??
   process.env.STARLIGHT_VAULT_DIR ??
-  (existsSync(REPO_VAULTS) ? REPO_VAULTS : join(homedir(), ".starlight", "vaults"));
+  (existsSync(HOME_VAULTS) ? HOME_VAULTS : REPO_VAULTS);
 const SESSIONS_DIR =
   process.env.STARLIGHT_SESSIONS_DIR ??
   join(REPO_ROOT, "memory", "voice-sessions");
@@ -242,11 +259,15 @@ function main(): void {
 
   (async () => {
     try {
-      // Step 1: Dreaming agent
+      // Step 1: Dreaming agent (pure analysis — no disk mutation)
       const agent = new DreamingAgent(VAULT_DIR);
       const dreamResult = agent.dream(SESSIONS_DIR, AUDIT_DIR);
 
-      // Step 2: Decay sweep
+      // Step 2: Persist the dream — promotions → wisdom.jsonl (ledger-guarded),
+      // insights → <vault>.jsonl (hash-idempotent), contradictions → report file.
+      const applied = applyDreamResult(dreamResult, VAULT_DIR);
+
+      // Step 3: Decay sweep
       const sweep = await sweepDecay(VAULT_DIR);
 
       const line =
@@ -255,12 +276,16 @@ function main(): void {
         ` · contradictions: ${dreamResult.contradictions.length}` +
         ` · promotions: ${dreamResult.promotions.length}` +
         ` · processed: ${dreamResult.processedFiles}` +
+        ` · promoted: ${applied.promotionsWritten}` +
+        ` · materialized: ${applied.insightsWritten}` +
         ` · decayed: ${sweep.decayed}` +
         ` · archived: ${sweep.archived}`;
       appendReceipt(line);
       console.log(line);
 
-      // Step 3: Git auto-commit (absorb Git-backed versioning paradigm)
+      // Step 4: Git auto-commit (absorb Git-backed versioning paradigm).
+      // Only ever stages in-repo memory/vaults + the log — never ~/.starlight
+      // paths, even when VAULT_DIR resolves to the operator's home store.
       try {
         if (process.env.STARLIGHT_GIT_AUTO_COMMIT !== "false") {
           const commitMsg = `chore(memory): dreaming consolidation [insights: ${dreamResult.extractedInsights.length}, promotions: ${dreamResult.promotions.length}, archived: ${sweep.archived}]`;
