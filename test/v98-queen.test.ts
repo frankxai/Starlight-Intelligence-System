@@ -128,6 +128,52 @@ describe("v98 Queen: measure parses real scorecard contents", () => {
     assert.match(result.stdout, /relative=\+?\d/, "expected a relative percentage on at least one delta");
   });
 
+  test("never pairs metrics across containers (no byVault-vs-results cross-bucket delta)", () => {
+    // F1 (2026-07-03): computeDeltas groups by (container, name), so a per-vault
+    // breakdown bucket can no longer be paired against an aggregate to produce a
+    // misleading spread. The transformer scorecard has precision_at_10 under BOTH
+    // `byVault.*` (per-vault) and `results.*` (aggregate rule buckets) — pre-fix,
+    // measure reported byVault.horizon(0.125) -> results.scorable26_50pct_rule(0.615)
+    // as a "+392%" delta. Every emitted delta must now be within a single container.
+    const containerOf = (config: string): string => {
+      const i = config.lastIndexOf(".");
+      return i === -1 ? "" : config.slice(0, i);
+    };
+    const result = runDriver("measure");
+    const line = result.stdout.split("\n").find((l) => l.startsWith("MEASURE_SUMMARY_JSON "));
+    assert.ok(line, "expected a MEASURE_SUMMARY_JSON line");
+    const summary = JSON.parse(line!.slice("MEASURE_SUMMARY_JSON ".length));
+    const allDeltas = summary.scorecards.flatMap((s: any) => s.deltas ?? []);
+    assert.ok(allDeltas.length > 0, "expected at least one real delta across the repo scorecards");
+    for (const d of allDeltas) {
+      assert.equal(
+        containerOf(d.low.config),
+        containerOf(d.high.config),
+        `delta pairs different containers: ${d.low.config} vs ${d.high.config} (${d.name})`,
+      );
+    }
+    // And the specific flagged pairing must be absent.
+    const crossBucket = allDeltas.some(
+      (d: any) =>
+        (/^byVault\b/.test(d.low.config) && /^results\b/.test(d.high.config)) ||
+        (/^results\b/.test(d.low.config) && /^byVault\b/.test(d.high.config)),
+    );
+    assert.equal(crossBucket, false, "byVault<->results cross-bucket delta must not be emitted");
+  });
+
+  test("still emits the legitimate same-container lexical-vs-hybrid method delta", () => {
+    const result = runDriver("measure");
+    const line = result.stdout.split("\n").find((l) => l.startsWith("MEASURE_SUMMARY_JSON "));
+    const summary = JSON.parse(line!.slice("MEASURE_SUMMARY_JSON ".length));
+    const rrf = summary.scorecards.find((s: any) => s.file === "2026-06-10-memory-lane-rrf-hybrid.json");
+    assert.ok(rrf, "expected the RRF-hybrid scorecard");
+    const methodDelta = (rrf.deltas ?? []).find(
+      (d: any) => /lexical/i.test(d.low.config) && /hybrid/i.test(d.high.config),
+    );
+    assert.ok(methodDelta, "the lexical->hybrid retrieval-method delta must survive the container guard");
+    assert.ok(methodDelta.relativePct > 20, "the real +61% precision@10 gain is still measured");
+  });
+
   test("emits a machine-readable MEASURE_SUMMARY_JSON line consumable by LEARN", () => {
     const result = runDriver("measure");
     const line = result.stdout.split("\n").find((l) => l.startsWith("MEASURE_SUMMARY_JSON "));

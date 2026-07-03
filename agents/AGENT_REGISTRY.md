@@ -148,14 +148,14 @@ Each agent below owns one Intelligence System layer. Vault namespaces are separa
 | **Embodiment** | `starlight-embodiment.md` | Embodiment Tier | Body substrate — training + nutrition + sleep + energy architecture | `v7.4-alpha — active dogfood` | `/design-regimen`, `/energy-audit` | `health/` |
 | **Second Brain** | `starlight-secondbrain.md` | Memory Tier (peer with Sage: personal PKM vs institutional wisdom) | Daily capture, insight distillation, weekly/monthly/quarterly review | `v7.4-alpha — active dogfood` | `/capture-daily`, `/distill-insights`, `/orchestrate-brain` | `second-brain/` |
 | **Relational** | `starlight-relational.md` | Relational Tier | Network architecture, alliance-readiness assessment | `v7.4-alpha — active dogfood` | `/map-relationships`, `/design-alliance-readiness` | `relational/` |
-| **Self IS** | `starlight-self-is.md` | Self Tier | Core persona, identity keys, personal values | `v8.0-alpha` | `/self-persona` | `self/` |
-| **Brand IS** | `starlight-brand-is.md` | Brand Tier | Visual assets, font alignments, brand kits | `v8.0-alpha` | `/brand-assets` | `brand/` |
+| **Self IS** | `starlight-self-is.md` | Self Tier | Core persona, identity keys, personal values | `v8.0-alpha` | `/discover-genius` | `self/` |
+| **Brand IS** | `starlight-brand-is.md` | Brand Tier | Visual assets, font alignments, brand kits | `v8.0-alpha` | `/define-vision` | `brand/` |
 | **Creator IS** | `starlight-creator-is.md` | Creator Tier | Content calendars, newsletters, creative pipeline gates | `v8.0-alpha` | `/creator-pipeline` | `creator/` |
-| **Wealth IS** | `starlight-wealth-is.md` | Wealth Tier | Capital allocation, investment monitoring | `v8.0-alpha` | `/wealth-allocate` | `wealth/` |
-| **Code IS** | `starlight-code-is.md` | Code Tier | Local workspace automation, MCP tool development | `v8.0-alpha` | `/code-automation` | `code/` |
-| **Voice & Video IS** | `starlight-voice-video-is.md` | Media Tier | Media asset attestation, audio editing, video pipelines | `v8.0-alpha` | `/media-pipeline` | `media/` |
-| **Family IS** | `starlight-family-is.md` | Family Tier | Kinship trees, private estate files, schedules | `v8.0-alpha` | `/family-kinship` | `family/` |
-| **Spiritual IS** | `starlight-spiritual-is.md` | Spiritual Tier | Private, encrypted node handling existential alignment | `v8.0-alpha` | `/existential-align` | `spiritual/` |
+| **Wealth IS** | `starlight-wealth-is.md` | Wealth Tier | Capital allocation, investment monitoring | `v8.0-alpha` | `/wealth-dpi` | `wealth/` |
+| **Code IS** | `starlight-code-is.md` | Code Tier | Local workspace automation, MCP tool development | `v8.0-alpha` | `/arco` | `code/` |
+| **Voice & Video IS** | `starlight-voice-video-is.md` | Media Tier | Media asset attestation, audio editing, video pipelines | `v8.0-alpha` | `/sip-attest-audio` | `media/` |
+| **Family IS** | `starlight-family-is.md` | Family Tier | Kinship trees, private estate files, schedules | `v8.0-alpha` | `/map-relationships` | `family/` |
+| **Spiritual IS** | `starlight-spiritual-is.md` | Spiritual Tier | Private, encrypted node handling existential alignment | `v8.0-alpha` | `/private-public-split` | `spiritual/` |
 | **Health IS** | `starlight-health-is.md` | Health Tier | Nutrition plans, sleep logs, physical exercises | `v8.0-alpha` | `/health-logs` | `health/` |
 
 ### Domain Sub-Stack Tier (v7.4.1+ — three reference verticals)
