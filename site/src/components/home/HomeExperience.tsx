@@ -7,8 +7,7 @@ import Image from "next/image";
 import {
   motion,
   useReducedMotion,
-  useScroll,
-  useMotionValueEvent,
+  useMotionValue,
   useTransform,
 } from "framer-motion";
 import gsap from "gsap";
@@ -528,23 +527,41 @@ function CtaSection() {
 export function HomeExperience() {
   const progressRef = useRef(0);
   const reduced = useReducedMotion() ?? false;
-  const { scrollYProgress } = useScroll();
+  const scrollYProgress = useMotionValue(0);
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    progressRef.current = v;
-  });
+  useEffect(() => {
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const v = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      progressRef.current = v;
+      scrollYProgress.set(v);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [scrollYProgress]);
 
   // Dim the cosmic stage once the narrative sections take over.
   const stageDim = useTransform(
     scrollYProgress,
-    [0, 0.14, 0.5, 0.85, 0.97],
-    [0, 0.55, 0.68, 0.72, 0.96],
+    [0, 0.14, 0.5],
+    [0, 0.55, 0.68],
   );
+  // Fully fade the stage out before the footer so nothing bleeds through.
+  const stageOpacity = useTransform(scrollYProgress, [0.78, 0.92], [1, 0]);
 
   return (
     <div className="relative bg-[#060609]">
       {/* Fixed cosmic stage — 3D core + nebula ambience */}
-      <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+      <motion.div
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{ opacity: stageOpacity }}
+        aria-hidden="true"
+      >
         <Image
           src="/images/home/nebula-veil.png"
           alt=""
@@ -559,7 +576,7 @@ export function HomeExperience() {
           style={{ opacity: stageDim }}
         />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#060609] to-transparent" />
-      </div>
+      </motion.div>
 
       {/* Scrolling narrative */}
       <div className="relative z-10">
