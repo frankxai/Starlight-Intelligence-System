@@ -54,7 +54,7 @@ function missingFiles(verticalDir: string, files: readonly string[]): string[] {
 function listAgentFiles(): string[] {
   const dir = join(REPO_ROOT, "agents");
   return readdirSync(dir)
-    .filter((f) => f.endsWith(".md") && f !== "AGENT_REGISTRY.md" && f !== "CODING_AGENTS_REGISTRY.md")
+    .filter((f) => f.endsWith(".md") && f !== "AGENT_REGISTRY.md" && f !== "CODING_AGENTS_REGISTRY.md" && f !== "AGENT_TEMPLATE.md")
     .sort();
 }
 

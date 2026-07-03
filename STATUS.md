@@ -35,6 +35,14 @@
 | Temporal reasoning (confidence half-life) | ✅ | `src/temporal.ts`, `src/temporal.test.ts` |
 | Contradiction detection | ✅ | `src/contradiction.ts` |
 | Dreaming (background transcript processing) | ✅ | `src/dreaming.ts`, `test/dreaming-vault-md-support.test.ts` |
+| Dreaming persistence (promotions → wisdom, insights → atoms, idempotent ledger) | ✅ | `scripts/dreaming-run.ts`, `test/v95-dreaming-persistence.test.ts` |
+| Real LLM executor (cli/api backends, in-role agent prompts) | ✅ | `src/executors/claude-executor.ts`, `test/v94-executor.test.ts` |
+| Swarm plan→run bridge (`starlight starlight-swarm run`, approval-gated) | ✅ | `src/swarm.ts`, `test/v96-swarm-bridge.test.ts` |
+| Executable boards (`starlight board`, verdict JSON to `docs/boards/`) | ✅ | `src/board.ts`, `test/v97-board.test.ts` |
+| Queen MEASURE/LEARN from real scorecard data + `queen verify` | ✅ | `tools/queen/driver.mjs`, `test/v98-queen.test.ts` |
+| Memory integrity (canonical atom text, veil-on-write, store unification) | ✅ | `src/atom.ts`, `test/v93-memory-integrity.test.ts` |
+| Agent quality ratchet (thin-scaffold ban, 81 rewritten, thin ledger at 0) | ✅ | `agents/AGENT_TEMPLATE.md`, `test/v92-agent-quality.test.ts` |
+| Scheduled cloud autonomy (nightly metrics, weekly dreaming, registry drift) | ✅ | `.github/workflows/`, `docs/ops/cloud-autonomy.md` |
 | Operational MCP server — 10 `sis_*` tools | ✅ | `src/mcp-server.ts`, `test/mcp-server-smoke.test.ts` (end-to-end JSON-RPC) |
 | v0.1 MCP server — 13 `sis.*` tools | ✅ | `src/mcp-server-v01.ts`, `test/v01-mcp-tools.test.ts` |
 | Platform adapters (Claude/Cursor/Codex/Gemini/OpenCode) | ✅ | `src/adapters/`, `test/v80-platform-prompts.test.ts` |

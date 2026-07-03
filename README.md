@@ -67,11 +67,11 @@ cleans up — your real vaults are never touched.
 |---|---|---|
 | Named agents | **144** | `agents/**/*.md` |
 | Auto-activating skills | **83** | `skills/skill-rules.json` |
-| Engine code | **20,440 LOC** across 73 files | `src/**/*.ts` (excl. tests) |
-| Test cases | **760** across 67 files | `src` + `test` `*.test.ts` |
+| Engine code | **21,495 LOC** across 76 files | `src/**/*.ts` (excl. tests) |
+| Test cases | **815** across 74 files | `src` + `test` `*.test.ts` |
 | Version | **8.3.0** | `package.json` |
 
-_Derived from source, not hand-typed. Regenerate with `npm run metrics`; CI fails on drift via `npm run metrics -- --check`. Last verified 2026-06-22._
+_Derived from source, not hand-typed. Regenerate with `npm run metrics`; CI fails on drift via `npm run metrics -- --check`. Last verified 2026-07-03._
 
 <!-- METRICS:END -->
 
@@ -129,7 +129,7 @@ npm test         # the full operational + substrate + eval suite
 
 ## The engineering
 
-The reference build is **20,440 lines of TypeScript** with one runtime
+The reference build is **21,495 lines of TypeScript** (live count in the metrics table above) with one runtime
 dependency (`better-sqlite3`). JSONL vaults are canon; everything else is a
 rebuildable layer on top.
 
@@ -266,7 +266,7 @@ npm run metrics  # recompute the live-metrics block from source
 npm run verify   # the full CI gate (lint, harness, tests, build, metrics --check, site)
 ```
 
-`src/` is **20,440 lines of TypeScript** (regenerate the exact figure with
+`src/` is **21,495 lines of TypeScript** (regenerate the exact figure with
 `npm run metrics`) with zero runtime dependencies outside `better-sqlite3`.
 Substrate docs are markdown-only — no build dependency.
 
