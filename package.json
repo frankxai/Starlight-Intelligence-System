@@ -1,7 +1,7 @@
 {
   "name": "@arcanea/starlight-intelligence-system",
   "version": "8.3.0",
-  "description": "Starlight Intelligence System \u2014 substrate (SIP protocol, alliance forging method, attestation) + reference operational layer (6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, MCP server, platform adapters, sanitization gateway, empirical sandbox, active healing)",
+  "description": "Starlight Intelligence System — substrate (SIP protocol, alliance forging method, attestation) + reference operational layer (6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, MCP server, platform adapters, sanitization gateway, empirical sandbox, active healing)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frankxai/Starlight-Intelligence-System.git"
@@ -185,6 +185,14 @@
     "starlight-substrate-mcp": "dist/starlight-mcp.js"
   },
   "dependencies": {
-    "better-sqlite3": "12.8.0"
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@react-three/postprocessing": "^3.0.4",
+    "better-sqlite3": "12.8.0",
+    "framer-motion": "^12.42.2",
+    "gsap": "^3.15.0",
+    "lucide-react": "^1.23.0",
+    "react": "^19.2.7",
+    "three": "^0.185.1"
   }
 }
