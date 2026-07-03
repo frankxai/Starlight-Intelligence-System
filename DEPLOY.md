@@ -1,72 +1,69 @@
 # Deploy — starlightintelligence.org
 
-Site code lives at `site/`. Production: `starlightintelligence.org`. Vercel project: `prj_wDNGrb1R1rB5PJOG9cUEICSER887` (canonical per HANDOVER-2026-04-23).
+Site code lives at `site/` (a server-rendered Next.js app — live route handlers,
+`sitemap.ts`/`robots.ts`, and `metadataBase`, so it needs a Node/serverless host, not a
+static bucket). Production: `starlightintelligence.org`. Vercel project:
+`starlight-intelligence-system` / `prj_wDNGrb1R1rB5PJOG9cUEICSER887` (canonical per
+HANDOVER-2026-04-23).
+
+The repo is the **source**; Vercel is the **host**. GitHub does not serve the site.
 
 ---
 
-## Auto-deploy via GitHub Actions (v7.5+)
+## How it deploys (Vercel native Git integration)
 
-Vercel's own GitHub integration broke 2026-04-10 and was not restored. v7.5 ships an alternative auto-deploy pipeline at `.github/workflows/vercel-deploy.yml`:
+Deploys are owned by **Vercel's native GitHub integration** — no repo secrets, no CLI
+workflow to maintain:
 
-- **Trigger:** push to `main` that touches `site/**` or the workflow file itself.
-- **Job:** install Vercel CLI → `vercel pull` (production env) → `vercel build --prod` → `vercel deploy --prebuilt --prod`.
-- **Concurrency:** one production deploy at a time (`vercel-deploy-prod` group, no cancel-in-progress).
-- **Manual override:** `workflow_dispatch` lets the workflow run on demand from the Actions tab.
+- **Preview** — every pull request gets an automatic preview deployment + a `vercel[bot]`
+  comment with the preview URL. (Confirmed working; that is the `*-git-<branch>.vercel.app`
+  URL you see on a PR — it is *not* production.)
+- **Production** — a push to `main` that changes `site/` rebuilds and ships to
+  `starlightintelligence.org`. Project config: production branch `main`, root directory
+  `site/` (Vercel dashboard → Settings → Git).
 
-### Required GitHub secrets
+There is **no GitHub Actions deploy workflow** and none is needed. The old
+`.github/workflows/vercel-deploy.yml` CLI pipeline (a stopgap from when the native
+integration briefly broke in 2026-04) was **retired 2026-07-03** once native integration
+was confirmed working — it was dormant (secret-gated, skipping) and duplicated the CI
+build gate. See `ATTESTATIONS.md` for the retirement record.
 
-The workflow needs three repo-level secrets configured at https://github.com/frankxai/Starlight-Intelligence-System/settings/secrets/actions :
+### CI build gate (independent of Vercel)
 
-| Secret | Source | Purpose |
-|---|---|---|
-| `VERCEL_TOKEN` | Vercel Account Settings → Tokens → "Create" → name it `starlight-gha-deploy` | Auth for Vercel CLI |
-| `VERCEL_ORG_ID` | `vercel inspect` from `site/` after `vercel link`, or `.vercel/project.json` | Tells the CLI which org owns the project |
-| `VERCEL_PROJECT_ID` | Same as above; should resolve to `prj_wDNGrb1R1rB5PJOG9cUEICSER887` | Identifies the project to deploy |
-
-After the secrets land, the next push that touches `site/` triggers a build. First run will take ~3-5 minutes; subsequent runs use Vercel's build cache.
+`.github/workflows/harness-check.yml` has a `web` job that runs `next build` on `site/`
+(and `console/`) on **every PR and push to `main`**. A broken site build fails the PR in
+GitHub before Vercel ever deploys — so build breakage can't reach production silently.
+No secrets required.
 
 ---
 
 ## Manual deploy (fallback)
 
-If the GHA pipeline fails or you want to force a deploy without a commit:
+To force a production deploy without a commit (e.g. to re-ship an unchanged `main`):
 
 ```bash
 cd site
 vercel --prod --yes
 ```
 
-This requires the local dev environment to be linked to the Vercel project (one-time `vercel link`). The token-based GHA path does not require local linkage.
+Requires a one-time `vercel link` to the project. Rarely needed — native integration
+handles `main` automatically.
 
 ---
 
 ## Verifying a deploy landed
 
 ```bash
-curl -sI https://starlightintelligence.org/protocol | head -1   # expects: HTTP/2 200
-curl -sI https://starlightintelligence.org/badge/v1.1.0 | head -1   # expects: HTTP/2 200
+curl -sI https://starlightintelligence.org/protocol      | head -1   # expects: HTTP/2 200
+curl -sI https://starlightintelligence.org/badge/v1.1.0  | head -1   # expects: HTTP/2 200
 ```
 
-If those return 200 against the SHA you just pushed, the deploy is live.
-
----
-
-## Reactivating Vercel's native GitHub integration (alternative)
-
-If you want to retire the GHA workflow and restore native auto-deploys:
-
-1. Go to https://vercel.com/dashboard → starlight-intelligence-system project → Settings → Git.
-2. Disconnect the existing GitHub integration (if still connected).
-3. Reconnect via "Connect Git Repository" → select `frankxai/Starlight-Intelligence-System`.
-4. Set production branch = `main`, root directory = `site/`.
-5. Test by pushing a trivial site change and verifying it propagates without manual `vercel --prod`.
-6. Once verified, you can delete `.github/workflows/vercel-deploy.yml` (or leave it as a fallback).
-
-The GHA path is the recommended default until that integration proves reliable across multiple consecutive deploys.
+If those return 200 for the SHA you just pushed, production is live. The DNS → Vercel
+domain attachment is configured in the Vercel dashboard (not in the repo).
 
 ---
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.0
 - Substrate: starlightintelligence.org/protocol
 - Layers used: [file-contract, attestation, sovereignty]
-- Generated: 2026-04-26 (v7.5)
+- Generated: 2026-04-26 (v7.5) · Rewritten 2026-07-03 (native-integration consolidation)

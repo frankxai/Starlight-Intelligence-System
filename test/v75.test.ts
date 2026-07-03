@@ -30,7 +30,7 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -244,21 +244,29 @@ describe("v7.5.1 Block 7 — OpenClaw v7.5 audit remediation", () => {
     assert.match(content, /Required external commands/, "Voice & Video IS README missing required-external section");
   });
 
-  // HIGH-1: GHA workflow uses 40-char SHA pins for all uses: declarations
-  it("v7.5.1.7.4 .github/workflows/vercel-deploy.yml pins all third-party actions to SHAs (HIGH-1)", () => {
-    const content = readFileSync(join(REPO_ROOT, ".github", "workflows", "vercel-deploy.yml"), "utf8");
-    const usesLines = content.split("\n").filter((l) => l.match(/^\s+uses:/));
-    assert.ok(usesLines.length > 0, "no uses: lines found in workflow");
-    for (const line of usesLines) {
-      const match = line.match(/uses:\s+\S+@(\S+?)(?:\s|$)/);
-      assert.ok(match, `uses: line did not parse: ${line.trim().slice(0, 50)}`);
-      const ref = match[1];
-      // Must be 40-char hex SHA, not @vN or @branch
-      assert.match(
-        ref,
-        /^[0-9a-f]{40}$/,
-        `uses: pin must be 40-char SHA (got something else of length ${ref.length})`
-      );
+  // HIGH-1 (generalized 2026-07-03): EVERY workflow SHA-pins its `uses:` actions.
+  // Originally scoped to vercel-deploy.yml (the CLI deploy pipeline); that workflow
+  // was retired when deploys moved to Vercel's native Git integration, so the control
+  // was broadened to the whole .github/workflows/ dir — a strictly stronger invariant
+  // that no longer depends on any single file existing.
+  it("v7.5.1.7.4 every .github/workflows/*.yml pins all actions to 40-char SHAs (HIGH-1, generalized)", () => {
+    const workflowsDir = join(REPO_ROOT, ".github", "workflows");
+    const files = readdirSync(workflowsDir).filter((f) => f.endsWith(".yml") || f.endsWith(".yaml"));
+    assert.ok(files.length > 0, "no workflow files found under .github/workflows/");
+    for (const file of files) {
+      const content = readFileSync(join(workflowsDir, file), "utf8");
+      const usesLines = content.split("\n").filter((l) => l.match(/^\s+-?\s*uses:/));
+      for (const line of usesLines) {
+        const match = line.match(/uses:\s+\S+@(\S+?)(?:\s|$)/);
+        assert.ok(match, `${file}: uses: line did not parse: ${line.trim().slice(0, 60)}`);
+        const ref = match[1];
+        // Must be a 40-char hex SHA, not @vN or @branch (supply-chain hardening).
+        assert.match(
+          ref,
+          /^[0-9a-f]{40}$/,
+          `${file}: uses: pin must be a 40-char SHA (got "${ref}", length ${ref.length})`
+        );
+      }
     }
   });
 

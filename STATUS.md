@@ -74,7 +74,8 @@
 |---|---|---|
 | npm package `@arcanea/starlight-intelligence-system` | 🔭 | Publish target; follow [`RELEASING.md`](RELEASING.md) and verify `npm view ... version` matches `package.json` before relying on it. Registry has lagged the repo before. |
 | `starlightintelligence.org/protocol` mirror | 🔭 | Canonical-URL mirror of `SIP.md`; external host |
-| Site / console (Next.js) builds | ✅ | `npm run build:site` / `build:console` — verified builds & eslint compile cleanly |
+| Site / console (Next.js) builds | ✅ | `npm run build:site` / `build:console` — verified builds & eslint compile cleanly; gated in CI by `harness-check.yml` `web` job on every PR + push |
+| Site deploy → `starlightintelligence.org` | ✅ | Vercel native Git integration (previews on PR, prod on `main`); no repo secrets — see [`DEPLOY.md`](DEPLOY.md) |
 
 ---
 

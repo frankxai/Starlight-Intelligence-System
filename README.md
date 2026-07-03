@@ -13,7 +13,7 @@
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![Built on SIP](https://starlightintelligence.org/badge/v1.1.1)](https://starlightintelligence.org/protocol)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
-[![deploy](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml)
+[![CI](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/harness-check.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/harness-check.yml)
 [![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
 
 ![Two CLIs recalling the same attested memory atom from one substrate](docs/assets/hero.svg)

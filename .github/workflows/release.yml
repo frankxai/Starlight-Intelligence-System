@@ -5,9 +5,9 @@
 # workflow makes publishing a `git tag v*.*.* && git push origin v*.*.*` away,
 # gated on the same build+test:substrate bar as prepublishOnly.
 #
-# Dormant-until-secret, mirroring vercel-deploy.yml's preflight pattern: with
-# no NPM_TOKEN secret set, `publish` is skipped cleanly and a ::notice::
-# points at the manual fallback instead of the run failing red.
+# Dormant-until-secret preflight pattern: with no NPM_TOKEN secret set,
+# `publish` is skipped cleanly and a ::notice:: points at the manual fallback
+# instead of the run failing red.
 #
 # Built on SIP — Starlight Intelligence Protocol
 # Layers used: [file-contract, attestation]

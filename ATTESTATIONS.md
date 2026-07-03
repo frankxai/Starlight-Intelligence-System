@@ -6,6 +6,33 @@
 
 ---
 
+## infra — 2026-07-03 — Deploy consolidation (native integration) + SHA-pin control broadened
+
+Deploys retired from GitHub Actions to **Vercel's native Git integration** (previews on
+PR, production on `main` → `starlightintelligence.org`; zero repo secrets). The
+`.github/workflows/vercel-deploy.yml` CLI pipeline — added under v7.5.1 as the auto-deploy
+restoration when the native integration briefly broke (2026-04-10) — was **deleted**: it
+had been dormant (secret-gated, skipping green) and duplicated the `harness-check.yml`
+`web` site-build gate. Native integration was confirmed live this cycle (PR #24 preview
+deployed).
+
+Supersedes the v7.5.1 record below in two ways, honestly:
+- The workflow's `.deploy-log` "Built on SIP" attestation artifact is retired *with* the
+  workflow. It was never test-enforced; the site itself still carries SIP attestation.
+- The OpenClaw v7.5 **HIGH-1** control ("SHA-pin third-party GHA actions") is **preserved
+  and strengthened** — `test/v75.test.ts` v7.5.1.7.4 was generalized from that single
+  workflow to **every** file under `.github/workflows/`, and the last two floating tags
+  (`sip-starter-release.yml`) were SHA-pinned. Supply-chain surface shrank (no self-hosted
+  deploy pipeline runs third-party actions with deploy creds) and coverage widened.
+
+Docs reconciled: `DEPLOY.md` (rewritten to native-integration model), `docs/ops/cloud-autonomy.md`
+(deploy row + arming section removed), `README.md` (deploy badge → `harness-check` CI badge).
+Operational-tier change; no substrate-gated files touched.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1
+
+---
+
 ## v7.6.0 — 2026-04-28 — People Intelligence rename (Path A authorless symmetric naming)
 
 HR Intelligence reference vertical renamed → People Intelligence. Path A authorless naming pattern symmetric with Sound Intelligence (sister Domain Sub-Stack Tier reference). Sheds HR-baggage; matches the people-flourishing-science SOUL framing already declared in v0.1.1.
