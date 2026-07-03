@@ -45,7 +45,7 @@ const PILLARS = [
   {
     n: "02",
     title: "Attested knowledge",
-    desc: "Every serious run leaves a proof trail: traces, evals, confidence notes, and SIP attestation another agent can inspect and cite.",
+    desc: "Every serious run leaves a proof trail — traces, evals, confidence notes, and a protocol attestation any other agent can inspect and cite.",
     icon: FileCheck2,
     accent: "#a78bfa",
   },
@@ -83,7 +83,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-[11px] font-medium uppercase tracking-[0.28em] text-violet-300/90">
+    <p className="font-serif text-[15px] italic tracking-wide text-violet-300/80">
       {children}
     </p>
   );
@@ -95,7 +95,7 @@ function SectionHeading({
   desc,
 }: {
   eyebrow: string;
-  title: string;
+  title: React.ReactNode;
   desc?: string;
 }) {
   return (
@@ -169,30 +169,31 @@ function Hero() {
       />
 
       <div data-hero-fade className="relative flex max-w-4xl flex-col items-center">
-        <div data-hero-reveal className="glass-panel inline-flex min-h-11 items-center gap-2 rounded-full px-4 py-2">
+        <div data-hero-reveal className="glass-panel inline-flex min-h-11 items-center gap-2.5 rounded-full px-5 py-2">
           <Sparkles size={13} className="text-violet-300" aria-hidden="true" />
-          <span className="font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-slate-300">
-            SIP v1.1.1 · Substrate v8.3
+          <span className="text-[12.5px] font-medium tracking-wide text-slate-300">
+            Starlight Intelligence Protocol{" "}
+            <span className="text-slate-500">v1.1 · Substrate v8.3</span>
           </span>
         </div>
 
         <h1
           data-hero-reveal
-          className="mt-7 text-balance text-[2.6rem] font-semibold leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl"
+          className="mt-8 text-balance text-[2.6rem] font-semibold leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-7xl"
         >
-          One shared brain for your{" "}
-          <span className="bg-gradient-to-r from-violet-300 via-cyan-200 to-amber-200 bg-clip-text text-transparent">
-            entire AI fleet
-          </span>
+          One shared mind for your{" "}
+          <em className="bg-gradient-to-r from-violet-200 via-violet-300 to-cyan-200 bg-clip-text font-serif font-medium italic text-transparent">
+            entire fleet of agents
+          </em>
         </h1>
 
         <p
           data-hero-reveal
-          className="mt-6 max-w-xl text-pretty text-base leading-8 text-slate-400 sm:text-lg"
+          className="mt-7 max-w-xl text-pretty text-base leading-8 text-slate-400 sm:text-lg"
         >
-          Persistent memory. Attested knowledge. Sovereign control. Every agent
-          in every tool reads from the same six semantic vaults — with full
-          provenance.
+          Persistent memory, attested knowledge, and sovereign control —
+          every agent, in every tool, reading from the same six semantic
+          vaults with full provenance.
         </p>
 
         <div
@@ -231,7 +232,7 @@ function Hero() {
         transition={{ delay: 1.6, duration: 0.8 }}
         aria-hidden="true"
       >
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-slate-500">
+        <span className="font-serif text-[13px] italic tracking-wide text-slate-500">
           Scroll
         </span>
         <motion.span
@@ -253,8 +254,14 @@ function SubstrateSection() {
   return (
     <section className="relative mx-auto max-w-6xl px-5 py-28 sm:px-6 md:py-36">
       <SectionHeading
-        eyebrow="The Substrate"
-        title="Built for agents that need proof, not another forgetful chat surface."
+        eyebrow="The substrate"
+        title={
+          <>
+            Built for agents that need{" "}
+            <em className="font-serif font-medium italic text-violet-200">proof</em>,
+            not another forgetful chat surface.
+          </>
+        }
         desc="Starlight is a working control plane: memory in, governance over the run, evidence out — and a path back to the exact source state."
       />
 
@@ -301,8 +308,16 @@ function LoopSection() {
   return (
     <section className="relative mx-auto max-w-6xl px-5 py-28 sm:px-6 md:py-36">
       <SectionHeading
-        eyebrow="Operating Loop"
-        title="Every serious run becomes durable intelligence."
+        eyebrow="The operating loop"
+        title={
+          <>
+            Every serious run becomes{" "}
+            <em className="font-serif font-medium italic text-violet-200">
+              durable intelligence
+            </em>
+            .
+          </>
+        }
       />
 
       <div className="relative mt-16">
@@ -352,8 +367,16 @@ function VaultsSection() {
   return (
     <section className="relative mx-auto max-w-6xl px-5 py-28 sm:px-6 md:py-36">
       <SectionHeading
-        eyebrow="Six Semantic Vaults"
-        title="One memory surface, six domains of intelligence."
+        eyebrow="Six semantic vaults"
+        title={
+          <>
+            One memory surface,{" "}
+            <em className="font-serif font-medium italic text-violet-200">
+              six domains
+            </em>{" "}
+            of intelligence.
+          </>
+        }
         desc="Agents read the same substrate and still specialize — by domain, tool, or decision context."
       />
 
@@ -448,9 +471,17 @@ function EcosystemSection() {
 
       <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
         <SectionHeading
-          eyebrow="The Constellation"
-          title="An ecosystem wired around one substrate."
-          desc="Roughly fifteen repositories orbit the Starlight hub — execution layers, creative universes, and satellites that all read the same attested memory."
+          eyebrow="The constellation"
+          title={
+            <>
+              An ecosystem wired around{" "}
+              <em className="font-serif font-medium italic text-violet-200">
+                one substrate
+              </em>
+              .
+            </>
+          }
+          desc="Fifteen repositories orbit the Starlight hub — execution layers, creative universes, and satellites, all reading the same attested memory."
         />
 
         <div className="mt-16">
@@ -479,9 +510,13 @@ function CtaSection() {
           className="pointer-events-none absolute -top-32 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-violet-500/15 blur-3xl"
           aria-hidden="true"
         />
-        <Eyebrow>60-second start</Eyebrow>
+        <Eyebrow>Begin in sixty seconds</Eyebrow>
         <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          Give every agent the same memory.
+          Give every agent{" "}
+          <em className="font-serif font-medium italic text-violet-200">
+            the same memory
+          </em>
+          .
         </h2>
 
         <div className="mx-auto mt-8 max-w-xl rounded-xl border border-white/[0.1] bg-[#08080e]/90 p-4 text-left">

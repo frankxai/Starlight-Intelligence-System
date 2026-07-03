@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NAV_GROUPS, CONNECT_LINKS } from "@/lib/nav";
+import { StarlightMark } from "@/components/StarlightMark";
 
 export function Footer() {
   return (
@@ -13,12 +14,11 @@ export function Footer() {
               aria-label="Starlight Intelligence — home"
               className="inline-flex items-center gap-2.5 transition-micro hover:opacity-80"
             >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                <circle cx="9" cy="9" r="3" fill="#a78bfa" opacity="0.8" />
-                <circle cx="9" cy="9" r="7" stroke="#a78bfa" strokeWidth="0.5" opacity="0.3" />
-                <circle cx="9" cy="9" r="9" stroke="#a78bfa" strokeWidth="0.3" opacity="0.15" />
-              </svg>
+              <StarlightMark size={18} />
               <span className="text-[15px] font-semibold tracking-tight text-white">Starlight</span>
+              <span className="font-serif text-[13px] italic tracking-wide text-slate-400">
+                Intelligence
+              </span>
             </Link>
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-slate-400">
               Persistent context for AI agents. Built on the Starlight Intelligence
@@ -29,7 +29,7 @@ export function Footer() {
           {/* Mirror the nav's Explore / Build / Learn groups */}
           {NAV_GROUPS.map((group) => (
             <div key={group.label} className="lg:col-span-2">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+              <p className="font-serif text-[14px] italic tracking-wide text-slate-400">
                 {group.label}
               </p>
               <nav className="mt-3 flex flex-col gap-2" aria-label={`${group.label} navigation`}>
@@ -44,7 +44,7 @@ export function Footer() {
 
           {/* Connect — external + newcomer */}
           <div className="lg:col-span-2">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">Connect</p>
+            <p className="font-serif text-[14px] italic tracking-wide text-slate-400">Connect</p>
             <nav className="mt-3 flex flex-col gap-2" aria-label="Connect navigation">
               {CONNECT_LINKS.map((l) => (
                 <FooterLink key={l.href} href={l.href} external={l.external}>
@@ -60,7 +60,7 @@ export function Footer() {
           <p className="text-[12px] text-slate-500">
             Built on the Starlight Intelligence Protocol · MIT
           </p>
-          <p className="text-[12px] text-slate-500">Sovereign by architecture.</p>
+          <p className="font-serif text-[13px] italic text-slate-500">Sovereign by architecture.</p>
         </div>
       </div>
     </footer>

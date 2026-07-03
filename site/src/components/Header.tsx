@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { NAV_GROUPS, GITHUB_URL, DEPLOY_URL, isActive } from "@/lib/nav";
+import { StarlightMark } from "@/components/StarlightMark";
 
 export function Header() {
   const pathname = usePathname();
@@ -49,14 +50,17 @@ export function Header() {
         <Link
           href="/"
           aria-label="Starlight Intelligence — home"
-          className="flex items-center gap-2.5 transition-micro hover:opacity-80"
+          className="flex items-baseline gap-2.5 transition-micro hover:opacity-80"
         >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <circle cx="9" cy="9" r="3" fill="#a78bfa" opacity="0.8" />
-            <circle cx="9" cy="9" r="7" stroke="#a78bfa" strokeWidth="0.5" opacity="0.3" />
-            <circle cx="9" cy="9" r="9" stroke="#a78bfa" strokeWidth="0.3" opacity="0.15" />
-          </svg>
-          <span className="text-[15px] font-semibold tracking-tight text-white">Starlight</span>
+          <span className="self-center" aria-hidden="true">
+            <StarlightMark size={19} />
+          </span>
+          <span className="text-[15px] font-semibold tracking-tight text-white">
+            Starlight
+          </span>
+          <span className="hidden font-serif text-[13px] italic tracking-wide text-slate-400 sm:inline">
+            Intelligence
+          </span>
         </Link>
 
         {/* Desktop grouped nav */}
@@ -178,7 +182,7 @@ export function Header() {
           <div className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto px-6 py-5">
             {NAV_GROUPS.map((group) => (
               <div key={group.label} className="mb-6">
-                <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                <p className="mb-1.5 font-serif text-[14px] italic tracking-wide text-slate-500">
                   {group.label}
                 </p>
                 <div className="flex flex-col">

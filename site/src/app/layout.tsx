@@ -27,17 +27,17 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://starlightintelligence.org"),
   title: {
     default:
-      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
+      "Starlight Intelligence — One shared mind for your entire fleet of agents",
     template: "%s — Starlight Intelligence",
   },
   description:
-    "Operational memory, governance, traces, evals, logs, and operator control for AI agent fleets. Built on SIP. Local-first, forkable, and proof-oriented.",
+    "Operational memory, governance, traces, evals, and operator control for AI agent fleets. Built on the Starlight Intelligence Protocol. Local-first, forkable, and proof-oriented.",
   alternates: { canonical: "/" },
   openGraph: {
     title:
-      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
+      "Starlight Intelligence — One shared mind for your entire fleet of agents",
     description:
-      "Persistent context, proof packets, governance gates, and reproducible agent operations. Built on SIP. Local-first and forkable.",
+      "Persistent context, proof packets, governance gates, and reproducible agent operations. Built on the Starlight Intelligence Protocol. Local-first and forkable.",
     url: "https://starlightintelligence.org",
     siteName: "Starlight Intelligence",
     type: "website",
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
+      "Starlight Intelligence — One shared mind for your entire fleet of agents",
     description:
-      "Persistent context, proof packets, governance gates, and reproducible agent operations. Built on SIP. Local-first and forkable.",
+      "Persistent context, proof packets, governance gates, and reproducible agent operations. Built on the Starlight Intelligence Protocol. Local-first and forkable.",
   },
   robots: { index: true, follow: true },
 };
