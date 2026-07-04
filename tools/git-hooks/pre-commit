@@ -85,3 +85,10 @@ if git diff --cached --name-only | grep -qE "$TRACK_D_RE" ; then
     fi
     echo "✓ v0.1 evals pass"
 fi
+
+echo "→ pre-commit: cross-repo audit"
+if ! node scripts/cross-repo-audit.mjs ; then
+    echo "✗ cross-repo audit failed — fix before commit, or --no-verify if intentional"
+    exit 1
+fi
+echo "✓ cross-repo audit pass"
