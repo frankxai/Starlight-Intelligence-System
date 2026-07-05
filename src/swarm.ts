@@ -439,8 +439,21 @@ export function appendSwarmAudit(record: SwarmPlan | SwarmRunRecord): void {
   appendFileSync(record.auditLogPath, JSON.stringify(record) + "\n", "utf-8");
 }
 
-export function getSwarmAuditLogPath(homeDir = homedir()): string {
-  return join(homeDir, "Starlight-Intelligence-System", "private", "voice-operator", "logs", "swarm.jsonl");
+/**
+ * Where the swarm audit log lives. With no override (the real CLI path), this
+ * resolves relative to the current working directory's own `private/` (the
+ * same gitignored, project-relative convention every other voice-operator log
+ * uses — see docs/ops/HANDOVER-2026-04-28.md). It previously defaulted to
+ * `$HOME/Starlight-Intelligence-System/...` regardless of cwd, which wrote
+ * side-effect files outside the actual project checkout whenever $HOME didn't
+ * happen to contain a same-named sibling directory. Tests still sandbox via an
+ * explicit homeDir (matching the pre-existing v96 fixture layout).
+ */
+export function getSwarmAuditLogPath(homeDir?: string): string {
+  if (homeDir !== undefined) {
+    return join(homeDir, "Starlight-Intelligence-System", "private", "voice-operator", "logs", "swarm.jsonl");
+  }
+  return join(process.cwd(), "private", "voice-operator", "logs", "swarm.jsonl");
 }
 
 // ── Plan → Run bridge ───────────────────────────────────────
