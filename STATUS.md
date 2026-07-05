@@ -33,15 +33,15 @@
 | Retrieval recall@k baseline (keyword/bm25) | ✅ | `test/retrieval-eval.test.ts`, `npm run eval:retrieval` |
 | First-run vault seeding (`init --vaults` + MCP auto-seed) | ✅ | `src/seed.ts`, `test/smoke-quickstart.test.ts` |
 | Temporal reasoning (confidence half-life) | ✅ | `src/temporal.ts`, `src/temporal.test.ts` |
-| Contradiction detection | ✅ | `src/contradiction.ts` |
+| Contradiction detection (calibrated threshold, real MD vaults) | ✅ | `src/contradiction.ts`, `src/contradiction.test.ts` |
 | Dreaming (background transcript processing) | ✅ | `src/dreaming.ts`, `test/dreaming-vault-md-support.test.ts` |
-| Dreaming persistence (promotions → wisdom, insights → atoms, idempotent ledger) | ✅ | `scripts/dreaming-run.ts`, `test/v95-dreaming-persistence.test.ts` |
+| Dreaming persistence (promotions → wisdom, insights → atoms, idempotent ledger) — fires against real MD vaults, not just synthetic JSONL fixtures (2026-07-05 fix: MD-sourced promotions carry their own content inline instead of being unconditionally skipped) | ✅ | `scripts/dreaming-run.ts`, `test/v95-dreaming-persistence.test.ts` |
 | Real LLM executor (cli/api backends, in-role agent prompts) | ✅ | `src/executors/claude-executor.ts`, `test/v94-executor.test.ts` |
 | Swarm plan→run bridge (`starlight starlight-swarm run`, approval-gated) | ✅ | `src/swarm.ts`, `test/v96-swarm-bridge.test.ts` |
 | Executable boards (`starlight board`, verdict JSON to `docs/boards/`) | ✅ | `src/board.ts`, `test/v97-board.test.ts` |
 | Queen MEASURE/LEARN from real scorecard data + `queen verify` | ✅ | `tools/queen/driver.mjs`, `test/v98-queen.test.ts` |
 | Memory integrity (canonical atom text, veil-on-write, store unification) | ✅ | `src/atom.ts`, `test/v93-memory-integrity.test.ts` |
-| Agent quality ratchet (thin-scaffold ban, 81 rewritten, thin ledger at 0) | ✅ | `agents/AGENT_TEMPLATE.md`, `test/v92-agent-quality.test.ts` |
+| Agent quality ratchet (thin-scaffold ban, 81 rewritten, thin ledger at 0, cross-agent playbook-similarity gate) | ✅ | `agents/AGENT_TEMPLATE.md`, `test/v92-agent-quality.test.ts` |
 | Scheduled cloud autonomy (nightly metrics, weekly dreaming, registry drift) | ✅ | `.github/workflows/`, `docs/ops/cloud-autonomy.md` |
 | Operational MCP server — 10 `sis_*` tools | ✅ | `src/mcp-server.ts`, `test/mcp-server-smoke.test.ts` (end-to-end JSON-RPC) |
 | v0.1 MCP server — 13 `sis.*` tools | ✅ | `src/mcp-server-v01.ts`, `test/v01-mcp-tools.test.ts` |
