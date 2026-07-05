@@ -8,7 +8,8 @@ import {
   BadgeCheck,
   Database,
   FileCheck2,
-  LockKeyhole,
+  GitBranch,
+  ShieldCheck,
   Terminal,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -25,27 +26,34 @@ const PROOF_LANES: ProofLane[] = [
   {
     label: "Memory",
     value: "6 vaults",
-    state: "indexed",
+    state: "context locked",
     icon: Database,
     tone: "text-cyan-600",
   },
   {
-    label: "Policy",
-    value: "gate pass",
-    state: "operator held",
-    icon: LockKeyhole,
-    tone: "text-emerald-600",
+    label: "Trace",
+    value: "run graph",
+    state: "source kept",
+    icon: GitBranch,
+    tone: "text-blue-600",
   },
   {
     label: "Evals",
-    value: "trace scored",
+    value: "0.97 score",
     state: "evidence kept",
     icon: Activity,
     tone: "text-amber-600",
   },
   {
-    label: "Attest",
-    value: "SIP footer",
+    label: "Policy",
+    value: "gate pass",
+    state: "operator held",
+    icon: ShieldCheck,
+    tone: "text-emerald-600",
+  },
+  {
+    label: "Release",
+    value: "READY",
     state: "rebuildable",
     icon: FileCheck2,
     tone: "text-rose-600",
@@ -54,18 +62,18 @@ const PROOF_LANES: ProofLane[] = [
 
 const TRACE_EVENTS = [
   ["00:00", "intent captured", "source: operator"],
-  ["00:12", "vault recall", "semantic + temporal"],
-  ["00:43", "eval gate", "policy and provenance"],
-  ["01:04", "dispatch", "adapter route selected"],
-  ["01:28", "attestation", "proof packet written"],
+  ["00:12", "memory recall", "semantic + temporal"],
+  ["00:43", "eval scored", "policy and provenance"],
+  ["01:04", "gate cleared", "human review held"],
+  ["01:28", "deployment ready", "manifest + source linked"],
 ];
 
 const FLOW_NODES = [
-  { x: 58, y: 92, label: "Intent", color: "#2563eb" },
-  { x: 154, y: 58, label: "Recall", color: "#0891b2" },
+  { x: 58, y: 92, label: "Memory", color: "#2563eb" },
+  { x: 154, y: 58, label: "Trace", color: "#0891b2" },
   { x: 256, y: 92, label: "Eval", color: "#d97706" },
   { x: 354, y: 58, label: "Gate", color: "#059669" },
-  { x: 452, y: 92, label: "Attest", color: "#e11d48" },
+  { x: 452, y: 92, label: "Release", color: "#e11d48" },
 ];
 
 export function OperationalProofConsole() {
@@ -118,7 +126,7 @@ export function OperationalProofConsole() {
     <motion.figure
       ref={rootRef}
       role="img"
-      aria-label="Starlight operator console showing context recall, evaluation, governance gate, and SIP attestation trace."
+      aria-label="Starlight release room console showing memory recall, trace, evaluation, governance gate, and deployment readiness."
       className="relative overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-950 shadow-[0_28px_90px_rgba(15,23,42,0.18)]"
       initial={reducedMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
       animate={reducedMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
@@ -133,10 +141,10 @@ export function OperationalProofConsole() {
             </span>
             <div>
               <p className="font-mono text-[11px] uppercase text-slate-400">
-                SIS operator console
+                SIS release room
               </p>
               <p className="text-sm font-semibold text-white">
-                Verified agent run
+                Verified release run
               </p>
             </div>
           </div>
@@ -152,10 +160,10 @@ export function OperationalProofConsole() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="font-mono text-[11px] uppercase text-slate-500">
-                Trace route
+                Release route
               </p>
               <h2 className="mt-1 text-xl font-semibold text-slate-950">
-                Context becomes a proof packet.
+                Memory becomes a release packet.
               </h2>
             </div>
             <span className="rounded-md border border-slate-200 px-2.5 py-1 font-mono text-[11px] text-slate-600">
@@ -266,10 +274,10 @@ export function OperationalProofConsole() {
         <div className="bg-slate-950 p-4 text-white sm:p-5">
           <div className="flex items-center justify-between gap-3">
             <p className="font-mono text-[11px] uppercase text-slate-400">
-              Proof ledger
+              Release ledger
             </p>
             <span className="rounded-md bg-cyan-300/12 px-2.5 py-1 font-mono text-[11px] text-cyan-100">
-              confidence 0.97
+              release confidence 0.97
             </span>
           </div>
 
@@ -304,13 +312,13 @@ export function OperationalProofConsole() {
           <div className="mt-4 rounded-lg border border-white/[0.08] bg-white/[0.04] p-3">
             <div className="flex items-center justify-between gap-3 text-xs">
               <span className="text-slate-300">Operator action</span>
-              <span className="font-semibold text-emerald-200">review ready</span>
+              <span className="font-semibold text-emerald-200">promote ready</span>
             </div>
             <div className="mt-3 h-2 overflow-hidden rounded-sm bg-white/[0.08]">
-              <div className="h-full w-[86%] bg-gradient-to-r from-cyan-300 via-emerald-300 to-amber-300" />
+              <div className="h-full w-[91%] bg-gradient-to-r from-cyan-300 via-emerald-300 to-amber-300" />
             </div>
             <p className="mt-3 text-xs leading-relaxed text-slate-400">
-              State sequence: recall, score, gate, route, then attest.
+              State sequence: recall, trace, score, gate, then release.
             </p>
           </div>
         </div>
