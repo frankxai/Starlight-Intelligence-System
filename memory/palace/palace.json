@@ -1,0 +1,146 @@
+{
+  "type": "memory-palace",
+  "version": "0.1",
+  "id": "starlight-vault-palace",
+  "title": "The Starlight Vault Palace",
+  "owner": "frankxai",
+  "locus": {
+    "kind": "imagined",
+    "basis": "an observatory built around the six Starlight Vaults",
+    "route": "strategic wing -> technical wing -> creative wing -> operational deck -> wisdom dome -> horizon balcony"
+  },
+  "rooms": [
+    {
+      "id": "strategic-vault",
+      "name": "Strategic Wing",
+      "order": 0,
+      "surface": "obsidian",
+      "accent": "#7da3ff",
+      "stations": [
+        {"id": "architecture-decisions", "name": "The decision table", "order": 0, "loci": [
+          {"id": "sis-architecture", "target": "Starlight Intelligence System Architecture Decision",
+           "fact": "Configuration-first, seven-agent model, five/six-vault memory, skill auto-activation, transmission channels, progressive disclosure.",
+           "image": {"text": "A obsidian table with six brass gears locking into place one by one, each stamped with a founding decision, until the whole table hums and lights from within.", "techniques": ["motion", "multisensory"]},
+           "refs": ["memory/vaults/strategic-vault.md#2026-02-10-starlight-intelligence-system-architecture-decision"]}
+        ]},
+        {"id": "integration-strategy", "name": "The map on the far wall", "order": 1, "loci": [
+          {"id": "ecosystem-integration", "target": "Ecosystem Integration Strategy",
+           "fact": "How Starlight connects to ACOS, Arcanea, and AI-Ops as the shared intelligence backbone.",
+           "image": {"text": "Glowing threads stretch from a pin labeled 'Starlight' out to three distant pins on a wall map, each thread pulsing as if carrying current.", "techniques": ["multisensory", "motion"]},
+           "refs": ["memory/vaults/strategic-vault.md#ecosystem-integration-strategy"]}
+        ]}
+      ]
+    },
+    {
+      "id": "technical-vault",
+      "name": "Technical Wing",
+      "order": 1,
+      "surface": "slate",
+      "accent": "#9aa1ad",
+      "stations": [
+        {"id": "config-pattern", "name": "The blueprint drafting table", "order": 0, "loci": [
+          {"id": "configuration-first", "target": "Configuration-First Pattern",
+           "fact": "Markdown and JSON over code — zero-install-friction deployment.",
+           "image": {"text": "Blueprints on the slate table redraw themselves in real time as plain text is typed onto them, no ink, no code — just words becoming structure.", "techniques": ["bizarreness", "dual-coding"]},
+           "refs": ["memory/vaults/technical-vault.md#configuration-first-pattern"]}
+        ]},
+        {"id": "memory-hierarchy", "name": "The layered shelf", "order": 1, "loci": [
+          {"id": "memory-hierarchy-pattern", "target": "Memory Hierarchy Pattern",
+           "fact": "Working, episodic, semantic memory layered like sediment — each layer feeding the one above.",
+           "image": {"text": "A shelf of slate slabs stacked like sediment; the bottom slab glows briefly whenever the top slab is touched, showing the flow of memory upward.", "techniques": ["motion", "multisensory"]},
+           "refs": ["memory/vaults/technical-vault.md#memory-hierarchy-pattern"]}
+        ]}
+      ]
+    },
+    {
+      "id": "creative-vault",
+      "name": "Creative Wing",
+      "order": 2,
+      "surface": "aurora",
+      "accent": "#c9b6ff",
+      "stations": [
+        {"id": "luminor-integration", "name": "The prism alcove", "order": 0, "loci": [
+          {"id": "luminor-wisdom", "target": "The Luminor Wisdom Integration",
+           "fact": "Arcanea's Luminor archetypes lend creative-intelligence patterns into Starlight's own agents.",
+           "image": {"text": "A prism in the aurora-lit alcove splits one beam of light into seven colored threads, each thread coiling into the shape of a small figure.", "techniques": ["bizarreness", "multisensory"]},
+           "refs": ["memory/vaults/creative-vault.md#the-luminor-wisdom-integration"]}
+        ]},
+        {"id": "voice-pattern", "name": "The echo chamber", "order": 1, "loci": [
+          {"id": "frank-dna-voice", "target": "Frank DNA Voice Pattern",
+           "fact": "Direct, technical, warm, playful — the voice every generated artifact inherits.",
+           "image": {"text": "A single spoken word echoes off the aurora walls and returns four times, each echo dressed in a different tone but unmistakably the same voice.", "techniques": ["multisensory", "motion"]},
+           "refs": ["memory/vaults/creative-vault.md#frank-dna-voice-pattern"]}
+        ]}
+      ]
+    },
+    {
+      "id": "operational-vault",
+      "name": "Operational Deck",
+      "order": 3,
+      "surface": "glass",
+      "accent": "#7de3c8",
+      "stations": [
+        {"id": "build-handoff", "name": "The handoff console", "order": 0, "loci": [
+          {"id": "v01-build-handoff", "target": "SIS v0.1 Build Handoff + Memory Health Gate",
+           "fact": "The build-to-verification handoff that gates a release on memory-health, not just green tests.",
+           "image": {"text": "A glass console on the deck shows a green checkmark that only lights up after a second, smaller gauge behind the glass also fills to full — one gate waiting on the other.", "techniques": ["multisensory", "motion"]},
+           "refs": ["memory/vaults/operational-vault.md#sis-v0-1-build-handoff-memory-health-gate"]}
+        ]},
+        {"id": "overnight-ship", "name": "The rolling ledger", "order": 1, "loci": [
+          {"id": "overnight-deep-ship", "target": "Overnight Deep Ship — Codex v01 integration + v84 symmetry + MEMORY.md compaction",
+           "fact": "A rolling operational-state entry — recent, not permanent, and due to age out per the vault's 90-day retention.",
+           "image": {"text": "Glass panels on the deck slowly frost over at the edges, the oldest entries fading first while the newest stays perfectly clear.", "techniques": ["motion", "exaggeration"]},
+           "refs": ["memory/vaults/operational-vault.md#overnight-deep-ship-codex-v01-integration-v84-symmetry-memory-md-compaction"]}
+        ]}
+      ]
+    },
+    {
+      "id": "wisdom-vault",
+      "name": "Wisdom Dome",
+      "order": 4,
+      "surface": "bronze",
+      "accent": "#f4c97a",
+      "stations": [
+        {"id": "infrastructure-principle", "name": "The central pillar", "order": 0, "loci": [
+          {"id": "intelligence-as-infrastructure", "target": "Intelligence as Infrastructure",
+           "fact": "Intelligence is wired into every layer, not bolted on as a feature.",
+           "image": {"text": "A bronze pillar in the dome's center has wiring running through visible cracks in the metal, humming faintly, load-bearing rather than decorative.", "techniques": ["multisensory", "bizarreness"]},
+           "refs": ["memory/vaults/wisdom-vault.md#intelligence-as-infrastructure"]}
+        ]},
+        {"id": "memory-is-power", "name": "The bronze mirror", "order": 1, "loci": [
+          {"id": "memory-is-power", "target": "Memory is Power",
+           "fact": "A system that remembers compounds; one that forgets starts over every session.",
+           "image": {"text": "A bronze mirror shows not a reflection but a growing tower of the same block, one block taller each time it's glanced at.", "techniques": ["bizarreness", "motion"]},
+           "refs": ["memory/vaults/wisdom-vault.md#memory-is-power"]}
+        ]},
+        {"id": "files-over-ephemera", "name": "The engraved floor", "order": 2, "loci": [
+          {"id": "files-over-ephemera", "target": "Files over Ephemera",
+           "fact": "Durable files outlast any single conversation — write it down or it didn't happen.",
+           "image": {"text": "Footsteps across the dome floor burn away instantly except where a name has been engraved — those steps leave a permanent, glowing print.", "techniques": ["bizarreness", "multisensory"]},
+           "refs": ["memory/vaults/wisdom-vault.md#files-over-ephemera"]}
+        ]},
+        {"id": "compound-intelligence", "name": "The dome's oculus", "order": 3, "loci": [
+          {"id": "compound-intelligence-effect", "target": "The Compound Intelligence Effect",
+           "fact": "Each interaction makes the system smarter because it builds on everything before it.",
+           "image": {"text": "Light enters the oculus as a single thin beam but ricochets off every bronze surface in the dome, doubling in brightness with each bounce before it reaches the floor.", "techniques": ["motion", "exaggeration"]},
+           "refs": ["memory/vaults/wisdom-vault.md#the-compound-intelligence-effect"]}
+        ]}
+      ]
+    },
+    {
+      "id": "horizon-vault",
+      "name": "Horizon Balcony",
+      "order": 5,
+      "surface": "marble",
+      "accent": "#ffe5cc",
+      "stations": [
+        {"id": "first-entry", "name": "The open railing", "order": 0, "loci": [
+          {"id": "horizon-first-entry", "target": "The First Entry",
+           "fact": "Public, append-only, human hopes and AI reasoning recorded side by side — designed to outlast this system.",
+           "image": {"text": "A marble railing overlooking open sky; a single sealed letter rests on it, weatherproof, addressed to no one in particular and everyone eventually.", "techniques": ["emotion", "self-reference"]},
+           "refs": ["memory/vaults/horizon-vault.md#2026-02-10--the-first-entry"]}
+        ]}
+      ]
+    }
+  ]
+}

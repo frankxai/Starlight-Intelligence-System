@@ -158,6 +158,13 @@ Update the appropriate vault with:
 
 Memory consolidation merges duplicates, elevates patterns, archives stale data, and strengthens cross-references. Run periodically or when vault size exceeds threshold.
 
+### Spatial index (pilot)
+
+`memory/palace/palace.json` is a walkable spatial index over the six vaults' most current entries,
+built with the [mind-palace-agent-skills](https://github.com/frankxai/mind-palace-agent-skills)
+Memory Palace suite. It is a companion view, not a replacement — the vaults remain authoritative.
+See `memory/palace/MEMORY_PALACE.md` for what it is and how to maintain it.
+
 ---
 
 ## Skills
