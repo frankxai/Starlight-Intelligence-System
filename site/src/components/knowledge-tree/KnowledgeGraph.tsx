@@ -266,12 +266,18 @@ export default function KnowledgeGraph() {
       }
     });
     ro.observe(containerRef.current);
-    const rect = containerRef.current.getBoundingClientRect();
-    setDimensions({
-      width: Math.floor(rect.width) || 800,
-      height: Math.floor(rect.height) || 600,
+    const frame = window.requestAnimationFrame(() => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      setDimensions({
+        width: Math.floor(rect.width) || 800,
+        height: Math.floor(rect.height) || 600,
+      });
     });
-    return () => ro.disconnect();
+    return () => {
+      window.cancelAnimationFrame(frame);
+      ro.disconnect();
+    };
   }, []);
 
   // Pause simulation when reduced motion is preferred
