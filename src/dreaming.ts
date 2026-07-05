@@ -11,7 +11,7 @@ import { atomText } from "./atom.js";
 export interface DreamResult {
   extractedInsights: Array<{ content: string; suggestedVault: string; confidence: number; source: string }>;
   contradictions: Contradiction[];
-  promotions: Array<{ entryId: string; fromVault: string; toVault: "wisdom"; reason: string }>;
+  promotions: Array<{ entryId: string; fromVault: string; toVault: "wisdom"; reason: string; content: string }>;
   processedFiles: number;
   timestamp: string;
 }
@@ -39,6 +39,16 @@ const HIGH_COMMITS = 5, HIGH_FILES = 10, LONG_SESSION_SEC = 3600;
 //   Future v3: when embedding sidecar is wired into dreaming agent, swap trigram
 //     Jaccard for hashing-TF cosine; threshold will recalibrate to ~0.4.
 const PROMO_SIM = 0.15;
+
+// CONTRADICTION_MIN_SIM: ContradictionDetector.scanVaults() defaults minSimilarity
+// to 0.6 (calibrated for atom-level text), which real MD vault-doc chunks can
+// never reach on plain overlap (ceiling ~0.22, per the PROMO_SIM probe above).
+// similarity() applies a +0.25 boost only when opposing polarity terms
+// (always/never/must/avoid/...) are present on both sides, capped at 1.0 — so a
+// genuine cross-vault contradiction tops out around 0.22 + 0.25 = 0.47, while a
+// merely-similar-but-non-opposing pair stays capped at the 0.22 ceiling. 0.4 sits
+// between the two: reachable by a real opposing pair, unreachable by noise alone.
+const CONTRADICTION_MIN_SIM = 0.4;
 
 export class DreamingAgent {
   private readonly vaultDir: string;
@@ -183,14 +193,18 @@ export class DreamingAgent {
       if (crossVaults.size >= 1) {
         seen.add(entries[i].id);
         promos.push({ entryId: entries[i].id, fromVault: entries[i].vault, toVault: "wisdom",
-          reason: `Cross-vault pattern: found in ${entries[i].vault} + ${[...crossVaults].join(", ")}` });
+          reason: `Cross-vault pattern: found in ${entries[i].vault} + ${[...crossVaults].join(", ")}`,
+          content: entries[i].content });
       }
     }
     return promos;
   }
 
   detectContradictions(vaultDir: string): Contradiction[] {
-    return this.detector.scanVaults(vaultDir);
+    // Exclude "wisdom" — every entry there is a verbatim promoted copy of its
+    // own source (see applyDreamResult), so comparing it back against that
+    // source is a guaranteed identical-text self-match, not a contradiction.
+    return this.detector.scanVaults(vaultDir, { minSimilarity: CONTRADICTION_MIN_SIM, excludeVaults: ["wisdom"] });
   }
 
   private readVaultEntries(vaultDir: string): VaultEntry[] {
@@ -225,7 +239,11 @@ export class DreamingAgent {
         const content = fs.readFileSync(path.join(vaultDir, file), "utf-8");
         const sections = content.split(/\n(?=#{2,3}\s)/);
         sections.forEach((sec, i) => {
-          const trimmed = sec.trim();
+          // Section 0 is everything before the first ##/### heading — strip its
+          // YAML frontmatter (retention/writers/readers boilerplate is near-
+          // identical across every vault file, so leaving it in makes section 0
+          // spuriously "similar" to every other vault's section 0).
+          const trimmed = (i === 0 ? sec.replace(/^---\n[\s\S]*?\n---\n?/, "") : sec).trim();
           if (trimmed.length < 100) return;  // skip tiny preamble fragments
           entries.push({
             id: `md:${file}#${i}`,
@@ -266,26 +284,6 @@ export interface ApplyDreamStats {
   contradictionsWritten: number;
 }
 
-/** Read every JSONL atom in vaultDir into an id → {text, vault} lookup. */
-function readJsonlAtomIndex(vaultDir: string): Map<string, { text: string; vault: string }> {
-  const index = new Map<string, { text: string; vault: string }>();
-  if (!fs.existsSync(vaultDir)) return index;
-  for (const file of fs.readdirSync(vaultDir).filter((f) => f.endsWith(".jsonl"))) {
-    const fallbackVault = path.basename(file, ".jsonl");
-    for (const line of fs.readFileSync(path.join(vaultDir, file), "utf-8").split("\n")) {
-      if (!line.trim()) continue;
-      try {
-        const r = JSON.parse(line) as Record<string, unknown>;
-        const id = typeof r.id === "string" ? r.id : undefined;
-        if (!id) continue;
-        const text = atomText(r);
-        if (text) index.set(id, { text, vault: (r.vault as string) || fallbackVault });
-      } catch { /* skip malformed line */ }
-    }
-  }
-  return index;
-}
-
 /** Collect the set of atom ids already present in a JSONL vault file. */
 function readExistingIds(filePath: string): Set<string> {
   const ids = new Set<string>();
@@ -315,9 +313,10 @@ function readLedger(ledgerPath: string): string[] {
  * durability contract:
  *
  *  - PROMOTIONS → append a `wis_promo_<sourceId>` atom to wisdom.jsonl carrying
- *    the source atom's text + provenance. Guarded by an idempotency ledger
- *    (.promotion-ledger.json) so a source is promoted at most once, ever.
- *    `md:*` section ids are skipped — they are MD chunks, not atoms.
+ *    the source's own text (carried inline on the promotion, from either a
+ *    JSONL atom or an `md:*` vault-doc section) + provenance. Guarded by an
+ *    idempotency ledger (.promotion-ledger.json) so a source is promoted at
+ *    most once, ever.
  *  - INSIGHTS → append to <suggestedVault>.jsonl with a content-hash id, so a
  *    repeated run never materializes the same insight twice.
  *  - CONTRADICTIONS → overwrite contradictions.jsonl entirely (a report of the
@@ -347,20 +346,17 @@ export function applyDreamResult(
   // ── Promotions → wisdom.jsonl (idempotent via ledger) ──────────────────────
   const ledgerPath = path.join(vaultDir, PROMOTION_LEDGER);
   const ledger = new Set<string>(readLedger(ledgerPath));
-  const atomIndex = readJsonlAtomIndex(vaultDir);
   const wisdomPath = path.join(vaultDir, "wisdom.jsonl");
 
   for (const promo of result.promotions) {
     const sourceId = promo.entryId;
-    if (sourceId.startsWith("md:")) { stats.promotionsSkipped++; continue; } // MD chunk, not an atom
-    if (ledger.has(sourceId)) { stats.promotionsSkipped++; continue; }       // already promoted
-    const source = atomIndex.get(sourceId);
-    if (!source) { stats.promotionsSkipped++; continue; }                    // text unresolvable
+    if (ledger.has(sourceId)) { stats.promotionsSkipped++; continue; }  // already promoted
+    if (!promo.content) { stats.promotionsSkipped++; continue; }       // no text to promote
 
     const atom = {
       id: `wis_promo_${sourceId}`,
       vault: "wisdom",
-      content: source.text,
+      content: promo.content,
       category: "insight",
       confidence: "high",
       source: "dreaming-promotion",

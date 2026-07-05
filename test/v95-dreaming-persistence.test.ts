@@ -7,7 +7,10 @@
  * closes that gap. This suite pins the three durability contracts:
  *   - PROMOTIONS  → append `wis_promo_<sourceId>` to wisdom.jsonl with provenance;
  *                   ledger-guarded so a source is promoted at most once, ever.
- *                   `md:*` section ids (MD chunks) are never promoted.
+ *                   Works for both JSONL atoms and `md:*` vault-doc sections —
+ *                   the promotion carries its own source text inline, so no
+ *                   separate atom-index lookup (and no format-based skip) is
+ *                   needed at persistence time.
  *   - INSIGHTS    → append to <suggestedVault>.jsonl with a content-hash id, so a
  *                   repeated run never materializes the same insight twice.
  *   - CONTRADICTIONS → overwrite contradictions.jsonl each run (report, not ledger).
@@ -58,7 +61,9 @@ function seedResult(): DreamResult {
     ],
     contradictions: [contradiction],
     promotions: [
-      { entryId: "t1", fromVault: "technical", toVault: "wisdom", reason: "Cross-vault pattern: found in technical + operational" },
+      { entryId: "t1", fromVault: "technical", toVault: "wisdom",
+        reason: "Cross-vault pattern: found in technical + operational",
+        content: "Read the file before editing it to avoid clobbering concurrent state" },
     ],
     processedFiles: 1,
     timestamp: now(),
@@ -103,19 +108,34 @@ describe("applyDreamResult — promotions land in wisdom.jsonl with provenance",
     });
   });
 
-  it("skips md:* section ids — MD chunks are not promotable atoms", () => {
+  it("promotes md:* vault-doc sections using their own inline content", () => {
     withTempDir("sis-v95-md-", (dir) => {
       seedVault(dir);
       const result = seedResult();
       result.promotions.push({
-        entryId: "md:strategic-vault.md#2", fromVault: "strategic", toVault: "wisdom", reason: "chunk overlap",
+        entryId: "md:strategic-vault.md#2", fromVault: "strategic", toVault: "wisdom",
+        reason: "chunk overlap", content: "Never ship the closed beta without a rollback plan.",
       });
       const stats = applyDreamResult(result, dir);
 
-      assert.equal(stats.promotionsWritten, 1, "only the real atom is promoted");
-      assert.equal(stats.promotionsSkipped, 1, "the md:* chunk is skipped");
+      assert.equal(stats.promotionsWritten, 2, "both the JSONL atom and the MD chunk are promoted");
       const wisdom = readJsonl(join(dir, "wisdom.jsonl"));
-      assert.ok(!wisdom.some((a) => String(a.id).includes("md:")), "no md chunk reaches wisdom");
+      const mdPromo = wisdom.find((a) => String(a.id).includes("md:"));
+      assert.ok(mdPromo, "the md:* chunk reaches wisdom.jsonl");
+      assert.equal(mdPromo!.content, "Never ship the closed beta without a rollback plan.");
+      assert.equal((mdPromo!.metadata as Record<string, unknown>).sourceId, "md:strategic-vault.md#2");
+    });
+  });
+
+  it("skips a promotion with no content (nothing real to promote)", () => {
+    withTempDir("sis-v95-nocontent-", (dir) => {
+      seedVault(dir);
+      const result = seedResult();
+      result.promotions = [{ entryId: "ghost", fromVault: "strategic", toVault: "wisdom", reason: "unresolvable", content: "" }];
+      const stats = applyDreamResult(result, dir);
+
+      assert.equal(stats.promotionsWritten, 0);
+      assert.equal(stats.promotionsSkipped, 1);
     });
   });
 

@@ -126,12 +126,17 @@ function loadCanonical(): Canonical {
   }
   const skillCount = rules.rules.length;
 
-  // Vault count: count unique vault files in memory/vaults/
+  // Vault count: count unique vault files in memory/vaults/, excluding the
+  // dreaming pipeline's own output artifacts (applyDreamResult in
+  // src/dreaming.ts writes these into the same directory as a report/ledger,
+  // not as a seventh conceptual vault — .promotion-ledger.json and
+  // contradictions.jsonl have no -vault.md counterpart at all).
   const vaultsDir = join(REPO_ROOT, "memory/vaults");
+  const NON_VAULT_ARTIFACTS = new Set([".promotion-ledger.json", "contradictions.jsonl"]);
   let vaultCount = 0;
   if (existsSync(vaultsDir)) {
     const entries = readdirSync(vaultsDir).filter((f) =>
-      statSync(join(vaultsDir, f)).isFile(),
+      statSync(join(vaultsDir, f)).isFile() && !NON_VAULT_ARTIFACTS.has(f),
     );
     const vaultNames = new Set<string>();
     for (const f of entries) {

@@ -82,7 +82,10 @@ export class ContradictionDetector {
         // Whole file as one entry caused trigram similarity to drown in noise.
         const sections = content.split(/\n(?=#{2,3}\s)/);
         sections.forEach((sec, i) => {
-          const trimmed = sec.trim();
+          // Section 0 is everything before the first ##/### heading — strip its
+          // YAML frontmatter so near-identical retention/writers/readers
+          // boilerplate across vault files doesn't register as a false match.
+          const trimmed = (i === 0 ? sec.replace(/^---\n[\s\S]*?\n---\n?/, "") : sec).trim();
           if (trimmed.length < 100) return;  // skip tiny preamble fragments
           entries.push({
             id: `md:${file}#${i}`,
@@ -97,9 +100,10 @@ export class ContradictionDetector {
     return entries;
   }
 
-  scanVaults(vaultDir: string, options?: { minSimilarity?: number; limit?: number }): Contradiction[] {
+  scanVaults(vaultDir: string, options?: { minSimilarity?: number; limit?: number; excludeVaults?: string[] }): Contradiction[] {
     const minSim = options?.minSimilarity ?? 0.6, limit = options?.limit ?? 50;
-    const entries = this.readEntries(vaultDir);
+    const excluded = new Set(options?.excludeVaults ?? []);
+    const entries = this.readEntries(vaultDir).filter((e) => !excluded.has(e.vault));
     const results: Contradiction[] = [];
     const now = new Date().toISOString();
     for (let i = 0; i < entries.length && results.length < limit; i++) {
