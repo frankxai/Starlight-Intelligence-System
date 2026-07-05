@@ -24,8 +24,8 @@
 
 import { parseArgs } from "node:util";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { existsSync, mkdirSync, writeFileSync, readFileSync, appendFileSync } from "node:fs";
+import { join, resolve, dirname } from "node:path";
 import { homedir } from "node:os";
 import { StarlightIntelligence } from "./index.js";
 import { GoalOrchestrator } from "./goal.js";
@@ -45,7 +45,14 @@ import {
   inspectSwarmProviders,
   inspectSwarmRepos,
   formatAgyToolCalls,
+  getSwarmAuditLogPath,
 } from "./swarm.js";
+import {
+  buildCouncilPlan,
+  loadIISCatalog,
+  runCouncil,
+  type CouncilPlan,
+} from "./swarm-council.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
@@ -119,6 +126,9 @@ Commands:
   sync                            Sync ACOS trajectories into SIS memory
   doctor                          Check CLI, dispatcher, and cockpit readiness
   dispatch <prompt>               Route a prompt through Arcanea orchestrator
+  swarm run "<context>"           Run the investment-intelligence council (Sonnet+Opus).
+                                    Dry-run plan by default; --live executes; --only <ids>,
+                                    --concurrency <n>, --timeout <ms>. Analysis-only; no execution.
   starlight-swarm <goal>           Create approval-gated multi-CLI swarm packets
   starlight-swarm status           Show swarm repo/provider readiness
   starlight-swarm providers        Show dry-run provider adapters
@@ -1200,6 +1210,114 @@ function cmdDispatch(
   }
 }
 
+/**
+ * `starlight swarm run "<context>"` — the investment-intelligence council.
+ *
+ * Dry-run by default: prints the compiled plan (agent id · layer · model ·
+ * prompt size) and exits. Passes NO model to any CLI. With `--live` it executes
+ * the three phases through `runCouncil` (analysis blind-parallel → risk →
+ * Opus synthesis), spawning `claude -p --model <id>` per agent, and appends a
+ * JSONL audit record. The dry-run `starlight-swarm` planner is a separate
+ * command and is untouched.
+ */
+async function cmdSwarm(
+  action: string | undefined,
+  rest: string[],
+  options: {
+    live?: boolean;
+    only?: string;
+    concurrency?: string;
+    timeout?: string;
+  },
+): Promise<void> {
+  if (action !== "run") {
+    console.error("[starlight] Error: swarm requires an action. Usage: starlight swarm run \"<context>\" [--live] [--only <ids>] [--concurrency <n>] [--timeout <ms>]");
+    process.exitCode = 1;
+    return;
+  }
+
+  const context = rest.join(" ").trim();
+  if (!context) {
+    console.error("[starlight] Error: swarm run requires a context string, e.g. starlight swarm run \"weekly strategy — late-cycle regime, 60/30/10 portfolio\".");
+    process.exitCode = 1;
+    return;
+  }
+
+  const only = options.only ? options.only.split(",").map((s) => s.trim()).filter(Boolean) : undefined;
+  let catalog;
+  try {
+    catalog = loadIISCatalog();
+  } catch (err) {
+    console.error(`[starlight] Error: could not load investment-intelligence catalog: ${(err as Error).message}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  const plan: CouncilPlan = buildCouncilPlan(catalog, { context, only });
+  const phases: Array<[string, typeof plan.analysis]> = [
+    ["analysis (blind-parallel)", plan.analysis],
+    ["risk (sees analysis)", plan.risk],
+    ["synthesis (sees full debate)", plan.synthesis],
+  ];
+
+  console.log(`[swarm] Investment-intelligence council — context: "${context}"`);
+  console.log(`[swarm] team: ${catalog.team}${only ? ` · filtered: ${only.join(", ")}` : ""}\n`);
+  for (const [label, tasks] of phases) {
+    if (tasks.length === 0) continue;
+    console.log(`  ${label}`);
+    for (const t of tasks) {
+      console.log(`    - ${t.id.padEnd(18)} model=${(t.model ?? "(default)").padEnd(20)} prompt=${t.prompt.length}c`);
+    }
+  }
+
+  if (!options.live) {
+    console.log("\n[swarm] Dry-run plan only. Re-run with --live to execute (spawns `claude -p --model <id>` per agent).");
+    console.log("[swarm] Boundary: the council produces analysis + a pending decision brief. Execution happens only via the local trade-gate MCP + a human approval token.");
+    return;
+  }
+
+  const concurrency = options.concurrency ? Number(options.concurrency) : undefined;
+  const timeoutMs = options.timeout ? Number(options.timeout) : undefined;
+
+  console.log("\n[swarm] --live: executing council via headless claude…\n");
+  const started = new Date().toISOString();
+  const result = await runCouncil(plan, {
+    context,
+    concurrency,
+    timeoutMs,
+    onResult: (r) => console.log(`    [${r.ok ? "ok" : "FAIL"}] ${r.id} (${r.durationMs}ms)`),
+  });
+
+  const auditPath = join(dirname(getSwarmAuditLogPath()), "swarm-council.jsonl");
+  try {
+    mkdirSync(dirname(auditPath), { recursive: true });
+    appendFileSync(
+      auditPath,
+      JSON.stringify({
+        command: "swarm run",
+        context,
+        startedAt: started,
+        finishedAt: new Date().toISOString(),
+        phases: {
+          analysis: result.analysis.results.map((r) => ({ id: r.id, ok: r.ok })),
+          risk: result.risk.results.map((r) => ({ id: r.id, ok: r.ok })),
+          synthesis: result.synthesis.results.map((r) => ({ id: r.id, ok: r.ok })),
+        },
+      }) + "\n",
+      "utf-8",
+    );
+  } catch {
+    // Audit is best-effort for a read-only analysis command; do not fail the run.
+  }
+
+  console.log("\n[swarm] === SYNTHESIS ===\n");
+  for (const r of result.synthesis.results) {
+    console.log(`--- ${r.id} ---\n${r.output || r.error || "(no output)"}\n`);
+  }
+  const failed = [result.analysis, result.risk, result.synthesis].reduce((n, s) => n + s.failed, 0);
+  console.log(`[swarm] Done. audit=${auditPath}${failed ? ` · ${failed} agent(s) failed (non-fatal)` : ""}`);
+}
+
 function cmdStarlightSwarm(actionOrGoal: string | undefined, rest: string[], options: { dryRun?: boolean }): void {
   const action = actionOrGoal?.trim();
 
@@ -1486,6 +1604,10 @@ async function main(): Promise<void> {
       checklist: { type: "string" },
       findings: { type: "string" },
       "no-tests": { type: "boolean" },
+      live: { type: "boolean" },
+      only: { type: "string" },
+      concurrency: { type: "string" },
+      timeout: { type: "string" },
     },
     strict: false,
   });
@@ -1558,6 +1680,16 @@ async function main(): Promise<void> {
         surface: asString(values.surface),
         model: asString(values.model),
         dryRun: values["dry-run"] === true,
+      });
+      break;
+    }
+
+    case "swarm": {
+      await cmdSwarm(positionals[1], positionals.slice(2), {
+        live: values.live === true,
+        only: asString(values.only),
+        concurrency: asString(values.concurrency),
+        timeout: asString(values.timeout),
       });
       break;
     }

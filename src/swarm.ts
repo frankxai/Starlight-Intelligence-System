@@ -7,6 +7,13 @@ import { AgentRouter } from "./agents.js";
 export interface SwarmTask {
   id: string;
   prompt: string;
+  /**
+   * Model id passed to the runner (default runner: `claude -p --model <id>`).
+   * Omitted → the runner's own default. Threads the per-agent
+   * `recommended_model` from the investment-intelligence catalog through the
+   * pool so analysis/risk run Sonnet-class and synthesis runs Opus-class.
+   */
+  model?: string;
 }
 
 export interface SwarmResult {
@@ -63,7 +70,9 @@ function resolveClaudeBin(): string {
  */
 export const defaultClaudeRunner: AgentRunner = (task, signal) =>
   new Promise((resolvePromise, reject) => {
-    const child = spawn(resolveClaudeBin(), ["-p", task.prompt], {
+    const args = ["-p", task.prompt];
+    if (task.model) args.push("--model", task.model);
+    const child = spawn(resolveClaudeBin(), args, {
       shell: false,
       signal,
     });
