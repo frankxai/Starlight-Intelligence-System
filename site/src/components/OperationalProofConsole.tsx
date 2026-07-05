@@ -79,6 +79,13 @@ const FLOW_NODES = [
 export function OperationalProofConsole() {
   const rootRef = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
+  const figureTransition = reducedMotion
+    ? { duration: 0 }
+    : { duration: 0.58, ease: [0.22, 1, 0.36, 1] as const };
+  const cardTransition = (delay: number) =>
+    reducedMotion
+      ? { duration: 0 }
+      : { duration: 0.44, ease: [0.22, 1, 0.36, 1] as const, delay };
 
   useEffect(() => {
     const root = rootRef.current;
@@ -129,8 +136,8 @@ export function OperationalProofConsole() {
       aria-label="Starlight release room console showing memory recall, trace, evaluation, governance gate, and deployment readiness."
       className="relative overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-950 shadow-[0_28px_90px_rgba(15,23,42,0.18)]"
       initial={reducedMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
-      animate={reducedMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.58, ease: [0.22, 1, 0.36, 1] }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={figureTransition}
     >
       <div className="relative border-b border-slate-200 bg-slate-950 px-4 py-3 text-white">
         <div className="sis-sweep pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-cyan-200/20 to-transparent" />
@@ -246,12 +253,8 @@ export function OperationalProofConsole() {
                   key={lane.label}
                   className="rounded-lg border border-slate-200 bg-white p-3"
                   initial={reducedMotion ? false : { opacity: 0, y: 10 }}
-                  animate={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.44,
-                    ease: [0.22, 1, 0.36, 1],
-                    delay: 0.16 + index * 0.06,
-                  }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={cardTransition(0.16 + index * 0.06)}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -287,12 +290,8 @@ export function OperationalProofConsole() {
                 key={`${time}-${title}`}
                 className="grid grid-cols-[3rem_1fr] gap-3 rounded-md border border-white/[0.08] bg-white/[0.04] p-3"
                 initial={reducedMotion ? false : { opacity: 0, x: 12 }}
-                animate={reducedMotion ? undefined : { opacity: 1, x: 0 }}
-                transition={{
-                  duration: 0.42,
-                  ease: [0.22, 1, 0.36, 1],
-                  delay: 0.24 + index * 0.07,
-                }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={cardTransition(0.24 + index * 0.07)}
               >
                 <span className="font-mono text-[11px] text-cyan-200">
                   {time}
