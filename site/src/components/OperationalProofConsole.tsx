@@ -28,14 +28,14 @@ const PROOF_LANES: ProofLane[] = [
     value: "6 vaults",
     state: "context locked",
     icon: Database,
-    tone: "text-cyan-600",
+    tone: "text-blue-600",
   },
   {
     label: "Trace",
     value: "run graph",
     state: "source kept",
     icon: GitBranch,
-    tone: "text-blue-600",
+    tone: "text-cyan-600",
   },
   {
     label: "Evals",
@@ -63,6 +63,7 @@ const PROOF_LANES: ProofLane[] = [
 const TRACE_EVENTS = [
   ["00:00", "intent captured", "source: operator"],
   ["00:12", "memory recall", "semantic + temporal"],
+  ["00:27", "trace linked", "run graph captured"],
   ["00:43", "eval scored", "policy and provenance"],
   ["01:04", "gate cleared", "human review held"],
   ["01:28", "deployment ready", "manifest + source linked"],
@@ -314,7 +315,13 @@ export function OperationalProofConsole() {
               <span className="font-semibold text-emerald-200">promote ready</span>
             </div>
             <div className="mt-3 h-2 overflow-hidden rounded-sm bg-white/[0.08]">
-              <div className="h-full w-[91%] bg-gradient-to-r from-cyan-300 via-emerald-300 to-amber-300" />
+              <div
+                className="h-full w-[91%]"
+                style={{
+                  background:
+                    "linear-gradient(90deg, #67e8f9 0%, #6ee7b7 42%, #fcd34d 68%, #fb7185 100%)",
+                }}
+              />
             </div>
             <p className="mt-3 text-xs leading-relaxed text-slate-400">
               State sequence: recall, trace, score, gate, then release.
