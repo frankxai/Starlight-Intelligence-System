@@ -16,6 +16,18 @@
  *     filename stem, voice ∈ the five VOICES.md archetypes.
  *   - The ledgers can only shrink: adding a new thin agent fails here.
  *
+ * 2026-07-05 audit finding: the scaffold-fingerprint check above is a
+ * fingerprint match against ONE dead template's exact wording — a rewrite
+ * that reworded those four headers while keeping generic filler prose would
+ * pass undetected. The cross-agent similarity check below closes that gap:
+ * it compares every pair of agents' "What this agent knows" playbook body
+ * (the section AGENT_TEMPLATE.md calls "the section that makes the agent
+ * real") via the same trigram-Jaccard measure ContradictionDetector uses.
+ * Calibration: across the current 81 agents with an extractable section, the
+ * real max cross-agent similarity is 0.0294 (two related health agents) — a
+ * genuinely domain-specific corpus scores near zero. 0.15 leaves ~5x margin
+ * above that ceiling while still catching copy-paste-with-nouns-swapped reuse.
+ *
  * Built on SIP — operational tier (quality ratchet).
  */
 import { describe, it } from "node:test";
@@ -23,6 +35,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { ContradictionDetector } from "../src/contradiction.js";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const AGENTS_DIR = path.join(ROOT, "agents");
@@ -74,6 +87,21 @@ function frontmatterField(text: string, key: string): string | undefined {
   const match = text.match(new RegExp(`^${key}:\\s*(.+)$`, "m"));
   return match?.[1]?.trim();
 }
+
+/** Isolate the "What this agent knows" playbook body — the section
+ * AGENT_TEMPLATE.md calls "the section that makes the agent real". Returns ""
+ * for agents built to an older format that doesn't use this exact heading;
+ * those are simply excluded from the similarity check below, not flagged. */
+function knowsSection(text: string): string {
+  const marker = "## What this agent knows";
+  const idx = text.indexOf(marker);
+  if (idx === -1) return "";
+  const rest = text.slice(idx + marker.length);
+  const nextHeading = rest.search(/\n##\s/);
+  return (nextHeading === -1 ? rest : rest.slice(0, nextHeading)).trim();
+}
+
+const CROSS_AGENT_SIM_LIMIT = 0.15;
 
 const ledger = JSON.parse(readFileSync(LEDGER_PATH, "utf8")) as Ledger;
 const thinSet = new Set(ledger.thin);
@@ -134,5 +162,27 @@ describe("v9.2 agent quality — the ratchet", () => {
       }
     }
     assert.deepEqual(violations, [], violations.join("\n"));
+  });
+
+  it("no two distinct agents share near-duplicate playbook content (boilerplate/copy-paste detector)", () => {
+    const detector = new ContradictionDetector();
+    const sections = agentFiles
+      .map((f) => ({ f, body: knowsSection(readFileSync(path.join(AGENTS_DIR, f), "utf8")) }))
+      .filter((x) => x.body.length >= 100);
+
+    const offenders: string[] = [];
+    for (let i = 0; i < sections.length; i++) {
+      for (let j = i + 1; j < sections.length; j++) {
+        const score = detector.similarity(sections[i].body, sections[j].body);
+        if (score >= CROSS_AGENT_SIM_LIMIT) {
+          offenders.push(`${sections[i].f} <-> ${sections[j].f} (similarity ${score.toFixed(3)})`);
+        }
+      }
+    }
+    assert.deepEqual(
+      offenders,
+      [],
+      `near-duplicate playbook content between distinct agents (real max on the current corpus is 0.0294): ${offenders.join("; ")}`,
+    );
   });
 });

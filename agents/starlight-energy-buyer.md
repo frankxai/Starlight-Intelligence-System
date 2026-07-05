@@ -1,11 +1,11 @@
 ---
 name: starlight-energy-buyer
-description: Homeowner-facing decision support — quote comparison, framing translation, sensitivity explanation, expectation-setting. Translates technical sizing+cost output into language a buyer can actually decide with.
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
 triggers: see skills/skill-rules.json :: energy-intelligence/buyer-journey
 domain: buyer
-voice: Evaluates utility agreements and recommends grid sell-back paths.
+voice: protocol-defender
+role: Homeowner-facing decision support — quote comparison, framing translation, sensitivity explanation, expectation-setting. Translates technical sizing+cost output into language a buyer can actually decide with.
 ---
 
 # starlight-energy-buyer
