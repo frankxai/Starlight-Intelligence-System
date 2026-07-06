@@ -570,3 +570,20 @@ Frank prefers Vercel-backed preview/live verification over long-running localhos
 Operational rule for Codex, Claude, OpenCode, Cursor, Gemini, Antigravity, and other coding agents: use local checks as the fast inner loop, then use Vercel preview/production URLs for meaningful web verification when the repo is connected to Vercel. Use Vercel connector/plugin/CLI to inspect projects, deployments, domains, and logs before claiming a site is live. Be cost-aware: batch coherent changes into a single preview/deploy cycle, avoid repeated production deploys for speculative changes, and prefer preview + promote when appropriate.
 
 GenCreator connector check on 2026-06-18: team `Starlight Intelligence`; Vercel project `gencreator-ai`; project id `prj_nIryRFHID247Sh0DEp2oH1T4amnO`; latest production deployment READY at `gencreator-ffliufq6k-starlight-intelligence.vercel.app`; GitHub integration metadata points to `frankxai/gencreator.ai` on `main`; connector listed Vercel subdomains but did not list `gencreator.ai` custom domain, so agents must verify domain attachment before saying the apex is live.
+
+## 2026-06-23 - Automation tool doctrine and skill installation
+
+**Category:** automation-ops
+**Confidence:** 0.96
+**Source:** Codex desktop session with Starlight swarm fanout
+**Related:** `starlight-automation-agent-skills`, `awesome-automation-agent-skills`, Codex skills, Make.com, n8n, MCP, Codex automations
+
+Durable decision: agents should use the narrowest reliable automation layer. Prefer native connectors for GitHub, Vercel, Gmail, Calendar, Slack, and similar structured surfaces. Use Codex automations for recurring reasoning, review, repo health, inbox/calendar briefs, and deployment or issue monitors. Use MCP as a typed agent boundary, not as an all-access tunnel; expose small tools with explicit schemas, run/read scopes first, fail-closed behavior, and human gates for destructive or public actions. Use Make.com for fast SaaS glue and low-code business workflows. Use n8n for branchy technical workflows, private/self-hosted flows, JSON-reviewable exports, and public template opportunities. Use Starlight swarm queues for cross-repo, multi-agent, eval-heavy, or handoff-heavy work.
+
+Installed Codex skills by junction from the new skills repo: `automation-tool-router`, `make-com-operations`, `n8n-operations`, `mcp-governance`, `codex-automation-operator`, and `starlight-queen-queue`. Future sessions should invoke `automation-tool-router` first when tool ownership is unclear, then route to the focused skill.
+
+Public/private boundary: public repos may contain doctrine, generic routing tables, sanitized skills, validation scripts, mock payloads, and public workflow cards. Private ops repos or vaults must hold live Make/n8n exports, webhook URLs, credentials, customer/inbox/calendar data, private memory, revenue state, partner pipeline details, and live queue state.
+
+Follow-up guide: `starlight-automation-agent-skills/docs/automation-operating-guide.md` now serves as the human-and-agent manual for understanding when to use native connectors, Codex automations, Hermes/retrieval agents, MCP, Make.com, n8n, Starlight swarm queues, and scripts/GitHub Actions. It includes cost model, decision protocol, observability, eval types, maintenance cadence, evolution ladder, and the agent working agreement. Use `templates/automation-decision-record.md` before durable workflow creation.
+
+Verification performed during setup: skill bundle validator passed, all six Codex skills passed official quick validation, plugin manifest validation passed, MCP example validation passed, n8n example validation passed, redaction self-test passed, and public-safety scans passed for both new public repos.

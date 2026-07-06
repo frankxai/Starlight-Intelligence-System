@@ -996,6 +996,43 @@
       "load_level": "core"
     },
     {
+      "id": "business-domain-intelligence",
+      "skill": "business/domain-intelligence",
+      "triggers": {
+        "keywords": [
+          "domain intelligence",
+          "domain investing",
+          "domain trading",
+          "domain portfolio",
+          "domain valuation",
+          "domain appraisal",
+          "buy domain",
+          "sell domain",
+          "lease domain",
+          "domain marketplace",
+          "ENS",
+          "web3 domain",
+          "web3 names",
+          "domain names"
+        ],
+        "agents": [
+          "starlight-business",
+          "starlight-architect",
+          "starlight-orchestrator",
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "domain-business",
+          "domain-valuation",
+          "portfolio-strategy",
+          "web3-names",
+          "marketplace-listing"
+        ]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "people-intelligence-structured-hiring",
       "skill": "people-intelligence/structured-hiring",
       "triggers": {
@@ -2840,6 +2877,7 @@
     ],
     "starlight-business": [
       "business-entity-architecture",
+      "business-domain-intelligence",
       "business-revenue-modeling",
       "intelligence-systems-thinking"
     ],

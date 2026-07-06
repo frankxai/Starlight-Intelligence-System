@@ -6,6 +6,8 @@
 #   1. Process Audit: Identifies and terminates orphaned agent CLI sessions (claude, codex, opencode),
 #      stuck Playwright/MCP instances, and idle background shells older than 4 hours, safely
 #      bypassing active current agent sessions (using parent PID mapping).
+#      **Important**: Persistent personal apps (Codex desktop, Claude Code) are explicitly protected
+#      and never killed.
 #   2. Worktree Cleanup: Prunes stale git worktrees from closed/crashed agent runs.
 #   3. MCP Port & Watchdog Audit: Checks if development ports are blocked by zombie processes.
 #   4. Observability Log: Appends diagnostics to private/api-monitor/WATCHDOG-STATUS.md.
@@ -50,8 +52,50 @@ $thresholdTime = $Now.AddHours(-4)
 $targetProcessNames = @('claude', 'codex', 'node', 'pwsh')
 $allProcs = Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -in $targetProcessNames }
 
+# === Persistent / Always-run apps (load from central config for excellence) ===
+# Queen and this watchdog share C:\Users\frank\starlight\private\persistent-agents.json
+# These are daily driver apps (Codex, Claude Code). They must ALWAYS run, be protected from kills, observed as personal-persistent.
+$persistentConfigPath = "C:\Users\frank\starlight\private\persistent-agents.json"
+$alwaysRunPatterns = @('Codex', 'codex', 'claude', 'Claude')  # defaults
+if (Test-Path $persistentConfigPath) {
+    try {
+        $pc = Get-Content $persistentConfigPath -Raw | ConvertFrom-Json
+        if ($pc.patterns) { $alwaysRunPatterns = $pc.patterns }
+        Write-Host "Loaded persistent patterns from config: $($alwaysRunPatterns -join ', ')"
+    } catch { Write-Host "Warning: could not load persistent config, using defaults" }
+}
+
+# Queen leads: load runtime exported personal PIDs from Queen state (exact current instances Queen considers active/persistent)
+$queenProtectedPath = "C:\Users\frank\starlight\queen\state\protected-personal.json"
+$queenProtectedPids = @()
+if (Test-Path $queenProtectedPath) {
+    try {
+        $qp = Get-Content $queenProtectedPath -Raw | ConvertFrom-Json
+        $queenProtectedPids = $qp | Where-Object { $_.pid } | ForEach-Object { [int]$_.pid }
+        if ($queenProtectedPids.Count -gt 0) {
+            Write-Host "Queen exported $($queenProtectedPids.Count) exact protected PIDs (Queen is leading decisions)"
+        }
+    } catch {}
+}
+
 foreach ($p in $allProcs) {
-    if ($p.Id -in $protectedPids) {
+    $fullPath = if ($p.Path) { $p.Path } else { '' }
+    $isPersistent = $false
+    foreach ($pat in $alwaysRunPatterns) {
+        if ($p.ProcessName -match $pat -or $fullPath -match $pat) {
+            $isPersistent = $true
+            break
+        }
+    }
+    if ($isPersistent) {
+        Log-Cleanup "Protected persistent app (never kill): $($p.ProcessName) PID $($p.Id) path=$fullPath"
+        continue
+    }
+
+    if ($p.Id -in $protectedPids -or $p.Id -in $queenProtectedPids) {
+        if ($p.Id -in $queenProtectedPids) {
+            Log-Cleanup "Queen-protected (Queen leading, do not kill): $($p.ProcessName) PID $($p.Id)"
+        }
         continue
     }
 

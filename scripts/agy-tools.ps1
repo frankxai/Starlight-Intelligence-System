@@ -17,7 +17,8 @@ try {
 } catch {}
 
 $global:AGY_EXE_PATH = "C:\Users\frank\AppData\Local\agy\bin\agy.exe"
-$global:REPOS_ROOT = "C:\Users\frank"
+$canonical = "C:\Users\frank\starlight\repos"
+$global:REPOS_ROOT = if (Test-Path $canonical) { $canonical } else { "C:\Users\frank" }
 
 if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
     $global:STARLIGHT_REPO_SHORTCUTS = [ordered]@{
@@ -141,6 +142,10 @@ function Invoke-AgyYolo {
 
     # Sync history from other harnesses
     Invoke-HistorySync
+
+    # Set env for hook-env.sh detection (agy/antigravity)
+    $env:AGY_PROJECT_DIR = $TargetPath
+    $env:AGY_SESSION = "1"
 
     # Switch location
     Set-Location $TargetPath
@@ -300,6 +305,10 @@ function Invoke-ClaudeYolo {
     # Sync history from other harnesses
     Invoke-HistorySync
 
+    # Set env for hook-env.sh detection (portable hooks identify harness)
+    $env:CLAUDE_PROJECT_DIR = $TargetPath
+    $env:CLAUDECODE = "1"
+
     # Switch location
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
@@ -324,6 +333,10 @@ function Invoke-CodexInRepo {
 
     # Sync history from other harnesses
     Invoke-HistorySync
+
+    # Set env for hook-env.sh detection
+    $env:CODEX_PROJECT_DIR = $TargetPath
+    $env:CODEX_SESSION = "1"
 
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
@@ -412,6 +425,10 @@ function Invoke-GrokYolo {
     # Sync history from other harnesses
     Invoke-HistorySync
 
+    # Set env for hook-env.sh detection (so portable hooks like session-logger fire as grok)
+    $env:GROK_PROJECT_DIR = $TargetPath
+    $env:GROK_CLI = "1"
+
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
     if ($Prompt) {
@@ -438,6 +455,7 @@ function Invoke-DeepAgentYolo {
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
     Write-Host "🚀 Spawning DeepAgent YOLO Agent (interactive)..." -ForegroundColor Green
+    $env:DA_PROJECT_DIR = $TargetPath
     dcode --auto-approve --shell-allow-list all
 }
 
@@ -510,8 +528,10 @@ function da-run {
     )
 
     if (-not $RepoKey) {
-        Show-StarlightRepos -Verb "run DeepAgent in"
-        Write-Host "`nUsage: da-run <repo-key>" -ForegroundColor DarkCyan
+        # bare "da" launches DeepAgent in current folder (per integration spec)
+        $current = (Get-Location).Path
+        Write-Host "Launching DeepAgent in current dir..." -ForegroundColor DarkCyan
+        Invoke-DeepAgentYolo -TargetPath $current
         return
     }
 
@@ -519,6 +539,7 @@ function da-run {
     if (-not $match) { return }
 
     Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    $env:DA_PROJECT_DIR = $match.FullName
     Invoke-DeepAgentYolo -TargetPath $match.FullName
 }
 
@@ -667,6 +688,8 @@ function cl-run {
     if (-not $match) { return }
 
     Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    $env:CLAUDE_PROJECT_DIR = $match.FullName
+    $env:CLAUDECODE = "1"
     Invoke-ClaudeYolo -TargetPath $match.FullName
 }
 
@@ -687,6 +710,8 @@ function cd-run {
     if (-not $match) { return }
 
     Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    $env:CODEX_PROJECT_DIR = $match.FullName
+    $env:CODEX_SESSION = "1"
     Invoke-CodexInRepo -TargetPath $match.FullName
 }
 
@@ -714,6 +739,8 @@ function cl-intelligent {
     if ($ArgsList.Count -eq 0) {
         $claudeExe = "C:\Users\frank\.local\bin\claude.exe"
         if (-not (Test-Path $claudeExe)) { $claudeExe = "claude" }
+        $env:CLAUDE_PROJECT_DIR = (Get-Location).Path
+        $env:CLAUDECODE = "1"
         & $claudeExe
     } else {
         cl-run ($ArgsList -join ' ')
@@ -733,6 +760,8 @@ function cd-intelligent {
         if (-not (Test-Path $codexPath)) {
             $codexPath = "codex"
         }
+        $env:CODEX_PROJECT_DIR = (Get-Location).Path
+        $env:CODEX_SESSION = "1"
         & $codexPath
     } else {
         $target = $PathArgs -join ' '
@@ -762,58 +791,69 @@ function gr-sis {
 
 # Dedicated wrappers for Grok in repo context
 function gr-fx {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "fx"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-arc {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "arc"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-app {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "app"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-studio {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "studio"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-brain {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "brain"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-prompts {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "prompts"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-acos {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "acos"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-g {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "g"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-vc {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "vc"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-ani {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "ani"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 function gr-dpi {
+    param([string]$Prompt)
     $repo = Get-StarlightRepo "dpi"
-    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-GrokYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
 # General fuzzy lookup for Grok YOLO
@@ -833,6 +873,8 @@ function gr-run {
     if (-not $match) { return }
 
     Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
+    $env:GROK_PROJECT_DIR = $match.FullName
+    $env:GROK_CLI = "1"
     Invoke-GrokYolo -TargetPath $match.FullName
 }
 
@@ -875,6 +917,8 @@ function gr-intelligent {
     if ($ArgsList.Count -eq 0) {
         $grokExe = "C:\Users\frank\.grok\bin\grok.exe"
         if (-not (Test-Path $grokExe)) { $grokExe = "grok" }
+        $env:GROK_PROJECT_DIR = (Get-Location).Path
+        $env:GROK_CLI = "1"
         & $grokExe
     } else {
         gr-run ($ArgsList -join ' ')
@@ -1089,4 +1133,5 @@ if ($env:FRANK_QUIET_PROFILE -ne '1') {
     Write-Host '  - gr <repo> / grsis / grfx / grarc / grapp / grstudio / grbrain / grprompts / gracos (or gk*)' -ForegroundColor DarkGray
     Write-Host '  - da <repo> / dasis / dafx / daarc / daapp / dastudio / dabrain / daprompts / daacos' -ForegroundColor DarkGray
     Write-Host 'Starlight fanout + council: Invoke-SiFanout | Invoke-SiCouncil (si-dispatch.ps1 / si-council.ps1)' -ForegroundColor Green
+    Write-Host 'Hook doctor: scripts/hook-doctor.ps1 (run any time for audit across harnesses)' -ForegroundColor DarkCyan
 }

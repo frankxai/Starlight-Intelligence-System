@@ -43,7 +43,7 @@ At portfolio scale, use the broader product doctrine:
 
 ## Applied Upgrades
 
-The portfolio now has 45 personal plugins. Of those, 35 received elevated product-facing names and descriptions.
+The portfolio now has 52 personal plugins. Of those, 35 legacy/internal plugins received elevated product-facing names and descriptions, six clean public wrapper plugins were added as product-line modules, and `agentic-music-os` was discovered as an existing product-grade plugin.
 
 | Stable slug | Product name | Future slug candidate |
 | --- | --- | --- |
@@ -79,6 +79,25 @@ The portfolio now has 45 personal plugins. Of those, 35 received elevated produc
 | `prompt-eval-lab` | Prompt Evaluation Lab | `prompt-evaluation-lab` |
 | `skill-to-plugin-forge` | Plugin Forge | `plugin-forge` |
 
+## Public Wrapper Plugins
+
+These plugins use clean slugs immediately because they were created as public product modules rather than migrations of existing internal operating plugins.
+
+| Plugin slug | Product name | Product line |
+| --- | --- | --- |
+| `founder-command-kit` | Founder Command Kit | Founder Command |
+| `revenue-engine-kit` | Revenue Engine Kit | Revenue Engine |
+| `starlight-system-module` | Starlight System Module | Starlight Intelligence System |
+| `arcanea-world-engine` | Arcanea World Engine | Arcanea World Engine |
+| `enterprise-ai-kit` | Enterprise AI Kit | Enterprise AI |
+| `creator-product-kit` | Creator Product Kit | Creator Products |
+
+## Product-Grade Discovery
+
+| Plugin slug | Product name | Product line |
+| --- | --- | --- |
+| `agentic-music-os` | Agentic Music OS | Music and release systems |
+
 ## Migration Rule
 
 Future slug renames should be handled as a deliberate V2 migration:
@@ -93,9 +112,11 @@ Do not rename folders in place without a compatibility plan.
 
 ## Result
 
-- Personal plugins: 45
+- Personal plugins: 52
 - Slugs containing `ops`: 29
 - Product display names ending in `Ops`: 0
 - Product display names containing `Ops`: 1, intentionally `Agentic Ops Harness`
+- Public wrapper plugins with clean slugs: 6
+- Existing product-grade discovery: `agentic-music-os`
 - Immediate user-facing quality: upgraded
 - Install compatibility: preserved

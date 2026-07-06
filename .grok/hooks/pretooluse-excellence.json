@@ -3,7 +3,13 @@
     "PreToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit|Bash",
-        "command": "echo 'Excellence gate: rules first? DNA? multi-orchestrator? repo-mastery context? harnesses via terminal? gstack/santa if web? Review before proceed. Grok .grok personal excellence seeds only.'"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.grok/hooks/pre-tool-gate.sh",
+            "timeout": 3000
+          }
+        ]
       }
     ]
   }

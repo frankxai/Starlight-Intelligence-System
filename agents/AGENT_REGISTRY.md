@@ -2,7 +2,7 @@
 
 > One-hundred-forty-four minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy + Legal + Space + Marine + Longevity + Infrastructure + Partners + Research + Assets + Distribution) + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
 >
-> **L99 Swarm Topology Update (2026-06-17):** Scaled swarm topology specifying Kings (policy locks), Queens (orchestration loops), Starlight Board, and Model Council consensus. The complete fleet of 150 agents is specified in the [Starlight 150 Agent Blueprint](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/AGENT_BLUEPRINT.md) and documented in the [Swarm Topology Strategy](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/swarm-topology.md).
+> **L99 Swarm Topology Update (2026-06-17):** Scaled swarm topology specifying Kings (policy locks), Queens (orchestration loops), Starlight Board, and Model Council consensus. The complete fleet of 150 agents is specified in the [Starlight 150 Agent Blueprint](../docs/AGENT_BLUEPRINT.md) and documented in the [Swarm Topology Strategy](../docs/swarm-topology.md).
 >
 > **v8.2.x update (2026-06-10):** Evaluator registered (`starlight-evaluator.md`) — Starlight Proving Ground + Model Arena measurement seat.
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.

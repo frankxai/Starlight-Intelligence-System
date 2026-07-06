@@ -1,0 +1,43 @@
+/* Starlight Intelligence — World Best Brand Color System (June 2026)
+   Only the most premium, luminous, sovereign palette.
+   Use with glassmorphism, volumetric light, high contrast.
+*/
+
+:root {
+  /* Void (deepest cosmic black for true premium depth) */
+  --sl-void: #050508;
+  --sl-void-2: #0a0a0f;
+  
+  /* Luminous Accents */
+  --sl-violet: #a78bfa;
+  --sl-violet-light: #c4b5fd;
+  --sl-cyan: #67e8f9;
+  --sl-cyan-light: #a5f3fc;
+  --sl-fuchsia: #e879f9;
+  --sl-fuchsia-light: #f0abfc;
+  --sl-gold: #c5a46e;
+  --sl-gold-light: #e2d5b8;
+  
+  /* Supporting Neutrals (glass luxury) */
+  --sl-white: #f8fafc;
+  --sl-white-80: #e0e7ff;
+  --sl-charcoal: #1f2937;
+  --sl-glass: rgba(255,255,255,0.06);
+  
+  /* Semantic */
+  --sl-primary: var(--sl-violet);
+  --sl-accent: var(--sl-cyan);
+  --sl-secondary: var(--sl-gold);
+}
+
+/* Usage examples for premium execution */
+.sl-bg-void { background: var(--sl-void); }
+.sl-text-luminous { color: var(--sl-violet); }
+.sl-border-glass { border-color: var(--sl-glass); }
+
+/* Premium gradient for conductors / swarms */
+.sl-gradient-cosmic {
+  background: linear-gradient(135deg, var(--sl-violet) 0%, var(--sl-cyan) 50%, var(--sl-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

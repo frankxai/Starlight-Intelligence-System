@@ -1,0 +1,43 @@
+{
+  "schema_version": "agentic-music-os.asset-manifest.v0.1",
+  "song_id": "franks-vibes_20260621_oh-chama",
+  "title": "Oh Chama",
+  "artist": "FrankX",
+  "generated_image_tool": "built_in_image_gen",
+  "cover_prompt_path": "assets/prompts/cover-directions.md",
+  "preferred_assets": {
+    "cover_master": "assets/cover/oh-chama-cover-3000x3000.jpg",
+    "cover_square_social": "assets/cover/oh-chama-cover-social-1080x1080.jpg",
+    "youtube_thumbnail": "assets/cover/oh-chama-thumbnail-1920x1080.jpg",
+    "vertical_poster": "assets/cover/oh-chama-poster-1080x1920.jpg",
+    "spotify_canvas": "assets/motion/oh-chama-spotify-canvas-loop-6s-1080x1920.mp4",
+    "youtube_shorts_primary": "assets/motion/oh-chama-youtube-shorts-hook-24s-1080x1920-v2.mp4",
+    "youtube_shorts_alternate": "assets/motion/oh-chama-youtube-shorts-hook-24s-1080x1920.mp4",
+    "teaser_gif": "assets/motion/oh-chama-canvas-teaser-4s-320x568-optimized.gif"
+  },
+  "source_assets": {
+    "suno_cover": "assets/cover/source-suno-cover-large.jpeg",
+    "generated_cover_source": "assets/cover/oh-chama-cover-generated-source.png",
+    "suno_video": "audio/source-suno-video.mp4",
+    "source_audio": "audio/source-suno.mp3"
+  },
+  "qa_frames": {
+    "canvas_start": "assets/motion/qa-canvas-frame-0.5s.jpg",
+    "canvas_end": "assets/motion/qa-canvas-frame-5.5s.jpg",
+    "short_start": "assets/motion/qa-short-v2-frame-1.5s.jpg",
+    "short_cta": "assets/motion/qa-short-v2-frame-19s.jpg"
+  },
+  "status": {
+    "cover": "prepared_local_only",
+    "canvas": "prepared_local_only",
+    "short_9x16": "prepared_local_only",
+    "gif": "prepared_local_only",
+    "external_uploads": "not_performed"
+  },
+  "notes": [
+    "Primary Shorts cut uses v2 because it avoids the hard padded-image seam in v1.",
+    "Canvas contains no text and no audio; Shorts contains burned-in captions and a 24 second audio excerpt starting around 00:50.",
+    "Human listen is still required to confirm the 00:50 hook cut lands on the intended lyric/musical moment."
+  ]
+}
+

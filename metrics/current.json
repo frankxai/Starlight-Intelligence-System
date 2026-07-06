@@ -13,55 +13,55 @@
       }
     }
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "ledger_started": "2026-06-10",
-  "last_updated": "2026-07-05",
+  "last_updated": "2026-07-06",
   "metrics": {
     "named_agents": {
       "value": 144,
-      "last_verified": "2026-07-05",
+      "last_verified": "2026-07-06",
       "source": "agents/**/*.md",
       "ownership": "built",
       "stale": false
     },
     "auto_activating_skills": {
-      "value": 83,
-      "last_verified": "2026-07-05",
+      "value": 84,
+      "last_verified": "2026-07-06",
       "source": "skills/skill-rules.json",
       "ownership": "built",
       "stale": false
     },
     "engine_loc": {
       "value": 21508,
-      "last_verified": "2026-07-05",
+      "last_verified": "2026-07-06",
       "source": "src/**/*.ts (excl. tests)",
       "ownership": "built",
       "stale": false
     },
     "engine_files": {
       "value": 76,
-      "last_verified": "2026-07-05",
+      "last_verified": "2026-07-06",
       "source": "src/**/*.ts (excl. tests)",
       "ownership": "built",
       "stale": false
     },
     "test_cases": {
       "value": 825,
-      "last_verified": "2026-07-05",
+      "last_verified": "2026-07-06",
       "source": "src + test *.test.ts",
       "ownership": "built",
       "stale": false
     },
     "test_files": {
       "value": 75,
-      "last_verified": "2026-07-05",
+      "last_verified": "2026-07-06",
       "source": "src + test *.test.ts",
       "ownership": "built",
       "stale": false
     },
     "sis_version": {
       "value": "8.3.0",
-      "last_verified": "2026-07-05",
+      "last_verified": "2026-07-06",
       "source": "package.json",
       "ownership": "built",
       "stale": false

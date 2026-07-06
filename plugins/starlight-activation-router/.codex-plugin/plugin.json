@@ -1,0 +1,46 @@
+{
+  "name": "starlight-activation-router",
+  "version": "0.1.0+codex.20260623104602",
+  "description": "Codex-native Starlight activation for /si, /so, /acos, Agentic Creator Operating System routing, swarm-aware orchestration, mobile text aliases, and safe lifecycle hooks.",
+  "author": {
+    "name": "FrankX / Starlight",
+    "url": "https://starlightintelligence.org"
+  },
+  "homepage": "https://starlightintelligence.org",
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "keywords": [
+    "starlight",
+    "codex",
+    "hooks",
+    "skills",
+    "si",
+    "so",
+    "acos",
+    "mobile",
+    "routing",
+    "agent-orchestration",
+    "swarm",
+    "slash-commands",
+    "prompts"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Starlight Activation Router",
+    "shortDescription": "Slash-style /si, /so, and /acos routing for Codex.",
+    "longDescription": "Adds Codex-native skills, local prompt shortcuts, and lifecycle hooks that route Starlight prompts to the right local skills, plugins, swarm lanes, and agent lanes without loading the full estate or launching fanout implicitly. Install the bundled prompt shortcuts to type /si, /so, and /acos directly; mobile-friendly aliases such as si:, so:, and acos: work when slash-command UI is unavailable.",
+    "developerName": "FrankX / Starlight",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ],
+    "websiteURL": "https://starlightintelligence.org",
+    "defaultPrompt": [
+      "/si audit this repo",
+      "/so build a dispatch packet",
+      "/acos plan tomorrow's content"
+    ]
+  }
+}
