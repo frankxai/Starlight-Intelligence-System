@@ -152,7 +152,7 @@ Flat council with emergent leadership, fronted by Front-Door + Excavation tiers.
 
 **Estate / Agent Army commissioning extensions (post 2026-06-16 Board PROCEED-WITH-REVISE):** When building or operating full sovereign estates, compose the base registry here with the `starlight-estate-os` profile (`templates/estate-os/AGENTS.md`) + client's 4-layer Blueprint (Persona mapping, Topology/swarm shapes from ORCHESTRATION_ENGINE + /si router, Kernel selection, Modules/domain sub-stacks). Hermes, council, and new Steward primitives become central for the production Mesh. See `docs/delivery/estate-army-commissioning-workflow.md`, `estate-blueprint.md`, and `estate-steward.md` commands. Genius grounding and encoded-self boundaries (SIP Â§5.7) are non-negotiable.
 
-For scaling beyond the core registry to a full **144+ Agent Swarm**, refer to the comprehensive [Starlight 150 Agent Blueprint](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/AGENT_BLUEPRINT.md) and the [Swarm Topology Strategy](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/swarm-topology.md) specifying Kings (policy locks), Queens (domain controllers), Board reviews, and Model Council consensus.
+For scaling beyond the core registry to a full **144+ Agent Swarm**, refer to the comprehensive [Starlight 150 Agent Blueprint](docs/AGENT_BLUEPRINT.md) and the [Swarm Topology Strategy](docs/swarm-topology.md) specifying Kings (policy locks), Queens (domain controllers), Board reviews, and Model Council consensus.
 
 Full per-agent file: `agents/<agent-name>.md`.
 
@@ -160,7 +160,7 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context â€” keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (83 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
+Skills fire based on context â€” keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (84 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (53 flat files) or `skills/<domain>/<skill-name>/SKILL.md` (31 dir-based skills), together matching the 84-rule count (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
 
 | Domain | Surface (sample) |
 |--------|------------------|
