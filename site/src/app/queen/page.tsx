@@ -26,7 +26,7 @@ export default function QueenPage() {
               The Starlight<br />Queen &amp; Her Swarms
             </h1>
             <p className="max-w-2xl text-2xl text-zinc-400 tracking-tight mb-10">
-              The continuous, self-advancing intelligence at the center.<br />One substrate. Coordinated swarms. Visuals that compound.
+              The orchestrator at the center of the substrate — routing work across every agent,<br />running parallel review swarms, and keeping a ledger of what actually shipped.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <a href="#the-loop" className="inline-flex items-center gap-3 rounded-2xl bg-white px-9 py-4 text-lg font-medium tracking-tight text-[#0a0a0f] hover:bg-zinc-200 active:scale-[0.985] transition">
@@ -184,18 +184,18 @@ export default function QueenPage() {
               href="/queen-vision.html" 
               className="group block rounded-3xl border border-white/20 bg-white/[0.015] px-10 py-8 text-center hover:border-cyan-400/50 hover:bg-white/[0.03] active:scale-[0.985] transition-all"
             >
-              <div className="text-xs tracking-[3.5px] text-cyan-400 mb-2">VISION / QUEEN-SWARMS-VISUAL • L99 PACKAGED</div>
-              <div className="text-3xl tracking-tighter font-semibold text-white group-hover:text-cyan-300 transition-colors">ACTIVATE QUEEN VISUAL SKILL</div>
-              <div className="mt-3 text-sm text-white/60 max-w-[42ch] mx-auto">Open the canonical deliverable (self-contained HTML with modular config, robust canvas, full SIP instructions). Scroll to feel the swarms respond. This is the skill in action — fork the CONFIG to produce ledger / palace / vertical variants.</div>
-              <div className="mt-5 inline-flex items-center gap-2 text-xs tracking-widest text-amber-300/80 group-hover:text-amber-300">OPEN CANONICAL → /queen-vision.html (or docs/queen-motion/)</div>
+              <div className="text-xs tracking-[3.5px] text-cyan-400 mb-2">QUEEN-SWARMS-VISUAL SKILL</div>
+              <div className="text-3xl tracking-tighter font-semibold text-white group-hover:text-cyan-300 transition-colors">SEE THE FULL VISION</div>
+              <div className="mt-3 text-sm text-white/60 max-w-[42ch] mx-auto">A self-contained animated page — scroll and the swarms respond. Fork the config inside to produce ledger, palace, or vertical variants of the same visual.</div>
+              <div className="mt-5 inline-flex items-center gap-2 text-xs tracking-widest text-amber-300/80 group-hover:text-amber-300">OPEN → /queen-vision.html</div>
             </a>
-            <div className="mt-3 text-[10px] text-white/40 text-center">Also: <code className="font-mono text-amber-300/70">/starlight-queen ledger --visual</code> • <Link href="/docs/queen-motion" className="underline hover:text-white/70">deep standalone narrative</Link> • skill definition in <code>skills/vision/queen-swarms-visual.md</code></div>
+            <div className="mt-3 text-[10px] text-white/40 text-center">Also: <code className="font-mono text-amber-300/70">/starlight-queen ledger --visual</code> • <a href="https://github.com/frankxai/Starlight-Intelligence-System/tree/main/docs/queen-motion" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/70">deep standalone narrative</a> • skill definition in <code>skills/vision/queen-swarms-visual.md</code></div>
           </div>
         </div>
       </section>
 
       <footer className="border-t border-white/10 py-12 text-center text-xs text-white/40">
-        Built on SIP v1.1.1 · Queen v0.2 self-advancing loop · All visuals generated with Grok Imagine under the l99 visual intelligence push.
+        Built on SIP v1.1.1 · Queen v0.2 orchestration loop · All visuals generated with Grok Imagine.
       </footer>
     </div>
   );
