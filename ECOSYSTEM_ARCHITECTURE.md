@@ -50,7 +50,7 @@ The separation remains deliberate. SIS never contains Claude Code-specific confi
 
 ## 2. The Constellation
 
-Four tiers, verified 2026-06-10. "Pulse" is observed activity, not aspiration.
+Four tiers, verified 2026-06-10; Incubating tier (§ 2.4) re-verified 2026-07-06 after two of its three members shipped real substance in the interim. "Pulse" is observed activity, not aspiration.
 
 ### 2.1 Active Core
 
@@ -73,6 +73,8 @@ Four tiers, verified 2026-06-10. "Pulse" is observed activity, not aspiration.
 | **starlight-evals** | Eval harness mirror | Deliberate publish-mirror of `tools/proving-ground` + `tools/arena` |
 | **starlight-horizon-dataset** | Alignment values dataset | Public counterpart of the Horizon Vault (§ 7) |
 | **starlight-voice** | Voice operator | Paused at v3 spec stage; resumes per Voice v3 plan |
+| **starlight-swarm** | L6 Swarm Runtime — Queen-led orchestration for AI income streams | Left incubation ~2026-06-30. v0.2: unit-tested escalation spine (fail-closed by design) + a real payments-MCP adapter, verify-only. Deliberately dry-run-only — no live money movement — per its own safety contract, not incompleteness. `Built on SIP`. |
+| **starlight-agent-skills** | Portable agent-facing skill library — the "execute" layer sibling to SIS | Left incubation ~2026-07-01. 26 production skills across 7 domains, each with `manifest.json` + worked `examples/` + `tests/`; CI (`validate.yml`) cross-checks frontmatter, attestation, and example↔manifest contracts on every push. Distinct from `claude-skills-library` (human-facing catalog) — this is the agent-resolved registry. |
 
 ### 2.3 Dormant / Archive Queue
 
@@ -86,15 +88,15 @@ Dormancy is a recorded state, not a deletion. Dormant repos keep their channel f
 
 ### 2.4 Incubating
 
-Repos that exist with intent but no substance yet. Listed for map completeness — they carry a name and a direction but no active contracts. Distinct from dormant (which had a pulse and lost it); these have not started.
+Repos that exist with intent but not yet enough substance to earn a satellite contract. Listed for map completeness — they carry a name and a direction. Distinct from dormant (which had a pulse and lost it); these are still building toward their first pulse.
 
-| Repo | State (2026-06-10) | Intent |
+**Re-verified 2026-07-06** (prior snapshot 2026-06-10 had aged out — starlight-swarm and starlight-agent-skills had already shipped real substance and moved to § 2.2 above; see their rows there).
+
+| Repo | State (2026-07-06) | Intent |
 |------|--------------------|--------|
-| **starlight-swarm** | Empty shell — README only | Multi-agent orchestration on the Starlight memory substrate, guided by the Starlight Queen |
-| **starlight-agent-skills** | Empty shell — README only | Agent-facing skill registry; `claude-skills-library` is the live public skill library today |
-| **starlight-cosmos-engine** | Scaffold — full TS monorepo layout, implementations are empty stubs | Production monorepo for Cosmos systems; invest-or-archive decision pending |
+| **starlight-cosmos-engine** | Real npm-workspaces monorepo, 34 packages wired end-to-end by TS project references + working CI (install → lint → typecheck → test → build) — but only 2 of 34 packages (`packages/schemas`, `apps/api`) carry implemented logic. Everything else is an intentional stub. The repo's own README documents this per-package, verified by reading source, not folder names. | Cosmos-content production system (NASA/ESA imagery + research → published stories). Invest-or-archive decision still pending — Phase 1 (API + Mission Control + Hermes orchestration + rights path + one pipeline end-to-end) is the activation bar. |
 
-Each now carries an honest `STATUS` banner in its README and explicit activation criteria. Incubation is a holding state: a repo leaves it by shipping a first real spike, not by accumulating more scaffold.
+Incubation is a holding state: a repo leaves it by shipping a first real spike, not by accumulating more scaffold. The two graduates above did exactly that.
 
 ---
 
