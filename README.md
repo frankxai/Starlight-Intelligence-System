@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/assets/hero.svg" width="100%" alt="Starlight Intelligence System hero banner"/></p>
+
 # Starlight Intelligence System
 
 > **One shared brain for your entire AI fleet — across every tool and every repository.**
