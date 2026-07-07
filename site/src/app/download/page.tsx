@@ -189,6 +189,86 @@ export default function DownloadPage() {
                 </div>
               </div>
             </div>
+
+            {/* Card 3: Agentic Creator OS (ACOS v11) */}
+            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090911]/60 backdrop-blur-md transition-all hover:border-amber-500/30 hover:shadow-[0_0_40px_rgba(245,158,11,0.08)]">
+              <div className="aspect-[16/9] w-full relative overflow-hidden bg-slate-950 border-b border-white/[0.04]">
+                <Image
+                  src="/assets/visuals/16-architecture-flow.jpg"
+                  alt="Agentic Creator OS Cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#090911] via-transparent to-transparent" />
+              </div>
+              <div className="p-6">
+                <span className="px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-mono rounded-full uppercase">
+                  ACOS Core • v11.2.0
+                </span>
+                <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">Agentic Creator OS</h3>
+                <p className="mt-2.5 text-xs text-slate-400 leading-relaxed">
+                  The flagship operating system for AI-powered creators. Configured with 90+ skills, 65+ custom CLI commands, 38 agents, and 8 plugins. Works out-of-the-box.
+                </p>
+                <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/[0.05] pt-4">
+                  <span className="text-[11px] text-slate-500 font-mono">License: MIT</span>
+                  <div className="flex gap-x-2">
+                    <a
+                      href="https://github.com/frankxai/agentic-creator-os"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-x-1.5 rounded-full bg-white px-4 py-2 text-[12px] font-semibold text-slate-950 hover:bg-amber-100 transition-all"
+                    >
+                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                        <path d="M9 18c-4.51 2-5-2-7-2" />
+                      </svg>
+                      Repo
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4: Starlight Swarm Coordinator */}
+            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090911]/60 backdrop-blur-md transition-all hover:border-emerald-500/30 hover:shadow-[0_0_40px_rgba(16,185,129,0.08)]">
+              <div className="aspect-[16/9] w-full relative overflow-hidden bg-slate-950 border-b border-white/[0.04]">
+                <Image
+                  src="/assets/visuals/10-council.jpg"
+                  alt="Starlight Swarm Coordinator Cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#090911] via-transparent to-transparent" />
+              </div>
+              <div className="p-6">
+                <span className="px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono rounded-full uppercase">
+                  Swarm Core • v1.5.0
+                </span>
+                <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">Swarm Coordinator</h3>
+                <p className="mt-2.5 text-xs text-slate-400 leading-relaxed">
+                  Multi-agent coordination system orchestrating tasks across frontier models. Integrates trajectory memory persistency, dynamic routing, and consensus gates.
+                </p>
+                <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/[0.05] pt-4">
+                  <span className="text-[11px] text-slate-500 font-mono">License: MIT</span>
+                  <div className="flex gap-x-2">
+                    <a
+                      href="https://github.com/frankxai/starlight-swarm"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-x-1.5 rounded-full bg-white px-4 py-2 text-[12px] font-semibold text-slate-950 hover:bg-emerald-100 transition-all"
+                    >
+                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                        <path d="M9 18c-4.51 2-5-2-7-2" />
+                      </svg>
+                      Repo
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -375,6 +455,64 @@ export default function DownloadPage() {
                 </Link>
               </div>
             </div>
+
+            {/* Book 3 */}
+            <div className="glass-panel p-6 rounded-2xl flex flex-col sm:flex-row gap-6 items-center">
+              <div className="w-32 h-44 relative rounded-lg overflow-hidden border border-white/[0.08] bg-slate-900 shrink-0">
+                <Image
+                  src="/assets/visuals/09-six-vaults.jpg"
+                  alt="Prompt Hub Design Books Cover"
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest">Prompt Engineering</span>
+                <h3 className="mt-2 font-bold text-lg text-white">Prompt Hub Design Books</h3>
+                <p className="mt-2 text-xs text-slate-400 leading-relaxed font-light">
+                  A library-of-Alexandria for elite prompt engineering, featuring red-teaming guidelines, evaluation metrics, and model routing.
+                </p>
+                <a
+                  href="https://github.com/frankxai/prompt-engine"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-x-1.5 text-xs font-semibold text-amber-400 hover:text-amber-300"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  Inspect Repository
+                </a>
+              </div>
+            </div>
+
+            {/* Book 4 */}
+            <div className="glass-panel p-6 rounded-2xl flex flex-col sm:flex-row gap-6 items-center">
+              <div className="w-32 h-44 relative rounded-lg overflow-hidden border border-white/[0.08] bg-slate-900 shrink-0">
+                <Image
+                  src="/assets/visuals/queen/9.jpg"
+                  alt="Conscious Creator Guidebook Cover"
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">Sovereignty Guide</span>
+                <h3 className="mt-2 font-bold text-lg text-white">Conscious Creator Guide</h3>
+                <p className="mt-2 text-xs text-slate-400 leading-relaxed font-light">
+                  Explore how creators build structural leverage and maintain digital sovereignty using autonomous multi-agent networks.
+                </p>
+                <a
+                  href="https://github.com/frankxai/agentic-creator-os"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-x-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  Inspect Repository
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -419,6 +557,20 @@ export default function DownloadPage() {
                 img: "/assets/visuals/03-advanced-3d-memory-palace-v2.jpg",
                 badge: "Lived OS Vault",
                 repo: "https://github.com/frankxai/agentic-mind-os",
+              },
+              {
+                title: "Arcanea InfoGenius Engine",
+                desc: "Google Search and Gemini-powered automated research synthesizer and infographic generator.",
+                img: "/assets/visuals/04-model-arena-grok-composer25-leaderboard.jpg",
+                badge: "InfoGenius",
+                repo: "https://github.com/frankxai/arcanea-infogenius",
+              },
+              {
+                title: "Jarvis-Grade Voice Operator",
+                desc: "Open-source Rust/Tauri client and Python Pipecat voice agent for sub-800ms low-latency conversation.",
+                img: "/assets/visuals/06-self-advancing-sis-constellation.jpg",
+                badge: "Voice Lobe",
+                repo: "https://github.com/frankxai/starlight-voice",
               },
             ].map((pack) => (
               <div

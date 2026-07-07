@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { QueenSwarm } from "@/components/QueenSwarm";
+import { STAR_GUARDIAN_TIER, QUEEN_NARRATIVES, EXPANDED_SWARM_FIELDS } from "@/lib/queen-visuals";
 
 export const metadata: Metadata = {
   title: "The Starlight Queen & Her Swarms",
@@ -95,7 +96,7 @@ export default function QueenPage() {
                 <div className="overflow-hidden rounded-3xl border border-white/10">
                   <img src="/assets/visuals/15-queen-loop.jpg" alt="Queen continuous loop" className="w-full h-auto" />
                 </div>
-                <div className="mt-2 text-[10px] text-white/40 tracking-widest">L99 ROUTE — GROK IMAGINE • WIRED</div>
+                <div className="mt-2 text-[10px] text-white/40 tracking-widest">L99 ROUTE — GROK IMAGINE • WIRED (special receipt; see queen-premium/ for scalable Sovereign excellence 101+)</div>
               </div>
             </div>
 
@@ -145,7 +146,141 @@ export default function QueenPage() {
             <div>
               <QueenSwarm className="w-full aspect-[16/9.6] rounded-3xl border border-white/10" phase="measure" interactive />
               <div className="mt-2 text-[10px] text-white/50 tracking-widest">LIVE INTERACTIVE — QUEEN DIRECTS 92 AGENTS. MOVE CURSOR TO CONDUCT.</div>
+              {/* Example Sovereign excellence wire (101+ from registry / queen-premium) for additional visual reference in swarms layer */}
+              <div className="mt-4 text-[10px] text-white/40">Additional excellence Sovereign example: /assets/visuals/queen-premium/108.jpg (swarm field) — see VISUAL_WIRING_MAP for full targets.</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Star Guardian Tier — executed 2026-06-26 */}
+      <section className="border-t border-white/10 py-16">
+        <div className="mx-auto max-w-6xl px-8">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <div className="text-xs tracking-[3px] text-violet-400">STAR GUARDIAN × STARLIGHT</div>
+              <h2 className="mt-2 font-serif text-5xl tracking-[-1.6px]">Luminous Guardians</h2>
+            </div>
+            <p className="max-w-md text-right text-sm text-zinc-400 hidden md:block">
+              Riot splash polish (four-pointed stars, iridescent ribbons, personality-mapped palettes) blended with Queen conductor + swarm familiars DNA.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {STAR_GUARDIAN_TIER.map((id) => (
+              <figure key={id} className="group overflow-hidden rounded-2xl border border-white/10 bg-black/40">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img
+                    src={`/assets/visuals/queen-premium/${id}.jpg`}
+                    alt={`Star Guardian Queen variant ${id}`}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                    <div className="text-[10px] tracking-widest text-white/60">QUEEN-PREMIUM/{id}</div>
+                  </div>
+                </div>
+                <figcaption className="px-3 py-2.5 text-xs text-zinc-400">
+                  {id === 109 && "Ahri-like leader — charismatic sovereign"}
+                  {id === 110 && "Lux optimistic — hopeful protector"}
+                  {id === 111 && "Jinx chaotic — explosive energy"}
+                  {id === 112 && "Kai'Sa tactical — precision power"}
+                  {id === 113 && "Ezreal playful — youthful explorer"}
+                  {id === 114 && "Team composition — Queen + Guardians"}
+                  {id === 115 && "Action battle — /queen phases"}
+                  {id === 116 && "Prestige luxurious — gold silk drama"}
+                  {id === 117 && "Chibi Codex — likeability tier"}
+                  {id === 118 && "Dark Prestige — Syndra mystery"}
+                  {id === 119 && "Weaver — memory orbs & threads"}
+                  {id === 120 && "Ledger refined — proving ground"}
+                  {id === 121 && "Resting contemplative"}
+                  {id === 122 && "Chibi Orchestrator — leadership"}
+                  {id === 123 && "Chibi Genius — excavation"}
+                  {id === 124 && "Defensive swarm shield"}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <div className="mt-4 text-[10px] text-white/40 tracking-widest">
+            Full research + prompts: brand-assets/prompts/visuals/STAR_GUARDIAN_STARLIGHT_PROMPTS.md • Curated from excellence-next/star-guardian
+          </div>
+        </div>
+      </section>
+
+      {/* Sovereign States — executed 2026-07-04 */}
+      <section className="border-t border-white/10 py-16">
+        <div className="mx-auto max-w-6xl px-8">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <div className="text-xs tracking-[3px] text-amber-400">SOVEREIGN STATES</div>
+              <h2 className="mt-2 font-serif text-5xl tracking-[-1.6px]">The Queen Narratives</h2>
+            </div>
+            <p className="max-w-md text-right text-sm text-zinc-400 hidden md:block">
+              Sovereign states of the Queen. From conducting swarms to weaving memory and resting in the palace.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {QUEEN_NARRATIVES.map((id) => (
+              <figure key={id} className="group overflow-hidden rounded-2xl border border-white/10 bg-black/40">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img
+                    src={`/assets/visuals/queen-premium/${id}.jpg`}
+                    alt={`Queen Narrative ${id}`}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                    <div className="text-[10px] tracking-widest text-white/60">QUEEN-PREMIUM/{id}</div>
+                  </div>
+                </div>
+                <figcaption className="px-3 py-2.5 text-xs text-zinc-400">
+                  {id === 166 && "The Queen Conducting"}
+                  {id === 167 && "The Queen Weaving"}
+                  {id === 168 && "The Queen Resting"}
+                  {id === 169 && "The Queen Archiving"}
+                  {id === 170 && "The Queen Healing"}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Swarm Topology — executed 2026-07-04 */}
+      <section className="border-t border-white/10 py-16">
+        <div className="mx-auto max-w-6xl px-8">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <div className="text-xs tracking-[3px] text-cyan-400">SWARM TOPOLOGY</div>
+              <h2 className="mt-2 font-serif text-5xl tracking-[-1.6px]">Expanded Swarm Fields</h2>
+            </div>
+            <p className="max-w-md text-right text-sm text-zinc-400 hidden md:block">
+              The intricate formations of the swarms, demonstrating creative, measuring, healing, and resonant configurations.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {EXPANDED_SWARM_FIELDS.map((id) => (
+              <figure key={id} className="group overflow-hidden rounded-2xl border border-white/10 bg-black/40">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img
+                    src={`/assets/visuals/queen-premium/${id}.jpg`}
+                    alt={`Swarm Field ${id}`}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                    <div className="text-[10px] tracking-widest text-white/60">QUEEN-PREMIUM/{id}</div>
+                  </div>
+                </div>
+                <figcaption className="px-3 py-2.5 text-xs text-zinc-400">
+                  {id === 161 && "Creative Swarm Matrix"}
+                  {id === 162 && "Measure Swarm Grid"}
+                  {id === 163 && "Healing Swarm Lattice"}
+                  {id === 164 && "Resonance Swarm Wave"}
+                  {id === 165 && "Ledger Swarm Archive"}
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </div>
       </section>

@@ -9,6 +9,7 @@ import {
   RESEARCH_PUBLIC_SLUGS,
   resolveResearchSlug,
 } from "@/lib/research";
+import { getResearchHeroId, QUEEN_PREMIUM_PATH } from "@/lib/queen-visuals";
 
 export const revalidate = 3600;
 
@@ -97,7 +98,7 @@ export default async function ResearchDetailPage({
       {/* ── Hero — premium 3D Queen image header with correct blog dimensions: generous margins, padding, image sizing (contained, aspect respected, mb for spacing) — */}
       <section className="research-hero relative overflow-hidden border-b border-white/[0.04]">
         <div className="absolute inset-0">
-          <img className="w-full h-full object-cover" src={`/assets/visuals/queen-premium/${slug.includes('memory-foundations') ? '84' : slug.includes('proving-ground') ? '75' : slug.includes('model-arena') ? '64' : '61'}.jpg`} alt="Research header" style={{ margin: 0, padding: 0 }} />
+          <img className="w-full h-full object-cover" src={`${QUEEN_PREMIUM_PATH}/${getResearchHeroId(slug)}.jpg`} alt="Research header" style={{ margin: 0, padding: 0 }} />
         </div>
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />

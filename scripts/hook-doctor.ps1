@@ -15,25 +15,33 @@ param(
 )
 
 $ErrorActionPreference = 'Continue'
-$results = @()
+$script:results = @()
 function Add-Result($Name, $Status, $Detail) {
-    $results += [pscustomobject]@{ Name=$Name; Status=$Status; Detail=$Detail }
+    $script:results += [pscustomobject]@{ Name=$Name; Status=$Status; Detail=$Detail }
     $color = if ($Status -eq 'PASS') { 'Green' } elseif ($Status -eq 'WARN') { 'Yellow' } else { 'Red' }
     Write-Host "[$Status] $Name : $Detail" -ForegroundColor $color
 }
 
 Write-Host "=== Starlight Hook Doctor v1 (excellence layer) ===" -ForegroundColor Cyan
-Write-Host "Central source: claude-code-config/hooks + .grok excellence + cockpit" -ForegroundColor DarkGray
+Write-Host "Central source: starlight-agent-config/core/hooks + projected harness hooks + cockpit" -ForegroundColor DarkGray
 
-$hookCentral = "C:\Users\frank\starlight\repos\claude-code-config\hooks"
+$sisRoot = Split-Path -Parent $PSScriptRoot
+$estateRoot = Split-Path -Parent $sisRoot
+$hookCandidates = @(
+    (Join-Path $estateRoot "starlight-agent-config\core\hooks"),
+    (Join-Path $estateRoot "claude-code-hooks\hooks"),
+    (Join-Path $estateRoot "claude-code-config\hooks")
+)
+$hookCentral = $hookCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
 $grokHooks = "$HOME\.grok\hooks"
 $claudeSettings = "$HOME\.claude\settings.json"
-$cockpitHooks = "C:\Users\frank\Starlight-Intelligence-System\cockpit\hooks"
+$claudeHooks = "$HOME\.claude\hooks"
+$cockpitHooks = Join-Path $sisRoot "cockpit\hooks"
 
 # 1. Central files
 if (Test-Path $hookCentral) {
     $count = (Get-ChildItem $hookCentral -File -Recurse).Count
-    Add-Result "Central hooks dir" "PASS" "$count files (incl lib)"
+    Add-Result "Central hooks dir" "PASS" "$count files (incl lib) at $hookCentral"
 } else { Add-Result "Central hooks dir" "FAIL" "Missing $hookCentral" }
 
 # 2. Registrations
@@ -52,6 +60,21 @@ if (Test-Path $grokHooks) {
     if ($exc) { Add-Result "Grok excellence gates" "PASS" "Found $($exc.Count)" } else { Add-Result "Grok excellence gates" "WARN" "No excellence json" }
 } else { Add-Result "Grok hooks dir" "WARN" "No ~/.grok/hooks" }
 
+if (Test-Path $claudeHooks) {
+    $requiredClaudeHooks = @(
+        'lib\hook-env.sh',
+        'quality-gate.sh',
+        'skill-activation-prompt.sh',
+        'secret-guard.cjs'
+    )
+    $missingClaudeHooks = $requiredClaudeHooks | Where-Object { -not (Test-Path (Join-Path $claudeHooks $_)) }
+    if ($missingClaudeHooks.Count -eq 0) {
+        Add-Result "Claude projected hooks" "PASS" "Core hook pack present in ~/.claude/hooks"
+    } else {
+        Add-Result "Claude projected hooks" "FAIL" "Missing: $($missingClaudeHooks -join ', ')"
+    }
+} else { Add-Result "Claude projected hooks" "FAIL" "No ~/.claude/hooks" }
+
 # 3. Hook-env portability
 $envLib = Join-Path $hookCentral "lib\hook-env.sh"
 if (Test-Path $envLib) {
@@ -67,7 +90,7 @@ if (Test-Path $envLib) {
 # 4. Simulate critical hooks (non-destructive)
 $gb = "C:\Program Files\Git\bin\bash.exe"
 if ( (Test-Path $gb) -and (Test-Path $hookCentral) ) {
-    $payload = '{"prompt":"use excellence review and repo-mastery to fix this","cwd":"C:\\Users\\frank\\Starlight-Intelligence-System"}'
+    $payload = '{"prompt":"use excellence review and repo-mastery to fix this","cwd":"C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System"}'
     $tests = @('quality-gate.sh','pre-compact.sh','notification.sh')
     foreach ($t in $tests) {
         $p = Join-Path $hookCentral $t
@@ -81,6 +104,11 @@ if ( (Test-Path $gb) -and (Test-Path $hookCentral) ) {
     if (Test-Path $jsP) {
         $jsOut = $payload | node $jsP 2>&1
         if ($LASTEXITCODE -eq 0 -or $jsOut -notmatch 'Error') { Add-Result "Exec skill-activation.js" "PASS" "No crash" } else { Add-Result "Exec skill-activation.js" "WARN" $jsOut }
+    }
+    $secretGuard = Join-Path $hookCentral 'secret-guard.cjs'
+    if (Test-Path $secretGuard) {
+        $guardOut = '{"tool":"Read","tool_input":{"file_path":"README.md"}}' | node $secretGuard 2>&1
+        if ($LASTEXITCODE -eq 0) { Add-Result "Exec secret-guard.cjs" "PASS" "Clean payload passed" } else { Add-Result "Exec secret-guard.cjs" "FAIL" $guardOut }
     }
 }
 
@@ -108,13 +136,13 @@ Write-Host "`n=== Recommendations (excellence) ===" -ForegroundColor Cyan
 Write-Host "- Source agy-tools.ps1 (or profile) before using cl/gr/da to get env + aliases."
 Write-Host "- For Grok excellence: ensure .grok/hooks/*.json are loaded by your Grok TUI (copy to ~/.grok/hooks if needed)."
 Write-Host "- Re-run with -Fix to attempt light repairs (future)."
-Write-Host "- Full cross-repo: central claude-code-config/hooks is source of truth; others should junction/symlink."
+Write-Host "- Full cross-repo: central starlight-agent-config/core/hooks is source of truth; harness homes should be projections."
 Write-Host "- Test in real harness: clsis or grfx then issue a prompt that should trigger skill-activation (e.g. 'use repo-mastery')."
 
 Write-Host "`n=== Summary ===" -ForegroundColor Cyan
-$pass = ($results | Where Status -eq 'PASS').Count
-$warn = ($results | Where Status -eq 'WARN').Count
-$fail = ($results | Where Status -eq 'FAIL').Count
+$pass = ($script:results | Where-Object Status -eq 'PASS').Count
+$warn = ($script:results | Where-Object Status -eq 'WARN').Count
+$fail = ($script:results | Where-Object Status -eq 'FAIL').Count
 Write-Host "PASS: $pass  WARN: $warn  FAIL: $fail" 
 if ($fail -gt 0) { Write-Host "Some hard failures - review above." -ForegroundColor Red } else { Write-Host "Core hooks appear executable. Detection + registrations are the usual culprits." -ForegroundColor Green }
 
@@ -122,7 +150,7 @@ if ($fail -gt 0) { Write-Host "Some hard failures - review above." -ForegroundCo
 
 if ($ScanRepos -or $true) {  # always show in this version for visibility; use switch to gate in future
   Write-Host "`n=== Multi-repo scan (production mains) ===" -ForegroundColor Cyan
-  $scanReposList = @('C:\Users\frank\starlight\repos\agentic-creator-os','C:\Users\frank\starlight\repos\FrankX','C:\Users\frank\starlight\repos\arcanea-ecosystem','C:\Users\frank\starlight\repos\second-brain-os','C:\Users\frank\starlight\repos\prompt-library','C:\Users\frank\Starlight-Intelligence-System','C:\Users\frank\starlight\repos\arcanea-ai-app')
+  $scanReposList = @('C:\Users\frank\starlight\repos\agentic-creator-os','C:\Users\frank\starlight\repos\FrankX','C:\Users\frank\starlight\repos\arcanea-ecosystem','C:\Users\frank\starlight\repos\second-brain-os','C:\Users\frank\starlight\repos\prompt-library','C:\Users\frank\starlight\repos\Starlight-Intelligence-System','C:\Users\frank\starlight\repos\arcanea-ai-app')
   foreach ($r in $scanReposList | Where {Test-Path $_}) {
     Push-Location $r
     $n = Split-Path $r -Leaf

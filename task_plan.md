@@ -29,6 +29,13 @@ Establish the strategic and technical blueprint to evolve SIS into a world-class
 - `[x]` Summarize the strategic recommendations in `walkthrough.md`.
 - `[x]` Ensure all proposed changes align with current substrate tests and verification criteria.
 
+### Phase 5: Implementation & Multi-Repo Wiring
+- `[ ]` Update `src/orchestrator.ts` to implement dynamic House routing and the 7-seat context loader.
+- `[ ]` Create `src/gateway/mcp-memory-bridge.ts` for starlight-memory loopback forwarding.
+- `[ ]` Implement `tools/paperclip/sync-paperclip.mjs` for task and cost dashboard sync.
+- `[ ]` Create `scripts/cross-repo-audit.mjs` and wire it to pre-commit git hooks.
+- `[ ]` Verify cross-repo integrity checks and run mock transaction multisig locks.
+
 ---
 
 ## Errors Encountered

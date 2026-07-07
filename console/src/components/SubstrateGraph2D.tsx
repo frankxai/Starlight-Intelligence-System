@@ -49,7 +49,11 @@ const NODE_RADIUS = {
   vertical: 6,
 } as const;
 
-export default function SubstrateGraph2D() {
+interface SubstrateGraph2DProps {
+  onNodeClick?: (node: SubstrateNode) => void;
+}
+
+export default function SubstrateGraph2D({ onNodeClick }: SubstrateGraph2DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   // react-force-graph exposes imperative methods (centerAt, zoom) via ref.
   const fgRef = useRef<{
@@ -118,6 +122,9 @@ export default function SubstrateGraph2D() {
           d3VelocityDecay={0.32}
           warmupTicks={40}
           enableNodeDrag
+          onNodeClick={(node: unknown) => {
+            if (onNodeClick && node) onNodeClick(node as SubstrateNode);
+          }}
           onNodeHover={(node: unknown) =>
             setHovered((node as GraphNode | null) ?? null)
           }

@@ -126,6 +126,34 @@ When a fact is mentioned, the memory manager updates the graph, creating permane
 All queries and writes to `starlight-memory` pass through a local regex and dictionary scrubbing layer. This prevents credentials, secrets, API tokens, and private identifiers from landing in vector indexes or public dashboards.
 
 
+## 4. Advanced Swarm Harnesses & Competitor Landscape
+
+To maintain world-class positioning for the Starlight Intelligence System (SIS), we evaluate and align with the latest evolutions in agent harnesses, meta-layers, and multi-agent control planes:
+
+### 4.1 Peer Harness Meta-Layers & Repositories
+We have evaluated peer meta-layers and developed an integration strategy to absorb their best architectural patterns into SIS without fragmenting our sovereign SIP substrate:
+
+*   **ruvnet/metaharness:** A git-powered agent framework generator. It scaffolds customized, branded agent harnesses from a GitHub URL with CLI capabilities, isolated memory namespaces, and self-improving evolution loops.
+    *   *Integration Strategy:* We absorb its git-powered scaffolding pattern into our `/vertical-spawn` command. When scaffolding a new House (e.g., House of Space), the system will automatically provision isolated SQLite/vector namespaces and wire a dedicated CLI entrypoint, treating each House as an autonomous sovereign harness governed by the central system.
+*   **revfactory/harness:** A team-architecture factory focused on generating domain-specific agent teams and custom skills for the Claude Code ecosystem (L3 Meta-Factory).
+    *   *Integration Strategy:* We absorb its L3 Meta-Factory patterns directly into our `starlight-architect` and `/agent-creator` systems. Instead of generating single agents, the Architect will dynamically scaffold an entire 7-seat Domain Council (Elder, Sage, Builder, Sentinel, etc.) with pre-configured routing triggers and inter-agent communication channels tailored to the specific domain.
+*   **stanford-iris-lab/meta-harness:** Research-focused code optimizing the "code around the model" automatically via reinforcement search.
+*   **Omnigent (Databricks):** A meta-harness wrapping agent executions in sandboxed sessions, providing uniform APIs and security policies across diverse models.
+*   **jbrahy/meta-agent-teams:** Framework for building self-improving teams with git-backed feedback loops and automated PR generation.
+    *   *Integration Strategy:* Wire its automated PR generation and feedback loop concepts into the Starlight Queen's self-advancement cycle (`ROUTE──►MEASURE──►LEARN──►RATIFY──►LEDGER`).
+
+### 4.2 Sizing Thesis: 12 Houses vs. 7-Member Teams
+*   **The 7-Seat Cognitive Limit:** A team of 7 agents (the core Council Tiers, i.e., Elder Father, Elder Mother, Sage, Builder, etc.) represents the mathematical sweet spot for **high-frequency consensus** and debate. Increasing team sizes beyond 7 in a single conversation context introduces high token costs, latency, and consensus deadlocks.
+*   **The 12-House Structural Partition:** Having 12 Houses is the correct approach to organize *domains of knowledge* (preventing context pollution). For example, the House of Music should not be aware of orbital telemetry logs from the House of Space.
+*   **The Hybrid Solution (Recommended):** Use the 12 Houses as **namespaces/workspaces** to partition files, tools, and vector memory. Within each House, tasks requiring strategic evaluation are routed to a local **7-seat Domain Council** for fast, high-quality consensus.
+
+### 4.3 Paperclip Adaptation
+*   **The Control Plane Model:** Paperclip (`paperclipai/paperclip`) treats agents as an organizational company layer with org charts, reporting lines, and budgets.
+*   **Starlight Broker (`starlight-paperclip-broker.md`):** SIS utilizes a partner-tier adapter to map local task queues, SQLite logs, and token/budget parameters to Paperclip's web UI. This allows users to oversee background agent operations, review billing, and audit workflows from a clean dashboard.
+
 ---
 
 **Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)**
+- Substrate: starlightintelligence.org/protocol v1.1.1
+- Layers: [file-contract, attestation, sovereignty, agent-registry, memory]
+

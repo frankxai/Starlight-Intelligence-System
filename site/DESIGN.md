@@ -51,8 +51,22 @@ This is the source of truth for visuals. All generated assets, components, and f
 
 **Chibi & Icons:**
 - Big head, expressive eyes, small body. Premium cute (not childish) — clean lines, perfect proportions, glow accents.
-- Use for likeability in docs, UI, social.
+- Use for likeability in docs, UI, social, and the Agent Codex layer.
 - Icon set: Outline (thin elegant lines), Filled, 3D (beveled with light), Chibi Bust.
+
+**Chibi Role (scoped deliberately):**
+- Primary purpose: emotional connection + personality for the 144-agent system (Codex).
+- Tone: sophisticated approachable ("premium cute"), playful where Queen herself is serene/commanding.
+- When to reach for chibi: agent grids, social posts, docs, UI elements, "meet the agents" content.
+- When to use majestic 3D Queen instead: heroes, research headers, /queen cinematic, authority/brand moments.
+- Never let chibi dominate operational product surfaces (see guardrail above).
+- This gives us dual-tone strength: cool/premium sovereign substrate (Queen + swarms) + fun/human-relatable Codex personality (chibi). Fits the overall brand "Fun" + "approachable" without diluting high-intellect positioning. Not streamer/low-effort — elevated likeability layer.
+
+**Star Guardian Influence (2026-06-26 addition)**:
+- New "star related" research executed: Full scrape of best LoL Star Guardian designs (Ahri leader, Lux, Kai'Sa, Prestige Syndra, etc.).
+- Style: Four-pointed stars, luminous pastels + iridescent, magical girl splash art (Riot), ethereal glows, personality palettes.
+- Applied to Starlight: Blend with existing Queen (light-stream robes → star energy, swarms → familiars). See brand-assets/06-illustrations/star-guardian/ for 10 refined prompts, bases, evaluation, and guide.
+- Use for fresh variants in Sovereign (leaders) and Codex (chibi Guardians). Update prompts in brand-assets/prompts/visuals/ when expanding.
 
 **Agent Characters Examples (extend to all 144):**
 - Orchestrator / Queen: Central conductor.
@@ -118,6 +132,55 @@ Generate social posts as image descriptions + copy hooks.
 
 This document evolves. Update with new generations. All work must feel "best of best teams" — thoughtful, executed, delightful.
 
+**Visual Production Pipeline & Best Practices**
+1. Generate or curate in brand-assets/06-illustrations/excellence-next/.
+2. Strict curation against this DESIGN.md.
+3. Promote winners to next numeric ID.
+4. Update src/lib/queen-visuals.ts + VISUAL_CONTENT_PLAN.md + this file if rules change.
+5. Wire using simple paths or the registry.
+6. Content (research heroes, social, infographics): update assignments.
+7. QA (gstack or visual review) + production deploy (site/ to Vercel).
+8. For infographics: prefer code for text/data accuracy; generated for mood/atmosphere plates. Composite when both needed.
+9. Social & broader content: pre-sized in social/, hooks written with brand voice.
+
+**Targets (Excellent State)**
+- Sovereign Tier: Complete coverage for all current + new research, /queen phases, key heroes.
+- Codex Tier: 20–30 chibi minimum for core agents + 1–2 per Universal IS + first verticals (People, Sound, etc.). Domain motifs documented.
+- System: 8–12 infographics (mix artistic + code), full social kits per major artifact.
+- Management: All assets tracked in registry + plan. Zero drift. Easy extension.
+- Overall: ~150-200 curated high-quality assets. Every surface feels premium and intentional.
+
+**Success Criteria (Gate Before Shipping Any Visual)**
+- DNA match (palette, lighting, motifs, dual-tone rules from this doc).
+- Premium execution (no slop, artifacts, weak composition).
+- Correct tier (Sovereign for authority, chibi for personality/engagement).
+- Technical excellence (performance, responsive, alt, no shift).
+- Perfect content fit + clean integration (preferably via queen-visuals.ts).
+- Extensible and documented.
+- Brand coherence across the system.
+
+**Star Guardian-inspired Tier (2026-06-26 addition)**:
+Additive layer fusing Riot Star Guardian splash polish (four-pointed star emblems, iridescent ribbons, luminous magical-girl cinematic from Ahri/Lux/Syndra/Kai'Sa references) with Starlight Queen DNA.
+- Sovereign: dynamic 16:9 splash heroes (leader, prestige, action, group).
+- Codex: 1:1 premium-cute chibi for agent personality (Soraka/Lux hybrid likeability).
+- Strict: four-pointed stars (force in prompt), soft ethereal glow/rim, sophisticated elegance, swarms as elegant familiars, palette harmony on #060609 + violet/cyan.
+- Full research + 10 refined prompts + eval loop: `brand-assets/prompts/visuals/STAR_GUARDIAN_STARLIGHT_PROMPTS.md`.
+- Workflow: image_gen or image_edit on 98/71/84 bases → excellence-next/star-guardian/ (sg-*.jpg) → curate → promote (numeric or thematic) → update queen-visuals.ts + plans.
+- Wiring targets: /queen (phase comparisons + motion), brand-lab grids (Sovereign / Codex / StarGuardian tabs), social kits, infographic mood, Codex diversity.
+- Good for: high-contrast elegant variety while staying on-brand.
+
+Use excellence gates (visual QA, design-review mindset). Only ship what would make the "best of best teams" proud.
+
+**Instructions for Future Agents & Upper-Coating Systems**
+- Before any visual work: Read this full DESIGN.md + brand-assets/VISUALS_MANAGEMENT.md + the prompts in brand-assets/prompts/visuals/.
+- Always respect dual-tone and scopes.
+- Use excellence-next for staging.
+- Update the registry and plans on every promotion.
+- For new agents: First define motif in DESIGN.md, then generate chibi + optional 3D bust using the prompt libraries.
+- Load the imagine skill for every image_gen/image_edit call.
+- When in doubt, default to curation of existing excellence over new low-quality volume.
+- Document reasoning here so the system compounds.
+
 **Built on SIP**
 
-(End of DESIGN.md — expand with generated examples and links as assets land.)
+(End of DESIGN.md — this is a living constitution. Expand with examples, new motifs, and links as assets land. Future agents: start here and in VISUALS_MANAGEMENT.md.)

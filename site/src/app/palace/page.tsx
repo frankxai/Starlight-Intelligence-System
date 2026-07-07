@@ -1,4 +1,4 @@
-import { MemoryPalace } from "@/components/MemoryPalace";
+import { MemoryPalace3D } from "@/components/MemoryPalace3D";
 import Link from "next/link";
 
 export const metadata = {
@@ -35,7 +35,7 @@ export default function PalacePage() {
           </div>
         </div>
 
-        <MemoryPalace />
+        <MemoryPalace3D />
 
         <div className="mx-auto mt-12 max-w-3xl text-sm text-white/60">
           <p>

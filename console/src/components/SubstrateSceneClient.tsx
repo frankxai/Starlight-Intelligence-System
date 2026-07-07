@@ -1,6 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { type Node as VNode } from "@/data/substrate";
+
+interface SubstrateSceneClientProps {
+  onNodeClick?: (node: VNode) => void;
+}
 
 /**
  * Client-only loader for the R3F scene.
@@ -19,6 +24,6 @@ const SubstrateScene = dynamic(() => import("./SubstrateScene"), {
   ),
 });
 
-export default function SubstrateSceneClient() {
-  return <SubstrateScene />;
+export default function SubstrateSceneClient({ onNodeClick }: SubstrateSceneClientProps) {
+  return <SubstrateScene onNodeClick={onNodeClick} />;
 }

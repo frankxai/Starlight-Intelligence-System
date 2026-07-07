@@ -277,15 +277,37 @@ export class AgentRouter {
   }
 
   /**
+   * Resolve the House namespace based on intent and file paths.
+   */
+  resolveHouse(query: string, filePaths?: string[]): string {
+    const q = query.toLowerCase();
+    if (q.includes("music") || q.includes("audio") || q.includes("song")) return "House of Music & Acoustics";
+    if (q.includes("wealth") || q.includes("crypto") || q.includes("finance")) return "House of Wealth & Capital";
+    if (q.includes("health") || q.includes("bio") || q.includes("sleep")) return "House of Health & Life";
+    if (q.includes("space") || q.includes("orbit")) return "House of Space & Orbit";
+    if (q.includes("marine") || q.includes("ocean")) return "House of Marine & Depths";
+    if (q.includes("creator") || q.includes("media") || q.includes("brand")) return "House of Creator & Media";
+    
+    // Default to Code & Systems for generic tech tasks
+    return "House of Code & Systems";
+  }
+
+  /**
    * Route a task to the best agent based on query keywords and file patterns.
    * Returns agents sorted by relevance score.
    */
-  route(query: string, filePaths?: string[]): AgentRecommendation[] {
+  route(query: string, filePaths?: string[], houseNamespace?: string): AgentRecommendation[] {
     const queryLower = query.toLowerCase();
     const results: AgentRecommendation[] = [];
 
     for (const agent of this.agents) {
       let score = 0;
+
+      // If a house namespace is provided, heavily boost agents belonging to that domain
+      // (This is a simplified check; in reality, agents should carry a domain tag)
+      if (houseNamespace && agent.triggers.keywords.some(k => houseNamespace.toLowerCase().includes(k))) {
+        score += 20;
+      }
 
       // Keyword matching
       for (const keyword of agent.triggers.keywords) {

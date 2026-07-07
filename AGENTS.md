@@ -1,4 +1,4 @@
-﻿# Starlight Intelligence System â€” Codex / OpenCode Agent Instructions
+# Starlight Intelligence System â€” Codex / OpenCode Agent Instructions
 
 > Persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) â€” a sovereign substrate.
 
@@ -153,6 +153,13 @@ Flat council with emergent leadership, fronted by Front-Door + Excavation tiers.
 **Estate / Agent Army commissioning extensions (post 2026-06-16 Board PROCEED-WITH-REVISE):** When building or operating full sovereign estates, compose the base registry here with the `starlight-estate-os` profile (`templates/estate-os/AGENTS.md`) + client's 4-layer Blueprint (Persona mapping, Topology/swarm shapes from ORCHESTRATION_ENGINE + /si router, Kernel selection, Modules/domain sub-stacks). Hermes, council, and new Steward primitives become central for the production Mesh. See `docs/delivery/estate-army-commissioning-workflow.md`, `estate-blueprint.md`, and `estate-steward.md` commands. Genius grounding and encoded-self boundaries (SIP Â§5.7) are non-negotiable.
 
 For scaling beyond the core registry to a full **144+ Agent Swarm**, refer to the comprehensive [Starlight 150 Agent Blueprint](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/AGENT_BLUEPRINT.md) and the [Swarm Topology Strategy](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/swarm-topology.md) specifying Kings (policy locks), Queens (domain controllers), Board reviews, and Model Council consensus.
+
+### Swarm Expansion Matrix & Hybrid Sizing Protocol (1728 Agents)
+* **The 1728 Matrix ($12 \text{ Houses} \times 144 \text{ Agents}$)**: To prevent context dilution and namespace collision, the global system is partitioned into 12 federated Houses (Code, Wealth, Creator, Health, Music, People, Space, Marine, Legal, Infrastructure, Research, Wisdom).
+* **The Hybrid Sizing Rule**: 
+  1. *Namespace Isolation*: Use the 12 Houses to partition local workspace files, tool directories, and database namespaces.
+  2. *Consensus Sizing*: Limit active consensus loops (direct debates, planning reviews, task validations) to **7 active agents** per local council. Sizing single conversation loops beyond 7 results in latency, high token consumption, and coordinate deadlocks.
+* **Paperclip Integration**: Use the partner broker adapter (`starlight-paperclip-broker.md`) to map local SQLite execution logs and token/budget parameters to the Paperclip web control plane.
 
 Full per-agent file: `agents/<agent-name>.md`.
 
@@ -316,3 +323,26 @@ For any site, app, landing page, dashboard, visual identity, brand, motion, medi
 
 When motion, scroll, generated media, GIF/video, or premium polish matters, route through the Motion Design Studio plugin/skills and verify the result visually.
 
+
+<!-- PREMIUM-WEB-OS:START -->
+## Premium Intelligence Web OS Adoption
+
+This repo participates in the Starlight Premium Intelligence Web OS.
+
+For any website, app, landing page, dashboard, brand surface, visual asset, motion system, 3D/WebGL scene, generated media, or public-facing UI work:
+
+- Read the estate OS first: `C:\Users\frank\starlight\repos\_intelligence\README.md`.
+- Use the activation contract: `C:\Users\frank\starlight\repos\_intelligence\adoption\activation-contract.md`.
+- Treat `C:\Users\frank\starlight\repos\_intelligence\` as the source of truth for premium web taste, design, motion, WebGL, copy, assets, and quality gates.
+- Use `/pwo` or the `premium-web-os` skill for full builds; use `/mad` for a design council pass.
+- Use `/pwo review-pr` before absorbing another agent's PR or branch.
+- Use `/pwo absorb-assets` before using external, generated, scientific, audio, video, or 3D assets.
+- Use `/pwo motion-score` before shipping cinematic scroll, sound-paired motion, or complex choreography.
+- Build static composition first, add Track A local motion second, add Track B GSAP/Lenis scroll only when earned, and add 3D only with fallback and reduced-motion behavior.
+- Use VIS through `C:\Users\frank\starlight\repos\visual-intelligence` for asset provenance, curation packets, rights, and publication records.
+- Use `C:\Users\frank\starlight\repos\_intelligence\visual-worlds\neural-cosmos.md` for neuroscience, cerebrum, spine, electron, signal, or golden spiral direction.
+- Do not copy reference sites or agencies. Deconstruct principles and create original execution.
+- Do not ship without responsive, accessibility, performance, reduced-motion, and visual QA checks appropriate to the change.
+
+Repo-local instructions remain authoritative when stricter.
+<!-- PREMIUM-WEB-OS:END -->
