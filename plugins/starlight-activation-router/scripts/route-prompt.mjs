@@ -24,7 +24,7 @@ const defaultIndexPath = path.join(
 );
 
 const registryPath = process.env.STARLIGHT_ACTIVATION_INDEX || defaultIndexPath;
-const input = readHookInput();
+const input = readRouterInput();
 const eventName = detectEventName(input);
 
 if (eventName === "PreToolUse") {
@@ -35,7 +35,7 @@ if (eventName === "PreToolUse") {
   handleSessionStart(input);
 }
 
-function readHookInput() {
+function readRouterInput() {
   try {
     const raw = fs.readFileSync(0, "utf8").trim();
     if (!raw) {
@@ -79,7 +79,7 @@ function handleSessionStart(payload) {
       "For /si-style agent routing, use $starlight-activation-router:starlight-si or mobile alias si:.",
       "For /so-style orchestrator dispatch, use $starlight-activation-router:starlight-so or mobile alias so:.",
       "For /acos Agentic Creator Operating System routing, use $starlight-activation-router:acos-router.",
-      "Hooks add routing context and safety checks only; explicit user wording is required before fanout, council, or orchestrator dispatch.",
+      "Skills and prompt shortcuts add routing context only; explicit user wording is required before fanout, council, or orchestrator dispatch.",
       estate,
     ]
       .filter(Boolean)
@@ -176,7 +176,7 @@ function handlePreToolUse(payload) {
 
   if (/\bcodex\s+plugin\s+(add|install|marketplace\s+add)\b/i.test(command)) {
     hints.push(
-      "Plugin install: prefer repo-backed marketplace paths, validate plugin.json and hooks first, then refresh codex-activation-index.json after install.",
+      "Plugin install: prefer repo-backed marketplace paths, validate plugin.json and bundled skills first, then refresh codex-activation-index.json after install.",
     );
   }
 

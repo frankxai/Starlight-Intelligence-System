@@ -13,7 +13,7 @@ When the local prompt shortcut is installed, `/so` expands into this skill. On m
 
 1. Read repo-local `AGENTS.md` before editing or dispatching.
 2. Packet first. Emit the plan, lanes, verification gates, and receipt target before execution.
-3. Do not launch fanout from hooks or ambient prompts. Execution requires explicit wording such as `/so --fanout`, `run fanout`, `dispatch`, or `verify across lanes`.
+3. Do not launch fanout from ambient routing or prompt shortcuts. Execution requires explicit wording such as `/so --fanout`, `run fanout`, `dispatch`, or `verify across lanes`.
 4. Keep default dispatch read-only unless Frank asks for implementation.
 5. For mobile prompts, keep responses compact and executable from the connected host.
 6. For swarm work, route through a single coordinator and split workers by capability lane, repo boundary, validation evidence, and handoff format.

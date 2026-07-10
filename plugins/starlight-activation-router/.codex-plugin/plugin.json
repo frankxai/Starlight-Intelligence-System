@@ -1,7 +1,7 @@
 {
   "name": "starlight-activation-router",
-  "version": "0.1.0+codex.20260623104602",
-  "description": "Codex-native Starlight activation for /si, /so, /acos, Agentic Creator Operating System routing, swarm-aware orchestration, mobile text aliases, and safe lifecycle hooks.",
+  "version": "0.1.0+codex.20260710101637",
+  "description": "Codex-native Starlight activation for /si, /so, /acos, Agentic Creator Operating System routing, swarm-aware orchestration, mobile aliases, and explicit local diagnostics.",
   "author": {
     "name": "FrankX / Starlight",
     "url": "https://starlightintelligence.org"
@@ -12,7 +12,7 @@
   "keywords": [
     "starlight",
     "codex",
-    "hooks",
+    "scripts",
     "skills",
     "si",
     "so",
@@ -25,11 +25,10 @@
     "prompts"
   ],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Starlight Activation Router",
     "shortDescription": "Slash-style /si, /so, and /acos routing for Codex.",
-    "longDescription": "Adds Codex-native skills, local prompt shortcuts, and lifecycle hooks that route Starlight prompts to the right local skills, plugins, swarm lanes, and agent lanes without loading the full estate or launching fanout implicitly. Install the bundled prompt shortcuts to type /si, /so, and /acos directly; mobile-friendly aliases such as si:, so:, and acos: work when slash-command UI is unavailable.",
+    "longDescription": "Adds Codex-native skills and local prompt shortcuts that route Starlight prompts to the right local skills, plugins, swarm lanes, and agent lanes without loading the full estate or launching fanout implicitly. Install the bundled prompt shortcuts to type /si, /so, and /acos directly; mobile-friendly aliases such as si:, so:, and acos: work when slash-command UI is unavailable.",
     "developerName": "FrankX / Starlight",
     "category": "Productivity",
     "capabilities": [
