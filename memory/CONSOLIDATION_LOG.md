@@ -50,3 +50,5 @@
 - 2026-07-11T12:24:56.391Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 18 · sb_contradictions: 0
 - 2026-07-11T12:27:00.243Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 18 · sb_contradictions: 0
 - 2026-07-12T02:15:03.876Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_contradictions: 0
+- 2026-07-12T04:26:08.825Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 22 · sb_contradictions: 0
+- 2026-07-12T04:26:18.426Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
