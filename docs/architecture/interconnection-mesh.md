@@ -70,12 +70,13 @@ The unlock: **GitHub is the convergence point.** Codex, Cursor, Gemini, and Clau
 ### Layer 3 — Harness-neutral write contract
 - [ ] Define the **session-end atom** schema: `{ts, repo, branch, harness, summary, commits[], next}`.
 - [ ] Wire the writer per harness: Claude → `Stop` hook; Codex → `AGENTS.md` instruction; Cursor → `.cursor/rules`; Gemini → `.gemini/`. One JSONL line on every wrap. **This is the "everything interconnected and updated" primitive.**
+- [ ] **Reconcile with per-repo `MEMORY.md`.** 7+ repos (`payment-intelligence-system`, `agentic-mind-os`, `human-mind-intelligence-system`, `second-brain-os`, `starlight-mind-os-pro`, `arcanea-ai-app`, and Starlight itself) already treat `MEMORY.md` as their canonical durable-state file, and `GEMINI.md` mandates *"periodic sweeps of all repo `MEMORY.md` files to update the global state."* The write contract must not create a parallel truth: the session-end atom updates the repo's own `MEMORY.md` (durable, human-readable, in-repo) **and** appends to the central bus (queryable, cross-repo). The bus indexes; `MEMORY.md` remains authoritative per repo.
 
 ### Layer 4 — Cross-CLI discovery in every repo
 - [ ] Every repo carries `AGENTS.md` + `.claude/` + `.cursor/rules` + `.gemini/` that point back to the same Starlight registry + write contract, so any harness in any repo knows the mesh exists and how to report into it.
 
 ### Layer 5 — Scheduled reconciliation + drift digest
-- [ ] A cloud Routine (this environment's trigger infra) runs poller → consolidation → drift check, then **DMs Frank a daily "what changed across all repos" digest**. Obeys the durable-output-sink law — never report-only into run-history.
+- [ ] A cloud Routine (this environment's trigger infra) runs poller → **`MEMORY.md` sweep** (the `GEMINI.md` global-state mandate) → consolidation → drift check, then **DMs Frank a daily "what changed across all repos" digest**. Obeys the durable-output-sink law — never report-only into run-history.
 
 ---
 
