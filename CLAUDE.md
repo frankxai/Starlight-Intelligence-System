@@ -42,7 +42,7 @@ Every task is either substrate-level or operational-level. Decide before acting.
 **Operational-level** (anything inside this repo's reference build):
 - Use `agents/AGENT_REGISTRY.md` for the current 144-agent registry and existing skill auto-activation.
 - Voice: Frank DNA (above).
-- Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 14), skill edits, agent edits, site edits.
+- Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 25 — authoritative index: `commands/COMMAND_SYSTEM.md`), skill edits, agent edits, site edits.
 
 **Ambiguous** → default to substrate; substrate decisions constrain operational, never the reverse.
 
@@ -202,6 +202,12 @@ Skill definitions: mixed layout — `skills/{domain}/{skill-name}/SKILL.md` (31 
 | `/dispatch` | Multi-CLI dispatch — route a task to a sibling CLI (Codex / Gemini / OpenCode) via the cognition router. |
 | `/vault-desire` | Write a desire/intention atom to the vault loop (paired with `/vault-proof`). |
 | `/vault-proof` | Write a proof/receipt atom closing a desire in the vault loop. |
+| `/starlight-king` / `/starlight-queen` / `/starlight-swarm` | Swarm-tier session commands — sovereign coordination (King), swarm leadership (Queen), and swarm construct dispatch. |
+| `/estate-army-deploy` / `/estate-provision` | Estate Factory — provision and deploy a sovereign agent estate (see DELIVERY.md §7). |
+| `/si` / `/so` / `/sq` | Multi-CLI routing shorthands (cognition router / image routing / quick status). |
+| `/agent-creator` / `/workflow-skill-creator` / `/starlight-architect` | Authoring tier — generate new agents, workflow skills, and architecture briefs. |
+
+Authoritative command index: `commands/COMMAND_SYSTEM.md` (25 command files as of v8.3.0).
 
 ---
 

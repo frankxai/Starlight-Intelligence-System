@@ -31,8 +31,12 @@ Use just the memory layer in your current tools. Adopt the protocol. Or run the 
 ## 60-second start
 
 ```bash
-npx -p @arcanea/starlight-intelligence-system starlight init --vaults
+git clone https://github.com/frankxai/Starlight-Intelligence-System
+cd Starlight-Intelligence-System && npm install && npm run build
+node dist/cli.js init --vaults
 ```
+
+> **Note:** npm currently serves v6.0.1 of `@arcanea/starlight-intelligence-system` — two major versions behind this repo. Use the git path above until v8.x is published.
 
 Then add to your MCP config (Claude Code, Cursor, Codex, Gemini, etc.):
 
@@ -47,7 +51,7 @@ Then add to your MCP config (Claude Code, Cursor, Codex, Gemini, etc.):
 }
 ```
 
-Restart your client. Every agent now shares the same memory. Ten `sis_*` tools appear instantly.
+Restart your client. Every agent now shares the same memory. Thirteen `sis_*` tools appear instantly (verified by JSON-RPC handshake, 2026-07-12).
 
 ---
 
@@ -75,7 +79,7 @@ See [CHANGELOG.md](CHANGELOG.md) for history.
 flowchart TB
   Human["Human intent"] --> Vaults["6 semantic vaults (JSONL truth)"]
   Vaults --> Index["SQLite + FTS5 index"]
-  Index --> MCP["MCP server (10 sis_* tools)"]
+  Index --> MCP["MCP server (13 sis_* tools)"]
   MCP --> Adapters["Every CLI you use"]
   Adapters --> Work["Safer, consistent, memory-aware work"]
   Work --> Vaults
@@ -133,11 +137,11 @@ Full workflow and templates: `docs/delivery/estate-army-commissioning-workflow.m
 | [`MEMORY.md`](MEMORY.md) | Template for per-instance state. |
 | [`REGISTRY.md`](REGISTRY.md) | MCP server registry. |
 | [`SKILL.md`](SKILL.md) | Substrate-layer behavior (what AI adopts when working at this layer). |
-| `.claude/commands/` | 9 reference slash commands (`/sip-attest`, `/alliance-forge`, `/alliance-reflect`, `/alliance-decide`, `/vertical-spawn`, `/luminor-board`, `/sovereign-signal`, `/openclaw-audit`, `/wealth-dpi`). |
+| `.claude/commands/` | 9 substrate-tier slash commands (`/sip-attest`, `/alliance-forge`, `/alliance-reflect`, `/alliance-decide`, `/vertical-spawn`, `/luminor-board`, `/sovereign-signal`, `/openclaw-audit`, `/wealth-dpi`) among 121 total command files. |
 
 ![SIP 6-Layer Protocol — the contract that preserves sovereignty while enabling composition.](docs/visuals/12-sip-layers.jpg)
 
-![MCP Server — 10 sis_* tools exposed uniformly to every platform adapter.](docs/visuals/11-mcp-tools.jpg)
+![MCP Server — 13 sis_* tools exposed uniformly to every platform adapter.](docs/visuals/11-mcp-tools.jpg)
 
 ### Forge an alliance, spawn a vertical
 
@@ -171,7 +175,8 @@ First, seed your vault directory so the system has somewhere to read from
 (a fresh install has no `~/.starlight/vaults` yet):
 
 ```bash
-npx -p @arcanea/starlight-intelligence-system starlight init --vaults
+# From a git clone of this repo (npm registry is at stale v6.0.1 — see note above):
+node dist/cli.js init --vaults
 # → seeds the six JSONL vaults in ~/.starlight/vaults (welcome entry + public examples)
 ```
 
@@ -192,14 +197,14 @@ Then point your MCP client at that directory:
 }
 ```
 
-Restart Claude Code. You now have ten `sis_*` tools available in every session.
+Restart Claude Code. You now have thirteen `sis_*` tools available in every session.
 (If you skip the seed step the server still works — it auto-seeds an empty
 `--vault-dir` on first boot so the empty state is never silently broken.)
 
 **Option 2: As a library**
 
 ```bash
-npm install @arcanea/starlight-intelligence-system
+npm install @arcanea/starlight-intelligence-system  # registry serves v6.0.1 — for v8.x, install from the git clone until republished
 ```
 
 ```ts
@@ -293,7 +298,7 @@ Voice archetypes are abstract; named agents are specific implementations. Anyone
 |------------------|------|-------|
 | Adopt SIP for your own creator stack | `SIP.md`, `SKILL.md`, `VOICES.md`, `.claude/commands/sip-attest.md`, `.claude/commands/alliance-forge.md` | Everything in `agents/`, `memory/`, `skills/`, `src/` |
 | Use the MCP memory server, no protocol | `src/`, `dist/`, npm package | Substrate spec files |
-| Forge an alliance under SIP | `SIP.md`, `ALLIANCE.md`, `VOICES.md`, all 9 commands in `.claude/commands/` | Operational layer |
+| Forge an alliance under SIP | `SIP.md`, `ALLIANCE.md`, `VOICES.md`, the 9 substrate commands in `.claude/commands/` | Operational layer |
 | Run the full reference build | All of it | Nothing |
 
 ---
@@ -323,7 +328,7 @@ Voice archetypes are abstract; named agents are specific implementations. Anyone
                              │  JSON-RPC 2.0 over stdio
                              ▼
             ┌─────────────────────────────────────────┐
-            │  MCP server  (10 sis_* tools)           │
+            │  MCP server  (13 sis_* tools)           │
             └────────────────┬────────────────────────┘
                              │
         ┌────────────────────┼────────────────────────┐

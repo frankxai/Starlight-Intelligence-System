@@ -587,3 +587,12 @@ Public/private boundary: public repos may contain doctrine, generic routing tabl
 Follow-up guide: `starlight-automation-agent-skills/docs/automation-operating-guide.md` now serves as the human-and-agent manual for understanding when to use native connectors, Codex automations, Hermes/retrieval agents, MCP, Make.com, n8n, Starlight swarm queues, and scripts/GitHub Actions. It includes cost model, decision protocol, observability, eval types, maintenance cadence, evolution ladder, and the agent working agreement. Use `templates/automation-decision-record.md` before durable workflow creation.
 
 Verification performed during setup: skill bundle validator passed, all six Codex skills passed official quick validation, plugin manifest validation passed, MCP example validation passed, n8n example validation passed, redaction self-test passed, and public-safety scans passed for both new public repos.
+
+## 2026-07-13 - Multi-agent ecosystem validation (8-agent swarm)
+
+**Category:** validation-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/starlight-multiagent-validation-gxd3bp
+**Related:** `docs/validation/2026-07-13-multiagent-ecosystem-validation.md`, starlight-swarm, starlight-evals, starlight-agent-skills, starlight-cosmos-engine
+
+Hard-count verdicts (all reproduced by command): 144 agents exact (137 + 7 council), 84 skills reconcile (31 dir + 53 flat), 1,142 tests / 0 failures, both MCP bins pass live JSON-RPC handshake — starlight-sis 8.3.0 serves 13 sis_* tools (not 10 as README said), starlight-substrate-mcp 1.1.1 serves 4. npm registry serves stale 6.0.1 — README quickstart was the #1 adopter wall (fixed to git path; republish is a pending human decision). cosmos-engine's 9 "MCP servers" have no protocol wiring — scaffold, not servers. starlight-evals staleness banner violated its own contract and the probe harness overwrote the committed 4-PASS receipt (both fixed: harness → out/, CI guards committed scorecards). Three canonical ecosystem maps contradicted each other (48/71 vs 144/84 vs manifest) — 144/84 is correct as of this run; ECOSYSTEM_ARCHITECTURE.md needs a v3 pass. affiliate-agent-skills (23 refs, L4 income engine) unverifiable from sandbox — check from unrestricted network. Income + payment-skills family missing Built-on-SIP attestation. Full report + forward blueprint (5 layers: truth, distribution, proof, swarm consolidation, preservation surfaces) in the validation doc.
