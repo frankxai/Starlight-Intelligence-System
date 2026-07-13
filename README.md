@@ -38,18 +38,20 @@ node dist/cli.js init --vaults
 
 > **Note:** npm currently serves v6.0.1 of `@arcanea/starlight-intelligence-system` — two major versions behind this repo. Use the git path above until v8.x is published.
 
-Then add to your MCP config (Claude Code, Cursor, Codex, Gemini, etc.):
+Then add to your MCP config (Claude Code, Cursor, Codex, Gemini, etc.), pointing at the `dist/mcp-server.js` inside your clone:
 
 ```json
 {
   "mcpServers": {
     "starlight": {
       "command": "node",
-      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js", "--vault-dir", "~/.starlight/vaults"]
+      "args": ["/path/to/Starlight-Intelligence-System/dist/mcp-server.js", "--vault-dir", "~/.starlight/vaults"]
     }
   }
 }
 ```
+
+(If you installed via npm instead, the path is `node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js` — but see the version note above.)
 
 Restart your client. Every agent now shares the same memory. Thirteen `sis_*` tools appear instantly (verified by JSON-RPC handshake, 2026-07-12).
 

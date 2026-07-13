@@ -42,7 +42,7 @@ Every task is either substrate-level or operational-level. Decide before acting.
 **Operational-level** (anything inside this repo's reference build):
 - Use `agents/AGENT_REGISTRY.md` for the current 144-agent registry and existing skill auto-activation.
 - Voice: Frank DNA (above).
-- Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 25 — authoritative index: `commands/COMMAND_SYSTEM.md`), skill edits, agent edits, site edits.
+- Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 25 files there — distinct from the 121 installed slash commands in `.claude/commands/`), skill edits, agent edits, site edits.
 
 **Ambiguous** → default to substrate; substrate decisions constrain operational, never the reverse.
 
@@ -207,7 +207,7 @@ Skill definitions: mixed layout — `skills/{domain}/{skill-name}/SKILL.md` (31 
 | `/si` / `/so` / `/sq` | Multi-CLI routing shorthands (cognition router / image routing / quick status). |
 | `/agent-creator` / `/workflow-skill-creator` / `/starlight-architect` | Authoring tier — generate new agents, workflow skills, and architecture briefs. |
 
-Authoritative command index: `commands/COMMAND_SYSTEM.md` (25 command files as of v8.3.0).
+Command surface as of v8.3.0: 25 command files in `commands/` (this table), plus 121 installed slash commands in `.claude/commands/` (9 of them substrate-tier). `commands/COMMAND_SYSTEM.md` is the architecture doc for the 13 core commands; the directory listing is the ground truth for the rest.
 
 ---
 
