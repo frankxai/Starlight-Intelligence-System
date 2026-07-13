@@ -17,7 +17,7 @@ The scaffolding is excellent. The wiring is missing. Every gap below is a wire, 
 
 | # | Gap | Evidence in-repo | Consequence |
 |---|-----|------------------|-------------|
-| G1 | **Context is static, hand-assembled, stale** | `context/unified-context.md` last assembled **2026-02-10**, still declares **"v1.0.0"** while `CLAUDE.md` is **v8.3.0**. Only **5** repo-contexts exist (`acos, ai-ops, arcanea, arcanea-flow, music-intelligence-systems`) against **41** repos on disk / **73** referenced. | The map is 5 months old and covers ~12% of the estate. |
+| G1 | **Context is static, hand-assembled, stale** | `context/unified-context.md` last assembled **2026-02-10**, still declares **"v1.0.0"** while `CLAUDE.md` is **v8.3.0**. Only **5** repo-contexts exist (`acos, ai-ops, arcanea, arcanea-flow, music-intelligence-systems`) against **42** repos on disk / **73** referenced. | The map is 5 months old and covers ~12% of the estate. |
 | G2 | **The cross-repo indexer is Claude-only + local-machine** | `scripts/run-cross-repo-indexer.ps1` crawls `~/.claude/projects/*/memory/` via a local Python `indexer`. | Codex/Cursor/Gemini write elsewhere → their work is never ingested. |
 | G3 | **No GitHub-org discovery** | No script queries `gh api /users/frankxai/repos`. Registry is implicit (whatever has a local Claude memory dir). | A brand-new repo like `ana-ai-business-kit` is structurally undiscoverable. |
 | G4 | **Automation is Windows-Task-Scheduler bound** | `register-*-task.ps1`, `dreaming-cron.ps1` — all PowerShell, all local. | Cloud/mobile/web sessions (this one, and the Codex one) write **zero** durable memory. |
@@ -35,8 +35,9 @@ The scaffolding is excellent. The wiring is missing. Every gap below is a wire, 
                     ┌──────────────────────────────┼───────────────────────────┐
                     ▼                               ▼                           ▼
              org webhook                     scheduled poller             session-end atom
-        (repo.created, PR.merged,        (gh api /users/frankxai/repos    (each agent writes 1
-             push → ingest)               diffed vs registry — the         JSONL line on wrap:
+        (repository[created],            (gh api /users/frankxai/repos    (each agent writes 1
+         pull_request[closed+            diffed vs registry — the         JSONL line on wrap:
+         merged=true], push → ingest)
                     │                      webhook safety net)              repo/branch/harness/
                     └──────────────┬──────────────┘   │                     summary/commits)
                                    ▼                   │                          │
@@ -56,13 +57,14 @@ The unlock: **GitHub is the convergence point.** Codex, Cursor, Gemini, and Clau
 ## 4. The layered wiring plan (minimum-viable → full)
 
 ### Layer 0 — Truth reconciliation *(safe, do now)*
-- [x] `context/repo-registry.json` — canonical live registry (41 on-disk repos + the 2 outside-field-of-view repos). Generated this session.
+- [x] `context/repo-registry.json` — canonical live registry (42 on-disk repos + the 2 outside-field-of-view repos). Schema: top-level `repos[]`, full 40-char `sha`, `schema_version: 1`. Generated this session.
+- [ ] **Migrate existing tooling onto the canonical registry (avoid split-brain).** `scripts/agy-tools.ps1` currently reads a machine-local `C:\Users\frank\repo-registry.json` and iterates `registry.repos`. The new file matches that `.repos` shape deliberately — point `agy-tools.ps1` (and any peer script) at `context/repo-registry.json`, or generate the machine-local copy from it, so there is one source of truth.
 - [ ] Regenerate `context/unified-context.md` + `context/STATE.md` from the registry; kill the v1.0.0→v8.3.0 drift.
 - [ ] Backfill missing `context/repo-contexts/*.md` (one per active repo, or a single rolled-up index).
 
 ### Layer 1 — GitHub event spine *(the key unlock)*
-- [ ] `scripts/org-poller.mjs` (Node, cloud-runnable) — `gh api /users/frankxai/repos`, diff vs `repo-registry.json`, emit memory-bus atoms for new repos + merges. **This is the thing that would have caught `ana-ai-business-kit`.**
-- [ ] GitHub App / org webhook → single ingest endpoint (repo.created, pull_request.closed+merged, push). Webhook = realtime; poller = safety net for missed events.
+- [ ] `scripts/org-poller.mjs` (Node, cloud-runnable) — `gh api /users/frankxai/repos`, diff vs `context/repo-registry.json`, emit memory-bus atoms for new repos + merges. **This is the thing that would have caught `ana-ai-business-kit`.**
+- [ ] GitHub App / org webhook → single ingest endpoint. Real event names: `repository` (action `created`), `pull_request` (action `closed` with `merged=true`), `push`. Webhook = realtime; poller = safety net for missed events.
 
 ### Layer 2 — Cloud-native memory bus
 - [ ] Move memory from `~/.claude/projects/*` local crawl to committed `memory/bus/*.jsonl` in Starlight (v1), migrate to AgentDB/Supabase table (v2) when volume warrants. One store every session reads/writes, local or remote.
