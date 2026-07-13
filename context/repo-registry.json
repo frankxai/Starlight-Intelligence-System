@@ -2,7 +2,8 @@
   "schema_version": 1,
   "generated": "2026-07-13",
   "generator": "claude/starlight-system-integration-gc2piq (live git scan)",
-  "note": "Canonical registry. `repos[]` key matches the shape existing tooling expects (scripts/agy-tools.ps1 iterates registry.repos). `sha` is the full 40-char commit hash. Snapshot of repos on this session disk — NOT exhaustive of the frankxai org; repos created by other harnesses (e.g. ana-ai-business-kit, rova-resort) are absent by construction until the org poller (Layer 1) lands.",
+  "note": "Canonical registry. `repos[]` key matches the shape existing tooling expects (scripts/agy-tools.ps1 iterates registry.repos). `sha` is the full 40-char commit hash. `repos[]` is the on-disk snapshot for this session; `org_totals` + `known_outside_field_of_view` come from a live account query (mcp list_repos, 2026-07-13). Run `node scripts/org-poller.mjs` on a token-bearing host to refresh the full snapshot automatically.",
+  "org_totals": {"account": "frankxai", "seen_live": 185, "has_more": true, "on_disk": 42, "coverage_pct": 22, "queried_at": "2026-07-13", "method": "mcp list_repos"},
   "repos": [
     {"repo": "FrankX", "slug": "frankxai/FrankX", "branch": "claude/starlight-system-integration-gc2piq", "last_commit": "2026-07-13", "sha": "55bb206113ec8e3f9cca8cf70667e45b1a2a22ed"},
     {"repo": "Starlight-Intelligence-System", "slug": "frankxai/Starlight-Intelligence-System", "branch": "claude/starlight-system-integration-gc2piq", "last_commit": "2026-07-13", "sha": "dd064ca2011845b84e9c2220cec30f8d99012c7c"},
@@ -47,8 +48,33 @@
     {"repo": "starlight-swarm", "slug": "frankxai/starlight-swarm", "branch": "claude/starlight-system-integration-gc2piq", "last_commit": "2026-06-22", "sha": "2151b91f8054948362cfc04137ab222446a4898e"},
     {"repo": "vibe-os", "slug": "frankxai/vibe-os", "branch": "claude/starlight-system-integration-gc2piq", "last_commit": "2026-01-05", "sha": "384ab7254a6834da53ce43e1871b1c3cbec637bb"}
   ],
-  "known_outside_field_of_view": [
-    {"repo": "ana-ai-business-kit", "slug": "frankxai/ana-ai-business-kit", "source": "Codex/Rova session 2026-07-13", "status": "2 PRs merged, not in Starlight scope"},
-    {"repo": "rova-resort", "slug": "frankxai/rova-resort", "source": "Codex/Rova session 2026-07-13", "status": "open PR, not in Starlight scope"}
-  ]
+  "known_outside_field_of_view": {
+    "description": "Active repos (pushed within ~8 days) present in the account but NOT on this session's disk or in CLAUDE.md scope. Discovered via live query 2026-07-13. This is the concrete interconnection gap — dozens of live repos, several of them Starlight's own memory/config substrate.",
+    "the_trigger_builds": [
+      {"repo": "ana-ai-business-kit", "slug": "frankxai/ana-ai-business-kit", "visibility": "public", "pushed_at": "2026-07-13T16:12:09Z", "note": "The Codex/Rova build that triggered this investigation"},
+      {"repo": "ana-new-repo", "slug": "frankxai/ana-new-repo", "visibility": "public", "pushed_at": "2026-07-13T15:14:31Z"},
+      {"repo": "rova-resort", "slug": "frankxai/rova-resort", "visibility": "private", "pushed_at": "2026-07-12T05:07:18Z"},
+      {"repo": "Ana", "slug": "frankxai/Ana", "visibility": "private", "pushed_at": "2026-07-10T19:22:44Z"}
+    ],
+    "fragmented_substrate": [
+      {"repo": "starlight-memory", "slug": "frankxai/starlight-memory", "visibility": "public", "pushed_at": "2026-07-12T23:21:26Z", "note": "Dedicated memory repo unreferenced by SIS"},
+      {"repo": "starlight-private-memory", "slug": "frankxai/starlight-private-memory", "visibility": "private", "pushed_at": "2026-07-13T09:37:46Z"},
+      {"repo": "starlight-memory-vault", "slug": "frankxai/starlight-memory-vault", "visibility": "private", "pushed_at": "2026-07-09T14:49:50Z"},
+      {"repo": "second-brain-vault", "slug": "frankxai/second-brain-vault", "visibility": "private", "pushed_at": "2026-07-12T04:37:45Z"},
+      {"repo": "ai-capability-registry", "slug": "frankxai/ai-capability-registry", "visibility": "private", "pushed_at": "2026-07-12T23:30:58Z", "note": "A parallel registry — reconcile to avoid split-brain"},
+      {"repo": "claude-code-config", "slug": "frankxai/claude-code-config", "visibility": "private", "pushed_at": "2026-07-13T02:56:35Z"},
+      {"repo": "starlight-agent-config", "slug": "frankxai/starlight-agent-config", "visibility": "private", "pushed_at": "2026-07-12T04:41:10Z"},
+      {"repo": "frankx-starlight-command", "slug": "frankxai/frankx-starlight-command", "visibility": "private", "pushed_at": "2026-07-12T23:21:40Z"},
+      {"repo": "starlight-command-center", "slug": "frankxai/starlight-command-center", "visibility": "private", "pushed_at": "2026-07-10T03:05:42Z"}
+    ],
+    "other_active_unwired": [
+      "frankxai/gencreator.ai", "frankxai/amsterdam-workspace-intel", "frankxai/influencer-agent-skills",
+      "frankxai/family-intelligence-os", "frankxai/family-intelligence-systems", "frankxai/iis-private",
+      "frankxai/library-os", "frankxai/hermes", "frankxai/agentic-operating-system-standard",
+      "frankxai/frankx-app-studio", "frankxai/frankx-app-forge", "frankxai/domain-venture-foundry",
+      "frankxai/ai-architect-academy", "frankxai/vibeclubs", "frankxai/StarlightOS", "frankxai/agentic-ops",
+      "frankxai/gencreator-community", "frankxai/arcanea-academy", "frankxai/starlight-intelligence-academy"
+    ],
+    "full_enumeration": "run scripts/org-poller.mjs — this list is the high-signal subset captured by hand on 2026-07-13"
+  }
 }
