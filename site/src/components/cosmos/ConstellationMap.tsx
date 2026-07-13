@@ -34,6 +34,7 @@ export function ConstellationMap({
   seed?: number;
 }) {
   const { stars, lines } = constellation;
+  if (stars.length === 0) return null;
 
   // Flat projection centered on the constellation's centroid. RA grows
   // eastward, which on a sky chart is to the LEFT (we look up at the sphere
