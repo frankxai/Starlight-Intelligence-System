@@ -73,13 +73,13 @@ export default async function CosmosPage() {
         </div>
       </section>
 
-      {/* ── Three views, one entry ── */}
+      {/* ── Four views, one entry ── */}
       <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
-            One entry, three views
+            One entry, four views
           </h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <ViewTile
               href="/cosmos/gallery"
               title="Deep Field"
@@ -93,6 +93,13 @@ export default async function CosmosPage() {
               accent="text-rose-300"
               border="border-rose-500/[0.2]"
               body="Near-Earth asteroids passing this week, with the mining-economics lens nobody else gives you."
+            />
+            <ViewTile
+              href="/cosmos/constellations"
+              title="Star Maps"
+              accent="text-amber-300"
+              border="border-amber-500/[0.2]"
+              body="Orion, the Dipper, the Southern Cross — science, myth, and navigation on one chart."
             />
             <ViewTile
               href="/cosmos/cards"

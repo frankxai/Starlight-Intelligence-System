@@ -24,6 +24,7 @@ const STATIC_ROUTES = [
   "/cosmos",
   "/cosmos/gallery",
   "/cosmos/cards",
+  "/cosmos/constellations",
   "/asteroids",
   "/queen",
   "/palace",
