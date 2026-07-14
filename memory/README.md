@@ -41,6 +41,17 @@ Run from `private/voice-operator/`.
 
 **Voice-session schema**: `type: voice-session`, `date`, `brand`, `decay_tier`, `intent_class`.
 
+## 2026-07 Update: Evolved Memory Architecture (Hindsight + Honcho Primary)
+
+**Decision (superintelligence path)**: 
+- Adopt **Hindsight** (via starlight-memory adapter) as primary backend for long-term agent learning/reflect/mental models. SOTA benchmarks, self-host, Hermes-native. Use as key SIS component for compounding intelligence.
+- **Honcho** for peer/user dialectic modeling.
+- mem0: deprioritized primary (weaker long-term).
+- **Own sovereign layer** (this vault system + starlight-memory router + MemPalace) remains authoritative. Externals are accelerators only.
+- Interconnect: Hermes providers → starlight-memory router (policy + hybrid RRF) → SIS vaults (human-curated MemPalace overlay) + queen/swarm synthesis (reflect). Shared substrate across systems.
+
+Full rationale, matrix, roadmap in `starlight-memory/docs/strategic/sis-memory-evolution-2026-07.md`.
+
 ## Sovereignty rules
 
 1. **No Obsidian Sync.** Use Git for substrate, Syncthing/iCloud only for personal scratch. Substrate sovereignty is non-negotiable.

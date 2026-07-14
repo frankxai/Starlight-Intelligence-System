@@ -1,4 +1,5 @@
 import type { ProviderRoute, SISMemoryRecord, TenantMemoryPolicy } from "./types.js";
+import { isExternalMirrorBlocked } from './privacy.js';
 
 const LOCAL_CORE_ROUTE: ProviderRoute = {
   provider: "local_core",
@@ -7,9 +8,7 @@ const LOCAL_CORE_ROUTE: ProviderRoute = {
 };
 
 function isExternallyBlocked(record: SISMemoryRecord, policy: TenantMemoryPolicy): boolean {
-  if (record.privacy_class === "secret") return true;
-  if (record.privacy_class === "regulated" && !policy.allow_regulated_external_mirror) return true;
-  return false;
+  return isExternalMirrorBlocked(record, policy);
 }
 
 function hasGraphShape(record: SISMemoryRecord): boolean {
@@ -18,8 +17,6 @@ function hasGraphShape(record: SISMemoryRecord): boolean {
 
 export function routeMemoryRecord(record: SISMemoryRecord, policy: TenantMemoryPolicy): ProviderRoute[] {
   const routes: ProviderRoute[] = [LOCAL_CORE_ROUTE];
-
-  if (isExternallyBlocked(record, policy)) return routes;
 
   if (policy.local_only) {
     routes.push({
@@ -37,6 +34,8 @@ export function routeMemoryRecord(record: SISMemoryRecord, policy: TenantMemoryP
       reason: "Local compositional recall/trust scoring requested",
     });
   }
+
+  if (isExternallyBlocked(record, policy)) return routes;
 
   if (policy.knowledge_browsing) {
     routes.push({

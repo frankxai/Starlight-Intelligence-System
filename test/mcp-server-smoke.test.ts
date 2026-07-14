@@ -1,13 +1,13 @@
 /**
  * Operational MCP server — end-to-end JSON-RPC smoke test.
  *
- * The README's #1 install path is `node dist/mcp-server.js` exposing ten
+ * The README's #1 install path is `node dist/mcp-server.js` exposing the
  * `sis_*` tools over JSON-RPC 2.0 stdio. That path previously had NO automated
  * end-to-end proof (the v0.1 server in mcp-server-v01.ts is a different, 13
  * `sis.*`-tool surface). This test spawns the operational server, drives the
  * real stdin/stdout protocol, and asserts:
  *   - `initialize` returns serverInfo
- *   - `tools/list` returns exactly the ten documented `sis_*` tools
+ *   - `tools/list` returns the complete documented `sis_*` tool surface
  *
  * The server is spawned from src/ via the tsx loader so the test does not
  * depend on build order within `npm test`; src/mcp-server.ts is the exact code
@@ -19,7 +19,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createInterface } from "node:readline";
@@ -38,6 +38,7 @@ const EXPECTED_TOOLS = [
   "sis_goal_update",
   "sis_invalidate",
   "sis_recent_entries",
+  "sis_register_trigger",
   "sis_search",
   "sis_stale",
   "sis_stats",
@@ -46,7 +47,12 @@ const EXPECTED_TOOLS = [
 
 interface RpcResponse {
   id: number | null;
-  result?: { tools?: Array<{ name: string }>; serverInfo?: { name?: string } };
+  result?: {
+    tools?: Array<{ name: string }>;
+    serverInfo?: { name?: string };
+    content?: Array<{ type: string; text: string }>;
+    isError?: boolean;
+  };
 }
 
 /**
@@ -111,7 +117,7 @@ function driveServer(
 }
 
 describe("operational MCP server (dist/mcp-server.js) — end-to-end", () => {
-  it("responds to initialize and lists exactly the ten sis_* tools", async () => {
+  it("responds to initialize and lists the complete sis_* tool surface", async () => {
     const responses = await driveServer(
       [
         { jsonrpc: "2.0", id: 1, method: "initialize", params: {} },
@@ -128,7 +134,27 @@ describe("operational MCP server (dist/mcp-server.js) — end-to-end", () => {
     assert.deepEqual(
       names,
       EXPECTED_TOOLS,
-      `tools/list did not return the ten documented sis_* tools (got ${names.length})`,
+      `tools/list did not return the documented sis_* tools (got ${names.length})`,
     );
+  });
+
+  it("rejects non-canonical vault names without writing outside the vault directory", async () => {
+    const escapeName = `sis-mcp-escape-${Date.now()}`;
+    const escapedPath = join(tmpdir(), `${escapeName}.jsonl`);
+    const response = await driveServer(
+      [{
+        jsonrpc: "2.0",
+        id: 3,
+        method: "tools/call",
+        params: {
+          name: "sis_append_entry",
+          arguments: { vault: `../${escapeName}`, content: "must not escape" },
+        },
+      }],
+      [3],
+    );
+
+    assert.equal(response.get(3)?.result?.isError, true);
+    assert.equal(existsSync(escapedPath), false, "path traversal created a file outside the vault directory");
   });
 });

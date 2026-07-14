@@ -96,6 +96,17 @@ describe('v9.0 Gateway — memory/add endpoint', () => {
     assert.equal(res.ok, false);
     assert.equal((res as { ok: false; status: number }).status, 400);
   });
+
+  it('POST /v1/memory/add rejects a non-canonical vault', async () => {
+    const { transport } = makeSut(root);
+    const res = await transport.request({
+      method: 'POST',
+      path: '/v1/memory/add',
+      body: { content: 'valid content', vault: '../escape' },
+    });
+    assert.equal(res.ok, false);
+    assert.equal((res as { ok: false; status: number }).status, 400);
+  });
 });
 
 describe('v9.0 Gateway — memory/search endpoint', () => {
@@ -115,6 +126,18 @@ describe('v9.0 Gateway — memory/search endpoint', () => {
     assert.equal((res as { ok: false; status: number }).status, 400);
   });
 
+  it('POST /v1/memory/search bounds result limits and vault filters', async () => {
+    const { transport } = makeSut(root);
+    const invalidLimit = await transport.request({
+      method: 'POST', path: '/v1/memory/search', body: { query: 'memory', limit: 1000 },
+    });
+    const invalidVault = await transport.request({
+      method: 'POST', path: '/v1/memory/search', body: { query: 'memory', vaults: ['../escape'] },
+    });
+    assert.equal((invalidLimit as { status: number }).status, 400);
+    assert.equal((invalidVault as { status: number }).status, 400);
+  });
+
   it('add → search round-trip: added entry is retrievable by keyword', async () => {
     const { client } = makeSut(root);
     await client.addMemory({
@@ -129,6 +152,26 @@ describe('v9.0 Gateway — memory/search endpoint', () => {
     assert.ok(Array.isArray(body.results), 'results must be an array');
     // At minimum the result set is non-empty (entry was just added)
     assert.ok(body.results.length >= 1, 'must find at least one result after add');
+  });
+
+  it('persisted memory remains searchable after gateway restart with vault identity intact', async () => {
+    const first = makeSut(root);
+    await first.client.addMemory({
+      content: 'restart-persistence-sentinel orchid protocol',
+      vault: 'wisdom',
+      tags: ['restart-test'],
+      confidence: 0.99,
+    });
+
+    const restarted = makeSut(root);
+    const result = await restarted.client.searchMemory({
+      query: 'restart-persistence-sentinel',
+      vaults: ['wisdom'],
+      limit: 5,
+    });
+    const body = result as { results: Array<{ entry: { content: string; vault: string } }> };
+    assert.ok(body.results.some((row) => row.entry.content.includes('orchid protocol')));
+    assert.ok(body.results.every((row) => row.entry.vault === 'wisdom'));
   });
 
   it('search returns ok:true with empty results for no matches', async () => {

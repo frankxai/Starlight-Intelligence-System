@@ -16,6 +16,7 @@ import type { TemporalMeta, ContradictionRecord } from './types.js';
 import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
 import { GoalOrchestrator } from './goal.js';
+import { withJsonlLock } from './jsonl-lock.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -52,6 +53,15 @@ interface RawEntry {
 // ── Helpers ───────────────────────────────────────────────────
 const MS_PER_DAY = 86_400_000;
 const VAULT_TYPES = ['strategic', 'technical', 'creative', 'operational', 'wisdom', 'horizon'] as const;
+type CanonicalVault = typeof VAULT_TYPES[number];
+
+function requireCanonicalVault(value: unknown): CanonicalVault {
+  const vault = String(value ?? '');
+  if (!(VAULT_TYPES as readonly string[]).includes(vault)) {
+    throw new Error(`Invalid vault "${vault}". Expected one of: ${VAULT_TYPES.join(', ')}`);
+  }
+  return vault as CanonicalVault;
+}
 
 function textOf(e: RawEntry): string { return e.content ?? e.insight ?? e.wish ?? ''; }
 
@@ -132,7 +142,7 @@ export class StarlightMcpServer {
     this.reg({
       name: 'sis_vault_search', description: 'Free-text search across vaults',
       inputSchema: { type: 'object', required: ['query'], properties: {
-        query: { type: 'string' }, vault: { type: 'string' }, limit: { type: 'number' },
+        query: { type: 'string' }, vault: { type: 'string', enum: [...VAULT_TYPES] }, limit: { type: 'number' },
       }},
     }, (p) => {
       const q = String(p.query ?? ''), v = p.vault ? String(p.vault) : null, lim = Number(p.limit ?? 10);
@@ -146,7 +156,7 @@ export class StarlightMcpServer {
     // 2. sis_recent_entries
     this.reg({
       name: 'sis_recent_entries', description: 'Get latest entries from vaults',
-      inputSchema: { type: 'object', properties: { vault: { type: 'string' }, limit: { type: 'number' } }},
+      inputSchema: { type: 'object', properties: { vault: { type: 'string', enum: [...VAULT_TYPES] }, limit: { type: 'number' } }},
     }, (p) => {
       const v = p.vault ? String(p.vault) : null, lim = Number(p.limit ?? 10);
       let entries = allEntries(this.vaultDir);
@@ -171,12 +181,12 @@ export class StarlightMcpServer {
     this.reg({
       name: 'sis_append_entry', description: 'Write a new entry to a vault',
       inputSchema: { type: 'object', required: ['vault', 'content'], properties: {
-        vault: { type: 'string' }, content: { type: 'string' },
+        vault: { type: 'string', enum: [...VAULT_TYPES] }, content: { type: 'string' },
         tags: { type: 'array', items: { type: 'string' } },
         confidence: { type: 'string' }, category: { type: 'string' },
       }},
     }, (p) => {
-      const vault = String(p.vault), now = new Date().toISOString();
+      const vault = requireCanonicalVault(p.vault), now = new Date().toISOString();
       const conf = p.confidence === 'high' ? 0.9 : p.confidence === 'low' ? 0.3 : 0.6;
       const entry: RawEntry = {
         id: `sis_${Date.now()}_${randomUUID().slice(0, 8)}`,
@@ -187,7 +197,10 @@ export class StarlightMcpServer {
         createdAt: now,
         temporal: { validFrom: now, validUntil: null, lastConfirmed: now, confidenceDecay: conf },
       };
-      appendFileSync(join(this.vaultDir, `${vault}.jsonl`), JSON.stringify(entry) + '\n', 'utf-8');
+      const vaultPath = join(this.vaultDir, `${vault}.jsonl`);
+      withJsonlLock(vaultPath, () => {
+        appendFileSync(vaultPath, JSON.stringify(entry) + '\n', 'utf-8');
+      });
       return { success: true, id: entry.id, vault };
     });
 
@@ -205,7 +218,7 @@ export class StarlightMcpServer {
     this.reg({
       name: 'sis_search', description: 'Keyword + temporal search with term-overlap scoring, tag boosting, and staleness penalty (no embeddings)',
       inputSchema: { type: 'object', required: ['query'], properties: {
-        query: { type: 'string' }, vaults: { type: 'array', items: { type: 'string' } },
+        query: { type: 'string' }, vaults: { type: 'array', items: { type: 'string', enum: [...VAULT_TYPES] } },
         limit: { type: 'number' }, includeExpired: { type: 'boolean' },
       }},
     }, (p) => {
@@ -235,9 +248,14 @@ export class StarlightMcpServer {
       const id = String(p.entryId), found = findEntry(this.vaultDir, id);
       if (!found) return { success: false, error: `Entry not found: ${id}` };
       const now = new Date().toISOString();
-      rewriteVault(this.vaultDir, found.vaultName, found.all.map(e =>
-        e.id !== id ? e : { ...e, temporal: { ...defaultTemporal(e), lastConfirmed: now } }
-      ));
+      const vaultPath = join(this.vaultDir, `${found.vaultName}.jsonl`);
+      withJsonlLock(vaultPath, () => {
+        const latest = findEntry(this.vaultDir, id);
+        if (!latest) throw new Error(`Entry not found during update: ${id}`);
+        rewriteVault(this.vaultDir, latest.vaultName, latest.all.map(e =>
+          e.id !== id ? e : { ...e, temporal: { ...defaultTemporal(e), lastConfirmed: now } }
+        ));
+      });
       return { success: true, entryId: id, lastConfirmed: now };
     });
 
@@ -252,12 +270,17 @@ export class StarlightMcpServer {
       const found = findEntry(this.vaultDir, id);
       if (!found) return { success: false, error: `Entry not found: ${id}` };
       const now = new Date().toISOString();
-      rewriteVault(this.vaultDir, found.vaultName, found.all.map(e => {
-        if (e.id !== id) return e;
-        const out: RawEntry = { ...e, temporal: { ...defaultTemporal(e), validUntil: now } };
-        if (reason) out._invalidationReason = reason;
-        return out;
-      }));
+      const vaultPath = join(this.vaultDir, `${found.vaultName}.jsonl`);
+      withJsonlLock(vaultPath, () => {
+        const latest = findEntry(this.vaultDir, id);
+        if (!latest) throw new Error(`Entry not found during update: ${id}`);
+        rewriteVault(this.vaultDir, latest.vaultName, latest.all.map(e => {
+          if (e.id !== id) return e;
+          const out: RawEntry = { ...e, temporal: { ...defaultTemporal(e), validUntil: now } };
+          if (reason) out._invalidationReason = reason;
+          return out;
+        }));
+      });
       return { success: true, entryId: id, validUntil: now, reason };
     });
 
@@ -274,7 +297,10 @@ export class StarlightMcpServer {
         reason: p.reason ? String(p.reason) : 'Flagged as contradictory',
         detectedAt: new Date().toISOString(), resolvedAt: null,
       };
-      appendFileSync(join(this.vaultDir, 'contradictions.jsonl'), JSON.stringify(record) + '\n', 'utf-8');
+      const contradictionPath = join(this.vaultDir, 'contradictions.jsonl');
+      withJsonlLock(contradictionPath, () => {
+        appendFileSync(contradictionPath, JSON.stringify(record) + '\n', 'utf-8');
+      });
       return { success: true, id: record.id };
     });
 

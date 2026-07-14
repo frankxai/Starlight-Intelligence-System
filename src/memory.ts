@@ -102,9 +102,15 @@ export class MemoryManager {
         const raw = readFileSync(this.eventLogPath, "utf-8");
         const lines = raw.split("\n").filter(l => l.trim().length > 0);
         
-        for (const line of lines) {
-          const event = JSON.parse(line) as MemoryEvent;
-          this.applyEvent(event);
+        for (const [index, line] of lines.entries()) {
+          try {
+            const event = JSON.parse(line) as MemoryEvent;
+            this.applyEvent(event);
+          } catch (err) {
+            // A torn/corrupt event must not hide every valid event after it.
+            // Keep loading and surface the exact line for repair tooling.
+            console.error(`[MemoryManager] Skipping invalid event-log line ${index + 1}:`, err);
+          }
         }
       } catch (err) {
         console.error("[MemoryManager] Failed to load event log:", err);

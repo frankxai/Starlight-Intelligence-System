@@ -59,10 +59,11 @@ describe("Mem0RemoteProvider", () => {
     assert.equal(added.length, 1);
     assert.equal(added[0]?.text, "Mem0 adapter must batch remote writes and preserve SIS authority.");
     assert.equal(added[0]?.metadata.sis_memory_id, "sis_1");
-    assert.equal(added[0]?.metadata.tenant_id, "tenant_frank");
+    assert.equal(typeof added[0]?.metadata.tenant_scope, "string");
+    assert.equal(added[0]?.metadata.tenant_id, undefined, "raw tenant id crossed provider boundary");
   });
 
-  it("blocks secret and regulated records unless explicitly allowed", async () => {
+  it("blocks private, secret, and regulated records unless explicitly allowed", async () => {
     let calls = 0;
     const client: Mem0Client = {
       async addMemory() { calls++; return { id: "mem0_forbidden" }; },
@@ -71,14 +72,31 @@ describe("Mem0RemoteProvider", () => {
     };
     const provider = new Mem0RemoteProvider({ client });
 
+    const privateRecord = await provider.remember(record("private_1", "private"));
     const secret = await provider.remember(record("secret_1", "secret"));
     const regulated = await provider.remember(record("regulated_1", "regulated"));
     const flushed = await provider.flush();
 
+    assert.equal(privateRecord.provider_shadow_refs.mem0?.sync_state, "failed");
     assert.equal(secret.provider_shadow_refs.mem0?.sync_state, "failed");
     assert.equal(regulated.provider_shadow_refs.mem0?.sync_state, "failed");
     assert.equal(flushed.written, 0);
     assert.equal(calls, 0);
+  });
+
+  it("deletes by provider shadow id rather than assuming SIS ids match", async () => {
+    const deleted: string[] = [];
+    const client: Mem0Client = {
+      async addMemory() { return { id: "mem0_provider_42" }; },
+      async searchMemories() { return []; },
+      async deleteMemory({ id }) { deleted.push(id); return true; },
+    };
+    const provider = new Mem0RemoteProvider({ client });
+    await provider.remember(record("sis_42"));
+    await provider.flush();
+
+    assert.equal(await provider.forget({ tenant_id: "tenant_frank", memory_id: "sis_42" }), true);
+    assert.deepEqual(deleted, ["mem0_provider_42"]);
   });
 
   it("recalls via remote search and maps provider refs without becoming canonical", async () => {

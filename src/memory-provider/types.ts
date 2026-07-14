@@ -96,6 +96,8 @@ export interface TenantMemoryPolicy {
   developer_cli_memory?: boolean;
   knowledge_browsing?: boolean;
   local_compositional_recall?: boolean;
+  /** Explicit opt-in; `private` records otherwise remain SIS-local. */
+  allow_private_external_mirror?: boolean;
   allow_regulated_external_mirror?: boolean;
 }
 
@@ -117,6 +119,10 @@ export interface ProviderCapabilities {
 
 export interface RecallRequest {
   tenant_id: string;
+  workspace_id?: string;
+  agent_id?: string;
+  user_id?: string;
+  session_id?: string;
   query: string;
   limit?: number;
   min_score?: number;
@@ -130,7 +136,10 @@ export interface RecallResult {
 
 export interface ForgetRequest {
   tenant_id: string;
+  workspace_id?: string;
   memory_id: string;
+  /** Provider shadow id persisted on the canonical SIS record, when known. */
+  provider_record_id?: string;
 }
 
 export interface MemoryProvider {
@@ -139,6 +148,11 @@ export interface MemoryProvider {
   remember(record: SISMemoryRecord): Promise<SISMemoryRecord>;
   recall(request: RecallRequest): Promise<RecallResult[]>;
   forget(request: ForgetRequest): Promise<boolean>;
+}
+
+export interface FlushableMemoryProvider extends MemoryProvider {
+  flush(): Promise<{ attempted: number; written: number; failed: number }>;
+  pendingCount(): number;
 }
 
 export interface ProviderResourcePlan {

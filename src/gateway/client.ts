@@ -159,6 +159,7 @@ export class HttpTransport implements GatewayTransport {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
+          'X-SIS-Harness': this.harness,
           ...(body ? { 'Content-Length': Buffer.byteLength(body) } : {}),
         },
       };

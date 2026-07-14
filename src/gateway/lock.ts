@@ -7,7 +7,8 @@
  * Built on SIP — operational tier (memory gateway v0.1)
  */
 
-import { mkdirSync, rmSync, existsSync, statSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmSync, existsSync, statSync, writeFileSync, readFileSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { join } from 'node:path';
 
 export interface LockOptions {
@@ -22,6 +23,7 @@ export interface LockOptions {
 interface LockMeta {
   pid: number;
   ts: number;
+  owner: string;
 }
 
 /**
@@ -41,12 +43,16 @@ export async function acquireLock(
   const retryMs = opts.retryMs ?? 50;
   const staleAfterMs = opts.staleAfterMs ?? 10_000;
   const metaFile = join(lockPath, 'meta.json');
+  const owner = randomUUID();
 
   const deadline = Date.now() + timeoutMs;
 
   /** Atomically remove the lock directory (recursive to handle meta.json). */
   const releaseLock = () => {
-    try { rmSync(lockPath, { recursive: true, force: true }); } catch { /* ignore */ }
+    try {
+      const meta = JSON.parse(readFileSync(metaFile, 'utf-8')) as LockMeta;
+      if (meta.owner === owner) rmSync(lockPath, { recursive: true, force: true });
+    } catch { /* already released or replaced */ }
   };
 
   const tryAcquire = (): boolean => {
@@ -55,14 +61,14 @@ export async function acquireLock(
       const now = Date.now();
       let mtime = now;
       try {
-        const st = statSync(lockPath);
-        mtime = st.mtimeMs;
+        const meta = JSON.parse(readFileSync(metaFile, 'utf-8')) as Partial<LockMeta>;
+        mtime = meta.ts ?? statSync(lockPath).mtimeMs;
       } catch {
-        // ignore stat errors — directory may have just been removed
+        try { mtime = statSync(lockPath).mtimeMs; } catch { /* raced with release */ }
       }
       if (now - mtime > staleAfterMs) {
         // Stale lock — force remove and retry
-        releaseLock();
+        try { rmSync(lockPath, { recursive: true, force: true }); } catch { /* another contender won */ }
       }
     }
 
@@ -70,9 +76,12 @@ export async function acquireLock(
       mkdirSync(lockPath, { recursive: false });
       // Write PID + timestamp for staleness detection
       try {
-        const meta: LockMeta = { pid: process.pid, ts: Date.now() };
+        const meta: LockMeta = { pid: process.pid, ts: Date.now(), owner };
         writeFileSync(metaFile, JSON.stringify(meta), 'utf-8');
-      } catch { /* non-fatal — staleness check is best-effort */ }
+      } catch {
+        try { rmSync(lockPath, { recursive: true, force: true }); } catch { /* best effort */ }
+        return false;
+      }
       return true;
     } catch {
       return false;

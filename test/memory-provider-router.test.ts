@@ -57,6 +57,28 @@ describe("SIS memory-provider router", () => {
     ]);
   });
 
+  it("keeps private records local unless external mirroring is explicitly approved", () => {
+    const blocked = routeMemoryRecord(
+      record({ privacy_class: "private" }),
+      { tenant_id: "tenant_frank", default_cloud_memory: "mem0", graph_memory: true, peer_modeling: true },
+    );
+    assert.deepEqual(blocked.map(route => route.provider), ["local_core"]);
+
+    const approved = routeMemoryRecord(
+      record({ privacy_class: "private" }),
+      {
+        tenant_id: "tenant_frank",
+        default_cloud_memory: "mem0",
+        graph_memory: true,
+        peer_modeling: true,
+        allow_private_external_mirror: true,
+      },
+    );
+    assert.ok(approved.some(route => route.provider === "mem0"));
+    assert.ok(approved.some(route => route.provider === "hindsight"));
+    assert.ok(approved.some(route => route.provider === "honcho"));
+  });
+
   it("routes graph-heavy records to Hindsight and general cloud memory to Mem0 without making either authoritative", () => {
     const routes = routeMemoryRecord(
       record({
