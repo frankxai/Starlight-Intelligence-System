@@ -28,6 +28,33 @@ Starlight is two things in one repository:
 
 Use just the memory layer in your current tools. Adopt the protocol. Or run the complete system Frank uses every day.
 
+
+## Purpose
+
+Starlight Intelligence System (SIS) is the **sovereign AI substrate** for memory, orchestration, skills, governance, and evals across Claude Code, Codex, Cursor, Gemini, and Antigravity. Dual-layer: **SIP substrate** you can adopt/fork, plus this repo's **reference operational build** (vaults, MCP, agents).
+
+## How People Experience It
+
+- **Builders:** 60-second start → forge alliances → spawn vertical intelligence systems → attest artifacts.
+- **Operators:** six vaults under `~/.starlight/vaults`, MCP tools, platform adapters, named agents.
+- **Public narrative:** constellation / ecosystem maps and Health Intelligence (and sibling verticals) downloads.
+- **Humans land on:** README → 60-second start → substrate files → operational quick start.
+
+## How Agents Explore It
+
+1. Read **`CLAUDE.md`** (deepest) and **`AGENTS.md`** (SIP file-contract / Codex entry).
+2. Check `agents/AGENT_REGISTRY.md` before inventing agents.
+3. Memory first: vaults exist — query, then write durable notes for future sessions.
+4. Run harness gates before claiming production readiness; prefer proof over console language ([#35](https://github.com/frankxai/Starlight-Intelligence-System/issues/35)).
+5. Cross-links: [starlight-memory](https://github.com/frankxai/starlight-memory) · [starlight-evals](https://github.com/frankxai/starlight-evals) · [starlight-swarm](https://github.com/frankxai/starlight-swarm) · [ACOS](https://github.com/frankxai/agentic-creator-os) · [FrankX](https://github.com/frankxai/FrankX).
+
+## Usefulness
+
+- **Humans:** portable sovereign memory + multi-agent fleet that compounds.
+- **Agents:** shared cognitive architecture, SAGE self-healing patterns, alliance/vertical forge.
+- **Portfolio role:** substrate under GenCreator/ACOS/Arcanea ops; mesh and Wealth OS drafts stay issue-tracked until harness-proven.
+
+---
 ## 60-second start
 
 ```bash
