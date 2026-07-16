@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/observability/event-1.0.0.json",
+  "title": "SIP Observability Event",
+  "type": "object",
+  "required": ["schema_version","event_id","event_type","observed_at","source","links","evidence","privacy"],
+  "properties": {
+    "schema_version": {"const":"1.0.0"},
+    "event_id": {"type":"string","minLength":1},
+    "event_type": {"enum":["objective.created","decision.recorded","run.started","run.completed","run.failed","artifact.produced","artifact.verified","human.intervention","cost.observed","metric.observed","repo.snapshot","incident.opened","incident.resolved"]},
+    "observed_at": {"type":"string","format":"date-time"},
+    "source": {"type":"object","required":["system"],"properties":{"system":{"type":"string","minLength":1},"connector":{"type":"string"},"machine":{"type":"string"},"conversation_id":{"type":"string"},"ref":{"type":"string"}},"additionalProperties":true},
+    "links": {"type":"object","properties":{"objective_id":{"type":"string"},"run_id":{"type":"string"},"repo_id":{"type":"string"},"agent_id":{"type":"string"},"artifact_id":{"type":"string"},"venture_id":{"type":"string"},"incident_id":{"type":"string"}},"additionalProperties":true},
+    "execution": {"type":"object","properties":{"status":{"type":"string"},"unattended":{"type":"boolean"},"started_at":{"type":"string","format":"date-time"},"completed_at":{"type":"string","format":"date-time"},"retry_count":{"type":"integer","minimum":0},"human_minutes":{"type":"number","minimum":0}},"additionalProperties":true},
+    "quality": {"type":"object","properties":{"verified":{"type":"boolean"},"verifier":{"type":"string"},"accepted_first_pass":{"type":"boolean"},"score":{"type":"number"},"safety_verdict":{"type":"string"},"rework_minutes":{"type":"number","minimum":0}},"additionalProperties":true},
+    "economics": {"type":"object","properties":{"input_tokens":{"type":"integer","minimum":0},"output_tokens":{"type":"integer","minimum":0},"estimated_cost_usd":{"type":"number","minimum":0},"revenue_eur":{"type":"number"}},"additionalProperties":true},
+    "metrics": {"type":"object","additionalProperties":{"type":["string","number","integer","boolean","null"]}},
+    "evidence": {"type":"array","items":{"type":"object","properties":{"kind":{"type":"string"},"uri":{"type":"string"},"sha256":{"type":"string"},"description":{"type":"string"}},"anyOf":[{"required":["uri"]},{"required":["description"]}],"additionalProperties":true}},
+    "privacy": {"enum":["public","internal","private","restricted"]},
+    "summary": {"type":"string"},
+    "tags": {"type":"array","items":{"type":"string"}}
+  },
+  "additionalProperties":false
+}
