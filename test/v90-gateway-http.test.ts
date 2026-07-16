@@ -25,6 +25,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { request as httpRequest } from 'node:http';
 import { SisGatewayDaemon } from '../src/gateway/daemon.js';
+import { HttpTransport, SisMemoryClient } from '../src/gateway/client.js';
 
 // ── HTTP helpers ────────────────────────────────────────────────────────────
 
@@ -119,5 +120,50 @@ describe('v9.0 Gateway HTTP — double-spawn guard', () => {
       /already running|spawn guard/i,
       'second start must fail with spawn guard error',
     );
+  });
+});
+
+describe('v9.0 Gateway HTTP — harness isolation and input bounds', () => {
+  let root: string;
+  let daemon: SisGatewayDaemon;
+
+  before(async () => {
+    root = mkdtempSync(join(tmpdir(), 'sis-http-isolation-'));
+    daemon = new SisGatewayDaemon({ storageRoot: root });
+    await daemon.start({ port: 0 });
+  });
+
+  after(async () => {
+    await daemon.stop();
+    try { rmSync(root, { recursive: true, force: true }); } catch { /* ignore */ }
+  });
+
+  it('keeps identical session ids isolated by HTTP harness', async () => {
+    const alpha = new SisMemoryClient(new HttpTransport({ storageRoot: root, harness: 'alpha' }));
+    const beta = new SisMemoryClient(new HttpTransport({ storageRoot: root, harness: 'beta' }));
+
+    await alpha.addSessionItems('shared-id', [{ content: 'alpha-only' }]);
+    await beta.addSessionItems('shared-id', [{ content: 'beta-only' }]);
+
+    assert.deepEqual((await alpha.getSessionItems('shared-id')).map(item => item.content), ['alpha-only']);
+    assert.deepEqual((await beta.getSessionItems('shared-id')).map(item => item.content), ['beta-only']);
+  });
+
+  it('rejects malformed harness identifiers at the daemon boundary', async () => {
+    const transport = new HttpTransport({ storageRoot: root, harness: '../escape' });
+    const response = await transport.request({ method: 'GET', path: '/v1/memory/health' });
+    assert.equal(response.ok, false);
+    assert.equal((response as { status: number }).status, 400);
+  });
+
+  it('rejects request bodies larger than one MiB', async () => {
+    const transport = new HttpTransport({ storageRoot: root, harness: 'bounded' });
+    const response = await transport.request({
+      method: 'POST',
+      path: '/v1/memory/add',
+      body: { content: 'x'.repeat(1_048_577) },
+    });
+    assert.equal(response.ok, false);
+    assert.equal((response as { status: number }).status, 413);
   });
 });

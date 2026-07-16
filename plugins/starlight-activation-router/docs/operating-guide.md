@@ -9,6 +9,11 @@ This guide explains how to use the Codex Starlight Activation Router across fres
 - `/acos`: route Agentic Creator Operating System work across content, creator, music, video, publishing, and implementation lanes.
 - `si:`, `so:`, `acos:`: mobile-safe aliases when a surface does not expose local slash prompts.
 
+The plugin exposes these routes through its three bundled skills. To add the slash prompt files to a
+local Codex installation, run `scripts/install-codex-prompts.ps1`, then start a new task. The
+`scripts/route-prompt.mjs` utility remains available for explicit JSON-input diagnostics and smoke
+tests; the plugin does not register it as a lifecycle hook or a standalone permission boundary.
+
 ## Default New Chat Pattern
 
 Start a fresh chat with one of these:
@@ -93,7 +98,8 @@ The best community-facing product is a guided creation cell: a small group start
 
 ## Safety Rules
 
-- Hooks add context and guardrails; they do not spawn agents automatically.
+- Skills and prompt shortcuts add routing context; they do not spawn agents automatically.
+- The router diagnostic can report a deny decision, but only the calling harness can enforce it. Estate `AGENTS.md` and harness policies remain authoritative.
 - Fanout requires explicit wording such as `/so --fanout`, `dispatch`, `run fanout`, or `verify across lanes`.
 - Railway, billing, DNS, secrets, public networking, and destructive commands need explicit approval.
 - Default to read-only audits until the user asks for implementation.

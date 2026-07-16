@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import SubstrateGraph2D from "./SubstrateGraph2D";
 import SubstrateHud from "./SubstrateHud";
 import SubstrateSceneClient from "./SubstrateSceneClient";
+import SidePanel from "./SidePanel";
+import { type Node as VNode } from "@/data/substrate";
 
 type ViewMode = "2d" | "3d";
 
@@ -30,6 +32,8 @@ export default function SubstrateViewSwitcher({
     return initialView;
   }, [searchParams, initialView]);
 
+  const [selectedNode, setSelectedNode] = useState<VNode | null>(null);
+
   const setView = useCallback(
     (next: ViewMode) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -46,11 +50,18 @@ export default function SubstrateViewSwitcher({
 
       {/* Renderer */}
       <div className="absolute inset-0">
-        {view === "2d" ? <SubstrateGraph2D /> : <SubstrateSceneClient />}
+        {view === "2d" ? (
+          <SubstrateGraph2D onNodeClick={setSelectedNode} />
+        ) : (
+          <SubstrateSceneClient onNodeClick={setSelectedNode} />
+        )}
       </div>
 
       {/* V&V HUD overlay */}
       <SubstrateHud view={view} setView={setView} />
+      
+      {/* Detail panel */}
+      <SidePanel node={selectedNode} onClose={() => setSelectedNode(null)} />
     </div>
   );
 }

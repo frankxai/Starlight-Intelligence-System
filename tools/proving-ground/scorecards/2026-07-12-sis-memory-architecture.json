@@ -1,0 +1,153 @@
+{
+  "schema": "sis.memory.architecture_scorecard.v1",
+  "evaluated_at": "2026-07-12T05:01:21.634Z",
+  "scope": "SIS canonical memory, Memory Gateway, MCP surfaces, private memory bus, MemPalace, Hindsight, Honcho, and Hermes provider patterns",
+  "verdict": {
+    "architecture": "strong",
+    "single_machine_cross_agent": "beta",
+    "cross_device": "alpha_unvalidated",
+    "mempalace": "static_prototype",
+    "external_provider_readiness": "adapter_contract_only",
+    "world_class_production_claim_allowed": false
+  },
+  "active_bus_baseline": {
+    "corpus_atoms": 345,
+    "namespaces": 46,
+    "queries": 50,
+    "hit_at_10": 0.88,
+    "hit_at_5": 0.74,
+    "precision_at_10": 0.382,
+    "mrr_at_10": 0.526,
+    "latency_ms_p50": 174.128,
+    "latency_ms_p95": 258.578,
+    "quality_eligible": false,
+    "limitations": [
+      "Token-overlap relevance judge",
+      "hit@5 is labeled recall5 in the legacy runner",
+      "No restart, privacy, concurrent-writer, cross-device, or outage cases"
+    ]
+  },
+  "provider_contract_eval": {
+    "fixture": "evals/memory/provider-contract.v1.json",
+    "command": "npm run eval:memory-providers",
+    "quality_eligible": false,
+    "results": [
+      {
+        "candidate": "sis-local-core",
+        "execution_mode": "local_engine",
+        "ingest_written": 6,
+        "ingest_failed": 0,
+        "hit_at_1": 1,
+        "hit_at_3": 1,
+        "mrr": 1,
+        "forbidden_leaks": 0,
+        "forget": "pass",
+        "latency_ms_p50": 0.133,
+        "latency_ms_p95": 1.145,
+        "verdict": "pass"
+      },
+      {
+        "candidate": "hindsight-adapter-contract",
+        "execution_mode": "adapter_contract",
+        "ingest_written": 6,
+        "ingest_failed": 0,
+        "hit_at_1": 1,
+        "hit_at_3": 1,
+        "mrr": 1,
+        "forbidden_leaks": 0,
+        "forget": "pass",
+        "latency_ms_p50": 0.122,
+        "latency_ms_p95": 1.168,
+        "verdict": "pass"
+      },
+      {
+        "candidate": "honcho-adapter-contract",
+        "execution_mode": "adapter_contract",
+        "ingest_written": 6,
+        "ingest_failed": 0,
+        "hit_at_1": 1,
+        "hit_at_3": 1,
+        "mrr": 1,
+        "forbidden_leaks": 0,
+        "forget": "pass",
+        "latency_ms_p50": 0.133,
+        "latency_ms_p95": 0.465,
+        "verdict": "pass"
+      }
+    ],
+    "comparison_policy": "Contract simulations prove adapter behavior only. Native vendor ranking requires identical quality-eligible fixtures, models, prompts, judges, budgets, and live endpoints."
+  },
+  "bounded_regression_run": {
+    "command": "node --import tsx --test test/memory-provider-router.test.ts test/memory-provider-local-core.test.ts test/memory-provider-mem0.test.ts test/memory-provider-hindsight-honcho.test.ts test/v90-gateway.test.ts test/v90-gateway-http.test.ts test/mcp-server-smoke.test.ts",
+    "tests": 40,
+    "passed": 40,
+    "failed": 0
+  },
+  "post_hardening_smoke": {
+    "command": "node --import tsx --test test/v90-gateway-http.test.ts test/jsonl-lock.test.ts",
+    "tests": 10,
+    "passed": 10,
+    "failed": 0
+  },
+  "final_gateway_lock_smoke": {
+    "command": "node --import tsx --test test/v90-gateway.test.ts test/jsonl-lock.test.ts",
+    "tests": 18,
+    "passed": 18,
+    "failed": 0
+  },
+  "gates": [
+    { "id": "gateway_restart_recall", "status": "pass" },
+    { "id": "persisted_vault_identity", "status": "pass" },
+    { "id": "http_harness_isolation", "status": "pass" },
+    { "id": "http_body_limit", "status": "pass" },
+    { "id": "mcp_vault_path_traversal", "status": "pass" },
+    { "id": "jsonl_stale_lock_recovery", "status": "pass" },
+    { "id": "jsonl_owner_safe_release", "status": "pass" },
+    { "id": "external_raw_content_boundary", "status": "pass" },
+    { "id": "external_raw_scope_boundary", "status": "pass" },
+    { "id": "private_external_default_deny", "status": "pass" },
+    { "id": "two_physical_device_partition_rejoin", "status": "not_run" },
+    { "id": "100_concurrent_writer_no_loss", "status": "not_run" },
+    { "id": "native_hindsight_quality", "status": "not_run" },
+    { "id": "native_honcho_quality", "status": "not_run" },
+    { "id": "live_mempalace_projection", "status": "fail" }
+  ],
+  "provider_decision": {
+    "canonical": "sis_local_core",
+    "first_shadow_candidate": "hindsight",
+    "optional_peer_model_lane": "honcho",
+    "external_activation": "human_gated",
+    "reasons": [
+      "SIS preserves sovereign truth and provider portability",
+      "Hindsight best matches the missing temporal/graph/reflection lane",
+      "Honcho best matches peer/user modeling rather than general canonical storage",
+      "Both remain deletable and rebuildable projections"
+    ]
+  },
+  "native_vendor_run": {
+    "status": "skipped_honestly",
+    "reasons": [
+      "No Hindsight or Honcho credentials/base URLs configured",
+      "Hermes lazy provider dependencies not installed",
+      "Docker unavailable",
+      "Machine-performance preflight returned HOLD"
+    ]
+  },
+  "full_build_and_typecheck": {
+    "status": "not_run_machine_gate_hold",
+    "preflight": {
+      "decision": "HOLD",
+      "free_ram_mb": 636,
+      "required_ram_mb": 8192,
+      "cpu_percent": 87,
+      "posture": "restart-soon"
+    }
+  },
+  "evidence": [
+    "docs/decisions/sis-memory-architecture-2026-07-12.md",
+    "docs/memory/MCP-SURFACE.md",
+    "evals/memory/provider-contract.v1.json",
+    "src/memory-provider/eval.ts",
+    "test/memory-provider-hindsight-honcho.test.ts"
+  ]
+}

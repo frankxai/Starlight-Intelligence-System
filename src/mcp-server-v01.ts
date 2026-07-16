@@ -173,6 +173,7 @@ export class SisMcpServerV01 {
     this.vault = new VaultMemory({
       storagePath: options.vaultStoragePath ?? join(this.repoRoot, '.starlight'),
     });
+    this.vault.load();
     ensureDir(join(this.repoRoot, 'memory', '_audit'));
     this.registerTools();
   }

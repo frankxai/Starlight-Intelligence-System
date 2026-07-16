@@ -7,6 +7,7 @@ import type {
   RecallResult,
   SISMemoryRecord,
 } from "./types.js";
+import { externalMemoryText, externalScopeId, isExternalMirrorBlocked } from './privacy.js';
 
 export interface Mem0Client {
   addMemory(input: { text: string; user_id?: string; agent_id?: string; metadata: Record<string, unknown> }): Promise<{ id: string }>;
@@ -18,6 +19,7 @@ export interface Mem0RemoteProviderOptions {
   client: Mem0Client;
   flush_batch_size?: number;
   allow_regulated_external_mirror?: boolean;
+  allow_private_external_mirror?: boolean;
   provider_name?: string;
 }
 
@@ -33,12 +35,15 @@ export class Mem0RemoteProvider implements MemoryProvider {
   private readonly client: Mem0Client;
   private readonly flushBatchSize: number;
   private readonly allowRegulatedExternalMirror: boolean;
+  private readonly allowPrivateExternalMirror: boolean;
   private readonly pending: PendingWrite[] = [];
+  private readonly providerIds = new Map<string, string>();
 
   constructor(options: Mem0RemoteProviderOptions) {
     this.client = options.client;
     this.flushBatchSize = Math.max(1, options.flush_batch_size ?? 25);
     this.allowRegulatedExternalMirror = options.allow_regulated_external_mirror ?? false;
+    this.allowPrivateExternalMirror = options.allow_private_external_mirror ?? false;
   }
 
   async remember(record: SISMemoryRecord): Promise<SISMemoryRecord> {
@@ -50,7 +55,7 @@ export class Mem0RemoteProvider implements MemoryProvider {
       });
     }
 
-    const text = record.normalized_fact ?? record.summary ?? "";
+    const text = externalMemoryText(record);
     if (!text.trim()) {
       return withMem0Ref(record, {
         provider_record_id: "missing_redacted_text",
@@ -70,8 +75,14 @@ export class Mem0RemoteProvider implements MemoryProvider {
   async recall(request: RecallRequest): Promise<RecallResult[]> {
     const rows = await this.client.searchMemories({
       query: request.query,
+      user_id: externalScopeId('user', request.user_id),
+      agent_id: externalScopeId('agent', request.agent_id),
       limit: Math.max(1, request.limit ?? 10),
-      metadata: { tenant_id: request.tenant_id },
+      metadata: {
+        tenant_scope: externalScopeId('tenant', request.tenant_id),
+        workspace_scope: externalScopeId('workspace', request.workspace_id),
+        session_scope: externalScopeId('session', request.session_id),
+      },
     });
 
     const minScore = request.min_score ?? 0;
@@ -79,6 +90,7 @@ export class Mem0RemoteProvider implements MemoryProvider {
       .map((row) => {
         const score = row.score ?? 0;
         const sisId = typeof row.metadata?.sis_memory_id === "string" ? row.metadata.sis_memory_id : `mem0_shadow_${row.id}`;
+        this.providerIds.set(sisId, row.id);
         const record: SISMemoryRecord = {
           memory_id: sisId,
           tenant_id: request.tenant_id,
@@ -108,7 +120,11 @@ export class Mem0RemoteProvider implements MemoryProvider {
   }
 
   async forget(request: ForgetRequest): Promise<boolean> {
-    return this.client.deleteMemory({ id: request.memory_id });
+    const providerId = request.provider_record_id ?? this.providerIds.get(request.memory_id);
+    if (!providerId) return false;
+    const deleted = await this.client.deleteMemory({ id: providerId });
+    if (deleted) this.providerIds.delete(request.memory_id);
+    return deleted;
   }
 
   async flush(): Promise<{ attempted: number; written: number; failed: number }> {
@@ -117,12 +133,13 @@ export class Mem0RemoteProvider implements MemoryProvider {
     let failed = 0;
     for (const item of batch) {
       try {
-        await this.client.addMemory({
+        const writtenRow = await this.client.addMemory({
           text: item.text,
-          user_id: item.record.user_id,
-          agent_id: item.record.agent_id,
+          user_id: externalScopeId('user', item.record.user_id),
+          agent_id: externalScopeId('agent', item.record.agent_id),
           metadata: item.metadata,
         });
+        this.providerIds.set(item.record.memory_id, writtenRow.id);
         written++;
       } catch {
         failed++;
@@ -136,17 +153,21 @@ export class Mem0RemoteProvider implements MemoryProvider {
   }
 
   private isBlocked(record: SISMemoryRecord): boolean {
-    if (record.privacy_class === "secret") return true;
-    if (record.privacy_class === "regulated" && !this.allowRegulatedExternalMirror) return true;
-    return false;
+    return isExternalMirrorBlocked(record, {
+      allow_private_external_mirror: this.allowPrivateExternalMirror,
+      allow_regulated_external_mirror: this.allowRegulatedExternalMirror,
+    });
   }
 }
 
 function metadataFor(record: SISMemoryRecord): Record<string, unknown> {
   return {
     sis_memory_id: record.memory_id,
-    tenant_id: record.tenant_id,
-    workspace_id: record.workspace_id,
+    tenant_scope: externalScopeId('tenant', record.tenant_id),
+    workspace_scope: externalScopeId('workspace', record.workspace_id),
+    agent_scope: externalScopeId('agent', record.agent_id),
+    user_scope: externalScopeId('user', record.user_id),
+    session_scope: externalScopeId('session', record.source.session_id),
     memory_type: record.memory_type,
     vault: record.vault,
     privacy_class: record.privacy_class,

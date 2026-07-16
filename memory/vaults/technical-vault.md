@@ -61,6 +61,7 @@ last_consolidated: '2026-05-11'
 **Elegance:** The loop now looks at itself (Queen advances the Queen). Visuals make the invisible (routing confidence, memory health, compound velocity) visible and citable. Gateway makes Queen state portable across harnesses without copy-paste.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
 **Related:** Strategic Vault - Architecture Decision
 
 **Pattern:** Use markdown files and JSON configuration instead of executable code for AI system definition.
@@ -280,5 +281,29 @@ When developing autonomous client bridges to JSON-RPC tools and services (such a
 
 **Built on SIP — Starlight Intelligence Protocol**
 
+---
 
+### [2026-07-12] SIS Memory Authority and Projection Pattern
 
+**Category:** architecture-decision / memory-system / provider-routing
+**Confidence:** 0.97
+**Source:** Codex `/si` memory architecture audit and bounded implementation pass
+**Related:** `docs/decisions/sis-memory-architecture-2026-07-12.md`, `docs/memory/MCP-SURFACE.md`, `evals/memory/provider-contract.v1.json`, `tools/proving-ground/scorecards/2026-07-12-sis-memory-architecture.json`
+
+**Decision:** SIS local events and vaults remain the only canonical memory authority. Hindsight is the first optional shadow candidate for temporal/graph/reflection recall. Honcho is an isolated optional peer/user-model lane. Both are deletable, rebuildable projections and never canonical truth.
+
+**Confirmed implementation patterns:**
+
+- Gate every operational writer behind one authenticated per-machine Gateway/broker; direct MCP and indexer writes must converge on that path.
+- Load canonical state before serving reads, retain persisted `vault:*` identity, and make derived indexes fully rebuildable.
+- Use owner-tokened locks with stale recovery during the transition to a single writer.
+- Default-deny external mirrors for `private`, `secret`, and `regulated` memory unless policy explicitly permits the class; secrets never leave SIS.
+- Send providers normalized facts/summaries only, with pseudonymous scope keys and distinct provider shadow ids. Production scope keys require a tenant-held HMAC salt.
+- Do not call shared mutable JSONL “conflict-free cross-device.” The target is immutable per-device event segments, globally unique event ids, causal/HLC metadata, tombstones, encrypted replication, and explicit convergence tests.
+- Treat MemPalace as a derived read-only projection with signed source ids and freshness. The current site is a static prototype, not a live memory control plane.
+
+**Evidence:** The active private bus contained 345 atoms across 46 namespaces. Its legacy 50-query baseline produced hit@10 0.88, hit@5 0.74, precision@10 0.382, MRR@10 0.526, p50 174.128 ms, and p95 258.578 ms; the lexical judge makes this engineering evidence, not a public benchmark. New local/Hindsight-contract/Honcho-contract evals each passed five scoped recall cases with zero forbidden leaks and explicit forget. Bounded regression tests passed 40/40, plus a post-hardening lock/Gateway smoke passed 10/10.
+
+**Open production gates:** physical two-device partition/rejoin convergence, 100-writer no-loss proof, durable provider outbox/replay, unified MCP facade, native Hindsight/Honcho bake-off, live MemPalace projection, full build/typecheck, and independent verifier. The latter two were deferred because `pp preflight --workload build` returned HOLD at 636 MB free RAM and 87% CPU.
+
+**Built on SIP — Starlight Intelligence Protocol**

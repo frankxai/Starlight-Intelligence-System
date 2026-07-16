@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrainHero } from "@/components/BrainHero";
+import { ADVANCED_INFOGRAPHICS } from "@/lib/queen-visuals";
 
 export const revalidate = 3600;
 
@@ -261,6 +262,17 @@ export default function ArchitecturePage() {
               accent="emerald"
             />
           </div>
+
+          <div className="mt-12 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c12] aspect-[16/9] relative shadow-[0_0_50px_rgba(34,211,238,0.05)]">
+            <img 
+              src="/assets/visuals/queen-premium/128.png" 
+              alt="Starlight System Architecture Dual-Layer Stack" 
+              className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
+            />
+            <div className="absolute bottom-4 left-4 rounded-xl bg-[#060609]/95 px-4 py-2.5 text-[11px] font-mono text-cyan-300 border border-cyan-400/20 backdrop-blur">
+              System Architecture Cover (Visual 128)
+            </div>
+          </div>
         </div>
       </section>
 
@@ -355,35 +367,47 @@ export default function ArchitecturePage() {
 
       {/* ── Domain Sub-Stack Tier ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
-            Domain Sub-Stack Tier
-          </h2>
-          <p className="mt-3 text-xl font-semibold text-white">
-            Verticals compose the same substrate for a specific domain.
-          </p>
-          <p className="mt-5 text-[14px] leading-[1.85] text-slate-400">
-            Three reference Domain Sub-Stacks ship in this repo: People
-            Intelligence (6 sub-systems · 28 commands · 6 agents), Sound
-            Intelligence (6 / 30 / 6), and Music IS (6+1 / 8 / 7,
-            Frank-operated).
-          </p>
-          <p className="mt-4 text-[14px] leading-[1.85] text-slate-400">
-            Every Domain Sub-Stack carries the same 7-file contract: README ·
-            SUB-SYSTEMS · AGENTS · SOUL · STACK · CANON · MEMORY. The
-            meta-command{" "}
-            <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[13px] text-violet-300">
-              /spawn-domain-stack
-            </code>{" "}
-            generalizes the pattern.
-          </p>
-          <div className="mt-8">
-            <Link
-              href="/verticals"
-              className="rounded-full bg-white px-5 py-2.5 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.2)]"
-            >
-              See the verticals &rarr;
-            </Link>
+        <div className="mx-auto max-w-5xl grid gap-10 md:grid-cols-[1.1fr_0.9fr] items-center">
+          <div>
+            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+              Domain Sub-Stack Tier
+            </h2>
+            <p className="mt-3 text-xl font-semibold text-white">
+              Verticals compose the same substrate for a specific domain.
+            </p>
+            <p className="mt-5 text-[14px] leading-[1.85] text-slate-400">
+              Three reference Domain Sub-Stacks ship in this repo: People
+              Intelligence (6 sub-systems · 28 commands · 6 agents), Sound
+              Intelligence (6 / 30 / 6), and Music IS (6+1 / 8 / 7,
+              Frank-operated).
+            </p>
+            <p className="mt-4 text-[14px] leading-[1.85] text-slate-400">
+              Every Domain Sub-Stack carries the same 7-file contract: README ·
+              SUB-SYSTEMS · AGENTS · SOUL · STACK · CANON · MEMORY. The
+              meta-command{" "}
+              <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[13px] text-violet-300">
+                /spawn-domain-stack
+              </code>{" "}
+              generalizes the pattern.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/verticals"
+                className="rounded-full bg-white px-5 py-2.5 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.2)]"
+              >
+                See the verticals &rarr;
+              </Link>
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c12] aspect-[4/3] relative shadow-[0_0_40px_rgba(167,139,250,0.04)]">
+            <img 
+              src="/assets/visuals/queen-premium/127.png" 
+              alt="Starlight Swarm Routing Constellation Flowchart" 
+              className="w-full h-full object-cover opacity-95 hover:opacity-100 transition-opacity duration-500"
+            />
+            <div className="absolute bottom-4 left-4 rounded-xl bg-[#060609]/95 px-4 py-2.5 text-[11px] font-mono text-cyan-300 border border-cyan-400/20 backdrop-blur">
+              Swarm Routing Constellation (Visual 127)
+            </div>
           </div>
         </div>
       </section>
@@ -558,6 +582,36 @@ export default function ArchitecturePage() {
             not. If a layer&apos;s use case is already covered by an existing
             layer&apos;s commands, it&apos;s a command, not a layer.
           </p>
+        </div>
+      </section>
+
+      {/* ── Advanced Systems Topology ── */}
+      <section className="border-b border-white/[0.08] px-6 py-20">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            Advanced Topology
+          </h2>
+          <p className="mt-3 max-w-md text-xl font-semibold text-white">
+            Comprehensive system maps.
+          </p>
+
+          <div className="mt-10 grid gap-8 md:grid-cols-2">
+            {ADVANCED_INFOGRAPHICS.map((id) => (
+              <div key={id} className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c12] relative shadow-[0_0_40px_rgba(167,139,250,0.04)]">
+                <img 
+                  src={`/assets/visuals/queen-premium/${id}.jpg`} 
+                  alt={`Advanced Topology ${id}`} 
+                  className="w-full h-auto object-cover opacity-95 hover:opacity-100 transition-opacity duration-500"
+                />
+                <div className="absolute bottom-4 left-4 rounded-xl bg-[#060609]/95 px-4 py-2.5 text-[11px] font-mono text-cyan-300 border border-cyan-400/20 backdrop-blur">
+                  {id === 171 && "Domain Sub-Stack Topology (Visual 171)"}
+                  {id === 172 && "The Proving Ground Flow (Visual 172)"}
+                  {id === 173 && "The Veil Gateway (Visual 173)"}
+                  {id === 174 && "The 144 Agent Blueprint (Visual 174)"}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

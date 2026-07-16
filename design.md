@@ -38,3 +38,10 @@ To generate the Memory Palace Schema:
 2. If replacement is needed, run `nano_banana_pro` or `recraft-v4-1` using `C:\Users\frank\starlight\higgsfield\experiments\starlight-palace-schema.md`.
 3. Generate a 2K schematic first.
 4. Log preflight, generation, result URL, and next action in the global [ledger.jsonl](file:///C:/Users/frank/starlight/higgsfield/ledger.jsonl).
+
+<!-- STARLIGHT-REPO-CONTRACT:START -->
+## Starlight repository contract
+
+Contract: `starlight.repo_profile.v2` · Team: `starlight-platform-team` · Priority: `tier-0`
+Use the Premium Intelligence Web OS and the repo's brand pack. Build static hierarchy first; add motion only after composition works. Require real product/proof or high-fidelity assets, provenance, desktop/mobile/reduced-motion inspection, accessibility, performance, and a minimum 26/30 visual quality score.
+<!-- STARLIGHT-REPO-CONTRACT:END -->

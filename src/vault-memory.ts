@@ -23,6 +23,7 @@ import { readFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { EmpiricalSandbox } from './sandbox.js';
 import { HashingTFProvider, rrfMerge, type RRFOptions } from './embedding.js';
+import { withJsonlLock } from './jsonl-lock.js';
 
 // ── Vault classification keywords ──────────────────────────
 
@@ -249,14 +250,18 @@ export class VaultMemory extends MemoryManager {
       const entry = entryMap.get(id);
       if (!entry) continue;
 
-      const vault = this.vaultIndex.get(entry.id) ?? this.classifyVault(entry.content);
+      const vault = this.resolveVault(entry);
       if (options.vaults && options.vaults.length > 0) {
         if (!options.vaults.includes(vault)) continue;
       }
 
       results.push({
         entry: { ...entry, vault, updatedAt: entry.createdAt } as VaultEntry,
-        score: rrfScore([lexicalRanks.get(entry.id), semanticRanks.get(entry.id)]),
+        score: weightedRrfScore(
+          semanticRanks.get(entry.id),
+          lexicalRanks.get(entry.id),
+          rrfOpts,
+        ),
         matchedTerms: queryTerms.filter(w => entry.content.toLowerCase().includes(w)),
         channels: {
           lexicalRank: lexicalRanks.get(entry.id),
@@ -306,7 +311,9 @@ export class VaultMemory extends MemoryManager {
     // Append to JSONL ledger
     const dir = dirname(this.horizonPath);
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    appendFileSync(this.horizonPath, JSON.stringify(entry) + '\n', 'utf-8');
+    withJsonlLock(this.horizonPath, () => {
+      appendFileSync(this.horizonPath, JSON.stringify(entry) + '\n', 'utf-8');
+    });
 
     return entry;
   }
@@ -338,7 +345,7 @@ export class VaultMemory extends MemoryManager {
     }
 
     for (const entry of all) {
-      const vault = this.vaultIndex.get(entry.id) ?? this.classifyVault(entry.content);
+      const vault = this.resolveVault(entry);
       const bucket = buckets.get(vault)!;
       bucket.entries.push(entry);
       for (const tag of entry.tags) {
@@ -362,6 +369,22 @@ export class VaultMemory extends MemoryManager {
         topTags,
       };
     });
+  }
+
+  /** Resolve persisted vault identity before falling back to classification. */
+  private resolveVault(entry: MemoryEntry): VaultType {
+    const indexed = this.vaultIndex.get(entry.id);
+    if (indexed) return indexed;
+
+    const tagged = entry.tags
+      .find(tag => tag.startsWith('vault:'))
+      ?.slice('vault:'.length) as VaultType | undefined;
+    if (tagged && ALL_VAULT_TYPES.includes(tagged)) {
+      this.vaultIndex.set(entry.id, tagged);
+      return tagged;
+    }
+
+    return this.classifyVault(entry.content);
   }
 }
 
@@ -400,7 +423,15 @@ function isPrivateEntry(entry: MemoryEntry): boolean {
   );
 }
 
-function rrfScore(ranks: Array<number | undefined>, k = 60): number {
-  return ranks.reduce<number>((sum, rank) => sum + (rank ? 1 / (k + rank) : 0), 0);
+function weightedRrfScore(
+  semanticRank: number | undefined,
+  lexicalRank: number | undefined,
+  opts: RRFOptions = {},
+): number {
+  const k = opts.k ?? 60;
+  const [semanticWeight, lexicalWeight] = opts.weights ?? [0.7, 0.3];
+  return (
+    (semanticRank ? semanticWeight / (k + semanticRank) : 0) +
+    (lexicalRank ? lexicalWeight / (k + lexicalRank) : 0)
+  );
 }
-

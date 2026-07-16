@@ -1,0 +1,53 @@
+// Personal Finance & Wealth Operations cockpit
+//
+// Launch: arc personal-finance
+// Or:     zellij --layout personal-finance --session personal-finance
+//
+// Designed for tracking daily, weekly, and monthly personal finance tasks,
+// wealth management, and operational oversight per user directives.
+//
+// Pane geometry:
+//
+//   +--------------------------------------------------------------+
+//   |  CONDUCTOR (Claude session, left 60%, full-height)           |
+//   |                                              +- TASKS -------|
+//   |                                              | daily/weekly  |
+//   |                                              | checklists    |
+//   |                                              +-- STATUS -----|
+//   |                                              | wealth & ops  |
+//   |                                              | overview      |
+//   |                                              +-- AUTOMATION--|
+//   |                                              | sync status   |
+//   +----------------------------------------------+---------------+
+
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="Personal Finance" focus=true {
+        pane split_direction="vertical" {
+            pane size="60%" name="Conductor" {
+                command "claude"
+                args "--resume" "personal-finance"
+            }
+            pane split_direction="horizontal" {
+                pane name="Tasks" {
+                    command "pwsh"
+                    args "-NoExit" "-Command" "Write-Host '=== Personal Finance Tasks ===' -ForegroundColor Cyan; Write-Host '[ ] Daily: Review yesterday`'s transactions'; Write-Host '[ ] Weekly: Reconcile accounts, check budget'; Write-Host '[ ] Monthly: Net worth snapshot, review subscriptions'; Write-Host ''; Write-Host 'To update tasks, edit docs/personal-finance-tasks.md'"
+                }
+                pane name="WealthStatus" {
+                    command "pwsh"
+                    args "-NoExit" "-Command" "Write-Host '=== Wealth Ops Status ===' -ForegroundColor Cyan; Write-Host 'Tracking active. Use /wealth-ops to run strategic reviews.'"
+                }
+                pane name="Automations" {
+                    command "pwsh"
+                    args "-NoExit" "-Command" "Write-Host '=== Automations ===' -ForegroundColor Cyan; Write-Host 'Waiting for scheduled sync tasks...'"
+                }
+            }
+        }
+    }
+}

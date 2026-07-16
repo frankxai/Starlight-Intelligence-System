@@ -270,6 +270,12 @@ export default function YoloPage() {
               Cockpit
             </Link>
             <Link
+              href="/yolo-traces"
+              className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-5 py-2.5 text-[14px] text-cyan-200 hover:bg-cyan-500/20"
+            >
+              Trace Telemetry
+            </Link>
+            <Link
               href="https://github.com/frankxai/Starlight-Intelligence-System"
               className="rounded-lg border border-violet-500/30 bg-violet-500/10 px-5 py-2.5 text-[14px] text-violet-200 hover:bg-violet-500/20"
             >

@@ -25,6 +25,10 @@ export class InMemoryLocalCoreProvider implements MemoryProvider {
 
     return Array.from(this.records.values())
       .filter((record) => record.tenant_id === request.tenant_id)
+      .filter((record) => request.workspace_id == null || record.workspace_id === request.workspace_id)
+      .filter((record) => request.agent_id == null || record.agent_id === request.agent_id)
+      .filter((record) => request.user_id == null || record.user_id === request.user_id)
+      .filter((record) => request.session_id == null || record.source.session_id === request.session_id)
       .map((record) => scoreRecord(record, queryTerms))
       .filter((result) => result.score > minScore)
       .sort((a, b) => b.score - a.score || b.record.importance - a.record.importance)

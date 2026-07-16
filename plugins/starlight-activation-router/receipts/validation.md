@@ -2,6 +2,10 @@
 
 Date: 2026-06-23
 
+> Superseded for current manifest compatibility on 2026-07-10. The official validator no longer
+> accepts `plugin.json.hooks`; the hook-specific results below are retained as historical evidence
+> only. See `manifest-compatibility-2026-07-10.md` for the current supported surfaces and validation.
+
 ## Source And Install
 
 - Source plugin: `C:\Users\frank\starlight\repos\Starlight-Intelligence-System\plugins\starlight-activation-router`

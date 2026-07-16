@@ -13,7 +13,7 @@ When the local prompt shortcut is installed, `/acos` expands into this skill and
 
 1. Pick the narrow creator lane first.
 2. Read only the specific ACOS command, skill, repo file, or prompt needed for the selected lane.
-3. Do not spawn swarms or fanout from hooks. Explicit user wording is required for cross-agent dispatch.
+3. Do not spawn swarms or fanout from ambient routing or prompt shortcuts. Explicit user wording is required for cross-agent dispatch.
 4. Prefer Codex for repo implementation and validation; route media, motion, music, and publishing work to the relevant Starlight skills/plugins.
 5. Return a compact receipt: selected lane, files read, next action, and any generated artifact path.
 6. For large creator programs, ask `/so` or Starlight Swarm to coordinate worker waves while ACOS owns the creator lane definition and publishing logic.

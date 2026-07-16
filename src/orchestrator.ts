@@ -139,12 +139,26 @@ export class OrchestrationEngine {
 
     // ── Layer 4: Routing ──
     const routingStage = this.startStage("routing");
-    const recommendations = this.router.route(cleanTask.intent, cleanTask.filePaths);
-    const maxAgents = cleanTask.maxAgents ?? this.defaultAgentCount(pattern, complexity);
+    
+    // Resolve the House namespace based on file paths and intent
+    const houseNamespace = this.router.resolveHouse(cleanTask.intent, cleanTask.filePaths);
+    cleanTask.context = { ...cleanTask.context, houseNamespace };
+
+    // Route within the target House domain
+    const recommendations = this.router.route(cleanTask.intent, cleanTask.filePaths, houseNamespace);
+    
+    // Enforce the strict 7-seat Council limit for any single execution context to prevent context bloat
+    let maxAgents = cleanTask.maxAgents ?? this.defaultAgentCount(pattern, complexity);
+    if (maxAgents > 7) {
+      console.warn(`[Orchestrator] Capping agents from ${maxAgents} to 7 (Council Limit)`);
+      maxAgents = 7;
+    }
+    
     const selectedAgents = recommendations.slice(0, maxAgents);
     this.completeStage(routingStage, {
       candidates: recommendations.length,
       selected: selectedAgents.length,
+      house: houseNamespace,
     });
 
     // ── Layer 5: Execution ──

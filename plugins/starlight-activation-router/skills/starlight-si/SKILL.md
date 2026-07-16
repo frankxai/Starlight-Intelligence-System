@@ -13,7 +13,7 @@ When the local prompt shortcut is installed, `/si` expands into this skill. On m
 
 1. Read repo-local `AGENTS.md` before editing or dispatching.
 2. Route first. Produce a compact lane recommendation or dispatch packet before running any cross-agent action.
-3. Do not launch fanout from hooks or ambient prompts. Fanout requires explicit wording such as `/si fanout`, `run fanout`, `dispatch`, `council`, or `smoke test`.
+3. Do not launch fanout from ambient routing or prompt shortcuts. Fanout requires explicit wording such as `/si fanout`, `run fanout`, `dispatch`, `council`, or `smoke test`.
 4. Keep default dispatch read-only unless Frank asks for implementation.
 5. Save or report receipts for any fanout/council run, including command, repo, lanes, and output path.
 6. For mobile prompts, keep output compact and command-ready. Mobile can steer the connected host, but local shell execution still happens on that host.

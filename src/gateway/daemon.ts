@@ -17,13 +17,15 @@ import { randomBytes } from 'node:crypto';
 import {
   existsSync,
   mkdirSync,
-  writeFileSync,
+  readFileSync,
   rmSync,
+  writeFileSync,
   chmodSync,
 } from 'node:fs';
 import { join } from 'node:path';
 import { SisGatewayCore } from './server.js';
 import type { GatewayRequest } from './protocol.js';
+import { acquireLock } from './lock.js';
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -48,6 +50,8 @@ export interface DaemonInfo {
 const SPAWN_LOCK_NAME = 'gateway-spawn.lock';
 const GATEWAY_JSON = 'gateway.json';
 const GATEWAY_TOKEN = 'gateway.token';
+const MAX_BODY_BYTES = 1_048_576;
+const HARNESS_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
 
 // ── HTTP helpers ─────────────────────────────────────────────
 
@@ -63,7 +67,17 @@ function sendJson(res: ServerResponse, status: number, body: unknown): void {
 async function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
-    req.on('data', chunk => chunks.push(chunk as Buffer));
+    let bytes = 0;
+    req.on('data', chunk => {
+      const buffer = chunk as Buffer;
+      bytes += buffer.length;
+      if (bytes > MAX_BODY_BYTES) {
+        reject(new Error('request_body_too_large'));
+        req.pause();
+        return;
+      }
+      chunks.push(buffer);
+    });
     req.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
     req.on('error', reject);
   });
@@ -76,7 +90,7 @@ export class SisGatewayDaemon {
   private readonly core: SisGatewayCore;
   private token: string = '';
   private spawnLockPath: string;
-  private spawnLockAcquired = false;
+  private releaseSpawnGuard: (() => void) | null = null;
   private server: import('node:http').Server | null = null;
 
   constructor(opts: DaemonOptions = {}) {
@@ -90,15 +104,22 @@ export class SisGatewayDaemon {
    * Returns the bound port. Throws if the spawn-guard lock is already held.
    */
   async start(opts: DaemonOptions = {}): Promise<number> {
-    // Acquire spawn guard
-    const lockPath = this.spawnLockPath;
+    if (!existsSync(this.storageRoot)) {
+      mkdirSync(this.storageRoot, { recursive: true });
+    }
+
+    // Acquire an owner-tokened spawn guard with stale-lock recovery.
     try {
-      mkdirSync(lockPath);
-      this.spawnLockAcquired = true;
-    } catch {
+      this.releaseSpawnGuard = await acquireLock(this.spawnLockPath, {
+        timeoutMs: 250,
+        retryMs: 25,
+        staleAfterMs: 30_000,
+      });
+    } catch (cause) {
       throw new Error(
-        `SIS gateway daemon already running (spawn guard at ${lockPath}). ` +
-        'Use the existing daemon or stop it first.'
+        `SIS gateway daemon already running (spawn guard at ${this.spawnLockPath}). ` +
+        'Use the existing daemon or stop it first.',
+        { cause },
       );
     }
 
@@ -106,9 +127,6 @@ export class SisGatewayDaemon {
     this.token = randomBytes(32).toString('hex');
 
     // Write token file
-    if (!existsSync(this.storageRoot)) {
-      mkdirSync(this.storageRoot, { recursive: true });
-    }
     const tokenFile = join(this.storageRoot, GATEWAY_TOKEN);
     writeFileSync(tokenFile, this.token, 'utf-8');
     try { chmodSync(tokenFile, 0o600); } catch { /* ignore on Windows */ }
@@ -123,6 +141,13 @@ export class SisGatewayDaemon {
       const expectedAuth = `Bearer ${this.token}`;
       if (authHeader !== expectedAuth) {
         sendJson(res, 401, { ok: false, error: 'Unauthorized' });
+        return;
+      }
+
+      const rawHarness = req.headers['x-sis-harness'];
+      const harness = Array.isArray(rawHarness) ? rawHarness[0] : rawHarness;
+      if (harness != null && !HARNESS_PATTERN.test(harness)) {
+        sendJson(res, 400, { ok: false, error: 'Invalid X-SIS-Harness header' });
         return;
       }
 
@@ -143,8 +168,12 @@ export class SisGatewayDaemon {
         try {
           const raw = await readBody(req);
           if (raw.trim()) body = JSON.parse(raw);
-        } catch {
-          sendJson(res, 400, { ok: false, error: 'Invalid JSON body' });
+        } catch (error) {
+          const tooLarge = error instanceof Error && error.message === 'request_body_too_large';
+          sendJson(res, tooLarge ? 413 : 400, {
+            ok: false,
+            error: tooLarge ? `Request body exceeds ${MAX_BODY_BYTES} bytes` : 'Invalid JSON body',
+          });
           return;
         }
       }
@@ -154,17 +183,22 @@ export class SisGatewayDaemon {
         path: pathPart,
         query,
         body,
-        auth: { harness: 'http', includePrivate: false },
+        auth: { harness: harness ?? 'http', includePrivate: false },
       };
 
       const response = await this.core.handle(gatewayReq);
       sendJson(res, response.status, response.ok ? response.body : { ok: false, error: response.error });
     });
 
-    await new Promise<void>((resolve, reject) => {
-      server.on('error', reject);
-      server.listen(desiredPort, host, () => resolve());
-    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        server.on('error', reject);
+        server.listen(desiredPort, host, () => resolve());
+      });
+    } catch (error) {
+      this.releaseSpawnLock();
+      throw error;
+    }
 
     const addr = server.address();
     const port = typeof addr === 'object' && addr ? addr.port : desiredPort;
@@ -206,20 +240,32 @@ export class SisGatewayDaemon {
    */
   stop(): Promise<void> {
     return new Promise((resolve) => {
-      this.releaseSpawnLock();
-      if (!this.server) { resolve(); return; }
+      const finish = () => {
+        this.removeOwnedDiscoveryFiles();
+        this.releaseSpawnLock();
+        resolve();
+      };
+      if (!this.server) { finish(); return; }
       this.server.close(() => {
         this.server = null;
-        resolve();
+        finish();
       });
     });
   }
 
+  private removeOwnedDiscoveryFiles(): void {
+    const infoPath = join(this.storageRoot, GATEWAY_JSON);
+    try {
+      const info = JSON.parse(readFileSync(infoPath, 'utf-8')) as Partial<DaemonInfo>;
+      if (info.pid !== process.pid) return;
+      rmSync(infoPath, { force: true });
+      rmSync(join(this.storageRoot, GATEWAY_TOKEN), { force: true });
+    } catch { /* absent, malformed, or already replaced */ }
+  }
+
   private releaseSpawnLock(): void {
-    if (this.spawnLockAcquired) {
-      try { rmSync(this.spawnLockPath, { recursive: true, force: true }); } catch { /* ignore */ }
-      this.spawnLockAcquired = false;
-    }
+    this.releaseSpawnGuard?.();
+    this.releaseSpawnGuard = null;
   }
 }
 

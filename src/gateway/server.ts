@@ -40,6 +40,10 @@ export interface GatewayCoreOptions {
   storageRoot: string;
 }
 
+const CANONICAL_VAULTS = new Set<VaultType>([
+  'strategic', 'technical', 'creative', 'operational', 'wisdom', 'horizon',
+]);
+
 export class SisGatewayCore {
   private readonly vault: VaultMemory;
   private readonly sessions: SessionStore;
@@ -48,6 +52,10 @@ export class SisGatewayCore {
     this.vault = new VaultMemory({
       storagePath: join(opts.storageRoot, '.starlight'),
     });
+    // Gateway processes are short-lived relative to the memory they serve.
+    // Hydrate the in-memory indexes before accepting requests so a restart
+    // cannot make persisted memories temporarily invisible.
+    this.vault.load();
     this.sessions = new SessionStore(opts.storageRoot);
   }
 
@@ -115,8 +123,10 @@ export class SisGatewayCore {
     }
 
     const content = body.content;
-    const vault: VaultType | undefined =
-      typeof body.vault === 'string' ? (body.vault as VaultType) : undefined;
+    if (body.vault != null && !isCanonicalVault(body.vault)) {
+      return err(400, 'body.vault must be one of strategic, technical, creative, operational, wisdom, horizon');
+    }
+    const vault = body.vault as VaultType | undefined;
     const tags = Array.isArray(body.tags) ? body.tags.map(String) : [];
     const confidence = typeof body.confidence === 'number' ? body.confidence : 0.5;
     const source = typeof body.source === 'string' ? body.source : undefined;
@@ -131,8 +141,14 @@ export class SisGatewayCore {
     }
 
     const query = body.query;
+    if (Array.isArray(body.vaults) && body.vaults.some(vault => !isCanonicalVault(vault))) {
+      return err(400, 'body.vaults contains a non-canonical vault');
+    }
     const vaults = Array.isArray(body.vaults) ? (body.vaults as VaultType[]) : undefined;
     const limit = typeof body.limit === 'number' ? body.limit : 10;
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+      return err(400, 'body.limit must be an integer from 1 to 100');
+    }
 
     const rawResults = this.vault.searchVaults({ query, vaults, limit });
 
@@ -234,4 +250,8 @@ function isPrivateTagged(tags: string[]): boolean {
     const tag = t.toLowerCase();
     return tag === 'private' || tag.startsWith('privacy:');
   });
+}
+
+function isCanonicalVault(value: unknown): value is VaultType {
+  return typeof value === 'string' && CANONICAL_VAULTS.has(value as VaultType);
 }
