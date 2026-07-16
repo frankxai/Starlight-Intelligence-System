@@ -29,6 +29,21 @@ if ($Register) {
 $Log = Join-Path $Vault '_meta\reflect-cron.log'
 Set-Location $Vault
 
+# Scheduled tasks cannot refresh OAuth — load API key from master secrets if unset.
+if (-not $env:ANTHROPIC_API_KEY) {
+    $secretsPath = Join-Path $env:USERPROFILE '.secrets\.env.master'
+    if (Test-Path $secretsPath) {
+        $keyLine = Select-String -Path $secretsPath -Pattern '^\s*ANTHROPIC_API_KEY\s*=' | Select-Object -First 1
+        if ($keyLine) {
+            $env:ANTHROPIC_API_KEY = ($keyLine.Line -split '=', 2)[1].Trim().Trim('"').Trim("'")
+        }
+    }
+}
+if (-not $env:ANTHROPIC_API_KEY) {
+    "=== $(Get-Date -Format o) SKIP — no ANTHROPIC_API_KEY (OAuth expired in headless cron; add key to ~/.secrets/.env.master or run: claude setup-token) ===" | Out-File -Append -Encoding utf8 $Log
+    exit 1
+}
+
 $prompt = @'
 You are the nightly Starlight Second Brain REFLECT run (autonomous). Follow the /starlight-sb skill and the vault CLAUDE.md contract. Use only the Read/Glob/Grep and Write/Edit tools - do NOT call git or MCP.
 1) REFLECT: read the _meta distilled layer (values.md, psychometrics/big-5.md, authentic-voice-map.md) + patterns/2026-corpus-synthesis.md + the most recent patterns/*-reflection.md. Generate 3-5 genuinely SALIENT, non-duplicate questions about the corpus (deliberately diversify away from prior weeks' themes - if prior reflections clustered on shipping/toolsmith, ask about health, relationships, or the creative engine instead). For each: cite a real source note; write a LENS answer, never a verdict. VERIFY gate - citation-real + lens-framed + privacy-safe, or DROP the candidate.
