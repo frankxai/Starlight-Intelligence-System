@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/observability/scorecard-1.0.0.json",
+  "title": "SIP Observability Scorecard",
+  "type": "object",
+  "required": ["schema_version","scorecard_id","generated_at","as_of","source_event_count","source_event_ids","metrics","signals","risks","anti_goodhart","attestation"],
+  "properties": {
+    "schema_version": {"const":"1.0.0"},
+    "scorecard_id": {"type":"string"},
+    "generated_at": {"type":"string","format":"date-time"},
+    "as_of": {"type":"string","format":"date"},
+    "source_event_count": {"type":"integer","minimum":0},
+    "source_event_ids": {"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "metrics": {"type":"array","items":{"type":"object","required":["name","value","unit","definition"],"properties":{"name":{"type":"string"},"value":{"type":["number","integer","string","boolean","null"]},"unit":{"type":"string"},"definition":{"type":"string"},"numerator":{"type":["number","integer"]},"denominator":{"type":["number","integer"]}},"additionalProperties":false}},
+    "signals": {"type":"object","additionalProperties":{"type":["string","number","integer","boolean","null"]}},
+    "risks": {"type":"array","items":{"type":"object"}},
+    "anti_goodhart": {"type":"string"},
+    "attestation": {"type":"string"}
+  },
+  "additionalProperties":false
+}
