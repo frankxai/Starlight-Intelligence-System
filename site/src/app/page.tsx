@@ -53,7 +53,7 @@ type OperatingStep = {
 };
 
 type RouteCard = {
-  href: "/protocol" | "/download" | "/research" | "/cockpit" | "/architecture" | "/vaults";
+  href: "/quickstart" | "/protocol" | "/download" | "/research" | "/cockpit" | "/architecture" | "/vaults";
   title: string;
   desc: string;
   icon: LucideIcon;
@@ -164,6 +164,12 @@ const OPERATING_STEPS: OperatingStep[] = [
 
 const PRODUCT_ROUTES: RouteCard[] = [
   {
+    href: "/quickstart",
+    title: "Quickstart",
+    desc: "Install the MCP server, configure your tool, and write your first vault entry.",
+    icon: Terminal,
+  },
+  {
     href: "/protocol",
     title: "Protocol",
     desc: "Read the SIP contract, attestation model, and substrate boundaries.",
@@ -241,27 +247,27 @@ export default async function HomePage() {
 
             <div className="mt-6 flex sm:hidden">
               <Link
-                href="/download"
+                href="/quickstart"
                 className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_32px_rgba(15,23,42,0.25)] transition-micro hover:bg-slate-800"
               >
-                Download starter
+                Start in 5 minutes
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
 
             <div className="mt-7 hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
               <Link
-                href="/download"
+                href="/quickstart"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_32px_rgba(15,23,42,0.25)] transition-micro hover:bg-slate-800"
               >
-                Download starter
+                Start in 5 minutes
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
               <Link
-                href="/protocol"
+                href="/download"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-950 transition-micro hover:bg-white"
               >
-                Read protocol
+                Download starter
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
@@ -412,11 +418,12 @@ export default async function HomePage() {
           <div className="mt-4 flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
               <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-                The site now leads with the system.
+                Start in minutes. Go as deep as you need.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600">
-                Protocol, starter kits, research, cockpit, architecture, and
-                vault APIs are the primary public proof surfaces.
+                Quickstart gets an agent reading and writing shared memory in
+                minutes. Protocol, starter kits, research, cockpit,
+                architecture, and vault APIs are the proof surfaces underneath it.
               </p>
             </div>
             <Link
