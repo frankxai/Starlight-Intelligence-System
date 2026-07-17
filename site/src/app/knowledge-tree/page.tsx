@@ -40,12 +40,16 @@ export const metadata: Metadata = {
 
 // The public repo exists; these CTAs link to it directly.
 // - CONTRIBUTE_URL → Issues, where contribution quests / open tasks live.
-// - ONTOLOGY_URL → repo root for now; the dedicated ontology document isn't
-//   published yet, so swap to `.../blob/main/ONTOLOGY.md` once it lands (avoids a 404).
+// - ONTOLOGY_URL → the canon layer (ontology, laws, research protocol, agent
+//   corps, and data/graph.json) currently lives in the SIS repo under
+//   verticals/knowledge-tree/. Phase 2 of the KT roadmap mirrors it into the
+//   public starlight-knowledge-tree repo; swap this to that repo's ONTOLOGY.md
+//   once the mirror lands.
 const KNOWLEDGE_TREE_GITHUB_URL =
   "https://github.com/frankxai/starlight-knowledge-tree";
 const CONTRIBUTE_URL = `${KNOWLEDGE_TREE_GITHUB_URL}/issues`;
-const ONTOLOGY_URL = KNOWLEDGE_TREE_GITHUB_URL;
+const ONTOLOGY_URL =
+  "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/knowledge-tree/ONTOLOGY.md";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MVP CONTENT — static.

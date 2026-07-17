@@ -207,6 +207,18 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **Board verdict:** REVISE close-out 2026-05-17 — `docs/boards/2026-05-17-crypto-investment-spawn.md` (5 items closed same-session per v7.5.1 recovery precedent).
 - **Genius prerequisite gate:** CLOSED via `genius/profile-frankx.md` + `genius/freedom-path-frankx.md` (Path A in-repo corpus excavation, 2026-05-17).
 
+### Knowledge Tree
+- **Class:** sovereign vertical (civilizational scope) — the open-knowledge-graph vertical. Distinct from domain sub-stacks: its domain is *all verifiable knowledge* mapped for humans and agents, not a single practice.
+- **Domain:** A typed, provenance-carrying graph of human capability and scientific knowledge — foundations (mathematics · physics-cosmos · life-mind · computation-intelligence · energy-matter) as trunk, capability paths as branches, open problems (`quest` nodes) as frontier. Progression loop: `concept → skill → practice → artifact → evidence → contribution → quest`.
+- **Owner:** open canon (CC-BY-4.0 data / MIT code) — forkable; Frank stewards the reference instance.
+- **Status:** `alpha — v0.2`. Canon layer live (`verticals/knowledge-tree/`): file contract + LAWS + ONTOLOGY + RESEARCH_PROTOCOL + AGENTS corps + `data/graph.json` (9 domains / 95 nodes / 101 edges, schema-validated). Explorer shipped at starlightintelligence.org/knowledge-tree (+ `/explore` 2D/3D).
+- **Primary repo:** `verticals/knowledge-tree/` in `frankxai/Starlight-Intelligence-System` (canon). Public mirror target: `github.com/frankxai/starlight-knowledge-tree` (Phase 2). Surface: `Starlight-Intelligence-System/site`.
+- **Canon:** declines mythology (substrate register). The knowledge itself is the canon; `LAWS.md` governs how a claim earns its place (provenance · adversarial verification · human merge gate · privacy boundary).
+- **Compounds:** open knowledge commons + attestation graph + every ecosystem surface (ACOS creator pipelines, claude-skills-library distribution) that composes the tree.
+- **SIP commands (planned):** `/kt-harvest`, `/kt-verify`, `/kt-quest`, `/kt-curate` — the research-corps loop (`RESEARCH_PROTOCOL.md`), runnable on any SKILL.md-compatible harness.
+- **Synthesis edge:** enterprise-architecture rigor × cross-domain pattern recognition × open-standards discipline × sovereignty-first substrate building. Applied to knowledge: foundations-first depth, provenance-or-it-doesn't-exist, and a research loop designed on the assumption that hallucination is the substrate's default.
+- **Governance:** substrate-tier — creation + ontology changes gated by `/starlight-board` + Frank-ack (this registration is a branch/draft-PR proposal, not a merged decision).
+
 ---
 
 ## Registry rules

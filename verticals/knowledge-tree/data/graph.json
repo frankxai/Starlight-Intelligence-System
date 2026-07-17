@@ -1,0 +1,1766 @@
+{
+  "meta": {
+    "name": "Starlight Knowledge Tree",
+    "version": "0.2.0",
+    "license": {
+      "data": "CC-BY-4.0",
+      "code": "MIT"
+    },
+    "attestation": "Built on SIP — Starlight Intelligence Protocol",
+    "substrate": "starlightintelligence.org/protocol",
+    "ontology": "verticals/knowledge-tree/ONTOLOGY.md",
+    "domainPrefixes": {
+      "math": "mathematics",
+      "phys": "physics-cosmos",
+      "bio": "life-mind",
+      "comp": "computation-intelligence",
+      "energy": "energy-matter",
+      "ai": "ai-architect",
+      "space": "space-builder",
+      "creator": "creator-founder"
+    },
+    "changelog": [
+      "0.1.0 — 2026-06 — seed path graph (4 domains, 44 nodes, 48 edges) authored in site bundle",
+      "0.2.0 — 2026-07-17 — canon layer: +5 foundation domains, foundation trunk nodes/edges, provenance + confidence fields, cross-domain bridges"
+    ],
+    "counts": {
+      "domains": 9,
+      "nodes": 95,
+      "edges": 101
+    }
+  },
+  "domains": [
+    {
+      "id": "mathematics",
+      "name": "Mathematics",
+      "accent": "violet",
+      "tier": "foundation",
+      "blurb": "The language of structure, quantity, and proof — the trunk everything else grows from."
+    },
+    {
+      "id": "physics-cosmos",
+      "name": "Physics & Cosmos",
+      "accent": "cyan",
+      "tier": "foundation",
+      "blurb": "Matter, energy, spacetime, and the universe at every scale."
+    },
+    {
+      "id": "life-mind",
+      "name": "Life & Mind",
+      "accent": "emerald",
+      "tier": "foundation",
+      "blurb": "The living substrate — from molecules to cells to cognition."
+    },
+    {
+      "id": "computation-intelligence",
+      "name": "Computation & Intelligence",
+      "accent": "amber",
+      "tier": "foundation",
+      "blurb": "What can be computed, how, and how intelligence arises in matter."
+    },
+    {
+      "id": "energy-matter",
+      "name": "Energy & Matter",
+      "accent": "rose",
+      "tier": "foundation",
+      "blurb": "The chemistry and energetics that build and power everything physical."
+    },
+    {
+      "id": "ai-architect",
+      "name": "AI Architect",
+      "accent": "cyan",
+      "blurb": "Design intelligence systems that compose without losing control.",
+      "tier": "path"
+    },
+    {
+      "id": "space-builder",
+      "name": "Space Builder",
+      "accent": "amber",
+      "blurb": "Move mass, energy, and information off the surface of a planet.",
+      "tier": "path"
+    },
+    {
+      "id": "bio-intelligence",
+      "name": "Bio / Human Intelligence",
+      "accent": "emerald",
+      "blurb": "Understand and extend the living, thinking substrate.",
+      "tier": "path"
+    },
+    {
+      "id": "creator-founder",
+      "name": "Creator-Founder",
+      "accent": "fuchsia",
+      "blurb": "Turn taste and systems into products people pay for.",
+      "tier": "path"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "math/concept/set-theory",
+      "label": "Set Theory",
+      "kind": "concept",
+      "domainId": "mathematics",
+      "summary": "ZFC axioms — the foundational language in which modern mathematics is formalized.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q12482"
+        },
+        {
+          "type": "isbn",
+          "id": "978-1-4419-8556-8",
+          "note": "Jech, Set Theory"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "math/concept/logic-proof",
+      "label": "Logic & Proof",
+      "kind": "concept",
+      "domainId": "mathematics",
+      "summary": "Formal deduction: what it means for a statement to follow from axioms.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q8078"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math/concept/number-theory",
+      "label": "Number Theory",
+      "kind": "concept",
+      "domainId": "mathematics",
+      "summary": "The deep structure of the integers — primes, divisibility, Diophantine equations.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q12479"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "math/concept/linear-algebra",
+      "label": "Linear Algebra",
+      "kind": "concept",
+      "domainId": "mathematics",
+      "summary": "Vector spaces and linear maps — the computational backbone of science and ML.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q82571"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math/concept/calculus-analysis",
+      "label": "Calculus & Analysis",
+      "kind": "concept",
+      "domainId": "mathematics",
+      "summary": "Limits, derivatives, integrals — the mathematics of continuous change.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q149972"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math/concept/probability",
+      "label": "Probability Theory",
+      "kind": "concept",
+      "domainId": "mathematics",
+      "summary": "Kolmogorov's axioms — rigorous reasoning under uncertainty.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q5862903"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "math/concept/group-theory",
+      "label": "Group Theory",
+      "kind": "concept",
+      "domainId": "mathematics",
+      "summary": "The mathematics of symmetry — foundational to physics and cryptography.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q874429"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "math/concept/topology",
+      "label": "Topology",
+      "kind": "concept",
+      "domainId": "mathematics",
+      "summary": "Properties preserved under continuous deformation — shape without distance.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q42989"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "math/evidence/godel-incompleteness",
+      "label": "Gödel's Incompleteness Theorems",
+      "kind": "evidence",
+      "domainId": "mathematics",
+      "summary": "Any consistent formal system rich enough for arithmetic contains true statements it cannot prove.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q200787"
+        },
+        {
+          "type": "doi",
+          "id": "10.1007/BF01700692"
+        }
+      ],
+      "last_verified": "2026-07-17"
+    },
+    {
+      "id": "math/quest/riemann-hypothesis",
+      "label": "Riemann Hypothesis",
+      "kind": "quest",
+      "domainId": "mathematics",
+      "summary": "Do all non-trivial zeros of the Riemann zeta function lie on the critical line Re(s)=1/2? Success: a proof or disproof. Unsolved since 1859; a Clay Millennium Problem.",
+      "confidence": "contested",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q192129"
+        },
+        {
+          "type": "url",
+          "id": "https://www.claymath.org/millennium/riemann-hypothesis/"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "math/quest/p-vs-np",
+      "label": "P versus NP",
+      "kind": "quest",
+      "domainId": "mathematics",
+      "summary": "Can every problem whose solution is quickly verifiable also be quickly solved? Success: proof that P=NP or P≠NP. A Clay Millennium Problem; foundational to computation and cryptography.",
+      "confidence": "contested",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q746242"
+        },
+        {
+          "type": "url",
+          "id": "https://www.claymath.org/millennium/p-vs-np/"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "phys/concept/classical-mechanics",
+      "label": "Classical Mechanics",
+      "kind": "concept",
+      "domainId": "physics-cosmos",
+      "summary": "Newtonian and Lagrangian dynamics — motion of matter under forces.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q11397"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "phys/concept/thermodynamics",
+      "label": "Thermodynamics",
+      "kind": "concept",
+      "domainId": "physics-cosmos",
+      "summary": "Energy, entropy, and the arrow of time — the laws heat and work obey.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q11473"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "phys/concept/electromagnetism",
+      "label": "Electromagnetism",
+      "kind": "concept",
+      "domainId": "physics-cosmos",
+      "summary": "Maxwell's unification of electricity, magnetism, and light.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q11406"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "phys/concept/special-relativity",
+      "label": "Special Relativity",
+      "kind": "concept",
+      "domainId": "physics-cosmos",
+      "summary": "Spacetime, the constancy of light speed, mass-energy equivalence.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q11455"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "phys/concept/general-relativity",
+      "label": "General Relativity",
+      "kind": "concept",
+      "domainId": "physics-cosmos",
+      "summary": "Gravity as the curvature of spacetime by mass-energy.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q11452"
+        },
+        {
+          "type": "doi",
+          "id": "10.1002/andp.19163540702"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "phys/concept/quantum-mechanics",
+      "label": "Quantum Mechanics",
+      "kind": "concept",
+      "domainId": "physics-cosmos",
+      "summary": "The probabilistic laws governing matter and energy at atomic scale.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q944"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "phys/concept/standard-model",
+      "label": "Standard Model",
+      "kind": "concept",
+      "domainId": "physics-cosmos",
+      "summary": "The field theory of all known particles and three of the four forces.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q192606"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "phys/concept/cosmology-bigbang",
+      "label": "Big Bang Cosmology",
+      "kind": "concept",
+      "domainId": "physics-cosmos",
+      "summary": "The universe's expansion from a hot dense state ~13.8 billion years ago.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q323"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "phys/evidence/higgs-2012",
+      "label": "Higgs Boson Detection (2012)",
+      "kind": "evidence",
+      "domainId": "physics-cosmos",
+      "summary": "ATLAS and CMS at the LHC confirmed the Higgs boson, completing the Standard Model's particle roster.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "doi",
+          "id": "10.1016/j.physletb.2012.08.020"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q844718"
+        }
+      ],
+      "last_verified": "2026-07-17"
+    },
+    {
+      "id": "phys/evidence/gw150914",
+      "label": "Gravitational Waves (GW150914)",
+      "kind": "evidence",
+      "domainId": "physics-cosmos",
+      "summary": "LIGO's 2015 detection of merging black holes directly confirmed a century-old prediction of general relativity.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "doi",
+          "id": "10.1103/PhysRevLett.116.061102"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q22315474"
+        }
+      ],
+      "last_verified": "2026-07-17"
+    },
+    {
+      "id": "phys/quest/quantum-gravity",
+      "label": "Quantum Gravity",
+      "kind": "quest",
+      "domainId": "physics-cosmos",
+      "summary": "How are general relativity and quantum mechanics reconciled into one theory? Success: an experimentally testable framework unifying gravity with the quantum. The central open problem of fundamental physics.",
+      "confidence": "contested",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q1049477"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "phys/quest/dark-matter-energy",
+      "label": "Dark Matter & Dark Energy",
+      "kind": "quest",
+      "domainId": "physics-cosmos",
+      "summary": "What are the ~95% of the universe's mass-energy that is neither ordinary matter nor radiation? Success: identification and characterization of the dark sector.",
+      "confidence": "contested",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q5283"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q206904"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "life/concept/evolution",
+      "label": "Evolution by Natural Selection",
+      "kind": "concept",
+      "domainId": "life-mind",
+      "summary": "Descent with modification under selection — the organizing principle of all biology.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q1063"
+        },
+        {
+          "type": "isbn",
+          "id": "978-0-140-43205-1",
+          "note": "Darwin, On the Origin of Species"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "life/concept/molecular-biology",
+      "label": "Molecular Biology",
+      "kind": "concept",
+      "domainId": "life-mind",
+      "summary": "The central dogma — DNA to RNA to protein — and the machinery of the cell.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q7141"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "life/concept/genetics",
+      "label": "Genetics & Genomics",
+      "kind": "concept",
+      "domainId": "life-mind",
+      "summary": "Heredity, variation, and the readout of genomes.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q7162"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "life/concept/cell-biology",
+      "label": "Cell Biology",
+      "kind": "concept",
+      "domainId": "life-mind",
+      "summary": "The cell as the fundamental unit of life — its structures and processes.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q7141"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "life/concept/neuroscience",
+      "label": "Neuroscience",
+      "kind": "concept",
+      "domainId": "life-mind",
+      "summary": "How nervous systems process information and produce behavior.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q207011"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "life/concept/ecology",
+      "label": "Ecology",
+      "kind": "concept",
+      "domainId": "life-mind",
+      "summary": "Interactions among organisms and their environment; systems at population and biosphere scale.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q7150"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "life/evidence/dna-structure-1953",
+      "label": "DNA Double Helix (1953)",
+      "kind": "evidence",
+      "domainId": "life-mind",
+      "summary": "Watson, Crick, Franklin, and Wilkins established DNA's structure, revealing the mechanism of heredity.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "doi",
+          "id": "10.1038/171737a0"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q911331"
+        }
+      ],
+      "last_verified": "2026-07-17"
+    },
+    {
+      "id": "life/evidence/human-genome-2003",
+      "label": "Human Genome Project (2003)",
+      "kind": "evidence",
+      "domainId": "life-mind",
+      "summary": "The first essentially complete sequence of the human genome, foundational to modern genomics and medicine.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q1057439"
+        },
+        {
+          "type": "doi",
+          "id": "10.1038/35057062"
+        }
+      ],
+      "last_verified": "2026-07-17"
+    },
+    {
+      "id": "life/quest/origin-of-life",
+      "label": "Origin of Life",
+      "kind": "quest",
+      "domainId": "life-mind",
+      "summary": "How did non-living chemistry give rise to self-replicating life on early Earth? Success: a demonstrated, plausible abiogenesis pathway. Constrained by prebiotic chemistry and the RNA-world hypothesis.",
+      "confidence": "speculative",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q189359"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "life/quest/consciousness",
+      "label": "The Nature of Consciousness",
+      "kind": "quest",
+      "domainId": "life-mind",
+      "summary": "How and why does subjective experience arise from physical processes (the 'hard problem')? Success: a theory that predicts and explains the presence and content of experience. Deeply contested across neuroscience and philosophy.",
+      "confidence": "speculative",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q2483"
+        },
+        {
+          "type": "doi",
+          "id": "10.1093/acprof:oso/9780195311051.001.0001"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "comp/concept/computability",
+      "label": "Computability & Turing Machines",
+      "kind": "concept",
+      "domainId": "computation-intelligence",
+      "summary": "What can in principle be computed — the Church-Turing thesis and its limits.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q163310"
+        },
+        {
+          "type": "doi",
+          "id": "10.1112/plms/s2-42.1.230"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "comp/concept/complexity",
+      "label": "Computational Complexity",
+      "kind": "concept",
+      "domainId": "computation-intelligence",
+      "summary": "How resource cost scales with problem size — P, NP, and the hierarchy.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q205084"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "comp/concept/algorithms",
+      "label": "Algorithms & Data Structures",
+      "kind": "concept",
+      "domainId": "computation-intelligence",
+      "summary": "Systematic procedures and the structures that make them efficient.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q8366"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "comp/concept/information-theory",
+      "label": "Information Theory",
+      "kind": "concept",
+      "domainId": "computation-intelligence",
+      "summary": "Shannon entropy, compression, channel capacity — the math beneath all communication and cognition.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "doi",
+          "id": "10.1002/j.1538-7305.1948.tb01338.x"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q131222"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "comp/concept/machine-learning",
+      "label": "Machine Learning",
+      "kind": "concept",
+      "domainId": "computation-intelligence",
+      "summary": "Systems that improve at a task from data rather than explicit programming.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q2539"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "comp/concept/deep-learning",
+      "label": "Deep Learning",
+      "kind": "concept",
+      "domainId": "computation-intelligence",
+      "summary": "Representation learning with deep neural networks — the engine of the modern AI era.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "doi",
+          "id": "10.1038/nature14539"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q197536"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "comp/concept/transformers",
+      "label": "Transformer Architecture",
+      "kind": "concept",
+      "domainId": "computation-intelligence",
+      "summary": "Attention-based sequence models — the substrate of large language models.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "arxiv",
+          "id": "1706.03762",
+          "note": "Attention Is All You Need"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q85810444"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "comp/evidence/alphafold-2021",
+      "label": "AlphaFold Protein Structure (2021)",
+      "kind": "evidence",
+      "domainId": "computation-intelligence",
+      "summary": "DeepMind's system predicted protein 3D structure from sequence at near-experimental accuracy, a landmark in scientific ML (CASP14).",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "doi",
+          "id": "10.1038/s41586-021-03819-2"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q107702640"
+        }
+      ],
+      "last_verified": "2026-07-17"
+    },
+    {
+      "id": "comp/quest/agi",
+      "label": "Artificial General Intelligence",
+      "kind": "quest",
+      "domainId": "computation-intelligence",
+      "summary": "Can we build systems that match or exceed human intelligence across the full range of cognitive tasks — and do so safely and controllably? Success criteria and safety framing are themselves active research.",
+      "confidence": "contested",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q1153047"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "comp/quest/alignment",
+      "label": "AI Alignment",
+      "kind": "quest",
+      "domainId": "computation-intelligence",
+      "summary": "How do we ensure advanced AI systems reliably pursue intended goals and remain correctable? Success: robust, scalable methods for oversight and value alignment. Load-bearing for the safe development of powerful AI.",
+      "confidence": "contested",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q113481646"
+        },
+        {
+          "type": "arxiv",
+          "id": "1606.06565",
+          "note": "Concrete Problems in AI Safety"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "energy/concept/chemistry",
+      "label": "Chemistry",
+      "kind": "concept",
+      "domainId": "energy-matter",
+      "summary": "How atoms bond and react — the science of matter's transformations.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q2329"
+        }
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "energy/concept/quantum-chemistry",
+      "label": "Quantum Chemistry",
+      "kind": "concept",
+      "domainId": "energy-matter",
+      "summary": "Chemical bonding and reactivity derived from quantum mechanics.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q7100"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "energy/concept/materials-science",
+      "label": "Materials Science",
+      "kind": "concept",
+      "domainId": "energy-matter",
+      "summary": "Structure-property relationships that let us design matter for a purpose.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q228736"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "energy/concept/thermodynamics-energy",
+      "label": "Energy & Thermodynamics",
+      "kind": "concept",
+      "domainId": "energy-matter",
+      "summary": "Conservation, conversion, and the entropy cost of every energy transformation.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q11473"
+        }
+      ],
+      "difficulty": 3
+    },
+    {
+      "id": "energy/concept/nuclear",
+      "label": "Nuclear Physics",
+      "kind": "concept",
+      "domainId": "energy-matter",
+      "summary": "The structure of the nucleus — fission, fusion, and radioactive decay.",
+      "confidence": "established",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q11172"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "energy/evidence/fusion-ignition-2022",
+      "label": "Fusion Ignition at NIF (2022)",
+      "kind": "evidence",
+      "domainId": "energy-matter",
+      "summary": "The National Ignition Facility achieved fusion ignition — more energy out of the fuel than the laser energy delivered to it — a scientific first.",
+      "confidence": "supported",
+      "refs": [
+        {
+          "type": "doi",
+          "id": "10.1103/PhysRevLett.132.065102"
+        },
+        {
+          "type": "wikidata",
+          "id": "Q115633857"
+        }
+      ],
+      "last_verified": "2026-07-17"
+    },
+    {
+      "id": "energy/quest/room-temp-superconductor",
+      "label": "Room-Temperature Superconductivity",
+      "kind": "quest",
+      "domainId": "energy-matter",
+      "summary": "Can a material superconduct at ambient temperature and pressure? Success: a reproducible, independently verified ambient superconductor. Would transform energy transmission and computing.",
+      "confidence": "contested",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q6821084"
+        }
+      ],
+      "difficulty": 5
+    },
+    {
+      "id": "energy/quest/grid-scale-storage",
+      "label": "Grid-Scale Clean Energy Storage",
+      "kind": "quest",
+      "domainId": "energy-matter",
+      "summary": "How do we store renewable energy cheaply and durably at civilizational scale? Success: storage economics that make an all-renewable grid reliable. An engineering-and-materials frontier with direct climate leverage.",
+      "confidence": "supported",
+      "refs": [
+        {
+          "type": "wikidata",
+          "id": "Q17103128"
+        }
+      ],
+      "difficulty": 4
+    },
+    {
+      "id": "ai/concept/information-theory",
+      "label": "Information Theory",
+      "kind": "concept",
+      "domainId": "ai-architect",
+      "summary": "Shannon entropy, compression, channel capacity — the math beneath all communication and cognition."
+    },
+    {
+      "id": "ai/concept/distributed-systems",
+      "label": "Distributed Systems",
+      "kind": "concept",
+      "domainId": "ai-architect",
+      "summary": "Consensus, fault tolerance, CAP theorem — how components coordinate at scale."
+    },
+    {
+      "id": "ai/concept/agent-orchestration",
+      "label": "Agent Orchestration",
+      "kind": "concept",
+      "domainId": "ai-architect",
+      "summary": "Multi-agent coordination, task routing, and emergent collective behavior."
+    },
+    {
+      "id": "ai/concept/context-and-memory",
+      "label": "Context & Memory Design",
+      "kind": "concept",
+      "domainId": "ai-architect",
+      "summary": "Working memory, long-term vaults, retrieval-augmented generation, and state across sessions."
+    },
+    {
+      "id": "ai/skill/system-decomposition",
+      "label": "System Decomposition",
+      "kind": "skill",
+      "domainId": "ai-architect",
+      "summary": "Break complex problems into composable, independently testable modules."
+    },
+    {
+      "id": "ai/skill/prompt-and-tool-design",
+      "label": "Prompt & Tool Design",
+      "kind": "skill",
+      "domainId": "ai-architect",
+      "summary": "Craft system prompts, tool schemas, and MCP server contracts that are robust under adversarial inputs."
+    },
+    {
+      "id": "ai/skill/evaluation-and-attestation",
+      "label": "Evaluation & Attestation",
+      "kind": "skill",
+      "domainId": "ai-architect",
+      "summary": "Design eval harnesses, red-team prompts, and attestation flows that verify claims automatically."
+    },
+    {
+      "id": "ai/skill/retrieval-architecture",
+      "label": "Retrieval Architecture",
+      "kind": "skill",
+      "domainId": "ai-architect",
+      "summary": "Vector + graph stores, hybrid retrieval, re-ranking, and query decomposition."
+    },
+    {
+      "id": "ai/practice/mcp-server-building",
+      "label": "Building MCP Servers",
+      "kind": "practice",
+      "domainId": "ai-architect",
+      "summary": "Regularly shipping Model Context Protocol servers that expose tools to agents."
+    },
+    {
+      "id": "ai/artifact/multi-agent-system",
+      "label": "Working Multi-Agent System",
+      "kind": "artifact",
+      "domainId": "ai-architect",
+      "summary": "A working multi-agent system with a memory layer and an eval suite — the Stage 1 build artifact."
+    },
+    {
+      "id": "ai/contribution/open-mcp-server",
+      "label": "Open-Source MCP Server",
+      "kind": "contribution",
+      "domainId": "ai-architect",
+      "summary": "An MCP server or reusable agent pattern published openly for others to build on."
+    },
+    {
+      "id": "ai/quest/reliable-agent-autonomy",
+      "label": "Reliable Agent Autonomy",
+      "kind": "quest",
+      "domainId": "ai-architect",
+      "summary": "Open problem: how do agents maintain reliable, auditable autonomy over long horizons without drift?"
+    },
+    {
+      "id": "space/concept/orbital-mechanics",
+      "label": "Orbital Mechanics",
+      "kind": "concept",
+      "domainId": "space-builder",
+      "summary": "Kepler's laws, delta-v, Hohmann transfers — the geometry of getting from A to B in space."
+    },
+    {
+      "id": "space/concept/propulsion-thermodynamics",
+      "label": "Propulsion & Thermodynamics",
+      "kind": "concept",
+      "domainId": "space-builder",
+      "summary": "Specific impulse, rocket equation, thermal management — the physics of thrust."
+    },
+    {
+      "id": "space/concept/materials-science",
+      "label": "Materials Science",
+      "kind": "concept",
+      "domainId": "space-builder",
+      "summary": "Stress, fatigue, radiation hardening — choosing materials that survive the environment."
+    },
+    {
+      "id": "space/concept/control-theory",
+      "label": "Control Theory",
+      "kind": "concept",
+      "domainId": "space-builder",
+      "summary": "PID controllers, state-space models, Kalman filters — keeping systems on trajectory."
+    },
+    {
+      "id": "space/skill/trajectory-modeling",
+      "label": "Trajectory Modeling",
+      "kind": "skill",
+      "domainId": "space-builder",
+      "summary": "Model mission profiles, compute delta-v budgets, verify with simulation."
+    },
+    {
+      "id": "space/skill/systems-engineering",
+      "label": "Systems Engineering",
+      "kind": "skill",
+      "domainId": "space-builder",
+      "summary": "Requirements flow-down, interface control, verification and validation across subsystems."
+    },
+    {
+      "id": "space/skill/simulation-and-telemetry",
+      "label": "Simulation & Telemetry",
+      "kind": "skill",
+      "domainId": "space-builder",
+      "summary": "Build and run physics simulations; instrument systems to produce verifiable telemetry."
+    },
+    {
+      "id": "space/artifact/mission-profile",
+      "label": "Verified Mission Profile",
+      "kind": "artifact",
+      "domainId": "space-builder",
+      "summary": "A simulated mission profile with a verified delta-v budget — the Stage 1 build artifact."
+    },
+    {
+      "id": "space/contribution/open-simulation",
+      "label": "Open Simulation / Hardware Design",
+      "kind": "contribution",
+      "domainId": "space-builder",
+      "summary": "A reproducible simulation or open hardware design published for the community."
+    },
+    {
+      "id": "space/quest/low-cost-launch",
+      "label": "Low-Cost Launch to Orbit",
+      "kind": "quest",
+      "domainId": "space-builder",
+      "summary": "Open problem: reach orbit reliably for under $1k/kg payload mass."
+    },
+    {
+      "id": "bio/concept/molecular-biology",
+      "label": "Molecular Biology",
+      "kind": "concept",
+      "domainId": "bio-intelligence",
+      "summary": "DNA, RNA, proteins — the central dogma and the molecular machinery of life."
+    },
+    {
+      "id": "bio/concept/genetics-and-genome",
+      "label": "Genetics & the Genome",
+      "kind": "concept",
+      "domainId": "bio-intelligence",
+      "summary": "Inheritance, variation, CRISPR, pangenomes — reading and editing the blueprint."
+    },
+    {
+      "id": "bio/concept/neuroscience",
+      "label": "Neuroscience",
+      "kind": "concept",
+      "domainId": "bio-intelligence",
+      "summary": "Neural circuits, synaptic plasticity, cognition — how the brain computes."
+    },
+    {
+      "id": "bio/concept/systems-physiology",
+      "label": "Systems Physiology",
+      "kind": "concept",
+      "domainId": "bio-intelligence",
+      "summary": "Feedback loops, homeostasis, organ systems — the body as a control system."
+    },
+    {
+      "id": "bio/skill/experimental-design",
+      "label": "Experimental Design",
+      "kind": "skill",
+      "domainId": "bio-intelligence",
+      "summary": "Controls, power analysis, blinding, pre-registration — how to generate trustworthy evidence."
+    },
+    {
+      "id": "bio/skill/bioinformatics",
+      "label": "Bioinformatics",
+      "kind": "skill",
+      "domainId": "bio-intelligence",
+      "summary": "Sequence alignment, variant calling, single-cell analysis — computational biology in practice."
+    },
+    {
+      "id": "bio/skill/statistical-inference",
+      "label": "Statistical Inference",
+      "kind": "skill",
+      "domainId": "bio-intelligence",
+      "summary": "Bayesian and frequentist methods, multiple testing correction, effect size estimation."
+    },
+    {
+      "id": "bio/artifact/analysis-notebook",
+      "label": "Reproducible Analysis Notebook",
+      "kind": "artifact",
+      "domainId": "bio-intelligence",
+      "summary": "A fully reproducible analysis notebook over an open dataset — the Stage 1 build artifact."
+    },
+    {
+      "id": "bio/contribution/open-dataset-or-method",
+      "label": "Open Dataset or Validated Method",
+      "kind": "contribution",
+      "domainId": "bio-intelligence",
+      "summary": "A shared dataset, method, or validated visual explainer others can build on."
+    },
+    {
+      "id": "bio/quest/longevity-escape-velocity",
+      "label": "Longevity Escape Velocity",
+      "kind": "quest",
+      "domainId": "bio-intelligence",
+      "summary": "Open problem: extend healthy lifespan faster than aging progresses. What's the critical path?"
+    },
+    {
+      "id": "creator/concept/audience-and-distribution",
+      "label": "Audience & Distribution",
+      "kind": "concept",
+      "domainId": "creator-founder",
+      "summary": "Algorithms, platforms, network effects — how content reaches and compounds an audience."
+    },
+    {
+      "id": "creator/concept/product-and-pricing",
+      "label": "Product & Pricing",
+      "kind": "concept",
+      "domainId": "creator-founder",
+      "summary": "Value capture, willingness to pay, tiering — turning capability into something people buy."
+    },
+    {
+      "id": "creator/concept/narrative-and-brand",
+      "label": "Narrative & Brand",
+      "kind": "concept",
+      "domainId": "creator-founder",
+      "summary": "Positioning, voice, signal vs. noise — the difference between content and a body of work."
+    },
+    {
+      "id": "creator/concept/unit-economics",
+      "label": "Unit Economics",
+      "kind": "concept",
+      "domainId": "creator-founder",
+      "summary": "CAC, LTV, contribution margin — the math that determines if the business can scale."
+    },
+    {
+      "id": "creator/skill/content-engineering",
+      "label": "Content Engineering",
+      "kind": "skill",
+      "domainId": "creator-founder",
+      "summary": "Systematic content production: hooks, structure, cadence, repurposing across platforms."
+    },
+    {
+      "id": "creator/skill/offer-design",
+      "label": "Offer Design",
+      "kind": "skill",
+      "domainId": "creator-founder",
+      "summary": "Package value into offers people feel compelled to buy — positioning, framing, pricing."
+    },
+    {
+      "id": "creator/skill/funnel-and-analytics",
+      "label": "Funnel & Analytics",
+      "kind": "skill",
+      "domainId": "creator-founder",
+      "summary": "Build measurement systems that show where the funnel leaks and what to fix."
+    },
+    {
+      "id": "creator/skill/shipping-cadence",
+      "label": "Shipping Cadence",
+      "kind": "skill",
+      "domainId": "creator-founder",
+      "summary": "The discipline of consistent, fast iteration — weekly shipping beats monthly planning."
+    },
+    {
+      "id": "creator/practice/daily-content-loop",
+      "label": "Daily Content Loop",
+      "kind": "practice",
+      "domainId": "creator-founder",
+      "summary": "Creating, publishing, and analyzing content as a daily practice — not a campaign."
+    },
+    {
+      "id": "creator/artifact/shipped-product",
+      "label": "Shipped Product with Revenue",
+      "kind": "artifact",
+      "domainId": "creator-founder",
+      "summary": "A shipped product with its first real revenue — the Stage 1 build artifact."
+    },
+    {
+      "id": "creator/contribution/open-template-or-playbook",
+      "label": "Open Template or Playbook",
+      "kind": "contribution",
+      "domainId": "creator-founder",
+      "summary": "A template, playbook, or teardown published openly for others to adapt."
+    },
+    {
+      "id": "creator/quest/ai-native-product",
+      "label": "AI-Native Product Category",
+      "kind": "quest",
+      "domainId": "creator-founder",
+      "summary": "Open problem: what product categories become possible only with AI — and how do you build the first one?"
+    }
+  ],
+  "edges": [
+    {
+      "source": "math/concept/logic-proof",
+      "target": "math/concept/set-theory",
+      "relation": "part-of"
+    },
+    {
+      "source": "math/concept/set-theory",
+      "target": "math/concept/number-theory",
+      "relation": "unlocks"
+    },
+    {
+      "source": "math/concept/linear-algebra",
+      "target": "math/concept/calculus-analysis",
+      "relation": "unlocks"
+    },
+    {
+      "source": "math/concept/set-theory",
+      "target": "math/concept/probability",
+      "relation": "requires"
+    },
+    {
+      "source": "math/quest/riemann-hypothesis",
+      "target": "math/concept/number-theory",
+      "relation": "requires"
+    },
+    {
+      "source": "math/quest/riemann-hypothesis",
+      "target": "math/concept/calculus-analysis",
+      "relation": "requires"
+    },
+    {
+      "source": "math/evidence/godel-incompleteness",
+      "target": "math/concept/logic-proof",
+      "relation": "requires"
+    },
+    {
+      "source": "math/quest/p-vs-np",
+      "target": "math/concept/logic-proof",
+      "relation": "requires"
+    },
+    {
+      "source": "phys/concept/classical-mechanics",
+      "target": "phys/concept/thermodynamics",
+      "relation": "unlocks"
+    },
+    {
+      "source": "phys/concept/special-relativity",
+      "target": "phys/concept/general-relativity",
+      "relation": "requires"
+    },
+    {
+      "source": "phys/concept/quantum-mechanics",
+      "target": "phys/concept/standard-model",
+      "relation": "requires"
+    },
+    {
+      "source": "phys/concept/electromagnetism",
+      "target": "phys/concept/special-relativity",
+      "relation": "unlocks"
+    },
+    {
+      "source": "phys/evidence/higgs-2012",
+      "target": "phys/concept/standard-model",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "phys/evidence/gw150914",
+      "target": "phys/concept/general-relativity",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "phys/quest/quantum-gravity",
+      "target": "phys/concept/general-relativity",
+      "relation": "requires"
+    },
+    {
+      "source": "phys/quest/quantum-gravity",
+      "target": "phys/concept/quantum-mechanics",
+      "relation": "requires"
+    },
+    {
+      "source": "phys/quest/dark-matter-energy",
+      "target": "phys/concept/cosmology-bigbang",
+      "relation": "requires"
+    },
+    {
+      "source": "phys/concept/classical-mechanics",
+      "target": "math/concept/calculus-analysis",
+      "relation": "requires",
+      "note": "physics is written in calculus"
+    },
+    {
+      "source": "phys/concept/quantum-mechanics",
+      "target": "math/concept/linear-algebra",
+      "relation": "requires",
+      "note": "state vectors, Hilbert space"
+    },
+    {
+      "source": "phys/concept/standard-model",
+      "target": "math/concept/group-theory",
+      "relation": "requires",
+      "note": "gauge symmetry"
+    },
+    {
+      "source": "life/concept/molecular-biology",
+      "target": "life/concept/genetics",
+      "relation": "unlocks"
+    },
+    {
+      "source": "life/concept/cell-biology",
+      "target": "life/concept/molecular-biology",
+      "relation": "part-of"
+    },
+    {
+      "source": "life/concept/evolution",
+      "target": "life/concept/ecology",
+      "relation": "unlocks"
+    },
+    {
+      "source": "life/concept/neuroscience",
+      "target": "life/quest/consciousness",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "life/evidence/dna-structure-1953",
+      "target": "life/concept/molecular-biology",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "life/evidence/human-genome-2003",
+      "target": "life/concept/genetics",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "life/quest/origin-of-life",
+      "target": "life/concept/molecular-biology",
+      "relation": "requires"
+    },
+    {
+      "source": "life/quest/origin-of-life",
+      "target": "phys/concept/thermodynamics",
+      "relation": "requires",
+      "note": "dissipation-driven ordering"
+    },
+    {
+      "source": "life/concept/genetics",
+      "target": "life/concept/evolution",
+      "relation": "requires"
+    },
+    {
+      "source": "comp/concept/computability",
+      "target": "comp/concept/complexity",
+      "relation": "unlocks"
+    },
+    {
+      "source": "comp/concept/algorithms",
+      "target": "comp/concept/complexity",
+      "relation": "requires"
+    },
+    {
+      "source": "comp/concept/machine-learning",
+      "target": "comp/concept/deep-learning",
+      "relation": "unlocks"
+    },
+    {
+      "source": "comp/concept/deep-learning",
+      "target": "comp/concept/transformers",
+      "relation": "unlocks"
+    },
+    {
+      "source": "comp/concept/transformers",
+      "target": "comp/evidence/alphafold-2021",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "comp/concept/deep-learning",
+      "target": "comp/quest/agi",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "comp/quest/agi",
+      "target": "comp/quest/alignment",
+      "relation": "requires",
+      "note": "capability without alignment is unsafe"
+    },
+    {
+      "source": "comp/concept/computability",
+      "target": "math/concept/logic-proof",
+      "relation": "requires"
+    },
+    {
+      "source": "comp/concept/complexity",
+      "target": "math/quest/p-vs-np",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "comp/concept/machine-learning",
+      "target": "math/concept/probability",
+      "relation": "requires"
+    },
+    {
+      "source": "comp/concept/machine-learning",
+      "target": "math/concept/linear-algebra",
+      "relation": "requires"
+    },
+    {
+      "source": "comp/concept/information-theory",
+      "target": "math/concept/probability",
+      "relation": "requires"
+    },
+    {
+      "source": "energy/concept/chemistry",
+      "target": "energy/concept/quantum-chemistry",
+      "relation": "unlocks"
+    },
+    {
+      "source": "energy/concept/chemistry",
+      "target": "energy/concept/materials-science",
+      "relation": "unlocks"
+    },
+    {
+      "source": "energy/concept/quantum-chemistry",
+      "target": "phys/concept/quantum-mechanics",
+      "relation": "requires"
+    },
+    {
+      "source": "energy/concept/nuclear",
+      "target": "energy/evidence/fusion-ignition-2022",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "energy/quest/room-temp-superconductor",
+      "target": "energy/concept/materials-science",
+      "relation": "requires"
+    },
+    {
+      "source": "energy/quest/room-temp-superconductor",
+      "target": "phys/concept/quantum-mechanics",
+      "relation": "requires"
+    },
+    {
+      "source": "energy/quest/grid-scale-storage",
+      "target": "energy/concept/materials-science",
+      "relation": "requires"
+    },
+    {
+      "source": "energy/concept/chemistry",
+      "target": "life/concept/molecular-biology",
+      "relation": "unlocks",
+      "note": "chemistry underlies biology"
+    },
+    {
+      "source": "comp/concept/information-theory",
+      "target": "ai/concept/information-theory",
+      "relation": "part-of",
+      "note": "path node specializes the foundation"
+    },
+    {
+      "source": "comp/concept/transformers",
+      "target": "ai/concept/distributed-systems",
+      "relation": "unlocks"
+    },
+    {
+      "source": "ai/concept/information-theory",
+      "target": "ai/concept/distributed-systems",
+      "relation": "unlocks"
+    },
+    {
+      "source": "ai/concept/distributed-systems",
+      "target": "ai/concept/agent-orchestration",
+      "relation": "unlocks"
+    },
+    {
+      "source": "ai/concept/agent-orchestration",
+      "target": "ai/skill/system-decomposition",
+      "relation": "unlocks"
+    },
+    {
+      "source": "ai/concept/context-and-memory",
+      "target": "ai/skill/retrieval-architecture",
+      "relation": "unlocks"
+    },
+    {
+      "source": "ai/skill/system-decomposition",
+      "target": "ai/skill/prompt-and-tool-design",
+      "relation": "unlocks"
+    },
+    {
+      "source": "ai/skill/prompt-and-tool-design",
+      "target": "ai/skill/evaluation-and-attestation",
+      "relation": "unlocks"
+    },
+    {
+      "source": "ai/skill/retrieval-architecture",
+      "target": "ai/practice/mcp-server-building",
+      "relation": "unlocks"
+    },
+    {
+      "source": "ai/skill/evaluation-and-attestation",
+      "target": "ai/artifact/multi-agent-system",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "ai/practice/mcp-server-building",
+      "target": "ai/artifact/multi-agent-system",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "ai/artifact/multi-agent-system",
+      "target": "ai/contribution/open-mcp-server",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "ai/contribution/open-mcp-server",
+      "target": "ai/quest/reliable-agent-autonomy",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "ai/concept/information-theory",
+      "target": "ai/concept/context-and-memory",
+      "relation": "part-of"
+    },
+    {
+      "source": "space/concept/orbital-mechanics",
+      "target": "space/skill/trajectory-modeling",
+      "relation": "unlocks"
+    },
+    {
+      "source": "space/concept/propulsion-thermodynamics",
+      "target": "space/skill/systems-engineering",
+      "relation": "unlocks"
+    },
+    {
+      "source": "space/concept/control-theory",
+      "target": "space/skill/simulation-and-telemetry",
+      "relation": "unlocks"
+    },
+    {
+      "source": "space/concept/materials-science",
+      "target": "space/skill/systems-engineering",
+      "relation": "unlocks"
+    },
+    {
+      "source": "space/skill/trajectory-modeling",
+      "target": "space/artifact/mission-profile",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "space/skill/simulation-and-telemetry",
+      "target": "space/artifact/mission-profile",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "space/skill/systems-engineering",
+      "target": "space/artifact/mission-profile",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "space/artifact/mission-profile",
+      "target": "space/contribution/open-simulation",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "space/contribution/open-simulation",
+      "target": "space/quest/low-cost-launch",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "space/concept/orbital-mechanics",
+      "target": "space/concept/control-theory",
+      "relation": "part-of"
+    },
+    {
+      "source": "bio/concept/molecular-biology",
+      "target": "bio/concept/genetics-and-genome",
+      "relation": "unlocks"
+    },
+    {
+      "source": "bio/concept/genetics-and-genome",
+      "target": "bio/skill/bioinformatics",
+      "relation": "unlocks"
+    },
+    {
+      "source": "bio/concept/neuroscience",
+      "target": "bio/concept/systems-physiology",
+      "relation": "part-of"
+    },
+    {
+      "source": "bio/concept/systems-physiology",
+      "target": "bio/skill/experimental-design",
+      "relation": "unlocks"
+    },
+    {
+      "source": "bio/skill/experimental-design",
+      "target": "bio/skill/statistical-inference",
+      "relation": "unlocks"
+    },
+    {
+      "source": "bio/skill/bioinformatics",
+      "target": "bio/artifact/analysis-notebook",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "bio/skill/statistical-inference",
+      "target": "bio/artifact/analysis-notebook",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "bio/artifact/analysis-notebook",
+      "target": "bio/contribution/open-dataset-or-method",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "bio/contribution/open-dataset-or-method",
+      "target": "bio/quest/longevity-escape-velocity",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "creator/concept/audience-and-distribution",
+      "target": "creator/skill/content-engineering",
+      "relation": "unlocks"
+    },
+    {
+      "source": "creator/concept/product-and-pricing",
+      "target": "creator/skill/offer-design",
+      "relation": "unlocks"
+    },
+    {
+      "source": "creator/concept/narrative-and-brand",
+      "target": "creator/skill/content-engineering",
+      "relation": "unlocks"
+    },
+    {
+      "source": "creator/concept/unit-economics",
+      "target": "creator/skill/funnel-and-analytics",
+      "relation": "unlocks"
+    },
+    {
+      "source": "creator/skill/content-engineering",
+      "target": "creator/practice/daily-content-loop",
+      "relation": "unlocks"
+    },
+    {
+      "source": "creator/skill/shipping-cadence",
+      "target": "creator/artifact/shipped-product",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "creator/skill/offer-design",
+      "target": "creator/artifact/shipped-product",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "creator/practice/daily-content-loop",
+      "target": "creator/artifact/shipped-product",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "creator/artifact/shipped-product",
+      "target": "creator/contribution/open-template-or-playbook",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "creator/contribution/open-template-or-playbook",
+      "target": "creator/quest/ai-native-product",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "creator/concept/audience-and-distribution",
+      "target": "creator/concept/narrative-and-brand",
+      "relation": "part-of"
+    },
+    {
+      "source": "ai/concept/agent-orchestration",
+      "target": "space/skill/systems-engineering",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "space/concept/control-theory",
+      "target": "ai/concept/agent-orchestration",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "bio/concept/systems-physiology",
+      "target": "ai/concept/context-and-memory",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "ai/skill/evaluation-and-attestation",
+      "target": "bio/skill/experimental-design",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "creator/skill/content-engineering",
+      "target": "ai/skill/prompt-and-tool-design",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "ai/artifact/multi-agent-system",
+      "target": "creator/artifact/shipped-product",
+      "relation": "contributes-to"
+    },
+    {
+      "source": "life/quest/consciousness",
+      "target": "life/concept/neuroscience",
+      "relation": "requires"
+    },
+    {
+      "source": "comp/quest/alignment",
+      "target": "comp/concept/machine-learning",
+      "relation": "requires"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/knowledge-tree/graph.schema.json",
+  "title": "Starlight Knowledge Tree — Canon Graph",
+  "description": "Schema for data/graph.json. Validates both canon and proposals. Ontology: verticals/knowledge-tree/ONTOLOGY.md. Renderers require only the core node fields; canon-only fields are optional and additive.",
+  "type": "object",
+  "required": ["meta", "domains", "nodes", "edges"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["name", "version", "license"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "license": {
+          "type": "object",
+          "properties": {
+            "data": { "type": "string" },
+            "code": { "type": "string" }
+          }
+        },
+        "attestation": { "type": "string" },
+        "substrate": { "type": "string" },
+        "ontology": { "type": "string" },
+        "domainPrefixes": { "type": "object", "additionalProperties": { "type": "string" } },
+        "changelog": { "type": "array", "items": { "type": "string" } },
+        "counts": { "type": "object" }
+      }
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "accent", "blurb"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "name": { "type": "string" },
+          "accent": { "enum": ["violet", "cyan", "fuchsia", "emerald", "amber", "rose"] },
+          "blurb": { "type": "string" },
+          "tier": { "enum": ["foundation", "path"] }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "kind", "domainId", "summary"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+/(concept|skill|practice|artifact|evidence|contribution|quest)/[a-z0-9-]+$",
+            "description": "Grammar: <domain-prefix>/<kind>/<slug>. Permanent once published."
+          },
+          "label": { "type": "string" },
+          "kind": {
+            "enum": ["concept", "skill", "practice", "artifact", "evidence", "contribution", "quest"]
+          },
+          "domainId": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "summary": { "type": "string", "minLength": 1 },
+          "confidence": {
+            "enum": ["established", "supported", "contested", "speculative", "unknown"]
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type", "id"],
+              "additionalProperties": false,
+              "properties": {
+                "type": { "enum": ["doi", "arxiv", "wikidata", "orcid", "isbn", "url"] },
+                "id": { "type": "string" },
+                "note": { "type": "string" }
+              }
+            }
+          },
+          "last_verified": { "type": "string", "format": "date" },
+          "status": { "enum": ["active", "deprecated"] },
+          "aliases": { "type": "array", "items": { "type": "string" } },
+          "difficulty": { "type": "integer", "minimum": 1, "maximum": 5 }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "target", "relation"],
+        "additionalProperties": false,
+        "properties": {
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "relation": { "enum": ["unlocks", "requires", "part-of", "contributes-to"] },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}
