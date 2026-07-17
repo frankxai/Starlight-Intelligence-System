@@ -1,93 +1,104 @@
-# =============================================================================
-# api-secret-scan.ps1 - Daily secret leak scan across active repos
-# =============================================================================
-#
-# Runs Infisical's built-in secret scanner against Frank's active repos. Looks
-# for API keys, tokens, and credentials accidentally committed to git history
-# or sitting in working directories. Writes findings to
-# private/api-monitor/secret-findings-YYYY-MM-DD.md.
-#
-# Infisical scan uses Gitleaks rules under the hood + Infisical's own ruleset.
-#
-# Schedule: daily 04:30 via StarlightSecretScan task.
-# Manual run: pwsh -File scripts/api-secret-scan.ps1
-#
-# Built on SIP - operational tier (secret leak prevention).
-# =============================================================================
-
-$ErrorActionPreference = "Continue"
-$RepoRoot = Split-Path -Parent $PSScriptRoot
-$OutDir = Join-Path $RepoRoot "private\api-monitor"
-$Today = Get-Date -Format "yyyy-MM-dd"
-$Findings = Join-Path $OutDir "secret-findings-$Today.md"
-$AlertsFile = Join-Path $OutDir "ALERTS.md"
-$Backticks = [char]96 + [char]96 + [char]96
-
-if (-not (Test-Path $OutDir)) { New-Item -ItemType Directory -Path $OutDir -Force | Out-Null }
-
-# Scan targets - Frank's active repos with credentials risk
-$repos = @(
-  "C:\Users\frank\starlight\repos\Starlight-Intelligence-System",
-  "C:\Users\frank\starlight\repos\FrankX",
-  "C:\Users\frank\starlight\repos\arcanea-ai-app",
-  "C:\Users\frank\starlight\repos\arcanea-studio",
-  "C:\Users\frank\starlight\repos\frankx.ai-vercel-website"
+# Daily secret leak scan across active repositories.
+[CmdletBinding()]
+param(
+    [switch]$ValidateOnly
 )
 
-$infisical = Get-Command "infisical" -ErrorAction SilentlyContinue
+$ErrorActionPreference = 'Stop'
+$RepoRoot = Split-Path -Parent $PSScriptRoot
+$OutDir = Join-Path $RepoRoot 'private\api-monitor'
+$Today = Get-Date -Format 'yyyy-MM-dd'
+$Findings = Join-Path $OutDir "secret-findings-$Today.md"
+$AlertsFile = Join-Path $OutDir 'ALERTS.md'
+$Backticks = [char]96 + [char]96 + [char]96
+
+$repos = @(
+    (Join-Path $HOME 'Starlight-Intelligence-System'),
+    (Join-Path $HOME 'FrankX'),
+    (Join-Path $HOME 'Arcanea'),
+    (Join-Path $HOME 'agentic-creator-os'),
+    (Join-Path $HOME 'frankx.ai-vercel-website')
+)
+$existingRepos = @($repos | Where-Object { Test-Path -LiteralPath $_ -PathType Container })
+$missingRepos = @($repos | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Container) })
+
+if ($existingRepos.Count -eq 0) {
+    Write-Error "Secret scan has zero existing repository inputs. Refusing false-green success."
+    exit 2
+}
+
+if ($ValidateOnly) {
+    [pscustomobject]@{
+        valid = ($missingRepos.Count -eq 0)
+        configured = $repos.Count
+        existing = $existingRepos.Count
+        missing = $missingRepos
+        infisical = [bool](Get-Command infisical -ErrorAction SilentlyContinue)
+    } | ConvertTo-Json -Depth 3
+    if ($missingRepos.Count -gt 0) { exit 1 }
+    exit 0
+}
+
+New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+$infisical = Get-Command infisical -ErrorAction SilentlyContinue
 if (-not $infisical) {
-  $msg = "infisical CLI not found in PATH - install via winget install Infisical.CLI"
-  $dateStr = (Get-Date).ToString("o")
-  Add-Content -Path $AlertsFile -Value "[ERROR] $dateStr secret-scan :: $msg"
-  Write-Host $msg -ForegroundColor Red
-  exit 1
+    $msg = 'infisical CLI not found in PATH - install via winget install Infisical.CLI'
+    Add-Content -Path $AlertsFile -Value "[ERROR] $((Get-Date).ToString('o')) secret-scan :: $msg"
+    Write-Error $msg
+    exit 1
 }
 
-"# Secret-scan findings $Today`n" | Set-Content -Path $Findings -Encoding UTF8
+@(
+    "# Secret-scan findings $Today"
+    ''
+    "Configured repositories: $($repos.Count) | Existing: $($existingRepos.Count) | Missing: $($missingRepos.Count)"
+) | Set-Content -Path $Findings -Encoding UTF8
+
+foreach ($missing in $missingRepos) {
+    Add-Content -Path $Findings -Value "- [ERROR] Missing configured repository: $missing"
+}
+
 $totalFindings = 0
-
-foreach ($repo in $repos) {
-  if (-not (Test-Path $repo)) { continue }
-  Write-Host "Scanning: $repo" -ForegroundColor Cyan
-  Add-Content -Path $Findings -Value "`n## $repo`n"
-
-  Push-Location $repo
-  try {
-    # Infisical scan against working tree + git history.
-    # Output goes to stdout as JSON (--json flag).
+$scanFailures = 0
+$scannedCount = 0
+foreach ($repo in $existingRepos) {
+    Write-Host "Scanning: $repo" -ForegroundColor Cyan
+    Add-Content -Path $Findings -Value "`n## $repo`n"
+    Push-Location $repo
     $tmpOut = [System.IO.Path]::GetTempFileName()
-    & infisical scan --verbose --no-color 2>&1 | Out-File -FilePath $tmpOut -Encoding utf8
-    $rc = $LASTEXITCODE
-
-    $out = Get-Content $tmpOut -Raw -ErrorAction SilentlyContinue
-    Remove-Item $tmpOut -ErrorAction SilentlyContinue
-
-    if ($rc -eq 0) {
-      Add-Content -Path $Findings -Value "OK - no secrets found.`n"
-      Write-Host "  OK - no findings" -ForegroundColor Green
-    } else {
-      # Infisical exits non-zero when findings exist
-      $findingCount = ([regex]::Matches($out, "Finding:|secret")).Count
-      $totalFindings += $findingCount
-      Add-Content -Path $Findings -Value "`n$Backticks`n$out`n$Backticks"
-      $dateStr = (Get-Date).ToString("o")
-      Add-Content -Path $AlertsFile -Value "[LEAK] $dateStr secret-scan :: $repo - findings (see $Findings)"
-      Write-Host "  LEAK SUSPECT - see $Findings" -ForegroundColor Red
+    try {
+        & infisical scan --verbose --no-color 2>&1 | Out-File -FilePath $tmpOut -Encoding utf8
+        $rc = $LASTEXITCODE
+        $out = Get-Content $tmpOut -Raw -ErrorAction SilentlyContinue
+        $scannedCount++
+        if ($rc -eq 0) {
+            Add-Content -Path $Findings -Value "OK - no secrets found.`n"
+        } else {
+            # Count real finding blocks only. Matching RuleID/secret inflates history scans.
+            $findingCount = ([regex]::Matches([string]$out, '(?m)^Finding:\s+')).Count
+            if ($findingCount -gt 0) {
+                $totalFindings += $findingCount
+                Add-Content -Path $Findings -Value "`n$Backticks`n$out`n$Backticks"
+                Add-Content -Path $AlertsFile -Value "[LEAK] $((Get-Date).ToString('o')) secret-scan :: $repo - $findingCount findings (see $Findings)"
+            } else {
+                $scanFailures++
+                Add-Content -Path $Findings -Value "ERROR: scanner exited $rc without parseable findings. Review local output."
+                Add-Content -Path $AlertsFile -Value "[ERROR] $((Get-Date).ToString('o')) secret-scan :: $repo scanner exit $rc"
+            }
+        }
+    } catch {
+        $scanFailures++
+        Add-Content -Path $Findings -Value "ERROR scanning: $($_.Exception.Message)`n"
+    } finally {
+        Remove-Item $tmpOut -ErrorAction SilentlyContinue
+        Pop-Location
     }
-  } catch {
-    $msg = $_.Exception.Message
-    Add-Content -Path $Findings -Value "ERROR scanning: $msg`n"
-    Write-Host "  ERROR: $msg" -ForegroundColor Red
-  } finally {
-    Pop-Location
-  }
 }
 
-Add-Content -Path $Findings -Value "`n---`nTotal findings across $($repos.Count) repos: $totalFindings"
-Write-Host ""
-Write-Host "Report: $Findings" -ForegroundColor Green
-Write-Host "Total findings: $totalFindings"
+Add-Content -Path $Findings -Value "`n---`nScanned repositories: $scannedCount/$($existingRepos.Count)`nTotal findings across $scannedCount scanned repos: $totalFindings`nOperational failures: $scanFailures"
+Write-Host "Report: $Findings"
+Write-Host "Scanned: $scannedCount | Findings: $totalFindings | Failures: $scanFailures"
 
-# Explicit exit so Task Scheduler never sees a lingering process (0x41306 fix).
-# Findings are reported via ALERTS.md, not the exit code.
+if ($scannedCount -eq 0 -or $scanFailures -gt 0 -or $missingRepos.Count -gt 0) { exit 1 }
+if ($totalFindings -gt 0) { exit 2 }
 exit 0

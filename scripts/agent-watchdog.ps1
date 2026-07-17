@@ -1,187 +1,162 @@
-# Agent Watchdog -- automated lifecycle monitor and performance optimizer.
-#
-# Role: AIOps + MachineOps guardrail. Runs on a scheduled task (StarlightAgentWatchdog).
-#
-# What it does:
-#   1. Process Audit: Identifies and terminates orphaned agent CLI sessions (claude, codex, opencode),
-#      stuck Playwright/MCP instances, and idle background shells older than 4 hours, safely
-#      bypassing active current agent sessions (using parent PID mapping).
-#   2. Worktree Cleanup: Prunes stale git worktrees from closed/crashed agent runs.
-#   3. MCP Port & Watchdog Audit: Checks if development ports are blocked by zombie processes.
-#   4. Observability Log: Appends diagnostics to private/api-monitor/WATCHDOG-STATUS.md.
+# Agent Watchdog -- bounded lifecycle and machine-pressure guard.
+[CmdletBinding()]
+param(
+    [switch]$DryRun,
+    [int]$MaxAgeHours = 4,
+    [double]$MinimumFreeDiskGiB = 50,
+    [double]$MaximumRamPercent = 90
+)
 
 $ErrorActionPreference = 'Stop'
-
-$RepoRoot     = (Resolve-Path "$PSScriptRoot\..").Path
-$MonitorDir   = Join-Path $RepoRoot 'private\api-monitor'
-$StatusPath   = Join-Path $MonitorDir 'WATCHDOG-STATUS.md'
-$LogPath      = Join-Path $MonitorDir 'WATCHDOG-ALERTS.md'
-$Now          = Get-Date
-
+$RepoRoot = (Resolve-Path "$PSScriptRoot\..").Path
+$MonitorDir = Join-Path $RepoRoot 'private\api-monitor'
+$StatusPath = Join-Path $MonitorDir 'WATCHDOG-STATUS.md'
+$LogPath = Join-Path $MonitorDir 'WATCHDOG-ALERTS.md'
+$Now = Get-Date
+$thresholdTime = $Now.AddHours(-$MaxAgeHours)
 New-Item -ItemType Directory -Path $MonitorDir -Force | Out-Null
 
-$cleanups = New-Object System.Collections.Generic.List[string]
-function Log-Cleanup([string]$msg) {
-    $cleanups.Add($msg)
-    Write-Host $msg
+$events = New-Object System.Collections.Generic.List[string]
+$candidates = New-Object System.Collections.Generic.List[string]
+function Log-Event([string]$Message) {
+    $events.Add($Message)
+    Write-Host $Message
 }
-
-# --- 1. Find our own session hierarchy to protect them ------------------------
-$myPid = $PID
-$protectedPids = @($myPid)
-
-# Trace up parent process chain to protect our own shells and agy runners
-$currPid = $myPid
-while ($currPid) {
-    $proc = Get-CimInstance Win32_Process -Filter "ProcessId = $currPid" -ErrorAction SilentlyContinue
-    if ($proc -and $proc.ParentProcessId) {
-        $protectedPids += $proc.ParentProcessId
-        $currPid = $proc.ParentProcessId
-    } else {
-        $currPid = $null
-    }
+function Log-Candidate([string]$Message) {
+    $candidates.Add($Message)
+    Write-Host $Message
 }
-Log-Cleanup ("Protected PIDs (current active chain): " + ($protectedPids -join ', '))
-
-# --- 2. Process Cleanup (claude, codex, node, pwsh orphans) -------------------
-# Target processes started > 4 hours ago
-$thresholdTime = $Now.AddHours(-4)
-
-$targetProcessNames = @('claude', 'codex', 'node', 'pwsh')
-$allProcs = Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -in $targetProcessNames }
-
-foreach ($p in $allProcs) {
-    if ($p.Id -in $protectedPids) {
-        continue
+function Stop-BoundedProcess([int]$ProcessId, [string]$Name, [string]$Reason) {
+    if ($DryRun) {
+        Log-Candidate "DRY-RUN would stop PID $ProcessId ($Name) -- $Reason"
+        return
     }
-
-    # Safe check for StartTime (handles access exceptions gracefully)
-    $startTime = $null
     try {
-        $startTime = $p.StartTime
+        Stop-Process -Id $ProcessId -Force -ErrorAction Stop
+        Log-Event "Stopped PID $ProcessId ($Name) -- $Reason"
     } catch {
-        # If we can't query StartTime, skip to avoid breaking system processes
-        continue
-    }
-
-    if ($startTime -and $startTime -lt $thresholdTime) {
-        $killProcess = $false
-        $reason = ''
-
-        # Match specific agent signatures
-        if ($p.ProcessName -in 'claude', 'codex') {
-            $killProcess = $true
-            $reason = "Orphaned agent session started at $startTime"
-        }
-        elseif ($p.ProcessName -eq 'node') {
-            # Inspect command line for Node agent wrappers
-            $cmd = (Get-CimInstance Win32_Process -Filter "ProcessId = $($p.Id)" -ErrorAction SilentlyContinue).CommandLine
-            if ($cmd -match 'playwright/mcp|openai/codex|starlight-mcp.js|npx-cli.js') {
-                $killProcess = $true
-                $reason = "Orphaned agent sub-process (MCP/adapter) started at $startTime -- $cmd"
-            }
-        }
-        elseif ($p.ProcessName -eq 'pwsh') {
-            # pwsh processes started long ago with no active agy or claude parents
-            $cmd = (Get-CimInstance Win32_Process -Filter "ProcessId = $($p.Id)" -ErrorAction SilentlyContinue).CommandLine
-            if ($cmd -match 'PSReadline|NonInteractive') {
-                $killProcess = $true
-                $reason = "Orphaned background terminal shell started at $startTime"
-            }
-        }
-
-        if ($killProcess) {
-            try {
-                Stop-Process -Id $p.Id -Force -ErrorAction Stop
-                Log-Cleanup ("Killed PID $($p.Id) ($($p.ProcessName)) -- $reason")
-            } catch {
-                Log-Cleanup ("Failed to kill PID $($p.Id) ($($p.ProcessName)): " + $_.Exception.Message)
-            }
-        }
+        Log-Candidate "Failed to stop PID $ProcessId ($Name): $($_.Exception.Message)"
     }
 }
 
-# --- 3. Git Worktree Cleanup --------------------------------------------------
-Log-Cleanup "Auditing git worktrees..."
+# Protect this task's complete process ancestry.
+$protectedPids = @($PID)
+$currentPid = $PID
+while ($currentPid) {
+    $current = Get-CimInstance Win32_Process -Filter "ProcessId = $currentPid" -ErrorAction SilentlyContinue
+    if ($current -and $current.ParentProcessId -and $current.ParentProcessId -notin $protectedPids) {
+        $protectedPids += [int]$current.ParentProcessId
+        $currentPid = [int]$current.ParentProcessId
+    } else {
+        $currentPid = $null
+    }
+}
+
+$allCim = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)
+$childrenByParent = @{}
+foreach ($item in $allCim) {
+    $parentKey = [int]$item.ParentProcessId
+    if (-not $childrenByParent.ContainsKey($parentKey)) {
+        $childrenByParent[$parentKey] = New-Object System.Collections.Generic.List[object]
+    }
+    $childrenByParent[$parentKey].Add($item)
+}
+
+# Auto-stop only signatures that are strongly proven to be leaks.
+foreach ($item in $allCim) {
+    $name = [string]$item.Name
+    if ($name -notin @('powershell.exe', 'pwsh.exe', 'node.exe', 'claude.exe', 'codex.exe')) { continue }
+    if ([int]$item.ProcessId -in $protectedPids) { continue }
+
+    $process = Get-Process -Id $item.ProcessId -ErrorAction SilentlyContinue
+    if (-not $process) { continue }
+    try { $startTime = $process.StartTime } catch { continue }
+    if ($startTime -ge $thresholdTime) { continue }
+
+    $commandLine = [string]$item.CommandLine
+    $executablePath = [string]$item.ExecutablePath
+    $ArgumentList = @()
+    if ($commandLine -and $executablePath) {
+        $normalizedCommand = $commandLine.Trim().Trim('"')
+        $normalizedExecutable = $executablePath.Trim().Trim('"')
+        if ($normalizedCommand -ine $normalizedExecutable) {
+            $ArgumentList = @($normalizedCommand)
+        }
+    }
+
+    if ($name -in @('powershell.exe', 'pwsh.exe') -and $ArgumentList.Count -eq 0) {
+        $children = if ($childrenByParent.ContainsKey([int]$item.ProcessId)) { @($childrenByParent[[int]$item.ProcessId]) } else { @() }
+        $onlyConsoleChildren = @($children | Where-Object { $_.Name -ine 'conhost.exe' }).Count -eq 0
+        $connections = @(Get-NetTCPConnection -OwningProcess $item.ProcessId -ErrorAction SilentlyContinue)
+        if ($onlyConsoleChildren -and $connections.Count -eq 0) {
+            Stop-BoundedProcess ([int]$item.ProcessId) $name "argumentless shell older than ${MaxAgeHours}h with only conhost children and no network connections"
+        }
+        continue
+    }
+
+    if ($name -eq 'node.exe' -and $commandLine -match 'playwright[/\\]mcp|openai[/\\]codex|starlight-mcp\.js|npx-cli\.js') {
+        Stop-BoundedProcess ([int]$item.ProcessId) $name "known orphanable agent wrapper older than ${MaxAgeHours}h"
+        continue
+    }
+
+    if ($name -in @('claude.exe', 'codex.exe')) {
+        Log-Candidate "Review-only: PID $($item.ProcessId) ($name) is older than ${MaxAgeHours}h; not auto-stopped without stronger idle proof"
+    }
+}
+
+# Worktrees are report-only. Never delete directories or WIP from a watchdog.
 if (Test-Path "$RepoRoot\.git") {
-    # Prune first (cleans up reference pointers of deleted folders)
-    $null = & git -C $RepoRoot worktree prune 2>&1
-    
-    # Get active list
     $worktrees = & git -C $RepoRoot worktree list --porcelain 2>&1
     if ($LASTEXITCODE -eq 0) {
-        $wtPaths = @()
-        foreach ($line in $worktrees) {
-            if ($line -match '^worktree\s+(.+)$') {
-                $wtPaths += $Matches[1].Trim()
-            }
-        }
-        
-        # Check folders under .claude/worktrees
-        $wtDir = Join-Path $RepoRoot '.claude\worktrees'
-        if (Test-Path $wtDir) {
-            $folders = Get-ChildItem $wtDir -Directory
-            foreach ($f in $folders) {
-                # If folder path is not listed as active by git worktree list, it's stale
-                $matched = $wtPaths | Where-Object { $_ -replace '\\','/' -eq $f.FullName -replace '\\','/' }
-                if (-not $matched) {
-                    try {
-                        Remove-Item $f.FullName -Recurse -Force -ErrorAction Stop
-                        Log-Cleanup ("Deleted stale worktree directory: $($f.FullName)")
-                    } catch {
-                        Log-Cleanup ("Failed to delete stale worktree folder $($f.FullName): " + $_.Exception.Message)
-                    }
-                }
-            }
+        $worktreeCount = @($worktrees | Where-Object { $_ -match '^worktree\s+' }).Count
+        Log-Candidate "Observed $worktreeCount registered SIS worktree(s); no automatic deletion performed"
+    }
+}
+
+# Old listeners are evidence, not automatic kill authority.
+foreach ($port in @(7373, 7777, 3007)) {
+    $connection = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $connection) { continue }
+    $process = Get-Process -Id $connection.OwningProcess -ErrorAction SilentlyContinue
+    if ($process) {
+        try { $ageHours = ($Now - $process.StartTime).TotalHours } catch { $ageHours = 0 }
+        if ($ageHours -ge $MaxAgeHours) {
+            Log-Candidate "Review-only: port $port held by PID $($process.Id) ($($process.ProcessName)) for $([math]::Round($ageHours,1))h"
         }
     }
 }
 
-# --- 4. MCP Port Audit --------------------------------------------------------
-$ports = @(7373, 7777, 3007)
-foreach ($p in $ports) {
-    $conn = Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($conn) {
-        # If port is held but starting process is older than 4 hours, it's a zombie port lock
-        $proc = Get-Process -Id $conn.OwningProcess -ErrorAction SilentlyContinue
-        if ($proc) {
-            $startTime = $null
-            try { $startTime = $proc.StartTime } catch {}
-            if ($startTime -and $startTime -lt $thresholdTime) {
-                try {
-                    Stop-Process -Id $proc.Id -Force -ErrorAction Stop
-                    Log-Cleanup ("Freed zombie port $p by killing process $($proc.Id) ($($proc.ProcessName))")
-                } catch {
-                    Log-Cleanup ("Failed to free port $p (process $($proc.Id)): " + $_.Exception.Message)
-                }
-            }
-        }
-    }
-}
+# Enforced resource receipt used by the night runner and sentinels.
+$os = Get-CimInstance Win32_OperatingSystem
+$ramUsedPercent = [math]::Round((1 - ($os.FreePhysicalMemory / $os.TotalVisibleMemorySize)) * 100, 1)
+$ramAvailableGiB = [math]::Round(($os.FreePhysicalMemory * 1KB) / 1GB, 2)
+$disk = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'"
+$diskFreeGiB = [math]::Round($disk.FreeSpace / 1GB, 2)
+$resourceZone = if ($diskFreeGiB -lt $MinimumFreeDiskGiB -or $ramUsedPercent -gt $MaximumRamPercent) { 'RED' } else { 'GREEN' }
 
-# --- 5. Generate Report -------------------------------------------------------
 $reportLines = @(
-    "# Starlight Agent Watchdog Status -- $($Now.ToString('yyyy-MM-dd HH:mm'))"
-    ''
-    "**Cleanups executed during this run: $($cleanups.Count)**"
-    ''
-    '### Run details:'
+    "# Starlight Agent Watchdog Status -- $($Now.ToString('yyyy-MM-dd HH:mm'))",
+    '',
+    "**Mode:** $(if ($DryRun) { 'DRY-RUN' } else { 'ENFORCE' })",
+    "**Resource zone:** $resourceZone",
+    "**Disk free:** $diskFreeGiB GiB (floor $MinimumFreeDiskGiB GiB)",
+    "**RAM used:** $ramUsedPercent% | available $ramAvailableGiB GiB (ceiling $MaximumRamPercent%)",
+    "**Cleanup events:** $($events.Count) | review candidates: $($candidates.Count)",
+    '',
+    '## Events'
 )
-if ($cleanups.Count -eq 0) {
-    $reportLines += '- System healthy. No orphaned agent sessions or stale worktrees found.'
-} else {
-    foreach ($c in $cleanups) {
-        $reportLines += "- $c"
-    }
-}
-
+if ($events.Count -eq 0) { $reportLines += '- None.' } else { $reportLines += @($events | ForEach-Object { "- $_" }) }
+$reportLines += @('', '## Review-only candidates')
+if ($candidates.Count -eq 0) { $reportLines += '- None.' } else { $reportLines += @($candidates | ForEach-Object { "- $_" }) }
 $reportLines | Set-Content $StatusPath -Encoding utf8
 
-if ($cleanups.Count -gt 0) {
-    foreach ($c in $cleanups) {
-        "[WATCHDOG] $($Now.ToString('s')) :: $c" | Add-Content $LogPath -Encoding utf8
-    }
+foreach ($event in $events) {
+    "[WATCHDOG] $($Now.ToString('s')) :: $event" | Add-Content $LogPath -Encoding utf8
+}
+if ($resourceZone -eq 'RED') {
+    "[WATCHDOG-RED] $($Now.ToString('s')) :: disk=${diskFreeGiB}GiB ram=${ramUsedPercent}%" | Add-Content $LogPath -Encoding utf8
 }
 
-Write-Host "Watchdog complete: $($cleanups.Count) event(s) logged."
+Write-Host "Watchdog complete: zone=$resourceZone events=$($events.Count) candidates=$($candidates.Count)"
+if ($resourceZone -eq 'RED') { exit 2 }
 exit 0
