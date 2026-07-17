@@ -1,0 +1,93 @@
+name: "Knowledge Tree — node / edge proposal"
+description: "Propose a new concept, skill, evidence, artifact, or contribution node (and its edges) for the Knowledge Tree canon."
+title: "kt(node): <domain> — <short label>"
+labels: ["knowledge-tree", "canon-proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every proposal is bound by `verticals/knowledge-tree/LAWS.md`. The two that get proposals rejected fastest:
+        **LAW-1 (provenance-or-it-doesn't-exist)** and **LAW-4 (honest confidence)**. Read `ONTOLOGY.md` for the closed
+        kind/relation vocabulary before filling this in. A curator (or curator agent under human review) merges — see `RESEARCH_PROTOCOL.md`.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Node kind
+      description: "The progression kind (ONTOLOGY.md §2). Closed set."
+      options:
+        - concept
+        - skill
+        - practice
+        - artifact
+        - evidence
+        - contribution
+    validations:
+      required: true
+  - type: input
+    id: node_id
+    attributes:
+      label: Proposed node ID
+      description: "Grammar: <domain-prefix>/<kind>/<slug> — lowercase, hyphenated. e.g. phys/concept/statistical-mechanics"
+      placeholder: "math/concept/measure-theory"
+    validations:
+      required: true
+  - type: input
+    id: label
+    attributes:
+      label: Label
+      placeholder: "Measure Theory"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: "One to two sentences a smart newcomer can parse. No jargon they can't unpack."
+    validations:
+      required: true
+  - type: dropdown
+    id: confidence
+    attributes:
+      label: Confidence (LAW-4)
+      description: "Assign the lowest defensible level. Inflating confidence is the cardinal violation."
+      options:
+        - established
+        - supported
+        - contested
+        - speculative
+        - unknown
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: Provenance (LAW-1) — one ref per line
+      description: "Each line: <type>:<id>, where type ∈ doi, arxiv, wikidata, orcid, isbn, url. Persistent identifiers strongly preferred over bare URLs."
+      placeholder: |
+        wikidata:Q217403
+        doi:10.1007/978-1-4614-6956-8
+    validations:
+      required: true
+  - type: textarea
+    id: edges
+    attributes:
+      label: Edges — one per line
+      description: "Format: <source-id> <relation> <target-id>, relation ∈ unlocks | requires | part-of | contributes-to. Use the weakest true relation. Cross-domain edges welcome."
+      placeholder: |
+        math/concept/measure-theory requires math/concept/set-theory
+        math/concept/measure-theory unlocks math/concept/probability
+    validations:
+      required: false
+  - type: checkboxes
+    id: laws
+    attributes:
+      label: Laws checklist
+      options:
+        - label: "Every claim traces to a fetched source, not model memory (LAW-1)."
+          required: true
+        - label: "Confidence is the lowest defensible level (LAW-4)."
+          required: true
+        - label: "No person-scoped / private data (LAW-11)."
+          required: true
+        - label: "Kind and relations are from the closed ontology sets (ONTOLOGY.md)."
+          required: true

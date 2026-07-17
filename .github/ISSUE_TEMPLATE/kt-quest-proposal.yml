@@ -1,0 +1,69 @@
+name: "Knowledge Tree — quest (open problem)"
+description: "Pose an open problem for the frontier. A well-posed quest is a first-class contribution."
+title: "kt(quest): <domain> — <short label>"
+labels: ["knowledge-tree", "canon-proposal", "quest"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Quests are the fruit of the tree. **LAW-5 (falsifiability):** a quest enters only if it is well-posed —
+        success criteria statable, and the concepts a serious attempt presupposes linked by `requires` edges.
+        "Understand everything about X" is not a quest; "determine whether X under conditions Y" is.
+  - type: input
+    id: quest_id
+    attributes:
+      label: Proposed quest ID
+      description: "Grammar: <domain-prefix>/quest/<slug>"
+      placeholder: "comp/quest/p-vs-np"
+    validations:
+      required: true
+  - type: input
+    id: label
+    attributes:
+      label: Label
+      placeholder: "P versus NP"
+    validations:
+      required: true
+  - type: textarea
+    id: statement
+    attributes:
+      label: The problem + success criteria (LAW-5)
+      description: "State the open question and exactly what would count as solving it. Include why it matters (leverage)."
+    validations:
+      required: true
+  - type: dropdown
+    id: confidence
+    attributes:
+      label: Current status
+      options:
+        - contested
+        - speculative
+        - unknown
+    validations:
+      required: true
+  - type: textarea
+    id: requires
+    attributes:
+      label: Prerequisite lattice (LAW-5) — one `requires` edge per line
+      description: "The concepts a serious attempt presupposes. Format: <quest-id> requires <concept-id>."
+      placeholder: |
+        comp/quest/p-vs-np requires math/concept/logic-proof
+        comp/quest/p-vs-np requires comp/concept/complexity
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraining evidence (optional)
+      description: "Existing evidence nodes or results that bound the problem. Format: <evidence-id> contributes-to <quest-id>, with refs."
+    validations:
+      required: false
+  - type: checkboxes
+    id: laws
+    attributes:
+      label: Laws checklist
+      options:
+        - label: "Success criteria are statable — this is falsifiable, not open-ended (LAW-5)."
+          required: true
+        - label: "The prerequisite lattice links to concepts that already exist in the canon (or are proposed alongside)."
+          required: true

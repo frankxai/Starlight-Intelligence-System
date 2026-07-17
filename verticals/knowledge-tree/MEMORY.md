@@ -17,7 +17,7 @@ Current state of this vertical instance. Agents: claim tasks here before startin
 |---|---|---|---|
 | T-001 | Wire site build-time loader to `data/graph.json` (Option A in site TODO) | (dev) | open |
 | T-002 | Mirror canon + ONTOLOGY + LAWS to public canon repo; fix site "Read the Ontology" link target | (dev/curator) | open |
-| T-003 | Contribution issue templates (node/edge proposal forms) on canon repo | Curator | open |
+| T-003 | Contribution issue templates (node/edge + quest proposal forms) | Curator | done — `.github/ISSUE_TEMPLATE/kt-*.yml` + `CONTRIBUTING.md` + CI canon gate (`.github/workflows/knowledge-tree-canon.yml`) |
 | T-004 | First Cartographer coverage report over the merged canon | Cartographer | open |
 | T-005 | Deepen `math/quest/riemann-hypothesis` requires-lattice with harvested refs | Harvester+Synthesizer | open |
 | T-006 | Sentinel baseline sweep: verify every `refs[]` identifier resolves | Sentinel | open |
@@ -25,6 +25,7 @@ Current state of this vertical instance. Agents: claim tasks here before startin
 
 ## Decisions log
 
+- 2026-07-17 — Contribution front door: provenance-enforcing issue forms (node/edge + quest), CONTRIBUTING.md, and a CI canon gate that runs `validate.mjs` on every PR touching `data/**` — the Laws are now CI-enforced, not just documented.
 - 2026-07-17 — Vertical canon layer created (file contract + laws + ontology + corps + canonical graph). Foundation trunk seeded with 5 domains; seed path graph ported from site as superset base. Ontology core frozen (7 kinds / 4 relations); extensions are optional-field-only below major version.
 - 2026-06 — Explorer shipped (2D + 3D, shared data shape); data model established in site schema (Stage 1–2 of surface roadmap).
 

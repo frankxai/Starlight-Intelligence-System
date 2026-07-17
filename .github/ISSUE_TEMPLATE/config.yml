@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Knowledge Tree — how to contribute
+    url: https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/knowledge-tree/CONTRIBUTING.md
+    about: Read the research loop and the Laws before proposing canon changes.
+  - name: Knowledge Tree — ontology
+    url: https://github.com/frankxai/Starlight-Intelligence-System/blob/main/verticals/knowledge-tree/ONTOLOGY.md
+    about: The closed node-kind and relation vocabulary. Read before filling in a proposal.
