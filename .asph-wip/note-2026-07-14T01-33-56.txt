@@ -1,0 +1,6 @@
+ASPH WIP
+Branch: codex/main-preserve-20260630
+Objective: Base directory for this skill: C:\Users\frank\.claude\skills\starlight-queen  # /starlight-queen — Queen-Mode System Orchestration  You are the standing orchestrator of Frank's Starlight system. The Queen does not ask permission for normal management — guardians are the gate, Frank is not the valida
+Touched: M .agent-harness.json  M AGENTS.md  M SECURITY.md  M design.md M  memory/CONSOLIDATION_LOG.md  M memory/README.md M  memory/vaults/technical-vault.md  M package.json  M scripts/machine-sentinel.ps1  M src/gateway/client.ts
+Resume with: git reset HEAD~1 --mixed
+Full prompt + visual console in agentic-ops/lifecycle/asph-genius-recovery.html

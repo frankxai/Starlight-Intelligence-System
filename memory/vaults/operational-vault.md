@@ -587,3 +587,25 @@ Public/private boundary: public repos may contain doctrine, generic routing tabl
 Follow-up guide: `starlight-automation-agent-skills/docs/automation-operating-guide.md` now serves as the human-and-agent manual for understanding when to use native connectors, Codex automations, Hermes/retrieval agents, MCP, Make.com, n8n, Starlight swarm queues, and scripts/GitHub Actions. It includes cost model, decision protocol, observability, eval types, maintenance cadence, evolution ladder, and the agent working agreement. Use `templates/automation-decision-record.md` before durable workflow creation.
 
 Verification performed during setup: skill bundle validator passed, all six Codex skills passed official quick validation, plugin manifest validation passed, MCP example validation passed, n8n example validation passed, redaction self-test passed, and public-safety scans passed for both new public repos.
+
+## 2026-07-16 — SHIP session: 07-14 codex wave integrated to mains (Cowork conductor)
+
+**Category:** orchestration-state
+**Confidence:** 0.97
+**Source:** Claude Cowork session, sandbox (no push auth)
+**Related:** all 9 registry repos, `merge/codex-wave-20260714` (SIS), `merge/homepage-world-engine` (arcanea-ai-app)
+
+Opening sweep found all 9 registry repos on codex/* or agent/* side branches, zero on main — an unmerged 2026-07-14 agent wave. starlight-command-center and starlight-swarm ARE versioned; the 2026-06-09 unversioned warnings in cowork-conductor SKILL.md are obsolete and should be removed.
+
+Fast-forwarded mains without touching working trees (`git fetch . HEAD:main`): arcanea-orchestrator 0113bf6, arcanea-claw 4356de5, arcanea-agent-skills f4e2430, starlight-swarm 405e0a9, arcanea-studio 1e35aff, arcanea-ecosystem (master) cd29bc9, starlight-command-center 4f7c303.
+
+arcanea-ai-app: true divergence (main 6↑ dependabot / branch 8↑ homepage V3). Merged in a shared-alternates scratch clone; conflict policy: main's newer dep pins kept; agenthub package.json restored from branch (main's copy was structurally broken — no name/scripts/framework deps) with main's bumps applied; pnpm overrides unioned (undici pin + js-yaml audit overrides); lockfile from main, refresh pending. Result staged as `merge/homepage-world-engine` (2861f21f) — main ref is held by the production worktree, which this sandbox cannot see (C:\ path), so the ff must happen on the machine.
+
+SIS: branch touches 415 files, ZERO board-gated substrate files. HEAD is an ASPH wip checkpoint, so merged as staged preview only: `merge/codex-wave-20260714` (311a27f). three-stdlib pin (2.36.1) kept over branch caret; site lockfile from main.
+
+Hygiene flags for next REPAIR: 15 prunable worktrees registered in arcanea-ai-app; uniform CRLF/BOM-noise dirty files (.agent-harness.json, AGENTS.md) + .asph-wip/ artifacts across 5 repos — left untouched per preserve-user-work doctrine; stale locks renamed *.stale (SIS index.lock was this session's own timeout artifact; maintenance.lock in 5 repos).
+
+On the machine (sandbox had no push auth):
+1. arcanea-ai-app production worktree: `git merge --ff-only merge/homepage-world-engine` then `pnpm install` to refresh lockfile with unioned overrides; verify via Vercel preview per Vercel-first doctrine.
+2. SIS: review `merge/codex-wave-20260714`, then `git branch -f`/merge to main with Frank ack and push.
+3. Push all seven fast-forwarded mains to origin.
