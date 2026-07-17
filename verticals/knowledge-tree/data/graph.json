@@ -12,11 +12,12 @@
     "domainPrefixes": {
       "math": "mathematics",
       "phys": "physics-cosmos",
-      "bio": "life-mind",
+      "life": "life-mind",
       "comp": "computation-intelligence",
       "energy": "energy-matter",
       "ai": "ai-architect",
       "space": "space-builder",
+      "bio": "bio-intelligence",
       "creator": "creator-founder"
     },
     "changelog": [
@@ -1359,8 +1360,8 @@
       "relation": "unlocks"
     },
     {
-      "source": "life/concept/cell-biology",
-      "target": "life/concept/molecular-biology",
+      "source": "life/concept/molecular-biology",
+      "target": "life/concept/cell-biology",
       "relation": "part-of"
     },
     {
@@ -1502,8 +1503,8 @@
       "note": "chemistry underlies biology"
     },
     {
-      "source": "comp/concept/information-theory",
-      "target": "ai/concept/information-theory",
+      "source": "ai/concept/information-theory",
+      "target": "comp/concept/information-theory",
       "relation": "part-of",
       "note": "path node specializes the foundation"
     },

@@ -37,13 +37,20 @@ for (const d of graph.domains ?? []) {
 
 // ── Nodes ────────────────────────────────────────────────────────────────────
 const nodeIds = new Set();
+const prefixMap = graph.meta?.domainPrefixes ?? {};
 for (const n of graph.nodes ?? []) {
+  if (!n.id || typeof n.id !== "string") { err(`node missing or invalid id: ${JSON.stringify(n)}`); continue; }
   if (nodeIds.has(n.id)) err(`duplicate node id: ${n.id}`);
   nodeIds.add(n.id);
   if (!ID_RE.test(n.id)) err(`node id violates grammar <prefix>/<kind>/<slug>: ${n.id}`);
   if (!KINDS.includes(n.kind)) err(`node ${n.id}: bad kind "${n.kind}"`);          // ontology closure
   if (!n.label || !n.summary) err(`node ${n.id}: missing label/summary`);
   if (n.domainId && !domainIds.has(n.domainId)) err(`node ${n.id}: unknown domainId "${n.domainId}"`);
+  // id prefix must map to the node's domainId via meta.domainPrefixes (integrity)
+  const prefix = n.id.split("/")[0];
+  const expectedDomainId = prefixMap[prefix];
+  if (expectedDomainId !== n.domainId)
+    err(`node ${n.id}: prefix "${prefix}" maps to "${expectedDomainId}" in domainPrefixes, but domainId is "${n.domainId}"`);
   // id kind segment must match declared kind
   const idKind = n.id.split("/")[1];
   if (idKind !== n.kind) err(`node ${n.id}: id kind "${idKind}" != declared kind "${n.kind}"`);
@@ -83,8 +90,8 @@ if (declared) {
 }
 
 // LAW-5 — every quest should declare its prerequisite lattice
-const requiresBySource = new Set(graph.edges.filter((e) => e.relation === "requires").map((e) => e.source));
-for (const n of graph.nodes.filter((n) => n.kind === "quest")) {
+const requiresBySource = new Set((graph.edges ?? []).filter((e) => e.relation === "requires").map((e) => e.source));
+for (const n of (graph.nodes ?? []).filter((n) => n.kind === "quest")) {
   if (!requiresBySource.has(n.id)) warn(`LAW-5: quest ${n.id} has no 'requires' edges (prerequisite lattice missing)`);
 }
 

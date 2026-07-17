@@ -39,7 +39,7 @@ An independent verifier — different instance/session/human than the synthesize
 - Are the edges real? (A plausible-sounding `requires` that experts would reject is worse than a missing edge.)
 - Default to *refuted* when uncertain.
 
-For `established`-confidence claims and all quest framings, use three verifier votes with distinct lenses (source-fidelity, confidence-honesty, edge-validity); majority refute kills or downgrades the claim. Single-vote verification is acceptable for `speculative`/`contested` labels and copy-level edits.
+For `established`-confidence claims and all quest framings, use three verifier votes with distinct lenses (source-fidelity, confidence-honesty, edge-validity); majority refute kills or downgrades the claim. Single-vote verification is acceptable for `supported`/`contested`/`speculative` labels and copy-level edits.
 
 ## 5. Propose
 
