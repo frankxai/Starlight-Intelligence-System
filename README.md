@@ -190,7 +190,7 @@ Then point your MCP client at that directory:
     "starlight": {
       "command": "node",
       "args": [
-        "node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js",
+        "/path/to/Starlight-Intelligence-System/dist/mcp-server.js",
         "--vault-dir",
         "~/.starlight/vaults"
       ]
@@ -198,6 +198,8 @@ Then point your MCP client at that directory:
   }
 }
 ```
+
+For an npm installation, use `node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js` instead; the clone path above is required for the current v8.x workflow.
 
 Restart Claude Code. You now have thirteen `sis_*` tools available in every session.
 (If you skip the seed step the server still works — it auto-seeds an empty
@@ -257,7 +259,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
 - **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode share the same vaults.
-- **MCP v2** — `src/mcp-server.ts` ships ten tools over JSON-RPC 2.0 stdio.
+- **MCP v2** — `src/mcp-server.ts` ships thirteen tools over JSON-RPC 2.0 stdio.
 
 ### MCP tools
 
@@ -273,6 +275,9 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | `sis_invalidate` | Mark an entry as expired |
 | `sis_contradict` | Flag two entries as contradictory |
 | `sis_stale` | List entries not confirmed within a threshold |
+| `sis_goal_status` | Read the current state of a tracked goal |
+| `sis_goal_update` | Update a tracked goal with attested state |
+| `sis_goal_log` | Append progress evidence to a tracked goal |
 
 ### Platform adapters
 
