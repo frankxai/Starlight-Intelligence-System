@@ -140,7 +140,6 @@
   },
   "files": [
     "dist/",
-    "context/",
     "public-vault/",
     "README.md"
   ],
