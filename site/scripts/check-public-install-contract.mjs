@@ -66,6 +66,10 @@ const forbidden = [
     pattern: /~\/\.config\/opencode\/config\.json/g,
     reason: "OpenCode's global configuration is ~/.config/opencode/opencode.json",
   },
+  {
+    pattern: /~\/\.opencode\/config\.json/g,
+    reason: "OpenCode's global configuration is ~/.config/opencode/opencode.json",
+  },
 ];
 
 const files = SEARCH_ROOTS.flatMap(walkTextFiles);
@@ -136,6 +140,10 @@ requireMarkers(join(SITE_ROOT, "public/llms.txt"), [
 requireMarkers(join(REPO_ROOT, "src/cli.ts"), [
   'join(getPackageRoot(), "dist", "mcp-server.js")',
   '--vault-dir "${result.vaultDir}"',
+]);
+
+requireMarkers(join(REPO_ROOT, "README.md"), [
+  "~/.config/opencode/opencode.json",
 ]);
 
 if (failures.length > 0) {
