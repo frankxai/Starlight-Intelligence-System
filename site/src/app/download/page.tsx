@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { BrainHero } from "@/components/BrainHero";
 import {
-  Brain,
   Download,
   Terminal as TerminalIcon,
   ShieldCheck,
@@ -14,30 +13,18 @@ import {
   ArrowRight,
   Sparkles,
   Layers,
-  Settings,
   Eye,
   FileText
 } from "lucide-react";
 import {
-  SIP_STARTER_ASSET_BASE,
-  SIP_STARTER_DOWNLOADS,
-  SIP_STARTER_INCLUDED,
-  SIP_STARTER_MODULE_NAME,
-  SIP_STARTER_RELEASE_URL,
-  SIP_STARTER_TAG,
+  SIP_STARTER_REPO,
+  SIP_STARTER_SOURCE_URL,
+  SIP_STARTER_LABEL,
 } from "@/lib/sip-download";
 import {
   PLUGIN_MODULES_ASSET_BASE,
-  PLUGIN_MODULES_DOWNLOADS,
-  PLUGIN_MODULES_MODULE_NAME,
-  PLUGIN_MODULES_PLUGINS,
-  PLUGIN_MODULES_SHA256,
-  PLUGIN_MODULES_TAG,
-  PLUGIN_PRODUCT_KITS,
   PLUGIN_STARTER_ASSET_BASE,
-  PLUGIN_STARTER_DOWNLOADS,
   PLUGIN_STARTER_MODULE_NAME,
-  PLUGIN_STARTER_PLUGINS,
   PLUGIN_STARTER_SHA256,
   PLUGIN_STARTER_TAG,
 } from "@/lib/plugin-starter-download";
@@ -45,11 +32,11 @@ import {
 export const metadata: Metadata = {
   title: "Download - Starlight Intelligence",
   description:
-    "Download open-core Starlight modules: the SIP Starter, public Codex plugins, books, and software agent packs with release checksums.",
+    "Access current Starlight source and published, checksum-backed plugin modules.",
   openGraph: {
     title: "Download — Starlight Intelligence",
     description:
-      "Open-core SIP Starter release package for adopting Starlight Intelligence Protocol in any repo or workspace.",
+      "Current Starlight source plus the published, checksum-backed plugin modules.",
     type: "article",
     images: [
       {
@@ -64,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Download — Starlight Intelligence",
     description:
-      "Download the open-core SIP Starter with checksums and validation guidance.",
+      "Current Starlight source plus published, checksum-backed modules.",
     images: ["/opengraph-image"],
   },
 };
@@ -81,16 +68,18 @@ export default function DownloadPage() {
         <div className="relative mx-auto max-w-5xl px-6">
           <span className="inline-flex items-center gap-x-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-cyan-400">
             <Sparkles className="h-3 w-3 animate-pulse" />
-            Starlight Core Releases
+            Starlight Distribution
           </span>
           <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
-            Download the<br />
+            Start from<br />
             <span className="bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-              SIP Starter.
+              verified source.
             </span>
           </h1>
           <p className="mt-6 max-w-2xl text-[15px] leading-[1.8] text-slate-400">
-            One archive: vault schema, MCP server, and adapter configs for Claude Code, Cursor, Codex, and Gemini CLI. Unzip, paste one config block, and your agents keep their memory across sessions.
+            Build the current system from its public source. Download only the
+            modules that have a published release, checksum, and inspectable
+            artifact.
           </p>
         </div>
       </section>
@@ -119,34 +108,33 @@ export default function DownloadPage() {
               </div>
               <div className="p-6">
                 <span className="px-2.5 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono rounded-full uppercase">
-                  SIP Core • {SIP_STARTER_TAG}
+                  SIP Core • {SIP_STARTER_LABEL}
                 </span>
-                <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">SIP Starter Package</h3>
+                <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">SIP Starter Source</h3>
                 <p className="mt-2.5 text-xs text-slate-400 leading-relaxed">
-                  The foundational Starlight Intelligence Protocol starter. Contains core schemas, Obsidian vault templates, release manifest, and local installation scripts.
+                  The v8.3.0 source is public. A checksum-backed SIP Starter
+                  archive has not been published for this version, so this
+                  surface routes to source instead of manufacturing a release.
                 </p>
                 <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/[0.05] pt-4">
                   <span className="text-[11px] text-slate-500 font-mono">License: MIT</span>
                   <div className="flex gap-x-2">
                     <a
-                      href={`${SIP_STARTER_ASSET_BASE}/${SIP_STARTER_MODULE_NAME}.zip`}
-                      className="inline-flex items-center gap-x-1.5 rounded-full bg-white px-4 py-2 text-[12px] font-semibold text-slate-950 hover:bg-cyan-100 transition-all"
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                      Get ZIP
-                    </a>
-                    <a
-                      href={SIP_STARTER_RELEASE_URL}
+                      href={SIP_STARTER_SOURCE_URL}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="inline-flex items-center gap-x-1.5 rounded-full bg-white px-4 py-2 text-[12px] font-semibold text-slate-950 hover:bg-cyan-100 transition-all"
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                      Inspect source
+                    </a>
+                    <Link
+                      href="/quickstart"
                       className="inline-flex items-center gap-x-1.5 rounded-full border border-white/[0.12] px-4 py-2 text-[12px] font-medium text-white hover:bg-white/[0.04] transition-all"
                     >
-                      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                        <path d="M9 18c-4.51 2-5-2-7-2" />
-                      </svg>
-                      Release
-                    </a>
+                      <TerminalIcon className="h-3.5 w-3.5" />
+                      Build current source
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -263,7 +251,7 @@ export default function DownloadPage() {
                 color: "text-amber-400 border-amber-500/10 hover:border-amber-500/30",
                 desc: "Packaging templates and visual monetization engines.",
               },
-            ].map((kit, index) => {
+            ].map((kit) => {
               const Icon = kit.icon;
               return (
                 <div
@@ -466,51 +454,50 @@ export default function DownloadPage() {
           <div>
             <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">05 / Setup</p>
             <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">
-              Start in seconds.
+              Build what is current.
             </h2>
             <p className="mt-4 text-slate-400 text-sm leading-relaxed font-light">
-              Run the shell script to unpack the Starlight core contract (memory, agents, stack, and vault seeds) into your active workspace.
+              Until a v8.3.0 Starter archive is published, the repository is
+              the only current distribution path.
             </p>
           </div>
           <Terminal>
-            <span className="text-cyan-400">$</span>{" "}
-            <span className="text-slate-300">curl -LO</span>{" "}
-            <span className="text-violet-300">
-              {`${SIP_STARTER_ASSET_BASE}/${SIP_STARTER_MODULE_NAME}.tar.gz`}
-            </span>
-            {"\n"}
-            <span className="text-cyan-400">$</span>{" "}
-            <span className="text-slate-300">tar -xzf</span>{" "}
-            <span className="text-violet-300">{`${SIP_STARTER_MODULE_NAME}.tar.gz`}</span>
-            {"\n"}
-            <span className="text-cyan-400">$</span>{" "}
-            <span className="text-slate-300">sh</span>{" "}
-            <span className="text-violet-300">
-              {`${SIP_STARTER_MODULE_NAME}/install.sh`}
-            </span>{" "}
-            <span className="text-slate-500">/path/to/your/repo</span>
+            {`git clone ${SIP_STARTER_REPO}.git
+cd Starlight-Intelligence-System
+npm install
+npm run build
+node dist/cli.js init --vaults`}
           </Terminal>
         </div>
       </section>
 
-      {/* 7. Package Contents Grid */}
+      {/* 7. Distribution state */}
       <section className="px-6 py-20 border-b border-white/[0.04] bg-[#040409]/30">
         <div className="mx-auto max-w-5xl">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">06 / Check list</p>
+          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">06 / Distribution state</p>
           <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">
-            Everything included in the SIP Core module.
+            Source is open. The archive is not published.
           </h2>
-          <div className="mt-8 grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-            {SIP_STARTER_INCLUDED.map((item) => (
-              <div
-                key={item}
-                className="rounded-xl border border-white/[0.05] bg-white/[0.01] px-4 py-3"
-              >
-                <code className="font-mono text-[11px] text-slate-400 truncate block">
-                  {item}
-                </code>
-              </div>
-            ))}
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-400">
+            No release page, ZIP, TAR.GZ, manifest, or checksum is claimed for
+            SIP Starter v8.3.0. The machine-readable endpoint reports the same
+            source-only state.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href={SIP_STARTER_SOURCE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-white/[0.1] px-5 py-2.5 text-[13px] font-medium text-white transition-all hover:border-white/[0.2] hover:bg-white/[0.04]"
+            >
+              Inspect main source
+            </a>
+            <Link
+              href="/download/latest.json"
+              className="rounded-full border border-white/[0.1] px-5 py-2.5 text-[13px] font-medium text-white transition-all hover:border-white/[0.2] hover:bg-white/[0.04]"
+            >
+              Read distribution JSON
+            </Link>
           </div>
         </div>
       </section>
@@ -520,18 +507,18 @@ export default function DownloadPage() {
         <div className="mx-auto max-w-5xl grid gap-6 sm:grid-cols-3">
           <ValidationStep
             n="01"
-            title="Verify checksums"
-            body="Download the SHA256 file and compare it against the archive before unpacking."
+            title="Inspect source"
+            body="Review the public repository, license, and current main history before adopting it."
           />
           <ValidationStep
             n="02"
-            title="Read the manifest"
-            body="Use release-manifest.json and starlight-module.json to confirm conformance."
+            title="Build locally"
+            body="Install dependencies and compile the checked-out source; do not substitute the stale npm package."
           />
           <ValidationStep
             n="03"
-            title="Deploy runtime"
-            body="When the file contract is working, install the full Starlight runtime via npm."
+            title="Verify the boundary"
+            body="Call tools/list over JSON-RPC and confirm the current 13-tool MCP surface."
           />
         </div>
         

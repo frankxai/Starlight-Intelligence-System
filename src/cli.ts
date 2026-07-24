@@ -351,7 +351,8 @@ function cmdInitVaults(vaultDirArg?: string, force = false): void {
   }
   console.log("");
   console.log("Point your MCP client at this directory:");
-  console.log(`  node node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js --vault-dir ${result.vaultDir}`);
+  const mcpServerPath = join(getPackageRoot(), "dist", "mcp-server.js");
+  console.log(`  node "${mcpServerPath}" --vault-dir "${result.vaultDir}"`);
 }
 
 function cmdGenerate(target?: string, outputPath?: string): void {

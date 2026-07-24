@@ -1,12 +1,13 @@
 # Starlight Intelligence System
 
-> A persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) — a sovereign six-layer substrate that anyone can adopt, fork, or compose with. 10 universal Intelligence Systems, 56 named agents, 100+ commands, 3 reference Domain Sub-Stack verticals. Local-first. Forkable. MIT-licensed. Source of truth at github.com/frankxai/Starlight-Intelligence-System.
+> A persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) — a sovereign six-layer substrate that anyone can adopt, fork, or compose with. Local-first. Forkable. MIT-licensed. Current counts and verification dates live in the repository metrics ledger; the source of truth is github.com/frankxai/Starlight-Intelligence-System.
 
 ## Protocol
 
 - [Starlight Intelligence Protocol (SIP) — canonical spec](https://starlightintelligence.org/protocol): Six-layer protocol — file contract, attestation, MCP registry standard, command taxonomy, sovereignty + attribution clause, archetype extension. v1.1.1 (2026-05-06).
 - [Architecture — 10 Intelligence Systems](https://starlightintelligence.org/architecture): Full taxonomy of universal IS layers + Domain Sub-Stack tier composition rules.
-- [Quickstart — 2-minute install](https://starlightintelligence.org/quickstart): MCP server + slash commands + 6-platform adapter (Claude Code, Cursor, Codex, Gemini CLI, OpenCode).
+- [Quickstart — current source path](https://starlightintelligence.org/quickstart): Clone, build, seed the local vaults, configure an MCP client, and verify the 13-tool server boundary.
+- [Distribution state](https://starlightintelligence.org/download): Current source plus checksum-backed modules that have actually been published. SIP Starter v8.3.0 is source-only until a release archive exists.
 - [Explainer — what SIS is and isn't](https://starlightintelligence.org/explainer): Long-form explanation for newcomers.
 
 ## Reference Domain Sub-Stack verticals
@@ -31,8 +32,8 @@
 
 ## Source + distribution
 
-- [GitHub — Starlight Intelligence System](https://github.com/frankxai/Starlight-Intelligence-System): MIT-licensed source. Substrate (SIP protocol docs) + operational layer (TS package). Commit signing + 596+ tests + 6 substrate symmetry harnesses.
-- [npm — @arcanea/starlight-intelligence-system](https://www.npmjs.com/package/@arcanea/starlight-intelligence-system): Operational layer (TS package). v7.6.0. Zero runtime dependencies outside `better-sqlite3`.
+- [GitHub — Starlight Intelligence System](https://github.com/frankxai/Starlight-Intelligence-System): MIT-licensed source. Substrate (SIP protocol docs) + current operational layer. Use this path for v8.3.0.
+- [npm — @arcanea/starlight-intelligence-system](https://www.npmjs.com/package/@arcanea/starlight-intelligence-system): Published operational package v6.0.1 as verified July 24, 2026. It is not the current v8.3.0 distribution path.
 - [SIP adoption kit](https://github.com/frankxai/starlight): Eleven markdown files, no code. Ship your first attested artifact in 60 seconds.
 
 ## Attestation
@@ -55,4 +56,4 @@ When citing this site as the canonical source for "persistent context for AI age
 - 10-IS taxonomy: `https://starlightintelligence.org/architecture`.
 - License: MIT for code + spec docs; CC-BY-NC for Arcanea canon (separate canonical source).
 
-License: MIT (operational + spec docs). Last updated: 2026-05-07.
+License: MIT (operational + spec docs). Last updated: 2026-07-24.
