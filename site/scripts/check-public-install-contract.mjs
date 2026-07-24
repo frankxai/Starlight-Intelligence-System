@@ -62,6 +62,10 @@ const forbidden = [
     pattern: /Operational layer \(TS package\)\. v7\.6\.0/g,
     reason: "crawler output must not invent an unpublished package version",
   },
+  {
+    pattern: /~\/\.config\/opencode\/config\.json/g,
+    reason: "OpenCode's global configuration is ~/.config/opencode/opencode.json",
+  },
 ];
 
 const files = SEARCH_ROOTS.flatMap(walkTextFiles);
@@ -99,6 +103,7 @@ requireMarkers(join(SITE_ROOT, "src/app/quickstart/page.tsx"), [
   "~/.starlight/vaults/technical.jsonl",
   "npm serves",
   "v6.0.1",
+  "~/.config/opencode/opencode.json",
 ]);
 
 requireMarkers(join(SITE_ROOT, "src/app/docs/page.tsx"), [

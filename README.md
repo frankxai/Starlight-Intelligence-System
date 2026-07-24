@@ -314,7 +314,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Cursor | `.cursorrules` | Cursor settings → MCP | 128,000 |
 | Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
 | Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
-| OpenCode | `AGENTS.md` (compact) | `~/.opencode/config.json` | 128,000 |
+| OpenCode | `AGENTS.md` (compact) | `~/.config/opencode/opencode.json` | 128,000 |
 
 ### The 7 named agents (operational layer)
 

@@ -111,7 +111,7 @@ args = ["${MCP_SERVER_PATH}"]`,
     labelBorder: "border-emerald-500/[0.18]",
     context: "user config",
     memoryFile: "AGENTS.md",
-    configPath: "~/.config/opencode/config.json",
+    configPath: "~/.config/opencode/opencode.json",
     reason: "Keep the server local while models change above the memory layer.",
     config: `{
   "mcp": {
