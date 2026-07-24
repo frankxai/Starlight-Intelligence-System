@@ -222,21 +222,32 @@ GET /api/vaults/frank    # Full vault data as JSON`}</Code>
         </Section>
 
         <Section id="mcp-server" title="MCP Server">
-          <P>Connect SIS to Claude Code, Cursor, or any MCP-compatible tool:</P>
-          <Code>{`// Claude Code settings.json
+          <P>
+            Build the current repository first. As verified on July 24, 2026,
+            npm still serves v6.0.1 while the repository is v8.3.0.
+          </P>
+          <Code>{`git clone https://github.com/frankxai/Starlight-Intelligence-System
+cd Starlight-Intelligence-System
+npm install
+npm run build
+node dist/cli.js init --vaults`}</Code>
+          <P>Then connect any MCP-compatible client to the built server:</P>
+          <Code>{`// MCP client configuration
 {
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["path/to/sis-mcp-server.mjs"]
+      "args": ["/path/to/Starlight-Intelligence-System/dist/mcp-server.js"]
     }
   }
 }`}</Code>
           <P>
-            Tools: <code className="text-slate-300">sis_vault_search</code>,{" "}
+            The current server exposes 13 tools, including{" "}
+            <code className="text-slate-300">sis_vault_search</code>,{" "}
             <code className="text-slate-300">sis_recent_entries</code>,{" "}
             <code className="text-slate-300">sis_append_entry</code>,{" "}
-            <code className="text-slate-300">sis_stats</code>
+            <code className="text-slate-300">sis_stats</code>, and the three{" "}
+            <code className="text-slate-300">sis_goal_*</code> tools.
           </P>
         </Section>
 

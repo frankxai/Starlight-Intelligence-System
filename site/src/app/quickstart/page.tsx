@@ -4,11 +4,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Quickstart",
   description:
-    "Install Starlight Intelligence in 2 minutes. Pick your AI tool and copy the config.",
+    "Build the current Starlight Intelligence source, connect one MCP client, and verify the live tool surface.",
   openGraph: {
     title: "Quickstart — Starlight Intelligence",
     description:
-      "Install Starlight Intelligence in 2 minutes. Pick your AI tool and copy the config.",
+      "Build the current source, connect one MCP client, and verify the live tool surface.",
     type: "article",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Quickstart" }],
   },
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Quickstart — Starlight Intelligence",
     description:
-      "Install in 2 minutes. Pick your AI tool, copy the config.",
+      "Build the current source, connect one MCP client, and verify the live tool surface.",
     images: ["/opengraph-image"],
   },
 };
@@ -30,8 +30,11 @@ type Platform = {
   memoryFile: string;
   configPath: string;
   reason: string;
-  json: string;
+  config: string;
 };
+
+const MCP_SERVER_PATH =
+  "/path/to/Starlight-Intelligence-System/dist/mcp-server.js";
 
 const PLATFORMS: Platform[] = [
   {
@@ -39,15 +42,15 @@ const PLATFORMS: Platform[] = [
     labelColor: "text-violet-400",
     labelBg: "bg-violet-500/[0.07]",
     labelBorder: "border-violet-500/[0.18]",
-    context: "200k tokens",
+    context: "project config",
     memoryFile: "CLAUDE.md",
-    configPath: "~/.claude/mcp.json",
-    reason: "Best for deep work — persistent sessions and rich tool access.",
-    json: `{
+    configPath: ".mcp.json",
+    reason: "Keep the server declaration with the project that uses it.",
+    config: `{
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
+      "args": ["${MCP_SERVER_PATH}"]
     }
   }
 }`,
@@ -57,15 +60,15 @@ const PLATFORMS: Platform[] = [
     labelColor: "text-cyan-400",
     labelBg: "bg-cyan-500/[0.07]",
     labelBorder: "border-cyan-500/[0.18]",
-    context: "200k tokens",
+    context: "user config",
     memoryFile: ".cursorrules",
-    configPath: ".cursor/mcp.json",
-    reason: "Best for IDE-native editing with memory-aware completions.",
-    json: `{
+    configPath: "~/.cursor/mcp.json",
+    reason: "Use one absolute server path so every workspace reaches the same vault.",
+    config: `{
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
+      "args": ["${MCP_SERVER_PATH}"]
     }
   }
 }`,
@@ -75,33 +78,28 @@ const PLATFORMS: Platform[] = [
     labelColor: "text-fuchsia-400",
     labelBg: "bg-fuchsia-500/[0.07]",
     labelBorder: "border-fuchsia-500/[0.18]",
-    context: "128k tokens",
+    context: "TOML config",
     memoryFile: "AGENTS.md",
-    configPath: "~/.codex/mcp.json",
-    reason: "Best for terminal-first workflows with OpenAI reasoning.",
-    json: `{
-  "mcpServers": {
-    "starlight-sis": {
-      "command": "node",
-      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
-    }
-  }
-}`,
+    configPath: "~/.codex/config.toml",
+    reason: "Register the local stdio server in Codex's TOML configuration.",
+    config: `[mcp_servers.starlight_sis]
+command = "node"
+args = ["${MCP_SERVER_PATH}"]`,
   },
   {
     name: "Gemini CLI",
     labelColor: "text-amber-400",
     labelBg: "bg-amber-500/[0.07]",
     labelBorder: "border-amber-500/[0.18]",
-    context: "1M tokens",
+    context: "user config",
     memoryFile: "GEMINI.md",
     configPath: "~/.gemini/settings.json",
-    reason: "Best for massive context — feed your whole vault in one shot.",
-    json: `{
+    reason: "Register the same local server and vault path in Gemini CLI.",
+    config: `{
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
+      "args": ["${MCP_SERVER_PATH}"]
     }
   }
 }`,
@@ -111,15 +109,18 @@ const PLATFORMS: Platform[] = [
     labelColor: "text-emerald-400",
     labelBg: "bg-emerald-500/[0.07]",
     labelBorder: "border-emerald-500/[0.18]",
-    context: "model-dependent",
+    context: "user config",
     memoryFile: "AGENTS.md",
     configPath: "~/.config/opencode/config.json",
-    reason: "Best for multi-model routing — swap models without losing memory.",
-    json: `{
+    reason: "Keep the server local while models change above the memory layer.",
+    config: `{
   "mcp": {
     "starlight-sis": {
       "type": "local",
-      "command": ["node", "node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
+      "command": [
+        "node",
+        "${MCP_SERVER_PATH}"
+      ]
     }
   }
 }`,
@@ -131,29 +132,37 @@ export default function QuickstartPage() {
     <div className="mx-auto max-w-3xl px-6 py-16">
       {/* Hero */}
       <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
-        Two minutes to compound intelligence
+        Current source · verified path
       </p>
       <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
         Quickstart
       </h1>
       <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400">
-        Pick your tool. Copy the config. Your next AI session remembers
-        everything.
+        Build the current source, point one MCP client at its server, and
+        confirm the 13 tools before writing your first memory.
       </p>
 
       {/* Step 1 — Install */}
       <section className="mt-16">
-        <StepLabel n={1} label="Install the package" />
+        <StepLabel n={1} label="Build the current source" />
         <p className="mt-3 text-[14px] leading-relaxed text-slate-400">
-          Install once from npm. Works with any MCP-compatible client.
+          The repository is the current v8.3.0 distribution path. Clone it,
+          build it, then seed the six local vaults.
         </p>
         <Terminal>
-          <span className="text-emerald-400">$</span>{" "}
-          <span className="text-slate-400">npm install</span>{" "}
-          <span className="text-violet-400">
-            @arcanea/starlight-intelligence-system
-          </span>
+          {`git clone https://github.com/frankxai/Starlight-Intelligence-System
+cd Starlight-Intelligence-System
+npm install
+npm run build
+node dist/cli.js init --vaults`}
         </Terminal>
+        <div className="mt-5 rounded-xl border border-amber-500/[0.16] bg-amber-500/[0.05] p-5">
+          <p className="text-[13px] leading-relaxed text-slate-300">
+            Distribution note: as verified on July 24, 2026, npm serves
+            v6.0.1 while this repository is v8.3.0. Use the source path above
+            for the current system.
+          </p>
+        </div>
       </section>
 
       {/* Step 2 — Platform configs */}
@@ -194,7 +203,7 @@ export default function QuickstartPage() {
                 </div>
               </dl>
 
-              <CodeBlock>{p.json}</CodeBlock>
+              <CodeBlock>{p.config}</CodeBlock>
             </div>
           ))}
         </div>
@@ -204,21 +213,14 @@ export default function QuickstartPage() {
       <section className="mt-16">
         <StepLabel n={3} label="Verify it works" />
         <p className="mt-3 text-[14px] leading-relaxed text-slate-400">
-          Run the MCP server directly to confirm it starts and lists its tools.
+          Ask the server for its tool inventory over the same JSON-RPC
+          boundary your client uses.
         </p>
         <Terminal>
-          <span className="text-emerald-400">$</span>{" "}
-          <span className="text-slate-400">npx</span>{" "}
-          <span className="text-violet-400">@arcanea/starlight-intelligence-system</span>{" "}
-          <span className="text-slate-400">--list-tools</span>
-          {"\n"}
-          <span className="text-slate-600">{"→ sis_append_entry"}</span>
-          {"\n"}
-          <span className="text-slate-600">{"→ sis_recent_entries"}</span>
-          {"\n"}
-          <span className="text-slate-600">{"→ sis_vault_search"}</span>
-          {"\n"}
-          <span className="text-slate-600">{"→ sis_stats"}</span>
+          {`printf '%s\\n' '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' \\
+  | node /path/to/Starlight-Intelligence-System/dist/mcp-server.js
+
+# result.tools contains 13 sis_* tool definitions`}
         </Terminal>
       </section>
 
@@ -252,7 +254,7 @@ export default function QuickstartPage() {
           <span className="text-slate-400">,</span>
           {"\n"}
           {"  "}
-          <span className="text-violet-400">insight</span>
+          <span className="text-violet-400">content</span>
           <span className="text-slate-400">:</span>{" "}
           <span className="text-emerald-400">
             &quot;Chose Next.js 16 for App Router streaming&quot;
@@ -271,7 +273,7 @@ export default function QuickstartPage() {
           <p className="text-[13px] leading-relaxed text-slate-300">
             That entry is now a plain JSONL line in{" "}
             <code className="font-mono text-[12px] text-violet-300">
-              vaults/frank/technical.jsonl
+              ~/.starlight/vaults/technical.jsonl
             </code>
             . Every tool with the MCP configured can read it. Your memory
             compounds across every session.
