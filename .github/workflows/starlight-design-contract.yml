@@ -8,4 +8,4 @@ permissions:
 
 jobs:
   design-contract:
-    uses: frankxai/starlight-design-intelligence/.github/workflows/design-contract.yml@0408bd8fb17a5890e1b743eb381abb4386f35a43
+    uses: frankxai/starlight-design-intelligence/.github/workflows/design-contract.yml@80830c60040967956580c761772469664c44dd55
