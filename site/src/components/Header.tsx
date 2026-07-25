@@ -59,10 +59,11 @@ function HeaderContent({ pathname }: { pathname: string }) {
 
         {/* Desktop grouped nav */}
         <div className="hidden items-center gap-0.5 md:flex">
-          {NAV_GROUPS.map((group) => {
+          {NAV_GROUPS.map((group, groupIndex) => {
             const open = openMenu === group.label;
             const groupActive = group.items.some((it) => isActive(pathname, it.href));
             const panelId = `nav-panel-${group.label.toLowerCase()}`;
+            const alignPanelRight = groupIndex === NAV_GROUPS.length - 1;
             return (
               <div
                 key={group.label}
@@ -92,7 +93,9 @@ function HeaderContent({ pathname }: { pathname: string }) {
                     doesn't drop while crossing it. */}
                 <div
                   id={panelId}
-                  className={`absolute left-0 top-full z-50 w-72 pt-2 transition-micro ${
+                  className={`absolute top-full z-50 w-72 pt-2 transition-micro ${
+                    alignPanelRight ? "right-0" : "left-0"
+                  } ${
                     open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
                   }`}
                 >

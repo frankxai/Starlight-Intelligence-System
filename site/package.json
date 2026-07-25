@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/check-public-install-contract.mjs && next build",
+    "build": "node scripts/check-public-install-contract.mjs && node scripts/check-layout-contract.mjs && next build",
     "check:public-install-contract": "node scripts/check-public-install-contract.mjs",
+    "check:layout-contract": "node scripts/check-layout-contract.mjs",
     "start": "next start",
     "lint": "eslint"
   },

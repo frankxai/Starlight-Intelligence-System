@@ -71,10 +71,8 @@ export default function DownloadPage() {
             Starlight Distribution
           </span>
           <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
-            Start from<br />
-            <span className="bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
-              verified source.
-            </span>
+            <span className="block">Start from</span>{" "}
+            <span className="block bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">verified source.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-[15px] leading-[1.8] text-slate-400">
             Build the current system from its public source. Download only the
