@@ -1,0 +1,21 @@
+{
+  "schema_version": "starlight.design_contract.v1",
+  "repository": "frankxai/Starlight-Intelligence-System",
+  "kernel_commit_sha": "0408bd8fb17a5890e1b743eb381abb4386f35a43",
+  "brand": {
+    "id": "sis",
+    "pack_sha256": "2c1d742c9ae823753b244da26816d740b80ca2ddd8428cd201790e2b827e3dea"
+  },
+  "surfaces": [
+    {
+      "id": "homepage",
+      "mode": "operations",
+      "claim_classes": ["availability", "capability", "provenance"]
+    }
+  ],
+  "local_contracts": ["AGENTS.md", "design.md", "taste.md"],
+  "release_evidence": {
+    "schema_version": "starlight.web_release_evidence.v1",
+    "receipt_directory": ".starlight/release-evidence"
+  }
+}
