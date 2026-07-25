@@ -5,16 +5,18 @@
 
 ## Wave 0 — Trust repairs (hours each; do before driving any traffic)
 
-- ◐ frankx.ai: fix broken nav link `/products/music-school` → `/music/learn` (repo's own wiring registry already verified the target)
-- ◐ frankx.ai `/tools`: delete fabricated `usageCount`/`rating`/"50K+ Monthly Uses"/"4.8/5" and Premium badges on the 6 stub tools
-- ◐ frankx.ai `/skills`: replace "Channel Frequency Alchemist" / "Consult Soul Strategist" example strings
-- ◐ frankx.ai `/research`: rewrite the FlagshipArticles block ("Conscious AI Operating Systems"); remove fictional research-team personas
-- ◐ frankx.ai `/vault`: generate layout metadata from `data/vault-manifest.json` (claims 484/30, actual 1507/55)
-- ◐ frankx.ai `/resources`: replace missing priority-loaded hero image (LCP 404)
-- ◐ frankx.ai `/coaching`: fix 40+/38 contradiction
-- ◐ frankx.ai `/shop`: fix "$19" floor (actual $27)
-- ◐ frankx.ai `/community`: fix "Active"-badged newsletter card linking to `/start`
-- ☐ arcanea.ai `/studio/store`: quarantine fake payment confirmations (SHIP-BLOCKER — gate behind flag or wire real checkout)
+> 2026-07-25 session: frankx.ai Wave 0 shipped in PR frankx.ai-vercel-website#362 (all gates green). arcanea.ai store quarantine + pricing markdown fix staged on the same branch name.
+
+- ☑ frankx.ai: fix broken nav link `/products/music-school` → `/music/learn` (repo's own wiring registry already verified the target)
+- ☑ frankx.ai `/tools`: delete fabricated `usageCount`/`rating`/"50K+ Monthly Uses"/"4.8/5" and Premium badges on the 6 stub tools
+- ☑ frankx.ai `/skills`: replace "Channel Frequency Alchemist" / "Consult Soul Strategist" example strings
+- ☑ frankx.ai `/research`: rewrite the FlagshipArticles block ("Conscious AI Operating Systems"); remove fictional research-team personas
+- ☑ frankx.ai `/vault`: generate layout metadata from `data/vault-manifest.json` (claims 484/30, actual 1507/55)
+- ☑ frankx.ai `/resources`: replace missing priority-loaded hero image (LCP 404)
+- ☑ frankx.ai `/coaching`: fix 40+/38 contradiction
+- ☑ frankx.ai `/shop`: fix "$19" floor (actual $27)
+- ☑ frankx.ai `/community`: fix "Active"-badged newsletter card linking to `/start`
+- ☑ arcanea.ai `/studio/store`: quarantine fake payment confirmations (SHIP-BLOCKER — gate behind flag or wire real checkout)
 - ☐ arcanea.ai: route all public numbers through `lib/facts.ts`; delete `/arcanea-os` fabricated stats
 - ☐ awesome-agentic-income: fix "Unlock premium Agent Swarms" CTA
 - ☐ ai-music-academy: decision — rehabilitate voice + metrics, or archive and move assets to music-intelligence-systems
