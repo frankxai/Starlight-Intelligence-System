@@ -1,5 +1,10 @@
 node_modules/
 .starlight/
+!.starlight/
+.starlight/*
+!.starlight/design-contract.json
+!.starlight/release-evidence/
+!.starlight/release-evidence/**
 .hearth/
 .umwelt/
 .machine/

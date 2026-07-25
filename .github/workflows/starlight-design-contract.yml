@@ -1,0 +1,11 @@
+name: Starlight design contract
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  design-contract:
+    uses: frankxai/starlight-design-intelligence/.github/workflows/design-contract.yml@0408bd8fb17a5890e1b743eb381abb4386f35a43
