@@ -5,7 +5,7 @@
 
 ## Wave 0 — Trust repairs (hours each; do before driving any traffic)
 
-> 2026-07-25 session: frankx.ai Wave 0 shipped in PR frankx.ai-vercel-website#362 (all gates green). arcanea.ai store quarantine + pricing markdown fix staged on the same branch name.
+> 2026-07-25 session: Wave 0 shipped — frankx.ai#362 MERGED + live; arcanea store quarantine in arcanea-ai-app#206 (held in draft by Frank pending deps + Visual QA repairs); awesome-agentic-income#4 open. Wave 1 session 2: frankx.ai#369 (conversion layer), agenticpassiveincome#20 + agenticincome#18 (Polar fail-closed), ICP_FLOW_MAP + POSITIONING_PLAYBOOK added.
 
 - ☑ frankx.ai: fix broken nav link `/products/music-school` → `/music/learn` (repo's own wiring registry already verified the target)
 - ☑ frankx.ai `/tools`: delete fabricated `usageCount`/`rating`/"50K+ Monthly Uses"/"4.8/5" and Premium badges on the 6 stub tools
@@ -23,18 +23,18 @@
 
 ## Wave 1 — Revenue (days; the compounding unlock)
 
-1. ☐ **One Polar.sh checkout integration** shared by agenticincome + agenticpassiveincome → ships Stream Pack 01 ($47) and Blueprint ($67). Runbooks already exist (`ops/POLAR-SETUP.md`, `FULFILLMENT_RUNBOOK.md`).
+1. ◐ **One Polar.sh checkout integration** — ENGINEERING SHIPPED 2026-07-25 (agenticpassiveincome#20 + agenticincome#18, triple-gated fail-closed; activation = Frank's checklist in each runbook). Original item: shared by agenticincome + agenticpassiveincome → ships Stream Pack 01 ($47) and Blueprint ($67). Runbooks already exist (`ops/POLAR-SETUP.md`, `FULFILLMENT_RUNBOOK.md`).
 2. ☐ **frankx.ai payment-rail decision**: pick ONE (recommendation: Lemon Squeezy — client + webhook already built, EU-friendly MoR). Configure variant IDs for the top 3 templates (rag-system-blueprint $197, multi-agent-blueprint $297, nextjs-saas-boilerplate $197). Fix the €97/€497 `/checkout/*` 404s. Unify the two Gumroad subdomains.
 3. ☐ **arcanea.ai `/pricing`**: wire the three CTAs to the existing `/api/stripe/checkout`. Fix `**40%**` markdown bug.
 4. ☐ agentic-business-os packs → list claims-guard ($29–49) + bundle ($99) on the chosen storefront.
 5. ☐ vibe-os → $19–29 pack (pure packaging).
-6. ☐ frankx.ai `/work-with-me`: replace mailto: form with the `/api/coaching-apply` pattern; add tier pricing to `/coaching`.
+6. ◐ frankx.ai `/work-with-me`: mailto replaced with real /api/studio-inquiry route + stateful form (PR #369). Tier pricing on /coaching still open.
 
 ## Wave 2 — Conversion & proof (1–2 weeks)
 
 - ☐ Social proof pipeline: collect real quotes → populate `data/products.json` `socialProof.quotes[]` → mount the already-built Testimonials components. Never invent proof.
-- ☐ Email capture on the 5 dead-end hubs (`/prompt-library`, `/ai-architect-academy`, `/agentic-ai-center`, `/research`, `/vault`) — copy the `/agents` inline EmailSignup pattern verbatim.
-- ☐ Header nav: add the money pages (workshops, coaching, work-with-me, shop) to NavigationMega; define the membership ladder (community → inner-circle → founders-circle).
+- ◐ Email capture: /prompt-library + /ai-architect-academy shipped in PR #369; /agentic-ai-center, /research, /vault still open. Original item: (`/prompt-library`, `/ai-architect-academy`, `/agentic-ai-center`, `/research`, `/vault`) — copy the `/agents` inline EmailSignup pattern verbatim.
+- ☑ Header nav: 'Work with Frank' group shipped in PR #369. Original item: (workshops, coaching, work-with-me, shop) to NavigationMega; define the membership ladder (community → inner-circle → founders-circle).
 - ☐ Imagery sprint: place existing assets (1,883 on frankx.ai, 205 on arcanea) onto the 15 zero-image commercial routes; backfill the 93 missing blog heroes; generate book covers + agent portraits for Arcanea (guardian v3 webp pipeline proves the path).
 - ☐ Metadata sprint: add metadata exports to the T1 hub roots missing them (spot-check layout.tsx inheritance first).
 
