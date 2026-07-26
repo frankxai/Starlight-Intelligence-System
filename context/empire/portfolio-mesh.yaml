@@ -1,0 +1,186 @@
+# portfolio-mesh.yaml — machine-readable registry of registries
+# Canonical cross-repo manifest for the FrankX / Starlight portfolio.
+# Patterned on mind-intelligence-systems/repo-mesh.yaml, extended portfolio-wide.
+# Verified by file enumeration 2026-07-25 (system-wide upgrade audit).
+# Rule: counts here are ground truth until the next audit stamps a newer date.
+#       If a repo's own README/CLAUDE.md disagrees, the repo doc is stale — fix the repo doc.
+
+version: 0.1.0
+last_verified: "2026-07-25"
+maintainer: Starlight-Intelligence-System/context/empire/
+
+repos:
+  # ── Substrate & orchestration ──────────────────────────────
+  - name: Starlight-Intelligence-System
+    role: substrate
+    skills: 84
+    agents: 144
+    commands: 25
+    manifests: [skills/skill-rules.json, agents/AGENT_REGISTRY.md, skills/SKILL_REGISTRY.md]
+    doc_counts_match_filesystem: true
+  - name: agentic-creator-os
+    role: os-reference-build
+    skills: 179
+    agents: 147
+    commands: 173
+    manifests: [.claude/skill-rules.json]
+    doc_counts_match_filesystem: false   # CLAUDE.md says 75+/67/35+ — undercounts >2x
+  - name: agentic-ops-hub
+    role: config-control-plane
+    manifests: [AGENTS.md, scripts/sync-agent-rules.mjs, ECOSYSTEM.md]
+    note: owns doctrine-sync for the income cluster; agentic-business-os should consume it
+
+  # ── Skills libraries (markdown) ────────────────────────────
+  - name: claude-skills-library
+    role: public-skills-library
+    skills: 111
+    canonical_source: agentic-creator-os   # 54 shared names; this is the public MIT mirror
+  - name: agentic-creator-skills
+    role: plugin-marketplace-pack
+    skills: 31
+    canonical_source: agentic-creator-os   # 19 shared names; plugin packaging of same content
+  - name: starlight-agent-skills
+    role: starlight-skills-pack
+    skills: 27
+    agents: 3
+    overlap: {agentic-creator-os: 7}       # entire space vertical duplicated
+  - name: mind-palace-agent-skills
+    role: domain-skills
+    skills: 14
+    commands: 6
+    overlap: {}
+  - name: marine-agent-skills
+    role: domain-skills
+    skills: 6
+    overlap: {}
+  - name: agentic-mind-os
+    role: lived-os-reference
+    skills: 4
+    agents: 4
+    commands: 4
+    manifests: [mindpack.yaml]
+
+  # ── Code-runtime engines ───────────────────────────────────
+  - name: starlight-cosmos-engine
+    role: content-engine
+    skills_code: 9
+    agents_code: 9
+  - name: starlight-swarm
+    role: swarm-runtime
+  - name: starlight-evals
+    role: eval-harness
+    manifests: [routing-table.json, lanes.json]
+  - name: second-brain-os
+    role: substrate-skill
+    skills: 1
+    manifests: [mcp.json]
+
+  # ── Canon / schema layers ──────────────────────────────────
+  - name: mind-intelligence-systems
+    role: canon-umbrella
+    manifests: [repo-mesh.yaml]
+  - name: human-mind-intelligence-system
+    role: engineered-system
+    schemas: 16
+  - name: starlight-mind-os-pro
+    role: distribution-surface
+    manifests: [starlight-pro.yaml]
+  - name: bless
+    role: protocol-spec
+  - name: agentic-intelligence-system
+    role: discovery-substrate
+    note: ais-profile.yaml / llms.txt standard — reconcile with reality.md + CLAUDE.md conventions
+
+  # ── Discovery lists (should be generated, not hand-written) ─
+  - name: awesome-mind-agent-skills
+    role: discovery-list
+    generated: false
+  - name: awesome-music-agent-skills
+    role: discovery-list
+    generated: false
+  - name: awesome-manifestation-skills
+    role: discovery-list
+    generated: false
+  - name: awesome-agentic-income
+    role: discovery-list
+    generated: false
+  - name: awesome-payment-agent-skills
+    role: discovery-list
+    generated: false
+
+  # ── Income / business cluster ──────────────────────────────
+  - name: agenticincome
+    role: commerce-hub
+    products_drafted: [agentic-income-blueprint-67, agent-team-pro-129]
+    checkout: {provider: polar, wired: false}
+  - name: agenticpassiveincome
+    role: commerce-spoke
+    products_drafted: [stream-pack-01-affiliate-publication-47]
+    checkout: {provider: polar, wired: false}
+  - name: agentic-business-os
+    role: os-family
+    packs: [claims-guard, business-intelligence, design-contract, weekly-rhythm]
+    downstreams: 1
+  - name: agentic-income-skills
+    role: schema-brain
+  - name: agentic-income-template
+    role: public-shell
+    status: freeze-when-feature-complete
+  - name: payment-intelligence-system
+    role: payments-governance
+    status: unaudited-no-live-funds
+
+  # ── Verticals ──────────────────────────────────────────────
+  - name: blue-life-commons
+    role: marine-commons
+    verdict: flagship
+  - name: ocean-intelligence-system
+    role: marine-agents
+    verdict: flagship
+  - name: marine-mcp
+    role: marine-serving
+  - name: realityarchitect
+    role: method-site
+    verdict: flagship
+  - name: frankx-palace
+    role: creative-3d-surface
+  - name: frankx-mind-palace
+    role: palace-data-layer
+  - name: music-intelligence-systems
+    role: charter-only
+    status: pre-code
+  - name: ai-music-academy
+    role: stale-vertical
+    status: needs-decision   # hype voice + unverified metrics; redirect assets to music-intelligence-systems
+  - name: vibe-os
+    role: out-of-scope-product
+    status: stale-since-2026-01
+
+  # ── Production websites ────────────────────────────────────
+  - name: frankx.ai-vercel-website
+    role: flagship-website
+    domain: frankx.ai
+    pages: 501
+    route_dirs: 214
+  - name: FrankX
+    role: private-dev-authoring
+    note: syncs FROM production; carries 3 ACOS variants needing reconciliation
+  - name: arcanea-ai-app
+    role: arcanea-production
+    domain_issue: no custom apex on healthy project; arcanea-ai-appx in ERROR state
+  - name: arcanea
+    role: arcanea-oss
+
+gaps:
+  no_skill_coverage:
+    - legal-compliance   # 7 starlight-legal-* agents, zero backing skills
+    - crypto-depth       # 5 agents, 1 skill
+    - testing-qa         # only webapp-testing exists
+    - data-engineering
+    - incident-response
+    - i18n-localization
+    - skills-governance  # nothing audits the 457 skill files portfolio-wide
+  actions:
+    - build skills-governance skill in SIS (audits counts, duplication, staleness; regenerates awesome-lists)
+    - declare canonical_source in each mirror repo's README
+    - reconcile ais-profile.yaml / reality.md / CLAUDE.md agent-legibility standards
