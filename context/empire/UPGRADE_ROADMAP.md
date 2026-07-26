@@ -6,7 +6,8 @@
 ## Wave 0 — Trust repairs (hours each; do before driving any traffic)
 
 > 2026-07-25 session: Wave 0 shipped — frankx.ai#362 MERGED + live; arcanea store quarantine in arcanea-ai-app#206 (held in draft by Frank pending deps + Visual QA repairs); awesome-agentic-income#4 open. Wave 1 session 2: frankx.ai#369 (conversion layer), agenticpassiveincome#20 + agenticincome#18 (Polar fail-closed), ICP_FLOW_MAP + POSITIONING_PLAYBOOK added.
-> 2026-07-26: Frank authorized lead-review-and-merge. MERGED to main: SIS#52 (this index), awesome-agentic-income#4, agenticpassiveincome#20, agenticincome#18, frankx.ai#369 (auto-deploys production). arcanea-ai-app#206 stays draft per Frank's hold. Next: arcanea deps-security PR.
+> 2026-07-26: Frank authorized lead-review-and-merge. MERGED to main: SIS#52 (this index), awesome-agentic-income#4, agenticpassiveincome#20, agenticincome#18, frankx.ai#369 (auto-deploys production). arcanea-ai-app#206 stays draft per Frank's hold.
+> 2026-07-26 continuation: frankx.ai#371 (email capture on the last 3 hubs) + #372 (metadata sprint, 4 T1 roots) MERGED and live. Arcanea deps repair found ALREADY DONE on main (#212, 2026-07-25) — `pnpm audit --audit-level high` clean; #206's deps precondition is satisfied, Visual QA half remains with Frank. Residual on arcanea: 6 moderate + 2 low advisories (hono/protobufjs chains, need major bumps) — left for a Frank-approved pass.
 
 - ☑ frankx.ai: fix broken nav link `/products/music-school` → `/music/learn` (repo's own wiring registry already verified the target)
 - ☑ frankx.ai `/tools`: delete fabricated `usageCount`/`rating`/"50K+ Monthly Uses"/"4.8/5" and Premium badges on the 6 stub tools
@@ -34,10 +35,10 @@
 ## Wave 2 — Conversion & proof (1–2 weeks)
 
 - ☐ Social proof pipeline: collect real quotes → populate `data/products.json` `socialProof.quotes[]` → mount the already-built Testimonials components. Never invent proof.
-- ◐ Email capture: /prompt-library + /ai-architect-academy MERGED in #369 (2026-07-26); /agentic-ai-center, /research, /vault still open. Original item: (`/prompt-library`, `/ai-architect-academy`, `/agentic-ai-center`, `/research`, `/vault`) — copy the `/agents` inline EmailSignup pattern verbatim.
+- ☑ Email capture: COMPLETE — /prompt-library + /ai-architect-academy in #369; /agentic-ai-center, /research, /vault in #371 (merged 2026-07-26, live). All five planned surfaces now mount EmailSignup.
 - ☑ Header nav: 'Work with Frank' group MERGED in #369 (2026-07-26, live). Original item: (workshops, coaching, work-with-me, shop) to NavigationMega; define the membership ladder (community → inner-circle → founders-circle).
 - ☐ Imagery sprint: place existing assets (1,883 on frankx.ai, 205 on arcanea) onto the 15 zero-image commercial routes; backfill the 93 missing blog heroes; generate book covers + agent portraits for Arcanea (guardian v3 webp pipeline proves the path).
-- ☐ Metadata sprint: add metadata exports to the T1 hub roots missing them (spot-check layout.tsx inheritance first).
+- ☑ Metadata sprint: DONE in #372 (merged 2026-07-26). Full 55-route T1 sweep found 6 gaps: 4 fixed via sibling layout.tsx (/auctions, /collectibles, /dashboard, /onboarding), 2 are pure redirects (inert). The audit's 12 "most important gaps" had all gained layout-level metadata since 2026-07-25 — verified individually.
 
 ## Wave 3 — Structure (weeks; needs Frank's URL/SEO approval per repo doctrine)
 

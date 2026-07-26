@@ -629,4 +629,17 @@ Shipped this session: SIS PR #52 (Empire Index), frankx.ai-vercel-website PR #36
 
 **Remaining decision for Frank (strategic tier):** who or what owns substrate cadence, so a multi-week silent gap cannot pass unnoticed again — the question is no longer "is SIS dormant" but "what monitor or ritual would have caught this on day 3 instead of day 11."
 
+## 2026-07-26 - Wave 2 close-out: capture complete, metadata complete, arcanea deps verified
+
+**Category:** portfolio-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (continuation of the merge-wave entry above)
+**Related:** frankx.ai-vercel-website #371 #372, arcanea-ai-app #206 #212, `context/empire/UPGRADE_ROADMAP.md`
+
+Same-session continuation after the five-PR merge wave. frankx.ai#371 merged (8032e49e): EmailSignup on /agentic-ai-center (ai-architect list), /research (newsletter, inside the Stay Current card), /vault (arcanea list) — Wave 2 email capture is now complete across all five planned surfaces. frankx.ai#372 merged (93849c62): metadata sprint — full 55-route T1 sweep found only 6 gaps; 4 fixed via sibling layout.tsx + `createMetadata` (/auctions, /collectibles, /dashboard, /onboarding), 2 are pure redirect() pages. Both PRs gate-verified (type-check / lint / ai-slop strict / build) and CI-green before merge; both deploy to frankx.ai production via Vercel git integration.
+
+Arcanea deps finding (changes #206's status): the 15 high pnpm-audit advisories cited as #206's dependency precondition were already resolved on arcanea-ai-app main by #212 (2026-07-25 — next 16.2.11 + tightened overrides). Verified `pnpm audit --audit-level high` exits 0 on main @ e594b3f. The deps half of Frank's hold is therefore satisfied; only the fail-closed Visual QA half remains. Residual: 6 moderate + 2 low (hono needs override floor >=4.12.27; @hono/node-server + protobufjs@8.x need major/upstream bumps) — deliberately not touched while Frank manages that repo.
+
+Ops note: pushes to frankx.ai-vercel-website from this shallow checkout intermittently fail with proxy 502/413 when the branch base lags main; rebasing onto current origin/main before push resolved it both times. Another session merged SIS#57 (dormancy record) in parallel — no conflicts, branch restarted from its main.
+
 **Built on SIP — Starlight Intelligence Protocol**
