@@ -27,17 +27,17 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://starlightintelligence.org"),
   title: {
     default:
-      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
+      "Starlight Intelligence — Multi-agent architecture for humans and their agents · Built on SIP",
     template: "%s — Starlight Intelligence",
   },
   description:
-    "Operational memory, governance, traces, evals, logs, and operator control for AI agent fleets. Built on SIP. Local-first, forkable, and proof-oriented.",
+    "A multi-agent design and architecture system: named agents, skills, orchestration, durable memory, governance, and an open protocol. Founders and their agent fleets share one substrate — the human holds the keys.",
   alternates: { canonical: "/" },
   openGraph: {
     title:
-      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
+      "Starlight Intelligence — Multi-agent architecture for humans and their agents · Built on SIP",
     description:
-      "Persistent context, proof packets, governance gates, and reproducible agent operations. Built on SIP. Local-first and forkable.",
+      "Agent design, orchestration, durable memory, governance, evals, and an open protocol. One substrate for founders and their agent fleets — the human holds the keys.",
     url: "https://starlightintelligence.org",
     siteName: "Starlight Intelligence",
     type: "website",
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Starlight Intelligence — Persistent context for AI agents · Built on SIP",
+      "Starlight Intelligence — Multi-agent architecture for humans and their agents · Built on SIP",
     description:
-      "Persistent context, proof packets, governance gates, and reproducible agent operations. Built on SIP. Local-first and forkable.",
+      "Agent design, orchestration, durable memory, governance, evals, and an open protocol. One substrate for founders and their agent fleets — the human holds the keys.",
   },
   robots: { index: true, follow: true },
 };

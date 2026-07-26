@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { NAV_GROUPS, GITHUB_URL, DEPLOY_URL, isActive } from "@/lib/nav";
+import { StarlightMark } from "@/components/StarlightMark";
 
 export function Header() {
   const pathname = usePathname();
@@ -49,11 +50,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
           aria-label="Starlight Intelligence — home"
           className="flex items-center gap-2.5 transition-micro hover:opacity-80"
         >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <circle cx="9" cy="9" r="3" fill="#a78bfa" opacity="0.8" />
-            <circle cx="9" cy="9" r="7" stroke="#a78bfa" strokeWidth="0.5" opacity="0.3" />
-            <circle cx="9" cy="9" r="9" stroke="#a78bfa" strokeWidth="0.3" opacity="0.15" />
-          </svg>
+          <StarlightMark size={19} />
           <span className="text-[15px] font-semibold tracking-tight text-white">Starlight</span>
         </Link>
 

@@ -643,3 +643,22 @@ Arcanea deps finding (changes #206's status): the 15 high pnpm-audit advisories 
 Ops note: pushes to frankx.ai-vercel-website from this shallow checkout intermittently fail with proxy 502/413 when the branch base lags main; rebasing onto current origin/main before push resolved it both times. Another session merged SIS#57 (dormancy record) in parallel — no conflicts, branch restarted from its main.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-07-26 - Public homepage repositioned: multi-agent architecture, WebGL hero, new sigil
+
+**Category:** public-surface / brand
+**Confidence:** 0.95
+**Source:** Claude Code remote session, branch claude/homepage-multi-agent-redesign-aucti4 — Frank directive: the homepage must carry the org's meaning (SIS is a multi-agent design & architecture system, not "memory and stuff"), show how humans and agents connect to it, replace the generic-AI logo, premium execution only
+**Related:** site/src/app/page.tsx, site/src/components/{StarlightMark,AgentConstellation,AgentConstellationScene,Header}.tsx, site/DESIGN.md §0
+
+**Positioning shift:** Hero promise moved from "Operational memory, governance, traces, evals, logs" to "Architecture for humans and their agents" — a multi-agent design and architecture system (agent design, orchestration, memory, governance, protocol, evals as six named planes). Site metadata (title/description/OG) updated to match. Memory is now framed as the floor, not the product.
+
+**New surfaces:** (1) "Two Front Doors" section — human door (quickstart/explainer/starter kits, founders-builders-families copy) beside an agent door listing the raw endpoints (/protocol.md, /sip.md, /api/vaults, /badge/latest) — the human/agent connection made literal. (2) Mission section ("Why Starlight exists") — distribution-over-concentration bet, restrained voice, horizon-vault quote inline. (3) System census strip (144 agents / 84 skills / 6 vaults / 1 protocol, labeled "as of v8.3.0" per Metrics Truth Rule).
+
+**Visual system:** New StarlightMark sigil — vertically-dominant diffraction star with one tilted orbit + companion node (star = operator's north, orbit = agent system). Deliberately avoids both the old concentric-dot mark and the four-point "AI sparkle" cliché. WebGL hero (AgentConstellation): R3F scene, three tilted orbital rings of additive-blended agent nodes around a pulsing core, seeded-deterministic, capability-gated (prefers-reduced-motion + WebGL probe deferred a frame), lazy-loaded so three.js never blocks first paint; static SVG Starfield is the universal fallback. No new dependencies — used the already-installed three/fiber/drei stack.
+
+**Guardrail note (open):** site/DESIGN.md §0 says the first viewport must lead with memory/proofs/governance evidence. Frank's directive supersedes for the hero (mission-led), and the OperationalProofConsole remains prominent as section 4 ("Evidence"). DESIGN.md §0/§4 should be reconciled to the new homepage doctrine in a follow-up rather than silently edited here.
+
+**Verification:** eslint clean, full `npm run build` green (public-install + layout contract checks pass), rendered via headless Chromium at 1440px and 390px — WebGL scene, gradient serif headline, and all eight sections confirmed visually. Gotcha for future sessions: `next start` left running across a rebuild serves stale chunk manifests (CSS 500s with nosniff → unstyled page); kill the server before rebuilding.
+
+**Built on SIP — Starlight Intelligence Protocol**
