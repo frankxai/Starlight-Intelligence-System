@@ -596,3 +596,23 @@ Verification performed during setup: skill bundle validator passed, all six Code
 **Related:** `docs/validation/2026-07-13-multiagent-ecosystem-validation.md`, starlight-swarm, starlight-evals, starlight-agent-skills, starlight-cosmos-engine
 
 Hard-count verdicts (all reproduced by command): 144 agents exact (137 + 7 council), 84 skills reconcile (31 dir + 53 flat), 1,142 tests / 0 failures, both MCP bins pass live JSON-RPC handshake — starlight-sis 8.3.0 serves 13 sis_* tools (not 10 as README said), starlight-substrate-mcp 1.1.1 serves 4. npm registry serves stale 6.0.1 — README quickstart was the #1 adopter wall (fixed to git path; republish is a pending human decision). cosmos-engine's 9 "MCP servers" have no protocol wiring — scaffold, not servers. starlight-evals staleness banner violated its own contract and the probe harness overwrote the committed 4-PASS receipt (both fixed: harness → out/, CI guards committed scorecards). Three canonical ecosystem maps contradicted each other (48/71 vs 144/84 vs manifest) — 144/84 is correct as of this run; ECOSYSTEM_ARCHITECTURE.md needs a v3 pass. affiliate-agent-skills (23 refs, L4 income engine) unverifiable from sandbox — check from unrestricted network. Income + payment-skills family missing Built-on-SIP attestation. Full report + forward blueprint (5 layers: truth, distribution, proof, swarm consolidation, preservation surfaces) in the validation doc.
+
+## 2026-07-25 - Ecosystem state sync + substrate dormancy flag
+
+**Category:** ecosystem-state / documentation-drift
+**Confidence:** 0.95
+**Source:** Claude Code session, branch claude/creator-os-linkedin-epekb4 — closing the vault-write gap (last operational entry 2026-07-13, last strategic entry 2026-06-17) against verified cross-repo state
+**Related:** 2026-07-17 portfolio audit, FrankX / frankx.ai-vercel-website, agentic-creator-os, agentic-ops-hub PR #8, arcanea #83 #84 #85
+
+**Substrate itself: dormant.** SIS has had no commits since 2026-07-06. Weekly commit velocity fell 47 → 36 → 18 → 5 → 0 with no freeze decision on record — no board verdict, no vault entry, no ended-cadence note. The dormancy was identified during a 2026-07-17 portfolio audit, not by any SIS-owned monitor. This entry is the first vault write recording it.
+
+**Consumer repos stayed active while the substrate idled:**
+- FrankX / frankx.ai-vercel-website shipped the Fable book, Learn hub portals, Suno catalog intelligence (817 tracks), and Postiz draft-only distribution (merged Jul 15).
+- ACOS superseded Signal into FrankX's social-media-strategy skill (Jul 9).
+- agentic-ops-hub has Estate Ops Governance open as draft PR #8.
+
+**arcanea repo hygiene (merged):** docs corrected for the cross-repo-sync workflow, which has failed every run since 2026-02-24 (arcanea#83 merged; issue #84 tracks the actual fix). Three dangling gitlinks removed (arcanea#85 merged).
+
+**Open question for Frank (decision not made here — strategic tier, his call):** is SIS dormancy intentional stability or attention drift? The substrate that everything composes currently has no owner cadence. Until answered, treat SIS state claims older than 2026-07-06 as frozen-snapshot, per the Cached-Belief rule.
+
+**Built on SIP — Starlight Intelligence Protocol**
