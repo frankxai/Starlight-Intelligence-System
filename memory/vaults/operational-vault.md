@@ -597,22 +597,36 @@ Verification performed during setup: skill bundle validator passed, all six Code
 
 Hard-count verdicts (all reproduced by command): 144 agents exact (137 + 7 council), 84 skills reconcile (31 dir + 53 flat), 1,142 tests / 0 failures, both MCP bins pass live JSON-RPC handshake — starlight-sis 8.3.0 serves 13 sis_* tools (not 10 as README said), starlight-substrate-mcp 1.1.1 serves 4. npm registry serves stale 6.0.1 — README quickstart was the #1 adopter wall (fixed to git path; republish is a pending human decision). cosmos-engine's 9 "MCP servers" have no protocol wiring — scaffold, not servers. starlight-evals staleness banner violated its own contract and the probe harness overwrote the committed 4-PASS receipt (both fixed: harness → out/, CI guards committed scorecards). Three canonical ecosystem maps contradicted each other (48/71 vs 144/84 vs manifest) — 144/84 is correct as of this run; ECOSYSTEM_ARCHITECTURE.md needs a v3 pass. affiliate-agent-skills (23 refs, L4 income engine) unverifiable from sandbox — check from unrestricted network. Income + payment-skills family missing Built-on-SIP attestation. Full report + forward blueprint (5 layers: truth, distribution, proof, swarm consolidation, preservation surfaces) in the validation doc.
 
-## 2026-07-25 - Ecosystem state sync + substrate dormancy flag
+## 2026-07-25 - System-wide upgrade audit + Empire Index (6-agent sweep)
+
+**Category:** portfolio-ops
+**Confidence:** 0.96
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4
+**Related:** `context/empire/EMPIRE_INDEX.md`, `context/empire/portfolio-mesh.yaml`, `context/empire/UPGRADE_ROADMAP.md`, `context/empire/audits/`
+
+Built the first portfolio-wide index: 42 repos, all 50 Vercel projects (19 production-live with custom domains, 6 stale, 25 experiments, 14 cull candidates), 501 frankx.ai pages tiered, 231 arcanea.ai pages audited. Registry ground truth: 457 skill files → ~357 unique names (22% duplication), 300+ agents, 200+ commands; ACOS docs undercount its own catalog >2x (claims 75+, ships 179 skills); SIS is the only repo whose stated counts match its filesystem. New machine-readable registry-of-registries at `context/empire/portfolio-mesh.yaml` with canonical_source declarations for the ACOS mirror triangle.
+
+Commerce truth (the critical path): working payment code exists in three places, customer-reachable checkout in zero. Two income products are content-complete and blocked only on Polar wiring ($47 Stream Pack, $67 Blueprint). frankx.ai has a fully wired Stripe pipeline with no caller and a 15-SKU storefront rendering disabled buttons. arcanea.ai /pricing shows plans with no buy buttons while /studio/store simulated payment confirmations (quarantined this session with explicit demo-mode labels).
+
+Shipped this session: SIS PR #52 (Empire Index), frankx.ai-vercel-website PR #362 (nine-surface trust repairs, all four gates verified green), awesome-agentic-income PR #4 (voice-contract fix), arcanea-ai-app store quarantine + pricing markdown fix (same branch name). Arcanea red flags for follow-up: no healthy Vercel project holds an arcanea.ai apex; arcanea-ai-appx (named production in repo docs) is in ERROR deploy state; OSS arcanea repo is a 2-month-stale fork publicly teaching the banned design system (Cinzel, wrong teal).
+
+**2026-07-25 addendum (Wave 1):** frankx.ai#362 merged and live in production. Wave 1 shipped same day: frankx.ai#369 (real /work-with-me intake via /api/studio-inquiry, honest waitlist CTAs on the €97/€497 products, EmailSignup on /prompt-library + /ai-architect-academy, 'Work with Frank' nav group), agenticpassiveincome#20 + agenticincome#18 (Polar checkout, triple-gated fail-closed: catalog allowlist + product mapping + env credentials; launch gates honored — activation is a runbook checklist, not engineering). Strategy layer added to context/empire/: ICP_FLOW_MAP.md + POSITIONING_PLAYBOOK.md. Key open decisions for Frank: Polar activation checklists, frankx payment-rail choice, three-way refund-policy contradiction (no-refund JSON-LD vs six refund guarantees vs 14-day EU page), arcanea #206 deps repair, arcanea.ai apex domain.
+
+**2026-07-26 addendum (merge wave):** Frank authorized lead-review-and-merge ("you lead review and merge... get best states on main"). All five ready PRs squash-merged to main after CI verification: SIS#52 (5adac2a, Empire Index), awesome-agentic-income#4 (94e0304, CTA fix), agenticpassiveincome#20 (415617f, Polar fail-closed), agenticincome#18 (dc938a3, Polar fail-closed), frankx.ai-vercel-website#369 (277b31a — auto-deploys frankx.ai production via Vercel git integration). arcanea-ai-app#206 remains draft per Frank's documented hold (deps + Visual QA repairs first). Bot noise during the wave (CodeRabbit rate limits, Gemini Code Assist sunset) carried no substantive findings. Next actions: arcanea dependency-security PR (next 15.x + sharp bumps, overrides for brace-expansion/js-yaml/fast-uri/OTel advisories) on a fresh branch; then /coaching tier pricing + remaining email-capture surfaces per UPGRADE_ROADMAP.
+
+## 2026-07-26 - Substrate dormancy window closed + cross-repo hygiene record
 
 **Category:** ecosystem-state / documentation-drift
 **Confidence:** 0.95
-**Source:** Claude Code session, branch claude/creator-os-linkedin-epekb4 — closing the vault-write gap (last operational entry 2026-07-13, last strategic entry 2026-06-17) against verified cross-repo state
-**Related:** 2026-07-17 portfolio audit, FrankX / frankx.ai-vercel-website, agentic-creator-os, agentic-ops-hub PR #8, arcanea #83 #84 #85
+**Source:** Claude Code session, branch claude/creator-os-linkedin-epekb4 — reconciled against main after the Empire Index entry landed (two parallel sessions independently closed the vault-write gap; this entry records what the other did not)
+**Related:** 2026-07-17 portfolio audit, Empire Index entry above, agentic-ops-hub PR #8, arcanea #83 #84 #85, frankx.ai-vercel-website #349
 
-**Substrate itself: dormant.** SIS has had no commits since 2026-07-06. Weekly commit velocity fell 47 → 36 → 18 → 5 → 0 with no freeze decision on record — no board verdict, no vault entry, no ended-cadence note. The dormancy was identified during a 2026-07-17 portfolio audit, not by any SIS-owned monitor. This entry is the first vault write recording it.
+**Dormancy window, now closed:** SIS had no commits from 2026-07-06 to 2026-07-25 — weekly velocity fell 47 → 36 → 18 → 5 → 0 with no freeze decision on record. The window ended with the Empire Index sweep + merge wave (PRs #52–#56). The structural finding stands even though activity resumed: the 19-day silence was caught by an external portfolio audit (2026-07-17), not by any SIS-owned monitor, and no vault or board record marked its start.
 
-**Consumer repos stayed active while the substrate idled:**
-- FrankX / frankx.ai-vercel-website shipped the Fable book, Learn hub portals, Suno catalog intelligence (817 tracks), and Postiz draft-only distribution (merged Jul 15).
-- ACOS superseded Signal into FrankX's social-media-strategy skill (Jul 9).
-- agentic-ops-hub has Estate Ops Governance open as draft PR #8.
+**Consumer-repo activity during the window (not covered by the Empire entry):** FrankX/frankx.ai-vercel-website shipped the Fable book, Learn hub portals, Suno catalog intelligence (817 tracks), and Postiz draft-only distribution (merged Jul 15); ACOS superseded Signal into FrankX's social-media-strategy skill (Jul 9); agentic-ops-hub Estate Ops Governance remains open as draft PR #8.
 
-**arcanea repo hygiene (merged):** docs corrected for the cross-repo-sync workflow, which has failed every run since 2026-02-24 (arcanea#83 merged; issue #84 tracks the actual fix). Three dangling gitlinks removed (arcanea#85 merged).
+**Cross-repo hygiene shipped this session:** arcanea#83 merged (docs corrected for cross-repo-sync); issue #84 root cause now diagnosed — the `PERSONAL_ACCESS_TOKEN` Actions secret is missing from frankxai/arcanea, so every scheduled run since 2026-02-24 dies at sibling-repo checkout; fix is a one-step human action (create fine-grained PAT, add as secret). arcanea#85 merged (three dangling gitlinks removed). frankx.ai-vercel-website#349 merged (public/reading recursive bloat untracked: 17,880 files, ~508MB).
 
-**Open question for Frank (decision not made here — strategic tier, his call):** is SIS dormancy intentional stability or attention drift? The substrate that everything composes currently has no owner cadence. Until answered, treat SIS state claims older than 2026-07-06 as frozen-snapshot, per the Cached-Belief rule.
+**Remaining decision for Frank (strategic tier):** who or what owns substrate cadence, so a multi-week silent gap cannot pass unnoticed again — the question is no longer "is SIS dormant" but "what monitor or ritual would have caught this on day 3 instead of day 11."
 
 **Built on SIP — Starlight Intelligence Protocol**
