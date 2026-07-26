@@ -613,3 +613,20 @@ Shipped this session: SIS PR #52 (Empire Index), frankx.ai-vercel-website PR #36
 **2026-07-25 addendum (Wave 1):** frankx.ai#362 merged and live in production. Wave 1 shipped same day: frankx.ai#369 (real /work-with-me intake via /api/studio-inquiry, honest waitlist CTAs on the €97/€497 products, EmailSignup on /prompt-library + /ai-architect-academy, 'Work with Frank' nav group), agenticpassiveincome#20 + agenticincome#18 (Polar checkout, triple-gated fail-closed: catalog allowlist + product mapping + env credentials; launch gates honored — activation is a runbook checklist, not engineering). Strategy layer added to context/empire/: ICP_FLOW_MAP.md + POSITIONING_PLAYBOOK.md. Key open decisions for Frank: Polar activation checklists, frankx payment-rail choice, three-way refund-policy contradiction (no-refund JSON-LD vs six refund guarantees vs 14-day EU page), arcanea #206 deps repair, arcanea.ai apex domain.
 
 **2026-07-26 addendum (merge wave):** Frank authorized lead-review-and-merge ("you lead review and merge... get best states on main"). All five ready PRs squash-merged to main after CI verification: SIS#52 (5adac2a, Empire Index), awesome-agentic-income#4 (94e0304, CTA fix), agenticpassiveincome#20 (415617f, Polar fail-closed), agenticincome#18 (dc938a3, Polar fail-closed), frankx.ai-vercel-website#369 (277b31a — auto-deploys frankx.ai production via Vercel git integration). arcanea-ai-app#206 remains draft per Frank's documented hold (deps + Visual QA repairs first). Bot noise during the wave (CodeRabbit rate limits, Gemini Code Assist sunset) carried no substantive findings. Next actions: arcanea dependency-security PR (next 15.x + sharp bumps, overrides for brace-expansion/js-yaml/fast-uri/OTel advisories) on a fresh branch; then /coaching tier pricing + remaining email-capture surfaces per UPGRADE_ROADMAP.
+
+## 2026-07-26 - Substrate dormancy window closed + cross-repo hygiene record
+
+**Category:** ecosystem-state / documentation-drift
+**Confidence:** 0.95
+**Source:** Claude Code session, branch claude/creator-os-linkedin-epekb4 — reconciled against main after the Empire Index entry landed (two parallel sessions independently closed the vault-write gap; this entry records what the other did not)
+**Related:** 2026-07-17 portfolio audit, Empire Index entry above, agentic-ops-hub PR #8, arcanea #83 #84 #85, frankx.ai-vercel-website #349
+
+**Dormancy window, now closed:** SIS had no commits from 2026-07-06 to 2026-07-25 — weekly velocity fell 47 → 36 → 18 → 5 → 0 with no freeze decision on record. The window ended with the Empire Index sweep + merge wave (PRs #52–#56). The structural finding stands even though activity resumed: the 19-day silence was caught by an external portfolio audit (2026-07-17), not by any SIS-owned monitor, and no vault or board record marked its start.
+
+**Consumer-repo activity during the window (not covered by the Empire entry):** FrankX/frankx.ai-vercel-website shipped the Fable book, Learn hub portals, Suno catalog intelligence (817 tracks), and Postiz draft-only distribution (merged Jul 15); ACOS superseded Signal into FrankX's social-media-strategy skill (Jul 9); agentic-ops-hub Estate Ops Governance remains open as draft PR #8.
+
+**Cross-repo hygiene shipped this session:** arcanea#83 merged (docs corrected for cross-repo-sync); issue #84 root cause now diagnosed — the `PERSONAL_ACCESS_TOKEN` Actions secret is missing from frankxai/arcanea, so every scheduled run since 2026-02-24 dies at sibling-repo checkout; fix is a one-step human action (create fine-grained PAT, add as secret). arcanea#85 merged (three dangling gitlinks removed). frankx.ai-vercel-website#349 merged (public/reading recursive bloat untracked: 17,880 files, ~508MB).
+
+**Remaining decision for Frank (strategic tier):** who or what owns substrate cadence, so a multi-week silent gap cannot pass unnoticed again — the question is no longer "is SIS dormant" but "what monitor or ritual would have caught this on day 3 instead of day 11."
+
+**Built on SIP — Starlight Intelligence Protocol**
