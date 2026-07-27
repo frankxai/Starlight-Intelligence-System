@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Starfield } from "@/components/cosmos/Starfield";
+import { CURRENT_METRICS } from "@/lib/metrics";
 
 /**
  * MemoryPalace — L99 Jarvis-style seed visualization for the Starlight Intelligence System.
@@ -312,7 +313,7 @@ export function MemoryPalace() {
           </div>
 
           <div className="mt-3 flex items-center justify-between text-[10px] text-white/40">
-            <div>138 agent definitions • local-first • six semantic vaults</div>
+            <div>{CURRENT_METRICS.registeredAgents} agent definitions • local-first • {CURRENT_METRICS.vaults} semantic vaults</div>
             <a
               href="https://github.com/frankxai/Starlight-Intelligence-System"
               target="_blank"

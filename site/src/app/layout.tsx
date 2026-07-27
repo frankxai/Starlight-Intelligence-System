@@ -73,7 +73,7 @@ const SCHEMA_GRAPH = {
         "https://www.npmjs.com/package/@arcanea/starlight-intelligence-system",
       ],
       description:
-        "A persistent context and memory architecture for AI agents. Sovereign by architecture, local-first, forkable.",
+        "A multi-agent architecture for people and their agents: orchestration, durable memory, governance, and inspectable proof.",
     },
     {
       "@type": "WebSite",
@@ -82,7 +82,7 @@ const SCHEMA_GRAPH = {
       name: "Starlight Intelligence",
       publisher: { "@id": ORG_ID },
       description:
-        "Persistent context for AI agents, built on the Starlight Intelligence Protocol.",
+        "Multi-agent architecture for humans and their agents, built on the Starlight Intelligence Protocol.",
       inLanguage: "en",
     },
     {

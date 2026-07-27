@@ -27,11 +27,13 @@ This is the repository-local decision layer for SIS product, editorial, and evid
 
 ## Visual hierarchy
 
-1. Real product states and evidence stacks.
-2. Source-linked system diagrams and trace views.
-3. Authored supporting media only when it clarifies a real mechanism.
+1. On operational surfaces: real product states and evidence stacks.
+2. On editorial entry surfaces: a clear system promise with an immediate path to source-linked evidence.
+3. Authored supporting media only when it clarifies a real mechanism or relationship.
 
-Generated media is never evidence. Generic sci-fi dashboards, radiant particle fields, decorative glow, unaligned nodes, and mythic Arcanea language do not belong on SIS surfaces.
+Generated media is never evidence. Generic sci-fi dashboards, unstructured decorative glow, unaligned nodes, and mythic Arcanea language do not belong on SIS operational or evidence surfaces.
+
+The public homepage is an editorial entry surface. It may use a restrained, deterministic constellation or pointer-light layer when all of the following hold: it is marked decorative, never carries a factual claim, lazy-loads after first paint, has a static fallback, respects reduced motion and coarse pointers, stops work while idle, and leaves the system promise, human control, source date, and route to evidence immediately legible.
 
 ## Motion discipline
 

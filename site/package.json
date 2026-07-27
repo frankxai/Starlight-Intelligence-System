@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/check-public-install-contract.mjs && node scripts/check-layout-contract.mjs && next build",
+    "build": "node scripts/check-metrics-contract.mjs && node scripts/check-public-install-contract.mjs && node scripts/check-layout-contract.mjs && next build",
     "check:public-install-contract": "node scripts/check-public-install-contract.mjs",
     "check:layout-contract": "node scripts/check-layout-contract.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:metrics": "node scripts/check-metrics-contract.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

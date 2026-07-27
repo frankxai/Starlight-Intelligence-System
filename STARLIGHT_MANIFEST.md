@@ -37,8 +37,8 @@
 
 | Component | Count | Status |
 |-----------|-------|--------|
-| Agents | 54 (47 top-level + 7 Council Archetype seats) | Active |
-| Skills | 71 (69 auto-activation rules) | Active |
+| Agents | See `metrics/current.json` (source-counted, dated) | Active |
+| Skills | See `metrics/current.json` (source-counted, dated) | Active |
 | Commands | 100+ (15 in `commands/` + 107 in `.claude/commands/`) | Active |
 | Vaults | 6 (incl. Horizon) | Active |
 | Note Templates | 4 | Active |
@@ -73,7 +73,7 @@ Starlight Intelligence System
 │   └── AI-Ops (operational intelligence, synthesis)
 │
 └── Standalone capabilities:
-    ├── Multi-agent orchestration (54 agents across 9 tiers, flat council with emergent leadership)
+    ├── Multi-agent orchestration (source-counted definitions across tiers; flat council with emergent leadership)
     ├── Persistent memory (6 Vaults incl. Horizon)
     ├── Knowledge capture (Notes with 4 templates)
     ├── Cross-system communication (Transmissions)

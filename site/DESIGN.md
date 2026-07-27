@@ -6,8 +6,8 @@
 This is the source of truth for visuals. All generated assets, components, and future work must align.
 
 ## 0. Operational Product Guardrail
-- Starlight production pages lead with memory, proofs, governance, traces, evals, logs, operator control, APIs, and reproducible deploys.
-- Queen, swarm, chibi, and cinematic Codex language is a brand-lab layer. It may support `/visuals/brand-lab`, `/queen`, social, and experimental routes, but it must not dominate the homepage first viewport or primary product promise.
+- Starlight operational pages lead with memory, proofs, governance, traces, evals, logs, operator control, APIs, and reproducible deploys.
+- Queen, chibi, and cinematic Codex language remains a brand-lab layer for `/visuals/brand-lab`, `/queen`, social, and experimental routes. The homepage may use the canonical abstract constellation and pointer-light system, but never a character-led or invented-evidence hero.
 - Exact UI, labels, dashboards, diagrams, proofs, and protocol text should be coded directly. Generated visuals are supporting applications after QA, not the source of truth for product evidence.
 
 ## 1. Brand Vision & Principles
@@ -72,7 +72,7 @@ This is the source of truth for visuals. All generated assets, components, and f
 - Always provide alt text, SIP attribution where appropriate.
 
 ## 4. Integration into Site Experience
-- **Homepage:** Product-first operational intelligence surface. The first viewport must show memory, proofs, governance, traces, evals, logs, and operator control through exact coded UI or real product evidence.
+- **Homepage:** Editorial entry surface for the multi-agent architecture. The first viewport must state the system, human-control boundary, source-verified census, and direct routes to quickstart and protocol. The Evidence section must remain a first-class homepage section with exact coded proof UI.
 - **Visual Brand Lab:** Generated Queen, swarm, chibi, and cinematic studies live at `/visuals/brand-lab` until they pass artifact, crop, contrast, accessibility, and surface-fit QA.
 - **/queen:** Expanded chapters with 3D images, chibi comparisons, full swarm gallery. More GSAP sync (phases tied to scroll progress).
 - **/palace, /research, /explainer:** Use new images as headers, inline illustrations, infographics.
@@ -88,7 +88,7 @@ This is the source of truth for visuals. All generated assets, components, and f
 - GSAP core + ScrollTrigger for scroll sync (progress bars, section reveals, particle control tied to scroll %).
 - Framer for React entrances where needed.
 - Canvas/QueenSwarm for interactive.
-- Future: R3F for true interactive 3D if performance allows (use current images as fallback).
+- R3F is allowed for the canonical homepage constellation only behind capability, reduced-motion, static-fallback, lazy-load, and idle-work gates. Other 3D work remains brand-lab-first.
 - Respect reduced motion everywhere.
 
 ## 6. Content Plans (Blog/Research + Infographics + Social)

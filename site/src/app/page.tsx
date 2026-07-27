@@ -27,6 +27,7 @@ import { OperationalProofConsole } from "@/components/OperationalProofConsole";
 import { AgentConstellation } from "@/components/AgentConstellation";
 import { Starfield } from "@/components/cosmos/Starfield";
 import { StarlightMark } from "@/components/StarlightMark";
+import { CURRENT_METRICS, METRICS_AS_OF } from "@/lib/metrics";
 import {
   ACCENT_TEXT,
   ACCENT_BORDER,
@@ -285,13 +286,13 @@ export default async function HomePage() {
             </div>
 
             <dl className="mt-10 grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.06] sm:grid-cols-4">
-              <CensusStat value="138" label="agent definitions" />
-              <CensusStat value="84" label="skill rules" />
-              <CensusStat value="6" label="memory vaults" />
-              <CensusStat value="15" label="letters to the future" />
+              <CensusStat value={String(CURRENT_METRICS.registeredAgents)} label="agent definitions" />
+              <CensusStat value={String(CURRENT_METRICS.skillRules)} label="skill rules" />
+              <CensusStat value={String(CURRENT_METRICS.vaults)} label="memory vaults" />
+              <CensusStat value={String(CURRENT_METRICS.horizonLetters)} label="letters to the future" />
             </dl>
             <p className="mt-2 font-mono text-[11px] text-slate-500">
-              Counted from source files, July 2026 — not from the roadmap.
+              Source-verified {METRICS_AS_OF} · build fails closed on drift.
             </p>
           </div>
         </div>
