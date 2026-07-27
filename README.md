@@ -26,7 +26,7 @@ Starlight is two things in one repository:
 - **SIP** — the open Starlight Intelligence Protocol: a clean contract for sovereign memory, identity, and governance that anyone can adopt.
 - **SIS** — the reference implementation: source-counted agent definitions, auto-activating skills, six semantic vaults, a production MCP server, and the repeatable **Estate Factory** for running full sovereign agent armies.
 
-Current counts and verification dates live in [`metrics/current.json`](metrics/current.json) and are enforced by the site build.\n\nUse just the memory layer in your current tools. Adopt the protocol. Or run the complete system Frank uses every day.
+The current **144 agents** and all other fast-moving counts are dated in [`metrics/current.json`](metrics/current.json) and enforced by both the agent harness and site build.\n\nUse just the memory layer in your current tools. Adopt the protocol. Or run the complete system Frank uses every day.
 
 
 ## Purpose
