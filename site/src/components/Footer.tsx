@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NAV_GROUPS, CONNECT_LINKS } from "@/lib/nav";
+import { StarlightMark } from "@/components/StarlightMark";
 
 export function Footer() {
   return (
@@ -13,11 +14,7 @@ export function Footer() {
               aria-label="Starlight Intelligence — home"
               className="inline-flex items-center gap-2.5 transition-micro hover:opacity-80"
             >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                <circle cx="9" cy="9" r="3" fill="#a78bfa" opacity="0.8" />
-                <circle cx="9" cy="9" r="7" stroke="#a78bfa" strokeWidth="0.5" opacity="0.3" />
-                <circle cx="9" cy="9" r="9" stroke="#a78bfa" strokeWidth="0.3" opacity="0.15" />
-              </svg>
+              <StarlightMark size={18} />
               <span className="text-[15px] font-semibold tracking-tight text-white">Starlight</span>
             </Link>
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-slate-400">
