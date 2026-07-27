@@ -40,7 +40,7 @@ Every task is either substrate-level or operational-level. Decide before acting.
 - Triggers: edits to `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md`, or any `/sip-*`, `/alliance-*`, `/vertical-*`, `/luminor-board`, `/openclaw-audit`, `/sovereign-signal`, `/wealth-dpi` command.
 
 **Operational-level** (anything inside this repo's reference build):
-- Use `metrics/current.json` for source-counted agent and skill totals; use `agents/AGENT_REGISTRY.md` for identities and routing.
+- Use `metrics/current.json` for the dated total and the current 144-agent registry in `agents/AGENT_REGISTRY.md` for identities and routing.
 - Voice: Frank DNA (above).
 - Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 25 files there — distinct from the 121 installed slash commands in `.claude/commands/`), skill edits, agent edits, site edits.
 
@@ -62,7 +62,7 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **What you have access to:**
 
-- **Agent mesh** — source-counted definitions across Core, Universal, and specialized Domain Vertical layers; current total lives in `metrics/current.json` (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
+- **144 Agents** — source-counted definitions across Core, Universal, and specialized Domain Vertical layers; verification lives in `metrics/current.json` (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
 - **84 Skills** — Auto-activate via `skills/skill-rules.json` across 16 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`).
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
