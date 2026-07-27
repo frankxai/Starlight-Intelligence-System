@@ -9,12 +9,12 @@ import path from "path";
  * file itself; this helper exists only to keep the badge in sync.
  */
 export async function getCanonicalSipVersion(): Promise<string> {
-  const fallback = "v1.1.0";
+  const fallback = "v1.1.1";
   try {
     // site/ lives one directory below the repo root
     const sipPath = path.join(process.cwd(), "..", "SIP.md");
     const raw = await fs.readFile(sipPath, "utf8");
-    // Match the line: `Version: \`v1.1.0\``
+    // Match the canonical semver line in SIP.md.
     const m = raw.match(/Version:\s*`?(v\d+\.\d+\.\d+(?:[-+][\w.]+)?)`?/);
     return m ? m[1] : fallback;
   } catch {
