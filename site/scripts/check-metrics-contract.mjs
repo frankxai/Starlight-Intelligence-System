@@ -5,13 +5,27 @@ const repoRoot = path.resolve(process.cwd(), "..");
 const ledgerPath = path.join(repoRoot, "metrics", "current.json");
 const ledger = JSON.parse(await fs.readFile(ledgerPath, "utf8"));
 
-async function walk(dir) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  const nested = await Promise.all(entries.map(async (entry) => {
-    const absolute = path.join(dir, entry.name);
-    return entry.isDirectory() ? walk(absolute) : [absolute];
-  }));
-  return nested.flat();
+async function deriveAgentCount() {
+  const agentsDir = path.join(repoRoot, "agents");
+  const entries = await fs.readdir(agentsDir, { withFileTypes: true });
+  let count = 0;
+  for (const entry of entries) {
+    if (entry.isFile()) {
+      if (
+        entry.name.endsWith(".md") &&
+        entry.name !== "AGENT_REGISTRY.md" &&
+        entry.name !== "CODING_AGENTS_REGISTRY.md"
+      ) count += 1;
+    } else if (entry.isDirectory()) {
+      const children = await fs.readdir(path.join(agentsDir, entry.name), {
+        withFileTypes: true,
+      });
+      count += children.filter(
+        (child) => child.isFile() && child.name.endsWith(".md"),
+      ).length;
+    }
+  }
+  return count;
 }
 
 function value(name) {
@@ -22,15 +36,7 @@ function value(name) {
   return metric.value;
 }
 
-const excludedAgentDocs = new Set([
-  "AGENT_REGISTRY.md",
-  "CODING_AGENTS_REGISTRY.md",
-  "README.md",
-]);
-
-const agentFiles = (await walk(path.join(repoRoot, "agents"))).filter(
-  (file) => file.endsWith(".md") && !excludedAgentDocs.has(path.basename(file)),
-);
+const agentCount = await deriveAgentCount();
 const skillRules = JSON.parse(
   await fs.readFile(path.join(repoRoot, "skills", "skill-rules.json"), "utf8"),
 ).rules;
@@ -43,7 +49,7 @@ const horizonLetters = (await fs.readFile(
 )).split("\n").filter((line) => line.trim()).length;
 
 const observed = {
-  registered_agents: agentFiles.length,
+  registered_agents: agentCount,
   skill_activation_rules: skillRules.length,
   starlight_vaults: vaultFiles.length,
   horizon_letters: horizonLetters,
