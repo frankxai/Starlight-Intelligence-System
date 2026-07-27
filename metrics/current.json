@@ -13,21 +13,21 @@
       }
     }
   },
-  "version": "0.2.0",
+  "version": "0.3.0",
   "ledger_started": "2026-06-10",
-  "last_updated": "2026-07-01",
+  "last_updated": "2026-07-27",
   "metrics": {
     "registered_agents": {
-      "value": 144,
-      "last_verified": "2026-07-01",
-      "source": "`find agents -iname '*.md'` file count minus non-agent registry docs (agents/AGENT_REGISTRY.md, agents/CODING_AGENTS_REGISTRY.md)",
+      "value": 138,
+      "last_verified": "2026-07-27",
+      "source": "site/scripts/check-metrics-contract.mjs (recursive agents/**/*.md count excluding registry and README documents)",
       "ownership": "built",
       "stale": false,
-      "notes": "144-agent core registry claim in CLAUDE.md matches the actual agent-profile .md file count in agents/ (root + agents/council/) once the two registry index files are excluded."
+      "notes": "Reproduced in the site build; the release fails closed if the source count drifts."
     },
     "skill_activation_rules": {
       "value": 84,
-      "last_verified": "2026-07-01",
+      "last_verified": "2026-07-27",
       "source": "skills/skill-rules.json (rules entry count)",
       "ownership": "built",
       "stale": false,
@@ -51,11 +51,19 @@
     },
     "starlight_vaults": {
       "value": 6,
-      "last_verified": "2026-07-01",
+      "last_verified": "2026-07-27",
       "source": "memory/vaults/ directory listing",
       "ownership": "built",
       "stale": false,
       "notes": "strategic, technical, creative, operational, wisdom, horizon."
+    },
+    "horizon_letters": {
+      "value": 15,
+      "last_verified": "2026-07-27",
+      "source": "public-vault/horizon.jsonl non-empty line count",
+      "ownership": "built",
+      "stale": false,
+      "notes": "Append-only public letters in the Horizon vault."
     }
   }
 }
