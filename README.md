@@ -24,9 +24,9 @@ Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity — they all read 
 Starlight is two things in one repository:
 
 - **SIP** — the open Starlight Intelligence Protocol: a clean contract for sovereign memory, identity, and governance that anyone can adopt.
-- **SIS** — the reference implementation: 144 specialized agents, 84 auto-activating skills, 6 semantic vaults, a production MCP server, and the repeatable **Estate Factory** for running full sovereign agent armies.
+- **SIS** — the reference implementation: source-counted agent definitions, auto-activating skills, six semantic vaults, a production MCP server, and the repeatable **Estate Factory** for running full sovereign agent armies.
 
-Use just the memory layer in your current tools. Adopt the protocol. Or run the complete system Frank uses every day.
+Current counts and verification dates live in [`metrics/current.json`](metrics/current.json) and are enforced by the site build.\n\nUse just the memory layer in your current tools. Adopt the protocol. Or run the complete system Frank uses every day.
 
 
 ## Purpose
@@ -89,7 +89,7 @@ Restart your client. Every agent now shares the same memory. Thirteen `sis_*` to
 | Layer              | What it is                                                                 | Best for |
 |--------------------|----------------------------------------------------------------------------|----------|
 | **SIP (Protocol)** | Open standard. Six clean layers for memory, attestation, commands, and sovereignty. | Forking the protocol or building your own systems |
-| **SIS (Reference)** | Complete working system: 144 agents, 84 skills, 6 vaults, MCP server, Estate Factory. | Running it as your daily multi-agent brain |
+| **SIS (Reference)** | Complete working system: source-counted agents and skills, six vaults, MCP server, Estate Factory. | Running it as your daily multi-agent brain |
 
 Use the protocol alone, the memory layer alone, or the full reference implementation. They are designed to compose.
 
