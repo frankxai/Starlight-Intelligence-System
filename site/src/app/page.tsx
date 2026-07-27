@@ -727,11 +727,13 @@ export default async function HomePage() {
 
 function CensusStat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="bg-[#0a0a12]/90 px-4 py-3.5 backdrop-blur">
-      <dd className="text-xl font-semibold text-white">{value}</dd>
+    // col-reverse so the DOM keeps the required dt-then-dd order while the
+    // number still reads above its label.
+    <div className="flex flex-col-reverse bg-[#0a0a12]/90 px-4 py-3.5 backdrop-blur">
       <dt className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-slate-500">
         {label}
       </dt>
+      <dd className="text-xl font-semibold text-white">{value}</dd>
     </div>
   );
 }
