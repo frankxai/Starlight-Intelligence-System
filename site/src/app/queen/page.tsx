@@ -144,7 +144,7 @@ export default function QueenPage() {
             </div>
             <div>
               <QueenSwarm className="w-full aspect-[16/9.6] rounded-3xl border border-white/10" phase="measure" interactive />
-              <div className="mt-2 text-[10px] text-white/50 tracking-widest">LIVE INTERACTIVE — QUEEN DIRECTS 92 AGENTS. MOVE CURSOR TO CONDUCT.</div>
+              <div className="mt-2 text-[10px] text-white/50 tracking-widest">LIVE INTERACTIVE — MOVE CURSOR TO CONDUCT.</div>
             </div>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default function QueenPage() {
       </section>
 
       <footer className="border-t border-white/10 py-12 text-center text-xs text-white/40">
-        Built on SIP v1.1.1 · Queen v0.2 orchestration loop · All visuals generated with Grok Imagine.
+        Built on SIP · Queen orchestration loop · All visuals generated with Grok Imagine.
       </footer>
     </div>
   );

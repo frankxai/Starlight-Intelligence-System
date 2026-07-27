@@ -277,7 +277,7 @@ export function MemoryPalace() {
         <div className="mx-auto max-w-[620px] rounded-2xl border border-white/[0.08] bg-black/40 p-5 text-sm backdrop-blur-xl">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 text-xs uppercase tracking-[2px] text-white/50">
-              <div>SIP v1.1.1</div>
+              <div>Built on SIP</div>
               <div className="h-px w-3 bg-white/20" />
               <div>6 VAULTS LIVE</div>
               <div className="h-px w-3 bg-white/20" />
@@ -312,7 +312,7 @@ export function MemoryPalace() {
           </div>
 
           <div className="mt-3 flex items-center justify-between text-[10px] text-white/40">
-            <div>56 agents • compound intelligence • local-first • queen excellence engine</div>
+            <div>138 agent definitions • local-first • six semantic vaults</div>
             <a
               href="https://github.com/frankxai/Starlight-Intelligence-System"
               target="_blank"

@@ -146,7 +146,7 @@ export default function QuickstartPage() {
       <section className="mt-16">
         <StepLabel n={1} label="Build the current source" />
         <p className="mt-3 text-[14px] leading-relaxed text-slate-400">
-          The repository is the current v8.3.0 distribution path. Clone it,
+          The repository is the current distribution path. Clone it,
           build it, then seed the six local vaults.
         </p>
         <Terminal>
