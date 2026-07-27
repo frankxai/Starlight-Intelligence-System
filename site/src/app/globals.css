@@ -16,7 +16,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jbmono);
-  --font-serif: var(--font-fraunces);
+  --font-serif: var(--font-newsreader);
 }
 
 * {
@@ -1118,7 +1118,7 @@ body {
 
 /* =================================================================
    Queen Visual Intelligence scroll experience — /queen
-   Premium dark technical-poetic, consistent with site mesh/glass/Inter+Fraunces.
+   Premium dark technical-poetic, consistent with site mesh/glass/Inter+Newsreader.
    Scroll progress mirroring the canonical motion HTML (l99).
    ================================================================= */
 .queen-section {

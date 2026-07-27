@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
+import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { StarlightTrail } from "@/components/StarlightTrail";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,11 +17,14 @@ const jbMono = JetBrains_Mono({
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Editorial serif for display headlines. Variable weight, so existing
+// `font-serif font-semibold` headings keep real weight rather than a
+// synthesised bold.
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
   display: "swap",
-  axes: ["SOFT", "WONK", "opsz"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -103,7 +107,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jbMono.variable} ${fraunces.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jbMono.variable} ${newsreader.variable}`}>
       <body className="flex min-h-dvh flex-col bg-[#060609] font-sans text-slate-200 antialiased">
         <script
           type="application/ld+json"
@@ -115,6 +119,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <StarlightTrail />
         <Header />
         <main id="main-content" className="flex-1">
           {children}

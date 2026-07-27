@@ -178,9 +178,14 @@ function StarShell({ glow }: { glow: THREE.Texture }) {
 
 function Core({ glow }: { glow: THREE.Texture }) {
   const sprite = useRef<THREE.Sprite>(null);
+  const { pointer } = useThree();
   useFrame(({ clock }) => {
     if (sprite.current) {
-      const pulse = 2.5 + Math.sin(clock.elapsedTime * 0.8) * 0.18;
+      // Breathe slowly, and brighten as attention approaches the centre —
+      // the system responds to being looked at.
+      const proximity = 1 - Math.min(Math.hypot(pointer.x, pointer.y), 1);
+      const pulse =
+        2.5 + Math.sin(clock.elapsedTime * 0.8) * 0.18 + proximity * 0.55;
       sprite.current.scale.setScalar(pulse);
     }
   });
@@ -217,9 +222,13 @@ function System() {
     const g = group.current;
     if (!g) return;
     g.rotation.y += delta * 0.03;
-    // Gentle pointer parallax — the system leans toward attention.
-    g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, pointer.y * -0.12, 0.02);
-    g.rotation.z = THREE.MathUtils.lerp(g.rotation.z, pointer.x * 0.06, 0.02);
+    // Pointer parallax — the system leans toward attention, and drifts a
+    // little toward it. Lerped hard enough to feel alive, damped enough
+    // that it never reads as a gimmick.
+    g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, 0.1 + pointer.y * -0.26, 0.045);
+    g.rotation.z = THREE.MathUtils.lerp(g.rotation.z, pointer.x * 0.14, 0.045);
+    g.position.x = THREE.MathUtils.lerp(g.position.x, pointer.x * 0.5, 0.03);
+    g.position.y = THREE.MathUtils.lerp(g.position.y, pointer.y * 0.35, 0.03);
   });
 
   return (

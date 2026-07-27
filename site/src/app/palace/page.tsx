@@ -30,7 +30,7 @@ export default function PalacePage() {
           </p>
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
             <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">Obsidian bridge live now</div>
-            <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">SIP v1.1.1 attested</div>
+            <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">SIP-attested</div>
             <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">Six vaults · live constellation</div>
           </div>
         </div>
@@ -49,7 +49,7 @@ export default function PalacePage() {
             It specifies r3f + custom shaders + real gateway data + desire-proof loops + swarm topology for the production 3D experience.
           </p>
           <p className="mt-3 text-[10px] text-white/40">
-            Built on SIP v1.1.1 • Visuals as first-class ledger artifacts
+            Built on SIP • Visuals as first-class ledger artifacts
           </p>
           <p className="mt-4 text-xs text-white/40">
             Premium dark technical aesthetic. Real memory data. The substrate made visible and interactive.

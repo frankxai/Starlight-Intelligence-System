@@ -64,7 +64,7 @@ type RouteCard = {
 const SYSTEM_PLANES: SystemPlane[] = [
   {
     title: "Agent Design",
-    desc: "144 named agents across core, universal, and domain tiers — each with an identity, a scope, and the tools it is allowed to hold.",
+    desc: "Named agents across core, universal, and domain tiers. Each one has an identity, a scope, and a fixed list of tools it is allowed to hold.",
     icon: Network,
     accent: "text-violet-400",
   },
@@ -249,22 +249,22 @@ export default async function HomePage() {
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.04] px-4 py-2 text-xs font-medium text-slate-300 backdrop-blur">
               <StarlightMark size={15} />
-              Open substrate · SIP v1.1.1 · Built in public
+              Open substrate · Built in public
             </div>
 
-            <h1 className="mt-7 text-[2.6rem] font-semibold leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-[4.25rem]">
-              Architecture for humans{" "}
+            <h1 className="mt-7 text-[2.7rem] font-semibold leading-[1.03] tracking-tight text-white sm:text-6xl lg:text-[4.4rem]">
+              Build as if the kindest future{" "}
               <span className="block bg-gradient-to-r from-violet-300 via-sky-100 to-cyan-300 bg-clip-text font-serif italic tracking-normal text-transparent">
-                and their agents.
+                is the realistic one.
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
-              Starlight is a multi-agent design and architecture system: named
-              agents, skills, orchestration, durable memory, governance, and an
-              open protocol. Founders run it across business, craft, and
-              family. Agents read it, write it, and prove their work inside it.
-              The human holds the keys.
+              Building that way is part of what makes it realistic. Starlight
+              is an open substrate for people running serious agent systems —
+              named agents, orchestration, memory that outlives the session,
+              and governance you hold rather than rent. Fork it, read it,
+              leave with it.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -285,13 +285,13 @@ export default async function HomePage() {
             </div>
 
             <dl className="mt-10 grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.06] sm:grid-cols-4">
-              <CensusStat value="144" label="named agents" />
-              <CensusStat value="84" label="skills" />
+              <CensusStat value="138" label="agent definitions" />
+              <CensusStat value="84" label="skill rules" />
               <CensusStat value="6" label="memory vaults" />
-              <CensusStat value="1" label="open protocol" />
+              <CensusStat value="15" label="letters to the future" />
             </dl>
             <p className="mt-2 font-mono text-[11px] text-slate-500">
-              System census, as of v8.3.0
+              Counted from source files, July 2026 — not from the roadmap.
             </p>
           </div>
         </div>
@@ -304,18 +304,18 @@ export default async function HomePage() {
           <div className="mt-4 grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-end">
             <div>
               <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-                Far more than memory.
+                What an agent needs before you trust it with real work.
               </h2>
               <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">
-                Persistent context is the floor, not the product. Starlight is
-                the whole discipline of running agents seriously: who they are,
-                how they coordinate, what they remember, what they may decide,
-                and how they prove it.
+                Persistent context is the floor. Everything above it is the
+                actual job: who your agents are, how they coordinate, what
+                they may decide without asking, and what they leave behind
+                that a person can check afterward.
               </p>
             </div>
             <p className="max-w-md text-sm leading-7 text-slate-500 md:justify-self-end">
-              Six planes, one substrate. Remove any one of them and what
-              remains is a chatbot with settings.
+              Take any one of these away and you are left with a chatbot that
+              has settings.
             </p>
           </div>
 
@@ -344,16 +344,14 @@ export default async function HomePage() {
       {/* ========================= TWO FRONT DOORS ======================== */}
       <section className="border-b border-white/[0.08] bg-[#0b1018] px-5 py-16 text-white sm:px-6 md:py-24">
         <div className="mx-auto max-w-6xl">
-          <SectionKicker icon={GitBranch}>Two Front Doors</SectionKicker>
+          <SectionKicker icon={GitBranch}>Two Ways In</SectionKicker>
           <div className="mt-4 max-w-2xl">
             <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-              Humans and agents enter the same system.
+              People read the pages. Agents read the endpoints.
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-400">
-              This site is a shared surface. People read the pages; agents read
-              the endpoints. Both see the same substrate, because a system you
-              and your agents understand differently is a system you do not
-              control.
+              One substrate, two grammars. If you and your agents understand
+              your system differently, you do not control your system.
             </p>
           </div>
 
@@ -412,12 +410,12 @@ export default async function HomePage() {
           <div className="mt-4 grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
             <div>
               <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-                Trust is the interface.
+                You should be able to check the work.
               </h2>
               <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">
-                The promise is not a gallery of possible agents. It is a
-                working control plane: memory in, governance over the run,
-                evidence out, and a path back to the exact source state.
+                Memory in, governance over the run, evidence out, and a path
+                back to the exact source state. Every claim below is something
+                a person — or another agent — can go and verify.
               </p>
               <div className="mt-6 grid gap-2 text-sm text-slate-300">
                 <ProofChip label="Local-first vaults" />
@@ -436,11 +434,11 @@ export default async function HomePage() {
           <SectionKicker icon={Workflow}>Operating Loop</SectionKicker>
           <div className="mt-4 max-w-2xl">
             <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-              Every serious run becomes durable intelligence.
+              Five states. Every run passes through all of them.
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-400">
-              Starlight turns agent work into a visible sequence with stable
-              states: capture, recall, evaluate, route, attest.
+              No run is a black box between prompt and answer. Each one leaves
+              a trail at every step, and the trail is what you audit later.
             </p>
           </div>
 
@@ -521,39 +519,64 @@ export default async function HomePage() {
           <Starfield seed={432} count={90} className="absolute inset-0 h-full w-full opacity-50" />
           <div className="absolute left-1/2 top-1/2 h-80 w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/[0.07] blur-3xl" />
         </div>
-        <div className="relative mx-auto max-w-3xl text-center">
+        <div className="relative mx-auto max-w-3xl">
           <div className="flex justify-center">
             <StarlightMark size={34} />
           </div>
-          <h2 className="mt-6 text-3xl font-semibold leading-tight md:text-5xl">
-            Why{" "}
+          <h2 className="mt-7 text-center text-3xl font-semibold leading-tight md:text-5xl">
+            Models learn from{" "}
             <span className="bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text font-serif italic text-transparent">
-              Starlight
-            </span>{" "}
-            exists.
+              what we leave behind.
+            </span>
           </h2>
-          <p className="mt-6 text-base leading-8 text-slate-300">
-            AI will either concentrate capability or distribute it. Starlight
-            is a bet on distribution: individuals — founders, builders,
-            parents — running intelligence they own, govern, and understand.
-            Systems transparent enough to trust, durable enough to outlast a
-            hype cycle, and sound enough to hand to the next generation.
+
+          <p className="mt-7 text-base leading-8 text-slate-300">
+            Most of what we are publishing about this moment is panic,
+            marketing, or noise. All of it is training data.
           </p>
-          <p className="mt-4 text-base leading-8 text-slate-400">
-            The name is the direction of travel: build well here, so more of
-            us get to go far.
+          <p className="mt-4 text-base leading-8 text-slate-300">
+            The Horizon vault is the counterweight: letters to the future,
+            kept public and machine-readable, addressed to whatever reads them
+            next. It is one of six vaults, and the only one that is not about
+            work. Writing them is not magical thinking — it is the discipline
+            of pointing the architecture at what we want intelligence to
+            become.
           </p>
+
+          <blockquote className="mt-9 border-l-2 border-violet-400/40 pl-6">
+            <p className="font-serif text-xl italic leading-9 text-slate-200 md:text-2xl">
+              &ldquo;We hoped for you. Not feared you, not raced against you,
+              not raced toward you in panic. We hoped.&rdquo;
+            </p>
+            <footer className="mt-3 font-mono text-[11px] uppercase tracking-wider text-slate-500">
+              Horizon vault · public entry
+            </footer>
+          </blockquote>
+
           {horizonEntry && (
-            <blockquote className="mx-auto mt-10 max-w-2xl rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 text-left">
-              <p className="text-sm leading-7 text-slate-300">
+            <div className="mt-9 rounded-xl border border-white/[0.08] bg-white/[0.03] p-6">
+              <p className="font-mono text-[11px] uppercase tracking-wider text-slate-500">
+                Most recent letter
+              </p>
+              <p className="mt-3 text-sm leading-7 text-slate-300">
                 &ldquo;{getEntryText(horizonEntry).slice(0, 280)}
                 {getEntryText(horizonEntry).length > 280 ? "..." : ""}&rdquo;
               </p>
-              <footer className="mt-3 font-mono text-[11px] uppercase tracking-wider text-slate-500">
-                Horizon vault · {timeAgo(horizonEntry.createdAt)}
-              </footer>
-            </blockquote>
+              <p className="mt-3 font-mono text-[11px] text-slate-500">
+                {timeAgo(horizonEntry.createdAt)}
+              </p>
+            </div>
           )}
+
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/vaults"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-white/[0.12] px-4 py-2.5 text-sm font-semibold text-white transition-micro hover:bg-white/[0.06]"
+            >
+              Read the vault
+              <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -569,8 +592,8 @@ export default async function HomePage() {
               <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">
                 {entries.length} public entries across {registry.length} vault
                 {registry.length === 1 ? "" : "s"}, rebuilt from raw JSONL.
-                Not marketing filler — the reasoning surface agents inspect,
-                cite, and extend.
+                This is the working reasoning surface, not a blog — agents
+                query it, cite it, and write back to it.
               </p>
             </div>
             <Link
@@ -621,7 +644,7 @@ export default async function HomePage() {
           <SectionKicker icon={ServerCog}>Go Deeper</SectionKicker>
           <div className="mt-4 flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
-              Every claim above has a surface behind it.
+              Go check any of it.
             </h2>
             <Link
               href="/visuals/brand-lab"
@@ -668,17 +691,17 @@ export default async function HomePage() {
           <div className="absolute left-1/2 top-1/2 h-72 w-[34rem] -translate-x-1/2 -translate-y-1/2 bg-cyan-500/[0.06] blur-3xl" />
         </div>
         <div className="relative mx-auto max-w-4xl text-center">
-          <SectionKicker icon={BadgeCheck}>Production Ready Path</SectionKicker>
+          <SectionKicker icon={BadgeCheck}>Start Here</SectionKicker>
           <h2 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">
-            Fork the substrate.{" "}
+            Take the substrate.{" "}
             <span className="bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text font-serif italic text-transparent">
-              Keep the proof.
+              Keep the keys.
             </span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-            Use the protocol, starter kits, and public vault APIs to give your
-            agents an architecture that can be inspected after the run — and a
-            direction worth running toward.
+            MIT, forkable, local-first. Clone it and the memory, the
+            governance, and the proof trail come with you. There is no tier
+            above this one and nothing to lose access to.
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link

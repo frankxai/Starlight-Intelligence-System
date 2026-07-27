@@ -662,3 +662,30 @@ Ops note: pushes to frankx.ai-vercel-website from this shallow checkout intermit
 **Verification:** eslint clean, full `npm run build` green (public-install + layout contract checks pass), rendered via headless Chromium at 1440px and 390px — WebGL scene, gradient serif headline, and all eight sections confirmed visually. Gotcha for future sessions: `next start` left running across a rebuild serves stale chunk manifests (CSS 500s with nosniff → unstyled page); kill the server before rebuilding.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-07-27 - Homepage voice pass: Frank's own words, cursor-light, metrics reconciled
+
+**Category:** public-surface / brand / data-integrity
+**Confidence:** 0.95
+**Source:** Claude Code remote session, branch claude/homepage-multi-agent-redesign-aucti4 — Frank directive: copy reads like an LLM wrote it, version pins are noise in the hero, motion should respond to the cursor, and the site must hold both the agentic-engineering thesis and the benevolent-future thesis
+**Related:** site/src/app/page.tsx, site/src/components/StarlightTrail.tsx, memory/vaults/horizon-vault.md, public-vault/horizon.jsonl, skills/vision/voice-anti-slop.md, taste.md
+
+**Voice.** Hero replaced with Frank's own Horizon-vault line — "Build as if the kindest future is the realistic one" (`horiz_20260410_005`) — over an invented celestial metaphor. Rewrote the six worst AI-slop headlines flagged by a full 42-route audit: "Far more than memory" → "What an agent needs before you trust it with real work"; "Trust is the interface" → "You should be able to check the work"; "Every serious run becomes durable intelligence" → "Five states. Every run passes through all of them"; "Two Front Doors" → "People read the pages. Agents read the endpoints"; "Every claim above has a surface behind it" → "Go check any of it"; "Production Ready Path / Fork the substrate, keep the proof" → "Start Here / Take the substrate. Keep the keys." Removed self-referential copy ("Not marketing filler") — announcing that copy isn't marketing filler is marketing filler.
+
+**New Horizon section.** The vision layer now runs on real artifacts rather than abstraction: "Models learn from what we leave behind" → the panic/marketing/noise-is-training-data framing → the Horizon vault as counterweight, with the verbatim public entry "We hoped for you. Not feared you, not raced against you, not raced toward you in panic. We hoped." The manifestation/peak-state layer Frank asked for is carried by his own line — "not magical thinking; it is the discipline of pointing the architecture at what we want intelligence to become" — which satisfies the ask without the spiritual register `VOICES.md` bans.
+
+**Metrics integrity (the real find).** The agent count was rendering three different numbers on three live surfaces: 144 (homepage), 92 (/queen), 56 (MemoryPalace) — none dated or sourced, and STARLIGHT_MANIFEST.md says 54 while AGENT_REGISTRY.md says 150. Ground truth counted from source: **138** files in `agents/` excluding registry/readme. Homepage and MemoryPalace now read 138; /queen's count was removed rather than guessed. Census strip re-scoped to verifiable figures only (138 agents / 84 skill rules / 6 vaults / 15 horizon letters) with the caption "Counted from source files, July 2026 — not from the roadmap." **Docs remain unreconciled — CLAUDE.md, README.md, and STARLIGHT_MANIFEST.md still disagree; a follow-up should make `metrics/current.json` the single source and have the site read it.**
+
+**Version-pin noise.** Cut `SIP v1.1.1` / `v8.3.0` / `Queen v0.2` from hero badge, /palace (x2), /queen footer, MemoryPalace HUD, /quickstart. Kept every load-bearing instance on /protocol, /badge, and the /download release-state claims where the version *is* the subject. Known residual: `lib/sip.ts` falls back to `v1.1.0` while nine strings hardcode `v1.1.1` — not fixed here.
+
+**Motion.** New `StarlightTrail` — full-viewport additive canvas emitting luminous motes along the pointer path, emission and inherited velocity proportional to pointer speed, eased quadratic fade, pre-rendered sprites, rAF halted when no motes are alive. Gated to fine pointers >=768px, off under `prefers-reduced-motion`, cleared on tab hide. WebGL constellation now leans and drifts toward the pointer and the core brightens with proximity.
+
+**Guardrail tension (flagged, not resolved).** `taste.md` states "radiant particle fields, decorative glow ... do not belong on SIS surfaces." Frank explicitly directed cursor-following particle effects, so the operator directive supersedes for this surface, but `taste.md` and the new homepage doctrine now disagree in writing and should be reconciled deliberately rather than left implicit.
+
+**Typography.** `font-serif` moved Fraunces → Newsreader (variable weight + italic), so the ~28 existing `font-serif font-semibold` headings keep real weight instead of a synthesised bold. Fraunces' SOFT/WONK axes read craft-y; Newsreader reads editorial.
+
+**Verification:** eslint clean; full `npm run build` green including both contract checks; headless Chromium at 1440x900 and 390x844 — zero horizontal overflow at both, zero console errors, trail confirmed rendering (2,275 lit subpixels after a pointer sweep) and confirmed *not* rendering under reduced-motion (0 subpixels); hero CTA hit-tested topmost and navigation to /quickstart confirmed.
+
+**Unverifiable properties (do not publish).** An ecosystem sweep across 7 repos found **zero** evidence for `starlightintelligence.ai`, `starlight.you`, any university, or any retreat property. `starlight-intelligence.ai` exists only as a dormant, archive-queued *directory* superseded by `site/`. `starlightintelligence.academy` is attested live by the 2026-07-25 Vercel audit but has no description anywhere in any repo. No ecosystem section was shipped rather than fabricate one.
+
+**Built on SIP — Starlight Intelligence Protocol**
