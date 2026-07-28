@@ -1,23 +1,33 @@
 ---
 name: starlight-queen
-description: Queen Self-Advancement & Harness Integration (v0.2 closed self-improving multi-harness loop). Primary surface for /starlight-queen, /sq (alias), /so (queen posture). Full tick: ROUTE→MEASURE(parallel subagent)→LEARN(synth+patches)→RATIFY(A-gates)→LEDGER(visual mandatory + velocity). Composes /starlight-eval (model lane now with Visual Eval), proving-ground/*, queen/driver, Memory Gateway, image_gen.
-usage: /starlight-queen [status|route|measure|learn|ratify|ledger|tick] [--class=...] [--lane=...] [--full] | /sq [same] | /so [queen|status|tick]
+description: Queen routing, governance, and receipt-driven improvement controller. Prefer typed Foundry Task Envelopes; legacy keyword routing and tick recipe emission remain compatibility surfaces.
+usage: /starlight-queen [status|route-envelope|route|measure|learn|ratify|ledger|tick] [--class=...] [--lane=...] [--full] [--visual=<existing-path>] | /sq [same] | /so [queen|status|tick]
 ---
 # /starlight-queen (/sq /so) — v0.2 Queen
 
-Continuous routing + eval overseer. **v0.2:** the closed, self-improving, multi-harness loop with explicit subagent dispatch, Visual Eval on every model receipt, Composer preference for long-agentic/visual, advancement velocity metrics + falsifiers (anti-Goodhart), A1/A2/A3 gates. Every tick produces >=1 visual artifact (image_gen) + ledger text + vault entry + velocity snapshot.
+Routing + evaluation overseer. Typed Foundry envelopes are now the preferred control plane. The older v0.2 tick remains a receipt-driven planning and ledger loop with emitted harness recipes, velocity metrics, and A1/A2/A3 gates.
 
-**Executable automation:** `node tools/queen/driver.mjs tick [--full]` (or `npm run queen -- tick`). Under Grok: prints native spawn_subagent recipes for parallel MEASURE/LEARN; image_gen prompt for visual; safe table patches only when gates pass.
+**Truth boundary:** `tick` does not itself dispatch external subagents, call image generation, or auto-apply a proposal. It prints recipes for a capable harness and records a local ledger entry. Only captured runtime spans and artifacts count as execution evidence.
 
-**Status:** v0.2 doctrine (tools/proving-ground/ROUTING-DOCTRINE.md) + driver + lanes/SPEC updates make the loop concrete and falsifiable. (Prior v0.1 was honest manual.) SIP on all.
+**Status:** typed routing and Foundry compilation are executable. Live multi-harness dispatch and trace ingestion remain phase 2.
 
 ## Subcommands (v0.2)
 
 ### status
 Show current Queen state (table v0.2 + advancement block, killSwitch, Grok-highlighted classes, recent receipts/velocity from state, last tick, visualsProduced, ledger tail).
 
+### route-envelope <task-envelope.json>
+
+Validate a Foundry Task Envelope, derive the live capability graph, resolve explicit required/preferred/forbidden capabilities, and return permission, autonomy, agent-necessity, and evidence gates.
+
+```bash
+node tools/queen/driver.mjs route-envelope foundry/examples/research-brief.task-envelope.json
+```
+
+This route is read-only by default. Add `--record` only when the routing decision should update Queen state. `--graph=<json>` pins a graph snapshot and `--out=<json>` writes the route receipt.
+
 ### route <desc>
-Classify + consult routing-table + doctrine v0.2. Return target + evidence + gates status. Now recognizes composer/agentic/visual/parallel/memory-consolidation classes.
+Legacy keyword fallback. Classify + consult routing-table + doctrine v0.2. Output is labeled `legacy-keyword-fallback`; do not treat it as a cognitive routing proof.
 
 ### measure [--lane=...]
 Compose Proving Ground (model lane now enforces Visual Eval per lanes.json/SPEC: receipt must ref image artifact) + Cost + gstack. Grok: parallel subagent dispatch (explore per lane) + excellence.
@@ -26,24 +36,24 @@ Compose Proving Ground (model lane now enforces Visual Eval per lanes.json/SPEC:
 Synthesize receipts → deltas for table + doctrine patches. A2 applied; velocity calc (receipt ts → proposal). Grok: best-of-n/check-work subagents.
 
 ### ratify [--class=...]
-A1/A2 gates + drift + substrate split (low-stakes operational auto if eligible; irreversible/substrate = safe + board/Frank ack). 
+A1/A2 eligibility + drift + substrate split. This local command reports eligibility but does not apply changes; irreversible/substrate work requires safe default + Board/operator approval.
 
 ### ledger [--append]
 Append (doctrine ledger + queen/ledger.jsonl + operational-vault). **v0.2: always includes visual ref + velocity snapshot.**
 
-### tick [--full]
-**The v0.2 automation entrypoint.** Runs the full closed loop (ROUTE→MEASURE parallel recipes→LEARN synth→RATIFY gates→LEDGER visual+text+velocity+vault). Prints exact subagent dispatches + image_gen prompt for harness to execute in parallel. Safe patches only. Emits SIP. Use for Queen self-advancement cycles. --full adds richer lanes. Alias: queen-tick.
+### tick [--full] [--visual=<existing-path>]
+Runs the local v0.2 planning/ledger loop (ROUTE→MEASURE recipes→LEARN synthesis→RATIFY gates→LEDGER). It prints subagent dispatch and image prompts for a capable harness. Do not claim those external steps ran unless their receipts are attached. `--full` adds richer planned lanes. Alias: queen-tick.
 
-## Grok harness execution (v0.2 parallelism + visual + composer win)
+## Harness execution boundary
 - tick (or /starlight-queen tick) prints the exact parallel subagent dispatch recipes (explore for MEASURE lanes incl. model+visual-eval, plan for LEARN synthesis, check-work for RATIFY gates + falsifier scan).
 - Harness executes: spawn_subagent (or parallel calls) + run_terminal per lane entrypoint + gstack + excellence-review + repo-mastery.
 - Visual: image_gen (Imagine) using the emitted prompt (routing heatmap / tick card / palace); ref resultPath in LEDGER/vault. Mandatory per tick.
 - Composer: for agentic-composer-long / visual / parallel classes inside the tick itself (sustained agentic + native visuals).
 - Session + state: Memory Gateway (grok-tui-* ns + SessionStore) + tools/queen/state.json (velocity + history).
-- Full tick = status + route/classify + MEASURE parallel + LEARN + RATIFY + LEDGER (visual + vault + table safe patch if gates + SIP).
+- A full external cycle exists only when the harness executes the emitted work, captures real spans/artifacts, and returns them to the Proving Ground.
 
 ## Bindings (inherited, non-waivable; v0.2 extended)
-- A1/A2/A3 as in v0.2 ROUTING-DOCTRINE.md (low-stakes auto only on rounds>=2 + !irreversible; substrate split; falsifiers defined for velocity/visual/A breaches).
+- A1/A2/A3 as in v0.2 ROUTING-DOCTRINE.md. The local driver remains proposal-only; an external governed runtime may apply low-stakes work only with qualifying receipts and must split substrate implications.
 - Visual Eval mandatory on model receipts + every tick LEDGER.
 - Cadence, token opt, anti-Goodhart unchanged (velocity metrics are descriptive snapshots only).
 - Excellence + SIP ambient.
@@ -59,15 +69,15 @@ Append (doctrine ledger + queen/ledger.jsonl + operational-vault). **v0.2: alway
 
 ## Test / Drive immediately (v0.2)
 1. Hygiene: git branch --show-current && git status (one agent = one branch).
-2. status + route: `node tools/queen/driver.mjs status`; `node tools/queen/driver.mjs route "implement queen tick visual ledger"`.
-3. Full tick (core): `node tools/queen/driver.mjs tick` (or `--full`). Observe: parallel MEASURE recipes (dispatch these with your spawn_subagent), visual prompt (run image_gen now, capture path), LEARN proposals, RATIFY decision (safe patch or proposal), LEDGER (jsonl + vault append with velocity + visual ref) + SIP.
-4. Verify Visual Eval: read latest arena receipt (composer25 exemplar) + lanes.json model entry + SPEC scorecard note.
-5. Check velocity/falsifiers: cat tools/queen/state.json (tickHistory, visualsProduced); grep falsifier in ROUTING-DOCTRINE.md.
-6. Cross: read core/orchestrator/harnesses/grok/README.md + system-prompt.md (composer formalization); HARNESS.md Grok §; /starlight (si) for visual dispatch.
-7. Persist (if low-stakes ratified): driver already did light table/backup + vault; manual search_replace only for higher if ack'd.
-8. Substrate note: table bumps here were operational (perf/cost); any SIP/agents core edit would have invoked board pre.
+2. Typed route: `node tools/queen/driver.mjs route-envelope foundry/examples/research-brief.task-envelope.json`.
+3. Legacy compatibility check: `node tools/queen/driver.mjs route "implement queen tick visual ledger"` and confirm it is labeled fallback.
+4. Full local tick only when ledger/table writes are intended: `node tools/queen/driver.mjs tick` (or `--full`). Execute printed recipes separately and attach real artifacts before promotion.
+5. Verify Visual Eval: read the receipt and confirm it points to a real artifact rather than an emitted prompt.
+6. Check velocity/falsifiers in `tools/queen/state.json` and `ROUTING-DOCTRINE.md`.
+7. Cross-check harness bindings before external dispatch.
+8. Persist only low-stakes ratified learning. Substrate implications still route through `/starlight-board`.
 
-All surgical, existing tools, receipts real. No new infra.
+Receipts are real only for steps actually executed and observed.
 
 **Built on SIP** — Starlight Intelligence Protocol. Operational (Queen loop driver + harness integration). Table/doctrine governance: respect A-gates + board pre for substrate-class.
 

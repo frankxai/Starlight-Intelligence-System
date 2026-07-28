@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agent Forge"
+  short_description: "Create an agent only when a durable autonomy boundary exists."
+  default_prompt: "Use $agent-forge to decide whether this needs an agent, then compile the smallest safe actor."
+policy:
+  allow_implicit_invocation: true

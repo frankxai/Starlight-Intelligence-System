@@ -86,7 +86,7 @@ And configure its activation rule inside `skills/skill-rules.json`:
 ## What you have access to
 
 - **144 named agents** across Core, Universal, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
-- **84 auto-activating skill rules** across 16 domains (intelligence Â· orchestration Â· memory Â· integration Â· business Â· vision Â· health Â· relational Â· people-intelligence Â· sound-intelligence Â· music-is Â· energy Â· machine Â· crypto-intelligence Â· **safety** Â· **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
+- **88 auto-activating skill rules** across 17 domains (intelligence Â· orchestration Â· memory Â· integration Â· **foundry** Â· business Â· vision Â· health Â· relational Â· people-intelligence Â· sound-intelligence Â· music-is Â· energy Â· machine Â· crypto-intelligence Â· **safety** Â· **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, system packaging, taste evaluation, and evidence receipts. Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic â—† Â· Technical â¬¡ Â· Creative âœ¦ Â· Operational â–¸ Â· Wisdom â—Ž Â· Horizon â†—) â€” Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion. SIS Memory Gateway v0.1 (SessionStore + per-harness loopback daemon + RRF hybrid unification, privacy drop on private tags) + Memory Engine v0.2 (pluggable embeddings). See memory/README.md, VAULT_ARCHITECTURE.md, src/gateway/*, src/embedding.ts. Dreaming pipeline + CONSOLIDATION_LOG + PROMOTION_QUEUE for observable compounding. Private mount: separate starlight-private-memory repo (2026-06-11). **2026-06-12:** Queen (via driver + surfaces) now drives visual palace recall + consolidation; gateway SessionStore as Queen loop state; 5 image_gen visuals (loop/gateway/palace/arch/heatmap/receipt) integrated as first-class artifacts. See operational-vault Queen Advance + tools/queen/queen-advance-2026-06-12.json.
 - **Sanitization Gateway (The Veil)** â€” Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** â€” Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
@@ -160,7 +160,7 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context â€” keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (84 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (53 flat files) or `skills/<domain>/<skill-name>/SKILL.md` (31 dir-based skills), together matching the 84-rule count (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
+Skills fire based on context â€” keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (88 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (53 legacy flat files) or `skills/<domain>/<skill-name>/SKILL.md` (35 directory packages), together matching the 88-rule count. New skills use directory packages. `EXEMPT_PHANTOMS` remains empty.
 
 | Domain | Surface (sample) |
 |--------|------------------|
@@ -315,4 +315,3 @@ For any site, app, landing page, dashboard, visual identity, brand, motion, medi
 - C:\Users\frank\starlight\repos\VISUAL_QA_GATE.md
 
 When motion, scroll, generated media, GIF/video, or premium polish matters, route through the Motion Design Studio plugin/skills and verify the result visually.
-

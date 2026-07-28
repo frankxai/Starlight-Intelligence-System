@@ -42,7 +42,7 @@ Every task is either substrate-level or operational-level. Decide before acting.
 **Operational-level** (anything inside this repo's reference build):
 - Use `metrics/current.json` for the dated total and the current 144-agent registry in `agents/AGENT_REGISTRY.md` for identities and routing.
 - Voice: Frank DNA (above).
-- Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 25 files there — distinct from the 121 installed slash commands in `.claude/commands/`), skill edits, agent edits, site edits.
+- Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 28 command files there — distinct from the 121 installed slash commands in `.claude/commands/`), skill edits, agent edits, site edits.
 
 **Ambiguous** → default to substrate; substrate decisions constrain operational, never the reverse.
 
@@ -63,7 +63,7 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 **What you have access to:**
 
 - **144 Agents** — source-counted definitions across Core, Universal, and specialized Domain Vertical layers; verification lives in `metrics/current.json` (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
-- **84 Skills** — Auto-activate via `skills/skill-rules.json` across 16 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`).
+- **88 Skills** — Auto-activate via `skills/skill-rules.json` across 17 domains (intelligence, orchestration, memory, integration, **foundry**, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, bounded system packaging, and executable taste evaluation. Existing orchestration includes `/yolo`, `/si` + `/so`, SAGE, and Hermes Swarm.
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
 - **Commands** — substrate commands in-repo + additional commands available per-environment installation (varies by user); covers universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
@@ -171,16 +171,17 @@ See `memory/palace/MEMORY_PALACE.md` for what it is and how to maintain it.
 
 ## Skills
 
-84 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
+88 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
 
 | Domain | Skills |
 |--------|--------|
 | **Intelligence / Orchestration / Memory / Integration** | Strategic reasoning, systems thinking, orchestration, vault management, context preservation, ecosystem sync |
 | **Business / Vision / Health / Relational** | Entity architecture, revenue modeling, design coherence, body substrate, network architecture |
+| **Foundry** | Skill, agent, swarm, vertical, plugin, taste, and evidence compilation |
 | **People / Sound / Music / Energy / Machine / Crypto / Marine** | Domain Sub-Stack skills, Music IS operations, energy intelligence, machine storage/heart, crypto on-chain proof pattern |
 
-Activation rules: `skills/skill-rules.json` (84 rules)
-Skill definitions: mixed layout — `skills/{domain}/{skill-name}/SKILL.md` (31 dir-based skills) or a flat `skills/{domain}/{skill-name}.md` (53 single-file skills). Both formats are canonical; 31 + 53 = 84, matching the rule count.
+Activation rules: `skills/skill-rules.json` (88 rules)
+Skill definitions: mixed layout — `skills/{domain}/{skill-name}/SKILL.md` (35 dir-based skills) or a flat `skills/{domain}/{skill-name}.md` (53 single-file skills). New skills use directory packages; legacy flat files remain compatibility inputs. 35 + 53 = 88.
 
 ---
 
@@ -205,9 +206,11 @@ Skill definitions: mixed layout — `skills/{domain}/{skill-name}/SKILL.md` (31 
 | `/starlight-king` / `/starlight-queen` / `/starlight-swarm` | Swarm-tier session commands — sovereign coordination (King), swarm leadership (Queen), and swarm construct dispatch. |
 | `/estate-army-deploy` / `/estate-provision` | Estate Factory — provision and deploy a sovereign agent estate (see DELIVERY.md §7). |
 | `/si` / `/so` / `/sq` | Multi-CLI routing shorthands (cognition router / image routing / quick status). |
-| `/agent-creator` / `/workflow-skill-creator` / `/starlight-architect` | Authoring tier — generate new agents, workflow skills, and architecture briefs. |
+| `/forge` / `/prove` / `/evolve` | Foundry tier — compile portable capabilities, issue evidence receipts, and propose receipt-driven evolution. |
+| `/agent-creator` / `/workflow-skill-creator` | Deprecated compatibility aliases for `/forge agent` and `/forge skill`. |
+| `/starlight-architect` | Architecture briefs and system design. |
 
-Command surface as of v8.3.0: 25 command files in `commands/` (this table), plus 121 installed slash commands in `.claude/commands/` (9 of them substrate-tier). `commands/COMMAND_SYSTEM.md` is the architecture doc for the 13 core commands; the directory listing is the ground truth for the rest.
+Command surface as of 2026-07-28: 28 command files in `commands/`, plus `COMMAND_SYSTEM.md`, and 121 installed slash commands in `.claude/commands/` (9 of them substrate-tier). The directory listing is the ground truth.
 
 ---
 

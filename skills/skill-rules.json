@@ -2781,20 +2781,62 @@
       "id": "orchestration-agent-creator",
       "skill": "orchestration/agent-creator",
       "triggers": {
-        "keywords": ["agent-creator", "/agent-creator", "create agent", "spawn agent", "scaffold agent", "register agent"],
-        "agents": ["starlight-architect", "starlight-orchestrator", "starlight-prime"],
-        "intents": ["agent-creation", "scaffolding", "agent-registration"]
+        "keywords": ["agent-creator", "/agent-creator"],
+        "intents": ["legacy-agent-creation"]
       },
-      "priority": "high",
-      "load_level": "core"
+      "priority": "low",
+      "load_level": "summary"
     },
     {
       "id": "orchestration-workflow-skill-creator",
       "skill": "orchestration/workflow-skill-creator",
       "triggers": {
-        "keywords": ["workflow-skill-creator", "/workflow-skill-creator", "make this a skill", "create a skill", "package this workflow", "workflow-to-skill"],
-        "agents": ["starlight-orchestrator", "starlight-prime", "starlight-sage"],
-        "intents": ["skill-creation", "workflow-distillation", "skill-registration"]
+        "keywords": ["workflow-skill-creator", "/workflow-skill-creator"],
+        "intents": ["legacy-skill-creation"]
+      },
+      "priority": "low",
+      "load_level": "summary"
+    },
+    {
+      "id": "foundry-skill-forge",
+      "skill": "foundry/skill-forge",
+      "triggers": {
+        "keywords": ["forge skill", "/forge skill", "create a skill", "make this a skill", "package this workflow", "portable skill", "skill creator", "improve this skill"],
+        "agents": ["starlight-architect", "starlight-orchestrator", "starlight-prime", "starlight-sage"],
+        "intents": ["skill-creation", "workflow-distillation", "capability-compilation", "skill-evaluation"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "foundry-agent-forge",
+      "skill": "foundry/agent-forge",
+      "triggers": {
+        "keywords": ["forge agent", "/forge agent", "create an agent", "agent creator", "workspace agent", "durable agent", "agent policy", "autonomy boundary"],
+        "agents": ["starlight-architect", "starlight-orchestrator", "starlight-prime"],
+        "intents": ["agent-creation", "agent-policy", "autonomy-design", "workspace-agent-design"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "foundry-system-forge",
+      "skill": "foundry/system-forge",
+      "triggers": {
+        "keywords": ["forge swarm", "/forge swarm", "forge vertical", "/forge vertical", "forge plugin", "/forge plugin", "capability compiler", "agent swarm", "multi-agent system", "skills plugin"],
+        "agents": ["starlight-architect", "starlight-orchestrator", "starlight-prime"],
+        "intents": ["swarm-design", "vertical-compilation", "plugin-packaging", "system-compilation"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "foundry-taste-engine",
+      "skill": "foundry/taste-engine",
+      "triggers": {
+        "keywords": ["taste engine", "quality rubric", "hard rejection gates", "pairwise judge", "independent judge", "true taste", "world-class quality", "premium quality"],
+        "agents": ["starlight-weaver", "starlight-sentinel", "starlight-prime"],
+        "intents": ["taste-evaluation", "quality-judgment", "artifact-comparison", "preference-learning"]
       },
       "priority": "high",
       "load_level": "core"
@@ -2809,15 +2851,16 @@
     "starlight-architect": [
       "intelligence-systems-thinking",
       "intelligence-pattern-recognition",
-      "orchestration-agent-creator"
+      "foundry-agent-forge",
+      "foundry-system-forge"
     ],
     "starlight-orchestrator": [
       "orchestration-multi-agent-coordination",
       "orchestration-workflow-design",
       "orchestration-sage-autonomous-execution",
       "orchestration-hermes-swarm",
-      "orchestration-agent-creator",
-      "orchestration-workflow-skill-creator"
+      "foundry-skill-forge",
+      "foundry-system-forge"
     ],
     "starlight-sentinel": [
       "intelligence-pattern-recognition",

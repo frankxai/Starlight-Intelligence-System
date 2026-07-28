@@ -48,6 +48,24 @@ Starlight Intelligence System (SIS) is the **sovereign AI substrate** for memory
 4. Run harness gates before claiming production readiness; prefer proof over console language ([#35](https://github.com/frankxai/Starlight-Intelligence-System/issues/35)).
 5. Cross-links: [starlight-memory](https://github.com/frankxai/starlight-memory) · [starlight-evals](https://github.com/frankxai/starlight-evals) · [starlight-swarm](https://github.com/frankxai/starlight-swarm) · [ACOS](https://github.com/frankxai/agentic-creator-os) · [FrankX](https://github.com/frankxai/FrankX).
 
+## Foundry: portable capabilities for ChatGPT and Codex
+
+Starlight Foundry turns intent into a typed Task Envelope, resolves existing capabilities, compiles the smallest justified skill or agent system, and issues an evidence receipt before promotion.
+
+```text
+/forge skill <brief>
+/forge agent <brief>
+/forge swarm <brief>
+/forge vertical <brief>
+/forge plugin <brief>
+/prove <package-or-artifact>
+/evolve <package-or-receipt>
+```
+
+The skills-only `starlight-foundry` plugin works as the portable ChatGPT Work/Codex surface. Agent creation fails unless a durable decision-right, memory, tool, ownership, or ongoing-trigger boundary is proven.
+
+[Read the Foundry architecture](docs/architecture/STARLIGHT-INTELLIGENCE-FOUNDRY.md) · [Inspect the contracts](foundry/contracts/) · [Run the demo](foundry/examples/)
+
 ## Usefulness
 
 - **Humans:** portable sovereign memory + multi-agent fleet that compounds.

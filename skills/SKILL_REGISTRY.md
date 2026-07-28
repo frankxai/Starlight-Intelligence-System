@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 84 skills across 16 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 88 skills across 17 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 
@@ -14,9 +14,7 @@ This file is **operational-tier** — it does not appear in the substrate-tier f
 
 ```yaml
 name: <domain>/<skill-name>          # canonical key, matches skill-rules.json `skill` field
-domain: <top-level-dir>              # one of 15: business, crypto-intelligence, energy-intelligence,
-                                     # health, integration, intelligence, machine, memory, music-is,
-                                     # orchestration, people-intelligence, relational, safety, sound-intelligence, vision
+domain: <top-level-dir>              # one of the registry sections below; count is test-derived
 activation_rule_id: <string>         # matches skill-rules.json `id` field; symmetry enforced by future v78 test
 owner_repo: SIS | <repo-name>        # default SIS; named repo if forked or alliance-owned
 version: <YYYY-MM-DD>                # date-stamped initial; semver upgrade reserved for Tier 3b
@@ -149,8 +147,17 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | orchestration/gencreator-stack | orchestration-gencreator-stack | SIS | 2026-05-13 | stable |
 | orchestration/hermes-swarm | orchestration-hermes-swarm | SIS | 2026-06-12 | stable |
 | orchestration/sage-autonomous-execution | orchestration-sage-autonomous-execution | SIS | 2026-06-16 | stable |
-| orchestration/agent-creator | orchestration-agent-creator | SIS | 2026-06-17 | stable |
-| orchestration/workflow-skill-creator | orchestration-workflow-skill-creator | SIS | 2026-06-17 | stable |
+| orchestration/agent-creator | orchestration-agent-creator | SIS | 2026-07-28 | deprecated |
+| orchestration/workflow-skill-creator | orchestration-workflow-skill-creator | SIS | 2026-07-28 | deprecated |
+
+### foundry (4)
+
+| Skill | Activation rule ID | Owner repo | Version | Status |
+|---|---|---|---|---|
+| foundry/skill-forge | foundry-skill-forge | SIS | 2026-07-28 | experimental |
+| foundry/agent-forge | foundry-agent-forge | SIS | 2026-07-28 | experimental |
+| foundry/system-forge | foundry-system-forge | SIS | 2026-07-28 | experimental |
+| foundry/taste-engine | foundry-taste-engine | SIS | 2026-07-28 | experimental |
 
 ### people-intelligence (6)
 

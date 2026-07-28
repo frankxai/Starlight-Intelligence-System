@@ -1,0 +1,6 @@
+interface:
+  display_name: "Skill Forge"
+  short_description: "Compile a reusable workflow into a proven portable skill."
+  default_prompt: "Use $skill-forge to turn this workflow into a portable skill with explicit tests."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/foundry/plugin-pack.schema.json",
+  "title": "Starlight Foundry Plugin Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "kind",
+    "id",
+    "version",
+    "description",
+    "displayName",
+    "skills",
+    "authentication",
+    "deployment"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "kind": {
+      "const": "plugin"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 1024
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 40
+    },
+    "skills": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9/-]{1,127}$"
+      }
+    },
+    "mcpServerUrl": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "authentication": {
+      "enum": [
+        "none",
+        "oauth2",
+        "service-account"
+      ]
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targets"
+      ],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "chatgpt-work",
+              "codex"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

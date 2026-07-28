@@ -1,0 +1,483 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "title": "Starlight Foundry Task Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "kind",
+    "objective",
+    "deliverables",
+    "stakes",
+    "autonomy",
+    "constraints",
+    "evidencePolicy",
+    "permissions",
+    "capabilitySelection",
+    "completionTests",
+    "deployment"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "kind": {
+      "enum": [
+        "skill",
+        "agent",
+        "swarm",
+        "vertical",
+        "plugin"
+      ]
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 2000
+    },
+    "deliverables": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "artifactType",
+          "required"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1000
+          },
+          "artifactType": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "required": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "vertical": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "audience": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "artifactTypes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "stakes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "impact",
+        "reversibility",
+        "rationale"
+      ],
+      "properties": {
+        "impact": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "reversibility": {
+          "enum": [
+            "reversible",
+            "recoverable",
+            "irreversible"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 1000
+        }
+      }
+    },
+    "autonomy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "approvalRequiredBefore"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "advise",
+            "draft",
+            "execute",
+            "delegate"
+          ]
+        },
+        "approvalRequiredBefore": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "external-write",
+              "destructive-action",
+              "financial-commitment",
+              "public-release",
+              "permission-expansion",
+              "substrate-change"
+            ]
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "must",
+        "mustNot"
+      ],
+      "properties": {
+        "must": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "mustNot": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "maxCostUsd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "maxLatencyMs": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxToolCalls": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxAgentTurns": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxParallelWorkers": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            }
+          }
+        }
+      }
+    },
+    "evidencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "freshness",
+        "requirePrimarySources",
+        "requiredLanes"
+      ],
+      "properties": {
+        "freshness": {
+          "enum": [
+            "not-applicable",
+            "stable",
+            "current",
+            "live"
+          ]
+        },
+        "requirePrimarySources": {
+          "type": "boolean"
+        },
+        "requiredLanes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "static",
+              "behavioral",
+              "factual",
+              "artifact",
+              "taste",
+              "security",
+              "economic",
+              "drift"
+            ]
+          }
+        },
+        "minimumIndependentJudges": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tools",
+        "memory",
+        "externalWrites",
+        "destructiveActions"
+      ],
+      "properties": {
+        "tools": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allow",
+            "deny"
+          ],
+          "properties": {
+            "allow": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "maxLength": 100
+              }
+            },
+            "deny": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "maxLength": 100
+              }
+            }
+          }
+        },
+        "memory": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "read",
+            "write"
+          ],
+          "properties": {
+            "read": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "maxLength": 120
+              }
+            },
+            "write": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "maxLength": 120
+              }
+            }
+          }
+        },
+        "externalWrites": {
+          "type": "boolean"
+        },
+        "destructiveActions": {
+          "type": "boolean"
+        }
+      }
+    },
+    "capabilitySelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "preferred",
+        "forbidden",
+        "allowCreation"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9:/-]{1,127}$"
+          }
+        },
+        "preferred": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9:/-]{1,127}$"
+          }
+        },
+        "forbidden": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9:/-]{1,127}$"
+          }
+        },
+        "allowCreation": {
+          "type": "boolean"
+        }
+      }
+    },
+    "tasteProfile": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9/-]{1,127}$"
+    },
+    "completionTests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/completionTest"
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targets"
+      ],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "chatgpt",
+              "chatgpt-work",
+              "workspace-agent",
+              "codex",
+              "claude-code",
+              "gemini",
+              "agents-sdk",
+              "mcp",
+              "plugin"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "completionTest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "lane",
+        "type",
+        "required"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+        },
+        "lane": {
+          "enum": [
+            "static",
+            "behavioral",
+            "factual",
+            "artifact",
+            "taste",
+            "security",
+            "economic",
+            "drift"
+          ]
+        },
+        "type": {
+          "enum": [
+            "file-exists",
+            "json-valid",
+            "contains",
+            "command",
+            "manual",
+            "judge"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "command": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "instructions": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 600000
+        }
+      }
+    }
+  }
+}

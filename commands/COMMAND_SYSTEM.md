@@ -27,6 +27,9 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 | `/si` | Route work to the right CLI or native generation tool | Orchestrator |
 | `/so` | Orchestrate multi-lane dispatch, packets, and verification | Orchestrator |
 | `/starlight-swarm` | Create approval-gated multi-CLI swarm packets | Orchestrator |
+| `/forge` | Compile a skill, justified agent, swarm, vertical, or plugin | Queen + Foundry |
+| `/prove` | Evaluate declared evidence lanes and issue a receipt | Sentinel + Foundry |
+| `/evolve` | Propose the smallest responsible patch from a receipt | Queen + Foundry |
 
 ---
 
@@ -46,6 +49,9 @@ Starlight Commands are slash-command interfaces that provide direct access to St
 /navigate --horizon 6months --domain technical
 /si --tool agy --repo arc "open this in Antigravity"
 /so --fanout "audit this flow across Codex, Gemini, and Grok"
+/forge skill "turn this research workflow into a portable skill"
+/prove ./generated/research-brief-forge
+/evolve ./generated/research-brief-forge/evidence-receipt.json
 ```
 
 ---
@@ -155,6 +161,32 @@ Design, scaffold, review, tradeoff analysis for enterprise systems, harnesses, c
 
 See `commands/starlight-architect.md` + `agents/starlight-architect.md`. Dispatched via `/starlight architect`.
 
+### /forge - Capability Compilation
+
+```text
+/forge skill <brief>
+/forge agent <brief>
+/forge swarm <brief>
+/forge vertical <brief>
+/forge plugin <brief>
+```
+
+The Queen writes a typed Task Envelope and resolves existing capabilities. Foundry then compiles the kind-specific pack. Agent creation fails unless a persistent decision-right, memory, tool, ownership, or ongoing-trigger boundary is proven.
+
+See `commands/forge.md`, `foundry/contracts/`, and `tools/foundry/cli.mjs`.
+
+### /prove - Evidence Receipt
+
+Runs declared `static`, `behavioral`, `factual`, `artifact`, `taste`, `security`, `economic`, and `drift` lanes. Unrun required checks remain pending. The producing actor cannot be the sole required taste judge.
+
+See `commands/prove.md`.
+
+### /evolve - Receipt-Driven Improvement
+
+Maps failed or pending required tests to the smallest responsible layer and emits a non-applying patch proposal. Security and drift changes require approval.
+
+See `commands/evolve.md`.
+
 ---
 
 ## Command Processing Flow
@@ -162,12 +194,13 @@ See `commands/starlight-architect.md` + `agents/starlight-architect.md`. Dispatc
 ```
 1. USER issues /command
 2. INTELLIGENCE CORE parses command and arguments
-3. ROUTING MATRIX identifies target agent(s)
-4. CONTEXT ENGINE assembles relevant context
-5. TARGET AGENT executes with skill support
-6. SYNTHESIS PROTOCOL merges results (if multi-agent)
-7. RESPONSE delivered to user
-8. MEMORY WRITE captures significant results in vaults
+3. QUEEN writes or validates the Task Envelope
+4. CAPABILITY GRAPH resolves skills, agents, tools, memory, and constraints
+5. EXECUTION SHAPE selects one actor or a bounded topology
+6. TARGET executes with declared permissions
+7. PROVING GROUND evaluates required evidence lanes
+8. RESPONSE returns artifact, receipt, uncertainty, and unresolved decisions
+9. MEMORY WRITE captures only ratified learning
 ```
 
 ---

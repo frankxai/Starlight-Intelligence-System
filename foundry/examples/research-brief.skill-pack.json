@@ -1,0 +1,78 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/skill-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "skill",
+  "id": "research-brief-forge",
+  "version": "0.1.0",
+  "description": "Turn a research question into a concise decision brief that separates sourced facts, reasoned inferences, unresolved unknowns, and recommendations.",
+  "triggers": {
+    "positive": [
+      "The user needs a decision-oriented research brief.",
+      "A consequential recommendation requires fresh source grounding."
+    ],
+    "negative": [
+      "The user only needs a timeless fact or a short explanation."
+    ]
+  },
+  "procedure": [
+    {
+      "id": "contract",
+      "instruction": "Restate the decision, audience, deadline, stakes, and the evidence threshold before researching.",
+      "proof": "A visible decision contract."
+    },
+    {
+      "id": "research",
+      "instruction": "Retrieve current primary sources for unstable claims and record publication date, event date, and direct support.",
+      "proof": "A source ledger with claim-to-source links."
+    },
+    {
+      "id": "separate",
+      "instruction": "Separate sourced facts, inferences, unknowns, and recommendations; label uncertainty instead of smoothing it over.",
+      "proof": "Every consequential claim has a type and support."
+    },
+    {
+      "id": "decide",
+      "instruction": "Synthesize the smallest useful recommendation, its trade-offs, falsifiers, and the next decision point.",
+      "proof": "A concise brief with explicit next action."
+    }
+  ],
+  "inputs": [
+    "Research question",
+    "Decision owner and audience",
+    "Time horizon and constraints"
+  ],
+  "outputs": [
+    "A source-grounded decision brief",
+    "A claim-to-source evidence ledger"
+  ],
+  "dependencies": [
+    "intelligence/hermes-search",
+    "intelligence/strategic-reasoning"
+  ],
+  "toolPolicy": {
+    "allow": [
+      "web-search",
+      "primary-source-reader"
+    ],
+    "deny": [
+      "external-write"
+    ]
+  },
+  "memoryContract": {
+    "read": [
+      "strategic-vault",
+      "technical-vault"
+    ],
+    "write": []
+  },
+  "tasteProfile": "decision-brief",
+  "deployment": {
+    "implicitInvocation": true,
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "plugin"
+    ]
+  }
+}
