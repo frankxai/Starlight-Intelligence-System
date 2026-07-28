@@ -689,3 +689,5 @@ Ops note: pushes to frankx.ai-vercel-website from this shallow checkout intermit
 **Unverifiable properties (do not publish).** An ecosystem sweep across 7 repos found **zero** evidence for `starlightintelligence.ai`, `starlight.you`, any university, or any retreat property. `starlight-intelligence.ai` exists only as a dormant, archive-queued *directory* superseded by `site/`. `starlightintelligence.academy` is attested live by the 2026-07-25 Vercel audit but has no description anywhere in any repo. No ecosystem section was shipped rather than fabricate one.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+**2026-07-28 addendum (validation-ops):** ECOSYSTEM_ARCHITECTURE.md reconciled to v2.1 — the last stale 48/71/v8.2.0 references updated to the harness-verified 144/84/v8.3.0 with a metrics-note pointing at `metrics/current.json` as the fail-closed source of truth. Closes the "three contradictory ecosystem maps" finding from the 2026-07-13 validation report. Verified: `node scripts/check-agent-harness.mjs` passes; zero stale-count matches remain.

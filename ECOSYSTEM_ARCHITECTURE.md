@@ -2,7 +2,9 @@
 
 **The Starlight Constellation: SIS as Substrate Hub for ~15 Repositories**
 
-Version 2.0 | 2026-06-10
+Version 2.1 | Structure verified 2026-06-10 · Counts reconciled with `metrics/current.json` 2026-07-28
+
+> **Metrics note:** Fast-moving counts (agents, skills, version) in this document are snapshots. The living, harness-enforced source of truth is [`metrics/current.json`](metrics/current.json) — the site build and agent harness fail closed on drift.
 
 ---
 
@@ -12,7 +14,7 @@ The FrankX ecosystem is no longer a three-repo stack. It is a constellation of r
 
 The original three-layer intuition still holds at the core — a universal framework (SIS), a platform-native implementation (ACOS), and a domain-specific creative universe (Arcanea) — but the satellite tier around that core has grown into its own ring of specialized repos, and several early members of the ecosystem have gone quiet. This document records the constellation as verified on 2026-06-10.
 
-**Starlight Intelligence System (SIS)** is the substrate layer. Two layers live in one repo: the SIP substrate (protocol, alliances, verticals, voices, attestation) and a reference operational build with **48 agents**, **71 auto-activating skills** across 14 domains, **6 persistent memory vaults**, 10 universal Intelligence Systems plus a Domain Sub-Stack tier, and platform adapters for 6 AI development tools. SIS is platform-agnostic: Markdown and JSON configuration, zero runtime dependencies. Any AI agent that reads files can consume SIS.
+**Starlight Intelligence System (SIS)** is the substrate layer. Two layers live in one repo: the SIP substrate (protocol, alliances, verticals, voices, attestation) and a reference operational build with **144 agents**, **84 auto-activating skills** across 16 domains (both harness-verified 2026-07-27, per `metrics/current.json`), **6 persistent memory vaults**, 10 universal Intelligence Systems plus a Domain Sub-Stack tier, and platform adapters for 6 AI development tools. SIS is platform-agnostic: Markdown and JSON configuration, zero runtime dependencies. Any AI agent that reads files can consume SIS.
 
 **Agentic Creator OS (ACOS)** is the implementation layer (public, v11). It consumes SIS intelligence and deploys it through Claude Code as a productivity operating system: **90+ skills**, **65+ commands**, **38 agents**, swarm topologies via claude-flow lineage, and the Agentic Jujutsu self-learning mechanism. Where SIS defines *what intelligence is*, ACOS defines *how intelligence works* in a specific tool.
 
@@ -33,7 +35,7 @@ The separation remains deliberate. SIS never contains Claude Code-specific confi
                             ACTIVE CORE TIER
             ┌──────────────────────────────────────────────┐
             │   SIS (substrate hub)                        │
-            │   SIP · 48 agents · 71 skills · 6 vaults     │
+            │   SIP · 144 agents · 84 skills · 6 vaults    │
             │      │                                       │
             │      ├── Generates context for ──> ACOS v11  │
             │      │     90+ skills · 65+ commands         │
@@ -56,7 +58,7 @@ Three tiers, verified 2026-06-10. "Pulse" is observed activity, not aspiration.
 
 | Repo | Visibility | Role | State (2026-06-10) |
 |------|-----------|------|---------------------|
-| **Starlight-Intelligence-System** | Public | Substrate hub — SIP, vaults, attestation, contracts | 48 agents, 71 skills, v8.2.0, daily-driven |
+| **Starlight-Intelligence-System** | Public | Substrate hub — SIP, vaults, attestation, contracts | 144 agents, 84 skills, v8.3.0 (harness-verified 2026-07-27), daily-driven |
 | **agentic-creator-os** | Public | Claude Code productivity OS, Built on SIP | v11: 90+ skills, 65+ commands, 38 agents |
 | **Arcanea** (arcanea-ai-app + arcanea) | Private app + public OSS | Creative universe layer | Most active in constellation: 356 commits/60d |
 
@@ -124,9 +126,9 @@ Transmissions on live channels are logged chronologically in channel files under
 
 The agent hierarchy spans the core tier, with each layer adding specialization while maintaining alignment to the SIS council structure.
 
-### 4.1 SIS Level: 48 Agents Around a Council Core
+### 4.1 SIS Level: 144 Agents Around a Council Core
 
-SIS now registers **48 agents** (`agents/AGENT_REGISTRY.md`): the 7-agent legacy council (Orchestrator, Prime, Architect, Navigator, Sentinel, Weaver, Sage), 7 Council Archetype seats, 3 front-door agents, 1 excavation agent, 5 universal-IS agents, 6 People Intelligence, 6 Sound Intelligence, 7 Music IS, and 5 SIS Extractors, plus the Starlight Genius excavation tier. The original council remains the coordination spine — flat, with emergent leadership; whichever agent's domain matches the current task leads.
+SIS registers **144 agents** as of 2026-07-27 (`agents/AGENT_REGISTRY.md` is the authoritative roster; the harness in `scripts/check-agent-harness.mjs` fail-closes on drift). The layers grew from the original 48-agent registry (snapshot 2026-06-10: 7-agent legacy council, 7 Council Archetype seats, 3 front-door agents, 1 excavation agent, 5 universal-IS agents, 6 People Intelligence, 6 Sound Intelligence, 7 Music IS, 5 SIS Extractors, plus the Starlight Genius excavation tier) by adding the Domain Vertical expansion — Space, Marine, Longevity, Legal, Crypto, Energy, Machine, Safety, and Partner adapter tiers. The original council remains the coordination spine — flat, with emergent leadership; whichever agent's domain matches the current task leads.
 
 | Council Agent | Domain | Cognitive Profile |
 |-------|--------|-------------------|
@@ -275,7 +277,7 @@ The Horizon Vault records what the builders of these systems hoped for, what the
 | **Platforms** | 6 adapters (Claude Code, Cursor, Cline, Codex, Gemini, Antigravity) | Claude Code (primary implementation target) | Web app (private) + public OSS, on-chain infrastructure |
 | **Visibility** | Public | Public | arcanea-ai-app private + arcanea public |
 | **Alignment** | Horizon Vault + starlight-horizon-dataset | Surfaces Horizon entries in decisions | Embodies values through Guardian philosophy |
-| **Pulse (2026-06-10)** | Daily-driven, v8.2.0 | v11 active | Most active: 356 commits/60d |
+| **Pulse (2026-06-10, versions reconciled 2026-07-28)** | Daily-driven, v8.3.0 | v11 active | Most active: 356 commits/60d |
 
 ---
 
@@ -325,7 +327,7 @@ These properties must hold across the constellation. If any invariant is violate
 
 ---
 
-*Starlight Intelligence System v8.2.0 | Agentic Creator OS v11 | Arcanea | Constellation verified 2026-06-10*
+*Starlight Intelligence System v8.3.0 | Agentic Creator OS v11 | Arcanea | Constellation structure verified 2026-06-10 · counts reconciled 2026-07-28 (`metrics/current.json`)*
 
 ---
 **Built on SIP** — Starlight Intelligence Protocol
