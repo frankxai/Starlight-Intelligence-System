@@ -26,7 +26,7 @@
 ## Wave 1 — Revenue (days; the compounding unlock)
 
 1. ☑ **One Polar.sh checkout integration** — MERGED TO MAIN 2026-07-26 (agenticpassiveincome#20 + agenticincome#18, triple-gated fail-closed; activation = Frank's checklist in each runbook — env vars + catalog status flip are his calls, never an agent's). Original item: shared by agenticincome + agenticpassiveincome → ships Stream Pack 01 ($47) and Blueprint ($67). Runbooks already exist (`ops/POLAR-SETUP.md`, `FULFILLMENT_RUNBOOK.md`).
-2. ☐ **frankx.ai payment-rail decision**: pick ONE (recommendation: Lemon Squeezy — client + webhook already built, EU-friendly MoR). Configure variant IDs for the top 3 templates (rag-system-blueprint $197, multi-agent-blueprint $297, nextjs-saas-boilerplate $197). Fix the €97/€497 `/checkout/*` 404s. Unify the two Gumroad subdomains.
+2. ◐ **frankx.ai payment-rail decision**: DECIDED + ENGINEERING SHIPPED 2026-07-28 — Lemon Squeezy rail, frankx.ai#397 merged. `/checkout/[slug]` now fail-closed triple-gated (registry paid-product → hardcoded env-key map → store+variant env vars); €97/€497 404s eliminated (honest launch-list fallback). Activation = Frank's checklist in `docs/commerce/lemon-squeezy-activation.md` (5 env vars in Vercel, then test-mode order). Still open: variant IDs for the top-3 templates, Gumroad subdomain unification, flipping product CTAs from /waitlist to /checkout once live.
 3. ☐ **arcanea.ai `/pricing`**: wire the three CTAs to the existing `/api/stripe/checkout`. Fix `**40%**` markdown bug.
 4. ☐ agentic-business-os packs → list claims-guard ($29–49) + bundle ($99) on the chosen storefront.
 5. ☐ vibe-os → $19–29 pack (pure packaging).
@@ -37,7 +37,7 @@
 - ☐ Social proof pipeline: collect real quotes → populate `data/products.json` `socialProof.quotes[]` → mount the already-built Testimonials components. Never invent proof.
 - ☑ Email capture: COMPLETE — /prompt-library + /ai-architect-academy in #369; /agentic-ai-center, /research, /vault in #371 (merged 2026-07-26, live). All five planned surfaces now mount EmailSignup.
 - ☑ Header nav: 'Work with Frank' group MERGED in #369 (2026-07-26, live). Original item: (workshops, coaching, work-with-me, shop) to NavigationMega; define the membership ladder (community → inner-circle → founders-circle).
-- ☐ Imagery sprint: place existing assets (1,883 on frankx.ai, 205 on arcanea) onto the 15 zero-image commercial routes; backfill the 93 missing blog heroes; generate book covers + agent portraits for Arcanea (guardian v3 webp pipeline proves the path).
+- ◐ Imagery sprint: frankx.ai#398 MERGED 2026-07-28 — subject-matched existing assets placed on /shop (3 tiles + real alt text), /work-with-me (stage photo as proof), /start-here (six-primitives visual), /workshops (own hero art); honest-match discipline skipped /templates + /community (no truthful asset exists). Still open: generate the 7 product OG covers from their existing specs (unblocks /products + /templates), 2 mismatched auction images in data/auctions.json, 93 blog-hero backfill, arcanea covers/portraits.
 - ☑ Metadata sprint: DONE in #372 (merged 2026-07-26). Full 55-route T1 sweep found 6 gaps: 4 fixed via sibling layout.tsx (/auctions, /collectibles, /dashboard, /onboarding), 2 are pure redirects (inert). The audit's 12 "most important gaps" had all gained layout-level metadata since 2026-07-25 — verified individually.
 
 ## Wave 3 — Structure (weeks; needs Frank's URL/SEO approval per repo doctrine)

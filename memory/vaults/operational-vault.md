@@ -688,4 +688,17 @@ Ops note: pushes to frankx.ai-vercel-website from this shallow checkout intermit
 
 **Unverifiable properties (do not publish).** An ecosystem sweep across 7 repos found **zero** evidence for `starlightintelligence.ai`, `starlight.you`, any university, or any retreat property. `starlight-intelligence.ai` exists only as a dormant, archive-queued *directory* superseded by `site/`. `starlightintelligence.academy` is attested live by the 2026-07-25 Vercel audit but has no description anywhere in any repo. No ecosystem section was shipped rather than fabricate one.
 
+## 2026-07-28 - Revenue rail + imagery sprint on frankx.ai production
+
+**Category:** portfolio-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (queen-swarm continuation under Frank's lead-and-merge directive)
+**Related:** frankx.ai-vercel-website #397 #398, `context/empire/UPGRADE_ROADMAP.md`, `docs/commerce/lemon-squeezy-activation.md` (in frankx repo)
+
+frankx.ai#397 merged (5e9a94bf): payment-rail decision executed — Lemon Squeezy. New fail-closed `/checkout/[slug]` route, triple-gated (registry paid product → hardcoded PRODUCT_VARIANT_ENV_KEYS map → store+variant env vars); the audit's #2 revenue item (€97/€497 checkout 404s) is closed with an honest launch-list fallback until Frank sets 5 env vars (runbook in docs/commerce/). Runtime-verified in both states before merge. Pre-existing flaws documented, not touched: store-ID/subdomain conflation in zero-caller createCheckoutUrl, Stripe route with no functioning caller, name-derived webhook slug mapping.
+
+frankx.ai#398 merged (fba63b50): imagery sprint — subject-matched existing assets on /shop, /work-with-me, /start-here, /workshops with descriptive alt text and no-layout-shift discipline; /templates + /community skipped because no honest asset exists (specs for 7 product OG covers already written in public/images/products/*/og.spec.md — generating them unblocks the next imagery pass). Audit correction: /products and /coaching were not zero-image (mascot placements), and the /shop auctions tile art is genuinely auctioned per data/auctions.json.
+
+Ops notes: one imagery-agent run died on the platform session limit mid-flight (no partial work leaked; tree stayed clean) — re-dispatched after reset and completed. SIS main is under heavy parallel-session activity (#57, #60 landed during this window); every branch restart re-based cleanly. All four frankx CI gates plus the new Web Interface Guidelines mechanical check green on both PRs.
+
 **Built on SIP — Starlight Intelligence Protocol**
