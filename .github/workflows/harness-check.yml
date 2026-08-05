@@ -50,5 +50,14 @@ jobs:
       - name: Agent-harness drift guard
         run: npm run agents:harness-check
 
+      # Only this repo is checked out here, so the mesh can re-measure SIS and
+      # nothing else; every other repo's numbers are carried forward verbatim.
+      # That still catches the failures that matter on a PR: a hand-edited
+      # generated mesh, a curated entry that no longer regenerates, and SIS's
+      # own counts drifting. Portfolio-wide refresh happens on a machine with
+      # the whole portfolio checked out (npm run mesh:generate).
+      - name: Portfolio-mesh drift guard
+        run: npm run mesh:check
+
       - name: Tests
         run: npm test

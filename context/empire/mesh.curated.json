@@ -1,0 +1,355 @@
+{
+  "_comment": [
+    "Hand-authored half of the portfolio mesh. Judgement lives here; numbers do not.",
+    "Anything countable from the filesystem (skills, agents, commands, schemas) is",
+    "derived by scripts/mesh-generate.mjs and must NOT be written here — that is the",
+    "mistake portfolio-mesh.yaml v0.1.0 made, and it went stale in five days.",
+    "Numbers that are real but not yet under the counting contract live in a repo's",
+    "curated_metrics block with an explicit as_of date, so their age is visible.",
+    "Edit this file, then run: npm run mesh:generate"
+  ],
+  "version": "0.2.0",
+  "maintainer": "Starlight-Intelligence-System/context/empire/",
+  "substrate": {
+    "name": "Starlight Intelligence Protocol (SIP)",
+    "repo": "Starlight-Intelligence-System",
+    "attestation": "Built on SIP"
+  },
+  "sections": [
+    { "key": "substrate", "title": "Substrate & orchestration" },
+    { "key": "skills-libraries", "title": "Skills libraries (markdown)" },
+    { "key": "runtime", "title": "Code-runtime engines" },
+    { "key": "canon", "title": "Canon / schema layers" },
+    { "key": "discovery", "title": "Discovery lists (should be generated, not hand-written)" },
+    { "key": "income", "title": "Income / business cluster" },
+    { "key": "verticals", "title": "Verticals" },
+    { "key": "gencreator", "title": "GenCreator cluster" },
+    { "key": "websites", "title": "Production websites" }
+  ],
+  "repos": [
+    {
+      "name": "Starlight-Intelligence-System",
+      "section": "substrate",
+      "role": "substrate",
+      "manifests": ["skills/skill-rules.json", "agents/AGENT_REGISTRY.md", "skills/SKILL_REGISTRY.md"],
+      "provides": ["sip-protocol", "attestation", "vaults", "portfolio-mesh"],
+      "note": "only repo whose published counts matched its filesystem at the 2026-07-25 audit; guarded by scripts/check-agent-harness.mjs"
+    },
+    {
+      "name": "agentic-creator-os",
+      "section": "substrate",
+      "role": "os-reference-build",
+      "manifests": [".claude/skill-rules.json"],
+      "depends_on": ["Starlight-Intelligence-System"],
+      "note": "CLAUDE.md advertises 75+ skills / 67 agents / 35+ commands and ships far more — reconcile the docs against the measured block, not the reverse"
+    },
+    {
+      "name": "agentic-ops-hub",
+      "section": "substrate",
+      "role": "config-control-plane",
+      "manifests": ["AGENTS.md", "scripts/sync-agent-rules.mjs", "ECOSYSTEM.md"],
+      "provides": ["doctrine-sync"],
+      "note": "owns doctrine-sync for the income cluster; agentic-business-os should consume it"
+    },
+
+    {
+      "name": "claude-skills-library",
+      "section": "skills-libraries",
+      "role": "public-skills-library",
+      "canonical_source": "agentic-creator-os",
+      "note": "public MIT mirror; 54 skill names shared with the canonical source"
+    },
+    {
+      "name": "agentic-creator-skills",
+      "section": "skills-libraries",
+      "role": "plugin-marketplace-pack",
+      "canonical_source": "agentic-creator-os",
+      "note": "plugin packaging of the same content; 19 shared names"
+    },
+    {
+      "name": "starlight-agent-skills",
+      "section": "skills-libraries",
+      "role": "starlight-skills-pack",
+      "overlap": { "agentic-creator-os": 7 },
+      "note": "entire space vertical duplicated from agentic-creator-os"
+    },
+    {
+      "name": "mind-palace-agent-skills",
+      "section": "skills-libraries",
+      "role": "domain-skills",
+      "depends_on": ["bless"],
+      "provides": ["blessing-skills", "palace-build"],
+      "overlap": {}
+    },
+    {
+      "name": "marine-agent-skills",
+      "section": "skills-libraries",
+      "role": "domain-skills",
+      "overlap": {}
+    },
+    {
+      "name": "agentic-mind-os",
+      "section": "skills-libraries",
+      "role": "lived-os-reference",
+      "manifests": ["mindpack.yaml"],
+      "depends_on": ["human-mind-intelligence-system", "mind-intelligence-systems"],
+      "provides": ["vault-templates", "personal-agents", "mind-skills"]
+    },
+
+    {
+      "name": "starlight-cosmos-engine",
+      "section": "runtime",
+      "role": "content-engine",
+      "curated_metrics": { "as_of": "2026-07-25", "skills_code": 9, "agents_code": 9 },
+      "note": "definitions live in code, not markdown — outside the markdown counting contract"
+    },
+    {
+      "name": "starlight-swarm",
+      "section": "runtime",
+      "role": "swarm-runtime",
+      "note": "queen/worker topology in src/swarm/ — the executing mesh, distinct from this registry"
+    },
+    {
+      "name": "starlight-evals",
+      "section": "runtime",
+      "role": "eval-harness",
+      "manifests": ["routing-table.json", "lanes.json"]
+    },
+    {
+      "name": "second-brain-os",
+      "section": "runtime",
+      "role": "substrate-skill",
+      "manifests": ["mcp.json"]
+    },
+
+    {
+      "name": "mind-intelligence-systems",
+      "section": "canon",
+      "role": "canon-umbrella",
+      "manifests": ["repo-mesh.yaml"],
+      "provides": ["naming-doctrine", "human-mind-model", "repo-mesh"],
+      "note": "carries its own repo-mesh.yaml for the mind cluster; the two manifests are parallel and not yet unified"
+    },
+    {
+      "name": "human-mind-intelligence-system",
+      "section": "canon",
+      "role": "engineered-system",
+      "depends_on": ["mind-intelligence-systems"],
+      "provides": ["cognitive-schemas", "ontology", "response-prediction-primitives"]
+    },
+    {
+      "name": "starlight-mind-os-pro",
+      "section": "canon",
+      "role": "distribution-surface",
+      "manifests": ["starlight-pro.yaml"],
+      "depends_on": ["agentic-mind-os", "mind-intelligence-systems"],
+      "status": "charter-only-by-design"
+    },
+    {
+      "name": "bless",
+      "section": "canon",
+      "role": "protocol-spec",
+      "provides": ["blessing-protocol"]
+    },
+    {
+      "name": "agentic-intelligence-system",
+      "section": "canon",
+      "role": "discovery-substrate",
+      "note": "ais-profile.yaml / llms.txt standard — reconcile with reality.md + CLAUDE.md conventions"
+    },
+
+    {
+      "name": "awesome-mind-agent-skills",
+      "section": "discovery",
+      "role": "discovery-list",
+      "generated": false
+    },
+    {
+      "name": "awesome-music-agent-skills",
+      "section": "discovery",
+      "role": "discovery-list",
+      "generated": false
+    },
+    {
+      "name": "awesome-manifestation-skills",
+      "section": "discovery",
+      "role": "discovery-list",
+      "generated": false
+    },
+    {
+      "name": "awesome-agentic-income",
+      "section": "discovery",
+      "role": "discovery-list",
+      "generated": false
+    },
+    {
+      "name": "awesome-payment-agent-skills",
+      "section": "discovery",
+      "role": "discovery-list",
+      "generated": false
+    },
+
+    {
+      "name": "agenticincome",
+      "section": "income",
+      "role": "commerce-hub",
+      "products_drafted": ["agentic-income-blueprint-67", "agent-team-pro-129"],
+      "checkout": { "provider": "polar", "wired": false }
+    },
+    {
+      "name": "agenticpassiveincome",
+      "section": "income",
+      "role": "commerce-spoke",
+      "products_drafted": ["stream-pack-01-affiliate-publication-47"],
+      "checkout": { "provider": "polar", "wired": false }
+    },
+    {
+      "name": "agentic-business-os",
+      "section": "income",
+      "role": "os-family",
+      "packs": ["claims-guard", "business-intelligence", "design-contract", "weekly-rhythm"],
+      "curated_metrics": { "as_of": "2026-07-25", "downstreams": 1 }
+    },
+    {
+      "name": "agentic-income-skills",
+      "section": "income",
+      "role": "schema-brain"
+    },
+    {
+      "name": "agentic-income-template",
+      "section": "income",
+      "role": "public-shell",
+      "status": "freeze-when-feature-complete"
+    },
+    {
+      "name": "payment-intelligence-system",
+      "section": "income",
+      "role": "payments-governance",
+      "status": "unaudited-no-live-funds"
+    },
+
+    {
+      "name": "blue-life-commons",
+      "section": "verticals",
+      "role": "marine-commons",
+      "verdict": "flagship"
+    },
+    {
+      "name": "ocean-intelligence-system",
+      "section": "verticals",
+      "role": "marine-agents",
+      "verdict": "flagship"
+    },
+    {
+      "name": "marine-mcp",
+      "section": "verticals",
+      "role": "marine-serving"
+    },
+    {
+      "name": "realityarchitect",
+      "section": "verticals",
+      "role": "method-site",
+      "verdict": "flagship"
+    },
+    {
+      "name": "frankx-palace",
+      "section": "verticals",
+      "role": "creative-3d-surface"
+    },
+    {
+      "name": "frankx-mind-palace",
+      "section": "verticals",
+      "role": "palace-data-layer",
+      "depends_on": ["mind-palace-agent-skills", "bless"],
+      "provides": ["blessing-ledger", "rooms"]
+    },
+    {
+      "name": "music-intelligence-systems",
+      "section": "verticals",
+      "role": "charter-only",
+      "status": "pre-code"
+    },
+    {
+      "name": "ai-music-academy",
+      "section": "verticals",
+      "role": "stale-vertical",
+      "status": "needs-decision",
+      "note": "hype voice + unverified metrics; redirect assets to music-intelligence-systems"
+    },
+    {
+      "name": "vibe-os",
+      "section": "verticals",
+      "role": "out-of-scope-product",
+      "status": "stale-since-2026-01"
+    },
+
+    {
+      "name": "gencreator.ai",
+      "section": "gencreator",
+      "role": "creator-coe-site",
+      "domain": "gencreator.ai",
+      "status": "unaudited",
+      "note": "registered 2026-07-30; missing from the 2026-07-25 audit sweep and therefore ungraded"
+    },
+    {
+      "name": "gencreator-community",
+      "section": "gencreator",
+      "role": "community-site",
+      "domain": "gencreator.community",
+      "status": "unaudited",
+      "note": "registered 2026-07-30; missing from the 2026-07-25 audit sweep and therefore ungraded"
+    },
+    {
+      "name": "GenCreator-Studio",
+      "section": "gencreator",
+      "role": "studio-surface",
+      "status": "unaudited",
+      "note": "registered 2026-07-30; missing from the 2026-07-25 audit sweep and therefore ungraded"
+    },
+
+    {
+      "name": "frankx.ai-vercel-website",
+      "section": "websites",
+      "role": "flagship-website",
+      "domain": "frankx.ai",
+      "curated_metrics": { "as_of": "2026-07-25", "pages": 501, "route_dirs": 214 }
+    },
+    {
+      "name": "FrankX",
+      "section": "websites",
+      "role": "private-dev-authoring",
+      "note": "syncs TO frankx.ai-vercel-website; carries 3 ACOS variants needing reconciliation"
+    },
+    {
+      "name": "arcanea-ai-app",
+      "section": "websites",
+      "role": "arcanea-production",
+      "note": "no custom apex on a healthy Vercel project; arcanea-ai-appx sits in ERROR state"
+    },
+    {
+      "name": "arcanea",
+      "section": "websites",
+      "role": "arcanea-oss"
+    }
+  ],
+  "gaps": {
+    "no_skill_coverage": [
+      "legal-compliance",
+      "crypto-depth",
+      "testing-qa",
+      "data-engineering",
+      "incident-response",
+      "i18n-localization"
+    ],
+    "actions": [
+      "declare canonical_source in each mirror repo's README",
+      "reconcile ais-profile.yaml / reality.md / CLAUDE.md agent-legibility standards",
+      "regenerate the five awesome-* discovery lists from this mesh instead of hand-writing them",
+      "unify mind-intelligence-systems/repo-mesh.yaml with this mesh — two parallel manifests, two schemas",
+      "bring starlight-cosmos-engine code-defined skills/agents under a counting contract"
+    ],
+    "closed": [
+      "skills-governance: nothing audited the portfolio-wide skill surface — closed 2026-07-30 by scripts/mesh-generate.mjs + the counting contract"
+    ]
+  }
+}

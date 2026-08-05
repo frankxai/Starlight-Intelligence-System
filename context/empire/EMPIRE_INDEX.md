@@ -3,6 +3,8 @@
 > The single source of truth for every domain, live site, repo, and surface in the FrankX / Starlight / Arcanea portfolio.
 > Built 2026-07-25 by the system-wide upgrade audit (6 parallel agent sweeps, all claims verified against filesystem and the Vercel API).
 > Companion files: `portfolio-mesh.yaml` (machine-readable registry), `UPGRADE_ROADMAP.md` (prioritized actions), `audits/` (full evidence).
+>
+> **The mesh is generated, not hand-written (since 2026-07-30).** Curated judgement lives in `mesh.curated.json`; every count is derived from the filesystem by `scripts/mesh-generate.mjs` under a written counting contract, and `npm run mesh:check` fails CI if the committed artifacts drift. Regenerate with `npm run mesh:generate` from a machine holding the whole portfolio. Do not hand-edit `portfolio-mesh.yaml` / `portfolio-mesh.json`. Numbers elsewhere in *this* file are still the hand-audited 2026-07-25 figures — where they disagree with the mesh, the mesh is right.
 
 ---
 
