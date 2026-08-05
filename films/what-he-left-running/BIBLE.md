@@ -1,6 +1,7 @@
 # WHAT HE LEFT RUNNING — story bible
 
-> Starlight · freeform track · target runtime 3:40 · aspect 4:3 · 24fps
+> Starlight · freeform track · **runtime 3:43 total** (3:40 picture + 0:03 end card)
+> · aspect 4:3 · 24fps
 > Canon: **none.** Substrate register per `SOUL.md`; declines vertical canon
 > per SIP § Sovereignty. Craft: `film-excellence` pack.
 > Status: **draft 1 — not locked.**

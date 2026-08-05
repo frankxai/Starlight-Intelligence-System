@@ -15,7 +15,8 @@
 ```yaml
 film:
   title: WHAT HE LEFT RUNNING
-  runtime_target: "03:40"
+  runtime_target: "03:43"        # 3:40 picture (beats 1-12) + 0:03 end card
+  runtime_picture: "03:40"
   aspect: "4:3"
   frame_rate: 24
   track: freeform

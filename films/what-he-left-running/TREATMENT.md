@@ -1,6 +1,11 @@
 # WHAT HE LEFT RUNNING — beat sheet
 
-> Target 3:40. Twelve beats. Turn at 2:24. **Speech-free ≥ 45s (20%).**
+> **Runtime 3:43 total** — 3:40 of picture (beats 1–12) plus a 0:03 end card.
+> Twelve beats. Turn at 2:24. **Speech-free ≥ 45s (20%).**
+>
+> The card is counted, not excluded. Beat 12's nineteen-second hold on her face
+> is not shortened to absorb it. Both figures clear the festival's 3:00 floor
+> with room, so the honest number costs nothing. Measured at stage 8.
 > Formal rules: nothing that reads as a computer, and nothing readable, inside
 > the film · the father is never heard · one house, four times of day.
 > Dialogue indicative only — set at stage 4 under the Spoken Law:
