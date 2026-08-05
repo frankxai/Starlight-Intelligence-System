@@ -702,3 +702,5 @@ frankx.ai#398 merged (fba63b50): imagery sprint — subject-matched existing ass
 Ops notes: one imagery-agent run died on the platform session limit mid-flight (no partial work leaked; tree stayed clean) — re-dispatched after reset and completed. SIS main is under heavy parallel-session activity (#57, #60 landed during this window); every branch restart re-based cleanly. All four frankx CI gates plus the new Web Interface Guidelines mechanical check green on both PRs.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+**2026-07-28 addendum (validation-ops):** ECOSYSTEM_ARCHITECTURE.md reconciled to v2.1 — the last stale 48/71/v8.2.0 references updated to the harness-verified 144/84/v8.3.0 with a metrics-note pointing at `metrics/current.json` as the fail-closed source of truth. Closes the "three contradictory ecosystem maps" finding from the 2026-07-13 validation report. Verified: `node scripts/check-agent-harness.mjs` passes; zero stale-count matches remain.
