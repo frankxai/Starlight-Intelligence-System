@@ -1,0 +1,21 @@
+The calcium in your bones and the iron in your blood did not exist when the universe began. The Big Bang made hydrogen, helium, and a trace of lithium — everything else was manufactured later, inside stars or in the violence of their deaths, and delivered here by supernova shockwaves and merging neutron stars. "We are star stuff" sounds like poetry. It is actually a supply-chain statement, and every link in the chain is measurable.
+
+## The literal supply chain
+
+Trace any heavy atom in your body backward and the provenance is specific: carbon and oxygen forged in the cores of stars that later shed their outer layers; iron built up in massive stars and scattered by core-collapse supernovae; much of the gold and iodine likely synthesized in neutron star mergers, events astronomers have now watched happen in gravitational waves and light at once. The solar system condensed from a cloud pre-enriched by earlier stellar generations — which means your body is a downstream product of manufacturing runs that completed billions of years before Earth existed. No metaphor required. The isotope ratios are the receipts.
+
+## The first infrastructure
+
+Before writing, stars were humanity's clock, calendar, compass, and database. Polynesian navigators crossed thousands of kilometers of open Pacific reading star paths against the horizon. Egyptian agriculture ran on the heliacal rising of Sirius — the first dawn the star reappears after weeks behind the Sun — which reliably preceded the Nile flood and effectively scheduled a civilization's food supply. The sky was the one display every human could see, the one reference frame nobody could tamper with, and the one system guaranteed to run tonight. Astronomy is the oldest science because the sky was the first public utility.
+
+## Looking up is looking back
+
+Starlight is old news, literally. The photons from Andromeda arriving at your retina tonight left that galaxy 2.5 million years ago, when the genus Homo was new. Light's finite speed makes every telescope a time machine and the night sky a depth-sorted archive: the farther you look, the earlier the universe you see. Deep time is not an abstraction — it is directly visible, which makes the sky the most effective perspective instrument we own. Astronauts report a version of the same recalibration from the other direction: the Overview Effect, a documented cognitive shift on seeing Earth whole against black — borders invisible, atmosphere alarmingly thin. The consistent report is not mysticism but a change in scale perception: the frame gets bigger and priorities re-sort.
+
+## The original memory palace
+
+Constellations are a data structure. Cultures across every continent, mostly independently, compressed knowledge into sky patterns: star groups bound to stories, stories carrying payloads — when to plant, where to sail, which season approaches. The pattern is mnemonic engineering: vivid narrative anchored to fixed spatial locations, which is precisely the method-of-loci technique memory athletes use today, except the loci were shared by everyone and backed up in every teller's head. Oral cultures transmitted usable astronomy across hundreds of generations with zero writing and remarkably low corruption. It is the longest-running knowledge-persistence system our species has operated.
+
+## Why it matters to a builder
+
+Every lesson here is load-bearing for someone who builds. The supply chain teaches provenance: knowing where your materials came from — atoms, data, dependencies — is what separates understanding from assumption. The first infrastructure teaches that the best reference systems are the ones nobody can tamper with and everybody can read; that is the design bar for any shared source of truth. Deep time is calibration against quarterly thinking — build against a longer axis and different decisions become obvious. And the constellation trick is the oldest proof that durable knowledge transfer needs structure: spatial anchors, narrative compression, redundancy across many minds. None of this requires believing anything beyond the physics. That is the point — the wonder survives verification, and the systems built on it lasted longer than any we have shipped since.
