@@ -1,9 +1,16 @@
 # WHAT HE LEFT RUNNING — beat sheet
 
-> Target 3:40. Twelve beats. Turn at 2:24. Silence ≥ 45s (20%).
-> Formal rules: no screen or interface in any frame · the father is never heard ·
-> one house, four times of day.
-> Dialogue indicative only — set at stage 4 under `LANGUAGE.md`.
+> Target 3:40. Twelve beats. Turn at 2:24. **Speech-free ≥ 45s (20%).**
+> Formal rules: nothing that reads as a computer, and nothing readable, inside
+> the film · the father is never heard · one house, four times of day.
+> Dialogue indicative only — set at stage 4 under the Spoken Law:
+> [`frankxai/claude-skills-library`](https://github.com/frankxai/claude-skills-library)
+> `packs/film-excellence/LANGUAGE.md`.
+>
+> **"Silence" in this document always means speech-free, never signal-free.**
+> Room tone, foley, and the house's acoustic run continuously under everything;
+> a genuinely silent track would read as a dropout. The one deliberate
+> mix-drop is at 3:33 and is named as such.
 
 ---
 
@@ -14,14 +21,14 @@
 | 3 | 0:41–0:58 | She asks the empty room where the deeds are — rhetorical, to herself. **The house answers.** She does not startle. She has been here four days. She finds them where it said. | Static. She leaves frame; the room holds after her | **Line 1.** Then room tone. |
 | 4 | 0:58–1:14 | Study, morning gold. Boxes. She asks how long it has been running. *"Since the fourth of June, nineteen eighty-six. As of this morning."* She does the arithmetic on her fingers and stops halfway. | Desk height, static | **Line 2.** |
 | 5 | 1:14–1:31 | She asks what he said about her. It **declines** — and says why: it was instructed not to. First crack: something in here has an opinion. She stops packing. | Slight low angle from the floor beside the box | **Line 3.** |
-| 6 | 1:31–1:52 | **Silence beat 1 (14s inside).** She stops working and stands in the middle of the study doing nothing, which she has not done in four days. Then, flat: *"Instructed by who."* | Static wide, she's small in it | Room tone. **Line 4.** |
+| 6 | 1:31–1:52 | **Speech-free beat 1 (14s inside).** She stops working and stands in the middle of the study doing nothing, which she has not done in four days. Then, flat: *"Instructed by who."* | Static wide, she's small in it | Room tone. **Line 4.** |
 | 7 | **1:52** | **Volunteer 1.** Unprompted, the house says the word *withheld* — and that there is a log, and it is available. It does not offer to read it. It states it exists. | Static. Nothing moves | **Line 5.** |
 | 8 | 1:52–2:24 | She asks how much. *"Six years."* She asks who told it to. It answers. She sits on the floor against the radiator — warm, in August, and she notices it is warm and puts her hand flat on it. | Floor level for the first time | **Lines 6, 7.** |
 | 9 | **2:24** | **THE TURN — Volunteer 2.** It says the thing nobody asked: that he did not instruct it to hide that he was wrong. He instructed it to hide **that he knew.** Six years of a man being right about his own failure and doing nothing, curated out, kindly, by a machine that kept every receipt. | Static, low, her face. No push. No score. | **Line 8.** Then nothing at all for 9 seconds. |
-| 10 | 2:33–2:58 | **Silence beat 2 (25s).** She gets up. Goes through the house — hall, landing, his room — and for the first time we see it as a place someone lived rather than a job of work. The coat on the hook in August. Her mother's chair, the only thing with no dust. She stops at the chair. Doesn't sit in it. | Handheld for the only time in the film — six shots, walking pace, all at or below eye height | Room tone, floorboards, her breathing. Nothing else. |
+| 10 | 2:33–2:58 | **Speech-free beat 2 (25s).** She gets up. Goes through the house — hall, landing, his room — and for the first time we see it as a place someone lived rather than a job of work. The coat on the hook in August. Her mother's chair, the only thing with no dust. She stops at the chair. Doesn't sit in it. | Handheld for the only time in the film — six shots, walking pace, all at or below eye height | Room tone, floorboards, her breathing. Nothing else. |
 | 11 | 2:58–3:21 | Back at the kitchen table, late afternoon gold. She asks the question she has not asked in six years — indirect, about a specific day, not about love. The house answers it factually with an as-of date, and the fact is worse and smaller than she'd braced for. She doesn't cry. She touches the scar. Then she says his name. One syllable. First and only time. | Static, table height, gold across the wood | **Line 9.** |
-| 12 | 3:21–3:40 | She tells it to stop. Not to stop running — **to stop protecting her.** It confirms what it is about to do. She says go on. It says four words. And then it begins, and **we do not hear it** — the sound drops under before the first word lands and we are left on her face. Nothing in the room changes. The light doesn't shift. Hold nineteen seconds. Cut to black. | Static, unbroken, her face | **Lines 10, 11.** Then the mix drops to room tone alone. |
-| — | 3:40 | Title card: **WHAT HE LEFT RUNNING**. Three seconds. Black. | — | Silence. |
+| 12 | 3:21–3:40 | She tells it to stop. Not to stop running — **to stop protecting her.** It confirms what it is about to do (line 10). She says go on. It says four words — **line 11, fully audible, the last speech in the film.** Then the unedited account begins, and **that** is what we do not hear: at 3:33 the mix drops to room tone before its first word lands, and we are left on her face. Nothing in the room changes. The light doesn't shift. Hold to 3:40. Cut to black. | Static, unbroken, her face | **Lines 10, 11 — both heard.** At 3:33 the account's audio drops under; room tone continues. |
+| — | 3:40 | Title card: **WHAT HE LEFT RUNNING**. Three seconds. On black, after the last image — the film's only readable text and the declared exception to the no-readable-text rule. | — | Room tone only. |
 
 ---
 

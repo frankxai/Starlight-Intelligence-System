@@ -1,7 +1,14 @@
 # WHAT HE LEFT RUNNING — look & sound
 
-> Filled from the `film-design.md` template. This file and the local refusals
-> below outrank every skill in the `film-excellence` pack for this production.
+> Filled from the `film-design.md` template in the `film-excellence` pack —
+> [`frankxai/claude-skills-library`](https://github.com/frankxai/claude-skills-library)
+> `packs/film-excellence/film-design.md`. The pack also carries `film-taste.md`
+> (refusals), `LANGUAGE.md` (the dialogue rules), and the `film-release-gate`
+> skill. They live there rather than here because craft is shared across
+> productions and canon is not.
+>
+> This file and the local refusals below outrank every skill in the pack for
+> this production.
 
 ---
 
@@ -15,9 +22,14 @@ film:
 
 formal_rule:
   camera: >
-    No screen, interface, device, status light, glowing element, or readable
-    text appears in any frame of this film. The system is perceived only through
-    its effects on a room. The camera is locked in every shot except beat 10.
+    No screen, display, interface, indicator light, glowing element, or readable
+    text appears in any frame of the film's picture. Domestic machines with no
+    display are not only permitted but load-bearing — the kettle, the fridge,
+    the radiator are how the system is perceived at all. The prohibition is on
+    anything that reads as a computer or renders information to be read, not on
+    appliances. The camera is locked in every shot except beat 10.
+    Sole exception to "no readable text": the end title card, which sits outside
+    the film's world. Nothing inside the story is ever readable.
   color: >
     One house, four times of day. The palette never changes; only the sun moves.
   sound: >
@@ -94,7 +106,10 @@ sound:
     in_point: null
     out_point: null
     instrumentation: "none"
-  silence:
+  # "Silence" throughout this production means SPEECH-FREE, never signal-free.
+  # Room tone, foley, and the house's acoustic run continuously. A truly silent
+  # track would read as a dropout.
+  speech_free:
     at: "2:33"
     duration: 25
     function: >
@@ -103,9 +118,13 @@ sound:
       only place they are given room to. Nothing may be laid over it.
 
 typography:
+  # The only readable text in the film, and the declared exception to the
+  # no-readable-text rule above. It sits outside the story: after the last image,
+  # on black, with nothing of the house in frame. Nothing *inside* the film is
+  # ever readable — no letter, no label, no box lid, no sign.
   title_card: "Plain grotesque, regular weight, small, centred. No tracking affectation."
-  placement: "end only"
-  rule: "One card, three seconds, silence. No logo. No SIP badge on screen — attestation lives in the production record."
+  placement: "end only, on black, after the final image"
+  rule: "One card, three seconds, room tone only. No logo. No SIP badge on screen — attestation lives in the production record."
 
 cast_locks:
   - name: "Mara"

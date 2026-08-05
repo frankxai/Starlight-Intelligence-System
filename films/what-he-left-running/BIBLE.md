@@ -42,9 +42,19 @@ filing cabinets.
 
 ## Formal rule
 
-**Camera:** **No screen, no interface, no readable text, no glowing element
-anywhere in the film.** Not a phone, not a monitor, not a status light, not a
-line of UI. The system is only ever perceived through its effects on a room.
+**Camera:** **Nothing that reads as a computer, and nothing readable, inside the
+film.** No screen, no display, no interface, no indicator light, no line of UI,
+no legible text on any letter, label, box lid, or sign. The system is only ever
+perceived through its effects on a room.
+
+Two clarifications, because both have already been misread:
+
+- *Appliances are not the target.* The kettle, the fridge, and the radiator are
+  domestic machines with no display, and they are how the system is perceived at
+  all. The rule bans anything that renders information to be read — not anything
+  with a plug.
+- *The end title card is the sole exception,* and it sits outside the story: on
+  black, after the last image, with nothing of the house in frame.
 
 This is the hardest available constraint for a film about a computer, and it is
 the whole differentiation. Every other AI-about-AI entry in the festival will
