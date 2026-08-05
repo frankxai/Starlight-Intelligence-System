@@ -1,5 +1,13 @@
 import type { NextConfig } from "next";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// The site imports the repo-level metrics ledger (`src/lib/metrics.ts` reads
+// ../../../metrics/current.json), so Turbopack's resolution root has to be the
+// repo, not the site directory. Derived from this file's own location rather
+// than from cwd: `path.resolve(".")` silently changed meaning depending on
+// whether the build was invoked from the repo root or from site/.
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 // Content Security Policy.
 //
@@ -35,7 +43,7 @@ const SECURITY_HEADERS = [
 
 const nextConfig: NextConfig = {
   turbopack: {
-    root: path.resolve("."),
+    root: REPO_ROOT,
   },
   // Strip the X-Powered-By: Next.js leak from response headers.
   poweredByHeader: false,
