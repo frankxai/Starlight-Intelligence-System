@@ -456,8 +456,14 @@ function main() {
         continue;
       }
       const actual = readFileSync(full, 'utf8');
-      // generated_at moves every day; drift in it alone is not drift.
-      const norm = (s) => s.replace(/^(generated_at|\s*"generated_at").*$/gm, '');
+      // Dates move every day; drift in a date alone is not drift. `generated_at`
+      // is stamped on every run, and `measured_at` is re-stamped for every repo
+      // this run could actually see — so without stripping both, --check fails
+      // the day after any commit even when nothing was measured differently.
+      // Staleness is unaffected: it is computed from the committed file's
+      // carried-forward dates before regeneration, not from this comparison.
+      const norm = (s) =>
+        s.replace(/^(generated_at|measured_at|\s*"(generated_at|measured_at)"|\s+measured_at).*$/gm, '');
       if (norm(actual) !== norm(expected)) {
         failures.push(`${file}: out of date — run npm run mesh:generate and commit`);
       }
