@@ -1,7 +1,7 @@
 {
   "version": "0.2.0",
   "generated_by": "scripts/mesh-generate.mjs",
-  "generated_at": "2026-07-30",
+  "generated_at": "2026-08-05",
   "curated_source": "context/empire/mesh.curated.json",
   "maintainer": "Starlight-Intelligence-System/context/empire/",
   "substrate": {
@@ -27,13 +27,13 @@
       ],
       "note": "only repo whose published counts matched its filesystem at the 2026-07-25 audit; guarded by scripts/check-agent-harness.mjs",
       "measured": {
-        "skills": 84,
-        "skills_unrooted": 6,
+        "skills": 88,
+        "skills_unrooted": 10,
         "installed_skills": 4,
         "agents": 144,
-        "commands": 25,
+        "commands": 28,
         "installed_commands": 121,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-05"
       }
     },
     {
