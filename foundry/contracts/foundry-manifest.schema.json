@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/foundry/foundry-manifest.schema.json",
+  "title": "Starlight Foundry Package Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "packageId",
+    "packageVersion",
+    "kind",
+    "compiledAt",
+    "compiler",
+    "sources",
+    "deploymentTargets",
+    "artifacts",
+    "proofCommand"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "packageId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "packageVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "kind": {
+      "enum": [
+        "skill",
+        "agent",
+        "swarm",
+        "vertical",
+        "plugin"
+      ]
+    },
+    "compiledAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "compiler": {
+      "type": "string",
+      "pattern": "^starlight-foundry/\\d+\\.\\d+\\.\\d+$"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "envelope",
+        "pack",
+        "resolution"
+      ],
+      "properties": {
+        "envelope": {
+          "type": "string"
+        },
+        "pack": {
+          "type": "string"
+        },
+        "resolution": {
+          "type": "string"
+        }
+      }
+    },
+    "deploymentTargets": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "bytes"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "proofCommand": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500
+    }
+  }
+}

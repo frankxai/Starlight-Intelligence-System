@@ -1,0 +1,107 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/vertical-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "vertical",
+  "id": "community-intelligence",
+  "version": "0.1.0",
+  "status": "experimental",
+  "description": "A governed intelligence vertical for choosing, launching, migrating, and operating an AI-native community platform.",
+  "audiences": [
+    "Community founders",
+    "Membership operators",
+    "Product and platform teams"
+  ],
+  "domainConstraints": [
+    "Separate hosted-platform selection from custom-build decisions.",
+    "State data ownership, lock-in, moderation, and exit costs.",
+    "Require approval before production migration, member messaging, purchase, or deployment."
+  ],
+  "ontology": {
+    "entities": [
+      "community",
+      "member",
+      "cohort",
+      "event",
+      "content",
+      "discussion",
+      "subscription",
+      "moderation",
+      "automation"
+    ],
+    "decisions": [
+      "hosted-platform-vs-custom",
+      "free-vs-paid",
+      "public-vs-private",
+      "synchronous-vs-asynchronous",
+      "platform-data-ownership",
+      "ai-integration-depth"
+    ]
+  },
+  "canonicalSources": {
+    "policy": "current-primary-sources",
+    "required": [
+      "Official product documentation",
+      "Official pricing",
+      "Official API or MCP documentation",
+      "Official security and data-processing documentation"
+    ]
+  },
+  "userJobs": [
+    "launch-community",
+    "migrate-community",
+    "monetize-community",
+    "moderate-community",
+    "activate-members",
+    "measure-retention",
+    "automate-operations"
+  ],
+  "artifactTaxonomy": [
+    "platform-comparison",
+    "architecture-decision-record",
+    "migration-plan",
+    "community-operating-model",
+    "automation-map",
+    "governance-policy"
+  ],
+  "capabilities": [
+    "intelligence/hermes-search",
+    "intelligence/strategic-reasoning",
+    "integration/domain-stack-architecture"
+  ],
+  "tasteProfile": "decision-brief",
+  "riskPolicy": {
+    "irreversible": [
+      "Production data migration",
+      "Member email send",
+      "Subscription purchase",
+      "Destructive platform change"
+    ],
+    "approvalRequired": [
+      "external-write",
+      "destructive-action",
+      "deployment",
+      "financial-commitment",
+      "permission-expansion"
+    ]
+  },
+  "evaluation": {
+    "requiredLanes": [
+      "static",
+      "factual",
+      "artifact",
+      "taste",
+      "security",
+      "economic",
+      "drift"
+    ],
+    "minimumPassRate": 0.9
+  },
+  "deployment": {
+    "targets": [
+      "chatgpt-work",
+      "codex",
+      "agents-sdk",
+      "plugin"
+    ]
+  }
+}

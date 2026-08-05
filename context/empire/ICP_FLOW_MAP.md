@@ -166,7 +166,7 @@ Wants their own substrate layer, not Frank's. Takes the MIT fork, rewires it to 
 
 **Target flow.**
 - **Single conversion action:** book the estate conversation. Not a checkout — a scoped conversation that produces a 4-layer Blueprint.
-- **Proof asset:** the Blueprint itself, and SIS's own integrity record. This is the only repo in the entire portfolio whose documented counts match its filesystem exactly (84 skills / 144 agents / 25 commands, verified by enumeration in `audits/2026-07-25-registry-sweep.md`). Against a portfolio where ACOS undercounts itself by more than 2x and Arcanea runs four contradictory numbers for one fact, "our registry is accurate and we can show you the audit" is a real and rare claim.
+- **Proof asset:** the Blueprint itself, and SIS's own integrity record. This is the only repo in the entire portfolio whose documented counts match its filesystem exactly (88 skills / 144 agents / 28 commands, enforced by live conformance harnesses; the prior baseline is in `audits/2026-07-25-registry-sweep.md`). Against a portfolio where other surfaces have drifted, "our registry is accurate and we can show you the receipt" is a real and rare claim.
 - **Handoff:** this is the top of the ladder. Everything below it — frankx.ai workshops, income packs, realityarchitect assessment — should have a visible route up to it for the buyer whose problem is bigger than a $47 pack.
 
 ---

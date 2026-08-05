@@ -41,7 +41,7 @@ Protocol: Read relevant vaults before work. Update after.
 
 ## Skills
 
-84 auto-activating skill rules across 16 domains: Intelligence · Orchestration · Memory · Integration · Safety · Business · Vision · Health · Relational · People Intelligence · Sound Intelligence · Music IS · Energy · Machine · Crypto Intelligence · Marine Intelligence. See `skills/skill-rules.json` for activation rules and `skills/SKILL_REGISTRY.md` for the full registry.
+88 auto-activating skill rules across 17 domains: Intelligence · Orchestration · Foundry · Memory · Integration · Safety · Business · Vision · Health · Relational · People Intelligence · Sound Intelligence · Music IS · Energy · Machine · Crypto Intelligence · Marine Intelligence. Foundry compiles skills, justified agents, bounded systems, taste profiles, and evidence receipts. See `skills/skill-rules.json` and `skills/SKILL_REGISTRY.md`.
 
 ## Research
 

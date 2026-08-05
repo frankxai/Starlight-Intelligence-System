@@ -1,0 +1,38 @@
+{
+  "name": "starlight-foundry",
+  "version": "0.1.0",
+  "description": "Compile, prove, and evolve portable skills and bounded agent systems from explicit capability contracts.",
+  "author": {
+    "name": "Starlight Intelligence",
+    "url": "https://starlightintelligence.org"
+  },
+  "homepage": "https://starlightintelligence.org",
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "agents",
+    "evaluation",
+    "starlight"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Starlight Foundry",
+    "shortDescription": "Forge portable skills and bounded agent systems.",
+    "longDescription": "Turn intent into typed capability packages, enforce skills-first agent necessity, operationalize taste, and issue evidence receipts before promotion.",
+    "developerName": "Starlight Intelligence",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills",
+      "Capability compilation",
+      "Evidence evaluation"
+    ],
+    "websiteURL": "https://starlightintelligence.org",
+    "defaultPrompt": [
+      "Use $skill-forge to turn this workflow into a portable, proven skill.",
+      "Use $agent-forge to decide whether this needs an agent or a skill.",
+      "Use $taste-engine to define hard gates and independent quality evaluation."
+    ],
+    "brandColor": "#7C5CFF"
+  }
+}
