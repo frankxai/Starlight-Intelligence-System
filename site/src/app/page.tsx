@@ -443,7 +443,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-3 lg:grid-cols-5">
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {OPERATING_STEPS.map((step, index) => {
               const Icon = step.icon;
               return (

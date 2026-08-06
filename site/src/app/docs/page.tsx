@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function DocsPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-2xl font-bold text-white">Documentation</h1>
+      <h1 className="text-3xl font-semibold leading-tight text-white md:text-4xl">Documentation</h1>
       <p className="mt-2 text-[14px] text-slate-500">
         Everything you need to deploy, configure, and connect.
       </p>

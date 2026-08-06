@@ -22,11 +22,11 @@ export default function QueenPage() {
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/5 px-4 py-1 text-xs tracking-[3px] text-cyan-400 mb-6">
               STARLIGHT ORCHESTRATOR • v0.2
             </div>
-            <h1 className="font-serif text-[72px] md:text-[92px] leading-[0.9] tracking-[-4.5px] text-white mb-6">
+            <h1 className="font-serif text-5xl sm:text-6xl md:text-[92px] leading-[0.95] md:leading-[0.9] tracking-tight md:tracking-[-4.5px] text-white mb-6">
               The Starlight<br />Queen &amp; Her Swarms
             </h1>
-            <p className="max-w-2xl text-2xl text-zinc-400 tracking-tight mb-10">
-              The orchestrator at the center of the substrate — routing work across every agent,<br />running parallel review swarms, and keeping a ledger of what actually shipped.
+            <p className="max-w-2xl text-lg sm:text-xl md:text-2xl text-zinc-400 tracking-tight mb-10">
+              The orchestrator at the center of the substrate — routing work across every agent,<span className="hidden md:inline"><br /></span> running parallel review swarms, and keeping a ledger of what actually shipped.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <a href="#the-loop" className="inline-flex items-center gap-3 rounded-2xl bg-white px-9 py-4 text-lg font-medium tracking-tight text-[#0a0a0f] hover:bg-zinc-200 active:scale-[0.985] transition">
@@ -42,7 +42,7 @@ export default function QueenPage() {
 
         {/* Hero visual — wired premium generated L99 asset */}
         <div className="absolute inset-y-0 right-0 w-full md:w-[58%] opacity-90">
-          <img src="/assets/visuals/08-readme-hero.jpg" alt="One substrate — every CLI shares attested memory" className="h-full w-full object-cover" />
+          <img src="/assets/visuals/08-readme-hero.jpg" alt="One substrate — every CLI shares attested memory" className="h-full w-full object-cover" width={1920} height={1080} loading="eager" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f] via-[#0a0a0f]/85 to-[#0a0a0f]/40" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0f]" />
         </div>
@@ -64,7 +64,7 @@ export default function QueenPage() {
           <div className="mb-10 flex items-end justify-between">
             <div>
               <div className="text-xs tracking-[3px] text-cyan-400">THE CONTINUOUS CYCLE</div>
-              <h2 className="mt-2 font-serif text-6xl tracking-[-2.2px]">The Queen Loop</h2>
+              <h2 className="mt-2 font-serif text-4xl sm:text-5xl md:text-6xl tracking-tight md:tracking-[-2.2px]">The Queen Loop</h2>
             </div>
             <div className="hidden text-right text-sm text-zinc-400 md:block max-w-[280px]">
               ROUTE → MEASURE → LEARN → RATIFY → LEDGER<br />
@@ -137,13 +137,13 @@ export default function QueenPage() {
       <section className="border-t border-white/10 py-16">
         <div className="mx-auto max-w-6xl px-8">
           <div className="grid gap-10 md:grid-cols-2">
-            <div>
+            <div className="min-w-0">
               <div className="text-xs tracking-[3px] text-amber-400">DISTRIBUTED INTELLIGENCE</div>
-              <h2 className="mt-2 font-serif text-5xl tracking-[-1.8px]">Her Swarms</h2>
+              <h2 className="mt-2 font-serif text-4xl sm:text-5xl tracking-tight md:tracking-[-1.8px]">Her Swarms</h2>
               <p className="mt-5 text-xl text-zinc-400">The Queen never works alone. Subagent swarms (Grok-native parallelism) execute MEASURE and LEARN concurrently while the Visual Composition Layer turns every tick into a permanent, attested artifact.</p>
             </div>
-            <div>
-              <QueenSwarm className="w-full aspect-[16/9.6] rounded-3xl border border-white/10" phase="measure" interactive />
+            <div className="min-w-0">
+              <QueenSwarm className="w-full max-w-full aspect-[16/9.6] rounded-3xl border border-white/10" phase="measure" interactive />
               <div className="mt-2 text-[10px] text-white/50 tracking-widest">LIVE INTERACTIVE — MOVE CURSOR TO CONDUCT.</div>
             </div>
           </div>

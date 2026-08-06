@@ -26,7 +26,7 @@ export default async function VaultsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
-      <h1 className="text-2xl font-bold text-white">Public Vaults</h1>
+      <h1 className="text-3xl font-semibold leading-tight text-white md:text-4xl">Public Vaults</h1>
       <p className="mt-2 text-[14px] text-slate-500">
         Memory gardens from builders and thinkers. Each vault is a collection
         of insights readable by humans and agents.

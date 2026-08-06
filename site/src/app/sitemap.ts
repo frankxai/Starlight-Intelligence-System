@@ -31,6 +31,7 @@ const STATIC_ROUTES = [
   "/asteroids",
   "/queen",
   "/palace",
+  "/yolo",
 ] as const;
 
 const VERTICAL_SLUGS = [

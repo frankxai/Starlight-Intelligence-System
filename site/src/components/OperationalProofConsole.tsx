@@ -13,6 +13,7 @@ import {
   Terminal,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { CURRENT_METRICS, METRICS_AS_OF } from "@/lib/metrics";
 
 type ProofLane = {
   label: string;
@@ -25,8 +26,8 @@ type ProofLane = {
 const PROOF_LANES: ProofLane[] = [
   {
     label: "Memory",
-    value: "6 vaults",
-    state: "context locked",
+    value: `${CURRENT_METRICS.vaults} vaults`,
+    state: "source-counted",
     icon: Database,
     tone: "text-blue-600",
   },
@@ -39,7 +40,7 @@ const PROOF_LANES: ProofLane[] = [
   },
   {
     label: "Evals",
-    value: "0.97 score",
+    value: "scored runs",
     state: "evidence kept",
     icon: Activity,
     tone: "text-amber-600",
@@ -53,20 +54,20 @@ const PROOF_LANES: ProofLane[] = [
   },
   {
     label: "Release",
-    value: "READY",
-    state: "rebuildable",
+    value: "rebuildable",
+    state: "manifest linked",
     icon: FileCheck2,
     tone: "text-rose-600",
   },
 ];
 
 const TRACE_EVENTS = [
-  ["00:00", "intent captured", "source: operator"],
-  ["00:12", "memory recall", "semantic + temporal"],
-  ["00:27", "trace linked", "run graph captured"],
-  ["00:43", "eval scored", "policy and provenance"],
-  ["01:04", "gate cleared", "human review held"],
-  ["01:28", "deployment ready", "manifest + source linked"],
+  ["01", "intent captured", "source: operator"],
+  ["02", "memory recall", "semantic + temporal"],
+  ["03", "trace linked", "run graph captured"],
+  ["04", "eval scored", "policy and provenance"],
+  ["05", "gate cleared", "human review held"],
+  ["06", "deployment ready", "manifest + source linked"],
 ];
 
 const FLOW_NODES = [
@@ -134,7 +135,7 @@ export function OperationalProofConsole() {
     <motion.figure
       ref={rootRef}
       role="img"
-      aria-label="Starlight release room console showing memory recall, trace, evaluation, governance gate, and deployment readiness."
+      aria-label="Schematic of the Starlight release loop: memory recall, trace, evaluation, governance gate, then deployment readiness. Illustrative sequence, not a live run."
       className="relative overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-950 shadow-[0_28px_90px_rgba(15,23,42,0.18)]"
       initial={reducedMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -152,13 +153,13 @@ export function OperationalProofConsole() {
                 SIS release room
               </p>
               <p className="text-sm font-semibold text-white">
-                Verified release run
+                The release loop
               </p>
             </div>
           </div>
           <div className="inline-flex items-center gap-2 rounded-md bg-emerald-400/12 px-3 py-1.5 text-xs font-semibold text-emerald-100">
             <BadgeCheck size={14} aria-hidden="true" />
-            Governance clear
+            Operator-held gate
           </div>
         </div>
       </div>
@@ -170,9 +171,9 @@ export function OperationalProofConsole() {
               <p className="font-mono text-[11px] uppercase text-slate-500">
                 Release route
               </p>
-              <h2 className="mt-1 text-xl font-semibold text-slate-950">
+              <p className="mt-1 text-xl font-semibold text-slate-950">
                 Memory becomes a release packet.
-              </h2>
+              </p>
             </div>
             <span className="rounded-md border border-slate-200 px-2.5 py-1 font-mono text-[11px] text-slate-600">
               main
@@ -281,7 +282,7 @@ export function OperationalProofConsole() {
               Release ledger
             </p>
             <span className="rounded-md bg-cyan-300/12 px-2.5 py-1 font-mono text-[11px] text-cyan-100">
-              release confidence 0.97
+              ledger verified {METRICS_AS_OF}
             </span>
           </div>
 
@@ -324,7 +325,8 @@ export function OperationalProofConsole() {
               />
             </div>
             <p className="mt-3 text-xs leading-relaxed text-slate-400">
-              State sequence: recall, trace, score, gate, then release.
+              Illustrative sequence: recall, trace, score, gate, then release.
+              Counts read from the source-verified ledger.
             </p>
           </div>
         </div>

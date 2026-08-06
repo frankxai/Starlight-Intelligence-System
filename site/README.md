@@ -88,4 +88,8 @@ git merge upstream/main
 
 Review the diff and let Vercel create a preview before merging changes into the production branch.
 
+## Design authority
+
+`taste.md` (repo root) governs judgment; `site/DESIGN.md` governs the visual system. Read both before UI work.
+
 **Built on SIP — Starlight Intelligence Protocol v1.1.1**
