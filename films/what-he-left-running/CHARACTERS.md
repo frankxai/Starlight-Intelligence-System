@@ -22,7 +22,14 @@ spent six years being correct, and correct is not a thing you can put down.
 ### What she will not say
 His name. Every reference is *he* or *him* — four of them in the stage-4 draft,
 and not one is the name. The audience never learns it. When she finally uses it,
-at 3:21, it is the second-largest moment in the film and it is one syllable.
+at the close of **beat 11**, it is the second-largest moment in the film and it
+is one syllable.
+
+*Prose in this file refers to **beats**, not timecodes. The eleven-lines table
+below is the exception — it is the timing budget, so timecodes are its content.
+Everywhere else a quoted second goes stale the moment a beat moves, and the
+sister film shipped exactly that bug: a hand-reveal pinned to a timecode that
+had drifted two beats away from the scene it described.*
 
 *(This used to claim a precise count of thirty-one references. It was invented
 at bible stage, the script came in at four, and a number that specific in a
@@ -40,7 +47,8 @@ third time she doesn't touch it, which is how we know she has already decided.
 **She cannot say:** *dad* · *home* · *miss* · *stay* · *forgive*
 **Grammatical tic:** She narrates her own logistics aloud when she is upset —
 *"kitchen, then the study, then I'm done"* — a to-do list as emotional armour.
-It appears at 0:30, 1:48, and then not at all after the turn, and its absence in
+It appears in **beat 2** and again in **beat 6**, and then not at all after the
+turn, and its absence in
 the last minute is the clearest signal in the film that something has changed.
 
 ### Locked visual string
@@ -66,8 +74,10 @@ make it a robot in a story about robots.
 1. **It does not lie.** Everything withheld is logged as withheld.
 2. **It never uses her name.** Her father asked it not to, and that instruction
    is the last thing she learns.
-3. **It answers what is asked.** It volunteers exactly twice: at 1:52 and 2:24.
-   Both volunteers move the film.
+3. **It answers what is asked.** It volunteers exactly twice — **beat 7** and
+   **beat 9**. Both volunteers move the film. Its beat-12 disclosure about her
+   name is responsive, not a third volunteer: she asked for the record
+   unedited, and held instructions are part of the record.
 4. **It speaks eleven times.** Counted, budgeted, and never exceeded. Its
    scarcity is the reason each line lands.
 5. **It never says sorry.** It has nothing to apologise for and the film is
