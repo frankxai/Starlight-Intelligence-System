@@ -99,6 +99,31 @@ describe("Mem0RemoteProvider", () => {
     assert.equal(results[0]?.score, 0.77);
   });
 
+  it("keeps failed remote writes pending so a later flush can retry the derived mirror", async () => {
+    let attempts = 0;
+    const client: Mem0Client = {
+      async addMemory() {
+        attempts++;
+        if (attempts === 1) throw new Error("transient remote outage");
+        return { id: "mem0_recovered" };
+      },
+      async searchMemories() { return []; },
+      async deleteMemory() { return true; },
+    };
+    const provider = new Mem0RemoteProvider({ client });
+
+    await provider.remember(record("retryable_mirror"));
+    const firstFlush = await provider.flush();
+
+    assert.deepEqual(firstFlush, { attempted: 1, written: 0, failed: 1 });
+    assert.equal(provider.pendingCount(), 1, "a failed adapter mirror must remain retryable");
+
+    const secondFlush = await provider.flush();
+    assert.deepEqual(secondFlush, { attempted: 1, written: 1, failed: 0 });
+    assert.equal(provider.pendingCount(), 0);
+    assert.equal(attempts, 2);
+  });
+
   it("declares remote-only resource capabilities", () => {
     const client: Mem0Client = {
       async addMemory() { return { id: "unused" }; },

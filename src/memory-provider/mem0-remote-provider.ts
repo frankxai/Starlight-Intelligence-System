@@ -113,6 +113,7 @@ export class Mem0RemoteProvider implements MemoryProvider {
 
   async flush(): Promise<{ attempted: number; written: number; failed: number }> {
     const batch = this.pending.splice(0, this.flushBatchSize);
+    const failedWrites: PendingWrite[] = [];
     let written = 0;
     let failed = 0;
     for (const item of batch) {
@@ -126,8 +127,13 @@ export class Mem0RemoteProvider implements MemoryProvider {
         written++;
       } catch {
         failed++;
+        failedWrites.push(item);
       }
     }
+
+    // A remote accelerator failure must not drop a derived mirror. Requeue at
+    // the front so the next bounded flush retries in original write order.
+    this.pending.unshift(...failedWrites);
     return { attempted: batch.length, written, failed };
   }
 
