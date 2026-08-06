@@ -15,7 +15,11 @@
 > Dialogue in this table is **indicative**; the wording that counts is in
 > [`SCRIPT.md`](SCRIPT.md), written at stage 4 under the Spoken Law:
 > [`frankxai/claude-skills-library`](https://github.com/frankxai/claude-skills-library)
-> `packs/film-excellence/LANGUAGE.md`.
+> `packs/film-excellence/LANGUAGE.md` — a path that **does not resolve yet**.
+> The pack is on
+> [claude-skills-library#23](https://github.com/frankxai/claude-skills-library/pull/23),
+> open and unmerged, and is not installed into this repo's `.claude/skills/`.
+> See `SCRIPT.md` for why.
 >
 > **"Silence" in this document always means speech-free, never signal-free.**
 > Room tone, foley, and the house's acoustic run continuously under everything;

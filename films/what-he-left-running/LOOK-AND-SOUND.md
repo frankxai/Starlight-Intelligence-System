@@ -7,6 +7,11 @@
 > skill. They live there rather than here because craft is shared across
 > productions and canon is not.
 >
+> ⚠️ **Those paths do not resolve yet.** The pack is on
+> [claude-skills-library#23](https://github.com/frankxai/claude-skills-library/pull/23),
+> open and unmerged, and is not installed into this repo's `.claude/skills/`.
+> See `SCRIPT.md` for why.
+>
 > This file and the local refusals below outrank every skill in the pack for
 > this production.
 
