@@ -111,12 +111,27 @@ sound:
   # Room tone, foley, and the house's acoustic run continuously. A truly silent
   # track would read as a dropout.
   speech_free:
-    at: "2:33"
-    duration: 25
-    function: >
+    # Measured against PICTURE (220s), not total (223s). The card is excluded
+    # from numerator and denominator alike.
+    budget_seconds: 44            # floor: 20% of 220s picture
+    actual_seconds: 70            # 31.8% of picture
+    beats: [1, 6, 10, 12]
+    beat_seconds: { 1: 24, 6: 14, 10: 25, 12: 7 }
+    whole_beats: [1, 10]
+    partial_beats: [6, 12]        # dialogue elsewhere in the beat; see SCRIPT.md
+    first_spoken_word_at: "0:30"
+    last_spoken_word_at: "3:33"
+    longest_span: 25              # beat 10
+    longest_span_function: >
       After the turn, the film stops talking for twenty-five seconds while she
-      walks through the house. This is where the audience does the work — the
-      only place they are given room to. Nothing may be laid over it.
+      walks through the house. She does not move for the first nine of them.
+      This is where the audience does the work — the only place they are given
+      room to. Nothing may be laid over it.
+  # No signal-free moment exists anywhere in this film. The 3:33 mix drop takes
+  # the account's audio out from under her face; room tone continues to the cut.
+  # That is the deliberate contrast with the sister film, whose climax IS the
+  # signal stopping. Do not add a total_silence field here by symmetry.
+  total_silence: null
 
 typography:
   # The only readable text in the film, and the declared exception to the

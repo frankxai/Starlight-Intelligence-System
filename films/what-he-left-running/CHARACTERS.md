@@ -20,9 +20,14 @@ She was right about him. That is the problem. She left for good reasons and has
 spent six years being correct, and correct is not a thing you can put down.
 
 ### What she will not say
-His name. She says *him*, *he*, *my father* — thirty-one references across the
-film and not once the name. The audience never learns it. When she finally uses
-it, at 3:21, it is the second-largest moment in the film and it is one syllable.
+His name. Every reference is *he* or *him* — four of them in the stage-4 draft,
+and not one is the name. The audience never learns it. When she finally uses it,
+at 3:21, it is the second-largest moment in the film and it is one syllable.
+
+*(This used to claim a precise count of thirty-one references. It was invented
+at bible stage, the script came in at four, and a number that specific in a
+document nobody recounts is a defect waiting to be quoted. The rule that matters
+is "never the name"; the tally is whatever the locked script measures.)*
 
 ### Physical asymmetry
 A thin white scar through her right eyebrow, childhood, and she touches it when
@@ -107,8 +112,9 @@ line the system speaks into the thing the audience is listening *past*.
 
 ## The eleven lines
 
-Budgeted at the bible stage so the script cannot inflate them. Indicative only —
-final wording is set at stage 4 under `LANGUAGE.md`.
+Budgeted at the bible stage so the script cannot inflate them. The budget held:
+the stage-4 draft in [`SCRIPT.md`](SCRIPT.md) uses exactly eleven, and that file
+carries the wording. This table carries the function and the timing.
 
 | # | TC | Function |
 |---|---|---|
@@ -121,8 +127,12 @@ final wording is set at stage 4 under `LANGUAGE.md`.
 | 7 | 2:11 | Answers "who told you to" |
 | 8 | **2:24** | **Volunteer 2 — THE TURN** |
 | 9 | 2:58 | Answers the question she has been avoiding for six years |
-| 10 | 3:14 | Confirms what it is about to do |
+| 10 | 3:24 | Confirms what it is about to do — and, because held instructions are part of the record she just asked for unedited, discloses the one about her name |
 | 11 | 3:29 | Four words. The last thing spoken in the film. |
+
+Line 10 sat at 3:14 until stage 4, which put it inside beat 11; the treatment
+has always placed lines 10 and 11 together in beat 12 (3:21–3:40). The beat
+boundary is the load-bearing figure, so the line moved.
 
 ---
 

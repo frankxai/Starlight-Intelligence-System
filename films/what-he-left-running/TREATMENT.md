@@ -1,14 +1,19 @@
 # WHAT HE LEFT RUNNING — beat sheet
 
 > **Runtime 3:43 total** — 3:40 of picture (beats 1–12) plus a 0:03 end card.
-> Twelve beats. Turn at 2:24. **Speech-free ≥ 45s (20%).**
+> Twelve beats. Turn at 2:24. **Speech-free ≥ 44s — 20% of the 220s of
+> picture.** The denominator is picture, not the 223s total; the card is
+> excluded from numerator and denominator alike. Excluding it from one and not
+> the other is what produced the earlier "45s" figure, which was 20% of the
+> total measured against a picture-only numerator.
 >
 > The card is counted, not excluded. Beat 12's nineteen-second hold on her face
 > is not shortened to absorb it. Both figures clear the festival's 3:00 floor
 > with room, so the honest number costs nothing. Measured at stage 8.
 > Formal rules: nothing that reads as a computer, and nothing readable, inside
 > the film · the father is never heard · one house, four times of day.
-> Dialogue indicative only — set at stage 4 under the Spoken Law:
+> Dialogue in this table is **indicative**; the wording that counts is in
+> [`SCRIPT.md`](SCRIPT.md), written at stage 4 under the Spoken Law:
 > [`frankxai/claude-skills-library`](https://github.com/frankxai/claude-skills-library)
 > `packs/film-excellence/LANGUAGE.md`.
 >
@@ -29,15 +34,23 @@
 | 6 | 1:31–1:52 | **Speech-free beat 1 (14s inside).** She stops working and stands in the middle of the study doing nothing, which she has not done in four days. Then, flat: *"Instructed by who."* | Static wide, she's small in it | Room tone. **Line 4.** |
 | 7 | **1:52** | **Volunteer 1.** Unprompted, the house says the word *withheld* — and that there is a log, and it is available. It does not offer to read it. It states it exists. | Static. Nothing moves | **Line 5.** |
 | 8 | 1:52–2:24 | She asks how much. *"Six years."* She asks who told it to. It answers. She sits on the floor against the radiator — warm, in August, and she notices it is warm and puts her hand flat on it. | Floor level for the first time | **Lines 6, 7.** |
-| 9 | **2:24** | **THE TURN — Volunteer 2.** It says the thing nobody asked: that he did not instruct it to hide that he was wrong. He instructed it to hide **that he knew.** Six years of a man being right about his own failure and doing nothing, curated out, kindly, by a machine that kept every receipt. | Static, low, her face. No push. No score. | **Line 8.** Then nothing at all for 9 seconds. |
-| 10 | 2:33–2:58 | **Speech-free beat 2 (25s).** She gets up. Goes through the house — hall, landing, his room — and for the first time we see it as a place someone lived rather than a job of work. The coat on the hook in August. Her mother's chair, the only thing with no dust. She stops at the chair. Doesn't sit in it. | Handheld for the only time in the film — six shots, walking pace, all at or below eye height | Room tone, floorboards, her breathing. Nothing else. |
-| 11 | 2:58–3:21 | Back at the kitchen table, late afternoon gold. She asks the question she has not asked in six years — indirect, about a specific day, not about love. The house answers it factually with an as-of date, and the fact is worse and smaller than she'd braced for. She doesn't cry. She touches the scar. Then she says his name. One syllable. First and only time. | Static, table height, gold across the wood | **Line 9.** |
+| 9 | **2:24** | **THE TURN — Volunteer 2.** It says the thing nobody asked: that he did not instruct it to hide that he was wrong. He instructed it to hide **that he knew.** Six years of a man being right about his own failure and doing nothing, curated out, kindly, by a machine that kept every receipt. | Static, low, her face. No push. No score. | **Line 8**, which fills the beat's nine seconds. |
+| 10 | 2:33–2:58 | **Speech-free beat 2 (25s).** She does not move for the first nine of them — that hold belongs to this beat, not to beat 9, which is nine seconds of the house talking. Then she gets up. Goes through the house — hall, landing, his room — and for the first time we see it as a place someone lived rather than a job of work. The coat on the hook in August. Her mother's chair, the only thing with no dust. She stops at the chair. Doesn't sit in it. | Handheld for the only time in the film — six shots, walking pace, all at or below eye height | Room tone, floorboards, her breathing. Nothing else. |
+| 11 | 2:58–3:21 | Back at the kitchen table, late afternoon gold. She asks the question she has not asked in six years — indirect, about a specific day, not about love. The house answers it factually with an as-of date, and the fact is worse and smaller than she'd braced for. She doesn't cry. Her thumb goes up towards the scar and stops short of it — the third time, and the only one where she doesn't touch it, which is how we know she has already decided. Then she says his name. One syllable. First and only time. | Static, table height, gold across the wood | **Line 9.** |
 | 12 | 3:21–3:40 | She tells it to stop. Not to stop running — **to stop protecting her.** It confirms what it is about to do (line 10). She says go on. It says four words — **line 11, fully audible, the last speech in the film.** Then the unedited account begins, and **that** is what we do not hear: at 3:33 the mix drops to room tone before its first word lands, and we are left on her face. Nothing in the room changes. The light doesn't shift. Hold to 3:40. Cut to black. | Static, unbroken, her face | **Lines 10, 11 — both heard.** At 3:33 the account's audio drops under; room tone continues. |
 | — | 3:40 | Title card: **WHAT HE LEFT RUNNING**. Three seconds. On black, after the last image — the film's only readable text and the declared exception to the no-readable-text rule. | — | Room tone only. |
 
 ---
 
 ## Structural notes
+
+**Speech-free budget, measured against the stage-4 script:** beat **1** (24s,
+whole) · beat **6** (14s, partial) · beat **10** (25s, whole) · beat **12** (7s,
+partial, from the 3:33 mix drop to the cut) = **70s of 220s picture — 31.8%**,
+against a 44s floor. Two of the four are partial beats, unlike the sister film
+where every speech-free beat is a whole one; the per-beat seconds in
+`LOOK-AND-SOUND.md` are the machine-readable record and this paragraph is
+derived from them, not the other way round. Measured for real at stage 8.
 
 **Why the film opens on a kettle in an empty room.** It establishes the entire
 premise — a system, running, alone, being kind on schedule — in twenty-four
