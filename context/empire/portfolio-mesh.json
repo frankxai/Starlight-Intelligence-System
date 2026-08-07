@@ -1,7 +1,7 @@
 {
   "version": "0.2.0",
   "generated_by": "scripts/mesh-generate.mjs",
-  "generated_at": "2026-07-30",
+  "generated_at": "2026-08-07",
   "curated_source": "context/empire/mesh.curated.json",
   "maintainer": "Starlight-Intelligence-System/context/empire/",
   "substrate": {
@@ -27,13 +27,13 @@
       ],
       "note": "only repo whose published counts matched its filesystem at the 2026-07-25 audit; guarded by scripts/check-agent-harness.mjs",
       "measured": {
-        "skills": 84,
-        "skills_unrooted": 6,
+        "skills": 88,
+        "skills_unrooted": 10,
         "installed_skills": 4,
         "agents": 144,
-        "commands": 25,
+        "commands": 28,
         "installed_commands": 121,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -52,7 +52,7 @@
         "installed_skills": 178,
         "installed_agents": 134,
         "installed_commands": 165,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -71,7 +71,7 @@
       "measured": {
         "installed_skills": 1,
         "installed_commands": 1,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -83,7 +83,7 @@
       "measured": {
         "skills": 110,
         "skills_unrooted": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -95,7 +95,7 @@
       "measured": {
         "skills": 16,
         "skills_unrooted": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -108,7 +108,7 @@
       "note": "entire space vertical duplicated from agentic-creator-os",
       "measured": {
         "skills": 27,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -126,7 +126,7 @@
       "measured": {
         "skills": 13,
         "commands": 6,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -136,7 +136,7 @@
       "overlap": {},
       "measured": {
         "skills": 6,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -159,7 +159,7 @@
         "skills": 4,
         "agents": 4,
         "commands": 4,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -173,7 +173,7 @@
       },
       "note": "definitions live in code, not markdown — outside the markdown counting contract",
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -183,7 +183,7 @@
       "note": "queen/worker topology in src/swarm/ — the executing mesh, distinct from this registry",
       "measured": {
         "installed_skills": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -195,7 +195,7 @@
         "lanes.json"
       ],
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -208,7 +208,7 @@
       "measured": {
         "installed_skills": 5,
         "installed_commands": 5,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -225,7 +225,7 @@
       ],
       "note": "carries its own repo-mesh.yaml for the mind cluster; the two manifests are parallel and not yet unified",
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -242,7 +242,7 @@
       ],
       "measured": {
         "schemas": 15,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -258,7 +258,7 @@
       ],
       "status": "charter-only-by-design",
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -269,7 +269,7 @@
         "blessing-protocol"
       ],
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -278,7 +278,7 @@
       "role": "discovery-substrate",
       "note": "ais-profile.yaml / llms.txt standard — reconcile with reality.md + CLAUDE.md conventions",
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -287,7 +287,7 @@
       "role": "discovery-list",
       "generated": false,
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -296,7 +296,7 @@
       "role": "discovery-list",
       "generated": false,
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -305,7 +305,7 @@
       "role": "discovery-list",
       "generated": false,
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -314,7 +314,7 @@
       "role": "discovery-list",
       "generated": false,
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -323,7 +323,7 @@
       "role": "discovery-list",
       "generated": false,
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -343,7 +343,7 @@
         "installed_skills": 14,
         "agents": 4,
         "commands": 7,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -363,7 +363,7 @@
         "agents": 4,
         "commands": 6,
         "schemas": 1,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -383,7 +383,7 @@
       "measured": {
         "skills_unrooted": 4,
         "installed_commands": 1,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -393,7 +393,7 @@
       "measured": {
         "skills": 2,
         "schemas": 1,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -403,7 +403,7 @@
       "status": "freeze-when-feature-complete",
       "measured": {
         "installed_skills": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -413,7 +413,7 @@
       "status": "unaudited-no-live-funds",
       "measured": {
         "agents": 5,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -423,7 +423,7 @@
       "verdict": "flagship",
       "measured": {
         "installed_skills": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -433,7 +433,7 @@
       "verdict": "flagship",
       "measured": {
         "agents": 2,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -441,7 +441,7 @@
       "section": "verticals",
       "role": "marine-serving",
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -451,7 +451,7 @@
       "verdict": "flagship",
       "measured": {
         "installed_skills": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -460,7 +460,7 @@
       "role": "creative-3d-surface",
       "measured": {
         "installed_skills": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -476,7 +476,7 @@
         "rooms"
       ],
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -485,7 +485,7 @@
       "role": "charter-only",
       "status": "pre-code",
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -498,7 +498,7 @@
         "installed_skills": 14,
         "agents": 2,
         "installed_commands": 10,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -507,7 +507,7 @@
       "role": "out-of-scope-product",
       "status": "stale-since-2026-01",
       "measured": {
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -522,7 +522,7 @@
         "installed_skills": 14,
         "installed_agents": 9,
         "installed_commands": 3,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -535,7 +535,7 @@
       "measured": {
         "skills": 1,
         "installed_skills": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -546,7 +546,7 @@
       "note": "registered 2026-07-30; missing from the 2026-07-25 audit sweep and therefore ungraded",
       "measured": {
         "installed_skills": 14,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -565,7 +565,7 @@
         "agents": 7,
         "installed_agents": 153,
         "installed_commands": 167,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -580,7 +580,7 @@
         "installed_agents": 217,
         "installed_commands": 244,
         "schemas": 1,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -595,7 +595,7 @@
         "installed_agents": 15,
         "installed_commands": 38,
         "schemas": 1,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     },
     {
@@ -609,7 +609,7 @@
         "agents": 6,
         "installed_agents": 139,
         "installed_commands": 160,
-        "measured_at": "2026-07-30"
+        "measured_at": "2026-08-07"
       }
     }
   ],

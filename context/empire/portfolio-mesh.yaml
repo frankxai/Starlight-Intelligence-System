@@ -10,12 +10,14 @@
 # installed (.claude/*) definitions are counted separately and never
 # summed — conflating them is what made two 2026-07 audits disagree.
 #
-# `measured.present: false` means the repo was not on disk for this run,
-# so its numbers are carried forward from the date in `measured_at`.
+# A repo that was not on disk for this run carries its whole `measured:`
+# block forward verbatim — there is no flag for it, because the claim being
+# made is "nothing re-measured", not "measured as absent". Read the age off
+# `measured_at`; `never` means it has not been measured even once.
 
 version: 0.2.0
 generated_by: scripts/mesh-generate.mjs
-generated_at: "2026-07-30"
+generated_at: "2026-08-07"
 curated_source: context/empire/mesh.curated.json
 maintainer: Starlight-Intelligence-System/context/empire/
 
@@ -33,13 +35,13 @@ repos:
     provides: [sip-protocol, attestation, vaults, portfolio-mesh]
     note: "only repo whose published counts matched its filesystem at the 2026-07-25 audit; guarded by scripts/check-agent-harness.mjs"
     measured:
-      skills: 84
-      skills_unrooted: 6
+      skills: 88
+      skills_unrooted: 10
       installed_skills: 4
       agents: 144
-      commands: 25
+      commands: 28
       installed_commands: 121
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agentic-creator-os
     section: substrate
     role: os-reference-build
@@ -51,7 +53,7 @@ repos:
       installed_skills: 178
       installed_agents: 134
       installed_commands: 165
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agentic-ops-hub
     section: substrate
     role: config-control-plane
@@ -61,7 +63,7 @@ repos:
     measured:
       installed_skills: 1
       installed_commands: 1
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   # ── Skills libraries (markdown) ───────────────────────────────
   - name: claude-skills-library
     section: skills-libraries
@@ -71,7 +73,7 @@ repos:
     measured:
       skills: 110
       skills_unrooted: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agentic-creator-skills
     section: skills-libraries
     role: plugin-marketplace-pack
@@ -80,7 +82,7 @@ repos:
     measured:
       skills: 16
       skills_unrooted: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: starlight-agent-skills
     section: skills-libraries
     role: starlight-skills-pack
@@ -88,7 +90,7 @@ repos:
     note: entire space vertical duplicated from agentic-creator-os
     measured:
       skills: 27
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: mind-palace-agent-skills
     section: skills-libraries
     role: domain-skills
@@ -98,14 +100,14 @@ repos:
     measured:
       skills: 13
       commands: 6
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: marine-agent-skills
     section: skills-libraries
     role: domain-skills
     overlap: {}
     measured:
       skills: 6
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agentic-mind-os
     section: skills-libraries
     role: lived-os-reference
@@ -116,7 +118,7 @@ repos:
       skills: 4
       agents: 4
       commands: 4
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   # ── Code-runtime engines ──────────────────────────────────────
   - name: starlight-cosmos-engine
     section: runtime
@@ -127,20 +129,20 @@ repos:
       agents_code: 9
     note: "definitions live in code, not markdown — outside the markdown counting contract"
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: starlight-swarm
     section: runtime
     role: swarm-runtime
     note: "queen/worker topology in src/swarm/ — the executing mesh, distinct from this registry"
     measured:
       installed_skills: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: starlight-evals
     section: runtime
     role: eval-harness
     manifests: [routing-table.json, lanes.json]
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: second-brain-os
     section: runtime
     role: substrate-skill
@@ -148,7 +150,7 @@ repos:
     measured:
       installed_skills: 5
       installed_commands: 5
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   # ── Canon / schema layers ─────────────────────────────────────
   - name: mind-intelligence-systems
     section: canon
@@ -157,7 +159,7 @@ repos:
     provides: [naming-doctrine, human-mind-model, repo-mesh]
     note: "carries its own repo-mesh.yaml for the mind cluster; the two manifests are parallel and not yet unified"
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: human-mind-intelligence-system
     section: canon
     role: engineered-system
@@ -165,7 +167,7 @@ repos:
     provides: [cognitive-schemas, ontology, response-prediction-primitives]
     measured:
       schemas: 15
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: starlight-mind-os-pro
     section: canon
     role: distribution-surface
@@ -173,50 +175,50 @@ repos:
     depends_on: [agentic-mind-os, mind-intelligence-systems]
     status: charter-only-by-design
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: bless
     section: canon
     role: protocol-spec
     provides: [blessing-protocol]
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agentic-intelligence-system
     section: canon
     role: discovery-substrate
     note: "ais-profile.yaml / llms.txt standard — reconcile with reality.md + CLAUDE.md conventions"
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   # ── Discovery lists (should be generated, not hand-written) ───
   - name: awesome-mind-agent-skills
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: awesome-music-agent-skills
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: awesome-manifestation-skills
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: awesome-agentic-income
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: awesome-payment-agent-skills
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   # ── Income / business cluster ─────────────────────────────────
   - name: agenticincome
     section: income
@@ -228,7 +230,7 @@ repos:
       installed_skills: 14
       agents: 4
       commands: 7
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agenticpassiveincome
     section: income
     role: commerce-spoke
@@ -240,7 +242,7 @@ repos:
       agents: 4
       commands: 6
       schemas: 1
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agentic-business-os
     section: income
     role: os-family
@@ -249,28 +251,28 @@ repos:
     measured:
       skills_unrooted: 4
       installed_commands: 1
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agentic-income-skills
     section: income
     role: schema-brain
     measured:
       skills: 2
       schemas: 1
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: agentic-income-template
     section: income
     role: public-shell
     status: freeze-when-feature-complete
     measured:
       installed_skills: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: payment-intelligence-system
     section: income
     role: payments-governance
     status: unaudited-no-live-funds
     measured:
       agents: 5
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   # ── Verticals ─────────────────────────────────────────────────
   - name: blue-life-commons
     section: verticals
@@ -278,45 +280,45 @@ repos:
     verdict: flagship
     measured:
       installed_skills: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: ocean-intelligence-system
     section: verticals
     role: marine-agents
     verdict: flagship
     measured:
       agents: 2
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: marine-mcp
     section: verticals
     role: marine-serving
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: realityarchitect
     section: verticals
     role: method-site
     verdict: flagship
     measured:
       installed_skills: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: frankx-palace
     section: verticals
     role: creative-3d-surface
     measured:
       installed_skills: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: frankx-mind-palace
     section: verticals
     role: palace-data-layer
     depends_on: [mind-palace-agent-skills, bless]
     provides: [blessing-ledger, rooms]
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: music-intelligence-systems
     section: verticals
     role: charter-only
     status: pre-code
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: ai-music-academy
     section: verticals
     role: stale-vertical
@@ -326,13 +328,13 @@ repos:
       installed_skills: 14
       agents: 2
       installed_commands: 10
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: vibe-os
     section: verticals
     role: out-of-scope-product
     status: stale-since-2026-01
     measured:
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   # ── GenCreator cluster ────────────────────────────────────────
   - name: gencreator.ai
     section: gencreator
@@ -345,7 +347,7 @@ repos:
       installed_skills: 14
       installed_agents: 9
       installed_commands: 3
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: gencreator-community
     section: gencreator
     role: community-site
@@ -355,7 +357,7 @@ repos:
     measured:
       skills: 1
       installed_skills: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: GenCreator-Studio
     section: gencreator
     role: studio-surface
@@ -363,7 +365,7 @@ repos:
     note: "registered 2026-07-30; missing from the 2026-07-25 audit sweep and therefore ungraded"
     measured:
       installed_skills: 14
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   # ── Production websites ───────────────────────────────────────
   - name: frankx.ai-vercel-website
     section: websites
@@ -379,7 +381,7 @@ repos:
       agents: 7
       installed_agents: 153
       installed_commands: 167
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: FrankX
     section: websites
     role: private-dev-authoring
@@ -391,7 +393,7 @@ repos:
       installed_agents: 217
       installed_commands: 244
       schemas: 1
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: arcanea-ai-app
     section: websites
     role: arcanea-production
@@ -403,7 +405,7 @@ repos:
       installed_agents: 15
       installed_commands: 38
       schemas: 1
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
   - name: arcanea
     section: websites
     role: arcanea-oss
@@ -414,7 +416,7 @@ repos:
       agents: 6
       installed_agents: 139
       installed_commands: 160
-      measured_at: "2026-07-30"
+      measured_at: "2026-08-07"
 
 gaps:
   no_skill_coverage: [legal-compliance, crypto-depth, testing-qa, data-engineering, incident-response, i18n-localization]
