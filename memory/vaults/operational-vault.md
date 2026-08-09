@@ -728,3 +728,18 @@ Ops notes: one imagery-agent run died on the platform session limit mid-flight (
 **Built on SIP — Starlight Intelligence Protocol**
 
 **2026-07-28 addendum (validation-ops):** ECOSYSTEM_ARCHITECTURE.md reconciled to v2.1 — the last stale 48/71/v8.2.0 references updated to the harness-verified 144/84/v8.3.0 with a metrics-note pointing at `metrics/current.json` as the fail-closed source of truth. Closes the "three contradictory ecosystem maps" finding from the 2026-07-13 validation report. Verified: `node scripts/check-agent-harness.mjs` passes; zero stale-count matches remain.
+
+## 2026-08-07 - Income cluster packaged: three gated products on the Polar catalog
+
+**Category:** portfolio-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (queen-swarm continuation)
+**Related:** agenticincome #23, agentic-business-os #3, vibe-os #4, `context/empire/UPGRADE_ROADMAP.md` Wave 1 items 4+5
+
+Wave 1's last unblocked revenue items closed. agenticincome#23 merged (a4805d39): claims-guard-pack $39, abos-pack-bundle $99, vibe-os-pack $24 added to products/catalog.json with gated statuses, PRODUCT_ID_ENV_KEYS rows mirroring the agent-team-pro gated-but-mapped pattern, env names documented, POLAR-SETUP.md activation checklist extended (packaged zip + delivery page required before any status flip). Verified: all 7 catalog products refuse checkout at gate 1; lint/test(12)/type-check/links/build all green. agentic-business-os#3 (639550b4) and vibe-os#4 (d3eb794d) merged with honest PRODUCT.md manifests generated from disk contents.
+
+Honesty decision recorded: both source repos are MIT-licensed and public, so every product surface frames purchase as the packaged, versioned edition of open source (supports development; MIT terms apply) — never exclusivity. If Frank wants exclusivity-based pricing, the repos must go private first; that decision is his and was deliberately not made by an agent.
+
+Coordination note: website + SIS film/foundry lanes are actively stewarded by sibling sessions with their own check-in loops and pending Frank decisions (taste.md, review approvals, VERCEL_AUTOMATION_BYPASS_SECRET for arcanea #222) — this session stayed off those lanes per the multi-agent protocol. Activation levers all Frank's: LEMON_SQUEEZY_* env vars (frankx.ai), POLAR_* env vars + catalog flips + product zips (income cluster).
+
+**Built on SIP — Starlight Intelligence Protocol**
