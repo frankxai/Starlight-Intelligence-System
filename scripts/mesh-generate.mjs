@@ -319,8 +319,10 @@ function renderYaml(mesh, curated) {
   lines.push('# installed (.claude/*) definitions are counted separately and never');
   lines.push('# summed — conflating them is what made two 2026-07 audits disagree.');
   lines.push('#');
-  lines.push('# `measured.present: false` means the repo was not on disk for this run,');
-  lines.push('# so its numbers are carried forward from the date in `measured_at`.');
+  lines.push('# A repo that was not on disk for this run carries its whole `measured:`');
+  lines.push('# block forward verbatim — there is no flag for it, because the claim being');
+  lines.push('# made is "nothing re-measured", not "measured as absent". Read the age off');
+  lines.push('# `measured_at`; `never` means it has not been measured even once.');
   lines.push('');
   yamlFields(
     {
