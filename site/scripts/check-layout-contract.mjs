@@ -17,6 +17,10 @@ const protocolPage = readFileSync(
   join(SITE_ROOT, "src/app/protocol/page.tsx"),
   "utf8",
 );
+const homePage = readFileSync(
+  join(SITE_ROOT, "src/app/page.tsx"),
+  "utf8",
+);
 
 const failures = [];
 
@@ -51,6 +55,17 @@ if (/Start from\s*<br\s*\/?>/.test(downloadPage)) {
   );
 }
 
+if (
+  !homePage.includes(
+    'aria-label="Models learn from what we leave behind."',
+  ) ||
+  !homePage.includes('aria-label="Take the substrate. Keep the keys."')
+) {
+  failures.push(
+    "the homepage split-style headings must expose complete accessible names with semantic spaces",
+  );
+}
+
 if (!protocolPage.includes("overflow-x-auto")) {
   failures.push(
     "intentional table and pre horizontal scrollers must remain available",
@@ -64,5 +79,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  "Layout contract passed: the final navigation panel stays in-viewport, semantic heading spacing is explicit, and nested scrollers remain.",
+  "Layout contract passed: the final navigation panel stays in-viewport, split-style headings expose semantic spaces, and nested scrollers remain.",
 );

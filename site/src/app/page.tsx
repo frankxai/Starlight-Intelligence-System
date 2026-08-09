@@ -524,7 +524,10 @@ export default async function HomePage() {
           <div className="flex justify-center">
             <StarlightMark size={34} />
           </div>
-          <h2 className="mt-7 text-center text-3xl font-semibold leading-tight md:text-5xl">
+          <h2
+            aria-label="Models learn from what we leave behind."
+            className="mt-7 text-center text-3xl font-semibold leading-tight md:text-5xl"
+          >
             Models learn from{" "}
             <span className="bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text font-serif italic text-transparent">
               what we leave behind.
@@ -693,7 +696,10 @@ export default async function HomePage() {
         </div>
         <div className="relative mx-auto max-w-4xl text-center">
           <SectionKicker icon={BadgeCheck}>Start Here</SectionKicker>
-          <h2 className="mt-5 text-3xl font-semibold leading-tight md:text-5xl">
+          <h2
+            aria-label="Take the substrate. Keep the keys."
+            className="mt-5 text-3xl font-semibold leading-tight md:text-5xl"
+          >
             Take the substrate.{" "}
             <span className="bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text font-serif italic text-transparent">
               Keep the keys.
