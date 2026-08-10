@@ -1,10 +1,14 @@
 # Starlight Creative Studio OS
 
-## Music, Art, Cinema, Living IP, and the Frank Riemer Artist System
+## Music, Art, Cinema, Living IP, and the Human Artist System
 
 **Version:** 1.0  
 **Status:** Proposed canon; publish through review before treating as Registry truth  
+**Artist-name gate:** Reopened 2026-08-10; leading recommendation only, not approved  
 **Portfolio:** FrankX · Starlight Intelligence · Arcanea · Anime Legends · GenCreator
+
+> [!CAUTION]
+> **Do not create, rename, or map a DSP artist profile from the old `Frank Riemer` decision.** The human artist name is reopened. `FRANK OMEGA` is the leading recommendation; `FRANK-Ω` is its visual sigil. Final promotion requires Frank's approval, in-app handle checks, and qualified legal clearance. Until then, downstream `Frank Riemer` artist references are placeholders for the primary human artist, not a DSP-name commitment.
 
 > We are not building a record label beside an art shop beside a film studio. We are building one living-IP flywheel: a song opens a world, the world produces images and characters, the characters produce stories and films, the making becomes education, and the audience becomes collectors, collaborators, and superfans.
 
@@ -12,8 +16,8 @@
 
 1. **Starlight Records is the umbrella rights, catalog, A&R, release, and revenue operating house.** It is the label system, not the public identity of every creative work.
 2. **Arcanea Records is the canon-bound music imprint.** It releases Guardian music, world scores, virtual artists, and soundtracks that belong inside Arcanea.
-3. **Frank Riemer is the primary human artist-of-record.** Use `FRANK RIEMER` as the visual display name and **The Starlight Architect** as the epithet. FrankX remains the founder studio, publisher, and commercial router—not the DSP artist name.
-4. **FRANK-Ω is a visual sigil and stage/avatar system, not a second artist identity.** It can become an alter ego only after the human artist has a stable release and audience baseline.
+3. **The primary human artist-name gate is reopened.** The leading recommendation is `FRANK OMEGA` for canonical DSP metadata and spoken billing, with `FRANK-Ω` as the visual sigil and `Frank Riemer` in legal, songwriter, and producer credits. This remains provisional pending approval and clearance.
+4. **Plain FrankX remains the founder/masterbrand but is not recommended as the DSP artist name.** It has excellent stage energy and existing equity, but an active exact-name Italian house DJ/producer already releases in the same category and runs Tounka Records; shared-name mapping and search friction would be permanent operating debt.
 5. **Alera is the first Arcanea virtual artist.** The remaining Guardians stay inside canon and content until Alera proves repeatable release demand.
 6. **“Frank’s Vibes” stops behaving like a label.** It becomes **Vibe OS Sessions**, a playlist, content franchise, and functional-music product line under Frank Riemer and FrankX.
 7. **Arcanea Cinema is a release line inside Arcanea Studios, not a new standalone company or social graph.** Anime Legends is the anime-native studio and production OS that can originate its own properties and co-produce Arcanea titles.
@@ -30,7 +34,7 @@
 | **FrankX** | Founder studio, authority, commercial front door | Frank’s worldview, creator systems, education, speaking, making-of content | Arcanea canon; DSP artist identity; label catalog |
 | **Starlight Intelligence** | Technology and intelligence institution | Agentic systems, memory, provenance protocols, creator infrastructure | Consumer entertainment identity |
 | **Starlight Records** | Umbrella label and rights operating house | A&R gates, masters administration, distribution, metadata, royalty graph, licensing | A single genre or fictional world |
-| **Frank Riemer** | Human artist | Cinematic electronic music, piano, DnB/house crossover, transformational anthems, live identity | Creator education products as release CTAs |
+| **Primary human artist — name pending** | Human artist | Cinematic electronic music, piano, DnB/house crossover, transformational anthems, live identity | Creator education products as release CTAs |
 | **Arcanea** | Living IP universe and creation platform | Canon, worlds, Guardians, stories, creator participation | Generic AI art inventory |
 | **Arcanea Records** | Arcanea music imprint | Guardian artists, world scores, soundtracks, mythic releases | Frank’s general catalog |
 | **Arcanea Cinema** | Arcanea film and cinematic release line | Short films, trailers, visual albums, future features | General anime education or tools |
@@ -51,19 +55,30 @@
 
 ## 3. Artist and label identity
 
-### Primary artist decision
+### Primary artist naming gate — reopened
 
-**Artist name:** `Frank Riemer`  
-**Display system:** `FRANK RIEMER`  
-**Epithet:** `The Starlight Architect`  
-**Presenter line:** `FrankX presents FRANK RIEMER`  
-**Visual sigil:** `FRANK-Ω`
+**Status:** Provisional; named-human approval and clearance required before release infrastructure changes.  
+**Leading candidate / canonical DSP metadata:** `FRANK OMEGA`  
+**Spoken and festival billing:** `Frank Omega`  
+**Brand bridge:** `FrankX presents FRANK OMEGA`  
+**Visual sigil:** `FRANK-Ω`  
+**Legal, songwriter, and producer credits:** `Frank Riemer`
 
-This is stronger than using FrankX as the DSP artist name. FrankX already has established meaning as the founder and systems brand, while active `Frankx`, `Frank X`, and `frank.x` artist profiles already exist across music services. The human name preserves uniqueness, trust, search coherence, credits, speaking equity, and future live-performance legitimacy. The rockstar layer comes from the world, styling, performance, and epithet—not from forcing the company brand into a crowded artist namespace.
+The instinct behind `FrankX` is correct: it is shorter, sharper, and stronger in an announcer test than the full legal name. The plain name is nevertheless rejected for DSP use because the collision is not theoretical. An active 17-year-old Italian DJ/producer already uses the exact name in house music, runs Tounka Records, and has 62 Soulful House tracks plus active 2026 releases on [Traxsource](https://www.traxsource.com/artist/298194/frankx). DistroKid explicitly says a unique artist name is best practice because shared names make search and profile grouping harder; see its [same-artist-name guidance](https://support.distrokid.com/hc/en-us/articles/360013534234-Having-the-Same-Artist-Name-as-Another-Artist). Apple likewise documents same-name catalog mixing and manual correction in [Apple Music for Artists FAQs](https://artists.apple.com/support/1113-faqs).
+
+`FRANK OMEGA` wins the current strategy judgment because it passes the stage test, retains Frank, already exists inside the FrankX universe, extends from human performance to the FRANK-Ω avatar and cinema, and had no indexed exact artist collision in the preliminary Spotify/Apple/Traxsource/Beatport web audit. That audit is evidence, not trademark or handle clearance.
+
+| Territory | Weighted judgment | Best quality | Fatal or material issue |
+|---|---:|---|---|
+| `FRANKX` | 7.0/10 | Maximum existing equity and stage energy | Exact, active, genre-adjacent collision; role overload |
+| `FRANK RIEMER` | 8.0/10 | Trust, authorship, credits, human authority | Does not feel like Frank's strongest stage identity |
+| `FRANK OMEGA` | **8.6/10** | Stage energy, search clarity, extensibility, existing FRANK-Ω equity | Must clear handles, trademarks, and the avatar/human role definition |
+
+**Identity rule if approved:** Frank Riemer is the human and legal author; FrankX is the founder studio and commercial masterbrand; FRANK OMEGA is the music/performance identity; FRANK-Ω is the visual mark and avatar. Never market the act as “DJ Frank Riemer.” Bill the act simply as `FRANK OMEGA`.
 
 ### Sonic corridor
 
-Frank Riemer should not launch as an everything-artist. The initial corridor is:
+The approved primary artist should not launch as an everything-artist. The initial corridor is:
 
 > **Cinematic electronic music for becoming** — piano-led emotion, liquid DnB and deep-house propulsion, mythic scale, and lyrics or spoken motifs that move identity.
 
@@ -87,7 +102,7 @@ Guardian accounts do not launch as separate social profiles. Alera first lives t
 
 ### Deferred identities
 
-- **FRANK-Ω:** retain as visual avatar/sigil; do not consume a DistroKid artist slot yet.
+- **FRANK-Ω:** leading visual sigil for the proposed `FRANK OMEGA` artist system; do not consume a DistroKid slot or rename channels until approval and clearance.
 - **Nona:** incubate as a future band or virtual act; no release infrastructure until the first two artist systems are stable.
 - **Lumen/Aether/Dawn:** retire as near-term artist decisions. Preserve as track, collection, location, or character-name candidates only after collision and canon review.
 - **Frank’s Vibes:** rename the operating property to **Vibe OS Sessions**; use it for playlists, routines, direct bundles, and functional-music content.
