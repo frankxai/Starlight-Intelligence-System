@@ -751,9 +751,9 @@ Coordination note: website + SIS film/foundry lanes are actively stewarded by si
 **Source:** Codex portfolio storage audit and Wave 1 execution  
 **Class:** operational; no SIP substrate contract changed
 
-**Decision:** New repository media debt is now fail-closed at pull-request time. Browser-ready images/fonts stay in Git only below strict size ceilings; large audio, video, PDFs, originals, and compressed/source archives must use the portfolio object-store path. The guard checks renamed destinations, symlinks, compound archives, unclassified media, and workflow-command escaping, with an executable nine-scenario regression contract.
+**Decision:** New repository media debt is now fail-closed at pull-request time. Browser-ready images/fonts stay in Git only below strict size ceilings; large audio, video, PDFs, originals, and compressed/source archives must use the portfolio object-store path. The guard checks renamed destinations, symlinks, compound archives, unclassified media, and workflow-command escaping, with an executable fourteen-scenario regression contract covering controlled roots and an explicit safe-sidecar allowlist.
 
-**State:** This PR adds only the enforcement boundary. Existing bytes and public URLs remain untouched. The shared R2 control-plane proposal is under review in `frankxai/agentic-ops#8`; no bucket, domain, Worker, asset, or production route has been mutated from this repository.
+**State:** This PR adds only the enforcement boundary. Existing bytes and public URLs remain untouched. The shared R2 control plane merged in `frankxai/agentic-ops#8`; provisioning remains credential-gated, so no bucket, domain, Worker, asset, or production route has been mutated from this repository.
 
 **Next:** After the control plane is approved and staging is provisioned, inventory the site from the exact default-branch tree, upload content-addressed copies, verify remote metadata plus sampled hashes, and cut over references in a separate reversible PR. Preserve originals through the production observation window.
 
