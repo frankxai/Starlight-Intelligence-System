@@ -1,0 +1,30 @@
+name: Media Guard
+
+on:
+  pull_request:
+    branches: [main, staging]
+
+permissions:
+  contents: read
+
+jobs:
+  media-guard:
+    name: Media Guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Media guard regression contract
+        run: node --test scripts/tests/media-guard.test.mjs
+
+      - name: Reject repository media debt
+        run: node scripts/media-guard.mjs --base origin/${{ github.base_ref }}
