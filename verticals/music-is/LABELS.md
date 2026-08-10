@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **Legacy map under review:** the four-label model below is retained for provenance. [CREATIVE-STUDIO-OS.md](./CREATIVE-STUDIO-OS.md) proposes the normalized hierarchy: Starlight Records = umbrella rights/label house; Arcanea Records = Arcanea imprint; Frank Riemer = human artist; Alera = first Arcanea virtual artist; Vibe OS Sessions = playlist/content/product series; Nona = deferred act. Conflicting sections below are superseded when the proposal is reviewed and merged.
+
 # LABELS — Arcanea Records (four-label canonical map)
 
 > Master map of Arcanea Records' four sub-labels. Each label has a canonical sound DNA, visual DNA, voice DNA, audience contract, and monetization stack. Personas sit under labels; personas inherit constraint from label-canon and contribute differentiation.
