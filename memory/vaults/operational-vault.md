@@ -751,7 +751,7 @@ Coordination note: website + SIS film/foundry lanes are actively stewarded by si
 **Source:** Codex portfolio storage audit and Wave 1 execution  
 **Class:** operational; no SIP substrate contract changed
 
-**Decision:** New repository media debt is now fail-closed at pull-request time. Browser-ready images/fonts stay in Git only below strict size ceilings; large audio, video, PDFs, originals, and compressed/source archives must use the portfolio object-store path. The guard checks renamed destinations, symlinks, compound archives, unclassified media, and workflow-command escaping, with an executable eight-scenario regression contract.
+**Decision:** New repository media debt is now fail-closed at pull-request time. Browser-ready images/fonts stay in Git only below strict size ceilings; large audio, video, PDFs, originals, and compressed/source archives must use the portfolio object-store path. The guard checks renamed destinations, symlinks, compound archives, unclassified media, and workflow-command escaping, with an executable nine-scenario regression contract.
 
 **State:** This PR adds only the enforcement boundary. Existing bytes and public URLs remain untouched. The shared R2 control-plane proposal is under review in `frankxai/agentic-ops#8`; no bucket, domain, Worker, asset, or production route has been mutated from this repository.
 
