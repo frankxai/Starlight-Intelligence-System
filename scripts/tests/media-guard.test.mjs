@@ -36,10 +36,11 @@ function commit(root, message = "scenario") {
   git(root, "commit", "--quiet", "-m", message)
 }
 
-function run(root, base) {
-  return spawnSync(process.execPath, [guard, "--base", base], {
+function run(root, base, env = {}) {
+  return spawnSync(process.execPath, base ? [guard, "--base", base] : [guard], {
     cwd: root,
     encoding: "utf8",
+    env: { ...process.env, ...env },
   })
 }
 
@@ -134,4 +135,15 @@ test("escapes workflow-command messages derived from hostile extensions", async 
   assert.equal(result.status, 1)
   assert.match(result.stderr, /%0A::error::injected is not a classified web-media format/u)
   assert.doesNotMatch(result.stderr, /(?:^|\n)::error::injected/mu)
+})
+
+test("falls back to HEAD^ when the GitHub base ref is unavailable", async (t) => {
+  const { root } = await repository(t)
+  await write(root, "public/video/oversized.mp4", Buffer.alloc(2 * MIB + 1))
+  commit(root)
+
+  const result = run(root, null, { GITHUB_BASE_REF: "missing-base-ref" })
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /\.mp4 exceeds the 2\.00 MiB Git limit/u)
+  assert.doesNotMatch(result.stderr, /unknown revision|ambiguous argument/u)
 })

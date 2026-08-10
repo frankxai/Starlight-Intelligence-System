@@ -77,7 +77,7 @@ function changedFiles() {
   const githubBase = process.env.GITHUB_BASE_REF
     ? `origin/${process.env.GITHUB_BASE_REF}`
     : null
-  const base = requestedBase || githubBase || (hasRef("HEAD^") ? "HEAD^" : null)
+  const base = requestedBase || (githubBase && hasRef(githubBase) ? githubBase : null) || (hasRef("HEAD^") ? "HEAD^" : null)
 
   const args = base
     ? ["diff", "--no-renames", "--name-only", "--diff-filter=AM", "-z", `${base}...HEAD`]
