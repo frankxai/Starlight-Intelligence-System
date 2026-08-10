@@ -61,9 +61,9 @@ jobs:
         working-directory: pr-head
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          # Break glass: a maintainer must apply this label to an owner/member/
-          # collaborator PR. Label changes rerun the trusted base workflow.
-          POLICY_UPDATE_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'media-policy-change-approved') && (github.event.pull_request.author_association == 'OWNER' || github.event.pull_request.author_association == 'MEMBER' || github.event.pull_request.author_association == 'COLLABORATOR') }}
+          # Break glass is exact-head: a maintainer must remove/reapply this
+          # label after each push to an owner/member/collaborator policy PR.
+          POLICY_UPDATE_APPROVED: ${{ github.event.action == 'labeled' && github.event.label.name == 'media-policy-change-approved' && (github.event.pull_request.author_association == 'OWNER' || github.event.pull_request.author_association == 'MEMBER' || github.event.pull_request.author_association == 'COLLABORATOR') }}
         run: |
           policy_arguments=(--protect-policy)
           if [[ "$POLICY_UPDATE_APPROVED" == "true" ]]; then
