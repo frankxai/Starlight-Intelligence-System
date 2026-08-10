@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **v1 supersession proposal:** [CREATIVE-STUDIO-OS.md](./CREATIVE-STUDIO-OS.md) now governs the proposed umbrella-label, artist, visual-IP, cinema, editions, channel, and system-of-record architecture. It makes Starlight Records the umbrella rights/label house, Arcanea Records the canon-bound imprint, Frank Riemer the primary human artist, Alera the first virtual artist, and Vibe OS Sessions a series rather than a label. The historical phase plan below is retained for lineage; conflicting identity and catalog-authority decisions are superseded when this branch is reviewed and merged.
+
 # Music IS — Strategy v0.1
 
 > Frank's operated music vertical. Six-phase build over 18-24 months. From local-first AI label to productized template + sovereign monetization.
