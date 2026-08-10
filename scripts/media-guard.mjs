@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process"
-import { existsSync, lstatSync } from "node:fs"
+import { lstatSync } from "node:fs"
 import { extname } from "node:path"
 
 const MIB = 1024 * 1024
@@ -52,7 +52,7 @@ const prohibitedSuffixes = [
   ".zip",
 ]
 
-const controlledMediaPath = /(?:^|\/)(?:audio|downloads?|fonts?|images?|media|video)(?:\/|$)/i
+const controlledMediaPath = /(?:^|\/)(?:audios?|downloads?|fonts?|images?|media|videos?)(?:\/|$)/i
 const allowedMediaSidecars = new Set([".css", ".csv", ".json", ".lrc", ".md", ".srt", ".txt", ".vtt", ".xml"])
 
 function parseBaseArgument() {
@@ -102,6 +102,17 @@ function escapeWorkflowCommandProperty(value) {
     .replace(/,/g, "%2C")
 }
 
+function escapeWorkflowCommandMessage(value) {
+  return value
+    .replace(/%/g, "%25")
+    .replace(/\r/g, "%0D")
+    .replace(/\n/g, "%0A")
+}
+
+function formatLogValue(value) {
+  return JSON.stringify(value)
+}
+
 function prohibitedSuffix(file) {
   const lower = file.toLowerCase()
   return prohibitedSuffixes.find((suffix) => lower.endsWith(suffix)) || null
@@ -111,8 +122,6 @@ const files = changedFiles()
 const violations = []
 
 for (const file of files) {
-  if (!existsSync(file)) continue
-
   const extension = extname(file).toLowerCase()
   const stats = lstatSync(file)
   const size = stats.size
@@ -158,9 +167,11 @@ for (const file of files) {
 if (violations.length > 0) {
   console.error("Media policy violations:\n")
   for (const violation of violations) {
-    console.error(`- ${violation.file} (${formatMiB(violation.size)}): ${violation.reason}`)
     console.error(
-      `::error file=${escapeWorkflowCommandProperty(violation.file)}::${violation.reason}; file size ${formatMiB(violation.size)}`,
+      `- ${formatLogValue(violation.file)} (${formatMiB(violation.size)}): ${formatLogValue(violation.reason)}`,
+    )
+    console.error(
+      `::error file=${escapeWorkflowCommandProperty(violation.file)}::${escapeWorkflowCommandMessage(violation.reason)}; file size ${formatMiB(violation.size)}`,
     )
   }
   console.error(

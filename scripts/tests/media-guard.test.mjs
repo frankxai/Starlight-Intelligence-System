@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { execFileSync, spawnSync } from "node:child_process"
-import { mkdir, mkdtemp, rename, rm, writeFile } from "node:fs/promises"
+import { mkdir, mkdtemp, rename, rm, symlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
 import test from "node:test"
@@ -90,7 +90,7 @@ test("treats renamed destinations as additions", async (t) => {
 
 test("escapes workflow-command properties in hostile filenames", async (t) => {
   const { root, base } = await repository(t)
-  const filename = "public/images/a:b,c%25\r\n::warning.png"
+  const filename = "public/images/a:b,c%25\r\n::warning::injected.png"
   await write(root, filename, Buffer.alloc(MIB + 1))
   commit(root)
 
@@ -98,16 +98,40 @@ test("escapes workflow-command properties in hostile filenames", async (t) => {
   assert.equal(result.status, 1)
   assert.match(
     result.stderr,
-    /::error file=public\/images\/a%3Ab%2Cc%2525%0D%0A%3A%3Awarning\.png::/u,
+    /::error file=public\/images\/a%3Ab%2Cc%2525%0D%0A%3A%3Awarning%3A%3Ainjected\.png::/u,
   )
+  assert.doesNotMatch(result.stderr, /(?:^|\n)::warning::injected\.png/mu)
 })
 
-test("rejects unclassified files in controlled media paths", async (t) => {
+test("rejects unclassified files in plural controlled media paths", async (t) => {
   const { root, base } = await repository(t)
-  await write(root, "public/images/hero.jxl", "next-generation image")
+  await write(root, "public/videos/hero.jxl", "next-generation video")
   commit(root)
 
   const result = run(root, base)
   assert.equal(result.status, 1)
   assert.match(result.stderr, /\.jxl is not a classified web-media format/u)
+})
+
+test("rejects dangling symlinks in controlled media paths", async (t) => {
+  const { root, base } = await repository(t)
+  await mkdir(join(root, "public/images"), { recursive: true })
+  await symlink("missing-target.png", join(root, "public/images/hero.png"))
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /media paths must not be symbolic links/u)
+})
+
+test("escapes workflow-command messages derived from hostile extensions", async (t) => {
+  const { root, base } = await repository(t)
+  const filename = "public/images/asset.\n::error::injected"
+  await write(root, filename, "unclassified")
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /%0A::error::injected is not a classified web-media format/u)
+  assert.doesNotMatch(result.stderr, /(?:^|\n)::error::injected/mu)
 })
