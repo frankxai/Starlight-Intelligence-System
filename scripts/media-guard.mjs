@@ -52,8 +52,26 @@ const prohibitedSuffixes = [
   ".zip",
 ]
 
+const controlledMediaRoot = /^(?:public|generated_audio|generated_imgs)(?:\/|$)|^content\/music\/source(?:\/|$)/i
 const controlledMediaPath = /(?:^|\/)(?:audios?|downloads?|fonts?|images?|media|videos?)(?:\/|$)/i
-const allowedMediaSidecars = new Set([".css", ".csv", ".json", ".lrc", ".md", ".srt", ".txt", ".vtt", ".xml"])
+const allowedMediaSidecars = new Set([
+  ".css",
+  ".csv",
+  ".html",
+  ".js",
+  ".json",
+  ".lrc",
+  ".map",
+  ".md",
+  ".mjs",
+  ".srt",
+  ".txt",
+  ".vtt",
+  ".webmanifest",
+  ".xml",
+  ".yaml",
+  ".yml",
+])
 
 function parseBaseArgument() {
   const index = process.argv.indexOf("--base")
@@ -118,6 +136,10 @@ function prohibitedSuffix(file) {
   return prohibitedSuffixes.find((suffix) => lower.endsWith(suffix)) || null
 }
 
+function isControlledMediaFile(file) {
+  return controlledMediaRoot.test(file) || controlledMediaPath.test(file)
+}
+
 const files = changedFiles()
 const violations = []
 
@@ -126,7 +148,7 @@ for (const file of files) {
   const stats = lstatSync(file)
   const size = stats.size
 
-  if (stats.isSymbolicLink() && controlledMediaPath.test(file)) {
+  if (stats.isSymbolicLink() && isControlledMediaFile(file)) {
     violations.push({
       file,
       reason: "media paths must not be symbolic links",
@@ -155,7 +177,7 @@ for (const file of files) {
     continue
   }
 
-  if (controlledMediaPath.test(file) && !limit && !allowedMediaSidecars.has(extension)) {
+  if (isControlledMediaFile(file) && !limit && !allowedMediaSidecars.has(extension)) {
     violations.push({
       file,
       reason: `${extension || "extensionless"} is not a classified web-media format`,
