@@ -8,6 +8,7 @@
 > 2026-07-25 session: Wave 0 shipped — frankx.ai#362 MERGED + live; arcanea store quarantine in arcanea-ai-app#206 (held in draft by Frank pending deps + Visual QA repairs); awesome-agentic-income#4 open. Wave 1 session 2: frankx.ai#369 (conversion layer), agenticpassiveincome#20 + agenticincome#18 (Polar fail-closed), ICP_FLOW_MAP + POSITIONING_PLAYBOOK added.
 > 2026-07-26: Frank authorized lead-review-and-merge. MERGED to main: SIS#52 (this index), awesome-agentic-income#4, agenticpassiveincome#20, agenticincome#18, frankx.ai#369 (auto-deploys production). arcanea-ai-app#206 stays draft per Frank's hold.
 > 2026-07-26 continuation: frankx.ai#371 (email capture on the last 3 hubs) + #372 (metadata sprint, 4 T1 roots) MERGED and live. Arcanea deps repair found ALREADY DONE on main (#212, 2026-07-25) — `pnpm audit --audit-level high` clean; #206's deps precondition is satisfied, Visual QA half remains with Frank. Residual on arcanea: 6 moderate + 2 low advisories (hono/protobufjs chains, need major bumps) — left for a Frank-approved pass.
+> 2026-08-10: arcanea-ai-app#206 CLOSED by Frank as superseded — his A0 trust purge #239 (on main) removed the simulated store outright, a stronger disposition than the quarantine labels. Hold released; no residual work from #206.
 
 - ☑ frankx.ai: fix broken nav link `/products/music-school` → `/music/learn` (repo's own wiring registry already verified the target)
 - ☑ frankx.ai `/tools`: delete fabricated `usageCount`/`rating`/"50K+ Monthly Uses"/"4.8/5" and Premium badges on the 6 stub tools
@@ -18,7 +19,7 @@
 - ☑ frankx.ai `/coaching`: fix 40+/38 contradiction
 - ☑ frankx.ai `/shop`: fix "$19" floor (actual $27)
 - ☑ frankx.ai `/community`: fix "Active"-badged newsletter card linking to `/start`
-- ☑ arcanea.ai `/studio/store`: quarantine fake payment confirmations (SHIP-BLOCKER — gate behind flag or wire real checkout)
+- ☑ arcanea.ai `/studio/store`: RESOLVED by Frank's A0 trust purge (arcanea-ai-app#239, merged 756f3f8, 2026-08-10) — store surface removed via notFound(), DEMO_STATS/fake case studies killed. The quarantine PR #206 was closed as superseded; per Frank's disposition, simulated commerce is not to be revived — next is honest env-gated Stripe rails (A1+).
 - ☐ arcanea.ai: route all public numbers through `lib/facts.ts`; delete `/arcanea-os` fabricated stats
 - ☑ awesome-agentic-income: fix "Unlock premium Agent Swarms" CTA (#4 merged 2026-07-26)
 - ☐ ai-music-academy: decision — rehabilitate voice + metrics, or archive and move assets to music-intelligence-systems
