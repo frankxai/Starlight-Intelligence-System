@@ -1,8 +1,13 @@
 import { execFileSync } from "node:child_process"
-import { lstatSync } from "node:fs"
+import { lstatSync, readFileSync } from "node:fs"
 import { extname } from "node:path"
 
 const MIB = 1024 * 1024
+const KIB = 1024
+const MAX_SIDECAR_BYTES = 512 * KIB
+const MAX_GENERIC_FILE_BYTES = 2 * MIB
+const MAX_GOVERNED_CHANGE_BYTES = 5 * MIB
+const MAX_TOTAL_CHANGE_BYTES = 20 * MIB
 
 const limits = new Map([
   [".avif", 1 * MIB],
@@ -52,8 +57,13 @@ const prohibitedSuffixes = [
   ".zip",
 ]
 
-const controlledMediaRoot = /^(?:public|generated_audio|generated_imgs)(?:\/|$)|^content\/music\/source(?:\/|$)/i
+const controlledMediaRoot = /(?:^|\/)(?:public|generated_audio|generated_imgs)(?:\/|$)|(?:^|\/)content\/music\/source(?:\/|$)/i
 const controlledMediaPath = /(?:^|\/)(?:audios?|downloads?|fonts?|images?|media|videos?)(?:\/|$)/i
+const protectedPolicyFiles = new Set([
+  ".github/workflows/media-guard.yml",
+  "scripts/media-guard.mjs",
+  "scripts/tests/media-guard.contract.mjs",
+])
 const allowedMediaSidecars = new Set([
   ".css",
   ".csv",
@@ -81,6 +91,10 @@ function parseBaseArgument() {
   return value
 }
 
+function protectPolicyFiles() {
+  return process.argv.includes("--protect-policy")
+}
+
 function hasRef(ref) {
   try {
     execFileSync("git", ["rev-parse", "--verify", ref], { stdio: "ignore" })
@@ -98,13 +112,23 @@ function changedFiles() {
   const base = requestedBase || (githubBase && hasRef(githubBase) ? githubBase : null) || (hasRef("HEAD^") ? "HEAD^" : null)
 
   const args = base
-    ? ["diff", "--no-renames", "--name-only", "--diff-filter=AM", "-z", `${base}...HEAD`]
-    : ["diff-tree", "--root", "--no-renames", "--no-commit-id", "--name-only", "-r", "-z", "HEAD"]
+    ? ["diff", "--no-renames", "--name-status", "--diff-filter=ADMT", "-z", `${base}...HEAD`]
+    : ["diff-tree", "--root", "--no-renames", "--no-commit-id", "--name-status", "-r", "-z", "HEAD"]
 
-  return execFileSync("git", args)
+  const fields = execFileSync("git", args)
     .toString("utf8")
     .split("\0")
     .filter(Boolean)
+
+  if (fields.length % 2 !== 0) {
+    throw new Error("Unexpected Git name-status output")
+  }
+
+  const entries = []
+  for (let index = 0; index < fields.length; index += 2) {
+    entries.push({ status: fields[index], file: fields[index + 1] })
+  }
+  return entries
 }
 
 function formatMiB(bytes) {
@@ -140,24 +164,85 @@ function isControlledMediaFile(file) {
   return controlledMediaRoot.test(file) || controlledMediaPath.test(file)
 }
 
-const files = changedFiles()
+function isGitLfsPointer(file, size) {
+  if (size > 1_024) return false
+  const lines = readFileSync(file, "utf8").split(/\r?\n/u)
+  return (
+    lines[0] === "version https://git-lfs.github.com/spec/v1" &&
+    lines.some((line) => /^oid sha256:[0-9a-f]{64}$/u.test(line)) &&
+    lines.some((line) => /^size [0-9]+$/u.test(line))
+  )
+}
+
+const entries = changedFiles()
 const violations = []
+let governedChangeBytes = 0
+let totalChangeBytes = 0
+let firstGovernedFile = null
+let firstChangedFile = null
 
-for (const file of files) {
-  const extension = extname(file).toLowerCase()
-  const stats = lstatSync(file)
-  const size = stats.size
-
-  if (stats.isSymbolicLink() && isControlledMediaFile(file)) {
+for (const { status, file } of entries) {
+  if (protectPolicyFiles() && protectedPolicyFiles.has(file)) {
     violations.push({
       file,
-      reason: "media paths must not be symbolic links",
+      reason: "media-guard trust roots require an administrator-authorized policy update",
+      size: 0,
+    })
+  }
+
+  if (status === "D") continue
+
+  const extension = extname(file).toLowerCase()
+  let stats
+  try {
+    stats = lstatSync(file)
+  } catch {
+    violations.push({
+      file,
+      reason: "changed path is unavailable for inspection",
+      size: 0,
+    })
+    continue
+  }
+  const size = stats.size
+  totalChangeBytes += size
+  firstChangedFile ||= file
+
+  const blockedSuffix = prohibitedSuffix(file)
+  const limit = limits.get(extension)
+  const controlled = isControlledMediaFile(file)
+  if (controlled || limit || blockedSuffix) {
+    governedChangeBytes += size
+    firstGovernedFile ||= file
+  }
+
+  if (stats.isSymbolicLink()) {
+    violations.push({
+      file,
+      reason: "repository additions and type changes must not be symbolic links",
       size,
     })
     continue
   }
 
-  const blockedSuffix = prohibitedSuffix(file)
+  if (!stats.isFile()) {
+    violations.push({
+      file,
+      reason: "repository additions and type changes must be regular files",
+      size,
+    })
+    continue
+  }
+
+  if (isGitLfsPointer(file, size)) {
+    violations.push({
+      file,
+      reason: "Git LFS pointers are not permitted; use the portfolio object store",
+      size,
+    })
+    continue
+  }
+
   if (blockedSuffix) {
     violations.push({
       file,
@@ -167,7 +252,6 @@ for (const file of files) {
     continue
   }
 
-  const limit = limits.get(extension)
   if (limit && size > limit) {
     violations.push({
       file,
@@ -177,13 +261,47 @@ for (const file of files) {
     continue
   }
 
-  if (isControlledMediaFile(file) && !limit && !allowedMediaSidecars.has(extension)) {
+  if (controlled && !limit && !allowedMediaSidecars.has(extension)) {
     violations.push({
       file,
       reason: `${extension || "extensionless"} is not a classified web-media format`,
       size,
     })
+    continue
   }
+
+  if (controlled && allowedMediaSidecars.has(extension) && size > MAX_SIDECAR_BYTES) {
+    violations.push({
+      file,
+      reason: `${extension} sidecar exceeds the ${formatMiB(MAX_SIDECAR_BYTES)} Git limit`,
+      size,
+    })
+    continue
+  }
+
+  if (size > MAX_GENERIC_FILE_BYTES) {
+    violations.push({
+      file,
+      reason: `unclassified file exceeds the ${formatMiB(MAX_GENERIC_FILE_BYTES)} Git limit`,
+      size,
+    })
+  }
+}
+
+if (governedChangeBytes > MAX_GOVERNED_CHANGE_BYTES && firstGovernedFile) {
+  violations.push({
+    file: firstGovernedFile,
+    reason: `governed media changes exceed the ${formatMiB(MAX_GOVERNED_CHANGE_BYTES)} pull-request budget`,
+    size: governedChangeBytes,
+  })
+}
+
+if (totalChangeBytes > MAX_TOTAL_CHANGE_BYTES && firstChangedFile) {
+  violations.push({
+    file: firstChangedFile,
+    reason: `changed files exceed the ${formatMiB(MAX_TOTAL_CHANGE_BYTES)} pull-request budget`,
+    size: totalChangeBytes,
+  })
 }
 
 if (violations.length > 0) {
@@ -202,4 +320,4 @@ if (violations.length > 0) {
   process.exit(1)
 }
 
-console.log(`Media guard passed for ${files.length} changed file(s).`)
+console.log(`Media guard passed for ${entries.length} changed path(s).`)

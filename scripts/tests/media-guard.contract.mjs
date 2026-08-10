@@ -6,6 +6,8 @@ import { dirname, join } from "node:path"
 import test from "node:test"
 import { fileURLToPath } from "node:url"
 
+// The .contract suffix keeps repository-wide Vitest discovery from treating
+// this Node-native suite as a Vitest module.
 const MIB = 1024 * 1024
 const guard = fileURLToPath(new URL("../media-guard.mjs", import.meta.url))
 
@@ -36,8 +38,8 @@ function commit(root, message = "scenario") {
   git(root, "commit", "--quiet", "-m", message)
 }
 
-function run(root, base, env = {}) {
-  return spawnSync(process.execPath, base ? [guard, "--base", base] : [guard], {
+function run(root, base, env = {}, extraArguments = []) {
+  return spawnSync(process.execPath, base ? [guard, ...extraArguments, "--base", base] : [guard, ...extraArguments], {
     cwd: root,
     encoding: "utf8",
     env: { ...process.env, ...env },
@@ -51,7 +53,7 @@ test("allows classified media at the exact size boundary", async (t) => {
 
   const result = run(root, base)
   assert.equal(result.status, 0, result.stderr)
-  assert.match(result.stdout, /passed for 1 changed file/u)
+  assert.match(result.stdout, /passed for 1 changed path/u)
 })
 
 test("rejects oversized classified web media", async (t) => {
@@ -122,7 +124,7 @@ test("rejects dangling symlinks in controlled media paths", async (t) => {
 
   const result = run(root, base)
   assert.equal(result.status, 1)
-  assert.match(result.stderr, /media paths must not be symbolic links/u)
+  assert.match(result.stderr, /must not be symbolic links/u)
 })
 
 test("escapes workflow-command messages derived from hostile extensions", async (t) => {
@@ -175,4 +177,132 @@ test("allows explicit text and config sidecars at controlled roots", async (t) =
 
   const result = run(root, base)
   assert.equal(result.status, 0, result.stderr)
+})
+
+test("rejects unclassified media in nested monorepo public roots", async (t) => {
+  const { root, base } = await repository(t)
+  await write(root, "apps/web/public/root.jxl", "unclassified media")
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /\.jxl is not a classified web-media format/u)
+})
+
+test("rejects classified-media symlinks outside controlled paths", async (t) => {
+  const { root, base } = await repository(t)
+  await write(root, "payload.bin", Buffer.alloc(3 * MIB))
+  await mkdir(join(root, "assets"), { recursive: true })
+  await symlink("../payload.bin", join(root, "assets/hero.png"))
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /must not be symbolic links/u)
+  assert.match(result.stderr, /unclassified file exceeds the 2\.00 MiB Git limit/u)
+})
+
+test("rejects regular-file to symlink type changes", async (t) => {
+  const { root } = await repository(t)
+  await write(root, "public/images/hero.png", "baseline image")
+  commit(root, "tracked image")
+  const typeChangeBase = git(root, "rev-parse", "HEAD").trim()
+  await rm(join(root, "public/images/hero.png"))
+  await symlink("../../payload.bin", join(root, "public/images/hero.png"))
+  commit(root)
+
+  const result = run(root, typeChangeBase)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /must not be symbolic links/u)
+})
+
+test("rejects oversized allowed sidecars", async (t) => {
+  const { root, base } = await repository(t)
+  await write(root, "generated_imgs/catalog.json", Buffer.alloc(512 * 1024 + 1))
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /\.json sidecar exceeds the 0\.50 MiB Git limit/u)
+})
+
+test("rejects oversized generic files outside media paths", async (t) => {
+  const { root, base } = await repository(t)
+  await write(root, "payload.bin", Buffer.alloc(2 * MIB + 1))
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /unclassified file exceeds the 2\.00 MiB Git limit/u)
+})
+
+test("rejects aggregate governed-media debt", async (t) => {
+  const { root, base } = await repository(t)
+  for (let index = 0; index < 6; index += 1) {
+    await write(root, `public/images/asset-${index}.png`, Buffer.alloc(MIB))
+  }
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /governed media changes exceed the 5\.00 MiB pull-request budget/u)
+})
+
+test("rejects aggregate repository bloat", async (t) => {
+  const { root, base } = await repository(t)
+  for (let index = 0; index < 11; index += 1) {
+    await write(root, `fixtures/chunk-${index}.txt`, Buffer.alloc(2 * MIB))
+  }
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /changed files exceed the 20\.00 MiB pull-request budget/u)
+})
+
+test("protects the media-guard trust roots from deletion", async (t) => {
+  const { root } = await repository(t)
+  await write(root, ".github/workflows/media-guard.yml", "name: trusted\n")
+  commit(root, "trusted policy")
+  const policyBase = git(root, "rev-parse", "HEAD").trim()
+  await rm(join(root, ".github/workflows/media-guard.yml"))
+  commit(root)
+
+  const result = run(root, policyBase, {}, ["--protect-policy"])
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /trust roots require an administrator-authorized policy update/u)
+})
+
+test("rejects Git submodules masquerading as media files", async (t) => {
+  const { root, base } = await repository(t)
+  const source = await mkdtemp(join(tmpdir(), "media-guard-submodule-"))
+  t.after(() => rm(source, { recursive: true, force: true }))
+  git(source, "init", "--quiet")
+  git(source, "config", "user.email", "media-guard@example.test")
+  git(source, "config", "user.name", "Media Guard Test")
+  await write(source, "README.md", "submodule payload\n")
+  git(source, "add", ".")
+  git(source, "commit", "--quiet", "-m", "payload")
+  git(root, "-c", "protocol.file.allow=always", "submodule", "add", "--quiet", source, "public/images/hero.png")
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /must be regular files/u)
+})
+
+test("rejects Git LFS pointer media", async (t) => {
+  const { root, base } = await repository(t)
+  await write(
+    root,
+    "public/images/hero.png",
+    "version https://git-lfs.github.com/spec/v1\n" +
+      `oid sha256:${"a".repeat(64)}\n` +
+      "size 1073741824\n",
+  )
+  commit(root)
+
+  const result = run(root, base)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /Git LFS pointers are not permitted/u)
 })

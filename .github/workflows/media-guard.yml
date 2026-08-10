@@ -1,8 +1,9 @@
 name: Media Guard
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [main, staging]
+    types: [opened, synchronize, reopened, ready_for_review, edited, labeled, unlabeled]
 
 permissions:
   contents: read
@@ -13,10 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Check out trusted base policy
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           fetch-depth: 0
+          path: trusted-base
           persist-credentials: false
+          ref: ${{ github.event.pull_request.base.sha }}
 
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
@@ -25,8 +29,44 @@ jobs:
           # packageManager metadata and requires pnpm before this no-install job.
           package-manager-cache: false
 
-      - name: Media guard regression contract
-        run: node --test scripts/tests/media-guard.test.mjs
+      - name: Stage trusted policy outside the PR workspace
+        run: |
+          install -d "$RUNNER_TEMP/media-guard/scripts/tests"
+          install -m 0644 trusted-base/scripts/media-guard.mjs "$RUNNER_TEMP/media-guard/scripts/media-guard.mjs"
+          install -m 0644 trusted-base/scripts/tests/media-guard.contract.mjs "$RUNNER_TEMP/media-guard/scripts/tests/media-guard.contract.mjs"
 
-      - name: Reject repository media debt
-        run: node scripts/media-guard.mjs --base ${{ github.event.pull_request.base.sha }}
+      - name: Verify trusted policy regression contract
+        run: node --test "$RUNNER_TEMP/media-guard/scripts/tests/media-guard.contract.mjs"
+
+      - name: Check out untrusted PR tree without executing it
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+          path: pr-head
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Verify immutable comparison commits
+        working-directory: pr-head
+        env:
+          EXPECTED_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD_SHA"
+          git -c protocol.file.allow=always fetch --no-tags ../trusted-base "$EXPECTED_BASE_SHA"
+          git cat-file -e "${EXPECTED_BASE_SHA}^{commit}"
+
+      - name: Reject repository media debt with trusted policy
+        working-directory: pr-head
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          # Break glass: a maintainer must apply this label to an owner/member/
+          # collaborator PR. Label changes rerun the trusted base workflow.
+          POLICY_UPDATE_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'media-policy-change-approved') && (github.event.pull_request.author_association == 'OWNER' || github.event.pull_request.author_association == 'MEMBER' || github.event.pull_request.author_association == 'COLLABORATOR') }}
+        run: |
+          policy_arguments=(--protect-policy)
+          if [[ "$POLICY_UPDATE_APPROVED" == "true" ]]; then
+            policy_arguments=()
+          fi
+          node "$RUNNER_TEMP/media-guard/scripts/media-guard.mjs" "${policy_arguments[@]}" --base "$BASE_SHA"
