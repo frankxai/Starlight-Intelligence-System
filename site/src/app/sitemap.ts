@@ -6,6 +6,8 @@ const BASE = "https://starlightintelligence.org";
 
 const STATIC_ROUTES = [
   "",
+  "/constitution",
+  "/perspectives/personal-superintelligence-for-everyone",
   "/protocol",
   "/download",
   "/quickstart",
