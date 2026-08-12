@@ -1,0 +1,179 @@
+{
+  "$schema": "../../schemas/starlight-upstreams.schema.json",
+  "schema_version": "1.0.0",
+  "audit_cutoff": "2026-08-12",
+  "owner": "Starlight architecture board",
+  "policy": {
+    "standards": "Conformance tests; do not fork",
+    "runtime_dependency": "Pin version and lockfile; contract, security, cost, and eval gates",
+    "reference_harness": "Lab adapter only; adopt primitives through ADRs",
+    "memory_provider": "Projection only; Starlight retains evidence, policy, and deletion authority"
+  },
+  "upstreams": [
+    {
+      "id": "ruflo",
+      "class": "reference_harness",
+      "repository": "https://github.com/ruvnet/ruflo",
+      "track": "v3.38.0",
+      "verified_at": "2026-08-12",
+      "adoption": "lab",
+      "owner": "starlight-agent-lab",
+      "primitive": "optional plugins, authorization receipts, budgets, telemetry, poisoning defense, doctor/migrations",
+      "security_notes": "No wholesale import; regression-test concurrent memory writes and reject unpinned launches"
+    },
+    {
+      "id": "oh-my-openagent",
+      "class": "reference_harness",
+      "repository": "https://github.com/code-yeongyu/oh-my-openagent",
+      "track": "stable v4.19.4; lab v5.0.0-beta.6",
+      "verified_at": "2026-08-12",
+      "adoption": "lab",
+      "owner": "starlight-agent-lab",
+      "primitive": "planner-reviewer-executor separation, routing, hash-anchored edits, LSP/AST checks, completion events",
+      "security_notes": "Pin stable; no unbounded loops, shared writers, or default telemetry"
+    },
+    {
+      "id": "omnigent",
+      "class": "reference_harness",
+      "repository": "https://github.com/omnigent-ai/omnigent",
+      "track": "v0.9.0",
+      "verified_at": "2026-08-12",
+      "adoption": "lab",
+      "owner": "starlight-agent-lab",
+      "primitive": "common runner, capability catalog, policies, budgets, isolated runners, session routing",
+      "security_notes": "Retain explicit approval authority; upstream remains 0.x"
+    },
+    {
+      "id": "openai-agent-standards",
+      "class": "standards",
+      "repository": "https://github.com/openai/agents.md",
+      "track": "official specification and Codex documentation",
+      "verified_at": "2026-08-12",
+      "adoption": "conformance",
+      "owner": "Starlight-Intelligence-System",
+      "primitive": "AGENTS.md and Agent Skills portability",
+      "security_notes": "Keep entry-point instructions small; repo documentation remains source of truth"
+    },
+    {
+      "id": "openai-agents-sdk",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/openai/openai-agents-js",
+      "track": "evaluate pinned release before adapter promotion",
+      "verified_at": "2026-08-12",
+      "adoption": "candidate",
+      "owner": "starlight-swarm",
+      "primitive": "agent loop, tools, handoffs, sessions, guardrails, tracing, sandbox workspaces",
+      "security_notes": "Conversation state and workspace snapshots are not durable Starlight memory"
+    },
+    {
+      "id": "pydantic-ai-harness",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/pydantic/pydantic-ai",
+      "track": "harness v0.18.1",
+      "verified_at": "2026-08-12",
+      "adoption": "candidate",
+      "owner": "starlight-evals",
+      "primitive": "capabilities, CAS/idempotency, budgets, durable Python workers",
+      "security_notes": "0.x harness API; model-authored capabilities remain untrusted"
+    },
+    {
+      "id": "mastra-agent-controller",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/mastra-ai/mastra",
+      "track": "beta; pin exact package during evaluation",
+      "verified_at": "2026-08-12",
+      "adoption": "candidate",
+      "owner": "starlight-command-center",
+      "primitive": "sessions, modes, approvals, steer/interrupt/queue, channels, events, subagents, workspaces",
+      "security_notes": "Do not adopt beta schemas as canonical Starlight contracts"
+    },
+    {
+      "id": "langgraph",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/langchain-ai/langgraph",
+      "track": "pin only where deterministic durable workflows are required",
+      "verified_at": "2026-08-12",
+      "adoption": "candidate",
+      "owner": "starlight-swarm",
+      "primitive": "checkpoints, interrupts, replay, time travel, human-in-the-loop",
+      "security_notes": "Workflow layer only; durable-wrap non-idempotent effects"
+    },
+    {
+      "id": "graphiti",
+      "class": "memory_provider",
+      "repository": "https://github.com/getzep/graphiti",
+      "track": "v0.29.3; core security floor 0.28.2; MCP floor 1.0.2",
+      "verified_at": "2026-08-12",
+      "adoption": "shadow",
+      "owner": "starlight-memory",
+      "primitive": "bitemporal claims, invalidation, episode provenance, hybrid graph retrieval",
+      "security_notes": "Enforce authorization before provider access; group_id is not a tenant boundary; older filters had Cypher injection"
+    },
+    {
+      "id": "letta-code",
+      "class": "memory_provider",
+      "repository": "https://github.com/letta-ai/letta-code",
+      "track": "v0.30.19",
+      "verified_at": "2026-08-12",
+      "adoption": "pattern",
+      "owner": "starlight-memory",
+      "primitive": "Git MemFS, pinned versus on-demand memory, agent-private guard, dreaming, doctor",
+      "security_notes": "Track Letta Code, not legacy letta-ai/letta; use one consolidator for shared rewrites"
+    },
+    {
+      "id": "hindsight",
+      "class": "memory_provider",
+      "repository": "https://github.com/vectorize-io/hindsight",
+      "track": "pin immutable revision for shadow evaluation",
+      "verified_at": "2026-08-12",
+      "adoption": "shadow",
+      "owner": "starlight-memory",
+      "primitive": "separate evidence, experience, entity summary, and belief networks",
+      "security_notes": "Application authentication and authorization remain mandatory"
+    },
+    {
+      "id": "mem0",
+      "class": "memory_provider",
+      "repository": "https://github.com/mem0ai/mem0",
+      "track": "v3 API; contract-test OSS and Platform separately",
+      "verified_at": "2026-08-12",
+      "adoption": "shadow",
+      "owner": "starlight-memory",
+      "primitive": "ADD-only extraction, entity-assisted hybrid search, temporal ranking, expiry, decay",
+      "security_notes": "OSS v3 migration removes graph drivers despite inconsistent overview documentation"
+    },
+    {
+      "id": "cognee",
+      "class": "memory_provider",
+      "repository": "https://github.com/topoteretes/cognee",
+      "track": "v1.4.2",
+      "verified_at": "2026-08-12",
+      "adoption": "shadow",
+      "owner": "starlight-memory",
+      "primitive": "remember-recall-improve promotion lifecycle",
+      "security_notes": "Test concurrent improve, partial failure, stale-lock reclamation, and recovery"
+    },
+    {
+      "id": "mempalace",
+      "class": "memory_provider",
+      "repository": "https://github.com/MemPalace/mempalace",
+      "track": "release or immutable image digest; never floating develop",
+      "verified_at": "2026-08-12",
+      "adoption": "shadow",
+      "owner": "starlight-memory",
+      "primitive": "verbatim-first local evidence and raw-recall baseline",
+      "security_notes": "Retrieval recall is not answer accuracy; hierarchy is metadata scoping; verify RBAC and deletion"
+    },
+    {
+      "id": "memp",
+      "class": "memory_provider",
+      "repository": "https://github.com/zjunlp/MemP",
+      "track": "research reference",
+      "verified_at": "2026-08-12",
+      "adoption": "pattern",
+      "owner": "starlight-agent-skills",
+      "primitive": "versioned procedural-memory extraction, correction, and deprecation",
+      "security_notes": "Never promote learned procedures without repeated success, tests, provenance, and review"
+    }
+  ]
+}
