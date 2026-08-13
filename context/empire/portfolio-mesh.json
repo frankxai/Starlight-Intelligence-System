@@ -33,8 +33,8 @@
         "agents": 144,
         "commands": 28,
         "installed_commands": 121,
-        "measured_at": "2026-08-07",
-        "schemas": 1
+        "schemas": 1,
+        "measured_at": "2026-08-07"
       }
     },
     {
