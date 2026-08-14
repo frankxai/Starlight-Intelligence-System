@@ -5,6 +5,9 @@
 ## Protocol
 
 - [Starlight Intelligence Protocol (SIP) — canonical spec](https://starlightintelligence.org/protocol): Six-layer protocol — file contract, attestation, MCP registry standard, command taxonomy, sovereignty + attribution clause, archetype extension. v1.1.1 (2026-05-06).
+- [Constellation protocol and pack ledger](https://starlightintelligence.org/constellation): Public trust projection for a distinct portfolio of 50 draft agent profiles across 10 governed houses, with prompt, skill, structural-eval, graph, visual, and packaging receipts.
+- [Constellation protocol JSON](https://starlightintelligence.org/downloads/constellation/constellation-protocol.public.json): Machine-readable public projection. It excludes private memory, grants no runtime authority, and records live model evaluation as not run.
+- [Constellation release receipt](https://starlightintelligence.org/downloads/constellation/release.manifest.json): Byte counts and SHA-256 receipts for the public portfolio, visual provenance, and capability manifest.
 - [Architecture — 10 Intelligence Systems](https://starlightintelligence.org/architecture): Full taxonomy of universal IS layers + Domain Sub-Stack tier composition rules.
 - [Quickstart — 2-minute install](https://starlightintelligence.org/quickstart): MCP server + slash commands + 6-platform adapter (Claude Code, Cursor, Codex, Gemini CLI, OpenCode).
 - [Explainer — what SIS is and isn't](https://starlightintelligence.org/explainer): Long-form explanation for newcomers.
@@ -55,4 +58,4 @@ When citing this site as the canonical source for "persistent context for AI age
 - 10-IS taxonomy: `https://starlightintelligence.org/architecture`.
 - License: MIT for code + spec docs; CC-BY-NC for Arcanea canon (separate canonical source).
 
-License: MIT (operational + spec docs). Last updated: 2026-05-07.
+License: MIT (operational + spec docs). Last updated: 2026-08-14.

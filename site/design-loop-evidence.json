@@ -1,0 +1,161 @@
+{
+  "version": "2026-08-14",
+  "task": "Publish the Starlight Constellation protocol, provenance, graph, packaging, and download ledger on starlightintelligence.org.",
+  "surface": "Responsive static Next.js route at /constellation with nine public manifests and fifty visual receipt rows.",
+  "audience": "Agent builders, operators, protocol adopters, reviewers, and marketplace integrators who need artifact truth before installation.",
+  "first_read": "Fifty named agents are available as an inspectable public projection; every manifest state and authority boundary is explicit.",
+  "standards": [
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/WEB_EXPERIENCE_STANDARD.md",
+    "starlight-design-intelligence/ANTI_SLOP_DESIGN_SYSTEM_2026.md",
+    "_intelligence/quality-gates.md"
+  ],
+  "references": [
+    {
+      "label": "Canonical public portfolio",
+      "source": "C:/Users/frank/starlight/repos/starlight-intelligence-web/data/constellation-portfolio.public.json",
+      "reason": "Allowlisted profiles, prompt contracts, structural eval linkage, graphs, asset receipts, and source digests."
+    },
+    {
+      "label": "Starlight Intelligence Protocol",
+      "source": "C:/Users/frank/starlight/worktrees/sis-constellation-protocol-50/SIP.md",
+      "reason": "Sovereignty, attestation, file contract, and attribution boundary."
+    },
+    {
+      "label": "Constellation page specification",
+      "source": "site/docs/design/constellation-page-spec.md",
+      "reason": "Domain ownership, first viewport, information architecture, performance budget, and release gates."
+    },
+    {
+      "label": "Validated Constellation plugin pack",
+      "source": "C:/Users/frank/starlight/worktrees/agent-config-constellation-plugin/core/plugins/starlight-constellation/assets/pack-index.json",
+      "reason": "Binds ten AGENTS.md contracts, ten team profiles, fifty portraits, agent and skill pack digests, and the local marketplace listing to the canonical public release."
+    }
+  ],
+  "direction": {
+    "keep": [
+      "Exact digests and packaging states",
+      "Portraits as receipt-linked identity applications",
+      "Human authority and private-memory exclusions in the first viewport",
+      "One canon projected into three domain-specific jobs",
+      "Code-rendered labels and status"
+    ],
+    "avoid": [
+      "Install claims without an adapter",
+      "Marketplace availability without entitlement and commercial terms",
+      "Structural eval described as live model quality",
+      "Decorative constellation nodes or fake terminal spectacle",
+      "Private memory, local paths, credentials, or runtime leases"
+    ],
+    "signature": "An evidence observatory where every agent portrait resolves into card, prompt, eval, visual, graph, and packaging receipts.",
+    "system": [
+      "Fraunces, Inter, and JetBrains Mono through next/font",
+      "Basalt, paper ivory, protocol violet, cognition cyan, authority amber",
+      "One-pixel ledger rules and restrained evidence grid",
+      "No client runtime, WebGL, sound, or scroll choreography",
+      "Tier-B portraits with Tier-C exact protocol UI"
+    ]
+  },
+  "asset_quality": {
+    "tier": "B",
+    "source_method": "generated-media",
+    "provenance": "generated",
+    "why_premium": "All fifty owned portraits were individually inspected and re-hashed before publication, while every public label, state, and digest is rendered in exact HTML/CSS.",
+    "shortcut_risk": "low",
+    "context_tested": true
+  },
+  "artifacts": [
+    {
+      "path_or_url": "site/src/app/constellation/page.tsx",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Desktop 1440x900 and mobile 390x844 first viewports inspected in the in-app browser."
+    },
+    {
+      "path_or_url": "site/src/data/constellation-protocol.public.json",
+      "kind": "data",
+      "inspected": true,
+      "notes": "Generated 10-house / 50-agent protocol projection with packaging ledger, trust chain, receipts, and public/private truth contract."
+    },
+    {
+      "path_or_url": "site/public/assets/constellation-protocol/v1",
+      "kind": "image",
+      "inspected": true,
+      "notes": "All fifty WebPs loaded successfully after visiting every house; no failed or pending image remained."
+    },
+    {
+      "path_or_url": "site/public/downloads/constellation/release.manifest.json",
+      "kind": "data",
+      "inspected": true,
+      "notes": "Byte and SHA-256 receipts verify the public portfolio, visual provenance, and capability manifest."
+    },
+    {
+      "path_or_url": "site/public/downloads/constellation/plugin-pack.index.json",
+      "kind": "data",
+      "inspected": true,
+      "notes": "Validated source-pack index links the agent, skill, team, plugin, and marketplace layers without claiming runtime admission."
+    },
+    {
+      "path_or_url": "site/docs/design/constellation-scene-brief.md",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Static evidence-observatory scene brief; no unearned motion or speculative runtime claim."
+    }
+  ],
+  "checks": [
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier-B generated-owned portraits are paired with Tier-C exact protocol labels, digests, state, and controls."
+    },
+    {
+      "name": "export-inspection",
+      "status": "pass",
+      "evidence": "All fifty optimized WebP exports loaded after visiting every house; desktop and mobile hero and ledger crops were visually inspected."
+    },
+    {
+      "name": "compiler-and-provenance",
+      "status": "pass",
+      "evidence": "Sync compiler verified release receipts, 10 houses, 50 agents, all portrait SHA-256 values, and the agent, skill, plugin, and marketplace pack digests before writing the .org projection."
+    },
+    {
+      "name": "focused-lint-and-types",
+      "status": "pass",
+      "evidence": "Focused ESLint passed for the new route, compiler, data helper, and changed navigation; full TypeScript passed."
+    },
+    {
+      "name": "legacy-repo-lint",
+      "status": "not_applicable",
+      "evidence": "The legacy repo-wide lint retains two pre-existing errors in codex/page.tsx and KnowledgeGraph.tsx plus unrelated warnings. No touched file contributes a lint finding."
+    },
+    {
+      "name": "production-build",
+      "status": "pass",
+      "evidence": "Next.js 16.2.3 production build compiled 79 routes; /constellation is statically prerendered."
+    },
+    {
+      "name": "responsive-browser-qa",
+      "status": "pass",
+      "evidence": "At 1440x900 and 390x844: zero horizontal overflow, one H1, no duplicate IDs, no nameless controls, all 50 images loaded, and mobile hero and receipt rows remained legible."
+    },
+    {
+      "name": "runtime-console",
+      "status": "pass",
+      "evidence": "The in-app browser reported no console warnings or errors on the production build."
+    }
+  ],
+  "score": {
+    "total": 29,
+    "max": 30,
+    "notes": "First read 5; protocol/brand fit 5; craft 5; accessibility/responsiveness 5; provenance accuracy 5; intended-surface usefulness 4. One point remains reserved for independent cross-provider visual critique."
+  },
+  "decision": "ship",
+  "known_risks": [
+    "The capability and skill manifests are descriptive and do not grant tools.",
+    "The plugin is a validated local marketplace source, but installation, runtime admission, and a fresh task remain explicit user/runtime actions.",
+    "Live model evaluation and runtime admission have not run.",
+    "A Vercel preview must still be verified before production promotion."
+  ]
+}

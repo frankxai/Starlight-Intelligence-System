@@ -32,6 +32,7 @@ export function Header() {
         {/* Desktop nav */}
         <div className="hidden items-center gap-0.5 min-[1500px]:flex">
           <NavLink href="/protocol">Protocol</NavLink>
+          <NavLink href="/constellation">Constellation</NavLink>
           <NavLink href="/research">Research</NavLink>
           <NavLink href="/download">Download</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
@@ -58,6 +59,7 @@ export function Header() {
         {/* Tablet nav — condensed */}
         <div className="hidden items-center gap-1 sm:flex min-[1500px]:hidden">
           <NavLink href="/protocol">Protocol</NavLink>
+          <NavLink href="/constellation">Constellation</NavLink>
           <NavLink href="/research">Research</NavLink>
           <NavLink href="/download">Download</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
@@ -85,6 +87,7 @@ export function Header() {
             className="absolute right-0 top-full z-50 mt-2 flex w-48 flex-col gap-0.5 rounded-lg border border-white/[0.10] bg-[#0c0c12] p-2 shadow-2xl"
           >
             <NavLink href="/protocol">Protocol</NavLink>
+            <NavLink href="/constellation">Constellation</NavLink>
             <NavLink href="/research">Research</NavLink>
             <NavLink href="/download">Download</NavLink>
             <NavLink href="/quickstart">Quickstart</NavLink>

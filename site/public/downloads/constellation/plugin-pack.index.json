@@ -1,0 +1,52 @@
+{
+  "schema_version": "starlight.constellation_plugin_pack.v1",
+  "plugin": "starlight-constellation",
+  "version": "0.1.0",
+  "generated_on": "2026-08-14",
+  "counts": {
+    "houses": 10,
+    "agents": 50,
+    "portraits": 50,
+    "skills": 49,
+    "team_profiles": 10,
+    "agents_contracts": 10
+  },
+  "source": {
+    "catalog_sha256": "da969f005eb4d7a4dfe427aa94d1226af61f9e62a7be9bef974ad55b646735f4",
+    "public_projection_sha256": "0087e2abfcdae567b52362f62b95602836b3125e82c258ff801fcdf9ce044521",
+    "capability_pack_digest": "sha256:51212fcdbe85433a30949bfb3352761515e6fd4b632939c3634349334b01d31c",
+    "release_sha256": "8bda697e9239a4c3c0c72bb39e9be9583650c270eca2022e4aee59cfe0a252d1"
+  },
+  "packs": {
+    "agent_pack": "sha256:24b637e9b3e218ec1f702d7553d186c9f0bada188c828535a1a6b22d0a04231c",
+    "skill_pack": "sha256:fd3a579b6ddad0ec164f84345a0fd5610ab367b063db15de3b1558f575b1cdc6"
+  },
+  "copied_artifacts": [
+    {
+      "path": "assets/portfolio.public.json",
+      "sha256": "0087e2abfcdae567b52362f62b95602836b3125e82c258ff801fcdf9ce044521",
+      "bytes": 408988
+    },
+    {
+      "path": "assets/capability-pack.manifest.json",
+      "sha256": "b2735b8d9a0d14fff266258668a26653ce058272b45e7bda8fbde772475f48ab",
+      "bytes": 113017
+    },
+    {
+      "path": "assets/visual-provenance.manifest.json",
+      "sha256": "1ef15079f23ab8340dda9b4ba1d9a40202225953d9c106fb9bfb1110a2098cfe",
+      "bytes": 84455
+    },
+    {
+      "path": "assets/release.manifest.json",
+      "sha256": "8bda697e9239a4c3c0c72bb39e9be9583650c270eca2022e4aee59cfe0a252d1",
+      "bytes": 1046
+    }
+  ],
+  "truth_contract": {
+    "grants_authority": false,
+    "runtime_admission": "not_included",
+    "live_eval_status": "not_run",
+    "claim": "Structural validation and fixture linkage only; no live model-quality or deployment claim"
+  }
+}

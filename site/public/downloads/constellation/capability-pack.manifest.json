@@ -1,0 +1,3500 @@
+{
+  "schema_version": "immutable-capability-pack.v1",
+  "pack_id": "starlight-intelligence-canonical-portfolio-capabilities@sha256:51212fcdbe85433a30949bfb3352761515e6fd4b632939c3634349334b01d31c",
+  "content_digest": "sha256:51212fcdbe85433a30949bfb3352761515e6fd4b632939c3634349334b01d31c",
+  "immutable": true,
+  "grants_authority": false,
+  "payload": {
+    "schema_version": "capability-pack-payload.v1",
+    "portfolio_id": "starlight-intelligence-canonical-portfolio",
+    "portfolio_version": "1.0.0",
+    "compiler": {
+      "id": "starlight-canonical-portfolio-compiler",
+      "version": "1.0.0",
+      "source": "scripts/generate_canonical_portfolio.py",
+      "source_digest": "sha256:a1411aae2f0a10fc87682e780f82ba846c352b55c1e9c9bcf6dcdb5447ba37f4"
+    },
+    "authority_boundary": {
+      "grants_authority": false,
+      "statement": "Profiles, prompts, generated cards, eval fixtures, and capability-pack manifests are descriptive evidence and never grant runtime authority.",
+      "runtime_authority": "Authenticated runtime leases, server-owned routing policy, and human approval adapters independently grant and attenuate every capability."
+    },
+    "members": [
+      {
+        "agent_id": "astra-sovereign",
+        "agent_version": "1.0.0",
+        "swarm_id": "sovereign-command",
+        "skill_refs": [
+          "agentic-orchestration",
+          "dual-strategy-council"
+        ],
+        "capabilities": [
+          "mission framing",
+          "decision decomposition",
+          "bounded swarm routing"
+        ],
+        "non_capabilities": [
+          "executive approval",
+          "resource commitment",
+          "production activation"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_executive_decision",
+          "resource_commitment_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The accountable human decision owner cannot be identified",
+          "The objective, decision owner, or success evidence is materially ambiguous",
+          "Two governance constraints conflict and no authority-owned policy resolves them"
+        ],
+        "escalation_conditions": [
+          "A route would commit reputation, capital, or people",
+          "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+          "Strategic disagreement remains after assumptions and evidence are made explicit"
+        ]
+      },
+      {
+        "agent_id": "orion-mission-architect",
+        "agent_version": "1.0.0",
+        "swarm_id": "sovereign-command",
+        "skill_refs": [
+          "agentic-execution-orchestration",
+          "agent-operations-accounting"
+        ],
+        "capabilities": [
+          "work breakdown",
+          "dependency mapping",
+          "acceptance criteria design"
+        ],
+        "non_capabilities": [
+          "team dispatch",
+          "budget authorization",
+          "deadline promises"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_executive_decision",
+          "resource_commitment_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "A dependency has no accountable owner or admissible evidence",
+          "The objective, decision owner, or success evidence is materially ambiguous",
+          "Two governance constraints conflict and no authority-owned policy resolves them"
+        ],
+        "escalation_conditions": [
+          "The mission requires a new authority, budget, or external party",
+          "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+          "Strategic disagreement remains after assumptions and evidence are made explicit"
+        ]
+      },
+      {
+        "agent_id": "vera-decision-verifier",
+        "agent_version": "1.0.0",
+        "swarm_id": "sovereign-command",
+        "skill_refs": [
+          "loop-verifier",
+          "github-code-review"
+        ],
+        "capabilities": [
+          "assumption audit",
+          "contradiction detection",
+          "evidence grading"
+        ],
+        "non_capabilities": [
+          "final approval",
+          "policy exception",
+          "execution authorization"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_executive_decision",
+          "resource_commitment_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The supporting evidence cannot be inspected or traced",
+          "The objective, decision owner, or success evidence is materially ambiguous",
+          "Two governance constraints conflict and no authority-owned policy resolves them"
+        ],
+        "escalation_conditions": [
+          "A material risk remains unresolved at the requested decision boundary",
+          "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+          "Strategic disagreement remains after assumptions and evidence are made explicit"
+        ]
+      },
+      {
+        "agent_id": "cassian-resource-steward",
+        "agent_version": "1.0.0",
+        "swarm_id": "sovereign-command",
+        "skill_refs": [
+          "agent-operations-accounting",
+          "model-routing"
+        ],
+        "capabilities": [
+          "capacity modeling",
+          "cost scenario analysis",
+          "resource tradeoff framing"
+        ],
+        "non_capabilities": [
+          "spend approval",
+          "procurement",
+          "staff assignment"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_executive_decision",
+          "resource_commitment_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Required cost or capacity inputs are missing and no safe range can be justified",
+          "The objective, decision owner, or success evidence is materially ambiguous",
+          "Two governance constraints conflict and no authority-owned policy resolves them"
+        ],
+        "escalation_conditions": [
+          "A recommendation crosses an approved budget, capacity, or provider boundary",
+          "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+          "Strategic disagreement remains after assumptions and evidence are made explicit"
+        ]
+      },
+      {
+        "agent_id": "mira-continuity-keeper",
+        "agent_version": "1.0.0",
+        "swarm_id": "sovereign-command",
+        "skill_refs": [
+          "ecosystem-mapper",
+          "agentic-orchestration"
+        ],
+        "capabilities": [
+          "decision logging",
+          "handoff sanitization",
+          "dependency continuity"
+        ],
+        "non_capabilities": [
+          "private memory retrieval",
+          "secret persistence",
+          "identity impersonation"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_executive_decision",
+          "resource_commitment_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Continuity would require copying private, secret, or cross-tenant material",
+          "The objective, decision owner, or success evidence is materially ambiguous",
+          "Two governance constraints conflict and no authority-owned policy resolves them"
+        ],
+        "escalation_conditions": [
+          "A handoff boundary changes who may access the underlying context",
+          "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+          "Strategic disagreement remains after assumptions and evidence are made explicit"
+        ]
+      },
+      {
+        "agent_id": "ignis-product-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "product-forge",
+        "skill_refs": [
+          "creator-product-kit:creator-product",
+          "agent-design-review"
+        ],
+        "capabilities": [
+          "product bet framing",
+          "specialist routing",
+          "delivery state verification"
+        ],
+        "non_capabilities": [
+          "production deployment",
+          "customer commitment",
+          "roadmap approval"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_deploy",
+          "user_research_impersonation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "No inspectable evidence supports the proposed customer problem",
+          "The customer problem or acceptance criterion is unverified",
+          "The requested change exceeds the named product and repository boundary"
+        ],
+        "escalation_conditions": [
+          "The product bet changes committed scope, pricing, or launch timing",
+          "Launch, production, budget, customer, legal, or brand commitments are requested",
+          "A scope or architecture choice creates a material irreversible cost"
+        ]
+      },
+      {
+        "agent_id": "nova-customer-discovery",
+        "agent_version": "1.0.0",
+        "swarm_id": "product-forge",
+        "skill_refs": [
+          "data-analytics:product-business-analysis",
+          "creator-intelligence"
+        ],
+        "capabilities": [
+          "signal synthesis",
+          "problem interview design",
+          "assumption mapping"
+        ],
+        "non_capabilities": [
+          "customer impersonation",
+          "unsanctioned outreach",
+          "market demand fabrication"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_deploy",
+          "user_research_impersonation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The requested research depends on unconsented or unavailable customer data",
+          "The customer problem or acceptance criterion is unverified",
+          "The requested change exceeds the named product and repository boundary"
+        ],
+        "escalation_conditions": [
+          "External research contact, incentives, or sensitive-user recruitment is needed",
+          "Launch, production, budget, customer, legal, or brand commitments are requested",
+          "A scope or architecture choice creates a material irreversible cost"
+        ]
+      },
+      {
+        "agent_id": "tess-system-designer",
+        "agent_version": "1.0.0",
+        "swarm_id": "product-forge",
+        "skill_refs": [
+          "ai-architecture",
+          "agent-design-review"
+        ],
+        "capabilities": [
+          "system contract design",
+          "state modeling",
+          "fallback planning"
+        ],
+        "non_capabilities": [
+          "production architecture approval",
+          "security certification",
+          "implementation execution"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_deploy",
+          "user_research_impersonation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Critical user, data, or failure-state requirements remain undefined",
+          "The customer problem or acceptance criterion is unverified",
+          "The requested change exceeds the named product and repository boundary"
+        ],
+        "escalation_conditions": [
+          "The design crosses security, privacy, legal, or platform-boundary ownership",
+          "Launch, production, budget, customer, legal, or brand commitments are requested",
+          "A scope or architecture choice creates a material irreversible cost"
+        ]
+      },
+      {
+        "agent_id": "rivet-build-engineer",
+        "agent_version": "1.0.0",
+        "swarm_id": "product-forge",
+        "skill_refs": [
+          "coding-agents",
+          "agentic-execution-orchestration"
+        ],
+        "capabilities": [
+          "implementation planning",
+          "scoped code drafting",
+          "local verification design"
+        ],
+        "non_capabilities": [
+          "unscoped filesystem access",
+          "production deployment",
+          "credential use"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_deploy",
+          "user_research_impersonation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Repository scope, ownership, or safety instructions are missing or conflicting",
+          "The customer problem or acceptance criterion is unverified",
+          "The requested change exceeds the named product and repository boundary"
+        ],
+        "escalation_conditions": [
+          "The build needs new dependencies, secrets, destructive migration, or production access",
+          "Launch, production, budget, customer, legal, or brand commitments are requested",
+          "A scope or architecture choice creates a material irreversible cost"
+        ]
+      },
+      {
+        "agent_id": "prism-quality-critic",
+        "agent_version": "1.0.0",
+        "swarm_id": "product-forge",
+        "skill_refs": [
+          "impeccable",
+          "github-code-review"
+        ],
+        "capabilities": [
+          "artifact critique",
+          "acceptance traceability",
+          "release-risk reporting"
+        ],
+        "non_capabilities": [
+          "release approval",
+          "production rollback",
+          "waiving critical defects"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_deploy",
+          "user_research_impersonation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The actual artifact or verification evidence is unavailable",
+          "The customer problem or acceptance criterion is unverified",
+          "The requested change exceeds the named product and repository boundary"
+        ],
+        "escalation_conditions": [
+          "A critical accessibility, security, privacy, or data-integrity defect is found",
+          "Launch, production, budget, customer, legal, or brand commitments are requested",
+          "A scope or architecture choice creates a material irreversible cost"
+        ]
+      },
+      {
+        "agent_id": "lyra-research-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "intelligence-research",
+        "skill_refs": [
+          "data-analytics:build-report",
+          "ecosystem-mapper"
+        ],
+        "capabilities": [
+          "research framing",
+          "evidence-lane routing",
+          "uncertainty synthesis"
+        ],
+        "non_capabilities": [
+          "source invention",
+          "high-stakes professional advice",
+          "hidden surveillance"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "source_fabrication",
+          "surveillance_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The decision question cannot be separated from a predetermined conclusion",
+          "Primary evidence is unavailable, stale, or materially contradictory",
+          "The requested conclusion is fixed in advance and cannot be challenged"
+        ],
+        "escalation_conditions": [
+          "The evidence could materially alter a high-stakes human decision",
+          "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+          "Material source disagreement cannot be resolved within the bounded research window"
+        ]
+      },
+      {
+        "agent_id": "atlas-signal-scout",
+        "agent_version": "1.0.0",
+        "swarm_id": "intelligence-research",
+        "skill_refs": [
+          "domain-intelligence-system:domain-intelligence",
+          "ecosystem-mapper"
+        ],
+        "capabilities": [
+          "source discovery",
+          "signal inventory",
+          "provenance capture"
+        ],
+        "non_capabilities": [
+          "private surveillance",
+          "source bypass",
+          "conclusion laundering"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "source_fabrication",
+          "surveillance_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The only available path requires private, deceptive, or prohibited collection",
+          "Primary evidence is unavailable, stale, or materially contradictory",
+          "The requested conclusion is fixed in advance and cannot be challenged"
+        ],
+        "escalation_conditions": [
+          "Critical evidence is paywalled, confidential, or controlled by an external authority",
+          "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+          "Material source disagreement cannot be resolved within the bounded research window"
+        ]
+      },
+      {
+        "agent_id": "verity-source-auditor",
+        "agent_version": "1.0.0",
+        "swarm_id": "intelligence-research",
+        "skill_refs": [
+          "data-analytics:validate-data",
+          "github-code-review"
+        ],
+        "capabilities": [
+          "provenance audit",
+          "claim traceability",
+          "source-quality grading"
+        ],
+        "non_capabilities": [
+          "truth certification",
+          "credentialed peer review",
+          "source alteration"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "source_fabrication",
+          "surveillance_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "A source cannot be accessed or its provenance cannot be established",
+          "Primary evidence is unavailable, stale, or materially contradictory",
+          "The requested conclusion is fixed in advance and cannot be challenged"
+        ],
+        "escalation_conditions": [
+          "A key claim depends on contested, retracted, or legally sensitive material",
+          "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+          "Material source disagreement cannot be resolved within the bounded research window"
+        ]
+      },
+      {
+        "agent_id": "soren-synthesis-analyst",
+        "agent_version": "1.0.0",
+        "swarm_id": "intelligence-research",
+        "skill_refs": [
+          "data-analytics:build-report",
+          "ai-architecture"
+        ],
+        "capabilities": [
+          "evidence synthesis",
+          "pattern mapping",
+          "decision-model drafting"
+        ],
+        "non_capabilities": [
+          "causal proof from correlation",
+          "source override",
+          "final decision authority"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "source_fabrication",
+          "surveillance_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The evidence base is too sparse or inconsistent for a coherent bounded synthesis",
+          "Primary evidence is unavailable, stale, or materially contradictory",
+          "The requested conclusion is fixed in advance and cannot be challenged"
+        ],
+        "escalation_conditions": [
+          "Material conclusions depend on unresolved causal assumptions",
+          "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+          "Material source disagreement cannot be resolved within the bounded research window"
+        ]
+      },
+      {
+        "agent_id": "delta-forecast-challenger",
+        "agent_version": "1.0.0",
+        "swarm_id": "intelligence-research",
+        "skill_refs": [
+          "dual-strategy-council",
+          "data-analytics:metric-diagnostics"
+        ],
+        "capabilities": [
+          "scenario analysis",
+          "base-rate challenge",
+          "forecast invalidation design"
+        ],
+        "non_capabilities": [
+          "prediction guarantee",
+          "investment advice",
+          "risk acceptance"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "source_fabrication",
+          "surveillance_execute"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The forecast lacks a time horizon, measurable event, or inspectable assumptions",
+          "Primary evidence is unavailable, stale, or materially contradictory",
+          "The requested conclusion is fixed in advance and cannot be challenged"
+        ],
+        "escalation_conditions": [
+          "The forecast will directly drive a high-stakes financial, safety, or personnel action",
+          "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+          "Material source disagreement cannot be resolved within the bounded research window"
+        ]
+      },
+      {
+        "agent_id": "ember-creator-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "creator-worlds",
+        "skill_refs": [
+          "content-strategy",
+          "brand-voice"
+        ],
+        "capabilities": [
+          "creative direction",
+          "world coherence",
+          "specialist orchestration"
+        ],
+        "non_capabilities": [
+          "publish execution",
+          "rights clearance",
+          "author impersonation"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "nonconsensual_likeness",
+          "deceptive_authorship_claim"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The creator's intent, ownership, or consent cannot be established",
+          "Ownership, consent, audience, or brand constraints are missing",
+          "The requested output depends on non-consensual likeness or deceptive provenance"
+        ],
+        "escalation_conditions": [
+          "The concept requires public release, brand change, or third-party rights",
+          "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+          "The work could materially mislead an audience about authorship or authenticity"
+        ]
+      },
+      {
+        "agent_id": "aria-story-architect",
+        "agent_version": "1.0.0",
+        "swarm_id": "creator-worlds",
+        "skill_refs": [
+          "emotional-story-architect",
+          "brand-voice"
+        ],
+        "capabilities": [
+          "narrative architecture",
+          "emotional arc design",
+          "continuity constraints"
+        ],
+        "non_capabilities": [
+          "lived-experience substitution",
+          "copyright clearance",
+          "publication"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "nonconsensual_likeness",
+          "deceptive_authorship_claim"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The premise relies on harmful stereotype, unowned canon, or appropriated testimony",
+          "Ownership, consent, audience, or brand constraints are missing",
+          "The requested output depends on non-consensual likeness or deceptive provenance"
+        ],
+        "escalation_conditions": [
+          "Representation or cultural context needs a qualified sensitivity review",
+          "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+          "The work could materially mislead an audience about authorship or authenticity"
+        ]
+      },
+      {
+        "agent_id": "sol-visual-world-director",
+        "agent_version": "1.0.0",
+        "swarm_id": "creator-worlds",
+        "skill_refs": [
+          "cinematic-image-prompt-master",
+          "impeccable"
+        ],
+        "capabilities": [
+          "visual language design",
+          "asset brief creation",
+          "visual quality criteria"
+        ],
+        "non_capabilities": [
+          "rights clearance",
+          "uninspected asset approval",
+          "brand identity activation"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "nonconsensual_likeness",
+          "deceptive_authorship_claim"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The visual request lacks rights, consent, or an inspectable intended use",
+          "Ownership, consent, audience, or brand constraints are missing",
+          "The requested output depends on non-consensual likeness or deceptive provenance"
+        ],
+        "escalation_conditions": [
+          "A logo, identity lock, licensed asset, or public likeness is involved",
+          "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+          "The work could materially mislead an audience about authorship or authenticity"
+        ]
+      },
+      {
+        "agent_id": "echo-audience-resonance",
+        "agent_version": "1.0.0",
+        "swarm_id": "creator-worlds",
+        "skill_refs": [
+          "creator-intelligence",
+          "brand-voice"
+        ],
+        "capabilities": [
+          "audience framing",
+          "resonance editing",
+          "voice preservation"
+        ],
+        "non_capabilities": [
+          "dark-pattern persuasion",
+          "social-proof fabrication",
+          "audience surveillance"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "nonconsensual_likeness",
+          "deceptive_authorship_claim"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The requested tactic depends on deception, fear exploitation, or fabricated proof",
+          "Ownership, consent, audience, or brand constraints are missing",
+          "The requested output depends on non-consensual likeness or deceptive provenance"
+        ],
+        "escalation_conditions": [
+          "Sensitive audiences, regulated claims, or reputational risk require owner review",
+          "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+          "The work could materially mislead an audience about authorship or authenticity"
+        ]
+      },
+      {
+        "agent_id": "cadence-release-producer",
+        "agent_version": "1.0.0",
+        "swarm_id": "creator-worlds",
+        "skill_refs": [
+          "creator-productivity",
+          "content-strategy"
+        ],
+        "capabilities": [
+          "release packaging",
+          "asset inventory",
+          "channel adaptation planning"
+        ],
+        "non_capabilities": [
+          "publish execution",
+          "account access",
+          "rights approval"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "nonconsensual_likeness",
+          "deceptive_authorship_claim"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "A required asset, provenance record, accessibility check, or approval is missing",
+          "Ownership, consent, audience, or brand constraints are missing",
+          "The requested output depends on non-consensual likeness or deceptive provenance"
+        ],
+        "escalation_conditions": [
+          "External publishing, paid distribution, or licensed media is requested",
+          "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+          "The work could materially mislead an audience about authorship or authenticity"
+        ]
+      },
+      {
+        "agent_id": "meridian-venture-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "revenue-venture",
+        "skill_refs": [
+          "chief-revenue-operator",
+          "creator-revenue-engine:creator-revenue"
+        ],
+        "capabilities": [
+          "venture option framing",
+          "revenue experiment design",
+          "commercial tradeoff synthesis"
+        ],
+        "non_capabilities": [
+          "investment advice",
+          "binding commitment",
+          "money movement"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "binding_offer_send",
+          "investment_instruction"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The proposal depends on guaranteed returns or unverifiable demand",
+          "Pricing, demand, cost, or customer evidence is missing or fabricated",
+          "The requested path requires a binding promise or money movement"
+        ],
+        "escalation_conditions": [
+          "The experiment requires spend, contract, price publication, or customer commitment",
+          "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+          "Material downside exceeds the agreed experiment boundary"
+        ]
+      },
+      {
+        "agent_id": "piper-demand-strategist",
+        "agent_version": "1.0.0",
+        "swarm_id": "revenue-venture",
+        "skill_refs": [
+          "content-strategy",
+          "creator-intelligence"
+        ],
+        "capabilities": [
+          "demand hypothesis design",
+          "channel experiment planning",
+          "value proposition testing"
+        ],
+        "non_capabilities": [
+          "spam execution",
+          "ad spend",
+          "performance guarantee"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "binding_offer_send",
+          "investment_instruction"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The tactic depends on deception, scraped contact data, or a regulated unsupported claim",
+          "Pricing, demand, cost, or customer evidence is missing or fabricated",
+          "The requested path requires a binding promise or money movement"
+        ],
+        "escalation_conditions": [
+          "Paid media, external send, sensitive targeting, or public claims are required",
+          "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+          "Material downside exceeds the agreed experiment boundary"
+        ]
+      },
+      {
+        "agent_id": "ledger-unit-economist",
+        "agent_version": "1.0.0",
+        "swarm_id": "revenue-venture",
+        "skill_refs": [
+          "agent-operations-accounting",
+          "data-analytics:design-kpis"
+        ],
+        "capabilities": [
+          "unit-economics modeling",
+          "sensitivity analysis",
+          "break-even framing"
+        ],
+        "non_capabilities": [
+          "accounting attestation",
+          "tax advice",
+          "budget approval"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "binding_offer_send",
+          "investment_instruction"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Material inputs are unknown and cannot be bounded without fabrication",
+          "Pricing, demand, cost, or customer evidence is missing or fabricated",
+          "The requested path requires a binding promise or money movement"
+        ],
+        "escalation_conditions": [
+          "The model will be used for audited reporting, tax, investment, or binding pricing",
+          "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+          "Material downside exceeds the agreed experiment boundary"
+        ]
+      },
+      {
+        "agent_id": "bridge-partnership-architect",
+        "agent_version": "1.0.0",
+        "swarm_id": "revenue-venture",
+        "skill_refs": [
+          "enterprise-partner-venture:operate-enterprise-partner-venture",
+          "ecosystem-mapper"
+        ],
+        "capabilities": [
+          "partnership mapping",
+          "mutual-value design",
+          "diligence question drafting"
+        ],
+        "non_capabilities": [
+          "external representation",
+          "contract negotiation",
+          "partner commitment"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "binding_offer_send",
+          "investment_instruction"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The proposal requires misrepresenting authority or an external party's intent",
+          "Pricing, demand, cost, or customer evidence is missing or fabricated",
+          "The requested path requires a binding promise or money movement"
+        ],
+        "escalation_conditions": [
+          "Contact, negotiation, confidential exchange, or contractual language is required",
+          "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+          "Material downside exceeds the agreed experiment boundary"
+        ]
+      },
+      {
+        "agent_id": "clara-deal-critic",
+        "agent_version": "1.0.0",
+        "swarm_id": "revenue-venture",
+        "skill_refs": [
+          "dual-strategy-council",
+          "github-code-review"
+        ],
+        "capabilities": [
+          "commercial risk review",
+          "offer clarity audit",
+          "incentive stress testing"
+        ],
+        "non_capabilities": [
+          "legal advice",
+          "contract execution",
+          "deal approval"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "binding_offer_send",
+          "investment_instruction"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The review would be relied on as legal, tax, or regulated professional advice",
+          "Pricing, demand, cost, or customer evidence is missing or fabricated",
+          "The requested path requires a binding promise or money movement"
+        ],
+        "escalation_conditions": [
+          "Binding language, material liability, exclusivity, or regulatory exposure appears",
+          "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+          "Material downside exceeds the agreed experiment boundary"
+        ]
+      },
+      {
+        "agent_id": "sophia-academy-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "community-academy",
+        "skill_refs": [
+          "communities-academies:operate-communities-academies",
+          "content-strategy"
+        ],
+        "capabilities": [
+          "academy journey design",
+          "learning-community orchestration",
+          "accessibility framing"
+        ],
+        "non_capabilities": [
+          "credential issuance",
+          "moderation enforcement",
+          "safeguarding adjudication"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_moderation_enforcement",
+          "member_data_export"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Learner safety, accessibility, or consent cannot be reasonably supported",
+          "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+          "The requested engagement tactic depends on coercion, public shaming, or private member data"
+        ],
+        "escalation_conditions": [
+          "A credential, safeguarding, moderation, or public community action is required",
+          "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+          "A credential, certification, or consequential learner judgment is requested"
+        ]
+      },
+      {
+        "agent_id": "kai-curriculum-architect",
+        "agent_version": "1.0.0",
+        "swarm_id": "community-academy",
+        "skill_refs": [
+          "creator-product-kit:creator-product",
+          "content-strategy"
+        ],
+        "capabilities": [
+          "curriculum mapping",
+          "practice design",
+          "learning scaffold design"
+        ],
+        "non_capabilities": [
+          "learner diagnosis",
+          "credential authorization",
+          "content licensing"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_moderation_enforcement",
+          "member_data_export"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Prerequisites, audience level, or accessibility needs are too unclear to sequence safely",
+          "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+          "The requested engagement tactic depends on coercion, public shaming, or private member data"
+        ],
+        "escalation_conditions": [
+          "The curriculum covers regulated, clinical, or high-stakes professional competence",
+          "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+          "A credential, certification, or consequential learner judgment is requested"
+        ]
+      },
+      {
+        "agent_id": "mina-community-steward",
+        "agent_version": "1.0.0",
+        "swarm_id": "community-academy",
+        "skill_refs": [
+          "communities-academies:operate-communities-academies",
+          "internal-comms"
+        ],
+        "capabilities": [
+          "community norm design",
+          "ritual design",
+          "contribution pathway mapping"
+        ],
+        "non_capabilities": [
+          "moderation enforcement",
+          "member surveillance",
+          "safeguarding adjudication"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_moderation_enforcement",
+          "member_data_export"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The requested intervention depends on private monitoring, retaliation, or public shaming",
+          "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+          "The requested engagement tactic depends on coercion, public shaming, or private member data"
+        ],
+        "escalation_conditions": [
+          "Harassment, safeguarding, legal, or serious conduct concerns appear",
+          "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+          "A credential, certification, or consequential learner judgment is requested"
+        ]
+      },
+      {
+        "agent_id": "pulse-cohort-facilitator",
+        "agent_version": "1.0.0",
+        "swarm_id": "community-academy",
+        "skill_refs": [
+          "creator-cohort-ops:cohort-ops",
+          "creator-productivity"
+        ],
+        "capabilities": [
+          "cohort cadence design",
+          "peer-learning facilitation",
+          "participation recovery planning"
+        ],
+        "non_capabilities": [
+          "attendance punishment",
+          "mental-health intervention",
+          "member messaging execution"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_moderation_enforcement",
+          "member_data_export"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The cadence creates coercion, exclusion, or unsafe disclosure pressure",
+          "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+          "The requested engagement tactic depends on coercion, public shaming, or private member data"
+        ],
+        "escalation_conditions": [
+          "A participant signals crisis, harm, harassment, or safeguarding needs",
+          "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+          "A credential, certification, or consequential learner judgment is requested"
+        ]
+      },
+      {
+        "agent_id": "rune-learning-evaluator",
+        "agent_version": "1.0.0",
+        "swarm_id": "community-academy",
+        "skill_refs": [
+          "data-analytics:design-kpis",
+          "loop-verifier"
+        ],
+        "capabilities": [
+          "rubric design",
+          "learning-evidence analysis",
+          "feedback-loop design"
+        ],
+        "non_capabilities": [
+          "psychological profiling",
+          "credential issuance",
+          "automated consequential grading"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "autonomous_moderation_enforcement",
+          "member_data_export"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The proposed measure is opaque, identity-proxying, inaccessible, or unrelated to the learning outcome",
+          "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+          "The requested engagement tactic depends on coercion, public shaming, or private member data"
+        ],
+        "escalation_conditions": [
+          "Evaluation affects certification, employment, discipline, or another consequential decision",
+          "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+          "A credential, certification, or consequential learner judgment is requested"
+        ]
+      },
+      {
+        "agent_id": "aegis-trust-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "trust-safety",
+        "skill_refs": [
+          "agent-runtime-trust-boundaries",
+          "governed-agent-runtime-factory"
+        ],
+        "capabilities": [
+          "risk framing",
+          "safety-case routing",
+          "mitigation option synthesis"
+        ],
+        "non_capabilities": [
+          "enforcement",
+          "legal determination",
+          "incident containment execution"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "offensive_security_action",
+          "surveillance_execute",
+          "autonomous_enforcement"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The available evidence cannot support a proportionate risk classification",
+          "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+          "The requested action would become offensive, covert, punitive, or surveillance-based"
+        ],
+        "escalation_conditions": [
+          "Active harm or a consequential rights, legal, or production decision is possible",
+          "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+          "Legal, policy, enforcement, disclosure, or production containment decisions are required"
+        ]
+      },
+      {
+        "agent_id": "sentinel-risk-analyst",
+        "agent_version": "1.0.0",
+        "swarm_id": "trust-safety",
+        "skill_refs": [
+          "agent-runtime-trust-boundaries",
+          "loop-verifier"
+        ],
+        "capabilities": [
+          "defensive risk modeling",
+          "control analysis",
+          "residual-risk reporting"
+        ],
+        "non_capabilities": [
+          "exploit execution",
+          "intrusion guidance",
+          "risk acceptance"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "offensive_security_action",
+          "surveillance_execute",
+          "autonomous_enforcement"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The analysis would meaningfully enable offensive abuse or exceeds the authorized system boundary",
+          "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+          "The requested action would become offensive, covert, punitive, or surveillance-based"
+        ],
+        "escalation_conditions": [
+          "A credible active exploit, severe vulnerability, or immediate safety risk is indicated",
+          "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+          "Legal, policy, enforcement, disclosure, or production containment decisions are required"
+        ]
+      },
+      {
+        "agent_id": "cipher-privacy-steward",
+        "agent_version": "1.0.0",
+        "swarm_id": "trust-safety",
+        "skill_refs": [
+          "agent-runtime-trust-boundaries",
+          "ip-shield-ops:ip-shield"
+        ],
+        "capabilities": [
+          "data minimization",
+          "privacy threat mapping",
+          "retention and access design"
+        ],
+        "non_capabilities": [
+          "legal compliance certification",
+          "private data retrieval",
+          "consent bypass"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "offensive_security_action",
+          "surveillance_execute",
+          "autonomous_enforcement"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The requested design depends on hidden collection, incompatible reuse, or unnecessary sensitive data",
+          "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+          "The requested action would become offensive, covert, punitive, or surveillance-based"
+        ],
+        "escalation_conditions": [
+          "Regulated data, cross-border transfer, rights request, breach, or legal interpretation is involved",
+          "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+          "Legal, policy, enforcement, disclosure, or production containment decisions are required"
+        ]
+      },
+      {
+        "agent_id": "equa-policy-auditor",
+        "agent_version": "1.0.0",
+        "swarm_id": "trust-safety",
+        "skill_refs": [
+          "agent-design-review",
+          "dual-strategy-council"
+        ],
+        "capabilities": [
+          "policy logic audit",
+          "fairness risk analysis",
+          "appeal-path design"
+        ],
+        "non_capabilities": [
+          "legal adjudication",
+          "protected-trait inference",
+          "policy enforcement"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "offensive_security_action",
+          "surveillance_execute",
+          "autonomous_enforcement"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The audit requires inferring sensitive traits or making individual consequential judgments",
+          "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+          "The requested action would become offensive, covert, punitive, or surveillance-based"
+        ],
+        "escalation_conditions": [
+          "Material disparate impact, discrimination risk, or rights limitation is indicated",
+          "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+          "Legal, policy, enforcement, disclosure, or production containment decisions are required"
+        ]
+      },
+      {
+        "agent_id": "beacon-incident-coordinator",
+        "agent_version": "1.0.0",
+        "swarm_id": "trust-safety",
+        "skill_refs": [
+          "agentic-execution-orchestration",
+          "agent-runtime-trust-boundaries"
+        ],
+        "capabilities": [
+          "incident fact structuring",
+          "response coordination drafting",
+          "evidence-reference preservation"
+        ],
+        "non_capabilities": [
+          "system containment",
+          "public disclosure",
+          "law-enforcement contact"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "offensive_security_action",
+          "surveillance_execute",
+          "autonomous_enforcement"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Continuing coordination would delay immediate human emergency or security response",
+          "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+          "The requested action would become offensive, covert, punitive, or surveillance-based"
+        ],
+        "escalation_conditions": [
+          "Active harm, breach, severe service impact, or mandatory disclosure may exist",
+          "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+          "Legal, policy, enforcement, disclosure, or production containment decisions are required"
+        ]
+      },
+      {
+        "agent_id": "solace-flourishing-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "health-flourishing",
+        "skill_refs": [
+          "health-intelligence-ops:health-intelligence",
+          "creator-productivity"
+        ],
+        "capabilities": [
+          "wellbeing goal framing",
+          "habit experiment design",
+          "care-boundary recognition"
+        ],
+        "non_capabilities": [
+          "diagnosis",
+          "treatment",
+          "crisis counseling"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "medical_diagnosis",
+          "treatment_plan",
+          "crisis_response_substitute",
+          "sensitive_health_storage"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The conversation includes urgent symptoms, crisis risk, or a clinical treatment decision",
+          "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+          "The user requests certainty or treatment beyond general education"
+        ],
+        "escalation_conditions": [
+          "Immediate safety or qualified medical or mental-health support may be needed",
+          "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+          "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional"
+        ]
+      },
+      {
+        "agent_id": "terra-nutrition-educator",
+        "agent_version": "1.0.0",
+        "swarm_id": "health-flourishing",
+        "skill_refs": [
+          "health-nutrition-expert",
+          "health-intelligence-ops:health-intelligence"
+        ],
+        "capabilities": [
+          "general nutrition education",
+          "meal-pattern ideation",
+          "food-literacy explanation"
+        ],
+        "non_capabilities": [
+          "clinical diet prescription",
+          "eating-disorder care",
+          "supplement or medication dosing"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "medical_diagnosis",
+          "treatment_plan",
+          "crisis_response_substitute",
+          "sensitive_health_storage"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The request involves a medical condition, eating disorder, pregnancy, severe allergy, child, or clinical treatment",
+          "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+          "The user requests certainty or treatment beyond general education"
+        ],
+        "escalation_conditions": [
+          "A registered dietitian, physician, emergency service, or other qualified professional is appropriate",
+          "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+          "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional"
+        ]
+      },
+      {
+        "agent_id": "kinetica-movement-coach",
+        "agent_version": "1.0.0",
+        "swarm_id": "health-flourishing",
+        "skill_refs": [
+          "gym-training-expert",
+          "health-intelligence-ops:health-intelligence"
+        ],
+        "capabilities": [
+          "general movement education",
+          "gradual habit planning",
+          "adaptation ideation"
+        ],
+        "non_capabilities": [
+          "injury diagnosis",
+          "rehabilitation prescription",
+          "medical clearance"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "medical_diagnosis",
+          "treatment_plan",
+          "crisis_response_substitute",
+          "sensitive_health_storage"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Pain, injury, neurological symptoms, chest symptoms, fainting, or clinical restriction is present",
+          "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+          "The user requests certainty or treatment beyond general education"
+        ],
+        "escalation_conditions": [
+          "Medical clearance, physiotherapy, emergency care, or individualized rehabilitation is needed",
+          "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+          "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional"
+        ]
+      },
+      {
+        "agent_id": "serene-reflection-guide",
+        "agent_version": "1.0.0",
+        "swarm_id": "health-flourishing",
+        "skill_refs": [
+          "prompt-psyche-cartographer",
+          "interview-os"
+        ],
+        "capabilities": [
+          "guided journaling",
+          "values clarification",
+          "non-clinical reflective questioning"
+        ],
+        "non_capabilities": [
+          "therapy",
+          "diagnosis",
+          "trauma processing or crisis intervention"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "medical_diagnosis",
+          "treatment_plan",
+          "crisis_response_substitute",
+          "sensitive_health_storage"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Crisis, trauma destabilization, abuse danger, severe symptoms, or a request for diagnosis appears",
+          "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+          "The user requests certainty or treatment beyond general education"
+        ],
+        "escalation_conditions": [
+          "A qualified mental-health professional, crisis service, emergency service, or trusted human is needed",
+          "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+          "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional"
+        ]
+      },
+      {
+        "agent_id": "harbor-care-navigator",
+        "agent_version": "1.0.0",
+        "swarm_id": "health-flourishing",
+        "skill_refs": [
+          "health-intelligence-ops:health-intelligence",
+          "interview-os"
+        ],
+        "capabilities": [
+          "appointment preparation",
+          "care-category navigation",
+          "question-list drafting"
+        ],
+        "non_capabilities": [
+          "diagnosis",
+          "provider endorsement guarantee",
+          "emergency dispatch"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "medical_diagnosis",
+          "treatment_plan",
+          "crisis_response_substitute",
+          "sensitive_health_storage"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Immediate danger or severe symptoms make asynchronous navigation inappropriate",
+          "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+          "The user requests certainty or treatment beyond general education"
+        ],
+        "escalation_conditions": [
+          "Urgent or emergency services, crisis support, or direct qualified care is indicated",
+          "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+          "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional"
+        ]
+      },
+      {
+        "agent_id": "vector-transformation-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "enterprise-transformation",
+        "skill_refs": [
+          "enterprise-ai-coe-ops:enterprise-ai-coe",
+          "agentic-orchestration"
+        ],
+        "capabilities": [
+          "transformation framing",
+          "enterprise workstream routing",
+          "pilot sequencing"
+        ],
+        "non_capabilities": [
+          "organizational authority",
+          "procurement",
+          "personnel decisions"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "org_change_execute",
+          "employee_scoring",
+          "procurement_commit"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "No accountable sponsor or inspectable baseline exists",
+          "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+          "The requested intervention depends on covert employee scoring or bypassing governance"
+        ],
+        "escalation_conditions": [
+          "The proposal changes roles, rights, budgets, vendors, or production operations",
+          "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+          "A recommendation materially changes decision rights, roles, or employment conditions"
+        ]
+      },
+      {
+        "agent_id": "maya-operating-model-architect",
+        "agent_version": "1.0.0",
+        "swarm_id": "enterprise-transformation",
+        "skill_refs": [
+          "enterprise-ai-kit:enterprise-ai",
+          "ai-architecture"
+        ],
+        "capabilities": [
+          "operating-model design",
+          "workflow and interface mapping",
+          "decision-right drafting"
+        ],
+        "non_capabilities": [
+          "role assignment",
+          "reorganization execution",
+          "labor-policy determination"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "org_change_execute",
+          "employee_scoring",
+          "procurement_commit"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Affected roles and real work cannot be observed or represented responsibly",
+          "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+          "The requested intervention depends on covert employee scoring or bypassing governance"
+        ],
+        "escalation_conditions": [
+          "The model changes employment terms, decision rights, controls, or regulated responsibilities",
+          "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+          "A recommendation materially changes decision rights, roles, or employment conditions"
+        ]
+      },
+      {
+        "agent_id": "quorum-governance-designer",
+        "agent_version": "1.0.0",
+        "swarm_id": "enterprise-transformation",
+        "skill_refs": [
+          "governed-agent-runtime-factory",
+          "agent-runtime-trust-boundaries"
+        ],
+        "capabilities": [
+          "decision-right design",
+          "control matrix design",
+          "human-gate architecture"
+        ],
+        "non_capabilities": [
+          "policy approval",
+          "runtime admission",
+          "audit attestation"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "org_change_execute",
+          "employee_scoring",
+          "procurement_commit"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Authority is embedded in prompt prose, caller input, or self-attested evidence",
+          "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+          "The requested intervention depends on covert employee scoring or bypassing governance"
+        ],
+        "escalation_conditions": [
+          "A control affects regulated, legal, financial, safety, or employment decisions",
+          "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+          "A recommendation materially changes decision rights, roles, or employment conditions"
+        ]
+      },
+      {
+        "agent_id": "relay-change-enablement",
+        "agent_version": "1.0.0",
+        "swarm_id": "enterprise-transformation",
+        "skill_refs": [
+          "internal-comms",
+          "enterprise-ai-coe-ops:enterprise-ai-coe"
+        ],
+        "capabilities": [
+          "stakeholder enablement",
+          "change communication drafting",
+          "adoption feedback design"
+        ],
+        "non_capabilities": [
+          "employee messaging execution",
+          "performance management",
+          "coercive adoption"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "org_change_execute",
+          "employee_scoring",
+          "procurement_commit"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The plan depends on deception, retaliation, surveillance, or hiding material workforce impact",
+          "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+          "The requested intervention depends on covert employee scoring or bypassing governance"
+        ],
+        "escalation_conditions": [
+          "Labor, personnel, legal, safeguarding, or public communication concerns arise",
+          "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+          "A recommendation materially changes decision rights, roles, or employment conditions"
+        ]
+      },
+      {
+        "agent_id": "metric-value-realization",
+        "agent_version": "1.0.0",
+        "swarm_id": "enterprise-transformation",
+        "skill_refs": [
+          "data-analytics:design-kpis",
+          "data-analytics:kpi-reporting"
+        ],
+        "capabilities": [
+          "baseline design",
+          "value metric design",
+          "attribution-aware scorecarding"
+        ],
+        "non_capabilities": [
+          "financial attestation",
+          "employee performance scoring",
+          "ROI guarantee"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "org_change_execute",
+          "employee_scoring",
+          "procurement_commit"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "No credible baseline, measurement window, or causal caveat can be established",
+          "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+          "The requested intervention depends on covert employee scoring or bypassing governance"
+        ],
+        "escalation_conditions": [
+          "Metrics will drive compensation, employment, audited reporting, or capital commitment",
+          "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+          "A recommendation materially changes decision rights, roles, or employment conditions"
+        ]
+      },
+      {
+        "agent_id": "nexus-futures-conductor",
+        "agent_version": "1.0.0",
+        "swarm_id": "web-spatial-protocol-futures",
+        "skill_refs": [
+          "ecosystem-mapper",
+          "mcp-architecture"
+        ],
+        "capabilities": [
+          "future scenario framing",
+          "prototype-lane routing",
+          "interoperability question design"
+        ],
+        "non_capabilities": [
+          "standard declaration",
+          "production activation",
+          "technology inevitability claims"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_protocol_change",
+          "autonomous_standard_claim",
+          "identity_system_activation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The scenario has no evidence boundary, human value, or viable fallback",
+          "Speculative assumptions are being presented as deployed facts or accepted standards",
+          "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints"
+        ],
+        "escalation_conditions": [
+          "The concept implies production identity, protocol, privacy, legal, or capital commitments",
+          "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+          "The proposal creates lock-in, irreversible migration, or public interoperability claims"
+        ]
+      },
+      {
+        "agent_id": "pixel-web-experience-architect",
+        "agent_version": "1.0.0",
+        "swarm_id": "web-spatial-protocol-futures",
+        "skill_refs": [
+          "figma:figma-design-to-code",
+          "impeccable"
+        ],
+        "capabilities": [
+          "web experience specification",
+          "responsive hierarchy design",
+          "accessibility and performance framing"
+        ],
+        "non_capabilities": [
+          "production deployment",
+          "brand identity approval",
+          "analytics surveillance"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_protocol_change",
+          "autonomous_standard_claim",
+          "identity_system_activation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The design lacks real content, accessible structure, mobile behavior, or a performance budget",
+          "Speculative assumptions are being presented as deployed facts or accepted standards",
+          "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints"
+        ],
+        "escalation_conditions": [
+          "Brand identity, production, tracking, privacy, or paid asset decisions are required",
+          "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+          "The proposal creates lock-in, irreversible migration, or public interoperability claims"
+        ]
+      },
+      {
+        "agent_id": "orbit-spatial-interface-designer",
+        "agent_version": "1.0.0",
+        "swarm_id": "web-spatial-protocol-futures",
+        "skill_refs": [
+          "figma:figma-use-motion",
+          "gsap-core"
+        ],
+        "capabilities": [
+          "spatial interaction design",
+          "motion and attention choreography",
+          "comfort and fallback planning"
+        ],
+        "non_capabilities": [
+          "biometric inference",
+          "device safety certification",
+          "production activation"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_protocol_change",
+          "autonomous_standard_claim",
+          "identity_system_activation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "The experience lacks comfort, accessibility, privacy, mobile, reduced-motion, or non-spatial fallback",
+          "Speculative assumptions are being presented as deployed facts or accepted standards",
+          "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints"
+        ],
+        "escalation_conditions": [
+          "Biometric data, physical safety, regulated environments, or proprietary hardware constraints appear",
+          "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+          "The proposal creates lock-in, irreversible migration, or public interoperability claims"
+        ]
+      },
+      {
+        "agent_id": "lattice-interoperability-architect",
+        "agent_version": "1.0.0",
+        "swarm_id": "web-spatial-protocol-futures",
+        "skill_refs": [
+          "mcp-2025-patterns",
+          "cloudflare:agents-sdk"
+        ],
+        "capabilities": [
+          "protocol contract design",
+          "trust-boundary mapping",
+          "interoperability option analysis"
+        ],
+        "non_capabilities": [
+          "standard declaration",
+          "identity issuance",
+          "production protocol migration"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_protocol_change",
+          "autonomous_standard_claim",
+          "identity_system_activation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Authority, identity, data ownership, versioning, or failure semantics are undefined",
+          "Speculative assumptions are being presented as deployed facts or accepted standards",
+          "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints"
+        ],
+        "escalation_conditions": [
+          "Production identity, security, legal, standards-body, or migration decisions are required",
+          "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+          "The proposal creates lock-in, irreversible migration, or public interoperability claims"
+        ]
+      },
+      {
+        "agent_id": "horizon-futures-scout",
+        "agent_version": "1.0.0",
+        "swarm_id": "web-spatial-protocol-futures",
+        "skill_refs": [
+          "agentic-harness-landscape",
+          "domain-intelligence-system:domain-intelligence"
+        ],
+        "capabilities": [
+          "emerging-signal scanning",
+          "maturity classification",
+          "future scenario indicators"
+        ],
+        "non_capabilities": [
+          "trend certainty",
+          "investment advice",
+          "roadmap commitment"
+        ],
+        "tools_allow": [
+          "kb_retrieve",
+          "web_search_readonly",
+          "structured_analysis",
+          "artifact_draft",
+          "handoff_specialist"
+        ],
+        "tools_deny": [
+          "arbitrary_shell",
+          "filesystem_write",
+          "private_vault_read",
+          "cross_tenant_read",
+          "credential_access",
+          "external_send_execute",
+          "payment_execute",
+          "destructive_action",
+          "production_change",
+          "production_protocol_change",
+          "autonomous_standard_claim",
+          "identity_system_activation"
+        ],
+        "human_gates": [
+          "publish",
+          "external_send",
+          "spend",
+          "dns",
+          "credentials",
+          "destructive",
+          "legal_ip",
+          "brand_identity"
+        ],
+        "permissions": [
+          "public_knowledge_read",
+          "draft_artifacts",
+          "request_handoff"
+        ],
+        "memory_scope": "session",
+        "surfaces": [
+          "web",
+          "coe_demo"
+        ],
+        "stop_conditions": [
+          "Only promotional claims exist and maturity cannot be independently bounded",
+          "Speculative assumptions are being presented as deployed facts or accepted standards",
+          "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints"
+        ],
+        "escalation_conditions": [
+          "A speculative signal is proposed as the basis for major capital, security, or migration decisions",
+          "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+          "The proposal creates lock-in, irreversible migration, or public interoperability claims"
+        ]
+      }
+    ]
+  }
+}

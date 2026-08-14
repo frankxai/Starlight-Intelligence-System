@@ -1,0 +1,2156 @@
+{
+  "assets": [
+    {
+      "agent_id": "aegis-trust-conductor",
+      "asset_id": "aegis-trust-conductor-v1",
+      "asset_path": "agents/trust-safety/aegis-trust-conductor.webp",
+      "bytes": 138390,
+      "display_name": "Aegis — Trust Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "transparent trust guardian",
+        "portrait_brief": "Calm guardian with a translucent shield halo, charcoal-glacier formal protective tailoring, transparent controls, explicitly non-militarized.",
+        "signature": "translucent shield halo",
+        "silhouette": "charcoal formal armor with glacier glass panels",
+        "swarm_visual_world": {
+          "lighting": "cool secure-room light with restrained signal-red incident accents",
+          "materials": [
+            "charcoal ceramic",
+            "glacier glass",
+            "matte protective textile"
+          ],
+          "negative_cues": [
+            "riot armor",
+            "police aesthetic",
+            "hacker hoodie",
+            "panopticon",
+            "threatening surveillance"
+          ],
+          "palette": [
+            "#1B232D",
+            "#A9D7E8",
+            "#F2F5F6",
+            "#D34E4E"
+          ],
+          "setting": "human-centered trust operations room with transparent controls and no weapons"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "70c440b1056d1cb140a94334872e3e8b7343b78fa783d73fc11e84412de943b2",
+      "source_file": "exec-66072bf6-f7fb-48f5-9be6-d903df56538a.png",
+      "swarm_id": "trust-safety",
+      "width": 935
+    },
+    {
+      "agent_id": "aria-story-architect",
+      "asset_id": "aria-story-architect-v1",
+      "asset_path": "agents/creator-worlds/aria-story-architect.webp",
+      "bytes": 148804,
+      "display_name": "Aria — Story Architect",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "narrative ribbon architect",
+        "portrait_brief": "Empathetic story architect arranging manuscript ribbons into a clear arc, plum-ink coat, warm gold edge light, literary studio realism.",
+        "signature": "floating manuscript ribbons",
+        "silhouette": "plum and ink story coat with warm gold lining",
+        "swarm_visual_world": {
+          "lighting": "cinematic magenta-cyan studio light with controlled warm highlights",
+          "materials": [
+            "ink-black satin",
+            "prismatic glass",
+            "warm studio brass"
+          ],
+          "negative_cues": [
+            "generic influencer",
+            "random neon",
+            "copyrighted character imitation",
+            "content-farm aesthetic",
+            "cluttered mood board"
+          ],
+          "palette": [
+            "#111018",
+            "#D63E89",
+            "#38C8D8",
+            "#E7B65A"
+          ],
+          "setting": "tactile creator studio where story, image, sound, and release artifacts coexist"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "298e76257dc469b6e3f19f62ce69ff4d39d31e327b91f21b46ea37145e6c3198",
+      "source_file": "exec-3f7f15b7-d0ee-4cc4-9b82-34f9467ffe18.png",
+      "swarm_id": "creator-worlds",
+      "width": 935
+    },
+    {
+      "agent_id": "astra-sovereign",
+      "asset_id": "astra-sovereign-v1",
+      "asset_path": "agents/sovereign-command/astra-sovereign.webp",
+      "bytes": 131354,
+      "display_name": "Astra — Sovereign Navigator",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "celestial command navigator",
+        "portrait_brief": "Centered navigator in a quiet orbital command chamber, intelligent warmth, star-compass halo, premium restrained tailoring.",
+        "signature": "gold star-compass halo",
+        "silhouette": "long asymmetric midnight command coat",
+        "swarm_visual_world": {
+          "lighting": "restrained celestial rim light with warm command-table glow",
+          "materials": [
+            "brushed midnight metal",
+            "satin ivory",
+            "antique gold inlay"
+          ],
+          "negative_cues": [
+            "military cosplay",
+            "royal throne",
+            "generic superhero",
+            "weapons",
+            "busy hologram clutter"
+          ],
+          "palette": [
+            "#071426",
+            "#D6AE62",
+            "#F4EFE5",
+            "#315A8A"
+          ],
+          "setting": "quiet orbital command chamber with precise star-map instrumentation"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "91ba2443d97e74a3e6413b118201449bf692a0f8ba2f134d175a08eea145598b",
+      "source_file": "exec-6666d658-5e6c-4d16-a724-63527625135b.png",
+      "swarm_id": "sovereign-command",
+      "width": 1122
+    },
+    {
+      "agent_id": "atlas-signal-scout",
+      "asset_id": "atlas-signal-scout-v1",
+      "asset_path": "agents/intelligence-research/atlas-signal-scout.webp",
+      "bytes": 130650,
+      "display_name": "Atlas — Signal Scout",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "signal field scout",
+        "portrait_brief": "Alert signal scout with compact antenna-lens pack, navy field gear, cyan optics, standing at the boundary of archive and observatory.",
+        "signature": "compact antenna-lens research pack",
+        "silhouette": "navy field gear with silver and cyan optics",
+        "swarm_visual_world": {
+          "lighting": "cool observatory light with narrow cyan evidence highlights",
+          "materials": [
+            "smoked glass",
+            "silver mesh",
+            "indigo technical wool"
+          ],
+          "negative_cues": [
+            "conspiracy board",
+            "detective noir",
+            "surveillance wall",
+            "random equations",
+            "generic data scientist"
+          ],
+          "palette": [
+            "#171B45",
+            "#42C8D7",
+            "#CAD4E8",
+            "#7656C9"
+          ],
+          "setting": "hybrid observatory and archival research room with real source artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "ae4fe7568d04874fe74e0fbbc466c665c3217fcf21fd12580b8042cd1751dca7",
+      "source_file": "exec-4352433c-13b9-43fd-bac2-c5322211fe0b.png",
+      "swarm_id": "intelligence-research",
+      "width": 951
+    },
+    {
+      "agent_id": "beacon-incident-coordinator",
+      "asset_id": "beacon-incident-coordinator-v1",
+      "asset_path": "agents/trust-safety/beacon-incident-coordinator.webp",
+      "bytes": 111594,
+      "display_name": "Beacon — Incident Coordinator",
+      "height": 1402,
+      "inspection_status": "pass",
+      "notes": "Approved regeneration. The initial render was rejected because its baton read as a weapon.",
+      "prompt_spec": {
+        "archetype": "incident response beacon",
+        "portrait_brief": "Calm coordinator holding a compact signal-light baton, charcoal jacket with red lining, chronological incident board, no emergency-service impersonation.",
+        "signature": "compact signal-light baton",
+        "silhouette": "charcoal command jacket with signal-red lining",
+        "swarm_visual_world": {
+          "lighting": "cool secure-room light with restrained signal-red incident accents",
+          "materials": [
+            "charcoal ceramic",
+            "glacier glass",
+            "matte protective textile"
+          ],
+          "negative_cues": [
+            "riot armor",
+            "police aesthetic",
+            "hacker hoodie",
+            "panopticon",
+            "threatening surveillance"
+          ],
+          "palette": [
+            "#1B232D",
+            "#A9D7E8",
+            "#F2F5F6",
+            "#D34E4E"
+          ],
+          "setting": "human-centered trust operations room with transparent controls and no weapons"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "d5ac234bd039c60f7ad05adc6959495771a6a78affedc0e8061fd80a516162b2",
+      "source_file": "exec-b3a197b7-1b0e-41fd-a76e-1bab6db7dfa7.png",
+      "swarm_id": "trust-safety",
+      "width": 935
+    },
+    {
+      "agent_id": "bridge-partnership-architect",
+      "asset_id": "bridge-partnership-architect-v1",
+      "asset_path": "agents/revenue-venture/bridge-partnership-architect.webp",
+      "bytes": 125592,
+      "display_name": "Bridge — Partnership Architect",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "partnership bridge architect",
+        "portrait_brief": "Diplomatic architect with interlocking arch pins, emerald-platinum tailored coat, two balanced worktables connected by a subtle bridge motif.",
+        "signature": "interlocking platinum arch pins",
+        "silhouette": "emerald diplomatic coat with navy foundation",
+        "swarm_visual_world": {
+          "lighting": "soft boardroom daylight with precise emerald data accents",
+          "materials": [
+            "deep green wool",
+            "champagne metal",
+            "smoked crystal"
+          ],
+          "negative_cues": [
+            "crypto bro",
+            "cash rain",
+            "casino",
+            "luxury car",
+            "stock-photo handshake"
+          ],
+          "palette": [
+            "#102921",
+            "#D8BF8A",
+            "#242A31",
+            "#E8EEE9"
+          ],
+          "setting": "modern venture salon with tactile models and no trading-floor spectacle"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "a2edb9ca3a8a2021f2eba40202b523a81c8e0c015f819f66939ef6a9c16f11f6",
+      "source_file": "exec-fc0fab87-9bb9-4f2e-bbf5-1989bde8be8e.png",
+      "swarm_id": "revenue-venture",
+      "width": 1001
+    },
+    {
+      "agent_id": "cadence-release-producer",
+      "asset_id": "cadence-release-producer-v1",
+      "asset_path": "agents/creator-worlds/cadence-release-producer.webp",
+      "bytes": 125788,
+      "display_name": "Cadence — Release Producer",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "creative release producer",
+        "portrait_brief": "Composed producer holding a timeline baton, black-gold utility suit with coral timing marks, organized release table and tactile assets.",
+        "signature": "timeline baton with metronome light",
+        "silhouette": "black-gold utility suit with coral timing marks",
+        "swarm_visual_world": {
+          "lighting": "cinematic magenta-cyan studio light with controlled warm highlights",
+          "materials": [
+            "ink-black satin",
+            "prismatic glass",
+            "warm studio brass"
+          ],
+          "negative_cues": [
+            "generic influencer",
+            "random neon",
+            "copyrighted character imitation",
+            "content-farm aesthetic",
+            "cluttered mood board"
+          ],
+          "palette": [
+            "#111018",
+            "#D63E89",
+            "#38C8D8",
+            "#E7B65A"
+          ],
+          "setting": "tactile creator studio where story, image, sound, and release artifacts coexist"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "61d0bd63bb21f95e8c6e50b203745296618b917e16eaa0bb5d101c0cb9e4284e",
+      "source_file": "exec-46cb8519-5181-4948-bc0c-46f9830a757b.png",
+      "swarm_id": "creator-worlds",
+      "width": 935
+    },
+    {
+      "agent_id": "cassian-resource-steward",
+      "asset_id": "cassian-resource-steward-v1",
+      "asset_path": "agents/sovereign-command/cassian-resource-steward.webp",
+      "bytes": 114706,
+      "display_name": "Cassian — Resource Steward",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "resource systems steward",
+        "portrait_brief": "Thoughtful steward beside a minimal abacus-ring interface, graphite utility mantle, subtle emerald capacity signals, premium realism.",
+        "signature": "golden abacus-ring interface",
+        "silhouette": "graphite utility mantle with gold edgework",
+        "swarm_visual_world": {
+          "lighting": "restrained celestial rim light with warm command-table glow",
+          "materials": [
+            "brushed midnight metal",
+            "satin ivory",
+            "antique gold inlay"
+          ],
+          "negative_cues": [
+            "military cosplay",
+            "royal throne",
+            "generic superhero",
+            "weapons",
+            "busy hologram clutter"
+          ],
+          "palette": [
+            "#071426",
+            "#D6AE62",
+            "#F4EFE5",
+            "#315A8A"
+          ],
+          "setting": "quiet orbital command chamber with precise star-map instrumentation"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "a4070469baf68c3f64464ba5c695e1ca8f465f172cfff0027dd42874403c2ff6",
+      "source_file": "exec-15aa432d-0b67-4a1f-abe7-612b47d13046.png",
+      "swarm_id": "sovereign-command",
+      "width": 1122
+    },
+    {
+      "agent_id": "cipher-privacy-steward",
+      "asset_id": "cipher-privacy-steward-v1",
+      "asset_path": "agents/trust-safety/cipher-privacy-steward.webp",
+      "bytes": 100716,
+      "display_name": "Cipher — Privacy Steward",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "privacy-by-design steward",
+        "portrait_brief": "Discreet steward beside a sealed-key lattice, black-blue tailored coat with pearl closure, privacy symbolism without hooded hacker tropes.",
+        "signature": "sealed-key geometric lattice",
+        "silhouette": "black-blue cryptographic coat with pearl closure",
+        "swarm_visual_world": {
+          "lighting": "cool secure-room light with restrained signal-red incident accents",
+          "materials": [
+            "charcoal ceramic",
+            "glacier glass",
+            "matte protective textile"
+          ],
+          "negative_cues": [
+            "riot armor",
+            "police aesthetic",
+            "hacker hoodie",
+            "panopticon",
+            "threatening surveillance"
+          ],
+          "palette": [
+            "#1B232D",
+            "#A9D7E8",
+            "#F2F5F6",
+            "#D34E4E"
+          ],
+          "setting": "human-centered trust operations room with transparent controls and no weapons"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "6f694bd5828d4b4be6326161d5f592d028c8c1092cd7802a6af5f0fa7a3c4ffd",
+      "source_file": "exec-59cfe937-8fe3-4563-a4f5-6a502b47d5a2.png",
+      "swarm_id": "trust-safety",
+      "width": 935
+    },
+    {
+      "agent_id": "clara-deal-critic",
+      "asset_id": "clara-deal-critic-v1",
+      "asset_path": "agents/revenue-venture/clara-deal-critic.webp",
+      "bytes": 112126,
+      "display_name": "Clara — Deal Critic",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "commercial redline critic",
+        "portrait_brief": "Exacting commercial critic viewing a folding contract grid, razor black suit, champagne structure and restrained crimson redline glow.",
+        "signature": "folding contract-grid lens",
+        "silhouette": "razor black suit with champagne and crimson details",
+        "swarm_visual_world": {
+          "lighting": "soft boardroom daylight with precise emerald data accents",
+          "materials": [
+            "deep green wool",
+            "champagne metal",
+            "smoked crystal"
+          ],
+          "negative_cues": [
+            "crypto bro",
+            "cash rain",
+            "casino",
+            "luxury car",
+            "stock-photo handshake"
+          ],
+          "palette": [
+            "#102921",
+            "#D8BF8A",
+            "#242A31",
+            "#E8EEE9"
+          ],
+          "setting": "modern venture salon with tactile models and no trading-floor spectacle"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "594b3cfd17ce46d439b547c11431f353586f7522a29364918c316b85ef96971b",
+      "source_file": "exec-666abf56-1384-44ba-9691-0ebc4ce968cb.png",
+      "swarm_id": "revenue-venture",
+      "width": 933
+    },
+    {
+      "agent_id": "delta-forecast-challenger",
+      "asset_id": "delta-forecast-challenger-v1",
+      "asset_path": "agents/intelligence-research/delta-forecast-challenger.webp",
+      "bytes": 135916,
+      "display_name": "Delta — Forecast Challenger",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "probability scenario challenger",
+        "portrait_brief": "Calm challenger holding a folding probability prism, angular charcoal suit, violet and cyan scenario light, no fortune-teller cues.",
+        "signature": "folding probability-fan prism",
+        "silhouette": "angular charcoal suit with violet geometry",
+        "swarm_visual_world": {
+          "lighting": "cool observatory light with narrow cyan evidence highlights",
+          "materials": [
+            "smoked glass",
+            "silver mesh",
+            "indigo technical wool"
+          ],
+          "negative_cues": [
+            "conspiracy board",
+            "detective noir",
+            "surveillance wall",
+            "random equations",
+            "generic data scientist"
+          ],
+          "palette": [
+            "#171B45",
+            "#42C8D7",
+            "#CAD4E8",
+            "#7656C9"
+          ],
+          "setting": "hybrid observatory and archival research room with real source artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "9e120d1a105b45f2ae0bb10ad6190b92ef60525f2a3452776ad77df79b025674",
+      "source_file": "exec-dbdcda40-6aec-48b6-9ae8-66fca2406aa1.png",
+      "swarm_id": "intelligence-research",
+      "width": 898
+    },
+    {
+      "agent_id": "echo-audience-resonance",
+      "asset_id": "echo-audience-resonance-v1",
+      "asset_path": "agents/creator-worlds/echo-audience-resonance.webp",
+      "bytes": 117216,
+      "display_name": "Echo — Audience Resonance Editor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "audience resonance editor",
+        "portrait_brief": "Empathetic editor framed by restrained concentric waveforms, modern ink coat with magenta-cyan folds, human audience signals rather than analytics clutter.",
+        "signature": "concentric waveform collar",
+        "silhouette": "modern ink coat with magenta-cyan acoustic folds",
+        "swarm_visual_world": {
+          "lighting": "cinematic magenta-cyan studio light with controlled warm highlights",
+          "materials": [
+            "ink-black satin",
+            "prismatic glass",
+            "warm studio brass"
+          ],
+          "negative_cues": [
+            "generic influencer",
+            "random neon",
+            "copyrighted character imitation",
+            "content-farm aesthetic",
+            "cluttered mood board"
+          ],
+          "palette": [
+            "#111018",
+            "#D63E89",
+            "#38C8D8",
+            "#E7B65A"
+          ],
+          "setting": "tactile creator studio where story, image, sound, and release artifacts coexist"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "b05de047344aaa9f47998f584e6949f314b00d1ccbdd91d28376506f61510223",
+      "source_file": "exec-777dd225-8ab8-41b2-9d7f-6220c70760d2.png",
+      "swarm_id": "creator-worlds",
+      "width": 935
+    },
+    {
+      "agent_id": "ember-creator-conductor",
+      "asset_id": "ember-creator-conductor-v1",
+      "asset_path": "agents/creator-worlds/ember-creator-conductor.webp",
+      "bytes": 101044,
+      "display_name": "Ember — Creator Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "creator studio conductor",
+        "portrait_brief": "Warm creator conductor holding an ember-crown light pen, black-magenta studio jacket, tactile premium studio and disciplined cinematic light.",
+        "signature": "ember-crown light pen",
+        "silhouette": "black-magenta studio jacket with gold seam",
+        "swarm_visual_world": {
+          "lighting": "cinematic magenta-cyan studio light with controlled warm highlights",
+          "materials": [
+            "ink-black satin",
+            "prismatic glass",
+            "warm studio brass"
+          ],
+          "negative_cues": [
+            "generic influencer",
+            "random neon",
+            "copyrighted character imitation",
+            "content-farm aesthetic",
+            "cluttered mood board"
+          ],
+          "palette": [
+            "#111018",
+            "#D63E89",
+            "#38C8D8",
+            "#E7B65A"
+          ],
+          "setting": "tactile creator studio where story, image, sound, and release artifacts coexist"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "aa0ce4e8c6d975fd25617f492285726f17c88bc8a6a8d0ecf1bb29f305399682",
+      "source_file": "exec-067da056-ec93-4143-93bb-bcbc7308d25e.png",
+      "swarm_id": "creator-worlds",
+      "width": 933
+    },
+    {
+      "agent_id": "equa-policy-auditor",
+      "asset_id": "equa-policy-auditor-v1",
+      "asset_path": "agents/trust-safety/equa-policy-auditor.webp",
+      "bytes": 113318,
+      "display_name": "Equa — Fairness & Policy Auditor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "fairness prism auditor",
+        "portrait_brief": "Measured auditor holding balanced translucent prism scales, white-charcoal formal coat with cobalt geometry, open and humane setting.",
+        "signature": "balanced translucent prism scales",
+        "silhouette": "white-charcoal formal coat with cobalt geometry",
+        "swarm_visual_world": {
+          "lighting": "cool secure-room light with restrained signal-red incident accents",
+          "materials": [
+            "charcoal ceramic",
+            "glacier glass",
+            "matte protective textile"
+          ],
+          "negative_cues": [
+            "riot armor",
+            "police aesthetic",
+            "hacker hoodie",
+            "panopticon",
+            "threatening surveillance"
+          ],
+          "palette": [
+            "#1B232D",
+            "#A9D7E8",
+            "#F2F5F6",
+            "#D34E4E"
+          ],
+          "setting": "human-centered trust operations room with transparent controls and no weapons"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "33369cb26f128faec794aa85f4eddec753b71ec0d2fdc9b9aaa569b74332462f",
+      "source_file": "exec-66b90d01-9b51-4efe-b1bd-1d75bc2bd4ea.png",
+      "swarm_id": "trust-safety",
+      "width": 935
+    },
+    {
+      "agent_id": "harbor-care-navigator",
+      "asset_id": "harbor-care-navigator-v1",
+      "asset_path": "agents/health-flourishing/harbor-care-navigator.webp",
+      "bytes": 214124,
+      "display_name": "Harbor — Care Navigator",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "welcoming care navigator",
+        "portrait_brief": "Reassuring navigator with lighthouse pin and folded path map, sky-clay coat, welcoming non-clinical studio connected to a clear horizon.",
+        "signature": "lighthouse pin and folded path map",
+        "silhouette": "sky-clay welcoming coat over navy foundation",
+        "swarm_visual_world": {
+          "lighting": "soft biophilic daylight with calm sky highlights",
+          "materials": [
+            "natural linen",
+            "warm wood",
+            "translucent bio-glass"
+          ],
+          "negative_cues": [
+            "doctor coat",
+            "medical device theater",
+            "before-and-after body",
+            "biohacking lab",
+            "spiritual guru"
+          ],
+          "palette": [
+            "#214D3A",
+            "#91B89A",
+            "#DCE8DD",
+            "#C97D5A"
+          ],
+          "setting": "welcoming wellbeing studio connected to nature, never a fake clinic"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "319db0f0eeb1a193f3784869f37a2822617bac9dac61f3da3105bf6630ac5d6a",
+      "source_file": "exec-2c7c6b2d-8c1c-412a-a5af-9ad843c03e2d.png",
+      "swarm_id": "health-flourishing",
+      "width": 935
+    },
+    {
+      "agent_id": "horizon-futures-scout",
+      "asset_id": "horizon-futures-scout-v1",
+      "asset_path": "agents/web-spatial-protocol-futures/horizon-futures-scout.webp",
+      "bytes": 152532,
+      "display_name": "Horizon — Futures Scout",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "technology horizon scout",
+        "portrait_brief": "Grounded scout with a slim horizon visor and folded light map, ultraviolet-cyan explorer coat, real emerging technology artifacts, no hype spectacle.",
+        "signature": "horizon visor and folded light map",
+        "silhouette": "ultraviolet-cyan explorer coat over graphite base",
+        "swarm_visual_world": {
+          "lighting": "deep spatial contrast with disciplined cyan and ultraviolet edge light",
+          "materials": [
+            "black optical glass",
+            "pearl ceramic",
+            "ultraviolet photonic mesh"
+          ],
+          "negative_cues": [
+            "metaverse cliché",
+            "VR headset stock photo",
+            "crypto iconography",
+            "random neon grid",
+            "floating UI overload"
+          ],
+          "palette": [
+            "#0C0B14",
+            "#714BD6",
+            "#36D3DF",
+            "#E9E6F2"
+          ],
+          "setting": "accessible spatial-web laboratory with tangible frames, volume, and protocol diagrams"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "308550cbb865cad8866cb703e03a613d521f22b7bd4438f9f22c06e88bfab0dd",
+      "source_file": "exec-f8c5d7d9-036b-40f6-9a0d-cbf0c44b24e7.png",
+      "swarm_id": "web-spatial-protocol-futures",
+      "width": 935
+    },
+    {
+      "agent_id": "ignis-product-conductor",
+      "asset_id": "ignis-product-conductor-v1",
+      "asset_path": "agents/product-forge/ignis-product-conductor.webp",
+      "bytes": 152484,
+      "display_name": "Ignis — Product Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "product forge conductor",
+        "portrait_brief": "Confident studio conductor at a real prototype bench, copper interface gauntlets, obsidian atelier coat, premium tactile realism.",
+        "signature": "paired copper interface gauntlets",
+        "silhouette": "obsidian atelier coat with rolled technical cuffs",
+        "swarm_visual_world": {
+          "lighting": "warm forge-key light balanced by precise cobalt task light",
+          "materials": [
+            "blackened steel",
+            "brushed copper",
+            "matte technical textile"
+          ],
+          "negative_cues": [
+            "fantasy blacksmith",
+            "sparks everywhere",
+            "generic startup office",
+            "fake dashboards",
+            "toy tools"
+          ],
+          "palette": [
+            "#111217",
+            "#B96B3A",
+            "#2E66C5",
+            "#E8E2D6"
+          ],
+          "setting": "premium product atelier with real tools, prototypes, and measured work surfaces"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "2b10d114e131b3464e35cee49d285153efd8fead4e43569bcfc52d6f534fef88",
+      "source_file": "exec-7aa34621-aab1-4b7d-90de-0b286e25d027.png",
+      "swarm_id": "product-forge",
+      "width": 935
+    },
+    {
+      "agent_id": "kai-curriculum-architect",
+      "asset_id": "kai-curriculum-architect-v1",
+      "asset_path": "agents/community-academy/kai-curriculum-architect.webp",
+      "bytes": 139428,
+      "display_name": "Kai — Curriculum Architect",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "modular curriculum architect",
+        "portrait_brief": "Focused curriculum architect arranging tactile lesson blocks, teal-amber structured jacket, warm paper and daylight learning environment.",
+        "signature": "floating lesson blocks",
+        "silhouette": "teal structured jacket with amber modular panels",
+        "swarm_visual_world": {
+          "lighting": "welcoming daylight with warm amber learning highlights",
+          "materials": [
+            "warm paper",
+            "woven textile",
+            "soft anodized metal"
+          ],
+          "negative_cues": [
+            "school uniform stereotype",
+            "corporate webinar",
+            "gamification overload",
+            "crowd spectacle",
+            "childlike mascot"
+          ],
+          "palette": [
+            "#F5EFE4",
+            "#E36F61",
+            "#2D8F8A",
+            "#E4A83B"
+          ],
+          "setting": "inclusive modern academy commons blending amphitheater, workshop, and quiet study"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "6d47e0c31718a4f69aa277b2641d27bb4861ebdbf76fea110bd60127154c45c5",
+      "source_file": "exec-88b46a3f-5262-4f6d-976d-f72e375e770b.png",
+      "swarm_id": "community-academy",
+      "width": 933
+    },
+    {
+      "agent_id": "kinetica-movement-coach",
+      "asset_id": "kinetica-movement-coach-v1",
+      "asset_path": "agents/health-flourishing/kinetica-movement-coach.webp",
+      "bytes": 175520,
+      "display_name": "Kinetica — Movement Coach",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "adaptive movement guide",
+        "portrait_brief": "Adaptive movement guide traced by subtle kinetic arc bands, sky-forest performance attire, natural studio, diverse ability-friendly posture.",
+        "signature": "kinetic arc bands",
+        "silhouette": "sky and forest performance attire with graphite base",
+        "swarm_visual_world": {
+          "lighting": "soft biophilic daylight with calm sky highlights",
+          "materials": [
+            "natural linen",
+            "warm wood",
+            "translucent bio-glass"
+          ],
+          "negative_cues": [
+            "doctor coat",
+            "medical device theater",
+            "before-and-after body",
+            "biohacking lab",
+            "spiritual guru"
+          ],
+          "palette": [
+            "#214D3A",
+            "#91B89A",
+            "#DCE8DD",
+            "#C97D5A"
+          ],
+          "setting": "welcoming wellbeing studio connected to nature, never a fake clinic"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "faad41373af1ea54dfe06c6f8ed3f73553a0274e78d4b7015d0c5de0c2a87927",
+      "source_file": "exec-5c533372-8dcf-4f9e-95b4-a8ad58f5610c.png",
+      "swarm_id": "health-flourishing",
+      "width": 933
+    },
+    {
+      "agent_id": "lattice-interoperability-architect",
+      "asset_id": "lattice-interoperability-architect-v1",
+      "asset_path": "agents/web-spatial-protocol-futures/lattice-interoperability-architect.webp",
+      "bytes": 125424,
+      "display_name": "Lattice — Interoperability Architect",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "interoperability lattice architect",
+        "portrait_brief": "Protocol architect connecting a small set of precise geometric nodes, black-platinum coat with violet seams, transparent trust-boundary diagrams.",
+        "signature": "linked geometric protocol nodes",
+        "silhouette": "black-platinum protocol coat with violet seams",
+        "swarm_visual_world": {
+          "lighting": "deep spatial contrast with disciplined cyan and ultraviolet edge light",
+          "materials": [
+            "black optical glass",
+            "pearl ceramic",
+            "ultraviolet photonic mesh"
+          ],
+          "negative_cues": [
+            "metaverse cliché",
+            "VR headset stock photo",
+            "crypto iconography",
+            "random neon grid",
+            "floating UI overload"
+          ],
+          "palette": [
+            "#0C0B14",
+            "#714BD6",
+            "#36D3DF",
+            "#E9E6F2"
+          ],
+          "setting": "accessible spatial-web laboratory with tangible frames, volume, and protocol diagrams"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "060306950f342a976a0d99e42319456a69a35ccb219c86cb869d3032b5e2e908",
+      "source_file": "exec-b8e7b6d2-a4bf-4de2-9830-bf18349959ac.png",
+      "swarm_id": "web-spatial-protocol-futures",
+      "width": 935
+    },
+    {
+      "agent_id": "ledger-unit-economist",
+      "asset_id": "ledger-unit-economist-v1",
+      "asset_path": "agents/revenue-venture/ledger-unit-economist.webp",
+      "bytes": 111516,
+      "display_name": "Ledger — Unit Economist",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "transparent unit economist",
+        "portrait_brief": "Calm economist inspecting transparent ledger tiles, champagne vest and deep-green tailoring, realistic analytical salon, no currency symbols.",
+        "signature": "stack of transparent ledger tiles",
+        "silhouette": "champagne vest beneath deep-green tailored jacket",
+        "swarm_visual_world": {
+          "lighting": "soft boardroom daylight with precise emerald data accents",
+          "materials": [
+            "deep green wool",
+            "champagne metal",
+            "smoked crystal"
+          ],
+          "negative_cues": [
+            "crypto bro",
+            "cash rain",
+            "casino",
+            "luxury car",
+            "stock-photo handshake"
+          ],
+          "palette": [
+            "#102921",
+            "#D8BF8A",
+            "#242A31",
+            "#E8EEE9"
+          ],
+          "setting": "modern venture salon with tactile models and no trading-floor spectacle"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "94b945fb49ea128ed8a72262b29b997277b746b0a2245a86a7ca3cb4784923cb",
+      "source_file": "exec-f699c5bb-6b6b-4b37-be2d-b24dd9f8df06.png",
+      "swarm_id": "revenue-venture",
+      "width": 935
+    },
+    {
+      "agent_id": "lyra-research-conductor",
+      "asset_id": "lyra-research-conductor-v1",
+      "asset_path": "agents/intelligence-research/lyra-research-conductor.webp",
+      "bytes": 121398,
+      "display_name": "Lyra — Research Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "observatory research conductor",
+        "portrait_brief": "Lucid research conductor surrounded by a few orbiting source cards, indigo mantle, cool observatory light, grounded scholarly realism.",
+        "signature": "orbiting source index cards",
+        "silhouette": "indigo observatory mantle with silver mesh collar",
+        "swarm_visual_world": {
+          "lighting": "cool observatory light with narrow cyan evidence highlights",
+          "materials": [
+            "smoked glass",
+            "silver mesh",
+            "indigo technical wool"
+          ],
+          "negative_cues": [
+            "conspiracy board",
+            "detective noir",
+            "surveillance wall",
+            "random equations",
+            "generic data scientist"
+          ],
+          "palette": [
+            "#171B45",
+            "#42C8D7",
+            "#CAD4E8",
+            "#7656C9"
+          ],
+          "setting": "hybrid observatory and archival research room with real source artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "27812ecb7661ab58853ece902dc27a8d768ef82392521689462da8bf3cc7aba6",
+      "source_file": "exec-37e4d6ec-97a5-484f-87f1-e1d2eee72b73.png",
+      "swarm_id": "intelligence-research",
+      "width": 897
+    },
+    {
+      "agent_id": "maya-operating-model-architect",
+      "asset_id": "maya-operating-model-architect-v1",
+      "asset_path": "agents/enterprise-transformation/maya-operating-model-architect.webp",
+      "bytes": 112860,
+      "display_name": "Maya — Operating Model Architect",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "modular operating-model architect",
+        "portrait_brief": "Architect arranging a modular organizational lattice, platinum-cobalt suit, real process cards and physical interfaces, human-centered enterprise setting.",
+        "signature": "floating organizational lattice",
+        "silhouette": "platinum-cobalt architectural suit",
+        "swarm_visual_world": {
+          "lighting": "architectural daylight with precise cobalt and amber system accents",
+          "materials": [
+            "graphite stone",
+            "cobalt glass",
+            "brushed platinum"
+          ],
+          "negative_cues": [
+            "corporate stock photo",
+            "handshake",
+            "generic boardroom",
+            "fake dashboard wall",
+            "robot replacing workers"
+          ],
+          "palette": [
+            "#20252D",
+            "#3167B8",
+            "#C9CED7",
+            "#D99A42"
+          ],
+          "setting": "modern transformation command floor with physical operating-model artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "5b87312b2771418fd1e9cd08afd71764041eb76fb0f7da99258e1461e5b8b6dd",
+      "source_file": "exec-9ff8cb04-1e45-45a2-be7b-8e25c308ed43.png",
+      "swarm_id": "enterprise-transformation",
+      "width": 933
+    },
+    {
+      "agent_id": "meridian-venture-conductor",
+      "asset_id": "meridian-venture-conductor-v1",
+      "asset_path": "agents/revenue-venture/meridian-venture-conductor.webp",
+      "bytes": 120292,
+      "display_name": "Meridian — Venture Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "venture meridian navigator",
+        "portrait_brief": "Sober venture navigator with a restrained meridian-compass halo, deep emerald tailoring, modern tactile venture salon, no wealth clichés.",
+        "signature": "champagne meridian-compass halo",
+        "silhouette": "deep emerald executive suit with graphite structure",
+        "swarm_visual_world": {
+          "lighting": "soft boardroom daylight with precise emerald data accents",
+          "materials": [
+            "deep green wool",
+            "champagne metal",
+            "smoked crystal"
+          ],
+          "negative_cues": [
+            "crypto bro",
+            "cash rain",
+            "casino",
+            "luxury car",
+            "stock-photo handshake"
+          ],
+          "palette": [
+            "#102921",
+            "#D8BF8A",
+            "#242A31",
+            "#E8EEE9"
+          ],
+          "setting": "modern venture salon with tactile models and no trading-floor spectacle"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "996c1030afa533af2a260946aed121e54cce88865d24ee8f104d33271c8329bf",
+      "source_file": "exec-cd8e19a7-564f-493c-a6e3-2df1454eda45.png",
+      "swarm_id": "revenue-venture",
+      "width": 933
+    },
+    {
+      "agent_id": "metric-value-realization",
+      "asset_id": "metric-value-realization-v1",
+      "asset_path": "agents/enterprise-transformation/metric-value-realization.webp",
+      "bytes": 108874,
+      "display_name": "Metric — Value Realization Analyst",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "value realization analyst",
+        "portrait_brief": "Analyst calibrating stacked measurement prisms, graphite-platinum suit with emerald band, real scorecard artifacts and architectural daylight.",
+        "signature": "stacked measurement prisms",
+        "silhouette": "graphite-platinum analytical suit with emerald signal band",
+        "swarm_visual_world": {
+          "lighting": "architectural daylight with precise cobalt and amber system accents",
+          "materials": [
+            "graphite stone",
+            "cobalt glass",
+            "brushed platinum"
+          ],
+          "negative_cues": [
+            "corporate stock photo",
+            "handshake",
+            "generic boardroom",
+            "fake dashboard wall",
+            "robot replacing workers"
+          ],
+          "palette": [
+            "#20252D",
+            "#3167B8",
+            "#C9CED7",
+            "#D99A42"
+          ],
+          "setting": "modern transformation command floor with physical operating-model artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "7df249aa222e23a442e8db13b9f542cec9a47635a5773c310fab018009b6bea1",
+      "source_file": "exec-6f75acb2-cfc5-43b7-a600-f12197174355.png",
+      "swarm_id": "enterprise-transformation",
+      "width": 933
+    },
+    {
+      "agent_id": "mina-community-steward",
+      "asset_id": "mina-community-steward-v1",
+      "asset_path": "agents/community-academy/mina-community-steward.webp",
+      "bytes": 195032,
+      "display_name": "Mina — Community Steward",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "woven-circle community steward",
+        "portrait_brief": "Approachable steward wearing a woven open-circle brooch, coral-teal structured coat, inclusive commons with small human-scale groups.",
+        "signature": "woven circle brooch with open center",
+        "silhouette": "soft structured coral-teal coat",
+        "swarm_visual_world": {
+          "lighting": "welcoming daylight with warm amber learning highlights",
+          "materials": [
+            "warm paper",
+            "woven textile",
+            "soft anodized metal"
+          ],
+          "negative_cues": [
+            "school uniform stereotype",
+            "corporate webinar",
+            "gamification overload",
+            "crowd spectacle",
+            "childlike mascot"
+          ],
+          "palette": [
+            "#F5EFE4",
+            "#E36F61",
+            "#2D8F8A",
+            "#E4A83B"
+          ],
+          "setting": "inclusive modern academy commons blending amphitheater, workshop, and quiet study"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "83c532b1bd662ab628f57f468e02979e405b35566522335c659a1f99867ea6fe",
+      "source_file": "exec-9d4166a8-1d8c-41f9-8439-3c71fe74529a.png",
+      "swarm_id": "community-academy",
+      "width": 933
+    },
+    {
+      "agent_id": "mira-continuity-keeper",
+      "asset_id": "mira-continuity-keeper-v1",
+      "asset_path": "agents/sovereign-command/mira-continuity-keeper.webp",
+      "bytes": 94214,
+      "display_name": "Mira — Continuity Keeper",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "continuity archivist",
+        "portrait_brief": "Serene archivist holding a few luminous timeline threads, layered ivory archive cloak, deliberate negative space and privacy symbolism.",
+        "signature": "luminous timeline threads",
+        "silhouette": "layered ivory and midnight archive cloak",
+        "swarm_visual_world": {
+          "lighting": "restrained celestial rim light with warm command-table glow",
+          "materials": [
+            "brushed midnight metal",
+            "satin ivory",
+            "antique gold inlay"
+          ],
+          "negative_cues": [
+            "military cosplay",
+            "royal throne",
+            "generic superhero",
+            "weapons",
+            "busy hologram clutter"
+          ],
+          "palette": [
+            "#071426",
+            "#D6AE62",
+            "#F4EFE5",
+            "#315A8A"
+          ],
+          "setting": "quiet orbital command chamber with precise star-map instrumentation"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "c964b8b8dd33bc832589706be14f18938a854077496e159afe6bd878b6c59a3a",
+      "source_file": "exec-43191e02-1350-4fe5-8aaa-4c45a92af139.png",
+      "swarm_id": "sovereign-command",
+      "width": 897
+    },
+    {
+      "agent_id": "nexus-futures-conductor",
+      "asset_id": "nexus-futures-conductor-v1",
+      "asset_path": "agents/web-spatial-protocol-futures/nexus-futures-conductor.webp",
+      "bytes": 112802,
+      "display_name": "Nexus — Futures Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "protocol futures conductor",
+        "portrait_brief": "Grounded futures conductor beneath a restrained protocol-lattice halo, sculptural pearl-black coat, tangible spatial-web lab, no metaverse cliché.",
+        "signature": "ultraviolet protocol-lattice halo",
+        "silhouette": "sculptural pearl-black coat",
+        "swarm_visual_world": {
+          "lighting": "deep spatial contrast with disciplined cyan and ultraviolet edge light",
+          "materials": [
+            "black optical glass",
+            "pearl ceramic",
+            "ultraviolet photonic mesh"
+          ],
+          "negative_cues": [
+            "metaverse cliché",
+            "VR headset stock photo",
+            "crypto iconography",
+            "random neon grid",
+            "floating UI overload"
+          ],
+          "palette": [
+            "#0C0B14",
+            "#714BD6",
+            "#36D3DF",
+            "#E9E6F2"
+          ],
+          "setting": "accessible spatial-web laboratory with tangible frames, volume, and protocol diagrams"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "f94bbe1ec2e91119b9ee80c349f404af65f957a606fe2619588deda8c10bec94",
+      "source_file": "exec-9890d9f5-c19e-45ab-9221-3e84a083b7a9.png",
+      "swarm_id": "web-spatial-protocol-futures",
+      "width": 935
+    },
+    {
+      "agent_id": "nova-customer-discovery",
+      "asset_id": "nova-customer-discovery-v1",
+      "asset_path": "agents/product-forge/nova-customer-discovery.webp",
+      "bytes": 116230,
+      "display_name": "Nova — Customer Discovery",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "customer signal field researcher",
+        "portrait_brief": "Observant field researcher with a compact cobalt lens kit, slate jacket and amber signal tabs, human-centered product studio setting.",
+        "signature": "cobalt multi-lens discovery kit",
+        "silhouette": "slate field jacket with amber signal tabs",
+        "swarm_visual_world": {
+          "lighting": "warm forge-key light balanced by precise cobalt task light",
+          "materials": [
+            "blackened steel",
+            "brushed copper",
+            "matte technical textile"
+          ],
+          "negative_cues": [
+            "fantasy blacksmith",
+            "sparks everywhere",
+            "generic startup office",
+            "fake dashboards",
+            "toy tools"
+          ],
+          "palette": [
+            "#111217",
+            "#B96B3A",
+            "#2E66C5",
+            "#E8E2D6"
+          ],
+          "setting": "premium product atelier with real tools, prototypes, and measured work surfaces"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "4e15af41962774a092b6fd7f4090a143058af9ac0be436514567270ab8633f2b",
+      "source_file": "exec-a7da02b6-cea5-4d00-ad97-e93e71b2b297.png",
+      "swarm_id": "product-forge",
+      "width": 935
+    },
+    {
+      "agent_id": "orbit-spatial-interface-designer",
+      "asset_id": "orbit-spatial-interface-designer-v1",
+      "asset_path": "agents/web-spatial-protocol-futures/orbit-spatial-interface-designer.webp",
+      "bytes": 102228,
+      "display_name": "Orbit — Spatial Interface Designer",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "volumetric interface designer",
+        "portrait_brief": "Spatial designer within three restrained orbital rings, pearl-ultraviolet sculptural suit, comfortable human-scale lab, no headset stock-photo pose.",
+        "signature": "three restrained orbital interaction rings",
+        "silhouette": "pearl-ultraviolet sculptural suit",
+        "swarm_visual_world": {
+          "lighting": "deep spatial contrast with disciplined cyan and ultraviolet edge light",
+          "materials": [
+            "black optical glass",
+            "pearl ceramic",
+            "ultraviolet photonic mesh"
+          ],
+          "negative_cues": [
+            "metaverse cliché",
+            "VR headset stock photo",
+            "crypto iconography",
+            "random neon grid",
+            "floating UI overload"
+          ],
+          "palette": [
+            "#0C0B14",
+            "#714BD6",
+            "#36D3DF",
+            "#E9E6F2"
+          ],
+          "setting": "accessible spatial-web laboratory with tangible frames, volume, and protocol diagrams"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "0549d9b37b15bbbd45c651670eacc64df5b52cdd959ec1c11ea649ec50f16bfc",
+      "source_file": "exec-830ac0c3-ccae-4e20-9160-c991dec0478e.png",
+      "swarm_id": "web-spatial-protocol-futures",
+      "width": 933
+    },
+    {
+      "agent_id": "orion-mission-architect",
+      "asset_id": "orion-mission-architect-v1",
+      "asset_path": "agents/sovereign-command/orion-mission-architect.webp",
+      "bytes": 120376,
+      "display_name": "Orion — Mission Architect",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "constellation systems architect",
+        "portrait_brief": "Three-quarter portrait studying a disciplined constellation blueprint, precise architectural tailoring, no spectacle or tactical styling.",
+        "signature": "floating constellation blueprint",
+        "silhouette": "structured navy coat with ivory architectural collar",
+        "swarm_visual_world": {
+          "lighting": "restrained celestial rim light with warm command-table glow",
+          "materials": [
+            "brushed midnight metal",
+            "satin ivory",
+            "antique gold inlay"
+          ],
+          "negative_cues": [
+            "military cosplay",
+            "royal throne",
+            "generic superhero",
+            "weapons",
+            "busy hologram clutter"
+          ],
+          "palette": [
+            "#071426",
+            "#D6AE62",
+            "#F4EFE5",
+            "#315A8A"
+          ],
+          "setting": "quiet orbital command chamber with precise star-map instrumentation"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "466931e1c86d9f71811cd3f1d50486dede4210f21e16cb93f2827346f384bd5d",
+      "source_file": "exec-b5f99534-3951-4cbe-b29d-ddd36ead2e02.png",
+      "swarm_id": "sovereign-command",
+      "width": 897
+    },
+    {
+      "agent_id": "piper-demand-strategist",
+      "asset_id": "piper-demand-strategist-v1",
+      "asset_path": "agents/revenue-venture/piper-demand-strategist.webp",
+      "bytes": 129182,
+      "display_name": "Piper — Demand Strategist",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "ethical demand signal strategist",
+        "portrait_brief": "Alert strategist tuning a restrained emerald signal beacon, crisp graphite coat, honest market research artifacts, no megaphone cliché.",
+        "signature": "emerald signal-wave beacon",
+        "silhouette": "crisp graphite coat with cyan signal piping",
+        "swarm_visual_world": {
+          "lighting": "soft boardroom daylight with precise emerald data accents",
+          "materials": [
+            "deep green wool",
+            "champagne metal",
+            "smoked crystal"
+          ],
+          "negative_cues": [
+            "crypto bro",
+            "cash rain",
+            "casino",
+            "luxury car",
+            "stock-photo handshake"
+          ],
+          "palette": [
+            "#102921",
+            "#D8BF8A",
+            "#242A31",
+            "#E8EEE9"
+          ],
+          "setting": "modern venture salon with tactile models and no trading-floor spectacle"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "00b28e6897de18d2be8325ab54cbc227dad4cb8fa09a0f57250dc0d2b4c76026",
+      "source_file": "exec-00d76176-6edb-4eb1-af8f-86a9a02f0a54.png",
+      "swarm_id": "revenue-venture",
+      "width": 933
+    },
+    {
+      "agent_id": "pixel-web-experience-architect",
+      "asset_id": "pixel-web-experience-architect-v1",
+      "asset_path": "agents/web-spatial-protocol-futures/pixel-web-experience-architect.webp",
+      "bytes": 98742,
+      "display_name": "Pixel — Web Experience Architect",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "responsive frame architect",
+        "portrait_brief": "Web architect arranging nested responsive frames, black-cyan design jacket, pearl grid collar, tangible content and accessible hierarchy, no UI clutter.",
+        "signature": "nested responsive frame portals",
+        "silhouette": "black-cyan design jacket with pearl grid collar",
+        "swarm_visual_world": {
+          "lighting": "deep spatial contrast with disciplined cyan and ultraviolet edge light",
+          "materials": [
+            "black optical glass",
+            "pearl ceramic",
+            "ultraviolet photonic mesh"
+          ],
+          "negative_cues": [
+            "metaverse cliché",
+            "VR headset stock photo",
+            "crypto iconography",
+            "random neon grid",
+            "floating UI overload"
+          ],
+          "palette": [
+            "#0C0B14",
+            "#714BD6",
+            "#36D3DF",
+            "#E9E6F2"
+          ],
+          "setting": "accessible spatial-web laboratory with tangible frames, volume, and protocol diagrams"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "e3b64185c37f5190e1c0507977f3e29adaf67c5ea965f59b120b19cdc7634c6e",
+      "source_file": "exec-eba8df1f-3037-4f47-9784-7fa16cb9c189.png",
+      "swarm_id": "web-spatial-protocol-futures",
+      "width": 933
+    },
+    {
+      "agent_id": "prism-quality-critic",
+      "asset_id": "prism-quality-critic-v1",
+      "asset_path": "agents/product-forge/prism-quality-critic.webp",
+      "bytes": 112970,
+      "display_name": "Prism — Quality Critic",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "spectral quality examiner",
+        "portrait_brief": "Premium critic inspecting a physical-digital prototype through an iridescent visor, razor-cut black coat, controlled spectral highlights.",
+        "signature": "iridescent inspection visor",
+        "silhouette": "razor-cut black coat with pearl interior",
+        "swarm_visual_world": {
+          "lighting": "warm forge-key light balanced by precise cobalt task light",
+          "materials": [
+            "blackened steel",
+            "brushed copper",
+            "matte technical textile"
+          ],
+          "negative_cues": [
+            "fantasy blacksmith",
+            "sparks everywhere",
+            "generic startup office",
+            "fake dashboards",
+            "toy tools"
+          ],
+          "palette": [
+            "#111217",
+            "#B96B3A",
+            "#2E66C5",
+            "#E8E2D6"
+          ],
+          "setting": "premium product atelier with real tools, prototypes, and measured work surfaces"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "f0b5a929a5258a56783d011f9cd033a044171b30176b018f40612be4e6975f5c",
+      "source_file": "exec-e61de7ac-860f-47ee-a708-3c7a47482ed4.png",
+      "swarm_id": "product-forge",
+      "width": 935
+    },
+    {
+      "agent_id": "pulse-cohort-facilitator",
+      "asset_id": "pulse-cohort-facilitator-v1",
+      "asset_path": "agents/community-academy/pulse-cohort-facilitator.webp",
+      "bytes": 140722,
+      "display_name": "Pulse — Cohort Facilitator",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "cohort rhythm facilitator",
+        "portrait_brief": "Energetic facilitator holding a subtle amber beacon baton, teal-navy attire, warm small-cohort learning circle, never stadium-like.",
+        "signature": "amber pulse ring and beacon baton",
+        "silhouette": "dynamic teal-navy attire with soft amber arcs",
+        "swarm_visual_world": {
+          "lighting": "welcoming daylight with warm amber learning highlights",
+          "materials": [
+            "warm paper",
+            "woven textile",
+            "soft anodized metal"
+          ],
+          "negative_cues": [
+            "school uniform stereotype",
+            "corporate webinar",
+            "gamification overload",
+            "crowd spectacle",
+            "childlike mascot"
+          ],
+          "palette": [
+            "#F5EFE4",
+            "#E36F61",
+            "#2D8F8A",
+            "#E4A83B"
+          ],
+          "setting": "inclusive modern academy commons blending amphitheater, workshop, and quiet study"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "0d66bd655ce082e011575e365f9e57340d1cbc563c0c4bf7d796ac467db7c595",
+      "source_file": "exec-06c4c882-2aee-4914-ae0a-6afdcc653127.png",
+      "swarm_id": "community-academy",
+      "width": 933
+    },
+    {
+      "agent_id": "quorum-governance-designer",
+      "asset_id": "quorum-governance-designer-v1",
+      "asset_path": "agents/enterprise-transformation/quorum-governance-designer.webp",
+      "bytes": 139948,
+      "display_name": "Quorum — Governance Designer",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "council governance designer",
+        "portrait_brief": "Governance designer beneath a balanced five-node quorum ring, graphite-amber formal coat, transparent control matrix, no judicial cosplay.",
+        "signature": "five-node quorum ring",
+        "silhouette": "graphite formal coat with amber control lines",
+        "swarm_visual_world": {
+          "lighting": "architectural daylight with precise cobalt and amber system accents",
+          "materials": [
+            "graphite stone",
+            "cobalt glass",
+            "brushed platinum"
+          ],
+          "negative_cues": [
+            "corporate stock photo",
+            "handshake",
+            "generic boardroom",
+            "fake dashboard wall",
+            "robot replacing workers"
+          ],
+          "palette": [
+            "#20252D",
+            "#3167B8",
+            "#C9CED7",
+            "#D99A42"
+          ],
+          "setting": "modern transformation command floor with physical operating-model artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "dd91d2ad0d8c0accf396cbd55106fae97faebccc6740a7215311eed54c57044d",
+      "source_file": "exec-d1f74e82-8c69-499e-9649-e467f678a3a2.png",
+      "swarm_id": "enterprise-transformation",
+      "width": 935
+    },
+    {
+      "agent_id": "relay-change-enablement",
+      "asset_id": "relay-change-enablement-v1",
+      "asset_path": "agents/enterprise-transformation/relay-change-enablement.webp",
+      "bytes": 128422,
+      "display_name": "Relay — Change Enablement Lead",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "human change relay lead",
+        "portrait_brief": "Approachable enablement lead guiding a cascade of relay-light arcs between small groups, cobalt-amber coat, humane enterprise floor.",
+        "signature": "cascading relay-light arcs",
+        "silhouette": "cobalt-amber agile coat with navy base",
+        "swarm_visual_world": {
+          "lighting": "architectural daylight with precise cobalt and amber system accents",
+          "materials": [
+            "graphite stone",
+            "cobalt glass",
+            "brushed platinum"
+          ],
+          "negative_cues": [
+            "corporate stock photo",
+            "handshake",
+            "generic boardroom",
+            "fake dashboard wall",
+            "robot replacing workers"
+          ],
+          "palette": [
+            "#20252D",
+            "#3167B8",
+            "#C9CED7",
+            "#D99A42"
+          ],
+          "setting": "modern transformation command floor with physical operating-model artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "6338d23f3c1e5c81cf68b8b37a8972f9a8b642804b1cc9c3aa6149c6b1b43ca9",
+      "source_file": "exec-fd11b518-081f-42c3-8e89-7c7090afd4d4.png",
+      "swarm_id": "enterprise-transformation",
+      "width": 933
+    },
+    {
+      "agent_id": "rivet-build-engineer",
+      "asset_id": "rivet-build-engineer-v1",
+      "asset_path": "agents/product-forge/rivet-build-engineer.webp",
+      "bytes": 171344,
+      "display_name": "Rivet — Build Engineer",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "precision build engineer",
+        "portrait_brief": "Focused engineer at a clean real tool bench, compact steel-orange exosleeves, rolled technical sleeves, no sci-fi weapon cues.",
+        "signature": "steel and orange articulated exosleeves",
+        "silhouette": "rolled-sleeve black technical workwear",
+        "swarm_visual_world": {
+          "lighting": "warm forge-key light balanced by precise cobalt task light",
+          "materials": [
+            "blackened steel",
+            "brushed copper",
+            "matte technical textile"
+          ],
+          "negative_cues": [
+            "fantasy blacksmith",
+            "sparks everywhere",
+            "generic startup office",
+            "fake dashboards",
+            "toy tools"
+          ],
+          "palette": [
+            "#111217",
+            "#B96B3A",
+            "#2E66C5",
+            "#E8E2D6"
+          ],
+          "setting": "premium product atelier with real tools, prototypes, and measured work surfaces"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "57245cb233132f56c2962f527357311be057f28f7b5530a70ec0e091ecf370d4",
+      "source_file": "exec-53845d54-b6a2-46a1-96cc-f5be3b754204.png",
+      "swarm_id": "product-forge",
+      "width": 935
+    },
+    {
+      "agent_id": "rune-learning-evaluator",
+      "asset_id": "rune-learning-evaluator-v1",
+      "asset_path": "agents/community-academy/rune-learning-evaluator.webp",
+      "bytes": 137846,
+      "display_name": "Rune — Learning Evaluator",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "transparent learning evaluator",
+        "portrait_brief": "Fair evaluator viewing simple progress glyphs through a transparent lens, ivory-charcoal coat, coral markers, warm accessible study space.",
+        "signature": "progress-glyph lens",
+        "silhouette": "ivory-charcoal analytic coat with coral markers",
+        "swarm_visual_world": {
+          "lighting": "welcoming daylight with warm amber learning highlights",
+          "materials": [
+            "warm paper",
+            "woven textile",
+            "soft anodized metal"
+          ],
+          "negative_cues": [
+            "school uniform stereotype",
+            "corporate webinar",
+            "gamification overload",
+            "crowd spectacle",
+            "childlike mascot"
+          ],
+          "palette": [
+            "#F5EFE4",
+            "#E36F61",
+            "#2D8F8A",
+            "#E4A83B"
+          ],
+          "setting": "inclusive modern academy commons blending amphitheater, workshop, and quiet study"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "aaf7a3e13324ce0933e39e4e4337d11fbc8af959e39f553a1883a2094d7e66e3",
+      "source_file": "exec-625f5c34-9d5e-4d45-a80f-682741c5c488.png",
+      "swarm_id": "community-academy",
+      "width": 933
+    },
+    {
+      "agent_id": "sentinel-risk-analyst",
+      "asset_id": "sentinel-risk-analyst-v1",
+      "asset_path": "agents/trust-safety/sentinel-risk-analyst.webp",
+      "bytes": 123734,
+      "display_name": "Sentinel — Risk Analyst",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "defensive risk sentinel",
+        "portrait_brief": "Defensive analyst reading a glacier radar fan, charcoal technical suit with one signal-red seam, secure room, no weapon or hacker cues.",
+        "signature": "glacier radar fan and alert lens",
+        "silhouette": "charcoal technical suit with restrained red seam",
+        "swarm_visual_world": {
+          "lighting": "cool secure-room light with restrained signal-red incident accents",
+          "materials": [
+            "charcoal ceramic",
+            "glacier glass",
+            "matte protective textile"
+          ],
+          "negative_cues": [
+            "riot armor",
+            "police aesthetic",
+            "hacker hoodie",
+            "panopticon",
+            "threatening surveillance"
+          ],
+          "palette": [
+            "#1B232D",
+            "#A9D7E8",
+            "#F2F5F6",
+            "#D34E4E"
+          ],
+          "setting": "human-centered trust operations room with transparent controls and no weapons"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "f231c9d62970fbdb2696f5c7e0b5c8a2232d63fe7467b6bfb4c16545835b3601",
+      "source_file": "exec-502ff5a8-d5e0-4c2f-b124-7145fa57b1e6.png",
+      "swarm_id": "trust-safety",
+      "width": 935
+    },
+    {
+      "agent_id": "serene-reflection-guide",
+      "asset_id": "serene-reflection-guide-v1",
+      "asset_path": "agents/health-flourishing/serene-reflection-guide.webp",
+      "bytes": 200996,
+      "display_name": "Serene — Reflection Guide",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "still-water reflection guide",
+        "portrait_brief": "Gentle guide beside a still-water mirror disk, soft sage-pearl cloak with violet interior, quiet daylight, no guru or therapist cosplay.",
+        "signature": "still-water mirror disk",
+        "silhouette": "soft sage-pearl cloak with violet interior",
+        "swarm_visual_world": {
+          "lighting": "soft biophilic daylight with calm sky highlights",
+          "materials": [
+            "natural linen",
+            "warm wood",
+            "translucent bio-glass"
+          ],
+          "negative_cues": [
+            "doctor coat",
+            "medical device theater",
+            "before-and-after body",
+            "biohacking lab",
+            "spiritual guru"
+          ],
+          "palette": [
+            "#214D3A",
+            "#91B89A",
+            "#DCE8DD",
+            "#C97D5A"
+          ],
+          "setting": "welcoming wellbeing studio connected to nature, never a fake clinic"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "0fde61a6f8017869d54e34d0bf58b42d96ba0bede525f49fc41ea0ff54d5de28",
+      "source_file": "exec-5e2034a4-4b60-4191-af4c-073499a54794.png",
+      "swarm_id": "health-flourishing",
+      "width": 933
+    },
+    {
+      "agent_id": "sol-visual-world-director",
+      "asset_id": "sol-visual-world-director-v1",
+      "asset_path": "agents/creator-worlds/sol-visual-world-director.webp",
+      "bytes": 127094,
+      "display_name": "Sol — Visual World Director",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "solar visual world director",
+        "portrait_brief": "Cinematic art director with a sun-disk optical lens, cyan-black tailored silhouette, real materials and controlled gold studio light.",
+        "signature": "sun-disk optical lens",
+        "silhouette": "cyan-black art-director coat with gold disk shoulder",
+        "swarm_visual_world": {
+          "lighting": "cinematic magenta-cyan studio light with controlled warm highlights",
+          "materials": [
+            "ink-black satin",
+            "prismatic glass",
+            "warm studio brass"
+          ],
+          "negative_cues": [
+            "generic influencer",
+            "random neon",
+            "copyrighted character imitation",
+            "content-farm aesthetic",
+            "cluttered mood board"
+          ],
+          "palette": [
+            "#111018",
+            "#D63E89",
+            "#38C8D8",
+            "#E7B65A"
+          ],
+          "setting": "tactile creator studio where story, image, sound, and release artifacts coexist"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "540a00af8eb1ad232216ca427ee9f5e741fc469b16a9be1cdf8415973cf40932",
+      "source_file": "exec-d8a9d7c4-2e77-4323-8220-d1676962b201.png",
+      "swarm_id": "creator-worlds",
+      "width": 935
+    },
+    {
+      "agent_id": "solace-flourishing-conductor",
+      "asset_id": "solace-flourishing-conductor-v1",
+      "asset_path": "agents/health-flourishing/solace-flourishing-conductor.webp",
+      "bytes": 230776,
+      "display_name": "Solace — Flourishing Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "biophilic flourishing guide",
+        "portrait_brief": "Warm wellbeing guide with a subtle sunleaf halo, forest-sage linen coat, biophilic daylight studio, clearly non-clinical and grounded.",
+        "signature": "sunleaf halo",
+        "silhouette": "forest-sage structured linen coat",
+        "swarm_visual_world": {
+          "lighting": "soft biophilic daylight with calm sky highlights",
+          "materials": [
+            "natural linen",
+            "warm wood",
+            "translucent bio-glass"
+          ],
+          "negative_cues": [
+            "doctor coat",
+            "medical device theater",
+            "before-and-after body",
+            "biohacking lab",
+            "spiritual guru"
+          ],
+          "palette": [
+            "#214D3A",
+            "#91B89A",
+            "#DCE8DD",
+            "#C97D5A"
+          ],
+          "setting": "welcoming wellbeing studio connected to nature, never a fake clinic"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "f848414253482a49ade7d6e59c8b1d48a2e30196fba664b5ec53d1a3abee5a47",
+      "source_file": "exec-c39097ef-76ac-444b-8a45-265b11ef9487.png",
+      "swarm_id": "health-flourishing",
+      "width": 933
+    },
+    {
+      "agent_id": "sophia-academy-conductor",
+      "asset_id": "sophia-academy-conductor-v1",
+      "asset_path": "agents/community-academy/sophia-academy-conductor.webp",
+      "bytes": 150340,
+      "display_name": "Sophia — Academy Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "inclusive academy conductor",
+        "portrait_brief": "Welcoming academy conductor with a minimal open-book halo, ivory-coral-teal mantle, inclusive modern learning commons in daylight.",
+        "signature": "luminous open-book halo",
+        "silhouette": "ivory academic mantle with coral and teal edges",
+        "swarm_visual_world": {
+          "lighting": "welcoming daylight with warm amber learning highlights",
+          "materials": [
+            "warm paper",
+            "woven textile",
+            "soft anodized metal"
+          ],
+          "negative_cues": [
+            "school uniform stereotype",
+            "corporate webinar",
+            "gamification overload",
+            "crowd spectacle",
+            "childlike mascot"
+          ],
+          "palette": [
+            "#F5EFE4",
+            "#E36F61",
+            "#2D8F8A",
+            "#E4A83B"
+          ],
+          "setting": "inclusive modern academy commons blending amphitheater, workshop, and quiet study"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "5c6ffec34c1f532ae8393963d62c1dea534584efe88593d951bdf3fbcd56925c",
+      "source_file": "exec-20561f59-2181-4fa2-8cd7-9d9c1e9f322b.png",
+      "swarm_id": "community-academy",
+      "width": 933
+    },
+    {
+      "agent_id": "soren-synthesis-analyst",
+      "asset_id": "soren-synthesis-analyst-v1",
+      "asset_path": "agents/intelligence-research/soren-synthesis-analyst.webp",
+      "bytes": 122590,
+      "display_name": "Soren — Synthesis Analyst",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "evidence synthesis cartographer",
+        "portrait_brief": "Thoughtful analyst braiding a few evidence strands into a legible map, tailored indigo coat, calm observatory archive setting.",
+        "signature": "braided cyan-violet evidence strands",
+        "silhouette": "tailored indigo coat with neural-map seams",
+        "swarm_visual_world": {
+          "lighting": "cool observatory light with narrow cyan evidence highlights",
+          "materials": [
+            "smoked glass",
+            "silver mesh",
+            "indigo technical wool"
+          ],
+          "negative_cues": [
+            "conspiracy board",
+            "detective noir",
+            "surveillance wall",
+            "random equations",
+            "generic data scientist"
+          ],
+          "palette": [
+            "#171B45",
+            "#42C8D7",
+            "#CAD4E8",
+            "#7656C9"
+          ],
+          "setting": "hybrid observatory and archival research room with real source artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "bb14b43ce0e193883c782b1dc1224f1d99a3235f26931109ac6ace3c482a5e3d",
+      "source_file": "exec-3727121b-2dbd-4850-9b60-c80458c167ad.png",
+      "swarm_id": "intelligence-research",
+      "width": 898
+    },
+    {
+      "agent_id": "terra-nutrition-educator",
+      "asset_id": "terra-nutrition-educator-v1",
+      "asset_path": "agents/health-flourishing/terra-nutrition-educator.webp",
+      "bytes": 170616,
+      "display_name": "Terra — Nutrition Educator",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "earthwise nutrition educator",
+        "portrait_brief": "Grounded educator with a botanical molecule brooch, clay-sage studio apron, real whole-food textures, no medical or diet-culture imagery.",
+        "signature": "botanical molecule brooch",
+        "silhouette": "clay-sage studio apron over ivory tailoring",
+        "swarm_visual_world": {
+          "lighting": "soft biophilic daylight with calm sky highlights",
+          "materials": [
+            "natural linen",
+            "warm wood",
+            "translucent bio-glass"
+          ],
+          "negative_cues": [
+            "doctor coat",
+            "medical device theater",
+            "before-and-after body",
+            "biohacking lab",
+            "spiritual guru"
+          ],
+          "palette": [
+            "#214D3A",
+            "#91B89A",
+            "#DCE8DD",
+            "#C97D5A"
+          ],
+          "setting": "welcoming wellbeing studio connected to nature, never a fake clinic"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "cfc476dc14ff5deddcc5dd3859b86e80bc2ef3aefdc21b20f06df2272372b928",
+      "source_file": "exec-ff43f1fc-9d71-4663-bd1b-653678d80a06.png",
+      "swarm_id": "health-flourishing",
+      "width": 933
+    },
+    {
+      "agent_id": "tess-system-designer",
+      "asset_id": "tess-system-designer-v1",
+      "asset_path": "agents/product-forge/tess-system-designer.webp",
+      "bytes": 137070,
+      "display_name": "Tess — System Designer",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "geometric systems designer",
+        "portrait_brief": "Precise designer arranging translucent teal system grids, ivory drafting jacket, measured atelier light, accessible human-centered mood.",
+        "signature": "stack of translucent teal grid tablets",
+        "silhouette": "ivory drafting jacket with graphite geometry seams",
+        "swarm_visual_world": {
+          "lighting": "warm forge-key light balanced by precise cobalt task light",
+          "materials": [
+            "blackened steel",
+            "brushed copper",
+            "matte technical textile"
+          ],
+          "negative_cues": [
+            "fantasy blacksmith",
+            "sparks everywhere",
+            "generic startup office",
+            "fake dashboards",
+            "toy tools"
+          ],
+          "palette": [
+            "#111217",
+            "#B96B3A",
+            "#2E66C5",
+            "#E8E2D6"
+          ],
+          "setting": "premium product atelier with real tools, prototypes, and measured work surfaces"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "86d754c3a9688c11fae9e6469640f215d7830dee4f1d004ed61e79359d539a7e",
+      "source_file": "exec-5a0c53c5-abd8-45f5-aee3-757130296b6a.png",
+      "swarm_id": "product-forge",
+      "width": 935
+    },
+    {
+      "agent_id": "vector-transformation-conductor",
+      "asset_id": "vector-transformation-conductor-v1",
+      "asset_path": "agents/enterprise-transformation/vector-transformation-conductor.webp",
+      "bytes": 115324,
+      "display_name": "Vector — Transformation Conductor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "enterprise transformation vector",
+        "portrait_brief": "Pragmatic transformation conductor with coordinate-arrow halo, cobalt-graphite tailoring, physical operating-model artifacts, no corporate stock aesthetic.",
+        "signature": "coordinate-arrow halo",
+        "silhouette": "cobalt-graphite executive coat with platinum geometry",
+        "swarm_visual_world": {
+          "lighting": "architectural daylight with precise cobalt and amber system accents",
+          "materials": [
+            "graphite stone",
+            "cobalt glass",
+            "brushed platinum"
+          ],
+          "negative_cues": [
+            "corporate stock photo",
+            "handshake",
+            "generic boardroom",
+            "fake dashboard wall",
+            "robot replacing workers"
+          ],
+          "palette": [
+            "#20252D",
+            "#3167B8",
+            "#C9CED7",
+            "#D99A42"
+          ],
+          "setting": "modern transformation command floor with physical operating-model artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "2a0dcb46b4e68f182d7a9f7f9e13e3ef2d34bc71c2fd32175a908618f1b20f80",
+      "source_file": "exec-8b56cc55-2ef0-4622-951f-eab5e15d973c.png",
+      "swarm_id": "enterprise-transformation",
+      "width": 935
+    },
+    {
+      "agent_id": "vera-decision-verifier",
+      "asset_id": "vera-decision-verifier-v1",
+      "asset_path": "agents/sovereign-command/vera-decision-verifier.webp",
+      "bytes": 117736,
+      "display_name": "Vera — Decision Verifier",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "precision decision examiner",
+        "portrait_brief": "Analytical portrait with a split-prism monocle reflecting two decision paths, restrained silver tailoring and cool evidence light.",
+        "signature": "split-prism verification monocle",
+        "silhouette": "sharp navy and silver precision suit",
+        "swarm_visual_world": {
+          "lighting": "restrained celestial rim light with warm command-table glow",
+          "materials": [
+            "brushed midnight metal",
+            "satin ivory",
+            "antique gold inlay"
+          ],
+          "negative_cues": [
+            "military cosplay",
+            "royal throne",
+            "generic superhero",
+            "weapons",
+            "busy hologram clutter"
+          ],
+          "palette": [
+            "#071426",
+            "#D6AE62",
+            "#F4EFE5",
+            "#315A8A"
+          ],
+          "setting": "quiet orbital command chamber with precise star-map instrumentation"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "4cc091eacebaf0edbb67dea7af80f32ba88920e8e340c05d5c06293b573630e1",
+      "source_file": "exec-1da10f93-2b35-4199-aa29-ec17cb709c1b.png",
+      "swarm_id": "sovereign-command",
+      "width": 1122
+    },
+    {
+      "agent_id": "verity-source-auditor",
+      "asset_id": "verity-source-auditor-v1",
+      "asset_path": "agents/intelligence-research/verity-source-auditor.webp",
+      "bytes": 144246,
+      "display_name": "Verity — Source Auditor",
+      "height": 1402,
+      "inspection_status": "pass",
+      "prompt_spec": {
+        "archetype": "citation integrity auditor",
+        "portrait_brief": "Meticulous archivist examining luminous citation seals, silver archival coat, precise cool light and authentic paper-glass textures.",
+        "signature": "luminous citation seals",
+        "silhouette": "silver archival coat over indigo tailoring",
+        "swarm_visual_world": {
+          "lighting": "cool observatory light with narrow cyan evidence highlights",
+          "materials": [
+            "smoked glass",
+            "silver mesh",
+            "indigo technical wool"
+          ],
+          "negative_cues": [
+            "conspiracy board",
+            "detective noir",
+            "surveillance wall",
+            "random equations",
+            "generic data scientist"
+          ],
+          "palette": [
+            "#171B45",
+            "#42C8D7",
+            "#CAD4E8",
+            "#7656C9"
+          ],
+          "setting": "hybrid observatory and archival research room with real source artifacts"
+        }
+      },
+      "rights_status": "generated-owned",
+      "sha256": "feca55c70e13dd43817642d18f25c867311c44561fb08c768e76ec89c0997426",
+      "source_file": "exec-d8ca5676-ea5d-496c-9744-93492fee84c0.png",
+      "swarm_id": "intelligence-research",
+      "width": 935
+    }
+  ],
+  "collection_id": "starlight-constellation-v1",
+  "counts": {
+    "agents": 50,
+    "assets": 50
+  },
+  "generated_on": "2026-08-14",
+  "generation": {
+    "prompt_contract": {
+      "base_brief": "Original fictional non-human synthetic intelligence in the Starlight porcelain-and-obsidian atelier. Tactile materials, controlled editorial lighting, visible micro-scratches, sophisticated silhouette, singular physically legible operational instrument, generous crop safety, and code-rendered public labels only.",
+      "canonical_source": "portfolio/canonical-portfolio.v1.json#swarms[].agents[].visual_dna",
+      "negative_contract": [
+        "readable text",
+        "logos or brand marks",
+        "screenshots or fake dashboards",
+        "generic starfields",
+        "weapons",
+        "celebrity likeness",
+        "superhero or military cosplay",
+        "decorative UI clutter"
+      ],
+      "record_note": "The canonical visual DNA plus this base and negative contract is the reproducible prompt specification. Source filenames below are the immutable generation-call receipts; absolute local paths are intentionally excluded from public artifacts.",
+      "semantic_color": {
+        "amber": "human-authorized intent, provenance, or value",
+        "cyan": "agent cognition and sensed network state",
+        "ultraviolet": "bounded protocol possibility"
+      }
+    },
+    "provider": "OpenAI",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "tool_surface": "Codex built-in image generation"
+  },
+  "inspection": {
+    "method": "Human-visible full-resolution comparative inspection in Codex",
+    "requirements": [
+      "no readable baked text",
+      "no third-party logo",
+      "no unsafe content",
+      "role instrument is visually legible",
+      "crop survives portrait card use",
+      "lineage remains recognizably Starlight"
+    ],
+    "status": "pass"
+  },
+  "portfolio_id": "starlight-intelligence-canonical-portfolio",
+  "portfolio_source_sha256": "f7e248303bb44d9b8877b963b6da0183875e206c0d772003f089d52a94301f17",
+  "rights": {
+    "public_web_allowed": true,
+    "redistribution_scope": "Starlight Intelligence portfolio and installable pack previews",
+    "status": "generated-owned"
+  },
+  "schema_version": "starlight.visual_provenance_manifest.v1"
+}

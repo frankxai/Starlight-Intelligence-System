@@ -7,6 +7,7 @@ const BASE = "https://starlightintelligence.org";
 const STATIC_ROUTES = [
   "",
   "/protocol",
+  "/constellation",
   "/download",
   "/quickstart",
   "/architecture",
@@ -46,7 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === ""
         ? 1.0
-        : path === "/protocol" || path === "/download" || path === "/quickstart" || path === "/research"
+        : path === "/protocol" || path === "/constellation" || path === "/download" || path === "/quickstart" || path === "/research"
           ? 0.9
           : 0.7,
   }));

@@ -1,0 +1,32 @@
+{
+  "schema_version": "starlight.public_constellation_release.v1",
+  "portfolio_id": "starlight-intelligence-canonical-portfolio",
+  "portfolio_version": "1.0.0",
+  "status": "draft",
+  "generated_on": "2026-08-14",
+  "truth_contract": {
+    "website_is_projection": true,
+    "grants_authority": false,
+    "private_memory_included": false,
+    "runtime_install_status": "preview_only",
+    "live_eval_status": "not_run",
+    "claim": "Structural validation and fixture linkage only; no live model-quality or deployment claim"
+  },
+  "artifacts": [
+    {
+      "name": "portfolio.public.json",
+      "bytes": 408988,
+      "sha256": "0087e2abfcdae567b52362f62b95602836b3125e82c258ff801fcdf9ce044521"
+    },
+    {
+      "name": "visual-provenance.manifest.json",
+      "bytes": 84455,
+      "sha256": "1ef15079f23ab8340dda9b4ba1d9a40202225953d9c106fb9bfb1110a2098cfe"
+    },
+    {
+      "name": "capability-pack.manifest.json",
+      "bytes": 113017,
+      "sha256": "b2735b8d9a0d14fff266258668a26653ce058272b45e7bda8fbde772475f48ab"
+    }
+  ]
+}

@@ -1,0 +1,360 @@
+{
+  "schema_version": "starlight.skill_pack.v1",
+  "content_digest": "sha256:fd3a579b6ddad0ec164f84345a0fd5610ab367b063db15de3b1558f575b1cdc6",
+  "immutable": true,
+  "dependency_count": 49,
+  "portable_skill_count": 1,
+  "reference_only_dependency_count": 49,
+  "payload": {
+    "schema_version": "starlight.skill_pack_payload.v1",
+    "pack_id": "starlight-constellation-skills",
+    "version": "0.1.0",
+    "adapter_skill": "compose-starlight-constellation",
+    "grants_tools": false,
+    "dependencies": [
+      {
+        "id": "agent-design-review",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "agent-operations-accounting",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "agent-runtime-trust-boundaries",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 5
+      },
+      {
+        "id": "agentic-execution-orchestration",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "agentic-harness-landscape",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "agentic-orchestration",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "ai-architecture",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "brand-voice",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "chief-revenue-operator",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "cinematic-image-prompt-master",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "cloudflare:agents-sdk",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "coding-agents",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "communities-academies:operate-communities-academies",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 2
+      },
+      {
+        "id": "content-strategy",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 5
+      },
+      {
+        "id": "creator-cohort-ops:cohort-ops",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "creator-intelligence",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "creator-product-kit:creator-product",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 2
+      },
+      {
+        "id": "creator-productivity",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "creator-revenue-engine:creator-revenue",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "data-analytics:build-report",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 2
+      },
+      {
+        "id": "data-analytics:design-kpis",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "data-analytics:kpi-reporting",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "data-analytics:metric-diagnostics",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "data-analytics:product-business-analysis",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "data-analytics:validate-data",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "domain-intelligence-system:domain-intelligence",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 2
+      },
+      {
+        "id": "dual-strategy-council",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 4
+      },
+      {
+        "id": "ecosystem-mapper",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 5
+      },
+      {
+        "id": "emotional-story-architect",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "enterprise-ai-coe-ops:enterprise-ai-coe",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 2
+      },
+      {
+        "id": "enterprise-ai-kit:enterprise-ai",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "enterprise-partner-venture:operate-enterprise-partner-venture",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "figma:figma-design-to-code",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "figma:figma-use-motion",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "github-code-review",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 4
+      },
+      {
+        "id": "governed-agent-runtime-factory",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 2
+      },
+      {
+        "id": "gsap-core",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "gym-training-expert",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "health-intelligence-ops:health-intelligence",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 4
+      },
+      {
+        "id": "health-nutrition-expert",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "impeccable",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "internal-comms",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 2
+      },
+      {
+        "id": "interview-os",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 2
+      },
+      {
+        "id": "ip-shield-ops:ip-shield",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "loop-verifier",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 3
+      },
+      {
+        "id": "mcp-2025-patterns",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "mcp-architecture",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "model-routing",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      },
+      {
+        "id": "prompt-psyche-cartographer",
+        "dependency_mode": "reference_only",
+        "resolution": "external_skill_registry",
+        "grants_tools": false,
+        "used_by_count": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,496 @@
+{
+  "schema_version": "starlight.public_agent_pack.v1",
+  "pack_id": "starlight-constellation-agents@sha256:24b637e9b3e218ec1f702d7553d186c9f0bada188c828535a1a6b22d0a04231c",
+  "content_digest": "sha256:24b637e9b3e218ec1f702d7553d186c9f0bada188c828535a1a6b22d0a04231c",
+  "immutable": true,
+  "installation_mode": "blueprint_and_profile_adapter",
+  "runtime_admission": "not_included",
+  "payload": {
+    "schema_version": "starlight.public_agent_pack_payload.v1",
+    "portfolio_id": "starlight-intelligence-canonical-portfolio",
+    "portfolio_version": "1.0.0",
+    "status": "preview_only",
+    "grants_authority": false,
+    "private_memory_included": false,
+    "live_eval_status": "not_run",
+    "catalog": {
+      "path": "assets/portfolio.public.json",
+      "sha256": "0087e2abfcdae567b52362f62b95602836b3125e82c258ff801fcdf9ce044521"
+    },
+    "capability_pack_digest": "sha256:51212fcdbe85433a30949bfb3352761515e6fd4b632939c3634349334b01d31c",
+    "teams": [
+      {
+        "house_id": "sovereign-command",
+        "team_profile": "assets/swarms/sovereign-command/team-profile.json",
+        "team_profile_sha256": "65bac8babb73a7f8e3aa467d39f923b43a5c6f359375d1ce90ee786612698258",
+        "agents_contract": "assets/swarms/sovereign-command/AGENTS.md",
+        "agents_contract_sha256": "235ddbb39c22dfd94e03265882835fa842fd9b5145a96c3b8dfc818d90951785"
+      },
+      {
+        "house_id": "product-forge",
+        "team_profile": "assets/swarms/product-forge/team-profile.json",
+        "team_profile_sha256": "29a19ffb0b3e5e3eb69967a3aad826df20685558caf5e902c58db2c92de841a1",
+        "agents_contract": "assets/swarms/product-forge/AGENTS.md",
+        "agents_contract_sha256": "51cfb4bdde63e0937dff1a50b0229f988685c484aae9a30f43dd7a92f7948324"
+      },
+      {
+        "house_id": "intelligence-research",
+        "team_profile": "assets/swarms/intelligence-research/team-profile.json",
+        "team_profile_sha256": "d234ecb4805432cecb2c63066874502e7068c63e97cab851e30019f70dcf107c",
+        "agents_contract": "assets/swarms/intelligence-research/AGENTS.md",
+        "agents_contract_sha256": "8d11fe08d14595749d1fe2895a65d8aa0c89f664c3e45d944d4c8326d5ae1b5f"
+      },
+      {
+        "house_id": "creator-worlds",
+        "team_profile": "assets/swarms/creator-worlds/team-profile.json",
+        "team_profile_sha256": "6912a899be6578305c38dbf2645eee874091e59c4cc7855ec76114b2a1514e44",
+        "agents_contract": "assets/swarms/creator-worlds/AGENTS.md",
+        "agents_contract_sha256": "433694b00677ef666f97a54049e2dc8132dae44b4f3ea1317ef31e7d2fbd61ae"
+      },
+      {
+        "house_id": "revenue-venture",
+        "team_profile": "assets/swarms/revenue-venture/team-profile.json",
+        "team_profile_sha256": "d3623bde40af8a6b29c05f53348f228cfa978473b7efae8ed1903a0f45385c7f",
+        "agents_contract": "assets/swarms/revenue-venture/AGENTS.md",
+        "agents_contract_sha256": "e8fccc2982683c41c3bc4455b02ec34d03aa1b191b7695fea435b4d905753110"
+      },
+      {
+        "house_id": "community-academy",
+        "team_profile": "assets/swarms/community-academy/team-profile.json",
+        "team_profile_sha256": "732e4b3ed1dabdf443cb50604c1b0a85dd25bb3b94742e2a1cfdc4525dade1b6",
+        "agents_contract": "assets/swarms/community-academy/AGENTS.md",
+        "agents_contract_sha256": "58d99a8db88a5d54a35522f57f6850215c1672dd4714883ea9ecee91fb8b1606"
+      },
+      {
+        "house_id": "trust-safety",
+        "team_profile": "assets/swarms/trust-safety/team-profile.json",
+        "team_profile_sha256": "fe1cd9f16b3b6bb37ff04933e570818477c06020423fb56c4679c49cd8e9a203",
+        "agents_contract": "assets/swarms/trust-safety/AGENTS.md",
+        "agents_contract_sha256": "4d20a1c8e8c84a34abd1801374f416da9d6482a7fa8e2941e9476cd9c2556fac"
+      },
+      {
+        "house_id": "health-flourishing",
+        "team_profile": "assets/swarms/health-flourishing/team-profile.json",
+        "team_profile_sha256": "2461ff5110e152e22e0b55b3fa72d7679ccf3bfd043e9db6a60a4cad207a2982",
+        "agents_contract": "assets/swarms/health-flourishing/AGENTS.md",
+        "agents_contract_sha256": "f655fb32fb0834a1aa2d6fe684ddff990ecbc77a8b342d980388bc7922c141e3"
+      },
+      {
+        "house_id": "enterprise-transformation",
+        "team_profile": "assets/swarms/enterprise-transformation/team-profile.json",
+        "team_profile_sha256": "560603b17e0e755d31548b20a61bba1ee647fbba2e08616358c03bac45f18fed",
+        "agents_contract": "assets/swarms/enterprise-transformation/AGENTS.md",
+        "agents_contract_sha256": "284468205e6663941aa861e646945385d29927716f8d1bec150ad9aa273a5dcd"
+      },
+      {
+        "house_id": "web-spatial-protocol-futures",
+        "team_profile": "assets/swarms/web-spatial-protocol-futures/team-profile.json",
+        "team_profile_sha256": "0aaaa2ec238b8e55b46ab37fa0e9eb6f58a9c835e66ff07563e0007a61ccdfc4",
+        "agents_contract": "assets/swarms/web-spatial-protocol-futures/AGENTS.md",
+        "agents_contract_sha256": "9e37d6967471b5ffd243275a7c7ba6c537d6b0e27309d84b36bfea0acef8204e"
+      }
+    ],
+    "agents": [
+      {
+        "id": "astra-sovereign",
+        "profile_url": "/constellation/agents/astra-sovereign",
+        "card_sha256": "808c47b653ac5fed0518dacb11217be8868dd9b79a62ddb6374266839d1cdc2e",
+        "prompt_sha256": "04c674da0d275c1003d58258e827498a698ac83f2b149ce110e479b249c721df",
+        "eval_sha256": "4ba3b1dc44699465d05d84b56567ccf2e20a9af7277f6f8c145de50e1e4623ad",
+        "visual_sha256": "91ba2443d97e74a3e6413b118201449bf692a0f8ba2f134d175a08eea145598b"
+      },
+      {
+        "id": "orion-mission-architect",
+        "profile_url": "/constellation/agents/orion-mission-architect",
+        "card_sha256": "bd02e5e34fdd6331cf7d3429ea636308db4e9e0bf9278e15b00dc4697ca51f1d",
+        "prompt_sha256": "bf0181589450b0581758e37e1f548503ba40513d8b0ef239addcc7726ddd9baa",
+        "eval_sha256": "ebe6430277df15f4249e945492b33e352735f038ec21cd14c0ca97461031c303",
+        "visual_sha256": "466931e1c86d9f71811cd3f1d50486dede4210f21e16cb93f2827346f384bd5d"
+      },
+      {
+        "id": "vera-decision-verifier",
+        "profile_url": "/constellation/agents/vera-decision-verifier",
+        "card_sha256": "6d207e954cd663536e628b3425bde81b2561590bce46c57d1e81346dbec0712b",
+        "prompt_sha256": "5d6a3f529fae12b6975cb2cb8247268ab318155581c6884bbd67450b2872872c",
+        "eval_sha256": "2539dc05fe0b3db8f3164024e966e2bb74e493a1390804fe5a49096aaa0f5ec4",
+        "visual_sha256": "4cc091eacebaf0edbb67dea7af80f32ba88920e8e340c05d5c06293b573630e1"
+      },
+      {
+        "id": "cassian-resource-steward",
+        "profile_url": "/constellation/agents/cassian-resource-steward",
+        "card_sha256": "7b5b28389a9f874eeea8aaa505ddada04640fd9f37997d056f5cf5841eac6356",
+        "prompt_sha256": "269f5edda77827da2e733df6d2bee9e0c1640618eef9806c065cdd38ba2c2bf2",
+        "eval_sha256": "6f970e575483f637a0ed631b95e459fc41bc9fffe3b728c971f9320f32395987",
+        "visual_sha256": "a4070469baf68c3f64464ba5c695e1ca8f465f172cfff0027dd42874403c2ff6"
+      },
+      {
+        "id": "mira-continuity-keeper",
+        "profile_url": "/constellation/agents/mira-continuity-keeper",
+        "card_sha256": "5188e775c85d1f7907f86563bda499eaae002802d95e467c177b911c3b3b5c99",
+        "prompt_sha256": "01d2898174e1500df260c10cba1757272fb554b856e386ada60f1db0c6684299",
+        "eval_sha256": "67b3f5a72ae3bc74bd26c1e3280c1ec165ea160a506c57a0c237caca825ca524",
+        "visual_sha256": "c964b8b8dd33bc832589706be14f18938a854077496e159afe6bd878b6c59a3a"
+      },
+      {
+        "id": "ignis-product-conductor",
+        "profile_url": "/constellation/agents/ignis-product-conductor",
+        "card_sha256": "014b30e3ab300aa5161a3d3a67391aea9bff5cfcb4da2a08da602144a54bb6a9",
+        "prompt_sha256": "6b8c8d107e82cf3fdf71e1587025d5f59383610a55e2dd1e47fa462361e5e726",
+        "eval_sha256": "5b9454dcf28908d45f3411feec15d1122b1994b760feec89ccdb2eb141d8b68b",
+        "visual_sha256": "2b10d114e131b3464e35cee49d285153efd8fead4e43569bcfc52d6f534fef88"
+      },
+      {
+        "id": "nova-customer-discovery",
+        "profile_url": "/constellation/agents/nova-customer-discovery",
+        "card_sha256": "bfaf7495573e5a1b95da3850bdcce1225ebcfd276365b417ac0ed619a5e1974e",
+        "prompt_sha256": "d30b7efafdff9f0db2e954c3fcf780fbbe2ea752305d7d6d1b3bdf07c65506c4",
+        "eval_sha256": "bc894333fc14e241c9e6c660052addec896586870a48b47e8c025c2c72d76d82",
+        "visual_sha256": "4e15af41962774a092b6fd7f4090a143058af9ac0be436514567270ab8633f2b"
+      },
+      {
+        "id": "tess-system-designer",
+        "profile_url": "/constellation/agents/tess-system-designer",
+        "card_sha256": "42b28757eea751da1c2fc2e954824b88096b525d526c53de40a8a6c8c69659fc",
+        "prompt_sha256": "57496695807f38bc9a29dd9b96f88ce87bcf329111aada9d728de61647e66b15",
+        "eval_sha256": "ee117424990b126c55ecbc0a235d4258388e6f43899d411af88c57089578b3a8",
+        "visual_sha256": "86d754c3a9688c11fae9e6469640f215d7830dee4f1d004ed61e79359d539a7e"
+      },
+      {
+        "id": "rivet-build-engineer",
+        "profile_url": "/constellation/agents/rivet-build-engineer",
+        "card_sha256": "a8d6f3eb3047de4357a5d8a802b5ce4791022b5e11cb4af94f54656dca224175",
+        "prompt_sha256": "579cf21ecad6058103ccf6e89552fe3645b7bb2f10c097eb334541b3e8f98d59",
+        "eval_sha256": "6c3e4210803517e1936cf090f93e06404b0228979e0aff63c24c732ccfd904a8",
+        "visual_sha256": "57245cb233132f56c2962f527357311be057f28f7b5530a70ec0e091ecf370d4"
+      },
+      {
+        "id": "prism-quality-critic",
+        "profile_url": "/constellation/agents/prism-quality-critic",
+        "card_sha256": "0b01d9cef73572db93faa35d68f014fe91b6a0edac7c3d9e0f842c9aab586cd7",
+        "prompt_sha256": "2b0c9828e2f52b5c26c64932caf4898d86a48261920e8bb80c327e2d0b2407f8",
+        "eval_sha256": "83bf78bf74b23ddc7907a34905f54e04693c01653cbd8b0753f564dda209739b",
+        "visual_sha256": "f0b5a929a5258a56783d011f9cd033a044171b30176b018f40612be4e6975f5c"
+      },
+      {
+        "id": "lyra-research-conductor",
+        "profile_url": "/constellation/agents/lyra-research-conductor",
+        "card_sha256": "8a672577723daec0603a65ae5a0a632ca4e2e72e8aa735fe2c6d6f96bd002f37",
+        "prompt_sha256": "2e5b75cceb3ee10b5fa92f23b9d6b6ab3904fea70b8387752597f0a0a241d8ad",
+        "eval_sha256": "9637b19cefd23859c0f62f9b01362ffffe0f2fb1533d8e745c2dd27a466928f3",
+        "visual_sha256": "27812ecb7661ab58853ece902dc27a8d768ef82392521689462da8bf3cc7aba6"
+      },
+      {
+        "id": "atlas-signal-scout",
+        "profile_url": "/constellation/agents/atlas-signal-scout",
+        "card_sha256": "829bdda7b3196ecb7c83609aaa11e0dfa77ce55e523303102e579dfbb78c85f0",
+        "prompt_sha256": "ba88db1464790787002ab0803bf39670d8d5d06f3e1cd8a69710d30df2623640",
+        "eval_sha256": "48ae065063cb0ccebeddbe2a98486cb25c284619f748164605af7bb878c8bb95",
+        "visual_sha256": "ae4fe7568d04874fe74e0fbbc466c665c3217fcf21fd12580b8042cd1751dca7"
+      },
+      {
+        "id": "verity-source-auditor",
+        "profile_url": "/constellation/agents/verity-source-auditor",
+        "card_sha256": "dd6bf85bc83df561ad37442162273d81dfa3a49333d0103babf1a42dee0c7dff",
+        "prompt_sha256": "b1af9d9d1cdba5ba345888d4d6910755f92bbb1cab98e5d63d39c772effd5fbd",
+        "eval_sha256": "b5dd64655886e24574e2f3b1c7cdf9d3b2a420c39f0f0ce9000a48806173c285",
+        "visual_sha256": "feca55c70e13dd43817642d18f25c867311c44561fb08c768e76ec89c0997426"
+      },
+      {
+        "id": "soren-synthesis-analyst",
+        "profile_url": "/constellation/agents/soren-synthesis-analyst",
+        "card_sha256": "8298f50c93f2289b0a09c950865350d7c8053c5fc6c538892dc72278149e49cd",
+        "prompt_sha256": "c425322163c64b51ceb3aef03225e6599fd3c1620ae1ae65628ca3cfed480309",
+        "eval_sha256": "dfc8e41faf653a27ab8599d04899703ae424db7b717d84bba31bb8d78c12a7d0",
+        "visual_sha256": "bb14b43ce0e193883c782b1dc1224f1d99a3235f26931109ac6ace3c482a5e3d"
+      },
+      {
+        "id": "delta-forecast-challenger",
+        "profile_url": "/constellation/agents/delta-forecast-challenger",
+        "card_sha256": "9f6e8a716fc24115c0140ecbc1b275ee3e81605f6f28090583e936c420152025",
+        "prompt_sha256": "759861a55cace101224c510bd1ac0bd85b9fa6106256cff55611072d4cb264fd",
+        "eval_sha256": "52afb74316bfd20f923814feeda14d006909bd5058c0c895484cbb350731ce48",
+        "visual_sha256": "9e120d1a105b45f2ae0bb10ad6190b92ef60525f2a3452776ad77df79b025674"
+      },
+      {
+        "id": "ember-creator-conductor",
+        "profile_url": "/constellation/agents/ember-creator-conductor",
+        "card_sha256": "7f27524d1fc07c0c2e17b5e4be67dc07c4be2e09a537e7f8b3a5faf1da15857a",
+        "prompt_sha256": "48255f357d5312ec55c6bce079644b12bb157d7f87623f45605218b6a30ce26b",
+        "eval_sha256": "d36abbe1e2e2f757aad644037905e91b77498e64e1930f0273630542ae918ba2",
+        "visual_sha256": "aa0ce4e8c6d975fd25617f492285726f17c88bc8a6a8d0ecf1bb29f305399682"
+      },
+      {
+        "id": "aria-story-architect",
+        "profile_url": "/constellation/agents/aria-story-architect",
+        "card_sha256": "e20626e9993202eed6109f3eaf7a819e3eeaa5391a30ddc958c1e2056893e1d5",
+        "prompt_sha256": "4be721a610eecea6f8c46b7b5813a202de87e651d2fed4d92a5cf72a9c2d0c4e",
+        "eval_sha256": "a5545de22606cfe9ef31f00b25cda2294b0df6374c463c5b2663d63709e55fcc",
+        "visual_sha256": "298e76257dc469b6e3f19f62ce69ff4d39d31e327b91f21b46ea37145e6c3198"
+      },
+      {
+        "id": "sol-visual-world-director",
+        "profile_url": "/constellation/agents/sol-visual-world-director",
+        "card_sha256": "617c2e86fe04a072a88292f2d1f7157fd8839332eb34aa57938d4ad9dcf24b82",
+        "prompt_sha256": "f4f7e6e4cb739486b93e7ced309a3f101fc51461305d90c6c2b9434d38572a68",
+        "eval_sha256": "0f6a54475e805517d0a8520315ee018ba06e09b735f67d1b48fe2da8ce40c986",
+        "visual_sha256": "540a00af8eb1ad232216ca427ee9f5e741fc469b16a9be1cdf8415973cf40932"
+      },
+      {
+        "id": "echo-audience-resonance",
+        "profile_url": "/constellation/agents/echo-audience-resonance",
+        "card_sha256": "5755e1079594b833bf6577f30bb69bfda203d7f2648080ca6968691354bdabfd",
+        "prompt_sha256": "188c7229e68245b4f4501b1876cb7feb63526303618273b167ddb34cc7bbdad6",
+        "eval_sha256": "90a446ee5b65ef91066a879386b491d796bd881b06e7a9e6119e67d48378c196",
+        "visual_sha256": "b05de047344aaa9f47998f584e6949f314b00d1ccbdd91d28376506f61510223"
+      },
+      {
+        "id": "cadence-release-producer",
+        "profile_url": "/constellation/agents/cadence-release-producer",
+        "card_sha256": "e7ab5e26dd565fe39a66f4938cf8abcc5e75856d075d31bccd848461f91650db",
+        "prompt_sha256": "54f78a090e2300c668b945ea2afe8eabeb297cd964ae1e87f90c0d2064d9d308",
+        "eval_sha256": "d17d0e017da2372698bd418de4d74eb134daf5cbe5c9c5d2813eeb2eb12986e5",
+        "visual_sha256": "61d0bd63bb21f95e8c6e50b203745296618b917e16eaa0bb5d101c0cb9e4284e"
+      },
+      {
+        "id": "meridian-venture-conductor",
+        "profile_url": "/constellation/agents/meridian-venture-conductor",
+        "card_sha256": "f1e95a8a75f17b4e41bcffc8ebbc475ec7b2f49cc8a70f76a79b9f9ddffa7302",
+        "prompt_sha256": "98b72ae026779fcd2f7a5a62a112918d77586fd55a255d996d4cbe32b77195c2",
+        "eval_sha256": "04d708ba3d570afd9aa5432f990918d7f4adde138bd6ee8ba06acf5c953f6167",
+        "visual_sha256": "996c1030afa533af2a260946aed121e54cce88865d24ee8f104d33271c8329bf"
+      },
+      {
+        "id": "piper-demand-strategist",
+        "profile_url": "/constellation/agents/piper-demand-strategist",
+        "card_sha256": "dacf671ed4ca586bedf8104e885ec698f7fc02366694572fe371d0e63d7b0807",
+        "prompt_sha256": "c53c5f49ae0d5dc2d9def5f069c6ea3bcaacec37c24e38d407658e9212563fbb",
+        "eval_sha256": "616c0e61aa86bbe50ec830254b0165ba55e1f9f85be79269aad771216f4bc67e",
+        "visual_sha256": "00b28e6897de18d2be8325ab54cbc227dad4cb8fa09a0f57250dc0d2b4c76026"
+      },
+      {
+        "id": "ledger-unit-economist",
+        "profile_url": "/constellation/agents/ledger-unit-economist",
+        "card_sha256": "1c25c6e09ef0c23861f194b7f0014a820ea22393cb46dd68cbc72070f7c07024",
+        "prompt_sha256": "e68ce8c99631d522bb92af5a1b5f9c077719cd5a6b3b6ec541324db07fc9de67",
+        "eval_sha256": "dba677d4e8b8a892828260a1c4642f50b4ee20ef0cc38678fdf77a60986597d2",
+        "visual_sha256": "94b945fb49ea128ed8a72262b29b997277b746b0a2245a86a7ca3cb4784923cb"
+      },
+      {
+        "id": "bridge-partnership-architect",
+        "profile_url": "/constellation/agents/bridge-partnership-architect",
+        "card_sha256": "31e6780fc5fdaf3bab9ba111aed67673e99515625ed0caa69aad5da77d0153eb",
+        "prompt_sha256": "b5af3c1507dc165942de570e17790b0e8825e2ba9d72aa619962011ff0b65994",
+        "eval_sha256": "0c7d825113183a3245463bd8b94739b9d0f128cfe5371ce43b580debb8ccd9c6",
+        "visual_sha256": "a2edb9ca3a8a2021f2eba40202b523a81c8e0c015f819f66939ef6a9c16f11f6"
+      },
+      {
+        "id": "clara-deal-critic",
+        "profile_url": "/constellation/agents/clara-deal-critic",
+        "card_sha256": "b2d911d6bdf246cc8f3dd2b72078dcf4d22c9f472b114172a23d76a2f6fc1955",
+        "prompt_sha256": "7d0c7e0596c387d573e96ad3444ea170bf3a9506ce8bcff58e8391ef97575d84",
+        "eval_sha256": "cea29300b12d8793783f3ab112c628615f4a3ac222d644e69799b51903709010",
+        "visual_sha256": "594b3cfd17ce46d439b547c11431f353586f7522a29364918c316b85ef96971b"
+      },
+      {
+        "id": "sophia-academy-conductor",
+        "profile_url": "/constellation/agents/sophia-academy-conductor",
+        "card_sha256": "c08301d0db9db005f66d3408dfa6adb8bef6b7e9f7d8e2389bcbdad1e401c312",
+        "prompt_sha256": "fe1c87aa6bbcfd88f3cdaaeeb44949b4c1d980c54fb42fbf891dac281e1b5a01",
+        "eval_sha256": "2bcf03ff29f3a54fd719702d24c9777ab8a02f5e870a8e7374aa0befe28d9431",
+        "visual_sha256": "5c6ffec34c1f532ae8393963d62c1dea534584efe88593d951bdf3fbcd56925c"
+      },
+      {
+        "id": "kai-curriculum-architect",
+        "profile_url": "/constellation/agents/kai-curriculum-architect",
+        "card_sha256": "cb2220c0ecbe14bcbf5ad5c81bb195e28e74a036d6b01662a52ded8051ae94a5",
+        "prompt_sha256": "46aaa528d7ede51eaa31d9cfb922646a91132f0e48f380997838ad0a7a9702b0",
+        "eval_sha256": "7e0249459a60d79c491a823be4a68be3c8589bd6b2e11a1a0934cda2e55d8909",
+        "visual_sha256": "6d47e0c31718a4f69aa277b2641d27bb4861ebdbf76fea110bd60127154c45c5"
+      },
+      {
+        "id": "mina-community-steward",
+        "profile_url": "/constellation/agents/mina-community-steward",
+        "card_sha256": "2b5780474b2b815ff453ad062260be0444fee1453d46268a5b271fa150eb4346",
+        "prompt_sha256": "3b102fbc8b732721312816ac58c1c4c8e8df397a0e23026554686f71098aafe9",
+        "eval_sha256": "c67407b761bdf4fb2d5cbdc44d0f9032786b7876342d6623714e26395b083e85",
+        "visual_sha256": "83c532b1bd662ab628f57f468e02979e405b35566522335c659a1f99867ea6fe"
+      },
+      {
+        "id": "pulse-cohort-facilitator",
+        "profile_url": "/constellation/agents/pulse-cohort-facilitator",
+        "card_sha256": "375c67946817f02f009bd24e5c153e29519e7b24319cc1e977df00b73987d4f0",
+        "prompt_sha256": "ba730f6db19eaa53126f9ae8ffea6a22389759dd7cfc41d9468cd765f9b06df4",
+        "eval_sha256": "712109b731f4cdf2bda3133cc582ac8a6a329cb2f53a89d71189a1f27f76de60",
+        "visual_sha256": "0d66bd655ce082e011575e365f9e57340d1cbc563c0c4bf7d796ac467db7c595"
+      },
+      {
+        "id": "rune-learning-evaluator",
+        "profile_url": "/constellation/agents/rune-learning-evaluator",
+        "card_sha256": "b4ebed2a5c2fdac4f862aaaa482e23a46c6afb78bd0895504171be0d1cb9610d",
+        "prompt_sha256": "a16ee1b1834617f27ccc77c737fd8defb8870c1506080cf4be4dd53403fbcfbb",
+        "eval_sha256": "84f62e483e2459173da17b2c9b64fe73da6c388a720aa6336f02932efa13431d",
+        "visual_sha256": "aaf7a3e13324ce0933e39e4e4337d11fbc8af959e39f553a1883a2094d7e66e3"
+      },
+      {
+        "id": "aegis-trust-conductor",
+        "profile_url": "/constellation/agents/aegis-trust-conductor",
+        "card_sha256": "9e3a802825d919c91272952346a976a7859cf8d5c7d9b91a341f4afd8abd9e0a",
+        "prompt_sha256": "d45d7ca6842d3bcda6226133742312a5725934b9d72734937491e9f001dfa2e5",
+        "eval_sha256": "afa8481af2191eee8d75291c4d6e037355ad01526d0d89397476988791a3a562",
+        "visual_sha256": "70c440b1056d1cb140a94334872e3e8b7343b78fa783d73fc11e84412de943b2"
+      },
+      {
+        "id": "sentinel-risk-analyst",
+        "profile_url": "/constellation/agents/sentinel-risk-analyst",
+        "card_sha256": "5872bae4ca31a1c8173191075f33dd15168c9832f818ecfb1faebe7166b51c56",
+        "prompt_sha256": "6f1ae6048b7c90b8d8ad31d25ab8f730174c0d1384bc168273e18c5abbeb896e",
+        "eval_sha256": "e6fd5e890a0a9e07c5e58876c501c3d51394bf28ebbeed9c84b8890b6f74dd37",
+        "visual_sha256": "f231c9d62970fbdb2696f5c7e0b5c8a2232d63fe7467b6bfb4c16545835b3601"
+      },
+      {
+        "id": "cipher-privacy-steward",
+        "profile_url": "/constellation/agents/cipher-privacy-steward",
+        "card_sha256": "e80ff28ce0f1f50d339be0dac2963d94c77e991bcd020b826c354408294a09f6",
+        "prompt_sha256": "5d9351070c0a57522965754b52de372aa6a0d47dbca7607e0045dd2a3be15c5e",
+        "eval_sha256": "2a0494cdf35cfed33ef67c2b4a0987254d8b90f5e3e15caf83f224c701b6ca97",
+        "visual_sha256": "6f694bd5828d4b4be6326161d5f592d028c8c1092cd7802a6af5f0fa7a3c4ffd"
+      },
+      {
+        "id": "equa-policy-auditor",
+        "profile_url": "/constellation/agents/equa-policy-auditor",
+        "card_sha256": "b15f0742876a8bb68d34cebcfdd3a377a3ff451d653040c5e4854c81886af5f4",
+        "prompt_sha256": "e23a5df51d2c55c7376edad5105c1802b899ddceb78810b9f73cb4f9b73cb519",
+        "eval_sha256": "53fa633f90188c1ad49b5cefed85d96faac083078de8e73eb1b2996722d1a389",
+        "visual_sha256": "33369cb26f128faec794aa85f4eddec753b71ec0d2fdc9b9aaa569b74332462f"
+      },
+      {
+        "id": "beacon-incident-coordinator",
+        "profile_url": "/constellation/agents/beacon-incident-coordinator",
+        "card_sha256": "c6703e79e7cfe3c566326e79daaec073c799097c939fcff742ac3c37b7b7c417",
+        "prompt_sha256": "5148c193bc24c8b4b4fa66f6b19dca9abc99e16ee1bcdc5e3b7d01b7823f4d8c",
+        "eval_sha256": "364ed266e52c86eaebbdb6bf90593513f846d4d046e77f98322dc33dcc606871",
+        "visual_sha256": "d5ac234bd039c60f7ad05adc6959495771a6a78affedc0e8061fd80a516162b2"
+      },
+      {
+        "id": "solace-flourishing-conductor",
+        "profile_url": "/constellation/agents/solace-flourishing-conductor",
+        "card_sha256": "febda1f4e0e8bd1cccf24e5be4931986a0f10c090614fd42b77a783826ae70e2",
+        "prompt_sha256": "ee97f65e52a168ec7d1fa8293ea61a79c416ebe780de261a955cdd40052b02c0",
+        "eval_sha256": "57e211bc258210559048c57f258dd722317cbacf03b586f5782248a8e74e055b",
+        "visual_sha256": "f848414253482a49ade7d6e59c8b1d48a2e30196fba664b5ec53d1a3abee5a47"
+      },
+      {
+        "id": "terra-nutrition-educator",
+        "profile_url": "/constellation/agents/terra-nutrition-educator",
+        "card_sha256": "88f543b921b0348de7ae1eadc6d029ba7b759f9edc41431526da071d926a517c",
+        "prompt_sha256": "542630648e0eb653ddc2a6b9dbd36b7f37caea200be0539ef0d09a2c0bad26b7",
+        "eval_sha256": "e77d94719279d7e3e90a4df8bc2cea8221eb1b4477ae89f0f777f383341435bf",
+        "visual_sha256": "cfc476dc14ff5deddcc5dd3859b86e80bc2ef3aefdc21b20f06df2272372b928"
+      },
+      {
+        "id": "kinetica-movement-coach",
+        "profile_url": "/constellation/agents/kinetica-movement-coach",
+        "card_sha256": "26f8151fc956c799550b3343c517eadfc8946e646339d76966299b9becfb74b7",
+        "prompt_sha256": "dc14bec17ef281542192fe9da1dccfbbb1f8adc2df158d9ba5fc2a1ab4a92298",
+        "eval_sha256": "a0a950b70fcdf62f1efc106cb3249f9bcbea80613d0b400c0fefabeaddaaf61f",
+        "visual_sha256": "faad41373af1ea54dfe06c6f8ed3f73553a0274e78d4b7015d0c5de0c2a87927"
+      },
+      {
+        "id": "serene-reflection-guide",
+        "profile_url": "/constellation/agents/serene-reflection-guide",
+        "card_sha256": "b3ca99cc2e08b954bed677d08469cdde0100a9d4032f0770c6a9c8f6c136979f",
+        "prompt_sha256": "1c1be4e896eddc78be8f1271d04d5048dedb22821b3f0bad7eee12825d89655b",
+        "eval_sha256": "227f83a19be2f1eeeaf805c51b24d9a1ed64c9da8b280f3f43ba9ec5d68f5123",
+        "visual_sha256": "0fde61a6f8017869d54e34d0bf58b42d96ba0bede525f49fc41ea0ff54d5de28"
+      },
+      {
+        "id": "harbor-care-navigator",
+        "profile_url": "/constellation/agents/harbor-care-navigator",
+        "card_sha256": "b59c6930d9de0e64df4fed716276136dfcf0fa4f0f75d83f67c9660775a746fc",
+        "prompt_sha256": "d5b2c9bd1aec8b4b70e0844b92e16f5200726516debd21aff14e325b4e2cbcad",
+        "eval_sha256": "47b20fcec491d4348f580319cfcd83fad27837e57a98389121fd183503556d99",
+        "visual_sha256": "319db0f0eeb1a193f3784869f37a2822617bac9dac61f3da3105bf6630ac5d6a"
+      },
+      {
+        "id": "vector-transformation-conductor",
+        "profile_url": "/constellation/agents/vector-transformation-conductor",
+        "card_sha256": "002e7386f46af61f952ae80274a68d52adbb16c95c47057b6b43bae3a5fa32a3",
+        "prompt_sha256": "d696b09031ebd32dab648a986c9c78a16315fa31fef3ce930b95881d68c96a06",
+        "eval_sha256": "f5dbd226e586d9162f54c2a2d246a48e4f0a86b2be047b479434dd03f764bf23",
+        "visual_sha256": "2a0dcb46b4e68f182d7a9f7f9e13e3ef2d34bc71c2fd32175a908618f1b20f80"
+      },
+      {
+        "id": "maya-operating-model-architect",
+        "profile_url": "/constellation/agents/maya-operating-model-architect",
+        "card_sha256": "c5c8044febd8f2db9263be121ae30645da013f72bcaf28d20da814e11506fa34",
+        "prompt_sha256": "49b824ffded95d13210bf65ed54100e48b0ec546eb680ebbe074c07ff307eee6",
+        "eval_sha256": "1cfa21c288bb7740a8d0aa2cdbe5ba2c93143d5e200f49db4274186ae2695671",
+        "visual_sha256": "5b87312b2771418fd1e9cd08afd71764041eb76fb0f7da99258e1461e5b8b6dd"
+      },
+      {
+        "id": "quorum-governance-designer",
+        "profile_url": "/constellation/agents/quorum-governance-designer",
+        "card_sha256": "50702e488cc7da5a779e17566a37df6b4949da27f6535a285934a1ebe6ab5c7d",
+        "prompt_sha256": "2ff586ecd578bdcf369a5aae07d7c188276a694a33f6032c84771a8ec6c6a564",
+        "eval_sha256": "73a821ee7d545f8552e06bd81624ea07cbed3628d48d25fbc961fa8f5f2bfe8e",
+        "visual_sha256": "dd91d2ad0d8c0accf396cbd55106fae97faebccc6740a7215311eed54c57044d"
+      },
+      {
+        "id": "relay-change-enablement",
+        "profile_url": "/constellation/agents/relay-change-enablement",
+        "card_sha256": "9624fc45e83da276c1e535c06c8a3809d1785983da7472dd087ab9ca2bc0df3e",
+        "prompt_sha256": "3ea9a0a9745e03d17749ddea3ab764895a34b529ad5a9e7672d6d0bf43badddc",
+        "eval_sha256": "2ea8fa5b21b77285b3bf6a86d2da93e4ec8d12c9be95ddeff5140bb712575ee2",
+        "visual_sha256": "6338d23f3c1e5c81cf68b8b37a8972f9a8b642804b1cc9c3aa6149c6b1b43ca9"
+      },
+      {
+        "id": "metric-value-realization",
+        "profile_url": "/constellation/agents/metric-value-realization",
+        "card_sha256": "9644b1be8d8fdd18b1fa693682ea79a20efce7693a5192070962e7c792d24f0b",
+        "prompt_sha256": "7c6a1fdc4c430c9b71aa97db6925bb7a1bc67fc026d5e3c7c811b1118b0b8e67",
+        "eval_sha256": "fb2499f5ddeb37c160a8ceeaee1787f94db4be9aa5faa034db45a6c85f84ad0f",
+        "visual_sha256": "7df249aa222e23a442e8db13b9f542cec9a47635a5773c310fab018009b6bea1"
+      },
+      {
+        "id": "nexus-futures-conductor",
+        "profile_url": "/constellation/agents/nexus-futures-conductor",
+        "card_sha256": "20922254e3f8dedb013517e0b4e3159e43378281fab07014bc4f9e000a117f64",
+        "prompt_sha256": "e65e1d4a03253294bae7b6ac889eda30bbbbd84a05252ce14e949bc38a22b3ed",
+        "eval_sha256": "2226c44898742555369d29a92de1131521b959d0b2d69498b929d8e77d302fd7",
+        "visual_sha256": "f94bbe1ec2e91119b9ee80c349f404af65f957a606fe2619588deda8c10bec94"
+      },
+      {
+        "id": "pixel-web-experience-architect",
+        "profile_url": "/constellation/agents/pixel-web-experience-architect",
+        "card_sha256": "543b18cf7a24595ca408d90f007f0774c35057fa8b5b40e260c1a79aff8c3f9e",
+        "prompt_sha256": "1bfb57a371c2734bcd8e9854866d73c68f466d06185e82090210a60bd75e6054",
+        "eval_sha256": "adc93eabdeb5af9d829ab1b2b271362a750fb2a1b6adb78c7d0ba932296d6bcc",
+        "visual_sha256": "e3b64185c37f5190e1c0507977f3e29adaf67c5ea965f59b120b19cdc7634c6e"
+      },
+      {
+        "id": "orbit-spatial-interface-designer",
+        "profile_url": "/constellation/agents/orbit-spatial-interface-designer",
+        "card_sha256": "70ff27323fa55799b6eb64748aad8fe289dc1db3ce32855ec954aebab957bb4f",
+        "prompt_sha256": "9b5f7584b2e329492c5a8779518dde8e2d4dd7f538ebd6e252c698cc7e6a8b56",
+        "eval_sha256": "e67ee8db7f6c0b97d3fd456f9a90f30449dd6783e151fd228f4d97eca6d60942",
+        "visual_sha256": "0549d9b37b15bbbd45c651670eacc64df5b52cdd959ec1c11ea649ec50f16bfc"
+      },
+      {
+        "id": "lattice-interoperability-architect",
+        "profile_url": "/constellation/agents/lattice-interoperability-architect",
+        "card_sha256": "896e9b87e667747e273df0d0fbe70139674c38133edb072c71e9a35d91ddb7bf",
+        "prompt_sha256": "492c85994119323770cfae74e3e519af310d29aef62e5449f17a9047aa78d099",
+        "eval_sha256": "0238039ec2313be15d2305618e966b019ffb258d1a6cbbced306b8a1a22834fe",
+        "visual_sha256": "060306950f342a976a0d99e42319456a69a35ccb219c86cb869d3032b5e2e908"
+      },
+      {
+        "id": "horizon-futures-scout",
+        "profile_url": "/constellation/agents/horizon-futures-scout",
+        "card_sha256": "0049ab9072d6a6df46e5e392280d2ee31e61718155a8d656190f00251eec462c",
+        "prompt_sha256": "eab8adfb9111434ebc8d6794b260b3d8c230a0a11866b4dea1b2ec5d6fd6a98b",
+        "eval_sha256": "51901404b3299f6fda465ed476967036868a37c369703ad3b83c74dec911e230",
+        "visual_sha256": "308550cbb865cad8866cb703e03a613d521f22b7bd4438f9f22c06e88bfab0dd"
+      }
+    ]
+  }
+}

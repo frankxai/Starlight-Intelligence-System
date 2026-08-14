@@ -108,3 +108,4 @@ link-checker-report.txt
 
 # Starlight/ACOS temporary files
 .gemini/
+.vercel

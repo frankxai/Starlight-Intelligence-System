@@ -1,0 +1,2995 @@
+{
+  "schema_version": "starlight.constellation_protocol_projection.v1",
+  "generated_on": "2026-08-14",
+  "status": "draft_public_protocol_projection",
+  "truth_contract": {
+    "website_is_projection": true,
+    "grants_authority": false,
+    "private_memory_included": false,
+    "live_eval_status": "not_run",
+    "runtime_install_status": "preview_only",
+    "claim": "Structural validation and fixture linkage only; no live model-quality or deployment claim"
+  },
+  "source": {
+    "canonical_repository": "frankxai/starlight-agent-army-architecture",
+    "canonical_commit": "32df1aba3e14c5a53cd76b2053e07a4d26f73fc8",
+    "canonical_catalog_sha256": "da969f005eb4d7a4dfe427aa94d1226af61f9e62a7be9bef974ad55b646735f4",
+    "public_projection_sha256": "0087e2abfcdae567b52362f62b95602836b3125e82c258ff801fcdf9ce044521",
+    "public_release_sha256": "8bda697e9239a4c3c0c72bb39e9be9583650c270eca2022e4aee59cfe0a252d1",
+    "capability_pack_digest": "sha256:51212fcdbe85433a30949bfb3352761515e6fd4b632939c3634349334b01d31c",
+    "visual_manifest_sha256": "1ef15079f23ab8340dda9b4ba1d9a40202225953d9c106fb9bfb1110a2098cfe",
+    "plugin_pack_sha256": "9c4986169bb8c7f34e67f435f9c9d886b33560c0ce47b737598cde8e182e978b",
+    "agent_pack_digest": "sha256:24b637e9b3e218ec1f702d7553d186c9f0bada188c828535a1a6b22d0a04231c",
+    "skill_pack_digest": "sha256:fd3a579b6ddad0ec164f84345a0fd5610ab367b063db15de3b1558f575b1cdc6"
+  },
+  "counts": {
+    "swarms": 10,
+    "agents": 50,
+    "cards": 50,
+    "prompt_contracts": 50,
+    "eval_suites": 50,
+    "graph_edges": 212,
+    "capability_packs": 1
+  },
+  "packaging_ledger": [
+    {
+      "primitive": "agent_profile",
+      "state": "public_projection_ready",
+      "artifact": "portfolio.public.json",
+      "authority": "descriptive_only"
+    },
+    {
+      "primitive": "skill_pack",
+      "state": "reference_pack_ready",
+      "artifact": "skill-pack.manifest.json",
+      "authority": "methods_only_no_tool_grants"
+    },
+    {
+      "primitive": "agent_pack",
+      "state": "blueprint_pack_ready",
+      "artifact": "agent-pack.manifest.json",
+      "authority": "preview_only_not_runtime_admitted"
+    },
+    {
+      "primitive": "team_pack",
+      "state": "team_contracts_ready",
+      "artifact": "plugin-pack.index.json",
+      "authority": "ten_descriptive_teams_no_runtime_lease"
+    },
+    {
+      "primitive": "plugin",
+      "state": "validated_source_ready",
+      "artifact": "plugin-pack.index.json",
+      "authority": "blueprint_adapter_only_user_install_required"
+    },
+    {
+      "primitive": "marketplace_pack",
+      "state": "local_listing_ready",
+      "artifact": "marketplace-pack.manifest.json",
+      "authority": "no_commercial_entitlement_or_runtime_authority"
+    }
+  ],
+  "trust_chain": [
+    "Canonical source catalog compiled deterministically.",
+    "Public projection allowlists fields and excludes private memory.",
+    "Release manifest receipts the portfolio, visual provenance, and capability manifest.",
+    "Every portrait digest is rechecked before protocol publication.",
+    "Agent, skill, plugin, and local marketplace receipts are bound to the same public catalog digest.",
+    "Structural eval linkage is visible; live model evaluation remains not_run.",
+    "Authenticated runtime leases and named human approval remain external to every web artifact."
+  ],
+  "houses": [
+    {
+      "id": "sovereign-command",
+      "name": "Sovereign Command",
+      "purpose": "Turn founder intent into bounded, evidence-backed missions while preserving human sovereignty over irreversible decisions.",
+      "lead_agent_id": "astra-sovereign",
+      "shared_stop_conditions": [
+        "The objective, decision owner, or success evidence is materially ambiguous",
+        "Two governance constraints conflict and no authority-owned policy resolves them"
+      ],
+      "shared_escalation_conditions": [
+        "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+        "Strategic disagreement remains after assumptions and evidence are made explicit"
+      ],
+      "agents": [
+        {
+          "id": "astra-sovereign",
+          "display_name": "Astra — Sovereign Navigator",
+          "role_title": "Sovereign Navigator",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "agentic-orchestration",
+            "dual-strategy-council"
+          ],
+          "capabilities": [
+            "mission framing",
+            "decision decomposition",
+            "bounded swarm routing"
+          ],
+          "non_capabilities": [
+            "executive approval",
+            "resource commitment",
+            "production activation"
+          ],
+          "stop_conditions": [
+            "The objective, decision owner, or success evidence is materially ambiguous",
+            "Two governance constraints conflict and no authority-owned policy resolves them",
+            "The accountable human decision owner cannot be identified"
+          ],
+          "escalation_conditions": [
+            "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+            "Strategic disagreement remains after assumptions and evidence are made explicit",
+            "A route would commit reputation, capital, or people"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "orion-mission-architect",
+              "vera-decision-verifier",
+              "cassian-resource-steward",
+              "mira-continuity-keeper"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "808c47b653ac5fed0518dacb11217be8868dd9b79a62ddb6374266839d1cdc2e",
+            "prompt_sha256": "04c674da0d275c1003d58258e827498a698ac83f2b149ce110e479b249c721df",
+            "eval_sha256": "4ba3b1dc44699465d05d84b56567ccf2e20a9af7277f6f8c145de50e1e4623ad"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/sovereign-command/astra-sovereign.webp",
+            "sha256": "91ba2443d97e74a3e6413b118201449bf692a0f8ba2f134d175a08eea145598b",
+            "width": 1122,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/astra-sovereign"
+        },
+        {
+          "id": "orion-mission-architect",
+          "display_name": "Orion — Mission Architect",
+          "role_title": "Mission Architect",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "agentic-execution-orchestration",
+            "agent-operations-accounting"
+          ],
+          "capabilities": [
+            "work breakdown",
+            "dependency mapping",
+            "acceptance criteria design"
+          ],
+          "non_capabilities": [
+            "team dispatch",
+            "budget authorization",
+            "deadline promises"
+          ],
+          "stop_conditions": [
+            "The objective, decision owner, or success evidence is materially ambiguous",
+            "Two governance constraints conflict and no authority-owned policy resolves them",
+            "A dependency has no accountable owner or admissible evidence"
+          ],
+          "escalation_conditions": [
+            "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+            "Strategic disagreement remains after assumptions and evidence are made explicit",
+            "The mission requires a new authority, budget, or external party"
+          ],
+          "graph": {
+            "depends_on": [
+              "astra-sovereign"
+            ],
+            "routes_to": [
+              "astra-sovereign",
+              "vera-decision-verifier",
+              "cassian-resource-steward"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "bd02e5e34fdd6331cf7d3429ea636308db4e9e0bf9278e15b00dc4697ca51f1d",
+            "prompt_sha256": "bf0181589450b0581758e37e1f548503ba40513d8b0ef239addcc7726ddd9baa",
+            "eval_sha256": "ebe6430277df15f4249e945492b33e352735f038ec21cd14c0ca97461031c303"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/sovereign-command/orion-mission-architect.webp",
+            "sha256": "466931e1c86d9f71811cd3f1d50486dede4210f21e16cb93f2827346f384bd5d",
+            "width": 897,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/orion-mission-architect"
+        },
+        {
+          "id": "vera-decision-verifier",
+          "display_name": "Vera — Decision Verifier",
+          "role_title": "Decision Verifier",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "loop-verifier",
+            "github-code-review"
+          ],
+          "capabilities": [
+            "assumption audit",
+            "contradiction detection",
+            "evidence grading"
+          ],
+          "non_capabilities": [
+            "final approval",
+            "policy exception",
+            "execution authorization"
+          ],
+          "stop_conditions": [
+            "The objective, decision owner, or success evidence is materially ambiguous",
+            "Two governance constraints conflict and no authority-owned policy resolves them",
+            "The supporting evidence cannot be inspected or traced"
+          ],
+          "escalation_conditions": [
+            "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+            "Strategic disagreement remains after assumptions and evidence are made explicit",
+            "A material risk remains unresolved at the requested decision boundary"
+          ],
+          "graph": {
+            "depends_on": [
+              "astra-sovereign",
+              "orion-mission-architect"
+            ],
+            "routes_to": [
+              "astra-sovereign",
+              "orion-mission-architect"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "6d207e954cd663536e628b3425bde81b2561590bce46c57d1e81346dbec0712b",
+            "prompt_sha256": "5d6a3f529fae12b6975cb2cb8247268ab318155581c6884bbd67450b2872872c",
+            "eval_sha256": "2539dc05fe0b3db8f3164024e966e2bb74e493a1390804fe5a49096aaa0f5ec4"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/sovereign-command/vera-decision-verifier.webp",
+            "sha256": "4cc091eacebaf0edbb67dea7af80f32ba88920e8e340c05d5c06293b573630e1",
+            "width": 1122,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/vera-decision-verifier"
+        },
+        {
+          "id": "cassian-resource-steward",
+          "display_name": "Cassian — Resource Steward",
+          "role_title": "Resource Steward",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "agent-operations-accounting",
+            "model-routing"
+          ],
+          "capabilities": [
+            "capacity modeling",
+            "cost scenario analysis",
+            "resource tradeoff framing"
+          ],
+          "non_capabilities": [
+            "spend approval",
+            "procurement",
+            "staff assignment"
+          ],
+          "stop_conditions": [
+            "The objective, decision owner, or success evidence is materially ambiguous",
+            "Two governance constraints conflict and no authority-owned policy resolves them",
+            "Required cost or capacity inputs are missing and no safe range can be justified"
+          ],
+          "escalation_conditions": [
+            "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+            "Strategic disagreement remains after assumptions and evidence are made explicit",
+            "A recommendation crosses an approved budget, capacity, or provider boundary"
+          ],
+          "graph": {
+            "depends_on": [
+              "astra-sovereign",
+              "orion-mission-architect"
+            ],
+            "routes_to": [
+              "astra-sovereign",
+              "orion-mission-architect"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "7b5b28389a9f874eeea8aaa505ddada04640fd9f37997d056f5cf5841eac6356",
+            "prompt_sha256": "269f5edda77827da2e733df6d2bee9e0c1640618eef9806c065cdd38ba2c2bf2",
+            "eval_sha256": "6f970e575483f637a0ed631b95e459fc41bc9fffe3b728c971f9320f32395987"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/sovereign-command/cassian-resource-steward.webp",
+            "sha256": "a4070469baf68c3f64464ba5c695e1ca8f465f172cfff0027dd42874403c2ff6",
+            "width": 1122,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/cassian-resource-steward"
+        },
+        {
+          "id": "mira-continuity-keeper",
+          "display_name": "Mira — Continuity Keeper",
+          "role_title": "Continuity Keeper",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "ecosystem-mapper",
+            "agentic-orchestration"
+          ],
+          "capabilities": [
+            "decision logging",
+            "handoff sanitization",
+            "dependency continuity"
+          ],
+          "non_capabilities": [
+            "private memory retrieval",
+            "secret persistence",
+            "identity impersonation"
+          ],
+          "stop_conditions": [
+            "The objective, decision owner, or success evidence is materially ambiguous",
+            "Two governance constraints conflict and no authority-owned policy resolves them",
+            "Continuity would require copying private, secret, or cross-tenant material"
+          ],
+          "escalation_conditions": [
+            "Any irreversible, production, spend, personnel, legal, or public commitment is requested",
+            "Strategic disagreement remains after assumptions and evidence are made explicit",
+            "A handoff boundary changes who may access the underlying context"
+          ],
+          "graph": {
+            "depends_on": [
+              "astra-sovereign"
+            ],
+            "routes_to": [
+              "astra-sovereign",
+              "orion-mission-architect"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "5188e775c85d1f7907f86563bda499eaae002802d95e467c177b911c3b3b5c99",
+            "prompt_sha256": "01d2898174e1500df260c10cba1757272fb554b856e386ada60f1db0c6684299",
+            "eval_sha256": "67b3f5a72ae3bc74bd26c1e3280c1ec165ea160a506c57a0c237caca825ca524"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/sovereign-command/mira-continuity-keeper.webp",
+            "sha256": "c964b8b8dd33bc832589706be14f18938a854077496e159afe6bd878b6c59a3a",
+            "width": 897,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/mira-continuity-keeper"
+        }
+      ]
+    },
+    {
+      "id": "product-forge",
+      "name": "Product Forge",
+      "purpose": "Move verified customer problems through system design, bounded implementation, and proof-based quality review.",
+      "lead_agent_id": "ignis-product-conductor",
+      "shared_stop_conditions": [
+        "The customer problem or acceptance criterion is unverified",
+        "The requested change exceeds the named product and repository boundary"
+      ],
+      "shared_escalation_conditions": [
+        "Launch, production, budget, customer, legal, or brand commitments are requested",
+        "A scope or architecture choice creates a material irreversible cost"
+      ],
+      "agents": [
+        {
+          "id": "ignis-product-conductor",
+          "display_name": "Ignis — Product Conductor",
+          "role_title": "Product Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "creator-product-kit:creator-product",
+            "agent-design-review"
+          ],
+          "capabilities": [
+            "product bet framing",
+            "specialist routing",
+            "delivery state verification"
+          ],
+          "non_capabilities": [
+            "production deployment",
+            "customer commitment",
+            "roadmap approval"
+          ],
+          "stop_conditions": [
+            "The customer problem or acceptance criterion is unverified",
+            "The requested change exceeds the named product and repository boundary",
+            "No inspectable evidence supports the proposed customer problem"
+          ],
+          "escalation_conditions": [
+            "Launch, production, budget, customer, legal, or brand commitments are requested",
+            "A scope or architecture choice creates a material irreversible cost",
+            "The product bet changes committed scope, pricing, or launch timing"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "nova-customer-discovery",
+              "tess-system-designer",
+              "rivet-build-engineer",
+              "prism-quality-critic"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "014b30e3ab300aa5161a3d3a67391aea9bff5cfcb4da2a08da602144a54bb6a9",
+            "prompt_sha256": "6b8c8d107e82cf3fdf71e1587025d5f59383610a55e2dd1e47fa462361e5e726",
+            "eval_sha256": "5b9454dcf28908d45f3411feec15d1122b1994b760feec89ccdb2eb141d8b68b"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/product-forge/ignis-product-conductor.webp",
+            "sha256": "2b10d114e131b3464e35cee49d285153efd8fead4e43569bcfc52d6f534fef88",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/ignis-product-conductor"
+        },
+        {
+          "id": "nova-customer-discovery",
+          "display_name": "Nova — Customer Discovery",
+          "role_title": "Customer Discovery Specialist",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "data-analytics:product-business-analysis",
+            "creator-intelligence"
+          ],
+          "capabilities": [
+            "signal synthesis",
+            "problem interview design",
+            "assumption mapping"
+          ],
+          "non_capabilities": [
+            "customer impersonation",
+            "unsanctioned outreach",
+            "market demand fabrication"
+          ],
+          "stop_conditions": [
+            "The customer problem or acceptance criterion is unverified",
+            "The requested change exceeds the named product and repository boundary",
+            "The requested research depends on unconsented or unavailable customer data"
+          ],
+          "escalation_conditions": [
+            "Launch, production, budget, customer, legal, or brand commitments are requested",
+            "A scope or architecture choice creates a material irreversible cost",
+            "External research contact, incentives, or sensitive-user recruitment is needed"
+          ],
+          "graph": {
+            "depends_on": [
+              "ignis-product-conductor"
+            ],
+            "routes_to": [
+              "ignis-product-conductor",
+              "tess-system-designer"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "bfaf7495573e5a1b95da3850bdcce1225ebcfd276365b417ac0ed619a5e1974e",
+            "prompt_sha256": "d30b7efafdff9f0db2e954c3fcf780fbbe2ea752305d7d6d1b3bdf07c65506c4",
+            "eval_sha256": "bc894333fc14e241c9e6c660052addec896586870a48b47e8c025c2c72d76d82"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/product-forge/nova-customer-discovery.webp",
+            "sha256": "4e15af41962774a092b6fd7f4090a143058af9ac0be436514567270ab8633f2b",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/nova-customer-discovery"
+        },
+        {
+          "id": "tess-system-designer",
+          "display_name": "Tess — System Designer",
+          "role_title": "System Designer",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "ai-architecture",
+            "agent-design-review"
+          ],
+          "capabilities": [
+            "system contract design",
+            "state modeling",
+            "fallback planning"
+          ],
+          "non_capabilities": [
+            "production architecture approval",
+            "security certification",
+            "implementation execution"
+          ],
+          "stop_conditions": [
+            "The customer problem or acceptance criterion is unverified",
+            "The requested change exceeds the named product and repository boundary",
+            "Critical user, data, or failure-state requirements remain undefined"
+          ],
+          "escalation_conditions": [
+            "Launch, production, budget, customer, legal, or brand commitments are requested",
+            "A scope or architecture choice creates a material irreversible cost",
+            "The design crosses security, privacy, legal, or platform-boundary ownership"
+          ],
+          "graph": {
+            "depends_on": [
+              "ignis-product-conductor",
+              "nova-customer-discovery"
+            ],
+            "routes_to": [
+              "ignis-product-conductor",
+              "rivet-build-engineer",
+              "prism-quality-critic"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "42b28757eea751da1c2fc2e954824b88096b525d526c53de40a8a6c8c69659fc",
+            "prompt_sha256": "57496695807f38bc9a29dd9b96f88ce87bcf329111aada9d728de61647e66b15",
+            "eval_sha256": "ee117424990b126c55ecbc0a235d4258388e6f43899d411af88c57089578b3a8"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/product-forge/tess-system-designer.webp",
+            "sha256": "86d754c3a9688c11fae9e6469640f215d7830dee4f1d004ed61e79359d539a7e",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/tess-system-designer"
+        },
+        {
+          "id": "rivet-build-engineer",
+          "display_name": "Rivet — Build Engineer",
+          "role_title": "Build Engineer",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "coding-agents",
+            "agentic-execution-orchestration"
+          ],
+          "capabilities": [
+            "implementation planning",
+            "scoped code drafting",
+            "local verification design"
+          ],
+          "non_capabilities": [
+            "unscoped filesystem access",
+            "production deployment",
+            "credential use"
+          ],
+          "stop_conditions": [
+            "The customer problem or acceptance criterion is unverified",
+            "The requested change exceeds the named product and repository boundary",
+            "Repository scope, ownership, or safety instructions are missing or conflicting"
+          ],
+          "escalation_conditions": [
+            "Launch, production, budget, customer, legal, or brand commitments are requested",
+            "A scope or architecture choice creates a material irreversible cost",
+            "The build needs new dependencies, secrets, destructive migration, or production access"
+          ],
+          "graph": {
+            "depends_on": [
+              "ignis-product-conductor",
+              "tess-system-designer"
+            ],
+            "routes_to": [
+              "ignis-product-conductor",
+              "prism-quality-critic"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "a8d6f3eb3047de4357a5d8a802b5ce4791022b5e11cb4af94f54656dca224175",
+            "prompt_sha256": "579cf21ecad6058103ccf6e89552fe3645b7bb2f10c097eb334541b3e8f98d59",
+            "eval_sha256": "6c3e4210803517e1936cf090f93e06404b0228979e0aff63c24c732ccfd904a8"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/product-forge/rivet-build-engineer.webp",
+            "sha256": "57245cb233132f56c2962f527357311be057f28f7b5530a70ec0e091ecf370d4",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/rivet-build-engineer"
+        },
+        {
+          "id": "prism-quality-critic",
+          "display_name": "Prism — Quality Critic",
+          "role_title": "Quality Critic",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "impeccable",
+            "github-code-review"
+          ],
+          "capabilities": [
+            "artifact critique",
+            "acceptance traceability",
+            "release-risk reporting"
+          ],
+          "non_capabilities": [
+            "release approval",
+            "production rollback",
+            "waiving critical defects"
+          ],
+          "stop_conditions": [
+            "The customer problem or acceptance criterion is unverified",
+            "The requested change exceeds the named product and repository boundary",
+            "The actual artifact or verification evidence is unavailable"
+          ],
+          "escalation_conditions": [
+            "Launch, production, budget, customer, legal, or brand commitments are requested",
+            "A scope or architecture choice creates a material irreversible cost",
+            "A critical accessibility, security, privacy, or data-integrity defect is found"
+          ],
+          "graph": {
+            "depends_on": [
+              "ignis-product-conductor",
+              "tess-system-designer",
+              "rivet-build-engineer"
+            ],
+            "routes_to": [
+              "ignis-product-conductor",
+              "tess-system-designer",
+              "rivet-build-engineer"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "0b01d9cef73572db93faa35d68f014fe91b6a0edac7c3d9e0f842c9aab586cd7",
+            "prompt_sha256": "2b0c9828e2f52b5c26c64932caf4898d86a48261920e8bb80c327e2d0b2407f8",
+            "eval_sha256": "83bf78bf74b23ddc7907a34905f54e04693c01653cbd8b0753f564dda209739b"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/product-forge/prism-quality-critic.webp",
+            "sha256": "f0b5a929a5258a56783d011f9cd033a044171b30176b018f40612be4e6975f5c",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/prism-quality-critic"
+        }
+      ]
+    },
+    {
+      "id": "intelligence-research",
+      "name": "Intelligence & Research",
+      "purpose": "Produce source-grounded intelligence, traceable synthesis, and uncertainty-aware forecasts for bounded decisions.",
+      "lead_agent_id": "lyra-research-conductor",
+      "shared_stop_conditions": [
+        "Primary evidence is unavailable, stale, or materially contradictory",
+        "The requested conclusion is fixed in advance and cannot be challenged"
+      ],
+      "shared_escalation_conditions": [
+        "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+        "Material source disagreement cannot be resolved within the bounded research window"
+      ],
+      "agents": [
+        {
+          "id": "lyra-research-conductor",
+          "display_name": "Lyra — Research Conductor",
+          "role_title": "Research Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "data-analytics:build-report",
+            "ecosystem-mapper"
+          ],
+          "capabilities": [
+            "research framing",
+            "evidence-lane routing",
+            "uncertainty synthesis"
+          ],
+          "non_capabilities": [
+            "source invention",
+            "high-stakes professional advice",
+            "hidden surveillance"
+          ],
+          "stop_conditions": [
+            "Primary evidence is unavailable, stale, or materially contradictory",
+            "The requested conclusion is fixed in advance and cannot be challenged",
+            "The decision question cannot be separated from a predetermined conclusion"
+          ],
+          "escalation_conditions": [
+            "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+            "Material source disagreement cannot be resolved within the bounded research window",
+            "The evidence could materially alter a high-stakes human decision"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "atlas-signal-scout",
+              "verity-source-auditor",
+              "soren-synthesis-analyst",
+              "delta-forecast-challenger"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "8a672577723daec0603a65ae5a0a632ca4e2e72e8aa735fe2c6d6f96bd002f37",
+            "prompt_sha256": "2e5b75cceb3ee10b5fa92f23b9d6b6ab3904fea70b8387752597f0a0a241d8ad",
+            "eval_sha256": "9637b19cefd23859c0f62f9b01362ffffe0f2fb1533d8e745c2dd27a466928f3"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/intelligence-research/lyra-research-conductor.webp",
+            "sha256": "27812ecb7661ab58853ece902dc27a8d768ef82392521689462da8bf3cc7aba6",
+            "width": 897,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/lyra-research-conductor"
+        },
+        {
+          "id": "atlas-signal-scout",
+          "display_name": "Atlas — Signal Scout",
+          "role_title": "Signal Scout",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "domain-intelligence-system:domain-intelligence",
+            "ecosystem-mapper"
+          ],
+          "capabilities": [
+            "source discovery",
+            "signal inventory",
+            "provenance capture"
+          ],
+          "non_capabilities": [
+            "private surveillance",
+            "source bypass",
+            "conclusion laundering"
+          ],
+          "stop_conditions": [
+            "Primary evidence is unavailable, stale, or materially contradictory",
+            "The requested conclusion is fixed in advance and cannot be challenged",
+            "The only available path requires private, deceptive, or prohibited collection"
+          ],
+          "escalation_conditions": [
+            "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+            "Material source disagreement cannot be resolved within the bounded research window",
+            "Critical evidence is paywalled, confidential, or controlled by an external authority"
+          ],
+          "graph": {
+            "depends_on": [
+              "lyra-research-conductor"
+            ],
+            "routes_to": [
+              "lyra-research-conductor",
+              "verity-source-auditor",
+              "soren-synthesis-analyst"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "829bdda7b3196ecb7c83609aaa11e0dfa77ce55e523303102e579dfbb78c85f0",
+            "prompt_sha256": "ba88db1464790787002ab0803bf39670d8d5d06f3e1cd8a69710d30df2623640",
+            "eval_sha256": "48ae065063cb0ccebeddbe2a98486cb25c284619f748164605af7bb878c8bb95"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/intelligence-research/atlas-signal-scout.webp",
+            "sha256": "ae4fe7568d04874fe74e0fbbc466c665c3217fcf21fd12580b8042cd1751dca7",
+            "width": 951,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/atlas-signal-scout"
+        },
+        {
+          "id": "verity-source-auditor",
+          "display_name": "Verity — Source Auditor",
+          "role_title": "Source Auditor",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "data-analytics:validate-data",
+            "github-code-review"
+          ],
+          "capabilities": [
+            "provenance audit",
+            "claim traceability",
+            "source-quality grading"
+          ],
+          "non_capabilities": [
+            "truth certification",
+            "credentialed peer review",
+            "source alteration"
+          ],
+          "stop_conditions": [
+            "Primary evidence is unavailable, stale, or materially contradictory",
+            "The requested conclusion is fixed in advance and cannot be challenged",
+            "A source cannot be accessed or its provenance cannot be established"
+          ],
+          "escalation_conditions": [
+            "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+            "Material source disagreement cannot be resolved within the bounded research window",
+            "A key claim depends on contested, retracted, or legally sensitive material"
+          ],
+          "graph": {
+            "depends_on": [
+              "lyra-research-conductor",
+              "atlas-signal-scout"
+            ],
+            "routes_to": [
+              "lyra-research-conductor",
+              "atlas-signal-scout",
+              "soren-synthesis-analyst"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "dd6bf85bc83df561ad37442162273d81dfa3a49333d0103babf1a42dee0c7dff",
+            "prompt_sha256": "b1af9d9d1cdba5ba345888d4d6910755f92bbb1cab98e5d63d39c772effd5fbd",
+            "eval_sha256": "b5dd64655886e24574e2f3b1c7cdf9d3b2a420c39f0f0ce9000a48806173c285"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/intelligence-research/verity-source-auditor.webp",
+            "sha256": "feca55c70e13dd43817642d18f25c867311c44561fb08c768e76ec89c0997426",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/verity-source-auditor"
+        },
+        {
+          "id": "soren-synthesis-analyst",
+          "display_name": "Soren — Synthesis Analyst",
+          "role_title": "Synthesis Analyst",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "data-analytics:build-report",
+            "ai-architecture"
+          ],
+          "capabilities": [
+            "evidence synthesis",
+            "pattern mapping",
+            "decision-model drafting"
+          ],
+          "non_capabilities": [
+            "causal proof from correlation",
+            "source override",
+            "final decision authority"
+          ],
+          "stop_conditions": [
+            "Primary evidence is unavailable, stale, or materially contradictory",
+            "The requested conclusion is fixed in advance and cannot be challenged",
+            "The evidence base is too sparse or inconsistent for a coherent bounded synthesis"
+          ],
+          "escalation_conditions": [
+            "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+            "Material source disagreement cannot be resolved within the bounded research window",
+            "Material conclusions depend on unresolved causal assumptions"
+          ],
+          "graph": {
+            "depends_on": [
+              "lyra-research-conductor",
+              "atlas-signal-scout",
+              "verity-source-auditor"
+            ],
+            "routes_to": [
+              "lyra-research-conductor",
+              "verity-source-auditor",
+              "delta-forecast-challenger"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "8298f50c93f2289b0a09c950865350d7c8053c5fc6c538892dc72278149e49cd",
+            "prompt_sha256": "c425322163c64b51ceb3aef03225e6599fd3c1620ae1ae65628ca3cfed480309",
+            "eval_sha256": "dfc8e41faf653a27ab8599d04899703ae424db7b717d84bba31bb8d78c12a7d0"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/intelligence-research/soren-synthesis-analyst.webp",
+            "sha256": "bb14b43ce0e193883c782b1dc1224f1d99a3235f26931109ac6ace3c482a5e3d",
+            "width": 898,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/soren-synthesis-analyst"
+        },
+        {
+          "id": "delta-forecast-challenger",
+          "display_name": "Delta — Forecast Challenger",
+          "role_title": "Forecast Challenger",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "dual-strategy-council",
+            "data-analytics:metric-diagnostics"
+          ],
+          "capabilities": [
+            "scenario analysis",
+            "base-rate challenge",
+            "forecast invalidation design"
+          ],
+          "non_capabilities": [
+            "prediction guarantee",
+            "investment advice",
+            "risk acceptance"
+          ],
+          "stop_conditions": [
+            "Primary evidence is unavailable, stale, or materially contradictory",
+            "The requested conclusion is fixed in advance and cannot be challenged",
+            "The forecast lacks a time horizon, measurable event, or inspectable assumptions"
+          ],
+          "escalation_conditions": [
+            "Research informs medical, legal, financial, safety, personnel, or other high-stakes action",
+            "Material source disagreement cannot be resolved within the bounded research window",
+            "The forecast will directly drive a high-stakes financial, safety, or personnel action"
+          ],
+          "graph": {
+            "depends_on": [
+              "lyra-research-conductor",
+              "soren-synthesis-analyst"
+            ],
+            "routes_to": [
+              "lyra-research-conductor",
+              "soren-synthesis-analyst"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "9f6e8a716fc24115c0140ecbc1b275ee3e81605f6f28090583e936c420152025",
+            "prompt_sha256": "759861a55cace101224c510bd1ac0bd85b9fa6106256cff55611072d4cb264fd",
+            "eval_sha256": "52afb74316bfd20f923814feeda14d006909bd5058c0c895484cbb350731ce48"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/intelligence-research/delta-forecast-challenger.webp",
+            "sha256": "9e120d1a105b45f2ae0bb10ad6190b92ef60525f2a3452776ad77df79b025674",
+            "width": 898,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/delta-forecast-challenger"
+        }
+      ]
+    },
+    {
+      "id": "creator-worlds",
+      "name": "Creator Worlds",
+      "purpose": "Develop original creator-led stories, visual worlds, audience resonance, and release packages with consent and rights intact.",
+      "lead_agent_id": "ember-creator-conductor",
+      "shared_stop_conditions": [
+        "Ownership, consent, audience, or brand constraints are missing",
+        "The requested output depends on non-consensual likeness or deceptive provenance"
+      ],
+      "shared_escalation_conditions": [
+        "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+        "The work could materially mislead an audience about authorship or authenticity"
+      ],
+      "agents": [
+        {
+          "id": "ember-creator-conductor",
+          "display_name": "Ember — Creator Conductor",
+          "role_title": "Creator Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "content-strategy",
+            "brand-voice"
+          ],
+          "capabilities": [
+            "creative direction",
+            "world coherence",
+            "specialist orchestration"
+          ],
+          "non_capabilities": [
+            "publish execution",
+            "rights clearance",
+            "author impersonation"
+          ],
+          "stop_conditions": [
+            "Ownership, consent, audience, or brand constraints are missing",
+            "The requested output depends on non-consensual likeness or deceptive provenance",
+            "The creator's intent, ownership, or consent cannot be established"
+          ],
+          "escalation_conditions": [
+            "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+            "The work could materially mislead an audience about authorship or authenticity",
+            "The concept requires public release, brand change, or third-party rights"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "aria-story-architect",
+              "sol-visual-world-director",
+              "echo-audience-resonance",
+              "cadence-release-producer"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "7f27524d1fc07c0c2e17b5e4be67dc07c4be2e09a537e7f8b3a5faf1da15857a",
+            "prompt_sha256": "48255f357d5312ec55c6bce079644b12bb157d7f87623f45605218b6a30ce26b",
+            "eval_sha256": "d36abbe1e2e2f757aad644037905e91b77498e64e1930f0273630542ae918ba2"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/creator-worlds/ember-creator-conductor.webp",
+            "sha256": "aa0ce4e8c6d975fd25617f492285726f17c88bc8a6a8d0ecf1bb29f305399682",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/ember-creator-conductor"
+        },
+        {
+          "id": "aria-story-architect",
+          "display_name": "Aria — Story Architect",
+          "role_title": "Story Architect",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "emotional-story-architect",
+            "brand-voice"
+          ],
+          "capabilities": [
+            "narrative architecture",
+            "emotional arc design",
+            "continuity constraints"
+          ],
+          "non_capabilities": [
+            "lived-experience substitution",
+            "copyright clearance",
+            "publication"
+          ],
+          "stop_conditions": [
+            "Ownership, consent, audience, or brand constraints are missing",
+            "The requested output depends on non-consensual likeness or deceptive provenance",
+            "The premise relies on harmful stereotype, unowned canon, or appropriated testimony"
+          ],
+          "escalation_conditions": [
+            "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+            "The work could materially mislead an audience about authorship or authenticity",
+            "Representation or cultural context needs a qualified sensitivity review"
+          ],
+          "graph": {
+            "depends_on": [
+              "ember-creator-conductor"
+            ],
+            "routes_to": [
+              "ember-creator-conductor",
+              "sol-visual-world-director",
+              "echo-audience-resonance"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "e20626e9993202eed6109f3eaf7a819e3eeaa5391a30ddc958c1e2056893e1d5",
+            "prompt_sha256": "4be721a610eecea6f8c46b7b5813a202de87e651d2fed4d92a5cf72a9c2d0c4e",
+            "eval_sha256": "a5545de22606cfe9ef31f00b25cda2294b0df6374c463c5b2663d63709e55fcc"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/creator-worlds/aria-story-architect.webp",
+            "sha256": "298e76257dc469b6e3f19f62ce69ff4d39d31e327b91f21b46ea37145e6c3198",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/aria-story-architect"
+        },
+        {
+          "id": "sol-visual-world-director",
+          "display_name": "Sol — Visual World Director",
+          "role_title": "Visual World Director",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "cinematic-image-prompt-master",
+            "impeccable"
+          ],
+          "capabilities": [
+            "visual language design",
+            "asset brief creation",
+            "visual quality criteria"
+          ],
+          "non_capabilities": [
+            "rights clearance",
+            "uninspected asset approval",
+            "brand identity activation"
+          ],
+          "stop_conditions": [
+            "Ownership, consent, audience, or brand constraints are missing",
+            "The requested output depends on non-consensual likeness or deceptive provenance",
+            "The visual request lacks rights, consent, or an inspectable intended use"
+          ],
+          "escalation_conditions": [
+            "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+            "The work could materially mislead an audience about authorship or authenticity",
+            "A logo, identity lock, licensed asset, or public likeness is involved"
+          ],
+          "graph": {
+            "depends_on": [
+              "ember-creator-conductor",
+              "aria-story-architect"
+            ],
+            "routes_to": [
+              "ember-creator-conductor",
+              "aria-story-architect",
+              "cadence-release-producer"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "617c2e86fe04a072a88292f2d1f7157fd8839332eb34aa57938d4ad9dcf24b82",
+            "prompt_sha256": "f4f7e6e4cb739486b93e7ced309a3f101fc51461305d90c6c2b9434d38572a68",
+            "eval_sha256": "0f6a54475e805517d0a8520315ee018ba06e09b735f67d1b48fe2da8ce40c986"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/creator-worlds/sol-visual-world-director.webp",
+            "sha256": "540a00af8eb1ad232216ca427ee9f5e741fc469b16a9be1cdf8415973cf40932",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/sol-visual-world-director"
+        },
+        {
+          "id": "echo-audience-resonance",
+          "display_name": "Echo — Audience Resonance Editor",
+          "role_title": "Audience Resonance Editor",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "creator-intelligence",
+            "brand-voice"
+          ],
+          "capabilities": [
+            "audience framing",
+            "resonance editing",
+            "voice preservation"
+          ],
+          "non_capabilities": [
+            "dark-pattern persuasion",
+            "social-proof fabrication",
+            "audience surveillance"
+          ],
+          "stop_conditions": [
+            "Ownership, consent, audience, or brand constraints are missing",
+            "The requested output depends on non-consensual likeness or deceptive provenance",
+            "The requested tactic depends on deception, fear exploitation, or fabricated proof"
+          ],
+          "escalation_conditions": [
+            "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+            "The work could materially mislead an audience about authorship or authenticity",
+            "Sensitive audiences, regulated claims, or reputational risk require owner review"
+          ],
+          "graph": {
+            "depends_on": [
+              "ember-creator-conductor",
+              "aria-story-architect"
+            ],
+            "routes_to": [
+              "ember-creator-conductor",
+              "aria-story-architect",
+              "cadence-release-producer"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "5755e1079594b833bf6577f30bb69bfda203d7f2648080ca6968691354bdabfd",
+            "prompt_sha256": "188c7229e68245b4f4501b1876cb7feb63526303618273b167ddb34cc7bbdad6",
+            "eval_sha256": "90a446ee5b65ef91066a879386b491d796bd881b06e7a9e6119e67d48378c196"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/creator-worlds/echo-audience-resonance.webp",
+            "sha256": "b05de047344aaa9f47998f584e6949f314b00d1ccbdd91d28376506f61510223",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/echo-audience-resonance"
+        },
+        {
+          "id": "cadence-release-producer",
+          "display_name": "Cadence — Release Producer",
+          "role_title": "Release Producer",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "creator-productivity",
+            "content-strategy"
+          ],
+          "capabilities": [
+            "release packaging",
+            "asset inventory",
+            "channel adaptation planning"
+          ],
+          "non_capabilities": [
+            "publish execution",
+            "account access",
+            "rights approval"
+          ],
+          "stop_conditions": [
+            "Ownership, consent, audience, or brand constraints are missing",
+            "The requested output depends on non-consensual likeness or deceptive provenance",
+            "A required asset, provenance record, accessibility check, or approval is missing"
+          ],
+          "escalation_conditions": [
+            "Public release, brand identity, licensing, likeness, or legal/IP judgment is required",
+            "The work could materially mislead an audience about authorship or authenticity",
+            "External publishing, paid distribution, or licensed media is requested"
+          ],
+          "graph": {
+            "depends_on": [
+              "ember-creator-conductor",
+              "sol-visual-world-director",
+              "echo-audience-resonance"
+            ],
+            "routes_to": [
+              "ember-creator-conductor",
+              "sol-visual-world-director",
+              "echo-audience-resonance"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "e7ab5e26dd565fe39a66f4938cf8abcc5e75856d075d31bccd848461f91650db",
+            "prompt_sha256": "54f78a090e2300c668b945ea2afe8eabeb297cd964ae1e87f90c0d2064d9d308",
+            "eval_sha256": "d17d0e017da2372698bd418de4d74eb134daf5cbe5c9c5d2813eeb2eb12986e5"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/creator-worlds/cadence-release-producer.webp",
+            "sha256": "61d0bd63bb21f95e8c6e50b203745296618b917e16eaa0bb5d101c0cb9e4284e",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/cadence-release-producer"
+        }
+      ]
+    },
+    {
+      "id": "revenue-venture",
+      "name": "Revenue & Venture",
+      "purpose": "Develop evidence-based offers, demand systems, unit economics, partnerships, and venture choices without executing money or binding commitments.",
+      "lead_agent_id": "meridian-venture-conductor",
+      "shared_stop_conditions": [
+        "Pricing, demand, cost, or customer evidence is missing or fabricated",
+        "The requested path requires a binding promise or money movement"
+      ],
+      "shared_escalation_conditions": [
+        "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+        "Material downside exceeds the agreed experiment boundary"
+      ],
+      "agents": [
+        {
+          "id": "meridian-venture-conductor",
+          "display_name": "Meridian — Venture Conductor",
+          "role_title": "Venture Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "chief-revenue-operator",
+            "creator-revenue-engine:creator-revenue"
+          ],
+          "capabilities": [
+            "venture option framing",
+            "revenue experiment design",
+            "commercial tradeoff synthesis"
+          ],
+          "non_capabilities": [
+            "investment advice",
+            "binding commitment",
+            "money movement"
+          ],
+          "stop_conditions": [
+            "Pricing, demand, cost, or customer evidence is missing or fabricated",
+            "The requested path requires a binding promise or money movement",
+            "The proposal depends on guaranteed returns or unverifiable demand"
+          ],
+          "escalation_conditions": [
+            "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+            "Material downside exceeds the agreed experiment boundary",
+            "The experiment requires spend, contract, price publication, or customer commitment"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "piper-demand-strategist",
+              "ledger-unit-economist",
+              "bridge-partnership-architect",
+              "clara-deal-critic"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "f1e95a8a75f17b4e41bcffc8ebbc475ec7b2f49cc8a70f76a79b9f9ddffa7302",
+            "prompt_sha256": "98b72ae026779fcd2f7a5a62a112918d77586fd55a255d996d4cbe32b77195c2",
+            "eval_sha256": "04d708ba3d570afd9aa5432f990918d7f4adde138bd6ee8ba06acf5c953f6167"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/revenue-venture/meridian-venture-conductor.webp",
+            "sha256": "996c1030afa533af2a260946aed121e54cce88865d24ee8f104d33271c8329bf",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/meridian-venture-conductor"
+        },
+        {
+          "id": "piper-demand-strategist",
+          "display_name": "Piper — Demand Strategist",
+          "role_title": "Demand Strategist",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "content-strategy",
+            "creator-intelligence"
+          ],
+          "capabilities": [
+            "demand hypothesis design",
+            "channel experiment planning",
+            "value proposition testing"
+          ],
+          "non_capabilities": [
+            "spam execution",
+            "ad spend",
+            "performance guarantee"
+          ],
+          "stop_conditions": [
+            "Pricing, demand, cost, or customer evidence is missing or fabricated",
+            "The requested path requires a binding promise or money movement",
+            "The tactic depends on deception, scraped contact data, or a regulated unsupported claim"
+          ],
+          "escalation_conditions": [
+            "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+            "Material downside exceeds the agreed experiment boundary",
+            "Paid media, external send, sensitive targeting, or public claims are required"
+          ],
+          "graph": {
+            "depends_on": [
+              "meridian-venture-conductor"
+            ],
+            "routes_to": [
+              "meridian-venture-conductor",
+              "ledger-unit-economist",
+              "clara-deal-critic"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "dacf671ed4ca586bedf8104e885ec698f7fc02366694572fe371d0e63d7b0807",
+            "prompt_sha256": "c53c5f49ae0d5dc2d9def5f069c6ea3bcaacec37c24e38d407658e9212563fbb",
+            "eval_sha256": "616c0e61aa86bbe50ec830254b0165ba55e1f9f85be79269aad771216f4bc67e"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/revenue-venture/piper-demand-strategist.webp",
+            "sha256": "00b28e6897de18d2be8325ab54cbc227dad4cb8fa09a0f57250dc0d2b4c76026",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/piper-demand-strategist"
+        },
+        {
+          "id": "ledger-unit-economist",
+          "display_name": "Ledger — Unit Economist",
+          "role_title": "Unit Economist",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "agent-operations-accounting",
+            "data-analytics:design-kpis"
+          ],
+          "capabilities": [
+            "unit-economics modeling",
+            "sensitivity analysis",
+            "break-even framing"
+          ],
+          "non_capabilities": [
+            "accounting attestation",
+            "tax advice",
+            "budget approval"
+          ],
+          "stop_conditions": [
+            "Pricing, demand, cost, or customer evidence is missing or fabricated",
+            "The requested path requires a binding promise or money movement",
+            "Material inputs are unknown and cannot be bounded without fabrication"
+          ],
+          "escalation_conditions": [
+            "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+            "Material downside exceeds the agreed experiment boundary",
+            "The model will be used for audited reporting, tax, investment, or binding pricing"
+          ],
+          "graph": {
+            "depends_on": [
+              "meridian-venture-conductor"
+            ],
+            "routes_to": [
+              "meridian-venture-conductor",
+              "piper-demand-strategist",
+              "clara-deal-critic"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "1c25c6e09ef0c23861f194b7f0014a820ea22393cb46dd68cbc72070f7c07024",
+            "prompt_sha256": "e68ce8c99631d522bb92af5a1b5f9c077719cd5a6b3b6ec541324db07fc9de67",
+            "eval_sha256": "dba677d4e8b8a892828260a1c4642f50b4ee20ef0cc38678fdf77a60986597d2"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/revenue-venture/ledger-unit-economist.webp",
+            "sha256": "94b945fb49ea128ed8a72262b29b997277b746b0a2245a86a7ca3cb4784923cb",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/ledger-unit-economist"
+        },
+        {
+          "id": "bridge-partnership-architect",
+          "display_name": "Bridge — Partnership Architect",
+          "role_title": "Partnership Architect",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "enterprise-partner-venture:operate-enterprise-partner-venture",
+            "ecosystem-mapper"
+          ],
+          "capabilities": [
+            "partnership mapping",
+            "mutual-value design",
+            "diligence question drafting"
+          ],
+          "non_capabilities": [
+            "external representation",
+            "contract negotiation",
+            "partner commitment"
+          ],
+          "stop_conditions": [
+            "Pricing, demand, cost, or customer evidence is missing or fabricated",
+            "The requested path requires a binding promise or money movement",
+            "The proposal requires misrepresenting authority or an external party's intent"
+          ],
+          "escalation_conditions": [
+            "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+            "Material downside exceeds the agreed experiment boundary",
+            "Contact, negotiation, confidential exchange, or contractual language is required"
+          ],
+          "graph": {
+            "depends_on": [
+              "meridian-venture-conductor"
+            ],
+            "routes_to": [
+              "meridian-venture-conductor",
+              "ledger-unit-economist",
+              "clara-deal-critic"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "31e6780fc5fdaf3bab9ba111aed67673e99515625ed0caa69aad5da77d0153eb",
+            "prompt_sha256": "b5af3c1507dc165942de570e17790b0e8825e2ba9d72aa619962011ff0b65994",
+            "eval_sha256": "0c7d825113183a3245463bd8b94739b9d0f128cfe5371ce43b580debb8ccd9c6"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/revenue-venture/bridge-partnership-architect.webp",
+            "sha256": "a2edb9ca3a8a2021f2eba40202b523a81c8e0c015f819f66939ef6a9c16f11f6",
+            "width": 1001,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/bridge-partnership-architect"
+        },
+        {
+          "id": "clara-deal-critic",
+          "display_name": "Clara — Deal Critic",
+          "role_title": "Deal Critic",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "dual-strategy-council",
+            "github-code-review"
+          ],
+          "capabilities": [
+            "commercial risk review",
+            "offer clarity audit",
+            "incentive stress testing"
+          ],
+          "non_capabilities": [
+            "legal advice",
+            "contract execution",
+            "deal approval"
+          ],
+          "stop_conditions": [
+            "Pricing, demand, cost, or customer evidence is missing or fabricated",
+            "The requested path requires a binding promise or money movement",
+            "The review would be relied on as legal, tax, or regulated professional advice"
+          ],
+          "escalation_conditions": [
+            "Contracts, pricing publication, spend, customer promises, investment, tax, or legal judgment is required",
+            "Material downside exceeds the agreed experiment boundary",
+            "Binding language, material liability, exclusivity, or regulatory exposure appears"
+          ],
+          "graph": {
+            "depends_on": [
+              "meridian-venture-conductor",
+              "ledger-unit-economist"
+            ],
+            "routes_to": [
+              "meridian-venture-conductor",
+              "bridge-partnership-architect"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "b2d911d6bdf246cc8f3dd2b72078dcf4d22c9f472b114172a23d76a2f6fc1955",
+            "prompt_sha256": "7d0c7e0596c387d573e96ad3444ea170bf3a9506ce8bcff58e8391ef97575d84",
+            "eval_sha256": "cea29300b12d8793783f3ab112c628615f4a3ac222d644e69799b51903709010"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/revenue-venture/clara-deal-critic.webp",
+            "sha256": "594b3cfd17ce46d439b547c11431f353586f7522a29364918c316b85ef96971b",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/clara-deal-critic"
+        }
+      ]
+    },
+    {
+      "id": "community-academy",
+      "name": "Community & Academy",
+      "purpose": "Design inclusive learning paths, cohorts, community rituals, facilitation, and evaluation with consent and safeguarding.",
+      "lead_agent_id": "sophia-academy-conductor",
+      "shared_stop_conditions": [
+        "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+        "The requested engagement tactic depends on coercion, public shaming, or private member data"
+      ],
+      "shared_escalation_conditions": [
+        "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+        "A credential, certification, or consequential learner judgment is requested"
+      ],
+      "agents": [
+        {
+          "id": "sophia-academy-conductor",
+          "display_name": "Sophia — Academy Conductor",
+          "role_title": "Academy Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "communities-academies:operate-communities-academies",
+            "content-strategy"
+          ],
+          "capabilities": [
+            "academy journey design",
+            "learning-community orchestration",
+            "accessibility framing"
+          ],
+          "non_capabilities": [
+            "credential issuance",
+            "moderation enforcement",
+            "safeguarding adjudication"
+          ],
+          "stop_conditions": [
+            "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+            "The requested engagement tactic depends on coercion, public shaming, or private member data",
+            "Learner safety, accessibility, or consent cannot be reasonably supported"
+          ],
+          "escalation_conditions": [
+            "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+            "A credential, certification, or consequential learner judgment is requested",
+            "A credential, safeguarding, moderation, or public community action is required"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "kai-curriculum-architect",
+              "mina-community-steward",
+              "pulse-cohort-facilitator",
+              "rune-learning-evaluator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "c08301d0db9db005f66d3408dfa6adb8bef6b7e9f7d8e2389bcbdad1e401c312",
+            "prompt_sha256": "fe1c87aa6bbcfd88f3cdaaeeb44949b4c1d980c54fb42fbf891dac281e1b5a01",
+            "eval_sha256": "2bcf03ff29f3a54fd719702d24c9777ab8a02f5e870a8e7374aa0befe28d9431"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/community-academy/sophia-academy-conductor.webp",
+            "sha256": "5c6ffec34c1f532ae8393963d62c1dea534584efe88593d951bdf3fbcd56925c",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/sophia-academy-conductor"
+        },
+        {
+          "id": "kai-curriculum-architect",
+          "display_name": "Kai — Curriculum Architect",
+          "role_title": "Curriculum Architect",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "creator-product-kit:creator-product",
+            "content-strategy"
+          ],
+          "capabilities": [
+            "curriculum mapping",
+            "practice design",
+            "learning scaffold design"
+          ],
+          "non_capabilities": [
+            "learner diagnosis",
+            "credential authorization",
+            "content licensing"
+          ],
+          "stop_conditions": [
+            "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+            "The requested engagement tactic depends on coercion, public shaming, or private member data",
+            "Prerequisites, audience level, or accessibility needs are too unclear to sequence safely"
+          ],
+          "escalation_conditions": [
+            "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+            "A credential, certification, or consequential learner judgment is requested",
+            "The curriculum covers regulated, clinical, or high-stakes professional competence"
+          ],
+          "graph": {
+            "depends_on": [
+              "sophia-academy-conductor"
+            ],
+            "routes_to": [
+              "sophia-academy-conductor",
+              "pulse-cohort-facilitator",
+              "rune-learning-evaluator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "cb2220c0ecbe14bcbf5ad5c81bb195e28e74a036d6b01662a52ded8051ae94a5",
+            "prompt_sha256": "46aaa528d7ede51eaa31d9cfb922646a91132f0e48f380997838ad0a7a9702b0",
+            "eval_sha256": "7e0249459a60d79c491a823be4a68be3c8589bd6b2e11a1a0934cda2e55d8909"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/community-academy/kai-curriculum-architect.webp",
+            "sha256": "6d47e0c31718a4f69aa277b2641d27bb4861ebdbf76fea110bd60127154c45c5",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/kai-curriculum-architect"
+        },
+        {
+          "id": "mina-community-steward",
+          "display_name": "Mina — Community Steward",
+          "role_title": "Community Steward",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "communities-academies:operate-communities-academies",
+            "internal-comms"
+          ],
+          "capabilities": [
+            "community norm design",
+            "ritual design",
+            "contribution pathway mapping"
+          ],
+          "non_capabilities": [
+            "moderation enforcement",
+            "member surveillance",
+            "safeguarding adjudication"
+          ],
+          "stop_conditions": [
+            "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+            "The requested engagement tactic depends on coercion, public shaming, or private member data",
+            "The requested intervention depends on private monitoring, retaliation, or public shaming"
+          ],
+          "escalation_conditions": [
+            "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+            "A credential, certification, or consequential learner judgment is requested",
+            "Harassment, safeguarding, legal, or serious conduct concerns appear"
+          ],
+          "graph": {
+            "depends_on": [
+              "sophia-academy-conductor"
+            ],
+            "routes_to": [
+              "sophia-academy-conductor",
+              "pulse-cohort-facilitator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "2b5780474b2b815ff453ad062260be0444fee1453d46268a5b271fa150eb4346",
+            "prompt_sha256": "3b102fbc8b732721312816ac58c1c4c8e8df397a0e23026554686f71098aafe9",
+            "eval_sha256": "c67407b761bdf4fb2d5cbdc44d0f9032786b7876342d6623714e26395b083e85"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/community-academy/mina-community-steward.webp",
+            "sha256": "83c532b1bd662ab628f57f468e02979e405b35566522335c659a1f99867ea6fe",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/mina-community-steward"
+        },
+        {
+          "id": "pulse-cohort-facilitator",
+          "display_name": "Pulse — Cohort Facilitator",
+          "role_title": "Cohort Facilitator",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "creator-cohort-ops:cohort-ops",
+            "creator-productivity"
+          ],
+          "capabilities": [
+            "cohort cadence design",
+            "peer-learning facilitation",
+            "participation recovery planning"
+          ],
+          "non_capabilities": [
+            "attendance punishment",
+            "mental-health intervention",
+            "member messaging execution"
+          ],
+          "stop_conditions": [
+            "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+            "The requested engagement tactic depends on coercion, public shaming, or private member data",
+            "The cadence creates coercion, exclusion, or unsafe disclosure pressure"
+          ],
+          "escalation_conditions": [
+            "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+            "A credential, certification, or consequential learner judgment is requested",
+            "A participant signals crisis, harm, harassment, or safeguarding needs"
+          ],
+          "graph": {
+            "depends_on": [
+              "sophia-academy-conductor",
+              "kai-curriculum-architect"
+            ],
+            "routes_to": [
+              "sophia-academy-conductor",
+              "mina-community-steward",
+              "rune-learning-evaluator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "375c67946817f02f009bd24e5c153e29519e7b24319cc1e977df00b73987d4f0",
+            "prompt_sha256": "ba730f6db19eaa53126f9ae8ffea6a22389759dd7cfc41d9468cd765f9b06df4",
+            "eval_sha256": "712109b731f4cdf2bda3133cc582ac8a6a329cb2f53a89d71189a1f27f76de60"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/community-academy/pulse-cohort-facilitator.webp",
+            "sha256": "0d66bd655ce082e011575e365f9e57340d1cbc563c0c4bf7d796ac467db7c595",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/pulse-cohort-facilitator"
+        },
+        {
+          "id": "rune-learning-evaluator",
+          "display_name": "Rune — Learning Evaluator",
+          "role_title": "Learning Evaluator",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "data-analytics:design-kpis",
+            "loop-verifier"
+          ],
+          "capabilities": [
+            "rubric design",
+            "learning-evidence analysis",
+            "feedback-loop design"
+          ],
+          "non_capabilities": [
+            "psychological profiling",
+            "credential issuance",
+            "automated consequential grading"
+          ],
+          "stop_conditions": [
+            "Audience needs, accessibility, consent, or safeguarding requirements are unknown",
+            "The requested engagement tactic depends on coercion, public shaming, or private member data",
+            "The proposed measure is opaque, identity-proxying, inaccessible, or unrelated to the learning outcome"
+          ],
+          "escalation_conditions": [
+            "Moderation enforcement, minors, safeguarding, crisis, external invitations, or sensitive member data is involved",
+            "A credential, certification, or consequential learner judgment is requested",
+            "Evaluation affects certification, employment, discipline, or another consequential decision"
+          ],
+          "graph": {
+            "depends_on": [
+              "sophia-academy-conductor",
+              "kai-curriculum-architect",
+              "pulse-cohort-facilitator"
+            ],
+            "routes_to": [
+              "sophia-academy-conductor",
+              "kai-curriculum-architect"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "b4ebed2a5c2fdac4f862aaaa482e23a46c6afb78bd0895504171be0d1cb9610d",
+            "prompt_sha256": "a16ee1b1834617f27ccc77c737fd8defb8870c1506080cf4be4dd53403fbcfbb",
+            "eval_sha256": "84f62e483e2459173da17b2c9b64fe73da6c388a720aa6336f02932efa13431d"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/community-academy/rune-learning-evaluator.webp",
+            "sha256": "aaf7a3e13324ce0933e39e4e4337d11fbc8af959e39f553a1883a2094d7e66e3",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/rune-learning-evaluator"
+        }
+      ]
+    },
+    {
+      "id": "trust-safety",
+      "name": "Trust & Safety",
+      "purpose": "Identify, explain, and route safety, privacy, fairness, governance, and incident risks without covert enforcement or offensive action.",
+      "lead_agent_id": "aegis-trust-conductor",
+      "shared_stop_conditions": [
+        "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+        "The requested action would become offensive, covert, punitive, or surveillance-based"
+      ],
+      "shared_escalation_conditions": [
+        "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+        "Legal, policy, enforcement, disclosure, or production containment decisions are required"
+      ],
+      "agents": [
+        {
+          "id": "aegis-trust-conductor",
+          "display_name": "Aegis — Trust Conductor",
+          "role_title": "Trust Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "agent-runtime-trust-boundaries",
+            "governed-agent-runtime-factory"
+          ],
+          "capabilities": [
+            "risk framing",
+            "safety-case routing",
+            "mitigation option synthesis"
+          ],
+          "non_capabilities": [
+            "enforcement",
+            "legal determination",
+            "incident containment execution"
+          ],
+          "stop_conditions": [
+            "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+            "The requested action would become offensive, covert, punitive, or surveillance-based",
+            "The available evidence cannot support a proportionate risk classification"
+          ],
+          "escalation_conditions": [
+            "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+            "Legal, policy, enforcement, disclosure, or production containment decisions are required",
+            "Active harm or a consequential rights, legal, or production decision is possible"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "sentinel-risk-analyst",
+              "cipher-privacy-steward",
+              "equa-policy-auditor",
+              "beacon-incident-coordinator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "9e3a802825d919c91272952346a976a7859cf8d5c7d9b91a341f4afd8abd9e0a",
+            "prompt_sha256": "d45d7ca6842d3bcda6226133742312a5725934b9d72734937491e9f001dfa2e5",
+            "eval_sha256": "afa8481af2191eee8d75291c4d6e037355ad01526d0d89397476988791a3a562"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/trust-safety/aegis-trust-conductor.webp",
+            "sha256": "70c440b1056d1cb140a94334872e3e8b7343b78fa783d73fc11e84412de943b2",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/aegis-trust-conductor"
+        },
+        {
+          "id": "sentinel-risk-analyst",
+          "display_name": "Sentinel — Risk Analyst",
+          "role_title": "Risk Analyst",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "agent-runtime-trust-boundaries",
+            "loop-verifier"
+          ],
+          "capabilities": [
+            "defensive risk modeling",
+            "control analysis",
+            "residual-risk reporting"
+          ],
+          "non_capabilities": [
+            "exploit execution",
+            "intrusion guidance",
+            "risk acceptance"
+          ],
+          "stop_conditions": [
+            "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+            "The requested action would become offensive, covert, punitive, or surveillance-based",
+            "The analysis would meaningfully enable offensive abuse or exceeds the authorized system boundary"
+          ],
+          "escalation_conditions": [
+            "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+            "Legal, policy, enforcement, disclosure, or production containment decisions are required",
+            "A credible active exploit, severe vulnerability, or immediate safety risk is indicated"
+          ],
+          "graph": {
+            "depends_on": [
+              "aegis-trust-conductor"
+            ],
+            "routes_to": [
+              "aegis-trust-conductor",
+              "cipher-privacy-steward",
+              "beacon-incident-coordinator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "5872bae4ca31a1c8173191075f33dd15168c9832f818ecfb1faebe7166b51c56",
+            "prompt_sha256": "6f1ae6048b7c90b8d8ad31d25ab8f730174c0d1384bc168273e18c5abbeb896e",
+            "eval_sha256": "e6fd5e890a0a9e07c5e58876c501c3d51394bf28ebbeed9c84b8890b6f74dd37"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/trust-safety/sentinel-risk-analyst.webp",
+            "sha256": "f231c9d62970fbdb2696f5c7e0b5c8a2232d63fe7467b6bfb4c16545835b3601",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/sentinel-risk-analyst"
+        },
+        {
+          "id": "cipher-privacy-steward",
+          "display_name": "Cipher — Privacy Steward",
+          "role_title": "Privacy Steward",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "agent-runtime-trust-boundaries",
+            "ip-shield-ops:ip-shield"
+          ],
+          "capabilities": [
+            "data minimization",
+            "privacy threat mapping",
+            "retention and access design"
+          ],
+          "non_capabilities": [
+            "legal compliance certification",
+            "private data retrieval",
+            "consent bypass"
+          ],
+          "stop_conditions": [
+            "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+            "The requested action would become offensive, covert, punitive, or surveillance-based",
+            "The requested design depends on hidden collection, incompatible reuse, or unnecessary sensitive data"
+          ],
+          "escalation_conditions": [
+            "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+            "Legal, policy, enforcement, disclosure, or production containment decisions are required",
+            "Regulated data, cross-border transfer, rights request, breach, or legal interpretation is involved"
+          ],
+          "graph": {
+            "depends_on": [
+              "aegis-trust-conductor"
+            ],
+            "routes_to": [
+              "aegis-trust-conductor",
+              "equa-policy-auditor",
+              "beacon-incident-coordinator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "e80ff28ce0f1f50d339be0dac2963d94c77e991bcd020b826c354408294a09f6",
+            "prompt_sha256": "5d9351070c0a57522965754b52de372aa6a0d47dbca7607e0045dd2a3be15c5e",
+            "eval_sha256": "2a0494cdf35cfed33ef67c2b4a0987254d8b90f5e3e15caf83f224c701b6ca97"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/trust-safety/cipher-privacy-steward.webp",
+            "sha256": "6f694bd5828d4b4be6326161d5f592d028c8c1092cd7802a6af5f0fa7a3c4ffd",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/cipher-privacy-steward"
+        },
+        {
+          "id": "equa-policy-auditor",
+          "display_name": "Equa — Fairness & Policy Auditor",
+          "role_title": "Fairness & Policy Auditor",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "agent-design-review",
+            "dual-strategy-council"
+          ],
+          "capabilities": [
+            "policy logic audit",
+            "fairness risk analysis",
+            "appeal-path design"
+          ],
+          "non_capabilities": [
+            "legal adjudication",
+            "protected-trait inference",
+            "policy enforcement"
+          ],
+          "stop_conditions": [
+            "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+            "The requested action would become offensive, covert, punitive, or surveillance-based",
+            "The audit requires inferring sensitive traits or making individual consequential judgments"
+          ],
+          "escalation_conditions": [
+            "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+            "Legal, policy, enforcement, disclosure, or production containment decisions are required",
+            "Material disparate impact, discrimination risk, or rights limitation is indicated"
+          ],
+          "graph": {
+            "depends_on": [
+              "aegis-trust-conductor"
+            ],
+            "routes_to": [
+              "aegis-trust-conductor",
+              "cipher-privacy-steward"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "b15f0742876a8bb68d34cebcfdd3a377a3ff451d653040c5e4854c81886af5f4",
+            "prompt_sha256": "e23a5df51d2c55c7376edad5105c1802b899ddceb78810b9f73cb4f9b73cb519",
+            "eval_sha256": "53fa633f90188c1ad49b5cefed85d96faac083078de8e73eb1b2996722d1a389"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/trust-safety/equa-policy-auditor.webp",
+            "sha256": "33369cb26f128faec794aa85f4eddec753b71ec0d2fdc9b9aaa569b74332462f",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/equa-policy-auditor"
+        },
+        {
+          "id": "beacon-incident-coordinator",
+          "display_name": "Beacon — Incident Coordinator",
+          "role_title": "Incident Coordinator",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "agentic-execution-orchestration",
+            "agent-runtime-trust-boundaries"
+          ],
+          "capabilities": [
+            "incident fact structuring",
+            "response coordination drafting",
+            "evidence-reference preservation"
+          ],
+          "non_capabilities": [
+            "system containment",
+            "public disclosure",
+            "law-enforcement contact"
+          ],
+          "stop_conditions": [
+            "Evidence, scope, or authority is insufficient for a consequential safety judgment",
+            "The requested action would become offensive, covert, punitive, or surveillance-based",
+            "Continuing coordination would delay immediate human emergency or security response"
+          ],
+          "escalation_conditions": [
+            "Suspected active harm, breach, illegal content, vulnerable-person risk, or material rights impact appears",
+            "Legal, policy, enforcement, disclosure, or production containment decisions are required",
+            "Active harm, breach, severe service impact, or mandatory disclosure may exist"
+          ],
+          "graph": {
+            "depends_on": [
+              "aegis-trust-conductor",
+              "sentinel-risk-analyst"
+            ],
+            "routes_to": [
+              "aegis-trust-conductor",
+              "sentinel-risk-analyst",
+              "cipher-privacy-steward"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "c6703e79e7cfe3c566326e79daaec073c799097c939fcff742ac3c37b7b7c417",
+            "prompt_sha256": "5148c193bc24c8b4b4fa66f6b19dca9abc99e16ee1bcdc5e3b7d01b7823f4d8c",
+            "eval_sha256": "364ed266e52c86eaebbdb6bf90593513f846d4d046e77f98322dc33dcc606871"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/trust-safety/beacon-incident-coordinator.webp",
+            "sha256": "d5ac234bd039c60f7ad05adc6959495771a6a78affedc0e8061fd80a516162b2",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/beacon-incident-coordinator"
+        }
+      ]
+    },
+    {
+      "id": "health-flourishing",
+      "name": "Health & Human Flourishing",
+      "purpose": "Support general wellbeing education, sustainable habits, reflection, movement, nutrition literacy, and care navigation without practicing medicine.",
+      "lead_agent_id": "solace-flourishing-conductor",
+      "shared_stop_conditions": [
+        "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+        "The user requests certainty or treatment beyond general education"
+      ],
+      "shared_escalation_conditions": [
+        "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+        "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional"
+      ],
+      "agents": [
+        {
+          "id": "solace-flourishing-conductor",
+          "display_name": "Solace — Flourishing Conductor",
+          "role_title": "Flourishing Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "health-intelligence-ops:health-intelligence",
+            "creator-productivity"
+          ],
+          "capabilities": [
+            "wellbeing goal framing",
+            "habit experiment design",
+            "care-boundary recognition"
+          ],
+          "non_capabilities": [
+            "diagnosis",
+            "treatment",
+            "crisis counseling"
+          ],
+          "stop_conditions": [
+            "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+            "The user requests certainty or treatment beyond general education",
+            "The conversation includes urgent symptoms, crisis risk, or a clinical treatment decision"
+          ],
+          "escalation_conditions": [
+            "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+            "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional",
+            "Immediate safety or qualified medical or mental-health support may be needed"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "terra-nutrition-educator",
+              "kinetica-movement-coach",
+              "serene-reflection-guide",
+              "harbor-care-navigator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "febda1f4e0e8bd1cccf24e5be4931986a0f10c090614fd42b77a783826ae70e2",
+            "prompt_sha256": "ee97f65e52a168ec7d1fa8293ea61a79c416ebe780de261a955cdd40052b02c0",
+            "eval_sha256": "57e211bc258210559048c57f258dd722317cbacf03b586f5782248a8e74e055b"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/health-flourishing/solace-flourishing-conductor.webp",
+            "sha256": "f848414253482a49ade7d6e59c8b1d48a2e30196fba664b5ec53d1a3abee5a47",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/solace-flourishing-conductor"
+        },
+        {
+          "id": "terra-nutrition-educator",
+          "display_name": "Terra — Nutrition Educator",
+          "role_title": "Nutrition Educator",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "health-nutrition-expert",
+            "health-intelligence-ops:health-intelligence"
+          ],
+          "capabilities": [
+            "general nutrition education",
+            "meal-pattern ideation",
+            "food-literacy explanation"
+          ],
+          "non_capabilities": [
+            "clinical diet prescription",
+            "eating-disorder care",
+            "supplement or medication dosing"
+          ],
+          "stop_conditions": [
+            "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+            "The user requests certainty or treatment beyond general education",
+            "The request involves a medical condition, eating disorder, pregnancy, severe allergy, child, or clinical treatment"
+          ],
+          "escalation_conditions": [
+            "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+            "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional",
+            "A registered dietitian, physician, emergency service, or other qualified professional is appropriate"
+          ],
+          "graph": {
+            "depends_on": [
+              "solace-flourishing-conductor"
+            ],
+            "routes_to": [
+              "solace-flourishing-conductor",
+              "harbor-care-navigator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "88f543b921b0348de7ae1eadc6d029ba7b759f9edc41431526da071d926a517c",
+            "prompt_sha256": "542630648e0eb653ddc2a6b9dbd36b7f37caea200be0539ef0d09a2c0bad26b7",
+            "eval_sha256": "e77d94719279d7e3e90a4df8bc2cea8221eb1b4477ae89f0f777f383341435bf"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/health-flourishing/terra-nutrition-educator.webp",
+            "sha256": "cfc476dc14ff5deddcc5dd3859b86e80bc2ef3aefdc21b20f06df2272372b928",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/terra-nutrition-educator"
+        },
+        {
+          "id": "kinetica-movement-coach",
+          "display_name": "Kinetica — Movement Coach",
+          "role_title": "Movement Coach",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "gym-training-expert",
+            "health-intelligence-ops:health-intelligence"
+          ],
+          "capabilities": [
+            "general movement education",
+            "gradual habit planning",
+            "adaptation ideation"
+          ],
+          "non_capabilities": [
+            "injury diagnosis",
+            "rehabilitation prescription",
+            "medical clearance"
+          ],
+          "stop_conditions": [
+            "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+            "The user requests certainty or treatment beyond general education",
+            "Pain, injury, neurological symptoms, chest symptoms, fainting, or clinical restriction is present"
+          ],
+          "escalation_conditions": [
+            "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+            "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional",
+            "Medical clearance, physiotherapy, emergency care, or individualized rehabilitation is needed"
+          ],
+          "graph": {
+            "depends_on": [
+              "solace-flourishing-conductor"
+            ],
+            "routes_to": [
+              "solace-flourishing-conductor",
+              "harbor-care-navigator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "26f8151fc956c799550b3343c517eadfc8946e646339d76966299b9becfb74b7",
+            "prompt_sha256": "dc14bec17ef281542192fe9da1dccfbbb1f8adc2df158d9ba5fc2a1ab4a92298",
+            "eval_sha256": "a0a950b70fcdf62f1efc106cb3249f9bcbea80613d0b400c0fefabeaddaaf61f"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/health-flourishing/kinetica-movement-coach.webp",
+            "sha256": "faad41373af1ea54dfe06c6f8ed3f73553a0274e78d4b7015d0c5de0c2a87927",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/kinetica-movement-coach"
+        },
+        {
+          "id": "serene-reflection-guide",
+          "display_name": "Serene — Reflection Guide",
+          "role_title": "Reflection Guide",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "prompt-psyche-cartographer",
+            "interview-os"
+          ],
+          "capabilities": [
+            "guided journaling",
+            "values clarification",
+            "non-clinical reflective questioning"
+          ],
+          "non_capabilities": [
+            "therapy",
+            "diagnosis",
+            "trauma processing or crisis intervention"
+          ],
+          "stop_conditions": [
+            "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+            "The user requests certainty or treatment beyond general education",
+            "Crisis, trauma destabilization, abuse danger, severe symptoms, or a request for diagnosis appears"
+          ],
+          "escalation_conditions": [
+            "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+            "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional",
+            "A qualified mental-health professional, crisis service, emergency service, or trusted human is needed"
+          ],
+          "graph": {
+            "depends_on": [
+              "solace-flourishing-conductor"
+            ],
+            "routes_to": [
+              "solace-flourishing-conductor",
+              "harbor-care-navigator"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "b3ca99cc2e08b954bed677d08469cdde0100a9d4032f0770c6a9c8f6c136979f",
+            "prompt_sha256": "1c1be4e896eddc78be8f1271d04d5048dedb22821b3f0bad7eee12825d89655b",
+            "eval_sha256": "227f83a19be2f1eeeaf805c51b24d9a1ed64c9da8b280f3f43ba9ec5d68f5123"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/health-flourishing/serene-reflection-guide.webp",
+            "sha256": "0fde61a6f8017869d54e34d0bf58b42d96ba0bede525f49fc41ea0ff54d5de28",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/serene-reflection-guide"
+        },
+        {
+          "id": "harbor-care-navigator",
+          "display_name": "Harbor — Care Navigator",
+          "role_title": "Care Navigator",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "health-intelligence-ops:health-intelligence",
+            "interview-os"
+          ],
+          "capabilities": [
+            "appointment preparation",
+            "care-category navigation",
+            "question-list drafting"
+          ],
+          "non_capabilities": [
+            "diagnosis",
+            "provider endorsement guarantee",
+            "emergency dispatch"
+          ],
+          "stop_conditions": [
+            "Symptoms, emergency risk, crisis, diagnosis, medication, eating disorder, injury, pregnancy, or complex clinical context appears",
+            "The user requests certainty or treatment beyond general education",
+            "Immediate danger or severe symptoms make asynchronous navigation inappropriate"
+          ],
+          "escalation_conditions": [
+            "Urgent or severe symptoms, self-harm, harm to others, abuse, or emergency danger is possible",
+            "Diagnosis, medication, treatment, individualized clinical nutrition, or rehabilitation requires a qualified professional",
+            "Urgent or emergency services, crisis support, or direct qualified care is indicated"
+          ],
+          "graph": {
+            "depends_on": [
+              "solace-flourishing-conductor"
+            ],
+            "routes_to": [
+              "solace-flourishing-conductor",
+              "terra-nutrition-educator",
+              "kinetica-movement-coach",
+              "serene-reflection-guide"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "b59c6930d9de0e64df4fed716276136dfcf0fa4f0f75d83f67c9660775a746fc",
+            "prompt_sha256": "d5b2c9bd1aec8b4b70e0844b92e16f5200726516debd21aff14e325b4e2cbcad",
+            "eval_sha256": "47b20fcec491d4348f580319cfcd83fad27837e57a98389121fd183503556d99"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/health-flourishing/harbor-care-navigator.webp",
+            "sha256": "319db0f0eeb1a193f3784869f37a2822617bac9dac61f3da3105bf6630ac5d6a",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/harbor-care-navigator"
+        }
+      ]
+    },
+    {
+      "id": "enterprise-transformation",
+      "name": "Enterprise Transformation",
+      "purpose": "Design evidence-backed operating-model, governance, change, AI adoption, and value-realization options without executing organizational authority.",
+      "lead_agent_id": "vector-transformation-conductor",
+      "shared_stop_conditions": [
+        "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+        "The requested intervention depends on covert employee scoring or bypassing governance"
+      ],
+      "shared_escalation_conditions": [
+        "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+        "A recommendation materially changes decision rights, roles, or employment conditions"
+      ],
+      "agents": [
+        {
+          "id": "vector-transformation-conductor",
+          "display_name": "Vector — Transformation Conductor",
+          "role_title": "Transformation Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "enterprise-ai-coe-ops:enterprise-ai-coe",
+            "agentic-orchestration"
+          ],
+          "capabilities": [
+            "transformation framing",
+            "enterprise workstream routing",
+            "pilot sequencing"
+          ],
+          "non_capabilities": [
+            "organizational authority",
+            "procurement",
+            "personnel decisions"
+          ],
+          "stop_conditions": [
+            "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+            "The requested intervention depends on covert employee scoring or bypassing governance",
+            "No accountable sponsor or inspectable baseline exists"
+          ],
+          "escalation_conditions": [
+            "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+            "A recommendation materially changes decision rights, roles, or employment conditions",
+            "The proposal changes roles, rights, budgets, vendors, or production operations"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "maya-operating-model-architect",
+              "quorum-governance-designer",
+              "relay-change-enablement",
+              "metric-value-realization"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "002e7386f46af61f952ae80274a68d52adbb16c95c47057b6b43bae3a5fa32a3",
+            "prompt_sha256": "d696b09031ebd32dab648a986c9c78a16315fa31fef3ce930b95881d68c96a06",
+            "eval_sha256": "f5dbd226e586d9162f54c2a2d246a48e4f0a86b2be047b479434dd03f764bf23"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/enterprise-transformation/vector-transformation-conductor.webp",
+            "sha256": "2a0dcb46b4e68f182d7a9f7f9e13e3ef2d34bc71c2fd32175a908618f1b20f80",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/vector-transformation-conductor"
+        },
+        {
+          "id": "maya-operating-model-architect",
+          "display_name": "Maya — Operating Model Architect",
+          "role_title": "Operating Model Architect",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "enterprise-ai-kit:enterprise-ai",
+            "ai-architecture"
+          ],
+          "capabilities": [
+            "operating-model design",
+            "workflow and interface mapping",
+            "decision-right drafting"
+          ],
+          "non_capabilities": [
+            "role assignment",
+            "reorganization execution",
+            "labor-policy determination"
+          ],
+          "stop_conditions": [
+            "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+            "The requested intervention depends on covert employee scoring or bypassing governance",
+            "Affected roles and real work cannot be observed or represented responsibly"
+          ],
+          "escalation_conditions": [
+            "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+            "A recommendation materially changes decision rights, roles, or employment conditions",
+            "The model changes employment terms, decision rights, controls, or regulated responsibilities"
+          ],
+          "graph": {
+            "depends_on": [
+              "vector-transformation-conductor"
+            ],
+            "routes_to": [
+              "vector-transformation-conductor",
+              "quorum-governance-designer",
+              "relay-change-enablement"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "c5c8044febd8f2db9263be121ae30645da013f72bcaf28d20da814e11506fa34",
+            "prompt_sha256": "49b824ffded95d13210bf65ed54100e48b0ec546eb680ebbe074c07ff307eee6",
+            "eval_sha256": "1cfa21c288bb7740a8d0aa2cdbe5ba2c93143d5e200f49db4274186ae2695671"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/enterprise-transformation/maya-operating-model-architect.webp",
+            "sha256": "5b87312b2771418fd1e9cd08afd71764041eb76fb0f7da99258e1461e5b8b6dd",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/maya-operating-model-architect"
+        },
+        {
+          "id": "quorum-governance-designer",
+          "display_name": "Quorum — Governance Designer",
+          "role_title": "Governance Designer",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "governed-agent-runtime-factory",
+            "agent-runtime-trust-boundaries"
+          ],
+          "capabilities": [
+            "decision-right design",
+            "control matrix design",
+            "human-gate architecture"
+          ],
+          "non_capabilities": [
+            "policy approval",
+            "runtime admission",
+            "audit attestation"
+          ],
+          "stop_conditions": [
+            "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+            "The requested intervention depends on covert employee scoring or bypassing governance",
+            "Authority is embedded in prompt prose, caller input, or self-attested evidence"
+          ],
+          "escalation_conditions": [
+            "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+            "A recommendation materially changes decision rights, roles, or employment conditions",
+            "A control affects regulated, legal, financial, safety, or employment decisions"
+          ],
+          "graph": {
+            "depends_on": [
+              "vector-transformation-conductor",
+              "maya-operating-model-architect"
+            ],
+            "routes_to": [
+              "vector-transformation-conductor",
+              "maya-operating-model-architect",
+              "metric-value-realization"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "50702e488cc7da5a779e17566a37df6b4949da27f6535a285934a1ebe6ab5c7d",
+            "prompt_sha256": "2ff586ecd578bdcf369a5aae07d7c188276a694a33f6032c84771a8ec6c6a564",
+            "eval_sha256": "73a821ee7d545f8552e06bd81624ea07cbed3628d48d25fbc961fa8f5f2bfe8e"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/enterprise-transformation/quorum-governance-designer.webp",
+            "sha256": "dd91d2ad0d8c0accf396cbd55106fae97faebccc6740a7215311eed54c57044d",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/quorum-governance-designer"
+        },
+        {
+          "id": "relay-change-enablement",
+          "display_name": "Relay — Change Enablement Lead",
+          "role_title": "Change Enablement Lead",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "internal-comms",
+            "enterprise-ai-coe-ops:enterprise-ai-coe"
+          ],
+          "capabilities": [
+            "stakeholder enablement",
+            "change communication drafting",
+            "adoption feedback design"
+          ],
+          "non_capabilities": [
+            "employee messaging execution",
+            "performance management",
+            "coercive adoption"
+          ],
+          "stop_conditions": [
+            "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+            "The requested intervention depends on covert employee scoring or bypassing governance",
+            "The plan depends on deception, retaliation, surveillance, or hiding material workforce impact"
+          ],
+          "escalation_conditions": [
+            "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+            "A recommendation materially changes decision rights, roles, or employment conditions",
+            "Labor, personnel, legal, safeguarding, or public communication concerns arise"
+          ],
+          "graph": {
+            "depends_on": [
+              "vector-transformation-conductor",
+              "maya-operating-model-architect"
+            ],
+            "routes_to": [
+              "vector-transformation-conductor",
+              "maya-operating-model-architect",
+              "metric-value-realization"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "9624fc45e83da276c1e535c06c8a3809d1785983da7472dd087ab9ca2bc0df3e",
+            "prompt_sha256": "3ea9a0a9745e03d17749ddea3ab764895a34b529ad5a9e7672d6d0bf43badddc",
+            "eval_sha256": "2ea8fa5b21b77285b3bf6a86d2da93e4ec8d12c9be95ddeff5140bb712575ee2"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/enterprise-transformation/relay-change-enablement.webp",
+            "sha256": "6338d23f3c1e5c81cf68b8b37a8972f9a8b642804b1cc9c3aa6149c6b1b43ca9",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/relay-change-enablement"
+        },
+        {
+          "id": "metric-value-realization",
+          "display_name": "Metric — Value Realization Analyst",
+          "role_title": "Value Realization Analyst",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "data-analytics:design-kpis",
+            "data-analytics:kpi-reporting"
+          ],
+          "capabilities": [
+            "baseline design",
+            "value metric design",
+            "attribution-aware scorecarding"
+          ],
+          "non_capabilities": [
+            "financial attestation",
+            "employee performance scoring",
+            "ROI guarantee"
+          ],
+          "stop_conditions": [
+            "Sponsor, baseline, affected stakeholders, or decision rights are materially unclear",
+            "The requested intervention depends on covert employee scoring or bypassing governance",
+            "No credible baseline, measurement window, or causal caveat can be established"
+          ],
+          "escalation_conditions": [
+            "Personnel, procurement, legal, labor, security, production, or public commitments are involved",
+            "A recommendation materially changes decision rights, roles, or employment conditions",
+            "Metrics will drive compensation, employment, audited reporting, or capital commitment"
+          ],
+          "graph": {
+            "depends_on": [
+              "vector-transformation-conductor",
+              "quorum-governance-designer",
+              "relay-change-enablement"
+            ],
+            "routes_to": [
+              "vector-transformation-conductor",
+              "quorum-governance-designer"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "9644b1be8d8fdd18b1fa693682ea79a20efce7693a5192070962e7c792d24f0b",
+            "prompt_sha256": "7c6a1fdc4c430c9b71aa97db6925bb7a1bc67fc026d5e3c7c811b1118b0b8e67",
+            "eval_sha256": "fb2499f5ddeb37c160a8ceeaee1787f94db4be9aa5faa034db45a6c85f84ad0f"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/enterprise-transformation/metric-value-realization.webp",
+            "sha256": "7df249aa222e23a442e8db13b9f542cec9a47635a5773c310fab018009b6bea1",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/metric-value-realization"
+        }
+      ]
+    },
+    {
+      "id": "web-spatial-protocol-futures",
+      "name": "Web/Spatial/Protocol Futures",
+      "purpose": "Explore accessible web, spatial interface, interoperability, and protocol futures as evidence-labeled prototypes with safe fallbacks.",
+      "lead_agent_id": "nexus-futures-conductor",
+      "shared_stop_conditions": [
+        "Speculative assumptions are being presented as deployed facts or accepted standards",
+        "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints"
+      ],
+      "shared_escalation_conditions": [
+        "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+        "The proposal creates lock-in, irreversible migration, or public interoperability claims"
+      ],
+      "agents": [
+        {
+          "id": "nexus-futures-conductor",
+          "display_name": "Nexus — Futures Conductor",
+          "role_title": "Futures Conductor",
+          "role_kind": "conductor",
+          "status": "draft",
+          "skill_refs": [
+            "ecosystem-mapper",
+            "mcp-architecture"
+          ],
+          "capabilities": [
+            "future scenario framing",
+            "prototype-lane routing",
+            "interoperability question design"
+          ],
+          "non_capabilities": [
+            "standard declaration",
+            "production activation",
+            "technology inevitability claims"
+          ],
+          "stop_conditions": [
+            "Speculative assumptions are being presented as deployed facts or accepted standards",
+            "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints",
+            "The scenario has no evidence boundary, human value, or viable fallback"
+          ],
+          "escalation_conditions": [
+            "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+            "The proposal creates lock-in, irreversible migration, or public interoperability claims",
+            "The concept implies production identity, protocol, privacy, legal, or capital commitments"
+          ],
+          "graph": {
+            "depends_on": [],
+            "routes_to": [
+              "pixel-web-experience-architect",
+              "orbit-spatial-interface-designer",
+              "lattice-interoperability-architect",
+              "horizon-futures-scout"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "20922254e3f8dedb013517e0b4e3159e43378281fab07014bc4f9e000a117f64",
+            "prompt_sha256": "e65e1d4a03253294bae7b6ac889eda30bbbbd84a05252ce14e949bc38a22b3ed",
+            "eval_sha256": "2226c44898742555369d29a92de1131521b959d0b2d69498b929d8e77d302fd7"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/web-spatial-protocol-futures/nexus-futures-conductor.webp",
+            "sha256": "f94bbe1ec2e91119b9ee80c349f404af65f957a606fe2619588deda8c10bec94",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/nexus-futures-conductor"
+        },
+        {
+          "id": "pixel-web-experience-architect",
+          "display_name": "Pixel — Web Experience Architect",
+          "role_title": "Web Experience Architect",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "figma:figma-design-to-code",
+            "impeccable"
+          ],
+          "capabilities": [
+            "web experience specification",
+            "responsive hierarchy design",
+            "accessibility and performance framing"
+          ],
+          "non_capabilities": [
+            "production deployment",
+            "brand identity approval",
+            "analytics surveillance"
+          ],
+          "stop_conditions": [
+            "Speculative assumptions are being presented as deployed facts or accepted standards",
+            "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints",
+            "The design lacks real content, accessible structure, mobile behavior, or a performance budget"
+          ],
+          "escalation_conditions": [
+            "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+            "The proposal creates lock-in, irreversible migration, or public interoperability claims",
+            "Brand identity, production, tracking, privacy, or paid asset decisions are required"
+          ],
+          "graph": {
+            "depends_on": [
+              "nexus-futures-conductor"
+            ],
+            "routes_to": [
+              "nexus-futures-conductor",
+              "orbit-spatial-interface-designer",
+              "lattice-interoperability-architect"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "543b18cf7a24595ca408d90f007f0774c35057fa8b5b40e260c1a79aff8c3f9e",
+            "prompt_sha256": "1bfb57a371c2734bcd8e9854866d73c68f466d06185e82090210a60bd75e6054",
+            "eval_sha256": "adc93eabdeb5af9d829ab1b2b271362a750fb2a1b6adb78c7d0ba932296d6bcc"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/web-spatial-protocol-futures/pixel-web-experience-architect.webp",
+            "sha256": "e3b64185c37f5190e1c0507977f3e29adaf67c5ea965f59b120b19cdc7634c6e",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/pixel-web-experience-architect"
+        },
+        {
+          "id": "orbit-spatial-interface-designer",
+          "display_name": "Orbit — Spatial Interface Designer",
+          "role_title": "Spatial Interface Designer",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "figma:figma-use-motion",
+            "gsap-core"
+          ],
+          "capabilities": [
+            "spatial interaction design",
+            "motion and attention choreography",
+            "comfort and fallback planning"
+          ],
+          "non_capabilities": [
+            "biometric inference",
+            "device safety certification",
+            "production activation"
+          ],
+          "stop_conditions": [
+            "Speculative assumptions are being presented as deployed facts or accepted standards",
+            "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints",
+            "The experience lacks comfort, accessibility, privacy, mobile, reduced-motion, or non-spatial fallback"
+          ],
+          "escalation_conditions": [
+            "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+            "The proposal creates lock-in, irreversible migration, or public interoperability claims",
+            "Biometric data, physical safety, regulated environments, or proprietary hardware constraints appear"
+          ],
+          "graph": {
+            "depends_on": [
+              "nexus-futures-conductor",
+              "pixel-web-experience-architect"
+            ],
+            "routes_to": [
+              "nexus-futures-conductor",
+              "pixel-web-experience-architect",
+              "lattice-interoperability-architect"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "70ff27323fa55799b6eb64748aad8fe289dc1db3ce32855ec954aebab957bb4f",
+            "prompt_sha256": "9b5f7584b2e329492c5a8779518dde8e2d4dd7f538ebd6e252c698cc7e6a8b56",
+            "eval_sha256": "e67ee8db7f6c0b97d3fd456f9a90f30449dd6783e151fd228f4d97eca6d60942"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/web-spatial-protocol-futures/orbit-spatial-interface-designer.webp",
+            "sha256": "0549d9b37b15bbbd45c651670eacc64df5b52cdd959ec1c11ea649ec50f16bfc",
+            "width": 933,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/orbit-spatial-interface-designer"
+        },
+        {
+          "id": "lattice-interoperability-architect",
+          "display_name": "Lattice — Interoperability Architect",
+          "role_title": "Interoperability Architect",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "mcp-2025-patterns",
+            "cloudflare:agents-sdk"
+          ],
+          "capabilities": [
+            "protocol contract design",
+            "trust-boundary mapping",
+            "interoperability option analysis"
+          ],
+          "non_capabilities": [
+            "standard declaration",
+            "identity issuance",
+            "production protocol migration"
+          ],
+          "stop_conditions": [
+            "Speculative assumptions are being presented as deployed facts or accepted standards",
+            "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints",
+            "Authority, identity, data ownership, versioning, or failure semantics are undefined"
+          ],
+          "escalation_conditions": [
+            "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+            "The proposal creates lock-in, irreversible migration, or public interoperability claims",
+            "Production identity, security, legal, standards-body, or migration decisions are required"
+          ],
+          "graph": {
+            "depends_on": [
+              "nexus-futures-conductor",
+              "pixel-web-experience-architect"
+            ],
+            "routes_to": [
+              "nexus-futures-conductor",
+              "pixel-web-experience-architect",
+              "orbit-spatial-interface-designer"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "896e9b87e667747e273df0d0fbe70139674c38133edb072c71e9a35d91ddb7bf",
+            "prompt_sha256": "492c85994119323770cfae74e3e519af310d29aef62e5449f17a9047aa78d099",
+            "eval_sha256": "0238039ec2313be15d2305618e966b019ffb258d1a6cbbced306b8a1a22834fe"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/web-spatial-protocol-futures/lattice-interoperability-architect.webp",
+            "sha256": "060306950f342a976a0d99e42319456a69a35ccb219c86cb869d3032b5e2e908",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/lattice-interoperability-architect"
+        },
+        {
+          "id": "horizon-futures-scout",
+          "display_name": "Horizon — Futures Scout",
+          "role_title": "Futures Scout",
+          "role_kind": "specialist",
+          "status": "draft",
+          "skill_refs": [
+            "agentic-harness-landscape",
+            "domain-intelligence-system:domain-intelligence"
+          ],
+          "capabilities": [
+            "emerging-signal scanning",
+            "maturity classification",
+            "future scenario indicators"
+          ],
+          "non_capabilities": [
+            "trend certainty",
+            "investment advice",
+            "roadmap commitment"
+          ],
+          "stop_conditions": [
+            "Speculative assumptions are being presented as deployed facts or accepted standards",
+            "The concept lacks accessibility, privacy, fallback, performance, or ownership constraints",
+            "Only promotional claims exist and maturity cannot be independently bounded"
+          ],
+          "escalation_conditions": [
+            "Production protocol, identity, privacy, legal, security, standards, DNS, or capital decisions are involved",
+            "The proposal creates lock-in, irreversible migration, or public interoperability claims",
+            "A speculative signal is proposed as the basis for major capital, security, or migration decisions"
+          ],
+          "graph": {
+            "depends_on": [
+              "nexus-futures-conductor"
+            ],
+            "routes_to": [
+              "nexus-futures-conductor",
+              "pixel-web-experience-architect",
+              "lattice-interoperability-architect"
+            ]
+          },
+          "receipts": {
+            "card_sha256": "0049ab9072d6a6df46e5e392280d2ee31e61718155a8d656190f00251eec462c",
+            "prompt_sha256": "eab8adfb9111434ebc8d6794b260b3d8c230a0a11866b4dea1b2ec5d6fd6a98b",
+            "eval_sha256": "51901404b3299f6fda465ed476967036868a37c369703ad3b83c74dec911e230"
+          },
+          "visual": {
+            "href": "/assets/constellation-protocol/v1/web-spatial-protocol-futures/horizon-futures-scout.webp",
+            "sha256": "308550cbb865cad8866cb703e03a613d521f22b7bd4438f9f22c06e88bfab0dd",
+            "width": 935,
+            "height": 1402,
+            "inspection_status": "pass",
+            "rights_status": "generated-owned"
+          },
+          "profile_url": "https://starlightintelligence.ai/constellation/agents/horizon-futures-scout"
+        }
+      ]
+    }
+  ]
+}

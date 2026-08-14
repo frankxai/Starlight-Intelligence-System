@@ -1,0 +1,48 @@
+{
+  "schema_version": "starlight.marketplace_pack.v1",
+  "sku": "starlight-constellation",
+  "version": "0.1.0",
+  "publisher": "Starlight Intelligence",
+  "listing": {
+    "marketplace": "starlight-estate",
+    "installation": "AVAILABLE",
+    "authentication": "ON_INSTALL",
+    "category": "Productivity",
+    "source": "./core/plugins/starlight-constellation"
+  },
+  "surfaces": {
+    "story": "https://starlightintelligence.ai/constellation",
+    "protocol": "https://starlightintelligence.org/constellation",
+    "academy": "https://starlightintelligence.academy/constellation-lab"
+  },
+  "artifacts": {
+    "agent_pack": {
+      "path": "assets/agent-pack.manifest.json",
+      "content_digest": "sha256:24b637e9b3e218ec1f702d7553d186c9f0bada188c828535a1a6b22d0a04231c"
+    },
+    "skill_pack": {
+      "path": "assets/skill-pack.manifest.json",
+      "content_digest": "sha256:fd3a579b6ddad0ec164f84345a0fd5610ab367b063db15de3b1558f575b1cdc6"
+    },
+    "capability_pack": {
+      "path": "assets/capability-pack.manifest.json",
+      "content_digest": "sha256:51212fcdbe85433a30949bfb3352761515e6fd4b632939c3634349334b01d31c"
+    },
+    "release_receipt": {
+      "path": "assets/release.manifest.json",
+      "sha256": "8bda697e9239a4c3c0c72bb39e9be9583650c270eca2022e4aee59cfe0a252d1"
+    }
+  },
+  "commercial": {
+    "price": null,
+    "entitlement_required": false,
+    "terms_status": "not_defined",
+    "support_boundary": "Public blueprint composition only"
+  },
+  "truth_contract": {
+    "grants_authority": false,
+    "runtime_admission": "not_included",
+    "live_eval_status": "not_run",
+    "claim": "Structural validation and fixture linkage only; no live model-quality or deployment claim"
+  }
+}
