@@ -99,6 +99,26 @@ describe("Mem0RemoteProvider", () => {
     assert.equal(results[0]?.score, 0.77);
   });
 
+  it("bounds remote recall input before it reaches the shared provider", async () => {
+    let receivedQuery = "";
+    let receivedLimit = 0;
+    const client: Mem0Client = {
+      async addMemory() { return { id: "unused" }; },
+      async searchMemories(input) {
+        receivedQuery = input.query;
+        receivedLimit = input.limit;
+        return [];
+      },
+      async deleteMemory() { return true; },
+    };
+    const provider = new Mem0RemoteProvider({ client });
+
+    await provider.recall({ tenant_id: "tenant_frank", query: "x".repeat(1_000), limit: 500 });
+
+    assert.equal(receivedQuery.length, 512);
+    assert.equal(receivedLimit, 50);
+  });
+
   it("keeps failed remote writes pending so a later flush can retry the derived mirror", async () => {
     let attempts = 0;
     const client: Mem0Client = {

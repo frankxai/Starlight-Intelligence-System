@@ -68,9 +68,13 @@ export class Mem0RemoteProvider implements MemoryProvider {
   }
 
   async recall(request: RecallRequest): Promise<RecallResult[]> {
+    // This is a shared remote accelerator, so cap untrusted request payloads
+    // before they cross the process/network boundary.
+    const query = request.query.slice(0, 512);
+    const limit = Math.min(50, Math.max(1, request.limit ?? 10));
     const rows = await this.client.searchMemories({
-      query: request.query,
-      limit: Math.max(1, request.limit ?? 10),
+      query,
+      limit,
       metadata: { tenant_id: request.tenant_id },
     });
 
