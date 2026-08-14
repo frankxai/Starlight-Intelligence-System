@@ -2,6 +2,7 @@
 
 > Prioritized from the 2026-07-25 system-wide audit. Ordering principle: trust first, then revenue, then reach.
 > Status legend: ☐ open · ◐ in progress (this session) · ☑ done (this session)
+> 2026-08-14: automation-layer audit complete — findings, self-healing playbook, and Frank-only levers live in `AUTOMATION_HEALTH.md` (sibling file). First fix shipped: agentic-ops-hub#42 (off-machine fleet dead-man's switch). frankx.ai#460 (Wave 0 auction trust repair) remains green-and-blocked on the C940 exact-head review status.
 
 ## Wave 0 — Trust repairs (hours each; do before driving any traffic)
 

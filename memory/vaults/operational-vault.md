@@ -743,3 +743,18 @@ Honesty decision recorded: both source repos are MIT-licensed and public, so eve
 Coordination note: website + SIS film/foundry lanes are actively stewarded by sibling sessions with their own check-in loops and pending Frank decisions (taste.md, review approvals, VERCEL_AUTOMATION_BYPASS_SECRET for arcanea #222) — this session stayed off those lanes per the multi-agent protocol. Activation levers all Frank's: LEMON_SQUEEZY_* env vars (frankx.ai), POLAR_* env vars + catalog flips + product zips (income cluster).
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-08-14 - Automation-layer audit: silence reads as health; first dead-man's switch shipped
+
+**Category:** portfolio-ops
+**Confidence:** 0.95
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (three parallel audit agents + first-hand incidents)
+**Related:** `context/empire/AUTOMATION_HEALTH.md`, agentic-ops-hub #42, FrankX `docs/ops/SCHEDULED-ROUTINES.md`, frankx.ai-vercel-website #460
+
+Structural pattern found across the whole automation layer: nearly every liveness monitor is self-referential (runs on the machine it watches), so a dark machine silences its own alarms and event-driven CI stops when pushes stop. Confirmed instances: newsletter-friday's six green-but-void weeks (fixed upstream 2026-08-05), model-arena-daily still firing two audits after its STOP verdict (agents cannot disable web-created routines), arcanea's daily cross-repo sync cron failing 100% then silently ceasing on 2026-07-27, and the C940 exact-head publisher stalling frankx.ai#460 for 3+ days with no SLA and no documentation anywhere in FrankX.
+
+First fix shipped: agentic-ops-hub#42 — scripts/fleet_watch.py + 6-hourly Actions cron checking heartbeats (24h) / ops-ledger sweep (72h) / queue TTLs (new fail-closed item_is_expired + require_ttl), durable-issue sink, 42/42 tests. Its dry-run correctly flagged the three real stale signals (c940 + yoga-book heartbeats, ledger sweep). The template generalizes: scheduled cron off-machine + read-only checks over git-versioned state + durable sink.
+
+CI sweep verdicts: ops-hub and frankx.ai CI healthy; SIS main healthy with two dead guards (sip-starter-release 0 runs ever, content-drift-check only-ever-red); agenticincome's monthly knowledge-freshness cron failed its only firing unactioned; arcanea is the problem repo (3 perma-red pipelines since ~Feb, comment-trigger spam burying main history). Frank-only levers recorded in AUTOMATION_HEALTH.md: disable model-arena-daily, delete duplicate Vercel project starlight-intelligence-system (20/20 ERROR), restart C940 publisher/heartbeats, resolve 6 unpatchable Dependabot pins.
+
+**Built on SIP — Starlight Intelligence Protocol**
