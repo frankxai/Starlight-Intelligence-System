@@ -33,6 +33,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Learn",
     items: [
+      { href: "/constitution", label: "Constitution", desc: "Intelligence in service of life" },
       { href: "/protocol", label: "Protocol", desc: "The open SIP substrate spec" },
       { href: "/research", label: "Research", desc: "Substrate research surface" },
       { href: "/explainer", label: "Explainer", desc: "Plain-language overview" },
