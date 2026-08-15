@@ -1,0 +1,32 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/starlight.run_receipt.v1.json",
+  "schema_version": "starlight.run_receipt.v1",
+  "run_id": "replace-with-run-id",
+  "task_packet_ref": "task-packet.json",
+  "actor_agent_ids": [],
+  "human_owner": "replace-with-accountable-owner",
+  "started_at": "replace-with-rfc3339-timestamp",
+  "completed_at": "replace-with-rfc3339-timestamp",
+  "inputs_digest": "sha256:replace",
+  "artifacts": [],
+  "tool_calls": [],
+  "checks": [],
+  "cost": {
+    "currency": "USD",
+    "amount": 0,
+    "operations": 0
+  },
+  "verifier": {
+    "agent_id": "replace-with-independent-verifier",
+    "verdict": "hold",
+    "live_eval_status": "not_run"
+  },
+  "failures": [],
+  "rollback": {
+    "available": false,
+    "artifact_ref": null,
+    "verified": false
+  },
+  "grants_runtime_authority": false
+}
+

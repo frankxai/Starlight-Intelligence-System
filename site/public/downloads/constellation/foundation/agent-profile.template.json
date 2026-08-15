@@ -1,0 +1,34 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/agent-card.v1.json",
+  "schema_version": "agent-card.v1",
+  "id": "replace-with-agent-id",
+  "version": "0.1.0",
+  "status": "draft",
+  "display_name": "Replace with agent name",
+  "role_kind": "specialist",
+  "purpose": "One bounded outcome this agent owns.",
+  "human_owner": "replace-with-accountable-owner",
+  "capabilities": [],
+  "non_capabilities": [],
+  "inputs": [],
+  "outputs": [],
+  "skill_refs": [],
+  "tool_policy_ref": "tool-policy.json",
+  "memory_policy_ref": "memory-policy.json",
+  "stop_conditions": [],
+  "escalation_conditions": [],
+  "fallback_agent_id": null,
+  "evaluation": {
+    "suite_id": "replace-with-suite-id",
+    "structural_status": "not_run",
+    "live_eval_status": "not_run",
+    "acceptance_threshold": "replace-with-measurable-threshold"
+  },
+  "authority": {
+    "grants_runtime_authority": false,
+    "production_promotion": "human_gated",
+    "external_send": "human_gated",
+    "spend": "human_gated"
+  }
+}
+

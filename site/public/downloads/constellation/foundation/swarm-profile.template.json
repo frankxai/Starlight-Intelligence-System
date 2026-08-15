@@ -1,0 +1,31 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/starlight.swarm_profile.v1.json",
+  "schema_version": "starlight.swarm_profile.v1",
+  "id": "replace-with-swarm-id",
+  "version": "0.1.0",
+  "status": "draft",
+  "mission_brief_ref": "mission-brief.json",
+  "human_owner": "replace-with-accountable-owner",
+  "topology": "conductor-specialists",
+  "active_agent_ids": [],
+  "conductor_agent_id": null,
+  "verifier_agent_id": null,
+  "routing": [],
+  "shared_state": {
+    "owner": "replace-with-state-owner",
+    "write_policy": "append_only",
+    "provenance_required": true
+  },
+  "write_scopes": [],
+  "human_gates": [
+    "credentials",
+    "production_promotion",
+    "external_send",
+    "spend",
+    "destructive_action",
+    "permission_change"
+  ],
+  "fallback_behavior": "degrade_or_hold",
+  "grants_runtime_authority": false
+}
+

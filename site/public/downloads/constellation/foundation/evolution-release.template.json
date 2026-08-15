@@ -1,0 +1,27 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/starlight.evolution_release.v1.json",
+  "schema_version": "starlight.evolution_release.v1",
+  "release_id": "replace-with-release-id",
+  "subject_type": "agent",
+  "subject_id": "replace-with-subject-id",
+  "from_version": "0.1.0",
+  "to_version": "0.2.0",
+  "status": "draft",
+  "capability_delta": [],
+  "boundary_delta": [],
+  "compatibility": [],
+  "migration_steps": [],
+  "evaluation_comparison": {
+    "baseline_receipt_ref": null,
+    "candidate_receipt_ref": null,
+    "live_eval_status": "not_run",
+    "regressions": []
+  },
+  "lineage_refs": [],
+  "rollback_ref": null,
+  "deprecations": [],
+  "retirement_notes": null,
+  "approved_by_human": false,
+  "grants_runtime_authority": false
+}
+

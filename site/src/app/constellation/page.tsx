@@ -69,6 +69,11 @@ const downloads = [
     file: "marketplace-pack.manifest.json",
     description: "The local Starlight Estate listing receipt; installation remains a user action.",
   },
+  {
+    name: "Multi-agent foundation",
+    file: "foundation/foundation-pack.v1.json",
+    description: "Ten system objects, seven control roles, five topology patterns, and public adoption templates.",
+  },
 ];
 
 export default function ConstellationProtocolPage() {

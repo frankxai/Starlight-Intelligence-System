@@ -8,6 +8,7 @@ const STATIC_ROUTES = [
   "",
   "/protocol",
   "/constellation",
+  "/constellation/foundation",
   "/download",
   "/quickstart",
   "/architecture",
@@ -47,7 +48,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === ""
         ? 1.0
-        : path === "/protocol" || path === "/constellation" || path === "/download" || path === "/quickstart" || path === "/research"
+        : path === "/protocol" || path === "/constellation" || path === "/constellation/foundation" || path === "/download" || path === "/quickstart" || path === "/research"
           ? 0.9
           : 0.7,
   }));

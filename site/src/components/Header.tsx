@@ -33,6 +33,7 @@ export function Header() {
         <div className="hidden items-center gap-0.5 min-[1500px]:flex">
           <NavLink href="/protocol">Protocol</NavLink>
           <NavLink href="/constellation">Constellation</NavLink>
+          <NavLink href="/constellation/foundation">Foundation</NavLink>
           <NavLink href="/research">Research</NavLink>
           <NavLink href="/download">Download</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
@@ -60,6 +61,7 @@ export function Header() {
         <div className="hidden items-center gap-1 sm:flex min-[1500px]:hidden">
           <NavLink href="/protocol">Protocol</NavLink>
           <NavLink href="/constellation">Constellation</NavLink>
+          <NavLink href="/constellation/foundation">Foundation</NavLink>
           <NavLink href="/research">Research</NavLink>
           <NavLink href="/download">Download</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
@@ -88,6 +90,7 @@ export function Header() {
           >
             <NavLink href="/protocol">Protocol</NavLink>
             <NavLink href="/constellation">Constellation</NavLink>
+            <NavLink href="/constellation/foundation">Foundation</NavLink>
             <NavLink href="/research">Research</NavLink>
             <NavLink href="/download">Download</NavLink>
             <NavLink href="/quickstart">Quickstart</NavLink>

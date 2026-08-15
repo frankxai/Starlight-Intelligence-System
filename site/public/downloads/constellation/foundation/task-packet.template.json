@@ -1,0 +1,27 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/starlight.task_packet.v1.json",
+  "schema_version": "starlight.task_packet.v1",
+  "task_id": "replace-with-task-id",
+  "mission_ref": "mission-brief.json",
+  "from_agent_id": "replace-with-sender",
+  "to_agent_id": "replace-with-recipient",
+  "human_owner": "replace-with-accountable-owner",
+  "objective": "One bounded unit of work.",
+  "context_refs": [],
+  "inputs": [],
+  "expected_output": {
+    "artifact_type": "replace-with-artifact-type",
+    "acceptance": []
+  },
+  "constraints": [],
+  "privacy_class": "public",
+  "tool_policy_ref": "tool-policy.json",
+  "budget": {
+    "currency": "USD",
+    "hard_cap": 0,
+    "operation_cap": 0
+  },
+  "expires_at": "replace-with-rfc3339-timestamp",
+  "external_side_effects_allowed": false
+}
+

@@ -1,9 +1,9 @@
 {
-  "version": "2026-08-14",
-  "task": "Publish the Starlight Constellation protocol, provenance, graph, packaging, and download ledger on starlightintelligence.org.",
-  "surface": "Responsive static Next.js route at /constellation with nine public manifests and fifty visual receipt rows.",
+  "version": "2026-08-15",
+  "task": "Publish the reusable multi-agent foundation protocol, template set, topology contracts, runtime truth states, and governed fifty-scene visual expansion ledger beside the Starlight Constellation.",
+  "surface": "Responsive static Next.js routes at /constellation and /constellation/foundation with downloadable foundation, template, and fifty-scene manifests.",
   "audience": "Agent builders, operators, protocol adopters, reviewers, and marketplace integrators who need artifact truth before installation.",
-  "first_read": "Fifty named agents are available as an inspectable public projection; every manifest state and authority boundary is explicit.",
+  "first_read": "A swarm is a chain of contracts: ten protocol objects make profiles, authority, work, evidence, packaging, and evolution inspectable.",
   "standards": [
     "design-agent-standards/OUTCOMES.md",
     "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
@@ -74,6 +74,24 @@
       "notes": "Desktop 1440x900 and mobile 390x844 first viewports inspected in the in-app browser."
     },
     {
+      "path_or_url": "site/src/app/constellation/foundation/page.tsx",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Production route inspected at 1440x900 and 390x844 with zero overflow, broken images, duplicate IDs, unnamed controls, or console warnings. Mobile details navigation opened successfully with all seventeen links and visible focus."
+    },
+    {
+      "path_or_url": "https://starlightintelligence.org/downloads/constellation/foundation/foundation-pack.v1.json",
+      "kind": "data",
+      "inspected": true,
+      "notes": "Production JSON resolves with ten protocol objects, seven control roles, five topology patterns, ten canonical swarms, fifty agents, and live_eval_status not_run."
+    },
+    {
+      "path_or_url": "https://starlightintelligence.org/downloads/constellation/foundation/visual-expansion-50.v1.json",
+      "kind": "data",
+      "inspected": true,
+      "notes": "Production JSON resolves with fifty scene briefs, exactly one generated_inspected scene and forty-nine planned scenes, plus the inspected tableau proof URL."
+    },
+    {
       "path_or_url": "site/src/data/constellation-protocol.public.json",
       "kind": "data",
       "inspected": true,
@@ -133,12 +151,12 @@
     {
       "name": "production-build",
       "status": "pass",
-      "evidence": "Next.js 16.2.3 production build compiled 79 routes; /constellation is statically prerendered."
+      "evidence": "The Vercel Next.js 16.2.3 production build compiled 82 routes; /constellation/foundation plus both foundation JSON downloads are statically prerendered."
     },
     {
       "name": "responsive-browser-qa",
       "status": "pass",
-      "evidence": "At 1440x900 and 390x844: zero horizontal overflow, one H1, no duplicate IDs, no nameless controls, all 50 images loaded, and mobile hero and receipt rows remained legible."
+      "evidence": "At 1440x900 and 390x844 the new foundation route has zero horizontal overflow, one H1, no duplicate IDs, no nameless controls, nine direct foundation downloads, and a working seventeen-link mobile details navigation."
     },
     {
       "name": "runtime-console",
@@ -156,6 +174,6 @@
     "The capability and skill manifests are descriptive and do not grant tools.",
     "The plugin is a validated local marketplace source, but installation, runtime admission, and a fresh task remain explicit user/runtime actions.",
     "Live model evaluation and runtime admission have not run.",
-    "A Vercel preview must still be verified before production promotion."
+    "The fifty-scene visual ledger is a production plan, not a completion claim: one image is generated and inspected while forty-nine remain planned."
   ]
 }
