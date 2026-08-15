@@ -25,7 +25,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Build",
     items: [
       { href: "/quickstart", label: "Quickstart", desc: "Five minutes to first context" },
-      { href: "/download", label: "Download", desc: "Fork the SIP Starter" },
+      { href: "/download", label: "Source & Modules", desc: "Build SIP source or get modules" },
       { href: "/cockpit", label: "Cockpit", desc: "The spec-trace console" },
       { href: "/architecture", label: "Architecture", desc: "How the pieces fit together" },
     ],

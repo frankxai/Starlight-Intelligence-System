@@ -186,8 +186,8 @@ const PRODUCT_ROUTES: RouteCard[] = [
   },
   {
     href: "/download",
-    title: "Starter Kits",
-    desc: "Download forkable starter packages for agents, plugins, and SIP use.",
+    title: "Source & Modules",
+    desc: "Build from current source or download published plugin modules.",
     icon: BadgeCheck,
   },
   {
@@ -374,7 +374,7 @@ export default async function HomePage() {
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <DoorLink href="/quickstart" label="Quickstart" />
                 <DoorLink href="/explainer" label="Explainer" />
-                <DoorLink href="/download" label="Starter kits" />
+                <DoorLink href="/download" label="Source & modules" />
               </div>
             </div>
 
@@ -712,10 +712,10 @@ export default async function HomePage() {
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href="/download"
+              href="/quickstart"
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition-micro hover:bg-slate-200"
             >
-              Get the starter
+              Build from source
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
             <Link
