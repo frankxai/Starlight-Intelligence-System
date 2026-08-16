@@ -47,6 +47,9 @@ export function validateRegistry(registry) {
   const failures = [];
 
   if (registry?.schema_version !== "1.0.0") failures.push("schema_version must be 1.0.0");
+  if (registry?.registrar_mode !== "advisory") {
+    failures.push("registrar_mode must remain advisory until the v1.1 release evidence contract lands");
+  }
   if (!isIsoDate(registry?.as_of)) failures.push("as_of must be an ISO date");
   if (registry?.authority?.run_rule !== "exactly-one-orchestration-loop-per-run") {
     failures.push("authority.run_rule must enforce exactly one orchestration loop per run");
@@ -159,6 +162,9 @@ export function validateRegistry(registry) {
     }
 
     if (deployment.lifecycle === "live") {
+      if (registry.registrar_mode === "advisory") {
+        failures.push(`${label}: advisory registries cannot authorize a live lifecycle`);
+      }
       if (surface?.deployment_state !== "production-ready") {
         failures.push(`${label}: live lifecycle requires a production-ready surface`);
       }
