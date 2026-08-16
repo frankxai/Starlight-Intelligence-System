@@ -1,6 +1,8 @@
-# Agent Deployment Registrar
+# Agent Deployment Registrar — Advisory v1.0
 
-The registrar is the operational release gate for every portfolio agent. It turns the July 2026 SIS/Eve strategy into an executable baseline without creating another platform or changing SIP core contracts.
+The registrar is the advisory inventory and architecture guard for portfolio agents. It turns the July 2026 SIS/Eve strategy into an executable Phase 0A baseline without creating another platform or changing SIP core contracts.
+
+It is not yet a legal, security, commercial, or production release authorization. Version 1.0 rejects every `lifecycle: live` record. Version 1.1 must implement the structured release evidence below before the mode can change.
 
 ## Files
 
@@ -21,9 +23,9 @@ node --test test/agent-deployments.test.mjs
 
 No third-party dependency is required.
 
-## Promotion contract
+## Planned v1.1 promotion contract
 
-An entry moves from `idea → spec → spike → pilot → live` only when its evidence changes. A working website, installed SDK, preview deployment or generated demo is not evidence that an agent product is live.
+An entry may move through `idea → spec → spike → pilot` as its evidence changes. A working website, installed SDK, preview deployment or generated demo is not evidence that an agent product is live. Advisory v1.0 cannot promote any entry to `live`.
 
 Before `live`, record:
 
@@ -37,6 +39,8 @@ Before `live`, record:
 8. Intended purpose, forbidden uses, synthetic-content disclosure and incident owner.
 9. Terms, privacy/DPA and rights-attestation evidence appropriate to the product.
 
+The v1.1 schema must type and verify these receipts, including artifact hash/URL, exact commit and environment, owner/reviewer, result, observation time, expiry/freshness, regulatory role/classification, Article 50 disclosures/marking, provider-feature policy, per-period commercial limits, data-processing/retention/deletion policy, tool-effect scope and immutable ledger references. Free-form prose is not sufficient.
+
 ## Architecture boundary
 
 - SIS owns the registry, policy, provenance, budgets, approval and evaluation contracts.
@@ -49,4 +53,3 @@ Before `live`, record:
 The registrar intentionally rejects raw provider-credit resale, plaintext BYOK storage, uncapped managed usage, R5 deployments, sensitive data on preview runtimes and any ambiguous nested orchestration loop.
 
 Built on SIP.
-
