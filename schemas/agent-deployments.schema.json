@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/agent-deployments.schema.json",
+  "title": "Starlight portfolio agent deployment registry",
+  "description": "Operational registry for product surfaces, orchestration runtimes, and governed agent deployments. This is not a SIP core protocol schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "as_of",
+    "authority",
+    "policy_defaults",
+    "surfaces",
+    "runtimes",
+    "deployments"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schema_version": { "const": "1.0.0" },
+    "as_of": { "type": "string", "format": "date" },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["control_plane", "execution_reference", "capability_abi", "business_ledger", "run_rule"],
+      "properties": {
+        "control_plane": { "const": "frankxai/Starlight-Intelligence-System" },
+        "execution_reference": { "const": "frankxai/arcanea-ai-app" },
+        "capability_abi": { "const": "tenant-aware-mcp" },
+        "business_ledger": { "const": "tenant-scoped-postgres-event-ledger" },
+        "run_rule": { "const": "exactly-one-orchestration-loop-per-run" }
+      }
+    },
+    "policy_defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tenant_isolation",
+        "raw_provider_credit_resale",
+        "plaintext_byok_storage",
+        "managed_usage_hard_cap",
+        "approval_risk_classes",
+        "forbidden_autonomous_risk_classes"
+      ],
+      "properties": {
+        "tenant_isolation": { "const": "database-rls-and-storage-prefix" },
+        "raw_provider_credit_resale": { "const": false },
+        "plaintext_byok_storage": { "const": false },
+        "managed_usage_hard_cap": { "const": true },
+        "approval_risk_classes": {
+          "type": "array",
+          "const": ["R3", "R4", "R5"]
+        },
+        "forbidden_autonomous_risk_classes": {
+          "type": "array",
+          "const": ["R5"]
+        }
+      }
+    },
+    "surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/surface" }
+    },
+    "runtimes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/runtime" }
+    },
+    "deployments": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/deployment" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference", "claim", "observed_at"],
+      "properties": {
+        "kind": { "enum": ["github", "vercel", "repository", "decision", "test", "manual"] },
+        "reference": { "type": "string", "minLength": 1 },
+        "claim": { "type": "string", "minLength": 1 },
+        "observed_at": { "type": "string", "format": "date" }
+      }
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "brand",
+        "role",
+        "repository",
+        "production_domains",
+        "deployment_state",
+        "data_boundary",
+        "evidence"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "brand": { "type": "string", "minLength": 1 },
+        "role": {
+          "enum": [
+            "trust-commerce",
+            "creative-production",
+            "storyworld-production",
+            "business-control-plane",
+            "reflective-planning",
+            "internal-operations"
+          ]
+        },
+        "repository": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" },
+        "vercel_project_id": { "type": "string", "minLength": 1 },
+        "production_domains": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "deployment_state": { "enum": ["production-ready", "preview-ready", "error", "unverified"] },
+        "data_boundary": { "enum": ["shared-product-kernel", "isolated-personal-memory", "internal-only"] },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "orchestrator", "loop_owner", "inference_plane", "status", "intended_scope", "constraints"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "orchestrator": {
+          "enum": [
+            "vercel-ai-sdk",
+            "openai-agents-sdk",
+            "claude-agent-sdk",
+            "eve",
+            "chatgpt-host",
+            "google-adk"
+          ]
+        },
+        "loop_owner": { "type": "string", "minLength": 1 },
+        "inference_plane": {
+          "enum": ["vercel-ai-gateway", "direct-openai", "direct-anthropic", "runtime-managed", "host-managed"]
+        },
+        "status": { "enum": ["approved-default", "approved-exception", "pilot-only", "deferred"] },
+        "intended_scope": { "type": "string", "minLength": 1 },
+        "constraints": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "surface_id",
+        "kind",
+        "intended_purpose",
+        "forbidden_uses",
+        "priority",
+        "lifecycle",
+        "runtime_id",
+        "loop_owner",
+        "channels",
+        "capabilities",
+        "risk_class",
+        "autonomy",
+        "credential_mode",
+        "secret_handling",
+        "data_classes",
+        "policy",
+        "commercial",
+        "evidence",
+        "next_gate",
+        "success_metrics"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "surface_id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["customer-product", "internal-agent", "distribution-surface"] },
+        "intended_purpose": { "type": "string", "minLength": 1 },
+        "forbidden_uses": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "priority": { "type": "integer", "minimum": 0, "maximum": 99 },
+        "lifecycle": { "enum": ["idea", "spec", "spike", "pilot", "live", "paused", "retired"] },
+        "runtime_id": { "$ref": "#/$defs/id" },
+        "loop_owner": { "type": "string", "minLength": 1 },
+        "channels": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["web", "chatgpt-plugin", "codex-skill", "slack", "scheduled", "internal-cli"] }
+        },
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "risk_class": { "enum": ["R0", "R1", "R2", "R3", "R4", "R5"] },
+        "autonomy": { "enum": ["read-only", "draft-only", "approval-gated", "bounded-autonomous"] },
+        "credential_mode": { "enum": ["platform-managed", "tenant-byok", "dual", "none"] },
+        "secret_handling": { "enum": ["encrypted-write-only", "server-managed", "not-applicable"] },
+        "data_classes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["public", "account", "confidential", "sensitive"] }
+        },
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["region", "zdr", "retention", "approval_events"],
+          "properties": {
+            "region": { "enum": ["eu-required", "tenant-configurable", "not-applicable"] },
+            "zdr": { "enum": ["required", "preferred", "not-required", "not-applicable"] },
+            "retention": { "type": "string", "minLength": 1 },
+            "approval_events": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": ["publish", "send", "delete", "deploy", "financial", "external-write", "sensitive-memory-promotion"]
+              }
+            }
+          }
+        },
+        "commercial": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["pricing_model", "billable_unit"],
+          "properties": {
+            "pricing_model": {
+              "enum": ["subscription-plus-usage", "subscription", "one-time-pack", "internal", "free-acquisition"]
+            },
+            "billable_unit": { "enum": ["creation-unit", "render-pack", "seat", "workflow-run", "pack", "none"] },
+            "target_median_gross_margin_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+            "managed_provider_envelope_eur": { "type": "number", "minimum": 0 }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/evidence" }
+        },
+        "next_gate": { "type": "string", "minLength": 1 },
+        "success_metrics": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
