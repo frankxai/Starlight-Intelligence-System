@@ -67,7 +67,15 @@ test("live is an evidence claim, not a marketing label", () => {
   const failures = mutated((copy) => {
     copy.deployments.find((item) => item.id === "gencreator-campaign-forge").lifecycle = "live";
   });
+  assert.ok(failures.some((failure) => failure.includes("advisory registries cannot authorize a live lifecycle")));
   assert.ok(failures.some((failure) => failure.includes("live lifecycle requires test evidence")));
+});
+
+test("v1.0 cannot be relabeled as a release gate", () => {
+  const failures = mutated((copy) => {
+    copy.registrar_mode = "release-gate";
+  });
+  assert.ok(failures.some((failure) => failure.includes("must remain advisory")));
 });
 
 test("raw provider-credit resale and uncapped usage cannot be enabled", () => {
