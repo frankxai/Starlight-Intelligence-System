@@ -4,6 +4,7 @@ Generated from `context/empire/agent-deployments.json` on the 2026-08-16 evidenc
 
 ## Current decision
 
+- Registrar mode: `advisory`. Version 1.0 is an inventory and architecture guard, not release authorization; it rejects every `live` claim.
 - Control plane: `frankxai/Starlight-Intelligence-System`.
 - Reference execution product: `frankxai/arcanea-ai-app`.
 - Capability boundary: `tenant-aware-mcp`.
@@ -47,7 +48,7 @@ One run has one loop owner. Vercel AI SDK, OpenAI Agents SDK, Claude Agent SDK, 
 | Reality Architect | `frankxai/realityarchitect` | realityarchitect.ai | production-ready | isolated-personal-memory | Production was READY with ten of ten recent deployments ready and no runtime errors. Current assessment is deterministic and local; no AI SDK runtime is implemented on the audited main branch. |
 | Starlight Intelligence System | `frankxai/Starlight-Intelligence-System` | starlightintelligence.org | production-ready | internal-only | The SIS site subproject was production READY with ten of ten recent deployments ready; the duplicate root deployment is independently broken and should be retired, not treated as a site outage. |
 
-## Enforced portfolio gates
+## Advisory gates enforced now
 
 - Never resell raw provider credits or expose an undifferentiated inference proxy. Sell finished workflows, governed seats, Creation Units, Render Packs and versioned first-party packs.
 - BYOK secrets are encrypted, write-only and configured on a secure account surface. They never enter prompts, client bundles, logs or MCP parameters.
@@ -55,6 +56,7 @@ One run has one loop owner. Vercel AI SDK, OpenAI Agents SDK, Claude Agent SDK, 
 - R3+ work is approval-gated. R5 deployments are rejected. Publish, send, delete, deploy, financial and external-write effects are enforced in the tool layer.
 - Sensitive data requires an EU route, ZDR and the isolated Reality Architect memory boundary. It cannot enter preview runtimes.
 - A deployment cannot move to `live` without production surface evidence and test evidence.
+- Version 1.0 rejects every `live` lifecycle. Version 1.1 must add schema-backed regulatory, provider, data-processing, commercial-limit, tool-effect and immutable release receipts before this can become a release gate.
 
 ## Revenue guardrails
 
