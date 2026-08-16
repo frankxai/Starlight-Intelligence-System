@@ -2,7 +2,9 @@
 
 ## Outcome
 
-Implemented the Phase 0A deployment baseline specified by `docs/strategic/2026-07-18-sis-eve-agent-platform-strategy.md`.
+Implemented the advisory Phase 0A deployment baseline specified by `docs/strategic/2026-07-18-sis-eve-agent-platform-strategy.md`.
+
+Red-team correction: v1.0 is explicitly an inventory and architecture guard, not a release gate. It rejects every `live` lifecycle until a v1.1 structured evidence contract covers regulatory, provider, data-processing, commercial-limit, tool-effect and immutable receipt requirements.
 
 The control-plane decision is unchanged:
 
