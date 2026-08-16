@@ -1,8 +1,13 @@
 # Reality Architecture Genesis
 
-Status: DRAFT / branch proposal
+Status: DRAFT / board MERGE_WITH_FIXES — kernel v0.1.1 in progress
 Date: 2026-08-16
 Owner: Starlight Intelligence System
+Board: `queen/reports/reality-architecture-board-20260816/BOARD_VERDICT.md` (control plane)
+ADR: `docs/reality-architecture/ADR-000-reality-architecture-substrate-map.md`
+Schemas: `docs/reality-architecture/schemas/` (canonical)
+Fixtures: `docs/reality-architecture/fixtures/`
+Validate: `python scripts/validate-reality-architecture-kernel.py`
 
 ## Decision
 
@@ -75,9 +80,11 @@ A structured difference between current state and target/branch state. It must c
 
 A governed plan compiled from a Reality Diff into experiments/actions with owners, prerequisites, costs, gates, expected evidence and rollback/stop conditions.
 
-### Evidence Receipt
+### Actualization Receipt
 
 A durable record binding action -> actor/agent -> tool -> input reference -> output/evidence -> timestamp -> verification result. Never claim a world-state transition without a receipt or an explicit unverifiable label.
+
+**Naming:** This is `ActualizationReceipt` (`schemas/actualization-receipt.schema.json`). It is **not** Foundry package `foundry/contracts/evidence-receipt.schema.json` (forge/package validation).
 
 ## Great Trees as ontology views
 

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "0.1.1",
+  "id": "ra:repo:frankxai/Starlight-Intelligence-System",
+  "type": "repository",
+  "label": "Starlight Intelligence System",
+  "description": "Canonical SIS substrate repository.",
+  "existence": {
+    "realm": "real",
+    "status": "observed",
+    "world_id": "ra:world:frankx-estate"
+  },
+  "epistemics": {
+    "kind": "empirical",
+    "confidence": 1.0,
+    "evidence_ids": ["ra:evidence:gh-repo-sis"]
+  },
+  "provenance": {
+    "source_type": "repository",
+    "source_ids": ["https://github.com/frankxai/Starlight-Intelligence-System"],
+    "created_by": ["human:frank"],
+    "derived_from": [],
+    "transformation": null
+  },
+  "temporal": {
+    "observed_at": "2026-08-16T01:00:00Z",
+    "created_at": "2026-08-16T01:00:00Z",
+    "updated_at": "2026-08-16T01:00:00Z",
+    "state_version": 1
+  },
+  "relations": [
+    {
+      "type": "implements",
+      "target_id": "ra:product:reality-architecture",
+      "confidence": 0.9,
+      "evidence_ids": ["ra:evidence:pr-85"]
+    }
+  ],
+  "capabilities": ["memory-substrate", "schema-host", "mcp"],
+  "values": [
+    {
+      "value_id": "ra:value:evidence-first",
+      "stance": "serves",
+      "holder_id": "human:frank",
+      "weight": 1.0
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "ra:action:read-schemas",
+      "governance": "read_only",
+      "tool_ref": "git"
+    }
+  ],
+  "external_ids": {
+    "github": "frankxai/Starlight-Intelligence-System"
+  }
+}
