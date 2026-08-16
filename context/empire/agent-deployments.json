@@ -1,0 +1,581 @@
+{
+  "$schema": "../../schemas/agent-deployments.schema.json",
+  "schema_version": "1.0.0",
+  "as_of": "2026-08-16",
+  "authority": {
+    "control_plane": "frankxai/Starlight-Intelligence-System",
+    "execution_reference": "frankxai/arcanea-ai-app",
+    "capability_abi": "tenant-aware-mcp",
+    "business_ledger": "tenant-scoped-postgres-event-ledger",
+    "run_rule": "exactly-one-orchestration-loop-per-run"
+  },
+  "policy_defaults": {
+    "tenant_isolation": "database-rls-and-storage-prefix",
+    "raw_provider_credit_resale": false,
+    "plaintext_byok_storage": false,
+    "managed_usage_hard_cap": true,
+    "approval_risk_classes": ["R3", "R4", "R5"],
+    "forbidden_autonomous_risk_classes": ["R5"]
+  },
+  "surfaces": [
+    {
+      "id": "frankx",
+      "brand": "FrankX",
+      "role": "trust-commerce",
+      "repository": "frankxai/frankx.ai-vercel-website",
+      "production_domains": ["frankx.ai", "www.frankx.ai"],
+      "deployment_state": "production-ready",
+      "data_boundary": "shared-product-kernel",
+      "evidence": [
+        {
+          "kind": "vercel",
+          "reference": "project:frankx-ai-vercel-website@dc9d67b",
+          "claim": "Production deployment was READY on main; eight of ten recent deployments were ready and no 24-hour runtime errors were observed.",
+          "observed_at": "2026-08-16"
+        }
+      ]
+    },
+    {
+      "id": "arcanea",
+      "brand": "Arcanea",
+      "role": "storyworld-production",
+      "repository": "frankxai/arcanea-ai-app",
+      "production_domains": [],
+      "deployment_state": "production-ready",
+      "data_boundary": "shared-product-kernel",
+      "evidence": [
+        {
+          "kind": "vercel",
+          "reference": "project:arcanea-ai-app@cebbf42",
+          "claim": "Canonical production deployment was READY, but arcanea.ai was not visible in the connected project domain list; GitHub issue 223 tracks the binding.",
+          "observed_at": "2026-08-16"
+        },
+        {
+          "kind": "github",
+          "reference": "frankxai/arcanea-ai-app#223",
+          "claim": "Canonical domain binding remains an explicit release gate.",
+          "observed_at": "2026-08-16"
+        }
+      ]
+    },
+    {
+      "id": "starlight-ai",
+      "brand": "Starlight Intelligence",
+      "role": "business-control-plane",
+      "repository": "frankxai/starlight-intelligence-web",
+      "production_domains": ["starlightintelligence.ai"],
+      "deployment_state": "production-ready",
+      "data_boundary": "shared-product-kernel",
+      "evidence": [
+        {
+          "kind": "vercel",
+          "reference": "project:starlightintelligence-ai",
+          "claim": "Production was READY with ten of ten recent deployments ready and no runtime errors; repository is currently a marketing surface without an AI runtime.",
+          "observed_at": "2026-08-16"
+        }
+      ]
+    },
+    {
+      "id": "gencreator",
+      "brand": "GenCreator",
+      "role": "creative-production",
+      "repository": "frankxai/gencreator.ai",
+      "production_domains": ["gencreator.ai"],
+      "deployment_state": "production-ready",
+      "data_boundary": "shared-product-kernel",
+      "evidence": [
+        {
+          "kind": "vercel",
+          "reference": "project:gencreator-ai@5987798",
+          "claim": "Production was READY with ten of ten recent deployments ready and no runtime errors.",
+          "observed_at": "2026-08-16"
+        },
+        {
+          "kind": "github",
+          "reference": "frankxai/gencreator.ai:/api/ask",
+          "claim": "Current AI endpoint is product-specific AI SDK 4 with a server-managed Anthropic key and should be migrated through the shared adapter.",
+          "observed_at": "2026-08-16"
+        }
+      ]
+    },
+    {
+      "id": "reality-architect",
+      "brand": "Reality Architect",
+      "role": "reflective-planning",
+      "repository": "frankxai/realityarchitect",
+      "production_domains": ["realityarchitect.ai"],
+      "deployment_state": "production-ready",
+      "data_boundary": "isolated-personal-memory",
+      "evidence": [
+        {
+          "kind": "vercel",
+          "reference": "project:realityarchitect@c199cfd",
+          "claim": "Production was READY with ten of ten recent deployments ready and no runtime errors.",
+          "observed_at": "2026-08-16"
+        },
+        {
+          "kind": "repository",
+          "reference": "frankxai/realityarchitect",
+          "claim": "Current assessment is deterministic and local; no AI SDK runtime is implemented on the audited main branch.",
+          "observed_at": "2026-08-16"
+        }
+      ]
+    },
+    {
+      "id": "sis-operations",
+      "brand": "Starlight Intelligence System",
+      "role": "internal-operations",
+      "repository": "frankxai/Starlight-Intelligence-System",
+      "production_domains": ["starlightintelligence.org"],
+      "deployment_state": "production-ready",
+      "data_boundary": "internal-only",
+      "evidence": [
+        {
+          "kind": "vercel",
+          "reference": "project:site",
+          "claim": "The SIS site subproject was production READY with ten of ten recent deployments ready; the duplicate root deployment is independently broken and should be retired, not treated as a site outage.",
+          "observed_at": "2026-08-16"
+        }
+      ]
+    }
+  ],
+  "runtimes": [
+    {
+      "id": "runtime-vercel-product",
+      "orchestrator": "vercel-ai-sdk",
+      "loop_owner": "ai-sdk-tool-loop-agent",
+      "inference_plane": "vercel-ai-gateway",
+      "status": "approved-default",
+      "intended_scope": "Provider-neutral streaming product agents and structured workflows in Next.js.",
+      "constraints": [
+        "AI Gateway is a model plane, not the authorization or billing ledger.",
+        "Tenant policy must set provider/model allowlists, region, retention and ZDR per request.",
+        "Capabilities execute through the tenant-aware MCP service or typed domain functions."
+      ]
+    },
+    {
+      "id": "runtime-openai-native",
+      "orchestrator": "openai-agents-sdk",
+      "loop_owner": "openai-agents-runner",
+      "inference_plane": "direct-openai",
+      "status": "approved-exception",
+      "intended_scope": "OpenAI-native hosted tools, voice, research, computer-use, handoffs or resumable approvals unavailable through the default runtime.",
+      "constraints": [
+        "Use Responses and Conversations rather than the retiring Assistants API.",
+        "Do not wrap this runner in a Vercel AI SDK or Eve agent loop.",
+        "Persist business truth outside provider sessions."
+      ]
+    },
+    {
+      "id": "runtime-claude-production",
+      "orchestrator": "claude-agent-sdk",
+      "loop_owner": "claude-agent-sdk-session",
+      "inference_plane": "direct-anthropic",
+      "status": "approved-exception",
+      "intended_scope": "Internal repository, filesystem, shell, research and artifact-production workers.",
+      "constraints": [
+        "Use commercial Anthropic API-key authentication; never repurpose Claude Pro or Max OAuth.",
+        "Every writing worker receives an isolated worktree or sandbox.",
+        "Deploy, publish, send, delete and financial actions require external approval enforcement."
+      ]
+    },
+    {
+      "id": "runtime-eve-pilot",
+      "orchestrator": "eve",
+      "loop_owner": "eve-session-runtime",
+      "inference_plane": "vercel-ai-gateway",
+      "status": "pilot-only",
+      "intended_scope": "Durable scheduled or long-running internal backend-agent pilots.",
+      "constraints": [
+        "Eve remains preview software and is isolated behind a runtime adapter.",
+        "No sensitive customer data, payments or irreversible autonomous actions.",
+        "The current eve-slack-agent deployment is an untouched template, not production infrastructure."
+      ]
+    },
+    {
+      "id": "runtime-chatgpt-plugin",
+      "orchestrator": "chatgpt-host",
+      "loop_owner": "chatgpt-host",
+      "inference_plane": "host-managed",
+      "status": "approved-exception",
+      "intended_scope": "Portfolio distribution through one plugin family: portable skills, authenticated MCP tools and optional MCP Apps UI.",
+      "constraints": [
+        "OAuth-link to a Starlight account; never collect provider keys, passwords, PCI or PHI through MCP parameters.",
+        "Use portable MCP Apps UI before ChatGPT-only extensions.",
+        "The MCP service enforces entitlement, tenant policy, spend caps and approval."
+      ]
+    },
+    {
+      "id": "runtime-google-adk",
+      "orchestrator": "google-adk",
+      "loop_owner": "google-adk-runner",
+      "inference_plane": "runtime-managed",
+      "status": "deferred",
+      "intended_scope": "Only a future Vertex-native graph runtime or independently operated A2A agent requirement.",
+      "constraints": [
+        "Do not implement until a measured Vertex, A2A or graph-runtime requirement exists.",
+        "MCP remains the current capability ABI."
+      ]
+    }
+  ],
+  "deployments": [
+    {
+      "id": "gencreator-campaign-forge",
+      "name": "GenCreator Campaign Forge",
+      "surface_id": "gencreator",
+      "kind": "customer-product",
+      "intended_purpose": "Turn an approved creator brief into editable campaign copy, image/video render jobs, channel variants and a provenance-backed export bundle.",
+      "forbidden_uses": [
+        "Non-consensual face, voice or likeness generation.",
+        "Unlimited image or video generation.",
+        "Raw provider proxy or transferable provider-credit resale."
+      ],
+      "priority": 1,
+      "lifecycle": "spec",
+      "runtime_id": "runtime-vercel-product",
+      "loop_owner": "ai-sdk-tool-loop-agent",
+      "channels": ["web"],
+      "capabilities": ["campaign-brief", "copy-variants", "image-render", "video-render", "asset-export", "provenance-record"],
+      "risk_class": "R1",
+      "autonomy": "draft-only",
+      "credential_mode": "dual",
+      "secret_handling": "encrypted-write-only",
+      "data_classes": ["account", "confidential"],
+      "policy": {
+        "region": "eu-required",
+        "zdr": "preferred",
+        "retention": "30-day-run-metadata-user-controlled-artifacts",
+        "approval_events": ["publish", "send", "external-write"]
+      },
+      "commercial": {
+        "pricing_model": "subscription-plus-usage",
+        "billable_unit": "creation-unit",
+        "target_median_gross_margin_pct": 75,
+        "managed_provider_envelope_eur": 15
+      },
+      "evidence": [
+        {
+          "kind": "decision",
+          "reference": "2026-08-16-product-kernel-decision",
+          "claim": "Selected as the first paid wedge because creator production has immediate recurring usage and lower regulatory exposure than sensitive or decision-support products.",
+          "observed_at": "2026-08-16"
+        }
+      ],
+      "next_gate": "Ship one billing-gated workflow with tenant isolation, a hard provider budget, a rights attestation and synthetic-content provenance.",
+      "success_metrics": ["paid-activation-rate", "successful-export-rate", "provider-cost-per-export", "median-and-p95-gross-margin", "30-day-retention"]
+    },
+    {
+      "id": "arcanea-worldforge",
+      "name": "Arcanea Worldforge",
+      "surface_id": "arcanea",
+      "kind": "customer-product",
+      "intended_purpose": "Create and maintain storyworld, character, lore and scene artifacts with continuity checks and licensed first-party creative packs.",
+      "forbidden_uses": [
+        "Unauthorized trademark, celebrity, mascot, voice or likeness packs.",
+        "Claims of exclusive ownership over model outputs.",
+        "Full reproduction of copyrighted works."
+      ],
+      "priority": 2,
+      "lifecycle": "spec",
+      "runtime_id": "runtime-vercel-product",
+      "loop_owner": "ai-sdk-tool-loop-agent",
+      "channels": ["web", "codex-skill"],
+      "capabilities": ["world-bible", "character-forge", "lore-retrieval", "continuity-check", "scene-draft", "pack-install"],
+      "risk_class": "R1",
+      "autonomy": "draft-only",
+      "credential_mode": "dual",
+      "secret_handling": "encrypted-write-only",
+      "data_classes": ["account", "confidential"],
+      "policy": {
+        "region": "eu-required",
+        "zdr": "preferred",
+        "retention": "user-controlled-project-artifacts",
+        "approval_events": ["publish", "external-write"]
+      },
+      "commercial": {
+        "pricing_model": "subscription-plus-usage",
+        "billable_unit": "creation-unit",
+        "target_median_gross_margin_pct": 75,
+        "managed_provider_envelope_eur": 15
+      },
+      "evidence": [
+        {
+          "kind": "repository",
+          "reference": "frankxai/arcanea-ai-app",
+          "claim": "Richest existing product substrate: AI SDK 6, provider adapters, BYOK, Supabase, Stripe, FAL and internal MCP packages.",
+          "observed_at": "2026-08-16"
+        }
+      ],
+      "next_gate": "Repair the Arcanea domain binding, route timeouts and malformed-YAML errors, then expose one hosted tenant-aware MCP workflow.",
+      "success_metrics": ["weekly-active-worlds", "continuity-eval-pass-rate", "pack-attach-rate", "provider-cost-per-artifact", "90-day-retention"]
+    },
+    {
+      "id": "starlight-company-brain",
+      "name": "Starlight Company Brain",
+      "surface_id": "starlight-ai",
+      "kind": "customer-product",
+      "intended_purpose": "Give teams cited answers, governed agents, versioned skills, evals, approvals and auditable execution over explicitly connected company sources.",
+      "forbidden_uses": [
+        "Employment, education, credit, insurance, legal, medical or other high-impact automated decisions.",
+        "Unbounded write access to customer systems.",
+        "Cross-tenant retrieval or training."
+      ],
+      "priority": 3,
+      "lifecycle": "spec",
+      "runtime_id": "runtime-vercel-product",
+      "loop_owner": "ai-sdk-tool-loop-agent",
+      "channels": ["web", "slack"],
+      "capabilities": ["source-connect", "cited-answer", "brief-draft", "agent-registry", "skill-registry", "eval-run", "approval-request", "audit-export"],
+      "risk_class": "R2",
+      "autonomy": "approval-gated",
+      "credential_mode": "tenant-byok",
+      "secret_handling": "encrypted-write-only",
+      "data_classes": ["account", "confidential"],
+      "policy": {
+        "region": "tenant-configurable",
+        "zdr": "required",
+        "retention": "tenant-policy-with-export-and-deletion",
+        "approval_events": ["publish", "send", "delete", "deploy", "financial", "external-write"]
+      },
+      "commercial": {
+        "pricing_model": "subscription",
+        "billable_unit": "seat",
+        "target_median_gross_margin_pct": 80
+      },
+      "evidence": [
+        {
+          "kind": "decision",
+          "reference": "docs/strategic/2026-07-18-sis-eve-agent-platform-strategy.md",
+          "claim": "Company Brain and Agentic OS are the first sellable service/delivery workspace; SIS remains the control plane rather than becoming another runtime.",
+          "observed_at": "2026-08-16"
+        }
+      ],
+      "next_gate": "Implement tenant/RBAC, provider policy, immutable usage/cost events, approvals and an audit export before inviting a design partner.",
+      "success_metrics": ["time-to-first-cited-answer", "citation-grounding-rate", "eval-pass-rate", "approved-run-completion-rate", "net-revenue-retention"]
+    },
+    {
+      "id": "reality-architect-blueprint",
+      "name": "Reality Architect Blueprint",
+      "surface_id": "reality-architect",
+      "kind": "customer-product",
+      "intended_purpose": "Convert a user's stated ambition into a private, editable 90-day plan, reflection prompts and weekly evidence reviews.",
+      "forbidden_uses": [
+        "Therapy, diagnosis, treatment or crisis support.",
+        "Guaranteed manifestation, financial, health or life outcomes.",
+        "Manipulation, vulnerability exploitation or significant automated decisions.",
+        "Cross-brand personal memory without explicit artifact-level promotion."
+      ],
+      "priority": 4,
+      "lifecycle": "spec",
+      "runtime_id": "runtime-vercel-product",
+      "loop_owner": "ai-sdk-tool-loop-agent",
+      "channels": ["web"],
+      "capabilities": ["goal-clarify", "blueprint-draft", "weekly-reflection", "evidence-review", "private-memory"],
+      "risk_class": "R2",
+      "autonomy": "draft-only",
+      "credential_mode": "dual",
+      "secret_handling": "encrypted-write-only",
+      "data_classes": ["account", "sensitive"],
+      "policy": {
+        "region": "eu-required",
+        "zdr": "required",
+        "retention": "sensitive-mode-ephemeral-otherwise-user-controlled",
+        "approval_events": ["sensitive-memory-promotion", "external-write"]
+      },
+      "commercial": {
+        "pricing_model": "subscription",
+        "billable_unit": "seat",
+        "target_median_gross_margin_pct": 80
+      },
+      "evidence": [
+        {
+          "kind": "repository",
+          "reference": "frankxai/realityarchitect",
+          "claim": "The current deterministic assessment is a safe acquisition base; an AI layer is not yet implemented.",
+          "observed_at": "2026-08-16"
+        }
+      ],
+      "next_gate": "Complete isolated private-memory, sensitive-mode retention, deletion fan-out, crisis-language routing and public-claim review before adding AI.",
+      "success_metrics": ["blueprint-completion-rate", "weekly-review-retention", "user-reported-plan-clarity", "deletion-sla-pass-rate", "safety-escalation-precision"]
+    },
+    {
+      "id": "frankx-portfolio-guide",
+      "name": "FrankX Portfolio Guide",
+      "surface_id": "frankx",
+      "kind": "customer-product",
+      "intended_purpose": "Help visitors choose the right first-party workflow, pack, course or product and create an editable starting brief.",
+      "forbidden_uses": [
+        "A sixth independent agent runtime.",
+        "Unreviewed personalized financial, medical or legal advice.",
+        "Silent cross-site tracking or memory."
+      ],
+      "priority": 5,
+      "lifecycle": "spec",
+      "runtime_id": "runtime-vercel-product",
+      "loop_owner": "ai-sdk-tool-loop-agent",
+      "channels": ["web"],
+      "capabilities": ["portfolio-route", "brief-draft", "pack-discovery", "course-discovery", "account-link"],
+      "risk_class": "R1",
+      "autonomy": "draft-only",
+      "credential_mode": "platform-managed",
+      "secret_handling": "server-managed",
+      "data_classes": ["public", "account"],
+      "policy": {
+        "region": "eu-required",
+        "zdr": "preferred",
+        "retention": "session-unless-user-saves-brief",
+        "approval_events": ["external-write"]
+      },
+      "commercial": {
+        "pricing_model": "free-acquisition",
+        "billable_unit": "none"
+      },
+      "evidence": [
+        {
+          "kind": "repository",
+          "reference": "frankxai/frankx.ai-vercel-website",
+          "claim": "The site already contains AI SDK 6, Gateway, Stripe and a custom BYOK route, but should remain a trust and commerce surface rather than own the shared runtime.",
+          "observed_at": "2026-08-16"
+        }
+      ],
+      "next_gate": "Replace stale hard-coded BYOK model identifiers with the shared model-policy registry and route every recommendation to an evidence-backed catalog entry.",
+      "success_metrics": ["qualified-product-click-rate", "brief-save-rate", "paid-conversion-rate", "recommendation-grounding-rate"]
+    },
+    {
+      "id": "portfolio-chatgpt-plugin",
+      "name": "Starlight Portfolio Plugin",
+      "surface_id": "sis-operations",
+      "kind": "distribution-surface",
+      "intended_purpose": "Publish one portfolio plugin family that lets ChatGPT and Codex discover approved skills and invoke authenticated, tenant-aware MCP tools.",
+      "forbidden_uses": [
+        "Separate backends per brand.",
+        "Collection of provider keys, passwords, PCI or PHI in chat or tool parameters.",
+        "Financial transactions inside ChatGPT."
+      ],
+      "priority": 6,
+      "lifecycle": "spec",
+      "runtime_id": "runtime-chatgpt-plugin",
+      "loop_owner": "chatgpt-host",
+      "channels": ["chatgpt-plugin", "codex-skill"],
+      "capabilities": ["portfolio-discovery", "skill-install", "account-oauth", "entitlement-check", "governed-tool-call"],
+      "risk_class": "R1",
+      "autonomy": "draft-only",
+      "credential_mode": "none",
+      "secret_handling": "not-applicable",
+      "data_classes": ["public", "account"],
+      "policy": {
+        "region": "eu-required",
+        "zdr": "preferred",
+        "retention": "tool-metadata-only-under-account-policy",
+        "approval_events": ["external-write"]
+      },
+      "commercial": {
+        "pricing_model": "subscription",
+        "billable_unit": "seat",
+        "target_median_gross_margin_pct": 80
+      },
+      "evidence": [
+        {
+          "kind": "github",
+          "reference": "portfolio-code-search@2026-08-16",
+          "claim": "No executable ChatGPT App, Apps SDK integration, window.openai extension or hosted MCP handler was found in the target repositories.",
+          "observed_at": "2026-08-16"
+        }
+      ],
+      "next_gate": "Deploy a read-only Streamable HTTP MCP server with OAuth, entitlement checks, privacy policy, test account and MCP Inspector receipt.",
+      "success_metrics": ["oauth-link-completion", "successful-tool-call-rate", "paid-account-attach-rate", "policy-denial-correctness"]
+    },
+    {
+      "id": "internal-production-studio",
+      "name": "Internal Production Studio",
+      "surface_id": "sis-operations",
+      "kind": "internal-agent",
+      "intended_purpose": "Use isolated Claude Agent SDK workers for bounded repository, research, asset and release-draft jobs over shared governed tools.",
+      "forbidden_uses": [
+        "Shared writing worktrees.",
+        "Claude consumer-plan OAuth or rate-limit repurposing.",
+        "Unapproved deploy, publish, send, delete or financial actions."
+      ],
+      "priority": 7,
+      "lifecycle": "spec",
+      "runtime_id": "runtime-claude-production",
+      "loop_owner": "claude-agent-sdk-session",
+      "channels": ["internal-cli"],
+      "capabilities": ["repo-inspect", "isolated-edit", "test-run", "research-brief", "artifact-draft", "pull-request-draft"],
+      "risk_class": "R3",
+      "autonomy": "approval-gated",
+      "credential_mode": "platform-managed",
+      "secret_handling": "server-managed",
+      "data_classes": ["public", "confidential"],
+      "policy": {
+        "region": "tenant-configurable",
+        "zdr": "preferred",
+        "retention": "run-receipt-durable-raw-context-minimized",
+        "approval_events": ["publish", "send", "delete", "deploy", "financial", "external-write"]
+      },
+      "commercial": {
+        "pricing_model": "internal",
+        "billable_unit": "none"
+      },
+      "evidence": [
+        {
+          "kind": "github",
+          "reference": "portfolio-code-search@2026-08-16",
+          "claim": "No executable Claude Agent SDK dependency was found; existing matches are documentation, skills and one architecture prototype declaration.",
+          "observed_at": "2026-08-16"
+        }
+      ],
+      "next_gate": "Implement one isolated-worktree worker, route tools through the shared MCP service and require a human-approved draft PR receipt.",
+      "success_metrics": ["accepted-draft-pr-rate", "verification-pass-rate", "human-review-minutes-saved", "unauthorized-write-count"]
+    },
+    {
+      "id": "eve-repo-steward",
+      "name": "Eve Repository Steward",
+      "surface_id": "sis-operations",
+      "kind": "internal-agent",
+      "intended_purpose": "Run scheduled repository-health audits and prepare non-destructive issue or pull-request drafts with durable resumability.",
+      "forbidden_uses": [
+        "Sensitive customer data.",
+        "Autonomous merge, deploy, delete or payment actions.",
+        "Promotion of the untouched Slack template as portfolio infrastructure."
+      ],
+      "priority": 8,
+      "lifecycle": "spike",
+      "runtime_id": "runtime-eve-pilot",
+      "loop_owner": "eve-session-runtime",
+      "channels": ["scheduled", "slack"],
+      "capabilities": ["repo-health", "dependency-audit", "issue-draft", "pull-request-draft", "schedule-run", "run-resume"],
+      "risk_class": "R3",
+      "autonomy": "approval-gated",
+      "credential_mode": "platform-managed",
+      "secret_handling": "server-managed",
+      "data_classes": ["public", "confidential"],
+      "policy": {
+        "region": "eu-required",
+        "zdr": "preferred",
+        "retention": "run-receipt-durable-working-files-expire",
+        "approval_events": ["publish", "delete", "deploy", "external-write"]
+      },
+      "commercial": {
+        "pricing_model": "internal",
+        "billable_unit": "none"
+      },
+      "evidence": [
+        {
+          "kind": "vercel",
+          "reference": "project:eve-slack-agent",
+          "claim": "One production Eve deployment is READY, but the repository remains the original Slack starter and proves installation only.",
+          "observed_at": "2026-08-16"
+        },
+        {
+          "kind": "decision",
+          "reference": "docs/strategic/2026-07-18-sis-eve-agent-platform-strategy.md",
+          "claim": "Repository Steward is the selected conditional Eve proof after the registrar baseline.",
+          "observed_at": "2026-08-16"
+        }
+      ],
+      "next_gate": "Run read-only against one repository, measure completion, retry cost and intervention rate, and keep all writes as approval-gated drafts.",
+      "success_metrics": ["scheduled-run-completion", "false-positive-rate", "human-intervention-rate", "cost-per-audit", "unauthorized-write-count"]
+    }
+  ]
+}
