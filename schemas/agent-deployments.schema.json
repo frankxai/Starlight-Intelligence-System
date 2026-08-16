@@ -8,6 +8,7 @@
   "required": [
     "$schema",
     "schema_version",
+    "registrar_mode",
     "as_of",
     "authority",
     "policy_defaults",
@@ -18,6 +19,10 @@
   "properties": {
     "$schema": { "type": "string", "minLength": 1 },
     "schema_version": { "const": "1.0.0" },
+    "registrar_mode": {
+      "const": "advisory",
+      "description": "Version 1.0 is an inventory and architecture guard. It cannot authorize a live release."
+    },
     "as_of": { "type": "string", "format": "date" },
     "authority": {
       "type": "object",
