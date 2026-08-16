@@ -1,6 +1,7 @@
 {
   "$schema": "../../schemas/agent-deployments.schema.json",
   "schema_version": "1.0.0",
+  "registrar_mode": "advisory",
   "as_of": "2026-08-16",
   "authority": {
     "control_plane": "frankxai/Starlight-Intelligence-System",
