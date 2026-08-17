@@ -49,6 +49,16 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Default compression — Vercel sets this independently, but explicit is better.
   compress: true,
+  // Allow Next.js Image Optimization for GitHub avatars used in vault registry.
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "github.com",
+        pathname: "/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {
