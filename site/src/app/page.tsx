@@ -77,7 +77,7 @@ const SYSTEM_PLANES: SystemPlane[] = [
   },
   {
     title: "Durable Memory",
-    desc: "Six semantic vaults and a spatial palace that every agent reads before acting and writes after — context that survives the session.",
+    desc: "One public vault and a spatial palace that every agent reads before acting and writes after — context that survives the session.",
     icon: Database,
     accent: "text-fuchsia-400",
   },
@@ -541,7 +541,7 @@ export default async function HomePage() {
           <p className="mt-4 text-base leading-8 text-slate-300">
             The Horizon vault is the counterweight: letters to the future,
             kept public and machine-readable, addressed to whatever reads them
-            next. It is one of six vaults, and the only one that is not about
+            next. It is the public vault, and the only one that is not about
             work. Writing them is not magical thinking — it is the discipline
             of pointing the architecture at what we want intelligence to
             become.

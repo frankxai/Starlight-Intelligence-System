@@ -15,7 +15,7 @@
   },
   "version": "0.3.0",
   "ledger_started": "2026-06-10",
-  "last_updated": "2026-07-28",
+  "last_updated": "2026-08-17",
   "metrics": {
     "registered_agents": {
       "value": 144,
@@ -50,12 +50,12 @@
       "notes": "Skills defined as a single flat file skills/{domain}/{skill-name}.md — the repo uses a mixed layout, both formats are canonical."
     },
     "starlight_vaults": {
-      "value": 6,
-      "last_verified": "2026-07-27",
-      "source": "memory/vaults/ directory listing",
+      "value": 1,
+      "last_verified": "2026-08-17",
+      "source": "/api/vaults endpoint (public vault registry)",
       "ownership": "built",
       "stale": false,
-      "notes": "strategic, technical, creative, operational, wisdom, horizon."
+      "notes": "Public vault count only. Private ~/.starlight/ categories (strategic, technical, creative, operational, wisdom, horizon) are not public vaults."
     },
     "horizon_letters": {
       "value": 15,

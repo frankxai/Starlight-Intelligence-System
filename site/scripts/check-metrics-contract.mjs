@@ -40,9 +40,12 @@ const agentCount = await deriveAgentCount();
 const skillRules = JSON.parse(
   await fs.readFile(path.join(repoRoot, "skills", "skill-rules.json"), "utf8"),
 ).rules;
-const vaultFiles = (await fs.readdir(path.join(repoRoot, "memory", "vaults"))).filter(
-  (name) => name.endsWith("-vault.md"),
+const vaultRegistry = JSON.parse(
+  await fs.readFile(path.join(repoRoot, "vault-registry.json"), "utf8"),
 );
+const publicVaults = Array.isArray(vaultRegistry.vaults)
+  ? vaultRegistry.vaults
+  : [];
 const horizonLetters = (await fs.readFile(
   path.join(repoRoot, "public-vault", "horizon.jsonl"),
   "utf8",
@@ -51,7 +54,7 @@ const horizonLetters = (await fs.readFile(
 const observed = {
   registered_agents: agentCount,
   skill_activation_rules: skillRules.length,
-  starlight_vaults: vaultFiles.length,
+  starlight_vaults: publicVaults.length,
   horizon_letters: horizonLetters,
 };
 
