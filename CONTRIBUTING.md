@@ -162,10 +162,44 @@ the issue tracker.
 
 ---
 
+## Horizon Vault and public gardens
+
+Horizon is the public, append-only values vault. Agents cannot write it
+directly. Local `~/.starlight/vaults/` is never a contribution.
+
+### A. Canonical letter
+
+Append one entry to `memory/vaults/horizon-vault.md` using the template
+in that file. PR title: `horizon: {Your Title}`. Include hope **and**
+reasoning. See also `docs/starlight-note-spec.md`.
+
+### B. Public wish ledger
+
+Append one JSONL line in
+[frankxai/starlight-horizon-dataset](https://github.com/frankxai/starlight-horizon-dataset)
+under `entries/YYYY-MM/`. There is no published CLI.
+
+### C. Your own public garden
+
+1. Copy `templates/public-vault/` to `public-vault/` in your fork (or
+   point the registry at another public repo).
+2. Replace placeholders. Empty category files are fine.
+3. Add one row to `vault-registry.json` (`slug` is a person, not a
+   vault name — `/vaults/horizon` will 404).
+4. Run `node scripts/validate-public-vault.mjs`.
+5. PR title: `vault: add {slug}`.
+
+The site fetches GitHub files listed in the registry. Mark signed
+future-facing Horizon entries `"benediction": true` to appear on
+`/benediction`.
+
+---
+
 ## What we won't merge
 
 - Changes that introduce hardcoded operator-specific paths (the Tier 2
   portability pass de-hardcoded them; don't reintroduce).
+- Private operator memory (`~/.starlight/`) pasted into `public-vault/`.
 - Changes that put instance state at repo root (use `private/` per the
   privacy-split contract).
 - Test fixtures with real secrets in shape-recognized formats (build
