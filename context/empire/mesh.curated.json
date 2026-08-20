@@ -17,8 +17,10 @@
   },
   "sections": [
     { "key": "substrate", "title": "Substrate & orchestration" },
+    { "key": "memory", "title": "Memory & second-brain layers" },
     { "key": "skills-libraries", "title": "Skills libraries (markdown)" },
     { "key": "runtime", "title": "Code-runtime engines" },
+    { "key": "operations", "title": "Fleet operations & operator surfaces" },
     { "key": "canon", "title": "Canon / schema layers" },
     { "key": "discovery", "title": "Discovery lists (should be generated, not hand-written)" },
     { "key": "income", "title": "Income / business cluster" },
@@ -45,11 +47,64 @@
     },
     {
       "name": "agentic-ops-hub",
-      "section": "substrate",
-      "role": "config-control-plane",
+      "section": "operations",
+      "role": "public-doctrine-sync",
       "manifests": ["AGENTS.md", "scripts/sync-agent-rules.mjs", "ECOSYSTEM.md"],
       "provides": ["doctrine-sync"],
-      "note": "owns doctrine-sync for the income cluster; agentic-business-os should consume it"
+      "canonical_source": "agentic-ops",
+      "note": "public templates and doctrine sync only; private fleet state, ledgers, and receipts belong in agentic-ops"
+    },
+    {
+      "name": "starlight-agentic-os",
+      "section": "substrate",
+      "role": "pack-program-control-plane",
+      "depends_on": ["Starlight-Intelligence-System", "starlight-agent-skills"],
+      "provides": ["pack-registry", "certification", "compatibility", "distribution"],
+      "note": "tracks and certifies packages; it does not own live fleet configuration or runtime execution"
+    },
+    {
+      "name": "agentic-operating-system-standard",
+      "section": "canon",
+      "role": "public-agentic-os-standard",
+      "provides": ["schemas", "modules", "validation", "examples"],
+      "note": "canonical public standard; never stores live fleet state"
+    },
+
+    {
+      "name": "starlight-memory",
+      "section": "memory",
+      "role": "memory-implementation-package",
+      "depends_on": ["Starlight-Intelligence-System"],
+      "provides": ["typed-memory-api", "provider-router", "local-core", "mcp", "projection-contracts"],
+      "note": "public implementation and projection plane; SIS owns policy/contracts and the private vault owns evidence/deletion truth"
+    },
+    {
+      "name": "starlight-private-memory",
+      "section": "memory",
+      "role": "private-evidence-vault",
+      "visibility": "private",
+      "provides": ["consent", "acl", "retention", "deletion-ledger", "allowlisted-projections"]
+    },
+    {
+      "name": "starlight-memory-vault",
+      "section": "memory",
+      "role": "machine-episodic-memory",
+      "visibility": "private",
+      "note": "cross-machine coding-agent memory; namespace separately from human-curated and hard-private evidence"
+    },
+    {
+      "name": "second-brain-vault",
+      "section": "memory",
+      "role": "human-curated-knowledge-instance",
+      "visibility": "private",
+      "depends_on": ["second-brain-os"]
+    },
+    {
+      "name": "starlight-knowledge-tree",
+      "section": "memory",
+      "role": "knowledge-graph-projection",
+      "canonical_source": "starlight-memory",
+      "note": "retain only independently valuable graph/query UI; projections are rebuildable and never evidence authority"
     },
 
     {
@@ -104,6 +159,13 @@
       "note": "definitions live in code, not markdown — outside the markdown counting contract"
     },
     {
+      "name": "starlight-gravity-engine",
+      "section": "runtime",
+      "role": "domain-community-engine",
+      "depends_on": ["Starlight-Intelligence-System"],
+      "note": "downstream domain engine; does not own orchestration, memory, or protocol authority"
+    },
+    {
       "name": "starlight-swarm",
       "section": "runtime",
       "role": "swarm-runtime",
@@ -113,13 +175,102 @@
       "name": "starlight-evals",
       "section": "runtime",
       "role": "eval-harness",
-      "manifests": ["routing-table.json", "lanes.json"]
+      "manifests": ["routing-table.json", "lanes.json"],
+      "status": "promote-to-independent-authority",
+      "note": "refresh public scorecards; SIS should consume versioned eval releases and retain migration receipts"
     },
     {
       "name": "second-brain-os",
       "section": "runtime",
-      "role": "substrate-skill",
-      "manifests": ["mcp.json"]
+      "role": "second-brain-experience",
+      "manifests": ["mcp.json"],
+      "depends_on": ["Starlight-Intelligence-System", "starlight-memory"],
+      "note": "human knowledge product and public template; not a competing memory provider or evidence authority"
+    },
+    {
+      "name": "starlight-agent-lab",
+      "section": "runtime",
+      "role": "quarantined-upstream-lab",
+      "status": "repurpose-or-archive-next-cycle",
+      "note": "only approved location for volatile harness and provider comparisons"
+    },
+    {
+      "name": "starlight-swarm-bus",
+      "section": "runtime",
+      "role": "deprecated-runtime-bus",
+      "status": "archive-after-consumer-check",
+      "note": "created in error; redirect to the active token-tracker/swarm-bus path"
+    },
+
+    {
+      "name": "agentic-ops",
+      "section": "operations",
+      "role": "private-estate-operations",
+      "visibility": "private",
+      "provides": ["empire-registry", "agent-lifecycle", "security-policy", "secrets-policy", "observability"],
+      "note": "canonical live fleet and repository registry"
+    },
+    {
+      "name": "starlight-agent-config",
+      "section": "operations",
+      "role": "compiled-fleet-configuration",
+      "visibility": "private",
+      "depends_on": ["agentic-ops", "Starlight-Intelligence-System"],
+      "note": "generated and reviewed installed-agent configuration; never store raw secrets or runtime proof state"
+    },
+    {
+      "name": "starlight-command-center",
+      "section": "operations",
+      "role": "operator-console",
+      "visibility": "private",
+      "status": "consolidate-stacked-branches",
+      "note": "candidate sole operator UI; flatten Observatory and Queen branch chain before promotion"
+    },
+    {
+      "name": "hermes-cockpit",
+      "section": "operations",
+      "role": "hermes-derived-view",
+      "visibility": "private",
+      "canonical_source": "agentic-ops",
+      "status": "absorb-then-archive",
+      "note": "Hermes-specific adapter surface; no independent registry authority"
+    },
+    {
+      "name": "starlight-command",
+      "section": "operations",
+      "role": "operator-template",
+      "status": "harvest-then-archive",
+      "note": "fold reusable public contracts into the operating-system standard or public ops layer"
+    },
+    {
+      "name": "StarlightOS",
+      "section": "operations",
+      "role": "cortex-product-prototype",
+      "visibility": "private",
+      "status": "freeze-pending-product-boundary"
+    },
+    {
+      "name": "starlight-intelligence",
+      "section": "operations",
+      "role": "public-product-shell",
+      "status": "repair-or-archive",
+      "canonical_source": "Starlight-Intelligence-System",
+      "note": "default branch is boilerplate; elect a thin web workbench or redirect so it cannot appear canonical"
+    },
+    {
+      "name": "agent-registry",
+      "section": "operations",
+      "role": "empty-registry-placeholder",
+      "status": "archive",
+      "canonical_source": "agentic-ops"
+    },
+    {
+      "name": "starlight-agent-army-architecture",
+      "section": "operations",
+      "role": "legacy-agent-playbook",
+      "status": "harvest-then-archive",
+      "canonical_source": "agentic-operating-system-standard",
+      "note": "move deployment recipes to starlight-swarm and durable public contracts to the standard"
     },
 
     {

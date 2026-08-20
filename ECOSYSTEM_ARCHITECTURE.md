@@ -1,5 +1,7 @@
 # FrankX Ecosystem Architecture
 
+> **Current-state notice (2026-08-12):** This is a historical June 2026 constellation narrative, not the current repository control plane. The canonical Starlight intelligence role map is [`docs/architecture/STARLIGHT_PORTFOLIO_TOPOLOGY.md`](docs/architecture/STARLIGHT_PORTFOLIO_TOPOLOGY.md); volatile external dependencies are tracked in [`context/empire/upstreams.json`](context/empire/upstreams.json). Preserve the dated material below as audit evidence until it is regenerated from the full connected estate.
+
 **The Starlight Constellation: SIS as Substrate Hub for ~15 Repositories**
 
 Version 2.1 | Structure verified 2026-06-10 · Counts reconciled with `metrics/current.json` 2026-07-28
