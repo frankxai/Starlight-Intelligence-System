@@ -778,3 +778,18 @@ First fix shipped: agentic-ops-hub#42 — scripts/fleet_watch.py + 6-hourly Acti
 CI sweep verdicts: ops-hub and frankx.ai CI healthy; SIS main healthy with two dead guards (sip-starter-release 0 runs ever, content-drift-check only-ever-red); agenticincome's monthly knowledge-freshness cron failed its only firing unactioned; arcanea is the problem repo (3 perma-red pipelines since ~Feb, comment-trigger spam burying main history). Frank-only levers recorded in AUTOMATION_HEALTH.md: disable model-arena-daily, delete duplicate Vercel project starlight-intelligence-system (20/20 ERROR), restart C940 publisher/heartbeats, resolve 6 unpatchable Dependabot pins.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-08-14 - Wave 0 closed on frankx.ai: #460 auction trust repair merged; arcanea canon gate live
+
+**Category:** portfolio-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (lead-review-and-merge mandate)
+**Related:** frankx.ai-vercel-website #460, arcanea #102, `context/empire/UPGRADE_ROADMAP.md`, `context/empire/AUTOMATION_HEALTH.md`
+
+frankx.ai#460 merged to main 2026-08-14T02:26Z (merged by Frank after the C940 exact-head review cleared; head d5eebf70, 5 commits, +312/−90 across 9 files) and auto-deployed to production. The fabricated Feb-2026 auction sale records ($187/$197/$297 to "Anonymous" buyers — proven fabricated via git history: the data file postdates its own claimed sales, and no payment rail existed) are gone; the three prints reopened as live silent-bid drops. Enforcement shipped with the honesty fix: fail-closed window gating (lib/auctions.ts, unparseable end = closed), server-side Number.isFinite + minimum-bid validation, awaited Resend sends returning 502 on delivery failure (no false success in serverless), and a mutant-verified contract test wired into merge:gate + merge-gate.yml. Survived the 4-layer gauntlet: Copilot, CodeRabbit ×2, Contract Guard ([contract-change] title), Hermes Merge-Queen REPAIR. This closes the last in-flight Wave 0 trust item; open Wave 0 residue: arcanea lib/facts.ts routing, ai-music-academy disposition.
+
+arcanea#102 merged same day on Frank's explicit approval (e18a38a): the canon gate — lore-release-gate + canon-evaluation skills, lore-lint.mjs (54 black-box fixtures, 4 silent failures found and mutant-verified closed), lore-canon.yml ratchet on newly-added lines. Merged with the known repo-wide CLI Tests/Test Summary debt red (red on main since ~Feb; 0 of the PR's files under packages/ — precedent #81/#87/#96). The gate now protects the lore PR queue; the Starweave drift sweep (186 hits) is tracked as arcanea#98.
+
+Loop hygiene: both send_later watch loops killed on Frank's order (the #460 merge-retry loop and the sibling session's 16:09Z timer). Next lane: portfolio-wide open-PR sweep to drive all good branches to main.
+
+**Built on SIP — Starlight Intelligence Protocol**

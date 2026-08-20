@@ -2,7 +2,7 @@
 
 > Prioritized from the 2026-07-25 system-wide audit. Ordering principle: trust first, then revenue, then reach.
 > Status legend: ☐ open · ◐ in progress (this session) · ☑ done (this session)
-> 2026-08-14: automation-layer audit complete — findings, self-healing playbook, and Frank-only levers live in `AUTOMATION_HEALTH.md` (sibling file). First fix shipped: agentic-ops-hub#42 (off-machine fleet dead-man's switch). frankx.ai#460 (Wave 0 auction trust repair) remains green-and-blocked on the C940 exact-head review status.
+> 2026-08-14: automation-layer audit complete — findings, self-healing playbook, and Frank-only levers live in `AUTOMATION_HEALTH.md` (sibling file). First fix shipped: agentic-ops-hub#42 (off-machine fleet dead-man's switch). frankx.ai#460 (Wave 0 auction trust repair) MERGED 2026-08-14 by Frank after the C940 exact-head review cleared — fabricated auction sale records removed, prints reopened as live silent-bid drops with window + minimum-bid + send-failure enforcement; auto-deployed to production. arcanea#102 (canon gate: lore-release-gate skill + rubric + lore-lint + CI ratchet) merged same day on Frank's approval.
 
 ## Wave 0 — Trust repairs (hours each; do before driving any traffic)
 
@@ -23,6 +23,7 @@
 - ☑ arcanea.ai `/studio/store`: RESOLVED by Frank's A0 trust purge (arcanea-ai-app#239, merged 756f3f8, 2026-08-10) — store surface removed via notFound(), DEMO_STATS/fake case studies killed. The quarantine PR #206 was closed as superseded; per Frank's disposition, simulated commerce is not to be revived — next is honest env-gated Stripe rails (A1+).
 - ☐ arcanea.ai: route all public numbers through `lib/facts.ts`; delete `/arcanea-os` fabricated stats
 - ☑ awesome-agentic-income: fix "Unlock premium Agent Swarms" CTA (#4 merged 2026-07-26)
+- ☑ frankx.ai `/auctions`: fabricated Feb-2026 sale records ($187/$197/$297 to "Anonymous" buyers, predating the data file and any payment rail) removed; prints reopened as live silent-bid drops with fail-closed window gating (`lib/auctions.ts`), server-side minimum-bid validation, awaited email sends returning 502 on failure, and a mutant-verified contract test wired into merge:gate (frankx.ai#460, merged 2026-08-14 after the full 4-layer review gauntlet + C940 exact-head review)
 - ☐ ai-music-academy: decision — rehabilitate voice + metrics, or archive and move assets to music-intelligence-systems
 
 ## Wave 1 — Revenue (days; the compounding unlock)
@@ -39,7 +40,7 @@
 - ☐ Social proof pipeline: collect real quotes → populate `data/products.json` `socialProof.quotes[]` → mount the already-built Testimonials components. Never invent proof.
 - ☑ Email capture: COMPLETE — /prompt-library + /ai-architect-academy in #369; /agentic-ai-center, /research, /vault in #371 (merged 2026-07-26, live). All five planned surfaces now mount EmailSignup.
 - ☑ Header nav: 'Work with Frank' group MERGED in #369 (2026-07-26, live). Original item: (workshops, coaching, work-with-me, shop) to NavigationMega; define the membership ladder (community → inner-circle → founders-circle).
-- ◐ Imagery sprint: frankx.ai#398 MERGED 2026-07-28 — subject-matched existing assets placed on /shop (3 tiles + real alt text), /work-with-me (stage photo as proof), /start-here (six-primitives visual), /workshops (own hero art); honest-match discipline skipped /templates + /community (no truthful asset exists). Still open: generate the 7 product OG covers from their existing specs (unblocks /products + /templates), 2 mismatched auction images in data/auctions.json, 93 blog-hero backfill, arcanea covers/portraits.
+- ◐ Imagery sprint: frankx.ai#398 MERGED 2026-07-28 — subject-matched existing assets placed on /shop (3 tiles + real alt text), /work-with-me (stage photo as proof), /start-here (six-primitives visual), /workshops (own hero art); honest-match discipline skipped /templates + /community (no truthful asset exists). Still open: generate the 7 product OG covers from their existing specs (unblocks /products + /templates), 93 blog-hero backfill, arcanea covers/portraits. The 2 mismatched auction images resolved in frankx.ai#460 (merged 2026-08-14: 1:1 session → real Oracle stage photo; ACOS setup → ACOS pack art).
 - ☑ Metadata sprint: DONE in #372 (merged 2026-07-26). Full 55-route T1 sweep found 6 gaps: 4 fixed via sibling layout.tsx (/auctions, /collectibles, /dashboard, /onboarding), 2 are pure redirects (inert). The audit's 12 "most important gaps" had all gained layout-level metadata since 2026-07-25 — verified individually.
 
 ## Wave 3 — Structure (weeks; needs Frank's URL/SEO approval per repo doctrine)
