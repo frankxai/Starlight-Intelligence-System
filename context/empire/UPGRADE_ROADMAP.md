@@ -2,6 +2,7 @@
 
 > Prioritized from the 2026-07-25 system-wide audit. Ordering principle: trust first, then revenue, then reach.
 > Status legend: ☐ open · ◐ in progress (this session) · ☑ done (this session)
+> 2026-08-21: portfolio integration wave — 144 open PRs triaged, 31 good branches merged to main across 12 repos (arcanea canon-gate program complete, SIS control plane, release-foundation family, frankx.ai #505-#508 hub chain + guards). Frank-decision and stale-close lists delivered in-session. Remaining armed: website#456 (media-guard hardening) + #479 on auto-merge.
 > 2026-08-14: automation-layer audit complete — findings, self-healing playbook, and Frank-only levers live in `AUTOMATION_HEALTH.md` (sibling file). First fix shipped: agentic-ops-hub#42 (off-machine fleet dead-man's switch). frankx.ai#460 (Wave 0 auction trust repair) MERGED 2026-08-14 by Frank after the C940 exact-head review cleared — fabricated auction sale records removed, prints reopened as live silent-bid drops with window + minimum-bid + send-failure enforcement; auto-deployed to production. arcanea#102 (canon gate: lore-release-gate skill + rubric + lore-lint + CI ratchet) merged same day on Frank's approval.
 
 ## Wave 0 — Trust repairs (hours each; do before driving any traffic)
