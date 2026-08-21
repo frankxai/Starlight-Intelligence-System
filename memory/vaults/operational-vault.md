@@ -793,3 +793,16 @@ arcanea#102 merged same day on Frank's explicit approval (e18a38a): the canon ga
 Loop hygiene: both send_later watch loops killed on Frank's order (the #460 merge-retry loop and the sibling session's 16:09Z timer). Next lane: portfolio-wide open-PR sweep to drive all good branches to main.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-08-21 - Portfolio integration wave: 31 branches driven to main across 12 repos
+
+**Category:** portfolio-ops
+**Confidence:** 0.96
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (Frank's directive: "ensure all good branches get to main after review, best process and integration and main into top state")
+**Related:** triage of 144 open PRs (17 READY / 25 NEEDS-REBASE / 18 NEEDS-WORK / 45 FRANK-DECISION / 39 STALE-CLOSE), `context/empire/UPGRADE_ROADMAP.md`
+
+Full-portfolio open-PR triage (144 PRs, evidence-based per-PR CI/review/mergeability fetch) followed by an execution wave: 31 merged to main. Highlights — arcanea's complete canon-gate program landed (#102 tooling on Frank's approval, #97 prose corpus, #88/#89/#91/#101 lore through the new mechanical ratchet at 0 errors), SIS portfolio control plane #81 + creative-studio docs #78, the release-foundation family (FrankX#125, agenticincome#24, agenticpassiveincome#24, starlight-agent-skills#18), fail-closed email-intake re-cut onto agenticpassiveincome's rewritten homepage (#23, obsolete homepage hunk dropped + test updated to current truth), claude-skills-library#21 resolved by adopting main's newer skill standardization (PR delta became purely additive +4034), both FrankX dependabot security bumps, and on frankx.ai-vercel-website the #505→#508 chain (LLM hub restore + registry refresh, intelligence-surface CI guards, /agent-hub, /ai-architecture field guide) + #504/#490/#459/#466 — all through the strict up-to-date treadmill using auto-merge + branch-nudge supervision against heavy parallel-session churn.
+
+Working findings recorded for future sweeps: (1) agenticincome#21 reclassified NEEDS-REBASE→FRANK-DECISION — its "Own the outcome" repositioning conflicts with the newer "Earn with agents/MCP" identity already on main; never union-merge competing brand identities. (2) arcanea#76 (Monster System) fails its own lint+package tests — real reds distinct from the repo's perma-red debt. (3) FrankX#99 blocked by CRLF renormalization (branch predates .gitattributes enforcement); merging from Linux would inject line-ending noise — rebase from a Windows checkout or land a deliberate renormalization commit first. (4) The strict-up-to-date + hot-main combination makes single-PR lock-step merging lose races; auto-merge armed on all + parallel branch-nudges converges. website#456 (media-guard hardening, gates green, twice union-re-resolved for merge:gate drift) and #479 remain armed and pending a quiet window.
+
+**Built on SIP — Starlight Intelligence Protocol**
