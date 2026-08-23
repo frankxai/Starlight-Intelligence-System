@@ -1,0 +1,201 @@
+{
+  "schema": "starlight.world.v1",
+  "name": "Starlight World",
+  "driver": "Frank",
+  "role": "private-drive-surface",
+  "privacy": {
+    "containsPrivateVaultNotes": false,
+    "containsSecrets": false,
+    "publicPublish": false
+  },
+  "not": [
+    "Q-Town",
+    "starlight-agent-canvas product surface",
+    "live agent fleet",
+    "public Mission Control"
+  ],
+  "projections": {
+    "model": "Starlight-Intelligence-System / Reality Architecture",
+    "palace": "Eight Mind Palace rooms — life is the proof",
+    "memory": "Six SIS semantic vaults",
+    "secondBrain": "second-brain-os product + second-brain-vault private notes (unmounted here)",
+    "observatory": "starlight-command-center Reality Observatory",
+    "knowledge": "starlight-knowledge-tree",
+    "canvas": "starlight-agent-canvas — source intake only, not this world"
+  },
+  "palace": [
+    {
+      "id": "lighthouse",
+      "title": "Lighthouse",
+      "role": "Alignment",
+      "lead": "Keep the north star one breath: the life is the proof the system works.",
+      "x": 50,
+      "y": 18
+    },
+    {
+      "id": "ocean-house",
+      "title": "Ocean House",
+      "role": "Life and relationships",
+      "lead": "Protect family, health, love, and the ocean-centered life from product thrash.",
+      "x": 78,
+      "y": 32
+    },
+    {
+      "id": "studio",
+      "title": "Studio",
+      "role": "Music and culture",
+      "lead": "Make and ship music without turning the palace into a catalog.",
+      "x": 86,
+      "y": 58
+    },
+    {
+      "id": "forge",
+      "title": "Forge",
+      "role": "Products",
+      "lead": "One free artifact, one paid SKU, one quiet high-ticket path.",
+      "x": 70,
+      "y": 82
+    },
+    {
+      "id": "commons",
+      "title": "Commons",
+      "role": "Community",
+      "lead": "Park paid community until one purchase is delivered.",
+      "x": 42,
+      "y": 86
+    },
+    {
+      "id": "living-lab",
+      "title": "Living Lab",
+      "role": "Science",
+      "lead": "Evidence before claim. Memory palace research stays rubric-locked.",
+      "x": 18,
+      "y": 70
+    },
+    {
+      "id": "treasury",
+      "title": "Treasury",
+      "role": "Wealth",
+      "lead": "One cash room. No new domains or SaaS ladders until a real sale.",
+      "x": 14,
+      "y": 42
+    },
+    {
+      "id": "observatory",
+      "title": "Observatory",
+      "role": "Long future",
+      "lead": "Private Observatory data never becomes public Mission Control.",
+      "x": 30,
+      "y": 20
+    }
+  ],
+  "vaults": [
+    {
+      "id": "strategic",
+      "title": "Strategic",
+      "mark": "◇",
+      "role": "Decisions, bets, north star",
+      "path": "memory/vaults/strategic"
+    },
+    {
+      "id": "technical",
+      "title": "Technical",
+      "mark": "▤",
+      "role": "Architecture, proofs, code patterns",
+      "path": "memory/vaults/technical"
+    },
+    {
+      "id": "creative",
+      "title": "Creative",
+      "mark": "✦",
+      "role": "Form, worlds, taste",
+      "path": "memory/vaults/creative"
+    },
+    {
+      "id": "operational",
+      "title": "Operational",
+      "mark": "▸",
+      "role": "Runs, receipts, Queen loop",
+      "path": "memory/vaults/operational"
+    },
+    {
+      "id": "wisdom",
+      "title": "Wisdom",
+      "mark": "◉",
+      "role": "Lessons that survived contact",
+      "path": "memory/vaults/wisdom"
+    },
+    {
+      "id": "horizon",
+      "title": "Horizon",
+      "mark": "↗",
+      "role": "What is becoming true",
+      "path": "memory/vaults/horizon"
+    }
+  ],
+  "city": [
+    {
+      "id": "starlight",
+      "title": "Starlight",
+      "role": "Intelligence substrate",
+      "steward": "registered",
+      "owns": ["SIS", "SIP", "Reality Architecture", "six vaults"],
+      "repo": "Starlight-Intelligence-System",
+      "drive": "Lead the world model here. Do not fork a new cosmos repo."
+    },
+    {
+      "id": "frankx",
+      "title": "FrankX",
+      "role": "Authority and proof",
+      "steward": "registered",
+      "owns": ["frankx.ai", "Mind Palace atlas", "books", "newsletter"],
+      "repo": "frankx.ai-vercel-website",
+      "drive": "Public palace atlas only. Private rooms stay off the site."
+    },
+    {
+      "id": "arcanea",
+      "title": "Arcanea",
+      "role": "Possibility worlds",
+      "steward": "registered",
+      "owns": ["canon", "studio", "academy"],
+      "repo": "arcanea-ai-app",
+      "drive": "Possibility graph. Starlight measures what can become real."
+    },
+    {
+      "id": "gencreator",
+      "title": "GenCreator",
+      "role": "Creator OS",
+      "steward": "registered",
+      "owns": ["gencreator.ai", "creator packs"],
+      "repo": "gencreator.ai",
+      "drive": "Productize the OS. Do not absorb Starlight memory."
+    },
+    {
+      "id": "command",
+      "title": "Command",
+      "role": "Reality Observatory",
+      "steward": "registered",
+      "owns": ["Observatory :4321", "fleet vitals"],
+      "repo": "starlight-command-center",
+      "drive": "Operational projection. Bind loopback. No public live ops."
+    }
+  ],
+  "secondBrain": {
+    "product": {
+      "repo": "second-brain-os",
+      "role": "OSS two-vault template. brain/ MCP-wired. private/ air-gapped."
+    },
+    "instance": {
+      "repo": "second-brain-vault",
+      "role": "Frank's Obsidian vault. Notes stay in the vault. This world only maps rooms."
+    },
+    "rule": "Never mount private/ into MCP, embeddings, or this graph."
+  },
+  "stewards": [
+    { "district": "starlight", "status": "registered", "live": false },
+    { "district": "frankx", "status": "registered", "live": false },
+    { "district": "arcanea", "status": "registered", "live": false },
+    { "district": "gencreator", "status": "registered", "live": false },
+    { "district": "command", "status": "registered", "live": false }
+  ]
+}

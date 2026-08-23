@@ -10,6 +10,7 @@ Constitutional docs + kernel contracts for steerable world models inside **Starl
 4. [schemas/](./schemas/) — six primitives (v0.1.1)  
 5. [fixtures/](./fixtures/) — positive + negative  
 6. Swarm prompts: [`docs/ops/prompts/reality-architecture-swarm.md`](../ops/prompts/reality-architecture-swarm.md)
+7. **Starlight World** (spatial drive surface): [`docs/starlight-world/`](../starlight-world/) — Mind Palace + six vaults + city. Not Q-Town. Not Agent Canvas.
 
 ## Primitives
 
