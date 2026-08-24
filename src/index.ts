@@ -423,3 +423,22 @@ export type {
   WorkGraphSourceSystem,
   WorkGraphWorkItem,
 } from './work-graph.js';
+
+export {
+  compileLoopGraph,
+  evaluateLoopGraph,
+  initHarness,
+  recordFeatureEvidence,
+} from './loop-graph.js';
+export type {
+  CompiledLoopGraph,
+  HarnessFeature,
+  HarnessState,
+  LoopBrakes,
+  LoopEdge,
+  LoopEvaluation,
+  LoopEvaluationInput,
+  LoopGraph,
+  LoopNode,
+  LoopShape,
+} from './loop-graph.js';

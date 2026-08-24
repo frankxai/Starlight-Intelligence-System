@@ -29,6 +29,9 @@ mustExist("docs/graph-engineering/loops/si-admit-verify-ship/supervisor.md");
 mustExist("examples/work-graph/si-admit-verify-ship.jsonl");
 mustExist("examples/work-graph/product-delivery.jsonl");
 mustExist("src/work-graph.ts");
+mustExist("src/loop-graph.ts");
+mustExist("docs/graph-engineering/loops/diamond-review.v1.json");
+mustExist("docs/graph-engineering/harness/features.v1.json");
 
 mustContain("docs/graph-engineering/CONTRACT.md", [
   "starlight.graph-engineering.v1",
@@ -36,6 +39,8 @@ mustContain("docs/graph-engineering/CONTRACT.md", [
   "No GraphRAG as fleet memory",
   "No third orchestrator",
   "si-admit-verify-ship",
+  "Implemented now",
+  "src/loop-graph.ts",
 ]);
 
 const loop = JSON.parse(

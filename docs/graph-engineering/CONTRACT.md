@@ -66,7 +66,22 @@ Every compiled loop must name: nodes, edges as data contracts, executor, **diffe
 - Software scale is **one writer per repo** plus a code index on that repo only.
 - Fleet scale is **shared routes and facts**. 144 registered SIS agents without a live process and a receipt are registry theater.
 
-## First compiled loop
+## Implemented now (this PR)
+
+These are the advanced post mechanics, as code, not as a second essay:
+
+| Mechanic | From | Code |
+|---|---|---|
+| Diamond / router / converge | 0xwhrrari + 0xCodez | `src/loop-graph.ts` |
+| Reduce in **code**, not an agent | 0xCodez 14-step | diamond `kind=code` gate |
+| Autonomy brake: turns, cost, empty rounds, silence list | Sprytixl 7-step | `LoopBrakes` |
+| Write-back after executed nodes | noisyb0y1 / Sprytixl | `requireWriteback` |
+| Same-actor verifier rejected | 0xCodez / longgraph supervisor | `evaluateLoopGraph` |
+| Initializer feature list starts **failing** | 0xCodez harness | `initHarness` + `docs/graph-engineering/harness/features.v1.json` |
+
+Still **not** in this PR (and not required to copy X): DSPy optimizer runtime, Codegraph install, nightly GraphRAG extract, a third scheduler.
+
+## First compiled loops
 
 `docs/graph-engineering/loops/si-admit-verify-ship/` compiles the existing SI / Queen admit → make → verify → ship loop onto the operational work graph.
 
