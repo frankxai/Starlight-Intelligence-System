@@ -56,7 +56,7 @@ type OperatingStep = {
 };
 
 type RouteCard = {
-  href: "/protocol" | "/download" | "/research" | "/cockpit" | "/architecture" | "/vaults";
+  href: "/protocol" | "/download" | "/research" | "/cockpit" | "/architecture" | "/vaults" | "/field-notes";
   title: string;
   desc: string;
   icon: LucideIcon;
@@ -213,6 +213,12 @@ const PRODUCT_ROUTES: RouteCard[] = [
     title: "Public Vaults",
     desc: "JSON-readable public memory that agents can query and cite.",
     icon: ServerCog,
+  },
+  {
+    href: "/field-notes",
+    title: "Visual Field Notes",
+    desc: "A human-scale visual record of memory, attestation, authority, and forkability.",
+    icon: FileCheck2,
   },
 ];
 
