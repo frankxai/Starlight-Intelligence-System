@@ -137,14 +137,12 @@ function HeaderContent({ pathname }: { pathname: string }) {
             </svg>
             GitHub
           </a>
-          <a
+          <Link
             href={DEPLOY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-1 rounded-full bg-white px-4 py-1.5 text-[13px] font-medium text-[#060609] transition-micro hover:bg-white/90"
+            className="ml-1 whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-[13px] font-medium text-[#060609] transition-micro hover:bg-white/90"
           >
-            Deploy
-          </a>
+            Deploy Explorer
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -206,14 +204,12 @@ function HeaderContent({ pathname }: { pathname: string }) {
               >
                 GitHub
               </a>
-              <a
+              <Link
                 href={DEPLOY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="flex-1 rounded-lg bg-white px-4 py-2.5 text-center text-[14px] font-medium text-[#060609] transition-micro hover:bg-white/90"
               >
-                Deploy
-              </a>
+                Deploy Explorer
+              </Link>
             </div>
           </div>
         </div>

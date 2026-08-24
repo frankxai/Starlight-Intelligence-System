@@ -15,6 +15,14 @@ Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity — they all read 
 [![deploy](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml)
 [![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
 
+## Deploy Starlight Explorer
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2FStarlight-Intelligence-System&root-directory=site&project-name=starlight-explorer&repository-name=starlight-explorer)
+
+This creates your own Git-connected copy of the **public Starlight Explorer**: the protocol, architecture, research, knowledge maps, and read-only public vault surfaces. It builds the [`site/`](site/) Next.js application with zero required secrets.
+
+Private memory, the MCP server, agent workers, credentials, and orchestration remain in your local sovereign runtime. [See the exact deployment boundary](https://starlightintelligence.org/deploy) or [run the complete system](SETUP.md).
+
 ![One Substrate. Every CLI in your fleet shares the same attested memory.](docs/visuals/08-readme-hero.jpg)
 
 *Claude Code, Cursor, Codex, Gemini, and OpenCode — all reading the exact same attested memory from one substrate.*

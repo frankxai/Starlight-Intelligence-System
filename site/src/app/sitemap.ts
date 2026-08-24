@@ -10,6 +10,7 @@ const STATIC_ROUTES = [
   "/perspectives/personal-superintelligence-for-everyone",
   "/protocol",
   "/download",
+  "/deploy",
   "/quickstart",
   "/architecture",
   "/explainer",
@@ -49,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === ""
         ? 1.0
-        : path === "/protocol" || path === "/download" || path === "/quickstart" || path === "/research"
+        : path === "/protocol" || path === "/download" || path === "/deploy" || path === "/quickstart" || path === "/research"
           ? 0.9
           : 0.7,
   }));

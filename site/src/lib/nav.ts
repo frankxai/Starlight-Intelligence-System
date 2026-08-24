@@ -24,6 +24,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Build",
     items: [
+      { href: "/deploy", label: "Deploy Explorer", desc: "Own the public Starlight interface" },
       { href: "/quickstart", label: "Quickstart", desc: "Five minutes to first context" },
       { href: "/download", label: "Source & Modules", desc: "Build SIP source or get modules" },
       { href: "/cockpit", label: "Cockpit", desc: "The spec-trace console" },
@@ -45,8 +46,7 @@ export const NAV_GROUPS: NavGroup[] = [
 
 export const GITHUB_URL = "https://github.com/frankxai/Starlight-Intelligence-System";
 export const ARCANEA_URL = "https://arcanea.ai";
-export const DEPLOY_URL =
-  "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2FStarlight-Intelligence-System&root-directory=site";
+export { DEPLOY_PAGE_URL as DEPLOY_URL } from "@/lib/deployment";
 
 /** External + newcomer links — Footer "Connect" column. */
 export const CONNECT_LINKS: { href: string; label: string; external?: boolean }[] = [
