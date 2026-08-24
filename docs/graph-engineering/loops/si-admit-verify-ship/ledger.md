@@ -16,7 +16,7 @@ Scoreboard lives here. Chat is not the scoreboard.
 | Compiled SI loop | artifact | open | `docs/graph-engineering/loops/si-admit-verify-ship.v1.json` |
 | Work-graph kernel | artifact | open | `src/work-graph.ts` + CLI + tests |
 | Local gates | checks | open | `npm run test:work-graph` and `npm run test:graph-engineering` |
-| Draft PR | change | open | fill after `gh pr create --draft` |
+| Draft PR | change | open | https://github.com/frankxai/Starlight-Intelligence-System/pull/102 |
 | Independent verify | verify | blocked | supervisor ≠ executor; fill `supervisor.md` from disk |
 | Complete | complete | blocked | all admitted proofs |
 
