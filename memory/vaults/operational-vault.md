@@ -806,3 +806,22 @@ Full-portfolio open-PR triage (144 PRs, evidence-based per-PR CI/review/mergeabi
 Working findings recorded for future sweeps: (1) agenticincome#21 reclassified NEEDS-REBASE→FRANK-DECISION — its "Own the outcome" repositioning conflicts with the newer "Earn with agents/MCP" identity already on main; never union-merge competing brand identities. (2) arcanea#76 (Monster System) fails its own lint+package tests — real reds distinct from the repo's perma-red debt. (3) FrankX#99 blocked by CRLF renormalization (branch predates .gitattributes enforcement); merging from Linux would inject line-ending noise — rebase from a Windows checkout or land a deliberate renormalization commit first. (4) The strict-up-to-date + hot-main combination makes single-PR lock-step merging lose races; auto-merge armed on all + parallel branch-nudges converges. website#456 (media-guard hardening, gates green, twice union-re-resolved for merge:gate drift) and #479 remain armed and pending a quiet window.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-08-25 - Vercel deploy boundary: the hosted product is Starlight Explorer
+
+**Category:** public-surface / deployment / product-boundary
+**Confidence:** 1.0
+**Source:** Codex `/si` execution, GitHub PR #103, canonical Vercel project inspection, production build, and responsive preview QA
+**Related:** `site/src/app/deploy/page.tsx`, `site/src/lib/deployment-contract.json`, `site/scripts/check-deploy-contract.mjs`, `site/README.md`
+
+**Decision:** The central website CTA deploys **Starlight Explorer**, the public, read-only publication layer. It creates a Git-connected Next.js project containing the protocol, architecture, research, knowledge maps, documentation, and public vault endpoints. Private memory, the MCP server, agent processes, credentials, workers, and orchestration remain in the operator-controlled runtime.
+
+**Why the CTA is central:** ownership is the product loop. A visitor can move from understanding the open substrate to owning an inspectable public interface. The CTA is justified only with informed consent, so the global action now routes to `/deploy`, explains the boundary, and launches Vercel after the artifact is legible.
+
+**Deploy contract:** source `frankxai/Starlight-Intelligence-System`; Root Directory `site/`; default Vercel project and cloned repository `starlight-explorer`; zero required environment variables. The full repository remains available during the build because the Explorer imports the verified root `metrics/current.json` ledger. This contract is machine-readable and fail-closed in the site build.
+
+**Vercel truth:** production is project `site` (`prj_wDNGrb1R1rB5PJOG9cUEICSER887`) in team `starlight-intelligence`. PR #103 preview `dpl_57542emV2JKJcvigNCsNBDjK8eCv` reached READY at head `a274e1b`. Local production build, focused ESLint, metrics/public-install/layout/deploy contracts, GitHub harness, Media Guard, design contract, Vercel preview, responsive browser QA, exact clone-flow resolution, and `/deploy` runtime-error audit passed. Browser QA caught and repaired one nested-main landmark before merge.
+
+**Residual:** the unlinked duplicate Vercel project `starlight-intelligence-system` remains outside this change. Deletion is a separate Frank-only control-plane action.
+
+**Built on SIP — Starlight Intelligence Protocol**
