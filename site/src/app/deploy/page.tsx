@@ -19,11 +19,15 @@ export const metadata: Metadata = {
   title: "Deploy Starlight Explorer",
   description:
     "Create your own public Starlight Explorer on Vercel while the sovereign intelligence runtime and private memory remain local.",
+  alternates: {
+    canonical: "/deploy",
+  },
   openGraph: {
     title: "Deploy Starlight Explorer — Starlight Intelligence",
     description:
       "One repository clone, one Vercel project, and a precise boundary between the public Explorer and your local intelligence runtime.",
     type: "website",
+    url: "/deploy",
     images: [
       {
         url: "/opengraph-image",
@@ -32,6 +36,13 @@ export const metadata: Metadata = {
         alt: "Deploy Starlight Explorer",
       },
     ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Deploy Starlight Explorer — Starlight Intelligence",
+    description:
+      "Create a public Starlight Explorer while private memory and the sovereign intelligence runtime remain local.",
+    images: ["/opengraph-image"],
   },
 };
 
