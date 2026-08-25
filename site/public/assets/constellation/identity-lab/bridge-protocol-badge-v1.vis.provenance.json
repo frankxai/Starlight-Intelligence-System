@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "bridge-protocol-badge-v1",
+  "role": "foundational-specialist-agent-identity-proof",
+  "agent_id": "bridge-partnership-architect",
+  "swarm_id": "revenue-venture",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-2867ad55-2e93-420c-bb67-0c019eb773ea.png",
+    "reference_asset": "public/assets/agents/v1/revenue-venture/bridge-partnership-architect.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-foundational-specialist-prompts.v1.md#prototype-e--bridge-protocol-badge-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized square WebP was inspected. Bridge's paired arch tablets, emerald diplomatic coat, material-contribution span, load-bearing responsibilities, unresolved dependency lens, optional route, and open human latch remain legible without handshake or contract imagery.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 4,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/bridge-protocol-badge-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 339248,
+    "sha256": "c2f03ff56cb3cbf78ed0d785bd2d1c4a1a1306cb6406f8767fb104ac08513802"
+  },
+  "generated_on": "2026-08-15"
+}

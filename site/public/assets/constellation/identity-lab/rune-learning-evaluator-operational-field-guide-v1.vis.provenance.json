@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "rune-learning-evaluator-operational-field-guide-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "rune-learning-evaluator",
+  "swarm_id": "community-academy",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-b80aeb95-25bf-4492-95ad-dc381ead4ed9.png",
+    "reference_asset": "public/assets/agents/v1/community-academy/rune-learning-evaluator.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#rune--learning-evaluator"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "Rune's transparent criteria rails, varied learning artifacts, and non-scored return loop remain clear with blank annotation rails.",
+  "quality_score": { "total": 28, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 4, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/rune-learning-evaluator-operational-field-guide-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 179068, "sha256": "a95dd737b0a68a52ad1900a618984562ef07bc75cabcbb7532e805b2c1822133" },
+  "generated_on": "2026-08-15"
+}

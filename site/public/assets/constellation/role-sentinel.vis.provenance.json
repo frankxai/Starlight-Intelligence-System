@@ -1,0 +1,31 @@
+{
+  "$schema": "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+  "schema_version": "1.0.0",
+  "asset": {
+    "asset_id": "asset_cf5bee58c1eb46d93a3acf45",
+    "version_id": "ver_cf5bee58c1eb46d93a3acf4519e28c9e",
+    "media_type": "image",
+    "sha256": "cf5bee58c1eb46d93a3acf4519e28c9e7fbd61251c915c5d2fecc1f212565287",
+    "local_path": "public/assets/constellation/role-sentinel.webp",
+    "relative_path": "./role-sentinel.webp"
+  },
+  "generation": {
+    "provider": "openai-codex",
+    "model": "gpt-image",
+    "prompt": null,
+    "negative_prompt": null,
+    "seed": null,
+    "settings": { "transcode": "ffmpeg libwebp quality=82" },
+    "output_paths": ["public/assets/constellation/role-sentinel.webp"],
+    "created_at": "2026-08-14T03:34:00+02:00"
+  },
+  "agent": {
+    "coding_agent": "codex",
+    "repo": "starlight-intelligence-web",
+    "thread_ref": null,
+    "session_ref": "019fe474-4b2f-7703-ab79-9826fd64b2c1",
+    "summary": "Sentinel visual archetype for the security and privacy reviewer; exact source prompt was not retained.",
+    "metadata": { "source_asset": "exec-8351143c-a562-4a4b-98b5-7fd2e8d35263.png" }
+  },
+  "skill": null
+}

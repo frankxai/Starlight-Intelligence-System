@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "nexus-sovereign-instrument-v1",
+  "role": "house-conductor-agent-identity-proof",
+  "agent_id": "nexus-futures-conductor",
+  "swarm_id": "web-spatial-protocol-futures",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-d8b3bb82-5119-4c8e-ad00-f2a62c43c12f.png",
+    "reference_asset": "public/assets/agents/v1/web-spatial-protocol-futures/nexus-futures-conductor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-house-conductor-prompts.v1.md#prototype-g--nexus-sovereign-instrument-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized 4:5 WebP was inspected. Nexus retains the exact cyan visor, ultraviolet coat, segmented lattice halo, and wireframe capsule. Bounded frames, a tactile interoperability bridge, mismatched connectors, and a warm human-value counterweight keep the future-protocol scene grounded rather than metaverse-generic.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 4,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/nexus-sovereign-instrument-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 254822,
+    "sha256": "ddfeccb5269d79857801047664f981f22222f2526aad0624cf1d01fff5b4ea79"
+  },
+  "generated_on": "2026-08-15"
+}

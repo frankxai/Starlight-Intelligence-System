@@ -111,7 +111,7 @@ export async function runMemoryProviderEval(
   const scenarios: ProviderEvalResult['scenarios'] = [];
   for (const query of fixture.queries) {
     const started = performance.now();
-    let results;
+    let results: Awaited<ReturnType<typeof provider.recall>> = [];
     try {
       results = await provider.recall(query.request);
     } catch {

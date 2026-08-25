@@ -1,0 +1,40 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "workflow-intelligence-research-v1",
+  "role": "workflow-in-action",
+  "swarm_id": "intelligence-research",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-8b0d1ebc-8a71-4767-b4e6-21955755a196.png",
+    "reference_assets": [
+      "public/assets/agents/v1/intelligence-research/atlas-signal-scout.webp",
+      "public/assets/agents/v1/intelligence-research/verity-source-auditor.webp",
+      "public/assets/agents/v1/intelligence-research/soren-synthesis-analyst.webp",
+      "public/assets/agents/v1/intelligence-research/delta-forecast-challenger.webp"
+    ],
+    "prompt_record": "docs/design/prompts/starlight-workflow-action-scene-tests.v1.md#test-03--intelligence--research--source-to-forecast--169"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The source PNG and optimized WebP were inspected at full export size. Atlas, Verity, Soren, and Delta retain their canonical instruments and silhouettes. The source capsule, citation seals, terminating unsupported branch, synthesis braid, and offset probability fan communicate scout, audit, synthesis, and challenge as separate responsibilities. The accepted route is materially readable, although the transition into Soren's synthesis is intentionally spatial rather than a continuous glowing line. No generated text, charts, UI, or certainty claim appears.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 4,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/workflow-intelligence-research-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1672,
+    "height": 941,
+    "bytes": 218160,
+    "sha256": "dc6ea166d17aeaace7afc18096f0d6a9487dbf566ac700f3615a20d1722c1682"
+  },
+  "generated_on": "2026-08-15"
+}

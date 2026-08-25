@@ -1,0 +1,31 @@
+{
+  "$schema": "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+  "schema_version": "1.0.0",
+  "asset": {
+    "asset_id": "asset_9790ed2e0f6cfe34faba01a6",
+    "version_id": "ver_9790ed2e0f6cfe34faba01a6e2dba66",
+    "media_type": "image",
+    "sha256": "9790ed2e0f6cfe34faba01a6e2dba66c5ab574288981568b0ad1e20c530dd097",
+    "local_path": "public/assets/constellation/role-runner.webp",
+    "relative_path": "./role-runner.webp"
+  },
+  "generation": {
+    "provider": "openai-codex",
+    "model": "gpt-image",
+    "prompt": null,
+    "negative_prompt": null,
+    "seed": null,
+    "settings": { "transcode": "ffmpeg libwebp quality=82" },
+    "output_paths": ["public/assets/constellation/role-runner.webp"],
+    "created_at": "2026-08-14T03:34:00+02:00"
+  },
+  "agent": {
+    "coding_agent": "codex",
+    "repo": "starlight-intelligence-web",
+    "thread_ref": null,
+    "session_ref": "019fe474-4b2f-7703-ab79-9826fd64b2c1",
+    "summary": "Runner visual archetype for the QA release SRE verifier; exact source prompt was not retained.",
+    "metadata": { "source_asset": "exec-814b5191-9691-43e0-aa28-7a2b0e33cb6f.png" }
+  },
+  "skill": null
+}

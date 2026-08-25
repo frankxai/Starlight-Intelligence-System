@@ -15,6 +15,8 @@ export { GrokAdapter } from './grok.js';
 export { HermesAdapter } from './hermes.js';
 export type { HermesAgentProfile, HermesSwarmConfig, ISDomain } from './hermes.js';
 export { IS_DOMAINS } from './hermes.js';
+export { SkillExporter } from './skill-exporter.js';
+export type { ParsedSkill, ExportTargets, ExportSummary } from './skill-exporter.js';
 
 import type { PlatformAdapter, AdapterConfig } from './types.js';
 import { ClaudeCodeAdapter } from './claude-code.js';

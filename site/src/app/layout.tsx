@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { StarlightCursor } from "@/components/motion/StarlightCursor";
 import "./globals.css";
 
 const inter = Inter({
@@ -115,6 +116,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <StarlightCursor />
         <Header />
         <main id="main-content" className="flex-1">
           {children}

@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "nova-operational-field-guide-v1",
+  "role": "foundational-specialist-agent-identity-proof",
+  "agent_id": "nova-customer-discovery",
+  "swarm_id": "product-forge",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-32adcb4a-5371-4503-8d67-57f2273c6a37.png",
+    "reference_asset": "public/assets/agents/v1/product-forge/nova-customer-discovery.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-foundational-specialist-prompts.v1.md#prototype-b--nova-operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized portrait WebP was inspected. Nova's cobalt multi-lens identity, material signal samples, empty interview chair, blank question cards, removable assumptions, rejected hypothesis, and generous overlay space preserve evidence discipline without fabricated people or demand.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 4,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/nova-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 292926,
+    "sha256": "30ae151f1e7528ecd8338ab41225aa2076fb6c4b06a3e4327442339f699dc2c2"
+  },
+  "generated_on": "2026-08-15"
+}

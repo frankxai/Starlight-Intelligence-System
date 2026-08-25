@@ -1,0 +1,31 @@
+{
+  "$schema": "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+  "schema_version": "1.0.0",
+  "asset": {
+    "asset_id": "asset_9588f63d53d8b74a9628fd29",
+    "version_id": "ver_9588f63d53d8b74a9628fd29f531aa62",
+    "media_type": "image",
+    "sha256": "9588f63d53d8b74a9628fd29f531aa62e5ede5a60fd77d564ae2a0c7e01dafb6",
+    "local_path": "public/assets/constellation/role-choreographer.webp",
+    "relative_path": "./role-choreographer.webp"
+  },
+  "generation": {
+    "provider": "openai-codex",
+    "model": "gpt-image",
+    "prompt": null,
+    "negative_prompt": null,
+    "seed": null,
+    "settings": { "transcode": "ffmpeg libwebp quality=82" },
+    "output_paths": ["public/assets/constellation/role-choreographer.webp"],
+    "created_at": "2026-08-14T03:34:00+02:00"
+  },
+  "agent": {
+    "coding_agent": "codex",
+    "repo": "starlight-intelligence-web",
+    "thread_ref": null,
+    "session_ref": "019fe474-4b2f-7703-ab79-9826fd64b2c1",
+    "summary": "Choreographer visual archetype for the UX design and motion specialist; exact source prompt was not retained.",
+    "metadata": { "source_asset": "exec-a17dcf0d-c004-498a-bed2-64aa970c1512.png" }
+  },
+  "skill": null
+}

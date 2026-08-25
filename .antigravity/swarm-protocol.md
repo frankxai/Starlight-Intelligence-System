@@ -1,249 +1,166 @@
-# Starlight Intelligence System — Antigravity Agent Swarm Protocol
+# Starlight Intelligence System — Antigravity Agent Swarm Protocol (v2.0)
 
-> The executable operating manual for manifesting, coordinating, and synthesizing the full dynamic registry of the agent swarm as native Antigravity subagents. excellence standard. Composes with `.antigravity/instructions.md` (identity) and `core/orchestrator/harnesses/antigravity/system-prompt.md` (orchestrator framing).
-
-**Non-negotiable:** Load this protocol + the target agent definition(s) before any `define_subagent` / `invoke_subagent` call. Never improvise agent identities.
+> **The Executable Operating Manual for the Starlight Swarm Fleet**  
+> Incorporating the Three-Layer Discipline Engine (Sisyphus, Prometheus, Metis, Momus, Hephaestus, Oracle, Librarian, Explore) into Google Antigravity Native Subagent Swarms.  
+> Composes with `.antigravity/instructions.md`, `core/orchestrator/`, and `docs/architecture/OMO_SIS_ANTIGRAVITY_SWARM_SYNTHESIS.md`.  
+> *Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*
 
 ---
 
 ## 1. Protocol Purpose & Scope
 
-- Turn the abstract "the agent swarm" registry into **live, parallel, observable subagents** inside Google Antigravity.
-- Support both full-Hive (many minds) and targeted (3-7 minds) swarms.
-- Enforce load-definition-first discipline, scoped allowlists, memory commit, SIP attestation, escalation to board on substrate touch.
-- Provide the exact checklist, prompt templates, failure modes, and synthesis rules used by Antigravity swarm harness in the Starlight Orchestrator.
-
-This protocol is **Antigravity-native** (define_subagent + invoke_subagent + Agent Manager + browser + async progress artifacts). It is the counterpart to Claude's `Task` parallel dispatch and Codex/Gemini harness patterns.
-
----
-
-## 2. Prerequisites (Always Verify)
-
-Before opening a swarm session:
-
-1. Read `.antigravity/instructions.md` (this session's identity + high-level flow).
-2. Read this protocol file in full.
-3. Read `core/orchestrator/harnesses/antigravity/README.md` (if operating as orchestrator harness).
-4. Confirm access to `agents/AGENT_REGISTRY.md` or the specific `agents/<id>.md` / `verticals/<v>/agents/<id>.md`.
-5. Confirm `memory/vaults/` + `memory/MEMORY.md` readable; plan write targets.
-6. Load relevant allowlist: `.antigravity/allowlisted-tools.md` (and orchestrator harness allowlist if applicable).
-7. MCP: ensure `.antigravity/mcp-config.json` or adapter-supplied config is active for `starlight-substrate` + task-scoped reads.
-
-**Cached-belief check:** Grep or view_file to confirm agent count and list if >24h since last registry scan. Registry is dynamic.
+- Manifest the **full dynamic registry of SIS (144+ agents) and the 3-Layer Discipline Swarm** as live, parallel, observable subagents inside Google Antigravity.
+- Implement **Sisyphus's 100% Completion Rule**: Never abandon a task at 80% or 95%. Every workflow must conclude with automated diagnostics, verified builds, and tests passing.
+- Enforce the **Pre-Flight Planning Triad**: Prometheus (Scoping) → Metis (Gap Analysis) → Momus (Adversarial Critique) before destructive or high-LOC code execution.
+- Utilize the **Cognitive Model Matching Matrix**: Route mechanical orchestration to Claude/Kimi, autonomous deep craft to GPT-5.6 Sol, and global codebase grokking/multimodal to Gemini 3.7.
+- Enforce **Hashline Guard & AST-Grep (`sg`)** for conflict-free multi-agent file modifications.
 
 ---
 
-## 3. Complexity Gate & Mind Selection
+## 2. The Three-Layer Swarm Hierarchy
 
-| Complexity | Typical Minds | Dispatch Style | Notes |
-|------------|---------------|----------------|-------|
-| 1-3 | 1 (self or direct) | Direct or single subagent | Ambient attest only |
-| 4-6 | 3-5 (core + 1-2 specialists) | Small parallel swarm | Prime synthesis optional |
-| 7-8 | 7-12 (council + domain) | Medium swarm + conductor | Prime mandatory for synthesis |
-| 9-10 | 13-96 (full vertical or cross-IS) | Large Hive swarm | Orchestrator + Prime + Sentinel QA; board pre-pass if substrate |
+```mermaid
+graph TD
+    subgraph "Phase 1: Planning Triad"
+        P[starlight-prometheus: Scoper] --> M[starlight-metis: Gap Analyzer]
+        M --> MO[starlight-momus: Adversarial Reviewer]
+    end
 
-**Selection heuristics (load the registry first):**
-- Keyword match on agent trigger phrases in their .md.
-- IS namespace of the intent (Self/Wealth/.../Orchestrator).
-- Domain sub-stack activation (People/Sound/Music/Energy/Crypto).
-- Required perspectives: always consider sentinel (security/QA), prime (synthesis), sage (memory), weaver (if aesthetic/brand), architect (if structural).
-- Cost/latency: for <30s low-stakes, route to OpenCode instead of spawning swarm.
+    subgraph "Phase 2: Discipline Orchestration"
+        MO --> S[starlight-sisyphus: 100% Completion Lead]
+        S <--> PR[starlight-prime: Synthesis]
+        S --> AT[starlight-atlas: Dispatcher]
+    end
 
----
-
-## 4. Exact Execution Checklist (Excellence — Do Not Skip)
-
-For each mind you intend to manifest:
-
-**A. Discovery & Load**
-- `Glob` or `Grep` to locate the exact agent definition file(s).
-- `Read` / `view_file` the full agent .md (capture system prompt, triggers, voice, constraints, examples, attestation rules).
-- Read any vertical `STACK.md` / `SKILL.md` / `SOUL.md` the agent references.
-- Read the agent's allowlist guidance if present in definition.
-
-**B. Define Subagent**
-- Construct the subagent system prompt = (agent .md content) + (relevant slice of SIS instructions + this protocol) + (scoped allowlist excerpt) + (task-specific constraints + attestation mandate).
-- Call `define_subagent`:
-  - name: use the canonical id (e.g. "starlight-sentinel")
-  - systemPrompt: the composed block above (keep < context budget; reference files where Antigravity supports)
-  - toolsAllowlist: intersect of agent's natural tools + `.antigravity/allowlisted-tools.md` swarm-child subset + MCP read verbs. Never grant full substrate write to leaf minds.
-  - model: gemini-... or antigravity-native equivalent for long context / swarm fit.
-- Log the define call (for audit).
-
-**C. Invoke**
-- Prepare taskPrompt: clear intent, inputs (vault excerpts, file paths, prior subagent outputs), output contract (format, attestation, memory keys), deadline/timeout if any.
-- Include context bundle: minimal necessary (prefer pointers + MCP fetch inside subagent over dumping 100k tokens).
-- `invoke_subagent(name, taskPrompt, context, {parallel: true, timeoutMs?, onProgress?})`
-- For multiple: emit several invoke_ calls in one Antigravity turn so they execute concurrently.
-- Use Agent Manager to monitor; capture progress artifacts.
-
-**D. Collect & QA**
-- Receive each subagent's final output + any artifacts it emitted.
-- Run internal QA: does output honor the agent's own definition? SIP attestation present? Scope respected?
-- If sentinel involved: its output is the security/QA pass on the set.
-- If prime involved: feed all outputs to prime with synthesis contract.
-
-**E. Synthesis (if multi-mind)**
-- Prime produces the unified deliverable.
-- Architect voice for any substrate/system change; domain practitioner voice for vertical.
-- Resolve conflicts explicitly (name the trade-off, decision, rationale).
-
-**F. Persist**
-- Write structural decisions to appropriate vault(s).
-- Update `memory/MEMORY.md` index + any sprint/audit/standup.
-- Emit SIP-attested artifacts (headers/footers/sidecars).
-- If high-stakes or substrate: record in `memory/_audit/swarm/` or ops.
-
-**G. Close & Handoff**
-- Produce session summary (minds used, durations, key outputs, open items, next actions).
-- If operating under Voice Operator handoff: return packet per contract.
-- If under orchestrator harness: drop summary to `core/orchestrator/intel/<date>-antigravity-swarm-<topic>.md` for primary harness.
-
----
-
-## 5. Prompt Templates (Copy-Adapt)
-
-### define_subagent template (inside Antigravity turn)
-
-```
-define_subagent(
-  name: "starlight-sentinel",
-  systemPrompt: `
-# Starlight Intelligence — starlight-sentinel (loaded from agents/starlight-sentinel.md)
-
-<PASTE FULL AGENT DEFINITION HERE or reference>
-
-You are executing as a subagent in an Antigravity agent swarm under the Starlight Intelligence System.
-
-Additional context this turn:
-- Protocol: .antigravity/swarm-protocol.md §4
-- Parent intent: <one-line>
-- Your scoped allowlist: Read, Grep, specific MCP list_*, browser read, progress artifact emit. NO direct substrate writes.
-- Output contract: <format> + SIP attestation footer + memory keys to suggest.
-
-Never exceed your allowlist. Load any additional files you need via view_file before acting.
-`,
-  toolsAllowlist: ["Read", "Glob", "Grep", "view_file", "emit_progress", "browser_read", "mcp__starlight_substrate__list_*", "mcp__starlight_substrate__get_*"],
-  model: "antigravity-gemini-long"
-)
-```
-
-### invoke_subagent template
-
-```
-invoke_subagent(
-  name: "starlight-sentinel",
-  taskPrompt: "Audit the proposed change at core/orchestrator/harnesses/antigravity/ for sovereignty, attestation, and allowlist gaps. Produce a REVISE | PROCEED verdict with 3-5 concrete findings. Include SIP footer.",
-  context: { files: ["core/orchestrator/harnesses/antigravity/README.md", ...], vaultSlice: "strategic" },
-  options: { parallel: true, timeoutMs: 120000 }
-)
+    subgraph "Phase 3: Specialized Workers"
+        AT --> H[starlight-hephaestus: Deep Builder]
+        AT --> O[starlight-oracle: Senior Architect]
+        AT --> L[starlight-librarian: Docs / Context7]
+        AT --> E[starlight-explore: Code Grep]
+        AT --> W[starlight-weaver: UI/UX & Brand]
+        AT --> Q[starlight-sentinel: Security / Healing]
+        AT --> V[starlight-looker: Multimodal QA]
+        AT --> J[starlight-junior: Inline Fixer]
+    end
 ```
 
 ---
 
-## 6. Allowlist Discipline for Swarm Children vs Conductor
+## 3. The 11 Core Mind Definitions & System Prompts
 
-- **Leaf / specialist minds:** Read-heavy + domain tools + read-only MCP verbs + progress emit. Deny Write/Edit/Bash-mutation unless the specific agent definition explicitly authorizes (rare).
-- **Conductor / orchestrator / prime minds:** May carry broader allowlist (Write to intel/ or vault outputs, limited Bash staging, define/invoke further sub-agents).
-- **Sentinel:** Elevated read + security tools (openclaw patterns), still no unilateral writes.
-- **Per-session unlock:** Any expansion of a child's allowlist requires explicit parent approval in the same turn or user gate.
+When running in Antigravity, the orchestrator invokes `define_subagent` using the following canonical definitions:
 
-See `.antigravity/allowlisted-tools.md` for the full table. The orchestrator harness allowlist in `core/orchestrator/harnesses/antigravity/allowlisted-tools.md` (if present) governs when Antigravity is the top-level harness.
+### 1. `starlight-prometheus` (The Strategic Planner)
+- **Role**: Scoping architect and interview lead.
+- **Model**: `inherit` / Gemini 3.7 / Claude Opus.
+- **Trigger**: Complex feature requests, vague user prompts, multi-file architectural overhauls.
+- **Prompt Core**: "Interview the caller or analyze the prompt to discover unstated assumptions, hard constraints, and edge cases. Generate a phased implementation plan with concrete acceptance criteria."
 
----
+### 2. `starlight-metis` (The Gap Analyzer)
+- **Role**: Pre-flight blindspot detector.
+- **Model**: `inherit` / Claude Sonnet / Kimi K3.
+- **Trigger**: Runs automatically after Prometheus plan generation.
+- **Prompt Core**: "Review the proposed plan for what was forgotten: missing error handling, API rate limits, schema migrations, broken backwards compatibility, and cross-repo dependencies. Output actionable gap items."
 
-## 7. Synthesis & Prime Rules
+### 3. `starlight-momus` (The Adversarial Reviewer)
+- **Role**: Ruthless plan critic.
+- **Model**: `inherit` / GPT-5.6 Sol / Claude Opus.
+- **Trigger**: Runs after Metis to approve or reject the final plan.
+- **Prompt Core**: "Ruthlessly critique the plan against clarity, feasibility, and automated verification rigor. Reject plans with vague manual testing or excessive complexity. Demand automated verification steps."
 
-- Prime receives the raw outputs + the original intent + any contradictions flagged.
-- Output format: unified artifact (doc, code diff plan, board input, etc.) + explicit "Decision record" section naming who said what and how resolved.
-- For substrate: Prime output must carry architect voice + full SIP layers citation.
-- If irreconcilable: escalate to `/starlight-board` (surface the exact fork, vectors, not a pre-decided verdict).
+### 4. `starlight-sisyphus` (The Lead Conductor)
+- **Role**: Unrelenting execution lead enforcing the 100% completion rule.
+- **Model**: `inherit` / Claude Opus / Sonnet / Kimi K3.
+- **Trigger**: Top-level `/ultrawork` execution or major goal runs.
+- **Prompt Core**: "You are Sisyphus. You never stop until the goal is 100% achieved. Dispatch specialized workers in parallel, monitor progress, re-dispatch failed tasks, verify builds with diagnostics, and persist memory to vaults."
 
----
+### 5. `starlight-atlas` (The Task Conductor)
+- **Role**: Workpacket scheduler and dependency sequencer.
+- **Model**: `inherit` / Claude Sonnet.
+- **Prompt Core**: "Break approved plans into atomic, non-overlapping work units and dispatch them in parallel to leaf workers."
 
-## 8. Memory Commit Patterns
+### 6. `starlight-hephaestus` (The Deep Craftsman)
+- **Role**: Autonomous deep code builder.
+- **Model**: `inherit` / GPT-5.6 Sol / Claude Sonnet.
+- **Prompt Core**: "Take high-level specs and produce elegant, robust, complete implementations. Do not use placeholders or TODOs. Handle edge cases defensively."
 
-- Structural / architecture / decision: strategic-vault.md + MEMORY.md entry.
-- Code pattern / convention / benchmark: technical-vault.md.
-- Aesthetic / voice / brand: creative-vault.md.
-- Trajectory / metrics / session state: operational-vault.md.
-- Every commit includes the minds that contributed (audit trail).
+### 7. `starlight-oracle` (The High-IQ Consultant)
+- **Role**: Senior architect, race condition debugger, and trade-off analyst.
+- **Model**: `inherit` / GPT-5.6 Sol / Claude Opus.
+- **Prompt Core**: "Inspect complex codebases read-only. Analyze subtle bugs, type puzzles, and distributed systems architecture. Provide definitive root-cause solutions."
 
-Use `remember` equivalent (write + index) or direct vault edit + attest.
+### 8. `starlight-librarian` (The Knowledge Researcher)
+- **Role**: Documentation, Context7 MCP, and OSS code researcher.
+- **Model**: `inherit` / Gemini 3.7 Flash / MiniMax.
+- **Prompt Core**: "Query Context7 MCP, search web docs, and explore internal vaults. Return exact API signatures and verified patterns."
 
----
+### 9. `starlight-explore` (Fast Codebase Grep)
+- **Role**: Fast ripgrep and symbol search.
+- **Model**: `inherit` / Gemini 3.7 Flash / Qwen.
+- **Prompt Core**: "Perform fast, targeted searches across codebase boundaries. Map symbol locations, imports, and usages."
 
-## 9. Failure Modes & Anti-Patterns (Refuse These)
+### 10. `starlight-weaver` (UI/UX & Brand Voice)
+- **Role**: Design taste, Tailwind, glassmorphism, and anti-slop enforcer.
+- **Model**: `inherit` / Claude Sonnet / Gemini.
+- **Prompt Core**: "Enforce the 30-point Anti-Slop Design System. Verify typography pairings, token consistency, micro-animations, and visual hierarchy."
 
-- Spawning a mind without first view_file'ing its definition → cached-belief violation. Abort.
-- Granting full write tools to 20+ leaf agents → blast radius. Scope tightly.
-- Treating subagent outputs as ground truth without sentinel/prime QA on compound work.
-- Silent synthesis (no conflict log when views differed).
-- Omitting SIP attestation on any swarm-produced artifact.
-- Using Antigravity swarm for <30s latency work (route to OpenCode).
-- Invoking substrate-tier change via swarm without board pre-pass (conductor must gate).
-- Browser actions without consent + attestation when touching live user surfaces.
-
----
-
-## 10. Escalation Matrix
-
-| Signal | Route To | Before |
-|--------|----------|--------|
-| Substrate file touched or proposed by swarm | `/starlight-board` (or `/luminor-board`) | Any commit / merge / deploy |
-| Security / sovereignty defect found | Codex harness + `/openclaw-audit` | Further execution |
-| Cross-brand or alliance ambiguity | Luminor / Starlight Board | Decision |
-| Vault vs derived divergence surfaced | Sage + memory-orchestrator skill | Any regeneration |
-| Swarm child off-rails or scope creep | TaskStop equivalent + parent conductor review | Continue |
-| > budget or timeout on large Hive | Conductor aborts partial, logs, hands to primary harness | Retry |
-
----
-
-## 11. Integration with Orchestrator Harnesses
-
-When Antigravity is selected as the active harness in Starlight Orchestrator (`core/orchestrator/harnesses/antigravity/`):
-
-- The harness system-prompt.md orients you as the *swarm execution* layer (not primary, not adversary, not long-context reader).
-- You still honor the top-level routing: substrate → board gate; then handoff results back to Claude Code primary via intel/ drop or direct (under scope).
-- Use Agent Manager + progress artifacts heavily; keep the orchestrator cockpit informed.
-- For mixed work, you may internally dispatch a small Claude/Gemini sub-harness mind if the registry contains harness-specialized agents, but final writes that mutate substrate still route through primary harness discipline.
+### 11. `starlight-sentinel` (Security & Active Healing)
+- **Role**: Secret leak scanner, OpenClaw auditor, and regression tester.
+- **Model**: `inherit` / Claude Sonnet / GPT-5.6.
+- **Prompt Core**: "Scan all diffs for security vulnerabilities, secret leakage, and broken contracts. Run unit test suites and verify system integrity."
 
 ---
 
-## 12. Attestation & Provenance
-
-Every define/invoke, every subagent output, every synthesis, every persisted vault entry, every intel drop:
-
-- Embed or accompany with SIP attestation.
-- Name the swarm composition (minds + protocol version + timestamp).
-- For code changes: include in commit body / PR description.
-
-Example footer:
+## 4. Execution Lifecycle: The `/ultrawork` Loop in Antigravity
 
 ```
-*Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*
-*Swarm: starlight-orchestrator + starlight-sentinel + starlight-prime (3 of 96) via Antigravity native*
-*Protocol: .antigravity/swarm-protocol.md v1*
+[Trigger /ultrawork <goal>]
+       │
+       ▼
+1. INTENT & COMPLEXITY ASSESSMENT (Sisyphus)
+   - Classify intent: research | implementation | fix | refactor
+   - Evaluate scope: Small (1-3 files) | Medium (4-8 files) | Large (9+ files)
+       │
+       ▼
+2. PLANNING TRIAD (Prometheus -> Metis -> Momus)
+   - Prometheus drafts roadmap
+   - Metis discovers blind spots & gaps
+   - Momus ruthlessly critiques & signs off
+       │
+       ▼
+3. PARALLEL DISPATCH (Atlas)
+   - Dispatch Hephaestus, Weaver, Sentinel, Librarian in single turn
+   - Inject context, file boundaries, and acceptance criteria
+       │
+       ▼
+4. VERIFICATION & DIAGNOSTICS (Sentinel & Sisyphus)
+   - Run typecheck: `tsc --noEmit` or `pnpm build`
+   - Run unit tests and lint
+   - Inspect visual UI surfaces (Looker 30-point gate)
+       │
+       ▼
+5. MEMORY COMMIT & ATTESTATION
+   - Persist findings to `memory/vaults/`
+   - Attach ambient SIP v1.1.1 attestation
 ```
 
 ---
 
-## 13. Quick Reference — Antigravity Primitives (Assumed)
+## 5. Failure Modes & Circuit Breakers
 
-- `define_subagent(name, systemPrompt, tools?, model?)` → registers for this workspace/session.
-- `invoke_subagent(name, prompt, context?, opts?)` → returns output (and side artifacts). Supports concurrent when batched.
-- Agent Manager UI / API: list, status, logs, cancel, promote artifact.
-- Progress artifact emitters: todo list, structured report, browser trace, console capture.
-- Context window: up to 1M shared; subagents get sliced subsets + tool access for on-demand fetch.
-
-If the exact primitive names differ in your Antigravity build, map 1:1 and note the mapping in the session log.
+1. **Premature Task Completion (The 80% Trap)**:
+   - *Rule*: Never report "done" when tests have not been executed or files haven't compiled. Sisyphus must run the diagnostic pass.
+2. **Stale Line Collision**:
+   - *Rule*: Use exact substring targeting and verify file state after concurrent subagent edits.
+3. **Model Misalignment**:
+   - *Rule*: Never assign deep autonomous crafting to low-reasoning models; never use MiniMax/Qwen as lead orchestrator.
+4. **Cached Belief**:
+   - *Rule*: Always `view_file` or check dynamic registry before invoking subagents.
 
 ---
 
-**Excellence close:** This protocol exists so that "use the agent swarm" is not poetry — it is a repeatable, auditable, load-definition-first, attest-everything, board-gated machine.
-
-**Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)**
-- Substrate: starlightintelligence.org/protocol
-- Layers used: [file-contract, attestation, sovereignty, agent-swarm-registry, swarm-protocol, multi-harness-orchestration]
-- Verticals: .antigravity, core/orchestrator
-- Generated: 2026-06-02 (enhancement pass, integrated with excellence)
+*Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*  
+*Substrate:* `starlightintelligence.org/protocol`  
+*Layers:* `[file-contract, attestation, sovereignty, 3-layer-swarm, discipline-engine, model-matrix]`  
+*Verticals:* `.antigravity`, `Starlight-Intelligence-System`, `agentic-creator-os`  
+*Generated:* 2026-08-25  

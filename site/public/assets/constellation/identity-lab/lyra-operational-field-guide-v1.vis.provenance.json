@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "lyra-operational-field-guide-v1",
+  "role": "house-conductor-agent-identity-proof",
+  "agent_id": "lyra-research-conductor",
+  "swarm_id": "intelligence-research",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-0ce1ef83-5537-4783-97a0-30ce82eb2137.png",
+    "reference_asset": "public/assets/agents/v1/intelligence-research/lyra-research-conductor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-house-conductor-prompts.v1.md#prototype-b--lyra-operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized 4:5 WebP was inspected. Lyra's face, indigo mantle, amber aperture, and source-card language remain canonical. A question aperture, provenance comparison rails, braided confidence strands, and an unresolved violet thread make epistemic humility and synthesis visible without a conspiracy-board trope.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/lyra-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 234052,
+    "sha256": "07a631c3383580d202acef100ae7597aac6c922094af2f1c7fbb3b708f9db62c"
+  },
+  "generated_on": "2026-08-15"
+}

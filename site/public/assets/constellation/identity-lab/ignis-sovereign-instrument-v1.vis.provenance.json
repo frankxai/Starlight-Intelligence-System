@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "ignis-sovereign-instrument-v1",
+  "role": "house-conductor-agent-identity-proof",
+  "agent_id": "ignis-product-conductor",
+  "swarm_id": "product-forge",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-ec162ab7-a831-48fd-8d34-e648fa04b095.png",
+    "reference_asset": "public/assets/agents/v1/product-forge/ignis-product-conductor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-house-conductor-prompts.v1.md#prototype-a--ignis-sovereign-instrument-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized 4:5 WebP was inspected. Ignis retains the canonical cyan visor, atelier coat, and paired copper gauntlets. The customer-evidence tile, neutral prototype, three bench stations, and closed inspection gate communicate product framing, specialist routing, and verified delivery without a shipping claim.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 4,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/ignis-sovereign-instrument-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 272556,
+    "sha256": "669ec04a6ddcd0913b171b4160e61af07495f057aac6296a641337afcf1a6c0d"
+  },
+  "generated_on": "2026-08-15"
+}

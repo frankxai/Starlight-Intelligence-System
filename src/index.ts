@@ -409,3 +409,8 @@ export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';
 // v8.8 — SAGE Autonomous Goal Execution (Autonomous Loops)
 export { GoalOrchestrator } from './goal.js';
 export type { GoalTask, GoalLog, GoalState, AuditResult } from './goal.js';
+
+// v9.0 — Blitzscaling 12-House Swarm Controller & Japanese Swarm
+export { SageSwarmController } from './orchestration/sage-swarm-controller.js';
+export type { HouseType, SwarmTask, SwarmConsensusResult } from './orchestration/sage-swarm-controller.js';
+

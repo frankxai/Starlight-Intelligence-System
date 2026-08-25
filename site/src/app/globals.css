@@ -1167,3 +1167,14 @@ body {
     linear-gradient(90deg, rgba(103, 232, 249, 0.035) 1px, transparent 1px);
   background-size: 56px 56px;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+

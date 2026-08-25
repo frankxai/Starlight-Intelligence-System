@@ -1,0 +1,31 @@
+{
+  "$schema": "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+  "schema_version": "1.0.0",
+  "asset": {
+    "asset_id": "asset_cea02c794f28f3efa5055d6f",
+    "version_id": "ver_cea02c794f28f3efa5055d6f82912d90",
+    "media_type": "image",
+    "sha256": "cea02c794f28f3efa5055d6f82912d9070e0ddcb4f8051f7b4eabfc62fd9cc81",
+    "local_path": "public/assets/constellation/role-forge.webp",
+    "relative_path": "./role-forge.webp"
+  },
+  "generation": {
+    "provider": "openai-codex",
+    "model": "gpt-image",
+    "prompt": null,
+    "negative_prompt": null,
+    "seed": null,
+    "settings": { "transcode": "ffmpeg libwebp quality=82" },
+    "output_paths": ["public/assets/constellation/role-forge.webp"],
+    "created_at": "2026-08-14T03:34:00+02:00"
+  },
+  "agent": {
+    "coding_agent": "codex",
+    "repo": "starlight-intelligence-web",
+    "thread_ref": null,
+    "session_ref": "019fe474-4b2f-7703-ab79-9826fd64b2c1",
+    "summary": "Forge visual archetype for the backend data engineer; exact source prompt was not retained.",
+    "metadata": { "source_asset": "exec-c4c5184c-023d-4460-80c2-a8d50d284630.png" }
+  },
+  "skill": null
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "pixel-sovereign-instrument-v1",
+  "role": "portfolio-coverage-specialist-agent-identity-proof",
+  "agent_id": "pixel-web-experience-architect",
+  "swarm_id": "web-spatial-protocol-futures",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-beb4bfa5-889d-463f-aa2d-bf6079371300.png",
+    "reference_asset": "public/assets/agents/v1/web-spatial-protocol-futures/pixel-web-experience-architect.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-portfolio-coverage-prompts.v1.md#prototype-j--pixel-sovereign-instrument-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized portrait was inspected. Pixel's canonical responsive frames preserve one content hierarchy across three sizes, while the accessibility aperture, weight-shedding meter, collaborator artifacts, deployment lock, and brand key make quality and limits legible without fake UI.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/pixel-sovereign-instrument-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 172730,
+    "sha256": "0a751cf2b28f4895ed037b245dd6b28a101256048daa9d5c9ddac721fc862f9e"
+  },
+  "generated_on": "2026-08-15"
+}

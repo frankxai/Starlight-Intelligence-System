@@ -585,6 +585,43 @@ export default function ArchitecturePage() {
         </div>
       </section>
 
+      {/* ── Agent Constellation Tier ── */}
+      <section className="border-b border-white/[0.08] px-6 py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <h2 className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+                Agent Constellation Tier
+              </h2>
+              <p className="mt-3 text-2xl font-bold text-white md:text-3xl">
+                50 Governed Specialists across 10 Federated Houses.
+              </p>
+              <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-slate-400">
+                Every agent implements a prompt contract, stop invariants, and verification obligations.
+                The 1728 Matrix partitions namespaces while limiting active consensus councils to 3–5 agents.
+              </p>
+            </div>
+            <Link
+              href="/constellation"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold text-[#060609] transition-all hover:bg-white/90 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+            >
+              Open Agent Constellation &rarr;
+            </Link>
+          </div>
+
+          <div className="mt-10 overflow-hidden rounded-3xl border border-white/10 bg-black/60 shadow-2xl relative aspect-[16/9] max-h-[460px]">
+            <img
+              src="/assets/constellation/constellation-lineup.webp"
+              alt="Seven porcelain Starlight agents assembled in a sovereign basalt archive"
+              className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
+            />
+            <div className="absolute bottom-4 left-4 rounded-xl bg-[#060609]/95 px-4 py-2.5 text-[11px] font-mono text-violet-300 border border-violet-400/20 backdrop-blur">
+              Constellation 01 Canonical Lineup · 10 Houses / 50 Agents
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Advanced Systems Topology ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">

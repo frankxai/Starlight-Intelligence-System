@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "harbor-operational-field-guide-v1",
+  "role": "foundational-specialist-agent-identity-proof",
+  "agent_id": "harbor-care-navigator",
+  "swarm_id": "health-flourishing",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-8b7106b5-98ac-4a1a-a5ea-28716faf1b71.png",
+    "reference_asset": "public/assets/agents/v1/health-flourishing/harbor-care-navigator.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-foundational-specialist-prompts.v1.md#prototype-h--harbor-operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized portrait WebP was inspected. Harbor's sky-and-navy identity, blank preparation tiles, three unranked care routes, lighthouse threshold, urgent amber route, and external human aperture remain calm, legible, and explicitly non-diagnostic.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 4,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/harbor-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 377218,
+    "sha256": "7fd5d2e1650318df8ac8699835aac918e3cf75f3f0b858150de841ce42c31d3d"
+  },
+  "generated_on": "2026-08-15"
+}

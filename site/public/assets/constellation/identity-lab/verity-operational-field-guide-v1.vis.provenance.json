@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "verity-operational-field-guide-v1",
+  "role": "foundational-specialist-agent-identity-proof",
+  "agent_id": "verity-source-auditor",
+  "swarm_id": "intelligence-research",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-00404cd6-3f11-4427-b624-e18e2784e38c.png",
+    "reference_asset": "public/assets/agents/v1/intelligence-research/verity-source-auditor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-foundational-specialist-prompts.v1.md#prototype-c--verity-operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized portrait WebP was inspected. Verity's indigo archival identity, source artifact, provenance seal, supported and deliberately dead claim branches, source-quality prism, and blank annotation field remain exceptionally clear without truth or peer-review certification.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/verity-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 224322,
+    "sha256": "ae4e0f36cae919af85d57085a9a462989bcd9da4a82f08736d65c4ff1ae66c34"
+  },
+  "generated_on": "2026-08-15"
+}

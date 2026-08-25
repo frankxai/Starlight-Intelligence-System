@@ -31,14 +31,17 @@ export function Header() {
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-0.5 min-[1500px]:flex">
+          <NavLink href="/skills">Skills</NavLink>
+          <NavLink href="/agents">Agents</NavLink>
           <NavLink href="/protocol">Protocol</NavLink>
+          <NavLink href="/constellation">Constellation</NavLink>
           <NavLink href="/research">Research</NavLink>
           <NavLink href="/download">Download</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
           <NavLink href="/architecture">Architecture</NavLink>
           <NavLink href="/vaults">Vaults</NavLink>
           <NavLink href="/verticals">Verticals</NavLink>
-          <NavLink href="/visuals/brand-lab">Brand Lab</NavLink>
+          <NavLink href="/visuals">Visuals</NavLink>
           <NavLink
             href="https://github.com/frankxai/Starlight-Intelligence-System"
             external
@@ -57,7 +60,10 @@ export function Header() {
 
         {/* Tablet nav — condensed */}
         <div className="hidden items-center gap-1 sm:flex min-[1500px]:hidden">
+          <NavLink href="/skills">Skills</NavLink>
+          <NavLink href="/agents">Agents</NavLink>
           <NavLink href="/protocol">Protocol</NavLink>
+          <NavLink href="/constellation">Constellation</NavLink>
           <NavLink href="/research">Research</NavLink>
           <NavLink href="/download">Download</NavLink>
           <NavLink href="/cockpit">Cockpit</NavLink>
@@ -84,7 +90,10 @@ export function Header() {
             aria-label="Mobile navigation"
             className="absolute right-0 top-full z-50 mt-2 flex w-48 flex-col gap-0.5 rounded-lg border border-white/[0.10] bg-[#0c0c12] p-2 shadow-2xl"
           >
+            <NavLink href="/skills">Skills</NavLink>
+            <NavLink href="/agents">Agents</NavLink>
             <NavLink href="/protocol">Protocol</NavLink>
+            <NavLink href="/constellation">Constellation</NavLink>
             <NavLink href="/research">Research</NavLink>
             <NavLink href="/download">Download</NavLink>
             <NavLink href="/quickstart">Quickstart</NavLink>
@@ -92,8 +101,8 @@ export function Header() {
             <NavLink href="/architecture">Architecture</NavLink>
             <NavLink href="/vaults">Vaults</NavLink>
             <NavLink href="/verticals">Verticals</NavLink>
+            <NavLink href="/visuals">Visuals Studio</NavLink>
             <NavLink href="/knowledge-tree">Knowledge Tree</NavLink>
-            <NavLink href="/visuals/brand-lab">Brand Lab</NavLink>
             <NavLink href="/explainer">Explainer</NavLink>
             <NavLink href="/changelog">Changelog</NavLink>
             <NavLink href="/docs">Docs</NavLink>

@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "equa-policy-auditor-protocol-badge-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "equa-policy-auditor",
+  "swarm_id": "trust-safety",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-92d87fbb-d1ea-4568-bb49-f58bf39d317b.png",
+    "reference_asset": "public/assets/agents/v1/trust-safety/equa-policy-auditor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#equa--fairness--policy-auditor"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "Equa's treatment paths, fairness prism, and explicit reversible human appeal route survive square crops without judicial or certification claims.",
+  "quality_score": { "total": 29, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 5, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/equa-policy-auditor-protocol-badge-v1.webp", "mime_type": "image/webp", "width": 1254, "height": 1254, "bytes": 186742, "sha256": "b1b2ce8ae39510a300e808b28f32604f225727b092176993dd30ccd9351c6a5c" },
+  "generated_on": "2026-08-15"
+}

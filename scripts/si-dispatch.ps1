@@ -396,7 +396,7 @@ function Invoke-ProcessCapture {
     $outFile = Join-Path $env:TEMP "si-dispatch-out-$([guid]::NewGuid().ToString('n')).txt"
     $errFile = Join-Path $env:TEMP "si-dispatch-err-$([guid]::NewGuid().ToString('n')).txt"
 
-    $proc = Start-Process -FilePath $FilePath -WorkingDirectory $WorkDir -NoNewWindow -PassThru `
+    $proc = Start-Process -FilePath $FilePath -WorkingDirectory $WorkDir -WindowStyle Hidden -PassThru `
         -RedirectStandardOutput $outFile -RedirectStandardError $errFile -ArgumentList $ArgumentList
 
     $completed = $proc.WaitForExit($TimeoutSec * 1000)
@@ -683,7 +683,7 @@ if ($Parallel -and $Lanes.Count -gt 1) {
             '-ReceiptPath', $receiptFile
         )
         if ($UseArco) { $argList += '-UseArco' }
-        $proc = Start-Process -FilePath 'pwsh' -PassThru -NoNewWindow -ArgumentList $argList
+        $proc = Start-Process -FilePath 'pwsh' -PassThru -WindowStyle Hidden -ArgumentList $argList
         $jobs += [pscustomobject]@{ Lane = $lane; Proc = $proc; Receipt = $receiptFile }
     }
     foreach ($job in $jobs) {

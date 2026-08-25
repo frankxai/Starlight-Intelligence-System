@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "sophia-operational-field-guide-v1",
+  "role": "house-conductor-agent-identity-proof",
+  "agent_id": "sophia-academy-conductor",
+  "swarm_id": "community-academy",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-7c189935-2d7f-4edf-ad0a-982d04b98c2a.png",
+    "reference_asset": "public/assets/agents/v1/community-academy/sophia-academy-conductor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-house-conductor-prompts.v1.md#prototype-e--sophia-operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized 4:5 WebP was inspected. Sophia's ivory, coral, teal, open-book halo, and warm synthetic identity are stable. Differently shaped learner steps, an equal-entry community ring, and an adjustable accessibility gateway create an inclusive first read; the feedback return is intentionally supported by adjacent HTML explanation.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 4,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/sophia-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 321868,
+    "sha256": "a0e04eb039fbcefaf6cc628750665eb1d89eeba510e239483a8775a2a1a1c38f"
+  },
+  "generated_on": "2026-08-15"
+}

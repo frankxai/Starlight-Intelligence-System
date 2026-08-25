@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "orion-sovereign-instrument-v2",
+  "role": "agent-identity-prototype",
+  "agent_id": "orion-mission-architect",
+  "swarm_id": "sovereign-command",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-eb102a49-50e2-4d4d-bfa0-0e82ce26cc29.png",
+    "reference_asset": "public/assets/agents/v1/sovereign-command/orion-mission-architect.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-identity-prototype-prompts.v1.md#prototype-a--sovereign-instrument-v2"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "Identity, hands, route marker, and mission blueprint were inspected after WebP conversion. Responsibility reads through active route construction; all public labels remain code-rendered.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 4,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/orion-sovereign-instrument-v2.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 212624,
+    "sha256": "8e3a990dce45ac364b9b20e5cf03d914da0e4c3f72631bafa1abf53f8f19c701"
+  },
+  "generated_on": "2026-08-15"
+}

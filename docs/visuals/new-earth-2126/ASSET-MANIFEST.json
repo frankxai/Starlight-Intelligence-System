@@ -1,0 +1,64 @@
+{
+  "version": "2026-08-25",
+  "series": "New Earth 2126 — Starlight Intelligence civilization",
+  "generator": "OpenAI built-in image generation",
+  "provenance": "Ten original research-grounded text-to-image generations created for this repository; no reference images or living-artist style prompts used.",
+  "master_format": "PNG",
+  "master_dimensions": {
+    "width": 1672,
+    "height": 941,
+    "aspect_ratio": "1.7768:1"
+  },
+  "assets": [
+    {
+      "file": "01-the-first-light.png",
+      "bytes": 2773648,
+      "sha256": "7a814f4318d85f0ad340344c33028a726245cc08146f82914f387551f06c1059"
+    },
+    {
+      "file": "02-civic-intelligence-assembly.png",
+      "bytes": 2756745,
+      "sha256": "07a88af36262e2c5488887c74a2bbfc05a2a50426bad97131c58ff7f427c5ac4"
+    },
+    {
+      "file": "03-living-waters-of-abundance.png",
+      "bytes": 3084088,
+      "sha256": "b32a1664abded0e28b93276304c1052c5fb624ec09499a4dffeab83363e43a2c"
+    },
+    {
+      "file": "04-multispecies-commons.png",
+      "bytes": 2126443,
+      "sha256": "af4a6312fac0a53625a2151b30835712e1cc0b022ade35ec7665ab1628c52079"
+    },
+    {
+      "file": "05-regenerative-food-continent.png",
+      "bytes": 3065286,
+      "sha256": "4c73b60760fb1c3d32ed1d09221284bdd453d0b477198c97e847e998c7e87b7e"
+    },
+    {
+      "file": "06-new-human-renaissance.png",
+      "bytes": 2749771,
+      "sha256": "ae03928f8c8d158646dc04a8f613ba21b02972f322762f81c4d666891fe46195"
+    },
+    {
+      "file": "07-great-intelligence-ecology.png",
+      "bytes": 3025672,
+      "sha256": "cad508dd0d570936ae0b50a77b824a17ae436d2b8bb40cb0ea628555b54ef2a8"
+    },
+    {
+      "file": "08-living-city-human-scale.png",
+      "bytes": 3231824,
+      "sha256": "128d2511f9a42de000eecacf4b1bd0447a9bf3b3ea4a1cf6dd6605d83504b263"
+    },
+    {
+      "file": "09-planetary-restoration.png",
+      "bytes": 2890560,
+      "sha256": "8b83e8f42d04d4262d06afe2628b81d4fef6b6c227f346d88729a9a85ef003c6"
+    },
+    {
+      "file": "10-starlight-horizon.png",
+      "bytes": 2234303,
+      "sha256": "7b0595e23443acc55521287391874ac0651fdd03f5b0e7c000f947b096319cc3"
+    }
+  ]
+}

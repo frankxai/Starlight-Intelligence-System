@@ -1,5 +1,13 @@
 {
   "schema_version": "starlight.repo_profile.v2",
+  "risk": "private",
+  "health": "npm test",
+  "agentFiles": [
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "deployPolicy": "manual",
+  "globalHooksAllowed": false,
   "repo": {
     "id": "Starlight-Intelligence-System",
     "classification": "platform",

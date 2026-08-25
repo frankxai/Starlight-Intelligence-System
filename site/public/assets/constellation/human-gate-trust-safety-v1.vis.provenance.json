@@ -1,0 +1,40 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "human-gate-trust-safety-v1",
+  "role": "human-gate",
+  "swarm_id": "trust-safety",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-16d06920-7525-4b32-b9bc-b8bf75a21701.png",
+    "reference_assets": [
+      "public/assets/agents/v1/trust-safety/beacon-incident-coordinator.webp",
+      "public/assets/agents/v1/trust-safety/cipher-privacy-steward.webp",
+      "public/assets/agents/v1/trust-safety/aegis-trust-conductor.webp",
+      "public/assets/constellation/human-conductor.webp"
+    ],
+    "prompt_record": "docs/design/prompts/starlight-workflow-action-scene-tests.v1.md#test-02--trust--safety--human-response-gate--45"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The source PNG and optimized WebP were inspected at full export size. Beacon, Aegis, and Cipher retain their canonical face systems, silhouettes, coats, and exclusive instruments. The sealed incident packet, isolated pearl privacy capsule, and shield boundary remain distinct. A human operator visibly holds the only amber authority key; no agent activates an external response. No generated text, UI, surveillance wall, exploit imagery, or legal-certification trope appears.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/human-gate-trust-safety-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 220406,
+    "sha256": "f9f34c1f1906e891dad5eae9db6614de841b5f16a2ddb7e3672e3c7146dca3d5"
+  },
+  "generated_on": "2026-08-15"
+}

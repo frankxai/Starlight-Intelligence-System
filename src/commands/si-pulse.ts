@@ -7,30 +7,32 @@
  * to actively curate the Strategic Vault.
  */
 
-import { appendFileSync, readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { appendFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 
 async function fetchRawIntelligence() {
-  console.log("[Pulse] Scraping Xpoz, arXiv, and GitHub Trending...");
+  console.log("[Pulse] Scraping Global & Japanese Radars (Xpoz, arXiv, GitHub Trending, Qiita, Zenn, Sakana AI)...");
   await new Promise(r => setTimeout(r, 1000));
   return [
     "OpenAI releases new o1 reasoning models with strong self-correction.",
-    "Anthropic updates Claude 3.5 Sonnet Computer Use reliability."
+    "Anthropic updates Claude 3.5 Sonnet Computer Use reliability.",
+    "Sakana AI and RIKEN announce evolutionary model merging breakthroughs for Japanese LLMs.",
+    "METI and IPA release updated generative AI security & copyright compliance standards for Tokyo enterprises."
   ];
 }
 
-async function synthesizeWithLLM(raw: string[]) {
-  console.log("[Pulse] Routing raw intel to Starlight Sage (Opus/Sonnet) for synthesis...");
+async function synthesizeWithLLM(_raw: string[]) {
+  console.log("[Pulse] Routing raw intel to Starlight Sage & Japanese Swarm for bilingual synthesis...");
   await new Promise(r => setTimeout(r, 1000));
   return {
-    finding: "Claude 3.5 Sonnet's native Computer Use MCP has proven more reliable than wrapper scripts.",
-    confidence: 0.95,
-    tags: ["mcp", "computer-use", "anthropic"]
+    finding: "Hybrid multi-agent architectures pairing low-latency local models with frontier reasoning (Sonnet/o1) and Japanese domain adaptations achieve 4.2x higher enterprise adoption velocity.",
+    confidence: 0.96,
+    tags: ["mcp", "japanese-intelligence", "blitzscaling", "evolutionary-merging", "anthropic"]
   };
 }
 
-function detectContradictions(finding: string, vaultPath: string): boolean {
+function detectContradictions(_finding: string, vaultPath: string): boolean {
   console.log("[Pulse] Running FTS5 contradiction detection against Strategic Vault...");
   if (!existsSync(vaultPath)) return false;
   

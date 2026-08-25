@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "relay-change-enablement-operational-field-guide-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "relay-change-enablement",
+  "swarm_id": "enterprise-transformation",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-d031c468-0748-4254-8e97-0df5ae2add13.png",
+    "reference_asset": "public/assets/agents/v1/enterprise-transformation/relay-change-enablement.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#relay--change-enablement-lead"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The corrected full-layout plate removes pictogram and pseudo-label drift while preserving role kits, format adaptation, feedback, and blank markers.",
+  "quality_score": { "total": 28, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 4, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/relay-change-enablement-operational-field-guide-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 164674, "sha256": "7a57a144556c9f1a9fa3d1fd49abfc68f9de923bfd47df8210512ff955ccd1fc" },
+  "generated_on": "2026-08-15"
+}

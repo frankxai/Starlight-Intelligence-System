@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "aegis-protocol-badge-v1",
+  "role": "cross-swarm-agent-registry-prototype",
+  "agent_id": "aegis-trust-conductor",
+  "swarm_id": "trust-safety",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-f9198d8d-dfe5-4c5b-8235-a5754ce9d2bf.png",
+    "reference_asset": "public/assets/agents/v1/trust-safety/aegis-trust-conductor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-cross-swarm-prototype-prompts.v1.md#prototype-e--aegis-protocol-badge-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized square WebP was inspected. Aegis retains the canonical face and shield silhouette; risk framing, specialist routing, mitigation sectors, open hand, and blank lower identity band survive the compact composition without generated text.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 4,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 5
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/aegis-protocol-badge-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 266692,
+    "sha256": "27a336005e0817a9a8bc2dd39fe8d256cd6c8805dd956543822967c362d4ab5a"
+  },
+  "generated_on": "2026-08-15"
+}

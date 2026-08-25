@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "rivet-build-engineer-operational-field-guide-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "rivet-build-engineer",
+  "swarm_id": "product-forge",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-fe17d069-90e5-4fca-97c1-1fe251ba46be.png",
+    "reference_asset": "public/assets/agents/v1/product-forge/rivet-build-engineer.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#rivet--build-engineer"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The unmarked field guide preserves Rivet's exosleeves and makes modular planning, scoped drafting, and local verification distinct at card scale.",
+  "quality_score": { "total": 29, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 5, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/rivet-build-engineer-operational-field-guide-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 249790, "sha256": "8747bb1131105c9b2dce7e5f7554cd4ce432928354170f5d54a23da5b8806a50" },
+  "generated_on": "2026-08-15"
+}

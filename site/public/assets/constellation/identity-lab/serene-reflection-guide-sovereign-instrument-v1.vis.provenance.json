@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "serene-reflection-guide-sovereign-instrument-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "serene-reflection-guide",
+  "swarm_id": "health-flourishing",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-9db73f95-0d01-4d08-bc3d-93add382e155.png",
+    "reference_asset": "public/assets/agents/v1/health-flourishing/serene-reflection-guide.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#serene--reflection-guide"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "Serene's mirror, three unlabeled value objects, stepping questions, and blank journal leave agency with the person and avoid clinical claims.",
+  "quality_score": { "total": 29, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 5, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/serene-reflection-guide-sovereign-instrument-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 146846, "sha256": "31366e61b4239f9192d0cd9a1c1b65efa024e9a5eb197256c1c71711f3574495" },
+  "generated_on": "2026-08-15"
+}

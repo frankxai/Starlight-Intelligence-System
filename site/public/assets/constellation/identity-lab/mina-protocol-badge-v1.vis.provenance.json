@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "mina-protocol-badge-v1",
+  "role": "portfolio-coverage-specialist-agent-identity-proof",
+  "agent_id": "mina-community-steward",
+  "swarm_id": "community-academy",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-d8cf6421-a553-44c7-9959-6270bd85c392.png",
+    "reference_asset": "public/assets/agents/v1/community-academy/mina-community-steward.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-portfolio-coverage-prompts.v1.md#prototype-f--mina-protocol-badge-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The square export was inspected. Mina's open woven-circle instrument, welcoming, ritual, and contribution paths, gently loosened conflict knot, voluntary exit gap, collaborator windows, and separate moderation key preserve warmth and limits at compact size.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/mina-protocol-badge-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 406166,
+    "sha256": "c87f38e35c3814dcec3ad668ca3dca56cc4ff35a597325e2d0af9412ac34cb5d"
+  },
+  "generated_on": "2026-08-15"
+}

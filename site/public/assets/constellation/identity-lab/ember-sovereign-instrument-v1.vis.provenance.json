@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "ember-sovereign-instrument-v1",
+  "role": "house-conductor-agent-identity-proof",
+  "agent_id": "ember-creator-conductor",
+  "swarm_id": "creator-worlds",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-dce97a0c-ad0f-4ce6-9b0b-cbc5117b1ea4.png",
+    "reference_asset": "public/assets/agents/v1/creator-worlds/ember-creator-conductor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-house-conductor-prompts.v1.md#prototype-c--ember-sovereign-instrument-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized 4:5 WebP was inspected. Ember preserves the canonical single cyan eye, ember crown, studio coat, and light pen. One continuous magenta-gold authorship thread crosses four materially distinct specialist stations and ends at a physical hand-shaped creator approval gate.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/ember-sovereign-instrument-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 302012,
+    "sha256": "b1ff73ea179a92a6ed662e27a6f55812df5a4b7d0e6f4e2fee0a6cc47c6d5518"
+  },
+  "generated_on": "2026-08-15"
+}

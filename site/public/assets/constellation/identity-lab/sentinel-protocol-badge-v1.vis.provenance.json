@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "sentinel-protocol-badge-v1",
+  "role": "portfolio-coverage-specialist-agent-identity-proof",
+  "agent_id": "sentinel-risk-analyst",
+  "swarm_id": "trust-safety",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-da6a2567-d985-4f03-9340-ccb2d9422947.png",
+    "reference_asset": "public/assets/agents/v1/trust-safety/sentinel-risk-analyst.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-portfolio-coverage-prompts.v1.md#prototype-g--sentinel-protocol-badge-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The square export was inspected. Sentinel's glacier radar sectors turn a large hazard through a physical control into a smaller residual-risk capsule, with separate report routes and a closed human risk-acceptance latch; no exploit or intrusion mechanics are present.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/sentinel-protocol-badge-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 334254,
+    "sha256": "506a9f48df02f79d6516aab30d81047de010157f3bb7c610f8dbe3a981ba6736"
+  },
+  "generated_on": "2026-08-15"
+}

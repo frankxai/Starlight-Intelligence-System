@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "pulse-cohort-facilitator-sovereign-instrument-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "pulse-cohort-facilitator",
+  "swarm_id": "community-academy",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-ebf5db36-ca42-4509-9e2c-d48a88e1fe6d.png",
+    "reference_asset": "public/assets/agents/v1/community-academy/pulse-cohort-facilitator.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#pulse--cohort-facilitator"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "Pulse's amber cadence, peer exchange, and gentle recovery path communicate facilitation and psychological safety without surveillance or coercion.",
+  "quality_score": { "total": 29, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 5, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/pulse-cohort-facilitator-sovereign-instrument-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 156792, "sha256": "b0ba23eb695b93617cc0f64f25656697bf791f42a28ec33f2b77c57ad9ca6d08" },
+  "generated_on": "2026-08-15"
+}

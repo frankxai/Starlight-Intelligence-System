@@ -1,0 +1,31 @@
+{
+  "$schema": "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+  "schema_version": "1.0.0",
+  "asset": {
+    "asset_id": "asset_af00a6f3f91ae06ac5d8673e",
+    "version_id": "ver_af00a6f3f91ae06ac5d8673e03d8ea30",
+    "media_type": "image",
+    "sha256": "af00a6f3f91ae06ac5d8673e03d8ea305ae93ceaba251cc0c8958b39cf722646",
+    "local_path": "public/assets/constellation/constellation-mobile.webp",
+    "relative_path": "./constellation-mobile.webp"
+  },
+  "generation": {
+    "provider": "openai-codex",
+    "model": "gpt-image",
+    "prompt": null,
+    "negative_prompt": null,
+    "seed": null,
+    "settings": { "transcode": "ffmpeg libwebp quality=82" },
+    "output_paths": ["public/assets/constellation/constellation-mobile.webp"],
+    "created_at": "2026-08-14T03:34:00+02:00"
+  },
+  "agent": {
+    "coding_agent": "codex",
+    "repo": "starlight-intelligence-web",
+    "thread_ref": null,
+    "session_ref": "019fe474-4b2f-7703-ab79-9826fd64b2c1",
+    "summary": "Mobile constellation story hero; exact source prompt was not retained.",
+    "metadata": { "source_asset": "exec-8335e605-f165-4cd7-b622-c7199901ef46.png" }
+  },
+  "skill": null
+}

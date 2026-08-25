@@ -1,13 +1,17 @@
+import Image from "next/image";
+import Link from "next/link";
 import { getVaultRegistry, getVaultData } from "@/lib/vault";
 import { VaultCard } from "@/components/VaultCard";
+import { VAULT_PLATES } from "@/lib/constellation-data";
+import { Database, Sparkles, ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Public Vaults",
+  title: "Semantic Memory Vaults — Starlight Substrate",
   description:
-    "Browse public memory vaults from builders, creators, and thinkers.",
+    "Explore the six canonical semantic memory chambers (Strategic, Technical, Operational, Creative, Wisdom, Horizon) and public operator vaults.",
 };
 
 export default async function VaultsPage() {
@@ -25,22 +29,84 @@ export default async function VaultsPage() {
   );
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
-      <h1 className="text-2xl font-bold text-white">Public Vaults</h1>
-      <p className="mt-2 text-[14px] text-slate-500">
-        Memory gardens from builders and thinkers. Each vault is a collection
-        of insights readable by humans and agents.
+    <div className="mx-auto max-w-6xl px-6 py-16">
+      <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-cyan-400">
+        <Database className="h-4 w-4" /> Sovereign Memory Substrate
+      </div>
+      <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-5xl">
+        Six Semantic Memory Vaults
+      </h1>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400 md:text-base">
+        Physicalized architectural chambers that give every agent the same durable memory surface.
+        SQLite FTS5 + JSONL append-only event logs with 90-day temporal half-life and contradiction detection.
       </p>
 
-      <div className="mt-10 grid gap-3 md:grid-cols-2">
-        {vaultsWithData.map(({ reg, totalEntries, lastUpdated }) => (
-          <VaultCard
-            key={reg.slug}
-            vault={reg}
-            totalEntries={totalEntries}
-            lastUpdated={lastUpdated}
-          />
+      {/* Six Semantic Chambers Grid */}
+      <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {Object.entries(VAULT_PLATES).map(([key, vault]) => (
+          <div
+            key={key}
+            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c14] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-[#12121e]"
+          >
+            <div>
+              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-black/40 border border-white/[0.06]">
+                <Image
+                  src={vault.plateUrl}
+                  alt={vault.name}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c14] via-transparent to-transparent opacity-60" />
+                <div className="absolute top-2.5 left-2.5">
+                  <span
+                    className="rounded-full px-2.5 py-0.5 font-mono text-[11px] font-bold"
+                    style={{ backgroundColor: `${vault.accent}20`, color: vault.accent, border: `1px solid ${vault.accent}40` }}
+                  >
+                    {vault.symbol} {vault.name.split(" ")[0]}
+                  </span>
+                </div>
+              </div>
+
+              <h3 className="mt-4 text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                {vault.name}
+              </h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-400">
+                {vault.description}
+              </p>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase text-slate-500">
+                Category · {key}
+              </span>
+              <Link
+                href={`/vaults/frank/${key}`}
+                className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors"
+              >
+                Explore <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+          </div>
         ))}
+      </div>
+
+      {/* Operator Public Vaults */}
+      <div className="mt-16 pt-12 border-t border-white/[0.08]">
+        <h2 className="text-2xl font-bold text-white">Public Operator Vaults</h2>
+        <p className="mt-2 text-sm text-slate-400">
+          Memory gardens from builders and thinkers. Each vault is a collection of insights readable by humans and agents.
+        </p>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {vaultsWithData.map(({ reg, totalEntries, lastUpdated }) => (
+            <VaultCard
+              key={reg.slug}
+              vault={reg}
+              totalEntries={totalEntries}
+              lastUpdated={lastUpdated}
+            />
+          ))}
+        </div>
       </div>
 
       {registry.length === 0 && (

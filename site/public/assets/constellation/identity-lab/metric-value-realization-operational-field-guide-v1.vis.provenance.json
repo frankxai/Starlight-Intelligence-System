@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "metric-value-realization-operational-field-guide-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "metric-value-realization",
+  "swarm_id": "enterprise-transformation",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-b2894b1c-c4ae-49d1-b398-bcab3d85ca33.png",
+    "reference_asset": "public/assets/agents/v1/enterprise-transformation/metric-value-realization.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#metric--value-realization-analyst"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "Metric's baseline, selected outcome prism, and layered attribution stack communicate value measurement without axes, vanity charts, or causal proof.",
+  "quality_score": { "total": 28, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 4, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/metric-value-realization-operational-field-guide-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 188548, "sha256": "d213cdd14e55b598561fe4d67db3da0940516f736266b6e77ac532450605ab4b" },
+  "generated_on": "2026-08-15"
+}

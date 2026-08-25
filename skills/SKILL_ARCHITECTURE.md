@@ -1,38 +1,43 @@
 # Starlight Skill Architecture
 
-> *"Skills are knowledge made executable. The difference between knowing and doing."*
+> *"Skills are knowledge made executable. Sovereign in authoring, universal in distribution."*
 
 ---
 
 ## Overview
 
-The Starlight Skill Architecture defines how capabilities are organized, activated, and composed within the intelligence system. Inspired by ACOS's skill-based system and Arcanea's hierarchical naming, Starlight skills are markdown-defined capabilities that auto-activate based on context.
+The Starlight Skill Architecture defines how capabilities are organized, activated, composed, and exported across the intelligence ecosystem. All 87 canonical skills are authored in `skills/` under the `agentskills.io` standard and automatically compiled into native platform adapters for Google Antigravity, Claude Code, Cursor IDE, OpenAI Codex, Cline, and the Starlight Marketplace.
 
 ---
 
-## Skill Hierarchy
+## Skill Hierarchy & Multi-Platform Pipeline
 
 ```
-STARLIGHT SKILL SYSTEM
-=======================
-
-Layer 1: CATEGORIES (5 domains)
-  Intelligence, Orchestration, Memory, Integration, Safety
-
-Layer 2: SKILLS (21 capabilities)
-  Intelligence: 5 skills (+ Hermes Search)
-  Orchestration: 4 skills
-  Memory: 4 skills
-  Integration: 4 skills
-  Safety: 4 skills
-
-Layer 3: PROCEDURES (within each skill)
-  Specific step-by-step protocols
+┌────────────────────────────────────────────────────────┐
+│             STARLIGHT SKILL ARCHITECTURE               │
+│                                                        │
+│  Layer 1: 16 DOMAINS                                   │
+│    Intelligence, Orchestration, Memory, Integration,   │
+│    Safety, Business, Vision, Sound, Music, Energy,     │
+│    People, Relational, Health, Machine, Crypto, Marine │
+│                                                        │
+│  Layer 2: 87 CANONICAL SKILLS (skills/**)              │
+│    agentskills.io YAML frontmatter + structured SOPs   │
+│                                                        │
+│  Layer 3: UNIVERSAL COMPILER & EXPORTER                │
+│    (scripts/export-skills.ts & src/adapters/)          │
+│    ├── Antigravity Plugin (.gemini/config/plugins/)    │
+│    ├── Claude Code Skills (~/.claude/skills/)          │
+│    ├── Cursor Rules (.cursor/rules/*.mdc)              │
+│    ├── Codex Skills (.agents/skills/ + AGENTS.md)      │
+│    ├── Cline Rules (.clinerules/skills/)               │
+│    └── Starlight Marketplace (dist/marketplace/)       │
+└────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Skill Categories
+## Skill Categories (87 Skills Across 16 Domains)
 
 ### Intelligence Skills
 Core reasoning, thinking, and search capabilities.

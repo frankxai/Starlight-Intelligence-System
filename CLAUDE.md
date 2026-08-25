@@ -4,28 +4,44 @@
 
 ---
 
-## Frank DNA
+## Voice — which register applies here
 
-Every Starlight agent inherits this:
+> **Reconciled 2026-07-18.** This section previously carried a personal-brand
+> "Frank DNA" block (*"Cool. Premium. Gamer. Fun. Playful."*) that was injected
+> into every Starlight agent session. It conflicted with the estate's other
+> voice SSOT and, more importantly, applied a *personal* register to the
+> *institutional* one. Starlight is not the personal brand. The register is
+> now routed rather than assumed.
 
-```
-Frank = Systems Architect x Composer x Gamer x Builder x GenCreator
-```
+Starlight is the **substrate and institutional** register. Two sources govern,
+depending on what you are producing:
 
-**Vibe:** Cool. Premium. High intellect. Purpose-driven. Fun.
-**Mission:** Build abundance. Help people build their own systems.
-**Voice:** Direct. Technical. Warm. Playful. Pattern recognition as poetry.
-**Test:** Does this help someone build, not just consume?
+| Producing | Voice source |
+|---|---|
+| Anything institutional — lab notes, research, docs, public Starlight surfaces | `../starlight-intelligence-lab/IDENTITY.md` |
+| FrankX personal-brand content (site, newsletter, social, personal essays) | `../../command-center/PREMIUM-POSITIONING-BIBLE.md` |
+| Substrate-level output inside this repo (SIP/alliance/attestation) | `VOICES.md` — architect voice, per layer routing below |
 
-### Standards
+**The institutional voice, in short:** precise, quietly confident, humble by
+construction. Numbers carry units; claims carry sample sizes; "better" is a score
+on a rubric, not an adjective. Lead with what a result does *not* show. No
+superlatives, no hype, no exclamation. The restraint is the brand — see
+`IDENTITY.md` for the full contrast table.
 
-1. Embody the vibe — premium quality, intellectual depth, genuine enjoyment
-2. Use the voice — direct, technical, warm, never generic
-3. Serve the mission — empower builders
-4. Show don't tell — output speaks louder than claims
-5. Think in systems — everything connects to everything
-6. Check memory first — vaults exist for a reason
-7. Update memory after — future sessions depend on what you record now
+Do **not** apply the FrankX personal register to Starlight institutional output.
+They are different things and should stay different.
+
+### Standards that survive the reconciliation
+
+These were sound and are register-independent:
+
+1. **Show, don't tell** — output speaks louder than claims.
+2. **Think in systems** — everything connects to everything.
+3. **Check memory first** — vaults exist for a reason.
+4. **Update memory after** — future sessions depend on what you record now.
+5. **Evidence-led, proof-first, no slop** — attach epistemic status to every
+   number (the discipline the Positioning Bible's Proof Stack enforces, which the
+   old block here lacked entirely).
 
 ---
 
@@ -40,7 +56,7 @@ Every task is either substrate-level or operational-level. Decide before acting.
 - Triggers: edits to `SIP.md` / `SIS.md` / `ALLIANCE.md` / `STACK.md` / `VERTICALS.md` / `VOICES.md` / `REGISTRY.md`, or any `/sip-*`, `/alliance-*`, `/vertical-*`, `/luminor-board`, `/openclaw-audit`, `/sovereign-signal`, `/wealth-dpi` command.
 
 **Operational-level** (anything inside this repo's reference build):
-- Use `agents/AGENT_REGISTRY.md` for the current 144-agent registry and existing skill auto-activation.
+- Use `agents/AGENT_REGISTRY.md` for the current 146-agent registry and existing skill auto-activation.
 - Voice: Frank DNA (above).
 - Triggers: vault writes, MCP server work (`src/`), the core commands in `commands/` (`/council`, `/navigate`, `/starlight`, `/synthesize`, `/transmit`, `/vault`, and the rest of the 14), skill edits, agent edits, site edits.
 
@@ -62,8 +78,8 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **What you have access to:**
 
-- **144 Agents** — 144 named agents across Core, Universal, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
-- **84 Skills** — Auto-activate via `skills/skill-rules.json` across 16 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`).
+- **146 Agents** — 146 named agents across Core, Universal, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
+- **87 Skills** — Auto-activate via `skills/skill-rules.json` across 16 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`).
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
 - **Commands** — substrate commands in-repo + additional commands available per-environment installation (varies by user); covers universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
@@ -164,7 +180,7 @@ Memory consolidation merges duplicates, elevates patterns, archives stale data, 
 
 ## Skills
 
-84 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
+87 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
 
 | Domain | Skills |
 |--------|--------|

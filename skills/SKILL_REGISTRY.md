@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 84 skills across 16 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 87 skills across 16 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 
@@ -81,7 +81,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | integration/idea-triage | integration-idea-triage | SIS | 2026-05-06 | stable |
 | integration/creator-path | integration-creator-path | SIS | 2026-05-06 | stable |
 
-### intelligence (7)
+### intelligence (9)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
@@ -92,6 +92,8 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | intelligence/genius-excavation | intelligence-genius-excavation | SIS | 2026-05-06 | stable |
 | intelligence/knowledge-reclamation | intelligence-knowledge-reclamation | SIS | 2026-05-06 | stable |
 | intelligence/hermes-search | intelligence-hermes-search | SIS | 2026-06-09 | stable |
+| intelligence/japanese-market-intelligence | intelligence-japanese-market-intelligence | SIS | 2026-08-25 | stable |
+| intelligence/frontier-model-routing | intelligence-frontier-model-routing | SIS | 2026-08-25 | stable |
 
 ### machine (2)
 
@@ -188,7 +190,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | crypto-intelligence | crypto-intelligence-vertical | SIS | 2026-05-17 | experimental |
 | crypto-intelligence/onchain | crypto-intelligence-onchain | SIS | 2026-05-17 | experimental |
 
-### vision (4)
+### vision (5)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
@@ -196,6 +198,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | vision/design-coherence | vision-design-coherence | SIS | 2026-05-06 | stable |
 | vision/voice-anti-slop | vision-voice-anti-slop | SIS | 2026-05-06 | stable |
 | vision/queen-swarms-visual | vision-queen-swarms-visual | SIS | 2026-06-12 | stable |
+| vision/impeccable-design-kernel | vision-impeccable-design-kernel | SIS | 2026-08-25 | stable |
 
 ### safety (4)
 

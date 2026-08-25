@@ -1,12 +1,3 @@
-/**
- * MCP Memory Bridge
- * 
- * Forwards semantic and graph-based memory queries to the decoupled `starlight-memory` MCP server.
- * This ensures the core SIS orchestrator remains lightweight without heavy vector database dependencies.
- */
-
-import { spawn } from "node:child_process";
-
 export interface MemoryQuery {
   query: string;
   limit?: number;
@@ -63,7 +54,7 @@ export class McpMemoryBridge {
   /**
    * Forwards an append request to `sis_append_entry` on the loopback server.
    */
-  async append(vault: string, content: string, tags: string[] = []): Promise<boolean> {
+  async append(vault: string, _content: string, _tags: string[] = []): Promise<boolean> {
     if (!this.isConnected) await this.connect();
     
     console.log(`[MemoryBridge] Forwarding append to ${vault} vault in starlight-memory...`);

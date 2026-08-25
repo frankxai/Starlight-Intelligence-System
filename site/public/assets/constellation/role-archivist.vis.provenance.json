@@ -1,0 +1,31 @@
+{
+  "$schema": "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+  "schema_version": "1.0.0",
+  "asset": {
+    "asset_id": "asset_fb06937eefb1fd523d59cf9f",
+    "version_id": "ver_fb06937eefb1fd523d59cf9fd602c182",
+    "media_type": "image",
+    "sha256": "fb06937eefb1fd523d59cf9fd602c18229efeda3ba17507d8369b6578d296d26",
+    "local_path": "public/assets/constellation/role-archivist.webp",
+    "relative_path": "./role-archivist.webp"
+  },
+  "generation": {
+    "provider": "openai-codex",
+    "model": "gpt-image",
+    "prompt": null,
+    "negative_prompt": null,
+    "seed": null,
+    "settings": { "transcode": "ffmpeg libwebp quality=82" },
+    "output_paths": ["public/assets/constellation/role-archivist.webp"],
+    "created_at": "2026-08-14T03:34:00+02:00"
+  },
+  "agent": {
+    "coding_agent": "codex",
+    "repo": "starlight-intelligence-web",
+    "thread_ref": null,
+    "session_ref": "019fe474-4b2f-7703-ab79-9826fd64b2c1",
+    "summary": "Archivist visual archetype for the AI evaluation engineer; exact source prompt was not retained.",
+    "metadata": { "source_asset": "exec-f1fa5922-82ab-4137-a155-5f5438e3f33f.png" }
+  },
+  "skill": null
+}

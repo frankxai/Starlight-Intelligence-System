@@ -609,3 +609,31 @@ On the machine (sandbox had no push auth):
 1. arcanea-ai-app production worktree: `git merge --ff-only merge/homepage-world-engine` then `pnpm install` to refresh lockfile with unioned overrides; verify via Vercel preview per Vercel-first doctrine.
 2. SIS: review `merge/codex-wave-20260714`, then `git branch -f`/merge to main with Frank ack and push.
 3. Push all seven fast-forwarded mains to origin.
+
+## 2026-08-05 — Cowork STRATEGY session: full-system cartography (Fable 5)
+Recon: 7 Claude scheduled tasks live, 12 Cowork artifacts, Hermes cockpit (registry v1.1.0, Telegram bot online, local agents 8081-84 mostly offline), gateway :5200 up since 08-03, ACOS v11 level 61 (138 agents/161 cmds/139 skills).
+Findings (verdicts):
+1. COORDINATION.md live lanes all dated 2026-07-19, still marked ACTIVE — 17-day board rot; archive or re-verify (cached-belief failure the protocol warns about).
+2. queen/running holds 2026-06-17 smoke-test entries — dispatcher hygiene sweep needed.
+3. sunday-palace-review (18:02) and content-sunday-lock (18:06) overlap — merge into one Sunday close ritual.
+4. hermes-cockpit dual-located (~/hermes-cockpit + starlight/repos/hermes-cockpit) — consolidate into starlight root per CLAUDE.md.
+5. ~/.claude/agents and ~/.claude/hooks listed empty through the sandbox mount while settings.json wires 9 hooks — verify on-machine that hook scripts exist (silent no-op risk).
+6. SYSTEM.md's own flag stands: agentic heartbeats reader-thin — wire or retire.
+Pending: none committed; report-only session. Next: REPAIR sweep per above.
+
+## 2026-08-05 — Cowork REPAIR session receipts (Fable 5)
+Executed:
+1. COORDINATION.md: 33 stale lanes (07-10..07-19) archived → queen/archive/lanes/COORDINATION-archive-2026-08-05.md (full backup alongside). Board 81→49 lines; 3 rows remain (Hermes standing, Codex standing-unverified, this session HANDOFF). NEW protocol rule 5: Lane TTL — ACTIVE>72h / HANDOFF>48h = any session may archive during opening sweep.
+2. queen/running: 30 stale entries (06-17..07-18) moved → queen/archive/running-stale-2026-08-05/. Dispatcher running/ now empty.
+3. Hooks verified on-machine: all 9 wired scripts exist (~/.claude/hooks). FINDING: 11 additional hook scripts exist UNWIRED (circuit-breaker, audit-trail, self-modify-gate, pre-commit, excellence-hook, memory-check, mcp-health-check, gsd-workflow-guard...). Wire-or-delete decision pending Frank. Tirith no-op finding (07-17) still open — do not flip fail-closed before binary install.
+4. Sunday rituals merged: sunday-palace-review now "Sunday Close" (palace review + content lock, content-lock wins on conflict); content-sunday-lock disabled (prompt preserved on disk, reversible).
+Codex standing row downgraded to UNVERIFIED — its arcanea-ai-app OFF-LIMITS claim dates to 07-19; re-verify before honoring.
+Frank on-machine queue: merge staged PR #243 (Stripe checkout = first-dollar path), wire/delete dormant hooks, re-auth OAuth connectors (Linear/Notion/GitHub/etc.), click Run-now on sunday-palace-review to pre-approve Notion tools.
+
+## 2026-08-05 — Priority correction + PRODUCT-RELEASE-GATE shipped (Fable 5)
+Frank override: quality before revenue. PR #243 merge DEPRIORITIZED — checkout stays staged until products pass gate. Shipped starlight/PRODUCT-RELEASE-GATE.md (exit-gate sibling to TECH-INTAKE-GATE + CROSS-MODEL-GATE): G0 claim-truth → G1 deterministic → G2 agentic buyer-simulation (3 providers, no-estate-context fresh session) → G3 maker≠checker → G4 post-purchase → G5 price integrity (sovereign). Receipts queen/reports/product-gates/, 90-day TTL. Binding: no live checkout without fresh PASS receipt (steward-revenue enforces as P0); Sunday Close reports gate status for anything going paid within 14d. Baseline inventory: 8 products, zero receipts, zero sellable (both FrankX toolkit CTAs dead). First-dollar path is now: pick one product → run G0-G5 → then merge #243.
+
+## 2026-08-05 — BUILD session: G2 harness shipped + first gate run (Fable 5)
+Built starlight-evals/harness/g2-buyer-sim/ (run.mjs + providers.mjs [claude/codex/grok CLI adapters + mock] + buyer-prompt.md + manifests/visual-creation-loop.json; pnpm/npm script "g2"). Committed 1b76342 on agent/claude/g2-buyer-sim-20260805, explicit pathspecs only; wave0 dirty files untouched; stale git locks renamed *.stale-20260805, git functional.
+FIRST GATE RUN — Visual Creation Loop: **FAIL, NOT SELLABLE** (5×P0, 3×P1). Receipt + transcript + defects: queen/reports/product-gates/visual-creation-loop-2026-08-05/. Headline P0s: advertised support scripts not in package; install path targets ~/.gemini/acos-frankx (wrong CLI, seller-internal); BANANA_API_KEY/banana.dev wrong vendor (real chain = GEMINI_API_KEY); blocking council agent + style DNA + templates never shipped; video pipeline promised, absent. Fix list (8 items, ordered) in receipt. PRODUCT-RELEASE-GATE.md inventory updated.
+On your machine: push agent/claude/g2-buyer-sim-20260805; re-gate after fixes with 3-provider run (`npm run g2 -- --product harness/g2-buyer-sim/manifests/visual-creation-loop.json --provider claude|codex|grok`).

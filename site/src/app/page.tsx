@@ -3,15 +3,18 @@ import {
   Activity,
   ArrowRight,
   BadgeCheck,
+  Bot,
   CheckCircle2,
   Database,
   FileCheck2,
   GitBranch,
+  Layers,
   LockKeyhole,
   Network,
   ScanLine,
   ServerCog,
   ShieldCheck,
+  Sparkles,
   Terminal,
   Workflow,
 } from "lucide-react";
@@ -25,6 +28,8 @@ import {
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
 import { OperationalProofConsole } from "@/components/OperationalProofConsole";
+import { NavigationHub } from "@/components/NavigationHub";
+import { ConstellationShowcase } from "@/components/constellation/ConstellationShowcase";
 import {
   ACCENT_TEXT,
   ACCENT_BORDER,
@@ -53,7 +58,7 @@ type OperatingStep = {
 };
 
 type RouteCard = {
-  href: "/protocol" | "/download" | "/research" | "/cockpit" | "/architecture" | "/vaults";
+  href: "/protocol" | "/constellation" | "/download" | "/research" | "/cockpit" | "/architecture" | "/vaults" | "/skills" | "/agents";
   title: string;
   desc: string;
   icon: LucideIcon;
@@ -164,6 +169,24 @@ const OPERATING_STEPS: OperatingStep[] = [
 
 const PRODUCT_ROUTES: RouteCard[] = [
   {
+    href: "/skills",
+    title: "Skills Directory",
+    desc: "Browse, search, and export 87 canonical skills across 16 domains for Antigravity, Claude Code, Cursor, Codex, and Cline.",
+    icon: Layers,
+  },
+  {
+    href: "/agents",
+    title: "Agent Fleet",
+    desc: "Explore 146 sovereign minds across 10 tiers, compose custom council swarms, and export execution prompts.",
+    icon: Bot,
+  },
+  {
+    href: "/constellation",
+    title: "Constellation",
+    desc: "Explore the 50 governed agents across 10 houses, prompt contracts, and swarm blueprints.",
+    icon: Sparkles,
+  },
+  {
     href: "/protocol",
     title: "Protocol",
     desc: "Read the SIP contract, attestation model, and substrate boundaries.",
@@ -239,6 +262,10 @@ export default async function HomePage() {
               </span>
             </p>
 
+            <div className="mt-6">
+              <NavigationHub />
+            </div>
+
             <div className="mt-6 flex sm:hidden">
               <Link
                 href="/download"
@@ -283,6 +310,8 @@ export default async function HomePage() {
           <SignalMetric label="Deploy" value="Git and Vercel state reconciled" />
         </div>
       </section>
+
+      <ConstellationShowcase />
 
       <section className="border-b border-white/[0.08] px-5 py-16 text-white sm:px-6 md:py-20">
         <div className="mx-auto max-w-6xl">

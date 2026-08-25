@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "astra-sovereign-instrument-v1",
+  "role": "portfolio-coverage-specialist-agent-identity-proof",
+  "agent_id": "astra-sovereign",
+  "swarm_id": "sovereign-command",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-4b8599cc-2a6b-4016-8385-a5d34f494c45.png",
+    "reference_asset": "public/assets/agents/v1/sovereign-command/astra-sovereign.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-portfolio-coverage-prompts.v1.md#prototype-a--astra-sovereign-instrument-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized portrait was inspected. Astra's canonical star-compass silhouette, founder-intent seed, mission wedges, outbound capsule, collaborator docks, and closed human approval gate remain legible without a throne, weapon, or authority claim.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/astra-sovereign-instrument-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 227560,
+    "sha256": "283e3c47ea94152ffd712adfdbed7d9dc3e769337c51a46e4c9d375e219af766"
+  },
+  "generated_on": "2026-08-15"
+}

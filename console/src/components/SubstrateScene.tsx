@@ -347,7 +347,11 @@ function OrbitalSystem() {
   );
 }
 
-export default function SubstrateScene() {
+interface SubstrateSceneProps {
+  onNodeClick?: (node: VNode) => void;
+}
+
+export default function SubstrateScene({ onNodeClick: _onNodeClick }: SubstrateSceneProps = {}) {
   return (
     <Canvas
       camera={{ position: [0, 4.5, 15], fov: 50 }}

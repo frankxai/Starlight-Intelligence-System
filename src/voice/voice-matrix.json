@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "defaultTier": "tier1_expressive",
+  "providers": {
+    "elevenlabs": {
+      "name": "ElevenLabs Flash v2.5",
+      "type": "cloud",
+      "ttfaMs": 280,
+      "expressivenessScore": 9.8,
+      "defaultVoiceId": "21m00Tcm4TlvDq8ikWAM",
+      "model": "eleven_flash_v2_5",
+      "envKey": "ELEVENLABS_API_KEY",
+      "primaryFor": ["narration", "agent_voice_clone", "briefings"]
+    },
+    "cartesia": {
+      "name": "Cartesia Sonic 3.5",
+      "type": "cloud",
+      "ttfaMs": 75,
+      "expressivenessScore": 8.9,
+      "defaultVoiceId": "a0e166b2-3d7f-4136-9e3b-9cbd704f275d",
+      "model": "sonic-english",
+      "envKey": "CARTESIA_API_KEY",
+      "primaryFor": ["realtime_hud", "double_clap_response", "interruptible_loop"]
+    },
+    "fish_audio": {
+      "name": "Fish Audio 1.5",
+      "type": "cloud",
+      "ttfaMs": 180,
+      "expressivenessScore": 9.1,
+      "envKey": "FISH_AUDIO_API_KEY",
+      "primaryFor": ["fast_cloning", "multilingual_switch"]
+    },
+    "edge_tts": {
+      "name": "Microsoft Edge Neural TTS",
+      "type": "local_cloud_free",
+      "ttfaMs": 120,
+      "expressivenessScore": 8.5,
+      "defaultVoice": "en-US-ChristopherNeural",
+      "envKey": null,
+      "primaryFor": ["zero_cost_fallback", "offline_mode", "background_notifications"]
+    },
+    "kokoro": {
+      "name": "Kokoro-82M ONNX",
+      "type": "local_offline",
+      "ttfaMs": 95,
+      "expressivenessScore": 8.7,
+      "defaultVoice": "af_heart",
+      "envKey": null,
+      "primaryFor": ["complete_airgap", "gpu_onnx_local"]
+    }
+  },
+  "fallbackCascade": [
+    "elevenlabs",
+    "cartesia",
+    "edge_tts",
+    "kokoro"
+  ]
+}

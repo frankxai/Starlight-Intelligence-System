@@ -34,9 +34,6 @@ const SECURITY_HEADERS = [
 ];
 
 const nextConfig: NextConfig = {
-  turbopack: {
-    root: path.resolve("."),
-  },
   // Strip the X-Powered-By: Next.js leak from response headers.
   poweredByHeader: false,
   // Default compression — Vercel sets this independently, but explicit is better.

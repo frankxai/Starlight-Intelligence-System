@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "soren-synthesis-analyst-sovereign-instrument-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "soren-synthesis-analyst",
+  "swarm_id": "intelligence-research",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-9fd036ce-ebb8-4587-b4a1-76bd523eaaf1.png",
+    "reference_asset": "public/assets/agents/v1/intelligence-research/soren-synthesis-analyst.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#soren--synthesis-analyst"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The corrected portrait preserves Soren's identity and source-bearing evidence braid through a bounded decision-model handoff; the landscape draft was rejected.",
+  "quality_score": { "total": 27, "maximum": 30, "first_read": 4, "brand_world": 5, "craft": 4, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/soren-synthesis-analyst-sovereign-instrument-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 125844, "sha256": "7c6b056c2b182352b158eb72c75a53ae5a10d90276db436727333109ac8d3b6d" },
+  "generated_on": "2026-08-15"
+}

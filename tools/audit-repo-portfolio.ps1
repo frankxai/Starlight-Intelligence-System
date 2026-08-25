@@ -1,4 +1,4 @@
-# audit-repo-portfolio.ps1 -- read-only inventory of all git repos under user home.
+# audit-repo-portfolio.ps1 -- read-only inventory of canonical estate repos.
 #
 # Output:
 #   docs/ops/REPO-PORTFOLIO-AUDIT-<YYYY-MM-DD>.md
@@ -8,15 +8,42 @@
 
 param(
     [string]$ScanRoot1 = 'C:\Users\frank\starlight\repos',
-    [string]$ScanRoot2 = 'C:\Users\frank\Arcanea',
+    [string]$ScanRoot2 = '',
+    [string]$CanonicalEstateRoot = 'C:\Users\frank\starlight\repos',
     [string]$RepoRoot  = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path,
     [int]$ActiveDays   = 14,
-    [int]$StaleDays    = 90
+    [int]$StaleDays    = 90,
+    [switch]$IncludeSize
 )
 
 $ErrorActionPreference = 'Stop'
 $today = Get-Date -Format 'yyyy-MM-dd'
 $nowIso = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+$canonicalEstateRoot = [System.IO.Path]::GetFullPath($CanonicalEstateRoot).TrimEnd('\')
+
+function Resolve-CanonicalScanRoot {
+    param([string]$Root)
+    if ([string]::IsNullOrWhiteSpace($Root)) { return $null }
+
+    $resolved = [System.IO.Path]::GetFullPath($Root).TrimEnd('\')
+    $isEstateRoot = $resolved.Equals($canonicalEstateRoot, [System.StringComparison]::OrdinalIgnoreCase)
+    $isEstateChild = $resolved.StartsWith("$canonicalEstateRoot\", [System.StringComparison]::OrdinalIgnoreCase)
+    if (-not ($isEstateRoot -or $isEstateChild)) {
+        throw "Scan root must stay within the canonical estate: $canonicalEstateRoot (received: $resolved)"
+    }
+    return $resolved
+}
+
+$scanRoots = @(
+    @($ScanRoot1, $ScanRoot2) |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+        ForEach-Object { Resolve-CanonicalScanRoot $_ } |
+        Sort-Object -Unique
+)
+
+if ($scanRoots.Count -eq 0) {
+    throw 'At least one canonical estate scan root is required.'
+}
 
 function Get-RepoMetrics {
     param([string]$Path)
@@ -32,7 +59,7 @@ function Get-RepoMetrics {
         ahead_of_origin   = 0
         has_readme        = $false
         has_package_json  = $false
-        size_mb           = 0
+        size_mb           = $null
         consolidation_cluster = $null
     }
 
@@ -68,13 +95,15 @@ function Get-RepoMetrics {
     $metrics.has_readme = (Test-Path (Join-Path $Path 'README.md')) -or (Test-Path (Join-Path $Path 'readme.md'))
     $metrics.has_package_json = (Test-Path (Join-Path $Path 'package.json')) -or (Test-Path (Join-Path $Path 'pyproject.toml'))
 
-    try {
-        $bytes = (Get-ChildItem -Path $Path -Recurse -File -Force -ErrorAction SilentlyContinue |
-            Where-Object { $_.FullName -notmatch '\\(node_modules|\.next|\.venv|dist|build|\.pytest_cache|target|out)\\' } |
-            Measure-Object -Property Length -Sum).Sum
-        if ($bytes) { $metrics.size_mb = [math]::Round($bytes / 1MB, 1) }
-    } catch {
-        $metrics.size_mb = 0
+    if ($IncludeSize) {
+        try {
+            $bytes = (Get-ChildItem -Path $Path -Recurse -File -Force -ErrorAction SilentlyContinue |
+                Where-Object { $_.FullName -notmatch '\\(node_modules|\.next|\.venv|dist|build|\.pytest_cache|target|out)\\' } |
+                Measure-Object -Property Length -Sum).Sum
+            if ($bytes) { $metrics.size_mb = [math]::Round($bytes / 1MB, 1) }
+        } catch {
+            $metrics.size_mb = $null
+        }
     }
 
     if ($null -eq $metrics.days_since) {
@@ -109,10 +138,11 @@ function Find-Repos {
         ForEach-Object { $_.FullName }
 }
 
-Write-Host "Scanning $ScanRoot1 + $ScanRoot2 ..."
+Write-Host "Scanning canonical estate roots: $($scanRoots -join ', ') ..."
 $repoPaths = @()
-$repoPaths += Find-Repos $ScanRoot1
-$repoPaths += Find-Repos $ScanRoot2
+foreach ($root in $scanRoots) {
+    $repoPaths += Find-Repos $root
+}
 $repoPaths = $repoPaths | Sort-Object -Unique
 Write-Host "Found $($repoPaths.Count) repos"
 
@@ -142,7 +172,8 @@ foreach ($r in $repos) {
 
 $jsonOut = [ordered]@{
     generated_at = $nowIso
-    scan_roots = @($ScanRoot1, $ScanRoot2)
+    scan_roots = $scanRoots
+    include_size = [bool]$IncludeSize
     thresholds = @{ active_days = $ActiveDays; stale_days = $StaleDays }
     repo_count = $repos.Count
     by_class = $byClass
@@ -157,8 +188,10 @@ Write-Host "JSON: $jsonPath"
 $md = New-Object System.Text.StringBuilder
 [void]$md.AppendLine("# Repo Portfolio Audit -- $today")
 [void]$md.AppendLine('')
-[void]$md.AppendLine("> Read-only inventory of all git repos under ``$ScanRoot1`` and ``$ScanRoot2``.")
+$renderedRoots = ($scanRoots | ForEach-Object { "``$_``" }) -join ' and '
+[void]$md.AppendLine("> Read-only inventory of direct git repositories under $renderedRoots.")
 [void]$md.AppendLine("> Generated: $nowIso")
+[void]$md.AppendLine('> Classification is advisory. No archive, delete, merge, push, or deployment is authorized by this report.')
 [void]$md.AppendLine('')
 
 [void]$md.AppendLine('## TL;DR')
@@ -193,7 +226,8 @@ function Write-RepoTable {
     [void]$md.AppendLine('|---|---:|---:|---:|---:|---:|---|')
     foreach ($r in $rows) {
         $cluster = if ($r.consolidation_cluster) { $r.consolidation_cluster } else { '-' }
-        [void]$md.AppendLine("| ``$($r.name)`` | $($r.days_since) | $($r.branches_local)/$($r.branches_remote) | $($r.uncommitted_files) | $($r.ahead_of_origin) | $($r.size_mb) | $cluster |")
+        $size = if ($null -eq $r.size_mb) { '-' } else { $r.size_mb }
+        [void]$md.AppendLine("| ``$($r.name)`` | $($r.days_since) | $($r.branches_local)/$($r.branches_remote) | $($r.uncommitted_files) | $($r.ahead_of_origin) | $size | $cluster |")
     }
     [void]$md.AppendLine('')
 }
@@ -222,7 +256,7 @@ if ($clusters.Count -gt 0) {
 
 [void]$md.AppendLine('## Action items')
 [void]$md.AppendLine('')
-[void]$md.AppendLine('### Top archive candidates (clean dormants)')
+[void]$md.AppendLine('### Top archive candidates (human review required)')
 $archiveTop = $repos | Where-Object { $_.class -eq 'archive-candidate' } | Sort-Object -Property days_since -Descending | Select-Object -First 5
 if ($archiveTop.Count -eq 0) {
     [void]$md.AppendLine('- _none -- all dormants have uncommitted work or unpushed commits._')
@@ -230,7 +264,7 @@ if ($archiveTop.Count -eq 0) {
     foreach ($r in $archiveTop) {
         $days = $r.days_since
         $name = $r.name
-        [void]$md.AppendLine("- ``$name`` -- $days days dormant, clean. Safe to archive.")
+        [void]$md.AppendLine("- ``$name`` -- $days days dormant and locally clean. Candidate only: verify owner, merge state, retention, and remote protection before any archive action.")
     }
 }
 [void]$md.AppendLine('')
@@ -244,7 +278,7 @@ foreach ($k in ($clusters.Keys | Sort-Object)) {
 }
 [void]$md.AppendLine('')
 
-[void]$md.AppendLine('### Dormant with uncommitted work (recover or discard)')
+[void]$md.AppendLine('### Dormant with uncommitted work (recover, ship, or preserve)')
 $dormantWithWork = $repos | Where-Object { $_.class -eq 'dormant' -and ($_.uncommitted_files -gt 0 -or $_.ahead_of_origin -gt 0) } | Sort-Object -Property days_since -Descending | Select-Object -First 5
 if ($dormantWithWork.Count -eq 0) {
     [void]$md.AppendLine('- _none._')
@@ -254,7 +288,7 @@ if ($dormantWithWork.Count -eq 0) {
         $name = $r.name
         $unc = $r.uncommitted_files
         $ahead = $r.ahead_of_origin
-        [void]$md.AppendLine("- ``$name`` -- $days days dormant, $unc uncommitted, $ahead unpushed. Decide: ship or discard.")
+        [void]$md.AppendLine("- ``$name`` -- $days days dormant, $unc uncommitted, $ahead unpushed. Decide: recover, ship, or preserve; never discard automatically.")
     }
 }
 [void]$md.AppendLine('')

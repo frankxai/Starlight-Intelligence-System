@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "beacon-incident-coordinator-operational-field-guide-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "beacon-incident-coordinator",
+  "swarm_id": "trust-safety",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-07ecdd58-e5d5-4f63-a945-7dc60e92e222.png",
+    "reference_asset": "public/assets/agents/v1/trust-safety/beacon-incident-coordinator.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#beacon--incident-coordinator"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The corrected full-layout guide removes all generated numerals and preserves chronological facts, three role lanes, the evidence capsule, and blank rails.",
+  "quality_score": { "total": 28, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 4, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/beacon-incident-coordinator-operational-field-guide-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 171666, "sha256": "6186e0c2416810d6a65e58bcd1e0535db9563d2bc48b32fb6b70d81ce4aa9927" },
+  "generated_on": "2026-08-15"
+}

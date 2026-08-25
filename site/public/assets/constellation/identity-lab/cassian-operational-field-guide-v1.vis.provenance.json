@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "cassian-operational-field-guide-v1",
+  "role": "foundational-specialist-agent-identity-proof",
+  "agent_id": "cassian-resource-steward",
+  "swarm_id": "sovereign-command",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-5502ec27-165e-4b1a-a744-92a7c6594a94.png",
+    "reference_asset": "public/assets/agents/v1/sovereign-command/cassian-resource-steward.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-foundational-specialist-prompts.v1.md#prototype-a--cassian-operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized portrait WebP was inspected. Cassian's broad pearl silhouette, graphite mantle, cyan eyes, gold abacus-ring, emerald uncertainty weight, bounded workload beads, competing work packets, and closed allocation gate remain readable without money or financial-dashboard imagery.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/cassian-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 345902,
+    "sha256": "46bd7dc3edd14d1f91fde2471df98814037c43c6ebd9280d3d41e2b1d5a7513c"
+  },
+  "generated_on": "2026-08-15"
+}

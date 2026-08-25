@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "quorum-protocol-badge-v1",
+  "role": "foundational-specialist-agent-identity-proof",
+  "agent_id": "quorum-governance-designer",
+  "swarm_id": "enterprise-transformation",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-134d7450-073d-4c37-b8a0-44da98aa71b5.png",
+    "reference_asset": "public/assets/agents/v1/enterprise-transformation/quorum-governance-designer.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-foundational-specialist-prompts.v1.md#prototype-i--quorum-protocol-badge-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized square WebP was inspected. Quorum's canonical five-node hand instrument remains distinct while the decision route, upward escalation chamber, evidence tray, monitoring aperture, and closed human gate communicate operational governance without judicial imagery.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 4,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/quorum-protocol-badge-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 379146,
+    "sha256": "1cabea6027dbf59b84927649aa440023b957d8cf7e20b86afd65dae398ef7339"
+  },
+  "generated_on": "2026-08-15"
+}

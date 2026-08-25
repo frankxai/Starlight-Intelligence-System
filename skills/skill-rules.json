@@ -3,6 +3,102 @@
   "description": "Starlight Intelligence System - Skill Auto-Activation Rules",
   "rules": [
     {
+      "id": "intelligence-frontier-model-routing",
+      "skill": "intelligence/frontier-model-routing",
+      "triggers": {
+        "keywords": [
+          "model routing",
+          "frontier model",
+          "extended thinking",
+          "o1",
+          "o3",
+          "claude 3.7",
+          "gemini 2.5",
+          "deepseek-r1",
+          "grok 3",
+          "thinking mode"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-prime",
+          "starlight-architect"
+        ],
+        "intents": [
+          "model_routing",
+          "extended_thinking",
+          "reasoning_calibration"
+        ]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "vision-impeccable-design-kernel",
+      "skill": "vision/impeccable-design-kernel",
+      "triggers": {
+        "keywords": [
+          "impeccable",
+          "design system",
+          "tailwind v4",
+          "nextjs 15",
+          "react 19",
+          "motion design",
+          "gsap",
+          "v0",
+          "nanobanana",
+          "brand assets",
+          "anti-slop"
+        ],
+        "agents": [
+          "starlight-weaver",
+          "starlight-visionary",
+          "starlight-orchestrator",
+          "starlight-prime"
+        ],
+        "intents": [
+          "ui_design",
+          "frontend_development",
+          "motion_choreography",
+          "brand_asset_generation"
+        ]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "intelligence-japanese-market-intelligence",
+      "skill": "intelligence/japanese-market-intelligence",
+      "triggers": {
+        "keywords": [
+          "japanese",
+          "japan",
+          "tokyo",
+          "日本語",
+          "スワーム",
+          "/japanese-swarm",
+          "/ja-intel",
+          "/jp-radar",
+          "qiita",
+          "zenn",
+          "sakana",
+          "keigo"
+        ],
+        "agents": [
+          "starlight-japanese-swarm",
+          "starlight-japanese-market-sentinel",
+          "starlight-prime",
+          "starlight-orchestrator"
+        ],
+        "intents": [
+          "japanese_research",
+          "cultural_calibration",
+          "japanese_market_scan"
+        ]
+      },
+      "priority": "high",
+      "load_level": "specialized"
+    },
+    {
       "id": "memory-mempalace-obsidian-bridge",
       "skill": "memory/mempalace-obsidian-bridge",
       "triggers": {

@@ -1,6 +1,6 @@
 # Starlight Agent Registry
 
-> One-hundred-forty-four minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy + Legal + Space + Marine + Longevity + Infrastructure + Partners + Research + Assets + Distribution) + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
+> One-hundred-forty-six minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy + Legal + Space + Marine + Longevity + Infrastructure + Partners + Research + Assets + Distribution) + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
 >
 > **L99 Swarm Topology Update (2026-06-17):** Scaled swarm topology specifying Kings (policy locks), Queens (orchestration loops), Starlight Board, and Model Council consensus. The complete fleet of 150 agents is specified in the [Starlight 150 Agent Blueprint](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/AGENT_BLUEPRINT.md) and documented in the [Swarm Topology Strategy](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/swarm-topology.md).
 >
@@ -447,6 +447,13 @@ Sage → Any:            "Historical context you should know about"
 ```
 
 ---
+
+### Japanese Intelligence Sub-Stack (日本インテリジェンス・サブスタック)
+
+| Agent | File | Tier | House | Core Focus |
+|-------|------|------|-------|------------|
+| **Japanese Swarm** | `starlight-japanese-swarm.md` | Leadership | Wisdom & Counsel | Bilingual orchestration, cultural/keigo calibration, cross-border SIP sync |
+| **Japanese Market Sentinel** | `starlight-japanese-market-sentinel.md` | Specialist | Wealth & Capital | Autonomous radar (Qiita/Zenn/Nikkei/arXiv), Japan AI market verification |
 
 ## Loading Strategy
 

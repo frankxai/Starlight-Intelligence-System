@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "delta-forecast-challenger-operational-field-guide-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "delta-forecast-challenger",
+  "swarm_id": "intelligence-research",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-34bede20-b2b0-4ec2-9456-88aa5257199a.png",
+    "reference_asset": "public/assets/agents/v1/intelligence-research/delta-forecast-challenger.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#delta--forecast-challenger"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "Delta's unmarked plate makes scenario range, base-rate challenge, and falsification key concrete without certainty, finance, or prediction theater.",
+  "quality_score": { "total": 28, "maximum": 30, "first_read": 5, "brand_world": 5, "craft": 4, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/delta-forecast-challenger-operational-field-guide-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 230046, "sha256": "9cfab120ca1576e3da09094c546527b601ecdb1155285b419815a6b0d4fbd9ad" },
+  "generated_on": "2026-08-15"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "ledger-operational-field-guide-v1",
+  "role": "portfolio-coverage-specialist-agent-identity-proof",
+  "agent_id": "ledger-unit-economist",
+  "swarm_id": "revenue-venture",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-55f8c3d9-02f3-453b-bc54-3a41cbf4cf8a.png",
+    "reference_asset": "public/assets/agents/v1/revenue-venture/ledger-unit-economist.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-portfolio-coverage-prompts.v1.md#prototype-e--ledger-operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The portrait WebP was inspected. Solid verified-input blocks, translucent assumptions, the three-channel sensitivity branch, break-even fulcrum, redline token, and human budget gate remain understandable without currency, equations, or finance-dashboard imagery.",
+  "quality_score": {
+    "total": 27,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 4,
+    "craft": 5,
+    "accessibility_and_crop": 4,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/ledger-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 225000,
+    "sha256": "59d96e4db9ad659e25178addbbbfe7865f142060c3bb52817b5a556e4134fc48"
+  },
+  "generated_on": "2026-08-15"
+}

@@ -1,0 +1,20 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "orbit-spatial-interface-designer-sovereign-instrument-v1",
+  "role": "portfolio-completion-specialist-agent-identity-proof",
+  "agent_id": "orbit-spatial-interface-designer",
+  "swarm_id": "web-spatial-protocol-futures",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-fbb090bb-e0e4-4f92-b994-db6183281db1.png",
+    "reference_asset": "public/assets/agents/v1/web-spatial-protocol-futures/orbit-spatial-interface-designer.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-completion-prompts.v1.md#orbit--spatial-interface-designer"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The corrected close portrait restores Orbit's card-scale identity while preserving near and mid interaction zones, comfort boundary, seat, and planar fallback.",
+  "quality_score": { "total": 27, "maximum": 30, "first_read": 4, "brand_world": 5, "craft": 4, "accessibility_and_crop": 5, "provenance_and_artifacts": 5, "operational_usefulness": 4 },
+  "export": { "path": "/assets/constellation/identity-lab/orbit-spatial-interface-designer-sovereign-instrument-v1.webp", "mime_type": "image/webp", "width": 1122, "height": 1402, "bytes": 91000, "sha256": "354c4a316c512c1134818363187c19087c9e0fb587ee527b4fd25005058d6787" },
+  "generated_on": "2026-08-15"
+}

@@ -10,12 +10,12 @@ Starlight ships platform-specific configuration files that deliver the same inte
 
 | Platform | Config Location | Format | Auto-Load | Notes |
 |----------|----------------|--------|-----------|-------|
-| **Claude Code** | `CLAUDE.md` | Markdown | Yes — native system prompt | Primary development target |
-| **Cursor** | `.cursor/rules/*.mdc` | MDC (Markdown with frontmatter) | Yes — project rules | Supports `alwaysApply` and glob-scoped rules |
-| **Cline** | `.clinerules/*.md` | Markdown | Yes — per-project instructions | Version-controlled, AI-editable |
-| **Codex (OpenAI)** | `AGENTS.md` | Markdown | Yes — agent instructions | Cascading from root, supports directory-level |
+| **Claude Code** | `CLAUDE.md` + `~/.claude/skills/` | Markdown + agentskills.io | Yes — native system prompt + skills | Primary development target (`npm run export:skills`) |
+| **Cursor** | `.cursor/rules/*.mdc` | MDC (Markdown with frontmatter) | Yes — project rules | Supports `alwaysApply` and glob-scoped rules compiled from SIS |
+| **Cline** | `.clinerules/*.md` + `.clinerules/skills/` | Markdown | Yes — per-project instructions | Version-controlled, AI-editable |
+| **Codex (OpenAI)** | `AGENTS.md` + `.agents/skills/` | Markdown | Yes — agent instructions | Cascading from root, supports directory-level |
 | **Gemini CLI** | `.gemini/GEMINI.md` | Markdown | Yes — instruction layer | Project-scoped, overrides user settings |
-| **Antigravity** | `.antigravity/instructions.md` (full, 2026-06-02) + `swarm-protocol.md` + `mcp-config.json` + `allowlisted-tools.md`; harness at `core/orchestrator/harnesses/antigravity/` (README + system-prompt) | Markdown + native swarm primitives | Yes — IDE + agent swarm config | Google's agent-first IDE with native define_subagent / invoke_subagent / Agent Manager / browser / async |
+| **Antigravity** | `.gemini/config/plugins/starlight-skills-library/` + `.antigravity/instructions.md` | Plugin + agentskills.io + native swarm primitives | Yes — IDE + agent swarm config | Google's agent-first IDE with native define_subagent / invoke_subagent / Agent Manager / browser / async |
 
 ---
 

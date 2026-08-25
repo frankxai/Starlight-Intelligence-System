@@ -29,7 +29,7 @@ Use this skill when the operator asks SIS to route work to a local CLI, choose a
 | Cursor | IDE-agent work where editor state matters | `cura`, `cursis` |
 | Antigravity | Async IDE work, browser control, agent-manager workflows | `agyarc`, `agya`, `agysis`, `agyfx`, `agyg`, `agyvc`, `agyani`, `agydpi` |
 | Grok | xAI/Grok reasoning lane and repo-local Grok CLI work | `grarc`, `grsis`, `grfx`, `grg`, `grvc`, `grani`, `grdpi` |
-| Native image tool | Direct image generation/editing in the current agent surface | image generation tool, Canva, Higgsfield, or repo-specific visual pipeline |
+| Native image tool | Direct image generation/editing in the current agent surface | Native Antigravity `generate_image`, NanoBanana (`nb-image`), Veo, or repo-specific visual pipeline (Higgsfield strictly banned) |
 
 ## Default Decisions
 

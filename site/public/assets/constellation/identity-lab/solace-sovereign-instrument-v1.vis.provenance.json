@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "solace-sovereign-instrument-v1",
+  "role": "cross-swarm-agent-identity-prototype",
+  "agent_id": "solace-flourishing-conductor",
+  "swarm_id": "health-flourishing",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-10b3a628-9a78-4be0-a794-cc2bcde325ca.png",
+    "reference_asset": "public/assets/agents/v1/health-flourishing/solace-flourishing-conductor.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-cross-swarm-prototype-prompts.v1.md#prototype-f--solace-sovereign-instrument-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized 4:5 WebP was inspected. Solace's canonical synthetic identity and sunleaf motif remain stable while the listening posture, goal seed, habit ring, care-boundary lighthouse, biophilic crop, and natural materials communicate warmth without a clinical claim.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/solace-sovereign-instrument-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 283798,
+    "sha256": "869d151daccf7d2e65c4281ac19902152c75f475a0a833f31ecff2475dc42877"
+  },
+  "generated_on": "2026-08-15"
+}

@@ -124,6 +124,42 @@ const PLATFORMS: Platform[] = [
   }
 }`,
   },
+  {
+    name: "Antigravity",
+    labelColor: "text-violet-400",
+    labelBg: "bg-violet-500/[0.07]",
+    labelBorder: "border-violet-500/[0.18]",
+    context: "Multi-agent swarm",
+    memoryFile: "AGENTS.md / .antigravity/",
+    configPath: "~/.gemini/antigravity/mcp/starlight-sis.json",
+    reason: "Best for native paired programming with autonomous subagent swarms and proactive tool delegation.",
+    json: `{
+  "mcpServers": {
+    "starlight-sis": {
+      "command": "node",
+      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
+    }
+  }
+}`,
+  },
+  {
+    name: "Windsurf",
+    labelColor: "text-sky-400",
+    labelBg: "bg-sky-500/[0.07]",
+    labelBorder: "border-sky-500/[0.18]",
+    context: "Cascade engine",
+    memoryFile: ".windsurfrules",
+    configPath: "~/.codeium/windsurf/mcp_config.json",
+    reason: "Best for real-time Cascade collaborative coding with memory context.",
+    json: `{
+  "mcpServers": {
+    "starlight-sis": {
+      "command": "node",
+      "args": ["node_modules/@arcanea/starlight-intelligence-system/dist/mcp-server.js"]
+    }
+  }
+}`,
+  },
 ];
 
 export default function QuickstartPage() {

@@ -1,0 +1,192 @@
+{
+  "version": "2026-08-24",
+  "task": "Research, art-direct, generate, inspect, and package a coherent ten-image New Earth 2126 Starlight civilization series.",
+  "surface": "Ten wide cinematic master frames for a repository gallery, editorial sequence, deck, site story, and future film storyboard.",
+  "audience": "Builders, citizens, researchers, creators, and future generations evaluating a life-affirming Starlight future.",
+  "first_read": "Reciprocal intelligence among people, artificial systems, water, land, and other species creates visible abundance.",
+  "standards": [
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/VISUAL_QA_GATE.md",
+    "starlight-design-intelligence/brand-image-system/standards/PREMIUM_IMAGE_PROMPT_STANDARD.md",
+    "starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/TASTE-CONSTITUTION.md",
+    "starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/BRAND-TERRITORIES.md",
+    "Starlight-Intelligence-System/memory/vaults/horizon-vault.md"
+  ],
+  "references": [
+    {
+      "label": "UNESCO Recommendation on the Ethics of Artificial Intelligence",
+      "source": "https://www.unesco.org/en/articles/recommendation-ethics-artificial-intelligence",
+      "reason": "Human dignity, transparency, fairness, environmental responsibility, and human oversight."
+    },
+    {
+      "label": "UNEP Cities and the UN Decade on Ecosystem Restoration",
+      "source": "https://www.unep.org/topics/cities/cities-nature/cities-un-decade-ecosystem-restoration",
+      "reason": "Ecological corridors, wetlands, canals, mangroves, pollinator habitat, and public participation."
+    },
+    {
+      "label": "IPBES Nature Futures Framework",
+      "source": "https://www.naturefuturesframework.org/nfftriangle",
+      "reason": "Plural positive values for nature for nature, nature for society, and nature as culture."
+    },
+    {
+      "label": "UNEP Water as a Circular Economy Resource",
+      "source": "https://www.unep.org/resources/emerging-issues/water-circular-economy-resource-foresight-brief-no-033-february-2024",
+      "reason": "Circular water reuse and resource stewardship."
+    },
+    {
+      "label": "FAO Agroforestry",
+      "source": "https://www.fao.org/agroforestry/about-agroforestry/overview/en",
+      "reason": "Diverse trees, crops, animals, and locally adapted production systems."
+    },
+    {
+      "label": "Earth Species Project",
+      "source": "https://earthspecies.org/what-we-do/",
+      "reason": "AI-assisted bioacoustics and cross-species research."
+    },
+    {
+      "label": "Project CETI Research",
+      "source": "https://www.projectceti.org/research/index",
+      "reason": "Low-impact field research, recordings, behavioral context, and machine learning for sperm-whale communication."
+    },
+    {
+      "label": "IEA Renewables 2025",
+      "source": "https://www.iea.org/reports/renewables-2025",
+      "reason": "Contemporary clean-energy transition context for electricity, heat, and transport."
+    }
+  ],
+  "direction": {
+    "keep": [
+      "Clear institutional daylight and documentary humanity",
+      "Place-specific ecology, water, weather, soil, and tactile materials",
+      "Visible stewardship, governance, maintenance, and intergenerational work",
+      "Plural non-anthropomorphic artificial intelligences with distinct public responsibilities",
+      "One readable subject and deep foreground-middle-background scale"
+    ],
+    "avoid": [
+      "Dark command centers, neon, glowing orbs, portals, orbit and node graphics",
+      "Humanoid robot councils, floating holograms, fake UI, generated text or logos",
+      "Glass megacity, flying-car swarms, pasted-on greenery, empty resort utopia",
+      "Impossible ecology, mutant animals, malformed anatomy, clone crowds",
+      "Generic solarpunk collage, franchise echoes, and living-artist imitation"
+    ],
+    "signature": "A thin oxidized-red physical provenance line recurs as real infrastructure connecting action to consequence across all ten frames.",
+    "system": [
+      "Civic biophilic realism",
+      "Warm mineral white, environmental blues and greens, deep navy as ink, oxidized red as the single intervention color",
+      "Large-format documentary and architectural photography language",
+      "No text in generated pixels; deterministic captions and marks remain external",
+      "Wide crop-safe master compositions with human-scale foreground and planetary consequence"
+    ]
+  },
+  "asset_quality": {
+    "tier": "B",
+    "source_method": "generated-media",
+    "provenance": "generated",
+    "why_premium": "Original research-grounded prompts, a coherent authored world, an explicit anti-trope system, and export-by-export visual inspection.",
+    "shortcut_risk": "low",
+    "context_tested": true
+  },
+  "artifacts": [
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/01-the-first-light.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Opening scale, hydrology, foreground stewardship, infrastructure, crop safety, anatomy, and provenance line inspected at full frame; pass."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/02-civic-intelligence-assembly.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Material plurality of AI, civic evidence action, faces, hands, garden context, and anti-command-center behavior inspected; pass."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/03-living-waters-of-abundance.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Connected water logic, maintenance activity, wetland layers, reflections, topography, and red service edge inspected; pass."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/04-multispecies-commons.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Whale anatomy, animal primacy, over-under waterline, passive research distance, cable, and absence of anthropomorphism inspected; pass."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/05-regenerative-food-continent.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Foreground handoff, hand anatomy, valley ecology, diverse food layers, public work, crowd integrity, and climate coherence inspected; pass."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/06-new-human-renaissance.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Craft focal action, hands, instrument, accessibility, learning depth, and red floor seam inspected; pass. Adaptive instrument is intentionally tool-like and non-authoritative despite a mildly creature-like silhouette."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/07-great-intelligence-ecology.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Four functional intelligence habitats, coherent ridge-to-sea geography, human stewardship, absence of a ruling monument, and route continuity inspected; pass."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/08-living-city-human-scale.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Daily-life density, tram, stream, flood-gate maintenance, public accessibility, faces, hands, reflections, and no readable generated signage inspected; pass."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/09-planetary-restoration.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Visible degradation history, branching basin, soil-work foreground, restoration staging, people, machinery, native-herd scale, and survey stakes inspected; pass."
+    },
+    {
+      "path_or_url": "docs/visuals/new-earth-2126/10-starlight-horizon.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Intergenerational silhouette, quiet instrument, living basin, distant whales, natural stars, archive inlay, twilight exposure, and emotional restraint inspected; pass."
+    }
+  ],
+  "checks": [
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier B custom generated world imagery is the correct medium for speculative future style frames."
+    },
+    {
+      "name": "research-grounding",
+      "status": "pass",
+      "evidence": "Local Horizon and Civic Intelligence canon plus primary-source research ledger recorded in README.md."
+    },
+    {
+      "name": "export-inspection",
+      "status": "pass",
+      "evidence": "All ten final PNG masters were opened at original detail and reviewed edge to edge; each decodes at 1672x941 in 24-bit RGB. Checksums are recorded in ASSET-MANIFEST.json."
+    },
+    {
+      "name": "visual-qa",
+      "status": "pass",
+      "evidence": "Reviewed anatomy, faces, hands, animal agency, water, ecological and geographic coherence, text/logo absence, crop safety, scene hierarchy, series continuity, provenance line, and rejected sci-fi tropes. No regeneration was required."
+    },
+    {
+      "name": "independent-critic",
+      "status": "blocked",
+      "evidence": "The pre-generation machine admission returned SWARM HOLD because free RAM was below the 10 GB swarm reserve and 16 Codex runtimes exceeded the eight-runtime budget. No new critic agent was started. Maker QA is complete; founder review remains the non-delegated release gate."
+    }
+  ],
+  "score": {
+    "total": 28,
+    "max": 30,
+    "notes": "Maker diagnostic: 5/5 first read, 5/5 outcome coherence, 5/5 visual craft, 5/5 brand alignment, 4/5 distinctiveness, 4/5 release readiness. This is not independent taste approval."
+  },
+  "decision": "iterate",
+  "known_risks": [
+    "Founder selection may request a narrower regional, architectural, or cultural specificity before public release.",
+    "Frame 06's adaptive teaching instrument has a mildly creature-like silhouette even though it is faceless, repairable, and subordinate to human learning.",
+    "The series is speculative future fiction; captions must preserve the distinction between researched mechanisms and depicted possibilities.",
+    "A self-authored diagnostic cannot provide independent taste approval."
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "lattice-operational-field-guide-v1",
+  "role": "foundational-specialist-agent-identity-proof",
+  "agent_id": "lattice-interoperability-architect",
+  "swarm_id": "web-spatial-protocol-futures",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-b7fac031-108b-49c6-94bc-0d369dbb1ff9.png",
+    "reference_asset": "public/assets/agents/v1/web-spatial-protocol-futures/lattice-interoperability-architect.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-foundational-specialist-prompts.v1.md#prototype-j--lattice-operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized portrait WebP was inspected. Lattice's single ultraviolet slit, black protocol coat, mismatched canonical connectors, replaceable adapters, trust membrane, isolated failure, portable module, and closed production cabinet make interoperability testable and vendor-neutral.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/lattice-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 221756,
+    "sha256": "9669fc862fab61cd96e62c9237a161d5d0d4a0bc574b969a3d73cd3fe68413e7"
+  },
+  "generated_on": "2026-08-15"
+}

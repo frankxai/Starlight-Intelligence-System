@@ -279,7 +279,7 @@ export class AgentRouter {
   /**
    * Resolve the House namespace based on intent and file paths.
    */
-  resolveHouse(query: string, filePaths?: string[]): string {
+  resolveHouse(query: string, _filePaths?: string[]): string {
     const q = query.toLowerCase();
     if (q.includes("music") || q.includes("audio") || q.includes("song")) return "House of Music & Acoustics";
     if (q.includes("wealth") || q.includes("crypto") || q.includes("finance")) return "House of Wealth & Capital";

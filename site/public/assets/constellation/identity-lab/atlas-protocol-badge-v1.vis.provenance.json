@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "atlas-protocol-badge-v1",
+  "role": "portfolio-coverage-specialist-agent-identity-proof",
+  "agent_id": "atlas-signal-scout",
+  "swarm_id": "intelligence-research",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-1a6be5ff-13a9-4f27-aa10-69a025c7497c.png",
+    "reference_asset": "public/assets/agents/v1/intelligence-research/atlas-signal-scout.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-portfolio-coverage-prompts.v1.md#prototype-c--atlas-protocol-badge-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The square export was inspected. Atlas's antenna-lens pack, three public signal materials, selected cyan signal, sealed provenance capsule, source thread, and separate audit and synthesis docks survive compact cropping without surveillance or hacker imagery.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 4,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/atlas-protocol-badge-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 287704,
+    "sha256": "139d7795ce446720a0006e9cdf90f25cee2fbe565d0dd52a56fe9bb57807b245"
+  },
+  "generated_on": "2026-08-15"
+}

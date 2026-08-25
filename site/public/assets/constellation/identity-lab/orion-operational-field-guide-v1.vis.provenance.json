@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "orion-operational-field-guide-v1",
+  "role": "agent-identity-prototype",
+  "agent_id": "orion-mission-architect",
+  "swarm_id": "sovereign-command",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-22e9c1a9-3c20-4d33-ad37-9c9651617e3a.png",
+    "reference_asset": "public/assets/agents/v1/sovereign-command/orion-mission-architect.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-identity-prototype-prompts.v1.md#prototype-b--operational-field-guide-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "Identity, three exploded plan layers, gold route pin, and blank callout rails were inspected after WebP conversion. No generated labels or pseudo-text are present.",
+  "quality_score": {
+    "total": 29,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 5,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/orion-operational-field-guide-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 287256,
+    "sha256": "178025d7be6971be191716d5ae39dae6a0737c68825bde63cf9a015279c29100"
+  },
+  "generated_on": "2026-08-15"
+}

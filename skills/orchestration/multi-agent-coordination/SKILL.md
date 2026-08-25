@@ -2,60 +2,88 @@
 name: orchestration/multi-agent-coordination
 description: Use when multiple Starlight agents need to collaborate on a related task — handles agent selection, task decomposition, dependency management, and result aggregation across the council. Default skill for Starlight Orchestrator.
 type: agent-orchestration
+version: "2026-08-25"
+status: stable
 ---
 
-# Multi-Agent Coordination
+# Multi-Agent Coordination & Swarm Orchestration
 
-> *"Many minds, one mission. Coordination is the multiplier."*
+> *"Many minds, one mission. High autonomy, bounded consensus, verifiable convergence."*
 
 ## When This Skill Activates
 
-- Tasks requiring multiple agents to collaborate
-- Keywords: "coordinate", "agents", "parallel", "team", "collaborate"
-- Default for: Starlight Orchestrator
+- Workflows requiring multiple specialized agents or subagents to collaborate.
+- Keywords: "coordinate", "agents", "swarm", "parallel", "team", "collaborate", "council", "/ultracode", "/ultrawork", "/ultraworld"
+- Default for: Starlight Orchestrator, Starlight Prime
 
 ## What This Skill Does
 
-Manages the coordination of multiple Starlight agents working on related tasks. Handles agent selection, task decomposition, dependency management, and result aggregation.
+Orchestrates multi-agent swarms using the 3-Gate Santa Method, strictly enforced consensus sizing ($\le 7$ agents), dynamic model routing, and memory guardian boundaries. Prevents context dilution, namespace collisions, and runaway token consumption.
+
+## Core Rules & Invariants
+
+1. **The $\le 7$ Consensus Sizing Rule**: Active deliberation and consensus loops MUST be capped at a maximum of 7 agents per council. Sizing beyond 7 causes coordinate deadlocks, latency spikes, and context dilution.
+2. **Dynamic Model Routing**:
+   - *Scout / Research / File Scan*: Fast lightweight models (`flash` / `flash_lite` / `haiku`).
+   - *Drafting / Implementation*: Capable code models (`inherit` / `sonnet`).
+   - *Crown Review / Unity Synthesis*: Deep reasoning models (`pro` / `thinking: high` / `o3` / `opus`).
+3. **Memory Guardian Protection**: When spawning parallel subagents, verify working memory and context boundaries to prevent OOM errors in containerized and local environments.
 
 ## Procedures
 
-### Procedure 1: Agent Selection
+### Procedure 1: Task Decomposition & Topology Selection
 
-1. Analyze the task for domain requirements
-2. Match domains to agent expertise (see Agent Registry)
-3. Assess if agents need to work in parallel or sequence
-4. Calculate total token budget for all agents
-5. Confirm agent selection is minimal (no unnecessary agents)
-6. Brief each agent with their specific sub-task
+1. **Classify Workflow Shape**:
+   - *Conductor / Hierarchical*: Orchestrator delegates to isolated workers and synthesizes.
+   - *Pipeline / Sequential*: Stage A (Research) $\to$ Stage B (Design) $\to$ Stage C (Implementation) $\to$ Stage D (QA).
+   - *Adversarial Santa Loop*: Worker drafts $\to$ Reviewer critiques $\to$ Worker refines $\to$ Consensus.
+2. **Decompose into Discrete Sub-Tasks**:
+   - Define for each agent: clear single responsibility, strict input context, explicit artifact deliverable, and acceptance criteria.
+3. **Draft-First Workspace Isolation**: Subagents run with isolated context and communicate asynchronously via structured message packets.
 
-### Procedure 2: Task Decomposition
+### Procedure 2: The Adversarial Santa Loop (3-Gate Execution)
 
-1. Break the main task into discrete sub-tasks
-2. For each sub-task, identify: owner agent, dependencies, expected output
-3. Create dependency graph
-4. Identify critical path
-5. Optimize for parallel execution where possible
-6. Set checkpoints for progress monitoring
+```
+┌────────────────────────────────────────────────────────┐
+│                   THE SANTA METHOD                     │
+│                                                        │
+│  [Fire Gate]       →    [Crown Gate]     →  [Unity]   │
+│  Rapid Generation       Adversarial Review   Synthesis│
+│  (Builder Agent)        (Sentinel/Reviewer)  (Prime)  │
+└────────────────────────────────────────────────────────┘
+```
 
-### Procedure 3: Result Aggregation
+1. **Fire Gate (Generation)**: Builder agent implements the initial code or artifact against technical specs.
+2. **Crown Gate (Review)**: Independent reviewer subagent audits the draft against `TASTE.md`, test suites, security invariants, and design canons.
+3. **Iterative Refinement**: If flaws are identified, feed targeted diffs back to the builder until all critical gates pass.
+4. **Unity Gate (Synthesis)**: Prime or Conductor merges validated artifacts into a unified output.
 
-1. Collect outputs from all agents
-2. Check for conflicts or contradictions
-3. Apply the Synthesis Protocol (see core/SYNTHESIS_PROTOCOL.md)
-4. Merge into unified response
-5. Ensure no agent's contribution is lost
-6. Present coherent result to user
+### Procedure 3: Context Compression & Handoff Protocol
+
+1. **Serialize Intermediate State**: Long-running swarms write milestones to `findings.md` or `task.md`.
+2. **Structured Handoff Packet**:
+   ```yaml
+   handoff:
+     from_agent: <agent-name>
+     to_agent: <agent-name>
+     task_id: <id>
+     completed_work: [<items>]
+     artifacts_created: [<paths>]
+     decisions_locked: [<decisions>]
+     next_actions: [<actions>]
+     verification_criteria: [<checks>]
+   ```
+3. **Context Truncation Guard**: Discard raw exploration logs and pass only compressed essential context to downstream agents.
 
 ## Integration Points
 
-- **Vault:** Operational Vault (coordination patterns)
-- **Agents:** Orchestrator (primary), Prime (council mode)
-- **Engine:** Orchestration Engine (core/ORCHESTRATION_ENGINE.md)
+- **Vaults**: Operational Vault (coordination receipts), Technical Vault (architecture patterns)
+- **Harnesses**: Antigravity native `define_subagent` / `invoke_subagent`, Claude Code fanout, Codex cascading agents
+- **Engine**: SAGE Autonomous Execution, Orchestration Engine (`core/ORCHESTRATION_ENGINE.md`)
 
 ## Quality Criteria
 
-- Were the minimum necessary agents used?
-- Were dependencies correctly identified?
-- Were parallel opportunities exploited?
-- Was the final output coherent, not fragmented?
+- Did the active consensus loop stay within the $\le 7$ agent boundary?
+- Were fast models used for broad scans and deep reasoning models for reviews?
+- Did the Santa Loop achieve verifiable consensus before user presentation?
+- Are all intermediate artifacts cleanly persisted in project memory?

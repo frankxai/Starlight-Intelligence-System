@@ -1,0 +1,31 @@
+{
+  "$schema": "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+  "schema_version": "1.0.0",
+  "asset": {
+    "asset_id": "asset_74dcb84846b135f903c494de",
+    "version_id": "ver_74dcb84846b135f903c494def51eb761",
+    "media_type": "image",
+    "sha256": "74dcb84846b135f903c494def51eb761bdbf4672324ae97339baf959f4019fad",
+    "local_path": "public/assets/constellation/role-cartographer.webp",
+    "relative_path": "./role-cartographer.webp"
+  },
+  "generation": {
+    "provider": "openai-codex",
+    "model": "gpt-image",
+    "prompt": null,
+    "negative_prompt": null,
+    "seed": null,
+    "settings": { "transcode": "ffmpeg libwebp quality=82" },
+    "output_paths": ["public/assets/constellation/role-cartographer.webp"],
+    "created_at": "2026-08-14T03:34:00+02:00"
+  },
+  "agent": {
+    "coding_agent": "codex",
+    "repo": "starlight-intelligence-web",
+    "thread_ref": null,
+    "session_ref": "019fe474-4b2f-7703-ab79-9826fd64b2c1",
+    "summary": "Cartographer visual archetype for the frontend experience engineer; exact source prompt was not retained.",
+    "metadata": { "source_asset": "exec-718d354c-ab71-4c2b-b9fe-d220fa5e79e1.png" }
+  },
+  "skill": null
+}

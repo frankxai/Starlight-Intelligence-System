@@ -1,0 +1,36 @@
+{
+  "schema": "visual.asset.provenance.v1",
+  "asset_id": "aria-sovereign-instrument-v1",
+  "role": "foundational-specialist-agent-identity-proof",
+  "agent_id": "aria-story-architect",
+  "swarm_id": "creator-worlds",
+  "source": {
+    "tool": "openai-imagegen",
+    "session_id": "019ffda3-8717-7e30-8957-4d6a7bd71085",
+    "output_id": "exec-23e3c535-596f-4f19-8bb7-3b5d1984680a.png",
+    "reference_asset": "public/assets/agents/v1/creator-worlds/aria-story-architect.webp",
+    "prompt_record": "docs/design/prompts/starlight-agent-foundational-specialist-prompts.v1.md#prototype-d--aria-sovereign-instrument-v1"
+  },
+  "rights_status": "generated-owned",
+  "inspection_status": "approved",
+  "inspection_notes": "The optimized portrait WebP was inspected. Aria's ear-blades, plum coat, manuscript tablet, three ivory ribbons, tension weights, continuity fixture, visual and resonance handoffs, and closed publication gate create a distinctive narrative machine with safe dark crop space.",
+  "quality_score": {
+    "total": 28,
+    "maximum": 30,
+    "first_read": 5,
+    "brand_world": 5,
+    "craft": 5,
+    "accessibility_and_crop": 4,
+    "provenance_and_artifacts": 5,
+    "operational_usefulness": 4
+  },
+  "export": {
+    "path": "/assets/constellation/identity-lab/aria-sovereign-instrument-v1.webp",
+    "mime_type": "image/webp",
+    "width": 1122,
+    "height": 1402,
+    "bytes": 280210,
+    "sha256": "c1fcdeaa79b5e7b3158b5bbd81d0c17a23dfb351ff06b8d575c33dac03aa608c"
+  },
+  "generated_on": "2026-08-15"
+}
