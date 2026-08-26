@@ -81,6 +81,29 @@ describe("Mem0RemoteProvider", () => {
     assert.equal(calls, 0);
   });
 
+  it("retains failed external writes for a later flush", async () => {
+    let attempts = 0;
+    const client: Mem0Client = {
+      async addMemory() {
+        attempts++;
+        if (attempts === 1) throw new Error("remote unavailable");
+        return { id: "mem0_retried" };
+      },
+      async searchMemories() { return []; },
+      async deleteMemory() { return true; },
+    };
+    const provider = new Mem0RemoteProvider({ client });
+
+    await provider.remember(record("retryable_write"));
+    const firstFlush = await provider.flush();
+    assert.deepEqual(firstFlush, { attempted: 1, written: 0, failed: 1 });
+    assert.equal(provider.pendingCount(), 1, "a failed external write must remain retryable");
+
+    const secondFlush = await provider.flush();
+    assert.deepEqual(secondFlush, { attempted: 1, written: 1, failed: 0 });
+    assert.equal(provider.pendingCount(), 0);
+  });
+
   it("recalls via remote search and maps provider refs without becoming canonical", async () => {
     const client: Mem0Client = {
       async addMemory() { return { id: "unused" }; },

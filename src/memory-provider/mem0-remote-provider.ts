@@ -113,6 +113,7 @@ export class Mem0RemoteProvider implements MemoryProvider {
 
   async flush(): Promise<{ attempted: number; written: number; failed: number }> {
     const batch = this.pending.splice(0, this.flushBatchSize);
+    const failedWrites: PendingWrite[] = [];
     let written = 0;
     let failed = 0;
     for (const item of batch) {
@@ -126,8 +127,15 @@ export class Mem0RemoteProvider implements MemoryProvider {
         written++;
       } catch {
         failed++;
+        failedWrites.push(item);
       }
     }
+
+    // Preserve failed writes ahead of records queued while the remote call was in flight.
+    // The canonical local_core write has already succeeded; this queue is only a retryable
+    // external projection and must never silently discard it on a transient outage.
+    if (failedWrites.length > 0) this.pending.unshift(...failedWrites);
+
     return { attempted: batch.length, written, failed };
   }
 
