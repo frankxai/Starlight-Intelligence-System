@@ -14,20 +14,21 @@
 # pinned semver for human readability — dependabot updates both the SHA
 # and the comment together.
 
-name: Deploy site/ to Vercel
+name: Manual site/ Vercel Deploy
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "site/**"
-      - ".github/workflows/vercel-deploy.yml"
+  # Emergency/manual deploy path only. The canonical `site` Vercel project
+  # deploys automatically through Vercel's native Git integration.
   workflow_dispatch:
+    inputs:
+      confirm_production:
+        description: "Type deploy-production to confirm the manual production deploy"
+        required: true
+        type: string
 
 concurrency:
   group: vercel-deploy-prod
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -43,6 +44,7 @@ jobs:
     # deploy job skips cleanly and deploys stay manual
     # (cd site && pnpm dlx vercel deploy --prod --yes).
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.confirm_production == 'deploy-production' }}
     outputs:
       has-secrets: ${{ steps.check.outputs.has }}
     steps:
