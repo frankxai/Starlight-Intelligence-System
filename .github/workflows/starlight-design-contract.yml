@@ -2,6 +2,16 @@ name: Starlight design contract
 
 on:
   pull_request:
+    paths:
+      - '**/*.tsx'
+      - '**/*.jsx'
+      - '**/*.css'
+      - '**/*.scss'
+      - '.github/workflows/starlight-design-contract.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
