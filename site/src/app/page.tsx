@@ -157,7 +157,7 @@ const OPERATING_STEPS: OperatingStep[] = [
   },
   {
     title: "Recall",
-    desc: "Vaults retrieve strategic, technical, creative, and operational memory.",
+    desc: "Public vault and operator-held local memory retrieve what the run is allowed to see.",
     icon: Database,
   },
   {
