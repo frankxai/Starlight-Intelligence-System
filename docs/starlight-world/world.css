@@ -150,6 +150,12 @@ aside h2 {
   font-size: 12px;
 }
 
+aside button[data-jump] {
+  display: block;
+  margin: 8px 0 0;
+  border-radius: 10px;
+}
+
 .hint { margin-top: 18px; color: var(--muted); font-size: 12px; }
 
 @media (max-width: 900px) {

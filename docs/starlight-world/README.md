@@ -4,10 +4,13 @@ Private drive surface. **Vanilla HTML/CSS/JS. No Next.js.**
 
 You drive four layers:
 
-1. **Palace** — eight Mind Palace rooms
-2. **Vaults** — six SIS semantic vaults
-3. **City** — Starlight, FrankX, Arcanea, GenCreator, Command
-4. **Second Brain** — brain/ vs sealed private/, registered stewards only
+1. **Palace** — eight rooms. Enter to go inside. Esc back.
+2. **Vaults** — six SIS orbs
+3. **City** — five districts with buildings
+4. **Second Brain** — brain/ vs sealed private/
+5. **Graph** — palace · vaults · city · brain edges
+
+Keys: `1`–`5`, arrows, Enter, Esc. Hash remembers the room.
 
 ## Run
 

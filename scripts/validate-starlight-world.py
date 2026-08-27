@@ -55,6 +55,15 @@ def validate(world: dict) -> list[str]:
         errors.append("private vault must be air-gapped")
     if any(item.get("live") for item in world.get("stewards", [])):
         errors.append("stewards must stay registered, not live")
+    known = palace_ids | vault_ids | city_ids | brain_ids
+    for room in world.get("palace", []):
+        if room.get("vault") not in vault_ids:
+            errors.append(f"palace {room['id']} missing vault")
+        if room.get("district") not in city_ids:
+            errors.append(f"palace {room['id']} missing district")
+    for edge in world.get("edges", []):
+        if edge.get("from") not in known or edge.get("to") not in known:
+            errors.append(f"edge drifted: {edge}")
     return errors
 
 
