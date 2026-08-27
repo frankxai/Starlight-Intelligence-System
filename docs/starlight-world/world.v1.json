@@ -3,6 +3,7 @@
   "name": "Starlight World",
   "driver": "Frank",
   "role": "private-drive-surface",
+  "stack": "vanilla-html",
   "privacy": {
     "containsPrivateVaultNotes": false,
     "containsSecrets": false,
@@ -10,6 +11,7 @@
   },
   "not": [
     "Q-Town",
+    "Next.js app",
     "starlight-agent-canvas product surface",
     "live agent fleet",
     "public Mission Control"
@@ -28,65 +30,73 @@
       "id": "lighthouse",
       "title": "Lighthouse",
       "role": "Alignment",
+      "system": "Self",
       "lead": "Keep the north star one breath: the life is the proof the system works.",
       "x": 50,
-      "y": 18
+      "y": 12
     },
     {
       "id": "ocean-house",
       "title": "Ocean House",
       "role": "Life and relationships",
+      "system": "Family",
       "lead": "Protect family, health, love, and the ocean-centered life from product thrash.",
-      "x": 78,
+      "x": 82,
       "y": 32
     },
     {
       "id": "studio",
       "title": "Studio",
       "role": "Music and culture",
+      "system": "Voice and Video",
       "lead": "Make and ship music without turning the palace into a catalog.",
       "x": 86,
-      "y": 58
+      "y": 62
     },
     {
       "id": "forge",
       "title": "Forge",
       "role": "Products",
+      "system": "Business",
       "lead": "One free artifact, one paid SKU, one quiet high-ticket path.",
-      "x": 70,
-      "y": 82
+      "x": 64,
+      "y": 86
     },
     {
       "id": "commons",
       "title": "Commons",
       "role": "Community",
+      "system": "Brand",
       "lead": "Park paid community until one purchase is delivered.",
-      "x": 42,
+      "x": 36,
       "y": 86
     },
     {
       "id": "living-lab",
       "title": "Living Lab",
       "role": "Science",
+      "system": "Code",
       "lead": "Evidence before claim. Memory palace research stays rubric-locked.",
-      "x": 18,
-      "y": 70
+      "x": 14,
+      "y": 62
     },
     {
       "id": "treasury",
       "title": "Treasury",
       "role": "Wealth",
+      "system": "Wealth",
       "lead": "One cash room. No new domains or SaaS ladders until a real sale.",
       "x": 14,
-      "y": 42
+      "y": 32
     },
     {
       "id": "observatory",
       "title": "Observatory",
       "role": "Long future",
+      "system": "Orchestrator",
       "lead": "Private Observatory data never becomes public Mission Control.",
-      "x": 30,
-      "y": 20
+      "x": 36,
+      "y": 12
     }
   ],
   "vaults": [
@@ -178,6 +188,48 @@
       "owns": ["Observatory :4321", "fleet vitals"],
       "repo": "starlight-command-center",
       "drive": "Operational projection. Bind loopback. No public live ops."
+    }
+  ],
+  "brain": [
+    {
+      "id": "brain-vault",
+      "title": "Brain",
+      "role": "MCP-wired operational vault",
+      "mount": "brain-only",
+      "airGapped": false,
+      "lead": "Summaries and indexes only. No raw private transcripts."
+    },
+    {
+      "id": "private-vault",
+      "title": "Private",
+      "role": "Air-gapped vault",
+      "mount": "none",
+      "airGapped": true,
+      "lead": "No MCP. No embeddings. No Git dump of notes."
+    },
+    {
+      "id": "people-map",
+      "title": "People Map",
+      "role": "Registered steward",
+      "mount": "brain-only",
+      "airGapped": false,
+      "lead": "One file per person in brain/. Never in private/."
+    },
+    {
+      "id": "pattern-detector",
+      "title": "Pattern Detector",
+      "role": "Registered steward",
+      "mount": "brain-only",
+      "airGapped": false,
+      "lead": "Weekly patterns from inbox summaries."
+    },
+    {
+      "id": "chronicle",
+      "title": "Chronicle",
+      "role": "Witness practice",
+      "mount": "none",
+      "airGapped": false,
+      "lead": "Bless one whole artifact. Refuse mid-flight work."
     }
   ],
   "secondBrain": {
