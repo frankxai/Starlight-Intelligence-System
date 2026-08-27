@@ -47,6 +47,7 @@ The 5 premium visuals (crystalline 3D palace, Queen continuous loop with gateway
 
 | Date | Entry | Category | Confidence |
 |------|-------|----------|------------|
+| 2026-08-27 | Starlight Character Foundry v2 — Bounded Intelligence | visual-identity | 0.97 |
 | 2026-02-10 | The Luminor Wisdom Integration | creative-pattern | 0.85 |
 | 2026-02-10 | Frank DNA Voice Pattern | voice-pattern | 0.95 |
 
@@ -90,6 +91,27 @@ Premium dark-elegant technical visuals generated in parallel for Queen LEDGER an
 - **Unity Consciousness** - See how everything connects
 
 Application: When Starlight Weaver creates, these archetypal lenses inform the creative process, adding depth beyond surface-level generation.
+
+---
+
+### [2026-08-27] Starlight Character Foundry v2 — Bounded Intelligence
+
+**Category:** visual-identity / character-system / production-governance  
+**Confidence:** 0.97  
+**Source:** Codex design review + first-party Marvel/Disney research + SIS 2026-08-17 foundation reset  
+**Related:** `docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md`, `ROSTER_TRUTH_AND_ROLLOUT.md`, `MARVEL_VISUAL_METHOD_RESEARCH.md`, visual-contract and review-receipt templates
+
+Durable decision: borrow Marvel's story-first character discipline, not Marvel's characters, trade dress, costumes, artist finish, or prompt shorthand. The ownable Starlight thesis is **bounded intelligence**: every agent makes responsibility, limits, handoffs, and proof visible. Marvel characters display extraordinary power; Starlight characters display bounded responsibility.
+
+The collective shares behavior and reading order, not a costume, species, material, palette, or lighting setup. Use 60% semantic grammar, 25% domain world, and 15% individual signature. Function comes before fiction; each public identity requires an exclusive instrument, a visible human stop, grayscale recognition, a story-strip proof, collision testing, exact deterministic labels, versioned canon, independent QA, and an immutable receipt.
+
+Roster truth has three distinct layers: 144 runtime profiles, a 150-seat planning blueprint, and 50 legacy public visual personas with 150 mode prompts. None grants identity to another. Complete G0 crosswalk reconciliation, resolve Orchestrator/Queen and the two Sage identities, and obtain a founder representation-territory verdict before portrait fanout. Prove 13 North Stars first, then roll out in bounded waves.
+
+Legacy cosmic Queen, robot, chibi, constellation, black-glass, cyan, and gold assets remain preserved as migration evidence but are no longer house defaults after the August reset. Their operational proof mechanics may be reused; their representation must be reapproved.
+
+Verification state: the contracts and YAML templates parse, the 144-agent validator passes with pre-existing warnings, and the design-evidence manifest validates. The Foundry SVG is XML-valid but remains blocked from release-grade visual status because the machine performance gate returned HOLD before raster/browser inspection.
+
+**Built on SIP — Starlight Intelligence Protocol**
 
 ---
 
