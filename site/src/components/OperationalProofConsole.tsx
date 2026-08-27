@@ -25,7 +25,7 @@ type ProofLane = {
 const PROOF_LANES: ProofLane[] = [
   {
     label: "Memory",
-    value: "6 vaults",
+    value: "1 public vault",
     state: "context locked",
     icon: Database,
     tone: "text-blue-600",
