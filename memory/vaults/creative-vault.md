@@ -47,6 +47,8 @@ The 5 premium visuals (crystalline 3D palace, Queen continuous loop with gateway
 
 | Date | Entry | Category | Confidence |
 |------|-------|----------|------------|
+| 2026-08-27 | Cinematic civic operators — Practical prestige translation | cinematic-character-system | 0.95 |
+| 2026-08-27 | Character territories — Civic operators + Living notation | visual-territory | 0.94 |
 | 2026-08-27 | Starlight Character Foundry v2 — Bounded Intelligence | visual-identity | 0.97 |
 | 2026-02-10 | The Luminor Wisdom Integration | creative-pattern | 0.85 |
 | 2026-02-10 | Frank DNA Voice Pattern | voice-pattern | 0.95 |
@@ -96,9 +98,12 @@ Application: When Starlight Weaver creates, these archetypal lenses inform the c
 
 ### [2026-08-27] Starlight Character Foundry v2 — Bounded Intelligence
 
-**Category:** visual-identity / character-system / production-governance  
-**Confidence:** 0.97  
-**Source:** Codex design review + first-party Marvel/Disney research + SIS 2026-08-17 foundation reset  
+**Category:** visual-identity / character-system / production-governance
+
+**Confidence:** 0.97
+
+**Source:** Codex design review + first-party Marvel/Disney research + SIS 2026-08-17 foundation reset
+
 **Related:** `docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md`, `ROSTER_TRUTH_AND_ROLLOUT.md`, `MARVEL_VISUAL_METHOD_RESEARCH.md`, visual-contract and review-receipt templates
 
 Durable decision: borrow Marvel's story-first character discipline, not Marvel's characters, trade dress, costumes, artist finish, or prompt shorthand. The ownable Starlight thesis is **bounded intelligence**: every agent makes responsibility, limits, handoffs, and proof visible. Marvel characters display extraordinary power; Starlight characters display bounded responsibility.
@@ -109,7 +114,31 @@ Roster truth has three distinct layers: 144 runtime profiles, a 150-seat plannin
 
 Legacy cosmic Queen, robot, chibi, constellation, black-glass, cyan, and gold assets remain preserved as migration evidence but are no longer house defaults after the August reset. Their operational proof mechanics may be reused; their representation must be reapproved.
 
+Imagegen territory follow-up: two inspected black-and-white v2 boards now compare Orchestrator, Sentinel, Concierge, Weaver, and Starlight Sage. **Civic operators** uses human figures plus separable bounded instruments; **Living notation** uses non-humanoid articulated civic objects. Design recommendation: advance Civic operators for public character representation and import Living notation as its instrument, diagram, registry-mark, and motion grammar. Founder approval remains pending, so neither board is canon and no North Star fanout is authorized. Proofs, exact prompts, hashes, and review evidence live under `docs/visuals/character-system/territory-proofs/`.
+
 Verification state: the contracts and YAML templates parse, the 144-agent validator passes with pre-existing warnings, and the design-evidence manifest validates. The Foundry SVG is XML-valid but remains blocked from release-grade visual status because the machine performance gate returned HOLD before raster/browser inspection.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+### [2026-08-27] Cinematic civic operators — Practical prestige translation
+
+**Category:** cinematic-character-system / costume-development / production-grammar
+
+**Confidence:** 0.95
+
+**Source:** Founder-directed image generation + Codex visual QA
+
+**Related:** `docs/visuals/character-system/cinematic-evolution/`, Civic operators territory, Living notation territory, Foundry v2
+
+Durable direction: translate premium ensemble cinema into Starlight through dramatic consequence, silhouette, practical fabrication, world integration, motivated light, restrained visual effects, and role-specific performance—not through Marvel characters, costumes, logos, trade dress, or style-name prompting.
+
+The current five-character family uses contemporary near-future architectural tailoring and separate inspectable instruments. Orchestrator routes, Sentinel compares and bounds, Concierge opens one route, Weaver retains provenance during synthesis, and Starlight Sage reveals nested evidence. The shared material family is tactile charcoal and warm-bone textile, satin titanium, dark steel, pale ceramic, laminated glass, precision cord, restrained plum, and sparse oxidized-red wayfinding.
+
+The first costume exploration drifted toward antique workshop and steampunk language. A targeted correction froze cast, roles, instruments, poses, and composition while changing only era, fabrication, material, and surface finish. This is the preferred repair pattern for future generated-media drift: diagnose the failed attribute, preserve approved invariants, and edit the smallest visual layer.
+
+The promoted direction now has three inspected assets: the five-person costume master candidate, an ultrawide archive ensemble v2, and an Orchestrator identity anchor. Ensemble v1 remains as iteration evidence; its lineup blocking and nonsemantic marks were corrected through a narrow edit that preserved cast, costume, instruments, location, and grade while changing action, eyelines, depth, and evidence-surface cleanliness. Exact notation remains deterministic. All assets ship as internal direction evidence only. Founder representation approval, G0 roster truth, Orchestrator/Queen resolution, full turnarounds, collision tests, and the 95-point public-release gate remain open.
 
 **Built on SIP — Starlight Intelligence Protocol**
 
