@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/learning-contract.schema.json",
+  "title": "LearningContract",
+  "description": "Learner-owned outcome, support, evidence, privacy, and budget agreement for a pinned AcademyPack release.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "status", "learnerRef", "passportRef", "academyPackRef", "targetIdentity", "outcomes", "constraints", "privacyTerms", "evidencePlan", "supportPlan", "budget", "acceptance"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "status": { "type": "string", "enum": ["proposed", "accepted", "active", "paused", "completed", "withdrawn", "expired"] },
+    "learnerRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+    "passportRef": { "$ref": "common.schema.json#/$defs/StableId" },
+    "academyPackRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "pathwayRef": { "$ref": "common.schema.json#/$defs/StableId" },
+    "missionInstanceRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "targetIdentity": { "$ref": "common.schema.json#/$defs/ShortText" },
+    "outcomes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["outcome", "competencyRefs", "proofCondition"],
+        "properties": {
+          "outcome": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+          "competencyRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+          "proofCondition": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+          "targetDate": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weeklyCapacityMinutes", "languages", "dataResidency"],
+      "properties": {
+        "weeklyCapacityMinutes": { "type": "integer", "minimum": 30, "maximum": 10080 },
+        "languages": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/Locale" } },
+        "dataResidency": { "type": "array", "minItems": 1, "items": { "type": "string", "enum": ["EU", "EEA", "NL", "DE", "US", "institution_controlled", "no_external_processing"] } },
+        "toolRestrictions": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ShortText" } },
+        "sensitiveConstraintRef": { "$ref": "common.schema.json#/$defs/StableId", "description": "Opaque protected record; do not embed medical or accommodation details." }
+      }
+    },
+    "privacyTerms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceVisibility", "telemetryUse", "consentGrantRefs", "retentionPolicyRef", "portableExportAllowed"],
+      "properties": {
+        "evidenceVisibility": { "$ref": "common.schema.json#/$defs/Visibility" },
+        "telemetryUse": { "type": "string", "enum": ["operational_only", "formative_with_consent", "research_with_separate_consent"] },
+        "consentGrantRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+        "retentionPolicyRef": { "$ref": "common.schema.json#/$defs/StableId" },
+        "portableExportAllowed": { "const": true },
+        "publicProjectionAllowed": { "type": "boolean", "default": false }
+      }
+    },
+    "evidencePlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredArtifactTypes", "defenseRequired", "unfamiliarTransferRequired", "assessmentPolicyRef"],
+      "properties": {
+        "requiredArtifactTypes": { "type": "array", "minItems": 1, "items": { "type": "string", "enum": ["design", "code", "decision_record", "research", "media", "evaluation", "deployment", "reflection", "defense"] } },
+        "defenseRequired": { "const": true },
+        "unfamiliarTransferRequired": { "type": "boolean" },
+        "assessmentPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "portfolioProjectionRef": { "$ref": "common.schema.json#/$defs/StableId" }
+      }
+    },
+    "supportPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["guardianTeamRef", "servicePath", "humanEscalationRef"],
+      "properties": {
+        "guardianTeamRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "servicePath": { "type": "array", "minItems": 2, "items": { "type": "string", "enum": ["guardian_agent", "peer_guild", "trained_mentor", "faculty_clinic", "founder_assembly"] } },
+        "humanEscalationRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+        "accessibilityPlanRef": { "$ref": "common.schema.json#/$defs/StableId" },
+        "clinicMinutes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["payerType", "entitlementPolicyRef", "usageLimits", "debtAllowed"],
+      "properties": {
+        "payerType": { "type": "string", "enum": ["learner", "employer", "institution", "sponsor", "scholarship", "mixed"] },
+        "entitlementPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "usageLimits": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/UsageLimit" } },
+        "debtAllowed": { "const": false }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["learnerAccepted", "academyAccepted"],
+      "properties": {
+        "learnerAccepted": { "type": "boolean" },
+        "academyAccepted": { "type": "boolean" },
+        "learnerSignature": { "$ref": "common.schema.json#/$defs/Signature" },
+        "academySignature": { "$ref": "common.schema.json#/$defs/Signature" },
+        "acceptedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "enum": ["accepted", "active", "paused", "completed"] } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "acceptance": { "type": "object", "properties": { "learnerAccepted": { "const": true }, "academyAccepted": { "const": true } }, "required": ["learnerSignature", "academySignature", "acceptedAt"] }
+        }
+      }
+    }
+  ]
+}

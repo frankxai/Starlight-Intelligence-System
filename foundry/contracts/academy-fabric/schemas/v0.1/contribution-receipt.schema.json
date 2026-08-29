@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/contribution-receipt.schema.json",
+  "title": "ContributionReceipt",
+  "description": "Immutable attribution and beneficiary-acceptance record; not a credential, ownership transfer, payout instruction, token, or universal score.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "status", "missionContractRef", "contributors", "beneficiaryRefs", "reviewerRef", "delegationGrantRefs", "inputArtifactRefs", "outputArtifactRefs", "execution", "competencyRefs", "rightsAndConsent", "acceptance", "maintenance", "economicBoundary", "verification"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "status": { "type": "string", "enum": ["proposed", "accepted", "disputed", "corrected", "revoked"] },
+    "missionContractRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "contributors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["principalRef", "contributionType", "statement"],
+        "properties": {
+          "principalRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+          "contributionType": { "type": "string", "enum": ["authorship", "implementation", "research", "design", "review", "mentorship", "agent_assistance", "maintenance", "funding", "beneficiary_input"] },
+          "statement": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+          "estimatedShareBasisPoints": { "type": "integer", "minimum": 0, "maximum": 10000, "description": "Attribution estimate only; never an ownership or payout instruction." }
+        }
+      }
+    },
+    "beneficiaryRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/EntityRef" } },
+    "reviewerRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+    "delegationGrantRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+    "inputArtifactRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "outputArtifactRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["humanResponsibleRef", "agentBuildRefs", "promptPackageRefs", "skillPackageRefs", "toolRefs", "environmentDigest", "startedAt", "endedAt"],
+      "properties": {
+        "humanResponsibleRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+        "agentBuildRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/AgentBuildRef" } },
+        "promptPackageRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+        "skillPackageRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+        "toolRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+        "environmentDigest": { "$ref": "common.schema.json#/$defs/Digest" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "endedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "competencyRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+    "rightsAndConsent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["licenseGrants", "consentGrantRefs", "visibility", "retentionPolicyRef"],
+      "properties": {
+        "licenseGrants": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/LicenseGrant" } },
+        "consentGrantRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+        "visibility": { "$ref": "common.schema.json#/$defs/Visibility" },
+        "retentionPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "decidedByRef", "decidedAt", "criteriaRef", "statement"],
+      "properties": {
+        "decision": { "type": "string", "enum": ["accepted", "partially_accepted", "rejected", "needs_revision"] },
+        "decidedByRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+        "decidedAt": { "type": "string", "format": "date-time" },
+        "criteriaRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "statement": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+        "evidenceRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } }
+      }
+    },
+    "maintenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["responsibleRefs", "obligation", "reviewAt", "status"],
+      "properties": {
+        "responsibleRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/EntityRef" } },
+        "obligation": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+        "reviewAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "maintained", "overdue", "released", "sunset"] }
+      }
+    },
+    "impactEndorsements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["endorserRef", "statement", "evidenceRefs", "endorsedAt"],
+        "properties": {
+          "endorserRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+          "statement": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+          "evidenceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+          "endorsedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "economicBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confersOwnership", "authorisesPayout", "isTransferableToken"],
+      "properties": {
+        "confersOwnership": { "const": false },
+        "authorisesPayout": { "const": false },
+        "isTransferableToken": { "const": false },
+        "entitlementDecisionRef": { "$ref": "common.schema.json#/$defs/StableId" }
+      }
+    },
+    "dispute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["caseRef", "openedAt", "reasonCode", "status"],
+      "properties": {
+        "caseRef": { "$ref": "common.schema.json#/$defs/StableId" },
+        "openedAt": { "type": "string", "format": "date-time" },
+        "reasonCode": { "type": "string", "enum": ["attribution", "consent", "licence", "quality", "acceptance", "identity", "fraud", "other"] },
+        "status": { "type": "string", "enum": ["open", "investigating", "resolved", "dismissed"] },
+        "resolutionRef": { "$ref": "common.schema.json#/$defs/StableId" }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receiptDigest", "proof", "statusEndpoint"],
+      "properties": {
+        "receiptDigest": { "$ref": "common.schema.json#/$defs/Digest" },
+        "proof": { "$ref": "common.schema.json#/$defs/Signature" },
+        "statusEndpoint": { "type": "string", "format": "uri" }
+      }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "disputed" } }, "required": ["status"] },
+      "then": { "required": ["dispute"] }
+    }
+  ]
+}
+

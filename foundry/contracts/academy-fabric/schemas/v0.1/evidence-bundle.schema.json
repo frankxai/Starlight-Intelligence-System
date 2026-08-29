@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/evidence-bundle.schema.json",
+  "title": "EvidenceBundle",
+  "description": "Frozen manifest of artifacts, evaluations, disclosures, environment, verification findings, and human defense.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "status", "evidenceScope", "subjectRef", "missionContractRef", "submittedByRef", "submittedAt", "artifactRefs", "evaluationRuns", "environment", "assistanceDisclosure", "verification", "freeze", "submitterDeclaration"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "status": { "type": "string", "enum": ["assembling", "frozen", "submitted", "verifying", "verified", "rejected", "superseded", "tombstoned"] },
+    "evidenceScope": { "type": "string", "enum": ["human_competence", "team_mission", "agent_capability", "contribution"] },
+    "subjectRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+    "missionContractRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "submittedByRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+    "submittedAt": { "type": "string", "format": "date-time" },
+    "artifactRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "evaluationRuns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["runId", "suiteRef", "evaluatorRef", "datasetRef", "scorerRefs", "environmentDigest", "startedAt", "endedAt", "outcome", "resultArtifactRef"],
+        "properties": {
+          "runId": { "$ref": "common.schema.json#/$defs/StableId" },
+          "suiteRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "evaluatorRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "datasetRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "scorerRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+          "seed": { "type": "integer", "minimum": 0 },
+          "environmentDigest": { "$ref": "common.schema.json#/$defs/Digest" },
+          "telemetrySchemaRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "startedAt": { "type": "string", "format": "date-time" },
+          "endedAt": { "type": "string", "format": "date-time" },
+          "outcome": { "type": "string", "enum": ["pass", "fail", "inconclusive", "error"] },
+          "metrics": { "type": "object", "additionalProperties": { "type": "number" } },
+          "resultArtifactRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executionImageDigest", "networkPolicyRef", "dependencyLockArtifactRef", "sandboxClass"],
+      "properties": {
+        "executionImageDigest": { "$ref": "common.schema.json#/$defs/Digest" },
+        "networkPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "dependencyLockArtifactRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "sandboxClass": { "type": "string", "enum": ["declarative_policy", "WASI", "gVisor", "Firecracker", "Kata"] }
+      }
+    },
+    "assistanceDisclosure": { "$ref": "common.schema.json#/$defs/AssistanceDisclosure" },
+    "defenseRecordRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "unfamiliarTransferArtifactRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completeness", "provenanceIntegrity", "policyConformance", "findings"],
+      "properties": {
+        "completeness": { "type": "string", "enum": ["not_checked", "complete", "incomplete"] },
+        "provenanceIntegrity": { "type": "string", "enum": ["not_checked", "valid", "invalid", "partial"] },
+        "policyConformance": { "type": "string", "enum": ["not_checked", "conformant", "nonconformant", "requires_human_review"] },
+        "verifierAgentBuildRef": { "$ref": "common.schema.json#/$defs/AgentBuildRef" },
+        "verifiedAt": { "type": "string", "format": "date-time" },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["severity", "code", "message", "evidenceRefs"],
+            "properties": {
+              "severity": { "type": "string", "enum": ["info", "warning", "error", "blocking"] },
+              "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" },
+              "message": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+              "evidenceRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } }
+            }
+          }
+        }
+      }
+    },
+    "freeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifestDigest", "canonicalization", "frozenAt", "frozenByRef"],
+      "properties": {
+        "manifestDigest": { "$ref": "common.schema.json#/$defs/Digest" },
+        "canonicalization": { "const": "JCS-RFC8785" },
+        "frozenAt": { "type": "string", "format": "date-time" },
+        "frozenByRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+        "signature": { "$ref": "common.schema.json#/$defs/Signature" }
+      }
+    },
+    "submitterDeclaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accurateToBestKnowledge", "rightsAndConsentConfirmed", "humanResponsibilityAccepted", "signature"],
+      "properties": {
+        "accurateToBestKnowledge": { "const": true },
+        "rightsAndConsentConfirmed": { "const": true },
+        "humanResponsibilityAccepted": { "const": true },
+        "signature": { "$ref": "common.schema.json#/$defs/Signature" }
+      }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "evidenceScope": { "const": "human_competence" } }, "required": ["evidenceScope"] },
+      "then": { "properties": { "subjectRef": { "type": "object", "properties": { "kind": { "const": "human" } } } }, "required": ["defenseRecordRef"] }
+    }
+  ]
+}

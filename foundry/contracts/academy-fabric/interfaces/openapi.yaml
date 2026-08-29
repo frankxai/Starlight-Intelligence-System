@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: Starlight Academy Fabric API
+  version: 0.1.0
+  description: Minimal resource and command surface. Commands require Idempotency-Key, policy decision, authenticated actor, and optimistic concurrency where applicable.
+servers:
+  - url: https://api.starlightintelligence.org/academy-fabric
+security:
+  - oauth2: []
+paths:
+  /v1/academy-packs/{id}:
+    get:
+      operationId: resolveAcademyPack
+      security: [{ oauth2: [academy.pack.read] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Version'
+      responses:
+        '200': { description: Pinned AcademyPack, content: { application/json: { schema: { $ref: '../schemas/v0.1/academy-pack.schema.json' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/missions/{id}:
+    get:
+      operationId: resolveMission
+      security: [{ oauth2: [academy.mission.read] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Caller-authorised mission, content: { application/json: { schema: { $ref: '../schemas/v0.1/mission-contract.schema.json' } } } }
+    post:
+      operationId: createMission
+      security: [{ oauth2: [academy.mission.write] }]
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }, { $ref: '#/components/parameters/PolicyDecision' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '../schemas/v0.1/mission-contract.schema.json' } } } }
+      responses: { '201': { description: Created } }
+  /v1/evidence-bundles:
+    post:
+      operationId: submitEvidenceBundle
+      security: [{ oauth2: [academy.evidence.submit] }]
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }, { $ref: '#/components/parameters/PolicyDecision' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '../schemas/v0.1/evidence-bundle.schema.json' } } } }
+      responses: { '202': { description: Frozen bundle accepted for verification } }
+  /v1/assessment-decisions:
+    post:
+      operationId: recordAssessmentDecision
+      description: Human assessor-of-record only; agent identities are rejected.
+      security: [{ oauth2: [academy.assessment.decide] }]
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }, { $ref: '#/components/parameters/PolicyDecision' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '../schemas/v0.1/common.schema.json#/$defs/DecisionRecord' } } } }
+      responses: { '202': { description: Decision recorded; credential issuance remains a separate command } }
+  /v1/credentials/{id}/verification:
+    get:
+      operationId: verifyHumanCredential
+      security: []
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { description: Public verification projection }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/agent-attestations/{id}/verification:
+    get:
+      operationId: verifyAgentAttestation
+      security: []
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { description: Public build-specific conformance projection } }
+  /v1/entitlements:evaluate:
+    post:
+      operationId: evaluateEntitlement
+      security: [{ oauth2: [academy.entitlement.evaluate] }]
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }, { $ref: '#/components/parameters/PolicyDecision' }]
+      requestBody: { required: true }
+      responses: { '200': { description: Immutable decision pinned to policy and fact versions } }
+  /v1/objects:validate:
+    post:
+      operationId: validateObject
+      security: [{ oauth2: [academy.schema.validate] }]
+      parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }]
+      requestBody: { required: true }
+      responses: { '200': { description: Structural and semantic validation report } }
+components:
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: string, format: uri } }
+    Version: { name: version, in: query, required: true, schema: { type: string } }
+    IdempotencyKey: { name: Idempotency-Key, in: header, required: true, schema: { type: string, minLength: 16, maxLength: 128 } }
+    PolicyDecision: { name: X-Policy-Decision-Ref, in: header, required: true, schema: { type: string, format: uri } }
+  responses:
+    NotFound: { description: Not found or not visible to caller }
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://identity.starlightintelligence.org/oauth/authorize
+          tokenUrl: https://identity.starlightintelligence.org/oauth/token
+          scopes:
+            academy.pack.read: Read published academy packs
+            academy.mission.read: Read authorised missions
+            academy.mission.write: Create bounded missions
+            academy.evidence.submit: Submit frozen evidence
+            academy.assessment.decide: Record human assessment decision
+            academy.entitlement.evaluate: Evaluate pinned entitlement policy
+            academy.schema.validate: Validate a contract object
+

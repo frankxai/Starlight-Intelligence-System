@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/learning-passport.schema.json",
+  "title": "LearningPassport",
+  "description": "Learner-controlled, consented projection over authoritative evidence, credentials, and contributions; never the raw event ledger.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "subjectRef", "projectionType", "generatedAt", "sourceCutoffAt", "competencyClaims", "artifactRefs", "credentialRefs", "contributionReceiptRefs", "sharePolicy"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "subjectRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+    "projectionType": { "type": "string", "enum": ["private", "sealed_assessor", "cohort", "institution", "public_portfolio", "portable_export"] },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "sourceCutoffAt": { "type": "string", "format": "date-time" },
+    "learningContractRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "competencyClaims": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/CompetencyClaim" } },
+    "artifactRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "credentialRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "contributionReceiptRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "opportunityPreferencesRef": { "$ref": "common.schema.json#/$defs/StableId" },
+    "sharePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consentGrantRefs", "audienceRefs", "purpose", "expiresAt", "revocable"],
+      "properties": {
+        "consentGrantRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+        "audienceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/EntityRef" } },
+        "purpose": { "type": "string", "enum": ["learner_use", "assessment", "portfolio", "employment", "collaboration", "institutional_reporting"] },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "revocable": { "const": true },
+        "shareGrantRef": { "$ref": "common.schema.json#/$defs/StableId" }
+      }
+    },
+    "export": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "digest", "generatedByRef"],
+      "properties": {
+        "format": { "type": "string", "enum": ["academy-fabric-json", "open-badges-3", "clr-2", "europass-edc"] },
+        "digest": { "$ref": "common.schema.json#/$defs/Digest" },
+        "generatedByRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+        "downloadRef": { "$ref": "common.schema.json#/$defs/StableId" }
+      }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  }
+}
+

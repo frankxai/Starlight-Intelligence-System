@@ -1,0 +1,52 @@
+version: 0.1.0
+envelopeSchema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/event-envelope.schema.json
+defaultDataSchema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/event-data.schema.json
+delivery:
+  sourceOfTruth: transactional-outbox
+  ordering: per-aggregate-only
+  deduplicationKey: [source, id]
+  replayProtection: idempotencykey
+  sensitivePayloadRule: opaque-identifiers-and-digests-only
+events:
+  - type: org.starlight.academy.pack.published.v1
+    owner: program
+    aggregate: AcademyPack
+    classification: public
+  - type: org.starlight.academy.mission.activated.v1
+    owner: program
+    aggregate: MissionContract
+    classification: internal
+  - type: org.starlight.academy.evidence.submitted.v1
+    owner: evidence
+    aggregate: EvidenceBundle
+    classification: confidential
+  - type: org.starlight.academy.evidence.verified.v1
+    owner: evidence
+    aggregate: EvidenceBundle
+    classification: confidential
+  - type: org.starlight.academy.assessment.decided.v1
+    owner: credentialing
+    aggregate: HumanCredential
+    classification: confidential
+    invariant: actorref resolves to an authorised human assessor
+  - type: org.starlight.academy.credential.status-changed.v1
+    owner: credentialing
+    aggregate: HumanCredential
+    classification: internal
+  - type: org.starlight.academy.agent-attestation.status-changed.v1
+    owner: agent-trust
+    aggregate: AgentCapabilityAttestation
+    classification: internal
+  - type: org.starlight.academy.receipt.accepted.v1
+    owner: contribution
+    aggregate: ContributionReceipt
+    classification: internal
+  - type: org.starlight.academy.receipt.revoked.v1
+    owner: contribution
+    aggregate: ContributionReceipt
+    classification: internal
+  - type: org.starlight.academy.entitlement.decided.v1
+    owner: commerce
+    aggregate: EntitlementDecision
+    classification: confidential
+

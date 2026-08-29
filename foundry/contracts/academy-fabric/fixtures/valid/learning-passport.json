@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "id": "urn:starlight:learning-passport:learner-001",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "tenant",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "academyRef": "urn:starlight:academy:ai-architect",
+    "stewardRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "visibility": "private",
+    "dataClassification": "confidential",
+    "maturity": "active",
+    "provenance": {
+      "contentDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "createdByRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }]
+    }
+  },
+  "subjectRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+  "projectionType": "private",
+  "generatedAt": "2026-09-12T12:00:00Z",
+  "sourceCutoffAt": "2026-09-12T11:59:59Z",
+  "learningContractRefs": [{
+    "id": "urn:starlight:learning-contract:learner-001",
+    "version": "0.1.0",
+    "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+  }],
+  "competencyClaims": [{
+    "competencyRef": "urn:starlight:competency:architecture-defense",
+    "frameworkVersion": "0.1.0",
+    "claimState": "credentialed",
+    "evidenceRefs": ["urn:starlight:evidence-bundle:learner-001"],
+    "credentialRefs": ["urn:starlight:human-credential:learner-001-architecture"]
+  }],
+  "artifactRefs": [{
+    "id": "urn:starlight:artifact:architecture-map-001",
+    "version": "0.1.0",
+    "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+  }],
+  "credentialRefs": [{
+    "id": "urn:starlight:human-credential:learner-001-architecture",
+    "version": "0.1.0",
+    "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+  }],
+  "contributionReceiptRefs": [{
+    "id": "urn:starlight:contribution-receipt:architecture-map-001",
+    "version": "0.1.0",
+    "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777"
+  }],
+  "sharePolicy": {
+    "consentGrantRefs": ["urn:starlight:consent:learner-001-private-passport"],
+    "audienceRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }],
+    "purpose": "learner_use",
+    "expiresAt": "2027-09-12T12:00:00Z",
+    "revocable": true,
+    "shareGrantRef": "urn:starlight:share-grant:learner-001-private"
+  }
+}

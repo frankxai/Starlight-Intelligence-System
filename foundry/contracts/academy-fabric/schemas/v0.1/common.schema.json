@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/common.schema.json",
+  "title": "Academy Fabric Common Definitions",
+  "$defs": {
+    "SemVer": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "StableId": {
+      "type": "string",
+      "format": "uri",
+      "minLength": 12,
+      "maxLength": 512
+    },
+    "NonEmptyText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "ShortText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "Locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[A-Z]{2})?$"
+    },
+    "Visibility": {
+      "type": "string",
+      "enum": ["private", "sealed", "cohort", "tenant", "public"]
+    },
+    "DataClassification": {
+      "type": "string",
+      "enum": ["public", "internal", "confidential", "restricted"]
+    },
+    "Maturity": {
+      "type": "string",
+      "enum": ["draft", "trial", "active", "deprecated", "archived"]
+    },
+    "NamespacedExtensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)+$"
+      },
+      "additionalProperties": true,
+      "maxProperties": 32
+    },
+    "ActorKind": {
+      "type": "string",
+      "enum": ["human", "organisation", "academy", "agent_definition", "agent_build", "workload", "service"]
+    },
+    "EntityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": { "$ref": "#/$defs/StableId" },
+        "kind": { "$ref": "#/$defs/ActorKind" },
+        "version": { "$ref": "#/$defs/SemVer" },
+        "digest": { "$ref": "#/$defs/Digest" },
+        "displayHint": { "$ref": "#/$defs/ShortText" }
+      }
+    },
+    "VersionedRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "digest"],
+      "properties": {
+        "id": { "$ref": "#/$defs/StableId" },
+        "version": { "$ref": "#/$defs/SemVer" },
+        "digest": { "$ref": "#/$defs/Digest" },
+        "mediaType": { "type": "string", "maxLength": 255 },
+        "relation": { "type": "string", "maxLength": 128 }
+      }
+    },
+    "HumanRef": {
+      "allOf": [
+        { "$ref": "#/$defs/EntityRef" },
+        { "type": "object", "properties": { "kind": { "const": "human" } } }
+      ]
+    },
+    "OrganisationRef": {
+      "allOf": [
+        { "$ref": "#/$defs/EntityRef" },
+        { "type": "object", "properties": { "kind": { "enum": ["organisation", "academy"] } } }
+      ]
+    },
+    "AgentBuildRef": {
+      "allOf": [
+        { "$ref": "#/$defs/EntityRef" },
+        { "type": "object", "required": ["digest"], "properties": { "kind": { "const": "agent_build" } } }
+      ]
+    },
+    "TimeWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startsAt"],
+      "properties": {
+        "startsAt": { "type": "string", "format": "date-time" },
+        "endsAt": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string", "minLength": 1, "maxLength": 64 }
+      }
+    },
+    "LicenseGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["licenseId", "rightsHolderRefs"],
+      "properties": {
+        "licenseId": { "type": "string", "minLength": 1, "maxLength": 128, "description": "SPDX identifier or LicenseRef-*" },
+        "licenseUrl": { "type": "string", "format": "uri" },
+        "rightsHolderRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/EntityRef" } },
+        "attribution": { "$ref": "#/$defs/NonEmptyText" },
+        "territory": { "type": "string", "maxLength": 128 },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ConsentGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "subjectRef", "purposes", "audiences", "grantedAt", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/StableId" },
+        "subjectRef": { "$ref": "#/$defs/HumanRef" },
+        "purposes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["learning_delivery", "assessment", "credentialing", "portfolio_projection", "research", "community", "opportunity_matching", "public_case", "marketing"] }
+        },
+        "audiences": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/EntityRef" } },
+        "dataCategories": { "type": "array", "uniqueItems": true, "items": { "type": "string", "maxLength": 128 } },
+        "grantedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["active", "withdrawn", "expired"] },
+        "withdrawnAt": { "type": "string", "format": "date-time" },
+        "proofRef": { "$ref": "#/$defs/StableId" }
+      }
+    },
+    "SourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri", "retrievedAt"],
+      "properties": {
+        "uri": { "type": "string", "format": "uri" },
+        "title": { "$ref": "#/$defs/ShortText" },
+        "digest": { "$ref": "#/$defs/Digest" },
+        "retrievedAt": { "type": "string", "format": "date-time" },
+        "sourceQuality": { "type": "string", "enum": ["authoritative", "primary", "secondary", "community", "unverified"] }
+      }
+    },
+    "Signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signerRef", "algorithm", "value", "signedAt"],
+      "properties": {
+        "signerRef": { "$ref": "#/$defs/EntityRef" },
+        "algorithm": { "type": "string", "enum": ["EdDSA", "ES256", "ES384", "PS256", "SigstoreBundle"] },
+        "keyId": { "type": "string", "format": "uri" },
+        "value": { "type": "string", "minLength": 16, "maxLength": 32768 },
+        "signedAt": { "type": "string", "format": "date-time" },
+        "purpose": { "type": "string", "enum": ["authorship", "approval", "attestation", "issuance", "receipt", "event"] }
+      }
+    },
+    "Provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contentDigest", "createdByRefs"],
+      "properties": {
+        "contentDigest": { "$ref": "#/$defs/Digest" },
+        "createdByRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/EntityRef" } },
+        "sourceRefs": { "type": "array", "items": { "$ref": "#/$defs/SourceRef" } },
+        "supersedesRef": { "$ref": "#/$defs/StableId" },
+        "buildAttestationRef": { "$ref": "#/$defs/StableId" },
+        "signatures": { "type": "array", "items": { "$ref": "#/$defs/Signature" } }
+      }
+    },
+    "CanonicalMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "schemaVersion", "recordVersion", "revision", "scope", "tenantRef", "stewardRef", "createdAt", "createdByRef", "updatedAt", "updatedByRef", "visibility", "dataClassification", "maturity", "provenance"],
+      "properties": {
+        "id": { "$ref": "#/$defs/StableId" },
+        "schemaVersion": { "const": "0.1.0" },
+        "recordVersion": { "$ref": "#/$defs/SemVer" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "scope": { "type": "string", "enum": ["global", "tenant"] },
+        "tenantRef": { "$ref": "#/$defs/OrganisationRef" },
+        "academyRef": { "$ref": "#/$defs/StableId" },
+        "stewardRef": { "$ref": "#/$defs/EntityRef" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdByRef": { "$ref": "#/$defs/EntityRef" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedByRef": { "$ref": "#/$defs/EntityRef" },
+        "validity": { "$ref": "#/$defs/TimeWindow" },
+        "visibility": { "$ref": "#/$defs/Visibility" },
+        "dataClassification": { "$ref": "#/$defs/DataClassification" },
+        "maturity": { "$ref": "#/$defs/Maturity" },
+        "locale": { "$ref": "#/$defs/Locale" },
+        "consentRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/StableId" } },
+        "license": { "$ref": "#/$defs/LicenseGrant" },
+        "retentionPolicyRef": { "$ref": "#/$defs/StableId" },
+        "nextReviewAt": { "type": "string", "format": "date-time" },
+        "provenance": { "$ref": "#/$defs/Provenance" },
+        "extensions": { "$ref": "#/$defs/NamespacedExtensions" }
+      }
+    },
+    "CompetencyClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["competencyRef", "claimState"],
+      "properties": {
+        "competencyRef": { "$ref": "#/$defs/StableId" },
+        "frameworkVersion": { "$ref": "#/$defs/SemVer" },
+        "levelRef": { "$ref": "#/$defs/StableId" },
+        "claimState": { "type": "string", "enum": ["declared", "authorised", "demonstrated", "credentialed"] },
+        "evidenceRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/StableId" } },
+        "credentialRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/StableId" } },
+        "validThrough": { "type": "string", "format": "date-time" }
+      }
+    },
+    "DelegationGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "principalRef", "delegateRef", "actions", "resourceRefs", "audienceRefs", "purposes", "validity", "maxDelegationDepth", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/StableId" },
+        "principalRef": { "$ref": "#/$defs/EntityRef" },
+        "delegateRef": { "$ref": "#/$defs/EntityRef" },
+        "actions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.:-]{2,127}$" } },
+        "resourceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/StableId" } },
+        "audienceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/EntityRef" } },
+        "purposes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "maxLength": 128 } },
+        "validity": { "$ref": "#/$defs/TimeWindow" },
+        "maxDelegationDepth": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "parentGrantRef": { "$ref": "#/$defs/StableId" },
+        "status": { "type": "string", "enum": ["active", "suspended", "revoked", "expired"] }
+      }
+    },
+    "AssistanceDisclosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["materialAssistanceUsed", "humanResponsibilityAccepted"],
+      "properties": {
+        "materialAssistanceUsed": { "type": "boolean" },
+        "humanResponsibilityAccepted": { "const": true },
+        "humanResponsibleRef": { "$ref": "#/$defs/HumanRef" },
+        "agentBuildRefs": { "type": "array", "items": { "$ref": "#/$defs/AgentBuildRef" } },
+        "toolRefs": { "type": "array", "items": { "$ref": "#/$defs/StableId" } },
+        "collaboratorRefs": { "type": "array", "items": { "$ref": "#/$defs/EntityRef" } },
+        "assistanceSummary": { "$ref": "#/$defs/NonEmptyText" },
+        "unaidedComponents": { "type": "array", "items": { "$ref": "#/$defs/ShortText" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "materialAssistanceUsed": { "const": true } }, "required": ["materialAssistanceUsed"] },
+          "then": { "required": ["humanResponsibleRef", "assistanceSummary"] }
+        }
+      ]
+    },
+    "Money": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "amountMinor"],
+      "properties": {
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "amountMinor": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }
+      }
+    },
+    "UsageLimit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "limit", "period"],
+      "properties": {
+        "metric": { "type": "string", "enum": ["requests", "tokens", "compute_seconds", "storage_bytes", "seats", "missions", "assessments", "human_clinic_minutes"] },
+        "limit": { "type": "integer", "minimum": 0 },
+        "period": { "type": "string", "enum": ["event", "day", "week", "month", "term", "lifetime"] },
+        "hardLimit": { "type": "boolean", "default": true }
+      }
+    },
+    "DecisionRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "decidedBy", "decidedAt", "rationale", "evidenceRefs"],
+      "properties": {
+        "decision": { "type": "string", "enum": ["approved", "rejected", "needs_revision", "suspended", "revoked"] },
+        "decidedBy": { "$ref": "#/$defs/HumanRef" },
+        "decidedAt": { "type": "string", "format": "date-time" },
+        "rationale": { "$ref": "#/$defs/NonEmptyText" },
+        "evidenceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/StableId" } },
+        "conflictDisclosure": { "$ref": "#/$defs/NonEmptyText" }
+      }
+    }
+  }
+}

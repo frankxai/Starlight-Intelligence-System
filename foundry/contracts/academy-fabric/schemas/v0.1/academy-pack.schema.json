@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/academy-pack.schema.json",
+  "title": "AcademyPack",
+  "description": "Immutable, published configuration of an academy experience over shared Fabric records.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "slug", "name", "purpose", "releaseStatus", "ownerOrganisationRef", "covenantRef", "institutionForms", "competencyFrameworkRefs", "pathways", "guardianModel", "policyRefs", "qualityGates"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 80 },
+    "name": { "$ref": "common.schema.json#/$defs/ShortText" },
+    "purpose": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+    "releaseStatus": { "type": "string", "enum": ["draft", "published", "deprecated", "retired"] },
+    "publishedAt": { "type": "string", "format": "date-time" },
+    "ownerOrganisationRef": { "$ref": "common.schema.json#/$defs/OrganisationRef" },
+    "issuerOrganisationRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/OrganisationRef" } },
+    "covenantRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "brandSurface": { "type": "string", "enum": ["frankx", "starlight_intelligence", "ai_architect_academy", "gencreator", "arcanea", "partner"] },
+    "institutionForms": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["commons", "playground", "studio", "guild", "apprenticeship", "certification_lab", "assembly", "ombuds"] }
+    },
+    "competencyFrameworkRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "pathways": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "status", "missionTemplateRefs", "entryCriteria", "exitCompetencyRefs"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/StableId" },
+          "name": { "$ref": "common.schema.json#/$defs/ShortText" },
+          "status": { "type": "string", "enum": ["hypothesis", "pilot", "active", "paused", "retired"] },
+          "missionTemplateRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+          "entryCriteria": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/NonEmptyText" } },
+          "exitCompetencyRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+          "credentialSchemeRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+          "offerRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } }
+        }
+      }
+    },
+    "guardianModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["servicePath", "humanEscalationRequired", "roleDefinitions"],
+      "properties": {
+        "servicePath": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "type": "string", "enum": ["guardian_agent", "peer_guild", "trained_mentor", "faculty_clinic", "founder_assembly"] }
+        },
+        "humanEscalationRequired": { "const": true },
+        "founderGuardianPackRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "roleDefinitions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["role", "accountability", "authorityBoundary"],
+            "properties": {
+              "role": { "type": "string", "enum": ["tutor", "researcher", "project_conductor", "evidence_verifier", "assessor_copilot", "portfolio_agent", "peer", "mentor", "faculty", "ombuds"] },
+              "accountability": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+              "authorityBoundary": { "$ref": "common.schema.json#/$defs/NonEmptyText" }
+            }
+          }
+        }
+      }
+    },
+    "policyRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "integrationProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lmsAdapterRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+        "cmsProjectionRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "damCollectionRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+        "xapiProfileRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "credentialExporterRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } }
+      }
+    },
+    "commonsContributionRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "approvalRequired"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["none", "consented_redacted_artifact", "sponsor_equivalent_bounty", "either"] },
+        "approvalRequired": { "const": true },
+        "beneficiaryRef": { "$ref": "common.schema.json#/$defs/EntityRef" }
+      }
+    },
+    "qualityGates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accessibilityStandard", "humanCredentialDecision", "appealPathRequired", "evidenceProvenanceRequired"],
+      "properties": {
+        "accessibilityStandard": { "type": "string", "enum": ["WCAG2.2-AA", "WCAG2.2-AAA", "institutional_equivalent"] },
+        "humanCredentialDecision": { "const": true },
+        "appealPathRequired": { "const": true },
+        "evidenceProvenanceRequired": { "const": true },
+        "assessorCalibrationRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "releaseStatus": { "const": "published" } }, "required": ["releaseStatus"] },
+      "then": { "required": ["publishedAt"] }
+    }
+  ]
+}
+

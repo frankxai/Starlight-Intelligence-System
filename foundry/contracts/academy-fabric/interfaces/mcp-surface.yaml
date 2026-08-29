@@ -1,0 +1,55 @@
+version: 0.1.0
+title: Academy Fabric read-first MCP surface
+principles:
+  - OAuth audience and resource indicators are mandatory.
+  - Caller, tenant, purpose, consent, classification, and delegation are evaluated on every resolution.
+  - Public verification is a projection; sealed artifacts and raw learner telemetry are never returned.
+resources:
+  - uriTemplate: academy://packs/{academyPackId}/versions/{version}
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/academy-pack.schema.json
+    scopes: [academy.pack.read]
+    projection: published
+  - uriTemplate: academy://missions/{missionId}/versions/{version}
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/mission-contract.schema.json
+    scopes: [academy.mission.read]
+    projection: caller-authorised
+  - uriTemplate: academy://passports/{subjectId}/projections/{projection}
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/learning-passport.schema.json
+    scopes: [academy.passport.read]
+    projection: consent-and-purpose-bound
+  - uriTemplate: academy://evidence/{bundleId}/metadata
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/evidence-bundle.schema.json
+    scopes: [academy.evidence.metadata.read]
+    projection: metadata-only
+  - uriTemplate: academy://credentials/{credentialId}/verification
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/human-credential.schema.json
+    scopes: [academy.credential.verify]
+    projection: public-verification
+  - uriTemplate: academy://agent-builds/{buildDigest}/attestation
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/agent-capability-attestation.schema.json
+    scopes: [academy.agent-attestation.verify]
+    projection: public-verification
+  - uriTemplate: academy://receipts/{receiptId}/verification
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/contribution-receipt.schema.json
+    scopes: [academy.receipt.verify]
+    projection: consented-verification
+  - uriTemplate: academy://schemas/{schemaName}/versions/{version}
+    scopes: [academy.schema.read]
+    projection: canonical
+tools:
+  - name: academy.validate_object
+    description: Structurally validate a supplied object against a pinned public schema.
+    sideEffect: none
+    scopes: [academy.schema.validate]
+  - name: academy.preflight_evidence_manifest
+    description: Resolve references and report deterministic completeness/provenance gaps without changing evidence or assessment state.
+    sideEffect: none
+    scopes: [academy.evidence.preflight]
+deferredWriteTools:
+  - submit_evidence_bundle
+  - request_assessment
+  - decide_assessment
+  - issue_or_change_credential
+  - publish_artifact
+  - evaluate_or_change_entitlement
+

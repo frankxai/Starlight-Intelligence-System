@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "id": "urn:starlight:learning-contract:learner-001",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "tenant",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "academyRef": "urn:starlight:academy:ai-architect",
+    "stewardRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "visibility": "private",
+    "dataClassification": "confidential",
+    "maturity": "active",
+    "retentionPolicyRef": "urn:starlight:retention:learner-private",
+    "provenance": {
+      "contentDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "createdByRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }]
+    }
+  },
+  "status": "active",
+  "learnerRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+  "passportRef": "urn:starlight:learning-passport:learner-001",
+  "academyPackRef": {
+    "id": "urn:starlight:academy-pack:ai-architect-0.1.0",
+    "version": "0.1.0",
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "pathwayRef": "urn:starlight:pathway:ai-architect-evidence",
+  "missionInstanceRefs": [{
+    "id": "urn:starlight:mission:architecture-evidence-001",
+    "version": "0.1.0",
+    "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+  }],
+  "targetIdentity": "Evidence-led AI Architect",
+  "outcomes": [{
+    "outcome": "Defend a production-grade agent architecture against an unfamiliar constraint change.",
+    "competencyRefs": ["urn:starlight:competency:architecture-defense"],
+    "proofCondition": "Accepted evidence bundle plus live human-assessed defense.",
+    "targetDate": "2026-09-12"
+  }],
+  "constraints": {
+    "weeklyCapacityMinutes": 720,
+    "languages": ["en"],
+    "dataResidency": ["EU"],
+    "sensitiveConstraintRef": "urn:starlight:protected-record:learner-001-accommodations"
+  },
+  "privacyTerms": {
+    "evidenceVisibility": "sealed",
+    "telemetryUse": "operational_only",
+    "consentGrantRefs": ["urn:starlight:consent:learner-001-assessment"],
+    "retentionPolicyRef": "urn:starlight:retention:learner-private",
+    "portableExportAllowed": true,
+    "publicProjectionAllowed": false
+  },
+  "evidencePlan": {
+    "requiredArtifactTypes": ["design", "decision_record", "evaluation", "defense"],
+    "defenseRequired": true,
+    "unfamiliarTransferRequired": true,
+    "assessmentPolicyRef": {
+      "id": "urn:starlight:policy:assessment-001",
+      "version": "0.1.0",
+      "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    }
+  },
+  "supportPlan": {
+    "guardianTeamRef": {
+      "id": "urn:starlight:agent-team:evidence-guardian-001",
+      "version": "0.1.0",
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    "servicePath": ["guardian_agent", "peer_guild", "trained_mentor", "faculty_clinic"],
+    "humanEscalationRef": { "id": "urn:starlight:human:mentor-001", "kind": "human" },
+    "clinicMinutes": 60
+  },
+  "budget": {
+    "payerType": "employer",
+    "entitlementPolicyRef": {
+      "id": "urn:starlight:entitlement-policy:evidence-sprint",
+      "version": "0.1.0",
+      "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+    },
+    "usageLimits": [{ "metric": "tokens", "limit": 2000000, "period": "term", "hardLimit": true }],
+    "debtAllowed": false
+  },
+  "acceptance": {
+    "learnerAccepted": true,
+    "academyAccepted": true,
+    "learnerSignature": {
+      "signerRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+      "algorithm": "EdDSA",
+      "value": "fixture-signature-learner-0001",
+      "signedAt": "2026-08-29T10:00:00Z",
+      "purpose": "approval"
+    },
+    "academySignature": {
+      "signerRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+      "algorithm": "EdDSA",
+      "value": "fixture-signature-academy-0001",
+      "signedAt": "2026-08-29T10:00:00Z",
+      "purpose": "approval"
+    },
+    "acceptedAt": "2026-08-29T10:00:00Z"
+  }
+}
+

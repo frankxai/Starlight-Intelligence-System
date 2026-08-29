@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/artifact.schema.json",
+  "title": "Artifact",
+  "description": "Immutable content-addressed work product with provenance, rights, consent, attribution, and retention controls.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "artifactKind", "title", "content", "creatorRefs", "attributions", "assistanceDisclosure", "rights", "retention", "integrityStatus"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "artifactKind": { "type": "string", "enum": ["design", "code", "decision_record", "research", "media", "dataset", "model", "skill", "prompt_package", "evaluation", "deployment_manifest", "reflection", "defense_record", "credential_payload"] },
+    "title": { "$ref": "common.schema.json#/$defs/ShortText" },
+    "description": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest", "mediaType", "byteSize", "storageRefs"],
+      "properties": {
+        "digest": { "$ref": "common.schema.json#/$defs/Digest" },
+        "mediaType": { "type": "string", "minLength": 3, "maxLength": 255 },
+        "byteSize": { "type": "integer", "minimum": 0 },
+        "storageRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "format": "uri" } },
+        "encryptionKeyRef": { "$ref": "common.schema.json#/$defs/StableId" },
+        "canonicalization": { "type": "string", "enum": ["raw_bytes", "JCS-RFC8785", "OCI-manifest", "C2PA"] }
+      }
+    },
+    "creatorRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/EntityRef" } },
+    "attributions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["principalRef", "role", "statement"],
+        "properties": {
+          "principalRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+          "role": { "type": "string", "enum": ["author", "coauthor", "agent_assistance", "reviewer", "mentor", "maintainer", "rights_holder", "source"] },
+          "statement": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+          "contributionReceiptRef": { "$ref": "common.schema.json#/$defs/StableId" }
+        }
+      }
+    },
+    "assistanceDisclosure": { "$ref": "common.schema.json#/$defs/AssistanceDisclosure" },
+    "sourceArtifactRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "sourceRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/SourceRef" } },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["license", "consentGrantRefs", "reuseAllowed"],
+      "properties": {
+        "license": { "$ref": "common.schema.json#/$defs/LicenseGrant" },
+        "consentGrantRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+        "reuseAllowed": { "type": "boolean" },
+        "commercialUseAllowed": { "type": "boolean" },
+        "modelTrainingUseAllowed": { "type": "boolean", "default": false }
+      }
+    },
+    "redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["isRedacted"],
+      "properties": {
+        "isRedacted": { "type": "boolean" },
+        "sourceArtifactRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "redactionPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "redactionReviewRef": { "$ref": "common.schema.json#/$defs/StableId" }
+      }
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policyRef", "reviewAt", "deletionMode"],
+      "properties": {
+        "policyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "reviewAt": { "type": "string", "format": "date-time" },
+        "deleteAt": { "type": "string", "format": "date-time" },
+        "legalHoldRef": { "$ref": "common.schema.json#/$defs/StableId" },
+        "deletionMode": { "type": "string", "enum": ["retain", "crypto_shred", "delete_bytes_keep_tombstone", "archive"] }
+      }
+    },
+    "integrityStatus": { "type": "string", "enum": ["registered", "verified", "quarantined", "tombstoned"] },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "metadata": { "type": "object", "properties": { "visibility": { "const": "sealed" } } } } },
+      "then": { "properties": { "content": { "type": "object", "required": ["encryptionKeyRef"] } } }
+    }
+  ]
+}

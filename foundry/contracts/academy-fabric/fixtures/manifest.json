@@ -1,0 +1,9 @@
+{
+  "cases": [
+    { "schema": "academy-pack.schema.json", "file": "valid/academy-pack.json", "valid": true },
+    { "schema": "learning-contract.schema.json", "file": "valid/learning-contract.json", "valid": true },
+    { "schema": "learning-passport.schema.json", "file": "valid/learning-passport.json", "valid": true },
+    { "schema": "human-credential.schema.json", "file": "invalid/credential-agent-subject.json", "valid": false }
+  ]
+}
+

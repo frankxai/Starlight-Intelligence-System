@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/event-data.schema.json",
+  "title": "Academy Fabric Generic State Event Data",
+  "description": "Minimal event payload. Sensitive content remains behind policy-controlled references.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["objectRef", "recordVersion", "contentDigest"],
+  "properties": {
+    "objectRef": { "$ref": "common.schema.json#/$defs/StableId" },
+    "recordVersion": { "$ref": "common.schema.json#/$defs/SemVer" },
+    "contentDigest": { "$ref": "common.schema.json#/$defs/Digest" },
+    "previousStatus": { "type": "string", "maxLength": 64 },
+    "newStatus": { "type": "string", "maxLength": 64 },
+    "decisionRef": { "$ref": "common.schema.json#/$defs/StableId" },
+    "reasonCodes": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" } },
+    "relatedObjectRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } }
+  }
+}

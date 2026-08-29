@@ -1,0 +1,31 @@
+name: Academy Fabric contracts
+on:
+  pull_request:
+    paths:
+      - 'foundry/contracts/academy-fabric/**'
+      - 'docs/architecture/ACADEMY_FABRIC.md'
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: foundry/contracts/academy-fabric
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: foundry/contracts/academy-fabric/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint:interfaces
+      - run: npm run generate:types
+      - uses: actions/upload-artifact@v4
+        with:
+          name: academy-fabric-types
+          path: foundry/contracts/academy-fabric/generated/v0.1

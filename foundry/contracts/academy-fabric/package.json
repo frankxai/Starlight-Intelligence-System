@@ -1,0 +1,22 @@
+{
+  "name": "@starlight/academy-fabric-contracts",
+  "version": "0.1.0-draft.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node src/validate.mjs",
+    "check": "npm run test",
+    "generate:types": "node src/generate-types.mjs",
+    "lint:interfaces": "node src/check-interfaces.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "json-schema-to-typescript": "^15.0.4",
+    "yaml": "^2.8.1"
+  }
+}
+

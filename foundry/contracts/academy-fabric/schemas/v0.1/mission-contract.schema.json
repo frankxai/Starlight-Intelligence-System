@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/mission-contract.schema.json",
+  "title": "MissionContract",
+  "description": "Versioned learning-and-contribution contract binding outcome, beneficiary, capability, roles, evidence, safety, assessment, and maintenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "status", "academyPackRef", "title", "beneficiaryRefs", "accountableHumanRef", "intendedOutcome", "requiredCompetencies", "roles", "constraints", "safetyGates", "sourceRefs", "expectedEvidence", "definitionOfDone", "outputLicense", "maintenance", "assessment", "appealPolicyRef"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "status": { "type": "string", "enum": ["draft", "ready", "active", "submitted", "under_review", "completed", "cancelled", "archived"] },
+    "academyPackRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "templateRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "learningContractRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "title": { "$ref": "common.schema.json#/$defs/ShortText" },
+    "beneficiaryRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/EntityRef" } },
+    "accountableHumanRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+    "intendedOutcome": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+    "requiredCompetencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["competencyRef", "frameworkVersion", "rubricRef"],
+        "properties": {
+          "competencyRef": { "$ref": "common.schema.json#/$defs/StableId" },
+          "frameworkVersion": { "$ref": "common.schema.json#/$defs/SemVer" },
+          "levelRef": { "$ref": "common.schema.json#/$defs/StableId" },
+          "rubricRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+        }
+      }
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "principalRef", "responsibilities", "authority"],
+        "properties": {
+          "role": { "type": "string", "enum": ["learner", "beneficiary", "mentor", "reviewer", "assessor", "accountable_owner", "agent", "collaborator", "maintainer", "ombuds"] },
+          "principalRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+          "responsibilities": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/NonEmptyText" } },
+          "authority": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.:-]{2,127}$" } },
+          "delegationGrantRef": { "$ref": "common.schema.json#/$defs/StableId" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timeWindow", "dataClassification", "permittedAiAssistance", "accessibilityPolicyRef", "privacyPolicyRef"],
+      "properties": {
+        "timeWindow": { "$ref": "common.schema.json#/$defs/TimeWindow" },
+        "dataClassification": { "$ref": "common.schema.json#/$defs/DataClassification" },
+        "permittedAiAssistance": { "type": "string", "enum": ["none", "bounded", "disclosed", "required"] },
+        "prohibitedToolRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+        "dataResidency": { "type": "array", "items": { "type": "string", "maxLength": 64 } },
+        "accessibilityPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "privacyPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "safetyGates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate", "stage", "evaluatorRef", "blocking"],
+        "properties": {
+          "gate": { "$ref": "common.schema.json#/$defs/ShortText" },
+          "stage": { "type": "string", "enum": ["before_start", "before_execution", "before_submission", "before_publication", "before_credential"] },
+          "evaluatorRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "blocking": { "const": true },
+          "humanApprovalRequired": { "type": "boolean" }
+        }
+      }
+    },
+    "sourceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/SourceRef" } },
+    "expectedEvidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifactType", "acceptanceCondition", "provenanceRequired"],
+        "properties": {
+          "artifactType": { "type": "string", "enum": ["design", "code", "decision_record", "research", "media", "evaluation", "deployment", "reflection", "defense"] },
+          "acceptanceCondition": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+          "provenanceRequired": { "const": true },
+          "requiredEvaluatorRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } }
+        }
+      }
+    },
+    "definitionOfDone": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/NonEmptyText" } },
+    "outputLicense": { "$ref": "common.schema.json#/$defs/LicenseGrant" },
+    "maintenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["responsibleRef", "obligation", "reviewAt"],
+      "properties": {
+        "responsibleRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+        "obligation": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+        "reviewAt": { "type": "string", "format": "date-time" },
+        "sunsetAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "rubricRefs", "humanDecisionRequired", "defenseRequired", "frozenAssessmentEnvironment"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["formative", "summative", "professional_defense", "contribution_acceptance"] },
+        "rubricRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+        "humanDecisionRequired": { "const": true },
+        "defenseRequired": { "type": "boolean" },
+        "unfamiliarTransferRequired": { "type": "boolean" },
+        "frozenAssessmentEnvironment": { "const": true },
+        "assessorRolePolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "appealPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  }
+}

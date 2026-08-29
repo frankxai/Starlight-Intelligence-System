@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "id": "urn:starlight:academy-pack:ai-architect-0.1.0",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "tenant",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "academyRef": "urn:starlight:academy:ai-architect",
+    "stewardRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "visibility": "public",
+    "dataClassification": "public",
+    "maturity": "active",
+    "nextReviewAt": "2026-11-29T10:00:00Z",
+    "provenance": {
+      "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "createdByRefs": [{ "id": "urn:starlight:human:steward-001", "kind": "human" }]
+    }
+  },
+  "slug": "ai-architect-evidence-sprint",
+  "name": "AI Architect Evidence Sprint",
+  "purpose": "Convert a live AI prototype into buyer-trusted architecture and operating evidence.",
+  "releaseStatus": "published",
+  "publishedAt": "2026-08-29T10:00:00Z",
+  "ownerOrganisationRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+  "issuerOrganisationRefs": [{ "id": "urn:starlight:org:academy-001", "kind": "academy" }],
+  "covenantRef": {
+    "id": "urn:starlight:policy:human-agent-learning-covenant",
+    "version": "0.1.0",
+    "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "brandSurface": "ai_architect_academy",
+  "institutionForms": ["studio", "guild", "certification_lab", "ombuds"],
+  "competencyFrameworkRefs": [{
+    "id": "urn:starlight:competency-framework:ai-architect",
+    "version": "0.1.0",
+    "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  }],
+  "pathways": [{
+    "id": "urn:starlight:pathway:ai-architect-evidence",
+    "name": "AI Architect Evidence",
+    "status": "pilot",
+    "missionTemplateRefs": [{
+      "id": "urn:starlight:mission-template:architecture-evidence",
+      "version": "0.1.0",
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }],
+    "entryCriteria": ["A live client-facing AI agent or prototype exists."],
+    "exitCompetencyRefs": ["urn:starlight:competency:architecture-defense"]
+  }],
+  "guardianModel": {
+    "servicePath": ["guardian_agent", "peer_guild", "trained_mentor", "faculty_clinic"],
+    "humanEscalationRequired": true,
+    "roleDefinitions": [{
+      "role": "evidence_verifier",
+      "accountability": "Preflight evidence integrity and reproducibility.",
+      "authorityBoundary": "May report findings; may not award or revoke credentials."
+    }]
+  },
+  "policyRefs": [{
+    "id": "urn:starlight:policy:assessment-001",
+    "version": "0.1.0",
+    "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  }],
+  "commonsContributionRule": {
+    "mode": "either",
+    "approvalRequired": true
+  },
+  "qualityGates": {
+    "accessibilityStandard": "WCAG2.2-AA",
+    "humanCredentialDecision": true,
+    "appealPathRequired": true,
+    "evidenceProvenanceRequired": true
+  }
+}
+

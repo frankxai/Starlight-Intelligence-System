@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/agent-team-manifest.schema.json",
+  "title": "AgentTeamManifest",
+  "description": "Pinned human-accountable team composition, authority, tools, data scopes, budgets, evaluations, and escalation routes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "status", "name", "controllerOrganisationRef", "accountableHumanRef", "purpose", "missionRefs", "members", "dataBoundary", "budget", "approvalPolicy", "escalation", "killSwitch"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "status": { "type": "string", "enum": ["draft", "validating", "active", "suspended", "retired"] },
+    "name": { "$ref": "common.schema.json#/$defs/ShortText" },
+    "controllerOrganisationRef": { "$ref": "common.schema.json#/$defs/OrganisationRef" },
+    "accountableHumanRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+    "purpose": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+    "missionRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "humanParticipantRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/HumanRef" } },
+    "members": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["agentBuildRef", "serviceIdentityRef", "capabilityAttestationRef", "role", "delegationGrantRefs", "toolScopes", "dataScopes", "autonomyLevel"],
+        "properties": {
+          "agentBuildRef": { "$ref": "common.schema.json#/$defs/AgentBuildRef" },
+          "serviceIdentityRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+          "capabilityAttestationRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "role": { "type": "string", "enum": ["program_architect", "learning_guide", "researcher", "project_conductor", "evidence_verifier", "assessor_copilot", "portfolio_agent", "commons_maintainer", "academy_operator"] },
+          "declaredCapabilityRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+          "delegationGrantRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+          "toolScopes": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.:-]{2,127}$" } },
+          "dataScopes": { "type": "array", "items": { "type": "string", "enum": ["public_catalog", "tenant_catalog", "cohort_context", "learner_consent_context", "sealed_evidence_metadata", "sealed_evidence_content", "commerce_metadata", "financial_execution"] } },
+          "autonomyLevel": { "type": "string", "enum": ["observe", "recommend", "draft", "execute_reversible", "execute_bounded"] },
+          "maxParallelRuns": { "type": "integer", "minimum": 1, "maximum": 64 }
+        }
+      }
+    },
+    "dataBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classifications", "residency", "defaultDenyEgress", "credentialBrokerRequired", "chainOfThoughtStorageAllowed"],
+      "properties": {
+        "classifications": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/DataClassification" } },
+        "residency": { "type": "array", "minItems": 1, "items": { "type": "string", "maxLength": 64 } },
+        "defaultDenyEgress": { "const": true },
+        "allowedEgressHosts": { "type": "array", "items": { "type": "string", "format": "hostname" } },
+        "credentialBrokerRequired": { "const": true },
+        "chainOfThoughtStorageAllowed": { "const": false },
+        "retentionPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approvedByRef", "currency", "maxSpendMinor", "usageLimits", "debtAllowed"],
+      "properties": {
+        "approvedByRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "maxSpendMinor": { "type": "integer", "minimum": 0 },
+        "usageLimits": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/UsageLimit" } },
+        "debtAllowed": { "const": false }
+      }
+    },
+    "approvalPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["humanApprovalRequiredFor"],
+      "properties": {
+        "humanApprovalRequiredFor": {
+          "type": "array",
+          "minItems": 7,
+          "uniqueItems": true,
+          "allOf": [
+            { "contains": { "const": "money" } },
+            { "contains": { "const": "publication" } },
+            { "contains": { "const": "external_communication" } },
+            { "contains": { "const": "credential_status" } },
+            { "contains": { "const": "destructive_action" } },
+            { "contains": { "const": "sensitive_data" } },
+            { "contains": { "const": "residual_risk_acceptance" } }
+          ],
+          "items": { "type": "string", "enum": ["money", "publication", "external_communication", "credential_status", "destructive_action", "sensitive_data", "residual_risk_acceptance", "contract", "price_change", "payout_release"] }
+        }
+      }
+    },
+    "escalation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primaryHumanRef", "ombudsRef", "incidentPolicyRef", "maxUnacknowledgedMinutes"],
+      "properties": {
+        "primaryHumanRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+        "ombudsRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+        "incidentPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "maxUnacknowledgedMinutes": { "type": "integer", "minimum": 1, "maximum": 10080 }
+      }
+    },
+    "killSwitch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "operatorRefs", "revokeDelegations", "stopWorkloads"],
+      "properties": {
+        "enabled": { "const": true },
+        "operatorRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/HumanRef" } },
+        "revokeDelegations": { "const": true },
+        "stopWorkloads": { "const": true },
+        "runbookRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  }
+}
+
