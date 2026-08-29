@@ -74,8 +74,10 @@ on all of these classes:
 - migrations or irreversible state changes
 - production surfaces (anything a deploy pipeline picks up)
 
-Anything unclassifiable fails closed and stays draft. **Until an automated classifier
-implementing these classes exists and is reviewed, auto-ready is disabled fleet-wide:**
+Anything unclassifiable fails closed and stays draft. A reference implementation of
+this classifier (manifest + fail-closed engine + tests) is under review at
+`claude-skills-library` `packs/risk-classifier/` (PR #27). **Until that classifier is
+reviewed and adopted, auto-ready is disabled fleet-wide:**
 stewards may comment a proposed classification on a green PR but never flip draft →
 ready. Merging to a production `main` is governed by each repo's own policy **plus
 per-run authorization from Frank** — no global statement in this file grants merge
