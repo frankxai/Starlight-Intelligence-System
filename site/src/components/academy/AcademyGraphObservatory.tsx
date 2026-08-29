@@ -280,7 +280,7 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
           <div className="mt-10 grid items-end gap-10 xl:grid-cols-[minmax(0,1fr)_440px]">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-violet-300">Academy Graph Observatory / 0.1</p>
-              <h1 aria-label="Can this graph prove its shape?" className="mt-5 max-w-5xl font-serif text-[clamp(3.2rem,7vw,7.4rem)] font-semibold leading-[0.82] tracking-[-0.058em] text-white">
+              <h1 aria-label="Can this graph prove its shape?" className="mt-5 max-w-5xl font-serif text-[clamp(2.75rem,7vw,7.4rem)] font-semibold leading-[0.84] tracking-[-0.058em] text-white">
                 <span className="block">Can this graph</span>{" "}
                 <span className="block bg-gradient-to-r from-violet-300 via-slate-100 to-cyan-200 bg-clip-text italic text-transparent">prove its shape?</span>
               </h1>
@@ -366,12 +366,22 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
                 ))}
               </div>
               <div className="mt-5 hidden border-t border-white/[0.06] px-3 pt-5 lg:block">
-                <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-400">Line grammar</p>
-                <div className="mt-3 grid gap-2 font-mono text-[9px] text-slate-400">
-                  <span><i className="mr-2 inline-block w-7 border-t border-cyan-300" /> sourced</span>
-                  <span><i className="mr-2 inline-block w-7 border-t border-dashed border-slate-400" /> derived</span>
-                  <span><i className="mr-2 inline-block w-7 border-t border-dotted border-fuchsia-300" /> hypothesized</span>
-                </div>
+                <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-400">
+                  {mode === "competency" ? "Claim grammar" : "Execution grammar"}
+                </p>
+                {mode === "competency" ? (
+                  <div className="mt-3 grid gap-2 font-mono text-[9px] text-slate-400">
+                    <span><i className="mr-2 inline-block w-7 border-t border-cyan-300" /> sourced</span>
+                    <span><i className="mr-2 inline-block w-7 border-t border-dashed border-slate-400" /> derived</span>
+                    <span><i className="mr-2 inline-block w-7 border-t border-dotted border-fuchsia-300" /> hypothesized</span>
+                  </div>
+                ) : (
+                  <div className="mt-3 grid gap-2 font-mono text-[9px] text-slate-400">
+                    <span>edge labels · handoff / approval / control</span>
+                    <span><i className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-amber-300" /> human authority</span>
+                    <span><i className="mr-2 inline-block w-7 border-t-2 border-cyan-300" /> active preview path</span>
+                  </div>
+                )}
               </div>
             </nav>
 
