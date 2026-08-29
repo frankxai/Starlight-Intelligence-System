@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "id": "urn:starlight:evidence-bundle:learner-pending",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "tenant",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "stewardRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:30:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "visibility": "sealed",
+    "dataClassification": "restricted",
+    "maturity": "trial",
+    "provenance": { "contentDigest": "sha256:d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1", "createdByRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }] }
+  },
+  "status": "submitted",
+  "evidenceScope": "human_competence",
+  "subjectRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+  "missionContractRef": { "id": "urn:starlight:mission:architecture-evidence-001", "version": "0.1.0", "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222" },
+  "submittedByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+  "submittedAt": "2026-08-29T10:30:00Z",
+  "artifactRefs": [{ "id": "urn:starlight:artifact:architecture-map-001", "version": "0.1.0", "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555" }],
+  "evaluationRuns": [{
+    "runId": "urn:starlight:eval-run:pending-001",
+    "suiteRef": { "id": "urn:starlight:eval-suite:architecture", "version": "0.1.0", "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" },
+    "evaluatorRef": { "id": "urn:starlight:evaluator:architecture", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" },
+    "datasetRef": { "id": "urn:starlight:dataset:architecture", "version": "0.1.0", "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111" },
+    "scorerRefs": [{ "id": "urn:starlight:scorer:architecture", "version": "0.1.0", "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333" }],
+    "environmentDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "startedAt": "2026-08-29T10:10:00Z",
+    "endedAt": "2026-08-29T10:15:00Z",
+    "outcome": "pass",
+    "resultArtifactRef": { "id": "urn:starlight:artifact:evaluation-pending", "version": "0.1.0", "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666" }
+  }],
+  "environment": {
+    "executionImageDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "networkPolicyRef": { "id": "urn:starlight:policy:no-egress", "version": "0.1.0", "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888" },
+    "dependencyLockArtifactRef": { "id": "urn:starlight:artifact:lock", "version": "0.1.0", "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999" },
+    "sandboxClass": "gVisor"
+  },
+  "assistanceDisclosure": { "materialAssistanceUsed": false, "humanResponsibilityAccepted": true },
+  "defenseRecordRef": { "id": "urn:starlight:artifact:defense-pending", "version": "0.1.0", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "verification": { "completeness": "not_checked", "provenanceIntegrity": "not_checked", "policyConformance": "not_checked", "findings": [] },
+  "freeze": {
+    "manifestDigest": "sha256:d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+    "canonicalization": "JCS-RFC8785",
+    "frozenAt": "2026-08-29T10:30:00Z",
+    "frozenByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" }
+  },
+  "submitterDeclaration": {
+    "accurateToBestKnowledge": true,
+    "rightsAndConsentConfirmed": true,
+    "humanResponsibilityAccepted": true,
+    "signature": { "signerRef": { "id": "urn:starlight:human:learner-001", "kind": "human" }, "algorithm": "EdDSA", "value": "fixture-submitter-signature", "signedAt": "2026-08-29T10:30:00Z", "purpose": "approval" }
+  }
+}

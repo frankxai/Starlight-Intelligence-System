@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agent Team Composition"
+  short_description: "Compose the minimum accountable agent team for a mission."
+  default_prompt: "Use $agent-team-composition to retain only agents with durable authority, memory, permission, or trigger boundaries."
+policy:
+  allow_implicit_invocation: true

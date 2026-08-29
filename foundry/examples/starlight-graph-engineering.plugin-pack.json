@@ -1,0 +1,24 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/plugin-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "plugin",
+  "id": "starlight-graph-engineering",
+  "version": "0.1.0",
+  "description": "Package six open, local-first Academy skills for capability graphs, missions, governed execution, evidence evaluation, learner Passport projections, and bounded agent teams.",
+  "displayName": "Starlight Graph Engineering",
+  "skills": [
+    "academy/capability-graph-architecture",
+    "academy/mission-graph-design",
+    "academy/execution-graph-engineering",
+    "academy/evidence-graph-evaluation",
+    "academy/passport-graph-projection",
+    "academy/agent-team-composition"
+  ],
+  "authentication": "none",
+  "deployment": {
+    "targets": [
+      "chatgpt-work",
+      "codex"
+    ]
+  }
+}

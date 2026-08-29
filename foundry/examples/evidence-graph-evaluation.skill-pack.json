@@ -1,0 +1,91 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/skill-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "skill",
+  "id": "evidence-graph-evaluation",
+  "version": "0.1.0",
+  "description": "Evaluate whether mission artifacts support capability claims while preserving provenance, separating machine findings from human judgment, and blocking pay-to-win credentials.",
+  "triggers": {
+    "positive": [
+      "Mission artifacts must be checked against capability nodes and versioned rubrics.",
+      "A portfolio, assessment queue, or credential process needs reproducibility and provenance preflight."
+    ],
+    "negative": [
+      "The request asks the model to issue, revoke, promise, or guarantee a human credential.",
+      "Raw private evidence lacks learner consent or the evaluator lacks authorized access."
+    ]
+  },
+  "procedure": [
+    {
+      "id": "preflight",
+      "instruction": "Verify scope, consent, artifact digests, evaluator authority, rubric version, and separation between learner, assistant, assessor, and issuer.",
+      "proof": "Authority and integrity preflight passes or blocks evaluation."
+    },
+    {
+      "id": "lineage",
+      "instruction": "Map each capability claim to exact artifacts, observations, defenses, decisions, and disclosed assistance.",
+      "proof": "A claim-to-evidence lineage table contains no implicit promotion."
+    },
+    {
+      "id": "checks",
+      "instruction": "Run only permitted structural, factual, reproducibility, adversarial, accessibility, and provenance checks.",
+      "proof": "Every finding records method, inputs, tool version, and confidence."
+    },
+    {
+      "id": "classify",
+      "instruction": "Classify claims as unsupported, partial, demonstrated, contradicted, or human-review-required without translating model scores into credential status.",
+      "proof": "Machine findings and human decisions occupy separate fields and records."
+    },
+    {
+      "id": "red-team",
+      "instruction": "Detect graph poisoning, circular evidence, rubric leakage, hidden assistance, evaluator conflict, cross-tenant references, and commerce-dependent outcomes.",
+      "proof": "Blocking security and integrity findings are explicit."
+    },
+    {
+      "id": "freeze",
+      "instruction": "Freeze the evidence bundle and prepare review or appeal material for an authorized human.",
+      "proof": "The immutable digest, unresolved findings, and next authority are recorded."
+    }
+  ],
+  "inputs": [
+    "Mission Contract and target capability subgraph",
+    "Frozen artifacts and provenance records",
+    "Versioned rubrics, evaluator policy, and consent grants",
+    "Prior findings, appeals, and conflict disclosures"
+  ],
+  "outputs": [
+    "Claim-to-evidence lineage table",
+    "Machine findings and confidence report",
+    "Frozen evidence bundle preflight",
+    "Human review or appeal packet"
+  ],
+  "dependencies": [
+    "academy/capability-graph-architecture",
+    "academy/mission-graph-design"
+  ],
+  "toolPolicy": {
+    "allow": [],
+    "deny": [
+      "external-write",
+      "public-release",
+      "credential-write",
+      "payment-write",
+      "evidence-mutation"
+    ]
+  },
+  "memoryContract": {
+    "read": [],
+    "write": []
+  },
+  "deployment": {
+    "implicitInvocation": true,
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

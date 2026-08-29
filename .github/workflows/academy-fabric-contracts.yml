@@ -3,7 +3,20 @@ on:
   pull_request:
     paths:
       - 'foundry/contracts/academy-fabric/**'
+      - 'foundry/examples/**'
       - 'docs/architecture/ACADEMY_FABRIC.md'
+      - 'docs/architecture/ACADEMY_COMMONS_CHARTER.md'
+      - 'skills/academy/**'
+      - 'skills/skill-rules.json'
+      - 'skills/SKILL_REGISTRY.md'
+      - 'plugins/starlight-graph-engineering/**'
+      - 'scripts/sync-academy-graph-plugin.mjs'
+      - 'scripts/validate-agentskills.mjs'
+      - 'test/v93-academy-graph-plugin-registry.test.ts'
+      - 'test/academy-foundry-packages.test.ts'
+      - 'test/v92-foundry.test.ts'
+      - 'package.json'
+      - '.github/workflows/academy-fabric-contracts.yml'
   push:
     branches: [main]
 permissions:
@@ -29,3 +42,23 @@ jobs:
         with:
           name: academy-fabric-types
           path: foundry/contracts/academy-fabric/generated/v0.1
+  academy-graph-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Validate global skill-rule and registry symmetry
+        run: node --import tsx --test test/v77-skill-rules.test.ts test/v78-skill-registry.test.ts
+      - name: Validate Agent Skills conformance
+        run: node scripts/validate-agentskills.mjs
+      - name: Check canonical Academy skill and plugin synchronization
+        run: npm run academy:graph:plugin:check
+      - name: Validate the skills-only Academy Graph plugin and open posture
+        run: npm run test:academy-graph
+      - name: Validate the canonical Foundry capability graph
+        run: npm run test:foundry

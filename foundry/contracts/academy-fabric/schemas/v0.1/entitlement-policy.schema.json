@@ -2,25 +2,25 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/entitlement-policy.schema.json",
   "title": "EntitlementPolicy",
-  "description": "Versioned deterministic rules for access, quotas, scholarship allocation, and payout preparation under non-negotiable financial guardrails.",
+  "description": "Versioned deterministic rules for optional capacity grants and managed services without gating the public learning, evidence, export, or credential path.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["metadata", "status", "issuerRef", "offerRefs", "eligibilityRules", "grants", "usageLimits", "validity", "financialGuardrails", "agentAuthority", "revocationPolicyRef"],
+  "required": ["metadata", "status", "issuerRef", "accessBasis", "eligibilityRules", "grants", "usageLimits", "validity", "accessNeutrality", "financialGuardrails", "agentAuthority", "revocationPolicyRef"],
   "properties": {
     "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
     "status": { "type": "string", "enum": ["draft", "active", "suspended", "retired"] },
     "issuerRef": { "$ref": "common.schema.json#/$defs/OrganisationRef" },
-    "offerRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+    "accessBasis": { "type": "string", "enum": ["public_open", "local", "commons", "contribution", "institution", "sponsored", "scholarship", "purchased"] },
+    "offerRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
     "eligibilityRules": {
       "type": "array",
-      "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["ruleId", "factType", "operator", "expectedValue", "failureCode"],
         "properties": {
           "ruleId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{2,63}$" },
-          "factType": { "type": "string", "enum": ["payment_cleared", "sponsorship_awarded", "scholarship_awarded", "institution_membership", "cohort_enrollment", "credential_active", "contribution_accepted", "manual_approval"] },
+          "factType": { "type": "string", "enum": ["public_open", "local_execution", "byok_configured", "commons_participation", "resource_grant_active", "payment_cleared", "sponsorship_awarded", "scholarship_awarded", "institution_membership", "cohort_enrollment", "credential_active", "contribution_accepted", "manual_approval"] },
           "operator": { "type": "string", "enum": ["equals", "in", "gte", "lte", "exists"] },
           "expectedValue": {},
           "failureCode": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" },
@@ -45,6 +45,19 @@
     },
     "usageLimits": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/UsageLimit" } },
     "validity": { "$ref": "common.schema.json#/$defs/TimeWindow" },
+    "accessNeutrality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["curriculumAccessUnaffected", "missionAccessUnaffected", "assessmentStandardIdentical", "credentialEligibilityUnaffected", "passportExportUnaffected", "learnerEvidenceRightsUnaffected"],
+      "properties": {
+        "curriculumAccessUnaffected": { "const": true },
+        "missionAccessUnaffected": { "const": true },
+        "assessmentStandardIdentical": { "const": true },
+        "credentialEligibilityUnaffected": { "const": true },
+        "passportExportUnaffected": { "const": true },
+        "learnerEvidenceRightsUnaffected": { "const": true }
+      }
+    },
     "renewal": {
       "type": "object",
       "additionalProperties": false,
@@ -100,7 +113,7 @@
         "allowedActions": {
           "type": "array",
           "uniqueItems": true,
-          "items": { "type": "string", "enum": ["evaluate_eligibility", "provision_approved_access", "meter_usage", "refresh_approved_budget", "allocate_deterministic_scholarship", "prepare_payout", "draft_notice"] }
+          "items": { "type": "string", "enum": ["evaluate_eligibility", "provision_approved_access", "meter_usage", "refresh_approved_resource_envelope", "refresh_approved_budget", "allocate_deterministic_scholarship", "prepare_payout", "draft_notice"] }
         },
         "prohibitedActions": {
           "type": "array",
@@ -130,7 +143,7 @@
         "id": { "$ref": "common.schema.json#/$defs/StableId" },
         "subjectRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
         "policyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
-        "inputFactRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+        "inputFactRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
         "decision": { "type": "string", "enum": ["grant", "deny", "manual_review", "revoke"] },
         "reasonCodes": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" } },
         "evaluatedAt": { "type": "string", "format": "date-time" },
@@ -143,4 +156,3 @@
     }
   }
 }
-

@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "id": "urn:starlight:learning-passport:expired-share",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "tenant",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "stewardRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "visibility": "private",
+    "dataClassification": "confidential",
+    "maturity": "active",
+    "consentRefs": ["urn:starlight:consent:expired-share"],
+    "provenance": { "contentDigest": "sha256:c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1", "createdByRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }] }
+  },
+  "subjectRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+  "projectionType": "private",
+  "generatedAt": "2026-09-12T12:00:00Z",
+  "sourceCutoffAt": "2026-09-12T11:59:59Z",
+  "competencyClaims": [],
+  "artifactRefs": [],
+  "credentialRefs": [],
+  "contributionReceiptRefs": [],
+  "sharePolicy": {
+    "consentGrantRefs": ["urn:starlight:consent:expired-share"],
+    "consentStatusChecks": [{
+      "grantRef": "urn:starlight:consent:expired-share",
+      "subjectRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+      "status": "active",
+      "checkedAt": "2026-09-12T12:00:00Z",
+      "validUntil": "2026-09-12T13:00:00Z",
+      "proof": { "signerRef": { "id": "urn:starlight:human:learner-001", "kind": "human" }, "algorithm": "EdDSA", "value": "fixture-consent-proof-expired", "signedAt": "2026-09-12T12:00:00Z", "purpose": "approval" }
+    }],
+    "audienceRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }],
+    "purpose": "learner_use",
+    "expiresAt": "2026-09-12T11:00:00Z",
+    "revocable": true,
+    "revocationStatusEndpoint": "https://status.starlightintelligence.org/consents/expired-share",
+    "cacheMaxAgeSeconds": 0
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/competency-graph.schema.json",
+  "title": "CompetencyGraph",
+  "description": "Versioned public learning graph that binds competencies to skills, missions, artifacts, evidence, rubrics, evaluators, roles, plugins, and opportunities without encoding commercial entitlement.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "status", "name", "domain", "nodes", "edges", "rootNodeIds", "qualityGates"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "status": { "type": "string", "enum": ["draft", "active", "deprecated", "retired"] },
+    "name": { "$ref": "common.schema.json#/$defs/ShortText" },
+    "domain": { "$ref": "common.schema.json#/$defs/ShortText" },
+    "description": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+    "rootNodeIds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "common.schema.json#/$defs/StableId" }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "name", "lifecycle", "claimState", "sourceRefs"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/StableId" },
+          "kind": { "type": "string", "enum": ["competency", "skill", "mission", "artifact_type", "evidence_requirement", "rubric", "evaluator", "role", "agent_role", "tool", "plugin", "opportunity"] },
+          "name": { "$ref": "common.schema.json#/$defs/ShortText" },
+          "description": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+          "lifecycle": { "type": "string", "enum": ["hypothesis", "experimental", "active", "deprecated", "retired"] },
+          "claimState": { "type": "string", "enum": ["sourced", "derived", "hypothesized"] },
+          "stage": { "type": "string", "enum": ["explorer", "apprentice", "practitioner", "architect", "guardian"] },
+          "componentRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "from", "to", "relation", "claimState", "sourceRefs"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/StableId" },
+          "from": { "$ref": "common.schema.json#/$defs/StableId" },
+          "to": { "$ref": "common.schema.json#/$defs/StableId" },
+          "relation": { "type": "string", "enum": ["requires", "taught_by", "practiced_in", "produces", "satisfies", "evaluated_by", "executed_by", "supported_by", "published_through", "enables", "projection_of"] },
+          "claimState": { "type": "string", "enum": ["sourced", "derived", "hypothesized"] },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+          }
+        }
+      }
+    },
+    "qualityGates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allReferencesResolve", "prerequisitesAcyclic", "activeCompetenciesReachMissionArtifactEvidenceAndRubric", "humanCredentialDecision", "completePublicPath", "containsCommercialEntitlement"],
+      "properties": {
+        "allReferencesResolve": { "const": true },
+        "prerequisitesAcyclic": { "const": true },
+        "activeCompetenciesReachMissionArtifactEvidenceAndRubric": { "const": true },
+        "humanCredentialDecision": { "const": true },
+        "completePublicPath": { "const": true },
+        "containsCommercialEntitlement": { "const": false }
+      }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  }
+}

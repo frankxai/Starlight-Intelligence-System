@@ -21,13 +21,32 @@
     "sharePolicy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["consentGrantRefs", "audienceRefs", "purpose", "expiresAt", "revocable"],
+      "required": ["consentGrantRefs", "consentStatusChecks", "audienceRefs", "purpose", "expiresAt", "revocable", "revocationStatusEndpoint", "cacheMaxAgeSeconds"],
       "properties": {
         "consentGrantRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+        "consentStatusChecks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["grantRef", "subjectRef", "status", "checkedAt", "validUntil", "proof"],
+            "properties": {
+              "grantRef": { "$ref": "common.schema.json#/$defs/StableId" },
+              "subjectRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+              "status": { "const": "active" },
+              "checkedAt": { "type": "string", "format": "date-time" },
+              "validUntil": { "type": "string", "format": "date-time" },
+              "proof": { "$ref": "common.schema.json#/$defs/Signature" }
+            }
+          }
+        },
         "audienceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/EntityRef" } },
         "purpose": { "type": "string", "enum": ["learner_use", "assessment", "portfolio", "employment", "collaboration", "institutional_reporting"] },
         "expiresAt": { "type": "string", "format": "date-time" },
         "revocable": { "const": true },
+        "revocationStatusEndpoint": { "type": "string", "format": "uri" },
+        "cacheMaxAgeSeconds": { "type": "integer", "minimum": 0, "maximum": 60 },
         "shareGrantRef": { "$ref": "common.schema.json#/$defs/StableId" }
       }
     },
@@ -45,4 +64,3 @@
     "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
   }
 }
-

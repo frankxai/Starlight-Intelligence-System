@@ -29,16 +29,16 @@
     "version": "0.1.0",
     "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
-  "pathwayRef": "urn:starlight:pathway:ai-architect-evidence",
+  "pathwayRef": "urn:starlight:pathway:graph-engineering-commons",
   "missionInstanceRefs": [{
-    "id": "urn:starlight:mission:architecture-evidence-001",
+    "id": "urn:starlight:mission:graph-or-no-graph-001",
     "version": "0.1.0",
     "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
   }],
-  "targetIdentity": "Evidence-led AI Architect",
+  "targetIdentity": "Evidence-led Graph Architect",
   "outcomes": [{
-    "outcome": "Defend a production-grade agent architecture against an unfamiliar constraint change.",
-    "competencyRefs": ["urn:starlight:competency:architecture-defense"],
+    "outcome": "Choose, contract, and defend the smallest governed execution topology against an unfamiliar constraint change.",
+    "competencyRefs": ["urn:starlight:competency:graph-system-shape"],
     "proofCondition": "Accepted evidence bundle plus live human-assessed defense.",
     "targetDate": "2026-09-12"
   }],
@@ -68,7 +68,7 @@
   },
   "supportPlan": {
     "guardianTeamRef": {
-      "id": "urn:starlight:agent-team:evidence-guardian-001",
+      "id": "urn:starlight:agent-team:graph-guardian-001",
       "version": "0.1.0",
       "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
     },
@@ -76,14 +76,18 @@
     "humanEscalationRef": { "id": "urn:starlight:human:mentor-001", "kind": "human" },
     "clinicMinutes": 60
   },
-  "budget": {
-    "payerType": "employer",
-    "entitlementPolicyRef": {
-      "id": "urn:starlight:entitlement-policy:evidence-sprint",
-      "version": "0.1.0",
-      "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
-    },
-    "usageLimits": [{ "metric": "tokens", "limit": 2000000, "period": "term", "hardLimit": true }],
+  "access": {
+    "accessBasis": "public_open",
+    "completePathAvailableWithoutPayment": true,
+    "credentialEligibilityWithoutPayment": true,
+    "exportWithoutPayment": true,
+    "identicalAssessmentStandard": true
+  },
+  "resourceEnvelope": {
+    "executionMode": "local",
+    "academyHostedUsageLimits": [],
+    "learnerControlledExecution": true,
+    "externalSpendAllowed": false,
     "debtAllowed": false
   },
   "acceptance": {
@@ -106,4 +110,3 @@
     "acceptedAt": "2026-08-29T10:00:00Z"
   }
 }
-

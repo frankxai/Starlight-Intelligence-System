@@ -227,7 +227,7 @@
     "DelegationGrant": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "principalRef", "delegateRef", "actions", "resourceRefs", "audienceRefs", "purposes", "validity", "maxDelegationDepth", "status"],
+      "required": ["id", "principalRef", "delegateRef", "actions", "resourceRefs", "audienceRefs", "purposes", "validity", "maxDelegationDepth", "status", "proof"],
       "properties": {
         "id": { "$ref": "#/$defs/StableId" },
         "principalRef": { "$ref": "#/$defs/EntityRef" },
@@ -239,7 +239,8 @@
         "validity": { "$ref": "#/$defs/TimeWindow" },
         "maxDelegationDepth": { "type": "integer", "minimum": 0, "maximum": 3 },
         "parentGrantRef": { "$ref": "#/$defs/StableId" },
-        "status": { "type": "string", "enum": ["active", "suspended", "revoked", "expired"] }
+        "status": { "type": "string", "enum": ["active", "suspended", "revoked", "expired"] },
+        "proof": { "$ref": "#/$defs/Signature" }
       }
     },
     "AssistanceDisclosure": {
@@ -286,13 +287,15 @@
     "DecisionRecord": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["decision", "decidedBy", "decidedAt", "rationale", "evidenceRefs"],
+      "required": ["decision", "decidedBy", "decidedAt", "rationale", "evidenceRefs", "authorityGrantRef", "decisionSignature"],
       "properties": {
         "decision": { "type": "string", "enum": ["approved", "rejected", "needs_revision", "suspended", "revoked"] },
         "decidedBy": { "$ref": "#/$defs/HumanRef" },
         "decidedAt": { "type": "string", "format": "date-time" },
         "rationale": { "$ref": "#/$defs/NonEmptyText" },
         "evidenceRefs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/StableId" } },
+        "authorityGrantRef": { "$ref": "#/$defs/VersionedRef" },
+        "decisionSignature": { "$ref": "#/$defs/Signature" },
         "conflictDisclosure": { "$ref": "#/$defs/NonEmptyText" }
       }
     }

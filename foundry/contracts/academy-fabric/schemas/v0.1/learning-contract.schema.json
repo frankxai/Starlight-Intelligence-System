@@ -2,10 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/learning-contract.schema.json",
   "title": "LearningContract",
-  "description": "Learner-owned outcome, support, evidence, privacy, and budget agreement for a pinned AcademyPack release.",
+  "description": "Learner-owned outcome, support, evidence, privacy, access, and bounded-resource agreement for a pinned AcademyPack release.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["metadata", "status", "learnerRef", "passportRef", "academyPackRef", "targetIdentity", "outcomes", "constraints", "privacyTerms", "evidencePlan", "supportPlan", "budget", "acceptance"],
+  "required": ["metadata", "status", "learnerRef", "passportRef", "academyPackRef", "targetIdentity", "outcomes", "constraints", "privacyTerms", "evidencePlan", "supportPlan", "access", "resourceEnvelope", "acceptance"],
   "properties": {
     "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
     "status": { "type": "string", "enum": ["proposed", "accepted", "active", "paused", "completed", "withdrawn", "expired"] },
@@ -79,14 +79,31 @@
         "clinicMinutes": { "type": "integer", "minimum": 0 }
       }
     },
-    "budget": {
+    "access": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["payerType", "entitlementPolicyRef", "usageLimits", "debtAllowed"],
+      "required": ["accessBasis", "completePathAvailableWithoutPayment", "credentialEligibilityWithoutPayment", "exportWithoutPayment", "identicalAssessmentStandard"],
       "properties": {
-        "payerType": { "type": "string", "enum": ["learner", "employer", "institution", "sponsor", "scholarship", "mixed"] },
+        "accessBasis": { "type": "string", "enum": ["public_open", "local", "commons", "contribution", "institution", "sponsored", "scholarship", "purchased"] },
+        "completePathAvailableWithoutPayment": { "const": true },
+        "credentialEligibilityWithoutPayment": { "const": true },
+        "exportWithoutPayment": { "const": true },
+        "identicalAssessmentStandard": { "const": true },
+        "participationGrantRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
         "entitlementPolicyRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
-        "usageLimits": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/UsageLimit" } },
+        "managedServiceTierRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "resourceEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executionMode", "academyHostedUsageLimits", "learnerControlledExecution", "externalSpendAllowed", "debtAllowed"],
+      "properties": {
+        "executionMode": { "type": "string", "enum": ["local", "byok", "hosted_capped", "sponsored_hosted", "managed_private"] },
+        "academyHostedUsageLimits": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/UsageLimit" } },
+        "learnerControlledExecution": { "const": true },
+        "fundingSourceRef": { "$ref": "common.schema.json#/$defs/StableId" },
+        "externalSpendAllowed": { "const": false },
         "debtAllowed": { "const": false }
       }
     },

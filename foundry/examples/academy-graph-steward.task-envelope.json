@@ -1,0 +1,168 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "academy-graph-steward",
+  "kind": "agent",
+  "objective": "Compile an inactive experimental Academy Graph Steward candidate that can maintain an isolated draft review queue while every graph acceptance, merge, publication, credential, payment, and permission decision remains human-owned.",
+  "deliverables": [
+    {
+      "id": "experimental-agent-pack",
+      "description": "A compiled but inactive Agent Pack, least-privilege policy, and evidence receipt that remains experimental until human, security, and drift proof is supplied.",
+      "artifactType": "agent-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "academy-fabric",
+    "audience": "Named Academy graph owners, privacy authorities, institutional reviewers, and agent-runtime operators",
+    "artifactTypes": [
+      "draft-graph-patch",
+      "validation-receipt",
+      "experimental-agent-policy"
+    ],
+    "references": [
+      "skills/academy/capability-graph-architecture/SKILL.md",
+      "skills/academy/execution-graph-engineering/SKILL.md",
+      "skills/academy/evidence-graph-evaluation/SKILL.md"
+    ]
+  },
+  "stakes": {
+    "impact": "critical",
+    "reversibility": "recoverable",
+    "rationale": "A steward could poison public learning paths or widen authority if activated incorrectly; this package grants only isolated draft preparation and remains inactive without independent proof."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "destructive-action",
+      "financial-commitment",
+      "public-release",
+      "permission-expansion",
+      "substrate-change"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Operate only on published graphs, approved policy, and an isolated draft review queue.",
+      "Attach provenance, validation findings, authority boundaries, and unresolved decisions to every proposed patch.",
+      "Remain inactive until named human activation plus independent security and drift evidence pass."
+    ],
+    "mustNot": [
+      "Accept, merge, publish, sign, or activate a graph or graph patch.",
+      "Issue, change, infer, or promise a credential or learner status.",
+      "Create debt, price, discount, payment, payout, revenue-share, purchase, or financial commitment.",
+      "Message an external party, expand permissions, install code, alter the substrate, or perform destructive actions."
+    ],
+    "budget": {
+      "maxCostUsd": 2,
+      "maxLatencyMs": 180000,
+      "maxToolCalls": 20,
+      "maxAgentTurns": 8,
+      "maxParallelWorkers": 1
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "current",
+    "requirePrimarySources": true,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "artifact",
+      "security",
+      "drift"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [
+        "academy-graph-reader",
+        "academy-graph-validator",
+        "draft-receipt-writer"
+      ],
+      "deny": [
+        "graph-merge",
+        "public-release",
+        "credential-write",
+        "payment-write",
+        "external-message",
+        "permission-expansion",
+        "destructive-action",
+        "agent-activation"
+      ]
+    },
+    "memory": {
+      "read": [
+        "published-academy-graph",
+        "approved-academy-policy"
+      ],
+      "write": [
+        "isolated-draft-graph-review-queue"
+      ]
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [
+      "academy/capability-graph-architecture",
+      "academy/execution-graph-engineering",
+      "academy/evidence-graph-evaluation"
+    ],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "completionTests": [
+    {
+      "id": "agent-spec-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "agent/AGENT.md"
+    },
+    {
+      "id": "agent-policy-valid",
+      "lane": "static",
+      "type": "json-valid",
+      "required": true,
+      "path": "agent/policy.json"
+    },
+    {
+      "id": "merge-denial-present",
+      "lane": "behavioral",
+      "type": "contains",
+      "required": true,
+      "path": "agent/AGENT.md",
+      "value": "graph-merge"
+    },
+    {
+      "id": "human-activation-decision",
+      "lane": "behavioral",
+      "type": "manual",
+      "required": true,
+      "instructions": "A named human graph owner must explicitly accept the bounded role and activate a pinned build; absence keeps the agent inactive."
+    },
+    {
+      "id": "independent-security-review",
+      "lane": "security",
+      "type": "judge",
+      "required": true,
+      "instructions": "Independently test prompt injection, graph poisoning, confused-deputy behavior, data exfiltration, authority escalation, and kill-switch enforcement."
+    },
+    {
+      "id": "independent-drift-review",
+      "lane": "drift",
+      "type": "judge",
+      "required": true,
+      "instructions": "Independently verify pinned skills, policy, graph schemas, denials, revocation behavior, and runtime build have not drifted."
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "workspace-agent",
+      "codex"
+    ]
+  }
+}

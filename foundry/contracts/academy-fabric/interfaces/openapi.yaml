@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Starlight Academy Fabric API
   version: 0.1.0
-  description: Minimal resource and command surface. Commands require Idempotency-Key, policy decision, authenticated actor, and optimistic concurrency where applicable.
+  description: Minimal open learning, graph, evidence, and optional managed-resource surface. Commands require Idempotency-Key, policy decision, authenticated actor, and optimistic concurrency where applicable.
 servers:
   - url: https://api.starlightintelligence.org/academy-fabric
 security:
@@ -31,6 +31,26 @@ paths:
       parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }, { $ref: '#/components/parameters/PolicyDecision' }]
       requestBody: { required: true, content: { application/json: { schema: { $ref: '../schemas/v0.1/mission-contract.schema.json' } } } }
       responses: { '201': { description: Created } }
+  /v1/competency-graphs/{id}:
+    get:
+      operationId: resolveCompetencyGraph
+      security: [{ oauth2: [academy.competency-graph.read] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Version'
+      responses:
+        '200': { description: Pinned public competency graph, content: { application/json: { schema: { $ref: '../schemas/v0.1/competency-graph.schema.json' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/execution-graphs/{id}:
+    get:
+      operationId: resolveExecutionGraph
+      security: [{ oauth2: [academy.execution-graph.read] }]
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Version'
+      responses:
+        '200': { description: Pinned published or caller-authorised execution graph, content: { application/json: { schema: { $ref: '../schemas/v0.1/execution-graph.schema.json' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
   /v1/evidence-bundles:
     post:
       operationId: submitEvidenceBundle
@@ -60,10 +80,10 @@ paths:
       security: []
       parameters: [{ $ref: '#/components/parameters/Id' }]
       responses: { '200': { description: Public build-specific conformance projection } }
-  /v1/entitlements:evaluate:
+  /v1/managed-resource-access:evaluate:
     post:
-      operationId: evaluateEntitlement
-      security: [{ oauth2: [academy.entitlement.evaluate] }]
+      operationId: evaluateManagedResourceAccess
+      security: [{ oauth2: [academy.access.evaluate] }]
       parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }, { $ref: '#/components/parameters/PolicyDecision' }]
       requestBody: { required: true }
       responses: { '200': { description: Immutable decision pinned to policy and fact versions } }
@@ -95,6 +115,7 @@ components:
             academy.mission.write: Create bounded missions
             academy.evidence.submit: Submit frozen evidence
             academy.assessment.decide: Record human assessment decision
-            academy.entitlement.evaluate: Evaluate pinned entitlement policy
+            academy.competency-graph.read: Read published competency graphs
+            academy.execution-graph.read: Read published or caller-authorised execution graphs
+            academy.access.evaluate: Evaluate a pinned optional managed-resource access policy
             academy.schema.validate: Validate a contract object
-

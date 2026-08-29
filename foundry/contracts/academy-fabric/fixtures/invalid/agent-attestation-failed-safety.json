@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "id": "urn:starlight:agent-attestation:failed-safety",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "tenant",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "stewardRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:security-reviewer", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:security-reviewer", "kind": "human" },
+    "visibility": "private",
+    "dataClassification": "confidential",
+    "maturity": "trial",
+    "provenance": {
+      "contentDigest": "sha256:2020202020202020202020202020202020202020202020202020202020202020",
+      "createdByRefs": [{ "id": "urn:starlight:human:security-reviewer", "kind": "human" }]
+    }
+  },
+  "status": "active",
+  "agentDefinitionRef": { "id": "urn:starlight:agent-definition:graph-mapper", "kind": "agent_definition" },
+  "agentBuildRef": { "id": "urn:starlight:agent-build:graph-mapper-a", "kind": "agent_build", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "controllerRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+  "serviceIdentityRef": { "id": "urn:starlight:service:graph-mapper", "kind": "service" },
+  "runtime": {
+    "runtimeRef": { "id": "urn:starlight:runtime:academy-sandbox", "version": "0.1.0", "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+    "modelRef": { "id": "urn:starlight:model:review-model", "version": "0.1.0", "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+    "executionImageDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "region": "EU",
+    "sandboxClass": "gVisor"
+  },
+  "packages": {
+    "promptPackageRef": { "id": "urn:starlight:prompt-package:graph-mapper", "version": "0.1.0", "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" },
+    "skillPackageRefs": [{ "id": "urn:starlight:skill-package:graph-engineering", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }],
+    "dependencyLockRef": { "id": "urn:starlight:artifact:dependency-lock", "version": "0.1.0", "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111" },
+    "sbomRef": { "id": "urn:starlight:artifact:sbom", "version": "0.1.0", "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222" },
+    "supplyChainProvenanceRef": { "id": "urn:starlight:artifact:provenance", "version": "0.1.0", "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333" }
+  },
+  "interfaces": [{
+    "protocol": "MCP",
+    "interfaceRef": { "id": "urn:starlight:interface:academy-read", "version": "0.1.0", "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444" },
+    "declaredCapabilityRefs": ["urn:starlight:capability:academy-read"]
+  }],
+  "toolAndDataScopes": {
+    "actions": ["academy.pack.read"],
+    "resourceRefs": ["urn:starlight:resource:academy-public"],
+    "dataClassifications": ["public"],
+    "credentialBrokerRequired": true,
+    "defaultDenyEgress": true
+  },
+  "evaluations": {
+    "suiteRefs": [{ "id": "urn:starlight:eval-suite:agent-safety", "version": "0.1.0", "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555" }],
+    "resultEvidenceBundleRef": { "id": "urn:starlight:evidence-bundle:agent-mapper", "version": "0.1.0", "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666" },
+    "capabilityClaims": [{ "competencyRef": "urn:starlight:competency:graph-mapping", "claimState": "demonstrated", "evidenceRefs": ["urn:starlight:evidence-bundle:agent-mapper"] }],
+    "safetyClaims": [{ "claim": "No authority escalation", "outcome": "fail", "evidenceRef": { "id": "urn:starlight:evidence:safety", "version": "0.1.0", "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777" } }],
+    "evaluatedAt": "2026-08-29T09:00:00Z",
+    "independentReviewerRef": { "id": "urn:starlight:human:security-reviewer", "kind": "human" }
+  },
+  "validFrom": "2026-08-29T10:00:00Z",
+  "validUntil": "2026-09-28T10:00:00Z",
+  "driftPolicyRef": { "id": "urn:starlight:policy:agent-drift", "version": "0.1.0", "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888" },
+  "incidentPolicyRef": { "id": "urn:starlight:policy:agent-incident", "version": "0.1.0", "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999" },
+  "verification": {
+    "attestationDigest": "sha256:2020202020202020202020202020202020202020202020202020202020202020",
+    "proof": { "signerRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" }, "algorithm": "EdDSA", "value": "fixture-agent-attestation-proof", "signedAt": "2026-08-29T10:00:00Z", "purpose": "attestation" },
+    "statusEndpoint": "https://status.starlightintelligence.org/agents/failed-safety"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "execution-graph-engineering",
+  "kind": "skill",
+  "objective": "Compile a portable Academy skill that chooses and proves the smallest justified human-agent execution graph with typed authority, state, recovery, termination, and budget boundaries.",
+  "deliverables": [
+    {
+      "id": "portable-skill",
+      "description": "An Agent Skills-compatible execution graph engineering package with explicit system-shape and proof gates.",
+      "artifactType": "skill-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "academy-fabric",
+    "audience": "AI architects, workflow engineers, academy operators, institutions, and human-agent system builders",
+    "artifactTypes": [
+      "execution-graph",
+      "authority-contract",
+      "recovery-plan",
+      "proof-receipt"
+    ],
+    "references": [
+      "skills/academy/execution-graph-engineering/SKILL.md",
+      "foundry/contracts/academy-fabric/schemas/v0.1/agent-team-manifest.schema.json"
+    ]
+  },
+  "stakes": {
+    "impact": "high",
+    "reversibility": "recoverable",
+    "rationale": "Incorrect execution topology can widen authority, leak data, waste spend, or lose work, but a draft graph can be rejected before activation."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "destructive-action",
+      "financial-commitment",
+      "public-release",
+      "permission-expansion",
+      "substrate-change"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Compare the proposed graph against a deterministic workflow, one loop, and sequential skill composition.",
+      "Attenuate authority across every edge and terminate every cycle.",
+      "Define idempotency, recovery, escalation, wall-time, parallelism, and spend before activation."
+    ],
+    "mustNot": [
+      "Create graph structure merely to increase agent count or visual complexity.",
+      "Persist chain-of-thought or undeclared private learner state as graph state.",
+      "Grant money, publication, credential, external-message, destructive, or permission-expansion authority to an agent."
+    ],
+    "budget": {
+      "maxCostUsd": 5,
+      "maxLatencyMs": 300000,
+      "maxToolCalls": 40,
+      "maxAgentTurns": 16,
+      "maxParallelWorkers": 4
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "stable",
+    "requirePrimarySources": false,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "artifact"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [],
+      "deny": [
+        "external-write",
+        "graph-activation",
+        "public-release",
+        "credential-write",
+        "payment-write",
+        "permission-expansion"
+      ]
+    },
+    "memory": {
+      "read": [],
+      "write": []
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "completionTests": [
+    {
+      "id": "skill-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/SKILL.md"
+    },
+    {
+      "id": "interface-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/agents/openai.yaml"
+    },
+    {
+      "id": "least-powerful-executor-law-present",
+      "lane": "behavioral",
+      "type": "contains",
+      "required": true,
+      "path": "skill/SKILL.md",
+      "value": "Bind each node to the least-powerful viable executor"
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

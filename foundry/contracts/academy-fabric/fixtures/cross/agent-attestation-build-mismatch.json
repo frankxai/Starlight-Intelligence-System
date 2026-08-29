@@ -1,0 +1,44 @@
+{
+  "records": [
+    {
+      "schemaName": "agent-team-manifest.schema.json",
+      "record": {
+        "metadata": {
+          "id": "urn:starlight:agent-team:build-mismatch",
+          "recordVersion": "0.1.0",
+          "scope": "tenant",
+          "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+          "updatedAt": "2026-08-29T10:00:00Z",
+          "provenance": { "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
+        },
+        "status": "active",
+        "controllerOrganisationRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+        "members": [{
+          "agentBuildRef": { "id": "urn:starlight:agent-build:declared-a", "kind": "agent_build", "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+          "serviceIdentityRef": { "id": "urn:starlight:service:graph-mapper", "kind": "service" },
+          "capabilityAttestationRef": { "id": "urn:starlight:agent-attestation:build-b", "version": "0.1.0", "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+          "toolScopes": ["academy.pack.read"]
+        }]
+      }
+    },
+    {
+      "schemaName": "agent-capability-attestation.schema.json",
+      "record": {
+        "metadata": {
+          "id": "urn:starlight:agent-attestation:build-b",
+          "recordVersion": "0.1.0",
+          "scope": "tenant",
+          "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+          "provenance": { "contentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" }
+        },
+        "status": "active",
+        "agentBuildRef": { "id": "urn:starlight:agent-build:attested-b", "kind": "agent_build", "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
+        "controllerRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+        "serviceIdentityRef": { "id": "urn:starlight:service:graph-mapper", "kind": "service" },
+        "toolAndDataScopes": { "actions": ["academy.pack.read"] },
+        "validFrom": "2026-08-29T09:00:00Z",
+        "validUntil": "2026-08-30T09:00:00Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/skill-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "skill",
+  "id": "execution-graph-engineering",
+  "version": "0.1.0",
+  "description": "Design the smallest justified execution graph for a human-agent system with typed nodes and edges, explicit authority, bounded state, recovery, termination, and independent proof.",
+  "triggers": {
+    "positive": [
+      "A human-agent system needs explicit dependencies, branches, joins, handoffs, approval gates, or recovery paths.",
+      "Different work nodes require distinct capabilities, permissions, data scopes, budgets, or independent verification."
+    ],
+    "negative": [
+      "A single deterministic function, bounded skill, or sequential loop can produce and verify the result.",
+      "The request is only for a capability graph, GraphRAG index, database choice, dependency visualization, or decorative diagram."
+    ]
+  },
+  "procedure": [
+    {
+      "id": "shape",
+      "instruction": "Compare a deterministic workflow, one agent loop, sequential skill composition, and an execution graph before choosing the system shape.",
+      "proof": "A rejected-complexity ledger justifies or refuses graph structure."
+    },
+    {
+      "id": "nodes",
+      "instruction": "Define typed task, router, join, gate, checkpoint, and terminal nodes independently from executor choice.",
+      "proof": "Every node owns one result or policy boundary and every reference resolves."
+    },
+    {
+      "id": "edges",
+      "instruction": "Type dependency, control, data, handoff, approval, recovery, and compensation edges so delegated authority can only attenuate.",
+      "proof": "All nodes are reachable, joins are deterministic, and consequential actions traverse human gates."
+    },
+    {
+      "id": "runtime",
+      "instruction": "Specify state, checkpoints, idempotency, retry classes, replay frontier, compensation, termination, wall time, parallelism, and spend.",
+      "proof": "Every failure class reaches recovery, escalation, or a bounded terminal state."
+    },
+    {
+      "id": "executors",
+      "instruction": "Bind each node to the least-powerful viable executor and require persistent-agent controls only where a durable boundary is proven.",
+      "proof": "Capability coverage is complete and false agent boundaries are downgraded."
+    },
+    {
+      "id": "prove",
+      "instruction": "Compare the graph with the simplest viable baseline across structural, behavioral, recovery, authority, provenance, economic, and independent-defense lanes.",
+      "proof": "A receipt records passed, failed, pending, and unresolved evidence without activation."
+    }
+  ],
+  "inputs": [
+    "Task Envelope, objective, beneficiary, constraints, and accountable human",
+    "Available skills, tools, temporary workers, and attested agent builds",
+    "Input, output, state, event, policy, budget, and data contracts",
+    "Required behavioral, recovery, security, economic, and independent-evaluation lanes"
+  ],
+  "outputs": [
+    "Execution graph contract",
+    "System-shape decision and rejected-complexity ledger",
+    "Node, edge, capability, authority, state, and budget contracts",
+    "Failure, recovery, observability, and evaluation plan",
+    "Proof receipt with unresolved promotion evidence"
+  ],
+  "dependencies": [],
+  "toolPolicy": {
+    "allow": [],
+    "deny": [
+      "external-write",
+      "graph-activation",
+      "public-release",
+      "credential-write",
+      "payment-write",
+      "permission-expansion"
+    ]
+  },
+  "memoryContract": {
+    "read": [],
+    "write": []
+  },
+  "deployment": {
+    "implicitInvocation": true,
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "evidence-graph-evaluation",
+  "kind": "skill",
+  "objective": "Compile a portable Academy skill that evaluates whether frozen mission artifacts support capability claims while preserving consent, provenance, reproducibility, and human credential authority.",
+  "deliverables": [
+    {
+      "id": "portable-skill",
+      "description": "An Agent Skills-compatible evidence graph evaluation package that stops before credential decision authority.",
+      "artifactType": "skill-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "academy-fabric",
+    "audience": "Learners, assessors, mentors, academy operators, institutions, and evidence-service builders",
+    "artifactTypes": [
+      "claim-evidence-lineage",
+      "machine-findings",
+      "evidence-preflight",
+      "review-packet"
+    ],
+    "references": [
+      "skills/academy/evidence-graph-evaluation/SKILL.md",
+      "foundry/contracts/academy-fabric/schemas/v0.1/evidence-bundle.schema.json"
+    ]
+  },
+  "stakes": {
+    "impact": "critical",
+    "reversibility": "recoverable",
+    "rationale": "Evidence misclassification can harm learners and institutions; findings can be superseded, but credential decisions require independent human authority."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "destructive-action",
+      "financial-commitment",
+      "public-release",
+      "permission-expansion",
+      "substrate-change"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Verify consent, artifact integrity, evaluator authority, rubric version, and role separation before evaluation.",
+      "Keep machine findings separate from authorized human assessment decisions.",
+      "Apply identical evidence thresholds regardless of payment tier."
+    ],
+    "mustNot": [
+      "Issue, revoke, promise, or guarantee a human credential.",
+      "Expose raw private evidence, chain-of-thought, hidden holdouts, signing keys, or another learner's data.",
+      "Treat cryptographic integrity as truth, originality, competence, or legal recognition."
+    ],
+    "budget": {
+      "maxCostUsd": 5,
+      "maxLatencyMs": 300000,
+      "maxToolCalls": 40,
+      "maxAgentTurns": 16,
+      "maxParallelWorkers": 4
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "stable",
+    "requirePrimarySources": false,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "artifact"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [],
+      "deny": [
+        "external-write",
+        "public-release",
+        "credential-write",
+        "payment-write",
+        "evidence-mutation"
+      ]
+    },
+    "memory": {
+      "read": [],
+      "write": []
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [
+      "academy/capability-graph-architecture",
+      "academy/mission-graph-design"
+    ],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "completionTests": [
+    {
+      "id": "skill-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/SKILL.md"
+    },
+    {
+      "id": "interface-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/agents/openai.yaml"
+    },
+    {
+      "id": "human-authority-law-present",
+      "lane": "behavioral",
+      "type": "contains",
+      "required": true,
+      "path": "skill/SKILL.md",
+      "value": "Machine findings and human decisions occupy separate fields and records."
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

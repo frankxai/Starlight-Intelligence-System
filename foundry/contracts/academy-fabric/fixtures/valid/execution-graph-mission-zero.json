@@ -1,0 +1,169 @@
+{
+  "metadata": {
+    "id": "urn:starlight:execution-graph:mission-zero-0.1.0",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "global",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "academyRef": "urn:starlight:academy:ai-architect",
+    "stewardRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "visibility": "public",
+    "dataClassification": "public",
+    "maturity": "trial",
+    "license": {
+      "licenseId": "MIT",
+      "rightsHolderRefs": [{ "id": "urn:starlight:org:academy-001", "kind": "academy" }]
+    },
+    "provenance": {
+      "contentDigest": "sha256:acacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacac",
+      "createdByRefs": [{ "id": "urn:starlight:human:steward-001", "kind": "human" }]
+    }
+  },
+  "status": "experimental",
+  "objective": "Produce and independently verify a graph-or-no-graph architecture decision without activating a persistent agent or consequential side effect.",
+  "accountableHumanRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+  "taskEnvelopeRef": {
+    "id": "urn:starlight:task-envelope:graph-mission-zero",
+    "version": "0.1.0",
+    "digest": "sha256:1010101010101010101010101010101010101010101010101010101010101010"
+  },
+  "baseline": {
+    "kind": "sequential_skills",
+    "retainedAsComparator": true,
+    "benchmarkRef": {
+      "id": "urn:starlight:benchmark:mission-zero-sequential-skills",
+      "version": "0.1.0",
+      "digest": "sha256:2020202020202020202020202020202020202020202020202020202020202020"
+    }
+  },
+  "graphJustification": ["independent_verification", "human_approval_topology", "recoverable_state"],
+  "stateSchemaRef": {
+    "id": "urn:starlight:schema:graph-mission-zero-state",
+    "version": "0.1.0",
+    "digest": "sha256:3030303030303030303030303030303030303030303030303030303030303030"
+  },
+  "entryNodeIds": ["urn:starlight:execution-node:mission-zero-frame"],
+  "terminalNodeIds": ["urn:starlight:execution-node:mission-zero-complete"],
+  "nodes": [
+    {
+      "id": "urn:starlight:execution-node:mission-zero-frame",
+      "kind": "task",
+      "name": "Frame system shape",
+      "capabilityRefs": ["urn:starlight:competency:graph-system-shape"],
+      "executor": {
+        "kind": "skill",
+        "componentRef": { "id": "urn:starlight:skill-pack:execution-graph-engineering", "version": "0.1.0", "digest": "sha256:1212121212121212121212121212121212121212121212121212121212121212" }
+      },
+      "authority": {
+        "sideEffectClass": "none",
+        "toolScopes": ["filesystem.read"],
+        "dataScopes": ["public"],
+        "mayTransferAuthority": false
+      },
+      "retry": { "idempotent": true, "maxAttempts": 2, "backoff": "fixed" },
+      "completionCondition": "A versioned decision record compares the viable system shapes.",
+      "timeoutSeconds": 300
+    },
+    {
+      "id": "urn:starlight:execution-node:mission-zero-verify",
+      "kind": "checkpoint",
+      "name": "Verify frozen decision",
+      "capabilityRefs": ["urn:starlight:competency:graph-system-shape"],
+      "executor": {
+        "kind": "temporary_worker",
+        "componentRef": { "id": "urn:starlight:worker-profile:independent-graph-verifier", "version": "0.1.0", "digest": "sha256:4040404040404040404040404040404040404040404040404040404040404040" }
+      },
+      "authority": {
+        "sideEffectClass": "none",
+        "toolScopes": ["academy.schema.validate", "academy.evidence.preflight"],
+        "dataScopes": ["public"],
+        "mayTransferAuthority": false
+      },
+      "retry": { "idempotent": true, "maxAttempts": 2, "backoff": "exponential" },
+      "completionCondition": "Structural, authority, recovery, provenance, and baseline findings are frozen.",
+      "timeoutSeconds": 300
+    },
+    {
+      "id": "urn:starlight:execution-node:mission-zero-approve",
+      "kind": "gate",
+      "name": "Human accepts residual risk",
+      "capabilityRefs": [],
+      "executor": {
+        "kind": "human",
+        "humanRef": { "id": "urn:starlight:human:steward-001", "kind": "human" }
+      },
+      "authority": {
+        "sideEffectClass": "consequential",
+        "toolScopes": [],
+        "dataScopes": ["public"],
+        "mayTransferAuthority": false
+      },
+      "retry": { "idempotent": false, "maxAttempts": 1, "backoff": "none" },
+      "completionCondition": "The accountable human records approve, revise, or reject against the frozen findings.",
+      "timeoutSeconds": 86400
+    },
+    {
+      "id": "urn:starlight:execution-node:mission-zero-complete",
+      "kind": "terminal",
+      "name": "Seal proof receipt",
+      "capabilityRefs": [],
+      "executor": {
+        "kind": "deterministic_tool",
+        "componentRef": { "id": "urn:starlight:tool:proof-receipt-renderer", "version": "0.1.0", "digest": "sha256:5050505050505050505050505050505050505050505050505050505050505050" }
+      },
+      "authority": {
+        "sideEffectClass": "none",
+        "toolScopes": ["filesystem.write.receipt"],
+        "dataScopes": ["public"],
+        "mayTransferAuthority": false
+      },
+      "retry": { "idempotent": true, "maxAttempts": 2, "backoff": "fixed" },
+      "completionCondition": "The proof receipt records the human decision and unresolved evidence without changing credential state.",
+      "timeoutSeconds": 60
+    }
+  ],
+  "edges": [
+    { "id": "urn:starlight:execution-edge:mission-zero-frame-verify", "from": "urn:starlight:execution-node:mission-zero-frame", "to": "urn:starlight:execution-node:mission-zero-verify", "type": "handoff", "authorityTransfer": false },
+    { "id": "urn:starlight:execution-edge:mission-zero-verify-approve", "from": "urn:starlight:execution-node:mission-zero-verify", "to": "urn:starlight:execution-node:mission-zero-approve", "type": "approval", "authorityTransfer": false },
+    { "id": "urn:starlight:execution-edge:mission-zero-approve-complete", "from": "urn:starlight:execution-node:mission-zero-approve", "to": "urn:starlight:execution-node:mission-zero-complete", "type": "control", "authorityTransfer": false }
+  ],
+  "termination": {
+    "maxSteps": 12,
+    "maxRounds": 2,
+    "maxWallSeconds": 90000,
+    "maxSpend": { "currency": "EUR", "amountMinor": 0 },
+    "successConditionRef": { "id": "urn:starlight:condition:mission-zero-success", "version": "0.1.0", "digest": "sha256:6060606060606060606060606060606060606060606060606060606060606060" },
+    "failureConditionRef": { "id": "urn:starlight:condition:mission-zero-failure", "version": "0.1.0", "digest": "sha256:7070707070707070707070707070707070707070707070707070707070707070" }
+  },
+  "recovery": {
+    "checkpointNodeIds": ["urn:starlight:execution-node:mission-zero-verify"],
+    "replayFromLastValidFrontier": true,
+    "compensationRequiredForIrreversibleEffects": true
+  },
+  "observability": {
+    "eventProfileRef": { "id": "urn:starlight:event-profile:graph-run", "version": "0.1.0", "digest": "sha256:8080808080808080808080808080808080808080808080808080808080808080" },
+    "provenanceRequired": true,
+    "chainOfThoughtStorageAllowed": false
+  },
+  "evaluation": {
+    "suiteRefs": [
+      { "id": "urn:starlight:eval-suite:graph-conformance", "version": "0.1.0", "digest": "sha256:9191919191919191919191919191919191919191919191919191919191919191" },
+      { "id": "urn:starlight:eval-suite:graph-adversarial", "version": "0.1.0", "digest": "sha256:9292929292929292929292929292929292929292929292929292929292929292" }
+    ],
+    "independentVerifierRef": { "id": "urn:starlight:human:verifier-002", "kind": "human" },
+    "baselineCompared": true,
+    "promotionStatus": "experimental"
+  },
+  "qualityGates": {
+    "allNodesReachable": true,
+    "cyclesBounded": true,
+    "authorityNeverAmplifies": true,
+    "consequentialActionsHaveHumanGate": true,
+    "builderVerifierSeparated": true
+  }
+}

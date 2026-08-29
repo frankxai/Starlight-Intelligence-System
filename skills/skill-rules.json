@@ -2767,6 +2767,72 @@
       "load_level": "core"
     },
     {
+      "id": "academy-capability-graph-architecture",
+      "skill": "academy/capability-graph-architecture",
+      "triggers": {
+        "keywords": ["capability graph", "competency graph", "curriculum graph", "role capability map", "skill ontology", "learning graph"],
+        "agents": ["starlight-architect", "starlight-training", "starlight-sentinel"],
+        "intents": ["capability-modeling", "curriculum-architecture", "competency-mapping", "learning-system-design"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "academy-execution-graph-engineering",
+      "skill": "academy/execution-graph-engineering",
+      "triggers": {
+        "keywords": ["graph engineering", "execution graph", "task graph", "agent graph", "workflow topology", "checkpoint replay", "compensation path"],
+        "agents": ["starlight-architect", "starlight-orchestrator", "starlight-sentinel"],
+        "intents": ["execution-graph-design", "agent-runtime-design", "workflow-resilience", "graph-conformance"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "academy-mission-graph-design",
+      "skill": "academy/mission-graph-design",
+      "triggers": {
+        "keywords": ["learning mission", "mission graph", "project-based curriculum", "authentic assessment", "academy mission", "learning pathway"],
+        "agents": ["starlight-training", "starlight-architect", "starlight-orchestrator"],
+        "intents": ["mission-design", "project-based-learning", "curriculum-compilation", "learning-path-design"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "academy-evidence-graph-evaluation",
+      "skill": "academy/evidence-graph-evaluation",
+      "triggers": {
+        "keywords": ["evidence graph", "rubric evaluation", "evidence bundle", "assessment proof", "capability evidence", "credential evidence"],
+        "agents": ["starlight-sentinel", "starlight-training", "starlight-architect"],
+        "intents": ["evidence-evaluation", "rubric-design", "assessment-validation", "capability-proof"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "academy-passport-graph-projection",
+      "skill": "academy/passport-graph-projection",
+      "triggers": {
+        "keywords": ["learning passport", "capability passport", "portfolio projection", "portable credential", "learner export", "consented evidence"],
+        "agents": ["starlight-training", "starlight-sentinel", "starlight-sage"],
+        "intents": ["passport-projection", "learner-export", "portfolio-publishing", "consent-aware-disclosure"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
+      "id": "academy-agent-team-composition",
+      "skill": "academy/agent-team-composition",
+      "triggers": {
+        "keywords": ["academy agent team", "learning guardian agent", "agent team manifest", "teaching agent team", "bounded agent team", "agent necessity"],
+        "agents": ["starlight-orchestrator", "starlight-architect", "starlight-sentinel"],
+        "intents": ["agent-team-design", "guardian-composition", "teaching-agent-design", "agent-authority-boundary"]
+      },
+      "priority": "high",
+      "load_level": "core"
+    },
+    {
       "id": "orchestration-sage-autonomous-execution",
       "skill": "orchestration/sage-autonomous-execution",
       "triggers": {

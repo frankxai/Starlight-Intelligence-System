@@ -161,7 +161,8 @@ describe("v9.2 Foundry contracts", () => {
 describe("v9.2 Foundry capability graph and routing", () => {
   it("derives every registered skill and source-counted agent", () => {
     const graph = buildCapabilityGraph(ROOT);
-    assert.equal(graph.nodes.filter((node: any) => node.kind === "skill").length, 88);
+    const registeredSkillCount = json(join(ROOT, "skills", "skill-rules.json")).rules.length;
+    assert.equal(graph.nodes.filter((node: any) => node.kind === "skill").length, registeredSkillCount);
     assert.equal(graph.nodes.filter((node: any) => node.kind === "agent").length, 144);
     const nodeIds = new Set(graph.nodes.map((node: any) => node.id));
     assert.equal(nodeIds.size, graph.nodes.length);

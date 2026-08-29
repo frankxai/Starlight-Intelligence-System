@@ -1,0 +1,134 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "passport-graph-projection",
+  "kind": "skill",
+  "objective": "Compile a portable Academy skill that derives purpose-bound, revocable learner Passport views from consented records without exposing telemetry or collapsing capability states.",
+  "deliverables": [
+    {
+      "id": "portable-skill",
+      "description": "An Agent Skills-compatible Passport graph projection package with explicit minimization and revocation proof.",
+      "artifactType": "skill-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "academy-fabric",
+    "audience": "Learners, portfolio builders, mentors, institutions, opportunity partners, and privacy engineers",
+    "artifactTypes": [
+      "passport-projection",
+      "projection-manifest",
+      "privacy-report"
+    ],
+    "references": [
+      "skills/academy/passport-graph-projection/SKILL.md",
+      "foundry/contracts/academy-fabric/schemas/v0.1/learning-passport.schema.json"
+    ]
+  },
+  "stakes": {
+    "impact": "critical",
+    "reversibility": "recoverable",
+    "rationale": "A projection can expose sensitive learner state or misrepresent competence; revocation and supersession reduce but do not erase disclosure harm."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "destructive-action",
+      "financial-commitment",
+      "public-release",
+      "permission-expansion",
+      "substrate-change"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Validate recipient, purpose, fields, expiry, revocation, and jurisdiction before projection.",
+      "Keep declared, practiced, demonstrated, credentialed, expired, withdrawn, and disputed states distinct.",
+      "Preserve a complete free learner-controlled export and private or self-hosted path."
+    ],
+    "mustNot": [
+      "Create a universal public score, hidden risk rating, or standing recipient access.",
+      "Expose raw telemetry, chain-of-thought, behavioral inference, unrelated history, hidden assessments, or financial data.",
+      "Infer credential, reputation, ownership, or entitlement from graph adjacency."
+    ],
+    "budget": {
+      "maxCostUsd": 5,
+      "maxLatencyMs": 300000,
+      "maxToolCalls": 40,
+      "maxAgentTurns": 16,
+      "maxParallelWorkers": 4
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "stable",
+    "requirePrimarySources": false,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "artifact"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [],
+      "deny": [
+        "external-write",
+        "public-release",
+        "credential-write",
+        "payment-write",
+        "standing-access"
+      ]
+    },
+    "memory": {
+      "read": [],
+      "write": []
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [
+      "academy/capability-graph-architecture",
+      "academy/evidence-graph-evaluation"
+    ],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "completionTests": [
+    {
+      "id": "skill-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/SKILL.md"
+    },
+    {
+      "id": "interface-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/agents/openai.yaml"
+    },
+    {
+      "id": "state-separation-law-present",
+      "lane": "behavioral",
+      "type": "contains",
+      "required": true,
+      "path": "skill/SKILL.md",
+      "value": "No state is inferred from graph adjacency or commercial entitlement."
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

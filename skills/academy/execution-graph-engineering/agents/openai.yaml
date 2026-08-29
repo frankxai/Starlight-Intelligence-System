@@ -1,0 +1,6 @@
+interface:
+  display_name: "Execution Graph Engineering"
+  short_description: "Design and prove the smallest governed human-agent execution graph."
+  default_prompt: "Use $execution-graph-engineering to choose, contract, and prove the smallest justified execution graph."
+policy:
+  allow_implicit_invocation: true

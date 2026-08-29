@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "id": "urn:starlight:competency-graph:incomplete-proof",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "global",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "stewardRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "visibility": "public",
+    "dataClassification": "public",
+    "maturity": "trial",
+    "provenance": {
+      "contentDigest": "sha256:bcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbc",
+      "createdByRefs": [{ "id": "urn:starlight:human:steward-001", "kind": "human" }]
+    }
+  },
+  "status": "draft",
+  "name": "Incomplete proof-path graph",
+  "domain": "Negative conformance fixture",
+  "rootNodeIds": ["urn:starlight:competency:incomplete"],
+  "nodes": [
+    {
+      "id": "urn:starlight:competency:incomplete",
+      "kind": "competency",
+      "name": "Incomplete capability",
+      "lifecycle": "active",
+      "claimState": "hypothesized",
+      "sourceRefs": [{ "id": "urn:starlight:source:negative-fixture", "version": "0.1.0", "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" }]
+    },
+    {
+      "id": "urn:starlight:skill:incomplete",
+      "kind": "skill",
+      "name": "Incomplete skill",
+      "lifecycle": "experimental",
+      "claimState": "hypothesized",
+      "sourceRefs": [{ "id": "urn:starlight:source:negative-fixture", "version": "0.1.0", "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" }]
+    }
+  ],
+  "edges": [
+    {
+      "id": "urn:starlight:edge:incomplete-capability-skill",
+      "from": "urn:starlight:competency:incomplete",
+      "to": "urn:starlight:skill:incomplete",
+      "relation": "taught_by",
+      "claimState": "hypothesized",
+      "sourceRefs": [{ "id": "urn:starlight:source:negative-fixture", "version": "0.1.0", "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" }]
+    }
+  ],
+  "qualityGates": {
+    "allReferencesResolve": true,
+    "prerequisitesAcyclic": true,
+    "activeCompetenciesReachMissionArtifactEvidenceAndRubric": true,
+    "humanCredentialDecision": true,
+    "completePublicPath": true,
+    "containsCommercialEntitlement": false
+  }
+}

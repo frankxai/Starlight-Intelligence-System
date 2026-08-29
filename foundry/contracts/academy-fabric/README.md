@@ -1,6 +1,6 @@
 # Starlight Academy Fabric Contract Pack
 
-Implementation contracts for the Starlight Trust & Learning Profile. This package is the canonical machine-readable boundary between academy experiences, institutional adapters, agent workflows, evidence services, credential services, and commerce.
+Implementation contracts for the Starlight Trust & Learning Profile. This package is the canonical machine-readable boundary between academy experiences, capability and execution graphs, institutional adapters, agent workflows, evidence services, credential services, and optional managed-resource services.
 
 **Release:** `0.1.0-draft.1`  
 **JSON Schema dialect:** 2020-12  
@@ -19,6 +19,15 @@ Implementation contracts for the Starlight Trust & Learning Profile. This packag
 8. Agents may validate, provision approved access, meter usage, and prepare actions. They may not independently create debt, invent discounts, alter renewal terms, define revenue shares, release disputed payouts, publish sensitive evidence, or decide credential status.
 9. Events are append-only facts. Corrections create superseding events or new record versions; consumers never mutate historical events.
 10. Every consumer must reject unknown major schema versions and preserve unknown minor fields when acting as a relay.
+11. Every published Academy Pack provides a complete free local or BYOK path through curriculum, missions, skills, evidence, Passport export, and credential eligibility under the same rubric.
+12. Capacity, privacy, integration, and service accountability may be paid; knowledge, capability truth, evidence rights, portability, and credential meaning may not be payment-gated.
+13. Competency, execution, and economic/resource graphs are separate projections. No edge silently transfers capability, authority, ownership, reputation, credential status, or economic entitlement.
+
+## Open capability floor
+
+`AcademyPack.openAccessContract` is a hard conformance boundary, not marketing metadata. It requires the capability graph, curriculum, missions, skills, plugin manifests, reference agent definitions, rubrics/evaluators, public fixtures, local runner, Passport export, and credential-eligibility path to remain available without payment. Hosted compute may be transparently capped; local and BYOK execution remain learner-controlled.
+
+The first public vertical is the AI Architect Graph Engineering Commons. Its competency graph records what a learner may learn and prove. Its execution graph records how bounded tools, skills, temporary workers, humans, and future attested agents coordinate and recover. Neither graph contains commercial entitlement.
 
 ## Repository layout
 
@@ -77,4 +86,6 @@ CI must additionally lint OpenAPI, verify generated TypeScript compilation, scan
 - no autonomous credential decisions;
 - no blockchain, token, universal reputation score, or wallet-only identity;
 - no LMS, CMS, CRM, billing, or DAM implementation;
+- no paid curriculum, hidden rubric, pay-to-win credential, or payment-dependent Passport export;
+- no persistent agent activation without build-specific attestation, verified evidence, signed delegation, least privilege, revocation, and independent human authority;
 - no storage of chain-of-thought, biometric proctoring, emotion inference, or opaque learner scoring.

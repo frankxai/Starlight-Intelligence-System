@@ -16,6 +16,14 @@ events:
     owner: program
     aggregate: MissionContract
     classification: internal
+  - type: org.starlight.academy.competency-graph.published.v1
+    owner: program
+    aggregate: CompetencyGraph
+    classification: public
+  - type: org.starlight.academy.execution-graph.status-changed.v1
+    owner: agent-trust
+    aggregate: ExecutionGraph
+    classification: internal
   - type: org.starlight.academy.evidence.submitted.v1
     owner: evidence
     aggregate: EvidenceBundle
@@ -45,8 +53,7 @@ events:
     owner: contribution
     aggregate: ContributionReceipt
     classification: internal
-  - type: org.starlight.academy.entitlement.decided.v1
-    owner: commerce
+  - type: org.starlight.academy.managed-resource-access.decided.v1
+    owner: access-policy
     aggregate: EntitlementDecision
     classification: confidential
-

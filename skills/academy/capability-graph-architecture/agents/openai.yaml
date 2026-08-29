@@ -1,0 +1,6 @@
+interface:
+  display_name: "Capability Graph Architecture"
+  short_description: "Map capabilities to missions, artifacts, evidence, and opportunities."
+  default_prompt: "Use $capability-graph-architecture to build a sourced capability-to-evidence graph for this domain."
+policy:
+  allow_implicit_invocation: true

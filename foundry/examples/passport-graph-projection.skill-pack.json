@@ -1,0 +1,91 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/skill-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "skill",
+  "id": "passport-graph-projection",
+  "version": "0.1.0",
+  "description": "Project consented capability and evidence records into a learner-controlled Passport view without exposing raw telemetry or collapsing declared, demonstrated, and credentialed states.",
+  "triggers": {
+    "positive": [
+      "Verified capability and evidence records must become a portfolio, application, mentor, institution, or private learner view.",
+      "A learner needs a portable selective export rather than giving a recipient access to the source database."
+    ],
+    "negative": [
+      "Consent is missing, expired, withdrawn, broader than the purpose, or cannot be independently checked.",
+      "The request asks for a universal public score, hidden risk rating, or raw learning telemetry."
+    ]
+  },
+  "procedure": [
+    {
+      "id": "consent",
+      "instruction": "Validate recipient, purpose, fields, expiry, revocation state, export jurisdiction, and the active learner-controlled consent grant.",
+      "proof": "A consent decision records exactly what may be projected."
+    },
+    {
+      "id": "lineage",
+      "instruction": "Resolve record lineage while keeping declared, practiced, demonstrated, credentialed, expired, withdrawn, and disputed states distinct.",
+      "proof": "No state is inferred from graph adjacency or commercial entitlement."
+    },
+    {
+      "id": "minimize",
+      "instruction": "Include only purpose-required claims, selected artifacts, provenance, assistance disclosure, issuer, status, and verification route.",
+      "proof": "Every included field has a purpose and excluded sensitive classes remain absent."
+    },
+    {
+      "id": "project",
+      "instruction": "Generate purpose-specific views from canonical records without mutating their source state.",
+      "proof": "The projection digest and source record versions are recorded."
+    },
+    {
+      "id": "negative-tests",
+      "instruction": "Test revocation, expiry, stale credentials, broken links, recipient mismatch, and cross-tenant leakage.",
+      "proof": "Every negative test fails closed."
+    },
+    {
+      "id": "learner-control",
+      "instruction": "Return export, verification, revocation, and deletion instructions controlled by the learner.",
+      "proof": "The learner can inspect and withdraw the projection without payment."
+    }
+  ],
+  "inputs": [
+    "Learner-controlled consent grant and projection purpose",
+    "Capability graph version",
+    "Learning Passport, evidence, credential, and contribution records",
+    "Recipient, expiry, revocation, minimization, and jurisdiction policy"
+  ],
+  "outputs": [
+    "Purpose-bound Passport projection",
+    "Projection manifest and digest",
+    "Verification and revocation instructions",
+    "Excluded-field and privacy test report"
+  ],
+  "dependencies": [
+    "academy/capability-graph-architecture",
+    "academy/evidence-graph-evaluation"
+  ],
+  "toolPolicy": {
+    "allow": [],
+    "deny": [
+      "external-write",
+      "public-release",
+      "credential-write",
+      "payment-write",
+      "standing-access"
+    ]
+  },
+  "memoryContract": {
+    "read": [],
+    "write": []
+  },
+  "deployment": {
+    "implicitInvocation": true,
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

@@ -20,23 +20,50 @@ const manifest = JSON.parse(await readFile(join(fixtureDir, "manifest.json"), "u
 const accepted = [];
 const failures = [];
 
-for (const test of manifest.cases) {
+async function loadAndValidateRecord(test) {
   const schema = schemas.find((candidate) => candidate.$id.endsWith(`/${test.schema}`));
   if (!schema) throw new Error(`Unknown fixture schema: ${test.schema}`);
   const record = JSON.parse(await readFile(join(fixtureDir, test.file), "utf8"));
   const validator = ajv.getSchema(schema.$id);
   const structuralValid = validator(record);
+  const structuralErrors = structuralValid ? [] : structuredClone(validator.errors ?? []);
   const invariantErrors = structuralValid ? validateInvariants(test.schema, record) : [];
-  const actualValid = structuralValid && invariantErrors.length === 0;
-  if (actualValid !== test.valid) {
-    failures.push({ test, structuralErrors: validator.errors, invariantErrors });
+  return { schemaName: test.schema, record, structuralValid, structuralErrors, invariantErrors, valid: structuralValid && invariantErrors.length === 0 };
+}
+
+for (const test of manifest.cases) {
+  const result = await loadAndValidateRecord(test);
+  const actualCodes = result.structuralValid ? result.invariantErrors.map((error) => error.code) : ["SCHEMA_INVALID"];
+  const missingExpectedCodes = (test.expectedErrorCodes ?? []).filter((code) => !actualCodes.includes(code));
+  if (result.valid !== test.valid || missingExpectedCodes.length) {
+    failures.push({ test, structuralErrors: result.structuralErrors, invariantErrors: result.invariantErrors, missingExpectedCodes });
   }
-  if (actualValid) accepted.push({ schemaName: test.schema, record });
+  if (result.valid) accepted.push({ schemaName: test.schema, record: result.record });
 }
 
 const crossErrors = validateCrossRecords(accepted);
-if (failures.length || crossErrors.length) {
-  console.error(JSON.stringify({ failures, crossErrors }, null, 2));
+const crossCaseFailures = [];
+for (const test of manifest.crossCases ?? []) {
+  let results = [];
+  let rawRecords = [];
+  if (test.file) {
+    rawRecords = JSON.parse(await readFile(join(fixtureDir, test.file), "utf8")).records;
+  } else {
+    results = await Promise.all(test.records.map(loadAndValidateRecord));
+  }
+  const recordFailures = results.filter((result) => !result.valid);
+  const records = test.file ? rawRecords : results.map(({ schemaName, record }) => ({ schemaName, record }));
+  const errors = recordFailures.length ? [] : validateCrossRecords(records);
+  const actualValid = recordFailures.length === 0 && errors.length === 0;
+  const actualCodes = errors.map((error) => error.code);
+  const missingExpectedCodes = (test.expectedErrorCodes ?? []).filter((code) => !actualCodes.includes(code));
+  if (actualValid !== test.valid || missingExpectedCodes.length || recordFailures.length) {
+    crossCaseFailures.push({ test, recordFailures, crossErrors: errors, missingExpectedCodes });
+  }
+}
+
+if (failures.length || crossErrors.length || crossCaseFailures.length) {
+  console.error(JSON.stringify({ failures, crossErrors, crossCaseFailures }, null, 2));
   process.exit(1);
 }
-console.log(`Validated ${schemas.length} schemas and ${manifest.cases.length} conformance fixtures.`);
+console.log(`Validated ${schemas.length} schemas, ${manifest.cases.length} record fixtures, and ${(manifest.crossCases ?? []).length} cross-record suites.`);

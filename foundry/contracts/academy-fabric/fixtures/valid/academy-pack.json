@@ -16,14 +16,19 @@
     "dataClassification": "public",
     "maturity": "active",
     "nextReviewAt": "2026-11-29T10:00:00Z",
+    "license": {
+      "licenseId": "MIT",
+      "rightsHolderRefs": [{ "id": "urn:starlight:org:academy-001", "kind": "academy" }],
+      "attribution": "Starlight Intelligence Academy Commons"
+    },
     "provenance": {
       "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "createdByRefs": [{ "id": "urn:starlight:human:steward-001", "kind": "human" }]
     }
   },
-  "slug": "ai-architect-evidence-sprint",
-  "name": "AI Architect Evidence Sprint",
-  "purpose": "Convert a live AI prototype into buyer-trusted architecture and operating evidence.",
+  "slug": "ai-architect-graph-engineering-commons",
+  "name": "AI Architect Graph Engineering Commons",
+  "purpose": "Help any learner design, operate, and defend governed human-agent execution graphs through an open local or BYOK path.",
   "releaseStatus": "published",
   "publishedAt": "2026-08-29T10:00:00Z",
   "ownerOrganisationRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
@@ -34,23 +39,23 @@
     "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
   "brandSurface": "ai_architect_academy",
-  "institutionForms": ["studio", "guild", "certification_lab", "ombuds"],
+  "institutionForms": ["commons", "studio", "guild", "certification_lab", "ombuds"],
   "competencyFrameworkRefs": [{
     "id": "urn:starlight:competency-framework:ai-architect",
     "version": "0.1.0",
     "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   }],
   "pathways": [{
-    "id": "urn:starlight:pathway:ai-architect-evidence",
-    "name": "AI Architect Evidence",
+    "id": "urn:starlight:pathway:graph-engineering-commons",
+    "name": "Graph Engineering Commons",
     "status": "pilot",
     "missionTemplateRefs": [{
-      "id": "urn:starlight:mission-template:architecture-evidence",
+      "id": "urn:starlight:mission-template:graph-or-no-graph",
       "version": "0.1.0",
       "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
     }],
-    "entryCriteria": ["A live client-facing AI agent or prototype exists."],
-    "exitCompetencyRefs": ["urn:starlight:competency:architecture-defense"]
+    "entryCriteria": ["A bounded system objective and accountable human are named."],
+    "exitCompetencyRefs": ["urn:starlight:competency:graph-system-shape"]
   }],
   "guardianModel": {
     "servicePath": ["guardian_agent", "peer_guild", "trained_mentor", "faculty_clinic"],
@@ -70,6 +75,17 @@
     "mode": "either",
     "approvalRequired": true
   },
+  "openAccessContract": {
+    "completePathWithoutPayment": true,
+    "localOrByokExecutionSupported": true,
+    "credentialEligibilityWithoutPayment": true,
+    "exportWithoutPayment": true,
+    "identicalAssessmentStandard": true,
+    "managedServiceOptional": true,
+    "freeCoreIncludes": ["capability_graph", "curriculum", "missions", "skills", "plugin_manifests", "reference_agent_definitions", "rubrics_and_evaluators", "public_fixtures", "local_runner", "passport_export", "credential_eligibility"],
+    "hostedComputePolicy": "transparent_quota",
+    "paidDifferentiators": ["managed_compute", "managed_hosting", "privacy_and_isolation", "integrations", "institutional_controls", "observability", "backups", "human_review_turnaround", "guardian_council_capacity", "service_level_agreement"]
+  },
   "qualityGates": {
     "accessibilityStandard": "WCAG2.2-AA",
     "humanCredentialDecision": true,
@@ -77,4 +93,3 @@
     "evidenceProvenanceRequired": true
   }
 }
-

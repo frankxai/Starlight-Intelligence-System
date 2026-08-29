@@ -1,0 +1,6 @@
+interface:
+  display_name: "Evidence Graph Evaluation"
+  short_description: "Test whether mission artifacts support bounded capability claims."
+  default_prompt: "Use $evidence-graph-evaluation to preflight this evidence against the pinned capability graph and rubric."
+policy:
+  allow_implicit_invocation: true

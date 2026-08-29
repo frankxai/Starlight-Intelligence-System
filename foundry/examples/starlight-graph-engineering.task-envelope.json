@@ -1,0 +1,161 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "starlight-graph-engineering",
+  "kind": "plugin",
+  "objective": "Compile the six open Academy Graph Engineering skills into one authentication-free, skills-only ChatGPT Work and Codex plugin without runtime, MCP, agent activation, credential, payment, or publication claims.",
+  "deliverables": [
+    {
+      "id": "skills-only-plugin",
+      "description": "A distributable plugin projection containing six canonical Academy skills and no remote runtime authority.",
+      "artifactType": "plugin-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "academy-fabric",
+    "audience": "Learners, educators, AI architects, creators, institutions, and local-first Academy builders",
+    "artifactTypes": [
+      "codex-plugin",
+      "agent-skills-bundle",
+      "foundry-evidence-receipt"
+    ],
+    "references": [
+      "plugins/starlight-graph-engineering/.codex-plugin/plugin.json",
+      "skills/academy"
+    ]
+  },
+  "stakes": {
+    "impact": "high",
+    "reversibility": "reversible",
+    "rationale": "The package is a local skills projection with no authentication or remote writes; an incorrect build can be withdrawn or replaced before publication."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "destructive-action",
+      "financial-commitment",
+      "public-release",
+      "permission-expansion",
+      "substrate-change"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Bundle canonical skill sources without rewriting their activation, authority, privacy, or free-access boundaries.",
+      "Keep knowledge, capability methods, missions, evidence standards, and learner portability open and free.",
+      "Preserve a verifiable source-to-bundle relationship for all six skills."
+    ],
+    "mustNot": [
+      "Declare MCP, remote tools, authentication, persistent agents, hooks, payments, credentials, or learner-data writes.",
+      "Claim installation, publication, activation, external messaging, or production deployment.",
+      "Hide curriculum, proof thresholds, or stronger credential outcomes behind payment."
+    ],
+    "budget": {
+      "maxCostUsd": 1,
+      "maxLatencyMs": 120000,
+      "maxToolCalls": 16,
+      "maxAgentTurns": 8,
+      "maxParallelWorkers": 2
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "stable",
+    "requirePrimarySources": false,
+    "requiredLanes": [
+      "static",
+      "artifact"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [],
+      "deny": [
+        "external-write",
+        "public-release",
+        "credential-write",
+        "payment-write",
+        "agent-activation",
+        "remote-mcp"
+      ]
+    },
+    "memory": {
+      "read": [],
+      "write": []
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [
+      "academy/capability-graph-architecture",
+      "academy/mission-graph-design",
+      "academy/execution-graph-engineering",
+      "academy/evidence-graph-evaluation",
+      "academy/passport-graph-projection",
+      "academy/agent-team-composition"
+    ],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": false
+  },
+  "completionTests": [
+    {
+      "id": "plugin-manifest-present",
+      "lane": "static",
+      "type": "json-valid",
+      "required": true,
+      "path": "plugin/.codex-plugin/plugin.json"
+    },
+    {
+      "id": "capability-graph-skill-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "plugin/skills/capability-graph-architecture/SKILL.md"
+    },
+    {
+      "id": "mission-graph-skill-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "plugin/skills/mission-graph-design/SKILL.md"
+    },
+    {
+      "id": "execution-graph-skill-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "plugin/skills/execution-graph-engineering/SKILL.md"
+    },
+    {
+      "id": "evidence-graph-skill-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "plugin/skills/evidence-graph-evaluation/SKILL.md"
+    },
+    {
+      "id": "passport-graph-skill-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "plugin/skills/passport-graph-projection/SKILL.md"
+    },
+    {
+      "id": "agent-team-skill-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "plugin/skills/agent-team-composition/SKILL.md"
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "chatgpt-work",
+      "codex"
+    ]
+  }
+}

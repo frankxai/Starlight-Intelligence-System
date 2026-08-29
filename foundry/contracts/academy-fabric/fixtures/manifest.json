@@ -3,7 +3,56 @@
     { "schema": "academy-pack.schema.json", "file": "valid/academy-pack.json", "valid": true },
     { "schema": "learning-contract.schema.json", "file": "valid/learning-contract.json", "valid": true },
     { "schema": "learning-passport.schema.json", "file": "valid/learning-passport.json", "valid": true },
-    { "schema": "human-credential.schema.json", "file": "invalid/credential-agent-subject.json", "valid": false }
+    { "schema": "human-credential.schema.json", "file": "invalid/credential-agent-subject.json", "valid": false, "expectedErrorCodes": ["SCHEMA_INVALID"] },
+    { "schema": "agent-team-manifest.schema.json", "file": "invalid/agent-team-active-execution.json", "valid": false, "expectedErrorCodes": ["AGENT_TEAM_EXECUTION_DEFERRED"] },
+    { "schema": "agent-team-manifest.schema.json", "file": "invalid/agent-team-write-scope.json", "valid": false, "expectedErrorCodes": ["AGENT_TEAM_WRITE_SCOPE_DEFERRED"] },
+    { "schema": "agent-team-manifest.schema.json", "file": "invalid/agent-team-unresolved-delegation.json", "valid": false, "expectedErrorCodes": ["AGENT_TEAM_UNRESOLVED_DELEGATION"] },
+    { "schema": "agent-capability-attestation.schema.json", "file": "invalid/agent-attestation-invalid-validity.json", "valid": false, "expectedErrorCodes": ["AGENT_ATTESTATION_VALIDITY_ORDER"] },
+    { "schema": "agent-capability-attestation.schema.json", "file": "invalid/agent-attestation-failed-safety.json", "valid": false, "expectedErrorCodes": ["AGENT_ATTESTATION_UNSAFE_CLAIM"] },
+    { "schema": "evidence-bundle.schema.json", "file": "invalid/evidence-verified-nonconformant.json", "valid": false, "expectedErrorCodes": ["EVIDENCE_VERIFIED_INCOMPLETE", "EVIDENCE_VERIFIED_PROVENANCE_INVALID", "EVIDENCE_VERIFIED_POLICY_INVALID", "EVIDENCE_VERIFIED_BLOCKING_FINDING"] },
+    { "schema": "learning-passport.schema.json", "file": "invalid/passport-expired-share.json", "valid": false, "expectedErrorCodes": ["PASSPORT_SHARE_EXPIRED"] },
+    { "schema": "competency-graph.schema.json", "file": "valid/competency-graph-graph-engineering.json", "valid": true },
+    { "schema": "execution-graph.schema.json", "file": "valid/execution-graph-mission-zero.json", "valid": true },
+    { "schema": "competency-graph.schema.json", "file": "invalid/competency-graph-incomplete-proof.json", "valid": false, "expectedErrorCodes": ["COMPETENCY_GRAPH_PROOF_PATH_INCOMPLETE"] },
+    { "schema": "execution-graph.schema.json", "file": "invalid/execution-graph-missing-human-gate.json", "valid": false, "expectedErrorCodes": ["EXECUTION_GRAPH_HUMAN_GATE_MISSING", "EXECUTION_GRAPH_COMPENSATION_MISSING"] }
+  ],
+  "crossCases": [
+    {
+      "name": "credential cannot issue from merely submitted evidence",
+      "valid": false,
+      "expectedErrorCodes": ["CREDENTIAL_EVIDENCE_NOT_VERIFIED"],
+      "records": [
+        { "schema": "human-credential.schema.json", "file": "valid/human-credential-pending-evidence.json" },
+        { "schema": "evidence-bundle.schema.json", "file": "valid/evidence-submitted-human.json" }
+      ]
+    },
+    {
+      "name": "credential evidence reference must resolve",
+      "valid": false,
+      "expectedErrorCodes": ["CREDENTIAL_EVIDENCE_UNRESOLVED"],
+      "records": [
+        { "schema": "human-credential.schema.json", "file": "valid/human-credential-pending-evidence.json" }
+      ]
+    },
+    {
+      "name": "active agent attestation reference must resolve",
+      "valid": false,
+      "expectedErrorCodes": ["AGENT_ATTESTATION_UNRESOLVED"],
+      "records": [
+        { "schema": "agent-team-manifest.schema.json", "file": "valid/agent-team-read-first.json" }
+      ]
+    },
+    {
+      "name": "cross-tenant denial covers non-URN identifiers",
+      "file": "cross/cross-tenant-https-reference.json",
+      "valid": false,
+      "expectedErrorCodes": ["CROSS_TENANT_REFERENCE"]
+    },
+    {
+      "name": "agent build must equal the admitted attestation build",
+      "file": "cross/agent-attestation-build-mismatch.json",
+      "valid": false,
+      "expectedErrorCodes": ["AGENT_ATTESTATION_BUILD_MISMATCH"]
+    }
   ]
 }
-

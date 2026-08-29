@@ -15,6 +15,7 @@
     "visibility": "private",
     "dataClassification": "confidential",
     "maturity": "active",
+    "consentRefs": ["urn:starlight:consent:learner-001-private-passport"],
     "provenance": {
       "contentDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
       "createdByRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }]
@@ -53,10 +54,26 @@
   }],
   "sharePolicy": {
     "consentGrantRefs": ["urn:starlight:consent:learner-001-private-passport"],
+    "consentStatusChecks": [{
+      "grantRef": "urn:starlight:consent:learner-001-private-passport",
+      "subjectRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+      "status": "active",
+      "checkedAt": "2026-09-12T12:00:00Z",
+      "validUntil": "2027-09-12T12:00:00Z",
+      "proof": {
+        "signerRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+        "algorithm": "EdDSA",
+        "value": "fixture-consent-signature-learner-001",
+        "signedAt": "2026-09-12T12:00:00Z",
+        "purpose": "approval"
+      }
+    }],
     "audienceRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }],
     "purpose": "learner_use",
     "expiresAt": "2027-09-12T12:00:00Z",
     "revocable": true,
+    "revocationStatusEndpoint": "https://status.starlightintelligence.org/consents/learner-001-private-passport",
+    "cacheMaxAgeSeconds": 0,
     "shareGrantRef": "urn:starlight:share-grant:learner-001-private"
   }
 }

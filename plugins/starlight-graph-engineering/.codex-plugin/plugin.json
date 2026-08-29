@@ -1,0 +1,43 @@
+{
+  "name": "starlight-graph-engineering",
+  "version": "0.1.0",
+  "description": "Open, local-first Academy skills that turn capabilities into missions, governed execution graphs, evidence, learner-controlled Passport projections, and bounded agent teams.",
+  "author": {
+    "name": "Starlight Intelligence",
+    "url": "https://starlightintelligence.org"
+  },
+  "homepage": "https://starlightintelligence.org",
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "keywords": [
+    "academy",
+    "capability-graph",
+    "learning-missions",
+    "execution-graphs",
+    "evidence",
+    "agents"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Starlight Graph Engineering",
+    "shortDescription": "Build capability graphs that terminate in defensible work.",
+    "longDescription": "Map capabilities to missions, artifacts, evaluators, evidence and opportunities; design governed execution graphs; compose bounded agent teams; and project learner-controlled Passports without paywalling knowledge or proof.",
+    "developerName": "Starlight Intelligence",
+    "category": "Productivity",
+    "capabilities": [
+      "Capability graph architecture",
+      "Mission graph design",
+      "Execution graph engineering",
+      "Evidence evaluation",
+      "Passport projection",
+      "Agent team composition"
+    ],
+    "websiteURL": "https://starlightintelligence.org",
+    "defaultPrompt": [
+      "Map this domain into a capability-to-evidence graph.",
+      "Compile this capability subgraph into an open mission.",
+      "Design and prove the smallest justified execution graph."
+    ],
+    "brandColor": "#7C5CFF"
+  }
+}

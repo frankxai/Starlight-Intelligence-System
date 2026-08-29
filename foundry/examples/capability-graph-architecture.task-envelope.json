@@ -1,0 +1,131 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "capability-graph-architecture",
+  "kind": "skill",
+  "objective": "Compile a portable Academy skill that turns inspectable domain evidence into a versioned capability-to-mission-to-evidence graph without overstating educational truth.",
+  "deliverables": [
+    {
+      "id": "portable-skill",
+      "description": "An Agent Skills-compatible capability graph architecture package with explicit proof obligations.",
+      "artifactType": "skill-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "academy-fabric",
+    "audience": "Academy architects, educators, domain experts, institutions, and learner-owned tool builders",
+    "artifactTypes": [
+      "competency-graph",
+      "coverage-matrix",
+      "claim-ledger"
+    ],
+    "references": [
+      "skills/academy/capability-graph-architecture/SKILL.md",
+      "foundry/contracts/academy-fabric/README.md"
+    ]
+  },
+  "stakes": {
+    "impact": "high",
+    "reversibility": "recoverable",
+    "rationale": "Capability graph errors can misroute learning and evaluation, but versioned drafts can be rejected or superseded before release."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "destructive-action",
+      "financial-commitment",
+      "public-release",
+      "permission-expansion",
+      "substrate-change"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Separate sourced, derived, and hypothesized graph claims.",
+      "Bind every active capability to a mission, artifact, evaluator or rubric, and evidence type.",
+      "Keep the complete reference method open and usable without payment."
+    ],
+    "mustNot": [
+      "Infer credential status, ownership, reputation, or economic entitlement from graph position.",
+      "Publish private learner evidence, raw telemetry, signing material, or hidden evaluations.",
+      "Merge or publish a proposed graph without named human approval."
+    ],
+    "budget": {
+      "maxCostUsd": 5,
+      "maxLatencyMs": 300000,
+      "maxToolCalls": 40,
+      "maxAgentTurns": 16,
+      "maxParallelWorkers": 4
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "stable",
+    "requirePrimarySources": false,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "artifact"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [],
+      "deny": [
+        "external-write",
+        "graph-merge",
+        "public-release",
+        "credential-write",
+        "payment-write"
+      ]
+    },
+    "memory": {
+      "read": [],
+      "write": []
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "completionTests": [
+    {
+      "id": "skill-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/SKILL.md"
+    },
+    {
+      "id": "interface-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/agents/openai.yaml"
+    },
+    {
+      "id": "provenance-law-present",
+      "lane": "behavioral",
+      "type": "contains",
+      "required": true,
+      "path": "skill/SKILL.md",
+      "value": "Each consequential graph claim has provenance or an explicit hypothesis state."
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

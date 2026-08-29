@@ -1,0 +1,86 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/skill-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "skill",
+  "id": "mission-graph-design",
+  "version": "0.1.0",
+  "description": "Compile a bounded capability subgraph into an open learning mission with observable artifacts, agent-assistance disclosure, recovery paths, and assessment-ready evidence.",
+  "triggers": {
+    "positive": [
+      "A capability graph must become a real project, studio brief, lab, or apprenticeship task.",
+      "A learner needs the smallest mission capable of producing evidence for a target capability set."
+    ],
+    "negative": [
+      "The request is only to outline lessons, lectures, or reading lists.",
+      "The beneficiary, artifact, evaluator, or evidence threshold cannot yet be named."
+    ]
+  },
+  "procedure": [
+    {
+      "id": "select",
+      "instruction": "Select the smallest connected target capability subgraph and make its prerequisite closure explicit.",
+      "proof": "Every selected node is necessary for the learner-visible outcome."
+    },
+    {
+      "id": "contract",
+      "instruction": "Define the beneficiary, problem, accountable human, success event, timebox, constraints, stop conditions, and free execution path.",
+      "proof": "The mission contract can be accepted or rejected without hidden context."
+    },
+    {
+      "id": "evidence",
+      "instruction": "Specify observable artifacts, checkpoints, provenance capture, assistance disclosure, and required human decisions.",
+      "proof": "Every target capability maps to at least one artifact claim and evidence event."
+    },
+    {
+      "id": "agents",
+      "instruction": "Compose the minimum bounded agent team and downgrade every unjustified persistent role to a skill or temporary worker.",
+      "proof": "An Agent Team Manifest or explicit no-agent decision records the authority boundary."
+    },
+    {
+      "id": "dry-run",
+      "instruction": "Dry-run the happy path, failure path, prompt-injection path, privacy breach, recovery route, and incomplete evidence path.",
+      "proof": "A validation report exposes every unresolved blocker before execution."
+    }
+  ],
+  "inputs": [
+    "Versioned capability graph and target node set",
+    "Learner baseline, constraints, consent, and available tools",
+    "Real or simulated beneficiary and accountable human",
+    "Artifact, rubric, evidence, recovery, and appeal requirements"
+  ],
+  "outputs": [
+    "Mission Contract",
+    "Target-subgraph map",
+    "Artifact and evidence plan",
+    "Agent Team Manifest or no-agent receipt",
+    "Evaluation, recovery, and appeal plan"
+  ],
+  "dependencies": [
+    "academy/capability-graph-architecture"
+  ],
+  "toolPolicy": {
+    "allow": [],
+    "deny": [
+      "external-write",
+      "public-release",
+      "credential-write",
+      "payment-write",
+      "agent-activation"
+    ]
+  },
+  "memoryContract": {
+    "read": [],
+    "write": []
+  },
+  "deployment": {
+    "implicitInvocation": true,
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

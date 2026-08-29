@@ -106,6 +106,21 @@
   },
   "allOf": [
     {
+      "if": { "properties": { "status": { "const": "verified" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "verification": {
+            "type": "object",
+            "required": ["verifierAgentBuildRef", "verifiedAt"]
+          },
+          "freeze": {
+            "type": "object",
+            "required": ["signature"]
+          }
+        }
+      }
+    },
+    {
       "if": { "properties": { "evidenceScope": { "const": "human_competence" } }, "required": ["evidenceScope"] },
       "then": { "properties": { "subjectRef": { "type": "object", "properties": { "kind": { "const": "human" } } } }, "required": ["defenseRecordRef"] }
     }

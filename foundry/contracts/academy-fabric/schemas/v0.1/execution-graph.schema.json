@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.starlightintelligence.org/academy-fabric/v0.1/execution-graph.schema.json",
+  "title": "ExecutionGraph",
+  "description": "Governed task, executor, authority, runtime-state, recovery, and proof graph for a bounded human-agent system.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["metadata", "status", "objective", "accountableHumanRef", "baseline", "graphJustification", "stateSchemaRef", "entryNodeIds", "terminalNodeIds", "nodes", "edges", "termination", "recovery", "observability", "evaluation", "qualityGates"],
+  "properties": {
+    "metadata": { "$ref": "common.schema.json#/$defs/CanonicalMetadata" },
+    "status": { "type": "string", "enum": ["draft", "experimental", "validated", "suspended", "retired"] },
+    "objective": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+    "accountableHumanRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+    "taskEnvelopeRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "retainedAsComparator"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["deterministic_workflow", "single_loop", "sequential_skills"] },
+        "retainedAsComparator": { "const": true },
+        "benchmarkRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "graphJustification": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["independent_verification", "heterogeneous_permissions", "recoverable_state", "long_running_state", "parallel_fanout", "human_approval_topology", "multi_domain_coordination"] }
+    },
+    "stateSchemaRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+    "entryNodeIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+    "terminalNodeIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "name", "capabilityRefs", "executor", "authority", "retry", "completionCondition"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/StableId" },
+          "kind": { "type": "string", "enum": ["task", "router", "join", "gate", "checkpoint", "terminal"] },
+          "name": { "$ref": "common.schema.json#/$defs/ShortText" },
+          "capabilityRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+          "inputSchemaRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+          "outputSchemaRefs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+          "executor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind"],
+            "properties": {
+              "kind": { "type": "string", "enum": ["deterministic_tool", "skill", "temporary_worker", "persistent_agent", "human"] },
+              "componentRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+              "humanRef": { "$ref": "common.schema.json#/$defs/HumanRef" },
+              "attestationRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+              "necessityReceiptRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+            },
+            "allOf": [
+              {
+                "if": { "properties": { "kind": { "const": "human" } }, "required": ["kind"] },
+                "then": { "required": ["humanRef"] },
+                "else": { "required": ["componentRef"] }
+              },
+              {
+                "if": { "properties": { "kind": { "const": "persistent_agent" } }, "required": ["kind"] },
+                "then": { "required": ["attestationRef", "necessityReceiptRef"] }
+              }
+            ]
+          },
+          "authority": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["sideEffectClass", "toolScopes", "dataScopes", "mayTransferAuthority"],
+            "properties": {
+              "sideEffectClass": { "type": "string", "enum": ["none", "reversible", "consequential", "irreversible"] },
+              "toolScopes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.:-]{2,127}$" } },
+              "dataScopes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "enum": ["public", "internal", "confidential", "restricted", "sealed"] } },
+              "mayTransferAuthority": { "const": false }
+            }
+          },
+          "retry": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["idempotent", "maxAttempts"],
+            "properties": {
+              "idempotent": { "type": "boolean" },
+              "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "backoff": { "type": "string", "enum": ["none", "fixed", "exponential"] }
+            },
+            "allOf": [
+              {
+                "if": { "properties": { "idempotent": { "const": false } }, "required": ["idempotent"] },
+                "then": { "properties": { "maxAttempts": { "const": 1 } } }
+              }
+            ]
+          },
+          "compensationRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "completionCondition": { "$ref": "common.schema.json#/$defs/NonEmptyText" },
+          "timeoutSeconds": { "type": "integer", "minimum": 1, "maximum": 86400 }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "from", "to", "type", "authorityTransfer"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/StableId" },
+          "from": { "$ref": "common.schema.json#/$defs/StableId" },
+          "to": { "$ref": "common.schema.json#/$defs/StableId" },
+          "type": { "type": "string", "enum": ["dependency", "control", "data", "handoff", "approval", "recovery", "compensation"] },
+          "contractRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+          "authorityTransfer": { "const": false }
+        }
+      }
+    },
+    "termination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxSteps", "maxRounds", "maxWallSeconds", "successConditionRef", "failureConditionRef"],
+      "properties": {
+        "maxSteps": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "maxRounds": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "maxWallSeconds": { "type": "integer", "minimum": 1, "maximum": 604800 },
+        "maxSpend": { "$ref": "common.schema.json#/$defs/Money" },
+        "successConditionRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "failureConditionRef": { "$ref": "common.schema.json#/$defs/VersionedRef" }
+      }
+    },
+    "recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpointNodeIds", "replayFromLastValidFrontier", "compensationRequiredForIrreversibleEffects"],
+      "properties": {
+        "checkpointNodeIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/StableId" } },
+        "replayFromLastValidFrontier": { "const": true },
+        "compensationRequiredForIrreversibleEffects": { "const": true }
+      }
+    },
+    "observability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eventProfileRef", "provenanceRequired", "chainOfThoughtStorageAllowed"],
+      "properties": {
+        "eventProfileRef": { "$ref": "common.schema.json#/$defs/VersionedRef" },
+        "provenanceRequired": { "const": true },
+        "chainOfThoughtStorageAllowed": { "const": false }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["suiteRefs", "independentVerifierRef", "baselineCompared", "promotionStatus"],
+      "properties": {
+        "suiteRefs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/VersionedRef" } },
+        "independentVerifierRef": { "$ref": "common.schema.json#/$defs/EntityRef" },
+        "baselineCompared": { "const": true },
+        "promotionStatus": { "type": "string", "enum": ["experimental", "validated", "revise", "rejected"] }
+      }
+    },
+    "qualityGates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allNodesReachable", "cyclesBounded", "authorityNeverAmplifies", "consequentialActionsHaveHumanGate", "builderVerifierSeparated"],
+      "properties": {
+        "allNodesReachable": { "const": true },
+        "cyclesBounded": { "const": true },
+        "authorityNeverAmplifies": { "const": true },
+        "consequentialActionsHaveHumanGate": { "const": true },
+        "builderVerifierSeparated": { "const": true }
+      }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/NamespacedExtensions" }
+  }
+}

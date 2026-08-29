@@ -121,9 +121,19 @@
   },
   "allOf": [
     {
+      "if": { "properties": { "status": { "const": "active" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "evaluations": {
+            "type": "object",
+            "required": ["independentReviewerRef"]
+          }
+        }
+      }
+    },
+    {
       "if": { "properties": { "status": { "const": "revoked" } }, "required": ["status"] },
       "then": { "required": ["revocation"] }
     }
   ]
 }
-

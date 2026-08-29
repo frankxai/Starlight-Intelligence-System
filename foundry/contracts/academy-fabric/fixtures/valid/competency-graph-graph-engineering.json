@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "id": "urn:starlight:competency-graph:graph-engineering-0.1.0",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "global",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "academyRef": "urn:starlight:academy:ai-architect",
+    "stewardRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:steward-001", "kind": "human" },
+    "visibility": "public",
+    "dataClassification": "public",
+    "maturity": "active",
+    "license": {
+      "licenseId": "MIT",
+      "rightsHolderRefs": [{ "id": "urn:starlight:org:academy-001", "kind": "academy" }],
+      "attribution": "Starlight Intelligence Academy Commons"
+    },
+    "provenance": {
+      "contentDigest": "sha256:abababababababababababababababababababababababababababababababab",
+      "createdByRefs": [{ "id": "urn:starlight:human:steward-001", "kind": "human" }],
+      "sourceRefs": [{
+        "uri": "https://arxiv.org/abs/2608.21156",
+        "retrievedAt": "2026-08-29T10:00:00Z",
+        "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      }]
+    }
+  },
+  "status": "active",
+  "name": "Graph Engineering Commons Capability Graph",
+  "domain": "AI Architect — governed execution graphs",
+  "description": "Open path from graph/no-graph judgment through topology, authority, recovery, and independent proof.",
+  "rootNodeIds": ["urn:starlight:competency:graph-system-shape"],
+  "nodes": [
+    {
+      "id": "urn:starlight:competency:graph-system-shape",
+      "kind": "competency",
+      "name": "Graph or no-graph system judgment",
+      "description": "Select the smallest justified system shape and defend the rejected alternatives.",
+      "lifecycle": "active",
+      "claimState": "derived",
+      "stage": "explorer",
+      "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }]
+    },
+    {
+      "id": "urn:starlight:skill:execution-graph-engineering",
+      "kind": "skill",
+      "name": "Execution Graph Engineering",
+      "lifecycle": "experimental",
+      "claimState": "derived",
+      "componentRef": { "id": "urn:starlight:skill-pack:execution-graph-engineering", "version": "0.1.0", "digest": "sha256:1212121212121212121212121212121212121212121212121212121212121212" },
+      "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }]
+    },
+    {
+      "id": "urn:starlight:mission:graph-or-no-graph",
+      "kind": "mission",
+      "name": "GE-M00 — Graph or No Graph?",
+      "lifecycle": "active",
+      "claimState": "derived",
+      "componentRef": { "id": "urn:starlight:mission-contract:graph-or-no-graph", "version": "0.1.0", "digest": "sha256:3434343434343434343434343434343434343434343434343434343434343434" },
+      "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }]
+    },
+    {
+      "id": "urn:starlight:artifact-type:system-shape-decision",
+      "kind": "artifact_type",
+      "name": "System-shape decision record",
+      "lifecycle": "active",
+      "claimState": "derived",
+      "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }]
+    },
+    {
+      "id": "urn:starlight:evidence-requirement:reject-unneeded-complexity",
+      "kind": "evidence_requirement",
+      "name": "Reject unnecessary graph complexity",
+      "lifecycle": "active",
+      "claimState": "derived",
+      "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }]
+    },
+    {
+      "id": "urn:starlight:rubric:graph-system-shape-v0.1",
+      "kind": "rubric",
+      "name": "Graph system-shape rubric",
+      "lifecycle": "experimental",
+      "claimState": "derived",
+      "componentRef": { "id": "urn:starlight:rubric-pack:graph-system-shape", "version": "0.1.0", "digest": "sha256:5656565656565656565656565656565656565656565656565656565656565656" },
+      "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }]
+    },
+    {
+      "id": "urn:starlight:plugin:starlight-graph-engineering",
+      "kind": "plugin",
+      "name": "Starlight Graph Engineering",
+      "lifecycle": "experimental",
+      "claimState": "sourced",
+      "componentRef": { "id": "urn:starlight:plugin-pack:starlight-graph-engineering", "version": "0.1.0", "digest": "sha256:7878787878787878787878787878787878787878787878787878787878787878" },
+      "sourceRefs": [{ "id": "urn:starlight:source:plugin-manifest", "version": "0.1.0", "digest": "sha256:9090909090909090909090909090909090909090909090909090909090909090" }]
+    },
+    {
+      "id": "urn:starlight:opportunity:commons-graph-contributor",
+      "kind": "opportunity",
+      "name": "Academy Commons graph contributor",
+      "lifecycle": "experimental",
+      "claimState": "hypothesized",
+      "sourceRefs": [{ "id": "urn:starlight:source:commons-charter", "version": "0.1.0", "digest": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd" }]
+    }
+  ],
+  "edges": [
+    { "id": "urn:starlight:edge:ge-capability-taught-by-skill", "from": "urn:starlight:competency:graph-system-shape", "to": "urn:starlight:skill:execution-graph-engineering", "relation": "taught_by", "claimState": "derived", "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }] },
+    { "id": "urn:starlight:edge:ge-skill-practiced-in-mission", "from": "urn:starlight:skill:execution-graph-engineering", "to": "urn:starlight:mission:graph-or-no-graph", "relation": "practiced_in", "claimState": "derived", "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }] },
+    { "id": "urn:starlight:edge:ge-mission-produces-artifact", "from": "urn:starlight:mission:graph-or-no-graph", "to": "urn:starlight:artifact-type:system-shape-decision", "relation": "produces", "claimState": "derived", "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }] },
+    { "id": "urn:starlight:edge:ge-artifact-satisfies-evidence", "from": "urn:starlight:artifact-type:system-shape-decision", "to": "urn:starlight:evidence-requirement:reject-unneeded-complexity", "relation": "satisfies", "claimState": "derived", "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }] },
+    { "id": "urn:starlight:edge:ge-evidence-evaluated-by-rubric", "from": "urn:starlight:evidence-requirement:reject-unneeded-complexity", "to": "urn:starlight:rubric:graph-system-shape-v0.1", "relation": "evaluated_by", "claimState": "derived", "sourceRefs": [{ "id": "urn:starlight:source:graph-engineering-research-basis", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" }] },
+    { "id": "urn:starlight:edge:ge-skill-published-through-plugin", "from": "urn:starlight:skill:execution-graph-engineering", "to": "urn:starlight:plugin:starlight-graph-engineering", "relation": "published_through", "claimState": "sourced", "sourceRefs": [{ "id": "urn:starlight:source:plugin-manifest", "version": "0.1.0", "digest": "sha256:9090909090909090909090909090909090909090909090909090909090909090" }] },
+    { "id": "urn:starlight:edge:ge-capability-enables-contribution", "from": "urn:starlight:competency:graph-system-shape", "to": "urn:starlight:opportunity:commons-graph-contributor", "relation": "enables", "claimState": "hypothesized", "sourceRefs": [{ "id": "urn:starlight:source:commons-charter", "version": "0.1.0", "digest": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd" }] }
+  ],
+  "qualityGates": {
+    "allReferencesResolve": true,
+    "prerequisitesAcyclic": true,
+    "activeCompetenciesReachMissionArtifactEvidenceAndRubric": true,
+    "humanCredentialDecision": true,
+    "completePublicPath": true,
+    "containsCommercialEntitlement": false
+  }
+}

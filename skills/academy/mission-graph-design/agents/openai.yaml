@@ -1,0 +1,6 @@
+interface:
+  display_name: "Mission Graph Design"
+  short_description: "Compile a capability subgraph into an open evidence-producing mission."
+  default_prompt: "Use $mission-graph-design to turn this capability subgraph into the smallest defensible open mission."
+policy:
+  allow_implicit_invocation: true

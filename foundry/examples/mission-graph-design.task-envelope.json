@@ -1,0 +1,133 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "mission-graph-design",
+  "kind": "skill",
+  "objective": "Compile a portable Academy skill that turns a bounded capability subgraph into a free, executable learning mission ending in inspectable artifacts and assessment-ready evidence.",
+  "deliverables": [
+    {
+      "id": "portable-skill",
+      "description": "An Agent Skills-compatible mission graph design package with a defensible completion contract.",
+      "artifactType": "skill-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "academy-fabric",
+    "audience": "Academy architects, educators, domain experts, mentors, and project-based learners",
+    "artifactTypes": [
+      "mission-contract",
+      "target-subgraph",
+      "evidence-plan"
+    ],
+    "references": [
+      "skills/academy/mission-graph-design/SKILL.md",
+      "foundry/contracts/academy-fabric/schemas/v0.1/mission-contract.schema.json"
+    ]
+  },
+  "stakes": {
+    "impact": "high",
+    "reversibility": "recoverable",
+    "rationale": "A defective mission can waste learner effort or expose data, but a draft contract can be rejected before execution."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "destructive-action",
+      "financial-commitment",
+      "public-release",
+      "permission-expansion",
+      "substrate-change"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Select the smallest connected capability subgraph needed for the learner-visible outcome.",
+      "Map every target capability to observable artifacts and evidence events.",
+      "Keep one complete reference mission executable without payment."
+    ],
+    "mustNot": [
+      "Issue credentials or translate attendance, opaque scores, or payment status into competence.",
+      "Turn sponsor problems into uncompensated learner labor or transfer learner IP by default.",
+      "Activate persistent agents without a justified autonomy boundary and human approval."
+    ],
+    "budget": {
+      "maxCostUsd": 5,
+      "maxLatencyMs": 300000,
+      "maxToolCalls": 40,
+      "maxAgentTurns": 16,
+      "maxParallelWorkers": 4
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "stable",
+    "requirePrimarySources": false,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "artifact"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [],
+      "deny": [
+        "external-write",
+        "public-release",
+        "credential-write",
+        "payment-write",
+        "agent-activation"
+      ]
+    },
+    "memory": {
+      "read": [],
+      "write": []
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [
+      "academy/capability-graph-architecture"
+    ],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "completionTests": [
+    {
+      "id": "skill-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/SKILL.md"
+    },
+    {
+      "id": "interface-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/agents/openai.yaml"
+    },
+    {
+      "id": "mission-coverage-law-present",
+      "lane": "behavioral",
+      "type": "contains",
+      "required": true,
+      "path": "skill/SKILL.md",
+      "value": "Every target capability maps to at least one artifact claim and evidence event."
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/skill-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "skill",
+  "id": "capability-graph-architecture",
+  "version": "0.1.0",
+  "description": "Model a role, curriculum, repository, or practice as a provenance-carrying capability graph that binds capabilities to missions, artifacts, evaluators, evidence, and opportunities.",
+  "triggers": {
+    "positive": [
+      "A role, academy, curriculum, repository, or expert practice must become an executable learning graph.",
+      "Existing courses or skills must be reconciled into prerequisites, missions, artifacts, and defensible proof."
+    ],
+    "negative": [
+      "The request is only for a system dependency graph, GraphRAG index, graph-database choice, or decorative diagram.",
+      "The sources are unavailable and the requester expects authoritative rather than hypothesized capability claims."
+    ]
+  },
+  "procedure": [
+    {
+      "id": "contract",
+      "instruction": "Freeze the graph owner, audience, domain boundary, learner outcome, release status, license, and excluded concerns before modeling.",
+      "proof": "A written graph contract with explicit exclusions."
+    },
+    {
+      "id": "provenance",
+      "instruction": "Build a claim ledger and classify every proposed node and edge as sourced, derived, or hypothesized.",
+      "proof": "Each consequential graph claim has provenance or an explicit hypothesis state."
+    },
+    {
+      "id": "execution-binding",
+      "instruction": "Normalize stable nodes and bind every active capability to a mission, expected artifact, evaluator or rubric, and acceptable evidence type.",
+      "proof": "The coverage matrix contains no unexplained active capability."
+    },
+    {
+      "id": "validate",
+      "instruction": "Reject unresolved references, duplicate edges, prerequisite cycles, orphan nodes, contradictory claims, incompatible licenses, and privacy boundary violations.",
+      "proof": "A machine-readable validation report separates blockers from proposed patches."
+    },
+    {
+      "id": "project",
+      "instruction": "Produce only a consented public projection and keep accepted graph state separate from the unresolved patch queue.",
+      "proof": "Versioned graph, source ledger, coverage report, and patch queue remain distinct artifacts."
+    }
+  ],
+  "inputs": [
+    "Target role, domain, or outcome",
+    "Inspectable curricula, repositories, standards, job evidence, or expert artifacts",
+    "Learner stage and constraints",
+    "Graph owner, version, license, and release boundary"
+  ],
+  "outputs": [
+    "Versioned competency graph",
+    "Capability-to-mission-to-evidence coverage matrix",
+    "Claim and provenance ledger",
+    "Blocking defects and proposed patch queue"
+  ],
+  "dependencies": [],
+  "toolPolicy": {
+    "allow": [],
+    "deny": [
+      "external-write",
+      "graph-merge",
+      "public-release",
+      "credential-write",
+      "payment-write"
+    ]
+  },
+  "memoryContract": {
+    "read": [],
+    "write": []
+  },
+  "deployment": {
+    "implicitInvocation": true,
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

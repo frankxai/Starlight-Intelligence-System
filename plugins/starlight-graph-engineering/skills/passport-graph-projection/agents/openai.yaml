@@ -1,0 +1,6 @@
+interface:
+  display_name: "Passport Graph Projection"
+  short_description: "Create a consented learner-controlled capability projection."
+  default_prompt: "Use $passport-graph-projection to create the minimum consented Passport view for this purpose."
+policy:
+  allow_implicit_invocation: true

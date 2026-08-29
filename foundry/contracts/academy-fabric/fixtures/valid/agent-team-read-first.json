@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "id": "urn:starlight:agent-team:read-first-001",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "tenant",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "stewardRef": { "id": "urn:starlight:human:owner-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:owner-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:owner-001", "kind": "human" },
+    "visibility": "private",
+    "dataClassification": "confidential",
+    "maturity": "trial",
+    "provenance": {
+      "contentDigest": "sha256:a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0",
+      "createdByRefs": [{ "id": "urn:starlight:human:owner-001", "kind": "human" }]
+    }
+  },
+  "status": "active",
+  "name": "Read-first Academy team",
+  "controllerOrganisationRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+  "accountableHumanRef": { "id": "urn:starlight:human:owner-001", "kind": "human" },
+  "purpose": "Read published Academy records and prepare bounded recommendations.",
+  "missionRefs": [{ "id": "urn:starlight:mission:read-first-001", "version": "0.1.0", "digest": "sha256:b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0" }],
+  "members": [{
+    "agentBuildRef": { "id": "urn:starlight:agent-build:graph-mapper-a", "kind": "agent_build", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    "serviceIdentityRef": { "id": "urn:starlight:service:graph-mapper", "kind": "service" },
+    "capabilityAttestationRef": { "id": "urn:starlight:agent-attestation:graph-mapper-a", "version": "0.1.0", "digest": "sha256:c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0" },
+    "role": "researcher",
+    "delegationGrantRefs": ["urn:starlight:delegation:read-first-001"],
+    "delegationGrants": [{
+      "id": "urn:starlight:delegation:read-first-001",
+      "principalRef": { "id": "urn:starlight:human:owner-001", "kind": "human" },
+      "delegateRef": { "id": "urn:starlight:service:graph-mapper", "kind": "service" },
+      "actions": ["academy.pack.read"],
+      "resourceRefs": ["urn:starlight:academy-pack:ai-architect-0.1.0"],
+      "audienceRefs": [{ "id": "urn:starlight:org:academy-001", "kind": "academy" }],
+      "purposes": ["learning_delivery"],
+      "validity": { "startsAt": "2026-08-29T09:00:00Z", "endsAt": "2026-08-30T10:00:00Z" },
+      "maxDelegationDepth": 0,
+      "status": "active",
+      "proof": { "signerRef": { "id": "urn:starlight:human:owner-001", "kind": "human" }, "algorithm": "EdDSA", "value": "fixture-delegation-signature", "signedAt": "2026-08-29T09:00:00Z", "purpose": "approval" }
+    }],
+    "toolScopes": ["academy.pack.read"],
+    "dataScopes": ["public_catalog"],
+    "autonomyLevel": "recommend",
+    "maxParallelRuns": 1
+  }],
+  "dataBoundary": {
+    "classifications": ["public"],
+    "residency": ["EU"],
+    "defaultDenyEgress": true,
+    "credentialBrokerRequired": true,
+    "chainOfThoughtStorageAllowed": false
+  },
+  "budget": {
+    "approvedByRef": { "id": "urn:starlight:human:owner-001", "kind": "human" },
+    "currency": "EUR",
+    "maxSpendMinor": 0,
+    "usageLimits": [{ "metric": "requests", "limit": 100, "period": "day", "hardLimit": true }],
+    "debtAllowed": false
+  },
+  "approvalPolicy": {
+    "humanApprovalRequiredFor": ["money", "publication", "external_communication", "credential_status", "destructive_action", "sensitive_data", "residual_risk_acceptance"]
+  },
+  "escalation": {
+    "primaryHumanRef": { "id": "urn:starlight:human:owner-001", "kind": "human" },
+    "ombudsRef": { "id": "urn:starlight:service:ombuds", "kind": "service" },
+    "incidentPolicyRef": { "id": "urn:starlight:policy:agent-incident", "version": "0.1.0", "digest": "sha256:d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0" },
+    "maxUnacknowledgedMinutes": 30
+  },
+  "killSwitch": {
+    "enabled": true,
+    "operatorRefs": [{ "id": "urn:starlight:human:owner-001", "kind": "human" }],
+    "revokeDelegations": true,
+    "stopWorkloads": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/agent-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "agent",
+  "id": "academy-graph-steward",
+  "version": "0.1.0",
+  "description": "Experimental inactive steward that prepares provenance-carrying Academy graph patches and validation receipts inside an isolated draft queue for named human review.",
+  "necessity": {
+    "rationale": "A candidate steward requires an isolated durable draft queue and a constrained validation boundary across recurring graph reviews; it receives no graph acceptance or external authority.",
+    "persistentDecisionRights": false,
+    "distinctMemoryScope": true,
+    "constrainedToolBoundary": true,
+    "ownershipTransfer": false,
+    "ongoingTrigger": false
+  },
+  "decisionRights": [
+    "Prepare a draft graph patch and validation receipt for a named human graph owner.",
+    "Return a draft as blocked inside the isolated review queue when provenance, consent, license, privacy, or authority gates fail.",
+    "Stop and hand off whenever acceptance, merge, publication, credential, payment, external communication, installation, or permission changes are requested."
+  ],
+  "skills": [
+    "academy/capability-graph-architecture",
+    "academy/execution-graph-engineering",
+    "academy/evidence-graph-evaluation"
+  ],
+  "toolPolicy": {
+    "allow": [
+      "academy-graph-reader",
+      "academy-graph-validator",
+      "draft-receipt-writer"
+    ],
+    "deny": [
+      "graph-merge",
+      "public-release",
+      "credential-write",
+      "payment-write",
+      "external-message",
+      "permission-expansion",
+      "destructive-action",
+      "agent-activation"
+    ]
+  },
+  "memoryContract": {
+    "read": [
+      "published-academy-graph",
+      "approved-academy-policy"
+    ],
+    "write": [
+      "isolated-draft-graph-review-queue"
+    ],
+    "retention": "durable"
+  },
+  "handoffs": [
+    {
+      "when": "A draft graph patch is ready for acceptance, merge, or release consideration.",
+      "target": "named-human-graph-owner"
+    },
+    {
+      "when": "Learner data, consent, tenancy, or disclosure scope is uncertain.",
+      "target": "named-privacy-authority"
+    },
+    {
+      "when": "Credential, payment, external communication, installation, or permission authority is requested.",
+      "target": "named-human-authority"
+    },
+    {
+      "when": "Security, drift, provenance, revocation, or build evidence is absent or stale.",
+      "target": "agent-runtime-operator"
+    }
+  ],
+  "termination": {
+    "conditions": [
+      "A draft patch and validation receipt are handed to the named human graph owner.",
+      "A required source, consent grant, license, schema, authority, or tenant boundary is unresolved.",
+      "Any denied authority or permission expansion is requested.",
+      "The hard turn, time, tool-call, or cost ceiling is reached."
+    ],
+    "maxTurns": 8
+  },
+  "deployment": {
+    "targets": [
+      "workspace-agent",
+      "codex"
+    ]
+  }
+}

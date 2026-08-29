@@ -1,0 +1,91 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/skill-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "skill",
+  "id": "agent-team-composition",
+  "version": "0.1.0",
+  "description": "Compose the minimum human-accountable agent team for a learning mission with pinned builds, least-privilege tools, consented memory, budgets, evaluations, escalation, and termination.",
+  "triggers": {
+    "positive": [
+      "A learning mission requires recurring agent roles with genuinely distinct permissions or memory scopes.",
+      "A learner or institution needs an inspectable Agent Team Manifest rather than an opaque swarm."
+    ],
+    "negative": [
+      "A single skill, deterministic tool, sequential workflow, or temporary worker can produce the result.",
+      "The proposed agent exists only as a persona, title, or promise of intelligence without a durable boundary."
+    ]
+  },
+  "procedure": [
+    {
+      "id": "necessity",
+      "instruction": "Run the agent necessity gate for every role and downgrade those without persistent decisions, distinct memory, constrained tools, ownership transfer, or ongoing triggers.",
+      "proof": "Each retained agent has at least one durable boundary and every rejected role has a simpler replacement."
+    },
+    {
+      "id": "capabilities",
+      "instruction": "Bind each retained role to registered skills and a non-overlapping output or policy boundary.",
+      "proof": "No role duplicates another agent's authority or reimplements a skill procedure."
+    },
+    {
+      "id": "least-privilege",
+      "instruction": "Pin build, attestation, delegation, tool scopes, data scopes, autonomy, spend, parallelism, and runtime environment.",
+      "proof": "The manifest fails closed on missing, expired, revoked, or out-of-scope references."
+    },
+    {
+      "id": "topology",
+      "instruction": "Define manager, shared-state policy, handoffs, conflict owner, maximum rounds, recovery, escalation, and kill switch.",
+      "proof": "No unbounded loop or silent shared-state overwrite is possible."
+    },
+    {
+      "id": "red-team",
+      "instruction": "Test prompt injection, data exfiltration, graph poisoning, confused-deputy actions, self-dealing, excessive autonomy, and credential or payment escalation.",
+      "proof": "Security failures block activation rather than becoming warnings."
+    },
+    {
+      "id": "receipt",
+      "instruction": "Issue only a draft manifest and keep all persistent agents inactive until behavioral, security, drift, and human activation evidence pass.",
+      "proof": "Activation status and unresolved proof remain machine-readable."
+    }
+  ],
+  "inputs": [
+    "Mission Contract and target capability subgraph",
+    "Available skill and agent registry",
+    "Tool, memory, budget, data, and residency constraints",
+    "Accountable human, ombuds, escalation, and kill-switch policy"
+  ],
+  "outputs": [
+    "Agent Team Manifest",
+    "Necessity and downgrade ledger",
+    "Permission and authority matrix",
+    "Security, evaluation, escalation, and termination plan"
+  ],
+  "dependencies": [
+    "academy/execution-graph-engineering"
+  ],
+  "toolPolicy": {
+    "allow": [],
+    "deny": [
+      "external-write",
+      "graph-merge",
+      "public-release",
+      "credential-write",
+      "payment-write",
+      "agent-activation"
+    ]
+  },
+  "memoryContract": {
+    "read": [],
+    "write": []
+  },
+  "deployment": {
+    "implicitInvocation": true,
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

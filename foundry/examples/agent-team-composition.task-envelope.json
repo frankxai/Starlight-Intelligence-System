@@ -1,0 +1,135 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "agent-team-composition",
+  "kind": "skill",
+  "objective": "Compile a portable Academy skill that justifies and composes the minimum human-accountable agent team while failing closed on authority, privacy, budget, security, and termination gaps.",
+  "deliverables": [
+    {
+      "id": "portable-skill",
+      "description": "An Agent Skills-compatible team composition package with necessity, permission, escalation, and inactive-until-proven gates.",
+      "artifactType": "skill-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "academy-fabric",
+    "audience": "Academy architects, agent engineers, institutions, accountable operators, privacy owners, and learners",
+    "artifactTypes": [
+      "agent-team-manifest",
+      "necessity-ledger",
+      "authority-matrix",
+      "activation-receipt"
+    ],
+    "references": [
+      "skills/academy/agent-team-composition/SKILL.md",
+      "foundry/contracts/academy-fabric/schemas/v0.1/agent-team-manifest.schema.json"
+    ]
+  },
+  "stakes": {
+    "impact": "critical",
+    "reversibility": "recoverable",
+    "rationale": "An overpowered or opaque agent team can expose learner data, spend funds, or make unauthorized decisions; an inactive manifest can be rejected before runtime activation."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "destructive-action",
+      "financial-commitment",
+      "public-release",
+      "permission-expansion",
+      "substrate-change"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Prove at least one durable boundary for every proposed persistent role.",
+      "Pin build, attestation, delegation, tools, data, budget, escalation, termination, and accountable human.",
+      "Keep every agent inactive until behavioral, security, drift, and human activation evidence pass."
+    ],
+    "mustNot": [
+      "Create an agent only for a persona, title, or promise of intelligence.",
+      "Grant graph merge, publication, credential, payment, installation, external-message, or permission-expansion authority.",
+      "Allow unbounded loops, silent shared-state overwrite, cross-tenant reads, or self-activation."
+    ],
+    "budget": {
+      "maxCostUsd": 5,
+      "maxLatencyMs": 300000,
+      "maxToolCalls": 40,
+      "maxAgentTurns": 16,
+      "maxParallelWorkers": 4
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "stable",
+    "requirePrimarySources": false,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "artifact"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [],
+      "deny": [
+        "external-write",
+        "graph-merge",
+        "public-release",
+        "credential-write",
+        "payment-write",
+        "agent-activation"
+      ]
+    },
+    "memory": {
+      "read": [],
+      "write": []
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [
+      "academy/execution-graph-engineering"
+    ],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "completionTests": [
+    {
+      "id": "skill-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/SKILL.md"
+    },
+    {
+      "id": "interface-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/agents/openai.yaml"
+    },
+    {
+      "id": "necessity-gate-present",
+      "lane": "behavioral",
+      "type": "contains",
+      "required": true,
+      "path": "skill/SKILL.md",
+      "value": "Each retained agent has at least one durable boundary"
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "claude-code",
+      "gemini",
+      "plugin"
+    ]
+  }
+}

@@ -13,6 +13,14 @@ resources:
     schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/mission-contract.schema.json
     scopes: [academy.mission.read]
     projection: caller-authorised
+  - uriTemplate: academy://competency-graphs/{graphId}/versions/{version}
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/competency-graph.schema.json
+    scopes: [academy.competency-graph.read]
+    projection: published
+  - uriTemplate: academy://execution-graphs/{graphId}/versions/{version}
+    schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/execution-graph.schema.json
+    scopes: [academy.execution-graph.read]
+    projection: published-or-caller-authorised
   - uriTemplate: academy://passports/{subjectId}/projections/{projection}
     schema: https://schemas.starlightintelligence.org/academy-fabric/v0.1/learning-passport.schema.json
     scopes: [academy.passport.read]
@@ -51,5 +59,4 @@ deferredWriteTools:
   - decide_assessment
   - issue_or_change_credential
   - publish_artifact
-  - evaluate_or_change_entitlement
-
+  - evaluate_or_change_managed_resource_access

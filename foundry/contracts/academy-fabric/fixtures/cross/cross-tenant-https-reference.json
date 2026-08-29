@@ -1,0 +1,33 @@
+{
+  "records": [
+    {
+      "schemaName": "artifact.schema.json",
+      "record": {
+        "metadata": {
+          "id": "https://records.starlightintelligence.org/artifacts/tenant-b-work",
+          "recordVersion": "0.1.0",
+          "scope": "tenant",
+          "tenantRef": { "id": "urn:starlight:org:tenant-b", "kind": "organisation" },
+          "provenance": { "contentDigest": "sha256:abababababababababababababababababababababababababababababababab" }
+        }
+      }
+    },
+    {
+      "schemaName": "learning-passport.schema.json",
+      "record": {
+        "metadata": {
+          "id": "https://records.starlightintelligence.org/passports/tenant-a-learner",
+          "recordVersion": "0.1.0",
+          "scope": "tenant",
+          "tenantRef": { "id": "urn:starlight:org:tenant-a", "kind": "organisation" },
+          "provenance": { "contentDigest": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd" }
+        },
+        "artifactRefs": [{
+          "id": "https://records.starlightintelligence.org/artifacts/tenant-b-work",
+          "version": "0.1.0",
+          "digest": "sha256:abababababababababababababababababababababababababababababababab"
+        }]
+      }
+    }
+  ]
+}

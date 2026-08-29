@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "id": "urn:starlight:evidence-bundle:nonconformant",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "tenant",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "stewardRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "updatedAt": "2026-08-29T12:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:agent-build:verifier", "kind": "agent_build", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    "visibility": "sealed",
+    "dataClassification": "restricted",
+    "maturity": "trial",
+    "provenance": { "contentDigest": "sha256:b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1", "createdByRefs": [{ "id": "urn:starlight:human:learner-001", "kind": "human" }] }
+  },
+  "status": "verified",
+  "evidenceScope": "agent_capability",
+  "subjectRef": { "id": "urn:starlight:agent-build:subject", "kind": "agent_build", "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+  "missionContractRef": { "id": "urn:starlight:mission:evidence-001", "version": "0.1.0", "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+  "submittedByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+  "submittedAt": "2026-08-29T10:30:00Z",
+  "artifactRefs": [{ "id": "urn:starlight:artifact:work-001", "version": "0.1.0", "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" }],
+  "evaluationRuns": [{
+    "runId": "urn:starlight:eval-run:001",
+    "suiteRef": { "id": "urn:starlight:eval-suite:001", "version": "0.1.0", "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" },
+    "evaluatorRef": { "id": "urn:starlight:evaluator:001", "version": "0.1.0", "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" },
+    "datasetRef": { "id": "urn:starlight:dataset:001", "version": "0.1.0", "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111" },
+    "scorerRefs": [{ "id": "urn:starlight:scorer:001", "version": "0.1.0", "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222" }],
+    "environmentDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "startedAt": "2026-08-29T11:00:00Z",
+    "endedAt": "2026-08-29T11:05:00Z",
+    "outcome": "fail",
+    "resultArtifactRef": { "id": "urn:starlight:artifact:eval-001", "version": "0.1.0", "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444" }
+  }],
+  "environment": {
+    "executionImageDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "networkPolicyRef": { "id": "urn:starlight:policy:no-egress", "version": "0.1.0", "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666" },
+    "dependencyLockArtifactRef": { "id": "urn:starlight:artifact:lock", "version": "0.1.0", "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777" },
+    "sandboxClass": "gVisor"
+  },
+  "assistanceDisclosure": { "materialAssistanceUsed": false, "humanResponsibilityAccepted": true },
+  "verification": {
+    "completeness": "incomplete",
+    "provenanceIntegrity": "partial",
+    "policyConformance": "nonconformant",
+    "verifierAgentBuildRef": { "id": "urn:starlight:agent-build:verifier", "kind": "agent_build", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    "verifiedAt": "2026-08-29T12:00:00Z",
+    "findings": [{ "severity": "blocking", "code": "PROVENANCE_GAP", "message": "A blocking provenance gap remains.", "evidenceRefs": ["urn:starlight:artifact:work-001"] }]
+  },
+  "freeze": {
+    "manifestDigest": "sha256:b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1",
+    "canonicalization": "JCS-RFC8785",
+    "frozenAt": "2026-08-29T10:30:00Z",
+    "frozenByRef": { "id": "urn:starlight:human:learner-001", "kind": "human" },
+    "signature": { "signerRef": { "id": "urn:starlight:human:learner-001", "kind": "human" }, "algorithm": "EdDSA", "value": "fixture-evidence-freeze-proof", "signedAt": "2026-08-29T10:30:00Z", "purpose": "approval" }
+  },
+  "submitterDeclaration": {
+    "accurateToBestKnowledge": true,
+    "rightsAndConsentConfirmed": true,
+    "humanResponsibilityAccepted": true,
+    "signature": { "signerRef": { "id": "urn:starlight:human:learner-001", "kind": "human" }, "algorithm": "EdDSA", "value": "fixture-submitter-declaration", "signedAt": "2026-08-29T10:30:00Z", "purpose": "approval" }
+  }
+}

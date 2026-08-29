@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "id": "urn:starlight:execution-graph:missing-human-gate",
+    "schemaVersion": "0.1.0",
+    "recordVersion": "0.1.0",
+    "revision": 1,
+    "scope": "global",
+    "tenantRef": { "id": "urn:starlight:org:academy-001", "kind": "academy" },
+    "stewardRef": { "id": "urn:starlight:human:builder-001", "kind": "human" },
+    "createdAt": "2026-08-29T10:00:00Z",
+    "createdByRef": { "id": "urn:starlight:human:builder-001", "kind": "human" },
+    "updatedAt": "2026-08-29T10:00:00Z",
+    "updatedByRef": { "id": "urn:starlight:human:builder-001", "kind": "human" },
+    "visibility": "public",
+    "dataClassification": "public",
+    "maturity": "trial",
+    "provenance": {
+      "contentDigest": "sha256:cececececececececececececececececececececececececececececececece",
+      "createdByRefs": [{ "id": "urn:starlight:human:builder-001", "kind": "human" }]
+    }
+  },
+  "status": "experimental",
+  "objective": "Negative fixture that attempts an irreversible non-human action without approval or compensation.",
+  "accountableHumanRef": { "id": "urn:starlight:human:builder-001", "kind": "human" },
+  "baseline": { "kind": "deterministic_workflow", "retainedAsComparator": true },
+  "graphJustification": ["human_approval_topology"],
+  "stateSchemaRef": { "id": "urn:starlight:schema:negative-state", "version": "0.1.0", "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111" },
+  "entryNodeIds": ["urn:starlight:execution-node:unsafe-write"],
+  "terminalNodeIds": ["urn:starlight:execution-node:unsafe-terminal"],
+  "nodes": [
+    {
+      "id": "urn:starlight:execution-node:unsafe-write",
+      "kind": "task",
+      "name": "Publish without authority",
+      "capabilityRefs": [],
+      "executor": {
+        "kind": "deterministic_tool",
+        "componentRef": { "id": "urn:starlight:tool:unsafe-publisher", "version": "0.1.0", "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222" }
+      },
+      "authority": {
+        "sideEffectClass": "irreversible",
+        "toolScopes": ["graph.publish"],
+        "dataScopes": ["public"],
+        "mayTransferAuthority": false
+      },
+      "retry": { "idempotent": false, "maxAttempts": 1, "backoff": "none" },
+      "completionCondition": "Public state changed without a human gate."
+    },
+    {
+      "id": "urn:starlight:execution-node:unsafe-terminal",
+      "kind": "terminal",
+      "name": "Unsafe completion",
+      "capabilityRefs": [],
+      "executor": {
+        "kind": "deterministic_tool",
+        "componentRef": { "id": "urn:starlight:tool:unsafe-receipt", "version": "0.1.0", "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333" }
+      },
+      "authority": {
+        "sideEffectClass": "none",
+        "toolScopes": [],
+        "dataScopes": ["public"],
+        "mayTransferAuthority": false
+      },
+      "retry": { "idempotent": true, "maxAttempts": 1, "backoff": "none" },
+      "completionCondition": "Unsafe attempt is recorded."
+    }
+  ],
+  "edges": [
+    { "id": "urn:starlight:execution-edge:unsafe-write-terminal", "from": "urn:starlight:execution-node:unsafe-write", "to": "urn:starlight:execution-node:unsafe-terminal", "type": "control", "authorityTransfer": false }
+  ],
+  "termination": {
+    "maxSteps": 2,
+    "maxRounds": 1,
+    "maxWallSeconds": 60,
+    "successConditionRef": { "id": "urn:starlight:condition:unsafe-success", "version": "0.1.0", "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444" },
+    "failureConditionRef": { "id": "urn:starlight:condition:unsafe-failure", "version": "0.1.0", "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555" }
+  },
+  "recovery": {
+    "checkpointNodeIds": [],
+    "replayFromLastValidFrontier": true,
+    "compensationRequiredForIrreversibleEffects": true
+  },
+  "observability": {
+    "eventProfileRef": { "id": "urn:starlight:event-profile:negative-run", "version": "0.1.0", "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666" },
+    "provenanceRequired": true,
+    "chainOfThoughtStorageAllowed": false
+  },
+  "evaluation": {
+    "suiteRefs": [{ "id": "urn:starlight:eval-suite:negative-graph", "version": "0.1.0", "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777" }],
+    "independentVerifierRef": { "id": "urn:starlight:human:verifier-002", "kind": "human" },
+    "baselineCompared": true,
+    "promotionStatus": "rejected"
+  },
+  "qualityGates": {
+    "allNodesReachable": true,
+    "cyclesBounded": true,
+    "authorityNeverAmplifies": true,
+    "consequentialActionsHaveHumanGate": true,
+    "builderVerifierSeparated": true
+  }
+}

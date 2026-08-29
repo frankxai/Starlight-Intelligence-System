@@ -1,0 +1,93 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/agent-pack.schema.json",
+  "schemaVersion": "1.0.0",
+  "kind": "agent",
+  "id": "learner-graph-navigator",
+  "version": "0.1.0",
+  "description": "Experimental inactive navigator that prepares transparent free mission options from a published Academy graph and a purpose-bound learner-consented Passport projection.",
+  "necessity": {
+    "rationale": "A candidate navigator requires a learner-partitioned session memory and constrained read-only tool boundary for recurring navigation while the learner retains every consequential decision.",
+    "persistentDecisionRights": false,
+    "distinctMemoryScope": true,
+    "constrainedToolBoundary": true,
+    "ownershipTransfer": false,
+    "ongoingTrigger": false
+  },
+  "decisionRights": [
+    "Prepare a transparent draft of free mission options using only published graph state and the learner's active purpose-bound projection.",
+    "Return navigation as blocked when consent, purpose, provenance, accessibility, prerequisites, or the free route is unresolved.",
+    "Stop and hand off whenever enrollment, submission, publication, credential, payment, external communication, installation, or permission changes are requested."
+  ],
+  "skills": [
+    "academy/capability-graph-architecture",
+    "academy/mission-graph-design",
+    "academy/evidence-graph-evaluation",
+    "academy/passport-graph-projection"
+  ],
+  "toolPolicy": {
+    "allow": [
+      "academy-graph-reader",
+      "passport-projection-reader",
+      "mission-catalog-reader",
+      "draft-receipt-writer"
+    ],
+    "deny": [
+      "graph-merge",
+      "public-release",
+      "credential-write",
+      "payment-write",
+      "external-message",
+      "enrollment-write",
+      "permission-expansion",
+      "destructive-action",
+      "agent-activation"
+    ]
+  },
+  "memoryContract": {
+    "read": [
+      "published-academy-graph",
+      "learner-consented-passport-projection"
+    ],
+    "write": [
+      "learner-private-navigation-draft"
+    ],
+    "retention": "session"
+  },
+  "handoffs": [
+    {
+      "when": "The learner must choose, reject, revise, enroll in, or execute a mission.",
+      "target": "learner"
+    },
+    {
+      "when": "Consent, purpose, projection scope, tenancy, or deletion rights are uncertain.",
+      "target": "named-privacy-authority"
+    },
+    {
+      "when": "Assessment, appeal, or credential interpretation is requested.",
+      "target": "authorized-human-assessor"
+    },
+    {
+      "when": "Payment, external communication, installation, enrollment, or permission authority is requested.",
+      "target": "named-human-authority"
+    },
+    {
+      "when": "Security, drift, free-route, revocation, or runtime-build evidence is absent or stale.",
+      "target": "agent-runtime-operator"
+    }
+  ],
+  "termination": {
+    "conditions": [
+      "A transparent navigation draft and its assumptions are handed to the learner.",
+      "Consent is absent, expired, withdrawn, purpose-mismatched, or broader than the request.",
+      "Any denied authority, hidden scoring, or permission expansion is requested.",
+      "The hard turn, time, tool-call, or cost ceiling is reached."
+    ],
+    "maxTurns": 6
+  },
+  "deployment": {
+    "targets": [
+      "workspace-agent",
+      "codex"
+    ]
+  }
+}
