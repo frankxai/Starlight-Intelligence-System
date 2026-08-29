@@ -31,6 +31,7 @@ expect(
 for (const relativePath of [
   "site/package.json",
   "site/vercel.json",
+  "site/scripts/vercel-ignore-build.mjs",
   "site/src/app/deploy/page.tsx",
   "site/src/lib/deployment.ts",
   "metrics/current.json",
@@ -39,6 +40,8 @@ for (const relativePath of [
 }
 
 const deploymentSource = read("site/src/lib/deployment.ts");
+const vercelConfig = JSON.parse(read("site/vercel.json"));
+const vercelIgnore = read("site/scripts/vercel-ignore-build.mjs");
 for (const parameter of ["repository-url", "root-directory", "project-name", "repository-name"]) {
   expect(deploymentSource.includes(parameter), `deployment URL is missing ${parameter}`);
 }
@@ -56,6 +59,16 @@ expect(deployPage.includes("Zero required environment variables"), "deploy page 
 expect(siteReadme.includes("What Vercel creates"), "site README must document the hosted artifact");
 expect(siteReadme.includes("What remains local"), "site README must document the local boundary");
 expect(rootReadme.includes("Deploy Starlight Explorer"), "root README must name the deployable product");
+expect(
+  typeof vercelConfig.ignoreCommand === "string" && vercelConfig.ignoreCommand.length <= 256,
+  "Vercel ignoreCommand must remain within the 256-character schema limit",
+);
+expect(
+  vercelConfig.ignoreCommand === "node scripts/vercel-ignore-build.mjs" &&
+    vercelIgnore.includes("VERCEL_GIT_PREVIOUS_SHA") &&
+    vercelIgnore.includes("VERCEL_GIT_COMMIT_SHA"),
+  "Vercel must delegate fail-open diff evaluation to the checked-in ignore script",
+);
 
 if (failures.length > 0) {
   console.error("Deploy contract failed:\n" + failures.map((failure) => `- ${failure}`).join("\n"));

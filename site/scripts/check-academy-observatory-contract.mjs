@@ -33,6 +33,7 @@ const directedGraph = read(
 const nav = read("site/src/lib/nav.ts");
 const sitemap = read("site/src/app/sitemap.ts");
 const vercel = read("site/vercel.json");
+const vercelIgnore = read("site/scripts/vercel-ignore-build.mjs");
 
 function expect(condition, message) {
   if (!condition) failures.push(message);
@@ -128,8 +129,9 @@ expect(
   "/academy/graphs must remain discoverable in the sitemap",
 );
 expect(
-  vercel.includes("../foundry/contracts/academy-fabric") &&
-    vercel.includes("../plugins/starlight-graph-engineering"),
+  vercel.includes("scripts/vercel-ignore-build.mjs") &&
+    vercelIgnore.includes("../foundry/contracts/academy-fabric") &&
+    vercelIgnore.includes("../plugins/starlight-graph-engineering"),
   "Academy contract and plugin changes must invalidate the Vercel ignore gate",
 );
 
