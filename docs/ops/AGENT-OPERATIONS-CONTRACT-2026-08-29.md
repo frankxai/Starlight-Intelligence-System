@@ -3,37 +3,91 @@
 > How the agent fleet manages Frank's GitHub estate: quality gates, healing bounds,
 > production paths, and the routine spine. Operational-tier (no substrate files touched).
 > Companion change: `frankxai/FrankX` PR #149 (pr-steward-daily spec + registry drift check).
+> Revised 2026-08-29 after campaign architecture review on PR #111 — see the revision log
+> at the bottom.
 
-## Scope: tiers, not the whole estate
+## Authority model (read first)
 
-Blanketing all ~44 repos with automation on day one produces noise, not quality. The
-fleet operates in tiers; a tier earns automation by having CI worth healing.
+This document is **subordinate operating policy**, not a control plane. The canonical
+layers it defers to, verified against `starlight-agent-config` @ `76f687e`:
 
-| Tier | Repos | Automation level |
+1. **Empire Registry** — `frankxai/agentic-ops/registry` (`registry/manifest.yaml` on
+   reviewed `main`) owns portfolio truth: which repositories exist, their canonical
+   IDs, brands, and architecture decisions. Per
+   `starlight-agent-config/core/policies/empire-registry-policy.v1.md`: fail closed
+   when the Registry is unavailable; record the source commit SHA; canonical changes
+   are PRs to `frankxai/agentic-ops`.
+2. **Cross-agent preflight policy** — `frankxai/starlight-agent-config/core/policies/`
+   distributes the read policy to every agent; it does not own the Registry.
+   The local control plane on Frank's machine (`~/starlight/`) projects this config;
+   cloud sessions cannot see it and must not assume its state.
+3. **This contract** — the operating posture agents apply *after* the layers above
+   resolve. Where any statement here conflicts with the Registry or a
+   `starlight-agent-config` policy, those win and this file gets corrected.
+
+Note for reconciliation: the PR #111 review cites
+`starlight-agent-config/core/estate/repo-estate.control.json` as the canonical estate
+manifest. That path does not exist at `starlight-agent-config` HEAD (`76f687e`); the
+closest canonical structures are the Empire Registry manifest and
+`core/policies/empire-registry-policy.v1.md`. If an estate control manifest is planned
+at that path, this contract adopts it the moment it lands on a reviewed default branch.
+
+## Scope: manifest-driven tiers (provisional seed below)
+
+Automation scope is **derived, not hard-coded**: the tier assignment for every
+repository belongs in the Empire Registry (or the estate control manifest when it
+lands), and agents must resolve it from there, recording the source commit SHA. The
+live estate is much larger than any list in a prose doc, and a prose list rots.
+
+Until the manifest carries tier assignments, the following is the **provisional seed**
+for initial rollout only — superseded by the manifest the moment it exists:
+
+| Tier | Provisional seed repos | Automation level |
 |---|---|---|
-| **1** | frankx.ai-vercel-website · FrankX · Starlight-Intelligence-System · agentic-creator-os · claude-skills-library | Full: daily PR steward, healing, auto-ready for content |
+| **1** | frankx.ai-vercel-website · FrankX · Starlight-Intelligence-System · agentic-creator-os · claude-skills-library | Daily PR steward with bounded healing |
 | **2** | gencreator.ai · arcanea-ai-app · ai-music-academy | Event-driven only (PR subscriptions per session) |
 | **3** | Everything else | Pull-based: agents act when asked, no standing automation |
 
-Promotion between tiers is a deliberate edit to this file, not an accident.
+Tier promotion is a Registry/manifest change (a reviewed PR), never an agent's
+in-session decision.
 
-## The four standing decisions
+## The standing decisions
 
-**1. Orchestration home is this repo.** Starlight is already the routing/governance
-substrate; ops contracts live in `docs/ops/`, routine specs live with the registry in
-`FrankX/docs/ops/SCHEDULED-ROUTINES.md` (its documented source-of-truth role).
+**1. Orchestration posture lives here; authority lives upstream.** This repo carries
+the fleet's *operating contract* (this file). Portfolio truth is the Empire Registry;
+cross-agent config is `starlight-agent-config`; routine registry is
+`FrankX/docs/ops/SCHEDULED-ROUTINES.md` in its documented source-of-truth role.
 
-**2. Deployment is hybrid, per existing repo contracts.** Agents always work on
-branches and open draft PRs. On green CI: content-only changes (`content/`, `docs/`,
-`data/`, `public/`) get marked ready automatically; anything touching `app/`,
-`components/`, `lib/`, `scripts/`, or config stays draft for Frank's one-click merge.
-No agent merges to a production `main`. No GitHub Actions deploy jobs — Vercel's git
-integration is the deployer (per frankx.ai-vercel-website CLAUDE.md).
+**2. Deployment: draft-PR always; readiness is risk-classified, never path-inferred.**
+Agents always work on branches and open draft PRs. A PR may be auto-marked ready
+**only** when an explicit risk classification of every changed file comes back clear
+on all of these classes:
+
+- executable code or configuration (anything imported, executed, or read at runtime —
+  `data/` and `public/` explicitly included: data files drive runtime behavior and
+  public assets ship claims and licensed material)
+- generated artifacts (lockfiles, build outputs — regenerated by tooling, not edited)
+- public claims (copy, metrics, positioning — Metrics Truth Rule applies)
+- asset rights (licensed images/fonts/audio, third-party material)
+- secrets or credentials (any hit fails closed)
+- dependency changes (package manifests, lockfiles)
+- migrations or irreversible state changes
+- production surfaces (anything a deploy pipeline picks up)
+
+Anything unclassifiable fails closed and stays draft. **Until an automated classifier
+implementing these classes exists and is reviewed, auto-ready is disabled fleet-wide:**
+stewards may comment a proposed classification on a green PR but never flip draft →
+ready. Merging to a production `main` is governed by each repo's own policy **plus
+per-run authorization from Frank** — no global statement in this file grants merge
+authority, and agents never merge.
 
 **3. Healing is aggressive but bounded.** Auto-fix lint/format/types/failing tests and
 re-push, at most 3 cycles per PR per day; after that, one comment naming the failure
 with a proposed patch. Never auto-revert. Never skip, disable, or quarantine a test to
-get green. Never push empty commits to kick CI.
+get green. Never push empty commits to kick CI. Branch mutations are scoped: a steward
+pushes only to branches on the base repository itself (never fork branches) whose PRs
+were opened by Frank's account or his agent sessions; ownership unverifiable → comment,
+don't push.
 
 **4. Cross-repo sync is a swept judgment call, not a webhook.** FrankX → prod syncs
 port deltas surgically (prod files diverge — e.g. `ResearchShell.tsx`); that requires
@@ -53,9 +107,12 @@ Checked the account's live triggers against `FrankX/docs/ops/SCHEDULED-ROUTINES.
   their prompts/environments need inspection.
 - **The acting gap:** `estate.pr-digest.daily` observes; nothing heals. The
   `pr-steward-daily` routine (spec + paste-ready prompt in FrankX PR #149) closes it.
-  Agent-side creation was attempted and rolled back: this org strips MCP connectors
-  from API-created routines, and a steward without GitHub tools is a void loop.
-  Creation is a one-click Frank action at https://claude.ai/code/routines.
+  **Preconditions before creation:** (a) the routine-registry/control-plane SSOT drift
+  above is reconciled, and (b) the steward prompt reflects this contract's revised
+  gates. Agent-side creation was attempted and rolled back: this org strips MCP
+  connectors from API-created routines, and a steward without GitHub tools is a void
+  loop. Creation is a Frank action at https://claude.ai/code/routines once the
+  preconditions clear.
 
 ## Non-negotiables carried from repo contracts
 
@@ -65,3 +122,20 @@ Checked the account's live triggers against `FrankX/docs/ops/SCHEDULED-ROUTINES.
   or Slack DM — never report-only into run history.
 - Substrate-tier changes in this repo still go through `/starlight-board` before
   commit/tag; nothing in this contract weakens that gate.
+- Empire Registry preflight (per `empire-registry-policy.v1.md`) runs before any work
+  that changes or asserts a domain, brand, repository, product, offer, or public
+  portfolio claim.
+
+## Revision log
+
+- **2026-08-29 (initial):** first draft — hard-coded five-repo tier, path-based
+  content auto-ready, orchestration authority claimed for this repo.
+- **2026-08-29 (review revision):** per campaign architecture review on PR #111 —
+  authority model made explicit and subordinate to Empire Registry +
+  `starlight-agent-config`; tier list made manifest-driven with the prose table
+  demoted to a provisional seed; path-based auto-ready replaced by an eight-class
+  risk classifier that fails closed, with auto-ready disabled until the classifier
+  exists; production merge authority restated as per-repo policy + per-run
+  authorization; steward branch mutations scoped to verified-ownership branches on
+  the base repo. Discrepancy recorded: the review's cited estate manifest path does
+  not exist at `starlight-agent-config` HEAD.
