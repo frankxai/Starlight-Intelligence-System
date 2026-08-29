@@ -137,6 +137,16 @@ requireMarkers(join(SITE_ROOT, "public/llms.txt"), [
   "SIP Starter v8.3.0 is source-only until a release archive exists",
 ]);
 
+requireMarkers(join(SITE_ROOT, "public/agents.md"), [
+  "Discovery is not execution authority",
+  "https://starlightintelligence.org/download/latest.json",
+  "https://starlightintelligence.org/download/plugins/latest.json",
+  "https://starlightintelligence.ai/api/v1/departments",
+  "https://starlightintelligence.academy/academy/catalog.json",
+  "a published artifact",
+  "Built on SIP",
+]);
+
 requireMarkers(join(REPO_ROOT, "src/cli.ts"), [
   'join(getPackageRoot(), "dist", "mcp-server.js")',
   '--vault-dir "${result.vaultDir}"',
