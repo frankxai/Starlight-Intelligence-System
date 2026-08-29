@@ -42,6 +42,7 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 | 2026-05-08 | v8.0 Build Repair + Verification | quality-state | 1.0 |
 | 2026-06-14 | Visual Home Restore + Laptop Image Correction | operator-surface | 0.98 |
 | 2026-07-28 | Starlight Intelligence Foundry v0.1 operational kernel | capability-compilation | 0.98 |
+| 2026-08-29 | Academy Graph Observatory preview built and contract-verified | public-proof / academy-graph | 0.98 |
 | 2026-06-12 | Grok-driven /si + /starlight-queen ( + /sq /so ) + /starlight-architect command surfaces built + live partial Queen tick executed (status, parallel MEASURE via subagents/terminal/gstack proxies, LEARN synth, image_gen LEDGER visual, ratify/ledger via vault append + gateway concepts). Branch: agent/grok/starlight-queen-command. Files: commands/starlight-queen.md (primary), sq.md, so.md, starlight-architect.md; integrations in starlight.md + COMMAND_SYSTEM.md + agents/* + HARNESS.md. Grok subagent orchestration + excellence gates used throughout. Gateway v0.1 + routing-table/doctrine compose. Operational (Queen loop driver + architect scaffold). SIP attested. Next: register proving-ground cadence, R4 deep-reasoning lane, full board if any substrate table mutation. | system-state / command-surface | 0.95 |
 | 2026-06-12 | Queen Advance — Whole SIS L99 (MASSIVE ACTION NIGHT SHIFT COMPLETE) | whole-system-evolution | 0.99 |
 **L99 Goal Achieved (MASSIVE ACTION / NIGHT SHIFT COMPLETE):** Ultimate premium scrolling motion animation site (site/queen-vision.html) built as the central visual heart of the SIS. Starlight Queen and her swarms visualized at the highest level with 7+ top-prompted Grok images (ultrawide L99 hero, motion studies, 3D palace, advanced neural swarms), 1 advanced video embed (queen-motion.mp4 with elegant swarm orbit), live Canvas swarm animation that responds to scroll/mouse (representing parallel subagents at scale), scroll-triggered reveals with advanced timing, parallax layers, interactive Queen Loop steps that activate in sequence, live demo that simulates real Queen driver routing with output. Deep integration: memory palace, gateway v0.1, /si dispatch, /starlight-queen surfaces + driver v0.2, vaults (strategic/technical/creative/operational), proving ground, routing table evolutions (new classes: memory-consolidation-queen, palace-visual-recall). Multiple image_gen + image_to_video with sophisticated, research-grounded prompts for cinematic quality. Queen driver routed, measured, learned, and ledgered the entire L99 effort in real time. Site is self-contained, thoughtful (Frank DNA voice, SIP attestation everywhere, concepts explained with depth), advanced (motion on scroll, visual synthesis as first-class, live reactive elements, embedded video). All assets in site/images + site/videos. System now has a living, scrollable visual embodiment of the Queen as orchestrator and her swarms as the distributed intelligence layer. Next (post-L99): Deploy to main site build, add WebGL 3D palace variant, real driver invocation from page, cross-harness visual sync, more video loops. | visual-compound / l99 / queen-vision / massive-action |
@@ -53,6 +54,20 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 ---
 
 ## Entries
+
+### [2026-08-29] Academy Graph Observatory preview built and contract-verified
+
+**Category:** public-proof / academy-graph / operator-surface
+**Confidence:** 0.98
+**Source:** Codex implementation plus independent QA on `codex/academy-fabric-v0-1-20260829`
+
+Built `/academy/graphs` as the fixture-backed, read-only Proof Loom for the AI Architect Graph Engineering Commons. The surface renders the 8-node CompetencyGraph and 4-node Mission Zero ExecutionGraph without merging them; exposes sourced, derived, and hypothesized claim state; traces Mission Zero through skill and temporary verification; and stops at the consequential human gate without issuing a receipt or changing credential state.
+
+Verified: Academy Observatory truth contract, Explorer public-install/layout/deploy contracts, ESLint (no new errors), direct Next 16 production build and static route generation, 16 Academy schemas / 15 fixtures / 5 cross-record suites, Academy plugin registry tests, Foundry tests, and Academy interface lint. Route-specific client code is approximately 11.5 KB gzip and contains no Three.js, R3F, force-graph, GSAP, or WebGL renderer signature.
+
+Known release boundary: the canonical `pnpm build` wrapper remains blocked because `metrics/current.json` records 88 skill activation rules while this Academy branch contains 94. Metrics doctrine requires that ledger correction to ship as a separate metrics-only PR; the Observatory must remain a preview until that merge sequence and post-deploy browser evidence are complete.
+
+**Built on SIP — Starlight Intelligence Protocol**
 
 ### [2026-06-14] Visual Home Restore + Laptop Image Correction
 

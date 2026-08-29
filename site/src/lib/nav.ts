@@ -15,6 +15,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/cosmos", label: "Cosmos", desc: "Visual map of the knowledge library" },
       { href: "/palace", label: "Memory Palace", desc: "Walk the vaults in space" },
       { href: "/knowledge-tree", label: "Knowledge Tree", desc: "The system, branch by branch" },
+      { href: "/academy/graphs", label: "Academy Graphs", desc: "Inspect capability, proof, and human authority" },
       { href: "/vaults", label: "Public Vaults", desc: "One public vault" },
       { href: "/queen", label: "Queen", desc: "The visual intelligence loop" },
       { href: "/visuals/brand-lab", label: "Brand Lab", desc: "The visual identity system" },

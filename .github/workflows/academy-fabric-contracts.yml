@@ -10,6 +10,16 @@ on:
       - 'skills/skill-rules.json'
       - 'skills/SKILL_REGISTRY.md'
       - 'plugins/starlight-graph-engineering/**'
+      - 'site/src/app/academy/graphs/**'
+      - 'site/src/components/academy/**'
+      - 'site/src/lib/academy-graphs.ts'
+      - 'site/scripts/check-academy-observatory-contract.mjs'
+      - 'site/src/lib/nav.ts'
+      - 'site/src/app/sitemap.ts'
+      - 'site/src/app/globals.css'
+      - 'site/vercel.json'
+      - 'site/package.json'
+      - 'site/README.md'
       - 'scripts/sync-academy-graph-plugin.mjs'
       - 'scripts/validate-agentskills.mjs'
       - 'test/v93-academy-graph-plugin-registry.test.ts'
@@ -62,3 +72,34 @@ jobs:
         run: npm run test:academy-graph
       - name: Validate the canonical Foundry capability graph
         run: npm run test:foundry
+  academy-observatory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: site/pnpm-lock.yaml
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8.15.9
+          run_install: false
+      - name: Install Explorer dependencies
+        working-directory: site
+        run: pnpm install --frozen-lockfile
+      - name: Verify Academy Observatory truth boundary
+        working-directory: site
+        run: pnpm check:academy-observatory
+      - name: Verify Explorer publication contracts
+        working-directory: site
+        run: |
+          pnpm check:public-install-contract
+          pnpm check:layout-contract
+          pnpm check:deploy-contract
+      - name: Lint Explorer
+        working-directory: site
+        run: pnpm lint
+      - name: Build Explorer projection
+        working-directory: site
+        run: pnpm exec next build

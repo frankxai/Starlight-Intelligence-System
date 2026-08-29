@@ -31,10 +31,26 @@ last_consolidated: '2026-05-11'
 | 2026-06-12 | Cross-Repo Visual Production Pattern | design-pattern | 0.95 |
 | 2026-06-14 | Double-Loop Visual Quality Control Pattern | process-pattern | 0.95 |
 | 2026-06-15 | SVD Double-Loop CLI Pipeline & Nested API Parsing | tool-pattern | 0.98 |
+| 2026-08-29 | Fixture-backed Proof Loom Projection Pattern | architecture-pattern / public-proof | 0.98 |
 
 ---
 
 ## Entries
+
+### [2026-08-29] Fixture-backed Proof Loom Projection Pattern
+
+**Category:** architecture-pattern / public-proof / academy-graph
+**Confidence:** 0.98
+**Source:** Academy Graph Observatory implementation and independent QA on `codex/academy-fabric-v0-1-20260829`
+**Related:** `site/src/lib/academy-graphs.ts`, `site/src/components/academy/`, `site/scripts/check-academy-observatory-contract.mjs`
+
+**Pattern:** Compile public contract fixtures into a static typed view model at build time, keep capability and execution graphs as separate authorities, and expose every node and typed edge through both a deterministic visual projection and a viewport-independent semantic DOM projection.
+
+**Truth law:** Every visible object carries independent record-origin and claim-state labels. Canonical fixtures may be shown as records; schema-derived teaching outcomes and hypothetical evidence or Passport projections must never be promoted into learner state. A deterministic execution preview stops at the consequential human gate and may not simulate approval, credential state, payment authority, or active persistent agents.
+
+**Release controls:** Pin source links to a known commit, include fixture/plugin paths in the deployment invalidation gate, preserve typed relations in the accessibility tree, honor reduced motion by resolving directly to the human gate, and use a focused contract script to fail closed on free-path, authority, provenance, or commerce drift.
+
+**Built on SIP — Starlight Intelligence Protocol**
 
 ### [2026-02-10] Configuration-First Pattern
 
@@ -279,6 +295,5 @@ When developing autonomous client bridges to JSON-RPC tools and services (such a
 - **Cost Minimization:** Evaluates prompt style code offline before wasting API credits.
 
 **Built on SIP — Starlight Intelligence Protocol**
-
 
 

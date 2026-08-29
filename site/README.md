@@ -22,6 +22,7 @@ The resulting project contains:
 
 - the public protocol, architecture, research, and documentation experience;
 - Cosmos, Knowledge Tree, Memory Palace, and public vault views;
+- the read-only Academy Graph Observatory at `/academy/graphs`, compiled from public CompetencyGraph, ExecutionGraph, AcademyPack, and plugin records;
 - read-only public API routes such as `/api/vaults`;
 - Git-connected preview and production deployments.
 
@@ -57,6 +58,7 @@ corepack pnpm check:metrics
 corepack pnpm check:public-install-contract
 corepack pnpm check:layout-contract
 corepack pnpm check:deploy-contract
+corepack pnpm check:academy-observatory
 corepack pnpm lint
 corepack pnpm build
 ```
@@ -70,6 +72,7 @@ After Vercel reports `Ready`, open:
 - `/protocol` — the open substrate specification;
 - `/architecture` — the system model;
 - `/research` — published substrate research;
+- `/academy/graphs` — the fixture-backed capability and Mission Zero execution proof loom;
 - `/api/vaults` — the read-only public vault index.
 
 Git integration creates previews for future commits. Connect a custom domain only after the generated Vercel URL passes those checks.

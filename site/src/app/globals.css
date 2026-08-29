@@ -1167,3 +1167,33 @@ body {
     linear-gradient(90deg, rgba(103, 232, 249, 0.035) 1px, transparent 1px);
   background-size: 56px 56px;
 }
+
+/* Academy Graph Observatory — one earned causal trace, no ambient graph theatre. */
+@keyframes academy-trace-flow {
+  from { stroke-dashoffset: 28; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes academy-gate-arrival {
+  0%, 100% { opacity: 0.34; transform: scale(0.96); }
+  50% { opacity: 0.78; transform: scale(1.04); }
+}
+
+.academy-run-edge > path:first-of-type {
+  stroke-dasharray: 7 7;
+  animation: academy-trace-flow 620ms linear both;
+}
+
+.academy-run-pulse {
+  animation: academy-gate-arrival 1.8s var(--ease) infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academy-run-edge > path:first-of-type,
+  .academy-run-pulse {
+    animation: none !important;
+    transition: none !important;
+  }
+}
