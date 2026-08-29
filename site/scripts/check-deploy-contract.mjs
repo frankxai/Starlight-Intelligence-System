@@ -31,6 +31,7 @@ expect(
 for (const relativePath of [
   "site/package.json",
   "site/vercel.json",
+  "site/scripts/vercel-build.mjs",
   "site/scripts/vercel-ignore-build.mjs",
   "site/src/app/deploy/page.tsx",
   "site/src/lib/deployment.ts",
@@ -41,6 +42,8 @@ for (const relativePath of [
 
 const deploymentSource = read("site/src/lib/deployment.ts");
 const vercelConfig = JSON.parse(read("site/vercel.json"));
+const packageJson = JSON.parse(read("site/package.json"));
+const vercelBuild = read("site/scripts/vercel-build.mjs");
 const vercelIgnore = read("site/scripts/vercel-ignore-build.mjs");
 for (const parameter of ["repository-url", "root-directory", "project-name", "repository-name"]) {
   expect(deploymentSource.includes(parameter), `deployment URL is missing ${parameter}`);
@@ -68,6 +71,16 @@ expect(
     vercelIgnore.includes("VERCEL_GIT_PREVIOUS_SHA") &&
     vercelIgnore.includes("VERCEL_GIT_COMMIT_SHA"),
   "Vercel must delegate fail-open diff evaluation to the checked-in ignore script",
+);
+expect(
+  vercelConfig.buildCommand === "node scripts/vercel-build.mjs" &&
+    packageJson.scripts.build.includes("check-metrics-contract.mjs") &&
+    packageJson.scripts["build:preview"].includes("check-deploy-contract.mjs") &&
+    packageJson.scripts["build:preview"].includes("check-academy-observatory-contract.mjs") &&
+    vercelBuild.includes('VERCEL_ENV === "production"') &&
+    vercelBuild.includes("scripts/check-metrics-contract.mjs") &&
+    vercelBuild.includes('node_modules/next/dist/bin/next", "build"'),
+  "Vercel previews must run publication contracts while production retains the metrics gate",
 );
 
 if (failures.length > 0) {
