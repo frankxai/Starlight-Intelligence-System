@@ -26,12 +26,12 @@ const EXECUTION_LAYOUT: Point[] = [
 ];
 
 function splitLabel(value: string) {
-  if (value.length <= 22) return [value];
+  if (value.length <= 19) return [value];
   const words = value.split(" ");
   const lines = [""];
   for (const word of words) {
     const current = lines.at(-1) ?? "";
-    if (current.length > 0 && `${current} ${word}`.length > 25 && lines.length < 2) {
+    if (current.length > 0 && `${current} ${word}`.length > 19 && lines.length < 3) {
       lines.push(word);
     } else {
       lines[lines.length - 1] = current ? `${current} ${word}` : word;
@@ -155,7 +155,7 @@ export function AcademyDirectedGraph({
                 vectorEffect="non-scaling-stroke"
               />
               <rect x={labelX - 43} y={labelY - 10} width="86" height="19" rx="9.5" fill="#08080d" stroke="rgba(255,255,255,.06)" />
-              <text x={labelX} y={labelY + 3} textAnchor="middle" fill={isActive ? "#e2e8f0" : "#94a3b8"} className="font-mono" fontSize="9">
+              <text x={labelX} y={labelY + 3} textAnchor="middle" fill={isActive ? "#e2e8f0" : "#94a3b8"} className="font-mono" fontSize="10">
                 {edge.relation.replaceAll("_", " ")}
               </text>
             </g>
@@ -201,13 +201,13 @@ export function AcademyDirectedGraph({
               />
               {consequential && <rect x={point.x - 73} y={point.y - 55} width="146" height="110" rx="20" fill="none" stroke="rgba(251,191,36,.18)" strokeWidth="1" />}
               <NodeGlyph node={node} x={point.x} y={point.y} active={isActive} />
-              <text x={point.x - 25} y={point.y - 37} fill="#94a3b8" className="font-mono" fontSize="8.5" letterSpacing=".08em">
+              <text x={point.x - 25} y={point.y - 37} fill="#94a3b8" className="font-mono" fontSize="9.5" letterSpacing=".08em">
                 {node.kind.replaceAll("_", " ").toUpperCase()}
               </text>
-              <text x={point.x} y={point.y + (lines.length === 1 ? 3 : -2)} textAnchor="middle" fill="#f8fafc" className="font-sans" fontSize="11.5" fontWeight="600">
+              <text x={point.x} y={point.y + (lines.length === 1 ? 3 : lines.length === 2 ? -3 : -10)} textAnchor="middle" fill="#f8fafc" className="font-sans" fontSize="12" fontWeight="600">
                 {lines.map((line, lineIndex) => <tspan key={line} x={point.x} dy={lineIndex === 0 ? 0 : 14}>{line}</tspan>)}
               </text>
-              <text x={point.x} y={point.y + 37} textAnchor="middle" fill={node.claimState === "hypothesized" ? "#f0abfc" : node.claimState === "sourced" ? "#67e8f9" : "#94a3b8"} className="font-mono" fontSize="8.5">
+              <text x={point.x} y={point.y + 39} textAnchor="middle" fill={node.claimState === "hypothesized" ? "#f0abfc" : node.claimState === "sourced" ? "#67e8f9" : "#94a3b8"} className="font-mono" fontSize="9.5">
                 {graph.mode === "execution" ? node.executor?.replaceAll("_", " ") : `${node.claimState} · ${node.lifecycle}`}
               </text>
             </g>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Check,
@@ -160,6 +160,7 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
   const [copied, setCopied] = useState(false);
   const [runState, setRunState] = useState<"idle" | "running" | "awaiting-human">("idle");
   const [runIndex, setRunIndex] = useState(-1);
+  const runSequence = useRef(0);
 
   const graph = mode === "competency" ? model.competency : model.execution;
   const selectedNode = graph.nodes.find((node) => node.id === selectedId) ?? graph.nodes[0];
@@ -180,6 +181,7 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
   }, [model.execution.nodes, runIndex, runState]);
 
   const changeMode = (nextMode: ObservatoryMode) => {
+    runSequence.current += 1;
     setRunIndex(-1);
     setRunState("idle");
     setMode(nextMode);
@@ -188,6 +190,7 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
   };
 
   const changeLens = (nextLens: GraphLens) => {
+    runSequence.current += 1;
     setRunIndex(-1);
     setRunState("idle");
     setLens(nextLens);
@@ -198,30 +201,63 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
     }
   };
 
-  const startRun = () => {
+  const startRun = (bringIntoView: boolean) => {
+    const sequence = runSequence.current + 1;
+    runSequence.current = sequence;
     setMode("execution");
     setLens("authority");
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setRunIndex(2);
-      setSelectedId(model.execution.nodes[2].id);
-      setRunState("awaiting-human");
-    } else {
-      setRunIndex(0);
-      setSelectedId(model.execution.nodes[0].id);
-      setRunState("running");
+    setRunIndex(-1);
+    setRunState("idle");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (bringIntoView) {
+      const panel = document.getElementById("academy-graph-panel");
+      panel?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+      panel?.focus({ preventScroll: true });
     }
+    const launch = () => {
+      if (runSequence.current !== sequence) return;
+      if (reduceMotion) {
+        setRunIndex(2);
+        setSelectedId(model.execution.nodes[2].id);
+        setRunState("awaiting-human");
+      } else {
+        setRunIndex(0);
+        setSelectedId(model.execution.nodes[0].id);
+        setRunState("running");
+      }
+    };
+    if (bringIntoView && !reduceMotion) window.setTimeout(launch, 520);
+    else launch();
+  };
+
+  const showProvenance = () => {
+    runSequence.current += 1;
+    setRunIndex(-1);
+    setRunState("idle");
+    setMode("competency");
+    setLens("provenance");
+    setSelectedId(model.competency.nodes[0].id);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const panel = document.getElementById("academy-graph-panel");
+    panel?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+    panel?.focus({ preventScroll: true });
   };
 
   const resetRun = () => {
+    runSequence.current += 1;
     setRunIndex(-1);
     setRunState("idle");
     setSelectedId(model.execution.nodes[0].id);
   };
 
   const copyId = async () => {
-    await navigator.clipboard.writeText(selectedNode.id);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
+    try {
+      await navigator.clipboard.writeText(selectedNode.id);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setCopied(false);
+    }
   };
 
   const maxSpend = new Intl.NumberFormat("en", {
@@ -249,13 +285,13 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
                 <span className="block bg-gradient-to-r from-violet-300 via-slate-100 to-cyan-200 bg-clip-text italic text-transparent">prove its shape?</span>
               </h1>
               <p className="mt-8 max-w-3xl text-base leading-7 text-slate-400 sm:text-lg sm:leading-8">
-                Inspect the smallest public path from system judgment to evidence—and run its execution topology until the exact moment a human must decide. No agent activation. No credential theatre. No paid gate.
+                Inspect the smallest public path from system judgment to evidence—and trace its execution topology until the exact moment a human must decide. No agent activation. No credential theatre. No paid gate.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <button type="button" onClick={startRun} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[#07070b] transition-micro hover:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70">
-                  <Play className="h-4 w-4" /> Run Mission Zero <ArrowRight className="h-4 w-4" />
+                <button type="button" onClick={() => startRun(true)} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[#07070b] transition-micro hover:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70">
+                  <Play className="h-4 w-4" /> Preview Mission Zero <ArrowRight className="h-4 w-4" />
                 </button>
-                <button type="button" onClick={() => { setRunIndex(-1); setRunState("idle"); setMode("competency"); setLens("provenance"); setSelectedId(model.competency.nodes[0].id); }} className="inline-flex items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.025] px-5 py-3 text-sm font-semibold text-slate-200 transition-micro hover:border-white/25 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300/70">
+                <button type="button" onClick={showProvenance} className="inline-flex items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.025] px-5 py-3 text-sm font-semibold text-slate-200 transition-micro hover:border-white/25 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300/70">
                   Trace claim provenance
                 </button>
               </div>
@@ -278,13 +314,13 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
 
           <div className="mt-12 flex max-w-5xl items-start gap-3 border-l border-amber-300/40 pl-5 text-sm leading-6 text-slate-400">
             <Sparkles className="mt-1 h-4 w-4 shrink-0 text-amber-200" />
-            <p><strong className="font-semibold text-slate-200">One domain is public today:</strong> {model.academy.pathwayName}. The Observatory shows that record at full fidelity instead of presenting an invented forty-domain catalog as fact.</p>
+            <p><strong className="font-semibold text-slate-200">One domain is public today:</strong> {model.academy.pathwayName}. The Observatory shows a faithful, provenance-explicit projection instead of presenting an invented forty-domain catalog as fact.</p>
           </div>
         </div>
       </section>
 
       <section className="px-4 py-12 sm:px-8 lg:px-10 lg:py-16">
-        <div className="mx-auto max-w-[1480px]">
+        <div className="mx-auto max-w-[1760px]">
           <div className="flex flex-col justify-between gap-7 border-b border-white/[0.07] pb-8 xl:flex-row xl:items-end">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Proof Loom / deterministic projection</p>
@@ -318,7 +354,7 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
             </div>
           </div>
 
-          <div className="mt-7 grid gap-5 lg:grid-cols-[190px_minmax(0,1fr)] 2xl:grid-cols-[190px_minmax(0,1fr)_360px]">
+          <div className="mt-7 grid gap-5 lg:grid-cols-[190px_minmax(0,1fr)] min-[1800px]:grid-cols-[190px_minmax(0,1fr)_360px]">
             <nav className="rounded-[1.5rem] border border-white/[0.07] bg-white/[0.02] p-3" aria-label="Observatory lenses">
               <p className="px-3 pb-3 pt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-slate-400">Inspection lens</p>
               <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
@@ -365,14 +401,14 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
                   </div>
                 </div>
                 {runState === "idle" ? (
-                  <button type="button" onClick={startRun} className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/[0.1] px-3 py-2 text-[11px] font-semibold text-slate-200 transition-micro hover:border-cyan-300/30 hover:text-white"><Play className="h-3.5 w-3.5" /> Trace run</button>
+                  <button type="button" onClick={() => startRun(false)} className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/[0.1] px-3 py-2 text-[11px] font-semibold text-slate-200 transition-micro hover:border-cyan-300/30 hover:text-white"><Play className="h-3.5 w-3.5" /> Trace preview</button>
                 ) : (
                   <button type="button" onClick={resetRun} className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/[0.1] px-3 py-2 text-[11px] font-semibold text-slate-200 transition-micro hover:border-white/25 hover:text-white"><RotateCcw className="h-3.5 w-3.5" /> Reset</button>
                 )}
               </div>
             </div>
 
-            <div className="lg:col-start-2 2xl:col-start-auto">
+            <div className="lg:col-start-2 min-[1800px]:col-start-auto">
               <Inspector node={selectedNode} copied={copied} onCopy={copyId} />
             </div>
           </div>
@@ -473,7 +509,7 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
                   <div className="mt-6 border-t border-white/[0.06] pt-5"><p className="font-mono text-[9px] uppercase tracking-[0.14em] text-rose-300">Denied authority</p><div className="mt-3 flex flex-wrap gap-1.5">{agent.deniedAuthority.slice(0, 6).map((item) => <span key={item} className="rounded-md bg-rose-300/[0.045] px-2 py-1 font-mono text-[8px] text-rose-100/60">{item}</span>)}</div></div>
                 </article>
               ))}
-              <div className="md:col-span-2 rounded-[1.5rem] border border-emerald-300/15 bg-emerald-300/[0.025] p-5 text-xs leading-5 text-slate-400"><strong className="text-emerald-200">Mission Zero verdict:</strong> no persistent agent is necessary. The active topology is one skill, one temporary verifier, one human gate, and one deterministic renderer.</div>
+              <div className="md:col-span-2 rounded-[1.5rem] border border-emerald-300/15 bg-emerald-300/[0.025] p-5 text-xs leading-5 text-slate-400"><strong className="text-emerald-200">Mission Zero design verdict:</strong> no persistent agent is necessary. The experimental reference topology is one skill, one temporary verifier, one human gate, and one deterministic renderer.</div>
             </div>
           </div>
         </div>

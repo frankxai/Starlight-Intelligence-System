@@ -283,5 +283,13 @@ export const academyGraphModel: AcademyGraphModel = {
       label: "Graph Engineering plugin",
       path: "plugins/starlight-graph-engineering/.codex-plugin/plugin.json",
     },
+    {
+      label: "Academy Graph Steward Agent Pack",
+      path: "foundry/examples/academy-graph-steward.agent-pack.json",
+    },
+    {
+      label: "Learner Graph Navigator Agent Pack",
+      path: "foundry/examples/learner-graph-navigator.agent-pack.json",
+    },
   ],
 };

@@ -99,6 +99,12 @@ expect(
   "the Mission Zero preview must stop at the human gate without implying an approval or credential",
 );
 expect(
+  observatory.includes("Preview Mission Zero") &&
+    !observatory.includes("Run Mission Zero") &&
+    observatory.includes("experimental reference topology"),
+  "the interface must describe Mission Zero as an experimental projection, never a live run or active topology",
+);
+expect(
   directedGraph.includes("semantic graph") &&
     directedGraph.includes("graph.edges.map((edge)") &&
     directedGraph.includes("Typed relations"),
@@ -107,6 +113,11 @@ expect(
 expect(
   observatory.includes("No checkout, entitlement graph, or autonomous payment authority is implemented."),
   "managed commerce must remain parked and non-operational",
+);
+expect(
+  model.includes("academy-graph-steward.agent-pack.json") &&
+    model.includes("learner-graph-navigator.agent-pack.json"),
+  "both rendered Agent Pack candidates must remain linked to their canonical source records",
 );
 expect(
   nav.includes('{ href: "/academy/graphs", label: "Academy Graphs"'),
