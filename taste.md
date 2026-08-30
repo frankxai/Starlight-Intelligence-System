@@ -52,3 +52,16 @@ A public surface is not complete until mobile behavior, reduced motion, claim ev
 design.md remains the local asset handoff. When it conflicts with this authority or the pinned SIS brand pack, evidence legibility and the immutable pack win.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## Reference intelligence
+
+For substantial site, app, landing page, dashboard, visual identity, motion, media, or journey work, follow [REFERENCE-INTELLIGENCE.md](REFERENCE-INTELLIGENCE.md) before implementation.
+
+- Research is evidence, not design authority. Repository truth and approved preference memory remain higher-order constraints.
+- Lock one dominant foundation. Assign every secondary reference one bounded role; never average references into a generic middle.
+- Record source, rights class, observed principles, anti-reference, applicable brand/surface, decision owner, and state.
+- Refero may supply live styles, screens, and flows. Public Refero Styles pages may be used when MCP is unavailable.
+- Manus may produce isolated candidates or wide research. It cannot promote canon, publish production, or write canonical branches without an explicit human gate.
+- A winning candidate becomes preference memory only when the receipt records what beat what, why, who judged it, and with what confidence.
+
+A polished artifact with unclear rights, failed accessibility, fabricated proof, broken production behavior, or no traceable reference lock is rejected regardless of its taste score.
