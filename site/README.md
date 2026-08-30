@@ -22,6 +22,7 @@ The resulting project contains:
 
 - the public protocol, architecture, research, and documentation experience;
 - Cosmos, Knowledge Tree, Memory Palace, and public vault views;
+- the Academy Atlas at `/academy`, compiled from a machine-readable five-house, forty-pack proposed portfolio with explicit learner, open-access, community, pricing-hypothesis, and agent-authority boundaries;
 - the read-only Academy Graph Observatory at `/academy/graphs`, compiled from public CompetencyGraph, ExecutionGraph, AcademyPack, and plugin records;
 - read-only public API routes such as `/api/vaults`;
 - Git-connected preview and production deployments.
@@ -59,6 +60,7 @@ corepack pnpm check:public-install-contract
 corepack pnpm check:layout-contract
 corepack pnpm check:deploy-contract
 corepack pnpm check:academy-observatory
+corepack pnpm check:academy-atlas
 corepack pnpm lint
 corepack pnpm build
 ```
@@ -72,6 +74,7 @@ After Vercel reports `Ready`, open:
 - `/protocol` — the open substrate specification;
 - `/architecture` — the system model;
 - `/research` — published substrate research;
+- `/academy` — the proposed forty-path Academy Atlas and free-core economics;
 - `/academy/graphs` — the fixture-backed capability and Mission Zero execution proof loom;
 - `/api/vaults` — the read-only public vault index.
 

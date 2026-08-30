@@ -121,8 +121,8 @@ expect(
   "both rendered Agent Pack candidates must remain linked to their canonical source records",
 );
 expect(
-  nav.includes('{ href: "/academy/graphs", label: "Academy Graphs"'),
-  "Academy Graphs must remain in the shared navigation model",
+  nav.includes('{ href: "/academy", label: "Academy Atlas"'),
+  "Academy Atlas must remain in the shared navigation model",
 );
 expect(
   sitemap.includes('"/academy/graphs"'),
@@ -131,8 +131,10 @@ expect(
 expect(
   vercel.includes("scripts/vercel-ignore-build.mjs") &&
     vercelIgnore.includes("../foundry/contracts/academy-fabric") &&
+    vercelIgnore.includes("../foundry/examples/academy-portfolio-40.reference.json") &&
+    vercelIgnore.includes("../plugins/starlight-academy-fabric") &&
     vercelIgnore.includes("../plugins/starlight-graph-engineering"),
-  "Academy contract and plugin changes must invalidate the Vercel ignore gate",
+  "Academy contract, Atlas, and plugin changes must invalidate the Vercel ignore gate",
 );
 
 if (failures.length > 0) {

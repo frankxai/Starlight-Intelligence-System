@@ -10,10 +10,14 @@ on:
       - 'skills/skill-rules.json'
       - 'skills/SKILL_REGISTRY.md'
       - 'plugins/starlight-graph-engineering/**'
-      - 'site/src/app/academy/graphs/**'
+      - 'plugins/starlight-academy-fabric/**'
+      - '.agents/plugins/marketplace.json'
+      - 'site/src/app/academy/**'
       - 'site/src/components/academy/**'
       - 'site/src/lib/academy-graphs.ts'
+      - 'site/src/lib/academy-atlas.ts'
       - 'site/scripts/check-academy-observatory-contract.mjs'
+      - 'site/scripts/check-academy-atlas-contract.mjs'
       - 'site/src/lib/nav.ts'
       - 'site/src/app/sitemap.ts'
       - 'site/src/app/globals.css'
@@ -91,6 +95,9 @@ jobs:
       - name: Verify Academy Observatory truth boundary
         working-directory: site
         run: pnpm check:academy-observatory
+      - name: Verify Academy Atlas portfolio and access boundary
+        working-directory: site
+        run: pnpm check:academy-atlas
       - name: Verify Explorer publication contracts
         working-directory: site
         run: |

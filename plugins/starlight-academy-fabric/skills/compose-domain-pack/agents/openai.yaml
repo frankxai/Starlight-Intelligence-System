@@ -1,0 +1,6 @@
+interface:
+  display_name: "Compose Domain Pack"
+  short_description: "Turn expertise into a governed open Academy pack."
+  default_prompt: "Use $compose-domain-pack to turn this learner problem or expertise into a source-explicit open Academy pack."
+policy:
+  allow_implicit_invocation: true

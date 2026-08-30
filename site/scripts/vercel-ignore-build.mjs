@@ -18,6 +18,8 @@ const comparison = spawnSync(
     "--",
     ".",
     "../foundry/contracts/academy-fabric",
+    "../foundry/examples/academy-portfolio-40.reference.json",
+    "../plugins/starlight-academy-fabric",
     "../plugins/starlight-graph-engineering",
   ],
   { stdio: "ignore" },

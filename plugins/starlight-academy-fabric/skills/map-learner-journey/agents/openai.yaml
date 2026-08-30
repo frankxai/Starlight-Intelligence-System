@@ -1,0 +1,6 @@
+interface:
+  display_name: "Map Learner Journey"
+  short_description: "Map an open path from learner reality to portable work."
+  default_prompt: "Use $map-learner-journey to map this learner's open academic, community, artifact, and managed-capacity path."
+policy:
+  allow_implicit_invocation: true

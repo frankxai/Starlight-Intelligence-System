@@ -294,6 +294,9 @@ export function AcademyGraphObservatory({ model }: { model: AcademyGraphModel })
                 <button type="button" onClick={showProvenance} className="inline-flex items-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.025] px-5 py-3 text-sm font-semibold text-slate-200 transition-micro hover:border-white/25 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300/70">
                   Trace claim provenance
                 </button>
+                <a href="/academy" className="inline-flex items-center gap-2 rounded-xl border border-cyan-300/15 bg-cyan-300/[0.035] px-5 py-3 text-sm font-semibold text-cyan-100 transition-micro hover:border-cyan-300/30 hover:bg-cyan-300/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70">
+                  Explore forty proposed paths <ArrowRight className="h-4 w-4" />
+                </a>
               </div>
             </div>
 

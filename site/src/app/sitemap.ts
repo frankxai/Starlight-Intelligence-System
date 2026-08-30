@@ -18,6 +18,7 @@ const STATIC_ROUTES = [
   "/research",
   "/knowledge-tree",
   "/knowledge-tree/explore",
+  "/academy",
   "/academy/graphs",
   "/cockpit",
   "/docs",

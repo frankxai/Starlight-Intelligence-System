@@ -1,0 +1,6 @@
+interface:
+  display_name: "Govern Managed Capacity"
+  short_description: "Price scarce capacity while keeping learning free."
+  default_prompt: "Use $govern-managed-capacity to design transparent managed Academy tiers and a deterministic, human-ratified commerce boundary."
+policy:
+  allow_implicit_invocation: true

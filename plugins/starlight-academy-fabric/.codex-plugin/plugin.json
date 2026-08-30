@@ -1,0 +1,41 @@
+{
+  "name": "starlight-academy-fabric",
+  "version": "0.1.0",
+  "description": "Open, skills-only methods for composing domain packs, learner paths, community cells, managed capacity, and institution-owned Academy adoption.",
+  "author": {
+    "name": "Starlight Intelligence",
+    "url": "https://starlightintelligence.org"
+  },
+  "homepage": "https://starlightintelligence.org/academy",
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "keywords": [
+    "open-academy",
+    "domain-packs",
+    "learner-journeys",
+    "learning-communities",
+    "institutional-adoption"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Starlight Academy Fabric",
+    "shortDescription": "Compose open Academy paths without creating platform or brand sprawl.",
+    "longDescription": "Design an installable domain pack around a specific learner problem; map its academic and community experience; price only managed capacity; and prepare institution-owned adoption with learner portability and named human authority.",
+    "developerName": "Starlight Intelligence",
+    "category": "Productivity",
+    "capabilities": [
+      "Domain pack composition",
+      "Learner journey mapping",
+      "Learning cell design",
+      "Managed capacity governance",
+      "Institutional adoption planning"
+    ],
+    "websiteURL": "https://starlightintelligence.org/academy",
+    "defaultPrompt": [
+      "Compose this expertise into an open Academy domain pack.",
+      "Map the learner, academic, community, and paid-capacity experience.",
+      "Prepare an institution-owned Academy adoption plan."
+    ],
+    "brandColor": "#22D3EE"
+  }
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Plan Institutional Adoption"
+  short_description: "Add Academy interfaces without replacing local authority."
+  default_prompt: "Use $plan-institutional-adoption to map a bounded, institution-owned Academy adoption with open interfaces and a clear exit path."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Design Learning Cell"
+  short_description: "Design artifact-led learning without founder dependence."
+  default_prompt: "Use $design-learning-cell to design a small, accessible, artifact-led community experience for this domain pack."
+policy:
+  allow_implicit_invocation: true

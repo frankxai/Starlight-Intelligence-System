@@ -6,14 +6,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/check-metrics-contract.mjs && pnpm run build:preview",
-    "build:preview": "node scripts/check-public-install-contract.mjs && node scripts/check-layout-contract.mjs && node scripts/check-deploy-contract.mjs && node scripts/check-academy-observatory-contract.mjs && next build",
+    "build:preview": "node scripts/check-public-install-contract.mjs && node scripts/check-layout-contract.mjs && node scripts/check-deploy-contract.mjs && node scripts/check-academy-observatory-contract.mjs && node scripts/check-academy-atlas-contract.mjs && next build",
     "check:public-install-contract": "node scripts/check-public-install-contract.mjs",
     "check:layout-contract": "node scripts/check-layout-contract.mjs",
     "check:deploy-contract": "node scripts/check-deploy-contract.mjs",
     "start": "next start",
     "lint": "eslint",
     "check:metrics": "node scripts/check-metrics-contract.mjs",
-    "check:academy-observatory": "node scripts/check-academy-observatory-contract.mjs"
+    "check:academy-observatory": "node scripts/check-academy-observatory-contract.mjs",
+    "check:academy-atlas": "node scripts/check-academy-atlas-contract.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
