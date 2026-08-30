@@ -28,7 +28,7 @@
       "note": "only repo whose published counts matched its filesystem at the 2026-07-25 audit; guarded by scripts/check-agent-harness.mjs",
       "measured": {
         "skills": 88,
-        "skills_unrooted": 10,
+        "skills_unrooted": 11,
         "installed_skills": 4,
         "agents": 144,
         "commands": 28,
