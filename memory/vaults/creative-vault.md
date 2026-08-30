@@ -47,7 +47,7 @@ The 5 premium visuals (crystalline 3D palace, Queen continuous loop with gateway
 
 | Date | Entry | Category | Confidence |
 |------|-------|----------|------------|
-| 2026-08-27 | Cinematic civic operators — Practical prestige translation | cinematic-character-system | 0.95 |
+| 2026-08-29 | Cinematic civic operators v3 — Semantic costume, instrument, and action unity | cinematic-character-system | 0.97 |
 | 2026-08-27 | Character territories — Civic operators + Living notation | visual-territory | 0.94 |
 | 2026-08-27 | Starlight Character Foundry v2 — Bounded Intelligence | visual-identity | 0.97 |
 | 2026-02-10 | The Luminor Wisdom Integration | creative-pattern | 0.85 |
@@ -122,11 +122,11 @@ Verification state: the contracts and YAML templates parse, the 144-agent valida
 
 ---
 
-### [2026-08-27] Cinematic civic operators — Practical prestige translation
+### [2026-08-29] Cinematic civic operators v3 — Semantic costume, instrument, and action unity
 
 **Category:** cinematic-character-system / costume-development / production-grammar
 
-**Confidence:** 0.95
+**Confidence:** 0.97
 
 **Source:** Founder-directed image generation + Codex visual QA
 
@@ -134,11 +134,11 @@ Verification state: the contracts and YAML templates parse, the 144-agent valida
 
 Durable direction: translate premium ensemble cinema into Starlight through dramatic consequence, silhouette, practical fabrication, world integration, motivated light, restrained visual effects, and role-specific performance—not through Marvel characters, costumes, logos, trade dress, or style-name prompting.
 
-The current five-character family uses contemporary near-future architectural tailoring and separate inspectable instruments. Orchestrator routes, Sentinel compares and bounds, Concierge opens one route, Weaver retains provenance during synthesis, and Starlight Sage reveals nested evidence. The shared material family is tactile charcoal and warm-bone textile, satin titanium, dark steel, pale ceramic, laminated glass, precision cord, restrained plum, and sparse oxidized-red wayfinding.
+The v3 family replaces shared-workwear sameness with five semantic costume-instrument-action systems. Orchestrator has a branching ink-and-oxblood coat plus a double-ellipse route compass; Sentinel has a compact graphite and frost silhouette plus overlapping threshold lenses; Concierge has a plum cocoon around a warm-bone center plus a single aperture folio; Weaver has rhythmic umber and mineral-olive pleats plus a circular provenance spindle; Starlight Sage has nested limestone, smoke, silver, and ochre layers plus five translucent atlas leaves. Shared satin titanium pivots, ceramic nodes, mineral glass, fine cord, tactile textile, and red stop markers establish civilization without creating a uniform.
 
 The first costume exploration drifted toward antique workshop and steampunk language. A targeted correction froze cast, roles, instruments, poses, and composition while changing only era, fabrication, material, and surface finish. This is the preferred repair pattern for future generated-media drift: diagnose the failed attribute, preserve approved invariants, and edit the smallest visual layer.
 
-The promoted direction now has three inspected assets: the five-person costume master candidate, an ultrawide archive ensemble v2, and an Orchestrator identity anchor. Ensemble v1 remains as iteration evidence; its lineup blocking and nonsemantic marks were corrected through a narrow edit that preserved cast, costume, instruments, location, and grade while changing action, eyelines, depth, and evidence-surface cleanliness. Exact notation remains deterministic. All assets ship as internal direction evidence only. Founder representation approval, G0 roster truth, Orchestrator/Queen resolution, full turnarounds, collision tests, and the 95-point public-release gate remain open.
+The promoted direction is now the inspected v3 character board plus v3 cinematic action proof. The action scene proves a label-free workflow through hand contact, gravity, physical cords, glass refraction, pivots, folds, and shadows: route → compare → welcome → weave → interpret. V2 and earlier assets remain iteration evidence. The first v3 Orchestrator arc read as a bow, so it was rejected and changed alone into a non-weapon overlapping route compass while all successful identities and designs were frozen. Exact notation remains deterministic. All assets ship as internal direction evidence only. Founder representation approval, G0 roster truth, Orchestrator/Queen resolution, full turnarounds, fabrication tests, remaining North Star collision tests, and the 95-point public-release gate remain open.
 
 **Built on SIP — Starlight Intelligence Protocol**
 
