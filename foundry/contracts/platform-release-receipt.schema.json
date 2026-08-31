@@ -461,6 +461,7 @@
         "method",
         "signature",
         "artifactSha256",
+        "statementSha256",
         "verificationUrl"
       ],
       "properties": {
@@ -489,6 +490,10 @@
           "type": "string",
           "pattern": "^https://",
           "maxLength": 1000
+        },
+        "statementSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         }
       }
     },
@@ -520,5 +525,427 @@
         "expiresAt"
       ]
     }
-  }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "openai-chatgpt-codex"
+            },
+            "surface": {
+              "const": "ChatGPT apps and Codex plugins"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "openai-custom-gpt"
+            },
+            "surface": {
+              "const": "Custom GPT actions and knowledge"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "instruction-pack"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "anthropic-claude"
+            },
+            "surface": {
+              "const": "Claude Code plugins, connectors, and MCP Apps"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "cursor-agent-plugins"
+            },
+            "surface": {
+              "const": "Cursor Agent Plugins marketplace"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "portable"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "github-copilot-vscode"
+            },
+            "surface": {
+              "const": "VS Code and GitHub Copilot agent plugins"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "portable"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "google-antigravity"
+            },
+            "surface": {
+              "const": "Antigravity Agent Plugins"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "google-gemini-cli"
+            },
+            "surface": {
+              "const": "Gemini CLI extensions"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "google-gemini-spark"
+            },
+            "surface": {
+              "const": "Gemini app-building and custom MCP"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "mcp-only"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "google-workspace-marketplace"
+            },
+            "surface": {
+              "const": "Google Workspace add-ons with Gemini"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "google-gemini-enterprise"
+            },
+            "surface": {
+              "const": "Gemini Enterprise A2A agents"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "xai-grok-build"
+            },
+            "surface": {
+              "const": "Grok Build and connected tools"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "manus-skills-mcp"
+            },
+            "surface": {
+              "const": "Manus skills and MCP integrations"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "hermes-agent-plugins"
+            },
+            "surface": {
+              "const": "Hermes Agent Plugin runtime"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "portable"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "opencode-plugins"
+            },
+            "surface": {
+              "const": "OpenCode plugins"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "kiro-powers"
+            },
+            "surface": {
+              "const": "Kiro Powers"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "portable"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "devin-plugins"
+            },
+            "surface": {
+              "const": "Devin plugins"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "cline-mcp-skills"
+            },
+            "surface": {
+              "const": "Cline skills and MCP servers"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "jetbrains-junie"
+            },
+            "surface": {
+              "const": "Junie guidelines and MCP"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "instruction-pack"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "zed-mcp"
+            },
+            "surface": {
+              "const": "Zed context servers"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "mcp-only"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "roo-code-sunset"
+            },
+            "surface": {
+              "const": "Legacy marketplace surface"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "unsupported"
+            }
+          }
+        }
+      }
+    }
+  ]
 }

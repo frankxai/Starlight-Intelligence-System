@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readdirSync } from "node:fs";
 import { basename, join } from "node:path";
 import { readJson } from "./io.mjs";
@@ -192,6 +193,30 @@ export function getContract(registry, name) {
   return schema;
 }
 
+function canonicalJson(value) {
+  if (Array.isArray(value)) return value.map((entry) => canonicalJson(entry));
+  if (value !== null && typeof value === "object") {
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((key) => [key, canonicalJson(value[key])]),
+    );
+  }
+  return value;
+}
+
+export function platformReceiptStatementSha256(receipt) {
+  if (receipt === null || typeof receipt !== "object" || Array.isArray(receipt)) {
+    throw new Error("Platform receipt statement must be an object");
+  }
+  const statement = Object.fromEntries(
+    Object.entries(receipt).filter(([key]) => key !== "attestation"),
+  );
+  return createHash("sha256")
+    .update(JSON.stringify(canonicalJson(statement)))
+    .digest("hex");
+}
+
 export function validateValue(value, schema, registry) {
   const errors = [];
   validateNode(value, schema, { errors, registry, rootSchema: schema }, "$");
@@ -293,6 +318,33 @@ export function validateValue(value, schema, registry) {
       pushError(errors, "$.run.completedAt", "RUN_ORDER", "run completion must follow its start");
     }
 
+    const platformBindings = new Map(
+      (Array.isArray(schema.oneOf) ? schema.oneOf : []).map((branch) => [
+        branch?.properties?.host?.properties?.registryId?.const,
+        {
+          surface: branch?.properties?.host?.properties?.surface?.const,
+          adapterTier: branch?.properties?.adapter?.properties?.tier?.const,
+        },
+      ]),
+    );
+    const platformBinding = platformBindings.get(value.host?.registryId);
+    if (platformBinding && value.host?.surface !== platformBinding.surface) {
+      pushError(
+        errors,
+        "$.host.surface",
+        "HOST_SURFACE_BINDING",
+        `host surface must match registry entry ${value.host.registryId}`,
+      );
+    }
+    if (platformBinding && value.adapter?.tier !== platformBinding.adapterTier) {
+      pushError(
+        errors,
+        "$.adapter.tier",
+        "ADAPTER_TIER_BINDING",
+        `adapter tier must match registry entry ${value.host.registryId}`,
+      );
+    }
+
     const evidence = Array.isArray(value.evidence) ? value.evidence : [];
     const evidenceIds = evidence.map((artifact) => artifact?.id).filter(Boolean);
     if (new Set(evidenceIds).size !== evidenceIds.length) {
@@ -321,6 +373,14 @@ export function validateValue(value, schema, registry) {
     const checks = Array.isArray(value.checks) ? value.checks : [];
     for (const claim of Array.isArray(value.claims) ? value.claims : []) {
       const claimRefs = Array.isArray(claim?.evidenceRefs) ? claim.evidenceRefs : [];
+      if (claim?.surface !== value.host?.surface) {
+        pushError(
+          errors,
+          "$.claims",
+          "CLAIM_SURFACE_BINDING",
+          "claim surface must match the receipt host surface",
+        );
+      }
       if (
         [...strongStates, "degraded"].includes(claim?.state) &&
         claimRefs.length === 0
@@ -426,6 +486,17 @@ export function validateValue(value, schema, registry) {
         "$.attestation.artifactSha256",
         "ATTESTATION_SUBJECT",
         "attestation artifact digest must match the receipt subject",
+      );
+    }
+    if (
+      typeof value.attestation?.statementSha256 === "string" &&
+      value.attestation.statementSha256 !== platformReceiptStatementSha256(value)
+    ) {
+      pushError(
+        errors,
+        "$.attestation.statementSha256",
+        "ATTESTATION_STATEMENT",
+        "attestation statement digest must bind the complete receipt excluding attestation metadata",
       );
     }
   }

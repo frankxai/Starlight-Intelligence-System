@@ -89,7 +89,7 @@ documented -> compatible -> verified -> published -> supported
 - `supported`: verified and published, with a named operational owner and no applicable failing check.
 - `degraded`, `blocked`, and `unsupported`: limitations are explicit and cannot be promoted by marketing copy.
 
-`platform-release-receipt.schema.json` defines the structural receipt. Semantic validation rejects strong claims without overlapping passing evidence, unknown registry hosts, unsupported adapters, blocked distribution, missing release URLs, unowned support, digest mismatch, and dangling evidence. Structural validation does **not** authenticate a signature. Until the external verifier lands, the local receipt validator rejects every `verified`, `published`, and `supported` promotion with `ATTESTATION_VERIFIER_REQUIRED`. The claim engine must verify Sigstore/GitHub OIDC evidence or a named human review record before emitting a public claim.
+`platform-release-receipt.schema.json` defines the structural receipt. Semantic validation binds the registry ID to its exact surface and adapter tier, binds every claim to that surface, and validates a deterministic digest of the complete receipt except its attestation object. It also rejects strong claims without overlapping passing evidence, unknown registry hosts, blocked distribution, missing release URLs, unowned support, subject mismatch, and dangling evidence. Structural validation does **not** authenticate a signature. Until the external verifier lands, the local receipt validator rejects every `verified`, `published`, and `supported` promotion with `ATTESTATION_VERIFIER_REQUIRED`. The claim engine must verify Sigstore/GitHub OIDC evidence or a named human review record against the signed statement before emitting a public claim.
 
 ### Evidence runner
 
@@ -362,7 +362,7 @@ Built now:
 - four portable Foundry skills;
 - portable Agent Plugin core with skills-only OpenAI/Codex and Claude compatibility overlays;
 - compatibility migration for legacy creators;
-- conformance, integrity, traversal, taste-pending, graph, and parity tests.
+- conformance, exact-target provenance, symlink rejection, receipt-scope and statement-integrity, traversal, taste-pending, graph, and parity tests.
 
 Not claimed:
 

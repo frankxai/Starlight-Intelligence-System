@@ -6,6 +6,7 @@ import {
   mkdirSync,
   readFileSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
@@ -19,6 +20,7 @@ import { proposeEvolution } from "../tools/foundry/lib/evolve.mjs";
 import {
   getContract,
   loadContractRegistry,
+  platformReceiptStatementSha256,
   validateValue,
 } from "../tools/foundry/lib/schema.mjs";
 
@@ -108,7 +110,7 @@ function starlightPublisher() {
 }
 
 function validPlatformReceipt() {
-  return {
+  const receipt: any = {
     $schema: "https://starlightintelligence.org/schemas/foundry/platform-release-receipt.schema.json",
     schemaVersion: "1.0.0",
     receiptId: "release-openai-001",
@@ -122,7 +124,7 @@ function validPlatformReceipt() {
     },
     host: {
       registryId: "openai-chatgpt-codex",
-      surface: "codex-cli",
+      surface: "ChatGPT apps and Codex plugins",
       version: "1.0.0",
       channel: "stable",
       os: "linux",
@@ -166,7 +168,7 @@ function validPlatformReceipt() {
     }],
     claims: [{
       capability: "skills.discovery",
-      surface: "codex-cli",
+      surface: "ChatGPT apps and Codex plugins",
       state: "compatible",
       owner: null,
       verifiedAt: "2026-08-31T12:02:00Z",
@@ -184,6 +186,8 @@ function validPlatformReceipt() {
     },
     waiver: null,
   };
+  receipt.attestation.statementSha256 = platformReceiptStatementSha256(receipt);
+  return receipt;
 }
 
 describe("v9.2 Foundry contracts", () => {
@@ -259,6 +263,20 @@ describe("v9.2 Foundry contracts", () => {
     const receiptContract = getContract(registry, "platform-release-receipt") as any;
     const receiptHostIds = receiptContract.properties.host.properties.registryId.enum;
     assert.deepEqual([...ids].sort(), [...receiptHostIds].sort());
+    const receiptBindings = receiptContract.oneOf.map((branch: any) => ({
+      id: branch.properties.host.properties.registryId.const,
+      surface: branch.properties.host.properties.surface.const,
+      adapterTier: branch.properties.adapter.properties.tier.const,
+    }));
+    const registryBindings = registryValue.surfaces.map((surface: any) => ({
+      id: surface.id,
+      surface: surface.surface,
+      adapterTier: surface.adapterTier,
+    }));
+    assert.deepEqual(
+      receiptBindings.sort((left: any, right: any) => left.id.localeCompare(right.id)),
+      registryBindings.sort((left: any, right: any) => left.id.localeCompare(right.id)),
+    );
     for (const id of [
       "anthropic-claude",
       "xai-grok-build",
@@ -321,11 +339,46 @@ describe("v9.2 Foundry contracts", () => {
       ),
     );
 
+    const wrongSurface = structuredClone(receipt);
+    wrongSurface.host.surface = "Custom GPT actions and knowledge";
+    wrongSurface.attestation.statementSha256 = platformReceiptStatementSha256(wrongSurface);
+    assert.ok(
+      validateValue(wrongSurface, contract, registry).errors.some(
+        (error: any) => error.code === "HOST_SURFACE_BINDING",
+      ),
+    );
+
+    const wrongTier = structuredClone(receipt);
+    wrongTier.adapter.tier = "portable";
+    wrongTier.attestation.statementSha256 = platformReceiptStatementSha256(wrongTier);
+    assert.ok(
+      validateValue(wrongTier, contract, registry).errors.some(
+        (error: any) => error.code === "ADAPTER_TIER_BINDING",
+      ),
+    );
+
+    const wrongClaimSurface = structuredClone(receipt);
+    wrongClaimSurface.claims[0].surface = "Custom GPT actions and knowledge";
+    wrongClaimSurface.attestation.statementSha256 = platformReceiptStatementSha256(wrongClaimSurface);
+    assert.ok(
+      validateValue(wrongClaimSurface, contract, registry).errors.some(
+        (error: any) => error.code === "CLAIM_SURFACE_BINDING",
+      ),
+    );
+
     const unattachedAttestation = structuredClone(receipt);
     unattachedAttestation.attestation.artifactSha256 = "d".repeat(64);
     assert.ok(
       validateValue(unattachedAttestation, contract, registry).errors.some(
         (error: any) => error.code === "ATTESTATION_SUBJECT",
+      ),
+    );
+
+    const tamperedStatement = structuredClone(receipt);
+    tamperedStatement.evidence[0].sha256 = "c".repeat(64);
+    assert.ok(
+      validateValue(tamperedStatement, contract, registry).errors.some(
+        (error: any) => error.code === "ATTESTATION_STATEMENT",
       ),
     );
 
@@ -737,6 +790,66 @@ describe("v9.2 Foundry compilation and proof", () => {
     }
   });
 
+  it("rejects symbolic links from compiler and prover artifact trees", () => {
+    const temp = tempDirectory();
+    try {
+      const sourceRoot = join(temp, "source-root");
+      mkdirSync(sourceRoot, { recursive: true });
+      symlinkSync(
+        join(ROOT, "skills", "foundry", "skill-forge"),
+        join(sourceRoot, "linked-skill"),
+        "dir",
+      );
+      const sourceGraph: any = structuredClone(buildCapabilityGraph(ROOT));
+      sourceGraph.nodes.find(
+        (node: any) => node.id === "skill:foundry/skill-forge",
+      ).path = "linked-skill/SKILL.md";
+      const sourceEnvelope = projectionEnvelope(
+        "plugin",
+        "symlinked-source",
+        ["agent-plugin"],
+        ["foundry/skill-forge"],
+        "plugin/plugin.json",
+      );
+      const sourcePack = {
+        schemaVersion: "1.0.0",
+        kind: "plugin",
+        id: "symlinked-source",
+        version: "0.1.0",
+        description: "Prove the compiler rejects skill sources reached through symbolic links.",
+        displayName: "Symlinked Source",
+        publisher: starlightPublisher(),
+        skills: ["foundry/skill-forge"],
+        authentication: "none",
+        deployment: { targets: ["agent-plugin"] },
+      };
+      assert.throws(
+        () => compilePackage({
+          root: sourceRoot,
+          envelope: sourceEnvelope,
+          pack: sourcePack,
+          output: join(temp, "source-package"),
+          graph: sourceGraph,
+          registry,
+        }),
+        /Refusing symbolic link in artifact tree/,
+      );
+
+      const output = join(temp, "package");
+      compileDemo(output);
+      symlinkSync(
+        join(output, "foundry-manifest.json"),
+        join(output, "linked-foundry-manifest.json"),
+      );
+      assert.throws(
+        () => provePackage({ packageDirectory: output, registry }),
+        /Refusing symbolic link in artifact tree: linked-foundry-manifest.json/,
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
   it("keeps a required taste lane pending without independent judge evidence", () => {
     const temp = tempDirectory();
     try {
@@ -979,7 +1092,7 @@ describe("v9.2 Foundry portable plugin compiler", () => {
       const envelope = projectionEnvelope(
         "plugin",
         "portable-only",
-        targets,
+        ["agent-plugin", "codex"],
         ["foundry/skill-forge"],
         "plugin/plugin.json",
       );
@@ -1011,6 +1124,7 @@ describe("v9.2 Foundry portable plugin compiler", () => {
       assert.equal(existsSync(join(output, "plugin", ".mcp.json")), false);
       assert.equal(existsSync(join(output, "plugin", ".claude-plugin")), false);
       assert.equal(existsSync(join(output, "plugin", ".claude-mcp.json")), false);
+      assert.deepEqual(json(join(output, "foundry-manifest.json")).deploymentTargets, targets);
 
       const invalidPack = structuredClone(pack);
       invalidPack.id = "foundry--projection";

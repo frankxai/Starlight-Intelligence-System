@@ -12,6 +12,7 @@ import { basename, dirname, join, parse, relative, resolve } from "node:path";
 import {
   hashTree,
   resolveInside,
+  walkFiles,
   writeJson,
   writeText,
 } from "./io.mjs";
@@ -190,8 +191,10 @@ function copySkill(root, node, destination) {
   const skillDirectory = join(destination, "skills", node.id.replace(/^skill:/, "").split("/").at(-1));
   mkdirSync(skillDirectory, { recursive: true });
   if (basename(source) === "SKILL.md") {
+    walkFiles(dirname(source));
     cpSync(dirname(source), skillDirectory, { recursive: true });
   } else {
+    walkFiles(source);
     cpSync(source, join(skillDirectory, "SKILL.md"));
   }
 }
@@ -446,7 +449,7 @@ export function compilePackage({
       pack: `${pack.kind}-pack.json`,
       resolution: "capability-resolution.json",
     },
-    deploymentTargets: envelope.deployment.targets,
+    deploymentTargets: pack.deployment.targets,
     artifacts: artifactDigests,
     proofCommand: "node tools/foundry/cli.mjs prove <package-directory>",
   };

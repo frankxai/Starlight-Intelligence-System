@@ -54,22 +54,23 @@ Preserve these invariants in code and tests:
 2. Portable plugin.json remains closed to the upstream schema.
 3. Portable mcp.json uses the upstream MCP schema.
 4. OpenAI and Claude metadata live in explicit overlays.
-5. The compiler always emits portable core and only emits host overlays for declared targets.
+5. The compiler always emits portable core, only emits host overlays for Plugin Pack targets allowed by the Task Envelope, and records that exact emitted set in foundry-manifest.json.
 6. Publisher, repository, homepage, license, email, and keywords come from source contracts; never hardcode Starlight for third parties.
 7. Remote MCP endpoints require HTTPS and reject user information, query strings, and fragments.
 8. Secrets never enter packages, logs, screenshots, recordings, fixtures, or issue bodies.
-9. One receipt covers one exact host surface/environment and expires.
+9. One receipt covers one exact registry ID, registry surface, adapter tier, and environment; every claim uses that surface and expires.
 10. Verified/published/supported claims require overlapping passing evidence.
 11. Published/supported require a release or listing URL; reviewed marketplaces require approval.
 12. Supported requires a named owner and no applicable failing check.
 13. Unsupported adapters and blocked distribution cannot become strong claims.
-14. Receipt schema validation is structural and semantic, not cryptographic authentication.
-15. A separate verifier must authenticate Sigstore/GitHub OIDC or the named human review record.
+14. Receipt schema validation binds the subject digest and the deterministic digest of the entire non-attestation receipt statement; it is not cryptographic authentication.
+15. A separate verifier must authenticate Sigstore/GitHub OIDC or the named human review record against that signed statement.
 16. Human consent, marketplace forms, billing, privacy/legal declarations, and final publish remain human gates.
 17. Public badges and copy must be derived from current receipts.
 18. Failing or expired receipts downgrade claims automatically.
 19. Do not broaden target scope merely because another host looks compatible.
 20. Every host adapter has an owner, tests, evidence plan, limitations, and repair path.
+21. Reject symbolic links in canonical skill sources and compiled artifact trees before copying, hashing, or proving.
 
 ### Immediate milestone
 
@@ -102,7 +103,8 @@ Implement a verifier separate from JSON schema validation.
 
 It must:
 
-- bind the attestation to subject artifactSha256;
+- bind the attestation to subject artifactSha256 and statementSha256;
+- sign and verify the deterministic non-attestation receipt statement covering host, adapter, distribution, run, checks, evidence hashes, claims, sources, expiry, and waiver;
 - verify the selected GitHub OIDC/Sigstore provenance with official libraries or CLIs;
 - verify issuer, identity, repository, workflow, ref/tag, and subject digest against policy;
 - expose deterministic pass/fail reasons;
@@ -172,8 +174,9 @@ At minimum test:
 - third-party publisher/license round trip;
 - HTTPS endpoint acceptance;
 - rejection of non-HTTPS, userinfo, query, and fragment URLs;
-- registry/receipt host ID parity;
-- unknown host ID rejection;
+- registry/receipt host ID, surface, and adapter-tier parity;
+- unknown or mismatched host ID/surface/tier rejection;
+- claim/host surface mismatch rejection;
 - dangling and duplicate evidence rejection;
 - verified claim without matching pass rejection;
 - pass with disjoint evidence rejection;
@@ -181,7 +184,8 @@ At minimum test:
 - blocked/pending marketplace published claim rejection;
 - missing listing URL rejection;
 - unowned or failing supported claim rejection;
-- attestation digest mismatch rejection;
+- subject and signed-statement digest mismatch rejection;
+- source and compiled-tree symlink rejection;
 - cryptographic verifier issuer/identity/digest negative cases;
 - expired receipt downgrade;
 - deterministic redaction;

@@ -1,5 +1,6 @@
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
   readdirSync,
@@ -51,10 +52,16 @@ export function walkFiles(root, options = {}) {
   const ignored = new Set(options.ignored ?? [".git", "node_modules"]);
   const results = [];
 
+  const absoluteRoot = resolve(root);
+
   function walk(current) {
     for (const entry of readdirSync(current, { withFileTypes: true })) {
-      if (ignored.has(entry.name)) continue;
       const absolute = resolve(current, entry.name);
+      if (entry.isSymbolicLink()) {
+        const path = relative(absoluteRoot, absolute).split(sep).join("/");
+        throw new Error(`Refusing symbolic link in artifact tree: ${path}`);
+      }
+      if (ignored.has(entry.name)) continue;
       if (entry.isDirectory()) {
         walk(absolute);
       } else if (entry.isFile()) {
@@ -63,7 +70,14 @@ export function walkFiles(root, options = {}) {
     }
   }
 
-  if (existsSync(root)) walk(resolve(root));
+  if (existsSync(absoluteRoot)) {
+    const rootStat = lstatSync(absoluteRoot);
+    if (rootStat.isSymbolicLink()) {
+      throw new Error("Refusing symbolic link in artifact tree: .");
+    }
+    if (rootStat.isFile()) results.push(absoluteRoot);
+    if (rootStat.isDirectory()) walk(absoluteRoot);
+  }
   return results.sort();
 }
 

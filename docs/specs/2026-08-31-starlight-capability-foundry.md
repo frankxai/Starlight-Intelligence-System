@@ -91,7 +91,7 @@ plugin/
 └── .claude-mcp.json          # optional Claude overlay
 ~~~
 
-Portable plugin.json stays closed to the upstream schema. Host-only metadata belongs in a host overlay or a reverse-domain extension directory. The compiler always emits the portable core and emits an OpenAI or Claude overlay only when that target was declared.
+Portable plugin.json stays closed to the upstream schema. Host-only metadata belongs in a host overlay or a reverse-domain extension directory. The compiler always emits the portable core and emits an OpenAI or Claude overlay only when that target was declared. The Task Envelope defines the maximum allowed targets; foundry-manifest.json records the Plugin Pack's exact emitted target set. Source and compiled artifact trees reject symbolic links before copying or hashing so provenance cannot escape or disappear from the digest set.
 
 Publisher identity, homepage, repository, license, and keywords are source inputs. This makes the Foundry safe for third-party products instead of silently assigning Starlight ownership.
 
@@ -181,10 +181,12 @@ A platform receipt binds:
 - runner mode, suite version, workflow URL, and timestamps;
 - checks, evidence references, claims, limitations, owner, and expiry;
 - official sources;
-- attestation method, signature material, subject digest, and verification URL;
+- attestation method, signature material, subject digest, signed-statement digest, and verification URL;
 - a time-bounded waiver, if any.
 
-Schema validation proves structure and local semantic invariants. It does not verify Sigstore, GitHub OIDC, or a human identity. In the foundational implementation, every verified, published, or supported candidate is rejected with ATTESTATION_VERIFIER_REQUIRED. A separate verifier must authenticate the attestation before the claim API may expose those states.
+The host registry ID, exact registry surface label, adapter tier, and every claim surface must agree. attestation.statementSha256 is the SHA-256 of the complete receipt except the attestation object, serialized as JSON with lexicographically sorted object keys and preserved array order. This non-self-referential statement binds the host, checks, evidence hashes, claims, official sources, distribution facts, expiry, and waiver before an external signer authenticates it.
+
+Schema validation proves structure, local semantic invariants, and the deterministic statement digest. It does not verify Sigstore, GitHub OIDC, or a human identity. In the foundational implementation, every verified, published, or supported candidate is rejected with ATTESTATION_VERIFIER_REQUIRED. A separate verifier must authenticate the attestation and signed statement before the claim API may expose those states.
 
 Default receipt TTL is 45 days. Security-critical host or authentication changes invalidate affected receipts immediately.
 
@@ -454,7 +456,7 @@ Rules:
 
 ### First 72 hours
 
-- Merge portable plugin, host registry, platform receipt, target gating, publisher provenance, URL secret guards, workflow, and issue form.
+- Merge portable plugin, host registry, platform receipt, exact emitted-target provenance, symlink rejection, publisher provenance, URL secret guards, workflow, and issue form.
 - Open the P0 epic and cross-repository runtime, registry, and eval issues.
 - Add pinned upstream Agent Plugins schema validation.
 - Add Claude native strict validation.
@@ -509,7 +511,8 @@ Done when:
 
 - registry ID is known;
 - claim states require correct evidence and distribution facts;
-- artifact and attestation digests match;
+- artifact, registry surface/tier, claim surface, and signed-statement digests match;
+- the signed statement covers the full non-attestation receipt payload;
 - cryptographic verification occurs outside schema validation;
 - evidence is immutable, HTTPS-addressable, redacted, and hashed;
 - receipt expiry and downgrade behavior are tested;
@@ -600,6 +603,6 @@ Done when:
 
 ## Implementation truth
 
-This foundational change establishes contracts, local compiler behavior, a documented registry, checked-in portable/OpenAI/Claude skills-only manifests, local tests, and GitHub workflow scaffolding.
+This foundational change establishes contracts, local compiler behavior, exact emitted-target provenance, symlink-safe artifact hashing, registry-bound receipts, full signed-statement digests, a documented registry, checked-in portable/OpenAI/Claude skills-only manifests, local tests, and GitHub workflow scaffolding.
 
 It makes zero verified, published, or supported host claim. Pinned upstream/native validators, cryptographic attestation verification, real connected-account host runs, marketplace submissions, screenshots, and recordings are the next gated implementation slice.
