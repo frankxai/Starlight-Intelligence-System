@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "starlight-foundry",
+  "displayName": "Starlight Foundry",
+  "version": "0.1.0",
+  "description": "Compile, prove, and evolve portable skills and bounded agent systems from explicit capability contracts.",
+  "author": {
+    "name": "Starlight Intelligence",
+    "url": "https://starlightintelligence.org"
+  },
+  "homepage": "https://starlightintelligence.org",
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "agents",
+    "evaluation",
+    "starlight"
+  ],
+  "skills": "./skills/"
+}

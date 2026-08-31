@@ -1,0 +1,54 @@
+name: Capability Foundry
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "foundry/**"
+      - "tools/foundry/**"
+      - "plugins/starlight-foundry/**"
+      - "scripts/sync-foundry-plugin.mjs"
+      - "test/v92-foundry.test.ts"
+      - ".github/workflows/capability-foundry.yml"
+  push:
+    branches: [main]
+    paths:
+      - "foundry/**"
+      - "tools/foundry/**"
+      - "plugins/starlight-foundry/**"
+      - "scripts/sync-foundry-plugin.mjs"
+      - "test/v92-foundry.test.ts"
+      - ".github/workflows/capability-foundry.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: capability-foundry-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contracts-and-compiler:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check checked-in Foundry plugin skill parity
+        run: npm run foundry:plugin:check
+
+      - name: Validate Foundry contracts, compiler, proof, and receipts
+        run: npm run test:foundry

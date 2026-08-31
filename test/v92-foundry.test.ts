@@ -97,6 +97,95 @@ function projectionEnvelope(
   return envelope;
 }
 
+function starlightPublisher() {
+  return {
+    name: "Starlight Intelligence",
+    homepage: "https://starlightintelligence.org",
+    repository: "https://github.com/frankxai/Starlight-Intelligence-System",
+    license: "MIT",
+    keywords: ["starlight", "foundry", "skills", "agents"],
+  };
+}
+
+function validPlatformReceipt() {
+  return {
+    $schema: "https://starlightintelligence.org/schemas/foundry/platform-release-receipt.schema.json",
+    schemaVersion: "1.0.0",
+    receiptId: "release-openai-001",
+    createdAt: "2026-08-31T12:03:00Z",
+    expiresAt: "2026-10-15T12:03:00Z",
+    subject: {
+      name: "starlight-foundry",
+      version: "0.1.0",
+      gitSha: "abcdef1234567",
+      artifactSha256: "a".repeat(64),
+    },
+    host: {
+      registryId: "openai-chatgpt-codex",
+      surface: "codex-cli",
+      version: "1.0.0",
+      channel: "stable",
+      os: "linux",
+      arch: "x64",
+      plan: "test",
+      locale: "en-US",
+    },
+    adapter: {
+      tier: "native",
+      format: "codex-plugin",
+      version: "1.0.0",
+      transport: "not-applicable",
+    },
+    distribution: {
+      mode: "git",
+      listingUrl: null,
+      listingId: null,
+      reviewState: "not-applicable",
+      installedVersion: "0.1.0",
+    },
+    run: {
+      mode: "headless",
+      suiteVersion: "1.0.0",
+      workflowRunUrl: "https://github.com/frankxai/Starlight-Intelligence-System/actions/runs/1",
+      startedAt: "2026-08-31T12:00:00Z",
+      completedAt: "2026-08-31T12:02:00Z",
+    },
+    checks: [{
+      id: "discover-skills",
+      capability: "skills.discovery",
+      status: "pass",
+      evidenceRefs: ["transcript-1"],
+    }],
+    evidence: [{
+      id: "transcript-1",
+      type: "transcript",
+      uri: "https://evidence.example/releases/001/transcript.ndjson",
+      sha256: "b".repeat(64),
+      capturedAt: "2026-08-31T12:02:00Z",
+      redacted: true,
+    }],
+    claims: [{
+      capability: "skills.discovery",
+      surface: "codex-cli",
+      state: "compatible",
+      owner: null,
+      verifiedAt: "2026-08-31T12:02:00Z",
+      expiresAt: "2026-10-15T12:00:00Z",
+      limitations: [],
+      evidenceRefs: ["transcript-1"],
+    }],
+    officialSourceUrls: ["https://developers.openai.com/plugins/build/plugins"],
+    attestation: {
+      actor: "github-actions:test",
+      method: "human-review",
+      signature: "review-record-c".repeat(4),
+      artifactSha256: "a".repeat(64),
+      verificationUrl: "https://github.com/frankxai/Starlight-Intelligence-System/actions/runs/1",
+    },
+    waiver: null,
+  };
+}
+
 describe("v9.2 Foundry contracts", () => {
   it("validates the canonical Task Envelope, Skill Pack, and Taste Profile examples", () => {
     const fixtures = [
@@ -155,6 +244,103 @@ describe("v9.2 Foundry contracts", () => {
     const result = validateValue(invalidAgent, getContract(registry, "agent-pack"), registry);
     assert.equal(result.valid, false);
     assert.ok(result.errors.some((error: any) => error.code === "ANY_OF"));
+  });
+
+  it("validates the cross-host registry without turning documented compatibility into support", () => {
+    const registryValue = json(join(ROOT, "foundry", "platforms", "host-capabilities.v1.json"));
+    const result = validateValue(
+      registryValue,
+      getContract(registry, "host-capability-registry"),
+      registry,
+    );
+    assert.equal(result.valid, true, JSON.stringify(result.errors));
+    const ids = registryValue.surfaces.map((surface: any) => surface.id);
+    assert.equal(new Set(ids).size, ids.length);
+    const receiptContract = getContract(registry, "platform-release-receipt") as any;
+    const receiptHostIds = receiptContract.properties.host.properties.registryId.enum;
+    assert.deepEqual([...ids].sort(), [...receiptHostIds].sort());
+    for (const id of [
+      "anthropic-claude",
+      "xai-grok-build",
+      "google-gemini-spark",
+      "manus-skills-mcp",
+      "hermes-agent-plugins",
+    ]) {
+      assert.ok(ids.includes(id), `missing host registry surface: ${id}`);
+    }
+  });
+
+  it("fails closed on unsupported, blocked, unowned, unevidenced, or unattested platform claims", () => {
+    const contract = getContract(registry, "platform-release-receipt");
+    const receipt: any = validPlatformReceipt();
+    assert.equal(validateValue(receipt, contract, registry).valid, true);
+
+    const unverifiedStrongClaim = structuredClone(receipt);
+    unverifiedStrongClaim.claims[0].state = "verified";
+    assert.ok(
+      validateValue(unverifiedStrongClaim, contract, registry).errors.some(
+        (error: any) => error.code === "ATTESTATION_VERIFIER_REQUIRED",
+      ),
+    );
+
+    const dangling = structuredClone(receipt);
+    dangling.claims[0].evidenceRefs = [];
+    dangling.checks[0].evidenceRefs = ["missing-artifact"];
+    const danglingResult = validateValue(dangling, contract, registry);
+    assert.equal(danglingResult.valid, false);
+    assert.ok(danglingResult.errors.some((error: any) => error.code === "CLAIM_EVIDENCE"));
+    assert.ok(danglingResult.errors.some((error: any) => error.code === "DANGLING_EVIDENCE"));
+
+    const falseSupport = structuredClone(receipt);
+    falseSupport.claims[0].state = "supported";
+    falseSupport.claims[0].owner = "";
+    falseSupport.adapter.tier = "unsupported";
+    falseSupport.distribution.reviewState = "blocked";
+    falseSupport.checks[0].status = "fail";
+    const supportResult = validateValue(falseSupport, contract, registry);
+    assert.equal(supportResult.valid, false);
+    for (const code of [
+      "CLAIM_PASS",
+      "ATTESTATION_VERIFIER_REQUIRED",
+      "UNSUPPORTED_ADAPTER_CLAIM",
+      "BLOCKED_DISTRIBUTION_CLAIM",
+      "LISTING_REQUIRED",
+      "SUPPORT_OWNER",
+      "FAILING_SUPPORT_CHECK",
+    ]) {
+      assert.ok(supportResult.errors.some((error: any) => error.code === code), code);
+    }
+
+    const unknownHost = structuredClone(receipt);
+    unknownHost.host.registryId = "invented-host";
+    assert.ok(
+      validateValue(unknownHost, contract, registry).errors.some(
+        (error: any) => error.code === "ENUM",
+      ),
+    );
+
+    const unattachedAttestation = structuredClone(receipt);
+    unattachedAttestation.attestation.artifactSha256 = "d".repeat(64);
+    assert.ok(
+      validateValue(unattachedAttestation, contract, registry).errors.some(
+        (error: any) => error.code === "ATTESTATION_SUBJECT",
+      ),
+    );
+
+    const pendingMarketplace = structuredClone(receipt);
+    pendingMarketplace.claims[0].state = "published";
+    pendingMarketplace.distribution = {
+      mode: "public-marketplace",
+      listingUrl: "https://example.com/listing/starlight-foundry",
+      listingId: "starlight-foundry",
+      reviewState: "pending",
+      installedVersion: "0.1.0",
+    };
+    assert.ok(
+      validateValue(pendingMarketplace, contract, registry).errors.some(
+        (error: any) => error.code === "MARKETPLACE_APPROVAL",
+      ),
+    );
   });
 });
 
@@ -415,7 +601,7 @@ describe("v9.2 Foundry compilation and proof", () => {
               "foundry/system-forge",
               "foundry/taste-engine",
             ],
-            "plugin/.codex-plugin/plugin.json",
+            "plugin/plugin.json",
           ),
           pack: {
             schemaVersion: "1.0.0",
@@ -424,6 +610,7 @@ describe("v9.2 Foundry compilation and proof", () => {
             version: "0.1.0",
             description: "Package the four validated Foundry skills into one ChatGPT Work and Codex distribution surface.",
             displayName: "Foundry Projection",
+            publisher: starlightPublisher(),
             skills: [
               "foundry/skill-forge",
               "foundry/agent-forge",
@@ -654,6 +841,202 @@ describe("v9.2 Foundry compilation and proof", () => {
   });
 });
 
+describe("v9.2 Foundry portable plugin compiler", () => {
+  it("emits portable core plus only declared OpenAI and Claude overlays", () => {
+    const temp = tempDirectory();
+    try {
+      const targets = ["agent-plugin", "openai-plugin", "codex", "claude-code"];
+      const envelope = projectionEnvelope(
+        "plugin",
+        "foundry-remote",
+        targets,
+        ["foundry/skill-forge"],
+        "plugin/plugin.json",
+      );
+      const pack: any = {
+        schemaVersion: "1.0.0",
+        kind: "plugin",
+        id: "foundry-remote",
+        version: "0.1.0",
+        description: "Package a validated Foundry skill with a remote MCP endpoint for portable and native host testing.",
+        displayName: "Foundry Remote",
+        publisher: {
+          name: "Example Publisher",
+          email: "release@example.com",
+          homepage: "https://example.com",
+          repository: "https://github.com/example/foundry-remote",
+          license: "Apache-2.0",
+          keywords: ["example", "foundry"],
+        },
+        skills: ["foundry/skill-forge"],
+        mcpServerUrl: "https://example.com/mcp",
+        authentication: "oauth2",
+        deployment: { targets },
+      };
+      const output = join(temp, pack.id);
+      compilePackage({
+        root: ROOT,
+        envelope,
+        pack,
+        output,
+        graph: buildCapabilityGraph(ROOT),
+        registry,
+      });
+
+      const portable = json(join(output, "plugin", "plugin.json"));
+      assert.equal(
+        portable.$schema,
+        "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+      );
+      assert.equal(portable.name, pack.id);
+      assert.equal(portable.author.name, "Example Publisher");
+      assert.equal(portable.license, "Apache-2.0");
+      assert.equal(Object.hasOwn(portable, "skills"), false);
+      assert.equal(Object.hasOwn(portable, "mcpServers"), false);
+      assert.equal(Object.hasOwn(portable, "interface"), false);
+      assert.ok(
+        Object.keys(portable).every((key) => [
+          "$schema",
+          "name",
+          "version",
+          "description",
+          "author",
+          "homepage",
+          "repository",
+          "license",
+          "keywords",
+          "extensions",
+        ].includes(key)),
+      );
+
+      const portableMcp = json(join(output, "plugin", "mcp.json"));
+      assert.equal(
+        portableMcp.$schema,
+        "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+      );
+      assert.deepEqual(portableMcp.mcpServers.foundry, {
+        type: "streamable-http",
+        url: "https://example.com/mcp",
+      });
+
+      const codex = json(join(output, "plugin", ".codex-plugin", "plugin.json"));
+      assert.equal(codex.mcpServers, "./.mcp.json");
+      assert.equal(codex.author.name, "Example Publisher");
+      assert.deepEqual(json(join(output, "plugin", ".mcp.json")), {
+        foundry: { type: "http", url: "https://example.com/mcp" },
+      });
+
+      const claude = json(join(output, "plugin", ".claude-plugin", "plugin.json"));
+      assert.equal(claude.mcpServers, "./.claude-mcp.json");
+      assert.equal(claude.author.name, "Example Publisher");
+      assert.deepEqual(json(join(output, "plugin", ".claude-mcp.json")), {
+        mcpServers: {
+          foundry: { type: "http", url: "https://example.com/mcp" },
+        },
+      });
+      assert.equal(
+        provePackage({ packageDirectory: output, registry }).receipt.status,
+        "validated",
+      );
+
+      for (const unsafeUrl of [
+        "https://example.com/mcp?api_key=placeholder",
+        "https://user:secret@example.com/mcp#fragment",
+      ]) {
+        const unsafePack = structuredClone(pack);
+        unsafePack.id = unsafeUrl.includes("api_key") ? "unsafe-query" : "unsafe-userinfo";
+        unsafePack.mcpServerUrl = unsafeUrl;
+        const unsafeEnvelope = projectionEnvelope(
+          "plugin",
+          unsafePack.id,
+          targets,
+          ["foundry/skill-forge"],
+          "plugin/plugin.json",
+        );
+        assert.throws(
+          () => compilePackage({
+            root: ROOT,
+            envelope: unsafeEnvelope,
+            pack: unsafePack,
+            output: join(temp, unsafePack.id),
+            graph: buildCapabilityGraph(ROOT),
+            registry,
+          }),
+          /must use HTTPS and must not contain user information, a query, or a fragment/,
+        );
+      }
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps host overlays target-scoped and rejects nonconformant portable ids", () => {
+    const temp = tempDirectory();
+    try {
+      const targets = ["agent-plugin"];
+      const envelope = projectionEnvelope(
+        "plugin",
+        "portable-only",
+        targets,
+        ["foundry/skill-forge"],
+        "plugin/plugin.json",
+      );
+      const pack: any = {
+        schemaVersion: "1.0.0",
+        kind: "plugin",
+        id: "portable-only",
+        version: "0.1.0",
+        description: "Exercise portable-only package emission without undeclared host-specific overlays.",
+        displayName: "Portable Only",
+        publisher: starlightPublisher(),
+        skills: ["foundry/skill-forge"],
+        mcpServerUrl: "https://example.com/mcp",
+        authentication: "none",
+        deployment: { targets },
+      };
+      const output = join(temp, pack.id);
+      compilePackage({
+        root: ROOT,
+        envelope,
+        pack,
+        output,
+        graph: buildCapabilityGraph(ROOT),
+        registry,
+      });
+      assert.equal(existsSync(join(output, "plugin", "plugin.json")), true);
+      assert.equal(existsSync(join(output, "plugin", "mcp.json")), true);
+      assert.equal(existsSync(join(output, "plugin", ".codex-plugin")), false);
+      assert.equal(existsSync(join(output, "plugin", ".mcp.json")), false);
+      assert.equal(existsSync(join(output, "plugin", ".claude-plugin")), false);
+      assert.equal(existsSync(join(output, "plugin", ".claude-mcp.json")), false);
+
+      const invalidPack = structuredClone(pack);
+      invalidPack.id = "foundry--projection";
+      delete invalidPack.mcpServerUrl;
+      const invalidEnvelope = projectionEnvelope(
+        "plugin",
+        invalidPack.id,
+        targets,
+        ["foundry/skill-forge"],
+        "plugin/plugin.json",
+      );
+      assert.throws(
+        () => compilePackage({
+          root: ROOT,
+          envelope: invalidEnvelope,
+          pack: invalidPack,
+          output: join(temp, invalidPack.id),
+          graph: buildCapabilityGraph(ROOT),
+          registry,
+        }),
+        /not Agent Plugins v1 conformant/,
+      );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("v9.2 Foundry plugin distribution", () => {
   it("refuses plugin skill-name collisions before writing output", () => {
     const temp = tempDirectory();
@@ -675,6 +1058,7 @@ describe("v9.2 Foundry plugin distribution", () => {
         version: "0.1.0",
         description: "A collision fixture that proves plugin packaging fails closed on duplicate skill directory names.",
         displayName: "Collision Fixture",
+        publisher: starlightPublisher(),
         skills: [
           "music-is/catalog-systems",
           "sound-intelligence/catalog-systems",
@@ -711,12 +1095,30 @@ describe("v9.2 Foundry plugin distribution", () => {
     }
   });
 
-  it("ships a skills-only plugin manifest with current starter prompts", () => {
+  it("ships synchronized skills-only portable, OpenAI, and Claude manifests", () => {
     const manifest = json(join(ROOT, "plugins", "starlight-foundry", ".codex-plugin", "plugin.json"));
+    const portable = json(join(ROOT, "plugins", "starlight-foundry", "plugin.json"));
+    const claude = json(join(ROOT, "plugins", "starlight-foundry", ".claude-plugin", "plugin.json"));
     assert.equal(manifest.name, "starlight-foundry");
+    assert.equal(portable.name, manifest.name);
+    assert.equal(portable.version, manifest.version);
+    assert.equal(claude.name, manifest.name);
+    assert.equal(claude.version, manifest.version);
+    assert.equal(
+      portable.$schema,
+      "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+    );
+    assert.equal(Object.hasOwn(portable, "skills"), false);
+    assert.equal(Object.hasOwn(portable, "mcpServers"), false);
     assert.equal(manifest.skills, "./skills/");
     assert.equal(Object.hasOwn(manifest, "mcpServers"), false);
+    assert.equal(claude.skills, "./skills/");
+    assert.equal(Object.hasOwn(claude, "mcpServers"), false);
+    assert.equal(existsSync(join(ROOT, "plugins", "starlight-foundry", "mcp.json")), false);
+    assert.equal(existsSync(join(ROOT, "plugins", "starlight-foundry", ".mcp.json")), false);
     assert.ok(Array.isArray(manifest.interface.defaultPrompt));
-    assert.ok(manifest.interface.defaultPrompt.some((prompt: string) => prompt.includes("$skill-forge")));
+    assert.ok(
+      manifest.interface.defaultPrompt.some((prompt: string) => prompt.includes("$skill-forge")),
+    );
   });
 });

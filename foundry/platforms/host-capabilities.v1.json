@@ -1,0 +1,691 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/host-capability-registry.schema.json",
+  "schemaVersion": "1.0.0",
+  "verifiedAt": "2026-08-31",
+  "defaultReceiptTtlDays": 45,
+  "surfaces": [
+    {
+      "id": "openai-chatgpt-codex",
+      "ecosystem": "OpenAI",
+      "surface": "ChatGPT apps and Codex plugins",
+      "priority": "p0",
+      "lifecycle": "primary",
+      "adapterTier": "native",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "codex-plugin",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "public-marketplace",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "mcp-apps",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate portable plugin and MCP schemas.",
+        "Run Codex install, discovery, positive, negative-auth, update, and uninstall cases."
+      ],
+      "humanGates": [
+        "Connect a staging ChatGPT workspace and Codex account.",
+        "Review privacy, screenshots, listing copy, permissions, and final submission."
+      ],
+      "limitations": [
+        "A compiled package is not proof of ChatGPT marketplace publication or support."
+      ],
+      "sources": [
+        "https://developers.openai.com/plugins/build/plugins",
+        "https://developers.openai.com/plugins/deploy/connect-chatgpt",
+        "https://developers.openai.com/plugins/deploy/submission"
+      ]
+    },
+    {
+      "id": "openai-custom-gpt",
+      "ecosystem": "OpenAI",
+      "surface": "Custom GPT actions and knowledge",
+      "priority": "p1",
+      "lifecycle": "compatibility",
+      "adapterTier": "instruction-pack",
+      "packageFormats": [
+        "gpt-instructions",
+        "openapi"
+      ],
+      "distribution": {
+        "mode": "host-console",
+        "listing": "reviewed",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Lint exported instructions, OpenAPI definitions, and policy-safe test prompts."
+      ],
+      "humanGates": [
+        "Create or update the GPT in the ChatGPT builder.",
+        "Test actions, privacy policy, conversation starters, and store review."
+      ],
+      "limitations": [
+        "Custom GPT configuration is a distinct host artifact, not an Agent Plugin projection."
+      ],
+      "sources": [
+        "https://help.openai.com/en/articles/8554397-creating-a-gpt",
+        "https://help.openai.com/en/articles/8798878-building-and-publishing-a-gpt"
+      ]
+    },
+    {
+      "id": "anthropic-claude",
+      "ecosystem": "Anthropic",
+      "surface": "Claude Code plugins, connectors, and MCP Apps",
+      "priority": "p0",
+      "lifecycle": "primary",
+      "adapterTier": "native",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "claude-plugin",
+        "mcp",
+        "mcp-app"
+      ],
+      "distribution": {
+        "mode": "public-marketplace",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "mcp-apps",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Run the Claude plugin validator and manifest checks.",
+        "Exercise remote MCP discovery, OAuth failure, tool execution, update, and removal."
+      ],
+      "humanGates": [
+        "Connect Claude staging accounts and approve OAuth scopes.",
+        "Complete connector review, listing assets, privacy review, and in-host UX capture."
+      ],
+      "limitations": [
+        "MCPB is only appropriate for explicitly local desktop installation needs."
+      ],
+      "sources": [
+        "https://claude.com/docs/connectors/building/what-to-build",
+        "https://code.claude.com/docs/en/plugins-reference",
+        "https://code.claude.com/docs/en/plugin-marketplaces",
+        "https://claude.com/docs/connectors/building/review-criteria"
+      ]
+    },
+    {
+      "id": "cursor-agent-plugins",
+      "ecosystem": "Cursor",
+      "surface": "Cursor Agent Plugins marketplace",
+      "priority": "p0",
+      "lifecycle": "primary",
+      "adapterTier": "portable",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "public-marketplace",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "mcp-apps",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate Agent Plugin package shape and MCP configuration.",
+        "Run clean install, skill discovery, tool call, update, and uninstall in a disposable profile."
+      ],
+      "humanGates": [
+        "Review requested permissions and marketplace presentation.",
+        "Approve final listing submission and screenshots."
+      ],
+      "limitations": [
+        "Host verification must identify Cursor version, channel, OS, and plan."
+      ],
+      "sources": [
+        "https://cursor.com/docs/plugins",
+        "https://github.com/agentplugins/agent-plugins-spec/blob/main/spec/1.0.0.md"
+      ]
+    },
+    {
+      "id": "github-copilot-vscode",
+      "ecosystem": "GitHub",
+      "surface": "VS Code and GitHub Copilot agent plugins",
+      "priority": "p0",
+      "lifecycle": "compatibility",
+      "adapterTier": "portable",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "public-marketplace",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "mcp-apps",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate Agent Plugin package and VS Code extension compatibility.",
+        "Test discovery and execution in a clean VS Code profile."
+      ],
+      "humanGates": [
+        "Test with authorized GitHub Copilot plans.",
+        "Review VS Code Marketplace assets and publish permissions."
+      ],
+      "limitations": [
+        "VS Code and hosted GitHub surfaces require separate receipts when behavior differs."
+      ],
+      "sources": [
+        "https://code.visualstudio.com/docs/copilot/customization/agent-plugins",
+        "https://docs.github.com/en/copilot/customizing-copilot/extending-copilot-chat-with-mcp"
+      ]
+    },
+    {
+      "id": "google-antigravity",
+      "ecosystem": "Google",
+      "surface": "Antigravity Agent Plugins",
+      "priority": "p1",
+      "lifecycle": "primary",
+      "adapterTier": "portable",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "curated-directory",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "host-native",
+        "mcp-apps"
+      ],
+      "headlessValidation": [
+        "Validate the portable package and MCP declaration.",
+        "Test install, discovery, execution, update, and removal in a disposable Antigravity profile."
+      ],
+      "humanGates": [
+        "Confirm product availability and eligible Google account.",
+        "Capture in-host behavior and complete any directory review."
+      ],
+      "limitations": [
+        "Treat Antigravity as the primary Google developer-host target; Gemini CLI is compatibility only."
+      ],
+      "sources": [
+        "https://github.com/agentplugins/agent-plugins-spec",
+        "https://antigravity.google/docs/agent-plugins"
+      ]
+    },
+    {
+      "id": "google-gemini-cli",
+      "ecosystem": "Google",
+      "surface": "Gemini CLI extensions",
+      "priority": "p2",
+      "lifecycle": "compatibility",
+      "adapterTier": "native",
+      "packageFormats": [
+        "gemini-extension",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "git",
+        "listing": "direct",
+        "publishAutomation": "api"
+      },
+      "ui": [
+        "text-only"
+      ],
+      "headlessValidation": [
+        "Validate gemini-extension.json and MCP settings.",
+        "Run install, command discovery, tool execution, update, and uninstall."
+      ],
+      "humanGates": [
+        "Confirm OAuth consent and any extension catalog listing."
+      ],
+      "limitations": [
+        "Do not position Gemini CLI compatibility as the primary Google marketplace lane."
+      ],
+      "sources": [
+        "https://geminicli.com/docs/extensions/",
+        "https://github.com/google-gemini/gemini-cli"
+      ]
+    },
+    {
+      "id": "google-gemini-spark",
+      "ecosystem": "Google",
+      "surface": "Gemini app-building and custom MCP",
+      "priority": "p1",
+      "lifecycle": "experimental",
+      "adapterTier": "mcp-only",
+      "packageFormats": [
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "direct-url",
+        "listing": "direct",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate remote MCP transport, schema, authentication errors, and tool results."
+      ],
+      "humanGates": [
+        "Connect the MCP server in a staging project and capture the generated application flow."
+      ],
+      "limitations": [
+        "This is a direct project integration lane, not a public Agent Plugin marketplace claim."
+      ],
+      "sources": [
+        "https://ai.google.dev/gemini-api/docs",
+        "https://firebase.google.com/docs/studio"
+      ]
+    },
+    {
+      "id": "google-workspace-marketplace",
+      "ecosystem": "Google",
+      "surface": "Google Workspace add-ons with Gemini",
+      "priority": "p1",
+      "lifecycle": "primary",
+      "adapterTier": "native",
+      "packageFormats": [
+        "workspace-addon"
+      ],
+      "distribution": {
+        "mode": "public-marketplace",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "host-cards",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Lint deployment descriptors, OAuth scopes, privacy links, and test fixtures.",
+        "Run Apps Script or HTTP endpoint integration tests."
+      ],
+      "humanGates": [
+        "Configure Cloud project, consent screen, test users, domain policies, and Marketplace review."
+      ],
+      "limitations": [
+        "Workspace add-ons are commercial host-native products, not Agent Plugin projections."
+      ],
+      "sources": [
+        "https://developers.google.com/workspace/add-ons/overview",
+        "https://developers.google.com/workspace/marketplace/how-to-publish"
+      ]
+    },
+    {
+      "id": "google-gemini-enterprise",
+      "ecosystem": "Google Cloud",
+      "surface": "Gemini Enterprise A2A agents",
+      "priority": "p1",
+      "lifecycle": "primary",
+      "adapterTier": "native",
+      "packageFormats": [
+        "a2a-agent-card",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "host-console",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "a2ui",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate A2A agent card, authentication, task lifecycle, and trace correlation.",
+        "Run conformance and negative permission tests in a staging project."
+      ],
+      "humanGates": [
+        "Provision Google Cloud project, IAM, service identity, billing, and enterprise catalog access."
+      ],
+      "limitations": [
+        "Enterprise publication and support are tenant-scoped and need customer-specific receipts."
+      ],
+      "sources": [
+        "https://cloud.google.com/gemini-enterprise/docs/create-a2a-agent",
+        "https://a2a-protocol.org/latest/"
+      ]
+    },
+    {
+      "id": "xai-grok-build",
+      "ecosystem": "xAI",
+      "surface": "Grok Build and connected tools",
+      "priority": "p1",
+      "lifecycle": "experimental",
+      "adapterTier": "mcp-only",
+      "packageFormats": [
+        "mcp",
+        "instruction-pack"
+      ],
+      "distribution": {
+        "mode": "host-console",
+        "listing": "closed-beta",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate MCP transport and tool schemas against an isolated xAI staging service."
+      ],
+      "humanGates": [
+        "Confirm Grok Build access, configure secrets, test consent, and record in-host behavior."
+      ],
+      "limitations": [
+        "No public marketplace claim until xAI exposes and documents a submission lane."
+      ],
+      "sources": [
+        "https://docs.x.ai/docs/grok-business/grok-build",
+        "https://docs.x.ai/docs"
+      ]
+    },
+    {
+      "id": "manus-skills-mcp",
+      "ecosystem": "Manus",
+      "surface": "Manus skills and MCP integrations",
+      "priority": "p1",
+      "lifecycle": "experimental",
+      "adapterTier": "native",
+      "packageFormats": [
+        "manus-skill",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "host-console",
+        "listing": "direct",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Lint exported skill instructions and MCP metadata.",
+        "Test task invocation, permissions, failure handling, and removal in a staging workspace."
+      ],
+      "humanGates": [
+        "Install through the Manus UI, authorize external tools, and capture task evidence."
+      ],
+      "limitations": [
+        "Manus packaging and sharing behavior must be reverified before every public claim."
+      ],
+      "sources": [
+        "https://manus.im/docs",
+        "https://manus.im/docs/features/skills"
+      ]
+    },
+    {
+      "id": "hermes-agent-plugins",
+      "ecosystem": "Nous Research",
+      "surface": "Hermes Agent Plugin runtime",
+      "priority": "p1",
+      "lifecycle": "primary",
+      "adapterTier": "portable",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "git",
+        "listing": "direct",
+        "publishAutomation": "api"
+      },
+      "ui": [
+        "text-only",
+        "mcp-apps"
+      ],
+      "headlessValidation": [
+        "Run portable plugin validation and Hermes install/discovery tests.",
+        "Exercise MCP tool calls and safety failure cases."
+      ],
+      "humanGates": [
+        "Review environment permissions and any community directory submission."
+      ],
+      "limitations": [
+        "Support claims are limited to tested Hermes releases and operating systems."
+      ],
+      "sources": [
+        "https://github.com/NousResearch/hermes-agent",
+        "https://github.com/agentplugins/agent-plugins-spec"
+      ]
+    },
+    {
+      "id": "opencode-plugins",
+      "ecosystem": "OpenCode",
+      "surface": "OpenCode plugins",
+      "priority": "p2",
+      "lifecycle": "compatibility",
+      "adapterTier": "native",
+      "packageFormats": [
+        "opencode-plugin",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "npm",
+        "listing": "self-service",
+        "publishAutomation": "api"
+      },
+      "ui": [
+        "text-only"
+      ],
+      "headlessValidation": [
+        "Lint plugin exports and run clean profile discovery/tool tests."
+      ],
+      "humanGates": [
+        "Approve npm provenance and any community listing."
+      ],
+      "limitations": [
+        "Requires an OpenCode-specific renderer."
+      ],
+      "sources": [
+        "https://opencode.ai/docs/plugins/"
+      ]
+    },
+    {
+      "id": "kiro-powers",
+      "ecosystem": "AWS",
+      "surface": "Kiro Powers",
+      "priority": "p2",
+      "lifecycle": "compatibility",
+      "adapterTier": "native",
+      "packageFormats": [
+        "kiro-power",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "git",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate Power metadata and MCP configuration.",
+        "Test activation, steering, hooks, and removal in a disposable workspace."
+      ],
+      "humanGates": [
+        "Confirm AWS account permissions and directory submission rules."
+      ],
+      "limitations": [
+        "Kiro Powers need a host-native projection."
+      ],
+      "sources": [
+        "https://kiro.dev/docs/powers/"
+      ]
+    },
+    {
+      "id": "devin-plugins",
+      "ecosystem": "Cognition",
+      "surface": "Devin plugins",
+      "priority": "p2",
+      "lifecycle": "beta",
+      "adapterTier": "native",
+      "packageFormats": [
+        "devin-plugin"
+      ],
+      "distribution": {
+        "mode": "private-marketplace",
+        "listing": "closed-beta",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Lint plugin contents and repository fixtures."
+      ],
+      "humanGates": [
+        "Obtain beta access, install in a staging organization, and capture task behavior."
+      ],
+      "limitations": [
+        "Distribution is beta/tenant-dependent; no public support claim without an eligible account."
+      ],
+      "sources": [
+        "https://docs.devin.ai/product-guides/plugins"
+      ]
+    },
+    {
+      "id": "cline-mcp-skills",
+      "ecosystem": "Cline",
+      "surface": "Cline skills and MCP servers",
+      "priority": "p2",
+      "lifecycle": "compatibility",
+      "adapterTier": "native",
+      "packageFormats": [
+        "cline-rules",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "git",
+        "listing": "direct",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "mcp-apps",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate MCP server metadata and instruction projection.",
+        "Run clean install, tool approval, negative auth, and uninstall tests."
+      ],
+      "humanGates": [
+        "Approve local command permissions and any MCP marketplace listing."
+      ],
+      "limitations": [
+        "Requires separate Cline rules and MCP projections."
+      ],
+      "sources": [
+        "https://docs.cline.bot/mcp/mcp-overview",
+        "https://github.com/cline/mcp-marketplace"
+      ]
+    },
+    {
+      "id": "jetbrains-junie",
+      "ecosystem": "JetBrains",
+      "surface": "Junie guidelines and MCP",
+      "priority": "p2",
+      "lifecycle": "compatibility",
+      "adapterTier": "instruction-pack",
+      "packageFormats": [
+        "junie-guidelines",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "direct-url",
+        "listing": "direct",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Lint guidelines and MCP JSON.",
+        "Run activation and tool-use cases in a clean IDE project."
+      ],
+      "humanGates": [
+        "Test supported IDE versions and approve local tool permissions."
+      ],
+      "limitations": [
+        "No unified public plugin marketplace projection is claimed."
+      ],
+      "sources": [
+        "https://www.jetbrains.com/help/junie/customize-guidelines.html",
+        "https://www.jetbrains.com/help/junie/mcp.html"
+      ]
+    },
+    {
+      "id": "zed-mcp",
+      "ecosystem": "Zed",
+      "surface": "Zed context servers",
+      "priority": "p2",
+      "lifecycle": "compatibility",
+      "adapterTier": "mcp-only",
+      "packageFormats": [
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "git",
+        "listing": "direct",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "text-only"
+      ],
+      "headlessValidation": [
+        "Validate context-server configuration and executable provenance.",
+        "Test discovery, permission failures, and removal."
+      ],
+      "humanGates": [
+        "Confirm local executable trust and extension review if distributed."
+      ],
+      "limitations": [
+        "Skills require an instruction projection; MCP alone does not preserve all behavior."
+      ],
+      "sources": [
+        "https://zed.dev/docs/assistant/model-context-protocol"
+      ]
+    },
+    {
+      "id": "roo-code-sunset",
+      "ecosystem": "Roo Code",
+      "surface": "Legacy marketplace surface",
+      "priority": "excluded",
+      "lifecycle": "sunset",
+      "adapterTier": "unsupported",
+      "packageFormats": [
+        "unsupported"
+      ],
+      "distribution": {
+        "mode": "none",
+        "listing": "none",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "none"
+      ],
+      "headlessValidation": [],
+      "humanGates": [
+        "Reopen only after current official documentation confirms a supported distribution surface."
+      ],
+      "limitations": [
+        "Excluded from active release lanes; preserve only a documented compatibility record."
+      ],
+      "sources": [
+        "https://docs.roocode.com/"
+      ]
+    }
+  ]
+}
