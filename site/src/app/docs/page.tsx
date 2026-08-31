@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
   title: "Documentation",
@@ -8,11 +9,19 @@ export const metadata: Metadata = {
 
 export default function DocsPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-2xl font-bold text-white">Documentation</h1>
-      <p className="mt-2 text-[14px] text-slate-500">
-        Everything you need to deploy, configure, and connect.
-      </p>
+    <div>
+      <section className="relative overflow-hidden border-b border-white/[0.06]">
+        <GalaxyField still="veil" />
+        <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-24">
+          <h1 className="font-serif text-[clamp(2rem,5vw,3.2rem)] font-semibold tracking-tight text-white">
+            Documentation
+          </h1>
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400">
+            Everything you need to deploy, configure, and connect.
+          </p>
+        </div>
+      </section>
+      <div className="mx-auto max-w-3xl px-6 py-16">
 
       {/* Quick nav */}
       <nav className="mt-8 flex flex-wrap gap-1.5" aria-label="Documentation sections">
@@ -262,6 +271,7 @@ pnpm start`}</Code>
             API rate limits. Otherwise, no env vars needed.
           </P>
         </Section>
+      </div>
       </div>
     </div>
   );

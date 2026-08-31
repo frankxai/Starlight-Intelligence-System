@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ACCENT_TEXT, ACCENT_BORDER } from "@/lib/accents";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -107,11 +108,7 @@ export default function YoloPage() {
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.08]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.07] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[320px] w-[320px] rounded-full bg-cyan-500/[0.05] blur-[80px]" />
-          <div className="animate-mesh-3 absolute left-1/2 bottom-0 h-[260px] w-[260px] rounded-full bg-emerald-500/[0.04] blur-[80px]" />
-        </div>
+        <GalaxyField still="nursery" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
             Top-tier session-mode command

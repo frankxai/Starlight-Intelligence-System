@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StarlightTrail } from "@/components/StarlightTrail";
+import { GalaxyWash } from "@/components/cinematic/GalaxyField";
 import "./globals.css";
 
 const inter = Inter({
@@ -113,18 +114,21 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_GRAPH) }}
         />
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-[#060609]"
-        >
-          Skip to content
-        </a>
-        <StarlightTrail />
-        <Header />
-        <main id="main-content" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <GalaxyWash />
+        <div className="relative z-10 flex min-h-dvh flex-col">
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-[#060609]"
+          >
+            Skip to content
+          </a>
+          <StarlightTrail />
+          <Header />
+          <main id="main-content" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

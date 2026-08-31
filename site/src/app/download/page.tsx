@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { BrainHero } from "@/components/BrainHero";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 import {
   Download,
   Terminal as TerminalIcon,
@@ -60,7 +61,8 @@ export default function DownloadPage() {
   return (
     <div className="min-h-screen bg-[#020205] text-slate-100 selection:bg-cyan-500/20 selection:text-cyan-200">
       {/* 1. Header Hero */}
-      <section className="relative overflow-hidden border-b border-white/[0.04] bg-gradient-to-b from-[#080812] to-[#020205] py-20 md:py-28">
+      <section className="relative overflow-hidden border-b border-white/[0.04] bg-gradient-to-b from-[#080812]/40 to-[#020205]/80 py-20 md:py-28">
+        <GalaxyField still="nursery" />
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(167,139,250,0.06),transparent_50%)]" />
         <BrainHero className="pointer-events-none absolute right-[-80px] top-8 hidden h-[440px] w-[440px] opacity-25 lg:block" />

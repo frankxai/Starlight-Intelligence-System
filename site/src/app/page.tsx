@@ -25,8 +25,8 @@ import {
 import { EntryCard } from "@/components/EntryCard";
 import { OperationalProofConsole } from "@/components/OperationalProofConsole";
 import { AgentConstellation } from "@/components/AgentConstellation";
-import { Starfield } from "@/components/cosmos/Starfield";
 import { StarlightMark } from "@/components/StarlightMark";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 import { CURRENT_METRICS, METRICS_AS_OF } from "@/lib/metrics";
 import {
   ACCENT_TEXT,
@@ -237,10 +237,8 @@ export default async function HomePage() {
       {/* ============================== HERO ============================== */}
       <section className="relative overflow-hidden border-b border-white/[0.08] text-white">
         <div className="absolute inset-0" aria-hidden="true">
-          <Starfield seed={1969} count={170} className="absolute inset-0 h-full w-full opacity-70" />
-          <div className="absolute left-1/2 top-[38%] h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/[0.10] blur-3xl md:left-[72%]" />
-          <div className="absolute left-[20%] top-[70%] h-72 w-72 rounded-full bg-cyan-500/[0.07] blur-3xl" />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#060609] to-transparent" />
+          <GalaxyField still="spiral" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#060609] to-transparent" />
         </div>
 
         {/* Live multi-agent system — WebGL, capability-gated, decorative. */}

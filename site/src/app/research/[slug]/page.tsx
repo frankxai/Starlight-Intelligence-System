@@ -6,6 +6,7 @@ import { join } from "node:path";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
   RESEARCH_PUBLIC_SLUGS,
   resolveResearchSlug,
 } from "@/lib/research";
@@ -99,10 +100,7 @@ export default async function ResearchDetailPage({
         <div className="absolute inset-0">
           <img className="w-full h-full object-cover" src={`/assets/visuals/queen-premium/${slug.includes('memory-foundations') ? '84' : slug.includes('proving-ground') ? '75' : slug.includes('model-arena') ? '64' : '61'}.jpg`} alt="Research header" style={{ margin: 0, padding: 0 }} />
         </div>
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-        </div>
+        <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28" style={{ paddingTop: '5rem', paddingBottom: '4rem' }}>
           <Link
             href="/research"

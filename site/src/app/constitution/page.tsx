@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
   title: "The Starlight Accord: Intelligence in Service of Life",
@@ -149,8 +150,9 @@ export default function ConstitutionPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      <section className="border-b border-white/[0.08] px-5 py-20 sm:px-6 md:py-28 lg:py-36">
-        <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1.08fr_.92fr] lg:items-end">
+      <section className="relative overflow-hidden border-b border-white/[0.08] px-5 py-20 sm:px-6 md:py-28 lg:py-36">
+        <GalaxyField still="veil" />
+        <div className="relative mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1.08fr_.92fr] lg:items-end">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-300">
               The Starlight Accord · Version 1.0

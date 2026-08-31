@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Starfield } from "@/components/cosmos/Starfield";
 import { ConstellationMap } from "@/components/cosmos/ConstellationMap";
 import { CardTile } from "@/components/cosmos/CardTile";
 import { CONSTELLATIONS } from "@/lib/cosmos/constellations";
 import { CARD_BY_SLUG } from "@/lib/cosmos/cards";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
   title: "Constellations — Starlight Cosmos",
@@ -22,8 +22,7 @@ export default function ConstellationsPage() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <Starfield seed={1054} count={150} />
+      <section className="relative overflow-hidden border-b border-white/[0.04]">        <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
           <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-cyan-300">
             Starlight Cosmos · Constellations
