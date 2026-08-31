@@ -2,20 +2,19 @@
 
 ## Automated path
 
-The repository workflows validate every change. Production deployment is an explicit GitHub environment action and runs `wrangler deploy` only after type checks, tests, plugin validation, and the UI/Worker build pass.
+The repository workflows validate every change. Production deployment is an explicit GitHub environment action and runs `wrangler deploy --secrets-file` only after type checks, tests, plugin validation, and the UI/Worker build pass. Code and Worker secrets are synchronized in the same Cloudflare version.
 
 Required GitHub production secrets:
 
 - `CLOUDFLARE_ACCOUNT_ID`
 - `CLOUDFLARE_API_TOKEN` with Workers Scripts write permission
-
-Required Worker secrets:
-
 - `SUPABASE_URL`
 - `SUPABASE_SECRET_KEY` (backend secret/service-role credential; never expose it to UI code)
 - `CF_ACCESS_TEAM_DOMAIN`
 - `CF_ACCESS_AUD`
 - `STARLIGHT_ALLOWED_EMAILS` as a comma-separated allowlist
+
+Store all seven values in the protected `starlight-plugin-production` GitHub environment. The workflow validates that none are empty, materializes the five runtime values in a permission-restricted runner-temporary file, and uploads them with the Worker. GitHub and Cloudflare mask the values; the file never enters the repository or an artifact.
 
 The non-secret tenant slug and canonical hostname live in `wrangler.jsonc`.
 

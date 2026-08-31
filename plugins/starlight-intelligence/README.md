@@ -51,10 +51,10 @@ For local Worker development, copy `.dev.vars.example` to `.dev.vars`, fill the 
 The code, migration, tests, and CI are automated. These account-bound values must be created or supplied once by an administrator:
 
 1. Apply `supabase/migrations/20260831111500_create_starlight_workspaces.sql` to the Starlight Platform project.
-2. Create the Cloudflare Worker and set `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`, and `STARLIGHT_ALLOWED_EMAILS` as Worker secrets.
+2. Add `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`, and `STARLIGHT_ALLOWED_EMAILS` to the protected GitHub production environment. The deploy workflow uploads them to the Worker alongside the code.
 3. Add `mcp.starlightintelligence.ai` as a Worker custom domain.
 4. In Cloudflare Zero Trust, add the MCP server and enable Access Managed OAuth for the allowed identity. The Worker independently validates the resulting Access JWT.
-5. Add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to the GitHub production environment, then run the deploy workflow.
+5. Add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to the same GitHub environment, then run the deploy workflow.
 6. In ChatGPT developer mode, connect `https://mcp.starlightintelligence.ai/mcp`, complete OAuth, scan tools, and run the cases in `evals/golden-cases.json`.
 
 See [cloud-deployment.md](docs/cloud-deployment.md) for the exact release sequence and rollback boundary.
