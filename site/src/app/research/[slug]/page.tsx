@@ -5,8 +5,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import {
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
+import {
   RESEARCH_PUBLIC_SLUGS,
   resolveResearchSlug,
 } from "@/lib/research";

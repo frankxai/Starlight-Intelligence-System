@@ -7,8 +7,8 @@ import {
   type Vertical,
   type VerticalSlug,
 } from "@/lib/verticals";
-import {
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
+import {
   ACCENT_TEXT,
   ACCENT_TEXT_LIGHT,
   ACCENT_BORDER,

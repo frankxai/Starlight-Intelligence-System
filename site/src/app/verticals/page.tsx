@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { VERTICALS } from "@/lib/verticals";
-import {
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
+import {
   ACCENT_TEXT,
   ACCENT_BORDER,
   ACCENT_BG,

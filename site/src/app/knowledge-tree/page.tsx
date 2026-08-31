@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
+import {
   type Accent,
   ACCENT_TEXT,
   ACCENT_BORDER,
