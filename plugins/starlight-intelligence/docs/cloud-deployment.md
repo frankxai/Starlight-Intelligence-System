@@ -20,12 +20,13 @@ The non-secret tenant slug and canonical hostname live in `wrangler.jsonc`.
 
 ## Cloudflare Access
 
-1. Deploy once to the generated `workers.dev` URL.
-2. Add `mcp.starlightintelligence.ai` as the Worker custom domain.
-3. In Zero Trust → Access controls → AI controls → MCP servers, add `https://mcp.starlightintelligence.ai/mcp`.
-4. Enable Access Managed OAuth and permit only the intended identity provider/account.
-5. Copy the Access application audience tag into `CF_ACCESS_AUD`; set the team domain such as `team.cloudflareaccess.com` in `CF_ACCESS_TEAM_DOMAIN`.
-6. Put the same permitted email addresses in `STARLIGHT_ALLOWED_EMAILS`.
+1. Create the `starlight-plugin-production` GitHub environment. Set the real Cloudflare account credentials, Supabase values, Access team domain, and permitted email addresses. For the first deployment only, set `CF_ACCESS_AUD` to `bootstrap-not-live`.
+2. Run the deployment workflow to create the Worker at its generated `workers.dev` URL. `/health` is available, while `/mcp` remains intentionally fail-closed because no real Access audience is accepted yet.
+3. Add `mcp.starlightintelligence.ai` as the Worker custom domain and ensure its Cloudflare DNS record is proxied.
+4. In Zero Trust → Access controls → AI controls → MCP servers, add `https://mcp.starlightintelligence.ai/mcp`.
+5. Enable Access Managed OAuth and permit only the intended identity provider/account.
+6. Copy the generated Access application audience tag into the GitHub `CF_ACCESS_AUD` secret. Confirm `CF_ACCESS_TEAM_DOMAIN` is the team domain such as `team.cloudflareaccess.com`, and `STARLIGHT_ALLOWED_EMAILS` contains the same permitted email addresses.
+7. Rerun the deployment workflow. This replaces the bootstrap audience and activates authenticated MCP traffic.
 
 Access performs the interactive OAuth flow. The Worker then validates `Cf-Access-Jwt-Assertion` against the Access JWKS, issuer, audience, expiry, subject, and email allowlist before creating any MCP server or Supabase client.
 
