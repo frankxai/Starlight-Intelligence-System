@@ -8,6 +8,7 @@ import {
   type AnnotatedEntry,
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -56,12 +57,9 @@ export default async function FeaturedPage() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
       {/* Hero */}
-      <section className="relative">
-        <div
-          className="pointer-events-none absolute -left-20 -top-20 h-[320px] w-[320px] rounded-full bg-violet-600/[0.07] blur-[100px]"
-          aria-hidden="true"
-        />
-        <div className="relative">
+      <section className="relative overflow-hidden">
+        <GalaxyField still="deepField" />
+        <div className="relative py-4">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-violet-400/80">
             Curated
           </p>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { NAV_GROUPS, GITHUB_URL, DEPLOY_URL, isActive } from "@/lib/nav";
+import { CINEMATIC_STILLS } from "@/lib/cinematic";
 import { StarlightMark } from "@/components/StarlightMark";
 
 export function Header() {
@@ -38,7 +39,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#060609]/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#060609]/72 backdrop-blur-xl">
       <nav
         ref={navRef}
         className="mx-auto flex h-14 max-w-[88rem] items-center justify-between px-6"
@@ -61,6 +62,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
             const groupActive = group.items.some((it) => isActive(pathname, it.href));
             const panelId = `nav-panel-${group.label.toLowerCase()}`;
             const alignPanelRight = groupIndex === NAV_GROUPS.length - 1;
+            const visual = CINEMATIC_STILLS[group.visual];
             return (
               <div
                 key={group.label}
@@ -90,34 +92,48 @@ function HeaderContent({ pathname }: { pathname: string }) {
                     doesn't drop while crossing it. */}
                 <div
                   id={panelId}
-                  className={`absolute top-full z-50 w-72 pt-2 transition-micro ${
+                  className={`absolute top-full z-50 w-[22.5rem] pt-2 transition-micro ${
                     alignPanelRight ? "right-0" : "left-0"
                   } ${
                     open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
                   }`}
                 >
-                  <div className="flex flex-col gap-0.5 rounded-xl border border-white/[0.10] bg-[#0c0c12]/95 p-2 shadow-2xl backdrop-blur-xl">
-                    {group.items.map((it) => {
-                      const itemActive = isActive(pathname, it.href);
-                      return (
-                        <Link
-                          key={it.href}
-                          href={it.href}
-                          className={`flex flex-col gap-0.5 rounded-lg px-3 py-2 transition-micro hover:bg-white/[0.05] ${
-                            itemActive ? "bg-white/[0.04]" : ""
-                          }`}
-                        >
-                          <span
-                            className={`text-[13px] font-medium ${
-                              itemActive ? "text-[#c4b5fd]" : "text-slate-100"
+                  <div className="overflow-hidden rounded-xl border border-white/[0.10] bg-[#0c0c12]/95 shadow-2xl backdrop-blur-xl">
+                    <div className="relative h-[5.75rem] overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={visual}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c12] via-[#0c0c12]/25 to-transparent" />
+                      <p className="absolute bottom-2.5 left-3 font-serif text-[17px] font-semibold tracking-tight text-white">
+                        {group.label}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-0.5 p-2">
+                      {group.items.map((it) => {
+                        const itemActive = isActive(pathname, it.href);
+                        return (
+                          <Link
+                            key={it.href}
+                            href={it.href}
+                            className={`flex flex-col gap-0.5 rounded-lg px-3 py-2 transition-micro hover:bg-white/[0.05] ${
+                              itemActive ? "bg-white/[0.04]" : ""
                             }`}
                           >
-                            {it.label}
-                          </span>
-                          <span className="text-[11px] leading-snug text-slate-500">{it.desc}</span>
-                        </Link>
-                      );
-                    })}
+                            <span
+                              className={`text-[13px] font-medium ${
+                                itemActive ? "text-[#c4b5fd]" : "text-slate-100"
+                              }`}
+                            >
+                              {it.label}
+                            </span>
+                            <span className="text-[11px] leading-snug text-slate-500">{it.desc}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -171,30 +187,38 @@ function HeaderContent({ pathname }: { pathname: string }) {
       {/* Mobile panel — grouped disclosure, all routes reachable */}
       {mobileOpen && (
         <div id="mobile-menu" className="border-t border-white/[0.06] bg-[#0a0a0f] md:hidden">
-          <div className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto px-6 py-5">
-            {NAV_GROUPS.map((group) => (
-              <div key={group.label} className="mb-6">
-                <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-slate-500">
-                  {group.label}
-                </p>
-                <div className="flex flex-col">
-                  {group.items.map((it) => {
-                    const itemActive = isActive(pathname, it.href);
-                    return (
-                      <Link
-                        key={it.href}
-                        href={it.href}
-                        className={`flex min-h-11 items-center rounded-lg px-2 text-[14px] transition-micro hover:bg-white/[0.05] hover:text-white ${
-                          itemActive ? "text-[#c4b5fd]" : "text-slate-200"
-                        }`}
-                      >
-                        {it.label}
-                      </Link>
-                    );
-                  })}
+          <div className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto px-5 py-4">
+            {NAV_GROUPS.map((group) => {
+              const visual = CINEMATIC_STILLS[group.visual];
+              return (
+                <div key={group.label} className="mb-5">
+                  <div className="relative mb-2 h-14 overflow-hidden rounded-lg">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={visual} alt="" className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/80 via-[#0a0a0f]/40 to-transparent" />
+                    <p className="absolute inset-y-0 left-3 flex items-center font-serif text-[16px] font-semibold text-white">
+                      {group.label}
+                    </p>
+                  </div>
+                  <div className="flex flex-col">
+                    {group.items.map((it) => {
+                      const itemActive = isActive(pathname, it.href);
+                      return (
+                        <Link
+                          key={it.href}
+                          href={it.href}
+                          className={`flex min-h-11 items-center rounded-lg px-2 text-[14px] transition-micro hover:bg-white/[0.05] hover:text-white ${
+                            itemActive ? "text-[#c4b5fd]" : "text-slate-200"
+                          }`}
+                        >
+                          {it.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div className="flex items-center gap-3 border-t border-white/[0.06] pt-5">
               <a
                 href={GITHUB_URL}

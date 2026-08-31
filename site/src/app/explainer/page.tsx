@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -60,10 +61,7 @@ export default function ExplainerPage() {
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.08]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-        </div>
+        <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
             Public explainer

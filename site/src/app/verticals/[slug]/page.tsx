@@ -7,6 +7,7 @@ import {
   type Vertical,
   type VerticalSlug,
 } from "@/lib/verticals";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 import {
   ACCENT_TEXT,
   ACCENT_TEXT_LIGHT,
@@ -74,11 +75,7 @@ export default async function VerticalPage({
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-          <div className="animate-mesh-3 absolute left-1/3 bottom-0 h-[280px] w-[280px] rounded-full bg-fuchsia-500/[0.05] blur-[90px]" />
-        </div>
+        <GalaxyField still="nursery" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
           <Link
             href="/verticals"

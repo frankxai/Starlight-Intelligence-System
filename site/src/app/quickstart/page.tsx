@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
   title: "Quickstart",
@@ -129,18 +130,23 @@ args = ["${MCP_SERVER_PATH}"]`,
 
 export default function QuickstartPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
-      {/* Hero */}
-      <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
-        Current source · verified path
-      </p>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
-        Quickstart
-      </h1>
-      <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400">
-        Build the current source, point one MCP client at its server, and
-        confirm the 13 tools before writing your first memory.
-      </p>
+    <div>
+      <section className="relative overflow-hidden border-b border-white/[0.06]">
+        <GalaxyField still="nursery" />
+        <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-24">
+          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+            Current source · verified path
+          </p>
+          <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.2rem)] font-semibold tracking-tight text-white">
+            Quickstart
+          </h1>
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400">
+            Build the current source, point one MCP client at its server, and
+            confirm the 13 tools before writing your first memory.
+          </p>
+        </div>
+      </section>
+      <div className="mx-auto max-w-3xl px-6 py-16">
 
       {/* Step 1 — Install */}
       <section className="mt-16">
@@ -301,6 +307,7 @@ node dist/cli.js init --vaults`}
           </Link>
         </div>
       </section>
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getBenedictions } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -22,11 +23,7 @@ export default async function BenedictionPage() {
   return (
     <div className="relative overflow-hidden">
       {/* Ambient mesh — slower, deeper than the homepage */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="animate-mesh-1 absolute -left-32 top-40 h-[500px] w-[500px] rounded-full bg-violet-600/[0.05] blur-[120px]" />
-        <div className="animate-mesh-2 absolute right-0 top-[600px] h-[400px] w-[400px] rounded-full bg-fuchsia-500/[0.04] blur-[100px]" />
-        <div className="animate-mesh-3 absolute left-1/3 bottom-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.03] blur-[80px]" />
-      </div>
+      <GalaxyField still="veil" />
 
       <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-32">
         {/* ── Hero ── */}
