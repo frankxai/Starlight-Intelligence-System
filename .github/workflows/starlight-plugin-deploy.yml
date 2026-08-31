@@ -1,0 +1,40 @@
+name: Deploy Starlight plugin
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "plugins/starlight-intelligence/**"
+
+concurrency:
+  group: starlight-plugin-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: starlight-plugin-production
+    defaults:
+      run:
+        working-directory: plugins/starlight-intelligence
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: plugins/starlight-intelligence/package-lock.json
+      - run: npm ci
+      - run: npm run validate
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm run smoke:worker
+      - run: npx wrangler deploy
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

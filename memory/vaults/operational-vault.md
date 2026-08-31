@@ -42,6 +42,7 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 | 2026-05-08 | v8.0 Build Repair + Verification | quality-state | 1.0 |
 | 2026-06-14 | Visual Home Restore + Laptop Image Correction | operator-surface | 0.98 |
 | 2026-07-28 | Starlight Intelligence Foundry v0.1 operational kernel | capability-compilation | 0.98 |
+| 2026-08-31 | Starlight Intelligence cloud plugin v0.2 + Supabase workspace | plugin-runtime / cloud-state | 0.98 |
 | 2026-06-12 | Grok-driven /si + /starlight-queen ( + /sq /so ) + /starlight-architect command surfaces built + live partial Queen tick executed (status, parallel MEASURE via subagents/terminal/gstack proxies, LEARN synth, image_gen LEDGER visual, ratify/ledger via vault append + gateway concepts). Branch: agent/grok/starlight-queen-command. Files: commands/starlight-queen.md (primary), sq.md, so.md, starlight-architect.md; integrations in starlight.md + COMMAND_SYSTEM.md + agents/* + HARNESS.md. Grok subagent orchestration + excellence gates used throughout. Gateway v0.1 + routing-table/doctrine compose. Operational (Queen loop driver + architect scaffold). SIP attested. Next: register proving-ground cadence, R4 deep-reasoning lane, full board if any substrate table mutation. | system-state / command-surface | 0.95 |
 | 2026-06-12 | Queen Advance — Whole SIS L99 (MASSIVE ACTION NIGHT SHIFT COMPLETE) | whole-system-evolution | 0.99 |
 **L99 Goal Achieved (MASSIVE ACTION / NIGHT SHIFT COMPLETE):** Ultimate premium scrolling motion animation site (site/queen-vision.html) built as the central visual heart of the SIS. Starlight Queen and her swarms visualized at the highest level with 7+ top-prompted Grok images (ultrawide L99 hero, motion studies, 3D palace, advanced neural swarms), 1 advanced video embed (queen-motion.mp4 with elegant swarm orbit), live Canvas swarm animation that responds to scroll/mouse (representing parallel subagents at scale), scroll-triggered reveals with advanced timing, parallax layers, interactive Queen Loop steps that activate in sequence, live demo that simulates real Queen driver routing with output. Deep integration: memory palace, gateway v0.1, /si dispatch, /starlight-queen surfaces + driver v0.2, vaults (strategic/technical/creative/operational), proving ground, routing table evolutions (new classes: memory-consolidation-queen, palace-visual-recall). Multiple image_gen + image_to_video with sophisticated, research-grounded prompts for cinematic quality. Queen driver routed, measured, learned, and ledgered the entire L99 effort in real time. Site is self-contained, thoughtful (Frank DNA voice, SIP attestation everywhere, concepts explained with depth), advanced (motion on scroll, visual synthesis as first-class, live reactive elements, embedded video). All assets in site/images + site/videos. System now has a living, scrollable visual embodiment of the Queen as orchestrator and her swarms as the distributed intelligence layer. Next (post-L99): Deploy to main site build, add WebGL 3D palace variant, real driver invocation from page, cross-harness visual sync, more video loops. | visual-compound / l99 / queen-vision / massive-action |
@@ -83,6 +84,23 @@ Verification: embedded script parsed with Node, headless Edge rendered screensho
 **Correction after Frank feedback:** Initial pass was too flat and lost premium motion/menu/network character from the prior version. Corrected same session: richer Core Layers / Interconnected Portals / L99 sidebar, first-viewport Starlight Network motion stage, `homeNetworkCanvas` orbiting signal particles, portal shortcuts, and updated "Starlight Network Command Deck" framing. Final screenshot: `private/visual-home/visual-home-render-v3-corrected.png`.
 
 **Restore update:** Frank later clarified the original backup's menu, cards, logo, and visual treatment were the preferred baseline. Active `C:\Users\frank\Desktop\visual-home.html` restored from `private/visual-home/visual-home-before-20260614-011003.html`. v3 preserved as `private/visual-home/visual-home-v3-before-restore-20260614-030651.html`. Render proof: `private/visual-home/visual-home-restored-backup-render.png`.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-08-31 - Starlight Intelligence cloud plugin v0.2 + Supabase workspace
+
+**Category:** plugin-runtime / cloud-state / authenticated-mcp
+**Confidence:** 0.98
+**Source:** ChatGPT Work implementation and live Supabase verification
+**Related:** `plugins/starlight-intelligence/`, `.github/workflows/starlight-plugin-ci.yml`, `.github/workflows/starlight-plugin-deploy.yml`
+
+Integrated the Starlight Intelligence plugin into the canonical SIS repository as a cloud-first, no-download service. The production path is a stateless Cloudflare Worker using `createMcpHandler()` and MCP SDK v2, with four remotely importable skills, ten tools, standard company-knowledge `search`/`fetch`, and one decoupled MCP Apps command-center resource. The render tool now receives the complete snapshot, eliminating process-local cache assumptions.
+
+Identity is fail-closed: Cloudflare Access performs interactive OAuth, while the Worker independently validates the Access JWT issuer, audience, expiry, subject, and explicit email allowlist before constructing the MCP server or Supabase client. Private SIS vaults remain outside the service boundary.
+
+Applied two additive migrations to the existing Starlight Platform Supabase project (`gfrfcqyprekhazzugdkr`): an active `starlight-intelligence` tenant plus revision-1 workspace with three ventures, then an explicit restrictive deny-all policy for `anon` and `authenticated`. Verified those roles cannot select, `service_role` retains backend select/insert/update, and the Supabase security advisor returns zero findings.
+
+Verification passed: official plugin validator; internal 4-skill / 5-positive / 3-negative contract validator; TypeScript; 8/8 auth, confirmation, concurrency, evidence, and filtering tests; 2.1 MB Worker bundle; health 200 and anonymous MCP 401 smoke; root SIS harness; Foundry plugin drift check; and `git diff --check`. Live Cloudflare deployment remains blocked only by absent Cloudflare account authorization and the five required Worker secrets; no local Codex runtime is required.
 
 **Built on SIP — Starlight Intelligence Protocol**
 

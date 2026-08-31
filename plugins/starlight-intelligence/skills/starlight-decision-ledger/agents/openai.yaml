@@ -1,0 +1,4 @@
+interface:
+  display_name: "Starlight Decision Ledger"
+  short_description: "Preserve choices, tradeoffs, and evidence"
+  default_prompt: "Use $starlight-decision-ledger to record this decision and its evidence."
