@@ -273,7 +273,8 @@ describe("v9.2 Foundry contracts", () => {
   it("fails closed on unsupported, blocked, unowned, unevidenced, or unattested platform claims", () => {
     const contract = getContract(registry, "platform-release-receipt");
     const receipt: any = validPlatformReceipt();
-    assert.equal(validateValue(receipt, contract, registry).valid, true);
+    const receiptValidation = validateValue(receipt, contract, registry);
+    assert.equal(receiptValidation.valid, true, JSON.stringify(receiptValidation.errors));
 
     const unverifiedStrongClaim = structuredClone(receipt);
     unverifiedStrongClaim.claims[0].state = "verified";
