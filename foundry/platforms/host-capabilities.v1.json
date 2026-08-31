@@ -184,7 +184,7 @@
         "VS Code and hosted GitHub surfaces require separate receipts when behavior differs."
       ],
       "sources": [
-        "https://code.visualstudio.com/docs/copilot/customization/agent-plugins",
+        "https://code.visualstudio.com/docs/agent-customization/agent-plugins",
         "https://docs.github.com/en/copilot/customizing-copilot/extending-copilot-chat-with-mcp"
       ]
     },
@@ -194,14 +194,14 @@
       "surface": "Antigravity Agent Plugins",
       "priority": "p1",
       "lifecycle": "primary",
-      "adapterTier": "portable",
+      "adapterTier": "native",
       "packageFormats": [
-        "agent-plugin-1.0.0",
+        "antigravity-plugin",
         "mcp"
       ],
       "distribution": {
-        "mode": "curated-directory",
-        "listing": "reviewed",
+        "mode": "git",
+        "listing": "direct",
         "publishAutomation": "partial"
       },
       "ui": [
@@ -209,19 +209,19 @@
         "mcp-apps"
       ],
       "headlessValidation": [
-        "Validate the portable package and MCP declaration.",
-        "Test install, discovery, execution, update, and removal in a disposable Antigravity profile."
+        "Validate native plugin.json, mcp_config.json, skills, rules, and hooks boundaries.",
+        "Test bundled/manual install, discovery, execution, update, and removal in a disposable Antigravity profile."
       ],
       "humanGates": [
-        "Confirm product availability and eligible Google account.",
-        "Capture in-host behavior and complete any directory review."
+        "Confirm Antigravity availability and an eligible Google staging account.",
+        "Review hooks and MCP permissions, capture in-host behavior, and approve any Build with Google submission path."
       ],
       "limitations": [
-        "Treat Antigravity as the primary Google developer-host target; Gemini CLI is compatibility only."
+        "Antigravity uses a native plugin.json plus mcp_config.json layout; do not label the portable Agent Plugin core host-verified without a documented compatibility path."
       ],
       "sources": [
-        "https://github.com/agentplugins/agent-plugins-spec",
-        "https://antigravity.google/docs/agent-plugins"
+        "https://antigravity.google/docs/plugins/",
+        "https://antigravity.google/docs/skills/"
       ]
     },
     {
@@ -280,14 +280,16 @@
         "Validate remote MCP transport, schema, authentication errors, and tool results."
       ],
       "humanGates": [
-        "Connect the MCP server in a staging project and capture the generated application flow."
+        "Use an eligible personal Google staging account with Spark access and Keep Activity enabled.",
+        "Review Dynamic Client Registration, credentials, write confirmations, privacy policy, and disconnect/remove behavior."
       ],
       "limitations": [
-        "This is a direct project integration lane, not a public Agent Plugin marketplace claim."
+        "Custom MCP apps are currently limited by Google eligibility, account, age, region, language, and Spark-access requirements.",
+        "This is a direct connected-app lane, not a public Agent Plugin marketplace claim."
       ],
       "sources": [
-        "https://ai.google.dev/gemini-api/docs",
-        "https://firebase.google.com/docs/studio"
+        "https://support.google.com/gemini/answer/17209137",
+        "https://support.google.com/gemini/answer/13695044"
       ]
     },
     {
@@ -365,31 +367,36 @@
       "surface": "Grok Build and connected tools",
       "priority": "p1",
       "lifecycle": "experimental",
-      "adapterTier": "mcp-only",
+      "adapterTier": "native",
       "packageFormats": [
-        "mcp",
-        "instruction-pack"
+        "grok-plugin",
+        "claude-plugin",
+        "mcp"
       ],
       "distribution": {
-        "mode": "host-console",
-        "listing": "closed-beta",
-        "publishAutomation": "none"
+        "mode": "git",
+        "listing": "direct",
+        "publishAutomation": "partial"
       },
       "ui": [
-        "host-native"
+        "host-native",
+        "text-only"
       ],
       "headlessValidation": [
-        "Validate MCP transport and tool schemas against an isolated xAI staging service."
+        "Validate Grok/Claude-compatible plugin layout and MCP settings.",
+        "Run local-dir or marketplace-source install, skill discovery, MCP tool execution, update, and removal."
       ],
       "humanGates": [
-        "Confirm Grok Build access, configure secrets, test consent, and record in-host behavior."
+        "Confirm Grok Build access, configure secrets, trust any hooks, and record in-host behavior.",
+        "Approve any public marketplace source before distribution."
       ],
       "limitations": [
-        "No public marketplace claim until xAI exposes and documents a submission lane."
+        "Grok documents Claude Code compatibility and configured marketplace sources; public publication workflow still needs a surface-specific receipt."
       ],
       "sources": [
-        "https://docs.x.ai/docs/grok-business/grok-build",
-        "https://docs.x.ai/docs"
+        "https://docs.x.ai/build/features/skills-plugins-marketplaces",
+        "https://docs.x.ai/build/features/mcp-servers",
+        "https://docs.x.ai/grok/connectors"
       ]
     },
     {
@@ -499,8 +506,9 @@
       "surface": "Kiro Powers",
       "priority": "p2",
       "lifecycle": "compatibility",
-      "adapterTier": "native",
+      "adapterTier": "portable",
       "packageFormats": [
+        "agent-plugin-1.0.0",
         "kiro-power",
         "mcp"
       ],
@@ -520,10 +528,12 @@
         "Confirm AWS account permissions and directory submission rules."
       ],
       "limitations": [
-        "Kiro Powers need a host-native projection."
+        "Prefer Agent Plugins for new Powers; retain legacy POWER.md only where migration requires it."
       ],
       "sources": [
-        "https://kiro.dev/docs/powers/"
+        "https://kiro.dev/docs/powers/",
+        "https://kiro.dev/docs/powers/installation/",
+        "https://kiro.dev/docs/powers/create/"
       ]
     },
     {

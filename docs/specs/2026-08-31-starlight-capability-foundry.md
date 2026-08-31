@@ -592,7 +592,10 @@ Done when:
 - Google Workspace add-ons: https://developers.google.com/workspace/add-ons/overview
 - Gemini Enterprise A2A: https://cloud.google.com/gemini-enterprise/docs/create-a2a-agent
 - A2A protocol: https://a2a-protocol.org/latest/
-- xAI documentation: https://docs.x.ai/docs
+- xAI Grok Build plugins and marketplaces: https://docs.x.ai/build/features/skills-plugins-marketplaces
+- xAI Grok Build MCP: https://docs.x.ai/build/features/mcp-servers
+- Google Antigravity plugins: https://antigravity.google/docs/plugins/
+- Gemini Spark custom MCP apps: https://support.google.com/gemini/answer/17209137
 - Hermes Agent: https://github.com/NousResearch/hermes-agent
 
 ## Implementation truth

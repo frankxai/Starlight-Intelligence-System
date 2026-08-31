@@ -20,6 +20,8 @@ on:
       - "scripts/sync-foundry-plugin.mjs"
       - "test/v92-foundry.test.ts"
       - ".github/workflows/capability-foundry.yml"
+  schedule:
+    - cron: "17 6 * * 1"
   workflow_dispatch:
 
 permissions:
