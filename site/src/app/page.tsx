@@ -514,10 +514,7 @@ export default async function HomePage() {
 
       {/* ============================= MISSION ============================ */}
       <section className="relative overflow-hidden border-b border-white/[0.08] px-5 py-20 text-white sm:px-6 md:py-28">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <Starfield seed={432} count={90} className="absolute inset-0 h-full w-full opacity-50" />
-          <div className="absolute left-1/2 top-1/2 h-80 w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/[0.07] blur-3xl" />
-        </div>
+        <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-3xl">
           <div className="flex justify-center">
             <StarlightMark size={34} />
