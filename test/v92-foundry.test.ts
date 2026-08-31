@@ -285,6 +285,7 @@ describe("v9.2 Foundry contracts", () => {
     );
 
     const dangling = structuredClone(receipt);
+    dangling.claims[0].state = "degraded";
     dangling.claims[0].evidenceRefs = [];
     dangling.checks[0].evidenceRefs = ["missing-artifact"];
     const danglingResult = validateValue(dangling, contract, registry);
