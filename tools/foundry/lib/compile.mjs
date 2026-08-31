@@ -10,6 +10,7 @@ import {
 } from "node:fs";
 import { basename, dirname, join, parse, relative, resolve } from "node:path";
 import {
+  assertNoSymlinkPath,
   hashTree,
   resolveInside,
   walkFiles,
@@ -187,7 +188,7 @@ function prepareOutputDirectory({ output, packageId, force, registry, root }) {
 }
 
 function copySkill(root, node, destination) {
-  const source = resolveInside(root, node.path);
+  const source = assertNoSymlinkPath(root, node.path);
   const skillDirectory = join(destination, "skills", node.id.replace(/^skill:/, "").split("/").at(-1));
   mkdirSync(skillDirectory, { recursive: true });
   if (basename(source) === "SKILL.md") {

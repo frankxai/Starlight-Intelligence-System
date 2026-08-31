@@ -362,7 +362,7 @@ Built now:
 - four portable Foundry skills;
 - portable Agent Plugin core with skills-only OpenAI/Codex and Claude compatibility overlays;
 - compatibility migration for legacy creators;
-- conformance, exact-target provenance, symlink rejection, receipt-scope and statement-integrity, traversal, taste-pending, graph, and parity tests.
+- conformance, exact-target provenance, ancestor/output symlink rejection, forbidden .git/node_modules subtree rejection, receipt-scope and statement-integrity, traversal, taste-pending, graph, and parity tests.
 
 Not claimed:
 

@@ -790,20 +790,20 @@ describe("v9.2 Foundry compilation and proof", () => {
     }
   });
 
-  it("rejects symbolic links from compiler and prover artifact trees", () => {
+  it("rejects ancestor and artifact symlinks plus forbidden dependency subtrees", () => {
     const temp = tempDirectory();
     try {
       const sourceRoot = join(temp, "source-root");
       mkdirSync(sourceRoot, { recursive: true });
       symlinkSync(
-        join(ROOT, "skills", "foundry", "skill-forge"),
-        join(sourceRoot, "linked-skill"),
+        join(ROOT, "skills", "foundry"),
+        join(sourceRoot, "linked-parent"),
         "dir",
       );
       const sourceGraph: any = structuredClone(buildCapabilityGraph(ROOT));
       sourceGraph.nodes.find(
         (node: any) => node.id === "skill:foundry/skill-forge",
-      ).path = "linked-skill/SKILL.md";
+      ).path = "linked-parent/skill-forge/SKILL.md";
       const sourceEnvelope = projectionEnvelope(
         "plugin",
         "symlinked-source",
@@ -832,18 +832,24 @@ describe("v9.2 Foundry compilation and proof", () => {
           graph: sourceGraph,
           registry,
         }),
-        /Refusing symbolic link in artifact tree/,
+        /Refusing symbolic link in source path: linked-parent/,
       );
 
       const output = join(temp, "package");
       compileDemo(output);
-      symlinkSync(
-        join(output, "foundry-manifest.json"),
-        join(output, "linked-foundry-manifest.json"),
-      );
+      const linkedManifest = join(output, "linked-foundry-manifest.json");
+      symlinkSync(join(output, "foundry-manifest.json"), linkedManifest);
       assert.throws(
         () => provePackage({ packageDirectory: output, registry }),
         /Refusing symbolic link in artifact tree: linked-foundry-manifest.json/,
+      );
+      rmSync(linkedManifest, { force: true });
+
+      mkdirSync(join(output, "node_modules"), { recursive: true });
+      writeFileSync(join(output, "node_modules", "unexpected.txt"), "not declared\n");
+      assert.throws(
+        () => provePackage({ packageDirectory: output, registry }),
+        /Refusing forbidden path in artifact tree: node_modules/,
       );
     } finally {
       rmSync(temp, { recursive: true, force: true });

@@ -70,7 +70,7 @@ Preserve these invariants in code and tests:
 18. Failing or expired receipts downgrade claims automatically.
 19. Do not broaden target scope merely because another host looks compatible.
 20. Every host adapter has an owner, tests, evidence plan, limitations, and repair path.
-21. Reject symbolic links in canonical skill sources and compiled artifact trees before copying, hashing, or proving.
+21. Reject symbolic links in every canonical-source path component and compiled artifact tree before copying, hashing, or proving; reject .git and node_modules entries instead of silently excluding them.
 
 ### Immediate milestone
 

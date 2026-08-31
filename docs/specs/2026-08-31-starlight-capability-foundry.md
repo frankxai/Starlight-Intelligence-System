@@ -91,7 +91,7 @@ plugin/
 └── .claude-mcp.json          # optional Claude overlay
 ~~~
 
-Portable plugin.json stays closed to the upstream schema. Host-only metadata belongs in a host overlay or a reverse-domain extension directory. The compiler always emits the portable core and emits an OpenAI or Claude overlay only when that target was declared. The Task Envelope defines the maximum allowed targets; foundry-manifest.json records the Plugin Pack's exact emitted target set. Source and compiled artifact trees reject symbolic links before copying or hashing so provenance cannot escape or disappear from the digest set.
+Portable plugin.json stays closed to the upstream schema. Host-only metadata belongs in a host overlay or a reverse-domain extension directory. The compiler always emits the portable core and emits an OpenAI or Claude overlay only when that target was declared. The Task Envelope defines the maximum allowed targets; foundry-manifest.json records the Plugin Pack's exact emitted target set. Every path component from the canonical source root to a selected skill must be a real directory or file, never a symbolic link. Compiled trees reject every symbolic link, and both source and compiled trees reject .git and node_modules entries rather than skipping them, so copied bytes cannot disappear from the digest set.
 
 Publisher identity, homepage, repository, license, and keywords are source inputs. This makes the Foundry safe for third-party products instead of silently assigning Starlight ownership.
 
