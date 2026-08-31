@@ -16,23 +16,9 @@
 
 ## Candidates
 
-### 2026-05-27T23:18:35.168Z
+### 2026-08-30T16:25:27.557Z
 
-- [ ] **`md:creative-vault.md#0`** — creative → wisdom  
-      Cross-vault pattern: found in creative + strategic
-- [ ] **`md:creative-vault.md#1`** — creative → wisdom  
-      Cross-vault pattern: found in creative + strategic, technical
-- [ ] **`md:operational-vault.md#0`** — operational → wisdom  
-      Cross-vault pattern: found in operational + strategic
-- [ ] **`md:strategic-vault.md#0`** — strategic → wisdom  
-      Cross-vault pattern: found in strategic + creative, operational
-- [ ] **`md:strategic-vault.md#1`** — strategic → wisdom  
-      Cross-vault pattern: found in strategic + creative, technical
-- [ ] **`md:technical-vault.md#1`** — technical → wisdom  
-      Cross-vault pattern: found in technical + creative, strategic
-### 2026-06-16T02:02:05.420Z
-
-- [ ] **`md:strategic-vault.md#14`** — strategic → wisdom  
+- [ ] **`md:strategic-vault.md#2026-06-12-cross-repo-visual-production-workspace-strategy`** — strategic → wisdom  
       Cross-vault pattern: found in strategic + technical
-- [ ] **`md:technical-vault.md#10`** — technical → wisdom  
+- [ ] **`md:technical-vault.md#2026-06-12-cross-repo-visual-production-pattern`** — technical → wisdom  
       Cross-vault pattern: found in technical + strategic

@@ -53,3 +53,6 @@
 - 2026-08-28T02:00:04.146Z · insights: 102 · contradictions: 0 · promotions: 4 · processed: 60 · decayed: 0 · archived: 0
 - 2026-08-29T02:00:03.629Z · insights: 104 · contradictions: 0 · promotions: 4 · processed: 61 · decayed: 0 · archived: 0
 - 2026-08-30T02:27:10.647Z · insights: 106 · contradictions: 0 · promotions: 4 · processed: 62 · decayed: 0 · archived: 0
+- 2026-08-30T16:23:36.472Z · insights: 106 · contradictions: 0 · promotions: 4 · queued: 4 · processed: 62 · decayed: 0 · archived: 0
+- 2026-08-30T16:25:27.557Z · insights: 106 · contradictions: 0 · promotions: 2 · queued: 2 · processed: 62 · decayed: 0 · archived: 0
+- 2026-08-31T02:00:04.097Z · insights: 108 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 63 · decayed: 0 · archived: 0
