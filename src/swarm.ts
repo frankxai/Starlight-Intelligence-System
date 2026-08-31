@@ -52,8 +52,20 @@ const DEFAULT_TIMEOUT_MS = 300_000;
 
 function resolveClaudeBin(): string {
   if (process.env.STARLIGHT_CLAUDE_BIN) return process.env.STARLIGHT_CLAUDE_BIN;
-  const known = "C:\\Users\\frank\\.local\\bin\\claude.exe";
-  return existsSync(known) ? known : "claude";
+
+  // This used to hardcode one maintainer's absolute path, which shipped to npm inside
+  // dist/swarm.js and was dead weight for every other user. The install location is the
+  // same relative to any home directory, so derive it — and keep PATH as the last resort
+  // so a differently-installed CLI still resolves.
+  const candidates =
+    process.platform === "win32"
+      ? [join(homedir(), ".local", "bin", "claude.exe"), join(homedir(), ".local", "bin", "claude")]
+      : [join(homedir(), ".local", "bin", "claude")];
+
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) return candidate;
+  }
+  return "claude";
 }
 
 /**

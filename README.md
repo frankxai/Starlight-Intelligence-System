@@ -22,7 +22,7 @@ Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity — they all read 
 Starlight is two things in one repository:
 
 - **SIP** — the open Starlight Intelligence Protocol: a clean contract for sovereign memory, identity, and governance that anyone can adopt.
-- **SIS** — the reference implementation: 144 specialized agents, 83 auto-activating skills, 6 semantic vaults, a production MCP server, and the repeatable **Estate Factory** for running full sovereign agent armies.
+- **SIS** — the reference implementation. What you get on install is the memory layer: an MCP server exposing 10 `sis_*` tools over 6 semantic vaults, with provenance and temporal decay. What you get on clone is the rest of the reference build — the agent registry, the auto-activating skill rules, the platform adapters, and the **Estate Factory**. Current counts are computed, never typed: see `metrics/current.json` (`node scripts/count-inventory.mjs`).
 
 Use just the memory layer in your current tools. Adopt the protocol. Or run the complete system Frank uses every day.
 
@@ -131,7 +131,8 @@ Full workflow and templates: `docs/delivery/estate-army-commissioning-workflow.m
 | [`MEMORY.md`](MEMORY.md) | Template for per-instance state. |
 | [`REGISTRY.md`](REGISTRY.md) | MCP server registry. |
 | [`SKILL.md`](SKILL.md) | Substrate-layer behavior (what AI adopts when working at this layer). |
-| `.claude/commands/` | 9 reference slash commands (`/sip-attest`, `/alliance-forge`, `/alliance-reflect`, `/alliance-decide`, `/vertical-spawn`, `/luminor-board`, `/sovereign-signal`, `/openclaw-audit`, `/wealth-dpi`). |
+| `.claude/commands/` | Slash commands a plain clone can run, including the substrate set (`/sip-attest`, `/alliance-forge`, `/alliance-reflect`, `/alliance-decide`, `/vertical-spawn`, `/luminor-board`, `/sovereign-signal`, `/openclaw-audit`, `/wealth-dpi`). |
+| `commands/` | Plugin-only commands (`/starlight`, `/vault`, `/council`, `/navigate`, `/synthesize`, `/transmit`, …). **These are not available from a plain clone** — Claude Code reads `.claude/commands/`. Install the plugin to get them. |
 
 ![SIP 6-Layer Protocol — the contract that preserves sovereignty while enabling composition.](docs/visuals/12-sip-layers.jpg)
 
@@ -247,7 +248,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 - **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
-- **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode share the same vaults.
+- **Eight platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity, Grok and Hermes share the same vaults.
 - **MCP v2** — `src/mcp-server.ts` ships ten tools over JSON-RPC 2.0 stdio.
 
 ### MCP tools
@@ -347,7 +348,7 @@ git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
 npm install
 npm run build       # tsc to dist/
-npm test            # 82+ orchestrator tests
+npm test            # full suite: operational + substrate + v0.1 evals
 npm run lint        # tsc --noEmit
 ```
 

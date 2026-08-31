@@ -59,9 +59,9 @@ Every inbound fits exactly one of these. Pick before you run anything.
 ### D. Sovereign spawn
 
 - **Who:** You want the whole SIS as your starting point. Your own substrate-aware system. Your own registry. Your own MCP server. Frank advises; doesn't own.
-- **What you get:** A clean fork of the full reference build — 7 agents, 6 vaults, 16 skills, the substrate docs, the MCP server, the multi-platform adapters. Rewired to your entity. MIT.
+- **What you get:** A clean fork of the full reference build — the whole agent registry, 6 vaults, every auto-activating skill rule, the substrate docs, the MCP server, the multi-platform adapters. Rewired to your entity. MIT. (Exact counts drift; `metrics/current.json` carries them with a `last_verified` date.)
 - **What you commit:** Attribution to SIP as protocol author. Your vaults stay yours. Your canon stays yours. Every artifact you ship under your new substrate carries "Built on SIP" per the layer 2 format.
-- **First command:** `/sovereign-spawn <your-substrate-name>` — **shipping in v7.3 alongside this doc**. Generates a forked repo with your entity name wired into every file.
+- **First command:** `/sovereign-spawn <your-substrate-name>`. Generates a forked repo with your entity name wired into every file.
 
 ---
 
@@ -93,7 +93,7 @@ Literal numbered steps. First session.
 
 1. **Read the sovereignty clause above.** If the shape doesn't fit, stop here and save yourself a week.
 2. **Identify your route (A/B/C/D)** from the four above. If torn between two, default substrate — ambiguity collapses to the more conservative.
-3. **Run `/intake`** (builder) or `/welcome` (creator). Both are v7.3 commands shipping alongside this doc. `/intake` is the canonical entry point; `/welcome` is its Concierge-wrapped version for non-terminal users.
+3. **Run `/intake`** (builder) or `/welcome` (creator). `/intake` is the canonical entry point; `/welcome` is its Concierge-wrapped version for non-terminal users.
 4. **Answer the intake honestly.** What you're bringing, who owns what, what ships by when. Node declarations without fields are not-yet-ready nodes — don't paper over.
 5. **Ship the first artifact.** End the session with `/sip-attest <path-to-your-artifact>`. If the command refuses (no real SIP composition detected), that's the protocol telling you it's decoration — revise, compose actually, re-run.
 
@@ -125,7 +125,7 @@ Symmetric. Read both columns.
 - [`VERTICALS.md`](VERTICALS.md) — public registry of sovereign verticals + alliance class definitions.
 - [`VOICES.md`](VOICES.md) — five canonical voice archetypes. You'll be assigned to at least one.
 - [`ALLIANCE.md`](ALLIANCE.md) — forging method, four conditions, posture, exit rules.
-- [`.claude/commands/`](.claude/commands/) — every reference slash command. `/intake`, `/welcome`, `/sovereign-spawn` ship with v7.3 alongside this doc.
+- [`.claude/commands/`](.claude/commands/) — every reference slash command a plain clone can run, including `/intake`, `/welcome` and `/sovereign-spawn`. Note that `commands/` (no leading dot) holds plugin-only commands that a clone cannot run; see the README.
 
 ---
 
@@ -135,7 +135,7 @@ Substrate: starlightintelligence.org/protocol v1.1.1
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
-- starlight-intelligence-system@v7.3 · substrate + reference onboarding surface
+- starlight-intelligence-system@v8.3.0 · substrate + reference onboarding surface
 
 Generated: 2026-04-24 · re-attested: 2026-05-26 (drift sweep — SIP pin bumped after v1.1.1 spec ship)
 Attestation is compounding, not credit transfer: every composition strengthens every node.

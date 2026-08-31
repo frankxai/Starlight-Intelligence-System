@@ -64,6 +64,16 @@ export class VaultMemory extends MemoryManager {
   private horizonPath: string;
   private vaultConfig: Readonly<Required<VaultMemoryConfig>>;
 
+  /**
+   * Whether this store is configured to execute code found in its own entries.
+   * Exposed so that every other component which would run stored content — the
+   * Forge in particular — honours the same opt-in rather than reaching the
+   * sandbox around it.
+   */
+  get executesCodeBlocks(): boolean {
+    return this.vaultConfig.executeCodeBlocks;
+  }
+
   constructor(config?: VaultMemoryConfig) {
     const storagePath = config?.storagePath ?? join(process.cwd(), '.starlight');
     super(join(storagePath, 'memory.json'));
@@ -74,6 +84,7 @@ export class VaultMemory extends MemoryManager {
       enableHorizon: config?.enableHorizon ?? true,
       horizonAuthor: config?.horizonAuthor ?? 'starlight',
       defaultVault: config?.defaultVault ?? 'operational',
+      executeCodeBlocks: config?.executeCodeBlocks ?? false,
     });
 
     this.horizonPath = join(storagePath, 'horizon.jsonl');
@@ -135,7 +146,10 @@ export class VaultMemory extends MemoryManager {
     let finalContent = content;
 
     // Empirical Grounding for Technical Vault
-    if (classifiedVault === 'technical') {
+    // Opt-in only. Every production caller here — gateway server, goal, index.remember,
+    // the MCP tool — stores text the process did not author, so executing what it finds
+    // hands a shell to whoever wrote that text.
+    if (this.vaultConfig.executeCodeBlocks && classifiedVault === 'technical') {
       const codeBlocks = EmpiricalSandbox.extractCodeBlocks(content);
       if (codeBlocks.length > 0) {
         let allSuccess = true;

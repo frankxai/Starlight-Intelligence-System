@@ -45,8 +45,16 @@ You should see these files inside `friend-starter/`:
 
 - `README.md` (you're reading it)
 - `custom-instructions.md` (the important one)
-- `knowledge/` folder with 9 small markdown files
+- `knowledge/` folder with 21 small markdown files
 - `badge.svg`, `mcp.json` (optional extras)
+
+Upload **all 21** knowledge files in Step 4 — they are what Starlight works from. Roughly:
+
+- **Who you are:** `genius-profile-template.md`, `freedom-path-template.md`, `voice-guide.md`
+- **What you know:** `reclamation-map-template.md`, `second-brain-architecture-template.md`, `export-pathways.md`
+- **What you make:** `creator-pipeline-template.md`, `executor-playbook-template.md`, `vision-architecture-template.md`
+- **How you work with people:** the six `people-*.md` files, `network-architecture-template.md`
+- **The rest:** `business-architecture-template.md`, `regimen-architecture-template.md`, `sis-overview.md`, `sovereignty-clause.md`, `attestation-block.md`
 
 ### Step 2 — Create a new Claude Project
 
@@ -143,8 +151,8 @@ The `badge.svg` file is the visible "Built on SIP" badge you can place on your p
 
 If Starlight starts sounding like generic Claude instead of warm-and-wise Starlight, two things to check:
 
-1. Did the full `custom-instructions.md` get pasted? It should be about 3,000 characters. If you pasted a truncated version, the voice doesn't load.
-2. Did all 9 knowledge files upload? If files are missing, Starlight won't have the templates to work from.
+1. Did the full `custom-instructions.md` get pasted? It's about 4,000 characters and ends with the sovereignty line. If you pasted a truncated version, the voice doesn't load.
+2. Did all 21 knowledge files upload? If files are missing, Starlight won't have the templates to work from.
 
 If both are in place and it still feels off, start a fresh chat inside the Project. Sometimes a long thread drifts. A fresh chat with the same setup usually snaps it back.
 

@@ -104,24 +104,31 @@ test("v8 sanitization: US SSN is scrubbed", () => {
   expectScrubbed("ssn-us", "SSN: 123-45-6789");
 });
 
+// ── Closed 2026-08-30 ───────────────────────
+// These three were documented gaps until an audit found SECRET_PATTERNS[0] was the 2021
+// `sk-` + 48-alphanumerics shape, which breaks on the first `-`/`_` — and every current
+// key format has one. Anthropic, current OpenAI, Stripe and AWS keys all passed through
+// the gateway byte-identical. Patterns added; the assertions below were flipped rather
+// than deleted, so the contract still means something.
+
 // ── Known-NOT-covered patterns (coverage-drift guards) ───────────
 
-test("v8 sanitization: Stripe live keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: Stripe secret keys are scrubbed", () => {
   // Prefix built piecewise so the contiguous literal never appears in source.
   // Also avoids 10-digit substrings (phone-regex false positive per docs).
   const stripePrefix = "sk" + "_" + "live" + "_";
-  expectUntouched("stripe-live", "key=" + stripePrefix + "a".repeat(40));
+  expectScrubbed("stripe-live", "key=" + stripePrefix + "a".repeat(40));
 });
 
-test("v8 sanitization: AWS access keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: AWS access key ids are scrubbed", () => {
   // AKIA + repeated low-entropy chars.
-  expectUntouched("aws-access", "aws_access_key_id=AKIA" + "Z".repeat(16));
+  expectScrubbed("aws-access", "aws_access_key_id=AKIA" + "Z".repeat(16));
 });
 
-test("v8 sanitization: Anthropic sk-ant keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: Anthropic sk-ant keys are scrubbed", () => {
   // Prefix split to avoid Anthropic-prefix secret scanner.
   const antPrefix = "sk" + "-" + "ant" + "-" + "api03_";
-  expectUntouched("sk-ant", "ANTHROPIC_API_KEY=" + antPrefix + "a".repeat(40));
+  expectScrubbed("sk-ant", "ANTHROPIC_API_KEY=" + antPrefix + "a".repeat(40));
 });
 
 test("v8 sanitization: HuggingFace hf_ tokens are NOT covered (documented gap)", () => {

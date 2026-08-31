@@ -176,7 +176,17 @@ export class StarlightMcpServer {
         confidence: { type: 'string' }, category: { type: 'string' },
       }},
     }, (p) => {
-      const vault = String(p.vault), now = new Date().toISOString();
+      // `vault` becomes a filename below. Unvalidated, `"..\\..\\anything"` walked out
+      // of the vault directory and appended attacker-controlled JSON anywhere the
+      // process could write — reachable from a single prompt-injected agent turn, and
+      // self-perpetuating, since a write into a real vault is replayed verbatim into
+      // every later session by sis_vault_search. VAULT_TYPES was already declared and
+      // simply never consulted here.
+      const vault = String(p.vault);
+      if (!(VAULT_TYPES as readonly string[]).includes(vault)) {
+        throw new Error(`unknown vault "${vault}" — expected one of ${VAULT_TYPES.join(', ')}`);
+      }
+      const now = new Date().toISOString();
       const conf = p.confidence === 'high' ? 0.9 : p.confidence === 'low' ? 0.3 : 0.6;
       const entry: RawEntry = {
         id: `sis_${Date.now()}_${randomUUID().slice(0, 8)}`,

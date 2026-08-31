@@ -19,6 +19,9 @@ These regex families are masked when `scrubSecrets: true` (default) or `scrubPII
 | Pattern | Example matched | Notes |
 |---|---|---|
 | OpenAI-style keys | `sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` | 48-char base alpha-numeric tail |
+| Anthropic / current OpenAI keys | `sk-ant-…`, `sk-proj-…`, `sk-svcacct-…`, `sk-admin-…` | Added 2026-08-30 — the legacy 48-char shape breaks on the first `-`/`_`, so every current format passed through untouched |
+| Stripe secret keys | `sk_live_…`, `sk_test_…` | Added 2026-08-30 |
+| AWS access key id | `AKIA…` + 16 upper-alnum | Added 2026-08-30. The 40-char *secret* key is still NOT covered |
 | Slack tokens | `xoxb-…`, `xoxp-…`, `xoxa-…`, `xoxr-…`, `xoxs-…` | 10–48 char tail |
 | GitHub tokens | `ghp_…`, `github_pat_…` | 36-char tail |
 | Google API keys | `AIza…` | 35-char fixed |
@@ -43,12 +46,11 @@ The following are **deliberately not in scope as of v8.0.0**. Anyone piping thes
 
 | Category | Examples |
 |---|---|
-| **Stripe** | `sk_live_…`, `sk_test_…`, `pk_live_…`, `rk_live_…`, `whsec_…` |
-| **AWS** | `AKIA…` (access keys), `aws_secret_access_key=…`, session tokens, IAM role ARNs |
+| **Stripe** | `pk_live_…`, `rk_live_…`, `whsec_…` — publishable, restricted and webhook shapes. `sk_live_…` / `sk_test_…` ARE covered as of 2026-08-30. |
+| **AWS** | `aws_secret_access_key=…` (40-char base64), session tokens, IAM role ARNs. The `AKIA…` access key id IS covered as of 2026-08-30. |
 | **GCP service-account JSON** | full SA JSON blobs, `client_email`, `private_key_id` |
 | **Azure** | `DefaultEndpointsProtocol=…`, connection strings, SAS tokens, account keys |
 | **HuggingFace** | `hf_…` tokens |
-| **Anthropic** | `sk-ant-…` (yes, even our own) |
 | **npm tokens** | `npm_…` |
 | **Cloudflare** | API tokens (no standard prefix), R2 keys |
 | **Database URIs** | `postgres://user:pass@host/db`, `mysql://…`, `mongodb+srv://…` |

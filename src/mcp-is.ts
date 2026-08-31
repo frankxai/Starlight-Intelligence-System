@@ -226,6 +226,44 @@ const TOOLS = [
   },
 ];
 
+/**
+ * Enforce the `enum` constraints the tool schemas already declare.
+ *
+ * Every tool here advertises enums — `domain`, `scope`, `tier`, `intent` — and until
+ * 2026-08-30 nothing checked them: handlers went straight to `String(params.x)` and
+ * several of those land in a `join()`. `genius_load` interpolates `scope` into a
+ * filename and `workflow_load` puts `domain` into a path, so a caller could walk out
+ * of REPO_ROOT and read any file matching the fixed suffix. This server is read-only
+ * (no write, no spawn), so the ceiling is disclosure rather than execution — but a
+ * prompt-injected agent turn choosing its own arguments is the normal threat here, and
+ * the allowlists were already written. Validating against the schema keeps one source
+ * of truth instead of a second copy that drifts.
+ */
+function assertEnumArgs(toolName: string, args: Record<string, unknown>): void {
+  const tool = TOOLS.find((t) => t.name === toolName);
+  if (!tool) return; // unknown tool: handleTool reports it
+
+  const properties = (tool.inputSchema as { properties?: Record<string, unknown> }).properties ?? {};
+  for (const [key, rawSpec] of Object.entries(properties)) {
+    const spec = rawSpec as { enum?: unknown[]; type?: string; items?: { enum?: unknown[] } };
+    const value = args[key];
+    if (value === undefined || value === null) continue;
+
+    if (Array.isArray(spec.enum) && !spec.enum.includes(value)) {
+      throw new Error(`invalid "${key}" for ${toolName}: ${JSON.stringify(value)} — expected one of ${spec.enum.join(', ')}`);
+    }
+
+    const itemEnum = spec.items?.enum;
+    if (Array.isArray(itemEnum) && Array.isArray(value)) {
+      for (const item of value) {
+        if (!itemEnum.includes(item)) {
+          throw new Error(`invalid "${key}" entry for ${toolName}: ${JSON.stringify(item)} — expected one of ${itemEnum.join(', ')}`);
+        }
+      }
+    }
+  }
+}
+
 // ── Tool handlers ─────────────────────────────────────────────────────────────
 
 function handleTool(name: string, params: Record<string, unknown>): unknown {
@@ -535,6 +573,7 @@ rl.on('line', (line: string) => {
       case 'tools/call': {
         const toolName = String((params as Record<string, unknown>).name ?? '');
         const toolArgs = ((params as Record<string, unknown>).arguments ?? {}) as Record<string, unknown>;
+        assertEnumArgs(toolName, toolArgs);
         const result = handleTool(toolName, toolArgs);
         respond({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] } });
         break;

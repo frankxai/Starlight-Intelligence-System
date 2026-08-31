@@ -28,6 +28,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { StarlightIntelligence } from "./index.js";
+import { quoteShellArg } from "./shell-quote.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
@@ -278,7 +279,14 @@ function runShell(
   inherit = false,
   extraEnv?: Record<string, string>,
 ): ReturnType<typeof spawnSync> {
-  return spawnSync(command, args, {
+  // `shell: true` is load-bearing here — `arco`, `gemini` and friends are installed as
+  // npm `.cmd` shims on Windows, which CreateProcess cannot execute directly. But a
+  // shell plus an unquoted argument is command injection, and `starlight dispatch` puts
+  // the user's raw prompt straight into argv: `starlight dispatch "x & calc"` ran calc.
+  // A human typing that is only injecting into themselves; an agent or script invoking
+  // `starlight dispatch <untrusted>` was handing out RCE. So keep the shell and quote
+  // every argument, which neutralises `& | ; > < $( )` and backticks on both platforms.
+  return spawnSync(command, args.map(quoteShellArg), {
     shell: true,
     encoding: "utf-8",
     stdio: inherit ? "inherit" : "pipe",
@@ -286,6 +294,7 @@ function runShell(
     env: extraEnv ? { ...process.env, ...extraEnv } : process.env,
   });
 }
+
 
 function commandSummary(command: string, args: string[] = ["--version"]): {
   ok: boolean;

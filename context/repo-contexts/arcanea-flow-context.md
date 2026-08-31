@@ -2,7 +2,7 @@
 
 > *Starlight's understanding of arcanea-flow*
 
-**Repository:** `C:\Users\frank\arcanea-flow\` (local sibling)
+**Repository:** `frankxai/arcanea-flow` (fork of `ruvnet/ruflo`; clone as a local sibling)
 **Lineage:** ruv-FANN / claude-flow / agentic-flow
 **Last Updated:** 2026-04-29
 **Architectural Decision:** Connect-not-absorb (memory: `project_arcanea_flow_connect_not_absorb.md`)

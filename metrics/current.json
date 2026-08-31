@@ -13,8 +13,23 @@
       }
     }
   },
-  "version": "0.1.0",
+  "version": "8.3.0",
   "ledger_started": "2026-06-10",
-  "last_updated": "2026-06-10",
-  "metrics": {}
+  "last_updated": "2026-08-31",
+  "metrics": {
+    "repo_inventory": {
+      "agents": 144,
+      "skill_rules": 84,
+      "skill_files": 92,
+      "commands_clone_visible": 121,
+      "commands_plugin_only": 26,
+      "vaults": 6,
+      "transmission_channels": 6,
+      "platform_adapters": 8,
+      "src_modules": 74,
+      "test_files": 71,
+      "last_verified": "2026-08-31",
+      "source": "scripts/count-inventory.mjs"
+    }
+  }
 }

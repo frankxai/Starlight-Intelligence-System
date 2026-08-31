@@ -19,7 +19,19 @@ export class TestForge {
    */
   public async forgeTests(): Promise<string[]> {
     const forgedFiles: string[] = [];
-    
+
+    // The Forge writes stored vault content into `.test.ts` files that `npm test`
+    // later executes. That makes it a second route to EmpiricalSandbox — one that
+    // bypassed the `executeCodeBlocks` opt-in on rememberInVault entirely, since
+    // it reads entries that are already stored. An attacker who gets text into the
+    // technical vault (gateway, MCP tool, or index.remember) and waits for anyone
+    // to run `starlight forge && npm test` gets host execution. Same switch, one
+    // decision: a store that does not execute its own entries does not forge them
+    // into executable tests either.
+    if (!this.memory.executesCodeBlocks) {
+      return forgedFiles;
+    }
+
     // 1. Get verified patterns
     const patterns = this.memory.searchVaults({
       query: "pattern",
@@ -55,6 +67,12 @@ export class TestForge {
 
   /**
    * Generate the TypeScript test file content.
+   *
+   * Stored code is embedded with JSON.stringify rather than hand-escaped into a
+   * template literal. The previous escaping handled `` ` `` and `${` but not the
+   * backslash, so a block ending in `\` escaped the closing backtick and broke out
+   * into the generated file as code — an injection into the developer's own test
+   * suite, independent of the sandbox. JSON.stringify escapes the whole set.
    */
   private generateTestContent(id: string, blocks: { language: SupportedLanguage, code: string }[]): string {
     return `/**
@@ -69,7 +87,7 @@ import { EmpiricalSandbox } from "../../src/sandbox.js";
 test("Forged Pattern Validation: ${id}", async () => {
   ${blocks.map((block, i) => `
   // Validating block ${i} (${block.language})
-  const result${i} = EmpiricalSandbox.validatePattern(\`${block.code.replace(/`/g, "\\`").replace(/\${/g, "\\${")}\`, "${block.language}");
+  const result${i} = EmpiricalSandbox.validatePattern(${JSON.stringify(block.code)}, "${block.language}");
   assert.strictEqual(result${i}.success, true, \`Pattern block ${i} failed execution: \${result${i}.output}\`);
   `).join("\n")}
 });

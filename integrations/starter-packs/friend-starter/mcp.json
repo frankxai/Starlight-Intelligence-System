@@ -1,23 +1,33 @@
 {
   "name": "starlight-mcp",
-  "sip_version": "1.1.0",
+  "sip_version": "1.1.1",
   "provides": ["sis.vault", "sis.attestation"],
   "requires": [],
   "attestation": { "built_on_sip": true },
-  "note": "Optional. Advanced users: install starlight-mcp from the main repo for full vault + attestation tools. The Claude Project works without it — custom instructions + knowledge files are sufficient.",
+  "note": "Optional. The Claude Project works without it — custom instructions + knowledge files are sufficient. Add this only if you want Starlight to read and write real vault files on your machine.",
   "advanced_install": {
     "repo": "https://github.com/frankxai/Starlight-Intelligence-System",
-    "path_in_repo": "src/",
+    "setup": [
+      "git clone https://github.com/frankxai/Starlight-Intelligence-System.git",
+      "cd Starlight-Intelligence-System && npm install && npm run build",
+      "npx starlight init --vaults   # seeds the six JSONL vaults under ~/.starlight/vaults"
+    ],
     "claude_desktop_config_example": {
       "mcpServers": {
         "starlight": {
           "command": "node",
-          "args": ["path/to/starlight-mcp/dist/index.js"],
-          "env": {
-            "STARLIGHT_VAULT_PATH": "~/.starlight/vaults"
-          }
+          "args": [
+            "<absolute-path-to-clone>/dist/mcp-server.js",
+            "--vault-dir",
+            "<your-home>/.starlight/vaults"
+          ]
         }
       }
-    }
+    },
+    "notes": [
+      "The server is dist/mcp-server.js (the `starlight-mcp` bin). dist/index.js is the library entry point and does not speak JSON-RPC — pointing Claude at it fails silently.",
+      "The vault directory is passed with the --vault-dir flag. There is no STARLIGHT_VAULT_PATH environment variable; an earlier version of this file listed one and it was never read.",
+      "Use absolute paths. Claude Desktop does not expand ~ in args."
+    ]
   }
 }

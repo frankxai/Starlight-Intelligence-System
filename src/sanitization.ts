@@ -15,21 +15,30 @@ export interface SanitizationOptions {
 export class SanitizationGateway {
   private static readonly SECRET_PATTERNS = [
     // Common API Keys, Tokens, Secrets
-    /sk-[a-zA-Z0-9]{48}/g, // OpenAI-style keys
+    // The 2021 `sk-` + 48 alphanumerics shape breaks on the first `-`/`_`, which every
+    // current format has, so sk-ant-api03-..., sk-proj-..., sk_live_... and AKIA... all
+    // passed through this gateway intact until 2026-08-30.
+    /\bsk-[A-Za-z0-9]{48}\b/g, // legacy OpenAI
+    /\bsk-(?:ant|proj|svcacct|admin)-[A-Za-z0-9\-_]{16,512}/g, // Anthropic / current OpenAI
+    /\bsk_(?:live|test)_[A-Za-z0-9]{16,512}/g, // Stripe
+    /\bAKIA[0-9A-Z]{16}\b/g, // AWS access key id
     /xox[baprs]-[0-9a-zA-Z]{10,48}/g, // Slack tokens
     /(?:github_pat|ghp)_[a-zA-Z0-9]{36}/g, // GitHub tokens
     /(?:AIza[0-9A-Za-z-_]{35})/g, // Google API keys
-    /eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/g, // JWTs
-    /bearer\s+[a-zA-Z0-9\-\._~]+/gi, // Bearer tokens
+    /eyJ[A-Za-z0-9-_=]{1,4096}\.[A-Za-z0-9-_=]{1,8192}\.?[A-Za-z0-9-_.+/=]{0,4096}/g, // JWTs
+    /bearer\s+[a-zA-Z0-9\-\._~]{1,4096}/gi, // Bearer tokens
     /password["']?\s*:\s*["']([^"']+)["']/gi, // Passwords in JSON/objects
     /private_key["']?\s*:\s*["']([^"']+)["']/gi, // Private keys
   ];
 
   private static readonly PII_PATTERNS = [
     // Emails
-    /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
-    // Phone numbers (US/Intl basic)
-    /(?:\+\d{1,3}[- ]?)?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}/g,
+    /[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,24}/g,
+    // Phone numbers. Separators used to be optional, so this matched ANY 10 consecutive
+    // digits and quietly corrupted every epoch-ms timestamp and long numeric id in stored
+    // memory (`event at 1735689600000 ms` -> `event at [REDACTED]000 ms`). Require a real
+    // separator or parens, and anchor on word boundaries.
+    /(?<![\d])(?:\+\d{1,3}[- ])?(?:\(\d{3}\)[- ]?|\d{3}[- ])\d{3}[- ]?\d{4}(?![\d])/g,
     // SSN / Basic ID patterns (very simplified)
     /\b\d{3}-\d{2}-\d{4}\b/g,
   ];
@@ -91,6 +100,17 @@ export class SanitizationGateway {
     for (const [key, value] of Object.entries(context)) {
       if (typeof value === 'string') {
         sanitized[key] = this.sanitize(value);
+      } else if (Array.isArray(value)) {
+        // typeof [] === 'object', so arrays used to fall into the branch below and come
+        // back as {"0":...,"1":...}. This runs on the live orchestrator path, so every task
+        // context carrying an array field reached the agents malformed.
+        sanitized[key] = value.map((item) =>
+          typeof item === 'string'
+            ? this.sanitize(item)
+            : typeof item === 'object' && item !== null
+              ? this.sanitizeContext(item as Record<string, unknown>, depth + 1, seen)
+              : item,
+        );
       } else if (typeof value === 'object' && value !== null) {
         sanitized[key] = this.sanitizeContext(
           value as Record<string, unknown>,

@@ -6,7 +6,7 @@ Read this as a menu. Pick the one that matches what you showed up for. Each sect
 
 ---
 
-## The six deliverables
+## The seven deliverables
 
 ### 1. Stamped artifact
 
@@ -21,7 +21,7 @@ Read this as a menu. Pick the one that matches what you showed up for. Each sect
 
 ### 2. SIS fork (sovereign spawn)
 
-- **What it is:** You take the whole reference build — 47 agents (7-archetype council + specialist tiers), 6 vaults, 71 skills across 14 domains, MCP server, multi-platform adapters, full substrate docs — and run your own substrate-aware system under your own name.
+- **What it is:** You take the whole reference build — the full agent registry (7-archetype council + specialist tiers), 6 vaults, the auto-activating skill rules, MCP server, multi-platform adapters, full substrate docs — and run your own substrate-aware system under your own name. Current counts are computed, not typed: `metrics/current.json`, refreshed by `node scripts/count-inventory.mjs`.
 - **Who it's for:** Operators, founders, and technical creators who want their own substrate layer rather than adopting Frank's. Competing is encouraged; composition is encouraged more.
 - **Scope:** Complete fork, rewired to your entity. Your registry. Your MCP server. Your agent names. Your vaults. All under MIT.
 - **What you bring:** An entity name. A declared substrate domain. Willingness to keep attribution to SIP as protocol author.
@@ -103,6 +103,7 @@ Compact matrix. Scan before picking.
 | 4. Alliance forge | Attribution on cross-node artifacts, named commitments by date | 2h forge, weekly/biweekly cycles | Per domain map, no votes | Every cross-node artifact, all nodes named |
 | 5. Luminor Board | Carry the reasoning into the shipped work | 15-45 min | You own the call; board advises | Session can be attested |
 | 6. Custom advisory | Custom arrangement, artifact-shaped terms | Weeks to months | Retained by you | Every artifact, co-authorship possible |
+| 7. Sovereign Estate / Agent Army | Written SOW, named artifacts and dates; generalized improvements promote back to the substrate | Blueprint 1-2 weeks, Pilot 2-6 weeks, retainer ongoing | Client owns the tuned estate; Starlight owns the generalized process and delivery IP | Full estate and all serious swarm outputs; boards on major moves |
 
 ---
 
@@ -129,12 +130,12 @@ Ownership stays with each node. Compounding is via attribution, not credit trans
 
 **Built on SIP** — Starlight Intelligence Protocol
 
-Substrate: starlightintelligence.org/protocol v1.1.0
+Substrate: starlightintelligence.org/protocol v1.1.1
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
-- starlight-intelligence-system@v7.3 · substrate + reference onboarding surface
+- starlight-intelligence-system@v8.3.0 · substrate + reference onboarding surface
 
-Generated: 2026-04-24
+Generated: 2026-08-31
 Attestation is compounding, not credit transfer: every composition strengthens every node.
 ---

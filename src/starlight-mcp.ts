@@ -26,7 +26,7 @@
  */
 import { createInterface } from 'node:readline';
 import { readFileSync, existsSync, statSync } from 'node:fs';
-import { join, resolve, dirname } from 'node:path';
+import { join, resolve, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getSipVersion } from './version.js';
 
@@ -436,7 +436,16 @@ export class StarlightSubstrateMcpServer {
       if (typeof p.content === 'string' && p.content.length) {
         source = p.content;
       } else if (typeof p.path === 'string' && p.path.length) {
-        const filePath = resolve(p.path);
+        // `path` is a tool argument, so an unconfined resolve() made this an
+        // existence / readability / isDirectory oracle over the whole filesystem —
+        // and leaked the contents of any file carrying an attestation block. The
+        // caller here is a model turn that may be acting on injected text, so the
+        // only safe root is the substrate this server was pointed at.
+        const filePath = resolve(this.substrateDir, p.path);
+        const root = resolve(this.substrateDir);
+        if (filePath !== root && !filePath.startsWith(root + sep)) {
+          return { valid: false, issues: [`Path escapes the substrate directory: ${p.path}`], parsed: null };
+        }
         if (!existsSync(filePath)) return { valid: false, issues: [`File not found: ${filePath}`], parsed: null };
         try {
           if (statSync(filePath).isDirectory()) return { valid: false, issues: [`Path is a directory: ${filePath}`], parsed: null };

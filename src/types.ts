@@ -350,6 +350,16 @@ export interface VaultMemoryConfig {
   enableHorizon?: boolean;
   horizonAuthor?: string;
   defaultVault?: VaultType;
+  /**
+   * Run fenced code blocks found in 'technical' entries through EmpiricalSandbox.
+   * OFF by default, and it must stay off on any path that stores content this process
+   * did not author. The sandbox is execSync with the caller's user, env, network and
+   * filesystem (see the header of src/sandbox.ts) — so with this on, any stored text
+   * that classifies as technical is a shell. Auto-classification alone is enough: prose
+   * mentioning architecture/api/database routes to the technical vault with no caller
+   * ever naming it, and a payload that runs cleanly has its confidence raised to 0.8.
+   */
+  executeCodeBlocks?: boolean;
 }
 
 // ── Temporal Layer (v6.0) ──────────────────────────────────
