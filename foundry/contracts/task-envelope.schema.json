@@ -397,8 +397,10 @@
           "uniqueItems": true,
           "items": {
             "enum": [
+              "agent-plugin",
               "chatgpt",
               "chatgpt-work",
+              "openai-plugin",
               "workspace-agent",
               "codex",
               "claude-code",

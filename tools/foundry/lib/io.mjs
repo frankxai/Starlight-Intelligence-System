@@ -1,5 +1,6 @@
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
   readdirSync,
@@ -7,7 +8,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { createHash } from "node:crypto";
-import { dirname, relative, resolve, sep } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 
 export function readJson(path) {
   try {
@@ -36,6 +37,22 @@ export function resolveInside(base, candidate) {
   return target;
 }
 
+export function assertNoSymlinkPath(base, candidate) {
+  const root = resolve(base);
+  const target = resolveInside(root, candidate);
+  const parts = relative(root, target).split(sep).filter(Boolean);
+  let current = root;
+  for (const part of ["", ...parts]) {
+    if (part) current = join(current, part);
+    if (!existsSync(current)) break;
+    if (lstatSync(current).isSymbolicLink()) {
+      const path = relative(root, current).split(sep).join("/") || ".";
+      throw new Error(`Refusing symbolic link in source path: ${path}`);
+    }
+  }
+  return target;
+}
+
 export function assertEmptyOrMissing(path, force = false) {
   if (!existsSync(path)) return;
   const stat = statSync(path);
@@ -47,14 +64,22 @@ export function assertEmptyOrMissing(path, force = false) {
   }
 }
 
-export function walkFiles(root, options = {}) {
-  const ignored = new Set(options.ignored ?? [".git", "node_modules"]);
+export function walkFiles(root) {
+  const forbiddenNames = new Set([".git", "node_modules"]);
   const results = [];
+
+  const absoluteRoot = resolve(root);
 
   function walk(current) {
     for (const entry of readdirSync(current, { withFileTypes: true })) {
-      if (ignored.has(entry.name)) continue;
       const absolute = resolve(current, entry.name);
+      const path = relative(absoluteRoot, absolute).split(sep).join("/");
+      if (entry.isSymbolicLink()) {
+        throw new Error(`Refusing symbolic link in artifact tree: ${path}`);
+      }
+      if (forbiddenNames.has(entry.name)) {
+        throw new Error(`Refusing forbidden path in artifact tree: ${path}`);
+      }
       if (entry.isDirectory()) {
         walk(absolute);
       } else if (entry.isFile()) {
@@ -63,7 +88,14 @@ export function walkFiles(root, options = {}) {
     }
   }
 
-  if (existsSync(root)) walk(resolve(root));
+  if (existsSync(absoluteRoot)) {
+    const rootStat = lstatSync(absoluteRoot);
+    if (rootStat.isSymbolicLink()) {
+      throw new Error("Refusing symbolic link in artifact tree: .");
+    }
+    if (rootStat.isFile()) results.push(absoluteRoot);
+    if (rootStat.isDirectory()) walk(absoluteRoot);
+  }
   return results.sort();
 }
 

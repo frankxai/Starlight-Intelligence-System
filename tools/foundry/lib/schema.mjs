@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readdirSync } from "node:fs";
 import { basename, join } from "node:path";
 import { readJson } from "./io.mjs";
@@ -192,6 +193,30 @@ export function getContract(registry, name) {
   return schema;
 }
 
+function canonicalJson(value) {
+  if (Array.isArray(value)) return value.map((entry) => canonicalJson(entry));
+  if (value !== null && typeof value === "object") {
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((key) => [key, canonicalJson(value[key])]),
+    );
+  }
+  return value;
+}
+
+export function platformReceiptStatementSha256(receipt) {
+  if (receipt === null || typeof receipt !== "object" || Array.isArray(receipt)) {
+    throw new Error("Platform receipt statement must be an object");
+  }
+  const statement = Object.fromEntries(
+    Object.entries(receipt).filter(([key]) => key !== "attestation"),
+  );
+  return createHash("sha256")
+    .update(JSON.stringify(canonicalJson(statement)))
+    .digest("hex");
+}
+
 export function validateValue(value, schema, registry) {
   const errors = [];
   validateNode(value, schema, { errors, registry, rootSchema: schema }, "$");
@@ -269,6 +294,212 @@ export function validateValue(value, schema, registry) {
       edgeKeys.add(key);
     }
   }
+  if (
+    schema.$id?.endsWith("/host-capability-registry.schema.json") &&
+    value &&
+    typeof value === "object"
+  ) {
+    const ids = (Array.isArray(value.surfaces) ? value.surfaces : [])
+      .map((surface) => surface?.id)
+      .filter(Boolean);
+    if (new Set(ids).size !== ids.length) {
+      pushError(errors, "$.surfaces", "DUPLICATE_ID", "surface ids must be unique");
+    }
+  }
+  if (
+    schema.$id?.endsWith("/platform-release-receipt.schema.json") &&
+    value &&
+    typeof value === "object"
+  ) {
+    if (Date.parse(value.expiresAt) <= Date.parse(value.createdAt)) {
+      pushError(errors, "$.expiresAt", "RECEIPT_EXPIRY", "receipt expiry must follow creation");
+    }
+    if (Date.parse(value.run?.completedAt) < Date.parse(value.run?.startedAt)) {
+      pushError(errors, "$.run.completedAt", "RUN_ORDER", "run completion must follow its start");
+    }
+
+    const platformBindings = new Map(
+      (Array.isArray(schema.oneOf) ? schema.oneOf : []).map((branch) => [
+        branch?.properties?.host?.properties?.registryId?.const,
+        {
+          surface: branch?.properties?.host?.properties?.surface?.const,
+          adapterTier: branch?.properties?.adapter?.properties?.tier?.const,
+        },
+      ]),
+    );
+    const platformBinding = platformBindings.get(value.host?.registryId);
+    if (platformBinding && value.host?.surface !== platformBinding.surface) {
+      pushError(
+        errors,
+        "$.host.surface",
+        "HOST_SURFACE_BINDING",
+        `host surface must match registry entry ${value.host.registryId}`,
+      );
+    }
+    if (platformBinding && value.adapter?.tier !== platformBinding.adapterTier) {
+      pushError(
+        errors,
+        "$.adapter.tier",
+        "ADAPTER_TIER_BINDING",
+        `adapter tier must match registry entry ${value.host.registryId}`,
+      );
+    }
+
+    const evidence = Array.isArray(value.evidence) ? value.evidence : [];
+    const evidenceIds = evidence.map((artifact) => artifact?.id).filter(Boolean);
+    if (new Set(evidenceIds).size !== evidenceIds.length) {
+      pushError(errors, "$.evidence", "DUPLICATE_ID", "evidence ids must be unique");
+    }
+    const evidenceSet = new Set(evidenceIds);
+    for (const collection of [value.checks, value.claims]) {
+      for (const entry of Array.isArray(collection) ? collection : []) {
+        for (const ref of Array.isArray(entry?.evidenceRefs) ? entry.evidenceRefs : []) {
+          if (!evidenceSet.has(ref)) {
+            pushError(errors, "$.evidence", "DANGLING_EVIDENCE", `unknown evidence reference: ${ref}`);
+          }
+        }
+      }
+    }
+
+    const checkIds = (Array.isArray(value.checks) ? value.checks : [])
+      .map((check) => check?.id)
+      .filter(Boolean);
+    if (new Set(checkIds).size !== checkIds.length) {
+      pushError(errors, "$.checks", "DUPLICATE_ID", "check ids must be unique");
+    }
+
+    const strongStates = new Set(["verified", "published", "supported"]);
+    const distributedStates = new Set(["published", "supported"]);
+    const checks = Array.isArray(value.checks) ? value.checks : [];
+    for (const claim of Array.isArray(value.claims) ? value.claims : []) {
+      const claimRefs = Array.isArray(claim?.evidenceRefs) ? claim.evidenceRefs : [];
+      if (claim?.surface !== value.host?.surface) {
+        pushError(
+          errors,
+          "$.claims",
+          "CLAIM_SURFACE_BINDING",
+          "claim surface must match the receipt host surface",
+        );
+      }
+      if (
+        [...strongStates, "degraded"].includes(claim?.state) &&
+        claimRefs.length === 0
+      ) {
+        pushError(
+          errors,
+          "$.claims",
+          "CLAIM_EVIDENCE",
+          `${claim.state} claims require at least one evidence reference`,
+        );
+      }
+      if (Date.parse(claim?.expiresAt) > Date.parse(value.expiresAt)) {
+        pushError(
+          errors,
+          "$.claims",
+          "CLAIM_EXPIRY",
+          "claim expiry must not extend beyond receipt expiry",
+        );
+      }
+      if (Date.parse(claim?.expiresAt) <= Date.parse(claim?.verifiedAt)) {
+        pushError(errors, "$.claims", "CLAIM_EXPIRY", "claim expiry must follow verification");
+      }
+
+      const matchingChecks = checks.filter((check) => check?.capability === claim?.capability);
+      const evidencedPass = matchingChecks.some(
+        (check) =>
+          check.status === "pass" &&
+          (Array.isArray(check.evidenceRefs) ? check.evidenceRefs : []).some((ref) =>
+            claimRefs.includes(ref),
+          ),
+      );
+      if (strongStates.has(claim?.state) && !evidencedPass) {
+        pushError(
+          errors,
+          "$.claims",
+          "CLAIM_PASS",
+          `${claim.state} claims require an evidenced passing check for ${claim.capability}`,
+        );
+      }
+      if (strongStates.has(claim?.state)) {
+        pushError(
+          errors,
+          "$.attestation",
+          "ATTESTATION_VERIFIER_REQUIRED",
+          "strong claims require external cryptographic attestation verification; structural validation cannot promote them",
+        );
+      }
+      if (strongStates.has(claim?.state) && value.adapter?.tier === "unsupported") {
+        pushError(
+          errors,
+          "$.adapter.tier",
+          "UNSUPPORTED_ADAPTER_CLAIM",
+          `${claim.state} is forbidden for an unsupported adapter`,
+        );
+      }
+      if (distributedStates.has(claim?.state)) {
+        if (value.distribution?.reviewState === "blocked") {
+          pushError(
+            errors,
+            "$.distribution.reviewState",
+            "BLOCKED_DISTRIBUTION_CLAIM",
+            `${claim.state} is forbidden for a blocked distribution`,
+          );
+        }
+        if (!value.distribution?.listingUrl) {
+          pushError(
+            errors,
+            "$.distribution.listingUrl",
+            "LISTING_REQUIRED",
+            `${claim.state} requires a public release or listing URL`,
+          );
+        }
+        if (
+          ["public-marketplace", "team-marketplace"].includes(value.distribution?.mode) &&
+          value.distribution?.reviewState !== "approved"
+        ) {
+          pushError(
+            errors,
+            "$.distribution.reviewState",
+            "MARKETPLACE_APPROVAL",
+            `${claim.state} requires an approved marketplace review`,
+          );
+        }
+      }
+      if (claim?.state === "supported") {
+        if (typeof claim.owner !== "string" || claim.owner.trim().length === 0) {
+          pushError(errors, "$.claims", "SUPPORT_OWNER", "supported claims require an owner");
+        }
+        if (matchingChecks.some((check) => check.status === "fail")) {
+          pushError(
+            errors,
+            "$.claims",
+            "FAILING_SUPPORT_CHECK",
+            `supported is forbidden while ${claim.capability} has a failing check`,
+          );
+        }
+      }
+    }
+
+    if (value.attestation?.artifactSha256 !== value.subject?.artifactSha256) {
+      pushError(
+        errors,
+        "$.attestation.artifactSha256",
+        "ATTESTATION_SUBJECT",
+        "attestation artifact digest must match the receipt subject",
+      );
+    }
+    if (
+      typeof value.attestation?.statementSha256 === "string" &&
+      value.attestation.statementSha256 !== platformReceiptStatementSha256(value)
+    ) {
+      pushError(
+        errors,
+        "$.attestation.statementSha256",
+        "ATTESTATION_STATEMENT",
+        "attestation statement digest must bind the complete receipt excluding attestation metadata",
+      );
+    }
+  }
   return { valid: errors.length === 0, errors };
 }
 
@@ -289,6 +520,7 @@ export function inferContractName(value) {
   if (typeof value?.$schema === "string" && value.$schema.includes("/foundry/")) {
     return value.$schema.split("/").at(-1).replace(/\.schema\.json$/, "");
   }
+  if (value?.subject && value?.host && value?.claims) return "platform-release-receipt";
   if (value?.receiptId) return "evidence-receipt";
   if (value?.packageId && value?.compiler && value?.sources) return "foundry-manifest";
   if (value?.nodes && value?.edges) return "capability-graph";

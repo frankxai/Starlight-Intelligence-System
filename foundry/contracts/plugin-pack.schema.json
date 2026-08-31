@@ -11,6 +11,7 @@
     "version",
     "description",
     "displayName",
+    "publisher",
     "skills",
     "authentication",
     "deployment"
@@ -76,9 +77,57 @@
           "uniqueItems": true,
           "items": {
             "enum": [
+              "agent-plugin",
               "chatgpt-work",
-              "codex"
+              "openai-plugin",
+              "codex",
+              "claude-code"
             ]
+          }
+        }
+      }
+    },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "homepage",
+        "repository",
+        "license"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "email": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "homepage": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "license": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "keywords": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
           }
         }
       }

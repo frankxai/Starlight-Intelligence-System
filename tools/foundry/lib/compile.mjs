@@ -10,8 +10,10 @@ import {
 } from "node:fs";
 import { basename, dirname, join, parse, relative, resolve } from "node:path";
 import {
+  assertNoSymlinkPath,
   hashTree,
   resolveInside,
+  walkFiles,
   writeJson,
   writeText,
 } from "./io.mjs";
@@ -186,54 +188,148 @@ function prepareOutputDirectory({ output, packageId, force, registry, root }) {
 }
 
 function copySkill(root, node, destination) {
-  const source = resolveInside(root, node.path);
+  const source = assertNoSymlinkPath(root, node.path);
   const skillDirectory = join(destination, "skills", node.id.replace(/^skill:/, "").split("/").at(-1));
   mkdirSync(skillDirectory, { recursive: true });
   if (basename(source) === "SKILL.md") {
+    walkFiles(dirname(source));
     cpSync(dirname(source), skillDirectory, { recursive: true });
   } else {
+    walkFiles(source);
     cpSync(source, join(skillDirectory, "SKILL.md"));
   }
 }
 
-function renderPluginManifest(pack) {
+const AGENT_PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json";
+const AGENT_PLUGIN_MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json";
+
+function assertPortablePluginInputs(pack) {
+  if (pack.id.endsWith("-") || pack.id.includes("--")) {
+    throw new Error(
+      `Plugin id "${pack.id}" is not Agent Plugins v1 conformant: trailing and doubled hyphens are forbidden.`,
+    );
+  }
+  if (!pack.mcpServerUrl) return;
+  let endpoint;
+  try {
+    endpoint = new URL(pack.mcpServerUrl);
+  } catch {
+    throw new Error(`Plugin MCP endpoint is not a valid absolute URL: ${pack.mcpServerUrl}`);
+  }
+  if (
+    endpoint.protocol !== "https:" ||
+    endpoint.username ||
+    endpoint.password ||
+    endpoint.search ||
+    endpoint.hash
+  ) {
+    throw new Error(
+      "Plugin MCP endpoint must use HTTPS and must not contain user information, a query, or a fragment.",
+    );
+  }
+}
+
+function renderAuthor(publisher) {
+  const author = {
+    name: publisher.name,
+    url: publisher.homepage,
+  };
+  if (publisher.email) author.email = publisher.email;
+  return author;
+}
+
+function renderPortablePluginManifest(pack) {
+  const manifest = {
+    $schema: AGENT_PLUGIN_SCHEMA,
+    name: pack.id,
+    version: pack.version,
+    description: pack.description,
+    author: renderAuthor(pack.publisher),
+    homepage: pack.publisher.homepage,
+    repository: pack.publisher.repository,
+    license: pack.publisher.license,
+  };
+  if (pack.publisher.keywords?.length) manifest.keywords = pack.publisher.keywords;
+  return manifest;
+}
+
+function renderPortableMcpManifest(pack) {
+  return {
+    $schema: AGENT_PLUGIN_MCP_SCHEMA,
+    mcpServers: {
+      foundry: {
+        type: "streamable-http",
+        url: pack.mcpServerUrl,
+      },
+    },
+  };
+}
+
+function renderCodexMcpManifest(pack) {
+  return {
+    foundry: {
+      type: "http",
+      url: pack.mcpServerUrl,
+    },
+  };
+}
+
+function renderClaudeMcpManifest(pack) {
+  return {
+    mcpServers: {
+      foundry: {
+        type: "http",
+        url: pack.mcpServerUrl,
+      },
+    },
+  };
+}
+
+function renderCodexPluginManifest(pack) {
   const firstSkill = pack.skills[0].split("/").at(-1);
   const manifest = {
     name: pack.id,
     version: pack.version,
     description: pack.description,
-    author: {
-      name: "Starlight Intelligence",
-      url: "https://starlightintelligence.org",
-    },
-    homepage: "https://starlightintelligence.org",
-    repository: "https://github.com/frankxai/Starlight-Intelligence-System",
-    license: "MIT",
-    keywords: ["starlight", "foundry", "skills", "agents"],
+    author: renderAuthor(pack.publisher),
+    homepage: pack.publisher.homepage,
+    repository: pack.publisher.repository,
+    license: pack.publisher.license,
     skills: "./skills/",
     interface: {
       displayName: pack.displayName,
       shortDescription: renderShortDescription(pack.description),
       longDescription: pack.description,
-      developerName: "Starlight Intelligence",
+      developerName: pack.publisher.name,
       category: "Productivity",
-      capabilities: ["Skills", "Capability compilation"],
-      websiteURL: "https://starlightintelligence.org",
+      capabilities: ["Skills"],
+      websiteURL: pack.publisher.homepage,
       defaultPrompt: [
-        `Use $${firstSkill} to forge a proven capability package.`,
-        "Prove this artifact and return an evidence receipt.",
+        `Use $${firstSkill} to begin.`,
+        "Apply the selected skill and return evidence for the result.",
       ],
-      brandColor: "#7C5CFF",
     },
   };
-  if (pack.mcpServerUrl) {
-    manifest.mcpServers = {
-      foundry: {
-        type: "http",
-        url: pack.mcpServerUrl,
-      },
-    };
-  }
+  if (pack.publisher.keywords?.length) manifest.keywords = pack.publisher.keywords;
+  if (pack.mcpServerUrl) manifest.mcpServers = "./.mcp.json";
+  return manifest;
+}
+
+function renderClaudePluginManifest(pack) {
+  const manifest = {
+    $schema: "https://json.schemastore.org/claude-code-plugin-manifest.json",
+    name: pack.id,
+    displayName: pack.displayName,
+    version: pack.version,
+    description: pack.description,
+    author: renderAuthor(pack.publisher),
+    homepage: pack.publisher.homepage,
+    repository: pack.publisher.repository,
+    license: pack.publisher.license,
+    skills: "./skills/",
+  };
+  if (pack.publisher.keywords?.length) manifest.keywords = pack.publisher.keywords;
+  if (pack.mcpServerUrl) manifest.mcpServers = "./.claude-mcp.json";
   return manifest;
 }
 
@@ -263,10 +359,38 @@ function writeKindArtifacts({ root, output, pack, graph }) {
     return;
   }
   if (pack.kind === "plugin") {
-    writeJson(join(output, "plugin", ".codex-plugin", "plugin.json"), renderPluginManifest(pack));
+    const pluginRoot = join(output, "plugin");
+    const targets = new Set(pack.deployment.targets);
+    const emitsOpenAi = ["openai-plugin", "chatgpt-work", "codex"].some((target) =>
+      targets.has(target),
+    );
+    const emitsClaude = targets.has("claude-code");
+
+    writeJson(join(pluginRoot, "plugin.json"), renderPortablePluginManifest(pack));
+    if (emitsOpenAi) {
+      writeJson(
+        join(pluginRoot, ".codex-plugin", "plugin.json"),
+        renderCodexPluginManifest(pack),
+      );
+    }
+    if (emitsClaude) {
+      writeJson(
+        join(pluginRoot, ".claude-plugin", "plugin.json"),
+        renderClaudePluginManifest(pack),
+      );
+    }
+    if (pack.mcpServerUrl) {
+      writeJson(join(pluginRoot, "mcp.json"), renderPortableMcpManifest(pack));
+      if (emitsOpenAi) {
+        writeJson(join(pluginRoot, ".mcp.json"), renderCodexMcpManifest(pack));
+      }
+      if (emitsClaude) {
+        writeJson(join(pluginRoot, ".claude-mcp.json"), renderClaudeMcpManifest(pack));
+      }
+    }
     for (const skill of pack.skills) {
       const node = capabilityNode(graph, skill);
-      copySkill(root, node, join(output, "plugin"));
+      copySkill(root, node, pluginRoot);
     }
   }
 }
@@ -291,6 +415,7 @@ export function compilePackage({
     throw new Error(`Task Envelope id "${envelope.id}" does not match pack id "${pack.id}".`);
   }
   if (pack.kind === "agent") assertPersistentAgentBoundary(pack);
+  if (pack.kind === "plugin") assertPortablePluginInputs(pack);
   assertPackWithinEnvelope(pack, envelope);
   const resolution = resolveCapabilities(envelope, graph);
   assertPackCapabilities(pack, graph, resolution);
@@ -325,7 +450,7 @@ export function compilePackage({
       pack: `${pack.kind}-pack.json`,
       resolution: "capability-resolution.json",
     },
-    deploymentTargets: envelope.deployment.targets,
+    deploymentTargets: pack.deployment.targets,
     artifacts: artifactDigests,
     proofCommand: "node tools/foundry/cli.mjs prove <package-directory>",
   };

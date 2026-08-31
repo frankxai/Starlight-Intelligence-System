@@ -1,0 +1,88 @@
+name: Capability adapter
+description: Propose or implement one evidence-scoped AI host adapter.
+title: "adapter: <host and surface>"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One issue covers one host surface. Documented compatibility is not host verification or marketplace publication.
+
+  - type: input
+    id: registry_id
+    attributes:
+      label: Host registry ID
+      description: Existing or proposed ID in foundry/platforms/host-capabilities.v1.json.
+      placeholder: openai-chatgpt-codex
+    validations:
+      required: true
+
+  - type: input
+    id: verification_date
+    attributes:
+      label: Official-source verification date
+      placeholder: YYYY-MM-DD
+    validations:
+      required: true
+
+  - type: textarea
+    id: official_sources
+    attributes:
+      label: Official sources
+      description: Direct vendor documentation, schemas, repositories, and submission rules.
+      placeholder: One HTTPS URL per line.
+    validations:
+      required: true
+
+  - type: textarea
+    id: package_contract
+    attributes:
+      label: Package and compiler contract
+      description: Source fields, generated paths, pinned schemas or CLIs, and fail-closed invariants.
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation_plan
+    attributes:
+      label: Headless and human-in-host validation
+      description: Cover clean install, discovery, success, negative auth, update, uninstall, optional UI, and distribution.
+    validations:
+      required: true
+
+  - type: textarea
+    id: auth_policy
+    attributes:
+      label: Authentication, secrets, and permissions
+      description: OAuth or key boundary, scopes, staging tenant, confirmation points, and forbidden package data.
+    validations:
+      required: true
+
+  - type: textarea
+    id: human_gates
+    attributes:
+      label: Human gates and marketplace path
+      description: Accounts, roles, consent, forms, review, screenshots, and final publish steps that cannot be automated.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence_plan
+    attributes:
+      label: Evidence and claim scope
+      description: Receipt state, TTL, tested versions/surfaces, screenshots, recording, transcript, owner, and limitations.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: invariants
+    attributes:
+      label: Release invariants
+      options:
+        - label: No secrets or customer data enter the package or evidence bundle.
+          required: true
+        - label: Compatible, verified, published, and supported remain separate claims.
+          required: true
+        - label: Public claims will be derived from an unexpired platform release receipt.
+          required: true
+        - label: Unsupported and not-applicable behavior is explicit.
+          required: true
