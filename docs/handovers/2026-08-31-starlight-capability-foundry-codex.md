@@ -5,6 +5,18 @@ Repository: frankxai/Starlight-Intelligence-System
 Current slice: feat/foundry-release-assurance, based on current main
 Mission: turn the foundational cross-host contracts into the first real, receipt-backed P0 release without overstating host support.
 
+## Delivery checkpoint
+
+- Review PR: [#128 — harden cross-host release assurance](https://github.com/frankxai/Starlight-Intelligence-System/pull/128)
+- Branch: `feat/foundry-release-assurance`
+- Reviewed GitHub head before this handover-link commit: `3ecb88e2455cfd96328e9423ea6ee28fb550cc36`
+- Reviewed tree: `49521d6c18c034320e357fbca494a7290124b65c`
+- Verification: Foundry 53/53; official Codex loader pass; official Claude strict validator pass; lint/build pass; full `npm test` pass; Track D 34 pass, 0 fail, 7 todo; root and native dependency audits report zero vulnerabilities.
+- Governance and founder-led pilot activation: [#129](https://github.com/frankxai/Starlight-Intelligence-System/issues/129)
+- Remaining assurance/runtime work: [#125](https://github.com/frankxai/Starlight-Intelligence-System/issues/125), [starlight-creator-mcp#4](https://github.com/frankxai/starlight-creator-mcp/issues/4), [agentic-intelligence-system#7](https://github.com/frankxai/agentic-intelligence-system/issues/7), and [starlight-evals#14](https://github.com/frankxai/starlight-evals/issues/14).
+
+Do not merge PR #128, connect accounts, submit to a marketplace, or publish a support claim without the named human gates. The PR is ready for review, not externally verified or published.
+
 ## Copy/paste prompt
 
 You are the implementation lead for Starlight Capability Foundry.
