@@ -79,9 +79,19 @@ this classifier (manifest + fail-closed engine + tests) is under review at
 `claude-skills-library` `packs/risk-classifier/` (PR #27). **Until that classifier is
 reviewed and adopted, auto-ready is disabled fleet-wide:**
 stewards may comment a proposed classification on a green PR but never flip draft →
-ready. Merging to a production `main` is governed by each repo's own policy **plus
-per-run authorization from Frank** — no global statement in this file grants merge
-authority, and agents never merge.
+ready.
+
+**Merge authority is defined per execution mode, never by this document:**
+
+- **Unattended / scheduled agents** (stewards, routines, anything with no human in the
+  loop) **never merge and never promote to production.** No exceptions.
+- **Interactive, user-directed agents** may merge a PR only when the *current request*
+  grants that authority and every gate is green on the exact head: independent review
+  of that head, branch protection satisfied, dependency order respected, no
+  deployment race (per the steward's Vercel gate), rollback path known, and the
+  release-proof receipt produced.
+- **No policy document grants merge authority** — including this one. Each repo's own
+  policy sets the floor; the request sets the ceiling; the safe default is draft.
 
 **3. Healing is aggressive but bounded.** Auto-fix lint/format/types/failing tests and
 re-push, at most 3 cycles per PR per day; after that, one comment naming the failure
@@ -97,6 +107,10 @@ reading both sides, so sync runs as agent work inside sessions and stewards, nev
 blind push-triggered automation.
 
 ## Routine spine — live-state findings (2026-08-29)
+
+> Dated observation, not durable truth: counts and run states below are a snapshot of
+> the trigger API on 2026-08-29. The living inventory is the reconciled table in
+> `FrankX/docs/ops/SCHEDULED-ROUTINES.md`; re-pull before relying on any number here.
 
 Checked the account's live triggers against `FrankX/docs/ops/SCHEDULED-ROUTINES.md`:
 
