@@ -1,15 +1,24 @@
 # Codex handover: continue Starlight Capability Foundry
 
-Date: 2026-08-31  
+Date: 2026-09-01
 Repository: frankxai/Starlight-Intelligence-System  
-Branch: feat/cross-ecosystem-capability-foundry  
+Current slice: feat/foundry-release-assurance, based on current main
 Mission: turn the foundational cross-host contracts into the first real, receipt-backed P0 release without overstating host support.
 
 ## Copy/paste prompt
 
 You are the implementation lead for Starlight Capability Foundry.
 
-Work in frankxai/Starlight-Intelligence-System from branch feat/cross-ecosystem-capability-foundry. Continue until the next safe, reviewable milestone is implemented, tested, documented, and reflected in GitHub. Do not stop at a plan while a safe implementation step remains.
+Work in frankxai/Starlight-Intelligence-System. Start by fetching current `main`, checking open Foundry PRs and issues, and creating or continuing one focused branch; never resume the deleted `feat/cross-ecosystem-capability-foundry` branch. Continue until the next safe, reviewable milestone is implemented, tested, documented, and reflected in GitHub. Do not stop at a plan while a safe implementation step remains.
+
+### Current state
+
+- PR #122 merged the foundation at `047a1494f3f61201a34a42497a5495f5a2efd4b1`.
+- The current release-assurance slice vendors and verifies the exact Agent Plugins 1.0.0 schemas, runs Ajv 8.20.0 conformance, adds an expiring OpenAI docs-derived preflight, validates an OpenAI submission profile, fixes the skills-only runtime handoff, pins the official Codex 0.152.0 loader lifecycle and Claude Code 2.1.252 strict validator, binds each validator's complete source/contract/dependency-lock closure, and produces CI reports.
+- These checks make no host-verified, OpenAI-reviewed, approved, published, or supported claim.
+- Connected Claude installation/runtime, connected ChatGPT behavior, cryptographic receipt verification, and public submission remain open gates. The Claude strict validator and Codex loader lifecycle are implemented but are not connected-host or directory receipts.
+- OpenAI local package, workspace marketplace, Universal Plugins Directory, ChatGPT runtime, and Codex runtime now have separate registry IDs and receipt gates. Anthropic likewise separates Claude Code plugins, connectors, and MCP Apps. Never remap a legacy aggregate receipt automatically; reissue it only from evidence proving the exact surface.
+- Read `docs/runbooks/openai-plugin-submission.md` before changing the OpenAI candidate or source preflight profile.
 
 ### Read first
 
@@ -78,12 +87,12 @@ Deliver a conformance-ready P0 foundation and the first staging runtime release 
 
 #### Workstream A: upstream conformance
 
-Implement pinned validation for:
+Maintain or implement pinned validation for:
 
-- https://agent-plugins.org/schemas/1.0.0/plugin.schema.json
-- https://agent-plugins.org/schemas/1.0.0/mcp.schema.json
+- https://agent-plugins.org/schemas/1.0.0/plugin.schema.json — implemented with immutable commit/blob/digest provenance.
+- https://agent-plugins.org/schemas/1.0.0/mcp.schema.json — implemented with immutable commit/blob/digest provenance.
 - Claude Code’s strict native plugin validator or the closest official deterministic validator.
-- OpenAI/Codex package validation exposed by current official tooling.
+- OpenAI/Codex package validation exposed by current official tooling. No standalone official submission validator currently exists: preserve the local check as `docs-derived-preflight`, add a pinned loader lifecycle, and require real Platform upload plus the skill safety/security scan for the current skills-only candidate. Reserve Scan Tools wording for MCP.
 
 Requirements:
 
@@ -195,7 +204,12 @@ Run:
 
 ~~~bash
 npm ci
+npm run foundry:toolchain:install # isolated native validators; requires Node.js >=22
 npm run foundry:plugin:check
+npm run foundry:conformance
+npm run foundry:submission:check
+npm run foundry:loader:codex
+npm run foundry:validator:claude
 npm run test:foundry
 npm run lint
 npm run build
@@ -231,7 +245,7 @@ Keep work reviewable:
 3. Use one issue per host surface through the capability-adapter form.
 4. Update the cross-repository issues rather than duplicating ownership.
 5. Make small commits by coherent workstream.
-6. Keep the foundational PR description truthful about test scope.
+6. Keep each continuation PR description truthful about test and host scope.
 7. Add exact test output and blockers to the PR.
 8. Request the correct code/security/GTM reviewers when known.
 9. Do not merge, publish a marketplace listing, create paid infrastructure, or enable production credentials without explicit authority.
@@ -266,6 +280,8 @@ When blocked on a human action, provide one compact packet:
 - evidence to capture;
 - safe rollback;
 - what automation resumes afterward.
+
+For OpenAI, also name the real verified publisher, Apps Management Write state, current availability/region rules, global data-residency requirement for MCP submission, domain verification, production endpoint, publisher-matched privacy/terms/support URLs, reviewer access, the current skill scan or MCP tool scan, conditional media request, and final publication owner.
 
 Never ask for raw secrets in chat or GitHub.
 

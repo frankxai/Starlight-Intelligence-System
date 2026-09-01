@@ -15,6 +15,8 @@ import { spawnSync } from "node:child_process";
 import { repoRootFromTestFile } from "./_lib/repo.js";
 import { buildCapabilityGraph, resolveCapabilities } from "../tools/foundry/lib/graph.mjs";
 import { compilePackage } from "../tools/foundry/lib/compile.mjs";
+import { validateOpenAIPluginPackage } from "../tools/foundry/lib/openai-preflight.mjs";
+import { hashTree } from "../tools/foundry/lib/io.mjs";
 import { provePackage } from "../tools/foundry/lib/prove.mjs";
 import { proposeEvolution } from "../tools/foundry/lib/evolve.mjs";
 import {
@@ -109,6 +111,17 @@ function starlightPublisher() {
   };
 }
 
+function openaiListing(overrides: Record<string, unknown> = {}) {
+  return {
+    category: "Developer Tools",
+    capabilities: ["Skills", "Evidence planning"],
+    brandColor: "#7C5CFF",
+    assetMode: "foundry-generated-geometric",
+    assetLicense: "MIT",
+    ...overrides,
+  };
+}
+
 function validPlatformReceipt() {
   const receipt: any = {
     $schema: "https://starlightintelligence.org/schemas/foundry/platform-release-receipt.schema.json",
@@ -123,8 +136,8 @@ function validPlatformReceipt() {
       artifactSha256: "a".repeat(64),
     },
     host: {
-      registryId: "openai-chatgpt-codex",
-      surface: "ChatGPT apps and Codex plugins",
+      registryId: "openai-codex-runtime",
+      surface: "Codex plugin runtime",
       version: "1.0.0",
       channel: "stable",
       os: "linux",
@@ -168,7 +181,7 @@ function validPlatformReceipt() {
     }],
     claims: [{
       capability: "skills.discovery",
-      surface: "ChatGPT apps and Codex plugins",
+      surface: "Codex plugin runtime",
       state: "compatible",
       owner: null,
       verifiedAt: "2026-08-31T12:02:00Z",
@@ -278,13 +291,23 @@ describe("v9.2 Foundry contracts", () => {
       registryBindings.sort((left: any, right: any) => left.id.localeCompare(right.id)),
     );
     for (const id of [
-      "anthropic-claude",
+      "openai-plugin-local",
+      "openai-workspace-marketplace",
+      "openai-universal-plugins-directory",
+      "openai-chatgpt-runtime",
+      "openai-codex-runtime",
+      "anthropic-claude-code-plugins",
+      "anthropic-claude-connectors",
+      "anthropic-mcp-apps",
       "xai-grok-build",
       "google-gemini-spark",
       "manus-skills-mcp",
       "hermes-agent-plugins",
     ]) {
       assert.ok(ids.includes(id), `missing host registry surface: ${id}`);
+    }
+    for (const obsoleteAggregate of ["openai-chatgpt-codex", "anthropic-claude"]) {
+      assert.equal(ids.includes(obsoleteAggregate), false, `aggregated receipt surface remains: ${obsoleteAggregate}`);
     }
   });
 
@@ -358,12 +381,22 @@ describe("v9.2 Foundry contracts", () => {
     );
 
     const wrongClaimSurface = structuredClone(receipt);
-    wrongClaimSurface.claims[0].surface = "Custom GPT actions and knowledge";
+    wrongClaimSurface.claims[0].surface = "ChatGPT plugin runtime";
     wrongClaimSurface.attestation.statementSha256 = platformReceiptStatementSha256(wrongClaimSurface);
     assert.ok(
       validateValue(wrongClaimSurface, contract, registry).errors.some(
         (error: any) => error.code === "CLAIM_SURFACE_BINDING",
       ),
+    );
+
+    const siblingRuntime = structuredClone(receipt);
+    siblingRuntime.host.registryId = "openai-chatgpt-runtime";
+    siblingRuntime.attestation.statementSha256 = platformReceiptStatementSha256(siblingRuntime);
+    assert.ok(
+      validateValue(siblingRuntime, contract, registry).errors.some(
+        (error: any) => error.code === "HOST_SURFACE_BINDING",
+      ),
+      "a Codex receipt must not validate as ChatGPT runtime evidence",
     );
 
     const unattachedAttestation = structuredClone(receipt);
@@ -666,6 +699,7 @@ describe("v9.2 Foundry compilation and proof", () => {
             description: "Package the four validated Foundry skills into one ChatGPT Work and Codex distribution surface.",
             displayName: "Foundry Projection",
             publisher: starlightPublisher(),
+            openaiListing: openaiListing(),
             skills: [
               "foundry/skill-forge",
               "foundry/agent-forge",
@@ -819,6 +853,7 @@ describe("v9.2 Foundry compilation and proof", () => {
         description: "Prove the compiler rejects skill sources reached through symbolic links.",
         displayName: "Symlinked Source",
         publisher: starlightPublisher(),
+        openaiListing: openaiListing(),
         skills: ["foundry/skill-forge"],
         authentication: "none",
         deployment: { targets: ["agent-plugin"] },
@@ -963,10 +998,154 @@ describe("v9.2 Foundry compilation and proof", () => {
 });
 
 describe("v9.2 Foundry portable plugin compiler", () => {
-  it("emits portable core plus only declared OpenAI and Claude overlays", () => {
+  it("emits a publisher-owned skills-only OpenAI directory candidate that passes preflight", () => {
     const temp = tempDirectory();
     try {
-      const targets = ["agent-plugin", "openai-plugin", "codex", "claude-code"];
+      const targets = ["openai-plugin", "codex"];
+      const envelope = projectionEnvelope(
+        "plugin",
+        "acme-workflow-kit",
+        targets,
+        ["foundry/skill-forge"],
+        "plugin/plugin.json",
+      );
+      const pack: any = {
+        schemaVersion: "1.0.0",
+        kind: "plugin",
+        id: "acme-workflow-kit",
+        version: "0.1.0",
+        description: "Design reusable Acme workflows with explicit activation, evidence, and completion boundaries.",
+        displayName: "Acme Workflow Kit",
+        publisher: {
+          name: "Acme Labs",
+          homepage: "https://example.com",
+          repository: "https://github.com/example/acme-workflow-kit",
+          license: "MIT",
+        },
+        openaiListing: openaiListing({
+          category: "Productivity",
+          capabilities: ["Workflow design"],
+          brandColor: "#3659A8",
+        }),
+        skills: ["foundry/skill-forge"],
+        authentication: "none",
+        deployment: { targets },
+      };
+      const output = join(temp, pack.id);
+      compilePackage({
+        root: ROOT,
+        envelope,
+        pack,
+        output,
+        graph: buildCapabilityGraph(ROOT),
+        registry,
+      });
+
+      const pluginRoot = join(output, "plugin");
+      const report = validateOpenAIPluginPackage(pluginRoot, { evaluationDate: "2026-09-01" });
+      assert.equal(report.status, "pass", JSON.stringify(report.errors));
+      const manifest = json(join(pluginRoot, ".codex-plugin", "plugin.json"));
+      assert.equal(manifest.interface.category, "Productivity");
+      assert.deepEqual(manifest.interface.capabilities, ["Workflow design"]);
+      const logo = readFileSync(join(pluginRoot, "assets", "logo.svg"), "utf8");
+      assert.match(logo, /Acme Workflow Kit/);
+      assert.match(logo, /#3659A8/);
+      assert.doesNotMatch(logo, /Starlight|#7C5CFF/);
+
+      const firstBuild = hashTree(output);
+      compilePackage({
+        root: ROOT,
+        envelope,
+        pack,
+        output,
+        graph: buildCapabilityGraph(ROOT),
+        registry,
+        force: true,
+      });
+      assert.deepEqual(hashTree(output), firstBuild, "repeat builds must be byte-reproducible");
+
+      const invalidPack = structuredClone(pack);
+      invalidPack.openaiListing.brandColor = "#FFFFFF";
+      assert.throws(
+        () => compilePackage({
+          root: ROOT,
+          envelope,
+          pack: invalidPack,
+          output,
+          graph: buildCapabilityGraph(ROOT),
+          registry,
+          force: true,
+        }),
+        /failed final-directory preflight/,
+      );
+      assert.deepEqual(hashTree(output), firstBuild, "a failed replacement must preserve the prior package");
+
+      const failedNewOutput = join(temp, "failed-new-output");
+      assert.throws(
+        () => compilePackage({
+          root: ROOT,
+          envelope,
+          pack: invalidPack,
+          output: failedNewOutput,
+          graph: buildCapabilityGraph(ROOT),
+          registry,
+        }),
+        /failed final-directory preflight/,
+      );
+      assert.equal(existsSync(failedNewOutput), false, "a failed new build must leave no target tree");
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects OpenAI listing lengths and credential-bearing publisher URLs before compilation", () => {
+    const basePack: any = {
+      schemaVersion: "1.0.0",
+      kind: "plugin",
+      id: "invalid-openai-listing",
+      version: "0.1.0",
+      description: "Exercise final-directory input limits before any OpenAI package is emitted.",
+      displayName: "Valid Listing",
+      publisher: starlightPublisher(),
+      openaiListing: openaiListing(),
+      skills: ["foundry/skill-forge"],
+      authentication: "none",
+      deployment: { targets: ["openai-plugin"] },
+    };
+    for (const mutate of [
+      (pack: any) => { pack.displayName = "D".repeat(31); },
+      (pack: any) => { pack.publisher.name = "P".repeat(81); },
+      (pack: any) => { pack.publisher.homepage = "https://user:secret@example.com"; },
+    ]) {
+      const temp = tempDirectory();
+      try {
+        const pack = structuredClone(basePack);
+        mutate(pack);
+        const envelope = projectionEnvelope(
+          "plugin",
+          pack.id,
+          pack.deployment.targets,
+          pack.skills,
+          "plugin/plugin.json",
+        );
+        assert.throws(() => compilePackage({
+          root: ROOT,
+          envelope,
+          pack,
+          output: join(temp, "package"),
+          graph: buildCapabilityGraph(ROOT),
+          registry,
+        }));
+      } finally {
+        rmSync(temp, { recursive: true, force: true });
+      }
+    }
+  });
+
+  it("emits portable and Claude MCP overlays and blocks unvalidated OpenAI MCP packages", () => {
+    const temp = tempDirectory();
+    try {
+      const targets = ["agent-plugin", "claude-code"];
       const envelope = projectionEnvelope(
         "plugin",
         "foundry-remote",
@@ -989,6 +1168,7 @@ describe("v9.2 Foundry portable plugin compiler", () => {
           license: "Apache-2.0",
           keywords: ["example", "foundry"],
         },
+        openaiListing: openaiListing({ brandColor: "#3659A8" }),
         skills: ["foundry/skill-forge"],
         mcpServerUrl: "https://example.com/mcp",
         authentication: "oauth2",
@@ -1035,24 +1215,28 @@ describe("v9.2 Foundry portable plugin compiler", () => {
         portableMcp.$schema,
         "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
       );
-      assert.deepEqual(portableMcp.mcpServers.foundry, {
+      assert.deepEqual(portableMcp.mcpServers[pack.id], {
         type: "streamable-http",
         url: "https://example.com/mcp",
       });
-
-      const codex = json(join(output, "plugin", ".codex-plugin", "plugin.json"));
-      assert.equal(codex.mcpServers, "./.mcp.json");
-      assert.equal(codex.author.name, "Example Publisher");
-      assert.deepEqual(json(join(output, "plugin", ".mcp.json")), {
-        foundry: { type: "http", url: "https://example.com/mcp" },
+      assert.deepEqual(portable.extensions["org.starlightintelligence.foundry"], {
+        mcpServerId: pack.id,
+        authentication: {
+          mode: "oauth2",
+          credentialDelivery: "host-managed",
+          secretsInPackage: false,
+        },
       });
+
+      assert.equal(existsSync(join(output, "plugin", ".codex-plugin")), false);
+      assert.equal(existsSync(join(output, "plugin", ".mcp.json")), false);
 
       const claude = json(join(output, "plugin", ".claude-plugin", "plugin.json"));
       assert.equal(claude.mcpServers, "./.claude-mcp.json");
       assert.equal(claude.author.name, "Example Publisher");
       assert.deepEqual(json(join(output, "plugin", ".claude-mcp.json")), {
         mcpServers: {
-          foundry: { type: "http", url: "https://example.com/mcp" },
+          [pack.id]: { type: "http", url: "https://example.com/mcp" },
         },
       });
       assert.equal(
@@ -1086,6 +1270,29 @@ describe("v9.2 Foundry portable plugin compiler", () => {
           /must use HTTPS and must not contain user information, a query, or a fragment/,
         );
       }
+
+      const openAiPack = structuredClone(pack);
+      openAiPack.id = "foundry-remote-openai";
+      openAiPack.deployment.targets = ["agent-plugin", "openai-plugin"];
+      const openAiEnvelope = projectionEnvelope(
+        "plugin",
+        openAiPack.id,
+        openAiPack.deployment.targets,
+        ["foundry/skill-forge"],
+        "plugin/plugin.json",
+      );
+      assert.throws(
+        () => compilePackage({
+          root: ROOT,
+          envelope: openAiEnvelope,
+          pack: openAiPack,
+          output: join(temp, openAiPack.id),
+          graph: buildCapabilityGraph(ROOT),
+          registry,
+        }),
+        /OpenAI MCP package compilation is blocked until the MCP-specific/,
+      );
+      assert.equal(existsSync(join(temp, openAiPack.id)), false);
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -1131,6 +1338,29 @@ describe("v9.2 Foundry portable plugin compiler", () => {
       assert.equal(existsSync(join(output, "plugin", ".claude-plugin")), false);
       assert.equal(existsSync(join(output, "plugin", ".claude-mcp.json")), false);
       assert.deepEqual(json(join(output, "foundry-manifest.json")).deploymentTargets, targets);
+
+      const contradictoryPack = structuredClone(pack);
+      contradictoryPack.id = "auth-without-mcp";
+      contradictoryPack.authentication = "oauth2";
+      delete contradictoryPack.mcpServerUrl;
+      const contradictoryEnvelope = projectionEnvelope(
+        "plugin",
+        contradictoryPack.id,
+        targets,
+        ["foundry/skill-forge"],
+        "plugin/plugin.json",
+      );
+      assert.throws(
+        () => compilePackage({
+          root: ROOT,
+          envelope: contradictoryEnvelope,
+          pack: contradictoryPack,
+          output: join(temp, contradictoryPack.id),
+          graph: buildCapabilityGraph(ROOT),
+          registry,
+        }),
+        /AUTHENTICATION_WITHOUT_MCP/,
+      );
 
       const invalidPack = structuredClone(pack);
       invalidPack.id = "foundry--projection";
@@ -1181,6 +1411,7 @@ describe("v9.2 Foundry plugin distribution", () => {
         description: "A collision fixture that proves plugin packaging fails closed on duplicate skill directory names.",
         displayName: "Collision Fixture",
         publisher: starlightPublisher(),
+        openaiListing: openaiListing(),
         skills: [
           "music-is/catalog-systems",
           "sound-intelligence/catalog-systems",
@@ -1209,11 +1440,9 @@ describe("v9.2 Foundry plugin distribution", () => {
   it("keeps plugin skills byte-identical to canonical skill sources", () => {
     const skills = ["skill-forge", "agent-forge", "system-forge", "taste-engine"];
     for (const skill of skills) {
-      for (const file of ["SKILL.md", join("agents", "openai.yaml")]) {
-        const canonical = readFileSync(join(ROOT, "skills", "foundry", skill, file));
-        const bundled = readFileSync(join(ROOT, "plugins", "starlight-foundry", "skills", skill, file));
-        assert.deepEqual(bundled, canonical, `${skill}/${file} drifted`);
-      }
+      const canonical = hashTree(join(ROOT, "skills", "foundry", skill));
+      const bundled = hashTree(join(ROOT, "plugins", "starlight-foundry", "skills", skill));
+      assert.deepEqual(bundled, canonical, `${skill} package tree drifted`);
     }
   });
 
@@ -1240,7 +1469,15 @@ describe("v9.2 Foundry plugin distribution", () => {
     assert.equal(existsSync(join(ROOT, "plugins", "starlight-foundry", ".mcp.json")), false);
     assert.ok(Array.isArray(manifest.interface.defaultPrompt));
     assert.ok(
-      manifest.interface.defaultPrompt.some((prompt: string) => prompt.includes("$skill-forge")),
+      manifest.interface.defaultPrompt.some((prompt: string) => prompt.includes("reusable skill")),
+    );
+    assert.ok(manifest.interface.shortDescription.length <= 30);
+    assert.equal(manifest.interface.logo, "./assets/logo.svg");
+    assert.equal(manifest.interface.composerIcon, "./assets/composer-icon.svg");
+    assert.equal(existsSync(join(ROOT, "plugins", "starlight-foundry", "assets", "logo.svg")), true);
+    assert.equal(
+      existsSync(join(ROOT, "plugins", "starlight-foundry", "assets", "composer-icon.svg")),
+      true,
     );
   });
 });

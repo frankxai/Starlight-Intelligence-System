@@ -7,18 +7,28 @@ on:
     paths:
       - "foundry/**"
       - "tools/foundry/**"
+      - "skills/foundry/**"
       - "plugins/starlight-foundry/**"
+      - ".agents/plugins/marketplace.json"
       - "scripts/sync-foundry-plugin.mjs"
       - "test/v92-foundry.test.ts"
+      - "test/foundry-conformance.test.ts"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/capability-foundry.yml"
   push:
     branches: [main]
     paths:
       - "foundry/**"
       - "tools/foundry/**"
+      - "skills/foundry/**"
       - "plugins/starlight-foundry/**"
+      - ".agents/plugins/marketplace.json"
       - "scripts/sync-foundry-plugin.mjs"
       - "test/v92-foundry.test.ts"
+      - "test/foundry-conformance.test.ts"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/capability-foundry.yml"
   schedule:
     - cron: "17 6 * * 1"
@@ -39,18 +49,60 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Install isolated native host validators
+        run: npm ci --prefix foundry/validators/native
+
       - name: Check checked-in Foundry plugin skill parity
         run: npm run foundry:plugin:check
 
+      - name: Validate portable Agent Plugin against pinned upstream schemas
+        run: >-
+          node tools/foundry/cli.mjs conformance plugins/starlight-foundry
+          --out "${RUNNER_TEMP}/agent-plugin-conformance.json"
+
+      - name: Validate OpenAI submission profile and docs-derived package preflight
+        run: |
+          node tools/foundry/cli.mjs validate \
+            plugins/starlight-foundry/submission/openai/profile.json \
+            --schema openai-submission-profile
+          node tools/foundry/cli.mjs preflight-openai \
+            plugins/starlight-foundry \
+            --out "${RUNNER_TEMP}/openai-plugin-preflight.json"
+
+      - name: Run pinned official Codex loader lifecycle
+        run: >-
+          node tools/foundry/codex-loader-smoke.mjs
+          --out "${RUNNER_TEMP}/codex-loader-smoke.json"
+
+      - name: Run pinned Claude native strict validator
+        run: >-
+          node tools/foundry/claude-validator-smoke.mjs
+          --out "${RUNNER_TEMP}/claude-validator-smoke.json"
+
       - name: Validate Foundry contracts, compiler, proof, and receipts
         run: npm run test:foundry
+
+      - name: Upload portable conformance evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: agent-plugin-conformance-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/agent-plugin-conformance.json
+            ${{ runner.temp }}/openai-plugin-preflight.json
+            ${{ runner.temp }}/codex-loader-smoke.json
+            ${{ runner.temp }}/claude-validator-smoke.json
+          if-no-files-found: warn
+          retention-days: 45

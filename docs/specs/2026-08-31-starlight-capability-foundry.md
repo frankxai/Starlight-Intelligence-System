@@ -1,6 +1,6 @@
 # Starlight Capability Foundry
 
-Status: architecture accepted; foundational implementation in review  
+Status: foundation merged in PR #122; Phase 1 release assurance active
 Date: 2026-08-31  
 Decision owner: Starlight Intelligence  
 Board verdict: PROCEED, with the condition that no compatibility or support claim may outrun a current platform receipt.
@@ -24,7 +24,7 @@ The durable promise is:
 | Foundry Core | Author, validate, compile, and prove skills, agents, MCP tools, UI, and host overlays | Now |
 | Foundry Release Cloud | Cross-host runners, evidence capture, receipts, drift canaries, and release automation | First commercial product |
 | Foundry Assurance | Policy, provenance, SBOM, permission review, attestation verification, and support-state API | With enterprise pilots |
-| Starlight Exchange | Discover, buy, install, update, and govern proven capabilities | After P0 reliability |
+| Starlight Exchange | Discover, evaluate, license through host-policy-permitted channels, install, update, and govern proven capabilities | After P0 reliability |
 | Foundry Enterprise | Private registries, tenant policies, approved catalogs, audit export, and support SLAs | After design partners |
 
 ## Non-goals
@@ -36,6 +36,8 @@ The durable promise is:
 - Do not make a second capability compiler in the Agentic Intelligence System.
 - Do not claim cryptographic authenticity merely because a receipt matches a JSON schema.
 - Do not launch a broad marketplace before install/update/uninstall reliability is measurable.
+- Do not sell or promote digital products, services, subscriptions, credits, or upgrades inside an OpenAI plugin while current OpenAI policy forbids that commerce.
+- Do not imply OpenAI verification, endorsement, or support without explicit host evidence authorizing the exact wording.
 
 ## Authority map
 
@@ -94,6 +96,22 @@ plugin/
 Portable plugin.json stays closed to the upstream schema. Host-only metadata belongs in a host overlay or a reverse-domain extension directory. The compiler always emits the portable core and emits an OpenAI or Claude overlay only when that target was declared. The Task Envelope defines the maximum allowed targets; foundry-manifest.json records the Plugin Pack's exact emitted target set. Every path component from the canonical source root to a selected skill must be a real directory or file, never a symbolic link. Compiled trees reject every symbolic link, and both source and compiled trees reject .git and node_modules entries rather than skipping them, so copied bytes cannot disappear from the digest set.
 
 Publisher identity, homepage, repository, license, and keywords are source inputs. This makes the Foundry safe for third-party products instead of silently assigning Starlight ownership.
+
+### OpenAI channel model
+
+OpenAI publication and execution are modeled as separate evidence surfaces even though one public Plugins Directory is shared by ChatGPT and Codex:
+
+| Surface | Foundry output | Required evidence |
+|---|---|---|
+| Local/repository package | Portable core plus OpenAI overlay | Pinned portable validation, docs-derived OpenAI preflight, clean loader lifecycle |
+| Workspace GitHub marketplace | Governed marketplace entry | Admin sync, policy, install, update, and removal evidence |
+| Universal Plugins Directory | Portal dossier and reviewed snapshot | Verified publisher, Platform upload, skill safety/security scan for skills or tool scan for MCP, review outcome, listing URL |
+| ChatGPT runtime | Runtime receipt | Activation, boundary, behavior, permissions, and uninstall in exact plan/region |
+| Codex runtime | Runtime receipt | Activation, boundary, behavior, update, and uninstall in exact CLI/app version |
+
+The portable package never substitutes for a directory or runtime receipt. A directory publication receipt never substitutes for either runtime receipt. OpenAI exposes no current standalone public submission validator, so Foundry labels its automated OpenAI check `docs-derived-preflight` and requires portal evidence before promotion.
+
+The policy plane must track host commerce behavior with source, verification date, and review TTL. For OpenAI, the release projection is `no-commerce` or `existing-entitlements-only`: digital checkout, plan comparison, upgrade promotion, and links to buy digital services remain outside the plugin. Exchange take-rate mechanics are enabled only on channels whose current policy permits them.
 
 Remote MCP endpoints must:
 
@@ -165,7 +183,7 @@ documented -> compatible -> verified -> published -> supported
 |---|---|
 | documented | Current official source and verification date |
 | compatible | Contract-valid target artifact built by the pinned compiler |
-| verified | Matching passing host check with overlapping immutable evidence |
+| verified | Matching passing host check with overlapping immutable evidence; public label `Tested by Starlight` |
 | published | Verified artifact plus public release/listing URL; marketplace review approved when applicable |
 | supported | Published, named owner, no applicable failing check, monitoring and response policy |
 | degraded | Evidence-backed limitation and owner/repair path |
@@ -199,7 +217,7 @@ Each release uses a clean disposable host profile where practical.
 1. Build from the exact tagged source and record digests.
 2. Validate Foundry schemas and target-specific package schemas.
 3. Scan secrets, licenses, dependencies, permissions, and SBOM.
-4. Install from the same artifact intended for distribution.
+4. Bind the portable source package, host submission snapshot, and installed runtime artifact; hosts may review or publish a metadata snapshot rather than the same local wiring.
 5. Confirm capability discovery and starter invocation.
 6. Execute a representative success path.
 7. Execute negative authentication and denied-permission paths.
@@ -235,7 +253,7 @@ evidence/<product>/<version>/<host>/<run-id>/
 └── platform-release-receipt.json
 ~~~
 
-Screenshots should show install/discovery, one meaningful result, permissions/consent when relevant, and the listing state. Recordings should be short, scripted, captioned where useful, and scrubbed of credentials, customer content, email addresses, tenant IDs, and unrelated browser chrome.
+Evidence media is conditional. Internal host evidence may capture install/discovery, one meaningful result, permissions/consent, and listing state. OpenAI recordings are created only when explicitly requested by the portal/reviewer or justified by an internal evidence plan; current official documentation does not make them universally mandatory. Directory screenshots are included only when the scanned plugin exposes custom UI; a skills-only or no-UI plugin submits none. Every recording should be short, scripted, captioned where useful, and scrubbed of credentials, customer content, email addresses, tenant IDs, and unrelated browser chrome.
 
 ## Agentic release team
 
@@ -256,6 +274,22 @@ The team is bounded by role and evidence, not by personalities.
 | Drift steward | Scheduled canaries, expiry, regression triage | Silent claim extension |
 
 Parallelize source research, adapter implementation, security review, and host runs only when their write scopes do not overlap. The release verifier is a separate role from the adapter author.
+
+### Initial operating assignment and response targets
+
+These are internal pilot targets, not a customer-facing support SLA. Frank Riemer is the accountable human for portfolio scope, GTM, spend, and every external publication gate. Agent names below are registered execution leads; they cannot replace human consent or approve their own work. Before a design-partner kickoff, every lane must have a named GitHub assignee and backup. An unassigned required lane blocks the kickoff and any `supported` claim.
+
+| Lane | Initial accountable owner | Lead agent or role | Pilot cadence and response target | Failure effect |
+|---|---|---|---|---|
+| Portfolio and GTM | Frank Riemer | `starlight-navigator` plus GTM owner | Review the 14-day scorecard every two business days; decide scope, price, or stop changes within one business day | No new outreach or offer expansion without an owner decision |
+| Source and policy | Foundry maintainer appointed by Frank | `starlight-hermes` plus source researcher | Check P0 official sources weekly and before every candidate; triage a suspected breaking policy change within four working hours | Freeze the affected claim until the source and registry are reconciled |
+| Contracts and adapters | SIS Foundry maintainer appointed by Frank | `starlight-architect` plus contract/compiler engineer and surface adapter owner | Required checks on every change; triage a P0 failure the same business day and post a repair plan within one business day | Block artifact promotion for the affected target |
+| Runtime and security | `starlight-creator-mcp` maintainer, assigned before staging | `starlight-architect`, `starlight-sentinel`, and runtime engineer | Treat secret, OAuth, tenancy, or destructive-action findings as immediate release blocks; human triage within four working hours | Stop the run, revoke exposed material if applicable, and require independent re-review |
+| Host run and evidence | Release operator assigned on the release issue | `starlight-orchestrator` plus host test operator and evidence curator | Start the clean run within one business day of an eligible candidate; redact and hash evidence before upload | A missing, failed, or unredacted check cannot produce a receipt |
+| Verification and claims | Human release verifier who did not author the adapter | `starlight-evaluator` plus release verifier | Review receipt, attestation, and copy within one business day of a complete evidence bundle | Keep or downgrade the claim; never infer approval from silence |
+| Drift and support | Named surface owner, required before `supported` | `starlight-orchestrator` plus drift steward | Run the surface cadence recorded in the registry, never later than the 45-day receipt expiry; downgrade a critical failed claim within one hour and assign repair within one business day | Expire or degrade only the affected surface |
+
+Contractual customer response and resolution SLAs remain out of scope until repeated pilot runs establish achievable service levels and an accountable support rota is staffed.
 
 ### Human gates
 
@@ -320,7 +354,7 @@ docs/
 | Claim promotion | After receipt | AIS support-state update and approved GTM copy |
 | Drift | Scheduled | Receipt renewal, expiry, downgrade, or repair issue |
 
-The foundational Capability Foundry workflow runs local parity and Foundry tests. It does not yet run the pinned upstream Agent Plugins schema or Claude strict validator; those are explicit Phase 1 gates and a tracked issue.
+The Capability Foundry workflow now verifies the exact vendored Agent Plugins 1.0.0 schema digests, validates the portable package with Ajv 8.20.0, runs a freshness-bounded OpenAI docs-derived preflight, validates the OpenAI submission profile, exercises a pinned official Codex 0.152.0 add/discover/install/list/remove lifecycle in a disposable home, runs Claude Code 2.1.252's official strict native validator, and uploads redacted reports. Its reviewed lock binds each validator's complete local source/contract closure and exact dependency lock, rejects closure deletion or mutation, decodes JSON as fatal UTF-8, and rejects nested skill manifests. Connected ChatGPT and Claude behavior, cryptographic attestation, and the OpenAI portal scan remain explicit Phase 1 gates.
 
 ### GitHub controls to enable
 
@@ -378,9 +412,32 @@ These are hypotheses to test, not published prices:
 | Launch Sprint | Fixed-fee P0 packaging and evidence | Five design partners; three renew |
 | Release Cloud Team | Per product plus active host surfaces | Monthly receipt renewal and expansion |
 | Enterprise | Annual private registry, policies, audit, SLA | Security-approved production deployment |
-| Exchange take rate | Later, on paid capability transactions | Proven buyer demand without harming publisher economics |
+| Exchange take rate | Later, only on policy-permitted transaction channels | Proven buyer demand without harming publisher economics or violating host policy |
 
 Do not price by number of generated files. Price the reduction in release time, review failure, drift risk, and support burden.
+
+### Fourteen-day founder-led sales experiment
+
+This is the first evidence-producing GTM test, not a launch claim.
+
+**Beachhead.** Approach teams that already have one production or production-shaped MCP server, agent tool, or AI extension; have received explicit requests for at least two P0 surfaces; can provide a non-customer-data staging fixture; and have a technical or product decision-maker available during the test. Exclude speculative ideas, single-host hobby projects, regulated-data pilots, and prospects that require marketplace approval to count the engagement as delivered.
+
+**First-ten selection gate.** Frank privately builds a candidate pool and selects exactly ten accounts only after each is scored against five observable signals: a working capability, multi-host demand, an identified buyer, staging access within five business days, and a plausible fourteen-day buying path. No customer name enters this specification, a public artifact, or a case study without permission. If fewer than ten candidates pass, do not pad the list; narrow the test to the qualified set and record the sourcing gap.
+
+**Offer and payment hypothesis.** Quote a one-capability Launch Sprint at EUR 10,000–15,000 fixed, with 50% due on signed kickoff and 50% due when the agreed package, release plans, and evidence dossier are delivered. Marketplace acceptance, publication dates, and unsupported host behavior are expressly excluded from the promise. Payment is direct B2B invoicing outside every host plugin. This range, split, and scope are test variables—not published pricing and not evidence that anyone has agreed to pay.
+
+**Attention artifact.** Use a concise release-risk diagnostic, the portable contract, and redacted local preflight output to show the method. Label them as local/preflight evidence; do not present them as connected-host verification. The call-to-action is a 30-minute release-readiness review for one real capability.
+
+| Window | Founder-led action | Evidence captured |
+|---|---|---|
+| First 72 hours | Score the candidate pool, lock the qualified cohort of up to ten, send one individual message to every qualified account through warm introductions first and targeted email, GitHub, or LinkedIn second, and offer five review slots | Scorecard, message variant, send timestamp, response, and source channel—no bulk automation |
+| Days 4–7 | Follow up once after three business days, run up to five discovery calls, and diagnose current host requests, failed releases, review risk, staging readiness, budget, and decision path | Structured call notes, problem severity, current labor, buying authority, objections, and next step |
+| Days 8–10 | Send at most two qualified proposals using the fixed scope and price hypothesis; require a staging-access and human-gate checklist before signature | Proposal version, quoted price, payment terms, exclusions, acceptance or objection |
+| Days 11–14 | Follow up once, ask for a signed kickoff and first payment, and close the test with an evidence review regardless of outcome | Signed scope and payment evidence, or a coded no-decision/loss reason |
+
+The primary motion is founder-led warm outreach; personalized email, GitHub, and LinkedIn are secondary routes. Publish technical proof only after it is receipt-backed and approved. Content during this test is a market sensor, not a substitute for direct conversations.
+
+**Day-14 decision.** Pass the commercial gate when the selected cohort produces at least four qualified conversations, two scoped proposals, and one signed Launch Sprint with the 50% kickoff payment received. A verbal yes does not pass. Revise the beachhead, message, scope, or price—but do not build self-serve sales automation—when conversations confirm the problem yet no payment is received. Stop or narrow the offer when fewer than three qualified accounts engage, buyers will pay only if Starlight guarantees marketplace approval, or projected delivery exceeds 60 operator hours for one sprint. Record response rate, qualified-call rate, proposal rate, cash collected, expected delivery hours, top three objections, and the single next hypothesis.
 
 ### Distribution motion
 
@@ -392,6 +449,8 @@ Do not price by number of generated files. Price the reduction in release time, 
 6. Convert repeated manual release work into Release Cloud runners.
 7. Open Exchange supply only to receipt-backed packages.
 8. Add buyer-side enterprise catalogs after publishers and receipts are reliable.
+
+For OpenAI, the plugin is a free utility or existing-entitlement client. Launch Sprints, Release Cloud, and Enterprise are sold through Starlight's direct B2B channel. Governed private workspace GitHub marketplaces are an earlier enterprise wedge than public Exchange because they solve rollout, policy, and evidence without adding in-plugin checkout.
 
 Every marketplace page should derive its host badges, tested versions, limitations, last verified date, and evidence links from receipts.
 
@@ -410,6 +469,7 @@ Receipt-backed successful installs that complete a representative capability tas
 - percentage of public claims backed by unexpired receipts;
 - evidence redaction defect rate;
 - marketplace first-pass review rate;
+- activation precision, false-trigger rate, task completion, satisfaction, and uninstall rate by host;
 - median adapter repair time after host drift;
 - design-partner renewal and host expansion;
 - support tickets per 100 successful installs;
@@ -458,10 +518,11 @@ Rules:
 
 - Merge portable plugin, host registry, platform receipt, exact emitted-target provenance, symlink rejection, publisher provenance, URL secret guards, workflow, and issue form.
 - Open the P0 epic and cross-repository runtime, registry, and eval issues.
-- Add pinned upstream Agent Plugins schema validation.
-- Add Claude native strict validation.
+- Add pinned upstream Agent Plugins schema validation. **Implemented on `feat/foundry-release-assurance`.**
+- Add Claude native strict validation. **Implemented with pinned Claude Code 2.1.252; connected-host lifecycle remains open.**
 - Choose the starlight-creator-mcp staging endpoint and authentication contract.
 - Inventory required P0 accounts, plans, OS runners, reviewers, and evidence storage.
+- Run the founder-led experiment's first-ten gate and message every qualified account, targeting ten; this is prospective work and does not imply that outreach has occurred.
 
 ### Days 4–14
 
@@ -470,8 +531,8 @@ Rules:
 - Build clean Codex, Claude, Cursor, and VS Code host profiles.
 - Implement install/discovery/success/negative-auth/update/uninstall suites.
 - Add screenshot and recording scripts plus deterministic redaction.
-- Create first submission kits without submitting publicly.
-- Recruit two design partners.
+- Complete the first OpenAI portal dossier without submitting publicly; use the source preflight profile as input and add verified identity/access, availability, attestations, public legal/support URLs, current skill scan or MCP tool scan, exact review tests, release notes, and conditional media.
+- Complete the founder-led experiment and apply its pass/revise/stop rule; target two qualified proposals and require one paid kickoff to pass the commercial gate.
 
 ### Days 15–30
 
@@ -532,7 +593,20 @@ Done when:
 - an authenticated receipt is minted;
 - owner and repair SLA are named.
 
-### Marketplace submission kit
+### OpenAI portal dossier
+
+Done when:
+
+- the package is self-contained and repository-relative runtime commands are optional, explicit handoffs;
+- the local package passes the pinned portable validator and freshness-bounded OpenAI preflight;
+- verified publisher identity and Apps Management Write access are recorded;
+- privacy, terms, support, and publisher identity agree;
+- MCP submissions use a production HTTPS endpoint, a global-data-residency project, domain verification, exact annotations and justifications, five positive and three negative cases, reviewer access without MFA, and the current portal scan;
+- no-UI packages contain no screenshots, while any portal-requested recording and UI screenshots follow their separate current policies;
+- connected ChatGPT and Codex runtime receipts remain separate from directory publication;
+- final submission and publication are explicitly approved by the accountable human.
+
+### Other marketplace submission kit
 
 Done when:
 
@@ -552,6 +626,8 @@ Done when:
 | Third-party IP/license misattribution | Required publisher/license contract and provenance review |
 | Manual QA destroys margin | P0 focus, deterministic fixtures, reusable host profiles, measure labor |
 | Marketplace dependency | Direct release and enterprise catalog lanes; Exchange only after proof |
+| Host commerce-policy breach | Versioned commerce policy plane; OpenAI projection has no digital checkout or upgrade promotion |
+| Host endorsement terminology collision | Render `Tested by Starlight`; require explicit host evidence before implying OpenAI verification, endorsement, or support |
 | UI fragmentation | One semantic experience model with host projections and text fallback |
 | Cross-repository contract forks | SIS authority, versioned schemas, generated clients, contract tests |
 | Fake attestation confidence | Separate cryptographic verifier and verification URL |
@@ -569,6 +645,8 @@ Done when:
 8. Schema validation is not cryptographic verification.
 9. Human marketplace and consent gates remain human.
 10. Exchange supply will require current receipts.
+11. OpenAI directory publication, ChatGPT runtime, and Codex runtime require separate receipts.
+12. OpenAI plugin commerce is entitlement-only or no-commerce for Starlight digital services under current policy.
 
 ## Open decisions
 
@@ -577,7 +655,7 @@ Done when:
 - Supported P0 OS/architecture matrix and paid host plans.
 - First two design partners.
 - Launch Sprint and Release Cloud pricing.
-- Exchange catalog timing and transaction model.
+- Exchange catalog timing and host-policy-conditional transaction model.
 - Which Google commercial lane has the first customer pull.
 
 ## Official references
@@ -587,6 +665,8 @@ Done when:
 - OpenAI plugin build: https://developers.openai.com/plugins/build/plugins
 - OpenAI ChatGPT connection: https://developers.openai.com/plugins/deploy/connect-chatgpt
 - OpenAI submission: https://developers.openai.com/plugins/deploy/submission
+- OpenAI plugin guidelines: https://developers.openai.com/plugins/app-guidelines
+- OpenAI submission errors: https://developers.openai.com/plugins/deploy/submission-errors
 - Claude build choice: https://claude.com/docs/connectors/building/what-to-build
 - Claude plugin reference: https://code.claude.com/docs/en/plugins-reference
 - Claude marketplaces: https://code.claude.com/docs/en/plugin-marketplaces
@@ -603,6 +683,6 @@ Done when:
 
 ## Implementation truth
 
-This foundational change establishes contracts, local compiler behavior, exact emitted-target provenance, symlink-safe artifact hashing, registry-bound receipts, full signed-statement digests, a documented registry, checked-in portable/OpenAI/Claude skills-only manifests, local tests, and GitHub workflow scaffolding.
+PR #122 merged the foundational contracts, compiler behavior, exact emitted-target provenance, symlink-safe artifact hashing, registry-bound receipts, full signed-statement digests, documented registry, checked-in portable/OpenAI/Claude skills-only manifests, tests, and GitHub workflow scaffolding.
 
-It makes zero verified, published, or supported host claim. Pinned upstream/native validators, cryptographic attestation verification, real connected-account host runs, marketplace submissions, screenshots, and recordings are the next gated implementation slice.
+The Phase 1 release-assurance slice adds exact vendored Agent Plugins schema pins, a fail-closed validator, docs-derived OpenAI package rules with an expiry gate, a self-contained skills-only execution boundary, source-preflight profile contract, candidate assets, CI reports, a pinned Codex loader smoke, a pinned Claude strict-validation smoke, and negative tests. It still makes zero connected-host-verified, OpenAI-reviewed, approved, published, or supported claim. Cryptographic attestation verification, real connected-account runs, and human marketplace gates remain tracked work.

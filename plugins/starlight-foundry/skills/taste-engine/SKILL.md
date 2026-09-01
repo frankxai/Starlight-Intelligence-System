@@ -9,6 +9,8 @@ description: Turn subjective quality intent into executable hard gates, weighted
 
 Create a domain-specific Taste Profile and an evaluation loop that can reject polished mediocrity without pretending subjective judgment is deterministic.
 
+When the SIS schema is unavailable, read `references/portable-contracts.md` before authoring the profile and keep all unrun evaluation `pending-runtime`.
+
 ## Use this skill when
 
 - A high-value artifact must be persuasive, elegant, clear, resonant, or production-ready.
@@ -56,4 +58,4 @@ Do not use a taste rubric as a substitute for factual, security, accessibility, 
 
 ## Return
 
-Return the Taste Profile, candidate strategy, deterministic gates, judge plan, Evidence Receipt status, winning rationale, and unresolved disagreement.
+Return the Taste Profile, candidate strategy, deterministic gates, judge plan, evidence status, winning rationale, and unresolved disagreement. Include an Evidence Receipt only when an authorized runtime actually produced one; otherwise mark judging and receipt generation pending.

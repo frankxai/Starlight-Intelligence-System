@@ -61,6 +61,7 @@ last_consolidated: '2026-05-11'
 **Elegance:** The loop now looks at itself (Queen advances the Queen). Visuals make the invisible (routing confidence, memory health, compound velocity) visible and citable. Gateway makes Queen state portable across harnesses without copy-paste.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
 **Related:** Strategic Vault - Architecture Decision
 
 **Pattern:** Use markdown files and JSON configuration instead of executable code for AI system definition.
@@ -280,5 +281,19 @@ When developing autonomous client bridges to JSON-RPC tools and services (such a
 
 **Built on SIP — Starlight Intelligence Protocol**
 
+---
 
+### [2026-09-01] Cross-host release assurance separates package, loader, runtime, and publication proof
 
+**Category:** platform-architecture / release-assurance / plugins
+**Confidence:** 0.98
+**Source:** Capability Foundry release-assurance implementation and official host validation runs
+**Related:** `foundry/validators/toolchain.lock.v1.json`, `tools/foundry/lib/upstream-conformance.mjs`, `tools/foundry/lib/openai-preflight.mjs`, `docs/runbooks/openai-plugin-submission.md`
+
+**Pattern:** A plugin cannot have one undifferentiated “verified” state. Preserve four evidence layers: portable schema conformance, native package/loader validation, connected-host runtime behavior, and marketplace review/publication. Each report names its authority and contains a claim boundary so a lower layer cannot silently promote a higher-layer claim.
+
+**Implementation:** Agent Plugins 1.0.0 schemas are cached byte-for-byte with immutable commit/blob/digest provenance and validated with pinned Ajv. OpenAI package rules are explicitly docs-derived and expire. Official Codex and Claude CLIs are exact lockfile dependencies: Codex runs an isolated add/discover/install/list/remove lifecycle; Claude runs strict native validation. OpenAI Platform upload and skill safety/security scan (or MCP Scan Tools for an MCP candidate), connected ChatGPT/Claude behavior, cryptographic receipt authentication, review, and publication remain external gates.
+
+**Product consequence:** Model OpenAI local packages, workspace catalogs, universal-directory publication, ChatGPT runtime, and Codex runtime separately. Render Starlight evidence as `Tested by Starlight`; never imply OpenAI verification, endorsement, or support without explicit host evidence. Keep OpenAI plugins free or existing-entitlement-only for Starlight digital services while current commerce policy forbids digital checkout and upgrade promotion.
+
+**Built on SIP — Starlight Intelligence Protocol**

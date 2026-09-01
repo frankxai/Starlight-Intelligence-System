@@ -90,9 +90,15 @@
       "properties": {
         "registryId": {
           "enum": [
-            "openai-chatgpt-codex",
+            "openai-plugin-local",
+            "openai-workspace-marketplace",
+            "openai-universal-plugins-directory",
+            "openai-chatgpt-runtime",
+            "openai-codex-runtime",
             "openai-custom-gpt",
-            "anthropic-claude",
+            "anthropic-claude-code-plugins",
+            "anthropic-claude-connectors",
+            "anthropic-mcp-apps",
             "cursor-agent-plugins",
             "github-copilot-vscode",
             "google-antigravity",
@@ -347,6 +353,7 @@
               "log",
               "trace",
               "junit",
+              "validator-report",
               "environment",
               "listing-snapshot"
             ]
@@ -532,10 +539,94 @@
         "host": {
           "properties": {
             "registryId": {
-              "const": "openai-chatgpt-codex"
+              "const": "openai-plugin-local"
             },
             "surface": {
-              "const": "ChatGPT apps and Codex plugins"
+              "const": "OpenAI plugin local package"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "openai-workspace-marketplace"
+            },
+            "surface": {
+              "const": "OpenAI workspace plugin marketplace"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "openai-universal-plugins-directory"
+            },
+            "surface": {
+              "const": "Universal Plugins Directory"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "openai-chatgpt-runtime"
+            },
+            "surface": {
+              "const": "ChatGPT plugin runtime"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "openai-codex-runtime"
+            },
+            "surface": {
+              "const": "Codex plugin runtime"
             }
           }
         },
@@ -574,10 +665,10 @@
         "host": {
           "properties": {
             "registryId": {
-              "const": "anthropic-claude"
+              "const": "anthropic-claude-code-plugins"
             },
             "surface": {
-              "const": "Claude Code plugins, connectors, and MCP Apps"
+              "const": "Claude Code plugins"
             }
           }
         },
@@ -585,6 +676,48 @@
           "properties": {
             "tier": {
               "const": "native"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "anthropic-claude-connectors"
+            },
+            "surface": {
+              "const": "Claude connectors"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "mcp-only"
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "host": {
+          "properties": {
+            "registryId": {
+              "const": "anthropic-mcp-apps"
+            },
+            "surface": {
+              "const": "Claude MCP Apps runtime"
+            }
+          }
+        },
+        "adapter": {
+          "properties": {
+            "tier": {
+              "const": "mcp-only"
             }
           }
         }

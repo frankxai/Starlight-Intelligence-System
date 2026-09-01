@@ -3,7 +3,7 @@
   "name": "starlight-foundry",
   "displayName": "Starlight Foundry",
   "version": "0.1.0",
-  "description": "Compile, prove, and evolve portable skills and bounded agent systems from explicit capability contracts.",
+  "description": "Design portable skills and bounded agent systems, with an optional compile-and-proof handoff to a Starlight Foundry runtime.",
   "author": {
     "name": "Starlight Intelligence",
     "url": "https://starlightintelligence.org"

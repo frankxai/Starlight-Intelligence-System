@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Starlight Foundry composer icon</title>
+  <rect width="512" height="512" rx="112" fill="#111024"/>
+  <path d="M256 92 292 220 420 256 292 292 256 420 220 292 92 256 220 220Z" fill="#8b7cff"/>
+  <path d="M256 162 274 238 350 256 274 274 256 350 238 274 162 256 238 238Z" fill="#67e8f9"/>
+  <circle cx="256" cy="256" r="25" fill="#fff"/>
+</svg>
