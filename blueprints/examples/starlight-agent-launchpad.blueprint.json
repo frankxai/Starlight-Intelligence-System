@@ -15,8 +15,8 @@
     "statement": "Submit an approved task from a Vercel cockpit to a Railway operator and receive a durable, inspectable run receipt without exposing operator credentials to the browser.",
     "acceptanceCriteria": [
       "The browser never receives the Railway operator URL credential or service token.",
-      "An approved task produces one stable run identifier and one durable run receipt.",
-      "The cockpit can read run status without receiving Railway control-plane credentials.",
+      "After completion, the same valid idempotency key and identical full request resolve to one stored receipt; crash recovery may reattempt only that identical request with at-least-once execution semantics.",
+      "The cockpit can submit a bounded run and retrieve its completed receipt without receiving Railway control-plane credentials.",
       "Authentication, operator health, and receipt persistence fail closed."
     ]
   },
@@ -32,7 +32,7 @@
         "Authenticate the human operator.",
         "Collect and validate a bounded task request.",
         "Enforce human approval before the server submits a run.",
-        "Render operator health, run state, and the final receipt."
+        "Render operator health and the completed receipt."
       ],
       "units": [
         {
@@ -46,7 +46,7 @@
         "state": "available",
         "repository": "https://github.com/frankxai/production-agent-patterns",
         "rootDirectory": "templates/starlight-agent-launchpad",
-        "ref": "9807e340563fc824a6e6e793fef26700a44b7b3d"
+        "ref": "69ad02e291fc175dfa73dae7b9ac2eb75e7e326e"
       },
       "deployment": {
         "method": "vercel-project",
@@ -86,7 +86,7 @@
         }
       ],
       "healthcheck": {
-        "path": "/api/health",
+        "path": "/api/operator/health",
         "expectedStatus": 200
       },
       "state": "stateless"
@@ -122,7 +122,7 @@
         "state": "available",
         "repository": "https://github.com/frankxai/production-agent-patterns",
         "rootDirectory": "templates/starlight-agent-launchpad",
-        "ref": "9807e340563fc824a6e6e793fef26700a44b7b3d"
+        "ref": "69ad02e291fc175dfa73dae7b9ac2eb75e7e326e"
       },
       "deployment": {
         "method": "railway-project",
@@ -175,11 +175,11 @@
       "to": "railway-operator",
       "client": "server",
       "protocol": "https",
-      "purpose": "Create a bounded run, read its state, and retrieve its signed, durable, idempotent receipt.",
+      "purpose": "Create a bounded run and return its signed, durable receipt after the bounded execution completes.",
       "endpointRef": "RAILWAY_API_URL",
       "interface": {
         "path": "/v1/runs",
-        "methods": ["POST", "GET"]
+        "methods": ["POST"]
       },
       "auth": {
         "mode": "service-token",
@@ -188,6 +188,27 @@
       },
       "dataClassification": "confidential",
       "mutationPolicy": "approval-required",
+      "failureMode": "fail-closed"
+    },
+    {
+      "id": "cockpit-to-receipt-lookup",
+      "from": "vercel-cockpit",
+      "to": "railway-operator",
+      "client": "server",
+      "protocol": "https",
+      "purpose": "Retrieve a completed receipt by its receipt identifier without exposing the operator credential to the browser.",
+      "endpointRef": "RAILWAY_API_URL",
+      "interface": {
+        "path": "/v1/receipts/{receiptId}",
+        "methods": ["GET"]
+      },
+      "auth": {
+        "mode": "service-token",
+        "sourceSecretRef": "RAILWAY_API_TOKEN",
+        "targetSecretRef": "OPERATOR_API_KEY"
+      },
+      "dataClassification": "confidential",
+      "mutationPolicy": "read-only",
       "failureMode": "fail-closed"
     }
   ],
@@ -238,7 +259,7 @@
   },
   "verification": {
     "state": "contract-valid",
-    "lastVerifiedAt": "2026-09-01T08:51:00Z",
+    "lastVerifiedAt": "2026-09-01T09:20:00Z",
     "checks": [
       {
         "id": "manifest-contract",
