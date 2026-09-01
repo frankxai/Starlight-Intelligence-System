@@ -1,0 +1,345 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/architecture-blueprint-manifest.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "starlight-agent-launchpad",
+  "name": "Starlight Agent Launchpad",
+  "version": "0.1.0",
+  "status": "candidate",
+  "owner": {
+    "organization": "Starlight Intelligence",
+    "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+    "maintainer": "Starlight Architecture"
+  },
+  "outcome": {
+    "audience": "AI-native founders operating a production agent from a web product",
+    "statement": "Submit an approved task from a Vercel cockpit to a Railway operator and receive a durable, inspectable run receipt without exposing operator credentials to the browser.",
+    "acceptanceCriteria": [
+      "The browser never receives the Railway operator URL credential or service token.",
+      "An approved task produces one stable run identifier and one durable run receipt.",
+      "The cockpit can read run status without receiving Railway control-plane credentials.",
+      "Authentication, operator health, and receipt persistence fail closed."
+    ]
+  },
+  "surfaces": [
+    {
+      "id": "vercel-cockpit",
+      "name": "Launchpad web cockpit",
+      "kind": "web-cockpit",
+      "provider": "vercel",
+      "runtime": "nextjs-16-node-24",
+      "exposure": "public",
+      "responsibilities": [
+        "Authenticate the human operator.",
+        "Collect and validate a bounded task request.",
+        "Enforce human approval before the server submits a run.",
+        "Render operator health, run state, and the final receipt."
+      ],
+      "units": [
+        {
+          "id": "cockpit-web",
+          "kind": "web-app",
+          "exposure": "public",
+          "required": true
+        }
+      ],
+      "source": {
+        "state": "available",
+        "repository": "https://github.com/frankxai/production-agent-patterns",
+        "rootDirectory": "templates/starlight-agent-launchpad",
+        "ref": "9807e340563fc824a6e6e793fef26700a44b7b3d"
+      },
+      "deployment": {
+        "method": "vercel-project",
+        "state": "planned",
+        "iacPath": "vercel.json",
+        "releaseTemplateRef": null,
+        "availability": "on-demand"
+      },
+      "environment": [
+        {
+          "name": "RAILWAY_API_URL",
+          "required": true,
+          "secret": false,
+          "source": "connected-surface",
+          "purpose": "Authenticated public HTTPS origin for the Railway operator; never a railway.internal hostname."
+        },
+        {
+          "name": "RAILWAY_API_TOKEN",
+          "required": true,
+          "secret": true,
+          "source": "generated",
+          "purpose": "Server-only credential used by the Vercel route handler to authenticate to the operator."
+        },
+        {
+          "name": "COCKPIT_ACCESS_TOKEN",
+          "required": true,
+          "secret": true,
+          "source": "generated",
+          "purpose": "Credential that gates access to the cockpit before any run can be submitted."
+        },
+        {
+          "name": "APP_ORIGIN",
+          "required": true,
+          "secret": false,
+          "source": "operator",
+          "purpose": "Canonical HTTPS origin used for same-origin and callback validation."
+        }
+      ],
+      "healthcheck": {
+        "path": "/api/health",
+        "expectedStatus": 200
+      },
+      "state": "stateless"
+    },
+    {
+      "id": "railway-operator",
+      "name": "Launchpad operator project",
+      "kind": "agent-operator",
+      "provider": "railway",
+      "runtime": "node-24",
+      "exposure": "protected-public",
+      "responsibilities": [
+        "Authenticate server-to-server task requests.",
+        "Execute the bounded core operator contract.",
+        "Persist run state and signed, durable, idempotent receipts.",
+        "Expose health and receipt retrieval over authenticated public HTTPS."
+      ],
+      "units": [
+        {
+          "id": "operator-api",
+          "kind": "api",
+          "exposure": "protected-public",
+          "required": true
+        },
+        {
+          "id": "receipt-store",
+          "kind": "database",
+          "exposure": "private",
+          "required": true
+        }
+      ],
+      "source": {
+        "state": "available",
+        "repository": "https://github.com/frankxai/production-agent-patterns",
+        "rootDirectory": "templates/starlight-agent-launchpad",
+        "ref": "9807e340563fc824a6e6e793fef26700a44b7b3d"
+      },
+      "deployment": {
+        "method": "railway-project",
+        "state": "planned",
+        "iacPath": ".railway/railway.ts",
+        "releaseTemplateRef": null,
+        "availability": "always-on"
+      },
+      "environment": [
+        {
+          "name": "OPERATOR_API_KEY",
+          "required": true,
+          "secret": true,
+          "source": "generated",
+          "purpose": "Railway-side copy of the service token accepted by the operator API."
+        },
+        {
+          "name": "RECEIPT_SIGNING_SECRET",
+          "required": true,
+          "secret": true,
+          "source": "generated",
+          "purpose": "Key used by the operator to bind a receipt to its canonical run payload."
+        },
+        {
+          "name": "RECEIPT_SIGNING_KEY_ID",
+          "required": true,
+          "secret": false,
+          "source": "operator",
+          "purpose": "Stable non-secret identifier for the receipt signing key used by verifiers."
+        },
+        {
+          "name": "DATABASE_URL",
+          "required": true,
+          "secret": true,
+          "source": "provider",
+          "purpose": "Private Railway PostgreSQL connection used for durable run and receipt persistence."
+        }
+      ],
+      "healthcheck": {
+        "path": "/health",
+        "expectedStatus": 200
+      },
+      "state": "database"
+    }
+  ],
+  "connections": [
+    {
+      "id": "cockpit-to-operator",
+      "from": "vercel-cockpit",
+      "to": "railway-operator",
+      "client": "server",
+      "protocol": "https",
+      "purpose": "Create a bounded run, read its state, and retrieve its signed, durable, idempotent receipt.",
+      "endpointRef": "RAILWAY_API_URL",
+      "interface": {
+        "path": "/v1/runs",
+        "methods": ["POST", "GET"]
+      },
+      "auth": {
+        "mode": "service-token",
+        "sourceSecretRef": "RAILWAY_API_TOKEN",
+        "targetSecretRef": "OPERATOR_API_KEY"
+      },
+      "dataClassification": "confidential",
+      "mutationPolicy": "approval-required",
+      "failureMode": "fail-closed"
+    }
+  ],
+  "adapters": [
+    {
+      "id": "hermes-reasoning-adapter",
+      "attachesTo": "railway-operator",
+      "state": "planned",
+      "required": false,
+      "purpose": "Optional reasoning adapter behind the core operator contract; not part of the v0.1 proof.",
+      "sourceRef": null,
+      "evidence": null
+    },
+    {
+      "id": "n8n-workflow-adapter",
+      "attachesTo": "railway-operator",
+      "state": "planned",
+      "required": false,
+      "purpose": "Optional deterministic workflow adapter behind the core operator contract; not part of the v0.1 proof.",
+      "sourceRef": null,
+      "evidence": null
+    }
+  ],
+  "deploymentOrder": ["railway-operator", "vercel-cockpit"],
+  "controls": {
+    "secrets": {
+      "browserExposure": "forbidden",
+      "storage": ["vercel-encrypted-environment", "railway-encrypted-variables"],
+      "rotationOwner": "Starlight Architecture"
+    },
+    "approvals": {
+      "externalMutationDefault": "human",
+      "irreversibleActions": [
+        "Submit a task that can write outside the operator receipt store.",
+        "Rotate or reveal an operator credential.",
+        "Publish, message, purchase, delete, or deploy through an optional adapter."
+      ]
+    },
+    "observability": {
+      "correlationHeader": "x-correlation-id",
+      "requiredSignals": ["logs", "metrics", "costs", "evals"]
+    },
+    "recovery": {
+      "rollback": "Redeploy the last known-good Vercel and Railway project revisions independently.",
+      "stateBackup": "Back up the Railway receipt store daily and verify a restore before promotion.",
+      "maximumDataLossMinutes": 1440
+    }
+  },
+  "verification": {
+    "state": "contract-valid",
+    "lastVerifiedAt": "2026-09-01T08:51:00Z",
+    "checks": [
+      {
+        "id": "manifest-contract",
+        "target": "manifest",
+        "kind": "schema",
+        "command": "npm run blueprints:validate",
+        "expected": "The manifest passes structural and semantic validation.",
+        "required": true,
+        "status": "passed",
+        "evidence": "test/architecture-blueprint.test.mjs"
+      },
+      {
+        "id": "cockpit-build",
+        "target": "vercel-cockpit",
+        "kind": "build",
+        "command": "npm run build",
+        "expected": "The Vercel cockpit compiles from its pinned source ref.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      },
+      {
+        "id": "operator-build",
+        "target": "railway-operator",
+        "kind": "build",
+        "command": "npm run build",
+        "expected": "The Railway operator and receipt store compile from their pinned source ref.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      },
+      {
+        "id": "cockpit-health",
+        "target": "vercel-cockpit",
+        "kind": "health",
+        "command": "npm run test:health:cockpit",
+        "expected": "The deployed cockpit health route returns its declared success status.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      },
+      {
+        "id": "operator-health",
+        "target": "railway-operator",
+        "kind": "health",
+        "command": "npm run test:health:operator",
+        "expected": "The deployed operator health route returns its declared success status without leaking secrets.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      },
+      {
+        "id": "authenticated-run-receipt",
+        "target": "manifest",
+        "kind": "integration",
+        "command": "npm run test:integration:launchpad",
+        "expected": "An approved Vercel request creates one Railway run and returns a matching durable receipt.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      },
+      {
+        "id": "browser-secret-negative-path",
+        "target": "vercel-cockpit",
+        "kind": "security",
+        "command": "npm run test:security:browser-secrets",
+        "expected": "No operator URL credential or service token appears in browser bundles, responses, or logs.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      },
+      {
+        "id": "operator-auth-negative-path",
+        "target": "railway-operator",
+        "kind": "security",
+        "command": "npm run test:security:operator-auth",
+        "expected": "Missing or invalid service credentials fail closed without creating a run or receipt.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      },
+      {
+        "id": "cockpit-rollback",
+        "target": "vercel-cockpit",
+        "kind": "rollback",
+        "command": "npm run test:rollback:cockpit",
+        "expected": "The cockpit rolls back independently while existing Railway receipts remain readable.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      },
+      {
+        "id": "operator-rollback",
+        "target": "railway-operator",
+        "kind": "rollback",
+        "command": "npm run test:rollback:operator",
+        "expected": "The operator rolls back independently without corrupting existing receipts.",
+        "required": true,
+        "status": "planned",
+        "evidence": null
+      }
+    ]
+  }
+}
