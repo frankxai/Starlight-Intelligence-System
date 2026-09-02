@@ -36,6 +36,7 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 
 | Date | Entry | Category | Confidence |
 |------|-------|----------|------------|
+| 2026-09-01 | Homepage vault ISR keeps last-good state across GitHub timeouts | runtime-resilience | 0.98 |
 | 2026-02-10 | System Initialization State | system-state | 1.0 |
 | 2026-02-10 | Ecosystem Connection Status | ecosystem-state | 0.90 |
 | 2026-05-06 | Starlight Ascension (E2E Upgrade) | ecosystem-state | 1.0 |
@@ -823,5 +824,20 @@ Working findings recorded for future sweeps: (1) agenticincome#21 reclassified N
 **Vercel truth:** production is project `site` (`prj_wDNGrb1R1rB5PJOG9cUEICSER887`) in team `starlight-intelligence`. PR #103 preview `dpl_57542emV2JKJcvigNCsNBDjK8eCv` reached READY at head `a274e1b`. Local production build, focused ESLint, metrics/public-install/layout/deploy contracts, GitHub harness, Media Guard, design contract, Vercel preview, responsive browser QA, exact clone-flow resolution, and `/deploy` runtime-error audit passed. Browser QA caught and repaired one nested-main landmark before merge.
 
 **Residual:** the unlinked duplicate Vercel project `starlight-intelligence-system` remains outside this change. Deletion is a separate Frank-only control-plane action.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-09-01 - Homepage vault ISR keeps last-good state across GitHub timeouts
+
+**Category:** public-surface / runtime-resilience / observability
+**Confidence:** 0.98
+**Source:** Vercel runtime error cluster and exact deployed-source trace
+**Related:** `site/src/lib/github-content.mjs`, `site/src/lib/vault.ts`, deployment `dpl_CrZHCV7oxvCYcPDtVqABzkgbZhjP`
+
+The production root route returned HTTP 200 from stale ISR cache while its background regeneration logged `TypeError: fetch failed` with nested `write ETIMEDOUT` at `2026-08-31T21:20:54Z`. The deployed homepage read public-vault files through the GitHub contents API, and that loader was the only outbound fetch on the root server-render path. The loader had no transport boundary, retry policy, or target-level receipt; its source remained unchanged in the next production SHA.
+
+The vault loader now retries one idempotent GitHub GET after transient network, 408, 425, 429, or 5xx failure. A persistent failure is logged with repo, path, attempt count, and nested network code, then rethrown so Next ISR retains the last successful render instead of treating an empty vault as a successful regeneration. Only a real 404 remains an accepted absent optional file. Five deterministic regression cases run inside the site build.
+
+No production deployment, alias, DNS, environment variable, or secret changed in this repair branch.
 
 **Built on SIP — Starlight Intelligence Protocol**
