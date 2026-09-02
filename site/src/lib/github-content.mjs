@@ -2,6 +2,7 @@ const GITHUB_API = "https://api.github.com";
 const DEFAULT_REVALIDATE_SECONDS = 3600;
 const DEFAULT_MAX_ATTEMPTS = 2;
 const DEFAULT_RETRY_DELAY_MS = 125;
+const DEFAULT_REQUEST_TIMEOUT_MS = 5000;
 
 class GitHubContentFetchError extends Error {
   /**
@@ -27,7 +28,14 @@ function isRetryableError(error) {
 
   // Native fetch rejects with TypeError for transport failures. The nested
   // cause carries the useful code on Node/undici (ETIMEDOUT, ECONNRESET, ...).
-  return error instanceof TypeError || error instanceof SyntaxError;
+  // AbortSignal.timeout() rejects with a TimeoutError; caller-driven aborts
+  // may surface as AbortError. Both are safe to retry for this idempotent GET.
+  return (
+    error instanceof TypeError ||
+    error instanceof SyntaxError ||
+    (error instanceof Error &&
+      (error.name === "TimeoutError" || error.name === "AbortError"))
+  );
 }
 
 /** @param {unknown} error */
@@ -77,6 +85,7 @@ function wait(milliseconds) {
  *   revalidateSeconds?: number,
  *   maxAttempts?: number,
  *   retryDelayMs?: number,
+ *   requestTimeoutMs?: number,
  *   fetchImpl?: typeof fetch,
  *   logger?: Pick<Console, "warn" | "error">
  * }} [options]
@@ -88,6 +97,7 @@ export async function fetchGitHubTextFile(repo, path, options = {}) {
     revalidateSeconds = DEFAULT_REVALIDATE_SECONDS,
     maxAttempts = DEFAULT_MAX_ATTEMPTS,
     retryDelayMs = DEFAULT_RETRY_DELAY_MS,
+    requestTimeoutMs = DEFAULT_REQUEST_TIMEOUT_MS,
     fetchImpl = fetch,
     logger = console,
   } = options;
@@ -103,6 +113,7 @@ export async function fetchGitHubTextFile(repo, path, options = {}) {
       const response = await fetchImpl(url, {
         headers,
         next: { revalidate: revalidateSeconds },
+        signal: AbortSignal.timeout(requestTimeoutMs),
       });
 
       if (response.status === 404) return null;
