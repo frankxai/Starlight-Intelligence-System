@@ -51,6 +51,46 @@ test("retries a transient transport timeout and returns decoded content", async 
   assert.equal(errors.length, 0);
 });
 
+test("aborts each hung attempt at its own deadline", async () => {
+  let calls = 0;
+  const signals = [];
+  const { logger, warnings, errors } = recordingLogger();
+
+  const fetchImpl = async (_url, init) => {
+    calls += 1;
+    signals.push(init.signal);
+
+    return new Promise((_resolve, reject) => {
+      if (init.signal.aborted) {
+        reject(init.signal.reason);
+        return;
+      }
+      init.signal.addEventListener("abort", () => reject(init.signal.reason), {
+        once: true,
+      });
+    });
+  };
+
+  await assert.rejects(
+    fetchGitHubTextFile("owner/repo", "vault.jsonl", {
+      fetchImpl,
+      requestTimeoutMs: 10,
+      retryDelayMs: 0,
+      logger,
+    }),
+    (error) => error instanceof Error && error.name === "TimeoutError",
+  );
+
+  assert.equal(calls, 2);
+  assert.equal(signals.length, 2);
+  assert.notEqual(signals[0], signals[1]);
+  assert.ok(signals.every((signal) => signal.aborted));
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0][1].error.name, "TimeoutError");
+  assert.equal(errors.length, 1);
+  assert.equal(errors[0][1].error.name, "TimeoutError");
+});
+
 test("retries a transient GitHub 5xx response", async () => {
   let calls = 0;
   const { logger, warnings } = recordingLogger();
