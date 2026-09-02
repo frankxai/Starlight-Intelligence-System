@@ -111,3 +111,24 @@ The FrankX voice pattern for all creative output:
 Example: *"Most people use AI tools. That's like using a piano to play one note. You need to build the whole symphony. Here's the system. Fork it. Make it yours."*
 
 ---
+
+
+### [2026-09-02] Songcraft Intelligence v2 — Authorship Before Prompting
+
+**Category:** songwriting-system / anti-generic / production-architecture
+**Confidence:** 0.96
+**Source:** Frank direction + official Suno v5.5/Studio 2.0 documentation + 2025–2026 IFPI/Spotify/TikTok/Luminate market evidence
+**Related:** `prompts/music/songcraft-system-v2.md`, `skills/music-is/suno-prompt.md`, `skills/sound-intelligence/composition-architecture.md`, `docs/research/music-intelligence/market-dna-2025-2026.md`, `docs/research/music-intelligence/source-ledger-2026-09.md`
+
+**Decision:** Music generation begins with human evidence: scene, contradiction, cost, turn, and social action. Genre + mood + BPM is metadata, never the composition.
+
+**Confirmed patterns:**
+- Repetition is counted at four levels (exact title, variants, melodic returns, chant cells) and assigned changing dramatic jobs; no universal repeat count.
+- References are decomposed into mechanisms and recombined across multiple sources; named-artist prompting and voice cloning are rejected.
+- Future Suno work emits four separate artifacts: Track Contract, v5.5 Style of Music, Lyrics, and Studio 2.0 Plan.
+- Vocal and low-end direction must describe physical behavior and role relationships, not adjective piles.
+- Copyrighted lyrics remain out of Git and memory. Store citations and derived features only; unknown provenance fails closed.
+
+**Lesson:** The cure for “AI sentences” is not a longer forbidden-word list. It is a stronger authorial instrument: private evidence, spoken syntax, emotional contradiction, prosody, an evolving metaphor, and revision that replaces the three most predictable lines before anyone sees them.
+
+**Built on SIP — Starlight Intelligence Protocol**
