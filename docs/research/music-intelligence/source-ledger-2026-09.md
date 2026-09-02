@@ -11,6 +11,7 @@
 | [Open Music Theory v1](https://openmusictheory.github.io/) | interactive theory reference | CC BY-SA 4.0 | Use for linked concepts; record version/date |
 | [Principles of Orchestration](https://www.gutenberg.org/ebooks/33900) | register, balance, doubling, orchestral color | Project Gutenberg/public-domain basis in the US; verify local jurisdiction and comply with Gutenberg terms | Download HTML/EPUB from Gutenberg; use as historical foundation, not modern production law |
 | [Groove MIDI Dataset](https://magenta.tensorflow.org/datasets/groove) | 1,150 human-performed drum MIDIs; microtiming, velocity, fills | CC BY 4.0 | Download MIDI + metadata; preserve attribution; learn groove descriptors, not drummer identity |
+| [Slakh2100](https://www.slakh.com/) | 2,100 synthesized multitracks with aligned MIDI/stems; 145 hours across 34 instrument classes | CC BY 4.0 on the official release | Use for source-separation, orchestration, and stem-role experiments; do not treat its source repertoire as a lyric/melody suggestion bank |
 | [FMA](https://github.com/mdeff/fma) | 106,574-track metadata/features and CC-licensed audio | code MIT; metadata CC BY 4.0; every audio track keeps its artist-selected license | Start with metadata/features. Ingest audio only after per-track license filtering and attribution capture |
 | [SALAMI annotations](https://github.com/DDMAL/salami-data-public) | human section-boundary and functional-form annotations | dataset/repo terms must be retained and rechecked before redistribution | Use annotations and IDs; do not expect audio in the repo |
 | [seancolsen/music-theory-data](https://github.com/seancolsen/music-theory-data) | machine-readable scales, chords, intervals, note names | CC BY-SA 4.0 | Useful for validators and harmonic vocabulary; retain license and attribution |
@@ -21,6 +22,9 @@
 |---|---|---|---|
 | [MTG-Jamendo](https://mtg.github.io/mtg-jamendo-dataset/) | 55k+ full tracks with genre, instrument, mood/theme tags | metadata CC BY-NC-SA 4.0; audio has per-track CC licenses; provider states non-commercial research/academic use unless separately authorized | Evaluation and taxonomy research only; keep out of commercial training and release assets |
 | [MAESTRO](https://magenta.tensorflow.org/datasets/maestro) | ~200 hours aligned virtuosic piano audio/MIDI | CC BY-NC-SA 4.0 | Non-commercial experiments on timing, pedaling, and expressive performance |
+| [MedleyDB 2.0](https://medleydb.weebly.com/) | 196 royalty-free research multitracks, mixes, stems, raw audio, melody and instrument annotations | non-commercial research; CC BY-NC-SA terms on the official download | Learn stem roles, melody extraction, source separation, and automatic-mix evaluation; never move its audio into commercial release assets |
+| [MUSDB18-HQ](https://zenodo.org/records/3338373) | 150 uncompressed songs with vocals, drums, bass, other, and mixture stems | educational/non-commercial; component licenses vary | Benchmark stem separation only; keep the track-level license list with the files |
+| [DEAM](https://cvml.unige.ch/databases/DEAM/) | 1,802 excerpts/full songs with continuous and whole-song valence/arousal annotations | non-commercial Creative Commons terms; verify the current manual before download | Evaluate emotion-curve descriptors, never use emotion labels as deterministic audience truth |
 | [DALI](https://github.com/gabolsgabs/DALI) | time-aligned lyric, note, and structure annotations | access and downstream rights are restricted/variable | Metadata and academic replication only after current terms are accepted; do not add lyric text to Git |
 | [Million Song Dataset — Musixmatch](https://millionsongdataset.com/musixmatch/) | bag-of-words counts for ~237k tracks | research dataset terms; no full lyrics | Study vocabulary/repetition distributions; store aggregate features only |
 | [Lakh MIDI Dataset](https://colinraffel.com/projects/lmd/) | large symbolic-music corpus aligned to song metadata | MIDI composition rights are not uniformly cleared for commercial generative use | Research-only unless a rights review produces an allowlist |
@@ -55,11 +59,11 @@
 ## Download order
 
 1. Open Music Theory v2 PDF/XML and v1 site snapshot.
-2. Groove MIDI Dataset.
+2. Groove MIDI and Slakh2100.
 3. FMA metadata only; build the license filter before any audio download.
 4. Project Gutenberg orchestration text.
 5. SALAMI annotations.
-6. Research-only datasets into an isolated, non-commercial store after their terms are recorded.
+6. Research-only datasets—including MedleyDB, MUSDB18-HQ, DEAM, MTG-Jamendo, and MAESTRO—into an isolated non-commercial store after their terms are recorded.
 7. Buy or borrow the four songwriting books; store personal notes, never scans.
 
 ## Provenance manifest for every acquired file
