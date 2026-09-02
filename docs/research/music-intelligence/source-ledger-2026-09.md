@@ -33,7 +33,7 @@
 
 | Guide/book | Best use | Legitimate access |
 |---|---|---|
-| Dennis DeSantis, *Making Music: 74 Creative Strategies for Electronic Music Producers* | starting, progressing, variation, finishing | [Ableton's official free web/PDF edition](https://www.ableton.com/en/blog/making-music-book-of-creative-strategies/); free access does not grant arbitrary relicensing |
+| Dennis DeSantis, *Making Music: 74 Creative Strategies for Electronic Music Producers* | starting, progressing, variation, finishing | [Ableton's official selected chapters](https://makingmusic.ableton.com/) and [book page](https://www.ableton.com/en/blog/making-music-book-of-creative-strategies/); the 2020 full digital giveaway was temporary, so buy/borrow the complete edition rather than using third-party PDF mirrors |
 | Alan Belkin, *General Principles of Harmony*, *Counterpoint*, and *Orchestration* | practical composer decision-making | [author's official site](https://alanbelkinmusic.com/general-principles-of-harmony/); use official PDFs as personal reference unless a reuse license is stated |
 | Pat Pattison, *Writing Better Lyrics* and lyric-form/rhyme guides | prosody, object writing, rhyme, section development | buy/borrow through [Berklee author page](https://berkleepress.com/berklee-authors/pat-pattison-2/) or a library |
 | Jack Perricone, *Great Songwriting Techniques* | melody, harmony, lyric, riff/loop songcraft | [Oxford University Press](https://global.oup.com/academic/product/great-songwriting-techniques-9780199967674) and its official companion audio |
