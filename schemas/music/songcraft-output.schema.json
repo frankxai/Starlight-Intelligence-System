@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/music/songcraft-output.schema.json",
+  "title": "Songcraft Intelligence Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "track_contract",
+    "style_of_music",
+    "lyrics",
+    "studio_2_plan",
+    "quality_receipt"
+  ],
+  "properties": {
+    "track_contract": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "title",
+        "thesis",
+        "listener",
+        "social_action",
+        "scene",
+        "emotional_contradiction",
+        "metaphor_system",
+        "hook",
+        "music",
+        "vocalist",
+        "low_end",
+        "rights"
+      ],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "thesis": { "type": "string", "minLength": 1 },
+        "listener": { "type": "string", "minLength": 1 },
+        "social_action": { "type": "string", "minLength": 1 },
+        "scene": { "type": "string", "minLength": 1 },
+        "emotional_contradiction": { "type": "string", "minLength": 1 },
+        "metaphor_system": { "type": "string", "minLength": 1 },
+        "hook": {
+          "type": "object",
+          "required": ["function", "exact_title_hits", "title_variants", "returns"],
+          "properties": {
+            "function": { "type": "string" },
+            "exact_title_hits": { "type": "integer", "minimum": 0 },
+            "title_variants": { "type": "integer", "minimum": 0 },
+            "returns": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": ["section", "job", "mutation"],
+                "properties": {
+                  "section": { "type": "string" },
+                  "job": { "enum": ["seed", "establish", "implicate", "fracture", "communal-payoff"] },
+                  "mutation": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "music": {
+          "type": "object",
+          "required": ["key_or_mode", "bpm", "meter", "harmonic_motion", "melodic_contour"],
+          "properties": {
+            "key_or_mode": { "type": "string" },
+            "bpm": { "type": "number", "exclusiveMinimum": 0 },
+            "meter": { "type": "string" },
+            "harmonic_motion": { "type": "string" },
+            "melodic_contour": { "type": "string" }
+          }
+        },
+        "vocalist": { "type": "object", "minProperties": 3 },
+        "low_end": { "type": "object", "minProperties": 3 },
+        "rights": {
+          "type": "object",
+          "required": ["lyrics_owner", "voice_consent", "samples", "ai_disclosure"],
+          "properties": {
+            "lyrics_owner": { "type": "string" },
+            "voice_consent": { "type": "string" },
+            "samples": { "type": "array", "items": { "type": "string" } },
+            "ai_disclosure": { "type": "string" }
+          }
+        }
+      }
+    },
+    "style_of_music": {
+      "type": "string",
+      "minLength": 80,
+      "maxLength": 1400,
+      "not": { "pattern": "([Ii]n the style of|[Ss]ounds exactly like|[Vv]oice clone)" }
+    },
+    "lyrics": {
+      "type": "string",
+      "minLength": 80,
+      "allOf": [
+        { "pattern": "\\[Intro\\]" },
+        { "pattern": "\\[Verse 1\\]" },
+        { "pattern": "\\[Chorus\\]" },
+        { "pattern": "\\[End\\]" }
+      ]
+    },
+    "studio_2_plan": {
+      "type": "object",
+      "required": ["take_criteria", "timeline", "stem_actions", "vocal_comp", "low_end", "automation", "translation_tests", "exports"]
+    },
+    "quality_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "hard_failures", "reference_distance_checked", "provenance_checked"],
+      "properties": {
+        "score": { "type": "integer", "minimum": 85, "maximum": 100 },
+        "hard_failures": { "type": "array", "maxItems": 0 },
+        "reference_distance_checked": { "const": true },
+        "provenance_checked": { "const": true }
+      }
+    }
+  }
+}
