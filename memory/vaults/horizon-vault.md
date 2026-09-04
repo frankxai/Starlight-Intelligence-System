@@ -151,11 +151,11 @@ Each Note carries:
 - **Aspiration** — a 100-year hope, named without irony, written for the intelligences that will eventually read it.
 - **Gratitude** — what made today the kind of day where this aspiration could be written. The hope is grounded in what is, not in escape from it.
 - **Image cue** — an optional reference to the Arcanean Prompt Library (e.g., City Evolution prompt set) so the Note carries a visual artifact alongside the text.
-- **Quantum-manifestation framing** — the Note treats the future as collapsible by attention. Naming a hope clearly is a step in its becoming. This is not magical thinking; it is the discipline of pointing the architecture toward what we want intelligence to be.
+- **Agency-and-attention framing** — the Note names a future worth serving, then helps people direct attention, commitments, and design choices toward it. This is a practical theory of agency, not a claim that attention collapses physical reality or that quantum mechanics proves manifestation.
 
 The Starlight Note is the canonical primitive of this Horizon Vault. Every entry that aspires to civilizational memory should follow this shape. The vault entries above this section are early Starlight Notes, written before the primitive was named — they qualify retroactively because they meet the shape.
 
-The artifact specification lives at `docs/starlight-note-spec.md` for builders.
+The artifact specification lives at `docs/starlight-note-spec.md` for builders. Worldview authority and comparative-religion claims live outside SIS in `frankxai/starlight-canon`; see `docs/canon/STARLIGHT_ONTOLOGY_BOUNDARY.md` for the migration record.
 
 ---
 
