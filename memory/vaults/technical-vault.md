@@ -31,6 +31,7 @@ last_consolidated: '2026-05-11'
 | 2026-06-12 | Cross-Repo Visual Production Pattern | design-pattern | 0.95 |
 | 2026-06-14 | Double-Loop Visual Quality Control Pattern | process-pattern | 0.95 |
 | 2026-06-15 | SVD Double-Loop CLI Pipeline & Nested API Parsing | tool-pattern | 0.98 |
+| 2026-09-01 | Architecture Blueprint Manifest | architecture-contract | 0.98 |
 
 ---
 
@@ -295,5 +296,20 @@ When developing autonomous client bridges to JSON-RPC tools and services (such a
 **Implementation:** Agent Plugins 1.0.0 schemas are cached byte-for-byte with immutable commit/blob/digest provenance and validated with pinned Ajv. OpenAI package rules are explicitly docs-derived and expire. Official Codex and Claude CLIs are exact lockfile dependencies: Codex runs an isolated add/discover/install/list/remove lifecycle; Claude runs strict native validation. OpenAI Platform upload and skill safety/security scan (or MCP Scan Tools for an MCP candidate), connected ChatGPT/Claude behavior, cryptographic receipt authentication, review, and publication remain external gates.
 
 **Product consequence:** Model OpenAI local packages, workspace catalogs, universal-directory publication, ChatGPT runtime, and Codex runtime separately. Render Starlight evidence as `Tested by Starlight`; never imply OpenAI verification, endorsement, or support without explicit host evidence. Keep OpenAI plugins free or existing-entitlement-only for Starlight digital services while current commerce policy forbids digital checkout and upgrade promotion.
+
+---
+
+### [2026-09-01] Architecture Blueprints use one SIS contract and independent provider projects
+
+**Category:** architecture-contract / deployment-pattern
+**Confidence:** 0.98
+**Source:** Starlight Agent Launchpad contract implementation
+**Related:** `blueprints/`, `docs/architecture/ADR-2026-09-01-architecture-blueprint-manifest.md`
+
+**Decision:** SIS owns the closed Architecture Blueprint Manifest, semantic validator, reference manifests, and evidence-promotion policy. Provider repositories own executable source. Catalogs and commercial offer registries consume the contract; they do not redefine it.
+
+**First proof boundary:** Vercel project → authenticated protected-public HTTPS → Railway multi-service project → durable deterministic run receipt. Railway project IaC is `.railway/railway.ts`; a marketplace template is a derived release artifact. The two provider projects deploy and roll back independently.
+
+**Truth boundary:** Structural validity is only `contract-valid`. Source, deploy, integration, security, and rollback checks remain independently evidenced. Hermes and n8n are optional planned adapters until their own source and evidence exist.
 
 **Built on SIP — Starlight Intelligence Protocol**
