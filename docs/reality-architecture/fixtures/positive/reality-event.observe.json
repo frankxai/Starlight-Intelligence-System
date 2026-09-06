@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "0.1.1",
+  "id": "ra:event:observe-sis-repo-20260816",
+  "event_type": "object.observed",
+  "occurred_at": "2026-08-16T01:00:00Z",
+  "recorded_at": "2026-08-16T01:00:05Z",
+  "subject_ids": ["ra:repo:frankxai/Starlight-Intelligence-System"],
+  "actor_ids": ["agent:hermes-queen"],
+  "payload": {
+    "branch": "agent/hermes/reality-kernel-m0-20260816",
+    "files": 2382
+  },
+  "provenance": {
+    "source_type": "agent",
+    "source_ids": ["git-worktree"],
+    "tool_ref": "git ls-files"
+  },
+  "epistemics": {
+    "kind": "empirical",
+    "confidence": 1.0
+  },
+  "receipt_id": null
+}

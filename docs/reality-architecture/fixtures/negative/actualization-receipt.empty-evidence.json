@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "0.1.1",
+  "id": "ra:receipt:forged-success",
+  "action_id": "act-x",
+  "plan_id": "ra:plan:x",
+  "actor": { "kind": "agent", "id": "bot" },
+  "tool": "none",
+  "started_at": "2026-08-16T01:00:00Z",
+  "finished_at": "2026-08-16T01:00:01Z",
+  "result": "success",
+  "verification": {
+    "status": "passed",
+    "criterion": "none"
+  },
+  "evidence": []
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "0.1.1",
+  "id": "ra:plan:empire/revenue-loop-v0",
+  "diff_id": "ra:diff:empire/revenue-loop-v0",
+  "branch_id": "ra:branch:empire/revenue-loop-v0",
+  "actions": [
+    {
+      "id": "act1",
+      "title": "Implement Reality Diff v0 compiler against estate fixture",
+      "gap_ids": ["g1"],
+      "owner": { "kind": "agent", "id": "codex-kernel" },
+      "tool": "codex",
+      "dependencies": [],
+      "cost_estimate": 2,
+      "risk": "medium",
+      "governance_tier": "supervised",
+      "expected_evidence": "JSON Diff artifact matching reality-diff.schema.json",
+      "verification_criterion": "Validator passes positive fixture and rejects missing gap class.",
+      "stop_condition": "If Diff is non-inspectable or non-deterministic without declared method, stop.",
+      "rollback": "Delete generated fixture outputs; keep schemas.",
+      "work_packet_id": null
+    }
+  ],
+  "created_at": "2026-08-16T01:20:00Z",
+  "created_by": "agent:hermes-queen",
+  "status": "proposed",
+  "notes": "Does not admit live Swarm side effects."
+}
