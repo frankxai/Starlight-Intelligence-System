@@ -1,0 +1,35 @@
+name: Starlight plugin CI
+
+on:
+  pull_request:
+    paths:
+      - "plugins/starlight-intelligence/**"
+      - ".github/workflows/starlight-plugin-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "plugins/starlight-intelligence/**"
+      - ".github/workflows/starlight-plugin-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/starlight-intelligence
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: plugins/starlight-intelligence/package-lock.json
+      - run: npm ci
+      - run: npm run validate
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm run smoke:worker

@@ -841,3 +841,13 @@ The vault loader now retries one idempotent GitHub GET after transient network, 
 No production deployment, alias, DNS, environment variable, or secret changed in this repair branch.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-09-06 — Community and plugin consolidation
+
+Source: Codex task 01a0740d-878e-7dc1-88c5-86f91ec18382, PR #133, issue #66.
+
+Integrated source contracts and the community reference loop on a dedicated branch. The community runtime has deterministic consent, replay, causality, and privacy tests; the skills-only package drafts a creation week. No external community send or marketplace publication occurred.
+
+PR #119's operational-vault blob contains binary corruption (30 NUL bytes). Preserved the existing mainline vault instead of importing that blob; the original branch retains the evidence. Cloud runtime source is integrated for CI review only, and deployment is manual. Connected authentication, host scan, and publication remain unproven.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.

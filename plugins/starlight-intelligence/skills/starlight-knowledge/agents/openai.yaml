@@ -1,0 +1,4 @@
+interface:
+  display_name: "Starlight Knowledge"
+  short_description: "Query the governed Starlight operating graph"
+  default_prompt: "Use $starlight-knowledge to retrieve what is known about this venture."
