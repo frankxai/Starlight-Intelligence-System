@@ -413,3 +413,36 @@ export type { GoalTask, GoalLog, GoalState, AuditResult } from './goal.js';
 // Community OS reference contracts and deterministic weekly loop.
 export { CommunityLedger, validateCommunityEvent, planCommunityAction, fixtureCommunityAdapter } from './community.js';
 export type { CommunityEvent, CommunityConsent, CommunityPrivacy, CommunityEventKind, CommunityAdapterManifest, CommunityAdmission, CommunityStewardAction } from './community.js';
+
+// Operational Work Graph — harness-neutral intent-to-production receipts
+export { parseWorkGraphJsonl, projectWorkGraph } from './work-graph.js';
+export type {
+  CompletionRequirements,
+  ParsedWorkGraphJsonl,
+  ProofKind,
+  WorkGraphEvent,
+  WorkGraphEventKind,
+  WorkGraphIssue,
+  WorkGraphProjection,
+  WorkGraphSourceSystem,
+  WorkGraphWorkItem,
+} from './work-graph.js';
+
+export {
+  compileLoopGraph,
+  evaluateLoopGraph,
+  initHarness,
+  recordFeatureEvidence,
+} from './loop-graph.js';
+export type {
+  CompiledLoopGraph,
+  HarnessFeature,
+  HarnessState,
+  LoopBrakes,
+  LoopEdge,
+  LoopEvaluation,
+  LoopEvaluationInput,
+  LoopGraph,
+  LoopNode,
+  LoopShape,
+} from './loop-graph.js';
