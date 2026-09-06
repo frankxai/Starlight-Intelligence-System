@@ -409,3 +409,7 @@ export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';
 // v8.8 — SAGE Autonomous Goal Execution (Autonomous Loops)
 export { GoalOrchestrator } from './goal.js';
 export type { GoalTask, GoalLog, GoalState, AuditResult } from './goal.js';
+
+// Community OS reference contracts and deterministic weekly loop.
+export { CommunityLedger, validateCommunityEvent, planCommunityAction, fixtureCommunityAdapter } from './community.js';
+export type { CommunityEvent, CommunityConsent, CommunityPrivacy, CommunityEventKind, CommunityAdapterManifest, CommunityAdmission, CommunityStewardAction } from './community.js';
