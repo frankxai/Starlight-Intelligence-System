@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Starlight World</title>
+  <link rel="stylesheet" href="./world.css" />
+</head>
+<body>
+  <header>
+    <div class="top">
+      <div>
+        <h1>Starlight World</h1>
+        <p class="sub">Vanilla HTML. You drive. Palace, vaults, city, second brain. No Next.js. No Q-Town. Private notes stay unmounted.</p>
+      </div>
+      <div class="layers" role="tablist">
+        <button type="button" id="layer-palace" aria-pressed="true">1 Palace</button>
+        <button type="button" id="layer-vaults" aria-pressed="false">2 Vaults</button>
+        <button type="button" id="layer-city" aria-pressed="false">3 City</button>
+        <button type="button" id="layer-brain" aria-pressed="false">4 Second Brain</button>
+        <button type="button" id="layer-graph" aria-pressed="false">5 Graph</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="map" aria-label="Starlight World map">
+      <svg id="world-svg" viewBox="0 0 1000 720" role="img"></svg>
+    </section>
+    <aside id="inspector">
+      <div class="kicker">Lead</div>
+      <h2>Loading</h2>
+    </aside>
+  </main>
+  <footer>
+    <span>SIS Reality Architecture · local private surface</span>
+    <span>python scripts/serve-starlight-world.py</span>
+  </footer>
+  <script src="./world.data.js"></script>
+  <script src="./world.js"></script>
+</body>
+</html>
