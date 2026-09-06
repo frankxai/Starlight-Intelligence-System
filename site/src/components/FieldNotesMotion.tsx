@@ -54,10 +54,33 @@ export function FieldNotesMotion() {
           if (!entry?.isIntersecting) return;
           sectionObserver?.disconnect();
 
-          const { gsap } = await import("gsap");
+          const loaded = await import("gsap").catch(() => null);
           if (activationId !== runId || !capability.matches) return;
+          if (!loaded) {
+            resetMotion();
+            return;
+          }
+          const { gsap } = loaded;
           gsapInstance = gsap;
           section.dataset.motion = "enhanced";
+
+          // Never hide content that has already painted in the viewport. Stage
+          // only cards below it, once, before any chapter intersection callback.
+          const staged = new Set(
+            Array.from(section.querySelectorAll<HTMLElement>("[data-field-card]"))
+              .filter((card) => card.getBoundingClientRect().top >= window.innerHeight),
+          );
+          gsap.set(Array.from(staged), {
+            autoAlpha: 0,
+            y: 64,
+            z: -80,
+            rotationX: 2.5,
+            rotationY: (index: number) => (index % 2 === 0 ? -6 : 6),
+            rotationZ: (index: number) => (index % 2 === 0 ? -0.7 : 0.7),
+            scale: 0.975,
+            transformPerspective: 1200,
+            transformOrigin: "50% 70%",
+          });
 
           const revealNext = () => {
             const chapter = revealQueue.shift();
@@ -69,20 +92,14 @@ export function FieldNotesMotion() {
             revealing = true;
             const cards = Array.from(
               chapter.querySelectorAll<HTMLElement>("[data-field-card]"),
-            );
-            const tween = gsap.fromTo(
+            ).filter((card) => staged.has(card));
+            if (cards.length === 0) {
+              revealNext();
+              return;
+            }
+            cards.forEach((card) => staged.delete(card));
+            const tween = gsap.to(
               cards,
-              {
-                autoAlpha: 0,
-                y: 64,
-                z: -80,
-                rotationX: 2.5,
-                rotationY: (index) => (index % 2 === 0 ? -6 : 6),
-                rotationZ: (index) => (index % 2 === 0 ? -0.7 : 0.7),
-                scale: 0.975,
-                transformPerspective: 1200,
-                transformOrigin: "50% 70%",
-              },
               {
                 autoAlpha: 1,
                 y: 0,

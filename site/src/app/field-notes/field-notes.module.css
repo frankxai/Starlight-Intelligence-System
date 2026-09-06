@@ -53,7 +53,7 @@
 .proofLine span {
   font-family: var(--font-jbmono), monospace;
   letter-spacing: 0.13em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .eyebrow {
