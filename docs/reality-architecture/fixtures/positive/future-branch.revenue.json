@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "0.1.1",
+  "id": "ra:branch:empire/revenue-loop-v0",
+  "label": "Empire revenue loop v0",
+  "baseline_ref": {
+    "kind": "snapshot",
+    "ref": "ra:snapshot:estate-2026-08-16",
+    "observed_at": "2026-08-16T01:00:00Z"
+  },
+  "assumptions": [
+    {
+      "id": "a1",
+      "statement": "Reality Diff self-service artifact can convert without human fulfillment.",
+      "epistemic_kind": "desired"
+    }
+  ],
+  "desired_changes": [
+    {
+      "object_id": "ra:product:reality-architect",
+      "change": "Ship inspectable Reality Diff export with agent-ready plan.",
+      "target_state": { "status": "paid_self_service_ready" }
+    }
+  ],
+  "predicted_effects": [
+    "Users can close one concrete gap without consulting dependency."
+  ],
+  "uncertainty_notes": [
+    "Willingness-to-pay unmeasured."
+  ],
+  "verification_criteria": [
+    {
+      "id": "v1",
+      "criterion": "At least one Diff artifact generated end-to-end from reality.md fixture.",
+      "evidence_type": "artifact"
+    }
+  ],
+  "telos_weights": {
+    "revenue": 0.6,
+    "local_first": 0.9,
+    "epistemic_integrity": 1.0
+  },
+  "epistemics": {
+    "kind": "desired",
+    "confidence": 0.55
+  },
+  "created_at": "2026-08-16T01:10:00Z",
+  "created_by": "human:frank",
+  "status": "draft"
+}

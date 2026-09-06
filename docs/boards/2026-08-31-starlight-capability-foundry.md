@@ -73,6 +73,14 @@ The marketplace is a downstream distribution product. It does not become the sou
 8. Packages and evidence contain no secrets or customer data.
 9. Exchange discovery work waits for the 90-day reliability gates.
 10. Each host surface can be paused or retired independently.
+11. OpenAI directory publication, ChatGPT runtime, and Codex runtime have separate evidence and receipts.
+12. The OpenAI projection does not sell or promote Starlight digital services, subscriptions, credits, or upgrades under current policy.
+13. Starlight evidence renders as `Tested by Starlight`; it never implies OpenAI verification, endorsement, or support absent explicit host evidence.
+14. No-UI packages submit no screenshots; internal evidence, reviewer recordings, and public screenshots remain separate artifact classes.
+
+## Post-merge checkpoint — 2026-09-01
+
+PR #122 merged the authorized foundation. The next release-assurance slice is authorized to add pinned portable validators, freshness-bounded docs-derived host preflight, a source preflight-profile contract, truthful package metadata, CI evidence, and negative tests. It is not authorized to connect accounts, create paid infrastructure, change verified legal identity, submit to a marketplace, or publish a public support claim.
 
 ## Immediate authorization
 
@@ -98,6 +106,26 @@ Not authorized by this decision alone:
 
 ## Proof gates
 
+### Founder-led market-test authorization
+
+The Board authorizes one bounded fourteen-day Launch Sprint sales test. It authorizes discovery, direct proposals, and invoicing; it does not authorize public compatibility claims, connected-account actions without consent, marketplace submission, or a promise of host approval.
+
+| Element | Authorized test |
+|---|---|
+| Accountable owner | Frank Riemer; Navigator and the GTM owner maintain the scorecard, while Orchestrator coordinates delivery and Sentinel/Evaluator retain independent security and claim gates |
+| Beachhead | Teams with a working MCP/agent capability, explicit demand for at least two P0 surfaces, a reachable buyer, and safe staging access |
+| First-ten gate | Privately score a candidate pool and select only accounts that meet all qualification signals; do not invent, publish, or imply customer names |
+| Price/payment hypothesis | EUR 10,000–15,000 fixed for one bounded capability sprint; 50% on signed kickoff and 50% on agreed evidence-package delivery; direct B2B invoice outside host plugins |
+| First 72 hours | Lock a qualified cohort of up to ten, message every qualified account through warm introductions first, and offer five release-readiness review slots |
+| Day-14 pass | At least four qualified conversations, two scoped proposals, and one signed sprint with the kickoff payment received |
+| Revise/stop | Revise when pain is confirmed without payment; stop or narrow when fewer than three qualified accounts engage, approval guarantees are required, or expected delivery exceeds 60 operator hours |
+
+The price, conversion targets, and named cohort are hypotheses until the experiment produces evidence. A verbal commitment is not a commercial pass.
+
+### Pilot ownership and response model
+
+The detailed assignment table lives in the product specification. During the pilot, Frank owns portfolio, GTM, spend, and public human gates. `starlight-architect` leads contracts/runtime design, `starlight-hermes` monitors official sources, `starlight-sentinel` leads security review, `starlight-orchestrator` coordinates host runs and drift, and `starlight-evaluator` supports independent receipt review. Every release issue must name a human adapter owner, host operator, verifier, and backup before work starts. Critical security findings block immediately; suspected P0 policy breaks receive human triage within four working hours; failed required checks receive a repair owner within one business day; affected critical claims downgrade within one hour. These are internal targets, not contractual customer SLAs, and no surface may become `supported` until a staffed support rota accepts its SLA.
+
 ### 14-day gate
 
 - pinned upstream/native validators in CI;
@@ -105,7 +133,8 @@ Not authorized by this decision alone:
 - production-shaped starlight-creator-mcp staging runtime;
 - one clean host runner;
 - evidence redaction and durable storage design;
-- two design-partner conversations.
+- four qualified design-partner conversations and two scoped proposals;
+- the founder-led market test reaches its explicit pass threshold or records a Board-visible revise/stop decision; no product automation is justified by activity alone.
 
 ### 30-day gate
 

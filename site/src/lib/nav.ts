@@ -26,6 +26,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/knowledge-tree", label: "Knowledge Tree", desc: "The system, branch by branch" },
       { href: "/vaults", label: "Public Vaults", desc: "One public vault" },
       { href: "/queen", label: "Queen", desc: "The visual intelligence loop" },
+      { href: "/field-notes", label: "Field Notes", desc: "Six studies of protocol, proof, and public memory" },
       { href: "/visuals/brand-lab", label: "Brand Lab", desc: "The visual identity system" },
       { href: "/verticals", label: "Verticals", desc: "Domain sub-stacks" },
     ],

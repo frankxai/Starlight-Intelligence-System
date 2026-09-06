@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/reality-event.v0.1.1.schema.json",
+  "title": "Starlight Reality Event v0.1.1",
+  "description": "Append-only observation of change. Durable state should be derivable from events.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "event_type", "occurred_at", "subject_ids", "payload", "provenance", "epistemics"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.1" },
+    "id": {
+      "type": "string",
+      "pattern": "^ra:event:[a-zA-Z0-9._~/-]{1,200}$"
+    },
+    "event_type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "e.g. object.observed, branch.created, action.completed, receipt.issued"
+    },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "recorded_at": { "type": ["string", "null"], "format": "date-time" },
+    "subject_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "actor_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "payload": { "type": "object" },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_type"],
+      "properties": {
+        "source_type": {
+          "enum": ["human", "repository", "database", "sensor", "paper", "website", "model", "agent", "simulation", "import", "unknown"]
+        },
+        "source_ids": { "type": "array", "items": { "type": "string" } },
+        "tool_ref": { "type": ["string", "null"] }
+      }
+    },
+    "epistemics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": ["empirical", "inference", "simulation", "fictional", "speculative", "preference", "unknown"]
+        },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "receipt_id": { "type": ["string", "null"] }
+  }
+}

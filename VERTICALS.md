@@ -143,6 +143,20 @@ This is the **public registry**. Active alliances and private verticals (Family 
 - **Canon:** optional Hz / Arcanea composition for music-side workflows.
 - **Compounds:** Voice & Video IS playbook + creator pipeline outputs.
 
+### Starlight Gravity Engine
+- **Class:** sovereign vertical (operated, public)
+- **Domain:** Human-and-agentic "gravity" — turning meaningful encounters into shared intelligence, useful artifacts, fulfilled commitments, trusted relationships, valuable introductions, and rooms people want to return to. Mechanism: `Gravity = Direction × Signal × Contribution × Convening × Reliability`.
+- **Owner:** Frank Riemer / Starlight Holding BV.
+- **Status:** `active — v0.1 "Field Edition"` (working core + CLI; draft PR under review).
+- **Primary repo:** [`frankxai/starlight-gravity-engine`](https://github.com/frankxai/starlight-gravity-engine) (PUBLIC, MIT).
+- **Public surface:** `github.com/frankxai/starlight-gravity-engine` today; `frankx.ai/starlight/gravity` (product page) forthcoming.
+- **Canon:** **declines** — no canon layer at the protocol level; defines only its own operating rules in-repo (`CANON.md`). May compose Arcanea canon per-artifact under CC-BY-NC, never at the vertical level.
+- **Composition (built ON SIP, never inside it):** A standalone vertical built on SIP. It **composes with** — but never requires — SIS, Creator IS, and ACOS. It does **not** live inside SIS, does **not** duplicate SIS memory, and does **not** make SIS/ACOS mandatory for its fifteen-minute starter experience. This registry entry links to the standalone repo; the implementation is **not** copied into the substrate.
+- **SIP attestation:** every published artifact carries the `Built on SIP` block, pinned to `starlightintelligence.org/protocol v1.1.1`, emitted by the engine's `attest.ts` publish gate (which refuses to emit without an approved, publishable artifact).
+- **Substrate home (in-repo surface):** `verticals/gravity-engine/` — pointer only (links out; no implementation).
+- **SIP commands:** `/gravity-capture` · `/gravity-brief` · `/gravity-publish` · `/gravity-room` · `/gravity-follow-through` · `/gravity-review`.
+- **Compounds:** FrankX (protocol-adoption narrative + consulting surface) + the engine's own catalog and any future managed tier.
+
 ### Starlight Intelligence (the substrate)
 - **Class:** sovereign substrate (the substrate itself, not a vertical)
 - **Domain:** SIP protocol, SIS substrate, Alliance forging method, Starlight Console, canonical registry. Hosts the master **Starlight Orchestrator** layer at `core/orchestrator/` that routes the other nine universal IS.

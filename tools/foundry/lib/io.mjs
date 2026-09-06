@@ -9,10 +9,21 @@ import {
 } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join, relative, resolve, sep } from "node:path";
+import { TextDecoder } from "node:util";
+
+const UTF8_DECODER = new TextDecoder("utf-8", { fatal: true });
+
+export function readUtf8(path) {
+  try {
+    return UTF8_DECODER.decode(readFileSync(path));
+  } catch (error) {
+    throw new Error(`Cannot decode UTF-8 at ${path}: ${error.message}`);
+  }
+}
 
 export function readJson(path) {
   try {
-    return JSON.parse(readFileSync(path, "utf8"));
+    return JSON.parse(readUtf8(path));
   } catch (error) {
     throw new Error(`Cannot read JSON at ${path}: ${error.message}`);
   }
@@ -105,6 +116,36 @@ export function hashFile(path) {
     sha256: createHash("sha256").update(bytes).digest("hex"),
     bytes: bytes.byteLength,
   };
+}
+
+export function verifyFileDigestClosure(root, closure, expectedPaths, label) {
+  const expected = [...expectedPaths].sort();
+  const actual = closure && typeof closure === "object" && !Array.isArray(closure)
+    ? Object.keys(closure).sort()
+    : [];
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(
+      `${label} source closure paths drifted: expected ${expected.join(", ")}, received ${actual.join(", ")}`,
+    );
+  }
+
+  return expected.map((path) => {
+    const expectedSha256 = closure[path];
+    if (!/^[a-f0-9]{64}$/u.test(expectedSha256 ?? "")) {
+      throw new Error(`${label} source closure has an invalid digest for ${path}`);
+    }
+    const absolute = assertNoSymlinkPath(root, path);
+    if (!existsSync(absolute) || !lstatSync(absolute).isFile()) {
+      throw new Error(`${label} source closure file is missing or not regular: ${path}`);
+    }
+    const actualSha256 = hashFile(absolute).sha256;
+    if (actualSha256 !== expectedSha256) {
+      throw new Error(
+        `${label} source closure digest mismatch for ${path}: expected ${expectedSha256}, received ${actualSha256}`,
+      );
+    }
+    return { path, sha256: actualSha256 };
+  });
 }
 
 export function hashTree(root, options = {}) {

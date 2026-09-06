@@ -220,6 +220,28 @@ export function platformReceiptStatementSha256(receipt) {
 export function validateValue(value, schema, registry) {
   const errors = [];
   validateNode(value, schema, { errors, registry, rootSchema: schema }, "$");
+  if (schema.$id?.endsWith("/plugin-pack.schema.json") && value && typeof value === "object") {
+    const targets = Array.isArray(value.deployment?.targets) ? value.deployment.targets : [];
+    const targetsOpenAI = ["openai-plugin", "chatgpt-work", "codex"].some((target) =>
+      targets.includes(target),
+    );
+    if (targetsOpenAI && !value.openaiListing) {
+      pushError(
+        errors,
+        "$.openaiListing",
+        "OPENAI_LISTING_REQUIRED",
+        "OpenAI, ChatGPT Work, and Codex targets require explicit OpenAI listing metadata",
+      );
+    }
+    if (!value.mcpServerUrl && value.authentication !== "none") {
+      pushError(
+        errors,
+        "$.authentication",
+        "AUTHENTICATION_WITHOUT_MCP",
+        "OAuth and service-account authentication require a real MCP endpoint",
+      );
+    }
+  }
   if (schema.$id?.endsWith("/taste-profile.schema.json") && value && typeof value === "object") {
     const weights = Array.isArray(value.dimensions)
       ? value.dimensions.map((dimension) => dimension?.weight).filter((weight) => typeof weight === "number")
@@ -304,6 +326,89 @@ export function validateValue(value, schema, registry) {
       .filter(Boolean);
     if (new Set(ids).size !== ids.length) {
       pushError(errors, "$.surfaces", "DUPLICATE_ID", "surface ids must be unique");
+    }
+  }
+  if (
+    schema.$id?.endsWith("/openai-submission-profile.schema.json") &&
+    value &&
+    typeof value === "object"
+  ) {
+    const screenshots = Array.isArray(value.experience?.screenshots)
+      ? value.experience.screenshots
+      : [];
+    if (value.experience?.customUi === false && screenshots.length > 0) {
+      pushError(
+        errors,
+        "$.experience.screenshots",
+        "SCREENSHOTS_WITHOUT_UI",
+        "OpenAI packages without custom UI must not submit screenshots",
+      );
+    }
+    const testIds = [
+      ...(Array.isArray(value.reviewTests?.positive) ? value.reviewTests.positive : []),
+      ...(Array.isArray(value.reviewTests?.negative) ? value.reviewTests.negative : []),
+    ].map((test) => test?.id).filter(Boolean);
+    if (new Set(testIds).size !== testIds.length) {
+      pushError(errors, "$.reviewTests", "DUPLICATE_ID", "review test ids must be unique");
+    }
+
+    if (["submitted", "approved", "published"].includes(value.state)) {
+      pushError(
+        errors,
+        "$.state",
+        "ATTESTATION_VERIFIER_REQUIRED",
+        "submitted, approved, and published are external strong states; structural dossier validation cannot promote them without digest-bound host evidence and live attestation verification",
+      );
+      if (
+        value.identity?.verificationState !== "verified" ||
+        value.identity?.appsManagementWrite !== "confirmed"
+      ) {
+        pushError(
+          errors,
+          "$.identity",
+          "SUBMISSION_IDENTITY_GATE",
+          "submitted or later states require verified identity and Apps Management Write access",
+        );
+      }
+      if (
+        !value.policy?.controllerMatchesVerifiedPublisher ||
+        !value.policy?.privacyUrl ||
+        !value.policy?.termsUrl ||
+        !value.policy?.supportUrl
+      ) {
+        pushError(
+          errors,
+          "$.policy",
+          "SUBMISSION_LEGAL_GATE",
+          "submitted or later states require publisher-matched privacy, terms, and support URLs",
+        );
+      }
+      if ((value.humanGates ?? []).some((gate) => gate?.status !== "complete")) {
+        pushError(
+          errors,
+          "$.humanGates",
+          "SUBMISSION_HUMAN_GATE",
+          "submitted or later states require every declared human gate to be complete",
+        );
+      }
+      for (const evidence of ["portableConformanceReport", "openaiPreflightReport", "skillsBundleScan"]) {
+        if (!value.evidence?.[evidence]) {
+          pushError(
+            errors,
+            `$.evidence.${evidence}`,
+            "SUBMISSION_EVIDENCE_GATE",
+            `submitted or later states require ${evidence}`,
+          );
+        }
+      }
+    }
+    if (["approved", "published"].includes(value.state) && !value.evidence?.reviewOutcome) {
+      pushError(
+        errors,
+        "$.evidence.reviewOutcome",
+        "REVIEW_OUTCOME_REQUIRED",
+        "approved or published states require an immutable review outcome reference",
+      );
     }
   }
   if (

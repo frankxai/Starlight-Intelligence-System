@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "openai-plugin-directory-preflight-2026-09-01",
+  "authority": "docs-derived-preflight",
+  "reviewedAt": "2026-09-01",
+  "reviewBy": "2026-10-01",
+  "claimBoundary": "This ruleset is not an OpenAI schema or portal result. A passing report cannot replace bundle upload, the OpenAI skill safety/security scan, review, runtime, or publication evidence. Scan Tools remains an MCP-specific external gate.",
+  "localConservativeChecks": {
+    "assetDecoder": "SVG only until a bounded, vulnerability-reviewed raster decoder is pinned",
+    "promptNormalization": "NFC plus Unicode whitespace collapse for duplicate detection; the portal algorithm is not published",
+    "symlinks": "Rejected by the Starlight package evidence boundary even where the portal may warn or ignore"
+  },
+  "sources": [
+    "https://developers.openai.com/plugins/build/plugins",
+    "https://developers.openai.com/plugins/app-guidelines",
+    "https://developers.openai.com/plugins/deploy/submission",
+    "https://developers.openai.com/plugins/deploy/submission-errors"
+  ],
+  "listing": {
+    "packageNameMaxLength": 64,
+    "packageVersionMaxLength": 64,
+    "displayNameMaxLength": 30,
+    "shortDescriptionMaxLength": 30,
+    "longDescriptionMaxLength": 4000,
+    "developerNameMaxLength": 80,
+    "categories": [
+      "Productivity",
+      "Creativity",
+      "Developer Tools",
+      "Business & Operations",
+      "Data & Analytics",
+      "Communication",
+      "Education & Research",
+      "Security",
+      "Finance",
+      "Healthcare",
+      "Travel",
+      "Entertainment",
+      "Other"
+    ],
+    "capabilitiesMaxItems": 20,
+    "capabilityMaxLength": 120,
+    "defaultPromptMaxItems": 3,
+    "defaultPromptMaxLength": 128,
+    "urlMaxLength": 1024,
+    "packageUrlMaxLength": 2048,
+    "brandColorMinimumContrast": 2,
+    "assetMaxBytes": 5242880,
+    "rasterAssetMaxDimension": 4096,
+    "assetExtensions": [".jpeg", ".jpg", ".png", ".svg", ".webp"]
+  },
+  "skillsOnly": {
+    "forbiddenPackagePaths": [".app.json", ".mcp.json"],
+    "forbiddenManifestKeys": ["apps", "mcpServers"],
+    "forbiddenInterfaceKeys": ["screenshots"]
+  },
+  "skillPayload": {
+    "descriptionMaxLength": 1024,
+    "combinedIdentityMaxLength": 64,
+    "openaiShortDescriptionMinLength": 25,
+    "openaiShortDescriptionMaxLength": 64,
+    "openaiMcpDependencyTransports": ["streamable_http", "sse"],
+    "openaiMcpDependencyValueMaxLength": 128,
+    "openaiMcpDependencyDescriptionMaxLength": 256
+  }
+}

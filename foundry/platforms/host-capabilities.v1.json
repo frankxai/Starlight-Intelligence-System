@@ -1,13 +1,84 @@
 {
   "$schema": "https://starlightintelligence.org/schemas/foundry/host-capability-registry.schema.json",
   "schemaVersion": "1.0.0",
-  "verifiedAt": "2026-08-31",
+  "verifiedAt": "2026-09-01",
   "defaultReceiptTtlDays": 45,
   "surfaces": [
     {
-      "id": "openai-chatgpt-codex",
+      "id": "openai-plugin-local",
       "ecosystem": "OpenAI",
-      "surface": "ChatGPT apps and Codex plugins",
+      "surface": "OpenAI plugin local package",
+      "priority": "p0",
+      "lifecycle": "primary",
+      "adapterTier": "native",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "codex-plugin",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "git",
+        "listing": "direct",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "mcp-apps",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate the portable package, OpenAI overlay, assets, and any declared MCP configuration against pinned schemas and source-reviewed rules.",
+        "Run a clean local add, discovery, install, list, update, and removal lifecycle without treating it as connected-host evidence."
+      ],
+      "humanGates": [
+        "Review publisher identity, source provenance, requested permissions, and release contents before distribution."
+      ],
+      "limitations": [
+        "Local package validation proves neither workspace availability, directory review, ChatGPT behavior, nor Codex behavior."
+      ],
+      "sources": [
+        "https://developers.openai.com/plugins/build/plugins"
+      ]
+    },
+    {
+      "id": "openai-workspace-marketplace",
+      "ecosystem": "OpenAI",
+      "surface": "OpenAI workspace plugin marketplace",
+      "priority": "p0",
+      "lifecycle": "primary",
+      "adapterTier": "native",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "codex-plugin",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "private-marketplace",
+        "listing": "reviewed",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "mcp-apps",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate the exact package and policy metadata selected for workspace synchronization."
+      ],
+      "humanGates": [
+        "Use an authorized workspace admin to synchronize, approve, install, update, and remove the package in a staging workspace.",
+        "Record workspace policy, plan, locale, and review state without implying public-directory availability."
+      ],
+      "limitations": [
+        "Workspace marketplace evidence proves neither Universal Plugins Directory publication nor ChatGPT or Codex runtime behavior."
+      ],
+      "sources": [
+        "https://developers.openai.com/plugins",
+        "https://developers.openai.com/plugins/build/plugins"
+      ]
+    },
+    {
+      "id": "openai-universal-plugins-directory",
+      "ecosystem": "OpenAI",
+      "surface": "Universal Plugins Directory",
       "priority": "p0",
       "lifecycle": "primary",
       "adapterTier": "native",
@@ -26,20 +97,88 @@
         "host-native"
       ],
       "headlessValidation": [
-        "Validate portable plugin and MCP schemas.",
-        "Run Codex install, discovery, positive, negative-auth, update, and uninstall cases."
+        "Validate package structure, listing metadata, assets, and the source-controlled submission dossier before upload."
       ],
       "humanGates": [
-        "Connect a staging ChatGPT workspace and Codex account.",
-        "Review privacy, screenshots, listing copy, permissions, and final submission."
+        "Use a verified publisher with Apps Management Write access to upload the exact artifact and retain its current scan and review outcome.",
+        "Review privacy, terms, support, permissions, listing copy, and any media required for the product that was actually scanned."
       ],
       "limitations": [
-        "A compiled package is not proof of ChatGPT marketplace publication or support."
+        "An approved directory listing does not prove activation or behavior in either ChatGPT or Codex."
+      ],
+      "sources": [
+        "https://developers.openai.com/plugins/deploy/submission",
+        "https://developers.openai.com/plugins/deploy/app-review"
+      ]
+    },
+    {
+      "id": "openai-chatgpt-runtime",
+      "ecosystem": "OpenAI",
+      "surface": "ChatGPT plugin runtime",
+      "priority": "p0",
+      "lifecycle": "primary",
+      "adapterTier": "native",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "host-console",
+        "listing": "direct",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "mcp-apps",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Validate the exact artifact, activation fixtures, expected tool boundaries, and redaction plan before connected-host testing."
+      ],
+      "humanGates": [
+        "Connect an authorized ChatGPT staging workspace and record activation, positive, boundary, failure, and removal cases for the exact plan, region, and locale."
+      ],
+      "limitations": [
+        "ChatGPT runtime evidence proves neither Codex behavior nor directory publication."
+      ],
+      "sources": [
+        "https://developers.openai.com/plugins/deploy/connect-chatgpt",
+        "https://developers.openai.com/plugins"
+      ]
+    },
+    {
+      "id": "openai-codex-runtime",
+      "ecosystem": "OpenAI",
+      "surface": "Codex plugin runtime",
+      "priority": "p0",
+      "lifecycle": "primary",
+      "adapterTier": "native",
+      "packageFormats": [
+        "agent-plugin-1.0.0",
+        "codex-plugin",
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "git",
+        "listing": "direct",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "text-only",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Run the pinned official Codex add, discovery, install, list, update, and removal lifecycle in a disposable profile.",
+        "Record exact Codex version, channel, operating system, architecture, artifact digest, and boundary-case results."
+      ],
+      "humanGates": [
+        "Approve any account-bound, OAuth, write-capable, or public-directory test that cannot run in the disposable local profile."
+      ],
+      "limitations": [
+        "A local Codex lifecycle proves neither ChatGPT behavior nor workspace or public-directory availability."
       ],
       "sources": [
         "https://developers.openai.com/plugins/build/plugins",
-        "https://developers.openai.com/plugins/deploy/connect-chatgpt",
-        "https://developers.openai.com/plugins/deploy/submission"
+        "https://developers.openai.com/plugins"
       ]
     },
     {
@@ -77,17 +216,50 @@
       ]
     },
     {
-      "id": "anthropic-claude",
+      "id": "anthropic-claude-code-plugins",
       "ecosystem": "Anthropic",
-      "surface": "Claude Code plugins, connectors, and MCP Apps",
+      "surface": "Claude Code plugins",
       "priority": "p0",
       "lifecycle": "primary",
       "adapterTier": "native",
       "packageFormats": [
         "agent-plugin-1.0.0",
         "claude-plugin",
-        "mcp",
-        "mcp-app"
+        "mcp"
+      ],
+      "distribution": {
+        "mode": "git",
+        "listing": "direct",
+        "publishAutomation": "partial"
+      },
+      "ui": [
+        "text-only",
+        "host-native"
+      ],
+      "headlessValidation": [
+        "Run the Claude plugin validator and manifest checks.",
+        "Exercise clean plugin install, discovery, activation, update, and removal in the exact Claude Code build under test."
+      ],
+      "humanGates": [
+        "Approve hooks, local commands, credentials, and any marketplace source before distribution."
+      ],
+      "limitations": [
+        "Claude Code plugin evidence proves neither Claude connector review nor MCP Apps rendering."
+      ],
+      "sources": [
+        "https://code.claude.com/docs/en/plugins-reference",
+        "https://code.claude.com/docs/en/plugin-marketplaces"
+      ]
+    },
+    {
+      "id": "anthropic-claude-connectors",
+      "ecosystem": "Anthropic",
+      "surface": "Claude connectors",
+      "priority": "p0",
+      "lifecycle": "primary",
+      "adapterTier": "mcp-only",
+      "packageFormats": [
+        "mcp"
       ],
       "distribution": {
         "mode": "public-marketplace",
@@ -95,24 +267,55 @@
         "publishAutomation": "partial"
       },
       "ui": [
-        "mcp-apps",
         "host-native"
       ],
       "headlessValidation": [
-        "Run the Claude plugin validator and manifest checks.",
-        "Exercise remote MCP discovery, OAuth failure, tool execution, update, and removal."
+        "Validate remote MCP transport, tool schemas, annotations, authentication failures, and redacted tool results."
       ],
       "humanGates": [
-        "Connect Claude staging accounts and approve OAuth scopes.",
-        "Complete connector review, listing assets, privacy review, and in-host UX capture."
+        "Connect an authorized Claude staging account, approve OAuth scopes, and exercise discovery, tool execution, disconnect, and removal.",
+        "Complete connector review, privacy review, listing assets, and retain the exact review outcome."
       ],
       "limitations": [
+        "A connector receipt does not prove Claude Code plugin installation or MCP Apps user-interface behavior.",
         "MCPB is only appropriate for explicitly local desktop installation needs."
       ],
       "sources": [
         "https://claude.com/docs/connectors/building/what-to-build",
-        "https://code.claude.com/docs/en/plugins-reference",
-        "https://code.claude.com/docs/en/plugin-marketplaces",
+        "https://claude.com/docs/connectors/building/review-criteria"
+      ]
+    },
+    {
+      "id": "anthropic-mcp-apps",
+      "ecosystem": "Anthropic",
+      "surface": "Claude MCP Apps runtime",
+      "priority": "p1",
+      "lifecycle": "primary",
+      "adapterTier": "mcp-only",
+      "packageFormats": [
+        "mcp",
+        "mcp-app"
+      ],
+      "distribution": {
+        "mode": "direct-url",
+        "listing": "direct",
+        "publishAutomation": "none"
+      },
+      "ui": [
+        "mcp-apps"
+      ],
+      "headlessValidation": [
+        "Validate MCP Apps resources, security boundaries, text fallback, and deterministic render fixtures before connected-host capture."
+      ],
+      "humanGates": [
+        "Render the exact app in an authorized Claude staging host and capture interaction, permission, fallback, disconnect, and cleanup evidence.",
+        "Review custom UI, content security policy, external domains, accessibility, privacy, and any required screenshots."
+      ],
+      "limitations": [
+        "MCP Apps runtime evidence does not prove connector directory review or Claude Code plugin behavior."
+      ],
+      "sources": [
+        "https://claude.com/docs/connectors/building/what-to-build",
         "https://claude.com/docs/connectors/building/review-criteria"
       ]
     },

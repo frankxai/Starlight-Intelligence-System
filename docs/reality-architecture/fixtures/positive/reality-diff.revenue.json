@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "0.1.1",
+  "id": "ra:diff:empire/revenue-loop-v0",
+  "current_ref": {
+    "kind": "snapshot",
+    "ref": "ra:snapshot:estate-2026-08-16",
+    "observed_at": "2026-08-16T01:00:00Z"
+  },
+  "target_branch_id": "ra:branch:empire/revenue-loop-v0",
+  "gaps": [
+    {
+      "id": "g1",
+      "class": "capability",
+      "statement": "No deterministic Reality Diff compiler from reality.md + target branch.",
+      "blocking_object_ids": ["ra:product:reality-architect"],
+      "leverage": "critical",
+      "uncertainty": "medium",
+      "suggested_experiment": "Implement Diff v0 on fixture estate snapshot."
+    },
+    {
+      "id": "g2",
+      "class": "evidence",
+      "statement": "No ActualizationReceipt loop proving plan → action → verify.",
+      "blocking_object_ids": ["ra:product:starlight-swarm"],
+      "leverage": "high",
+      "uncertainty": "low",
+      "suggested_experiment": "Dry-run one bounded fixture action with receipt."
+    }
+  ],
+  "method": {
+    "name": "board-manual-v0",
+    "deterministic": false,
+    "notes": "Seed fixture for compiler tests; replace with deterministic ruleset."
+  },
+  "generated_at": "2026-08-16T01:15:00Z",
+  "generated_by": "agent:hermes-queen",
+  "summary": "Two highest-leverage gaps block paid Reality Diff loop."
+}

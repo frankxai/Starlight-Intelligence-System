@@ -1,0 +1,70 @@
+name: Deploy Starlight plugin
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: starlight-plugin-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: starlight-plugin-production
+    defaults:
+      run:
+        working-directory: plugins/starlight-intelligence
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: plugins/starlight-intelligence/package-lock.json
+      - run: npm ci
+      - run: npm run validate
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm run smoke:worker
+      - name: Deploy Worker with synchronized secrets
+        shell: bash
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CF_ACCESS_TEAM_DOMAIN: ${{ secrets.CF_ACCESS_TEAM_DOMAIN }}
+          CF_ACCESS_AUD: ${{ secrets.CF_ACCESS_AUD }}
+          STARLIGHT_ALLOWED_EMAILS: ${{ secrets.STARLIGHT_ALLOWED_EMAILS }}
+        run: |
+          required=(
+            CLOUDFLARE_ACCOUNT_ID
+            CLOUDFLARE_API_TOKEN
+            SUPABASE_URL
+            SUPABASE_SECRET_KEY
+            CF_ACCESS_TEAM_DOMAIN
+            CF_ACCESS_AUD
+            STARLIGHT_ALLOWED_EMAILS
+          )
+          for key in "${required[@]}"; do
+            if [[ -z "${!key}" ]]; then
+              echo "::error::$key is not configured in starlight-plugin-production"
+              exit 1
+            fi
+          done
+
+          umask 077
+          jq -n '{
+            SUPABASE_URL: env.SUPABASE_URL,
+            SUPABASE_SECRET_KEY: env.SUPABASE_SECRET_KEY,
+            CF_ACCESS_TEAM_DOMAIN: env.CF_ACCESS_TEAM_DOMAIN,
+            CF_ACCESS_AUD: env.CF_ACCESS_AUD,
+            STARLIGHT_ALLOWED_EMAILS: env.STARLIGHT_ALLOWED_EMAILS
+          }' > "$RUNNER_TEMP/starlight-worker-secrets.json"
+
+          npx wrangler deploy \
+            --secrets-file "$RUNNER_TEMP/starlight-worker-secrets.json"

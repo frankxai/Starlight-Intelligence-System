@@ -1,13 +1,16 @@
 import {
   cpSync,
   existsSync,
+  mkdtempSync,
   mkdirSync,
   readFileSync,
   realpathSync,
   readdirSync,
+  renameSync,
   rmSync,
   statSync,
 } from "node:fs";
+import { randomUUID } from "node:crypto";
 import { basename, dirname, join, parse, relative, resolve } from "node:path";
 import {
   assertNoSymlinkPath,
@@ -19,10 +22,13 @@ import {
 } from "./io.mjs";
 import { resolveCapabilities } from "./graph.mjs";
 import { assertValid, getContract } from "./schema.mjs";
+import { validateOpenAIPluginPackage } from "./openai-preflight.mjs";
 import {
   renderAgent,
   renderOpenAiYaml,
   renderPackageReadme,
+  renderPluginComposerIconSvg,
+  renderPluginLogoSvg,
   renderShortDescription,
   renderSkill,
 } from "./render.mjs";
@@ -140,7 +146,7 @@ function assertPackCapabilities(pack, graph, resolution) {
   }
 }
 
-function prepareOutputDirectory({ output, packageId, force, registry, root }) {
+function assertOutputCanBeReplaced({ output, packageId, force, registry, root }) {
   const protectedOutputs = new Set([
     parse(output).root,
     resolve(root),
@@ -184,7 +190,37 @@ function prepareOutputDirectory({ output, packageId, force, registry, root }) {
       `Refusing --force: output belongs to package "${manifest.packageId}", not "${packageId}".`,
     );
   }
-  rmSync(output, { recursive: true, force: false });
+}
+
+function promoteStagedOutput(staging, output) {
+  if (!existsSync(output)) {
+    renameSync(staging, output);
+    return;
+  }
+  const backup = join(dirname(output), `.${basename(output)}-backup-${randomUUID()}`);
+  renameSync(output, backup);
+  try {
+    renameSync(staging, output);
+  } catch (error) {
+    renameSync(backup, output);
+    throw error;
+  }
+  rmSync(backup, { recursive: true, force: true });
+}
+
+function reproducibleBuildTimestamp(sourceDateEpoch = process.env.SOURCE_DATE_EPOCH) {
+  if (sourceDateEpoch === undefined || sourceDateEpoch === "") {
+    return "1970-01-01T00:00:00.000Z";
+  }
+  if (!/^\d+$/u.test(String(sourceDateEpoch))) {
+    throw new Error("SOURCE_DATE_EPOCH must be a non-negative integer number of Unix seconds");
+  }
+  const milliseconds = Number(sourceDateEpoch) * 1000;
+  const timestamp = new Date(milliseconds);
+  if (!Number.isSafeInteger(milliseconds) || Number.isNaN(timestamp.getTime())) {
+    throw new Error("SOURCE_DATE_EPOCH is outside the supported JavaScript date range");
+  }
+  return timestamp.toISOString();
 }
 
 function copySkill(root, node, destination) {
@@ -210,6 +246,11 @@ function assertPortablePluginInputs(pack) {
     );
   }
   if (!pack.mcpServerUrl) return;
+  if (["openai-plugin", "chatgpt-work", "codex"].some((target) => pack.deployment.targets.includes(target))) {
+    throw new Error(
+      "OpenAI MCP package compilation is blocked until the MCP-specific package, authentication, tool-annotation, and portal-scan validator is implemented.",
+    );
+  }
   let endpoint;
   try {
     endpoint = new URL(pack.mcpServerUrl);
@@ -226,6 +267,29 @@ function assertPortablePluginInputs(pack) {
     throw new Error(
       "Plugin MCP endpoint must use HTTPS and must not contain user information, a query, or a fragment.",
     );
+  }
+}
+
+function assertPublisherUrls(pack) {
+  for (const [label, value] of [
+    ["Publisher homepage", pack.publisher.homepage],
+    ["Publisher repository", pack.publisher.repository],
+  ]) {
+    let url;
+    try {
+      url = new URL(value);
+    } catch {
+      throw new Error(`${label} must be a valid absolute URL`);
+    }
+    if (
+      url.protocol !== "https:" ||
+      !url.hostname ||
+      url.username ||
+      url.password ||
+      value.length > 2048
+    ) {
+      throw new Error(`${label} must be credential-free HTTPS with a host and at most 2048 characters`);
+    }
   }
 }
 
@@ -250,6 +314,18 @@ function renderPortablePluginManifest(pack) {
     license: pack.publisher.license,
   };
   if (pack.publisher.keywords?.length) manifest.keywords = pack.publisher.keywords;
+  if (pack.mcpServerUrl) {
+    manifest.extensions = {
+      "org.starlightintelligence.foundry": {
+        mcpServerId: pack.id,
+        authentication: {
+          mode: pack.authentication,
+          credentialDelivery: pack.authentication === "none" ? "none" : "host-managed",
+          secretsInPackage: false,
+        },
+      },
+    };
+  }
   return manifest;
 }
 
@@ -257,7 +333,7 @@ function renderPortableMcpManifest(pack) {
   return {
     $schema: AGENT_PLUGIN_MCP_SCHEMA,
     mcpServers: {
-      foundry: {
+      [pack.id]: {
         type: "streamable-http",
         url: pack.mcpServerUrl,
       },
@@ -267,7 +343,7 @@ function renderPortableMcpManifest(pack) {
 
 function renderCodexMcpManifest(pack) {
   return {
-    foundry: {
+    [pack.id]: {
       type: "http",
       url: pack.mcpServerUrl,
     },
@@ -277,7 +353,7 @@ function renderCodexMcpManifest(pack) {
 function renderClaudeMcpManifest(pack) {
   return {
     mcpServers: {
-      foundry: {
+      [pack.id]: {
         type: "http",
         url: pack.mcpServerUrl,
       },
@@ -298,18 +374,24 @@ function renderCodexPluginManifest(pack) {
     skills: "./skills/",
     interface: {
       displayName: pack.displayName,
-      shortDescription: renderShortDescription(pack.description),
+      shortDescription: renderShortDescription(pack.description, 30),
       longDescription: pack.description,
       developerName: pack.publisher.name,
-      category: "Productivity",
-      capabilities: ["Skills"],
+      category: pack.openaiListing.category,
+      capabilities: pack.openaiListing.capabilities,
       websiteURL: pack.publisher.homepage,
       defaultPrompt: [
-        `Use $${firstSkill} to begin.`,
-        "Apply the selected skill and return evidence for the result.",
+        `Turn this workflow into a reusable ${firstSkill.includes("agent") ? "agent design" : "capability"}.`,
+        "Define evidence and completion gates for this capability.",
       ],
+      brandColor: pack.openaiListing.brandColor,
+      logo: "./assets/logo.svg",
+      composerIcon: "./assets/composer-icon.svg",
     },
   };
+  if (pack.openaiListing.brandColorDark) {
+    manifest.interface.brandColorDark = pack.openaiListing.brandColorDark;
+  }
   if (pack.publisher.keywords?.length) manifest.keywords = pack.publisher.keywords;
   if (pack.mcpServerUrl) manifest.mcpServers = "./.mcp.json";
   return manifest;
@@ -372,6 +454,14 @@ function writeKindArtifacts({ root, output, pack, graph }) {
         join(pluginRoot, ".codex-plugin", "plugin.json"),
         renderCodexPluginManifest(pack),
       );
+      writeText(
+        join(pluginRoot, "assets", "logo.svg"),
+        renderPluginLogoSvg(pack.displayName, pack.openaiListing.brandColor),
+      );
+      writeText(
+        join(pluginRoot, "assets", "composer-icon.svg"),
+        renderPluginComposerIconSvg(pack.displayName, pack.openaiListing.brandColor),
+      );
     }
     if (emitsClaude) {
       writeJson(
@@ -392,6 +482,14 @@ function writeKindArtifacts({ root, output, pack, graph }) {
       const node = capabilityNode(graph, skill);
       copySkill(root, node, pluginRoot);
     }
+    if (emitsOpenAi && !pack.mcpServerUrl) {
+      const preflight = validateOpenAIPluginPackage(pluginRoot);
+      if (preflight.status !== "pass") {
+        throw new Error(
+          `Compiled OpenAI plugin failed final-directory preflight: ${preflight.errors.map((error) => error.code).join(", ")}`,
+        );
+      }
+    }
   }
 }
 
@@ -403,6 +501,7 @@ export function compilePackage({
   graph,
   registry,
   force = false,
+  sourceDateEpoch,
 }) {
   assertValid(envelope, getContract(registry, "task-envelope"), registry, "Task Envelope");
   assertValid(pack, getContract(registry, packContractName(pack.kind)), registry, `${pack.kind} pack`);
@@ -416,57 +515,63 @@ export function compilePackage({
   }
   if (pack.kind === "agent") assertPersistentAgentBoundary(pack);
   if (pack.kind === "plugin") assertPortablePluginInputs(pack);
+  if (pack.kind === "plugin") assertPublisherUrls(pack);
   assertPackWithinEnvelope(pack, envelope);
   const resolution = resolveCapabilities(envelope, graph);
   assertPackCapabilities(pack, graph, resolution);
 
   const absoluteOutput = resolve(output);
-  prepareOutputDirectory({
+  assertOutputCanBeReplaced({
     output: absoluteOutput,
     packageId: pack.id,
     force,
     registry,
     root,
   });
-  mkdirSync(absoluteOutput, { recursive: true });
+  mkdirSync(dirname(absoluteOutput), { recursive: true });
+  const staging = mkdtempSync(join(dirname(absoluteOutput), `.${basename(absoluteOutput)}-staging-`));
+  try {
+    const compiledAt = reproducibleBuildTimestamp(sourceDateEpoch);
+    const compiledResolution = { ...resolution, graphGeneratedAt: compiledAt };
+    writeJson(join(staging, "task-envelope.json"), envelope);
+    writeJson(join(staging, `${pack.kind}-pack.json`), pack);
+    writeJson(join(staging, "capability-resolution.json"), compiledResolution);
+    writeKindArtifacts({ root, output: staging, pack, graph });
+    writeText(join(staging, "README.md"), renderPackageReadme(envelope, pack, compiledResolution));
 
-  writeJson(join(absoluteOutput, "task-envelope.json"), envelope);
-  writeJson(join(absoluteOutput, `${pack.kind}-pack.json`), pack);
-  writeJson(join(absoluteOutput, "capability-resolution.json"), resolution);
-  writeKindArtifacts({ root, output: absoluteOutput, pack, graph });
-  writeText(join(absoluteOutput, "README.md"), renderPackageReadme(envelope, pack, resolution));
+    const artifactDigests = hashTree(staging);
+    const manifest = {
+      $schema: "https://starlightintelligence.org/schemas/foundry/foundry-manifest.schema.json",
+      schemaVersion: "1.0.0",
+      packageId: pack.id,
+      packageVersion: pack.version,
+      kind: pack.kind,
+      compiledAt,
+      compiler: "starlight-foundry/0.1.0",
+      sources: {
+        envelope: "task-envelope.json",
+        pack: `${pack.kind}-pack.json`,
+        resolution: "capability-resolution.json",
+      },
+      deploymentTargets: pack.deployment.targets,
+      artifacts: artifactDigests,
+      proofCommand: "node tools/foundry/cli.mjs prove <package-directory>",
+    };
+    assertValid(
+      manifest,
+      getContract(registry, "foundry-manifest"),
+      registry,
+      "Foundry Manifest",
+    );
+    writeJson(join(staging, "foundry-manifest.json"), manifest);
+    const files = hashTree(staging).map((entry) => entry.path);
+    promoteStagedOutput(staging, absoluteOutput);
 
-  const artifactDigests = hashTree(absoluteOutput);
-  const manifest = {
-    $schema: "https://starlightintelligence.org/schemas/foundry/foundry-manifest.schema.json",
-    schemaVersion: "1.0.0",
-    packageId: pack.id,
-    packageVersion: pack.version,
-    kind: pack.kind,
-    compiledAt: new Date().toISOString(),
-    compiler: "starlight-foundry/0.1.0",
-    sources: {
-      envelope: "task-envelope.json",
-      pack: `${pack.kind}-pack.json`,
-      resolution: "capability-resolution.json",
-    },
-    deploymentTargets: pack.deployment.targets,
-    artifacts: artifactDigests,
-    proofCommand: "node tools/foundry/cli.mjs prove <package-directory>",
-  };
-  assertValid(
-    manifest,
-    getContract(registry, "foundry-manifest"),
-    registry,
-    "Foundry Manifest",
-  );
-  writeJson(join(absoluteOutput, "foundry-manifest.json"), manifest);
-
-  return {
-    output: absoluteOutput,
-    manifest,
-    files: hashTree(absoluteOutput).map((entry) => entry.path),
-  };
+    return { output: absoluteOutput, manifest, files };
+  } catch (error) {
+    if (existsSync(staging)) rmSync(staging, { recursive: true, force: true });
+    throw error;
+  }
 }
 
 export function inspectCompiledPackage(packageDirectory) {
