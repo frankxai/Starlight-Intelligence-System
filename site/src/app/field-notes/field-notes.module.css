@@ -90,7 +90,7 @@
 }
 
 .actions a,
-.constellation a {
+.publication {
   min-height: 46px;
   display: inline-flex;
   align-items: center;
@@ -109,8 +109,7 @@
   border-color: var(--paper);
 }
 
-.actions a:hover,
-.constellation a:hover {
+.actions a:hover {
   color: #09070d;
   background: #ddd3f4;
   border-color: #ddd3f4;
@@ -377,13 +376,13 @@
   max-width: 760px;
 }
 
-.constellation a {
+.publication {
   min-width: 13rem;
   display: grid;
   gap: 0.38rem;
 }
 
-.constellation a span {
+.publication span {
   color: var(--violet);
   font-family: var(--font-jbmono), monospace;
   font-size: 0.55rem;
@@ -418,7 +417,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .constellation a {
+  .publication {
     min-width: 0;
   }
 }

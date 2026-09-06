@@ -100,7 +100,7 @@ export default function PublicFieldNotesPage() {
                     <span className={styles.glow} data-field-glow aria-hidden="true" />
                     <span className={styles.stars} data-field-stars aria-hidden="true" />
                     <span className={styles.trace} aria-hidden="true" />
-                    <span className={styles.frameNumber} aria-hidden="true">PUBLIC / {card.id}</span>
+                    <span className={styles.frameNumber} aria-hidden="true">Public / {card.id}</span>
                   </div>
                   <div className={styles.caption}>
                     <p><span>{card.id}</span>{card.stage}</p>
@@ -118,15 +118,15 @@ export default function PublicFieldNotesPage() {
 
       <section className={styles.constellation} aria-labelledby="constellation-title">
         <div>
-          <p className={styles.eyebrow}>The complete constellation</p>
-          <h2 id="constellation-title">Twenty scenes. One human-owned operating line.</h2>
+          <p className={styles.eyebrow}>Companion chapters</p>
+          <h2 id="constellation-title">The record continues.</h2>
         </div>
-        <a href="https://starlightintelligence.academy/field-notes">
-          <span>01—07</span> Academy practice
-        </a>
-        <a href="https://starlightintelligence.ai/field-notes">
-          <span>08—14</span> Applied system
-        </a>
+        <p className={styles.publication}>
+          <span>01—07 · Awaiting publication</span> Academy practice
+        </p>
+        <p className={styles.publication}>
+          <span>08—14 · Awaiting publication</span> Applied system
+        </p>
       </section>
 
       <p className={styles.disclosure}>
