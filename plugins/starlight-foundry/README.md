@@ -1,12 +1,12 @@
 # Starlight Foundry Plugin
 
-Skills-first capability compilation for portable Agent Plugin hosts, ChatGPT/Codex, and Claude Code.
+Skills-first capability design for portable Agent Plugin hosts, ChatGPT/Codex, and Claude Code, with optional compilation in an SIS Foundry runtime.
 
 ## Included skills
 
-- `$skill-forge` — compile reusable workflows into portable skills;
-- `$agent-forge` — justify and compile persistent actors;
-- `$system-forge` — compile bounded swarms, verticals, and plugins;
+- `$skill-forge` — design reusable workflows as portable skills;
+- `$agent-forge` — justify and design bounded persistent actors;
+- `$system-forge` — design bounded swarms, verticals, and plugins;
 - `$taste-engine` — turn qualitative intent into executable evaluation.
 
 ## Package surfaces
@@ -18,7 +18,7 @@ Skills-first capability compilation for portable Agent Plugin hosts, ChatGPT/Cod
 | `.codex-plugin/plugin.json` | OpenAI/Codex compatibility overlay |
 | `.claude-plugin/plugin.json` | Claude Code compatibility overlay |
 
-This checked-in v0.1 package is intentionally skills-only. It does not declare a remote MCP server or claim marketplace publication, verified installation, or vendor support.
+This checked-in v0.1 package is intentionally skills-only. In a marketplace install it designs source contracts and marks compiler proof `pending-runtime`; inside an SIS workspace it may hand off to the checked-in Foundry CLI. It does not declare a remote MCP server or claim Platform upload, host verification, directory publication, or vendor support.
 
 ## Codex local install
 
@@ -42,14 +42,22 @@ Use a disposable host profile for release evidence. A successful local load is c
 ## Validation
 
 ~~~bash
+npm run foundry:toolchain:install # isolated native validators; requires Node.js >=22
 npm run foundry:plugin:check
+npm run foundry:conformance
+npm run foundry:submission:check
+npm run foundry:loader:codex
+npm run foundry:validator:claude
 npm run test:foundry
 ~~~
 
-The parity check proves bundled skill files remain byte-identical to `skills/foundry/*`. Foundry tests validate local package and receipt invariants. Pinned upstream Agent Plugins validation and Claude native strict validation are the next release gates and must pass before a `verified` claim.
+The parity check proves bundled skill files remain byte-identical to `skills/foundry/*`. Portable conformance uses byte-pinned Agent Plugins 1.0.0 schemas and Ajv 8.20.0. The OpenAI submission check applies freshness-bounded, docs-derived rules and validates the pending preflight gate profile. The pinned official Codex 0.152.0 loader smoke uses a disposable home for add, discovery, install, list, removal, and cleanup. Claude Code 2.1.252 runs its official strict native validator. OpenAI Platform bundle upload and skill safety/security scan, real ChatGPT behavior, Claude installation/runtime, cryptographic attestation, and human review remain separate gates before a strong claim.
+
+The current candidate has no custom UI, so it carries no submission screenshots. See `docs/runbooks/openai-plugin-submission.md` for the release, evidence, commerce, and human-gate workflow.
 
 Official packaging references:
 
 - https://github.com/agentplugins/agent-plugins-spec/blob/main/spec/1.0.0.md
 - https://developers.openai.com/plugins/build/plugins
+- https://developers.openai.com/plugins/deploy/submission
 - https://code.claude.com/docs/en/plugins-reference

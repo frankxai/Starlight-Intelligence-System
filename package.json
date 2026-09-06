@@ -128,7 +128,14 @@
     "foundry:demo": "node tools/foundry/demo.mjs",
     "foundry:plugin:sync": "node scripts/sync-foundry-plugin.mjs",
     "foundry:plugin:check": "node scripts/sync-foundry-plugin.mjs --check",
-    "test:foundry": "node --import tsx --test test/v92-foundry.test.ts",
+    "foundry:conformance": "node tools/foundry/cli.mjs conformance plugins/starlight-foundry",
+    "foundry:preflight:openai": "node tools/foundry/cli.mjs preflight-openai plugins/starlight-foundry",
+    "foundry:submission:check": "node tools/foundry/cli.mjs validate plugins/starlight-foundry/submission/openai/profile.json --schema openai-submission-profile && npm run foundry:preflight:openai",
+    "foundry:toolchain:install": "npm ci --prefix foundry/validators/native",
+    "foundry:loader:codex": "node tools/foundry/codex-loader-smoke.mjs",
+    "foundry:validator:claude": "node tools/foundry/claude-validator-smoke.mjs",
+    "test:foundry:conformance": "node --import tsx --test test/foundry-conformance.test.ts",
+    "test:foundry": "node --import tsx --test test/v92-foundry.test.ts test/foundry-conformance.test.ts",
     "test": "npm run test:operational && npm run test:substrate && npm run test:v01-evals",
     "test:v01-evals": "npm run build && node tools/run-v01-evals.mjs",
     "test:evals": "npm run build && node tools/run-v01-evals.mjs",
@@ -169,8 +176,12 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.2.3",
+    "ajv": "8.20.0",
+    "fast-xml-parser": "5.11.1",
+    "semver": "7.8.5",
     "tsx": "^4.21.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "yaml": "2.9.0"
   },
   "peerDependencies": {
     "@arcanea/memory-system": ">=0.1.0",

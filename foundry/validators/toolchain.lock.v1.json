@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-09-01",
+  "updatePolicy": "Every version, integrity, schema digest, rules digest, local source/contract closure digest, or dependency lock digest change requires a reviewed pull request and refreshed positive and negative evidence. CI never floats or silently rewrites this lock.",
+  "portable": {
+    "specification": "Agent Plugins 1.0.0",
+    "sourceCommit": "ff8ab5e392cc87bd88d87c060815a87490e51003",
+    "provenanceSha256": "cb368039a7876ae154075af53f03f13ec438bc83c39dd77bb1ba1e0a25d54e8b",
+    "schemas": {
+      "plugin.schema.json": {
+        "gitBlob": "8fed0e1fe45d0464aee880d3fbab228b71ecfc1e",
+        "sha256": "0a4aad95ce337878ad38802ebf0daa3fde76abe3f65400c86bcbb1ec0b3ab883",
+        "bytes": 1805
+      },
+      "mcp.schema.json": {
+        "gitBlob": "a9139a4259b932c60b5351c8d9da6a5c60c97646",
+        "sha256": "6539175bfcdf43085855183e86da40ea94b166547a72b47ae9a0a390516d3acb",
+        "bytes": 3408
+      }
+    },
+    "validator": {
+      "package": "ajv",
+      "version": "8.20.0",
+      "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==",
+      "implementationPath": "tools/foundry/lib/upstream-conformance.mjs",
+      "implementationSha256": "4c6fc13625d140805ca306f46d7132ae2117acecdd66c90d23a284644ab222c5",
+      "sourceClosure": {
+        "package-lock.json": "1b23df6eba93961840bb26188cc2de36219914c82e3a0164943e517223b03796",
+        "package.json": "46941c118a047bcf0780ed18422968f20d61ffc6959d447b520cfda017726abb",
+        "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
+        "tools/foundry/lib/upstream-conformance.mjs": "4c6fc13625d140805ca306f46d7132ae2117acecdd66c90d23a284644ab222c5"
+      }
+    }
+  },
+  "openai": {
+    "rules": {
+      "id": "openai-plugin-directory-preflight-2026-09-01",
+      "sha256": "a7d4ca80a1cc2b6b7883b1f1ce11b97b11ae3423fb0955505fd896eccf22e624",
+      "reviewBy": "2026-10-01",
+      "authority": "docs-derived-preflight",
+      "validator": {
+        "implementationPath": "tools/foundry/lib/openai-preflight.mjs",
+        "implementationSha256": "43a2cbc1513a3e54bb46d86bdd2edc908cfb0063647e8b2192674711373eebf3",
+        "sourceClosure": {
+          "foundry/contracts/openai-submission-profile.schema.json": "67aecad66f6faa969b766eb6aa00a1864aaccb4560f283a39166b35167c66038",
+          "package-lock.json": "1b23df6eba93961840bb26188cc2de36219914c82e3a0164943e517223b03796",
+          "package.json": "46941c118a047bcf0780ed18422968f20d61ffc6959d447b520cfda017726abb",
+          "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
+          "tools/foundry/lib/openai-preflight.mjs": "43a2cbc1513a3e54bb46d86bdd2edc908cfb0063647e8b2192674711373eebf3",
+          "tools/foundry/lib/package-payload.mjs": "0a195f6a1aeb04ec4f37386038335b6da2be53fa68b83207b3244fd7b070c309",
+          "tools/foundry/lib/schema.mjs": "8e401876b38e271734084cb5dbf2e6f2312344413e67495a5fdecb4462d1b94b"
+        }
+      },
+      "implementation": {
+        "semver": {
+          "version": "7.8.5",
+          "integrity": "sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA=="
+        },
+        "yaml": {
+          "version": "2.9.0",
+          "integrity": "sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA=="
+        },
+        "fast-xml-parser": {
+          "version": "5.11.1",
+          "integrity": "sha512-TBw6K/fxoQGGjCmZDw9w/ZwP3uDcnTM4YH/g+PFRWr8sbe5idXtxNN6vITh4+1ruCZaho6uBFurElsA7F0zzgw=="
+        }
+      }
+    },
+    "codexLoader": {
+      "package": "@openai/codex",
+      "version": "0.152.0",
+      "integrity": "sha512-Vx0tg/J5SbxYYGJazTtL/XySK9Dlqc5KW1MZM71NMwVci/4F1ap+FfSKPFTlrICEtOTuq3KNcWSdv9oMGdPuRw==",
+      "sourceClosure": {
+        "foundry/validators/native/package-lock.json": "40939a89c67977d995358442d218575ba00f193864e67a56ff53d250adfd7d98",
+        "foundry/validators/native/package.json": "e55b7118d8516c2fc6536dc603475eff9b34df1098e2ee02eb80e2b78b1039c9",
+        "tools/foundry/codex-loader-smoke.mjs": "e3ebf332b80e440ceb62c05410c8415ead21f08d369ede9bbfa93dfb7c561c22",
+        "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
+        "tools/foundry/lib/package-payload.mjs": "0a195f6a1aeb04ec4f37386038335b6da2be53fa68b83207b3244fd7b070c309"
+      },
+      "platformPackages": {
+        "darwin-arm64": { "package": "@openai/codex-darwin-arm64", "version": "0.152.0-darwin-arm64", "integrity": "sha512-DOnDA6EKOs+aRytYH4ffIuUutok9ovpvCNax8aaTZvBB2bKUPjUleLrP1pk+hGarddqU1ySuvXMOfp6ufXyOVQ==" },
+        "darwin-x64": { "package": "@openai/codex-darwin-x64", "version": "0.152.0-darwin-x64", "integrity": "sha512-p2XLFWU+Lflke89zNK67ad2/yaFndUIZkyk+gjl35NCDz+LncvAUOeiTFB2MtmC2kxvudcYo6/yezQqwM29Gnw==" },
+        "linux-arm64": { "package": "@openai/codex-linux-arm64", "version": "0.152.0-linux-arm64", "integrity": "sha512-OTmO6y5gCpcjzybwzgK/nSM8VI68Pw+T2ohBK+8cwVM+7PCRqSqtNo7qTLG0bgv9ff6QtwiZ9sl0KtY42H0Wqg==" },
+        "linux-x64": { "package": "@openai/codex-linux-x64", "version": "0.152.0-linux-x64", "integrity": "sha512-Isn/g5EZTaNbwZtaIuz67U1FNDEVVeMpS4xiR+c1dpOPL2xxrGNtdAothOW2YKsb96OsS+QfClziFb4qxesWDA==" },
+        "win32-arm64": { "package": "@openai/codex-win32-arm64", "version": "0.152.0-win32-arm64", "integrity": "sha512-1aMFMFvhSru5IT3hRstBjTmLPkhi+FKlu05bKKsKY+Pmx3a0sZBiK8WYFkROUynsM6ZVgNApfDv8zVUbX5crLA==" },
+        "win32-x64": { "package": "@openai/codex-win32-x64", "version": "0.152.0-win32-x64", "integrity": "sha512-vy67ua+QeOHKqT5ovLOkINncuaknldUkOfwcGdxQwPbSxgnCoiHnAO/rieWQt3ncM2pRzygtPVoLOFiovcRlaQ==" }
+      },
+      "authority": "official-loader-smoke"
+    },
+    "externalGates": [
+      "OpenAI Platform upload",
+      "current OpenAI skill safety/security scan result",
+      "developer-mode ChatGPT runtime",
+      "directory review and publication"
+    ]
+  },
+  "claude": {
+    "strictValidator": {
+      "state": "active",
+      "package": "@anthropic-ai/claude-code",
+      "version": "2.1.252",
+      "integrity": "sha512-ftoO0eLOZyEDrA3KDd7QZH5qdvToiTcoip3YdGGx8wzH4R9YUwHO+5VG01JDRn8u7MrRcXkf7FvbMYezEt0VyQ==",
+      "sourceClosure": {
+        "foundry/validators/native/package-lock.json": "40939a89c67977d995358442d218575ba00f193864e67a56ff53d250adfd7d98",
+        "foundry/validators/native/package.json": "e55b7118d8516c2fc6536dc603475eff9b34df1098e2ee02eb80e2b78b1039c9",
+        "tools/foundry/claude-validator-smoke.mjs": "4504c82703f0c551ad97f8d55dc863d8063ecb56380e70a2a75f22cad05fc2fd",
+        "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
+        "tools/foundry/lib/package-payload.mjs": "0a195f6a1aeb04ec4f37386038335b6da2be53fa68b83207b3244fd7b070c309"
+      },
+      "platformPackages": {
+        "darwin-arm64": { "package": "@anthropic-ai/claude-code-darwin-arm64", "version": "2.1.252", "integrity": "sha512-hCk12rC0srb7IlrGyFfEkm+GNBuBvkL2WrQvZzMOnCYRPJhAznxY0bHyHBjkyR9kexOmXyjxqv0IkQ5yVq+7gA==" },
+        "darwin-x64": { "package": "@anthropic-ai/claude-code-darwin-x64", "version": "2.1.252", "integrity": "sha512-QgAyThKvvGLYFSABu2BMNv6PqrMZNYGVKt0frCzSi6PZAE8BKAJCJ4fw99z7eiBRsY0RdUGSlcnjHNak3AxsbQ==" },
+        "linux-arm64": { "package": "@anthropic-ai/claude-code-linux-arm64", "version": "2.1.252", "integrity": "sha512-y8lYCVmU9zWxCJu++dR00pZKykogS7rXFiJ/b++zyNSjnkmxZNGhhU/y+QFKzKUSMD2Ti/8DI3A+MW/ZVLQkMQ==" },
+        "linux-arm64-musl": { "package": "@anthropic-ai/claude-code-linux-arm64-musl", "version": "2.1.252", "integrity": "sha512-5uOIgyeC82Za1UVFl0E7JA5l/6U5GVZn3ZocJv1B2Eukc4aHTQmqZvTf6m7dkeU7vIippqge/KhD88LHCqoinA==" },
+        "linux-x64": { "package": "@anthropic-ai/claude-code-linux-x64", "version": "2.1.252", "integrity": "sha512-TzdB7DjCsQRtE4XDneXTye+WA8UDJ6BJNj382ygjKSlpgCPH145uZKCS2J8uYRQcS7gW7ruC6PmnjKMCuMr2uw==" },
+        "linux-x64-musl": { "package": "@anthropic-ai/claude-code-linux-x64-musl", "version": "2.1.252", "integrity": "sha512-xI3LHsXWhj4sG2nOnSVYAc+5jsfVHypZknqMqGoGXjGyEU/FHcnNTErj6UB3rP5ExUm1yW7lsgu6CYJMMGIl8A==" },
+        "win32-arm64": { "package": "@anthropic-ai/claude-code-win32-arm64", "version": "2.1.252", "integrity": "sha512-saM5OUcH6FpioPPt7PGrvrP//Sg4nvC3fMvplPLF1glEATfJvvAcCQ0KfwuOVq65e98ncEPEpIYgZDX3RBkS6w==" },
+        "win32-x64": { "package": "@anthropic-ai/claude-code-win32-x64", "version": "2.1.252", "integrity": "sha512-WfauOCDXj1RV3+zhEbQ/h8r7xW9nANWeXtXssQhbKlVUQDd++fJK6krqkrUVrztggAffauatTue+itb+qx+LhA==" }
+      },
+      "command": "claude plugin validate <plugin-dir> --strict",
+      "authority": "official-native-validator"
+    }
+  }
+}

@@ -42,7 +42,8 @@
     },
     "compiledAt": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "Reproducible build timestamp derived from SOURCE_DATE_EPOCH; Unix epoch when unset. This is not runtime or publication evidence."
     },
     "compiler": {
       "type": "string",

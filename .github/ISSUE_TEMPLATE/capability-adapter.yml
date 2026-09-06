@@ -12,7 +12,7 @@ body:
     attributes:
       label: Host registry ID
       description: Existing or proposed ID in foundry/platforms/host-capabilities.v1.json.
-      placeholder: openai-chatgpt-codex
+      placeholder: openai-codex-runtime
     validations:
       required: true
 

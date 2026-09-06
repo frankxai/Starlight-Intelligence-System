@@ -1,6 +1,6 @@
 interface:
   display_name: "Skill Forge"
-  short_description: "Compile a reusable workflow into a proven portable skill."
-  default_prompt: "Use $skill-forge to turn this workflow into a portable skill with explicit tests."
+  short_description: "Design a reusable workflow as a portable, testable skill."
+  default_prompt: "Use $skill-forge to prepare this portable skill and mark compilation pending when no Foundry runtime is available."
 policy:
   allow_implicit_invocation: true

@@ -42,7 +42,7 @@
     "displayName": {
       "type": "string",
       "minLength": 3,
-      "maxLength": 40
+      "maxLength": 30
     },
     "skills": {
       "type": "array",
@@ -100,7 +100,7 @@
         "name": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 120
+          "maxLength": 80
         },
         "email": {
           "type": "string",
@@ -130,6 +130,40 @@
             "maxLength": 80
           }
         }
+      }
+    },
+    "openaiListing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "capabilities", "brandColor", "assetMode", "assetLicense"],
+      "properties": {
+        "category": {
+          "enum": [
+            "Productivity",
+            "Creativity",
+            "Developer Tools",
+            "Business & Operations",
+            "Data & Analytics",
+            "Communication",
+            "Education & Research",
+            "Security",
+            "Finance",
+            "Healthcare",
+            "Travel",
+            "Entertainment",
+            "Other"
+          ]
+        },
+        "capabilities": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 120 }
+        },
+        "brandColor": { "type": "string", "pattern": "^#[A-Fa-f0-9]{6}$" },
+        "brandColorDark": { "type": "string", "pattern": "^#[A-Fa-f0-9]{6}$" },
+        "assetMode": { "const": "foundry-generated-geometric" },
+        "assetLicense": { "const": "MIT" }
       }
     }
   }

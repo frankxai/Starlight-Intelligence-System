@@ -1,12 +1,35 @@
 import { slugToTitle, yamlQuote } from "./io.mjs";
 
-export function renderShortDescription(value) {
+export function renderShortDescription(value, maximum = 64) {
   const normalized = value.replace(/\s+/g, " ").trim();
   const padded = normalized.length < 25 ? `${normalized} with explicit proof.` : normalized;
-  if (padded.length <= 64) return padded;
-  const candidate = padded.slice(0, 61);
+  if (padded.length <= maximum) return padded;
+  const candidate = padded.slice(0, maximum - 3);
   const boundary = candidate.lastIndexOf(" ");
-  return `${candidate.slice(0, boundary >= 25 ? boundary : 61)}...`;
+  return `${candidate.slice(0, boundary >= Math.min(25, maximum - 3) ? boundary : maximum - 3)}...`;
+}
+
+function xmlAttribute(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+export function renderPluginLogoSvg(label, color) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="${xmlAttribute(label)}">
+  <rect width="512" height="512" rx="112" fill="${color}"/>
+  <rect x="128" y="128" width="256" height="256" rx="72" fill="#FFFFFF"/>
+  <circle cx="256" cy="256" r="64" fill="#212121"/>
+</svg>`;
+}
+
+export function renderPluginComposerIconSvg(label, color) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="${xmlAttribute(label)}">
+  <circle cx="64" cy="64" r="56" fill="${color}"/>
+  <path d="M64 28 100 64 64 100 28 64Z" fill="#FFFFFF"/>
+</svg>`;
 }
 
 export function renderSkill(pack) {
