@@ -11,7 +11,7 @@
     "maxTurns": 8,
     "maxCostUnits": 20,
     "emptyRoundsToStop": 2,
-    "silenceTriggers": ["external-send", "spend", "destroy"],
+    "allowedActions": ["external-send", "spend", "destroy"],
     "requireWriteback": true
   },
   "nodes": [

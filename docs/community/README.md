@@ -29,7 +29,7 @@ Member details, artifact bodies, reflection text, and identity mappings stay in 
 authenticated consuming product; only their structured references enter this kernel.
 
 The host supplies current authenticated consent on every admission and projection.
-Events cannot grant their own consent. Duplicate consent records fail closed.
+Events cannot grant their own consent. Public-class admission also requires current sharing consent. Duplicate consent records fail closed.
 Idempotency keys are scoped to community and adapter; IDs to community. Identical
 replays are ignored; changed content under the same key or ID fails. Causal links
 must stay within the same member, cell, loop, and correlation chain.

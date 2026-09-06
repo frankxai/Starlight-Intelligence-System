@@ -316,6 +316,11 @@ export class StarlightStore {
     return { evidence: result.value, revision: result.revision };
   }
 
+  /** Legacy caller snapshots are accepted but never trusted as render data. */
+  async getRenderSnapshot(input: { snapshot?: unknown; venture_ids?: string[]; include_closed?: boolean } = {}): Promise<PortfolioSnapshot> {
+    return this.getSnapshot({ venture_ids: input.venture_ids, include_closed: input.include_closed });
+  }
+
   async getSnapshot(options: { venture_ids?: string[]; include_closed?: boolean } = {}): Promise<PortfolioSnapshot> {
     const state = await this.read();
     const ventureIds = new Set(options.venture_ids ?? state.ventures.map((venture) => venture.id));
@@ -370,15 +375,16 @@ export class StarlightStore {
     types?: RecordType[];
     limit?: number;
   }): Promise<SearchResult[]> {
-    const state = await this.read();
     const tokens = input.query.toLowerCase().split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) throw new StarlightError("VALIDATION", "Search requires a non-empty query.");
+    const state = await this.read();
     const acceptedTypes = new Set<RecordType>(input.types ?? ["venture", "objective", "work_item", "decision", "evidence"]);
     const results: SearchResult[] = [];
     const push = (result: Omit<SearchResult, "score">, haystack: string) => {
       if (input.venture_id && result.venture_id !== input.venture_id && result.id !== input.venture_id) return;
       const normalized = haystack.toLowerCase();
       const score = tokens.reduce((total, token) => total + (normalized.includes(token) ? 1 : 0), 0);
-      if (score > 0 || tokens.length === 0) results.push({ ...result, score });
+      if (score > 0) results.push({ ...result, score });
     };
 
     if (acceptedTypes.has("venture")) {

@@ -6,7 +6,7 @@ export interface LoopBrakes {
   maxTurns: number;
   maxCostUnits: number;
   emptyRoundsToStop: number;
-  silenceTriggers: string[];
+  allowedActions: string[];
   requireWriteback: boolean;
 }
 
@@ -147,7 +147,8 @@ export function compileLoopGraph(graph: LoopGraph): CompiledLoopGraph {
 }
 
 function brakeHalt(graph: LoopGraph, input: LoopEvaluationInput): LoopEvaluation["haltReason"] | undefined {
-  if (input.proposedAction && !graph.brakes.silenceTriggers.includes(input.proposedAction)) {
+  if (!Array.isArray(graph.brakes.allowedActions)
+    || (input.proposedAction && !graph.brakes.allowedActions.includes(input.proposedAction))) {
     return "silence";
   }
   if (input.turnsUsed >= graph.brakes.maxTurns) return "max-turns";

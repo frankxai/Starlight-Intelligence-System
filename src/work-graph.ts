@@ -307,7 +307,11 @@ export function projectWorkGraph(events: readonly WorkGraphEvent[]): WorkGraphPr
   for (const event of [...events].sort((a, b) =>
     a.observedAt.localeCompare(b.observedAt) || a.eventId.localeCompare(b.eventId)
   )) {
-    const serialized = JSON.stringify(event);
+    const serialized = JSON.stringify(event, (_key, value) =>
+      value && typeof value === "object" && !Array.isArray(value)
+        ? Object.fromEntries(Object.keys(value).sort().map(key => [key, value[key]]))
+        : value,
+    );
     const prior = observedEvents.get(event.eventId);
     if (prior) {
       if (prior !== serialized) {

@@ -46,3 +46,7 @@ Access performs the interactive OAuth flow. The Worker then validates `Cf-Access
 - UI: breaking changes require a new `ui://` URI. Never reuse a prior URI for incompatible HTML, JavaScript, or CSS.
 
 No local Codex installation is required for deployment or runtime.
+
+## Source consolidation state (2026-09-06)
+
+Production deployment is manual through workflow_dispatch. Source CI does not prove Cloudflare Access configuration, a connected ChatGPT scan, tenancy isolation beyond the configured shared operator workspace, or publication. The community fixture kernel is a separate library and is not served by this Worker.

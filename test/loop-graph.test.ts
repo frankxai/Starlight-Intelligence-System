@@ -18,7 +18,7 @@ const diamond: LoopGraph = {
     maxTurns: 8,
     maxCostUnits: 20,
     emptyRoundsToStop: 2,
-    silenceTriggers: ["external-send", "spend", "destroy"],
+    allowedActions: ["external-send", "spend", "destroy"],
     requireWriteback: true,
   },
   nodes: [
@@ -65,7 +65,7 @@ describe("loop-graph topologies", () => {
       shape: "router",
       executorRole: "maker",
       supervisorRole: "checker",
-      brakes: { maxTurns: 3, maxCostUnits: 10, emptyRoundsToStop: 1, silenceTriggers: [], requireWriteback: false },
+      brakes: { maxTurns: 3, maxCostUnits: 10, emptyRoundsToStop: 1, allowedActions: [], requireWriteback: false },
       nodes: [
         { id: "inspect", role: "system", kind: "code", costUnits: 0, outputContract: "class" },
         { id: "docs", role: "maker", kind: "agent", costUnits: 1, outputContract: "doc-diff" },
@@ -89,7 +89,7 @@ describe("loop-graph topologies", () => {
       shape: "converge",
       executorRole: "maker",
       supervisorRole: "checker",
-      brakes: { maxTurns: 4, maxCostUnits: 100, emptyRoundsToStop: 2, silenceTriggers: [], requireWriteback: false },
+      brakes: { maxTurns: 4, maxCostUnits: 100, emptyRoundsToStop: 2, allowedActions: [], requireWriteback: false },
       nodes: [
         { id: "sweep", role: "maker", kind: "agent", costUnits: 1, outputContract: "hits" },
         { id: "dedupe", role: "system", kind: "code", costUnits: 0, outputContract: "new-hits" },

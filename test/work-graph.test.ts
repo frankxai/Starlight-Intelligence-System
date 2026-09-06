@@ -36,6 +36,15 @@ function event(
 }
 
 describe("operational work graph", () => {
+  it("deduplicates replay across top-level and nested JSON property order", () => {
+    const original = event("evt_same", "work.admitted", { first: 1, nested: { a: 1, b: 2 } });
+    const reordered = Object.fromEntries(Object.entries({ ...original,
+      data: { nested: { b: 2, a: 1 }, first: 1 },
+    }).reverse()) as unknown as WorkGraphEvent;
+    const result = projectWorkGraph([original, reordered]);
+    assert.equal(result.issues.filter(issue => issue.code === "event-id-conflict").length, 0);
+    assert.equal(result.workItems.length, 1);
+  });
   it("refuses completion until every admitted proof gate is satisfied", () => {
     const result = projectWorkGraph([
       event("evt_admit", "work.admitted", {

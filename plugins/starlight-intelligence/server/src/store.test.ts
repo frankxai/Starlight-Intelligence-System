@@ -8,6 +8,27 @@ import { JsonFileWorkspaceAdapter } from "./store-file.js";
 
 const pluginRoot = resolve(import.meta.dirname, "../..");
 
+test("blank search never enumerates the operating graph", async () => {
+  await withStore(async store => {
+    for (const query of ["", "   ", "\n\t"]) {
+      await assert.rejects(() => store.search({ query }),
+        (error: unknown) => error instanceof StarlightError && error.code === "VALIDATION");
+    }
+    assert((await store.search({ query: "Starlight" })).length > 0);
+  });
+});
+
+test("render ignores forged and stale caller snapshots and preserves explicit scope", async () => {
+  await withStore(async store => {
+    const forged = { snapshot_id: 'fake', revision: 9999, workspace: { name: 'Forged' }, summary: { ventures: 9999 } };
+    const rendered = await store.getRenderSnapshot({ snapshot: forged, venture_ids: ['venture_arcanea'] });
+    assert.notEqual(rendered.revision, 9999);
+    assert.equal(rendered.ventures.length, 1);
+    assert.equal(rendered.ventures[0].id, 'venture_arcanea');
+    assert.equal(rendered.summary.ventures, 1);
+  });
+});
+
 async function withStore(run: (store: StarlightStore) => Promise<void>): Promise<void> {
   const dataDir = await mkdtemp(join(tmpdir(), "starlight-store-test-"));
   const adapter = new JsonFileWorkspaceAdapter({

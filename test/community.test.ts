@@ -79,6 +79,12 @@ test('capability and health mismatch create explicit fallbacks without consuming
   assert.equal(ledger.ingest(event(), adapter, consent).status, 'accepted');
   assert.throws(() => ledger.ingest(event('intake', { source: 'spoof' }), adapter, consent), /source mismatch/);
 });
+test('processing-only consent cannot stage a public event for later disclosure', () => {
+  const ledger = new CommunityLedger();
+  assert.throws(() => ledger.ingest(event('intake', { privacy: 'public' }), adapter,
+    [{ ...consent[0], public: false }]), /sharing consent/);
+  assert.equal(ledger.project('builders', 'public', consent).length, 0);
+});
 test('causality prevents cross-member, cross-cell, cross-loop, future, and skipped-stage references', () => {
   const ledger = new CommunityLedger();
   ledger.ingest(event(), adapter, consent);

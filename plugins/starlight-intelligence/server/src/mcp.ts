@@ -6,7 +6,7 @@ import decisionSkill from "../../skills/starlight-decision-ledger/SKILL.md";
 import executionSkill from "../../skills/starlight-execution/SKILL.md";
 import knowledgeSkill from "../../skills/starlight-knowledge/SKILL.md";
 import { StarlightError, StarlightStore } from "./store.js";
-import type { PortfolioSnapshot, RecordType } from "./types.js";
+import type { RecordType } from "./types.js";
 
 const TEMPLATE_URI = "ui://starlight/command-center/v2.html";
 const RESOURCE_MIME_TYPE = "text/html;profile=mcp-app";
@@ -75,20 +75,6 @@ function actorLabel(actor: ActorContext): string {
   return actor.name ? `${actor.name} <${actor.email}>` : actor.email;
 }
 
-function assertSnapshot(value: unknown): PortfolioSnapshot {
-  if (
-    typeof value !== "object" ||
-    value === null ||
-    !("snapshot_id" in value) ||
-    !("revision" in value) ||
-    !("workspace" in value) ||
-    !("summary" in value)
-  ) {
-    throw new StarlightError("VALIDATION", "render_command_center requires a snapshot from get_portfolio_snapshot.");
-  }
-  return value as PortfolioSnapshot;
-}
-
 function registerDataTools(server: McpServer, store: StarlightStore, actor: ActorContext): void {
   server.registerTool(
     "get_portfolio_snapshot",
@@ -126,7 +112,7 @@ function registerDataTools(server: McpServer, store: StarlightStore, actor: Acto
       title: "Search workspace",
       description: "Find ventures, objectives, work items, decisions, or evidence in the Starlight operating graph.",
       inputSchema: z.object({
-        query: z.string().max(500),
+        query: z.string().trim().min(1).max(500),
         venture_id: z.string().optional(),
         types: z
           .array(z.enum(["venture", "objective", "work_item", "decision", "evidence"]))
@@ -374,7 +360,7 @@ function registerDataTools(server: McpServer, store: StarlightStore, actor: Acto
   );
 }
 
-function registerCommandCenter(server: McpServer): void {
+function registerCommandCenter(server: McpServer, store: StarlightStore): void {
   server.registerResource(
     "Starlight Command Center",
     TEMPLATE_URI,
@@ -400,8 +386,12 @@ function registerCommandCenter(server: McpServer): void {
     {
       title: "Render command center",
       description:
-        "Render final portfolio data. Always call get_portfolio_snapshot first, inspect it, then pass its complete snapshot here.",
-      inputSchema: z.object({ snapshot: z.unknown() }),
+        "Render a fresh authoritative portfolio snapshot. Optional venture filters narrow the view; caller-supplied snapshots are ignored.",
+      inputSchema: z.object({
+        snapshot: z.unknown().optional(),
+        venture_ids: z.array(z.string()).max(25).optional(),
+        include_closed: z.boolean().default(false),
+      }),
       outputSchema: z.object({ snapshot: z.unknown() }),
       annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
       _meta: {
@@ -411,9 +401,9 @@ function registerCommandCenter(server: McpServer): void {
         "openai/toolInvocation/invoked": "Command center ready.",
       },
     },
-    async ({ snapshot }) => {
+    async ({ venture_ids, include_closed }) => {
       try {
-        const validated = assertSnapshot(snapshot);
+        const validated = await store.getRenderSnapshot({ venture_ids, include_closed });
         return textResult(`Rendering Starlight portfolio revision ${validated.revision}.`, { snapshot: validated });
       } catch (error) {
         return errorResult(error);
@@ -483,14 +473,14 @@ export function createStarlightServer(options: {
     { name: "starlight-intelligence", version: "0.2.0" },
     {
       instructions:
-        "Read authoritative state before mutation. Fetch an existing record before changing it and preserve its version. Terminal work states and approved/rejected decisions require explicit user confirmation. Use get_portfolio_snapshot before render_command_center and pass the complete snapshot. Never infer completion, approval, or evidence.",
+        "Read authoritative state before mutation. Fetch an existing record before changing it and preserve its version. Terminal work states and approved/rejected decisions require explicit user confirmation. Use get_portfolio_snapshot to analyze state; render_command_center re-reads authoritative data using the same venture filters. Never infer completion, approval, or evidence.",
       capabilities: {
         extensions: { "io.modelcontextprotocol/skills": {} },
       } as never,
     },
   );
   registerDataTools(server, options.store, options.actor);
-  registerCommandCenter(server);
+  registerCommandCenter(server, options.store);
   registerSkills(server);
   return server;
 }

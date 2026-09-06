@@ -172,3 +172,16 @@ Verified reachable 2026-08-05:
 These sources reinforce the same boundary: durable workflow state, provenance, transport, telemetry, and semantic memory are related but distinct planes.
 
 Built on SIP — operational tier.
+
+## Projection privacy boundary
+
+This operational work-graph projector consumes trusted, private operator records. It
+is not the Community OS event or consent kernel and is not a public-export or
+retention-enforcement API. Its source references and open data fields may contain
+operator-private information. Keep its output private; use the host's redaction,
+retention and access policies before any export. Never feed raw community messages
+into this graph or infer member consent from graph visibility labels.
+
+The initial loop contract uses `brakes.allowedActions` as an allowlist. Earlier draft
+`silenceTriggers` spelling was misleading and is not supported; migrate it to
+`allowedActions` without changing its values. An absent list fails closed.

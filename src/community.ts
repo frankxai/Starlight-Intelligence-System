@@ -93,6 +93,7 @@ export class CommunityLedger {
     assert(event.source === adapter.id, 'Adapter source mismatch');
     const policy = consentFor(event, policies);
     assert(policy?.processing === true, 'Current processing consent required');
+    assert(event.privacy !== 'public' || policy.public === true, 'Public-class events require current sharing consent');
     const key = JSON.stringify([event.communityId, event.source, event.idempotencyKey]);
     const id = JSON.stringify([event.communityId, event.id]);
     const hash = digest(event);
