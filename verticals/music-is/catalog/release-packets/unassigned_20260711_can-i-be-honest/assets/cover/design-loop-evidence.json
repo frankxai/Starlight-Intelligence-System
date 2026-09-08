@@ -1,0 +1,65 @@
+{
+  "version": "2026-06-23",
+  "task": "Create a provisional premium cover concept for Can I Be Honest without prematurely assigning an artist identity.",
+  "surface": "3000x3000 single artwork and future social/video crop source",
+  "audience": "Listeners encountering an intimate slow song; internal A&R before artist lock.",
+  "first_read": "Two people are separated by a narrow opening and are deciding whether to reach across it.",
+  "standards": [
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "starlight-design-intelligence/evals/generated-asset-quality-gate.md"
+  ],
+  "references": [
+    {
+      "label": "Song evidence",
+      "source": "audio/audio-analysis.json and audio/lyrics-review.md",
+      "reason": "Nocturnal palette, confession metaphor, and emotional restraint"
+    },
+    {
+      "label": "Motion direction",
+      "source": "assets/motion/design-loop-evidence.json",
+      "reason": "Preserve the ownable opening-doorway behavior across the release system"
+    }
+  ],
+  "direction": {
+    "keep": ["70 percent negative space", "believable warm seam light", "two hands not touching", "matte tactile surfaces", "low saturation"],
+    "avoid": ["faces", "generic couple imagery", "roses or hearts", "neon", "fantasy portal", "piano imagery", "baked-in text"],
+    "signature": "The confession exists as the illuminated distance between two hands.",
+    "system": ["near-black and smoked umber", "muted antique gold", "square editorial crop", "analog grain", "typography added later in exact layout if identity requires it"]
+  },
+  "asset_quality": {
+    "tier": "B",
+    "source_method": "generated-media",
+    "provenance": "generated",
+    "why_premium": "Song-specific photographic metaphor, controlled anatomy, strong negative space, and crop-safe physical lighting.",
+    "shortcut_risk": "low",
+    "context_tested": true
+  },
+  "artifacts": [
+    {
+      "path_or_url": "assets/cover/can-i-be-honest-cover-concept-v1.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Original generated square inspected; hands, light, material, anatomy, and absence of text/artifacts passed."
+    },
+    {
+      "path_or_url": "assets/cover/can-i-be-honest-cover-3000.jpg",
+      "kind": "image",
+      "inspected": true,
+      "notes": "3000x3000 RGB-ready JPG inspected after Lanczos upscale; 505KB."
+    }
+  ],
+  "checks": [
+    {"name": "asset-tier", "status": "pass", "evidence": "Tier B custom generated photographic art is appropriate for a provisional cover."},
+    {"name": "export-inspection", "status": "pass", "evidence": "Original generation and 3000-square JPG inspected."},
+    {"name": "visual-qa", "status": "pass", "evidence": "First read, anatomy, crop, contrast, texture, unwanted text, and DistroKid dimensions checked."}
+  ],
+  "score": {
+    "total": 28,
+    "max": 30,
+    "notes": "5 hierarchy + 4 provisional brand fit + 5 craft + 5 accessibility/crop + 5 provenance/artifacts + 4 release usefulness pending artist lock."
+  },
+  "decision": "ship",
+  "known_risks": ["The cover is a provisional song identity, not final artist identity proof.", "Typography and artist name must wait until persona/label lock."]
+}

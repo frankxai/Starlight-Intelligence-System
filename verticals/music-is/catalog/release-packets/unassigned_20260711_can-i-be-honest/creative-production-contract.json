@@ -1,0 +1,144 @@
+{
+  "schema_version": "music-is.creative-production.v0.2",
+  "release_id": "unassigned_20260711_can-i-be-honest",
+  "stage": "preproduction",
+  "song_truth": {
+    "source_audio": "audio/source-audio.pointer.json",
+    "lyrics_status": "machine-draft",
+    "lyrics_id": "audio/transcript.json",
+    "explicit_status": "needs-human-review",
+    "hook_windows": [
+      {"start_seconds": 60.1, "end_seconds": 90.1, "purpose": "question-to-answer narrative window", "confidence": "provisional"}
+    ]
+  },
+  "canon": {
+    "id": "candidate-confessional-alt-rnb-world",
+    "version": "0.1.0",
+    "status": "draft",
+    "invariants": [
+      "artist performance is the emotional center",
+      "tobacco amber against bruised cyan shadows",
+      "time freezes or reverses when truth is withheld",
+      "sweating glass, perfume, warm stair and doorway recur with stable meaning",
+      "physical anomalies remain causally readable"
+    ],
+    "controlled_variables": ["wardrobe within charcoal/silver family", "afterparty room", "shot size", "platform duration", "counterpart framing"],
+    "forbidden_drift": ["anonymous hands-only campaign", "generic nightclub montage", "model-vacant expression", "fashion-film slow motion without story", "literal illustration of every lyric"]
+  },
+  "artist": {
+    "identity_status": "unassigned",
+    "public_identity": {
+      "name": "TBD",
+      "promise": "The instant private restraint becomes an irreversible confession.",
+      "audience": "Listeners drawn to intimate nocturnal alt-R&B and emotionally direct relationship storytelling.",
+      "identity_type": "TBD real performer or owned virtual artist"
+    },
+    "singer_identity": {
+      "voice_source": "unverified source recording; consent and provenance required",
+      "vocal_character": ["intimate", "held breath", "restrained until the answer"],
+      "gaze_grammar": ["avoids camera during concealment", "direct eye contact on the question", "looks to counterpart on the answer"],
+      "gesture_grammar": ["thumb on glass rim", "collar touch", "one arrested reach"],
+      "posture_rhythm": ["contained shoulders", "one decisive forward step at commitment"],
+      "camera_relationship": "Camera is the unsaid truth until the artist redirects attention to the counterpart.",
+      "performance_dos": ["micro-expression", "visible breath", "specific hesitation", "direct performance on title and answer"],
+      "performance_donts": ["vacant fashion stare", "constant lip sync", "generic sensual posing", "overacted melodrama"]
+    },
+    "reference_assets": {"face": [], "body": [], "wardrobe": [], "voice": [], "motion": []}
+  },
+  "story": {
+    "emotional_thesis": "A room can restart only after someone risks saying the truth.",
+    "premise": "At a crowded nocturnal afterparty, time freezes as the person the protagonist loves begins to leave; only the protagonist can move until the confession is made.",
+    "causal_arc": {
+      "trigger": "The counterpart crosses the glowing exit threshold.",
+      "pursuit": "The protagonist moves through a frozen room trying to reach them.",
+      "escalation": "Objects and memories reverse while fragments of the room restart around each attempted confession.",
+      "irreversible_image": "The protagonist stops hiding behind the room and looks directly into camera for the question.",
+      "answer": "On the request to stay, the counterpart turns and the whole room inhales into motion.",
+      "loop": "A glass begins falling again; the artist notices; the cut returns to the opening suspension."
+    },
+    "motifs": [
+      {"id": "stopped-time", "meaning": "withheld truth", "recurrence": "world freezes before each confession"},
+      {"id": "reverse-breath", "meaning": "memory and restraint", "recurrence": "vapor, hair and fabric reverse toward the body"},
+      {"id": "warm-threshold", "meaning": "decision", "recurrence": "stairs and doorway light only under committed movement"}
+    ],
+    "signature_objects": ["sweating glass", "silver ring", "perfume bottle", "charcoal shirt collar", "warm stair", "exit doorway"],
+    "world_rules": ["everyone but the protagonist freezes after the exit trigger", "one truthful action restarts one layer of the room", "objects reverse toward emotionally significant owners"],
+    "exclusions": ["unmotivated surrealism", "new locations without story cause", "text inside generated footage", "identity-changing wardrobe"]
+  },
+  "format_graph": [
+    {"id": "hero-vertical", "family": "narrative_microfilm", "platform": "TikTok, Instagram, YouTube", "surface": "9:16 feed", "objective": "recognize and hold", "hook": "reverse glass plus direct eye contact", "duration_seconds": 26, "status": "planned"},
+    {"id": "performance-question", "family": "performance_identity", "platform": "TikTok, Instagram, YouTube", "surface": "9:16 feed", "objective": "artist recognition", "hook": "visible inhale into the title line", "duration_seconds": 12, "status": "planned"},
+    {"id": "confession-response", "family": "confession_direct", "platform": "TikTok, Instagram", "surface": "9:16 participation", "objective": "participation", "hook": "Can I be honest? I never told you…", "duration_seconds": 15, "status": "planned"},
+    {"id": "four-slot-rewind", "family": "creator_template", "platform": "CapCut, TikTok, Reels", "surface": "9:16 template", "objective": "creator adoption", "hook": "four replaceable relationship fragments reverse into the confession", "duration_seconds": 12, "status": "planned"},
+    {"id": "behind-the-song", "family": "behind_song", "platform": "TikTok, Reels, Shorts", "surface": "9:16 process", "objective": "authorship trust", "hook": "bad transcript to corrected lyric to scene decision", "duration_seconds": 20, "status": "blocked-on-verified-lyrics"},
+    {"id": "canvas-reverse-glass", "family": "canvas_loop", "platform": "Spotify", "surface": "Canvas", "objective": "track recognition", "hook": "glass falls and returns in one causal loop", "duration_seconds": 6, "status": "planned"},
+    {"id": "proof-session", "family": "proof_live", "platform": "YouTube, Spotify Video, owned site", "surface": "16:9 performance", "objective": "performance truth", "hook": "one uninterrupted title-to-answer performance", "duration_seconds": 90, "status": "blocked-on-artist"},
+    {"id": "full-music-video", "family": "full_music_video", "platform": "YouTube, eligible Spotify Video", "surface": "16:9 full video", "objective": "flagship story and performance", "hook": "full Unsent Room narrative", "duration_seconds": 232, "status": "blocked-on-artist-rights-budget"}
+  ],
+  "hook_experiments": [
+    {"id": "H1", "controlled_variable": "opening physical event", "first_0_7s_event": "falling glass snaps upward", "hypothesis": "impossible physics earns the stop", "status": "planned"},
+    {"id": "H2", "controlled_variable": "relationship jeopardy", "first_0_7s_event": "counterpart freezes halfway through exit", "hypothesis": "departure stakes read before explanation", "status": "planned"},
+    {"id": "H3", "controlled_variable": "human performance", "first_0_7s_event": "extreme close-up visible inhale", "hypothesis": "vulnerability outperforms spectacle", "status": "planned"},
+    {"id": "H4", "controlled_variable": "tactile macro", "first_0_7s_event": "perfume vapor folds backward", "hypothesis": "sensory anomaly can stop while preserving intimacy", "status": "planned"},
+    {"id": "H5", "controlled_variable": "signature world rule", "first_0_7s_event": "warm stair ignites under one step", "hypothesis": "repeatable visual behavior increases recognition", "status": "planned"},
+    {"id": "H6", "controlled_variable": "narrative order", "first_0_7s_event": "cold open on answer then rewind", "hypothesis": "answer-first structure increases rewatch", "status": "planned"}
+  ],
+  "prompt_cards": [
+    {
+      "id": "veo-3.1-character-narrative-shot",
+      "provider_model_version": "Google Veo 3.1 Quality",
+      "purpose": "reference-guided hero character and narrative shots",
+      "evidence_state": "research-backed",
+      "official_sources": ["https://ai.google.dev/gemini-api/docs/video", "https://deepmind.google/models/veo/prompt-guide/"],
+      "eval_rubric": "production-os/prompts/PROMPT-LIFECYCLE.md"
+    },
+    {
+      "id": "runway-gen-4.5-performance-i2v",
+      "provider_model_version": "Runway Gen-4.5 Image to Video",
+      "purpose": "single performance and high-motion shots from locked references",
+      "evidence_state": "research-backed",
+      "official_sources": ["https://help.runwayml.com/hc/en-us/articles/48324313115155-Image-to-Video-Prompting-Guide"],
+      "eval_rubric": "production-os/prompts/PROMPT-LIFECYCLE.md"
+    },
+    {
+      "id": "firefly-composition-motion-reference",
+      "provider_model_version": "Adobe Firefly Video current 2026-07",
+      "purpose": "controlled composition or camera-motion transfer",
+      "evidence_state": "research-backed",
+      "official_sources": ["https://helpx.adobe.com/firefly/web/work-with-audio-and-video/work-with-video/use-video-as-composition-reference.html"],
+      "eval_rubric": "production-os/prompts/PROMPT-LIFECYCLE.md"
+    },
+    {
+      "id": "runway-aleph-2-targeted-finish",
+      "provider_model_version": "Runway Aleph 2.0",
+      "purpose": "targeted continuity, wardrobe, relight or environment edit after strong footage exists",
+      "evidence_state": "research-backed",
+      "official_sources": ["https://help.runwayml.com/hc/en-us/articles/52150503729171-Aleph-2-0-Prompting-Guide"],
+      "eval_rubric": "production-os/prompts/PROMPT-LIFECYCLE.md"
+    }
+  ],
+  "rights": {
+    "status": "unverified",
+    "music": {"ownership": "needs Suno/commercial-rights evidence", "samples": "unknown", "splits_total": 0},
+    "likeness_voice_performance": {"subjects": [], "consent_documents": []},
+    "ai_disclosure": {"required": true, "prepared": true, "path": "rights/ai-disclosure.md"}
+  },
+  "market_gate": {
+    "score": 37,
+    "max": 100,
+    "threshold_for_stage": 0,
+    "zero_blockers": ["artist-recognition", "native-motion", "rights"],
+    "assessment": "Current V2 is palette/composition research only; it cannot advance the contract."
+  },
+  "decision": {
+    "verdict": "HOLD",
+    "blockers": [
+      "human-verified lyrics and explicit status",
+      "artist/persona and singer identity lock",
+      "face/body/wardrobe/voice/motion reference set",
+      "likeness/voice/performance consent and music rights",
+      "authenticated credit-approved native-video production route"
+    ],
+    "human_approval_required": true
+  }
+}

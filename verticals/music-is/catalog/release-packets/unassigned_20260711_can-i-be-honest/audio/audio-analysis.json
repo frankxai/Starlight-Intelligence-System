@@ -1,0 +1,58 @@
+{
+  "schema_version": "music-is.audio-intake.v0.1",
+  "song_id": "unassigned_20260711_can-i-be-honest",
+  "created_at": "2026-07-11T18:08:57.589670+00:00",
+  "source_sha256": "98dd725e59191e590aeff33a21136cef97a5a5948cab020abe883281d257e630",
+  "duration_seconds": 232.239979,
+  "codec": "mp3",
+  "sample_rate_hz": 48000,
+  "channels": 2,
+  "bit_rate_bps": 182206,
+  "loudness": {
+    "status": "observed",
+    "input_i": -13.7,
+    "input_tp": -1.26,
+    "input_lra": 6.2,
+    "input_thresh": -23.8,
+    "output_i": -12.48,
+    "output_tp": -1.0,
+    "output_lra": 4.0,
+    "output_thresh": -22.53,
+    "normalization_type": "dynamic",
+    "target_offset": -1.52
+  },
+  "musical_features": {
+    "status": "estimated",
+    "bpm": 63.02,
+    "bpm_confidence_0_1": 0.755,
+    "key": "A minor",
+    "key_profile_correlation": 0.818,
+    "key_margin": 0.259,
+    "rms_mean": 0.209295,
+    "rms_p95": 0.431619,
+    "method": "numpy spectral-flux autocorrelation + Krumhansl-Schmuckler profile",
+    "warning": "Tempo and key are estimates; verify in a DAW before release metadata is locked."
+  },
+  "transcription": {
+    "engine": "faster-whisper",
+    "model": "base",
+    "compute_type": "int8",
+    "beam_size": 5,
+    "vad_filter": false,
+    "condition_on_previous_text": true,
+    "language": "en",
+    "language_probability": 1,
+    "duration_seconds": 232.24,
+    "status": "complete"
+  },
+  "evidence": [
+    "audio/source-audio.pointer.json",
+    "audio/ffprobe.json",
+    "audio/loudness.json",
+    "audio/waveform.png",
+    "audio/transcript.json",
+    "audio/transcription.txt",
+    "intake/lyrics.txt"
+  ],
+  "external_uploads_performed": false
+}

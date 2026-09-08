@@ -22,13 +22,18 @@ description: Grounded Suno prompt synthesis from local knowledge corpus + person
 
 ## Grounding sources (read in order)
 
-1. `verticals/music-is/knowledge/suno/prompt-pattern-library.md` — known-working prompt patterns
-2. `verticals/music-is/knowledge/suno/structure-tags-reference.md` — Suno structure-tag syntax
-3. `verticals/music-is/knowledge/suno/genre-style-cards.md` — per-genre prompt anchors
-4. `verticals/music-is/knowledge/suno/vocal-control-recipes.md` — vocal posture control
-5. `verticals/music-is/knowledge/suno/known-bugs-workarounds.md` — current Suno quirks
-6. `verticals/music-is/labels/<label>/CANON.md` — label sound DNA
-7. `verticals/music-is/labels/<label>/personas/<persona>/CANON.md` — persona sound DNA + Suno prompt anchors
+1. `verticals/music-is/knowledge/suno/prompting-ground-truth-2026.md` — dated official behavior and Music IS Simple/Custom contracts
+2. `verticals/music-is/knowledge/suno/prompt-pattern-library.md` — known-working prompt patterns
+3. `verticals/music-is/knowledge/suno/structure-tags-reference.md` — Suno structure-tag syntax
+4. `verticals/music-is/knowledge/suno/genre-style-cards.md` — per-genre prompt anchors
+5. `verticals/music-is/knowledge/suno/vocal-control-recipes.md` — vocal posture control
+6. `verticals/music-is/knowledge/suno/known-bugs-workarounds.md` — current Suno quirks
+7. `verticals/music-is/labels/<label>/CANON.md` — label sound DNA
+8. `verticals/music-is/labels/<label>/personas/<persona>/CANON.md` — persona sound DNA + Suno prompt anchors
+
+Before returning a prompt, translate any named-artist reference triangle into
+musical traits. Never put a living artist name, imitation request, or song title
+in the final Suno prompt.
 
 ## Prompt synthesis pattern
 
@@ -88,7 +93,10 @@ neo-classical solo piano, contemplative, dynamic-range-protected, 84 BPM, evenin
 
 ## Output
 
-Returns: 3-5 candidate prompts, each with:
+Returns either one Simple-mode prompt or 2-3 controlled Custom-mode candidates.
+For Simple mode, keep the Music IS house budget at 300-400 characters and state
+that this is an internal budget rather than a verified Suno limit. For Custom
+mode, return separate Title, Style, Lyrics, and Exclude fields. Each candidate includes:
 - The composed prompt text
 - Layer-1 / Layer-2 / Layer-3 breakdown
 - Predicted variability (which dimensions Suno is most likely to vary across re-generations)

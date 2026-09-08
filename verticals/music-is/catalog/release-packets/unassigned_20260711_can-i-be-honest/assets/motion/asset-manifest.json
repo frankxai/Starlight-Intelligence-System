@@ -1,0 +1,42 @@
+{
+  "schema_version": "music-is.motion-assets.v0.1",
+  "song_id": "unassigned_20260711_can-i-be-honest",
+  "motion_thesis": "A held breath moves from separation to touch: stillness, tiny human signals, then one decisive connection.",
+  "source_method": "Six coherent Tier B generated cinematic plates edited and finished in Remotion 4",
+  "exports": [
+    {
+      "role": "vertical_teaser_rejected_v1",
+      "path": "../../../../studio/remotion/out/can-i-be-honest-teaser-9x16.mp4",
+      "dimensions": "1080x1920",
+      "duration_seconds": 30.059,
+      "codec": "h264+aac",
+      "audio_window_seconds": "60.10-90.10",
+      "status": "rejected_creative_quality_2026-07-11"
+    },
+    {
+      "role": "spotify_canvas",
+      "path": "../../../../studio/remotion/out/can-i-be-honest-canvas-9x16-final.mp4",
+      "dimensions": "720x1280",
+      "duration_seconds": 7.967,
+      "codec": "h264",
+      "status": "rejected_pending_visual_rebuild_2026-07-11"
+    },
+    {
+      "role": "vertical_teaser_master_v2",
+      "path": "../../../../studio/remotion/out/can-i-be-honest-cinematic-v2-9x16.mp4",
+      "dimensions": "1080x1920",
+      "duration_seconds": 30.059,
+      "codec": "h264+aac",
+      "audio_window_seconds": "60.10-90.10",
+      "status": "visual_development_prototype_not_market_release"
+    }
+  ],
+  "market_reset": {
+    "status": "restart_required",
+    "market_readiness_score": 37,
+    "market_readiness_max": 100,
+    "reason": "V2 has coherent art direction and finishing but lacks artist identity, performance, native temporal motion, a cultural premise, and a tested multi-hook content system.",
+    "brief": "rebuild/market-reset-2026-07.md"
+  },
+  "external_uploads_performed": false
+}

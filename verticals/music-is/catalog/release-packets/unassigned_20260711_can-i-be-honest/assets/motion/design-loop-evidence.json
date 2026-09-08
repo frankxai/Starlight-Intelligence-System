@@ -1,0 +1,145 @@
+{
+  "version": "2026-07-11-market-reset",
+  "task": "Replace the rejected Can I Be Honest teaser with a cinematic, song-specific 30-second vertical master.",
+  "surface": "1080x1920 vertical social music video",
+  "audience": "Listeners encountering an intimate slow song before the artist identity is locked.",
+  "first_read": "Two people cross the emotional distance between separation and touch while the confession resolves.",
+  "standards": [
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "MOTION_TASTE_RUBRIC.md",
+    "Motion Design Studio critic gate",
+    "Remotion best practices"
+  ],
+  "references": [
+    {
+      "label": "Song evidence",
+      "source": "audio/audio-analysis.json and audio/transcript.json",
+      "reason": "Hook window, pacing, emotional arc, and lyric selection"
+    },
+    {
+      "label": "Creative treatment",
+      "source": "assets/motion/rebuild/creative-treatment.md",
+      "reason": "Motion thesis, timed six-shot structure, and explicit rejection of v1"
+    },
+    {
+      "label": "Storyboard",
+      "source": "assets/motion/rebuild/storyboard.json",
+      "reason": "Frame-level production contract"
+    }
+  ],
+  "direction": {
+    "keep": [
+      "human-scale tactile imagery",
+      "amber light against near-black",
+      "negative space",
+      "escalation from separation to touch",
+      "two short typographic interventions"
+    ],
+    "avoid": [
+      "animated-poster treatment",
+      "generic waveform graphics",
+      "fake UI",
+      "faces before artist lock",
+      "constant lyric captions",
+      "decorative motion without emotional causality"
+    ],
+    "signature": "A single amber seam becomes the distance between two people, then the point where they finally touch.",
+    "system": [
+      "six-shot narrative progression",
+      "obsidian, umber, and warm cream palette",
+      "slow optical pushes with one restrained handheld beat",
+      "hard cuts without black flashes",
+      "opening question and closing answer only",
+      "fine film texture"
+    ]
+  },
+  "asset_quality": {
+    "tier": "B",
+    "source_method": "generated-media",
+    "provenance": "generated",
+    "why_premium": "Six custom song-specific cinematic plates share one lighting grammar and form a legible emotional sequence; Remotion supplies precise picture edit, typography, audio sync, and delivery finishing.",
+    "shortcut_risk": "low",
+    "context_tested": false
+  },
+  "artifacts": [
+    {
+      "path_or_url": "verticals/music-is/studio/remotion/out/can-i-be-honest-cinematic-v2-9x16.mp4",
+      "kind": "encoded vertical music video",
+      "inspected": true,
+      "notes": "Encoded master sampled across all six shots and every cut boundary; 1080x1920 H.264, stereo AAC, 30.059 seconds, 24.4 MB. Full decode completed without errors."
+    },
+    {
+      "path_or_url": "verticals/music-is/studio/remotion/out/v2-contact-sheet-final.png",
+      "kind": "encoded-master contact sheet",
+      "inspected": true,
+      "notes": "Inspected for crop, hierarchy, palette continuity, image quality, and text safe area."
+    },
+    {
+      "path_or_url": "verticals/music-is/studio/remotion/out/v2-transition-sheet.png",
+      "kind": "cut-boundary QA sheet",
+      "inspected": true,
+      "notes": "Twenty encoded frames around all five cuts inspected; no unintended black frames or cross-shot contamination."
+    },
+    {
+      "path_or_url": "verticals/music-is/catalog/release-packets/unassigned_20260711_can-i-be-honest/assets/motion/rebuild/plates/storyboard-contact-sheet.png",
+      "kind": "source-plate contact sheet",
+      "inspected": true,
+      "notes": "Six generated plates inspected together for anatomy, lighting, palette, crop, and narrative coherence before animation."
+    }
+  ],
+  "checks": [
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier B custom generated cinematic plates are appropriate for a pre-identity music short."
+    },
+    {
+      "name": "export-inspection",
+      "status": "pass",
+      "evidence": "Encoded master, representative frames, and all cut boundaries were inspected after render."
+    },
+    {
+      "name": "visual-qa",
+      "status": "pass",
+      "evidence": "Narrative progression, safe areas, typography, crop, palette continuity, and final touch payoff pass."
+    },
+    {
+      "name": "technical-delivery",
+      "status": "pass",
+      "evidence": "30.059s, 1080x1920, 30fps H.264, 48kHz stereo AAC; full ffmpeg decode completed without errors."
+    },
+    {
+      "name": "motion-critic",
+      "status": "pass",
+      "evidence": "V1 was restarted at 15/30; V2 has one thesis, six motivated shots, rising intimacy, restrained type, clean cuts, and a decisive ending."
+    }
+  ],
+  "score": {
+    "total": 21,
+    "max": 30,
+    "notes": "4 hierarchy + 2 brand/ownability + 4 craft + 4 accessibility/safe-area + 5 provenance + 2 release usefulness. The prior score graded polish while ignoring absent artist identity, native performance, market comparison, and platform testing."
+  },
+  "decision": "restart",
+  "iteration_history": [
+    {
+      "version": "v1",
+      "decision": "restart",
+      "score": "15/30 visual, 27/55 motion",
+      "reason": "One procedural doorway and four title cards produced an animated poster, not a music video."
+    },
+    {
+      "version": "v2",
+      "decision": "restart after market comparison",
+      "score": "21/30 visual; 37/100 market readiness",
+      "reason": "Clean visual development, but not a competitive release asset: no artist, performance, native temporal motion, participation premise, or tested hook system."
+    }
+  ],
+  "known_risks": [
+    "Artist visual DNA remains unlocked, so imagery is song-specific rather than persona-specific.",
+    "Generated still plates use simulated camera motion; a future campaign master can exceed this with native video generation or directed live-action performance.",
+    "The Spotify Canvas candidate remains rejected until rebuilt from the new visual system.",
+    "No final video should be produced until lyrics, artist/persona, and an authenticated native-video route are locked."
+  ]
+}

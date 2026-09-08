@@ -1,0 +1,13 @@
+{
+  "status": "observed",
+  "input_i": -13.7,
+  "input_tp": -1.26,
+  "input_lra": 6.2,
+  "input_thresh": -23.8,
+  "output_i": -12.48,
+  "output_tp": -1.0,
+  "output_lra": 4.0,
+  "output_thresh": -22.53,
+  "normalization_type": "dynamic",
+  "target_offset": -1.52
+}

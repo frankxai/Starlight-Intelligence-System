@@ -1,5 +1,13 @@
 # Music IS — Arcanea Records operating layer
 
+## 2026 media-production control plane
+
+All new cover, character, music-video, Canvas, social and campaign production
+must start at [`production-os/README.md`](production-os/README.md). The OS adds
+versioned artist/singer/world canon, causal story, platform format graphs,
+model-specific prompt evidence, continuity receipts, hook experiments and a
+machine-validated market gate before the existing asset pipeline runs.
+
 > Frank's operated music vertical. Four sub-labels, persona-multiplication, AI-native asset pipeline, OpenClaws amplification mesh, attribution-cascade royalty graph. The intelligence layer Arcanea Records runs above Suno + DistroKid + Spotify + the social mesh.
 
 **Tier:** Operated vertical (private operating layer; not the public reference at `verticals/sound-intelligence/`).

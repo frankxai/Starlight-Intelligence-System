@@ -1,0 +1,10 @@
+{
+  "schema_version": "music-is.intake.v0.1",
+  "song_id": "unassigned_20260711_can-i-be-honest",
+  "source_type": "mp3",
+  "source_file_name": "Can I Be Honest.mp3",
+  "source_sha256": "98dd725e59191e590aeff33a21136cef97a5a5948cab020abe883281d257e630",
+  "created_at": "2026-07-11T18:08:57.589670+00:00",
+  "lyrics_source": "automatic_transcription",
+  "human_lyrics_verification": "pending"
+}

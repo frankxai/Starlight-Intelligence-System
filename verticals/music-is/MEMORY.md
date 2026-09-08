@@ -131,6 +131,32 @@ When file contract or skills change:
 - /luminor-board pass: not run; no commit/tag requested in this session.
 - Migration impact: Future `/music-release` and catalog tooling should stop claiming external DistroKid/Canvas completion locally. External rails are `prepared_local_only` until Frank manually uploads and IDs are backfilled.
 
+## 2026-07-11 — Methodology evolution: Music Media Production OS v0.2
+
+- Change: Added `production-os/` as the canonical preproduction/media control
+  plane; added artist/singer/world canon, causal story, current format graph,
+  model-specific video cards, prompt evidence lifecycle, JSON Schema,
+  dependency-free validator, and a real `Can I Be Honest` proof contract.
+- Reason: Two finished-looking videos proved that asset-first generation can
+  pass technical and visual checks while remaining culturally and commercially
+  noncompetitive. The durable unit must be canon + story + format graph +
+  receipts, not a prompt or render.
+- Research: Official Runway, Google/Veo, Adobe/Firefly, TikTok, Meta, YouTube,
+  Spotify, ScreenSkills, SAG-AFTRA and US Copyright Office sources checked on
+  2026-07-11. Spotify Clips was removed from future routing because new uploads
+  ended 2026-06-17.
+- Proven prompt rule: `draft → research-backed → render-tested →
+  campaign-proven`; no model-version inheritance and no “proven” claim without
+  stored outputs/metrics.
+- Validation: JSON Schema validates the blank template and real proof contract;
+  the hard-gate validator passes both and reports the proof as preproduction,
+  37/100, eight formats, six hooks and four research-backed prompt cards.
+- /luminor-board pass: not run; no commit/tag requested in this session.
+- Migration impact: Existing releases remain historical. New visual/media work
+  must create and validate `creative-production-contract.json` before flagship
+  asset generation. Old Spotify Clips plans must migrate to Canvas, eligible
+  Countdown Videos or eligible full-length Spotify Video.
+
 ---
 
 **Built on SIP** — `verticals/music-is/MEMORY.md` · Append-only · v0.1 · 2026-04-29 · First entry: Phase 0 spawn

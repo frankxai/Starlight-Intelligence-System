@@ -1,9 +1,16 @@
 ---
 name: music-is/asset-render
-description: Orchestrate cover (nano banana 2), motion (Seedance 2), cinematic (Higgsfield), shorts/Canvas (Remotion) for a draft song. Triggers on asset render requests, /music-canvas, new song-intake events. Senior tier (Sonnet 4.6) → external engines.
+description: Orchestrate research-backed, canon-locked music media production from a validated creative-production contract. Triggers on asset render requests, /music-canvas, new song-intake events. Senior tier routes current image/video models and Remotion finishing without claiming unverified access.
 ---
 
 # Asset Render Orchestration
+
+> **v0.2 production override (2026-07-11):** Read
+> `verticals/music-is/production-os/README.md` and require a passing
+> `creative-production-contract.json` before any generation. The older engine
+> table below is historical routing context, not guaranteed availability or the
+> current market standard. Reverify provider access, model version, price and
+> official documentation for every paid run.
 
 > Every release ships with a complete asset bundle. No exceptions. The bundle is generated from persona canon (visual DNA) + label canon (visual DNA) + song metadata (mood/tempo/structure). The skill orchestrates four engines + Remotion programmatic templates.
 
@@ -19,6 +26,19 @@ description: Orchestrate cover (nano banana 2), motion (Seedance 2), cinematic (
 - **Persona canon** (visual DNA from `verticals/music-is/labels/<label>/personas/<persona>/CANON.md`)
 - **Label canon** (visual DNA from `verticals/music-is/labels/<label>/CANON.md`)
 - **Song metadata** (title, BPM, mood, structure tags)
+- **Validated creative production contract** — song truth, locked artist/singer
+  canon, story engine, format graph, hook experiments, prompt evidence, rights
+  and market gate.
+
+Run:
+
+```powershell
+python verticals/music-is/production-os/workflows/validate_production_contract.py `
+  verticals/music-is/catalog/release-packets/<song-id>/creative-production-contract.json
+```
+
+If the contract is `draft` or `preproduction`, produce only the explicitly
+allowed research/previz artifacts. Do not represent them as campaign masters.
 
 ## Asset bundle (per release)
 
@@ -35,6 +55,11 @@ description: Orchestrate cover (nano banana 2), motion (Seedance 2), cinematic (
 | Lyric video (Phase 2+, if lyrics) | MP4 | 16:9, 1920×1080, full song length | Remotion + Whisper alignment |
 
 ## Engine prompt construction
+
+Current model-specific prompt and routing rules live in
+`verticals/music-is/production-os/prompts/video-model-cards.md`. A prompt may be
+called proven only when it reaches `render-tested` or `campaign-proven` under
+`production-os/prompts/PROMPT-LIFECYCLE.md`.
 
 ### Cover (nano banana 2)
 
@@ -104,6 +129,11 @@ Programmatic per-persona template:
 - AI-vocal-cloned video voice without consent on file (lyric video)
 - Render with engine outputs claimed as human-painted/photographed
 - Bundle ship to catalog before all required formats present (no partial bundles)
+- Generation without a production contract or with a contract that fails validation
+- Flagship generation when artist/singer identity, verified lyrics or rights are unlocked
+- Animated still sequences represented as native performance/cinematic footage
+- Reuse of a prompt's proven status across a provider model-version change
+- Paid generation without authenticated access and the applicable credit/spend approval
 
 ## Composes with
 

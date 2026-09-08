@@ -223,4 +223,31 @@ Every Agent dispatch sets `model:` explicitly.
 
 ---
 
-**Built on SIP** — Music IS DECISIONS.md · v0.1 · 2026-04-29 · 14 decisions locked · Re-litigation requires explicit canon-update.
+## D15 — Canon-and-contract before media generation
+
+**Position:** Every new cover, character, performance, music video, Canvas or
+campaign asset must inherit a versioned artist/singer/world canon and a passing
+`creative-production-contract.json`. Metadata plus a generic visual prompt is
+not sufficient input.
+
+**Prompt evidence:** Prompt states are `draft`, `research-backed`,
+`render-tested`, `campaign-proven` or `retired`. Only the last two evidence
+states may be described as tested/proven, and status never transfers silently
+to a new provider model version.
+
+**Flagship gate:** Six opening experiments, verified lyrics, locked artist and
+singer identity, rights/consent, native temporal performance, a multi-format
+content graph and 90/100 market readiness are mandatory. A technically valid
+render cannot override a zero in artist recognition, native motion or rights.
+
+**Reason:** The July 2026 market baseline makes animated still sequences useful
+for visual development but insufficient as flagship music media. Story,
+performance identity, creator affordance and measured hook performance are
+first-class production requirements.
+
+**Revisit-trigger:** Reground model cards and platform formats quarterly or on a
+provider/platform change; do not weaken the canon/rights/receipt gates.
+
+---
+
+**Built on SIP** — Music IS DECISIONS.md · v0.2 · 2026-07-11 · 15 decisions locked · Re-litigation requires explicit canon-update.

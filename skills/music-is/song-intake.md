@@ -1,6 +1,6 @@
 ---
 name: music-is/song-intake
-description: Capture a Suno URL into catalog/draft, queue assets, attach metadata. Triggers on /music-song, "add this song to catalog", "intake [suno-url]", new song notification. Mechanical tier (Haiku 4.5).
+description: Capture a Suno URL or local MP3/WAV into a proof-backed catalog draft, extract metadata and lyrics, queue assets, and attach release evidence. Triggers on /music-song, "add this song to catalog", "intake [suno-url]", a local song file, or a new song notification. Mechanical tier.
 ---
 
 # Song Intake
@@ -15,7 +15,7 @@ description: Capture a Suno URL into catalog/draft, queue assets, attach metadat
 
 ## Required inputs
 
-- **Suno URL** — `https://suno.com/song/<id>` or extension share URL
+- **Source** — a Suno URL or local MP3/WAV path
 - **Persona** — explicit or inferable from active context; rejection if neither
 - **Intent (optional)** — short tag: "evening-journal", "gym-peak", "score-grade", etc.
 
@@ -26,6 +26,20 @@ description: Capture a Suno URL into catalog/draft, queue assets, attach metadat
 Pull from URL: title (Suno-assigned, often re-named at gate-pass), prompt used, duration, BPM (if Suno provides), engine version, generation timestamp, audio URL, any structural tags Suno attached.
 
 If Suno API not yet integrated, manual paste of the prompt + observed metadata into the intake form.
+
+For a local MP3/WAV, run the deterministic intake before any LLM:
+
+```powershell
+python verticals/music-is/workflows/audio-intake.py <audio-path> `
+  --song-id <song-id> `
+  --packet-root verticals/music-is/catalog/release-packets/<song-id> `
+  --model base --compute-type int8 --beam-size 5 --condition-on-previous-text
+```
+
+The script writes hash, ffprobe facts, loudness, waveform, tempo/key estimates,
+word timestamps, and a lyrics draft. Sung transcription remains human-review
+pending. Use `--reuse-transcription` when only deterministic audio analysis must
+be refreshed.
 
 ### 2. Generate song-id
 

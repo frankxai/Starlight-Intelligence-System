@@ -1,0 +1,46 @@
+{
+  "schema_version": "agentic-music-os.release-packet.v0.1",
+  "song_id": "unassigned_20260711_can-i-be-honest",
+  "title": "Can I Be Honest",
+  "label": "unassigned",
+  "persona": "unassigned",
+  "packet_state": "revise",
+  "external_action_policy": {
+    "distrokid_upload": "not_performed",
+    "spotify_upload": "not_performed",
+    "youtube_upload": "not_performed",
+    "bandcamp_upload": "not_performed",
+    "social_posting": "not_performed",
+    "allowed_status": "prepared_local_only"
+  },
+  "analysis_summary": {
+    "duration_seconds": 232.239979,
+    "codec": "mp3",
+    "sample_rate_hz": 48000,
+    "channels": 2,
+    "lufs_integrated": -13.7,
+    "true_peak_dbtp": -1.26,
+    "lra_lu": 6.2,
+    "bpm_estimate": 63.02,
+    "key_estimate": "A minor"
+  },
+  "rights_summary": {
+    "status": "needs_verification",
+    "ai_disclosure": "draft_present",
+    "commercial_rights_proof": "missing",
+    "sample_clearance": "unknown",
+    "vocal_consent": "unknown"
+  },
+  "assets_summary": {
+    "generated_cover": "provisional_local_verified",
+    "canvas": "rejected_pending_visual_rebuild",
+    "short_9x16": "v2_visual_development_only_market_restart_required",
+    "visualizer_16x9": "source_ready_not_rendered",
+    "full_lyric_video": "blocked_on_lyrics"
+  },
+  "gate": {
+    "decision": "REVISE",
+    "blocking_revisions": 7,
+    "frank_signoff": "pending"
+  }
+}

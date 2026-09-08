@@ -1,0 +1,23 @@
+{
+  "name": "@music-is/record-studio-video",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "render:teaser": "remotion render src/index.ts CanIBeHonest-Teaser out/can-i-be-honest-teaser-9x16.mp4",
+    "render:cinematic": "remotion render src/index.ts CanIBeHonest-CinematicV2 out/can-i-be-honest-cinematic-v2-9x16.mp4 --concurrency=1 --codec=h264",
+    "render:canvas": "remotion render src/index.ts CanIBeHonest-Canvas out/can-i-be-honest-canvas-9x16.mp4",
+    "still": "remotion still src/index.ts CanIBeHonest-Teaser out/can-i-be-honest-style-frame.png --frame=360",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.487",
+    "@remotion/media": "4.0.487",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.487"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "path": "local-private://Can I Be Honest.mp3",
+  "storage_class": "local_private",
+  "sha256": "98dd725e59191e590aeff33a21136cef97a5a5948cab020abe883281d257e630",
+  "bytes": 5289445,
+  "mime_type": "audio/mpeg",
+  "created_at": "2026-07-11T18:08:57.589670+00:00",
+  "notes": "Source path redacted. No external upload performed."
+}

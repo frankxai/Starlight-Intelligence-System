@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.local/music-is/creative-production-contract.schema.json",
+  "title": "Music IS Creative Production Contract",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "release_id",
+    "stage",
+    "song_truth",
+    "canon",
+    "artist",
+    "story",
+    "format_graph",
+    "hook_experiments",
+    "prompt_cards",
+    "rights",
+    "market_gate",
+    "decision"
+  ],
+  "properties": {
+    "schema_version": {"const": "music-is.creative-production.v0.2"},
+    "release_id": {"type": "string", "minLength": 3},
+    "stage": {
+      "enum": ["draft", "preproduction", "hook-test", "campaign-test", "flagship-candidate", "release-ready"]
+    },
+    "song_truth": {
+      "type": "object",
+      "required": ["source_audio", "lyrics_status", "hook_windows", "explicit_status"],
+      "properties": {
+        "lyrics_status": {"enum": ["instrumental", "machine-draft", "human-verified"]},
+        "hook_windows": {"type": "array"}
+      }
+    },
+    "canon": {
+      "type": "object",
+      "required": ["id", "version", "status", "invariants", "controlled_variables", "forbidden_drift"]
+    },
+    "artist": {
+      "type": "object",
+      "required": ["identity_status", "public_identity", "singer_identity", "reference_assets"]
+    },
+    "story": {
+      "type": "object",
+      "required": ["emotional_thesis", "premise", "causal_arc", "motifs", "signature_objects"]
+    },
+    "format_graph": {"type": "array"},
+    "hook_experiments": {"type": "array"},
+    "prompt_cards": {"type": "array"},
+    "rights": {
+      "type": "object",
+      "required": ["status", "music", "likeness_voice_performance", "ai_disclosure"]
+    },
+    "market_gate": {
+      "type": "object",
+      "required": ["score", "max", "threshold_for_stage", "zero_blockers"]
+    },
+    "decision": {
+      "type": "object",
+      "required": ["verdict", "blockers", "human_approval_required"]
+    }
+  }
+}

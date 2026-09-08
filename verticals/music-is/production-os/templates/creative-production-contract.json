@@ -1,0 +1,55 @@
+{
+  "schema_version": "music-is.creative-production.v0.2",
+  "release_id": "replace-me",
+  "stage": "draft",
+  "song_truth": {
+    "source_audio": "",
+    "lyrics_status": "machine-draft",
+    "lyrics_id": "",
+    "explicit_status": "unknown",
+    "hook_windows": []
+  },
+  "canon": {
+    "id": "",
+    "version": "0.1.0",
+    "status": "draft",
+    "invariants": [],
+    "controlled_variables": [],
+    "forbidden_drift": []
+  },
+  "artist": {
+    "identity_status": "unassigned",
+    "public_identity": {"name": "", "promise": "", "audience": "", "identity_type": ""},
+    "singer_identity": {
+      "voice_source": "",
+      "vocal_character": [],
+      "gaze_grammar": [],
+      "gesture_grammar": [],
+      "posture_rhythm": [],
+      "camera_relationship": "",
+      "performance_dos": [],
+      "performance_donts": []
+    },
+    "reference_assets": {"face": [], "body": [], "wardrobe": [], "voice": [], "motion": []}
+  },
+  "story": {
+    "emotional_thesis": "",
+    "premise": "",
+    "causal_arc": {"trigger": "", "pursuit": "", "escalation": "", "irreversible_image": "", "answer": "", "loop": ""},
+    "motifs": [],
+    "signature_objects": [],
+    "world_rules": [],
+    "exclusions": []
+  },
+  "format_graph": [],
+  "hook_experiments": [],
+  "prompt_cards": [],
+  "rights": {
+    "status": "unverified",
+    "music": {"ownership": "unknown", "samples": "unknown", "splits_total": 0},
+    "likeness_voice_performance": {"subjects": [], "consent_documents": []},
+    "ai_disclosure": {"required": true, "prepared": false}
+  },
+  "market_gate": {"score": 0, "max": 100, "threshold_for_stage": 0, "zero_blockers": ["artist-recognition", "native-motion", "rights"]},
+  "decision": {"verdict": "HOLD", "blockers": ["complete required fields"], "human_approval_required": true}
+}

@@ -1,5 +1,14 @@
 # SOP — Release Cycle (idea → revenue)
 
+> **v0.2 creative-production insertion (2026-07-11):** Between Intake and
+> Asset, every release now passes `verticals/music-is/production-os/`. Create
+> and validate `creative-production-contract.json`; lock artist/singer/world
+> canon; define the release story and format graph; prepare six hook experiments;
+> and attach model-specific prompt cards plus rights state. Stage 5 below may not
+> run as flagship production from metadata alone. Spotify Clips is retired for
+> new uploads; current Spotify visual routes are Canvas, eligible Countdown
+> Videos and eligible full-length Spotify Video.
+
 > The spine workflow. Every Music IS release passes through this end-to-end pipeline. Phase 0-1 manual-assisted; Phase 2+ progressively automated.
 
 **Owner:** Frank + `music-curator` (Opus) + sub-agents
@@ -115,6 +124,9 @@ Each stage has: input · operations · output · refusal triggers · model tier.
 ## Stage 5 — Asset pipeline
 
 **Input:** song-id + persona canon + label canon
+
+**Additional mandatory input:** passing creative production contract. A
+preproduction/HOLD contract permits research and previz only.
 
 **Operations:**
 1. `music-producer` (Sonnet) orchestrates parallel asset render:

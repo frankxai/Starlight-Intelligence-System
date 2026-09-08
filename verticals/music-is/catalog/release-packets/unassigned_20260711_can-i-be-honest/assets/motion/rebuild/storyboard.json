@@ -1,0 +1,14 @@
+{
+  "schema_version": "music-is.storyboard.v1",
+  "song_id": "unassigned_20260711_can-i-be-honest",
+  "surface": "social-vertical-9x16",
+  "audio_window_seconds": [60.1, 90.1],
+  "shots": [
+    {"id": "s1-separation", "from": 0, "to": 2.3, "purpose": "hook", "plate": "plate-01-separation.png", "camera": "slow 3% push", "text": "CAN I BE HONEST?"},
+    {"id": "s2-condensation", "from": 2.3, "to": 7.2, "purpose": "hesitation", "plate": "plate-02-condensation.png", "camera": "macro lateral drift + focus shift", "text": null},
+    {"id": "s3-shadow", "from": 7.2, "to": 12.8, "purpose": "physical signal", "plate": "plate-03-shadow.png", "camera": "slow diagonal push", "text": null},
+    {"id": "s4-curtain", "from": 12.8, "to": 18.2, "purpose": "hold", "plate": "plate-04-curtain.png", "camera": "subtle handheld + curtain drift", "text": null},
+    {"id": "s5-almost", "from": 18.2, "to": 24.4, "purpose": "tension", "plate": "plate-05-almost.png", "camera": "center push + light rise", "text": null},
+    {"id": "s6-touch", "from": 24.4, "to": 30, "purpose": "payoff", "plate": "plate-06-touch.png", "camera": "decisive push then still hold", "text": "I WANT YOU TO STAY"}
+  ]
+}
