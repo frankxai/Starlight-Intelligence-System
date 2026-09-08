@@ -350,6 +350,20 @@ export interface VaultMemoryConfig {
   enableHorizon?: boolean;
   horizonAuthor?: string;
   defaultVault?: VaultType;
+  /**
+   * Run fenced code blocks found in remembered content through EmpiricalSandbox.
+   *
+   * DEFAULT FALSE, and it must stay false unless the operator has read what it means:
+   * the sandbox is a temp directory, nothing more — the executed code inherits this
+   * process's user, environment, network and filesystem. Enabling it turns
+   * `rememberInVault()` into "execute the code in this text", and rememberInVault is
+   * reachable from the MCP `remember` tool and the network gateway, so the content is
+   * frequently not the operator's own.
+   *
+   * Enable only when every caller of this VaultMemory instance is trusted, or when the
+   * whole process is inside an outer container.
+   */
+  executeCodeBlocks?: boolean;
 }
 
 // ── Temporal Layer (v6.0) ──────────────────────────────────
