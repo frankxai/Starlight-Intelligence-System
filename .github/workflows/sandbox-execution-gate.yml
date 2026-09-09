@@ -1,0 +1,53 @@
+# Fail-closed proof that remembering a memory does not execute fenced code.
+# Does not edit package.json (foundry RULES_LOCK). Runs the dedicated gate file only.
+name: Sandbox execution gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/sandbox.ts"
+      - "src/vault-memory.ts"
+      - "src/goal.ts"
+      - "src/forge.ts"
+      - "src/types.ts"
+      - "test/sandbox-execution-gate.test.ts"
+      - ".github/workflows/sandbox-execution-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/sandbox.ts"
+      - "src/vault-memory.ts"
+      - "src/goal.ts"
+      - "src/forge.ts"
+      - "src/types.ts"
+      - "test/sandbox-execution-gate.test.ts"
+      - ".github/workflows/sandbox-execution-gate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sandbox-execution-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sandbox-execution-gate:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Execution-gate tests
+        run: node --import tsx --test test/sandbox-execution-gate.test.ts
