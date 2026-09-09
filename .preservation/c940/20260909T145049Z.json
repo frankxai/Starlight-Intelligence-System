@@ -1,0 +1,96 @@
+{
+  "schema": "c940-wip-preservation/v1",
+  "repository": "Starlight-Intelligence-System",
+  "created_utc": "2026-09-09T19:33:33.297428+00:00",
+  "source_head": "b99c12af14fe9449e50215b110cf5947e406ab6d",
+  "safe_remote_ancestor": "1de3e1b9f7c551236b7099d5488b4bed753c8554",
+  "status": "WIP-not-approved-for-integration",
+  "files": [
+    {
+      "path": ".antigravity/allowlisted-tools.md",
+      "bytes": 9168,
+      "sha256": "a4bc1c45af157b0d6f5ee07f0afba53146a04a73f3e7f62d36bc12616fd7f209"
+    },
+    {
+      "path": ".antigravity/instructions.md",
+      "bytes": 15285,
+      "sha256": "c1747690ae3bfaf8b18efa24af802c1832c6f1bf060de58411a92c352a602a16"
+    },
+    {
+      "path": ".antigravity/swarm-protocol.md",
+      "bytes": 13807,
+      "sha256": "4ed9265e6a73e031f00b461f036bc985f97da5172291bd0181a2d2833bae3c7b"
+    },
+    {
+      "path": "core/orchestrator/harnesses/antigravity/system-prompt.md",
+      "bytes": 9396,
+      "sha256": "0fe8af411e2b6640ca39cee7b635662ea44938930e2e16b3171ac7f156c6a9e5"
+    },
+    {
+      "path": "src/index.ts",
+      "bytes": 12859,
+      "sha256": "eac2439d817b97515a7367ae94926aee6bf93fbb9889c0a576f57edee1715ce5"
+    },
+    {
+      "path": "src/swarm.ts",
+      "bytes": 33670,
+      "sha256": "bd3760f9b82e9326e3ac55e34e938631e53478c0f8381464ee0fcba295ec91e8"
+    },
+    {
+      "path": "src/swarm.test.ts",
+      "bytes": 4961,
+      "sha256": "36ce475a8418b9b0093ddd5bcfcab05c8c662fb506be45ff3c9913308f2b7a57"
+    },
+    {
+      "path": "scripts/api-secret-scan.ps1",
+      "bytes": 8796,
+      "sha256": "8a440a62b4ea75a80171739acc3f06b5d75608d7a779e4151e3b7a7e4e9665ac"
+    },
+    {
+      "path": "scripts/machine-sentinel.ps1",
+      "bytes": 10984,
+      "sha256": "e28123b446c71bfbdf7d952fc1a97390cba929d12f70d1c172fe69ab324875fd"
+    },
+    {
+      "path": "src/memory-provider/index.ts",
+      "bytes": 1030,
+      "sha256": "2b794ae72e40a5660902d60686ab54673b47b31359c17e4af23e3af954c8faf2"
+    },
+    {
+      "path": "src/memory-provider/mem0-remote-provider.ts",
+      "bytes": 7425,
+      "sha256": "8f64b7e09f696dbc3ebfd3c1e075513afb5a569bb9255d24fe37aec03e6d83da"
+    },
+    {
+      "path": "src/memory-provider/sis-memory-compatibility-adapter.ts",
+      "bytes": 3177,
+      "sha256": "fd8a57e1553fcc65d6e5f510e01e623c047e7659f226d48e3e116747406f7e3e"
+    },
+    {
+      "path": "src/memory-provider/ttl-cache.ts",
+      "bytes": 1401,
+      "sha256": "fd7c2c853ca3076ec485d6f005567cf476320675f0f5b85438ab87aafe7dcdb8"
+    },
+    {
+      "path": "test/memory-provider-mem0-hardening.test.ts",
+      "bytes": 3484,
+      "sha256": "fb647403f8cdafd9832d7bbb6b330e8c6149d7ff05b6d444d37e0685bb1fa7fc"
+    },
+    {
+      "path": "package.json",
+      "bytes": 9463,
+      "sha256": "24d4db5d74883dd3bb5b670f1643b1ab606946a633e823f4808d90c695ac378b"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 35877,
+      "sha256": "dab04ea3f5ba9098c079c8587178d792e67b65b9e1327b775cd77e5db8553582"
+    }
+  ],
+  "restrictions": [
+    "No automatic merge/deploy/runtime activation",
+    "Known defects recorded in private tracker v2 handoff",
+    "Private local ancestry deliberately excluded",
+    "Other pending paths and private data remain separate recovery work"
+  ]
+}

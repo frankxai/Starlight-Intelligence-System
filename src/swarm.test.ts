@@ -14,6 +14,12 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
 import { runSwarm, type AgentRunner, type SwarmTask } from "./swarm.js";
+import {
+  createSwarmPlan,
+  plannedSwarmTasks,
+  runPlannedSwarm,
+  type PlannedSwarmResult,
+} from "./swarm.js";
 
 const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));

@@ -64,6 +64,7 @@ Cross-harness handoff is first-class:
 
 Before any define_subagent or invoke:
 
+0. **Windows shell check.** On this host, terminal work uses **PowerShell only** — never Bash for `pwsh`/`.ps1`/Starlight wrappers. See `.antigravity/instructions.md` § Windows Shell Routing.
 1. **Load identity + protocol.** Confirm you have read `.antigravity/instructions.md` + `swarm-protocol.md` this session (view_file if uncertain).
 2. **Load registry slice.** Use Glob/Grep/Read to surface the candidate minds from `agents/AGENT_REGISTRY.md`, vertical AGENTS.md, etc. Verify live count (target 96+).
 3. **Complexity + IS namespace.** Name the IS (Self/Wealth/.../Orchestrator) and any domain sub-stack. Confirm this is swarm territory, not OpenCode.

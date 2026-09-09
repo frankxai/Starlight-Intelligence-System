@@ -734,6 +734,224 @@ export function calculateModelConsensus(
   };
 }
 
+// ── Planner → Executor Bridge ───────────────────────────────
+//
+// createSwarmPlan() routes a goal into approval-gated packets; runSwarm()
+// fans SwarmTask[] across a bounded worker pool. Historically these two halves
+// never touched: the planner recommended, the executor ran, and nothing carried
+// a plan through execution into an auditable trace. runPlannedSwarm closes that
+// gap. It is additive, dry-run by default, and refuses to execute
+// high-mutation-risk packets unless the caller explicitly approves — mirroring
+// the CLI's existing "plan-and-approve only" contract.
+
+/** A SwarmTask carrying the plan metadata it was derived from, so the result can be traced back to its packet. */
+export interface PlannedSwarmTask extends SwarmTask {
+  packetId: string;
+  repoId: string;
+  repoName: string;
+  repoPath: string;
+  lane: string;
+  agent: string;
+  mutationRisk: SwarmMutationRisk;
+  externalProviderRisk: SwarmExternalRisk;
+}
+
+/** A SwarmResult re-joined to the packet metadata that produced it. */
+export interface PlannedSwarmResult extends SwarmResult {
+  packetId: string;
+  repoId: string;
+  repoName: string;
+  repoPath: string;
+  lane: string;
+  agent: string;
+  mutationRisk: SwarmMutationRisk;
+  externalProviderRisk: SwarmExternalRisk;
+  /** true when the packet was planned but deliberately not executed (dry-run or gated). */
+  planned: boolean;
+}
+
+export type SwarmExecutionMode = "dry_run" | "execute";
+
+export interface SwarmExecutionTrace {
+  planId: string;
+  goal: string;
+  mode: SwarmExecutionMode;
+  startedAt: string;
+  completedAt: string;
+  durationMs: number;
+  packets: number;
+  total: number;
+  succeeded: number;
+  failed: number;
+  /** true when execution was refused (e.g. a high-risk packet without approval). */
+  blocked: boolean;
+  blockedReason?: string;
+  results: PlannedSwarmResult[];
+}
+
+export interface PlannedSwarmOptions extends SwarmOptions {
+  /** "dry_run" (default) produces a trace without invoking any runner. "execute" fans packets through runSwarm. */
+  mode?: SwarmExecutionMode;
+  /** Required to execute any packet whose mutationRisk is "high". Without it, execute mode returns a blocked trace. */
+  approveHighRisk?: boolean;
+  /** Fired per settled packet in execute mode, carrying the metadata-enriched result. */
+  onPlannedResult?: (result: PlannedSwarmResult) => void;
+}
+
+/**
+ * Deterministically convert a plan's packets into executable tasks. The prompt
+ * is assembled from plan metadata ONLY — no local file contents, no secrets —
+ * so the same plan always yields the same tasks and nothing uncontrolled leaks
+ * into an agent invocation.
+ */
+export function plannedSwarmTasks(plan: SwarmPlan): PlannedSwarmTask[] {
+  return plan.packets.map((packet) => ({
+    id: packet.id,
+    prompt: buildPacketPrompt(plan, packet),
+    packetId: packet.id,
+    repoId: packet.repo.id,
+    repoName: packet.repo.name,
+    repoPath: packet.repo.path,
+    lane: packet.recommendedLane,
+    agent: packet.agent,
+    mutationRisk: packet.mutationRisk,
+    externalProviderRisk: packet.externalProviderRisk,
+  }));
+}
+
+function buildPacketPrompt(plan: SwarmPlan, packet: SwarmPacket): string {
+  return [
+    "You are executing a Starlight swarm packet.",
+    "",
+    `Goal: ${packet.goal}`,
+    `Repo: ${packet.repo.name} (${packet.repo.path})`,
+    `Lane: ${packet.recommendedLane}`,
+    `Agent: ${packet.agent}`,
+    `Required context: ${packet.requiredContext.join(", ") || "(none)"}`,
+    `Rationale: ${packet.rationale}`,
+    `Mutation risk: ${packet.mutationRisk} | External provider risk: ${packet.externalProviderRisk}`,
+    "",
+    "Constraints:",
+    "- Respect repo-local AGENTS.md / CLAUDE.md instructions and safety gates.",
+    "- Do not make external provider calls unless the packet explicitly allows it.",
+    "- Return concise implementation notes and the risks you encountered.",
+    "",
+    `Plan: ${plan.goal} (generated ${plan.generatedAt})`,
+  ].join("\n");
+}
+
+/**
+ * Bridge a SwarmPlan through the worker-pool executor into an auditable trace.
+ *
+ * Safety contract (matches the CLI's "plan-and-approve only" posture):
+ *   - Default mode is "dry_run": NO runner is invoked. Each packet becomes a
+ *     `planned: true` result so callers get a full trace with zero side-effects.
+ *   - "execute" mode fans packets through the existing `runSwarm`, preserving
+ *     its concurrency cap, per-task timeout, input-order, and failure isolation.
+ *   - Any packet with mutationRisk "high" blocks execute mode unless
+ *     `approveHighRisk: true` is passed — the whole batch is refused, returning
+ *     a blocked trace rather than partially mutating the estate.
+ *   - Packet metadata is re-joined onto every result so the trace is auditable
+ *     back to the routing decision that produced it.
+ */
+export async function runPlannedSwarm(
+  plan: SwarmPlan,
+  options: PlannedSwarmOptions = {},
+): Promise<SwarmExecutionTrace> {
+  const mode: SwarmExecutionMode = options.mode ?? "dry_run";
+  const startedAt = new Date();
+  const plannedTasks = plannedSwarmTasks(plan);
+
+  const base = (task: PlannedSwarmTask): Omit<PlannedSwarmResult, keyof SwarmResult> => ({
+    packetId: task.packetId,
+    repoId: task.repoId,
+    repoName: task.repoName,
+    repoPath: task.repoPath,
+    lane: task.lane,
+    agent: task.agent,
+    mutationRisk: task.mutationRisk,
+    externalProviderRisk: task.externalProviderRisk,
+    planned: true,
+  });
+
+  const finish = (
+    results: PlannedSwarmResult[],
+    blocked: boolean,
+    blockedReason?: string,
+  ): SwarmExecutionTrace => {
+    const completedAt = new Date();
+    const succeeded = results.filter((r) => r.ok).length;
+    return {
+      planId: `swarm-trace-${plan.generatedAt}`,
+      goal: plan.goal,
+      mode,
+      startedAt: startedAt.toISOString(),
+      completedAt: completedAt.toISOString(),
+      durationMs: completedAt.getTime() - startedAt.getTime(),
+      packets: plan.packets.length,
+      total: results.length,
+      succeeded,
+      failed: results.length - succeeded,
+      blocked,
+      blockedReason,
+      results,
+    };
+  };
+
+  // Dry-run: never touch a runner. Every packet is a planned, side-effect-free result.
+  if (mode === "dry_run") {
+    const results = plannedTasks.map<PlannedSwarmResult>((task) => ({
+      id: task.id,
+      ok: true,
+      output: `[planned] ${task.agent} → ${task.repoName} via ${task.lane}`,
+      exitCode: null,
+      durationMs: 0,
+      ...base(task),
+    }));
+    return finish(results, false);
+  }
+
+  // Execute mode — high-risk gate. Refuse the whole batch rather than partially mutate.
+  const highRisk = plannedTasks.filter((t) => t.mutationRisk === "high");
+  if (highRisk.length > 0 && !options.approveHighRisk) {
+    const results = plannedTasks.map<PlannedSwarmResult>((task) => ({
+      id: task.id,
+      ok: false,
+      output: "",
+      exitCode: null,
+      durationMs: 0,
+      error: "blocked: high mutation-risk packet requires approveHighRisk",
+      ...base(task),
+    }));
+    return finish(
+      results,
+      true,
+      `${highRisk.length} packet(s) have mutationRisk "high"; pass approveHighRisk to execute (${highRisk.map((t) => t.packetId).join(", ")})`,
+    );
+  }
+
+  // Execute: fan through the existing worker pool, then re-join packet metadata by id.
+  const metaById = new Map(plannedTasks.map((t) => [t.id, t]));
+  const { mode: _mode, approveHighRisk: _approve, onPlannedResult, onResult, ...swarmOpts } = options;
+  void _mode;
+  void _approve;
+  const summary = await runSwarm(plannedTasks, {
+    ...swarmOpts,
+    onResult: (result) => {
+      onResult?.(result);
+      const task = metaById.get(result.id);
+      if (task) onPlannedResult?.({ ...result, ...base(task), planned: false });
+    },
+  });
+
+  const results = summary.results.map<PlannedSwarmResult>((result) => {
+    const task = metaById.get(result.id)!;
+    return { ...result, ...base(task), planned: false };
+  });
+
+  return finish(results, false);
+}
+
 export function performStarlightBoardReview(
   proposalId: string,
   vectorInputs: { vector: "Sovereign" | "Seer" | "Harmonizer" | "Strategist" | "Verifier"; verdict: string; recommendation: "PROCEED" | "REVISE" | "STOP" }[],
