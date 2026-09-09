@@ -74,6 +74,10 @@ export class VaultMemory extends MemoryManager {
       enableHorizon: config?.enableHorizon ?? true,
       horizonAuthor: config?.horizonAuthor ?? 'starlight',
       defaultVault: config?.defaultVault ?? 'operational',
+      // Default false: see VaultMemoryConfig.executeCodeBlocks. Storing a memory must not
+      // be a way to run code, because the callers that store memories include the MCP
+      // remember tool and the network gateway.
+      executeCodeBlocks: config?.executeCodeBlocks ?? false,
     });
 
     this.horizonPath = join(storagePath, 'horizon.jsonl');
@@ -134,15 +138,19 @@ export class VaultMemory extends MemoryManager {
     let finalConfidence = confidence;
     let finalContent = content;
 
-    // Empirical Grounding for Technical Vault
-    if (classifiedVault === 'technical') {
+    // Empirical Grounding for Technical Vault.
+    // Gated on an explicit opt-in: `classifiedVault === 'technical'` is decided by keyword
+    // match on the content itself, so without this gate the content chooses whether it gets
+    // executed. Off by default — the block below does not run, nothing is extracted, and the
+    // entry is stored exactly as any other memory.
+    if (classifiedVault === 'technical' && this.vaultConfig.executeCodeBlocks) {
       const codeBlocks = EmpiricalSandbox.extractCodeBlocks(content);
       if (codeBlocks.length > 0) {
         let allSuccess = true;
         let validationLogs = [];
-        
+
         for (const block of codeBlocks) {
-          const result = EmpiricalSandbox.validatePattern(block.code, block.language);
+          const result = EmpiricalSandbox.validatePattern(block.code, block.language, { allowExecution: true });
           if (!result.success) {
             allSuccess = false;
             validationLogs.push(`[Validation Failed for ${block.language}]:\n${result.output}`);

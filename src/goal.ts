@@ -12,7 +12,19 @@
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { execSync } from "node:child_process";
+import { execSync, execFileSync } from "node:child_process";
+
+/**
+ * Run git with an argv array, never a command string.
+ *
+ * `commitCheckpoint(message)` is public API with no in-repo caller, so the message comes from
+ * whatever a consumer passes — commonly an objective or summary derived from model output — and
+ * it used to be interpolated inside double quotes in a shell command. Branch names reached a
+ * shell the same way, and git permits `;`, `$`, `(` and `|` in a ref name. No shell, no class.
+ */
+function git(args: string[]): void {
+  execFileSync("git", args, { stdio: "ignore" });
+}
 import { VaultMemory } from "./vault-memory.js";
 
 // ── Types ───────────────────────────────────────────────────
@@ -295,14 +307,14 @@ export class GoalOrchestrator {
 
     try {
       // Create and checkout new checkpoint branch
-      execSync(`git checkout -b ${checkpointBranch}`, { stdio: "ignore" });
-      
+      git(["checkout", "-b", checkpointBranch]);
+
       // Stage and commit all modifications
-      execSync("git add .", { stdio: "ignore" });
-      execSync('git commit -m "SAGE Auto-checkpoint: Local state backup" --no-verify', { stdio: "ignore" });
-      
+      git(["add", "."]);
+      git(["commit", "-m", "SAGE Auto-checkpoint: Local state backup", "--no-verify"]);
+
       // Return to original branch
-      execSync(`git checkout ${originalBranch}`, { stdio: "ignore" });
+      git(["checkout", originalBranch]);
 
       const state = this.loadState();
       if (state) {
@@ -315,7 +327,7 @@ export class GoalOrchestrator {
       this.addLog("error", `Git checkpoint creation failed: ${err.message}`);
       // Fallback: make sure we are on original branch
       try {
-        execSync(`git checkout ${originalBranch}`, { stdio: "ignore" });
+        git(["checkout", originalBranch]);
       } catch {}
       throw err;
     }
@@ -341,8 +353,8 @@ export class GoalOrchestrator {
    */
   commitCheckpoint(message: string): void {
     try {
-      execSync("git add .", { stdio: "ignore" });
-      execSync(`git commit -m "${message}" --no-verify`, { stdio: "ignore" });
+      git(["add", "."]);
+      git(["commit", "-m", message, "--no-verify"]);
       this.addLog("git", `Committed changes: "${message}"`);
     } catch (err: any) {
       this.addLog("warning", `Commit skipped (likely no changes or git issue): ${err.message}`);
