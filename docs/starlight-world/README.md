@@ -2,15 +2,17 @@
 
 Private drive surface. **Vanilla HTML/CSS/JS. No Next.js.**
 
-You drive four layers:
+You drive five layers:
 
-1. **Palace** — eight rooms. Enter to go inside. Esc back.
-2. **Vaults** — six SIS orbs
-3. **City** — five districts with buildings
-4. **Second Brain** — brain/ vs sealed private/
-5. **Graph** — palace · vaults · city · brain edges
+1. **Palace** — eight named rooms around The Proof. Enter / Space inside. Esc back.
+2. **Vaults** — six labeled SIS orbs
+3. **City** — five districts with named buildings
+4. **Second Brain** — brain/ vs sealed private/, visible air-gap
+5. **Graph** — palace · vaults · city · brain edges, neighbors labeled
 
-Keys: `1`–`5`, arrows, Enter, Esc. Hash remembers the room.
+Keys: `1`–`5`, arrows, Enter, Space, Esc, `?` help. Hash remembers the room.
+
+Bar: `docs/starlight-world/SUCCESS.md`
 
 ## Run
 
@@ -21,14 +23,15 @@ python scripts/serve-starlight-world.py
 
 Then open `http://127.0.0.1:8767/`
 
-Or open `docs/starlight-world/index.html` directly. `world.data.js` boots the map without a bundler.
+Loopback only. Do not publish. Private vault notes stay unmounted.
 
-Keys: `1` `2` `3` `4` and arrows.
+Or open `docs/starlight-world/index.html` directly. `world.data.js` boots the map without a bundler.
 
 ## Not this
 
 - Q-Town
-- Next.js / React / console app
+- Next.js / React / bundler
 - Agent Canvas
 - Live agent spawn
 - Private vault notes
+- Writing `main`

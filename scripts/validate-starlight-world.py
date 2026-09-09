@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WORLD_PATH = ROOT / "docs" / "starlight-world" / "world.v1.json"
-DATA_JS = ROOT / "docs" / "starlight-world" / "world.data.js"
+WORLD_DIR = ROOT / "docs" / "starlight-world"
+WORLD_PATH = WORLD_DIR / "world.v1.json"
+DATA_JS = WORLD_DIR / "world.data.js"
+SERVE = ROOT / "scripts" / "serve-starlight-world.py"
 
 REQUIRED_PALACE = {
     "lighthouse",
@@ -24,6 +27,7 @@ REQUIRED_PALACE = {
 REQUIRED_VAULTS = {"strategic", "technical", "creative", "operational", "wisdom", "horizon"}
 REQUIRED_CITY = {"starlight", "frankx", "arcanea", "gencreator", "command"}
 REQUIRED_BRAIN = {"brain-vault", "private-vault", "people-map", "pattern-detector", "chronicle"}
+BANNED = re.compile(r"next\.js|from ['\"]react['\"]|create-react-app", re.I)
 
 
 def validate(world: dict) -> list[str]:
@@ -61,9 +65,36 @@ def validate(world: dict) -> list[str]:
             errors.append(f"palace {room['id']} missing vault")
         if room.get("district") not in city_ids:
             errors.append(f"palace {room['id']} missing district")
-    for edge in world.get("edges", []):
+        if not room.get("enter"):
+            errors.append(f"palace {room['id']} missing enter")
+        if not room.get("title") or not room.get("role"):
+            errors.append(f"palace {room['id']} missing title/role")
+    for district in world.get("city", []):
+        if not district.get("buildings"):
+            errors.append(f"city {district['id']} missing buildings")
+    edges = world.get("edges", [])
+    if len(edges) < 16:
+        errors.append(f"graph too thin: {len(edges)} edges")
+    for edge in edges:
         if edge.get("from") not in known or edge.get("to") not in known:
             errors.append(f"edge drifted: {edge}")
+    html = (WORLD_DIR / "index.html").read_text(encoding="utf-8")
+    js = (WORLD_DIR / "world.js").read_text(encoding="utf-8")
+    css = (WORLD_DIR / "world.css").read_text(encoding="utf-8")
+    serve = SERVE.read_text(encoding="utf-8")
+    for label, text in (("index.html", html), ("world.js", js), ("world.css", css)):
+        if BANNED.search(text):
+            errors.append(f"{label} must stay vanilla (no Next.js/React)")
+    if "innerHTML" in js and "svg.innerHTML" not in js:
+        errors.append("world.js must not assign innerHTML of world data")
+    if "inspector.innerHTML" in js:
+        errors.append("inspector must be DOM-built")
+    if "layer-graph" not in html or 'id="world-svg"' not in html:
+        errors.append("index.html missing graph layer or map")
+    if "127.0.0.1" not in serve or "allow_reuse_address" not in serve:
+        errors.append("serve must bind loopback with reuse")
+    if not (WORLD_DIR / "SUCCESS.md").exists():
+        errors.append("SUCCESS.md missing")
     return errors
 
 
@@ -87,6 +118,7 @@ def main() -> int:
                 "vaults": len(world["vaults"]),
                 "city": len(world["city"]),
                 "brain": len(world["brain"]),
+                "edges": len(world.get("edges", [])),
                 "data": str(DATA_JS),
             }
         )
