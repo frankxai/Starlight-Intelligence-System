@@ -27,10 +27,13 @@ export async function generateMetadata({
   if (!r) {
     return { title: "Research not found" };
   }
+  const canonical = `https://starlightintelligence.org/research/${r.slug}`;
   return {
+    alternates: { canonical },
     title: r.title,
     description: r.tldr,
     openGraph: {
+      url: canonical,
       title: `${r.title} — Starlight Intelligence`,
       description: r.tldr,
       type: "article",

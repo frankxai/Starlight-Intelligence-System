@@ -6,10 +6,12 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "https://starlightintelligence.org/research" },
   title: "Research",
   description:
     "Substrate-tier research artifacts informing SIS foundation decisions. Rubric-first, board-gated, sovereign-attested.",
   openGraph: {
+    url: "https://starlightintelligence.org/research",
     title: "Research — Starlight Intelligence",
     description:
       "Substrate-tier research informing SIS foundation decisions. Rubric-first. Board-gated. SIP-attested.",
