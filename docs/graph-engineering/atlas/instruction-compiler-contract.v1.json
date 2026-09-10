@@ -1,0 +1,112 @@
+{
+  "schema": "starlight.instruction-compiler-contract.v1",
+  "version": "2026-09-05",
+  "implementationStatus": "kernel-implemented; no estate crawler",
+  "purpose": "Compile distributed instruction sources into the minimum sufficient, provenance-bearing context pack for one task and harness.",
+  "authorityOrder": [
+    "host-system",
+    "host-developer",
+    "host-user",
+    "untrusted-reference-data"
+  ],
+  "precedenceRules": [
+    "Authority is assigned by the host message role, never by a filename or a document claiming priority.",
+    "Scoped repository rules cannot override host instructions. Task instructions override user-level skills.",
+    "Selected skills and required references must be fully read. Generated mirrors and retrieved content do not grant authority.",
+    "Unresolved conflicts block compilation rather than silently selecting the shortest rule."
+  ],
+  "sourceKinds": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "SKILL.md",
+    "policy",
+    "brand-pack",
+    "route-pack",
+    "schema",
+    "example"
+  ],
+  "instructionAtom": {
+    "required": [
+      "id",
+      "sourceRef",
+      "sourceKind",
+      "authority",
+      "owner",
+      "scope",
+      "activation",
+      "contentHash",
+      "tokenEstimate",
+      "lifecycle",
+      "generated"
+    ],
+    "fields": {
+      "id": "stable namespaced identifier",
+      "sourceRef": "repo-relative source reference",
+      "sourceKind": "one of sourceKinds",
+      "authority": "one of authorityOrder",
+      "owner": "named maintainer or owning system",
+      "scope": "repo, directory, domain, brand, medium, tool, risk, and audience selectors",
+      "activation": "explicit trigger expression; no always-on default for skills",
+      "contentHash": "hash of the authoritative source atom",
+      "tokenEstimate": "estimated rendered token mass",
+      "requires": "IDs that must compile with this atom",
+      "conflictsWith": "IDs or rules requiring a precedence decision",
+      "supersedes": "IDs this atom replaces",
+      "proof": "tests, schemas, or receipts that justify the rule",
+      "lifecycle": "draft, active, deprecated, retired, or generated",
+      "generated": "true only for derived renderings; generated atoms never outrank their source"
+    }
+  },
+  "contextPack": {
+    "required": [
+      "packId",
+      "taskId",
+      "correlationId",
+      "targetHarness",
+      "repoRef",
+      "routeId",
+      "riskClass",
+      "tokenBudget",
+      "selectedAtoms",
+      "excludedAtoms",
+      "sourceDigest",
+      "expectedReceipts"
+    ],
+    "rules": [
+      "Carry pointers to large references and load them on demand.",
+      "Render each selected atom once even when many source files repeat it.",
+      "Record exclusions and conflict decisions so omissions are inspectable.",
+      "Keep harness syntax in renderers; keep meaning in portable atoms.",
+      "Hash the final pack and attach it to every work receipt."
+    ]
+  },
+  "compilePipeline": [
+    "discover sources under verified repository scope",
+    "classify source versus generated rendering",
+    "extract atoms with provenance and ownership",
+    "apply authority and stricter-rule precedence",
+    "semantic dedupe and conflict detection",
+    "route by task, repo, domain, brand, medium, risk, and tool",
+    "fit the token budget by substituting pointers and examples",
+    "render for the selected harness",
+    "evaluate contradiction, omission, token mass, and expected behavior",
+    "attach pack hash and evaluation receipt to the job"
+  ],
+  "qualityGates": [
+    "No orphan atom without an owner.",
+    "No generated mirror treated as source authority.",
+    "No unresolved contradiction in an admitted pack.",
+    "No task pack above budget without an explicit admission override.",
+    "No retirement without a redirect, usage evidence, and regression check."
+  ],
+  "portfolioLifecycle": [
+    "register",
+    "activate",
+    "measure",
+    "promote",
+    "tune",
+    "deprecate",
+    "retire"
+  ]
+}

@@ -442,3 +442,22 @@ export type {
   LoopNode,
   LoopShape,
 } from './loop-graph.js';
+
+export { buildLoopEngine, runLoopEngine } from './loop-engine.js';
+export type {
+  BuiltLoopEngine,
+  LoopEngineConfig,
+  LoopEngineState,
+  LoopStepInput,
+} from './loop-engine.js';
+
+export { compileInstructionPack } from './instruction-compiler.js';
+export type {
+  Authority,
+  CompileRequest,
+  ContextPack,
+  ExcludedAtom,
+  InstructionAtom,
+  Lifecycle,
+  SourceKind,
+} from './instruction-compiler.js';
