@@ -38,11 +38,20 @@ export async function generateMetadata({
       description: r.tldr,
       type: "article",
       publishedTime: r.publishedAt,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: "Starlight Intelligence",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${r.title} — Starlight Intelligence`,
       description: r.tldr,
+      images: ["/opengraph-image"],
     },
   };
 }
