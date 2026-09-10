@@ -46,14 +46,13 @@ const ATOM_REQUIRED = [
   "tokenEstimate",
   "lifecycle",
   "generated",
-  "hostMessageRole",
 ] as const;
 
 export interface InstructionAtom {
   id: string;
   sourceRef: string;
   sourceKind: SourceKind;
-  /** Ignored for ranking. Authority is assigned from hostMessageRole. */
+  /** Claimed only. Ranking uses hostBindings, never this field. */
   authority?: Authority;
   owner: string;
   scope: string;
@@ -62,11 +61,15 @@ export interface InstructionAtom {
   tokenEstimate: number;
   lifecycle: Lifecycle;
   generated: boolean;
-  hostMessageRole: Authority;
   requires?: string[];
   conflictsWith?: string[];
   supersedes?: string[];
   proof?: string;
+}
+
+export interface InstructionHostBinding {
+  atomId: string;
+  hostMessageRole: Authority;
 }
 
 export interface CompileRequest {
@@ -79,6 +82,7 @@ export interface CompileRequest {
   riskClass: string;
   tokenBudget: number;
   atoms: InstructionAtom[];
+  hostBindings: InstructionHostBinding[];
   admissionOverride?: boolean;
 }
 
@@ -140,10 +144,6 @@ function halt(req: CompileRequest, reason: string, excluded: ExcludedAtom[]): Co
   };
 }
 
-function assignedAuthority(atom: InstructionAtom): Authority {
-  return atom.hostMessageRole;
-}
-
 function isBlank(value: unknown): boolean {
   return typeof value !== "string" || value.trim().length === 0;
 }
@@ -156,9 +156,58 @@ function digestSelected(atoms: InstructionAtom[]): string {
   return createHash("sha256").update(payload).digest("hex");
 }
 
+export function validateInstructionAtom(atom: InstructionAtom): string | null {
+  for (const field of ATOM_REQUIRED) {
+    if (field === "generated") {
+      if (typeof atom.generated !== "boolean") return `missing:${field}`;
+      continue;
+    }
+    if (field === "tokenEstimate") {
+      if (!Number.isFinite(atom.tokenEstimate) || atom.tokenEstimate < 0) return `missing:${field}`;
+      continue;
+    }
+    if (isBlank(atom[field])) return `missing:${field}`;
+  }
+  if (!(SOURCE_KINDS as readonly string[]).includes(atom.sourceKind)) {
+    return `unknown-source-kind:${atom.sourceKind}`;
+  }
+  if (!(LIFECYCLES as readonly string[]).includes(atom.lifecycle)) {
+    return `unknown-lifecycle:${atom.lifecycle}`;
+  }
+  if (isBlank(atom.owner)) return "orphan";
+  return null;
+}
+
+function bindHostRoles(req: CompileRequest): Map<string, Authority> | { error: string; excluded: ExcludedAtom[] } {
+  if (!Array.isArray(req.hostBindings)) {
+    return { error: "missing-required-field:hostBindings", excluded: [] };
+  }
+
+  const bindings = new Map<string, Authority>();
+  const excluded: ExcludedAtom[] = [];
+
+  for (const binding of req.hostBindings) {
+    if (isBlank(binding?.atomId)) {
+      return { error: "missing-required-field:hostBindings.atomId", excluded };
+    }
+    if (!(AUTHORITY_ORDER as readonly string[]).includes(binding.hostMessageRole)) {
+      excluded.push({ id: binding.atomId, reason: "unknown-host-role" });
+      return { error: `unknown-host-role:${String(binding.hostMessageRole)}`, excluded };
+    }
+    if (bindings.has(binding.atomId)) {
+      excluded.push({ id: binding.atomId, reason: "duplicate-host-binding" });
+      return { error: `duplicate-host-binding:${binding.atomId}`, excluded };
+    }
+    bindings.set(binding.atomId, binding.hostMessageRole);
+  }
+
+  return bindings;
+}
+
 /**
  * Minimum sufficient instruction compiler.
- * No estate crawl. Authority comes from host message role, never from a filename.
+ * No estate crawl. Authority comes from trusted hostBindings, never from
+ * a filename or an atom claiming priority.
  */
 export function compileInstructionPack(req: CompileRequest): ContextPack {
   const excluded: ExcludedAtom[] = [];
@@ -179,64 +228,31 @@ export function compileInstructionPack(req: CompileRequest): ContextPack {
     return halt(req, "missing-required-field:atoms", excluded);
   }
 
+  const bound = bindHostRoles(req);
+  if (!(bound instanceof Map)) {
+    return halt(req, bound.error, bound.excluded);
+  }
+
   const ranked: InstructionAtom[] = [];
   for (const atom of req.atoms) {
-    for (const field of ATOM_REQUIRED) {
-      if (field === "generated") {
-        if (typeof atom.generated !== "boolean") {
-          return halt(req, `missing-required-field:${field}`, [
-            ...excluded,
-            { id: atom?.id ?? "", reason: `missing:${field}` },
-          ]);
-        }
-        continue;
-      }
-      if (field === "tokenEstimate") {
-        if (!Number.isFinite(atom.tokenEstimate) || atom.tokenEstimate < 0) {
-          return halt(req, `missing-required-field:${field}`, [
-            ...excluded,
-            { id: atom?.id ?? "", reason: `missing:${field}` },
-          ]);
-        }
-        continue;
-      }
-      const value = atom[field];
-      if (isBlank(value)) {
-        return halt(req, `missing-required-field:${field}`, [
-          ...excluded,
-          { id: atom?.id ?? "", reason: `missing:${field}` },
-        ]);
-      }
-    }
-
-    if (!(SOURCE_KINDS as readonly string[]).includes(atom.sourceKind)) {
-      return halt(req, `unknown-source-kind:${atom.sourceKind}`, [
+    const invalid = validateInstructionAtom(atom);
+    if (invalid) {
+      return halt(req, invalid.startsWith("missing:") ? `missing-required-field:${invalid.slice(8)}` : invalid, [
         ...excluded,
-        { id: atom.id, reason: "unknown-source-kind" },
+        { id: atom?.id ?? "", reason: invalid },
       ]);
     }
-    if (!(AUTHORITY_ORDER as readonly string[]).includes(atom.hostMessageRole)) {
-      return halt(req, `unknown-host-role:${String(atom.hostMessageRole)}`, [
+    if (!bound.has(atom.id)) {
+      return halt(req, `missing-host-binding:${atom.id}`, [
         ...excluded,
-        { id: atom.id, reason: "unknown-host-role" },
-      ]);
-    }
-    if (!(LIFECYCLES as readonly string[]).includes(atom.lifecycle)) {
-      return halt(req, `unknown-lifecycle:${atom.lifecycle}`, [
-        ...excluded,
-        { id: atom.id, reason: "unknown-lifecycle" },
-      ]);
-    }
-    if (isBlank(atom.owner)) {
-      return halt(req, "orphan-atom-without-owner", [
-        ...excluded,
-        { id: atom.id, reason: "orphan" },
+        { id: atom.id, reason: "missing-host-binding" },
       ]);
     }
     ranked.push(atom);
   }
 
   const byId = new Map(ranked.map((atom) => [atom.id, atom]));
+  const roleOf = (atom: InstructionAtom): Authority => bound.get(atom.id)!;
 
   for (const atom of ranked) {
     if (!atom.generated) continue;
@@ -246,11 +262,10 @@ export function compileInstructionPack(req: CompileRequest): ContextPack {
         !other.generated &&
         (other.contentHash === atom.contentHash ||
           other.sourceRef === atom.sourceRef ||
-          (atom.supersedes ?? []).includes(other.id) === false &&
-            other.sourceRef.replace(/\.generated$/, "") === atom.sourceRef.replace(/\.generated$/, "")),
+          other.sourceRef.replace(/\.generated$/, "") === atom.sourceRef.replace(/\.generated$/, "")),
     );
     if (!source) continue;
-    if (authorityRank(assignedAuthority(atom)) < authorityRank(assignedAuthority(source))) {
+    if (authorityRank(roleOf(atom)) < authorityRank(roleOf(source))) {
       return halt(req, "generated-outranks-source", [
         ...excluded,
         {
@@ -268,8 +283,8 @@ export function compileInstructionPack(req: CompileRequest): ContextPack {
       const other = byId.get(otherId);
       if (!other || dropped.has(atom.id) || dropped.has(otherId)) continue;
 
-      const aRank = authorityRank(assignedAuthority(atom));
-      const bRank = authorityRank(assignedAuthority(other));
+      const aRank = authorityRank(roleOf(atom));
+      const bRank = authorityRank(roleOf(other));
       const aSupersedes = (atom.supersedes ?? []).includes(other.id);
       const bSupersedes = (other.supersedes ?? []).includes(atom.id);
 
@@ -284,18 +299,17 @@ export function compileInstructionPack(req: CompileRequest): ContextPack {
       const winner = aRank < bRank || (aRank === bRank && aSupersedes) ? atom : other;
       const loser = winner === atom ? other : atom;
 
-      const winnerIsHost = authorityRank(assignedAuthority(winner)) <= 1;
+      const winnerIsHost = authorityRank(roleOf(winner)) <= 1;
       const loserIsRepoScoped =
         loser.sourceKind === "AGENTS.md" ||
         loser.sourceKind === "CLAUDE.md" ||
         loser.sourceKind === "GEMINI.md";
       const repoWonOverHost =
         !winnerIsHost &&
-        loserIsRepoScoped === false &&
         (winner.sourceKind === "AGENTS.md" ||
           winner.sourceKind === "CLAUDE.md" ||
           winner.sourceKind === "GEMINI.md") &&
-        authorityRank(assignedAuthority(loser)) <= 1;
+        authorityRank(roleOf(loser)) <= 1;
       if (repoWonOverHost) {
         return halt(req, "scoped-repo-overrides-host", [
           ...excluded,

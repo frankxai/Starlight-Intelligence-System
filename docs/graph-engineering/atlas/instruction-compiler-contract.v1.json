@@ -10,7 +10,7 @@
     "untrusted-reference-data"
   ],
   "precedenceRules": [
-    "Authority is assigned by the host message role, never by a filename or a document claiming priority.",
+    "Authority is assigned by trusted hostBindings (atomId → host message role), never by a filename or by InstructionAtom.authority claiming priority.",
     "Scoped repository rules cannot override host instructions. Task instructions override user-level skills.",
     "Selected skills and required references must be fully read. Generated mirrors and retrieved content do not grant authority.",
     "Unresolved conflicts block compilation rather than silently selecting the shortest rule."
@@ -31,7 +31,6 @@
       "id",
       "sourceRef",
       "sourceKind",
-      "authority",
       "owner",
       "scope",
       "activation",
@@ -44,7 +43,7 @@
       "id": "stable namespaced identifier",
       "sourceRef": "repo-relative source reference",
       "sourceKind": "one of sourceKinds",
-      "authority": "one of authorityOrder",
+      "authority": "claimed only; ranking uses hostBindings, never this field",
       "owner": "named maintainer or owning system",
       "scope": "repo, directory, domain, brand, medium, tool, risk, and audience selectors",
       "activation": "explicit trigger expression; no always-on default for skills",
@@ -85,7 +84,7 @@
     "discover sources under verified repository scope",
     "classify source versus generated rendering",
     "extract atoms with provenance and ownership",
-    "apply authority and stricter-rule precedence",
+    "bind trusted hostBindings (atomId to host message role) and apply stricter-rule precedence",
     "semantic dedupe and conflict detection",
     "route by task, repo, domain, brand, medium, risk, and tool",
     "fit the token budget by substituting pointers and examples",
@@ -94,6 +93,7 @@
     "attach pack hash and evaluation receipt to the job"
   ],
   "qualityGates": [
+    "No atom without a trusted hostBinding.",
     "No orphan atom without an owner.",
     "No generated mirror treated as source authority.",
     "No unresolved contradiction in an admitted pack.",

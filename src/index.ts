@@ -451,13 +451,14 @@ export type {
   LoopStepInput,
 } from './loop-engine.js';
 
-export { compileInstructionPack } from './instruction-compiler.js';
+export { compileInstructionPack, validateInstructionAtom } from './instruction-compiler.js';
 export type {
   Authority,
   CompileRequest,
   ContextPack,
   ExcludedAtom,
   InstructionAtom,
+  InstructionHostBinding,
   Lifecycle,
   SourceKind,
 } from './instruction-compiler.js';
