@@ -27,19 +27,31 @@ export async function generateMetadata({
   if (!r) {
     return { title: "Research not found" };
   }
+  const canonical = `https://starlightintelligence.org/research/${r.slug}`;
   return {
+    alternates: { canonical },
     title: r.title,
     description: r.tldr,
     openGraph: {
+      url: canonical,
       title: `${r.title} — Starlight Intelligence`,
       description: r.tldr,
       type: "article",
       publishedTime: r.publishedAt,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: "Starlight Intelligence",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${r.title} — Starlight Intelligence`,
       description: r.tldr,
+      images: ["/opengraph-image"],
     },
   };
 }
