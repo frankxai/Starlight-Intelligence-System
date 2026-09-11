@@ -1,9 +1,11 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  classifyEffort,
   compileLoopGraph,
   evaluateLoopGraph,
   initHarness,
+  maxFanOutForEffort,
   recordFeatureEvidence,
   type LoopGraph,
 } from "../src/loop-graph.js";
@@ -68,8 +70,8 @@ describe("loop-graph topologies", () => {
       brakes: { maxTurns: 3, maxCostUnits: 10, emptyRoundsToStop: 1, silenceTriggers: [], requireWriteback: false },
       nodes: [
         { id: "inspect", role: "system", kind: "code", costUnits: 0, outputContract: "class" },
-        { id: "docs", role: "maker", kind: "agent", costUnits: 1, outputContract: "doc-diff" },
-        { id: "code", role: "maker", kind: "agent", costUnits: 3, outputContract: "code-diff" },
+        { id: "docs", role: "checker", kind: "agent", costUnits: 1, outputContract: "doc-verdict" },
+        { id: "code", role: "checker", kind: "agent", costUnits: 3, outputContract: "code-verdict" },
       ],
       edges: [
         { from: "inspect", to: "docs", contract: "class", when: { field: "class", equals: "docs" } },
@@ -93,8 +95,12 @@ describe("loop-graph topologies", () => {
       nodes: [
         { id: "sweep", role: "maker", kind: "agent", costUnits: 1, outputContract: "hits" },
         { id: "dedupe", role: "system", kind: "code", costUnits: 0, outputContract: "new-hits" },
+        { id: "verify", role: "checker", kind: "agent", costUnits: 1, outputContract: "verdict" },
       ],
-      edges: [{ from: "sweep", to: "dedupe", contract: "hits" }],
+      edges: [
+        { from: "sweep", to: "dedupe", contract: "hits" },
+        { from: "dedupe", to: "verify", contract: "new-hits" },
+      ],
     };
     const dry = evaluateLoopGraph(converge, {
       facts: { emptyRounds: 2 },
@@ -114,16 +120,48 @@ describe("loop-graph topologies", () => {
     assert.equal(budget.halted, true);
     assert.equal(budget.haltReason, "max-turns");
   });
+
+  it("fails closed on unreachable nodes, contract drift, and unverified terminal nodes", () => {
+    const broken: LoopGraph = {
+      ...diamond,
+      id: "invalid-contract",
+      nodes: [
+        ...diamond.nodes,
+        { id: "orphan", role: "maker", kind: "agent", costUnits: 1, outputContract: "orphan-output" },
+      ],
+      edges: diamond.edges.map((edge, index) =>
+        index === 0 ? { ...edge, contract: "wrong-contract" } : edge,
+      ),
+    };
+    const compiled = compileLoopGraph(broken);
+    assert.equal(compiled.ok, false);
+    assert.match(compiled.issues.join(" "), /contract.*does not match/);
+    assert.match(compiled.issues.join(" "), /terminal node orphan must be role=checker/);
+  });
+
+  it("rejects cycles because convergence repeats are controlled by the driver brakes", () => {
+    const cyclic: LoopGraph = {
+      ...diamond,
+      id: "cyclic-diamond",
+      edges: [
+        ...diamond.edges,
+        { from: "synthesize", to: "scan-a", contract: "report" },
+      ],
+    };
+    const compiled = compileLoopGraph(cyclic);
+    assert.equal(compiled.ok, false);
+    assert.match(compiled.issues.join(" "), /cycle detected/);
+  });
 });
 
 describe("loop-graph brakes, write-back, verifier", () => {
-  it("refuses an action that is not on the silence-break list", () => {
+  it("refuses a listed silence-break action until explicitly authorized", () => {
     const result = evaluateLoopGraph(diamond, {
       facts: {},
       actorId: "agent:hermes",
       turnsUsed: 0,
       costUsed: 0,
-      proposedAction: "tweet",
+      proposedAction: "external-send",
     });
     assert.equal(result.halted, true);
     assert.equal(result.haltReason, "silence");
@@ -170,5 +208,54 @@ describe("initializer harness", () => {
 
     const done = recordFeatureEvidence(next, "brakes", "test://brakes");
     assert.equal(done.readyToComplete, true);
+  });
+});
+
+describe("effort-scale, capacity, shared gist", () => {
+  it("maps Anthropic effort classes to fan-out caps", () => {
+    assert.equal(classifyEffort({ effortClass: "simple" }), "simple");
+    assert.equal(maxFanOutForEffort("simple"), 1);
+    assert.equal(maxFanOutForEffort("comparison"), 4);
+    assert.equal(maxFanOutForEffort("complex"), 8);
+  });
+
+  it("refuses a diamond when effortClass is simple", () => {
+    const result = evaluateLoopGraph(diamond, {
+      facts: { effortClass: "simple", writebacks: ["scan-a", "scan-b", "reduce", "synthesize", "verify"] },
+      actorId: "agent:hermes",
+      verifierActorId: "agent:checker",
+      turnsUsed: 1,
+      costUsed: 4,
+    });
+    assert.equal(result.ok, false);
+    assert.match(result.issues.join(" "), /effort-scale/);
+  });
+
+  it("refuses multi-agent fan-out when RAM is below 10 GiB", () => {
+    const result = evaluateLoopGraph(diamond, {
+      facts: { ramAvailGb: 7.39, writebacks: ["scan-a", "scan-b", "reduce", "synthesize", "verify"] },
+      actorId: "agent:hermes",
+      verifierActorId: "agent:checker",
+      turnsUsed: 1,
+      costUsed: 4,
+    });
+    assert.equal(result.ok, false);
+    assert.match(result.issues.join(" "), /RAM below 10 GiB/);
+  });
+
+  it("requires a shared gist for every executed node when the substrate is present", () => {
+    const result = evaluateLoopGraph(diamond, {
+      facts: {
+        writebacks: ["scan-a", "scan-b"],
+        gists: { "scan-a": "lane A findings" },
+      },
+      actorId: "agent:hermes",
+      verifierActorId: "agent:checker",
+      turnsUsed: 1,
+      costUsed: 4,
+      executed: ["scan-a", "scan-b"],
+    });
+    assert.equal(result.ok, false);
+    assert.match(result.issues.join(" "), /shared-gist missing for executed node scan-b/);
   });
 });

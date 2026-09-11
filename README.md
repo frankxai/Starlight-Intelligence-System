@@ -31,6 +31,8 @@ The current **144 agents** and all other fast-moving counts are dated in [`metri
 
 ## Purpose
 
+Looking for reusable agent workflows? Start with the [graph adoption kit](tools/graph-adoption/README.md): dependency-free repository inventory, instruction-source hashes, a report-only workflow manifest and Mermaid export. The [graph atlas](docs/graph-engineering/atlas/README.md) separates the reference architecture from runtime evidence. No provider keys or standing agents are needed for the quickstart.
+
 Starlight Intelligence System (SIS) is the **sovereign AI substrate** for memory, orchestration, skills, governance, and evals across Claude Code, Codex, Cursor, Gemini, and Antigravity. Dual-layer: **SIP substrate** you can adopt/fork, plus this repo's **reference operational build** (vaults, MCP, agents).
 
 ## How People Experience It

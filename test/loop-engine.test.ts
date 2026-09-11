@@ -57,7 +57,7 @@ describe("LoopEngine", () => {
       { node: "scan-b", writeback: "test://scan-b", actor: "agent:hermes" },
       { node: "reduce", writeback: "test://reduce", actor: "system:code" },
       { node: "synthesize", writeback: "test://report", actor: "agent:hermes" },
-      { node: "verify", writeback: "test://verdict", actor: "agent:checker" },
+      { node: "verify", writeback: "test://verdict", actor: "agent:checker", verdict: "pass" },
     ]);
 
     const events = parseWorkGraphJsonl(trace.join("\n")).events;
@@ -106,6 +106,60 @@ describe("LoopEngine", () => {
     assert.equal(state.haltReason, "max-turns");
   });
 
+  it("does not release the diamond reducer until every fan-out lane has written back", () => {
+    const engine = buildLoopEngine(config());
+    const trace = runLoopEngine(engine, [
+      { node: "scan-a", writeback: "test://scan-a", actor: "agent:hermes" },
+      { node: "reduce", writeback: "test://reduce", actor: "system:code" },
+    ]);
+    const state = lastState(trace);
+    assert.equal(state.halted, true);
+    assert.equal(state.haltReason, "no-plan");
+    assert.deepEqual(state.pending, ["scan-b"]);
+  });
+
+  it("rejects an unplanned node and a verifier impersonating the independent checker", () => {
+    const engine = buildLoopEngine(config());
+    const outOfOrder = runLoopEngine(engine, [
+      { node: "verify", writeback: "test://fake", actor: "agent:checker" },
+    ]);
+    assert.equal(lastState(outOfOrder).haltReason, "no-plan");
+
+    const impersonated = runLoopEngine(engine, [
+      { node: "scan-a", writeback: "test://scan-a", actor: "agent:hermes" },
+      { node: "scan-b", writeback: "test://scan-b", actor: "agent:hermes" },
+      { node: "reduce", writeback: "test://reduce", actor: "system:code" },
+      { node: "synthesize", writeback: "test://report", actor: "agent:hermes" },
+      { node: "verify", writeback: "test://fake", actor: "agent:hermes" },
+    ]);
+    assert.equal(lastState(impersonated).haltReason, "no-plan");
+    assert.equal(impersonated.some((line) => line.includes("work.completed")), false);
+  });
+
+  it("allows a node to consume the final available turn and cost unit", () => {
+    const chain: LoopGraph = {
+      schema: "starlight.loop-graph.v1",
+      id: "exact-budget",
+      shape: "chain",
+      executorRole: "maker",
+      supervisorRole: "checker",
+      brakes: { maxTurns: 2, maxCostUnits: 3, emptyRoundsToStop: 1, silenceTriggers: [], requireWriteback: true },
+      nodes: [
+        { id: "make", role: "maker", kind: "agent", costUnits: 1, outputContract: "artifact" },
+        { id: "verify", role: "checker", kind: "agent", costUnits: 2, outputContract: "verdict" },
+      ],
+      edges: [{ from: "make", to: "verify", contract: "artifact" }],
+    };
+    const trace = runLoopEngine(buildLoopEngine({ ...config(), graph: chain }), [
+      { node: "make", writeback: "test://artifact", actor: "agent:hermes" },
+      { node: "verify", writeback: "test://verdict", actor: "agent:checker", verdict: "pass" },
+    ]);
+    const state = lastState(trace);
+    assert.equal(state.completed, true);
+    assert.equal(state.turn, 2);
+    assert.equal(state.costUsed, 3);
+  });
+
   it("advances through a router branch selected by facts", () => {
     const router: LoopGraph = {
       schema: "starlight.loop-graph.v1",
@@ -136,7 +190,7 @@ describe("LoopEngine", () => {
     const trace = runLoopEngine(engine, [
       { node: "inspect", facts: { class: "code" }, writeback: "test://class", actor: "system:code" },
       { node: "code", writeback: "test://code", actor: "agent:hermes" },
-      { node: "verify", writeback: "test://verdict", actor: "agent:checker" },
+      { node: "verify", writeback: "test://verdict", actor: "agent:checker", verdict: "pass" },
     ]);
     const events = parseWorkGraphJsonl(trace.join("\n")).events;
     const { workItems } = projectWorkGraph(events);

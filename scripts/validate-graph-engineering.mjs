@@ -32,6 +32,11 @@ mustExist("src/work-graph.ts");
 mustExist("src/loop-graph.ts");
 mustExist("docs/graph-engineering/loops/diamond-review.v1.json");
 mustExist("docs/graph-engineering/harness/features.v1.json");
+mustExist("docs/graph-engineering/atlas/estate-graph.v1.json");
+mustExist("graph-adoption.json");
+mustExist("tools/graph-adoption/cli.mjs");
+mustExist("docs/graph-engineering/atlas/TARGET_ARCHITECTURE.md");
+mustExist("site/src/app/graph-atlas/page.tsx");
 
 mustContain("docs/graph-engineering/CONTRACT.md", [
   "starlight.graph-engineering.v1",

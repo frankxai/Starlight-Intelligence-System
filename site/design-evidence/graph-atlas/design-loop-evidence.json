@@ -1,0 +1,132 @@
+{
+  "version": "2026-09-05",
+  "task": "Design and implement the Starlight Agentic Graph Atlas as an operator-grade interactive architecture surface.",
+  "surface": "Responsive Next.js graph atlas and target-architecture page",
+  "audience": "Frank, Starlight operators, creators, developers, and prospective platform users",
+  "first_read": "Starlight is one governed operating graph with many domain projections, not a directory of disconnected agents.",
+  "standards": [
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "design-agent-standards/WEB_EXPERIENCE_STANDARD.md",
+    "starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/TASTE-CONSTITUTION.md",
+    "starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/BRAND-TERRITORIES.md"
+  ],
+  "references": [
+    {
+      "label": "SIS Civic Intelligence territory",
+      "source": "starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/BRAND-TERRITORIES.md",
+      "reason": "Warm institutional light, near-black ink, documentary proof, and restrained intervention color"
+    },
+    {
+      "label": "Graph atlas model",
+      "source": "docs/graph-engineering/atlas/estate-graph.v1.json",
+      "reason": "Exact machine-readable source for every rendered node, edge, route, law, benchmark, and roadmap item"
+    },
+    {
+      "label": "Estate census",
+      "source": "docs/graph-engineering/atlas/estate-inventory.snapshot.json",
+      "reason": "Reproducible evidence for the opening ledger"
+    }
+  ],
+  "direction": {
+    "keep": [
+      "Editorial hierarchy with a legible first read",
+      "Exact deterministic SVG diagrams",
+      "Evidence and provenance visible in the interface",
+      "Keyboard-accessible node inspection and route filtering"
+    ],
+    "avoid": [
+      "Purple-cyan AI glow",
+      "Glass cards and generic gradients",
+      "Decorative orbit or constellation motifs",
+      "All-caps interface copy",
+      "Force-directed graph chaos"
+    ],
+    "signature": "A civic intelligence drafting table where every graph edge exposes the contract it carries.",
+    "system": [
+      "Newsreader display serif with Inter body and JetBrains Mono provenance labels",
+      "Warm paper, navy ink, oxidized red selection, and safety yellow focus",
+      "Fine documentary rules instead of floating cards",
+      "Content-sized diagram bounds with fit/enlarge controls, keyboard tabs and a native node selector",
+      "Motion limited to brief state transitions and disabled under reduced motion"
+    ]
+  },
+  "asset_quality": {
+    "tier": "C",
+    "source_method": "vector-diagram",
+    "provenance": "owned",
+    "why_premium": "The correct premium asset is exact coded architecture: inspectable contracts, deterministic layout, responsive behavior, and machine-readable provenance.",
+    "shortcut_risk": "low",
+    "context_tested": false
+  },
+  "artifacts": [
+    {
+      "path_or_url": "site/src/app/graph-atlas/page.tsx",
+      "kind": "web",
+      "inspected": false,
+      "notes": "Source reviewed; rendered export inspection is blocked by the machine build preflight."
+    },
+    {
+      "path_or_url": "site/src/app/graph-atlas/GraphAtlasClient.tsx",
+      "kind": "ui",
+      "inspected": false,
+      "notes": "Interaction source reviewed; browser interaction inspection remains pending."
+    },
+    {
+      "path_or_url": "docs/graph-engineering/atlas/estate-graph.v1.json",
+      "kind": "vector-diagram",
+      "inspected": true,
+      "notes": "Validated by scripts/validate-graph-atlas.mjs: seven views, six routes, 68 nodes."
+    }
+  ],
+  "checks": [
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier C exact UI/vector system asset is the correct medium; no generated visual is required."
+    },
+    {
+      "name": "graph-model",
+      "status": "pass",
+      "evidence": "npm run graph-atlas:generate and npm run test:graph-engineering pass."
+    },
+    {
+      "name": "anti-slop",
+      "status": "pass",
+      "evidence": "2026-09-05 scoped scanner scored 85/100; it cannot see inherited next/font variables. This heuristic is not rendered visual evidence."
+    },
+    {
+      "name": "targeted-typecheck",
+      "status": "pass",
+      "evidence": "scripts/typecheck-graph-atlas.mjs passed for the two route components and generated data module."
+    },
+    {
+      "name": "export-inspection",
+      "status": "blocked",
+      "evidence": "2026-09-05 build preflight HOLD: 1872 MB free RAM, 8192 MB required, CPU 88%. No build or browser was started."
+    },
+    {
+      "name": "visual-qa",
+      "status": "blocked",
+      "evidence": "Desktop and mobile browser inspection must follow a successful build preflight."
+    },
+    {
+      "name": "accessibility",
+      "status": "blocked",
+      "evidence": "Semantic and keyboard behavior are implemented in source; browser and automated checks remain pending."
+    }
+  ],
+  "score": {
+    "total": 0,
+    "max": 30,
+    "notes": "Unscored; zero is a placeholder, not a quality verdict. No defensible visual score before rendered inspection and independent provider review."
+  },
+  "decision": "blocked",
+  "known_risks": [
+    "Root and targeted route TypeScript checks passed; full site build remains blocked by machine/storage gates.",
+    "Second-provider skeptical-buyer review remains pending; no public release or paid-product approval is implied.",
+    "The graph canvas and responsive typography require actual desktop and mobile inspection before ship.",
+    "Existing global Header/Footer dark styling may need a route-level integration adjustment after browser review."
+  ]
+}

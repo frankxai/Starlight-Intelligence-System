@@ -2,7 +2,7 @@
 
 **Schema:** `starlight.graph-engineering.v1`  
 **Status:** executable law for this repo  
-**Date:** 2026-08-24  
+**Date:** 2026-08-29
 **Owner:** `Starlight-Intelligence-System`  
 **Not:** a new product, a per-agent brain, Q-Town, Agent Canvas, GraphRAG-as-memory, or a second Queen scheduler
 
@@ -78,8 +78,29 @@ These are the advanced post mechanics, as code, not as a second essay:
 | Write-back after executed nodes | noisyb0y1 / Sprytixl | `requireWriteback` |
 | Same-actor verifier rejected | 0xCodez / longgraph supervisor | `evaluateLoopGraph` |
 | Initializer feature list starts **failing** | 0xCodez harness | `initHarness` + `docs/graph-engineering/harness/features.v1.json` |
+| Effort-scale fan-out caps | Anthropic multi-agent research (simple/comparison/complex) | `classifyEffort` + `maxFanOutForEffort` |
+| Capacity admission | Starlight overnight + DeLM shared substrate | `ramAvailGb` / `storageMode` refuse multi-agent fan-out |
+| Shared gist write-back | Stanford DeLM gists | optional `facts.gists` must cover executed nodes |
+| Compiled reachability and edge contracts | Google ADK workflow graphs | roots, terminals, duplicate edges, missing nodes, and contract drift fail closed |
+| True diamond AND join | deterministic graph runtimes | reducer stays blocked until every active predecessor completes |
+| Caller-declared actor separation | independent-supervisor law | out-of-plan nodes and same-actor verification halt; host authentication is still required |
+| Estate graph atlas | Starlight operating evidence | `docs/graph-engineering/atlas/estate-graph.v1.json` + reproducible census |
 
 Still **not** in this PR (and not required to copy X): DSPy optimizer runtime, Codegraph install, nightly GraphRAG extract, a third scheduler.
+
+### Runtime boundary and migration (2026-09-05)
+
+`runLoopEngine` is an in-memory recorder of supplied steps, not a tool executor or authenticated evidence broker. All nodes now require a nonblank `writeback`; checkers additionally require `verdict: "pass"`. Missing/failing verdicts block completion. Actors and artifact references remain caller-supplied; the host must authenticate identities, resolve artifacts, meter real costs and enforce permissions. Declared `costUnits` are not billed tokens. Convergence stopping is evaluated by `evaluateLoopGraph`; repeating/resuming rounds is not implemented by the recorder.
+
+Router selection is exclusive and fixed at the root; later facts cannot switch branches. A missing or ambiguous match halts unless exactly one default applies. Conditions outside the router root are unsupported and rejected. Joins wait for every active predecessor; skipped router branches do not block the chosen tail.
+
+The dependency-free community entry is [the adoption kit](../../tools/graph-adoption/README.md). It checks local manifest/source conformance and generates coverage, never bulk-modifies another repository. Production, publication and paid-product release gates remain independent.
+
+## Estate atlas and target control plane
+
+`docs/graph-engineering/atlas/` projects this contract across the verified estate without creating new graph authorities. It contains the reproducible instruction/agent census, the current and target operating projections, six reusable domain routes, implementation research, graph economics, and the `/graph-atlas` page contract.
+
+The target instruction compiler treats AGENTS, CLAUDE, GEMINI, SKILL, policy, brand, and repo files as provenance-bearing source atoms. It emits a minimum sufficient task pack and a harness-native rendering. Generated skill mirrors remain build output, never source authority.
 
 ## First compiled loops
 

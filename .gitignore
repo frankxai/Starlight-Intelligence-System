@@ -113,3 +113,7 @@ link-checker-report.txt
 
 # Starlight/ACOS temporary files
 .gemini/
+
+# Operator-private inventories are not website datasets.
+docs/graph-engineering/atlas/estate-inventory.snapshot.json
+*.graph-adoption.local.json

@@ -1,0 +1,267 @@
+{
+  "schema": "starlight.graph-atlas.v1",
+  "version": "2026-08-29",
+  "title": "Starlight Agentic Graph Atlas",
+  "thesis": "One typed operating graph, many domain projections, every edge carrying a contract and every terminal outcome carrying proof.",
+  "views": [
+    {
+      "id": "estate",
+      "label": "Estate operating graph",
+      "title": "Intent becomes verified value",
+      "description": "The canonical cross-harness path. Harnesses are execution adapters, not competing schedulers.",
+      "nodes": [
+        { "id": "intent", "title": "Intent", "detail": "Human, signal, schedule, event, or opportunity", "kind": "signal", "layer": "world", "status": "current", "x": 70, "y": 210, "receipt": "intent.captured" },
+        { "id": "admission", "title": "Admission", "detail": "Value, risk, capacity, storage, and effort class", "kind": "gate", "layer": "workflow", "status": "partial", "x": 210, "y": 210, "receipt": "work.admitted" },
+        { "id": "prepass", "title": "Code pre-pass", "detail": "Deterministic census, lint, retrieval, diff, and cache", "kind": "code", "layer": "code", "status": "partial", "x": 350, "y": 210, "receipt": "evidence.prepared" },
+        { "id": "router", "title": "Queen router", "detail": "Selects shape, policy pack, domain pack, and one harness", "kind": "orchestrator", "layer": "workflow", "status": "current", "x": 500, "y": 210, "receipt": "route.selected" },
+        { "id": "claude", "title": "Claude adapter", "detail": "Long-form synthesis and bounded councils", "kind": "adapter", "layer": "workflow", "status": "current", "x": 645, "y": 70, "receipt": "execution.started" },
+        { "id": "codex", "title": "Codex adapter", "detail": "Repository engineering and verifiable implementation", "kind": "adapter", "layer": "workflow", "status": "current", "x": 645, "y": 155, "receipt": "execution.started" },
+        { "id": "hermes", "title": "Hermes adapter", "detail": "Persistent local loops, cron, and report production", "kind": "adapter", "layer": "workflow", "status": "current", "x": 645, "y": 250, "receipt": "execution.started" },
+        { "id": "antigravity", "title": "Antigravity adapter", "detail": "Heavy scans, browser, and visual inspection", "kind": "adapter", "layer": "workflow", "status": "current", "x": 645, "y": 345, "receipt": "execution.started" },
+        { "id": "maker", "title": "Maker lanes", "detail": "One to eight bounded workers selected by effort and capacity", "kind": "agent", "layer": "workflow", "status": "partial", "x": 800, "y": 155, "receipt": "artifact.produced" },
+        { "id": "reducer", "title": "Code reducer", "detail": "Schema validation, dedupe, ranking, and deterministic merge", "kind": "code", "layer": "code", "status": "partial", "x": 800, "y": 260, "receipt": "artifact.reduced" },
+        { "id": "verifier", "title": "Independent verifier", "detail": "Different actor; checks artifact, policy, visual, and outcome gates", "kind": "checker", "layer": "workflow", "status": "partial", "x": 960, "y": 210, "receipt": "verification.passed" },
+        { "id": "human-gate", "title": "Human gate", "detail": "Only irreversible, external, money, legal, identity, and high-risk actions", "kind": "human", "layer": "world", "status": "current", "x": 1110, "y": 120, "receipt": "approval.decided" },
+        { "id": "receipt", "title": "Receipt ledger", "detail": "Append-only outcome, provenance, cost, and lineage", "kind": "memory", "layer": "memory", "status": "partial", "x": 1110, "y": 280, "receipt": "work.completed" },
+        { "id": "value", "title": "Measured value", "detail": "Quality, cycle time, revenue, reach, learning, or risk retired", "kind": "value", "layer": "world", "status": "target", "x": 1250, "y": 210, "receipt": "outcome.measured" }
+      ],
+      "edges": [
+        { "from": "intent", "to": "admission", "contract": "typed intent envelope", "status": "current" },
+        { "from": "admission", "to": "prepass", "contract": "admission decision + budgets", "status": "partial" },
+        { "from": "prepass", "to": "router", "contract": "small evidence packet", "status": "partial" },
+        { "from": "router", "to": "claude", "contract": "harness-neutral job contract", "status": "current" },
+        { "from": "router", "to": "codex", "contract": "harness-neutral job contract", "status": "current" },
+        { "from": "router", "to": "hermes", "contract": "harness-neutral job contract", "status": "current" },
+        { "from": "router", "to": "antigravity", "contract": "harness-neutral job contract", "status": "current" },
+        { "from": "claude", "to": "maker", "contract": "bounded execution", "status": "partial" },
+        { "from": "codex", "to": "maker", "contract": "bounded execution", "status": "partial" },
+        { "from": "hermes", "to": "maker", "contract": "bounded execution", "status": "partial" },
+        { "from": "antigravity", "to": "maker", "contract": "bounded execution", "status": "partial" },
+        { "from": "maker", "to": "reducer", "contract": "artifact + gist + provenance", "status": "partial" },
+        { "from": "reducer", "to": "verifier", "contract": "merged artifact + check plan", "status": "partial" },
+        { "from": "verifier", "to": "human-gate", "contract": "verdict + confidence + risk", "status": "target" },
+        { "from": "verifier", "to": "receipt", "contract": "machine-verifiable proof", "status": "partial" },
+        { "from": "human-gate", "to": "receipt", "contract": "approval or refusal receipt", "status": "current" },
+        { "from": "receipt", "to": "value", "contract": "completed work + outcome telemetry", "status": "target" },
+        { "from": "value", "to": "admission", "contract": "portfolio learning signal", "status": "target", "feedback": true }
+      ]
+    },
+    {
+      "id": "loops",
+      "label": "Reusable loop shapes",
+      "title": "Four shapes replace prompt choreography",
+      "description": "Chains for delivery, diamonds for independent evidence, routers for conditional work, and convergence for search-until-dry.",
+      "nodes": [
+        { "id": "loop-intake", "title": "Typed input", "detail": "Schema and done condition", "kind": "signal", "layer": "workflow", "status": "current", "x": 80, "y": 210, "receipt": "input.validated" },
+        { "id": "loop-router", "title": "Shape compiler", "detail": "Validates roots, joins, routes, budgets, and terminals", "kind": "code", "layer": "code", "status": "partial", "x": 240, "y": 210, "receipt": "graph.compiled" },
+        { "id": "lane-a", "title": "Evidence lane A", "detail": "Independent exploration", "kind": "agent", "layer": "workflow", "status": "current", "x": 430, "y": 95, "receipt": "artifact.produced" },
+        { "id": "lane-b", "title": "Evidence lane B", "detail": "Independent counter-hypothesis", "kind": "agent", "layer": "workflow", "status": "current", "x": 430, "y": 210, "receipt": "artifact.produced" },
+        { "id": "lane-c", "title": "Evidence lane C", "detail": "Optional comparison lane", "kind": "agent", "layer": "workflow", "status": "target", "x": 430, "y": 325, "receipt": "artifact.produced" },
+        { "id": "and-join", "title": "AND join", "detail": "Releases only when every active predecessor completes", "kind": "code", "layer": "code", "status": "partial", "x": 620, "y": 210, "receipt": "join.released" },
+        { "id": "synthesis", "title": "Synthesis", "detail": "Writes the decision artifact", "kind": "agent", "layer": "workflow", "status": "current", "x": 800, "y": 210, "receipt": "artifact.produced" },
+        { "id": "loop-verify", "title": "Verifier", "detail": "Cannot be the maker actor", "kind": "checker", "layer": "workflow", "status": "partial", "x": 975, "y": 210, "receipt": "verification.passed" },
+        { "id": "loop-writeback", "title": "Write-back", "detail": "Receipt, gist, cost, and learned constraint", "kind": "memory", "layer": "memory", "status": "partial", "x": 1150, "y": 210, "receipt": "work.completed" }
+      ],
+      "edges": [
+        { "from": "loop-intake", "to": "loop-router", "contract": "validated input", "status": "current" },
+        { "from": "loop-router", "to": "lane-a", "contract": "bounded lane contract", "status": "current" },
+        { "from": "loop-router", "to": "lane-b", "contract": "bounded lane contract", "status": "current" },
+        { "from": "loop-router", "to": "lane-c", "contract": "effort-gated lane contract", "status": "target" },
+        { "from": "lane-a", "to": "and-join", "contract": "artifact + gist", "status": "partial" },
+        { "from": "lane-b", "to": "and-join", "contract": "artifact + gist", "status": "partial" },
+        { "from": "lane-c", "to": "and-join", "contract": "artifact + gist", "status": "target" },
+        { "from": "and-join", "to": "synthesis", "contract": "deterministic reduction", "status": "partial" },
+        { "from": "synthesis", "to": "loop-verify", "contract": "artifact + expected checks", "status": "current" },
+        { "from": "loop-verify", "to": "loop-writeback", "contract": "verdict + evidence", "status": "partial" }
+      ]
+    },
+    {
+      "id": "instructions",
+      "label": "Instruction compiler",
+      "title": "Thousands of files become a small context pack",
+      "description": "AGENTS.md, CLAUDE.md, GEMINI.md, skills, policy, brand, and repo instructions compile by provenance and task relevance.",
+      "nodes": [
+        { "id": "contracts", "title": "Contract corpus", "detail": "AGENTS, CLAUDE, GEMINI, SKILL, policy, brand", "kind": "memory", "layer": "memory", "status": "current", "x": 80, "y": 210, "receipt": "source.discovered" },
+        { "id": "provenance", "title": "Provenance index", "detail": "Owner, scope, version, inheritance, generated/source", "kind": "code", "layer": "code", "status": "target", "x": 250, "y": 115, "receipt": "source.indexed" },
+        { "id": "conflicts", "title": "Conflict resolver", "detail": "Host instruction hierarchy first; scoped rules cannot elevate their own authority", "kind": "code", "layer": "code", "status": "target", "x": 250, "y": 305, "receipt": "conflict.resolved" },
+        { "id": "dedupe", "title": "Semantic dedupe", "detail": "Hashes repeated rules and preserves one authoritative source", "kind": "code", "layer": "code", "status": "target", "x": 450, "y": 210, "receipt": "instruction.deduped" },
+        { "id": "task-route", "title": "Task router", "detail": "Repo, domain, risk, medium, tools, and desired outcome", "kind": "orchestrator", "layer": "workflow", "status": "target", "x": 650, "y": 210, "receipt": "context.route.selected" },
+        { "id": "context-pack", "title": "Compiled context pack", "detail": "Minimum sufficient rules, examples, schemas, and pointers", "kind": "memory", "layer": "memory", "status": "target", "x": 850, "y": 210, "receipt": "context.compiled" },
+        { "id": "harness-render", "title": "Harness renderer", "detail": "Claude, Codex, Hermes, Gemini, or agent-card form", "kind": "adapter", "layer": "workflow", "status": "target", "x": 1040, "y": 115, "receipt": "context.rendered" },
+        { "id": "context-eval", "title": "Context eval", "detail": "Token mass, contradiction, omission, and task outcome", "kind": "checker", "layer": "workflow", "status": "target", "x": 1040, "y": 305, "receipt": "context.evaluated" },
+        { "id": "prune", "title": "Subtraction queue", "detail": "Retire duplicates, stale agents, and generated source mirrors", "kind": "gate", "layer": "world", "status": "target", "x": 1230, "y": 210, "receipt": "instruction.retired" }
+      ],
+      "edges": [
+        { "from": "contracts", "to": "provenance", "contract": "source file + scope", "status": "target" },
+        { "from": "contracts", "to": "conflicts", "contract": "instruction + authority", "status": "target" },
+        { "from": "provenance", "to": "dedupe", "contract": "indexed instruction", "status": "target" },
+        { "from": "conflicts", "to": "dedupe", "contract": "precedence decision", "status": "target" },
+        { "from": "dedupe", "to": "task-route", "contract": "canonical instruction atoms", "status": "target" },
+        { "from": "task-route", "to": "context-pack", "contract": "relevance plan + budget", "status": "target" },
+        { "from": "context-pack", "to": "harness-render", "contract": "portable pack", "status": "target" },
+        { "from": "context-pack", "to": "context-eval", "contract": "pack + expected behavior", "status": "target" },
+        { "from": "context-eval", "to": "prune", "contract": "redundancy + regression evidence", "status": "target" },
+        { "from": "prune", "to": "contracts", "contract": "approved source change", "status": "target", "feedback": true }
+      ]
+    },
+    {
+      "id": "layers",
+      "label": "Four graph layers",
+      "title": "Keep workflow, memory, code, and world graphs separate",
+      "description": "They exchange typed references; none impersonates the others or becomes a universal source of truth.",
+      "nodes": [
+        { "id": "workflow-layer", "title": "A · Workflow graph", "detail": "Tasks, joins, routes, brakes, actors, and checkpoints", "kind": "orchestrator", "layer": "workflow", "status": "partial", "x": 220, "y": 105, "receipt": "work.state.changed" },
+        { "id": "memory-layer", "title": "B · Memory graph", "detail": "Evidence, decisions, temporal facts, provenance, and receipts", "kind": "memory", "layer": "memory", "status": "partial", "x": 620, "y": 105, "receipt": "memory.promoted" },
+        { "id": "code-layer", "title": "C · Code graph", "detail": "Repositories, files, symbols, tests, dependencies, and deploys", "kind": "code", "layer": "code", "status": "partial", "x": 220, "y": 315, "receipt": "code.evidence.recorded" },
+        { "id": "world-layer", "title": "D · World graph", "detail": "Brands, products, people, customers, channels, offers, and outcomes", "kind": "value", "layer": "world", "status": "target", "x": 620, "y": 315, "receipt": "outcome.measured" },
+        { "id": "reference-plane", "title": "Typed reference plane", "detail": "Stable IDs, lineage, validity time, and access policy", "kind": "gate", "layer": "workflow", "status": "target", "x": 1030, "y": 210, "receipt": "reference.resolved" }
+      ],
+      "edges": [
+        { "from": "workflow-layer", "to": "reference-plane", "contract": "work and actor references", "status": "target" },
+        { "from": "memory-layer", "to": "reference-plane", "contract": "evidence and decision references", "status": "target" },
+        { "from": "code-layer", "to": "reference-plane", "contract": "repository and artifact references", "status": "target" },
+        { "from": "world-layer", "to": "reference-plane", "contract": "brand, offer, customer, outcome references", "status": "target" },
+        { "from": "reference-plane", "to": "workflow-layer", "contract": "resolved facts, never raw graph authority", "status": "target", "feedback": true }
+      ]
+    },
+    {
+      "id": "value",
+      "label": "Value and learning loop",
+      "title": "Autonomy must close on an outcome",
+      "description": "A green process is not success. Every loop names the value hypothesis and how it will be measured.",
+      "nodes": [
+        { "id": "demand", "title": "Demand signal", "detail": "Customer problem, audience need, risk, or opportunity", "kind": "signal", "layer": "world", "status": "target", "x": 70, "y": 210, "receipt": "demand.observed" },
+        { "id": "hypothesis", "title": "Value hypothesis", "detail": "Expected beneficiary, behavior, and metric", "kind": "gate", "layer": "world", "status": "target", "x": 235, "y": 210, "receipt": "hypothesis.admitted" },
+        { "id": "portfolio", "title": "Portfolio admission", "detail": "Impact / effort / confidence / risk / capacity", "kind": "orchestrator", "layer": "workflow", "status": "target", "x": 410, "y": 210, "receipt": "portfolio.decision" },
+        { "id": "production", "title": "Production loop", "detail": "Code, design, content, research, revenue, or operations", "kind": "agent", "layer": "workflow", "status": "partial", "x": 590, "y": 210, "receipt": "artifact.produced" },
+        { "id": "proof-gate", "title": "Proof gate", "detail": "Functional, visual, factual, rights, security, and policy checks", "kind": "checker", "layer": "workflow", "status": "partial", "x": 770, "y": 210, "receipt": "verification.passed" },
+        { "id": "ship", "title": "Ship or propose", "detail": "Autonomous safe output or human-gated action", "kind": "human", "layer": "world", "status": "partial", "x": 950, "y": 210, "receipt": "release.decided" },
+        { "id": "measurement", "title": "Outcome measurement", "detail": "Adoption, quality, revenue, reach, learning, or risk", "kind": "value", "layer": "world", "status": "target", "x": 1130, "y": 210, "receipt": "outcome.measured" },
+        { "id": "learning", "title": "Portfolio learning", "detail": "Promote, tune, pause, retire, or invent the next loop", "kind": "memory", "layer": "memory", "status": "target", "x": 1130, "y": 355, "receipt": "learning.promoted" }
+      ],
+      "edges": [
+        { "from": "demand", "to": "hypothesis", "contract": "evidence-backed need", "status": "target" },
+        { "from": "hypothesis", "to": "portfolio", "contract": "beneficiary + metric + kill condition", "status": "target" },
+        { "from": "portfolio", "to": "production", "contract": "budgeted job contract", "status": "target" },
+        { "from": "production", "to": "proof-gate", "contract": "artifact + proof plan", "status": "partial" },
+        { "from": "proof-gate", "to": "ship", "contract": "verdict + residual risk", "status": "partial" },
+        { "from": "ship", "to": "measurement", "contract": "release + attribution", "status": "target" },
+        { "from": "measurement", "to": "learning", "contract": "metric delta + confidence", "status": "target" },
+        { "from": "learning", "to": "portfolio", "contract": "portfolio update", "status": "target", "feedback": true }
+      ]
+    },
+    {
+      "id": "brands",
+      "label": "Multi-brand production",
+      "title": "Distinct brand worlds, one governed production loop",
+      "description": "Brand operating units compile voice, audience, offer, visual territory, rights, and channel rules into the shared content and design route.",
+      "nodes": [
+        { "id": "brand-demand", "title": "Demand signal", "detail": "Audience need, campaign, launch, product proof, or cultural moment", "kind": "signal", "layer": "world", "status": "partial", "x": 30, "y": 205, "receipt": "demand.observed" },
+        { "id": "brand-router", "title": "Brand router", "detail": "Selects exactly one operating unit and its approved pack", "kind": "orchestrator", "layer": "workflow", "status": "partial", "x": 185, "y": 205, "receipt": "brand.route.selected" },
+        { "id": "pack-frankx", "title": "FrankX pack", "detail": "Founder intelligence, enterprise AI, creator leadership", "kind": "memory", "layer": "world", "status": "partial", "x": 355, "y": 30, "receipt": "brand.context.loaded" },
+        { "id": "pack-arcanea", "title": "Arcanea pack", "detail": "Canon, worlds, wonder, mythic creative intelligence", "kind": "memory", "layer": "world", "status": "partial", "x": 355, "y": 100, "receipt": "brand.context.loaded" },
+        { "id": "pack-starline", "title": "Starline pack", "detail": "Music, artist development, releases, and culture", "kind": "memory", "layer": "world", "status": "target", "x": 355, "y": 170, "receipt": "brand.context.loaded" },
+        { "id": "pack-gencreator", "title": "GenCreator pack", "detail": "Creator operating systems, education, and products", "kind": "memory", "layer": "world", "status": "partial", "x": 355, "y": 240, "receipt": "brand.context.loaded" },
+        { "id": "pack-income", "title": "Energetic Income pack", "detail": "Offers, transformation, and ethical revenue", "kind": "memory", "layer": "world", "status": "target", "x": 355, "y": 310, "receipt": "brand.context.loaded" },
+        { "id": "pack-akamoto", "title": "Akamoto pack", "detail": "Nonakamito/Jade voice, audience, and product laws", "kind": "memory", "layer": "world", "status": "target", "x": 355, "y": 380, "receipt": "brand.context.loaded" },
+        { "id": "brand-context", "title": "Source-led brief", "detail": "Brand pack + research + offer + channel + rights + done condition", "kind": "code", "layer": "code", "status": "target", "x": 555, "y": 205, "receipt": "brief.compiled" },
+        { "id": "content-maker", "title": "Content maker", "detail": "Long-form source, channel variants, claims, and calls to action", "kind": "agent", "layer": "workflow", "status": "partial", "x": 745, "y": 105, "receipt": "artifact.produced" },
+        { "id": "visual-maker", "title": "Visual maker", "detail": "Exact overlays, asset provenance, crops, and motion sources", "kind": "agent", "layer": "workflow", "status": "partial", "x": 745, "y": 305, "receipt": "artifact.produced" },
+        { "id": "brand-reducer", "title": "Campaign reducer", "detail": "Claims, assets, variants, rights, naming, and channel matrix", "kind": "code", "layer": "code", "status": "target", "x": 935, "y": 205, "receipt": "campaign.assembled" },
+        { "id": "brand-verifier", "title": "Independent QA", "detail": "Voice, factuality, visual quality, rights, accessibility, and channel fit", "kind": "checker", "layer": "workflow", "status": "partial", "x": 1115, "y": 205, "receipt": "verification.passed" },
+        { "id": "publish-gate", "title": "Publish gate", "detail": "Founder approval for live posts, premium identity, and external sends", "kind": "human", "layer": "world", "status": "current", "x": 1260, "y": 105, "receipt": "approval.decided" },
+        { "id": "postiz-measure", "title": "Postiz + measure", "detail": "Official API publishing, attribution, engagement, conversion, and learning", "kind": "value", "layer": "world", "status": "partial", "x": 1260, "y": 305, "receipt": "outcome.measured" }
+      ],
+      "edges": [
+        { "from": "brand-demand", "to": "brand-router", "contract": "demand + audience + objective", "status": "partial" },
+        { "from": "brand-router", "to": "pack-frankx", "contract": "brand selection", "status": "partial" },
+        { "from": "brand-router", "to": "pack-arcanea", "contract": "brand selection", "status": "partial" },
+        { "from": "brand-router", "to": "pack-starline", "contract": "brand selection", "status": "target" },
+        { "from": "brand-router", "to": "pack-gencreator", "contract": "brand selection", "status": "partial" },
+        { "from": "brand-router", "to": "pack-income", "contract": "brand selection", "status": "target" },
+        { "from": "brand-router", "to": "pack-akamoto", "contract": "brand selection", "status": "target" },
+        { "from": "pack-frankx", "to": "brand-context", "contract": "approved brand context", "status": "target" },
+        { "from": "pack-arcanea", "to": "brand-context", "contract": "approved brand context", "status": "target" },
+        { "from": "pack-starline", "to": "brand-context", "contract": "approved brand context", "status": "target" },
+        { "from": "pack-gencreator", "to": "brand-context", "contract": "approved brand context", "status": "target" },
+        { "from": "pack-income", "to": "brand-context", "contract": "approved brand context", "status": "target" },
+        { "from": "pack-akamoto", "to": "brand-context", "contract": "approved brand context", "status": "target" },
+        { "from": "brand-context", "to": "content-maker", "contract": "source-led content brief", "status": "target" },
+        { "from": "brand-context", "to": "visual-maker", "contract": "premium asset brief", "status": "target" },
+        { "from": "content-maker", "to": "brand-reducer", "contract": "copy + claims + variants", "status": "target" },
+        { "from": "visual-maker", "to": "brand-reducer", "contract": "assets + provenance + crops", "status": "target" },
+        { "from": "brand-reducer", "to": "brand-verifier", "contract": "campaign package + check plan", "status": "target" },
+        { "from": "brand-verifier", "to": "publish-gate", "contract": "verdict + residual risk", "status": "partial" },
+        { "from": "publish-gate", "to": "postiz-measure", "contract": "approved publish action", "status": "partial" },
+        { "from": "postiz-measure", "to": "brand-router", "contract": "audience and conversion learning", "status": "target", "feedback": true }
+      ]
+    },
+    {
+      "id": "target",
+      "label": "Target architecture",
+      "title": "The Starlight control plane",
+      "description": "A compiler, runtime contract, proof plane, and operator surface around existing harnesses.",
+      "nodes": [
+        { "id": "operator-surface", "title": "Operator surface", "detail": "One human gate, portfolio, exceptions, value, and receipts", "kind": "human", "layer": "world", "status": "target", "x": 660, "y": 55, "receipt": "operator.decision" },
+        { "id": "portfolio-engine", "title": "Portfolio engine", "detail": "Demand, value, capacity, budgets, and lifecycle", "kind": "orchestrator", "layer": "workflow", "status": "target", "x": 300, "y": 170, "receipt": "portfolio.decision" },
+        { "id": "instruction-compiler", "title": "Instruction compiler", "detail": "Provenance-aware context packs and harness renderers", "kind": "code", "layer": "code", "status": "target", "x": 1020, "y": 170, "receipt": "context.compiled" },
+        { "id": "work-runtime", "title": "Work graph runtime", "detail": "Compile, checkpoint, resume, join, brake, and verify", "kind": "orchestrator", "layer": "workflow", "status": "partial", "x": 480, "y": 300, "receipt": "work.state.changed" },
+        { "id": "adapter-plane", "title": "Harness adapter plane", "detail": "Claude, Codex, Hermes, Gemini, browser, cloud", "kind": "adapter", "layer": "workflow", "status": "partial", "x": 840, "y": 300, "receipt": "execution.receipt" },
+        { "id": "proof-plane", "title": "Proof and eval plane", "detail": "Checks, traces, costs, outcomes, regression datasets", "kind": "checker", "layer": "memory", "status": "target", "x": 300, "y": 430, "receipt": "verification.passed" },
+        { "id": "memory-plane", "title": "Memory and lineage plane", "detail": "Receipts first; temporal graph as optional derived index", "kind": "memory", "layer": "memory", "status": "partial", "x": 660, "y": 430, "receipt": "memory.promoted" },
+        { "id": "policy-plane", "title": "Policy and trust plane", "detail": "Identity, permissions, safe outputs, secrets, rights, spend", "kind": "gate", "layer": "world", "status": "partial", "x": 1020, "y": 430, "receipt": "policy.decision" }
+      ],
+      "edges": [
+        { "from": "operator-surface", "to": "portfolio-engine", "contract": "goals and decisions", "status": "target" },
+        { "from": "operator-surface", "to": "instruction-compiler", "contract": "policy and preference", "status": "target" },
+        { "from": "portfolio-engine", "to": "work-runtime", "contract": "admitted job + budgets", "status": "target" },
+        { "from": "instruction-compiler", "to": "adapter-plane", "contract": "harness-native context pack", "status": "target" },
+        { "from": "work-runtime", "to": "adapter-plane", "contract": "portable execution contract", "status": "partial" },
+        { "from": "adapter-plane", "to": "proof-plane", "contract": "artifact + trace + cost", "status": "target" },
+        { "from": "proof-plane", "to": "memory-plane", "contract": "verified receipt", "status": "target" },
+        { "from": "policy-plane", "to": "work-runtime", "contract": "admission and action policy", "status": "target" },
+        { "from": "memory-plane", "to": "operator-surface", "contract": "exceptions, outcomes, and learning", "status": "target", "feedback": true }
+      ]
+    }
+  ],
+  "routes": [
+    { "id": "software", "label": "Software engineering", "color": "#1f5a8a", "nodeIds": ["intent", "admission", "prepass", "router", "codex", "maker", "reducer", "verifier", "receipt", "value"], "checks": ["tests", "types", "security", "review", "deploy evidence"] },
+    { "id": "design", "label": "Design and web", "color": "#b43a28", "nodeIds": ["intent", "admission", "prepass", "router", "antigravity", "maker", "reducer", "verifier", "human-gate", "receipt", "value"], "checks": ["page spec", "asset provenance", "desktop/mobile", "accessibility", "performance"] },
+    { "id": "content", "label": "Brand content", "color": "#9a6b12", "nodeIds": ["intent", "admission", "prepass", "router", "hermes", "maker", "reducer", "verifier", "human-gate", "receipt", "value"], "checks": ["brand pack", "source trace", "maker-checker split", "channel fit", "posting gate"] },
+    { "id": "research", "label": "Research and intelligence", "color": "#3c6b5b", "nodeIds": ["intent", "admission", "prepass", "router", "claude", "maker", "reducer", "verifier", "receipt", "value"], "checks": ["primary sources", "counter-hypothesis", "recency", "citation", "decision relevance"] },
+    { "id": "revenue", "label": "Revenue and offers", "color": "#7c3f70", "nodeIds": ["intent", "admission", "prepass", "router", "claude", "maker", "reducer", "verifier", "human-gate", "receipt", "value"], "checks": ["real demand", "offer proof", "money-path test", "external-send gate", "conversion"] },
+    { "id": "estate", "label": "Estate operations", "color": "#59616a", "nodeIds": ["intent", "admission", "prepass", "router", "hermes", "maker", "reducer", "verifier", "receipt", "value"], "checks": ["capacity", "queue age", "liveness", "dedupe", "cleanup receipt"] }
+  ],
+  "policies": [
+    { "id": "writer-reader", "title": "Every writer has a named reader", "why": "A generated report without a consumer is inventory, not intelligence.", "enforcement": "Reject loop registration without writer, reader, freshness, and silence behavior." },
+    { "id": "outcome-gate", "title": "Green means outcome, not process", "why": "A healthy scheduler can repeatedly produce no value.", "enforcement": "Require an outcome metric, observation window, and kill condition at admission." },
+    { "id": "maker-checker", "title": "Maker and checker must differ", "why": "Independent verification catches confident self-confirmation.", "enforcement": "Runtime identity check plus terminal verifier receipt." },
+    { "id": "typed-edges", "title": "Every edge has a contract", "why": "Strings and implied state turn routing failures into silent corruption.", "enforcement": "Schema validation before graph compilation and at every boundary." },
+    { "id": "one-job-one-harness", "title": "One job, one execution owner", "why": "Cross-harness duplication multiplies cost and creates contradictory state.", "enforcement": "Correlation-id lease and idempotent receipts across adapters." },
+    { "id": "admission-control", "title": "Capacity before concurrency", "why": "More agents under RAM, storage, CI, or attention pressure reduce throughput.", "enforcement": "Effort, RAM, storage, queue, token, and CI budgets gate fan-out." },
+    { "id": "one-human-surface", "title": "One human exception surface", "why": "Autonomy fails when approvals and failures scatter across tools.", "enforcement": "All irreversible or high-risk decisions converge on the Human Gate." }
+  ],
+  "effortModel": [
+    { "class": "Simple", "fanOut": "1", "modelCalls": "1–3", "use": "Known path, deterministic pre-pass, local verification" },
+    { "class": "Comparison", "fanOut": "2–4", "modelCalls": "10–15", "use": "Independent options, adversarial review, multi-source decision" },
+    { "class": "Complex", "fanOut": "5–8", "modelCalls": "Budgeted", "use": "High-value decomposable work with a code reducer and proof gates" }
+  ],
+  "benchmarks": [
+    { "name": "Google ADK", "pattern": "Compile and validate workflow graphs before execution; deterministic scheduling for parallel branches.", "adopt": "Graph compiler, reachability, join, route, and schema checks.", "url": "https://github.com/google/adk-python/blob/main/docs/guides/workflow/graph/index.md" },
+    { "name": "LangGraph", "pattern": "Per-step checkpoints, resumable threads, human interrupts, time travel, and a separate cross-thread store.", "adopt": "Checkpoint work state; keep durable memory separate from the workflow graph.", "url": "https://docs.langchain.com/oss/python/langgraph/persistence" },
+    { "name": "Microsoft Agent Framework", "pattern": "Checkpoint executor state, pending messages, requests, responses, and shared state for human-in-the-loop resume.", "adopt": "Persist approval requests as typed state, not chat residue.", "url": "https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop" },
+    { "name": "Temporal", "pattern": "Crash-proof durable execution that resumes after failures or long waits.", "adopt": "Use for long-lived money, partner, customer, and cross-system workflows when file receipts are insufficient.", "url": "https://docs.temporal.io/" },
+    { "name": "OpenAI Agents SDK", "pattern": "Small primitives for handoffs, guardrails, sessions, human approval, and tracing.", "adopt": "Adapter-level handoff filters, tool guardrails, and trace spans.", "url": "https://openai.github.io/openai-agents-python/" },
+    { "name": "GitHub Agentic Workflows", "pattern": "Compile natural-language Markdown into governed Actions with read-only defaults and safe outputs.", "adopt": "Compile human-readable loop specs into existing schedulers; do not invent another scheduler.", "url": "https://github.blog/changelog/2026-06-11-github-agentic-workflows-is-now-in-public-preview/" },
+    { "name": "Langfuse", "pattern": "Show both aggregated cyclic graphs and expanded per-run DAG traces.", "adopt": "Separate architecture view from execution trace; stable span names make evaluation durable.", "url": "https://langfuse.com/docs/observability/features/agent-graphs" },
+    { "name": "OpenTelemetry GenAI", "pattern": "Shared attributes for agents, conversations, tools, and token usage, with explicit sensitivity warnings.", "adopt": "Portable trace vocabulary with redaction at collection time.", "url": "https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/" },
+    { "name": "A2A", "pattern": "Agent Cards describe identity and skills; tasks have state; artifacts are distinct from messages.", "adopt": "Portable agent-card projection and artifact-first interop, without making cards the runtime SSOT.", "url": "https://a2a-protocol.org/latest/topics/key-concepts/" },
+    { "name": "Graphiti and GraphRAG", "pattern": "Temporal context graphs and corpus knowledge graphs improve memory retrieval and synthesis.", "adopt": "Derived memory indexes only; receipts and the work graph remain authoritative.", "url": "https://help.getzep.com/graphiti/getting-started/welcome" }
+  ],
+  "roadmap": [
+    { "phase": "Now · 0–2 weeks", "title": "Make truth executable", "outcomes": ["Land loop compiler hardening", "Snapshot estate and instruction mass", "Publish graph atlas and shared vocabulary", "Define one OpenTelemetry-aligned receipt envelope"] },
+    { "phase": "Next · 2–6 weeks", "title": "Compile context, stop copying it", "outcomes": ["Provenance index for AGENTS/CLAUDE/GEMINI/SKILL", "Semantic dedupe and conflict report", "Task-specific context pack compiler", "Harness renderers and token-mass regression evals"] },
+    { "phase": "Scale · 6–12 weeks", "title": "Close production loops on value", "outcomes": ["Domain route packs for code, design, content, research, revenue", "Checkpoint/resume for long-running work", "Trace-to-eval datasets and portfolio admission", "One operator surface for exceptions and outcomes"] },
+    { "phase": "Lead · 12+ weeks", "title": "Productize the operating system", "outcomes": ["Customer-owned runtime and BYOK adapters", "Portable agent cards and proof receipts", "Marketplace of verified route packs", "Outcome benchmark and graph-economics moat"] }
+  ]
+}
