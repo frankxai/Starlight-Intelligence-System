@@ -17,8 +17,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
 
+class LoopbackServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
+
 def main() -> None:
-    with socketserver.TCPServer((HOST, PORT), Handler) as httpd:
+    if HOST not in {"127.0.0.1", "localhost", "::1"}:
+        raise SystemExit("Starlight World binds loopback only")
+    with LoopbackServer((HOST, PORT), Handler) as httpd:
         print(f"Starlight World  http://{HOST}:{PORT}/")
         httpd.serve_forever()
 
