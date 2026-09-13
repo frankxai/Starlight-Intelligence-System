@@ -851,3 +851,29 @@ Integrated source contracts and the community reference loop on a dedicated bran
 PR #119's operational-vault blob contains binary corruption (30 NUL bytes). Preserved the existing mainline vault instead of importing that blob; the original branch retains the evidence. Cloud runtime source is integrated for CI review only, and deployment is manual. Connected authentication, host scan, and publication remain unproven.
 
 Built on SIP — Starlight Intelligence Protocol v1.1.1.
+## 2026-09-12 — Operational agent federation
+
+**Decision:** Extend the existing swarm pool with explicit capability routes and A2A/MCP/process runners. Preserve host admission, canonical memory, the established work graph and the separate durable-runtime owner. Only approved task input crosses the default runner boundary.
+
+**Implementation:** `src/federation.ts`, `src/federation/`, the host-registerable `sis_federate` definition/handler, `examples/federation/`, and `docs/architecture/agent-federation.md`. A2A coverage is deliberately text JSON-RPC 0.3.0; the MCP connection is supplied by the host. Python is demonstrated through a one-shot process with an explicit environment. Eight upstream projects informed the architecture; six new records extend the existing upstream registry without claiming they were installed.
+
+**Evidence:** 31 focused checks passed with no skips, including six existing swarm regressions, real loopback A2A transport, a Python subprocess and structural composition with the separately developed `RuntimeBridge`. The composition test confirmed its duplicate task ID produces only one A2A submission. Focused strict TypeScript compilation, the two-task Python/MCP fixture demo and upstream validation passed. The peer runtime remains on a separate branch, not a federation dependency.
+
+**Limits:** No authenticated external provider or cloud deployment was exercised. Local cancellation does not prove a remote stop. No global monetary or fleet-wide concurrency budget, process-tree isolation, durable crash recovery or app UI is provided by this batch bridge. Full repository build and independent second-provider release review were held by machine admission. These are local implementation results, not production readiness.
+
+**Lesson:** Concurrent tasks can switch a shared checkout while file edits survive. The collision was recorded, the other writer moved to an isolated checkout, and the federation writer rechecked branch/paths and claimed its own lane. Keep file scopes separate and never stage an entire shared checkout.
+
+**Next:** Land compatible transports/lifecycle under review; admit one real A2A endpoint plus one established MCP connection; persist provider references, reconcile failures and bind verified results to the existing command center.
+
+## 2026-09-12 — Local and cloud capability control plane
+
+**Category:** orchestration / cost control / operator visibility
+**Confidence:** 0.95
+**Source:** Codex `/si` implementation and deterministic tests
+**Related:** `config/capability-providers.json`, `src/capability-control-plane.ts`, `starlight capabilities`
+
+Added a declarative inventory for local, desktop, and cloud execution surfaces. The CLI now detects access through command presence or credential presence without printing secret values, and ranks matching lanes using availability, prior eval score, cost class, and privacy boundary. “Free-eligible” is an account-dependent routing preference, not a promise of current quota; every result tells the operator to verify quota before dispatch. Workspace-only routing excludes remote providers.
+
+The control plane observes and recommends. It does not launch an agent, spend a credit, deploy, or claim that an external task ran. Provider outcomes can feed the existing Queen and arena evidence loops in a later measured iteration.
+
+**Built on SIP — Starlight Intelligence Protocol**
