@@ -859,3 +859,14 @@ Inventoried 60 local/remote refs at 43 distinct heads against main `12629bc`. Pr
 Evidence and complete branch disposition: `docs/ops/BRANCH-INTEGRATION-2026-09-14.md`. Candidate source validation: 51 focused tests and strict TypeScript passed. Full Windows checks encountered existing Foundry symlink/lock limitations after SQLite repair; Linux CI and independent re-review are required before merge. A green GitHub Vercel status for #142 actually referred to a canceled deployment; use the deployment API state and source SHA.
 
 Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+
+## 2026-09-14 — Bounded Queen session execution
+
+Implemented an operational composition of existing `runSwarm` and instruction compilation in `src/queen-session.ts`. Each maker/checker call requires host admission, a distinct execution identity, scope-checked context bytes and private receipt persistence. Reviews bind to the exact artifact hash and all acceptance criteria. Material ambiguity blocks; reversible assumptions and dissent remain explicit. Timeouts remain unresolved without retry.
+
+Validation: 33 focused tests passed across swarm, instruction compilation and Queen session; 15 Queen cases include two actual Node child processes using repository skill content. This is a controlled process fixture, not a model-quality benchmark or a cloud worker activation. Strict focused TypeScript passed. The process adapter is not a sandbox; the host owns isolation, credentials and cost enforcement. No durable scheduler or substrate authority was introduced. Existing `starlight-swarm#15` remains the cloud activation dependency.
+
+Runbook: `docs/operations/queen-session.md`. Demo: `tools/queen/session-demo.ts`. Private fixture receipts are not committed. Public coordination service is developed separately in `production-agent-patterns` using its existing Railway operator.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.
