@@ -1,5 +1,5 @@
 import { compileLoopGraph, type LoopGraph } from "./loop-graph.js";
-import type { WorkGraphSourceSystem } from "./work-graph.js";
+import { isRfc3339Instant, type WorkGraphSourceSystem } from "./work-graph.js";
 
 export interface LoopEngineConfig {
   graph: LoopGraph;
@@ -178,8 +178,8 @@ export function runLoopEngine(engine: BuiltLoopEngine, inputs: LoopStepInput[]):
   let active = new Set(config.graph.nodes.map((node) => node.id));
 
   const admittedAt = config.now();
-  if (typeof admittedAt !== "string" || !Number.isFinite(Date.parse(admittedAt)) ||
-    Date.parse(admittedAt) > 8.64e15 - config.graph.nodes.length * 2 - 4) {
+  if (!isRfc3339Instant(admittedAt) || Date.parse(admittedAt) < Date.parse("0000-01-01T00:00:00.000Z") ||
+    Date.parse(admittedAt) > Date.parse("9999-12-31T23:59:59.999Z") - config.graph.nodes.length * 2 - 4) {
     return [JSON.stringify({ ...state, halted: true, haltReason: "no-plan" })];
   }
   out.push(admitEvent(config, new Date(Date.parse(admittedAt)).toISOString()));

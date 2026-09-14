@@ -136,6 +136,15 @@ test('admission timestamp normalizes offsets and missing milliseconds before pro
   }
 });
 
+test('admission rejects local-time and out-of-range timestamps before emitting events', () => {
+  for (const timestamp of ['2026-09-05T10:00:00', 'Sep 5 2026 10:00', '+010000-01-01T00:00:00Z',
+    '0000-01-01T00:00:00+01:00', '9999-12-31T23:59:59.999Z']) {
+    const trace = runLoopEngine(buildLoopEngine({ ...config(), now: () => timestamp }), inputs).map((line) => JSON.parse(line));
+    assert.equal(trace.at(-1).haltReason, 'no-plan');
+    assert.equal(trace.some((e) => e.kind), false);
+  }
+});
+
 test('a retry is separately projected and cannot erase a failed attempt', () => {
   const failed = runLoopEngine(buildLoopEngine(config()), [...inputs.slice(0, 2), { ...inputs[2], verdict: 'fail' }]);
   const passed = runLoopEngine(buildLoopEngine({ ...config(), attemptId: 'retry' }), inputs);

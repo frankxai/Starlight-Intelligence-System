@@ -146,7 +146,7 @@ function nonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-function isRfc3339Instant(value: unknown): value is string {
+export function isRfc3339Instant(value: unknown): value is string {
   return nonEmptyString(value) && RFC3339_INSTANT.test(value) && Number.isFinite(Date.parse(value));
 }
 
