@@ -26,7 +26,7 @@ Ahead counts are ancestry counts against the base, not counts of missing feature
 | Branch refs sharing a commit | Commit | Ahead | Changed paths | Decision |
 |---|---|---:|---:|---|
 | `agent/claude/memory-backlog-20260911` | `ed3d54ba2a` | 12 | 3 | Hold memory snapshot: deletes unchecked promotion candidates and references character assets/docs absent from main. Reconcile append-only history and evidence before landing. |
-| `agent/claude/sip-evidence-graph`<br>`origin/agent/claude/sip-evidence-graph` | `adf977a439` | 11 | 17 | Hold #141: new downstream protocol contract needs Board review and independent projection/privacy review; carries unrelated memory backlog. Its explorer is still uncommitted in the shared checkout. |
+| `agent/claude/sip-evidence-graph`<br>`origin/agent/claude/sip-evidence-graph` | `adf977a439` | 11 | 17 | Hold #141: reproduced a privacy defect at adf977a — validateProfile returns PASS with a public claim in redactFields, but traceClaim exposes its synthetic private marker. Its tests also reference a generated site mask absent from the branch. Requires fixes, complete artifacts and protocol review before integration. |
 | `agent/claude/site-integrity` | `d60b39b0b8` | 1 | 5 | Prior PR already merged; remaining differences include later main edits. Do not replay the old snapshot. |
 | `agent/claude/starlight-proof-first-night-20260717` | `c68efd2e63` | 1 | 1 | Hold source-install variant: existing install fixes landed through #51 and subsequent revisions; reconcile remaining five divergent files individually. |
 | `agent/claude/substrate-security-and-adoption` | `9a79cbb419` | 9 | 34 | Priority follow-up: unique security/adoption changes overlap #135 and current src edits. Rebase tests and evaluate each security patch against current contracts; do not replay old package/vault snapshots. |
@@ -92,3 +92,7 @@ Vercel connector verified project `site` / `prj_wDNGrb1R1rB5PJOG9cUEICSER887`, t
 **Recommendation:** PROCEED with the operational review candidate commit. Main merge remains held until independent re-review and full clean-checkout checks pass; this does not approve the held protocol/canon branches.
 
 **Built on SIP â€” Starlight Intelligence Protocol v1.1.1.**
+
+### CI reconciliation
+
+Candidate Linux runs 34797027266 and 34797027292 failed because the new package test command changed package.json, which Foundry pins in two source-closure maps. The original diagnosis of RULES_LOCK as Windows-specific was incorrect. Refreshed those exact two SHA-256 pins for the reviewed script addition; all 22 Foundry conformance/preflight tests now pass, including positive fixtures and tamper rejection. No validator behavior or dependency version changed. Windows symlink EPERM is a separate local limitation.
