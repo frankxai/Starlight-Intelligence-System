@@ -1,220 +1,131 @@
 "use client";
 
-/**
- * StarlightTrail — light that follows the pointer.
- *
- * A full-viewport additive canvas that emits luminous motes wherever the
- * cursor moves. Emission rate and initial velocity are proportional to
- * pointer speed, so a slow drift leaves a faint dust and a fast sweep
- * throws a comet tail. Motes inherit a fraction of pointer velocity, then
- * decelerate and fade on an eased curve.
- *
- * Restraint rules — this must never become a toy:
- *  - fine pointers only (no touch), and only above the mobile breakpoint
- *  - disabled entirely under prefers-reduced-motion
- *  - the rAF loop stops when no motes are alive and restarts on movement,
- *    so an idle page costs nothing
- *  - paused when the tab is hidden
- */
-
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import styles from "./StarlightCursor.module.css";
 
-type Mote = {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number; // 1 -> 0
-  decay: number;
-  size: number;
-  sprite: HTMLCanvasElement;
-};
-
-const PALETTE = ["#c4b5fd", "#a78bfa", "#67e8f9", "#e2e8f0", "#f0abfc"];
-const MAX_MOTES = 130;
-
-/** Pre-render one soft radial sprite per palette colour — cheaper than a
- *  per-frame createRadialGradient, and keeps the additive pass fast. */
-function buildSprites(): HTMLCanvasElement[] {
-  return PALETTE.map((color) => {
-    const size = 32;
-    const c = document.createElement("canvas");
-    c.width = size;
-    c.height = size;
-    const ctx = c.getContext("2d")!;
-    const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-    g.addColorStop(0, color);
-    g.addColorStop(0.35, `${color}66`);
-    g.addColorStop(1, "transparent");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, size, size);
-    return c;
-  });
-}
-
+// Same interaction contract across Starlight's three independently deployed sites.
+// A fixed SVG pool: no canvas, per-frame React state, or replacement native cursor.
 export function StarlightTrail() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const root = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const element = root.current;
+    if (!element) return;
+    let disposed = false;
+    let cleanup = () => {};
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const fine = window.matchMedia("(pointer: fine)");
-    const wide = window.matchMedia("(min-width: 768px)");
-    if (reduced.matches || !fine.matches || !wide.matches) return;
-
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
-
-    const sprites = buildSprites();
-    const motes: Mote[] = [];
-
-    let dpr = 1;
-    let width = 0;
-    let height = 0;
-    let frame = 0;
-    let running = false;
-
-    // Pointer state — last position and smoothed speed.
-    let px = 0;
-    let py = 0;
-    let hasPrev = false;
-    let spawnDebt = 0;
-
-    function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas!.width = Math.floor(width * dpr);
-      canvas!.height = Math.floor(height * dpr);
-      canvas!.style.width = `${width}px`;
-      canvas!.style.height = `${height}px`;
-      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    function spawn(x: number, y: number, vx: number, vy: number) {
-      if (motes.length >= MAX_MOTES) return;
-      const spread = 0.9;
-      motes.push({
-        x: x + (Math.random() - 0.5) * 6,
-        y: y + (Math.random() - 0.5) * 6,
-        // Inherit a slice of pointer velocity, then scatter.
-        vx: vx * 0.09 + (Math.random() - 0.5) * spread,
-        vy: vy * 0.09 + (Math.random() - 0.5) * spread - 0.16, // slight lift
-        life: 1,
-        decay: 0.012 + Math.random() * 0.016,
-        size: 2.5 + Math.random() * 5.5,
-        sprite: sprites[Math.floor(Math.random() * sprites.length)],
-      });
-    }
-
-    function tick() {
-      ctx!.clearRect(0, 0, width, height);
-      ctx!.globalCompositeOperation = "lighter";
-
-      for (let i = motes.length - 1; i >= 0; i--) {
-        const m = motes[i];
-        m.life -= m.decay;
-        if (m.life <= 0) {
-          motes.splice(i, 1);
-          continue;
-        }
-        m.x += m.vx;
-        m.y += m.vy;
-        m.vx *= 0.94;
-        m.vy *= 0.94;
-        m.vy -= 0.006; // gentle upward drift, like embers
-
-        // Ease the fade so the tail lingers then vanishes cleanly.
-        const alpha = m.life * m.life;
-        const s = m.size * (0.6 + m.life * 0.7);
-        ctx!.globalAlpha = alpha * 0.85;
-        ctx!.drawImage(m.sprite, m.x - s / 2, m.y - s / 2, s, s);
-      }
-
-      ctx!.globalAlpha = 1;
-      ctx!.globalCompositeOperation = "source-over";
-
-      if (motes.length > 0) {
-        frame = requestAnimationFrame(tick);
-      } else {
-        running = false;
-      }
-    }
-
-    function start() {
-      if (running || document.hidden) return;
-      running = true;
-      frame = requestAnimationFrame(tick);
-    }
-
-    function onMove(e: PointerEvent) {
-      if (e.pointerType !== "mouse") return;
-      const x = e.clientX;
-      const y = e.clientY;
-
-      if (!hasPrev) {
-        px = x;
-        py = y;
-        hasPrev = true;
-        return;
-      }
-
-      const dx = x - px;
-      const dy = y - py;
-      const speed = Math.hypot(dx, dy);
-      px = x;
-      py = y;
-
-      // Emission scales with speed but saturates, so a fast flick doesn't
-      // dump the whole budget in one frame.
-      spawnDebt += Math.min(speed * 0.22, 5);
-      const n = Math.floor(spawnDebt);
-      spawnDebt -= n;
-      for (let i = 0; i < n; i++) {
-        // Distribute along the segment travelled, not just the endpoint —
-        // otherwise fast movement leaves visible gaps.
-        const t = (i + 1) / n;
-        spawn(px - dx * (1 - t), py - dy * (1 - t), dx, dy);
-      }
-
-      start();
-    }
-
-    function onLeave() {
-      hasPrev = false;
-    }
-
-    function onVisibility() {
-      if (document.hidden) {
-        cancelAnimationFrame(frame);
-        running = false;
-        motes.length = 0;
-        ctx!.clearRect(0, 0, width, height);
+    async function mount() {
+      try {
+        const { gsap } = await import("gsap");
+        if (disposed || !element) return;
+        const media = gsap.matchMedia();
+        media.add("(pointer: fine) and (hover: hover) and (prefers-reduced-motion: no-preference) and (forced-colors: none)", () => {
+          const stars = Array.from(element.children) as HTMLElement[];
+          const positions = stars.map((star, index) => ({
+            x: gsap.quickTo(star, "x", { duration: 0.18 + index * 0.075, ease: "power3.out" }),
+            y: gsap.quickTo(star, "y", { duration: 0.18 + index * 0.075, ease: "power3.out" }),
+          }));
+          const opacityTo = gsap.quickTo(element, "opacity", { duration: 0.2, ease: "power2.out" });
+          const shape = stars[0].querySelector("svg")!;
+          gsap.set(shape, { scale: 1, rotation: 0, transformOrigin: "50% 50%" });
+          const scaleTo = gsap.quickTo(shape, "scale", { duration: 0.24, ease: "power3.out" });
+          const turnTo = gsap.quickTo(shape, "rotation", { duration: 0.38, ease: "power3.out" });
+          let visible = false;
+          let interactive = false;
+          const hide = () => {
+            visible = false;
+            opacityTo(0);
+          };
+          const idle = gsap.delayedCall(1.1, hide).pause();
+          const reset = () => {
+            idle.pause();
+            if (!visible && !opacityTo.tween.isActive()) return;
+            visible = false;
+            opacityTo.tween.pause();
+            gsap.set(element, { opacity: 0 });
+          };
+          const move = (event: PointerEvent) => {
+            const target = event.target;
+            if (event.pointerType !== "mouse" || event.buttons !== 0 || document.hidden ||
+                !(target instanceof Element) ||
+                target.closest("input, textarea, select, dialog, [contenteditable]:not([contenteditable='false']), [data-starlight-quiet], [role='dialog']") ||
+                window.getSelection()?.isCollapsed === false) {
+              reset();
+              return;
+            }
+            const nextInteractive = Boolean(target.closest("a[href], button:not(:disabled), summary, [role='button']"));
+            if (nextInteractive !== interactive) {
+              interactive = nextInteractive;
+              element.dataset.interactive = String(interactive);
+              scaleTo(interactive ? 0.8 : 1);
+              turnTo(interactive ? 45 : 0);
+            }
+            if (!visible) {
+              positions.forEach((position, index) => {
+                const x = event.clientX + 18 + index * 5;
+                const y = event.clientY + 20 + index * 4;
+                // Explicit starts avoid a sweep from the last route or screen corner.
+                position.x(x, x);
+                position.y(y, y);
+              });
+              visible = true;
+              opacityTo(0.85, Number(gsap.getProperty(element, "opacity")));
+            } else {
+              positions.forEach((position, index) => {
+                position.x(event.clientX + 18 + index * 5);
+                position.y(event.clientY + 20 + index * 4);
+              });
+            }
+            idle.restart(true);
+          };
+          const key = (event: KeyboardEvent) => { if (!event.metaKey && !event.ctrlKey && !event.altKey) reset(); };
+          const leave = (event: PointerEvent) => { if (!event.relatedTarget) reset(); };
+          document.addEventListener("pointermove", move, { passive: true });
+          document.addEventListener("pointerdown", reset, { passive: true });
+          document.addEventListener("pointerout", leave);
+          document.addEventListener("visibilitychange", reset);
+          document.addEventListener("keydown", key);
+          window.addEventListener("blur", reset);
+          window.addEventListener("scroll", reset, { passive: true });
+          return () => {
+            document.removeEventListener("pointermove", move);
+            document.removeEventListener("pointerdown", reset);
+            document.removeEventListener("pointerout", leave);
+            document.removeEventListener("visibilitychange", reset);
+            document.removeEventListener("keydown", key);
+            window.removeEventListener("blur", reset);
+            window.removeEventListener("scroll", reset);
+            idle.kill();
+            positions.forEach(position => { position.x.tween.kill(); position.y.tween.kill(); });
+            opacityTo.tween.kill();
+            scaleTo.tween.kill();
+            turnTo.tween.kill();
+            shape.style.removeProperty("transform");
+            delete element.dataset.interactive;
+            element.style.opacity = "0";
+          };
+        });
+        cleanup = () => media.revert();
+      } catch {
+        // Optional decoration. Navigation and reading never depend on GSAP.
       }
     }
-
-    resize();
-    window.addEventListener("resize", resize);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerleave", onLeave);
-    document.addEventListener("visibilitychange", onVisibility);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerleave", onLeave);
-      document.removeEventListener("visibilitychange", onVisibility);
-    };
-  }, []);
+    void mount();
+    return () => { disposed = true; cleanup(); };
+  }, [pathname]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[60]"
-    />
+    <div ref={root} className={styles.field} data-starlight-cursor="" aria-hidden="true">
+      {[0, 1, 2, 3].map(index => (
+        <span className={styles.star} key={index}>
+          {index === 0 && <i className={styles.orbit} />}
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C13.1 8.2 15.8 10.9 24 12C15.8 13.1 13.1 15.8 12 24C10.9 15.8 8.2 13.1 0 12C8.2 10.9 10.9 8.2 12 0Z" />
+          </svg>
+        </span>
+      ))}
+    </div>
   );
 }
