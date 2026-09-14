@@ -153,7 +153,7 @@ function isBlank(value: unknown): boolean {
 }
 
 function digestSelected(atoms: InstructionAtom[]): string {
-  const payload = JSON.stringify(atoms.map((atom) => [atom.id, atom.contentHash]).sort((a, b) => a[0].localeCompare(b[0])));
+  const payload = JSON.stringify(atoms.map((atom) => [atom.id, atom.contentHash]).sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)));
   return createHash("sha256").update(payload).digest("hex");
 }
 
@@ -299,7 +299,7 @@ export function compileInstructionPack(req: CompileRequest): ContextPack {
         ? "generated-mirror-not-authority" : `inactive-lifecycle:${atom.lifecycle}` });
     }
   }
-  ranked.sort((a, b) => authorityRank(roleOf(a)) - authorityRank(roleOf(b)) || a.id.localeCompare(b.id));
+  ranked.sort((a, b) => authorityRank(roleOf(a)) - authorityRank(roleOf(b)) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 
   for (const atom of ranked) {
     const related = new Set([...(atom.conflictsWith ?? []), ...(atom.supersedes ?? [])]);

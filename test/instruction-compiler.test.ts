@@ -56,6 +56,13 @@ function request(
 }
 
 describe("instruction compiler", () => {
+  it("uses code-unit ordering for cross-host deterministic selection", () => {
+    const atoms = [atom({ id: "a" }), atom({ id: "Z" }), atom({ id: "ä" })];
+    const a = compileInstructionPack(request(atoms, {}));
+    const b = compileInstructionPack(request([...atoms].reverse(), {}));
+    assert.deepEqual(a.selectedAtoms, ["Z", "a", "ä"]);
+    assert.equal(a.sourceDigest, b.sourceDigest);
+  });
   it("rejects duplicate atom identities sharing one trusted binding", () => {
     const atoms = [atom({ id: "policy" }), atom({ id: "policy", contentHash: "other" })];
     const pack = compileInstructionPack(request(atoms, {}, {

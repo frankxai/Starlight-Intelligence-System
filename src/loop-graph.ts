@@ -372,6 +372,9 @@ export function evaluateLoopGraph(graph: LoopGraph, input: LoopEvaluationInput):
   const compiled = compileLoopGraph(graph);
   if (!compiled.ok) return { ok: false, halted: false, route: [], costUnits: 0, issues: compiled.issues };
   if (!input || !input.facts || typeof input.facts !== "object" ||
+    Array.isArray(input.facts) || (input.executed !== undefined && (!Array.isArray(input.executed) ||
+      input.executed.some((id) => typeof id !== "string"))) ||
+    (input.facts.emptyRounds !== undefined && (!Number.isSafeInteger(input.facts.emptyRounds) || Number(input.facts.emptyRounds) < 0)) ||
     !Number.isSafeInteger(input.turnsUsed) || input.turnsUsed < 0 ||
     !Number.isFinite(input.costUsed) || input.costUsed < 0) {
     return { ok: false, halted: false, route: [], costUnits: 0, issues: ["invalid evaluation input"] };

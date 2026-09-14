@@ -20,7 +20,7 @@ const graph: LoopGraph = {
     { from: 'code', to: 'verify', contract: 'artifact' },
   ],
 };
-const config = (g = graph) => ({ graph: g, workId: 'fixture', correlationId: 'fixture', projectId: 'example/repo', executorActorId: 'maker', verifierActorId: 'checker', now: () => '2026-09-05T10:00:00.000Z' });
+const config = (g = graph) => ({ graph: g, workId: 'fixture', attemptId: 'first', correlationId: 'fixture', projectId: 'example/repo', executorActorId: 'maker', verifierActorId: 'checker', now: () => '2026-09-05T10:00:00.000Z' });
 const inputs: LoopStepInput[] = [
   { node: 'inspect', actor: 'system', facts: { class: 'docs' }, writeback: 'fixture:class' },
   { node: 'docs', actor: 'maker', writeback: 'fixture:artifact' },
@@ -122,4 +122,28 @@ test('large chains compile without recursive stack overflow', () => {
     edges: Array.from({ length: size - 1 }, (_, i) => ({ from: `n${i}`, to: `n${i + 1}`, contract: 'next' })),
   };
   assert.equal(compileLoopGraph(large).ok, true);
+  assert.equal(evaluateLoopGraph(large, { facts: {}, actorId: 'maker', turnsUsed: 0, costUsed: 0, executed: [] }).route.length, size);
+});
+
+test('admission timestamp normalizes offsets and missing milliseconds before projection', () => {
+  for (const timestamp of ['2026-09-05T10:00:00Z', '2026-09-05T12:00:00+02:00']) {
+    const trace = runLoopEngine(buildLoopEngine({ ...config(), now: () => timestamp }), inputs).map((line) => JSON.parse(line));
+    const parsed = parseWorkGraphJsonl(trace.filter((e) => !e.__state).map((e) => JSON.stringify(e)).join('\n'));
+    assert.equal(parsed.issues.length, 0);
+    const projection = projectWorkGraph(parsed.events);
+    assert.equal(projection.issues.length, 0);
+    assert.equal(projection.workItems[0].completed, true);
+  }
+});
+
+test('a retry is separately projected and cannot erase a failed attempt', () => {
+  const failed = runLoopEngine(buildLoopEngine(config()), [...inputs.slice(0, 2), { ...inputs[2], verdict: 'fail' }]);
+  const passed = runLoopEngine(buildLoopEngine({ ...config(), attemptId: 'retry' }), inputs);
+  const lines = [...failed, ...passed].filter((line) => !JSON.parse(line).__state);
+  const projection = projectWorkGraph(parseWorkGraphJsonl(lines.join('\n')).events);
+  assert.equal(projection.issues.length, 0);
+  assert.equal(projection.workItems.length, 2);
+  assert.equal(projection.workItems.filter((item) => item.completed).length, 1);
+  assert.equal(projection.workItems.filter((item) => item.blocked).length, 1);
+  assert.equal(buildLoopEngine({ ...config(), attemptId: '' }).ok, false);
 });

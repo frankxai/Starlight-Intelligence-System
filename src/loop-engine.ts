@@ -4,6 +4,9 @@ import type { WorkGraphSourceSystem } from "./work-graph.js";
 export interface LoopEngineConfig {
   graph: LoopGraph;
   workId: string;
+  /** Unique attempt within workId; retries/convergence rounds must mint a new id.
+   * Reusing an attempt is only valid for byte-identical replay (including now()). */
+  attemptId: string;
   correlationId: string;
   projectId: string;
   executorActorId: string;
@@ -46,8 +49,8 @@ export interface BuiltLoopEngine {
 function admitEvent(cfg: LoopEngineConfig, now: string): string {
   return JSON.stringify({
     schemaVersion: "1.0",
-    eventId: JSON.stringify(["loop", cfg.workId, "admit"]),
-    workId: cfg.workId,
+    eventId: JSON.stringify(["loop", cfg.workId, cfg.attemptId, "admit"]),
+    workId: JSON.stringify([cfg.workId, cfg.attemptId]),
     correlationId: cfg.correlationId,
     projectId: cfg.projectId,
     kind: "work.admitted",
@@ -59,15 +62,15 @@ function admitEvent(cfg: LoopEngineConfig, now: string): string {
     visibility: "internal",
     retention: "audit",
     summary: `Loop ${cfg.graph.id} (${cfg.graph.shape}) admitted`,
-    data: { requirements: { artifact: true, change: false, checks: false, deployment: false, verification: true } },
+    data: { requirements: { artifact: cfg.graph.nodes.some((node) => node.role !== "checker"), change: false, checks: false, deployment: false, verification: true } },
   });
 }
 
 function nodeEvent(kind: string, cfg: LoopEngineConfig, nodeId: string, actorId: string, evidence: string, now: string): string {
   return JSON.stringify({
     schemaVersion: "1.0",
-    eventId: JSON.stringify(["loop", cfg.workId, kind, nodeId]),
-    workId: cfg.workId,
+    eventId: JSON.stringify(["loop", cfg.workId, cfg.attemptId, kind, nodeId]),
+    workId: JSON.stringify([cfg.workId, cfg.attemptId]),
     correlationId: cfg.correlationId,
     projectId: cfg.projectId,
     kind,
@@ -86,8 +89,8 @@ function nodeEvent(kind: string, cfg: LoopEngineConfig, nodeId: string, actorId:
 function completeEvent(cfg: LoopEngineConfig, now: string, actorId: string, evidence: string): string {
   return JSON.stringify({
     schemaVersion: "1.0",
-    eventId: JSON.stringify(["loop", cfg.workId, "complete"]),
-    workId: cfg.workId,
+    eventId: JSON.stringify(["loop", cfg.workId, cfg.attemptId, "complete"]),
+    workId: JSON.stringify([cfg.workId, cfg.attemptId]),
     correlationId: cfg.correlationId,
     projectId: cfg.projectId,
     kind: "work.completed",
@@ -105,7 +108,7 @@ function completeEvent(cfg: LoopEngineConfig, now: string, actorId: string, evid
 export function buildLoopEngine(config: LoopEngineConfig): BuiltLoopEngine {
   if (!config || typeof config !== "object") return { ok: false, issues: ["invalid config"], config };
   const issues = [...compileLoopGraph(config.graph).issues];
-  for (const field of ["workId", "correlationId", "projectId", "executorActorId", "verifierActorId"] as const) {
+  for (const field of ["workId", "attemptId", "correlationId", "projectId", "executorActorId", "verifierActorId"] as const) {
     if (typeof config[field] !== "string" || !config[field].trim()) issues.push(`${field} must not be empty`);
   }
   if (typeof config.now !== "function") issues.push("now must be a function");
@@ -123,12 +126,12 @@ function incoming(graph: LoopGraph, id: string): LoopGraph["edges"] {
   return graph.edges.filter((edge) => edge.to === id);
 }
 
-function planNext(graph: LoopGraph, state: LoopEngineState, active: Set<string>): string[] {
+function planNext(graph: LoopGraph, state: LoopEngineState, active: Set<string>, inbound: Map<string, LoopGraph["edges"]>): string[] {
   const done = new Set(state.executed);
   return graph.nodes
     .filter((node) => active.has(node.id) && !done.has(node.id))
     .filter((node) => {
-      const allInbound = incoming(graph, node.id);
+      const allInbound = inbound.get(node.id) ?? [];
       if (allInbound.length === 0) return true;
       const activeInbound = allInbound.filter((edge) => active.has(edge.from));
       if (activeInbound.length === 0) return false;
@@ -167,6 +170,11 @@ export function runLoopEngine(engine: BuiltLoopEngine, inputs: LoopStepInput[]):
   }
 
   const nodes = nodeById(config.graph);
+  const inbound = new Map<string, LoopGraph["edges"]>();
+  for (const edge of config.graph.edges) {
+    if (!inbound.has(edge.to)) inbound.set(edge.to, []);
+    inbound.get(edge.to)!.push(edge);
+  }
   let active = new Set(config.graph.nodes.map((node) => node.id));
 
   const admittedAt = config.now();
@@ -174,8 +182,8 @@ export function runLoopEngine(engine: BuiltLoopEngine, inputs: LoopStepInput[]):
     Date.parse(admittedAt) > 8.64e15 - config.graph.nodes.length * 2 - 4) {
     return [JSON.stringify({ ...state, halted: true, haltReason: "no-plan" })];
   }
-  out.push(admitEvent(config, admittedAt));
-  state.pending = planNext(config.graph, state, active);
+  out.push(admitEvent(config, new Date(Date.parse(admittedAt)).toISOString()));
+  state.pending = planNext(config.graph, state, active, inbound);
 
   // Sequence-derived timestamps order this batch in the projector. They are
   // not measurements of node execution time. The host owns actual timing.
@@ -189,7 +197,9 @@ export function runLoopEngine(engine: BuiltLoopEngine, inputs: LoopStepInput[]):
   const stop = (reason: NonNullable<LoopEngineState["haltReason"]>): string[] => {
     state.halted = true;
     state.haltReason = reason;
-    out.push(nodeEvent("work.blocked", config, `halt:${reason}`, config.executorActorId, `loop://${config.graph.id}`, tick()));
+    const event = JSON.parse(nodeEvent("work.blocked", config, reason, config.executorActorId, `loop://${config.graph.id}`, tick()));
+    event.eventId = JSON.stringify(["loop", config.workId, config.attemptId, "halt", reason]);
+    out.push(JSON.stringify(event));
     out.push(JSON.stringify(state));
     return out;
   };
@@ -198,7 +208,8 @@ export function runLoopEngine(engine: BuiltLoopEngine, inputs: LoopStepInput[]):
   for (const input of inputs) {
     if (!input || typeof input.node !== "string" || typeof input.actor !== "string" ||
       (input.writeback !== undefined && typeof input.writeback !== "string") ||
-      (input.proposedAction !== undefined && typeof input.proposedAction !== "string")) return stop("no-plan");
+      (input.proposedAction !== undefined && typeof input.proposedAction !== "string") ||
+      (input.facts !== undefined && (!input.facts || typeof input.facts !== "object" || Array.isArray(input.facts)))) return stop("no-plan");
     const node = nodes.get(input.node);
     if (!node) {
       return stop("no-plan");
@@ -268,7 +279,7 @@ export function runLoopEngine(engine: BuiltLoopEngine, inputs: LoopStepInput[]):
     }
 
 
-    const next = planNext(config.graph, state, active);
+    const next = planNext(config.graph, state, active, inbound);
     state.pending = next;
 
     if (state.pending.length === 0 && isVerifier) {

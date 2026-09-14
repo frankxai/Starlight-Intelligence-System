@@ -40,7 +40,7 @@ const diamond: LoopGraph = {
 function config(): LoopEngineConfig {
   return {
     graph: diamond,
-    workId: "work_diamond",
+    workId: "work_diamond", attemptId: "first",
     correlationId: "corr_diamond",
     projectId: "frankxai/Starlight-Intelligence-System",
     executorActorId: "agent:hermes",
@@ -62,7 +62,7 @@ describe("LoopEngine", () => {
 
     const events = parseWorkGraphJsonl(trace.join("\n")).events;
     const { workItems } = projectWorkGraph(events);
-    const item = workItems.find((w) => w.workId === "work_diamond");
+    const item = workItems.find((w) => w.workId === JSON.stringify(["work_diamond", "first"]));
     assert.equal(item?.completed, true, "loop should complete");
     assert.equal(trace.some((line) => line.includes("work.completed")), true);
   });
@@ -194,7 +194,7 @@ describe("LoopEngine", () => {
     ]);
     const events = parseWorkGraphJsonl(trace.join("\n")).events;
     const { workItems } = projectWorkGraph(events);
-    const item = workItems.find((w) => w.workId === "work_router");
+    const item = workItems.find((w) => w.workId === JSON.stringify(["work_router", "first"]));
     assert.equal(item?.completed, true, "router branch should complete");
     assert.equal(trace.some((line) => line.includes("docs")), false, "docs branch must not run");
   });

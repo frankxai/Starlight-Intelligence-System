@@ -96,3 +96,9 @@ Vercel connector verified project `site` / `prj_wDNGrb1R1rB5PJOG9cUEICSER887`, t
 ### CI reconciliation
 
 Candidate Linux runs 34797027266 and 34797027292 failed because the new package test command changed package.json, which Foundry pins in two source-closure maps. The original diagnosis of RULES_LOCK as Windows-specific was incorrect. Refreshed those exact two SHA-256 pins for the reviewed script addition; all 22 Foundry conformance/preflight tests now pass, including positive fixtures and tamper rejection. No validator behavior or dependency version changed. Windows symlink EPERM is a separate local limitation.
+
+### Independent re-review corrections
+
+Claude Opus 5 re-review requested normalization of admission timestamps, separate identities for attempts, and locale-independent digest ordering. These were reproduced and corrected. LoopEngineConfig now requires an attemptId: projected work identities combine workId and attemptId, preserving failed attempts while a new retry can complete. Identical replay must retain the same attempt inputs/time; retries use a new attemptId. CorrelationId groups related attempts. Compilation and routing are indexed and iterative; the batch recorder still emits full state snapshots and is intended for bounded batches, not an unbounded stream.
+
+54 focused tests pass, including offset/millisecond timestamp normalization, failed-then-successful attempts, 12,000-node compilation/routing, and deterministic code-unit ordering. All Linux checks passed at intermediate commit 391098e (harness run 34797310256 and Foundry run 34797310319); those do not cover these final corrections, so final-revision CI and review remain required.
