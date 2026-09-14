@@ -859,3 +859,12 @@ Inventoried 60 local/remote refs at 43 distinct heads against main `12629bc`. Pr
 Evidence and complete branch disposition: `docs/ops/BRANCH-INTEGRATION-2026-09-14.md`. Candidate source validation: 51 focused tests and strict TypeScript passed. Full Windows checks encountered existing Foundry symlink/lock limitations after SQLite repair; Linux CI and independent re-review are required before merge. A green GitHub Vercel status for #142 actually referred to a canceled deployment; use the deployment API state and source SHA.
 
 Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+
+## 2026-09-14 — Repository-change runtime proof planned
+
+Decision: reuse federation goal #143 and scorecard #150; issue #158 owns one deterministic repository-change acceptance fixture. The operational specification is `docs/execution/2026-09-14-runtime-proof.md`.
+
+Source inspection at `464639bb9f4e9e745ed3eec37c84b3177e93e9da` confirmed that Queen ticks emit harness recipes, the orchestration default executor is a placeholder, and the loop engine records events while the host owns admission and authenticated evidence. Registered agent definitions do not establish live worker capacity.
+
+State: planning only. No runtime tests, authenticated provider execution, cost measurement, deployment or availability verification was performed for this documentation change. Next action: implement #158 against existing recovery, memory and evaluation contracts; preserve the current durable-runtime authority.
