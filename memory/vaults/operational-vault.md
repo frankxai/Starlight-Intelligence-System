@@ -851,3 +851,11 @@ Integrated source contracts and the community reference loop on a dedicated bran
 PR #119's operational-vault blob contains binary corruption (30 NUL bytes). Preserved the existing mainline vault instead of importing that blob; the original branch retains the evidence. Cloud runtime source is integrated for CI review only, and deployment is manual. Connected authentication, host scan, and publication remain unproven.
 
 Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+## 2026-09-14 — Branch integration review
+
+Inventoried 60 local/remote refs at 43 distinct heads against main `12629bc`. Preserved the shared checkout and historical refs. Selected PR #142's loop kernel for a corrected operational candidate; retained the unfinished #137 atlas and held new protocol/canon contracts. Independent review found v1 action-boundary inversion, instruction identity/authority ambiguity, generated-rule suppression and event-id collisions that existing tests missed. Corrections and adversarial fixtures now cover those paths; compilation uses indexed adjacency and an iterative traversal for large graphs. The host still owns admission and evidence authentication.
+
+Evidence and complete branch disposition: `docs/ops/BRANCH-INTEGRATION-2026-09-14.md`. Candidate source validation: 51 focused tests and strict TypeScript passed. Full Windows checks encountered existing Foundry symlink/lock limitations after SQLite repair; Linux CI and independent re-review are required before merge. A green GitHub Vercel status for #142 actually referred to a canceled deployment; use the deployment API state and source SHA.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.
