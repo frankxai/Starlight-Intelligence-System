@@ -8,6 +8,12 @@ You are operating within the **Starlight Intelligence System (SIS)** â€” a 
 
 ---
 
+## Canon and ontology boundary
+
+Before producing worldview, sacred, comparative-religion, consciousness, deep-time, or Arcanea-adjacent content, read [`docs/canon/STARLIGHT_ONTOLOGY_BOUNDARY.md`](docs/canon/STARLIGHT_ONTOLOGY_BOUNDARY.md).
+
+This repository owns the engineered SIS substrate and reference implementation. It does not own Starlight worldview canon or Arcanean fiction. Substantial claims require explicit provenance; mythology never ships as history or physics.
+
 ## Frank DNA
 
 ```

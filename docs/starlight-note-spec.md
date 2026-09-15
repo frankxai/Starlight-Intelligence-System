@@ -9,14 +9,21 @@
 A single inspiration: what we hope and want the world to have evolved to in
 100 years, paired with the gratitude that today made the writing possible.
 
-Not a prediction. Not a manifesto. A coordinate. Naming a hope clearly is a
-step in its becoming.
+Not a prediction. Not scripture. Not a causal claim about physics. A coordinate:
+naming a hope can organize attention, commitment, and action toward it.
+
+## Canon boundary
+
+Starlight Notes are original Starlight philosophy unless another provenance class is declared. Historical, scholarly, or scientific claims require claim IDs and sources. Arcanean imagery must be labeled `arcanea-fiction`; it cannot be presented as revelation, history, or physics. The worldview authority is `frankxai/starlight-canon`; this specification owns only the SIS artifact format.
 
 ## Required structure
 
 ```markdown
 ---
 type: starlight-note
+provenance: original-starlight-philosophy
+claim_ids: []
+fiction_boundary: none
 note: <slug>
 written: <YYYY-MM-DD>
 horizon: 2125-XX-XX     # 100 years out
