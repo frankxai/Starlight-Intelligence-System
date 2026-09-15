@@ -210,7 +210,7 @@ export interface BrandWorkflowHost {
   execute(stage: BrandStage, contract: BrandWorkflowContract, operationId: string, signal?: AbortSignal): Promise<BrandReceipt>;
 }
 
-/** One bounded wake of an existing host, not a scheduler. Never retries an uncertain effect. */
+/** Runs one bounded wake through an existing host. Uncertain effects require reconciliation. */
 export async function runBrandWorkflow(host: BrandWorkflowHost, maxSteps = 1, signal?: AbortSignal): Promise<BrandInspection> {
   const stop = (reason: string): BrandInspection => ({ status: 'blocked', reason, events: [] });
   if (!Number.isSafeInteger(maxSteps) || maxSteps < 1 || maxSteps > BRAND_STAGES.length) return stop('invalid-step-budget');
