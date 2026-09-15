@@ -108,3 +108,9 @@ link-checker-report.txt
 
 # Starlight/ACOS temporary files
 .gemini/
+
+# Local dispatch scratch & MCP tool schemas
+agent-tools/*.md
+terminals/
+_cto-packs/
+mcps/

@@ -134,9 +134,9 @@
     "package:sip-starter": "node scripts/package-sip-starter.mjs",
     "package:sip-starter:check": "node scripts/package-sip-starter.mjs --check",
     "release:module:dry-run": "node scripts/package-sip-starter.mjs --dry-run",
-    "prepare": "git config core.hooksPath tools/git-hooks 2>/dev/null || true",
+    "prepare": "node -e \"try{require('child_process').execSync('git config core.hooksPath tools/git-hooks')}catch(e){}\"",
     "prepublishOnly": "npm run build && npm run test:substrate",
-    "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts"
+    "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts && node --import tsx --test test/memory-provider-mem0-hardening.test.ts"
   },
   "files": [
     "dist/",
@@ -185,6 +185,7 @@
     "starlight-substrate-mcp": "dist/starlight-mcp.js"
   },
   "dependencies": {
-    "better-sqlite3": "12.8.0"
+    "better-sqlite3": "12.8.0",
+    "@starlight-intelligence/memory": "file:../starlight-memory"
   }
 }

@@ -178,12 +178,39 @@ That is *amplification* in physics. It is visually premium. It is not a graph di
 
 ---
 
-## Immediate next step
+## Creative lock v1 (conviction — not a menu)
 
-**Frank picks:** A (Lens) · B (BrainHero evolve) · C (Glass surface) · or A+B hybrid.
+**Decision:** Homepage loop = **A+B hybrid** (Substrate Lens at BrainHero hub). No more A/B/C polling.
 
-No build until pick. `hero-frame-preview.html` is **withdrawn** — do not use as reference.
+| Why not B alone | Why not A alone | Why A+B |
+|-----------------|-----------------|---------|
+| Ring pulse alone reads decorative | New lens vocabulary fights live hero | Lens *replaces* center orb; ring unchanged = brand continuity + physics metaphor |
+
+**Artifacts:**
+
+- Still + motion preview: `site/motion/estate-hero-loop/stills/creative-lock-v1.html`
+- Beat sheet: `site/motion/estate-hero-loop/beat-sheet.md`
+
+**Frank gate:** Approve or revise the **still** (step 3). No MP4 render until still passes pitch-deck + material tests.
+
+`hero-frame-preview.html` and P0 keyframe slideshow remain **withdrawn**.
 
 ---
 
-**Built on SIP** v1.1.1 · Design reset 2026-06-18
+## Design thinking depth (what June 2026 premium actually means)
+
+**1. Category, not cosmetics.** The homepage hero is not a product tour. It is the 3-second handshake before H1. Motion must feel like *proof of physics* — not slides about vaults.
+
+**2. One memorable object.** Linear, Apple Vision loops, Stripe films: you remember **one** thing (a lens, a beam, a surface). P0 had three unrelated stills + clipart orbs = zero memory.
+
+**3. Extend shipped brand.** `BrainHero` already lives on the page at 50% opacity. The loop is its **kinetic twin** — same ring geometry, upgraded center (glass lens), upgraded motion (phase sync). Inventing a parallel visual language was amateur.
+
+**4. Constructive interference is the idea.** Amplification is not "more nodes." It is **phase alignment** — weak signals summing to a stronger wave. That's teachable in 3s muted. That's premium because it has physics.
+
+**5. Information density without text.** Canonical `docs/visuals/06–07` prove Starlight's bar: glass, depth, rim light, data *in the materials*. The loop carries **one** Fraunces word — the site owns the sentence.
+
+**6. Process honesty.** Moodboard → still lock → beat sheet → build → draft → watch → ship. We skipped to build. That will not happen again.
+
+---
+
+**Built on SIP** v1.1.1 · Design reset 2026-06-18 · Creative lock v1 same day

@@ -33,22 +33,28 @@ export default function LandingPage() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-3">
-            <Link
-              href="/substrate"
-              className="group rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#050509] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.25)]"
-            >
-              Enter substrate
-              <span className="ml-1 inline-block transition-micro group-hover:translate-x-0.5">
-                &rarr;
-              </span>
-            </Link>
-            <Link
-              href="/substrate?view=3d"
-              className="rounded-full border border-white/[0.1] bg-black/30 px-5 py-3 text-[13px] font-medium text-slate-300 backdrop-blur-md transition-micro hover:border-white/[0.25] hover:text-white"
-            >
-              or open 3D scene
-            </Link>
-          </div>
+                      <Link
+                        href="/operator"
+                        className="group rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#050509] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.25)]"
+                      >
+                        Open Operator
+                        <span className="ml-1 inline-block transition-micro group-hover:translate-x-0.5">
+                          &rarr;
+                        </span>
+                      </Link>
+                      <Link
+                        href="/substrate"
+                        className="rounded-full border border-white/[0.1] bg-black/30 px-5 py-3 text-[13px] font-medium text-slate-300 backdrop-blur-md transition-micro hover:border-white/[0.25] hover:text-white"
+                      >
+                        Substrate 2D
+                      </Link>
+                      <Link
+                        href="/substrate?view=3d"
+                        className="rounded-full border border-white/[0.1] bg-black/30 px-5 py-3 text-[13px] font-medium text-slate-300 backdrop-blur-md transition-micro hover:border-white/[0.25] hover:text-white"
+                      >
+                        3D scene
+                      </Link>
+                    </div>
         </section>
 
         {/* Phase 2 — honest roadmap */}

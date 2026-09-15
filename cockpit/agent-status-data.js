@@ -1,5 +1,5 @@
 window.STARLIGHT_AGENT_STATUS = {
-  "last_updated": "2026-06-13T18:09:00.6587285Z",
+  "last_updated": "2026-07-19T16:49:49.0578708Z",
   "hostname": "DESKTOP-1B4ICID",
   "machine_role": "Primary Dev Machine (Heavy Orchestration & Coding)",
   "machine_description": "High-perf laptop used for deep coding, Next.js dashboard/console execution, and full agent swarms.",

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Starlight Hero Loop — Creative Lock v1 (A+B)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #060609;
+      overflow: hidden;
+      font-family: Inter, system-ui, sans-serif;
+    }
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      max-width: 1920px;
+      max-height: 1080px;
+      margin: 0 auto;
+      aspect-ratio: 16 / 9;
+    }
+    .stage svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    /* Left third reserved for site H1 overlay in production embed */
+    .text-zone {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 38%;
+      height: 100%;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(6,6,9,0.92) 0%, rgba(6,6,9,0.55) 70%, transparent 100%);
+    }
+    .wordmark {
+      position: absolute;
+      right: 8%;
+      bottom: 14%;
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: rgba(226, 232, 240, 0.88);
+      pointer-events: none;
+    }
+    .wordmark em {
+      font-style: normal;
+      background: linear-gradient(120deg, #a78bfa 0%, #e879f9 45%, #67e8f9 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 600;
+    }
+    .meta {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.45);
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .filament, .node-crystal, .lens-group, .beam-out, .mesh { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <pattern id="dotGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.6" fill="rgba(255,255,255,0.035)" />
+        </pattern>
+        <radialGradient id="voidVignette" cx="50%" cy="50%" r="70%">
+          <stop offset="0%" stop-color="transparent" />
+          <stop offset="100%" stop-color="#060609" stop-opacity="0.85" />
+        </radialGradient>
+        <linearGradient id="rimLight" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.9" />
+          <stop offset="50%" stop-color="#a78bfa" stop-opacity="0.5" />
+          <stop offset="100%" stop-color="#f0abfc" stop-opacity="0.25" />
+        </linearGradient>
+        <linearGradient id="beamGrad" x1="0%" y1="50%" x2="100%" y2="50%">
+          <stop offset="0%" stop-color="#a78bfa" stop-opacity="0" />
+          <stop offset="35%" stop-color="#a78bfa" stop-opacity="0.35" />
+          <stop offset="65%" stop-color="#67e8f9" stop-opacity="0.95" />
+          <stop offset="100%" stop-color="#e0f2fe" stop-opacity="0.7" />
+        </linearGradient>
+        <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="8" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <filter id="glassLens" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
+          <feColorMatrix in="blur" type="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.55 0" result="glass" />
+          <feSpecularLighting in="glass" surfaceScale="4" specularConstant="1.2" specularExponent="28"
+            lighting-color="#67e8f9" result="spec">
+            <fePointLight x="1180" y="420" z="180" />
+          </feSpecularLighting>
+          <feComposite in="spec" in2="glass" operator="in" result="specOut" />
+          <feMerge>
+            <feMergeNode in="glass" />
+            <feMergeNode in="specOut" />
+          </feMerge>
+        </filter>
+        <filter id="filamentGlow" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur stdDeviation="3" />
+        </filter>
+      </defs>
+
+      <!-- Void + atmosphere -->
+      <rect width="1920" height="1080" fill="#060609" />
+      <rect width="1920" height="1080" fill="url(#dotGrid)" opacity="0.9" />
+
+      <!-- Mesh drift (site hero parity) -->
+      <g class="mesh" opacity="0.9">
+        <ellipse class="mesh" cx="280" cy="200" rx="220" ry="220" fill="#7c3aed" opacity="0.06" filter="url(#softGlow)">
+          <animate attributeName="cx" values="280;320;280" dur="18s" repeatCount="indefinite" />
+        </ellipse>
+        <ellipse class="mesh" cx="1680" cy="320" rx="180" ry="180" fill="#06b6d4" opacity="0.05" filter="url(#softGlow)">
+          <animate attributeName="cy" values="320;280;320" dur="22s" repeatCount="indefinite" />
+        </ellipse>
+        <ellipse class="mesh" cx="1200" cy="780" rx="140" ry="140" fill="#d946ef" opacity="0.04" filter="url(#softGlow)">
+          <animate attributeName="rx" values="140;160;140" dur="14s" repeatCount="indefinite" />
+        </ellipse>
+      </g>
+
+      <!-- Agent filaments — misaligned phase (constructive interference setup) -->
+      <g filter="url(#filamentGlow)" opacity="0.55">
+        <path class="filament" d="M 200 180 Q 900 120 1180 520" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-linecap="round">
+          <animate attributeName="opacity" values="0.25;0.7;0.25" dur="3.2s" begin="0s" repeatCount="indefinite" />
+        </path>
+        <path class="filament" d="M 1680 140 Q 1400 200 1180 520" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-linecap="round">
+          <animate attributeName="opacity" values="0.7;0.2;0.7" dur="3.2s" begin="0.4s" repeatCount="indefinite" />
+        </path>
+        <path class="filament" d="M 1750 720 Q 1500 600 1180 520" fill="none" stroke="#e879f9" stroke-width="1.2" stroke-linecap="round">
+          <animate attributeName="opacity" values="0.3;0.65;0.3" dur="3.2s" begin="0.9s" repeatCount="indefinite" />
+        </path>
+        <path class="filament" d="M 900 980 Q 1050 700 1180 520" fill="none" stroke="#34d399" stroke-width="1" stroke-linecap="round">
+          <animate attributeName="opacity" values="0.5;0.15;0.5" dur="3.2s" begin="1.2s" repeatCount="indefinite" />
+        </path>
+        <path class="filament" d="M 400 850 Q 750 650 1180 520" fill="none" stroke="#fbbf24" stroke-width="1" stroke-linecap="round">
+          <animate attributeName="opacity" values="0.2;0.6;0.2" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+        </path>
+      </g>
+
+      <!-- BrainHero ring — crystal facets, not clipart circles -->
+      <g transform="translate(1180, 520)">
+        <!-- Ring topology (scaled from BrainHero 400×400) -->
+        <g opacity="0.35">
+          <circle r="280" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.8" />
+        </g>
+        <!-- Spokes to lens center -->
+        <g stroke="rgba(255,255,255,0.05)" stroke-width="0.6">
+          <line x1="0" y1="0" x2="0" y2="-196" />
+          <line x1="0" y1="0" x2="126" y2="-160" />
+          <line x1="0" y1="0" x2="190" y2="-67" />
+          <line x1="0" y1="0" x2="190" y2="67" />
+          <line x1="0" y1="0" x2="126" y2="160" />
+          <line x1="0" y1="0" x2="0" y2="196" />
+          <line x1="0" y1="0" x2="-126" y2="160" />
+          <line x1="0" y1="0" x2="-190" y2="67" />
+          <line x1="0" y1="0" x2="-190" y2="-67" />
+        </g>
+        <!-- 9 agent crystals on ring -->
+        <g class="nodes">
+          <polygon class="node-crystal" points="0,-196 8,-184 -8,-184" fill="#a78bfa" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="0s" repeatCount="indefinite" />
+          </polygon>
+          <polygon class="node-crystal" points="126,-160 134,-148 118,-148" fill="#22d3ee" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="0.9s" repeatCount="indefinite" />
+          </polygon>
+          <polygon class="node-crystal" points="190,-67 198,-55 182,-55" fill="#e879f9" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="1.8s" repeatCount="indefinite" />
+          </polygon>
+          <polygon class="node-crystal" points="190,67 198,79 182,79" fill="#34d399" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="2.7s" repeatCount="indefinite" />
+          </polygon>
+          <polygon class="node-crystal" points="126,160 134,172 118,172" fill="#fbbf24" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="3.6s" repeatCount="indefinite" />
+          </polygon>
+          <polygon class="node-crystal" points="0,196 8,208 -8,208" fill="#fb7185" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="4.5s" repeatCount="indefinite" />
+          </polygon>
+          <polygon class="node-crystal" points="-126,160 -118,172 -134,172" fill="#a78bfa" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="5.4s" repeatCount="indefinite" />
+          </polygon>
+          <polygon class="node-crystal" points="-190,67 -182,79 -198,79" fill="#22d3ee" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="6.3s" repeatCount="indefinite" />
+          </polygon>
+          <polygon class="node-crystal" points="-190,-67 -182,-55 -198,-55" fill="#e879f9" opacity="0.5">
+            <animate attributeName="opacity" values="0.35;1;0.5" dur="9s" begin="7.2s" repeatCount="indefinite" />
+          </polygon>
+        </g>
+
+        <!-- Substrate lens — frosted disc, rim-lit -->
+        <g class="lens-group" filter="url(#glassLens)">
+          <circle r="72" fill="rgba(255,255,255,0.06)" stroke="url(#rimLight)" stroke-width="1.5" />
+          <circle r="58" fill="rgba(103,232,249,0.04)" />
+          <circle r="44" fill="rgba(167,139,250,0.08)" />
+          <animate attributeName="opacity" values="0.85;1;0.85" dur="4.5s" repeatCount="indefinite" />
+        </g>
+        <circle r="76" fill="none" stroke="url(#rimLight)" stroke-width="0.5" opacity="0.4" />
+
+        <!-- Unified beam — amplification outward (toward viewer / lower-right) -->
+        <g class="beam-out" filter="url(#softGlow)">
+          <path d="M 40 20 L 420 180 L 400 200 L 20 40 Z" fill="url(#beamGrad)" opacity="0">
+            <animate attributeName="opacity" values="0;0.15;0.55;0.55;0.1;0" dur="10s" repeatCount="indefinite" />
+          </path>
+        </g>
+      </g>
+
+      <!-- Sync flash — all nodes phase-lock at loop peak -->
+      <circle cx="1180" cy="520" r="300" fill="none" stroke="#67e8f9" stroke-width="0.5" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;0.35;0;0" dur="10s" repeatCount="indefinite" />
+        <animate attributeName="r" values="280;280;280;320;280;280" dur="10s" repeatCount="indefinite" />
+      </circle>
+
+      <rect width="1920" height="1080" fill="url(#voidVignette)" pointer-events="none" />
+    </svg>
+
+    <div class="text-zone" aria-hidden="true"></div>
+    <p class="wordmark"><em>Amplified.</em></p>
+  </div>
+  <p class="meta">Creative lock v1 · A+B hybrid · estate-hero-loop · draft — not shipped</p>
+</body>
+</html>

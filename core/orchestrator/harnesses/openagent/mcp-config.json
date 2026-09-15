@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "_comment": "OpenAgent (OmO) harness MCP scope for Starlight Orchestrator. Connects OmO to the canonical Starlight memory substrate.",
+  "_harness": "openagent",
+  "_role": "multi-harness-team-mode",
+  "_models": ["Kimi K2.6", "GPT-5.5", "Claude 3.7", "Codex", "Pi"],
+  "_loaded_when": "multi-agent parallel work, heterogeneous model dispatch, long-horizon work tracking, automated coding swarms",
+  "_write_policy": "Scoped workspace edits with Git checkpointing and Sentinel test audits.",
+  "mcpServers": {
+    "starlight-substrate": {
+      "command": "node",
+      "args": ["dist/mcp-server.js"],
+      "env": {
+        "STARLIGHT_MCP_MODE": "read-write",
+        "STARLIGHT_VAULT_DIR": "memory/vaults"
+      }
+    }
+  },
+  "_built_on_sip": {
+    "substrate": "starlightintelligence.org/protocol",
+    "version": "v1.1.1",
+    "layers_used": ["file-contract", "attestation", "mcp-registry"],
+    "verticals": "core/orchestrator/harnesses/openagent",
+    "generated": "2026-09-15"
+  }
+}

@@ -111,12 +111,12 @@ Optional: single word fade at 6–8s: `amplified` (lowercase, mono) — only if 
 
 ## Design bar
 
-See `docs/strategic/motion-design-premium-2026.md`. **`hero-frame-preview.html` withdrawn** — failed premium audit.
+See `docs/strategic/motion-design-premium-2026.md`. P0 assets **withdrawn**.
 
-**Direction pick required:** A (Substrate Lens) · B (BrainHero evolve) · C (Glass surface) · A+B hybrid.
+**Creative lock v1 (A+B):** `stills/creative-lock-v1.html` + `beat-sheet.md`
 
 ## Approval
 
-- [ ] Frank picks design direction (premium doc § Three directions)
-- [ ] Frank approves **still** (premium-visual or evolved BrainHero) — creative lock
+- [x] Direction: A+B hybrid (substrate lens + BrainHero ring) — documented in premium doc
+- [ ] Frank approves **still** (`stills/creative-lock-v1.html`) — creative lock
 - [ ] Frank approves draft MP4 → high render + registry `approved`

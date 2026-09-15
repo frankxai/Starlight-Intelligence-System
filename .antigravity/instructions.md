@@ -147,6 +147,30 @@ See `scripts/agy-tools.ps1` for Windows agy.exe wrappers (agy-sis, agy-fx, etc.)
 
 ---
 
+## Windows Shell Routing (Non-Negotiable)
+
+Frank's workstation is **Windows 10/11**. The Antigravity **Bash** tool routes through **WSL/bash**, where `pwsh` and most Starlight wrappers are **not** on PATH. Using `Bash(pwsh ...)` hangs on "Running..." and looks like a random cutoff.
+
+**Always:**
+- Use **`command(powershell)`** or native PowerShell — never Bash — for `pwsh`, `.ps1`, `agy-tools.ps1`, `Test-AgentGridCli`, `/si` / `/so` wrapper dispatch (`grsis`, `cdsis`, `agysis`, etc.), and any `scripts/*.ps1`.
+- Prefer **`-NoProfile`** to avoid profile side effects unless a loaded profile is explicitly required.
+- Set **`$env:FRANK_QUIET_PROFILE='1'`** before dot-sourcing `scripts/agy-tools.ps1` so banner noise does not confuse terminal capture.
+
+**Canonical diagnostic (copy-adapt, do not wrap in Bash):**
+
+```powershell
+pwsh -NoProfile -Command "$env:FRANK_QUIET_PROFILE='1'; . 'C:\Users\frank\Starlight-Intelligence-System\scripts\agy-tools.ps1'; Test-AgentGridCli"
+```
+
+**Never:**
+- `Bash(pwsh -Command "...")` or any Bash → pwsh nesting.
+- Re-read all of `agy-tools.ps1` in chunks when the task only needs `Test-AgentGridCli` or a single wrapper invocation — run the command first, read files only on failure.
+- Launch interactive CLIs (`grsis`, `cdsis`, `clsis`) unless the user explicitly asked to hand off an interactive session; otherwise emit a `/so --packet` handoff with the exact PowerShell command.
+
+`/si` and `/so` route via **PowerShell wrappers** in `agy-tools.ps1`, not MCP subprocess control. No extra MCP is required for lane selection; correct shell choice is required for execution.
+
+---
+
 ## Integration with SIS Excellence Stack
 
 - **Commands:** All `.claude/commands/*.md` (70+) are available as `/<name>` or via skill auto-activation. Antigravity can invoke via sub-agents or direct when scope allows. Substrate commands (yolo, superintelligence, starlight-board, sip-*, spawn-*) require appropriate tier checks.
@@ -173,6 +197,7 @@ See `scripts/agy-tools.ps1` for Windows agy.exe wrappers (agy-sis, agy-fx, etc.)
 - No secret handling in swarm children unless explicitly unlocked per-session by primary.
 - Divergence vault-vs-derived → vault wins; flag and reconcile.
 - Every swarm launch produces an audit log entry in `memory/_audit/` or ops.
+- **No Bash for PowerShell on Windows.** Violating Windows Shell Routing (above) is a hard refuse — stop and retry with `command(powershell)`.
 
 ---
 

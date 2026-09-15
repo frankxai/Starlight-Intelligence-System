@@ -1,75 +1,89 @@
-# MEMORY — Starlight Instance State (template)
+# MEMORY — Starlight Intelligence System (Instance State)
 
-Template for alliance or vertical memory. Copy to your instance's root, rename to `MEMORY.md` if adopting wholesale. Update at every cycle close or after any structural change.
-
-This file is the **public template**. Real instance state — Notion IDs, partner names, in-flight commitments, financial detail — is held privately by each adopter (do not commit it to a public repo).
-
-## Identity
-
-- **Name:** `<your instance name>`
-- **Type:** `<alliance | vertical | substrate>`
-- **Authored by:** `<your name / entity>`
-- **Founded:** `<year>`
-- **SIP version:** `v1.0.0`
-- **Canonical public URL:** `<your protocol URL or starlightintelligence.org/protocol>`
-- **Source of truth:** `<your repo>`
-
-## Sovereign verticals (if you operate any)
-
-| Vertical | Owner | Status | Notes |
-|----------|-------|--------|-------|
-| `<name>` | `<entity>` | `active vN` | `<one-line>` |
-| ... | ... | ... | ... |
-
-## Alliances (if you participate in any)
-
-| Alliance | Members | Your role | Status |
-|----------|---------|-----------|--------|
-| `<name>` | `<count nodes, names if public-OK>` | `<architect / advisor / etc.>` | `<cycle N status>` |
-| ... | ... | ... | ... |
-
-## External authorities
-
-- **Intent authority:** `<Notion DB ID or other system>` — the "why" lives here.
-- **Source of truth:** `<GitHub org/repo>` — the "what holds now" lives here.
-- **Runtime state:** `<Supabase / DB / etc.>` — the "what's happening now" lives here.
-
-(Keep IDs in your private state; substitute placeholders in any public surface of this file.)
-
-## Active roadmap
-
-| Milestone | Target date | Owner | Status |
-|-----------|-------------|-------|--------|
-| `<milestone>` | `<date>` | `<owner>` | `<status>` |
-| ... | ... | ... | ... |
-
-## Non-negotiables (substrate-level)
-
-- "Built on SIP" attribution on every cross-vertical or cross-node artifact.
-- Sovereignty clause (SIP § 5) is not waivable. Parties that cannot accept it do not adopt SIP.
-- Canon license (CC-BY-NC for Arcanea canon) is enforceable.
-- Open boundary (MIT) for the substrate spec is permanent — no re-licensing.
-
-## Open forks
-
-| Fork | Options | Owner | Decide by |
-|------|---------|-------|-----------|
-| `<fork>` | `<options>` | `<owner>` | `<date>` |
-| ... | ... | ... | ... |
-
-## Changelog
-
-- `v7.6.0` · `2026-04-28` · **People Intelligence rename** — Path A authorless symmetric naming with Sound Intelligence. HR Intelligence reference vertical → People Intelligence (8-phase ship across vertical wrapper, skills domain, 6 sub-system agents, 28 commands, cross-reference sweep, SOUL boundary note, /openclaw-audit, version bump). Industry-context HR mentions preserved (HR theater, HRBP, HRIS, HR-tech, HR-fluff, HR-specific data privacy). Frozen historical records (docs/boards/, docs/ops/HANDOVER-*) untouched. Luminor Board verdict 2026-04-28: PROCEED at v7.6.0 (revised down from proposed v8.0). Boundary note added to verticals/people-intelligence/SUB-SYSTEMS.md delineating People Intelligence ↔ Relational IS per Lyssandria's challenge.
-- `v7.4.1-alpha` · `2026-04-25` · **Domain Sub-Stack Tier** introduced — pattern for sovereign-person domain verticals composed of 4-7 functional sub-systems. First reference shipped as **HR Intelligence vertical** (renamed to **People Intelligence** at v7.6.0; see entry above) at `verticals/people-intelligence/` with 6 sub-systems (Hiring/Performance/Training/Culture/Talent/Org), 6 new agents (`starlight-hiring`, `starlight-performance`, `starlight-training`, `starlight-culture`, `starlight-talent`, `starlight-org`), 6 new skills under `skills/people-intelligence/`, 28 new operational commands across `hire-*`/`perf-*`/`training-*`/`culture-*`/`talent-*`/`org-*` prefixes, all research-grounded (Schmidt & Hunter, SBI, SCARF, Maslach, Edmondson, Kirkpatrick, Schein, Kotter, Bridges, etc.) with refusal of HR theater (PIPs-as-firing, stack rank, values-poster, engagement-survey-as-data, one-off-workshop, paper-succession). New meta-command `/spawn-domain-stack` generalizes the pattern. Two new ecosystem export targets: Microsoft Copilot + Custom GPT (now 7 export targets total). 6 new knowledge templates in starter pack (people-hiring, people-performance, people-training, people-culture, people-talent, people-org) plus export-pathways guide. Composes with universal 9-layer IS (Genius + Vision + Talent overlap with sub-system Talent — boundaries declared in AGENT_REGISTRY).
-- `v7.4.0-beta` · `2026-04-24` · 9-layer intelligence architecture complete. Added 5 new IS layers + 5 new agents + new tiers (Business / Vision / Embodiment / Memory / Relational). New agents: starlight-business, starlight-visionary, starlight-embodiment, starlight-secondbrain, starlight-relational. New commands (13 this wave): /architect-entity, /model-revenue, /tax-sanity, /define-vision, /build-brand-kit, /align-voice, /design-regimen, /energy-audit, /capture-daily, /distill-insights, /orchestrate-brain, /map-relationships, /design-alliance-readiness. Plus meta-composition command /compose-stack. New skills across 5 new domains (business/, vision/, health/, memory/ expansion, relational/). docs/ARCHITECTURE.md (2,400 words) documents full 9-layer composition. test/v74.test.ts (27 assertions, all passing) guards drift. Luminor Board pressure-test returned REVISE with 5 items — 3 ship-blockers landed in this commit (AGENT_REGISTRY update with 9-layer stack + 5 new tiers + Sage/SecondBrain + Business/Wealth boundaries; v7.4 test harness; docs/ARCHITECTURE.md already landed by composition agent). Maturity marking: Business/Vision/Creator/Genius = v7.4-stable; Health/Relational/SecondBrain = v7.4-alpha (active dogfood, not positioning-central). Items 4 (MVS foregrounding in public explainer) + 5 (first-test-case dogfood for new layers) deferred to v7.4.1.
-- `v7.4.0-alpha` · `2026-04-24` · Genius Intelligence System alpha shipped: new Excavation Tier agent `starlight-genius`; four new commands (`/discover-genius`, `/reclaim-knowledge`, `/train-executor`, `/creator-pipeline`, `/content-systemize`); vertical-tier `/arcanea-canon`; two new intelligence skills (`intelligence/genius-excavation`, `intelligence/knowledge-reclamation`); public explainer page (`docs/public/starlight-intelligence-system.md`, ~2,200 words); non-technical Claude Project starter pack (`integrations/starter-packs/friend-starter/` — 13 files including custom-instructions.md, 9 knowledge templates with reference-grade filled examples, README). Attestation stance shifted: agents auto-embed "Built on SIP" in every output; `/sip-attest` remains for retrofit. First real test case: a private individual (identity and profession withheld) full dogfood: intake card, genius profile template, freedom path, reclamation map, executor playbook, creator pipeline — all reference-grade examples live in starter pack knowledge files.
-- `v7.3.1` · `2026-04-24` · Post-Luminor-Board REVISE follow-on shipped same-day: test/v73.test.ts (19 conformance assertions, all passing) closes eval gap; docs/ecosystem-integration.md (2,868-word hub) closes "Claude Code central" perception gap; ONBOARDING.md updated with "Protocol vs reference" section; memory/intake/session-log-template.md provides instrumentation for live sessions; v7.4 ecosystem exports scaffolded (/sip-export + 5 target schemas: claude-project, chatgpt-project, gemini-gem, cursor, cowork); v7.5 attested modalities scaffolded (/sip-attest-audio, /sip-attest-image, /sip-attest-video, /sip-compose-modality + docs/attested-modalities.md roadmap).
-- `v7.3.0` · `2026-04-24` · Newcomer surface shipped: ONBOARDING.md + DELIVERY.md + SESSION_RUNBOOK.md at root; /intake + /welcome + /sovereign-spawn commands (protocol tier); starlight-concierge + starlight-envoy agents (new Front-Door Tier); integration/idea-triage + integration/creator-path skills; templates/vertical-starter/ scaffold; AGENT_REGISTRY.md updated with Front-Door Tier; skill-rules.json updated (18 rules, 9 agent defaults). Closes non-coder onboarding gap identified in v7.2 retrospective.
-- `v7.2.0` · `2026-04-23` · Substrate ecosystem ship: starlight-adoption-kit + vibe-os-substrate repos live, /badge route, test harness (35 assertions), OpenClaw audit + remediations applied.
-- `v7.1.0` · earlier · starlight-mcp v1.1 live; Console v8 foundation; private/staging/ structure.
-- `v7.0.0` · 2026-04-22 · SIP v1.1.0 spec shipped; first substrate self-attestation.
-- `vX.Y.Z` · `<date>` · `<one-line summary>`
+Current operating state and living ledger for the **Starlight Intelligence System (SIS)** reference build and sovereign substrate.
 
 ---
 
-**Built on SIP** · v1 · MIT
+## Identity
+
+- **Name:** Starlight Intelligence System (SIS)
+- **Type:** Substrate + Reference Operational Build
+- **Authored by:** Frank Riemer (FrankX)
+- **Founded:** 2024
+- **SIP version:** `v1.1.1`
+- **Canonical public URL:** `starlightintelligence.org`
+- **Source of truth:** `frankxai/Starlight-Intelligence-System`
+
+---
+
+## Sovereign Verticals (Operational Reference)
+
+| Vertical | Owner | Status | Notes |
+|----------|-------|--------|-------|
+| **People Intelligence** | FrankX / SIS | `active v7.6.0` | 6 sub-systems (Hiring, Performance, Training, Culture, Talent, Org) · 28 commands |
+| **Sound Intelligence** | FrankX / SIS | `active v7.6.0` | 6 sub-systems (Composition, Production, Catalog, Performance, Audience, Sync) |
+| **Music IS** | FrankX / Arcanea Records | `active v7.6.0` | 7 agents (A&R, Persona, Production, Distribution, Royalty, Persona-Keeper, Royalty-Architect) |
+| **Second Brain IS** | FrankX / SIS | `active v0.1.1` | Daily capture, weekly orchestration, monthly distillation, Alina Pak workflow, LLM-Wiki filing |
+| **Business IS** | FrankX / SIS | `active v7.4.0` | Entity architecture, revenue modeling, tax sanity, unit economics |
+| **Creator IS** | FrankX / SIS | `active v7.4.0` | Creator pipeline, content systemization, genius profile |
+| **Brand IS** | FrankX / SIS | `active v7.4.0` | Brand kit, voice anti-slop, aesthetic lanes, visual directors |
+| **Code IS** | FrankX / SIS | `active v7.4.0` | Empirical sandbox, active healing daemon, repo-bridge, multi-agent dispatch |
+| **Self & Health IS** | FrankX / SIS | `active v7.4.0` | Body substrate, energy architecture, cognitive load management |
+| **Ocean / Marine Intelligence** | FrankX / SIS | `active v8.3.0` | Marine biodiversity, acoustics, autonomous underwater vehicle coordination |
+| **Crypto Intelligence** | FrankX / SIS | `active v8.3.0` | On-chain telemetry, portfolio risk modeling, smart contract audit gates |
+
+---
+
+## Multi-Agent Ecosystem Alliances & Swarm Peers
+
+| Platform / Framework | Connection Mode | Integration Mechanism | Status |
+|----------------------|-----------------|------------------------|--------|
+| **ruflow / claude-flow v3** | Connected Peer (`arcanea-flow`) | Memory Bus singleton daemon (`transmissions/channels/arcanea-flow-channel.md`), RuVector embeddings, Q-learning router, MoE, ReasoningBank | `active` |
+| **oh-my-openagent (OmO)** | Multi-Harness Agent OS (`oh-my-openagent`) | Team Mode multi-agent coordination (11 roles), Boulder work-state tracking, OpenCode & Codex dual editions | `active` |
+| **Hermes Agent** | Profile Distribution & Provenance (`hermes`) | GenCreator 6-Pillar CoE Guardians, isolated profile specs, deep provenance search backbone (`starlight-hermes`) | `active` |
+| **OpenClaw & Kiloclaw** | Reference Runtime (`openclaw`, `kiloclaw`) | Signed SIS Claw packages (`frankxai/sis-*-claw`), hash verification, deployable business/creator stacks | `active` |
+| **Google Antigravity / Gemini** | Native Swarm Platform (`.antigravity/`) | Reactive event loops, subagent dispatch, sandbox commands, artifact generation, Gemini 1M+ context | `active` |
+| **Grok (xAI)** | Fast TUI & Subagent Driver (`.grok/`) | TUI subagent swarm, Grok personal excellence seeds, visual generation, live palace review | `active` |
+
+---
+
+## Memory Substrate Status
+
+- **6 Semantic Memory Vaults:** Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗
+- **Storage Hybrid:** Append-only event-sourced JSONL files + local SQLite FTS5 index + pluggable vector embeddings.
+- **Memory Provider Router:** Resource-aware routing with `local_core` as canonical authority; Mem0 remote provider with TTL cache, auto-flush, and cache invalidation on write; Hindsight/Graphiti graph memory mirrors.
+- **Memory Gateway v0.1:** SessionStore + per-harness loopback daemon + Reciprocal Rank Fusion (RRF) unification with automatic privacy filtering.
+- **Queen Continuous Advance:** Visual palace recall + dreaming consolidation pipeline (`scripts/dreaming-cron.ps1`).
+
+---
+
+## Non-negotiables (Substrate-Level)
+
+- "Built on SIP" attribution on every cross-vertical or cross-node artifact.
+- Sovereignty clause (SIP § 5) is non-waivable.
+- Open boundary: MIT for spec and reference code, CC-BY-NC for Arcanea canon.
+- Declared file loads must be test-asserted to exist.
+- SAGE Goal verification invariant: `/goal` runs require checklist state and Sentinel audit passing (`LGTM-SIS`).
+- Second Brain question-filing invariant: Every distilled note titled by the specific question it answers.
+
+---
+
+## Changelog
+
+- `v8.3.0` · `2026-06-12` · **Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS + Queen Advance** — Shipped pluggable memory provider router (local_core canonical authority, Mem0 remote shadow provider with TTL caching, retry, and auto-flush); 5 image_gen visual palace recall artifacts; Queen continuous loop driver; Crypto Intelligence vertical v0.1 proof-of-pattern; Marine Intelligence skills; 144 named agents and 83 auto-activating skills locked.
+- `v8.2.0` · `2026-05-20` · **Cost & API Control Plane + Finance Bridge** — Built Zellij cockpit cost plane layout, Stripe revenue fetchers, P&L calculations, runway estimation, and daily revenue snapshot automation.
+- `v8.1.0` · `2026-05-11` · **/yolo Hive Conductor + SAGE Autonomous Engine** — Conductor mode for cross-repo parallel council scans, SAGE self-healing loops with checkpointing, context compression, and automatic git rollback on Sentinel audit failure.
+- `v8.0.0` · `2026-05-07` · **Platform Prompt Symmetry & 10-IS Stack Lock** — Built `test/v80-platform-prompts.test.ts` asserting cross-platform prompt symmetry across Claude, Codex, Gemini, Antigravity, Grok, and OpenCode. Locked the 10 universal Intelligence Systems.
+- `v7.9.0` · `2026-05-04` · **Vertical Coverage & agentskills.io Conformance** — Standardized all skills under the agentskills.io specification (v88 conformance suite) and verified 100% vertical structural coverage.
+- `v7.8.0` · `2026-05-02` · **Starlight Skill Registry** — Formalized `skills/SKILL_REGISTRY.md` tracking ownership, version, and lifecycle across 83 skills in 16 domains.
+- `v7.7.0` · `2026-04-30` · **Skill Rules Engine** — Centralized auto-activation rules in `skills/skill-rules.json` matching keywords, globs, and agent personas.
+- `v7.6.0` · `2026-04-28` · **People Intelligence Rename** — People Intelligence reference vertical shipped at `verticals/people-intelligence/` with 6 sub-systems, 6 agents, 28 commands.
+- `v7.4.1` · `2026-04-25` · **Domain Sub-Stack Tier Introduced** — Sound Intelligence and HR/People Intelligence reference builds.
+- `v7.4.0` · `2026-04-24` · **9-Layer Intelligence Architecture & Genius IS** — Shipped `starlight-genius`, excavation commands, and non-technical Claude starter pack.
+- `v7.3.0` · `2026-04-24` · **Front-Door Tier** — Concierge and Envoy intake agents with idea-triage and creator-path skills.
+- `v7.2.0` · `2026-04-23` · **Substrate Ecosystem Ship** — Adoption kit, Built on SIP badge generator, and OpenClaw security review.
+- `v7.0.0` · `2026-04-22` · **SIP v1.1.0 Spec Shipped** — First substrate self-attestation.
+
+---
+
+**Built on SIP** — Starlight Intelligence Protocol v1.1.1 · MIT

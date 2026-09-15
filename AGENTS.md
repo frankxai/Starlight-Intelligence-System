@@ -81,6 +81,15 @@ And configure its activation rule inside `skills/skill-rules.json`:
 }
 ```
 
+### 4. Ecosystem Swarm & Multi-Harness Alignment
+
+SIS integrates and aligns with the leading open multi-agent frameworks across the Frank ecosystem:
+* **ruflow / claude-flow v3** (`C:\Users\frank\arcanea-flow\`): Connect-not-absorb via the Memory Bus contract (`transmissions/channels/arcanea-flow-channel.md`). High-velocity swarm coordination, RuVector embeddings, Q-learning router, MoE (8 experts), ReasoningBank adaptive learning loops, and hive-mind blackboard patterns. Swarm execution outputs stream into the Memory Bus with SIP attribution before write.
+* **oh-my-openagent (OmO)** (`C:\Users\frank\oh-my-openagent\`): Multi-Harness Agent OS coordinating across OpenCode and Codex CLI runtimes. Provides Team Mode (parallel multi-agent delegation across 11 roles), Boulder work-state tracking (`.omo/boulder.json`), background workers, and heterogeneous model routing (Kimi K2.6, GPT-5.5, Claude, Codex, Pi).
+* **Hermes Agent** (`C:\Users\frank\hermes\`): Isolated agent profiles with dedicated config, skills, memory, and sessions. Powers the GenCreator 6-Pillar CoE Guardians (Strategy, Governance, Talent, Technology, Data, Ethics) and acts as the deep provenance search backbone (`starlight-hermes`, `skills/orchestration/hermes-swarm`).
+* **OpenClaw & Kiloclaw**: Security-first personal AI agent runtimes, signed SIS Claws (`frankxai/sis-*-claw`), cryptographic hash verification, zero auto-load of untrusted community hubs, and deployable modular stacks for business, creators, and wealth.
+* **Google Antigravity & Gemini CLI**: High-context agent pairing, terminal sandbox, reactive messaging, native artifacts, and subagent orchestration (`.antigravity/instructions.md`, `swarm-protocol.md`).
+
 ---
 
 ## What you have access to
