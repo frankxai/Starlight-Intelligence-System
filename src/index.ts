@@ -434,6 +434,15 @@ export {
   initHarness,
   recordFeatureEvidence,
 } from './loop-graph.js';
+
+export {
+  BRAND_STAGES, brandDigest, validateBrandContract, compileBrandWorkflow,
+  createBrandJournal, inspectBrandWorkflow, runBrandWorkflow,
+} from './brand-workflow.js';
+export type {
+  BrandStage, CriterionKind, BrandWorkflowContract, BrandReceipt, BrandJournal,
+  BrandInspection, BrandWorkflowHost,
+} from './brand-workflow.js';
 export type {
   CompiledLoopGraph,
   HarnessFeature,

@@ -10,6 +10,9 @@ on:
     paths:
       - ".github/workflows/loop-kernel.yml"
       - "src/loop-*.ts"
+      - "src/brand-workflow.ts"
+      - "scripts/brand-workflow.ts"
+      - "test/brand-workflow.test.ts"
       - "src/instruction-compiler.ts"
       - "src/work-graph*.ts"
       - "src/index.ts"
@@ -23,6 +26,9 @@ on:
     paths:
       - ".github/workflows/loop-kernel.yml"
       - "src/loop-*.ts"
+      - "src/brand-workflow.ts"
+      - "scripts/brand-workflow.ts"
+      - "test/brand-workflow.test.ts"
       - "src/instruction-compiler.ts"
       - "src/work-graph*.ts"
       - "src/index.ts"
