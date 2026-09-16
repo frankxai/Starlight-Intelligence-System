@@ -42,21 +42,21 @@ export class BrandWorkflowStore {
     this.now = options.now ?? Date.now;
     db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON;');
     db.exec(`
-      CREATE TABLE IF NOT EXISTS brand_store_meta (id INTEGER PRIMARY KEY CHECK(id=1), version INTEGER NOT NULL);
-      INSERT OR IGNORE INTO brand_store_meta VALUES (1,1);
+      create table if not exists brand_store_meta (id INTEGER PRIMARY KEY CHECK(id=1), version INTEGER NOT NULL);
+      insert or ignore into brand_store_meta VALUES (1,1);
     `);
     if ((db.prepare('SELECT version FROM brand_store_meta WHERE id=1').get() as { version: number }).version !== 1) throw new Error('Unsupported brand store version');
     db.exec(`
-      CREATE TABLE IF NOT EXISTS brand_leases (resource TEXT PRIMARY KEY, holder TEXT NOT NULL, fence INTEGER NOT NULL, expires INTEGER NOT NULL);
-      CREATE TABLE IF NOT EXISTS brand_limits (id INTEGER PRIMARY KEY CHECK(id=1), total_ceiling INTEGER NOT NULL);
-      CREATE TABLE IF NOT EXISTS brand_principals (actor TEXT PRIMARY KEY, provider TEXT NOT NULL, public_key TEXT NOT NULL, fingerprint TEXT NOT NULL UNIQUE, active INTEGER NOT NULL DEFAULT 1);
-      CREATE TABLE IF NOT EXISTS brand_work (work TEXT PRIMARY KEY, resource TEXT NOT NULL, max_attempts INTEGER NOT NULL, total_ceiling INTEGER NOT NULL, stage_ceiling INTEGER NOT NULL);
-      CREATE TABLE IF NOT EXISTS brand_attempts (work TEXT NOT NULL REFERENCES brand_work(work), attempt TEXT NOT NULL, ordinal INTEGER NOT NULL, contract TEXT NOT NULL, journal TEXT NOT NULL, digest TEXT NOT NULL, PRIMARY KEY(work,attempt), UNIQUE(work,ordinal));
-      CREATE TABLE IF NOT EXISTS brand_operations (operation TEXT PRIMARY KEY, work TEXT NOT NULL REFERENCES brand_work(work), attempt TEXT NOT NULL, ceiling INTEGER NOT NULL, charged INTEGER NOT NULL, state TEXT NOT NULL, outcome TEXT, provider_ref TEXT, resolution TEXT, FOREIGN KEY(work,attempt) REFERENCES brand_attempts(work,attempt));
-      CREATE INDEX IF NOT EXISTS brand_operations_work ON brand_operations(work,state);
-      CREATE TABLE IF NOT EXISTS brand_outcomes (operation TEXT NOT NULL REFERENCES brand_operations(operation), sequence INTEGER NOT NULL, envelope TEXT NOT NULL, received INTEGER NOT NULL, PRIMARY KEY(operation,sequence));
+      create table if not exists brand_leases (resource TEXT PRIMARY KEY, holder TEXT NOT NULL, fence INTEGER NOT NULL, expires INTEGER NOT NULL);
+      create table if not exists brand_limits (id INTEGER PRIMARY KEY CHECK(id=1), total_ceiling INTEGER NOT NULL);
+      create table if not exists brand_principals (actor TEXT PRIMARY KEY, provider TEXT NOT NULL, public_key TEXT NOT NULL, fingerprint TEXT NOT NULL UNIQUE, active INTEGER NOT NULL DEFAULT 1);
+      create table if not exists brand_work (work TEXT PRIMARY KEY, resource TEXT NOT NULL, max_attempts INTEGER NOT NULL, total_ceiling INTEGER NOT NULL, stage_ceiling INTEGER NOT NULL);
+      create table if not exists brand_attempts (work TEXT NOT NULL REFERENCES brand_work(work), attempt TEXT NOT NULL, ordinal INTEGER NOT NULL, contract TEXT NOT NULL, journal TEXT NOT NULL, digest TEXT NOT NULL, PRIMARY KEY(work,attempt), UNIQUE(work,ordinal));
+      create table if not exists brand_operations (operation TEXT PRIMARY KEY, work TEXT NOT NULL REFERENCES brand_work(work), attempt TEXT NOT NULL, ceiling INTEGER NOT NULL, charged INTEGER NOT NULL, state TEXT NOT NULL, outcome TEXT, provider_ref TEXT, resolution TEXT, FOREIGN KEY(work,attempt) REFERENCES brand_attempts(work,attempt));
+      create index if not exists brand_operations_work ON brand_operations(work,state);
+      create table if not exists brand_outcomes (operation TEXT NOT NULL REFERENCES brand_operations(operation), sequence INTEGER NOT NULL, envelope TEXT NOT NULL, received INTEGER NOT NULL, PRIMARY KEY(operation,sequence));
     `);
-    db.prepare('INSERT OR IGNORE INTO brand_limits VALUES (1,?)').run(options.totalMicroUsd);
+    db.prepare('insert or ignore into brand_limits VALUES (1,?)').run(options.totalMicroUsd);
     if ((db.prepare('SELECT total_ceiling FROM brand_limits WHERE id=1').get() as { total_ceiling: number }).total_ceiling !== options.totalMicroUsd) throw new Error('Global budget changed');
   }
 
@@ -129,7 +129,7 @@ export class BrandWorkflowStore {
     return this.transaction(() => {
       this.assertLease(lease);
       this.assertPrincipals(contract);
-      this.db.prepare('INSERT OR IGNORE INTO brand_work VALUES (?,?,?,?,?)').run(contract.workId, lease.resource, contract.maxAttempts, budget.totalMicroUsd, budget.stageMicroUsd);
+      this.db.prepare('insert or ignore into brand_work VALUES (?,?,?,?,?)').run(contract.workId, lease.resource, contract.maxAttempts, budget.totalMicroUsd, budget.stageMicroUsd);
       const work = this.work(contract.workId);
       if (work.resource !== lease.resource || work.max_attempts !== contract.maxAttempts || work.total_ceiling !== budget.totalMicroUsd || work.stage_ceiling !== budget.stageMicroUsd) throw new Error('Admitted limits or resource changed');
       if (this.db.prepare("SELECT 1 FROM brand_operations WHERE work=? AND state NOT IN ('settled','abandoned')").get(contract.workId)) throw new Error('Reconciliation required before another attempt');
