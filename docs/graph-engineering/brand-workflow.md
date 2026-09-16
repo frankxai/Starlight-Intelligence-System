@@ -131,6 +131,59 @@ quality. Different provider strings alone do not establish independent review.
 
 ## Evidence and adoption
 
+### Durable local host
+
+`BrandWorkflowStore` implements local admission, storage and evidence verification
+behind `BrandWorkflowHost`. Pass an open SQLite connection with `exec` and
+`prepare/get/run` methods. It supports the existing `better-sqlite3` dependency and
+Node's `DatabaseSync`; the package itself imports neither driver at startup.
+
+The store uses immediate transactions, WAL and full synchronization. It atomically
+reserves a stage and its budget before dispatch, then records dispatch separately so
+a repeated delivery cannot execute the same reservation twice. Lease generations
+reject expired writers. Unresolved operations hold further work on the same resource.
+Use one canonical resource identity and the same local database for all cooperating
+adapters; these leases cannot control unrelated editors or another database.
+
+Budgets are explicit integer micro-USD amounts: 1,000,000 units equal one US dollar.
+Both the database-wide ceiling and work/attempt ceilings survive restart. Unknown
+usage retains its reservation and prevents progress. Reported overages retain the
+actual amount and halt; the provider adapter must also enforce provider-side output
+and spending limits. A local reservation cannot cap a remote provider's bill.
+
+Each registered principal has an Ed25519 public key. Shared signing keys across
+principal IDs, silent rebinding and reactivation of revoked identities are refused.
+Workers sign `brandOutcomePayload({ receipt, costMicroUsd, usageRef })`. Signatures
+cover the attempt, artifact and usage together; raw model text cannot mint a valid
+outcome. Provision signing keys in independently controlled workers, and bind their
+provider identity to authenticated runtime configuration. Cryptography alone cannot
+prove model diversity or honest usage reporting by a compromised signer.
+
+The host adapter supplies `execute`, current contract/artifact reads and capacity
+admission. Its execution context includes an abort signal, a numeric cost ceiling
+and a callback to persist a provider request reference. Timeouts retain an unresolved
+operation; they do not establish remote cancellation. Recover the actual outcome
+using that reference, verify current intent/artifacts, acquire the current lease and
+call `settle` explicitly. Every usage report is retained during reconciliation.
+Preserve the database and signing-key custody; deleting either destroys continuity.
+
+Unknown costs and reported overages hold new dispatch across the whole store,
+including operations reserved before the report arrived. Reservations count against
+available budget until a signed outcome supplies actual usage. A known correction
+can settle the operation; usage reports remain in the history.
+
+If execution never started, `abandonUndispatched(workId, attemptId, expectedDigest,
+lease, reason)` atomically releases that reservation. It refuses dispatched effects,
+stale journals and a different resource owner. The old attempt retains its in-flight
+journal and an abandonment reason; a fresh attempt consumes the next ordinal.
+Use this after feedback changes between reservation and dispatch. A timeout after
+dispatch still requires recovery of the real provider outcome.
+
+Regression cases include closed-connection restart, separate-process CAS contention,
+fencing, cross-work budget exhaustion, lost effects, cancellation, signed usage
+reconciliation and revoked identities. Fixtures use generated keys and synthetic
+provider identities. Authenticated live-provider acceptance remains a separate gate.
+
 Tests exercise real file save/refine/reopen across separate runner calls as well as
 feedback drift, artifact drift, cross-attempt replay, missing criterion evidence,
 capacity holds, cancellation and uncertain effects. Test receipts use mock identity
@@ -155,3 +208,28 @@ matches or outperforms these projects, and no upstream harness was installed.
 | [Hermes Agent](https://github.com/NousResearch/hermes-agent) | Session search, persistent memory and reusable skills | Recover compact source-linked intent through existing memory/runtime surfaces; no duplicate scheduler |
 | [OpenAI harness engineering](https://openai.com/index/harness-engineering/) | Repository knowledge and executable constraints | Version workflow code and acceptance contracts, with deterministic checks in CI |
 | [Anthropic long-running harnesses](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) | Incremental progress and explicit feature verification | Start without passing evidence; save each stage; verify the full outcome before completion |
+
+### Code reuse and commercial distribution
+
+License evidence checked on 2026-09-15. This is a scoped adoption record; dependency,
+asset, trademark and other rights still require review for the actual bundle.
+
+| Project | Observed root license | Adoption decision |
+|---|---|---|
+| [Ruflo](https://github.com/ruvnet/ruflo/blob/main/LICENSE) | MIT; license blob `5c4718198a4156beacc780980077043a98b0dd6a` | Eligible for reviewed code reuse with required notices; keep this workflow implementation original |
+| [Hermes](https://github.com/NousResearch/hermes-agent/blob/main/LICENSE) | MIT; license blob `75410e73319c72cd3e991a501c5455eb78f38375` | Prefer an existing runtime adapter; review dependencies before redistribution |
+| [Codex](https://github.com/openai/codex/blob/main/LICENSE) | Apache-2.0; license blob `4606e72e042564097e8780d66c1d4dcb611869bd` | Integrate through supported interfaces; preserve applicable license/notice and modification obligations when distributing code |
+| [OmO](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/LICENSE.md) | Sustainable Use License 1.0; license blob `5982a8720a1cb87c26a36bb31d5019f119841769` | Reference its public mechanisms. Do not bundle its implementation into paid products under an assumed MIT grant; review the exact use or obtain suitable permission |
+| [Autoresearch](https://github.com/karpathy/autoresearch) | README states MIT; standalone license endpoint did not return a license during this audit | Use the bounded-experiment principle. Resolve the exact license/notice before redistributing source |
+| [Postiz](https://github.com/gitroomhq/postiz-app/blob/main/LICENSE) | AGPL-3.0-or-later | Preserve the existing posting integration; examine source-offer and other obligations before distributing or operating modifications |
+
+The EU Software Directive distinguishes protected program expression from underlying
+ideas and principles. That supports independently implemented mechanisms, while
+leaving other rights and contractual obligations relevant. Avoid copying distinctive
+code or prose into a commercial package merely because its repository is public.
+See [Directive 2009/24/EC, Articles 1 and 8](https://eur-lex.europa.eu/eli/dir/2009/24/oj/eng).
+
+For a release, record the exact source revision, license evidence, copied files,
+modifications, required notices and distribution mode in the existing upstream or
+product provenance record. Learning a pattern and redistributing an implementation
+are separate entries. This workflow imports no source from the projects above.

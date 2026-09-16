@@ -443,6 +443,8 @@ export type {
   BrandStage, CriterionKind, BrandWorkflowContract, BrandReceipt, BrandJournal,
   BrandInspection, BrandWorkflowHost,
 } from './brand-workflow.js';
+export { BrandWorkflowStore, brandOutcomePayload } from './brand-workflow-store.js';
+export type { BrandDatabase, BrandLease, BrandPrincipal, BrandBudget, SignedBrandOutcome } from './brand-workflow-store.js';
 export type {
   CompiledLoopGraph,
   HarnessFeature,
