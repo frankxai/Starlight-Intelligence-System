@@ -1,5 +1,7 @@
 # Starlight Intelligence Brand Assets
 
+> **Legacy visual library.** These June 2026 assets remain available for provenance and migration, but they are not the current character or brand source of truth. New work must use the 2026-08-17 SIS foundation reset and [`docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md`](../docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md). Do not reuse cosmic Queen, robot, chibi, dark-glass, cyan, or gold conventions by default; each needs fresh territory approval.
+
 **June 2026 — World Best Brand**
 
 Only the most premium, timeless, cosmic elegant assets. Curated from the highest quality 3D renders and custom vectors.

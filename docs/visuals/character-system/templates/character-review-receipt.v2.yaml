@@ -1,0 +1,467 @@
+# Starlight Character Foundry v2 — immutable review receipt template
+# Copy per candidate revision. Replace every <required:...> token and record evidence.
+# Never edit an approved receipt; supersede it with a new receipt that links back.
+
+template_kind: starlight_character_review_receipt
+schema_version: "2.0.0"
+template_status: active
+
+review_standard:
+  foundry_name: "Starlight Character Foundry v2"
+  thesis: "Bounded intelligence: every agent makes responsibility, limits, handoffs, and proof visible."
+  scoring_total: 100
+  public_release_threshold: 95
+  decision_bands:
+    public_release: "95-100"
+    revise: "90-94"
+    exploration_only: "80-89"
+    restart: "0-79"
+  hard_failure_rule: "Any confirmed hard failure overrides score and blocks public release."
+  founder_gate_rule: "Representation class, shared materials, shared colors, key/public identity, and release require an explicit founder verdict."
+
+receipt_control:
+  receipt_id: "<required:stable-immutable-id>"
+  receipt_version: "1.0.0"
+  status: draft # draft | under_review | hold | superseded | final
+  created_at: "<required:ISO-8601>"
+  finalized_at: null
+  review_round: 1
+  supersedes_receipt_id: null
+  superseded_by_receipt_id: null
+  repository: "<required:repository-url>"
+  git_revision: "<required:full-commit-sha>"
+  built_on_sip:
+    protocol: "Starlight Intelligence Protocol"
+    version: "1.1.1"
+
+reviewed_subject:
+  character_id: "<required:stable-character-id>"
+  runtime_agent_id: "<required:exact-agent-registry-id>"
+  display_name: "<required:public-display-name>"
+  representation_class: "<required:exact-approved-or-proposed-class>"
+  contract:
+    contract_id: "<required:visual-contract-id>"
+    version: "<required:semantic-version>"
+    path: "<required:repo-relative-path>"
+    sha256: "<required:64-hex>"
+  candidate_asset_manifest:
+    path: "<required:repo-relative-or-controlled-asset-path>"
+    sha256: "<required:64-hex>"
+  review_scope:
+    - runtime_to_visual_mapping
+    - narrative_and_function
+    - behavior_and_modes
+    - representation_and_silhouette
+    - exclusive_instrument
+    - palette_material_and_illustration_grammar
+    - views_crops_and_production_readiness
+    - provenance_rights_culture_and_accessibility
+  excluded_from_scope: []
+
+maker:
+  maker_id: "<required:person-or-agent-id>"
+  maker_type: human # human | agent | human_agent_team
+  role: "<required:art-director-character-designer-generator-operator-etc>"
+  responsibilities:
+    - "<required:what-this-maker-created-or-changed>"
+  generation_run_ids: []
+  asset_paths_edited: []
+  maker_statement: "<required:design-intent-and-known-weaknesses>"
+  self_review_completed: false
+  self_review_is_not_independent_qa: true
+
+independence:
+  minimum_independent_critics: 2
+  recommended_independent_critics: 3
+  maker_may_not_be_a_critic: true
+  generator_operator_may_not_review_same_revision: true
+  direct_asset_editor_may_not_review_same_revision: true
+  founder_verdict_does_not_replace_critics: true
+  automated_checks_do_not_replace_humans: true
+  critic_ids_must_be_unique: true
+  independence_audit:
+    maker_id: "<required:maker-id>"
+    critic_ids: []
+    conflicts_found: []
+    status: pending # pending | pass | fail
+    audited_by: "<required:review-coordinator-id>"
+    audited_at: "<required:ISO-8601>"
+
+independent_critics:
+  - critic_id: "<required:critic-1-id>"
+    critic_type: human # human | agent | human_agent_team
+    scope: runtime_truth_and_system_coherence
+    independence_basis: "<required:why-this-critic-is-independent-of-the-maker-and-revision>"
+    reviewed_contract_sha256: "<required:64-hex>"
+    reviewed_asset_manifest_sha256: "<required:64-hex>"
+    verdict: pending # pass | conditional_pass | revise | reject | pending
+    findings:
+      critical: []
+      major: []
+      minor: []
+    evidence_refs: []
+    signed_at: null
+  - critic_id: "<required:critic-2-id>"
+    critic_type: human # human | agent | human_agent_team
+    scope: visual_identity_and_collective_distinction
+    independence_basis: "<required:why-this-critic-is-independent-of-the-maker-and-revision>"
+    reviewed_contract_sha256: "<required:64-hex>"
+    reviewed_asset_manifest_sha256: "<required:64-hex>"
+    verdict: pending
+    findings:
+      critical: []
+      major: []
+      minor: []
+    evidence_refs: []
+    signed_at: null
+  - critic_id: "<required:critic-3-id-or-remove-if-two-critics-cover-all-scopes>"
+    critic_type: human # human | agent | human_agent_team
+    scope: rights_culture_and_accessibility
+    independence_basis: "<required:why-this-critic-is-independent-of-the-maker-and-revision>"
+    reviewed_contract_sha256: "<required:64-hex>"
+    reviewed_asset_manifest_sha256: "<required:64-hex>"
+    verdict: pending
+    findings:
+      critical: []
+      major: []
+      minor: []
+    evidence_refs: []
+    signed_at: null
+
+founder_verdict:
+  founder_id: "<required:founder-id>"
+  verdict_id: "<required:stable-verdict-id>"
+  status: pending # approve | approve_with_conditions | revise | reject | pending
+  reviewed_receipt_revision: "<required:receipt-git-revision>"
+  representation_class:
+    proposed: "<required:class>"
+    decision: pending # approve | revise | reject | pending
+    rationale: "<required:why-this-representation-serves-the-foundry-thesis>"
+  shared_colors:
+    proposed: []
+    decision: not_requested # approve | revise | reject | not_requested
+    rationale: "<required:rationale-or-not-requested>"
+  shared_materials:
+    proposed: []
+    decision: not_requested # approve | revise | reject | not_requested
+    rationale: "<required:rationale-or-not-requested>"
+  aug_17_reset_exception:
+    requested: false
+    default_or_motif: null # porcelain | obsidian | generic_robot | generic_cosmic | other
+    functional_rationale: null
+    decision: not_requested # approve | revise | reject | not_requested
+  conditions: []
+  release_scope: none # none | internal | exploration | public
+  statement: "<required:founder-decision-in-plain-language>"
+  signed_at: null
+
+truth_and_authority_checks:
+  runtime_sources_resolve_to_immutable_revisions:
+    status: pending # pass | fail | pending
+    evidence: []
+  each_visual_claim_maps_to_runtime_truth_or_is_marked_metaphor:
+    status: pending
+    evidence: []
+  no_visual_element_adds_rank_capability_permission_memory_or_tool_access:
+    status: pending
+    evidence: []
+  responsibility_limits_handoffs_and_proof_are_visible:
+    status: pending
+    evidence: []
+  conflicts_resolve_in_favor_of_runtime_truth:
+    status: pending
+    evidence: []
+  no_private_or_restricted_content_on_public_surface:
+    status: pending
+    evidence: []
+  ai_personification_is_not_misrepresented_as_a_human_identity:
+    status: pending
+    evidence: []
+  overall_status: pending # pass | fail | pending
+
+representation_and_collective_checks:
+  representation_class_is_functionally_justified:
+    status: pending
+    evidence: []
+  aug_17_reset_defaults_absent_or_explicitly_approved:
+    tested_defaults:
+      - porcelain_character
+      - obsidian_character
+      - generic_robot_or_android
+      - generic_cosmic_or_celestial_being
+    status: pending
+    evidence: []
+  silhouette_reads_at_64px_in_grayscale:
+    status: pending
+    evidence: []
+  silhouette_and_identity_read_at_32px:
+    status: pending
+    evidence: []
+  silhouette_is_distinct_in_current_collective_lineup:
+    status: pending
+    evidence: []
+  exclusive_instrument_has_no_registry_collision:
+    status: pending
+    evidence: []
+  instrument_is_shown_operating_not_merely_decorating:
+    status: pending
+    evidence: []
+  shared_color_or_material_tokens_have_founder_verdict:
+    status: pending
+    evidence: []
+  modes_preserve_identity_and_do_not_use_color_alone:
+    status: pending
+    evidence: []
+  collective_distinction_axes:
+    axes_reviewed:
+      - narrative_premise_and_function
+      - representation_face_or_body
+      - silhouette_and_proportion
+      - construction_or_costume_architecture
+      - emblem_or_identity_mark
+      - palette
+      - material
+      - movement_and_behavior
+      - exclusive_instrument_or_effect
+      - environment_relationship
+    minimum_materially_distinct_axes: 7
+    materially_distinct_axes: []
+    status: pending
+    evidence: []
+  overall_status: pending
+
+rights_and_originality_check:
+  status: pending # pass | hold | fail | pending
+  reviewer_id: "<required:rights-reviewer-id>"
+  source_manifest_reviewed: false
+  source_manifest_path: "<required:path>"
+  all_references_have_creator_rightsholder_and_license: false
+  generation_terms_allow_intended_use: false
+  no_named_franchise_or_living_artist_style_request: false
+  no_confusingly_similar_character_costume_logo_prop_or_trade_dress: false
+  likeness_and_publicity_rights_cleared_or_not_applicable: false
+  trademark_search_scope: "<required:scope-or-not-applicable>"
+  reverse_image_and_similarity_review:
+    method: "<required:tool-human-review-and-reference-set>"
+    reviewed_axes:
+      - silhouette
+      - costume_or_construction
+      - identity_marks_and_logos
+      - instrument_or_prop
+      - color_blocking
+      - pose_and_effect_signature
+      - likeness
+    status: pending
+    evidence_refs: []
+  restrictions: []
+  evidence_refs: []
+  signed_at: null
+
+cultural_integrity_check:
+  status: pending # pass | hold | fail | pending
+  reviewer_id: "<required:cultural-reviewer-id>"
+  cultures_symbols_or_identity_markers_present: []
+  lived_experience_or_domain_consultation: []
+  sacred_restricted_or_context_specific_elements: []
+  stereotype_exoticization_and_villain_coding_reviewed: false
+  gender_age_body_disability_and_power_coding_reviewed: false
+  names_language_and_gestures_reviewed: false
+  changes_required: []
+  evidence_refs: []
+  signed_at: null
+
+accessibility_check:
+  status: pending # pass | hold | fail | pending
+  reviewer_id: "<required:accessibility-reviewer-id>"
+  alt_text:
+    full_figure: "<required:concise-functional-alt-text>"
+    avatar: "<required:concise-recognition-alt-text>"
+    modes: "<required:how-state-differences-are-described>"
+  contrast:
+    essential_text_and_ui_target: "WCAG 2.2 AA"
+    measured_results: []
+  color_independence:
+    state_not_conveyed_by_color_alone: false
+    evidence: []
+  low_vision_and_scale:
+    avatar_32px_pass: false
+    avatar_64px_pass: false
+    silhouette_grayscale_pass: false
+    detail_loss_is_nonessential: false
+    evidence: []
+  motion:
+    reduced_motion_equivalent_exists: false
+    flashing_or_strobing_risk_absent: false
+    vestibular_risk_notes: []
+  cognitive_and_language:
+    mode_labels_plain_and_consistent: false
+    decorative_effects_do_not_obscure_function: false
+  changes_required: []
+  signed_at: null
+
+production_and_provenance_check:
+  status: pending # pass | hold | fail | pending
+  all_required_views_present: false
+  all_required_crops_present: false
+  all_required_modes_present: false
+  layered_source_master_present: false
+  final_assets_match_manifest_hashes: false
+  prompts_and_generation_runs_are_hash_recorded: false
+  source_and_output_license_records_complete: false
+  rollback_manifest_present: false
+  handoff_packet_contains_no_secrets_or_private_vault_content: false
+  evidence_refs: []
+
+scoring:
+  instructions:
+    - "Award integer points only."
+    - "Each category requires evidence from at least one independent critic."
+    - "Maximum points across categories must sum to exactly 100."
+    - "A high score cannot neutralize a hard failure or missing founder gate."
+  categories:
+    - id: truth_authority_and_bounded_intelligence
+      maximum: 15
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: narrative_function_and_human_value
+      maximum: 10
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: representation_silhouette_and_shape_distinction
+      maximum: 15
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: exclusive_instrument_function_and_originality
+      maximum: 10
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: palette_material_and_construction_coherence
+      maximum: 10
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: behavior_modes_and_handoff_legibility
+      maximum: 10
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: illustration_craft_composition_and_detail_hierarchy
+      maximum: 10
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: views_crops_and_production_readiness
+      maximum: 5
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: accessibility_and_multiscale_readability
+      maximum: 10
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+    - id: rights_cultural_integrity_and_provenance
+      maximum: 5
+      awarded: 0
+      evidence: []
+      rationale: "<required:score-rationale>"
+  validation:
+    maximum_points_sum: 100
+    awarded_points_sum: 0
+    arithmetic_checked_by: "<required:review-coordinator-id>"
+    arithmetic_status: pending # pass | fail | pending
+  total_awarded: 0
+  score_band: restart # public_release | revise | exploration_only | restart
+
+hard_failures:
+  catalog:
+    - code: HF_AUTHORITY_CONFLICT
+      condition: "Visual contract contradicts or overrides runtime truth."
+    - code: HF_UNVERIFIED_POWER_OR_ACCESS
+      condition: "Image implies rank, power, tool, permission, autonomy, memory, or credential absent from runtime truth."
+    - code: HF_PRIVACY_OR_SECRET_LEAK
+      condition: "Asset, prompt, manifest, or handoff exposes restricted or private content."
+    - code: HF_FOUNDRY_THESIS_MISSING
+      condition: "Responsibility, limits, handoffs, or proof cannot be located in the design."
+    - code: HF_RESET_DEFAULT_REINTRODUCED
+      condition: "Porcelain, obsidian, generic robot, or generic cosmic default is used without functional rationale and founder approval."
+    - code: HF_REPRESENTATION_GATE_MISSING
+      condition: "Representation class lacks an explicit founder decision."
+    - code: HF_COLLECTIVE_TOKEN_GATE_MISSING
+      condition: "A shared material or color is declared without explicit founder approval."
+    - code: HF_IDENTITY_OR_INSTRUMENT_COLLISION
+      condition: "Silhouette, identity system, or exclusive instrument is confusingly similar to an existing collective character."
+    - code: HF_RIGHTS_OR_TRADE_DRESS_RISK
+      condition: "Rights are unclear or the design imitates a protected character, franchise, artist style, costume, logo, prop, likeness, or trade dress."
+    - code: HF_CULTURAL_HARM
+      condition: "Unresolved stereotyping, sacred/restricted misuse, dehumanization, or harmful identity coding exists."
+    - code: HF_ACCESSIBILITY_BLOCKER
+      condition: "Essential identity or state cannot be perceived in required accessible modes."
+    - code: HF_PROVENANCE_GAP
+      condition: "Required source, prompt, model, license, or final-asset hash evidence is absent."
+    - code: HF_INDEPENDENCE_BREACH
+      condition: "Maker, generator operator, or direct editor acts as an independent critic of the same revision."
+    - code: HF_REQUIRED_DELIVERABLE_MISSING
+      condition: "A required view, crop, mode, source master, manifest, alt text set, or handoff record is missing."
+  observed: []
+  confirmed_count: 0
+  disputed: []
+  resolution_notes: []
+  overall_status: pending # clear | blocked | pending
+
+iteration_decision:
+  computed_from_score: restart # public_release | revise | exploration_only | restart
+  hard_failure_override: false
+  founder_gate_override: false
+  final_decision: pending # public_release | revise | exploration_only | restart | reject | pending
+  release_rule: >-
+    Public release requires 95-100 points, zero confirmed hard failures, all mandatory
+    checks passed, critic independence passed, and an approve founder verdict with no
+    open release conditions.
+  interpretation:
+    public_release: "Release the reviewed hashes only; archive source, receipt, and handoff proof."
+    revise: "Score 90-94: preserve the viable identity, fix named gaps, and issue a new receipt."
+    exploration_only: "Score 80-89: retain as non-public exploration; do not promote as canonical."
+    restart: "Score below 80 or foundational mismatch: return to truth, representation, silhouette, or instrument search."
+  required_actions:
+    - action_id: "<required:action-id-or-none>"
+      severity: "<required:critical-major-minor-or-none>"
+      finding_ref: "<required:finding-or-hard-failure-ref>"
+      owner: "<required:owner>"
+      acceptance_test: "<required:observable-pass-condition>"
+      due_at: "<required:ISO-8601-or-none>"
+      status: open # open | in_progress | verified | waived
+  preserved_decisions: []
+  discarded_decisions: []
+  next_review_scope: []
+  next_receipt_due_at: null
+
+handoff_and_release_receipt:
+  handoff_packet_path: "<required:path>"
+  handoff_packet_sha256: "<required:64-hex>"
+  sender_id: "<required:id>"
+  recipient_id: "<required:id>"
+  accepted: false
+  acceptance_conditions: []
+  accepted_at: null
+  released_asset_hashes: []
+  public_release_allowed: false
+  release_surface_scope: []
+  rollback_manifest_path: "<required:path>"
+
+signatures:
+  review_coordinator:
+    signer_id: "<required:id>"
+    signature_or_attestation_ref: "<required:ref>"
+    signed_at: null
+  critics: []
+  founder:
+    signer_id: "<required:founder-id>"
+    signature_or_attestation_ref: "<required:ref>"
+    signed_at: null
+  receipt_sha256: null
+  attestation_text: "Built on SIP — Starlight Intelligence Protocol v1.1.1"

@@ -64,6 +64,8 @@ import type {
 } from "./types.js";
 import type { AgentRecommendation } from "./agents.js";
 
+export * from "./capability-control-plane.js";
+
 // ── Main Class ──────────────────────────────────────────────
 
 export class StarlightIntelligence {
@@ -415,6 +417,16 @@ export { CommunityLedger, validateCommunityEvent, planCommunityAction, fixtureCo
 export type { CommunityEvent, CommunityConsent, CommunityPrivacy, CommunityEventKind, CommunityAdapterManifest, CommunityAdmission, CommunityStewardAction } from './community.js';
 
 // Operational Work Graph — harness-neutral intent-to-production receipts
+export { AgentFederation, FederatedRuntime, createFederationTool, createA2ARunner, createMcpToolRunner, createProcessRunner } from './federation.js';
+export type {
+  FederationWorker, FederationTask, FederationRoute, FederationLimits, FederationResult,
+  FederationSummary, A2ARunnerOptions, McpToolCaller, McpToolRunnerOptions, ProcessRunnerOptions,
+  FederatedRuntimeOptions, FederatedTaskResult, FederatedRunSummary,
+} from './federation.js';
+
+export { RuntimeBridge, WORKER_PROTOCOL, createHttpWorkerRuntime, createMcpWorkerRuntime } from './runtime-bridge/index.js';
+export type { RuntimeBridgeOptions, RuntimeReceipt, WorkerRequest, WorkerResponse, WorkerRuntime } from './runtime-bridge/index.js';
+
 export { parseWorkGraphJsonl, projectWorkGraph } from './work-graph.js';
 export type {
   CompletionRequirements,

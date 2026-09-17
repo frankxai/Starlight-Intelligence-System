@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/federation.ts", "src/federation/**/*.ts", "src/runtime-bridge/**/*.ts"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "providers": [
+    { "id": "codex", "surface": "local", "command": "codex", "capabilities": ["code", "review", "browser"], "costClass": "included", "privacy": "workspace", "evalScore": 0.9 },
+    { "id": "claude", "surface": "local", "command": "claude", "capabilities": ["reasoning", "code", "review"], "costClass": "included", "privacy": "workspace", "evalScore": 0.88 },
+    { "id": "gemini", "surface": "local", "command": "gemini", "capabilities": ["reasoning", "code", "research"], "costClass": "free-eligible", "privacy": "workspace", "evalScore": 0.78 },
+    { "id": "opencode", "surface": "local", "command": "opencode", "capabilities": ["code", "review"], "costClass": "free-eligible", "privacy": "workspace", "evalScore": 0.72 },
+    { "id": "hermes", "surface": "local", "command": "hermes", "capabilities": ["research", "retrieval", "synthesis"], "costClass": "included", "privacy": "workspace", "evalScore": 0.76 },
+    { "id": "cursor", "surface": "desktop", "command": "cursor", "capabilities": ["code", "review"], "costClass": "included", "privacy": "workspace", "evalScore": 0.8 },
+    { "id": "github", "surface": "cloud", "command": "gh", "capabilities": ["repo", "ci", "issues", "deployment"], "costClass": "free-eligible", "privacy": "remote", "evalScore": 0.9 },
+    { "id": "vercel", "surface": "cloud", "command": "vercel", "capabilities": ["deployment", "preview", "logs"], "costClass": "free-eligible", "privacy": "remote", "evalScore": 0.86 },
+    { "id": "muapi", "surface": "cloud", "env": "MUAPI_API_KEY", "capabilities": ["image", "video"], "costClass": "metered", "privacy": "remote", "evalScore": 0.6 }
+  ]
+}

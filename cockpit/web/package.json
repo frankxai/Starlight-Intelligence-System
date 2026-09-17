@@ -1,0 +1,26 @@
+{
+  "name": "@starlight/cockpit-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-latency, local-first Starlight Cockpit Desktop/Web instrument for visual multi-agent orchestration and memory palace exploration",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && node bundle-standalone.mjs",
+    "bundle": "node bundle-standalone.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.1.0"
+  }
+}

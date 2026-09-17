@@ -1,0 +1,118 @@
+{
+  "version": "2026-08-27",
+  "task": "Generate and compare two original black-and-white representation territories for the Starlight Character Foundry v2.",
+  "surface": "Founder territory-selection boards and character-system documentation",
+  "audience": "Starlight founder, character designers, runtime owners, and independent visual reviewers",
+  "first_read": "The same five responsibilities become either human civic operators or non-humanoid living instruments, without superhero, robot, or cosmic defaults.",
+  "standards": [
+    "C:/Users/frank/starlight/repos/design-agent-standards/OUTCOMES.md",
+    "C:/Users/frank/starlight/repos/design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "C:/Users/frank/starlight/repos/design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "C:/Users/frank/starlight/repos/design-agent-standards/VISUAL_QA_GATE.md",
+    "C:/Users/frank/starlight/repos/starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/TASTE-CONSTITUTION.md"
+  ],
+  "references": [
+    {
+      "label": "Starlight Character Foundry v2",
+      "source": "docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md",
+      "reason": "Defines bounded intelligence, the black-and-white territory gate, required stress-test roles, and originality boundaries."
+    },
+    {
+      "label": "SIS taste constitution",
+      "source": "C:/Users/frank/starlight/repos/starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/TASTE-CONSTITUTION.md",
+      "reason": "Requires founder territory selection and rejects cosmic, robot, black-glass, cyan, gold, and command-center defaults."
+    },
+    {
+      "label": "Marvel visual method research",
+      "source": "docs/visuals/character-system/MARVEL_VISUAL_METHOD_RESEARCH.md",
+      "reason": "Contributes transferable story readability and production discipline without copied expression."
+    }
+  ],
+  "direction": {
+    "keep": [
+      "Black-and-white structural comparison",
+      "Five identical role functions across both boards",
+      "Visible instruments, limits, handoffs, and evidence",
+      "Human warmth in Territory A and ownable mechanism in Territory B"
+    ],
+    "avoid": [
+      "Marvel or named-artist imitation",
+      "Superhero costumes, robots, cosmic imagery, thrones, and militarism",
+      "Generated labels, interface copy, logos, and all-caps text",
+      "Color-led differentiation before territory approval"
+    ],
+    "signature": "Bounded intelligence becomes visible as a separable relationship between a responsible person and an inspectable instrument.",
+    "system": [
+      "Territory A recommended for public character representation",
+      "Territory B recommended for instruments, diagrams, registry marks, and motion behavior",
+      "Graphite, ink, charcoal, warm paper, honest material, and grayscale hierarchy",
+      "Orchestrator, Sentinel, Concierge, Weaver, and Starlight Sage shown in the same sequence"
+    ]
+  },
+  "asset_quality": {
+    "tier": "B",
+    "source_method": "generated-media",
+    "provenance": "generated",
+    "why_premium": "Both boards are custom, strongly art-directed, original, high-resolution, visually inspected, structurally comparable, and specific to the Foundry's role and trust grammar.",
+    "shortcut_risk": "low",
+    "context_tested": true
+  },
+  "artifacts": [
+    {
+      "path_or_url": "docs/visuals/character-system/territory-proofs/territory-a-civic-operators-v2.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Inspected at original 1536 by 1024 resolution and inline preview. Strong human warmth and role readability; shared workwear and tiny pseudo-marks require correction in final character sheets. SHA-256: 912728e326df9d3a34b25bc68461ba415034696fc98444ca288781bcd7ae7b67."
+    },
+    {
+      "path_or_url": "docs/visuals/character-system/territory-proofs/territory-b-living-notation-v2.png",
+      "kind": "image",
+      "inspected": true,
+      "notes": "Inspected at original 1536 by 1024 resolution and inline preview. Highly ownable mechanism and silhouette system; emotional distance and repeated plinths prevent recommendation as the sole public character class. SHA-256: c0c91d4c8e2dca89efb8eec94e1242074482215d2a5d674a9cb6bb4fd722ef25."
+    }
+  ],
+  "checks": [
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier B custom generated media with stored prompts, versions, hashes, and inspection evidence."
+    },
+    {
+      "name": "export-inspection",
+      "status": "pass",
+      "evidence": "Both final v2 PNG files were reopened from their project paths and inspected at original resolution."
+    },
+    {
+      "name": "visual-qa",
+      "status": "pass",
+      "evidence": "Checked first read, grayscale hierarchy, silhouette separation, anatomy, geometry, role correspondence, materials, composition, and artifact risks."
+    },
+    {
+      "name": "role-collision",
+      "status": "pass",
+      "evidence": "Both boards show the same five functions in the same order; Concierge, Sentinel, and Weaver satisfy the required stress test."
+    },
+    {
+      "name": "text-and-casing",
+      "status": "pass",
+      "evidence": "No interface copy, headings, labels, logos, or all-caps text are rendered in either image. Minor nonsemantic pseudo-marks are recorded as a future exact-overlay risk."
+    },
+    {
+      "name": "rights-and-originality",
+      "status": "pass",
+      "evidence": "No Marvel character, logo, costume, trade dress, named-artist style, or recognizable franchise expression appears in the final boards."
+    }
+  ],
+  "score": {
+    "total": 27,
+    "max": 30,
+    "notes": "Strong enough for founder territory selection. Not approved for character canon, public campaign use, or fleet fanout until founder and G0 gates pass."
+  },
+  "decision": "ship",
+  "known_risks": [
+    "Territory A could develop workwear and instrument-frame sameness across a large cast.",
+    "Territory B could become emotionally distant and over-institutional at fleet scale.",
+    "Generated pseudo-marks must never be treated as exact information; production labels require deterministic overlays.",
+    "No color, mobile crop, animation, or live product-context test is authorized before the founder territory verdict."
+  ]
+}

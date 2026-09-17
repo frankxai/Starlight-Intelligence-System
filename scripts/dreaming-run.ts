@@ -45,7 +45,7 @@ import {
 } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { DreamingAgent } from "../src/dreaming.js";
+import { type DreamResult, DreamingAgent } from "../src/dreaming.js";
 import { TemporalEngine } from "../src/temporal.js";
 
 // ── SweepResult export ────────────────────────────────────────────────────────
@@ -140,6 +140,49 @@ function timestamp(): string {
 
 function escapeForLog(s: string): string {
   return s.replace(/[\r\n]+/g, " ").trim();
+}
+
+// ── Promotion queue writeback ─────────────────────────────────────────────────
+
+const QUEUE_PATH = join(REPO_ROOT, "memory", "PROMOTION_QUEUE.md");
+const QUEUE_STATE_PATH = join(REPO_ROOT, "memory", ".dreaming-state.json");
+
+interface QueueState {
+  version: 1;
+  promoted: Record<string, { queuedAt: string; fromVault: string; reason: string }>;
+}
+
+function readQueueState(): QueueState {
+  if (!existsSync(QUEUE_STATE_PATH)) return { version: 1, promoted: {} };
+  return JSON.parse(readFileSync(QUEUE_STATE_PATH, "utf-8")) as QueueState;
+}
+
+/**
+ * Append promotion candidates not seen in a previous run to PROMOTION_QUEUE.md.
+ *
+ * This step is documented in scripts/dreaming-cron.ps1 and in the queue's own
+ * header, but had no implementation in the runner: the last two writes were
+ * 2026-05-27 and 2026-06-16, after which nightly runs kept reporting
+ * `promotions: 4` from the in-memory result while the queue and its dedup
+ * sidecar went untouched. Restored 2026-08-30.
+ *
+ * @returns count of candidates newly appended this run.
+ */
+function writebackPromotions(promotions: DreamResult["promotions"], ts: string): number {
+  const state = readQueueState();
+  const fresh = promotions.filter((p) => !state.promoted[p.entryId]);
+  if (fresh.length === 0) return 0;
+
+  const rows = fresh
+    .map((p) => `- [ ] **\`${p.entryId}\`** — ${p.fromVault} → wisdom  \n      ${p.reason}`)
+    .join("\n");
+  appendFileSync(QUEUE_PATH, `\n### ${ts}\n\n${rows}\n`, "utf-8");
+
+  for (const p of fresh) {
+    state.promoted[p.entryId] = { queuedAt: ts, fromVault: p.fromVault, reason: p.reason };
+  }
+  writeFileSync(QUEUE_STATE_PATH, JSON.stringify(state, null, 2) + "\n", "utf-8");
+  return fresh.length;
 }
 
 // ── Decay sweep ───────────────────────────────────────────────────────────────
@@ -249,11 +292,15 @@ function main(): void {
       // Step 2: Decay sweep
       const sweep = await sweepDecay(VAULT_DIR);
 
+      // Step 2b: Queue new wisdom-promotion candidates for human review
+      const queued = writebackPromotions(dreamResult.promotions, ts);
+
       const line =
         `- ${ts}` +
         ` · insights: ${dreamResult.extractedInsights.length}` +
         ` · contradictions: ${dreamResult.contradictions.length}` +
         ` · promotions: ${dreamResult.promotions.length}` +
+        ` · queued: ${queued}` +
         ` · processed: ${dreamResult.processedFiles}` +
         ` · decayed: ${sweep.decayed}` +
         ` · archived: ${sweep.archived}`;
@@ -264,7 +311,7 @@ function main(): void {
       try {
         if (process.env.STARLIGHT_GIT_AUTO_COMMIT !== "false") {
           const commitMsg = `chore(memory): dreaming consolidation [insights: ${dreamResult.extractedInsights.length}, promotions: ${dreamResult.promotions.length}, archived: ${sweep.archived}]`;
-          execSync("git add memory/vaults/ memory/CONSOLIDATION_LOG.md", { cwd: REPO_ROOT, stdio: "ignore" });
+          execSync("git add memory/vaults/ memory/CONSOLIDATION_LOG.md memory/PROMOTION_QUEUE.md", { cwd: REPO_ROOT, stdio: "ignore" });
           
           // Check if there are staged changes to commit
           const status = execSync("git diff --cached --name-only", { cwd: REPO_ROOT }).toString().trim();

@@ -59,7 +59,37 @@ This track makes the "truly good" production-grade agent army (Mind + Mesh + Ste
 - Every item must have a falsifier tied to the world-class E2E checklist (client describes army + points to live attested outputs <30 days; mesh handles real work cross-surface without babysitting; memory compounds at 6+ months; client evolves via runbooks; gates held; unmistakably Frank depth + operated patterns + production substrate; measurable tech metrics).
 - Promotion: Any generalized pattern from these upgrades goes back into the starlight-estate-os profile and substrate core immediately.
 
-## Current Status Snapshot (2026-06-16)
+## Progress and historical baseline
+
+### Operational federation increment — September 12, 2026
+
+Items 6 and 7 have a tested implementation increment in [`src/federation.ts`](../../src/federation.ts): capability routing over the existing swarm executor, A2A 0.3.0 text JSON-RPC, host-supplied MCP calls and one-shot language workers. Tests exercise an actual Python subprocess and loopback A2A service. `asExecutor()` connects the bridge to the existing orchestration engine; `createFederationTool()` supplies a host-registerable MCP definition and handler.
+
+See [agent federation architecture](../architecture/agent-federation.md) for upstream revisions, language choices, app/overlay integration and remaining boundaries. This is local operational code. Authenticated external-provider pilots, durable recovery and deployment remain open. The simultaneous portable-runtime task is isolated on a separate branch; the transport/lifecycle composition has a dedicated optional integration test.
+
+Next acceptance milestone: one authenticated remote agent and one established MCP connection complete an admitted workload, with provider references, actual usage evidence, failure reconciliation and independently checked artifacts visible in the existing command center. The full upgrade items remain open.
+
+### GitHub delivery goal — September 12, 2026
+
+The federation increment now has an evidence-gated delivery goal: [portable local and remote swarms, #143](https://github.com/frankxai/Starlight-Intelligence-System/issues/143), tracked in [Agent federation v0.1 — verified pilot](https://github.com/frankxai/Starlight-Intelligence-System/milestone/3). These are implementation targets; the milestone is open and does not claim a deployed swarm service.
+
+| Workstream | Acceptance owner |
+|---|---|
+| Reconcile transport/lifecycle contracts and clean CI | [#144](https://github.com/frankxai/Starlight-Intelligence-System/issues/144) |
+| Versioned skills, tool packs and upstream adoption decisions | [#145](https://github.com/frankxai/Starlight-Intelligence-System/issues/145) |
+| Authenticated A2A/MCP pilot across local and remote hosts | [#146](https://github.com/frankxai/Starlight-Intelligence-System/issues/146) |
+| Restart reconciliation, cancellation and global budget proof | [#147](https://github.com/frankxai/Starlight-Intelligence-System/issues/147) |
+| App/overlay projection and authenticated API contract | [#148](https://github.com/frankxai/Starlight-Intelligence-System/issues/148) |
+| Protected Vercel pilot and deployment-bound release checks | [#149](https://github.com/frankxai/Starlight-Intelligence-System/issues/149) |
+| Frozen evaluation corpus, independent scorecard and release decision | [#150](https://github.com/frankxai/Starlight-Intelligence-System/issues/150) |
+
+Native sub-issues and blocking dependencies preserve the sequence. Start with #144 and #145; define #150's evaluation corpus before model trials. The operator implementation is tracked in its existing private repository. Existing host validators (#124), attestation verification (#125), release governance (#129) and [runtime authority](https://github.com/frankxai/starlight-swarm/issues/15) remain the owners of their controls.
+
+The parent goal holds the measurable release targets: at least 19 accepted artifacts from a frozen 20-task corpus, ten recovery cases without duplicate effects, complete usage/evidence status, measured API/UI responsiveness, accessibility checks and a rollback rehearsal. Required tests skipped for missing providers remain a hold. No new delivery date replaces the historical dates above.
+
+Vercel's role is scoped in #149: use the existing Next.js/Git preview path, evaluate AI SDK and AI Gateway on one admitted lane, and prove Sandbox isolation before using it for coding workers. Workflow is a candidate for bounded hosted steps beneath the established Temporal/Queen authority; Queues needs a demonstrated independent-consumer use case. The connected SIS `site` production deployment was observed ready on September 12, 2026, at `540c070d1e6d5902999bcce42edccd5002c5977f`; federation is not part of that deployment.
+
+### Historical baseline — June 16, 2026
 
 - Strong foundation already live: ORCHESTRATION_ENGINE 6 patterns + swarm consensus + self-learning, /si routing + handoff packets, claws (spec + some execution), Memory Bus + vaults + Veil, Genius + 10-IS + domain sub-stacks, attestation, antigravity swarm-protocol recent work, yolo/hive.
 - Gaps explicitly named in the strategy and workflow docs: the above 10.

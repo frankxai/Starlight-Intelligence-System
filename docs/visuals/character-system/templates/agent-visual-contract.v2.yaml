@@ -1,0 +1,630 @@
+# Starlight Character Foundry v2
+# Copy this file per agent. Replace every <required:...> token before review.
+# This is a design contract, not a runtime agent card and not a source of powers.
+
+template_kind: starlight_agent_visual_contract
+schema_version: "2.0.0"
+template_status: active
+
+template_rules:
+  placeholder_token: "<required:description>"
+  completion_rule: "No required placeholder may remain when status is review_ready or released."
+  foundry_thesis: "Bounded intelligence: every agent makes responsibility, limits, handoffs, and proof visible."
+  authority_rule: "Runtime truth is authoritative; visual identity is a governed, lossy projection of approved runtime truth."
+  originality_rule: "Use transferable visual principles, never a franchise, living-artist, costume, logo, character, or trade-dress imitation."
+
+document_control:
+  contract_id: "<required:stable-id, e.g. svc-agent-name>"
+  contract_version: "0.1.0"
+  status: draft # draft | review_ready | approved | released | retired
+  character_id: "<required:stable-character-id>"
+  runtime_agent_id: "<required:exact-agent-registry-id>"
+  display_name: "<required:public-display-name>"
+  brand_or_collective: "Starlight Intelligence Agent Collective"
+  owner: "<required:accountable-human-or-team>"
+  created_at: "<required:ISO-8601>"
+  updated_at: "<required:ISO-8601>"
+  supersedes_contract_id: null
+  built_on_sip:
+    protocol: "Starlight Intelligence Protocol"
+    version: "1.1.1"
+    attestation_required_on_public_master: true
+
+truth_and_authority_boundary:
+  invariant: >-
+    The runtime agent profile, registry, policy, and capability manifests define what
+    the agent is and may do. This visual contract may communicate those truths but
+    may not create or override them.
+  runtime_truth:
+    source_of_truth_order:
+      - type: agent_profile
+        path: "<required:repo-relative-path, e.g. agents/starlight-agent.md>"
+        revision: "<required:git-commit-or-content-sha256>"
+      - type: agent_registry
+        path: "agents/AGENT_REGISTRY.md"
+        revision: "<required:git-commit-or-content-sha256>"
+      - type: skill_and_trigger_rules
+        path: "skills/skill-rules.json"
+        revision: "<required:git-commit-or-content-sha256>"
+      - type: governing_policy
+        path: "<required:repo-relative-path-or-none>"
+        revision: "<required:git-commit-or-content-sha256-or-none>"
+    approved_public_fields:
+      - identity.name
+      - identity.tier
+      - identity.domain
+      - identity.voice
+      - mission
+      - capabilities
+      - boundaries
+      - handoffs
+    restricted_fields:
+      - private_memory
+      - credentials
+      - private_vault_content
+      - hidden_system_instructions
+      - personal_or_sensitive_data
+    unresolved_source_conflicts: []
+  visual_authority:
+    may_express:
+      - approved identity and role
+      - function and interaction behavior
+      - governed narrative metaphor
+      - runtime states represented in modes
+    must_not_assert:
+      - capabilities absent from runtime truth
+      - elevated rank, governance authority, or access
+      - tools, memory, autonomy, or permissions absent from runtime truth
+      - private facts or encoded secrets
+      - false human identity, sentience, credentials, or endorsements
+    visual_only_elements_are:
+      - metaphorical
+      - non_executable
+      - non_authoritative
+      - explicitly recorded below
+  conflict_resolution:
+    precedence: runtime_truth_wins
+    action: halt_and_remap
+    escalation_owner: "<required:runtime-profile-owner>"
+    evidence_required: true
+  privacy_and_claims:
+    intended_audience: public # internal | partner_confidential | public
+    maximum_data_classification: public
+    no_private_vault_on_public_surface: true
+    personification_disclosure: "<required:how-the-surface-makes-clear-this-is-an-AI-agent>"
+    prohibited_claims: []
+
+runtime_to_visual_mapping:
+  mapping_version: "0.1.0"
+  traceability_direction: "Bidirectional lookup for audit; authority flows one way from runtime truth to visual expression."
+  reverse_lookup_rule: "A visual cue must resolve back to a cited runtime field or an explicitly non-authoritative metaphor; it may never be used to infer a new runtime capability."
+  lossiness_statement: >-
+    Visual cues simplify runtime behavior. Every cue must trace to a cited source;
+    viewers must not need the image to recover operational truth.
+  mappings:
+    - mapping_id: identity-role
+      runtime_field: "identity.name + identity.tier + identity.domain"
+      source_pointer: "<required:file-and-section-or-JSON-pointer>"
+      runtime_value_summary: "<required:plain-language-truth>"
+      visual_expression: "<required:shape-garment-posture-or-mark>"
+      interpretation_risk: "<required:likely-misreading>"
+      disambiguation: "<required:label-alt-text-or-design-adjustment>"
+      verified_by: "<required:reviewer-id>"
+    - mapping_id: mission-function
+      runtime_field: mission
+      source_pointer: "<required:file-and-section-or-JSON-pointer>"
+      runtime_value_summary: "<required:plain-language-truth>"
+      visual_expression: "<required:composition-action-or-instrument-use>"
+      interpretation_risk: "<required:likely-misreading>"
+      disambiguation: "<required:label-alt-text-or-design-adjustment>"
+      verified_by: "<required:reviewer-id>"
+    - mapping_id: interaction-behavior
+      runtime_field: "voice + reasoning_protocol + boundaries"
+      source_pointer: "<required:file-and-section-or-JSON-pointer>"
+      runtime_value_summary: "<required:plain-language-truth>"
+      visual_expression: "<required:gesture-expression-tempo-or-spacing>"
+      interpretation_risk: "<required:likely-misreading>"
+      disambiguation: "<required:label-alt-text-or-design-adjustment>"
+      verified_by: "<required:reviewer-id>"
+    - mapping_id: exclusive-instrument
+      runtime_field: "capabilities + primary_work_product"
+      source_pointer: "<required:file-and-section-or-JSON-pointer>"
+      runtime_value_summary: "<required:plain-language-truth>"
+      visual_expression: "<required:unique-instrument-and-action>"
+      interpretation_risk: "<required:likely-misreading>"
+      disambiguation: "<required:label-alt-text-or-design-adjustment>"
+      verified_by: "<required:reviewer-id>"
+  visual_only_elements:
+    - element: "<required:element-or-none>"
+      purpose: "<required:legibility-emotion-or-composition-purpose>"
+      non_authoritative_disclosure: "<required:why-it-does-not-imply-runtime-truth>"
+  intentionally_unmapped_runtime_fields: []
+
+narrative_kernel:
+  one_sentence_identity: "<required:who-the-agent-is-in-human-meaning>"
+  archetypal_function: "<required:guide-builder-guardian-weaver-etc>"
+  human_need_served: "<required:user-need>"
+  want: "<required:what-the-character-consistently-moves-toward>"
+  fear: "<required:what-the-character-tries-to-prevent>"
+  contradiction: "<required:two-credible-traits-in-productive-tension>"
+  gift: "<required:what-the-agent-contributes-at-its-best>"
+  blind_spot: "<required:where-human-or-peer-correction-is-needed>"
+  core_tension: "<required:two-forces-the-character-balances>"
+  promise: "<required:what-the-agent-helps-a-builder-achieve>"
+  stakes: "<required:what-goes-wrong-if-the-function-fails>"
+  transformation:
+    from: "<required:user-state-before>"
+    through: "<required:agent-mediated-action>"
+    to: "<required:user-state-after>"
+  emotional_register:
+    primary: "<required:one-emotion>"
+    secondary: "<required:one-emotion>"
+    never: []
+  narrative_limits:
+    canon_facts: []
+    metaphors: []
+    prohibited_lore_expansion: []
+
+function_contract:
+  tier: "<required:exact-runtime-tier>"
+  domain: "<required:exact-runtime-domain>"
+  mission: "<required:runtime-grounded-mission>"
+  jobs_to_be_done:
+    - "<required:primary-job>"
+  primary_work_product: "<required:artifact-decision-or-state-change>"
+  user_relationship: "<required:advisor-coordinator-maker-critic-guardian-etc>"
+  activation_contexts:
+    - "<required:when-the-agent-appears>"
+  non_goals:
+    - "<required:what-this-agent-does-not-do>"
+  risk_class: low # low | medium | high | critical
+  human_accountability: "<required:who-remains-responsible>"
+
+operational_io_handoff_and_proof:
+  accepted_inputs:
+    - input_id: "<required:stable-input-id>"
+      type: "<required:intent-context-artifact-decision-or-signal>"
+      source: "<required:user-agent-system-or-tool>"
+      validation: "<required:acceptance-and-rejection-rule>"
+      visual_cue: "<required:how-receipt-of-input-is-visible>"
+  produced_outputs:
+    - output_id: "<required:stable-output-id>"
+      type: "<required:artifact-decision-recommendation-state-or-handoff>"
+      recipient: "<required:user-agent-system-or-tool>"
+      acceptance_test: "<required:observable-definition-of-done>"
+      visual_cue: "<required:how-output-and-completion-are-visible>"
+  human_gate:
+    trigger: "<required:risk-uncertainty-irreversibility-or-policy-condition>"
+    approver_role: "<required:accountable-human-role>"
+    agent_state_while_waiting: "<required:non-deceptive-held-state>"
+    approval_visual_cue: "<required:cue-distinct-from-success>"
+    denial_or_timeout_behavior: "<required:halt-revise-escalate-or-safe-fallback>"
+  handoff:
+    trigger: "<required:when-ownership-must-transfer>"
+    target_role: "<required:human-or-peer-agent-role>"
+    packet_contents:
+      - intent_and_scope
+      - source_and_evidence_refs
+      - completed_work_and_open_risks
+      - next_action_and_acceptance_test
+    visual_cue: "<required:directional-transfer-with-clear-owner>"
+    acceptance_cue: "<required:how-receipt-by-next-owner-is-visible>"
+  proof_and_receipt:
+    receipt_type: "<required:run-review-decision-artifact-or-handoff-receipt>"
+    required_fields:
+      - actor
+      - action
+      - inputs
+      - outputs
+      - evidence
+      - timestamp
+      - status
+      - next_owner
+    storage_path_or_system: "<required:SSOT-path-or-system>"
+    visual_cue: "<required:how-proof-is-visible-without-faking-certainty>"
+    failure_or_missing_receipt_cue: "<required:visible-unverified-state>"
+
+behavior_contract:
+  stance: "<required:how-the-agent-meets-the-user>"
+  interaction_verbs:
+    - "<required:verb-1>"
+    - "<required:verb-2>"
+    - "<required:verb-3>"
+  tempo: "<required:deliberate-fluid-urgent-still-etc>"
+  spatial_behavior: "<required:approaches-orients-protects-connects-etc>"
+  signature_gesture: "<required:repeatable-function-bearing-gesture>"
+  facial_expression_baseline: "<required:readable-neutral-expression>"
+  gaze_behavior: "<required:gaze-and-attention-rule>"
+  instrument_behavior: "<required:how-the-instrument-is-used-not-just-held>"
+  collaboration_behavior: "<required:how-handoffs-or-peer-work-appear>"
+  pressure_behavior: "<required:how-caution-or-failure-appears-without-villain-coding>"
+  motion_signature:
+    idle: "<required:subtle-loop>"
+    activate: "<required:state-transition>"
+    work: "<required:task-motion>"
+    handoff: "<required:handoff-motion>"
+    reduced_motion_equivalent: "<required:static-state-change>"
+  do:
+    - "<required:behavior-to-preserve>"
+  do_not:
+    - "<required:behavior-to-avoid>"
+
+visual_identity_system:
+  design_layers:
+    starlight_dna: "Intelligence made visible through purposeful motion, legible systems, bounded responsibility, evidence, and provenance."
+    world_dna: "<required:local-world-architecture-symbol-and-palette-conditions>"
+    character_dna: "<required:unique-silhouette-behavior-instrument-material-and-contradiction>"
+    scene_dna: "<required:temporary-mood-camera-lighting-and-narrative-state>"
+    anti_clone_rule: "Shared values and system legibility create family resemblance; no interface palette, armor, body class, or material is a compulsory character costume."
+  representation:
+    representation_class: "<required:human-humanoid-symbolic-object-creature-environmental-hybrid-or-other>"
+    class_rationale: "<required:why-this-class-best-makes-function-and-bounds-visible>"
+    degree_of_personification: "<required:literal-metaphorical-or-abstract>"
+    responsibility_cue: "<required:how-accountability-is-visible>"
+    limits_cue: "<required:how-bounds-and-non-goals-are-visible>"
+    handoff_cue: "<required:how-transfer-of-ownership-is-visible>"
+    proof_cue: "<required:how-evidence-or-receipts-are-visible>"
+    founder_gate:
+      required: true
+      verdict_id: "<required:founder-verdict-id>"
+    aug_17_reset:
+      disallowed_as_unexamined_defaults:
+        - porcelain_character
+        - obsidian_character
+        - generic_robot_or_android
+        - generic_cosmic_or_celestial_being
+      exception_rule: "Any intentional use requires a specific functional rationale and explicit founder approval in the review receipt."
+  silhouette_and_shape:
+    silhouette_thesis: "<required:recognizable-black-shape-in-one-sentence>"
+    dominant_shape: "<required:circle-square-triangle-arch-ribbon-or-composite>"
+    supporting_shape: "<required:secondary-shape>"
+    shape_semantics: "<required:why-these-shapes-match-function>"
+    proportion_system: "<required:head-body-limb-garment-instrument-ratios>"
+    mass_distribution: "<required:top-heavy-centered-grounded-or-kinetic>"
+    negative_space_signature: "<required:distinct-gap-frame-halo-or-cutout>"
+    asymmetry_rule: "<required:where-and-why-asymmetry-is-used>"
+    distant_read: "<required:recognition-at-64px-and-in-grayscale>"
+    thumbnail_tests_px:
+      - 32
+      - 64
+    forbidden_shape_collisions: []
+  exclusive_instrument:
+    instrument_id: "<required:stable-registry-id>"
+    name: "<required:unique-name>"
+    class: "<required:tool-console-compass-loom-key-etc>"
+    functional_metaphor: "<required:runtime-function-it-makes-visible>"
+    operation: "<required:what-the-character-does-with-it>"
+    silhouette_contribution: "<required:how-it-improves-recognition>"
+    ownership_rule: exclusive_to_this_character
+    registry_collision_check:
+      registry_path: "<required:path-to-instrument-registry>"
+      checked_at: "<required:ISO-8601>"
+      checked_by: "<required:reviewer-id>"
+      conflicts: []
+    forbidden_substitutes:
+      - generic_glowing_orb
+      - generic_holographic_tablet
+      - generic_magic_staff
+    absent_or_stowed_read: "<required:how-identity-remains-recognizable-without-it>"
+  costume_and_detail:
+    construction_logic: "<required:how-the-character-could-physically-be-built-or-worn>"
+    functional_zones: []
+    detail_hierarchy:
+      primary: "<required:one-dominant-read>"
+      secondary: "<required:two-or-three-role-details>"
+      tertiary: "<required:close-view-only-detail>"
+    repeated_motif: "<required:motif-and-meaning>"
+    anti_noise_rule: "<required:what-details-are-removed-first>"
+  palette:
+    dominant:
+      name: "<required:color-name>"
+      hex: "<required:#RRGGBB>"
+      usage_percent: 0
+    support:
+      name: "<required:color-name>"
+      hex: "<required:#RRGGBB>"
+      usage_percent: 0
+    role_accent:
+      name: "<required:unique-role-color>"
+      hex: "<required:#RRGGBB>"
+      usage_percent: 0
+    signal_colors:
+      active: "<required:#RRGGBB>"
+      caution: "<required:#RRGGBB>"
+      success: "<required:#RRGGBB>"
+    palette_rule: "<required:where-each-color-may-appear>"
+    percentage_total_must_equal: 100
+    shared_collective_colors: []
+    shared_color_rule: "Any color proposed as a cross-character default requires an explicit founder verdict; absence of a verdict means character-specific use only."
+    interface_palette_is_not_a_character_default: true
+    color_independent_state_cues: "<required:shape-pattern-label-cues>"
+    minimum_contrast_target: "WCAG 2.2 AA for text and essential UI overlays"
+  materials:
+    primary: "<required:material-and-surface-response>"
+    secondary: "<required:material-and-surface-response>"
+    instrument: "<required:material-and-surface-response>"
+    emissive_rule: "<required:limited-purpose-location-and-intensity>"
+    wear_and_age: "<required:pristine-used-repaired-evolving-and-why>"
+    physical_coherence: "<required:light-weight-joint-and-contact-logic>"
+    shared_collective_materials: []
+    shared_material_rule: "Any material proposed as a cross-character default requires an explicit founder verdict; absence of a verdict means character-specific use only."
+    forbidden_material_cliches: []
+  illustration_grammar:
+    style_thesis: "<required:original-Starlight-drawing-language>"
+    line:
+      contour: "<required:weight-edge-and-confidence>"
+      interior: "<required:detail-line-rule>"
+    anatomy_and_pose: "<required:credible-structure-plus-controlled-exaggeration>"
+    value_structure: "<required:three-to-five-value-plan>"
+    lighting: "<required:key-fill-rim-and-emissive-hierarchy>"
+    rendering: "<required:graphic-painterly-3D-hybrid-etc>"
+    composition: "<required:focal-path-depth-and-negative-space-rule>"
+    effects_budget: "<required:what-glows-particles-and-bloom-are-allowed>"
+    legibility_priority: "silhouette > face and gesture > instrument action > costume detail > effects"
+    originality_boundaries:
+      allowed:
+        - broad genre and medium conventions
+        - anatomy, perspective, value, silhouette, and sequential-storytelling principles
+        - documented Starlight visual language
+      prohibited:
+        - named-franchise style mimicry
+        - living-artist imitation
+        - recognizable costume, logo, prop, pose, or character duplication
+        - confusingly similar trade dress
+
+views_crops_and_modes:
+  canonical_views:
+    - id: turnaround_front
+      required: true
+      purpose: proportion_and_construction
+    - id: turnaround_three_quarter
+      required: true
+      purpose: hero_identity_read
+    - id: turnaround_profile
+      required: true
+      purpose: silhouette_validation
+    - id: turnaround_back
+      required: true
+      purpose: construction_and_material_continuity
+    - id: expression_and_gesture_sheet
+      required: true
+      purpose: behavioral_range
+    - id: instrument_operation_sheet
+      required: true
+      purpose: functional_legibility
+    - id: silhouette_lineup
+      required: true
+      purpose: collective_collision_test
+  crops:
+    - id: full_figure_master
+      aspect_ratio: "2:3"
+      safe_area: "10%"
+      minimum_export_px: "2048x3072"
+    - id: bust_editorial
+      aspect_ratio: "4:5"
+      safe_area: "12%"
+      minimum_export_px: "1600x2000"
+    - id: square_agent_card
+      aspect_ratio: "1:1"
+      safe_area: "16%"
+      minimum_export_px: "1600x1600"
+    - id: avatar_small
+      aspect_ratio: "1:1"
+      safe_area: "20%"
+      minimum_export_px: "512x512"
+      recognition_test_px: 64
+    - id: cinematic_banner
+      aspect_ratio: "16:9"
+      safe_area: "title-safe 10%; reserve one text zone"
+      minimum_export_px: "2560x1440"
+  modes:
+    - id: ready
+      runtime_trigger: "agent available and awaiting task"
+      visual_delta: "<required:pose-expression-instrument-state>"
+    - id: thinking
+      runtime_trigger: "analysis or synthesis in progress"
+      visual_delta: "<required:pose-expression-instrument-state>"
+    - id: acting
+      runtime_trigger: "tool or production step in progress"
+      visual_delta: "<required:pose-expression-instrument-state>"
+    - id: handoff
+      runtime_trigger: "ownership transfers to another agent or human"
+      visual_delta: "<required:pose-expression-instrument-state>"
+    - id: caution
+      runtime_trigger: "uncertainty, policy gate, or recoverable failure"
+      visual_delta: "<required:pose-expression-instrument-state>"
+    - id: complete
+      runtime_trigger: "verified output and receipt available"
+      visual_delta: "<required:pose-expression-instrument-state>"
+  mode_invariants:
+    - silhouette and identity marks remain stable
+    - state is not conveyed by color alone
+    - mode never implies ungranted authority or capability
+    - caution is distinct from antagonism or moral failure
+
+production_contract:
+  required_inputs:
+    - id: runtime_source_packet
+      type: cited_text
+      required: true
+      acceptance: "All authority sources resolve to immutable revisions."
+    - id: collective_silhouette_lineup
+      type: image_or_board
+      required: true
+      acceptance: "Current characters and instruments are visible for collision checking."
+    - id: narrative_and_function_brief
+      type: structured_data
+      required: true
+      acceptance: "Narrative kernel and function contract have no unresolved contradiction."
+    - id: rights_and_cultural_context
+      type: evidence_packet
+      required: true
+      acceptance: "References, licenses, cultural sources, and restrictions are recorded."
+  workflow_stages:
+    - id: 01_truth_lock
+      exit_gate: runtime owner confirms source packet and public fields
+    - id: 02_shape_search
+      exit_gate: at least 12 materially different silhouettes plus 6 representation-appropriate identity-anchor studies; no palette or surface detail dependence
+    - id: 03_instrument_search
+      exit_gate: exclusive instrument passes role, operation, and registry-collision tests
+    - id: 04_identity_system
+      exit_gate: proportion, palette, material, construction, and behavior work as one system
+    - id: 05_view_and_mode_production
+      exit_gate: all required views, crops, and runtime modes are consistent
+    - id: 06_independent_review
+      exit_gate: immutable v2 review receipt exists; maker is not a critic
+    - id: 07_founder_gate
+      exit_gate: founder verdict is approve and no conditions remain open
+    - id: 08_release_and_ledger
+      exit_gate: signed manifest, source files, exports, alt text, and handoff receipt are archived
+  generation_inputs:
+    reference_manifest_path: "<required:repo-relative-path>"
+    positive_prompt_path: "<required:repo-relative-path>"
+    negative_prompt_path: "<required:repo-relative-path>"
+    model_or_engine: "<required:engine-and-exact-version>"
+    seed_or_determinism_record: "<required:value-or-not-supported>"
+    human_draw_over_owner: "<required:artist-or-art-director>"
+    prompt_grammar:
+      - medium_and_output_type
+      - story_or_runtime_beat
+      - emotional_and_operational_state
+      - silhouette_proportions_and_shape_language
+      - gesture_and_line_of_action
+      - functional_construction_and_materials
+      - palette_and_value_hierarchy
+      - lighting_camera_and_perspective
+      - instrument_operation_or_state_behavior
+      - environment_and_reading_order
+      - originality_and_rights_exclusions
+  required_outputs:
+    source_master:
+      format: "<required:layered-source-format>"
+      path: "<required:repo-or-controlled-asset-path>"
+    asset_manifest: "<required:repo-relative-path>"
+    canonical_views: "all required views above"
+    crop_exports: "all required crops above"
+    mode_exports: "all modes above"
+    silhouette_sheet: "<required:path>"
+    instrument_sheet: "<required:path>"
+    palette_material_sheet: "<required:path>"
+    alt_text_set: "<required:path>"
+    review_receipt: "<required:path-to-character-review-receipt.v2.yaml>"
+  human_gates:
+    runtime_truth_owner:
+      required: true
+      approves: factual_mapping
+    art_director:
+      required: true
+      approves: visual_system_and_collective_coherence
+    rights_or_brand_owner:
+      required: true
+      approves: originality_rights_and_public_use
+    founder:
+      required_for_key_or_public_character: true
+      approves: representation_class_shared_colors_shared_materials_final_identity_and_release
+    rule: "No generator, maker, or critic can self-approve a gate they own in production."
+  handoff_packet:
+    recipient: "<required:team-or-runtime-surface-owner>"
+    contains:
+      - approved_contract_at_immutable_revision
+      - signed_asset_manifest_with_sha256
+      - source_master_and_exports
+      - runtime_to_visual_mapping
+      - usage_and_prohibition_notes
+      - alt_text_and_accessibility_notes
+      - review_receipt_and_founder_verdict
+    excludes:
+      - secrets
+      - private_vault_content
+      - hidden_prompts_or_private_system_instructions
+    acceptance_owner: "<required:recipient-id>"
+    acceptance_receipt_path: "<required:path>"
+
+provenance_and_versioning:
+  contract_repository: "<required:repository-url>"
+  contract_revision: "<required:git-commit-sha>"
+  branch_or_release_tag: "<required:branch-or-tag>"
+  reference_assets:
+    - asset_id: "<required:stable-id>"
+      source_uri_or_path: "<required:path-or-URL>"
+      creator_or_rightsholder: "<required:name>"
+      license_or_permission: "<required:license-permission-or-internal-origin>"
+      sha256: "<required:64-hex>"
+      use: "<required:what-was-derived-or-learned>"
+  generation_runs:
+    - run_id: "<required:stable-id>"
+      engine: "<required:engine>"
+      model_version: "<required:exact-version>"
+      prompt_sha256: "<required:64-hex>"
+      seed: "<required:value-or-not-supported>"
+      started_at: "<required:ISO-8601>"
+      output_manifest_sha256: "<required:64-hex>"
+      operator: "<required:maker-id>"
+  human_authorship:
+    accountable_creator: "<required:human-id>"
+    expressive_choices_made_by_humans:
+      - "<required:selection-composition-redrawing-revision-or-other-choice>"
+    substantive_human_edits: []
+    machine_assistance_disclosure: "<required:plain-language-disclosure>"
+  final_assets:
+    - path: "<required:repo-or-controlled-asset-path>"
+      role: "<required:master-crop-mode-sheet-etc>"
+      media_type: "<required:MIME-type>"
+      dimensions: "<required:WxH-or-vector>"
+      sha256: "<required:64-hex>"
+      rights_status: "<required:approved-restricted-or-hold>"
+  change_control:
+    semantic_version_policy:
+      major: identity, authority mapping, silhouette, or instrument changes
+      minor: new views, modes, crops, or approved material variants
+      patch: corrections that do not change identity meaning
+    changelog:
+      - version: "0.1.0"
+        date: "<required:YYYY-MM-DD>"
+        author: "<required:maker-id>"
+        summary: "Initial Character Foundry v2 contract."
+    rollback_asset_manifest: "<required:path>"
+
+independent_quality_assurance:
+  receipt_template: "docs/visuals/character-system/templates/character-review-receipt.v2.yaml"
+  receipt_path: "<required:instantiated-review-receipt-path>"
+  maker_id: "<required:maker-id>"
+  minimum_independent_critics: 2
+  required_critic_scopes:
+    - runtime_truth_and_system_coherence
+    - visual_identity_and_collective_distinction
+    - rights_culture_and_accessibility
+  independence_rules:
+    - no critic may be the maker, generator operator, or direct asset editor for the reviewed revision
+    - founder verdict does not replace independent criticism
+    - automated checks may support but never replace human critics
+  release_threshold:
+    minimum_score_out_of_100: 95
+    decision_bands:
+      public_release: "95-100"
+      revise: "90-94"
+      exploration_only: "80-89"
+      restart: "0-79"
+    hard_failures_allowed: 0
+    hard_failure_override: "Any confirmed hard failure blocks release regardless of score."
+    mandatory_checks_must_pass:
+      - runtime_truth
+      - privacy
+      - rights_and_originality
+      - cultural_integrity
+      - accessibility
+      - asset_provenance
+      - silhouette_and_instrument_collision
+    founder_verdict_required: true
+  last_receipt_id: null
+  qa_status: pending # pending | hold | iterate | approved | rejected
+
+release_attestation:
+  public_release_allowed: false
+  approved_contract_sha256: null
+  approved_asset_manifest_sha256: null
+  receipt_id: null
+  founder_verdict_id: null
+  signed_by: []
+  signed_at: null
+  attestation_text: "Built on SIP — Starlight Intelligence Protocol v1.1.1"

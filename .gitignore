@@ -113,3 +113,12 @@ link-checker-report.txt
 
 # Starlight/ACOS temporary files
 .gemini/
+.gstack/
+
+# Voice capture output — operator-private by default.
+# The six files already tracked here are pipeline smoke-test captures with no
+# personal content, and stay tracked. This rule exists so the NEXT real capture
+# does not land in a public repo by default: the private/public split was being
+# held by judgment at commit time rather than by a rule. Audited 2026-08-30.
+memory/voice-sessions/*.md
+!memory/voice-sessions/README.md

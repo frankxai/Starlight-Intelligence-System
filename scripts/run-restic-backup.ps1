@@ -69,6 +69,12 @@ $excludes = @(
     '--exclude', $PasswordFile  # never backup the password itself
 )
 
+if ($Repo -and -not $Repo.StartsWith('b2:') -and -not $Repo.StartsWith('s3:')) {
+    # $Repo lives under $HOME\.starlight, which is itself a backup target below —
+    # without this the repo re-ingests its own prior snapshots every run.
+    $excludes += @('--exclude', $Repo)
+}
+
 Write-Host "[restic] Backing up $($targets.Count) paths..." -ForegroundColor Cyan
 $tag = "daily-$(Get-Date -Format 'yyyy-MM-dd')"
 & restic backup --tag $tag @excludes $targets

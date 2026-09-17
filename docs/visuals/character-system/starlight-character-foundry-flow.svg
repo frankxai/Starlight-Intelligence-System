@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Starlight Character Foundry v2 flow</title>
+  <desc id="desc">An editorial process diagram showing a Starlight agent character moving from runtime truth through function, territory, divergence, collision, canon, story, delivery modes, independent quality assurance, and release. Founder approval gates representation territory and release.</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#D8D2C8" stroke-width="1" opacity="0.42"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#24333D"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8.4" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#A34639"/>
+    </marker>
+    <style>
+      .ink { fill: #16242D; }
+      .muted { fill: #657078; }
+      .red { fill: #A34639; }
+      .eyebrow { font: 600 15px/1.2 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: 0.08em; }
+      .title { font: 650 48px/1.05 Georgia, "Times New Roman", serif; letter-spacing: -0.025em; }
+      .subtitle { font: 400 20px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .stage { font: 650 22px/1.2 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .body { font: 400 16px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .small { font: 500 14px/1.35 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .num { font: 700 15px/1 ui-monospace, SFMono-Regular, Consolas, monospace; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#F3EFE6"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <path d="M70 72H1530" stroke="#16242D" stroke-width="2"/>
+
+  <text x="72" y="112" class="eyebrow red">Starlight intelligence system · operational visual contract</text>
+  <text x="72" y="174" class="title ink">Character Foundry v2</text>
+  <text x="72" y="212" class="subtitle muted">Runtime truth becomes a legible character only after divergence, collision, story, and independent proof.</text>
+  <text x="1528" y="174" text-anchor="end" class="eyebrow ink">Bounded intelligence</text>
+  <text x="1528" y="205" text-anchor="end" class="small muted">Power · limit · handoff · evidence</text>
+
+  <!-- lane labels -->
+  <text x="72" y="292" class="eyebrow ink">Derive</text>
+  <text x="72" y="605" class="eyebrow ink">Prove</text>
+  <path d="M72 307H1528" stroke="#AFA89D" stroke-width="1"/>
+  <path d="M72 620H1528" stroke="#AFA89D" stroke-width="1"/>
+
+  <!-- derive line -->
+  <path d="M176 433H1408" fill="none" stroke="#24333D" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Truth -->
+  <circle cx="190" cy="433" r="54" fill="#F3EFE6" stroke="#16242D" stroke-width="3"/>
+  <text x="190" y="438" text-anchor="middle" class="num ink">G0</text>
+  <text x="190" y="354" text-anchor="middle" class="stage ink">Truth</text>
+  <text x="190" y="503" text-anchor="middle" class="small muted">144 profiles</text>
+  <text x="190" y="523" text-anchor="middle" class="small muted">one authority chain</text>
+
+  <!-- Function -->
+  <circle cx="432" cy="433" r="54" fill="#F3EFE6" stroke="#16242D" stroke-width="3"/>
+  <text x="432" y="438" text-anchor="middle" class="num ink">G1</text>
+  <text x="432" y="354" text-anchor="middle" class="stage ink">Function</text>
+  <text x="432" y="503" text-anchor="middle" class="small muted">mission · I/O</text>
+  <text x="432" y="523" text-anchor="middle" class="small muted">limit · handoff</text>
+
+  <!-- Territory -->
+  <circle cx="674" cy="433" r="54" fill="#A34639" stroke="#A34639" stroke-width="3"/>
+  <text x="674" y="438" text-anchor="middle" class="num" fill="#FFF9EF">G2</text>
+  <text x="674" y="354" text-anchor="middle" class="stage ink">Territory</text>
+  <text x="674" y="503" text-anchor="middle" class="small muted">representation class</text>
+  <text x="674" y="523" text-anchor="middle" class="small muted">selected in B&amp;W first</text>
+  <path d="M674 306V374" stroke="#A34639" stroke-width="3" marker-end="url(#arrowRed)"/>
+  <text x="674" y="286" text-anchor="middle" class="eyebrow red">Founder gate</text>
+
+  <!-- Divergence -->
+  <circle cx="916" cy="433" r="54" fill="#F3EFE6" stroke="#16242D" stroke-width="3"/>
+  <text x="916" y="438" text-anchor="middle" class="num ink">G3–4</text>
+  <text x="916" y="354" text-anchor="middle" class="stage ink">Divergence</text>
+  <text x="916" y="503" text-anchor="middle" class="small muted">3 structural routes</text>
+  <text x="916" y="523" text-anchor="middle" class="small muted">one exclusive instrument</text>
+
+  <!-- Collision -->
+  <circle cx="1158" cy="433" r="54" fill="#F3EFE6" stroke="#16242D" stroke-width="3"/>
+  <text x="1158" y="438" text-anchor="middle" class="num ink">G5</text>
+  <text x="1158" y="354" text-anchor="middle" class="stage ink">Collision</text>
+  <text x="1158" y="503" text-anchor="middle" class="small muted">lineup · blur · crop</text>
+  <text x="1158" y="523" text-anchor="middle" class="small muted">duplicate-role test</text>
+
+  <!-- Canon -->
+  <circle cx="1400" cy="433" r="54" fill="#16242D" stroke="#16242D" stroke-width="3"/>
+  <text x="1400" y="438" text-anchor="middle" class="num" fill="#FFF9EF">G6</text>
+  <text x="1400" y="354" text-anchor="middle" class="stage ink">Canon</text>
+  <text x="1400" y="503" text-anchor="middle" class="small muted">model sheet vN</text>
+  <text x="1400" y="523" text-anchor="middle" class="small muted">version, never overwrite</text>
+
+  <!-- transition to prove lane -->
+  <path d="M1454 433H1502V680H1408" fill="none" stroke="#24333D" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- prove line, right to left visually continues then bends to release -->
+  <path d="M1390 680H382" fill="none" stroke="#24333D" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Story -->
+  <circle cx="1320" cy="680" r="54" fill="#F3EFE6" stroke="#16242D" stroke-width="3"/>
+  <text x="1320" y="685" text-anchor="middle" class="num ink">G7</text>
+  <text x="1320" y="768" text-anchor="middle" class="stage ink">Story</text>
+  <text x="1320" y="797" text-anchor="middle" class="small muted">six-frame proof</text>
+  <text x="1320" y="817" text-anchor="middle" class="small muted">need → limit → handoff</text>
+
+  <!-- Modes -->
+  <circle cx="1030" cy="680" r="54" fill="#F3EFE6" stroke="#16242D" stroke-width="3"/>
+  <text x="1030" y="685" text-anchor="middle" class="num ink">G8</text>
+  <text x="1030" y="768" text-anchor="middle" class="stage ink">Modes</text>
+  <text x="1030" y="797" text-anchor="middle" class="small muted">instrument · field guide</text>
+  <text x="1030" y="817" text-anchor="middle" class="small muted">badge · story strip</text>
+
+  <!-- QA -->
+  <circle cx="740" cy="680" r="54" fill="#F3EFE6" stroke="#16242D" stroke-width="3"/>
+  <text x="740" y="685" text-anchor="middle" class="num ink">G9</text>
+  <text x="740" y="768" text-anchor="middle" class="stage ink">Independent QA</text>
+  <text x="740" y="797" text-anchor="middle" class="small muted">maker ≠ verifier</text>
+  <text x="740" y="817" text-anchor="middle" class="small muted">≥95 · zero hard failures</text>
+
+  <!-- Release -->
+  <circle cx="450" cy="680" r="54" fill="#A34639" stroke="#A34639" stroke-width="3"/>
+  <text x="450" y="685" text-anchor="middle" class="num" fill="#FFF9EF">G10</text>
+  <text x="450" y="768" text-anchor="middle" class="stage ink">Release</text>
+  <text x="450" y="797" text-anchor="middle" class="small muted">receipt · migration</text>
+  <text x="450" y="817" text-anchor="middle" class="small muted">rollback path intact</text>
+
+  <!-- reject loop -->
+  <path d="M686 652C620 560 502 559 450 625" fill="none" stroke="#A34639" stroke-width="2.5" stroke-dasharray="8 8" marker-end="url(#arrowRed)"/>
+  <text x="568" y="574" text-anchor="middle" class="small red">revise with evidence</text>
+
+  <!-- provenance footer -->
+  <path d="M72 854H1528" stroke="#16242D" stroke-width="2"/>
+  <text x="72" y="882" class="small ink">Runtime profile → visual contract → character version → asset → immutable review receipt</text>
+  <text x="1528" y="882" text-anchor="end" class="small muted">Marvel discipline translated into original Starlight governance — never Marvel imitation</text>
+</svg>

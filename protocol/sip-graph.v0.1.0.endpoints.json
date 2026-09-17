@@ -1,0 +1,123 @@
+{
+  "$comment": "Published endpoint matrix for SIP graph v0.1.0. Companion to sip-graph.v0.1.0.schema.json: JSON Schema cannot express \"the node this edge points at must be of type X\", so the matrix is published as data and enforced by rule G7 in protocol/lib/graph.mjs. A test pins the two together.",
+  "sipGraphVersion": "0.1.0",
+  "endpointMatrix": {
+    "asserts": {
+      "from": [
+        "Agent",
+        "Identity"
+      ],
+      "to": [
+        "Claim"
+      ]
+    },
+    "derivedFrom": {
+      "from": [
+        "Claim",
+        "MemoryRecord",
+        "Artifact"
+      ],
+      "to": [
+        "Source",
+        "MemoryRecord",
+        "Artifact"
+      ]
+    },
+    "supports": {
+      "from": [
+        "Source",
+        "Evaluation"
+      ],
+      "to": [
+        "Claim"
+      ]
+    },
+    "contradicts": {
+      "from": [
+        "Source",
+        "Evaluation"
+      ],
+      "to": [
+        "Claim"
+      ]
+    },
+    "governedBy": {
+      "from": [
+        "Agent",
+        "Capability",
+        "Claim",
+        "Artifact",
+        "MemoryRecord"
+      ],
+      "to": [
+        "Policy"
+      ]
+    },
+    "decides": {
+      "from": [
+        "Decision"
+      ],
+      "to": [
+        "Claim",
+        "Artifact",
+        "Capability"
+      ]
+    },
+    "underPolicy": {
+      "from": [
+        "Decision"
+      ],
+      "to": [
+        "Policy"
+      ]
+    },
+    "grants": {
+      "from": [
+        "Identity"
+      ],
+      "to": [
+        "Capability"
+      ]
+    },
+    "exercises": {
+      "from": [
+        "Agent"
+      ],
+      "to": [
+        "Capability"
+      ]
+    },
+    "produces": {
+      "from": [
+        "Agent"
+      ],
+      "to": [
+        "Artifact",
+        "MemoryRecord"
+      ]
+    },
+    "evaluates": {
+      "from": [
+        "Evaluation"
+      ],
+      "to": "*"
+    },
+    "attests": {
+      "from": [
+        "Attestation"
+      ],
+      "to": [
+        "Artifact",
+        "Claim",
+        "Evaluation",
+        "Decision"
+      ]
+    },
+    "projects": {
+      "from": [
+        "Projection"
+      ],
+      "to": "*"
+    }
+  }
+}

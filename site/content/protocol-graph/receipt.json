@@ -1,0 +1,134 @@
+{
+  "receiptVersion": "0.1.0",
+  "tool": "sip-conform@0.1.0",
+  "sipGraphVersion": "0.1.0",
+  "declaredGraphVersion": "0.1.0",
+  "subject": "github.com/example/research-agent",
+  "profileId": "sip:profile:reference-adopter",
+  "profileSha256": "d0805144eb53ef426b2ef00efd2faa24da54a8979d45e319e17efe37f3a12d93",
+  "checkedAt": "2026-09-03T08:08:26.943Z",
+  "counts": {
+    "nodes": 14,
+    "edges": 15,
+    "projections": 1,
+    "byType": {
+      "Identity": 2,
+      "Agent": 1,
+      "Capability": 1,
+      "MemoryRecord": 1,
+      "Claim": 1,
+      "Source": 2,
+      "Attestation": 1,
+      "Policy": 1,
+      "Decision": 1,
+      "Artifact": 1,
+      "Evaluation": 1,
+      "Projection": 1
+    }
+  },
+  "verdict": "PASS",
+  "rules": [
+    {
+      "id": "C1",
+      "title": "Declared graph version is compatible",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G1",
+      "title": "Every node and edge carries the governance envelope",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G2",
+      "title": "Ids are namespaced and match their type",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G3",
+      "title": "Ids are unique across nodes and edges",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G4",
+      "title": "Node types are drawn from the declared set",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G5",
+      "title": "Edge types are drawn from the declared set",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G6",
+      "title": "Edge endpoints resolve to declared nodes",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G7",
+      "title": "Edge endpoints match the legal type matrix",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G8",
+      "title": "Every element is owned by a declared Identity",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G9",
+      "title": "Provenance sources resolve inside the graph",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G10",
+      "title": "derivedFrom contains no cycles",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "G11",
+      "title": "Node bodies carry their type's required fields",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "P1",
+      "title": "Projections never widen a node or edge past its visibility",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "P2",
+      "title": "Boundary-crossing edges are declared as redacted",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "P3",
+      "title": "Owner-only fields are stripped or explicitly redacted, at any depth",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "P4",
+      "title": "No credential-shaped value reaches a public projection",
+      "status": "pass",
+      "findings": []
+    },
+    {
+      "id": "P5",
+      "title": "Publicly projected nodes name a publicly resolvable owner",
+      "status": "pass",
+      "findings": []
+    }
+  ]
+}

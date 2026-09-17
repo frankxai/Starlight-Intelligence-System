@@ -1,9 +1,11 @@
 # Starlight Intelligence — Visual Brand & Agent Visualization System
 
+> **Superseded for new work.** This document records the June 2026 visual system. Preserve it as history, but route all new character and brand decisions through the 2026-08-17 SIS foundation reset and [`docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md`](../../docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md). Its cosmic Queen, robot, chibi, dark-glass, cyan, and gold treatments are options requiring reapproval, not house defaults.
+
 **Version:** v1.0 (2026-06)  
 **Purpose:** Define the complete premium visual language for the Starlight Queen, her Swarms, all agents (144+), chibi/likable variants, icons, 3D experiences, infographics, and integration across the public site (starlightintelligence.org), content, social, and internal tools.
 
-This is the source of truth for visuals. All generated assets, components, and future work must align.
+This was the June 2026 source of truth. It now governs only preserved legacy assets and migration history.
 
 ## 1. Brand Vision & Principles
 - **Vibe:** Cool. Premium. High intellect. Purpose-driven. Fun. Luminous, sovereign, cosmic yet approachable.

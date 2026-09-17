@@ -11,6 +11,72 @@
   },
   "upstreams": [
     {
+      "id": "a2a-protocol",
+      "class": "standards",
+      "repository": "https://github.com/a2aproject/A2A",
+      "track": "0.3.0 contract 8d57eba286de756176892518a8fc39b0ac2ccefb; main research 6d6640c29b102f7a8d23784901351b5d2454fe71",
+      "verified_at": "2026-09-12",
+      "adoption": "pattern",
+      "owner": "Starlight-Intelligence-System",
+      "primitive": "Text JSON-RPC message/send and tasks/get adapter, bounded polling and task identity; src/federation/a2a.ts",
+      "security_notes": "Apache-2.0. Limited 0.3 transport tests, not full conformance. Operator-configured endpoint, no redirects or implicit retries. No upstream code copied."
+    },
+    {
+      "id": "mcp-typescript-sdk",
+      "class": "standards",
+      "repository": "https://github.com/modelcontextprotocol/typescript-sdk",
+      "track": "research b65426158ed9f29aea8ef3dc09ca22d7d9d6f970; host pins its actual SDK",
+      "verified_at": "2026-09-12",
+      "adoption": "pattern",
+      "owner": "Starlight-Intelligence-System",
+      "primitive": "Initialized client supplied by host; selected tool and structured/text normalization; src/federation/mcp.ts",
+      "security_notes": "License transition: new code/spec Apache-2.0, some MIT contributions remain, non-spec docs CC-BY-4.0. Check file notices before copying. No SDK install or source copying; host owns auth."
+    },
+    {
+      "id": "agent-client-protocol",
+      "class": "standards",
+      "repository": "https://github.com/agentclientprotocol/agent-client-protocol",
+      "track": "research f1293d8e43d09a6745ff8fe717f9acd8299591b7",
+      "verified_at": "2026-09-12",
+      "adoption": "candidate",
+      "owner": "starlight-command-center",
+      "primitive": "Editor-to-coding-agent sessions for the existing overlay; separate from remote A2A delegation",
+      "security_notes": "Apache-2.0. Proposal only; preserve editor permission boundaries. No ACP implementation or conformance claim."
+    },
+    {
+      "id": "openhands-software-agent-sdk",
+      "class": "reference_harness",
+      "repository": "https://github.com/OpenHands/software-agent-sdk",
+      "track": "research 9df0ca59bb8110c5294a508fb6761d91d043e6a3",
+      "verified_at": "2026-09-12",
+      "adoption": "lab",
+      "owner": "starlight-agent-lab",
+      "primitive": "Coding-agent server, Python/TypeScript/REST clients and local/remote workspace boundaries",
+      "security_notes": "MIT. Pilot candidate only. No install/provider calls. Prove isolation and artifact verification before repository-write routing."
+    },
+    {
+      "id": "temporal-typescript-sdk",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/temporalio/sdk-typescript",
+      "track": "research e37ed88b7c71dc35c022464d095bca69a9b2dcd3; not installed",
+      "verified_at": "2026-09-12",
+      "adoption": "candidate",
+      "owner": "starlight-swarm",
+      "primitive": "Durable workflow activities in the existing runtime plan; persist provider IDs and reconcile before retrying effects",
+      "security_notes": "MIT. Swarm results are not durable checkpoints. Idempotency or provider reconciliation required for retries. No second estate scheduler."
+    },
+    {
+      "id": "tauri-shell",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "track": "research d0f38df06a2f4406b388a336694aa18b3c6bf1a9",
+      "verified_at": "2026-09-12",
+      "adoption": "candidate",
+      "owner": "starlight-command-center",
+      "primitive": "Rust native shell with web frontend; evaluate only for measured native capability or footprint needs",
+      "security_notes": "README declares MIT or Apache-2.0. Research only; preserve the existing app, avoid a parallel shell rewrite."
+    },
+    {
       "id": "ruflo",
       "class": "reference_harness",
       "repository": "https://github.com/ruvnet/ruflo",

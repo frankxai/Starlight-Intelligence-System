@@ -39,6 +39,7 @@ import { runMemoryEval } from "./memory-eval.js";
 import { seedVaults } from "./seed.js";
 import { AgentOpsLedger, ApprovalGateRequiredError, readRecentAgentEvents } from "./ledgers.js";
 import { listModules, setModuleEnabled } from "./modules.js";
+import { inspectCapabilityProviders, loadCapabilityInventory, routeCapability } from "./capability-control-plane.js";
 import {
   appendSwarmAudit,
   createSwarmPlan,
@@ -142,6 +143,8 @@ Commands:
   modules list                    List Intelligence System modules
   modules enable <id>             Enable an Intelligence System module locally
   modules disable <id>            Disable an Intelligence System module locally
+  capabilities status             Detect configured local and cloud provider access
+  capabilities route <capability> Rank lanes by evidence, cost, and privacy
   vault list                      List all memory entries
   vault health                    Show repo-local memory health
   vault refresh                   Run dreaming consolidation and stamp vault freshness
@@ -191,6 +194,8 @@ Options:
   --checklist <tasks>             Comma-separated checklist tasks for goal init
   --findings <text>               Findings to consolidate during goal compress
   --no-tests                      Skip test execution during goal audit
+  --privacy <boundary>            Route boundary: workspace or remote-ok
+  --no-free-preference            Do not boost free-eligible lanes
 
 Examples:
   starlight init
@@ -1026,6 +1031,34 @@ function cmdModules(action: string, args: string[]): void {
   }
 }
 
+function cmdCapabilities(
+  action: string,
+  args: string[],
+  options: { privacy?: string; freePreference: boolean },
+): void {
+  const inventory = loadCapabilityInventory(getPackageRoot());
+  const providers = inspectCapabilityProviders(inventory);
+  if (action === "status") {
+    console.log(formatJSON({ inventoryVersion: inventory.version, providers }));
+    return;
+  }
+  if (action === "route") {
+    const capability = args[0];
+    if (!capability) throw new Error("capabilities route requires a capability.");
+    if (options.privacy && !["workspace", "remote-ok"].includes(options.privacy)) {
+      throw new Error("--privacy must be workspace or remote-ok.");
+    }
+    const candidates = routeCapability(providers, {
+      capability,
+      privacy: options.privacy as "workspace" | "remote-ok" | undefined,
+      preferFree: options.freePreference,
+    });
+    console.log(formatJSON({ capability, candidates }));
+    return;
+  }
+  throw new Error(`Unknown capabilities action: ${action}. Available: status, route.`);
+}
+
 function cmdStats(): void {
   const sis = createSIS();
   const stats = sis.getStats();
@@ -1487,6 +1520,8 @@ async function main(): Promise<void> {
       checklist: { type: "string" },
       findings: { type: "string" },
       "no-tests": { type: "boolean" },
+      privacy: { type: "string" },
+      "no-free-preference": { type: "boolean" },
     },
     strict: false,
   });
@@ -1654,6 +1689,19 @@ async function main(): Promise<void> {
         return;
       }
       cmdModules(modulesAction, positionals.slice(2));
+      break;
+    }
+
+    case "capabilities": {
+      try {
+        cmdCapabilities(positionals[1] ?? "status", positionals.slice(2), {
+          privacy: asString(values.privacy),
+          freePreference: values["no-free-preference"] !== true,
+        });
+      } catch (err) {
+        console.error(`[starlight] ${err instanceof Error ? err.message : String(err)}`);
+        process.exitCode = 1;
+      }
       break;
     }
 

@@ -1,0 +1,85 @@
+name: Federation checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/federation.ts"
+      - "src/federation/**"
+      - "src/runtime-bridge/**"
+      - "src/swarm.ts"
+      - "src/swarm.test.ts"
+      - "src/types.ts"
+      - "test/federat*.test.ts"
+      - "test/runtime-bridge.test.ts"
+      - "examples/federation/**"
+      - "scripts/check-federation-package.mjs"
+      - "package*.json"
+      - "tsconfig*.json"
+      - ".github/workflows/federation-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/federation.ts"
+      - "src/federation/**"
+      - "src/runtime-bridge/**"
+      - "src/swarm.ts"
+      - "src/swarm.test.ts"
+      - "src/types.ts"
+      - "test/federat*.test.ts"
+      - "test/runtime-bridge.test.ts"
+      - "examples/federation/**"
+      - "scripts/check-federation-package.mjs"
+      - "package*.json"
+      - "tsconfig*.json"
+      - ".github/workflows/federation-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: federation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contracts:
+    name: Federation / ${{ matrix.os }} / Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - { os: ubuntu-latest, node: "22", python: "3.11" }
+          - { os: ubuntu-latest, node: "24", python: "3.13" }
+          - { os: windows-latest, node: "24", python: "3.13" }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - name: Set up Python
+        id: python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the locked verification toolchain
+        run: npm ci --ignore-scripts --include=dev
+      - name: Verify contracts and mandatory Python integration
+        run: npm run test:federation
+        env:
+          STARLIGHT_TEST_PYTHON: ${{ steps.python.outputs.python-path }}
+          STARLIGHT_REQUIRE_PYTHON: "1"
+      - name: Build the federation package slice and verify exports
+        run: npm run verify:federation-package
+      - name: Exercise the Python and MCP example
+        run: npm run demo:federation
+        env:
+          STARLIGHT_PYTHON: ${{ steps.python.outputs.python-path }}

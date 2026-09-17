@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/protocol/receipt.v0.1.0.schema.json",
+  "title": "SIP graph conformance receipt v0.1.0",
+  "description": "Output of `node protocol/conform.mjs <profile.json> --json <out>`. Deterministic apart from checkedAt: the same profile bytes and the same tool version always produce the same rule results.",
+  "type": "object",
+  "required": [
+    "receiptVersion",
+    "tool",
+    "sipGraphVersion",
+    "profileSha256",
+    "checkedAt",
+    "counts",
+    "verdict",
+    "rules"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "receiptVersion": { "type": "string", "const": "0.1.0" },
+    "tool": {
+      "type": "string",
+      "pattern": "^sip-conform@\\d+\\.\\d+\\.\\d+$",
+      "description": "Which checker produced this. A receipt is only as good as the tool named here."
+    },
+    "sipGraphVersion": {
+      "type": "string",
+      "description": "Graph contract version the checker implements."
+    },
+    "declaredGraphVersion": {
+      "type": ["string", "null"],
+      "description": "Graph contract version the profile claimed. Differs from sipGraphVersion only when C1 failed."
+    },
+    "subject": { "type": ["string", "null"] },
+    "profileId": { "type": ["string", "null"] },
+    "profileSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of the exact profile bytes that were checked. This is what makes a receipt re-verifiable."
+    },
+    "checkedAt": { "type": "string", "format": "date-time" },
+    "counts": {
+      "type": "object",
+      "required": ["nodes", "edges", "projections"],
+      "properties": {
+        "nodes": { "type": "integer", "minimum": 0 },
+        "edges": { "type": "integer", "minimum": 0 },
+        "projections": { "type": "integer", "minimum": 0 },
+        "byType": { "type": "object", "additionalProperties": { "type": "integer" } }
+      }
+    },
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "status", "findings"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[CGP]\\d+$" },
+          "title": { "type": "string" },
+          "status": { "type": "string", "enum": ["pass", "fail"] },
+          "findings": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Empty on pass. On fail, one line per offending element, naming the element."
+          }
+        }
+      }
+    }
+  }
+}

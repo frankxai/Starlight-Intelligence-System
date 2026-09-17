@@ -69,6 +69,20 @@ Before claiming a local lane works, verify:
 - For wrappers, `Test-AgentGridCli` reports installed binaries and existing repo targets.
 - For image work, an image artifact was generated or the tool returned a concrete refusal.
 
+## Remote agents and language workers
+
+For external agents, existing MCP connections, or workers in another language, use the operational [federation bridge](../../docs/architecture/agent-federation.md). The library entry point is `src/federation.ts`; the bounded example is `examples/federation/demo.ts`.
+
+- A2A: verify the service version. The implemented adapter covers text JSON-RPC 0.3.0 only.
+- MCP: use a selected tool on a host-owned initialized connection. Map its actual arguments.
+- Process: use an operator-configured, one-shot executable. Python is demonstrated; other languages need their own envelope tests.
+- Plan every task before dispatch. Ambiguous capabilities require an explicit worker; do not silently substitute another platform.
+- Pass only approved task input. Credentials and private memory stay behind the existing host boundary.
+- A timeout or lost response can leave an unknown remote outcome. Preserve provider task references and reconcile before retrying effects.
+- Successful execution still needs artifact verification and the existing work graph before completion or memory promotion.
+
+This bridge does not install SDKs, start global MCP servers, grant permissions, enforce a monetary budget or provide durable scheduling. Use the established runtime lifecycle for those concerns. The separate `RuntimeBridge` can consume these transport runners through the documented structural adapter after its branch lands.
+
 ## Output Standard
 
 Be brief. State the chosen lane, why, and the exact command/tool to run when not executing directly. If executing directly, report the artifact, diff, or command result.

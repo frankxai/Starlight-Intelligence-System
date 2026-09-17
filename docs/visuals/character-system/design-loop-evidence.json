@@ -1,0 +1,112 @@
+{
+  "version": "2026-08-27",
+  "task": "Define and visualize the Starlight Character Foundry v2 workflow without imitating Marvel intellectual property.",
+  "surface": "Operational documentation diagram and character-system handoff",
+  "audience": "Starlight founder, character makers, runtime owners, independent reviewers, and future agent swarms",
+  "first_read": "Runtime truth moves through founder-gated representation, divergence, collision, story proof, independent QA, and a receipt-bearing release.",
+  "standards": [
+    "C:/Users/frank/starlight/repos/design-agent-standards/OUTCOMES.md",
+    "C:/Users/frank/starlight/repos/design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "C:/Users/frank/starlight/repos/design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "C:/Users/frank/starlight/repos/design-agent-standards/VISUAL_QA_GATE.md",
+    "C:/Users/frank/starlight/repos/starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/TASTE-CONSTITUTION.md"
+  ],
+  "references": [
+    {
+      "label": "SIS 2026-08-17 Taste Constitution",
+      "source": "C:/Users/frank/starlight/repos/starlight-design-intelligence/brand-image-system/foundation-reset/2026-08-17/TASTE-CONSTITUTION.md",
+      "reason": "Sets the active foundation reset, anti-defaults, black-and-white territory gate, and founder approval boundary."
+    },
+    {
+      "label": "Marvel Studios visual development retrospective",
+      "source": "https://www.marvel.com/articles/movies/looking-at-the-visual-development-of-marvel-studios-over-the-past-ten-years",
+      "reason": "Informs the story-first and cross-discipline visual-development method, not a copied look."
+    },
+    {
+      "label": "Marvel X-Men '97 character design interview",
+      "source": "https://www.marvel.com/articles/tv-shows/x-men-97-amelia-vidal-interview",
+      "reason": "Informs silhouette, acting, function, source essence, and production collaboration."
+    },
+    {
+      "label": "Starlight Character Foundry v2",
+      "source": "docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md",
+      "reason": "Provides the exact G0-G10 operating sequence represented by the diagram."
+    }
+  ],
+  "direction": {
+    "keep": [
+      "Civic and editorial clarity",
+      "Warm-white substrate with deep ink",
+      "Oxidized-red only for intervention and founder gates",
+      "Exact operational labels and visible rollback loop"
+    ],
+    "avoid": [
+      "Marvel character or costume imitation",
+      "Cosmic Queen, robot, superhero, star, or constellation defaults",
+      "Black glass, cyan-gold glow, card grids, and decorative complexity",
+      "Generated text for exact labels"
+    ],
+    "signature": "Bounded intelligence: the system makes power, limits, handoffs, evidence, and human gates visible.",
+    "system": [
+      "1600 by 900 deterministic SVG",
+      "Two process lanes: derive and prove",
+      "Deep navy for authority, oxidized red for intervention, warm white for the civic field",
+      "Sentence-case stage labels with restrained editorial typography",
+      "Accessible title and description embedded in the SVG",
+      "Receipt-bearing authority chain in the footer"
+    ]
+  },
+  "asset_quality": {
+    "tier": "C",
+    "source_method": "vector-diagram",
+    "provenance": "owned",
+    "why_premium": "The source is deterministic, original, semantically exact, and governed by the active SIS taste constitution; final premium status remains unclaimed until the export is visually inspected.",
+    "shortcut_risk": "low",
+    "context_tested": false
+  },
+  "artifacts": [
+    {
+      "path_or_url": "docs/visuals/character-system/starlight-character-foundry-flow.svg",
+      "kind": "image",
+      "inspected": false,
+      "notes": "PowerShell XML parsing passed and the root reports viewBox 0 0 1600 900. Raster/export inspection is pending because machine preflight returned HOLD."
+    }
+  ],
+  "checks": [
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier C deterministic vector diagram with owned provenance and no fake product UI."
+    },
+    {
+      "name": "xml-validation",
+      "status": "pass",
+      "evidence": "The SVG parses as XML with a 1600 by 900 viewBox and contains accessible title and description nodes."
+    },
+    {
+      "name": "rights-and-originality",
+      "status": "pass",
+      "evidence": "The diagram contains no Marvel characters, logos, costumes, names, or copied composition; Marvel informs method only."
+    },
+    {
+      "name": "export-inspection",
+      "status": "blocked",
+      "evidence": "pp preflight --workload browser-qa returned HOLD on 2026-08-27: 7951 MB free versus 8192 MB required and 33 task runtimes versus a budget of 8."
+    },
+    {
+      "name": "visual-qa",
+      "status": "blocked",
+      "evidence": "No browser, raster, responsive, contrast, or in-context inspection was run after the performance gate returned HOLD."
+    }
+  ],
+  "score": {
+    "total": 0,
+    "max": 30,
+    "notes": "Not scored. The 30-point premium score requires visual inspection; source-level correctness alone is insufficient."
+  },
+  "decision": "blocked",
+  "known_risks": [
+    "Font metrics, label collision, arrow routing, contrast, and small-text readability have not been visually inspected.",
+    "The SVG must not be used as a release-grade visual until the blocked inspection checks pass and the evidence record is superseded."
+  ]
+}

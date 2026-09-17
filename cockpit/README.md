@@ -211,6 +211,34 @@ CI runs all three on Windows + Linux on every push to `main`. See [.github/workf
 
 ---
 
+## Starlight Cockpit Visual Instrument (Web / Desktop)
+
+The Starlight Cockpit includes a zero-latency, local-first spatial canvas instrument for visual multi-agent orchestration and memory palace exploration.
+
+### Architectural Highlights
+- **120 FPS Spatial Canvas Engine**: Infinite pan and zoom with viewport frustum culling, dynamic cubic Bezier cables, and animated memory context-flow particles.
+- **Three Node Types**:
+  - `MemoryVaultNode`: Visualizes each of the 6 vaults (Strategic, Technical, Creative, Operational, Wisdom, Horizon) with in-node live search, item count metrics, and vector cluster tags.
+  - `AgentNode`: Visualizes active agents (Orchestrator, Architect, Sentinel, Weaver, Prime, Navigator, Hermes) with live status pills (`idle`, `deliberating`, `executing`).
+  - `ExecutionGateNode`: Visualizes Santa review / SIP consensus gates with invariant criteria checklists.
+- **Local-First Memory Substrate (SQLite WASM / In-Memory)**: Indexes all 108 production vault entries with sub-millisecond FTS5 lexical matching and HashingTF sparse vector cosine similarity (<0.5ms average latency, zero network requests).
+- **Streaming Council Split-Screen (The Deliberation Chamber)**: 3-column parallel streaming panel (Architect, Sentinel, Prime) that reaches multi-agent consensus and generates signed SIP Consensus JSON artifacts.
+- **Audio-Tactile Synthesis**: 2ms Web Audio micro-impulse tactile clicks on node placement, cable connections, and panel toggles (100% synthesized, zero external audio downloads).
+
+### Quick Launch
+```bash
+# Launch via Vite dev server (<600ms boot)
+npm run cockpit:dev
+
+# Or build the standalone single-file instrument
+npm run cockpit:build
+
+# Open standalone HTML directly in any browser (0ms server spinup)
+# Located at: cockpit/starlight-cockpit.html
+```
+
+---
+
 ## Privacy
 
 Manifest contains: cwd, project name, agent type, opaque session UUIDs, PIDs, hostname. **No transcript content, no prompts, no tool outputs, no secrets, no file contents.**

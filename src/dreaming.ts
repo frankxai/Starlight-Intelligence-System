@@ -38,6 +38,21 @@ const HIGH_COMMITS = 5, HIGH_FILES = 10, LONG_SESSION_SEC = 3600;
 //     Jaccard for hashing-TF cosine; threshold will recalibrate to ~0.4.
 const PROMO_SIM = 0.15;
 
+// Entry ids must survive edits made elsewhere in the same file. A positional
+// index shifts whenever any earlier section is added or removed, silently
+// repointing every already-queued promotion candidate at unrelated content —
+// observed 2026-08-30, when PROMOTION_QUEUE candidates filed in May resolved to
+// June/August entries and one had drifted past the end of its vault entirely.
+function sectionKey(section: string): string {
+  return section
+    .split("\n", 1)[0]
+    .replace(/^#{1,6}\s+/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
 export class DreamingAgent {
   private readonly vaultDir: string;
   private readonly detector: ContradictionDetector;
@@ -219,17 +234,21 @@ export class DreamingAgent {
       try {
         const fileMtime = fs.statSync(path.join(vaultDir, file)).mtime.toISOString();
         const content = fs.readFileSync(path.join(vaultDir, file), "utf-8");
-        const sections = content.split(/\n(?=#{2,3}\s)/);
-        sections.forEach((sec, i) => {
+        for (const sec of content.split(/\n(?=#{2,3}\s)/)) {
           const trimmed = sec.trim();
-          if (trimmed.length < 100) return;  // skip tiny preamble fragments
+          // The split's first chunk is frontmatter + H1, not an entry. It was
+          // scoring cross-vault matches against other vaults' identical
+          // boilerplate ("type: vault / retention: permanent / readers: all")
+          // and reaching the promotion queue as a candidate.
+          if (!trimmed.startsWith("#")) continue;
+          if (trimmed.length < 100) continue;
           entries.push({
-            id: `md:${file}#${i}`,
+            id: `md:${file}#${sectionKey(trimmed)}`,
             vault,
             content: trimmed,
             createdAt: fileMtime,
           });
-        });
+        }
       } catch { /* skip — corrupt or unreadable file */ }
     }
 

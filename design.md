@@ -1,5 +1,7 @@
 # Starlight Intelligence System Design Handoff (Starlight-Intelligence-System)
 
+> **Legacy visual record.** This June-era cosmic/glow direction is preserved for provenance, but it is not the default for new brand or character work. New work must use the 2026-08-17 SIS foundation reset and [`docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md`](./docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md). Cosmic Queen, robot, chibi, dark-glass, cyan, and gold treatments require fresh territory approval.
+
 > Local visual specifications. Consumes the global design operating contract at [starlight/design.md](file:///C:/Users/frank/starlight/design.md).
 
 ---

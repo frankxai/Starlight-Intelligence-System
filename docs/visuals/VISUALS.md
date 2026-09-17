@@ -1,5 +1,7 @@
 # VISUALS — Canonical High-Intellect Artifacts
 
+> **Legacy artifact ledger.** These June 2026 visuals remain historical, receipt-bearing system artifacts; they are not defaults for new identity or character work. Use the 2026-08-17 SIS foundation reset and [`character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md`](./character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md) for new work. Existing cosmic, constellation, dark-glass, cyan, gold, Queen, robot, or chibi treatments require inventory, mapping, and reapproval before reuse.
+
 > Built on SIP — Starlight Intelligence Protocol v1.1.1.
 > Production-quality visuals generated natively via Grok harness (image_gen / Imagine) as first-class LEDGER artifacts for the Queen loop, Memory Palace reviews, research surface, and system attestation. They advance the SIS by making abstract architecture, closed-loop intelligence, and self-advancing dynamics immediately legible, referenceable, and embeddable.
 
