@@ -1,0 +1,7 @@
+{
+  "name": "starlight-intelligence-system",
+  "version": "8.2.0",
+  "description": "The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet across Claude Code, OpenAI Codex, Grok Build, Google Antigravity, and Cursor. Built on the Starlight Intelligence Protocol v1.1.1.",
+  "author": "Frank Riemer",
+  "skills": "./skills"
+}

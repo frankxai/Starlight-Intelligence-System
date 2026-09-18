@@ -1,0 +1,55 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/plugin.v1.json",
+  "name": "starlight-intelligence-system",
+  "version": "8.2.0",
+  "description": "The sovereign intelligence substrate — persistent memory, identity, and attested governance for your whole AI fleet across Claude Code, OpenAI Codex, Grok Build, Google Antigravity, and Cursor. Built on the Starlight Intelligence Protocol v1.1.1.",
+  "author": {
+    "name": "Frank Riemer",
+    "email": "frank@frankx.ai",
+    "url": "https://frankx.ai",
+    "github": "frankxai"
+  },
+  "homepage": "https://starlightintelligence.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frankxai/Starlight-Intelligence-System.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "starlight-intelligence",
+    "sip",
+    "agent-substrate",
+    "agent-skills",
+    "agent-plugins",
+    "ai-memory",
+    "claude-code",
+    "codex",
+    "grok",
+    "antigravity",
+    "cursor",
+    "sovereignty"
+  ],
+  "skills": "./skills",
+  "runtimes": {
+    "codex": {
+      "supported": true,
+      "skills_dir": "./skills"
+    },
+    "claude": {
+      "supported": true,
+      "skills_dir": "./skills"
+    },
+    "grok": {
+      "supported": true,
+      "skills_dir": "./skills"
+    },
+    "antigravity": {
+      "supported": true,
+      "skills_dir": "./skills"
+    },
+    "cursor": {
+      "supported": true,
+      "skills_dir": "./skills"
+    }
+  }
+}
