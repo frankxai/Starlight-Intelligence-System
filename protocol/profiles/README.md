@@ -25,7 +25,7 @@ nothing about adoption, users or other repositories.
 
 ## How it is attested
 
-On every push to `main`, `sip-self-receipt.yml` runs
+On every push to `main` that changes `protocol/**` or the workflow (or a manual run), `sip-self-receipt.yml` runs
 
 ```bash
 node protocol/conform.mjs protocol/profiles/sis.json --json sip-receipt.json
