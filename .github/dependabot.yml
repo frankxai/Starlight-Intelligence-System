@@ -24,3 +24,33 @@ updates:
       gha-actions:
         patterns:
           - "*"
+
+  # npm ecosystems. GitHub's dependency graph already raises security alerts
+  # for every lockfile in this repo (80 open as of 2026-09-19: 37 high, 38
+  # medium, 5 low), but with no npm entry here nothing ever opened a PR to act
+  # on them — every bump had to be made by hand, like the 16.3.5 RCE fix.
+  #
+  # One entry per lockfile directory, since Dependabot resolves per manifest.
+  # Grouped and capped so this does not bury the review queue.
+  - package-ecosystem: "npm"
+    directories:
+      - "/"
+      - "/site"
+      - "/console"
+      - "/cockpit/mcp"
+      - "/plugins/starlight-intelligence"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "supply-chain"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    open-pull-requests-limit: 5
+    groups:
+      npm-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
