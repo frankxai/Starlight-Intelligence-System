@@ -2,7 +2,7 @@
 #
 # Pull requests: run conform on protocol/profiles/sis.json only. Nothing is
 # signed and nothing is written to a transparency log.
-# Push to main: run conform, then attest the PASS receipt with Sigstore keyless
+# Push to main (protocol/** or this workflow changed) or manual run: conform, then attest the PASS receipt with Sigstore keyless
 # signing via actions/attest. Subject = the profile bytes, predicate = the
 # receipt. conform exits 1 on FAIL, so a FAIL receipt is never attested.
 #
@@ -18,6 +18,12 @@ on:
       - "protocol/**"
   push:
     branches: [main]
+    # Attest only when the profile or the checker changes: every attestation is a
+    # permanent public transparency-log entry, so unrelated pushes must not add one.
+    paths:
+      - ".github/workflows/sip-self-receipt.yml"
+      - "protocol/**"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -44,7 +50,7 @@ jobs:
         run: node protocol/conform.mjs protocol/profiles/sis.json --json "$RUNNER_TEMP/sip-receipt.json"
 
   attest:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
