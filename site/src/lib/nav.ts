@@ -48,6 +48,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/constitution", label: "Constitution", desc: "Intelligence in service of life" },
       { href: "/protocol", label: "Protocol", desc: "The open SIP substrate spec" },
+      { href: "/verify", label: "Verify", desc: "Check this system's own signed receipt" },
       { href: "/research", label: "Research", desc: "Substrate research surface" },
       { href: "/explainer", label: "Explainer", desc: "Plain-language overview" },
       { href: "/docs", label: "Documentation", desc: "Reference docs" },

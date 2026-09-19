@@ -332,6 +332,18 @@ export default function ProtocolPage() {
             <em>compounding</em> across every adopter.
           </p>
 
+          <p className="mt-6 text-[14px] leading-[1.85] text-slate-400">
+            The block is a declared label and carries no signature. A claim
+            a stranger can check needs a signed receipt. See{" "}
+            <Link
+              href="/verify"
+              className="text-violet-300 underline decoration-violet-400/40 underline-offset-4 transition-std hover:text-white"
+            >
+              this system&apos;s own signed receipt
+            </Link>
+            .
+          </p>
+
           <p className="mt-6 text-[14px] uppercase tracking-widest text-slate-400">
             Minimum block
           </p>
