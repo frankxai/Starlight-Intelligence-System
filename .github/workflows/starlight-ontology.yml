@@ -1,0 +1,43 @@
+name: Starlight ontology boundary
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "**/*.md"
+      - "**/*.mdx"
+      - "scripts/starlight-ontology-lint.mjs"
+      - "test/starlight-ontology-boundary.test.mjs"
+      - ".github/workflows/starlight-ontology.yml"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.md"
+      - "**/*.mdx"
+      - "scripts/starlight-ontology-lint.mjs"
+      - "test/starlight-ontology-boundary.test.mjs"
+      - ".github/workflows/starlight-ontology.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: starlight-ontology-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+      - name: Run ontology linter
+        run: node scripts/starlight-ontology-lint.mjs
+      - name: Test ontology rules
+        run: node --test test/starlight-ontology-boundary.test.mjs
