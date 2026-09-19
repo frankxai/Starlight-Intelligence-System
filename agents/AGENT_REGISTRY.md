@@ -320,7 +320,7 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 | **OpenAlex Aggregator** | `starlight-research-openalex.md` | Aggregates citation metrics, h-indexes, and author lists | `research/openalex/` | `research-openalex-aggregate` |
 | **PDF Distiller** | `starlight-research-distill.md` | Extracts charts and abstracts from scientific PDF documents | `research/distill/` | `research-distill-pdf` |
 | **Markdown Formatter** | `starlight-research-format.md` | Formats text columns into clean academic GitHub Markdown | `research/format/` | `research-format-markdown` |
-| **Attestation Pinner** | `starlight-research-attest.md` | Pins digital signatures and cryptographic hashes onto papers | `research/attest/` | `research-attest-pin` |
+| **Attestation Pinner** | `starlight-research-attest.md` | Pins content hashes and SIP attestation blocks onto papers | `research/attest/` | `research-attest-pin` |
 
 **Asset & Production sub-system agents** (7 agents)
 

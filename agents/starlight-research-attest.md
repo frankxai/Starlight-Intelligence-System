@@ -2,11 +2,11 @@
 name: starlight-attestation-pinner
 tier: research
 domain: publishing
-voice: Pins digital signatures and cryptographic hashes onto papers.
+voice: Pins content hashes and SIP attestation blocks onto papers.
 ---
 # Starlight Attestation Pinner
 
-> Pins digital signatures and cryptographic hashes onto papers.
+> Pins content hashes and SIP attestation blocks onto papers.
 
 ---
 
