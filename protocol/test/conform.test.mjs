@@ -421,3 +421,16 @@ test("the explorer masks through the same function the protocol does", {
     "site/src/lib/generated/sip-mask.mjs has drifted from protocol/lib/mask.mjs — run node site/scripts/sync-protocol-graph.mjs"
   );
 });
+
+test("a URL pinned to a full commit SHA is not a credential", () => {
+  const sha = "72a84693be9b39d1b7a183d225f1662a8f04703c";
+  const pinned = `https://github.com/frankxai/Starlight-Intelligence-System/blob/${sha}/LICENSE`;
+  assert.deepEqual(findSecrets(pinned), []);
+  assert.deepEqual(findSecrets(`https://github.com/o/r/commit/${sha}`), []);
+  assert.deepEqual(findSecrets(`https://github.com/o/r/tree/${sha}#readme`), []);
+
+  // The exemption is the 40-hex segment only: a token-shaped path segment still fails.
+  const webhook = "https://hooks.example.com/services/T0AAAAAAA/B0BBBBBBB/Zq8vR2mXkLp4NwYt7HsJd3Fc9GbVe6Ua1Qo5";
+  assert.deepEqual(findSecrets(webhook), ["long base64 blob"]);
+  assert.deepEqual(findSecrets(`${pinned}?token=${"Zq8vR2mXkLp4NwYt7HsJd3Fc9GbVe6Ua1Qo5".repeat(2)}`), ["long base64 blob"]);
+});
