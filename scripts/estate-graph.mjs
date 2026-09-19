@@ -18,6 +18,7 @@
  *                                            directory of sibling checkouts
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -253,10 +254,24 @@ if (upstreams) {
 }
 
 // ------------------------------------------------------------------ output
+// The committed graph must be a pure function of its inputs, or `--check` cannot tell
+// a stale graph from a freshly rebuilt one. No wall-clock timestamp: a digest of every
+// source file instead, which is both deterministic and what staleness actually means.
+const digestInputs = [
+  'ontology/starlight-estate.ontology.v1.json',
+  'ontology/company-registry.json',
+  'ontology/repo-tiers.json',
+  ...agents.map((a) => a.path).sort(),
+];
+const sourcesDigest = 'sha256:' + createHash('sha256')
+  .update(digestInputs.map((f) => `${f}\0${readFileSync(join(ROOT, f), 'utf8')}`).join('\0'))
+  .digest('hex')
+  .slice(0, 32);
+
 const graph = {
   $schema: 'https://starlightintelligence.org/schemas/ontology/starlight-estate.ontology.v1.json',
   schema: 'starlight.estate-graph.v1',
-  generatedAt: new Date().toISOString(),
+  sourcesDigest,
   source: {
     ontology: 'ontology/starlight-estate.ontology.v1.json',
     companyRegistry: 'ontology/company-registry.json',
@@ -269,10 +284,18 @@ const graph = {
 };
 for (const n of graph.nodes) graph.counts[n.kind] = (graph.counts[n.kind] || 0) + 1;
 
+const OUT = join(ROOT, 'ontology/estate-graph.json');
+const serialised = JSON.stringify(graph, null, 2) + '\n';
+if (CHECK_ONLY) {
+  const committed = existsSync(OUT) ? readFileSync(OUT, 'utf8') : null;
+  if (committed === null) fail('INV-0', 'ontology/estate-graph.json is missing — run `npm run estate:graph`');
+  else if (committed !== serialised) fail('INV-0', 'ontology/estate-graph.json is stale — sources changed since it was built. Run `npm run estate:graph` and commit the result.');
+} else {
+  writeFileSync(OUT, serialised);
+}
+
 const errors = problems.filter((p) => p.severity === 'error');
 const warns = problems.filter((p) => p.severity === 'warn');
-
-if (!CHECK_ONLY) writeFileSync(join(ROOT, 'ontology/estate-graph.json'), JSON.stringify(graph, null, 2) + '\n');
 
 console.log('estate-graph', CHECK_ONLY ? '(check only)' : '→ ontology/estate-graph.json');
 console.log('  nodes:', graph.nodes.length, JSON.stringify(graph.counts));
