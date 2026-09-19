@@ -120,6 +120,7 @@ const SECRET_PATTERNS = [
 const BASE64_BLOB = /[A-Za-z0-9+/]{60,}={0,2}/g;
 const SHA256_HEX = /^[0-9a-f]{64}$/;
 const DIGEST_PREFIX = /(?:sha256|sha-256|sha512|digest)[:=@-]$/i;
+const COMMIT_SHA_SEGMENT = /(?<=\/)[0-9a-f]{40}(?=[/?#]|$|\s)/g;
 
 /**
  * Labels for every credential shape found in `text`. Empty means clean.
@@ -132,10 +133,15 @@ export function findSecrets(text) {
   for (const [pattern, label] of SECRET_PATTERNS) {
     if (pattern.test(subject)) labels.push(label);
   }
-  for (const m of subject.matchAll(BASE64_BLOB)) {
+  // A full git commit SHA as a whole path segment (`.../blob/<40 hex>/LICENSE`) is
+  // a pin, not key material, but `/` is in the base64 alphabet, so the URL path
+  // around it reads as one long blob. Blank only those segments; a secret carried
+  // in a URL path (e.g. a webhook token) is not 40 hex and is still caught.
+  const scanned = subject.replace(COMMIT_SHA_SEGMENT, "#");
+  for (const m of scanned.matchAll(BASE64_BLOB)) {
     const token = m[0].replace(/=+$/, "");
     if (SHA256_HEX.test(token)) continue;
-    if (DIGEST_PREFIX.test(subject.slice(Math.max(0, m.index - 8), m.index))) continue;
+    if (DIGEST_PREFIX.test(scanned.slice(Math.max(0, m.index - 8), m.index))) continue;
     labels.push("long base64 blob");
     break;
   }
