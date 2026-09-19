@@ -1,0 +1,123 @@
+{
+  "$comment": "Boot state for a fresh session. Read this FIRST — see docs/architecture/SESSION-CONTINUITY.md. Pointers only: no transcripts, no private data, no monetary figures, no credentials. Small and current beats complete and stale.",
+  "schema": "starlight.session-state.v1",
+  "updated": "2026-09-19",
+  "updated_by": "cloud session — estate ontology + executive tier",
+  "open_threads": [
+    {
+      "id": "thread:agents-md-band-split",
+      "summary": "AGENTS.md becomes three bands (A inherited / B company projection / C repo-local). Decision written; generator not built.",
+      "state": "decided, unimplemented",
+      "next": "write Band C for the 16 repos that have no AGENTS.md, then ship scripts/agents-md-project.mjs",
+      "owner_seat": "agent:starlight-cto",
+      "doc": "docs/architecture/AGENTS-MD-CONTRACT.md"
+    },
+    {
+      "id": "thread:executive-tier",
+      "summary": "Seven C-suite seats registered (CEO, CAIO, CMO, CFO, CTO, COO, Chief of Staff). Decision rights and metrics declared; none wired to a live metric source.",
+      "state": "registered, unmeasured",
+      "next": "bind each owns_metrics entry to a real source — git for attention allocation, starlight-evals for pass rate, private/business-registry.json for runway",
+      "owner_seat": "agent:starlight-caio",
+      "doc": "agents/executive/"
+    },
+    {
+      "id": "thread:estate-graph",
+      "summary": "Accountability graph over companies/repos/agents/rights/metrics. Builder + 9 invariants running; 3 errors open.",
+      "state": "live — 2 errors, both with open PRs",
+      "next": "INV-6 errors have fixes in flight: starlight-agent-skills#27 (T0) and GenCreator-Studio#7 (T1). Re-run `npm run estate:check` after both merge; expect 0 errors. Then write Band C for the remaining 14 repos with no contract.",
+      "owner_seat": "agent:starlight-cto",
+      "doc": "ontology/README.md"
+    },
+    {
+      "id": "thread:t3-consolidation",
+      "summary": "8 repos proposed T3 (consolidation candidates). Three separate 'palace' repos for one idea; agenticpassiveincome near-duplicates agenticincome.",
+      "state": "proposed, awaiting Frank",
+      "next": "Frank rules per repo. An agent never archives a repo.",
+      "owner_seat": "agent:starlight-ceo",
+      "doc": "ontology/repo-tiers.json"
+    },
+    {
+      "id": "thread:absorption-gate",
+      "summary": "INV-10/INV-11 found 61 of 151 agent cards (40%) in 14 near-identical clusters; 7 adapters name untracked upstreams. Gate + absorption contract shipped.",
+      "state": "gate live, disposition pending Frank",
+      "next": "Frank rules per cluster: earn / collapse / delete. Most non-adapter clusters are parameters of one agent, not agents. Restate the fleet count after.",
+      "owner_seat": "agent:starlight-caio",
+      "doc": "docs/findings/2026-09-19-absorption-audit.md"
+    }
+  ],
+  "blocked": [
+    {
+      "id": "block:board-gate",
+      "what": "Tagging any of this into a release",
+      "why": "Touches the SIP § 1 file-contract. CLAUDE.md substrate-tier gate requires /starlight-board BEFORE commit/tag, not after.",
+      "unblocks_when": "board verdict recorded in docs/boards/"
+    }
+  ],
+  "live_branches": [
+    {
+      "repo": "repo:Starlight-Intelligence-System",
+      "branch": "claude/agent-docs-structure-roles-k0fv2d",
+      "carries": "estate ontology, executive tier, AGENTS.md contract, session continuity, AGENTS.md encoding repair"
+    },
+    {
+      "repo": "repo:starlight-agent-skills",
+      "branch": "claude/agent-docs-structure-roles-k0fv2d",
+      "carries": "Band C AGENTS.md — PR #27"
+    },
+    {
+      "repo": "repo:GenCreator-Studio",
+      "branch": "claude/agent-docs-structure-roles-k0fv2d",
+      "carries": "Band C AGENTS.md — PR #7"
+    }
+  ],
+  "recent_decisions": [
+    {
+      "date": "2026-09-19",
+      "decision": "AGENTS.md is per-repo, generated in two bands from SIS, hand-written in the third. Company is a registry row, not a file.",
+      "rationale_in": "docs/architecture/AGENTS-MD-CONTRACT.md"
+    },
+    {
+      "date": "2026-09-19",
+      "decision": "Executive tier holds decision rights and metrics, never does the work. A seat with no metric fails the build (INV-4).",
+      "rationale_in": "agents/executive/"
+    },
+    {
+      "date": "2026-09-19",
+      "decision": "The estate graph is a projection, not a fifth graph. It extends foundry capability-graph with the accountability dimension.",
+      "rationale_in": "ontology/starlight-estate.ontology.v1.json"
+    },
+    {
+      "date": "2026-09-19",
+      "decision": "ABSORBED.md ships seeded and empty rather than created lazily on first absorption — a ledger that says 'nothing yet' is a true state, and check_links.py depends on the link resolving.",
+      "rationale_in": "claude-skills-library commit 58437db"
+    }
+  ],
+  "read_order": [
+    "memory/SESSION_STATE.json",
+    "ontology/estate-graph.json",
+    "memory/vaults/<the one the work touches>.md",
+    "<repo>/CLAUDE.md and <repo>/AGENTS.md"
+  ],
+  "open_prs": [
+    {
+      "pr": "frankxai/Starlight-Intelligence-System#175",
+      "what": "estate ontology + executive tier + AGENTS.md contract + session continuity",
+      "state": "draft, CI green (4 pass / 2 skipped), mergeable clean — awaiting /starlight-board"
+    },
+    {
+      "pr": "frankxai/starlight-agent-skills#27",
+      "what": "Band C AGENTS.md for a T0 repo that had none",
+      "state": "draft, mergeable clean, no CI configured for docs paths"
+    },
+    {
+      "pr": "frankxai/GenCreator-Studio#7",
+      "what": "Band C AGENTS.md for a T1 repo that had none",
+      "state": "draft, mergeable clean, check suite clean"
+    },
+    {
+      "pr": "frankxai/claude-skills-library#31",
+      "what": "ABSORPTION.md + scripts/absorb.mjs — four-gate inbound contract",
+      "state": "draft, validate green after the ABSORBED.md seed fix, mergeable clean"
+    }
+  ]
+}

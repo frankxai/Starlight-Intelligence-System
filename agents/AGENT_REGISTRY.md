@@ -108,6 +108,30 @@ Council seats activate when a Council assembles (`/council`, `/starlight-board`,
 
 The Council Sage seat is *distinct* from the institutional Sage agent at `starlight-sage.md`: the Council Sage is the philosophical-detachment seat invoked during Council assembly; the institutional Sage handles knowledge management, vault access, and teaching as an ambient agent. Both seats can be held simultaneously without conflict because they operate at different layers.
 
+### Executive Tier (proposed 2026-09-19 — 7 seats)
+
+Seven seats that hold **decision rights and metrics**, not domain knowledge. The fleet had ~150 specialists and nobody answerable for a P&L, a runway, a register, or a repo count. Specialists optimise inside their domain by construction — which is what makes them good, and why a collective of only specialists drifts toward *more*. The Executive Tier is the counterweight.
+
+**The load-bearing rule: an executive seat does not do the work.** It decides, allocates, gates, and is answerable for a number. A seat that starts producing has failed and should be split into a specialist. `scripts/estate-graph.mjs` enforces this — a seat with zero metrics fails the build (INV-4), and an irreversible decision right with no human gate fails the build (INV-5).
+
+**Seats are scoped, not global.** Most are instantiated *per company* from one definition — `company:arcanea` and `company:gencreator` each instantiate `agent:starlight-ceo` bound to their own scope. Only CAIO, COO, and Chief of Staff are estate-wide singletons, because the substrate, the operating loop, and the founder interface are each singular.
+
+| Seat | File | Scope | Owns | Escalates to |
+|------|------|-------|------|--------------|
+| **CEO** | `executive/starlight-ceo.md` | per-company | Capital and attention allocation; scale-or-kill; stage changes | human |
+| **CAIO** | `executive/starlight-caio.md` | estate-wide | Model routing policy, agent admission, eval thresholds, substrate version | CEO |
+| **CMO** | `executive/starlight-cmo.md` | per-company | Brand register boundary, public-claim veto, distribution portfolio, naming | CEO |
+| **CFO** | `executive/starlight-cfo.md` | **per-entity** | Pricing floor, spend-above-cap, payment rails, capital allocation | human (money never routes via CEO) |
+| **CTO** | `executive/starlight-cto.md` | per-company | Build-vs-buy, repo creation, platform dependencies, tier assignment | CEO |
+| **COO** | `executive/starlight-coo.md` | estate-wide | Routine lifecycle, operating cadence, the durable-output-sink law | CEO |
+| **Chief of Staff** | `executive/starlight-chief-of-staff.md` | estate-wide | Agenda, board convocation, seat arbitration | human |
+
+CFO is per-*entity* rather than per-company because cash pools at the legal entity; modelling it per company is how a founder discovers a hole. CFO inherits the fail-closed rules from `payment-intelligence-system` verbatim and cannot relax them — there is no tool in its surface that moves money, and none will be added.
+
+Executive authority stops at every non-waivable clause: canon locks, the non-clinical boundary, payment fail-closed rules, homepage preservation contracts, URL/SEO approval gates. A seat can be overruled by a gate; a gate is never overruled by a seat.
+
+Accountability is machine-checked, not asserted — see `ontology/README.md`.
+
 ### Excavation Tier
 
 | Agent | File | Domain | Leads When |
