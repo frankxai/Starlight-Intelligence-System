@@ -2,6 +2,11 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## Unreleased — 2026-09-19
+
+- **Attestation is earned, not blanket.** The "Built on SIP" block is emitted only on artifacts that compose a SIP element, and is described as a declared label; verifiable claims use signed receipts (`protocol/sign.mjs`). Supersedes the v7.4 ambient-attestation stance (see `ATTESTATIONS.md`).
+- Agent profiles no longer describe the SIP block as cryptographic.
+
 ## v8.1.0 — 2026-05-17
 
 **Substrate doctrine evolution — Composition Layer primitive declared. Crypto IS v0.1 proof-of-pattern. Wealth IS evolved to first composition-layer reference instance.**

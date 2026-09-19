@@ -55,7 +55,7 @@ const VAULTS: VaultOrb[] = [
     label: "Creative",
     accent: "#f0abfc",
     angle: 120,
-    excerpt: "Luminor wisdom integration + Frank DNA voice: direct, technical, warm, playful. Pattern recognition as poetry.",
+    excerpt: "Frank DNA voice: direct, technical, warm, playful. Pattern recognition as poetry.",
     confidence: "0.95",
   },
   {

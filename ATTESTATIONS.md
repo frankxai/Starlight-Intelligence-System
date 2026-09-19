@@ -6,6 +6,24 @@
 
 ---
 
+## 2026-09-19 — Supersedes the v7.4 "ambient attestation" stance
+
+Entries under **v7.4.0-alpha** below record agents embedding "Built on SIP" in *every* output. That
+stance is withdrawn. The entries stay as history; this entry changes the rule going forward.
+
+- The "Built on SIP" block is emitted only when an artifact actually composes a SIP element (SIP
+  § Layer 2; `/sip-attest` refuses otherwise). It is never a blanket footer.
+- The block is a declared label, not a signature. A claim a stranger can verify needs a signed
+  receipt from `protocol/sign.mjs` (the proposed SIP graph extension), checked with
+  `protocol/verify.mjs --profile`.
+- Changed in: `CLAUDE.md`, `core/orchestrator/harnesses/{claude,grok}/system-prompt.md`, and the
+  checklist in 82 agent profiles plus the scaffold template.
+
+Board: `docs/boards/2026-09-19-sip-graph-signed-receipts.md` (PR #167, REVISE items applied).
+`SIP.md` is unchanged; no version bump.
+
+---
+
 ## v7.6.0 — 2026-04-28 — People Intelligence rename (Path A authorless symmetric naming)
 
 HR Intelligence reference vertical renamed → People Intelligence. Path A authorless naming pattern symmetric with Sound Intelligence (sister Domain Sub-Stack Tier reference). Sheds HR-baggage; matches the people-flourishing-science SOUL framing already declared in v0.1.1.

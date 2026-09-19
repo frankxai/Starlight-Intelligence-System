@@ -20,7 +20,7 @@ If either vignette lands, read on. SIS was designed with people like you in the 
 
 ---
 
-## How it works — the five phases
+## How it works — the journey
 
 Five phases. You don't have to commit to all of them. You just have to start.
 
@@ -132,7 +132,7 @@ SIS is not a product with a price sheet. The substrate is free. What we ask in r
 
 - **Attribution.** Cross-party artifacts carry "Built on SIP." Silent composition — using SIP elements without the block — is a breach of trust, not a legal issue, and we treat it accordingly.
 - **Sovereignty clause.** Your work is yours. You can leave anytime. Your vaults stay on your machine. Attribution history remains immutable because it's how the whole protocol compounds.
-- **Optional: feed learnings back.** If SIS helps you, help the protocol evolve. Pressure-test it via Luminor Board sessions. Submit substrate contributions. Or just write about what worked. Abundance attracts abundance; transactional filters itself out.
+- **Optional: feed learnings back.** If SIS helps you, help the protocol evolve. Pressure-test it via Starlight Board sessions. Submit substrate contributions. Or just write about what worked. Abundance attracts abundance; transactional filters itself out.
 
 **Paid tier (limited):** Frank runs pilot sessions and custom advisory. No pricing list — terms are artifact-shaped (named deliverables by named dates), not hour-shaped. Frank's time is the bottleneck, not substrate capacity. Contact via the site tab if you want to explore.
 
@@ -142,7 +142,7 @@ SIS is not a product with a price sheet. The substrate is free. What we ask in r
 
 If you're technical and want the architecture view:
 
-- **Protocol:** SIP v1.1.0 — six layers: file contract (SKILL.md, AGENTS.md, MEMORY.md, CANON.md, SOUL.md, STACK.md, `.claude/commands/`), attestation protocol, MCP registry standard, command taxonomy, sovereignty clause, optional archetype extension.
+- **Protocol:** SIP v1.1.1 — six layers: file contract (SKILL.md, AGENTS.md, MEMORY.md, CANON.md, SOUL.md, STACK.md, `.claude/commands/`), attestation protocol, MCP registry standard, command taxonomy, sovereignty clause, optional archetype extension.
 - **Stack:** Markdown + JSONL vaults + TypeScript MCP server (`@arcanea/starlight-intelligence-system`) + Claude Code commands as reference implementation. Zero runtime deps outside `better-sqlite3`.
 - **Runtime coverage:** Claude Code (first-class), Cursor, Codex, Gemini CLI, Cline, Antigravity, OpenCode. Workspace exports (v7.4) for Claude Projects, ChatGPT Projects, Gemini Gems, Cowork. Modality attestation (v7.5) for Suno, Udio, Imagen, Midjourney, ElevenLabs.
 - **Test harness:** 35 substrate conformance assertions + 19 v7.3 newcomer-surface assertions. Reference build runs clean.
@@ -165,11 +165,11 @@ You already have it. Let's organize it.
 
 **Built on SIP** — Starlight Intelligence Protocol
 
-Substrate: starlightintelligence.org/protocol v1.1.0
+Substrate: starlightintelligence.org/protocol v1.1.1
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
 - starlight-intelligence-system@v7.3 · public explainer surface
 
-Generated: 2026-04-24
+Generated: 2026-04-24 · re-attested: 2026-05-26 (drift sweep — SIP pin bumped after v1.1.1 spec ship)
 Attestation is compounding, not credit transfer: every composition strengthens every node.
