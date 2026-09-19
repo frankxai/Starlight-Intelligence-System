@@ -10,6 +10,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { basename, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 import { validateProfile, SIP_GRAPH_VERSION } from "./lib/graph.mjs";
 
@@ -107,7 +108,7 @@ function main(argv) {
   const path = resolve(args.path);
   let raw;
   try {
-    raw = readFileSync(path, "utf8");
+    raw = readFileSync(path); // bytes: profileSha256 must equal sha256sum of the file
   } catch (err) {
     console.error(`sip-conform: cannot read ${path}: ${err.message}`);
     return 2;
@@ -115,7 +116,7 @@ function main(argv) {
 
   let profile;
   try {
-    profile = JSON.parse(raw);
+    profile = JSON.parse(raw.toString("utf8"));
   } catch (err) {
     console.error(`sip-conform: ${basename(path)} is not valid JSON: ${err.message}`);
     return 2;
@@ -136,7 +137,7 @@ function main(argv) {
   return receipt.verdict === "PASS" ? 0 : 1;
 }
 
-if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith("conform.mjs")) {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   process.exit(main(process.argv.slice(2)));
 }
 

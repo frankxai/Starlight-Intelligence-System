@@ -52,7 +52,9 @@ PASS receipt it could not fully check.
 ## Deprecation
 
 Inherited from `SIP.md` § Versioning: a breaking change requires a major bump and a **90-day
-deprecation window**, during which both versions validate and the older one warns. The canonical
+deprecation window**. This checker validates exactly one major version (rule C1 fails any other), so
+during a window adopters keep the previous checker pinned beside the new one; no multi-version
+validator exists yet. The canonical
 changelog is `starlightintelligence.org/protocol/changelog`.
 
 ## Receipts pin versions

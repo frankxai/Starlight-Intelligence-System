@@ -1,15 +1,24 @@
 // node --test protocol/test/sign.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
-import { generateKeyPairSync } from "node:crypto";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash, createPrivateKey, generateKeyPairSync, sign as edSign } from "node:crypto";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 
 import { buildReceipt } from "../conform.mjs";
-import { pae, keyIdOf, signReceipt, verifyEnvelope, PAYLOAD_TYPE, RECEIPT_PREDICATE_TYPE } from "../lib/dsse.mjs";
+import {
+  pae,
+  keyIdOf,
+  receiptProblems,
+  receiptStatement,
+  signReceipt,
+  verifyEnvelope,
+  PAYLOAD_TYPE,
+  RECEIPT_PREDICATE_TYPE,
+} from "../lib/dsse.mjs";
 import { recheckProfile } from "../verify.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -141,4 +150,67 @@ test("the CLIs sign and verify end to end, offline", () => {
   assert.equal(run([join(protocolDir, "sign.mjs"), failPath, "--key", join(dir, "sip-signing.key")]).status, 1);
 
   writeFileSync(join(dir, ".done"), "");
+});
+
+// ── Review hardening (PR #166) ──────────────────────────────────────────────
+
+
+function signRaw(statement, priv, keyid) {
+  const payload = Buffer.from(JSON.stringify(statement), "utf8");
+  const sig = edSign(null, pae(PAYLOAD_TYPE, payload), createPrivateKey(priv)).toString("base64");
+  return { payloadType: PAYLOAD_TYPE, payload: payload.toString("base64"), signatures: [{ keyid, sig }] };
+}
+
+test("a hand-edited receipt that claims PASS without passing rules is refused", () => {
+  const { priv } = keypair();
+  const { receipt } = receiptFor("leaky-profile.json");
+  const edited = { ...receipt, verdict: "PASS" };
+  assert.throws(() => signReceipt(edited, priv), /refusing to sign: rules not passing/);
+  const bare = { verdict: "PASS", profileSha256: receipt.profileSha256, subject: "x" };
+  assert.throws(() => signReceipt(bare, priv), /refusing to sign/);
+  assert.ok(receiptProblems(bare).includes("receipt lists no rules"));
+});
+
+test("a signed but incomplete receipt is not shown as verified", () => {
+  const { priv, pub } = keypair();
+  const { receipt } = receiptFor("valid-profile.json");
+  const partial = { verdict: "PASS", profileSha256: receipt.profileSha256, subject: "x" };
+  const envelope = signRaw(receiptStatement(partial), priv, keyIdOf(pub));
+  const result = verifyEnvelope(envelope, [pub]);
+  assert.equal(result.ok, false);
+  assert.match(result.reasons.join(" "), /not a complete PASS/);
+});
+
+test("recheckProfile reports a malformed predicate instead of throwing", () => {
+  assert.deepEqual(recheckProfile({ predicate: { verdict: "PASS" } }, Buffer.from("{}")), [
+    "signed receipt is malformed (no rules or profileSha256)",
+  ]);
+});
+
+test("a signature without a keyid verifies against any trusted key", () => {
+  const { priv, pub } = keypair();
+  const envelope = signReceipt(receiptFor("valid-profile.json").receipt, priv);
+  delete envelope.signatures[0].keyid;
+  assert.equal(verifyEnvelope(envelope, [keypair().pub, pub]).ok, true);
+});
+
+test("verifyEnvelope refuses a non-list of trusted keys without throwing", () => {
+  const { priv } = keypair();
+  const envelope = signReceipt(receiptFor("valid-profile.json").receipt, priv);
+  assert.equal(verifyEnvelope(envelope, undefined).ok, false);
+});
+
+test("profileSha256 is the sha256 of the file bytes, as sha256sum computes it", () => {
+  const dir = mkdtempSync(join(tmpdir(), "sip-bytes-"));
+  const out = join(dir, "r.json");
+  spawnSync(process.execPath, [join(protocolDir, "conform.mjs"), fixture("valid-profile.json"), "--json", out, "--quiet"]);
+  const expected = createHash("sha256").update(readFileSync(fixture("valid-profile.json"))).digest("hex");
+  assert.equal(JSON.parse(readFileSync(out, "utf8")).profileSha256, expected);
+});
+
+test("keygen ignores its own private key in git", () => {
+  const dir = mkdtempSync(join(tmpdir(), "sip-keygen-"));
+  assert.equal(spawnSync(process.execPath, [join(protocolDir, "sign.mjs"), "keygen", dir]).status, 0);
+  assert.ok(existsSync(join(dir, ".gitignore")));
+  assert.match(readFileSync(join(dir, ".gitignore"), "utf8"), /^sip-signing\.key$/m);
 });

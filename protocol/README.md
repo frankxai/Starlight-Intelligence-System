@@ -6,7 +6,9 @@ SIP layers 1–6 govern files, attestation, the MCP registry, command tiers, sov
 archetypes. They say what a compliant repository *carries* and what its parties *owe each other*.
 They say nothing about the shape of the evidence a node publishes about its own work.
 
-This directory adds that: **SIP layer 7, the evidence graph.** Twelve node types and thirteen edge
+This directory adds that: **a proposed SIP layer 7, the evidence graph.** It is proposed until
+`SIP.md` itself lists it (target: SIP v1.2.0); until then `SIP.md` and its six layers remain the
+source of truth. Twelve node types and thirteen edge
 types, where every element declares an owner, provenance, a version, a visibility, and the
 evaluation rule it is judged by. It is a strict addition — nothing in SIP v1.1.1 changes, and a
 repository can be SIP-compliant without publishing a graph at all.
@@ -21,7 +23,7 @@ Version namespace is independent of SIP's: profiles declare `sipGraphVersion: "0
 | `sip-graph.v0.1.0.endpoints.json` | The published edge endpoint matrix, as data. JSON Schema cannot express it; rule G7 enforces it. |
 | `conform.mjs` | Zero-dependency conformance checker. Prints a receipt. |
 | `lib/graph.mjs` | Validator core and the claim-trace walk. No I/O, no dependencies. |
-| `lib/mask.mjs` | The projection masking function. Vendored verbatim by the explorer so page and protocol cannot disagree. |
+| `lib/mask.mjs` | The projection masking function. Intended to be vendored verbatim by the site explorer, so page and protocol cannot disagree (the explorer has not shipped yet). |
 | `sign.mjs` | Signs a PASS receipt: Ed25519, DSSE v1 envelope, in-toto v1 Statement. `keygen` makes a key pair. Refuses FAIL. |
 | `verify.mjs` | Verifies a signed receipt against trusted public keys; `--profile` re-runs the check on the exact bytes. |
 | `lib/dsse.mjs` | DSSE pre-authentication encoding, statement wrapping, sign and verify. No I/O. |

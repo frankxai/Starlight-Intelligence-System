@@ -60,13 +60,37 @@ export function receiptStatement(receipt) {
 }
 
 /**
- * Sign a receipt. Refuses a FAIL receipt: a signature is a statement that the
- * work passed, and SIP does not let a signer vouch for work that did not.
+ * What is wrong with a receipt, structurally. An empty list means it is a
+ * complete PASS receipt as conform.mjs emits it: every rule present and passing.
+ * Checked on both sides so a hand-edited or half-built receipt is neither
+ * signed nor shown as verified.
+ */
+export function receiptProblems(receipt) {
+  if (!receipt || typeof receipt !== "object" || Array.isArray(receipt)) return ["receipt is not an object"];
+  const problems = [];
+  if (receipt.receiptVersion !== "0.1.0") problems.push(`receiptVersion is ${JSON.stringify(receipt.receiptVersion)}`);
+  if (!/^sip-conform@\d+\.\d+\.\d+$/.test(receipt.tool ?? "")) problems.push("tool does not name a sip-conform version");
+  if (typeof receipt.checkedAt !== "string" || Number.isNaN(Date.parse(receipt.checkedAt))) problems.push("checkedAt is not a date-time");
+  if (!/^[0-9a-f]{64}$/.test(receipt.profileSha256 ?? "")) problems.push("profileSha256 is not a sha256");
+  if (!Array.isArray(receipt.rules) || receipt.rules.length === 0) {
+    problems.push("receipt lists no rules");
+  } else {
+    const failed = receipt.rules.filter((r) => r?.status !== "pass").map((r) => r?.id ?? "?");
+    if (failed.length) problems.push(`rules not passing: ${failed.join(", ")}`);
+  }
+  if (receipt.verdict !== "PASS") problems.push(`verdict is ${receipt.verdict ?? "missing"}`);
+  return problems;
+}
+
+/**
+ * Sign a receipt. Refuses anything but a complete PASS receipt: a signature is
+ * a statement that the work passed, and SIP does not let a signer vouch for
+ * work that did not. (The key holder can still sign what they like with other
+ * tools; the defence against that is verify --profile, which re-runs the check.)
  */
 export function signReceipt(receipt, privateKeyPem) {
-  if (receipt?.verdict !== "PASS") {
-    throw new Error(`refusing to sign a receipt whose verdict is ${receipt?.verdict ?? "missing"}`);
-  }
+  const problems = receiptProblems(receipt);
+  if (problems.length) throw new Error(`refusing to sign: ${problems.join("; ")}`);
   const privateKey = assertEd25519(createPrivateKey(privateKeyPem), "signing key");
   const publicKey = createPublicKey(privateKey);
   const payload = Buffer.from(JSON.stringify(receiptStatement(receipt)), "utf8");
@@ -95,6 +119,7 @@ export function verifyEnvelope(envelope, trustedPublicKeys) {
     return fail("envelope carries no signatures");
   }
 
+  if (!Array.isArray(trustedPublicKeys)) return fail("trusted keys must be a list");
   const trusted = new Map();
   for (const pem of trustedPublicKeys) {
     try {
@@ -110,23 +135,27 @@ export function verifyEnvelope(envelope, trustedPublicKeys) {
   const message = pae(envelope.payloadType, payload);
 
   let signedBy = null;
+  const verifies = (key, sig) => {
+    try {
+      return verify(null, message, key, Buffer.from(String(sig), "base64"));
+    } catch {
+      return false;
+    }
+  };
   for (const s of envelope.signatures) {
-    const key = trusted.get(s?.keyid);
-    if (!key) {
-      reasons.push(`signature keyid ${String(s?.keyid).slice(0, 16)}… is not a trusted key`);
+    if (!s || typeof s !== "object") continue;
+    // DSSE keyid is an optional hint: without one, try every trusted key.
+    const candidates = s.keyid ? [[s.keyid, trusted.get(s.keyid)]] : [...trusted.entries()];
+    if (s.keyid && !trusted.has(s.keyid)) {
+      reasons.push(`signature keyid ${String(s.keyid).slice(0, 16)}… is not a trusted key`);
       continue;
     }
-    let valid = false;
-    try {
-      valid = verify(null, message, key, Buffer.from(String(s.sig), "base64"));
-    } catch {
-      valid = false;
-    }
-    if (valid) {
-      signedBy = s.keyid;
+    const match = candidates.find(([, key]) => verifies(key, s.sig));
+    if (match) {
+      signedBy = match[0];
       break;
     }
-    reasons.push(`signature by ${s.keyid.slice(0, 16)}… does not verify`);
+    reasons.push(`signature${s.keyid ? ` by ${String(s.keyid).slice(0, 16)}…` : " without keyid"} does not verify`);
   }
   if (!signedBy) return fail("no signature verifies against a trusted key");
 
@@ -144,7 +173,8 @@ export function verifyEnvelope(envelope, trustedPublicKeys) {
   if (digest !== statement.predicate?.profileSha256) {
     return fail("subject digest does not match the receipt's profileSha256");
   }
-  if (statement.predicate?.verdict !== "PASS") return fail("signed receipt is not a PASS");
+  const problems = receiptProblems(statement.predicate);
+  if (problems.length) return fail(`signed receipt is not a complete PASS: ${problems.join("; ")}`);
 
   return { ok: true, reasons, keyid: signedBy, statement };
 }

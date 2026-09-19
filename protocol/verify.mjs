@@ -13,6 +13,7 @@
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 import { verifyEnvelope } from "./lib/dsse.mjs";
 import { buildReceipt } from "./conform.mjs";
@@ -23,8 +24,11 @@ const USAGE = `sip-verify — verify a signed SIP receipt (Ed25519, DSSE v1, in-
 
 /** Re-check the profile bytes and compare with what was signed. Returns a list of mismatches. */
 export function recheckProfile(statement, raw) {
+  const signed = statement?.predicate;
+  if (!Array.isArray(signed?.rules) || typeof signed?.profileSha256 !== "string") {
+    return ["signed receipt is malformed (no rules or profileSha256)"];
+  }
   const mismatches = [];
-  const signed = statement.predicate;
   const sha = createHash("sha256").update(raw).digest("hex");
   if (sha !== signed.profileSha256) {
     mismatches.push(`profile sha256 ${sha.slice(0, 16)}… differs from signed ${signed.profileSha256.slice(0, 16)}…`);
@@ -32,16 +36,17 @@ export function recheckProfile(statement, raw) {
   }
   let profile;
   try {
-    profile = JSON.parse(raw);
+    profile = JSON.parse(Buffer.isBuffer(raw) ? raw.toString("utf8") : raw);
   } catch {
     return ["profile is not valid JSON"];
   }
   const fresh = buildReceipt({ profile, raw, checkedAt: signed.checkedAt });
   if (fresh.verdict !== signed.verdict) mismatches.push(`re-check verdict ${fresh.verdict} differs from signed ${signed.verdict}`);
   const signedRules = new Map(signed.rules.map((r) => [r.id, r.status]));
-  for (const r of fresh.rules) {
-    if (signedRules.get(r.id) !== r.status) {
-      mismatches.push(`rule ${r.id}: re-check ${r.status}, signed ${signedRules.get(r.id) ?? "absent"}`);
+  const freshRules = new Map(fresh.rules.map((r) => [r.id, r.status]));
+  for (const id of new Set([...signedRules.keys(), ...freshRules.keys()])) {
+    if (signedRules.get(id) !== freshRules.get(id)) {
+      mismatches.push(`rule ${id}: re-check ${freshRules.get(id) ?? "absent"}, signed ${signedRules.get(id) ?? "absent"}`);
     }
   }
   if (mismatches.length && fresh.tool !== signed.tool) {
@@ -71,7 +76,7 @@ function main(argv) {
   try {
     envelope = JSON.parse(readFileSync(resolve(args.path), "utf8"));
     pubs = args.pubs.map((p) => readFileSync(resolve(p), "utf8"));
-    if (args.profile) raw = readFileSync(resolve(args.profile), "utf8");
+    if (args.profile) raw = readFileSync(resolve(args.profile)); // bytes, as conform hashes them
   } catch (err) {
     console.error(`sip-verify: ${err.message}`);
     return 2;
@@ -80,7 +85,11 @@ function main(argv) {
   const result = verifyEnvelope(envelope, pubs);
   let recheck = null;
   if (result.ok && raw !== null) {
-    recheck = recheckProfile(result.statement, raw);
+    try {
+      recheck = recheckProfile(result.statement, raw);
+    } catch (err) {
+      recheck = [`re-check failed: ${err.message}`];
+    }
     if (recheck.length) {
       result.ok = false;
       result.reasons.push(...recheck);
@@ -114,7 +123,7 @@ function main(argv) {
   return summary.verified ? 0 : 1;
 }
 
-if (process.argv[1]?.endsWith("verify.mjs")) {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   process.exit(main(process.argv.slice(2)));
 }
 

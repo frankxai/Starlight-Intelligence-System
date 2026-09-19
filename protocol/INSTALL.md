@@ -5,32 +5,22 @@ Fifteen minutes, no dependencies, no account, nothing sent anywhere. You end wit
 
 ## 1 · Get the checker
 
-Copy three files into your repo — `conform.mjs`, `lib/graph.mjs` and `lib/mask.mjs` — or vendor the
-whole `protocol/` directory. Take them from a checkout rather than from a URL, so what you vendor is
-pinned to a commit you can name:
+Vendor the `protocol/` directory into your repo as `sip/`. Take it from a checkout rather than
+from a URL, so what you vendor is pinned to a commit you can name:
 
 ```bash
 git clone --depth 1 https://github.com/frankxai/Starlight-Intelligence-System.git /tmp/sip-src
 mkdir -p sip/lib
-cp /tmp/sip-src/protocol/conform.mjs     sip/conform.mjs
-cp /tmp/sip-src/protocol/lib/graph.mjs   sip/lib/graph.mjs
-cp /tmp/sip-src/protocol/lib/mask.mjs    sip/lib/mask.mjs
+cp /tmp/sip-src/protocol/{conform,sign,verify}.mjs sip/
+cp /tmp/sip-src/protocol/lib/{graph,mask,dsse}.mjs sip/lib/
 git -C /tmp/sip-src rev-parse HEAD > sip/PINNED_COMMIT   # what your receipt was produced by
 ```
 
-Prefer git to keep the checker updatable in place:
+Checking needs `conform.mjs`, `lib/graph.mjs` and `lib/mask.mjs`. Signing and verifying add
+`sign.mjs`, `verify.mjs` and `lib/dsse.mjs`. All are MIT, zero-dependency, and read nothing but the
+paths you hand them. To update, repeat the copy from a newer checkout and commit the new
+`PINNED_COMMIT` with it.
 
-```bash
-git subtree add --prefix sip https://github.com/frankxai/Starlight-Intelligence-System.git main --squash
-```
-
-They are MIT, zero-dependency, and read nothing but the path you hand them.
-
-> `protocol/` is not on the default branch yet, so `raw.githubusercontent.com/.../main/protocol/…`
-> returns 404 (checked 2026-09-02: 404 for `protocol/conform.mjs` and `protocol/lib/graph.mjs`;
-> 200 for `SIP.md`, so the host and branch path are right and only the directory is missing). Until
-> it lands, clone — do not curl. This note is removed in the same commit that publishes the
-> directory.
 
 ## 2 · Write a profile
 
@@ -83,26 +73,46 @@ receipt, pick by where the work lives:
 Statement. Nothing leaves your machine and nothing is published to a log.
 
 ```bash
-node protocol/sign.mjs keygen .sip                       # once; keep .sip/sip-signing.key out of git
-node protocol/conform.mjs profile.json --json receipt.json
-node protocol/sign.mjs receipt.json --key .sip/sip-signing.key --out receipt.dsse.json
+node sip/sign.mjs keygen .sip                            # once; writes .sip/.gitignore for the key
+node sip/conform.mjs sip-profile.json --json sip-receipt.json
+node sip/sign.mjs sip-receipt.json --key .sip/sip-signing.key --out sip-receipt.dsse.json
 ```
 
 Publish `.sip/sip-signing.pub` next to your receipts. Anyone can then verify, offline:
 
 ```bash
-node protocol/verify.mjs receipt.dsse.json --pub sip-signing.pub --profile profile.json
+node sip/verify.mjs sip-receipt.dsse.json --pub .sip/sip-signing.pub --profile sip-profile.json
 ```
 
-`--profile` re-runs the check on the exact bytes and requires the same verdict and rule results,
-so a verifier trusts the checker rather than the signer. The signer refuses a FAIL receipt.
+`--profile` re-runs the check on the exact bytes and requires the same verdict and the same rule
+results, so a verifier trusts the checker rather than the signer. The signer refuses anything but a
+complete PASS receipt; a key holder could still sign something else with other tools, which is why
+`--profile` exists.
+
+Key custody: on macOS and Linux the key is written `0600`. Windows ignores file modes, so there the
+key is protected only by its folder's ACL; `keygen` prints the `icacls` command that restricts it.
 
 **Public (Sigstore, for public repositories).** The same receipt can be attested with GitHub
-artifact attestations (`actions/attest`, Sigstore keyless, recorded in a public transparency log)
-using predicate type `https://starlightintelligence.org/protocol/receipt/v0.1.0`, and checked with
-`gh attestation verify --predicate-type <that URI>`. Use it only where the repository and its
-names may be public: the transparency log is permanent. This profile is documented, not yet
-exercised by this repository's own CI.
+artifact attestations: Sigstore keyless signing, recorded in a public transparency log. The subject
+is the profile, the predicate is the receipt:
+
+```yaml
+permissions: { contents: read, id-token: write, attestations: write }
+steps:
+  - run: node sip/conform.mjs sip-profile.json --json sip-receipt.json
+  - uses: actions/attest@v2
+    with:
+      subject-path: sip-profile.json
+      predicate-type: https://starlightintelligence.org/protocol/receipt/v0.1.0
+      predicate-path: sip-receipt.json
+```
+
+```bash
+gh attestation verify sip-profile.json --repo <owner>/<repo>   --predicate-type https://starlightintelligence.org/protocol/receipt/v0.1.0
+```
+
+Use it only where the repository and its names may be public: the transparency log is permanent.
+This profile is documented, not yet exercised by this repository's own CI.
 
 ## 6 · Attest it
 
