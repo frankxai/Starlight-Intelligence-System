@@ -85,6 +85,11 @@
       "date": "2026-09-19",
       "decision": "The estate graph is a projection, not a fifth graph. It extends foundry capability-graph with the accountability dimension.",
       "rationale_in": "ontology/starlight-estate.ontology.v1.json"
+    },
+    {
+      "date": "2026-09-19",
+      "decision": "ABSORBED.md ships seeded and empty rather than created lazily on first absorption — a ledger that says 'nothing yet' is a true state, and check_links.py depends on the link resolving.",
+      "rationale_in": "claude-skills-library commit 58437db"
     }
   ],
   "read_order": [
@@ -97,22 +102,22 @@
     {
       "pr": "frankxai/Starlight-Intelligence-System#175",
       "what": "estate ontology + executive tier + AGENTS.md contract + session continuity",
-      "state": "draft, awaiting /starlight-board"
+      "state": "draft, CI green (4 pass / 2 skipped), mergeable clean — awaiting /starlight-board"
     },
     {
       "pr": "frankxai/starlight-agent-skills#27",
       "what": "Band C AGENTS.md for a T0 repo that had none",
-      "state": "draft"
+      "state": "draft, mergeable clean, no CI configured for docs paths"
     },
     {
       "pr": "frankxai/GenCreator-Studio#7",
       "what": "Band C AGENTS.md for a T1 repo that had none",
-      "state": "draft"
+      "state": "draft, mergeable clean, check suite clean"
     },
     {
       "pr": "frankxai/claude-skills-library#31",
       "what": "ABSORPTION.md + scripts/absorb.mjs — four-gate inbound contract",
-      "state": "draft"
+      "state": "draft, validate green after the ABSORBED.md seed fix, mergeable clean"
     }
   ]
 }
