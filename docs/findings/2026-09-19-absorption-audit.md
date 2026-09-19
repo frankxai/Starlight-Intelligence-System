@@ -85,7 +85,7 @@ The order is therefore: gate first, then absorb.
 
 - **Gate, shipped:** `INV-10` (near-duplicate cards) and `INV-11` (adapter naming an untracked upstream) in
   `scripts/estate-graph.mjs`. Both error-severity; the build fails.
-- **Contract, shipped:** [`claude-skills-library/ABSORPTION.md`](https://github.com/frankxai/claude-skills-library/blob/main/ABSORPTION.md)
+- **Contract, shipped:** [`claude-skills-library/ABSORPTION.md`](https://github.com/frankxai/claude-skills-library/blob/claude/agent-docs-structure-roles-k0fv2d/ABSORPTION.md)
   and `scripts/absorb.mjs` — four gates that refuse rather than warn. Gate 3 (distinctness, ≥85% Jaccard)
   makes this exact duplicate class un-creatable on the way in.
 - **Registries split:** `context/empire/upstreams.json` stays the **watch list** (15 entries, adoption states,
