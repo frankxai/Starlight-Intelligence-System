@@ -73,3 +73,16 @@ Also from the code review:
 - A failure to write output exits 2.
 
 Tests: 45 pass, 0 fail, 1 skipped (the explorer drift test, until `site/src/lib/generated/sip-mask.mjs` exists). CI: `.github/workflows/protocol.yml` runs them on Node 18/20/22 with no install step. Root `package.json` is left untouched, because the Foundry toolchain lock pins its digest.
+
+## Resolution: #167 (2026-09-19)
+
+All six #167 items applied:
+
+1. Merged after #166 (`f97c4b3`) and rebased, so `protocol/sign.mjs` references resolve on `main`.
+2. `CLAUDE.md` now says "the proposed SIP graph extension".
+3. `ATTESTATIONS.md` has a new superseding entry; the v7.4 entries are unchanged. `site/content/changelog.md` has an Unreleased line.
+4. `AGENTS.md`: declared (not "verifiable") footer; "SIP attestation" instead of "cryptographic attestation".
+5. The Attestation Pinner profile, registry row and blueprint row now say "content hashes and SIP attestation blocks".
+6. `/palace`: "Luminor wisdom integration" removed.
+
+Frank acknowledged both substrate merges on 2026-09-19.
