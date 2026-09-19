@@ -214,6 +214,6 @@
     "starlight-substrate-mcp": "dist/starlight-mcp.js"
   },
   "dependencies": {
-    "better-sqlite3": "12.8.0"
+    "better-sqlite3": "13.0.3"
   }
 }
