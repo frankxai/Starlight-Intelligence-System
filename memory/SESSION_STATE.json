@@ -3,7 +3,6 @@
   "schema": "starlight.session-state.v1",
   "updated": "2026-09-19",
   "updated_by": "cloud session — estate ontology + executive tier",
-
   "open_threads": [
     {
       "id": "thread:agents-md-band-split",
@@ -24,8 +23,8 @@
     {
       "id": "thread:estate-graph",
       "summary": "Accountability graph over companies/repos/agents/rights/metrics. Builder + 9 invariants running; 3 errors open.",
-      "state": "live, failing by design",
-      "next": "clear INV-6 errors: starlight-agent-skills and GenCreator-Studio have no agent contract",
+      "state": "live — 2 errors, both with open PRs",
+      "next": "INV-6 errors have fixes in flight: starlight-agent-skills#27 (T0) and GenCreator-Studio#7 (T1). Re-run `npm run estate:check` after both merge; expect 0 errors. Then write Band C for the remaining 14 repos with no contract.",
       "owner_seat": "agent:starlight-cto",
       "doc": "ontology/README.md"
     },
@@ -38,7 +37,6 @@
       "doc": "ontology/repo-tiers.json"
     }
   ],
-
   "blocked": [
     {
       "id": "block:board-gate",
@@ -47,21 +45,61 @@
       "unblocks_when": "board verdict recorded in docs/boards/"
     }
   ],
-
   "live_branches": [
-    { "repo": "repo:Starlight-Intelligence-System", "branch": "claude/agent-docs-structure-roles-k0fv2d", "carries": "estate ontology, executive tier, AGENTS.md contract, session continuity, AGENTS.md encoding repair" }
+    {
+      "repo": "repo:Starlight-Intelligence-System",
+      "branch": "claude/agent-docs-structure-roles-k0fv2d",
+      "carries": "estate ontology, executive tier, AGENTS.md contract, session continuity, AGENTS.md encoding repair"
+    },
+    {
+      "repo": "repo:starlight-agent-skills",
+      "branch": "claude/agent-docs-structure-roles-k0fv2d",
+      "carries": "Band C AGENTS.md — PR #27"
+    },
+    {
+      "repo": "repo:GenCreator-Studio",
+      "branch": "claude/agent-docs-structure-roles-k0fv2d",
+      "carries": "Band C AGENTS.md — PR #7"
+    }
   ],
-
   "recent_decisions": [
-    { "date": "2026-09-19", "decision": "AGENTS.md is per-repo, generated in two bands from SIS, hand-written in the third. Company is a registry row, not a file.", "rationale_in": "docs/architecture/AGENTS-MD-CONTRACT.md" },
-    { "date": "2026-09-19", "decision": "Executive tier holds decision rights and metrics, never does the work. A seat with no metric fails the build (INV-4).", "rationale_in": "agents/executive/" },
-    { "date": "2026-09-19", "decision": "The estate graph is a projection, not a fifth graph. It extends foundry capability-graph with the accountability dimension.", "rationale_in": "ontology/starlight-estate.ontology.v1.json" }
+    {
+      "date": "2026-09-19",
+      "decision": "AGENTS.md is per-repo, generated in two bands from SIS, hand-written in the third. Company is a registry row, not a file.",
+      "rationale_in": "docs/architecture/AGENTS-MD-CONTRACT.md"
+    },
+    {
+      "date": "2026-09-19",
+      "decision": "Executive tier holds decision rights and metrics, never does the work. A seat with no metric fails the build (INV-4).",
+      "rationale_in": "agents/executive/"
+    },
+    {
+      "date": "2026-09-19",
+      "decision": "The estate graph is a projection, not a fifth graph. It extends foundry capability-graph with the accountability dimension.",
+      "rationale_in": "ontology/starlight-estate.ontology.v1.json"
+    }
   ],
-
   "read_order": [
     "memory/SESSION_STATE.json",
     "ontology/estate-graph.json",
     "memory/vaults/<the one the work touches>.md",
     "<repo>/CLAUDE.md and <repo>/AGENTS.md"
+  ],
+  "open_prs": [
+    {
+      "pr": "frankxai/Starlight-Intelligence-System#175",
+      "what": "estate ontology + executive tier + AGENTS.md contract + session continuity",
+      "state": "draft, awaiting /starlight-board"
+    },
+    {
+      "pr": "frankxai/starlight-agent-skills#27",
+      "what": "Band C AGENTS.md for a T0 repo that had none",
+      "state": "draft"
+    },
+    {
+      "pr": "frankxai/GenCreator-Studio#7",
+      "what": "Band C AGENTS.md for a T1 repo that had none",
+      "state": "draft"
+    }
   ]
 }

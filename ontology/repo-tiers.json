@@ -15,7 +15,7 @@
   "repos": [
     { "id": "repo:Starlight-Intelligence-System", "company": "company:starlight",      "tier": "T0", "agents_md": { "state": "handwritten", "lines": 331, "repaired": "2026-09-19 — BOM stripped, 170 cp1252 double-encodings repaired; band split still pending" } },
     { "id": "repo:claude-skills-library",         "company": "company:starlight",      "tier": "T0", "agents_md": { "state": "handwritten", "lines": 42 } },
-    { "id": "repo:starlight-agent-skills",        "company": "company:starlight",      "tier": "T0", "agents_md": { "state": "absent", "lines": 0, "defect": "T0 repo with no agent contract" } },
+    { "id": "repo:starlight-agent-skills",        "company": "company:starlight",      "tier": "T0", "agents_md": { "state": "absent", "lines": 0, "defect": "T0 repo with no agent contract", "fix_in_flight": "frankxai/starlight-agent-skills#27" } },
 
     { "id": "repo:frankx.ai-vercel-website",      "company": "company:frankx",         "tier": "T1", "agents_md": { "state": "handwritten", "lines": 174 }, "deploys": "surface:frankx.ai" },
     { "id": "repo:FrankX",                        "company": "company:frankx",         "tier": "T1", "agents_md": { "state": "handwritten", "lines": 314 }, "note": "private authoring trunk; ports to the website repo, never bulk-copies" },
@@ -23,7 +23,7 @@
     { "id": "repo:arcanea-ai-app",                "company": "company:arcanea",        "tier": "T1", "agents_md": { "state": "handwritten", "lines": 178 }, "deploys": "surface:arcanea.ai" },
     { "id": "repo:agentic-creator-os",            "company": "company:gencreator",     "tier": "T1", "agents_md": { "state": "handwritten", "lines": 31 } },
     { "id": "repo:gencreator-community",          "company": "company:gencreator",     "tier": "T1", "agents_md": { "state": "handwritten", "lines": 44 } },
-    { "id": "repo:GenCreator-Studio",             "company": "company:gencreator",     "tier": "T1", "agents_md": { "state": "absent", "lines": 0, "defect": "T1 repo with no agent contract" } },
+    { "id": "repo:GenCreator-Studio",             "company": "company:gencreator",     "tier": "T1", "agents_md": { "state": "absent", "lines": 0, "defect": "T1 repo with no agent contract", "fix_in_flight": "frankxai/GenCreator-Studio#7" } },
 
     { "id": "repo:arcanea",                       "company": "company:arcanea",        "tier": "T2", "agents_md": { "state": "divergent", "lines": 8, "defect": "contains only Cursor Cloud port notes — no DNA, no voice, no branch protocol, no canon gate" } },
     { "id": "repo:starlight-evals",               "company": "company:starlight",      "tier": "T2", "agents_md": { "state": "handwritten", "lines": 48 } },
