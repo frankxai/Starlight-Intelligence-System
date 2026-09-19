@@ -128,7 +128,7 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 | **Sage** | `starlight-sage.md` | Wisdom (institutional) | Knowledge retrieval, lessons learned, vault access, teaching |
 | **Hermes** | `starlight-hermes.md` | Search & Retrieval | Semantic search across vaults + repos + web; multi-source synthesis; provenance tracking; contradiction detection |
 | **Social Strategist** | `starlight-social-strategist.md` | Social Campaign | Translating blogs/releases into threads/posts, copywriting, hook engineering |
-| **Social Sentinel** | `starlight-social-sentinel.md` | Tone & Publication Gating | Auditing social copy for brand voice, scrubbing secrets, cryptographic signing, enforcing approval gates |
+| **Social Sentinel** | `starlight-social-sentinel.md` | Tone & Publication Gating | Auditing social copy for brand voice, scrubbing secrets, attaching SIP attestation labels, enforcing approval gates |
 | **Social Psychologist** | `starlight-social-psychologist.md` | Cognitive Psychology | Auditing audience dynamics, cognitive load, structuring hooks for organic curiosity |
 | **Social Vibe Tracker** | `starlight-social-vibetracker.md` | Vibe Curation | Tracking cultural vibes, trend matching, aligning drafts with brand aesthetic lanes |
 | **Social Fact Checker** | `starlight-social-factcheck.md` | Claim Verification | Running searches, verifying claims/citations, checking links and logical math accuracy |

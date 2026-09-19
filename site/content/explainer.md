@@ -132,7 +132,7 @@ SIS is not a product with a price sheet. The substrate is free. What we ask in r
 
 - **Attribution.** Cross-party artifacts carry "Built on SIP." Silent composition — using SIP elements without the block — is a breach of trust, not a legal issue, and we treat it accordingly.
 - **Sovereignty clause.** Your work is yours. You can leave anytime. Your vaults stay on your machine. Attribution history remains immutable because it's how the whole protocol compounds.
-- **Optional: feed learnings back.** If SIS helps you, help the protocol evolve. Pressure-test it via Luminor Board sessions. Submit substrate contributions. Or just write about what worked. Abundance attracts abundance; transactional filters itself out.
+- **Optional: feed learnings back.** If SIS helps you, help the protocol evolve. Pressure-test it via Starlight Board sessions. Submit substrate contributions. Or just write about what worked. Abundance attracts abundance; transactional filters itself out.
 
 **Paid tier (limited):** Frank runs pilot sessions and custom advisory. No pricing list — terms are artifact-shaped (named deliverables by named dates), not hour-shaped. Frank's time is the bottleneck, not substrate capacity. Contact via the site tab if you want to explore.
 
