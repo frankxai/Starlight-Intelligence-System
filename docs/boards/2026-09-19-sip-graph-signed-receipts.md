@@ -72,4 +72,4 @@ Also from the code review:
 - The entry guards use `pathToFileURL`.
 - A failure to write output exits 2.
 
-Tests: 45 pass, 0 fail, 1 skipped (the explorer drift test, until `site/src/lib/generated/sip-mask.mjs` exists).
+Tests: 45 pass, 0 fail, 1 skipped (the explorer drift test, until `site/src/lib/generated/sip-mask.mjs` exists). CI: `.github/workflows/protocol.yml` runs them on Node 18/20/22 with no install step. Root `package.json` is left untouched, because the Foundry toolchain lock pins its digest.

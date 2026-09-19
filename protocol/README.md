@@ -41,7 +41,7 @@ Version namespace is independent of SIP's: profiles declare `sipGraphVersion: "0
 ```bash
 node protocol/conform.mjs protocol/fixtures/valid-profile.json    # exit 0, PASS
 node protocol/conform.mjs protocol/fixtures/leaky-profile.json    # exit 1, FAIL
-node --test protocol/test/conform.test.mjs protocol/test/sign.test.mjs
+node --test protocol/test/conform.test.mjs protocol/test/sign.test.mjs   # CI: .github/workflows/protocol.yml
 
 node protocol/sign.mjs keygen .sip                                  # once
 node protocol/conform.mjs protocol/fixtures/valid-profile.json --json receipt.json
