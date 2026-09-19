@@ -5,7 +5,7 @@
     "subject": "github.com/frankxai/Starlight-Intelligence-System",
     "declaredBy": "sip:identity:frank-riemer",
     "generatedAt": "2026-09-19T00:00:00Z",
-    "note": "SIS's own profile. Every claim traces to a file in this repository pinned to a commit; nothing here is synthetic. Attested with Sigstore on every push to main (see protocol/profiles/README.md)."
+    "note": "SIS's own profile. Every claim traces to a file in this repository pinned to a commit; nothing here is synthetic. Attested with Sigstore whenever the profile or the checker changes on main (see protocol/profiles/README.md)."
   },
   "nodes": [
     {

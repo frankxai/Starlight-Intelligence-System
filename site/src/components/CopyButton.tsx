@@ -11,20 +11,24 @@ type CopyState = "idle" | "copied" | "failed";
  */
 export function CopyButton({ value, label }: { value: string; label: string }) {
   const [state, setState] = useState<CopyState>("idle");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (state === "idle") return;
     const t = window.setTimeout(() => setState("idle"), 2000);
     return () => window.clearTimeout(t);
-  }, [state]);
+  }, [state, attempt]);
 
   async function copy() {
+    let next: CopyState = "copied";
     try {
       await navigator.clipboard.writeText(value);
-      setState("copied");
     } catch {
-      setState("failed");
+      next = "failed";
     }
+    // Bump the attempt so a repeat click re-announces and restarts the timer.
+    setAttempt((n) => n + 1);
+    setState(next);
   }
 
   const text = state === "copied" ? "Copied" : state === "failed" ? "Select to copy" : "Copy";
@@ -38,12 +42,11 @@ export function CopyButton({ value, label }: { value: string; label: string }) {
   return (
     <>
       <span className="sr-only" aria-live="polite">
-        {announcement}
+        {announcement ? <span key={attempt}>{announcement}</span> : null}
       </span>
       <button
         type="button"
         onClick={copy}
-        aria-label={`Copy ${label}`}
         className={`inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md border px-3 font-mono text-[11px] uppercase tracking-widest transition-micro ${
           state === "copied"
             ? "border-emerald-400/30 text-emerald-300"
@@ -53,6 +56,7 @@ export function CopyButton({ value, label }: { value: string; label: string }) {
         }`}
       >
         {text}
+        <span className="sr-only"> {label}</span>
       </button>
     </>
   );

@@ -77,14 +77,17 @@ type ReceiptState = "signed" | "unsigned-preview" | "unverifiable" | "empty";
 function receiptState(): ReceiptState {
   if (!receipt || !Array.isArray(receipt.rules) || (receipt.counts?.nodes ?? 0) === 0) return "empty";
   if (receipt.verdict !== "PASS") return "unverifiable";
-  // Only pushes to main are signed. Production deploys build from main; every
-  // other build (Vercel preview, local) may show bytes that are not signed yet.
-  return process.env.VERCEL_ENV === "production" ? "signed" : "unsigned-preview";
+  // Only pushes to main are signed. A production deploy made from git on main
+  // shows the "built from main" state; anything else (preview, local, or a CLI
+  // `vercel deploy --prod`, which sets no git ref) may show unsigned bytes.
+  return process.env.VERCEL_ENV === "production" && process.env.VERCEL_GIT_COMMIT_REF === "main"
+    ? "signed"
+    : "unsigned-preview";
 }
 
 const STATE_COPY: Record<ReceiptState, { chip: string; tone: string; body: string }> = {
   signed: {
-    chip: "Pass · signed on main",
+    chip: "Pass · built from main",
     tone: "border-emerald-400/30 bg-emerald-400/[0.08] text-emerald-300",
     body: "This page was built from main. CI signs these exact bytes whenever the profile or the checker changes on main. The verify command below confirms the signature without trusting this site.",
   },
@@ -277,7 +280,7 @@ export default function VerifyPage() {
                               s.label
                             )}
                             {s.commit ? (
-                              <span className="font-mono text-[12px] text-slate-500"> @ {s.commit.slice(0, 12)}</span>
+                              <span className="font-mono text-[12px] text-slate-400"> @ {s.commit.slice(0, 12)}</span>
                             ) : null}
                           </span>
                         ))}
@@ -306,7 +309,7 @@ export default function VerifyPage() {
                 >
                   {rule.status === "pass" ? "Pass" : "Fail"}
                 </span>
-                <span className="w-9 shrink-0 font-mono text-[12px] text-slate-500">{rule.id}</span>
+                <span className="w-9 shrink-0 font-mono text-[12px] text-slate-400">{rule.id}</span>
                 <div className="min-w-0 text-slate-300">
                   {rule.title}
                   {rule.findings.length > 0 ? (
