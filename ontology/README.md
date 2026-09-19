@@ -30,6 +30,8 @@ The fleet has ~150 agent cards, 88 skill rules, and 45 repos across 8 companies.
 - Where does this agent escalate, and does that chain terminate at a human? *(INV-3)*
 - What number is this seat answerable for? *(INV-4)*
 - Which irreversible decisions have no human gate? *(INV-5)*
+- Which cards claim a capability they do not carry? *(INV-10 — currently 61 of 151)*
+- Which adaptations name an upstream nobody tracks? *(INV-11 — currently 7)*
 
 `foundry/contracts/capability-graph.schema.json` already models `skill` and `agent` with `activates` / `depends-on` / `default-for`. It has no word for **accountability** — no company, no decision right, no metric, no escalation. This ontology adds exactly that dimension and reuses the capability-graph relations unchanged where they already fit.
 
@@ -57,6 +59,8 @@ Per `docs/graph-engineering/CONTRACT.md`, which this composes with rather than a
 | INV-7 | No money, jurisdiction, or credential in a public file | error |
 | INV-8 | Every brand names its `COPY.md` pin | warn |
 | INV-9 | Every agent card appears in the graph | warn |
+| INV-10 | No two agent cards are ≥85% identical — a card must carry distinguishing knowledge, not substituted nouns | error |
+| INV-11 | An adapter card naming an external system has that system in `context/empire/upstreams.json` | error |
 
 ## Adding a company
 

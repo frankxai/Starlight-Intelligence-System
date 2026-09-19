@@ -35,6 +35,14 @@
       "next": "Frank rules per repo. An agent never archives a repo.",
       "owner_seat": "agent:starlight-ceo",
       "doc": "ontology/repo-tiers.json"
+    },
+    {
+      "id": "thread:absorption-gate",
+      "summary": "INV-10/INV-11 found 61 of 151 agent cards (40%) in 14 near-identical clusters; 7 adapters name untracked upstreams. Gate + absorption contract shipped.",
+      "state": "gate live, disposition pending Frank",
+      "next": "Frank rules per cluster: earn / collapse / delete. Most non-adapter clusters are parameters of one agent, not agents. Restate the fleet count after.",
+      "owner_seat": "agent:starlight-caio",
+      "doc": "docs/findings/2026-09-19-absorption-audit.md"
     }
   ],
   "blocked": [
@@ -99,6 +107,11 @@
     {
       "pr": "frankxai/GenCreator-Studio#7",
       "what": "Band C AGENTS.md for a T1 repo that had none",
+      "state": "draft"
+    },
+    {
+      "pr": "frankxai/claude-skills-library#?",
+      "what": "ABSORPTION.md + scripts/absorb.mjs — four-gate inbound contract",
       "state": "draft"
     }
   ]

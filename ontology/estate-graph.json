@@ -1,7 +1,7 @@
 {
   "$schema": "https://starlightintelligence.org/schemas/ontology/starlight-estate.ontology.v1.json",
   "schema": "starlight.estate-graph.v1",
-  "generatedAt": "2026-09-19T12:08:46.790Z",
+  "generatedAt": "2026-09-19T12:14:47.006Z",
   "source": {
     "ontology": "ontology/starlight-estate.ontology.v1.json",
     "companyRegistry": "ontology/company-registry.json",

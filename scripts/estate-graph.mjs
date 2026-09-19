@@ -31,6 +31,8 @@ const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 const ontology = read('ontology/starlight-estate.ontology.v1.json');
 const registry = read('ontology/company-registry.json');
 const tiers = read('ontology/repo-tiers.json');
+let upstreams = null;
+try { upstreams = read('context/empire/upstreams.json'); } catch { /* optional source */ }
 
 const problems = [];
 const fail = (inv, msg) => problems.push({ severity: 'error', inv, msg });
@@ -195,6 +197,58 @@ if (TREE) {
     const onDisk = new Set(readdirSync(abs, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => `repo:${d.name}`));
     for (const r of tiers.repos) if (!onDisk.has(r.id)) warn('INV-1', `declared repo ${r.id} not present in ${TREE}`);
     for (const id of onDisk) if (!repoOwners.has(id)) warn('INV-1', `repo ${id} present in ${TREE} but unowned in repo-tiers.json`);
+  }
+}
+
+// INV-10: agent cards must carry distinguishing knowledge, not substituted nouns.
+// Near-duplicate detection over normalised 5-word shingles of the card body.
+const SHINGLE = 5;
+function shingles(text) {
+  const words = text
+    .replace(/^---[\s\S]*?---/, '')            // drop frontmatter
+    .toLowerCase()
+    .replace(/[`*_>#|\[\]()]/g, ' ')
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+  const set = new Set();
+  for (let i = 0; i + SHINGLE <= words.length; i++) set.add(words.slice(i, i + SHINGLE).join(' '));
+  return set;
+}
+function jaccard(a, b) {
+  if (!a.size || !b.size) return 0;
+  let inter = 0;
+  for (const x of a) if (b.has(x)) inter++;
+  return inter / (a.size + b.size - inter);
+}
+const DUP_THRESHOLD = 0.85;
+const bodies = agents.map((a) => ({ id: a.id, path: a.path, sh: shingles(readFileSync(join(ROOT, a.path), 'utf8')) }));
+const clusters = [];
+const claimed = new Set();
+for (let i = 0; i < bodies.length; i++) {
+  if (claimed.has(bodies[i].id) || bodies[i].sh.size < 40) continue;
+  const group = [bodies[i].id];
+  for (let j = i + 1; j < bodies.length; j++) {
+    if (claimed.has(bodies[j].id) || bodies[j].sh.size < 40) continue;
+    if (jaccard(bodies[i].sh, bodies[j].sh) >= DUP_THRESHOLD) { group.push(bodies[j].id); claimed.add(bodies[j].id); }
+  }
+  if (group.length > 1) { group.forEach((g) => claimed.add(g)); clusters.push(group); }
+}
+for (const g of clusters) {
+  fail('INV-10', `${g.length} agent cards are >=${DUP_THRESHOLD * 100}% identical — they name different systems and carry the same text: ${g.join(', ')}`);
+}
+
+// INV-11: an adapter card naming an external system must have that system in the upstream registry.
+if (upstreams) {
+  const ids = upstreams.upstreams.map((u) => u.id.toLowerCase());
+  const repos = upstreams.upstreams.map((u) => u.repository.toLowerCase());
+  for (const a of agents) {
+    const m = a.path.match(/agents\/starlight-adapter-([a-z0-9-]+)\.md$/);
+    if (!m) continue;
+    const name = m[1];
+    const known = ids.some((id) => id === name || id.startsWith(name + '-') || id.endsWith('-' + name) || id.includes(name))
+      || repos.some((r) => r.includes('/' + name) || r.includes(name + '/'));
+    if (!known) fail('INV-11', `${a.id} adapts '${name}', which is absent from context/empire/upstreams.json — a claimed adaptation with no tracked upstream`);
   }
 }
 
