@@ -1,0 +1,59 @@
+# SIP graph + signed receipts. Zero dependencies, so no install step: this is
+# exactly what an adopter runs after vendoring protocol/. The Node matrix holds
+# the README's "Node >= 18" claim to account.
+name: Protocol
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/protocol.yml"
+      - "protocol/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/protocol.yml"
+      - "protocol/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: protocol-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  protocol:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        node: ["18", "20", "22"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Tests
+        run: node --test protocol/test/conform.test.mjs protocol/test/sign.test.mjs
+
+      - name: Reference profile passes, leaky profile fails
+        run: |
+          node protocol/conform.mjs protocol/fixtures/valid-profile.json --quiet
+          if node protocol/conform.mjs protocol/fixtures/leaky-profile.json --quiet; then
+            echo "leaky profile passed; it must fail" && exit 1
+          fi
+
+      - name: Sign and verify a receipt end to end
+        run: |
+          dir="$(mktemp -d)"
+          node protocol/sign.mjs keygen "$dir/keys"
+          node protocol/conform.mjs protocol/fixtures/valid-profile.json --json "$dir/receipt.json" --quiet
+          node protocol/sign.mjs "$dir/receipt.json" --key "$dir/keys/sip-signing.key" --out "$dir/receipt.dsse.json"
+          node protocol/verify.mjs "$dir/receipt.dsse.json" --pub "$dir/keys/sip-signing.pub" \
+            --profile protocol/fixtures/valid-profile.json
