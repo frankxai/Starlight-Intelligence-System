@@ -1,0 +1,71 @@
+# SIS attests its own SIP graph profile (protocol/INSTALL.md §5, public profile).
+#
+# Pull requests: run conform on protocol/profiles/sis.json only. Nothing is
+# signed and nothing is written to a transparency log.
+# Push to main: run conform, then attest the PASS receipt with Sigstore keyless
+# signing via actions/attest. Subject = the profile bytes, predicate = the
+# receipt. conform exits 1 on FAIL, so a FAIL receipt is never attested.
+#
+# Verify: see protocol/profiles/README.md.
+name: SIP self-receipt
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/sip-self-receipt.yml"
+      - "protocol/**"
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sip-self-receipt-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  conform:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+
+      - name: SIS profile passes conform
+        run: node protocol/conform.mjs protocol/profiles/sis.json --json "$RUNNER_TEMP/sip-receipt.json"
+
+  attest:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+
+      - name: SIS profile passes conform
+        run: node protocol/conform.mjs protocol/profiles/sis.json --json "$RUNNER_TEMP/sip-receipt.json"
+
+      - name: Attest the receipt (Sigstore, public transparency log)
+        uses: actions/attest@ce27ba3b4a9a139d9a20a4a07d69fabb52f1e5bc # v2.4.0
+        with:
+          subject-path: protocol/profiles/sis.json
+          predicate-type: https://starlightintelligence.org/protocol/receipt/v0.1.0
+          predicate-path: ${{ runner.temp }}/sip-receipt.json

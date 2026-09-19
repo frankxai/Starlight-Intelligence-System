@@ -34,6 +34,7 @@ Version namespace is independent of SIP's: profiles declare `sipGraphVersion: "0
 | `receipt.v0.1.0.schema.json` | The receipt format, so receipts are machine-comparable. |
 | `fixtures/valid-profile.json` | Reference profile. Must PASS. |
 | `fixtures/leaky-profile.json` | Negative fixture. Must FAIL P1–P5. |
+| `profiles/sis.json` | SIS's own profile. Must PASS; attested on every push to main. See `profiles/README.md`. |
 | `test/conform.test.mjs`, `test/sign.test.mjs` | `node --test`, no test framework. |
 
 ## Run it
@@ -95,7 +96,9 @@ this contract, not a reason to change it.
 
 v0.1.0 is a first published contract, not a ratified standard. It has one reference profile, one
 negative fixture and seventeen enforced rules. It has no external adopters yet. Nothing in this
-directory should be cited as evidence of adoption.
+directory should be cited as evidence of adoption. This repository attests its own profile
+(`profiles/sis.json`) on every push to main with Sigstore (see `.github/workflows/sip-self-receipt.yml`);
+that is the public signing profile in `INSTALL.md` §5 exercised by its author, not an adoption.
 
 ---
 
