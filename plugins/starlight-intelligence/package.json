@@ -27,7 +27,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "5.20260831.1",
     "@modelcontextprotocol/sdk": "1.30.0",
-    "@types/node": "24.10.1",
+    "@types/node": "26.6.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "esbuild": "0.28.1",
