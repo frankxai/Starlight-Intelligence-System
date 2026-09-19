@@ -112,7 +112,7 @@ gh attestation verify sip-profile.json --repo <owner>/<repo>   --predicate-type 
 ```
 
 Use it only where the repository and its names may be public: the transparency log is permanent.
-This profile is documented, not yet exercised by this repository's own CI.
+This repository attests its own profile on every push to main (see `.github/workflows/sip-self-receipt.yml` and `profiles/README.md`).
 
 ## 6 · Attest it
 
