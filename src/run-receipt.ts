@@ -110,13 +110,34 @@ const DECIDED_BY: DecisionBy[] = ["human", "agent", "policy"];
 const OUTCOMES: DecisionOutcome[] = ["approved", "rejected", "deferred"];
 /** Rounding tolerance when checking totals against stage sums. */
 const EUR_TOLERANCE = 0.0051;
+/** DSSE issuers emit one or a few signatures; more than this is a cost attack, not a receipt. */
+export const MAX_SIGNATURES = 8;
+/** RFC 3339 date-time with a zone designator. Date.parse alone accepts "2026" and other partial forms. */
+const DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$/;
+const KEYS = {
+  receipt: ["schema", "receiptId", "issuedAt", "issuer", "run", "subject", "stages", "totals", "decisions", "evidence", "verdict"],
+  issuer: ["name", "keyid"],
+  run: ["id", "kind", "host", "startedAt", "endedAt", "correlationId"],
+  subject: ["name", "digest"],
+  digest: ["sha256"],
+  stage: ["name", "status", "model", "provider", "inputTokens", "outputTokens", "costEur", "latencyMs", "note"],
+  totals: ["costEur", "latencyMs", "tokens"],
+  tokens: ["input", "output"],
+  decision: ["gate", "decidedBy", "actorId", "outcome", "at", "note"],
+  evidence: ["kind", "ref", "sha256"],
+} as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
 function isDate(value: unknown): value is string {
-  return typeof value === "string" && !Number.isNaN(Date.parse(value));
+  return typeof value === "string" && DATE_TIME.test(value) && !Number.isNaN(Date.parse(value));
+}
+
+/** Names of properties that the schema does not allow on this object. */
+function unknownKeys(value: Record<string, unknown>, allowed: readonly string[]): string[] {
+  return Object.keys(value).filter((k) => !allowed.includes(k));
 }
 
 function isNonNegative(value: unknown): value is number {
@@ -165,14 +186,21 @@ export function receiptProblems(receipt: unknown): string[] {
   const problems: string[] = [];
   const r = receipt;
 
+  for (const k of unknownKeys(r, KEYS.receipt)) problems.push(`unknown property ${k}`);
   if (r.schema !== RUN_RECEIPT_SCHEMA) problems.push(`schema is ${JSON.stringify(r.schema)}, expected ${RUN_RECEIPT_SCHEMA}`);
   if (typeof r.receiptId !== "string" || !r.receiptId.trim()) problems.push("receiptId is missing");
   if (!isDate(r.issuedAt)) problems.push("issuedAt is not a date-time");
-  if (!isRecord(r.issuer) || typeof r.issuer.name !== "string" || !r.issuer.name.trim()) problems.push("issuer.name is missing");
+  if (!isRecord(r.issuer) || typeof r.issuer.name !== "string" || !r.issuer.name.trim()) {
+    problems.push("issuer.name is missing");
+  } else {
+    for (const k of unknownKeys(r.issuer, KEYS.issuer)) problems.push(`unknown property issuer.${k}`);
+    if (r.issuer.keyid !== undefined && !SHA256.test(String(r.issuer.keyid))) problems.push("issuer.keyid is not a sha256 keyid");
+  }
 
   if (!isRecord(r.run)) {
     problems.push("run is missing");
   } else {
+    for (const k of unknownKeys(r.run, KEYS.run)) problems.push(`unknown property run.${k}`);
     for (const k of ["id", "kind", "host"]) {
       if (typeof r.run[k] !== "string" || !(r.run[k] as string).trim()) problems.push(`run.${k} is missing`);
     }
@@ -185,8 +213,13 @@ export function receiptProblems(receipt: unknown): string[] {
 
   if (!isRecord(r.subject) || typeof r.subject.name !== "string" || !r.subject.name.trim()) {
     problems.push("subject.name is missing");
-  } else if (!isRecord(r.subject.digest) || !SHA256.test(String(r.subject.digest.sha256 ?? ""))) {
-    problems.push("subject.digest.sha256 is not a sha256");
+  } else {
+    for (const k of unknownKeys(r.subject, KEYS.subject)) problems.push(`unknown property subject.${k}`);
+    if (!isRecord(r.subject.digest) || !SHA256.test(String(r.subject.digest.sha256 ?? ""))) {
+      problems.push("subject.digest.sha256 is not a sha256");
+    } else {
+      for (const k of unknownKeys(r.subject.digest, KEYS.digest)) problems.push(`unknown property subject.digest.${k}`);
+    }
   }
 
   let costSum = 0;
@@ -202,6 +235,7 @@ export function receiptProblems(receipt: unknown): string[] {
         problems.push(`stage ${i} is not an object`);
         return;
       }
+      for (const k of unknownKeys(stage, KEYS.stage)) problems.push(`unknown property stages[${i}].${k}`);
       if (typeof stage.name !== "string" || !stage.name.trim()) problems.push(`stage ${i} has no name`);
       if (!STAGE_STATUSES.includes(stage.status as StageStatus)) problems.push(`stage ${stage.name ?? i} has status ${JSON.stringify(stage.status)}`);
       for (const k of ["inputTokens", "outputTokens", "costEur", "latencyMs"]) {
@@ -221,6 +255,8 @@ export function receiptProblems(receipt: unknown): string[] {
     problems.push("totals is missing");
   } else {
     const t = r.totals;
+    for (const k of unknownKeys(t, KEYS.totals)) problems.push(`unknown property totals.${k}`);
+    if (isRecord(t.tokens)) for (const k of unknownKeys(t.tokens, KEYS.tokens)) problems.push(`unknown property totals.tokens.${k}`);
     if (!isNonNegative(t.costEur)) problems.push("totals.costEur is not a non-negative number");
     if (!isNonNegative(t.latencyMs)) problems.push("totals.latencyMs is not a non-negative number");
     if (!isRecord(t.tokens) || !isNonNegative(t.tokens.input) || !isNonNegative(t.tokens.output)) {
@@ -243,6 +279,7 @@ export function receiptProblems(receipt: unknown): string[] {
         problems.push(`decision ${i} is not an object`);
         return;
       }
+      for (const k of unknownKeys(d, KEYS.decision)) problems.push(`unknown property decisions[${i}].${k}`);
       if (typeof d.gate !== "string" || !d.gate.trim()) problems.push(`decision ${i} has no gate`);
       if (!DECIDED_BY.includes(d.decidedBy as DecisionBy)) problems.push(`decision ${d.gate ?? i}.decidedBy is ${JSON.stringify(d.decidedBy)}`);
       if (typeof d.actorId !== "string" || !d.actorId.trim()) problems.push(`decision ${d.gate ?? i} has no actorId`);
@@ -259,6 +296,7 @@ export function receiptProblems(receipt: unknown): string[] {
         problems.push(`evidence ${i} is not an object`);
         return;
       }
+      for (const k of unknownKeys(e, KEYS.evidence)) problems.push(`unknown property evidence[${i}].${k}`);
       if (typeof e.kind !== "string" || !e.kind.trim()) problems.push(`evidence ${i} has no kind`);
       if (typeof e.ref !== "string" || !e.ref.trim()) problems.push(`evidence ${i} has no ref`);
       if (e.sha256 !== undefined && !SHA256.test(String(e.sha256))) problems.push(`evidence ${e.ref ?? i}.sha256 is not a sha256`);
@@ -315,6 +353,7 @@ export function verifyRunReceipt(envelope: unknown, trustedPublicKeys: string[])
   if (envelope.payloadType !== PAYLOAD_TYPE) return fail(`payloadType is ${JSON.stringify(envelope.payloadType)}, expected ${PAYLOAD_TYPE}`);
   if (typeof envelope.payload !== "string") return fail("payload is missing");
   if (!Array.isArray(envelope.signatures) || envelope.signatures.length === 0) return fail("envelope carries no signatures");
+  if (envelope.signatures.length > MAX_SIGNATURES) return fail(`envelope carries ${envelope.signatures.length} signatures; at most ${MAX_SIGNATURES} are accepted`);
 
   if (!Array.isArray(trustedPublicKeys)) return fail("trusted keys must be a list");
   const trusted = new Map<string, KeyObject>();
@@ -369,9 +408,13 @@ export function verifyRunReceipt(envelope: unknown, trustedPublicKeys: string[])
   const problems = receiptProblems(predicate);
   if (problems.length) return fail(`signed receipt is incomplete: ${problems.join("; ")}`);
   const receipt = predicate as RunReceipt;
-  const subject = Array.isArray(statement.subject) && isRecord(statement.subject[0]) ? statement.subject[0] : null;
-  const digest = subject && isRecord(subject.digest) ? subject.digest.sha256 : undefined;
+  if (!Array.isArray(statement.subject) || statement.subject.length !== 1 || !isRecord(statement.subject[0])) {
+    return fail("statement must name exactly one subject");
+  }
+  const subject = statement.subject[0];
+  const digest = isRecord(subject.digest) ? subject.digest.sha256 : undefined;
   if (digest !== receipt.subject.digest.sha256) return fail("statement subject digest does not match the receipt's subject digest");
+  if (subject.name !== receipt.subject.name) return fail("statement subject name does not match the receipt's subject name");
   if (receipt.issuer.keyid && receipt.issuer.keyid !== signedBy) {
     return fail(`receipt names issuer keyid ${receipt.issuer.keyid.slice(0, 16)}… but was signed by ${signedBy.slice(0, 16)}…`);
   }

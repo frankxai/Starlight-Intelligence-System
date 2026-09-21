@@ -29,6 +29,8 @@ import {
   verifyRunReceipt,
   type RunReceipt,
   type RunReceiptStage,
+  MAX_SIGNATURES,
+  receiptStatement,
 } from '../src/run-receipt.js';
 
 function keyPair(): { privatePem: string; publicPem: string; keyid: string } {
@@ -165,5 +167,79 @@ describe('run receipt — receiptProblems', () => {
   it('signRunReceipt refuses an incomplete receipt', () => {
     const k = keyPair();
     assert.throws(() => signRunReceipt(receipt({ stages: [] }), k.privatePem), /refusing to sign/);
+  });
+});
+
+// Hardening after the 2026-09-21 code review: cost caps and strictness that the
+// schema states and the verifier must enforce identically on both sides.
+describe('run receipt hardening', () => {
+  function keys() {
+    const { privateKey, publicKey } = generateKeyPairSync('ed25519');
+    return {
+      priv: privateKey.export({ type: 'pkcs8', format: 'pem' }) as string,
+      pub: publicKey.export({ type: 'spki', format: 'pem' }) as string,
+    };
+  }
+  function baseReceipt(): RunReceipt {
+    const stages: RunReceiptStage[] = [{ name: 'synthesize', status: 'ok', costEur: 0.002, latencyMs: 900, inputTokens: 100, outputTokens: 20 }];
+    return {
+      schema: RUN_RECEIPT_SCHEMA,
+      receiptId: 'rcpt_hardening',
+      issuedAt: '2026-09-21T22:00:00Z',
+      issuer: { name: 'test' },
+      run: { id: 'run_h', kind: 'desk.brief', host: 'claude-code', startedAt: '2026-09-21T21:59:00Z', endedAt: '2026-09-21T21:59:30Z' },
+      subject: { name: 'brief.md', digest: { sha256: sha256Hex('brief') } },
+      stages,
+      totals: totalsFromStages(stages),
+      decisions: [],
+      evidence: [],
+      verdict: 'PASS',
+    };
+  }
+
+  it('rejects an envelope with more than MAX_SIGNATURES signatures before any crypto work', () => {
+    const k = keys();
+    const env = signRunReceipt(baseReceipt(), k.priv);
+    const flooded = { ...env, signatures: Array.from({ length: MAX_SIGNATURES + 1 }, () => ({ sig: 'AA==' })) };
+    const res = verifyRunReceipt(flooded, [k.pub]);
+    assert.equal(res.ok, false);
+    assert.match(res.reasons.join(' '), /signatures; at most/);
+  });
+
+  it('rejects a statement whose subject name differs from the receipt subject', () => {
+    const k = keys();
+    const receipt = baseReceipt();
+    const statement = receiptStatement(receipt);
+    statement.subject[0].name = 'other.md';
+    const payload = Buffer.from(JSON.stringify(statement), 'utf8');
+    const sig = sign(null, pae(PAYLOAD_TYPE, payload), createPrivateKey(k.priv));
+    const env = { payloadType: PAYLOAD_TYPE, payload: payload.toString('base64'), signatures: [{ keyid: keyIdOf(k.pub), sig: sig.toString('base64') }] };
+    const res = verifyRunReceipt(env, [k.pub]);
+    assert.equal(res.ok, false);
+    assert.match(res.reasons.join(' '), /subject name does not match/);
+  });
+
+  it('rejects a statement with two subjects', () => {
+    const k = keys();
+    const receipt = baseReceipt();
+    const statement = receiptStatement(receipt) as { subject: unknown[] };
+    statement.subject.push({ name: 'x', digest: { sha256: sha256Hex('x') } });
+    const payload = Buffer.from(JSON.stringify(statement), 'utf8');
+    const sig = sign(null, pae(PAYLOAD_TYPE, payload), createPrivateKey(k.priv));
+    const env = { payloadType: PAYLOAD_TYPE, payload: payload.toString('base64'), signatures: [{ keyid: keyIdOf(k.pub), sig: sig.toString('base64') }] };
+    assert.match(verifyRunReceipt(env, [k.pub]).reasons.join(' '), /exactly one subject/);
+  });
+
+  it('rejects unknown properties, loose dates and a malformed keyid, matching the schema', () => {
+    const withExtra = { ...baseReceipt(), extra: 1 } as unknown as RunReceipt;
+    assert.match(receiptProblems(withExtra).join(' '), /unknown property extra/);
+    const stageExtra = baseReceipt();
+    (stageExtra.stages[0] as unknown as Record<string, unknown>).tool = 'x';
+    assert.match(receiptProblems(stageExtra).join(' '), /unknown property stages\[0\]\.tool/);
+    const looseDate = { ...baseReceipt(), issuedAt: '2026' };
+    assert.match(receiptProblems(looseDate).join(' '), /issuedAt is not a date-time/);
+    const badKey = { ...baseReceipt(), issuer: { name: 't', keyid: 'abc' } };
+    assert.match(receiptProblems(badKey).join(' '), /issuer.keyid is not a sha256 keyid/);
+    assert.deepEqual(receiptProblems(baseReceipt()), []);
   });
 });
