@@ -120,7 +120,7 @@ footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);font-
       <button class="node partial" data-id="wdk"><i></i>Workflow Development Kit <small>durable · Sandbox</small></button>
       <button class="node live" data-id="eve"><i></i>Eve <small>Companion runtime provider</small></button>
       <button class="node live" data-id="mcp"><i></i>MCP servers <small>SIS · cockpit · marine · arcanea</small></button>
-      <button class="node partial" data-id="railway"><i></i>Railway <small>workers · n8n · long MCP</small></button>
+      <button class="node planned" data-id="railway"><i></i>Railway <small>workers · n8n · long MCP</small></button>
       <button class="node live" data-id="vercel"><i></i>Vercel <small>surfaces · previews</small></button>
     </div></section>
 
@@ -142,7 +142,7 @@ footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);font-
       <button class="node partial" data-id="sqlitevec"><i></i>sqlite-vec sidecar <small>hybrid RRF · local</small></button>
       <button class="node live" data-id="palace"><i></i>Memory palace <small>spatial index</small></button>
       <button class="node partial" data-id="supabase"><i></i>Supabase <small>pgvector + RRF · queues · cron</small></button>
-      <button class="node planned" data-id="agentdb"><i></i>AgentDB <small>derived learning index</small></button>
+      <button class="node partial" data-id="agentdb"><i></i>AgentDB <small>derived learning index</small></button>
       <button class="node planned" data-id="mem0"><i></i>mem0 <small>optional adapter</small></button>
       <button class="node no" data-id="pinecone"><i></i>Pinecone</button>
       <button class="node live" data-id="workgraph"><i></i>Work-graph ledger <small>layer A</small></button>
@@ -222,7 +222,7 @@ const D = {
  wdk:{t:'Workflow Development Kit',s:'partial',p:'Vercel durable execution: each step an isolated route with recorded I/O, deterministic replay, no execution-time limit, Sandbox as a serializable step. The right home for constellation runs and room-mode queues; Railway stays for always-on workers.',repo:'workflow-sdk · @vercel/sandbox',links:['aisdk','railway','constellation','publish']},
  eve:{t:'Eve',s:'live',p:'GenCreator Companion runtime provider name in telemetry. AgentRuntime contract with start, result, resume, approval and usage receipts. The Token Factory cascade becomes a second provider behind the same contract.',repo:'gencreator.ai/lib/agent-runtime-contract.ts',links:['gencreator','aisdk','receipt']},
  mcp:{t:'MCP servers',s:'live',p:'SIS memory and IS routing servers, cockpit continuity, marine, arcanea. Tools are the agent-facing API of the estate; every CLI in the harness can call them.',repo:'src/mcp-server.ts · src/mcp-is.ts · cockpit/mcp · marine-mcp',links:['claudecode','codex','grok','vaults','console']},
- railway:{t:'Railway',s:'partial',p:'Long-running workers, stateful MCP over SSE, n8n, private networking between services. Usage-based on a small base plan. Vercel fronts, Railway runs what must not sleep.',repo:'STACK.md L4',links:['wdk','mcp','supabase']},
+ railway:{t:'Railway',s:'planned',p:'Long-running workers, stateful MCP over SSE, n8n, private networking between services. Named in STACK.md L4 but deployed nowhere in the estate today (survey 2026-09-21: no railway.json, no Dockerfile at any root). First service: the SIS MCP over SSE plus n8n, week after the hackathon.',repo:'STACK.md L4 · drift ledger #5',links:['wdk','mcp','supabase']},
  vercel:{t:'Vercel',s:'live',p:'59 projects on the Starlight Intelligence team, four brand surfaces among them. Git integration deploys main; every PR gets a preview. AI Gateway and Sandbox sit on the same account.',repo:'team starlight-intelligence',links:['frankx','gencreator','sio','sia','arcanea','ship']},
  agentsmd:{t:'AGENTS.md',s:'live',p:'The cross-harness instruction file. Codex CLI, Grok Build and Antigravity read it; CLAUDE.md, GROK.md and GEMINI.md are supplements that point back. One rule set, fanned out by script where a repo needs it.',repo:'AGENTS.md in every active repo',links:['claudecode','codex','grok','antigravity','kimi','soul']},
  claudemd:{t:'CLAUDE.md, GROK.md, GEMINI.md',s:'live',p:'Harness-specific supplements. Operating contracts, hard stops, branch discipline, the web-design gate, the editorial contract.',repo:'per repo',links:['agentsmd','gate']},
@@ -238,7 +238,7 @@ const D = {
  sqlitevec:{t:'sqlite-vec sidecar',s:'partial',p:'Vectors in the same SQLite file as the FTS index, fused by RRF, rebuildable from JSONL. Pluggable embedder: local by default, Qwen3-Embedding on Token Factory when hosted quality is worth it.',repo:'src/embedding.ts · docs/bring-your-own-model.md',links:['vaults','nebius','qwen','desk']},
  palace:{t:'Memory palace',s:'live',p:'Walkable spatial index over the vaults. Companion view; vaults stay authoritative.',repo:'memory/palace/palace.json',links:['vaults','console']},
  supabase:{t:'Supabase',s:'partial',p:'Runtime and shared state: Postgres with RLS, pgvector hybrid search with RRF, Queues on pgmq, pg_cron, Edge Functions. The right place for multi-tenant and shared memory, never for the founder\'s private vault.',repo:'gencreator.ai/lib/supabase · STACK.md L2',links:['gencreator','railway','wdk','vaults']},
- agentdb:{t:'AgentDB',s:'planned',p:'A learning retrieval index that watches which results agents actually used. Allowed only as a derived, rebuildable index over the vaults, never as truth. Phase 0 memory foundations chartered its tier.',repo:'docs/research/published/memory-foundations-2026-05.md',links:['vaults','sqlitevec','learn']},
+ agentdb:{t:'AgentDB',s:'partial',p:'A learning retrieval index that watches which results agents actually used. Already a dependency in FrankX (3.0.0-alpha.11) and the frankx.ai trunk (alpha.20); allowed only as a derived, rebuildable index over the vaults, never as truth. Pin one version, document the boundary.',repo:'FrankX and frankx.ai-vercel-website package.json · drift ledger #3',links:['vaults','sqlitevec','learn']},
  mem0:{t:'mem0',s:'planned',p:'OpenAI-compatible drop-in with scoped memories and a self-hosted server. Fits as an optional adapter for partner estates that already run it. Not core.',repo:'adapter slot',links:['vaults']},
  pinecone:{t:'Pinecone',s:'no',p:'Rejected as a memory layer. A hosted server as source of truth breaks the install-for-anyone promise and the sovereignty invariant. Shared vectors live in Supabase when needed.',repo:'SOUL.md invariant 1',links:['supabase']},
  workgraph:{t:'Work-graph ledger',s:'live',p:'Layer A: what is legal next, what proves done, who may not self-grade. One compiled ledger per campaign, never per agent. Events promote to memory only through the promotion rule.',repo:'src/work-graph.ts · docs/graph-engineering/CONTRACT.md',links:['queen','console','receipt','learn']},

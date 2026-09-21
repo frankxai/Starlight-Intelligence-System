@@ -129,9 +129,43 @@ It does not change the substrate. SIP, the sovereignty clause, the file contract
 
 ---
 
-## Appendix A. Repo inventory (survey 2026-09-21)
+## Appendix A. Repo inventory and drift ledger (survey 2026-09-21)
 
-_Appended from the automated survey below._
+Automated survey of the 44 repositories checked out in this session, read from files only. Full row-level table in the survey transcript; the facts that change decisions are here.
+
+### A.1 What the estate actually is
+
+| Fact | Count | Consequence |
+|---|---|---|
+| Repos with a Vercel project file at root | 9 (FrankX, SIS, agentic-intelligence-system, agenticincome, arcanea, arcanea-ai-app, frankx-palace, frankx.ai-vercel-website, gencreator.ai) | Vercel is the only deploy target in use |
+| Repos with Railway, Fly or a root Dockerfile | 0 | Railway in STACK.md L4 is doctrine, not deployment. Status on the map: planned. First Railway workload is the SSE MCP server and n8n, week after |
+| Repos with GitHub Actions | 39 of 44 | The ADLC gate layer already exists almost everywhere; the six without are docs-only mind and music repos |
+| Repos carrying the identical 14-skill web-excellence pack | 15 (11 exactly, 4 as a subset of larger skill sets) | The design gate is already the estate default; the remaining web repos to install it into are the two Next outliers below |
+| Docs-and-skills-only repos (no package.json) | 22 of 44 | Half the estate is knowledge and contract, not code. They converge through AGENTS.md and SKILL.md, not through a runtime |
+| Next.js version | 16.3.5 standard; frankx-palace on 15.1.6; starlight-swarm on 14.2.3; FrankX and frankx.ai-vercel-website on React 18.3.1, the rest React 19 | Two upgrade PRs and one React bump on the trunk are convergence work, not features |
+| `ai` SDK as a dependency | FrankX 6.0.277, frankx.ai-vercel-website 6.0.190, gencreator.ai on 4.0 with @ai-sdk/anthropic 1.0 | gencreator.ai must move to AI SDK 6 before the Token Factory provider lands behind the Eve contract. This is the first October PR |
+| `agentdb` as a dependency | FrankX 3.0.0-alpha.11, frankx.ai-vercel-website 3.0.0-alpha.20; mentioned in 11 more repos | Status on the map: partial. The rule holds: derived index over the vaults, never truth; the two alpha versions should be pinned to one |
+| mem0, pinecone, langchain, mastra, prisma, drizzle, sqlite-vec as dependencies | none anywhere | mem0 stays an adapter slot; Pinecone stays rejected; sqlite-vec is the sidecar to add in SIS |
+| Supabase as a dependency | arcanea, arcanea-ai-app, gencreator.ai | Shared runtime state already lives where the doctrine says |
+| SOUL.md | only in Starlight-Intelligence-System | The drift test exists once. Each brand surface writes its own SOUL.md naming what must not drift for that surface (SIP layer 1, optional but now recommended for the four brand repos) |
+| Fullest harness | SIS carries all eleven contract files but has no `.claude/skills` directories, only `skill-rules.json` | Install the web-excellence pack into SIS `site/` before the Desk route lands, so the gate fires on the 23rd |
+| Orchestration vocabulary | queen and hermes terms across starlight-swarm, SIS, frankx.ai-vercel-website, arcanea-ai-app, agentic-ops-hub; gstack and claude-flow across FrankX, ACOS, arcanea | One Queen already; claude-flow and gstack are pattern sources and sprint tooling, not a second scheduler |
+| Last activity | 19 repos committed 2026-09-19; SIS 2026-09-21; oldest live repos June 2026 (starlight-mind-os-pro, payment-intelligence-system) | The estate is active; convergence is sequencing, not revival |
+
+### A.2 Drift ledger: convergence actions the survey makes concrete
+
+| # | Action | Repo | Horizon | Gate |
+|---|---|---|---|---|
+| 1 | Install the web-excellence pack into `site/`; add SOUL.md-style drift notes to the four brand repos | SIS, frankx.ai-vercel-website, gencreator.ai, arcanea-ai-app | before 23 Sept (SIS), October (others) | install.sh, editorial CI |
+| 2 | Upgrade gencreator.ai from `ai` 4.0 to AI SDK 6; keep Eve as provider one, add Token Factory as provider two | gencreator.ai | October | ADR, unit and e2e CI |
+| 3 | Pin one `agentdb` version across FrankX and the trunk; document it as a derived index in both repos' memory notes | FrankX, frankx.ai-vercel-website | October | port file by file, prod is authority |
+| 4 | Add `NebiusEmbeddingProvider` and the sqlite-vec sidecar behind `STARLIGHT_EMBED`; run the recall eval head to head | SIS | 23 Sept then week after | eval:retrieval in CI |
+| 5 | First Railway service: SIS MCP over SSE plus n8n; document in STACK.md L4 as deployed, not recommended | SIS | week after | Board only if the file contract changes |
+| 6 | Bump frankx-palace to Next 16 and starlight-swarm to Next 16; React 19 on the trunk after the homepage preservation capture | frankx-palace, starlight-swarm, frankx.ai-vercel-website | Q4 | web-release-gate, homepage contract |
+| 7 | Register HX and AX seats in the agent registry; one owner each | SIS | October | Board (registry change) |
+| 8 | Console reads the Desk vault; cockpit lane board shows the work-graph ledger | SIS console/, cockpit/ | week after | Console honesty rule |
+| 9 | Publish adapter to gencreator.ai research hub behind the approval receipt | gencreator.ai | week after | ADR-010 no autonomous publication |
+| 10 | Kimi lane in the cognition router with a receipt format | SIS commands/si.md | Q4 | route receipt schema |
 
 ## Appendix B. Dated technical brief (external facts, 2026-09-21)
 
