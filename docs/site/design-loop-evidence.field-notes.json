@@ -1,0 +1,33 @@
+{
+  "version": "2026-08-24",
+  "task": "Create and integrate the protocol and public-memory chapter of the 20-scene Starlight Field Notes visual system.",
+  "surface": "Starlight Intelligence Org /field-notes institutional editorial experience",
+  "audience": "Protocol implementers, operators, collaborators, and public-source evaluators",
+  "first_read": "Keep proof, human authority, forkability, and public memory in one visible relationship.",
+  "standards": ["design-agent-standards/OUTCOMES.md", "design-agent-standards/AGENTIC_DESIGN_LOOP.md", "design-agent-standards/PREMIUM_ASSET_STANDARD.md", "design-agent-standards/MOTION_TASTE_RUBRIC.md"],
+  "references": [{"label": "Starlight reference character set", "source": "C:/Users/frank/.codex/generated_images/019fe474-4b2f-7703-ab79-9826fd64b2c1", "reason": "Extend the shared character family into civic, archival, and governance roles."}],
+  "direction": {
+    "keep": ["Named human authority", "Institutional restraint", "Public memory", "Source and attestation texture"],
+    "avoid": ["Marketing spectacle", "Fake governance UI", "Abstract trust icons", "Particle DOM", "Weapon-like robots"],
+    "signature": "A restrained starlight trace moves from source record to human attestation and public return.",
+    "system": ["Inter, JetBrains Mono, and Fraunces", "Obsidian/mineral/violet/brass", "4:5 civic studies", "Progressive motion enhancement"]
+  },
+  "asset_quality": {"tier": "B", "source_method": "generated-media", "provenance": "generated", "why_premium": "Six individually directed institutional scenes center human authority and preserve clear distinctions between memory, protocol, attestation, forkability, and public stewardship.", "shortcut_risk": "low", "context_tested": true},
+  "artifacts": [
+    {"path_or_url": "site/public/assets/field-notes/v1", "kind": "image", "inspected": true, "notes": "Six normalized 1120x1400 WebP exports below 240 KB."},
+    {"path_or_url": "/field-notes", "kind": "web", "inspected": true, "notes": "Vercel preview inspected at desktop and 390x844 mobile; six cards and all six images render with zero horizontal overflow."}
+  ],
+  "checks": [
+    {"name": "asset-tier", "status": "pass", "evidence": "Tier B custom generated media."},
+    {"name": "export-inspection", "status": "pass", "evidence": "All public-memory crops inspected in the production contact sheet."},
+    {"name": "visual-qa", "status": "pass", "evidence": "Desktop and mobile preview captures pass hierarchy, crop, copy, navigation, image-load, and overflow checks; no route console errors."}
+  ],
+  "score": {"total": 28, "max": 30, "notes": "Custom media, institutional restraint, responsive behavior, and static fallback pass the premium gate."},
+  "decision": "ship",
+  "known_risks": [
+    "Cross-domain links should be released as one coordinated set.",
+    "The dense forkability scene remains a late-chapter card, never a hero claim.",
+    "The available browser surfaces report coarse pointer, so the fine-pointer GSAP path is source-verified while the static fallback is preview-verified.",
+    "Production promotion remains human-gated."
+  ]
+}

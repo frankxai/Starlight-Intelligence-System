@@ -36,6 +36,7 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 
 | Date | Entry | Category | Confidence |
 |------|-------|----------|------------|
+| 2026-09-01 | Homepage vault ISR keeps last-good state across GitHub timeouts | runtime-resilience | 0.98 |
 | 2026-02-10 | System Initialization State | system-state | 1.0 |
 | 2026-02-10 | Ecosystem Connection Status | ecosystem-state | 0.90 |
 | 2026-05-06 | Starlight Ascension (E2E Upgrade) | ecosystem-state | 1.0 |
@@ -825,3 +826,47 @@ Working findings recorded for future sweeps: (1) agenticincome#21 reclassified N
 **Residual:** the unlinked duplicate Vercel project `starlight-intelligence-system` remains outside this change. Deletion is a separate Frank-only control-plane action.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-09-01 - Homepage vault ISR keeps last-good state across GitHub timeouts
+
+**Category:** public-surface / runtime-resilience / observability
+**Confidence:** 0.98
+**Source:** Vercel runtime error cluster and exact deployed-source trace
+**Related:** `site/src/lib/github-content.mjs`, `site/src/lib/vault.ts`, deployment `dpl_CrZHCV7oxvCYcPDtVqABzkgbZhjP`
+
+The production root route returned HTTP 200 from stale ISR cache while its background regeneration logged `TypeError: fetch failed` with nested `write ETIMEDOUT` at `2026-08-31T21:20:54Z`. The deployed homepage read public-vault files through the GitHub contents API, and that loader was the only outbound fetch on the root server-render path. The loader had no transport boundary, retry policy, or target-level receipt; its source remained unchanged in the next production SHA.
+
+The vault loader now retries one idempotent GitHub GET after transient network, 408, 425, 429, or 5xx failure. A persistent failure is logged with repo, path, attempt count, and nested network code, then rethrown so Next ISR retains the last successful render instead of treating an empty vault as a successful regeneration. Only a real 404 remains an accepted absent optional file. Five deterministic regression cases run inside the site build.
+
+No production deployment, alias, DNS, environment variable, or secret changed in this repair branch.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-09-06 — Community and plugin consolidation
+
+Source: Codex task 01a0740d-878e-7dc1-88c5-86f91ec18382, PR #133, issue #66.
+
+Integrated source contracts and the community reference loop on a dedicated branch. The community runtime has deterministic consent, replay, causality, and privacy tests; the skills-only package drafts a creation week. No external community send or marketplace publication occurred.
+
+PR #119's operational-vault blob contains binary corruption (30 NUL bytes). Preserved the existing mainline vault instead of importing that blob; the original branch retains the evidence. Cloud runtime source is integrated for CI review only, and deployment is manual. Connected authentication, host scan, and publication remain unproven.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+## 2026-09-14 — Branch integration review
+
+Inventoried 60 local/remote refs at 43 distinct heads against main `12629bc`. Preserved the shared checkout and historical refs. Selected PR #142's loop kernel for a corrected operational candidate; retained the unfinished #137 atlas and held new protocol/canon contracts. Independent review found v1 action-boundary inversion, instruction identity/authority ambiguity, generated-rule suppression and event-id collisions that existing tests missed. Corrections and adversarial fixtures now cover those paths; compilation uses indexed adjacency and an iterative traversal for large graphs. The host still owns admission and evidence authentication.
+
+Evidence and complete branch disposition: `docs/ops/BRANCH-INTEGRATION-2026-09-14.md`. Candidate source validation: 51 focused tests and strict TypeScript passed. Full Windows checks encountered existing Foundry symlink/lock limitations after SQLite repair; Linux CI and independent re-review are required before merge. A green GitHub Vercel status for #142 actually referred to a canceled deployment; use the deployment API state and source SHA.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+
+## 2026-09-14 — Bounded Queen session execution
+
+Implemented an operational composition of existing `runSwarm` and instruction compilation in `src/queen-session.ts`. Each maker/checker call requires host admission, a distinct execution identity, scope-checked context bytes and private receipt persistence. Reviews bind to the exact artifact hash and all acceptance criteria. Material ambiguity blocks; reversible assumptions and dissent remain explicit. Timeouts remain unresolved without retry.
+
+Validation: 33 focused tests passed across swarm, instruction compilation and Queen session; 15 Queen cases include two actual Node child processes using repository skill content. This is a controlled process fixture, not a model-quality benchmark or a cloud worker activation. Strict focused TypeScript passed. The process adapter is not a sandbox; the host owns isolation, credentials and cost enforcement. No durable scheduler or substrate authority was introduced. Existing `starlight-swarm#15` remains the cloud activation dependency.
+
+Runbook: `docs/operations/queen-session.md`. Demo: `tools/queen/session-demo.ts`. Private fixture receipts are not committed. Public coordination service is developed separately in `production-agent-patterns` using its existing Railway operator.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.

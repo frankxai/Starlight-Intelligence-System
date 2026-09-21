@@ -1,0 +1,642 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/protocol/sip-graph.v0.1.0.schema.json",
+  "title": "SIP graph profile v0.1.0",
+  "description": "A versioned extension of the Starlight Intelligence Protocol (SIP.md v1.1.1). SIP layers 1-6 govern files, attestation, registry, commands, sovereignty and archetypes; this schema governs the evidence graph a SIP node publishes about its own work. Structural validation lives here; the projection rules (P1-P5) are behavioural and are enforced by protocol/conform.mjs, not by this schema.",
+  "type": "object",
+  "required": [
+    "sipGraphVersion",
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "sipGraphVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Version of this graph contract that the profile is written against. Major must match the validator's; see COMPATIBILITY.md."
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^sip:profile:"
+        },
+        "subject": {
+          "type": "string",
+          "description": "What this profile describes — usually a repository or a deployed system."
+        },
+        "declaredBy": {
+          "type": "string",
+          "pattern": "^sip:identity:"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    }
+  },
+  "$defs": {
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "alliance",
+        "private",
+        "secret"
+      ],
+      "description": "Ordered lattice, widest first. A projection may never carry an element stricter than its own audience."
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "origin",
+        "at"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "origin": {
+          "type": "string",
+          "enum": [
+            "authored",
+            "derived",
+            "imported",
+            "observed"
+          ],
+          "description": "authored = a sovereign wrote it. derived = computed from declared sources. imported = taken from outside the graph. observed = recorded from a run."
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "method": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Ids of nodes this element was derived from. Every id must resolve inside the profile (rule G9)."
+        }
+      }
+    },
+    "evaluationRef": {
+      "type": "object",
+      "required": [
+        "rule"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "rule": {
+          "type": "string",
+          "description": "Id of the evaluation rule this element is judged by. In v0.1.0 the rule need not be declared as an Evaluation node; v0.2.0 is expected to require it."
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "unevaluated"
+          ]
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "envelope": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "version",
+        "owner",
+        "visibility",
+        "provenance",
+        "evaluation"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^sip:[a-z-]+:"
+        },
+        "version": {
+          "$ref": "#/$defs/semver"
+        },
+        "owner": {
+          "type": "string",
+          "pattern": "^sip:identity:",
+          "description": "Identity holding decision rights over this element. SIP layer 5 clause 1: advice is not override."
+        },
+        "visibility": {
+          "$ref": "#/$defs/visibility"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "evaluation": {
+          "$ref": "#/$defs/evaluationRef"
+        },
+        "label": {
+          "type": "string"
+        },
+        "private": {
+          "type": "object",
+          "description": "Owner-only fields. Never emitted in a projection whose audience is wider than 'private' unless the projection lists this node in redactFields (rule P3)."
+        }
+      }
+    },
+    "node": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/envelope"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "body"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "Identity",
+            "Agent",
+            "Capability",
+            "MemoryRecord",
+            "Claim",
+            "Source",
+            "Attestation",
+            "Policy",
+            "Decision",
+            "Artifact",
+            "Evaluation",
+            "Projection"
+          ]
+        },
+        "body": {
+          "type": "object"
+        }
+      },
+      "anyOf": [
+        {
+          "$ref": "#/$defs/bodyIdentity"
+        },
+        {
+          "$ref": "#/$defs/bodyAgent"
+        },
+        {
+          "$ref": "#/$defs/bodyCapability"
+        },
+        {
+          "$ref": "#/$defs/bodyMemoryRecord"
+        },
+        {
+          "$ref": "#/$defs/bodyClaim"
+        },
+        {
+          "$ref": "#/$defs/bodySource"
+        },
+        {
+          "$ref": "#/$defs/bodyAttestation"
+        },
+        {
+          "$ref": "#/$defs/bodyPolicy"
+        },
+        {
+          "$ref": "#/$defs/bodyDecision"
+        },
+        {
+          "$ref": "#/$defs/bodyArtifact"
+        },
+        {
+          "$ref": "#/$defs/bodyEvaluation"
+        },
+        {
+          "$ref": "#/$defs/bodyProjection"
+        }
+      ]
+    },
+    "bodyIdentity": {
+      "properties": {
+        "type": {
+          "const": "Identity"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "person",
+                "org",
+                "agentic",
+                "service"
+              ]
+            },
+            "publicKeyRef": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyAgent": {
+      "properties": {
+        "type": {
+          "const": "Agent"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "harness"
+          ],
+          "properties": {
+            "harness": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyCapability": {
+      "properties": {
+        "type": {
+          "const": "Capability"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "action",
+            "scope"
+          ],
+          "properties": {
+            "action": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string",
+              "description": "Bounded scope expression. An unbounded scope is a governance hole."
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyMemoryRecord": {
+      "properties": {
+        "type": {
+          "const": "MemoryRecord"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "retention",
+            "contentRef"
+          ],
+          "properties": {
+            "retention": {
+              "type": "string",
+              "description": "ISO-8601 duration, or 'indefinite'."
+            },
+            "contentRef": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyClaim": {
+      "properties": {
+        "type": {
+          "const": "Claim"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "statement"
+          ],
+          "properties": {
+            "statement": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodySource": {
+      "properties": {
+        "type": {
+          "const": "Source"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "locator"
+          ],
+          "properties": {
+            "locator": {
+              "type": "string"
+            },
+            "retrievedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyAttestation": {
+      "properties": {
+        "type": {
+          "const": "Attestation"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "statementType"
+          ],
+          "properties": {
+            "statementType": {
+              "type": "string"
+            },
+            "sipVersion": {
+              "type": "string"
+            },
+            "signatureRef": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyPolicy": {
+      "properties": {
+        "type": {
+          "const": "Policy"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "rule",
+            "enforcement"
+          ],
+          "properties": {
+            "rule": {
+              "type": "string"
+            },
+            "enforcement": {
+              "type": "string",
+              "enum": [
+                "advisory",
+                "blocking"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyDecision": {
+      "properties": {
+        "type": {
+          "const": "Decision"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "outcome",
+            "rationale"
+          ],
+          "properties": {
+            "outcome": {
+              "type": "string",
+              "enum": [
+                "allow",
+                "deny",
+                "revise"
+              ]
+            },
+            "rationale": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyArtifact": {
+      "properties": {
+        "type": {
+          "const": "Artifact"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "locator"
+          ],
+          "properties": {
+            "locator": {
+              "type": "string"
+            },
+            "mediaType": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyEvaluation": {
+      "properties": {
+        "type": {
+          "const": "Evaluation"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "method",
+            "result"
+          ],
+          "properties": {
+            "method": {
+              "type": "string"
+            },
+            "result": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail",
+                "unevaluated"
+              ]
+            },
+            "observed": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "bodyProjection": {
+      "properties": {
+        "type": {
+          "const": "Projection"
+        },
+        "body": {
+          "type": "object",
+          "required": [
+            "audience",
+            "include"
+          ],
+          "properties": {
+            "audience": {
+              "$ref": "#/$defs/visibility"
+            },
+            "include": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "redacted": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Edge ids that cross the projection boundary. Declaring them keeps a truncated evidence chain visible as truncated (rule P2)."
+            },
+            "redactFields": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Node ids whose `private` block is stripped on projection (rule P3)."
+            }
+          }
+        }
+      },
+      "required": [
+        "type",
+        "body"
+      ]
+    },
+    "edge": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/envelope"
+        }
+      ],
+      "type": "object",
+      "required": [
+        "from",
+        "to"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^sip:edge:"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "asserts",
+            "derivedFrom",
+            "supports",
+            "contradicts",
+            "governedBy",
+            "decides",
+            "underPolicy",
+            "grants",
+            "exercises",
+            "produces",
+            "evaluates",
+            "attests",
+            "projects"
+          ]
+        },
+        "from": {
+          "type": "string",
+          "pattern": "^sip:"
+        },
+        "to": {
+          "type": "string",
+          "pattern": "^sip:"
+        }
+      },
+      "$comment": "Legal endpoint types per edge type are published as data, not as a schema keyword: see sip-graph.v0.1.0.endpoints.json. Rule G7 enforces them; a JSON Schema validator cannot, and a non-keyword here breaks strict loaders such as ajv."
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "bad-no-prefix",
+  "type": "repository",
+  "label": "Broken",
+  "existence": { "realm": "real", "status": "observed" },
+  "epistemics": { "kind": "empirical" },
+  "provenance": { "source_type": "repository" },
+  "temporal": { "observed_at": null }
+}

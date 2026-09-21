@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "0.1.1",
+  "id": "ra:fictional:arcanea/example-branch-entity",
+  "type": "fictional_entity",
+  "label": "Example non-canon Arcanea entity",
+  "existence": {
+    "realm": "fictional",
+    "status": "proposed",
+    "world_id": "ra:world:arcanea-sandbox"
+  },
+  "epistemics": {
+    "kind": "fictional",
+    "confidence": 0.4,
+    "evidence_ids": []
+  },
+  "provenance": {
+    "source_type": "fictional_canon",
+    "source_ids": ["arcanea:sandbox"],
+    "created_by": ["agent:world-genome"],
+    "derived_from": [],
+    "transformation": "non-canon simulation seed"
+  },
+  "temporal": {
+    "observed_at": "2026-08-16T01:00:00Z",
+    "created_at": "2026-08-16T01:00:00Z",
+    "updated_at": null,
+    "state_version": "sim-0"
+  }
+}

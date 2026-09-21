@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { QueenSwarm } from "@/components/QueenSwarm";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
   title: "The Starlight Queen & Her Swarms",
@@ -16,7 +17,8 @@ export default function QueenPage() {
   return (
     <div className="bg-[#0a0a0f] text-zinc-200">
       {/* Hero - l99 cinematic */}
-      <header className="relative min-h-[100dvh] flex items-center overflow-hidden border-b border-white/[0.08] queen-constellation">
+      <header className="relative min-h-[100dvh] flex items-center overflow-hidden border-b border-white/[0.08]">
+        <GalaxyField still="spiral" />
         <div className="relative z-10 mx-auto max-w-5xl px-8 pt-16 pb-20">
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/5 px-4 py-1 text-xs tracking-[3px] text-cyan-400 mb-6">

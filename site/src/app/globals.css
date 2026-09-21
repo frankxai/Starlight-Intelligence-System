@@ -60,6 +60,41 @@ body {
   background-size: 24px 24px;
 }
 
+/* Cinematic deep-field stills — slow ken-burns, killed under reduced motion */
+.galaxy-still {
+  transform: scale(1.08);
+  animation: galaxy-ken 72s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes galaxy-ken {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to { transform: scale(1.16) translate3d(-1.6%, -1.2%, 0); }
+}
+
+.gallery-masonry {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .gallery-masonry {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .gallery-masonry {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+.gallery-tile {
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .gallery-tile-hero { grid-column: span 8; }
+  .gallery-tile-wide { grid-column: span 6; }
+  .gallery-tile-std { grid-column: span 4; }
+}
+
 /* Terminal cursor blink */
 @keyframes blink {
   0%, 100% { opacity: 1; }
@@ -88,6 +123,7 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-entrance { animation: none; opacity: 1; transform: none; }
+  .galaxy-still { animation: none; transform: scale(1.04); }
 }
 
 /* Brain hero — central Orchestrator core (slow inward pulse). */
@@ -319,6 +355,7 @@ body {
   .animate-mesh-1,
   .animate-mesh-2,
   .animate-mesh-3,
+  .galaxy-still,
   .animate-glow-pulse,
   .animate-fade-up,
   .animate-blink,

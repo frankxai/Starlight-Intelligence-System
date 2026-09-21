@@ -5,6 +5,7 @@ import {
   getFallbackGallery,
   type GalleryItem,
 } from "@/lib/cosmos/nasa";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 86400;
 
@@ -34,43 +35,63 @@ const COLLECTIONS: { key: string; title: string; sub: string; query: string }[] 
     query: "spiral galaxy hubble",
   },
   {
+    key: "andromeda",
+    title: "Nearby giants",
+    sub: "Andromeda, the Whirlpool, and other galaxies close enough to resolve.",
+    query: "andromeda galaxy hubble",
+  },
+  {
     key: "nebulae",
     title: "Nebulae",
     sub: "Stellar nurseries and graveyards — where the elements are forged and scattered.",
-    query: "nebula stellar nursery",
+    query: "carina nebula webb",
   },
 ];
 
 export default async function GalleryPage() {
   const results = await Promise.all(
-    COLLECTIONS.map((c) => searchNasaImages(c.query, 9))
+    COLLECTIONS.map((c) => searchNasaImages(c.query, 12)),
   );
   const anyLive = results.some((r) => r.length > 0);
   const fallback = getFallbackGallery();
+  const heroItem = results.find((r) => r.length > 0)?.[0] ?? fallback[0];
 
   return (
     <div>
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-24 top-0 h-[360px] w-[360px] rounded-full bg-violet-600/[0.07] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-16 h-[280px] w-[280px] rounded-full bg-fuchsia-500/[0.05] blur-[80px]" />
-        </div>
-        <div className="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
+      <section className="relative min-h-[72vh] overflow-hidden border-b border-white/[0.04] md:min-h-[82vh]">
+        {heroItem ? (
+          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={heroItem.imageUrl || heroItem.thumbUrl}
+              alt=""
+              className="galaxy-still absolute inset-0 h-full w-full object-cover opacity-80"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#060609]/35 via-[#060609]/55 to-[#060609]" />
+          </div>
+        ) : (
+          <GalaxyField still="deepField" />
+        )}
+        <div className="relative mx-auto flex min-h-[72vh] max-w-[88rem] flex-col justify-end px-6 py-20 md:min-h-[82vh] md:py-28">
           <Link
             href="/cosmos"
-            className="text-[12px] text-slate-400 transition-micro hover:text-white"
+            className="text-[12px] text-slate-300 transition-micro hover:text-white"
           >
             <span aria-hidden="true">&larr;</span> Cosmos
           </Link>
-          <h1 className="mt-4 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
+          <h1 className="mt-4 max-w-3xl font-serif text-[clamp(2.6rem,7vw,5.4rem)] font-semibold leading-[0.98] tracking-tight text-white">
             Deep Field
           </h1>
-          <p className="mt-5 max-w-2xl text-[15px] leading-[1.85] text-slate-400">
+          <p className="mt-5 max-w-2xl text-[16px] leading-[1.85] text-slate-200">
             Pulled from NASA&apos;s open image library and refreshed daily. Every
             image links to its source record — title, instrument, credit. The
             originals are free; the universe published them first.
           </p>
+          {heroItem ? (
+            <p className="mt-4 max-w-xl font-mono text-[11px] text-slate-400">
+              Featured · {heroItem.title} · {heroItem.credit}
+            </p>
+          ) : null}
         </div>
       </section>
 
@@ -83,7 +104,7 @@ export default async function GalleryPage() {
               sub={c.sub}
               items={results[i]}
             />
-          ) : null
+          ) : null,
         )
       ) : (
         <GallerySection
@@ -93,10 +114,10 @@ export default async function GalleryPage() {
         />
       )}
 
-      {/* ── Footer CTA ── */}
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-5xl">
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
+      <section className="relative overflow-hidden px-6 py-16">
+        <GalaxyField still="veil" className="opacity-70" />
+        <div className="relative mx-auto max-w-5xl">
+          <div className="rounded-xl border border-white/[0.08] bg-[#060609]/55 p-6 backdrop-blur-md">
             <p className="text-[14px] leading-[1.8] text-slate-300">
               Want the story behind the images?{" "}
               <Link
@@ -127,6 +148,12 @@ export default async function GalleryPage() {
   );
 }
 
+function tileClass(index: number) {
+  if (index === 0) return "gallery-tile gallery-tile-hero";
+  if (index === 1 || index === 2) return "gallery-tile gallery-tile-wide";
+  return "gallery-tile gallery-tile-std";
+}
+
 function GallerySection({
   title,
   sub,
@@ -138,26 +165,32 @@ function GallerySection({
 }) {
   return (
     <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
-      <div className="mx-auto max-w-5xl">
-        <h2 className="font-serif text-[24px] font-semibold tracking-tight text-white">
+      <div className="mx-auto max-w-[88rem]">
+        <h2 className="font-serif text-[clamp(1.6rem,3vw,2.2rem)] font-semibold tracking-tight text-white">
           {title}
         </h2>
-        <p className="mt-2 text-[13px] text-slate-400">{sub}</p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
+        <p className="mt-2 max-w-2xl text-[14px] text-slate-400">{sub}</p>
+        <div className="gallery-masonry mt-8">
+          {items.map((item, index) => (
             <a
               key={item.nasaId}
               href={`https://images.nasa.gov/details/${item.nasaId}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="group overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02] transition-std hover:border-white/[0.18]"
+              className={`group overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02] transition-std hover:border-white/[0.18] ${tileClass(index)}`}
             >
-              <div className="aspect-square overflow-hidden">
+              <div
+                className={
+                  index === 0
+                    ? "aspect-[16/9] overflow-hidden sm:aspect-[21/9]"
+                    : "aspect-[16/10] overflow-hidden"
+                }
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={item.thumbUrl}
+                  src={index < 3 ? item.imageUrl : item.thumbUrl}
                   alt={item.title}
-                  loading="lazy"
+                  loading={index === 0 ? "eager" : "lazy"}
                   className="h-full w-full object-cover transition-dramatic group-hover:scale-[1.04]"
                 />
               </div>

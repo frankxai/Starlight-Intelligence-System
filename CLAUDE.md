@@ -74,7 +74,7 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 
 **Estate / Agent Army commissioning (post 2026-06-16 Board):** The full "sovereign intelligence estate" (Mind + production Mesh/agent army + Steward) is the repeatable commercial elevation of Route D + custom advisory. Uses the same front door but adds Genius excavation, 4-layer Blueprint (/estate-blueprint), starlight-estate-os profile scaffold, /si-routed production swarm build (ORCHESTRATION_ENGINE + claws + multi-CLI), Pilot-to-Standing, and Steward retainer. See `docs/delivery/estate-army-commissioning-workflow.md`, `docs/strategic/sip-web4-substrate-strategy.md`, and DELIVERY.md §7. Trinity is instance #1 (alliance governance + commercial delivery). All major moves gated by /starlight-board. The open protocol surface for pure attribution adopters is preserved.
 
-**Genius Intelligence System alpha (v7.4):** New **Excavation Tier** agent `starlight-genius` + 4 new commands — `/discover-genius` (excavates Genius Profile + Freedom Path from scattered corpus), `/reclaim-knowledge` (organizes scattered material by function not source), `/train-executor` (generates handover playbook in person's voice), `/creator-pipeline` (multi-modal content pipeline from frameworks). Vertical-tier `/arcanea-canon` now live. Public explainer at `docs/public/starlight-intelligence-system.md`. Non-technical Claude Project starter at `integrations/starter-packs/friend-starter/`. Attestation is now ambient: agents auto-embed "Built on SIP" in every generated artifact — the user never runs `/sip-attest` for forward-generated work; the command remains for retrofit.
+**Genius Intelligence System alpha (v7.4):** New **Excavation Tier** agent `starlight-genius` + 4 new commands — `/discover-genius` (excavates Genius Profile + Freedom Path from scattered corpus), `/reclaim-knowledge` (organizes scattered material by function not source), `/train-executor` (generates handover playbook in person's voice), `/creator-pipeline` (multi-modal content pipeline from frameworks). Vertical-tier `/arcanea-canon` now live. Public explainer at `docs/public/starlight-intelligence-system.md`. Non-technical Claude Project starter at `integrations/starter-packs/friend-starter/`. Attestation is ambient but earned: agents embed "Built on SIP" only on artifacts that actually compose a SIP element (SIP.md layer 2 — `/sip-attest` refuses otherwise), never as a blanket footer. The block is a declared label; a claim someone else can verify needs a signed receipt (`protocol/sign.mjs`, the proposed SIP graph extension). `/sip-attest` remains for retrofit.
 
 ---
 
@@ -340,3 +340,17 @@ High-leverage rules for every Claude Code session. Distilled from Karpathy's 202
 - Prefer one careful pass with verification over many fast passes; speed without a check loop compounds error and erodes trust.
 - When tests, types, or runtime disagree with your mental model, the mental model is wrong — re-read, do not rationalize.
 - Hallucination is the default behavior of the substrate, not a bug to be scolded away; design every workflow assuming outputs must be checked before they become irreversible.
+
+<!-- STARLIGHT-EDITORIAL:START -->
+## Editorial contract
+
+Brand: **Starlight Intelligence Systems** (`sis`)
+
+- Read `CREATOR.md` before changing public or customer-facing copy.
+- Apply the registered brand voice and the shared editorial gate.
+- Reject generated prestige language, rhetorical contrast formulas, invented claims, and abstract labels that hide simple facts.
+- Keep public labels in sentence case.
+- Run the changed-copy editorial audit before release.
+
+Pinned source: https://github.com/frankxai/starlight-design-intelligence/blob/50ae34c7ac06e6c083f277ca96c3bde8f0a39b43/brand-packs/sis/COPY.md
+<!-- STARLIGHT-EDITORIAL:END -->

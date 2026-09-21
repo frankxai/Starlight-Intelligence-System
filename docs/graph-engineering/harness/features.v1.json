@@ -1,0 +1,16 @@
+{
+  "schema": "starlight.harness.features.v1",
+  "id": "graph-engineering-v1",
+  "rule": "Initializer marks every required feature failing. Completion is refused until evidence exists.",
+  "features": [
+    { "id": "work-graph-kernel", "title": "Evidence-gated work-graph projector", "required": true, "status": "passing", "evidence": "test/work-graph.test.ts" },
+    { "id": "si-chain", "title": "Compiled SI admit-verify-ship chain", "required": true, "status": "passing", "evidence": "docs/graph-engineering/loops/si-admit-verify-ship.v1.json" },
+    { "id": "topology", "title": "Executable diamond/router/converge", "required": true, "status": "passing", "evidence": "test/loop-graph.test.ts" },
+    { "id": "brakes", "title": "Autonomy brakes + silence list", "required": true, "status": "passing", "evidence": "src/loop-graph.ts#LoopBrakes" },
+    { "id": "writeback", "title": "Per-node write-back required", "required": true, "status": "passing", "evidence": "test/loop-graph.test.ts" },
+    { "id": "independent-verifier", "title": "Same-actor verification rejected", "required": true, "status": "passing", "evidence": "test/loop-graph.test.ts" },
+    { "id": "dspy-runtime", "title": "DSPy optimizer runtime", "required": false, "status": "failing" },
+    { "id": "codegraph-index", "title": "Per-active-repo code index", "required": false, "status": "failing" },
+    { "id": "nightly-extract", "title": "Nightly extract-resolve-assemble into SIS projection", "required": false, "status": "failing" }
+  ]
+}

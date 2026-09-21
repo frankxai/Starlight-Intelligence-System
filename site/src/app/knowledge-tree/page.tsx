@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 import {
   type Accent,
   ACCENT_TEXT,
@@ -221,11 +222,7 @@ export default function KnowledgeTreePage() {
     <div>
       {/* ── 1 · Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.08]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.05] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[340px] w-[340px] rounded-full bg-cyan-500/[0.05] blur-[80px]" />
-          <div className="animate-mesh-3 absolute left-1/3 bottom-0 h-[280px] w-[280px] rounded-full bg-amber-400/[0.04] blur-[90px]" />
-        </div>
+        <GalaxyField still="veil" />
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
         <TreeGlyph className="pointer-events-none absolute right-[-60px] top-10 hidden h-[460px] w-[460px] opacity-60 lg:block" />
 

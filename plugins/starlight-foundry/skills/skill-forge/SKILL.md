@@ -7,7 +7,7 @@ description: Forge a reusable, portable skill from a proven workflow or capabili
 
 ## Outcome
 
-Compile one narrow capability into a portable Agent Skills package with explicit activation boundaries and a proof receipt.
+Design one narrow capability as a portable Agent Skills package with explicit activation boundaries, then compile and prove it when a Foundry runtime is available.
 
 ## Use this skill when
 
@@ -35,9 +35,8 @@ Do not use it when the work requires persistent decision rights, a distinct dura
    - Give every procedure step a proof obligation.
    - Declare inputs, outputs, dependencies, tool policy, memory policy, deployment targets, and optional taste profile.
    - Keep `SKILL.md` frontmatter limited to `name` and `description`.
-5. Compile.
-   - Validate the Task Envelope and Skill Pack.
-   - Run:
+5. Select the execution mode.
+   - **Foundry runtime available:** use this mode only when `tools/foundry/cli.mjs` and `foundry/contracts/` exist in the current workspace. Validate the Task Envelope and Skill Pack, then run:
 
      ```bash
      node tools/foundry/cli.mjs forge \
@@ -46,7 +45,10 @@ Do not use it when the work requires persistent decision rights, a distinct dura
        --out <package-directory>
      ```
 
+   - **Portable skills-only install:** read `references/portable-contracts.md`, then author the Task Envelope, Skill Pack, and proposed `SKILL.md` directly with those field names. Mark compilation and proof `pending-runtime`; do not invent paths, commands, or receipts. Give the operator the command above as an optional handoff for a later SIS workspace run.
+
 6. Prove.
+   - Run this step only in Foundry runtime mode.
    - Run static and artifact checks first.
    - Execute command tests only when the Task Envelope permits the executable.
    - Keep manual and judge tests pending until independent evidence exists.
@@ -72,4 +74,4 @@ Do not use it when the work requires persistent decision rights, a distinct dura
 
 ## Return
 
-Return the Task Envelope, Skill Pack, compiled package path, Evidence Receipt status, unresolved proof, and any dependency or permission decision.
+Return the Task Envelope, Skill Pack, proposed skill, execution mode, and unresolved proof. Include a compiled package path and Evidence Receipt only when those artifacts were actually produced.

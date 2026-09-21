@@ -8,7 +8,8 @@
 # normally runs as a predev/prebuild step, but if a contributor edits the source
 # without running build, the committed copy goes stale silently.
 #
-# This workflow runs the sync and fails if it produces a diff. The fix is to
+# This workflow runs the sync and fails if it produces a diff. A second job does
+# the same for the /verify receipt (site/scripts/sync-sis-receipt.mjs --check). The fix is to
 # either run `pnpm build` locally before pushing, or run `node site/scripts/
 # sync-explainer.mjs` directly.
 
@@ -20,6 +21,11 @@ on:
       - "docs/public/starlight-intelligence-system.md"
       - "site/content/explainer.md"
       - "site/scripts/sync-explainer.mjs"
+      - "protocol/profiles/sis.json"
+      - "protocol/conform.mjs"
+      - "protocol/lib/**"
+      - "site/src/lib/generated/sis-receipt.json"
+      - "site/scripts/sync-sis-receipt.mjs"
   push:
     branches:
       - main
@@ -27,6 +33,11 @@ on:
       - "docs/public/starlight-intelligence-system.md"
       - "site/content/explainer.md"
       - "site/scripts/sync-explainer.mjs"
+      - "protocol/profiles/sis.json"
+      - "protocol/conform.mjs"
+      - "protocol/lib/**"
+      - "site/src/lib/generated/sis-receipt.json"
+      - "site/scripts/sync-sis-receipt.mjs"
 
 permissions:
   contents: read
@@ -64,3 +75,22 @@ jobs:
             echo "::error::To fix: run 'node site/scripts/sync-explainer.mjs' locally and commit the result, or run 'pnpm build' from site/."
             exit 1
           fi
+
+  # The /verify page renders a committed receipt for protocol/profiles/sis.json.
+  # Recompute it with protocol/conform.mjs and fail if anything but checkedAt differs.
+  sis-receipt-drift:
+    runs-on: ubuntu-latest
+    name: Verify site/src/lib/generated/sis-receipt.json matches protocol/profiles/sis.json
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+
+      - name: Check receipt drift
+        run: node site/scripts/sync-sis-receipt.mjs --check

@@ -1,5 +1,6 @@
 import { MemoryPalace } from "@/components/MemoryPalace";
 import Link from "next/link";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata = {
   title: "Memory Palace",
@@ -14,8 +15,9 @@ export const metadata = {
 
 export default function PalacePage() {
   return (
-    <div className="min-h-screen bg-[#060609] pb-24 pt-8 text-[#e2e8f0]">
-      <div className="mx-auto max-w-5xl px-6">
+    <div className="relative min-h-screen overflow-hidden bg-[#060609] pb-24 pt-8 text-[#e2e8f0]">
+      <GalaxyField still="veil" />
+      <div className="relative mx-auto max-w-5xl px-6">
         <div className="mb-8 flex items-center gap-3 text-xs uppercase tracking-[3px] text-white/50">
           <Link href="/" className="hover:text-white/80 transition">Starlight</Link>
           <span>/</span>

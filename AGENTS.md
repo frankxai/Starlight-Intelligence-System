@@ -35,7 +35,7 @@ SIS is engineered to enable the orchestration of specialized, autonomous LLM swa
 
 ### 1. What Makes SIS Unique
 * **Shared Cognitive Architecture**: Rather than hardcoding distinct personality specs or memory configurations into each individual agent, agents share the same flat, queryable memory vaults and active skill registries.
-* **Sovereign Substrate (SIP)**: Verifiable attestation footer (`Built on SIP`), cryptographic-friendly credentials scans, and multi-fleet alliance coordination.
+* **Sovereign Substrate (SIP)**: Declared attestation footer (`Built on SIP`), verifiable through signed receipts in `protocol/`, credentials scans, and multi-fleet alliance coordination.
 * **Event-Sourced SQLite Hybrid indexing**: Allows memory sync across P2P networks (like Syncthing) using append-only JSONL files indexed locally in SQLite with full-text search.
 * **SAGE Self-Healing Loops**: Protects agents against context exhaustion, error accumulation, and repeating failures using checklist state serialization, context compression backups, Sentinel test-audits, and automatic git rollbacks.
 
@@ -132,7 +132,7 @@ Flat council with emergent leadership, fronted by Front-Door + Excavation tiers.
 | **Weaver** | Creative synthesis, narrative, design, pattern weaving |
 | **Hermes** | Search and retrieval â€” vault lookup, cross-repo search, multi-source synthesis with provenance |
 | **Social Strategist** | Preparing social media campaigns, copywriting, platform-specific thread formatting |
-| **Social Sentinel** | Gating social posts, reviewing brand voice, compliance/secret auditing, cryptographic attestation |
+| **Social Sentinel** | Gating social posts, reviewing brand voice, compliance/secret auditing, SIP attestation |
 | **Social Psychologist** | Auditing audience dynamics, cognitive load, structuring hooks for organic curiosity |
 | **Social Vibe Tracker** | Tracking cultural vibes, trend matching, aligning drafts with brand aesthetic lanes |
 | **Social Fact Checker** | Running searches, verifying claims/citations, checking links and logical math accuracy |
@@ -315,3 +315,17 @@ For any site, app, landing page, dashboard, visual identity, brand, motion, medi
 - C:\Users\frank\starlight\repos\VISUAL_QA_GATE.md
 
 When motion, scroll, generated media, GIF/video, or premium polish matters, route through the Motion Design Studio plugin/skills and verify the result visually.
+
+<!-- STARLIGHT-EDITORIAL:START -->
+## Editorial contract
+
+Brand: **Starlight Intelligence Systems** (`sis`)
+
+- Read `CREATOR.md` before changing public or customer-facing copy.
+- Apply the registered brand voice and the shared editorial gate.
+- Reject generated prestige language, rhetorical contrast formulas, invented claims, and abstract labels that hide simple facts.
+- Keep public labels in sentence case.
+- Run the changed-copy editorial audit before release.
+
+Pinned source: https://github.com/frankxai/starlight-design-intelligence/blob/50ae34c7ac06e6c083f277ca96c3bde8f0a39b43/brand-packs/sis/COPY.md
+<!-- STARLIGHT-EDITORIAL:END -->

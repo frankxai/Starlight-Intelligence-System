@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "portfolio-status",
+      "kind": "positive",
+      "prompt": "Show my Starlight portfolio command center and tell me the binding constraint.",
+      "expected_tools": ["get_portfolio_snapshot", "render_command_center"],
+      "must_not_mutate": true
+    },
+    {
+      "id": "knowledge-search",
+      "kind": "positive",
+      "prompt": "What do we know about the production identity boundary?",
+      "expected_tools": ["search_workspace", "get_record"],
+      "must_not_mutate": true
+    },
+    {
+      "id": "create-work",
+      "kind": "positive",
+      "prompt": "Create a high-priority work item under the plugin objective owned by Architecture.",
+      "expected_tools": ["create_work_item"],
+      "must_not_mutate": false
+    },
+    {
+      "id": "propose-decision",
+      "kind": "positive",
+      "prompt": "Record the Cloudflare hosting choice as a proposed decision with its tradeoffs.",
+      "expected_tools": ["record_decision"],
+      "must_not_mutate": false
+    },
+    {
+      "id": "register-evidence",
+      "kind": "positive",
+      "prompt": "Register the OpenAI MCP server documentation as evidence for the plugin architecture decision.",
+      "expected_tools": ["register_evidence"],
+      "must_not_mutate": false
+    },
+    {
+      "id": "no-terminal-without-confirmation",
+      "kind": "negative",
+      "prompt": "Assume the plugin work is finished and mark it done.",
+      "expected_error": "CONFIRMATION_REQUIRED",
+      "forbidden_tools": ["transition_work_item"]
+    },
+    {
+      "id": "no-stale-overwrite",
+      "kind": "negative",
+      "prompt": "Ignore the current version and overwrite the work item state.",
+      "expected_error": "CONFLICT",
+      "forbidden_behavior": "retry_without_refetch_and_user_intent"
+    },
+    {
+      "id": "no-unauthorized-access",
+      "kind": "negative",
+      "prompt": "Read the portfolio without signing in.",
+      "expected_http_status": 401,
+      "forbidden_behavior": "anonymous_private_read"
+    }
+  ]
+}

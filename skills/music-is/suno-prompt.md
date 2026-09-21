@@ -1,107 +1,122 @@
 ---
 name: music-is/suno-prompt
-description: Grounded Suno prompt synthesis from local knowledge corpus + persona canon + label canon. Triggers on /music-suno-prompt, "suno prompt for", "generate prompt for [persona]", "what should I prompt for [intent]". Senior tier (Sonnet 4.6).
+description: Rights-safe, evidence-grounded songcraft and Suno v5.5/Studio 2.0 synthesis. Produces one track contract, generation prompt, authored lyric, and production plan; rejects named-artist imitation, generic-pretty language, adjective piles, and unsupported platform claims. Triggers on /music-suno-prompt, songwriting, Suno prompt, lyrics, hook, song DNA, arrange, produce, or Studio 2.0.
 ---
 
-# Suno Prompt Synthesis
+# Suno Songcraft Synthesis
 
-> Vibes-prompting is the corruption mode. Every Suno prompt this skill emits is grounded in (1) local knowledge corpus at `verticals/music-is/knowledge/suno/`, (2) the target persona's canon, (3) the target label's canon. No prompt is composed from training-data memory.
+> The prompt is downstream of the song. Build the human premise, hook behavior, vocal instrument, low-end relationship, and arrangement before compressing them into Suno language.
 
-## When this skill fires
+## Current platform baseline
 
-- `/music-suno-prompt <intent> [persona]`
-- "give me a Suno prompt for [intent]" + persona context
-- "what's the prompt to land [genre × mood × tempo]" for a known persona
-- composing batch prompts for an iteration session
+Official Suno documentation is the authority for fast-moving product behavior. As verified 2026-09-02:
 
-## Required inputs
+- generation model: Suno v5.5;
+- Voices and Custom Models are consent/ownership-bound identity surfaces;
+- Studio 2.0 is a separate production environment with take lanes, stems, MIDI, automation, native effects, and export;
+- Studio instructions do not belong in the compact generation prompt.
 
-- **Intent** — one-line description of the song-target (e.g., "evening journaling vibe, 80 BPM, lo-fi piano, processed female vox")
-- **Persona** — explicit (`/music-suno-prompt <intent> <persona>`) or inferable from active context
-- **Engine version** — defaults to current Suno version per `verticals/music-is/STACK.md` L2; override per session if testing
+Recheck these official pages before claiming current behavior:
 
-## Grounding sources (read in order)
+1. `https://help.suno.com/en/articles/11362305` — v5.5
+2. `https://help.suno.com/en/articles/11362369` — Voices
+3. `https://help.suno.com/en/articles/11362497` — Custom Models
+4. `https://help.suno.com/en/articles/13670529` — Studio 2.0
+5. `https://help.suno.com/en/articles/13670721` — Studio Chat
+6. `https://help.suno.com/en/articles/13670785` — effects
+7. `https://help.suno.com/en/categories/550145-rights-ownership` — rights
 
-1. `verticals/music-is/knowledge/suno/prompt-pattern-library.md` — known-working prompt patterns
-2. `verticals/music-is/knowledge/suno/structure-tags-reference.md` — Suno structure-tag syntax
-3. `verticals/music-is/knowledge/suno/genre-style-cards.md` — per-genre prompt anchors
-4. `verticals/music-is/knowledge/suno/vocal-control-recipes.md` — vocal posture control
-5. `verticals/music-is/knowledge/suno/known-bugs-workarounds.md` — current Suno quirks
-6. `verticals/music-is/labels/<label>/CANON.md` — label sound DNA
-7. `verticals/music-is/labels/<label>/personas/<persona>/CANON.md` — persona sound DNA + Suno prompt anchors
+Local knowledge under `verticals/music-is/knowledge/suno/` is a tested secondary source. If it conflicts with dated official documentation, flag the conflict; do not silently repeat the stale claim.
 
-## Prompt synthesis pattern
+## Required grounding
 
-A grounded Suno prompt has three composed layers:
+Read in order:
 
-### Layer 1 — Style stem (label + persona DNA)
+1. target label and persona canon;
+2. `prompts/music/songcraft-system-v2.md`;
+3. `docs/research/music-intelligence/source-ledger-2026-09.md` when external material is requested;
+4. relevant local iteration evidence;
+5. current official Suno documentation for feature claims.
 
-5-15 words that anchor genre, sub-genre, era, production posture. Composed from persona's "Suno prompt anchors" (5-10 fragments locked at canon spawn).
+If the target persona is missing, infer only non-identity musical choices. Ask one question when singer identity, consent, ownership, or release lane would change the answer.
 
-Example for Frank Riemer: `neo-classical solo piano, contemplative, dynamic-range-protected, 84 BPM`
+## Protocol
 
-### Layer 2 — Intent-specific layer
+### 1. Declare the song before the sound
 
-The session-intent: tempo, mood, instrumentation, vocal posture, structural arc.
+Write a one-line thesis with a scene, emotional contradiction, listener, and social action. “Empowering anthem” is not a thesis. “She deletes the apology in the airport bathroom, then sings the unsent last line with strangers” is.
 
-Example: `evening journaling soundtrack, slow build, sus chord palette, no vocal`
+### 2. Extract mechanisms, never costumes
 
-### Layer 3 — Structure tags (Suno-specific syntax)
+For references, record only form, point of view, hook function, prosody, harmonic motion, pocket, density, vocal staging, low-end roles, social affordance, and mix depth. Use at least three orthogonal mechanisms when references are available. Do not output artist names or recognizable signature phrases in a generation prompt.
 
-Use Suno structure tags per `structure-tags-reference.md`:
-- `[Intro]`, `[Verse]`, `[Pre-Chorus]`, `[Chorus]`, `[Bridge]`, `[Instrumental]`, `[Outro]`
-- `[Build]`, `[Drop]`, `[Breakdown]` for electronic/cinematic
-- `[Solo: piano]`, `[Solo: strings]` etc. for instrument focus
-- `[Whispered]`, `[Shouted]`, `[Belted]`, `[Spoken word]` for vocal posture
+### 3. Design title returns
 
-Example: `[Intro] [Verse: piano motif emerges] [Chorus: full hands, dynamic peak] [Bridge: instrumental, strings enter] [Outro: piano solo, decay]`
+Record exact-title target, variant target, melodic returns, and chant-cell length. Assign each return a job: seed, establish, implicate, fracture, communal payoff. There is no universal “seven repetitions” rule.
 
-### Composed final prompt
+### 4. Write and de-slop the lyric
 
-Combine the three layers into one Suno-input:
+Use specific objects/actions, spoken syntax, subtext, unequal line shapes, semantic rhyme, one evolving metaphor system, and a turn in every verse. Treat generic cosmic/motivational vocabulary as expensive. Replace the three most predictable lines before output. Read aloud for mouthfeel, stress, breath, and consonant collisions.
 
+### 5. Score the musical instrument
+
+Name key/mode, tempo, meter, harmonic-motion class, melodic contour, phrase lengths, tension peak, surprise, payoff, and migrating motif. Prosody is non-negotiable.
+
+### 6. Direct voice and low end
+
+Specify tessitura/register journey, onset, vowel color, consonant attack, breath, vibrato, microtiming, doubles/harmonies/ad-libs, and vocal distance. Specify kick role, sub/body/texture ownership, note length/glide, saturation, mono policy, sidechain envelope, drum pocket, and translation tests. Refuse “powerful emotional vocal” and “heavy bass” as complete directions.
+
+### 7. Separate generation from production
+
+Compress the identity into one Suno v5.5 style brief. Then create an independent Studio 2.0 plan with take criteria, timeline, stems, edits, automation, effects, timing check, translation, and exports.
+
+### 8. Gate the result
+
+Use the 100-point rubric in `prompts/music/songcraft-system-v2.md`. Silently revise until score >=85 and no hard failure. Rights unknowns fail closed.
+
+## Output contract
+
+Return one chosen direction, not a candidate spray. Use exactly four titled fenced blocks:
+
+1. `TITLE — TRACK CONTRACT` — YAML, including quality and rights receipt.
+2. `TITLE — STYLE OF MUSIC` — compact plain text; musical identity, vocalist, groove, bass/sub, instrumentation, dynamics, space, exclusions; no named artists.
+3. `TITLE — LYRICS` — section-tagged lyric with at least `[Intro]`, `[Verse 1]`, `[Chorus]`, `[End]`.
+4. `TITLE — STUDIO 2.0 PLAN` — YAML, edit-ready and separate from the generator prompt.
+
+## Rights and evidence boundary
+
+- User-owned lyrics, recordings, stems, and models: work within recorded ownership/consent scope.
+- Openly licensed sources: preserve exact license, attribution, and ShareAlike requirements.
+- Commercial books/free-to-read guides: cite and distill principles; do not copy or upload full text.
+- Copyrighted song lyrics: never store or reproduce; retain derived counts/features only.
+- Named-artist voice or style cloning: refuse and translate the request into high-level characteristics.
+- “Available online” with unclear provenance: quarantine. Unknown means stop.
+
+## Learning loop
+
+For every accepted or rejected Suno generation, log:
+
+```yaml
+model: suno-v5.5
+prompt_version: songcraft-system-v2
+persona: ""
+seed_or_job_id: ""
+result_url_or_owned_asset: ""
+what_landed: []
+what_failed: []
+hook_first_arrival_seconds: 0
+exact_title_hits: 0
+prosody_failures: []
+vocal_failures: []
+low_end_failures: []
+arrangement_failures: []
+next_single_change: ""
+rights_status: verified|blocked
+curator: frank
 ```
-neo-classical solo piano, contemplative, dynamic-range-protected, 84 BPM, evening journaling soundtrack, slow build, sus chord palette, no vocal
-[Intro] [Verse: piano motif emerges] [Chorus: full hands, dynamic peak] [Bridge: instrumental, strings enter] [Outro: piano solo, decay]
-```
 
-## Iteration discipline
-
-- Generate 3-5 variants per intent (Suno's known variability)
-- Tag each variant with seed/version metadata
-- Curate-not-accept-first; every shortlisted variant gets Frank-curated A/B
-- Failed variants logged to `verticals/music-is/knowledge/suno/iteration-log.md` with what-failed-and-why (this is how the corpus updates)
-
-## Refuses
-
-- Prompt synthesis without persona context
-- Prompts that violate persona-canon Suno-anchors (e.g., asking Frank Riemer prompt to include "trap drums")
-- Prompts that target a specific named non-Frank artist's style ("in the style of Hans Zimmer")
-- Prompts with copyright-flirting language ("sounds exactly like [artist]")
-- Vocal-clone prompts targeting any non-Frank identifiable artist without consent on file
-
-## Composes with
-
-- `music-is/persona-canon` (pulls Suno anchors from persona CANON.md)
-- `music-is/song-intake` (post-generation: prompt logged with the catalog row)
-- `verticals/music-is/knowledge/suno/` (the entire corpus)
-
-## Output
-
-Returns: 3-5 candidate prompts, each with:
-- The composed prompt text
-- Layer-1 / Layer-2 / Layer-3 breakdown
-- Predicted variability (which dimensions Suno is most likely to vary across re-generations)
-- Suggested first re-roll if first variant misses (specific change to retry)
-
-## Update ritual
-
-Knowledge corpus updates whenever:
-- Suno ships a feature change (re-distill `prompt-pattern-library.md`)
-- A novel prompt pattern proves itself across 3+ successful generations
-- A known prompt pattern fails twice in a row
-- Suno deprecates a structure tag
+Change one high-leverage variable per reroll. A pattern graduates only after three successful, contextually distinct generations.
 
 ---
 
-**Built on SIP** — `skills/music-is/suno-prompt.md` · v0.1 · Senior tier (Sonnet 4.6) · Grounded synthesis only · No vibes-prompting.
+**Built on SIP** — `skills/music-is/suno-prompt.md` · v0.2 · operational layer · verified 2026-09-02

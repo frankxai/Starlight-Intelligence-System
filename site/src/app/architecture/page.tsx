@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrainHero } from "@/components/BrainHero";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -187,10 +188,7 @@ export default function ArchitecturePage() {
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.08]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.05] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-        </div>
+        <GalaxyField still="nursery" />
 
         {/* 10-IS topology with labels — visible on lg+, slightly more prominent
             than the home variant since the architecture page IS the topic. */}

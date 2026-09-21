@@ -1,0 +1,9 @@
+# Merge this block into ~/.hermes/config.yaml.
+# Authentication is completed interactively; no token belongs in this file or Git.
+mcp_servers:
+  refero:
+    url: "https://api.refero.design/mcp"
+    auth: oauth
+    tools:
+      prompts: true
+      resources: true

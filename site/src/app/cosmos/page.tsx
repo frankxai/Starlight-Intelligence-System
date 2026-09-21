@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Starfield } from "@/components/cosmos/Starfield";
 import { CardTile } from "@/components/cosmos/CardTile";
 import { COSMOS_CARDS, featuredCards } from "@/lib/cosmos/cards";
 import { getApod, getUpcomingLaunches } from "@/lib/cosmos/nasa";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
+import { CINEMATIC_STILLS, type CinematicStill } from "@/lib/cinematic";
 
 export const revalidate = 3600;
 
@@ -30,12 +31,7 @@ export default async function CosmosPage() {
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <Starfield seed={1969} count={170} />
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-10 h-[420px] w-[420px] rounded-full bg-violet-600/[0.07] blur-[110px]" />
-          <div className="animate-mesh-2 absolute right-0 top-32 h-[320px] w-[320px] rounded-full bg-cyan-500/[0.05] blur-[90px]" />
-          <div className="animate-mesh-3 absolute bottom-0 left-1/3 h-[260px] w-[260px] rounded-full bg-fuchsia-500/[0.04] blur-[80px]" />
-        </div>
+        <GalaxyField still="spiral" />
         <div className="relative mx-auto max-w-5xl px-6 py-24 md:py-36">
           <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-violet-300">
             Starlight Cosmos
@@ -83,6 +79,7 @@ export default async function CosmosPage() {
             <ViewTile
               href="/cosmos/gallery"
               title="Deep Field"
+              still="deepField"
               accent="text-violet-300"
               border="border-violet-500/[0.2]"
               body="Galaxies, nebulae, and Webb's first images — pulled from NASA's open image library, refreshed daily."
@@ -90,6 +87,7 @@ export default async function CosmosPage() {
             <ViewTile
               href="/asteroids"
               title="Close Approach"
+              still="nursery"
               accent="text-rose-300"
               border="border-rose-500/[0.2]"
               body="Near-Earth asteroids passing this week, with the mining-economics lens nobody else gives you."
@@ -97,6 +95,7 @@ export default async function CosmosPage() {
             <ViewTile
               href="/cosmos/constellations"
               title="Star Maps"
+              still="veil"
               accent="text-amber-300"
               border="border-amber-500/[0.2]"
               body="Orion, the Dipper, the Southern Cross — science, myth, and navigation on one chart."
@@ -104,6 +103,7 @@ export default async function CosmosPage() {
             <ViewTile
               href="/cosmos/cards"
               title="Knowledge"
+              still="spiral"
               accent="text-cyan-300"
               border="border-cyan-500/[0.2]"
               body="Deep cards on stars, metals, fusion, and the laws of the universe — each with prompts to explore."
@@ -298,25 +298,38 @@ function ViewTile({
   body,
   accent,
   border,
+  still,
 }: {
   href: string;
   title: string;
   body: string;
   accent: string;
   border: string;
+  still: CinematicStill;
 }) {
   return (
     <Link
       href={href}
-      className={`group rounded-xl border ${border} bg-white/[0.02] p-6 transition-std hover:bg-white/[0.04]`}
+      className={`group overflow-hidden rounded-xl border ${border} bg-white/[0.02] transition-std hover:bg-white/[0.04]`}
     >
-      <h3 className={`font-serif text-[20px] font-semibold tracking-tight ${accent}`}>
-        {title}
-      </h3>
-      <p className="mt-3 text-[13px] leading-[1.75] text-slate-400">{body}</p>
-      <span className="mt-4 inline-block text-[12px] text-slate-500 transition-micro group-hover:text-slate-300">
-        Enter <span aria-hidden="true">&rarr;</span>
-      </span>
+      <div className="relative h-28 overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={CINEMATIC_STILLS[still]}
+          alt=""
+          className="h-full w-full object-cover transition-dramatic group-hover:scale-[1.06]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060609] to-transparent" />
+      </div>
+      <div className="p-6">
+        <h3 className={`font-serif text-[20px] font-semibold tracking-tight ${accent}`}>
+          {title}
+        </h3>
+        <p className="mt-3 text-[13px] leading-[1.75] text-slate-400">{body}</p>
+        <span className="mt-4 inline-block text-[12px] text-slate-500 transition-micro group-hover:text-slate-300">
+          Enter <span aria-hidden="true">&rarr;</span>
+        </span>
+      </div>
     </Link>
   );
 }

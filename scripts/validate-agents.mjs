@@ -100,7 +100,7 @@ function validate() {
       violations.push({
         file: `agents/${rel}`,
         rule: "MISSING_ATTESTATION",
-        detail: 'Missing cryptographic attestation block ("Built on SIP" or "Starlight Intelligence Protocol")',
+        detail: 'Missing SIP attestation block ("Built on SIP" or "Starlight Intelligence Protocol")',
       });
     }
 

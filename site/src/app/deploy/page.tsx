@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { GITHUB_URL } from "@/lib/nav";
 import { DEPLOYMENT_CONTRACT, VERCEL_DEPLOY_URL } from "@/lib/deployment";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
   title: "Deploy Starlight Explorer",
@@ -55,7 +56,8 @@ const trace = [
 export default function DeployPage() {
   return (
     <div className="min-h-screen overflow-hidden bg-[#060609] text-slate-100">
-      <section className="relative border-b border-white/[0.06] px-6 pb-20 pt-20 md:pb-28 md:pt-28">
+      <section className="relative overflow-hidden border-b border-white/[0.06] px-6 pb-20 pt-20 md:pb-28 md:pt-28">
+        <GalaxyField still="nursery" />
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
         <div
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_22%,rgba(124,58,237,0.16),transparent_34%),radial-gradient(circle_at_20%_70%,rgba(34,211,238,0.08),transparent_30%)]"

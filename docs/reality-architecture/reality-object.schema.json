@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/reality-object.v0.1.schema.json",
+  "title": "Starlight Reality Object v0.1 (compat pointer)",
+  "description": "COMPATIBILITY SHIM. Canonical schema moved to schemas/reality-object.schema.json (v0.1.1). This file re-exports the hardened kernel for older links from PR #85 seed.",
+  "$ref": "schemas/reality-object.schema.json"
+}

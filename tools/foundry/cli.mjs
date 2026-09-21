@@ -14,6 +14,8 @@ import {
   validateValue,
 } from "./lib/schema.mjs";
 import { provePackage } from "./lib/prove.mjs";
+import { validateAgentPluginPackage } from "./lib/upstream-conformance.mjs";
+import { validateOpenAIPluginPackage } from "./lib/openai-preflight.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -40,6 +42,8 @@ function help() {
 
 Usage:
   node tools/foundry/cli.mjs validate <json> [--schema <name>]
+  node tools/foundry/cli.mjs conformance <agent-plugin-dir> [--out <json>]
+  node tools/foundry/cli.mjs preflight-openai <plugin-dir> [--out <json>]
   node tools/foundry/cli.mjs graph [--out <json>]
   node tools/foundry/cli.mjs route <task-envelope.json> [--graph <json>] [--out <json>]
   node tools/foundry/cli.mjs forge --envelope <json> --pack <json> --out <dir> [--graph <json>] [--force]
@@ -71,6 +75,28 @@ async function main() {
     const result = validateValue(value, schema, registry);
     printJson({ file: resolve(path), contract: contractName, ...result });
     if (!result.valid) process.exitCode = 1;
+    return;
+  }
+
+  if (command === "conformance") {
+    const packageDirectory = args[0];
+    if (!packageDirectory) throw new Error("conformance requires an Agent Plugin package directory");
+    const result = validateAgentPluginPackage(resolve(packageDirectory));
+    const output = option(args, "--out");
+    if (output) writeJson(resolve(output), result);
+    printJson({ ...result, output: output ? resolve(output) : null });
+    if (result.status !== "pass") process.exitCode = 1;
+    return;
+  }
+
+  if (command === "preflight-openai") {
+    const packageDirectory = args[0];
+    if (!packageDirectory) throw new Error("preflight-openai requires an OpenAI plugin package directory");
+    const result = validateOpenAIPluginPackage(resolve(packageDirectory));
+    const output = option(args, "--out");
+    if (output) writeJson(resolve(output), result);
+    printJson({ ...result, output: output ? resolve(output) : null });
+    if (result.status !== "pass") process.exitCode = 1;
     return;
   }
 

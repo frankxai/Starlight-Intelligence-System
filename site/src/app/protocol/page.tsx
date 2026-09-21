@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -164,11 +165,7 @@ export default function ProtocolPage() {
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.08]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.05] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-          <div className="animate-mesh-3 absolute left-1/3 bottom-0 h-[280px] w-[280px] rounded-full bg-fuchsia-500/[0.04] blur-[90px]" />
-        </div>
+        <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
           <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
             The protocol
@@ -333,6 +330,18 @@ export default function ProtocolPage() {
             , which refuses to emit without real contribution. Attribution does
             not mean credit <em>transfer</em> — it means credit{" "}
             <em>compounding</em> across every adopter.
+          </p>
+
+          <p className="mt-6 text-[14px] leading-[1.85] text-slate-400">
+            The block is a declared label and carries no signature. A claim
+            a stranger can check needs a signed receipt. See{" "}
+            <Link
+              href="/verify"
+              className="text-violet-300 underline decoration-violet-400/40 underline-offset-4 transition-std hover:text-white"
+            >
+              this system&apos;s own signed receipt
+            </Link>
+            .
           </p>
 
           <p className="mt-6 text-[14px] uppercase tracking-widest text-slate-400">

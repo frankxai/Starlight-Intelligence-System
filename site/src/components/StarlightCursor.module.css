@@ -1,0 +1,41 @@
+.field[data-starlight-cursor] {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  overflow: hidden;
+  contain: strict;
+}
+.star {
+  will-change: transform;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15px;
+  height: 15px;
+  color: #f1d49a;
+}
+.star svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 4px #efd39a80);
+}
+.star:nth-child(2) { width: 7px; height: 7px; color: #c1e8ed; opacity: .65; }
+.star:nth-child(3) { width: 4px; height: 4px; color: #f1d49a; opacity: .4; }
+.star:nth-child(4) { width: 3px; height: 3px; color: #c1e8ed; opacity: .2; }
+.orbit {
+  position: absolute;
+  inset: -5px;
+  border: 1px solid #f1d49a70;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.65);
+  transition: transform 220ms cubic-bezier(.16, 1, .3, 1), opacity 160ms ease-out;
+}
+.field[data-interactive="true"] .orbit { opacity: .8; transform: scale(1); }
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce), (forced-colors: active) {
+  .field { display: none; }
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/future-branch.v0.1.1.schema.json",
+  "title": "Starlight Future Branch v0.1.1",
+  "description": "Versioned proposed world-state delta from a named baseline. Never auto-merges into observed state.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "label",
+    "baseline_ref",
+    "assumptions",
+    "desired_changes",
+    "verification_criteria",
+    "epistemics",
+    "created_at"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1.1" },
+    "id": {
+      "type": "string",
+      "pattern": "^ra:branch:[a-zA-Z0-9._~/-]{1,200}$"
+    },
+    "label": { "type": "string", "minLength": 1 },
+    "baseline_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref"],
+      "properties": {
+        "kind": { "enum": ["snapshot", "commit", "event_cursor", "object_set"] },
+        "ref": { "type": "string", "minLength": 1 },
+        "observed_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "epistemic_kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "statement": { "type": "string" },
+          "epistemic_kind": {
+            "enum": ["assumed", "modeled", "desired", "fictional_rule", "measured", "unknown"]
+          }
+        }
+      }
+    },
+    "desired_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["object_id", "change"],
+        "properties": {
+          "object_id": { "type": "string" },
+          "change": { "type": "string" },
+          "target_state": { "type": ["object", "null"] }
+        }
+      }
+    },
+    "predicted_effects": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "uncertainty_notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "verification_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "criterion", "evidence_type"],
+        "properties": {
+          "id": { "type": "string" },
+          "criterion": { "type": "string" },
+          "evidence_type": { "type": "string" }
+        }
+      }
+    },
+    "telos_weights": {
+      "type": "object",
+      "additionalProperties": { "type": "number" },
+      "description": "Explicit preference weights — never smuggled as empirical facts."
+    },
+    "epistemics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": ["planned", "desired", "hypothetical", "simulated", "fictional", "speculative"]
+        },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "created_by": { "type": ["string", "null"] },
+    "status": {
+      "enum": ["draft", "active", "superseded", "merged_actualized", "abandoned"],
+      "default": "draft"
+    }
+  }
+}

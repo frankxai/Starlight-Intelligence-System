@@ -2,6 +2,15 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## 2026-09-09 — Starlight World excellence (private vanilla drive)
+
+**Private Starlight World is a vanilla HTML drive surface for palace, six vaults, city, second brain, and graph. Loopback only. Stewards registered, not live.**
+
+- **Surface:** `docs/starlight-world/` — courtyard palace, labeled vault orbs, named city buildings, air-gapped private vault, neighbor-labeled graph.
+- **Drive:** hash routes, Enter/Space inside, Esc back, `?` help, DOM inspector (no world-data `innerHTML`).
+- **Proof:** `scripts/validate-starlight-world.py` + `docs/starlight-world/SUCCESS.md`. Serve binds `127.0.0.1:8767` with reuse.
+- **Not this:** Q-Town, Next.js/React, Agent Canvas, live swarm, private notes in Git, writing `main`.
+
 ## 2026-06-12 — Queen v0.2 + L99 Visual Intelligence Push (Whole-SIS Advance)
 
 **Queen self-advancing closed loop (ROUTE→MEASURE→LEARN→RATIFY→LEDGER) becomes first-class executable with mandatory visuals, Grok harness integration, public surfaces, and memory compounding.**

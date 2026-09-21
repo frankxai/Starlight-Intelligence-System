@@ -1,4 +1,7 @@
-const GITHUB_API = "https://api.github.com";
+import "server-only";
+
+import { fetchGitHubTextFile } from "./github-content.mjs";
+
 const REGISTRY_REPO = "frankxai/Starlight-Intelligence-System";
 const VAULT_CATEGORIES = [
   "strategic",
@@ -156,28 +159,13 @@ export function timeAgo(iso: string): string {
 
 // -- Data fetching --
 
-function githubHeaders(): HeadersInit {
-  const headers: HeadersInit = {
-    Accept: "application/vnd.github.v3+json",
-  };
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
-  return headers;
-}
-
 async function fetchGitHubFile(
   repo: string,
   path: string
 ): Promise<string | null> {
-  const url = `${GITHUB_API}/repos/${repo}/contents/${path}`;
-  const res = await fetch(url, {
-    headers: githubHeaders(),
-    next: { revalidate: 3600 },
+  return fetchGitHubTextFile(repo, path, {
+    token: process.env.GITHUB_TOKEN,
   });
-  if (!res.ok) return null;
-  const data = await res.json();
-  return Buffer.from(data.content, "base64").toString("utf-8");
 }
 
 function parseJsonl(content: string): VaultEntry[] {

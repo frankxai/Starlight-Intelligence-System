@@ -1,0 +1,43 @@
+{
+  "name": "starlight-web-production",
+  "version": "0.1.0",
+  "description": "Reference-led art direction, implementation, motion, and production proof for the Starlight portfolio.",
+  "author": {
+    "name": "Starlight Intelligence",
+    "url": "https://starlightintelligence.org"
+  },
+  "homepage": "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/WEB-PRODUCTION-KERNEL.md",
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "keywords": [
+    "web-design",
+    "reference-intelligence",
+    "aceternity",
+    "gsap",
+    "motion",
+    "nextjs"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Starlight Web Production",
+    "shortDescription": "Direct distinctive, production-proven web releases.",
+    "longDescription": "Turns brand truth and sourced design evidence into original, accessible web surfaces with explicit component and motion choices, rendered verification, and production receipts.",
+    "developerName": "Starlight Intelligence",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Reference research",
+      "Web art direction",
+      "Design engineering",
+      "Motion direction",
+      "Release verification"
+    ],
+    "websiteURL": "https://starlightintelligence.org",
+    "defaultPrompt": [
+      "Use $starlight-web-production to direct this web release.",
+      "Use $starlight-web-production to redesign this surface.",
+      "Use $starlight-web-production to audit this site."
+    ],
+    "brandColor": "#7C5CFF"
+  }
+}

@@ -1,6 +1,6 @@
 interface:
   display_name: "System Forge"
-  short_description: "Compile bounded swarms, verticals, and skills-first plugins."
-  default_prompt: "Use $system-forge to choose and compile the smallest justified multi-capability system."
+  short_description: "Design bounded swarms, verticals, and skills-first plugins."
+  default_prompt: "Use $system-forge to design the smallest justified system and mark compilation pending without a Foundry runtime."
 policy:
   allow_implicit_invocation: true

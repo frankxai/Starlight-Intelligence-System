@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Starlight World</title>
+  <link rel="stylesheet" href="./world.css" />
+</head>
+<body>
+  <a class="skip" href="#world-svg">Skip to map</a>
+  <header>
+    <div class="top">
+      <div>
+        <p class="brand">SIS · Reality Architecture</p>
+        <h1>Starlight World</h1>
+        <p class="sub">Private drive surface. Vanilla HTML. You steer palace, vaults, city, and second brain. Private notes stay unmounted.</p>
+      </div>
+      <div class="layers" role="tablist" aria-label="World layers">
+        <button type="button" id="layer-palace" aria-pressed="true">1 Palace</button>
+        <button type="button" id="layer-vaults" aria-pressed="false">2 Vaults</button>
+        <button type="button" id="layer-city" aria-pressed="false">3 City</button>
+        <button type="button" id="layer-brain" aria-pressed="false">4 Second Brain</button>
+        <button type="button" id="layer-graph" aria-pressed="false">5 Graph</button>
+      </div>
+    </div>
+    <p id="place-line" class="place" aria-live="polite">Palace · Lighthouse</p>
+  </header>
+  <main>
+    <section class="map" aria-label="Starlight World map">
+      <svg id="world-svg" viewBox="0 0 1000 720" role="application" aria-label="Drive the world with arrows, Enter, and Esc" tabindex="0"></svg>
+    </section>
+    <aside id="inspector" aria-live="polite"></aside>
+  </main>
+  <footer>
+    <span>1-5 layers · arrows move · Enter open · Esc back · ? help</span>
+    <span>127.0.0.1:8767 · loopback only</span>
+  </footer>
+  <dialog id="help">
+    <h2>Drive</h2>
+    <p>This is a private map of rooms you already own. It is not a product site and not a live agent fleet.</p>
+    <ul>
+      <li>1-5 layers</li>
+      <li>Arrows move between rooms</li>
+      <li>Enter or Space go inside</li>
+      <li>Esc returns to the map</li>
+      <li>Click a door in the inspector to jump Palace to Vault to City</li>
+    </ul>
+    <form method="dialog"><button type="submit">Close</button></form>
+  </dialog>
+  <script src="./world.data.js"></script>
+  <script src="./world.js"></script>
+</body>
+</html>

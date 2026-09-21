@@ -1,0 +1,37 @@
+{
+  "name": "starlight-intelligence",
+  "version": "0.2.0",
+  "description": "A governed venture control plane for portfolio intelligence, execution, evidence, and decisions.",
+  "author": {
+    "name": "Starlight Intelligence Systems",
+    "url": "https://starlightintelligence.ai"
+  },
+  "homepage": "https://starlightintelligence.ai",
+  "license": "MIT",
+  "keywords": [
+    "venture-os",
+    "portfolio-intelligence",
+    "decision-ledger",
+    "agent-governance"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Starlight Intelligence",
+    "shortDescription": "Govern ventures, decisions, evidence, and execution.",
+    "longDescription": "Turn fragmented venture work into a governed operating graph: inspect portfolio state, create and transition work, preserve evidence, record decisions, and render a command-center view.",
+    "developerName": "Starlight Intelligence Systems",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://starlightintelligence.ai",
+    "defaultPrompt": [
+      "Show my Starlight portfolio command center.",
+      "Turn this objective into governed execution.",
+      "Record this decision and its supporting evidence."
+    ],
+    "brandColor": "#7C6CFF"
+  }
+}

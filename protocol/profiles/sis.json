@@ -1,0 +1,503 @@
+{
+  "sipGraphVersion": "0.1.0",
+  "profile": {
+    "id": "sip:profile:starlight-intelligence-system",
+    "subject": "github.com/frankxai/Starlight-Intelligence-System",
+    "declaredBy": "sip:identity:frank-riemer",
+    "generatedAt": "2026-09-19T00:00:00Z",
+    "note": "SIS's own profile. Every claim traces to a file in this repository pinned to a commit; nothing here is synthetic. Attested with Sigstore whenever the profile or the checker changes on main (see protocol/profiles/README.md)."
+  },
+  "nodes": [
+    {
+      "id": "sip:identity:frank-riemer",
+      "type": "Identity",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": [
+          "sip:source:license"
+        ]
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "Frank Riemer (GitHub: frankxai)",
+      "body": {
+        "kind": "person",
+        "note": "Copyright holder in LICENSE; owner of the github.com/frankxai/Starlight-Intelligence-System repository."
+      }
+    },
+    {
+      "id": "sip:artifact:sis-repository",
+      "type": "Artifact",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "Starlight Intelligence System repository",
+      "body": {
+        "locator": "https://github.com/frankxai/Starlight-Intelligence-System",
+        "mediaType": "application/x-git"
+      }
+    },
+    {
+      "id": "sip:artifact:sis-profile",
+      "type": "Artifact",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "derived",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "hand-authored from the pinned sources",
+        "sources": [
+          "sip:artifact:sis-repository"
+        ]
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "This profile",
+      "body": {
+        "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/protocol/profiles/sis.json",
+        "mediaType": "application/json"
+      }
+    },
+    {
+      "id": "sip:source:license",
+      "type": "Source",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "imported",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "pinned to commit 72a84693be9b (full sha in body.commit)",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "LICENSE (MIT, copyright Frank Riemer)",
+      "body": {
+        "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/72a84693be9b/LICENSE",
+        "commit": "72a84693be9b39d1b7a183d225f1662a8f04703c"
+      }
+    },
+    {
+      "id": "sip:source:protocol-workflow",
+      "type": "Source",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "imported",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "pinned to commit 72a84693be9b (full sha in body.commit)",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "Protocol CI workflow",
+      "body": {
+        "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/72a84693be9b/.github/workflows/protocol.yml",
+        "commit": "72a84693be9b39d1b7a183d225f1662a8f04703c"
+      }
+    },
+    {
+      "id": "sip:source:attestations-2026-09-19",
+      "type": "Source",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "imported",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "pinned to commit 72a84693be9b (full sha in body.commit)",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "ATTESTATIONS.md, entry 2026-09-19",
+      "body": {
+        "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/72a84693be9b/ATTESTATIONS.md",
+        "commit": "72a84693be9b39d1b7a183d225f1662a8f04703c"
+      }
+    },
+    {
+      "id": "sip:source:protocol-readme",
+      "type": "Source",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "imported",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "pinned to commit 72a84693be9b (full sha in body.commit)",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "protocol/README.md",
+      "body": {
+        "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/72a84693be9b/protocol/README.md",
+        "commit": "72a84693be9b39d1b7a183d225f1662a8f04703c"
+      }
+    },
+    {
+      "id": "sip:source:self-receipt-workflow",
+      "type": "Source",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "SIP self-receipt workflow",
+      "body": {
+        "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/.github/workflows/sip-self-receipt.yml"
+      }
+    },
+    {
+      "id": "sip:claim:protocol-ci-node-matrix",
+      "type": "Claim",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "derived",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "read the workflow",
+        "sources": [
+          "sip:source:protocol-workflow"
+        ]
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "Protocol suite runs on Node 18, 20 and 22",
+      "body": {
+        "statement": "CI runs the protocol test suite (protocol/test/conform.test.mjs, protocol/test/sign.test.mjs), the reference-passes/leaky-fails fixture check and an end-to-end sign-and-verify on Node 18, 20 and 22, for pull requests to main and pushes to main that touch protocol/ or the workflow."
+      }
+    },
+    {
+      "id": "sip:claim:sip-block-is-a-label",
+      "type": "Claim",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "derived",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "read the 2026-09-19 entry",
+        "sources": [
+          "sip:source:attestations-2026-09-19"
+        ]
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "The Built on SIP block is a declared label, not a signature",
+      "body": {
+        "statement": "The 'Built on SIP' block is a declared label, not a signature, and is emitted only when an artifact composes a SIP element. A claim a stranger can verify needs a signed receipt, checked with protocol/verify.mjs --profile."
+      }
+    },
+    {
+      "id": "sip:claim:protocol-zero-dependency",
+      "type": "Claim",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "derived",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "read the README; checkable with grep -h '^import' protocol/*.mjs protocol/lib/*.mjs",
+        "sources": [
+          "sip:source:protocol-readme"
+        ]
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "The protocol toolchain has no dependencies",
+      "body": {
+        "statement": "protocol/conform.mjs, sign.mjs, verify.mjs and protocol/lib/*.mjs import only node: built-in modules and each other; nothing is installed to run them."
+      }
+    },
+    {
+      "id": "sip:evaluation:sis-self-conform",
+      "type": "Evaluation",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "observed",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "CI",
+        "sources": [
+          "sip:source:self-receipt-workflow"
+        ]
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "Conformance check of this profile",
+      "body": {
+        "method": "node protocol/conform.mjs protocol/profiles/sis.json --json <receipt>, run by .github/workflows/sip-self-receipt.yml. On push to main the attest step runs only after this exits 0, so every attested version of this file carried a PASS receipt.",
+        "result": "pass"
+      }
+    },
+    {
+      "id": "sip:attestation:sis-self-receipt",
+      "type": "Attestation",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": [
+          "sip:evaluation:sis-self-conform"
+        ]
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "Sigstore attestation of the receipt",
+      "body": {
+        "statementType": "https://starlightintelligence.org/protocol/receipt/v0.1.0",
+        "signatureRef": "https://github.com/frankxai/Starlight-Intelligence-System/attestations",
+        "signer": "actions/attest@v2 (Sigstore keyless, GitHub OIDC)",
+        "verify": "gh attestation verify protocol/profiles/sis.json --repo frankxai/Starlight-Intelligence-System --predicate-type https://starlightintelligence.org/protocol/receipt/v0.1.0"
+      }
+    },
+    {
+      "id": "sip:projection:public",
+      "type": "Projection",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "derived",
+        "at": "2026-09-19T00:00:00Z",
+        "method": "projection",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      },
+      "label": "Public projection",
+      "body": {
+        "audience": "public",
+        "include": [
+          "sip:projection:public",
+          "sip:identity:frank-riemer",
+          "sip:artifact:sis-repository",
+          "sip:artifact:sis-profile",
+          "sip:source:license",
+          "sip:source:protocol-workflow",
+          "sip:source:attestations-2026-09-19",
+          "sip:source:protocol-readme",
+          "sip:source:self-receipt-workflow",
+          "sip:claim:protocol-ci-node-matrix",
+          "sip:claim:sip-block-is-a-label",
+          "sip:claim:protocol-zero-dependency",
+          "sip:evaluation:sis-self-conform",
+          "sip:attestation:sis-self-receipt"
+        ],
+        "redacted": [],
+        "redactFields": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "sip:edge:owner-asserts-protocol-ci-node-matrix",
+      "type": "asserts",
+      "from": "sip:identity:frank-riemer",
+      "to": "sip:claim:protocol-ci-node-matrix",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:owner-asserts-sip-block-is-a-label",
+      "type": "asserts",
+      "from": "sip:identity:frank-riemer",
+      "to": "sip:claim:sip-block-is-a-label",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:owner-asserts-protocol-zero-dependency",
+      "type": "asserts",
+      "from": "sip:identity:frank-riemer",
+      "to": "sip:claim:protocol-zero-dependency",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:protocol-ci-node-matrix-derives-protocol-workflow",
+      "type": "derivedFrom",
+      "from": "sip:claim:protocol-ci-node-matrix",
+      "to": "sip:source:protocol-workflow",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:sip-block-is-a-label-derives-attestations-2026-09-19",
+      "type": "derivedFrom",
+      "from": "sip:claim:sip-block-is-a-label",
+      "to": "sip:source:attestations-2026-09-19",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:protocol-zero-dependency-derives-protocol-readme",
+      "type": "derivedFrom",
+      "from": "sip:claim:protocol-zero-dependency",
+      "to": "sip:source:protocol-readme",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:profile-derives-repository",
+      "type": "derivedFrom",
+      "from": "sip:artifact:sis-profile",
+      "to": "sip:artifact:sis-repository",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:self-conform-evaluates-profile",
+      "type": "evaluates",
+      "from": "sip:evaluation:sis-self-conform",
+      "to": "sip:artifact:sis-profile",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:self-receipt-attests-conform",
+      "type": "attests",
+      "from": "sip:attestation:sis-self-receipt",
+      "to": "sip:evaluation:sis-self-conform",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    },
+    {
+      "id": "sip:edge:public-projects-profile",
+      "type": "projects",
+      "from": "sip:projection:public",
+      "to": "sip:artifact:sis-profile",
+      "version": "1.0.0",
+      "owner": "sip:identity:frank-riemer",
+      "visibility": "public",
+      "provenance": {
+        "origin": "authored",
+        "at": "2026-09-19T00:00:00Z",
+        "sources": []
+      },
+      "evaluation": {
+        "rule": "sip:evaluation:sis-self-conform"
+      }
+    }
+  ]
+}

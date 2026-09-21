@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Starfield } from "@/components/cosmos/Starfield";
 import { CardTile } from "@/components/cosmos/CardTile";
 import { miningCards } from "@/lib/cosmos/cards";
 import { getNeoFeed } from "@/lib/cosmos/nasa";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 21600;
 
@@ -28,11 +28,7 @@ export default async function AsteroidsPage() {
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <Starfield seed={2182} count={120} />
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-24 top-0 h-[380px] w-[380px] rounded-full bg-rose-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-24 h-[300px] w-[300px] rounded-full bg-amber-500/[0.04] blur-[80px]" />
-        </div>
+        <GalaxyField still="nursery" />
         <div className="relative mx-auto max-w-5xl px-6 py-24 md:py-32">
           <Link
             href="/cosmos"

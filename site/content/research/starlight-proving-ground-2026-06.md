@@ -8,8 +8,8 @@ Most AI shops publish a model benchmark. Almost none publish a **whole-system** 
 their memory recall, their harness integrity, their dataset provenance — with the
 weaknesses named and dated. The Starlight Proving Ground does. It is the standing
 discipline that measures the entire Starlight Intelligence System across seven lanes,
-run by evaluator agents that hold the Luminor kernel mindset — Precision, Wisdom,
-Transcendence — and renders its verdict through the Starlight Board. It exists because
+run by evaluator agents held to three standards — precision, judgement and
+long-horizon thinking — and renders its verdict through the Starlight Board. It exists because
 a system you can't measure is a system you're only hoping works, and because the
 patterns that separate a real intelligence substrate from a demo are only visible when
 you put numbers next to them and refuse to round up.

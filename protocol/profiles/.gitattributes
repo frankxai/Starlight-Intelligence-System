@@ -1,0 +1,3 @@
+# Receipts are over the exact bytes; keep profiles LF on every checkout (incl. Windows autocrlf)
+# so `gh attestation verify` digests match what CI attested.
+*.json text eol=lf

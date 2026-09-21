@@ -37,7 +37,7 @@ Before any non-trivial subagent dispatch or MCP interaction:
 3. **MCP fidelity.** Every MCP call routes through getMcpConfig() shape from src/adapters/grok.ts. No ad-hoc servers. Log MCP server name + purpose in memory/operational.
 4. **GStack conceptual QA.** Ground any external or cross-repo claim in repo-mastery (prior adapter/harness patterns) + gstack (Grok stack: high-context + tool chaining + excellence reflection loops). Target 99% e2e god-mode pass before surfacing.
 5. **Layer check.** Substrate vs operational? Substrate → architect voice + board pre-pass. Excellence hook failures are substrate-class.
-6. **Attestation ambient.** Every subagent artifact, summary, intel file, and final synthesis auto-embeds "Built on SIP" footer naming `core/orchestrator/harnesses/grok`.
+6. **Attestation earned.** Subagent artifacts, summaries, intel files and syntheses that actually compose a SIP element embed the "Built on SIP" block naming `core/orchestrator/harnesses/grok`; others do not. The block is a declared label, not proof.
 
 ---
 

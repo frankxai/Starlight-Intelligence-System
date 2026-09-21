@@ -1,7 +1,7 @@
 {
   "name": "starlight-foundry",
   "version": "0.1.0",
-  "description": "Compile, prove, and evolve portable skills and bounded agent systems from explicit capability contracts.",
+  "description": "Design portable skills and bounded agent systems, with an optional compile-and-proof handoff to a Starlight Foundry runtime.",
   "author": {
     "name": "Starlight Intelligence",
     "url": "https://starlightintelligence.org"
@@ -18,21 +18,23 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Starlight Foundry",
-    "shortDescription": "Forge portable skills and bounded agent systems.",
-    "longDescription": "Turn intent into typed capability packages, enforce skills-first agent necessity, operationalize taste, and issue evidence receipts before promotion.",
+    "shortDescription": "Design portable AI systems",
+    "longDescription": "Design typed Task Envelopes, reusable skills, bounded agents, multi-capability systems, and evidence plans. In a Starlight Intelligence System workspace, the same skills can hand off to the Foundry compiler and prover; a skills-only marketplace install reports runtime proof as pending instead of inventing a receipt.",
     "developerName": "Starlight Intelligence",
     "category": "Productivity",
     "capabilities": [
       "Skills",
-      "Capability compilation",
-      "Evidence evaluation"
+      "Portable contract design",
+      "Evidence planning"
     ],
     "websiteURL": "https://starlightintelligence.org",
     "defaultPrompt": [
-      "Use $skill-forge to turn this workflow into a portable, proven skill.",
-      "Use $agent-forge to decide whether this needs an agent or a skill.",
-      "Use $taste-engine to define hard gates and independent quality evaluation."
+      "Turn this repeated workflow into a reusable skill.",
+      "Decide whether this needs a skill, tool, or persistent agent.",
+      "Define evidence and quality gates for this capability."
     ],
-    "brandColor": "#7C5CFF"
+    "brandColor": "#7C5CFF",
+    "logo": "./assets/logo.svg",
+    "composerIcon": "./assets/composer-icon.svg"
   }
 }

@@ -1,5 +1,6 @@
 import { getVaultRegistry, getVaultData } from "@/lib/vault";
 import { VaultCard } from "@/components/VaultCard";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 import type { Metadata } from "next";
 
 export const revalidate = 3600;
@@ -25,12 +26,20 @@ export default async function VaultsPage() {
   );
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
-      <h1 className="text-2xl font-bold text-white">Public Vaults</h1>
-      <p className="mt-2 text-[14px] text-slate-500">
-        Memory gardens from builders and thinkers. Each vault is a collection
-        of insights readable by humans and agents.
-      </p>
+    <div>
+      <section className="relative overflow-hidden border-b border-white/[0.06]">
+        <GalaxyField still="veil" />
+        <div className="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
+          <h1 className="font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-tight text-white">
+            Public Vaults
+          </h1>
+          <p className="mt-4 max-w-2xl text-[15px] leading-[1.8] text-slate-400">
+            Memory gardens from builders and thinkers. Each vault is a collection
+            of insights readable by humans and agents.
+          </p>
+        </div>
+      </section>
+      <div className="mx-auto max-w-5xl px-6 py-16">
 
       <div className="mt-10 grid gap-3 md:grid-cols-2">
         {vaultsWithData.map(({ reg, totalEntries, lastUpdated }) => (
@@ -79,6 +88,7 @@ export default async function VaultsPage() {
         >
           Fork on GitHub
         </a>
+      </div>
       </div>
     </div>
   );

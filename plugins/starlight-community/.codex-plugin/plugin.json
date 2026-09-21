@@ -1,0 +1,18 @@
+{
+  "name": "starlight-community",
+  "version": "0.1.0",
+  "description": "Plan a creation cell's week, review artifact evidence, and prepare consent-aware reflections.",
+  "author": {
+    "name": "Frank Riemer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Starlight community",
+    "shortDescription": "Turn a shared goal into a week of making.",
+    "longDescription": "A workflow skill for small creation cells: scope a quest, agree on commitments, review artifacts, and prepare a reflection. Produces drafts; external sends and member data access require separate authorization and tools.",
+    "developerName": "Frank Riemer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Help our creation cell choose one useful artifact for this week, with a realistic commitment and a Friday reflection."
+  }
+}

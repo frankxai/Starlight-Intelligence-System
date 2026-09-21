@@ -1,0 +1,116 @@
+{
+  "schema": "starlight.loop-graph.v1",
+  "id": "si-admit-verify-ship",
+  "title": "SI admit → verify → ship",
+  "layer": "A",
+  "shape": "chain",
+  "sourceLoop": "SI H0–H6 / Queen outcome lane",
+  "executorRole": "maker",
+  "supervisorRole": "checker",
+  "supervisorMustDifferFromExecutor": true,
+  "humanGates": [
+    "production-deploy",
+    "public-send",
+    "spend",
+    "dns",
+    "secrets",
+    "legal",
+    "destroy",
+    "force-push"
+  ],
+  "stopRule": "Close SHIPPED, HOLD, BLOCKED, FAILED, or REPLACED after one increment. No new scope after the verification node.",
+  "forbids": [
+    "self-certified-completion",
+    "per-agent-graph",
+    "third-orchestrator",
+    "private-payload-in-public-event"
+  ],
+  "nodes": [
+    {
+      "id": "intent",
+      "role": "maker",
+      "workGraphKind": "intent.captured",
+      "input": "operator ask",
+      "output": "goal + done-when + mode",
+      "evidence": "session:// or telegram:// ref only"
+    },
+    {
+      "id": "admit",
+      "role": "maker",
+      "workGraphKind": "work.admitted",
+      "input": "goal + machine/disk/git facts",
+      "output": "requirements + path lease + one writer",
+      "evidence": "lane card or this ledger"
+    },
+    {
+      "id": "run",
+      "role": "maker",
+      "workGraphKind": "run.started",
+      "input": "admitted contract",
+      "output": "owned execution",
+      "evidence": "process or CLI receipt"
+    },
+    {
+      "id": "artifact",
+      "role": "maker",
+      "workGraphKind": "artifact.produced",
+      "input": "allowed paths",
+      "output": "files in the claimed worktree",
+      "evidence": "git path list"
+    },
+    {
+      "id": "change",
+      "role": "maker",
+      "workGraphKind": "change.opened",
+      "input": "artifact",
+      "output": "draft PR",
+      "evidence": "https://github.com/.../pull/N"
+    },
+    {
+      "id": "checks",
+      "role": "system",
+      "workGraphKind": "check.passed",
+      "input": "artifact",
+      "output": "deterministic gate result",
+      "evidence": "npm run test:work-graph + npm run test:graph-engineering"
+    },
+    {
+      "id": "verify",
+      "role": "checker",
+      "workGraphKind": "verification.passed",
+      "input": "artifact + checks + PR",
+      "output": "independent verdict",
+      "evidence": "supervisor.md filled from disk, not chat"
+    },
+    {
+      "id": "complete",
+      "role": "orchestrator",
+      "workGraphKind": "work.completed",
+      "input": "all admitted proofs",
+      "output": "SHIPPED or HOLD",
+      "evidence": "work-graph projection readyToComplete=true"
+    }
+  ],
+  "edges": [
+    { "from": "intent", "to": "admit", "contract": "goal+done-when" },
+    { "from": "admit", "to": "run", "contract": "requirements+lease" },
+    { "from": "run", "to": "artifact", "contract": "allowed-paths" },
+    { "from": "artifact", "to": "change", "contract": "pathspecs" },
+    { "from": "artifact", "to": "checks", "contract": "commands" },
+    { "from": "change", "to": "verify", "contract": "draft-pr-url" },
+    { "from": "checks", "to": "verify", "contract": "gate-exit-0" },
+    { "from": "verify", "to": "complete", "contract": "independent-verdict" }
+  ],
+  "requirements": {
+    "artifact": true,
+    "change": true,
+    "checks": true,
+    "deployment": false,
+    "verification": true
+  },
+  "files": {
+    "ledger": "docs/graph-engineering/loops/si-admit-verify-ship/ledger.md",
+    "supervisor": "docs/graph-engineering/loops/si-admit-verify-ship/supervisor.md",
+    "events": "examples/work-graph/si-admit-verify-ship.jsonl"
+  }
+}

@@ -1,13 +1,13 @@
 ---
 name: agent-forge
-description: Design and compile an agent only when a durable autonomy boundary is justified. Use for persistent decision rights, distinct memory, constrained tools, ownership transfer, or an ongoing schedule, channel, or API trigger.
+description: Design an agent only when a durable autonomy boundary is justified; compile it only when a Foundry runtime is available. Use for persistent decision rights, distinct memory, constrained tools, ownership transfer, or an ongoing schedule, channel, or API trigger.
 ---
 
 # Agent Forge
 
 ## Outcome
 
-Create the smallest justified persistent actor, or deliberately downgrade the request to a skill or temporary worker.
+Design the smallest justified persistent actor, or deliberately downgrade the request to a skill or temporary worker. Compile it only when a Foundry runtime is present.
 
 ## Agent necessity gate
 
@@ -41,7 +41,8 @@ If none applies, stop and route to `$skill-forge`. A name, persona, or desire fo
    - Set success conditions, stop conditions, and a hard turn or round ceiling.
 6. Compose existing skills.
    - Agents orchestrate capabilities; they do not duplicate skill procedures inside a persona prompt.
-7. Compile and prove.
+7. Select the execution mode.
+   - **Foundry runtime available:** only when `tools/foundry/cli.mjs` and `foundry/contracts/` exist in the current workspace, compile and prove:
 
    ```bash
    node tools/foundry/cli.mjs forge \
@@ -50,6 +51,8 @@ If none applies, stop and route to `$skill-forge`. A name, persona, or desire fo
      --out <package-directory>
    node tools/foundry/cli.mjs prove <package-directory>
    ```
+
+   - **Portable skills-only install:** read `references/portable-contracts.md`, then author the Task Envelope and Agent Pack with those field names. Mark compilation and proof `pending-runtime`; do not invent an Evidence Receipt. Provide the commands above as an optional handoff for a later SIS workspace run.
 
 8. Refuse false persistence.
    - If the boundary disappears during design, return a Skill Pack proposal instead of forcing agent creation.
@@ -65,4 +68,4 @@ If none applies, stop and route to `$skill-forge`. A name, persona, or desire fo
 
 ## Return
 
-Return the necessity verdict, chosen topology, Agent Pack, compiled package path, Evidence Receipt, permissions requiring approval, and any downgrade recommendation.
+Return the necessity verdict, chosen topology, Agent Pack, execution mode, permissions requiring approval, and any downgrade recommendation. Include a compiled package path and Evidence Receipt only when they were actually produced.

@@ -26,7 +26,7 @@ export function Footer() {
           {/* Mirror the nav's Explore / Build / Learn groups */}
           {NAV_GROUPS.map((group) => (
             <div key={group.label} className="lg:col-span-2">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+              <p className="text-[11px] font-medium tracking-wider text-slate-400">
                 {group.label}
               </p>
               <nav className="mt-3 flex flex-col gap-2" aria-label={`${group.label} navigation`}>
@@ -41,8 +41,9 @@ export function Footer() {
 
           {/* Connect — external + newcomer */}
           <div className="lg:col-span-2">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-slate-400">Connect</p>
+            <p className="text-[11px] font-medium tracking-wider text-slate-400">Connect</p>
             <nav className="mt-3 flex flex-col gap-2" aria-label="Connect navigation">
+              <FooterLink href="/brand">Brand identity</FooterLink>
               {CONNECT_LINKS.map((l) => (
                 <FooterLink key={l.href} href={l.href} external={l.external}>
                   {l.label}
