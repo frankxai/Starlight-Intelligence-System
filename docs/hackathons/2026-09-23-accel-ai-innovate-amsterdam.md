@@ -35,7 +35,7 @@ Stretch, and worth the risk: kick off a LoRA on a small Qwen3 at 10:00 with sixt
 
 ### Prototype
 
-`docs/hackathons/desk-prototype.html` is a single-file, high-fidelity prototype of the Desk on the Explorer's tokens: cascade timeline, the brief in lab-report format with resolving citations, the contradiction callout, the printed receipt with the edge meter, the memory graph, and the recall eval. It replays the cascade with GSAP, honours reduced motion, and holds at phone width. Numbers are marked illustrative. It is the visual contract for the day: the `/desk` route in `site/` reproduces it, it does not reinterpret it.
+`docs/hackathons/desk-prototype.html` is a single-file, high-fidelity prototype of the Desk on the Explorer's tokens: cascade timeline, the brief in lab-report format with resolving citations, the contradiction callout, the printed receipt with the edge meter, the constellation of typed artifacts with their renderers and truth classes, the publish stage with its approval gate, the memory graph, and the recall eval. It replays the cascade with GSAP, honours reduced motion, and holds at phone width. Numbers are marked illustrative. It is the visual contract for the day: the `/desk` route in `site/` reproduces it, it does not reinterpret it.
 
 ### Visual system for the Desk
 
@@ -60,6 +60,67 @@ Three directions were considered and two rejected: a terminal-only "console" tre
 - Lighthouse on the preview: no red. Motion respects `prefers-reduced-motion`, keyboard focus visible on the run control and the three conflict buttons.
 - Every citation link on the demo briefs resolves. Every number on the receipt is computed from the run, none typed.
 - Copy audited against `CREATOR.md`: sentence case, no prestige words, no invented claims. "Illustrative" labels come off only when the numbers are real.
+
+## 1c. The wider system the Desk is stage one of: Starlight Operator for GenCreator
+
+Yes to the direction. The Desk is not a standalone tool; it is the first stage of one operator loop that runs GenCreator's content workflow on the Starlight substrate. No to building all of it on the day. The judging brief scores Nebius central and edge proven. A build where most of the screen time is Higgsfield, OpenArt and Suno output makes Token Factory a text sidecar, and the edge story collapses. So the rule for the day is simple: every hop that thinks runs on Token Factory; closed generators render, behind adapters, and only from a brief that Token Factory wrote and signed.
+
+### The loop, end to end
+
+```
+question ─▶ Desk (stage 1, this build)
+              brief · citations · contradiction · receipt · memory atom
+                 │
+                 ▼
+            Constellation (GenCreator CreatorPack, ADR-007)
+              brief ─▶ typed artifacts: post · thread · newsletter section · 45 s script · cover · track brief
+              each carries a truth class (AUTHOR_ASSERTED / EDITOR_INFERRED / EXTERNAL_EVIDENCE / GENERATED_DRAFT)
+              text hops: DeepSeek V4 (draft) · GPT-OSS (voice + rubric judge) · Qwen3-Embedding (dedupe vs vault)
+              stills: Flux on Token Factory, the brief's cover, in-engine
+                 │
+                 ▼
+            Renderers (accelerators, adapters, never the engine)
+              Higgsfield ─▶ UGC clip from the 45 s script (ACOS higgsfield-operator)
+              OpenArt   ─▶ art-directed key visual from the cover brief
+              Suno      ─▶ 60 s track from the track brief (ACOS suno-prompt-architect)
+                 │
+                 ▼
+            Publish (gencreator.ai)
+              research hub MDX · schema.org Article + FAQPage · llms.txt entry · sitemap · RSS
+              approval receipt (agent-runtime-contract) before anything goes live; no autonomous publication in alpha
+                 │
+                 ▼
+            Operator surface (Console + cockpit)
+              work-graph ledger: what is legal next, what proves done, who may not self-grade
+              memory graph: the Desk's graph is the Console's substrate graph, same data layer
+              every stage a receipt: model · tokens · € · ms · score · truth class · signature
+```
+
+### Which existing piece does which job
+
+| Job | Existing piece | Change needed |
+|---|---|---|
+| Mission, lanes, admission, per-lane receipts | `src/queen-session.ts` | None for the day; the Desk run is one mission with six lanes |
+| Legal-next, proof-of-done, no self-grading | `src/work-graph.ts` + `docs/graph-engineering/CONTRACT.md` layer A | Emit one work-graph event per stage; the receipt is the proof object |
+| Memory, contradiction, recall | six vaults, `src/contradiction.ts`, `src/embedding.ts` | Add `NebiusEmbeddingProvider` (already in the day plan) |
+| Visual operator surface | `console/` substrate graph (2D default, 3D signature), `cockpit/agent-control-center.html` | Feed the Desk's atoms into the Console data layer; the cockpit shows the live lane board |
+| Product unit and truth classes | `gencreator.ai/lib/creator-pack-contract.ts` | None; the brief becomes a CreatorPack source with EXTERNAL_EVIDENCE claims |
+| Approval before publish, usage receipts, budgets | `gencreator.ai/lib/agent-runtime-contract.ts`, `/approvals` | None; wire the Desk receipt into the usage receipt |
+| Research hub, llms.txt, schema, RSS | `gencreator.ai/app/research`, `app/llms.txt` | Publish adapter writes the MDX and frontmatter |
+| Video, image, music renderers | ACOS `higgsfield-operator`, `suno-prompt-architect`, Higgsfield MCP, OpenArt MCP | Adapters take a signed brief in, return an asset id and a render receipt |
+
+### What ships when
+
+| Horizon | Scope | Nebius share of the compute |
+|---|---|---|
+| **23 Sept, on the day** | Desk stage 1 complete. Plus the constellation's text artifacts (post, thread, 45 s script) drafted and judged on Token Factory, the cover rendered by Flux on Token Factory, one work-graph ledger visible on the operator screen. Stretch, owned by a third person if present: one Higgsfield UGC clip from the signed script, shown once, labelled as a renderer | Every thinking hop and the stills. Near total |
+| **Week after** | Publish adapter to gencreator.ai research hub with schema, llms.txt and RSS, behind the approval receipt. Suno track from the track brief. OpenArt key visual. Console data layer reads the Desk vault | Text and embeddings on Token Factory; renderers closed |
+| **Month after** | Starlight Operator as the GenCreator Companion runtime (ADR-010): `AgentRuntime` provider backed by the Token Factory cascade; LoRA'd brief and post models per creator; room mode as a standing feature for cohorts | Cascade is the runtime |
+
+### Two constraints that hold the ambition honest
+
+- **The Console's own rule stands: nothing pre-cached masquerades as live.** If a Higgsfield clip is shown on stage, it was generated during the day from a brief the audience saw written. Otherwise it is not shown.
+- **No autonomous publication.** ADR-010 holds. The publish stage produces an approval request, a human presses the button. On the day that human is Frank, on stage, and the press is part of the demo.
 
 ## 2. What exists today (verified in-repo, 2026-09-21)
 

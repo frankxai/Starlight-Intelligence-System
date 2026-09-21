@@ -147,6 +147,32 @@ sup.c{font-family:var(--mono);font-size:10px;color:var(--cyan);margin-left:2px;c
 .meter .row-h .sw{display:inline-block;width:10px;height:6px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .foot{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
 
+/* constellation + publish */
+.const{margin-top:16px}
+.const .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.art{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:8px;min-height:150px;position:relative;overflow:hidden}
+.art .k{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.art .k b{font:500 12.5px var(--sans);color:var(--ink)}
+.art .tc{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--border-2);color:var(--ink-2);white-space:nowrap}
+.art .tc.ev{color:var(--emerald);border-color:rgba(52,211,153,.4)}
+.art .tc.gd{color:var(--amber);border-color:rgba(251,191,36,.4)}
+.art .body{font-family:var(--serif);font-size:13.5px;line-height:1.45;color:#cbd3df;flex:1}
+.art .body.mono{font-family:var(--mono);font-size:11px;color:var(--ink-2);line-height:1.5}
+.art .eng{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);border-top:1px solid var(--border);padding-top:8px}
+.art .eng i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.art .eng .tf{color:var(--cyan)}.art .eng .tf i{background:var(--cyan)}
+.art .eng .rd{color:var(--ink-2)}.art .eng .rd i{background:var(--rose)}
+.art.cover .swatch{height:74px;border-radius:8px;background:radial-gradient(120px 60px at 30% 40%,rgba(167,139,250,.75),transparent 70%),radial-gradient(100px 60px at 75% 65%,rgba(103,232,249,.55),transparent 70%),linear-gradient(160deg,#0b0b14,#15102a);border:1px solid var(--border-2)}
+.pub{margin-top:12px;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.pub .targets{display:flex;gap:8px;flex-wrap:wrap}
+.pub .t{font-family:var(--mono);font-size:11px;color:var(--ink-2);border:1px solid var(--border-2);border-radius:6px;padding:4px 8px;background:var(--void)}
+.pub .t b{color:var(--emerald);font-weight:500}
+.approve{border:1px solid rgba(52,211,153,.5);background:rgba(52,211,153,.1);color:#d1fae5;border-radius:10px;padding:10px 16px;font:600 12.5px var(--sans);cursor:pointer;white-space:nowrap}
+.approve:hover{background:rgba(52,211,153,.18)}
+.approve:focus-visible{outline:2px solid var(--emerald);outline-offset:3px}
+.pub .note{grid-column:1/-1;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+@media (max-width:760px){.pub{grid-template-columns:1fr}.approve{width:100%}}
+
 /* lower */
 .lower{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-top:16px}
 .graph{position:relative;min-height:360px}
@@ -314,6 +340,29 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
         </div>
         <p class="foot">Closed-API figures use published list prices for the same token counts. The rubric gap is inside judge variance; the cost gap is not.</p>
       </div>
+    </div>
+  </section>
+
+  <section class="panel const" aria-label="Constellation">
+    <h2>Constellation · from this brief <span>typed artifacts · each with a truth class · thinking on Token Factory, rendering behind adapters</span></h2>
+    <div class="grid">
+      <div class="art"><div class="k"><b>LinkedIn post</b><span class="tc ev">external evidence</span></div><div class="body">A weekly research brief on open models costs under three cents. Here is the receipt, and the one place the closed API still wins.</div><div class="eng"><span class="tf"><i></i>DeepSeek V4 · judged 8.4</span><span>412 words</span></div></div>
+      <div class="art"><div class="k"><b>X thread</b><span class="tc ev">external evidence</span></div><div class="body">1/ Routing beats loyalty. 2/ Extraction is mechanical. 3/ Judgment is expensive, so spend there. 4/ The receipt.</div><div class="eng"><span class="tf"><i></i>DeepSeek V4 · judged 8.1</span><span>7 posts</span></div></div>
+      <div class="art"><div class="k"><b>45 s UGC script</b><span class="tc gd">generated draft</span></div><div class="body mono">HOOK 0–3 s: "I priced my research this week." · PROOF 3–25 s: receipt on screen · TURN 25–40 s: contradiction flag · CTA 40–45 s: gencreator.ai/research</div><div class="eng"><span class="tf"><i></i>DeepSeek V4 → Higgsfield</span><span class="rd"><i></i>renderer · queued</span></div></div>
+      <div class="art cover"><div class="k"><b>Cover</b><span class="tc gd">generated draft</span></div><div class="swatch" role="img" aria-label="Cover art placeholder, violet and cyan light on void"></div><div class="eng"><span class="tf"><i></i>Flux · Token Factory</span><span>1600×900</span></div></div>
+      <div class="art"><div class="k"><b>Track brief</b><span class="tc gd">generated draft</span></div><div class="body mono">lo-fi · 82 bpm · warm keys, tape hiss, one bright synth line at the turn · 60 s · no vocals · sits under the UGC cut</div><div class="eng"><span class="tf"><i></i>Nemotron 3 Nano → Suno</span><span class="rd"><i></i>renderer · after event</span></div></div>
+      <div class="art"><div class="k"><b>Newsletter section</b><span class="tc ev">external evidence</span></div><div class="body">What I changed this week: one memory conflict, one decision, one number. The vault disagreed with me and I let it.</div><div class="eng"><span class="tf"><i></i>DeepSeek V4 · judged 8.7</span><span>168 words</span></div></div>
+    </div>
+    <div class="pub">
+      <div class="targets">
+        <span class="t">gencreator.ai/research/<b>brief-0917.mdx</b></span>
+        <span class="t">schema.org <b>Article + FAQPage</b></span>
+        <span class="t"><b>llms.txt</b> entry</span>
+        <span class="t">sitemap · RSS <b>updated</b></span>
+        <span class="t">approval receipt <b>pending</b></span>
+      </div>
+      <button class="approve" type="button">Approve and publish</button>
+      <div class="note">Nothing publishes on its own. The operator presses the button; the approval receipt and the usage receipt are signed together.</div>
     </div>
   </section>
 
