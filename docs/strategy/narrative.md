@@ -80,6 +80,7 @@ Celestial nouns (Starlight, constellation, council, observatory) organise inform
 2. Regulation is arriving at provenance, not at models. EU AI Act Article 50 asks for machine-readable marks on generated content. A receipt with a subject digest and a signature is that mark, extended to the whole run.
 3. Open weights on EU-hosted inference make cost a printable number per artifact. A receipt that says "€0.0071" is only possible when the model lane is not a black box.
 4. Buyers of agent work (founders, teams, institutions) are learning to ask "who decided, and what did it cost", the two questions a chat log cannot answer.
+5. Nobody sells the object yet. A survey of the field on 2026-09-21 (convergence v3, appendix C section G) found observability vendors and customer-experience agent vendors holding the proof on their side, open-source operator tools leaving logs on the customer's machine, and no one issuing a signed receipt a third party can verify. The word "receipt" appears once in that field, in gstack's local hash chain.
 
 ## 7. The proof rule
 

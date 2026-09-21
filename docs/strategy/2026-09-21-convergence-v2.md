@@ -2,6 +2,7 @@
 
 **Status:** decision record and plan, 2026-09-21. Operational tier. Supersedes the foundation question left open in `2026-09-21-great-convergence.md`; that document's nine layers, runtime decisions, cost doctrine, seat table and appendices remain in force and are referenced, not repeated.
 **Foundation chosen:** receipt-first. The signed run receipt is the product. Operator and memory are how receipts get produced and kept; they are consequences, not co-equals.
+**Erratum (v3, same day):** "AI SDK 6" below should read AI SDK 7 (current major since 2026-06-25; `needsApproval` became agent-level `toolApproval`). See `2026-09-21-convergence-v3.md` appendix C section D.
 **Companions:** `narrative.md` (the words), `docs/receipts.md` (the format for users), `protocol/run-receipt.v1.schema.json` (the schema), `src/run-receipt.ts` (the issuer and verifier), `starlight-intelligence-web` (`/receipts`, `/verify`, the API and MCP tool on starlightintelligence.ai).
 
 ---
