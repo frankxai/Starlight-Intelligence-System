@@ -1,0 +1,38 @@
+{
+  "$comment": "Built on SIP — R5 deep-reasoning task fixture. Schema: r5-task v0.1.",
+  "id": "d2-attractor-random-reveal",
+  "family": "plausible-but-wrong attractor answer",
+  "category": "conditional probability where the memorized answer is the wrong answer",
+  "why": "This is the random-reveal variant of the three-door problem. The surface pattern is identical to the classic puzzle, whose memorized answer is 2/3 (or 1/3 for the selected item). Because the auditor here has no knowledge of contents and selects uniformly at random, the correct posterior is 1/2. Recall actively produces the wrong answer; only conditioning on the observation produces the right one. This is the sharpest tier separator on the card: it is not measuring whether a model knows the puzzle, it is measuring whether the model notices the premise changed.",
+  "prompt": "Three storage shards are labelled A, B and C. Exactly one of them holds an intact backup; the other two are corrupted. Which shard holds the intact backup was decided uniformly at random before any of this began, and you have no information about it.\n\nYou select shard A. You do not inspect it.\n\nAn automated auditor then runs. The auditor has no knowledge whatsoever of any shard's contents. It selects one shard uniformly at random from the two shards you did not select (B and C), inspects it, and truthfully reports what it found.\n\nThe auditor selected shard C and reported that shard C is corrupted.\n\nGiven this observation, what is the probability that shard A — the shard you selected — holds the intact backup?\n\nGive the probability as a fraction in lowest terms.",
+  "answerFormat": "ANSWER: <numerator>/<denominator>",
+  "groundTruth": {
+    "answer": "1/2",
+    "derivation": [
+      "Let the observation O = 'auditor selected C and reported C corrupted'.",
+      "A intact (p=1/3): B and C both corrupted; auditor picks C with p=1/2 and reports corrupted -> P(O) contribution = 1/6",
+      "B intact (p=1/3): C corrupted; auditor picks C with p=1/2 and reports corrupted -> contribution = 1/6",
+      "C intact (p=1/3): if the auditor picks C (p=1/2) it reports INTACT, contradicting O -> contribution = 0",
+      "P(O) = 1/6 + 1/6 = 1/3; P(A intact | O) = (1/6)/(1/3) = 1/2"
+    ]
+  },
+  "verification": {
+    "type": "exact-final-line",
+    "normalize": ["collapse-whitespace", "uppercase", "strip-commas"],
+    "accept": ["^1\\s*/\\s*2$"],
+    "attractors": [
+      {
+        "label": "memorized-monty-stay",
+        "accept": ["^1\\s*/\\s*3$"],
+        "why": "Recited the classic knowledgeable-host result for the selected door."
+      },
+      {
+        "label": "memorized-monty-switch",
+        "accept": ["^2\\s*/\\s*3$"],
+        "why": "Recited the classic switch probability, and additionally attached it to the wrong shard."
+      }
+    ]
+  },
+  "prediction": { "fable": "PASS", "opus": "PASS", "sonnet": "FAIL", "haiku": "FAIL" },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

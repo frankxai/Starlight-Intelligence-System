@@ -162,7 +162,8 @@
     "prepare": "git config core.hooksPath tools/git-hooks 2>/dev/null || true",
     "prepublishOnly": "npm run build && npm run test:substrate",
     "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts",
-    "test:queen-session": "node --import tsx --test test/queen-session.test.ts"
+    "test:queen-session": "node --import tsx --test test/queen-session.test.ts",
+    "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs"
   },
   "files": [
     "dist/",

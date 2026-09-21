@@ -76,7 +76,7 @@ exact prompt shapes.)
 
 Per exec-board call (Frank-authorized): **stop generating output-discipline / craft
 arena rounds** — 5 in 48h, the axis is saturated (R3 confirmed capability parity across
-the lineup). The next arena round is the **R4 deep-reasoning lane** (multi-step proof,
+the lineup). That round landed as the **R5 deep-reasoning lane** (multi-step proof,
 long-context contradiction detection, architecture trade-off scored on correctness not
 format) + a **cross-family GPT-5 judge** (OpenRouter) to kill the Claude-family bias
 caveat. Do not run another compliance card until R4 ships.

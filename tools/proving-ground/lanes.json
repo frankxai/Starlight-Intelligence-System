@@ -57,6 +57,15 @@
       "status": "live; doctrine = 'no synthetic benchmarks' (bencher.py)"
     },
     {
+      "id": "deep-reasoning",
+      "title": "Deep Reasoning (R5)",
+      "measures": "Whether the expensive model tiers buy fewer WRONG ANSWERS than the cheap tiers on problems where one bad intermediate step propagates — cost-adjusted, four Claude tiers, six ground-truth tasks",
+      "entrypoint": "tools/arena/deep-reasoning.mjs (runnable) + tools/arena/R5-DESIGN.md (pre-registration) + tools/arena/fixtures/deep-reasoning/ (task set)",
+      "receipts": "tools/arena/runs/2026-08-28-r5-deep-reasoning.json; run-local receipts land in tools/arena/out/ and a reviewed run is promoted to runs/ by hand",
+      "verification": "fully mechanical — each task declares ground truth and accepting regexes matched against the reply's final ANSWER line; twelve pre-registered attractors distinguish a near-miss from noise. No LLM judge: all four Claude tiers are contestants, so no Claude model is a non-contestant judge (R5-DESIGN.md section 6). Binary scoring, no partial credit. Credential-graceful: with no usable model credential the harness emits an UNRUN receipt with zero result rows rather than any number.",
+      "status": "v0.1 — RAN 2026-08-28, verdict VOID-EQUIVALENT on the reasoning axis. Executed twice; run 1 scored 6/6 for all four tiers (spread 0, VOID by the pre-registered rule) and run 2 scored 5/6/6/6/5 where both non-PASS cells were non-reasoning (one TLS transport error, one omitted ANSWER line). Across both runs 46 of 46 answered cells were correct and not one attractor was taken. The lane is live and reproducible but has NOT separated the tiers: routing-table.json stays at rounds=0, confidence=low, autoApply=false, because a void-equivalent round is not evidence and does not count toward the A2 two-round floor. Note R4 (work-samples) DID separate on output discipline under load, an axis this card does not score — see the 2026-09-19 correction in R5-DESIGN.md."
+    },
+    {
       "id": "system",
       "title": "System",
       "measures": "Unifying scorecard + Luminor-kernel Overseer synthesis across lanes 1-6",
