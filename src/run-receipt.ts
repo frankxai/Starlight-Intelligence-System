@@ -110,7 +110,7 @@ const DECIDED_BY: DecisionBy[] = ["human", "agent", "policy"];
 const OUTCOMES: DecisionOutcome[] = ["approved", "rejected", "deferred"];
 /** Rounding tolerance when checking totals against stage sums. */
 const EUR_TOLERANCE = 0.0051;
-/** DSSE issuers emit one or a few signatures; more than this is a cost attack, not a receipt. */
+/** DSSE issuers emit one or a few signatures. Above this count the envelope is refused before any signature is checked, which bounds the verification cost a caller can impose. */
 export const MAX_SIGNATURES = 8;
 /** RFC 3339 date-time with a zone designator. Date.parse alone accepts "2026" and other partial forms. */
 const DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|[+-]\d{2}:\d{2})$/;
