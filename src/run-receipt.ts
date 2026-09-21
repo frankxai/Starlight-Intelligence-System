@@ -108,8 +108,10 @@ const VERDICTS: RunReceiptVerdict[] = ["PASS", "FAIL", "PARTIAL"];
 const STAGE_STATUSES: StageStatus[] = ["ok", "failed", "skipped"];
 const DECIDED_BY: DecisionBy[] = ["human", "agent", "policy"];
 const OUTCOMES: DecisionOutcome[] = ["approved", "rejected", "deferred"];
-/** Rounding tolerance when checking totals against stage sums. */
-const EUR_TOLERANCE = 0.0051;
+/** Rounding tolerance when checking totals against stage sums: half of the 4-decimal rounding unit, or 0.5 percent of the stage sum, whichever is larger. */
+function eurTolerance(stageSum: number): number {
+  return Math.max(0.00005, stageSum * 0.005);
+}
 /** DSSE issuers emit one or a few signatures. Above this count the envelope is refused before any signature is checked, which bounds the verification cost a caller can impose. */
 export const MAX_SIGNATURES = 8;
 /** RFC 3339 date-time with a zone designator. Date.parse alone accepts "2026" and other partial forms. */
@@ -263,7 +265,7 @@ export function receiptProblems(receipt: unknown): string[] {
       problems.push("totals.tokens.input and totals.tokens.output are required");
     }
     // Totals may exceed the stage sums (overhead, untracked steps) but never fall short of them.
-    if (anyCost && isNonNegative(t.costEur) && t.costEur + EUR_TOLERANCE < costSum) {
+    if (anyCost && isNonNegative(t.costEur) && t.costEur + eurTolerance(costSum) < costSum) {
       problems.push(`totals.costEur ${t.costEur} is below the stage sum ${costSum.toFixed(4)}`);
     }
     if (isNonNegative(t.latencyMs) && t.latencyMs < latencySum) problems.push(`totals.latencyMs ${t.latencyMs} is below the stage sum ${latencySum}`);
