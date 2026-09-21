@@ -1,0 +1,122 @@
+[
+  {
+    "page": "convergence-map-v4.html",
+    "width": 1440,
+    "reducedMotion": "no-preference",
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflow": false,
+    "height": 5339,
+    "focusable": 71,
+    "errors": [
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    "page": "convergence-map-v4.html",
+    "width": 375,
+    "reducedMotion": "no-preference",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "overflow": false,
+    "height": 10884,
+    "focusable": 71,
+    "errors": [
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    "page": "convergence-map-v4.html",
+    "width": 375,
+    "reducedMotion": "reduce",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "overflow": false,
+    "height": 10884,
+    "focusable": 71,
+    "errors": [
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    "page": "memory-log-prototype.html",
+    "width": 1440,
+    "reducedMotion": "no-preference",
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflow": false,
+    "height": 1615,
+    "focusable": 6,
+    "errors": [
+      "console: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    "page": "memory-log-prototype.html",
+    "width": 375,
+    "reducedMotion": "no-preference",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "overflow": false,
+    "height": 3897,
+    "focusable": 6,
+    "errors": [
+      "console: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    "page": "memory-log-prototype.html",
+    "width": 375,
+    "reducedMotion": "reduce",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "overflow": false,
+    "height": 3897,
+    "focusable": 6,
+    "errors": [
+      "console: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    "page": "ledger-countersign-prototype.html",
+    "width": 1440,
+    "reducedMotion": "no-preference",
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflow": false,
+    "height": 1636,
+    "focusable": 9,
+    "errors": [
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    "page": "ledger-countersign-prototype.html",
+    "width": 375,
+    "reducedMotion": "no-preference",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "overflow": false,
+    "height": 4013,
+    "focusable": 9,
+    "errors": [
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    "page": "ledger-countersign-prototype.html",
+    "width": 375,
+    "reducedMotion": "reduce",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "overflow": false,
+    "height": 4013,
+    "focusable": 9,
+    "errors": [
+      "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+    ]
+  }
+]

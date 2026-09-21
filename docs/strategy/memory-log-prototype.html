@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memory log prototype</title>
+<meta name="description" content="Prototype for convergence v4, memory direction: one append-only signed log, six vaults and every index rebuilt as projections, deletion as a tombstone and a replay. Example values throughout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--void:#060609;--ink:#e2e8f0;--ink-2:#94a3b8;--ink-3:#64748b;--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;
+--surface:rgba(255,255,255,.025);--surface-2:rgba(255,255,255,.045);--border:rgba(255,255,255,.07);--border-2:rgba(255,255,255,.14);
+--serif:"Newsreader",Georgia,serif;--sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--ease:cubic-bezier(.4,0,.2,1);color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{margin:0;background:var(--void);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-inline:clamp(16px,3vw,40px);padding-block:0 64px;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1100px 520px at 12% -10%,rgba(167,139,250,.14),transparent 60%),radial-gradient(900px 480px at 95% 5%,rgba(103,232,249,.08),transparent 60%)}
+.page{position:relative;z-index:1;max-width:1360px;margin:0 auto}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:.2em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-2);border-radius:999px;padding:4px 10px;font-family:var(--mono);font-size:11px;color:var(--ink-2);background:var(--surface);letter-spacing:.04em}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--emerald);display:inline-block}
+.chip.warn{border-color:rgba(251,191,36,.4);color:var(--amber)}.chip.warn i{background:var(--amber)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px 10px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:26px;height:26px;position:relative}
+.brand .mark::before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff 0,var(--violet) 25%,transparent 62%)}
+.brand .mark::after{content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.35);border-radius:50%}
+.brand b{font-weight:600;font-size:14px}.brand span{color:var(--ink-3);font-size:13px}
+.top .right{display:flex;gap:8px;flex-wrap:wrap}
+.hero{padding-block:36px 22px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:end}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,4.8vw,60px);line-height:1.02;letter-spacing:-.015em;margin:0;text-wrap:balance}
+h1 em{font-style:italic;color:var(--violet)}
+.lede{color:var(--ink-2);max-width:62ch;margin:14px 0 0;font-size:16px}
+.stack{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.stage{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.3fr) 320px;gap:16px;margin-top:20px;align-items:start}
+.panel{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:16px;min-width:0}
+.panel h2{margin:0 0 12px;font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.panel h2 span{font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-3)}
+/* log */
+.log{font-family:var(--mono);font-size:11.5px;line-height:1.5;max-height:420px;overflow:auto;border:1px solid var(--border);border-radius:10px;background:#0a0b10}
+.ev{display:grid;grid-template-columns:36px 118px minmax(0,1fr) auto;gap:8px;padding:7px 10px;border-bottom:1px solid var(--border);align-items:baseline}
+.ev:last-child{border-bottom:0}
+.ev .seq{color:var(--ink-3)}
+.ev .kind{color:var(--cyan);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev.receipt .kind{color:var(--violet)}.ev.promote .kind{color:var(--emerald)}.ev.contra .kind{color:var(--amber)}.ev.tomb .kind{color:var(--rose)}.ev.consent .kind{color:var(--emerald)}
+.ev .subj{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev .sig{color:var(--ink-3);font-size:10.5px}
+.ev.new{background:rgba(167,139,250,.08)}
+.ev.dead .subj{text-decoration:line-through;color:var(--ink-3)}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{border:1px solid var(--border-2);background:transparent;color:var(--ink);border-radius:8px;padding:9px 12px;font:500 12px var(--sans);cursor:pointer;min-height:38px;transition:border-color 150ms var(--ease),background 150ms var(--ease)}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.btn.pri{border-color:rgba(167,139,250,.55);background:linear-gradient(180deg,rgba(167,139,250,.28),rgba(167,139,250,.12));color:#fff}
+.btn.pri:hover{background:linear-gradient(180deg,rgba(167,139,250,.4),rgba(167,139,250,.18));color:#fff}
+.btn.danger{border-color:rgba(251,113,133,.45);color:var(--rose)}.btn.danger:hover{background:rgba(251,113,133,.08);color:var(--rose)}
+.hint{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+/* projections */
+.vaults{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.vault{border:1px solid var(--border);border-radius:10px;padding:10px 11px;background:var(--void);min-width:0;position:relative;transition:border-color 300ms var(--ease)}
+.vault.hot{border-color:rgba(103,232,249,.55)}
+.vault .n{font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.vault b{display:block;font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-.01em;margin-top:2px}
+.vault small{display:block;font-size:11.5px;color:var(--ink-2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vault .sym{position:absolute;top:8px;right:9px;color:var(--violet);font-size:12px}
+.proj{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pcard{border:1px solid var(--border);border-radius:10px;padding:10px 11px;background:var(--void);min-width:0;transition:border-color 300ms var(--ease)}
+.pcard.hot{border-color:rgba(52,211,153,.55)}
+.pcard .n{font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;gap:6px}
+.pcard .n i{font-style:normal;color:var(--emerald);text-transform:none;letter-spacing:0}
+.pcard .v{font-family:var(--mono);font-size:12px;color:var(--ink);margin-top:5px;line-height:1.5;word-break:break-all}
+.pcard .v span{color:var(--ink-3)}
+.graph{height:120px;border-radius:8px;background:radial-gradient(300px 120px at 50% 50%,rgba(167,139,250,.08),transparent 70%);display:block;width:100%;margin-top:6px}
+/* rebuild */
+.rebuild .bar{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin:6px 0 10px}
+.rebuild .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width 400ms var(--ease)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.kv b{color:var(--ink);font-weight:500;word-break:break-all}
+.kv .ok{color:var(--emerald)}.kv .warn{color:var(--amber)}
+.fals{margin-top:12px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.06);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#e7dcc0;line-height:1.5}
+.fals b{color:#fff;font-weight:500;display:block;font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+/* deletion walkthrough */
+.walk{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.step{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:14px 15px}
+.step .num{font-family:var(--mono);font-size:26px;font-weight:500;letter-spacing:-.02em;color:var(--ink)}
+.step .num small{font-size:12px;color:var(--ink-3);margin-left:4px}
+.step h3{font:500 14.5px var(--sans);margin:8px 0 4px}
+.step p{margin:0;color:var(--ink-2);font-size:13px;line-height:1.55}
+.step code{font-family:var(--mono);font-size:11.5px;color:var(--cyan)}
+.truth{margin-top:18px;border-left:2px solid var(--amber);padding:12px 16px;color:var(--ink-2);font-size:13.5px;max-width:78ch;line-height:1.6}
+.truth b{color:var(--ink);font-weight:500}
+.truth code{font-family:var(--mono);font-size:12px;color:var(--cyan)}
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:1100px){.stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.stage .rebuild{grid-column:1/-1}}
+@media (max-width:760px){.hero{grid-template-columns:1fr;gap:16px}.stage{grid-template-columns:1fr}.vaults{grid-template-columns:repeat(2,minmax(0,1fr))}.proj{grid-template-columns:1fr}.walk{grid-template-columns:1fr}.ev{grid-template-columns:36px minmax(0,1fr);grid-template-areas:"seq kind" "subj subj" "sig sig"}.ev .seq{grid-area:seq}.ev .kind{grid-area:kind}.ev .subj{grid-area:subj;white-space:normal}.ev .sig{grid-area:sig}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div class="brand"><div class="mark" aria-hidden="true"></div><b>Starlight Intelligence</b><span>Memory log prototype</span></div>
+    <div class="right">
+      <span class="chip warn"><i></i>Example values throughout</span>
+      <span class="chip"><i></i>Convergence v4 · memory direction B · Board proposal attached</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">The most consequential architecture move</div>
+      <h1>One log. Six vaults as <em>projections.</em></h1>
+      <p class="lede">Every write to memory is an appended, signed event. The vaults, the palace, the console graph, the search index and the receipts ledger are rebuilt from that log by one runner. Nothing is edited in place. Deletion is a tombstone and a replay. The projections on this page are computed from the log in the page, so what you see is the mechanism itself rather than a picture of it.</p>
+    </div>
+    <div class="stack">
+      <span class="chip"><i style="background:var(--violet)"></i>Events signed with the same envelope as receipts</span>
+      <span class="chip"><i style="background:var(--cyan)"></i>Projections rebuildable byte for byte</span>
+      <span class="chip"><i style="background:var(--rose)"></i>Erasure: tombstone, replay, shred the key</span>
+    </div>
+  </section>
+
+  <section class="stage">
+    <div class="panel" aria-label="The log">
+      <h2>The log <span id="logmeta" class="mono">seq 0 · 0 bytes</span></h2>
+      <div class="log" id="log" role="log" aria-live="polite"></div>
+      <div class="ctl">
+        <button class="btn pri" id="b-atom" type="button">Append atom</button>
+        <button class="btn" id="b-receipt" type="button">Issue receipt</button>
+        <button class="btn" id="b-promote" type="button">Promote</button>
+        <button class="btn" id="b-contra" type="button">Flag contradiction</button>
+        <button class="btn danger" id="b-tomb" type="button">Tombstone last atom</button>
+        <button class="btn" id="b-rebuild" type="button">Rebuild all</button>
+      </div>
+      <p class="hint">Each line is one JSONL event: sequence, time, kind, subject digest, signer key id. Kinds shown: atom.added, receipt.issued, promote, contradiction.flagged, consent.granted, tombstone. The six vault names are the classification an atom carries, so the taxonomy stays the same; what changes is where truth lives.</p>
+    </div>
+
+    <div class="panel" aria-label="Projections">
+      <h2>Projections <span>rebuilt from the log · nothing hand edited</span></h2>
+      <div class="vaults" id="vaults"></div>
+      <div class="proj">
+        <div class="pcard" id="p-palace"><div class="n">Palace <i>projection</i></div><div class="v"><span>rooms</span> <b id="palace-rooms">0</b> · <span>walk order by recency</span></div></div>
+        <div class="pcard" id="p-index"><div class="n">Search index <i>projection</i></div><div class="v"><span>rows</span> <b id="index-rows">0</b> · <span>fts + vec, disposable</span></div></div>
+        <div class="pcard" id="p-receipts"><div class="n">Receipts ledger <i>projection</i></div><div class="v"><span>signed</span> <b id="rc-count">0</b> · <span>subjects</span> <b id="rc-subj">0</b></div></div>
+        <div class="pcard" id="p-graph"><div class="n">Console graph <i>projection</i></div><canvas class="graph" id="graph" width="600" height="120" role="img" aria-label="Graph of atoms and their links, rebuilt from the log"></canvas></div>
+      </div>
+    </div>
+
+    <div class="panel rebuild" aria-label="Rebuild">
+      <h2>Rebuild <span id="rb-state">idle</span></h2>
+      <div class="bar"><i id="rb-bar"></i></div>
+      <div class="kv">
+        <span>replayed</span><b id="rb-seq">0 of 0</b>
+        <span>vault checksum</span><b id="ck-vaults" class="ok">…</b>
+        <span>palace checksum</span><b id="ck-palace" class="ok">…</b>
+        <span>index checksum</span><b id="ck-index" class="ok">…</b>
+        <span>diff vs hand vault</span><b id="rb-diff">0.4 % <span style="color:var(--ink-3)">(example)</span></b>
+        <span>tombstoned</span><b id="rb-tomb">0 atoms</b>
+        <span>runner</span><b>one job · local first, Railway later</b>
+      </div>
+      <div class="fals"><b>Falsifier</b>A projection rebuilt from the log differs from the hand-maintained vault it replaces by more than 2 percent of atoms on 2026-12-31, or a rebuild of the full log takes longer than one Sunday loop. Either is a reject.</div>
+    </div>
+  </section>
+
+  <section aria-label="Deletion as replay">
+    <div class="eyebrow" style="margin-top:22px">Erasure without editing history</div>
+    <div class="walk">
+      <div class="step"><div class="num">1<small>tombstone</small></div><h3>Append, never edit</h3><p>A <code>tombstone</code> event names the atom digest, the requester and the legal basis. The original event stays in the log; the log does not lie about what it once held.</p></div>
+      <div class="step"><div class="num">2<small>replay</small></div><h3>Every projection forgets</h3><p>The runner replays and skips tombstoned subjects. Vaults, palace, index, graph and the console lose the atom in one pass. No projection can keep a copy the log did not sanction.</p></div>
+      <div class="step"><div class="num">3<small>shred</small></div><h3>Receipts keep their digest, lose the body</h3><p>Content is encrypted per subject; erasure destroys the subject key. A receipt that cited the atom still verifies against its <code>subject.digest</code>, and nobody can read what it was.</p></div>
+    </div>
+  </section>
+
+  <p class="truth"><b>What is real and what is prototype.</b> Real today: append-only JSONL is the primary memory substrate (Board record 2026-05-23; migration 168 of 168 atoms), the work graph is an event log with ten event kinds (<code>src/work-graph.ts</code>), the receipts ledger appends one JSONL line per receipt (<code>src/mcp-server-v01.ts</code>), and <code>AGENTS.md</code> already describes the vaults as event-sourced JSONL truth. Prototype: one envelope for all three logs, the projection runner, tombstone and consent event kinds, per-subject keys, and the checksums. The move changes where truth lives, so it is a Board question; the proposal is section 7 of <code>2026-09-21-convergence-v4.md</code>. Every number on this page is an example.</p>
+
+  <footer>
+    <span>Built on SIP · Starlight Intelligence Systems · memory log prototype · 2026-09-21</span>
+    <span>convergence v4 · memory direction B</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var VAULTS = ['strategic','technical','creative','operational','wisdom','horizon'];
+  var SYM = {strategic:'◆',technical:'⬡',creative:'✦',operational:'▸',wisdom:'◎',horizon:'↗'};
+  var seq = 0, log = [];
+  var keyid = 'c82e4bbc';
+
+  // deterministic pseudo hash for example digests (a real log uses sha256)
+  function h(s){ var x=2166136261; for(var i=0;i<s.length;i++){ x^=s.charCodeAt(i); x=(x*16777619)>>>0; } return ('0000000'+x.toString(16)).slice(-8); }
+  function digest(s){ return h(s)+h(s+'|')+'…'; }
+  function ts(){ var d=new Date(1790035000000+seq*61000); return d.toISOString().slice(11,19); }
+
+  function append(kind, fields){
+    seq += 1;
+    var ev = Object.assign({seq:seq, at:ts(), kind:kind, keyid:keyid}, fields);
+    ev.sig = h(JSON.stringify(ev));
+    log.push(ev);
+    return ev;
+  }
+
+  // seed: an example day
+  var titles = ['Cascade beats one call on twenty briefs','Nebius has no prompt caching yet','Receipt card is the one shared object','Room mode intake via QR','Retainers fund the year','Letters to 2036'];
+  var seedVaults = ['technical','technical','creative','operational','strategic','horizon'];
+  for(var i=0;i<6;i++){ append('atom.added',{vault:seedVaults[i],title:titles[i],subject:digest(titles[i]),links:i>0?[1+(i%3)]:[]}); }
+  append('receipt.issued',{run:'desk.brief',subject:digest('brief-0917'),costEur:0.0071,title:'desk.brief · brief.md · €0.0071 (example)'});
+  append('consent.granted',{gate:'train',subject:digest(titles[0]),title:'train · human · frank'});
+  append('promote',{subject:digest(titles[1]),from:'technical',to:'wisdom',title:'technical → wisdom · rule: stable claim + provenance + human'});
+
+  // projections, computed from the log
+  function project(upTo){
+    var atoms = {}, order = [], tomb = {}, receipts = [], promos = {}, contras = 0;
+    log.slice(0, upTo).forEach(function(ev){
+      if(ev.kind==='atom.added'){ atoms[ev.subject]=ev; order.push(ev.subject); }
+      if(ev.kind==='tombstone'){ tomb[ev.subject]=true; }
+      if(ev.kind==='receipt.issued'){ receipts.push(ev); }
+      if(ev.kind==='promote'){ promos[ev.subject]=ev.to; }
+      if(ev.kind==='contradiction.flagged'){ contras++; }
+    });
+    var live = order.filter(function(s){ return !tomb[s]; });
+    var byVault = {}; VAULTS.forEach(function(v){ byVault[v]=[]; });
+    live.forEach(function(s){ var a=atoms[s]; var v=promos[s]||a.vault; byVault[v].push(a); });
+    var subjects = {}; receipts.forEach(function(r){ subjects[r.subject]=1; });
+    return {atoms:atoms, live:live, byVault:byVault, tomb:Object.keys(tomb).length, receipts:receipts.length, subjects:Object.keys(subjects).length, contras:contras,
+      cks:{vaults:h(JSON.stringify(byVault)), palace:h(live.join(',')), index:h(live.length+':'+seq)}};
+  }
+
+  var logEl=document.getElementById('log'), vaultsEl=document.getElementById('vaults'), meta=document.getElementById('logmeta');
+  var gc=document.getElementById('graph'), g=gc.getContext('2d');
+
+  function renderLog(newSeq){
+    var p = project(log.length);
+    var deadSet = {}; log.forEach(function(ev){ if(ev.kind==='tombstone') deadSet[ev.subject]=1; });
+    logEl.innerHTML = log.map(function(ev){
+      var cls = ev.kind==='receipt.issued'?'receipt':ev.kind==='promote'?'promote':ev.kind==='contradiction.flagged'?'contra':ev.kind==='tombstone'?'tomb':ev.kind==='consent.granted'?'consent':'';
+      var dead = ev.kind==='atom.added' && deadSet[ev.subject] ? ' dead' : '';
+      var isNew = ev.seq===newSeq ? ' new' : '';
+      var subj = ev.title || ev.subject;
+      return '<div class="ev '+cls+dead+isNew+'"><span class="seq">'+ev.seq+'</span><span class="kind">'+ev.kind+'</span><span class="subj" title="'+ev.subject+'">'+esc(subj)+'</span><span class="sig">'+ev.keyid+' · '+ev.sig.slice(0,6)+'</span></div>';
+    }).join('');
+    logEl.scrollTop = logEl.scrollHeight;
+    var bytes = JSON.stringify(log).length;
+    meta.textContent = 'seq '+seq+' · '+bytes.toLocaleString()+' bytes';
+    return p;
+  }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  function renderProjections(p, hotVault){
+    vaultsEl.innerHTML = VAULTS.map(function(v){
+      var list=p.byVault[v]; var last=list.length?list[list.length-1].title:'empty';
+      return '<div class="vault'+(v===hotVault?' hot':'')+'" id="v-'+v+'"><span class="sym" aria-hidden="true">'+SYM[v]+'</span><div class="n">'+v+'</div><b>'+list.length+'</b><small title="'+esc(last)+'">'+esc(last)+'</small></div>';
+    }).join('');
+    document.getElementById('palace-rooms').textContent = p.live.length;
+    document.getElementById('index-rows').textContent = p.live.length*3;
+    document.getElementById('rc-count').textContent = p.receipts;
+    document.getElementById('rc-subj').textContent = p.subjects;
+    document.getElementById('ck-vaults').textContent = p.cks.vaults;
+    document.getElementById('ck-palace').textContent = p.cks.palace;
+    document.getElementById('ck-index').textContent = p.cks.index;
+    document.getElementById('rb-tomb').textContent = p.tomb+' atom'+(p.tomb===1?'':'s');
+    document.getElementById('rb-seq').textContent = seq+' of '+seq;
+    drawGraph(p);
+  }
+
+  var W=600,H=120;
+  function sizeGraph(){ var d=devicePixelRatio||1; W=gc.clientWidth||600; H=gc.clientHeight||120; gc.width=W*d; gc.height=H*d; g.setTransform(d,0,0,d,0,0); }
+  var lastP=null;
+  function drawGraph(p){
+    lastP=p; g.clearRect(0,0,W,H);
+    var n=p.live.length; if(!n) return;
+    var pts=p.live.map(function(s,i){ var a=(i/n)*Math.PI*2-Math.PI/2; return {x:W/2+Math.cos(a)*(Math.min(W,H*2.6)/2-18), y:H/2+Math.sin(a)*(H/2-14), a:p.atoms[s]}; });
+    g.strokeStyle='rgba(148,163,184,.25)'; g.lineWidth=1;
+    pts.forEach(function(pt,i){ (pt.a.links||[]).forEach(function(l){ var j=(l-1)%n; if(pts[j]&&j!==i){ g.beginPath(); g.moveTo(pt.x,pt.y); g.lineTo(pts[j].x,pts[j].y); g.stroke(); } }); });
+    pts.forEach(function(pt){ var c = pt.a.vault==='horizon'?'#a78bfa':pt.a.vault==='strategic'?'#fbbf24':'#67e8f9';
+      var glow=g.createRadialGradient(pt.x,pt.y,0,pt.x,pt.y,14); glow.addColorStop(0,c+'55'); glow.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=glow; g.beginPath(); g.arc(pt.x,pt.y,14,0,7); g.fill();
+      g.fillStyle=c; g.beginPath(); g.arc(pt.x,pt.y,4.5,0,7); g.fill(); });
+  }
+
+  function refresh(newSeq, hot){ var p=renderLog(newSeq); renderProjections(p, hot); }
+  sizeGraph(); addEventListener('resize', function(){ sizeGraph(); if(lastP) drawGraph(lastP); });
+  refresh();
+
+  // actions
+  var extra = [['operational','Five phones verified the stage receipt (example)'],['creative','Receipt paper: warm on a cold page'],['strategic','Estate factory is the channel; the spine is the loop'],['technical','Second runtime must pass the receipt conformance suite'],['wisdom','Numbers without receipts are stories']];
+  var k=0;
+  document.getElementById('b-atom').onclick=function(){ var e=extra[k%extra.length]; k++; var ev=append('atom.added',{vault:e[0],title:e[1],subject:digest(e[1]+k),links:[1+(k%4)]}); refresh(ev.seq,e[0]); };
+  document.getElementById('b-receipt').onclick=function(){ var c=(0.0029+Math.random()*0.004).toFixed(4); var ev=append('receipt.issued',{run:'constellation.artifact',subject:digest('art'+seq),costEur:+c,title:'constellation.artifact · €'+c+' (example)'}); refresh(ev.seq); flash('p-receipts'); };
+  document.getElementById('b-promote').onclick=function(){ var p=project(log.length); var s=p.live[p.live.length-1]; if(!s) return; var ev=append('promote',{subject:s,from:p.atoms[s].vault,to:'wisdom',title:p.atoms[s].vault+' → wisdom · rule: stable claim + provenance + human'}); refresh(ev.seq,'wisdom'); };
+  document.getElementById('b-contra').onclick=function(){ var p=project(log.length); var s=p.live[0]; if(!s) return; var ev=append('contradiction.flagged',{subject:s,title:'against '+(p.atoms[s].title||'').slice(0,40)+' · hold both, flag for review'}); refresh(ev.seq); };
+  document.getElementById('b-tomb').onclick=function(){ var p=project(log.length); var s=p.live[p.live.length-1]; if(!s) return; var ev=append('tombstone',{subject:s,title:'erase · requester: subject · basis: GDPR art. 17 · key shredded'}); rebuild(ev.seq); };
+  document.getElementById('b-rebuild').onclick=function(){ rebuild(); };
+
+  function flash(id){ var el=document.getElementById(id); el.classList.add('hot'); setTimeout(function(){ el.classList.remove('hot'); }, 900); }
+
+  var bar=document.getElementById('rb-bar'), st=document.getElementById('rb-state'), rbSeq=document.getElementById('rb-seq');
+  function rebuild(newSeq){
+    renderLog(newSeq);
+    if(reduce || typeof gsap==='undefined'){ bar.style.width='100%'; st.textContent='rebuilt · instant path (reduced motion, or no animation library reachable)'; renderProjections(project(log.length)); return; }
+    st.textContent='replaying…'; bar.style.transition='none'; bar.style.width='0'; void bar.offsetWidth; bar.style.transition='';
+    var o={v:0}; var total=log.length;
+    gsap.to(o,{v:total,duration:Math.min(1.6,.25+total*.06),ease:'power2.inOut',onUpdate:function(){ var n=Math.round(o.v); bar.style.width=(n/total*100)+'%'; rbSeq.textContent=n+' of '+total; renderProjections(project(n)); }, onComplete:function(){ st.textContent='rebuilt · '+total+' events · checksums stable'; renderProjections(project(total)); }});
+  }
+})();
+</script>
+</body>
+</html>
