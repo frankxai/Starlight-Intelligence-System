@@ -1,0 +1,426 @@
+<title>Starlight Research Desk</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --void:#060609;--ink:#e2e8f0;--ink-2:#94a3b8;--ink-3:#64748b;
+  --violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;
+  --surface:rgba(255,255,255,.025);--surface-2:rgba(255,255,255,.045);--border:rgba(255,255,255,.07);--border-2:rgba(255,255,255,.14);
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;--sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--void);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-inline:clamp(16px,3vw,40px);padding-block:0 64px;position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(1100px 520px at 15% -10%,rgba(167,139,250,.14),transparent 60%),radial-gradient(900px 480px at 95% 5%,rgba(103,232,249,.09),transparent 60%)}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.7}
+.page{position:relative;z-index:1;max-width:1360px;margin:0 auto}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-2);border-radius:999px;padding:3px 10px;font-family:var(--mono);font-size:11px;color:var(--ink-2);background:var(--surface)}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--emerald);display:inline-block}
+
+/* header */
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:18px 10px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:26px;height:26px;position:relative}
+.brand .mark::before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff 0,var(--violet) 25%,transparent 62%);filter:blur(.2px)}
+.brand .mark::after{content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.35);border-radius:50%}
+.brand b{font-weight:600;font-size:14px;letter-spacing:.01em}
+.brand span{color:var(--ink-3);font-size:13px}
+.top .right{display:flex;gap:8px;flex-wrap:wrap}
+
+.hero{padding-block:38px 26px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:32px;align-items:end}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,4.6vw,58px);line-height:1.02;letter-spacing:-.015em;margin:0;text-wrap:balance}
+h1 em{font-style:italic;color:var(--violet)}
+.lede{color:var(--ink-2);max-width:62ch;margin:14px 0 0;font-size:16px}
+.stack{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.stack .chip{font-size:11.5px}
+.stack .chip.nebius i{background:var(--cyan)}
+.stack .chip.eu i{background:var(--violet)}
+
+/* ask bar */
+.ask{margin-top:6px;border:1px solid var(--border-2);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.015));border-radius:14px;padding:14px 14px 12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;box-shadow:0 30px 80px -40px rgba(167,139,250,.35)}
+.ask label{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.ask select{width:100%;background:transparent;border:0;color:var(--ink);font-family:var(--serif);font-size:clamp(17px,2.1vw,22px);line-height:1.3;outline:none;appearance:none;padding:0;cursor:pointer}
+.ask select:focus-visible{outline:2px solid var(--violet);outline-offset:6px;border-radius:6px}
+.run{border:1px solid rgba(167,139,250,.55);background:linear-gradient(180deg,rgba(167,139,250,.28),rgba(167,139,250,.12));color:#fff;border-radius:10px;padding:12px 18px;font:600 13px var(--sans);letter-spacing:.02em;cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform 150ms var(--ease),background 150ms var(--ease)}
+.run:hover{background:linear-gradient(180deg,rgba(167,139,250,.4),rgba(167,139,250,.18))}
+.run:active{transform:translateY(1px)}
+.run:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.run svg{width:14px;height:14px}
+.cascade-chips{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:10px;border-top:1px solid var(--border)}
+.cascade-chips .arrow{color:var(--ink-3);font-family:var(--mono);font-size:11px}
+.cascade-chips .chip.model{border-color:rgba(103,232,249,.35)}
+.cascade-chips .chip.model i{background:var(--cyan)}
+.cascade-chips .chip.judge i{background:var(--emerald)}
+.cascade-chips .chip.embed i{background:var(--violet)}
+
+/* stage */
+.stage{display:grid;grid-template-columns:260px minmax(0,1fr) 340px;gap:16px;margin-top:22px;align-items:start}
+.panel{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:16px}
+.panel h2{margin:0 0 12px;font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center}
+.panel h2 span{font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-3)}
+
+/* cascade timeline */
+.steps{display:flex;flex-direction:column;gap:0;position:relative}
+.step{display:grid;grid-template-columns:18px 1fr;gap:10px;padding:9px 0;position:relative}
+.step + .step::before{content:"";position:absolute;left:8px;top:-9px;height:9px;width:1px;background:var(--border-2)}
+.step .dot{width:17px;height:17px;border-radius:50%;border:1px solid var(--border-2);background:var(--void);position:relative;margin-top:2px;transition:border-color 300ms var(--ease),box-shadow 300ms var(--ease)}
+.step .dot::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--ink-3);opacity:.35;transition:opacity 300ms,background 300ms}
+.step.on .dot{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(103,232,249,.12)}
+.step.on .dot::after{background:var(--cyan);opacity:1}
+.step.done .dot{border-color:var(--emerald)}
+.step.done .dot::after{background:var(--emerald);opacity:1}
+.step.warn .dot{border-color:var(--amber)}
+.step.warn .dot::after{background:var(--amber);opacity:1}
+.step .name{font-size:13px;font-weight:500}
+.step .meta{font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;gap:10px;flex-wrap:wrap;margin-top:2px}
+.step .meta b{color:var(--ink-2);font-weight:500}
+.step .model{font-family:var(--mono);font-size:10.5px;color:var(--cyan);margin-top:1px}
+.step.judge .model{color:var(--emerald)}
+.step.embed .model{color:var(--violet)}
+.step .bar{height:2px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.step .bar i{display:block;height:100%;width:0;background:var(--cyan);transition:width 500ms var(--ease)}
+.step.done .bar i{width:100%;background:var(--emerald)}
+.step.warn .bar i{width:100%;background:var(--amber)}
+.tally{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tally div{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.tally div b{display:block;font-size:18px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+
+/* brief */
+.brief{padding:22px 24px 20px}
+.brief .kicker{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brief h3{font-family:var(--serif);font-weight:400;font-size:clamp(22px,2.4vw,30px);line-height:1.15;letter-spacing:-.01em;margin:8px 0 4px;text-wrap:balance}
+.brief .sub{color:var(--ink-2);font-size:14px;margin:0 0 18px}
+.sec{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--border)}
+.sec h4{margin:0;font:500 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding-top:3px}
+.sec p{margin:0;font-size:14.5px;line-height:1.6;color:#d6dde8;max-width:66ch}
+.sec p + p{margin-top:8px}
+sup.c{font-family:var(--mono);font-size:10px;color:var(--cyan);margin-left:2px;cursor:help}
+.contra{border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.06);border-radius:10px;padding:12px 14px;margin:14px 0 4px;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.contra .flag{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);padding-top:2px;white-space:nowrap}
+.contra p{margin:0;font-size:13.5px;color:#e7dcc0;line-height:1.55}
+.contra p b{color:#fff;font-weight:500}
+.contra .act{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.contra .act button{background:transparent;border:1px solid rgba(251,191,36,.4);color:var(--amber);border-radius:6px;padding:5px 10px;font:500 11.5px var(--sans);cursor:pointer}
+.contra .act button:hover{background:rgba(251,191,36,.1)}
+.sources{margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.sources ol{margin:8px 0 0;padding-left:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px 18px}
+.sources li{font-family:var(--mono);font-size:11px;color:var(--ink-3);display:grid;grid-template-columns:22px 1fr;gap:4px;line-height:1.45}
+.sources li span{color:var(--cyan)}
+.sources li a{color:var(--ink-2)}
+.sources li em{font-style:normal;color:var(--emerald)}
+
+/* receipt */
+.receipt{position:relative;background:#f4f1ea;color:#161513;border-radius:6px;padding:20px 18px 26px;font-family:var(--mono);font-size:12px;line-height:1.5;box-shadow:0 30px 60px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.05);
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,radial-gradient(circle at 6px 100%,transparent 5px,#000 5.5px) bottom/12px 10px repeat-x;mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,radial-gradient(circle at 6px 100%,transparent 5px,#000 5.5px) bottom/12px 10px repeat-x}
+.receipt .head{text-align:center;border-bottom:1px dashed #b8b2a4;padding-bottom:10px;margin-bottom:10px}
+.receipt .head b{display:block;font-family:var(--serif);font-size:20px;font-weight:500;letter-spacing:-.01em;color:#111}
+.receipt .head small{display:block;font-size:10.5px;color:#6b665b;letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.line{display:flex;justify-content:space-between;gap:10px;padding:2.5px 0;opacity:1}
+.line .k{color:#57524a}
+.line .v{font-weight:500;text-align:right;white-space:nowrap}
+.line.sub .k{padding-left:14px;color:#8a8479}
+.line.sub .v{font-weight:400;color:#57524a}
+.rule{border-top:1px dashed #b8b2a4;margin:8px 0}
+.line.total .k,.line.total .v{font-weight:600;font-size:14px;color:#111}
+.line.good .v{color:#0f7a4f}
+.seal{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;border-top:1px dashed #b8b2a4;padding-top:10px}
+.seal .ring{width:42px;height:42px;border-radius:50%;border:1.5px solid #6d5bd0;position:relative;display:grid;place-items:center;color:#6d5bd0;font-size:9px;letter-spacing:.08em;font-weight:600}
+.seal .ring::after{content:"";position:absolute;inset:4px;border:1px solid rgba(109,91,208,.5);border-radius:50%}
+.seal .sig{font-size:10.5px;color:#57524a;line-height:1.45;word-break:break-all}
+.seal .sig b{display:block;color:#111;font-weight:600}
+.edge{margin-top:14px}
+.edge h2{margin-bottom:10px}
+.meter{display:grid;grid-template-columns:82px 1fr 64px;gap:8px 10px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--ink-2)}
+.meter .track{height:8px;border-radius:4px;background:var(--border);position:relative;overflow:hidden}
+.meter .track i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;width:0;transition:width 700ms var(--ease)}
+.meter .ours i{background:linear-gradient(90deg,var(--cyan),var(--violet))}
+.meter .base i{background:rgba(251,113,133,.55)}
+.meter .lab{color:var(--ink-3)}
+.meter .val{text-align:right;color:var(--ink)}
+.meter .val.win{color:var(--emerald)}
+.meter .row-h{grid-column:1/-1;display:flex;gap:14px;font-size:10.5px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.meter .row-h b{font-weight:500;color:var(--ink-2)}
+.meter .row-h .sw{display:inline-block;width:10px;height:6px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.foot{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+
+/* lower */
+.lower{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-top:16px}
+.graph{position:relative;min-height:360px}
+.graph canvas{width:100%;height:340px;display:block;border-radius:10px;background:radial-gradient(600px 300px at 50% 50%,rgba(167,139,250,.06),transparent 70%)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:8px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;margin-right:5px}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px}
+th{text-align:left;font-weight:500;color:var(--ink-3);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--border-2)}
+td{padding:8px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums}
+td.n{text-align:right}
+td.win{color:var(--emerald);font-weight:500}
+td.q{color:var(--ink-2)}
+.evalfoot{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+.cmd{background:#0b0b10;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);margin-top:12px;overflow-x:auto;white-space:nowrap}
+.cmd b{color:var(--emerald);font-weight:500}
+.cmd .c{color:var(--ink-3)}
+
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+
+/* motion */
+.fade{opacity:1}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* responsive */
+@media (max-width:1100px){.stage{grid-template-columns:240px minmax(0,1fr)}.stage .panel.rcp{grid-column:1/-1}.lower{grid-template-columns:1fr}}
+@media (max-width:760px){.hero{grid-template-columns:1fr;gap:18px}.stage{grid-template-columns:1fr}.ask{grid-template-columns:1fr}.run{justify-content:center}.sec{grid-template-columns:1fr;gap:4px}.contra{grid-template-columns:1fr;gap:6px}.brief{padding:18px}.top{padding-top:14px}}
+</style>
+
+<canvas class="stars" id="stars" aria-hidden="true"></canvas>
+<div class="page">
+  <header class="top">
+    <div class="brand"><div class="mark" aria-hidden="true"></div><b>Starlight Intelligence</b><span>Research Desk</span></div>
+    <div class="right">
+      <span class="chip"><i></i>Sample run · numbers illustrative until 23 Sept</span>
+      <span class="chip" style="border-color:rgba(103,232,249,.35)"><i style="background:var(--cyan)"></i>Engine: Nebius Token Factory</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Accel AI Innovate · Amsterdam · 23 September 2026</div>
+      <h1>One question in. A brief with <em>every claim linked</em>, a memory you own, and a receipt you can verify.</h1>
+      <p class="lede">Built for founders who publish research every week. Runs on open models hosted in Europe, at a fraction of closed-API cost, and shows you the cost, the speed, and the grounding rate on every single run.</p>
+    </div>
+    <div class="stack">
+      <span class="chip nebius"><i></i>Five Token Factory calls per brief</span>
+      <span class="chip eu"><i></i>EU-hosted inference · JSONL memory the founder owns</span>
+      <span class="chip"><i></i>Signed SIP receipt · cross-family judge · live recall eval</span>
+    </div>
+  </section>
+
+  <section class="ask" aria-label="Ask the desk">
+    <div>
+      <label for="q">Founder question</label>
+      <select id="q">
+        <option>Which EU-hosted open model should a solo founder standardise on for weekly research briefs, and what does one brief actually cost?</option>
+        <option>Is weekly published research still a moat for a creator business in 2026, or has it become table stakes?</option>
+        <option>What changed in agent memory design since June, and should I rebuild my vault around embeddings?</option>
+      </select>
+    </div>
+    <button class="run" id="run" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 2.5v11l10-5.5z" stroke-linejoin="round"/></svg>Run the cascade</button>
+    <div class="cascade-chips" aria-label="Model cascade">
+      <span class="eyebrow" style="margin-right:4px">Cascade</span>
+      <span class="chip">Tavily search · extract</span><span class="arrow">→</span>
+      <span class="chip model"><i></i>Nemotron 3 Nano 30B-A3B</span><span class="arrow">→</span>
+      <span class="chip model"><i></i>DeepSeek V4</span><span class="arrow">→</span>
+      <span class="chip judge"><i></i>GPT-OSS judge</span><span class="arrow">→</span>
+      <span class="chip embed"><i></i>Qwen3-Embedding-8B</span><span class="arrow">→</span>
+      <span class="chip">SIP receipt</span>
+    </div>
+  </section>
+
+  <section class="stage">
+    <div class="panel" aria-label="Cascade">
+      <h2>Cascade <span id="elapsed" class="mono">12.8 s</span></h2>
+      <div class="steps" id="steps">
+        <div class="step done" data-ms="1900"><div class="dot"></div><div><div class="name">Retrieve</div><div class="model">Tavily · search 8 · extract 6</div><div class="meta"><span><b>1.9 s</b></span><span>6 sources</span></div><div class="bar"><i></i></div></div></div>
+        <div class="step done" data-ms="1400"><div class="dot"></div><div><div class="name">Extract claims</div><div class="model">Nemotron 3 Nano 30B-A3B</div><div class="meta"><span><b>1.4 s</b></span><span>11.2k tok</span><span>€0.003</span></div><div class="bar"><i></i></div></div></div>
+        <div class="step done" data-ms="6100"><div class="dot"></div><div><div class="name">Write the brief</div><div class="model">DeepSeek V4</div><div class="meta"><span><b>6.1 s</b></span><span>14.7k tok</span><span>€0.021</span></div><div class="bar"><i></i></div></div></div>
+        <div class="step warn" data-ms="500"><div class="dot"></div><div><div class="name">Check against memory</div><div class="model" style="color:var(--amber)">contradiction.ts · vault</div><div class="meta"><span><b>0.5 s</b></span><span style="color:var(--amber)">1 conflict</span></div><div class="bar"><i></i></div></div></div>
+        <div class="step done judge" data-ms="2200"><div class="dot"></div><div><div class="name">Judge</div><div class="model">GPT-OSS · rubric + grounding</div><div class="meta"><span><b>2.2 s</b></span><span>5.9k tok</span><span>€0.004</span></div><div class="bar"><i></i></div></div></div>
+        <div class="step done embed" data-ms="700"><div class="dot"></div><div><div class="name">Remember + sign</div><div class="model">Qwen3-Embedding-8B · SIP</div><div class="meta"><span><b>0.7 s</b></span><span>1 atom · 6 links</span></div><div class="bar"><i></i></div></div></div>
+      </div>
+      <div class="tally">
+        <div>Cost per brief<b id="t-cost">€0.028</b></div>
+        <div>Wall clock<b id="t-time">12.8 s</b></div>
+        <div>Grounding<b id="t-ground">94%</b></div>
+        <div>Rubric<b id="t-rubric">8.6<span style="font-size:11px;color:var(--ink-3)">/10</span></b></div>
+      </div>
+    </div>
+
+    <article class="panel brief" aria-label="Brief">
+      <div class="kicker"><span class="eyebrow">Brief · lab-report format</span><span class="chip"><i></i>17 claims · 16 cited</span></div>
+      <h3 id="b-title">Standardise on a two-model cascade, not a single model: a small extractor plus one reasoning model keeps a weekly brief under three cents.</h3>
+      <p class="sub">For a solo founder publishing one brief a week, the model choice is a routing decision, not a loyalty decision.</p>
+
+      <div class="sec"><h4>Hypothesis</h4><p>An open-weight cascade on EU-hosted inference matches a closed API on rubric quality for research briefs while cutting cost per brief by an order of magnitude.<sup class="c">[1]</sup><sup class="c">[3]</sup></p></div>
+      <div class="sec"><h4>Method</h4><p>Same question, same eight Tavily sources, two pipelines. Ours: Nemotron 3 Nano extracts claims with quotes and URLs, DeepSeek V4 writes the six-section brief, GPT-OSS scores it against the research rubric. Baseline: one closed model does everything.<sup class="c">[2]</sup><sup class="c">[5]</sup></p></div>
+      <div class="sec"><h4>Results</h4><div><p>Extraction is mechanical work and a 3B-active model does it at a tenth of the price with structured JSON output.<sup class="c">[1]</sup> Synthesis is judgment work and the reasoning model carries it, with citation discipline holding at 16 of 17 claims linked to a source passage.<sup class="c">[4]</sup></p><p>Token Factory exposes an OpenAI-compatible endpoint, so the whole cascade is provider config in the Vercel AI SDK, not custom integration.<sup class="c">[2]</sup> Embeddings for memory recall come from the same engine.<sup class="c">[6]</sup></p></div></div>
+      <div class="sec"><h4>Takeaway</h4><p>Standardise on the cascade shape, and let the model IDs be config strings you swap as the open-weight leaderboard moves. The founder keeps the memory as JSONL, the brief is signed, and every run prints its own cost.<sup class="c">[3]</sup></p></div>
+      <div class="sec"><h4>Next</h4><p>LoRA a small Qwen3 on sixty published briefs for the format, then re-run the rubric. Publish the before-and-after as the next lab report.<sup class="c">[5]</sup></p></div>
+
+      <div class="contra" id="contra" role="note">
+        <div class="flag">Conflict · memory</div>
+        <div>
+          <p>Prior belief in the vault, <b>12 Aug 2026</b>: “keyword retrieval is enough at second-brain scale; embeddings are not worth the dependency.” This brief argues for hosted embeddings on the recall path. <b>Which holds?</b> Run the eval below before promoting either.</p>
+          <div class="act"><button type="button">Keep prior belief</button><button type="button">Promote new claim</button><button type="button">Hold both, flag for review</button></div>
+        </div>
+      </div>
+
+      <div class="sources">
+        <div class="eyebrow">Sources · every citation resolves</div>
+        <ol>
+          <li><span>[1]</span><a href="https://nebius.com/services/token-factory">nebius.com · Token Factory · model catalogue and pricing</a></li>
+          <li><span>[2]</span><a href="https://docs.tokenfactory.nebius.com/api-reference/introduction">docs.tokenfactory.nebius.com · OpenAI-compatible API</a></li>
+          <li><span>[3]</span><a href="https://starlightintelligence.org">starlightintelligence.org · SIP receipts, vault format</a></li>
+          <li><span>[4]</span><a href="https://github.com/tavily-ai/tavily-mcp">github.com/tavily-ai · search, extract, crawl</a></li>
+          <li><span>[5]</span><a href="https://github.com/nebius/token-factory-cookbook">github.com/nebius · cookbook · fine-tuning, LoRA</a></li>
+          <li><span>[6]</span><a href="https://openrouter.ai/qwen/qwen3-embedding-8b">Qwen3-Embedding-8B · served on Token Factory <em>✓</em></a></li>
+        </ol>
+      </div>
+    </article>
+
+    <div class="panel rcp" style="padding:12px" aria-label="Receipt">
+      <h2 style="padding:4px 4px 0">Receipt <span>signed · verifiable</span></h2>
+      <div class="receipt" id="receipt">
+        <div class="head"><b>Starlight Research Desk</b><small>Run #0917 · Amsterdam · eu-north</small></div>
+        <div class="line"><span class="k">Question</span><span class="v">1 · 168 chars</span></div>
+        <div class="line"><span class="k">Sources</span><span class="v">8 searched · 6 kept</span></div>
+        <div class="rule"></div>
+        <div class="line"><span class="k">Extract · Nemotron 3 Nano</span><span class="v">€0.003</span></div>
+        <div class="line sub"><span class="k">11,204 tok · 1.4 s</span><span class="v">3B active</span></div>
+        <div class="line"><span class="k">Brief · DeepSeek V4</span><span class="v">€0.021</span></div>
+        <div class="line sub"><span class="k">14,688 tok · 6.1 s</span><span class="v">reasoning</span></div>
+        <div class="line"><span class="k">Judge · GPT-OSS</span><span class="v">€0.004</span></div>
+        <div class="line sub"><span class="k">5,912 tok · 2.2 s</span><span class="v">other family</span></div>
+        <div class="line"><span class="k">Embed · Qwen3-8B</span><span class="v">€0.000</span></div>
+        <div class="line sub"><span class="k">1 atom · 1024 dims</span><span class="v">sidecar</span></div>
+        <div class="rule"></div>
+        <div class="line total"><span class="k">Cost per brief</span><span class="v">€0.028</span></div>
+        <div class="line"><span class="k">Closed API, same task</span><span class="v" style="color:#b0433f">€0.41 est.</span></div>
+        <div class="line"><span class="k">Wall clock</span><span class="v">12.8 s</span></div>
+        <div class="rule"></div>
+        <div class="line good"><span class="k">Rubric (methodology)</span><span class="v">8.6 / 10</span></div>
+        <div class="line good"><span class="k">Grounding</span><span class="v">16 / 17 · 94%</span></div>
+        <div class="line"><span class="k">Memory conflicts</span><span class="v" style="color:#9a6b00">1 flagged</span></div>
+        <div class="line"><span class="k">Region</span><span class="v">EU · Nebius</span></div>
+        <div class="seal">
+          <div class="ring">SIP</div>
+          <div class="sig"><b>Signed · sip.receipt.v1</b>sha256 · 4f2c…9b1e<br>protocol/sign.mjs · verify at starlightintelligence.org/verify</div>
+        </div>
+      </div>
+      <div class="edge">
+        <h2>Edge meter <span>cascade vs closed API</span></h2>
+        <div class="meter" id="meter">
+          <div class="row-h"><b><span class="sw" style="background:linear-gradient(90deg,var(--cyan),var(--violet))"></span>Cascade on Token Factory</b><b><span class="sw" style="background:rgba(251,113,133,.6)"></span>Closed API</b></div>
+          <div class="lab">Cost</div><div class="track ours"><i data-w="7"></i></div><div class="val win">€0.028</div>
+          <div class="lab"></div><div class="track base"><i data-w="100"></i></div><div class="val">€0.41</div>
+          <div class="lab">Time</div><div class="track ours"><i data-w="58"></i></div><div class="val">12.8 s</div>
+          <div class="lab"></div><div class="track base"><i data-w="100"></i></div><div class="val">22.0 s</div>
+          <div class="lab">Grounding</div><div class="track ours"><i data-w="94"></i></div><div class="val win">94%</div>
+          <div class="lab"></div><div class="track base"><i data-w="81"></i></div><div class="val">81%</div>
+          <div class="lab">Rubric</div><div class="track ours"><i data-w="86"></i></div><div class="val">8.6</div>
+          <div class="lab"></div><div class="track base"><i data-w="88"></i></div><div class="val">8.8</div>
+        </div>
+        <p class="foot">Closed-API figures use published list prices for the same token counts. The rubric gap is inside judge variance; the cost gap is not.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lower">
+    <div class="panel graph" aria-label="Memory graph">
+      <h2>Memory <span>the founder's vault, growing</span></h2>
+      <canvas id="graph" width="900" height="340" role="img" aria-label="Graph of the new brief linked to its six sources and one prior belief"></canvas>
+      <div class="legend"><span><i style="background:var(--violet)"></i>brief</span><span><i style="background:var(--cyan)"></i>source</span><span><i style="background:var(--ink-3)"></i>prior belief</span><span><i style="background:var(--amber)"></i>contradiction edge</span></div>
+    </div>
+    <div class="panel" aria-label="Recall eval">
+      <h2>Recall eval <span>run live on stage</span></h2>
+      <table>
+        <thead><tr><th>Query set</th><th style="text-align:right">keyword</th><th style="text-align:right">hybrid + Qwen3</th></tr></thead>
+        <tbody>
+          <tr><td class="q">recall@1</td><td class="n">1.00</td><td class="n win">1.00</td></tr>
+          <tr><td class="q">recall@3</td><td class="n">1.00</td><td class="n win">1.00</td></tr>
+          <tr><td class="q">recall@5</td><td class="n">1.00</td><td class="n win">1.00</td></tr>
+          <tr><td class="q">paraphrase set · n=24</td><td class="n">0.71</td><td class="n win">0.92</td></tr>
+          <tr><td class="q">cross-lingual · n=12</td><td class="n">0.33</td><td class="n win">0.83</td></tr>
+        </tbody>
+      </table>
+      <div class="cmd"><b>$</b> npm run eval:retrieval <span class="c">--provider nebius:qwen3-embedding-8b</span></div>
+      <p class="evalfoot">The first three rows are the repo's shipped baseline (100% on the labelled corpus). The paraphrase and cross-lingual rows are the sets to add before the event; the numbers shown are targets, not results.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Built on SIP · Starlight Intelligence Systems · prototype for the 23 Sept build</span>
+    <span>starlightintelligence.ai/desk</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasGsap = typeof gsap !== 'undefined';
+
+  /* starfield */
+  const sc = document.getElementById('stars'), sx = sc.getContext('2d');
+  function stars(){ const d = devicePixelRatio||1; sc.width = innerWidth*d; sc.height = innerHeight*d; sx.setTransform(d,0,0,d,0,0); sx.clearRect(0,0,innerWidth,innerHeight);
+    let seed = 7; const rnd = () => (seed = (seed*9301+49297)%233280)/233280;
+    for(let i=0;i<180;i++){ const x=rnd()*innerWidth, y=rnd()*innerHeight, r=rnd()*1.1+.2, a=rnd()*.5+.1; sx.fillStyle=`rgba(226,232,240,${a})`; sx.beginPath(); sx.arc(x,y,r,0,7); sx.fill(); } }
+  stars(); addEventListener('resize', stars);
+
+  /* memory graph */
+  const gc = document.getElementById('graph'), g = gc.getContext('2d');
+  const V='#a78bfa', C='#67e8f9', N='#64748b', A='#fbbf24';
+  const nodes = [
+    {id:'brief', label:'Brief #0917', c:V, r:9, x:.5, y:.5, s:1},
+    {id:'prior', label:'Prior belief · 12 Aug', c:N, r:6, x:.13, y:.34, s:1},
+    {id:'q', label:'Question', c:N, r:5, x:.5, y:.12, s:1},
+    ...[1,2,3,4,5,6].map((n,i)=>({id:'s'+n, label:'['+n+']', c:C, r:4.5, x:.5+.3*Math.cos(i/6*6.283+.95), y:.5+.34*Math.sin(i/6*6.283+.95), s:1})),
+    {id:'m1', label:'memory-foundations', c:N, r:4, x:.82, y:.2, s:1},
+    {id:'m2', label:'proving-ground', c:N, r:4, x:.86, y:.78, s:1},
+    {id:'m3', label:'model-arena', c:N, r:4, x:.14, y:.8, s:1},
+  ];
+  const edges = [['brief','q'],['brief','s1'],['brief','s2'],['brief','s3'],['brief','s4'],['brief','s5'],['brief','s6'],['brief','prior','contra'],['prior','m1'],['m1','m2'],['m2','s4'],['m3','prior'],['m3','s6']];
+  let W=900,H=340,t=0;
+  function sizeGraph(){ const d=devicePixelRatio||1; W=gc.clientWidth; H=gc.clientHeight; gc.width=W*d; gc.height=H*d; g.setTransform(d,0,0,d,0,0); }
+  function draw(){
+    g.clearRect(0,0,W,H); t+=.008;
+    const px = n => n.x*W, py = n => n.y*H;
+    edges.forEach(([a,b,k])=>{ const A_=nodes.find(n=>n.id===a), B_=nodes.find(n=>n.id===b); g.beginPath(); g.moveTo(px(A_),py(A_)); g.lineTo(px(B_),py(B_));
+      if(k==='contra'){ g.setLineDash([4,4]); g.strokeStyle='rgba(251,191,36,.75)'; g.lineWidth=1.2; } else { g.setLineDash([]); g.strokeStyle='rgba(148,163,184,.22)'; g.lineWidth=1; }
+      g.globalAlpha = Math.min(A_.s,B_.s); g.stroke(); g.globalAlpha=1; g.setLineDash([]); });
+    nodes.forEach((n,i)=>{ const x=px(n)+Math.sin(t*1.3+i)*1.2, y=py(n)+Math.cos(t*1.1+i*1.7)*1.2, r=n.r*n.s;
+      if(n.s<=0) return;
+      const glow=g.createRadialGradient(x,y,0,x,y,r*3.2); glow.addColorStop(0,n.c+'55'); glow.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=glow; g.beginPath(); g.arc(x,y,r*3.2,0,7); g.fill();
+      g.fillStyle=n.c; g.beginPath(); g.arc(x,y,r,0,7); g.fill();
+      g.fillStyle='rgba(226,232,240,.75)'; g.font='10.5px "JetBrains Mono", monospace'; g.textAlign = n.x>.6?'right':(n.x<.4?'left':'center');
+      const off = n.x>.6? -r-6 : (n.x<.4? r+6 : 0); g.fillText(n.label, x+off, y + (n.x>=.4&&n.x<=.6 ? r+14 : 4)); });
+    if(!reduce) requestAnimationFrame(draw);
+  }
+  sizeGraph(); addEventListener('resize', ()=>{sizeGraph(); if(reduce) draw();}); draw();
+
+  /* meter bars */
+  function meter(instant){ document.querySelectorAll('#meter .track i').forEach(b=>{ b.style.transition = instant?'none':''; b.style.width = b.dataset.w+'%'; }); }
+  meter(true);
+
+  /* replay */
+  const steps=[...document.querySelectorAll('#steps .step')], stepsWrap=document.getElementById('steps');
+  const receipt=document.getElementById('receipt'), lines=[...receipt.querySelectorAll('.line,.rule,.seal,.head')];
+  const briefEls=[...document.querySelectorAll('.brief h3,.brief .sub,.brief .sec,#contra,.sources')];
+  const brief=document.querySelector('.brief');
+  const elapsedEl=document.getElementById('elapsed');
+  let running=false;
+  function reset(){ steps.forEach(s=>{ s.classList.remove('done','on','warn'); s.querySelector('.bar i').style.width='0'; s.querySelector('.bar i').style.background=''; });
+    lines.forEach(l=>l.style.opacity=0); briefEls.forEach(e=>{e.style.opacity=0; e.style.transform='translateY(6px)'});
+    document.querySelectorAll('#meter .track i').forEach(b=>{b.style.transition='none'; b.style.width='0'}); void document.body.offsetHeight; document.querySelectorAll('#meter .track i').forEach(b=>b.style.transition='');
+    nodes[0].s=0; elapsedEl.textContent='0.0 s'; }
+  function finishAll(){ steps.forEach(s=>s.classList.add(s.dataset.ms==='500'?'warn':'done')); lines.forEach(l=>l.style.opacity=1); briefEls.forEach(e=>{e.style.opacity=1;e.style.transform='none'}); meter(true); nodes[0].s=1; elapsedEl.textContent='12.8 s'; if(reduce) draw(); }
+  function run(){ if(running) return; running=true; reset();
+    if(reduce || !hasGsap){ finishAll(); running=false; return; }
+    const tl=gsap.timeline({onComplete:()=>{running=false;}}); let acc=0;
+    steps.forEach((s,i)=>{ const dur=Math.max(.35, s.dataset.ms/1000*.28);
+      tl.call(()=>{ s.classList.add('on'); s.querySelector('.bar i').style.width='70%'; }, null, acc);
+      tl.call(()=>{ s.classList.remove('on'); s.classList.add(s.dataset.ms==='500'?'warn':'done'); }, null, acc+dur);
+      if(i===2){ tl.to(briefEls,{opacity:1,y:0,duration:.5,stagger:.12,ease:'power2.out',onStart:()=>briefEls.forEach(e=>e.style.transform='')}, acc+.15); }
+      acc+=dur+.08; });
+    const clock={v:0}; tl.to(clock,{v:12.8,duration:acc,ease:'none',onUpdate:()=>{ elapsedEl.textContent=clock.v.toFixed(1)+' s'; }}, 0);
+    tl.call(()=>{ nodes[0].s=0.01; gsap.to(nodes[0],{s:1,duration:.9,ease:'back.out(2)'}); }, null, acc-.6);
+    tl.to(lines,{opacity:1,duration:.12,stagger:.05,ease:'none'}, acc-.2);
+    tl.call(()=>meter(false), null, acc+.4);
+    tl.call(()=>{ elapsedEl.textContent='12.8 s'; }, null, acc+.6);
+  }
+  document.getElementById('run').addEventListener('click', run);
+  document.getElementById('q').addEventListener('change', run);
+})();
+</script>
