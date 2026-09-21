@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.ai/schemas/starlight.run_receipt.v1.json",
+  "title": "Starlight run receipt v1",
+  "description": "The unit of proof for agent work: what a run did, what it cost, how long it took, who decided at each gate, and which evidence remains. Signed as a DSSE v1 envelope around an in-toto Statement v1 with Ed25519; predicateType https://starlightintelligence.ai/protocol/run-receipt/v1. Issued locally by the Starlight Intelligence System (sis.receipt.issue) and verifiable at https://starlightintelligence.ai/verify or POST /api/v1/receipts/verify.",
+  "type": "object",
+  "required": ["schema", "receiptId", "issuedAt", "issuer", "run", "subject", "stages", "totals", "decisions", "evidence", "verdict"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "starlight.run-receipt.v1" },
+    "receiptId": { "type": "string", "minLength": 1 },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "issuer": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "keyid": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "sha256 of the signing public key's SPKI DER. Set by the signer." }
+      }
+    },
+    "run": {
+      "type": "object",
+      "required": ["id", "kind", "host", "startedAt", "endedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "minLength": 1, "description": "e.g. desk.brief, constellation, publish, eval" },
+        "host": { "type": "string", "minLength": 1, "description": "e.g. claude-code, codex, grok, antigravity, cowork, workflow" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "endedAt": { "type": "string", "format": "date-time" },
+        "correlationId": { "type": "string" }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "required": ["name", "digest"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "digest": {
+          "type": "object",
+          "required": ["sha256"],
+          "additionalProperties": false,
+          "properties": { "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }
+        }
+      }
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["ok", "failed", "skipped"] },
+          "model": { "type": "string" },
+          "provider": { "type": "string" },
+          "inputTokens": { "type": "number", "minimum": 0 },
+          "outputTokens": { "type": "number", "minimum": 0 },
+          "costEur": { "type": "number", "minimum": 0 },
+          "latencyMs": { "type": "number", "minimum": 0 },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "required": ["costEur", "latencyMs", "tokens"],
+      "additionalProperties": false,
+      "description": "Never below the stage sums. May exceed them when the issuer tracks overhead.",
+      "properties": {
+        "costEur": { "type": "number", "minimum": 0 },
+        "latencyMs": { "type": "number", "minimum": 0 },
+        "tokens": {
+          "type": "object",
+          "required": ["input", "output"],
+          "additionalProperties": false,
+          "properties": { "input": { "type": "number", "minimum": 0 }, "output": { "type": "number", "minimum": 0 } }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gate", "decidedBy", "actorId", "outcome", "at"],
+        "additionalProperties": false,
+        "properties": {
+          "gate": { "type": "string", "minLength": 1 },
+          "decidedBy": { "type": "string", "enum": ["human", "agent", "policy"] },
+          "actorId": { "type": "string", "minLength": 1 },
+          "outcome": { "type": "string", "enum": ["approved", "rejected", "deferred"] },
+          "at": { "type": "string", "format": "date-time" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "ref"],
+        "additionalProperties": false,
+        "properties": {
+          "kind": { "type": "string", "minLength": 1 },
+          "ref": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        }
+      }
+    },
+    "verdict": { "type": "string", "enum": ["PASS", "FAIL", "PARTIAL"] }
+  }
+}

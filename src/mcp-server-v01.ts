@@ -1,7 +1,7 @@
 /**
  * SIS MCP Server v0.1 — Track B
  *
- * 21 sis.* tools composing on top of Track A's contracts (src/types.ts) and
+ * 24 sis.* tools composing on top of Track A's contracts (src/types.ts) and
  * ledgers (src/ledgers.ts). The sis.* prefix avoids collision with the v6
  * vault-focused sis_* server and the substrate-registry starlight_* server.
  *
@@ -17,6 +17,8 @@
  *   sis.events.tail           sis.workpacket.next
  *   sis.workpacket.complete   sis.memory.rebuild
  *   sis.module.list
+ *   sis.receipt.issue         sis.receipt.verify
+ *   sis.receipt.list
  *
  * Invariants:
  *   • Risk-tiered approval gate (decision.log / workpacket.create at high/critical)
@@ -28,12 +30,14 @@
  *     permissions_acked != true.
  *   • sis.project.context output is sanitized via SanitizationGateway before
  *     return (PII + secrets).
+ *   • sis.receipt.issue persists nothing when receiptProblems() is non-empty.
+ *     An unsigned draft is recorded as kind 'draft' and is not proof.
  *
  * Built on SIP — operational tier
  */
 
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import {
@@ -43,11 +47,13 @@ import {
   appendArtifact,
   appendCouncilReview,
   appendDecision,
+  appendReceiptEnvelope,
   appendWorkPacket,
   ensureDir,
   newId,
   nowIso,
   readRecentAgentEvents,
+  readRecentReceipts,
   readGraphEdges,
   vaultLoopLedgerPath,
 } from './ledgers.js';
@@ -59,6 +65,19 @@ import {
   listPacks as runtimeListPacks,
   uninstallPack as runtimeUninstallPack,
 } from './pack-runtime.js';
+import {
+  peekRunReceipt,
+  receiptProblems,
+  signRunReceipt,
+  totalsFromStages,
+  verdictFromStages,
+  verifyRunReceipt,
+  sha256Hex,
+  RUN_RECEIPT_SCHEMA,
+  type RunReceipt,
+  type RunReceiptStage,
+  type RunReceiptVerdict,
+} from './run-receipt.js';
 import { SanitizationGateway } from './sanitization.js';
 import { VaultMemory } from './vault-memory.js';
 import { appendFileSync } from 'node:fs';
@@ -138,6 +157,8 @@ const VAULT_LOOP_KINDS = [
   'desire', 'gratitude', 'visualization', 'surrender',
   'intuition', 'aligned_action', 'evidence', 'outcome', 'proof',
 ];
+const RECEIPT_VERDICTS: RunReceiptVerdict[] = ['PASS', 'FAIL', 'PARTIAL'];
+const DEFAULT_RECEIPT_ISSUER = 'starlight-intelligence-system';
 
 // ── Error envelope ────────────────────────────────────────────
 
@@ -148,6 +169,88 @@ interface ErrorResult {
 
 function errorResult(message: string): ErrorResult {
   return { ok: false, error: message };
+}
+
+// ── Run receipt helpers ───────────────────────────────────────
+
+interface ReceiptSummary {
+  receiptId: string;
+  kind: 'signed' | 'draft';
+  keyid?: string;
+  verdict: string;
+  runKind: string;
+  issuedAt: string;
+  costEur: number;
+  subjectName: string;
+}
+
+function readPemFile(path: string): string | null {
+  if (!existsSync(path)) return null;
+  const pem = readFileSync(path, 'utf-8').trim();
+  return pem ? pem : null;
+}
+
+/** Signing key: signing_key_pem → signing_key_path → SIS_SIGNING_KEY_PATH → SIS_SIGNING_KEY. */
+function resolveSigningKey(p: Record<string, unknown>): string | null {
+  if (typeof p.signing_key_pem === 'string' && p.signing_key_pem.trim()) return p.signing_key_pem;
+  if (typeof p.signing_key_path === 'string' && p.signing_key_path.trim()) {
+    const pem = readPemFile(p.signing_key_path);
+    if (!pem) throw new Error(`signing_key_path not found: ${p.signing_key_path}`);
+    return pem;
+  }
+  const envPath = process.env.SIS_SIGNING_KEY_PATH;
+  if (envPath && envPath.trim()) {
+    const pem = readPemFile(envPath);
+    if (!pem) throw new Error(`SIS_SIGNING_KEY_PATH not found: ${envPath}`);
+    return pem;
+  }
+  const envPem = process.env.SIS_SIGNING_KEY;
+  if (envPem && envPem.trim()) return envPem;
+  return null;
+}
+
+/** Trusted keys: public_key_pem + public_key_path + (trust_ledger) every *.pub under SIS_TRUSTED_KEYS_DIR. */
+function resolveTrustedKeys(p: Record<string, unknown>): string[] {
+  const keys: string[] = [];
+  if (typeof p.public_key_pem === 'string' && p.public_key_pem.trim()) keys.push(p.public_key_pem);
+  if (typeof p.public_key_path === 'string' && p.public_key_path.trim()) {
+    const pem = readPemFile(p.public_key_path);
+    if (!pem) throw new Error(`public_key_path not found: ${p.public_key_path}`);
+    keys.push(pem);
+  }
+  const dir = process.env.SIS_TRUSTED_KEYS_DIR;
+  if (p.trust_ledger === true && dir && existsSync(dir)) {
+    for (const file of readdirSync(dir).filter((f) => f.endsWith('.pub')).sort()) {
+      const pem = readPemFile(join(dir, file));
+      if (pem) keys.push(pem);
+    }
+  }
+  return keys;
+}
+
+/** Accept {name, digest:{sha256}} as is, or {name, content} and hash the content. */
+function resolveReceiptSubject(subject: Record<string, unknown>): Record<string, unknown> {
+  if (typeof subject.content === 'string' && subject.digest === undefined) {
+    return { name: subject.name, digest: { sha256: sha256Hex(subject.content) } };
+  }
+  return subject;
+}
+
+function summarizeReceiptRecord(record: Record<string, unknown>): ReceiptSummary | null {
+  const kind = record.kind === 'signed' || record.kind === 'draft' ? record.kind : null;
+  if (!kind) return null;
+  const receipt = kind === 'signed' ? peekRunReceipt(record.envelope) : (record.receipt as RunReceipt | null);
+  if (!receipt) return null;
+  return {
+    receiptId: String(record.receiptId ?? receipt.receiptId),
+    kind,
+    ...(typeof record.keyid === 'string' ? { keyid: record.keyid } : {}),
+    verdict: receipt.verdict,
+    runKind: receipt.run.kind,
+    issuedAt: receipt.issuedAt,
+    costEur: receipt.totals.costEur,
+    subjectName: receipt.subject.name,
+  };
 }
 
 // ── Server ────────────────────────────────────────────────────
@@ -231,6 +334,9 @@ export class SisMcpServerV01 {
     this.regWorkPacketComplete();
     this.regMemoryRebuild();
     this.regModuleList();
+    this.regReceiptIssue();
+    this.regReceiptVerify();
+    this.regReceiptList();
   }
 
   // 1 ── sis.memory.add ──────────────────────────────────────
@@ -1087,6 +1193,145 @@ export class SisMcpServerV01 {
         inputSchema: { type: 'object', properties: {} },
       },
       () => ({ ok: true as const, modules: listModules(this.repoRoot) }),
+    );
+  }
+
+  // 20 ── sis.receipt.issue ─────────────────────────────────
+
+  private regReceiptIssue(): void {
+    this.reg(
+      {
+        name: 'sis.receipt.issue',
+        description:
+          'Issue a run receipt (starlight.run-receipt.v1) for a completed run and append it to receipts.jsonl. ' +
+          'Signs it (Ed25519, DSSE v1) when a key resolves from signing_key_pem, signing_key_path, ' +
+          'SIS_SIGNING_KEY_PATH, or SIS_SIGNING_KEY; otherwise records an unsigned draft. ' +
+          'A draft is not proof — only a signed envelope can be verified. ' +
+          'An incomplete receipt is refused and nothing is persisted.',
+        inputSchema: {
+          type: 'object',
+          required: ['run', 'subject', 'stages'],
+          properties: {
+            run: { type: 'object' },
+            subject: { type: 'object' },
+            stages: { type: 'array' },
+            issuer_name: { type: 'string' },
+            decisions: { type: 'array' },
+            evidence: { type: 'array' },
+            verdict: { type: 'string', enum: RECEIPT_VERDICTS },
+            totals: { type: 'object' },
+            signing_key_pem: { type: 'string' },
+            signing_key_path: { type: 'string' },
+          },
+        },
+      },
+      (p) => {
+        const stages = p.stages as RunReceiptStage[];
+        const subject = resolveReceiptSubject(p.subject as Record<string, unknown>);
+        const receipt: RunReceipt = {
+          schema: RUN_RECEIPT_SCHEMA,
+          receiptId: newId('rcpt'),
+          issuedAt: nowIso(),
+          issuer: { name: typeof p.issuer_name === 'string' && p.issuer_name.trim() ? p.issuer_name : DEFAULT_RECEIPT_ISSUER },
+          run: p.run as RunReceipt['run'],
+          subject: subject as RunReceipt['subject'],
+          stages,
+          totals: (p.totals as RunReceipt['totals'] | undefined) ?? totalsFromStages(Array.isArray(stages) ? stages : []),
+          decisions: (p.decisions as RunReceipt['decisions'] | undefined) ?? [],
+          evidence: (p.evidence as RunReceipt['evidence'] | undefined) ?? [],
+          verdict: (p.verdict as RunReceiptVerdict | undefined) ?? verdictFromStages(Array.isArray(stages) ? stages : []),
+        };
+        const problems = receiptProblems(receipt);
+        if (problems.length > 0) {
+          return errorResult(`receipt is incomplete: ${problems.join('; ')}`);
+        }
+
+        const key = resolveSigningKey(p);
+        if (!key) {
+          const write = appendReceiptEnvelope(this.repoRoot, {
+            kind: 'draft',
+            receiptId: receipt.receiptId,
+            receipt,
+            appendedAt: nowIso(),
+          });
+          if (!write.ok) return errorResult(write.error ?? 'receipt append failed');
+          return {
+            ok: true as const,
+            status: 'draft' as const,
+            receiptId: receipt.receiptId,
+            receipt,
+            note: 'unsigned draft: set SIS_SIGNING_KEY_PATH or pass signing_key_path to sign',
+          };
+        }
+
+        const envelope = signRunReceipt(receipt, key);
+        const keyid = envelope.signatures[0]?.keyid ?? null;
+        const signed: RunReceipt = { ...receipt, issuer: { ...receipt.issuer, keyid: keyid ?? undefined } };
+        const write = appendReceiptEnvelope(this.repoRoot, {
+          kind: 'signed',
+          receiptId: receipt.receiptId,
+          keyid,
+          envelope,
+          appendedAt: nowIso(),
+        });
+        if (!write.ok) return errorResult(write.error ?? 'receipt append failed');
+        return { ok: true as const, status: 'signed' as const, receiptId: receipt.receiptId, keyid, receipt: signed, envelope };
+      },
+    );
+  }
+
+  // 21 ── sis.receipt.verify ────────────────────────────────
+
+  private regReceiptVerify(): void {
+    this.reg(
+      {
+        name: 'sis.receipt.verify',
+        description:
+          'Verify a signed run receipt envelope against trusted Ed25519 public keys ' +
+          '(public_key_pem, public_key_path, and with trust_ledger=true every *.pub under SIS_TRUSTED_KEYS_DIR). ' +
+          'verified=false is a completed check, not an error.',
+        inputSchema: {
+          type: 'object',
+          required: ['envelope'],
+          properties: {
+            envelope: { type: 'object' },
+            public_key_pem: { type: 'string' },
+            public_key_path: { type: 'string' },
+            trust_ledger: { type: 'boolean' },
+          },
+        },
+      },
+      (p) => {
+        const keys = resolveTrustedKeys(p);
+        if (keys.length === 0) return errorResult('no trusted public key supplied');
+        const result = verifyRunReceipt(p.envelope, keys);
+        return { ok: true as const, verified: result.ok, keyid: result.keyid, reasons: result.reasons, receipt: result.receipt };
+      },
+    );
+  }
+
+  // 22 ── sis.receipt.list ──────────────────────────────────
+
+  private regReceiptList(): void {
+    this.reg(
+      {
+        name: 'sis.receipt.list',
+        description: 'List recent run receipts from receipts.jsonl, newest first (signed and draft)',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            limit: { type: 'number' },
+          },
+        },
+      },
+      (p) => {
+        const limit = typeof p.limit === 'number' ? p.limit : 20;
+        const receipts = readRecentReceipts(this.repoRoot, limit)
+          .map(summarizeReceiptRecord)
+          .filter((r): r is ReceiptSummary => r !== null)
+          .reverse();
+        return { ok: true as const, receipts };
+      },
     );
   }
 
