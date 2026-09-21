@@ -1289,7 +1289,7 @@ export class SisMcpServerV01 {
         description:
           'Verify a signed run receipt envelope against trusted Ed25519 public keys ' +
           '(public_key_pem, public_key_path, and with trust_ledger=true every *.pub under SIS_TRUSTED_KEYS_DIR). ' +
-          'verified=false is a completed check, not an error.',
+          'The check completes with verified=false when the signature or receipt does not hold; that is a result to read, and the reasons list says why.',
         inputSchema: {
           type: 'object',
           required: ['envelope'],
