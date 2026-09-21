@@ -168,24 +168,58 @@ function normalize(raw, steps = []) {
   return s;
 }
 
+// Output-contract compliance — a SECOND axis, scored independently of correctness.
+//
+// ANSWER_INSTRUCTION asks for "a single final line" and states "Nothing may
+// follow that line." Neither clause was ever checked: extractAnswer takes the
+// LAST match, so extra ANSWER lines and trailing prose passed silently.
+//
+// This is the axis arena R4 (2026-06-10 work-samples) found actually separates
+// the tiers — "Fable 5 violated an output contract for the first time across
+// four rounds; when the task itself is heavy, its constraint edge narrows" —
+// and the one this card could not report on. Computed from rawOutput, which the
+// harness already holds, so it costs no extra model call.
+//
+// It never changes PASS/FAIL. A reply may be correct and non-conformant, or
+// conformant and wrong; the point is to stop conflating the two.
+function contractCheck(rawOutput) {
+  if (typeof rawOutput !== "string") {
+    return { answerLines: 0, trailingChars: 0, conformant: false, violations: ["no-output"] };
+  }
+  const re = /^[^\S\n]*(?:[*_`>\-\s]*)ANSWER\s*:\s*(.+?)[^\S\n]*$/gim;
+  const matches = [...rawOutput.matchAll(re)];
+  const answerLines = matches.length;
+  let trailingChars = 0;
+  if (answerLines) {
+    const last = matches[answerLines - 1];
+    trailingChars = rawOutput.slice(last.index + last[0].length).trim().length;
+  }
+  const violations = [];
+  if (answerLines === 0) violations.push("no-answer-line");
+  if (answerLines > 1) violations.push(`multiple-answer-lines:${answerLines}`);
+  if (trailingChars > 0) violations.push(`trailing-content:${trailingChars}`);
+  return { answerLines, trailingChars, conformant: violations.length === 0, violations };
+}
+
 function score(task, rawOutput) {
+  const contract = contractCheck(rawOutput);
   const answerLine = extractAnswer(rawOutput);
   if (answerLine === null) {
-    return { status: "NO-ANSWER", answer: null, note: "no final ANSWER line found in the reply" };
+    return { status: "NO-ANSWER", answer: null, contract, note: "no final ANSWER line found in the reply" };
   }
   const v = task.verification;
   const norm = normalize(answerLine, v.normalize);
   for (const pat of v.accept) {
-    if (new RegExp(pat).test(norm)) return { status: "PASS", answer: norm };
+    if (new RegExp(pat).test(norm)) return { status: "PASS", answer: norm, contract };
   }
   for (const att of v.attractors ?? []) {
     for (const pat of att.accept) {
       if (new RegExp(pat).test(norm)) {
-        return { status: "FAIL-ATTRACTOR", answer: norm, attractor: att.label, note: att.why };
+        return { status: "FAIL-ATTRACTOR", answer: norm, contract, attractor: att.label, note: att.why };
       }
     }
   }
-  return { status: "FAIL", answer: norm };
+  return { status: "FAIL", answer: norm, contract };
 }
 
 // ---- claude CLI transport --------------------------------------------------
@@ -466,6 +500,17 @@ async function main() {
       outputTokens: rows.reduce((a, r) => a + (r.outputTokens ?? 0), 0),
       costUSD: Number(cost.toFixed(6)),
       costPerPassedTaskUSD: passed > 0 ? Number((cost / passed).toFixed(6)) : null,
+      // Second axis, independent of correctness. Only cells that produced output
+      // are scoreable: a transport ERROR is not a contract violation.
+      contract: (() => {
+        const scored = rows.filter((r) => r.contract);
+        const bad = scored.filter((r) => !r.contract.conformant);
+        return {
+          scoreable: scored.length,
+          conformant: scored.length - bad.length,
+          violations: bad.flatMap((r) => r.contract.violations),
+        };
+      })(),
     };
   }
 
@@ -504,6 +549,11 @@ async function main() {
       perTier,
       separation,
       tally: Object.fromEntries(Object.entries(perTier).map(([k, v]) => [k, `${v.passed}/${v.of}`])),
+      contractTally: Object.fromEntries(
+        Object.entries(perTier).map(([k, v]) => [k, `${v.contract.conformant}/${v.contract.scoreable}`])
+      ),
+      contractNote:
+        "Output-contract compliance, scored independently of correctness: did the reply emit exactly one final ANSWER line with nothing after it, as ANSWER_INSTRUCTION requires. This is the axis arena R4 (2026-06-10 work-samples) found actually separates the tiers; correctness on this card does not. A cell can be correct and non-conformant. Transport ERRORs are excluded — they are not contract violations.",
       headline:
         verdict === "VOID"
           ? `VOID — every contestant scored ${passCounts[0]}/${tasks.length}. The card did not separate the tiers, so it yields no routing evidence. Per the pre-registered rule in R5-DESIGN.md this is a design failure, not a finding: redesign the card before R6.`
@@ -516,6 +566,7 @@ async function main() {
       "inputTokens sums the uncached, cache-write and cache-read buckets. Reading only the uncached bucket under-reports a large prompt by orders of magnitude — see the harness comment in runClaude().",
         "Effort is held constant across the three tiers that accept it and is not applied to claude-haiku-4-5, which does not support it. The cost-adjusted effort frontier is NOT measured by this round.",
         "One round cannot harden a routing rule: the A2 floor requires >=2 concordant rounds.",
+        "contractTally is a second axis and never affects PASS/FAIL. It was added 2026-09-21, after the 2026-08-28 runs, so the promoted receipt for those runs carries no contract data — the harness discarded raw replies then. It is measured from the next run forward.",
         ...(anyErrors ? ["At least one cell errored; treat any tier with errors > 0 as incompletely measured."] : []),
       ],
     },
