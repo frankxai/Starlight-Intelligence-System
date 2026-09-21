@@ -73,12 +73,14 @@ Build and test commands. Ports. Local gotchas. Domain contracts that exist only 
 ## Direction of generation
 
 ```
-ontology/company-registry.json ─┐
-ontology/repo-tiers.json        ├─→  scripts/agents-md-project.mjs  ─→  <repo>/AGENTS.md
-VOICES.md · CLAUDE.md (DNA)    ─┘                                         bands A + B only
+ontology/agents-md/band-a.md   ─┐
+ontology/company-registry.json  ├─→  scripts/agents-md-project.mjs  ─→  <repo>/AGENTS.md
+ontology/repo-tiers.json       ─┘                                         bands A + B only
 ```
 
 One way. SIS is the source; the repo is the destination. Nothing reads a repo's `AGENTS.md` back into SIS.
+
+**Band A is an authored file, not a scrape.** This diagram previously named `VOICES.md` and `CLAUDE.md` as the Band A source. The generator instead reads one authored template, `ontology/agents-md/band-a.md`, distilled by hand from the DNA in `CLAUDE.md` and the registers in `VOICES.md`. Regex-lifting sections out of a 331-line prose file that is edited for other reasons would put 45 repos one careless heading change away from a silently wrong contract. `VOICES.md` remains voice authority; Band A does not restate it.
 
 **Prior art already in the estate:** `agentic-ops-hub` runs exactly this pattern — `AGENTS.md` is the single source and `node scripts/sync-agent-rules.mjs` fans it out to every tool-specific format, with `--check` in CI. The generator generalises that from one repo to the estate; it does not invent it.
 
@@ -100,13 +102,34 @@ Unchanged and orthogonal. `AGENTS.md` is the cross-harness contract (Codex, Curs
 
 ## Migration, in order
 
-1. **Repair what is broken.** SIS `AGENTS.md` BOM + mojibake — *done in this change*.
-2. **Write Band C where it is missing.** 16 repos, hand-written, one per repo. No generator can invent local build commands.
-3. **Ship the generator.** `scripts/agents-md-project.mjs`, with `--check` for CI.
-4. **Backfill T0/T1 first** (10 repos), then T2. T3 repos get nothing until Frank rules on consolidation.
+1. **Repair what is broken.** SIS `AGENTS.md` BOM + mojibake — *done*.
+2. **Write Band C where it is missing.** 16 repos, hand-written, one per repo. No generator can invent local build commands. *In flight: `starlight-agent-skills#27`, `GenCreator-Studio#7`.*
+3. **Ship the generator.** `scripts/agents-md-project.mjs`, with `--check` for CI — *done*. `npm run agents:project` / `agents:project:check`.
+4. **Backfill T0/T1 first**, then T2. T3 repos get nothing until Frank rules on consolidation, so the generator's default tier filter is `T0,T1,T2`.
 5. **Flip INV-6 to error** for handwritten T0/T1 once step 4 completes.
 
 Step 2 is the real work and it does not parallelise well — it is 16 repos of genuine local knowledge. Steps 3–5 are mechanical.
+
+### The generator, as built
+
+```bash
+npm run agents:project              # write bands A+B into every sibling checkout
+npm run agents:project:check        # verify only; non-zero if any is stale
+node scripts/agents-md-project.mjs --tree .. --repo <name>     # one repo
+node scripts/agents-md-project.mjs --tree .. --tier T0,T1      # tier subset
+node scripts/agents-md-project.mjs --tree .. --init            # also create absent files
+```
+
+Four properties it holds, each verified against the live tree rather than asserted:
+
+- **Band C survives byte-for-byte.** The generator strips the fences, keeps the remainder exactly, and re-emits A + B + C in that order. Measured on SIS's own 21,039-byte contract: identical before and after.
+- **Idempotent.** A second run writes nothing. `--check` can therefore distinguish a stale file from a fresh one, the same property `sourcesDigest` gives the estate graph.
+- **Hand-edits inside a fence are caught.** Each fence carries the `sha256` prefix of the body the generator wrote. A body that no longer hashes to its own declared `sha` was edited in place; `--check` warns by name and says to change it upstream instead.
+- **INV-7 is enforced before the write, not after.** The projection is scanned for money, jurisdiction, and credential patterns using the *same* regex as `scripts/estate-graph.mjs` — one definition of the invariant, so the generator and the validator cannot disagree about what a leak is.
+
+A repo with no `AGENTS.md` is skipped with a warning, not invented. Band C is local knowledge; `--init` writes an explicitly marked `TODO` stub and nothing more.
+
+**Observed on 2026-09-21**, `--tree ..` across the checked-out estate: 29 repos carry an un-banded contract, 8 have none, 0 would leak. That is the size of step 4.
 
 ---
 
