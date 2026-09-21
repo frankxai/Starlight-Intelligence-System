@@ -21,6 +21,46 @@ Why this and not a generic chat wrapper:
 
 **Public promise (sentence case, no prestige words):** "Ask one question. Get a brief with every claim linked to its source, saved to a memory you own, on European open models at a fraction of closed-API cost."
 
+## 1b. Raising the bar: what makes it extraordinary
+
+A good research tool wins a category prize. Three things move it from good to the one people talk about on the train home. All three are in scope for the day; none of them is decoration.
+
+**The receipt is the product.** Not a stats panel. A printed ticket: monospace ledger, perforated edge, a signature seal, the closed-API price beside ours on the same paper. It prints line by line as the run completes. Judges photograph it. Founders paste it under a brief. The prototype below has the exact treatment.
+
+**The room is the customer.** Ship a QR code on stage. Anyone in AI House can submit a question from their phone; the Desk processes them in order and every brief lands in one shared vault. The memory graph on the big screen grows with the room's questions for the rest of the afternoon. That is customer evidence you do not have to claim, because forty people watched themselves generate it.
+
+**Memory has an opinion.** The contradiction pass is the emotional beat. When the brief disagrees with what the vault believed last month, the Desk says so, amber, with three buttons: keep the prior belief, promote the new claim, or hold both for review. The founder decides; the system never silently overwrites. Nothing a chat wrapper can do, because a chat wrapper has no memory to disagree with.
+
+Stretch, and worth the risk: kick off a LoRA on a small Qwen3 at 10:00 with sixty published briefs, run the rubric before and after at 14:30. A live before-and-after on adaptability is the rarest thing a hackathon judge sees.
+
+### Prototype
+
+`docs/hackathons/desk-prototype.html` is a single-file, high-fidelity prototype of the Desk on the Explorer's tokens: cascade timeline, the brief in lab-report format with resolving citations, the contradiction callout, the printed receipt with the edge meter, the memory graph, and the recall eval. It replays the cascade with GSAP, honours reduced motion, and holds at phone width. Numbers are marked illustrative. It is the visual contract for the day: the `/desk` route in `site/` reproduces it, it does not reinterpret it.
+
+### Visual system for the Desk
+
+Every token comes from the Explorer (`site/src/app/globals.css`, `site/DESIGN.md`). Nothing new is invented on the day.
+
+| Role | Choice | Why |
+|---|---|---|
+| Ground | void `#060609`, glass surfaces at 2.5 to 4.5% white, 1px borders at 7% | The Explorer's ground; the receipt reads as paper against it |
+| Display | Newsreader, regular weight, italic for the one emphasised phrase | The brief is editorial; a serif says "published", a grotesk says "dashboard" |
+| Body | Inter, 15px, 66ch measure in the brief | The Explorer's body face |
+| Data | JetBrains Mono, tabular numerals, everywhere a number sits | Receipt, cascade meta, eval table, citations |
+| Semantic | cyan for open-model stages, emerald for pass and grounding, amber for contradiction, rose for the closed baseline, violet for Starlight and memory | Colour encodes state, so the eye reads the run without labels |
+| Receipt paper | `#f4f1ea` with `#161513` ink, perforated bottom edge via mask, violet seal | The one warm object on a cold page; that contrast is the whole point |
+| Motion | GSAP timeline: stages light in sequence, brief lines rise 6px, receipt prints line by line, the new graph node blooms with a back-out ease | One conducted sequence, not scattered effects; instant under reduced motion |
+
+Three directions were considered and two rejected: a terminal-only "console" treatment (reads as infra, judges cannot see the customer), and a card dashboard with big-number tiles (reads as any SaaS). The editorial brief plus printed receipt is the one only this product could have.
+
+### Quality bar before it goes on stage
+
+- Deployed preview URL by 14:00, and it opens on a phone.
+- Screenshots at 375, 768 and 1440 committed under `site/design-evidence/` per the web-release-gate.
+- Lighthouse on the preview: no red. Motion respects `prefers-reduced-motion`, keyboard focus visible on the run control and the three conflict buttons.
+- Every citation link on the demo briefs resolves. Every number on the receipt is computed from the run, none typed.
+- Copy audited against `CREATOR.md`: sentence case, no prestige words, no invented claims. "Illustrative" labels come off only when the numbers are real.
+
 ## 2. What exists today (verified in-repo, 2026-09-21)
 
 | Asset | Where | Reuse |
@@ -105,7 +145,7 @@ Roles assume two to three people. Solo: drop the LoRA stretch and the Lovable su
 | 11:00–12:00 | Stage 2 synthesis with citation discipline; contradiction pass | Receipt renders live stage-by-stage (GSAP count-up, one reveal, reduced-motion honoured) |
 | 12:00–12:30 | `NebiusEmbeddingProvider` in `src/embedding.ts`; run `eval:retrieval` head to head | Graph node appears on memory write |
 | 12:30–13:30 | Judge stage, grounding rate, SIP receipt signing | Edge meter side-by-side panel |
-| 13:30–14:15 | Run the three demo questions end to end, freeze the numbers | Polish: typography, empty states, mobile at 375 |
+| 13:30–14:15 | Run the three demo questions end to end, freeze the numbers; open the room queue (QR, one shared vault) | Polish against the prototype: typography, empty states, mobile at 375, screenshots for design-evidence |
 | 14:15–15:00 | Stretch: LoRA job on Qwen3 small, or Flux cover art | Demo script rehearsal, timing to 3 minutes |
 
 **Lovable:** one deliberate use only, if a third person is free: the customer intake and waitlist page for `starlightintelligence.ai/desk` (name, weekly research question, current tool spend). It is evidence of customer pull, not part of the product stack. Do not let it fragment the Next.js build.
@@ -122,7 +162,7 @@ Roles assume two to three people. Solo: drop the LoRA stretch and the Lovable su
 ## 8. Demo script (3 minutes)
 
 1. **10 s.** "Every founder I work with does research by hand once a week. Here is the question one of them asked me yesterday." Type it.
-2. **60 s.** Watch the cascade. Claims appear from Nemotron, brief streams from DeepSeek, one contradiction flag against last month's belief.
+2. **60 s.** Watch the cascade. Put the QR up: "ask it something now, it goes into the same memory." Claims appear from Nemotron, brief streams from DeepSeek, one contradiction flag against last month's belief.
 3. **40 s.** Receipt lands. Read three numbers aloud: cost, seconds, grounding rate. Then the edge meter: same question, closed-API price beside it.
 4. **30 s.** Memory graph: the node appears, linked to the sources and the prior belief. Run `eval:retrieval` in a terminal. Recall table prints.
 5. **20 s.** "Every brief is signed, every claim links to its source, the memory is a JSONL file the founder owns, and it ran on open models in Europe. That combination is only possible now." Stop.
