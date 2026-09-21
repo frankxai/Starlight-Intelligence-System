@@ -27,12 +27,12 @@
  *   It never invents a number. An empty honest result is the correct output;
  *   fabricated results would poison routing-table.json, which is the artifact
  *   this whole lane exists to inform. Exit code is 0 on UNRUN, matching the
- *   sibling harness's dependency-graceful convention (harness/income-payments-safety.mjs);
+ *   sibling harness's dependency-graceful convention (the income-payments-safety harness in the starlight-evals mirror);
  *   the banner, not the exit code, is what tells you nothing ran.
  *
  * TRANSPORT CAVEAT
  *   Runs go through the local `claude` CLI in print mode, the same transport
- *   providers/claude-cli.mjs establishes for this repo, so no ANTHROPIC_API_KEY
+ *   the arena's claude-CLI transport (tools/arena/README.md) establishes for this repo, so no ANTHROPIC_API_KEY
  *   is needed. The default CLI system prompt is REPLACED with a minimal one
  *   (--system-prompt), which drops per-call harness overhead from ~27,300 tokens
  *   to ~250 and makes the cost column attributable to the task rather than to
@@ -60,8 +60,12 @@ import { spawn } from "node:child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ARENA_DIR = __dirname;
-const REPO_ROOT = resolve(__dirname, "..", "..");
 const FIXTURE_DIR = join(ARENA_DIR, "fixtures", "deep-reasoning");
+
+// Both axes must agree on what an ANSWER line is. Duplicating this regex let the
+// contract metric drift from the scored population with nothing to catch it.
+// matchAll clones the regex, so a shared /g literal is safe here.
+const ANSWER_LINE_RE = /^[^\S\n]*(?:[*_`>\-\s]*)ANSWER\s*:\s*(.+?)[^\S\n]*$/gim;
 const CLAUDE_BIN = process.env.CLAUDE_CLI_BIN || "claude";
 
 // ---- Contestants ----------------------------------------------------------
@@ -149,7 +153,7 @@ function buildPrompt(task) {
 // ---- Answer extraction + mechanical scoring --------------------------------
 function extractAnswer(text) {
   if (typeof text !== "string") return null;
-  const matches = [...text.matchAll(/^[^\S\n]*(?:[*_`>\-\s]*)ANSWER\s*:\s*(.+?)[^\S\n]*$/gim)];
+  const matches = [...text.matchAll(ANSWER_LINE_RE)];
   if (!matches.length) return null;
   return matches[matches.length - 1][1];
 }
@@ -186,8 +190,7 @@ function contractCheck(rawOutput) {
   if (typeof rawOutput !== "string") {
     return { answerLines: 0, trailingChars: 0, conformant: false, violations: ["no-output"] };
   }
-  const re = /^[^\S\n]*(?:[*_`>\-\s]*)ANSWER\s*:\s*(.+?)[^\S\n]*$/gim;
-  const matches = [...rawOutput.matchAll(re)];
+  const matches = [...rawOutput.matchAll(ANSWER_LINE_RE)];
   const answerLines = matches.length;
   let trailingChars = 0;
   if (answerLines) {
@@ -223,7 +226,22 @@ function score(task, rawOutput) {
 }
 
 // ---- claude CLI transport --------------------------------------------------
+// Linux caps a single argv element at MAX_ARG_STRLEN (131072 bytes) and the prompt goes
+// in via -p. d3 is already ~74KB, and R5-DESIGN.md section 5 sanctions growing it toward
+// ~150K tokens, which spawn would reject with E2BIG. Left unchecked that surfaces as an
+// ERROR cell, which then perturbs `separation` and the stamped verdict — a measurement
+// artifact disguised as a result. Fail loudly instead.
+const MAX_ARG_BYTES = 131072;
+
 function runClaude({ prompt, model, effort, timeoutMs }) {
+  const bytes = Buffer.byteLength(prompt, "utf8");
+  if (bytes >= MAX_ARG_BYTES) {
+    return Promise.resolve({
+      error: `prompt is ${bytes} bytes, at or over the ${MAX_ARG_BYTES}-byte single-argument limit for -p. ` +
+             `This is a harness limit, NOT a model result: do not score this cell. ` +
+             `Pass the prompt on stdin before growing this task further.`,
+    });
+  }
   return new Promise((resolvePromise) => {
     const args = [
       "-p", prompt,
@@ -251,6 +269,11 @@ function runClaude({ prompt, model, effort, timeoutMs }) {
     }, timeoutMs);
     const finish = (r) => { if (settled) return; settled = true; clearTimeout(timer); resolvePromise(r); };
 
+    // Decode as UTF-8 per stream, not per chunk: `stdout += buffer` stringifies each
+    // chunk independently and mangles any multi-byte character straddling a 64 KiB
+    // boundary, which silently turns a correct long answer into a FAIL.
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
     child.stdout.on("data", (c) => (stdout += c));
     child.stderr.on("data", (c) => (stderr += c));
     child.on("error", (err) => finish({ error: `spawn error: ${err.message}` }));
@@ -299,13 +322,18 @@ function runClaude({ prompt, model, effort, timeoutMs }) {
   });
 }
 
-function claudeBinaryPresent() {
+// Returns the CLI version string, or null when the binary is unusable. The version is
+// recorded in the receipt: R5-DESIGN.md section 10 makes transport identity the condition
+// for R6 concordance, so a receipt that omits it cannot be compared against a later one.
+function claudeVersion() {
   return new Promise((res) => {
-    let child;
-    try { child = spawn(CLAUDE_BIN, ["--version"], { shell: false, stdio: "ignore" }); }
-    catch { res(false); return; }
-    child.on("error", () => res(false));
-    child.on("close", (code) => res(code === 0));
+    let child, out = "";
+    try { child = spawn(CLAUDE_BIN, ["--version"], { shell: false, stdio: ["ignore", "pipe", "ignore"] }); }
+    catch { res(null); return; }
+    child.stdout.setEncoding("utf8");
+    child.stdout.on("data", (c) => (out += c));
+    child.on("error", () => res(null));
+    child.on("close", (code) => res(code === 0 ? out.trim() || "unknown" : null));
   });
 }
 
@@ -351,7 +379,7 @@ function unrunReceipt(ranAt, reason, contestants, tasks, effort) {
     date: ranAt,
     status: "UNRUN",
     unrunReason: reason,
-    card: "round-4-deep-reasoning: 6 tasks, fully mechanical verification, cost-adjusted",
+    card: "round-5-deep-reasoning: 6 tasks, fully mechanical verification, cost-adjusted",
     lane: "deep-reasoning",
     design: "tools/arena/R5-DESIGN.md",
     harness: "tools/arena/deep-reasoning.mjs (claude CLI print mode)",
@@ -374,6 +402,18 @@ async function main() {
   const ranAt = new Date().toISOString().slice(0, 10);
   const tasks = loadTasks(args.tasks);
   const contestants = args.models ? CONTESTANTS.filter((c) => args.models.includes(c.key)) : CONTESTANTS;
+  if (args.models) {
+    const valid = CONTESTANTS.map((c) => c.key);
+    const unknown = args.models.filter((m) => !valid.includes(m));
+    if (unknown.length) {
+      console.error(`unknown --models key(s): ${unknown.join(", ")}\nvalid keys: ${valid.join(", ")}`);
+      process.exit(2);
+    }
+  }
+  if (!contestants.length) {
+    console.error("no contestants selected — refusing to write a receipt with an empty lineup");
+    process.exit(2);
+  }
   const outPath = args.out
     ? resolve(args.out)
     : join(ARENA_DIR, "out", `r5-deep-reasoning-${ranAt}.json`);
@@ -383,7 +423,7 @@ async function main() {
     process.exit(2);
   }
 
-  console.log(`\nR4 deep-reasoning lane — ${tasks.length} task(s) x ${contestants.length} contestant(s)`);
+  console.log(`\nR5 deep-reasoning lane — ${tasks.length} task(s) x ${contestants.length} contestant(s)`);
   console.log(`design: tools/arena/R5-DESIGN.md   effort requested: ${args.effort}\n`);
 
   if (args.dryRun) {
@@ -399,7 +439,8 @@ async function main() {
   }
 
   // ---- Honest degradation gate --------------------------------------------
-  if (!(await claudeBinaryPresent())) {
+  const cliVersion = await claudeVersion();
+  if (!cliVersion) {
     const reason = `the "${CLAUDE_BIN}" CLI is not on PATH, so no model could be called`;
     const p = writeReceipt(unrunReceipt(ranAt, reason, contestants, tasks, args.effort), outPath);
     console.log("=".repeat(72));
@@ -444,6 +485,7 @@ async function main() {
       row: {
         status: s.status,
         answer: s.answer,
+        contract: s.contract,
         ...(s.attractor ? { attractor: s.attractor, attractorWhy: s.note } : {}),
         ...(s.note && !s.attractor ? { note: s.note } : {}),
         effortApplied: effort,
@@ -493,6 +535,7 @@ async function main() {
       model: c.model,
       passed,
       of: rows.length,
+      failed: rows.filter((r) => r.status === "FAIL").length,
       failAttractor: rows.filter((r) => r.status === "FAIL-ATTRACTOR").length,
       noAnswer: rows.filter((r) => r.status === "NO-ANSWER").length,
       errors: rows.filter((r) => r.status === "ERROR").length,
@@ -517,7 +560,30 @@ async function main() {
   const passCounts = Object.values(perTier).map((t) => t.passed);
   const separation = Math.max(...passCounts) - Math.min(...passCounts);
   const anyErrors = Object.values(perTier).some((t) => t.errors > 0);
-  const verdict = separation === 0 ? "VOID" : "MEASURED";
+
+  // The verdict is machine-stamped, per R5-DESIGN.md section 4 — never a judgment made
+  // after seeing the numbers. `separation === 0 ? VOID : MEASURED` was wrong twice:
+  //
+  //  PARTIAL          a run restricted by --tasks or --models cannot separate the full
+  //                   lineup by construction, so it is not evidence about the card in
+  //                   either direction. The old stamp called the documented
+  //                   `--models opus` reproduction a design failure.
+  //  VOID             spread 0 over the full lineup: the card did not separate.
+  //  VOID-EQUIVALENT  spread > 0 but NO tier gave a wrong answer — every non-PASS cell
+  //                   is a transport ERROR or a missing ANSWER line. One dead socket
+  //                   used to stamp MEASURED while the reviewed verdict said
+  //                   void-equivalent, so a consumer reading .verdict would have
+  //                   counted this round toward the A2 floor.
+  //  MEASURED         spread > 0 with at least one real FAIL or FAIL-ATTRACTOR.
+  const isSubset = Boolean(args.tasks) || Boolean(args.models);
+  const wrongAnswers = Object.values(perTier).reduce((a, x) => a + x.failed + x.failAttractor, 0);
+  const verdict = isSubset
+    ? "PARTIAL"
+    : separation === 0
+      ? "VOID"
+      : wrongAnswers === 0
+        ? "VOID-EQUIVALENT"
+        : "MEASURED";
 
   const scorecard = {
     $comment:
@@ -528,10 +594,15 @@ async function main() {
     date: ranAt,
     status: "RAN",
     verdict,
-    card: "round-4-deep-reasoning: 6 tasks across 5 families where one wrong intermediate step propagates; fully mechanical verification; per-run token and cost accounting",
+    card: "round-5-deep-reasoning: 6 tasks across 5 families where one wrong intermediate step propagates; fully mechanical verification; per-run token and cost accounting",
     lane: "deep-reasoning",
     design: "tools/arena/R5-DESIGN.md",
     harness: "tools/arena/deep-reasoning.mjs — claude CLI print mode, default system prompt replaced",
+    transport: {
+      cli: CLAUDE_BIN,
+      cliVersion,
+      note: "Recorded because R5-DESIGN.md section 10 makes transport identity the condition for R6 concordance: a round run on a different CLI is a different experiment, and two receipts cannot be compared without this field.",
+    },
     method:
       "Each task is dispatched independently to every contestant with a minimal replaced system prompt and no tools. " +
       "The reply's final ANSWER line is matched against pre-registered accepting regexes; a match against a " +
@@ -555,9 +626,13 @@ async function main() {
       contractNote:
         "Output-contract compliance, scored independently of correctness: did the reply emit exactly one final ANSWER line with nothing after it, as ANSWER_INSTRUCTION requires. This is the axis arena R4 (2026-06-10 work-samples) found actually separates the tiers; correctness on this card does not. A cell can be correct and non-conformant. Transport ERRORs are excluded — they are not contract violations.",
       headline:
-        verdict === "VOID"
-          ? `VOID — every contestant scored ${passCounts[0]}/${tasks.length}. The card did not separate the tiers, so it yields no routing evidence. Per the pre-registered rule in R5-DESIGN.md this is a design failure, not a finding: redesign the card before R6.`
-          : `Separation of ${separation} task(s) between the best and worst tier. Read summary.perTier for the cost-adjusted comparison; a single round sets confidence to at most medium under the A2 sample floor.`,
+        verdict === "PARTIAL"
+          ? `PARTIAL — a subset run (${contestants.length} of ${CONTESTANTS.length} contestants, ${tasks.length} task(s)). A restricted lineup cannot separate the tiers by construction, so this receipt is NOT evidence about the card in either direction and must not move routing-table.json.`
+          : verdict === "VOID"
+            ? `VOID — every contestant scored ${passCounts[0]}/${tasks.length}. The card did not separate the tiers, so it yields no routing evidence. Per the pre-registered rule in R5-DESIGN.md this is a design failure, not a finding: redesign the card before R6.`
+            : verdict === "VOID-EQUIVALENT"
+              ? `VOID-EQUIVALENT — nominal separation of ${separation} task(s), but no tier gave a WRONG answer: every non-PASS cell is a transport ERROR or a missing ANSWER line. No reasoning separation was established, so this does not count toward the A2 floor.`
+              : `Separation of ${separation} task(s) between the best and worst tier, including at least one real wrong answer. Read summary.perTier for the cost-adjusted comparison; a single round sets confidence to at most medium under the A2 sample floor.`,
       caveats: [
         "n=1 per (task, contestant) cell — directional, not statistical.",
         "Zero LLM-judge dependence: every result is a regex match against a pre-registered ground truth.",
@@ -566,6 +641,8 @@ async function main() {
       "inputTokens sums the uncached, cache-write and cache-read buckets. Reading only the uncached bucket under-reports a large prompt by orders of magnitude — see the harness comment in runClaude().",
         "Effort is held constant across the three tiers that accept it and is not applied to claude-haiku-4-5, which does not support it. The cost-adjusted effort frontier is NOT measured by this round.",
         "One round cannot harden a routing rule: the A2 floor requires >=2 concordant rounds.",
+        "PROMPT-CACHE COST CONFOUND — costUSD and costPerPassedTaskUSD are NOT comparable across tiers on a cache-warm run. Cache reads bill about 0.1x and the hit rate is wildly asymmetric per cell: in the 2026-08-28 run 2, opus on d1 was 99.8% cacheRead while fable, sonnet and haiku paid full price on the same task. Re-running an identical card immediately (as run 2 did, to fix a token-accounting bug) guarantees a cache-warm and therefore incomparable cost column. Treat the cost axis as sound only on a cold cache, and read cacheReadInputTokens per cell before drawing any cost conclusion.",
+        "inputTokens is a BLENDED sum of three buckets that bill at different rates (uncached 1x, cache-write ~1.25x, cache-read ~0.1x) while priceListUSDPerMTok.input is a single number. Recomputing cost as inputTokens * input price overstates spend — by 2.10x for opus in the 2026-08-28 run 2. Use costUSD, or the per-bucket fields on each cell; never the blended sum against the list price.",
         "contractTally is a second axis and never affects PASS/FAIL. It was added 2026-09-21, after the 2026-08-28 runs, so the promoted receipt for those runs carries no contract data — the harness discarded raw replies then. It is measured from the next run forward.",
         ...(anyErrors ? ["At least one cell errored; treat any tier with errors > 0 as incompletely measured."] : []),
       ],

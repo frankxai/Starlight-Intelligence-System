@@ -16,7 +16,12 @@
 `confidence: "low"`, `rounds: 0`, and this evidence field:
 
 > Doctrine, NOT yet measured — no arena card has a deep-reasoning lane where Opus
-> ceiling would show. R5 must build it before this hardens.
+> ceiling would show. R4 must build it before this hardens.
+
+Quoted verbatim. It says "R4" because that is what the field said — the round it
+was asking for landed as R5, for the reason given in the correction at the end of
+this document. An earlier revision of this file renumbered the text *inside* this
+quotation; that was wrong and is restored here.
 
 R3 named the same gap as its own weakness: its card "measures COMPLIANCE, not
 CAPABILITY CEILING." Every other class in the routing table has at least one

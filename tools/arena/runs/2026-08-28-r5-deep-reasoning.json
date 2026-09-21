@@ -4,7 +4,7 @@
   "date": "2026-08-28",
   "status": "RAN",
   "verdict": "MEASURED",
-  "card": "round-4-deep-reasoning: 6 tasks across 5 families where one wrong intermediate step propagates; fully mechanical verification; per-run token and cost accounting",
+  "card": "round-5-deep-reasoning: 6 tasks across 5 families where one wrong intermediate step propagates; fully mechanical verification; per-run token and cost accounting",
   "lane": "deep-reasoning",
   "design": "tools/arena/R5-DESIGN.md",
   "harness": "tools/arena/deep-reasoning.mjs — claude CLI print mode, default system prompt replaced",

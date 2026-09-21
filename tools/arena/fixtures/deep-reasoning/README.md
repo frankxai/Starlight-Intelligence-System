@@ -43,6 +43,6 @@ a reader can check the ground truth without running anything.
 - Ground truths for `d1`, `d5` and `d6` were produced by reference
   implementations rather than by hand; `d6`'s uniqueness was established by
   exhaustive search over all 14,400 candidate grids.
-- Every fixture must parse as JSON — `npm run validate` checks this.
+- Every fixture must parse as JSON — `node -e "require('fs').readdirSync('.').filter(f=>f.endsWith('.json')).forEach(f=>JSON.parse(require('fs').readFileSync(f)))"` checks this.
 
 Built on SIP — Starlight Intelligence Protocol.
