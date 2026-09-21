@@ -1,0 +1,610 @@
+{
+  "$comment": "Built on SIP — Starlight Model Arena run receipt. Schema: arena-run v0.3 (R5 deep-reasoning). Round 5 = the deep-reasoning lane R3 named as its own missing weakness. Fully mechanical verification, cost-adjusted. Pre-registered design: tools/arena/R5-DESIGN.md — written before any of these numbers existed. THIS FILE IS A REVIEWED PROMOTION of the harness receipt for run 2, with a review block and a full prior-run disclosure appended. No harness-emitted field was altered.",
+  "runId": "arena-2026-08-28-r5-deep-reasoning",
+  "date": "2026-08-28",
+  "status": "RAN",
+  "verdict": "MEASURED",
+  "card": "round-4-deep-reasoning: 6 tasks across 5 families where one wrong intermediate step propagates; fully mechanical verification; per-run token and cost accounting",
+  "lane": "deep-reasoning",
+  "design": "tools/arena/R5-DESIGN.md",
+  "harness": "tools/arena/deep-reasoning.mjs — claude CLI print mode, default system prompt replaced",
+  "method": "Each task is dispatched independently to every contestant with a minimal replaced system prompt and no tools. The reply's final ANSWER line is matched against pre-registered accepting regexes; a match against a pre-registered attractor is recorded as FAIL-ATTRACTOR. Binary scoring, no partial credit, no LLM judge.",
+  "effort": {
+    "requested": "high",
+    "appliedTo": [
+      "fable",
+      "opus",
+      "sonnet"
+    ],
+    "notAppliedTo": [
+      "haiku"
+    ],
+    "note": "Effort is held constant, not swept. claude-haiku-4-5 does not accept output_config.effort at the API level, so its arm runs at the CLI default — a stated asymmetry of this card, not a controlled condition."
+  },
+  "contestants": {
+    "fable": "claude-fable-5",
+    "opus": "claude-opus-5",
+    "sonnet": "claude-sonnet-5",
+    "haiku": "claude-haiku-4-5"
+  },
+  "priceListUSDPerMTok": {
+    "fable": {
+      "input": 10,
+      "output": 50
+    },
+    "opus": {
+      "input": 5,
+      "output": 25
+    },
+    "sonnet": {
+      "input": 2,
+      "output": 10
+    },
+    "haiku": {
+      "input": 1,
+      "output": 5
+    }
+  },
+  "tasks": [
+    {
+      "id": "d1-deduction-trap-ledger",
+      "category": "sequential rule application, two interacting quantities, branch-flipping trap",
+      "family": "multi-step deduction with a trap intermediate step",
+      "verification": "mechanical — final ANSWER line matched against pre-registered accepting regexes; no LLM judge",
+      "groundTruth": "CREDITS=654 SLOTS=9",
+      "prediction": {
+        "fable": "PASS",
+        "opus": "PASS",
+        "sonnet": "PASS",
+        "haiku": "FAIL"
+      },
+      "results": {
+        "fable": {
+          "status": "PASS",
+          "answer": "CREDITS=654 SLOTS=9",
+          "effortApplied": "high",
+          "inputTokens": 801,
+          "inputTokensUncached": 801,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 877,
+          "costUSD": 0.027247,
+          "costAttribution": "top-level usage (per-model entry absent)",
+          "durationMs": 15195,
+          "wallMs": 19744
+        },
+        "opus": {
+          "status": "PASS",
+          "answer": "CREDITS=654 SLOTS=9",
+          "effortApplied": "high",
+          "inputTokens": 801,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 799,
+          "outputTokens": 808,
+          "costUSD": 0.0206095,
+          "costAttribution": "modelUsage[\"claude-opus-5\"]",
+          "durationMs": 10082,
+          "wallMs": 13177
+        },
+        "sonnet": {
+          "status": "PASS",
+          "answer": "CREDITS=654 SLOTS=9",
+          "effortApplied": "high",
+          "inputTokens": 817,
+          "inputTokensUncached": 817,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 951,
+          "costUSD": 0.011144000000000001,
+          "costAttribution": "modelUsage[\"claude-sonnet-5\"]",
+          "durationMs": 11947,
+          "wallMs": 16708
+        },
+        "haiku": {
+          "status": "PASS",
+          "answer": "CREDITS=654 SLOTS=9",
+          "effortApplied": null,
+          "effortNote": "claude-haiku-4-5 does not accept output_config.effort; no effort flag sent",
+          "inputTokens": 612,
+          "inputTokensUncached": 612,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 2142,
+          "costUSD": 0.011321999999999999,
+          "costAttribution": "modelUsage[\"claude-haiku-4-5\"]",
+          "durationMs": 18037,
+          "wallMs": 22614
+        }
+      },
+      "winner": "tie (4-way) — saturated"
+    },
+    {
+      "id": "d2-attractor-random-reveal",
+      "category": "conditional probability where the memorized answer is the wrong answer",
+      "family": "plausible-but-wrong attractor answer",
+      "verification": "mechanical — final ANSWER line matched against pre-registered accepting regexes; no LLM judge",
+      "groundTruth": "1/2",
+      "prediction": {
+        "fable": "PASS",
+        "opus": "PASS",
+        "sonnet": "FAIL",
+        "haiku": "FAIL"
+      },
+      "results": {
+        "fable": {
+          "status": "PASS",
+          "answer": "1/2",
+          "effortApplied": "high",
+          "inputTokens": 599,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 597,
+          "outputTokens": 581,
+          "costUSD": 0.029667000000000002,
+          "costAttribution": "modelUsage[\"claude-fable-5\"]",
+          "durationMs": 9890,
+          "wallMs": 14009
+        },
+        "opus": {
+          "status": "PASS",
+          "answer": "1/2",
+          "effortApplied": "high",
+          "inputTokens": 599,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 597,
+          "outputTokens": 712,
+          "costUSD": 0.0181085,
+          "costAttribution": "modelUsage[\"claude-opus-5\"]",
+          "durationMs": 11217,
+          "wallMs": 16479
+        },
+        "sonnet": {
+          "status": "PASS",
+          "answer": "1/2",
+          "effortApplied": "high",
+          "inputTokens": 615,
+          "inputTokensUncached": 615,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 1061,
+          "costUSD": 0.011840000000000002,
+          "costAttribution": "modelUsage[\"claude-sonnet-5\"]",
+          "durationMs": 19414,
+          "wallMs": 21200
+        },
+        "haiku": {
+          "status": "ERROR",
+          "error": "CLI reported error: API Error: Unable to connect to API: Self-signed certificate detected. Check your proxy or corporate SSL certificates",
+          "effortApplied": null,
+          "wallMs": 2080
+        }
+      },
+      "winner": "fable / opus / sonnet"
+    },
+    {
+      "id": "d3-longctx-reconcile",
+      "category": "two-needle reconciliation with a live decoy and ~300 near-miss distractors",
+      "family": "long-context synthesis reconciling two facts placed far apart",
+      "verification": "mechanical — final ANSWER line matched against pre-registered accepting regexes; no LLM judge",
+      "groundTruth": "04:50 YES",
+      "prediction": {
+        "fable": "PASS",
+        "opus": "PASS",
+        "sonnet": "FAIL",
+        "haiku": "FAIL"
+      },
+      "results": {
+        "fable": {
+          "status": "PASS",
+          "answer": "04:50 YES",
+          "effortApplied": "high",
+          "inputTokens": 26297,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 26295,
+          "outputTokens": 241,
+          "costUSD": 0.039681499999999995,
+          "costAttribution": "top-level usage (per-model entry absent)",
+          "durationMs": 6028,
+          "wallMs": 7822
+        },
+        "opus": {
+          "status": "PASS",
+          "answer": "04:50 YES",
+          "effortApplied": "high",
+          "inputTokens": 26297,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 26295,
+          "outputTokens": 347,
+          "costUSD": 0.021832499999999998,
+          "costAttribution": "modelUsage[\"claude-opus-5\"]",
+          "durationMs": 6767,
+          "wallMs": 9210
+        },
+        "sonnet": {
+          "status": "PASS",
+          "answer": "04:50 YES",
+          "effortApplied": "high",
+          "inputTokens": 26313,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 26311,
+          "outputTokens": 399,
+          "costUSD": 0.0092562,
+          "costAttribution": "modelUsage[\"claude-sonnet-5\"]",
+          "durationMs": 6074,
+          "wallMs": 9247
+        },
+        "haiku": {
+          "status": "PASS",
+          "answer": "04:50 YES",
+          "effortApplied": null,
+          "effortNote": "claude-haiku-4-5 does not accept output_config.effort; no effort flag sent",
+          "inputTokens": 19809,
+          "inputTokensUncached": 10,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 19799,
+          "outputTokens": 843,
+          "costUSD": 0.006204899999999999,
+          "costAttribution": "modelUsage[\"claude-haiku-4-5\"]",
+          "durationMs": 8915,
+          "wallMs": 10511
+        }
+      },
+      "winner": "tie (4-way) — saturated"
+    },
+    {
+      "id": "d4-multifile-idempotency-bug",
+      "category": "cross-module defect — no single file is wrong in isolation",
+      "family": "debugging a subtle multi-file bug",
+      "verification": "mechanical — final ANSWER line matched against pre-registered accepting regexes; no LLM judge",
+      "groundTruth": "C billing/charge.py:5",
+      "prediction": {
+        "fable": "PASS",
+        "opus": "PASS",
+        "sonnet": "PASS",
+        "haiku": "FAIL"
+      },
+      "results": {
+        "fable": {
+          "status": "NO-ANSWER",
+          "answer": null,
+          "note": "no final ANSWER line found in the reply",
+          "effortApplied": "high",
+          "inputTokens": 1333,
+          "inputTokensUncached": 141,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 1192,
+          "outputTokens": 259,
+          "costUSD": 0.009439,
+          "costAttribution": "top-level usage (per-model entry absent)",
+          "durationMs": 10868,
+          "wallMs": 12752
+        },
+        "opus": {
+          "status": "PASS",
+          "answer": "C BILLING/CHARGE.PY:5",
+          "effortApplied": "high",
+          "inputTokens": 1194,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 1192,
+          "outputTokens": 866,
+          "costUSD": 0.022255999999999998,
+          "costAttribution": "modelUsage[\"claude-opus-5\"]",
+          "durationMs": 14179,
+          "wallMs": 16245
+        },
+        "sonnet": {
+          "status": "PASS",
+          "answer": "C BILLING/CHARGE.PY:5",
+          "effortApplied": "high",
+          "inputTokens": 1210,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 1208,
+          "outputTokens": 167,
+          "costUSD": 0.0019156000000000002,
+          "costAttribution": "modelUsage[\"claude-sonnet-5\"]",
+          "durationMs": 5370,
+          "wallMs": 7247
+        },
+        "haiku": {
+          "status": "PASS",
+          "answer": "C BILLING/CHARGE.PY:5",
+          "effortApplied": null,
+          "effortNote": "claude-haiku-4-5 does not accept output_config.effort; no effort flag sent",
+          "inputTokens": 973,
+          "inputTokensUncached": 973,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 6007,
+          "costUSD": 0.031008,
+          "costAttribution": "modelUsage[\"claude-haiku-4-5\"]",
+          "durationMs": 61052,
+          "wallMs": 63196
+        }
+      },
+      "winner": "opus / sonnet / haiku"
+    },
+    {
+      "id": "d5-architecture-slo-tradeoff",
+      "category": "multi-constraint feasibility — latency budget, cost budget, durability floor",
+      "family": "architecture trade-off analysis with a determinate answer",
+      "verification": "mechanical — final ANSWER line matched against pre-registered accepting regexes; no LLM judge",
+      "groundTruth": "A 223 3960",
+      "prediction": {
+        "fable": "PASS",
+        "opus": "PASS",
+        "sonnet": "PASS",
+        "haiku": "FAIL"
+      },
+      "results": {
+        "fable": {
+          "status": "PASS",
+          "answer": "A 223 3960",
+          "effortApplied": "high",
+          "inputTokens": 846,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 844,
+          "outputTokens": 385,
+          "costUSD": 0.020114,
+          "costAttribution": "modelUsage[\"claude-fable-5\"]",
+          "durationMs": 6573,
+          "wallMs": 8403
+        },
+        "opus": {
+          "status": "PASS",
+          "answer": "A 223 3960",
+          "effortApplied": "high",
+          "inputTokens": 846,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 844,
+          "outputTokens": 573,
+          "costUSD": 0.014757000000000001,
+          "costAttribution": "modelUsage[\"claude-opus-5\"]",
+          "durationMs": 8177,
+          "wallMs": 10022
+        },
+        "sonnet": {
+          "status": "PASS",
+          "answer": "A 223 3960",
+          "effortApplied": "high",
+          "inputTokens": 862,
+          "inputTokensUncached": 862,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 450,
+          "costUSD": 0.0062239999999999995,
+          "costAttribution": "modelUsage[\"claude-sonnet-5\"]",
+          "durationMs": 6191,
+          "wallMs": 8140
+        },
+        "haiku": {
+          "status": "PASS",
+          "answer": "A 223 3960",
+          "effortApplied": null,
+          "effortNote": "claude-haiku-4-5 does not accept output_config.effort; no effort flag sent",
+          "inputTokens": 686,
+          "inputTokensUncached": 686,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 1314,
+          "costUSD": 0.007256,
+          "costAttribution": "modelUsage[\"claude-haiku-4-5\"]",
+          "durationMs": 11742,
+          "wallMs": 13795
+        }
+      },
+      "winner": "tie (4-way) — saturated"
+    },
+    {
+      "id": "d6-constraint-backtrack-assignment",
+      "category": "5x3 assignment, 10 constraints, unique solution, no single constraint pins a cell",
+      "family": "multi-step deduction — constraint satisfaction requiring backtracking",
+      "verification": "mechanical — final ANSWER line matched against pre-registered accepting regexes; no LLM judge",
+      "groundTruth": "Ash=harness/Thu Bex=retrieval/Wed Cyd=substrate/Fri Dov=memory/Tue Eli=model/Mon",
+      "prediction": {
+        "fable": "PASS",
+        "opus": "PASS",
+        "sonnet": "FAIL",
+        "haiku": "FAIL"
+      },
+      "results": {
+        "fable": {
+          "status": "PASS",
+          "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+          "effortApplied": "high",
+          "inputTokens": 784,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 782,
+          "outputTokens": 1065,
+          "costUSD": 0.054051999999999996,
+          "costAttribution": "modelUsage[\"claude-fable-5\"]",
+          "durationMs": 12490,
+          "wallMs": 14234
+        },
+        "opus": {
+          "status": "PASS",
+          "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+          "effortApplied": "high",
+          "inputTokens": 784,
+          "inputTokensUncached": 2,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 782,
+          "outputTokens": 1059,
+          "costUSD": 0.026876,
+          "costAttribution": "modelUsage[\"claude-opus-5\"]",
+          "durationMs": 13506,
+          "wallMs": 15325
+        },
+        "sonnet": {
+          "status": "PASS",
+          "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+          "effortApplied": "high",
+          "inputTokens": 800,
+          "inputTokensUncached": 800,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 1890,
+          "costUSD": 0.0205,
+          "costAttribution": "modelUsage[\"claude-sonnet-5\"]",
+          "durationMs": 16469,
+          "wallMs": 18346
+        },
+        "haiku": {
+          "status": "PASS",
+          "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+          "effortApplied": null,
+          "effortNote": "claude-haiku-4-5 does not accept output_config.effort; no effort flag sent",
+          "inputTokens": 613,
+          "inputTokensUncached": 613,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 4452,
+          "costUSD": 0.022873,
+          "costAttribution": "modelUsage[\"claude-haiku-4-5\"]",
+          "durationMs": 37654,
+          "wallMs": 40141
+        }
+      },
+      "winner": "tie (4-way) — saturated"
+    }
+  ],
+  "summary": {
+    "perTier": {
+      "fable": {
+        "model": "claude-fable-5",
+        "passed": 5,
+        "of": 6,
+        "failAttractor": 0,
+        "noAnswer": 1,
+        "errors": 0,
+        "inputTokens": 30660,
+        "outputTokens": 3408,
+        "costUSD": 0.1802,
+        "costPerPassedTaskUSD": 0.03604
+      },
+      "opus": {
+        "model": "claude-opus-5",
+        "passed": 6,
+        "of": 6,
+        "failAttractor": 0,
+        "noAnswer": 0,
+        "errors": 0,
+        "inputTokens": 30521,
+        "outputTokens": 4365,
+        "costUSD": 0.12444,
+        "costPerPassedTaskUSD": 0.02074
+      },
+      "sonnet": {
+        "model": "claude-sonnet-5",
+        "passed": 6,
+        "of": 6,
+        "failAttractor": 0,
+        "noAnswer": 0,
+        "errors": 0,
+        "inputTokens": 30617,
+        "outputTokens": 4918,
+        "costUSD": 0.06088,
+        "costPerPassedTaskUSD": 0.010147
+      },
+      "haiku": {
+        "model": "claude-haiku-4-5",
+        "passed": 5,
+        "of": 6,
+        "failAttractor": 0,
+        "noAnswer": 0,
+        "errors": 1,
+        "inputTokens": 22693,
+        "outputTokens": 14758,
+        "costUSD": 0.078664,
+        "costPerPassedTaskUSD": 0.015733
+      }
+    },
+    "separation": 1,
+    "tally": {
+      "fable": "5/6",
+      "opus": "6/6",
+      "sonnet": "6/6",
+      "haiku": "5/6"
+    },
+    "headline": "REVIEWED VERDICT: VOID-EQUIVALENT. Mechanical spread is 1 task, but both non-PASS cells are non-reasoning (one transport error, one missing answer line); every tier answered correctly on every task it answered. Run 1 of the same card scored 6/6 across all four tiers outright. See review and priorRun. No routing change.",
+    "caveats": [
+      "n=1 per (task, contestant) cell — directional, not statistical.",
+      "Zero LLM-judge dependence: every result is a regex match against a pre-registered ground truth.",
+      "model-in-Claude-Code-CLI, not raw API. The default system prompt is replaced to keep token accounting attributable, but this is still a harness measurement.",
+      "Cost is the CLI's own list-price attribution for the contestant's model entry; it excludes the background Haiku call the CLI makes per invocation.",
+      "inputTokens sums the uncached, cache-write and cache-read buckets. Reading only the uncached bucket under-reports a large prompt by orders of magnitude — see the harness comment in runClaude().",
+      "Effort is held constant across the three tiers that accept it and is not applied to claude-haiku-4-5, which does not support it. The cost-adjusted effort frontier is NOT measured by this round.",
+      "One round cannot harden a routing rule: the A2 floor requires >=2 concordant rounds.",
+      "At least one cell errored; treat any tier with errors > 0 as incompletely measured."
+    ]
+  },
+  "runtime": {
+    "elapsedMs": 89157,
+    "concurrency": 6,
+    "jobs": 24
+  },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol",
+  "priorRun": {
+    "note": "The card was executed TWICE on 2026-08-28. Both runs are disclosed here; neither is discarded. Run 1 is reported in full because publishing only run 2 would be selection.",
+    "run1": {
+      "whySuperseded": "Instrument defect in the token column only. The harness read the CLI usage field inputTokens, which excludes the cache-write and cache-read buckets, and therefore recorded values as low as 2 input tokens for an 18,500-token prompt. Run 1's PASS/FAIL data is unaffected and is reported below. The harness was corrected to sum all three buckets and the IDENTICAL card was re-run as run 2. The card itself was not changed between runs.",
+      "verdict": "VOID",
+      "separation": 0,
+      "tally": {
+        "fable": "6/6",
+        "opus": "6/6",
+        "sonnet": "6/6",
+        "haiku": "6/6"
+      },
+      "costUSD": {
+        "fable": 0.398718,
+        "opus": 0.41855,
+        "sonnet": 0.167632,
+        "haiku": 0.143206
+      },
+      "costPerPassedTaskUSD": {
+        "fable": 0.066453,
+        "opus": 0.069758,
+        "sonnet": 0.027939,
+        "haiku": 0.023868
+      },
+      "outputTokens": {
+        "fable": 4025,
+        "opus": 4536,
+        "sonnet": 5136,
+        "haiku": 20045
+      },
+      "outcome": "Every contestant passed every task. Zero FAIL, zero FAIL-ATTRACTOR, zero NO-ANSWER, zero ERROR. Under the pre-registered void rule (R5-DESIGN.md section 4) a spread of 0 is VOID: a design failure, not a finding."
+    }
+  },
+  "review": {
+    "reviewer": "promotion review, 2026-08-28",
+    "reviewedVerdict": "VOID-EQUIVALENT — no reasoning separation established",
+    "reasoning": [
+      "The harness stamped run 2 verdict=MEASURED because the mechanical spread is 1 task. The reviewed reading is that this does not clear the pre-registered bar, for two independent reasons.",
+      "First, R5-DESIGN.md section 9 pre-registers that a spread of exactly 1 is weak separation and must NOT move the route at n=1.",
+      "Second, and decisive: NEITHER non-PASS cell is a reasoning failure. haiku/d2 is a transport ERROR (TLS: self-signed certificate detected at the sandbox proxy), which section 9 already rules unusable for a routing change. fable/d4 is NO-ANSWER: the model reasoned but did not emit the required final ANSWER line, which is an output-discipline failure and is the same signature R1, R2 and R3 all recorded on that axis. Remove both non-reasoning cells and every tier is at 100% on every task it answered.",
+      "Across both runs, 46 of 46 scored cells that produced an answer produced the CORRECT answer. Zero wrong answers. Not one of the twelve pre-registered attractors was taken by any tier — including claude-haiku-4-5 on the memorisation-inverting probability item and on the 300-section needle reconciliation."
+    ],
+    "headline": "The card was built specifically to separate reasoning tiers and did not separate them. Capability is saturated across the entire lineup on well-posed, ground-truth-checkable reasoning tasks — the same result R3 reached on a far easier card, now reproduced against branch-flipping traps, a live decoy, a memorisation-inverting attractor, and a ten-constraint CSP.",
+    "routingConsequence": "NONE. routing-table.json deep-reasoning stays route=opus, confidence=low, rounds=0, autoApply=false. A void-equivalent round does not count toward the A2 two-round floor. The class remains UNMEASURED in the sense that matters: the card never located an Opus or Fable ceiling, so the doctrine claim that Opus is the right tier for deep reasoning is still a hunch.",
+    "costObservationNotAFinding": "With capability saturated, cost is the only axis that moved, and it moved against the expensive tiers. Cost per passed task in run 2: haiku $0.0157, sonnet $0.0101, opus $0.0207, fable $0.0360. In run 1: haiku $0.0239, sonnet $0.0279, opus $0.0698, fable $0.0665. Haiku reached the same answers using roughly 3-5x the output tokens of fable and was still cheaper. This is consistent with the doctrine rule that a saturated class routes to the cheapest passing tier, but it is NOT evidence for a routing change: a saturated card cannot tell you what the expensive tiers are for. Do not cite these numbers as a finding.",
+    "whatWouldActuallySeparate": [
+      "The tiers are no longer separated by whether they can solve well-posed deterministic problems. That capability is now common to the whole lineup, Haiku included.",
+      "This creates a methodological bind for R6: the tasks that plausibly still separate the frontier — open-ended synthesis, long-horizon multi-step agentic work, judgment under genuine ambiguity — are exactly the tasks with no mechanical ground truth, and R5 could not use a judge because all four tiers were contestants.",
+      "AMENDED 2026-09-19 (round renumbered R4 -> R5; arena R4 is the 2026-06-10 work-samples card, which this mirror never received). The original text here read: 'R6 therefore needs the cross-family judge from ROUTING-DOCTRINE.md roadmap item 2 before a harder card is worth building.' That is wrong. Arena R4 already ran two blind Claude-family sonnet judges with shuffled per-task labels over real production work and recorded family bias as a stated caveat, not a blocker. R6 is NOT gated on the cross-family judge existing; that judge reduces a known bias rather than unlocking the method. Building a harder mechanical card first is still likely to saturate again.",
+      "AMENDED 2026-09-19: arena R4 also separated the tiers on an axis this card does not measure — discipline under load. Its recorded finding: 'Fable 5 violated an output contract for the first time across four rounds — when the task itself is heavy, its constraint edge narrows', with Opus at 5 of 7 structured-output tasks violated. This receipt classifies run 2 fable/d4 (correct chain, omitted ANSWER line, the heaviest multi-file task on the card) as non-reasoning and therefore noise. Against R4 it is not noise: it is a third independent instance of the same measured behaviour from the tier R4 named. The reasoning verdict is unchanged — no tier gave a wrong answer — but that cell is evidence on the output-discipline axis, not an absence of evidence.",
+      "AMENDED 2026-09-19: second cheap probe, alongside the effort sweep — re-score the replies this round already produced for OUTPUT-CONTRACT COMPLIANCE rather than correctness. Mechanical, no judge, no new spend, and it tests the one axis four rounds now agree on.",
+      "Cheaper interim probe: hold this card fixed and sweep effort DOWNWARD. If every tier still passes at effort=low, the routing question stops being which tier and becomes which effort — and that saving is larger than any tier swap."
+    ]
+  }
+}
