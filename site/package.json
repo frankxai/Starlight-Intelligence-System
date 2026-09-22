@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "eslint",
     "check:metrics": "node scripts/check-metrics-contract.mjs",
-    "test:vault-fetch": "node --test src/lib/github-content.test.mjs"
+    "test:vault-fetch": "node --test src/lib/github-content.test.mjs",
+    "test:desk": "node --experimental-strip-types --import ./scripts/test/register.mjs --test src/lib/desk/pricing.test.mjs src/lib/desk/cascade.test.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
