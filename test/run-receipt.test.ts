@@ -148,6 +148,24 @@ describe('run receipt — receiptProblems', () => {
     assert.ok(problems.some((p) => p.includes('totals.tokens.input') && p.includes('below the stage sum')));
   });
 
+  it('rejects a total half a percent under the stages, and allows only rounding dust', () => {
+    const under = receiptProblems(receipt({
+      stages: [{ name: 'synthesize', status: 'ok', costEur: 10.05, latencyMs: 1, inputTokens: 1, outputTokens: 1 }],
+      totals: { costEur: 10, latencyMs: 1, tokens: { input: 1, output: 1 } },
+    }));
+    assert.ok(under.some((p) => p.includes('totals.costEur') && p.includes('below the stage sum')), under.join('; '));
+    const dust = receiptProblems(receipt({
+      stages: [{ name: 'synthesize', status: 'ok', costEur: 10, latencyMs: 1, inputTokens: 1, outputTokens: 1 }],
+      totals: { costEur: 9.99996, latencyMs: 1, tokens: { input: 1, output: 1 } },
+    }));
+    assert.equal(dust.length, 0, dust.join('; '));
+    const brief = receiptProblems(receipt({
+      stages: [{ name: 'synthesize', status: 'ok', costEur: 0.0033, latencyMs: 1, inputTokens: 1, outputTokens: 1 }],
+      totals: { costEur: 0, latencyMs: 1, tokens: { input: 1, output: 1 } },
+    }));
+    assert.ok(brief.some((p) => p.includes('totals.costEur') && p.includes('below the stage sum')), brief.join('; '));
+  });
+
   it('catches a bad verdict', () => {
     const problems = receiptProblems(receipt({ verdict: 'MAYBE' as RunReceipt['verdict'] }));
     assert.ok(problems.some((p) => p.startsWith('verdict is')), problems.join('; '));

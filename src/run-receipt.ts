@@ -108,9 +108,13 @@ const VERDICTS: RunReceiptVerdict[] = ["PASS", "FAIL", "PARTIAL"];
 const STAGE_STATUSES: StageStatus[] = ["ok", "failed", "skipped"];
 const DECIDED_BY: DecisionBy[] = ["human", "agent", "policy"];
 const OUTCOMES: DecisionOutcome[] = ["approved", "rejected", "deferred"];
-/** Rounding tolerance when checking totals against stage sums: half of the 4-decimal rounding unit, or 0.5 percent of the stage sum, whichever is larger. */
-function eurTolerance(stageSum: number): number {
-  return Math.max(0.00005, stageSum * 0.005);
+/**
+ * Half a ten-thousandth per priced stage.
+ * A flat half-cent was larger than a cascade brief, so a zero total passed.
+ * A percentage of the sum lets a large total sit under its stages.
+ */
+function eurTolerance(pricedStages: number): number {
+  return 0.00005 * Math.max(1, pricedStages);
 }
 /** DSSE issuers emit one or a few signatures. Above this count the envelope is refused before any signature is checked, which bounds the verification cost a caller can impose. */
 export const MAX_SIGNATURES = 8;
@@ -225,6 +229,7 @@ export function receiptProblems(receipt: unknown): string[] {
   }
 
   let costSum = 0;
+  let costStages = 0;
   let latencySum = 0;
   let inSum = 0;
   let outSum = 0;
@@ -246,6 +251,7 @@ export function receiptProblems(receipt: unknown): string[] {
       if (isNonNegative(stage.costEur)) {
         costSum += stage.costEur;
         anyCost = true;
+        costStages += 1;
       }
       if (isNonNegative(stage.latencyMs)) latencySum += stage.latencyMs;
       if (isNonNegative(stage.inputTokens)) inSum += stage.inputTokens;
@@ -265,7 +271,7 @@ export function receiptProblems(receipt: unknown): string[] {
       problems.push("totals.tokens.input and totals.tokens.output are required");
     }
     // Totals may exceed the stage sums (overhead, untracked steps) but never fall short of them.
-    if (anyCost && isNonNegative(t.costEur) && t.costEur + eurTolerance(costSum) < costSum) {
+    if (anyCost && isNonNegative(t.costEur) && t.costEur + eurTolerance(costStages) < costSum) {
       problems.push(`totals.costEur ${t.costEur} is below the stage sum ${costSum.toFixed(4)}`);
     }
     if (isNonNegative(t.latencyMs) && t.latencyMs < latencySum) problems.push(`totals.latencyMs ${t.latencyMs} is below the stage sum ${latencySum}`);
