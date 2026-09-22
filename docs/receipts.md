@@ -31,6 +31,19 @@ This writes `.starlight/keys/sip-signing.key` (private, mode 0600, gitignored) a
 
 Point the MCP server at the private key with `SIS_SIGNING_KEY_PATH=.starlight/keys/sip-signing.key`, or pass `signing_key_path` per call. `SIS_SIGNING_KEY` (PEM content) also works. Resolution order: `signing_key_pem` → `signing_key_path` → `SIS_SIGNING_KEY_PATH` → `SIS_SIGNING_KEY`.
 
+## Issue from the command line, print, scan
+
+One command signs a receipt, self-verifies it, and writes what the phone path needs:
+
+```bash
+node --experimental-strip-types scripts/receipts/issue-and-share.mts scripts/receipts/examples/desk-brief.draft.json \
+  --key .starlight/keys/sip-signing.key --ledger
+```
+
+The draft carries `run`, `subject` (`path` to the produced file; its sha256 becomes the digest), `stages`, and optionally `issuer`, `decisions`, `evidence`, `totals`, `verdict`. The script writes `.starlight/receipts/<receiptId>.envelope.json`, `.share.txt` (the link) and `.card.html` (an A5 card with a 64 mm QR; open it and print), and with `--ledger` appends the signed envelope to `memory/_audit/receipts.jsonl`, as `sis.receipt.issue` does.
+
+The link is the compact form, `https://starlightintelligence.ai/verify?r=z:…`: deflate-raw over the envelope with its statement stored decoded, base64url, about 1.3k characters for a four-stage receipt. The plain form, `r=b64u:<base64url of the envelope JSON>`, is about 3.8k characters, past what a QR holds (2953 bytes). Both restore the envelope byte for byte, so the signature check is the same. `src/receipt-share.ts` produces and parses both; the site parses both.
+
 ## Issue a receipt over MCP
 
 ```json

@@ -382,6 +382,10 @@ export function verifyRunReceipt(envelope: unknown, trustedPublicKeys: string[])
   };
   for (const s of envelope.signatures) {
     if (!isRecord(s)) continue;
+    if (s.keyid !== undefined && typeof s.keyid !== "string") {
+      reasons.push("signature keyid must be a string when present");
+      continue;
+    }
     const keyid = typeof s.keyid === "string" ? s.keyid : null;
     if (keyid && !trusted.has(keyid)) {
       reasons.push(`signature keyid ${keyid.slice(0, 16)}… is not a trusted key`);

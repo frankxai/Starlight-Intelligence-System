@@ -704,3 +704,4 @@ describe('Track B v0.1 — substrate invariants', () => {
 // separate, reviewed change.
 import './run-receipt.test.js';
 import './v01-receipt-tools.test.js';
+import './receipt-share.test.js';
