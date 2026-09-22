@@ -60,7 +60,7 @@ This is where **"AGENTS.md per company"** actually lands. Not as a file per comp
 - which **executive seat** is accountable, and where this repo escalates
 - the repo's **tier** (T0–T3) and what that implies about installing it
 
-Source: `ontology/company-registry.json` + `ontology/repo-tiers.json`. Same fence, same rule.
+Source: `ontology/company-registry.json` + `ontology/repo-tiers.json` when you are projecting the fixture. An operator passes `--registry`, `--tiers`, and `--band-a` pointing at their instance. The committed JSON in this repo is the synthetic fixture, not a live portfolio. Same fence, same rule.
 
 ### Band C — repo-local (hand-written; the generator never touches it)
 
