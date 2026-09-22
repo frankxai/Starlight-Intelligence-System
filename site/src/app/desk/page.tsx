@@ -4,7 +4,7 @@ import { DeskConsole } from "./DeskConsole";
 export const metadata: Metadata = {
   title: "The Desk",
   description:
-    "One question, four stages, a cited brief and a signed receipt. Small model where the work is mechanical, large model where the work is judgment, a different family as judge.",
+    "One question, a cited brief, a signed receipt, and a vault that remembers. Small model where the work is mechanical, large model where the work is judgment, a different family as judge.",
 };
 
 const EXAMPLES = [
@@ -20,9 +20,10 @@ export default function DeskPage() {
         One question in. A cited brief and a receipt out.
       </h1>
       <p className="mt-6 max-w-xl text-[15px] leading-[1.8] text-slate-400">
-        Four stages run in the open: retrieval finds the sources, a small model extracts claims that quote them, a large model
-        writes the brief with every fact cited, and a model from another family scores the result. The receipt records what each
-        stage cost, how long it took, and which sources survived, so the numbers on screen are the run&apos;s own.
+        Every stage runs in the open: the vault recalls what was already held, retrieval finds the sources, a small model
+        extracts claims that quote them, a large model writes the brief with every fact cited, a model from another family
+        scores the result, and the run writes its claims back as memory to be argued with next time. The receipt records what
+        each stage cost, how long it took, and which sources survived, so the numbers on screen are the run&apos;s own.
       </p>
       <div className="mt-12">
         <DeskConsole examples={EXAMPLES} />

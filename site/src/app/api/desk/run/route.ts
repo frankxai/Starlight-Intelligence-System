@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { runDesk } from "@/lib/desk/cascade";
 import { signRunReceipt } from "@/lib/desk/run-receipt";
+import { vaultPath } from "@/lib/desk/vault";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
       retrieval: { apiKey: tavilyKey, endpoint: process.env.TAVILY_URL },
       issuer: process.env.DESK_ISSUER ?? "Starlight Desk",
       host: "desk",
+      vaultPath: vaultPath(),
     });
 
     // Sign when a key is present. Without one the receipt travels as a draft,
@@ -85,6 +87,9 @@ export async function POST(request: Request) {
       claims: run.claims,
       judgement: run.judgement,
       groundingRate: run.groundingRate,
+      related: run.related,
+      contradictions: run.contradictions,
+      remembered: run.remembered,
       receipt: run.receipt,
       envelope,
       signed: Boolean(envelope),

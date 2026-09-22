@@ -1,10 +1,13 @@
 /**
  * The Desk cascade: a question in, a cited brief and a signed receipt out.
  *
+ *   recall     the vault (no model)         prior beliefs near this question
  *   retrieve   Tavily                       sources with URLs
  *   extract    Nemotron 3 Nano (small)      claims, each quoting one source
  *   synthesize DeepSeek V4 Flash (large)    the six-section brief, every claim cited [n]
+ *   contradict Nemotron 3 Nano (small)      where this run disagrees with memory
  *   judge      GPT-OSS 120B (other family)  rubric score, independent of the writer
+ *   remember   the vault (no model)         this run's claims, appended as beliefs
  *
  * The architecture story in one line: the small model where the work is
  * mechanical, the large model where the work is judgment, a different family as
@@ -27,10 +30,12 @@ import {
   type RunReceipt,
   type RunReceiptStage,
 } from "./run-receipt";
+import { appendAtoms, findRelated, readAtoms, type VaultAtom } from "./vault";
 
 export const MODELS = {
   extract: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
   synthesize: "deepseek-ai/DeepSeek-V4-Flash-0731",
+  contradict: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
   judge: "openai/gpt-oss-120b",
 } as const;
 
@@ -50,6 +55,15 @@ export interface Judgement {
   rationale: string;
 }
 
+/** A place where this run disagrees with something the vault already held. */
+export interface Contradiction {
+  /** The vault atom being contradicted. */
+  priorId: string;
+  priorClaim: string;
+  newClaim: string;
+  reason: string;
+}
+
 export interface DeskRun {
   question: string;
   brief: string;
@@ -58,6 +72,11 @@ export interface DeskRun {
   judgement: Judgement | null;
   /** Cited claims over total claims, computed from the brief's own text. */
   groundingRate: number;
+  /** Prior beliefs the vault held near this question. */
+  related: VaultAtom[];
+  contradictions: Contradiction[];
+  /** How many beliefs this run wrote back to the vault. */
+  remembered: number;
   receipt: RunReceipt;
   pricesVerified: boolean;
 }
@@ -69,6 +88,8 @@ export interface CascadeOptions {
   maxSources?: number;
   issuer?: string;
   host?: string;
+  /** Where memory lives. Omit and the run reads and writes nothing. */
+  vaultPath?: string;
   now?: () => number;
   clock?: () => string;
 }
@@ -87,6 +108,32 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   let claims: Claim[] = [];
   let brief = "";
   let judgement: Judgement | null = null;
+  let related: VaultAtom[] = [];
+  let contradictions: Contradiction[] = [];
+  let remembered = 0;
+
+  // ── recall ────────────────────────────────────────────────────────────────
+  // Memory first, and locally: keyword overlap over the vault's own lines. No
+  // model, no index, no network, so this stage cannot be the one that fails.
+  if (options.vaultPath) {
+    const startedRecall = now();
+    try {
+      const atoms = await readAtoms(options.vaultPath);
+      related = findRelated(atoms, question);
+      stages.push({
+        name: "recall",
+        status: "ok",
+        provider: "vault",
+        latencyMs: now() - startedRecall,
+        costEur: 0,
+        note: `${related.length} of ${atoms.length} prior beliefs`,
+      });
+    } catch (error) {
+      stages.push({ name: "recall", status: "failed", provider: "vault", note: message(error) });
+    }
+  } else {
+    stages.push({ name: "recall", status: "skipped", provider: "vault", note: "no vault" });
+  }
 
   // ── retrieve ──────────────────────────────────────────────────────────────
   try {
@@ -172,6 +219,49 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     stages.push({ name: "synthesize", status: "skipped", model: MODELS.synthesize, provider: "nebius", note: "no claims" });
   }
 
+  // ── contradict ────────────────────────────────────────────────────────────
+  // What memory is for: not recalling agreement, but catching the moment this
+  // run says something the vault already said otherwise.
+  if (related.length > 0 && claims.length > 0) {
+    try {
+      const result = await chat(
+        {
+          model: MODELS.contradict,
+          json: true,
+          temperature: 0,
+          maxTokens: 800,
+          messages: [
+            { role: "system", content: CONTRADICT_SYSTEM },
+            { role: "user", content: contradictPrompt(related, claims) },
+          ],
+        },
+        options.provider,
+      );
+      contradictions = parseContradictions(result.text, related);
+      stages.push({
+        name: "contradict",
+        status: "ok",
+        model: result.model,
+        provider: "nebius",
+        inputTokens: result.inputTokens,
+        outputTokens: result.outputTokens,
+        latencyMs: result.latencyMs,
+        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens)),
+        note: `${contradictions.length} against ${related.length} prior beliefs`,
+      });
+    } catch (error) {
+      stages.push({ name: "contradict", status: "failed", model: MODELS.contradict, provider: "nebius", note: message(error) });
+    }
+  } else {
+    stages.push({
+      name: "contradict",
+      status: "skipped",
+      model: MODELS.contradict,
+      provider: "nebius",
+      note: related.length === 0 ? "nothing recalled" : "no claims",
+    });
+  }
+
   // ── judge ─────────────────────────────────────────────────────────────────
   const groundingRate = computeGroundingRate(brief, claims);
   if (brief.length > 0) {
@@ -208,11 +298,39 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     stages.push({ name: "judge", status: "skipped", model: MODELS.judge, provider: "nebius", note: "no brief" });
   }
 
-  const endedAt = clock();
+  // ── remember ──────────────────────────────────────────────────────────────
+  // Best-effort by design: a vault that refuses the write records a failed
+  // stage, and the run still hands over its brief and its receipt.
   const runId = `run_${now().toString(36)}`;
+  const receiptId = `rcpt_${now()}_${runId.slice(4, 12)}`;
+  if (options.vaultPath && claims.length > 0) {
+    const startedRemember = now();
+    try {
+      remembered = await appendAtoms(options.vaultPath, claims.map((claim) => atomFrom(claim, question, receiptId, clock())));
+      stages.push({
+        name: "remember",
+        status: remembered > 0 ? "ok" : "failed",
+        provider: "vault",
+        latencyMs: now() - startedRemember,
+        costEur: 0,
+        note: `${remembered} beliefs written`,
+      });
+    } catch (error) {
+      stages.push({ name: "remember", status: "failed", provider: "vault", note: message(error) });
+    }
+  } else {
+    stages.push({
+      name: "remember",
+      status: "skipped",
+      provider: "vault",
+      note: options.vaultPath ? "no claims" : "no vault",
+    });
+  }
+
+  const endedAt = clock();
   const receipt: RunReceipt = {
     schema: RUN_RECEIPT_SCHEMA,
-    receiptId: `rcpt_${now()}_${runId.slice(4, 12)}`,
+    receiptId,
     issuedAt: endedAt,
     issuer: { name: options.issuer ?? "Starlight Desk" },
     run: { id: runId, kind: "desk.brief", host: options.host ?? "desk", startedAt, endedAt },
@@ -220,11 +338,40 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     stages,
     totals: totalsFromStages(stages),
     decisions: [],
-    evidence: sources.map((source) => ({ kind: "source", ref: source.url })),
+    evidence: [
+      ...sources.map((source) => ({ kind: "source", ref: source.url })),
+      ...(remembered > 0 && options.vaultPath ? [{ kind: "vault", ref: options.vaultPath }] : []),
+    ],
     verdict: verdictFromStages(stages),
   };
 
-  return { question, brief, sources, claims, judgement, groundingRate, receipt, pricesVerified: pricingIsComplete() };
+  return {
+    question,
+    brief,
+    sources,
+    claims,
+    judgement,
+    groundingRate,
+    related,
+    contradictions,
+    remembered,
+    receipt,
+    pricesVerified: pricingIsComplete(),
+  };
+}
+
+function atomFrom(claim: Claim, question: string, receiptId: string, at: string): VaultAtom {
+  return {
+    id: `${receiptId}_c${claim.index}`,
+    kind: "belief",
+    question,
+    claim: claim.text,
+    quote: claim.quote,
+    url: claim.url,
+    confidence: claim.confidence,
+    receiptId,
+    at,
+  };
 }
 
 /** Cited claims over total claims, read out of the brief. Zero claims is zero grounding. */
@@ -263,6 +410,30 @@ export function parseClaims(text: string, sources: Source[]): Claim[] {
     });
   }
   return claims;
+}
+
+/**
+ * Contradictions the model reported, kept only where they name a prior belief
+ * that was actually recalled. One naming a belief nobody holds is dropped.
+ */
+export function parseContradictions(text: string, related: VaultAtom[]): Contradiction[] {
+  const parsed = parseJsonObject(text);
+  if (!parsed) return [];
+  const raw = Array.isArray(parsed.contradictions) ? parsed.contradictions : [];
+  const priors = new Map(related.map((atom) => [atom.id, atom]));
+  const found: Contradiction[] = [];
+  const claimed = new Set<string>();
+  for (const entry of raw) {
+    if (!entry || typeof entry !== "object") continue;
+    const record = entry as Record<string, unknown>;
+    const priorId = str(record.priorId);
+    const prior = priors.get(priorId);
+    const newClaim = str(record.newClaim);
+    if (!prior || !newClaim || claimed.has(priorId)) continue;
+    claimed.add(priorId);
+    found.push({ priorId, priorClaim: prior.claim, newClaim, reason: str(record.reason) });
+  }
+  return found;
 }
 
 /** The judge's verdict, or null when it did not return one this run can use. */
@@ -329,6 +500,9 @@ const SYNTHESIZE_SYSTEM = `You write a research brief in six sections, in this o
 ## NEXT
 Every sentence that states a fact carries the citation marker [n] of the claim it rests on. A sentence you cannot cite is a sentence you do not write. Direct, technical, warm. No filler.`;
 
+const CONTRADICT_SYSTEM = `You compare new claims against beliefs already held. Return JSON: {"contradictions":[{"priorId","newClaim","reason"}]}.
+Rules: "priorId" is the id of the held belief exactly as given; report only a direct disagreement of fact, never a difference of wording, scope, or date of measurement; when nothing disagrees return an empty list; one entry per held belief at most.`;
+
 const JUDGE_SYSTEM = `You score a research brief against a methodology rubric. Return JSON: {"score": 0-10, "rationale": "one sentence"}.
 Score for: falsifiability of the hypothesis, whether the method could be replicated, whether every factual sentence carries a citation, and whether the takeaway follows from the results.`;
 
@@ -342,6 +516,12 @@ function extractPrompt(question: string, sources: Source[]): string {
 function synthesizePrompt(question: string, claims: Claim[]): string {
   const body = claims.map((claim) => `[${claim.index}] ${claim.text} (source: ${claim.url})`).join("\n");
   return `Question: ${question}\n\nClaims you may cite, by marker:\n${body}\n\nWrite the brief.`;
+}
+
+function contradictPrompt(related: VaultAtom[], claims: Claim[]): string {
+  const held = related.map((atom) => `${atom.id}: ${atom.claim}`).join("\n");
+  const fresh = claims.map((claim) => `- ${claim.text}`).join("\n");
+  return `Beliefs already held:\n${held}\n\nNew claims from this run:\n${fresh}\n\nReport only direct disagreements.`;
 }
 
 function judgePrompt(question: string, brief: string): string {

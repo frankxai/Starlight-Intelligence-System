@@ -30,24 +30,45 @@ interface Source {
   url: string;
 }
 
+interface Belief {
+  id: string;
+  question: string;
+  claim: string;
+  url: string;
+  at: string;
+}
+
+interface Contradiction {
+  priorId: string;
+  priorClaim: string;
+  newClaim: string;
+  reason: string;
+}
+
 interface DeskResponse {
   question: string;
   brief: string;
   sources: Source[];
   judgement: { score: number; rationale: string } | null;
   groundingRate: number;
+  related: Belief[];
+  contradictions: Contradiction[];
+  remembered: number;
   receipt: Receipt;
   signed: boolean;
   pricesVerified: boolean;
 }
 
-const STAGE_ORDER = ["retrieve", "extract", "synthesize", "judge"] as const;
+const STAGE_ORDER = ["recall", "retrieve", "extract", "synthesize", "contradict", "judge", "remember"] as const;
 
 const STAGE_ROLE: Record<string, string> = {
+  recall: "the vault",
   retrieve: "sources",
   extract: "small model",
   synthesize: "large model",
+  contradict: "small model",
   judge: "other family",
+  remember: "the vault",
 };
 
 export function DeskConsole({ examples }: { examples: string[] }) {
@@ -256,6 +277,45 @@ export function DeskConsole({ examples }: { examples: string[] }) {
           </section>
 
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
+              <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Memory</span>
+              <span className="font-mono text-[11px] text-slate-500">
+                {result.related.length} recalled · {result.remembered} written
+              </span>
+            </div>
+            {result.contradictions.length > 0 ? (
+              <ul className="divide-y divide-white/[0.06]">
+                {result.contradictions.map((item) => (
+                  <li key={item.priorId} className="px-5 py-4">
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-amber-300">Disagrees with memory</div>
+                    <p className="mt-2 text-[14px] leading-[1.8] text-slate-300">
+                      <span className="text-slate-500">held:</span> {item.priorClaim}
+                    </p>
+                    <p className="mt-1 text-[14px] leading-[1.8] text-slate-100">
+                      <span className="text-slate-500">now:</span> {item.newClaim}
+                    </p>
+                    {item.reason ? <p className="mt-2 text-[13px] leading-[1.7] text-slate-500">{item.reason}</p> : null}
+                  </li>
+                ))}
+              </ul>
+            ) : result.related.length > 0 ? (
+              <ul className="divide-y divide-white/[0.06]">
+                {result.related.map((belief) => (
+                  <li key={belief.id} className="px-5 py-3 text-[13px] leading-[1.7] text-slate-400">
+                    {belief.claim}
+                    <span className="ml-2 font-mono text-[11px] text-slate-600">{belief.at.slice(0, 10)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="px-5 py-4 text-[13px] leading-[1.7] text-slate-500">
+                Nothing held near this question yet. This run is the vault&rsquo;s first word on it; ask again after the next one
+                and the Desk checks itself against what it said here.
+              </p>
+            )}
+          </section>
+
+          <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
             <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-400">
               Sources
             </div>
@@ -313,8 +373,8 @@ export function DeskConsole({ examples }: { examples: string[] }) {
             <div className="max-w-xs text-center sm:text-left">
               <p className="text-[15px] leading-[1.7] text-slate-200">Scan it and ask the Desk something.</p>
               <p className="mt-2 text-[13px] leading-[1.7] text-slate-500">
-                Every question runs the same four stages and leaves the same receipt, so anyone here can check what their own
-                answer cost.
+                Every question runs the same stages and leaves the same receipt, so anyone here can check what their own answer
+                cost.
               </p>
               <p className="mt-3 break-all font-mono text-[11px] text-slate-600">{roomUrl}</p>
             </div>

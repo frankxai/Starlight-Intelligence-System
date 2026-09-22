@@ -4,10 +4,22 @@
 // is a canned response, so these assertions hold on the day whether or not the
 // venue Wi-Fi does.
 import assert from "node:assert/strict";
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
-import { computeGroundingRate, parseClaims, parseJudgement, runDesk, sectionsPresent, MODELS } from "./cascade.ts";
+import {
+  computeGroundingRate,
+  parseClaims,
+  parseContradictions,
+  parseJudgement,
+  runDesk,
+  sectionsPresent,
+  MODELS,
+} from "./cascade.ts";
 import { receiptProblems } from "./run-receipt.ts";
+import { readAtoms } from "./vault.ts";
 
 const SOURCES = [
   { title: "A", url: "https://example.org/a", content: "Alpha body text." },
@@ -96,7 +108,7 @@ test("a full run cites its claims, scores itself, and issues a complete receipt"
   assert.equal(run.receipt.run.kind, "desk.brief");
   assert.deepEqual(
     run.receipt.stages.map((stage) => `${stage.name}:${stage.status}`),
-    ["retrieve:ok", "extract:ok", "synthesize:ok", "judge:ok"],
+    ["recall:skipped", "retrieve:ok", "extract:ok", "synthesize:ok", "contradict:skipped", "judge:ok", "remember:skipped"],
   );
   assert.equal(run.receipt.evidence.length, 2, "each source is evidence");
   assert.equal(run.receipt.totals.tokens.input, 3900);
@@ -125,9 +137,17 @@ test("a failed stage is recorded and still yields a readable receipt", async () 
   assert.equal(run.receipt.verdict, "PARTIAL", "one stage landed, one failed: the verdict says so");
   assert.deepEqual(
     run.receipt.stages.map((stage) => `${stage.name}:${stage.status}`),
-    ["retrieve:ok", "extract:failed", "synthesize:skipped", "judge:skipped"],
+    [
+      "recall:skipped",
+      "retrieve:ok",
+      "extract:failed",
+      "synthesize:skipped",
+      "contradict:skipped",
+      "judge:skipped",
+      "remember:skipped",
+    ],
   );
-  assert.match(run.receipt.stages[1].note ?? "", /400/);
+  assert.match(run.receipt.stages[2].note ?? "", /400/);
 });
 
 test("a throttled stage is retried once, then succeeds", async () => {
@@ -164,4 +184,110 @@ test("malformed model output degrades instead of throwing", () => {
 test("a judged score is clamped into the rubric's range", () => {
   assert.equal(parseJudgement(JSON.stringify({ score: 44 }))?.score, 10);
   assert.equal(parseJudgement(JSON.stringify({ score: -3 }))?.score, 0);
+});
+
+test("a run writes its claims to the vault, and the next run reads them back", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "desk-cascade-"));
+  const vaultPath = join(dir, "desk-vault.jsonl");
+
+  const first = await runDesk({
+    ...config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+      ]),
+    ),
+    vaultPath,
+  });
+
+  assert.equal(first.related.length, 0, "an empty vault recalls nothing");
+  assert.equal(first.remembered, 2, "both surviving claims become beliefs");
+  assert.deepEqual(
+    first.receipt.stages.map((stage) => `${stage.name}:${stage.status}`),
+    ["recall:ok", "retrieve:ok", "extract:ok", "synthesize:ok", "contradict:skipped", "judge:ok", "remember:ok"],
+  );
+  assert.ok(
+    first.receipt.evidence.some((item) => item.kind === "vault" && item.ref === vaultPath),
+    "the vault the run wrote to is evidence",
+  );
+
+  const stored = await readAtoms(vaultPath);
+  assert.deepEqual(stored.map((atom) => atom.claim), ["Alpha holds.", "Beta holds."]);
+
+  const second = await runDesk({
+    ...config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(
+          JSON.stringify({
+            contradictions: [
+              { priorId: stored[0].id, newClaim: "Alpha fails.", reason: "Opposite finding." },
+              { priorId: "never-held", newClaim: "Invented disagreement.", reason: "None." },
+            ],
+          }),
+          800,
+          60,
+        ),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+      ]),
+    ),
+    vaultPath,
+  });
+
+  assert.equal(second.related.length, 2, "the prior run's beliefs are recalled");
+  assert.deepEqual(
+    second.contradictions.map((item) => item.priorClaim),
+    ["Alpha holds."],
+    "a contradiction against a belief nobody holds is dropped",
+  );
+  assert.equal(second.contradictions[0].newClaim, "Alpha fails.");
+  assert.deepEqual(
+    second.receipt.stages.map((stage) => `${stage.name}:${stage.status}`),
+    ["recall:ok", "retrieve:ok", "extract:ok", "synthesize:ok", "contradict:ok", "judge:ok", "remember:ok"],
+  );
+  assert.equal((await readAtoms(vaultPath)).length, 4, "memory accumulates rather than replaces");
+});
+
+test("an unwritable vault costs the run its memory, not its brief", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "desk-cascade-"));
+  // A file where the vault expects a directory: the append cannot land.
+  const blocker = join(dir, "blocked");
+  await writeFile(blocker, "not a directory", "utf8");
+
+  const run = await runDesk({
+    ...config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+      ]),
+    ),
+    vaultPath: join(blocker, "vault.jsonl"),
+  });
+
+  assert.equal(run.remembered, 0);
+  assert.equal(run.brief.length > 0, true, "the brief still ships");
+  assert.equal(run.receipt.stages.at(-1).status, "failed");
+  assert.equal(run.receipt.verdict, "PARTIAL", "a lost write is visible in the verdict, not hidden");
+  assert.deepEqual(receiptProblems(run.receipt), []);
+});
+
+test("contradictions are kept only where they name a belief that was recalled", () => {
+  const held = [
+    { id: "a", kind: "belief", question: "q", claim: "Held one.", quote: "q", url: "u", confidence: 1, receiptId: "r", at: "t" },
+  ];
+  assert.deepEqual(parseContradictions("not json", held), []);
+  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: "nope" }), held), []);
+  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [{ priorId: "b", newClaim: "x" }] }), held), []);
+  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [{ priorId: "a", newClaim: "" }] }), held), []);
+  const twice = parseContradictions(
+    JSON.stringify({ contradictions: [{ priorId: "a", newClaim: "x" }, { priorId: "a", newClaim: "y" }] }),
+    held,
+  );
+  assert.deepEqual(twice, [{ priorId: "a", priorClaim: "Held one.", newClaim: "x", reason: "" }], "one entry per prior belief");
 });
