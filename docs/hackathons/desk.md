@@ -56,10 +56,25 @@ meter can put the closed-API baseline beside it.
 | The route refuses without keys, caps question length, and rate-limits room mode | `src/app/api/desk/run/route.ts` |
 | The whole path works against a live provider | run against a local stub: `PASS`, grounding 1.0, judge 8.6, four stages timed, receipt signed |
 
-Not yet proven: the browser path. This sandbox cannot upgrade the dev server's
-HMR WebSocket, so React never hydrates here and no click reaches the console.
-Smoke the page in a browser on the demo laptop before the day; that is Tuesday
-check 10.
+| The browser path works, hydrates, and fits a phone | production build served locally, a full run driven through the UI: zero page errors and zero horizontal overflow at 1440 and 375. Screenshots in `evidence/` |
+
+The one caveat: `next dev` in a sandbox whose WebSocket cannot upgrade never
+hydrates, which is how the CSP bug below was found. The production path is
+proven; still open the page once on the demo laptop (Tuesday check 10).
+
+## The edge meter
+
+`src/lib/desk/edge-meter.ts` prices the same run twice: the cascade's own euros
+against what those identical token counts would cost on a closed API at its
+published list price, plus rubric, seconds, and the share of claims that reached
+the brief. Both sides stay "unpriced" until the console numbers land, and the
+multiple is withheld rather than guessed.
+
+## Room mode
+
+A QR of the page, large enough to scan from the back of a room. Every question
+the room asks runs the same four stages and leaves the same receipt, so anyone
+watching can check what their own answer cost.
 
 ## A CSP bug this work found
 

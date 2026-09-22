@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
+import { edgeMeter } from "@/lib/desk/edge-meter";
+import { RoomQr } from "./RoomQr";
 
 interface Stage {
   name: string;
@@ -54,6 +56,9 @@ export function DeskConsole({ examples }: { examples: string[] }) {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<DeskResponse | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  // The room URL is read when the button is pressed, so the server and the
+  // first client render agree on an empty string and nothing mismatches.
+  const [roomUrl, setRoomUrl] = useState("");
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const run = useCallback(
@@ -92,6 +97,18 @@ export function DeskConsole({ examples }: { examples: string[] }) {
     [pending],
   );
 
+  const meter = useMemo(() => {
+    if (!result) return null;
+    return edgeMeter({
+      costEur: result.receipt.totals.costEur,
+      latencyMs: result.receipt.totals.latencyMs,
+      tokens: result.receipt.totals.tokens,
+      groundingRate: result.groundingRate,
+      rubricScore: result.judgement?.score ?? null,
+      pricesVerified: result.pricesVerified,
+    });
+  }, [result]);
+
   const stages = useMemo(() => {
     const byName = new Map((result?.receipt.stages ?? []).map((stage) => [stage.name, stage]));
     return STAGE_ORDER.map((name) => ({ name, stage: byName.get(name) }));
@@ -109,7 +126,11 @@ export function DeskConsole({ examples }: { examples: string[] }) {
         <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
           <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Ask the Desk</span>
           <span className="font-mono text-[11px] text-slate-500">
-            {pending ? `${(elapsed / 1000).toFixed(1)} s` : "idle"}
+            {pending
+              ? `${(elapsed / 1000).toFixed(1)} s`
+              : result
+                ? `done in ${(result.receipt.totals.latencyMs / 1000).toFixed(1)} s`
+                : "idle"}
           </span>
         </div>
         <div className="p-5">
@@ -185,6 +206,37 @@ export function DeskConsole({ examples }: { examples: string[] }) {
             <Figure label="rubric" value={result.judgement ? `${result.judgement.score}/10` : "—"} />
           </section>
 
+          {meter ? (
+            <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
+                <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Edge meter</span>
+                <span className="font-mono text-[11px] text-slate-500">{meter.baselineLabel}</span>
+              </div>
+              <table className="w-full text-[13px]">
+                <thead>
+                  <tr className="border-b border-white/[0.06] text-left font-mono text-[10px] uppercase tracking-widest text-slate-500">
+                    <th className="px-5 py-2 font-normal">axis</th>
+                    <th className="px-5 py-2 font-normal">this cascade</th>
+                    <th className="px-5 py-2 font-normal">closed API</th>
+                    <th className="px-5 py-2 text-right font-normal">multiple</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.06]">
+                  {meter.rows.map((row) => (
+                    <tr key={row.axis}>
+                      <td className="px-5 py-3 text-slate-400">{row.label}</td>
+                      <td className="px-5 py-3 font-mono tabular-nums text-white">{row.ours}</td>
+                      <td className="px-5 py-3 font-mono tabular-nums text-slate-400">{row.baseline}</td>
+                      <td className="px-5 py-3 text-right font-mono tabular-nums text-violet-300">
+                        {row.ratio === null ? "" : `${row.ratio}x cheaper`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          ) : null}
+
           {!result.pricesVerified ? (
             <p className="rounded-lg border border-amber-400/25 bg-amber-400/[0.05] px-4 py-3 text-[12px] leading-[1.7] text-amber-200/90">
               Model prices are unverified, so this run reports tokens and seconds and withholds euros. Fill them from the Token
@@ -198,7 +250,9 @@ export function DeskConsole({ examples }: { examples: string[] }) {
               <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Brief</span>
               <span className="font-mono text-[11px] text-slate-500">{result.receipt.subject.name}</span>
             </div>
-            <div className="whitespace-pre-wrap px-5 py-5 text-[14px] leading-[1.9] text-slate-300">{result.brief}</div>
+            <div className="px-5 py-5">
+              <Brief text={result.brief} />
+            </div>
           </section>
 
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
@@ -241,6 +295,66 @@ export function DeskConsole({ examples }: { examples: string[] }) {
           </section>
         </>
       ) : null}
+
+      <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
+          <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Room mode</span>
+          <button
+            type="button"
+            onClick={() => setRoomUrl((current) => (current ? "" : `${window.location.origin}/desk`))}
+            className="rounded-lg border border-white/[0.08] px-3 py-1.5 text-[12px] text-slate-400 transition hover:border-white/[0.16] hover:text-slate-200"
+          >
+            {roomUrl ? "Hide the code" : "Put it on the screen"}
+          </button>
+        </div>
+        {roomUrl ? (
+          <div className="flex flex-col items-center gap-4 px-5 py-8 sm:flex-row sm:justify-center sm:gap-8">
+            <RoomQr url={roomUrl} size={200} />
+            <div className="max-w-xs text-center sm:text-left">
+              <p className="text-[15px] leading-[1.7] text-slate-200">Scan it and ask the Desk something.</p>
+              <p className="mt-2 text-[13px] leading-[1.7] text-slate-500">
+                Every question runs the same four stages and leaves the same receipt, so anyone here can check what their own
+                answer cost.
+              </p>
+              <p className="mt-3 break-all font-mono text-[11px] text-slate-600">{roomUrl}</p>
+            </div>
+          </div>
+        ) : (
+          <p className="px-5 py-4 text-[13px] leading-[1.7] text-slate-500">
+            Shows a QR of this page, large enough to scan from the back of a room.
+          </p>
+        )}
+      </section>
+    </div>
+  );
+}
+
+/**
+ * The brief, with its six headings set as headings. The body keeps its citation
+ * markers verbatim, because the markers are the point.
+ */
+function Brief({ text }: { text: string }) {
+  const blocks = text
+    .split(/^##\s+/m)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => {
+      const newline = block.indexOf("\n");
+      return newline === -1
+        ? { heading: block, body: "" }
+        : { heading: block.slice(0, newline).trim(), body: block.slice(newline + 1).trim() };
+    });
+
+  if (blocks.length === 0) return <p className="text-[14px] leading-[1.9] text-slate-300">{text}</p>;
+
+  return (
+    <div className="space-y-5">
+      {blocks.map((block) => (
+        <section key={block.heading}>
+          <h3 className="font-mono text-[10px] uppercase tracking-widest text-violet-400">{block.heading}</h3>
+          <p className="mt-2 whitespace-pre-wrap text-[14px] leading-[1.9] text-slate-300">{block.body}</p>
+        </section>
+      ))}
     </div>
   );
 }
