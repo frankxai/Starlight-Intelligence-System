@@ -56,14 +56,10 @@ if (/Start from\s*<br\s*\/?>/.test(downloadPage)) {
 }
 
 if (
-  !homePage.includes(
-    'aria-label="Models learn from what we leave behind."',
-  ) ||
-  !homePage.includes('aria-label="Take the substrate. Keep the keys."')
+  !/<h1 id="era-title">Intelligence should\s+<em>compound\.<\/em><\/h1>/.test(homePage) ||
+  !homePage.includes('aria-labelledby="era-title"')
 ) {
-  failures.push(
-    "the homepage split-style headings must expose complete accessible names with semantic spaces",
-  );
+  failures.push("the homepage H1 must have complete semantic text and a labelled hero section");
 }
 
 if (!protocolPage.includes("overflow-x-auto")) {
@@ -79,5 +75,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  "Layout contract passed: the final navigation panel stays in-viewport, split-style headings expose semantic spaces, and nested scrollers remain.",
+  "Layout contract passed: the final navigation panel stays in-viewport, homepage text is semantic, and nested scrollers remain.",
 );

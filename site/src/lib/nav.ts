@@ -1,8 +1,7 @@
 /**
- * Single source of truth for the site's information architecture.
- * Both the Header (grouped mega-menu) and the Footer consume these groups so
- * navigation can never drift between them again. Every route lives in exactly
- * one group; the Footer adds a Connect column for external + newcomer links.
+ * Curated public navigation for the Starlight narrative and developer path.
+ * Both the Header and Footer consume these groups. Legacy experiments keep
+ * their direct URLs and contextual links without competing for primary IA.
  */
 
 import type { CinematicStill } from "@/lib/cinematic";
@@ -20,15 +19,11 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Explore",
     visual: NAV_GROUP_STILLS.Explore,
     items: [
-      { href: "/cosmos", label: "Cosmos", desc: "The universe as a thinking substrate" },
-      { href: "/cosmos/gallery", label: "Deep Field", desc: "Galaxies and Webb, cinematic" },
-      { href: "/palace", label: "Memory Palace", desc: "Walk the vaults in space" },
-      { href: "/knowledge-tree", label: "Knowledge Tree", desc: "The system, branch by branch" },
-      { href: "/vaults", label: "Public Vaults", desc: "One public vault" },
-      { href: "/queen", label: "Queen", desc: "The visual intelligence loop" },
-      { href: "/field-notes", label: "Field Notes", desc: "Six studies of protocol, proof, and public memory" },
-      { href: "/visuals/brand-lab", label: "Brand Lab", desc: "The visual identity system" },
-      { href: "/verticals", label: "Verticals", desc: "Domain sub-stacks" },
+      { href: "/story", label: "Story", desc: "The thesis in seven chapters" },
+      { href: "/notes", label: "Starlight Notes", desc: "Curated public knowledge with exportable records" },
+      { href: "/constitution", label: "Constitution", desc: "Mission, values, and long horizon" },
+      { href: "/cosmos", label: "Cosmos", desc: "An exploration of the universe as orientation" },
+      { href: "/field-notes", label: "Field Notes", desc: "Research and working ideas" },
     ],
   },
   {
@@ -36,22 +31,19 @@ export const NAV_GROUPS: NavGroup[] = [
     visual: NAV_GROUP_STILLS.Build,
     items: [
       { href: "/deploy", label: "Deploy Explorer", desc: "Own the public Starlight interface" },
-      { href: "/quickstart", label: "Quickstart", desc: "Five minutes to first context" },
-      { href: "/download", label: "Source & Modules", desc: "Build SIP source or get modules" },
-      { href: "/cockpit", label: "Cockpit", desc: "The spec-trace console" },
       { href: "/architecture", label: "Architecture", desc: "How the pieces fit together" },
+      { href: "/quickstart", label: "Quickstart", desc: "Run the local system" },
+      { href: "/download", label: "Source & Modules", desc: "Build SIP source or get modules" },
+      { href: "/docs", label: "Documentation", desc: "Reference docs and developer details" },
     ],
   },
   {
     label: "Learn",
     visual: NAV_GROUP_STILLS.Learn,
     items: [
-      { href: "/constitution", label: "Constitution", desc: "Intelligence in service of life" },
+      { href: "/proof", label: "Proof", desc: "Current code, tests, status, and claim limits" },
       { href: "/protocol", label: "Protocol", desc: "The open SIP substrate spec" },
       { href: "/verify", label: "Verify", desc: "Check this system's own signed receipt" },
-      { href: "/research", label: "Research", desc: "Substrate research surface" },
-      { href: "/explainer", label: "Explainer", desc: "Plain-language overview" },
-      { href: "/docs", label: "Documentation", desc: "Reference docs" },
       { href: "/changelog", label: "Changelog", desc: "What shipped, and when" },
     ],
   },

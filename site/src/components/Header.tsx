@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { NAV_GROUPS, GITHUB_URL, DEPLOY_URL, isActive } from "@/lib/nav";
-import { CINEMATIC_STILLS } from "@/lib/cinematic";
+import { NAV_GROUPS, GITHUB_URL, isActive } from "@/lib/nav";
 import { StarlightMark } from "@/components/StarlightMark";
 
 export function Header() {
@@ -39,7 +38,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#060609]/72 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[#34454a] bg-[#0c171d]">
       <nav
         ref={navRef}
         className="mx-auto flex h-14 max-w-[88rem] items-center justify-between px-6"
@@ -57,12 +56,14 @@ function HeaderContent({ pathname }: { pathname: string }) {
 
         {/* Desktop grouped nav */}
         <div className="hidden items-center gap-0.5 md:flex">
+          <Link href="/story" className={`hidden min-h-11 items-center px-3 text-[13px] lg:inline-flex ${isActive(pathname, "/story") ? "text-white" : "text-[#c0ceca] hover:text-white"}`}>Story</Link>
+          <Link href="/architecture" className={`hidden min-h-11 items-center px-3 text-[13px] lg:inline-flex ${isActive(pathname, "/architecture") ? "text-white" : "text-[#c0ceca] hover:text-white"}`}>Architecture</Link>
+          <Link href="/notes" className={`hidden min-h-11 items-center px-3 text-[13px] lg:inline-flex ${isActive(pathname, "/notes") ? "text-white" : "text-[#c0ceca] hover:text-white"}`}>Notes</Link>
           {NAV_GROUPS.map((group, groupIndex) => {
             const open = openMenu === group.label;
             const groupActive = group.items.some((it) => isActive(pathname, it.href));
             const panelId = `nav-panel-${group.label.toLowerCase()}`;
             const alignPanelRight = groupIndex === NAV_GROUPS.length - 1;
-            const visual = CINEMATIC_STILLS[group.visual];
             return (
               <div
                 key={group.label}
@@ -92,25 +93,15 @@ function HeaderContent({ pathname }: { pathname: string }) {
                     doesn't drop while crossing it. */}
                 <div
                   id={panelId}
+                  inert={!open}
                   className={`absolute top-full z-50 w-[22.5rem] pt-2 transition-micro ${
                     alignPanelRight ? "right-0" : "left-0"
                   } ${
                     open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
                   }`}
                 >
-                  <div className="overflow-hidden rounded-xl border border-white/[0.10] bg-[#0c0c12]/95 shadow-2xl backdrop-blur-xl">
-                    <div className="relative h-[5.75rem] overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={visual}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c12] via-[#0c0c12]/25 to-transparent" />
-                      <p className="absolute bottom-2.5 left-3 font-serif text-[17px] font-semibold tracking-tight text-white">
-                        {group.label}
-                      </p>
-                    </div>
+                  <div className="overflow-hidden border border-[#34454a] bg-[#102329] shadow-2xl">
+                    <p className="border-b border-[#34454a] px-4 py-3 font-serif text-[17px] text-white">{group.label}</p>
                     <div className="flex flex-col gap-0.5 p-2">
                       {group.items.map((it) => {
                         const itemActive = isActive(pathname, it.href);
@@ -124,7 +115,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
                           >
                             <span
                               className={`text-[13px] font-medium ${
-                                itemActive ? "text-[#c4b5fd]" : "text-slate-100"
+                                itemActive ? "text-[#b6dfd5]" : "text-slate-100"
                               }`}
                             >
                               {it.label}
@@ -153,12 +144,8 @@ function HeaderContent({ pathname }: { pathname: string }) {
             </svg>
             GitHub
           </a>
-          <Link
-            href={DEPLOY_URL}
-            className="ml-1 whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-[13px] font-medium text-[#060609] transition-micro hover:bg-white/90"
-          >
-            Deploy Explorer
-          </Link>
+          <Link href="/deploy" className="hidden min-h-11 items-center px-2.5 text-[13px] text-[#c0ceca] hover:text-white xl:inline-flex">Deploy Explorer</Link>
+          <Link href="/proof" className="ml-1 inline-flex min-h-11 items-center whitespace-nowrap bg-[#b6dfd5] px-4 text-[13px] font-semibold text-[#0c2729] hover:bg-[#d4eee6]">See proof</Link>
         </div>
 
         {/* Mobile toggle */}
@@ -188,18 +175,13 @@ function HeaderContent({ pathname }: { pathname: string }) {
       {mobileOpen && (
         <div id="mobile-menu" className="border-t border-white/[0.06] bg-[#0a0a0f] md:hidden">
           <div className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto px-5 py-4">
+            <div className="mb-5 grid grid-cols-2 gap-2 border-b border-white/[0.10] pb-5">
+              {[{ href: "/story", label: "Story" }, { href: "/architecture", label: "Architecture" }, { href: "/notes", label: "Notes" }, { href: "/proof", label: "Proof" }].map((item) => <Link key={item.href} href={item.href} className="flex min-h-11 items-center border border-[#34454a] px-3 text-[14px] text-white">{item.label}</Link>)}
+            </div>
             {NAV_GROUPS.map((group) => {
-              const visual = CINEMATIC_STILLS[group.visual];
               return (
                 <div key={group.label} className="mb-5">
-                  <div className="relative mb-2 h-14 overflow-hidden rounded-lg">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={visual} alt="" className="h-full w-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/80 via-[#0a0a0f]/40 to-transparent" />
-                    <p className="absolute inset-y-0 left-3 flex items-center font-serif text-[16px] font-semibold text-white">
-                      {group.label}
-                    </p>
-                  </div>
+                  <p className="mb-2 border-b border-[#34454a] py-2 font-serif text-[16px] text-white">{group.label}</p>
                   <div className="flex flex-col">
                     {group.items.map((it) => {
                       const itemActive = isActive(pathname, it.href);
@@ -208,7 +190,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
                           key={it.href}
                           href={it.href}
                           className={`flex min-h-11 items-center rounded-lg px-2 text-[14px] transition-micro hover:bg-white/[0.05] hover:text-white ${
-                            itemActive ? "text-[#c4b5fd]" : "text-slate-200"
+                            itemActive ? "text-[#b6dfd5]" : "text-slate-200"
                           }`}
                         >
                           {it.label}
@@ -228,13 +210,9 @@ function HeaderContent({ pathname }: { pathname: string }) {
               >
                 GitHub
               </a>
-              <Link
-                href={DEPLOY_URL}
-                className="flex-1 rounded-lg bg-white px-4 py-2.5 text-center text-[14px] font-medium text-[#060609] transition-micro hover:bg-white/90"
-              >
-                Deploy Explorer
-              </Link>
+              <Link href="/proof" className="flex-1 bg-[#b6dfd5] px-4 py-2.5 text-center text-[14px] font-semibold text-[#0c2729]">See proof</Link>
             </div>
+            <Link href="/deploy" className="mt-3 flex min-h-11 items-center justify-center border border-[#34454a] text-[14px] text-slate-200">Deploy Explorer</Link>
           </div>
         </div>
       )}

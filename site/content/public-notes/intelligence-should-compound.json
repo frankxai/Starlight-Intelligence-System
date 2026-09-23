@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "revision": "1.0.0",
+  "id": "starlight-note-001",
+  "slug": "intelligence-should-compound",
+  "kind": "principle",
+  "visibility": "public",
+  "status": "working-thesis",
+  "confidence": "moderate",
+  "title": "Intelligence should compound",
+  "thesis": "Useful knowledge and proven capabilities should remain available to the people and ventures that create them, so later work can begin with more context and less reinvention.",
+  "evidence": [
+    {
+      "label": "Local memory implementation",
+      "claim": "The reference build includes local memory code and tests. This establishes a technical primitive, not reliable recall across ventures.",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/blob/a54cc7090f53ebe4f79765ba01e6a459d835b2dd/src/memory.ts"
+    },
+    {
+      "label": "Capability packaging implementation",
+      "claim": "The foundry has passing local skill-package paths. OpenAI plugin projection fails preflight on audited main; no cross-venture outcome is established.",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/blob/a54cc7090f53ebe4f79765ba01e6a459d835b2dd/tools/foundry/lib/prove.mjs"
+    },
+    {
+      "label": "Local multi-project sync",
+      "claim": "Registered local project paths can contribute trajectories to SIS memory. The code does not measure whether a reused capability improved a later venture outcome.",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/blob/a54cc7090f53ebe4f79765ba01e6a459d835b2dd/src/multi-sync.ts"
+    }
+  ],
+  "interpretation": "These local primitives make a compounding system plausible. The product thesis remains unproven until a capability moves between independent ventures with permission, verification, a baseline, and an observed outcome.",
+  "aspiration": "Build an exportable record of useful knowledge, principles, discoveries, questions, warnings, and hopes that can survive changes in tools and institutions. Generational durability is a long-horizon aim, not a present product guarantee.",
+  "author": {
+    "name": "Starlight Intelligence System",
+    "role": "Agent-authored synthesis of issue #197; not a founder quotation"
+  },
+  "created": "2026-09-23",
+  "revisions": [
+    {
+      "version": "1.0.0",
+      "date": "2026-09-23",
+      "summary": "Initial public working thesis, with current source boundaries."
+    }
+  ],
+  "provenance": {
+    "curation": "Explicit public record committed in site/content/public-notes; no private-vault ingestion.",
+    "source": "https://github.com/frankxai/Starlight-Intelligence-System/issues/197",
+    "auditedCommit": "a54cc7090f53ebe4f79765ba01e6a459d835b2dd"
+  }
+}
