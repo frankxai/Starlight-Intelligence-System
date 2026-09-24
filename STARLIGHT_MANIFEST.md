@@ -14,6 +14,10 @@
 **Classification:** Multi-platform agent orchestration framework
 **Platforms:** Claude Code, Cursor, Cline, Codex, Gemini CLI, Antigravity (agent swarm harness), OpenCode, Grok
 
+## Name and canon boundary
+
+“Starlight Intelligence System” names an engineered agent and memory architecture. The name does not assert that Starlight is a deity, source, supernatural being, or omniscient AI. SIS is canon-neutral infrastructure. Starlight worldview material is governed by `frankxai/starlight-canon`; Arcanean material remains explicitly fictional and governed by `frankxai/arcanea`.
+
 ## Version History
 
 | Version | Codename | Focus | Date |
