@@ -23,11 +23,15 @@ import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import os from 'node:os'
 
-// The estate root: two directories up when this file lives at <estate>/tools/lib, or wherever
-// STARLIGHT_ESTATE points when the module is vendored into a product repo (SIS foundry/).
-export const ESTATE = process.env.STARLIGHT_ESTATE ? resolve(process.env.STARLIGHT_ESTATE) : resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
+// In SIS this package defaults to the checked-out repository. An operator may explicitly
+// point it at a multi-repo estate; home directories require a second, separate opt-in.
+const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
+const EXTERNAL_ESTATE = Boolean(process.env.STARLIGHT_ESTATE)
+export const ESTATE = EXTERNAL_ESTATE ? resolve(process.env.STARLIGHT_ESTATE) : PACKAGE_ROOT
 export const HOME = os.homedir()
 const REPOS = join(ESTATE, 'repos')
+const SCAN_HOME = EXTERNAL_ESTATE && process.env.STARLIGHT_SCAN_HOME === '1'
+export const HOME_SCAN_ENABLED = SCAN_HOME
 
 // Directories that hold copies of live trees (worktrees, sandboxes, vendored packages). Scanning
 // them double-counts every agent and, worse, reads a stale fork as if it were canon.
@@ -48,7 +52,7 @@ export const SOURCE_KINDS = [
 ]
 
 export const ESTATES = {
-  sis:     { root: join(REPOS, 'Starlight-Intelligence-System'), brand: 'starlight' },
+  sis:     { root: EXTERNAL_ESTATE ? join(REPOS, 'Starlight-Intelligence-System') : PACKAGE_ROOT, brand: 'starlight' },
   acos:    { root: join(REPOS, 'agentic-creator-os'),            brand: 'frankx' },
   arcanea: { root: join(REPOS, 'arcanea-ai-app'),                brand: 'arcanea' },
   global:  { root: join(HOME, '.claude'),                        brand: 'starlight' },
@@ -416,14 +420,16 @@ export function scanEstate({ includeSkills = true, includeGlobalSkills = true } 
   add(walk(arcTeams, { maxDepth: 2, ext: '.md' }).map((f) => fromClaudeMd(f, 'arcanea', 'arcanea')))
   if (includeSkills) { const s = join(ESTATES.arcanea.root, '.arcanea', 'skills'); src(s, 'arcanea skills'); add(walk(s, { maxDepth: 2, ext: 'SKILL.md' }).map((f) => fromSkillMd(f, 'arcanea', 'arcanea'))) }
 
-  // Global corps (~/.claude/agents)
-  const gAgents = join(ESTATES.global.root, 'agents'); src(gAgents, 'global claude subagents')
-  add(walk(gAgents, { maxDepth: 1, ext: '.md' }).map((f) => { const r = fromClaudeMd(f, 'global', 'starlight'); r.brand = /^arcanea-|^luminor/.test(r.name) ? 'arcanea' : /^frankx-/.test(r.name) ? 'frankx' : 'starlight'; return r }))
-  add(walk(gAgents, { maxDepth: 1, ext: '.json' }).map((f) => { try { const c = JSON.parse(readFileSync(f, 'utf8')); const name = slug(c.name || basename(f, '.json')); return record({ id: `agent:global/${name}`, kind: 'agent', name, estate: 'global', brand: /arcanea/.test(name) ? 'arcanea' : 'starlight', sourceRef: rel(f), sourceKind: 'claude-subagent-json', contentHash: sha(JSON.stringify(c)), tokenEstimate: tokens(JSON.stringify(c)), mtime: statSync(f).mtime.toISOString(), displayName: c.name || name, description: c.description || '', model: c.model || null, toolsAllow: asList(c.tools), harness: 'claude-code' }) } catch { warnings.push(`unparseable ${rel(f)}`); return null } }))
-  if (includeSkills && includeGlobalSkills) { const s = join(ESTATES.global.root, 'skills'); src(s, 'global skills'); add(walk(s, { maxDepth: 2, ext: 'SKILL.md' }).map((f) => fromSkillMd(f, 'global', 'starlight'))) }
+  // Home sources are private and must never enter a public graph by default.
+  if (SCAN_HOME) {
+    const gAgents = join(ESTATES.global.root, 'agents'); src(gAgents, 'global claude subagents')
+    add(walk(gAgents, { maxDepth: 1, ext: '.md' }).map((f) => { const r = fromClaudeMd(f, 'global', 'starlight'); r.brand = /^arcanea-|^luminor/.test(r.name) ? 'arcanea' : /^frankx-/.test(r.name) ? 'frankx' : 'starlight'; return r }))
+    add(walk(gAgents, { maxDepth: 1, ext: '.json' }).map((f) => { try { const c = JSON.parse(readFileSync(f, 'utf8')); const name = slug(c.name || basename(f, '.json')); return record({ id: `agent:global/${name}`, kind: 'agent', name, estate: 'global', brand: /arcanea/.test(name) ? 'arcanea' : 'starlight', sourceRef: rel(f), sourceKind: 'claude-subagent-json', contentHash: sha(JSON.stringify(c)), tokenEstimate: tokens(JSON.stringify(c)), mtime: statSync(f).mtime.toISOString(), displayName: c.name || name, description: c.description || '', model: c.model || null, toolsAllow: asList(c.tools), harness: 'claude-code' }) } catch { warnings.push(`unparseable ${rel(f)}`); return null } }))
+    if (includeSkills && includeGlobalSkills) { const s = join(ESTATES.global.root, 'skills'); src(s, 'global skills'); add(walk(s, { maxDepth: 2, ext: 'SKILL.md' }).map((f) => fromSkillMd(f, 'global', 'starlight'))) }
+  }
 
   // Skill-only runtimes other harnesses load from (Hermes, Codex, the cross-harness ~/.agents)
-  if (includeSkills && includeGlobalSkills) {
+  if (SCAN_HOME && includeSkills && includeGlobalSkills) {
     for (const est of ['hermes', 'codex', 'agents']) {
       const s = join(ESTATES[est].root, 'skills'); src(s, `${est} skills`)
       add(walk(s, { maxDepth: 2, ext: 'SKILL.md' }).map((f) => fromSkillMd(f, est, ESTATES[est].brand)))

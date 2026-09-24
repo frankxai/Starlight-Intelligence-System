@@ -25,12 +25,13 @@
 //   node tools/agent-compile.mjs --targets
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
-import { join, basename, isAbsolute } from 'node:path'
+import { join, basename, isAbsolute, dirname } from 'node:path'
 import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { scanEstate, ESTATE, ESTATES, tokens, sha } from './agent-ontology.mjs'
 
 const SELF = 'tools/agent-compile.mjs'
+const PACKAGE_DEFAULTS = join(dirname(fileURLToPath(import.meta.url)), 'defaults')
 const ATLAS = join(ESTATE, 'graph', 'agents.atlas.json')
 const DEFAULT_OUT = join(ESTATE, 'scratch', 'agent-compile')
 const args = process.argv.slice(2)
@@ -40,7 +41,7 @@ const has = (n) => args.includes(`--${n}`)
 // ------------------------------------------------------------------ identity layer sources
 
 const SRC = {
-  kernel:        join(ESTATE, 'kernel', 'KERNEL.md'),
+  kernel:        existsSync(join(ESTATE, 'kernel', 'KERNEL.md')) ? join(ESTATE, 'kernel', 'KERNEL.md') : join(PACKAGE_DEFAULTS, 'KERNEL.md'),
   frankDna:      join(ESTATES.sis.root, 'CLAUDE.md'),
   sisSoul:       join(ESTATES.sis.root, 'SOUL.md'),
   luminor:       join(ESTATES.arcanea.root, '.arcanea', 'prompts', 'luminor-engineering-kernel.md'),
@@ -95,7 +96,8 @@ export function composeSoul(rec, { budget = Infinity } = {}) {
 
   // 4. constitution — the operating discipline for this kind of work
   const constName = (CONSTITUTION_BY_ROLE.find(([re]) => re.test(roleText)) || [null, 'FRANKX_AGENT_CONSTITUTION.md'])[1]
-  const constPath = join(SRC.constitutions, constName)
+  const estateConstitution = join(SRC.constitutions, constName)
+  const constPath = existsSync(estateConstitution) ? estateConstitution : join(PACKAGE_DEFAULTS, 'CONSTITUTION.md')
   const constText = read(constPath)
   if (constText) {
     const role = section(constText, 'Role') || section(constText, 'Identity')
@@ -127,7 +129,7 @@ export function composeSoul(rec, { budget = Infinity } = {}) {
   const gates = [...new Set(['push', 'publish', 'send', 'delete', 'money', ...rec.will.humanGates])]
   const auth = [
     '## Write authority',
-    rec.will.toolsAllow.length ? `Tools allowlist: ${rec.will.toolsAllow.join(', ')}. The allowlist is the enforcement; prose never widens it.` : 'No tools allowlist is declared for this agent; it inherits the caller. Treat every write as read-only until an allowlist exists.',
+    rec.will.toolsAllow.length ? `Tools allowlist: ${rec.will.toolsAllow.join(', ')}. The allowlist is the enforcement; prose never widens it.` : 'No tools allowlist is declared for this agent. Compiled Claude targets are restricted to Read, Glob, Grep; other harnesses must enforce equivalent read-only authority.',
     rec.will.toolsDeny.length ? `Denied: ${rec.will.toolsDeny.join(', ')}.` : '',
     `\n## Human gates\n\nAlways confirm before: ${gates.join(', ')}.`,
     rec.will.handoffs.length ? `\n## Handoffs\n\n${rec.will.handoffs.map((h) => `- → ${h.to}: ${h.when}`).join('\n')}` : '',
@@ -193,13 +195,13 @@ function description(rec) {
   return d
 }
 
-function toClaudeCode(rec, soul) {
+export function toClaudeCode(rec, soul) {
   const { model, note } = claudeModel(rec.body.model)
   const desc = description(rec).replace(/"/g, '\\"')
   // Subagents do not inherit the main conversation's skills (code.claude.com/docs/en/sub-agents,
   // read 2026-09-19): a skill the record names must be preloaded with `skills:` or it is invisible.
   const skills = rec.mind.skills.map((s) => String(s).split('/').pop()).filter((s) => /^[a-z0-9][a-z0-9-]*$/.test(s))
-  const tools = mapTools(rec.will.toolsAllow)
+  const tools = mapTools(rec.will.toolsAllow.length ? rec.will.toolsAllow : ['Read', 'Glob', 'Grep'])
   const fm = [`name: "${rec.name}"`, `description: "${desc}"`, model ? `model: ${model}` : null, tools.mapped.length ? `tools: ${tools.mapped.join(', ')}` : null, skills.length ? `skills:\n${skills.map((s) => `  - ${s}`).join('\n')}` : null].filter(Boolean)
   const body = [
     soul.markdown,
@@ -210,10 +212,10 @@ function toClaudeCode(rec, soul) {
   return { file: `${rec.name}.md`, content: `---\n${fm.join('\n')}\n---\n\n${body}\n` }
 }
 
-function toClaudeSdk(rec, soul) {
+export function toClaudeSdk(rec, soul) {
   const { model } = claudeModel(rec.body.model)
   const entry = { description: description(rec), prompt: soul.markdown }
-  const tools = mapTools(rec.will.toolsAllow)
+  const tools = mapTools(rec.will.toolsAllow.length ? rec.will.toolsAllow : ['Read', 'Glob', 'Grep'])
   if (tools.mapped.length) entry.tools = tools.mapped
   if (model && model !== 'inherit') entry.model = model
   return { file: `${rec.name}.agent.json`, content: JSON.stringify({ [rec.name]: entry, $provenance: { compiledBy: SELF, sourceRef: rec.sourceRef, contentHash: rec.contentHash, digest: soul.sourceDigest } }, null, 2) + '\n' }

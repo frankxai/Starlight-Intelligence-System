@@ -1,6 +1,7 @@
 # SOUL — how an agent's identity is composed
 
-`kernel/KERNEL.md` is the posture every agent shares. This file is the composition contract: the
+`kernel/KERNEL.md` is the full-estate posture; a standalone SIS checkout uses
+`foundry/agent-ontology/defaults/KERNEL.md`. This file is the composition contract: the
 fixed order in which the estate's identity layers are stacked into one agent's SOUL, where each
 layer is read from, and what a compiled SOUL must carry so it can be trusted. The code is
 `tools/agent-compile.mjs` (`composeSoul`); this page exists so a human can check the code against
@@ -20,10 +21,10 @@ is copied into a second place to drift.
 
 | # | Layer | Source (read, never copied) | Required | Host role |
 |---|---|---|---|---|
-| 1 | Kernel posture | `kernel/KERNEL.md` install block | yes | system |
+| 1 | Kernel posture | estate `kernel/KERNEL.md` install block, or checked-in portable default | yes | system |
 | 2 | Brand DNA | Starlight/FrankX: Frank DNA in SIS `CLAUDE.md` · Arcanea: Luminor kernel IDENTITY/NATURE/VOICE + `CANON_LOCKED.md` pointer | no (dropped first under budget) | user |
 | 3 | Substrate invariants | SIS `SOUL.md` six invariants (Starlight-branded agents only) | no | user |
-| 4 | Constitution | one of the five by role: creative → Arcanea, engineering → Codex execution, content/media → Content media, research/verify → Research verification, else FrankX; Role section inline, full file by pointer | yes | user |
+| 4 | Constitution | one of the five by role in the full estate; the checked-in portable default when unavailable. Role section inline, full file by pointer | yes | user |
 | 5 | Agent identity | the agent's own record: display name, tagline, mission, voice, values, boundaries, read-first, skills | yes | developer |
 | 6 | Authority | tools allowlist (the enforcement, never widened by prose), denied tools, human gates = the five kernel gates ∪ the agent's own, handoffs | yes | system |
 | 7 | Verification | named verifier that is never this agent; cross-provider per `CROSS-MODEL-GATE.md`; the three-line receipt | yes | system |

@@ -22,7 +22,7 @@
 import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { scanEstate, stats, canonicalName, ESTATE, ESTATES } from './agent-ontology.mjs'
+import { scanEstate, stats, canonicalName, ESTATE, ESTATES, HOME_SCAN_ENABLED } from './agent-ontology.mjs'
 
 const SELF = 'tools/gen-agent-atlas.mjs'
 const OUT_CAP = join(ESTATE, 'graph', 'agents.capability.json')
@@ -43,17 +43,18 @@ const LEGACY_IDS = /(claude-3|claude-opus-4|claude-sonnet-4|claude-haiku-4-0|opu
 const classifyModel = (m) => !m ? 'none' : ALIAS_OK.has(m) ? 'alias' : CURRENT_IDS.test(m) ? 'current-id' : LEGACY_IDS.test(m) ? 'legacy-id' : /\s/.test(m) ? 'policy-text' : 'unverified-id'
 
 // Every place a request is routed to an agent today. Existence is checked; nothing else is assumed.
+const SIS_REF = ESTATES.sis.root === ESTATE ? '' : 'repos/Starlight-Intelligence-System/'
 const ROUTERS = [
-  { name: 'SIS routing matrix (intent → agent)', path: 'repos/Starlight-Intelligence-System/core/ROUTING_MATRIX.md' },
-  { name: 'SIS IS router (keyword vectors → IS domain)', path: 'repos/Starlight-Intelligence-System/src/is-router.ts' },
-  { name: 'SIS skill rules (keywords/intents/files → skill + agents)', path: 'repos/Starlight-Intelligence-System/skills/skill-rules.json' },
-  { name: 'SIS capability control plane (capability → provider)', path: 'repos/Starlight-Intelligence-System/src/capability-control-plane.ts' },
+  { name: 'SIS routing matrix (intent → agent)', path: `${SIS_REF}core/ROUTING_MATRIX.md` },
+  { name: 'SIS IS router (keyword vectors → IS domain)', path: `${SIS_REF}src/is-router.ts` },
+  { name: 'SIS skill rules (keywords/intents/files → skill + agents)', path: `${SIS_REF}skills/skill-rules.json` },
+  { name: 'SIS capability control plane (capability → provider)', path: `${SIS_REF}src/capability-control-plane.ts` },
   { name: 'ACOS /acos keyword table', path: 'repos/agentic-creator-os/.claude/commands/acos.md' },
   { name: 'ACOS meta-acos-router (Opus subagent)', path: 'repos/agentic-creator-os/.claude/agents/meta-acos-router.md' },
   { name: 'Arcanea Lumina queen (domain → Guardian)', path: 'repos/arcanea-ai-app/.claude/agents/@lumina-queen.agent.md' },
   { name: 'Skill engine swarm router (persona keywords + model ladder)', path: 'repos/starlight-skill-engine/src/router.js' },
   { name: 'AIS resolver (AgentRequest → Route → Capability)', path: 'repos/agentic-intelligence-system/lib/ais/route.mjs' },
-  { name: 'Global starlight-orchestrator (→ stewards / queen / loops)', path: '~/.claude/agents/starlight-orchestrator.md' },
+  ...(HOME_SCAN_ENABLED ? [{ name: 'Global starlight-orchestrator (→ stewards / queen / loops)', path: '~/.claude/agents/starlight-orchestrator.md' }] : []),
   { name: 'AGENTS.md §4 work-shape → harness table', path: 'AGENTS.md' },
   { name: 'Model routing matrix (work-shape → model, PROPOSED)', path: 'ops/model-arena/kb/model-routing-matrix.md' },
 ]
@@ -165,7 +166,7 @@ for (const k of skills) for (const h of k.will.handoffs) if (h.when === 'activat
 // The contract's `source` is exactly two strings (additionalProperties: false). The 17-root
 // inventory with mtimes lives in the atlas sidecar, which is the registry this graph compiles from.
 const capability = {
-  $schema: 'repos/Starlight-Intelligence-System/foundry/contracts/capability-graph.schema.json',
+  $schema: `${SIS_REF}foundry/contracts/capability-graph.schema.json`,
   schemaVersion: '1.0.0',
   generatedAt: findings.measuredAt,
   source: { skillRules: 'repos/Starlight-Intelligence-System/skills/skill-rules.json', agentRegistry: 'graph/agents.atlas.json' },
@@ -208,7 +209,7 @@ const capErrors = existsSync(CAP_SCHEMA) ? validateAgainst(JSON.parse(readFileSy
 const danglingEdges = capEdges.filter((e) => !nodeIds.has(e.from) || !nodeIds.has(e.to)).length
 if (danglingEdges) capErrors.push(`${danglingEdges} edges reference unknown node ids`)
 if (capErrors.length) { console.error(`capability graph fails ${CAP_SCHEMA}:\n${capErrors.slice(0, 20).join('\n')}`); process.exit(1) }
-findings.capabilityGraph = { nodes: capNodes.length, edges: capEdges.length, schema: 'repos/Starlight-Intelligence-System/foundry/contracts/capability-graph.schema.json', validated: 'recursive subset: type/const/enum/pattern/required/additionalProperties/items/uniqueItems/minItems/length; format not enforced' }
+findings.capabilityGraph = { nodes: capNodes.length, edges: capEdges.length, schema: `${SIS_REF}foundry/contracts/capability-graph.schema.json`, validated: 'recursive subset: type/const/enum/pattern/required/additionalProperties/items/uniqueItems/minItems/length; format not enforced' }
 
 const atlas = { schema: 'starlight.agent-atlas.v1', generatedAt: findings.measuredAt, generatedBy: SELF, sources, findings, records }
 
