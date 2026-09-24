@@ -1,6 +1,6 @@
 {
   "name": "starlight-activation-router",
-  "version": "0.1.0+codex.20260623104602",
+  "version": "0.1.1+codex.20260924",
   "description": "Codex-native Starlight activation for /si, /so, /acos, Agentic Creator Operating System routing, swarm-aware orchestration, mobile text aliases, and safe lifecycle hooks.",
   "author": {
     "name": "FrankX / Starlight",
@@ -25,7 +25,6 @@
     "prompts"
   ],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Starlight Activation Router",
     "shortDescription": "Slash-style /si, /so, and /acos routing for Codex.",
