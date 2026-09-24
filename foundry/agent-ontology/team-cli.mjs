@@ -40,7 +40,9 @@ function safePath(root, subpath) {
   let cursor = root
   for (const part of relative(root, target).split(sep)) {
     cursor = join(cursor, part)
-    if (existsSync(cursor) && lstatSync(cursor).isSymbolicLink()) throw new Error(`Symlink in install path: ${relative(root, cursor)}`)
+    let entry
+    try { entry = lstatSync(cursor) } catch (error) { if (error.code !== 'ENOENT') throw error }
+    if (entry?.isSymbolicLink()) throw new Error(`Symlink in install path: ${relative(root, cursor)}`)
   }
   return target
 }

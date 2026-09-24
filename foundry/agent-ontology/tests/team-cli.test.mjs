@@ -1,8 +1,10 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, readFileSync, writeFileSync, existsSync, rmSync, mkdirSync } from 'node:fs'
+import { mkdtempSync, readFileSync, writeFileSync, existsSync, rmSync, mkdirSync, copyFileSync, cpSync, symlinkSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { spawnSync } from 'node:child_process'
 import { makeTeamPlan, runTeamCommand } from '../team-cli.mjs'
 
 function fixture(fn) {
@@ -65,4 +67,32 @@ test('forged manifest cannot redirect rollback outside the owned projection', ()
   mkdirSync(join(root, '.starlight'))
   writeFileSync(join(root, '.starlight', 'team-install.v1.json'), JSON.stringify({ schema: 'starlight.team-install.v1', host: 'claude-code', agent: 'x', target: '../outside', sourceHash: 'a'.repeat(16), identityDigest: 'b'.repeat(24), contentHash: 'c'.repeat(64) }))
   assert.throws(() => runTeamCommand('rollback', { root, yes: true }), /Unrecognized install manifest/)
+}))
+
+test('a symlinked install ancestor is rejected', (context) => fixture((root) => {
+  const outside = mkdtempSync(join(tmpdir(), 'starlight-team-outside-'))
+  try {
+    try { symlinkSync(outside, join(root, '.claude'), 'dir') }
+    catch (error) { if (['EPERM', 'EACCES'].includes(error.code)) { context.skip('symlink creation denied by host'); return } throw error }
+    assert.throws(() => makeTeamPlan({ root }), /Symlink in install path/)
+  } finally { rmSync(outside, { recursive: true, force: true }) }
+}))
+
+test('a packed-layout mirror works without private estate files', () => fixture((root) => {
+  const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..')
+  const moduleDir = join(root, 'package', 'foundry', 'agent-ontology')
+  const project = join(root, 'project')
+  mkdirSync(moduleDir, { recursive: true })
+  mkdirSync(project)
+  for (const name of ['agent-ontology.mjs', 'agent-compile.mjs', 'agent-route.mjs', 'team-cli.mjs']) copyFileSync(join(sourceRoot, 'foundry', 'agent-ontology', name), join(moduleDir, name))
+  cpSync(join(sourceRoot, 'foundry', 'agent-ontology', 'defaults'), join(moduleDir, 'defaults'), { recursive: true })
+  cpSync(join(sourceRoot, 'foundry', 'agent-ontology', 'public-agents'), join(moduleDir, 'public-agents'), { recursive: true })
+  copyFileSync(join(sourceRoot, 'SOUL.md'), join(root, 'package', 'SOUL.md'))
+  const command = spawnSync(process.execPath, [join(moduleDir, 'team-cli.mjs'), 'plan', '--root', project, '--json'], { encoding: 'utf8' })
+  assert.equal(command.status, 0, command.stderr)
+  const plan = JSON.parse(command.stdout)
+  assert.equal(plan.status, 'ready-to-install')
+  assert.match(plan.preview, /Build for people who want to understand/)
+  assert.equal(plan.preview.includes('CROSS-MODEL-GATE.md'), false)
+  assert.equal(plan.preview.includes('C:\\Users\\'), false)
 }))

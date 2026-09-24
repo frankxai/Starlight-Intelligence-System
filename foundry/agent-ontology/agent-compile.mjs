@@ -46,8 +46,8 @@ const SRC = {
   sisSoul:       join(ESTATES.sis.root, 'SOUL.md'),
   luminor:       join(ESTATES.arcanea.root, '.arcanea', 'prompts', 'luminor-engineering-kernel.md'),
   canon:         join(ESTATES.arcanea.root, '.arcanea', 'lore', 'CANON_LOCKED.md'),
-  crossModel:    join(ESTATE, 'CROSS-MODEL-GATE.md'),
-  generalContract: join(ESTATE, 'ops', 'stewards', 'GENERAL-CONTRACT.md'),
+  crossModel:    existsSync(join(ESTATE, 'CROSS-MODEL-GATE.md')) ? join(ESTATE, 'CROSS-MODEL-GATE.md') : join(PACKAGE_DEFAULTS, 'VERIFICATION.md'),
+  generalContract: existsSync(join(ESTATE, 'ops', 'stewards', 'GENERAL-CONTRACT.md')) ? join(ESTATE, 'ops', 'stewards', 'GENERAL-CONTRACT.md') : join(PACKAGE_DEFAULTS, 'AUTHORITY.md'),
   constitutions: join(ESTATES.config.root, 'agent-constitution'),
 }
 const CONSTITUTION_BY_ROLE = [
@@ -137,7 +137,7 @@ export function composeSoul(rec, { budget = Infinity } = {}) {
   atoms.push(atom('authority', 'authority', SRC.generalContract, auth))
 
   // 7. verification — maker ≠ checker and the receipt
-  const verifier = rec.routing.verifier && rec.routing.verifier !== 'declared' ? rec.routing.verifier : `A different provider per \`${relp(SRC.crossModel)}\`, or the invoking queen session. Never this agent.`
+  const verifier = rec.routing.verifier && rec.routing.verifier !== 'declared' ? rec.routing.verifier : SRC.crossModel.endsWith('VERIFICATION.md') ? 'A different provider than the maker. Never this agent.' : `A different provider per \`${relp(SRC.crossModel)}\`, or the invoking queen session. Never this agent.`
   atoms.push(atom('verification', 'verification', SRC.crossModel, `## Maker ≠ checker\n\n${verifier}\n\n## Receipt\n\nEvery pass ends with three lines: made / verified / proposed. A pass without a receipt did not happen.`))
 
   // budget: drop optional layers largest-first until it fits, and say so

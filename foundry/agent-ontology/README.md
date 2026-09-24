@@ -16,8 +16,8 @@ plus SKILL.md packages in available runtimes, into one record shaped like the Ag
 The npm package exposes the typed `./foundry` subpath. The packaged beta contains a public-safe `starlight-team-guide` source, not the full estate roster. See `docs/product/agent-platform-beta/QUICKSTART.md`. A2A cards are templates with `.invalid` interfaces until a host binds and tests an HTTPS endpoint; schema-shaped output is not an interoperable exchange claim.
 
 In a public SIS checkout, the scanner reads only checked-in SIS agents and skills. It does not
-read the operator's home directory. The compiler uses the checked-in portable kernel and
-constitution when the full estate's private policy files are unavailable. An unbound agent's
+read the operator's home directory. The compiler uses checked-in portable kernel, brand,
+constitution, authority, and verification sources when the full estate policy files are unavailable. An unbound agent's
 Claude Code and SDK projections are restricted to `Read, Glob, Grep`.
 
 For the full private multi-repo estate, opt in explicitly:

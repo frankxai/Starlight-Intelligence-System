@@ -1,5 +1,5 @@
 export interface AgentRecord {
-  id: string; kind: 'agent' | 'skill' | 'constitution'; name: string; estate: string; brand: string;
+  id: string; kind: 'agent' | 'skill' | 'team' | 'constitution'; name: string; estate: string; brand: string;
   sourceRef: string; sourceKind: string; contentHash: string; tokenEstimate: number;
   identity: { displayName: string; tagline: string; voice: string; values: string[]; boundaries: string[]; soulRef: string | null };
   mind: { skills: string[]; kb: string[]; memoryScope: string | null; approach: string };
