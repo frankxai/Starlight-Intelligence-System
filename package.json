@@ -113,6 +113,10 @@
     "./queen-session": {
       "types": "./dist/queen-session.d.ts",
       "import": "./dist/queen-session.js"
+    },
+    "./foundry": {
+      "types": "./foundry/agent-ontology/index.d.mts",
+      "import": "./foundry/agent-ontology/index.mjs"
     }
   },
   "scripts": {
@@ -159,7 +163,6 @@
     "package:sip-starter": "node scripts/package-sip-starter.mjs",
     "package:sip-starter:check": "node scripts/package-sip-starter.mjs --check",
     "release:module:dry-run": "node scripts/package-sip-starter.mjs --dry-run",
-    "prepare": "git config core.hooksPath tools/git-hooks 2>/dev/null || true",
     "prepublishOnly": "npm run build && npm run test:substrate",
     "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts",
     "test:queen-session": "node --import tsx --test test/queen-session.test.ts",
@@ -168,6 +171,16 @@
   "files": [
     "dist/",
     "public-vault/",
+    "foundry/agent-ontology/index.mjs",
+    "foundry/agent-ontology/agent-ontology.mjs",
+    "foundry/agent-ontology/agent-compile.mjs",
+    "foundry/agent-ontology/agent-route.mjs",
+    "foundry/agent-ontology/team-cli.mjs",
+    "foundry/agent-ontology/index.d.mts",
+    "foundry/agent-ontology/defaults/",
+    "foundry/agent-ontology/public-agents/",
+    "docs/product/agent-platform-beta/",
+    "SOUL.md",
     "README.md"
   ],
   "keywords": [
