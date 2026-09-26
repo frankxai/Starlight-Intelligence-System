@@ -7,13 +7,10 @@ fences — outranks this section on any conflict inside this repo.**
 
 ### DNA
 
-```
-Frank = Systems Architect x Composer x Gamer x Builder x GenCreator
-```
+The founder's name and voice live in the operator instance (`--band-a`), not in this
+template. Brand voice is the `COPY.md` pin on the company row. This file carries
+the guardrails every adopter inherits.
 
-**Vibe:** cool, premium, high intellect, purpose-driven, fun.
-**Mission:** build abundance; help people build their own systems.
-**Voice:** direct, technical, warm, playful. Pattern recognition as poetry.
 **Test:** does this help someone build, not just consume?
 
 ### The five guardrails
@@ -33,7 +30,7 @@ Frank = Systems Architect x Composer x Gamer x Builder x GenCreator
 
 Before any structural change: what specific problem, who has it, what is the
 evidence, what is the simplest fix, what breaks, is it reversible. If it is not
-reversible, it needs Frank.
+reversible, it needs the principal named in the company registry.
 
 ### Branch and PR protocol
 

@@ -16,6 +16,9 @@
  *   node scripts/estate-graph.mjs --check    validate only, write nothing
  *   node scripts/estate-graph.mjs --tree ..  also cross-check repos against a
  *                                            directory of sibling checkouts
+ *   node scripts/estate-graph.mjs --registry <file> --tiers <file> --out <file>
+ *                                            operator instance. Refuses to overwrite
+ *                                            the fixture graph unless --out is set.
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -27,11 +30,26 @@ const argv = process.argv.slice(2);
 const CHECK_ONLY = argv.includes('--check');
 const treeIdx = argv.indexOf('--tree');
 const TREE = treeIdx !== -1 ? argv[treeIdx + 1] : null;
+const flag = (name) => {
+  const i = argv.indexOf(name);
+  return i !== -1 ? argv[i + 1] : null;
+};
+const resolveInput = (p) => {
+  if (/^[A-Za-z]:[\\/]/.test(p) || p.startsWith('/') || p.startsWith('\\\\')) return p;
+  return join(ROOT, p);
+};
+
+const REGISTRY_REL = flag('--registry') || 'ontology/company-registry.json';
+const TIERS_REL = flag('--tiers') || 'ontology/repo-tiers.json';
+const REGISTRY_ABS = resolveInput(REGISTRY_REL);
+const TIERS_ABS = resolveInput(TIERS_REL);
+const externalInstance = REGISTRY_REL !== 'ontology/company-registry.json' || TIERS_REL !== 'ontology/repo-tiers.json';
+const OUT_REL = flag('--out') || (externalInstance ? null : 'ontology/estate-graph.json');
 
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 const ontology = read('ontology/starlight-estate.ontology.v1.json');
-const registry = read('ontology/company-registry.json');
-const tiers = read('ontology/repo-tiers.json');
+const registry = JSON.parse(readFileSync(REGISTRY_ABS, 'utf8'));
+const tiers = JSON.parse(readFileSync(TIERS_ABS, 'utf8'));
 let upstreams = null;
 try { upstreams = read('context/empire/upstreams.json'); } catch { /* optional source */ }
 
@@ -82,7 +100,8 @@ const edges = [];
 const push = (n) => nodes.push(n);
 const link = (from, relation, to) => edges.push({ from, relation, to });
 
-push({ id: 'human:frank', kind: 'human', name: 'Frank Riemer' });
+const principal = registry.principal || { id: 'human:operator', name: 'Operator' };
+push({ id: principal.id, kind: 'human', name: principal.name });
 for (const e of registry.entities) push({ id: e.id, kind: 'entity', name: e.name, role: e.role });
 for (const b of registry.brands) {
   push({ id: b.id, kind: 'brand', name: b.name, register: b.register, copy_pin: b.copy_pin });
@@ -111,7 +130,7 @@ for (const r of tiers.repos) {
 for (const a of agents) {
   push({ id: a.id, kind: 'agent', tier: a.tier, domain: a.domain, path: a.path });
   const esc = a.fm.escalates_to;
-  if (esc) link(a.id, 'escalates-to', esc === 'human' ? 'human:frank' : esc);
+  if (esc) link(a.id, 'escalates-to', esc === 'human' ? principal.id : esc);
   for (const m of [].concat(a.fm.owns_metrics || [])) {
     push({ id: m, kind: 'metric', owner_seat: a.id });
     link(a.id, 'accountable-for', m);
@@ -178,11 +197,12 @@ for (const r of tiers.repos.filter((x) => x.tier === 'T0' || x.tier === 'T1')) {
 
 // INV-7: no money, jurisdiction, or credential in the public graph
 const FORBIDDEN = /\b(iban|swift|bic|api[_-]?key|secret|password|"amount"|current_cash|jurisdiction)\b/i;
-for (const src of ['ontology/company-registry.json', 'ontology/repo-tiers.json']) {
-  const raw = readFileSync(join(ROOT, src), 'utf8');
+for (const src of [[REGISTRY_REL, REGISTRY_ABS], [TIERS_REL, TIERS_ABS]]) {
+  const raw = readFileSync(src[1], 'utf8');
+  const label = src[0];
   for (const [i, line] of raw.split(/\r?\n/).entries()) {
     if (FORBIDDEN.test(line) && !/never|private\/|no cash|_privacy|_doc/i.test(line)) {
-      fail('INV-7', `${src}:${i + 1} looks like private data in a public file`);
+      fail('INV-7', `${label}:${i + 1} looks like private data in a public file`);
     }
   }
 }
@@ -258,13 +278,13 @@ if (upstreams) {
 // a stale graph from a freshly rebuilt one. No wall-clock timestamp: a digest of every
 // source file instead, which is both deterministic and what staleness actually means.
 const digestInputs = [
-  'ontology/starlight-estate.ontology.v1.json',
-  'ontology/company-registry.json',
-  'ontology/repo-tiers.json',
-  ...agents.map((a) => a.path).sort(),
+  ['ontology/starlight-estate.ontology.v1.json', join(ROOT, 'ontology/starlight-estate.ontology.v1.json')],
+  [REGISTRY_REL, REGISTRY_ABS],
+  [TIERS_REL, TIERS_ABS],
+  ...agents.map((a) => [a.path, join(ROOT, a.path)]).sort((a, b) => a[0].localeCompare(b[0])),
 ];
 const sourcesDigest = 'sha256:' + createHash('sha256')
-  .update(digestInputs.map((f) => `${f}\0${readFileSync(join(ROOT, f), 'utf8')}`).join('\0'))
+  .update(digestInputs.map(([label, abs]) => `${label}\0${readFileSync(abs, 'utf8')}`).join('\0'))
   .digest('hex')
   .slice(0, 32);
 
@@ -274,8 +294,8 @@ const graph = {
   sourcesDigest,
   source: {
     ontology: 'ontology/starlight-estate.ontology.v1.json',
-    companyRegistry: 'ontology/company-registry.json',
-    repoTiers: 'ontology/repo-tiers.json',
+    companyRegistry: REGISTRY_REL,
+    repoTiers: TIERS_REL,
     agents: 'agents/',
   },
   counts: {},
@@ -284,7 +304,11 @@ const graph = {
 };
 for (const n of graph.nodes) graph.counts[n.kind] = (graph.counts[n.kind] || 0) + 1;
 
-const OUT = join(ROOT, 'ontology/estate-graph.json');
+if (!OUT_REL) {
+  console.error('estate-graph: an external instance will not overwrite ontology/estate-graph.json. Pass --out.');
+  process.exit(2);
+}
+const OUT = resolveInput(OUT_REL);
 const serialised = JSON.stringify(graph, null, 2) + '\n';
 if (CHECK_ONLY) {
   const committed = existsSync(OUT) ? readFileSync(OUT, 'utf8') : null;
