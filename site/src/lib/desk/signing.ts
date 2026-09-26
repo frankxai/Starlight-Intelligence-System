@@ -6,8 +6,8 @@
  * holds: the deployed Desk never reads it. A deployment signs only with
  * DESK_SIGNING_KEY, a separate Ed25519 key that speaks for this Desk and
  * nothing else, and whose public half is registered as the Desk's. Without it
- * the receipt ships as an explicit unsigned draft: a record of the run, not a
- * proof of it.
+ * the receipt ships as an explicit unsigned draft, which records the run and
+ * proves nothing about who ran it.
  *
  * On a laptop (not Vercel) SIS_SIGNING_KEY remains the fallback, so the local
  * sovereign flow signs with the owner's own key as before.
