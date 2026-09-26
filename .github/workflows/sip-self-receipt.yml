@@ -70,7 +70,7 @@ jobs:
         run: node protocol/conform.mjs protocol/profiles/sis.json --json "$RUNNER_TEMP/sip-receipt.json"
 
       - name: Attest the receipt (Sigstore, public transparency log)
-        uses: actions/attest@ce27ba3b4a9a139d9a20a4a07d69fabb52f1e5bc # v2.4.0
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-path: protocol/profiles/sis.json
           predicate-type: https://starlightintelligence.org/protocol/receipt/v0.1.0
