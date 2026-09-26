@@ -2,6 +2,16 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## Unreleased — vault MCP server hardening
+
+**`dist/mcp-server.js` (the `starlight-mcp` bin): vault names can no longer escape the vault directory, and the 13 `sis_*` tools meet the mcp-doctor quality bar (21% → 93%).**
+
+- **Security:** `sis_append_entry` joined the caller's `vault` into a file path, so `../x` wrote outside the vault dir. Vault names now match `^[a-z][a-z0-9_-]{0,39}$`; `contradictions` is reserved.
+- **Contract:** titles, safety annotations, `outputSchema` + `structuredContent`, bounded and described inputs, all enforced server-side (unknown arguments rejected). Protocol version negotiated (2025-06-18, 2025-03-26, 2024-11-05).
+- **Errors:** not-found ids, unknown goal tasks and bad arguments return `isError` with a hint; previously `success: false`, or `success: true` for an unknown goal task.
+- **Fixes:** `contradictions.jsonl` no longer counted as a vault; SAGE fallback logging moved from stdout (which corrupted the MCP stream) to stderr.
+- **Shape change:** `sis_vault_search` and `sis_search` return `{ results: [...] }` and `sis_recent_entries` returns `{ entries: [...] }` (structured content must be an object). `sis_stale` caps `entries` at `limit` (default 50) while `count` stays the total.
+
 ## 2026-09-09 — Starlight World excellence (private vanilla drive)
 
 **Private Starlight World is a vanilla HTML drive surface for palace, six vaults, city, second brain, and graph. Loopback only. Stewards registered, not live.**
