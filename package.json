@@ -207,7 +207,7 @@
     }
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "20.x || 22.x || 23.x || 24.x || 25.x"
   },
   "bin": {
     "starlight": "dist/cli.js",
