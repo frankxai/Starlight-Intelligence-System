@@ -10,7 +10,7 @@ One portable capability definition may run in three **separately owned** executi
 
 | Envelope | Execution and authority | Data | Day-2 operator |
 |---|---|---|---|
-| Founder | Existing local SIS/Queen, private agentic-ops event writer, machine-scoped harnesses; the Command Center projects state | Sovereign local memory, private files, personal credentials in host secret stores; cloud projections/export by deliberate sync | Frank and nominated private stewards |
+| Founder | Local SIS/Queen and machine-scoped harnesses; proposed private agentic-ops work-event writer; existing Command Center observer | Sovereign local memory, private files, personal credentials in host secret stores; cloud projections/export by deliberate sync | Frank and nominated private stewards |
 | Customer local / self-hosted | Versioned SIS package, skill/agent projection and chosen host runner in the customer's device or infrastructure | Customer-owned vault, file store, queue/checkpoints and keys; offline possible within proven capabilities | Customer; support only on explicitly shared diagnostics |
 | Customer managed | Versioned package and host adapter in a dedicated tenant context; authenticated API and bounded workers | Tenant-scoped durable records, object storage, encryption context, audit events, backup and export | Named managed-service operator under published support terms |
 
@@ -44,8 +44,8 @@ flowchart TD
 
 ### Founder local and cloud
 
-1. A machine owns its own private credentials, local files and hardware access. Local vault/event logs use the current SIS gateway and memory-provider interfaces; any remote provider is an explicitly authorized adapter. Personal source material does not transit through a general customer API.
-2. A private outbox sends only allowlisted, classified event references or assets to designated cloud services. It records source revision/hash, idempotency key, destination, consent/policy snapshot, attempt and acknowledgement. On failure it resumes without replaying an external effect blindly. No observer impersonates a peer device.
+1. A machine owns its own private credentials, local files and hardware access. Local vault access can use the current SIS gateway and memory-provider interfaces; the private work-event writer remains a separate implementation gate. Any remote provider is an explicitly authorized adapter. Personal source material does not transit through a general customer API.
+2. A private outbox must send only allowlisted, classified event references or assets to designated cloud services. It records source revision/hash, idempotency key, destination, consent/policy snapshot, attempt and acknowledgement. On failure it resumes without replaying an external effect blindly. No observer impersonates a peer device.
 3. Back up local authoritative logs, vaults, media masters and configuration separately from disposable indexes. Test restore on a clean device, including keys, tombstones, version compatibility and a projection rebuild. A synced folder is not a restore test.
 4. The Command Center stays a read-only Observatory until a separately admitted operator action has authenticated identity, an action-time grant, an audit receipt and rollback path. It must not become a competing event writer.
 
