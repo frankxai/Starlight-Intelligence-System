@@ -1,40 +1,49 @@
 import { NextResponse } from "next/server";
 import { runDesk } from "@/lib/desk/cascade";
 import { signRunReceipt } from "@/lib/desk/run-receipt";
+import { deskAccess } from "@/lib/desk/access";
+import { redisConfigFromEnv } from "@/lib/desk/redis-rest";
+import {
+  dailyRunLimit,
+  memoryRunLimiter,
+  redisRunLimiter,
+  type LimitResult,
+  type RunLimiter,
+} from "@/lib/desk/run-limit";
 import { selectVault } from "@/lib/desk/vault";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Room mode means strangers can type into this. Cap what one address may spend. */
-const WINDOW_MS = 60_000;
-const MAX_RUNS_PER_WINDOW = 6;
 const MAX_QUESTION_CHARS = 400;
-const seen = new Map<string, { count: number; resetAt: number }>();
 
-function rateLimit(key: string): { ok: boolean; retryAfter: number } {
-  const now = Date.now();
-  const record = seen.get(key);
-  if (!record || now > record.resetAt) {
-    seen.set(key, { count: 1, resetAt: now + WINDOW_MS });
-    if (seen.size > 2000) for (const [id, value] of seen) if (now > value.resetAt) seen.delete(id);
-    return { ok: true, retryAfter: 0 };
-  }
-  record.count += 1;
-  if (record.count > MAX_RUNS_PER_WINDOW) {
-    return { ok: false, retryAfter: Math.ceil((record.resetAt - now) / 1000) };
-  }
-  return { ok: true, retryAfter: 0 };
-}
+/** One per process. Only local development reaches it; see deskAccess. */
+const localLimiter = memoryRunLimiter({ dailyLimit: dailyRunLimit() });
 
 export async function POST(request: Request) {
-  const client = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
-  const limit = rateLimit(client);
-  if (!limit.ok) {
-    return NextResponse.json(
-      { error: "Too many runs from this address; try again in a minute." },
-      { status: 429, headers: { "retry-after": String(limit.retryAfter) } },
-    );
+  // Room mode means strangers can type into this, and every run spends money.
+  // Decide who may run, and count them, before anything is spent.
+  const access = deskAccess(process.env, request.headers.get("authorization"));
+  if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
+
+  const redis = redisConfigFromEnv();
+  const limiter: RunLimiter | null =
+    access.limiter === "durable" && redis
+      ? redisRunLimiter(redis, { dailyLimit: dailyRunLimit() })
+      : access.limiter === "memory"
+        ? localLimiter
+        : null;
+
+  if (limiter && !access.authorized) {
+    const client = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+    const hit = await count(() => limiter.hitAddress(client));
+    if (hit instanceof Response) return hit;
+    if (!hit.ok) {
+      return NextResponse.json(
+        { error: "Too many runs from this address; try again in a minute." },
+        { status: 429, headers: { "retry-after": String(hit.retryAfter) } },
+      );
+    }
   }
 
   const nebiusKey = process.env.NEBIUS_API_KEY;
@@ -62,6 +71,19 @@ export async function POST(request: Request) {
   // on Vercel without a durable store no vault at all: the receipt then says
   // "no durable vault configured" rather than pretending /tmp is memory.
   const vault = selectVault();
+
+  // The daily ceiling counts runs that are about to spend, not malformed
+  // requests, so junk cannot use up the day.
+  if (limiter) {
+    const day = await count(() => limiter.hitDaily());
+    if (day instanceof Response) return day;
+    if (!day.ok) {
+      return NextResponse.json(
+        { error: "The Desk has reached today's run ceiling. It opens again at midnight UTC." },
+        { status: 429, headers: { "retry-after": String(day.retryAfter) } },
+      );
+    }
+  }
 
   try {
     const run = await runDesk({
@@ -105,6 +127,21 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "The run failed." },
       { status: 502 },
+    );
+  }
+}
+
+/**
+ * A counter that cannot be reached fails closed: a run nobody could count is a
+ * run nobody agreed to pay for.
+ */
+async function count(hit: () => Promise<LimitResult>): Promise<LimitResult | Response> {
+  try {
+    return await hit();
+  } catch {
+    return NextResponse.json(
+      { error: "The Desk cannot reach its run counter right now, so it is not running. Try again shortly." },
+      { status: 503 },
     );
   }
 }
