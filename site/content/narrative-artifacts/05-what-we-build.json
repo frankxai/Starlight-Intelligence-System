@@ -1,0 +1,24 @@
+{
+  "slug": "what-we-build",
+  "number": "05",
+  "mode": "evidence",
+  "eyebrow": "Starlight / product",
+  "title": "Infrastructure you can inspect.",
+  "subtitle": "Command · Memory · Teams · Capabilities · Operations · Transfer · Evidence",
+  "socialSubtitle": "Seven parts. Two live locally. The portfolio loop is staged.",
+  "socialDetail": "Inspect source: github.com/frankxai/Starlight-Intelligence-System.",
+  "detail": "Memory and SIP verification tools run locally. Foundry skill paths work, but plugin packaging is blocked on audited main. The portfolio loop needs end-to-end proof.",
+  "status": "Local proof partial / portfolio loop staged",
+  "motif": "instrument",
+  "diagramAlt": "Seven public primitives: Command staged; Memory live locally; Teams staged; Capabilities staged; Operations staged; Transfer staged; Evidence live locally. The full portfolio loop is still staged.",
+  "primitives": [
+    { "name": "Command", "status": "Staged", "meaning": "Portfolio posture, ventures, priorities, decisions, work, and risk.", "source": "plugins/starlight-intelligence/server/src/mcp.ts" },
+    { "name": "Memory", "status": "Live locally", "meaning": "Append-only records, vault search, and a local context gateway.", "source": "src/memory.ts" },
+    { "name": "Teams", "status": "Staged", "meaning": "Bounded human and agent roles with governed execution contracts.", "source": "src/orchestrator.ts" },
+    { "name": "Capabilities", "status": "Staged", "meaning": "Local skill-package paths work; the OpenAI plugin projection currently fails preflight on audited main.", "source": "tools/foundry/lib/prove.mjs" },
+    { "name": "Operations", "status": "Staged", "meaning": "Work graphs and loops for building and improving products.", "source": "src/work-graph.ts" },
+    { "name": "Transfer", "status": "Staged", "meaning": "Carry a proven capability to another venture with permission and provenance.", "source": "src/multi-sync.ts" },
+    { "name": "Evidence", "status": "Live locally", "meaning": "Conformance checks, signed receipts, eval fixtures, and decision records.", "source": "protocol/verify.mjs" }
+  ],
+  "href": "/proof"
+}

@@ -1,0 +1,61 @@
+{
+  "version": "2026-09-23",
+  "task": "Issue #197 public narrative, seven exact vector chapters, and evidence-led web experience",
+  "surface": "Homepage, story, architecture, proof, public Notes, 16:9 deck, 4:5 and 1:1 social exports",
+  "audience": "Founders, developers, creators, and serious partners who need to distinguish working code from the long horizon",
+  "first_read": "Starlight is local-first intelligence infrastructure for owner-directed ventures; intelligence should compound, and the current proof can be inspected.",
+  "standards": [
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/WEB_EXPERIENCE_STANDARD.md",
+    "skills/vision/design-coherence.md"
+  ],
+  "references": [
+    { "label": "Current source and status", "source": "docs/brand/claim-evidence-2026-09-23.md", "reason": "Makes product proof and uncertainty the primary visual content." },
+    { "label": "Narrative page spec", "source": "docs/brand/next-era-page-spec.md", "reason": "Sets information hierarchy and Evidence/Horizon modes before implementation." },
+    { "label": "Starlight visual standard", "source": "design-agent-standards/DESIGN_TASTE.md", "reason": "Restrained scientific/editorial hierarchy with ownable typography." },
+    { "label": "Queen visual composition", "source": "skills/vision/queen-swarms-visual.md", "reason": "Used for composition critique, without promoting generated exploration as proof." }
+  ],
+  "direction": {
+    "keep": ["Source-linked local proof", "Independent ventures with a shared infrastructure rail", "Exact text in portable SVG exports", "Readable 360px social crops"],
+    "avoid": ["Nebula wallpaper", "Fake dashboards and unsupported scores", "Glowing brain or orbit clichés", "Tiny status labels", "Claims that upgrade research to live operation"],
+    "signature": "Evidence Mode and Horizon Mode share one Inter/Newsreader typographic system and an instrument-like rule structure.",
+    "system": ["Inter body and labels; Newsreader editorial display", "Dark observatory field and warm paper with mineral green accent", "Status and source paths are literal typography", "Seven chapter-specific diagrams in 16:9, 4:5, and 1:1", "No essential motion"]
+  },
+  "asset_quality": {
+    "tier": "C",
+    "source_method": "vector-diagram",
+    "provenance": "owned",
+    "why_premium": "The flagship exports explain exact brand, mechanism, product, and status relationships with selectable text; the web hero contains links to current source rather than decorative proof.",
+    "shortcut_risk": "low",
+    "context_tested": true
+  },
+  "artifacts": [
+    { "path_or_url": "site/public/next-era/intelligence-should-compound-landscape.svg", "kind": "vector diagram / deck", "inspected": true },
+    { "path_or_url": "site/public/next-era/why-starlight-landscape.svg", "kind": "vector diagram / deck", "inspected": true },
+    { "path_or_url": "site/public/next-era/the-constellation-landscape.svg", "kind": "vector diagram / deck", "inspected": true },
+    { "path_or_url": "site/public/next-era/the-compounding-loop-square.svg", "kind": "vector diagram / social", "inspected": true },
+    { "path_or_url": "site/public/next-era/what-we-build-portrait.svg", "kind": "vector diagram / social", "inspected": true },
+    { "path_or_url": "site/public/next-era/three-horizons-portrait.svg", "kind": "vector diagram / social", "inspected": true },
+    { "path_or_url": "site/public/next-era/build-with-us-square.svg", "kind": "vector diagram / social", "inspected": true },
+    { "path_or_url": "site/qa/screenshots/issue-197-home-desktop.png", "kind": "web screenshot", "inspected": true },
+    { "path_or_url": "site/qa/screenshots/issue-197-product-social-4x5.png", "kind": "social crop screenshot", "inspected": true }
+  ],
+  "checks": [
+    { "name": "asset-tier", "status": "pass", "evidence": "Tier C exact vector diagrams are the correct medium for a source-linked architecture story; homepage proof is real source, not illustration." },
+    { "name": "export-inspection", "status": "pass", "evidence": "Twenty-one SVGs regenerated and XML parsed; 16:9, 4:5, and 1:1 rendered and inspected, including 360px social previews." },
+    { "name": "visual-qa", "status": "pass", "evidence": "Independent design re-review scored 27/30 after status, loop, brand relation, typography, social legibility, and CTA fixes." },
+    { "name": "responsive", "status": "pass", "evidence": "Production build checked at 1600x900 and 390x844 on five core routes; no horizontal overflow, one H1 and one main per page." },
+    { "name": "accessibility", "status": "pass", "evidence": "SVG title/desc, semantic captions, keyboard-expandable mobile nav, 44px menu target, reduced-motion CSS, and sampled contrast above 5:1." },
+    { "name": "privacy", "status": "pass", "evidence": "Notes API imports one explicit public record; unlisted slug returns 404; no private vault ingestion." },
+    { "name": "motion", "status": "not_applicable", "evidence": "No essential animation or generated motion is used in the seven chapters." }
+  ],
+  "score": { "total": 27, "max": 30, "notes": "Independent design review after one substantive and one social-legibility iteration." },
+  "decision": "ship",
+  "known_risks": [
+    "The new /proof route is preview-only until the web PR is deployed; source-controlled product social copy points to the live GitHub repository.",
+    "Capability statuses are pinned to the audited main commit and must be rechecked when the separate Foundry repair lands.",
+    "No real cross-venture outcome is yet measured; visual proof describes only local tools and staged work."
+  ]
+}
