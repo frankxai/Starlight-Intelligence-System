@@ -1,9 +1,16 @@
 /**
- * The vault: what the Desk remembers, as JSONL the customer owns.
+ * The vault: what the Desk remembers, as JSON lines the customer owns.
  *
- * One line per belief. Plain text, append-only, readable with `cat`, portable
- * with `cp`. No database to run, nothing to migrate, and a founder can read
- * their own memory without asking anyone for access.
+ * One line per belief, append-only. Two stores behind one interface:
+ *
+ *   file    a JSONL file on disk. The local, sovereign default: readable with
+ *           `cat`, portable with `cp`, no database to run, nothing to migrate,
+ *           and a founder can read their own memory without asking anyone.
+ *   redis   the same JSON lines, one per list entry, in a Redis list reached
+ *           over the Upstash REST API. The deployed path, because a serverless
+ *           filesystem is per-instance and erased between invocations.
+ *           `LRANGE key 0 -1` gives the lines back verbatim, so the memory is
+ *           still one command away from being a file again.
  *
  * Every write is best-effort by design: a vault that cannot be written records
  * a failed stage and the run still produces its brief and its receipt. Memory
@@ -13,6 +20,7 @@
  */
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { dirname } from "node:path";
+import { redisCommand, redisConfigFromEnv, type RedisRestConfig } from "./redis-rest";
 
 export interface VaultAtom {
   id: string;
@@ -27,17 +35,75 @@ export interface VaultAtom {
   at: string;
 }
 
-/**
- * Where the vault lives. A serverless filesystem is read-only apart from /tmp,
- * so a deployed Desk keeps its vault there and the operator carries it off in
- * the receipt's evidence; a laptop keeps it in the repo where it survives.
- */
-export function vaultPath(env: NodeJS.ProcessEnv = process.env): string {
-  if (env.DESK_VAULT_PATH) return env.DESK_VAULT_PATH;
-  return env.VERCEL ? "/tmp/desk-vault.jsonl" : ".starlight/desk-vault.jsonl";
+/** Where beliefs are kept. Both stores append JSON lines and read them back newest last. */
+export interface VaultStore {
+  readonly kind: "file" | "redis";
+  /** Where the memory lives, as the receipt's evidence names it. Never a credential. */
+  readonly ref: string;
+  /** Returns how many landed. Throws when the store refused the write. */
+  append(atoms: VaultAtom[]): Promise<number>;
+  /** The newest `limit` beliefs, oldest first. An empty or absent vault reads as []. */
+  read(limit?: number): Promise<VaultAtom[]>;
 }
 
-/** Append beliefs. Returns how many landed; zero when the vault refused the write. */
+/** Which store this environment gets, or why it gets none. */
+export type VaultSelection = { store: VaultStore; reason?: undefined } | { store: null; reason: string };
+
+export const NO_DURABLE_VAULT = "no durable vault configured";
+export const DEFAULT_READ_LIMIT = 500;
+
+/**
+ * Choose the store. A configured Redis REST backend wins. Otherwise a laptop
+ * gets the file. A deployment on Vercel with no durable store gets no vault at
+ * all: its filesystem would only take the write in /tmp, which is per-instance
+ * and erased, and a memory that silently forgets is worse than an honest
+ * "skipped" on the receipt.
+ */
+export function selectVault(env: NodeJS.ProcessEnv = process.env, fetchImpl?: typeof fetch): VaultSelection {
+  const redis = redisConfigFromEnv(env);
+  if (redis) return { store: redisVault({ ...redis, fetchImpl }, vaultNamespace(env)) };
+  if (env.VERCEL) return { store: null, reason: NO_DURABLE_VAULT };
+  return { store: fileVault(vaultPath(env)) };
+}
+
+/** Where the file vault lives on a machine the customer controls. */
+export function vaultPath(env: NodeJS.ProcessEnv = process.env): string {
+  return env.DESK_VAULT_PATH || ".starlight/desk-vault.jsonl";
+}
+
+/** One Redis list per namespace, so two Desks can share a database without sharing a memory. */
+export function vaultNamespace(env: NodeJS.ProcessEnv = process.env): string {
+  const raw = (env.DESK_VAULT_NAMESPACE ?? "").trim();
+  return /^[A-Za-z0-9._-]{1,64}$/.test(raw) ? raw : "default";
+}
+
+export function fileVault(path: string): VaultStore {
+  return {
+    kind: "file",
+    ref: path,
+    append: (atoms) => appendAtoms(path, atoms),
+    read: (limit) => readAtoms(path, limit),
+  };
+}
+
+export function redisVault(config: RedisRestConfig, namespace = "default"): VaultStore {
+  const key = `desk:vault:${namespace}`;
+  return {
+    kind: "redis",
+    ref: `redis:${key}`,
+    async append(atoms) {
+      if (atoms.length === 0) return 0;
+      await redisCommand(config, ["RPUSH", key, ...atoms.map((atom) => JSON.stringify(atom))]);
+      return atoms.length;
+    },
+    async read(limit = DEFAULT_READ_LIMIT) {
+      const result = await redisCommand(config, ["LRANGE", key, -Math.max(1, Math.floor(limit)), -1]);
+      return parseLines(Array.isArray(result) ? result.filter((line): line is string => typeof line === "string") : []);
+    },
+  };
+}
+
+/** Append beliefs to a file vault. Returns how many landed; zero when there was nothing to write. */
 export async function appendAtoms(path: string, atoms: VaultAtom[]): Promise<number> {
   if (atoms.length === 0) return 0;
   await mkdir(dirname(path), { recursive: true }).catch(() => undefined);
@@ -46,16 +112,21 @@ export async function appendAtoms(path: string, atoms: VaultAtom[]): Promise<num
   return atoms.length;
 }
 
-/** Read beliefs, newest last. A malformed line is skipped rather than fatal. */
-export async function readAtoms(path: string, limit = 500): Promise<VaultAtom[]> {
+/** Read a file vault's beliefs, newest last. A missing file reads as empty. */
+export async function readAtoms(path: string, limit = DEFAULT_READ_LIMIT): Promise<VaultAtom[]> {
   let text: string;
   try {
     text = await readFile(path, "utf8");
   } catch {
     return [];
   }
+  return parseLines(text.split("\n")).slice(-limit);
+}
+
+/** JSON lines to beliefs. A malformed or foreign line is skipped rather than fatal. */
+function parseLines(lines: string[]): VaultAtom[] {
   const atoms: VaultAtom[] = [];
-  for (const line of text.split("\n")) {
+  for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
     try {
@@ -65,7 +136,7 @@ export async function readAtoms(path: string, limit = 500): Promise<VaultAtom[]>
       // a torn line is a line to skip
     }
   }
-  return atoms.slice(-limit);
+  return atoms;
 }
 
 const STOP = new Set([

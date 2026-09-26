@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { runDesk } from "@/lib/desk/cascade";
 import { signRunReceipt } from "@/lib/desk/run-receipt";
-import { vaultPath } from "@/lib/desk/vault";
+import { selectVault } from "@/lib/desk/vault";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -58,6 +58,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `Keep the question under ${MAX_QUESTION_CHARS} characters.` }, { status: 422 });
   }
 
+  // A Redis REST store when one is configured, the JSONL file on a laptop, and
+  // on Vercel without a durable store no vault at all: the receipt then says
+  // "no durable vault configured" rather than pretending /tmp is memory.
+  const vault = selectVault();
+
   try {
     const run = await runDesk({
       question,
@@ -65,7 +70,8 @@ export async function POST(request: Request) {
       retrieval: { apiKey: tavilyKey, endpoint: process.env.TAVILY_URL },
       issuer: process.env.DESK_ISSUER ?? "Starlight Desk",
       host: "desk",
-      vaultPath: vaultPath(),
+      vault: vault.store ?? undefined,
+      noVaultReason: vault.reason,
     });
 
     // Sign when a key is present. Without one the receipt travels as a draft,

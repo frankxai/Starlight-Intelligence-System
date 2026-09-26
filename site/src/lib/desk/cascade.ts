@@ -30,7 +30,7 @@ import {
   type RunReceipt,
   type RunReceiptStage,
 } from "./run-receipt";
-import { appendAtoms, findRelated, readAtoms, type VaultAtom } from "./vault";
+import { fileVault, findRelated, type VaultAtom, type VaultStore } from "./vault";
 
 export const MODELS = {
   extract: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
@@ -88,8 +88,12 @@ export interface CascadeOptions {
   maxSources?: number;
   issuer?: string;
   host?: string;
-  /** Where memory lives. Omit and the run reads and writes nothing. */
+  /** Where memory lives. Omit it (and `vaultPath`) and the run reads and writes nothing. */
+  vault?: VaultStore;
+  /** Shorthand for a file vault at this path. Ignored when `vault` is given. */
   vaultPath?: string;
+  /** Why there is no vault, recorded on the skipped recall and remember stages. */
+  noVaultReason?: string;
   now?: () => number;
   clock?: () => string;
 }
@@ -111,14 +115,18 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   let related: VaultAtom[] = [];
   let contradictions: Contradiction[] = [];
   let remembered = 0;
+  const vault = options.vault ?? (options.vaultPath ? fileVault(options.vaultPath) : null);
+  const noVault = options.noVaultReason ?? "no vault";
 
   // ── recall ────────────────────────────────────────────────────────────────
-  // Memory first, and locally: keyword overlap over the vault's own lines. No
-  // model, no index, no network, so this stage cannot be the one that fails.
-  if (options.vaultPath) {
+  // Memory first: keyword overlap over the vault's own lines. No model and no
+  // index; with the file store no network either, so on a laptop this stage
+  // cannot be the one that fails. A durable store that cannot be read fails
+  // this stage and nothing else.
+  if (vault) {
     const startedRecall = now();
     try {
-      const atoms = await readAtoms(options.vaultPath);
+      const atoms = await vault.read();
       related = findRelated(atoms, question);
       stages.push({
         name: "recall",
@@ -132,7 +140,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       stages.push({ name: "recall", status: "failed", provider: "vault", note: message(error) });
     }
   } else {
-    stages.push({ name: "recall", status: "skipped", provider: "vault", note: "no vault" });
+    stages.push({ name: "recall", status: "skipped", provider: "vault", note: noVault });
   }
 
   // ── retrieve ──────────────────────────────────────────────────────────────
@@ -303,10 +311,10 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   // stage, and the run still hands over its brief and its receipt.
   const runId = `run_${now().toString(36)}`;
   const receiptId = `rcpt_${now()}_${runId.slice(4, 12)}`;
-  if (options.vaultPath && claims.length > 0) {
+  if (vault && claims.length > 0) {
     const startedRemember = now();
     try {
-      remembered = await appendAtoms(options.vaultPath, claims.map((claim) => atomFrom(claim, question, receiptId, clock())));
+      remembered = await vault.append(claims.map((claim) => atomFrom(claim, question, receiptId, clock())));
       stages.push({
         name: "remember",
         status: remembered > 0 ? "ok" : "failed",
@@ -323,7 +331,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       name: "remember",
       status: "skipped",
       provider: "vault",
-      note: options.vaultPath ? "no claims" : "no vault",
+      note: vault ? "no claims" : noVault,
     });
   }
 
@@ -340,7 +348,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     decisions: [],
     evidence: [
       ...sources.map((source) => ({ kind: "source", ref: source.url })),
-      ...(remembered > 0 && options.vaultPath ? [{ kind: "vault", ref: options.vaultPath }] : []),
+      ...(remembered > 0 && vault ? [{ kind: "vault", ref: vault.ref }] : []),
     ],
     verdict: verdictFromStages(stages),
   };

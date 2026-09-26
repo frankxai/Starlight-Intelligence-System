@@ -19,7 +19,7 @@ import {
   MODELS,
 } from "./cascade.ts";
 import { receiptProblems } from "./run-receipt.ts";
-import { readAtoms } from "./vault.ts";
+import { NO_DURABLE_VAULT, readAtoms, redisVault, selectVault } from "./vault.ts";
 
 const SOURCES = [
   { title: "A", url: "https://example.org/a", content: "Alpha body text." },
@@ -275,6 +275,105 @@ test("an unwritable vault costs the run its memory, not its brief", async () => 
   assert.equal(run.receipt.stages.at(-1).status, "failed");
   assert.equal(run.receipt.verdict, "PARTIAL", "a lost write is visible in the verdict, not hidden");
   assert.deepEqual(receiptProblems(run.receipt), []);
+});
+
+test("a deployment with no durable vault says so on the receipt instead of writing to /tmp", async () => {
+  const picked = selectVault({ VERCEL: "1" });
+  const run = await runDesk({
+    ...config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+      ]),
+    ),
+    vault: picked.store ?? undefined,
+    noVaultReason: picked.reason,
+  });
+
+  assert.equal(run.remembered, 0);
+  const memory = run.receipt.stages.filter((stage) => stage.provider === "vault");
+  assert.deepEqual(
+    memory.map((stage) => `${stage.name}:${stage.status}:${stage.note}`),
+    [`recall:skipped:${NO_DURABLE_VAULT}`, `remember:skipped:${NO_DURABLE_VAULT}`],
+  );
+  assert.ok(!run.receipt.evidence.some((item) => item.kind === "vault"), "no vault is claimed as evidence");
+  assert.deepEqual(receiptProblems(run.receipt), []);
+});
+
+test("the durable store carries memory from one run to the next", async () => {
+  // An in-memory stand-in for the REST API: RPUSH appends, LRANGE reads.
+  const list = [];
+  const redisFetchImpl = async (_url, init) => {
+    const [command, , ...args] = JSON.parse(init.body);
+    let result;
+    if (command === "RPUSH") {
+      list.push(...args);
+      result = list.length;
+    } else if (command === "LRANGE") {
+      result = list.slice(args[0]);
+    } else {
+      throw new Error(`unexpected ${command}`);
+    }
+    return { ok: true, status: 200, json: async () => ({ result }) };
+  };
+  const vault = redisVault({ url: "https://kv.example.upstash.io", token: "t", fetchImpl: redisFetchImpl }, "test");
+
+  const first = await runDesk({
+    ...config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+      ]),
+    ),
+    vault,
+  });
+  assert.equal(first.remembered, 2);
+  assert.equal(list.length, 2, "one list entry per belief");
+  assert.ok(first.receipt.evidence.some((item) => item.kind === "vault" && item.ref === "redis:desk:vault:test"));
+
+  const second = await runDesk({
+    ...config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ contradictions: [] }), 800, 60),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+      ]),
+    ),
+    vault,
+  });
+  assert.equal(second.related.length, 2, "the prior run's beliefs are recalled from the durable store");
+  assert.equal(list.length, 4);
+});
+
+test("a durable store that cannot be reached fails recall and remember, and the brief still ships", async () => {
+  const vault = redisVault({
+    url: "https://kv.example.upstash.io",
+    token: "t",
+    fetchImpl: async () => {
+      throw new TypeError("fetch failed");
+    },
+  });
+  const run = await runDesk({
+    ...config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+      ]),
+    ),
+    vault,
+  });
+  assert.ok(run.brief.length > 0);
+  assert.equal(run.receipt.stages[0].status, "failed");
+  assert.equal(run.receipt.stages.at(-1).status, "failed");
+  assert.equal(run.receipt.verdict, "PARTIAL");
 });
 
 test("contradictions are kept only where they name a belief that was recalled", () => {
