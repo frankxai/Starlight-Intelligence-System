@@ -464,3 +464,21 @@ Core framework components implemented:
 **Next:** 23 Sept Desk issues the first real `desk.brief` receipt on stage and verifies it live on `/verify`; add Frank's Desk key to the registry by PR (drift item 12); Foundry lock pin refresh if a `test:receipts` script is wanted in `package.json`.
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
+
+---
+
+### [2026-09-21] Convergence v4 — the option space for all twenty-one dimensions, chosen against the zero
+
+**Confidence:** 0.8
+**Source:** the convergence brief run a second time on the same day, stacked on PR #189 (v1, v2, v3); `docs/strategy/2026-09-21-convergence-v4.md`, appendices E and F, `convergence-map-v4.html`, `memory-log-prototype.html`, `ledger-countersign-prototype.html`
+**Related:** `2026-09-21-convergence-v3.md`, `narrative.md`, `docs/receipts.md`, `protocol/run-receipt.v1.schema.json`
+
+**Decision (operational tier; two items blocked on Board):** every direction is judged first by whether it moves the count of signed receipts verified by a key that is not ours, which is zero on this date (`memory/_audit/receipts.jsonl` absent; registry empty). Choices that differ from v3: the verifier becomes one MIT package (`@starlight/receipt`) rather than a copy; the constitution gates every route with the Queen inside it; two runtimes, one receipt (a conformance twin by Q4); the memory log with the six vaults as projections (Board proposal, section 7.1); the demo adds countersignature from the judge's phone; the twelve dimensions each get three directions, a cost at three scales and a falsifier.
+
+**Corrections that change arithmetic:** Nebius batch is 50 percent; Suno rights attach to downloads (20 or 60 a month); Nebius pins EU compute only on dedicated endpoints; Anthropic's first-party API has no EU inference geo; Claude Code reads CLAUDE.md natively rather than AGENTS.md.
+
+**Falsifier carried forward:** if by 2026-12-31 fewer than 100 countersignatures exist from keys that are not ours, the trust move failed and the plan says so.
+
+**Receipt:** unsigned draft `rcpt_1790034118905_5c0d1383`, subject sha256 `d849a34cb9a1d5bf852494b383c66d505f653de7bfbabaa6e0d87bf2b57970d2`; no signing key on the authoring machine.
+
+**Built on SIP** — Starlight Intelligence Protocol v1.1.1
