@@ -42,12 +42,12 @@ const has = (n) => args.includes(`--${n}`)
 
 const SRC = {
   kernel:        existsSync(join(ESTATE, 'kernel', 'KERNEL.md')) ? join(ESTATE, 'kernel', 'KERNEL.md') : join(PACKAGE_DEFAULTS, 'KERNEL.md'),
-  frankDna:      join(ESTATES.sis.root, 'CLAUDE.md'),
+  frankDna:      existsSync(join(ESTATES.sis.root, 'CLAUDE.md')) ? join(ESTATES.sis.root, 'CLAUDE.md') : join(PACKAGE_DEFAULTS, 'BRAND.md'),
   sisSoul:       join(ESTATES.sis.root, 'SOUL.md'),
   luminor:       join(ESTATES.arcanea.root, '.arcanea', 'prompts', 'luminor-engineering-kernel.md'),
   canon:         join(ESTATES.arcanea.root, '.arcanea', 'lore', 'CANON_LOCKED.md'),
-  crossModel:    join(ESTATE, 'CROSS-MODEL-GATE.md'),
-  generalContract: join(ESTATE, 'ops', 'stewards', 'GENERAL-CONTRACT.md'),
+  crossModel:    existsSync(join(ESTATE, 'CROSS-MODEL-GATE.md')) ? join(ESTATE, 'CROSS-MODEL-GATE.md') : join(PACKAGE_DEFAULTS, 'VERIFICATION.md'),
+  generalContract: existsSync(join(ESTATE, 'ops', 'stewards', 'GENERAL-CONTRACT.md')) ? join(ESTATE, 'ops', 'stewards', 'GENERAL-CONTRACT.md') : join(PACKAGE_DEFAULTS, 'AUTHORITY.md'),
   constitutions: join(ESTATES.config.root, 'agent-constitution'),
 }
 const CONSTITUTION_BY_ROLE = [
@@ -137,7 +137,7 @@ export function composeSoul(rec, { budget = Infinity } = {}) {
   atoms.push(atom('authority', 'authority', SRC.generalContract, auth))
 
   // 7. verification — maker ≠ checker and the receipt
-  const verifier = rec.routing.verifier && rec.routing.verifier !== 'declared' ? rec.routing.verifier : `A different provider per \`${relp(SRC.crossModel)}\`, or the invoking queen session. Never this agent.`
+  const verifier = rec.routing.verifier && rec.routing.verifier !== 'declared' ? rec.routing.verifier : SRC.crossModel.endsWith('VERIFICATION.md') ? 'A different provider than the maker. Never this agent.' : `A different provider per \`${relp(SRC.crossModel)}\`, or the invoking queen session. Never this agent.`
   atoms.push(atom('verification', 'verification', SRC.crossModel, `## Maker ≠ checker\n\n${verifier}\n\n## Receipt\n\nEvery pass ends with three lines: made / verified / proposed. A pass without a receipt did not happen.`))
 
   // budget: drop optional layers largest-first until it fits, and say so
@@ -246,28 +246,26 @@ function toContextPack(rec, soul, opts) {
   return { file: `${rec.name}.compile-request.json`, content: JSON.stringify({ ...request, $provenance: { compiledBy: SELF, sourceRef: rec.sourceRef, contentHash: rec.contentHash, layerDigest: soul.sourceDigest, excludedByBudget: soul.excluded } }, null, 2) + '\n' }
 }
 
-// A2A AgentCard v1.0.0 (a2a-protocol.org/latest/specification, read 2026-09-19): the discovery
-// document other agents fetch at /.well-known/agent-card.json. Field names are the spec's; the
-// `starlight.sip` extension carries what the spec has no slot for — the compiled identity digest
-// and the verifier that is never this agent — so a card from this estate is checkable, not just
-// discoverable. `url` is a placeholder until a host binds it; nothing here claims a live endpoint.
-export function toA2ACard(rec, soul, { baseUrl = 'https://starlightintelligence.ai/agents' } = {}) {
+// A2A AgentCard v1.0 (a2a-protocol.org/v1.0.0/specification): the discovery
+// document other agents fetch at /.well-known/agent-card.json. Field names are the spec's.
+// The SIP extension carries the compiled identity digest and independent verifier. The default
+// .invalid URL makes this a non-deployable template until a host binds a real HTTPS endpoint.
+export function toA2ACard(rec, soul, { baseUrl = 'https://example.invalid/a2a', protocolBinding = 'HTTP+JSON', includeSourceRef = false } = {}) {
+  const endpoint = new URL(`${baseUrl.replace(/\/$/, '')}/${encodeURIComponent(rec.name)}`)
+  if (endpoint.protocol !== 'https:' || !['HTTP+JSON', 'JSONRPC', 'GRPC'].includes(protocolBinding)) throw new Error('A2A requires an HTTPS endpoint and supported protocol binding')
   const skills = rec.mind.skills.length ? rec.mind.skills : [rec.routing.domain || 'general']
+  const extension = { uri: 'https://starlightintelligence.org/sip/agent-record/v1', description: 'Compiled identity digest, human gates, and independent verifier', required: false, params: { ...(includeSourceRef ? { sourceRef: rec.sourceRef } : {}), contentHash: rec.contentHash, layerDigest: soul.sourceDigest, layers: soul.selected.map((a) => a.id), humanGates: [...new Set(['push', 'publish', 'send', 'delete', 'money', ...rec.will.humanGates])], verifier: rec.routing.verifier && rec.routing.verifier !== 'declared' ? rec.routing.verifier : 'a different provider per CROSS-MODEL-GATE.md; never this agent', harness: rec.body.harness, brand: rec.brand } }
   const card = {
     name: rec.identity.displayName,
     description: description(rec),
-    url: `${baseUrl}/${rec.name}`,
-    provider: { organization: 'Starlight Intelligence', url: 'https://starlightintelligence.ai' },
+    supportedInterfaces: [{ url: endpoint.href, protocolBinding, protocolVersion: '1.0' }],
+    provider: { organization: 'Starlight Intelligence', url: 'https://starlightintelligence.org' },
     version: `0.1.0+${rec.contentHash}`,
-    protocolVersion: '1.0.0',
-    capabilities: { streaming: false, pushNotifications: false, stateTransitionHistory: false },
+    capabilities: { streaming: false, pushNotifications: false, extensions: [extension] },
     defaultInputModes: ['text/plain', 'text/markdown'],
     defaultOutputModes: ['text/markdown'],
-    skills: skills.map((s) => ({ id: String(s).toLowerCase().replace(/[^a-z0-9/-]+/g, '-'), name: String(s).split('/').pop(), description: `Skill ${s} as declared by ${rec.sourceRef}`, tags: [rec.brand, rec.routing.domain, rec.routing.rank].filter(Boolean) })),
+    skills: skills.map((s) => ({ id: String(s).toLowerCase().replace(/[^a-z0-9/-]+/g, '-'), name: String(s).split('/').pop(), description: `Skill ${s} declared by ${rec.identity.displayName}`, tags: [rec.brand, rec.routing.domain, rec.routing.rank].filter(Boolean) })),
     securitySchemes: {},
-    security: [],
-    supportsAuthenticatedExtendedCard: false,
-    extensions: [{ uri: 'https://starlightintelligence.ai/sip/agent-record/v1', description: 'Starlight compiled-identity extension: layer digest, human gates, named verifier, source provenance', required: false, params: { sourceRef: rec.sourceRef, contentHash: rec.contentHash, layerDigest: soul.sourceDigest, layers: soul.selected.map((a) => a.id), humanGates: [...new Set(['push', 'publish', 'send', 'delete', 'money', ...rec.will.humanGates])], verifier: rec.routing.verifier && rec.routing.verifier !== 'declared' ? rec.routing.verifier : 'a different provider per CROSS-MODEL-GATE.md; never this agent', harness: rec.body.harness, brand: rec.brand } }],
   }
   return { file: `${rec.name}.agent-card.json`, content: JSON.stringify(card, null, 2) + '\n' }
 }

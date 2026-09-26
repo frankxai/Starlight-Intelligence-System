@@ -29,7 +29,7 @@ const order = soul.selected.map((a) => a.layer)
 check('layers compose in kernel → brand → substrate → constitution → agent → authority → verification order',
   JSON.stringify(order) === JSON.stringify(['kernel', 'brand', 'substrate', 'constitution', 'agent', 'authority', 'verification']), order.join(','))
 check('every atom carries sourceRef, contentHash and tokenEstimate', soul.atoms.every((a) => a.sourceRef && /^[a-f0-9]{16}$/.test(a.contentHash) && a.tokenEstimate > 0))
-check('kernel layer is the Omotenashi install block', /Omotenashi Kernel/.test(soul.selected[0].text) && /made \/ verified \/ proposed/.test(soul.selected[0].text))
+check('kernel layer is present and carries trust-boundary discipline', soul.selected[0].id === 'kernel.posture' && /trust boundary/i.test(soul.selected[0].text))
 check('agent layer carries values, boundaries, read-first and skills', /proof over prose/.test(soul.markdown) && /never self-certify/.test(soul.markdown) && /TRUTH\.md/.test(soul.markdown) && /todo-discipline/.test(soul.markdown))
 check('human gates always include the five kernel gates plus the card gates', /Always confirm before: push, publish, send, delete, money, dns/.test(soul.markdown))
 check('a missing verifier defaults to a different provider, never the agent', /Never this agent/.test(soul.markdown))
@@ -38,10 +38,15 @@ check('sourceDigest changes when identity changes', composeSoul({ ...base, ident
 
 // ---- brand switch
 const arc = composeSoul({ ...base, brand: 'arcanea', name: 'lore-keeper', routing: { ...base.routing, domain: 'lore' } })
-check('arcanea brand swaps Frank DNA for the Luminor register and canon pointer', arc.selected.some((a) => a.id === 'brand.luminor') && arc.selected.some((a) => a.id === 'brand.canon') && !arc.selected.some((a) => a.id === 'brand.frank-dna'))
-check('arcanea lore role picks the creative constitution', arc.selected.find((a) => a.layer === 'constitution').sourceRef.endsWith('ARCANEA_CREATIVE_AGENT.md'))
+check('arcanea does not inherit Frank DNA', !arc.selected.some((a) => a.id === 'brand.frank-dna'))
+check('arcanea lore role picks a constitution', Boolean(arc.selected.find((a) => a.layer === 'constitution')))
 const coder = composeSoul({ ...base, name: 'backend-coder', routing: { ...base.routing, description: 'Implements backend code and CI.', domain: 'engineering' } })
-check('engineering role picks the codex execution constitution', coder.selected.find((a) => a.layer === 'constitution').sourceRef.endsWith('CODEX_EXECUTION_AGENT.md'))
+check('engineering role picks a constitution', Boolean(coder.selected.find((a) => a.layer === 'constitution')))
+if (process.env.STARLIGHT_ESTATE) {
+  check('estate kernel keeps its Omotenashi receipt contract', /Omotenashi Kernel/.test(soul.selected[0].text) && /made \/ verified \/ proposed/.test(soul.selected[0].text))
+  check('estate Arcanea includes Luminor and canon sources', arc.selected.some((a) => a.id === 'brand.luminor') && arc.selected.some((a) => a.id === 'brand.canon'))
+  check('estate lore and engineering use specialized constitutions', arc.selected.find((a) => a.layer === 'constitution').sourceRef.endsWith('ARCANEA_CREATIVE_AGENT.md') && coder.selected.find((a) => a.layer === 'constitution').sourceRef.endsWith('CODEX_EXECUTION_AGENT.md'))
+}
 
 // ---- budget
 const tight = composeSoul(base, { budget: 600 })
@@ -80,8 +85,14 @@ try {
 
 // ---- A2A AgentCard
 const cardOut = JSON.parse(TARGETS['a2a'].emit(base, soul, {}).content)
-check('a2a card carries the v1.0.0 field set', ['name', 'description', 'url', 'provider', 'version', 'protocolVersion', 'capabilities', 'skills', 'securitySchemes', 'security', 'defaultInputModes', 'defaultOutputModes', 'supportsAuthenticatedExtendedCard', 'extensions'].every((k) => k in cardOut) && cardOut.protocolVersion === '1.0.0')
-check('a2a skills carry id/name/description/tags and the SIP extension carries digest, gates and verifier', cardOut.skills.every((s) => s.id && s.name && s.description && Array.isArray(s.tags)) && cardOut.extensions[0].params.layerDigest === soul.sourceDigest && cardOut.extensions[0].params.humanGates.includes('money') && /never this agent|different provider/i.test(cardOut.extensions[0].params.verifier))
+check('a2a card carries the v1.0 required fields and an ordered interface', ['name', 'description', 'supportedInterfaces', 'version', 'capabilities', 'skills', 'defaultInputModes', 'defaultOutputModes'].every((k) => k in cardOut) && cardOut.supportedInterfaces[0].protocolVersion === '1.0' && cardOut.supportedInterfaces[0].protocolBinding === 'HTTP+JSON' && cardOut.supportedInterfaces[0].url.startsWith('https://example.invalid/'))
+check('a2a default template does not claim a live endpoint or leak source paths', !('url' in cardOut) && !('protocolVersion' in cardOut) && !('sourceRef' in cardOut.capabilities.extensions[0].params))
+check('a2a skills carry id/name/description/tags and the SIP extension carries digest, gates and verifier', cardOut.skills.every((s) => s.id && s.name && s.description && Array.isArray(s.tags)) && cardOut.capabilities.extensions[0].params.layerDigest === soul.sourceDigest && cardOut.capabilities.extensions[0].params.humanGates.includes('money') && /never this agent|different provider/i.test(cardOut.capabilities.extensions[0].params.verifier))
+const boundCard = JSON.parse(TARGETS['a2a'].emit(base, soul, { baseUrl: 'https://agent.example.org/a2a' }).content)
+check('a2a host binding changes only the declared HTTPS interface', boundCard.supportedInterfaces[0].url === 'https://agent.example.org/a2a/sample-steward')
+let invalidA2aBlocked = false
+try { TARGETS['a2a'].emit(base, soul, { baseUrl: 'http://agent.example.org/a2a' }) } catch { invalidA2aBlocked = true }
+check('a2a refuses an insecure endpoint', invalidA2aBlocked)
 
 // ---- source body survives compilation (contract sections and read paths stay lintable)
 const withBody = { ...base, name: 'steward-sample', routing: { ...base.routing, rank: 'general' }, provenance: { ...base.provenance, body: '# Steward - sample\n\n## Mission\nKeep samples healthy.\n\n## Read-first SSOT\n1. `C:\\Users\\frank\\starlight\\TRUTH.md`\n\n## Scope\nsamples.\n\n## Health signals\n`C:\\Users\\frank\\starlight\\logs\\heartbeats\\heartbeat-steward-sample.json` is the receipt.\n\n## Evidence rules\nmeasured.\n\n## Write authority\nread-only.\n\n## Receipt duty\nwrite it.\n\n## Escalation\nnone.\n\n## Maker≠checker\nsteward-infra.\n\n## Coordination\nclaim a lane.\n\n## Pass procedure\n1. read.\n' } }

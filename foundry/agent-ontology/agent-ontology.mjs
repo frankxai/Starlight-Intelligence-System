@@ -400,6 +400,9 @@ export function scanEstate({ includeSkills = true, includeGlobalSkills = true } 
   // SIS
   const sisAgents = join(ESTATES.sis.root, 'agents'); src(sisAgents, 'sis agent markdown')
   add(walk(sisAgents, { maxDepth: 2, ext: '.md' }).filter((f) => !/REGISTRY\.md$/i.test(f)).map(fromSisMd))
+  const publicBetaAgents = join(ESTATES.sis.root, 'foundry', 'agent-ontology', 'public-agents')
+  src(publicBetaAgents, 'public beta agent markdown')
+  add(walk(publicBetaAgents, { maxDepth: 1, ext: '.md' }).map(fromSisMd))
   if (includeSkills) { src(join(ESTATES.sis.root, 'skills'), 'sis domain skills + skill-rules.json'); add(fromSisSkills()) }
 
   // ACOS
