@@ -6,7 +6,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { existsSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -82,18 +82,94 @@ describe("vault MCP server quality contract", () => {
     });
   });
 
-  it("results carry structuredContent mirrored in the text block", async () => {
+  it("results carry structuredContent; list tools keep their bare-array text for existing callers", async () => {
     await withVault(async (dir) => {
       const r = await session(dir, [
         call(1, "sis_append_entry", { vault: "technical", content: "quality marker qzx" }),
         call(2, "sis_search", { query: "qzx" }),
+        call(3, "sis_vault_search", { query: "qzx" }),
+        call(4, "sis_recent_entries", {}),
       ]);
-      for (const id of [1, 2]) {
+      const append = r.get(1)!.result;
+      assert.deepEqual(JSON.parse(append.content[0].text), append.structuredContent);
+      for (const [id, key] of [[2, "results"], [3, "results"], [4, "entries"]] as const) {
         const result = r.get(id)!.result;
         assert.ok(!result.isError, JSON.stringify(result));
-        assert.deepEqual(JSON.parse(result.content[0].text), result.structuredContent);
+        const text = JSON.parse(result.content[0].text);
+        assert.ok(Array.isArray(text), `call ${id} text stays an array`);
+        assert.deepEqual(text, result.structuredContent[key]);
+        assert.equal(text[0].content, "quality marker qzx");
       }
-      assert.equal(r.get(2)!.result.structuredContent.results[0].content, "quality marker qzx");
+    });
+  });
+
+  it("a malformed request line gets an error and the server keeps serving", async () => {
+    await withVault(async (dir) => {
+      const child = spawn(process.execPath, [SERVER, "--vault-dir", dir, "--no-seed"], { stdio: ["pipe", "pipe", "pipe"] });
+      const lines: any[] = [];
+      let buffer = "";
+      const done = new Promise<void>((resolvePromise, reject) => {
+        const timer = setTimeout(() => { child.kill(); reject(new Error(`got ${lines.length}/4 responses`)); }, 15000);
+        child.stdout.on("data", (chunk) => {
+          buffer += chunk;
+          const parts = buffer.split("\n");
+          buffer = parts.pop()!;
+          for (const part of parts) if (part.trim()) lines.push(JSON.parse(part));
+          if (lines.length === 4) { clearTimeout(timer); child.kill(); resolvePromise(); }
+        });
+      });
+      for (const line of ["null", "[]", '{"jsonrpc":"2.0","id":7}', JSON.stringify(call(9, "sis_stats"))]) child.stdin.write(line + "\n");
+      await done;
+      assert.deepEqual(lines.slice(0, 3).map((l) => l.error?.code), [-32600, -32600, -32600]);
+      assert.equal(lines[2].id, 7, "the id is echoed when it can be read");
+      assert.equal(lines[3].id, 9);
+      assert.ok(lines[3].result.structuredContent, "the next request is still served");
+    });
+  });
+
+  it("argument shapes other than a plain object, and prototype keys, are rejected", async () => {
+    await withVault(async (dir) => {
+      const raw = (id: number, args: unknown) => ({ jsonrpc: "2.0", id, method: "tools/call", params: { name: "sis_entry_types", arguments: args } });
+      const r = await session(dir, [
+        raw(1, []),
+        raw(2, 0),
+        { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "sis_entry_types", arguments: JSON.parse('{"__proto__":{"polluted":true}}') } },
+        raw(4, { constructor: 5 }),
+      ]);
+      for (const id of [1, 2, 3, 4]) assert.equal(r.get(id)!.result.isError, true, `call ${id}`);
+    });
+  });
+
+  it("Windows device names are not vault names", async () => {
+    await withVault(async (dir) => {
+      const r = await session(dir, [
+        call(1, "sis_append_entry", { vault: "nul", content: "must not vanish into a device" }),
+        call(2, "sis_append_entry", { vault: "com1", content: "x" }),
+        call(3, "sis_append_entry", { vault: "console", content: "a normal word that starts like con" }),
+      ]);
+      assert.equal(r.get(1)!.result.isError, true);
+      assert.equal(r.get(2)!.result.isError, true);
+      assert.ok(!r.get(3)!.result.isError, "only exact device names are reserved");
+    });
+  });
+
+  it("a vault file that is a symlink is neither written through nor read", async (t) => {
+    await withVault(async (dir) => {
+      const outside = join(dir, "..", `sis-outside-${process.pid}.jsonl`);
+      writeFileSync(outside, "");
+      try {
+        try {
+          symlinkSync(outside, join(dir, "technical.jsonl"));
+        } catch {
+          t.skip("creating symlinks needs privileges on this machine");
+          return;
+        }
+        const r = await session(dir, [call(1, "sis_append_entry", { vault: "technical", content: "escape attempt" })]);
+        assert.equal(r.get(1)!.result.isError, true);
+        assert.equal(readFileSync(outside, "utf-8"), "");
+      } finally {
+        rmSync(outside, { force: true });
+      }
     });
   });
 

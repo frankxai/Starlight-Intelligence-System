@@ -8,7 +8,7 @@
  * Usage: node dist/mcp-server.js [--vault-dir ~/.starlight/vaults]
  */
 import { createInterface } from 'node:readline';
-import { readFileSync, writeFileSync, appendFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, appendFileSync, readdirSync, existsSync, mkdirSync, lstatSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { homedir } from 'node:os';
 import { randomUUID } from 'node:crypto';
@@ -94,10 +94,21 @@ function ensureDir(dir: string): void {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 }
 
+function isLink(path: string): boolean {
+  return existsSync(path) && lstatSync(path).isSymbolicLink();
+}
+
+/** A vault file path that stays in the vault directory: a planted symlink would redirect writes elsewhere. */
+function vaultFile(vaultDir: string, name: string): string {
+  const path = join(vaultDir, `${name}.jsonl`);
+  if (isLink(path)) throw new ToolError(`Vault file ${name}.jsonl is a symlink; refusing to follow it.`, 'Replace the link with a regular file inside the vault directory.');
+  return path;
+}
+
 function readVaultFiles(vaultDir: string): Array<{ file: string; entries: RawEntry[] }> {
   if (!existsSync(vaultDir)) return [];
   return readdirSync(vaultDir)
-    .filter(f => f.endsWith('.jsonl') && f !== `${CONTRADICTIONS}.jsonl`)
+    .filter(f => f.endsWith('.jsonl') && f !== `${CONTRADICTIONS}.jsonl` && !isLink(join(vaultDir, f)))
     .map(file => {
       const entries: RawEntry[] = [];
       for (const line of readFileSync(join(vaultDir, file), 'utf-8').split('\n')) {
@@ -125,7 +136,7 @@ function wordScore(query: string, text: string): number {
 }
 
 function rewriteVault(vaultDir: string, name: string, entries: RawEntry[]): void {
-  writeFileSync(join(vaultDir, `${name}.jsonl`), entries.map(e => JSON.stringify(e)).join('\n') + '\n', 'utf-8');
+  writeFileSync(vaultFile(vaultDir, name), entries.map(e => JSON.stringify(e)).join('\n') + '\n', 'utf-8');
 }
 
 function findEntry(vaultDir: string, id: string) {
@@ -163,7 +174,10 @@ function activeGoal(orchestrator: GoalOrchestrator) {
 
 // ── Schemas ───────────────────────────────────────────────────
 // Vault names become file names: the pattern is what keeps "../" out of the vault directory.
-const vaultName = (description: string): JsonSchema => ({ type: 'string', pattern: '^[a-z][a-z0-9_-]{0,39}$', description });
+// Also excludes Windows device names (nul, con, com1...), which are not files there.
+const vaultName = (description: string): JsonSchema => ({
+  type: 'string', pattern: '^(?!(?:con|prn|aux|nul|com[0-9]|lpt[0-9])$)[a-z][a-z0-9_-]{0,39}$', description,
+});
 const entryId = (description: string): JsonSchema => ({ type: 'string', minLength: 1, maxLength: 200, description });
 const limit = (fallback: number, max: number): JsonSchema => ({
   type: 'integer', minimum: 1, maximum: max, default: fallback, description: `Maximum results (1-${max}, default ${fallback}).`,
@@ -179,12 +193,14 @@ const READ: McpToolAnnotations = { readOnlyHint: true, openWorldHint: false };
 const APPEND: McpToolAnnotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
 
 /** Enforces the subset of JSON Schema the tools declare, so the advertised bounds are real. */
-export function validateArgs(schema: JsonSchema, args: Record<string, unknown>): string | null {
+export function validateArgs(schema: JsonSchema, args: unknown): string | null {
+  if (typeof args !== 'object' || args === null || Array.isArray(args)) return 'Arguments must be a JSON object.';
+  const own = (obj: object, key: string) => Object.prototype.hasOwnProperty.call(obj, key);
   for (const key of schema.required ?? []) {
-    if (args[key] === undefined) return `Missing required argument "${key}".`;
+    if (!own(args, key) || (args as Record<string, unknown>)[key] === undefined) return `Missing required argument "${key}".`;
   }
   for (const [key, value] of Object.entries(args)) {
-    const prop = schema.properties?.[key];
+    const prop = schema.properties && own(schema.properties, key) ? schema.properties[key] : undefined;
     if (!prop) {
       if (schema.additionalProperties === false) return `Unknown argument "${key}". Allowed: ${Object.keys(schema.properties ?? {}).join(', ') || 'none'}.`;
       continue;
@@ -229,7 +245,12 @@ function checkValue(schema: JsonSchema, value: unknown): string | null {
 
 // ── Server ────────────────────────────────────────────────────
 export class StarlightMcpServer {
-  private tools = new Map<string, { definition: McpTool; handler: (p: Record<string, unknown>) => Record<string, unknown> }>();
+  private tools = new Map<string, {
+    definition: McpTool;
+    handler: (p: Record<string, unknown>) => Record<string, unknown>;
+    /** Key whose value is the text block, so pre-structured-output callers keep the bare array they parsed. */
+    legacyText?: string;
+  }>();
   private vaultDir: string;
 
   constructor(vaultDir: string) {
@@ -238,8 +259,8 @@ export class StarlightMcpServer {
     this.registerTools();
   }
 
-  private reg(def: McpTool, handler: (p: Record<string, unknown>) => Record<string, unknown>): void {
-    this.tools.set(def.name, { definition: def, handler });
+  private reg(def: McpTool, handler: (p: Record<string, unknown>) => Record<string, unknown>, legacyText?: string): void {
+    this.tools.set(def.name, { definition: def, handler, legacyText });
   }
 
   private registerTools(): void {
@@ -262,7 +283,7 @@ export class StarlightMcpServer {
         .filter(e => e._s > 0).sort((a, b) => b._s - a._s).slice(0, lim)
         .map(({ _s, _vault, ...r }) => ({ ...r, vault: _vault, score: _s }));
       return { results };
-    });
+    }, 'results');
 
     this.reg({
       name: 'sis_recent_entries',
@@ -279,7 +300,7 @@ export class StarlightMcpServer {
         entries: entries.sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
           .slice(0, lim).map(({ _vault, ...r }) => ({ ...r, vault: _vault })),
       };
-    });
+    }, 'entries');
 
     this.reg({
       name: 'sis_stats',
@@ -322,7 +343,7 @@ export class StarlightMcpServer {
         createdAt: now,
         temporal: { validFrom: now, validUntil: null, lastConfirmed: now, confidenceDecay: conf },
       };
-      appendFileSync(join(this.vaultDir, `${vault}.jsonl`), JSON.stringify(entry) + '\n', 'utf-8');
+      appendFileSync(vaultFile(this.vaultDir, vault), JSON.stringify(entry) + '\n', 'utf-8');
       return { success: true, id: entry.id, vault };
     });
 
@@ -373,7 +394,7 @@ export class StarlightMcpServer {
           matchedTerms: terms.filter(w => textOf(r as RawEntry).toLowerCase().includes(w)),
         }));
       return { results };
-    });
+    }, 'results');
 
     this.reg({
       name: 'sis_confirm',
@@ -436,7 +457,7 @@ export class StarlightMcpServer {
         reason: p.reason ? String(p.reason) : 'Flagged as contradictory',
         detectedAt: new Date().toISOString(), resolvedAt: null,
       };
-      appendFileSync(join(this.vaultDir, `${CONTRADICTIONS}.jsonl`), JSON.stringify(record) + '\n', 'utf-8');
+      appendFileSync(vaultFile(this.vaultDir, CONTRADICTIONS), JSON.stringify(record) + '\n', 'utf-8');
       return { success: true, id: record.id };
     });
 
@@ -539,14 +560,16 @@ export class StarlightMcpServer {
     }
     if (method === 'tools/call') {
       const p = (params ?? {}) as Record<string, unknown>;
-      const name = String(p.name ?? ''), args = (p.arguments ?? {}) as Record<string, unknown>;
+      const name = String(p.name ?? ''), rawArgs = p.arguments ?? {};
       const tool = this.tools.get(name);
       if (!tool) return { jsonrpc: '2.0', id: rpcId, error: { code: -32602, message: `Unknown tool: ${name}` } };
-      const invalid = validateArgs(tool.definition.inputSchema, args);
+      const invalid = validateArgs(tool.definition.inputSchema, rawArgs);
+      const args = rawArgs as Record<string, unknown>;
       if (invalid) return { jsonrpc: '2.0', id: rpcId, result: toolError(invalid, 'Fix the argument and call again; nothing was changed.') };
       try {
         const result = tool.handler(args);
-        return { jsonrpc: '2.0', id: rpcId, result: { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }], structuredContent: result } };
+        const text = tool.legacyText ? result[tool.legacyText] : result;
+        return { jsonrpc: '2.0', id: rpcId, result: { content: [{ type: 'text', text: JSON.stringify(text, null, 2) }], structuredContent: result } };
       } catch (err) {
         const hint = err instanceof ToolError ? err.hint : 'Unexpected failure; the vault may be unreadable. Check the server log.';
         return { jsonrpc: '2.0', id: rpcId, result: toolError(err instanceof Error ? err.message : String(err), hint) };
@@ -565,7 +588,17 @@ export class StarlightMcpServer {
         process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } }) + '\n');
         return;
       }
-      const response = this.handleRequest(request);
+      if (typeof request !== 'object' || request === null || Array.isArray(request) || typeof request.method !== 'string') {
+        const id = typeof request === 'object' && request !== null && !Array.isArray(request) ? request.id ?? null : null;
+        process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id, error: { code: -32600, message: 'Invalid Request: expected a JSON-RPC object with a string method' } }) + '\n');
+        return;
+      }
+      let response: JsonRpcResponse | null;
+      try {
+        response = this.handleRequest(request);
+      } catch (err) {
+        response = { jsonrpc: '2.0', id: request.id ?? null, error: { code: -32603, message: err instanceof Error ? err.message : String(err) } };
+      }
       if (response) process.stdout.write(JSON.stringify(response) + '\n');
     });
     process.stderr.write(`[starlight-sis] MCP server started, vault: ${this.vaultDir}\n`);

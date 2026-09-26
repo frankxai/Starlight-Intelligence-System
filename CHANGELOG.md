@@ -10,7 +10,9 @@ All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separat
 - **Contract:** titles, safety annotations, `outputSchema` + `structuredContent`, bounded and described inputs, all enforced server-side (unknown arguments rejected). Protocol version negotiated (2025-06-18, 2025-03-26, 2024-11-05).
 - **Errors:** not-found ids, unknown goal tasks and bad arguments return `isError` with a hint; previously `success: false`, or `success: true` for an unknown goal task.
 - **Fixes:** `contradictions.jsonl` no longer counted as a vault; SAGE fallback logging moved from stdout (which corrupted the MCP stream) to stderr.
-- **Shape change:** `sis_vault_search` and `sis_search` return `{ results: [...] }` and `sis_recent_entries` returns `{ entries: [...] }` (structured content must be an object). `sis_stale` caps `entries` at `limit` (default 50) while `count` stays the total.
+- **Robustness (Codex review):** a malformed line (`null`, `[]`, no method) used to crash the server; it now gets `-32600` and the next request is served. Arguments must be a plain object (prototype keys rejected). Windows device names (`nul`, `con`, `com1`...) are not vault names. Vault files that are symlinks are neither written through nor read.
+- **Shapes:** `structuredContent` for `sis_vault_search` / `sis_search` is `{ results }` and for `sis_recent_entries` is `{ entries }` (it must be an object); their **text block keeps the old bare array**, so existing callers are unaffected. `sis_stale` caps `entries` at `limit` (default 50) while `count` stays the total.
+- **Kept on purpose:** invalid arguments return `isError: true` with a hint rather than JSON-RPC `-32602`, so the model sees the message and can correct itself (matches the official SDK). Unknown tools are `-32602`.
 
 ## 2026-09-09 — Starlight World excellence (private vanilla drive)
 
