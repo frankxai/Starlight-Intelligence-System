@@ -22,7 +22,7 @@ These envelopes share **contracts, conformance fixtures, package hashes and expo
 |---|---|---|
 | Portfolio product admission, studio and release governance | `agentic-ops` reviewed Registry | SIS consumes a pinned projection; it does not mint a parallel brand or control plane |
 | SIP and public Foundry/graph/work-event contracts | This repository | Version, test and document compatibility; substrate changes pass the Starlight Board before commit/tag |
-| Private founder work events and machine bus | Private `agentic-ops` / local `~/.starlight` | One append-only writer per event stream; export redacted references only |
+| Private founder work events and machine bus | Private `agentic-ops` / local `~/.starlight` designated; work-event writer remains unverified | Implement one append-only writer per event stream; export redacted references only |
 | Memory authority | Customer's sovereign local core or declared instance owner | Session state and remote embeddings are projections; promotion follows stable claim, evidence, classification, contradiction check, approval and reversible projection |
 | Agent fleet deployment policy | `starlight-agent-config` for the founder; customer instance policy for an adopter | Host enforces grants. An agent file, A2A card or MCP tool description cannot escalate them |
 | Sessions and host execution | Originating harness and its authenticated runner | Persist run/cost/identity evidence, not copied private transcript bodies |
