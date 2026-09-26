@@ -1,5 +1,7 @@
 autoInstallPeers: false
 
+# better-sqlite3 backs the ledgers and retrieval index and needs its native
+# binary; esbuild installs its platform binary in postinstall.
 allowBuilds:
-  better-sqlite3: set this to true or false
-  esbuild: set this to true or false
+  better-sqlite3: true
+  esbuild: true
