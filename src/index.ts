@@ -481,6 +481,16 @@ export {
   verdictFromStages,
   verifyRunReceipt,
 } from './run-receipt.js';
+export {
+  compactShareParam,
+  MAX_INFLATED_BYTES,
+  MAX_SHARE_PARAM_BYTES,
+  parseShareParam,
+  QR_MAX_CHARS,
+  receiptShareUrl,
+  SHARE_ORIGIN,
+  shareParam,
+} from './receipt-share.js';
 export type {
   DecisionBy,
   DecisionOutcome,
