@@ -10,6 +10,7 @@ import {
   type LimitResult,
   type RunLimiter,
 } from "@/lib/desk/run-limit";
+import { deskSigningKey } from "@/lib/desk/signing";
 import { selectVault } from "@/lib/desk/vault";
 
 export const runtime = "nodejs";
@@ -96,13 +97,14 @@ export async function POST(request: Request) {
       noVaultReason: vault.reason,
     });
 
-    // Sign when a key is present. Without one the receipt travels as a draft,
-    // which is a record of the run and not a proof of it.
-    const signingKey = process.env.SIS_SIGNING_KEY;
+    // Sign with the Desk's own key when one is set; deployed, never with the
+    // personal key (see signing.ts). Without one the receipt travels as a
+    // draft, which is a record of the run and not a proof of it.
+    const signingKey = deskSigningKey();
     let envelope: unknown = null;
     if (signingKey) {
       try {
-        envelope = signRunReceipt(run.receipt, signingKey);
+        envelope = signRunReceipt(run.receipt, signingKey.pem);
       } catch {
         envelope = null;
       }
