@@ -167,6 +167,12 @@ export function overlap(a: Set<string>, b: Set<string>): number {
  * Prior beliefs close enough to the question to be worth checking against.
  * Keyword overlap rather than embeddings: it needs no model, no index, and no
  * network, so the contradiction pass still runs when the venue Wi-Fi does not.
+ *
+ * This is the floor. Embedding recall, when it is added, sits behind this
+ * signature and degrades to exactly this path when its model is unset or
+ * unreachable. It is not built yet: each embedding call is spend the receipt
+ * must record and the price table must carry, and a vector per line would
+ * stop the file vault being memory a person can read with `cat`.
  */
 export function findRelated(atoms: VaultAtom[], question: string, max = 6, threshold = 0.08): VaultAtom[] {
   const asked = terms(question);
