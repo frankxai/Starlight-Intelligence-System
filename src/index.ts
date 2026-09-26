@@ -466,3 +466,40 @@ export type {
   Lifecycle,
   SourceKind,
 } from './instruction-compiler.js';
+
+// Run receipts — the unit of proof for agent work
+export {
+  RUN_RECEIPT_SCHEMA,
+  RUN_RECEIPT_PREDICATE_TYPE,
+  keyIdOf,
+  peekRunReceipt,
+  receiptProblems,
+  receiptStatement,
+  sha256Hex,
+  signRunReceipt,
+  totalsFromStages,
+  verdictFromStages,
+  verifyRunReceipt,
+} from './run-receipt.js';
+export {
+  compactShareParam,
+  MAX_INFLATED_BYTES,
+  MAX_SHARE_PARAM_BYTES,
+  parseShareParam,
+  QR_MAX_CHARS,
+  receiptShareUrl,
+  SHARE_ORIGIN,
+  shareParam,
+} from './receipt-share.js';
+export type {
+  DecisionBy,
+  DecisionOutcome,
+  DsseEnvelope,
+  RunReceipt,
+  RunReceiptDecision,
+  RunReceiptEvidence,
+  RunReceiptStage,
+  RunReceiptVerdict,
+  StageStatus,
+  VerifyResult,
+} from './run-receipt.js';
