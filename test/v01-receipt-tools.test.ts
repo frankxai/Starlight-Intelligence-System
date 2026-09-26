@@ -13,7 +13,7 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { generateKeyPairSync } from 'node:crypto';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -174,6 +174,7 @@ describe('Track B v0.1 — sis.receipt.* tools', () => {
       assert.deepEqual(receipts[0], {
         receiptId: second.receiptId,
         kind: 'signed',
+        verified: false,
         keyid: second.keyid,
         verdict: 'PASS',
         runKind: 'publish',
@@ -181,6 +182,39 @@ describe('Track B v0.1 — sis.receipt.* tools', () => {
         costEur: 0.021,
         subjectName: 'post.md',
       });
+      const checked = srv.call('sis.receipt.list', { limit: 10, public_key_pem: k.publicPem }) as OkEnvelope;
+      const proved = (checked.receipts as Array<Record<string, unknown>>)[0];
+      assert.equal(proved.verified, true);
+    });
+  });
+
+  it('a ledger row marked signed is not proof until its signature verifies', () => {
+    withServer((srv, root) => {
+      const k = keyPair();
+      const issued = srv.call('sis.receipt.issue', issueParams({ signing_key_pem: k.privatePem })) as OkEnvelope;
+      assert.equal(issued.status, 'signed');
+      const ledger = readFileSync(join(root, 'memory', '_audit', 'receipts.jsonl'), 'utf-8');
+      assert.equal(ledger.includes('PRIVATE KEY'), false);
+      const forged = {
+        kind: 'signed',
+        receiptId: 'rcpt_forged',
+        keyid: 'not-a-key',
+        envelope: {
+          payloadType: 'application/vnd.in-toto+json',
+          payload: (issued.envelope as { payload: string }).payload,
+          signatures: [{ keyid: 'not-a-key', sig: 'AAAA' }],
+        },
+        appendedAt: '2026-09-22T00:00:00.000Z',
+      };
+      writeFileSync(join(root, 'memory', '_audit', 'receipts.jsonl'), `${ledger.trim()}\n${JSON.stringify(forged)}\n`);
+      const listed = srv.call('sis.receipt.list', { public_key_pem: k.publicPem }) as OkEnvelope;
+      const rows = listed.receipts as Array<Record<string, unknown>>;
+      const fake = rows.find((row) => row.receiptId === 'rcpt_forged');
+      assert.ok(fake);
+      assert.equal(fake.kind, 'signed');
+      assert.equal(fake.verified, false);
+      const real = rows.find((row) => row.receiptId === issued.receiptId);
+      assert.equal(real?.verified, true);
     });
   });
 

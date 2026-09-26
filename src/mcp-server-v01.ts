@@ -176,6 +176,8 @@ function errorResult(message: string): ErrorResult {
 interface ReceiptSummary {
   receiptId: string;
   kind: 'signed' | 'draft';
+  /** True only when this call verified the envelope against a supplied public key. */
+  verified: boolean;
   keyid?: string;
   verdict: string;
   runKind: string;
@@ -236,14 +238,18 @@ function resolveReceiptSubject(subject: Record<string, unknown>): Record<string,
   return subject;
 }
 
-function summarizeReceiptRecord(record: Record<string, unknown>): ReceiptSummary | null {
+function summarizeReceiptRecord(record: Record<string, unknown>, trustedPublicKeys: string[]): ReceiptSummary | null {
   const kind = record.kind === 'signed' || record.kind === 'draft' ? record.kind : null;
   if (!kind) return null;
   const receipt = kind === 'signed' ? peekRunReceipt(record.envelope) : (record.receipt as RunReceipt | null);
   if (!receipt) return null;
+  const verified = kind === 'signed' && trustedPublicKeys.length > 0
+    ? verifyRunReceipt(record.envelope, trustedPublicKeys).ok
+    : false;
   return {
     receiptId: String(record.receiptId ?? receipt.receiptId),
     kind,
+    verified,
     ...(typeof record.keyid === 'string' ? { keyid: record.keyid } : {}),
     verdict: receipt.verdict,
     runKind: receipt.run.kind,
@@ -1267,13 +1273,17 @@ export class SisMcpServerV01 {
         const envelope = signRunReceipt(receipt, key);
         const keyid = envelope.signatures[0]?.keyid ?? null;
         const signed: RunReceipt = { ...receipt, issuer: { ...receipt.issuer, keyid: keyid ?? undefined } };
-        const write = appendReceiptEnvelope(this.repoRoot, {
-          kind: 'signed',
+        const persisted = {
+          kind: 'signed' as const,
           receiptId: receipt.receiptId,
           keyid,
           envelope,
           appendedAt: nowIso(),
-        });
+        };
+        if (JSON.stringify(persisted).includes(key.trim())) {
+          return errorResult('refusing to persist the signing key');
+        }
+        const write = appendReceiptEnvelope(this.repoRoot, persisted);
         if (!write.ok) return errorResult(write.error ?? 'receipt append failed');
         return { ok: true as const, status: 'signed' as const, receiptId: receipt.receiptId, keyid, receipt: signed, envelope };
       },
@@ -1316,18 +1326,26 @@ export class SisMcpServerV01 {
     this.reg(
       {
         name: 'sis.receipt.list',
-        description: 'List recent run receipts from receipts.jsonl, newest first (signed and draft)',
+        description:
+          'List recent run receipts from receipts.jsonl, newest first. ' +
+          'kind is how the row was written (signed or draft). ' +
+          'verified is true only when this call checks the envelope against public_key_pem, public_key_path, or the trust ledger. ' +
+          'A row with verified false is not proof.',
         inputSchema: {
           type: 'object',
           properties: {
             limit: { type: 'number' },
+            public_key_pem: { type: 'string' },
+            public_key_path: { type: 'string' },
+            trust_ledger: { type: 'boolean' },
           },
         },
       },
       (p) => {
         const limit = typeof p.limit === 'number' ? p.limit : 20;
+        const keys = resolveTrustedKeys(p);
         const receipts = readRecentReceipts(this.repoRoot, limit)
-          .map(summarizeReceiptRecord)
+          .map((record) => summarizeReceiptRecord(record, keys))
           .filter((r): r is ReceiptSummary => r !== null)
           .reverse();
         return { ok: true as const, receipts };
