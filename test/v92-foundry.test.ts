@@ -824,16 +824,24 @@ describe("v9.2 Foundry compilation and proof", () => {
     }
   });
 
-  it("rejects ancestor and artifact symlinks plus forbidden dependency subtrees", () => {
+  it("rejects ancestor symlinks in skill sources", (t) => {
     const temp = tempDirectory();
     try {
       const sourceRoot = join(temp, "source-root");
       mkdirSync(sourceRoot, { recursive: true });
-      symlinkSync(
-        join(ROOT, "skills", "foundry"),
-        join(sourceRoot, "linked-parent"),
-        "dir",
-      );
+      try {
+        symlinkSync(
+          join(ROOT, "skills", "foundry"),
+          join(sourceRoot, "linked-parent"),
+          "dir",
+        );
+      } catch (error: any) {
+        if (process.platform === "win32" && error?.code === "EPERM") {
+          t.skip("Windows denied symlink fixture creation (EPERM)");
+          return;
+        }
+        throw error;
+      }
       const sourceGraph: any = structuredClone(buildCapabilityGraph(ROOT));
       sourceGraph.nodes.find(
         (node: any) => node.id === "skill:foundry/skill-forge",
@@ -869,17 +877,41 @@ describe("v9.2 Foundry compilation and proof", () => {
         }),
         /Refusing symbolic link in source path: linked-parent/,
       );
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
 
+  it("rejects symlinks in compiled artifacts", (t) => {
+    const temp = tempDirectory();
+    try {
       const output = join(temp, "package");
       compileDemo(output);
       const linkedManifest = join(output, "linked-foundry-manifest.json");
-      symlinkSync(join(output, "foundry-manifest.json"), linkedManifest);
+      try {
+        symlinkSync(join(output, "foundry-manifest.json"), linkedManifest);
+      } catch (error: any) {
+        if (process.platform === "win32" && error?.code === "EPERM") {
+          t.skip("Windows denied symlink fixture creation (EPERM)");
+          return;
+        }
+        throw error;
+      }
       assert.throws(
         () => provePackage({ packageDirectory: output, registry }),
         /Refusing symbolic link in artifact tree: linked-foundry-manifest.json/,
       );
       rmSync(linkedManifest, { force: true });
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
 
+  it("rejects forbidden dependency subtrees in compiled artifacts", () => {
+    const temp = tempDirectory();
+    try {
+      const output = join(temp, "package");
+      compileDemo(output);
       mkdirSync(join(output, "node_modules"), { recursive: true });
       writeFileSync(join(output, "node_modules", "unexpected.txt"), "not declared\n");
       assert.throws(

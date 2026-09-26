@@ -37,16 +37,26 @@
     "@types/three": "^0.184.1",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
-    "postcss": "8.5.15",
+    "postcss": "8.5.28",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
   "overrides": {
-    "postcss": "8.5.15"
+    "postcss": "8.5.28",
+    "brace-expansion@1": "^1.1.18",
+    "brace-expansion@5": "^5.0.9",
+    "browserslist": "^4.28.7",
+    "js-yaml": "^4.3.2",
+    "nanoid": "^3.3.18"
   },
   "pnpm": {
     "overrides": {
-      "postcss": "8.5.15"
+      "postcss": "8.5.28",
+      "brace-expansion@1": "^1.1.18",
+      "brace-expansion@5": "^5.0.9",
+      "browserslist": "^4.28.7",
+      "js-yaml": "^4.3.2",
+      "nanoid": "^3.3.18"
     }
   }
 }

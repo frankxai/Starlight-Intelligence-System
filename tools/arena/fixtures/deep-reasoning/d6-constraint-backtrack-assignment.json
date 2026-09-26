@@ -1,0 +1,27 @@
+{
+  "$comment": "Built on SIP — R5 deep-reasoning task fixture. Schema: r5-task v0.1.",
+  "id": "d6-constraint-backtrack-assignment",
+  "family": "multi-step deduction — constraint satisfaction requiring backtracking",
+  "category": "5x3 assignment, 10 constraints, unique solution, no single constraint pins a cell",
+  "why": "Deliberately harder than R1's logic grid, which both contestants solved and which therefore separated nothing. No constraint here directly assigns a lane to an agent; C4 compares two lanes by alphabetical rank, which forces the solver to hold a partial assignment and revisit it. Ten constraints over 5!*5! = 14,400 candidate grids, verified by exhaustive search to admit exactly one solution. Scoring is all-or-nothing across all ten cells, so a single propagated error fails the task — which is the property being measured.",
+  "prompt": "Five agents — Ash, Bex, Cyd, Dov and Eli — are each assigned exactly one evaluation lane and exactly one working day. No two agents share a lane, and no two share a day.\n\nThe five lanes are: harness, memory, model, retrieval, substrate.\nThe five days are: Mon, Tue, Wed, Thu, Fri.\n\nConstraints:\n 1. The agent assigned the memory lane works exactly two days before the agent assigned the harness lane.\n 2. Bex works on Wednesday.\n 3. Ash's lane is neither model nor substrate.\n 4. The agent who works on Monday has a lane that comes strictly later in alphabetical order than Dov's lane.\n 5. Dov works the day immediately after Eli.\n 6. The substrate lane is worked on Friday.\n 7. Cyd is not assigned the retrieval lane.\n 8. The model lane is worked earlier in the week than the memory lane.\n 9. Eli's lane is not harness.\n10. Ash works neither Monday nor Tuesday.\n\nDetermine the lane and day of every agent. List all five agents in alphabetical order.",
+  "answerFormat": "ANSWER: Ash=<lane>/<day> Bex=<lane>/<day> Cyd=<lane>/<day> Dov=<lane>/<day> Eli=<lane>/<day>",
+  "groundTruth": {
+    "answer": "Ash=harness/Thu Bex=retrieval/Wed Cyd=substrate/Fri Dov=memory/Tue Eli=model/Mon",
+    "derivation": [
+      "Verified by exhaustive search over all 14,400 lane x day assignments: exactly one grid satisfies all ten constraints.",
+      "C1: memory (Dov, Tue) is two days before harness (Ash, Thu).",
+      "C4: Monday's agent is Eli on model (alphabetical rank 3 of harness/memory/model/retrieval/substrate); Dov's lane is memory (rank 2); 3 > 2 holds.",
+      "C8: model on Mon precedes memory on Tue.",
+      "The search is reproducible from the constraint list alone; no step of it is asserted by hand."
+    ]
+  },
+  "verification": {
+    "type": "exact-final-line",
+    "normalize": ["collapse-whitespace", "uppercase", "strip-commas"],
+    "accept": ["^ASH\\s*=\\s*HARNESS\\s*/\\s*THU\\s+BEX\\s*=\\s*RETRIEVAL\\s*/\\s*WED\\s+CYD\\s*=\\s*SUBSTRATE\\s*/\\s*FRI\\s+DOV\\s*=\\s*MEMORY\\s*/\\s*TUE\\s+ELI\\s*=\\s*MODEL\\s*/\\s*MON$"],
+    "attractors": []
+  },
+  "prediction": { "fable": "PASS", "opus": "PASS", "sonnet": "FAIL", "haiku": "FAIL" },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

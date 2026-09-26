@@ -78,9 +78,10 @@
       "confidence": "low",
       "autoApply": false,
       "stakes": "medium",
-      "evidence": "Doctrine, NOT yet measured — no arena card has a deep-reasoning lane where Opus ceiling would show. R4 must build it before this hardens.",
+      "evidence": "STILL NOT MEASURED — but now for a known reason rather than an absent one. The lane was built and RAN on 2026-08-28 (design: tools/arena/R5-DESIGN.md; tasks: tools/arena/fixtures/deep-reasoning/; runner: tools/arena/deep-reasoning.mjs, npm run eval:deep-reasoning; receipt: tools/arena/runs/2026-08-28-r5-deep-reasoning.json) and came back VOID-EQUIVALENT on the reasoning axis: the card saturated. All four tiers passed all six tasks in run 1; in run 2 the only two non-PASS cells were a transport error and an omitted ANSWER line, neither a wrong answer. 46 of 46 answered cells were correct across both runs and no pre-registered attractor was taken by any tier. The card never located an Opus or Fable ceiling, so route=opus remains a doctrine heuristic. Numbered R5, not R4: arena R4 is the 2026-06-10 work-samples card.",
+      "design": "tools/arena/R5-DESIGN.md — pre-registered hypothesis, per-tier predictions, void rule, falsification criteria, and the 2026-09-19 correction.",
       "rounds": 0,
-      "note": "autoApply=false until R4 confirms. Until then this is a heuristic, not a finding."
+      "note": "autoApply=false. rounds stays 0: a void-equivalent round is not evidence and does not count toward the A2 two-round floor. Do NOT read this as support for down-routing either — a saturated card cannot tell you what the expensive tiers are for, and the cheap tiers costing less per passed task on a card nothing failed is an artifact of the card, not a finding. R6 needs a genuinely separating card; note that arena R4 DID separate the tiers on output discipline under load (fable's first contract violation in four rounds; opus 5 of 7 structured-output tasks), an axis this card does not score. R1-R4 contested claude-opus-4-8 while R5 contests claude-opus-5; the two series must not be pooled."
     },
     {
       "taskClass": "bulk-classification",

@@ -166,7 +166,8 @@
     "estate:graph": "node scripts/estate-graph.mjs",
     "estate:check": "node scripts/estate-graph.mjs --check",
     "agents:project": "node scripts/agents-md-project.mjs --tree ..",
-    "agents:project:check": "node scripts/agents-md-project.mjs --tree .. --check"
+    "agents:project:check": "node scripts/agents-md-project.mjs --tree .. --check",
+    "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs"
   },
   "files": [
     "dist/",

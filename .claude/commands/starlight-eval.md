@@ -1,7 +1,7 @@
 # /starlight-eval
 
 Run a **Starlight Proving Ground** pass — evaluate the whole Starlight Intelligence
-System across seven lanes, render per-lane and system verdicts with the Luminor
+System across eight lanes, render per-lane and system verdicts with the Luminor
 kernel mindset, and write a scorecard receipt.
 
 Spec: `tools/proving-ground/SPEC.md` · Lanes: `tools/proving-ground/lanes.json`
@@ -10,8 +10,8 @@ Evaluator disposition: `agents/starlight-evaluator.md`
 ## Usage
 
 ```
-/starlight-eval              # full pass — all 7 lanes
-/starlight-eval <lane>       # single lane: model | memory | retrieval | harness | substrate | datasets | system
+/starlight-eval              # full pass — all 8 lanes
+/starlight-eval <lane>       # single lane: model | memory | retrieval | harness | substrate | datasets | deep-reasoning | system
 /starlight-eval --since <tag-or-runId>   # delta against a prior scorecard
 ```
 
@@ -25,7 +25,10 @@ Evaluator disposition: `agents/starlight-evaluator.md`
    - `harness` → run `tools/run-v01-evals.mjs`.
    - `substrate` → run `npm run test:substrate`.
    - `datasets` → audit dataset provenance (verdict, not metric).
-   - `system` → synthesize lanes 1-6.
+   - `deep-reasoning` → run `npm run eval:deep-reasoning` (full four-tier lineup only; a
+     `--models`/`--tasks` subset stamps PARTIAL and is not evidence), or read the latest
+     receipt in `tools/arena/runs/`.
+   - `system` → synthesize lanes 1-7.
 2. **Evaluate** each lane with the Luminor kernel mindset (Precision / Wisdom /
    Transcendence). Per lane: a board verdict (PROCEED / REVISE / STOP), the metrics
    with `sourceLane` + `baseline` + `delta`, caveats, and the **named weakness** the

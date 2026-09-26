@@ -113,3 +113,6 @@ link-checker-report.txt
 
 # Starlight/ACOS temporary files
 .gemini/
+
+# Arena run-local eval receipts (a reviewed run is promoted to tools/arena/runs/ by hand)
+tools/arena/out/
