@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060609">
 <title>Memory log prototype</title>
 <meta name="description" content="Prototype for convergence v4, memory direction: one append-only signed log, six vaults and every index rebuilt as projections, deletion as a tombstone and a replay. Example values throughout.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--void:#060609;--ink:#e2e8f0;--ink-2:#94a3b8;--ink-3:#64748b;--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;
+:root{--void:#060609;--ink:#e2e8f0;--ink-2:#94a3b8;--ink-3:#7c8aa0;--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;
 --surface:rgba(255,255,255,.025);--surface-2:rgba(255,255,255,.045);--border:rgba(255,255,255,.07);--border-2:rgba(255,255,255,.14);
 --serif:"Newsreader",Georgia,serif;--sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--ease:cubic-bezier(.4,0,.2,1);color-scheme:dark}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;overflow-x:clip}
@@ -96,9 +97,12 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
 @media (max-width:1100px){.stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.stage .rebuild{grid-column:1/-1}}
 @media (max-width:760px){.hero{grid-template-columns:1fr;gap:16px}.stage{grid-template-columns:1fr}.vaults{grid-template-columns:repeat(2,minmax(0,1fr))}.proj{grid-template-columns:1fr}.walk{grid-template-columns:1fr}.ev{grid-template-columns:36px minmax(0,1fr);grid-template-areas:"seq kind" "subj subj" "sig sig"}.ev .seq{grid-area:seq}.ev .kind{grid-area:kind}.ev .subj{grid-area:subj;white-space:normal}.ev .sig{grid-area:sig}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 12px;border-radius:8px;background:#e2e8f0;color:#060609;font:500 13px/1 system-ui,sans-serif;text-decoration:none}.skip:focus-visible{top:12px;outline:2px solid #67e8f9;outline-offset:2px}
+h1,h2,h3{text-wrap:balance}p{text-wrap:pretty}main{display:block}.log:focus-visible{outline:2px solid #67e8f9;outline-offset:2px}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <div class="page">
   <header class="top">
     <div class="brand"><div class="mark" aria-hidden="true"></div><b>Starlight Intelligence</b><span>Memory log prototype</span></div>
@@ -107,6 +111,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
       <span class="chip"><i></i>Convergence v4 · memory direction B · Board proposal attached</span>
     </div>
   </header>
+<main id="main" tabindex="-1">
 
   <section class="hero">
     <div>
@@ -124,7 +129,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
   <section class="stage">
     <div class="panel" aria-label="The log">
       <h2>The log <span id="logmeta" class="mono">seq 0 · 0 bytes</span></h2>
-      <div class="log" id="log" role="log" aria-live="polite"></div>
+      <div class="log" id="log" role="log" aria-live="polite" aria-label="Event log" tabindex="0"></div>
       <div class="ctl">
         <button class="btn pri" id="b-atom" type="button">Append atom</button>
         <button class="btn" id="b-receipt" type="button">Issue receipt</button>
@@ -174,6 +179,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
 
   <p class="truth"><b>What is real and what is prototype.</b> Real today: append-only JSONL is the primary memory substrate (Board record 2026-05-23; migration 168 of 168 atoms), the work graph is an event log with ten event kinds (<code>src/work-graph.ts</code>), the receipts ledger appends one JSONL line per receipt (<code>src/mcp-server-v01.ts</code>), and <code>AGENTS.md</code> already describes the vaults as event-sourced JSONL truth. Prototype: one envelope for all three logs, the projection runner, tombstone and consent event kinds, per-subject keys, and the checksums. The move changes where truth lives, so it is a Board question; the proposal is section 7 of <code>2026-09-21-convergence-v4.md</code>. Every number on this page is an example.</p>
 
+</main>
   <footer>
     <span>Built on SIP · Starlight Intelligence Systems · memory log prototype · 2026-09-21</span>
     <span>convergence v4 · memory direction B</span>

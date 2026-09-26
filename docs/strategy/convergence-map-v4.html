@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060609">
 <title>Convergence option space v4</title>
 <meta name="description" content="Convergence v4: twenty-one dimensions and the demo, three directions each, the chosen one lit. Detail panel: cost at three scales, falsifier, SOUL invariant, receipt and Board verdict. Illustrative numbers labelled.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#060609;--fg:#e2e8f0;--muted:#94a3b8;--dim:#64748b;--line:rgba(226,232,240,.1);--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;--sans:Inter,system-ui,sans-serif;--serif:Newsreader,Georgia,serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
+:root{--bg:#060609;--fg:#e2e8f0;--muted:#94a3b8;--dim:#7c8aa0;--line:rgba(226,232,240,.1);--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;--sans:Inter,system-ui,sans-serif;--serif:Newsreader,Georgia,serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1000px 500px at 10% -10%,rgba(167,139,250,.12),transparent 60%),radial-gradient(800px 420px at 100% 0%,rgba(103,232,249,.07),transparent 60%)}
@@ -73,9 +74,12 @@ h1 em{font-style:italic;color:var(--violet)}
 footer{padding:18px 0 50px;border-top:1px solid var(--line);color:var(--dim);font:400 12px var(--mono);margin-top:30px}
 @media(prefers-reduced-motion:no-preference){.dir{transition:border-color .2s ease,background .2s ease}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 12px;border-radius:8px;background:#e2e8f0;color:#060609;font:500 13px/1 system-ui,sans-serif;text-decoration:none}.skip:focus-visible{top:12px;outline:2px solid #67e8f9;outline-offset:2px}
+h1,h2,h3{text-wrap:balance}p{text-wrap:pretty}main{display:block}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
 <header class="top">
   <span class="chip on">Convergence v4</span>
@@ -83,6 +87,7 @@ footer{padding:18px 0 50px;border-top:1px solid var(--line);color:var(--dim);fon
   <span class="chip warn">Costs illustrative · list prices 2026-09-21</span>
   <span class="chip">Nothing shown as live that is not in a file</span>
 </header>
+<main id="main" tabindex="-1">
 <h1>Twenty-one dimensions, <em>chosen harder.</em></h1>
 <p class="lede">Nine layers, the demo, and the twelve dimensions v1 left out. Each row has three directions: the conservative one, the current or v3 choice, and the radical one. The lit card is what v4 chose; a cyan "part" mark means the direction was adopted in part. Open any card for what it enables, what it costs at three scales, what it forbids, the observation that would prove it wrong, the SOUL invariant it stresses, the receipt it produces, and the Board verdict for the row. The plan is <code>2026-09-21-convergence-v4.md</code>; the two prototypes are <code>memory-log-prototype.html</code> and <code>ledger-countersign-prototype.html</code>.</p>
 <div class="legend"><span class="ch">chosen</span><span class="co">conservative</span><span class="cu">current (v1 to v3)</span><span class="ra">radical</span></div>
@@ -107,6 +112,7 @@ footer{padding:18px 0 50px;border-top:1px solid var(--line);color:var(--dim);fon
   <div class="contract"><b>Capital narrative</b><p>Starlight Holding BV in formation; Accel AI Innovate on 23 September at AI House; the receipt layer for agent work on an open protocol; no customer count, revenue or verified-receipt count claimed, because each is zero on the day of writing.</p></div>
 </section>
 
+</main>
 <footer>Starlight Intelligence · convergence map v4 · 2026-09-21 · Built on SIP</footer>
 </div>
 
@@ -232,7 +238,21 @@ function show(id){
     '<div class="k">Board verdict for the row’s choice</div><span class="verdict '+L.vc+'">'+esc(L.verdict)+'</span>';
 }
 render();
-layersEl.addEventListener('click',function(e){var b=e.target.closest('.dir'); if(b) show(b.getAttribute('data-id'));});
+var narrow=window.matchMedia('(max-width:1023px)'), layoutEl=layersEl.parentNode;
+function place(id){
+  if(narrow.matches){ var sec=document.getElementById('L-'+id.split('-')[0]); if(sec) sec.insertAdjacentElement('afterend',detailEl); }
+  else if(detailEl.parentNode!==layoutEl){ layoutEl.appendChild(detailEl); }
+}
+var current='memory-2';
+function select(id,user){
+  current=id; show(id); place(id);
+  if(user){
+    try{ history.replaceState(null,'','#'+id); }catch(_){}
+    if(narrow.matches){ detailEl.scrollIntoView({block:'nearest',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); }
+  }
+}
+(narrow.addEventListener?narrow.addEventListener('change',function(){place(current);}):narrow.addListener(function(){place(current);}));
+layersEl.addEventListener('click',function(e){var b=e.target.closest('.dir'); if(b) select(b.getAttribute('data-id'),true);});
 var filters=document.querySelectorAll('.filters button');
 Array.prototype.forEach.call(filters,function(btn){ btn.addEventListener('click',function(){
   var f=btn.getAttribute('data-f');
@@ -243,7 +263,7 @@ Array.prototype.forEach.call(filters,function(btn){ btn.addEventListener('click'
   });
   Array.prototype.forEach.call(document.querySelectorAll('.part'),function(p){ var isA=p.textContent.indexOf('Part A')===0; p.style.display = (f==='all'||(f==='A'&&isA)||(f==='B'&&!isA))?'':'none'; });
 });});
-show('memory-2');
+(function(){ var h=decodeURIComponent(location.hash.slice(1)); select(document.querySelector('.dir[data-id="'+h.replace(/"/g,'')+'"]')?h:'memory-2',false); })();
 </script>
 </body>
 </html>

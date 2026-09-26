@@ -105,6 +105,7 @@ Every "live", "partial" or "absent" claim in `2026-09-21-convergence-v4.md` was 
 | `deep-reasoning` class | unchanged route, new evidence | `main` 2b94523..515e6c0 records the R5 lane run of 2026-08-28 as void-equivalent (saturated card); `autoApply: false`, `rounds: 0` |
 | `STATUS.md` says 13 `sis.*` tools; the file has 24 | yes, still stale | `STATUS.md:39` on `main`; 24 names in `src/mcp-server-v01.ts` on 910c7ed (drift item 51) |
 | PRs 189 (SIS), 54 (web) and 192 (SIS) are drafts, unmerged | yes | GitHub, 26 September |
+| The map and both prototypes pass an accessibility audit | yes, after fixes | axe-core 4 at 1440, 768, 375 and 375 with reduced motion: 0 violations on all three pages (`evidence/convergence-v4/checks.json`). Fixed on 26 September: muted text raised from `#64748b` (4.25:1) to `#7c8aa0` (5.8:1), a `main` landmark and skip link, ledger rows as buttons inside list items, a keyboard-scrollable event log, and on narrow screens the map's detail panel now opens under the tapped row with the selection in the URL hash |
 
 ## F.6 Asserted without a file (say so)
 

@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060609">
 <title>Countersigned ledger prototype</title>
 <meta name="description" content="Prototype for convergence v4, trust direction: a public append-only ledger of run receipts where every verification by a stranger's phone is itself a signed statement in the log, with an inclusion proof computed in the page. Example values throughout.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--void:#060609;--ink:#e2e8f0;--ink-2:#94a3b8;--ink-3:#64748b;--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;--paper:#f4f1ea;--paperink:#161513;
+:root{--void:#060609;--ink:#e2e8f0;--ink-2:#94a3b8;--ink-3:#7c8aa0;--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;--paper:#f4f1ea;--paperink:#161513;
 --surface:rgba(255,255,255,.025);--surface-2:rgba(255,255,255,.045);--border:rgba(255,255,255,.07);--border-2:rgba(255,255,255,.14);
 --serif:"Newsreader",Georgia,serif;--sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--ease:cubic-bezier(.4,0,.2,1);color-scheme:dark}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;overflow-x:clip}
@@ -38,9 +39,9 @@ h1 em{font-style:italic;color:var(--emerald)}
 .panel h2{margin:0 0 12px;font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center;gap:8px}
 .panel h2 span{font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-3)}
 /* feed */
-.feed{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0a0b10}
+.feed{list-style:none;margin:0;padding:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0a0b10}
 .row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;text-align:left;width:100%;background:transparent;border-left:0;border-right:0;border-top:0;color:var(--ink);font:inherit}
-.row:last-child{border-bottom:0}
+.feed li:last-child .row{border-bottom:0}
 .row:hover{background:rgba(255,255,255,.03)}
 .row:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
 .row[aria-pressed="true"]{background:rgba(167,139,250,.1)}
@@ -105,9 +106,12 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
 @media (max-width:1100px){.stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.stage .ph{grid-column:1/-1}.metric{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:760px){.hero{grid-template-columns:1fr;gap:16px}.stage{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.metric{grid-template-columns:1fr 1fr}.row{grid-template-columns:24px 1fr}.row .c{grid-column:2;text-align:left}.row .c b{display:inline;margin-right:8px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 12px;border-radius:8px;background:#e2e8f0;color:#060609;font:500 13px/1 system-ui,sans-serif;text-decoration:none}.skip:focus-visible{top:12px;outline:2px solid #67e8f9;outline-offset:2px}
+h1,h2,h3{text-wrap:balance}p{text-wrap:pretty}main{display:block}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <div class="page">
   <header class="top">
     <div class="brand"><div class="mark" aria-hidden="true"></div><b>Starlight Intelligence</b><span>Countersigned ledger prototype</span></div>
@@ -116,6 +120,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
       <span class="chip"><i></i>Convergence v4 · trust direction C · off-chain transparency log</span>
     </div>
   </header>
+<main id="main" tabindex="-1">
 
   <section class="hero">
     <div>
@@ -133,7 +138,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
   <section class="stage">
     <div class="panel" aria-label="Public ledger">
       <h2>Public ledger <span id="feedmeta" class="mono">0 entries</span></h2>
-      <div class="feed" id="feed" role="list"></div>
+      <ul class="feed" id="feed" aria-label="Ledger entries"></ul>
       <p class="pnote" style="margin-top:10px">Only receipts the issuer published are here. A FAIL receipt is publishable; a signed record of a failed run is still proof. Payloads stay on the issuer's side; the log holds envelopes and hashes.</p>
     </div>
 
@@ -186,6 +191,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
 
   <p class="truth"><b>What is real and what is prototype.</b> Real today: <code>/verify</code>, <code>POST /api/v1/receipts/verify</code> and the <code>verify_run_receipt</code> MCP tool on the unmerged web branch; Ed25519 over DSSE in <code>src/run-receipt.ts</code>; a Sigstore keyless attestation of the SIP profile on every push to main that touches <code>protocol/</code> (<code>.github/workflows/sip-self-receipt.yml</code>), which is already an entry in a public transparency log. Prototype: the public ledger feed, the Merkle root and inclusion proof, the countersignature statement, the phone-made key, and the recount of external keys. The registry is empty on the day this was written. Every number on this page is an example.</p>
 
+</main>
   <footer>
     <span>Built on SIP · Starlight Intelligence Systems · countersigned ledger prototype · 2026-09-21</span>
     <span>convergence v4 · trust direction C</span>
@@ -233,7 +239,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
 
   function renderFeed(){
     feed.innerHTML = entries.map(function(e,i){
-      return '<button class="row" role="listitem" data-i="'+i+'" aria-pressed="'+(i===sel)+'"><span class="i">'+(i+1)+'</span><span class="t"><b>'+e.run+' · '+e.subject+'</b><small>'+e.id+' · '+e.host+' · '+e.issued+'</small></span><span class="c '+(e.verdict==='PASS'?'pass':'fail')+'"><b>'+e.verdict+'</b><span>€'+e.cost.toFixed(4)+' · '+e.sigs.length+' sig'+(e.sigs.length===1?'':'s')+'</span></span></button>';
+      return '<li><button type="button" class="row" data-i="'+i+'" aria-pressed="'+(i===sel)+'"><span class="i">'+(i+1)+'</span><span class="t"><b>'+e.run+' · '+e.subject+'</b><small>'+e.id+' · '+e.host+' · '+e.issued+'</small></span><span class="c '+(e.verdict==='PASS'?'pass':'fail')+'"><b>'+e.verdict+'</b><span>€'+e.cost.toFixed(4)+' · '+e.sigs.length+' sig'+(e.sigs.length===1?'':'s')+'</span></span></button></li>';
     }).join('');
     document.getElementById('feedmeta').textContent = entries.length+' entries · root '+root().slice(0,8)+'…';
     metrics();
@@ -260,7 +266,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);displ
     document.getElementById('m-size').textContent = entries.length;
   }
 
-  feed.addEventListener('click', function(ev){ var b=ev.target.closest('.row'); if(!b) return; sel=+b.getAttribute('data-i'); renderFeed(); renderDetail(); });
+  feed.addEventListener('click', function(ev){ var b=ev.target.closest('.row'); if(!b) return; sel=+b.getAttribute('data-i'); renderFeed(); renderDetail(); var nb=feed.querySelector('.row[data-i="'+sel+'"]'); if(nb) nb.focus(); });
 
   // phone
   var checks=[1,2,3,4].map(function(n){ return document.getElementById('c'+n); });
