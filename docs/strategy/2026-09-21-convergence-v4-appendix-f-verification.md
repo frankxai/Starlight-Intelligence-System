@@ -11,7 +11,7 @@ Every "live", "partial" or "absent" claim in `2026-09-21-convergence-v4.md` was 
 | `STATUS.md` says the v0.1 server has 13 tools | yes, stale | `STATUS.md:39` |
 | Run receipt issuer and schema exist | yes | `src/run-receipt.ts` (21,322 bytes), `protocol/run-receipt.v1.schema.json` (6,884 bytes); `run.kind`, `run.host`, `decisions[].decidedBy` enum `human | agent | policy` |
 | The receipt for v3 was an unsigned draft | yes | PR 189 body: "Unsigned draft (no signing key on the authoring machine): rcpt_1790029005980_c3acc4d3" |
-| Queen routing table has no class with `autoApply` true; `rounds: 1` | yes | `tools/proving-ground/routing-table.json` classes `codegen`, `grounding-extraction`, `constrained-output` all `autoApply: false`, `rounds: 1`, note "A2 floor not met" |
+| Queen routing table has no class with `autoApply` true; `rounds: 1` | **no (corrected 26 September)** | The 21 September check read `codegen` and `grounding-extraction` (`autoApply: false`, `rounds: 1`) and generalised. At 04bb1b0 six of fourteen classes are `autoApply: true`: `constrained-output` and `interactive-agentic` at `rounds: 3`; `visual-synthesis` at 2; `parallel-harness-measure` at 3; `memory-consolidation-queen` and `palace-visual-recall` at 1 with `confidence: high`, which A2 forbids. Unchanged on `main` at 515e6c0. See F.7 |
 | Route ledger exists | yes | `tools/queen/ledger.jsonl`, `tools/queen/state.json`, `tools/queen/driver.mjs` |
 | Task envelope carries budget, autonomy, evidence policy | yes | `foundry/examples/research-brief.task-envelope.json`: `constraints.budget.maxCostUsd: 5`, `autonomy.approvalRequiredBefore`, `evidencePolicy.requiredLanes` |
 | Work graph has ten event kinds | yes | `src/work-graph.ts:97-108`: `intent.captured` … `work.completed` |
@@ -34,7 +34,7 @@ Every "live", "partial" or "absent" claim in `2026-09-21-convergence-v4.md` was 
 | `metrics/current.json` counts | yes | registered agents 144 (2026-07-27), skill rules 88 (2026-07-28), horizon letters 15; last updated 2026-08-17 |
 | The v1 map says "AI SDK 6" in three nodes | yes | `grep -o "AI SDK [0-9]" docs/strategy/convergence-map.html`: 3 × "AI SDK 6"; the v3 map has one "AI SDK 7" and one historical "AI SDK 6" |
 | Explorer tokens on the site | yes | `site/src/app/globals.css:4` `--background: #060609`; Newsreader and Inter named at line 1158 |
-| `site/` routes include `verify` and `palace`; no `desk` route yet | yes | `ls site/src/app`: `verify`, `palace`, `queen`, `cockpit` present; no `desk` |
+| `site/` routes include `verify` and `palace`; no `desk` route yet | yes at 04bb1b0; superseded (F.7) | `ls site/src/app`: `verify`, `palace`, `queen`, `cockpit` present; no `desk` |
 | Estate commands exist | yes | `.claude/commands/`: `estate-blueprint.md`, `estate-provision.md`, `estate-steward.md`, `estate-army-deploy.md` |
 | The 2026-06-16 Board's six REVISE items are not recorded as closed | not found | no closure record in `docs/boards/2026-06-16-estate-factory-web4-positioning-verdict.md` or a later board file; the estate factory execution summary of the same date predates the verdict's deadlines |
 
@@ -91,6 +91,20 @@ Every "live", "partial" or "absent" claim in `2026-09-21-convergence-v4.md` was 
 | Chromium (Playwright 1.56.1, Chromium 1194) at 1440×1000 and 375×812, and 375 with `prefers-reduced-motion: reduce`, on all three pages, with one interaction each (map: open the trust row's chosen card; memory log: append, issue, tombstone, rebuild; ledger: verify then countersign) | zero page errors on every run; `scrollWidth` equals `clientWidth` at 375 on every page (no horizontal scroll); focusable controls 71 / 6 / 9; the only console entries are the sandbox proxy refusing Google Fonts and the GSAP CDN (`ERR_CERT_AUTHORITY_INVALID`, `ERR_TUNNEL_CONNECTION_FAILED`), so the renders below use fallback fonts and the memory prototype's reduced path; raw results in `evidence/convergence-v4/checks.json` |
 | Screenshots | `evidence/convergence-v4/<page>-1440.jpg` and `<page>-375.jpg` for the three pages, full page, JPEG quality 78 |
 | `strategy.plan` run receipt for the plan | unsigned draft issued with `src/run-receipt.ts` (`node --experimental-strip-types`); no signing key on the authoring machine; receipt id and subject sha256 in the PR body and in `evidence/convergence-v4/receipt-draft.json`; `receiptProblems()` returned none |
+
+## F.7 Re-verification, 26 September (SIS `main` 515e6c0, PR 189 head 910c7ed)
+
+| Claim | Holds | Evidence |
+|---|---|---|
+| Zero signed run receipts in a ledger | yes | `git ls-tree -r origin/main memory/_audit/` and the same on 910c7ed: no `receipts.jsonl` |
+| The key registry exists with no key | narrower | `lib/trusted-keys.ts` is absent from the web repo's `main` (4ad9a34); it exists only on draft PR 54; issue 55 is open |
+| The Desk is code | yes, new | `site/src/app/desk/{page,DeskConsole,RoomQr}.tsx`, `site/src/app/api/desk/run/route.ts`, `site/src/lib/desk/cascade.ts`; tests `cascade`, `edge-meter`, `pricing`, `vault` |
+| The Desk writes an append-only vault keyed by receipt | yes, new | `site/src/lib/desk/vault.ts`: `VaultAtom { kind: "belief", claim, quote, url, confidence, receiptId, at }`, `appendFile` only |
+| One command signs, verifies and prints a receipt | yes, new | `scripts/receipts/issue-and-share.mts`; compact `z:` link in `src/receipt-share.ts`, vector pinned in `test/receipt-share.test.ts` |
+| Routing table auto-applies classes | yes (this corrects F.1) | `tools/proving-ground/routing-table.json` on `main`: six `autoApply: true`, two at `rounds: 1`; `ROUTING-DOCTRINE.md` A2: no high confidence with auto-apply before two concordant rounds |
+| `deep-reasoning` class | unchanged route, new evidence | `main` 2b94523..515e6c0 records the R5 lane run of 2026-08-28 as void-equivalent (saturated card); `autoApply: false`, `rounds: 0` |
+| `STATUS.md` says 13 `sis.*` tools; the file has 24 | yes, still stale | `STATUS.md:39` on `main`; 24 names in `src/mcp-server-v01.ts` on 910c7ed (drift item 51) |
+| PRs 189 (SIS), 54 (web) and 192 (SIS) are drafts, unmerged | yes | GitHub, 26 September |
 
 ## F.6 Asserted without a file (say so)
 
