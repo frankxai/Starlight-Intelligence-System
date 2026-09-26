@@ -34,7 +34,7 @@
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "tsx": "4.21.0",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "wrangler": "4.115.0"
   },
   "overrides": {
