@@ -71,15 +71,24 @@ test("aborts each hung attempt at its own deadline", async () => {
     });
   };
 
-  await assert.rejects(
-    fetchGitHubTextFile("owner/repo", "vault.jsonl", {
-      fetchImpl,
-      requestTimeoutMs: 10,
-      retryDelayMs: 0,
-      logger,
-    }),
-    (error) => error instanceof Error && error.name === "TimeoutError",
-  );
+  // AbortSignal.timeout() is unref'd, and the hung fetch above holds nothing
+  // else open, so without a ref'd handle the event loop drains before the
+  // deadline fires and the runner cancels every test still pending. The
+  // interval keeps the loop alive for exactly as long as the awaited work runs.
+  const keepAlive = setInterval(() => {}, 1_000);
+  try {
+    await assert.rejects(
+      fetchGitHubTextFile("owner/repo", "vault.jsonl", {
+        fetchImpl,
+        requestTimeoutMs: 10,
+        retryDelayMs: 0,
+        logger,
+      }),
+      (error) => error instanceof Error && error.name === "TimeoutError",
+    );
+  } finally {
+    clearInterval(keepAlive);
+  }
 
   assert.equal(calls, 2);
   assert.equal(signals.length, 2);
