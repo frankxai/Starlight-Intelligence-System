@@ -23,5 +23,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/frankxai/cockpit-continuity"
+  },
+  "overrides": {
+    "fast-uri": "^3.1.6",
+    "hono": "^4.12.25",
+    "ip-address": "^10.3.1"
   }
 }
