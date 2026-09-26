@@ -14,6 +14,7 @@
  *   graph-edges.jsonl               — GraphEdge stream (evidence-validated)
  *   agent-events/<YYYY-MM-DD>.jsonl — Daily-rotated AgentEvent stream
  *   vault-loop.jsonl                — Vault-loop entry stream (T4 consumer)
+ *   receipts.jsonl                  — Run receipt stream (signed envelopes + drafts)
  *   agent-ops.sqlite                — Shadow index (WAL + foreign keys)
  *
  * Invariants:
@@ -122,6 +123,10 @@ export function vaultLoopLedgerPath(repoRoot: string): string {
   return join(repoRoot, 'memory', '_audit', 'vault-loop.jsonl');
 }
 
+export function receiptLedgerPath(repoRoot: string): string {
+  return join(repoRoot, 'memory', '_audit', 'receipts.jsonl');
+}
+
 export function appendAgentEvent(repoRoot: string, event: AgentEvent): WriteResult {
   return safeAppend(eventLedgerPath(repoRoot), JSON.stringify(event));
 }
@@ -144,6 +149,11 @@ export function appendArtifact(repoRoot: string, artifact: Artifact): WriteResul
 
 export function appendCouncilReview(repoRoot: string, review: CouncilReview): WriteResult {
   return safeAppend(councilLedgerPath(repoRoot), JSON.stringify(review));
+}
+
+/** Append a run receipt record (a signed envelope or an unsigned draft). */
+export function appendReceiptEnvelope(repoRoot: string, record: Record<string, unknown>): WriteResult {
+  return safeAppend(receiptLedgerPath(repoRoot), JSON.stringify(record));
 }
 
 /**
@@ -224,6 +234,12 @@ export function readRecentAgentEvents(
 export function readApprovalGate(repoRoot: string, gateId: string): ApprovalGate | null {
   const all = readJsonl<ApprovalGate>(approvalLedgerPath(repoRoot));
   return all.find((g) => g.id === gateId) ?? null;
+}
+
+/** Last `limit` receipt records in ledger order (newest last). Missing ledger → []. */
+export function readRecentReceipts(repoRoot: string, limit = 20): Record<string, unknown>[] {
+  const all = readJsonl<Record<string, unknown>>(receiptLedgerPath(repoRoot));
+  return all.slice(-Math.max(1, limit));
 }
 
 // ── Class-style ledger with SQLite shadow index ─────────────
