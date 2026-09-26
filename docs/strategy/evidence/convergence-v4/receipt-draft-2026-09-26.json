@@ -1,0 +1,84 @@
+{
+ "status": "draft",
+ "note": "unsigned: no signing key on the authoring machine; a draft is a record, not proof. Supersedes nothing: receipt-draft.json records the 21 September run and keeps its digest.",
+ "receipt": {
+  "schema": "starlight.run-receipt.v1",
+  "receiptId": "rcpt_1790412381933_323b4386",
+  "issuedAt": "2026-09-26T08:46:21.000Z",
+  "issuer": {
+   "name": "Claude Code lane (convergence v4 revision session)"
+  },
+  "run": {
+   "id": "run_2026-09-26_convergence-v4-revision",
+   "kind": "strategy.plan",
+   "host": "claude-code",
+   "startedAt": "2026-09-26T07:30:00Z",
+   "endedAt": "2026-09-26T08:46:21.000Z"
+  },
+  "subject": {
+   "name": "docs/strategy/2026-09-21-convergence-v4.md",
+   "digest": {
+    "sha256": "593927bbf753c84e20fb9f0ef43d478ae2adcf58a6a3b08e3f9b1b2c9345e0f8"
+   }
+  },
+  "stages": [
+   {
+    "name": "re-verify-claims",
+    "status": "ok",
+    "provider": "local",
+    "note": "SIS main 515e6c0 and PR 189 head 910c7ed; routing claim corrected; appendix F.7"
+   },
+   {
+    "name": "merge-base",
+    "status": "ok",
+    "provider": "local",
+    "note": "PR 189 head merged into this branch with a merge commit; no conflicts"
+   },
+   {
+    "name": "editorial-audit",
+    "status": "ok",
+    "provider": "local",
+    "note": "pinned kernel 50ae34c7 policy on changed lines: 0 hard fails, 0 signals"
+   },
+   {
+    "name": "accessibility-and-render",
+    "status": "ok",
+    "provider": "local",
+    "note": "axe-core 4 at 1440, 768, 375 and 375 reduced motion on three pages: 0 violations, 0 page errors, no horizontal overflow"
+   }
+  ],
+  "totals": {
+   "costEur": 0,
+   "latencyMs": 0,
+   "tokens": {
+    "input": 0,
+    "output": 0
+   }
+  },
+  "decisions": [
+   {
+    "gate": "publish",
+    "decidedBy": "human",
+    "actorId": "frank",
+    "outcome": "deferred",
+    "at": "2026-09-26T08:46:21.000Z",
+    "note": "merge to main is Frank's call"
+   }
+  ],
+  "evidence": [
+   {
+    "kind": "file",
+    "ref": "docs/strategy/2026-09-21-convergence-v4.md"
+   },
+   {
+    "kind": "file",
+    "ref": "docs/strategy/2026-09-21-convergence-v4-appendix-f-verification.md"
+   },
+   {
+    "kind": "file",
+    "ref": "docs/strategy/evidence/convergence-v4/checks.json"
+   }
+  ],
+  "verdict": "PASS"
+ }
+}
