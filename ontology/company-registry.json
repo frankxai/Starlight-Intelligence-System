@@ -1,0 +1,115 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/ontology/starlight-estate.ontology.v1.json",
+  "schema": "starlight.company-registry.v1",
+  "status": "proposed — requires /starlight-board before tag",
+  "_privacy": "PUBLIC-SAFE BY CONSTRUCTION. No cash, no jurisdiction, no tax posture, no counterparty, no credential. Money and jurisdiction live in private/business-registry.json per business-registry.template.json and the feedback_privacy_split memory rule. INV-7 enforces this.",
+  "_authority": "Voice is authored in VOICES.md. Editorial pins are authored in each brand's COPY.md. This file binds company -> brand -> repo -> accountable seat. It does not restate voice.",
+
+  "entities": [
+    { "id": "entity:starlight-holding", "name": "Starlight Holding BV", "role": "holding — substrate and platform IP", "source": "REGISTRY.md" },
+    { "id": "entity:arcanea", "name": "Arcanea BV", "role": "operating — creative IP and canon licensing", "source": "REGISTRY.md" }
+  ],
+
+  "companies": [
+    {
+      "id": "company:starlight",
+      "name": "Starlight Intelligence Systems",
+      "stage": "operating",
+      "thesis": "The substrate. SIP + the reference build every other company composes.",
+      "routes_through": "entity:starlight-holding",
+      "accountable_exec_seat": "agent:starlight-caio",
+      "owns_brands": ["brand:sis"],
+      "operates_repos": ["repo:Starlight-Intelligence-System", "repo:starlight-agent-skills", "repo:starlight-evals", "repo:starlight-swarm", "repo:starlight-cosmos-engine", "repo:starlight-mind-os-pro", "repo:claude-skills-library", "repo:agentic-ops-hub", "repo:second-brain-os"],
+      "owns_surfaces": ["surface:starlightintelligence.org"]
+    },
+    {
+      "id": "company:frankx",
+      "name": "FrankX.ai",
+      "stage": "operating",
+      "thesis": "Founder surface. Advisory, content, and the proof that the systems work.",
+      "routes_through": "entity:starlight-holding",
+      "accountable_exec_seat": "agent:starlight-cmo",
+      "owns_brands": ["brand:frankx"],
+      "operates_repos": ["repo:frankx.ai-vercel-website", "repo:FrankX", "repo:frankx-mind-palace", "repo:frankx-palace", "repo:realityarchitect", "repo:bless", "repo:awesome-manifestation-skills"],
+      "owns_surfaces": ["surface:frankx.ai"]
+    },
+    {
+      "id": "company:arcanea",
+      "name": "Arcanea",
+      "stage": "operating",
+      "thesis": "Creative IP. Canon, characters, worlds — licensed, not given away.",
+      "routes_through": "entity:arcanea",
+      "accountable_exec_seat": "agent:starlight-ceo",
+      "owns_brands": ["brand:arcanea", "brand:luminor"],
+      "operates_repos": ["repo:arcanea", "repo:arcanea-ai-app"],
+      "owns_surfaces": ["surface:arcanea.ai"]
+    },
+    {
+      "id": "company:gencreator",
+      "name": "GenCreator",
+      "stage": "alpha",
+      "thesis": "Turn one trusted source into a week of content that still sounds like you.",
+      "routes_through": "entity:starlight-holding",
+      "accountable_exec_seat": "agent:starlight-ceo",
+      "owns_brands": ["brand:gencreator"],
+      "operates_repos": ["repo:gencreator.ai", "repo:gencreator-community", "repo:GenCreator-Studio", "repo:agentic-creator-os", "repo:agentic-creator-skills", "repo:vibe-os"],
+      "owns_surfaces": ["surface:gencreator.ai"]
+    },
+    {
+      "id": "company:agentic-income",
+      "name": "Agentic Income",
+      "stage": "incubating",
+      "thesis": "Income systems that run without the founder in the loop. Payments fail closed.",
+      "routes_through": "entity:starlight-holding",
+      "accountable_exec_seat": "agent:starlight-cfo",
+      "owns_brands": ["brand:agentic-income"],
+      "operates_repos": ["repo:agenticincome", "repo:agenticpassiveincome", "repo:agentic-income-skills", "repo:agentic-income-template", "repo:awesome-agentic-income", "repo:agentic-business-os", "repo:agentic-intelligence-system", "repo:payment-intelligence-system", "repo:awesome-payment-agent-skills"],
+      "owns_surfaces": []
+    },
+    {
+      "id": "company:mind",
+      "name": "Mind Intelligence Systems",
+      "stage": "incubating",
+      "thesis": "Model cognition, never diagnose. Schemas and a lived OS on top of them.",
+      "routes_through": "entity:starlight-holding",
+      "accountable_exec_seat": "agent:starlight-cto",
+      "owns_brands": ["brand:mind-is"],
+      "operates_repos": ["repo:mind-intelligence-systems", "repo:human-mind-intelligence-system", "repo:agentic-mind-os", "repo:awesome-mind-agent-skills", "repo:mind-palace-agent-skills"],
+      "owns_surfaces": []
+    },
+    {
+      "id": "company:sound",
+      "name": "Sound & Music Intelligence",
+      "stage": "incubating",
+      "thesis": "A 12k-track catalog as a system, not a shoebox.",
+      "routes_through": "entity:starlight-holding",
+      "accountable_exec_seat": "agent:starlight-cmo",
+      "owns_brands": ["brand:music-is"],
+      "operates_repos": ["repo:ai-music-academy", "repo:music-intelligence-systems", "repo:awesome-music-agent-skills"],
+      "owns_surfaces": []
+    },
+    {
+      "id": "company:blue",
+      "name": "Blue Life",
+      "stage": "exploring",
+      "thesis": "Marine and ocean intelligence as a commons, funded by the rest of the estate.",
+      "routes_through": "entity:starlight-holding",
+      "accountable_exec_seat": "agent:starlight-coo",
+      "owns_brands": ["brand:blue-life"],
+      "operates_repos": ["repo:blue-life-commons", "repo:ocean-intelligence-system", "repo:marine-mcp", "repo:marine-agent-skills"],
+      "owns_surfaces": []
+    }
+  ],
+
+  "brands": [
+    { "id": "brand:frankx",         "name": "FrankX",                        "register": "founder / AI Architect — results-first, understated", "company": "company:frankx",         "copy_pin": "starlight-design-intelligence/brand-packs/frankx/COPY.md" },
+    { "id": "brand:sis",            "name": "Starlight Intelligence Systems","register": "substrate — canon-free, functional vector names",     "company": "company:starlight",      "copy_pin": "starlight-design-intelligence/brand-packs/sis/COPY.md" },
+    { "id": "brand:gencreator",     "name": "GenCreator",                    "register": "generative culture — decision-first, no prestige",    "company": "company:gencreator",     "copy_pin": "starlight-design-intelligence/brand-packs/gencreator/COPY.md" },
+    { "id": "brand:arcanea",        "name": "Arcanea",                       "register": "arcane + authoritative — elevated, never mystical-vague", "company": "company:arcanea",    "copy_pin": ".arcanea/lore/CANON_LOCKED.md" },
+    { "id": "brand:luminor",        "name": "Luminor",                       "register": "Arcanea-mythic — Guardian names, CC-BY-NC",           "company": "company:arcanea",        "copy_pin": ".arcanea/lore/CANON_LOCKED.md" },
+    { "id": "brand:agentic-income", "name": "Agentic Income",                "register": "operator — fail-closed, no hype on money",            "company": "company:agentic-income", "copy_pin": null },
+    { "id": "brand:mind-is",        "name": "Mind Intelligence",             "register": "clinical-adjacent — observe, never diagnose",         "company": "company:mind",           "copy_pin": null },
+    { "id": "brand:music-is",       "name": "Music Intelligence",            "register": "producer — craft over volume",                        "company": "company:sound",          "copy_pin": null },
+    { "id": "brand:blue-life",      "name": "Blue Life",                     "register": "commons — evidence-first, no eco-grandiosity",        "company": "company:blue",           "copy_pin": null }
+  ]
+}
