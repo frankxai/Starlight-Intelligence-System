@@ -7,9 +7,15 @@ import assert from "node:assert/strict";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
+  DEADLINE_REACHED,
+  DEFAULT_RUN_DEADLINE_MS,
+  MAX_RUN_DEADLINE_MS,
+  MIN_RUN_DEADLINE_MS,
+  runDeadlineMs,
   ATTEMPTS_PER_STAGE,
   MIN_QUOTE_CHARS,
   checkClaims,
@@ -33,6 +39,7 @@ import {
 import { receiptProblems } from "./run-receipt.ts";
 import { PRICING } from "./pricing.ts";
 import { COST_INCOMPLETE_UNSIGNED, signingPlan } from "./signing.ts";
+import { METER_TIMEOUT_MS } from "./run-limit.ts";
 import { NO_DURABLE_VAULT, readAtoms, redisVault, selectVault, vaultForRun } from "./vault.ts";
 import { ANONYMOUS_MEMORY } from "./access.ts";
 
@@ -668,4 +675,88 @@ test("a cost-incomplete receipt is never signed, even with a key; a complete one
   assert.equal(COST_INCOMPLETE_UNSIGNED, "cost-incomplete: signing would assert a total the Desk cannot vouch for");
   assert.deepEqual(signingPlan(true, key), { sign: true, key });
   assert.deepEqual(signingPlan(true, null), { sign: false, reason: "no Desk signing key configured" });
+});
+
+// ── one deadline for the whole run ──────────────────────────────────────────
+
+/**
+ * A provider that answers the scripted stages at once and hangs on the rest
+ * until the request's signal aborts, the way a stalled model call does.
+ */
+function slowAfter(answers) {
+  const calls = [];
+  const impl = (url, init) => {
+    calls.push({ url: String(url), signal: init?.signal, body: init?.body ? JSON.parse(init.body) : null });
+    const next = answers.shift();
+    if (next) return Promise.resolve(next);
+    return new Promise((_, reject) => {
+      const abort = () => reject(Object.assign(new Error("aborted"), { name: "AbortError" }));
+      if (init?.signal?.aborted) abort();
+      init?.signal?.addEventListener("abort", abort, { once: true });
+    });
+  };
+  impl.calls = calls;
+  return impl;
+}
+
+test("a stage cut off by the deadline fails, the stages after it are skipped, and the receipt still ships", async () => {
+  const fetchImpl = slowAfter([jsonResponse({ results: SOURCES }), completion(CLAIMS_JSON)]);
+  const started = Date.now();
+  const run = await runDesk({ ...config(fetchImpl), deadlineMs: 150 });
+
+  assert.ok(Date.now() - started < 2_000, "the run ends at its deadline, well before the provider's own 45 s timeout");
+  assert.deepEqual(
+    run.receipt.stages.map((stage) => `${stage.name}:${stage.status}:${stage.note.replace(" · unpriced", "")}`),
+    [
+      "recall:skipped:no vault",
+      "retrieve:ok:2 sources",
+      "extract:ok:2 claims · 1 dropped: no retrieved URL or missing fields",
+      `synthesize:failed:${DEADLINE_REACHED}`,
+      `contradict:skipped:${DEADLINE_REACHED}`,
+      `judge:skipped:${DEADLINE_REACHED}`,
+      `remember:skipped:${DEADLINE_REACHED}`,
+    ],
+  );
+  assert.equal(run.receipt.verdict, "PARTIAL");
+  assert.deepEqual(receiptProblems(run.receipt), []);
+  assert.equal(fetchImpl.calls.length, 3, "the cut-off call is not retried");
+  assert.ok(fetchImpl.calls.every((call) => call.signal instanceof AbortSignal), "every provider and retrieval call carries the signal");
+  assert.equal(fetchImpl.calls[2].signal.aborted, true, "the run's deadline aborted the call in flight");
+});
+
+test("retrieval cut off by the deadline fails, and nothing after it starts", async () => {
+  const fetchImpl = slowAfter([]);
+  const run = await runDesk({ ...config(fetchImpl), deadlineMs: 50 });
+  assert.deepEqual(
+    run.receipt.stages.map((stage) => `${stage.name}:${stage.status}`),
+    ["recall:skipped", "retrieve:failed", "extract:skipped", "synthesize:skipped", "contradict:skipped", "judge:skipped", "remember:skipped"],
+  );
+  assert.ok(run.receipt.stages.slice(1).every((stage) => stage.note.startsWith(DEADLINE_REACHED)));
+  assert.equal(fetchImpl.calls.length, 1);
+});
+
+test("a deadline already spent before the run skips every stage and calls nobody", async () => {
+  const fetchImpl = slowAfter([]);
+  const read = [];
+  const vault = { kind: "file", ref: "memory", read: async () => (read.push(1), []), append: async () => 0 };
+  const run = await runDesk({ ...config(fetchImpl), vault, deadlineMs: 0 });
+  assert.ok(run.receipt.stages.every((stage) => stage.status === "skipped" && stage.note === DEADLINE_REACHED));
+  assert.equal(fetchImpl.calls.length, 0);
+  assert.equal(read.length, 0);
+  assert.deepEqual(receiptProblems(run.receipt), []);
+});
+
+test("the deadline reads the environment, clamped to a range that fits maxDuration", () => {
+  assert.equal(runDeadlineMs({}), DEFAULT_RUN_DEADLINE_MS);
+  assert.equal(runDeadlineMs({ DESK_RUN_DEADLINE_MS: "30000" }), 30_000);
+  assert.equal(runDeadlineMs({ DESK_RUN_DEADLINE_MS: "10" }), MIN_RUN_DEADLINE_MS);
+  assert.equal(runDeadlineMs({ DESK_RUN_DEADLINE_MS: "600000" }), MAX_RUN_DEADLINE_MS);
+  assert.equal(runDeadlineMs({ DESK_RUN_DEADLINE_MS: "soon" }), DEFAULT_RUN_DEADLINE_MS);
+});
+
+test("the route's maxDuration outlasts the longest deadline plus the token record", async () => {
+  const route = await readFile(new URL("../../app/api/desk/run/route.ts", import.meta.url), "utf8");
+  const match = route.match(/^export const maxDuration = (\d+);$/m);
+  assert.ok(match, "route.ts exports maxDuration as a literal");
+  assert.ok(MAX_RUN_DEADLINE_MS + METER_TIMEOUT_MS < Number(match[1]) * 1000);
 });

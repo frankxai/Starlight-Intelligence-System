@@ -54,6 +54,13 @@ export interface LimitOptions {
   namespace?: string;
 }
 
+/**
+ * Time allowed for each token-meter call. Shorter than the Redis default so
+ * recording after a run, which happens after the run's deadline, still ends
+ * inside the route's maxDuration.
+ */
+export const METER_TIMEOUT_MS = 3_000;
+
 /** Tokens per UTC day across every run. Conservative on purpose, like the run ceiling. */
 export const DEFAULT_DAILY_TOKEN_BUDGET = 2_000_000;
 

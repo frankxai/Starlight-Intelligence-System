@@ -64,9 +64,9 @@ export class RedisRestError extends Error {
   }
 }
 
-/** One command. Returns its `result`; a Redis-side error throws. */
-export async function redisCommand(config: RedisRestConfig, command: RedisValue[]): Promise<unknown> {
-  const payload = await post(config, config.url, command);
+/** One command. Returns its `result`; a Redis-side error throws. `signal` abandons the call early. */
+export async function redisCommand(config: RedisRestConfig, command: RedisValue[], signal?: AbortSignal): Promise<unknown> {
+  const payload = await post(config, config.url, command, signal);
   return unwrap(payload, String(command[0]));
 }
 
@@ -82,11 +82,14 @@ export async function redisPipeline(config: RedisRestConfig, commands: RedisValu
   return payload.map((entry, index) => unwrap(entry, String(commands[index][0])));
 }
 
-async function post(config: RedisRestConfig, url: string, body: unknown): Promise<unknown> {
+async function post(config: RedisRestConfig, url: string, body: unknown, signal?: AbortSignal): Promise<unknown> {
   const fetchImpl = config.fetchImpl ?? fetch;
+  if (signal?.aborted) throw new RedisRestError("redis not called: the run's deadline passed");
   const controller = new AbortController();
   const timeoutMs = config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const onAbort = () => controller.abort();
+  signal?.addEventListener("abort", onAbort, { once: true });
   try {
     const response = await fetchImpl(url, {
       method: "POST",
@@ -103,12 +106,14 @@ async function post(config: RedisRestConfig, url: string, body: unknown): Promis
     return payload;
   } catch (error) {
     if (error instanceof RedisRestError) throw error;
+    if (signal?.aborted) throw new RedisRestError("redis call abandoned: the run's deadline passed");
     if (error instanceof Error && error.name === "AbortError") {
       throw new RedisRestError(`redis did not answer within ${timeoutMs} ms`);
     }
     throw new RedisRestError(`redis call failed: ${error instanceof Error ? error.message : String(error)}`);
   } finally {
     clearTimeout(timer);
+    signal?.removeEventListener("abort", onAbort);
   }
 }
 

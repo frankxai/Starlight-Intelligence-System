@@ -140,9 +140,41 @@ export interface CascadeOptions {
   clock?: () => string;
   /** The price table. Defaults to PRICING; tests pass a priced one. */
   pricing?: PricingTable;
+  /**
+   * Milliseconds this run may take, from the moment runDesk is called. Every
+   * provider, retrieval and vault call gets the same abort signal. Defaults to
+   * DEFAULT_RUN_DEADLINE_MS; the route passes what is left of its own budget.
+   */
+  deadlineMs?: number;
 }
 
-/** Run the cascade. Every stage records itself, including the ones that fail. */
+// ── the deadline ───────────────────────────────────────────────────────────
+
+/** One deadline for the whole cascade. The route's maxDuration (60 s) leaves room after it for recording and signing. */
+export const DEFAULT_RUN_DEADLINE_MS = 55_000;
+export const MIN_RUN_DEADLINE_MS = 5_000;
+export const MAX_RUN_DEADLINE_MS = 55_000;
+export const DEADLINE_REACHED = "deadline reached";
+
+/**
+ * `DESK_RUN_DEADLINE_MS`, clamped to [MIN_RUN_DEADLINE_MS, MAX_RUN_DEADLINE_MS]
+ * so no setting can outlast the function's maxDuration. Junk falls back to
+ * the default.
+ */
+export function runDeadlineMs(env: NodeJS.ProcessEnv = process.env): number {
+  const raw = env.DESK_RUN_DEADLINE_MS?.trim();
+  if (!raw || !/^\d+$/.test(raw)) return DEFAULT_RUN_DEADLINE_MS;
+  return Math.min(MAX_RUN_DEADLINE_MS, Math.max(MIN_RUN_DEADLINE_MS, Number(raw)));
+}
+
+/**
+ * Run the cascade. Every stage records itself, including the ones that fail.
+ *
+ * One AbortController carries the deadline to every provider, retrieval and
+ * vault call. A stage not yet started when it passes records skipped
+ * "deadline reached"; a stage it cuts off records failed "deadline reached";
+ * and the run still returns its receipt.
+ */
 export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   const now = options.now ?? (() => Date.now());
   const clock = options.clock ?? (() => new Date().toISOString());
@@ -164,15 +196,29 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   const noVault = options.noVaultReason ?? "no vault";
   const table = options.pricing ?? PRICING;
 
+  const deadline = new AbortController();
+  const deadlineMs = options.deadlineMs ?? DEFAULT_RUN_DEADLINE_MS;
+  const timer = deadlineMs > 0 ? setTimeout(() => deadline.abort(), deadlineMs) : null;
+  if (!timer) deadline.abort();
+  // A stray timer must not hold a process open; the run clears it anyway.
+  (timer as { unref?: () => void } | null)?.unref?.();
+  const signal = deadline.signal;
+  const provider: ProviderConfig = { ...options.provider, signal };
+  const retrieval: RetrieveConfig = { ...options.retrieval, signal };
+  /** Why a stage failed: the deadline, when it has passed, or the error itself. */
+  const failure = (error: unknown) => (signal.aborted ? DEADLINE_REACHED : message(error));
+
   // ── recall ────────────────────────────────────────────────────────────────
   // Memory first: keyword overlap over the vault's own lines. No model and no
   // index; with the file store no network either, so on a laptop this stage
   // cannot be the one that fails. A durable store that cannot be read fails
   // this stage and nothing else.
-  if (vault) {
+  if (signal.aborted) {
+    stages.push({ name: "recall", status: "skipped", provider: "vault", note: DEADLINE_REACHED });
+  } else if (vault) {
     const startedRecall = now();
     try {
-      const atoms = await vault.read();
+      const atoms = await vault.read(undefined, signal);
       related = findRelated(atoms, question, MAX_RECALLED);
       stages.push({
         name: "recall",
@@ -183,30 +229,36 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${related.length} of ${atoms.length} prior beliefs`,
       });
     } catch (error) {
-      stages.push({ name: "recall", status: "failed", provider: "vault", note: message(error) });
+      stages.push({ name: "recall", status: "failed", provider: "vault", note: failure(error) });
     }
   } else {
     stages.push({ name: "recall", status: "skipped", provider: "vault", note: noVault });
   }
 
   // ── retrieve ──────────────────────────────────────────────────────────────
-  try {
-    const found = await retrieve(question, maxSources, options.retrieval);
-    sources = found.sources;
-    stages.push({
-      name: "retrieve",
-      status: sources.length > 0 ? "ok" : "failed",
-      provider: "tavily",
-      latencyMs: found.latencyMs,
-      ...costFields(retrievalCostEur("tavily", found.calls, table)),
-      note: `${sources.length} sources`,
-    });
-  } catch (error) {
-    stages.push({ name: "retrieve", status: "failed", provider: "tavily", note: message(error) });
+  if (signal.aborted) {
+    stages.push({ name: "retrieve", status: "skipped", provider: "tavily", note: DEADLINE_REACHED });
+  } else {
+    try {
+      const found = await retrieve(question, maxSources, retrieval);
+      sources = found.sources;
+      stages.push({
+        name: "retrieve",
+        status: sources.length > 0 ? "ok" : "failed",
+        provider: "tavily",
+        latencyMs: found.latencyMs,
+        ...costFields(retrievalCostEur("tavily", found.calls, table)),
+        note: `${sources.length} sources`,
+      });
+    } catch (error) {
+      stages.push({ name: "retrieve", status: "failed", provider: "tavily", note: failure(error) });
+    }
   }
 
   // ── extract ───────────────────────────────────────────────────────────────
-  if (sources.length > 0) {
+  if (signal.aborted) {
+    stages.push({ name: "extract", status: "skipped", model: MODELS.extract, provider: "nebius", note: DEADLINE_REACHED });
+  } else if (sources.length > 0) {
     try {
       const result = await chat(
         {
@@ -219,7 +271,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
             { role: "user", content: extractPrompt(question, sources) },
           ],
         },
-        options.provider,
+        provider,
       );
       const checked = checkClaims(result.text, sources);
       claims = checked.claims;
@@ -235,14 +287,16 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: extractNote(checked),
       });
     } catch (error) {
-      stages.push({ name: "extract", status: "failed", model: MODELS.extract, provider: "nebius", note: message(error) });
+      stages.push({ name: "extract", status: "failed", model: MODELS.extract, provider: "nebius", note: failure(error) });
     }
   } else {
     stages.push({ name: "extract", status: "skipped", model: MODELS.extract, provider: "nebius", note: "no sources" });
   }
 
   // ── synthesize ────────────────────────────────────────────────────────────
-  if (claims.length > 0) {
+  if (signal.aborted) {
+    stages.push({ name: "synthesize", status: "skipped", model: MODELS.synthesize, provider: "nebius", note: DEADLINE_REACHED });
+  } else if (claims.length > 0) {
     try {
       const result = await chat(
         {
@@ -254,7 +308,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
             { role: "user", content: synthesizePrompt(question, claims) },
           ],
         },
-        options.provider,
+        provider,
       );
       brief = result.text.trim();
       stages.push({
@@ -269,7 +323,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${sectionsPresent(brief).length}/${SECTIONS.length} sections`,
       });
     } catch (error) {
-      stages.push({ name: "synthesize", status: "failed", model: MODELS.synthesize, provider: "nebius", note: message(error) });
+      stages.push({ name: "synthesize", status: "failed", model: MODELS.synthesize, provider: "nebius", note: failure(error) });
     }
   } else {
     stages.push({ name: "synthesize", status: "skipped", model: MODELS.synthesize, provider: "nebius", note: "no claims" });
@@ -278,7 +332,9 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   // ── contradict ────────────────────────────────────────────────────────────
   // What memory is for: not recalling agreement, but catching the moment this
   // run says something the vault already said otherwise.
-  if (related.length > 0 && claims.length > 0) {
+  if (signal.aborted) {
+    stages.push({ name: "contradict", status: "skipped", model: MODELS.contradict, provider: "nebius", note: DEADLINE_REACHED });
+  } else if (related.length > 0 && claims.length > 0) {
     try {
       const result = await chat(
         {
@@ -291,7 +347,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
             { role: "user", content: contradictPrompt(related, claims) },
           ],
         },
-        options.provider,
+        provider,
       );
       contradictions = parseContradictions(result.text, related);
       stages.push({
@@ -306,7 +362,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${contradictions.length} against ${related.length} prior beliefs`,
       });
     } catch (error) {
-      stages.push({ name: "contradict", status: "failed", model: MODELS.contradict, provider: "nebius", note: message(error) });
+      stages.push({ name: "contradict", status: "failed", model: MODELS.contradict, provider: "nebius", note: failure(error) });
     }
   } else {
     stages.push({
@@ -320,7 +376,9 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
 
   // ── judge ─────────────────────────────────────────────────────────────────
   const groundingRate = computeGroundingRate(brief, claims);
-  if (brief.length > 0) {
+  if (signal.aborted) {
+    stages.push({ name: "judge", status: "skipped", model: MODELS.judge, provider: "nebius", note: DEADLINE_REACHED });
+  } else if (brief.length > 0) {
     try {
       const result = await chat(
         {
@@ -333,7 +391,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
             { role: "user", content: judgePrompt(question, brief) },
           ],
         },
-        options.provider,
+        provider,
       );
       judgement = parseJudgement(result.text);
       stages.push({
@@ -348,7 +406,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: judgement ? `score ${judgement.score}/10 · cited ${(groundingRate * 100).toFixed(0)}%` : "unparsable verdict",
       });
     } catch (error) {
-      stages.push({ name: "judge", status: "failed", model: MODELS.judge, provider: "nebius", note: message(error) });
+      stages.push({ name: "judge", status: "failed", model: MODELS.judge, provider: "nebius", note: failure(error) });
     }
   } else {
     stages.push({ name: "judge", status: "skipped", model: MODELS.judge, provider: "nebius", note: "no brief" });
@@ -359,10 +417,15 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   // stage, and the run still hands over its brief and its receipt.
   const runId = `run_${now().toString(36)}`;
   const receiptId = `rcpt_${now()}_${runId.slice(4, 12)}`;
-  if (vault && claims.length > 0) {
+  if (signal.aborted) {
+    stages.push({ name: "remember", status: "skipped", provider: "vault", note: DEADLINE_REACHED });
+  } else if (vault && claims.length > 0) {
     const startedRemember = now();
     try {
-      remembered = await vault.append(claims.map((claim) => atomFrom(claim, question, receiptId, clock())));
+      remembered = await vault.append(
+        claims.map((claim) => atomFrom(claim, question, receiptId, clock())),
+        signal,
+      );
       stages.push({
         name: "remember",
         status: remembered > 0 ? "ok" : "failed",
@@ -372,7 +435,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${remembered} beliefs written`,
       });
     } catch (error) {
-      stages.push({ name: "remember", status: "failed", provider: "vault", note: message(error) });
+      stages.push({ name: "remember", status: "failed", provider: "vault", note: failure(error) });
     }
   } else {
     stages.push({
@@ -382,6 +445,8 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       note: vault ? "no claims" : noVault,
     });
   }
+
+  if (timer) clearTimeout(timer);
 
   // A stage that did paid work without a euro figure says so, and the receipt
   // names every such stage. Its total then covers only the priced stages.

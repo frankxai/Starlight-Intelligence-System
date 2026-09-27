@@ -207,3 +207,13 @@ test("a Redis refusal throws, so the cascade records a failed stage", async () =
   });
   await assert.rejects(down.read(), /redis call failed: fetch failed/);
 });
+
+test("a Redis store call after the run's deadline is refused without reaching the network", async () => {
+  const fetchImpl = redisFetch([]);
+  const store = redisVault({ url: "https://kv", token: "t", fetchImpl });
+  const deadline = new AbortController();
+  deadline.abort();
+  await assert.rejects(store.read(10, deadline.signal), /deadline passed/);
+  await assert.rejects(store.append([atom("1", "q", "c")], deadline.signal), /deadline passed/);
+  assert.equal(fetchImpl.calls.length, 0);
+});

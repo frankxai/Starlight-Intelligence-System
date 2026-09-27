@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { MAX_QUESTION_CHARS, WORST_CASE_RUN_TOKENS, meteredTokens, runDesk } from "@/lib/desk/cascade";
+import { MAX_QUESTION_CHARS, WORST_CASE_RUN_TOKENS, meteredTokens, runDeadlineMs, runDesk } from "@/lib/desk/cascade";
 import { signRunReceipt } from "@/lib/desk/run-receipt";
 import { deskAccess } from "@/lib/desk/access";
 import { deskNamespace, redisConfigFromEnv } from "@/lib/desk/redis-rest";
 import {
+  METER_TIMEOUT_MS,
   dailyRunLimit,
   dailyTokenBudget,
   memoryRunLimiter,
@@ -18,15 +19,22 @@ import { vaultForRun } from "@/lib/desk/vault";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-/** The token meter's Redis calls get less time than the default, so recording after a run stays inside maxDuration. */
-const METER_TIMEOUT_MS = 3_000;
+/**
+ * Seconds the platform lets this function run. The run's own deadline is at
+ * most MAX_RUN_DEADLINE_MS (55 s), counted from the start of the request, and
+ * after it come only the token record (at most METER_TIMEOUT_MS, 3 s) and
+ * signing. A literal, because Next.js reads it statically.
+ */
+export const maxDuration = 60;
 
 /** One per process. Only local development reaches these; see deskAccess. */
 const localLimiter = memoryRunLimiter({ dailyLimit: dailyRunLimit() });
 const localMeter = memoryTokenMeter({ budget: dailyTokenBudget() });
 
 export async function POST(request: Request) {
+  // The run's deadline counts from here, so time spent on the counters below
+  // comes out of the run's budget rather than past the function's.
+  const deadlineAt = Date.now() + runDeadlineMs();
   // Room mode means strangers can type into this, and every run spends money.
   // Decide who may run, and count them, before anything is spent.
   const access = deskAccess(process.env, request.headers.get("authorization"));
@@ -115,6 +123,7 @@ export async function POST(request: Request) {
       host: "desk",
       vault: vault.store ?? undefined,
       noVaultReason: vault.reason,
+      deadlineMs: deadlineAt - Date.now(),
     });
 
     // Charge the day with what the run used. The run has already been paid

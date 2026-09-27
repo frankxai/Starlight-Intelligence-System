@@ -43,6 +43,11 @@ export interface ProviderConfig {
   fetchImpl?: typeof fetch;
   /** Wall clock, injectable so tests can assert latency without sleeping. */
   now?: () => number;
+  /**
+   * The run's deadline. When it aborts, the call in flight is abandoned and
+   * not retried; a call not yet started is refused.
+   */
+  signal?: AbortSignal;
 }
 
 export class ProviderError extends Error {
@@ -63,14 +68,15 @@ function isRetryable(status: number): boolean {
 /**
  * One chat completion. Retries once on a throttle or a server fault, because a
  * single retry is the difference between a stage that stalls on stage and a
- * stage that arrives a second late. Anything else surfaces immediately.
+ * stage that arrives a second late. Anything else surfaces immediately, and
+ * nothing is retried once the run's deadline has passed.
  */
 export async function chat(request: ChatRequest, config: ProviderConfig): Promise<ChatResult> {
   const attempt = () => chatOnce(request, config);
   try {
     return await attempt();
   } catch (error) {
-    if (error instanceof ProviderError && error.retryable) return attempt();
+    if (error instanceof ProviderError && error.retryable && !config.signal?.aborted) return attempt();
     throw error;
   }
 }
@@ -79,9 +85,12 @@ async function chatOnce(request: ChatRequest, config: ProviderConfig): Promise<C
   const fetchImpl = config.fetchImpl ?? fetch;
   const now = config.now ?? (() => Date.now());
   const baseUrl = (config.baseUrl ?? DEFAULT_BASE_URL).replace(/\/$/, "");
+  if (config.signal?.aborted) throw new ProviderError(`${request.model} not called: the run's deadline passed`, 408, false);
   const controller = new AbortController();
   const timeoutMs = request.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const onDeadline = () => controller.abort();
+  config.signal?.addEventListener("abort", onDeadline, { once: true });
   const startedAt = now();
 
   try {
@@ -121,6 +130,7 @@ async function chatOnce(request: ChatRequest, config: ProviderConfig): Promise<C
     const usage = extractUsage(payload);
     return { text, inputTokens: usage.input, outputTokens: usage.output, latencyMs, model: request.model };
   } catch (error) {
+    if (config.signal?.aborted) throw new ProviderError(`${request.model} abandoned: the run's deadline passed`, 408, false);
     if (error instanceof ProviderError) throw error;
     if (error instanceof Error && error.name === "AbortError") {
       throw new ProviderError(`${request.model} did not answer within ${timeoutMs} ms`, 408, true);
@@ -128,6 +138,7 @@ async function chatOnce(request: ChatRequest, config: ProviderConfig): Promise<C
     throw new ProviderError(`${request.model} call failed: ${error instanceof Error ? error.message : String(error)}`, 0, true);
   } finally {
     clearTimeout(timer);
+    config.signal?.removeEventListener("abort", onDeadline);
   }
 }
 

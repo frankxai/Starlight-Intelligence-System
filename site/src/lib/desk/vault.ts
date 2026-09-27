@@ -41,10 +41,10 @@ export interface VaultStore {
   readonly kind: "file" | "redis";
   /** Where the memory lives, as the receipt's evidence names it. Never a credential. */
   readonly ref: string;
-  /** Returns how many landed. Throws when the store refused the write. */
-  append(atoms: VaultAtom[]): Promise<number>;
+  /** Returns how many landed. Throws when the store refused the write. `signal` abandons a network store's call. */
+  append(atoms: VaultAtom[], signal?: AbortSignal): Promise<number>;
   /** The newest `limit` beliefs, oldest first. An empty or absent vault reads as []. */
-  read(limit?: number): Promise<VaultAtom[]>;
+  read(limit?: number, signal?: AbortSignal): Promise<VaultAtom[]>;
 }
 
 /** Which store this environment gets, or why it gets none. */
@@ -98,13 +98,13 @@ export function redisVault(config: RedisRestConfig, namespace = "default"): Vaul
   return {
     kind: "redis",
     ref: `redis:${key}`,
-    async append(atoms) {
+    async append(atoms, signal) {
       if (atoms.length === 0) return 0;
-      await redisCommand(config, ["RPUSH", key, ...atoms.map((atom) => JSON.stringify(atom))]);
+      await redisCommand(config, ["RPUSH", key, ...atoms.map((atom) => JSON.stringify(atom))], signal);
       return atoms.length;
     },
-    async read(limit = DEFAULT_READ_LIMIT) {
-      const result = await redisCommand(config, ["LRANGE", key, -Math.max(1, Math.floor(limit)), -1]);
+    async read(limit = DEFAULT_READ_LIMIT, signal) {
+      const result = await redisCommand(config, ["LRANGE", key, -Math.max(1, Math.floor(limit)), -1], signal);
       return parseLines(Array.isArray(result) ? result.filter((line): line is string => typeof line === "string") : []);
     },
   };

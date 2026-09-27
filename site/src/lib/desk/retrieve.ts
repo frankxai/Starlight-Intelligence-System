@@ -30,6 +30,8 @@ export interface RetrieveConfig {
   now?: () => number;
   endpoint?: string;
   timeoutMs?: number;
+  /** The run's deadline; aborting it abandons the search. */
+  signal?: AbortSignal;
 }
 
 export interface RetrieveResult {
@@ -46,9 +48,12 @@ export interface RetrieveResult {
 export async function retrieve(question: string, maxResults: number, config: RetrieveConfig): Promise<RetrieveResult> {
   const fetchImpl = config.fetchImpl ?? fetch;
   const now = config.now ?? (() => Date.now());
+  if (config.signal?.aborted) throw new Error("retrieval not called: the run's deadline passed");
   const controller = new AbortController();
   const timeoutMs = config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const onDeadline = () => controller.abort();
+  config.signal?.addEventListener("abort", onDeadline, { once: true });
   const startedAt = now();
 
   try {
@@ -72,12 +77,14 @@ export async function retrieve(question: string, maxResults: number, config: Ret
     const payload: unknown = await response.json().catch(() => null);
     return { sources: toSources(payload, maxResults), latencyMs, calls: 1 };
   } catch (error) {
+    if (config.signal?.aborted) throw new Error("retrieval abandoned: the run's deadline passed");
     if (error instanceof Error && error.name === "AbortError") {
       throw new Error(`retrieval did not answer within ${timeoutMs} ms`);
     }
     throw error instanceof Error ? error : new Error(String(error));
   } finally {
     clearTimeout(timer);
+    config.signal?.removeEventListener("abort", onDeadline);
   }
 }
 
