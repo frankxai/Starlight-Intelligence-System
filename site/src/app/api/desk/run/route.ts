@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
-import { runDesk } from "@/lib/desk/cascade";
+import { MAX_QUESTION_CHARS, WORST_CASE_RUN_TOKENS, meteredTokens, runDesk } from "@/lib/desk/cascade";
 import { signRunReceipt } from "@/lib/desk/run-receipt";
 import { deskAccess } from "@/lib/desk/access";
 import { deskNamespace, redisConfigFromEnv } from "@/lib/desk/redis-rest";
 import {
   dailyRunLimit,
+  dailyTokenBudget,
   memoryRunLimiter,
+  memoryTokenMeter,
   redisRunLimiter,
-  type LimitResult,
+  redisTokenMeter,
   type RunLimiter,
+  type TokenMeter,
 } from "@/lib/desk/run-limit";
 import { deskSigningKey } from "@/lib/desk/signing";
 import { vaultForRun } from "@/lib/desk/vault";
@@ -16,10 +19,12 @@ import { vaultForRun } from "@/lib/desk/vault";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MAX_QUESTION_CHARS = 400;
+/** The token meter's Redis calls get less time than the default, so recording after a run stays inside maxDuration. */
+const METER_TIMEOUT_MS = 3_000;
 
-/** One per process. Only local development reaches it; see deskAccess. */
+/** One per process. Only local development reaches these; see deskAccess. */
 const localLimiter = memoryRunLimiter({ dailyLimit: dailyRunLimit() });
+const localMeter = memoryTokenMeter({ budget: dailyTokenBudget() });
 
 export async function POST(request: Request) {
   // Room mode means strangers can type into this, and every run spends money.
@@ -27,15 +32,18 @@ export async function POST(request: Request) {
   const access = deskAccess(process.env, request.headers.get("authorization"));
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
 
-  const redis = redisConfigFromEnv();
-  const limiter: RunLimiter | null =
-    access.limiter === "durable" && redis
-      ? redisRunLimiter(redis, { dailyLimit: dailyRunLimit(), namespace: deskNamespace() })
-      : access.limiter === "memory"
-        ? localLimiter
-        : null;
+  // Every run is counted, token or not: in Redis when it is configured, and
+  // in memory only off Vercel (deskAccess refuses Vercel without Redis).
+  const redis = access.limiter === "durable" ? redisConfigFromEnv() : null;
+  const namespace = deskNamespace();
+  const limiter: RunLimiter = redis
+    ? redisRunLimiter(redis, { dailyLimit: dailyRunLimit(), namespace })
+    : localLimiter;
+  const meter: TokenMeter = redis
+    ? redisTokenMeter({ ...redis, timeoutMs: METER_TIMEOUT_MS }, { budget: dailyTokenBudget(), namespace })
+    : localMeter;
 
-  if (limiter && !access.authorized) {
+  if (!access.authorized) {
     const client = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
     const hit = await count(() => limiter.hitAddress(client));
     if (hit instanceof Response) return hit;
@@ -75,17 +83,27 @@ export async function POST(request: Request) {
   // laptop gets the JSONL file.
   const vault = vaultForRun(process.env, access.authorized);
 
+  // The daily token budget: refuse when today's tokens plus one run's worst
+  // case would pass it. Checked before the run ceiling, so a refusal here does
+  // not use up a run.
+  const budget = await count(() => meter.check(WORST_CASE_RUN_TOKENS));
+  if (budget instanceof Response) return budget;
+  if (!budget.ok) {
+    return NextResponse.json(
+      { error: "The Desk has used today's token budget. It opens again at midnight UTC." },
+      { status: 429, headers: { "retry-after": String(budget.retryAfter) } },
+    );
+  }
+
   // The daily ceiling counts runs that are about to spend, not malformed
   // requests, so junk cannot use up the day.
-  if (limiter) {
-    const day = await count(() => limiter.hitDaily());
-    if (day instanceof Response) return day;
-    if (!day.ok) {
-      return NextResponse.json(
-        { error: "The Desk has reached today's run ceiling. It opens again at midnight UTC." },
-        { status: 429, headers: { "retry-after": String(day.retryAfter) } },
-      );
-    }
+  const day = await count(() => limiter.hitDaily());
+  if (day instanceof Response) return day;
+  if (!day.ok) {
+    return NextResponse.json(
+      { error: "The Desk has reached today's run ceiling. It opens again at midnight UTC." },
+      { status: 429, headers: { "retry-after": String(day.retryAfter) } },
+    );
   }
 
   try {
@@ -98,6 +116,17 @@ export async function POST(request: Request) {
       vault: vault.store ?? undefined,
       noVaultReason: vault.reason,
     });
+
+    // Charge the day with what the run used. The run has already been paid
+    // for, so a meter that cannot be reached now does not withhold its result.
+    // The next run's check goes to the same meter and fails closed while it
+    // stays unreachable; a record lost to a brief outage undercounts the day
+    // by this one run.
+    try {
+      await meter.record(meteredTokens(run.receipt.stages));
+    } catch (error) {
+      console.error("desk: the token meter did not record this run", error instanceof Error ? error.message : error);
+    }
 
     // Sign with the Desk's own key when one is set; deployed, never with the
     // personal key (see signing.ts). Without one the receipt travels as a
@@ -139,7 +168,7 @@ export async function POST(request: Request) {
  * A counter that cannot be reached fails closed: a run nobody could count is a
  * run nobody agreed to pay for.
  */
-async function count(hit: () => Promise<LimitResult>): Promise<LimitResult | Response> {
+async function count<T>(hit: () => Promise<T>): Promise<T | Response> {
   try {
     return await hit();
   } catch {

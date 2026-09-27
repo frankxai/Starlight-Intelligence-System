@@ -21,7 +21,7 @@
  */
 import { chat, type ProviderConfig } from "./provider";
 import { modelCostEur, retrievalCostEur, pricingIsComplete } from "./pricing";
-import { retrieve, type RetrieveConfig, type Source } from "./retrieve";
+import { MAX_SOURCE_CHARS, MAX_TITLE_CHARS, MAX_URL_CHARS, retrieve, type RetrieveConfig, type Source } from "./retrieve";
 import {
   RUN_RECEIPT_SCHEMA,
   sha256Hex,
@@ -40,6 +40,27 @@ export const MODELS = {
 } as const;
 
 export const SECTIONS = ["HYPOTHESIS", "METHOD", "SETUP", "RESULTS", "TAKEAWAY", "NEXT"] as const;
+
+// ── caps ───────────────────────────────────────────────────────────────────
+// Every input a prompt can carry is capped, so one run has a worst case in
+// tokens that is a number (WORST_CASE_RUN_TOKENS, at the end of this file)
+// and the daily token budget can refuse a run before it spends.
+
+/** The longest question the Desk takes. The route and runDesk both enforce it. */
+export const MAX_QUESTION_CHARS = 400;
+export const MAX_SOURCES = 8;
+/** Claims past this many are dropped; the extract prompt asks for at most this many. */
+export const MAX_CLAIMS = 12;
+/** A claim's text is cut to this in the prompts that carry it forward. */
+export const MAX_CLAIM_CHARS = 400;
+/** Recalled beliefs handed to the contradict stage. */
+export const MAX_RECALLED = 6;
+export const MAX_ATOM_ID_CHARS = 120;
+/** The judge reads at most this much of the brief. */
+export const MAX_BRIEF_CHARS_JUDGED = 16_000;
+/** max_tokens per model stage, sent on every call. */
+export const MAX_OUTPUT_TOKENS = { extract: 2048, synthesize: 3000, contradict: 800, judge: 800 } as const;
+export type ModelStage = keyof typeof MAX_OUTPUT_TOKENS;
 
 export interface Claim {
   /** 1-based, matching the `[n]` marker the brief must carry. */
@@ -102,9 +123,10 @@ export interface CascadeOptions {
 export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   const now = options.now ?? (() => Date.now());
   const clock = options.clock ?? (() => new Date().toISOString());
-  const maxSources = options.maxSources ?? 8;
+  const maxSources = Math.max(1, Math.min(options.maxSources ?? MAX_SOURCES, MAX_SOURCES));
   const question = options.question.trim();
   if (!question) throw new Error("the Desk needs a question");
+  if (question.length > MAX_QUESTION_CHARS) throw new Error(`the Desk takes questions up to ${MAX_QUESTION_CHARS} characters`);
 
   const startedAt = clock();
   const stages: RunReceiptStage[] = [];
@@ -127,7 +149,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     const startedRecall = now();
     try {
       const atoms = await vault.read();
-      related = findRelated(atoms, question);
+      related = findRelated(atoms, question, MAX_RECALLED);
       stages.push({
         name: "recall",
         status: "ok",
@@ -167,6 +189,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
           model: MODELS.extract,
           json: true,
           temperature: 0,
+          maxTokens: MAX_OUTPUT_TOKENS.extract,
           messages: [
             { role: "system", content: EXTRACT_SYSTEM },
             { role: "user", content: extractPrompt(question, sources) },
@@ -200,7 +223,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         {
           model: MODELS.synthesize,
           temperature: 0.3,
-          maxTokens: 3000,
+          maxTokens: MAX_OUTPUT_TOKENS.synthesize,
           messages: [
             { role: "system", content: SYNTHESIZE_SYSTEM },
             { role: "user", content: synthesizePrompt(question, claims) },
@@ -237,7 +260,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
           model: MODELS.contradict,
           json: true,
           temperature: 0,
-          maxTokens: 800,
+          maxTokens: MAX_OUTPUT_TOKENS.contradict,
           messages: [
             { role: "system", content: CONTRADICT_SYSTEM },
             { role: "user", content: contradictPrompt(related, claims) },
@@ -279,7 +302,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
           model: MODELS.judge,
           json: true,
           temperature: 0,
-          maxTokens: 800,
+          maxTokens: MAX_OUTPUT_TOKENS.judge,
           messages: [
             { role: "system", content: JUDGE_SYSTEM },
             { role: "user", content: judgePrompt(question, brief) },
@@ -409,6 +432,7 @@ export function parseClaims(text: string, sources: Source[]): Claim[] {
     const quote = str(record.quote);
     const url = str(record.url);
     if (!claimText || !quote || !urls.has(url)) continue;
+    if (claims.length >= MAX_CLAIMS) break;
     claims.push({
       index: claims.length + 1,
       text: claimText,
@@ -496,10 +520,10 @@ function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
 
-const EXTRACT_SYSTEM = `You extract claims from sources. Return JSON: {"claims":[{"text","quote","url","confidence"}]}.
-Rules: every claim quotes one source verbatim in "quote"; "url" is that source's URL exactly as given; a claim you cannot quote is a claim you drop; at most 12 claims.`;
+export const EXTRACT_SYSTEM = `You extract claims from sources. Return JSON: {"claims":[{"text","quote","url","confidence"}]}.
+Rules: every claim quotes one source verbatim in "quote"; "url" is that source's URL exactly as given; a claim you cannot quote is a claim you drop; at most ${MAX_CLAIMS} claims.`;
 
-const SYNTHESIZE_SYSTEM = `You write a research brief in six sections, in this order and with these exact headings:
+export const SYNTHESIZE_SYSTEM = `You write a research brief in six sections, in this order and with these exact headings:
 ## HYPOTHESIS
 ## METHOD
 ## SETUP
@@ -508,30 +532,124 @@ const SYNTHESIZE_SYSTEM = `You write a research brief in six sections, in this o
 ## NEXT
 Every sentence that states a fact carries the citation marker [n] of the claim it rests on. A sentence you cannot cite is a sentence you do not write. Direct, technical, warm. No filler.`;
 
-const CONTRADICT_SYSTEM = `You compare new claims against beliefs already held. Return JSON: {"contradictions":[{"priorId","newClaim","reason"}]}.
+export const CONTRADICT_SYSTEM = `You compare new claims against beliefs already held. Return JSON: {"contradictions":[{"priorId","newClaim","reason"}]}.
 Rules: "priorId" is the id of the held belief exactly as given; report only a direct disagreement of fact, never a difference of wording, scope, or date of measurement; when nothing disagrees return an empty list; one entry per held belief at most.`;
 
-const JUDGE_SYSTEM = `You score a research brief against a methodology rubric. Return JSON: {"score": 0-10, "rationale": "one sentence"}.
+export const JUDGE_SYSTEM = `You score a research brief against a methodology rubric. Return JSON: {"score": 0-10, "rationale": "one sentence"}.
 Score for: falsifiability of the hypothesis, whether the method could be replicated, whether every factual sentence carries a citation, and whether the takeaway follows from the results.`;
 
-function extractPrompt(question: string, sources: Source[]): string {
+export function extractPrompt(question: string, sources: Source[]): string {
   const body = sources
-    .map((source) => `[${source.index}] ${source.title}\nURL: ${source.url}\n${source.content.slice(0, 2400)}`)
+    .map((source) => `[${source.index}] ${source.title.slice(0, MAX_TITLE_CHARS)}\nURL: ${source.url}\n${source.content.slice(0, MAX_SOURCE_CHARS)}`)
     .join("\n\n");
   return `Question: ${question}\n\nSources:\n\n${body}`;
 }
 
-function synthesizePrompt(question: string, claims: Claim[]): string {
-  const body = claims.map((claim) => `[${claim.index}] ${claim.text} (source: ${claim.url})`).join("\n");
+export function synthesizePrompt(question: string, claims: Claim[]): string {
+  const body = claims
+    .slice(0, MAX_CLAIMS)
+    .map((claim) => `[${claim.index}] ${claim.text.slice(0, MAX_CLAIM_CHARS)} (source: ${claim.url})`)
+    .join("\n");
   return `Question: ${question}\n\nClaims you may cite, by marker:\n${body}\n\nWrite the brief.`;
 }
 
-function contradictPrompt(related: VaultAtom[], claims: Claim[]): string {
-  const held = related.map((atom) => `${atom.id}: ${atom.claim}`).join("\n");
-  const fresh = claims.map((claim) => `- ${claim.text}`).join("\n");
+export function contradictPrompt(related: VaultAtom[], claims: Claim[]): string {
+  const held = related
+    .slice(0, MAX_RECALLED)
+    .map((atom) => `${atom.id.slice(0, MAX_ATOM_ID_CHARS)}: ${atom.claim.slice(0, MAX_CLAIM_CHARS)}`)
+    .join("\n");
+  const fresh = claims
+    .slice(0, MAX_CLAIMS)
+    .map((claim) => `- ${claim.text.slice(0, MAX_CLAIM_CHARS)}`)
+    .join("\n");
   return `Beliefs already held:\n${held}\n\nNew claims from this run:\n${fresh}\n\nReport only direct disagreements.`;
 }
 
-function judgePrompt(question: string, brief: string): string {
-  return `Question: ${question}\n\nBrief:\n\n${brief}`;
+export function judgePrompt(question: string, brief: string): string {
+  return `Question: ${question}\n\nBrief:\n\n${brief.slice(0, MAX_BRIEF_CHARS_JUDGED)}`;
+}
+
+// ── the worst case ─────────────────────────────────────────────────────────
+
+/**
+ * An upper bound on tokens per UTF-16 code unit. A byte-level tokenizer emits
+ * at most one token per UTF-8 byte, and one code unit is at most three bytes.
+ * Real text tokenizes far below this; the bound is what makes the worst case
+ * a ceiling rather than an estimate.
+ */
+export const TOKENS_PER_CHAR_BOUND = 3;
+/** Room for the chat template a provider wraps around the messages of one call. */
+export const TEMPLATE_TOKENS = 256;
+/** chat() retries once, and an abandoned attempt may still be billed. */
+export const ATTEMPTS_PER_STAGE = 2;
+
+/** Input-token bound for one call carrying these two messages. */
+export function inputTokenBound(system: string, user: string): number {
+  return (system.length + user.length) * TOKENS_PER_CHAR_BOUND + TEMPLATE_TOKENS;
+}
+
+/**
+ * Worst-case tokens per model stage, all attempts included. Each prompt is
+ * built by the same function the run uses, from inputs larger than every
+ * cap, so a prompt that stopped enforcing a cap would raise this number
+ * rather than slip past it.
+ */
+export const STAGE_WORST_CASE: Record<ModelStage, number> = worstCaseByStage();
+
+/** The most tokens one run can spend. The daily token budget refuses a run that could cross it. */
+export const WORST_CASE_RUN_TOKENS: number = Object.values(STAGE_WORST_CASE).reduce((sum, tokens) => sum + tokens, 0);
+
+function worstCaseByStage(): Record<ModelStage, number> {
+  const over = 1000;
+  const long = (chars: number) => "x".repeat(chars + over);
+  const question = "x".repeat(MAX_QUESTION_CHARS);
+  const url = `https://${"x".repeat(MAX_URL_CHARS - "https://".length)}`;
+  const sources: Source[] = Array.from({ length: MAX_SOURCES }, (_, i) => ({
+    index: i + 1,
+    title: long(MAX_TITLE_CHARS),
+    url,
+    content: long(MAX_SOURCE_CHARS),
+  }));
+  const claims: Claim[] = Array.from({ length: MAX_CLAIMS + over }, (_, i) => ({
+    index: i + 1,
+    text: long(MAX_CLAIM_CHARS),
+    quote: "",
+    url,
+    confidence: 1,
+  }));
+  const related: VaultAtom[] = Array.from({ length: MAX_RECALLED + over }, (_, i) => ({
+    id: long(MAX_ATOM_ID_CHARS) + i,
+    kind: "belief",
+    question,
+    claim: long(MAX_CLAIM_CHARS),
+    quote: "",
+    url,
+    confidence: 1,
+    receiptId: "",
+    at: "",
+  }));
+  const stage = (system: string, user: string, output: number) => ATTEMPTS_PER_STAGE * (inputTokenBound(system, user) + output);
+  return {
+    extract: stage(EXTRACT_SYSTEM, extractPrompt(question, sources), MAX_OUTPUT_TOKENS.extract),
+    synthesize: stage(SYNTHESIZE_SYSTEM, synthesizePrompt(question, claims), MAX_OUTPUT_TOKENS.synthesize),
+    contradict: stage(CONTRADICT_SYSTEM, contradictPrompt(related, claims), MAX_OUTPUT_TOKENS.contradict),
+    judge: stage(JUDGE_SYSTEM, judgePrompt(question, long(MAX_BRIEF_CHARS_JUDGED)), MAX_OUTPUT_TOKENS.judge),
+  };
+}
+
+/**
+ * The tokens a finished run is charged against the daily budget: what each
+ * stage reported, and for a model stage that ran but reported no usage (a
+ * provider that omits it, a call cut off mid-answer) that stage's worst case.
+ * Unreported use is counted high, never as zero.
+ */
+export function meteredTokens(stages: RunReceiptStage[]): number {
+  let total = 0;
+  for (const stage of stages) {
+    const reported = (stage.inputTokens ?? 0) + (stage.outputTokens ?? 0);
+    const worst = stage.name in STAGE_WORST_CASE ? STAGE_WORST_CASE[stage.name as ModelStage] : 0;
+    if (stage.model && stage.status !== "skipped" && reported === 0) total += worst;
+    else total += reported;
+  }
+  return total;
 }

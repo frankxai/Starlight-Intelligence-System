@@ -1,6 +1,6 @@
 /**
- * How many runs the Desk will pay for: a per-address window and a daily
- * ceiling across everyone.
+ * How many runs the Desk will pay for: a per-address window, a daily run
+ * ceiling across everyone, and a daily token budget.
  *
  * Every run spends real money on retrieval and four model calls, and the route
  * is reachable by anyone with the URL. On serverless an in-memory counter is
@@ -10,10 +10,18 @@
  * in-memory counter survives only for local development, where one process is
  * the whole deployment.
  *
+ * A run count is not a spend ceiling: one run can cost a hundred times
+ * another. The token meter is. It needs no prices: before a run it refuses
+ * when today's recorded tokens plus one run's worst case would pass the
+ * budget, and after the run it adds the tokens the run used (INCRBY + EXPIRE,
+ * pipelined). Concurrent runs each pass the check before any of them records,
+ * so the budget can be overshot by at most the runs in flight at once, each
+ * bounded by WORST_CASE_RUN_TOKENS.
+ *
  * Built on SIP — operational tier.
  */
 import { createHash } from "node:crypto";
-import { deskKey, redisPipeline, type RedisRestConfig } from "./redis-rest";
+import { deskKey, redisCommand, redisPipeline, type RedisRestConfig } from "./redis-rest";
 
 export const WINDOW_MS = 60_000;
 export const MAX_RUNS_PER_WINDOW = 6;
@@ -46,15 +54,114 @@ export interface LimitOptions {
   namespace?: string;
 }
 
+/** Tokens per UTC day across every run. Conservative on purpose, like the run ceiling. */
+export const DEFAULT_DAILY_TOKEN_BUDGET = 2_000_000;
+
+/**
+ * `DESK_DAILY_TOKEN_BUDGET`, a whole number of tokens per UTC day. Zero closes
+ * the Desk, and so does any budget smaller than one run's worst case.
+ * Anything unparsable falls back to the default.
+ */
+export function dailyTokenBudget(env: NodeJS.ProcessEnv = process.env): number {
+  return wholeNumber(env.DESK_DAILY_TOKEN_BUDGET, DEFAULT_DAILY_TOKEN_BUDGET);
+}
+
+export interface BudgetResult {
+  ok: boolean;
+  /** Tokens recorded today before this run. */
+  used: number;
+  budget: number;
+  /** The run's worst case the check reserved room for. */
+  worstCase: number;
+  /** Seconds until the UTC day resets; 0 when `ok`. */
+  retryAfter: number;
+}
+
+export interface TokenMeter {
+  readonly kind: "durable" | "memory";
+  /** May a run whose worst case is this many tokens start now? */
+  check(worstCase: number): Promise<BudgetResult>;
+  /** Add what a finished run used to today's total. Returns the new total. */
+  record(tokens: number): Promise<number>;
+}
+
+export interface MeterOptions {
+  budget?: number;
+  now?: () => number;
+  namespace?: string;
+}
+
+export function redisTokenMeter(config: RedisRestConfig, options: MeterOptions = {}): TokenMeter {
+  const budget = options.budget ?? DEFAULT_DAILY_TOKEN_BUDGET;
+  const now = options.now ?? (() => Date.now());
+  const namespace = options.namespace ?? "default";
+  const keyAt = (at: number) => deskKey(namespace, "tok", utcDay(at));
+  return {
+    kind: "durable",
+    async check(worstCase) {
+      const at = now();
+      const raw = await redisCommand(config, ["GET", keyAt(at)]);
+      const used = raw === null ? 0 : Number(raw);
+      if (!Number.isFinite(used)) throw new Error("the token meter answered with something that is not a number");
+      return budgetResult(used, budget, worstCase, at);
+    },
+    async record(tokens) {
+      const add = Math.max(0, Math.ceil(tokens));
+      const key = keyAt(now());
+      const [total] = await redisPipeline(config, [
+        ["INCRBY", key, add],
+        ["EXPIRE", key, 2 * 86_400],
+      ]);
+      return Number(total);
+    },
+  };
+}
+
+/** One process, one meter. Local development only, like memoryRunLimiter. */
+export function memoryTokenMeter(options: MeterOptions = {}): TokenMeter {
+  const budget = options.budget ?? DEFAULT_DAILY_TOKEN_BUDGET;
+  const now = options.now ?? (() => Date.now());
+  const day = { day: "", used: 0 };
+  const today = (at: number) => {
+    if (day.day !== utcDay(at)) {
+      day.day = utcDay(at);
+      day.used = 0;
+    }
+    return day;
+  };
+  return {
+    kind: "memory",
+    async check(worstCase) {
+      const at = now();
+      return budgetResult(today(at).used, budget, worstCase, at);
+    },
+    async record(tokens) {
+      const current = today(now());
+      current.used += Math.max(0, Math.ceil(tokens));
+      return current.used;
+    },
+  };
+}
+
+function budgetResult(used: number, budget: number, worstCase: number, at: number): BudgetResult {
+  const ok = used + worstCase <= budget;
+  return { ok, used, budget, worstCase, retryAfter: ok ? 0 : secondsUntil(nextUtcMidnight(at), at) };
+}
+
 /**
  * `DESK_DAILY_RUN_LIMIT`, a whole number of runs per UTC day. Zero is a valid
  * setting and closes the Desk; anything unparsable falls back to the default
  * rather than to "unlimited".
  */
 export function dailyRunLimit(env: NodeJS.ProcessEnv = process.env): number {
-  const raw = env.DESK_DAILY_RUN_LIMIT?.trim();
-  if (!raw || !/^\d+$/.test(raw)) return DEFAULT_DAILY_RUN_LIMIT;
-  return Number(raw);
+  return wholeNumber(env.DESK_DAILY_RUN_LIMIT, DEFAULT_DAILY_RUN_LIMIT);
+}
+
+function wholeNumber(value: string | undefined, fallback: number): number {
+  const raw = value?.trim();
+  if (!raw || !/^\d+$/.test(raw)) return fallback;
+  const parsed = Number(raw);
+  return Number.isSafeInteger(parsed) ? parsed : fallback;
 }
 
 export function redisRunLimiter(config: RedisRestConfig, options: LimitOptions = {}): RunLimiter {

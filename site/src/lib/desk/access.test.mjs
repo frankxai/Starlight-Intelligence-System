@@ -20,11 +20,11 @@ test("on Vercel without a durable counter the public gets 503", () => {
   );
 });
 
-test("on Vercel without a durable counter a valid token runs, uncounted", () => {
+test("on Vercel without a durable counter a valid token is refused too: nothing runs unmetered", () => {
   assert.deepEqual(deskAccess({ VERCEL: "1", DESK_ACCESS_TOKEN: TOKEN }, `Bearer ${TOKEN}`), {
-    ok: true,
-    limiter: "none",
-    authorized: true,
+    ok: false,
+    status: 503,
+    error: CLOSED_WITHOUT_COUNTER,
   });
 });
 

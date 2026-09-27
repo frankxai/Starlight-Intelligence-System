@@ -10,7 +10,14 @@ import { join } from "node:path";
 import test from "node:test";
 
 import {
+  ATTEMPTS_PER_STAGE,
+  MAX_OUTPUT_TOKENS,
+  MAX_QUESTION_CHARS,
+  STAGE_WORST_CASE,
+  TEMPLATE_TOKENS,
+  WORST_CASE_RUN_TOKENS,
   computeGroundingRate,
+  meteredTokens,
   parseClaims,
   parseContradictions,
   parseJudgement,
@@ -423,4 +430,85 @@ test("contradictions are kept only where they name a belief that was recalled", 
     held,
   );
   assert.deepEqual(twice, [{ priorId: "a", priorClaim: "Held one.", newClaim: "x", reason: "" }], "one entry per prior belief");
+});
+
+// ── the worst case, against the requests a run actually sends ───────────────
+
+test("the worst case is the sum of the stage bounds, a finite whole number", () => {
+  const sum = Object.values(STAGE_WORST_CASE).reduce((total, tokens) => total + tokens, 0);
+  assert.equal(WORST_CASE_RUN_TOKENS, sum);
+  assert.ok(Number.isSafeInteger(WORST_CASE_RUN_TOKENS) && WORST_CASE_RUN_TOKENS > 0);
+  assert.deepEqual(Object.keys(STAGE_WORST_CASE), ["extract", "synthesize", "contradict", "judge"]);
+});
+
+test("a run fed oversized, multibyte inputs never sends a request past its stage's bound", async () => {
+  // Three UTF-8 bytes per code unit: the tokenizer bound's own worst case.
+  const wide = (chars) => "\u6f22".repeat(chars);
+  const body = wide(10_000);
+  const sources = Array.from({ length: 20 }, (_, i) => ({
+    title: wide(1_000),
+    url: `https://example.org/${i}`,
+    content: body,
+  }));
+  sources.push({ title: "long url", url: `https://example.org/${"x".repeat(600)}`, content: body });
+  const quote = body.slice(0, 40);
+  const claims = Array.from({ length: 30 }, (_, i) => ({ text: wide(2_000), quote, url: `https://example.org/${i % 8}`, confidence: 1 }));
+  // Content words first, so keyword recall finds the held beliefs and the contradict stage runs.
+  const question = `alpha holds ${wide(MAX_QUESTION_CHARS - 12)}`;
+  const held = Array.from({ length: 10 }, (_, i) => ({
+    id: `${wide(500)}${i}`,
+    kind: "belief",
+    question,
+    claim: wide(2_000),
+    quote: "q",
+    url: "https://example.org/0",
+    confidence: 1,
+    receiptId: "r",
+    at: "2026-09-22T00:00:00Z",
+  }));
+  const vault = { kind: "file", ref: "memory", read: async () => held, append: async (atoms) => atoms.length };
+
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: sources }),
+    completion(JSON.stringify({ claims })),
+    completion(wide(50_000)),
+    completion(JSON.stringify({ contradictions: [] })),
+    completion(JSON.stringify({ score: 5, rationale: "x" })),
+  ]);
+  const run = await runDesk({ ...config(fetchImpl), question, vault, maxSources: 50 });
+
+  assert.equal(fetchImpl.calls[0].body.max_results, 8, "retrieval asks for no more than the cap");
+  const chats = fetchImpl.calls.slice(1);
+  assert.equal(chats.length, 4);
+  ["extract", "synthesize", "contradict", "judge"].forEach((stage, i) => {
+    const request = chats[i].body;
+    const bytes = request.messages.reduce((total, message) => total + Buffer.byteLength(message.content, "utf8"), 0);
+    const perAttempt = STAGE_WORST_CASE[stage] / ATTEMPTS_PER_STAGE;
+    assert.equal(request.max_tokens, MAX_OUTPUT_TOKENS[stage], `${stage} sends its max_tokens cap`);
+    assert.ok(
+      bytes + TEMPLATE_TOKENS + request.max_tokens <= perAttempt,
+      `${stage}: ${bytes} input bytes + template + output cap must fit in ${perAttempt}`,
+    );
+  });
+  assert.ok(run.claims.length <= 12, "claims past the cap are dropped");
+  assert.ok(run.sources.every((source) => source.url.length <= 512), "a source whose URL passes the cap is dropped");
+});
+
+test("the Desk refuses a question past the cap rather than bill for it", async () => {
+  await assert.rejects(
+    runDesk({ ...config(scriptedFetch([])), question: "x".repeat(MAX_QUESTION_CHARS + 1) }),
+    /up to 400 characters/,
+  );
+});
+
+test("the metered tokens count what stages reported, and a model stage with no usage at its worst case", () => {
+  const stages = [
+    { name: "recall", status: "ok", provider: "vault", costEur: 0 },
+    { name: "retrieve", status: "ok", provider: "tavily" },
+    { name: "extract", status: "ok", model: MODELS.extract, inputTokens: 1000, outputTokens: 200 },
+    { name: "synthesize", status: "failed", model: MODELS.synthesize, note: "did not answer" },
+    { name: "contradict", status: "skipped", model: MODELS.contradict },
+    { name: "judge", status: "ok", model: MODELS.judge, inputTokens: 0, outputTokens: 0 },
+  ];
+  assert.equal(meteredTokens(stages), 1200 + STAGE_WORST_CASE.synthesize + STAGE_WORST_CASE.judge);
 });

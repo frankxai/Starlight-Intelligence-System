@@ -5,13 +5,13 @@
  *
  *   1. A bearer token that does not match DESK_ACCESS_TOKEN is refused (401).
  *   2. With a durable run counter configured, the route is public and every
- *      run is counted in Redis. A valid token skips the per-address window,
- *      so an operator is not throttled by a room sharing one address, but
- *      still counts against the daily ceiling.
- *   3. Off Vercel (local development) the in-memory counter stands in.
- *   4. On Vercel with no durable counter, only a valid token runs, uncounted.
- *      Everyone else gets 503: a public route that spends money with no limit
- *      that holds across instances is not one this Desk will serve.
+ *      run is counted in Redis: runs and tokens per UTC day. A valid token
+ *      skips the per-address window, so an operator is not throttled by a
+ *      room sharing one address, and still counts against the daily run
+ *      ceiling and the daily token budget.
+ *   3. Off Vercel (local development) the in-memory counters stand in.
+ *   4. On Vercel with no durable counter, nobody runs, token or not: 503. A
+ *      run nobody can meter is a run with no spend ceiling, whoever asks.
  *
  * Memory follows the same identity (memoryAccess below). On Vercel only a run
  * carrying a valid token may recall from or write to the vault; an anonymous
@@ -27,11 +27,11 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { redisConfigFromEnv } from "./redis-rest";
 
 export type DeskAccess =
-  | { ok: true; limiter: "durable" | "memory" | "none"; authorized: boolean }
+  | { ok: true; limiter: "durable" | "memory"; authorized: boolean }
   | { ok: false; status: 401 | 503; error: string };
 
 export const CLOSED_WITHOUT_COUNTER =
-  "This Desk is not open to the public: the deployment has no durable run counter configured.";
+  "This Desk is not running: the deployment has no durable run counter configured.";
 export const BAD_TOKEN = "That access token is not valid for this Desk.";
 
 export function deskAccess(env: NodeJS.ProcessEnv, authorization: string | null): DeskAccess {
@@ -44,7 +44,6 @@ export function deskAccess(env: NodeJS.ProcessEnv, authorization: string | null)
 
   if (redisConfigFromEnv(env)) return { ok: true, limiter: "durable", authorized };
   if (!env.VERCEL) return { ok: true, limiter: "memory", authorized };
-  if (authorized) return { ok: true, limiter: "none", authorized };
   return { ok: false, status: 503, error: CLOSED_WITHOUT_COUNTER };
 }
 

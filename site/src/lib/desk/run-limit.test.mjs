@@ -3,7 +3,16 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
 
-import { DEFAULT_DAILY_RUN_LIMIT, dailyRunLimit, memoryRunLimiter, redisRunLimiter } from "./run-limit.ts";
+import {
+  DEFAULT_DAILY_RUN_LIMIT,
+  DEFAULT_DAILY_TOKEN_BUDGET,
+  dailyRunLimit,
+  dailyTokenBudget,
+  memoryRunLimiter,
+  memoryTokenMeter,
+  redisRunLimiter,
+  redisTokenMeter,
+} from "./run-limit.ts";
 
 const CONFIG = { url: "https://kv.example.upstash.io", token: "kv-token" };
 // 2026-09-26T10:00:30Z: thirty seconds into a one-minute window.
@@ -102,4 +111,75 @@ test("the daily limit reads the environment, and junk falls back to the default,
   assert.equal(dailyRunLimit({ DESK_DAILY_RUN_LIMIT: "lots" }), DEFAULT_DAILY_RUN_LIMIT);
   assert.equal(dailyRunLimit({ DESK_DAILY_RUN_LIMIT: "-5" }), DEFAULT_DAILY_RUN_LIMIT);
   assert.equal(dailyRunLimit({ DESK_DAILY_RUN_LIMIT: "Infinity" }), DEFAULT_DAILY_RUN_LIMIT);
+});
+
+// ── the daily token meter ───────────────────────────────────────────────────
+
+test("the token meter reads today's total with one GET and refuses a run that could pass the budget", async () => {
+  const fetchImpl = pipelineFetch([{ result: "1500000" }, { result: "1600001" }, { result: null }]);
+  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, budget: 2_000_000, namespace: "acme" });
+
+  assert.deepEqual(await meter.check(400_000), { ok: true, used: 1_500_000, budget: 2_000_000, worstCase: 400_000, retryAfter: 0 });
+  const over = await meter.check(400_000);
+  assert.equal(over.ok, false, "1,600,001 used plus a 400,000 worst case passes 2,000,000");
+  assert.equal(over.retryAfter, 14 * 3600 - 30, "until midnight UTC");
+  assert.equal((await meter.check(400_000)).used, 0, "a day with no key has used nothing");
+
+  assert.deepEqual(fetchImpl.calls[0], {
+    url: "https://kv.example.upstash.io",
+    headers: { authorization: "Bearer kv-token", "content-type": "application/json" },
+    body: ["GET", "desk:acme:tok:2026-09-26"],
+  });
+});
+
+test("after a run the meter adds its tokens with one pipelined INCRBY and EXPIRE", async () => {
+  const fetchImpl = pipelineFetch([[{ result: 12_345 }, { result: 1 }]]);
+  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, namespace: "acme" });
+  assert.equal(await meter.record(12_344.2), 12_345);
+  assert.deepEqual(fetchImpl.calls, [
+    {
+      url: "https://kv.example.upstash.io/pipeline",
+      headers: { authorization: "Bearer kv-token", "content-type": "application/json" },
+      body: [
+        ["INCRBY", "desk:acme:tok:2026-09-26", 12_345],
+        ["EXPIRE", "desk:acme:tok:2026-09-26", 172_800],
+      ],
+    },
+  ]);
+});
+
+test("a token meter that errors throws, so the route fails closed", async () => {
+  const erroring = redisTokenMeter({ ...CONFIG, fetchImpl: pipelineFetch([{ error: "WRONGPASS" }]) });
+  await assert.rejects(erroring.check(1), /redis GET failed: WRONGPASS/);
+  const junk = redisTokenMeter({ ...CONFIG, fetchImpl: pipelineFetch([{ result: "lots" }]) });
+  await assert.rejects(junk.check(1), /not a number/);
+  const down = redisTokenMeter({ ...CONFIG, fetchImpl: pipelineFetch([new TypeError("fetch failed")]) });
+  await assert.rejects(down.record(10), /redis call failed/);
+});
+
+test("a zero budget, or one smaller than a run's worst case, closes the Desk", async () => {
+  assert.equal((await memoryTokenMeter({ budget: 0 }).check(1)).ok, false);
+  assert.equal((await memoryTokenMeter({ budget: 100 }).check(101)).ok, false);
+  assert.equal((await memoryTokenMeter({ budget: 100 }).check(100)).ok, true);
+});
+
+test("the in-memory meter keeps the same rules and starts clean each UTC day", async () => {
+  let at = AT;
+  const meter = memoryTokenMeter({ now: () => at, budget: 1000 });
+  assert.equal((await meter.check(400)).ok, true);
+  assert.equal(await meter.record(500), 500);
+  assert.equal((await meter.check(400)).ok, true, "500 + 400 fits in 1000");
+  assert.equal(await meter.record(200), 700);
+  assert.equal((await meter.check(400)).ok, false, "700 + 400 does not");
+  at += 86_400_000;
+  assert.deepEqual(await meter.check(400), { ok: true, used: 0, budget: 1000, worstCase: 400, retryAfter: 0 });
+});
+
+test("the token budget reads the environment, and junk falls back to the default", () => {
+  assert.equal(dailyTokenBudget({}), DEFAULT_DAILY_TOKEN_BUDGET);
+  assert.equal(dailyTokenBudget({ DESK_DAILY_TOKEN_BUDGET: "500000" }), 500_000);
+  assert.equal(dailyTokenBudget({ DESK_DAILY_TOKEN_BUDGET: "0" }), 0, "zero closes the Desk");
+  assert.equal(dailyTokenBudget({ DESK_DAILY_TOKEN_BUDGET: "2e6" }), DEFAULT_DAILY_TOKEN_BUDGET);
+  assert.equal(dailyTokenBudget({ DESK_DAILY_TOKEN_BUDGET: "-1" }), DEFAULT_DAILY_TOKEN_BUDGET);
+  assert.equal(dailyTokenBudget({ DESK_DAILY_TOKEN_BUDGET: "99999999999999999999" }), DEFAULT_DAILY_TOKEN_BUDGET);
 });
