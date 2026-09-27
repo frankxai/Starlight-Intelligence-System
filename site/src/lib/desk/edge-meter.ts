@@ -66,7 +66,7 @@ export function edgeMeter(input: EdgeInput, baseline = "closed-api", table: Pric
     },
     {
       axis: "quality",
-      label: "rubric, 0 to 10",
+      label: "Rubric, 0 to 10",
       ours: input.rubricScore === null ? "—" : `${input.rubricScore}`,
       baseline: "same rubric, run it",
       ratio: null,
@@ -74,7 +74,7 @@ export function edgeMeter(input: EdgeInput, baseline = "closed-api", table: Pric
     },
     {
       axis: "speed",
-      label: "seconds per brief",
+      label: "Seconds per brief",
       ours: `${(input.latencyMs / 1000).toFixed(1)} s`,
       baseline: "—",
       ratio: null,
@@ -82,7 +82,7 @@ export function edgeMeter(input: EdgeInput, baseline = "closed-api", table: Pric
     },
     {
       axis: "grounding",
-      label: "verified claims cited in the brief",
+      label: "Verified claims cited in the brief",
       ours: `${Math.round(input.groundingRate * 100)}%`,
       baseline: "—",
       ratio: null,

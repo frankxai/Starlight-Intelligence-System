@@ -80,13 +80,13 @@ interface DeskResponse {
 const STAGE_ORDER = ["recall", "retrieve", "extract", "synthesize", "contradict", "judge", "remember"] as const;
 
 const STAGE_ROLE: Record<string, string> = {
-  recall: "the vault",
-  retrieve: "sources",
-  extract: "small model",
-  synthesize: "large model",
-  contradict: "small model",
-  judge: "other family",
-  remember: "the vault",
+  recall: "The vault",
+  retrieve: "Sources",
+  extract: "Small model",
+  synthesize: "Large model",
+  contradict: "Small model",
+  judge: "Other family",
+  remember: "The vault",
 };
 
 export function DeskConsole({ examples }: { examples: string[] }) {
@@ -170,7 +170,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
         className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]"
       >
         <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
-          <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Ask the Desk</span>
+          <span className="font-mono text-[12px] font-medium text-slate-300">Ask the Desk</span>
           <span className="font-mono text-[11px] text-slate-500">
             {pending
               ? `${(elapsed / 1000).toFixed(1)} s`
@@ -221,7 +221,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
       </form>
 
       <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]" aria-live="polite">
-        <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-400">
+        <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[12px] font-medium text-slate-300">
           The cascade
         </div>
         <ol className="divide-y divide-white/[0.06]">
@@ -246,10 +246,10 @@ export function DeskConsole({ examples }: { examples: string[] }) {
       {result ? (
         <>
           <section className="grid gap-4 sm:grid-cols-4">
-            <Figure label="cost" value={costFigure(result.costComplete, result.receipt.totals.costEur)} />
-            <Figure label="time" value={`${(result.receipt.totals.latencyMs / 1000).toFixed(1)} s`} />
-            <Figure label="cited share" value={`${Math.round(result.groundingRate * 100)}%`} />
-            <Figure label="rubric" value={result.judgement ? `${result.judgement.score}/10` : "—"} />
+            <Figure label="Cost" value={costFigure(result.costComplete, result.receipt.totals.costEur)} />
+            <Figure label="Time" value={`${(result.receipt.totals.latencyMs / 1000).toFixed(1)} s`} />
+            <Figure label="Cited share" value={`${Math.round(result.groundingRate * 100)}%`} />
+            <Figure label="Rubric" value={result.judgement ? `${result.judgement.score}/10` : "—"} />
           </section>
           <p className="-mt-4 text-[12px] leading-[1.7] text-slate-500">
             Cited share is the part of the extracted claims whose quote was found in its source and reached the brief as a
@@ -260,16 +260,16 @@ export function DeskConsole({ examples }: { examples: string[] }) {
           {meter ? (
             <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
-                <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Edge meter</span>
+                <span className="font-mono text-[12px] font-medium text-slate-300">Edge meter</span>
                 <span className="font-mono text-[11px] text-slate-500">{meter.baselineLabel}</span>
               </div>
               <table className="w-full text-[13px]">
                 <thead>
-                  <tr className="border-b border-white/[0.06] text-left font-mono text-[10px] uppercase tracking-widest text-slate-500">
-                    <th className="px-5 py-2 font-normal">axis</th>
-                    <th className="px-5 py-2 font-normal">this cascade</th>
-                    <th className="px-5 py-2 font-normal">closed API</th>
-                    <th className="px-5 py-2 text-right font-normal">multiple</th>
+                  <tr className="border-b border-white/[0.06] text-left font-mono text-[11px] text-slate-400">
+                    <th className="px-5 py-2 font-normal">Axis</th>
+                    <th className="px-5 py-2 font-normal">This cascade</th>
+                    <th className="px-5 py-2 font-normal">Closed API</th>
+                    <th className="px-5 py-2 text-right font-normal">Multiple</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/[0.06]">
@@ -299,7 +299,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
 
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Brief</span>
+              <span className="font-mono text-[12px] font-medium text-slate-300">Brief</span>
               <span className="font-mono text-[11px] text-slate-500">{result.receipt.subject.name}</span>
             </div>
             <div className="px-5 py-5">
@@ -309,7 +309,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
 
           {references.length > 0 ? (
             <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
-              <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-400">
+              <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[12px] font-medium text-slate-300">
                 References
               </div>
               <ol className="divide-y divide-white/[0.06]">
@@ -335,7 +335,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
 
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Memory</span>
+              <span className="font-mono text-[12px] font-medium text-slate-300">Memory</span>
               <span className="font-mono text-[11px] text-slate-500">
                 {result.related.length} recalled · {result.remembered} written
               </span>
@@ -344,7 +344,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
               <ul className="divide-y divide-white/[0.06]">
                 {result.contradictions.map((item) => (
                   <li key={item.priorId} className="px-5 py-4">
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-amber-300">Disagrees with memory</div>
+                    <div className="font-mono text-[11px] font-medium text-amber-300">Disagrees with memory</div>
                     <p className="mt-2 text-[14px] leading-[1.8] text-slate-300">
                       <span className="text-slate-500">held:</span> {item.priorClaim}
                     </p>
@@ -377,7 +377,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
           </section>
 
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
-            <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-400">
+            <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[12px] font-medium text-slate-300">
               Sources retrieved
             </div>
             <ul className="divide-y divide-white/[0.06]">
@@ -398,28 +398,28 @@ export function DeskConsole({ examples }: { examples: string[] }) {
 
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
-              <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Receipt</span>
+              <span className="font-mono text-[12px] font-medium text-slate-300">Receipt</span>
               <span className="font-mono text-[11px] text-slate-500">
                 {result.signed ? "signed" : "draft, unsigned"} · {result.receipt.verdict}
               </span>
             </div>
             <dl className="divide-y divide-white/[0.06] text-[12px]">
-              <Row label="receipt id" value={result.receipt.receiptId} />
-              {result.unsignedReason ? <Row label="unsigned" value={result.unsignedReason} /> : null}
+              <Row label="Receipt ID" value={result.receipt.receiptId} />
+              {result.unsignedReason ? <Row label="Unsigned" value={result.unsignedReason} /> : null}
               <Row
-                label="cost"
+                label="Cost"
                 value={
                   result.costComplete
                     ? eur(result.receipt.totals.costEur)
                     : `${costFigure(false, result.receipt.totals.costEur)}; left out: ${(result.unaccounted ?? []).map(gapPhrase).join("; ") || result.unpricedStages.join(", ")}`
                 }
               />
-              <Row label="subject sha256" value={result.receipt.subject.digest.sha256} />
+              <Row label="Subject SHA-256" value={result.receipt.subject.digest.sha256} />
               <Row
-                label="tokens"
+                label="Tokens"
                 value={`${result.receipt.totals.tokens.input.toLocaleString("en-US")} in · ${result.receipt.totals.tokens.output.toLocaleString("en-US")} out`}
               />
-              {result.judgement ? <Row label="judge" value={result.judgement.rationale} /> : null}
+              {result.judgement ? <Row label="Judge" value={result.judgement.rationale} /> : null}
             </dl>
           </section>
         </>
@@ -427,7 +427,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
 
       <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
-          <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Room mode</span>
+          <span className="font-mono text-[12px] font-medium text-slate-300">Room mode</span>
           <button
             type="button"
             onClick={() => setRoomUrl((current) => (current ? "" : `${window.location.origin}/desk`))}
@@ -480,7 +480,7 @@ function Brief({ text }: { text: string }) {
     <div className="space-y-5">
       {blocks.map((block) => (
         <section key={block.heading}>
-          <h3 className="font-mono text-[10px] uppercase tracking-widest text-violet-400">{block.heading}</h3>
+          <h3 className="text-[13px] font-semibold text-violet-300">{sentenceCase(block.heading)}</h3>
           <p className="mt-2 whitespace-pre-wrap text-[14px] leading-[1.9] text-slate-300">{block.body}</p>
         </section>
       ))}
@@ -488,10 +488,15 @@ function Brief({ text }: { text: string }) {
   );
 }
 
+/** "HYPOTHESIS" as "Hypothesis": the brief's headings shown in sentence case. Mixed-case text is left alone. */
+function sentenceCase(heading: string): string {
+  return heading === heading.toUpperCase() ? heading.charAt(0) + heading.slice(1).toLowerCase() : heading;
+}
+
 function Figure({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-white/[0.1] bg-[#0c0c12] px-5 py-4">
-      <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">{label}</div>
+      <div className="font-mono text-[11px] font-medium text-slate-400">{label}</div>
       <div className="mt-1 font-mono text-[22px] tabular-nums text-white">{value}</div>
     </div>
   );
@@ -500,7 +505,7 @@ function Figure({ label, value }: { label: string; value: string }) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-wrap gap-x-4 gap-y-1 px-5 py-3">
-      <dt className="w-32 shrink-0 font-mono text-[11px] uppercase tracking-widest text-slate-500">{label}</dt>
+      <dt className="w-32 shrink-0 font-mono text-[11px] font-medium text-slate-400">{label}</dt>
       <dd className="min-w-0 flex-1 break-all font-mono text-[11px] text-slate-300">{value}</dd>
     </div>
   );
