@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { PRICING, baselineCostEur, isPaidStage, isVerified, modelCostEur, pricingIsComplete, retrievalCostEur, unpricedStages } from "./pricing.ts";
+import { PRICING, baselineCostEur, isPaidStage, isVerified, isVerifiedCallPrice, modelCostEur, pricingIsComplete, retrievalCostEur, unpricedStages } from "./pricing.ts";
 
 test("an unverified price yields no euro figure at all", () => {
   assert.equal(modelCostEur("openai/gpt-oss-120b", 1_000_000, 1_000_000), null);
@@ -32,6 +32,31 @@ test("a half-filled price stays unverified", () => {
   assert.equal(isVerified({ eurPerMillionInput: 1, eurPerMillionOutput: null, verifiedAt: "2026-09-22" }), false);
   assert.equal(isVerified({ eurPerMillionInput: 1, eurPerMillionOutput: 2, verifiedAt: null }), false);
   assert.equal(isVerified(undefined), false);
+});
+
+test("a negative, infinite or NaN rate, or a date that is not a real date, leaves a price unverified", () => {
+  const ok = { eurPerMillionInput: 1, eurPerMillionOutput: 2, verifiedAt: "2026-09-22" };
+  assert.equal(isVerified(ok), true);
+  assert.equal(isVerified({ ...ok, eurPerMillionInput: 0 }), true, "a free rate is a real rate");
+  assert.equal(isVerified({ ...ok, verifiedAt: "2026-09-22T10:00:00Z" }), true);
+  for (const bad of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
+    assert.equal(isVerified({ ...ok, eurPerMillionInput: bad }), false, `input rate ${bad}`);
+    assert.equal(isVerified({ ...ok, eurPerMillionOutput: bad }), false, `output rate ${bad}`);
+  }
+  for (const date of ["yes", "x", "2026-02-30", "2026-13-01", "22.09.2026", " 2026-09-22"]) {
+    assert.equal(isVerified({ ...ok, verifiedAt: date }), false, `date ${JSON.stringify(date)}`);
+  }
+  const table = { ...PRICING, models: { m: { ...ok, eurPerMillionInput: -1, source: "console" } } };
+  assert.equal(modelCostEur("m", 1000, 1000, table), null, "a negative rate yields no euro figure");
+});
+
+test("a retrieval price must be a finite, nonnegative rate with a real date", () => {
+  const table = (eurPerCall, verifiedAt) => ({ ...PRICING, retrieval: { tavily: { eurPerCall, verifiedAt, source: "console" } } });
+  assert.equal(retrievalCostEur("tavily", 1, table(0.008, "2026-09-22")), 0.008);
+  assert.equal(retrievalCostEur("tavily", 1, table(-0.008, "2026-09-22")), null);
+  assert.equal(retrievalCostEur("tavily", 1, table(Number.NaN, "2026-09-22")), null);
+  assert.equal(retrievalCostEur("tavily", 1, table(0.008, "soon")), null);
+  assert.equal(isVerifiedCallPrice({ eurPerCall: 0.008, verifiedAt: "2026-09-22" }), true);
 });
 
 test("the shipped table names the three cascade models and the baseline", () => {

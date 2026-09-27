@@ -20,10 +20,12 @@ break.
 | judge | `openai/gpt-oss-120b` | a different family scores the result, so the writer is not its own referee |
 | remember | none | the run's claims append to the vault as beliefs the next run must face |
 
-A stage is `ok` only when its output is usable. Synthesis fails when the brief
-is missing any of the six sections (note "missing sections: …", headings only,
-never model text); the brief still goes back to the caller and the judge still
-scores it, but the verdict cannot be `PASS`. The vault is unaffected: remember
+A stage is `ok` only when its output is usable. Synthesis fails unless the brief
+carries the six sections as Markdown headings, each once and in order; a
+section's name inside a sentence is not a heading. The note says which are
+missing, or "out of order or repeated", and never quotes model text. The brief
+still goes back to the caller and the judge still scores it, but the verdict
+cannot be `PASS`. The vault is unaffected: remember
 writes the verified claims, never the brief. Contradict fails on an answer that
 is not JSON or has no `contradictions` list ("invalid contradiction response");
 an empty list is a valid answer. The judge fails ("unparsable verdict") unless
@@ -83,8 +85,10 @@ does not.
 
 What memory is for here is not recalling agreement. It is the moment the Desk
 says something the vault already said otherwise, and says so on screen with both
-claims side by side. A contradiction naming a belief that was not recalled is
-dropped rather than shown.
+claims side by side. A contradiction is shown only when it names a belief that
+was recalled and one of this run's own claims, matched after the same
+normalization the quote check uses; the screen then shows the run's claim text,
+not the model's wording. Any other entry is dropped.
 
 A vault line is read as a belief only when every field (`id`, `kind`,
 `question`, `claim`, `quote`, `url`, `confidence`, `receiptId`, `at`) is present
@@ -183,7 +187,7 @@ as a reservation, in `run-limit.ts`:
   at its ceiling.
 
 The worst case is a constant, `WORST_CASE_RUN_TOKENS` in `cascade.ts`, about
-392,000 tokens. Every input a prompt can carry is capped: the question at 400
+396,000 tokens. Every input a prompt can carry is capped: the question at 400
 characters, 8 sources, 2,400 characters of text per source, titles at 200,
 URLs at 512 (a longer one is dropped, since a cut URL cannot be cited), 12
 claims of at most 400 characters in the prompts that carry them, 6 recalled
@@ -227,7 +231,9 @@ included. A null price means the Desk reports tokens and seconds and withholds
 euros. Nothing estimates. Day-prep step F4 fills the table from the Token
 Factory and Tavily consoles and dates each entry; from that moment every euro on
 screen is a figure a person checked, and the edge meter can put the closed-API
-baseline beside it.
+baseline beside it. A price counts only when its rates are finite and zero or
+more and its date is a real `YYYY-MM-DD` date; a negative, `NaN` or undated
+entry stays unpriced.
 
 A run is cost-complete only when every stage that did paid work carries a euro
 figure: each model stage that ran, and retrieval. A model stage gets a figure
@@ -282,8 +288,11 @@ proven; still open the page once on the demo laptop (Tuesday check 10).
 `src/lib/desk/edge-meter.ts` prices the same run twice: the cascade's own euros
 against what those identical token counts would cost on a closed API at its
 published list price, plus rubric, seconds, and the cited share. The Desk's own
-euros show only for a cost-complete run. Both sides stay "unpriced" until the console numbers land, and the
-multiple is withheld rather than guessed.
+euros show only for a cost-complete run. Both sides stay "unpriced" until the
+console numbers land, and the multiple is withheld rather than guessed. When a
+model call did not report its token counts, the baseline shows "usage
+unreported" instead of a figure priced from partial counts. The multiple reads
+"cheaper", "more expensive" or "same cost", whichever way the numbers point.
 
 ## Room mode
 

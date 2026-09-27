@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import { edgeMeter } from "@/lib/desk/edge-meter";
-import { costFigure, costWarning, gapPhrase, type CostGap } from "@/lib/desk/cost-copy";
+import { costFigure, costWarning, gapPhrase, USAGE_UNREPORTED, type CostGap } from "@/lib/desk/cost-copy";
 import { referenceList } from "@/lib/desk/references";
 import { RoomQr } from "./RoomQr";
 
@@ -146,6 +146,8 @@ export function DeskConsole({ examples }: { examples: string[] }) {
       rubricScore: result.judgement?.score ?? null,
       // The run's own euros are only shown when every paid stage was priced.
       pricesVerified: result.costComplete,
+      // The baseline is priced from the same token counts, so it needs them all.
+      tokensComplete: !(result.unaccounted ?? []).some((gap) => gap.reason === USAGE_UNREPORTED),
     });
   }, [result]);
 
@@ -277,7 +279,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
                       <td className="px-5 py-3 font-mono tabular-nums text-white">{row.ours}</td>
                       <td className="px-5 py-3 font-mono tabular-nums text-slate-400">{row.baseline}</td>
                       <td className="px-5 py-3 text-right font-mono tabular-nums text-violet-300">
-                        {row.ratio === null ? "" : `${row.ratio}x cheaper`}
+                        {row.comparison ?? ""}
                       </td>
                     </tr>
                   ))}

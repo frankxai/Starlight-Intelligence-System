@@ -36,6 +36,7 @@ import {
   parseContradictions,
   parseJudgement,
   runDesk,
+  sectionsInOrder,
   sectionsPresent,
   MODELS,
 } from "./cascade.ts";
@@ -171,6 +172,48 @@ test("an injected id nonce makes ids deterministic", async () => {
   const run = await runDesk({ ...config(fullScript()), idNonce: () => "fixed" });
   assert.equal(run.receipt.run.id, `run_${(1_790_000_000_000).toString(36)}_fixed`);
   assert.equal(run.receipt.receiptId, "rcpt_1790000000000_fixed");
+});
+
+test("a section counts only as a Markdown heading, and the six must come once each in order", () => {
+  assert.deepEqual(sectionsPresent("## HYPOTHESIS\nMETHOD SETUP RESULTS TAKEAWAY NEXT"), ["HYPOTHESIS"], "names inside prose are not headings");
+  assert.deepEqual(missingSections("## HYPOTHESIS\nMETHOD SETUP RESULTS TAKEAWAY NEXT"), ["METHOD", "SETUP", "RESULTS", "TAKEAWAY", "NEXT"]);
+  assert.equal(sectionsInOrder(BRIEF), true);
+  assert.equal(sectionsInOrder(BRIEF.replace("## HYPOTHESIS", "## **Hypothesis:**")), true, "case, emphasis and a colon are ignored");
+  const swapped = BRIEF.replace("## RESULTS", "## TMP").replace("## TAKEAWAY", "## RESULTS").replace("## TMP", "## TAKEAWAY");
+  assert.deepEqual(missingSections(swapped), []);
+  assert.equal(sectionsInOrder(swapped), false, "all six present but out of order");
+  assert.equal(sectionsInOrder(`${BRIEF}\n## NEXT\nAgain.`), false, "a repeated heading");
+});
+
+test("a brief with all six headings out of order fails synthesis", async () => {
+  const swapped = BRIEF.replace("## RESULTS", "## TMP").replace("## TAKEAWAY", "## RESULTS").replace("## TMP", "## TAKEAWAY");
+  const run = await runDesk(
+    config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(swapped, 2000, 600),
+        completion(JSON.stringify({ score: 7, rationale: "Ordered badly." }), 900, 80),
+      ]),
+    ),
+  );
+  const synthesize = run.receipt.stages.find((stage) => stage.name === "synthesize");
+  assert.equal(synthesize.status, "failed");
+  assert.equal(synthesize.note, "6/6 sections · out of order or repeated · unpriced");
+  assert.equal(run.receipt.verdict, "PARTIAL");
+});
+
+test("a stage that fails still records how long it took", async () => {
+  let tick = 1_790_000_000_000;
+  const failing = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    { ok: false, status: 400, json: async () => ({}), text: async () => "bad request" },
+  ]);
+  const run = await runDesk({ ...config(failing), now: () => (tick += 1000) });
+  const extract = run.receipt.stages.find((stage) => stage.name === "extract");
+  assert.equal(extract.status, "failed");
+  assert.equal(extract.latencyMs, 1000, "the failed call's elapsed time is on the stage");
+  assert.ok(run.receipt.totals.latencyMs >= 1000, "and in the totals");
 });
 
 test("a brief missing required sections fails synthesis, so the verdict cannot be PASS", async () => {
@@ -346,8 +389,9 @@ test("a run writes its claims to the vault, and the next run reads them back", a
         completion(
           JSON.stringify({
             contradictions: [
-              { priorId: stored[0].id, newClaim: "Alpha fails.", reason: "Opposite finding." },
-              { priorId: "never-held", newClaim: "Invented disagreement.", reason: "None." },
+              { priorId: stored[0].id, newClaim: "- beta  replicated the finding", reason: "Opposite finding." },
+              { priorId: stored[1].id, newClaim: "Alpha fails.", reason: "A claim this run never made." },
+              { priorId: "never-held", newClaim: "Beta replicated the finding", reason: "None." },
             ],
           }),
           800,
@@ -363,9 +407,9 @@ test("a run writes its claims to the vault, and the next run reads them back", a
   assert.deepEqual(
     second.contradictions.map((item) => item.priorClaim),
     ["The alpha effect held in all three trials"],
-    "a contradiction against a belief nobody holds is dropped",
+    "a contradiction against a belief nobody holds, or naming a claim this run never made, is dropped",
   );
-  assert.equal(second.contradictions[0].newClaim, "Alpha fails.");
+  assert.equal(second.contradictions[0].newClaim, "Beta replicated the finding", "the run's own claim text, not the model's");
   assert.deepEqual(
     second.receipt.stages.map((stage) => `${stage.name}:${stage.status}`),
     ["recall:ok", "retrieve:ok", "extract:ok", "synthesize:ok", "contradict:ok", "judge:ok", "remember:ok"],
@@ -544,17 +588,39 @@ test("contradictions are kept only where they name a belief that was recalled", 
   const held = [
     { id: "a", kind: "belief", question: "q", claim: "Held one.", quote: "q", url: "u", confidence: 1, receiptId: "r", at: "t" },
   ];
-  assert.equal(parseContradictions("not json", held), null, "malformed is not the same as empty");
-  assert.equal(parseContradictions(JSON.stringify({ contradictions: "nope" }), held), null);
-  assert.equal(parseContradictions(JSON.stringify({ other: [] }), held), null, "a missing list is malformed");
-  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [] }), held), [], "an empty list is a valid answer");
-  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [{ priorId: "b", newClaim: "x" }] }), held), []);
-  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [{ priorId: "a", newClaim: "" }] }), held), []);
+  const made = [
+    { index: 1, text: "Claim x", quote: "Claim x", url: "u", confidence: 1 },
+    { index: 2, text: "Claim y", quote: "Claim y", url: "u", confidence: 1 },
+  ];
+  assert.equal(parseContradictions("not json", held, made), null, "malformed is not the same as empty");
+  assert.equal(parseContradictions(JSON.stringify({ contradictions: "nope" }), held, made), null);
+  assert.equal(parseContradictions(JSON.stringify({ other: [] }), held, made), null, "a missing list is malformed");
+  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [] }), held, made), [], "an empty list is a valid answer");
+  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [{ priorId: "b", newClaim: "Claim x" }] }), held, made), []);
+  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [{ priorId: "a", newClaim: "" }] }), held, made), []);
   const twice = parseContradictions(
-    JSON.stringify({ contradictions: [{ priorId: "a", newClaim: "x" }, { priorId: "a", newClaim: "y" }] }),
+    JSON.stringify({ contradictions: [{ priorId: "a", newClaim: "Claim x" }, { priorId: "a", newClaim: "Claim y" }] }),
     held,
+    made,
   );
-  assert.deepEqual(twice, [{ priorId: "a", priorClaim: "Held one.", newClaim: "x", reason: "" }], "one entry per prior belief");
+  assert.deepEqual(twice, [{ priorId: "a", priorClaim: "Held one.", newClaim: "Claim x", reason: "" }], "one entry per prior belief");
+});
+
+test("a contradiction must name a claim this run made, or it is dropped", () => {
+  const held = [
+    { id: "a", kind: "belief", question: "q", claim: "Held one.", quote: "q", url: "u", confidence: 1, receiptId: "r", at: "t" },
+  ];
+  const long = `Alpha ${"x".repeat(450)}`;
+  const made = [
+    { index: 1, text: "The alpha effect held in all three trials", quote: "q", url: "u", confidence: 1 },
+    { index: 2, text: long, quote: "q", url: "u", confidence: 1 },
+  ];
+  const parse = (newClaim) => parseContradictions(JSON.stringify({ contradictions: [{ priorId: "a", newClaim, reason: "r" }] }), held, made);
+  assert.deepEqual(parse("The alpha effect failed in every trial"), [], "a fabricated claim is dropped");
+  assert.deepEqual(parse("The alpha effect held"), [], "a fragment of a claim is not the claim");
+  assert.equal(parse("the Alpha effect held in all  three trials")[0].newClaim, "The alpha effect held in all three trials", "case and spacing are normalized");
+  assert.equal(parse("- The alpha effect held in all three trials")[0].newClaim, "The alpha effect held in all three trials", "the prompt's list marker is ignored");
+  assert.equal(parse(long.slice(0, 400))[0].newClaim, long, "a claim as the prompt truncated it maps back to the full claim");
 });
 
 function contradictRun(answer) {

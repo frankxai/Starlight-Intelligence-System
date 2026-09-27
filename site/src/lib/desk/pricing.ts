@@ -59,15 +59,31 @@ function unpriced(): ModelPrice {
   return { eurPerMillionInput: null, eurPerMillionOutput: null, verifiedAt: null, source: "unverified" };
 }
 
-/** A price is usable when both halves are present and a person dated them. */
+/** A rate is usable when it is a finite number of euros, zero or more. */
+export function isRate(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
+/** A verification date is a real calendar date, written YYYY-MM-DD, optionally followed by an ISO time. */
+export function isVerificationDate(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})(T[\d:.]+(Z|[+-]\d{2}:\d{2})?)?$/);
+  if (!match) return false;
+  const [year, month, day] = [Number(match[1]), Number(match[2]), Number(match[3])];
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day && !Number.isNaN(Date.parse(value));
+}
+
+/** A price is usable when both halves are finite, nonnegative rates and a person dated them with a real date. */
 export function isVerified(price: Pick<ModelPrice, "eurPerMillionInput" | "eurPerMillionOutput" | "verifiedAt"> | undefined): boolean {
   return Boolean(
-    price &&
-      typeof price.eurPerMillionInput === "number" &&
-      typeof price.eurPerMillionOutput === "number" &&
-      typeof price.verifiedAt === "string" &&
-      price.verifiedAt.length > 0,
+    price && isRate(price.eurPerMillionInput) && isRate(price.eurPerMillionOutput) && isVerificationDate(price.verifiedAt),
   );
+}
+
+/** A per-call retrieval price is usable on the same terms. */
+export function isVerifiedCallPrice(price: { eurPerCall: number | null; verifiedAt: string | null } | undefined): boolean {
+  return Boolean(price && isRate(price.eurPerCall) && isVerificationDate(price.verifiedAt));
 }
 
 /** Euros for one model call, or null when the model has no verified price. */
@@ -82,8 +98,8 @@ export function modelCostEur(model: string, inputTokens: number, outputTokens: n
 /** Euros for one retrieval call, or null when unpriced. */
 export function retrievalCostEur(provider: string, calls = 1, table: PricingTable = PRICING): number | null {
   const price = table.retrieval[provider];
-  if (!price || typeof price.eurPerCall !== "number" || !price.verifiedAt) return null;
-  return round4(price.eurPerCall * calls);
+  if (!isVerifiedCallPrice(price)) return null;
+  return round4((price.eurPerCall as number) * calls);
 }
 
 /**
@@ -103,7 +119,7 @@ export function pricingIsComplete(table: PricingTable = PRICING): boolean {
   return (
     Object.values(table.models).every((price) => isVerified(price)) &&
     Object.values(table.baselines).every((price) => isVerified(price)) &&
-    Object.values(table.retrieval).every((price) => typeof price.eurPerCall === "number" && Boolean(price.verifiedAt))
+    Object.values(table.retrieval).every((price) => isVerifiedCallPrice(price))
   );
 }
 

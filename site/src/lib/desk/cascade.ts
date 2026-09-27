@@ -260,7 +260,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${related.length} of ${atoms.length} prior beliefs`,
       });
     } catch (error) {
-      stages.push({ name: "recall", status: "failed", provider: "vault", note: failure(error) });
+      stages.push({ name: "recall", status: "failed", provider: "vault", latencyMs: now() - startedRecall, note: failure(error) });
     }
   } else {
     stages.push({ name: "recall", status: "skipped", provider: "vault", note: noVault });
@@ -270,6 +270,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   if (signal.aborted) {
     stages.push({ name: "retrieve", status: "skipped", provider: "tavily", note: DEADLINE_REACHED });
   } else {
+    const started = now();
     try {
       const found = await retrieve(question, maxSources, retrieval);
       sources = found.sources;
@@ -283,7 +284,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       });
     } catch (error) {
       usageUnknown.set("retrieve", CALL_COUNT_UNKNOWN);
-      stages.push({ name: "retrieve", status: "failed", provider: "tavily", note: failure(error) });
+      stages.push({ name: "retrieve", status: "failed", provider: "tavily", latencyMs: now() - started, note: failure(error) });
     }
   }
 
@@ -291,6 +292,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   if (signal.aborted) {
     stages.push({ name: "extract", status: "skipped", model: MODELS.extract, provider: "nebius", note: DEADLINE_REACHED });
   } else if (sources.length > 0) {
+    const started = now();
     try {
       const result = await chat(
         {
@@ -324,7 +326,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     } catch (error) {
       billableUsageComplete = false;
       usageUnknown.set("extract", USAGE_UNREPORTED);
-      stages.push({ name: "extract", status: "failed", model: MODELS.extract, provider: "nebius", note: failure(error) });
+      stages.push({ name: "extract", status: "failed", model: MODELS.extract, provider: "nebius", latencyMs: now() - started, note: failure(error) });
     }
   } else {
     stages.push({ name: "extract", status: "skipped", model: MODELS.extract, provider: "nebius", note: "no sources" });
@@ -334,6 +336,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   if (signal.aborted) {
     stages.push({ name: "synthesize", status: "skipped", model: MODELS.synthesize, provider: "nebius", note: DEADLINE_REACHED });
   } else if (claims.length > 0) {
+    const started = now();
     try {
       const result = await chat(
         {
@@ -348,28 +351,30 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         provider,
       );
       brief = result.text.trim();
-      // A brief missing a required section is a failed synthesis, so the
+      // A brief missing a required heading, or with the six out of order, is
+      // a failed synthesis, so the
       // verdict cannot be PASS. The text still goes back to the caller. The
       // note names only the missing headings, never the model's own text.
       const missing = missingSections(brief);
+      const ordered = sectionsInOrder(brief);
       billableUsageComplete &&= result.usageComplete;
       if (result.usageComplete) usageReported.add("synthesize");
       else usageUnknown.set("synthesize", USAGE_UNREPORTED);
       stages.push({
         name: "synthesize",
-        status: brief.length > 0 && missing.length === 0 ? "ok" : "failed",
+        status: missing.length === 0 && ordered ? "ok" : "failed",
         model: result.model,
         provider: "nebius",
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
         ...(result.usageComplete ? costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)) : {}),
-        note: sectionsNote(missing),
+        note: sectionsNote(missing, ordered),
       });
     } catch (error) {
       billableUsageComplete = false;
       usageUnknown.set("synthesize", USAGE_UNREPORTED);
-      stages.push({ name: "synthesize", status: "failed", model: MODELS.synthesize, provider: "nebius", note: failure(error) });
+      stages.push({ name: "synthesize", status: "failed", model: MODELS.synthesize, provider: "nebius", latencyMs: now() - started, note: failure(error) });
     }
   } else {
     stages.push({ name: "synthesize", status: "skipped", model: MODELS.synthesize, provider: "nebius", note: "no claims" });
@@ -381,6 +386,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   if (signal.aborted) {
     stages.push({ name: "contradict", status: "skipped", model: MODELS.contradict, provider: "nebius", note: DEADLINE_REACHED });
   } else if (related.length > 0 && claims.length > 0) {
+    const started = now();
     try {
       const result = await chat(
         {
@@ -397,7 +403,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       // null is a malformed answer (not JSON, or no contradictions list); an
       // empty list is a valid "nothing disagrees". Only the second is ok.
-      const found = parseContradictions(result.text, related);
+      const found = parseContradictions(result.text, related, claims);
       contradictions = found ?? [];
       billableUsageComplete &&= result.usageComplete;
       if (result.usageComplete) usageReported.add("contradict");
@@ -416,7 +422,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     } catch (error) {
       billableUsageComplete = false;
       usageUnknown.set("contradict", USAGE_UNREPORTED);
-      stages.push({ name: "contradict", status: "failed", model: MODELS.contradict, provider: "nebius", note: failure(error) });
+      stages.push({ name: "contradict", status: "failed", model: MODELS.contradict, provider: "nebius", latencyMs: now() - started, note: failure(error) });
     }
   } else {
     stages.push({
@@ -433,6 +439,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   if (signal.aborted) {
     stages.push({ name: "judge", status: "skipped", model: MODELS.judge, provider: "nebius", note: DEADLINE_REACHED });
   } else if (brief.length > 0) {
+    const started = now();
     try {
       const result = await chat(
         {
@@ -465,7 +472,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     } catch (error) {
       billableUsageComplete = false;
       usageUnknown.set("judge", USAGE_UNREPORTED);
-      stages.push({ name: "judge", status: "failed", model: MODELS.judge, provider: "nebius", note: failure(error) });
+      stages.push({ name: "judge", status: "failed", model: MODELS.judge, provider: "nebius", latencyMs: now() - started, note: failure(error) });
     }
   } else {
     stages.push({ name: "judge", status: "skipped", model: MODELS.judge, provider: "nebius", note: "no brief" });
@@ -496,7 +503,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${remembered} beliefs written`,
       });
     } catch (error) {
-      stages.push({ name: "remember", status: "failed", provider: "vault", note: failure(error) });
+      stages.push({ name: "remember", status: "failed", provider: "vault", latencyMs: now() - startedRemember, note: failure(error) });
     }
   } else {
     stages.push({
@@ -604,22 +611,46 @@ export function computeGroundingRate(brief: string, claims: Claim[]): number {
   return Math.round((cited / claims.length) * 100) / 100;
 }
 
-/** Which of the six sections the brief actually carries. */
-export function sectionsPresent(brief: string): string[] {
-  const upper = brief.toUpperCase();
-  return SECTIONS.filter((section) => upper.includes(section));
+/**
+ * The brief's Markdown headings that name a required section, in the order
+ * they appear. Only a heading line counts: a section's name inside a sentence
+ * does not. Case, emphasis marks and a trailing colon are ignored.
+ */
+export function sectionHeadings(brief: string): string[] {
+  const names: readonly string[] = SECTIONS;
+  const found: string[] = [];
+  for (const line of brief.split(/\r?\n/)) {
+    const heading = line.match(/^ {0,3}#{1,6}[ \t]+(.*?)[ \t#]*$/);
+    if (!heading) continue;
+    const name = heading[1].replace(/[*_:]/g, "").trim().toUpperCase();
+    if (names.includes(name)) found.push(name);
+  }
+  return found;
 }
 
-/** The required sections the brief does not carry, in order. */
+/** Which of the six sections the brief carries as headings. */
+export function sectionsPresent(brief: string): string[] {
+  const headings = new Set(sectionHeadings(brief));
+  return SECTIONS.filter((section) => headings.has(section));
+}
+
+/** The required sections the brief does not carry as headings, in order. */
 export function missingSections(brief: string): string[] {
   const present = new Set(sectionsPresent(brief));
   return SECTIONS.filter((section) => !present.has(section));
 }
 
-/** The synthesize stage's note: a count of sections, and which are missing. Fixed headings only. */
-function sectionsNote(missing: string[]): string {
+/** Whether the brief's section headings are the six, each once, in the required order. */
+export function sectionsInOrder(brief: string): boolean {
+  const headings = sectionHeadings(brief);
+  return headings.length === SECTIONS.length && headings.every((name, index) => name === SECTIONS[index]);
+}
+
+/** The synthesize stage's note: a count of sections, which are missing, and whether they are out of order. Fixed headings only. */
+function sectionsNote(missing: string[], ordered: boolean): string {
   const count = `${SECTIONS.length - missing.length}/${SECTIONS.length} sections`;
-  return missing.length === 0 ? count : `${count} · missing sections: ${missing.join(", ")}`;
+  if (missing.length > 0) return `${count} · missing sections: ${missing.join(", ")}`;
+  return ordered ? count : `${count} · out of order or repeated`;
 }
 
 /**
@@ -746,15 +777,23 @@ export const INVALID_CONTRADICTIONS = "invalid contradiction response";
 
 /**
  * Contradictions the model reported, kept only where they name a prior belief
- * that was actually recalled. One naming a belief nobody holds is dropped.
- * Returns null when the answer is malformed (not a JSON object, or without a
- * `contradictions` list), so it is never mistaken for a valid empty result.
+ * that was actually recalled and a claim this run actually made. `newClaim`
+ * must be one of this run's claims, as the prompt listed it (normalized as the
+ * quote check normalizes); the entry then carries the run's own claim text,
+ * never the model's. Returns null when the answer is malformed (not a JSON
+ * object, or without a `contradictions` list), so it is never mistaken for a
+ * valid empty result.
  */
-export function parseContradictions(text: string, related: VaultAtom[]): Contradiction[] | null {
+export function parseContradictions(text: string, related: VaultAtom[], current: Claim[]): Contradiction[] | null {
   const parsed = parseJsonObject(text);
   if (!parsed || !Array.isArray(parsed.contradictions)) return null;
   const raw: unknown[] = parsed.contradictions;
   const priors = new Map(related.map((atom) => [atom.id, atom]));
+  const made = new Map<string, string>();
+  for (const claim of current.slice(0, MAX_CLAIMS)) {
+    made.set(normalizeForQuote(claim.text), claim.text);
+    made.set(normalizeForQuote(claim.text.slice(0, MAX_CLAIM_CHARS)), claim.text);
+  }
   const found: Contradiction[] = [];
   const claimed = new Set<string>();
   for (const entry of raw) {
@@ -762,7 +801,7 @@ export function parseContradictions(text: string, related: VaultAtom[]): Contrad
     const record = entry as Record<string, unknown>;
     const priorId = str(record.priorId);
     const prior = priors.get(priorId);
-    const newClaim = str(record.newClaim);
+    const newClaim = made.get(normalizeForQuote(str(record.newClaim).replace(/^\s*-\s+/, "")));
     if (!prior || !newClaim || claimed.has(priorId)) continue;
     claimed.add(priorId);
     found.push({ priorId, priorClaim: prior.claim, newClaim, reason: str(record.reason) });
@@ -845,7 +884,7 @@ export const SYNTHESIZE_SYSTEM = `You write a research brief in six sections, in
 Every sentence that states a fact carries the citation marker [n] of the claim it rests on. A sentence you cannot cite is a sentence you do not write. Direct, technical, warm. No filler.`;
 
 export const CONTRADICT_SYSTEM = `You compare new claims against beliefs already held. Return JSON: {"contradictions":[{"priorId","newClaim","reason"}]}.
-Rules: "priorId" is the id of the held belief exactly as given; report only a direct disagreement of fact, never a difference of wording, scope, or date of measurement; when nothing disagrees return an empty list; one entry per held belief at most.`;
+Rules: "priorId" is the id of the held belief exactly as given; "newClaim" is one of the new claims exactly as given; report only a direct disagreement of fact, never a difference of wording, scope, or date of measurement; when nothing disagrees return an empty list; one entry per held belief at most.`;
 
 export const JUDGE_SYSTEM = `You score a research brief against a methodology rubric. Return JSON: {"score": 0-10, "rationale": "one sentence"}.
 Score for: falsifiability of the hypothesis, whether the method could be replicated, whether every factual sentence carries a citation, and whether the takeaway follows from the results.`;
