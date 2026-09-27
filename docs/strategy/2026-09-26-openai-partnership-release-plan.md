@@ -4,7 +4,7 @@ Status: proposed execution plan. This is an independent Starlight plan, not an O
 
 ## Decision
 
-Lead with a reproducible developer outcome: **take an agent capability from a source-controlled instruction to a bounded run, independent evaluation, and an inspectable receipt**. SIS Foundry owns the capability contract; Starlight Academy proves a public learner experience; Vercel hosts the public product surfaces. OpenAI is a prospective technology and distribution partner. No new venture, domain, or umbrella runtime is needed.
+The product north star is **Starlight Living Intelligence**: a person observes, understands, imagines, makes, tests and shares a result that another person can use. The first [Living Water Lab mission](2026-09-27-openai-multimodal-proof-spec.md) composes current Academy, Knowledge Tree, Blue Life Commons, Foundry, Desk and Observatory work. The enabling developer proof remains concrete: take a source-controlled capability through a bounded run, independent evaluation and inspectable receipt. SIS Foundry owns that contract; products own their human experiences; Vercel hosts product surfaces. OpenAI is a prospective technology and distribution collaborator. No new venture, domain or umbrella runtime is needed.
 
 The first external ask is technical feedback and a developer showcase conversation around a working artifact. Partnership, credits, co-marketing, enhanced directory placement, and early access are separate requests that require evidence and OpenAI's decision. Directory approval alone does not imply any of them.
 
@@ -40,7 +40,7 @@ The [27 September Living Intelligence proof](2026-09-27-openai-multimodal-proof-
 
 ## One proof package, three demonstrations
 
-**Core demonstration: Foundry release receipt.** Input: a small, real developer request and existing source-controlled skill. Output: typed scope, explicit tool grant and human gate, preview, bounded execution, independent verifier result, cost/latency/quality trace, and artifact hash. Show an unauthorized path being denied and a failed verifier leaving a recoverable draft. This is the candidate for Codex for Open Source and developer showcase consideration after live evidence.
+**Enabling demonstration: Foundry release receipt.** Input: a small, real developer request and existing source-controlled skill. Output: typed scope, explicit tool grant and human gate, preview, bounded execution, independent verifier result, cost/latency/quality trace, and artifact hash. Show an unauthorized path being denied and a failed verifier leaving a recoverable draft. This is the candidate for Codex for Open Source and developer showcase consideration after live evidence.
 
 **Education demonstration: Academy plugin.** In a fresh ChatGPT host, run the five positive and three negative cases in the Academy packet against the production MCP endpoint. Evidence must contain selected tools, host/version/region, UI result, errors, scan, and domain/publisher state. No badge, grading, learner database, model-training claim, or OpenAI listing is inferred from an authored curriculum response.
 
@@ -86,7 +86,7 @@ Public copy: “Starlight is independently built with OpenAI APIs and Codex-comp
 
 For each demonstration: task completion with human acceptance; citation/grounding where relevant; unauthorized-action denial; recovery after interruption; median and p95 latency; total tokens and billed cost; cache hit rate; independent verifier pass; user activation and week-two repeat use. Compare against a frozen baseline and record failures. Gate promotion on quality and unit economics together, not the number of agents or generated assets.
 
-The decisive next move is to complete **one frozen Foundry-to-Codex run with a denied tool case and signed receipt**, then use that same evidence in the partner memo and public technical note. If it cannot be reproduced, partnership outreach stays a request for feedback on an experiment.
+The decisive next move is a **Living Water Lab case with a human correction, a denied tool action and an inspectable receipt**, using the existing Foundry-to-Codex baseline as its bounded execution proof. The first case must be reproducible and distinguish a generated concept from physical evidence before it anchors a partnership narrative.
 
 ## Source of truth and review
 
