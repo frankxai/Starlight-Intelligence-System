@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import { edgeMeter } from "@/lib/desk/edge-meter";
+import { costFigure, costWarning, gapPhrase, type CostGap } from "@/lib/desk/cost-copy";
 import { RoomQr } from "./RoomQr";
 
 interface Stage {
@@ -60,6 +61,7 @@ interface DeskResponse {
   pricesVerified: boolean;
   costComplete: boolean;
   unpricedStages: string[];
+  unaccounted?: CostGap[];
   /** True when the receipt is not signed. */
   draft?: boolean;
   /** "total", or "priced-stage subtotal" when the run is cost-incomplete. */
@@ -229,7 +231,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
       {result ? (
         <>
           <section className="grid gap-4 sm:grid-cols-4">
-            <Figure label="cost" value={result.costComplete ? eur(result.receipt.totals.costEur) : "unpriced"} />
+            <Figure label="cost" value={costFigure(result.costComplete, result.receipt.totals.costEur)} />
             <Figure label="time" value={`${(result.receipt.totals.latencyMs / 1000).toFixed(1)} s`} />
             <Figure label="cited share" value={`${Math.round(result.groundingRate * 100)}%`} />
             <Figure label="rubric" value={result.judgement ? `${result.judgement.score}/10` : "—"} />
@@ -273,9 +275,10 @@ export function DeskConsole({ examples }: { examples: string[] }) {
 
           {!result.costComplete ? (
             <p className="rounded-lg border border-amber-400/25 bg-amber-400/[0.05] px-4 py-3 text-[12px] leading-[1.7] text-amber-200/90">
-              These stages did paid work without a verified price, a reported token count, or a known call count: {result.unpricedStages.join(", ")}. So this run reports tokens and
-              seconds, withholds euros, and ships its receipt unsigned. Fill the prices from the provider consoles in{" "}
-              <span className="font-mono">src/lib/desk/pricing.ts</span> and every figure here becomes a number someone checked.
+              {costWarning(
+                result.receipt.totals.costEur,
+                result.unaccounted ?? result.unpricedStages.map((stage) => ({ stage, reason: "unpriced" })),
+              )}
             </p>
           ) : null}
 
@@ -368,7 +371,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
                 value={
                   result.costComplete
                     ? eur(result.receipt.totals.costEur)
-                    : `subtotal ${eur(result.receipt.totals.costEur)}, unaccounted: ${result.unpricedStages.join(", ")}`
+                    : `${costFigure(false, result.receipt.totals.costEur)}; left out: ${(result.unaccounted ?? []).map(gapPhrase).join("; ") || result.unpricedStages.join(", ")}`
                 }
               />
               <Row label="subject sha256" value={result.receipt.subject.digest.sha256} />

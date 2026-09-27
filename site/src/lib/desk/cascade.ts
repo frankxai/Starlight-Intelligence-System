@@ -30,6 +30,7 @@
  * Built on SIP — operational tier.
  */
 import { chat, type ProviderConfig } from "./provider";
+import { CALL_COUNT_UNKNOWN, UNPRICED, USAGE_UNREPORTED } from "./cost-copy";
 import { PRICING, modelCostEur, pricingIsComplete, retrievalCostEur, unpricedStages, type PricingTable } from "./pricing";
 import { MAX_SOURCE_CHARS, MAX_TITLE_CHARS, MAX_URL_CHARS, retrieve, type RetrieveConfig, type Source } from "./retrieve";
 import {
@@ -124,6 +125,8 @@ export interface DeskRun {
   costComplete: boolean;
   /** Paid stages without a euro figure: no verified price, or usage the provider did not report. */
   unpricedStages: string[];
+  /** The same stages, each with the reason it has no euro figure. */
+  unaccounted: { stage: string; reason: string }[];
   /** Internal spend guard; deliberately separate from receipt cost completeness. */
   billableUsageComplete: boolean;
 }
@@ -535,6 +538,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     pricesVerified: pricingIsComplete(table),
     costComplete: unaccounted.length === 0,
     unpricedStages: unaccounted,
+    unaccounted: unaccounted.map((stage) => ({ stage, reason: gapOf(stage) })),
     billableUsageComplete,
   };
 }
@@ -579,10 +583,7 @@ export function sectionsPresent(brief: string): string[] {
 export const COST_SUBTOTAL_NOTE =
   "cost-incomplete: totals.costEur is the subtotal of priced stages only, and this receipt is an unsigned draft";
 
-/** Why a paid stage carries no euro figure. */
-export const UNPRICED = "unpriced";
-export const USAGE_UNREPORTED = "usage unreported";
-export const CALL_COUNT_UNKNOWN = "call count unknown";
+export { CALL_COUNT_UNKNOWN, UNPRICED, USAGE_UNREPORTED } from "./cost-copy";
 
 export const MIN_QUOTE_CHARS = 20;
 

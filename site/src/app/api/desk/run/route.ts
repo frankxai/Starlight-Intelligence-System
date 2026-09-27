@@ -170,6 +170,7 @@ export async function POST(request: Request) {
       pricesVerified: run.pricesVerified,
       costComplete: run.costComplete,
       unpricedStages: run.unpricedStages,
+      unaccounted: run.unaccounted,
       // Until the receipt schema can say "unknown", a cost-incomplete receipt's
       // totals.costEur is the subtotal of priced stages; name that here too.
       draft: !envelope,
