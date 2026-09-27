@@ -164,13 +164,23 @@ validated, so malformed requests cannot use up the day.
 
 **The token budget.** A run count is not a spend ceiling: one run can cost far
 more than another. `DESK_DAILY_TOKEN_BUDGET` (default 2,000,000; `0` closes the
-Desk; anything unparsable falls back to the default) needs no prices. Before a
-run the route reads the day's total and refuses with 429 when that total plus
-one run's worst case would pass the budget. After the run it adds the tokens
-the run used with one pipelined `INCRBY` and `EXPIRE`. A model stage whose one
-attempt reported both token counts is charged what it reported, and a reported
-zero counts as zero. A model stage that ran with usage missing, malformed, or
-spread over a retry is charged its worst case, never zero.
+Desk; anything unparsable falls back to the default) needs no prices. It works
+as a reservation, in `run-limit.ts`:
+
+- **Reserve, before any paid work.** One Redis `EVAL` reads the day's total and,
+  in the same atomic step, either refuses with 429 and changes nothing (when the
+  total plus one run's worst case would pass the budget), or adds that worst
+  case to the total and refreshes the key's expiry. Every run reserves before it
+  spends, so runs arriving at once cannot together pass the budget.
+- **Give it back when no paid work happens.** If the daily run ceiling then
+  refuses the request, or its counter cannot be reached, the reservation is
+  returned before the refusal.
+- **Reconcile, only on known usage.** After the run, when every model call ran
+  once and reported both token counts, a second `EVAL` replaces the reservation
+  with the tokens actually used; a reported zero counts as zero. Otherwise,
+  meaning usage missing or malformed, a retry, or a reconcile call that fails,
+  the full worst case stays charged, so spend the Desk cannot count is counted
+  at its ceiling.
 
 The worst case is a constant, `WORST_CASE_RUN_TOKENS` in `cascade.ts`, about
 392,000 tokens. Every input a prompt can carry is capped: the question at 400
@@ -184,10 +194,6 @@ three tokens per UTF-16 code unit (a byte-level tokenizer emits at most one
 token per UTF-8 byte), plus 256 tokens of chat template, doubled for the one
 retry. Real runs use a small fraction of it. A test sends a run oversized
 multibyte inputs and checks every request fits its stage's bound.
-
-One gap is known: concurrent runs each pass the check before any records, so
-the budget can be overshot by the runs in flight at once, each at most the
-worst case.
 
 **The deadline.** A run has one deadline, `DESK_RUN_DEADLINE_MS` (default
 55,000, clamped to 5,000 to 55,000), counted from the start of the request. One
