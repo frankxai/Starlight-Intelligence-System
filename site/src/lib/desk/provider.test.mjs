@@ -56,10 +56,24 @@ test("explicit zero counts are complete when both fields are reported", async ()
   assert.equal(result.usageComplete, true);
 });
 
-test("malformed or negative token counts make usage incomplete", async (t) => {
+test("non-negative safe integer counts are complete when both fields are reported", async () => {
+  const result = await chat(REQUEST, {
+    apiKey: "test",
+    fetchImpl: async () => completion({ prompt_tokens: 17, completion_tokens: 3 }),
+  });
+
+  assert.equal(result.inputTokens, 17);
+  assert.equal(result.outputTokens, 3);
+  assert.equal(result.usageComplete, true);
+});
+
+test("invalid token counts make usage incomplete", async (t) => {
   const cases = [
     ["malformed input", { prompt_tokens: "10", completion_tokens: 2 }],
     ["negative input", { prompt_tokens: -1, completion_tokens: 2 }],
+    ["tiny fractional input", { prompt_tokens: 0.01, completion_tokens: 2 }],
+    ["fractional output", { prompt_tokens: 10, completion_tokens: 1.5 }],
+    ["unsafe integer input", { prompt_tokens: Number.MAX_SAFE_INTEGER + 1, completion_tokens: 2 }],
     ["malformed output", { prompt_tokens: 10, completion_tokens: Number.NaN }],
     ["negative output", { prompt_tokens: 10, completion_tokens: -1 }],
   ];
@@ -71,6 +85,8 @@ test("malformed or negative token counts make usage incomplete", async (t) => {
         fetchImpl: async () => completion(usage),
       });
       assert.equal(result.usageComplete, false);
+      assert.equal(result.inputTokens, Number.isSafeInteger(usage.prompt_tokens) && usage.prompt_tokens >= 0 ? usage.prompt_tokens : 0);
+      assert.equal(result.outputTokens, Number.isSafeInteger(usage.completion_tokens) && usage.completion_tokens >= 0 ? usage.completion_tokens : 0);
     });
   }
 });

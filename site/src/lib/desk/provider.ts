@@ -194,7 +194,7 @@ function extractUsage(payload: unknown): { input: number; output: number; comple
 }
 
 function isReportedTokenCount(value: unknown): value is number {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
 function numberOr(value: unknown, fallback: number): number {
