@@ -19,6 +19,7 @@ import {
   ATTEMPTS_PER_STAGE,
   MIN_QUOTE_CHARS,
   checkClaims,
+  claimMatchesQuote,
   extractPrompt,
   normalizeForQuote,
   quoteInSource,
@@ -66,8 +67,8 @@ function completion(content, input = 1000, output = 200) {
 
 const CLAIMS_JSON = JSON.stringify({
   claims: [
-    { text: "Alpha holds.", quote: "The alpha effect held in all three trials", url: "https://example.org/a", confidence: 0.9 },
-    { text: "Beta holds.", quote: "Beta replicated the finding", url: "https://example.org/b", confidence: 0.7 },
+    { text: "The alpha effect held in all three trials", quote: "The alpha effect held in all three trials", url: "https://example.org/a", confidence: 0.9 },
+    { text: "Beta replicated the finding", quote: "Beta replicated the finding", url: "https://example.org/b", confidence: 0.7 },
     { text: "Invented.", quote: "nowhere", url: "https://elsewhere.invalid/x", confidence: 0.9 },
   ],
 });
@@ -242,7 +243,7 @@ test("a run writes its claims to the vault, and the next run reads them back", a
   );
 
   const stored = await readAtoms(vaultPath);
-  assert.deepEqual(stored.map((atom) => atom.claim), ["Alpha holds.", "Beta holds."]);
+  assert.deepEqual(stored.map((atom) => atom.claim), ["The alpha effect held in all three trials", "Beta replicated the finding"]);
 
   const second = await runDesk({
     ...config(
@@ -269,7 +270,7 @@ test("a run writes its claims to the vault, and the next run reads them back", a
   assert.equal(second.related.length, 2, "the prior run's beliefs are recalled");
   assert.deepEqual(
     second.contradictions.map((item) => item.priorClaim),
-    ["Alpha holds."],
+    ["The alpha effect held in all three trials"],
     "a contradiction against a belief nobody holds is dropped",
   );
   assert.equal(second.contradictions[0].newClaim, "Alpha fails.");
@@ -471,8 +472,8 @@ test("a run fed oversized, multibyte inputs never sends a request past its stage
     content: body,
   }));
   sources.push({ title: "long url", url: `https://example.org/${"x".repeat(600)}`, content: body });
-  const quote = body.slice(0, 40);
-  const claims = Array.from({ length: 30 }, (_, i) => ({ text: wide(2_000), quote, url: `https://example.org/${i % 8}`, confidence: 1 }));
+  const quote = body.slice(0, 2_000);
+  const claims = Array.from({ length: 30 }, (_, i) => ({ text: quote, quote, url: `https://example.org/${i % 8}`, confidence: 1 }));
   // Content words first, so keyword recall finds the held beliefs and the contradict stage runs.
   const question = `alpha holds ${wide(MAX_QUESTION_CHARS - 12)}`;
   const held = Array.from({ length: 10 }, (_, i) => ({
@@ -555,16 +556,36 @@ test("a fabricated quote under a real URL is dropped", () => {
   assert.equal(check.unverified, 1);
 });
 
-test("a verbatim quote survives whitespace, quote-style, dash and case differences", () => {
+test("a safe extractive claim survives whitespace, quote-style, dash and case differences", () => {
   const quote = `the trial's "PRIMARY endpoint" was met - at 24 weeks, with 312 patients`;
   assert.equal(quoteInSource(quote, QUOTED[0]), true);
-  const check = checkClaims(claimsJson(["Met at 24 weeks.", quote, "https://example.org/a"]), QUOTED);
+  assert.equal(claimMatchesQuote(`THE TRIAL'S "primary endpoint" WAS MET - AT 24 WEEKS, WITH 312 PATIENTS`, quote), true);
+  const check = checkClaims(claimsJson([quote, quote, "https://example.org/a"]), QUOTED);
   assert.equal(check.claims.length, 1);
   assert.equal(check.claims[0].quote, quote, "the model's quote is kept as given");
 });
 
+test("a false assertion paired with an unrelated exact source quote is dropped", () => {
+  const check = checkClaims(
+    claimsJson(["The trial caused every participant to recover.", QUOTED[0].content, "https://example.org/a"]),
+    QUOTED,
+  );
+  assert.deepEqual(check.claims, []);
+  assert.equal(check.unverified, 1);
+});
+
 test("a quote from source A filed under source B's URL is dropped", () => {
-  const check = checkClaims(claimsJson(["Beta says it.", "primary endpoint was met", "https://example.org/b"]), QUOTED);
+  const quote = "The trial's primary endpoint was met";
+  const check = checkClaims(claimsJson([quote, quote, "https://example.org/b"]), QUOTED);
+  assert.deepEqual(check.claims, []);
+  assert.equal(check.unverified, 1);
+});
+
+test("a paraphrase that inverts the quote is dropped", () => {
+  const check = checkClaims(
+    claimsJson(["The trial's primary endpoint was not met.", QUOTED[0].content, "https://example.org/a"]),
+    QUOTED,
+  );
   assert.deepEqual(check.claims, []);
   assert.equal(check.unverified, 1);
 });
@@ -598,7 +619,7 @@ test("dropped claims reach neither the brief, the vault nor the citations", asyn
     jsonResponse({ results: SOURCES }),
     completion(
       claimsJson(
-        ["Alpha holds.", "The alpha effect held in all three trials", "https://example.org/a"],
+        ["The alpha effect held in all three trials", "The alpha effect held in all three trials", "https://example.org/a"],
         ["Fabricated.", "The alpha effect failed in every trial run", "https://example.org/a"],
         ["Misfiled.", "Beta replicated the finding", "https://example.org/a"],
       ),
@@ -608,11 +629,11 @@ test("dropped claims reach neither the brief, the vault nor the citations", asyn
   ]);
   const run = await runDesk({ ...config(fetchImpl), vault });
 
-  assert.deepEqual(run.claims.map((claim) => claim.text), ["Alpha holds."]);
-  assert.equal(run.receipt.stages[2].note, "1 claim · 2 dropped: quote not found in the named source · unpriced");
+  assert.deepEqual(run.claims.map((claim) => claim.text), ["The alpha effect held in all three trials"]);
+  assert.equal(run.receipt.stages[2].note, "1 claim · 2 dropped: claim is not an exact quote from the named source · unpriced");
   const synthesis = JSON.stringify(fetchImpl.calls[2].body);
   assert.ok(!synthesis.includes("Fabricated.") && !synthesis.includes("Misfiled."), "the writer never sees them");
-  assert.deepEqual(written.map((atom) => atom.claim), ["Alpha holds."], "memory keeps only the verified claim");
+  assert.deepEqual(written.map((atom) => atom.claim), ["The alpha effect held in all three trials"], "memory keeps only the verified claim");
 });
 
 // ── cost-complete, or unsigned ──────────────────────────────────────────────
