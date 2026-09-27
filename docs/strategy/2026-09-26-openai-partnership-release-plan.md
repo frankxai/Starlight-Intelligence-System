@@ -36,7 +36,7 @@ Sources: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog
 
 ## Multimodal extension
 
-The [27 September evidence-to-action spec](2026-09-27-openai-multimodal-proof-spec.md) makes the first Foundry proof useful in a real voice + screenshot + document developer case. Its separate 12-case overlay checks grounding, consent, denial, recovery and user acceptance. This is a proposed prototype; no live product or partner result is claimed. OpenAI's Sora 2/Videos API shut down on 24 September 2026, so video input uses timestamped frames/transcript and no OpenAI video generation is planned.
+The [27 September Living Intelligence proof](2026-09-27-openai-multimodal-proof-spec.md) composes the existing Academy mission, Knowledge Tree Open Inventor Path, Blue Life Commons K0 kit proposal, Foundry, Desk and Observatory into one human-led multimodal loop. The first demonstration is a Living Water Lab case: observe, challenge a claim, design a controlled test, make a bounded artifact and attempt independent replication. A separate 12-case overlay checks grounding, correction, denial, recovery and learning transfer. This is a proposed prototype, not a live product, water benefit or partnership. OpenAI's Sora 2/Videos API shut down on 24 September 2026; video input uses timestamped frames/transcript and no OpenAI video generation is planned.
 
 ## One proof package, three demonstrations
 
