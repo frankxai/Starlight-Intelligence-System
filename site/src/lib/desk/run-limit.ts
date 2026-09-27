@@ -118,13 +118,21 @@ const TOTAL_FIELD = "total";
 
 /**
  * KEYS[1] the day's hash. ARGV: requested tokens, budget, TTL seconds, ticket field.
- * A total that is not a whole number of zero or more is an error, never headroom.
+ * Only an absent hash starts a day at zero. A hash without its total, or with
+ * a total that is not a whole number of zero or more, is an error, never
+ * headroom, and the script returns before its first write.
  */
 export const RESERVE_TOKENS = `
 local raw = redis.call("HGET", KEYS[1], "${TOTAL_FIELD}")
-local used = 0
-if raw then used = tonumber(raw) end
-if used == nil or used < 0 then return redis.error_reply("DESK token total is invalid") end
+local used
+if raw then
+  used = tonumber(raw)
+elseif redis.call("EXISTS", KEYS[1]) == 1 then
+  return redis.error_reply("DESK token total is missing")
+else
+  used = 0
+end
+if used == nil or used < 0 or used ~= math.floor(used) then return redis.error_reply("DESK token total is invalid") end
 local requested = tonumber(ARGV[1])
 local budget = tonumber(ARGV[2])
 if used + requested > budget then
@@ -145,9 +153,9 @@ return {1, used, total}
  */
 export const RECONCILE_TOKENS = `
 local reserved = tonumber(redis.call("HGET", KEYS[1], ARGV[1]) or "")
-if reserved == nil then return {0, "no open reservation"} end
+if reserved == nil or reserved < 0 or reserved ~= math.floor(reserved) then return {0, "no open reservation"} end
 local total = tonumber(redis.call("HGET", KEYS[1], "${TOTAL_FIELD}") or "")
-if total == nil or total < 0 then return {0, "no valid total"} end
+if total == nil or total < 0 or total ~= math.floor(total) then return {0, "no valid total"} end
 local adjustment = tonumber(ARGV[2]) - reserved
 if total + adjustment < 0 then return {0, "would fall below zero"} end
 redis.call("HDEL", KEYS[1], ARGV[1])

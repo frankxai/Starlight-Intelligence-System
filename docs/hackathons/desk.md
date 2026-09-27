@@ -176,8 +176,10 @@ as a reservation, in `run-limit.ts`:
   total plus one run's worst case would pass the budget), or records the
   reservation under its own random id, adds the worst case to the total, and
   refreshes the key's expiry. Every run reserves before it spends, so runs
-  arriving at once cannot together pass the budget. A total that is negative or
-  not a number is an error, and the route answers 503, never "room to spare".
+  arriving at once cannot together pass the budget. Only an absent hash starts
+  the day at zero: a hash that has lost its total, or holds one that is
+  negative, fractional or not a number, is an error before any write, and the
+  route answers 503, never "room to spare".
 - **Give it back when no paid work happens.** If the daily run ceiling then
   refuses the request, or its counter cannot be reached, the reservation is
   returned before the refusal.
@@ -194,7 +196,8 @@ as a reservation, in `run-limit.ts`:
 
 Both scripts are tested against a real Redis (`run-limit.redis.test.mjs`; CI
 runs a Redis 7.0 service): concurrent admission, a repeated reconcile, a
-missing key, a refund that would go below zero, and an invalid total. Upstash's
+missing key, a hash that has lost its total, a refund that would go below
+zero, and a negative, fractional or non-numeric total. Upstash's
 own `EVAL` is still to be checked in the live run.
 
 The worst case is a constant, `WORST_CASE_RUN_TOKENS` in `cascade.ts`, about

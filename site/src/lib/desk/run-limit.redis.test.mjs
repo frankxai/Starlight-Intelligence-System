@@ -96,6 +96,31 @@ test("real Redis: a total that is missing its field, negative, or not a number i
   await assert.rejects(meter.reserve(1), /DESK token total is invalid/);
 });
 
+test("real Redis: a day's hash that has lost its total refuses a new reservation, and writes nothing", async (t) => {
+  if (skip) return t.skip(skip);
+  const { meter, key } = meterFor(1_000_000);
+  const first = await meter.reserve(400_000);
+  assert.equal(first.ok, true);
+  await rest.redis(["HDEL", key, "total"]); // open reservations remain; the total is gone
+  const fieldsBefore = await rest.redis(["HLEN", key]);
+  await assert.rejects(meter.reserve(400_000), /DESK token total is missing/, "only an absent hash starts at zero");
+  assert.equal(await rest.redis(["HLEN", key]), fieldsBefore, "no reservation field was written");
+  assert.equal(await total(key), null);
+});
+
+test("real Redis: a fractional total refuses both scripts before any write", async (t) => {
+  if (skip) return t.skip(skip);
+  const { meter, key } = meterFor(1_000_000);
+  const admission = await meter.reserve(400_000);
+  await rest.redis(["HSET", key, "total", "400000.5"]);
+  const fieldsBefore = await rest.redis(["HLEN", key]);
+  await assert.rejects(meter.reserve(1), /DESK token total is invalid/);
+  assert.equal(await rest.redis(["HLEN", key]), fieldsBefore, "no reservation field was written before HINCRBY could fail");
+  await assert.rejects(meter.reconcile(admission, 0), /refused to reconcile: no valid total/);
+  assert.equal(await rest.redis(["HEXISTS", key, admission.ticket]), 1, "the reservation stays open");
+  assert.equal(await rest.redis(["HGET", key, "total"]), "400000.5");
+});
+
 test("real Redis: usage above the reservation is charged in full", async (t) => {
   if (skip) return t.skip(skip);
   const { meter, key } = meterFor(1_000_000);
