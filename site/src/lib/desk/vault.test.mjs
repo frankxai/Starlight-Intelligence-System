@@ -7,6 +7,7 @@ import test from "node:test";
 
 import {
   NO_DURABLE_VAULT,
+  VAULT_UNREADABLE,
   appendAtoms,
   fileVault,
   findRelated,
@@ -20,6 +21,7 @@ import {
 } from "./vault.ts";
 import { ANONYMOUS_MEMORY } from "./access.ts";
 import { deskKey, deskNamespace, redisConfigFromEnv } from "./redis-rest.ts";
+import { publicNote } from "./public-error.ts";
 
 function atom(id, question, claim) {
   return { id, kind: "belief", question, claim, quote: "q", url: "https://example.org/x", confidence: 0.8, receiptId: "r", at: "2026-09-22T00:00:00Z" };
@@ -44,6 +46,35 @@ test("a torn line is skipped and the rest survive", async () => {
   const path = join(dir, "v.jsonl");
   await writeFile(path, `${JSON.stringify(atom("1", "q", "c"))}\n{"broken":\n${JSON.stringify(atom("2", "q", "c"))}\n\n`, "utf8");
   assert.deepEqual((await readAtoms(path)).map((a) => a.id), ["1", "2"]);
+});
+
+test("a line missing a field, or carrying one with the wrong type, is skipped", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "vault-"));
+  const path = join(dir, "v.jsonl");
+  const { at: _at, ...noAt } = atom("no-at", "q", "c");
+  const lines = [
+    atom("1", "q", "c"),
+    noAt,
+    { ...atom("url-number", "q", "c"), url: 42 },
+    { ...atom("confidence-string", "q", "c"), confidence: "0.8" },
+    { ...atom("receipt-null", "q", "c"), receiptId: null },
+    atom("2", "q", "c"),
+  ];
+  await writeFile(path, lines.map((line) => JSON.stringify(line)).join("\n") + "\n", "utf8");
+  assert.deepEqual((await readAtoms(path)).map((a) => a.id), ["1", "2"]);
+});
+
+test("a vault path that cannot be read throws a public note instead of reading as empty", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "vault-"));
+  // A directory where the file should be: EISDIR, not ENOENT.
+  const error = await readAtoms(dir).then(
+    () => null,
+    (reason) => reason,
+  );
+  assert.ok(error, "an unreadable vault is not an empty one");
+  assert.equal(publicNote(error), VAULT_UNREADABLE);
+  assert.ok(!publicNote(error).includes(dir), "the note never names the path");
+  await assert.rejects(fileVault(dir).read(), /EISDIR/);
 });
 
 test("writing nothing writes nothing", async () => {

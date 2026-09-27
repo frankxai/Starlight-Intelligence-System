@@ -41,7 +41,7 @@ import { receiptProblems } from "./run-receipt.ts";
 import { PRICING } from "./pricing.ts";
 import { COST_INCOMPLETE_UNSIGNED, signingPlan } from "./signing.ts";
 import { METER_TIMEOUT_MS } from "./run-limit.ts";
-import { NO_DURABLE_VAULT, readAtoms, redisVault, selectVault, vaultForRun } from "./vault.ts";
+import { NO_DURABLE_VAULT, VAULT_UNREADABLE, readAtoms, redisVault, selectVault, vaultForRun } from "./vault.ts";
 import { ANONYMOUS_MEMORY } from "./access.ts";
 
 const SOURCES = [
@@ -314,6 +314,16 @@ test("an unwritable vault costs the run its memory, not its brief", async () => 
   assert.equal(run.receipt.stages.at(-1).status, "failed");
   assert.equal(run.receipt.verdict, "PARTIAL", "a lost write is visible in the verdict, not hidden");
   assert.deepEqual(receiptProblems(run.receipt), []);
+});
+
+test("a file vault that cannot be read fails recall with its public note", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "desk-cascade-"));
+  const run = await runDesk({ ...config(fullScript()), vaultPath: dir });
+  const recall = run.receipt.stages[0];
+  assert.equal(recall.status, "failed", "a directory is not an empty vault");
+  assert.equal(recall.note, VAULT_UNREADABLE);
+  assert.ok(run.brief.length > 0, "the brief still ships");
+  assert.equal(run.receipt.verdict, "PARTIAL");
 });
 
 test("a deployment with no durable vault says so on the receipt instead of writing to /tmp", async () => {

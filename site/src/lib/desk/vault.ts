@@ -21,6 +21,7 @@
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { memoryAccess } from "./access";
+import { PublicError } from "./public-error";
 import { deskKey, deskNamespace, redisCommand, redisConfigFromEnv, type RedisRestConfig } from "./redis-rest";
 
 export interface VaultAtom {
@@ -119,13 +120,22 @@ export async function appendAtoms(path: string, atoms: VaultAtom[]): Promise<num
   return atoms.length;
 }
 
-/** Read a file vault's beliefs, newest last. A missing file reads as empty. */
+export const VAULT_UNREADABLE = "vault could not be read";
+
+/**
+ * Read a file vault's beliefs, newest last. A missing file reads as empty.
+ * Any other failure (a directory, no permission, an I/O error) throws, so
+ * recall records failed rather than an empty memory it did not read.
+ */
 export async function readAtoms(path: string, limit = DEFAULT_READ_LIMIT): Promise<VaultAtom[]> {
   let text: string;
   try {
     text = await readFile(path, "utf8");
-  } catch {
-    return [];
+  } catch (error) {
+    const code = (error as { code?: unknown } | null)?.code;
+    if (code === "ENOENT") return [];
+    // The code only: the error's own message names a server path.
+    throw new PublicError(`file vault read failed (${typeof code === "string" ? code : "unknown"})`, VAULT_UNREADABLE);
   }
   return parseLines(text.split("\n")).slice(-limit);
 }
@@ -191,13 +201,24 @@ export function findRelated(atoms: VaultAtom[], question: string, max = 6, thres
     .map((scored) => scored.atom);
 }
 
+/**
+ * A persisted line is a belief only when every field VaultAtom declares is
+ * present with its type. Callers (recall, the contradict prompt, the page)
+ * read all of them, so a line missing one is skipped like a torn line.
+ */
 function isAtom(value: unknown): value is VaultAtom {
-  if (!value || typeof value !== "object") return false;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const record = value as Record<string, unknown>;
   return (
     record.kind === "belief" &&
     typeof record.id === "string" &&
+    typeof record.question === "string" &&
     typeof record.claim === "string" &&
-    typeof record.question === "string"
+    typeof record.quote === "string" &&
+    typeof record.url === "string" &&
+    typeof record.confidence === "number" &&
+    Number.isFinite(record.confidence) &&
+    typeof record.receiptId === "string" &&
+    typeof record.at === "string"
   );
 }
