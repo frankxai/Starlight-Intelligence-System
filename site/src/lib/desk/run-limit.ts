@@ -13,7 +13,7 @@
  * Built on SIP — operational tier.
  */
 import { createHash } from "node:crypto";
-import { redisPipeline, type RedisRestConfig } from "./redis-rest";
+import { deskKey, redisPipeline, type RedisRestConfig } from "./redis-rest";
 
 export const WINDOW_MS = 60_000;
 export const MAX_RUNS_PER_WINDOW = 6;
@@ -42,6 +42,8 @@ export interface LimitOptions {
   maxPerWindow?: number;
   dailyLimit?: number;
   now?: () => number;
+  /** The Desk namespace the keys sit under (see deskNamespace). */
+  namespace?: string;
 }
 
 /**
@@ -56,7 +58,7 @@ export function dailyRunLimit(env: NodeJS.ProcessEnv = process.env): number {
 }
 
 export function redisRunLimiter(config: RedisRestConfig, options: LimitOptions = {}): RunLimiter {
-  const { windowMs, maxPerWindow, dailyLimit, now } = resolve(options);
+  const { windowMs, maxPerWindow, dailyLimit, now, namespace } = resolve(options);
   const windowSeconds = Math.ceil(windowMs / 1000);
 
   return {
@@ -64,7 +66,7 @@ export function redisRunLimiter(config: RedisRestConfig, options: LimitOptions =
     async hitAddress(address) {
       const at = now();
       const window = Math.floor(at / windowMs);
-      const key = `desk:limit:addr:${addressKey(address)}:${window}`;
+      const key = deskKey(namespace, "rl", addressKey(address), window);
       // The window index is in the key, so re-arming the expiry on every hit
       // cannot stretch a window; it only lets the key disappear once it is done.
       const [count] = await redisPipeline(config, [
@@ -75,7 +77,7 @@ export function redisRunLimiter(config: RedisRestConfig, options: LimitOptions =
     },
     async hitDaily() {
       const at = now();
-      const key = `desk:limit:day:${utcDay(at)}`;
+      const key = deskKey(namespace, "day", utcDay(at));
       const [count] = await redisPipeline(config, [
         ["INCR", key],
         ["EXPIRE", key, 2 * 86_400],
@@ -123,6 +125,7 @@ function resolve(options: LimitOptions): Required<LimitOptions> {
     maxPerWindow: options.maxPerWindow ?? MAX_RUNS_PER_WINDOW,
     dailyLimit: options.dailyLimit ?? DEFAULT_DAILY_RUN_LIMIT,
     now: options.now ?? (() => Date.now()),
+    namespace: options.namespace ?? "default",
   };
 }
 

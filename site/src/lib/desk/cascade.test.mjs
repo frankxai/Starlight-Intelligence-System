@@ -367,7 +367,7 @@ test("the durable store carries memory from one run to the next", async () => {
   });
   assert.equal(first.remembered, 2);
   assert.equal(list.length, 2, "one list entry per belief");
-  assert.ok(first.receipt.evidence.some((item) => item.kind === "vault" && item.ref === "redis:desk:vault:test"));
+  assert.ok(first.receipt.evidence.some((item) => item.kind === "vault" && item.ref === "redis:desk:test:vault"));
 
   const second = await runDesk({
     ...config(

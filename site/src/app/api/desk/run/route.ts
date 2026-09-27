@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { runDesk } from "@/lib/desk/cascade";
 import { signRunReceipt } from "@/lib/desk/run-receipt";
 import { deskAccess } from "@/lib/desk/access";
-import { redisConfigFromEnv } from "@/lib/desk/redis-rest";
+import { deskNamespace, redisConfigFromEnv } from "@/lib/desk/redis-rest";
 import {
   dailyRunLimit,
   memoryRunLimiter,
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   const redis = redisConfigFromEnv();
   const limiter: RunLimiter | null =
     access.limiter === "durable" && redis
-      ? redisRunLimiter(redis, { dailyLimit: dailyRunLimit() })
+      ? redisRunLimiter(redis, { dailyLimit: dailyRunLimit(), namespace: deskNamespace() })
       : access.limiter === "memory"
         ? localLimiter
         : null;

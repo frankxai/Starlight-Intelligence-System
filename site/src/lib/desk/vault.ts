@@ -21,7 +21,7 @@
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { memoryAccess } from "./access";
-import { redisCommand, redisConfigFromEnv, type RedisRestConfig } from "./redis-rest";
+import { deskKey, deskNamespace, redisCommand, redisConfigFromEnv, type RedisRestConfig } from "./redis-rest";
 
 export interface VaultAtom {
   id: string;
@@ -62,7 +62,7 @@ export const DEFAULT_READ_LIMIT = 500;
  */
 export function selectVault(env: NodeJS.ProcessEnv = process.env, fetchImpl?: typeof fetch): VaultSelection {
   const redis = redisConfigFromEnv(env);
-  if (redis) return { store: redisVault({ ...redis, fetchImpl }, vaultNamespace(env)) };
+  if (redis) return { store: redisVault({ ...redis, fetchImpl }, deskNamespace(env)) };
   if (env.VERCEL) return { store: null, reason: NO_DURABLE_VAULT };
   return { store: fileVault(vaultPath(env)) };
 }
@@ -83,12 +83,6 @@ export function vaultPath(env: NodeJS.ProcessEnv = process.env): string {
   return env.DESK_VAULT_PATH || ".starlight/desk-vault.jsonl";
 }
 
-/** One Redis list per namespace, so two Desks can share a database without sharing a memory. */
-export function vaultNamespace(env: NodeJS.ProcessEnv = process.env): string {
-  const raw = (env.DESK_VAULT_NAMESPACE ?? "").trim();
-  return /^[A-Za-z0-9._-]{1,64}$/.test(raw) ? raw : "default";
-}
-
 export function fileVault(path: string): VaultStore {
   return {
     kind: "file",
@@ -98,8 +92,9 @@ export function fileVault(path: string): VaultStore {
   };
 }
 
+/** One Redis list per namespace, so two Desks can share a database without sharing a memory. */
 export function redisVault(config: RedisRestConfig, namespace = "default"): VaultStore {
-  const key = `desk:vault:${namespace}`;
+  const key = deskKey(namespace, "vault");
   return {
     kind: "redis",
     ref: `redis:${key}`,

@@ -16,11 +16,10 @@ import {
   selectVault,
   terms,
   vaultForRun,
-  vaultNamespace,
   vaultPath,
 } from "./vault.ts";
 import { ANONYMOUS_MEMORY } from "./access.ts";
-import { redisConfigFromEnv } from "./redis-rest.ts";
+import { deskKey, deskNamespace, redisConfigFromEnv } from "./redis-rest.ts";
 
 function atom(id, question, claim) {
   return { id, kind: "belief", question, claim, quote: "q", url: "https://example.org/x", confidence: 0.8, receiptId: "r", at: "2026-09-22T00:00:00Z" };
@@ -89,7 +88,7 @@ test("a laptop gets the file vault it can cat", () => {
 test("a configured Redis REST backend wins, on Vercel or off it", () => {
   assert.equal(selectVault({ ...KV }).store?.kind, "redis");
   assert.equal(selectVault({ ...KV, VERCEL: "1", DESK_VAULT_PATH: "/x.jsonl" }).store?.kind, "redis");
-  assert.equal(selectVault({ ...UPSTASH, VERCEL: "1" }).store?.ref, "redis:desk:vault:default");
+  assert.equal(selectVault({ ...UPSTASH, VERCEL: "1" }).store?.ref, "redis:desk:default:vault");
 });
 
 test("Vercel with no durable store gets no vault, never a silent /tmp", () => {
@@ -125,9 +124,16 @@ test("the Marketplace names win over the Upstash names, and half a pair is no pa
 });
 
 test("the namespace is a safe key segment or the default", () => {
-  assert.equal(vaultNamespace({ DESK_VAULT_NAMESPACE: "acme-prod" }), "acme-prod");
-  assert.equal(vaultNamespace({ DESK_VAULT_NAMESPACE: "a b:c" }), "default");
-  assert.equal(vaultNamespace({}), "default");
+  assert.equal(deskNamespace({ DESK_VAULT_NAMESPACE: "acme-prod" }), "acme-prod");
+  assert.equal(deskNamespace({ DESK_VAULT_NAMESPACE: "a b:c" }), "default");
+  assert.equal(deskNamespace({}), "default");
+});
+
+test("DESK_NAMESPACE wins over the older DESK_VAULT_NAMESPACE, and every key shares it", () => {
+  assert.equal(deskNamespace({ DESK_NAMESPACE: "acme", DESK_VAULT_NAMESPACE: "old" }), "acme");
+  assert.equal(deskNamespace({ DESK_NAMESPACE: "a:b", DESK_VAULT_NAMESPACE: "old" }), "old", "an unsafe value is ignored");
+  assert.equal(deskKey("acme", "tok", "2026-09-26"), "desk:acme:tok:2026-09-26");
+  assert.equal(selectVault({ ...KV, DESK_NAMESPACE: "acme" }).store?.ref, "redis:desk:acme:vault");
 });
 
 test("the file store behaves exactly as the file helpers do", async () => {
@@ -162,10 +168,10 @@ test("the Redis store appends with one RPUSH of JSON lines", async () => {
       url: "https://kv.example.upstash.io",
       method: "POST",
       headers: { authorization: "Bearer kv-token", "content-type": "application/json" },
-      body: ["RPUSH", "desk:vault:acme", JSON.stringify(atoms[0]), JSON.stringify(atoms[1])],
+      body: ["RPUSH", "desk:acme:vault", JSON.stringify(atoms[0]), JSON.stringify(atoms[1])],
     },
   ]);
-  assert.equal(store.ref, "redis:desk:vault:acme", "the receipt names the list, never the URL or token");
+  assert.equal(store.ref, "redis:desk:acme:vault", "the receipt names the list, never the URL or token");
 });
 
 test("the Redis store reads the newest lines with LRANGE and skips what does not parse", async () => {
@@ -174,7 +180,7 @@ test("the Redis store reads the newest lines with LRANGE and skips what does not
   ]);
   const store = redisVault({ url: "https://kv.example.upstash.io", token: "kv-token", fetchImpl });
   assert.deepEqual((await store.read(50)).map((a) => a.id), ["1", "2"]);
-  assert.deepEqual(fetchImpl.calls[0].body, ["LRANGE", "desk:vault:default", -50, -1]);
+  assert.deepEqual(fetchImpl.calls[0].body, ["LRANGE", "desk:default:vault", -50, -1]);
 });
 
 test("writing nothing to Redis makes no call", async () => {

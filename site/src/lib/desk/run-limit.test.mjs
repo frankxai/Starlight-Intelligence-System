@@ -25,12 +25,12 @@ function pipelineFetch(counts) {
 
 test("an address is counted with one pipelined INCR and EXPIRE per window", async () => {
   const fetchImpl = pipelineFetch([[{ result: 1 }, { result: 1 }]]);
-  const limiter = redisRunLimiter({ ...CONFIG, fetchImpl }, { now: () => AT });
+  const limiter = redisRunLimiter({ ...CONFIG, fetchImpl }, { now: () => AT, namespace: "acme" });
   const hit = await limiter.hitAddress("203.0.113.7");
 
   assert.deepEqual(hit, { ok: true, count: 1, limit: 6, retryAfter: 0 });
   const digest = createHash("sha256").update("203.0.113.7").digest("hex").slice(0, 32);
-  const key = `desk:limit:addr:${digest}:${Math.floor(AT / 60_000)}`;
+  const key = `desk:acme:rl:${digest}:${Math.floor(AT / 60_000)}`;
   assert.deepEqual(fetchImpl.calls, [
     {
       url: "https://kv.example.upstash.io/pipeline",
@@ -61,8 +61,8 @@ test("the daily ceiling is one counter per UTC day, refused past the limit", asy
   assert.equal(over.ok, false);
   assert.equal(over.retryAfter, 14 * 3600 - 30, "until midnight UTC");
   assert.deepEqual(fetchImpl.calls[0].body, [
-    ["INCR", "desk:limit:day:2026-09-26"],
-    ["EXPIRE", "desk:limit:day:2026-09-26", 172_800],
+    ["INCR", "desk:default:day:2026-09-26"],
+    ["EXPIRE", "desk:default:day:2026-09-26", 172_800],
   ]);
 });
 

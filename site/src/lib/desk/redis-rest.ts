@@ -4,8 +4,8 @@
  * A serverless function cannot hold a Redis socket open between invocations,
  * and an SDK is a dependency the Desk does not need: the REST API takes a
  * command as a JSON array and answers `{ result }` or `{ error }`. Two things
- * use it: the durable vault (RPUSH / LRANGE) and the run counter (INCR /
- * EXPIRE, pipelined).
+ * use it: the durable vault (RPUSH / LRANGE) and the run counters (INCR /
+ * EXPIRE, pipelined). Every key sits under one namespace (deskNamespace).
  *
  * Built on SIP — operational tier.
  */
@@ -36,6 +36,25 @@ export function redisConfigFromEnv(env: NodeJS.ProcessEnv = process.env): RedisR
     if (url?.trim() && token?.trim()) return { url: url.trim().replace(/\/+$/, ""), token: token.trim() };
   }
   return null;
+}
+
+/**
+ * The namespace every Desk key sits under: DESK_NAMESPACE, else the older
+ * DESK_VAULT_NAMESPACE, else "default". Two Desks sharing one database with
+ * different namespaces share no memory and no counters. A value that is not a
+ * safe key segment is ignored.
+ */
+export function deskNamespace(env: NodeJS.ProcessEnv = process.env): string {
+  for (const raw of [env.DESK_NAMESPACE, env.DESK_VAULT_NAMESPACE]) {
+    const value = (raw ?? "").trim();
+    if (/^[A-Za-z0-9._-]{1,64}$/.test(value)) return value;
+  }
+  return "default";
+}
+
+/** `desk:<namespace>:<part>:…`, the one shape every Desk key takes. */
+export function deskKey(namespace: string, ...parts: Array<string | number>): string {
+  return ["desk", namespace, ...parts].join(":");
 }
 
 export class RedisRestError extends Error {
