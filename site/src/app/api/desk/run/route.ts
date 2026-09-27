@@ -133,7 +133,7 @@ export async function POST(request: Request) {
     // Replace the reservation only when every model call ran once and reported
     // usage. Retries, unknown usage, and accounting errors retain the worst case.
     if (run.billableUsageComplete) {
-      await reconcileKnownUsage(meter, budget, meteredTokens(run.receipt.stages));
+      await reconcileKnownUsage(meter, budget, meteredTokens(run.receipt.stages, run.usageReportedStages));
     }
 
     // Sign with the Desk's own key when one is set; deployed, never with the

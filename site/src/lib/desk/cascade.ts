@@ -131,6 +131,11 @@ export interface DeskRun {
   unaccounted: { stage: string; reason: string }[];
   /** Internal spend guard; deliberately separate from receipt cost completeness. */
   billableUsageComplete: boolean;
+  /**
+   * Model stages whose single attempt reported both token counts. Only these
+   * are metered at what they reported, zeros included (see meteredTokens).
+   */
+  usageReportedStages: string[];
 }
 
 export interface CascadeOptions {
@@ -214,6 +219,9 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   // retrieval that failed after an unknown number of billable calls. They
   // carry no euro figure, whatever the price table says.
   const usageUnknown = new Map<string, string>();
+  // Model stages whose one attempt reported both token counts: their reported
+  // figures, zeros included, are what the token meter charges.
+  const usageReported = new Set<string>();
   const vault = options.vault ?? (options.vaultPath ? fileVault(options.vaultPath) : null);
   const noVault = options.noVaultReason ?? "no vault";
   const table = options.pricing ?? PRICING;
@@ -299,7 +307,8 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       const checked = checkClaims(result.text, sources);
       billableUsageComplete &&= result.usageComplete;
-      if (!result.usageComplete) usageUnknown.set("extract", USAGE_UNREPORTED);
+      if (result.usageComplete) usageReported.add("extract");
+      else usageUnknown.set("extract", USAGE_UNREPORTED);
       claims = checked.claims;
       stages.push({
         name: "extract",
@@ -340,7 +349,8 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       brief = result.text.trim();
       billableUsageComplete &&= result.usageComplete;
-      if (!result.usageComplete) usageUnknown.set("synthesize", USAGE_UNREPORTED);
+      if (result.usageComplete) usageReported.add("synthesize");
+      else usageUnknown.set("synthesize", USAGE_UNREPORTED);
       stages.push({
         name: "synthesize",
         status: brief.length > 0 ? "ok" : "failed",
@@ -383,7 +393,8 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       contradictions = parseContradictions(result.text, related);
       billableUsageComplete &&= result.usageComplete;
-      if (!result.usageComplete) usageUnknown.set("contradict", USAGE_UNREPORTED);
+      if (result.usageComplete) usageReported.add("contradict");
+      else usageUnknown.set("contradict", USAGE_UNREPORTED);
       stages.push({
         name: "contradict",
         status: "ok",
@@ -431,7 +442,8 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       judgement = parseJudgement(result.text);
       billableUsageComplete &&= result.usageComplete;
-      if (!result.usageComplete) usageUnknown.set("judge", USAGE_UNREPORTED);
+      if (result.usageComplete) usageReported.add("judge");
+      else usageUnknown.set("judge", USAGE_UNREPORTED);
       stages.push({
         name: "judge",
         status: judgement ? "ok" : "failed",
@@ -551,6 +563,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     unpricedStages: unaccounted,
     unaccounted: unaccounted.map((stage) => ({ stage, reason: gapOf(stage) })),
     billableUsageComplete,
+    usageReportedStages: [...usageReported],
   };
 }
 
@@ -917,17 +930,20 @@ function worstCaseByStage(): Record<ModelStage, number> {
 }
 
 /**
- * The tokens a finished run is charged against the daily budget: what each
- * stage reported, and for a model stage that ran but reported no usage (a
- * provider that omits it, a call cut off mid-answer) that stage's worst case.
- * Unreported use is counted high, never as zero.
+ * The tokens a finished run is charged against the daily budget. A model
+ * stage that ran is charged what it reported only when it is in
+ * `usageReported` (DeskRun.usageReportedStages): one attempt reported both
+ * counts, so a reported zero is a known zero. Any other model stage that ran
+ * (usage missing or malformed, a retry, a call cut off mid-answer) is charged
+ * that stage's worst case. Unknown use is counted high, never as zero.
  */
-export function meteredTokens(stages: RunReceiptStage[]): number {
+export function meteredTokens(stages: RunReceiptStage[], usageReported: Iterable<string>): number {
+  const known = new Set(usageReported);
   let total = 0;
   for (const stage of stages) {
     const reported = (stage.inputTokens ?? 0) + (stage.outputTokens ?? 0);
     const worst = stage.name in STAGE_WORST_CASE ? STAGE_WORST_CASE[stage.name as ModelStage] : 0;
-    if (stage.model && stage.status !== "skipped" && reported === 0) total += worst;
+    if (stage.model && stage.status !== "skipped" && !known.has(stage.name)) total += worst;
     else total += reported;
   }
   return total;

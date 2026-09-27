@@ -560,7 +560,7 @@ test("the Desk refuses a question past the cap rather than bill for it", async (
   );
 });
 
-test("the metered tokens count what stages reported, and a model stage with no usage at its worst case", () => {
+test("the metered tokens count what stages reported, and a model stage with unknown usage at its worst case", () => {
   const stages = [
     { name: "recall", status: "ok", provider: "vault", costEur: 0 },
     { name: "retrieve", status: "ok", provider: "tavily" },
@@ -569,7 +569,42 @@ test("the metered tokens count what stages reported, and a model stage with no u
     { name: "contradict", status: "skipped", model: MODELS.contradict },
     { name: "judge", status: "ok", model: MODELS.judge, inputTokens: 0, outputTokens: 0 },
   ];
-  assert.equal(meteredTokens(stages), 1200 + STAGE_WORST_CASE.synthesize + STAGE_WORST_CASE.judge);
+  // The judge's zeros were not reported in full (missing or malformed usage): worst case.
+  assert.equal(meteredTokens(stages, ["extract"]), 1200 + STAGE_WORST_CASE.synthesize + STAGE_WORST_CASE.judge);
+  // The same zeros reported in full by one attempt are a known zero.
+  assert.equal(meteredTokens(stages, ["extract", "judge"]), 1200 + STAGE_WORST_CASE.synthesize);
+  // Partial counts from a stage without complete usage are not trusted either.
+  assert.equal(meteredTokens(stages, []), STAGE_WORST_CASE.extract + STAGE_WORST_CASE.synthesize + STAGE_WORST_CASE.judge);
+});
+
+test("a run meters a fully reported zero as zero and unreported usage at the worst case", async () => {
+  const reportedZero = await runDesk(
+    config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 0, 0),
+      ]),
+    ),
+  );
+  assert.equal(reportedZero.billableUsageComplete, true);
+  assert.deepEqual(reportedZero.usageReportedStages, ["extract", "synthesize", "judge"]);
+  assert.equal(meteredTokens(reportedZero.receipt.stages, reportedZero.usageReportedStages), 1200 + 2600, "the judge's zeros count as zero");
+
+  const unreported = await runDesk(
+    config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        jsonResponse({ choices: [{ message: { content: JSON.stringify({ score: 8, rationale: "Cited." }) } }] }),
+      ]),
+    ),
+  );
+  assert.equal(unreported.billableUsageComplete, false);
+  assert.deepEqual(unreported.usageReportedStages, ["extract", "synthesize"]);
+  assert.equal(meteredTokens(unreported.receipt.stages, unreported.usageReportedStages), 1200 + 2600 + STAGE_WORST_CASE.judge);
 });
 
 // ── quotes are checked against the source they name ─────────────────────────
