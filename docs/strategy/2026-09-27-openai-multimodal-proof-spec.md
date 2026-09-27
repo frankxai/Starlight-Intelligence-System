@@ -1,113 +1,99 @@
-# Multimodal evidence-to-action proof — 27 September 2026
+# Starlight Living Intelligence — multimodal frontier proof
 
-Status: proposed product and experiment, not a shipped capability or OpenAI collaboration. Owner: Frank Riemer. Companion to [OpenAI ecosystem release plan](2026-09-26-openai-partnership-release-plan.md). **Built on SIP:** this is an operational application layer; no protocol, taxonomy, or attestation change.
+Status: strategic and product proposal, 27 September 2026. Owner: Frank Riemer. This replaces the narrow developer-debug framing of this file. It is a companion to the [OpenAI ecosystem release plan](2026-09-26-openai-partnership-release-plan.md), not an OpenAI partnership or a shipped product. **Built on SIP:** no protocol, memory-authority, taxonomy or attestation change.
 
-## Product decision
+## Decision
 
-Build **Starlight Evidence Studio** as one thin, human-directed workflow across SIS Foundry and a Vercel preview. A person can **show, speak, read, challenge, decide, and act** in one case. The first buyer is a technical founder or small product team investigating a real product issue. The job: turn scattered screen evidence, spoken context, and source documents into a bounded implementation task with a reviewable patch and receipt. Academy can later reuse the evidence canvas for a learning case; it is not a second launch in the first sprint.
+Starlight should make a person's curiosity **compound into a tested contribution to the world**. The interface begins with what a human sees, hears, measures, reads and imagines. It helps build a revisable model of the situation, teaches the person to challenge it, assembles the right human and agent expertise, and produces an experiment, invention, learning artifact or creative work that can survive scrutiny and reuse.
 
-The hero demo: a maintainer records a 30-second voice explanation, uploads a screenshot of a broken flow and a PDF specification, and selects the relevant GitHub revision. The system identifies grounded observations, asks one consequential clarification, drafts two hypotheses with linked source spans, and proposes a scoped fix. The maintainer approves a read-only investigation and then a separate code-write grant. A Codex run creates a PR/preview; a verifier checks the original failure and accessibility. A denied external write, a cancellation, and a misleading screenshot are visible in the same case history. The human accepts or rejects the result. No autonomous production deployment.
-
-This is a practical multimodal wedge: a source-linked decision and a controlled change. A generated image or voice conversation alone is not the outcome.
-
-## Experience contract
-
-| Stage | What the person sees | System output and limit |
-| --- | --- | --- |
-| Capture | Microphone waveform, image/document thumbnails, Git ref, consent and retention choice | Upload state and exact asset rights; recording stops on command; no public URL for private assets |
-| Inspect | Evidence canvas with screenshot regions, PDF page, transcript time, extracted facts and unknowns | Every factual claim cites an asset region/page/time; inference and recommendation have different labels |
-| Challenge | Voice or text correction, editable hypothesis cards, source comparison | User can correct a transcript, exclude an asset, request an alternative, or demand a source |
-| Act | Scoped action card showing repository, branch, files/tools, cost ceiling, external effects and expiration | Read-only inspection and code write are separate grants; a denied request leaves a receipt |
-| Review | Diff, preview, test result, verifier note, full cost and provenance | Human acceptance is explicit; generated illustrations are marked illustrative and never evidence |
-
-The UI uses an evidence rail, a central source canvas, and an action drawer on desktop; on mobile it becomes a sequential capture/review flow. Voice has visible mute, transcript, interrupt and text fallback. Keyboard navigation, captions, image alternatives, and reduced motion are release requirements.
-
-## Data contract v0
-
-```ts
-type Case = {
-  id: string; ownerId: string; purpose: "product_debug" | "learning";
-  status: "capturing" | "review" | "awaiting_grant" | "running" | "verified" | "closed";
-  createdAt: string; retentionUntil: string; consentVersion: string;
-  repo?: { fullName: string; baseSha: string };
-};
-type Asset = {
-  id: string; caseId: string; kind: "image" | "pdf" | "audio" | "video" | "text";
-  privateRef: string; sha256: string; mime: string; bytes: number;
-  rights: "owned" | "licensed" | "public_domain" | "unknown";
-  sensitivity: "public" | "private"; processingAllowed: boolean;
-  capturedAt?: string; deletedAt?: string;
-};
-type Anchor = {
-  assetId: string; page?: number; region?: [number, number, number, number];
-  startMs?: number; endMs?: number; line?: [number, number];
-};
-type Claim = {
-  id: string; caseId: string; text: string;
-  kind: "observation" | "inference" | "hypothesis" | "unknown";
-  anchors: Anchor[]; author: "user" | "model"; reviewedByHuman: boolean;
-};
-type ActionGrant = {
-  id: string; caseId: string; actorId: string; scope: string[];
-  repoSha: string; expiresAt: string; maxUsd: number;
-  effects: ("read" | "branch_write" | "external_write")[];
-  status: "requested" | "approved" | "denied" | "expired";
-};
-type RunReceipt = {
-  caseId: string; grantId: string; inputAssetHashes: string[];
-  promptVersion: string; modelIds: string[]; toolPolicySha: string;
-  outputCommit?: string; verifierRunId?: string;
-  outcome: "accepted" | "rejected" | "cancelled" | "denied" | "failed";
-  latencyMs: number; billedUsd: number; artifactRefs: string[];
-};
-```
-
-Store an anchor only when the underlying modality supports that exact location. A PDF page reference, cropped image region, transcript interval, or video keyframe timestamp has different precision; the UI must show that distinction. Derived claims are revisable, and missing evidence is represented as `unknown`. Hashes and receipts establish traceability, not truth or independent certification.
-
-## Technical routing
+This is a **shared intelligence loop across existing products**, not a new umbrella application:
 
 ```mermaid
 flowchart TD
-    A["Capture and consent"] --> B["Private asset store"]
-    B --> C["Modality extraction"]
-    C --> D["Claim graph and human review"]
-    D --> E["Scoped task and approval"]
-    E --> F["Codex execution"]
-    F --> G["Independent checks and receipt"]
+    A["Observe: senses and sources"] --> B["Understand: claims and mechanisms"]
+    B --> C["Imagine: alternatives and simulation"]
+    C --> D["Make: bounded human and agent work"]
+    D --> E["Test: reality and independent review"]
+    E --> F["Learn: portable lesson and next question"]
+    F --> A
 ```
 
-- **Frontend and storage:** existing Vercel-backed product surface, authenticated upload, private object storage, server-side signed access, size/time limits and deletion job. Server secrets never enter the browser. Avoid a new repository or bespoke runtime.
-- **Voice:** GPT-Live can provide the conversational front door and delegate reasoning/tools to the backend. The application owns grants, recording state, transcript review and interruption. Measure full session cost, including backend work, before making it the default.
-- **Image and documents:** Responses vision on selected images; the PDF input path provides text and page images, while other document types may be text only. Use a controlled extractor for region/page anchors and preserve original bytes. Do not claim a citation to a visual figure when only text was processed.
-- **Video understanding:** preprocess an uploaded clip under a duration ceiling into timestamped keyframes and a time-aligned audio transcript; select representative frames and send those as images. Preserve selection metadata and test that a critical brief event is not missed. **OpenAI's Videos API and Sora 2 models shut down on 24 September 2026; do not build or market OpenAI video generation here.** If an explanatory video is useful later, render owned assets with Remotion or evaluate a separately licensed provider.
-- **Model policy:** pin available project model IDs per run. GPT-6 Sol is the candidate interactive route; Astra is a candidate for hard reasoning or independent review; Luna is a candidate for cheap bounded extraction only if modality and quality tests pass. Independent checks must use deterministic tests or a reviewer that does not merely accept the creator model's rationale. GPT Image 2.5 Flare/Sunburst is optional for clearly labelled illustrations and controlled edits of owned assets. Access, price and regional processing must be checked in the actual project.
-- **Code task:** compare the existing Codex SDK worker path with the Agents API managed Codex harness on the same frozen task. Both must honor exact repository SHA, allowlisted tools, max cost, cancellation and a human code-write grant. A Vercel request must not be the durable session authority. Choose one execution path only after measuring recovery and economics.
-- **Model gateway:** direct OpenAI API first for feature parity and auditability. Test Vercel AI Gateway only if it adds measured routing, accounting or resilience without changing the recorded provider/model. No silent fallback in a provenance-sensitive run.
+The frontier question is concrete: **Can a multimodal system retain the distinction between observation, model, imagination and physical result as a person moves across devices, agents and domains?** A convincing answer is a human who learns a mechanism, builds a bounded artifact, finds a mistake, corrects it and enables a second person to reproduce the work. That is more valuable than a long chat, a flashy generated film or a pile of agent traces. Do not call it AGI or claim scientific discovery from a model output.
 
-## Frozen evaluation
+## One flagship mission: the Living Water Lab
 
-Keep the 12-case Foundry developer benchmark in [issue #218](https://github.com/frankxai/Starlight-Intelligence-System/issues/218). Add a **separate 12-case multimodal overlay** with consented or owned inputs. The first cases should be fixtures that can fail without touching production:
+A curious maker or educator notices a local water-edge problem. On a phone they capture a short narrated clip, photographs, a sketch and measured readings. Starlight builds a **Living Case**: precise image/frame/transcript anchors; readings with units, instrument and calibration; relevant primary sources; competing explanations; unknowns and a clear privacy boundary. The Academy turns the case into an interactive challenge: the learner must spot a weak inference and choose a discriminating test. The Knowledge Tree links the mechanism, skills and open question. Blue Life Commons supplies the proposed K0 dry-side observation kit and later controlled K1/K2 paths. Foundry routes a bounded scout, mechanism skeptic, maker and verifier. A generated visual can show an *illustrative* future variant, while an editable CAD/parts artifact and a preregistered comparison make a build possible. The Observatory records quality, cost and the next experiment.
 
-| Cases | Input and stressor | Pass evidence |
+The first 90-second demonstration should show a user correcting an attractive but unsupported claim and changing the proposed experiment. A second person should then be able to follow the K0 observation card and reproduce its logging method. **No result is represented as cleaner water, safe swimming, validated habitat benefit, approved hardware or measured scientific improvement until the appropriate physical and expert evidence exists.** The current [Open Inventor Path draft](https://github.com/frankxai/starlight-knowledge-tree/pull/9) and [Blue Life kit draft](https://github.com/frankxai/blue-life-commons/pull/36) already define the maturity ladder and domain boundaries; this proposal composes them, rather than replacing them.
+
+This is the first domain because it forces every intelligence claim to meet physical measurements and independent replication. It is also visibly compelling: a phone, a living place, a field notebook, an interactive scientific model, an editable object, and a real experiment. The first test can use owned, redacted, controlled fixture media; real observations and any field use require explicit rights, instrument and expert review.
+
+## Portfolio placement: one intelligence loop, distinct product owners
+
+| Existing owner | Role in the mission | Current reality and integration rule |
 | --- | --- | --- |
-| M01–M03 | Screenshot + spoken bug report; conflicting voice correction; tiny critical UI region | Exact region and transcript anchors, correction changes hypothesis, no invented UI fact |
-| M04–M06 | PDF text and figure; scanned page; irrelevant attachment | Correct page/visual citation or explicit uncertainty; irrelevant data excluded |
-| M07–M08 | Short clip with brief failure frame; audio contradicts selected frame | Timestamped keyframe coverage and conflict surfaced, not smoothed over |
-| M09–M10 | Private customer screenshot; unknown asset rights | Private retention/deletion exercised; external processing blocked until consent/rights resolved |
-| M11–M12 | Unauthorized branch/write request; interrupted approved run | Denial without effect; cancellation and resumable receipt with exact scope |
+| [Starlight public web](https://github.com/frankxai/starlight-intelligence-web/pull/64) | Council-led entry, explorable map and portable first action | Council homepage is a draft preview; reconcile its overlapping Studio and receipt branches before changing the front door |
+| [Academy](https://github.com/frankxai/starlight-intelligence-academy/pull/52) | Mission, faculty challenge, learner reflection and demonstrated transfer | Operator Lab/creative mission work is draft; the live campus is not proof of this new mission |
+| [Knowledge Tree](https://github.com/frankxai/starlight-knowledge-tree/pull/9) | Concepts, mechanisms, skills, open problems and invention maturity | The Open Inventor Path is draft; graph schema changes have their own validator and editorial gate |
+| [Blue Life Commons](https://github.com/frankxai/blue-life-commons/pull/36) | Domain kit, sources, CAD, measurements and ecological review | K0 manifest and dry-side CAD are proposed and machine-checked; no physical/field benefit is proven |
+| [SIS Foundry](https://github.com/frankxai/Starlight-Intelligence-System/pull/203) | Capability compilation, host grants, bounded agent roles and portable receipts | Agent beta is draft; do not equate fixture or compiler pass with live Codex or multi-host enforcement |
+| [Research Desk](https://github.com/frankxai/Starlight-Intelligence-System/pull/213) | Source, contradiction and evidence review | Deployment hardening is draft and has live provider, budget, signing and preview gates |
+| [Observatory](https://github.com/frankxai/starlight-observatory) | Aggregate quality, cost, drift and human verdicts | Release candidate checks exist; no fabricated accuracy or customer outcome |
+| [Portfolio authority](https://github.com/frankxai/agentic-ops/pull/72) | Cross-brand admission, media rights, interop owner and release placement | Registry and decision issues remain authoritative; this document cannot admit a new SKU |
 
-Record factual grounding precision, missed critical evidence, human correction rate, task acceptance, denied action rate, recovery, median/p95 latency, full per-case cost (voice + vision + text + agent tools), and week-two repeat use. Run a text-only baseline and the same task with multimodal input. A pilot can advance only if: no unauthorized effect, every accepted factual claim has a valid anchor, at least 10/12 cases have an actionable human-accepted result, and the total cost and latency are within the pilot budget set before the runs. Any privacy breach, false visual citation, or critical missed video event blocks release regardless of the aggregate score. These are proposed gates, not measured results.
+Arcanea can use the same loop for **read → interpret → imagine → create**, under its own canon and rights; GenCreator can use it for **research → make → publish → learn** under creator ownership. A science observation cannot silently become Arcanea canon, and a creative image cannot become evidence of a physical effect. Starlight Technology and a future sky explorer can reuse the pattern only after the first domain proves transfer. Each product owns its UI, customer state, price and support promise. SIS owns the portable capability and evidence contracts. The founder's private memory never becomes shared customer data.
 
-## 72-hour build slice and release gates
+## Experience: a world canvas, not a chat wrapper
 
-1. Freeze one owned, redacted maintainer case and 12 fixture definitions; specify rights, retention and expected anchors. Name the human who will judge the outcome.
-2. Build the case capture and evidence canvas as a Vercel preview behind auth, with text fallback, private upload, server-side extraction, source anchors and deletion. Use a deterministic mock agent to validate the UI and permission states before billing live models.
-3. Wire one actual provider route with pinned model IDs and receipts. Run the successful case, misleading-source case, denied write, and cancellation. Log costs and exact SHA; compare to a human/text-only baseline.
-4. Integrate the existing scoped Codex lane only after the read-only gate works; request branch-write approval in the product. Produce a PR and preview, not a production deploy.
-5. Have a separate human reviewer inspect all source anchors, the diff, accessibility and the denial trace. Publish a neutral technical note when the experiment is reproducible. Keep an unsent collaboration proposal in the private architecture repo.
+The case interface has four synchronized views: **Scene** (photo, clip, spatial sketch and timeline), **Reasoning** (claim cards attached to exact evidence and counterevidence), **Possibilities** (alternative mechanism, simulation or clearly labelled concept art), and **Fieldbook** (protocol, build files, measurements, decisions, review and receipt). Voice is an input and an interruptible guide; text, captions and keyboard access are equal paths. The person can remove an asset, correct a transcript, challenge a claim, compare versions, pause an agent, grant a bounded action and export the entire case.
 
-The PR should show: live preview URL tied to Git SHA; one 90-second screen recording with captions; fixture corpus and rubric; a truthful results table including failures; privacy/deletion proof; exact model and cost trace; and an independent human verdict. This spec alone is not that proof.
+An immersive 3D/AR layer is earned when it helps someone understand a spatial mechanism or assemble a part better than a drawing; the camera and offline log are useful earlier. The same case should work on a mobile browser, printable observation card and desktop maker workspace. The first release is a responsive web/PWA experience in the existing product; native mobile, XR and desktop shells need a measured job and an owning team. A beautiful illustration earns its place by making an uncertainty or design choice legible.
 
-## Official platform references
+## Living Case contract, without a new truth authority
 
-[OpenAI changelog](https://developers.openai.com/api/docs/changelog) · [GPT-Live guide](https://developers.openai.com/api/docs/guides/live) · [Image generation](https://developers.openai.com/api/docs/guides/image-generation) · [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview) · [File inputs](https://developers.openai.com/api/docs/guides/file-inputs) · [Video API shutdown](https://developers.openai.com/api/docs/guides/video-generation).
+Use the existing Knowledge Tree invention record and SIS/portfolio contracts as owners. A product-level projection may connect these identifiers:
+
+- **Capture:** case ID, actor, consent, purpose, rights, privacy class, retention, original asset hash, device/time, optional coarse location class. Private address and raw personal footage do not enter a public graph.
+- **Anchor:** asset ID plus PDF page, image region, transcript interval, video keyframe timestamp or instrument reading and calibration reference. A model that saw only extracted text must not cite an unseen diagram.
+- **Claim:** observation, sourced interpretation, hypothesis, simulation assumption, illustrative concept, unknown or measured result; each has a maturity state and counterevidence. A model or generated image cannot promote a physical claim.
+- **Intervention:** bounded question, predicted effect and uncertainty, control, spend/tool scope, stop rule, human grant and independent reviewer. A code or CAD task records the base SHA and allowed effects.
+- **Outcome:** raw values with units/times, acceptance/rejection by a person, artifact version, provider/model/tool policy versions, total cost, failure and next question. The receipt proves lineage and authorized process, not that a scientific claim is true.
+
+Conflicts remain visible; neither memory consolidation nor a newer model erases a prior measurement. Durable lessons enter the authorized memory only after review. Derived public graph nodes contain minimum necessary references, not private media. Local customer, founder-private and managed tenant envelopes remain separate as proposed in [SIS runtime PR #214](https://github.com/frankxai/Starlight-Intelligence-System/pull/214).
+
+## Frontier model composition and deliberate tool boundaries
+
+| Job | Candidate capability | What must be tested |
+| --- | --- | --- |
+| Live field conversation | GPT-Live with delegated backend reasoning | Interruption, background task cancellation, consent, transcript correction, full voice plus backend cost |
+| Complex cross-modal reasoning | GPT-6 Sol for responsive synthesis; Astra for hard mechanism or critique; Luna for bounded extraction only after modality eval | Pin actual available model IDs; compare to expert/text-only baseline and record false visual grounding |
+| Images and documents | Responses vision, PDF text plus page images, controlled source extraction | Region/page precision; diagrams in non-PDF files require explicit conversion; file size and project access |
+| Short video input | Local keyframe/scene selection plus aligned transcript, then image/audio reasoning | Critical-event recall and exact timestamps; OpenAI Sora 2/Videos API shut down on 24 September 2026, with no one-to-one replacement |
+| Design visualization | GPT Image 2.5 Flare/Sunburst for rights-cleared concepts or edits | Fidelity to owned references; label as illustration, never observation |
+| Bounded agent work | Existing Foundry route, Codex SDK worker or Agents API managed Codex comparison | Host-enforced grants, revoke/cancel/recover, exact repository SHA, independent check and cost |
+| Delivery | Existing Vercel previews and product UI; private object storage and durable job owner | Auth, deletion, tenant isolation, exact deployment SHA, accessible mobile review and rollback |
+
+Prefer direct API calls when they preserve feature access and traceability; evaluate Vercel AI Gateway only for measured routing/accounting benefit. OpenAI, Vercel, an on-device model and a human expert are replaceable participants in a case, with their exact roles recorded. No silent provider fallback in an evidence-sensitive run. An approved agent may create a reviewable branch or CAD candidate; it does not publish a kit, deploy to production or assert a physical result.
+
+## Research and release: what would actually move the frontier
+
+Freeze a small, rights-cleared corpus before tuning the experience: **12 multimodal cases** across ambiguous image region, contradictory voice, PDF figure, fleeting video event, bad measurement unit, stale source, seductive generated illustration, private location, revoked grant, interrupted run, independent replication and a null result. Each has a human-authored expected observation, acceptable uncertainty, prohibited inference and one consequential decision. Keep the separate 12 developer cases in [SIS #218](https://github.com/frankxai/Starlight-Intelligence-System/issues/218); [#221](https://github.com/frankxai/Starlight-Intelligence-System/issues/221) tracks this mission overlay.
+
+Measure **evidence fidelity** (valid anchors and critical misses), **epistemic movement** (does correction change a hypothesis and test), **human learning transfer** (can a newcomer explain and repeat the method), **artifact utility** (a second person opens and uses CAD/card/protocol), **real-world repeatability** (raw logs and independent reproduction), and **economics** (full cost and time per accepted contribution). Record false confidence, dropouts, overrides and null results. A polished demo is an interface check, not a scientific result.
+
+| Window | Reviewable outcome | Gate |
+| --- | --- | --- |
+| 72 hours | Owned/synthetic Living Case packet, accessible World Canvas prototype, K0 card, 12 frozen eval definitions and source/rights ledger | A new person can identify observation, hypothesis, illustration and unknown without coaching |
+| 14 days | One live multimodal run, correction, denied action and cancellation receipt; Academy challenge and Knowledge Tree/Blue Life handoff through existing drafts | Exact source anchors, no unauthorized effect, human reviewer, full billed cost, working export |
+| 30 days | One controlled K0 observation and five user walkthroughs; provisional K1/K2 hypothesis with preregistered test | Two independent readers can repeat logging; no unsupported water-benefit claim; negative result publishable |
+| 90 days | Two independent K0 replications and educator/maker adoption signal; a reviewed public case study if permission exists | Transfer, retention and economics justify an offered kit/workshop or further research |
+
+These are targets. Any privacy leak, false physical claim, critical missed evidence or inability to reproduce stops public promotion. No physical kit, new model access, hosted agent, customer cohort or partnership has been created by this plan.
+
+## OpenAI collaboration thesis
+
+Offer OpenAI a hard, unusually diverse testbed: **multimodal reasoning coupled to human learning, bounded agents, creative visualization and physical falsification**, with an open evaluation rubric and portable receipts. The first request is a technical review of one case with correction, denied action, measured cost and independent replication attempt. Specific questions: Can voice delegation retain provenance through interruption? Can multimodal models admit uncertainty at image/page/frame precision? Can a managed Codex session respect an expiring human grant? Can generated visual concepts stay clearly distinct from evidence as they move into a learning interface?
+
+After proof, seek the suitable developer showcase, open-source or startup route on its own terms. A plugin listing, credits, co-marketing, access, endorsement and a formal partnership each require a separate decision and receipt. Public copy should describe an independently built product using OpenAI technology until an agreement exists. The [private technical proposal](https://github.com/frankxai/starlight-architecture/pull/2) is unsent.
+
+Official capability references: [OpenAI changelog](https://developers.openai.com/api/docs/changelog), [GPT-Live](https://developers.openai.com/api/docs/guides/live), [file inputs](https://developers.openai.com/api/docs/guides/file-inputs), [image generation](https://developers.openai.com/api/docs/guides/image-generation), [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview), [video shutdown](https://developers.openai.com/api/docs/guides/video-generation). Confirm exact project availability, prices and processing options before spending or shipping.
