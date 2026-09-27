@@ -1,0 +1,64 @@
+# The Desk (site/ /desk): unit tests and type check on Node 20 and 22.
+#
+# test:desk mocks every provider and Redis call, so it needs no secrets and
+# no network beyond the install. It transpiles TypeScript through the site's
+# own typescript devDependency (site/scripts/test/ts-resolve-hooks.mjs), which
+# is what lets it run on Node 20, where --experimental-strip-types does not
+# exist. This workflow deploys nothing.
+
+name: Desk tests
+
+on:
+  pull_request:
+    paths:
+      - "site/src/lib/desk/**"
+      - "site/src/app/api/desk/**"
+      - "site/src/app/desk/**"
+      - "site/scripts/test/**"
+      - "site/package.json"
+      - ".github/workflows/desk-tests.yml"
+  push:
+    branches: [main]
+    paths:
+      - "site/src/lib/desk/**"
+      - "site/src/app/api/desk/**"
+      - "site/src/app/desk/**"
+      - "site/scripts/test/**"
+      - "site/package.json"
+      - ".github/workflows/desk-tests.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desk-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+        with:
+          # site/pnpm-lock.yaml is lockfile v6.0, which pnpm 8 writes.
+          version: 8
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+          cache-dependency-path: site/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test:desk
+      - run: pnpm run test:vault-fetch
+      - run: npx tsc --noEmit

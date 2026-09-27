@@ -1,4 +1,4 @@
-// node --experimental-strip-types --import ./scripts/test/register.mjs --test src/lib/desk/access.test.mjs
+// node --import ./scripts/test/register.mjs --test src/lib/desk/access.test.mjs
 import assert from "node:assert/strict";
 import test from "node:test";
 

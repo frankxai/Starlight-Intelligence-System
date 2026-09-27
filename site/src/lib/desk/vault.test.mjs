@@ -1,4 +1,4 @@
-// node --experimental-strip-types --import ./scripts/test/register.mjs --test src/lib/desk/vault.test.mjs
+// node --import ./scripts/test/register.mjs --test src/lib/desk/vault.test.mjs
 import assert from "node:assert/strict";
 import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";

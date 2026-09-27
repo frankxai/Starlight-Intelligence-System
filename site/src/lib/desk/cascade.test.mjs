@@ -1,4 +1,4 @@
-// node --experimental-strip-types --test src/lib/desk/cascade.test.mjs
+// node --import ./scripts/test/register.mjs --test src/lib/desk/cascade.test.mjs
 //
 // The cascade, proven without a key and without a network: every provider call
 // is a canned response, so these assertions hold on the day whether or not the

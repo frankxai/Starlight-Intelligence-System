@@ -1,4 +1,4 @@
-// node --experimental-strip-types --import ./scripts/test/register.mjs --test src/lib/desk/run-limit.test.mjs
+// node --import ./scripts/test/register.mjs --test src/lib/desk/run-limit.test.mjs
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
