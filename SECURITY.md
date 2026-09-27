@@ -39,8 +39,8 @@ GitHub sends the report privately to the repository maintainers and supports
 private discussion while the report is assessed.
 
 Do not include vulnerability details, secrets, private data, or proof-of-concept
-payloads in a public issue or discussion. There is no verified public fallback
-channel at this time.
+payloads in a public issue or discussion. Private reporting requires a GitHub
+account, and no alternative private email channel is currently verified.
 
 ---
 

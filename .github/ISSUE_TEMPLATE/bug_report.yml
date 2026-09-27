@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for helping improve Starlight Intelligence System. Do not include secrets, private data, or vulnerability details. Report suspected vulnerabilities through the private security link in the issue chooser.
+        Thanks for helping improve Starlight Intelligence System. Do not include secrets, private data, or vulnerability details. Report suspected vulnerabilities through the [private vulnerability reporting form](https://github.com/frankxai/Starlight-Intelligence-System/security/advisories/new).
 
   - type: dropdown
     id: layer
