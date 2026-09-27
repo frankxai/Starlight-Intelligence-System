@@ -348,19 +348,23 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         provider,
       );
       brief = result.text.trim();
+      // A brief missing a required section is a failed synthesis, so the
+      // verdict cannot be PASS. The text still goes back to the caller. The
+      // note names only the missing headings, never the model's own text.
+      const missing = missingSections(brief);
       billableUsageComplete &&= result.usageComplete;
       if (result.usageComplete) usageReported.add("synthesize");
       else usageUnknown.set("synthesize", USAGE_UNREPORTED);
       stages.push({
         name: "synthesize",
-        status: brief.length > 0 ? "ok" : "failed",
+        status: brief.length > 0 && missing.length === 0 ? "ok" : "failed",
         model: result.model,
         provider: "nebius",
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
         ...(result.usageComplete ? costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)) : {}),
-        note: `${sectionsPresent(brief).length}/${SECTIONS.length} sections`,
+        note: sectionsNote(missing),
       });
     } catch (error) {
       billableUsageComplete = false;
@@ -603,7 +607,18 @@ export function sectionsPresent(brief: string): string[] {
   return SECTIONS.filter((section) => upper.includes(section));
 }
 
-/** A quote shorter than this, once normalized, proves nothing and is dropped. */
+/** The required sections the brief does not carry, in order. */
+export function missingSections(brief: string): string[] {
+  const present = new Set(sectionsPresent(brief));
+  return SECTIONS.filter((section) => !present.has(section));
+}
+
+/** The synthesize stage's note: a count of sections, and which are missing. Fixed headings only. */
+function sectionsNote(missing: string[]): string {
+  const count = `${SECTIONS.length - missing.length}/${SECTIONS.length} sections`;
+  return missing.length === 0 ? count : `${count} · missing sections: ${missing.join(", ")}`;
+}
+
 /**
  * What a cost-incomplete receipt's decision says. The v1 schema requires a
  * number in totals.costEur and cannot say "unknown", so the receipt itself
@@ -614,6 +629,7 @@ export const COST_SUBTOTAL_NOTE =
 
 export { CALL_COUNT_UNKNOWN, UNPRICED, USAGE_UNREPORTED } from "./cost-copy";
 
+/** A quote shorter than this, once normalized, proves nothing and is dropped. */
 export const MIN_QUOTE_CHARS = 20;
 
 /**

@@ -30,6 +30,7 @@ import {
   WORST_CASE_RUN_TOKENS,
   computeGroundingRate,
   meteredTokens,
+  missingSections,
   parseClaims,
   parseContradictions,
   parseJudgement,
@@ -169,6 +170,38 @@ test("an injected id nonce makes ids deterministic", async () => {
   const run = await runDesk({ ...config(fullScript()), idNonce: () => "fixed" });
   assert.equal(run.receipt.run.id, `run_${(1_790_000_000_000).toString(36)}_fixed`);
   assert.equal(run.receipt.receiptId, "rcpt_1790000000000_fixed");
+});
+
+test("a brief missing required sections fails synthesis, so the verdict cannot be PASS", async () => {
+  const partial = `## HYPOTHESIS
+Alpha explains the result [1].
+## METHOD
+Two sources were read [1].
+## SETUP
+Local.
+## TAKEAWAY
+Beta also holds [2]. SECRET-MODEL-TEXT`;
+  assert.deepEqual(missingSections(partial), ["RESULTS", "NEXT"]);
+  const written = [];
+  const vault = { kind: "file", ref: "memory", read: async () => [], append: async (atoms) => (written.push(...atoms), atoms.length) };
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    completion(CLAIMS_JSON),
+    completion(partial, 2000, 600),
+    completion(JSON.stringify({ score: 4, rationale: "Incomplete." }), 900, 80),
+  ]);
+  const run = await runDesk({ ...config(fetchImpl), vault });
+  const synthesize = run.receipt.stages.find((stage) => stage.name === "synthesize");
+  assert.equal(synthesize.status, "failed");
+  assert.equal(synthesize.note, "4/6 sections · missing sections: RESULTS, NEXT · unpriced");
+  assert.ok(!JSON.stringify(run.receipt).includes("SECRET-MODEL-TEXT"), "no model text reaches the receipt");
+  assert.notEqual(run.receipt.verdict, "PASS");
+  assert.equal(run.receipt.verdict, "PARTIAL");
+  assert.equal(run.brief, partial, "the caller still gets the brief text");
+  // The vault holds verified claims, never the brief: the claims were checked
+  // against their sources before synthesis ran, so they are still written.
+  assert.deepEqual(written.map((atom) => atom.claim), ["The alpha effect held in all three trials", "Beta replicated the finding"]);
+  assert.ok(written.every((atom) => !JSON.stringify(atom).includes("SECRET-MODEL-TEXT")), "no brief text is persisted");
 });
 
 test("a failed stage is recorded and still yields a readable receipt", async () => {
