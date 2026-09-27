@@ -105,3 +105,24 @@ test("a successful retry retains an incomplete billable-usage signal", async () 
   assert.equal(result.usageComplete, false, "the first attempt may have consumed unreported billable work");
   assert.equal(result.inputTokens + result.outputTokens, 12, "reported usage still describes only the successful attempt");
 });
+
+test("a retried call's latency covers both attempts, not only the retry", async () => {
+  // chat start, attempt 1 start, attempt 1 answered (503), retry decision,
+  // attempt 2 start, attempt 2 answered.
+  const ticks = [1_000, 1_000, 1_300, 1_350, 1_350, 1_550];
+  const responses = [{ ok: false, status: 503, text: async () => "busy" }, completion()];
+  const result = await chat(REQUEST, {
+    apiKey: "test",
+    now: () => ticks.shift(),
+    fetchImpl: async () => responses.shift(),
+  });
+
+  assert.equal(result.attempts, 2);
+  assert.equal(result.latencyMs, 550, "350 ms spent on the failed attempt plus 200 ms on the retry");
+});
+
+test("a single attempt's latency is that attempt's own", async () => {
+  const ticks = [0, 10, 70];
+  const result = await chat(REQUEST, { apiKey: "test", now: () => ticks.shift(), fetchImpl: async () => completion() });
+  assert.equal(result.latencyMs, 60);
+});

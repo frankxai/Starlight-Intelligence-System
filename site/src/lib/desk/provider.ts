@@ -78,16 +78,21 @@ function isRetryable(status: number): boolean {
  * nothing is retried once the run's deadline has passed.
  */
 export async function chat(request: ChatRequest, config: ProviderConfig): Promise<ChatResult> {
+  const now = config.now ?? (() => Date.now());
   const attempt = () => chatOnce(request, config);
+  const startedAt = now();
   try {
     const result = await attempt();
     return { ...result, attempts: 1 };
   } catch (error) {
     if (error instanceof ProviderError && error.retryable && !config.signal?.aborted) {
+      // The stage's latency is wall time across both attempts: the failed
+      // attempt's elapsed time counts, not only the retry's.
+      const failedMs = Math.max(0, now() - startedAt);
       const result = await attempt();
       // The failed response may have consumed billable tokens without returning
       // usage. A successful retry therefore cannot make aggregate usage known.
-      return { ...result, attempts: 2, usageComplete: false };
+      return { ...result, latencyMs: failedMs + result.latencyMs, attempts: 2, usageComplete: false };
     }
     throw error;
   }
