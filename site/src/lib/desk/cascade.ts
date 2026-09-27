@@ -29,6 +29,7 @@
  *
  * Built on SIP — operational tier.
  */
+import { randomBytes } from "node:crypto";
 import { chat, type ProviderConfig } from "./provider";
 import { CALL_COUNT_UNKNOWN, UNPRICED, USAGE_UNREPORTED } from "./cost-copy";
 import { publicNote } from "./public-error";
@@ -147,6 +148,12 @@ export interface CascadeOptions {
   noVaultReason?: string;
   now?: () => number;
   clock?: () => string;
+  /**
+   * The random part of the run and receipt ids. Defaults to 64 random bits
+   * as hex; tests inject a fixed one. The time part alone collides for runs
+   * started in the same millisecond.
+   */
+  idNonce?: () => string;
   /** The price table. Defaults to PRICING; tests pass a priced one. */
   pricing?: PricingTable;
   /**
@@ -448,8 +455,10 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   // ── remember ──────────────────────────────────────────────────────────────
   // Best-effort by design: a vault that refuses the write records a failed
   // stage, and the run still hands over its brief and its receipt.
-  const runId = `run_${now().toString(36)}`;
-  const receiptId = `rcpt_${now()}_${runId.slice(4, 12)}`;
+  const idAt = now();
+  const nonce = (options.idNonce ?? randomNonce)();
+  const runId = `run_${idAt.toString(36)}_${nonce}`;
+  const receiptId = `rcpt_${idAt}_${nonce}`;
   if (signal.aborted) {
     stages.push({ name: "remember", status: "skipped", provider: "vault", note: DEADLINE_REACHED });
   } else if (vault && claims.length > 0) {
@@ -543,6 +552,11 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     unaccounted: unaccounted.map((stage) => ({ stage, reason: gapOf(stage) })),
     billableUsageComplete,
   };
+}
+
+/** 64 random bits as 16 hex characters: the part of an id the clock cannot repeat. */
+function randomNonce(): string {
+  return randomBytes(8).toString("hex");
 }
 
 function atomFrom(claim: Claim, question: string, receiptId: string, at: string): VaultAtom {

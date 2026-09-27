@@ -153,6 +153,24 @@ test("a full run cites its claims, scores itself, and issues a complete receipt"
   assert.deepEqual(models, [MODELS.extract, MODELS.synthesize, MODELS.judge], "small, large, other family");
 });
 
+test("two runs on the same clock get different run, receipt and belief ids", async () => {
+  const written = [];
+  const vault = { kind: "file", ref: "memory", read: async () => [], append: async (atoms) => (written.push(...atoms), atoms.length) };
+  const first = await runDesk({ ...config(fullScript()), vault });
+  const second = await runDesk({ ...config(fullScript()), vault });
+  assert.match(first.receipt.run.id, /^run_[0-9a-z]+_[0-9a-f]{16}$/);
+  assert.match(first.receipt.receiptId, /^rcpt_1790000000000_[0-9a-f]{16}$/, "the time part is still readable");
+  assert.notEqual(first.receipt.run.id, second.receipt.run.id);
+  assert.notEqual(first.receipt.receiptId, second.receipt.receiptId);
+  assert.equal(new Set(written.map((atom) => atom.id)).size, written.length, "no belief id repeats");
+});
+
+test("an injected id nonce makes ids deterministic", async () => {
+  const run = await runDesk({ ...config(fullScript()), idNonce: () => "fixed" });
+  assert.equal(run.receipt.run.id, `run_${(1_790_000_000_000).toString(36)}_fixed`);
+  assert.equal(run.receipt.receiptId, "rcpt_1790000000000_fixed");
+});
+
 test("a failed stage is recorded and still yields a readable receipt", async () => {
   const fetchImpl = scriptedFetch([
     jsonResponse({ results: SOURCES }),
