@@ -10,6 +10,8 @@
  * Built on SIP — operational tier.
  */
 
+import { PublicError } from "./public-error";
+
 export const DEFAULT_TIMEOUT_MS = 5_000;
 
 export type RedisValue = string | number;
@@ -57,9 +59,9 @@ export function deskKey(namespace: string, ...parts: Array<string | number>): st
   return ["desk", namespace, ...parts].join(":");
 }
 
-export class RedisRestError extends Error {
+export class RedisRestError extends PublicError {
   constructor(message: string) {
-    super(message);
+    super(message, "vault store unavailable");
     this.name = "RedisRestError";
   }
 }

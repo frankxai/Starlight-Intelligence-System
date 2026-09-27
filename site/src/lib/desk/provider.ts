@@ -10,6 +10,8 @@
  */
 
 /** Where Token Factory listens. Override per environment; confirm in the console before the day. */
+import { PublicError } from "./public-error";
+
 export const DEFAULT_BASE_URL = "https://api.studio.nebius.com/v1";
 /** A stage that has not answered in this long is a stage that will not save the demo. */
 export const DEFAULT_TIMEOUT_MS = 45_000;
@@ -54,11 +56,11 @@ export interface ProviderConfig {
   signal?: AbortSignal;
 }
 
-export class ProviderError extends Error {
+export class ProviderError extends PublicError {
   readonly status: number;
   readonly retryable: boolean;
-  constructor(message: string, status: number, retryable: boolean) {
-    super(message);
+  constructor(message: string, status: number, retryable: boolean, note: string) {
+    super(message, note);
     this.name = "ProviderError";
     this.status = status;
     this.retryable = retryable;
@@ -98,7 +100,7 @@ async function chatOnce(
   const fetchImpl = config.fetchImpl ?? fetch;
   const now = config.now ?? (() => Date.now());
   const baseUrl = (config.baseUrl ?? DEFAULT_BASE_URL).replace(/\/$/, "");
-  if (config.signal?.aborted) throw new ProviderError(`${request.model} not called: the run's deadline passed`, 408, false);
+  if (config.signal?.aborted) throw new ProviderError(`${request.model} not called: the run's deadline passed`, 408, false, "deadline reached");
   const controller = new AbortController();
   const timeoutMs = request.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -126,18 +128,20 @@ async function chatOnce(
     const latencyMs = Math.max(0, now() - startedAt);
 
     if (!response.ok) {
-      const detail = await safeText(response);
+      // The body is not read: whatever the provider put there must not reach
+      // a receipt, and nothing here needs it.
       throw new ProviderError(
-        `${request.model} answered ${response.status}${detail ? `: ${detail.slice(0, 200)}` : ""}`,
+        `${request.model} answered ${response.status}`,
         response.status,
         isRetryable(response.status),
+        `provider answered HTTP ${response.status}`,
       );
     }
 
     const payload: unknown = await response.json().catch(() => null);
     const text = extractText(payload);
     if (text === null) {
-      throw new ProviderError(`${request.model} returned no message content`, 502, false);
+      throw new ProviderError(`${request.model} returned no message content`, 502, false, "provider returned an invalid response");
     }
 
     const usage = extractUsage(payload);
@@ -150,25 +154,18 @@ async function chatOnce(
       usageComplete: usage.complete,
     };
   } catch (error) {
-    if (config.signal?.aborted) throw new ProviderError(`${request.model} abandoned: the run's deadline passed`, 408, false);
+    if (config.signal?.aborted) throw new ProviderError(`${request.model} abandoned: the run's deadline passed`, 408, false, "deadline reached");
     if (error instanceof ProviderError) throw error;
     if (error instanceof Error && error.name === "AbortError") {
-      throw new ProviderError(`${request.model} did not answer within ${timeoutMs} ms`, 408, true);
+      throw new ProviderError(`${request.model} did not answer within ${timeoutMs} ms`, 408, true, "provider timed out");
     }
-    throw new ProviderError(`${request.model} call failed: ${error instanceof Error ? error.message : String(error)}`, 0, true);
+    throw new ProviderError(`${request.model} call failed`, 0, true, "provider unreachable");
   } finally {
     clearTimeout(timer);
     config.signal?.removeEventListener("abort", onDeadline);
   }
 }
 
-async function safeText(response: { text(): Promise<string> }): Promise<string> {
-  try {
-    return await response.text();
-  } catch {
-    return "";
-  }
-}
 
 function extractText(payload: unknown): string | null {
   if (!payload || typeof payload !== "object") return null;

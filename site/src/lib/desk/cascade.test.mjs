@@ -899,3 +899,58 @@ test("the route's maxDuration outlasts the longest deadline plus the token recor
   assert.ok(match, "route.ts exports maxDuration as a literal");
   assert.ok(MAX_RUN_DEADLINE_MS + METER_TIMEOUT_MS < Number(match[1]) * 1000);
 });
+
+// ── nothing an upstream service says reaches a public note ──────────────────
+const SENTINEL = "SENTINEL-7f3a-do-not-leak";
+
+function failing(status) {
+  return { ok: false, status, json: async () => ({ error: SENTINEL }), text: async () => `upstream said ${SENTINEL}` };
+}
+
+test("a provider error body never reaches the receipt: the note is a category and a status", async () => {
+  const fetchImpl = scriptedFetch([jsonResponse({ results: SOURCES }), failing(500), failing(500)]);
+  const run = await runDesk(config(fetchImpl));
+  assert.ok(!JSON.stringify(run).includes(SENTINEL), "the sentinel must not appear anywhere in the result");
+  const extract = run.receipt.stages.find((stage) => stage.name === "extract");
+  assert.equal(extract.status, "failed");
+  assert.match(extract.note, /^provider answered HTTP 500/);
+});
+
+test("a provider network error's message never reaches the receipt", async () => {
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    () => Promise.reject(new Error(`connect failed ${SENTINEL}`)),
+    () => Promise.reject(new Error(`connect failed ${SENTINEL}`)),
+  ]);
+  const run = await runDesk(config(fetchImpl));
+  assert.ok(!JSON.stringify(run).includes(SENTINEL));
+  assert.match(run.receipt.stages.find((stage) => stage.name === "extract").note, /^provider unreachable/);
+});
+
+test("a retrieval error body never reaches the receipt", async () => {
+  const run = await runDesk(config(scriptedFetch([failing(502)])));
+  assert.ok(!JSON.stringify(run).includes(SENTINEL));
+  assert.match(run.receipt.stages.find((stage) => stage.name === "retrieve").note, /^retrieval answered HTTP 502/);
+});
+
+test("a vault store error never reaches the receipt", async () => {
+  const redisFetch = async () => jsonResponse({ error: `ERR ${SENTINEL}` });
+  const vault = redisVault({ url: "https://redis.test", token: "t", fetchImpl: redisFetch });
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    completion(CLAIMS_JSON),
+    completion(BRIEF, 2000, 600),
+    completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+  ]);
+  const run = await runDesk({ ...config(fetchImpl), vault });
+  assert.ok(!JSON.stringify(run).includes(SENTINEL));
+  const recall = run.receipt.stages.find((stage) => stage.name === "recall");
+  assert.equal(recall.status, "failed");
+  assert.match(recall.note, /^vault store unavailable/);
+});
+
+test("the route never returns an error's own message", async () => {
+  const route = await readFile(new URL("../../app/api/desk/run/route.ts", import.meta.url), "utf8");
+  assert.doesNotMatch(route, /error:\s*error instanceof Error \? error\.message/);
+  assert.match(route, /\{ error: "The run failed\." \}/);
+});

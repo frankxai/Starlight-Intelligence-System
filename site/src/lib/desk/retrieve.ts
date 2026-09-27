@@ -4,6 +4,7 @@
  *
  * Built on SIP — operational tier.
  */
+import { PublicError } from "./public-error";
 
 export const TAVILY_URL = "https://api.tavily.com/search";
 export const DEFAULT_TIMEOUT_MS = 20_000;
@@ -48,7 +49,7 @@ export interface RetrieveResult {
 export async function retrieve(question: string, maxResults: number, config: RetrieveConfig): Promise<RetrieveResult> {
   const fetchImpl = config.fetchImpl ?? fetch;
   const now = config.now ?? (() => Date.now());
-  if (config.signal?.aborted) throw new Error("retrieval not called: the run's deadline passed");
+  if (config.signal?.aborted) throw new PublicError("retrieval not called: the run's deadline passed", "deadline reached");
   const controller = new AbortController();
   const timeoutMs = config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -71,17 +72,18 @@ export async function retrieve(question: string, maxResults: number, config: Ret
 
     const latencyMs = Math.max(0, now() - startedAt);
     if (!response.ok) {
-      throw new Error(`retrieval answered ${response.status}`);
+      throw new PublicError(`retrieval answered ${response.status}`, `retrieval answered HTTP ${response.status}`);
     }
 
     const payload: unknown = await response.json().catch(() => null);
     return { sources: toSources(payload, maxResults), latencyMs, calls: 1 };
   } catch (error) {
-    if (config.signal?.aborted) throw new Error("retrieval abandoned: the run's deadline passed");
+    if (config.signal?.aborted) throw new PublicError("retrieval abandoned: the run's deadline passed", "deadline reached");
+    if (error instanceof PublicError) throw error;
     if (error instanceof Error && error.name === "AbortError") {
-      throw new Error(`retrieval did not answer within ${timeoutMs} ms`);
+      throw new PublicError(`retrieval did not answer within ${timeoutMs} ms`, "retrieval timed out");
     }
-    throw error instanceof Error ? error : new Error(String(error));
+    throw new PublicError("retrieval call failed", "retrieval unreachable");
   } finally {
     clearTimeout(timer);
     config.signal?.removeEventListener("abort", onDeadline);

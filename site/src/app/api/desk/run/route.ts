@@ -177,8 +177,11 @@ export async function POST(request: Request) {
       costEurMeaning: run.costComplete ? "total" : "priced-stage subtotal",
     });
   } catch (error) {
+    // The class name only; the message may carry upstream detail.
+    console.error("desk: run failed", error instanceof Error ? error.name : typeof error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "The run failed." },
+      // A fixed message: the error's own text may carry upstream detail.
+      { error: "The run failed." },
       { status: 502 },
     );
   }

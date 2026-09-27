@@ -31,6 +31,7 @@
  */
 import { chat, type ProviderConfig } from "./provider";
 import { CALL_COUNT_UNKNOWN, UNPRICED, USAGE_UNREPORTED } from "./cost-copy";
+import { publicNote } from "./public-error";
 import { PRICING, modelCostEur, pricingIsComplete, retrievalCostEur, unpricedStages, type PricingTable } from "./pricing";
 import { MAX_SOURCE_CHARS, MAX_TITLE_CHARS, MAX_URL_CHARS, retrieve, type RetrieveConfig, type Source } from "./retrieve";
 import {
@@ -220,7 +221,8 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   const provider: ProviderConfig = { ...options.provider, signal };
   const retrieval: RetrieveConfig = { ...options.retrieval, signal };
   /** Why a stage failed: the deadline, when it has passed, or the error itself. */
-  const failure = (error: unknown) => (signal.aborted ? DEADLINE_REACHED : message(error));
+  // A public note only: a category and at most an HTTP status (public-error.ts).
+  const failure = (error: unknown) => (signal.aborted ? DEADLINE_REACHED : publicNote(error));
 
   // ── recall ────────────────────────────────────────────────────────────────
   // Memory first: keyword overlap over the vault's own lines. No model and no
@@ -755,10 +757,6 @@ function subjectName(question: string): string {
     .replace(/^-+|-+$/g, "")
     .slice(0, 60);
   return `briefs/${slug || "question"}.md`;
-}
-
-function message(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
 }
 
 function str(value: unknown): string {
