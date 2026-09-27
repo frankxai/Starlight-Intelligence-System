@@ -11,12 +11,10 @@
  * the whole deployment.
  *
  * A run count is not a spend ceiling: one run can cost a hundred times
- * another. The token meter is. It needs no prices: before a run it refuses
- * when today's recorded tokens plus one run's worst case would pass the
- * budget, and after the run it adds the tokens the run used (INCRBY + EXPIRE,
- * pipelined). Concurrent runs each pass the check before any of them records,
- * so the budget can be overshot by at most the runs in flight at once, each
- * bounded by WORST_CASE_RUN_TOKENS.
+ * another. The token meter is. It needs no prices: an atomic Redis script
+ * conditionally reserves one run's worst case before paid work. Once complete,
+ * known usage replaces that reservation. Unknown usage or a failed
+ * reconciliation leaves the conservative reservation in place.
  *
  * Built on SIP — operational tier.
  */
@@ -75,21 +73,23 @@ export function dailyTokenBudget(env: NodeJS.ProcessEnv = process.env): number {
 
 export interface BudgetResult {
   ok: boolean;
-  /** Tokens recorded today before this run. */
+  /** Tokens reserved or reconciled today before this run. */
   used: number;
   budget: number;
   /** The run's worst case the check reserved room for. */
   worstCase: number;
+  /** Opaque UTC-day reservation identifier used for reconciliation. */
+  reservation: string;
   /** Seconds until the UTC day resets; 0 when `ok`. */
   retryAfter: number;
 }
 
 export interface TokenMeter {
   readonly kind: "durable" | "memory";
-  /** May a run whose worst case is this many tokens start now? */
-  check(worstCase: number): Promise<BudgetResult>;
-  /** Add what a finished run used to today's total. Returns the new total. */
-  record(tokens: number): Promise<number>;
+  /** Atomically reserve this run's worst case, or refuse without changing usage. */
+  reserve(worstCase: number): Promise<BudgetResult>;
+  /** Replace this run's reservation with known actual usage. */
+  reconcile(reservation: Pick<BudgetResult, "reservation" | "worstCase">, actual: number): Promise<number>;
 }
 
 export interface MeterOptions {
@@ -98,6 +98,27 @@ export interface MeterOptions {
   namespace?: string;
 }
 
+const RESERVE_TOKENS = `
+local used = tonumber(redis.call("GET", KEYS[1]) or "0")
+local requested = tonumber(ARGV[1])
+local budget = tonumber(ARGV[2])
+if used + requested > budget then
+  if redis.call("EXISTS", KEYS[1]) == 1 then redis.call("EXPIRE", KEYS[1], ARGV[3]) end
+  return {0, used}
+end
+local total = redis.call("INCRBY", KEYS[1], requested)
+redis.call("EXPIRE", KEYS[1], ARGV[3])
+return {1, used, total}
+`;
+
+const RECONCILE_TOKENS = `
+local total = redis.call("INCRBY", KEYS[1], tonumber(ARGV[2]) - tonumber(ARGV[1]))
+redis.call("EXPIRE", KEYS[1], ARGV[3])
+return total
+`;
+
+const TOKEN_KEY_TTL_SECONDS = 2 * 86_400;
+
 export function redisTokenMeter(config: RedisRestConfig, options: MeterOptions = {}): TokenMeter {
   const budget = options.budget ?? DEFAULT_DAILY_TOKEN_BUDGET;
   const now = options.now ?? (() => Date.now());
@@ -105,21 +126,40 @@ export function redisTokenMeter(config: RedisRestConfig, options: MeterOptions =
   const keyAt = (at: number) => deskKey(namespace, "tok", utcDay(at));
   return {
     kind: "durable",
-    async check(worstCase) {
+    async reserve(worstCase) {
       const at = now();
-      const raw = await redisCommand(config, ["GET", keyAt(at)]);
-      const used = raw === null ? 0 : Number(raw);
-      if (!Number.isFinite(used)) throw new Error("the token meter answered with something that is not a number");
-      return budgetResult(used, budget, worstCase, at);
-    },
-    async record(tokens) {
-      const add = Math.max(0, Math.ceil(tokens));
-      const key = keyAt(now());
-      const [total] = await redisPipeline(config, [
-        ["INCRBY", key, add],
-        ["EXPIRE", key, 2 * 86_400],
+      const requested = tokenCount(worstCase);
+      const raw = await redisCommand(config, [
+        "EVAL",
+        RESERVE_TOKENS,
+        1,
+        keyAt(at),
+        requested,
+        budget,
+        TOKEN_KEY_TTL_SECONDS,
       ]);
-      return Number(total);
+      if (!Array.isArray(raw) || raw.length < 2) throw new Error("the token meter answered with an unexpected reservation");
+      const admitted = Number(raw[0]);
+      const used = Number(raw[1]);
+      if ((admitted !== 0 && admitted !== 1) || !Number.isFinite(used)) {
+        throw new Error("the token meter answered with an invalid reservation");
+      }
+      return budgetResult(Boolean(admitted), used, budget, requested, keyAt(at), at);
+    },
+    async reconcile(reservation, actual) {
+      const total = Number(
+        await redisCommand(config, [
+          "EVAL",
+          RECONCILE_TOKENS,
+          1,
+          reservation.reservation,
+          tokenCount(reservation.worstCase),
+          tokenCount(actual),
+          TOKEN_KEY_TTL_SECONDS,
+        ]),
+      );
+      if (!Number.isFinite(total) || total < 0) throw new Error("the token meter answered with an invalid total");
+      return total;
     },
   };
 }
@@ -128,31 +168,45 @@ export function redisTokenMeter(config: RedisRestConfig, options: MeterOptions =
 export function memoryTokenMeter(options: MeterOptions = {}): TokenMeter {
   const budget = options.budget ?? DEFAULT_DAILY_TOKEN_BUDGET;
   const now = options.now ?? (() => Date.now());
-  const day = { day: "", used: 0 };
+  const days = new Map<string, number>();
   const today = (at: number) => {
-    if (day.day !== utcDay(at)) {
-      day.day = utcDay(at);
-      day.used = 0;
-    }
-    return day;
+    const day = utcDay(at);
+    return { day, used: days.get(day) ?? 0 };
   };
   return {
     kind: "memory",
-    async check(worstCase) {
+    async reserve(worstCase) {
       const at = now();
-      return budgetResult(today(at).used, budget, worstCase, at);
+      const current = today(at);
+      const requested = tokenCount(worstCase);
+      const result = budgetResult(current.used + requested <= budget, current.used, budget, requested, current.day, at);
+      if (result.ok) days.set(current.day, current.used + requested);
+      return result;
     },
-    async record(tokens) {
-      const current = today(now());
-      current.used += Math.max(0, Math.ceil(tokens));
-      return current.used;
+    async reconcile(reservation, actual) {
+      const current = days.get(reservation.reservation) ?? 0;
+      const total = current + tokenCount(actual) - tokenCount(reservation.worstCase);
+      if (total < 0) throw new Error("the token meter cannot reconcile below zero");
+      days.set(reservation.reservation, total);
+      return total;
     },
   };
 }
 
-function budgetResult(used: number, budget: number, worstCase: number, at: number): BudgetResult {
-  const ok = used + worstCase <= budget;
-  return { ok, used, budget, worstCase, retryAfter: ok ? 0 : secondsUntil(nextUtcMidnight(at), at) };
+function budgetResult(
+  ok: boolean,
+  used: number,
+  budget: number,
+  worstCase: number,
+  reservation: string,
+  at: number,
+): BudgetResult {
+  return { ok, used, budget, worstCase, reservation, retryAfter: ok ? 0 : secondsUntil(nextUtcMidnight(at), at) };
+}
+
+function tokenCount(value: number): number {
+  if (!Number.isFinite(value)) throw new Error("the token meter needs a finite token count");
+  return Math.max(0, Math.ceil(value));
 }
 
 /**

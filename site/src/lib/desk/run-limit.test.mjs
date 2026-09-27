@@ -115,64 +115,130 @@ test("the daily limit reads the environment, and junk falls back to the default,
 
 // ── the daily token meter ───────────────────────────────────────────────────
 
-test("the token meter reads today's total with one GET and refuses a run that could pass the budget", async () => {
-  const fetchImpl = pipelineFetch([{ result: "1500000" }, { result: "1600001" }, { result: null }]);
+/** Stateful Redis EVAL double: JavaScript serializes execution just as Redis does. */
+function atomicMeterFetch(initial = 0) {
+  let used = initial;
+  const calls = [];
+  let error = null;
+  const impl = async (url, init) => {
+    const body = JSON.parse(init.body);
+    calls.push({ url: String(url), headers: init.headers, body });
+    if (error) {
+      const next = error;
+      error = null;
+      if (next instanceof Error) throw next;
+      return { ok: true, status: 200, json: async () => ({ error: next }) };
+    }
+    const [, script, keyCount, key, first, second, ttl] = body;
+    assert.equal(body[0], "EVAL");
+    assert.equal(keyCount, 1);
+    assert.equal(key, "desk:acme:tok:2026-09-26");
+    assert.equal(ttl, 172_800);
+    if (script.includes("used + requested")) {
+      const before = used;
+      if (used + first > second) return { ok: true, status: 200, json: async () => ({ result: [0, before] }) };
+      used += first;
+      return { ok: true, status: 200, json: async () => ({ result: [1, before, used] }) };
+    }
+    used += second - first;
+    return { ok: true, status: 200, json: async () => ({ result: used }) };
+  };
+  impl.calls = calls;
+  impl.used = () => used;
+  impl.failNext = (next) => {
+    error = next;
+  };
+  return impl;
+}
+
+test("simultaneous admissions atomically reserve no more than the token budget", async () => {
+  const fetchImpl = atomicMeterFetch();
   const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, budget: 2_000_000, namespace: "acme" });
 
-  assert.deepEqual(await meter.check(400_000), { ok: true, used: 1_500_000, budget: 2_000_000, worstCase: 400_000, retryAfter: 0 });
-  const over = await meter.check(400_000);
-  assert.equal(over.ok, false, "1,600,001 used plus a 400,000 worst case passes 2,000,000");
-  assert.equal(over.retryAfter, 14 * 3600 - 30, "until midnight UTC");
-  assert.equal((await meter.check(400_000)).used, 0, "a day with no key has used nothing");
+  const admissions = await Promise.all(Array.from({ length: 200 }, () => meter.reserve(400_000)));
+  assert.equal(admissions.filter((result) => result.ok).length, 5);
+  assert.equal(admissions.filter((result) => !result.ok).length, 195);
+  assert.equal(fetchImpl.used(), 2_000_000, "denied admissions do not increment the one daily key");
+  assert.ok(fetchImpl.calls.every((call) => call.body[0] === "EVAL"));
+});
 
-  assert.deepEqual(fetchImpl.calls[0], {
-    url: "https://kv.example.upstash.io",
-    headers: { authorization: "Bearer kv-token", "content-type": "application/json" },
-    body: ["GET", "desk:acme:tok:2026-09-26"],
+test("a depleted budget is denied without changing its reservation total", async () => {
+  const fetchImpl = atomicMeterFetch(1_600_001);
+  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, budget: 2_000_000, namespace: "acme" });
+  const denied = await meter.reserve(400_000);
+
+  assert.deepEqual(denied, {
+    ok: false,
+    used: 1_600_001,
+    budget: 2_000_000,
+    worstCase: 400_000,
+    reservation: "desk:acme:tok:2026-09-26",
+    retryAfter: 14 * 3600 - 30,
   });
+  assert.equal(fetchImpl.used(), 1_600_001);
 });
 
-test("after a run the meter adds its tokens with one pipelined INCRBY and EXPIRE", async () => {
-  const fetchImpl = pipelineFetch([[{ result: 12_345 }, { result: 1 }]]);
+test("Redis admission errors throw so the route fails closed", async () => {
+  const fetchImpl = atomicMeterFetch();
+  fetchImpl.failNext("WRONGPASS");
   const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, namespace: "acme" });
-  assert.equal(await meter.record(12_344.2), 12_345);
-  assert.deepEqual(fetchImpl.calls, [
-    {
-      url: "https://kv.example.upstash.io/pipeline",
-      headers: { authorization: "Bearer kv-token", "content-type": "application/json" },
-      body: [
-        ["INCRBY", "desk:acme:tok:2026-09-26", 12_345],
-        ["EXPIRE", "desk:acme:tok:2026-09-26", 172_800],
-      ],
-    },
-  ]);
+  await assert.rejects(meter.reserve(1), /redis EVAL failed: WRONGPASS/);
+
+  fetchImpl.failNext(new TypeError("fetch failed"));
+  await assert.rejects(meter.reserve(1), /redis call failed/);
 });
 
-test("a token meter that errors throws, so the route fails closed", async () => {
-  const erroring = redisTokenMeter({ ...CONFIG, fetchImpl: pipelineFetch([{ error: "WRONGPASS" }]) });
-  await assert.rejects(erroring.check(1), /redis GET failed: WRONGPASS/);
-  const junk = redisTokenMeter({ ...CONFIG, fetchImpl: pipelineFetch([{ result: "lots" }]) });
-  await assert.rejects(junk.check(1), /not a number/);
-  const down = redisTokenMeter({ ...CONFIG, fetchImpl: pipelineFetch([new TypeError("fetch failed")]) });
-  await assert.rejects(down.record(10), /redis call failed/);
+test("known usage reconciles the worst-case reservation to the actual total", async () => {
+  const fetchImpl = atomicMeterFetch();
+  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, budget: 1_000, namespace: "acme" });
+  const admission = await meter.reserve(400);
+  assert.equal(admission.ok, true);
+  assert.equal(await meter.reconcile(admission, 125), 125);
+  assert.equal(fetchImpl.used(), 125);
+});
+
+test("post-run accounting errors retain the worst-case reservation", async () => {
+  const fetchImpl = atomicMeterFetch();
+  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, budget: 400, namespace: "acme" });
+  const admission = await meter.reserve(400);
+  assert.equal(admission.ok, true);
+  fetchImpl.failNext(new TypeError("fetch failed"));
+  await assert.rejects(meter.reconcile(admission, 125), /redis call failed/);
+  assert.equal(fetchImpl.used(), 400);
+  assert.equal((await meter.reserve(1)).ok, false, "a later retry cannot spend reservation room whose refund failed");
+});
+
+test("unknown usage is not reconciled and a retried admission remains blocked", async () => {
+  const fetchImpl = atomicMeterFetch();
+  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, budget: 400, namespace: "acme" });
+  assert.equal((await meter.reserve(400)).ok, true);
+  // The caller deliberately does not reconcile when provider usage is unknown.
+  assert.equal((await meter.reserve(400)).ok, false);
+  assert.equal(fetchImpl.used(), 400);
 });
 
 test("a zero budget, or one smaller than a run's worst case, closes the Desk", async () => {
-  assert.equal((await memoryTokenMeter({ budget: 0 }).check(1)).ok, false);
-  assert.equal((await memoryTokenMeter({ budget: 100 }).check(101)).ok, false);
-  assert.equal((await memoryTokenMeter({ budget: 100 }).check(100)).ok, true);
+  assert.equal((await memoryTokenMeter({ budget: 0 }).reserve(1)).ok, false);
+  assert.equal((await memoryTokenMeter({ budget: 100 }).reserve(101)).ok, false);
+  assert.equal((await memoryTokenMeter({ budget: 100 }).reserve(100)).ok, true);
 });
 
-test("the in-memory meter keeps the same rules and starts clean each UTC day", async () => {
+test("the in-memory meter reserves atomically, reconciles, and resets each UTC day", async () => {
   let at = AT;
   const meter = memoryTokenMeter({ now: () => at, budget: 1000 });
-  assert.equal((await meter.check(400)).ok, true);
-  assert.equal(await meter.record(500), 500);
-  assert.equal((await meter.check(400)).ok, true, "500 + 400 fits in 1000");
-  assert.equal(await meter.record(200), 700);
-  assert.equal((await meter.check(400)).ok, false, "700 + 400 does not");
+  const admissions = await Promise.all([meter.reserve(400), meter.reserve(400), meter.reserve(400)]);
+  assert.deepEqual(admissions.map((result) => result.ok), [true, true, false]);
+  assert.equal(await meter.reconcile(admissions[0], 200), 600);
+  assert.equal((await meter.reserve(400)).ok, true, "a known refund makes room available");
   at += 86_400_000;
-  assert.deepEqual(await meter.check(400), { ok: true, used: 0, budget: 1000, worstCase: 400, retryAfter: 0 });
+  assert.deepEqual(await meter.reserve(400), {
+    ok: true,
+    used: 0,
+    budget: 1000,
+    worstCase: 400,
+    reservation: "2026-09-27",
+    retryAfter: 0,
+  });
 });
 
 test("the token budget reads the environment, and junk falls back to the default", () => {
