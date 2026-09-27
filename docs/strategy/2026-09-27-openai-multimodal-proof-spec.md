@@ -110,4 +110,4 @@ The PR should show: live preview URL tied to Git SHA; one 90-second screen recor
 
 ## Official platform references
 
-[OpenAI changelog](https://developers.openai.com/api/docs/changelog) · [GPT-Live guide](https://developers.openai.com/api/docs/guides/gpt-live) · [Image generation](https://developers.openai.com/api/docs/guides/image-generation) · [Agents API](https://developers.openai.com/api/docs/guides/agents) · [File inputs](https://developers.openai.com/api/docs/guides/pdf-files) · [Video API shutdown](https://developers.openai.com/api/docs/guides/video-generation).
+[OpenAI changelog](https://developers.openai.com/api/docs/changelog) · [GPT-Live guide](https://developers.openai.com/api/docs/guides/live) · [Image generation](https://developers.openai.com/api/docs/guides/image-generation) · [Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview) · [File inputs](https://developers.openai.com/api/docs/guides/file-inputs) · [Video API shutdown](https://developers.openai.com/api/docs/guides/video-generation).
