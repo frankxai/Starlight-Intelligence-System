@@ -51,7 +51,8 @@ test("a torn line is skipped and the rest survive", async () => {
 test("a line missing a field, or carrying one with the wrong type, is skipped", async () => {
   const dir = await mkdtemp(join(tmpdir(), "vault-"));
   const path = join(dir, "v.jsonl");
-  const { at: _at, ...noAt } = atom("no-at", "q", "c");
+  const noAt = atom("no-at", "q", "c");
+  delete noAt.at;
   const lines = [
     atom("1", "q", "c"),
     noAt,
