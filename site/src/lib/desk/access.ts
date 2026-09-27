@@ -13,6 +13,12 @@
  *      Everyone else gets 503: a public route that spends money with no limit
  *      that holds across instances is not one this Desk will serve.
  *
+ * Memory follows the same identity (memoryAccess below). On Vercel only a run
+ * carrying a valid token may recall from or write to the vault; an anonymous
+ * run is stateless, so one stranger's question cannot plant beliefs that the
+ * next stranger's run is then argued with. Off Vercel the owner is the only
+ * caller, and memory stays on.
+ *
  * Pure: it reads the environment it is handed and the header, nothing else.
  *
  * Built on SIP — operational tier.
@@ -40,6 +46,21 @@ export function deskAccess(env: NodeJS.ProcessEnv, authorization: string | null)
   if (!env.VERCEL) return { ok: true, limiter: "memory", authorized };
   if (authorized) return { ok: true, limiter: "none", authorized };
   return { ok: false, status: 503, error: CLOSED_WITHOUT_COUNTER };
+}
+
+export const ANONYMOUS_MEMORY = "anonymous run: memory is operator-only";
+
+export type MemoryAccess = { allowed: true } | { allowed: false; reason: string };
+
+/**
+ * Whether this run may read or write the vault. A deployed vault is shared by
+ * everyone who reaches the URL, so only a caller the operator vouched for (a
+ * valid DESK_ACCESS_TOKEN) touches it. A laptop is the owner's own machine.
+ */
+export function memoryAccess(env: NodeJS.ProcessEnv, authorized: boolean): MemoryAccess {
+  if (!env.VERCEL) return { allowed: true };
+  if (authorized) return { allowed: true };
+  return { allowed: false, reason: ANONYMOUS_MEMORY };
 }
 
 /** The token from `authorization: Bearer <token>`, or null when there is none. */

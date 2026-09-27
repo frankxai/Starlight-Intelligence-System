@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { BAD_TOKEN, CLOSED_WITHOUT_COUNTER, bearer, deskAccess, tokensMatch } from "./access.ts";
+import { ANONYMOUS_MEMORY, BAD_TOKEN, CLOSED_WITHOUT_COUNTER, bearer, deskAccess, memoryAccess, tokensMatch } from "./access.ts";
 
 const KV = { KV_REST_API_URL: "https://kv.example.upstash.io", KV_REST_API_TOKEN: "kv-token" };
 const TOKEN = "desk-access-token-0123456789";
@@ -71,4 +71,15 @@ test("tokens compare equal only when they are equal, whatever their lengths", ()
   assert.equal(tokensMatch(TOKEN.slice(0, -1), TOKEN), false);
   assert.equal(tokensMatch("", TOKEN), false);
   assert.equal(tokensMatch(`${TOKEN}${TOKEN}`, TOKEN), false);
+});
+
+test("deployed, memory belongs to the operator: an anonymous run is stateless", () => {
+  assert.deepEqual(memoryAccess({ VERCEL: "1", ...KV }, false), { allowed: false, reason: ANONYMOUS_MEMORY });
+  assert.deepEqual(memoryAccess({ VERCEL: "1", ...KV, DESK_ACCESS_TOKEN: TOKEN }, false), { allowed: false, reason: ANONYMOUS_MEMORY });
+  assert.deepEqual(memoryAccess({ VERCEL: "1", ...KV, DESK_ACCESS_TOKEN: TOKEN }, true), { allowed: true });
+});
+
+test("on a laptop the owner is the only caller, so memory stays on", () => {
+  assert.deepEqual(memoryAccess({}, false), { allowed: true });
+  assert.deepEqual(memoryAccess({ ...KV }, false), { allowed: true });
 });

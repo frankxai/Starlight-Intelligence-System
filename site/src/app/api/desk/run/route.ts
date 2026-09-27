@@ -11,7 +11,7 @@ import {
   type RunLimiter,
 } from "@/lib/desk/run-limit";
 import { deskSigningKey } from "@/lib/desk/signing";
-import { selectVault } from "@/lib/desk/vault";
+import { vaultForRun } from "@/lib/desk/vault";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -68,10 +68,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `Keep the question under ${MAX_QUESTION_CHARS} characters.` }, { status: 422 });
   }
 
-  // A Redis REST store when one is configured, the JSONL file on a laptop, and
-  // on Vercel without a durable store no vault at all: the receipt then says
-  // "no durable vault configured" rather than pretending /tmp is memory.
-  const vault = selectVault();
+  // Memory belongs to a trusted identity. Deployed, an anonymous run gets no
+  // vault and its receipt says "anonymous run: memory is operator-only". An
+  // operator's run gets the Redis REST store when one is configured; on Vercel
+  // without one, no vault ("no durable vault configured") rather than /tmp. A
+  // laptop gets the JSONL file.
+  const vault = vaultForRun(process.env, access.authorized);
 
   // The daily ceiling counts runs that are about to spend, not malformed
   // requests, so junk cannot use up the day.

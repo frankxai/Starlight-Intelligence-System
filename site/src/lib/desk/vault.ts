@@ -20,6 +20,7 @@
  */
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { dirname } from "node:path";
+import { memoryAccess } from "./access";
 import { redisCommand, redisConfigFromEnv, type RedisRestConfig } from "./redis-rest";
 
 export interface VaultAtom {
@@ -64,6 +65,17 @@ export function selectVault(env: NodeJS.ProcessEnv = process.env, fetchImpl?: ty
   if (redis) return { store: redisVault({ ...redis, fetchImpl }, vaultNamespace(env)) };
   if (env.VERCEL) return { store: null, reason: NO_DURABLE_VAULT };
   return { store: fileVault(vaultPath(env)) };
+}
+
+/**
+ * The store for one run, given who is asking. An anonymous run on a deployment
+ * gets no vault and the reason (see memoryAccess); nothing is read or written
+ * for it. Everyone else gets what selectVault chooses.
+ */
+export function vaultForRun(env: NodeJS.ProcessEnv, authorized: boolean, fetchImpl?: typeof fetch): VaultSelection {
+  const memory = memoryAccess(env, authorized);
+  if (!memory.allowed) return { store: null, reason: memory.reason };
+  return selectVault(env, fetchImpl);
 }
 
 /** Where the file vault lives on a machine the customer controls. */

@@ -19,7 +19,8 @@ import {
   MODELS,
 } from "./cascade.ts";
 import { receiptProblems } from "./run-receipt.ts";
-import { NO_DURABLE_VAULT, readAtoms, redisVault, selectVault } from "./vault.ts";
+import { NO_DURABLE_VAULT, readAtoms, redisVault, selectVault, vaultForRun } from "./vault.ts";
+import { ANONYMOUS_MEMORY } from "./access.ts";
 
 const SOURCES = [
   { title: "A", url: "https://example.org/a", content: "Alpha body text." },
@@ -300,6 +301,39 @@ test("a deployment with no durable vault says so on the receipt instead of writi
   );
   assert.ok(!run.receipt.evidence.some((item) => item.kind === "vault"), "no vault is claimed as evidence");
   assert.deepEqual(receiptProblems(run.receipt), []);
+});
+
+test("a deployed anonymous run reads and writes no memory, and names none as evidence", async () => {
+  const redisCalls = [];
+  const redisFetchImpl = async (url) => {
+    redisCalls.push(String(url));
+    throw new Error("an anonymous run touched the vault");
+  };
+  const env = { VERCEL: "1", KV_REST_API_URL: "https://kv.example.upstash.io", KV_REST_API_TOKEN: "t" };
+  const picked = vaultForRun(env, false, redisFetchImpl);
+  const run = await runDesk({
+    ...config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+      ]),
+    ),
+    vault: picked.store ?? undefined,
+    noVaultReason: picked.reason,
+  });
+
+  assert.equal(redisCalls.length, 0, "nothing is read or written");
+  assert.equal(run.related.length, 0);
+  assert.equal(run.remembered, 0);
+  const memory = run.receipt.stages.filter((stage) => stage.provider === "vault");
+  assert.deepEqual(
+    memory.map((stage) => `${stage.name}:${stage.status}:${stage.note}`),
+    [`recall:skipped:${ANONYMOUS_MEMORY}`, `remember:skipped:${ANONYMOUS_MEMORY}`],
+  );
+  assert.ok(!run.receipt.evidence.some((item) => item.kind === "vault"));
+  assert.equal(run.receipt.verdict, "PASS", "a stateless run is a complete run");
 });
 
 test("the durable store carries memory from one run to the next", async () => {

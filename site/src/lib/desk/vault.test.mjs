@@ -15,9 +15,11 @@ import {
   redisVault,
   selectVault,
   terms,
+  vaultForRun,
   vaultNamespace,
   vaultPath,
 } from "./vault.ts";
+import { ANONYMOUS_MEMORY } from "./access.ts";
 import { redisConfigFromEnv } from "./redis-rest.ts";
 
 function atom(id, question, claim) {
@@ -96,6 +98,19 @@ test("Vercel with no durable store gets no vault, never a silent /tmp", () => {
   assert.equal(picked.reason, NO_DURABLE_VAULT);
   const explicit = selectVault({ VERCEL: "1", DESK_VAULT_PATH: "/tmp/desk-vault.jsonl" });
   assert.equal(explicit.store, null, "an explicit path on a serverless host is still per-instance and erased");
+});
+
+test("a deployed anonymous run gets no vault; an operator's run gets the durable store", () => {
+  const anonymous = vaultForRun({ ...KV, VERCEL: "1" }, false);
+  assert.equal(anonymous.store, null);
+  assert.equal(anonymous.reason, ANONYMOUS_MEMORY);
+  assert.equal(vaultForRun({ ...KV, VERCEL: "1" }, true).store?.kind, "redis");
+  assert.equal(vaultForRun({ VERCEL: "1" }, true).reason, NO_DURABLE_VAULT, "an operator on Vercel without Redis still gets no /tmp");
+});
+
+test("off Vercel the vault choice ignores who is asking", () => {
+  assert.equal(vaultForRun({}, false).store?.kind, "file");
+  assert.equal(vaultForRun({ ...KV }, false).store?.kind, "redis");
 });
 
 test("the Marketplace names win over the Upstash names, and half a pair is no pair", () => {

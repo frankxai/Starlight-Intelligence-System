@@ -307,6 +307,10 @@ export function DeskConsole({ examples }: { examples: string[] }) {
                   </li>
                 ))}
               </ul>
+            ) : recallSkipped(result) ? (
+              <p className="px-5 py-4 text-[13px] leading-[1.7] text-slate-500">
+                This run kept no memory: {recallSkipped(result)}.
+              </p>
             ) : (
               <p className="px-5 py-4 text-[13px] leading-[1.7] text-slate-500">
                 Nothing held near this question yet. This run is the vault&rsquo;s first word on it; ask again after the next one
@@ -435,6 +439,12 @@ function Row({ label, value }: { label: string; value: string }) {
       <dd className="min-w-0 flex-1 break-all font-mono text-[11px] text-slate-300">{value}</dd>
     </div>
   );
+}
+
+/** Why recall did not run, when it did not: an anonymous deployed run, or no vault. */
+function recallSkipped(result: DeskResponse): string | null {
+  const recall = result.receipt.stages.find((stage) => stage.name === "recall");
+  return recall?.status === "skipped" ? (recall.note ?? "no vault") : null;
 }
 
 function dotClass(status: Stage["status"] | undefined, pending: boolean): string {
