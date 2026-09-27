@@ -170,7 +170,9 @@ export function DeskConsole({ examples }: { examples: string[] }) {
         className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]"
       >
         <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
-          <span className="font-mono text-[12px] font-medium text-slate-300">Ask the Desk</span>
+          <label htmlFor="desk-question" className="font-mono text-[12px] font-medium text-slate-300">
+            Ask the Desk
+          </label>
           <span className="font-mono text-[11px] text-slate-500">
             {pending
               ? `${(elapsed / 1000).toFixed(1)} s`
@@ -181,13 +183,14 @@ export function DeskConsole({ examples }: { examples: string[] }) {
         </div>
         <div className="p-5">
           <textarea
+            id="desk-question"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
             rows={3}
             maxLength={400}
             spellCheck={false}
             placeholder="What should I know about…"
-            className="w-full resize-none rounded-lg border border-white/[0.08] bg-black/40 p-4 font-sans text-[15px] leading-[1.7] text-slate-100 outline-none placeholder:text-slate-600 focus:border-violet-400/50"
+            className="w-full resize-none rounded-lg border border-white/[0.08] bg-black/40 p-4 font-sans text-[15px] leading-[1.7] text-slate-100 outline-none placeholder:text-slate-600 focus:border-violet-400/50 focus-visible:ring-2 focus-visible:ring-violet-400/60"
           />
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <button
