@@ -27,12 +27,16 @@ Keep the neutral receipt contract and source portability intact. Any OpenAI-spec
 | --- | --- | --- |
 | GPT-6 Astra, 3 Sep; Sol and Luna, 22 Sep | Route difficult review and architecture to Astra, interactive production work to Sol, bounded repeatable classifications to Luna only after evals | Freeze model IDs in each experiment; record quality, latency, tokens, cost, and refusal/tool outcomes. Re-run image-input cases after the 25 Sep Sol/Luna encoding fix. |
 | Agents API public beta, 10 Sep | Managed Codex harness may replace custom long-running orchestration in a specific lane | Separate proof from Codex SDK issue #153 and the self-hosted Agents SDK. One bounded task, resumable session, authorization check, and cancellation receipt before selection. |
-| GPT-Live 1 GA, 10 Sep | A voice front door can wait on a reasoning agent without owning the memory substrate | Keep as a later Academy or founder-cockpit experiment; compare interruption quality and total voice plus backend cost. |
+| GPT-Live 1 GA, 10 Sep | A voice front door can wait on a reasoning agent without owning the memory substrate | Test in the evidence-to-action prototype with interruption, handoff and full voice plus backend cost. |
 | GPT Image 2.5 Sunburst and Flare, 8 Sep | Precision edits for Arcanea or Academy assets versus faster daily generation | Separate creative benchmark with owned reference assets; no visual model choice without rights and quality evidence. |
 | Prompt Cache Diagnostics GA, 8 Sep; Responses controls, 3 Sep | Long-running work can use async tools, steering, reasoning changes, and measurable cache behavior | Instrument repeat runs and cache misses before promising cost or latency gains. |
 | Universal plugin submission path | Skills-only and remote MCP candidates can be submitted through different review routes | Foundry and Academy keep separate submission dossiers, security scans, positive/negative host cases, and publication receipts. |
 
 Sources: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog), [model guidance](https://developers.openai.com/api/docs/guides/latest-model), [Agents overview](https://developers.openai.com/api/docs/guides/agents), [plugin submission](https://developers.openai.com/plugins/deploy/submission). Confirm current model access and pricing in the actual project before code or spend.
+
+## Multimodal extension
+
+The [27 September evidence-to-action spec](2026-09-27-openai-multimodal-proof-spec.md) makes the first Foundry proof useful in a real voice + screenshot + document developer case. Its separate 12-case overlay checks grounding, consent, denial, recovery and user acceptance. This is a proposed prototype; no live product or partner result is claimed. OpenAI's Sora 2/Videos API shut down on 24 September 2026, so video input uses timestamped frames/transcript and no OpenAI video generation is planned.
 
 ## One proof package, three demonstrations
 
