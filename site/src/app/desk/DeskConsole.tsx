@@ -223,9 +223,14 @@ export function DeskConsole({ examples }: { examples: string[] }) {
           <section className="grid gap-4 sm:grid-cols-4">
             <Figure label="cost" value={result.pricesVerified ? eur(result.receipt.totals.costEur) : "unpriced"} />
             <Figure label="time" value={`${(result.receipt.totals.latencyMs / 1000).toFixed(1)} s`} />
-            <Figure label="grounding" value={`${Math.round(result.groundingRate * 100)}%`} />
+            <Figure label="cited share" value={`${Math.round(result.groundingRate * 100)}%`} />
             <Figure label="rubric" value={result.judgement ? `${result.judgement.score}/10` : "—"} />
           </section>
+          <p className="-mt-4 text-[12px] leading-[1.7] text-slate-500">
+            Cited share is the part of the extracted claims whose quote was found in its source and reached the brief as a
+            citation. It shows a checked quote stands behind each cited claim; it does not check that the brief&rsquo;s sentences
+            follow from that quote.
+          </p>
 
           {meter ? (
             <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">

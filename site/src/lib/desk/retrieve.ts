@@ -90,7 +90,9 @@ function toSources(payload: unknown, maxResults: number): Source[] {
     const record = entry as Record<string, unknown>;
     const url = typeof record.url === "string" ? record.url : "";
     const content = typeof record.content === "string" ? record.content : "";
-    if (!url.startsWith("http") || url.length > MAX_URL_CHARS || content.trim().length === 0) continue;
+    // A URL with whitespace, quotes or angle brackets is not one the extract
+    // prompt can carry verbatim inside its delimiters, so it is not kept.
+    if (!url.startsWith("http") || url.length > MAX_URL_CHARS || /[\s<>"]/.test(url) || content.trim().length === 0) continue;
     const title = typeof record.title === "string" && record.title.trim() ? record.title : url;
     sources.push({
       index: sources.length + 1,

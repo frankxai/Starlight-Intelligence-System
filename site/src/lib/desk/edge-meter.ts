@@ -3,8 +3,9 @@
  *
  * The cascade's own euros against what those identical token counts would have
  * cost on a closed API at its published list price. Four axes, because one
- * number is an anecdote: cost, quality, speed, and how much of the brief is
- * anchored to a source.
+ * number is an anecdote: cost, quality, speed, and the cited share (verified
+ * claims whose marker reached the brief; it does not show the prose follows
+ * from the source).
  *
  * Every figure can be absent. An absent figure is reported as absent; nothing
  * here estimates, and the comparison stays silent until both sides are priced.
@@ -67,7 +68,7 @@ export function edgeMeter(input: EdgeInput, baseline = "closed-api", table: Pric
     },
     {
       axis: "grounding",
-      label: "claims that reached the brief",
+      label: "verified claims cited in the brief",
       ours: `${Math.round(input.groundingRate * 100)}%`,
       baseline: "—",
       ratio: null,
