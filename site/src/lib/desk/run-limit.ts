@@ -16,9 +16,16 @@
  * known usage replaces that reservation. Unknown usage or a failed
  * reconciliation leaves the conservative reservation in place.
  *
+ * The day's total and every open reservation live in one Redis hash, so each
+ * script touches a single key. A reservation is reconciled at most once: the
+ * script reads the amount it reserved from the hash, not from the caller, and
+ * deletes it as it applies the refund. It refuses without writing anything
+ * when the reservation or the total is missing (an expired or evicted key) or
+ * when the refund would take the total below zero.
+ *
  * Built on SIP — operational tier.
  */
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { deskKey, redisCommand, redisPipeline, type RedisRestConfig } from "./redis-rest";
 
 export const WINDOW_MS = 60_000;
@@ -80,6 +87,8 @@ export interface BudgetResult {
   worstCase: number;
   /** Opaque UTC-day reservation identifier used for reconciliation. */
   reservation: string;
+  /** This reservation's own id within the day, reconciled at most once. Empty when refused. */
+  ticket: string;
   /** Seconds until the UTC day resets; 0 when `ok`. */
   retryAfter: number;
 }
@@ -88,34 +97,67 @@ export interface TokenMeter {
   readonly kind: "durable" | "memory";
   /** Atomically reserve this run's worst case, or refuse without changing usage. */
   reserve(worstCase: number): Promise<BudgetResult>;
-  /** Replace this run's reservation with known actual usage. */
-  reconcile(reservation: Pick<BudgetResult, "reservation" | "worstCase">, actual: number): Promise<number>;
+  /**
+   * Replace this run's reservation with known actual usage, once. Throws,
+   * leaving every total as it was, when the reservation is unknown or already
+   * reconciled, the day's total is gone, or the result would fall below zero.
+   */
+  reconcile(reservation: Pick<BudgetResult, "reservation" | "ticket" | "worstCase">, actual: number): Promise<number>;
 }
 
 export interface MeterOptions {
   budget?: number;
   now?: () => number;
   namespace?: string;
+  /** The reservation id. Defaults to 96 random bits as hex; tests inject one. */
+  ticket?: () => string;
 }
 
-const RESERVE_TOKENS = `
-local used = tonumber(redis.call("GET", KEYS[1]) or "0")
+/** The hash field holding the day's total; every other field is an open reservation. */
+const TOTAL_FIELD = "total";
+
+/**
+ * KEYS[1] the day's hash. ARGV: requested tokens, budget, TTL seconds, ticket field.
+ * A total that is not a whole number of zero or more is an error, never headroom.
+ */
+export const RESERVE_TOKENS = `
+local raw = redis.call("HGET", KEYS[1], "${TOTAL_FIELD}")
+local used = 0
+if raw then used = tonumber(raw) end
+if used == nil or used < 0 then return redis.error_reply("DESK token total is invalid") end
 local requested = tonumber(ARGV[1])
 local budget = tonumber(ARGV[2])
 if used + requested > budget then
   if redis.call("EXISTS", KEYS[1]) == 1 then redis.call("EXPIRE", KEYS[1], ARGV[3]) end
   return {0, used}
 end
-local total = redis.call("INCRBY", KEYS[1], requested)
+if redis.call("HSETNX", KEYS[1], ARGV[4], requested) == 0 then
+  return redis.error_reply("DESK token reservation id already in use")
+end
+local total = redis.call("HINCRBY", KEYS[1], "${TOTAL_FIELD}", requested)
 redis.call("EXPIRE", KEYS[1], ARGV[3])
 return {1, used, total}
 `;
 
-const RECONCILE_TOKENS = `
-local total = redis.call("INCRBY", KEYS[1], tonumber(ARGV[2]) - tonumber(ARGV[1]))
+/**
+ * KEYS[1] the day's hash. ARGV: ticket field, actual tokens, TTL seconds.
+ * Every refusal returns before the first write.
+ */
+export const RECONCILE_TOKENS = `
+local reserved = tonumber(redis.call("HGET", KEYS[1], ARGV[1]) or "")
+if reserved == nil then return {0, "no open reservation"} end
+local total = tonumber(redis.call("HGET", KEYS[1], "${TOTAL_FIELD}") or "")
+if total == nil or total < 0 then return {0, "no valid total"} end
+local adjustment = tonumber(ARGV[2]) - reserved
+if total + adjustment < 0 then return {0, "would fall below zero"} end
+redis.call("HDEL", KEYS[1], ARGV[1])
+local after = redis.call("HINCRBY", KEYS[1], "${TOTAL_FIELD}", adjustment)
 redis.call("EXPIRE", KEYS[1], ARGV[3])
-return total
+return {1, after}
 `;
+
+/** Why a reconciliation was refused, as the script names it. Fixed strings only. */
+const RECONCILE_REFUSALS = new Set(["no open reservation", "no valid total", "would fall below zero"]);
 
 const TOKEN_KEY_TTL_SECONDS = 2 * 86_400;
 
@@ -123,12 +165,14 @@ export function redisTokenMeter(config: RedisRestConfig, options: MeterOptions =
   const budget = options.budget ?? DEFAULT_DAILY_TOKEN_BUDGET;
   const now = options.now ?? (() => Date.now());
   const namespace = options.namespace ?? "default";
-  const keyAt = (at: number) => deskKey(namespace, "tok", utcDay(at));
+  const newTicket = options.ticket ?? (() => randomBytes(12).toString("hex"));
+  const keyAt = (at: number) => deskKey(namespace, "budget", utcDay(at));
   return {
     kind: "durable",
     async reserve(worstCase) {
       const at = now();
       const requested = tokenCount(worstCase);
+      const ticket = ticketField(newTicket());
       const raw = await redisCommand(config, [
         "EVAL",
         RESERVE_TOKENS,
@@ -137,6 +181,7 @@ export function redisTokenMeter(config: RedisRestConfig, options: MeterOptions =
         requested,
         budget,
         TOKEN_KEY_TTL_SECONDS,
+        ticket,
       ]);
       if (!Array.isArray(raw) || raw.length < 2) throw new Error("the token meter answered with an unexpected reservation");
       const admitted = Number(raw[0]);
@@ -144,50 +189,73 @@ export function redisTokenMeter(config: RedisRestConfig, options: MeterOptions =
       if ((admitted !== 0 && admitted !== 1) || !Number.isFinite(used)) {
         throw new Error("the token meter answered with an invalid reservation");
       }
-      return budgetResult(Boolean(admitted), used, budget, requested, keyAt(at), at);
+      return budgetResult(Boolean(admitted), used, budget, requested, keyAt(at), admitted ? ticket : "", at);
     },
     async reconcile(reservation, actual) {
-      const total = Number(
-        await redisCommand(config, [
-          "EVAL",
-          RECONCILE_TOKENS,
-          1,
-          reservation.reservation,
-          tokenCount(reservation.worstCase),
-          tokenCount(actual),
-          TOKEN_KEY_TTL_SECONDS,
-        ]),
-      );
+      if (!reservation.ticket) throw new Error("the token meter has no reservation to reconcile");
+      const raw = await redisCommand(config, [
+        "EVAL",
+        RECONCILE_TOKENS,
+        1,
+        reservation.reservation,
+        reservation.ticket,
+        tokenCount(actual),
+        TOKEN_KEY_TTL_SECONDS,
+      ]);
+      if (!Array.isArray(raw) || raw.length < 2) throw new Error("the token meter answered with an unexpected reconciliation");
+      if (Number(raw[0]) !== 1) {
+        const reason = RECONCILE_REFUSALS.has(String(raw[1])) ? String(raw[1]) : "unexpected answer";
+        throw new Error(`the token meter refused to reconcile: ${reason}`);
+      }
+      const total = Number(raw[1]);
       if (!Number.isFinite(total) || total < 0) throw new Error("the token meter answered with an invalid total");
       return total;
     },
   };
 }
 
+/** A reservation's field in the day's hash. Never the total's own field name. */
+function ticketField(id: string): string {
+  if (!/^[0-9a-z]{1,64}$/.test(id)) throw new Error("the token meter needs a short lowercase alphanumeric reservation id");
+  return `r:${id}`;
+}
+
 /** One process, one meter. Local development only, like memoryRunLimiter. */
 export function memoryTokenMeter(options: MeterOptions = {}): TokenMeter {
   const budget = options.budget ?? DEFAULT_DAILY_TOKEN_BUDGET;
   const now = options.now ?? (() => Date.now());
-  const days = new Map<string, number>();
-  const today = (at: number) => {
-    const day = utcDay(at);
-    return { day, used: days.get(day) ?? 0 };
+  const newTicket = options.ticket ?? (() => randomBytes(12).toString("hex"));
+  const days = new Map<string, { total: number; open: Map<string, number> }>();
+  const dayOf = (day: string) => {
+    let record = days.get(day);
+    if (!record) days.set(day, (record = { total: 0, open: new Map() }));
+    return record;
   };
   return {
     kind: "memory",
     async reserve(worstCase) {
       const at = now();
-      const current = today(at);
+      const day = utcDay(at);
+      const record = dayOf(day);
       const requested = tokenCount(worstCase);
-      const result = budgetResult(current.used + requested <= budget, current.used, budget, requested, current.day, at);
-      if (result.ok) days.set(current.day, current.used + requested);
+      const ok = record.total + requested <= budget;
+      const ticket = ok ? ticketField(newTicket()) : "";
+      const result = budgetResult(ok, record.total, budget, requested, day, ticket, at);
+      if (ok) {
+        if (record.open.has(ticket)) throw new Error("the token meter reservation id is already in use");
+        record.open.set(ticket, requested);
+        record.total += requested;
+      }
       return result;
     },
     async reconcile(reservation, actual) {
-      const current = days.get(reservation.reservation) ?? 0;
-      const total = current + tokenCount(actual) - tokenCount(reservation.worstCase);
-      if (total < 0) throw new Error("the token meter cannot reconcile below zero");
-      days.set(reservation.reservation, total);
+      const record = days.get(reservation.reservation);
+      const reserved = record?.open.get(reservation.ticket);
+      if (!record || reserved === undefined) throw new Error("the token meter refused to reconcile: no open reservation");
+      const total = record.total + tokenCount(actual) - reserved;
+      if (total < 0) throw new Error("the token meter refused to reconcile: would fall below zero");
+      record.open.delete(reservation.ticket);
+      record.total = total;
       return total;
     },
   };
@@ -199,9 +267,10 @@ function budgetResult(
   budget: number,
   worstCase: number,
   reservation: string,
+  ticket: string,
   at: number,
 ): BudgetResult {
-  return { ok, used, budget, worstCase, reservation, retryAfter: ok ? 0 : secondsUntil(nextUtcMidnight(at), at) };
+  return { ok, used, budget, worstCase, reservation, ticket, retryAfter: ok ? 0 : secondsUntil(nextUtcMidnight(at), at) };
 }
 
 function tokenCount(value: number): number {

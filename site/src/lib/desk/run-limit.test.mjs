@@ -10,6 +10,8 @@ import {
   dailyTokenBudget,
   memoryRunLimiter,
   memoryTokenMeter,
+  RECONCILE_TOKENS,
+  RESERVE_TOKENS,
   redisRunLimiter,
   redisTokenMeter,
 } from "./run-limit.ts";
@@ -115,9 +117,13 @@ test("the daily limit reads the environment, and junk falls back to the default,
 
 // ── the daily token meter ───────────────────────────────────────────────────
 
-/** Stateful Redis EVAL double: JavaScript serializes execution just as Redis does. */
+/**
+ * Stateful EVAL double for the request shape and error paths. It mirrors the
+ * scripts' rules in JavaScript; run-limit.redis.test.mjs runs the real scripts
+ * under a real Redis.
+ */
 function atomicMeterFetch(initial = 0) {
-  let used = initial;
+  const hash = { total: initial, open: new Map() };
   const calls = [];
   let error = null;
   const impl = async (url, init) => {
@@ -129,27 +135,39 @@ function atomicMeterFetch(initial = 0) {
       if (next instanceof Error) throw next;
       return { ok: true, status: 200, json: async () => ({ error: next }) };
     }
-    const [, script, keyCount, key, first, second, ttl] = body;
+    const answer = (result) => ({ ok: true, status: 200, json: async () => ({ result }) });
     assert.equal(body[0], "EVAL");
-    assert.equal(keyCount, 1);
-    assert.equal(key, "desk:acme:tok:2026-09-26");
-    assert.equal(ttl, 172_800);
-    if (script.includes("used + requested")) {
-      const before = used;
-      if (used + first > second) return { ok: true, status: 200, json: async () => ({ result: [0, before] }) };
-      used += first;
-      return { ok: true, status: 200, json: async () => ({ result: [1, before, used] }) };
+    assert.equal(body[2], 1, "one key per script");
+    assert.equal(body[3], "desk:acme:budget:2026-09-26");
+    if (body[1] === RESERVE_TOKENS) {
+      const [, , , , requested, budget, ttl, ticket] = body;
+      assert.equal(ttl, 172_800);
+      const before = hash.total;
+      if (before + requested > budget) return answer([0, before]);
+      hash.open.set(ticket, requested);
+      hash.total += requested;
+      return answer([1, before, hash.total]);
     }
-    used += second - first;
-    return { ok: true, status: 200, json: async () => ({ result: used }) };
+    assert.equal(body[1], RECONCILE_TOKENS);
+    const [, , , , ticket, actual, ttl] = body;
+    assert.equal(ttl, 172_800);
+    const reserved = hash.open.get(ticket);
+    if (reserved === undefined) return answer([0, "no open reservation"]);
+    if (hash.total + actual - reserved < 0) return answer([0, "would fall below zero"]);
+    hash.open.delete(ticket);
+    hash.total += actual - reserved;
+    return answer([1, hash.total]);
   };
   impl.calls = calls;
-  impl.used = () => used;
+  impl.used = () => hash.total;
   impl.failNext = (next) => {
     error = next;
   };
   return impl;
 }
+
+let serial = 0;
+const tickets = () => `t${(serial += 1)}`;
 
 test("simultaneous admissions atomically reserve no more than the token budget", async () => {
   const fetchImpl = atomicMeterFetch();
@@ -160,6 +178,9 @@ test("simultaneous admissions atomically reserve no more than the token budget",
   assert.equal(admissions.filter((result) => !result.ok).length, 195);
   assert.equal(fetchImpl.used(), 2_000_000, "denied admissions do not increment the one daily key");
   assert.ok(fetchImpl.calls.every((call) => call.body[0] === "EVAL"));
+  const ids = admissions.filter((result) => result.ok).map((result) => result.ticket);
+  assert.equal(new Set(ids).size, 5, "each admission gets its own reservation id");
+  assert.ok(ids.every((id) => /^r:[0-9a-f]{24}$/.test(id)));
 });
 
 test("a depleted budget is denied without changing its reservation total", async () => {
@@ -172,10 +193,12 @@ test("a depleted budget is denied without changing its reservation total", async
     used: 1_600_001,
     budget: 2_000_000,
     worstCase: 400_000,
-    reservation: "desk:acme:tok:2026-09-26",
+    reservation: "desk:acme:budget:2026-09-26",
+    ticket: "",
     retryAfter: 14 * 3600 - 30,
   });
   assert.equal(fetchImpl.used(), 1_600_001);
+  await assert.rejects(meter.reconcile(denied, 0), /no reservation to reconcile/, "a refusal has nothing to refund");
 });
 
 test("Redis admission errors throw so the route fails closed", async () => {
@@ -188,13 +211,17 @@ test("Redis admission errors throw so the route fails closed", async () => {
   await assert.rejects(meter.reserve(1), /redis call failed/);
 });
 
-test("known usage reconciles the worst-case reservation to the actual total", async () => {
+test("known usage reconciles the worst-case reservation to the actual total, once", async () => {
   const fetchImpl = atomicMeterFetch();
-  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, budget: 1_000, namespace: "acme" });
+  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, budget: 1_000, namespace: "acme", ticket: tickets });
   const admission = await meter.reserve(400);
   assert.equal(admission.ok, true);
   assert.equal(await meter.reconcile(admission, 125), 125);
   assert.equal(fetchImpl.used(), 125);
+  const call = fetchImpl.calls.at(-1).body;
+  assert.equal(call.length, 7, "reconcile sends the ticket and actual usage, not the caller's idea of the worst case");
+  await assert.rejects(meter.reconcile(admission, 0), /refused to reconcile: no open reservation/);
+  assert.equal(fetchImpl.used(), 125, "a second reconcile changes nothing");
 });
 
 test("post-run accounting errors retain the worst-case reservation", async () => {
@@ -217,28 +244,32 @@ test("unknown usage is not reconciled and a retried admission remains blocked", 
   assert.equal(fetchImpl.used(), 400);
 });
 
+test("a reservation id that is not short lowercase alphanumeric is refused before any call", async () => {
+  const fetchImpl = atomicMeterFetch();
+  const meter = redisTokenMeter({ ...CONFIG, fetchImpl }, { now: () => AT, namespace: "acme", ticket: () => "TOTAL" });
+  await assert.rejects(meter.reserve(1), /reservation id/);
+  assert.equal(fetchImpl.calls.length, 0);
+});
+
 test("a zero budget, or one smaller than a run's worst case, closes the Desk", async () => {
   assert.equal((await memoryTokenMeter({ budget: 0 }).reserve(1)).ok, false);
   assert.equal((await memoryTokenMeter({ budget: 100 }).reserve(101)).ok, false);
   assert.equal((await memoryTokenMeter({ budget: 100 }).reserve(100)).ok, true);
 });
 
-test("the in-memory meter reserves atomically, reconciles, and resets each UTC day", async () => {
+test("the in-memory meter reserves atomically, reconciles once, and resets each UTC day", async () => {
   let at = AT;
-  const meter = memoryTokenMeter({ now: () => at, budget: 1000 });
+  const meter = memoryTokenMeter({ now: () => at, budget: 1000, ticket: tickets });
   const admissions = await Promise.all([meter.reserve(400), meter.reserve(400), meter.reserve(400)]);
   assert.deepEqual(admissions.map((result) => result.ok), [true, true, false]);
   assert.equal(await meter.reconcile(admissions[0], 200), 600);
+  await assert.rejects(meter.reconcile(admissions[0], 0), /no open reservation/, "a repeated refund is refused");
   assert.equal((await meter.reserve(400)).ok, true, "a known refund makes room available");
   at += 86_400_000;
-  assert.deepEqual(await meter.reserve(400), {
-    ok: true,
-    used: 0,
-    budget: 1000,
-    worstCase: 400,
-    reservation: "2026-09-27",
-    retryAfter: 0,
-  });
+  const next = await meter.reserve(400);
+  assert.equal(next.ok, true);
+  assert.equal(next.used, 0);
+  assert.equal(next.reservation, "2026-09-27");
 });
 
 test("the token budget reads the environment, and junk falls back to the default", () => {

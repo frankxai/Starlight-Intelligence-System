@@ -1,7 +1,8 @@
 # The Desk (site/ /desk): unit tests and type check on Node 20 and 22.
 #
-# test:desk mocks every provider and Redis call, so it needs no secrets and
-# no network beyond the install. It transpiles TypeScript through the site's
+# test:desk mocks every provider call and needs no secrets. The token meter's
+# Lua scripts also run against a real Redis in a service container
+# (run-limit.redis.test.mjs), so their EVAL semantics are tested, not mocked. It transpiles TypeScript through the site's
 # own typescript devDependency (site/scripts/test/ts-resolve-hooks.mjs), which
 # is what lets it run on Node 20, where --experimental-strip-types does not
 # exist. This workflow deploys nothing.
@@ -44,6 +45,18 @@ jobs:
       fail-fast: false
       matrix:
         node: [20, 22]
+    services:
+      redis:
+        image: redis:7.0-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 15
+    env:
+      DESK_TEST_REDIS_URL: redis://127.0.0.1:6379
     defaults:
       run:
         working-directory: site

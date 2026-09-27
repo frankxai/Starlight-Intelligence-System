@@ -55,8 +55,8 @@ millisecond, and the beliefs they write, never share an id.
 Every Redis key the Desk uses sits under one namespace: `DESK_NAMESPACE`, else
 the older `DESK_VAULT_NAMESPACE`, else `default`. The vault is
 `desk:<ns>:vault`; the per-address window `desk:<ns>:rl:<digest>:<window>`; the
-daily run count `desk:<ns>:day:<date>`; the daily token meter
-`desk:<ns>:tok:<date>`. Two Desks on one database with different namespaces
+daily run count `desk:<ns>:day:<date>`; the daily token meter, a hash holding
+the day's total and each open reservation, `desk:<ns>:budget:<date>`. Two Desks on one database with different namespaces
 share no memory and no counters.
 
 Memory belongs to a trusted identity (`memoryAccess` in `access.ts`, applied by
@@ -173,18 +173,29 @@ as a reservation, in `run-limit.ts`:
 
 - **Reserve, before any paid work.** One Redis `EVAL` reads the day's total and,
   in the same atomic step, either refuses with 429 and changes nothing (when the
-  total plus one run's worst case would pass the budget), or adds that worst
-  case to the total and refreshes the key's expiry. Every run reserves before it
-  spends, so runs arriving at once cannot together pass the budget.
+  total plus one run's worst case would pass the budget), or records the
+  reservation under its own random id, adds the worst case to the total, and
+  refreshes the key's expiry. Every run reserves before it spends, so runs
+  arriving at once cannot together pass the budget. A total that is negative or
+  not a number is an error, and the route answers 503, never "room to spare".
 - **Give it back when no paid work happens.** If the daily run ceiling then
   refuses the request, or its counter cannot be reached, the reservation is
   returned before the refusal.
-- **Reconcile, only on known usage.** After the run, when every model call ran
-  once and reported both token counts, a second `EVAL` replaces the reservation
-  with the tokens actually used; a reported zero counts as zero. Otherwise,
-  meaning usage missing or malformed, a retry, or a reconcile call that fails,
-  the full worst case stays charged, so spend the Desk cannot count is counted
-  at its ceiling.
+- **Reconcile, only on known usage, and only once.** After the run, when every
+  model call ran once and reported both token counts, a second `EVAL` replaces
+  the reservation with the tokens actually used; a reported zero counts as
+  zero. It reads the reserved amount from Redis, not from the caller, and
+  deletes the reservation as it applies the difference, so a repeated call has
+  nothing to refund. It writes nothing when the reservation or the total is
+  missing (the key expired or was evicted) or when the result would fall below
+  zero. Otherwise, meaning usage missing or malformed, a retry, or a reconcile
+  call that fails or is refused, the full worst case stays charged, so spend the
+  Desk cannot count is counted at its ceiling.
+
+Both scripts are tested against a real Redis (`run-limit.redis.test.mjs`; CI
+runs a Redis 7.0 service): concurrent admission, a repeated reconcile, a
+missing key, a refund that would go below zero, and an invalid total. Upstash's
+own `EVAL` is still to be checked in the live run.
 
 The worst case is a constant, `WORST_CASE_RUN_TOKENS` in `cascade.ts`, about
 396,000 tokens. Every input a prompt can carry is capped: the question at 400
