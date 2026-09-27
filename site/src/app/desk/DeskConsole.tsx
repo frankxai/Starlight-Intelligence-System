@@ -56,7 +56,10 @@ interface DeskResponse {
   remembered: number;
   receipt: Receipt;
   signed: boolean;
+  unsignedReason: string | null;
   pricesVerified: boolean;
+  costComplete: boolean;
+  unpricedStages: string[];
 }
 
 const STAGE_ORDER = ["recall", "retrieve", "extract", "synthesize", "contradict", "judge", "remember"] as const;
@@ -126,7 +129,8 @@ export function DeskConsole({ examples }: { examples: string[] }) {
       tokens: result.receipt.totals.tokens,
       groundingRate: result.groundingRate,
       rubricScore: result.judgement?.score ?? null,
-      pricesVerified: result.pricesVerified,
+      // The run's own euros are only shown when every paid stage was priced.
+      pricesVerified: result.costComplete,
     });
   }, [result]);
 
@@ -221,7 +225,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
       {result ? (
         <>
           <section className="grid gap-4 sm:grid-cols-4">
-            <Figure label="cost" value={result.pricesVerified ? eur(result.receipt.totals.costEur) : "unpriced"} />
+            <Figure label="cost" value={result.costComplete ? eur(result.receipt.totals.costEur) : "unpriced"} />
             <Figure label="time" value={`${(result.receipt.totals.latencyMs / 1000).toFixed(1)} s`} />
             <Figure label="cited share" value={`${Math.round(result.groundingRate * 100)}%`} />
             <Figure label="rubric" value={result.judgement ? `${result.judgement.score}/10` : "—"} />
@@ -263,11 +267,11 @@ export function DeskConsole({ examples }: { examples: string[] }) {
             </section>
           ) : null}
 
-          {!result.pricesVerified ? (
+          {!result.costComplete ? (
             <p className="rounded-lg border border-amber-400/25 bg-amber-400/[0.05] px-4 py-3 text-[12px] leading-[1.7] text-amber-200/90">
-              Model prices are unverified, so this run reports tokens and seconds and withholds euros. Fill them from the Token
-              Factory console in <span className="font-mono">src/lib/desk/pricing.ts</span> and every figure here becomes a number
-              someone checked.
+              These stages did paid work without a verified price: {result.unpricedStages.join(", ")}. So this run reports tokens and
+              seconds, withholds euros, and ships its receipt unsigned. Fill the prices from the provider consoles in{" "}
+              <span className="font-mono">src/lib/desk/pricing.ts</span> and every figure here becomes a number someone checked.
             </p>
           ) : null}
 
@@ -354,6 +358,15 @@ export function DeskConsole({ examples }: { examples: string[] }) {
             </div>
             <dl className="divide-y divide-white/[0.06] text-[12px]">
               <Row label="receipt id" value={result.receipt.receiptId} />
+              {result.unsignedReason ? <Row label="unsigned" value={result.unsignedReason} /> : null}
+              <Row
+                label="cost"
+                value={
+                  result.costComplete
+                    ? eur(result.receipt.totals.costEur)
+                    : `unpriced: ${result.unpricedStages.join(", ")}`
+                }
+              />
               <Row label="subject sha256" value={result.receipt.subject.digest.sha256} />
               <Row
                 label="tokens"

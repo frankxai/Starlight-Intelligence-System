@@ -29,7 +29,7 @@
  * Built on SIP — operational tier.
  */
 import { chat, type ProviderConfig } from "./provider";
-import { modelCostEur, retrievalCostEur, pricingIsComplete } from "./pricing";
+import { PRICING, modelCostEur, pricingIsComplete, retrievalCostEur, unpricedStages, type PricingTable } from "./pricing";
 import { MAX_SOURCE_CHARS, MAX_TITLE_CHARS, MAX_URL_CHARS, retrieve, type RetrieveConfig, type Source } from "./retrieve";
 import {
   RUN_RECEIPT_SCHEMA,
@@ -112,7 +112,15 @@ export interface DeskRun {
   /** How many beliefs this run wrote back to the vault. */
   remembered: number;
   receipt: RunReceipt;
+  /** Every price in the table is dated, baselines included. */
   pricesVerified: boolean;
+  /**
+   * Every stage that did paid work carries a euro figure, so the receipt's
+   * total is one the Desk can vouch for. When false the receipt lists the
+   * unpriced stages as "cost-incomplete" evidence and is not signed.
+   */
+  costComplete: boolean;
+  unpricedStages: string[];
 }
 
 export interface CascadeOptions {
@@ -130,6 +138,8 @@ export interface CascadeOptions {
   noVaultReason?: string;
   now?: () => number;
   clock?: () => string;
+  /** The price table. Defaults to PRICING; tests pass a priced one. */
+  pricing?: PricingTable;
 }
 
 /** Run the cascade. Every stage records itself, including the ones that fail. */
@@ -152,6 +162,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   let remembered = 0;
   const vault = options.vault ?? (options.vaultPath ? fileVault(options.vaultPath) : null);
   const noVault = options.noVaultReason ?? "no vault";
+  const table = options.pricing ?? PRICING;
 
   // ── recall ────────────────────────────────────────────────────────────────
   // Memory first: keyword overlap over the vault's own lines. No model and no
@@ -187,7 +198,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       status: sources.length > 0 ? "ok" : "failed",
       provider: "tavily",
       latencyMs: found.latencyMs,
-      ...costFields(retrievalCostEur("tavily", found.calls)),
+      ...costFields(retrievalCostEur("tavily", found.calls, table)),
       note: `${sources.length} sources`,
     });
   } catch (error) {
@@ -220,7 +231,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
-        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens)),
+        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)),
         note: extractNote(checked),
       });
     } catch (error) {
@@ -254,7 +265,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
-        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens)),
+        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)),
         note: `${sectionsPresent(brief).length}/${SECTIONS.length} sections`,
       });
     } catch (error) {
@@ -291,7 +302,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
-        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens)),
+        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)),
         note: `${contradictions.length} against ${related.length} prior beliefs`,
       });
     } catch (error) {
@@ -333,7 +344,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
-        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens)),
+        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)),
         note: judgement ? `score ${judgement.score}/10 · cited ${(groundingRate * 100).toFixed(0)}%` : "unparsable verdict",
       });
     } catch (error) {
@@ -372,6 +383,13 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     });
   }
 
+  // A stage that did paid work without a euro figure says so, and the receipt
+  // names every such stage. Its total then covers only the priced stages.
+  const unpriced = unpricedStages(stages, table);
+  for (const stage of stages) {
+    if (unpriced.includes(stage.name)) stage.note = stage.note ? `${stage.note} · unpriced` : "unpriced";
+  }
+
   const endedAt = clock();
   const receipt: RunReceipt = {
     schema: RUN_RECEIPT_SCHEMA,
@@ -386,6 +404,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     evidence: [
       ...sources.map((source) => ({ kind: "source", ref: source.url })),
       ...(remembered > 0 && vault ? [{ kind: "vault", ref: vault.ref }] : []),
+      ...(unpriced.length > 0 ? [{ kind: "cost-incomplete", ref: `unpriced: ${unpriced.join(", ")}` }] : []),
     ],
     verdict: verdictFromStages(stages),
   };
@@ -401,7 +420,9 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     contradictions,
     remembered,
     receipt,
-    pricesVerified: pricingIsComplete(),
+    pricesVerified: pricingIsComplete(table),
+    costComplete: unpriced.length === 0,
+    unpricedStages: unpriced,
   };
 }
 

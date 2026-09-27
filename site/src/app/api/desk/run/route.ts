@@ -13,7 +13,7 @@ import {
   type RunLimiter,
   type TokenMeter,
 } from "@/lib/desk/run-limit";
-import { deskSigningKey } from "@/lib/desk/signing";
+import { deskSigningKey, signingPlan } from "@/lib/desk/signing";
 import { vaultForRun } from "@/lib/desk/vault";
 
 export const runtime = "nodejs";
@@ -129,15 +129,19 @@ export async function POST(request: Request) {
     }
 
     // Sign with the Desk's own key when one is set; deployed, never with the
-    // personal key (see signing.ts). Without one the receipt travels as a
-    // draft, which is a record of the run and not a proof of it.
-    const signingKey = deskSigningKey();
+    // personal key (see signing.ts). A cost-incomplete run is never signed:
+    // the receipt must state a euro total, and one that leaves out unpriced
+    // paid stages is a total the Desk cannot vouch for. Unsigned, the receipt
+    // travels as a draft with the reason, a record of the run that proves
+    // nothing about who ran it.
+    const plan = signingPlan(run.costComplete, deskSigningKey());
     let envelope: unknown = null;
-    if (signingKey) {
+    let unsignedReason: string | null = plan.sign ? null : plan.reason;
+    if (plan.sign) {
       try {
-        envelope = signRunReceipt(run.receipt, signingKey.pem);
+        envelope = signRunReceipt(run.receipt, plan.key.pem);
       } catch {
-        envelope = null;
+        unsignedReason = "signing failed";
       }
     }
 
@@ -154,7 +158,10 @@ export async function POST(request: Request) {
       receipt: run.receipt,
       envelope,
       signed: Boolean(envelope),
+      unsignedReason,
       pricesVerified: run.pricesVerified,
+      costComplete: run.costComplete,
+      unpricedStages: run.unpricedStages,
     });
   } catch (error) {
     return NextResponse.json(

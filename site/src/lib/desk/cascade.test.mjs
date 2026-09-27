@@ -31,6 +31,8 @@ import {
   MODELS,
 } from "./cascade.ts";
 import { receiptProblems } from "./run-receipt.ts";
+import { PRICING } from "./pricing.ts";
+import { COST_INCOMPLETE_UNSIGNED, signingPlan } from "./signing.ts";
 import { NO_DURABLE_VAULT, readAtoms, redisVault, selectVault, vaultForRun } from "./vault.ts";
 import { ANONYMOUS_MEMORY } from "./access.ts";
 
@@ -112,7 +114,7 @@ test("a full run cites its claims, scores itself, and issues a complete receipt"
 
   assert.equal(run.sources.length, 2);
   assert.equal(run.claims.length, 2, "the claim quoting an unseen URL is dropped");
-  assert.equal(run.receipt.stages[2].note, "2 claims · 1 dropped: no retrieved URL or missing fields");
+  assert.equal(run.receipt.stages[2].note, "2 claims · 1 dropped: no retrieved URL or missing fields · unpriced");
   assert.equal(run.groundingRate, 1);
   assert.equal(run.judgement?.score, 8.4);
   assert.deepEqual(sectionsPresent(run.brief).length, 6);
@@ -124,14 +126,19 @@ test("a full run cites its claims, scores itself, and issues a complete receipt"
     run.receipt.stages.map((stage) => `${stage.name}:${stage.status}`),
     ["recall:skipped", "retrieve:ok", "extract:ok", "synthesize:ok", "contradict:skipped", "judge:ok", "remember:skipped"],
   );
-  assert.equal(run.receipt.evidence.length, 2, "each source is evidence");
+  assert.equal(run.receipt.evidence.filter((item) => item.kind === "source").length, 2, "each source is evidence");
   assert.equal(run.receipt.totals.tokens.input, 3900);
   assert.equal(run.receipt.totals.tokens.output, 880);
 
-  // Prices start unverified, so no stage invents a euro figure.
+  // Prices start unverified, so no stage invents a euro figure, and the
+  // receipt says which paid stages it could not price.
   assert.equal(run.pricesVerified, false);
   assert.ok(run.receipt.stages.every((stage) => stage.costEur === undefined));
   assert.equal(run.receipt.totals.costEur, 0);
+  assert.equal(run.costComplete, false);
+  assert.deepEqual(run.unpricedStages, ["retrieve", "extract", "synthesize", "judge"]);
+  assert.deepEqual(run.receipt.evidence.at(-1), { kind: "cost-incomplete", ref: "unpriced: retrieve, extract, synthesize, judge" });
+  assert.equal(run.receipt.stages[1].note, "2 sources · unpriced");
 
   const models = fetchImpl.calls.slice(1).map((call) => call.body.model);
   assert.deepEqual(models, [MODELS.extract, MODELS.synthesize, MODELS.judge], "small, large, other family");
@@ -595,8 +602,70 @@ test("dropped claims reach neither the brief, the vault nor the citations", asyn
   const run = await runDesk({ ...config(fetchImpl), vault });
 
   assert.deepEqual(run.claims.map((claim) => claim.text), ["Alpha holds."]);
-  assert.equal(run.receipt.stages[2].note, "1 claim · 2 dropped: quote not found in the named source");
+  assert.equal(run.receipt.stages[2].note, "1 claim · 2 dropped: quote not found in the named source · unpriced");
   const synthesis = JSON.stringify(fetchImpl.calls[2].body);
   assert.ok(!synthesis.includes("Fabricated.") && !synthesis.includes("Misfiled."), "the writer never sees them");
   assert.deepEqual(written.map((atom) => atom.claim), ["Alpha holds."], "memory keeps only the verified claim");
+});
+
+// ── cost-complete, or unsigned ──────────────────────────────────────────────
+
+const PRICED_MODEL = { eurPerMillionInput: 0.1, eurPerMillionOutput: 0.4, verifiedAt: "2026-09-22", source: "console" };
+const MODELS_PRICED = {
+  ...PRICING,
+  models: Object.fromEntries(Object.keys(PRICING.models).map((model) => [model, PRICED_MODEL])),
+};
+const ALL_PRICED = { ...MODELS_PRICED, retrieval: { tavily: { eurPerCall: 0.008, verifiedAt: "2026-09-22", source: "console" } } };
+
+function fullScript() {
+  return scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    completion(CLAIMS_JSON),
+    completion(BRIEF, 2000, 600),
+    completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+  ]);
+}
+
+test("priced models with unpriced retrieval are still cost-incomplete: Tavily is paid work", async () => {
+  const run = await runDesk({ ...config(fullScript()), pricing: MODELS_PRICED });
+  assert.equal(run.costComplete, false);
+  assert.deepEqual(run.unpricedStages, ["retrieve"]);
+  const retrieve = run.receipt.stages.find((stage) => stage.name === "retrieve");
+  assert.equal(retrieve.costEur, undefined, "an unpriced stage carries no euro figure");
+  assert.match(retrieve.note, /unpriced$/);
+  assert.equal(typeof run.receipt.stages.find((stage) => stage.name === "extract").costEur, "number");
+  assert.deepEqual(run.receipt.evidence.filter((item) => item.kind === "cost-incomplete"), [
+    { kind: "cost-incomplete", ref: "unpriced: retrieve" },
+  ]);
+  assert.deepEqual(receiptProblems(run.receipt), [], "the draft stays a valid v1 receipt");
+});
+
+test("a fully priced run is cost-complete, names no gap, and states its total", async () => {
+  const run = await runDesk({ ...config(fullScript()), pricing: ALL_PRICED });
+  assert.equal(run.costComplete, true);
+  assert.deepEqual(run.unpricedStages, []);
+  assert.ok(!run.receipt.evidence.some((item) => item.kind === "cost-incomplete"));
+  assert.ok(!run.receipt.stages.some((stage) => /unpriced/.test(stage.note ?? "")));
+  const sum = run.receipt.stages.reduce((total, stage) => total + (stage.costEur ?? 0), 0);
+  assert.equal(run.receipt.totals.costEur, Math.round(sum * 10_000) / 10_000);
+  assert.ok(run.receipt.totals.costEur > 0);
+  assert.deepEqual(receiptProblems(run.receipt), []);
+});
+
+test("a paid stage that failed has no euro figure, so even a priced table leaves the run cost-incomplete", async () => {
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    { ok: false, status: 400, json: async () => ({}), text: async () => "bad request" },
+  ]);
+  const run = await runDesk({ ...config(fetchImpl), pricing: ALL_PRICED });
+  assert.deepEqual(run.unpricedStages, ["extract"]);
+  assert.equal(run.costComplete, false);
+});
+
+test("a cost-incomplete receipt is never signed, even with a key; a complete one is", () => {
+  const key = { pem: "-----BEGIN PRIVATE KEY-----\nx\n-----END PRIVATE KEY-----", source: "DESK_SIGNING_KEY" };
+  assert.deepEqual(signingPlan(false, key), { sign: false, reason: COST_INCOMPLETE_UNSIGNED });
+  assert.equal(COST_INCOMPLETE_UNSIGNED, "cost-incomplete: signing would assert a total the Desk cannot vouch for");
+  assert.deepEqual(signingPlan(true, key), { sign: true, key });
+  assert.deepEqual(signingPlan(true, null), { sign: false, reason: "no Desk signing key configured" });
 });

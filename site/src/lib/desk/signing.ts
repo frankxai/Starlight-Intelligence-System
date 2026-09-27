@@ -30,3 +30,20 @@ export function deskSigningKey(env: NodeJS.ProcessEnv = process.env): SigningKey
   const personal = env.SIS_SIGNING_KEY?.trim();
   return personal ? { pem: personal, source: "SIS_SIGNING_KEY" } : null;
 }
+
+export const COST_INCOMPLETE_UNSIGNED = "cost-incomplete: signing would assert a total the Desk cannot vouch for";
+export const NO_SIGNING_KEY = "no Desk signing key configured";
+
+export type SigningPlan = { sign: true; key: SigningKeyChoice } | { sign: false; reason: string };
+
+/**
+ * Whether to sign this run's receipt. The v1 receipt must state a euro total,
+ * and it cannot say "unknown". A run with an unpriced paid stage would sign a
+ * total that leaves that stage out, so it ships as an unsigned draft with the
+ * reason, even when a key is present.
+ */
+export function signingPlan(costComplete: boolean, key: SigningKeyChoice | null): SigningPlan {
+  if (!costComplete) return { sign: false, reason: COST_INCOMPLETE_UNSIGNED };
+  if (!key) return { sign: false, reason: NO_SIGNING_KEY };
+  return { sign: true, key };
+}

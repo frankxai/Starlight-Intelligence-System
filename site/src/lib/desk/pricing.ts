@@ -6,8 +6,14 @@
  * the Token Factory console (day-prep step F4) and set `verifiedAt` to the date
  * you read it; from that moment every euro on screen is a number someone checked.
  *
+ * A run is cost-complete only when every stage that did paid work carries a
+ * euro figure: each model stage that ran, and retrieval, because Tavily bills
+ * per call. A run that is not says which stages are unpriced, and the route
+ * does not sign its receipt (see signing.ts).
+ *
  * Built on SIP — operational tier.
  */
+import type { RunReceiptStage } from "./run-receipt";
 
 export interface ModelPrice {
   eurPerMillionInput: number | null;
@@ -42,6 +48,8 @@ export const PRICING: PricingTable = {
   baselines: {
     "closed-api": { label: "Closed API, published list price", ...unpriced() },
   },
+  // Retrieval is paid work too: a run that used it is not cost-complete until
+  // this carries a dated per-call price.
   retrieval: {
     tavily: { eurPerCall: null, verifiedAt: null, source: "unverified" },
   },
@@ -90,12 +98,28 @@ export function baselineCostEur(inputTokens: number, outputTokens: number, basel
   return round4(input + output);
 }
 
-/** Every price the table carries is dated, so a receipt may state euros without a caveat. */
+/** Every price the table carries is dated, retrieval included, so a receipt may state euros without a caveat. */
 export function pricingIsComplete(table: PricingTable = PRICING): boolean {
   return (
     Object.values(table.models).every((price) => isVerified(price)) &&
-    Object.values(table.baselines).every((price) => isVerified(price))
+    Object.values(table.baselines).every((price) => isVerified(price)) &&
+    Object.values(table.retrieval).every((price) => typeof price.eurPerCall === "number" && Boolean(price.verifiedAt))
   );
+}
+
+/** A stage did paid work when it ran against a model, or against a retrieval provider the table lists. */
+export function isPaidStage(stage: RunReceiptStage, table: PricingTable = PRICING): boolean {
+  if (stage.status === "skipped") return false;
+  if (stage.model) return true;
+  return stage.provider !== undefined && Object.prototype.hasOwnProperty.call(table.retrieval, stage.provider);
+}
+
+/**
+ * The names of stages that did paid work and carry no euro figure. Empty
+ * means the run is cost-complete and its total is one the Desk can vouch for.
+ */
+export function unpricedStages(stages: RunReceiptStage[], table: PricingTable = PRICING): string[] {
+  return stages.filter((stage) => isPaidStage(stage, table) && typeof stage.costEur !== "number").map((stage) => stage.name);
 }
 
 function round4(value: number): number {
