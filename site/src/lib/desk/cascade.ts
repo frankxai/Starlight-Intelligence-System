@@ -118,9 +118,11 @@ export interface DeskRun {
   /**
    * Every stage that did paid work carries a euro figure, so the receipt's
    * total is one the Desk can vouch for. When false the receipt lists the
-   * unpriced stages as "cost-incomplete" evidence and is not signed.
+   * gaps as "cost-incomplete" evidence, carries a policy decision that its
+   * total is a subtotal, and is not signed.
    */
   costComplete: boolean;
+  /** Paid stages without a euro figure: no verified price, or usage the provider did not report. */
   unpricedStages: string[];
   /** Internal spend guard; deliberately separate from receipt cost completeness. */
   billableUsageComplete: boolean;
@@ -196,6 +198,9 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   let contradictions: Contradiction[] = [];
   let remembered = 0;
   let billableUsageComplete = true;
+  // Model stages whose billable usage the provider did not fully report, on
+  // the answering attempt or a failed one before it. They carry no euro figure.
+  const usageUnknown = new Set<string>();
   const vault = options.vault ?? (options.vaultPath ? fileVault(options.vaultPath) : null);
   const noVault = options.noVaultReason ?? "no vault";
   const table = options.pricing ?? PRICING;
@@ -279,6 +284,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       const checked = checkClaims(result.text, sources);
       billableUsageComplete &&= result.usageComplete;
+      if (!result.usageComplete) usageUnknown.add("extract");
       claims = checked.claims;
       stages.push({
         name: "extract",
@@ -288,11 +294,12 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
-        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)),
+        ...(result.usageComplete ? costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)) : {}),
         note: extractNote(checked),
       });
     } catch (error) {
       billableUsageComplete = false;
+      usageUnknown.add("extract");
       stages.push({ name: "extract", status: "failed", model: MODELS.extract, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -318,6 +325,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       brief = result.text.trim();
       billableUsageComplete &&= result.usageComplete;
+      if (!result.usageComplete) usageUnknown.add("synthesize");
       stages.push({
         name: "synthesize",
         status: brief.length > 0 ? "ok" : "failed",
@@ -326,11 +334,12 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
-        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)),
+        ...(result.usageComplete ? costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)) : {}),
         note: `${sectionsPresent(brief).length}/${SECTIONS.length} sections`,
       });
     } catch (error) {
       billableUsageComplete = false;
+      usageUnknown.add("synthesize");
       stages.push({ name: "synthesize", status: "failed", model: MODELS.synthesize, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -359,6 +368,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       contradictions = parseContradictions(result.text, related);
       billableUsageComplete &&= result.usageComplete;
+      if (!result.usageComplete) usageUnknown.add("contradict");
       stages.push({
         name: "contradict",
         status: "ok",
@@ -367,11 +377,12 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
-        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)),
+        ...(result.usageComplete ? costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)) : {}),
         note: `${contradictions.length} against ${related.length} prior beliefs`,
       });
     } catch (error) {
       billableUsageComplete = false;
+      usageUnknown.add("contradict");
       stages.push({ name: "contradict", status: "failed", model: MODELS.contradict, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -405,6 +416,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       judgement = parseJudgement(result.text);
       billableUsageComplete &&= result.usageComplete;
+      if (!result.usageComplete) usageUnknown.add("judge");
       stages.push({
         name: "judge",
         status: judgement ? "ok" : "failed",
@@ -413,11 +425,12 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
-        ...costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)),
+        ...(result.usageComplete ? costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)) : {}),
         note: judgement ? `score ${judgement.score}/10 · cited ${(groundingRate * 100).toFixed(0)}%` : "unparsable verdict",
       });
     } catch (error) {
       billableUsageComplete = false;
+      usageUnknown.add("judge");
       stages.push({ name: "judge", status: "failed", model: MODELS.judge, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -461,10 +474,15 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   if (timer) clearTimeout(timer);
 
   // A stage that did paid work without a euro figure says so, and the receipt
-  // names every such stage. Its total then covers only the priced stages.
-  const unpriced = unpricedStages(stages, table);
+  // names every such stage with the reason: no verified price, or billable
+  // usage the provider did not report. Its total then covers only the priced
+  // stages, so the receipt also records a policy decision not to sign it.
+  const unaccounted = unpricedStages(stages, table);
+  const unreported = unaccounted.filter((name) => usageUnknown.has(name));
+  const unpriced = unaccounted.filter((name) => !usageUnknown.has(name));
   for (const stage of stages) {
-    if (unpriced.includes(stage.name)) stage.note = stage.note ? `${stage.note} · unpriced` : "unpriced";
+    const gap = unreported.includes(stage.name) ? "usage unreported" : unpriced.includes(stage.name) ? "unpriced" : null;
+    if (gap) stage.note = stage.note ? `${stage.note} · ${gap}` : gap;
   }
 
   const endedAt = clock();
@@ -477,11 +495,24 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     subject: { name: subjectName(question), digest: { sha256: sha256Hex(brief || question) } },
     stages,
     totals: totalsFromStages(stages),
-    decisions: [],
+    decisions:
+      unaccounted.length > 0
+        ? [
+            {
+              gate: "sign",
+              decidedBy: "policy",
+              actorId: "desk.cost-completeness",
+              outcome: "rejected",
+              at: endedAt,
+              note: `${COST_SUBTOTAL_NOTE}; unaccounted: ${unaccounted.join(", ")}`,
+            },
+          ]
+        : [],
     evidence: [
       ...sources.map((source) => ({ kind: "source", ref: source.url })),
       ...(remembered > 0 && vault ? [{ kind: "vault", ref: vault.ref }] : []),
       ...(unpriced.length > 0 ? [{ kind: "cost-incomplete", ref: `unpriced: ${unpriced.join(", ")}` }] : []),
+      ...(unreported.length > 0 ? [{ kind: "cost-incomplete", ref: `usage unreported: ${unreported.join(", ")}` }] : []),
     ],
     verdict: verdictFromStages(stages),
   };
@@ -498,8 +529,8 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     remembered,
     receipt,
     pricesVerified: pricingIsComplete(table),
-    costComplete: unpriced.length === 0,
-    unpricedStages: unpriced,
+    costComplete: unaccounted.length === 0,
+    unpricedStages: unaccounted,
     billableUsageComplete,
   };
 }
@@ -536,6 +567,14 @@ export function sectionsPresent(brief: string): string[] {
 }
 
 /** A quote shorter than this, once normalized, proves nothing and is dropped. */
+/**
+ * What a cost-incomplete receipt's decision says. The v1 schema requires a
+ * number in totals.costEur and cannot say "unknown", so the receipt itself
+ * states that the number is a subtotal and that signing was refused.
+ */
+export const COST_SUBTOTAL_NOTE =
+  "cost-incomplete: totals.costEur is the subtotal of priced stages only, and this receipt is an unsigned draft";
+
 export const MIN_QUOTE_CHARS = 20;
 
 /**

@@ -196,13 +196,24 @@ screen is a figure a person checked, and the edge meter can put the closed-API
 baseline beside it.
 
 A run is cost-complete only when every stage that did paid work carries a euro
-figure: each model stage that ran, and retrieval. A paid stage that failed has
-no token count and so no figure. When a run is not cost-complete, each
-unpriced stage has no `costEur` and a note ending "unpriced", the receipt
-carries the evidence entry `{ kind: "cost-incomplete", ref: "unpriced:
-<stages>" }`, the page shows "unpriced" wherever a total would appear, and the
-receipt is not signed. With the shipped table that is every run until F4 is
-done.
+figure: each model stage that ran, and retrieval. A model stage gets a figure
+only when its call reported both token counts on every attempt. A missing or
+malformed usage report, a failed attempt before a retry, or a call cut off by
+the deadline all leave its usage unknown, and it gets no figure, however the
+price table reads. When a run is not cost-complete:
+
+- each gap has no `costEur` and a note ending "unpriced" or "usage unreported";
+- the receipt carries one evidence entry per reason, `{ kind: "cost-incomplete",
+  ref: "unpriced: <stages>" }` and `{ kind: "cost-incomplete", ref: "usage
+  unreported: <stages>" }`;
+- the receipt records a policy decision, `{ gate: "sign", decidedBy: "policy",
+  outcome: "rejected" }`, whose note says `totals.costEur` is the subtotal of
+  priced stages only, because v1 cannot say "unknown" in that field;
+- the route returns `draft: true` and `costEurMeaning: "priced-stage subtotal"`;
+- the page shows "unpriced" or "subtotal", never a bare total;
+- the receipt is not signed.
+
+With the shipped table that is every run until F4 is done.
 
 ## What is proven, and where
 

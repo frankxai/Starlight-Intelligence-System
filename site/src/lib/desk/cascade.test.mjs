@@ -678,6 +678,58 @@ test("priced models with unpriced retrieval are still cost-incomplete: Tavily is
   assert.deepEqual(receiptProblems(run.receipt), [], "the draft stays a valid v1 receipt");
 });
 
+const DESK_KEY = { pem: "unused", source: "DESK_SIGNING_KEY" };
+
+test("a priced stage whose usage the provider did not report carries no euro figure, and the receipt is an unsigned subtotal", async () => {
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    completion(CLAIMS_JSON),
+    jsonResponse({ choices: [{ message: { content: BRIEF } }] }),
+    completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+  ]);
+  const run = await runDesk({ ...config(fetchImpl), pricing: ALL_PRICED });
+  const synthesize = run.receipt.stages.find((stage) => stage.name === "synthesize");
+  assert.equal(synthesize.costEur, undefined, "no usage, so no invented euro figure");
+  assert.match(synthesize.note, /usage unreported$/);
+  assert.equal(run.costComplete, false);
+  assert.deepEqual(run.unpricedStages, ["synthesize"]);
+  assert.deepEqual(run.receipt.evidence.filter((item) => item.kind === "cost-incomplete"), [
+    { kind: "cost-incomplete", ref: "usage unreported: synthesize" },
+  ]);
+  assert.equal(run.receipt.decisions.length, 1);
+  const [decision] = run.receipt.decisions;
+  assert.equal(decision.gate, "sign");
+  assert.equal(decision.decidedBy, "policy");
+  assert.equal(decision.outcome, "rejected");
+  assert.match(decision.note, /subtotal of priced stages only/);
+  assert.match(decision.note, /unaccounted: synthesize$/);
+  assert.deepEqual(signingPlan(run.costComplete, DESK_KEY), { sign: false, reason: COST_INCOMPLETE_UNSIGNED });
+  assert.deepEqual(receiptProblems(run.receipt), [], "still a valid v1 receipt");
+});
+
+test("a retried stage stays unaccounted even when the answering attempt reports its usage", async () => {
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    completion(CLAIMS_JSON),
+    { ok: false, status: 429, json: async () => ({}), text: async () => "slow down" },
+    completion(BRIEF, 2000, 600),
+    completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+  ]);
+  const run = await runDesk({ ...config(fetchImpl), pricing: ALL_PRICED });
+  const synthesize = run.receipt.stages.find((stage) => stage.name === "synthesize");
+  assert.equal(synthesize.status, "ok");
+  assert.equal(synthesize.costEur, undefined, "the throttled attempt's usage is unknown");
+  assert.equal(run.costComplete, false);
+  assert.deepEqual(run.unpricedStages, ["synthesize"]);
+  assert.equal(signingPlan(run.costComplete, DESK_KEY).sign, false);
+});
+
+test("a fully priced run with every usage reported records no refusal and may be signed", async () => {
+  const run = await runDesk({ ...config(fullScript()), pricing: ALL_PRICED });
+  assert.deepEqual(run.receipt.decisions, []);
+  assert.deepEqual(signingPlan(run.costComplete, DESK_KEY), { sign: true, key: DESK_KEY });
+});
+
 test("a fully priced run is cost-complete, names no gap, and states its total", async () => {
   const run = await runDesk({ ...config(fullScript()), pricing: ALL_PRICED });
   assert.equal(run.costComplete, true);
@@ -737,7 +789,7 @@ test("a stage cut off by the deadline fails, the stages after it are skipped, an
 
   assert.ok(Date.now() - started < 2_000, "the run ends at its deadline, well before the provider's own 45 s timeout");
   assert.deepEqual(
-    run.receipt.stages.map((stage) => `${stage.name}:${stage.status}:${stage.note.replace(" · unpriced", "")}`),
+    run.receipt.stages.map((stage) => `${stage.name}:${stage.status}:${stage.note.replace(/ · (unpriced|usage unreported)$/, "")}`),
     [
       "recall:skipped:no vault",
       "retrieve:ok:2 sources",
