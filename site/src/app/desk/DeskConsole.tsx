@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { edgeMeter } from "@/lib/desk/edge-meter";
 import { costFigure, costWarning, gapPhrase, type CostGap } from "@/lib/desk/cost-copy";
+import { referenceList } from "@/lib/desk/references";
 import { RoomQr } from "./RoomQr";
 
 interface Stage {
@@ -31,6 +32,13 @@ interface Source {
   url: string;
 }
 
+/** A verified claim. Its index is the `[n]` marker the brief carries. */
+interface Claim {
+  index: number;
+  quote: string;
+  url: string;
+}
+
 interface Belief {
   id: string;
   question: string;
@@ -50,6 +58,7 @@ interface DeskResponse {
   question: string;
   brief: string;
   sources: Source[];
+  claims?: Claim[];
   judgement: { score: number; rationale: string } | null;
   groundingRate: number;
   related: Belief[];
@@ -139,6 +148,10 @@ export function DeskConsole({ examples }: { examples: string[] }) {
       pricesVerified: result.costComplete,
     });
   }, [result]);
+
+  // The brief's [n] markers are claim indices, so the list is built from the
+  // claims: entry n is claim n, with the title and URL of the source it quotes.
+  const references = useMemo(() => (result ? referenceList(result.claims ?? [], result.sources) : []), [result]);
 
   const stages = useMemo(() => {
     const byName = new Map((result?.receipt.stages ?? []).map((stage) => [stage.name, stage]));
@@ -292,6 +305,32 @@ export function DeskConsole({ examples }: { examples: string[] }) {
             </div>
           </section>
 
+          {references.length > 0 ? (
+            <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
+              <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-400">
+                References
+              </div>
+              <ol className="divide-y divide-white/[0.06]">
+                {references.map((reference) => (
+                  <li key={reference.index} className="flex gap-3 px-5 py-3 text-[13px]">
+                    <span className="font-mono text-[11px] text-slate-500">[{reference.index}]</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="leading-[1.7] text-slate-300">&ldquo;{reference.quote}&rdquo;</p>
+                      <a
+                        href={reference.url}
+                        rel="noopener noreferrer nofollow ugc"
+                        target="_blank"
+                        className="mt-1 block truncate text-[12px] text-slate-400 underline decoration-white/20 underline-offset-4 hover:text-white"
+                      >
+                        {reference.title}
+                      </a>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ) : null}
+
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-3">
               <span className="font-mono text-[11px] uppercase tracking-widest text-slate-400">Memory</span>
@@ -337,12 +376,11 @@ export function DeskConsole({ examples }: { examples: string[] }) {
 
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
             <div className="border-b border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-400">
-              Sources
+              Sources retrieved
             </div>
-            <ol className="divide-y divide-white/[0.06]">
+            <ul className="divide-y divide-white/[0.06]">
               {result.sources.map((source) => (
                 <li key={source.url} className="flex gap-3 px-5 py-3 text-[13px]">
-                  <span className="font-mono text-[11px] text-slate-500">[{source.index}]</span>
                   <a
                     href={source.url}
                     rel="noopener noreferrer nofollow ugc"
@@ -353,7 +391,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
                   </a>
                 </li>
               ))}
-            </ol>
+            </ul>
           </section>
 
           <section className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]">
