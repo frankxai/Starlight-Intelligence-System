@@ -16,6 +16,7 @@ on:
       - "site/src/app/desk/**"
       - "site/scripts/test/**"
       - "site/package.json"
+      - "site/package-lock.json"
       - ".github/workflows/desk-tests.yml"
   push:
     branches: [main]
@@ -25,6 +26,7 @@ on:
       - "site/src/app/desk/**"
       - "site/scripts/test/**"
       - "site/package.json"
+      - "site/package-lock.json"
       - ".github/workflows/desk-tests.yml"
 
 permissions:
@@ -52,10 +54,12 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
-      # site/pnpm-lock.yaml is lockfile v6.0, which only pnpm 8 reads. The
-      # runner's preinstalled pnpm is newer and ignores it, and a setup action
-      # can leave that newer binary first on PATH, so pnpm is pinned per call.
-      - run: npx -y pnpm@8.15.9 install --frozen-lockfile
-      - run: npx -y pnpm@8.15.9 run test:desk
-      - run: npx -y pnpm@8.15.9 run test:vault-fetch
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      # site/package-lock.json is the lockfile Dependabot keeps current.
+      # site/pnpm-lock.yaml on main is behind site/package.json (it has no
+      # overrides block), so a frozen pnpm install stops before any test runs.
+      - run: npm ci --no-audit --no-fund
+      - run: npm run test:desk
+      - run: npm run test:vault-fetch
       - run: npx tsc --noEmit
