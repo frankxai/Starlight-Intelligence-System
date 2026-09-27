@@ -12,13 +12,27 @@ break.
 
 | Stage | Model | Why this one |
 |---|---|---|
-| recall | none | keyword overlap over the vault's own lines; no model, no index, no network, so this stage cannot be the one that fails |
+| recall | none | keyword overlap over the vault's own lines; no model, no index, and with the file store no network, so the venue Wi-Fi cannot be what fails it |
 | retrieve | Tavily | sources arrive with their URLs, so a claim can be cited |
 | extract | `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` | the work is mechanical; a small model does it and must quote, and every quote is checked against its source |
 | synthesize | `deepseek-ai/DeepSeek-V4-Flash-0731` | the work is judgment; the large model writes and cites |
 | contradict | `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` | comparing two short claim lists is mechanical again |
 | judge | `openai/gpt-oss-120b` | a different family scores the result, so the writer is not its own referee |
 | remember | none | the run's claims append to the vault as beliefs the next run must face |
+
+A stage is `ok` only when its output is usable. Synthesis fails when the brief
+is missing any of the six sections (note "missing sections: …", headings only,
+never model text); the brief still goes back to the caller and the judge still
+scores it, but the verdict cannot be `PASS`. The vault is unaffected: remember
+writes the verified claims, never the brief. Contradict fails on an answer that
+is not JSON or has no `contradictions` list ("invalid contradiction response");
+an empty list is a valid answer. The judge fails ("unparsable verdict") unless
+its score is a number, or a plain numeric string, from 0 to 10; `null`, `false`
+or `""` is no score rather than a 0, and 11 is no score rather than a 10.
+
+Run and receipt ids carry the start time and a 64-bit random nonce
+(`run_<ms base 36>_<hex>`, `rcpt_<ms>_<hex>`), so two runs in the same
+millisecond, and the beliefs they write, never share an id.
 
 ## Memory
 
@@ -72,6 +86,12 @@ says something the vault already said otherwise, and says so on screen with both
 claims side by side. A contradiction naming a belief that was not recalled is
 dropped rather than shown.
 
+A vault line is read as a belief only when every field (`id`, `kind`,
+`question`, `claim`, `quote`, `url`, `confidence`, `receiptId`, `at`) is present
+with its type; any other line is skipped. A missing vault file reads as empty;
+a file that exists but cannot be read (a directory, no permission, an I/O
+error) fails recall with the note "vault could not be read".
+
 Every write is best-effort by design: a vault that refuses the write records a
 failed stage, the verdict turns `PARTIAL`, and the run still hands over its brief
 and its receipt. Memory is worth having and worth nobody's demo.
@@ -98,6 +118,12 @@ brief. It is never asked of a model. It says a checked quote stands behind each
 cited claim. It does not show that the brief's sentences follow from those
 quotes; nothing in the Desk tests that entailment.
 
+On the page, the References list under the brief is built from the claims
+(`referenceList` in `src/lib/desk/references.ts`): entry n is claim n, with its
+quote and the title and URL of the source it quotes, so `[n]` in the brief and
+`[n]` in the list always name the same thing. Retrieved sources are listed
+separately and unnumbered.
+
 ## Running it
 
 ```bash
@@ -112,7 +138,7 @@ Optional: `NEBIUS_BASE_URL` (defaults to the Token Factory endpoint),
 `TAVILY_URL`, `DESK_ISSUER`, `DESK_NAMESPACE`, `DESK_DAILY_RUN_LIMIT`,
 `DESK_DAILY_TOKEN_BUDGET`, `DESK_RUN_DEADLINE_MS`.
 
-Tests: `pnpm run test:desk` (93 tests, every provider and Redis call mocked)
+Tests: `pnpm run test:desk` (144 tests, every provider and Redis call mocked)
 runs on Node 20 and 22 with no flag: `site/scripts/test/ts-resolve-hooks.mjs`
 turns TypeScript into JavaScript with the site's own `typescript`
 devDependency. `.github/workflows/desk-tests.yml` runs it, `test:vault-fetch`
@@ -141,8 +167,10 @@ more than another. `DESK_DAILY_TOKEN_BUDGET` (default 2,000,000; `0` closes the
 Desk; anything unparsable falls back to the default) needs no prices. Before a
 run the route reads the day's total and refuses with 429 when that total plus
 one run's worst case would pass the budget. After the run it adds the tokens
-the run used with one pipelined `INCRBY` and `EXPIRE`. A model stage that ran
-but reported no usage is charged its worst case, never zero.
+the run used with one pipelined `INCRBY` and `EXPIRE`. A model stage whose one
+attempt reported both token counts is charged what it reported, and a reported
+zero counts as zero. A model stage that ran with usage missing, malformed, or
+spread over a retry is charged its worst case, never zero.
 
 The worst case is a constant, `WORST_CASE_RUN_TOKENS` in `cascade.ts`, about
 392,000 tokens. Every input a prompt can carry is capped: the question at 400
@@ -224,7 +252,7 @@ With the shipped table that is every run until F4 is done.
 
 | Claim | Evidence |
 |---|---|
-| The cascade runs, drops uncitable claims, computes the cited share, and issues a complete receipt | `pnpm test:desk`: 93 tests, every provider and Redis call mocked and asserted, on Node 20 and 22 |
+| The cascade runs, drops uncitable claims, computes the cited share, and issues a complete receipt | `pnpm test:desk`: 144 tests, every provider and Redis call mocked and asserted, on Node 20 and 22 |
 | A quote that is not in the source its URL names is dropped before the brief, the vault and the citations | same suite: fabricated quote, quote filed under the wrong URL, short quote, whitespace and quote-style differences that still pass, a source that tries to close its own delimiter |
 | A failed stage is recorded and the run still yields a readable receipt | same suite, `PARTIAL` verdict case |
 | A throttled stage is retried once | same suite |
