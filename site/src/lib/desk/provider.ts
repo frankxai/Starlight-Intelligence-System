@@ -35,6 +35,10 @@ export interface ChatResult {
   outputTokens: number;
   latencyMs: number;
   model: string;
+  /** How many provider requests this result required. Internal accounting signal. */
+  attempts: 1 | 2;
+  /** False when any attempt's billable usage is unknown. */
+  usageComplete: boolean;
 }
 
 export interface ProviderConfig {
@@ -74,14 +78,23 @@ function isRetryable(status: number): boolean {
 export async function chat(request: ChatRequest, config: ProviderConfig): Promise<ChatResult> {
   const attempt = () => chatOnce(request, config);
   try {
-    return await attempt();
+    const result = await attempt();
+    return { ...result, attempts: 1, usageComplete: reportedUsage(result) };
   } catch (error) {
-    if (error instanceof ProviderError && error.retryable && !config.signal?.aborted) return attempt();
+    if (error instanceof ProviderError && error.retryable && !config.signal?.aborted) {
+      const result = await attempt();
+      // The failed response may have consumed billable tokens without returning
+      // usage. A successful retry therefore cannot make aggregate usage known.
+      return { ...result, attempts: 2, usageComplete: false };
+    }
     throw error;
   }
 }
 
-async function chatOnce(request: ChatRequest, config: ProviderConfig): Promise<ChatResult> {
+async function chatOnce(
+  request: ChatRequest,
+  config: ProviderConfig,
+): Promise<Omit<ChatResult, "attempts" | "usageComplete">> {
   const fetchImpl = config.fetchImpl ?? fetch;
   const now = config.now ?? (() => Date.now());
   const baseUrl = (config.baseUrl ?? DEFAULT_BASE_URL).replace(/\/$/, "");
@@ -140,6 +153,10 @@ async function chatOnce(request: ChatRequest, config: ProviderConfig): Promise<C
     clearTimeout(timer);
     config.signal?.removeEventListener("abort", onDeadline);
   }
+}
+
+function reportedUsage(result: Pick<ChatResult, "inputTokens" | "outputTokens">): boolean {
+  return result.inputTokens + result.outputTokens > 0;
 }
 
 async function safeText(response: { text(): Promise<string> }): Promise<string> {

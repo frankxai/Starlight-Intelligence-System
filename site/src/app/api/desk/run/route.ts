@@ -94,7 +94,7 @@ export async function POST(request: Request) {
   // The daily token budget: refuse when today's tokens plus one run's worst
   // case would pass it. Checked before the run ceiling, so a refusal here does
   // not use up a run.
-  const budget = await count(() => meter.check(WORST_CASE_RUN_TOKENS));
+  const budget = await count(() => meter.reserve(WORST_CASE_RUN_TOKENS));
   if (budget instanceof Response) return budget;
   if (!budget.ok) {
     return NextResponse.json(
@@ -106,8 +106,12 @@ export async function POST(request: Request) {
   // The daily ceiling counts runs that are about to spend, not malformed
   // requests, so junk cannot use up the day.
   const day = await count(() => limiter.hitDaily());
-  if (day instanceof Response) return day;
+  if (day instanceof Response) {
+    await reconcileKnownUsage(meter, budget, 0);
+    return day;
+  }
   if (!day.ok) {
+    await reconcileKnownUsage(meter, budget, 0);
     return NextResponse.json(
       { error: "The Desk has reached today's run ceiling. It opens again at midnight UTC." },
       { status: 429, headers: { "retry-after": String(day.retryAfter) } },
@@ -126,15 +130,10 @@ export async function POST(request: Request) {
       deadlineMs: deadlineAt - Date.now(),
     });
 
-    // Charge the day with what the run used. The run has already been paid
-    // for, so a meter that cannot be reached now does not withhold its result.
-    // The next run's check goes to the same meter and fails closed while it
-    // stays unreachable; a record lost to a brief outage undercounts the day
-    // by this one run.
-    try {
-      await meter.record(meteredTokens(run.receipt.stages));
-    } catch (error) {
-      console.error("desk: the token meter did not record this run", error instanceof Error ? error.message : error);
+    // Replace the reservation only when every model call ran once and reported
+    // usage. Retries, unknown usage, and accounting errors retain the worst case.
+    if (run.billableUsageComplete) {
+      await reconcileKnownUsage(meter, budget, meteredTokens(run.receipt.stages));
     }
 
     // Sign with the Desk's own key when one is set; deployed, never with the
@@ -177,6 +176,20 @@ export async function POST(request: Request) {
       { error: error instanceof Error ? error.message : "The run failed." },
       { status: 502 },
     );
+  }
+}
+
+async function reconcileKnownUsage(
+  meter: TokenMeter,
+  reservation: Parameters<TokenMeter["reconcile"]>[0],
+  actual: number,
+): Promise<void> {
+  try {
+    await meter.reconcile(reservation, actual);
+  } catch {
+    // Paid work already happened (or admission was already refused elsewhere),
+    // so fail conservative by retaining the reservation. Never log credentials.
+    console.error("desk: the token reservation was not reconciled");
   }
 }
 

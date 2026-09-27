@@ -121,6 +121,8 @@ export interface DeskRun {
    */
   costComplete: boolean;
   unpricedStages: string[];
+  /** Internal spend guard; deliberately separate from receipt cost completeness. */
+  billableUsageComplete: boolean;
 }
 
 export interface CascadeOptions {
@@ -192,6 +194,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   let related: VaultAtom[] = [];
   let contradictions: Contradiction[] = [];
   let remembered = 0;
+  let billableUsageComplete = true;
   const vault = options.vault ?? (options.vaultPath ? fileVault(options.vaultPath) : null);
   const noVault = options.noVaultReason ?? "no vault";
   const table = options.pricing ?? PRICING;
@@ -274,6 +277,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         provider,
       );
       const checked = checkClaims(result.text, sources);
+      billableUsageComplete &&= result.usageComplete;
       claims = checked.claims;
       stages.push({
         name: "extract",
@@ -287,6 +291,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: extractNote(checked),
       });
     } catch (error) {
+      billableUsageComplete = false;
       stages.push({ name: "extract", status: "failed", model: MODELS.extract, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -311,6 +316,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         provider,
       );
       brief = result.text.trim();
+      billableUsageComplete &&= result.usageComplete;
       stages.push({
         name: "synthesize",
         status: brief.length > 0 ? "ok" : "failed",
@@ -323,6 +329,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${sectionsPresent(brief).length}/${SECTIONS.length} sections`,
       });
     } catch (error) {
+      billableUsageComplete = false;
       stages.push({ name: "synthesize", status: "failed", model: MODELS.synthesize, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -350,6 +357,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         provider,
       );
       contradictions = parseContradictions(result.text, related);
+      billableUsageComplete &&= result.usageComplete;
       stages.push({
         name: "contradict",
         status: "ok",
@@ -362,6 +370,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${contradictions.length} against ${related.length} prior beliefs`,
       });
     } catch (error) {
+      billableUsageComplete = false;
       stages.push({ name: "contradict", status: "failed", model: MODELS.contradict, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -394,6 +403,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         provider,
       );
       judgement = parseJudgement(result.text);
+      billableUsageComplete &&= result.usageComplete;
       stages.push({
         name: "judge",
         status: judgement ? "ok" : "failed",
@@ -406,6 +416,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: judgement ? `score ${judgement.score}/10 · cited ${(groundingRate * 100).toFixed(0)}%` : "unparsable verdict",
       });
     } catch (error) {
+      billableUsageComplete = false;
       stages.push({ name: "judge", status: "failed", model: MODELS.judge, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -488,6 +499,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     pricesVerified: pricingIsComplete(table),
     costComplete: unpriced.length === 0,
     unpricedStages: unpriced,
+    billableUsageComplete,
   };
 }
 

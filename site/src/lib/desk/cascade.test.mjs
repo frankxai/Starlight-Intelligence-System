@@ -124,6 +124,7 @@ test("a full run cites its claims, scores itself, and issues a complete receipt"
   assert.equal(run.receipt.stages[2].note, "2 claims · 1 dropped: no retrieved URL or missing fields · unpriced");
   assert.equal(run.groundingRate, 1);
   assert.equal(run.judgement?.score, 8.4);
+  assert.equal(run.billableUsageComplete, true, "one-attempt stages can safely reconcile their reported usage");
   assert.deepEqual(sectionsPresent(run.brief).length, 6);
 
   assert.deepEqual(receiptProblems(run.receipt), [], "the receipt is structurally complete");
@@ -189,6 +190,15 @@ test("a throttled stage is retried once, then succeeds", async () => {
   const run = await runDesk(config(fetchImpl));
   assert.equal(run.claims.length, 2);
   assert.equal(run.receipt.verdict, "PASS");
+  assert.equal(run.billableUsageComplete, false, "a successful retry must retain the worst-case reservation");
+});
+
+test("the route refunds only the cascade's complete billable-usage path", async () => {
+  const route = await readFile(new URL("../../app/api/desk/run/route.ts", import.meta.url), "utf8");
+  assert.match(route, /if \(run\.billableUsageComplete\) \{\s*await reconcileKnownUsage/);
+  const reconcile = route.slice(route.indexOf("async function reconcileKnownUsage"), route.indexOf("/**\n * A counter"));
+  assert.match(reconcile, /console\.error\("desk: the token reservation was not reconciled"\)/);
+  assert.doesNotMatch(reconcile, /error\.message|String\(error\)/, "reconciliation never logs raw Redis errors");
 });
 
 test("the cited share counts markers in the brief, never a model's self-report", () => {
