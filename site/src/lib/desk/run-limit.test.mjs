@@ -219,7 +219,7 @@ test("known usage reconciles the worst-case reservation to the actual total, onc
   assert.equal(await meter.reconcile(admission, 125), 125);
   assert.equal(fetchImpl.used(), 125);
   const call = fetchImpl.calls.at(-1).body;
-  assert.equal(call.length, 7, "reconcile sends the ticket and actual usage, not the caller's idea of the worst case");
+  assert.equal(call.length, 7, "reconcile sends only the ticket and the actual usage; Redis holds the reserved amount");
   await assert.rejects(meter.reconcile(admission, 0), /refused to reconcile: no open reservation/);
   assert.equal(fetchImpl.used(), 125, "a second reconcile changes nothing");
 });

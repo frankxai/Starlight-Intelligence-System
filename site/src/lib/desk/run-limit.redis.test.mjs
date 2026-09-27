@@ -69,7 +69,7 @@ test("real Redis: a missing day key refuses to reconcile and never writes a nega
   assert.equal(await rest.redis(["EXISTS", key]), 0, "the refusal did not recreate the key");
   const next = await meter.reserve(1_000_000);
   assert.equal(next.ok, true);
-  assert.equal(next.used, 0, "the next admission sees zero, not negative headroom");
+  assert.equal(next.used, 0, "the next admission starts from zero");
 });
 
 test("real Redis: a refund that would take the total below zero is refused before any write", async (t) => {
@@ -96,7 +96,7 @@ test("real Redis: a total that is missing its field, negative, or not a number i
   await assert.rejects(meter.reserve(1), /DESK token total is invalid/);
 });
 
-test("real Redis: usage above the reservation is charged, not ignored", async (t) => {
+test("real Redis: usage above the reservation is charged in full", async (t) => {
   if (skip) return t.skip(skip);
   const { meter, key } = meterFor(1_000_000);
   const admission = await meter.reserve(400);

@@ -18,7 +18,7 @@
  *
  * The day's total and every open reservation live in one Redis hash, so each
  * script touches a single key. A reservation is reconciled at most once: the
- * script reads the amount it reserved from the hash, not from the caller, and
+ * script takes the reserved amount from the hash itself and
  * deletes it as it applies the refund. It refuses without writing anything
  * when the reservation or the total is missing (an expired or evicted key) or
  * when the refund would take the total below zero.

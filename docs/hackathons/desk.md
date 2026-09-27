@@ -184,7 +184,7 @@ as a reservation, in `run-limit.ts`:
 - **Reconcile, only on known usage, and only once.** After the run, when every
   model call ran once and reported both token counts, a second `EVAL` replaces
   the reservation with the tokens actually used; a reported zero counts as
-  zero. It reads the reserved amount from Redis, not from the caller, and
+  zero. It takes the reserved amount from Redis itself and
   deletes the reservation as it applies the difference, so a repeated call has
   nothing to refund. It writes nothing when the reservation or the total is
   missing (the key expired or was evicted) or when the result would fall below
