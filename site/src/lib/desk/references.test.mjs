@@ -30,12 +30,12 @@ test("two claims from the same source each get their own entry, numbered as the 
       [1, "Alpha paper", "https://example.org/a"],
       [2, "Alpha paper", "https://example.org/a"],
     ],
-    "[2] resolves to the second alpha quote, not to source 2",
+    "[2] resolves to the second alpha quote, whatever source 2 is",
   );
   assert.equal(references[1].quote, "A second alpha trial ran in 2025 with the same protocol");
 });
 
-test("claims in a different order from retrieval resolve by claim index, not source index", () => {
+test("claims in a different order from retrieval resolve by claim index", () => {
   const claims = claimsFrom(
     ["Beta replicated the finding under the same conditions", "https://example.org/b"],
     ["Gamma measured nothing of note in this particular setup", "https://example.org/c"],

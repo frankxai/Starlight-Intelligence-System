@@ -67,7 +67,7 @@ test("a line missing a field, or carrying one with the wrong type, is skipped", 
 
 test("a vault path that cannot be read throws a public note instead of reading as empty", async () => {
   const dir = await mkdtemp(join(tmpdir(), "vault-"));
-  // A directory where the file should be: EISDIR, not ENOENT.
+  // A directory where the file should be: EISDIR, which is no missing file.
   const error = await readAtoms(dir).then(
     () => null,
     (reason) => reason,

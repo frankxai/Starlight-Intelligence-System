@@ -87,7 +87,7 @@ export async function chat(request: ChatRequest, config: ProviderConfig): Promis
   } catch (error) {
     if (error instanceof ProviderError && error.retryable && !config.signal?.aborted) {
       // The stage's latency is wall time across both attempts: the failed
-      // attempt's elapsed time counts, not only the retry's.
+      // attempt's elapsed time plus the retry's.
       const failedMs = Math.max(0, now() - startedAt);
       const result = await attempt();
       // The failed response may have consumed billable tokens without returning

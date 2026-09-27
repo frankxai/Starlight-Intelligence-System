@@ -106,7 +106,7 @@ test("a successful retry retains an incomplete billable-usage signal", async () 
   assert.equal(result.inputTokens + result.outputTokens, 12, "reported usage still describes only the successful attempt");
 });
 
-test("a retried call's latency covers both attempts, not only the retry", async () => {
+test("a retried call's latency covers the failed attempt and the retry", async () => {
   // chat start, attempt 1 start, attempt 1 answered (503), retry decision,
   // attempt 2 start, attempt 2 answered.
   const ticks = [1_000, 1_000, 1_300, 1_350, 1_350, 1_550];

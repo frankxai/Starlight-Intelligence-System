@@ -280,7 +280,7 @@ test("only a finite score on the rubric's 0-10 scale is a score", () => {
   assert.equal(score("   "), null);
   assert.equal(score([]), null);
   assert.equal(score("7abc"), null);
-  assert.equal(score(11), null, "off the scale is no score, not a clamped 10");
+  assert.equal(score(11), null, "an off-scale score is dropped rather than clamped to 10");
   assert.equal(score(44), null);
   assert.equal(score(-3), null);
   assert.equal(score("7")?.score, 7, "a plain numeric string is read");
