@@ -79,7 +79,7 @@ export async function chat(request: ChatRequest, config: ProviderConfig): Promis
   const attempt = () => chatOnce(request, config);
   try {
     const result = await attempt();
-    return { ...result, attempts: 1, usageComplete: reportedUsage(result) };
+    return { ...result, attempts: 1 };
   } catch (error) {
     if (error instanceof ProviderError && error.retryable && !config.signal?.aborted) {
       const result = await attempt();
@@ -94,7 +94,7 @@ export async function chat(request: ChatRequest, config: ProviderConfig): Promis
 async function chatOnce(
   request: ChatRequest,
   config: ProviderConfig,
-): Promise<Omit<ChatResult, "attempts" | "usageComplete">> {
+): Promise<Omit<ChatResult, "attempts">> {
   const fetchImpl = config.fetchImpl ?? fetch;
   const now = config.now ?? (() => Date.now());
   const baseUrl = (config.baseUrl ?? DEFAULT_BASE_URL).replace(/\/$/, "");
@@ -141,7 +141,14 @@ async function chatOnce(
     }
 
     const usage = extractUsage(payload);
-    return { text, inputTokens: usage.input, outputTokens: usage.output, latencyMs, model: request.model };
+    return {
+      text,
+      inputTokens: usage.input,
+      outputTokens: usage.output,
+      latencyMs,
+      model: request.model,
+      usageComplete: usage.complete,
+    };
   } catch (error) {
     if (config.signal?.aborted) throw new ProviderError(`${request.model} abandoned: the run's deadline passed`, 408, false);
     if (error instanceof ProviderError) throw error;
@@ -153,10 +160,6 @@ async function chatOnce(
     clearTimeout(timer);
     config.signal?.removeEventListener("abort", onDeadline);
   }
-}
-
-function reportedUsage(result: Pick<ChatResult, "inputTokens" | "outputTokens">): boolean {
-  return result.inputTokens + result.outputTokens > 0;
 }
 
 async function safeText(response: { text(): Promise<string> }): Promise<string> {
@@ -177,16 +180,23 @@ function extractText(payload: unknown): string | null {
   return typeof content === "string" ? content : null;
 }
 
-function extractUsage(payload: unknown): { input: number; output: number } {
+function extractUsage(payload: unknown): { input: number; output: number; complete: boolean } {
   const usage = payload && typeof payload === "object" ? (payload as { usage?: unknown }).usage : null;
-  if (!usage || typeof usage !== "object") return { input: 0, output: 0 };
+  if (!usage || typeof usage !== "object") return { input: 0, output: 0, complete: false };
   const record = usage as Record<string, unknown>;
+  const inputReported = isReportedTokenCount(record.prompt_tokens);
+  const outputReported = isReportedTokenCount(record.completion_tokens);
   return {
     input: numberOr(record.prompt_tokens, 0),
     output: numberOr(record.completion_tokens, 0),
+    complete: inputReported && outputReported,
   };
 }
 
+function isReportedTokenCount(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
 function numberOr(value: unknown, fallback: number): number {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : fallback;
+  return isReportedTokenCount(value) ? value : fallback;
 }
