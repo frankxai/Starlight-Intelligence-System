@@ -49,16 +49,13 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@v6
-        with:
-          # site/pnpm-lock.yaml is lockfile v6.0, which pnpm 8 writes.
-          version: 8
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
-          cache: pnpm
-          cache-dependency-path: site/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run test:desk
-      - run: pnpm run test:vault-fetch
+      # site/pnpm-lock.yaml is lockfile v6.0, which only pnpm 8 reads. The
+      # runner's preinstalled pnpm is newer and ignores it, and a setup action
+      # can leave that newer binary first on PATH, so pnpm is pinned per call.
+      - run: npx -y pnpm@8.15.9 install --frozen-lockfile
+      - run: npx -y pnpm@8.15.9 run test:desk
+      - run: npx -y pnpm@8.15.9 run test:vault-fetch
       - run: npx tsc --noEmit
