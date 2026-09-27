@@ -142,7 +142,7 @@ export async function POST(request: Request) {
     // paid stages is a total the Desk cannot vouch for. Unsigned, the receipt
     // travels as a draft with the reason, a record of the run that proves
     // nothing about who ran it.
-    const plan = signingPlan(run.costComplete, deskSigningKey());
+    const plan = signingPlan(run.costComplete, deskSigningKey(), run.unpricedStages);
     let envelope: unknown = null;
     let unsignedReason: string | null = plan.sign ? null : plan.reason;
     if (plan.sign) {

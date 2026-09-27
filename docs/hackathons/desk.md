@@ -200,12 +200,17 @@ figure: each model stage that ran, and retrieval. A model stage gets a figure
 only when its call reported both token counts on every attempt. A missing or
 malformed usage report, a failed attempt before a retry, or a call cut off by
 the deadline all leave its usage unknown, and it gets no figure, however the
-price table reads. When a run is not cost-complete:
+price table reads. Explicit zero counts are a known zero only when one
+completed attempt reported both. Retrieval gets a figure only when its number
+of billable calls is known; a failed retrieval is "call count unknown", since a
+per-call price does not make an unknown count a total. When a run is not
+cost-complete:
 
-- each gap has no `costEur` and a note ending "unpriced" or "usage unreported";
-- the receipt carries one evidence entry per reason, `{ kind: "cost-incomplete",
-  ref: "unpriced: <stages>" }` and `{ kind: "cost-incomplete", ref: "usage
-  unreported: <stages>" }`;
+- each gap has no `costEur` and a note ending "unpriced", "usage unreported"
+  or "call count unknown";
+- the receipt carries one evidence entry per reason, such as `{ kind:
+  "cost-incomplete", ref: "usage unreported: <stages>" }`;
+- the unsigned reason names the unaccounted stages, and nothing secret;
 - the receipt records a policy decision, `{ gate: "sign", decidedBy: "policy",
   outcome: "rejected" }`, whose note says `totals.costEur` is the subtotal of
   priced stages only, because v1 cannot say "unknown" in that field;

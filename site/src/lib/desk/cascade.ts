@@ -198,9 +198,11 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   let contradictions: Contradiction[] = [];
   let remembered = 0;
   let billableUsageComplete = true;
-  // Model stages whose billable usage the provider did not fully report, on
-  // the answering attempt or a failed one before it. They carry no euro figure.
-  const usageUnknown = new Set<string>();
+  // Paid stages whose billable usage is unknown, with the reason: a model call
+  // whose provider did not report both token counts on every attempt, or a
+  // retrieval that failed after an unknown number of billable calls. They
+  // carry no euro figure, whatever the price table says.
+  const usageUnknown = new Map<string, string>();
   const vault = options.vault ?? (options.vaultPath ? fileVault(options.vaultPath) : null);
   const noVault = options.noVaultReason ?? "no vault";
   const table = options.pricing ?? PRICING;
@@ -260,6 +262,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         note: `${sources.length} sources`,
       });
     } catch (error) {
+      usageUnknown.set("retrieve", CALL_COUNT_UNKNOWN);
       stages.push({ name: "retrieve", status: "failed", provider: "tavily", note: failure(error) });
     }
   }
@@ -284,7 +287,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       const checked = checkClaims(result.text, sources);
       billableUsageComplete &&= result.usageComplete;
-      if (!result.usageComplete) usageUnknown.add("extract");
+      if (!result.usageComplete) usageUnknown.set("extract", USAGE_UNREPORTED);
       claims = checked.claims;
       stages.push({
         name: "extract",
@@ -299,7 +302,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       });
     } catch (error) {
       billableUsageComplete = false;
-      usageUnknown.add("extract");
+      usageUnknown.set("extract", USAGE_UNREPORTED);
       stages.push({ name: "extract", status: "failed", model: MODELS.extract, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -325,7 +328,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       brief = result.text.trim();
       billableUsageComplete &&= result.usageComplete;
-      if (!result.usageComplete) usageUnknown.add("synthesize");
+      if (!result.usageComplete) usageUnknown.set("synthesize", USAGE_UNREPORTED);
       stages.push({
         name: "synthesize",
         status: brief.length > 0 ? "ok" : "failed",
@@ -339,7 +342,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       });
     } catch (error) {
       billableUsageComplete = false;
-      usageUnknown.add("synthesize");
+      usageUnknown.set("synthesize", USAGE_UNREPORTED);
       stages.push({ name: "synthesize", status: "failed", model: MODELS.synthesize, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -368,7 +371,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       contradictions = parseContradictions(result.text, related);
       billableUsageComplete &&= result.usageComplete;
-      if (!result.usageComplete) usageUnknown.add("contradict");
+      if (!result.usageComplete) usageUnknown.set("contradict", USAGE_UNREPORTED);
       stages.push({
         name: "contradict",
         status: "ok",
@@ -382,7 +385,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       });
     } catch (error) {
       billableUsageComplete = false;
-      usageUnknown.add("contradict");
+      usageUnknown.set("contradict", USAGE_UNREPORTED);
       stages.push({ name: "contradict", status: "failed", model: MODELS.contradict, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -416,7 +419,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       );
       judgement = parseJudgement(result.text);
       billableUsageComplete &&= result.usageComplete;
-      if (!result.usageComplete) usageUnknown.add("judge");
+      if (!result.usageComplete) usageUnknown.set("judge", USAGE_UNREPORTED);
       stages.push({
         name: "judge",
         status: judgement ? "ok" : "failed",
@@ -430,7 +433,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
       });
     } catch (error) {
       billableUsageComplete = false;
-      usageUnknown.add("judge");
+      usageUnknown.set("judge", USAGE_UNREPORTED);
       stages.push({ name: "judge", status: "failed", model: MODELS.judge, provider: "nebius", note: failure(error) });
     }
   } else {
@@ -478,11 +481,10 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   // usage the provider did not report. Its total then covers only the priced
   // stages, so the receipt also records a policy decision not to sign it.
   const unaccounted = unpricedStages(stages, table);
-  const unreported = unaccounted.filter((name) => usageUnknown.has(name));
-  const unpriced = unaccounted.filter((name) => !usageUnknown.has(name));
+  const gapOf = (name: string) => usageUnknown.get(name) ?? UNPRICED;
+  const gapReasons = [...new Set(unaccounted.map(gapOf))];
   for (const stage of stages) {
-    const gap = unreported.includes(stage.name) ? "usage unreported" : unpriced.includes(stage.name) ? "unpriced" : null;
-    if (gap) stage.note = stage.note ? `${stage.note} · ${gap}` : gap;
+    if (unaccounted.includes(stage.name)) stage.note = stage.note ? `${stage.note} · ${gapOf(stage.name)}` : gapOf(stage.name);
   }
 
   const endedAt = clock();
@@ -511,8 +513,10 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     evidence: [
       ...sources.map((source) => ({ kind: "source", ref: source.url })),
       ...(remembered > 0 && vault ? [{ kind: "vault", ref: vault.ref }] : []),
-      ...(unpriced.length > 0 ? [{ kind: "cost-incomplete", ref: `unpriced: ${unpriced.join(", ")}` }] : []),
-      ...(unreported.length > 0 ? [{ kind: "cost-incomplete", ref: `usage unreported: ${unreported.join(", ")}` }] : []),
+      ...gapReasons.map((reason) => ({
+        kind: "cost-incomplete",
+        ref: `${reason}: ${unaccounted.filter((name) => gapOf(name) === reason).join(", ")}`,
+      })),
     ],
     verdict: verdictFromStages(stages),
   };
@@ -574,6 +578,11 @@ export function sectionsPresent(brief: string): string[] {
  */
 export const COST_SUBTOTAL_NOTE =
   "cost-incomplete: totals.costEur is the subtotal of priced stages only, and this receipt is an unsigned draft";
+
+/** Why a paid stage carries no euro figure. */
+export const UNPRICED = "unpriced";
+export const USAGE_UNREPORTED = "usage unreported";
+export const CALL_COUNT_UNKNOWN = "call count unknown";
 
 export const MIN_QUOTE_CHARS = 20;
 

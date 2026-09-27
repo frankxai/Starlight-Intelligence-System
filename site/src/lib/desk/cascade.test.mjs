@@ -703,7 +703,10 @@ test("a priced stage whose usage the provider did not report carries no euro fig
   assert.equal(decision.outcome, "rejected");
   assert.match(decision.note, /subtotal of priced stages only/);
   assert.match(decision.note, /unaccounted: synthesize$/);
-  assert.deepEqual(signingPlan(run.costComplete, DESK_KEY), { sign: false, reason: COST_INCOMPLETE_UNSIGNED });
+  assert.deepEqual(signingPlan(run.costComplete, DESK_KEY, run.unpricedStages), {
+    sign: false,
+    reason: `${COST_INCOMPLETE_UNSIGNED} (unaccounted: synthesize)`,
+  });
   assert.deepEqual(receiptProblems(run.receipt), [], "still a valid v1 receipt");
 });
 
@@ -722,6 +725,59 @@ test("a retried stage stays unaccounted even when the answering attempt reports 
   assert.equal(run.costComplete, false);
   assert.deepEqual(run.unpricedStages, ["synthesize"]);
   assert.equal(signingPlan(run.costComplete, DESK_KEY).sign, false);
+});
+
+function usageOnly(content, usage) {
+  return jsonResponse({ choices: [{ message: { content } }], usage });
+}
+
+for (const [label, usage] of [
+  ["prompt tokens", { completion_tokens: 600 }],
+  ["completion tokens", { prompt_tokens: 2000 }],
+  ["a valid count (a string)", { prompt_tokens: "2000", completion_tokens: 600 }],
+]) {
+  test(`a priced stage missing ${label} is unaccounted and unsigned`, async () => {
+    const fetchImpl = scriptedFetch([
+      jsonResponse({ results: SOURCES }),
+      completion(CLAIMS_JSON),
+      usageOnly(BRIEF, usage),
+      completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+    ]);
+    const run = await runDesk({ ...config(fetchImpl), pricing: ALL_PRICED });
+    assert.equal(run.receipt.stages.find((stage) => stage.name === "synthesize").costEur, undefined);
+    assert.equal(run.costComplete, false);
+    assert.deepEqual(run.unpricedStages, ["synthesize"]);
+    assert.equal(signingPlan(run.costComplete, DESK_KEY, run.unpricedStages).sign, false);
+  });
+}
+
+test("a failed retrieval has an unknown billable call count: unaccounted, not merely unpriced", async () => {
+  const fetchImpl = scriptedFetch([{ ok: false, status: 502, json: async () => ({}), text: async () => "bad gateway" }]);
+  const run = await runDesk({ ...config(fetchImpl), pricing: ALL_PRICED });
+  const retrieve = run.receipt.stages.find((stage) => stage.name === "retrieve");
+  assert.equal(retrieve.status, "failed");
+  assert.equal(retrieve.costEur, undefined, "a per-call price does not make an unknown call count a total");
+  assert.match(retrieve.note, /call count unknown$/);
+  assert.equal(run.costComplete, false);
+  assert.deepEqual(run.receipt.evidence.filter((item) => item.kind === "cost-incomplete"), [
+    { kind: "cost-incomplete", ref: "call count unknown: retrieve" },
+  ]);
+  assert.equal(run.receipt.decisions[0]?.outcome, "rejected");
+  assert.deepEqual(receiptProblems(run.receipt), []);
+});
+
+test("explicit zero usage, reported in full by a single attempt, is a known zero", async () => {
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    completion(CLAIMS_JSON),
+    completion(BRIEF, 2000, 600),
+    completion(JSON.stringify({ score: 8, rationale: "Cited." }), 0, 0),
+  ]);
+  const run = await runDesk({ ...config(fetchImpl), pricing: ALL_PRICED });
+  const judge = run.receipt.stages.find((stage) => stage.name === "judge");
+  assert.equal(judge.costEur, 0, "reported zeros price to zero");
+  assert.equal(run.costComplete, true);
+  assert.deepEqual(run.receipt.decisions, []);
 });
 
 test("a fully priced run with every usage reported records no refusal and may be signed", async () => {

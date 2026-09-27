@@ -273,7 +273,7 @@ export function DeskConsole({ examples }: { examples: string[] }) {
 
           {!result.costComplete ? (
             <p className="rounded-lg border border-amber-400/25 bg-amber-400/[0.05] px-4 py-3 text-[12px] leading-[1.7] text-amber-200/90">
-              These stages did paid work without a verified price or a reported token count: {result.unpricedStages.join(", ")}. So this run reports tokens and
+              These stages did paid work without a verified price, a reported token count, or a known call count: {result.unpricedStages.join(", ")}. So this run reports tokens and
               seconds, withholds euros, and ships its receipt unsigned. Fill the prices from the provider consoles in{" "}
               <span className="font-mono">src/lib/desk/pricing.ts</span> and every figure here becomes a number someone checked.
             </p>

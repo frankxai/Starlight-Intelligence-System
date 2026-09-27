@@ -42,8 +42,12 @@ export type SigningPlan = { sign: true; key: SigningKeyChoice } | { sign: false;
  * total that leaves that stage out, so it ships as an unsigned draft with the
  * reason, even when a key is present.
  */
-export function signingPlan(costComplete: boolean, key: SigningKeyChoice | null): SigningPlan {
-  if (!costComplete) return { sign: false, reason: COST_INCOMPLETE_UNSIGNED };
+export function signingPlan(costComplete: boolean, key: SigningKeyChoice | null, unaccounted: string[] = []): SigningPlan {
+  if (!costComplete) {
+    // Name the stages, never a price, a key or a provider response.
+    const reason = unaccounted.length > 0 ? `${COST_INCOMPLETE_UNSIGNED} (unaccounted: ${unaccounted.join(", ")})` : COST_INCOMPLETE_UNSIGNED;
+    return { sign: false, reason };
+  }
   if (!key) return { sign: false, reason: NO_SIGNING_KEY };
   return { sign: true, key };
 }
