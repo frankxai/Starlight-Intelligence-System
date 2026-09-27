@@ -762,13 +762,26 @@ export function parseContradictions(text: string, related: VaultAtom[]): Contrad
   return found;
 }
 
-/** The judge's verdict, or null when it did not return one this run can use. */
+/**
+ * The judge's verdict, or null when it did not return one this run can use:
+ * a score that is a finite number, or a plain decimal string, from 0 to 10.
+ * Anything else (null, false, "", a score off the rubric's scale) is no
+ * score, never coerced into a real-looking 0/10 or clamped into range.
+ */
 export function parseJudgement(text: string): Judgement | null {
   const parsed = parseJsonObject(text);
   if (!parsed) return null;
-  const score = typeof parsed.score === "number" ? parsed.score : Number(parsed.score);
-  if (!Number.isFinite(score)) return null;
-  return { score: Math.min(10, Math.max(0, Math.round(score * 10) / 10)), rationale: str(parsed.rationale) };
+  const score = rubricScore(parsed.score);
+  if (score === null) return null;
+  return { score: Math.round(score * 10) / 10, rationale: str(parsed.rationale) };
+}
+
+function rubricScore(value: unknown): number | null {
+  let score: number;
+  if (typeof value === "number") score = value;
+  else if (typeof value === "string" && /^\s*\d+(\.\d+)?\s*$/.test(value)) score = Number(value);
+  else return null;
+  return Number.isFinite(score) && score >= 0 && score <= 10 ? score : null;
 }
 
 function parseJsonObject(text: string): Record<string, unknown> | null {

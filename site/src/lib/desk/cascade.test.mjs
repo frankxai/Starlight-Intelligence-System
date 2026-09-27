@@ -271,9 +271,39 @@ test("malformed model output degrades instead of throwing", () => {
   assert.equal(parseJudgement("Here you go: {\"score\":9.25} — done")?.score, 9.3);
 });
 
-test("a judged score is clamped into the rubric's range", () => {
-  assert.equal(parseJudgement(JSON.stringify({ score: 44 }))?.score, 10);
-  assert.equal(parseJudgement(JSON.stringify({ score: -3 }))?.score, 0);
+test("only a finite score on the rubric's 0-10 scale is a score", () => {
+  const score = (value) => parseJudgement(JSON.stringify({ score: value, rationale: "r" }));
+  assert.equal(score(null), null, "null is not a zero");
+  assert.equal(score(false), null, "false is not a zero");
+  assert.equal(score(""), null, "an empty string is not a zero");
+  assert.equal(score("   "), null);
+  assert.equal(score([]), null);
+  assert.equal(score("7abc"), null);
+  assert.equal(score(11), null, "off the scale is no score, not a clamped 10");
+  assert.equal(score(44), null);
+  assert.equal(score(-3), null);
+  assert.equal(score("7")?.score, 7, "a plain numeric string is read");
+  assert.equal(score(7)?.score, 7);
+  assert.equal(score(0)?.score, 0, "a real zero is kept");
+  assert.equal(score(10)?.score, 10);
+});
+
+test("an unusable judge score records an unparsable verdict", async () => {
+  const run = await runDesk(
+    config(
+      scriptedFetch([
+        jsonResponse({ results: SOURCES }),
+        completion(CLAIMS_JSON),
+        completion(BRIEF, 2000, 600),
+        completion(JSON.stringify({ score: null, rationale: "none" }), 900, 80),
+      ]),
+    ),
+  );
+  const judge = run.receipt.stages.find((stage) => stage.name === "judge");
+  assert.equal(judge.status, "failed");
+  assert.match(judge.note, /^unparsable verdict/);
+  assert.equal(run.judgement, null);
+  assert.equal(run.receipt.verdict, "PARTIAL");
 });
 
 test("a run writes its claims to the vault, and the next run reads them back", async () => {
