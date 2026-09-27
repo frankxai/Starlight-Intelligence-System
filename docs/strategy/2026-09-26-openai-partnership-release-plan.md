@@ -38,13 +38,13 @@ Sources: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog
 
 The [27 September Living Intelligence proof](2026-09-27-openai-multimodal-proof-spec.md) composes the existing Academy mission, Knowledge Tree Open Inventor Path, Blue Life Commons K0 kit proposal, Foundry, Desk and Observatory into one human-led multimodal loop. The first demonstration is a Living Water Lab case: observe, challenge a claim, design a controlled test, make a bounded artifact and attempt independent replication. A separate 12-case overlay checks grounding, correction, denial, recovery and learning transfer. This is a proposed prototype, not a live product, water benefit or partnership. OpenAI's Sora 2/Videos API shut down on 24 September 2026; video input uses timestamped frames/transcript and no OpenAI video generation is planned.
 
-## One proof package, three demonstrations
+## One mission, three complementary proofs
 
 **Enabling demonstration: Foundry release receipt.** Input: a small, real developer request and existing source-controlled skill. Output: typed scope, explicit tool grant and human gate, preview, bounded execution, independent verifier result, cost/latency/quality trace, and artifact hash. Show an unauthorized path being denied and a failed verifier leaving a recoverable draft. This is the candidate for Codex for Open Source and developer showcase consideration after live evidence.
 
 **Education demonstration: Academy plugin.** In a fresh ChatGPT host, run the five positive and three negative cases in the Academy packet against the production MCP endpoint. Evidence must contain selected tools, host/version/region, UI result, errors, scan, and domain/publisher state. No badge, grading, learner database, model-training claim, or OpenAI listing is inferred from an authored curriculum response.
 
-**Optional creative demonstration: one owned asset workflow.** Use a real Arcanea or FrankX source image and a measured image-generation edit plus accessible human review. Ship only if it shows a distinct audience outcome and the asset rights are clear. It is not on the critical path to the first partnership conversation.
+**Flagship mission: Living Water Lab.** An owned narrated scene, photos, readings and sources become an evidence-linked Living Case. A learner corrects a weak inference; a bounded agent produces a K0 observation card and editable dry-side artifact; another human repeats the logging method. Generated concepts are labelled and physical claims await actual measurements and domain review. Arcanea and GenCreator can later adopt the same loop under their own canon and rights, after this mission demonstrates transfer.
 
 ## Architecture and operating boundary
 
