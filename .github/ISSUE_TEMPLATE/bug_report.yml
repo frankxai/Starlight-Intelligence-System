@@ -1,0 +1,73 @@
+name: Bug report
+description: Report a reproducible problem in the operational build or public repository.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Starlight Intelligence System. Do not include secrets, private data, or vulnerability details. Report suspected vulnerabilities through the private security link in the issue chooser.
+
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Affected layer
+      description: Substrate changes require a `/starlight-board` pre-pass.
+      options:
+        - Operational build
+        - SIP substrate or file contract
+        - Documentation or community surface
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the problem and the result you expected.
+      placeholder: I ran… I expected… Instead…
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest sequence that reproduces the problem from a fresh clone when possible.
+      placeholder: |
+        1. Run `…`
+        2. Configure `…`
+        3. Observe `…`
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, Node and npm versions, and the commit SHA or release. Redact usernames, paths, tokens, and private data.
+      placeholder: |
+        OS:
+        Node:
+        npm:
+        Commit or release:
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Relevant output
+      description: Paste minimal logs, screenshots, or other evidence after removing secrets and private data.
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public report check
+      options:
+        - label: I removed secrets and private data, and this report does not disclose a suspected vulnerability.
+          required: true
+        - label: I searched existing issues for the same problem.
+          required: true
