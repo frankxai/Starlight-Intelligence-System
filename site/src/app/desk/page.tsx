@@ -4,7 +4,7 @@ import { DeskConsole } from "./DeskConsole";
 export const metadata: Metadata = {
   title: "The Desk",
   description:
-    "One question, a cited brief, a signed receipt, and a vault that remembers. Small model where the work is mechanical, large model where the work is judgment, a different family as judge.",
+    "One question, a cited brief, a receipt, and a vault that remembers. Small model where the work is mechanical, large model where the work is judgment, a different family as judge.",
 };
 
 const EXAMPLES = [

@@ -1,7 +1,7 @@
 # The Desk
 
-One question in. A cited brief, a signed receipt, and a vault that argues with
-the next run.
+One question in. A cited brief, a receipt (signed once every price is dated),
+and a vault that argues with the next run.
 
 Route `/desk` in `site/`. Engine in `site/src/lib/desk/`. Zero new dependencies:
 the model calls are `fetch` against the OpenAI-compatible chat-completions
@@ -14,7 +14,7 @@ break.
 |---|---|---|
 | recall | none | keyword overlap over the vault's own lines; no model, no index, no network, so this stage cannot be the one that fails |
 | retrieve | Tavily | sources arrive with their URLs, so a claim can be cited |
-| extract | `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` | the work is mechanical; a small model does it and must quote |
+| extract | `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` | the work is mechanical; a small model does it and must quote, and every quote is checked against its source |
 | synthesize | `deepseek-ai/DeepSeek-V4-Flash-0731` | the work is judgment; the large model writes and cites |
 | contradict | `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` | comparing two short claim lists is mechanical again |
 | judge | `openai/gpt-oss-120b` | a different family scores the result, so the writer is not its own referee |
@@ -33,12 +33,35 @@ break.
   over the Upstash REST API, called with `fetch`. It is chosen when
   `KV_REST_API_URL` and `KV_REST_API_TOKEN` are set (the names Vercel's
   Marketplace injects), with `UPSTASH_REDIS_REST_URL` and
-  `UPSTASH_REDIS_REST_TOKEN` as fallbacks. `DESK_VAULT_NAMESPACE` separates
-  vaults. The receipt names the list, never the URL or the token.
+  `UPSTASH_REDIS_REST_TOKEN` as fallbacks. The receipt names the list, never
+  the URL or the token.
 
-A deployed Desk with neither has no vault. It does not write to `/tmp`, which on
-serverless is per instance and erased between invocations; the recall and
-remember stages record `skipped` with the note "no durable vault configured".
+Every Redis key the Desk uses sits under one namespace: `DESK_NAMESPACE`, else
+the older `DESK_VAULT_NAMESPACE`, else `default`. The vault is
+`desk:<ns>:vault`; the per-address window `desk:<ns>:rl:<digest>:<window>`; the
+daily run count `desk:<ns>:day:<date>`; the daily token meter
+`desk:<ns>:tok:<date>`. Two Desks on one database with different namespaces
+share no memory and no counters.
+
+Memory belongs to a trusted identity (`memoryAccess` in `access.ts`, applied by
+`vaultForRun` in `vault.ts`):
+
+| Where | Who asks | Memory |
+|---|---|---|
+| Laptop (not Vercel) | anyone | the vault as configured: the owner is the only caller |
+| Vercel | a request with a valid `DESK_ACCESS_TOKEN` | the Redis store; with no Redis the route does not run at all |
+| Vercel | anyone else | none. Recall and remember record `skipped`, "anonymous run: memory is operator-only"; nothing is read or written and no vault is listed as evidence |
+
+A deployed vault is shared by everyone who reaches the URL, so without this
+rule one stranger's run could plant beliefs the next stranger's run is then
+checked against. The page itself sends no token, so on a deployment the public
+page runs stateless; recall and contradictions show up for runs made with the
+token.
+
+An operator run on a deployment with no durable store has no vault. It does not
+write to `/tmp`, which on serverless is per instance and erased between
+invocations; the recall and remember stages record `skipped` with the note "no
+durable vault configured".
 
 Recall uses keyword overlap rather than embeddings. That is the point: the pass
 costs nothing, needs no index to rebuild, and still runs when the venue Wi-Fi
@@ -53,9 +76,27 @@ Every write is best-effort by design: a vault that refuses the write records a
 failed stage, the verdict turns `PARTIAL`, and the run still hands over its brief
 and its receipt. Memory is worth having and worth nobody's demo.
 
-Grounding rate is computed from the brief's own text: the share of extracted
-claims whose `[n]` marker survives into the writing. It is never asked of a
-model. A number a model reports about itself is a number nobody should read out.
+## Quotes, and what the cited share means
+
+Retrieved text can try to steer the extract model, so a claim is not trusted
+because the model returned it. A claim survives only if its quote, normalized,
+is a substring of the normalized text of the source whose URL it names: the
+same text the extract stage was given. Normalization is Unicode NFKC, straight
+quotes for curly ones, one hyphen for every dash, soft hyphens and zero-width
+characters removed, lower case, whitespace collapsed. A quote shorter than 20
+normalized characters is dropped. So is a real URL with an invented quote, and
+a quote from one source filed under another's URL. Dropped claims never reach
+the writer, the vault, or a citation; the extract stage's note counts them.
+
+The extract prompt also wraps each source in `<source>` tags and says text
+inside them is material to quote, never instructions. That is defence in depth;
+the deterministic check above is the control.
+
+The cited share (`groundingRate` in the code and the API) is computed from the
+brief's own text: the share of verified claims whose `[n]` marker reached the
+brief. It is never asked of a model. It says a checked quote stands behind each
+cited claim. It does not show that the brief's sentences follow from those
+quotes; nothing in the Desk tests that entailment.
 
 ## Running it
 
@@ -68,7 +109,15 @@ pnpm dev                    # then open /desk
 ```
 
 Optional: `NEBIUS_BASE_URL` (defaults to the Token Factory endpoint),
-`TAVILY_URL`, `DESK_ISSUER`.
+`TAVILY_URL`, `DESK_ISSUER`, `DESK_NAMESPACE`, `DESK_DAILY_RUN_LIMIT`,
+`DESK_DAILY_TOKEN_BUDGET`, `DESK_RUN_DEADLINE_MS`.
+
+Tests: `pnpm run test:desk` (93 tests, every provider and Redis call mocked)
+runs on Node 20 and 22 with no flag: `site/scripts/test/ts-resolve-hooks.mjs`
+turns TypeScript into JavaScript with the site's own `typescript`
+devDependency. `.github/workflows/desk-tests.yml` runs it, `test:vault-fetch`
+and `tsc --noEmit` on a Node 20 and 22 matrix for every pull request that
+touches the Desk. It deploys nothing.
 
 ## Deployed
 
@@ -77,15 +126,48 @@ is spent (`src/lib/desk/access.ts`, a pure function with its own tests).
 
 | Configuration | Who runs | Counted by |
 |---|---|---|
-| Redis configured | everyone | Redis: six runs a minute per address (the address is stored only as a sha256 digest) and one ceiling per UTC day across everyone, `DESK_DAILY_RUN_LIMIT`, default 200 |
+| Redis configured | everyone | Redis: six runs a minute per address (the address is stored only as a sha256 digest), one run ceiling per UTC day across everyone (`DESK_DAILY_RUN_LIMIT`, default 200), and one token budget per UTC day (below) |
 | Laptop (not Vercel) | everyone | the same rules in memory |
-| Vercel, no Redis | only a request carrying `authorization: Bearer <DESK_ACCESS_TOKEN>` | nothing; everyone else gets 503 |
+| Vercel, no Redis | nobody, token or not | 503: a run nobody can meter is a run with no spend ceiling |
 
 A wrong token gets 401. A valid token skips the per-address window, so an
 operator is not throttled by a room sharing one address, and still counts
-against the daily ceiling. A counter that cannot be reached fails closed with
-503. The daily count happens after the request is validated, so malformed
-requests cannot use up the day.
+against the daily run ceiling and the token budget. A counter that cannot be
+reached fails closed with 503. The daily counts happen after the request is
+validated, so malformed requests cannot use up the day.
+
+**The token budget.** A run count is not a spend ceiling: one run can cost far
+more than another. `DESK_DAILY_TOKEN_BUDGET` (default 2,000,000; `0` closes the
+Desk; anything unparsable falls back to the default) needs no prices. Before a
+run the route reads the day's total and refuses with 429 when that total plus
+one run's worst case would pass the budget. After the run it adds the tokens
+the run used with one pipelined `INCRBY` and `EXPIRE`. A model stage that ran
+but reported no usage is charged its worst case, never zero.
+
+The worst case is a constant, `WORST_CASE_RUN_TOKENS` in `cascade.ts`, about
+392,000 tokens. Every input a prompt can carry is capped: the question at 400
+characters, 8 sources, 2,400 characters of text per source, titles at 200,
+URLs at 512 (a longer one is dropped, since a cut URL cannot be cited), 12
+claims of at most 400 characters in the prompts that carry them, 6 recalled
+beliefs, 16,000 characters of brief for the judge, and a `max_tokens` on every
+model call (2,048, 3,000, 800, 800). Each stage's bound is computed by building
+its prompt with the run's own functions from inputs larger than every cap, at
+three tokens per UTF-16 code unit (a byte-level tokenizer emits at most one
+token per UTF-8 byte), plus 256 tokens of chat template, doubled for the one
+retry. Real runs use a small fraction of it. A test sends a run oversized
+multibyte inputs and checks every request fits its stage's bound.
+
+One gap is known: concurrent runs each pass the check before any records, so
+the budget can be overshot by the runs in flight at once, each at most the
+worst case.
+
+**The deadline.** A run has one deadline, `DESK_RUN_DEADLINE_MS` (default
+55,000, clamped to 5,000 to 55,000), counted from the start of the request. One
+`AbortController` carries it to every provider, retrieval and vault call. A
+stage not started when it passes records `skipped` "deadline reached"; a stage
+it cuts off records `failed` "deadline reached" and is not retried; the run
+still returns its receipt. The route exports `maxDuration = 60`, which leaves
+room after the deadline for the token record (3 s timeout) and signing.
 
 **Signing.** A key on a host is a key the host's operators can use.
 `src/lib/desk/signing.ts` signs with `DESK_SIGNING_KEY`, a separate Ed25519 key
@@ -93,32 +175,53 @@ that speaks for this Desk only and whose public half is registered as the
 Desk's. On Vercel the personal `SIS_SIGNING_KEY` is never read. With no Desk
 key the receipt ships as an unsigned draft.
 
-Without a signing key the run still produces a receipt, as an unsigned draft:
-a record of the run rather than a proof of it. With the key the route returns a
-DSSE envelope whose keyid matches the registry entry, so the same receipt
-verifies at `starlightintelligence.ai/verify` from a phone.
+A run that is not cost-complete (see Prices) is never signed, key or no key.
+The v1 receipt must state a euro total and cannot say "unknown", so signing it
+would assert a total that leaves out unpriced paid work. The route returns the
+draft with `signed: false` and `unsignedReason` "cost-incomplete: signing would
+assert a total the Desk cannot vouch for".
+
+An unsigned draft records the run; it proves nothing about who ran it. With the
+key and a cost-complete run the route returns a DSSE envelope whose keyid
+matches the registry entry, so the same receipt verifies at
+`starlightintelligence.ai/verify` from a phone.
 
 ## Prices
 
-`src/lib/desk/pricing.ts` ships with every price null. A null price means the
-Desk reports tokens and seconds and withholds euros. Nothing estimates. Day-prep
-step F4 fills the table from the Token Factory console and dates each entry;
-from that moment every euro on screen is a figure a person checked, and the edge
-meter can put the closed-API baseline beside it.
+`src/lib/desk/pricing.ts` ships with every price null, Tavily's per-call price
+included. A null price means the Desk reports tokens and seconds and withholds
+euros. Nothing estimates. Day-prep step F4 fills the table from the Token
+Factory and Tavily consoles and dates each entry; from that moment every euro on
+screen is a figure a person checked, and the edge meter can put the closed-API
+baseline beside it.
+
+A run is cost-complete only when every stage that did paid work carries a euro
+figure: each model stage that ran, and retrieval. A paid stage that failed has
+no token count and so no figure. When a run is not cost-complete, each
+unpriced stage has no `costEur` and a note ending "unpriced", the receipt
+carries the evidence entry `{ kind: "cost-incomplete", ref: "unpriced:
+<stages>" }`, the page shows "unpriced" wherever a total would appear, and the
+receipt is not signed. With the shipped table that is every run until F4 is
+done.
 
 ## What is proven, and where
 
 | Claim | Evidence |
 |---|---|
-| The cascade runs, drops uncitable claims, computes grounding, and issues a complete receipt | `pnpm test:desk`: 58 tests, every provider and Redis call mocked and asserted |
+| The cascade runs, drops uncitable claims, computes the cited share, and issues a complete receipt | `pnpm test:desk`: 93 tests, every provider and Redis call mocked and asserted, on Node 20 and 22 |
+| A quote that is not in the source its URL names is dropped before the brief, the vault and the citations | same suite: fabricated quote, quote filed under the wrong URL, short quote, whitespace and quote-style differences that still pass, a source that tries to close its own delimiter |
 | A failed stage is recorded and the run still yields a readable receipt | same suite, `PARTIAL` verdict case |
 | A throttled stage is retried once | same suite |
 | A run writes its claims to the vault and the next run reads them back, contradicts one, and keeps both | same suite, two runs against one temporary vault |
 | An unwritable vault costs the run its memory and not its brief | same suite, `PARTIAL` verdict with the brief intact |
+| A deployed anonymous run touches no memory | same suite, a vault whose fetch fails the test if called |
+| No request exceeds its stage's share of the worst case, and the token meter refuses and records as described | same suite, oversized multibyte run; `run-limit.test.mjs` against a recorded fetch |
+| The deadline stops the run and the receipt still ships | same suite, a provider that hangs until its signal aborts |
+| An unpriced paid stage makes the receipt cost-incomplete and unsigned | same suite, with the shipped table, models priced but Tavily not, and everything priced |
 | The route refuses without keys, caps question length, and rate-limits room mode | `src/app/api/desk/run/route.ts` |
-| The access policy, the durable counters, the Redis vault and the key choice behave as the table above says | `access.test.mjs`, `run-limit.test.mjs`, `vault.test.mjs`, `signing.test.mjs` in the same suite |
-| The whole path works against a live provider | run against a local stub: `PASS`, grounding 1.0, judge 8.6, seven stages timed, 2 beliefs recalled, 1 contradiction, 3 written, receipt signed |
-| The browser path works, hydrates, and fits a phone | production build served locally, a full run driven through the UI: zero page errors and zero horizontal overflow at 1440 and 375. Screenshots in `evidence/` |
+| The access policy, the durable counters, the Redis vault and the key choice behave as the tables above say | `access.test.mjs`, `run-limit.test.mjs`, `vault.test.mjs`, `signing.test.mjs` in the same suite |
+| The whole path works against a live provider | run against a local stub before the quote check, token meter, deadline and cost-complete rule landed: `PASS`, cited share 1.0, judge 8.6, seven stages timed, 2 beliefs recalled, 1 contradiction, 3 written, receipt signed. Not yet re-run; with today's null prices the same run would ship unsigned |
+| The browser path works, hydrates, and fits a phone | production build served locally, a full run driven through the UI: zero page errors and zero horizontal overflow at 1440 and 375, before this change. Screenshots in `evidence/` |
 
 The one caveat: `next dev` in a sandbox whose WebSocket cannot upgrade never
 hydrates, which is how the CSP bug below was found. The production path is
@@ -128,8 +231,8 @@ proven; still open the page once on the demo laptop (Tuesday check 10).
 
 `src/lib/desk/edge-meter.ts` prices the same run twice: the cascade's own euros
 against what those identical token counts would cost on a closed API at its
-published list price, plus rubric, seconds, and the share of claims that reached
-the brief. Both sides stay "unpriced" until the console numbers land, and the
+published list price, plus rubric, seconds, and the cited share. The Desk's own
+euros show only for a cost-complete run. Both sides stay "unpriced" until the console numbers land, and the
 multiple is withheld rather than guessed.
 
 ## Room mode
