@@ -36,6 +36,7 @@ import {
   parseContradictions,
   parseJudgement,
   runDesk,
+  SECTIONS,
   sectionsInOrder,
   sectionsPresent,
   MODELS,
@@ -175,8 +176,9 @@ test("an injected id nonce makes ids deterministic", async () => {
 });
 
 test("a section counts only as a Markdown heading, and the six must come once each in order", () => {
-  assert.deepEqual(sectionsPresent("## HYPOTHESIS\nMETHOD SETUP RESULTS TAKEAWAY NEXT"), ["HYPOTHESIS"], "names inside prose are not headings");
-  assert.deepEqual(missingSections("## HYPOTHESIS\nMETHOD SETUP RESULTS TAKEAWAY NEXT"), ["METHOD", "SETUP", "RESULTS", "TAKEAWAY", "NEXT"]);
+  const inProse = `## HYPOTHESIS\n${SECTIONS.slice(1).join(" ")}`;
+  assert.deepEqual(sectionsPresent(inProse), ["HYPOTHESIS"], "names inside prose are not headings");
+  assert.deepEqual(missingSections(inProse), SECTIONS.slice(1));
   assert.equal(sectionsInOrder(BRIEF), true);
   assert.equal(sectionsInOrder(BRIEF.replace("## HYPOTHESIS", "## **Hypothesis:**")), true, "case, emphasis and a colon are ignored");
   const swapped = BRIEF.replace("## RESULTS", "## TMP").replace("## TAKEAWAY", "## RESULTS").replace("## TMP", "## TAKEAWAY");

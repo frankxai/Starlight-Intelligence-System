@@ -42,7 +42,7 @@ test("an unpriced side reports itself as unpriced and withholds the multiple", (
   assert.equal(meter.readable, false);
 });
 
-test("a cascade that costs more than the baseline is called more expensive, not cheaper", () => {
+test("a cascade that costs more than the baseline reads as more expensive", () => {
   const dear = edgeMeter({ ...RUN, costEur: 0.204 }, "closed-api", PRICED).rows.find((row) => row.axis === "cost");
   assert.equal(dear.ratio, 0.5);
   assert.equal(dear.comparison, "2x more expensive");
