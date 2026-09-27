@@ -13,6 +13,7 @@ import test from "node:test";
 import {
   DEADLINE_REACHED,
   DEFAULT_RUN_DEADLINE_MS,
+  INVALID_CONTRADICTIONS,
   MAX_RUN_DEADLINE_MS,
   MIN_RUN_DEADLINE_MS,
   runDeadlineMs,
@@ -543,8 +544,10 @@ test("contradictions are kept only where they name a belief that was recalled", 
   const held = [
     { id: "a", kind: "belief", question: "q", claim: "Held one.", quote: "q", url: "u", confidence: 1, receiptId: "r", at: "t" },
   ];
-  assert.deepEqual(parseContradictions("not json", held), []);
-  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: "nope" }), held), []);
+  assert.equal(parseContradictions("not json", held), null, "malformed is not the same as empty");
+  assert.equal(parseContradictions(JSON.stringify({ contradictions: "nope" }), held), null);
+  assert.equal(parseContradictions(JSON.stringify({ other: [] }), held), null, "a missing list is malformed");
+  assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [] }), held), [], "an empty list is a valid answer");
   assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [{ priorId: "b", newClaim: "x" }] }), held), []);
   assert.deepEqual(parseContradictions(JSON.stringify({ contradictions: [{ priorId: "a", newClaim: "" }] }), held), []);
   const twice = parseContradictions(
@@ -552,6 +555,37 @@ test("contradictions are kept only where they name a belief that was recalled", 
     held,
   );
   assert.deepEqual(twice, [{ priorId: "a", priorClaim: "Held one.", newClaim: "x", reason: "" }], "one entry per prior belief");
+});
+
+function contradictRun(answer) {
+  const held = [
+    { id: "held-1", kind: "belief", question: "Does alpha hold?", claim: "Alpha failed.", quote: "q", url: "u", confidence: 1, receiptId: "r", at: "t" },
+  ];
+  const vault = { kind: "file", ref: "memory", read: async () => held, append: async (atoms) => atoms.length };
+  const fetchImpl = scriptedFetch([
+    jsonResponse({ results: SOURCES }),
+    completion(CLAIMS_JSON),
+    completion(BRIEF, 2000, 600),
+    completion(answer, 800, 60),
+    completion(JSON.stringify({ score: 8, rationale: "Cited." }), 900, 80),
+  ]);
+  return runDesk({ ...config(fetchImpl), vault });
+}
+
+test("a malformed contradiction answer fails the stage; a valid empty one is ok", async () => {
+  for (const malformed of ["I think they agree.", JSON.stringify({ disagreements: [] })]) {
+    const run = await contradictRun(malformed);
+    const contradict = run.receipt.stages.find((stage) => stage.name === "contradict");
+    assert.equal(contradict.status, "failed");
+    assert.equal(contradict.note.replace(/ · unpriced$/, ""), INVALID_CONTRADICTIONS);
+    assert.deepEqual(run.contradictions, []);
+    assert.equal(run.receipt.verdict, "PARTIAL");
+  }
+  const empty = await contradictRun(JSON.stringify({ contradictions: [] }));
+  const contradict = empty.receipt.stages.find((stage) => stage.name === "contradict");
+  assert.equal(contradict.status, "ok");
+  assert.equal(contradict.note.replace(/ · unpriced$/, ""), "0 against 1 prior beliefs");
+  assert.equal(empty.receipt.verdict, "PASS");
 });
 
 // ── the worst case, against the requests a run actually sends ───────────────

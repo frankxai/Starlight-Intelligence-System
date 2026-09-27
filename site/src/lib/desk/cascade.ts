@@ -395,20 +395,23 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         },
         provider,
       );
-      contradictions = parseContradictions(result.text, related);
+      // null is a malformed answer (not JSON, or no contradictions list); an
+      // empty list is a valid "nothing disagrees". Only the second is ok.
+      const found = parseContradictions(result.text, related);
+      contradictions = found ?? [];
       billableUsageComplete &&= result.usageComplete;
       if (result.usageComplete) usageReported.add("contradict");
       else usageUnknown.set("contradict", USAGE_UNREPORTED);
       stages.push({
         name: "contradict",
-        status: "ok",
+        status: found ? "ok" : "failed",
         model: result.model,
         provider: "nebius",
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
         latencyMs: result.latencyMs,
         ...(result.usageComplete ? costFields(modelCostEur(result.model, result.inputTokens, result.outputTokens, table)) : {}),
-        note: `${contradictions.length} against ${related.length} prior beliefs`,
+        note: found ? `${contradictions.length} against ${related.length} prior beliefs` : INVALID_CONTRADICTIONS,
       });
     } catch (error) {
       billableUsageComplete = false;
@@ -738,14 +741,19 @@ function extractNote(check: ClaimCheck): string {
   return parts.join(" · ");
 }
 
+/** The contradict stage's note when the model's answer is not the JSON it was asked for. */
+export const INVALID_CONTRADICTIONS = "invalid contradiction response";
+
 /**
  * Contradictions the model reported, kept only where they name a prior belief
  * that was actually recalled. One naming a belief nobody holds is dropped.
+ * Returns null when the answer is malformed (not a JSON object, or without a
+ * `contradictions` list), so it is never mistaken for a valid empty result.
  */
-export function parseContradictions(text: string, related: VaultAtom[]): Contradiction[] {
+export function parseContradictions(text: string, related: VaultAtom[]): Contradiction[] | null {
   const parsed = parseJsonObject(text);
-  if (!parsed) return [];
-  const raw = Array.isArray(parsed.contradictions) ? parsed.contradictions : [];
+  if (!parsed || !Array.isArray(parsed.contradictions)) return null;
+  const raw: unknown[] = parsed.contradictions;
   const priors = new Map(related.map((atom) => [atom.id, atom]));
   const found: Contradiction[] = [];
   const claimed = new Set<string>();
