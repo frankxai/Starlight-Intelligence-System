@@ -21,7 +21,8 @@ By participating, you agree to uphold the [Code of Conduct](./CODE_OF_CONDUCT.md
 (Contributor Covenant v2.1).
 
 Reports to the conduct contact in `CODE_OF_CONDUCT.md`. Security issues
-go to `SECURITY.md` (separate channel).
+go through the [private vulnerability reporting form](https://github.com/frankxai/Starlight-Intelligence-System/security/advisories/new)
+instead of a public issue.
 
 ---
 
@@ -39,7 +40,7 @@ review.
 git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
 npm install
-npm test       # 256+ tests should pass
+npm test
 ```
 
 See `SETUP.md` for the full operator onboarding (private/ templates,
@@ -140,6 +141,11 @@ CI uses GitHub Actions — see `.github/workflows/`.
 
 ## Filing a good bug
 
+Use the [bug report form](https://github.com/frankxai/Starlight-Intelligence-System/issues/new?template=bug_report.yml)
+for an ordinary, reproducible bug. If the report could expose a vulnerability,
+secret, or private data, stop and use the
+[private vulnerability reporting form](https://github.com/frankxai/Starlight-Intelligence-System/security/advisories/new).
+
 1. **What you ran** — exact command.
 2. **What you expected** — quick sentence.
 3. **What happened** — exact output (paste, don't paraphrase).
@@ -154,6 +160,7 @@ the shape of the data without the values.
 
 ## Filing a good feature request
 
+Use the [feature request form](https://github.com/frankxai/Starlight-Intelligence-System/issues/new?template=feature_request.yml).
 State the operator need first, the proposed shape second. The most
 useful proposals come with a 5-line scenario ("I'm in a /yolo session
 and X happens; today I have to Y; if Z existed I could..."). Substrate
@@ -214,10 +221,17 @@ future-facing Horizon entries `"benediction": true` to appear on
 
 ## Where to ask
 
-- General questions → GitHub Discussions (if enabled) or issue tagged
-  `question`.
+- General questions → open a blank issue with a `Question:` title.
 - Substrate philosophy → re-read `SIP.md` and `SIS.md` first, then ask.
 - Operational onboarding → `SETUP.md`.
+
+## Opening a pull request
+
+Open a focused PR against `main` and complete the
+[pull request template](./.github/pull_request_template.md). Describe the
+scope, tests run (or why they were not run), privacy and security impact, and
+evidence or a preview where the change has a visible or behavioral result.
+The operational/substrate split and `/starlight-board` gate above still apply.
 
 ---
 
