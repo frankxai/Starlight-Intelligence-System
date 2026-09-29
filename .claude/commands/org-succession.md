@@ -1,6 +1,6 @@
 ---
 name: org-succession
-description: Succession planning with real readiness — not paper. Per critical role: identified successor, readiness gap, 6-12-month development plan, tested partial in-role, named timeline, transparent communication. Refuses paper-only succession plans. Surfaces single-points-of-failure, unprepared successors, and undisclosed plans (the silent-succession trust corrosion).
+description: "Succession planning with real readiness — not paper. Per critical role: identified successor, readiness gap, 6-12-month development plan, tested partial in-role, named timeline, transparent communication. Refuses paper-only succession plans. Surfaces single-points-of-failure, unprepared successors, and undisclosed plans (the silent-succession trust corrosion)."
 allowed-tools: Read, Write, Grep, Glob
 argument-hint: org name (required) + --critical-roles <comma-separated list> + --horizon <12mo|3yr|5yr> + optional context paragraph
 ---
