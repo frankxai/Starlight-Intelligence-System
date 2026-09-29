@@ -18,8 +18,8 @@ export function Footer() {
               <span className="text-[15px] font-semibold tracking-tight text-white">Starlight</span>
             </Link>
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-slate-400">
-              Persistent context for AI agents. Built on the Starlight Intelligence
-              Protocol. Local-first. Forkable. Free forever.
+              Local-first memory, capability, and evidence tools for an owner-directed
+              venture portfolio. Inspect what works and what still needs proof.
             </p>
           </div>
 
@@ -56,9 +56,9 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col gap-2 border-t border-white/[0.06] pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[12px] text-slate-500">
-            Built on the Starlight Intelligence Protocol · MIT
+            <Link href="/protocol" className="hover:text-white">SIP v1.1.1 reference</Link> · MIT
           </p>
-          <p className="text-[12px] text-slate-500">Sovereign by architecture.</p>
+          <p className="text-[12px] text-slate-500">Source and local records remain inspectable. Export independence remains a product test.</p>
         </div>
       </div>
     </footer>

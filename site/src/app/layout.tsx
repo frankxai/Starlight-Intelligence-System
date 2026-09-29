@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { StarlightTrail } from "@/components/StarlightTrail";
 import { GalaxyWash } from "@/components/cinematic/GalaxyField";
 import "./globals.css";
+import "./next-era.css";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,17 +33,17 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://starlightintelligence.org"),
   title: {
     default:
-      "Starlight Intelligence — Multi-agent architecture for humans and their agents · Built on SIP",
+      "Starlight Intelligence — intelligence should compound",
     template: "%s — Starlight Intelligence",
   },
   description:
-    "A multi-agent design and architecture system: named agents, skills, orchestration, durable memory, governance, and an open protocol. Founders and their agent fleets share one substrate — the human holds the keys.",
+    "Local-first intelligence infrastructure for owner-directed venture portfolios. Explore working memory, capability, and evidence tools with honest product status.",
   alternates: { canonical: "/" },
   openGraph: {
     title:
-      "Starlight Intelligence — Multi-agent architecture for humans and their agents · Built on SIP",
+      "Starlight Intelligence — intelligence should compound",
     description:
-      "Agent design, orchestration, durable memory, governance, evals, and an open protocol. One substrate for founders and their agent fleets — the human holds the keys.",
+      "Local-first intelligence infrastructure for owner-directed venture portfolios. Inspect working code, evidence, and the long horizon.",
     url: "https://starlightintelligence.org",
     siteName: "Starlight Intelligence",
     type: "website",
@@ -51,9 +52,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Starlight Intelligence — Multi-agent architecture for humans and their agents · Built on SIP",
+      "Starlight Intelligence — intelligence should compound",
     description:
-      "Agent design, orchestration, durable memory, governance, evals, and an open protocol. One substrate for founders and their agent fleets — the human holds the keys.",
+      "Local-first intelligence infrastructure for owner-directed venture portfolios. Inspect working code, evidence, and the long horizon.",
   },
   robots: { index: true, follow: true },
 };
@@ -74,7 +75,7 @@ const SCHEMA_GRAPH = {
         "https://www.npmjs.com/package/@arcanea/starlight-intelligence-system",
       ],
       description:
-        "A multi-agent architecture for people and their agents: orchestration, durable memory, governance, and inspectable proof.",
+        "Local-first intelligence infrastructure for owner-directed venture portfolios, with inspectable local memory, capability, and evidence tools.",
     },
     {
       "@type": "WebSite",
@@ -83,7 +84,7 @@ const SCHEMA_GRAPH = {
       name: "Starlight Intelligence",
       publisher: { "@id": ORG_ID },
       description:
-        "Multi-agent architecture for humans and their agents, built on the Starlight Intelligence Protocol.",
+        "An evidence-led public guide to the Starlight Intelligence System and its current local tools.",
       inLanguage: "en",
     },
     {
