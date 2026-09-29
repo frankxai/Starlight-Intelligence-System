@@ -86,7 +86,21 @@ One way. SIS is the source; the repo is the destination. Nothing reads a repo's 
 
 ### `CLAUDE.md` vs `AGENTS.md`
 
-Unchanged and orthogonal. `AGENTS.md` is the cross-harness contract (Codex, Cursor, Cline, Gemini, Grok, OpenCode). `CLAUDE.md` is the Claude-specific deepening on top of it. **Where a repo has both and they disagree, that repo's `CLAUDE.md` wins** — that is already the stated rule in `payment-intelligence-system` and SIS, and this change does not disturb it.
+Unchanged and orthogonal. `AGENTS.md` is the cross-harness contract (Codex, Cursor, Cline, Gemini, Grok, OpenCode). `CLAUDE.md` is the Claude-specific deepening on top of it.
+
+**Which of the two wins is per repo, and no generated band decides it.** An earlier draft of this document asserted that `CLAUDE.md` always wins. Read against the repos that carry both files at root, on 2026-09-29, that is the minority position — 4 of 10:
+
+| Precedence, as the repo itself states it | Repos |
+|---|---|
+| `CLAUDE.md` wins | `Starlight-Intelligence-System`, `payment-intelligence-system`, `GenCreator-Studio`, `agentic-creator-os` |
+| `AGENTS.md` is read first, or is named the single source | `agentic-ops-hub`, `arcanea-ai-app`, `FrankX`, `frankx.ai-vercel-website`, `gencreator-community` |
+| Neither — each file names the other as "read first" | `gencreator.ai`, since `266aa2b` |
+
+`agentic-ops-hub` is the sharpest counter-example, and it is the prior art named above: its `AGENTS.md` is headed *Single Source of Truth*, and its `CLAUDE.md` is `@AGENTS.md` plus a Claude-only delta that `scripts/sync-agent-rules.mjs` generates. An estate-wide "`CLAUDE.md` wins" would invert that repo's own contract.
+
+So this axis belongs in **Band C**, stated by each repo in its own words. Band A says nothing about `CLAUDE.md`, deliberately: it ranks Band C above Bands A and B *within `AGENTS.md`*, which is a different question. A generated band ruling on cross-file precedence would be the exact failure the three-band model exists to prevent — a projected contract silently overriding a local one.
+
+The `gencreator.ai` row is drift, not a design. `266aa2b` gave its `CLAUDE.md` a "read `@AGENTS.md` first" line while its `AGENTS.md` still said "read `CLAUDE.md` first", so each file now sends the reader to the other. One line in either file resolves it, in that repo, as Band C.
 
 ---
 
