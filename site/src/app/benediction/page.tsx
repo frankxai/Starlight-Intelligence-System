@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import type { Metadata } from "next";
 import { getBenedictions } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
@@ -18,6 +19,9 @@ export const metadata: Metadata = {
 };
 
 export default async function BenedictionPage() {
+  // Public vaults are fetched from GitHub; a transient upstream timeout must
+  // not fail deployment while Next prerenders this route.
+  await connection();
   const benedictions = await getBenedictions(20);
 
   return (
