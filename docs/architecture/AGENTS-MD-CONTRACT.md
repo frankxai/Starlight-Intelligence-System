@@ -88,13 +88,15 @@ One way. SIS is the source; the repo is the destination. Nothing reads a repo's 
 
 Unchanged and orthogonal. `AGENTS.md` is the cross-harness contract (Codex, Cursor, Cline, Gemini, Grok, OpenCode). `CLAUDE.md` is the Claude-specific deepening on top of it.
 
-**Which of the two wins is per repo, and no generated band decides it.** An earlier draft of this document asserted that `CLAUDE.md` always wins. Read against the repos that carry both files at root, on 2026-09-29, that is the minority position — 4 of 10:
+**Which of the two wins is per repo, and no generated band decides it.** An earlier draft of this document asserted that `CLAUDE.md` always wins. Twenty repos in the estate carry both files at root. Read against all twenty on 2026-09-29, that rule is stated by five and contradicted by seven:
 
-| Precedence, as the repo itself states it | Repos |
-|---|---|
-| `CLAUDE.md` wins | `Starlight-Intelligence-System`, `payment-intelligence-system`, `GenCreator-Studio`, `agentic-creator-os` |
-| `AGENTS.md` is read first, or is named the single source | `agentic-ops-hub`, `arcanea-ai-app`, `FrankX`, `frankx.ai-vercel-website`, `gencreator-community` |
-| Neither — each file names the other as "read first" | `gencreator.ai`, since `266aa2b` |
+| Precedence, as the repo itself states it | n | Repos |
+|---|---|---|
+| `AGENTS.md` first, or named the shared contract | 7 | `FrankX`, `agentic-mind-os`, `agentic-ops-hub`, `arcanea-ai-app`, `frankx.ai-vercel-website`, `gencreator-community`, `starlight-mind-os-pro` |
+| `CLAUDE.md` wins, or read first | 5 | `GenCreator-Studio`, `Starlight-Intelligence-System`, `agentic-creator-os`, `agentic-income-template` (UI paths only), `payment-intelligence-system` |
+| Parity — same doctrine, one file per harness | 1 | `human-mind-intelligence-system` |
+| Contradictory — each file names the other as "read first" | 1 | `gencreator.ai`, since `266aa2b` |
+| Silent — neither file ranks the other | 6 | `agenticincome`, `agenticpassiveincome`, `arcanea`, `blue-life-commons`, `realityarchitect`, `starlight-swarm` |
 
 `agentic-ops-hub` is the sharpest counter-example, and it is the prior art named above: its `AGENTS.md` is headed *Single Source of Truth*, and its `CLAUDE.md` is `@AGENTS.md` plus a Claude-only delta that `scripts/sync-agent-rules.mjs` generates. An estate-wide "`CLAUDE.md` wins" would invert that repo's own contract.
 
