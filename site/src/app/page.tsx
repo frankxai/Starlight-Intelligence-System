@@ -597,8 +597,8 @@ export default async function HomePage() {
               <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">
                 {entries.length} public entries across {registry.length} vault
                 {registry.length === 1 ? "" : "s"}, rebuilt from raw JSONL.
-                This is the working reasoning surface, not a blog — agents
-                query it, cite it, and write back to it.
+                This is the working reasoning surface: agents query it, cite
+                it, and write back to it.
               </p>
             </div>
             <Link

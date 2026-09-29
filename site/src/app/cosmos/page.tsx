@@ -43,8 +43,7 @@ export default async function CosmosPage() {
             Live NASA data, Webb&apos;s deep fields, asteroids passing closer than
             the Moon — wired to knowledge cards on the stars, the elements they
             forge, and the laws they obey. Every card ships with prompts to
-            explore, so the cosmos becomes something you think with, not just
-            look at.
+            explore, so you can think with the cosmos as well as look at it.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Link

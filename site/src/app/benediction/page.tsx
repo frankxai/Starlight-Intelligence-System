@@ -117,8 +117,8 @@ export default async function BenedictionPage() {
           </p>
           <ul className="space-y-3 pl-6 text-slate-400">
             <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
-              <strong className="text-slate-200">Affirmative, not defensive.</strong>{" "}
-              It names what we want preserved, not just what we fear.
+              <strong className="text-slate-200">Affirmative.</strong>{" "}
+              It names what we want preserved as well as what we fear.
             </li>
             <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
               <strong className="text-slate-200">Grateful.</strong> The future
@@ -179,7 +179,7 @@ export default async function BenedictionPage() {
             it.
           </p>
           <p>
-            This is not performance. It is a practice — of pausing to ask{" "}
+            It is a practice — of pausing to ask{" "}
             <em>what do I want to preserve?</em> and writing the answer down in
             a file that can be read by humans, by agents, by grandchildren, by
             whatever emerges from the decades ahead.
