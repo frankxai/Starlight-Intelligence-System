@@ -4,7 +4,7 @@
 
 **The Starlight Constellation: SIS as Substrate Hub for ~15 Repositories**
 
-Version 2.1 | Structure verified 2026-06-10 · Counts reconciled with `metrics/current.json` 2026-07-28
+Version 2.1 | Structure verified 2026-06-10 · Counts reconciled with `metrics/current.json` 2026-09-29
 
 > **Metrics note:** Fast-moving counts (agents, skills, version) in this document are snapshots. The living, harness-enforced source of truth is [`metrics/current.json`](metrics/current.json) — the site build and agent harness fail closed on drift.
 
@@ -16,7 +16,7 @@ The FrankX ecosystem is no longer a three-repo stack. It is a constellation of r
 
 The original three-layer intuition still holds at the core — a universal framework (SIS), a platform-native implementation (ACOS), and a domain-specific creative universe (Arcanea) — but the satellite tier around that core has grown into its own ring of specialized repos, and several early members of the ecosystem have gone quiet. This document records the constellation as verified on 2026-06-10.
 
-**Starlight Intelligence System (SIS)** is the substrate layer. Two layers live in one repo: the SIP substrate (protocol, alliances, verticals, voices, attestation) and a reference operational build with **144 agents**, **84 auto-activating skills** across 16 domains (both harness-verified 2026-07-27, per `metrics/current.json`), **6 persistent memory vaults**, 10 universal Intelligence Systems plus a Domain Sub-Stack tier, and platform adapters for 6 AI development tools. SIS is platform-agnostic: Markdown and JSON configuration, zero runtime dependencies. Any AI agent that reads files can consume SIS.
+**Starlight Intelligence System (SIS)** is the substrate layer. Two layers live in one repo: the SIP substrate (protocol, alliances, verticals, voices, attestation) and a reference operational build with **144 agents**, **88 auto-activating skills** across 17 domains (harness-verified 2026-09-29, per `metrics/current.json`), **6 persistent memory vaults**, 10 universal Intelligence Systems plus a Domain Sub-Stack tier, and platform adapters for 6 AI development tools. SIS is platform-agnostic: Markdown and JSON configuration, zero runtime dependencies. Any AI agent that reads files can consume SIS.
 
 **Agentic Creator OS (ACOS)** is the implementation layer (public, v11). It consumes SIS intelligence and deploys it through Claude Code as a productivity operating system: **90+ skills**, **65+ commands**, **38 agents**, swarm topologies via claude-flow lineage, and the Agentic Jujutsu self-learning mechanism. Where SIS defines *what intelligence is*, ACOS defines *how intelligence works* in a specific tool.
 
@@ -37,7 +37,7 @@ The separation remains deliberate. SIS never contains Claude Code-specific confi
                             ACTIVE CORE TIER
             ┌──────────────────────────────────────────────┐
             │   SIS (substrate hub)                        │
-            │   SIP · 144 agents · 84 skills · 6 vaults    │
+            │   SIP · 144 agents · 88 skills · 6 vaults    │
             │      │                                       │
             │      ├── Generates context for ──> ACOS v11  │
             │      │     90+ skills · 65+ commands         │
@@ -60,7 +60,7 @@ Three tiers, verified 2026-06-10. "Pulse" is observed activity, not aspiration.
 
 | Repo | Visibility | Role | State (2026-06-10) |
 |------|-----------|------|---------------------|
-| **Starlight-Intelligence-System** | Public | Substrate hub — SIP, vaults, attestation, contracts | 144 agents, 84 skills, v8.3.0 (harness-verified 2026-07-27), daily-driven |
+| **Starlight-Intelligence-System** | Public | Substrate hub — SIP, vaults, attestation, contracts | 144 agents, 88 skills, v8.3.0 (harness-verified 2026-09-29), daily-driven |
 | **agentic-creator-os** | Public | Claude Code productivity OS, Built on SIP | v11: 90+ skills, 65+ commands, 38 agents |
 | **Arcanea** (arcanea-ai-app + arcanea) | Private app + public OSS | Creative universe layer | Most active in constellation: 356 commits/60d |
 
@@ -271,8 +271,8 @@ The Horizon Vault records what the builders of these systems hoped for, what the
 |---|---|---|---|
 | **Role** | Substrate / framework | Implementation | Universe |
 | **Abstraction** | Platform-agnostic intelligence layer | Claude Code-native productivity OS | AI-native creative platform |
-| **Agents** | 48 (council core + archetype seats + IS/domain tiers) | 38 specialized (inheriting council) | 10 Guardians (mapped to council + mythology) |
-| **Skills** | 71 auto-activating across 14 domains | 90+ auto-activating (keyword + intent + agent match) | Domain skills (creative, narrative, design, lore) |
+| **Agents** | 144 (council core + archetype seats + IS/domain tiers; see `metrics/current.json`) | 38 specialized (inheriting council) | 10 Guardians (mapped to council + mythology) |
+| **Skills** | 88 auto-activating across 17 domains | 90+ auto-activating (keyword + intent + agent match) | Domain skills (creative, narrative, design, lore) |
 | **Commands** | Substrate suite (`/starlight`, `/vault`, `/council`, `/transmit`, `/synthesize`, `/navigate`, `/yolo`, `/sis-forge`, board gates) | 65+ routed through `/acos` | Guardian-mediated (chat interfaces, Library access) |
 | **Memory** | 6 vaults + sovereign Path A substrate + Memory Bus daemon | Session-level writes via hooks and Agentic Jujutsu | Creative + Wisdom vault writes through Guardian interaction |
 | **Orchestration** | 6 patterns defined (Direct through Broadcast) | Patterns executed via command routing and swarm topologies | Patterns surfaced through Guardian interaction flows |

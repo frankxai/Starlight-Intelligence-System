@@ -36,7 +36,7 @@
       "entrypoint": "tools/run-v01-evals.mjs",
       "receipts": "test/v01-evals/*.test.ts (TAP)",
       "verification": "isolated temp-server assertions per risk dimension",
-      "status": "live; 28 pass / 0 fail / 2 todo"
+      "status": "live; 34 pass / 0 fail / 7 todo (28 pass at first baseline)"
     },
     {
       "id": "substrate",
