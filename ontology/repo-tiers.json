@@ -1,65 +1,19 @@
 {
   "$schema": "https://starlightintelligence.org/schemas/ontology/starlight-estate.ontology.v1.json",
   "schema": "starlight.repo-tiers.v1",
-  "status": "proposed — requires /starlight-board before tag",
-  "observed_at": "2026-09-19",
-  "_doc": "What a session installs, and what it does not. Tier is a decision about attention and context budget, not about value. T0 is always cloned; T1 when working that company; T2 on demand; T3 is a consolidation candidate awaiting Frank's call. agents_md.state is OBSERVED from the working tree on observed_at, not aspirational — 'absent' and 'divergent' are defects this file exists to make visible.",
+  "status": "fixture — the operator's tier file is passed with --tiers",
+  "_doc": "Install policy for the adoptable product. T0 is the substrate anyone clones. A real portfolio's T1–T3 list lives in the operator instance, not here.",
 
   "tiers": {
-    "T0": { "name": "substrate",        "install": "always — every session, every harness", "rule": "Carries a contract other repos read. Losing it breaks the estate." },
-    "T1": { "name": "revenue surface",  "install": "when working that company",             "rule": "Deploys to a live domain or holds a paying product." },
-    "T2": { "name": "vertical",         "install": "on demand",                             "rule": "Real work, bounded scope, no live deploy of its own." },
-    "T3": { "name": "consolidation candidate", "install": "never by default",               "rule": "No AGENTS.md, no CLAUDE.md, no distinct claim. Fold into a parent or archive. Frank decides — an agent never archives a repo." }
+    "T0": { "name": "substrate", "install": "always — every session, every harness", "rule": "Carries a contract other repos read. Losing it breaks the product." },
+    "T1": { "name": "revenue surface", "install": "when working that company", "rule": "Deploys to a live domain or holds a paying product." },
+    "T2": { "name": "vertical", "install": "on demand", "rule": "Real work, bounded scope, no live deploy of its own." },
+    "T3": { "name": "consolidation candidate", "install": "never by default", "rule": "Fold into a parent or archive. The principal decides — an agent never archives a repo." }
   },
 
   "repos": [
-    { "id": "repo:Starlight-Intelligence-System", "company": "company:starlight",      "tier": "T0", "agents_md": { "state": "handwritten", "lines": 331, "repaired": "2026-09-19 — BOM stripped, 170 cp1252 double-encodings repaired; band split still pending" } },
-    { "id": "repo:claude-skills-library",         "company": "company:starlight",      "tier": "T0", "agents_md": { "state": "handwritten", "lines": 42 } },
-    { "id": "repo:starlight-agent-skills",        "company": "company:starlight",      "tier": "T0", "agents_md": { "state": "absent", "lines": 0, "defect": "T0 repo with no agent contract", "fix_in_flight": "frankxai/starlight-agent-skills#27" } },
-
-    { "id": "repo:frankx.ai-vercel-website",      "company": "company:frankx",         "tier": "T1", "agents_md": { "state": "handwritten", "lines": 174 }, "deploys": "surface:frankx.ai" },
-    { "id": "repo:FrankX",                        "company": "company:frankx",         "tier": "T1", "agents_md": { "state": "handwritten", "lines": 314 }, "note": "private authoring trunk; ports to the website repo, never bulk-copies" },
-    { "id": "repo:gencreator.ai",                 "company": "company:gencreator",     "tier": "T1", "agents_md": { "state": "handwritten", "lines": 92 }, "deploys": "surface:gencreator.ai" },
-    { "id": "repo:arcanea-ai-app",                "company": "company:arcanea",        "tier": "T1", "agents_md": { "state": "handwritten", "lines": 178 }, "deploys": "surface:arcanea.ai" },
-    { "id": "repo:agentic-creator-os",            "company": "company:gencreator",     "tier": "T1", "agents_md": { "state": "handwritten", "lines": 31 } },
-    { "id": "repo:gencreator-community",          "company": "company:gencreator",     "tier": "T1", "agents_md": { "state": "handwritten", "lines": 44 } },
-    { "id": "repo:GenCreator-Studio",             "company": "company:gencreator",     "tier": "T1", "agents_md": { "state": "absent", "lines": 0, "defect": "T1 repo with no agent contract", "fix_in_flight": "frankxai/GenCreator-Studio#7" } },
-
-    { "id": "repo:arcanea",                       "company": "company:arcanea",        "tier": "T2", "agents_md": { "state": "divergent", "lines": 8, "defect": "contains only Cursor Cloud port notes — no DNA, no voice, no branch protocol, no canon gate" } },
-    { "id": "repo:starlight-evals",               "company": "company:starlight",      "tier": "T2", "agents_md": { "state": "handwritten", "lines": 48 } },
-    { "id": "repo:starlight-swarm",               "company": "company:starlight",      "tier": "T2", "agents_md": { "state": "handwritten", "lines": 37 } },
-    { "id": "repo:starlight-cosmos-engine",       "company": "company:starlight",      "tier": "T2", "agents_md": { "state": "handwritten", "lines": 67 } },
-    { "id": "repo:starlight-mind-os-pro",         "company": "company:starlight",      "tier": "T2", "agents_md": { "state": "handwritten", "lines": 47 } },
-    { "id": "repo:agentic-ops-hub",               "company": "company:starlight",      "tier": "T2", "agents_md": { "state": "handwritten", "lines": 67 }, "note": "already runs its own sync-agent-rules.mjs fan-out — the working prior art for the generator" },
-    { "id": "repo:second-brain-os",               "company": "company:starlight",      "tier": "T2", "agents_md": { "state": "handwritten", "lines": 49 } },
-    { "id": "repo:payment-intelligence-system",   "company": "company:agentic-income",  "tier": "T2", "agents_md": { "state": "handwritten", "lines": 61 } },
-    { "id": "repo:agentic-intelligence-system",   "company": "company:agentic-income",  "tier": "T2", "agents_md": { "state": "handwritten", "lines": 59 } },
-    { "id": "repo:agenticincome",                 "company": "company:agentic-income",  "tier": "T2", "agents_md": { "state": "handwritten", "lines": 39 } },
-    { "id": "repo:agentic-income-template",       "company": "company:agentic-income",  "tier": "T2", "agents_md": { "state": "handwritten", "lines": 35 } },
-    { "id": "repo:agentic-income-skills",         "company": "company:agentic-income",  "tier": "T2", "agents_md": { "state": "handwritten", "lines": 30 } },
-    { "id": "repo:agentic-business-os",           "company": "company:agentic-income",  "tier": "T2", "agents_md": { "state": "absent", "lines": 0 } },
-    { "id": "repo:agentic-creator-skills",        "company": "company:gencreator",     "tier": "T2", "agents_md": { "state": "handwritten", "lines": 42 } },
-    { "id": "repo:vibe-os",                       "company": "company:gencreator",     "tier": "T2", "agents_md": { "state": "absent", "lines": 0 } },
-    { "id": "repo:human-mind-intelligence-system","company": "company:mind",           "tier": "T2", "agents_md": { "state": "handwritten", "lines": 39 } },
-    { "id": "repo:mind-intelligence-systems",     "company": "company:mind",           "tier": "T2", "agents_md": { "state": "handwritten", "lines": 35 } },
-    { "id": "repo:agentic-mind-os",               "company": "company:mind",           "tier": "T2", "agents_md": { "state": "handwritten", "lines": 64 } },
-    { "id": "repo:mind-palace-agent-skills",      "company": "company:mind",           "tier": "T2", "agents_md": { "state": "absent", "lines": 0 } },
-    { "id": "repo:ocean-intelligence-system",     "company": "company:blue",           "tier": "T2", "agents_md": { "state": "handwritten", "lines": 41 } },
-    { "id": "repo:blue-life-commons",             "company": "company:blue",           "tier": "T2", "agents_md": { "state": "handwritten", "lines": 62 } },
-    { "id": "repo:marine-mcp",                    "company": "company:blue",           "tier": "T2", "agents_md": { "state": "absent", "lines": 0 } },
-    { "id": "repo:marine-agent-skills",           "company": "company:blue",           "tier": "T2", "agents_md": { "state": "absent", "lines": 0 } },
-    { "id": "repo:ai-music-academy",              "company": "company:sound",          "tier": "T2", "agents_md": { "state": "absent", "lines": 0 } },
-    { "id": "repo:music-intelligence-systems",    "company": "company:sound",          "tier": "T2", "agents_md": { "state": "absent", "lines": 0 } },
-    { "id": "repo:realityarchitect",              "company": "company:frankx",         "tier": "T2", "agents_md": { "state": "handwritten", "lines": 94 } },
-    { "id": "repo:frankx-palace",                 "company": "company:frankx",         "tier": "T2", "agents_md": { "state": "absent", "lines": 0 } },
-
-    { "id": "repo:agenticpassiveincome",          "company": "company:agentic-income",  "tier": "T3", "agents_md": { "state": "handwritten", "lines": 19 }, "review": "consolidate into repo:agenticincome — near-duplicate claim" },
-    { "id": "repo:awesome-agentic-income",        "company": "company:agentic-income",  "tier": "T3", "agents_md": { "state": "handwritten", "lines": 42 }, "review": "link-list; fold into agentic-income-skills or keep as pure public index" },
-    { "id": "repo:awesome-payment-agent-skills",  "company": "company:agentic-income",  "tier": "T3", "agents_md": { "state": "absent", "lines": 0 }, "review": "no contract, no CLAUDE.md" },
-    { "id": "repo:awesome-mind-agent-skills",     "company": "company:mind",           "tier": "T3", "agents_md": { "state": "absent", "lines": 0 }, "review": "no contract, no CLAUDE.md" },
-    { "id": "repo:awesome-music-agent-skills",    "company": "company:sound",          "tier": "T3", "agents_md": { "state": "absent", "lines": 0 }, "review": "no contract, no CLAUDE.md" },
-    { "id": "repo:awesome-manifestation-skills",  "company": "company:frankx",         "tier": "T3", "agents_md": { "state": "absent", "lines": 0 }, "review": "no contract, no CLAUDE.md" },
-    { "id": "repo:bless",                         "company": "company:frankx",         "tier": "T3", "agents_md": { "state": "absent", "lines": 0 }, "review": "no contract, no CLAUDE.md, unclear claim" },
-    { "id": "repo:frankx-mind-palace",            "company": "company:frankx",         "tier": "T3", "agents_md": { "state": "absent", "lines": 0 }, "review": "overlaps repo:frankx-palace and repo:mind-palace-agent-skills — three palaces, one idea" }
+    { "id": "repo:Starlight-Intelligence-System", "company": "company:example", "tier": "T0", "agents_md": { "state": "handwritten", "lines": 0 }, "note": "schema, seat templates, generator, fixture" },
+    { "id": "repo:claude-skills-library", "company": "company:example", "tier": "T0", "agents_md": { "state": "handwritten", "lines": 0 }, "note": "skills that passed the absorption gates" },
+    { "id": "repo:starlight-agent-skills", "company": "company:example", "tier": "T0", "agents_md": { "state": "handwritten", "lines": 0 }, "note": "the format is the product" }
   ]
 }

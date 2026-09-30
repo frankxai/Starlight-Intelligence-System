@@ -7,8 +7,8 @@ The accountability layer the agent fleet did not have. Four files, one builder, 
 | File | What it is |
 |---|---|
 | `starlight-estate.ontology.v1.json` | The **vocabulary**. Node kinds, edge relations, invariants. No instances. |
-| `company-registry.json` | **Companies, entities, brands.** Public-safe by construction — no cash, no jurisdiction, no terms. |
-| `repo-tiers.json` | **Repos, tiers, observed contract state.** What a session installs and what it does not. |
+| `company-registry.json` | **Fixture.** One synthetic company so the graph runs. An operator's portfolio is passed with `--registry` and is not committed here. |
+| `repo-tiers.json` | **Fixture.** The three T0 product repos. An operator's T1–T3 list is passed with `--tiers`. |
 | `estate-graph.json` | **Generated.** Do not hand-edit — `node scripts/estate-graph.mjs` rebuilds it. |
 
 ```bash
@@ -64,9 +64,11 @@ Per `docs/graph-engineering/CONTRACT.md`, which this composes with rather than a
 
 ## Adding a company
 
-1. Add the row to `company-registry.json` — including `accountable_exec_seat`, which must be an `executive`-tier agent (INV-2).
-2. Assign its repos in `repo-tiers.json` with a tier.
-3. `node scripts/estate-graph.mjs` — it fails if you missed something.
+Add it to the operator instance, not to the fixture.
+
+1. Add the row to the instance registry — including `accountable_exec_seat`, which must be an `executive`-tier agent (INV-2), and `principal`.
+2. Assign its repos in the instance tier file.
+3. `node scripts/estate-graph.mjs --registry <instance> --tiers <tiers> --out <instance>/estate-graph.json`
 4. Substrate-tier change: `/starlight-board` before tag.
 
 Built on SIP.

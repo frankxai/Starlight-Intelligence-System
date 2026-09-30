@@ -21,6 +21,8 @@
  *   node scripts/agents-md-project.mjs --tree .. --repo X   one repo
  *   node scripts/agents-md-project.mjs --tree .. --tier T0,T1
  *   node scripts/agents-md-project.mjs --tree .. --init     also create absent AGENTS.md
+ *   --registry <file> --tiers <file> --band-a <file>       operator instance.
+ *                                                          Defaults are the fixture.
  *
  * T3 is excluded unless named with --tier, because T3 is a consolidation proposal
  * awaiting Frank's call and gets nothing until then.
@@ -42,11 +44,17 @@ const TREE = flag('--tree');
 const ONLY_REPO = flag('--repo');
 const TIERS = (flag('--tier') || 'T0,T1,T2').split(',').map((t) => t.trim()).filter(Boolean);
 
-const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
-const registry = read('ontology/company-registry.json');
-const tiers = read('ontology/repo-tiers.json');
-const BAND_A_SRC = 'ontology/agents-md/band-a.md';
-const bandABody = readFileSync(join(ROOT, BAND_A_SRC), 'utf8').trimEnd();
+const resolveInput = (p) => {
+  if (/^[A-Za-z]:[\\/]/.test(p) || p.startsWith('/') || p.startsWith('\\\\')) return p;
+  return join(ROOT, p);
+};
+const REGISTRY_PATH = resolveInput(flag('--registry') || 'ontology/company-registry.json');
+const TIERS_PATH = resolveInput(flag('--tiers') || 'ontology/repo-tiers.json');
+const BAND_A_PATH = resolveInput(flag('--band-a') || 'ontology/agents-md/band-a.md');
+const registry = JSON.parse(readFileSync(REGISTRY_PATH, 'utf8'));
+const tiers = JSON.parse(readFileSync(TIERS_PATH, 'utf8'));
+const bandABody = readFileSync(BAND_A_PATH, 'utf8').trimEnd();
+const principalName = (registry.principal && registry.principal.name) || 'the principal';
 
 const problems = [];
 const fail = (msg) => problems.push({ severity: 'error', msg });
@@ -150,7 +158,7 @@ function renderBandB(repo, company) {
     '',
     `**Escalation.** Decisions this repo cannot make alone go to \`${company.accountable_exec_seat}\`.`,
     'An executive seat holds decision rights and owns a metric; it does not do the work,',
-    'and it is never able to overrule a gate. Anything irreversible goes to Frank.',
+    `and it is never able to overrule a gate. Anything irreversible goes to ${principalName}.`,
   );
   return lines.join('\n');
 }
@@ -256,7 +264,7 @@ const errors = problems.filter((p) => p.severity === 'error');
 const warns = problems.filter((p) => p.severity === 'warn');
 
 console.log('agents-md-project', CHECK_ONLY ? '(check only)' : `→ ${TREE}/<repo>/AGENTS.md`);
-console.log(`  band A: ${BAND_A_SRC} sha=${sha12(bandABody)}`);
+console.log(`  band A: ${BAND_A_PATH} sha=${sha12(bandABody)}`);
 console.log(`  tiers: ${TIERS.join(',')}  selected: ${selected.length}`);
 console.log(`  ${CHECK_ONLY ? 'up to date' : 'written'}: ${CHECK_ONLY ? unchanged : written}   unchanged: ${unchanged}   skipped: ${skipped}`);
 for (const p of warns) console.log(`  WARN  ${p.msg}`);
