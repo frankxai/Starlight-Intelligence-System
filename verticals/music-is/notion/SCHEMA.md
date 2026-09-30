@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **30 September 2026 binding contract:** [Records OS bindings](../records-os/bindings.json) supersede this legacy sync proposal for new research and preparation surfaces. Notion owns working evidence/briefs; GitHub stores dated snapshots and reviewed specs. Preserve human edits and quarantine conflicts. No sync is deployed by this change; do not overwrite new records from the old four-label CSV projection.
+
 # Notion Architecture — Music IS
 
 > Per DECISIONS.md D8: **Notion is mirror-only. Single source of truth = local Excel/CSV + markdown corpus.** This spec defines the schema for each Notion surface, the migration plan, and the sync mechanism.

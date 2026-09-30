@@ -1,4 +1,7 @@
 > [!IMPORTANT]
+> **Founder direction recorded 30 September 2026:** [Records OS](./records-os/README.md) records **Frank X** as the chosen stage-name direction and **Arcanea Records** as the roster's label umbrella. Historical FRANK OMEGA, Starlight-umbrella, four-label, entity, split and live-state assertions below do not create current release authority. Name clearance and actual profile/rights evidence remain open. Scope: owned music operations; no lore or Starlight substrate change.
+
+> [!IMPORTANT]
 > **Legacy map under review:** the four-label model below is retained for provenance. [CREATIVE-STUDIO-OS.md](./CREATIVE-STUDIO-OS.md) proposes the normalized hierarchy: Starlight Records = umbrella rights/label house; Arcanea Records = Arcanea imprint; Frank Riemer = human artist; Alera = first Arcanea virtual artist; Vibe OS Sessions = playlist/content/product series; Nona = deferred act. Conflicting sections below are superseded when the proposal is reviewed and merged.
 
 # LABELS — Arcanea Records (four-label canonical map)

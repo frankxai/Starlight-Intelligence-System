@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **Founder direction recorded 30 September 2026:** [Records OS](./records-os/README.md) records **Frank X** as the chosen stage-name direction and **Arcanea Records** as the roster's label umbrella. Historical FRANK OMEGA, Starlight-umbrella, four-label, entity, split and live-state assertions below do not create current release authority. Name clearance and actual profile/rights evidence remain open. Scope: owned music operations; no lore or Starlight substrate change.
+
 # AGENTS — Music IS / Arcanea Records
 
 > Seven canonical agents. Six own a sub-system; one (`music-curator`) is the cross-cutting A&R green-light gate. All agents are model-tiered per `feedback_model_routing_discipline`.

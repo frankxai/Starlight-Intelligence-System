@@ -58,19 +58,19 @@ function handleSong(args) {
     persona,
     label,
     status: 'draft',
-    engine: 'suno-v5',
+    engine: 'unknown',
     suno_url,
-    suno_prompt: `grounded prompt for ${intent}`,
-    bpm: 80,
-    key: 'Am',
-    duration_seconds: 180,
-    structure_tags: "[Intro]\n[Verse]\n[Chorus]\n[Outro]",
-    created_date: new Date().toISOString().split('T')[0],
+    suno_prompt: '',
+    bpm: '',
+    key: '',
+    duration_seconds: '',
+    structure_tags: '',
+    created_date: '',
     gated_date: '',
     released_date: '',
-    royalty_graph_id: `RG-${song_id}`,
-    attestation_hash: `SIP_ATTEST_v8_${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
-    ai_disclosure_metadata: 'AI-generated via Suno; CC-BY-NC-licensed Arcanea Records release.',
+    royalty_graph_id: '',
+    attestation_hash: '',
+    ai_disclosure_metadata: 'AI-generated via Suno; source metadata and rights require review.',
     notes: `Catalog intake via CLI. Intent: ${intent}`
   };
 
@@ -134,53 +134,11 @@ function handlePersona(args) {
   console.log(` - 6-axis Rubric audit complete. Locked for proceeding (refer to franks-vibes/NAMING_SCORECARD.md).`);
 }
 
-// 3. release command
+// 3. release command — legacy simulator disabled; no catalog mutation.
 function handleRelease(args) {
-  if (args.length < 1) {
-    console.error('Error: Incomplete arguments.');
-    console.log('Usage: node music-cli.js release <song-id>');
-    process.exit(1);
-  }
-  const songId = args[0];
-  const { headers, rows } = readCatalog();
-  const index = rows.findIndex(r => r.song_id === songId);
-
-  if (index === -1) {
-    console.error(`Error: Song ID ${songId} not found in catalog.`);
-    process.exit(1);
-  }
-
-  console.log(`\nConvening A&R release gate for: ${rows[index].title}...`);
-  console.log(`[✓] Gate check 1: Persona-anchoring confirmed (@${rows[index].persona})`);
-  console.log(`[✓] Gate check 2: Asset bundle validated`);
-  console.log(`[✓] Gate check 3: AI-disclosure metadata validated`);
-  console.log(`[✓] Gate check 4: Vocal-impersonation consent locked`);
-  console.log(`[✓] Gate check 5: Royalty splits mapped (ID: ${rows[index].royalty_graph_id})`);
-
-  let nextStatus = 'gated';
-  if (rows[index].status === 'gated') nextStatus = 'released';
-  if (rows[index].status === 'released') {
-    console.log(`\n[!] Song ${songId} already fully released to DSPs!`);
-    return;
-  }
-
-  rows[index].status = nextStatus;
-  if (nextStatus === 'gated' && !rows[index].gated_date) {
-    rows[index].gated_date = new Date().toISOString().split('T')[0];
-  } else if (nextStatus === 'released' && !rows[index].released_date) {
-    rows[index].released_date = new Date().toISOString().split('T')[0];
-    if (!rows[index].gated_date) rows[index].gated_date = new Date().toISOString().split('T')[0];
-  }
-
-  writeCatalog(headers, rows);
-  writeDraftMarkdown(rows[index]);
-
-  console.log(`\n[✓] A&R GATE PASS: Status advanced to ${nextStatus.toUpperCase()}`);
-  if (nextStatus === 'released') {
-    console.log(` - Mechanical DistroKid release: COMPLETE`);
-    console.log(` - Spotify Canvas upload: COMPLETE`);
-    console.log(` - Notion Mirror updated: COMPLETE`);
-  }
+  console.error('Legacy release command cannot verify A&R, rights, or DSP delivery.');
+  console.error('Prepare a private evidence packet and run: node verticals/music-is/records-os/records-control.mjs check-release <packet.json>');
+  process.exitCode = 1;
 }
 
 // 4. board command
@@ -196,7 +154,7 @@ function handleBoard(args) {
   console.log(`\nArcanea Records — Visual Portfolio Scorecard (${labelFilter.toUpperCase()})`);
   console.log(`==================================================================`);
   console.log(`Total cataloged tracks: ${filtered.length}`);
-  console.log(` - Released (Live on DSPs): ${released}`);
+  console.log(` - Released (legacy; live evidence unverified): ${released}`);
   console.log(` - Gated (Locked A&R):       ${gated}`);
   console.log(` - Drafts (Pipeline):       ${drafts}`);
   console.log(`\nBreakdown by Label:`);
@@ -205,7 +163,7 @@ function handleBoard(args) {
     const lTracks = rows.filter(r => r.label === l).length;
     console.log(` - ${l.padEnd(15)}: ${lTracks} tracks`);
   });
-  console.log(`\nNotion AI Musicians Hub Sync Status: [ALL IN SYNC]`);
+  console.log(`\nNotion sync: not checked; no provider receipt recorded`);
 }
 
 // 5. prompt command
