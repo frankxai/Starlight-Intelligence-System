@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "starlight.voice.v1",
+  "brandId": "sis",
+  "registryBrandId": "brand_starlight_intelligence",
+  "version": "1.0.0",
+  "updatedAt": "2026-10-01",
+  "traits": [
+    "curious",
+    "confident",
+    "warm",
+    "playful"
+  ],
+  "rules": [
+    "Lead with what a person wants to explore or make. Use clear verbs and concrete consequences.",
+    "Show powerful intelligence through useful work, discoveries, and recognizable agent relationships.",
+    "Make teamwork easy to picture: who contributes, what changed, and what happens next.",
+    "Invite people to explore, build, inspect, remix, and carry their work with them.",
+    "Use warmth and occasional wit naturally. Do not force jokes, slogans, fragments, or crew metaphors into every sentence.",
+    "Use vivid imagination where it earns its place. Keep controls, costs, permissions, progress, errors, and recovery explicit.",
+    "Keep technical terms when they convey needed precision. Do not use enterprise abstractions as the default public voice.",
+    "Queen is attentive, candid, capable, and lightly mischievous. Her personality never changes her permissions.",
+    "Keep Starlight, GenCreator, Arcanea, and FrankX distinct. Starlight imagination does not import Arcanea canon.",
+    "Match every capability claim to evidence. Distinguish vision, proposed copy, preview, and live functionality. Open source requires a released license."
+  ],
+  "modes": {
+    "horizon": "Expansive, vivid, inviting; reveal a concrete place to begin.",
+    "operator": "Exact, readable, human; show work, costs, sources, and recovery.",
+    "academy": "Generous, challenging, encouraging independent judgment.",
+    "cultural": "Expressive, rhythmic, imaginative; preserve authorship and brand boundaries."
+  },
+  "examples": [
+    {
+      "surface": "homepage",
+      "copy": "Bring a wild idea. Meet your crew.",
+      "status": "proposed"
+    },
+    {
+      "surface": "product",
+      "copy": "See what your agents are doing.",
+      "status": "proposed"
+    },
+    {
+      "surface": "queen",
+      "copy": "The prototype works. Mobile needs one more pass. Here’s the fix.",
+      "status": "proposed"
+    },
+    {
+      "surface": "progress",
+      "copy": "Three agents, two strong ideas, one stubborn bug.",
+      "status": "proposed"
+    },
+    {
+      "surface": "recovery",
+      "copy": "The run stopped before publishing. Your draft is saved. Retry from the last step.",
+      "status": "proposed"
+    }
+  ],
+  "reviewQuestions": [
+    "Can a reader picture the work or possibility?",
+    "Does it sound natural read aloud?",
+    "Does the next action make sense?",
+    "Are claims, cost, authority, and status exact?",
+    "Is this distinctly Starlight without forced cosmic jargon?"
+  ],
+  "decisionNote": "Voice direction explicitly requested by Frank on 2026-10-01 Amsterdam time. Examples are proposals, not approved slogans, new agent identities, or proof of product availability. Git authority starts only after reviewed merge."
+}
+
