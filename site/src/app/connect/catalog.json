@@ -1,0 +1,118 @@
+{
+  "format": "starlight.agent_interfaces.catalog.v1",
+  "verified_at": "2026-09-30",
+  "review_after": "2026-10-30",
+  "scope": "Public interface references; no runtime connection or admission claims",
+  "interfaces": [
+    {
+      "id": "chatgpt-apps",
+      "name": "ChatGPT",
+      "surface": "Tools and embedded UI",
+      "transport": "MCP + MCP Apps",
+      "interface": "MCP tools/resources; standard UI bridge",
+      "sdk": "MCP server SDK; ext-apps bridge",
+      "purpose": "Use the existing Starlight cloud plugin from a connected host.",
+      "boundary": "Host installation and authorization are separate from this catalog.",
+      "docs": "https://developers.openai.com/plugins/build/app-quickstart"
+    },
+    {
+      "id": "openai-agents",
+      "name": "OpenAI Agents API",
+      "surface": "Managed agent execution",
+      "transport": "HTTPS + event stream",
+      "interface": "POST /v1/agents/sessions (beta)",
+      "sdk": "OpenAI SDK beta.agents.sessions",
+      "purpose": "Managed Codex harness for cloud or self-hosted environments.",
+      "boundary": "Requires project credentials, environment policy and beta admission.",
+      "docs": "https://developers.openai.com/api/docs/guides/agents-api/overview"
+    },
+    {
+      "id": "openai-agents-sdk",
+      "name": "OpenAI Agents SDK",
+      "surface": "Application-owned agent loop",
+      "transport": "Provider API + tools",
+      "interface": "Agent / Runner with handoffs and tracing",
+      "sdk": "OpenAI Agents SDK",
+      "purpose": "Build an application-owned loop when a native harness is insufficient.",
+      "boundary": "Do not add a second Starlight router; use an admitted worker adapter.",
+      "docs": "https://openai.github.io/openai-agents-python/"
+    },
+    {
+      "id": "codex",
+      "name": "Codex",
+      "surface": "Local coding agent",
+      "transport": "App Server JSON-RPC",
+      "interface": "initialize; thread/start; turn/start; event notifications",
+      "sdk": "Codex SDK or App Server client",
+      "purpose": "Drive local work with native approval and progress events.",
+      "boundary": "Needs an authenticated worker on the machine holding the checkout.",
+      "docs": "https://learn.chatgpt.com/docs/app-server"
+    },
+    {
+      "id": "claude",
+      "name": "Claude Code",
+      "surface": "Cloud or local code review",
+      "transport": "GitHub Action; cloud/local CLI",
+      "interface": "@claude; claude --cloud; claude -p",
+      "sdk": "Claude Agent SDK for application-owned workers",
+      "purpose": "Review a pinned change through the existing GitHub workflow or a bound worker.",
+      "boundary": "A GitHub review does not connect private Claude chats or your laptop.",
+      "docs": "https://code.claude.com/docs/en/claude-code-on-the-web"
+    },
+    {
+      "id": "google-adk",
+      "name": "Google ADK",
+      "surface": "Agent framework and remote delegation",
+      "transport": "Native framework + A2A",
+      "interface": "ADK agents; A2A Agent Card and tasks",
+      "sdk": "Google ADK and A2A SDK",
+      "purpose": "Expose an admitted remote specialist through negotiated A2A capabilities.",
+      "boundary": "ADK is a framework; A2A is the inter-agent protocol, not model API equivalence.",
+      "docs": "https://adk.dev/a2a/"
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "surface": "Local coding agent",
+      "transport": "ACP stdio or HTTP + SSE",
+      "interface": "opencode acp; /session; /session/:id/prompt_async",
+      "sdk": "OpenCode SDK or ACP client",
+      "purpose": "Use one native worker session under Queen's existing assignment policy.",
+      "boundary": "Bind an explicit checkout and authenticated server; do not expose a local worker publicly.",
+      "docs": "https://opencode.ai/docs/server/"
+    },
+    {
+      "id": "hermes",
+      "name": "Hermes",
+      "surface": "General agent worker",
+      "transport": "ACP; gateway RPC; HTTP + SSE",
+      "interface": "hermes acp; /v1/responses; /v1/runs",
+      "sdk": "Hermes native integration",
+      "purpose": "Reuse its worker lifecycle, tools, approvals and session persistence.",
+      "boundary": "Negotiate the instance's actual API and permissions before admission.",
+      "docs": "https://hermes-agent.nousresearch.com/docs/developer-guide/programmatic-integration"
+    },
+    {
+      "id": "openclaw",
+      "name": "OpenClaw",
+      "surface": "Gateway agent worker",
+      "transport": "Gateway WebSocket or opt-in HTTP",
+      "interface": "POST /v1/responses (disabled by default)",
+      "sdk": "OpenClaw native gateway client",
+      "purpose": "Use an explicitly enabled gateway profile for an admitted worker.",
+      "boundary": "Shared-secret bearer grants full operator access; never treat it as scoped customer authorization.",
+      "docs": "https://docs.openclaw.ai/gateway/openresponses-http-api"
+    },
+    {
+      "id": "paperclip",
+      "name": "Paperclip",
+      "surface": "Agent work and management records",
+      "transport": "Native API and provider adapters",
+      "interface": "Tasks, approvals, runs and adapter metadata",
+      "sdk": "Upstream Paperclip interfaces",
+      "purpose": "Project authorized work metadata into the existing manager view.",
+      "boundary": "Keep upstream ownership; source status does not establish verified completion.",
+      "docs": "https://github.com/paperclipai/paperclip"
+    }
+  ]
+}

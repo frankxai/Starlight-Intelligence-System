@@ -14,7 +14,7 @@
     "dev": "npm run build:ui && wrangler dev",
     "deploy": "npm run check && npm test && npm run build:ui && wrangler deploy",
     "smoke:worker": "node scripts/smoke-worker.mjs",
-    "test": "node --import tsx --test server/src/*.test.ts",
+    "test": "node --import tsx --test server/src/*.test.ts server/src/*.test.mjs",
     "validate": "node scripts/validate-plugin.mjs"
   },
   "dependencies": {

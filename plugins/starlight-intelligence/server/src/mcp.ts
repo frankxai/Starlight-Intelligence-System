@@ -6,6 +6,7 @@ import decisionSkill from "../../skills/starlight-decision-ledger/SKILL.md";
 import executionSkill from "../../skills/starlight-execution/SKILL.md";
 import knowledgeSkill from "../../skills/starlight-knowledge/SKILL.md";
 import { StarlightError, StarlightStore } from "./store.js";
+import { getAgentInterfaces, prepareReviewHandoff } from "./review-handoff.mjs";
 import type { RecordType } from "./types.js";
 
 const TEMPLATE_URI = "ui://starlight/command-center/v2.html";
@@ -412,6 +413,47 @@ function registerCommandCenter(server: McpServer, store: StarlightStore): void {
   );
 }
 
+function registerReviewTools(server: McpServer): void {
+  server.registerTool(
+    "get_agent_interfaces",
+    {
+      title: "Inspect agent interfaces",
+      description: "Read dated public native-interface references. This catalog does not establish runtime connections, authorization or admission.",
+      inputSchema: z.object({}).strict(),
+      outputSchema: z.object({ catalog: z.unknown() }),
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+    },
+    async () => textResult("Interface reference catalog; runtime connections not evaluated.", { catalog: getAgentInterfaces() }),
+  );
+  server.registerTool(
+    "prepare_review_handoff",
+    {
+      title: "Prepare a pinned code review",
+      description: "Prepare an expiring read-only Claude GitHub, cloud or local handoff. No dispatch, admission, queue write or permission grant. The executor must verify the owner, source revisions, expiry and worker binding independently.",
+      inputSchema: z.object({
+        repository: z.string().min(3).max(200),
+        pull_request: z.number().int().min(1).max(2147483647),
+        base_sha: z.string().regex(/^[0-9a-f]{40}$/),
+        head_sha: z.string().regex(/^[0-9a-f]{40}$/),
+        reviewer: z.enum(["claude-github", "claude-cloud", "claude-local"]),
+        max_minutes: z.number().int().min(1).max(25),
+        focus: z.array(z.string().min(1).max(500)).min(1).max(10),
+      }).strict(),
+      outputSchema: z.object({ preparation: z.unknown() }),
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+    },
+    async (input) => {
+      try {
+        return textResult("Review prepared; authorization and pinned-source verification remain unevaluated. Keep outside the live inbox.", {
+          preparation: prepareReviewHandoff(input),
+        });
+      } catch (error) {
+        return errorResult(error);
+      }
+    },
+  );
+}
+
 async function sha256(text: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
   return `sha256:${Array.from(new Uint8Array(digest))
@@ -482,6 +524,7 @@ export function createStarlightServer(options: {
   registerDataTools(server, options.store, options.actor);
   registerCommandCenter(server, options.store);
   registerSkills(server);
+  registerReviewTools(server);
   return server;
 }
 
@@ -496,6 +539,9 @@ export const starlightToolNames = [
   "record_decision",
   "register_evidence",
   "render_command_center",
+  "get_agent_interfaces",
+  "prepare_review_handoff",
 ] as const;
 
 export type StarlightRecordType = RecordType;
+
