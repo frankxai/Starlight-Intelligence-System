@@ -33,6 +33,7 @@
 .routes { display: flex; gap: 8px; margin: 22px 0 14px; }
 .routes button { border: 1px solid #30414e; border-radius: 6px; padding: 8px 16px; font-size: 13px; cursor: pointer; }
 .routes button[aria-pressed="true"] { border-color: #5eead4; color: #99f6e4; background: #102026; }
+.copy { color: #99f6e4; font-size: 13px; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
 .section pre { padding: 22px; border: 1px solid #26323f; background: #0b1016; border-radius: 8px; color: #c7d7e1; font-size: 12px; line-height: 1.8; overflow: auto; }
 .tableWrap { overflow-x: auto; margin: 24px 0; }
 .tableWrap table { border-collapse: collapse; width: 100%; min-width: 600px; text-align: left; font-size: 13px; }

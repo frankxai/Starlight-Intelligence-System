@@ -14,12 +14,21 @@ const routes = ['claude-github', 'claude-cloud', 'claude-local'] as const;
 export function ConnectionGuide({ catalog }: { catalog: Catalog }) {
   const [selected, select] = useState(catalog.interfaces[0].id);
   const [route, setRoute] = useState<typeof routes[number]>('claude-github');
+  const [copyState, setCopyState] = useState('');
   const agent = catalog.interfaces.find(item => item.id === selected) ?? catalog.interfaces[0];
   const example = {
     repository: 'your-org/your-repo', pull_request: 42,
     base_sha: 'a'.repeat(40), head_sha: 'b'.repeat(40), reviewer: route,
     max_minutes: 15, focus: ['Permission boundaries', 'Revision and evidence checks'],
   };
+  async function copyExample() {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(example, null, 2));
+      setCopyState('Example copied. Replace the sample repository and revisions before use.');
+    } catch {
+      setCopyState('Copy is unavailable. Select the example text to copy it.');
+    }
+  }
   return (
     <main className={styles.main}>
       <header className={styles.intro}>
@@ -46,7 +55,9 @@ export function ConnectionGuide({ catalog }: { catalog: Catalog }) {
       <section aria-labelledby="handoff-title" className={styles.section}>
         <div className={styles.sectionHead}><h2 id="handoff-title">Prepare a Claude review</h2><span>Illustrative input · no dispatch</span></div>
         <p>Use <code>prepare_review_handoff</code> in the existing Starlight MCP plugin. Supply the actual repository, PR and revisions. The result expires after 15 minutes and leaves authorization and source verification to the executor.</p>
-        <div className={styles.routes} role="group" aria-label="Claude review route">{routes.map(item => <button type="button" key={item} aria-pressed={route === item} onClick={() => setRoute(item)}>{item.replace('claude-', '')}</button>)}</div>
+        <div className={styles.routes} role="group" aria-label="Claude review route">{routes.map(item => <button type="button" key={item} aria-pressed={route === item} onClick={() => { setRoute(item); setCopyState(''); }}>{item.replace('claude-', '')}</button>)}</div>
+        <button className={styles.copy} type="button" onClick={copyExample}>Copy example input</button>
+        <p className={styles.note} role="status">{copyState}</p>
         <pre aria-label="Example review input">{JSON.stringify(example, null, 2)}</pre>
         <p className={styles.note}>{route === 'claude-github' ? 'GitHub: use the repository’s existing authorized Claude workflow. A comment is a request; inspect the resulting run and review.' : route === 'claude-cloud' ? 'Cloud: an authenticated Claude CLI can prepare a new cloud session from the repository. The cloud executor still needs read-only permissions and pinned-source access.' : 'Local: an authenticated worker must run on the machine holding the checkout. Re-check its path and enforce the review budget there.'}</p>
       </section>
