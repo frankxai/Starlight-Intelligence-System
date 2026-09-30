@@ -31,7 +31,10 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: plugins/starlight-intelligence/package-lock.json
-      - name: Verify generated connect catalog\n        working-directory: .\n        run: node scripts/build-connect-catalog.mjs --check\n      - run: npm ci
+      - name: Verify generated connect catalog
+        working-directory: .
+        run: node scripts/build-connect-catalog.mjs --check
+      - run: npm ci
       - run: npm run validate
       - run: npm run check
       - run: npm test
