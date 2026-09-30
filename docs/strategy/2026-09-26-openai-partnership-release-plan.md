@@ -2,11 +2,15 @@
 
 Status: proposed execution plan. This is an independent Starlight plan, not an OpenAI partnership, endorsement, accepted submission, or release announcement. Owner: Frank Riemer. Review after 30 days or an official platform change.
 
-## Decision
+## Direction
 
-The product north star is **Starlight Living Intelligence**: a person observes, understands, imagines, makes, tests and shares a result that another person can use. The first [Living Water Lab mission](2026-09-27-openai-multimodal-proof-spec.md) composes current Academy, Knowledge Tree, Blue Life Commons, Foundry, Desk and Observatory work. The enabling developer proof remains concrete: take a source-controlled capability through a bounded run, independent evaluation and inspectable receipt. SIS Foundry owns that contract; products own their human experiences; Vercel hosts product surfaces. OpenAI is a prospective technology and distribution collaborator. No new venture, domain or umbrella runtime is needed.
+**Build what once took an institution.** Starlight should give people the context, expertise and dependable systems to carry ambitious work through to a useful result. GenCreator supplies the creative studio; Arcanea supplies original worlds and continuity; FrankX supplies teaching, editorial authorship and public proof.
 
-The first external ask is technical feedback and a developer showcase conversation around a working artifact. Partnership, credits, co-marketing, enhanced directory placement, and early access are separate requests that require evidence and OpenAI's decision. Directory approval alone does not imply any of them.
+The [vision and collaboration proposal](2026-09-27-openai-multimodal-proof-spec.md), revised 30 September, restores that broader purpose. The recommended creative demonstration builds on the existing World Seed portfolio proposal. The earlier water experiment remains a candidate in the Open Inventor Path; it is not the defining product or an approved launch decision.
+
+This document remains the enabling developer release plan: source-controlled capability, authorized execution, independent review, portable result and recovery. Its platform and deployment observations are dated 26–27 September and require a fresh check before implementation or public claims.
+
+The first external request is technical feedback on working artifacts. Credits, distribution, co-marketing, early access and a formal partnership each require their own evidence and agreement.
 
 ## Portfolio contract
 
@@ -27,24 +31,28 @@ Keep the neutral receipt contract and source portability intact. Any OpenAI-spec
 | --- | --- | --- |
 | GPT-6 Astra, 3 Sep; Sol and Luna, 22 Sep | Route difficult review and architecture to Astra, interactive production work to Sol, bounded repeatable classifications to Luna only after evals | Freeze model IDs in each experiment; record quality, latency, tokens, cost, and refusal/tool outcomes. Re-run image-input cases after the 25 Sep Sol/Luna encoding fix. |
 | Agents API public beta, 10 Sep | Managed Codex harness may replace custom long-running orchestration in a specific lane | Separate proof from Codex SDK issue #153 and the self-hosted Agents SDK. One bounded task, resumable session, authorization check, and cancellation receipt before selection. |
-| GPT-Live 1 GA, 10 Sep | A voice front door can wait on a reasoning agent without owning the memory substrate | Test in the evidence-to-action prototype with interruption, handoff and full voice plus backend cost. |
+| GPT-Live 1 GA, 10 Sep | A voice front door can wait on a reasoning agent without owning the memory substrate | Test spoken direction and correction in the chosen product workflow, including interruption, handoff and full voice plus backend cost. |
 | GPT Image 2.5 Sunburst and Flare, 8 Sep | Precision edits for Arcanea or Academy assets versus faster daily generation | Separate creative benchmark with owned reference assets; no visual model choice without rights and quality evidence. |
 | Prompt Cache Diagnostics GA, 8 Sep; Responses controls, 3 Sep | Long-running work can use async tools, steering, reasoning changes, and measurable cache behavior | Instrument repeat runs and cache misses before promising cost or latency gains. |
 | Universal plugin submission path | Skills-only and remote MCP candidates can be submitted through different review routes | Foundry and Academy keep separate submission dossiers, security scans, positive/negative host cases, and publication receipts. |
 
-Sources: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog), [model guidance](https://developers.openai.com/api/docs/guides/latest-model), [Agents overview](https://developers.openai.com/api/docs/guides/agents), [plugin submission](https://developers.openai.com/plugins/deploy/submission). Confirm current model access and pricing in the actual project before code or spend.
+Sources: [OpenAI API changelog](https://developers.openai.com/api/docs/changelog), [model guidance](https://developers.openai.com/api/docs/guides/latest-model), [Agents overview](https://developers.openai.com/api/docs/guides/agents-api/overview), [plugin submission](https://developers.openai.com/plugins/deploy/submission). Confirm current model access and pricing in the actual project before code or spend.
 
-## Multimodal extension
+## Multimodal product story
 
-The [27 September Living Intelligence proof](2026-09-27-openai-multimodal-proof-spec.md) composes the existing Academy mission, Knowledge Tree Open Inventor Path, Blue Life Commons K0 kit proposal, Foundry, Desk and Observatory into one human-led multimodal loop. The first demonstration is a Living Water Lab case: observe, challenge a claim, design a controlled test, make a bounded artifact and attempt independent replication. A separate 12-case overlay checks grounding, correction, denial, recovery and learning transfer. This is a proposed prototype, not a live product, water benefit or partnership. OpenAI's Sora 2/Videos API shut down on 24 September 2026; video input uses timestamped frames/transcript and no OpenAI video generation is planned.
+The person speaks an idea, shows a sketch, selects a passage or shares source material. The application helps carry that intention through research, alternatives, revision and a finished work.
 
-## One mission, three complementary proofs
+**Creative demonstration, recommended:** one original passage and spoken direction become a scene, image, soundtrack cue and reader experience in the existing Arcanea proposal. GenCreator prepares a permitted edition and channel package. Starlight preserves context, source, decisions and execution evidence. The person revises and exports the editable work. This remains a proposal within the portfolio review and current work-in-progress limits.
 
-**Enabling demonstration: Foundry release receipt.** Input: a small, real developer request and existing source-controlled skill. Output: typed scope, explicit tool grant and human gate, preview, bounded execution, independent verifier result, cost/latency/quality trace, and artifact hash. Show an unauthorized path being denied and a failed verifier leaving a recoverable draft. This is the candidate for Codex for Open Source and developer showcase consideration after live evidence.
+**Developer demonstration:** an existing skill completes a real scoped task, recovers interruption and leaves an inspectable result. A denied action and an independent review establish the permission and verification boundary.
 
-**Education demonstration: Academy plugin.** In a fresh ChatGPT host, run the five positive and three negative cases in the Academy packet against the production MCP endpoint. Evidence must contain selected tools, host/version/region, UI result, errors, scan, and domain/publisher state. No badge, grading, learner database, model-training claim, or OpenAI listing is inferred from an authored curriculum response.
+**Learning demonstration:** the Academy's separate curriculum plugin is tested in a fresh connected host. Its exact tool, identity, scan and publication requirements stay in the Academy packet.
 
-**Flagship mission: Living Water Lab.** An owned narrated scene, photos, readings and sources become an evidence-linked Living Case. A learner corrects a weak inference; a bounded agent produces a K0 observation card and editable dry-side artifact; another human repeats the logging method. Generated concepts are labelled and physical claims await actual measurements and domain review. Arcanea and GenCreator can later adopt the same loop under their own canon and rights, after this mission demonstrates transfer.
+**Science candidate:** the Open Inventor Path and Blue Life K0 kit may test the same intelligence loop against observations and independent replication. Their physical maturity and expert review remain domain-owned.
+
+The separate 12-case multimodal overlay in [#221](https://github.com/frankxai/Starlight-Intelligence-System/issues/221) checks continuity, correction, source fidelity, permission, cost and recovery. The developer baseline stays in [#218](https://github.com/frankxai/Starlight-Intelligence-System/issues/218).
+
+The dated platform research in this branch records the Sora 2/Videos API shutdown on 24 September. Refresh actual media provider availability before implementation; this plan does not depend on OpenAI video generation.
 
 ## Architecture and operating boundary
 
@@ -75,18 +83,18 @@ Do not put a commercial launch date on a plugin until the verified publisher, te
 
 ## Partnership paths and exact asks
 
-1. **Developer ecosystem, now:** submit a concise working demo to the OpenAI developer showcase when the public artifact and evidence exist. Ask for technical review of tool permissions, skill distribution and receipt design, plus permission to publish a case study. A showcase submission is editorial consideration, not a partnership.
+1. **Developer ecosystem, after artifact review:** submit a concise working demo to the OpenAI developer showcase when the public artifact and evidence exist. Ask for technical review of tool permissions, skill distribution and receipt design, plus permission to publish a case study. A showcase submission is editorial consideration, not a partnership.
 2. **Open source, after reproducible maintainer proof:** apply to Codex for Open Source with SIS Foundry's public repository, maintainer workflows, adoption/quality evidence, and the specific request for API credits or security support. Eligibility and selection belong to OpenAI.
 3. **Startup/product collaboration, after first users:** bring Academy and Foundry adoption and unit economics to OpenAI for Startups or an appropriate developer contact. Ask for a scoped technical collaboration or introduction tied to a measurable cohort, not a general strategic endorsement.
-4. **Community, when reopened:** Amsterdam Codex workshop and reusable course can support a future Codex Ambassadors application. Applications are currently paused; no active cohort claim.
+4. **Community, when reopened:** Amsterdam Codex workshop and reusable course can support a future Codex Ambassadors application. The 26 September check recorded paused applications; refresh status before applying.
 
-Public copy: “Starlight is independently built with OpenAI APIs and Codex-compatible workflows.” Use “OpenAI partner”, “verified”, “featured”, “supported”, or “published” only with an exact external receipt for that state.
+Public copy must describe the actual implementation and current readiness. An integration, host test, program selection, listing and formal partnership each need their corresponding evidence before those terms are used.
 
 ## Scoreboard
 
 For each demonstration: task completion with human acceptance; citation/grounding where relevant; unauthorized-action denial; recovery after interruption; median and p95 latency; total tokens and billed cost; cache hit rate; independent verifier pass; user activation and week-two repeat use. Compare against a frozen baseline and record failures. Gate promotion on quality and unit economics together, not the number of agents or generated assets.
 
-The decisive next move is a **Living Water Lab case with a human correction, a denied tool action and an inspectable receipt**, using the existing Foundry-to-Codex baseline as its bounded execution proof. The first case must be reproducible and distinguish a generated concept from physical evidence before it anchors a partnership narrative.
+The next engineering step is to reconcile the proposed creative demonstration with the existing World Seed/Creator Launch work, then complete one reviewable artifact through the authorized product train. The developer proof supplies the execution baseline. The partnership narrative should follow work people can inspect and use.
 
 ## Source of truth and review
 
