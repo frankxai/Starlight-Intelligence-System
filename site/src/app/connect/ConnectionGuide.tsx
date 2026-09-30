@@ -44,8 +44,8 @@ export function ConnectionGuide({ catalog }: { catalog: Catalog }) {
           <div className={styles.selector} role="group" aria-label="Agent interfaces">
             {catalog.interfaces.map(item => <button key={item.id} type="button" aria-pressed={selected === item.id} onClick={() => select(item.id)} className={selected === item.id ? styles.selected : ''}><strong>{item.name}</strong><span>{item.surface}</span></button>)}
           </div>
-          <article className={styles.inspector} aria-live="polite">
-            <p className={styles.eyebrow}>{agent.surface}</p><h3>{agent.name}</h3><p>{agent.purpose}</p>
+          <article className={styles.inspector}>
+            <p className={styles.eyebrow}>{agent.surface}</p><h3 aria-live="polite">{agent.name}</h3><p>{agent.purpose}</p>
             <dl><dt>Transport</dt><dd>{agent.transport}</dd><dt>Native interface</dt><dd className={styles.mono}>{agent.interface}</dd><dt>SDK choice</dt><dd>{agent.sdk}</dd></dl>
             <div className={styles.boundary}><h4>Before connecting</h4><p>{agent.boundary}</p></div>
             <a href={agent.docs} target="_blank" rel="noreferrer">Read the primary documentation ↗</a>
