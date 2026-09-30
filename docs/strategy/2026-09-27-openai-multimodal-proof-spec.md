@@ -116,6 +116,10 @@ The person should leave with something they value: a clearer understanding, a fi
 
 **That is the future we are building toward: more people able to bring extraordinary things into existence, and own a meaningful part of what follows.**
 
+## Product experience and community
+
+The [narrative, human design and community proposal](2026-09-30-starlight-narrative-experience-and-community.md) connects this vision to the interface, image-generation workflow, storage boundaries, AI etiquette and contribution paths. It translates the reviewed principles into product behavior and acceptance evidence, builds on the existing Starlight Communities creation-cell toolkit, and proposes a bounded first implementation.
+
 ## Source and implementation notes
 
 This revision draws on Frank's recurring vision across prior conversations, the 10 August editorial strategy, the reviewed [portfolio strategy](https://github.com/frankxai/agentic-ops/blob/main/STRATEGY.md), the [Horizon Vault](https://github.com/frankxai/Starlight-Intelligence-System/blob/main/memory/vaults/horizon-vault.md), and the current draft portfolio architecture. Earlier assistant names and recommended demonstrations are proposals, not settled brand decisions.
