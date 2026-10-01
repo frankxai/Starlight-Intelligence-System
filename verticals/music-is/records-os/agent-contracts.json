@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "runtime_deployed": false,
+  "schedule_enabled": false,
+  "external_write_enabled": false,
+  "paid_budget_eur": null,
+  "agents": [
+    {
+      "id": "music-archivist",
+      "role": "Intake/provenance owner",
+      "trigger": "Intake or weekly hygiene",
+      "prepare": "Deduplicate sources; hash bytes; record unknown metadata; assemble missing-evidence queue",
+      "human_gate": "No fabricated BPM, rights, ISRC, release status or sync receipt",
+      "required_evidence": "Source/export receipt, hash, lineage, catalog revision",
+      "next_action": "Implement private intake and reconcile legacy rows",
+      "runtime_state": "contract_prepared",
+      "enabled": false,
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f68120935cd1522b7d309f?pvs=204"
+    },
+    {
+      "id": "music-curator",
+      "role": "A&R packet owner",
+      "trigger": "Candidate bracket or material revision",
+      "prepare": "Prepare blind bracket and strengths/weaknesses; compare anchor voice and artistic contract",
+      "human_gate": "Frank selects master and public story; agent score is advisory",
+      "required_evidence": "Listening files, source references, Frank's recorded exact-version decision",
+      "next_action": "Run first 12-recording listening bracket",
+      "runtime_state": "contract_prepared",
+      "enabled": false,
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f68189ace1cb68d481face?pvs=204"
+    },
+    {
+      "id": "persona-keeper",
+      "role": "Identity and voice steward",
+      "trigger": "New concept or output draft",
+      "prepare": "Check narrator, timbre, visual/lyric contract and source revision; surface naming drift",
+      "human_gate": "Founder admits identity; qualified reviewer clears name; no invented biography",
+      "required_evidence": "Artist ID, voice/canon references, dated evidence and review",
+      "next_action": "Audit human vs virtual acts and ownership of existing profiles",
+      "runtime_state": "contract_prepared",
+      "enabled": false,
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f68143856fe1d1ddd1e658?pvs=204"
+    },
+    {
+      "id": "music-producer",
+      "role": "Production packet owner",
+      "trigger": "Approved private brief",
+      "prepare": "Prepare finishing plan, cover/cuts and technical analysis within funded envelope",
+      "human_gate": "Human sensory review; generation spend requires an approved budget",
+      "required_evidence": "Originals, tool versions, rendition lineage, analysis, reviewed hashes",
+      "next_action": "Prove one asset pipeline from master to campaign packet",
+      "runtime_state": "contract_prepared",
+      "enabled": false,
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f68137951ed01e810649c2?pvs=204"
+    },
+    {
+      "id": "music-distributor",
+      "role": "Delivery preparation owner",
+      "trigger": "Packet check passes and operator requests preparation",
+      "prepare": "Prepare exact metadata, artist IDs, ISRC/UPC handling and platform forms",
+      "human_gate": "External submission requires authorized operator; never treat HTTP timeout as success",
+      "required_evidence": "Immutable packet, authorization, real receipt and correct live-profile URLs",
+      "next_action": "Implement receipt reconciliation; keep submission manual until supported adapter is admitted",
+      "runtime_state": "contract_prepared",
+      "enabled": false,
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f68120a6aeef0fea9eeb56?pvs=204"
+    },
+    {
+      "id": "music-amplifier",
+      "role": "Campaign preparation owner",
+      "trigger": "Approved master and campaign brief",
+      "prepare": "Prepare scene-led hook cuts, captions, disclosure and post-release measurements",
+      "human_gate": "Public publication and messages require explicit authority for exact asset/channel/audience",
+      "required_evidence": "Approved content hashes, channel grant, consent check and provider receipts",
+      "next_action": "One YouTube archive, one discovery channel and one permissioned First Light intake",
+      "runtime_state": "contract_prepared",
+      "enabled": false,
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f6818f96dbc34520039f26?pvs=204"
+    },
+    {
+      "id": "royalty-architect",
+      "role": "Statement and rights operations owner",
+      "trigger": "Authorized statement import; monthly close",
+      "prepare": "Map receipts, agreements, deductions and splits; put unmatched lines in suspense",
+      "human_gate": "No invented default splits, self-certified legal clearance or autonomous payouts",
+      "required_evidence": "Original statement, contract revisions, allocation audit and cash reconciliation",
+      "next_action": "Reproduce one real statement and royalty allocation before automation",
+      "runtime_state": "contract_prepared",
+      "enabled": false,
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f68149af90eede36e160e7?pvs=204"
+    }
+  ],
+  "admission_tests": [
+    "Duplicate intake/event has one effect",
+    "Changed master/artwork/packet invalidates approval",
+    "Timeout after provider acceptance reconciles before retry",
+    "Wrong artist/tenant access denied",
+    "Evidence and restore verified",
+    "Shadow run costs within approved envelope",
+    "Human signoff on publication scope"
+  ]
+}

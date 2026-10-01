@@ -870,3 +870,12 @@ Validation: 33 focused tests passed across swarm, instruction compilation and Qu
 Runbook: `docs/operations/queen-session.md`. Demo: `tools/queen/session-demo.ts`. Private fixture receipts are not committed. Public coordination service is developed separately in `production-agent-patterns` using its existing Railway operator.
 
 Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+
+## 2026-09-30 — Arcanea Records identity and release-control organization
+
+Founder direction: Frank X stage name; Arcanea Records umbrella. Frank Riemer piano split and additional personas remain recommended/candidate decisions with name/profile/rights gates. [Notion command room](https://app.notion.com/p/3eb26ac2b7f6819183d1e41870a8ef93?pvs=204). [Operational package](../../verticals/music-is/records-os/README.md).
+
+Prepared review branch binds 17 identities/projects, 23 name records, four preparation slots and seven existing role contracts. No new lore, substrate ownership, company formation or public music delivery is asserted. Legacy CLI release simulation is blocked and unobserved intake metadata remains unknown. Historical released rows need actual receipt reconciliation.
+
+Validation: 12 local dependency-free tests and registry validation passed on 30 September 2026. Provider integrations, persistent worker deployment, name-clearance opinion and audio A&R remain separate proof tasks; issue links are in the operational roadmap.

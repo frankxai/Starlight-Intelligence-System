@@ -1,0 +1,25 @@
+name: Music records control
+on:
+  pull_request:
+    paths:
+      - 'verticals/music-is/records-os/**'
+      - 'verticals/music-is/workflows/music-cli.js'
+      - 'verticals/music-is/workflows/catalog-coprocessor.js'
+      - '.github/workflows/music-records-control.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'verticals/music-is/records-os/**'
+      - 'verticals/music-is/workflows/music-cli.js'
+permissions:
+  contents: read
+jobs:
+  records-control:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: node verticals/music-is/records-os/records-control.mjs validate-registry
+      - run: node --test verticals/music-is/records-os/records-control.test.mjs

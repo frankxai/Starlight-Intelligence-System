@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "notion": {
+    "hub": "https://app.notion.com/p/3eb26ac2b7f6819183d1e41870a8ef93?pvs=204",
+    "artists": {
+      "database_id": "53ef8cbae17f469ca89e8d57fb987356",
+      "data_source_id": "6bf86384-ae14-4070-8753-f30d737bde49"
+    },
+    "names": {
+      "database_id": "10c4c1d2d7a04cdc8dcec45b4e8e0842",
+      "data_source_id": "553a38b4-ec8c-4433-a4c9-349e6d2d5f8b"
+    },
+    "releases": {
+      "database_id": "8b2c40fb34ab4e88872f1f9b4035d6fd",
+      "data_source_id": "99a154c7-376e-4ddf-8d04-8e9e7e14cb17"
+    },
+    "agents": {
+      "database_id": "97359cc30e47429cb86faa18d1937d76",
+      "data_source_id": "632ff660-51fc-40e4-8e9c-5b5d2071c085"
+    }
+  },
+  "github": {
+    "repository": "frankxai/Starlight-Intelligence-System",
+    "branch": "codex/arcanea-records-os-2026-09-30",
+    "base_sha": "649f1f9f330a89cd405f9ccfdbbf12df7999c452",
+    "pull_request_url": "https://github.com/frankxai/Starlight-Intelligence-System/pull/261",
+    "merge_state": "Draft PR; not merged"
+  },
+  "authority": {
+    "founder_direction": "User accepted Frank X stage direction and Arcanea Records umbrella on 2026-09-30; no legal clearance implied",
+    "technical_spec": "GitHub review branch pending merge",
+    "name_research": "Notion working evidence; JSON is dated exported snapshot",
+    "release_queue": "Notion planning only; legacy catalog not migrated",
+    "catalog": "Existing CSV is preserved but unverified released status must be reconciled from receipts",
+    "target_runtime": "Private Arcanea Records API and scoped database; not deployed by this change",
+    "financial_books": "Actual contracting entity accounting system; not Notion or GitHub"
+  },
+  "sync": {
+    "enabled": false,
+    "stable_key": "Stable ID / Research ID / Release ID / Agent ID",
+    "policy": "Field-owned upserts; compare revisions; quarantine conflicts; no automatic overwrite of human review or rights fields"
+  },
+  "release_slots": [
+    {
+      "id": "ar:plan:001",
+      "identity_id": "ar:artist:frank-x",
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f681a2b268e66930901e72?pvs=204",
+      "recording_id": null,
+      "master_hash": null,
+      "target_date": null
+    },
+    {
+      "id": "ar:plan:002",
+      "identity_id": "ar:artist:frank-riemer",
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f681ae8299c54bba3ce633?pvs=204",
+      "recording_id": null,
+      "master_hash": null,
+      "target_date": null
+    },
+    {
+      "id": "ar:plan:003",
+      "identity_id": "ar:artist:ocean-muses",
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f681cdb661d123c3bf6976?pvs=204",
+      "recording_id": null,
+      "master_hash": null,
+      "target_date": null
+    },
+    {
+      "id": "ar:plan:004",
+      "identity_id": "ar:artist:alera",
+      "notion_url": "https://app.notion.com/p/3eb26ac2b7f68141b804ec1a11aab9a3?pvs=204",
+      "recording_id": null,
+      "master_hash": null,
+      "target_date": null
+    }
+  ],
+  "implementation_issues": {
+    "identity": "https://github.com/frankxai/Starlight-Intelligence-System/issues/256",
+    "intake": "https://github.com/frankxai/Starlight-Intelligence-System/issues/257",
+    "delivery": "https://github.com/frankxai/Starlight-Intelligence-System/issues/258",
+    "agents": "https://github.com/frankxai/Starlight-Intelligence-System/issues/259",
+    "campaign-finance": "https://github.com/frankxai/Starlight-Intelligence-System/issues/260"
+  }
+}
