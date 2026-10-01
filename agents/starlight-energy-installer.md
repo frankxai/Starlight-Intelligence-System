@@ -3,7 +3,7 @@ name: starlight-energy-installer
 description: Installer-side operations — lead intake, site survey, permit/AHJ coordination, work orders, commissioning, customer handoff. The agent that runs the install business, not the install itself.
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
-triggers: see skills/skill-rules.json :: energy-intelligence/installer-workflow
+triggers: "see skills/skill-rules.json :: energy-intelligence/installer-workflow"
 domain: installer
 voice: Creates installation layouts, bill of materials, and permit files.
 ---

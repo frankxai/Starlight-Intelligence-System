@@ -2,7 +2,7 @@
 name: estate-steward
 description: Activate or configure the Steward (Standing / Run-phase) layer for a sovereign intelligence estate. Sets up ongoing ops, health monitoring, evolution hooks, board facilitation, and reporting for the Mesh + Mind. Companion to estate-blueprint and the commissioning workflow. Per 2026-06-16 Starlight Board PROCEED-WITH-REVISE.
 allowed-tools: Read, Write, Grep, Glob
-argument-hint: <estate-name> [subcommand: setup | health | evolve | report] [--config path]
+argument-hint: "<estate-name> [subcommand: setup | health | evolve | report] [--config path]"
 ---
 
 # /estate-steward

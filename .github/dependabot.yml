@@ -63,6 +63,10 @@ updates:
       - dependency-name: "semver"
       - dependency-name: "yaml"
       - dependency-name: "fast-xml-parser"
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-root-minor-patch:
         update-types:
@@ -81,6 +85,13 @@ updates:
       prefix: "chore(deps)"
       include: "scope"
     open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "framer-motion"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-site-minor-patch:
         update-types:
@@ -99,6 +110,11 @@ updates:
       prefix: "chore(deps)"
       include: "scope"
     open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-console-minor-patch:
         update-types:
@@ -135,6 +151,11 @@ updates:
       prefix: "chore(deps)"
       include: "scope"
     open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-plugin-minor-patch:
         update-types:

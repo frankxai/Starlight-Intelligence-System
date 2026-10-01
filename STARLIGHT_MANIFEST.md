@@ -39,7 +39,7 @@
 |-----------|-------|--------|
 | Agents | See `metrics/current.json` (source-counted, dated) | Active |
 | Skills | See `metrics/current.json` (source-counted, dated) | Active |
-| Commands | 100+ (15 in `commands/` + 107 in `.claude/commands/`) | Active |
+| Commands | 149 as of 2026-09-29 (28 in `commands/` + 121 in `.claude/commands/`, counted from the directories) | Active |
 | Vaults | 6 (incl. Horizon) | Active |
 | Note Templates | 4 | Active |
 | Transmission Channels | 4 | Active |

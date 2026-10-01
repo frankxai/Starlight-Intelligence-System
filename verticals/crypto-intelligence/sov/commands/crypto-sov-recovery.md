@@ -2,7 +2,7 @@
 name: crypto-sov-recovery
 description: Plan key recovery procedures using Shamir Secret Sharing or geodistributed seed paper shards.
 allowed-tools: Read, Write
-argument-hint: [--shares 5] [--threshold 3]
+argument-hint: "[--shares 5] [--threshold 3]"
 vertical: crypto-intelligence
 house: sov
 tier: Domain Sub-Stack Tier
