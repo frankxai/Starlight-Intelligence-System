@@ -391,8 +391,8 @@ export default function ConstitutionPage() {
             </em>
           </h2>
           <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-slate-400">
-            This is not a claim that every tension is solved. It is a public
-            standard against which the work can be judged.
+            Not every tension is solved. This is a public standard against
+            which the work can be judged.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link

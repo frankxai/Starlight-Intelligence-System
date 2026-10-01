@@ -13,7 +13,7 @@ export const publicFieldNotes: FieldNote[] = [
     id: "15",
     stage: "Remember",
     title: "The memory keeper",
-    principle: "Public memory should preserve context, not just conclusions.",
+    principle: "Public memory should preserve context along with conclusions.",
     detail: "A future reader needs the source, the exception, the owner, and the conditions around the decision.",
     image: "/assets/field-notes/v1/15-memory-keeper.webp",
     alt: "A human archivist and compact white robot preserving illuminated records in a dark mineral archive.",

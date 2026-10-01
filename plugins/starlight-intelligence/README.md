@@ -5,7 +5,7 @@ Starlight is a governed venture control plane for ChatGPT and Codex. Version 0.2
 ## Architecture
 
 - Four portable skills: command center, execution, decision ledger, and knowledge retrieval.
-- Ten MCP tools, including standard read-only `search` and `fetch` tools.
+- Twelve MCP tools, including standard read-only `search` and `fetch`, public native-interface references, and offline review preparation.
 - A decoupled MCP Apps UI: `get_portfolio_snapshot` returns authoritative data and `render_command_center` renders the complete, model-checked snapshot.
 - Stateless Cloudflare `createMcpHandler()` transport at `/mcp` using MCP SDK v2.
 - Cloudflare Access JWT validation plus an explicit email allowlist on every MCP request.

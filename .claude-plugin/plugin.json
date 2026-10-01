@@ -57,15 +57,15 @@
     "absorbs": []
   },
   "stats": {
-    "agents": 48,
-    "skills": 71,
-    "commands": 108,
+    "agents": 144,
+    "skills": 88,
+    "commands": 149,
     "vaults": 6,
     "intelligence_systems": 10,
     "domain_sub_stacks": 3,
     "platforms": 6,
-    "verified": "2026-06-10",
-    "note": "Counts reflect current shipped state, enforced by test/v87-agent-registry.test.ts. 48 agents = 7-archetype council + specialist tiers + evaluator per agents/AGENT_REGISTRY.md. 71 skills across 14 domains per skills/skill-rules.json. 3 reference Domain Sub-Stacks: People IS, Sound IS, Music IS (Crypto IS shipped v0.1 proof-of-pattern 2026-05-17, not yet counted as reference)."
+    "verified": "2026-09-29",
+    "note": "Counts checked 2026-09-29 by scripts/check-agent-harness.mjs and test/v87-agent-registry.test.ts. 144 agents per agents/AGENT_REGISTRY.md. 88 skills across 17 domains per skills/skill-rules.json. 149 commands = 28 in commands/ + 121 in .claude/commands/. 3 reference Domain Sub-Stacks: People IS, Sound IS, Music IS (Crypto IS shipped v0.1 proof-of-pattern 2026-05-17, not yet counted as reference)."
   },
   "intelligence": {
     "version": "v8.2.0",

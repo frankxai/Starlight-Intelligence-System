@@ -731,7 +731,7 @@ cp cost-plane-config.template.json private/cost-plane-config.json
 
 ### Add Hermes to VPS
 
-See [HERMES-CLAUDE-CODE-GUIDE.md](./docs/guides/HERMES-CLAUDE-CODE-GUIDE.md) for the full dual-stack setup.
+See [HERMES-CLAUDE-CODE-GUIDE.md](./guides/HERMES-CLAUDE-CODE-GUIDE.md) for the full dual-stack setup.
 
 ### Add downstream OS repo
 

@@ -393,7 +393,7 @@ export default function ArchitecturePage() {
             Composition rules
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
-            The graph is a reinforcement network, not a hierarchy.
+            The graph is a reinforcement network.
           </p>
           <ul className="mt-6 space-y-4 pl-6 text-[14px] leading-[1.85] text-slate-400">
             <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
@@ -434,7 +434,7 @@ export default function ArchitecturePage() {
             Developmental phases
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
-            The substrate evolves like a living system, not a release schedule.
+            The substrate evolves like a living system.
           </p>
           <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-slate-400">
             SIS&apos;s version history mirrors what computational neuroscience
@@ -546,15 +546,15 @@ export default function ArchitecturePage() {
             Extension
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
-            Adding an 11th IS is a named procedure, not a refactor.
+            Adding an 11th IS follows a named procedure.
           </p>
           <p className="mt-5 text-[14px] leading-[1.85] text-slate-400">
             Every new layer requires: one agent · 1–2 skills · 2–3 commands ·
             knowledge templates · /compose-stack sequencing update ·
             ARCHITECTURE.md entry · /luminor-board pressure-test before merge ·
             /openclaw-audit adversarial pass. Extension is welcome. Sprawl is
-            not. If a layer&apos;s use case is already covered by an existing
-            layer&apos;s commands, it&apos;s a command, not a layer.
+            not. If an existing layer&apos;s commands already cover a use case,
+            add a command instead of a layer.
           </p>
         </div>
       </section>
