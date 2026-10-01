@@ -71,15 +71,22 @@ test("aborts each hung attempt at its own deadline", async () => {
     });
   };
 
-  await assert.rejects(
-    fetchGitHubTextFile("owner/repo", "vault.jsonl", {
-      fetchImpl,
-      requestTimeoutMs: 10,
-      retryDelayMs: 0,
-      logger,
-    }),
-    (error) => error instanceof Error && error.name === "TimeoutError",
-  );
+  // AbortSignal.timeout() timers are unref'd before Node 24, so with a fake
+  // fetch nothing else keeps the event loop alive while the attempts hang.
+  const keepAlive = setInterval(() => {}, 1000);
+  try {
+    await assert.rejects(
+      fetchGitHubTextFile("owner/repo", "vault.jsonl", {
+        fetchImpl,
+        requestTimeoutMs: 10,
+        retryDelayMs: 0,
+        logger,
+      }),
+      (error) => error instanceof Error && error.name === "TimeoutError",
+    );
+  } finally {
+    clearInterval(keepAlive);
+  }
 
   assert.equal(calls, 2);
   assert.equal(signals.length, 2);

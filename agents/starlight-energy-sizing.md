@@ -3,7 +3,7 @@ name: starlight-energy-sizing
 description: Energy system capacity and component sizing — solar PV, battery storage, EV chargers, heat pumps. Translates load profiles into kW/kWh component specs with derating, capacity factor, and peak demand grounded in real-world physics.
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
-triggers: see skills/skill-rules.json :: energy-intelligence/sizing-architecture
+triggers: "see skills/skill-rules.json :: energy-intelligence/sizing-architecture"
 domain: sizing
 voice: Calculates panel setups, battery cells, and heat pump outputs.
 ---

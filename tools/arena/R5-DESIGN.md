@@ -299,7 +299,7 @@ Built on SIP — Starlight Intelligence Protocol.
 the outcome and is not part of the pre-registration.
 
 R5 ran on 2026-08-28. Receipt:
-[`2026-08-28-r5-deep-reasoning.json`](2026-08-28-r5-deep-reasoning.json).
+[`2026-08-28-r5-deep-reasoning.json`](runs/2026-08-28-r5-deep-reasoning.json).
 **Verdict: VOID-EQUIVALENT. The card saturated.**
 
 - **Run 1:** every tier scored 6/6. Spread 0 — VOID by the §4 rule.

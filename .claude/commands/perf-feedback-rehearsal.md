@@ -2,7 +2,7 @@
 name: perf-feedback-rehearsal
 description: Rehearse a high-stakes feedback conversation before delivery. Takes an SBI sketch + recipient context, produces multiple openings, anticipated reactions with responses, SCARF-aware adjustments, and three branching paths the conversation could take with the manager's response to each. Saves to people-intelligence/performance/rehearsal-<topic>-<date>.md.
 allowed-tools: Read, Write, Grep, Glob, Bash
-argument-hint: <topic-slug> --manager <manager-name> --recipient <recipient-name> --sbi "Situation: ... Behavior: ... Impact: ..." [--history "context paragraph on the relationship and prior feedback"] [--genius genius/profile-<manager-slug>.md]
+argument-hint: "<topic-slug> --manager <manager-name> --recipient <recipient-name> --sbi \"Situation: ... Behavior: ... Impact: ...\" [--history \"context paragraph on the relationship and prior feedback\"] [--genius genius/profile-<manager-slug>.md]"
 ---
 
 # /perf-feedback-rehearsal

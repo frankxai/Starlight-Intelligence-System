@@ -42,7 +42,7 @@ Inside `skills/skill-rules.json`, rules are configured as follows:
 ### Process for Adding and Testing Skills
 1. **Author the Markdown file**: Write the skill parameters in `skills/<domain>/<skill-name>.md`.
 2. **Add the Rule**: Register the trigger conditions under `skills/skill-rules.json`.
-3. **Register the Skill**: Append the skill entry to [SKILL_REGISTRY.md](file:///C:/Users/frank/Starlight-Intelligence-System/skills/SKILL_REGISTRY.md) with date version and status (`stable` or `experimental`).
+3. **Register the Skill**: Append the skill entry to [SKILL_REGISTRY.md](skills/SKILL_REGISTRY.md) with date version and status (`stable` or `experimental`).
 4. **Run Verification**: Execute the unit-test validator:
    ```bash
    node --import tsx --test test/v77-skill-rules.test.ts
