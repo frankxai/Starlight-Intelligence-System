@@ -61,15 +61,18 @@ const r4 = route('check whether the queen dispatcher heartbeat is fresh and the 
 check('a same-name copy in another estate does not make the route ambiguous, and the copy is reported', r4.resolution !== 'ambiguous' && r4.verifier && r4.verifier.name !== 'steward-substrate' && r4.maker.copies.length === 1 && r4.maker.copies[0].id !== r4.maker.id && r4.maker.copies[0].id.endsWith('/steward-substrate'), JSON.stringify({ res: r4.resolution, maker: r4.maker?.id, copies: r4.maker?.copies }))
 const prose = [rec({ name: 'prose-only', estate: 'x', description: 'queen dispatcher heartbeat loop fleet alive fresh check substrate mesh gates enforcement watch' }), records[3]]
 check('long prose alone cannot cross the resolve threshold', route('check whether the queen dispatcher heartbeat is fresh and the loop fleet is alive', { records: prose }).resolution === 'refused')
-check('verifier reports harness sameness and the cross-provider lane', r1.verifier && typeof r1.verifier.sameHarnessAsMaker === 'boolean' && r1.verifier.crossProviderLane)
+check('verifier reports harness sameness', r1.verifier && typeof r1.verifier.sameHarnessAsMaker === 'boolean')
 
 // ---- doctrine reads
 const m = readMatrix()
-check('routing matrix rows are read from the file, never typed', m.rows.length >= 10 && m.rows.every((r) => r.shape && r.primary) && ['PROPOSED', 'ADOPTED', 'unknown'].includes(m.status))
+if (process.env.STARLIGHT_ESTATE) check('routing matrix rows are read from the file, never typed', m.rows.length >= 10 && m.rows.every((r) => r.shape && r.primary) && ['PROPOSED', 'ADOPTED', 'unknown'].includes(m.status))
+else check('portable route reports absent private routing matrix', m.rows.length === 0 && m.status === 'missing')
 const verifyRow = route('verify the deployment is green', { records }).workShape
-check('verify request lands on the matrix verify row with its primary model', verifyRow.row && /verify/i.test(verifyRow.row) && verifyRow.primary.length > 0 && verifyRow.source.endsWith('model-routing-matrix.md'))
+if (process.env.STARLIGHT_ESTATE) check('verify request lands on the matrix verify row with its primary model', verifyRow.row && /verify/i.test(verifyRow.row) && verifyRow.primary.length > 0 && verifyRow.source.endsWith('model-routing-matrix.md'))
+else check('portable route does not fabricate a model preset', verifyRow.row === null && verifyRow.status === 'missing')
 const lane = readCheckerLane()
-check('checker lane is read from CROSS-MODEL-GATE.md', lane && lane.path === 'CROSS-MODEL-GATE.md' && lane.who.length > 0)
+if (process.env.STARLIGHT_ESTATE) check('checker lane is read from CROSS-MODEL-GATE.md', lane && lane.path === 'CROSS-MODEL-GATE.md' && lane.who.length > 0 && r1.verifier?.crossProviderLane)
+else check('portable route reports no private checker lane', lane === null && r1.verifier?.crossProviderLane === null)
 const env = route('review this PR before merge', { records })
 check('envelope carries schema, risk class and gates', env.schema === 'starlight.route.v1' && env.riskClass === 'gated' && env.gates.includes('push'))
 

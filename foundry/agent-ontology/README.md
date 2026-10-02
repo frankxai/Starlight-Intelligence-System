@@ -11,16 +11,19 @@ plus SKILL.md packages in available runtimes, into one record shaped like the Ag
 | `gen-agent-atlas.mjs` | projects the Foundry capability graph (`contracts/capability-graph.schema.json`, validated recursively every run) + `agents.atlas.json` + `AGENT-ATLAS.md`; `--check` fails on drift |
 | `agent-compile.mjs` | composes an agent's SOUL in a fixed seven-layer order (`SOUL.md`) and emits `claude-code`, `claude-sdk`, `soul`, `context-pack` (a CompileRequest `compileInstructionPack` accepts), `a2a` (AgentCard v1.0.0 + SIP extension) |
 | `agent-route.mjs` | one router: intent/files/brand/risk-class signals, work shape read from the routing matrix, verifier never the maker, refuse/ambiguous instead of guessing |
+| `team-cli.mjs` | offline `starlight team` preview, no-spend fixture, opt-in repo-scoped Claude projection, conservative rollback |
+
+The npm package exposes the typed `./foundry` subpath. The packaged beta contains a public-safe `starlight-team-guide` source, not the full estate roster. See `docs/product/agent-platform-beta/QUICKSTART.md`. A2A cards are templates with `.invalid` interfaces until a host binds and tests an HTTPS endpoint; schema-shaped output is not an interoperable exchange claim.
 
 In a public SIS checkout, the scanner reads only checked-in SIS agents and skills. It does not
-read the operator's home directory. The compiler uses the checked-in portable kernel and
-constitution when the full estate's private policy files are unavailable. An unbound agent's
+read the operator's home directory. The compiler uses checked-in portable kernel, brand,
+constitution, authority, and verification sources when the full estate policy files are unavailable. An unbound agent's
 Claude Code and SDK projections are restricted to `Read, Glob, Grep`.
 
 For the full private multi-repo estate, opt in explicitly:
 
 ```
-set STARLIGHT_ESTATE=C:\Users\frank\starlight
+set STARLIGHT_ESTATE=<operator-estate-root>
 set STARLIGHT_SCAN_HOME=1
 node foundry/agent-ontology/tests/agent-ontology.test.mjs
 node foundry/agent-ontology/tests/agent-compile.test.mjs
