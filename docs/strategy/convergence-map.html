@@ -1,0 +1,298 @@
+<title>Starlight Convergence Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--void:#060609;--ink:#e2e8f0;--ink-2:#94a3b8;--ink-3:#64748b;--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;
+--surface:rgba(255,255,255,.025);--surface-2:rgba(255,255,255,.05);--border:rgba(255,255,255,.07);--border-2:rgba(255,255,255,.15);
+--serif:"Newsreader",Georgia,serif;--sans:"Inter",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--ease:cubic-bezier(.4,0,.2,1);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--void);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased;padding-inline:clamp(16px,3vw,40px);padding-block:0 56px;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(1000px 500px at 10% -10%,rgba(167,139,250,.13),transparent 60%),radial-gradient(800px 420px at 100% 0%,rgba(103,232,249,.08),transparent 60%)}
+.page{position:relative;max-width:1400px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+header{padding-block:22px 6px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4vw,50px);line-height:1.04;letter-spacing:-.015em;margin:8px 0 0;text-wrap:balance;max-width:22ch}
+h1 em{font-style:italic;color:var(--violet)}
+.lede{color:var(--ink-2);max-width:60ch;margin:12px 0 0;font-size:15px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);align-items:center}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.hint{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:14px}
+
+.map{position:relative;margin-top:22px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.layers{position:relative;display:flex;flex-direction:column;gap:10px}
+svg.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
+.layer{position:relative;border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:12px 14px 12px;display:grid;grid-template-columns:150px 1fr;gap:10px 14px;align-items:start;transition:border-color 250ms var(--ease),background 250ms var(--ease)}
+.layer.dim{opacity:.55}
+.layer.lit{border-color:var(--border-2);background:var(--surface-2)}
+.layer .t{position:sticky;top:8px}
+.layer .t b{display:block;font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.layer .t span{display:block;font-size:12px;color:var(--ink-3);margin-top:3px;line-height:1.4}
+.nodes{display:flex;flex-wrap:wrap;gap:6px}
+.node{position:relative;border:1px solid var(--border-2);background:var(--void);border-radius:8px;padding:6px 9px 6px 8px;font-size:12.5px;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:border-color 200ms var(--ease),background 200ms var(--ease),opacity 200ms;line-height:1.25}
+.node i{width:7px;height:7px;border-radius:50%;flex:none}
+.node.live i{background:var(--emerald)}.node.partial i{background:var(--amber)}.node.planned i{background:var(--ink-3);opacity:.7}.node.no i{background:var(--rose)}
+.node small{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+.node:hover,.node:focus-visible{border-color:var(--cyan);outline:none}
+.node.sel{border-color:var(--violet);background:rgba(167,139,250,.12);box-shadow:0 0 0 3px rgba(167,139,250,.14)}
+.node.linked{border-color:rgba(103,232,249,.7);background:rgba(103,232,249,.07)}
+.node.fade{opacity:.35}
+.node.no{border-style:dashed;color:var(--ink-2)}
+
+.detail{position:sticky;top:12px;border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:16px;min-height:300px}
+.detail .eyebrow{margin-bottom:6px}
+.detail h2{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.15;margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
+.detail .st{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-bottom:10px}
+.detail .st i{width:7px;height:7px;border-radius:50%}
+.detail p{margin:0 0 10px;color:#cbd3df;font-size:13.5px;line-height:1.55}
+.detail .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-family:var(--mono);font-size:11px;color:var(--ink-3);border-top:1px solid var(--border);padding-top:10px;margin-top:10px}
+.detail .kv b{color:var(--ink-2);font-weight:500}
+.detail .links{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+.detail .links button{background:transparent;border:1px solid var(--border-2);color:var(--ink-2);border-radius:6px;padding:3px 8px;font:11px var(--mono);cursor:pointer}
+.detail .links button:hover{border-color:var(--cyan);color:var(--cyan)}
+.detail .empty{color:var(--ink-3);font-size:13px}
+
+.rules{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:900px){.rules{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
+.rule{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:12px 14px}
+.rule b{display:block;font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:6px}
+.rule p{margin:0;font-size:13px;color:#cbd3df;line-height:1.5}
+footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media (max-width:1000px){.map{grid-template-columns:1fr}.detail{position:static}.layer{grid-template-columns:1fr}.layer .t{position:static}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="page">
+<header>
+  <div>
+    <div class="eyebrow">Starlight Intelligence Systems · convergence · 21 September 2026</div>
+    <h1>One substrate, one operator, one product spine, <em>every surface</em> a projection.</h1>
+    <p class="lede">The estate as it is and as it converges. Select any node to see what it is, where it lives, what it connects to, and its honest status. Nothing here is a mock: live means deployed or shipped in a repo today.</p>
+  </div>
+  <div class="legend"><span><i style="background:var(--emerald)"></i>live</span><span><i style="background:var(--amber)"></i>partial · wired, not complete</span><span><i style="background:var(--ink-3)"></i>planned</span><span><i style="background:var(--rose)"></i>rejected</span></div>
+</header>
+
+<div class="map">
+  <div class="layers" id="layers">
+    <svg class="wires" id="wires" aria-hidden="true"></svg>
+
+    <section class="layer" data-layer="surfaces"><div class="t"><b>Surfaces</b><span>What founders and creators touch. 59 Vercel projects on one team; four carry the brands.</span></div><div class="nodes">
+      <button class="node live" data-id="frankx"><i></i>frankx.ai <small>Next 16 · GSAP</small></button>
+      <button class="node live" data-id="gencreator"><i></i>gencreator.ai <small>CreatorPack · Companion</small></button>
+      <button class="node live" data-id="sio"><i></i>starlightintelligence.org <small>Explorer · protocol</small></button>
+      <button class="node partial" data-id="sia"><i></i>starlightintelligence.ai <small>Desk · operator</small></button>
+      <button class="node live" data-id="arcanea"><i></i>arcanea.ai <small>world · design system</small></button>
+      <button class="node partial" data-id="community"><i></i>gencreator community</button>
+      <button class="node partial" data-id="mobile"><i></i>mobile · PWA shells</button>
+      <button class="node planned" data-id="desktop"><i></i>desktop cockpit app</button>
+    </div></section>
+
+    <section class="layer" data-layer="product"><div class="t"><b>Product spine</b><span>One loop every surface projects. Stage one ships 23 Sept.</span></div><div class="nodes">
+      <button class="node partial" data-id="desk"><i></i>Research Desk <small>stage 1</small></button>
+      <button class="node partial" data-id="constellation"><i></i>Constellation <small>CreatorPack</small></button>
+      <button class="node planned" data-id="renderers"><i></i>Renderers <small>Higgsfield · OpenArt · Suno</small></button>
+      <button class="node partial" data-id="publish"><i></i>Publish <small>approval receipt</small></button>
+      <button class="node live" data-id="receipt"><i></i>Receipts <small>SIP · usage · approval</small></button>
+      <button class="node planned" data-id="roommode"><i></i>Room mode <small>QR · shared vault</small></button>
+    </div></section>
+
+    <section class="layer" data-layer="operator"><div class="t"><b>Operator</b><span>Who decides. Humans hold the irreversible; agents hold the loop.</span></div><div class="nodes">
+      <button class="node partial" data-id="frank"><i></i>Frank <small>sovereign · approvals</small></button>
+      <button class="node live" data-id="queen"><i></i>Starlight Queen <small>/sq · envelopes · ledger</small></button>
+      <button class="node live" data-id="board"><i></i>Board <small>/starlight-board · pre-tag gate</small></button>
+      <button class="node partial" data-id="council"><i></i>Council seats <small>7 archetypes · leadership tier</small></button>
+      <button class="node planned" data-id="hx"><i></i>HX + AX directors <small>human · agent experience</small></button>
+      <button class="node partial" data-id="claws"><i></i>Claws <small>Sentinel always on</small></button>
+      <button class="node live" data-id="console"><i></i>Console + cockpit <small>graph · lanes · continuity</small></button>
+    </div></section>
+
+    <section class="layer" data-layer="lifecycle"><div class="t"><b>ADLC</b><span>Agentic development life cycle. Gates, not ceremonies.</span></div><div class="nodes">
+      <button class="node partial" data-id="spec"><i></i>Spec <small>/spec · task envelope</small></button>
+      <button class="node live" data-id="route"><i></i>Route <small>Queen · capability graph</small></button>
+      <button class="node partial" data-id="build"><i></i>Build <small>multi-CLI lanes</small></button>
+      <button class="node live" data-id="prove"><i></i>Prove <small>/prove · proving ground · evals</small></button>
+      <button class="node live" data-id="gate"><i></i>Gate <small>web-release-gate · editorial · design</small></button>
+      <button class="node live" data-id="ship"><i></i>Ship <small>draft PR · CI · Vercel</small></button>
+      <button class="node partial" data-id="learn"><i></i>Learn <small>/evolve · receipts → doctrine</small></button>
+    </div></section>
+
+    <section class="layer" data-layer="runtime"><div class="t"><b>Runtime</b><span>Where agents execute. Thinking on open models, rendering behind adapters.</span></div><div class="nodes">
+      <button class="node planned" data-id="aisdk"><i></i>AI SDK 6 <small>ToolLoopAgent · Gateway</small></button>
+      <button class="node partial" data-id="nebius"><i></i>Nebius Token Factory <small>cascade · Flux · LoRA · batch</small></button>
+      <button class="node planned" data-id="wdk"><i></i>Workflow Development Kit <small>durable · Sandbox</small></button>
+      <button class="node partial" data-id="eve"><i></i>Eve <small>Companion runtime provider</small></button>
+      <button class="node live" data-id="mcp"><i></i>MCP servers <small>SIS · cockpit · marine · arcanea</small></button>
+      <button class="node planned" data-id="railway"><i></i>Railway <small>workers · n8n · long MCP</small></button>
+      <button class="node live" data-id="vercel"><i></i>Vercel <small>surfaces · previews</small></button>
+    </div></section>
+
+    <section class="layer" data-layer="harness"><div class="t"><b>Harness</b><span>One file contract, every CLI. The power is in the files.</span></div><div class="nodes">
+      <button class="node live" data-id="agentsmd"><i></i>AGENTS.md <small>shared: Codex · Grok · Antigravity</small></button>
+      <button class="node live" data-id="claudemd"><i></i>CLAUDE.md · GROK.md · GEMINI.md</button>
+      <button class="node live" data-id="soul"><i></i>SOUL.md <small>what must not drift</small></button>
+      <button class="node live" data-id="skills"><i></i>SKILL.md packs <small>web-excellence · foundry</small></button>
+      <button class="node live" data-id="claudecode"><i></i>Claude Code <small>Agent SDK · hooks · subagents</small></button>
+      <button class="node partial" data-id="codex"><i></i>Codex CLI</button>
+      <button class="node partial" data-id="grok"><i></i>Grok Build <small>8 subagents · 2M ctx</small></button>
+      <button class="node partial" data-id="antigravity"><i></i>Antigravity 2 <small>manager · 5 agents</small></button>
+      <button class="node planned" data-id="kimi"><i></i>Kimi CLI · K3</button>
+      <button class="node live" data-id="router"><i></i>/si cognition router <small>dispatch</small></button>
+    </div></section>
+
+    <section class="layer" data-layer="memory"><div class="t"><b>Memory</b><span>One estate memory. Four graphs, no more.</span></div><div class="nodes">
+      <button class="node live" data-id="vaults"><i></i>Six vaults <small>JSONL truth · FTS5</small></button>
+      <button class="node partial" data-id="sqlitevec"><i></i>sqlite-vec sidecar <small>hybrid RRF · local</small></button>
+      <button class="node live" data-id="palace"><i></i>Memory palace <small>spatial index</small></button>
+      <button class="node partial" data-id="supabase"><i></i>Supabase <small>pgvector + RRF · queues · cron</small></button>
+      <button class="node partial" data-id="agentdb"><i></i>AgentDB <small>derived learning index</small></button>
+      <button class="node planned" data-id="mem0"><i></i>mem0 <small>optional adapter</small></button>
+      <button class="node no" data-id="pinecone"><i></i>Pinecone</button>
+      <button class="node live" data-id="workgraph"><i></i>Work-graph ledger <small>layer A</small></button>
+    </div></section>
+
+    <section class="layer" data-layer="models"><div class="t"><b>Models</b><span>Cascades, not loyalty. Config strings, swapped as the leaderboard moves.</span></div><div class="nodes">
+      <button class="node live" data-id="claude"><i></i>Claude <small>protocol · canon · architecture</small></button>
+      <button class="node partial" data-id="deepseek"><i></i>DeepSeek V4 <small>MoE · sparse attention · 1M</small></button>
+      <button class="node partial" data-id="nemotron"><i></i>Nemotron 3 <small>Nano · Super · Ultra</small></button>
+      <button class="node partial" data-id="qwen"><i></i>Qwen3.5 · Qwen3-Embedding</button>
+      <button class="node planned" data-id="kimik3"><i></i>Kimi K3 <small>2.8T MoE · vision</small></button>
+      <button class="node planned" data-id="glm"><i></i>GLM-5.3</button>
+      <button class="node partial" data-id="cost"><i></i>Cost doctrine <small>cascade · cache · LoRA · batch</small></button>
+    </div></section>
+
+    <section class="layer" data-layer="design"><div class="t"><b>Design</b><span>Highest bar we own. Liquid objects on the Explorer's tokens.</span></div><div class="nodes">
+      <button class="node live" data-id="kernel"><i></i>Design kernel <small>starlight-design-intelligence · pinned</small></button>
+      <button class="node partial" data-id="packs"><i></i>Brand packs <small>frankx · sis · gencreator · arcanea</small></button>
+      <button class="node live" data-id="taste"><i></i>design.md + taste.md <small>per repo</small></button>
+      <button class="node live" data-id="gatepack"><i></i>web-excellence pack <small>hooks · lint · proof</small></button>
+      <button class="node partial" data-id="motion"><i></i>Motion system <small>GSAP · Framer · reduced motion</small></button>
+      <button class="node partial" data-id="liquid"><i></i>Liquid objects <small>receipt · graph · constellation</small></button>
+    </div></section>
+  </div>
+
+  <aside class="detail" id="detail">
+    <div class="eyebrow">Select a node</div>
+    <p class="empty">Hover to trace connections. Click to pin. Every status is verifiable in the repo named on the card.</p>
+  </aside>
+</div>
+
+<div class="rules">
+  <div class="rule"><b>Rule 1 · thinking on open weights</b><p>Every hop that reasons, extracts, judges or embeds runs on Token Factory or a swappable open model. Closed generators render behind adapters from a signed brief.</p></div>
+  <div class="rule"><b>Rule 2 · one memory, four graphs</b><p>JSONL vaults are truth. Indexes are rebuildable. Supabase holds shared runtime state. No graph per agent, no hosted vector DB as a second source of truth.</p></div>
+  <div class="rule"><b>Rule 3 · humans hold the irreversible</b><p>Publish, pay, merge to main, rotate keys. Agents draft, route, prove and propose. The approval receipt is signed with the usage receipt.</p></div>
+  <div class="rule"><b>Rule 4 · every surface is a projection</b><p>Sites, PWA, desktop cockpit and MCP clients all read the same vault, ledger and receipts. No surface owns state the others cannot see.</p></div>
+  <div class="rule"><b>Rule 5 · nothing pre-cached masquerades as live</b><p>The Console's rule for the whole estate. A demo shows what ran. Illustrative numbers are labelled until they are real.</p></div>
+  <div class="rule"><b>Rule 6 · the file contract is the harness</b><p>AGENTS.md, SOUL.md, SKILL.md and receipts travel across Claude Code, Codex, Grok Build, Antigravity and Kimi. Frameworks stay thin and replaceable.</p></div>
+</div>
+
+<footer><span>Built on SIP · Starlight Intelligence Systems · docs/strategy/2026-09-21-great-convergence.md</span><span>starlightintelligence.org</span></footer>
+</div>
+
+<script>
+(function(){
+const D = {
+ frankx:{t:'frankx.ai',s:'live',p:'Production trunk for FrankX. Vercel deploys main on every push. Homepage is a protected identity surface; research and blog hubs carry the AI Architect voice.',repo:'frankxai/frankx.ai-vercel-website',links:['kernel','packs','gatepack','publish','receipt','vercel']},
+ gencreator:{t:'gencreator.ai',s:'live',p:'Turn one trusted source into a week of content that still sounds like you. CreatorPack is the product unit, Companion is the runtime role, approvals gate every publish. Territory B design: light-first, one spot colour, Instrument Serif.',repo:'frankxai/gencreator.ai',links:['constellation','publish','eve','receipt','supabase','packs']},
+ sio:{t:'starlightintelligence.org',s:'live',p:'The Explorer: protocol, architecture, research, cosmos, knowledge tree, palace, public vaults. Builds from site/ with the metrics ledger. Stays single-domain by the subdomain roadmap.',repo:'frankxai/Starlight-Intelligence-System · site/',links:['vaults','palace','console','kernel','vercel']},
+ sia:{t:'starlightintelligence.ai',s:'partial',p:'Product surface. The Desk lands here first, then the operator views. A Vercel project exists; the Desk route is the 23 Sept build.',repo:'Vercel project starlightintelligence-ai',links:['desk','console','roommode','aisdk','nebius']},
+ arcanea:{t:'arcanea.ai',s:'live',p:'Creative universe and the most active app in the constellation. Owns @arcanea/design-system and the lore canon gate. Consumes Starlight; never absorbed by it.',repo:'frankxai/arcanea-ai-app',links:['packs','kernel','mcp','claudecode']},
+ community:{t:'GenCreator community',s:'partial',p:'Browser-local, deterministic packet processing. No analytics, no storage, no network submission until evidence and operator approval exist.',repo:'frankxai/gencreator-community',links:['gencreator','roommode']},
+ mobile:{t:'Mobile and PWA shells',s:'partial',p:'gencreator.ai ships an installable manifest with shortcuts. The Desk and cockpit views hold at 375 by contract. Native wrappers are not on the roadmap until a surface earns one.',repo:'gencreator.ai app/manifest.ts',links:['gencreator','desk','console']},
+ desktop:{t:'Desktop cockpit app',s:'planned',p:'The cockpit already rehydrates a terminal estate across reboots and exposes eight MCP tools. A desktop shell over the Console graph and lane board is the natural next surface once the Desk vault feeds it.',repo:'cockpit/ · console/',links:['console','workgraph','mcp']},
+ desk:{t:'Research Desk',s:'partial',p:'One founder question in, one cited brief with a contradiction pass, a memory atom and a printed signed receipt out. Two-stage open-model cascade, cross-family judge, live recall eval. Prototype committed; build day 23 Sept.',repo:'docs/hackathons/desk-prototype.html',links:['nebius','aisdk','vaults','sqlitevec','receipt','constellation','queen']},
+ constellation:{t:'Constellation',s:'partial',p:'The brief becomes typed artifacts with truth classes: post, thread, newsletter section, script, cover, track brief. Contract exists in GenCreator; the adapter from the Desk is the week-after work.',repo:'gencreator.ai/lib/creator-pack-contract.ts',links:['desk','renderers','publish','deepseek','qwen']},
+ renderers:{t:'Renderers',s:'planned',p:'Higgsfield for UGC clips, OpenArt for art-directed key visuals, Suno for tracks. Adapters take a signed brief in and return an asset id and a render receipt. Never the engine.',repo:'agentic-creator-os/.claude/skills/higgsfield-operator, suno-prompt-architect, suno-ai-mastery',links:['constellation','receipt']},
+ publish:{t:'Publish',s:'partial',p:'Research hub MDX, schema.org Article and FAQPage, llms.txt, sitemap, RSS. Produces an approval request; a human presses the button. No autonomous publication in alpha.',repo:'gencreator.ai/app/research · app/llms.txt · /approvals',links:['gencreator','frankx','frank','receipt','ship']},
+ receipt:{t:'Receipts',s:'live',p:'SIP attestation receipts signed with protocol/sign.mjs; GenCreator usage and approval receipts; Queen route receipts; Foundry evidence receipts. The one object every layer emits.',repo:'protocol/sign.mjs · agent-runtime-contract.ts · tools/queen',links:['desk','publish','queen','workgraph','learn']},
+ roommode:{t:'Room mode',s:'planned',p:'A QR on stage. Anyone submits a question, every brief lands in one shared vault, the graph grows with the room. Customer evidence forty people watched themselves generate.',repo:'docs/hackathons/2026-09-23-accel-ai-innovate-amsterdam.md §1b (planned; no route yet)',links:['desk','vaults','console']},
+ frank:{t:'Frank',s:'partial',p:'Sovereign. Holds the irreversible: publish, pay, merge to production main, key rotation, substrate-class merges. Everything else is delegated to the loop.',repo:'FrankX/CLAUDE.md § Hard stops · gencreator.ai/docs/strategy/2026-08-20-gencreator-companion-alpha.md (ADR-010)',links:['board','publish','ship','queen']},
+ queen:{t:'Starlight Queen',s:'live',p:'Routing and receipt-driven improvement controller. Typed Foundry task envelopes, capability-graph routing, permission and evidence gates, ledger. Live multi-harness dispatch is phase 2.',repo:'commands/starlight-queen.md · tools/queen/driver.mjs',links:['route','council','receipt','learn','router','workgraph']},
+ board:{t:'Board',s:'live',p:'/starlight-board pressure-tests every substrate-class change before commit or tag. Canon-free functional vectors; /luminor-board is the Arcanea-canon variant. Structural, not discretionary, since v7.6.',repo:'docs/boards/',links:['frank','queen','spec','gate']},
+ council:{t:'Council seats and leadership tier',s:'partial',p:'Two things the registry keeps apart: the seven archetype council seats (Elder Father, Elder Mother, Sage, Builder-Elder, Shadow Witness, Divine Neutral Witness, Future Self at 90; AGENT_REGISTRY.md:12) and the tiers of named agents (Leadership: Orchestrator, Prime, Architect; Specialist: Navigator, Sentinel, Weaver; Foundation: Sage). What the estate calls its generals is the leadership tier: named seats with domains, not a rank.',repo:'agents/AGENT_REGISTRY.md',links:['queen','claws','build']},
+ hx:{t:'HX and AX directors',s:'planned',p:'Human experience and agent experience as two named accountabilities. HX owns the surfaces people touch against design.md and taste.md. AX owns the harness agents run in: file contracts, tool surfaces, receipts. Neither seat exists in agents/ today (grep 2026-09-21: zero hits); both are October registry additions, gated by Board.',repo:'agents/AGENT_REGISTRY.md (to add) · design.md · HARNESS.md',links:['council','design','kernel','harness']},
+ claws:{t:'Claws',s:'partial',p:'Installable operational units under SIS Prime: bootstrap, genius, reclamation, memory, and Sentinel as the always-on cross-cutting gate on files, vaults and external services.',repo:'CLAWS.md',links:['council','vaults','mcp']},
+ console:{t:'Console and cockpit',s:'live',p:'Console renders the substrate as a 2D force graph by default and a 3D orbital scene on demand, one data layer. Cockpit rehydrates terminal estates and exposes MCP. Together they are the operator screen; the Desk vault is their next data source.',repo:'console/ · cockpit/',links:['sio','desk','workgraph','vaults','desktop']},
+ spec:{t:'Spec',s:'partial',p:'Every non-trivial change starts as a spec or a typed task envelope with required, preferred and forbidden capabilities. Spec-driven validation is where the 2026 multi-agent literature converged too.',repo:'foundry/examples/*.task-envelope.json (typed envelope exists; no /spec command in commands/ or .claude/commands/)',links:['route','board','build']},
+ route:{t:'Route',s:'live',p:'The Queen derives the live capability graph, resolves the envelope and returns permission, autonomy, agent-necessity and evidence gates. Read-only unless recorded.',repo:'tools/queen/driver.mjs route-envelope',links:['queen','spec','build','router']},
+ build:{t:'Build',s:'partial',p:'Lanes across Claude Code, Codex, Grok Build, Antigravity and Kimi, one agent per branch, worktrees for heavy parallel work, staged by pathspec. Git is the coordination layer.',repo:'AGENTS.md § Multi-Agent Systems & Agent Harnesses',links:['claudecode','codex','grok','antigravity','kimi','router','prove']},
+ prove:{t:'Prove',s:'live',p:'Foundry /prove issues evidence receipts; the proving ground and arena run evals; retrieval recall runs in CI. A model summary is never a fact; a receipt with an artifact is.',repo:'/prove · tools/proving-ground · starlight-evals',links:['build','gate','receipt','learn']},
+ gate:{t:'Gate',s:'live',p:'web-release-gate sequences design, motion, vitals and visual proof; editorial and design contracts run in CI; lore lint for Arcanea; Board for substrate. Hooks make the sequence the default.',repo:'claude-skills-library packs/web-excellence · .github/workflows',links:['prove','ship','gatepack','board']},
+ ship:{t:'Ship',s:'live',p:'Draft PR, CI green, Vercel preview, then a human marks ready and merges. Production main is never pushed directly. Vercel deploys main.',repo:'starlight-intelligence-web/README.md § Workflow · frankx.ai-vercel-website/CLAUDE.md § Branch and merge discipline',links:['gate','vercel','frank','publish']},
+ learn:{t:'Learn',s:'partial',p:'/evolve turns receipts into doctrine patches and routing-table deltas; the Queen ratifies with A1 and A2 gates. This closes the loop the SDLC never had.',repo:'/evolve · /starlight-queen learn|ratify',links:['queen','receipt','prove']},
+ aisdk:{t:'AI SDK 6',s:'planned',p:'ToolLoopAgent with stopWhen and needsApproval, Output.object for structured results, AI Gateway routing by provider/model string with fallback order, streaming into the App Router. The openai-compatible provider points at Token Factory with one baseURL.',repo:'gencreator.ai/package.json pins ai@^4.0.0 and @ai-sdk/anthropic@^1.0.0 (2026-09-21); no @ai-sdk/openai-compatible anywhere. The AI SDK 6 upgrade is drift item 2.',links:['nebius','desk','eve','wdk','deepseek']},
+ nebius:{t:'Nebius Token Factory',s:'partial',p:'OpenAI-compatible endpoint, EU-hosted. Confirmed: serverless fine-tuning, batch API with a discount, volume tiers. Not yet shipped: prompt caching. Design the cascade so caching is a later win, not a dependency.',repo:'https://api.tokenfactory.nebius.com/v1/',links:['desk','deepseek','nemotron','qwen','cost','aisdk']},
+ wdk:{t:'Workflow Development Kit',s:'planned',p:'Vercel durable execution: each step an isolated route with recorded I/O, deterministic replay, no execution-time limit, Sandbox as a serializable step. The right home for constellation runs and room-mode queues; Railway stays for always-on workers.',repo:'workflow-sdk · @vercel/sandbox (not a dependency in any estate package.json, 2026-09-21)',links:['aisdk','railway','constellation','publish']},
+ eve:{t:'Eve',s:'partial',p:'GenCreator Companion runtime provider name in telemetry. AgentRuntime contract with start, result, resume, approval and usage receipts. The Token Factory cascade becomes a second provider behind the same contract.',repo:'gencreator.ai/lib/creator-pack-contract.ts:48 (provider enum: deterministic_fixture, vercel_eve) · lib/agent-runtime-contract.ts enforces it; only the fixture path executes today',links:['gencreator','aisdk','receipt']},
+ mcp:{t:'MCP servers',s:'live',p:'SIS memory and IS routing servers, cockpit continuity, marine, arcanea. Tools are the agent-facing API of the estate; every CLI in the harness can call them.',repo:'src/mcp-server.ts · src/mcp-is.ts · cockpit/mcp · marine-mcp',links:['claudecode','codex','grok','vaults','console']},
+ railway:{t:'Railway',s:'planned',p:'Long-running workers, stateful MCP over SSE, n8n, private networking between services. Named in STACK.md L4 but deployed nowhere in the estate today (survey 2026-09-21: no railway.json, no Dockerfile at any root). First service: the SIS MCP over SSE plus n8n, week after the hackathon.',repo:'STACK.md L4 · drift ledger #5',links:['wdk','mcp','supabase']},
+ vercel:{t:'Vercel',s:'live',p:'59 projects on the Starlight Intelligence team, four brand surfaces among them. Git integration deploys main; every PR gets a preview. AI Gateway and Sandbox sit on the same account.',repo:'team starlight-intelligence',links:['frankx','gencreator','sio','sia','arcanea','ship']},
+ agentsmd:{t:'AGENTS.md',s:'live',p:'The cross-harness instruction file. Codex CLI, Grok Build and Antigravity read it; CLAUDE.md, GROK.md and GEMINI.md are supplements that point back. One rule set, fanned out by script where a repo needs it.',repo:'AGENTS.md in every active repo',links:['claudecode','codex','grok','antigravity','kimi','soul']},
+ claudemd:{t:'CLAUDE.md, GROK.md, GEMINI.md',s:'live',p:'Harness-specific supplements. Operating contracts, hard stops, branch discipline, the web-design gate, the editorial contract.',repo:'per repo',links:['agentsmd','gate']},
+ soul:{t:'SOUL.md',s:'live',p:'What must not drift: sovereignty before convenience, honest attestation, MIT substrate forever, non-waivable sovereignty clause, abundance toward alliances, the voice. The convergence is judged against it.',repo:'SOUL.md',links:['agentsmd','board']},
+ skills:{t:'SKILL.md packs',s:'live',p:'Portable directory skills: the web-excellence pack, foundry compilers, the 88 SIS skills, ACOS skills. Installed by script, pinned to commits, tested upstream.',repo:'claude-skills-library · skills/ · .claude/skills/',links:['gatepack','claudecode','build']},
+ claudecode:{t:'Claude Code',s:'live',p:'Primary harness for protocol-layer work. Agent SDK, hooks, skills, subagents. Where this convergence was written.',repo:'STACK.md L3',links:['agentsmd','skills','mcp','build']},
+ codex:{t:'Codex CLI',s:'partial',p:'Reads AGENTS.md. Second opinion lane and parallel builder. Dispatched by the cognition router.',repo:'/dispatch · /si',links:['agentsmd','router','build']},
+ grok:{t:'Grok Build',s:'partial',p:'Up to eight parallel subagents, 2M context, MCP, plugins and hooks. The excellence and QA lane in STACK.md. Native adapter and GROK.md exist in ACOS and SIS.',repo:'SIS/GROK.md · agentic-creator-os/adapters/grok (no adapters/grok in SIS)',links:['agentsmd','router','build','prove']},
+ antigravity:{t:'Antigravity 2',s:'partial',p:'Manager view runs five agents with a built-in browser for visual verification and verifiable artifacts. Fits the visual-proof gate.',repo:'.antigravity/ adapter',links:['agentsmd','build','gate']},
+ kimi:{t:'Kimi CLI and K3',s:'planned',p:'Plan mode, subagents, headless CI. Adds a long-context open-model lane at parity with the others once the router has a receipt format for it.',repo:'router lane to add',links:['agentsmd','router','kimik3']},
+ router:{t:'/si cognition router',s:'live',p:'Routes a task to the right CLI or model lane and records the dispatch. The Queen decides, the router executes.',repo:'commands/si.md · /dispatch',links:['queen','codex','grok','claudecode','kimi']},
+ vaults:{t:'Six vaults',s:'live',p:'Strategic, technical, creative, operational, wisdom, horizon. JSONL is truth; FTS5 with bm25 gives 100% recall on the labelled corpus in CI. Zero infra to install.',repo:'memory/vaults · src/retrieval.ts',links:['sqlitevec','palace','desk','console','mcp']},
+ sqlitevec:{t:'sqlite-vec sidecar',s:'partial',p:'Vectors in the same SQLite file as the FTS index, fused by RRF, rebuildable from JSONL. Pluggable embedder: providers hashing, transformer, auto (src/embedding.ts:296); a hosted Qwen3-Embedding provider does not exist yet and is drift item 4.',repo:'src/embedding.ts · docs/bring-your-own-model.md',links:['vaults','nebius','qwen','desk']},
+ palace:{t:'Memory palace',s:'live',p:'Walkable spatial index over the vaults. Companion view; vaults stay authoritative.',repo:'memory/palace/palace.json',links:['vaults','console']},
+ supabase:{t:'Supabase',s:'partial',p:'Runtime and shared state: Postgres with RLS, pgvector hybrid search with RRF, Queues on pgmq, pg_cron, Edge Functions. The right place for multi-tenant and shared memory, never for the founder\'s private vault.',repo:'gencreator.ai/lib/supabase · STACK.md L2',links:['gencreator','railway','wdk','vaults']},
+ agentdb:{t:'AgentDB',s:'partial',p:'A learning retrieval index that watches which results agents actually used. Already a dependency in FrankX (3.0.0-alpha.11) and the frankx.ai trunk (alpha.20); allowed only as a derived, rebuildable index over the vaults, never as truth. Pin one version, document the boundary.',repo:'FrankX and frankx.ai-vercel-website package.json · drift ledger #3',links:['vaults','sqlitevec','learn']},
+ mem0:{t:'mem0',s:'planned',p:'OpenAI-compatible drop-in with scoped memories and a self-hosted server. Fits as an optional adapter for partner estates that already run it. Not core.',repo:'adapter slot',links:['vaults']},
+ pinecone:{t:'Pinecone',s:'no',p:'Rejected as a memory layer. A hosted server as source of truth breaks the install-for-anyone promise and the sovereignty invariant. Shared vectors live in Supabase when needed.',repo:'SOUL.md invariant 1',links:['supabase']},
+ workgraph:{t:'Work-graph ledger',s:'live',p:'Layer A: what is legal next, what proves done, who may not self-grade. One compiled ledger per campaign, never per agent. Events promote to memory only through the promotion rule.',repo:'src/work-graph.ts · docs/graph-engineering/CONTRACT.md',links:['queen','console','receipt','learn']},
+ claude:{t:'Claude',s:'live',p:'Primary for architecture, canon and protocol reasoning where quality compounds. Diversify below the protocol layer, not at it.',repo:'STACK.md L1',links:['claudecode','board']},
+ deepseek:{t:'DeepSeek V4',s:'partial',p:'Pro at 1.6T total and 49B active, Flash at 284B and 13B active, sparse attention, 1M context. Served on Token Factory. The synthesis stage of the cascade.',repo:'Token Factory model id',links:['nebius','desk','constellation','cost']},
+ nemotron:{t:'Nemotron 3',s:'partial',p:'Nano, Super and Ultra with training data, RL environments and fine-tuning code released. Nano is the extraction stage; Super and Ultra are candidates for the judge lane.',repo:'Token Factory model id',links:['nebius','desk','cost']},
+ qwen:{t:'Qwen3.5 and Qwen3-Embedding',s:'partial',p:'Multimodal family with 1M context; the 8B embedding model is the hosted embedder for the sidecar and the LoRA target for the brief format.',repo:'Token Factory model id',links:['nebius','sqlitevec','constellation']},
+ kimik3:{t:'Kimi K3',s:'planned',p:'2.8T MoE, 104B active, native vision, delta attention for long context. A long-context lane once served where we can meter it.',repo:'lane to add',links:['kimi','cost']},
+ glm:{t:'GLM-5.3',s:'planned',p:'744B total, 40B active, post-training refresh. Alternative synthesis lane; swap by config string when the eval says so.',repo:'lane to add',links:['cost']},
+ cost:{t:'Cost doctrine',s:'partial',p:'Small model where the work is mechanical, large where it is judgment, different family as judge. Prefix caching where the provider discounts it, batch for anything not real-time, LoRA to shrink the model that carries a format, speculative decoding at serving time. Every run prints its own cost.',repo:'protocol/run-receipt.v1.schema.json (totals) · docs/hackathons/2026-09-23-accel-ai-innovate-amsterdam.md §5',links:['nebius','deepseek','nemotron','receipt']},
+ kernel:{t:'Design kernel',s:'live',p:'starlight-design-intelligence: the world-class-web-release skill, brand packs, the web release gate eval. Pinned by commit in each repo\'s .starlight/design-contract.json.',repo:'frankxai/starlight-design-intelligence',links:['packs','taste','gatepack','frankx','sio','arcanea']},
+ packs:{t:'Brand packs',s:'partial',p:'FrankX (obsidian, emerald, cyan, restraint), SIS (void, JetBrains Mono, violet, cyan), GenCreator (paper, one spot colour, Instrument Serif), Arcanea (teal, cosmic blue, gold, Geist). Four registers, one kernel.',repo:'starlight-design-intelligence/brand-packs/* (pinned by .starlight/design-contract.json in four repos; not checked out here) · design.md per repo',links:['kernel','taste','frankx','gencreator','arcanea']},
+ taste:{t:'design.md and taste.md',s:'live',p:'Tokens make a system consistent; taste makes it excellent. Reference points: Vercel, Linear, Stripe, Apple Pro pages, Anthropic, Ableton. Both files outrank every skill in the pack.',repo:'per repo',links:['kernel','packs','gatepack']},
+ gatepack:{t:'web-excellence pack',s:'live',p:'Eleven vendored skills plus web-release-gate, core-web-vitals and visual-proof, three hooks, a CI lint on newly added lines. Installed into every web repo by script and tested upstream.',repo:'claude-skills-library/packs/web-excellence',links:['gate','skills','taste']},
+ motion:{t:'Motion system',s:'partial',p:'Two tracks: Framer for micro-interactions and one hero moment, GSAP with ScrollTrigger for scroll choreography. Sixty-frame budget, deliberate reduced-motion fallback, domAnimation never domMax.',repo:'site/motion/* (SIS) · FrankX design-motion agent (not in SIS agents/)',links:['liquid','taste']},
+ liquid:{t:'Liquid objects',s:'partial',p:'The premium bar: interface elements that behave like objects with material and momentum. The printed receipt, the blooming graph node, the constellation cards. Apple-grade physics, restraint everywhere else. The Desk prototype is the reference.',repo:'docs/hackathons/desk-prototype.html',links:['motion','desk','kernel']},
+ design:{t:'Design',s:'live',p:'Layer node. The design layer is the kernel, the packs, taste and design files per repo, the web-excellence gate and the motion system. See the nodes in this row.',repo:'.starlight/design-contract.json per repo',links:['kernel','packs','taste','gatepack','motion','liquid']},
+ harness:{t:'Harness',s:'live',p:'Layer node. The harness layer is AGENTS.md read by four CLIs, the supplements, SOUL.md as the drift test, skills installed by script and the /si router. See the nodes in this row.',repo:'AGENTS.md · SOUL.md · skills/skill-rules.json',links:['agentsmd','claudemd','soul','skills','router']}
+};
+const nodes=[...document.querySelectorAll('.node')], wires=document.getElementById('wires'), layersEl=document.getElementById('layers'), detail=document.getElementById('detail');
+const byId=id=>document.querySelector(`.node[data-id="${id}"]`);
+let pinned=null;
+function center(el){const r=el.getBoundingClientRect(), b=layersEl.getBoundingClientRect(); return {x:r.left-b.left+r.width/2, y:r.top-b.top+r.height/2, t:r.top-b.top, btm:r.bottom-b.top};}
+function draw(id){
+  wires.innerHTML=''; nodes.forEach(n=>n.classList.remove('sel','linked','fade'));
+  document.querySelectorAll('.layer').forEach(l=>l.classList.remove('lit','dim'));
+  if(!id) return;
+  const src=byId(id); if(!src) return; const d=D[id]||{links:[]};
+  src.classList.add('sel'); const linked=new Set(d.links);
+  nodes.forEach(n=>{ if(n===src) return; if(linked.has(n.dataset.id)) n.classList.add('linked'); else n.classList.add('fade'); });
+  document.querySelectorAll('.layer').forEach(l=>{ const has=[...l.querySelectorAll('.node')].some(n=>n===src||linked.has(n.dataset.id)); l.classList.add(has?'lit':'dim'); });
+  const a=center(src);
+  d.links.forEach(t=>{ const el=byId(t); if(!el) return; const b=center(el);
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    const dy=(b.y-a.y), c1y=a.y+dy*0.5, c2y=b.y-dy*0.5;
+    path.setAttribute('d',`M${a.x},${a.y} C${a.x},${c1y} ${b.x},${c2y} ${b.x},${b.y}`);
+    path.setAttribute('fill','none'); path.setAttribute('stroke','rgba(103,232,249,.55)'); path.setAttribute('stroke-width','1.2');
+    wires.appendChild(path); });
+}
+function show(id){
+  const d=D[id]; if(!d||!d.p){ return; }
+  const st={live:'live',partial:'partial · wired, not complete',planned:'planned',no:'rejected'}[d.s];
+  const col={live:'var(--emerald)',partial:'var(--amber)',planned:'var(--ink-3)',no:'var(--rose)'}[d.s];
+  detail.innerHTML=`<div class="eyebrow">${layerOf(id)}</div><h2>${d.t}</h2><div class="st"><i style="background:${col}"></i>${st}</div><p>${d.p}</p><div class="kv"><b>where</b><span>${d.repo}</span><b>connects</b><span>${d.links.length} nodes</span></div><div class="links">${d.links.map(l=>`<button data-go="${l}">${(D[l]&&D[l].t)||l}</button>`).join('')}</div>`;
+  detail.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{pinned=b.dataset.go; draw(pinned); show(pinned); byId(pinned)?.scrollIntoView({block:'nearest',behavior:'smooth'});}));
+}
+function layerOf(id){ const l=byId(id)?.closest('.layer'); return l? l.querySelector('.t b').textContent : ''; }
+nodes.forEach(n=>{
+  n.addEventListener('mouseenter',()=>{ if(!pinned){ draw(n.dataset.id); show(n.dataset.id);} });
+  n.addEventListener('mouseleave',()=>{ if(!pinned){ draw(null); } });
+  n.addEventListener('focus',()=>{ if(!pinned){ draw(n.dataset.id); show(n.dataset.id);} });
+  n.addEventListener('click',()=>{ pinned = pinned===n.dataset.id ? null : n.dataset.id; draw(pinned); if(pinned) show(pinned); });
+});
+addEventListener('resize',()=>draw(pinned));
+pinned='desk'; draw(pinned); show(pinned);
+})();
+</script>
