@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/capability-transfer.v1.schema.json",
+  "title": "Starlight capability transfer observation v1",
+  "description": "An append-only observation of one capability applied across independent ventures. Completeness is not causal proof or cryptographic verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "sourceVenture", "destinationVenture", "capabilityId", "capabilityVersion", "permissionRef", "sourceVerificationRef", "destinationApplicationRef", "baseline", "outcome", "measurementMethod", "attributionLimits", "observedAt", "reviewedBy"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "type": "string" },
+    "sourceVenture": { "type": "string" },
+    "destinationVenture": { "type": "string" },
+    "capabilityId": { "type": "string" },
+    "capabilityVersion": { "type": "string" },
+    "permissionRef": { "type": "string" },
+    "sourceVerificationRef": { "type": "string" },
+    "destinationApplicationRef": { "type": "string" },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "unit", "direction"],
+      "properties": {
+        "value": { "type": "number" },
+        "unit": { "type": "string" },
+        "direction": { "enum": ["higher", "lower"] }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "unit"],
+      "properties": {
+        "value": { "type": "number" },
+        "unit": { "type": "string" }
+      }
+    },
+    "measurementMethod": { "type": "string" },
+    "attributionLimits": { "type": "string" },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "reviewedBy": { "type": "string" }
+  }
+}
