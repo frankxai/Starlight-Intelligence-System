@@ -1,17 +1,7 @@
-<!-- STARLIGHT-EDITORIAL:START -->
-## Editorial contract
-
-Brand: **Starlight Intelligence Systems** (`sis`)
-
-- Read `CREATOR.md` before changing public or customer-facing copy.
-- Apply the registered brand voice and the shared editorial gate.
-- Reject generated prestige language, rhetorical contrast formulas, invented claims, and abstract labels that hide simple facts.
-- Keep public labels in sentence case.
-- Run the changed-copy editorial audit before release.
-
-Pinned source: https://github.com/frankxai/starlight-design-intelligence/blob/3d6fc8fdd38b5db69a16db1078e30d454e891af1/brand-packs/sis/COPY.md (proposal preview; refresh after reviewed merge)
-<!-- STARLIGHT-EDITORIAL:END -->
-
+---
+description: Starlight voice for branded copy and agent dialogue
+alwaysApply: true
+---
 
 <!-- STARLIGHT-VOICE:START -->
 ## Starlight voice
