@@ -146,3 +146,21 @@ The regression proves:
 ## Proposed integration step
 
 The Codex lead should apply the candidate as one reviewable change set, verify every stated digest after application, run the two focused test files on Linux and Windows, and then submit the source mapping and local-conservative classifications to the required independent provider and Starlight Board review before any merge or publication decision.
+
+## Integration record (2026-10-04)
+
+The sections above describe the candidate as proposed. What happened after:
+
+- Merged as PR 272 (`08bbd32`). Public CI (harness, contracts-and-compiler) passed on Linux. The earlier private Windows mirror (35 of 37 passed, 2 `EPERM` symlink skips) was a pre-merge check; the "Windows validation has not occurred" line above predates it.
+- Independent provider review: Grok, pass, on `08bbd32`. It recomputed the rules, validator and lock digests against the values recorded here. It did not re-prove the documentation mapping or the pre-merge Windows run.
+- Board: a single-provider pre-pass (not a multi-model council) returned HOLD after the merge. Its concerns are tracked below; none found a defect in the merged diff.
+- Superseded `plugin-rules.v2026-09-01.json` is removed so no stale artifact carries an old rules id.
+- `.github/workflows/foundry-rules-expiry.yml` opens an issue when the newest rules artifact is within 10 days of `reviewBy`. The previous 30-day cliff left the harness red on main for two days.
+
+Open follow-ups, none blocking:
+
+1. Sequence PR 246 against `foundry/validators/toolchain.lock.v1.json`; its `package.json` bumps change source-closure pins this renewal copied forward.
+2. Classify the short-description (25 to 64) and dependency (128/256) bounds as local conservative checks in `localConservativeChecks`, or cite an upstream source.
+3. Relabel the skills-only screenshot rejection: the live error `screenshot_configuration_excluded` blocks `interface.screenshots` on skills-only archives, while other submission paths still describe screenshots.
+4. Re-fetch `app-guidelines` and `plugin-guidelines`; archival hashes remain unavailable (proxy rejected `curl`).
+5. The lock-level `reviewedAt` moved from 2026-09-23 to 2026-10-04; non-OpenAI pins were not re-reviewed.
