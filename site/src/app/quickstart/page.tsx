@@ -43,7 +43,7 @@ const PLATFORMS: Platform[] = [
     labelColor: "text-violet-400",
     labelBg: "bg-violet-500/[0.07]",
     labelBorder: "border-violet-500/[0.18]",
-    context: "project config",
+    context: "Project config",
     memoryFile: "CLAUDE.md",
     configPath: ".mcp.json",
     reason: "Keep the server declaration with the project that uses it.",
@@ -61,7 +61,7 @@ const PLATFORMS: Platform[] = [
     labelColor: "text-cyan-400",
     labelBg: "bg-cyan-500/[0.07]",
     labelBorder: "border-cyan-500/[0.18]",
-    context: "user config",
+    context: "User config",
     memoryFile: ".cursorrules",
     configPath: "~/.cursor/mcp.json",
     reason: "Use one absolute server path so every workspace reaches the same vault.",
@@ -92,7 +92,7 @@ args = ["${MCP_SERVER_PATH}"]`,
     labelColor: "text-amber-400",
     labelBg: "bg-amber-500/[0.07]",
     labelBorder: "border-amber-500/[0.18]",
-    context: "user config",
+    context: "User config",
     memoryFile: "GEMINI.md",
     configPath: "~/.gemini/settings.json",
     reason: "Register the same local server and vault path in Gemini CLI.",
@@ -110,7 +110,7 @@ args = ["${MCP_SERVER_PATH}"]`,
     labelColor: "text-emerald-400",
     labelBg: "bg-emerald-500/[0.07]",
     labelBorder: "border-emerald-500/[0.18]",
-    context: "user config",
+    context: "User config",
     memoryFile: "AGENTS.md",
     configPath: "~/.config/opencode/opencode.json",
     reason: "Keep the server local while models change above the memory layer.",
@@ -134,7 +134,7 @@ export default function QuickstartPage() {
       <section className="relative overflow-hidden border-b border-white/[0.06]">
         <GalaxyField still="nursery" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-24">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-widest text-violet-400">
             Current source · verified path
           </p>
           <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.2rem)] font-semibold tracking-tight text-white">
@@ -186,11 +186,11 @@ node dist/cli.js init --vaults`}
             >
               <div className="flex flex-wrap items-center gap-3">
                 <span
-                  className={`rounded-full border px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider ${p.labelColor} ${p.labelBg} ${p.labelBorder}`}
+                  className={`rounded-full border px-2.5 py-1 text-[11px] font-medium normal-case tracking-wider ${p.labelColor} ${p.labelBg} ${p.labelBorder}`}
                 >
                   {p.name}
                 </span>
-                <span className="text-[11px] uppercase tracking-widest text-slate-600">
+                <span className="text-[11px] normal-case tracking-widest text-slate-600">
                   {p.context}
                 </span>
               </div>
@@ -201,11 +201,11 @@ node dist/cli.js init --vaults`}
               <dl className="mt-4 grid gap-2 text-[12px] sm:grid-cols-2">
                 <div className="flex gap-2">
                   <dt className="text-slate-600">memory:</dt>
-                  <dd className="font-mono text-slate-300">{p.memoryFile}</dd>
+                  <dd className="min-w-0 break-all font-mono text-slate-300">{p.memoryFile}</dd>
                 </div>
                 <div className="flex gap-2">
                   <dt className="text-slate-600">config:</dt>
-                  <dd className="font-mono text-slate-300">{p.configPath}</dd>
+                  <dd className="min-w-0 break-all font-mono text-slate-300">{p.configPath}</dd>
                 </div>
               </dl>
 
@@ -289,7 +289,7 @@ node dist/cli.js init --vaults`}
 
       {/* Next steps */}
       <section className="mt-20 border-t border-white/[0.08] pt-10">
-        <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+        <h2 className="text-[11px] font-medium normal-case tracking-widest text-slate-600">
           Next
         </h2>
         <div className="mt-4 flex flex-wrap gap-3">
@@ -345,8 +345,8 @@ function CodeBlock({ children }: { children: string }) {
   return (
     <div className="mt-4 overflow-hidden rounded-lg border border-white/[0.06] bg-[#0c0c12]">
       <div className="border-b border-white/[0.08] px-4 py-2">
-        <code className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
-          mcp config
+        <code className="font-mono text-[10px] normal-case tracking-widest text-slate-600">
+          MCP config
         </code>
       </div>
       <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.7] text-slate-300">
