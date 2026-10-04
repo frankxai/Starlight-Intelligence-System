@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "reviewedAt": "2026-09-23",
+  "reviewedAt": "2026-10-04",
   "updatePolicy": "Every version, integrity, schema digest, rules digest, local source/contract closure digest, or dependency lock digest change requires a reviewed pull request and refreshed positive and negative evidence. CI never floats or silently rewrites this lock.",
   "portable": {
     "specification": "Agent Plugins 1.0.0",
@@ -34,19 +34,19 @@
   },
   "openai": {
     "rules": {
-      "id": "openai-plugin-directory-preflight-2026-09-01",
-      "sha256": "a7d4ca80a1cc2b6b7883b1f1ce11b97b11ae3423fb0955505fd896eccf22e624",
-      "reviewBy": "2026-10-01",
+      "id": "openai-plugin-directory-preflight-2026-10-04",
+      "sha256": "fbed653bd422a710b234c9f2ee0a9abb4f49841583bc5b278fb516404ff1322a",
+      "reviewBy": "2026-11-03",
       "authority": "docs-derived-preflight",
       "validator": {
         "implementationPath": "tools/foundry/lib/openai-preflight.mjs",
-        "implementationSha256": "43a2cbc1513a3e54bb46d86bdd2edc908cfb0063647e8b2192674711373eebf3",
+        "implementationSha256": "088627eafaafa3ae21aaaf37914579cd1729f8e868bfc9d68649982f06eda212",
         "sourceClosure": {
           "foundry/contracts/openai-submission-profile.schema.json": "67aecad66f6faa969b766eb6aa00a1864aaccb4560f283a39166b35167c66038",
           "package-lock.json": "1b23df6eba93961840bb26188cc2de36219914c82e3a0164943e517223b03796",
           "package.json": "6c4340a4c6eca16109a09b7c71b970b0dccaa3e0fe61c578c76563a0ef3915d6",
           "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
-          "tools/foundry/lib/openai-preflight.mjs": "43a2cbc1513a3e54bb46d86bdd2edc908cfb0063647e8b2192674711373eebf3",
+          "tools/foundry/lib/openai-preflight.mjs": "088627eafaafa3ae21aaaf37914579cd1729f8e868bfc9d68649982f06eda212",
           "tools/foundry/lib/package-payload.mjs": "0a195f6a1aeb04ec4f37386038335b6da2be53fa68b83207b3244fd7b070c309",
           "tools/foundry/lib/schema.mjs": "8e401876b38e271734084cb5dbf2e6f2312344413e67495a5fdecb4462d1b94b"
         }
