@@ -150,8 +150,8 @@ class McpAppsBridge {
   async connect(): Promise<void> {
     window.addEventListener("message", this.onMessage, { passive: true });
     await this.request("ui/initialize", {
-      appInfo: { name: "starlight-command-center", version: "0.1.0" },
-      appCapabilities: { availableDisplayModes: ["inline", "fullscreen"] },
+      appInfo: { name: "starlight-command-center", version: "0.3.0" },
+      appCapabilities: { availableDisplayModes: ["fullscreen"] },
       protocolVersion: "2026-01-26",
     });
     this.notify("ui/notifications/initialized");

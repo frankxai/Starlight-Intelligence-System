@@ -3,6 +3,8 @@ import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
 const manifest = JSON.parse(await readFile(join(root, ".codex-plugin", "plugin.json"), "utf8"));
+const portable = JSON.parse(await readFile(join(root, "plugin.json"), "utf8"));
+const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
 const evals = JSON.parse(await readFile(join(root, "evals", "golden-cases.json"), "utf8"));
 const mcpSource = await readFile(join(root, "server", "src", "mcp.ts"), "utf8");
 const workerSource = await readFile(join(root, "server", "src", "worker.ts"), "utf8");
@@ -16,7 +18,11 @@ const check = (condition, message) => {
   if (!condition) failures.push(message);
 };
 
-check(manifest.version === "0.2.0", "plugin manifest version must be 0.2.0");
+check(manifest.version === pkg.version && portable.version === pkg.version, "package and both manifests must share one version");
+check(portable.$schema === "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json", "portable manifest schema is required");
+check(JSON.stringify(portable.extensions?.["com.openai"]?.interface) === JSON.stringify(manifest.interface), "portable and legacy interface must stay equivalent");
+check(manifest.interface.shortDescription.length <= 30, "listing subtitle must fit 30 characters");
+check(!("skills" in portable) && !("interface" in portable) && !("mcpServers" in portable), "portable manifest must use fixed component discovery");
 check(skillDirectories.length === 4, "plugin must contain exactly four focused skills");
 for (const directory of skillDirectories) {
   const text = await readFile(join(root, "skills", directory, "SKILL.md"), "utf8");
