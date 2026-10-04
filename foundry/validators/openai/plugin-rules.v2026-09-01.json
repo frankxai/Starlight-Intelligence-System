@@ -2,8 +2,8 @@
   "schemaVersion": "1.0.0",
   "id": "openai-plugin-directory-preflight-2026-09-01",
   "authority": "docs-derived-preflight",
-  "reviewedAt": "2026-09-01",
-  "reviewBy": "2026-10-01",
+  "reviewedAt": "2026-10-04",
+  "reviewBy": "2026-11-03",
   "claimBoundary": "This ruleset is not an OpenAI schema or portal result. A passing report cannot replace bundle upload, the OpenAI skill safety/security scan, review, runtime, or publication evidence. Scan Tools remains an MCP-specific external gate.",
   "localConservativeChecks": {
     "assetDecoder": "SVG only until a bounded, vulnerability-reviewed raster decoder is pinned",

@@ -35,8 +35,8 @@
   "openai": {
     "rules": {
       "id": "openai-plugin-directory-preflight-2026-09-01",
-      "sha256": "a7d4ca80a1cc2b6b7883b1f1ce11b97b11ae3423fb0955505fd896eccf22e624",
-      "reviewBy": "2026-10-01",
+      "sha256": "b45437ecc14723e0e02ff613c269af70e9508bbe51e2dfe7a25610b0bfbeddd9",
+      "reviewBy": "2026-11-03",
       "authority": "docs-derived-preflight",
       "validator": {
         "implementationPath": "tools/foundry/lib/openai-preflight.mjs",
