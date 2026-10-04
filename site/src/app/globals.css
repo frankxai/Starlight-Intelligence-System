@@ -204,14 +204,6 @@ body {
   pointer-events: none;
 }
 
-.command-reveal-panel-front::before {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(to bottom, black, transparent 88%);
-}
-
 .command-reveal-panel-front::after {
   background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.08) 42%, transparent 58%);
   transform: translateX(-60%);
