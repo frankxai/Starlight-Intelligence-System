@@ -500,7 +500,7 @@ export class StarlightMcpServer {
       title: 'Session continuity status',
       description: 'Recovered work from trusted continuity imports: captured intent and its harnesses, the bound checkout, the registered owner, admission and missing delivery proof. Reported paused/blocked states are operator-supplied labels. Read-only; nothing here resumes work.',
       inputSchema: input({}),
-      outputSchema: output({ works: { type: 'array', items: { type: 'object' } }, unattributedQuarantine: { type: 'integer' }, issues: { type: 'array', items: { type: 'object' } }, imports: { type: 'integer' } }),
+      outputSchema: output({ schemaVersion: { type: 'string' }, works: { type: 'array', items: { type: 'object' } }, unattributedQuarantine: { type: 'integer' }, issues: { type: 'array', items: { type: 'object' } }, imports: { type: 'integer' } }),
       annotations: READ,
     }, () => ({ ...continuityStatus(continuityPaths().store, readContinuityPolicy()) }));
 

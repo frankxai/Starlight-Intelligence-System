@@ -15,7 +15,9 @@ describe("trusted continuity import", () => {
     assert.equal(result.status, "imported");
     assert.equal(result.accepted.length, 1);
     assert.equal(result.executionStarted, false);
-    const [work] = continuityStatus(s, policy).works;
+    const status = continuityStatus(s, policy);
+    assert.equal(status.schemaVersion, "starlight.continuity-status.v1");
+    const [work] = status.works;
     assert.equal(work.state, "input-required");
     assert.deepEqual(work.reportedState, { value: "paused", verification: "operator-supplied" });
     assert.equal(work.admission.admitted, false);

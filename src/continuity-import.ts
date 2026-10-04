@@ -369,7 +369,10 @@ export interface ContinuityWorkStatus {
   mayAutomaticallyResume: false;
 }
 
+export const CONTINUITY_STATUS_SCHEMA = "starlight.continuity-status.v1";
+
 export interface ContinuityStatus {
+  schemaVersion: typeof CONTINUITY_STATUS_SCHEMA;
   works: ContinuityWorkStatus[];
   unattributedQuarantine: number;
   issues: WorkGraphIssue[];
@@ -422,6 +425,7 @@ export function continuityStatus(storeDirectory: string, policyInput?: unknown):
   });
   const known = new Set(works.map((w) => w.workId));
   return {
+    schemaVersion: CONTINUITY_STATUS_SCHEMA,
     works,
     unattributedQuarantine: quarantine.filter((q) => !known.has(q.workId)).length,
     issues: projection.issues,
