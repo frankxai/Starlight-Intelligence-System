@@ -148,7 +148,7 @@ export function OperationalProofConsole() {
               <Terminal size={16} aria-hidden="true" />
             </span>
             <div>
-              <p className="font-mono text-[11px] uppercase text-slate-400">
+              <p className="font-mono text-[11px] normal-case text-slate-400">
                 SIS release room
               </p>
               <p className="text-sm font-semibold text-white">
@@ -167,7 +167,7 @@ export function OperationalProofConsole() {
         <div className="bg-white p-4 sm:p-5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="font-mono text-[11px] uppercase text-slate-500">
+              <p className="font-mono text-[11px] normal-case text-slate-500">
                 Release route
               </p>
               <h2 className="mt-1 text-xl font-semibold text-slate-950">
@@ -259,7 +259,7 @@ export function OperationalProofConsole() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-mono text-[11px] uppercase text-slate-500">
+                      <p className="font-mono text-[11px] normal-case text-slate-500">
                         {lane.label}
                       </p>
                       <p className="mt-1 text-sm font-semibold text-slate-950">
@@ -277,7 +277,7 @@ export function OperationalProofConsole() {
 
         <div className="bg-slate-950 p-4 text-white sm:p-5">
           <div className="flex items-center justify-between gap-3">
-            <p className="font-mono text-[11px] uppercase text-slate-400">
+            <p className="font-mono text-[11px] normal-case text-slate-400">
               Release ledger
             </p>
             <span className="rounded-md bg-cyan-300/12 px-2.5 py-1 font-mono text-[11px] text-cyan-100">
