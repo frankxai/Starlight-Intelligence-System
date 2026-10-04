@@ -223,7 +223,6 @@ export default function KnowledgeTreePage() {
       {/* ── 1 · Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <GalaxyField still="veil" />
-        <div className="dot-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
         <TreeGlyph className="pointer-events-none absolute right-[-60px] top-10 hidden h-[460px] w-[460px] opacity-60 lg:block" />
 
         <div className="relative mx-auto max-w-5xl px-6 py-20 md:py-28">

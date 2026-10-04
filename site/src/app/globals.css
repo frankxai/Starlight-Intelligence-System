@@ -54,12 +54,6 @@ body {
 .animate-mesh-2 { animation: mesh-drift 25s ease-in-out infinite reverse; }
 .animate-mesh-3 { animation: mesh-drift 30s ease-in-out infinite 5s; }
 
-/* Dot grid background */
-.dot-grid {
-  background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
 /* Cinematic deep-field stills — slow ken-burns, killed under reduced motion */
 .galaxy-still {
   transform: scale(1.08);
@@ -1166,9 +1160,6 @@ body {
   backdrop-filter: blur(24px);
   border: 1px solid rgba(103, 232, 249, 0.12);
 }
-.queen-loop-progress {
-  transition: width 60ms linear;
-}
 .queen-phase {
   transition: all 0.55s cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -1192,8 +1183,7 @@ body {
   .animate-brain-core,
   .animate-brain-node,
   .queen-visual,
-  .queen-phase,
-  .queen-loop-progress {
+  .queen-phase {
     animation: none !important;
     transition: none !important;
   }
