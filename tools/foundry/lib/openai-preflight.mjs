@@ -16,7 +16,7 @@ import { getContract, loadContractRegistry, validateValue } from "./schema.mjs";
 export { openAIPluginPayload } from "./package-payload.mjs";
 
 const DEFAULT_RULES = fileURLToPath(
-  new URL("../../../foundry/validators/openai/plugin-rules.v2026-09-01.json", import.meta.url),
+  new URL("../../../foundry/validators/openai/plugin-rules.v2026-10-04.json", import.meta.url),
 );
 const DEFAULT_TOOLCHAIN_LOCK = fileURLToPath(
   new URL("../../../foundry/validators/toolchain.lock.v1.json", import.meta.url),
