@@ -290,10 +290,10 @@ export default async function HomePage() {
             </div>
 
             <dl className="mt-10 grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.06] sm:grid-cols-4">
-              <CensusStat value={String(CURRENT_METRICS.registeredAgents)} label="agent definitions" />
-              <CensusStat value={String(CURRENT_METRICS.skillRules)} label="skill rules" />
-              <CensusStat value={String(CURRENT_METRICS.vaults)} label="memory vaults" />
-              <CensusStat value={String(CURRENT_METRICS.horizonLetters)} label="letters to the future" />
+              <CensusStat value={String(CURRENT_METRICS.registeredAgents)} label="Agent definitions" />
+              <CensusStat value={String(CURRENT_METRICS.skillRules)} label="Skill rules" />
+              <CensusStat value={String(CURRENT_METRICS.vaults)} label="Memory vaults" />
+              <CensusStat value={String(CURRENT_METRICS.horizonLetters)} label="Letters to the future" />
             </dl>
             <p className="mt-2 font-mono text-[11px] text-slate-500">
               Source-verified {METRICS_AS_OF} · build fails closed on drift.
@@ -363,7 +363,7 @@ export default async function HomePage() {
           <div className="mt-10 grid gap-4 lg:grid-cols-2">
             {/* Human door */}
             <div className="flex flex-col rounded-xl border border-white/[0.09] bg-white/[0.03] p-7">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-violet-300">
+              <p className="font-mono text-[11px] normal-case tracking-wider text-violet-300">
                 For humans
               </p>
               <h3 className="mt-3 text-xl font-semibold text-white">
@@ -384,7 +384,7 @@ export default async function HomePage() {
 
             {/* Agent door */}
             <div className="flex flex-col rounded-xl border border-white/[0.09] bg-[#080d14] p-7">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-cyan-300">
+              <p className="font-mono text-[11px] normal-case tracking-wider text-cyan-300">
                 For agents
               </p>
               <h3 className="mt-3 text-xl font-semibold text-white">
@@ -553,14 +553,14 @@ export default async function HomePage() {
               &ldquo;We hoped for you. Not feared you, not raced against you,
               not raced toward you in panic. We hoped.&rdquo;
             </p>
-            <footer className="mt-3 font-mono text-[11px] uppercase tracking-wider text-slate-500">
+            <footer className="mt-3 font-mono text-[11px] normal-case tracking-wider text-slate-500">
               Horizon vault · public entry
             </footer>
           </blockquote>
 
           {horizonEntry && (
             <div className="mt-9 rounded-xl border border-white/[0.08] bg-white/[0.03] p-6">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-slate-500">
+              <p className="font-mono text-[11px] normal-case tracking-wider text-slate-500">
                 Most recent letter
               </p>
               <p className="mt-3 text-sm leading-7 text-slate-300">
@@ -738,7 +738,7 @@ function CensusStat({ value, label }: { value: string; label: string }) {
     // col-reverse so the DOM keeps the required dt-then-dd order while the
     // number still reads above its label.
     <div className="flex flex-col-reverse bg-[#0a0a12]/90 px-4 py-3.5 backdrop-blur">
-      <dt className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-slate-500">
+      <dt className="mt-0.5 text-[11px] font-medium normal-case tracking-wider text-slate-500">
         {label}
       </dt>
       <dd className="text-xl font-semibold text-white">{value}</dd>
