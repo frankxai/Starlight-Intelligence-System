@@ -133,6 +133,24 @@ import { parseWorkGraphJsonl, projectWorkGraph } from "@arcanea/starlight-intell
 
 The CLI exits non-zero for malformed input, conflicting event IDs, or a premature completion attempt.
 
+## Session continuity import
+
+The private collector in `frankxai/agentic-ops` (`lifecycle/sis-continuity.js`) exports explicit user intent from harness sessions as checksummed bundles of `intent.captured` events. A manifest proves file integrity, not who produced the claims. `src/continuity-import.ts` adds the trust decisions this graph leaves to its operator, without changing the event contract:
+
+- **Integrity and shape.** The manifest checksums are recomputed, every event passes `parseWorkGraphJsonl`, and a bundle may contain only `intent.captured`. A bundle claiming execution, admission or completion is refused.
+- **Trust policy** (`starlight.continuity-trust.v1`, private, at `~/.starlight/continuity/trust-policy.json`). It lists supported SIS source revisions, collector harnesses with their source-reference prefixes, known operators, and registered works with their single owner and optional bound origin/branch. Events that fail a check are quarantined with a reason (`unregistered-work`, `untrusted-collector`, `unknown-operator`, `checkout-mismatch` and others), not dropped silently.
+- **Idempotence.** Re-importing a manifest is a no-op. An interrupted import replays as duplicates, because events are written before the receipt. A reused event ID with different content refuses the whole bundle. Fresh observations of the same request count as one request across harnesses.
+- **Admission stays human.** Import never admits, runs or completes work. `reconcileWork` is the only path to `work.admitted`: only the registered owner may decide, a second claim is refused, and work last reported paused or blocked needs explicit acknowledgement. It is exposed through the local `starlight-continuity reconcile` CLI and deliberately not through MCP, where a caller can claim any actor identity.
+- **Read model.** `continuityStatus` projects the store through `projectWorkGraph` into A2A-aligned states: `submitted`, `input-required`, `working`, `blocked` and `completed`. It reports captured intent, the bound checkout and uncommitted-work flag, the owner, admission and missing proofs. Completion stays proof-gated, and `mayAutomaticallyResume` is always false.
+
+```bash
+starlight-continuity import <absolute-bundle-dir>
+starlight-continuity status [--json]
+starlight-continuity reconcile --work <id> --actor <owner> --decision admit|block --reason <text> [--acknowledge-paused]
+```
+
+MCP: `sis_continuity_status` (read) and `sis_continuity_import`. Signed collector attestation remains a protocol change under the SIP Board process. Until then, the trust policy and private store location are the boundary, and imported claims keep `sourceVerification: collector-claimed`.
+
 ## Adoption sequence
 
 1. **Kernel (this change):** schema, parser, idempotent projector, proof gates, CLI, tests.

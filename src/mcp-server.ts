@@ -16,6 +16,7 @@ import type { TemporalMeta, ContradictionRecord } from './types.js';
 import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
 import { GoalOrchestrator } from './goal.js';
+import { continuityStatus, importContinuityBundle } from './continuity-import.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpToolAnnotations {
@@ -189,6 +190,17 @@ const output = (properties: Record<string, JsonSchema>): JsonSchema => ({
   type: 'object', properties, required: Object.keys(properties),
 });
 const entryList: JsonSchema = { type: 'array', items: { type: 'object', description: 'A vault entry plus its vault name.' } };
+// Private continuity store and trust policy; never inside a vault or repository.
+function continuityPaths(): { store: string; policy: string } {
+  const home = process.env.SIS_CONTINUITY_HOME ?? join(homedir(), '.starlight', 'continuity');
+  return { store: join(home, 'store'), policy: join(home, 'trust-policy.json') };
+}
+
+function readContinuityPolicy(): unknown {
+  const { policy } = continuityPaths();
+  if (!existsSync(policy)) throw new ToolError('No continuity trust policy is installed.', `Create ${policy} (schema starlight.continuity-trust.v1) listing supported revisions, collectors, operators and registered works.`);
+  try { return JSON.parse(readFileSync(policy, 'utf8')); } catch { throw new ToolError('The continuity trust policy is not valid JSON.', `Fix ${policy}.`); }
+}
 const READ: McpToolAnnotations = { readOnlyHint: true, openWorldHint: false };
 const APPEND: McpToolAnnotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
 
@@ -483,6 +495,29 @@ export class StarlightMcpServer {
       return { threshold: th, count: stale.length, entries };
     });
 
+    this.reg({
+      name: 'sis_continuity_status',
+      title: 'Session continuity status',
+      description: 'Recovered work from trusted continuity imports: captured intent and its harnesses, the bound checkout, the registered owner, admission and missing delivery proof. Reported paused/blocked states are operator-supplied labels. Read-only; nothing here resumes work.',
+      inputSchema: input({}),
+      outputSchema: output({ works: { type: 'array', items: { type: 'object' } }, unattributedQuarantine: { type: 'integer' }, issues: { type: 'array', items: { type: 'object' } }, imports: { type: 'integer' } }),
+      annotations: READ,
+    }, () => ({ ...continuityStatus(continuityPaths().store, readContinuityPolicy()) }));
+
+    this.reg({
+      name: 'sis_continuity_import',
+      title: 'Import a continuity bundle',
+      description: 'Verify and import one session-continuity bundle exported by the private collector. Untrusted events are quarantined with a reason; re-importing the same bundle is a no-op. Imports never admit, start or complete work: only the registered owner can admit, through the local reconciliation CLI.',
+      inputSchema: input({
+        bundleDir: { type: 'string', minLength: 3, maxLength: 1024, description: 'Absolute path of a verified bundle directory.' },
+      }, ['bundleDir']),
+      outputSchema: output({ status: { type: 'string' }, bundleDigest: { type: 'string' }, accepted: { type: 'array', items: { type: 'string' } }, duplicates: { type: 'array', items: { type: 'string' } }, quarantined: { type: 'array', items: { type: 'object' } }, executionStarted: { type: 'boolean' } }),
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    }, (p) => {
+      const result = importContinuityBundle(String(p.bundleDir), continuityPaths().store, readContinuityPolicy());
+      if (result.status === 'refused') throw new ToolError(`Import refused: ${result.refusal}`, 'Re-export to a new directory, check the trust policy, or inspect the bundle; the store is unchanged or replayable.');
+      return { ...result };
+    });
     this.reg({
       name: 'sis_goal_status',
       title: 'SAGE goal status',
