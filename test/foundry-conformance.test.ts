@@ -502,7 +502,17 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
       unlinkSync(join(temp, "assets", "logo.svg"));
 
-      const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-10-02" });
+      const rules = JSON.parse(
+        readFileSync(
+          join(ROOT, "foundry", "validators", "openai", "plugin-rules.v2026-09-01.json"),
+          "utf8",
+        ),
+      );
+      const expired = new Date(`${rules.reviewBy}T00:00:00Z`);
+      expired.setUTCDate(expired.getUTCDate() + 1);
+      const result = validateOpenAIPluginPackage(temp, {
+        evaluationDate: expired.toISOString().slice(0, 10),
+      });
       assert.equal(result.status, "fail");
       for (const id of ["rules-freshness", "short-description", "starter-prompts", "logo"]) {
         assert.equal(result.checks.find((check: any) => check.id === id)?.status, "fail", id);
