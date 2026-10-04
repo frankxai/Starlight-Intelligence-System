@@ -6,6 +6,8 @@ import { join } from "node:path";
 import { runContinuityCli } from "../src/continuity-cli.js";
 import { capture, policy, writeBundle } from "./_lib/continuity-fixture.js";
 
+const ownerAtTerminal = { interactive: true, ask: () => "work:continuity" };
+
 function withHome<T>(run: () => T): T {
   const previous = process.env.SIS_CONTINUITY_HOME;
   const home = mkdtempSync(join(tmpdir(), "sis-continuity-cli-"));
@@ -26,10 +28,10 @@ describe("starlight-continuity CLI", () => {
       assert.match(before, /paused \(operator-supplied\)/);
       assert.match(before, /with uncommitted work/);
       assert.match(before, /Nothing resumes automatically/);
-      const refused = runContinuityCli(["reconcile", "--work", "work:continuity", "--actor", "actor:frank", "--decision", "admit", "--reason", "checked"]);
+      const refused = runContinuityCli(["reconcile", "--work", "work:continuity", "--actor", "actor:frank", "--decision", "admit", "--reason", "checked"], ownerAtTerminal);
       assert.equal(refused.exitCode, 1);
       assert.match(refused.stderr, /acknowledge it explicitly/);
-      const admitted = runContinuityCli(["reconcile", "--work", "work:continuity", "--actor", "actor:frank", "--decision", "admit", "--reason", "checked", "--acknowledge-paused"]);
+      const admitted = runContinuityCli(["reconcile", "--work", "work:continuity", "--actor", "actor:frank", "--decision", "admit", "--reason", "checked", "--acknowledge-paused"], ownerAtTerminal);
       assert.equal(JSON.parse(admitted.stdout).recorded, "work.admitted");
       assert.match(runContinuityCli(["status"]).stdout, /\[working\][\s\S]*missing artifact, change, checks, verification/);
     });

@@ -7,13 +7,28 @@
  *   starlight-continuity status [--json]
  *   starlight-continuity reconcile --work <id> --actor <owner> --decision admit|block --reason <text> [--acknowledge-paused]
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, readSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { continuityStatus, importContinuityBundle, reconcileWork, type ContinuityStatus } from "./continuity-import.js";
 
 export interface CliResult { exitCode: number; stdout: string; stderr: string }
+
+/** The terminal the owner types into; agents and pipes have no interactive terminal. */
+export interface OwnerTerminal { interactive: boolean; ask(question: string): string }
+
+function readLineSync(): string {
+  const buffer = Buffer.alloc(1);
+  let line = "";
+  while (readSync(0, buffer, 0, 1, null) === 1 && buffer[0] !== 0x0a) line += buffer.toString("utf8");
+  return line.replace(/\r$/, "");
+}
+
+const processTerminal: OwnerTerminal = {
+  interactive: Boolean(process.stdin.isTTY && process.stdout.isTTY),
+  ask(question) { process.stdout.write(question); return readLineSync(); },
+};
 
 function paths() {
   const home = process.env.SIS_CONTINUITY_HOME ?? join(homedir(), ".starlight", "continuity");
@@ -36,7 +51,7 @@ export function renderStatus(status: ContinuityStatus): string {
   const lines = status.works.map((w) => [
     `${w.workId}  [${w.state}]  owner ${w.ownerActorId ?? "unregistered"}`,
     `  intent: ${w.intent.distinctRequests} request(s) seen ${w.intent.observations} time(s) via ${w.intent.harnesses.join(", ")}; capture ${w.intent.captureCompleteness.join("/") || "unknown"}`,
-    `  reported: ${w.reportedState ? `${w.reportedState.value} (operator-supplied)` : "unknown"}`,
+    `  reported: ${w.reportedState ? `${w.reportedState.value} (${w.reportedState.verification})` : "unknown"}`,
     `  checkout: ${w.checkout ? `${w.checkout.origin} ${w.checkout.branch} @ ${w.checkout.head.slice(0, 12)}${w.checkout.dirty ? " with uncommitted work" : ""}` : "unknown"}`,
     `  admission: ${w.admission.admitted ? `admitted by ${w.admission.byActorId}` : "not admitted"}`,
     `  delivery: ${w.delivery.completed ? "completed with proof" : w.admission.admitted ? `missing ${w.delivery.missingProofs.join(", ") || "nothing"}` : "not started"}`,
@@ -46,7 +61,7 @@ export function renderStatus(status: ContinuityStatus): string {
   return lines.join("\n\n") + "\n" + footer;
 }
 
-export function runContinuityCli(args: string[]): CliResult {
+export function runContinuityCli(args: string[], terminal: OwnerTerminal = processTerminal): CliResult {
   const { store, policy } = paths();
   const readPolicy = () => JSON.parse(readFileSync(policy, "utf8")) as unknown;
   try {
@@ -63,9 +78,13 @@ export function runContinuityCli(args: string[]): CliResult {
       const f = flags(rest);
       const decision = f.get("--decision");
       if (decision !== "admit" && decision !== "block") throw new Error("--decision must be admit or block");
+      if (!terminal.interactive) throw new Error("Reconciliation needs the owner at an interactive terminal; agents and scripts cannot admit work.");
+      const workId = String(f.get("--work") ?? "");
+      const typedWorkId = terminal.ask(`Type the work ID to ${decision} ${workId}: `).trim();
       const event = reconcileWork(store, readPolicy(), {
-        workId: String(f.get("--work") ?? ""), actorId: String(f.get("--actor") ?? ""), decision,
+        workId, actorId: String(f.get("--actor") ?? ""), decision,
         reason: String(f.get("--reason") ?? ""), acknowledgePaused: f.get("--acknowledge-paused") === true,
+        confirmation: { method: "interactive-terminal", typedWorkId },
       });
       return { exitCode: 0, stdout: JSON.stringify({ recorded: event.kind, eventId: event.eventId, executionStarted: false }) + "\n", stderr: "" };
     }

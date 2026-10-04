@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { continuityStatus, importContinuityBundle, reconcileWork } from "../src/continuity-import.js";
 import { capture, HEAD, ORIGIN, policy, writeBundle } from "./_lib/continuity-fixture.js";
 
+const owner = { method: "interactive-terminal" as const, typedWorkId: "work:continuity" };
 const store = () => join(mkdtempSync(join(tmpdir(), "continuity-store-")), "store");
 
 describe("trusted continuity import", () => {
@@ -105,7 +106,8 @@ describe("owner reconciliation", () => {
   it("admits paused work only for the owner with explicit acknowledgement, once", () => {
     const s = store();
     importContinuityBundle(writeBundle([capture()]), s, policy);
-    const base = { workId: "work:continuity", actorId: "actor:frank", decision: "admit" as const, reason: "Owner verified checkout and WIP." };
+    const confirmation = { method: "interactive-terminal" as const, typedWorkId: "work:continuity" };
+    const base = { workId: "work:continuity", actorId: "actor:frank", decision: "admit" as const, reason: "Owner verified checkout and WIP.", confirmation };
     assert.throws(() => reconcileWork(s, policy, { ...base, actorId: "actor:frank-impostor" }), /registered owner/);
     assert.throws(() => reconcileWork(s, policy, base), /acknowledge it explicitly/);
     const admitted = reconcileWork(s, policy, { ...base, acknowledgePaused: true, now: new Date("2026-10-04T14:00:00Z") });
@@ -119,7 +121,7 @@ describe("owner reconciliation", () => {
   it("completion stays proof-gated after admission", () => {
     const s = store();
     importContinuityBundle(writeBundle([capture()]), s, policy);
-    reconcileWork(s, policy, { workId: "work:continuity", actorId: "actor:frank", decision: "admit", reason: "ok", acknowledgePaused: true,
+    reconcileWork(s, policy, { workId: "work:continuity", actorId: "actor:frank", decision: "admit", reason: "ok", acknowledgePaused: true, confirmation: owner,
       requirements: { artifact: false, change: false, checks: false, deployment: false, verification: true } });
     const completion = { schemaVersion: "1.0", eventId: "done:1", workId: "work:continuity", correlationId: "work:continuity",
       projectId: "project:sis", kind: "work.completed", source: { system: "human", sourceId: "frank" }, actorId: "actor:frank",
@@ -135,9 +137,9 @@ describe("owner reconciliation", () => {
   it("blocks by owner decision and refuses later admission", () => {
     const s = store();
     importContinuityBundle(writeBundle([capture()]), s, policy);
-    reconcileWork(s, policy, { workId: "work:continuity", actorId: "actor:frank", decision: "block", reason: "Owner paused campaign." });
+    reconcileWork(s, policy, { workId: "work:continuity", actorId: "actor:frank", decision: "block", reason: "Owner paused campaign.", confirmation: owner });
     assert.equal(continuityStatus(s, policy).works[0].state, "blocked");
-    assert.throws(() => reconcileWork(s, policy, { workId: "work:continuity", actorId: "actor:frank", decision: "admit", reason: "x", acknowledgePaused: true }), /blocked/);
+    assert.throws(() => reconcileWork(s, policy, { workId: "work:continuity", actorId: "actor:frank", decision: "admit", reason: "x", acknowledgePaused: true, confirmation: owner }), /blocked/);
   });
 
   it("serializes concurrent imports with a lock that expires after a crash", () => {

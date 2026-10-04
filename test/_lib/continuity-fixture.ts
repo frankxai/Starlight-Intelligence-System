@@ -19,7 +19,9 @@ export const policy: ContinuityTrustPolicy = {
   works: [{ workId: "work:continuity", projectId: "project:sis", ownerActorId: "actor:frank", checkout: { origin: ORIGIN, branch: "agent/codex/lane" } }],
 };
 
-export function capture(over: { harness?: string; sessionId?: string; observedAt?: string; request?: string; workId?: string; actorId?: string; uri?: string } = {}) {
+export function capture(over: { harness?: string; sessionId?: string; observedAt?: string; request?: string; workId?: string; actorId?: string; uri?: string; reportedState?: string; stateVerification?: string } = {}) {
+  const reportedState = over.reportedState ?? "paused";
+  const stateVerification = over.stateVerification ?? "operator-supplied";
   const harness = over.harness ?? "codex";
   const sessionId = over.sessionId ?? "s-1";
   const observedAt = over.observedAt ?? "2026-10-04T12:00:00.000Z";
@@ -34,11 +36,11 @@ export function capture(over: { harness?: string; sessionId?: string; observedAt
     evidenceRefs: [`session:${sessionId}`, `sha256:${requestDigest}`], visibility: "private", retention: "operational",
     summary: "Complete user directive captured; task admission and release proof remain external.",
     data: { harness, requestDigest, goalAuthority: "explicit-user-directive", goalSourceRef: `session:${sessionId}#lastPrompt`,
-      sourceVerification: "collector-claimed", reportedState: "paused", stateVerification: "operator-supplied",
+      sourceVerification: "collector-claimed", reportedState, stateVerification,
       repositoryHead: HEAD, mayAutomaticallyResume: false },
   };
-  const observation = { sessionKey: JSON.stringify([harness, sessionId]), workId, projectId: "project:sis", reportedState: "paused",
-    stateVerification: "operator-supplied", goalAuthority: "explicit-user-directive", requestDigest, captureCompleteness: "complete",
+  const observation = { sessionKey: JSON.stringify([harness, sessionId]), workId, projectId: "project:sis", reportedState,
+    stateVerification, goalAuthority: "explicit-user-directive", requestDigest, captureCompleteness: "complete",
     repository: { root: "C:/checkout", head: HEAD, branch: "agent/codex/lane", origin: ORIGIN, dirty: true }, mayAutomaticallyResume: false };
   return { event, observation };
 }

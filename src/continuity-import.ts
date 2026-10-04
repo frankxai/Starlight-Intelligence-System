@@ -8,7 +8,7 @@
  * known operators and the bound checkout. Nothing here admits, runs or completes
  * work. Admission happens only through an explicit owner reconciliation.
  */
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   appendFileSync,
   closeSync,
@@ -17,9 +17,12 @@ import {
   lstatSync,
   mkdirSync,
   openSync,
+  readFileSync,
   readSync,
+  renameSync,
   rmSync,
   statSync,
+  truncateSync,
   writeSync,
 } from "node:fs";
 import { isAbsolute, join } from "node:path";
@@ -65,6 +68,8 @@ export type QuarantineReason =
   | "unknown-operator"
   | "checkout-mismatch"
   | "observation-missing"
+  | "observation-ambiguous"
+  | "claim-invalid"
   | "resume-not-forbidden";
 
 export interface ContinuityImportResult {
@@ -87,10 +92,12 @@ interface BundleRepository {
 }
 
 interface BundleObservation {
+  sessionKey: string;
   workId: string;
   projectId: string;
   requestDigest: string;
   reportedState: string;
+  stateVerification: string;
   captureCompleteness: string;
   repository: BundleRepository;
 }
@@ -194,62 +201,86 @@ export function readContinuityBundle(bundleDirectory: string): {
   const foreign = parsed.events.find((e) => e.kind !== "intent.captured");
   if (foreign) throw new ContinuityRefusal(`Collectors may only supply intent.captured, not ${foreign.kind}`);
   const observations = (bundle.observations as unknown[]).filter((o): o is BundleObservation =>
-    isRecord(o) && typeof o.workId === "string" && typeof o.requestDigest === "string" && isRecord(o.repository)
+    isRecord(o) && typeof o.sessionKey === "string" && typeof o.workId === "string" && typeof o.requestDigest === "string" && isRecord(o.repository)
     && typeof o.repository.origin === "string" && typeof o.repository.branch === "string" && typeof o.repository.head === "string");
   return { digest: sha256(manifestBytes), sourceRevision: bundle.sisSourceRevision, events: parsed.events, observations };
 }
 
-function trustDecision(
-  event: WorkGraphEvent,
-  observations: BundleObservation[],
-  policy: ContinuityTrustPolicy,
-): QuarantineReason | null {
-  const work = policy.works.find((w) => w.workId === event.workId);
-  if (!work) return "unregistered-work";
-  if (work.projectId !== event.projectId) return "project-mismatch";
-  const data = isRecord(event.data) ? event.data : {};
-  if (data.mayAutomaticallyResume !== false) return "resume-not-forbidden";
-  const harness = typeof data.harness === "string" ? data.harness : "";
-  const uri = event.source.uri ?? "";
-  if (!policy.collectors.some((c) => c.harness === harness && uri.startsWith(c.sourceRefPrefix))) return "untrusted-collector";
-  if (!policy.operators.includes(event.actorId)) return "unknown-operator";
-  const observation = observations.find((o) => o.workId === event.workId && o.requestDigest === data.requestDigest
-    && o.repository.head === data.repositoryHead);
-  if (!observation) return "observation-missing";
-  if (work.checkout && (work.checkout.origin !== observation.repository.origin || work.checkout.branch !== observation.repository.branch)) {
-    return "checkout-mismatch";
-  }
-  return null;
-}
+const REPORTED_STATES = new Set(["active", "paused", "blocked", "complete", "unknown"]);
+const STATE_VERIFICATIONS = new Set(["operator-supplied", "native-goal-store"]);
+const NAMED_SOURCES = new Set(["codex", "claude", "antigravity", "hermes"]);
 
-/** Synchronous exclusive lock; a crashed holder's lock expires after 30 seconds. */
+type TrustOutcome = { reason: QuarantineReason } | { observation: BundleObservation };
+
+/** Binds each event to the one observation it was checked against, or quarantines it. */
+function trustDecision(event: WorkGraphEvent, observations: BundleObservation[], policy: ContinuityTrustPolicy): TrustOutcome {
+  const work = policy.works.find((w) => w.workId === event.workId);
+  if (!work) return { reason: "unregistered-work" };
+  if (work.projectId !== event.projectId) return { reason: "project-mismatch" };
+  const data = isRecord(event.data) ? event.data : {};
+  if (data.mayAutomaticallyResume !== false) return { reason: "resume-not-forbidden" };
+  const harness = typeof data.harness === "string" ? data.harness : "";
+  if (event.source.system !== (NAMED_SOURCES.has(harness) ? harness : "other")) return { reason: "claim-invalid" };
+  if (data.sourceVerification !== "collector-claimed" || !STATE_VERIFICATIONS.has(String(data.stateVerification))
+    || !REPORTED_STATES.has(String(data.reportedState))) return { reason: "claim-invalid" };
+  const uri = event.source.uri ?? "";
+  if (!policy.collectors.some((c) => c.harness === harness && uri.startsWith(c.sourceRefPrefix))) return { reason: "untrusted-collector" };
+  if (!policy.operators.includes(event.actorId)) return { reason: "unknown-operator" };
+  const sessionKey = JSON.stringify([harness, event.source.sourceId]);
+  const matches = observations.filter((o) => o.sessionKey === sessionKey && o.workId === event.workId
+    && o.requestDigest === data.requestDigest && o.repository.head === data.repositoryHead);
+  if (matches.length === 0) return { reason: "observation-missing" };
+  if (matches.length > 1) return { reason: "observation-ambiguous" };
+  const [observation] = matches;
+  if (observation.reportedState !== data.reportedState || observation.stateVerification !== data.stateVerification) return { reason: "claim-invalid" };
+  if (work.checkout && (work.checkout.origin !== observation.repository.origin || work.checkout.branch !== observation.repository.branch)) {
+    return { reason: "checkout-mismatch" };
+  }
+  return { observation };
+}
+/**
+ * Synchronous exclusive lock owned by a random token. A crashed holder's lock is
+ * reclaimed after 30 seconds by renaming it aside, which exactly one contender wins.
+ */
 function withStoreLock<T>(storeDirectory: string, run: () => T): T {
   const lock = join(storeDirectory, ".import.lock");
-  let fd: number;
+  const token = randomUUID();
+  const acquire = () => { const fd = openSync(lock, "wx"); writeSync(fd, token); closeSync(fd); };
   try {
-    fd = openSync(lock, "wx");
+    acquire();
   } catch {
-    if (existsSync(lock) && Date.now() - statSync(lock).mtimeMs > LOCK_STALE_MS) {
-      rmSync(lock, { force: true });
-      fd = openSync(lock, "wx");
-    } else {
-      throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes");
-    }
+    let stale = false;
+    try { stale = Date.now() - statSync(lock).mtimeMs > LOCK_STALE_MS; } catch { /* released meanwhile */ }
+    if (!stale) throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes");
+    const aside = `${lock}.stale-${token}`;
+    try { renameSync(lock, aside); } catch { throw new ContinuityRefusal("Another importer reclaimed the stale lock; retry after it finishes"); }
+    rmSync(aside, { force: true });
+    try { acquire(); } catch { throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes"); }
   }
   try {
-    writeSync(fd, String(process.pid));
     return run();
   } finally {
-    closeSync(fd);
-    rmSync(lock, { force: true });
+    try { if (readFileSync(lock, "utf8") === token) rmSync(lock, { force: true }); } catch { /* already gone */ }
   }
 }
 
+/** Complete lines only: a torn final line from a crashed writer is never trusted. */
 function readJsonl(file: string): unknown[] {
   if (!existsSync(file)) return [];
-  return readBounded(file).toString("utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line));
+  const text = readBounded(file).toString("utf8");
+  const complete = text.endsWith("\n") ? text : text.slice(0, text.lastIndexOf("\n") + 1);
+  return complete.split("\n").filter(Boolean).map((line) => JSON.parse(line));
 }
 
+/** Appends whole lines, first trimming a torn tail that no receipt ever covered. */
+function appendJsonl(file: string, rows: unknown[]): void {
+  if (!rows.length) return;
+  if (existsSync(file)) {
+    const text = readBounded(file).toString("utf8");
+    if (text && !text.endsWith("\n")) truncateSync(file, Buffer.byteLength(text.slice(0, text.lastIndexOf("\n") + 1)));
+  }
+  appendFileSync(file, rows.map((row) => JSON.stringify(row)).join("\n") + "\n", { mode: 0o600 });
+}
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
   if (isRecord(value)) {
@@ -303,42 +334,42 @@ export function importContinuityBundle(
       }
       const stored = new Map<string, string>();
       for (const event of readJsonl(paths.events) as WorkGraphEvent[]) stored.set(event.eventId, canonical(event));
+      const observed = new Set((readJsonl(paths.observations) as { eventId: string }[]).map((o) => o.eventId));
       const accepted: WorkGraphEvent[] = [];
       const duplicates: string[] = [];
       const quarantined: ContinuityImportResult["quarantined"] = [];
+      const observations: Record<string, unknown>[] = [];
+      const importedAt = (options.now ?? new Date()).toISOString();
       for (const event of bundle.events) {
         const previous = stored.get(event.eventId);
-        if (previous !== undefined) {
-          if (previous !== canonical(event)) throw new ContinuityRefusal(`Event ${event.eventId} conflicts with stored content`);
-          duplicates.push(event.eventId);
+        if (previous !== undefined && previous !== canonical(event)) throw new ContinuityRefusal(`Event ${event.eventId} conflicts with stored content`);
+        const outcome = trustDecision(event, bundle.observations, policy);
+        if ("reason" in outcome) {
+          if (previous === undefined) quarantined.push({ eventId: event.eventId, workId: event.workId, reason: outcome.reason });
+          else duplicates.push(event.eventId);
           continue;
         }
-        const reason = trustDecision(event, bundle.observations, policy);
-        if (reason) quarantined.push({ eventId: event.eventId, workId: event.workId, reason });
-        else accepted.push(event);
+        const o = outcome.observation;
+        // A replay after a crash backfills the observation its earlier attempt never wrote.
+        if (!observed.has(event.eventId)) {
+          observations.push({ eventId: event.eventId, workId: event.workId, sessionKey: o.sessionKey, requestDigest: o.requestDigest,
+            reportedState: o.reportedState, stateVerification: o.stateVerification, captureCompleteness: o.captureCompleteness,
+            repository: o.repository, importedAt });
+        }
+        if (previous === undefined) accepted.push(event);
+        else duplicates.push(event.eventId);
       }
-      const importedAt = (options.now ?? new Date()).toISOString();
-      // Events first, receipt last: an interrupted import replays as duplicates.
-      if (accepted.length) appendFileSync(paths.events, accepted.map((e) => JSON.stringify(e)).join("\n") + "\n", { mode: 0o600 });
-      const acceptedObservations = accepted.map((event) => {
-        const data = event.data as Record<string, unknown>;
-        const o = bundle.observations.find((x) => x.workId === event.workId && x.requestDigest === data.requestDigest)!;
-        return { eventId: event.eventId, workId: event.workId, requestDigest: o.requestDigest, reportedState: o.reportedState,
-          captureCompleteness: o.captureCompleteness, repository: o.repository, importedAt };
-      });
-      if (acceptedObservations.length) {
-        appendFileSync(paths.observations, acceptedObservations.map((o) => JSON.stringify(o)).join("\n") + "\n", { mode: 0o600 });
-      }
-      if (quarantined.length) {
-        appendFileSync(paths.quarantine, quarantined.map((q) => JSON.stringify({ ...q, bundleDigest: bundle.digest, importedAt })).join("\n") + "\n", { mode: 0o600 });
-      }
-      appendFileSync(paths.receipts, JSON.stringify({ bundleDigest: bundle.digest, importedAt, accepted: accepted.length,
-        duplicates: duplicates.length, quarantined: quarantined.length }) + "\n", { mode: 0o600 });
+      // Observations, then events, then the receipt: every interruption replays safely.
+      appendJsonl(paths.observations, observations);
+      appendJsonl(paths.events, accepted);
+      appendJsonl(paths.quarantine, quarantined.map((q) => ({ ...q, bundleDigest: bundle.digest, importedAt })));
+      appendJsonl(paths.receipts, [{ bundleDigest: bundle.digest, importedAt, accepted: accepted.length,
+        duplicates: duplicates.length, quarantined: quarantined.length }]);
       return { status: "imported" as const, bundleDigest: bundle.digest, accepted: accepted.map((e) => e.eventId), duplicates,
         quarantined, executionStarted: false as const };
     });
   } catch (error) {
-    const refusal = error instanceof ContinuityRefusal ? error.message : "Import failed; the store was left unchanged or replayable";
+    const refusal = error instanceof ContinuityRefusal ? error.message : "Import stopped before its receipt; re-running replays it safely. If it repeats, inspect the store files.";
     return { status: "refused", bundleDigest: bundle.digest, refusal, ...empty };
   }
 }
@@ -361,7 +392,8 @@ export interface ContinuityWorkStatus {
     captureCompleteness: string[];
     goalAuthority: string[];
   };
-  reportedState: { value: string; verification: "operator-supplied" } | null;
+  /** Labels from the collector or the harness goal store; never a verified lifecycle transition. */
+  reportedState: { value: string; verification: "operator-supplied" | "native-goal-store" } | null;
   checkout: { origin: string; branch: string; head: string; dirty: boolean } | null;
   admission: { admitted: boolean; byActorId: string | null; requirements: CompletionRequirements | null };
   delivery: { proofEventIds: Record<ProofKind, string[]>; missingProofs: ProofKind[]; readyToComplete: boolean; completed: boolean };
@@ -383,23 +415,28 @@ export function continuityStatus(storeDirectory: string, policyInput?: unknown):
   const policy = policyInput === undefined ? null : validateTrustPolicy(policyInput);
   const paths = storePaths(storeDirectory);
   const events = readJsonl(paths.events) as WorkGraphEvent[];
-  const observations = readJsonl(paths.observations) as (BundleObservation & { eventId: string; importedAt: string })[];
+  const observations = new Map<string, BundleObservation & { eventId: string }>();
+  for (const o of readJsonl(paths.observations) as (BundleObservation & { eventId: string })[]) if (!observations.has(o.eventId)) observations.set(o.eventId, o);
   const quarantine = readJsonl(paths.quarantine) as { workId: string }[];
   const projection = projectWorkGraph(events);
   const works: ContinuityWorkStatus[] = projection.workItems.map((item) => {
     const own = events.filter((e) => e.workId === item.workId);
     const intents = own.filter((e) => e.kind === "intent.captured");
     const data = intents.map((e) => (isRecord(e.data) ? e.data : {}));
-    const obs = observations.filter((o) => o.workId === item.workId).sort((a, b) => a.importedAt.localeCompare(b.importedAt));
-    const latest = obs.at(-1);
+    // Latest by when the intent was observed, not by import order; a missing observation stays unknown.
+    const ordered = [...intents].sort((a, b) => a.observedAt.localeCompare(b.observedAt) || a.eventId.localeCompare(b.eventId));
+    const obs = ordered.map((e) => observations.get(e.eventId)).filter((o): o is BundleObservation & { eventId: string } => o !== undefined);
+    const lastIntent = ordered.at(-1);
+    const latest = lastIntent ? observations.get(lastIntent.eventId) : undefined;
     const admittedEvent = own.find((e) => e.kind === "work.admitted");
     const registration = policy?.works.find((w) => w.workId === item.workId);
     const observedTimes = intents.map((e) => e.observedAt).sort();
-    const pausedOrBlocked = latest && (latest.reportedState === "paused" || latest.reportedState === "blocked");
+    // Fails closed: only a reported active state may be admitted without acknowledgement.
+    const needsOwner = !latest || latest.reportedState !== "active";
     const state: ContinuityState = item.completed ? "completed"
       : item.blocked ? "blocked"
       : item.admitted ? "working"
-      : pausedOrBlocked ? "input-required"
+      : needsOwner ? "input-required"
       : "submitted";
     return {
       workId: item.workId,
@@ -415,7 +452,7 @@ export function continuityStatus(storeDirectory: string, policyInput?: unknown):
         captureCompleteness: [...new Set(obs.map((o) => o.captureCompleteness))].sort(),
         goalAuthority: [...new Set(data.map((d) => String(d.goalAuthority)))].sort(),
       },
-      reportedState: latest ? { value: latest.reportedState, verification: "operator-supplied" } : null,
+      reportedState: latest ? { value: latest.reportedState, verification: latest.stateVerification === "native-goal-store" ? "native-goal-store" : "operator-supplied" } : null,
       checkout: latest ? { origin: latest.repository.origin, branch: latest.repository.branch, head: latest.repository.head, dirty: latest.repository.dirty } : null,
       admission: { admitted: item.admitted, byActorId: admittedEvent?.actorId ?? null, requirements: item.admitted ? item.requirements : null },
       delivery: { proofEventIds: item.proofEventIds, missingProofs: item.missingProofs, readyToComplete: item.readyToComplete, completed: item.completed },
@@ -439,8 +476,13 @@ export interface ReconciliationRequest {
   decision: "admit" | "block";
   reason: string;
   requirements?: CompletionRequirements;
-  /** Admitting work whose last reported state was paused or blocked must say so. */
+  /** Admitting work whose last reported state is not active (or is unknown) must say so. */
   acknowledgePaused?: boolean;
+  /**
+   * Human presence: the owner typed the work ID in an interactive terminal. This is a
+   * presence check, not authentication; signed attestation remains SIP Board work.
+   */
+  confirmation: { method: "interactive-terminal"; typedWorkId: string };
   now?: Date;
 }
 
@@ -455,13 +497,19 @@ export function reconcileWork(storeDirectory: string, policyInput: unknown, requ
   if (!work) throw new ContinuityRefusal("Work is not registered");
   if (work.ownerActorId !== request.actorId) throw new ContinuityRefusal("Only the registered owner may reconcile this work");
   if (typeof request.reason !== "string" || !request.reason.trim()) throw new ContinuityRefusal("A reconciliation reason is required");
+  if (request.confirmation?.method !== "interactive-terminal" || request.confirmation.typedWorkId !== request.workId) {
+    throw new ContinuityRefusal("Reconciliation needs the owner to confirm the work ID in an interactive terminal");
+  }
+  if (request.requirements && request.requirements.verification !== true) {
+    throw new ContinuityRefusal("Admitted work must require verification proof before completion");
+  }
   return withStoreLock(storeDirectory, () => {
     const status = continuityStatus(storeDirectory, policy).works.find((w) => w.workId === request.workId);
     if (!status) throw new ContinuityRefusal("No trusted captured intent exists for this work");
     if (status.admission.admitted) throw new ContinuityRefusal("Work is already admitted; a second claim is refused");
     if (status.state === "blocked" || status.state === "completed") throw new ContinuityRefusal(`Work is ${status.state}`);
     if (request.decision === "admit" && status.state === "input-required" && request.acknowledgePaused !== true) {
-      throw new ContinuityRefusal("Last reported state is paused or blocked; acknowledge it explicitly to admit");
+      throw new ContinuityRefusal(`Last reported state is ${status.reportedState?.value ?? "unknown"}; acknowledge it explicitly to admit`);
     }
     const at = (request.now ?? new Date()).toISOString();
     const intentIds = (readJsonl(storePaths(storeDirectory).events) as WorkGraphEvent[])
@@ -483,12 +531,12 @@ export function reconcileWork(storeDirectory: string, policyInput: unknown, requ
       retention: "audit",
       summary: request.decision === "admit" ? "Owner admitted captured intent after reconciliation." : "Owner blocked captured intent after reconciliation.",
       data: request.decision === "admit"
-        ? { requirements, reason: request.reason, acknowledgedPaused: request.acknowledgePaused === true }
-        : { reason: request.reason },
+        ? { requirements, reason: request.reason, acknowledgedReportedState: request.acknowledgePaused === true, confirmation: "interactive-terminal" }
+        : { reason: request.reason, confirmation: "interactive-terminal" },
     };
     const check = parseWorkGraphJsonl(JSON.stringify(event));
     if (check.issues.length) throw new ContinuityRefusal(`Reconciliation event failed validation: ${check.issues[0].message}`);
-    appendFileSync(storePaths(storeDirectory).events, JSON.stringify(event) + "\n", { mode: 0o600 });
+    appendJsonl(storePaths(storeDirectory).events, [event]);
     return event;
   });
 }
