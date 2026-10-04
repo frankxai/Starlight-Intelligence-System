@@ -95,7 +95,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
     );
     assert.equal(
       lock.openai.rules.sha256,
-      sha256(join(ROOT, "foundry", "validators", "openai", "plugin-rules.v2026-09-01.json")),
+      sha256(join(ROOT, "foundry", "validators", "openai", "plugin-rules.v2026-10-04.json")),
     );
   });
 
@@ -502,7 +502,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
       unlinkSync(join(temp, "assets", "logo.svg"));
 
-      const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-10-02" });
+      const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-11-04" });
       assert.equal(result.status, "fail");
       for (const id of ["rules-freshness", "short-description", "starter-prompts", "logo"]) {
         assert.equal(result.checks.find((check: any) => check.id === id)?.status, "fail", id);
