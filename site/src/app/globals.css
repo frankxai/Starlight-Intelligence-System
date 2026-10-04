@@ -1180,9 +1180,3 @@ body {
     transition: none !important;
   }
 }
-.queen-constellation {
-  background-image: 
-    linear-gradient(rgba(167, 139, 250, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(103, 232, 249, 0.035) 1px, transparent 1px);
-  background-size: 56px 56px;
-}
