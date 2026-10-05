@@ -1,0 +1,80 @@
+# Built on SIP — Starlight Intelligence Protocol v1.1.0
+# Production design canary. After each Production deploy (and daily) a headless Chrome visits the
+# live Protocol site at 320, 390, 768 and 1440 px and fails when a route scrolls sideways or shows
+# forced-uppercase text. A failure opens or updates one issue. Read-only against production.
+
+name: Production design canary
+
+on:
+  deployment_status:
+  schedule:
+    - cron: "41 5 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: production-design-canary
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  probe:
+    if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Let the production alias settle
+        if: github.event_name == 'deployment_status'
+        run: sleep 45
+
+      - name: Probe production
+        id: probe
+        env:
+          CHROME: google-chrome
+          NO_SANDBOX: "1"
+        run: node .github/scripts/probe-production.mjs --base https://starlightintelligence.org --out probe-results
+        continue-on-error: true
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: production-design-canary
+          path: probe-results
+          retention-days: 14
+
+      - name: Report failures
+        if: steps.probe.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TRIGGER_SHA: ${{ github.event.deployment.sha || github.sha }}
+        run: |
+          title="Production design canary is failing"
+          {
+            echo "Run: ${RUN_URL}"
+            echo "Commit: ${TRIGGER_SHA}"
+            echo
+            echo "Violations (overflow over 1px, or forced-uppercase text):"
+            echo
+            sed 's/^/- /' probe-results/violations.txt
+          } > issue-body.md
+          existing=$(gh issue list --state open --search "\"${title}\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file issue-body.md
+          else
+            gh issue create --title "$title" --body-file issue-body.md
+          fi
+          exit 1
