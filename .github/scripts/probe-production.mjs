@@ -23,6 +23,7 @@ const arg = (name, fallback) => {
 };
 const BASE = arg("base", "https://starlightintelligence.org").replace(/\/$/, "");
 const OUT = arg("out", "probe-results");
+const BASE_ORIGIN = new URL(BASE).origin;
 const FAIL_ON = new Set(arg("fail-on", "overflow,uppercase").split(",").map((s) => s.trim()).filter(Boolean));
 const MAX_SITEMAP = Number(arg("max-sitemap", "40"));
 const CHROME = process.env.CHROME || "google-chrome";
@@ -34,13 +35,23 @@ const WIDTHS_ENDS = [320, 1440];
 const SETTLE_MS = 2500;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+let sitemapStats = { locs: 0, accepted: 0 };
 // Sitemap paths, thinned so a family of dynamic pages (cards, articles) contributes two samples.
 async function sitemapRoutes() {
   try {
     const xml = await (await fetch(`${BASE}/sitemap.xml`)).text();
-    const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
-      .map((m) => { try { return new URL(m[1]).pathname.replace(/\/$/, "") || "/"; } catch { return null; } })
-      .filter(Boolean);
+    const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    // Only same-origin http(s) locs are followed; anything else (other hosts, mailto:, data:) is dropped.
+    const paths = locs
+      .map((loc) => {
+        try {
+          const u = new URL(loc);
+          if (!/^https?:$/.test(u.protocol) || u.origin !== BASE_ORIGIN) return null;
+          return u.pathname.replace(/\/$/, "") || "/";
+        } catch { return null; }
+      })
+      .filter((p) => p && p.startsWith("/"));
+    sitemapStats = { locs: locs.length, accepted: paths.length };
     const seen = new Map();
     const picked = [];
     for (const p of [...new Set(paths)]) {
@@ -166,7 +177,9 @@ async function visit(path, width, reduced, deep) {
     await send("Emulation.setDeviceMetricsOverride", { width, height: width < 800 ? 844 : 900, deviceScaleFactor: 1, mobile: width <= 768 });
     await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" }] });
     const loaded = new Promise((r) => (onLoad = r));
-    await send("Page.navigate", { url: `${BASE}${path}${path.includes("?") ? "&" : "?"}canary=${Date.now()}` });
+    const target = new URL(`${path}${path.includes("?") ? "&" : "?"}canary=${Date.now()}`, `${BASE}/`);
+    if (target.origin !== BASE_ORIGIN) throw new Error(`refusing to leave ${BASE_ORIGIN}: ${target.href}`);
+    await send("Page.navigate", { url: target.href });
     await Promise.race([loaded, sleep(30000)]);
     await sleep(SETTLE_MS);
     const row = await evaluate(BASIC);
@@ -237,6 +250,7 @@ const totals = Object.fromEntries(Object.keys(metric).map((m) => [m, [...finding
 writeFileSync(join(OUT, "results.json"), JSON.stringify({ base: BASE, at: new Date().toISOString(), failOn: [...FAIL_ON], totals, rows, findings }, null, 1));
 writeFileSync(join(OUT, "violations.txt"), findings.failing.join("\n"));
 const summary = [`${rows.length} checks against ${BASE}: ${findings.failing.length} failing, ${findings.reported.length} reported (report-only)`,
+  `sitemap: ${sitemapStats.locs} urls, ${sitemapStats.accepted} same-origin`,
   `findings by check: ${Object.entries(totals).map(([k, v]) => `${k}=${v}`).join(" ")}`];
 console.log(summary.join("\n"));
 for (const l of findings.failing) console.log(`  FAIL ${l}`);
