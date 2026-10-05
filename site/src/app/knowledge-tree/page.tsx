@@ -227,7 +227,7 @@ export default function KnowledgeTreePage() {
 
         <div className="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
           <div className="max-w-2xl">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-cyan-400">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-cyan-400">
               The vertical · built on SIS
             </p>
             <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
@@ -319,7 +319,7 @@ export default function KnowledgeTreePage() {
 
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Substrate · SIS / SIP
             </p>
             <p className="mt-2 text-[14px] leading-relaxed text-slate-400">
@@ -347,7 +347,7 @@ export default function KnowledgeTreePage() {
           <div
             className={`rounded-2xl border bg-white/[0.02] p-6 ${ACCENT_BORDER.cyan} ${ACCENT_BG_SOFT.cyan}`}
           >
-            <p className={`text-[11px] font-medium uppercase tracking-widest ${ACCENT_TEXT.cyan}`}>
+            <p className={`text-[11px] font-medium normal-case tracking-wider ${ACCENT_TEXT.cyan}`}>
               Vertical · Knowledge Tree
             </p>
             <p className="mt-2 text-[14px] leading-relaxed text-slate-400">
@@ -476,7 +476,7 @@ export default function KnowledgeTreePage() {
           <div
             className={`rounded-2xl border bg-white/[0.02] p-6 ${ACCENT_BORDER.cyan} ${ACCENT_BG_SOFT.cyan}`}
           >
-            <p className={`text-[11px] font-medium uppercase tracking-widest ${ACCENT_TEXT.cyan}`}>
+            <p className={`text-[11px] font-medium normal-case tracking-wider ${ACCENT_TEXT.cyan}`}>
               Public — belongs in the repo
             </p>
             <ul className="mt-4 space-y-3">
@@ -494,7 +494,7 @@ export default function KnowledgeTreePage() {
           <div
             className={`rounded-2xl border bg-white/[0.02] p-6 ${ACCENT_BORDER.amber} ${ACCENT_BG_SOFT.amber}`}
           >
-            <p className={`text-[11px] font-medium uppercase tracking-widest ${ACCENT_TEXT.amber}`}>
+            <p className={`text-[11px] font-medium normal-case tracking-wider ${ACCENT_TEXT.amber}`}>
               Private — local vaults only
             </p>
             <ul className="mt-4 space-y-3">
@@ -548,7 +548,7 @@ export default function KnowledgeTreePage() {
               Start a Path
             </a>
           </div>
-          <p className="mt-10 text-[11px] uppercase tracking-widest text-slate-500">
+          <p className="mt-10 text-[11px] normal-case tracking-wider text-slate-500">
             Built on SIP · A Starlight Intelligence vertical
           </p>
         </div>
@@ -578,7 +578,7 @@ function Section({
       className="border-b border-white/[0.08] px-6 py-16 scroll-mt-20 md:py-20"
     >
       <div className="mx-auto max-w-5xl">
-        <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+        <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
           {eyebrow}
         </p>
         <h2 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
@@ -610,7 +610,7 @@ function PathCard({ path }: { path: Path }) {
       </div>
 
       <div className="mt-5 border-t border-white/[0.06] pt-4">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-slate-500">
+        <p className="text-[10px] font-medium normal-case tracking-wider text-slate-500">
           First build artifact
         </p>
         <p className="mt-1.5 text-[13px] leading-relaxed text-slate-200">
@@ -618,7 +618,7 @@ function PathCard({ path }: { path: Path }) {
         </p>
       </div>
       <div className="mt-4">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-slate-500">
+        <p className="text-[10px] font-medium normal-case tracking-wider text-slate-500">
           Contribution path
         </p>
         <p className="mt-1.5 text-[13px] leading-relaxed text-slate-200">
@@ -640,7 +640,7 @@ function CardField({
 }) {
   return (
     <div>
-      <p className="text-[10px] font-medium uppercase tracking-widest text-slate-500">
+      <p className="text-[10px] font-medium normal-case tracking-wider text-slate-500">
         {label}
       </p>
       <div className="mt-2 flex flex-wrap gap-1.5">

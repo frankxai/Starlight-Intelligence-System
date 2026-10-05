@@ -65,7 +65,7 @@ export default function DownloadPage() {
         <BrainHero className="pointer-events-none absolute right-[-80px] top-8 hidden h-[440px] w-[440px] opacity-25 lg:block" />
         
         <div className="relative mx-auto max-w-5xl px-6">
-          <span className="inline-flex items-center gap-x-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-cyan-400">
+          <span className="inline-flex items-center gap-x-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-[11px] font-semibold normal-case tracking-wider text-cyan-400">
             <Sparkles className="h-3 w-3 animate-pulse" />
             Starlight Distribution
           </span>
@@ -85,7 +85,7 @@ export default function DownloadPage() {
       <section className="relative px-6 py-20 border-b border-white/[0.04]">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">01 / Foundation</p>
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">01 / Foundation</p>
             <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Core Protocol & SDKs</h2>
           </div>
 
@@ -104,7 +104,7 @@ export default function DownloadPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#090911] via-transparent to-transparent" />
               </div>
               <div className="p-6">
-                <span className="px-2.5 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono rounded-full uppercase">
+                <span className="px-2.5 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono rounded-full normal-case">
                   SIP Core • {SIP_STARTER_LABEL}
                 </span>
                 <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">SIP Starter Source</h3>
@@ -151,7 +151,7 @@ export default function DownloadPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#090911] via-transparent to-transparent" />
               </div>
               <div className="p-6">
-                <span className="px-2.5 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[10px] font-mono rounded-full uppercase">
+                <span className="px-2.5 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[10px] font-mono rounded-full normal-case">
                   Codex SDK • {PLUGIN_STARTER_TAG}
                 </span>
                 <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">Codex Plugin Starter</h3>
@@ -183,7 +183,7 @@ export default function DownloadPage() {
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">02 / Swarm Modules</p>
+              <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">02 / Swarm Modules</p>
               <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Intelligence Wrapper Kits</h2>
               <p className="mt-2 text-slate-400 text-sm font-light">
                 Six public-ready wrappers for orchestrating command, revenue, system builds, world engines, and products.
@@ -299,7 +299,7 @@ export default function DownloadPage() {
       <section className="px-6 py-20 border-b border-white/[0.04]">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">03 / Knowledge</p>
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">03 / Knowledge</p>
             <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Books &amp; Guides</h2>
             <p className="mt-2 text-slate-400 text-sm font-light">
               Understand the core mechanics, cognitive psychology concepts, and protocol standards.
@@ -319,7 +319,7 @@ export default function DownloadPage() {
                 />
               </div>
               <div className="flex-1 text-center sm:text-left">
-                <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">Digital Guide</span>
+                <span className="text-[10px] font-mono text-cyan-400 normal-case tracking-wider">Digital Guide</span>
                 <h3 className="mt-2 font-bold text-lg text-white">Lived OS Handbook</h3>
                 <p className="mt-2 text-xs text-slate-400 leading-relaxed font-light">
                   A comprehensive guide to adopting active recall, capturing daily workflows, and building a sovereign second brain.
@@ -346,7 +346,7 @@ export default function DownloadPage() {
                 />
               </div>
               <div className="flex-1 text-center sm:text-left">
-                <span className="text-[10px] font-mono text-violet-400 uppercase tracking-widest">Specification</span>
+                <span className="text-[10px] font-mono text-violet-400 normal-case tracking-wider">Specification</span>
                 <h3 className="mt-2 font-bold text-lg text-white">Starlight Protocol Spec</h3>
                 <p className="mt-2 text-xs text-slate-400 leading-relaxed font-light">
                   Technical standard documentation covering multi-agent lifecycle events, attestations, and schemas.
@@ -368,7 +368,7 @@ export default function DownloadPage() {
       <section className="px-6 py-20 border-b border-white/[0.04] bg-[#040409]/30">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">04 / Runtimes</p>
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">04 / Runtimes</p>
             <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Intelligence System Packs</h2>
             <p className="mt-2 text-slate-400 text-sm font-light">
               Deploy specialized cognitive environments built on structured schemas and reproducible pipelines.
@@ -449,7 +449,7 @@ export default function DownloadPage() {
       <section className="px-6 py-20 border-b border-white/[0.04]">
         <div className="mx-auto max-w-5xl grid gap-12 md:grid-cols-2 items-center">
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">05 / Setup</p>
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">05 / Setup</p>
             <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">
               Build what is current.
             </h2>
@@ -471,7 +471,7 @@ node dist/cli.js init --vaults`}
       {/* 7. Distribution state */}
       <section className="px-6 py-20 border-b border-white/[0.04] bg-[#040409]/30">
         <div className="mx-auto max-w-5xl">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 font-mono">06 / Distribution state</p>
+          <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">06 / Distribution state</p>
           <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">
             Source is open. The archive is not published.
           </h2>
