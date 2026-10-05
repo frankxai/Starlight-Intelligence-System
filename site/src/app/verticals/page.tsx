@@ -39,7 +39,7 @@ export default function VerticalsPage() {
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <GalaxyField still="nursery" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400">
             Domain Sub-Stack Tier
           </p>
           <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
@@ -68,7 +68,7 @@ export default function VerticalsPage() {
               >
                 <header>
                   <p
-                    className={`text-[11px] font-medium uppercase tracking-widest ${ACCENT_TEXT[v.accent]}`}
+                    className={`text-[11px] font-medium normal-case tracking-wider ${ACCENT_TEXT[v.accent]}`}
                   >
                     {verticalStatusLabel(v.status)}
                   </p>
@@ -81,13 +81,13 @@ export default function VerticalsPage() {
                 </header>
 
                 <dl className="mt-6 grid grid-cols-3 gap-2 border-y border-white/[0.06] py-4 text-center">
-                  <Stat label="sub-systems" value={v.counts.subSystems} />
-                  <Stat label="commands" value={v.counts.commands} />
-                  <Stat label="agents" value={v.counts.agents} />
+                  <Stat label="Sub-systems" value={v.counts.subSystems} />
+                  <Stat label="Commands" value={v.counts.commands} />
+                  <Stat label="Agents" value={v.counts.agents} />
                 </dl>
 
                 <div className="mt-6">
-                  <p className="text-[10px] uppercase tracking-widest text-slate-400">
+                  <p className="text-[10px] normal-case tracking-wider text-slate-400">
                     Sub-systems
                   </p>
                   <ul className="mt-3 flex flex-wrap gap-1.5">
@@ -129,7 +129,7 @@ export default function VerticalsPage() {
       {/* ── Pattern generalizes ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             The pattern
           </p>
           <h2 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
@@ -153,8 +153,8 @@ export default function VerticalsPage() {
 
           <div className="mt-8 overflow-hidden rounded-xl border border-violet-500/[0.18] bg-violet-500/[0.05]">
             <div className="border-b border-white/[0.06] px-4 py-3">
-              <code className="font-mono text-[10px] uppercase tracking-widest text-violet-300/80">
-                spawning a vertical
+              <code className="font-mono text-[10px] normal-case tracking-wider text-violet-300/80">
+                Spawning a vertical
               </code>
             </div>
             <pre className="overflow-x-auto p-5 font-mono text-[12px] leading-[1.8] text-slate-200">
@@ -221,7 +221,7 @@ export default function VerticalsPage() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-widest text-slate-400">
+      <dt className="text-[10px] normal-case tracking-wider text-slate-400">
         {label}
       </dt>
       <dd className="mt-1 font-mono text-[12px] text-white">{value}</dd>

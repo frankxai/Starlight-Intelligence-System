@@ -96,7 +96,7 @@ export default function CockpitPage() {
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <GalaxyField still="nursery" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400">
             Local cockpit
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-5xl">
@@ -118,7 +118,7 @@ export default function CockpitPage() {
       {/* ── 4 Surfaces ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             The four surfaces
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -128,7 +128,7 @@ export default function CockpitPage() {
           {/* SVG schematic */}
           <div className="mt-10 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c12]">
             <div className="border-b border-white/[0.08] px-4 py-3">
-              <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
+              <code className="font-mono text-[10px] normal-case tracking-wider text-slate-400">
                 local-cockpit · schematic
               </code>
             </div>
@@ -152,7 +152,7 @@ export default function CockpitPage() {
       {/* ── Voice loop ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Voice loop
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -183,7 +183,7 @@ export default function CockpitPage() {
           </div>
 
           <div className="mt-12">
-            <p className="text-[11px] uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] normal-case tracking-wider text-slate-400">
               Seven tools the loop can call
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -208,7 +208,7 @@ export default function CockpitPage() {
       {/* ── Brain viz ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Brain viz
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -250,7 +250,7 @@ export default function CockpitPage() {
       {/* ── Drafts on disk ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Drafts on disk
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -275,7 +275,7 @@ export default function CockpitPage() {
       {/* ── Privacy ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Privacy posture
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -344,7 +344,7 @@ function SurfaceCell({ surface }: { surface: Surface }) {
         <p className={`text-[12px] font-semibold ${ACCENT_TEXT[surface.accent]}`}>
           {surface.name}
         </p>
-        <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
+        <code className="font-mono text-[10px] normal-case tracking-wider text-slate-400">
           {surface.port}
         </code>
       </div>
@@ -371,7 +371,7 @@ function Stage({
       className={`flex-1 rounded-xl border ${ACCENT_BORDER[accent]} bg-white/[0.02] p-5 text-center`}
     >
       <p
-        className={`font-mono text-[10px] uppercase tracking-widest ${ACCENT_TEXT[accent]}`}
+        className={`font-mono text-[10px] normal-case tracking-wider ${ACCENT_TEXT[accent]}`}
       >
         {n} · {label}
       </p>
