@@ -139,12 +139,12 @@ export default function QueenPage() {
       <section className="border-t border-white/10 py-16">
         <div className="mx-auto max-w-6xl px-8">
           <div className="grid gap-10 md:grid-cols-2">
-            <div>
+            <div className="min-w-0">
               <div className="text-xs tracking-[3px] text-amber-400">DISTRIBUTED INTELLIGENCE</div>
               <h2 className="mt-2 font-serif text-5xl tracking-[-1.8px]">Her Swarms</h2>
               <p className="mt-5 text-xl text-zinc-400">The Queen never works alone. Subagent swarms (Grok-native parallelism) execute MEASURE and LEARN concurrently while the Visual Composition Layer turns every tick into a permanent, attested artifact.</p>
             </div>
-            <div>
+            <div className="min-w-0">
               <QueenSwarm className="w-full aspect-[16/9.6] rounded-3xl border border-white/10" phase="measure" interactive />
               <div className="mt-2 text-[10px] text-white/50 tracking-widest">LIVE INTERACTIVE — MOVE CURSOR TO CONDUCT.</div>
             </div>
