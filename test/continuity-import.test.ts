@@ -1,10 +1,10 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, utimesSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { continuityStatus, importContinuityBundle, reconcileWork } from "../src/continuity-import.js";
-import { capture, HEAD, ORIGIN, policy, writeBundle } from "./_lib/continuity-fixture.js";
+import { capture, deadPid, HEAD, lockOwnedBy, ORIGIN, policy, writeBundle } from "./_lib/continuity-fixture.js";
 
 const owner = { method: "interactive-terminal" as const, typedWorkId: "work:continuity" };
 const store = () => join(mkdtempSync(join(tmpdir(), "continuity-store-")), "store");
@@ -142,13 +142,12 @@ describe("owner reconciliation", () => {
     assert.throws(() => reconcileWork(s, policy, { workId: "work:continuity", actorId: "actor:frank", decision: "admit", reason: "x", acknowledgePaused: true, confirmation: owner }), /blocked/);
   });
 
-  it("serializes concurrent imports with a lock that expires after a crash", () => {
+  it("serializes imports behind a live holder and reclaims a crashed holder's lock", () => {
     const s = store();
     mkdirSync(s, { recursive: true });
-    writeFileSync(join(s, ".import.lock"), "999999");
+    writeFileSync(join(s, ".import.lock"), lockOwnedBy(process.pid));
     assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
-    const old = new Date(Date.now() - 11 * 60_000);
-    utimesSync(join(s, ".import.lock"), old, old);
+    writeFileSync(join(s, ".import.lock"), lockOwnedBy(deadPid()));
     assert.equal(importContinuityBundle(writeBundle([capture()]), s, policy).status, "imported");
     assert.equal(existsSync(join(s, ".import.lock")), false);
   });

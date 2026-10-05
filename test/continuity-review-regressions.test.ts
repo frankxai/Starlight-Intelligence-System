@@ -10,7 +10,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { continuityStatus, importContinuityBundle, reconcileWork } from "../src/continuity-import.js";
 import { runContinuityCli } from "../src/continuity-cli.js";
-import { capture, policy, writeBundle } from "./_lib/continuity-fixture.js";
+import { capture, deadPid, lockOwnedBy, policy, writeBundle } from "./_lib/continuity-fixture.js";
 
 const store = () => join(mkdtempSync(join(tmpdir(), "continuity-regress-")), "store");
 const owner = { method: "interactive-terminal" as const, typedWorkId: "work:continuity" };
@@ -91,17 +91,16 @@ describe("review finding 4: locks and torn lines", () => {
     assert.ok(lines.every((line) => JSON.parse(line).eventId.startsWith("capture:")));
   });
 
-  it("reclaims a stale lock once and never deletes a lock it does not own", () => {
+  it("reclaims an abandoned lock once and never deletes a lock it does not own", () => {
     const s = store();
     mkdirSync(s, { recursive: true });
-    writeFileSync(join(s, ".import.lock"), "someone-else");
-    const old = new Date(Date.now() - 11 * 60_000);
-    utimesSync(join(s, ".import.lock"), old, old);
+    writeFileSync(join(s, ".import.lock"), lockOwnedBy(deadPid()));
     assert.equal(importContinuityBundle(writeBundle([capture()]), s, policy).status, "imported");
     assert.equal(existsSync(join(s, ".import.lock")), false);
-    writeFileSync(join(s, ".import.lock"), "fresh-holder");
+    const live = lockOwnedBy(process.pid);
+    writeFileSync(join(s, ".import.lock"), live);
     assert.match(importContinuityBundle(writeBundle([capture({ sessionId: "s-3" })]), s, policy).refusal ?? "", /in progress/);
-    assert.equal(readFileSync(join(s, ".import.lock"), "utf8"), "fresh-holder");
+    assert.equal(readFileSync(join(s, ".import.lock"), "utf8"), live);
   });
 });
 
@@ -174,16 +173,41 @@ describe("round two: replayed quarantine, repeated IDs, corruption and lock age"
     assert.match(result.refusal ?? "", /corrupt line 1; restore it from a backup/);
   });
 
-  it("keeps a lock younger than ten minutes and reclaims an older one", () => {
+  it("never preempts a live holder however old, nor a lock from another host or an unreadable one", () => {
     const s = store();
     mkdirSync(s, { recursive: true });
     const lock = join(s, ".import.lock");
-    writeFileSync(lock, "slow-but-alive");
-    const fiveMinutes = new Date(Date.now() - 5 * 60_000);
-    utimesSync(lock, fiveMinutes, fiveMinutes);
+    writeFileSync(lock, lockOwnedBy(process.pid));
+    const ancient = new Date(Date.now() - 24 * 60 * 60_000);
+    utimesSync(lock, ancient, ancient);
     assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
-    const elevenMinutes = new Date(Date.now() - 11 * 60_000);
-    utimesSync(lock, elevenMinutes, elevenMinutes);
-    assert.equal(importContinuityBundle(writeBundle([capture()]), s, policy).status, "imported");
+    writeFileSync(lock, lockOwnedBy(deadPid(), "another-machine"));
+    assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
+    writeFileSync(lock, "not a lock");
+    assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /unreadable; remove it only after confirming/);
+    assert.equal(existsSync(join(s, "events.jsonl")), false);
+  });});
+
+describe("round three: real concurrent importers", () => {
+  it("two processes importing the same bundle at once leave one copy and one receipt", async () => {
+    const { spawn } = await import("node:child_process");
+    const { repoRootFromTestFile } = await import("./_lib/repo.js");
+    const root = repoRootFromTestFile(import.meta.url);
+    const home = mkdtempSync(join(tmpdir(), "continuity-concurrent-"));
+    writeFileSync(join(home, "trust-policy.json"), JSON.stringify(policy));
+    const bundle = writeBundle([capture(), capture({ sessionId: "s-2", observedAt: "2026-10-04T13:00:00.000Z" })]);
+    const run = () => new Promise<number>((resolve) => {
+      const child = spawn(process.execPath, ["--import", "tsx", join(root, "src", "continuity-cli.ts"), "import", bundle],
+        { cwd: root, env: { ...process.env, SIS_CONTINUITY_HOME: home }, stdio: "ignore" });
+      child.on("exit", (code) => resolve(code ?? -1));
+    });
+    const codes = await Promise.all([run(), run(), run()]);
+    // Losers are refused while the lock is held, or replay to already-imported; none duplicates.
+    assert.ok(codes.includes(0));
+    const events = readFileSync(join(home, "store", "events.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l).eventId);
+    assert.equal(events.length, 2);
+    assert.equal(new Set(events).size, 2);
+    assert.equal(readFileSync(join(home, "store", "imports.jsonl"), "utf8").trim().split("\n").length, 1);
+    assert.equal(existsSync(join(home, "store", ".import.lock")), false);
   });
 });

@@ -21,10 +21,10 @@ import {
   readSync,
   renameSync,
   rmSync,
-  statSync,
   truncateSync,
   writeSync,
 } from "node:fs";
+import { hostname } from "node:os";
 import { basename, isAbsolute, join } from "node:path";
 import {
   parseWorkGraphJsonl,
@@ -40,8 +40,6 @@ const BUNDLE_SCHEMA = "starlight.continuity-bundle.v1";
 const MANIFEST_SCHEMA = "starlight.continuity-manifest.v1";
 const BUNDLE_FILES = ["events.jsonl", "continuity.json", "recovery.txt"] as const;
 const MAX_FILE_BYTES = 4 * 1024 * 1024;
-// Imports finish in well under a second; a lock this old belongs to a crashed holder.
-const LOCK_STALE_MS = 10 * 60_000;
 
 export interface ContinuityWorkRegistration {
   workId: string;
@@ -245,38 +243,61 @@ function trustDecision(event: WorkGraphEvent, observations: BundleObservation[],
   }
   return { observation };
 }
+interface LockOwner { pid: number; host: string; token: string }
+
+function readLockOwner(lock: string): LockOwner | null {
+  try {
+    const owner = JSON.parse(readFileSync(lock, "utf8")) as LockOwner;
+    return Number.isInteger(owner.pid) && typeof owner.host === "string" && typeof owner.token === "string" ? owner : null;
+  } catch { return null; }
+}
+
+function processAlive(pid: number): boolean {
+  try { process.kill(pid, 0); return true; } catch (error) { return (error as NodeJS.ErrnoException).code === "EPERM"; }
+}
+
 /**
- * Synchronous exclusive lock owned by a random token. A crashed holder's lock is
- * reclaimed after ten minutes by renaming it aside, which exactly one contender wins.
- * `assertHeld` runs before every write, so a holder whose lock was reclaimed writes nothing more.
+ * Synchronous exclusive lock owned by `{pid, host, token}`. A live holder is never
+ * preempted however long it runs; only a lock whose holder process on this host has
+ * exited is reclaimed, by renaming it aside so exactly one contender wins. Locks from
+ * another host, or unreadable ones, are never reclaimed automatically.
  */
 function withStoreLock<T>(storeDirectory: string, run: (assertHeld: () => void) => T): T {
   const lock = join(storeDirectory, ".import.lock");
-  const token = randomUUID();
-  const acquire = () => { const fd = openSync(lock, "wx"); writeSync(fd, token); closeSync(fd); };
+  const me: LockOwner = { pid: process.pid, host: hostname(), token: randomUUID() };
+  const acquire = () => { const fd = openSync(lock, "wx"); writeSync(fd, JSON.stringify(me)); closeSync(fd); };
   try {
     acquire();
   } catch {
-    let stale = false;
-    try { stale = Date.now() - statSync(lock).mtimeMs > LOCK_STALE_MS; } catch { /* released meanwhile */ }
-    if (!stale) throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes");
-    const aside = `${lock}.stale-${token}`;
-    try { renameSync(lock, aside); } catch { throw new ContinuityRefusal("Another importer reclaimed the stale lock; retry after it finishes"); }
+    const holder = readLockOwner(lock);
+    const abandoned = holder !== null && holder.host === me.host && !processAlive(holder.pid);
+    if (!abandoned) {
+      throw new ContinuityRefusal(holder === null
+        ? `The import lock at ${lock} is unreadable; remove it only after confirming no import is running`
+        : "Another continuity import is in progress; retry after it finishes");
+    }
+    const aside = `${lock}.abandoned-${me.token}`;
+    try { renameSync(lock, aside); } catch { throw new ContinuityRefusal("Another importer reclaimed the abandoned lock; retry after it finishes"); }
+    // The rename may have raced a fresh holder; only discard what was really abandoned.
+    const taken = readLockOwner(aside);
+    if (!taken || taken.token !== holder.token) {
+      try { renameSync(aside, lock); } catch { /* the newer holder's lock stays aside; it will refuse its own next write */ }
+      throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes");
+    }
     rmSync(aside, { force: true });
     try { acquire(); } catch { throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes"); }
   }
   const assertHeld = () => {
-    let holder = "";
-    try { holder = readFileSync(lock, "utf8"); } catch { /* reclaimed */ }
-    if (holder !== token) throw new ContinuityRefusal("The import lock was reclaimed by another importer; this import stopped before its next write and can be re-run");
+    if (readLockOwner(lock)?.token !== me.token) {
+      throw new ContinuityRefusal("The import lock is no longer held by this import; it stopped before its next write and can be re-run");
+    }
   };
   try {
     return run(assertHeld);
   } finally {
-    try { if (readFileSync(lock, "utf8") === token) rmSync(lock, { force: true }); } catch { /* already gone */ }
+    if (readLockOwner(lock)?.token === me.token) rmSync(lock, { force: true });
   }
 }
-
 /** Complete lines only: a torn final line from a crashed writer is never trusted. */
 function readJsonl(file: string): unknown[] {
   if (!existsSync(file)) return [];

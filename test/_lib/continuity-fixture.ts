@@ -1,3 +1,5 @@
+import { spawnSync } from "node:child_process";
+import { hostname } from "node:os";
 import { createHash } from "node:crypto";
 import { mkdtempSync, writeFileSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -64,3 +66,13 @@ export function writeBundle(parts: ReturnType<typeof capture>[], over: Record<st
   return dir;
 }
 
+
+/** A lock file in the importer's format, owned by the given process. */
+export function lockOwnedBy(pid: number, host = hostname()): string {
+  return JSON.stringify({ pid, host, token: `test-${pid}` });
+}
+
+/** The PID of a process that has already exited. */
+export function deadPid(): number {
+  return spawnSync(process.execPath, ["-e", ""]).pid!;
+}
