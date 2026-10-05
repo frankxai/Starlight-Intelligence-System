@@ -51,7 +51,7 @@ describe("vault MCP server quality contract", () => {
   it("every tool has a title, full annotations, 80+ char description, bounded described inputs and an outputSchema", async () => {
     await withVault(async (dir) => {
       const tools = (await session(dir, [{ jsonrpc: "2.0", id: 1, method: "tools/list" }])).get(1)!.result.tools;
-      assert.equal(tools.length, 13);
+      assert.equal(tools.length, 15);
       for (const tool of tools) {
         assert.match(tool.name, /^sis_[a-z_]+$/);
         assert.ok(tool.title, `${tool.name} title`);

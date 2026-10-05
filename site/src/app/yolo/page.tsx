@@ -33,22 +33,22 @@ type Phase = {
 
 const SESSION_PHASES: Phase[] = [
   {
-    step: "open",
+    step: "Open",
     desc: "Load yolo-scope.json. Apply phase-in lockout. Read prior session drift. Increment session counter.",
     accent: "violet",
   },
   {
-    step: "scan",
+    step: "Scan",
     desc: "Parallel single-message dispatch to 7 council agents. Each runs yolo-scan through its domain lens against active repos.",
     accent: "cyan",
   },
   {
-    step: "synthesize",
+    step: "Synthesize",
     desc: "Prime dedupes overlapping moves across council packets. Ranks by leverage × activity × alignment / (blast × effort). Returns top 3–5.",
     accent: "fuchsia",
   },
   {
-    step: "execute",
+    step: "Execute",
     desc: "You pick. Conductor dispatches council-of-relevance. Subagent QA gates. Auto-/starlight-board on substrate touch with sovereign re-ack.",
     accent: "emerald",
   },
@@ -110,7 +110,7 @@ export default function YoloPage() {
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <GalaxyField still="nursery" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400">
             Top-tier session-mode command
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-5xl">
@@ -150,7 +150,7 @@ export default function YoloPage() {
       {/* ── Session phases ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Session lifecycle
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -159,7 +159,7 @@ export default function YoloPage() {
           <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04] sm:grid-cols-2 lg:grid-cols-4">
             {SESSION_PHASES.map((p) => (
               <div key={p.step} className="bg-[#0c0c12] p-6">
-                <p className={`font-mono text-[11px] uppercase tracking-widest ${ACCENT_TEXT[p.accent]}`}>
+                <p className={`font-mono text-[11px] normal-case tracking-wider ${ACCENT_TEXT[p.accent]}`}>
                   {p.step}
                 </p>
                 <p className="mt-3 text-[14px] leading-[1.7] text-slate-400">{p.desc}</p>
@@ -172,7 +172,7 @@ export default function YoloPage() {
       {/* ── Structural gates ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Gates (structural, non-negotiable)
           </h2>
           <p className="mt-3 max-w-xl text-xl font-semibold text-white">
@@ -184,7 +184,7 @@ export default function YoloPage() {
                 key={g.name}
                 className={`rounded-xl border ${ACCENT_BORDER.violet} bg-[#0c0c12] p-6`}
               >
-                <p className="font-mono text-[11px] uppercase tracking-widest text-violet-300">
+                <p className="font-mono text-[11px] normal-case tracking-wider text-violet-300">
                   {g.name}
                 </p>
                 <p className="mt-2 text-[14px] leading-[1.7] text-slate-300">{g.rule}</p>
@@ -197,7 +197,7 @@ export default function YoloPage() {
       {/* ── Tripwires ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Tripwires
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -207,10 +207,10 @@ export default function YoloPage() {
             <table className="w-full text-left text-[14px]">
               <thead className="bg-white/[0.04]">
                 <tr>
-                  <th className="px-6 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-400">
+                  <th className="px-6 py-3 font-mono text-[11px] normal-case tracking-wider text-slate-400">
                     Trigger
                   </th>
-                  <th className="px-6 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-400">
+                  <th className="px-6 py-3 font-mono text-[11px] normal-case tracking-wider text-slate-400">
                     Response
                   </th>
                 </tr>
@@ -223,8 +223,8 @@ export default function YoloPage() {
                       <span
                         className={
                           t.response === "REFUSE"
-                            ? "rounded bg-red-500/10 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-red-300"
-                            : "rounded bg-amber-500/10 px-2 py-0.5 font-mono text-[11px] uppercase tracking-widest text-amber-300"
+                            ? "rounded bg-red-500/10 px-2 py-0.5 font-mono text-[11px] normal-case tracking-wider text-red-300"
+                            : "rounded bg-amber-500/10 px-2 py-0.5 font-mono text-[11px] normal-case tracking-wider text-amber-300"
                         }
                       >
                         {t.response}
@@ -241,7 +241,7 @@ export default function YoloPage() {
       {/* ── Architecture link ── */}
       <section className="px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Architecture
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">

@@ -47,7 +47,7 @@ export function CopyButton({ value, label }: { value: string; label: string }) {
       <button
         type="button"
         onClick={copy}
-        className={`inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md border px-3 font-mono text-[11px] uppercase tracking-widest transition-micro ${
+        className={`inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md border px-3 font-mono text-[11px] normal-case tracking-wider transition-micro ${
           state === "copied"
             ? "border-emerald-400/30 text-emerald-300"
             : state === "failed"

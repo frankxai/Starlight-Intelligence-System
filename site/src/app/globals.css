@@ -17,6 +17,10 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: var(--font-jbmono), ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  /* Secondary text steps lifted so text-slate-500/600 reaches WCAG AA (4.5:1) on the near-black surfaces.
+     400 stays the brighter step (7.6:1), so the hierarchy 400 > 500 > 600 is kept. */
+  --color-slate-500: #8091aa;
+  --color-slate-600: #6e809a;
 }
 
 * {
@@ -384,6 +388,7 @@ body {
   font-size: 15px;
   line-height: 1.85;
   color: rgb(203 213 225);
+  overflow-wrap: anywhere;
 }
 .explainer-prose > * + * { margin-top: 1.25em; }
 .explainer-prose h2,

@@ -167,13 +167,13 @@ export default function ProtocolPage() {
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400">
             The protocol
           </p>
           <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
             Starlight Intelligence Protocol
           </h1>
-          <p className="mt-4 font-mono text-[13px] uppercase tracking-widest text-slate-500">
+          <p className="mt-4 font-mono text-[13px] normal-case tracking-wider text-slate-500">
             v1.1.1
           </p>
           <p className="mt-6 max-w-xl text-[15px] leading-[1.8] text-slate-400">
@@ -203,7 +203,7 @@ export default function ProtocolPage() {
       {/* ── Source-of-truth banner ── */}
       <section className="border-b border-white/[0.08] bg-white/[0.01] px-6 py-4">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-slate-500">
-          <span className="text-[10px] uppercase tracking-widest text-slate-400">
+          <span className="text-[10px] normal-case tracking-wider text-slate-400">
             Canonical source
           </span>
           <span className="text-slate-700">·</span>
@@ -211,7 +211,7 @@ export default function ProtocolPage() {
             href={SIP_GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-slate-400 transition-std hover:text-violet-300"
+            className="inline-flex min-h-8 items-center font-mono text-slate-400 transition-std hover:text-violet-300"
           >
             frankxai/Starlight-Intelligence-System
           </a>
@@ -254,13 +254,13 @@ export default function ProtocolPage() {
               <table className="w-full border-collapse text-left text-[13px]">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] normal-case tracking-wider text-slate-400">
                       File
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] normal-case tracking-wider text-slate-400">
                       Purpose
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] normal-case tracking-wider text-slate-400">
                       Required
                     </th>
                   </tr>
@@ -344,12 +344,12 @@ export default function ProtocolPage() {
             .
           </p>
 
-          <p className="mt-6 text-[14px] uppercase tracking-widest text-slate-400">
+          <p className="mt-6 text-[14px] normal-case tracking-wider text-slate-400">
             Minimum block
           </p>
           <CodeBlock label="attestation">{ATTESTATION_BLOCK}</CodeBlock>
 
-          <p className="mt-8 text-[14px] uppercase tracking-widest text-slate-400">
+          <p className="mt-8 text-[14px] normal-case tracking-wider text-slate-400">
             Pinning rules
           </p>
           <ul className="mt-4 space-y-3 pl-6 text-[14px] text-slate-400">
@@ -416,16 +416,16 @@ export default function ProtocolPage() {
               <table className="w-full border-collapse text-left text-[13px]">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] normal-case tracking-wider text-slate-400">
                       Tier
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] normal-case tracking-wider text-slate-400">
                       Prefix / location
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] normal-case tracking-wider text-slate-400">
                       Owner
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                    <th scope="col" className="px-4 py-3 font-mono text-[10px] normal-case tracking-wider text-slate-400">
                       Example
                     </th>
                   </tr>
@@ -541,7 +541,7 @@ export default function ProtocolPage() {
             </li>
             <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
               Canonical changelog:{" "}
-              <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-violet-300">
+              <code className="break-all rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-violet-300">
                 starlightintelligence.org/protocol/changelog
               </code>
               .
@@ -589,7 +589,7 @@ export default function ProtocolPage() {
           id="adopt-sip"
           className="mt-24 scroll-mt-24"
         >
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400/80">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400/80">
             Adopt SIP
           </p>
           <h2 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
@@ -603,8 +603,8 @@ export default function ProtocolPage() {
 
           <div className="mt-8 overflow-hidden rounded-2xl border border-violet-500/[0.18] bg-gradient-to-br from-violet-500/[0.06] via-transparent to-fuchsia-500/[0.05]">
             <div className="border-b border-white/[0.06] px-5 py-3">
-              <code className="font-mono text-[10px] uppercase tracking-widest text-violet-300/80">
-                attestation · this page
+              <code className="font-mono text-[10px] normal-case tracking-wider text-violet-300/80">
+                Attestation · this page
               </code>
             </div>
             <pre className="overflow-x-auto p-5 font-mono text-[12px] leading-[1.8] text-slate-200">
@@ -629,7 +629,7 @@ export default function ProtocolPage() {
             </Link>
           </div>
 
-          <p className="mt-10 text-[11px] uppercase tracking-widest text-slate-400">
+          <p className="mt-10 text-[11px] normal-case tracking-wider text-slate-400">
             Built on SIP · v1.1.1 · Authored by Frank Riemer (Starlight Holding
             BV) · MIT
           </p>
@@ -650,7 +650,7 @@ function Section({
 }) {
   return (
     <section className="mt-16 first:mt-0">
-      <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+      <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
         {eyebrow}
       </p>
       <h2 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
@@ -671,7 +671,7 @@ function CodeBlock({
   return (
     <div className="mt-4 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
       <div className="border-b border-white/[0.06] px-4 py-2">
-        <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
+        <code className="font-mono text-[10px] normal-case tracking-wider text-slate-400">
           {label}
         </code>
       </div>
