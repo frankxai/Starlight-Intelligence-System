@@ -16,7 +16,7 @@ export function CardTile({ card }: { card: CosmosCard }) {
     >
       <div className="flex items-center gap-2">
         <span
-          className={`rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-widest ${ACCENT_CHIP[accent]}`}
+          className={`rounded-full border px-2 py-0.5 text-[10px] normal-case tracking-wider ${ACCENT_CHIP[accent]}`}
         >
           {KIND_LABEL[card.kind]}
         </span>

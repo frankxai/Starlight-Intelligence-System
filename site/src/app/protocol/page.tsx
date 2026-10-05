@@ -541,7 +541,7 @@ export default function ProtocolPage() {
             </li>
             <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
               Canonical changelog:{" "}
-              <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-violet-300">
+              <code className="break-all rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-[12px] text-violet-300">
                 starlightintelligence.org/protocol/changelog
               </code>
               .
