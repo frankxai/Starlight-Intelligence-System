@@ -384,6 +384,7 @@ body {
   font-size: 15px;
   line-height: 1.85;
   color: rgb(203 213 225);
+  overflow-wrap: anywhere;
 }
 .explainer-prose > * + * { margin-top: 1.25em; }
 .explainer-prose h2,
