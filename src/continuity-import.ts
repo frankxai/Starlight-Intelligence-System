@@ -275,6 +275,9 @@ function reclaimAbandoned(lock: string, me: LockOwner): void {
   } catch {
     const other = readLockOwner(mutex);
     // Clearing a crashed reclaimer's mutex automatically would itself race; leave it to an operator.
+    if (other === null && existsSync(mutex)) {
+      throw new ContinuityRefusal(`The lock reclaim mutex at ${mutex} is unreadable; remove it only after confirming no import is running`);
+    }
     if (other && other.host === me.host && !processAlive(other.pid)) {
       throw new ContinuityRefusal(`A crashed lock reclaimer left ${mutex}; remove it and ${lock} after confirming no import is running`);
     }
