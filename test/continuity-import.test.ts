@@ -147,7 +147,7 @@ describe("owner reconciliation", () => {
     mkdirSync(s, { recursive: true });
     writeFileSync(join(s, ".import.lock"), "999999");
     assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
-    const old = new Date(Date.now() - 60_000);
+    const old = new Date(Date.now() - 11 * 60_000);
     utimesSync(join(s, ".import.lock"), old, old);
     assert.equal(importContinuityBundle(writeBundle([capture()]), s, policy).status, "imported");
     assert.equal(existsSync(join(s, ".import.lock")), false);

@@ -57,7 +57,8 @@ export function renderStatus(status: ContinuityStatus): string {
     `  delivery: ${w.delivery.completed ? "completed with proof" : w.admission.admitted ? `missing ${w.delivery.missingProofs.join(", ") || "nothing"}` : "not started"}`,
     w.quarantined ? `  quarantined: ${w.quarantined} untrusted event(s)` : "",
   ].filter(Boolean).join("\n"));
-  const footer = `\n${status.imports} import(s). Nothing resumes automatically; paused work needs owner reconciliation.\n`;
+  const issues = status.issues.length ? `\n${status.issues.length} Work Graph issue(s): ${[...new Set(status.issues.map((i) => i.code))].join(", ")}. Inspect with status --json.` : "";
+  const footer = `${issues}\n${status.imports} import(s). Nothing resumes automatically; paused work needs owner reconciliation.\n`;
   return lines.join("\n\n") + "\n" + footer;
 }
 

@@ -41,10 +41,9 @@ describe("review finding 2: observation binding", () => {
     importContinuityBundle(writeBundle([paused, active]), s, policy);
     const status = continuityStatus(s, policy).works[0];
     assert.equal(status.intent.observations, 2);
-    const twin = { ...paused, observation: { ...paused.observation } };
-    const result = importContinuityBundle(writeBundle([paused, twin]), store(), policy);
+    const result = importContinuityBundle(writeBundle([paused], { observations: [paused.observation, { ...paused.observation }] }), store(), policy);
     assert.equal(result.status, "imported");
-    assert.ok(result.quarantined.every((q) => q.reason === "observation-ambiguous"));
+    assert.deepEqual(result.quarantined.map((q) => q.reason), ["observation-ambiguous"]);
   });
 });
 
@@ -96,7 +95,7 @@ describe("review finding 4: locks and torn lines", () => {
     const s = store();
     mkdirSync(s, { recursive: true });
     writeFileSync(join(s, ".import.lock"), "someone-else");
-    const old = new Date(Date.now() - 60_000);
+    const old = new Date(Date.now() - 11 * 60_000);
     utimesSync(join(s, ".import.lock"), old, old);
     assert.equal(importContinuityBundle(writeBundle([capture()]), s, policy).status, "imported");
     assert.equal(existsSync(join(s, ".import.lock")), false);
@@ -137,5 +136,54 @@ describe("review finding 6: proof gate", () => {
     const [work] = continuityStatus(s, policy).works;
     assert.equal(work.delivery.readyToComplete, false);
     assert.ok(work.delivery.missingProofs.includes("verification"));
+  });
+});
+
+describe("round two: replayed quarantine, repeated IDs, corruption and lock age", () => {
+  it("records a quarantined event once across replays and later manifests", () => {
+    const s = store();
+    const untrusted = capture({ workId: "work:unknown" });
+    const bundle = writeBundle([untrusted]);
+    importContinuityBundle(bundle, s, policy);
+    rmSync(join(s, "imports.jsonl"));
+    const replay = importContinuityBundle(bundle, s, policy);
+    assert.deepEqual([replay.quarantined.length, replay.duplicates.length], [0, 1], "a replayed quarantine is a duplicate, not a new row");
+    importContinuityBundle(writeBundle([untrusted, capture({ sessionId: "s-other" })]), s, policy);
+    assert.equal(readFileSync(join(s, "quarantine.jsonl"), "utf8").trim().split("\n").length, 1);
+    assert.equal(continuityStatus(s, policy).unattributedQuarantine, 1);
+  });
+
+  it("refuses a bundle that repeats an event ID with different claims", () => {
+    const active = capture({ reportedState: "active" });
+    const paused = capture({ reportedState: "paused" });
+    paused.event = { ...paused.event, eventId: active.event.eventId };
+    const s = store();
+    const result = importContinuityBundle(writeBundle([active, paused]), s, policy);
+    assert.equal(result.status, "refused");
+    assert.match(result.refusal ?? "", /repeats event ID/);
+    assert.equal(existsSync(join(s, "events.jsonl")), false);
+  });
+
+  it("reports a corrupt complete line as corruption, not as replayable", () => {
+    const s = store();
+    importContinuityBundle(writeBundle([capture()]), s, policy);
+    const file = join(s, "events.jsonl");
+    writeFileSync(file, "{not json}\n" + readFileSync(file, "utf8"));
+    const result = importContinuityBundle(writeBundle([capture({ sessionId: "s-9" })]), s, policy);
+    assert.equal(result.status, "refused");
+    assert.match(result.refusal ?? "", /corrupt line 1; restore it from a backup/);
+  });
+
+  it("keeps a lock younger than ten minutes and reclaims an older one", () => {
+    const s = store();
+    mkdirSync(s, { recursive: true });
+    const lock = join(s, ".import.lock");
+    writeFileSync(lock, "slow-but-alive");
+    const fiveMinutes = new Date(Date.now() - 5 * 60_000);
+    utimesSync(lock, fiveMinutes, fiveMinutes);
+    assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
+    const elevenMinutes = new Date(Date.now() - 11 * 60_000);
+    utimesSync(lock, elevenMinutes, elevenMinutes);
+    assert.equal(importContinuityBundle(writeBundle([capture()]), s, policy).status, "imported");
   });
 });

@@ -25,7 +25,7 @@ import {
   truncateSync,
   writeSync,
 } from "node:fs";
-import { isAbsolute, join } from "node:path";
+import { basename, isAbsolute, join } from "node:path";
 import {
   parseWorkGraphJsonl,
   projectWorkGraph,
@@ -40,7 +40,8 @@ const BUNDLE_SCHEMA = "starlight.continuity-bundle.v1";
 const MANIFEST_SCHEMA = "starlight.continuity-manifest.v1";
 const BUNDLE_FILES = ["events.jsonl", "continuity.json", "recovery.txt"] as const;
 const MAX_FILE_BYTES = 4 * 1024 * 1024;
-const LOCK_STALE_MS = 30_000;
+// Imports finish in well under a second; a lock this old belongs to a crashed holder.
+const LOCK_STALE_MS = 10 * 60_000;
 
 export interface ContinuityWorkRegistration {
   workId: string;
@@ -198,6 +199,12 @@ export function readContinuityBundle(bundleDirectory: string): {
   if (parsed.events.length !== manifest.eventCount || parsed.events.length !== bundle.events.length) {
     throw new ContinuityRefusal("Event count does not match the manifest");
   }
+  const ids = new Set<string>();
+  for (const event of parsed.events) {
+    // One bundle may not carry two versions of an event; the first must not silently win.
+    if (ids.has(event.eventId)) throw new ContinuityRefusal(`Bundle repeats event ID ${event.eventId}`);
+    ids.add(event.eventId);
+  }
   const foreign = parsed.events.find((e) => e.kind !== "intent.captured");
   if (foreign) throw new ContinuityRefusal(`Collectors may only supply intent.captured, not ${foreign.kind}`);
   const observations = (bundle.observations as unknown[]).filter((o): o is BundleObservation =>
@@ -240,9 +247,10 @@ function trustDecision(event: WorkGraphEvent, observations: BundleObservation[],
 }
 /**
  * Synchronous exclusive lock owned by a random token. A crashed holder's lock is
- * reclaimed after 30 seconds by renaming it aside, which exactly one contender wins.
+ * reclaimed after ten minutes by renaming it aside, which exactly one contender wins.
+ * `assertHeld` runs before every write, so a holder whose lock was reclaimed writes nothing more.
  */
-function withStoreLock<T>(storeDirectory: string, run: () => T): T {
+function withStoreLock<T>(storeDirectory: string, run: (assertHeld: () => void) => T): T {
   const lock = join(storeDirectory, ".import.lock");
   const token = randomUUID();
   const acquire = () => { const fd = openSync(lock, "wx"); writeSync(fd, token); closeSync(fd); };
@@ -257,8 +265,13 @@ function withStoreLock<T>(storeDirectory: string, run: () => T): T {
     rmSync(aside, { force: true });
     try { acquire(); } catch { throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes"); }
   }
+  const assertHeld = () => {
+    let holder = "";
+    try { holder = readFileSync(lock, "utf8"); } catch { /* reclaimed */ }
+    if (holder !== token) throw new ContinuityRefusal("The import lock was reclaimed by another importer; this import stopped before its next write and can be re-run");
+  };
   try {
-    return run();
+    return run(assertHeld);
   } finally {
     try { if (readFileSync(lock, "utf8") === token) rmSync(lock, { force: true }); } catch { /* already gone */ }
   }
@@ -269,7 +282,12 @@ function readJsonl(file: string): unknown[] {
   if (!existsSync(file)) return [];
   const text = readBounded(file).toString("utf8");
   const complete = text.endsWith("\n") ? text : text.slice(0, text.lastIndexOf("\n") + 1);
-  return complete.split("\n").filter(Boolean).map((line) => JSON.parse(line));
+  return complete.split("\n").filter(Boolean).map((line, index) => {
+    try { return JSON.parse(line); } catch {
+      // A torn tail is expected after a crash; a bad complete line is corruption.
+      throw new ContinuityRefusal(`Store file ${basename(file)} has a corrupt line ${index + 1}; restore it from a backup before continuing`);
+    }
+  });
 }
 
 /** Appends whole lines, first trimming a torn tail that no receipt ever covered. */
@@ -327,7 +345,7 @@ export function importContinuityBundle(
   mkdirSync(storeDirectory, { recursive: true, mode: 0o700 });
   const paths = storePaths(storeDirectory);
   try {
-    return withStoreLock(storeDirectory, () => {
+    return withStoreLock(storeDirectory, (assertHeld) => {
       const receipts = readJsonl(paths.receipts) as { bundleDigest: string }[];
       if (receipts.some((r) => r.bundleDigest === bundle.digest)) {
         return { status: "already-imported" as const, bundleDigest: bundle.digest, ...empty };
@@ -335,6 +353,7 @@ export function importContinuityBundle(
       const stored = new Map<string, string>();
       for (const event of readJsonl(paths.events) as WorkGraphEvent[]) stored.set(event.eventId, canonical(event));
       const observed = new Set((readJsonl(paths.observations) as { eventId: string }[]).map((o) => o.eventId));
+      const alreadyQuarantined = new Set((readJsonl(paths.quarantine) as { eventId: string }[]).map((q) => q.eventId));
       const accepted: WorkGraphEvent[] = [];
       const duplicates: string[] = [];
       const quarantined: ContinuityImportResult["quarantined"] = [];
@@ -345,7 +364,7 @@ export function importContinuityBundle(
         if (previous !== undefined && previous !== canonical(event)) throw new ContinuityRefusal(`Event ${event.eventId} conflicts with stored content`);
         const outcome = trustDecision(event, bundle.observations, policy);
         if ("reason" in outcome) {
-          if (previous === undefined) quarantined.push({ eventId: event.eventId, workId: event.workId, reason: outcome.reason });
+          if (previous === undefined && !alreadyQuarantined.has(event.eventId)) quarantined.push({ eventId: event.eventId, workId: event.workId, reason: outcome.reason });
           else duplicates.push(event.eventId);
           continue;
         }
@@ -360,16 +379,20 @@ export function importContinuityBundle(
         else duplicates.push(event.eventId);
       }
       // Observations, then events, then the receipt: every interruption replays safely.
+      assertHeld();
       appendJsonl(paths.observations, observations);
+      assertHeld();
       appendJsonl(paths.events, accepted);
+      assertHeld();
       appendJsonl(paths.quarantine, quarantined.map((q) => ({ ...q, bundleDigest: bundle.digest, importedAt })));
+      assertHeld();
       appendJsonl(paths.receipts, [{ bundleDigest: bundle.digest, importedAt, accepted: accepted.length,
         duplicates: duplicates.length, quarantined: quarantined.length }]);
       return { status: "imported" as const, bundleDigest: bundle.digest, accepted: accepted.map((e) => e.eventId), duplicates,
         quarantined, executionStarted: false as const };
     });
   } catch (error) {
-    const refusal = error instanceof ContinuityRefusal ? error.message : "Import stopped before its receipt; re-running replays it safely. If it repeats, inspect the store files.";
+    const refusal = error instanceof ContinuityRefusal ? error.message : "Import stopped before its receipt; re-running replays it. If it repeats, inspect the store files.";
     return { status: "refused", bundleDigest: bundle.digest, refusal, ...empty };
   }
 }
@@ -417,7 +440,7 @@ export function continuityStatus(storeDirectory: string, policyInput?: unknown):
   const events = readJsonl(paths.events) as WorkGraphEvent[];
   const observations = new Map<string, BundleObservation & { eventId: string }>();
   for (const o of readJsonl(paths.observations) as (BundleObservation & { eventId: string })[]) if (!observations.has(o.eventId)) observations.set(o.eventId, o);
-  const quarantine = readJsonl(paths.quarantine) as { workId: string }[];
+  const quarantine = [...new Map((readJsonl(paths.quarantine) as { eventId: string; workId: string }[]).map((q) => [q.eventId, q])).values()];
   const projection = projectWorkGraph(events);
   const works: ContinuityWorkStatus[] = projection.workItems.map((item) => {
     const own = events.filter((e) => e.workId === item.workId);
@@ -503,7 +526,7 @@ export function reconcileWork(storeDirectory: string, policyInput: unknown, requ
   if (request.requirements && request.requirements.verification !== true) {
     throw new ContinuityRefusal("Admitted work must require verification proof before completion");
   }
-  return withStoreLock(storeDirectory, () => {
+  return withStoreLock(storeDirectory, (assertHeld) => {
     const status = continuityStatus(storeDirectory, policy).works.find((w) => w.workId === request.workId);
     if (!status) throw new ContinuityRefusal("No trusted captured intent exists for this work");
     if (status.admission.admitted) throw new ContinuityRefusal("Work is already admitted; a second claim is refused");
@@ -536,6 +559,7 @@ export function reconcileWork(storeDirectory: string, policyInput: unknown, requ
     };
     const check = parseWorkGraphJsonl(JSON.stringify(event));
     if (check.issues.length) throw new ContinuityRefusal(`Reconciliation event failed validation: ${check.issues[0].message}`);
+    assertHeld();
     appendJsonl(storePaths(storeDirectory).events, [event]);
     return event;
   });
