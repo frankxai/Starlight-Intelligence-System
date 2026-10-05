@@ -246,3 +246,15 @@ describe("round four: orphaned observations and the reclaim mutex", () => {
     assert.equal(existsSync(lock), false);
   });
 });
+
+describe("follow-up: operator-facing lock messages", () => {
+  it("names an unreadable reclaim mutex instead of reporting a running import", () => {
+    const s = store();
+    mkdirSync(s, { recursive: true });
+    const lock = join(s, ".import.lock");
+    writeFileSync(lock, lockOwnedBy(deadPid()));
+    writeFileSync(`${lock}.reclaim`, "not a lock");
+    assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /reclaim mutex at .*\.import\.lock\.reclaim is unreadable/);
+    assert.ok(existsSync(`${lock}.reclaim`));
+  });
+});
