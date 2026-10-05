@@ -30,15 +30,21 @@ updates:
   # medium, 5 low), but with no npm entry here nothing ever opened a PR to act
   # on them — every bump had to be made by hand, like the 16.3.5 RCE fix.
   #
-  # One entry per lockfile directory, since Dependabot resolves per manifest.
-  # Grouped and capped so this does not bury the review queue.
+  # One entry and one group per lockfile directory. A single multi-directory
+  # group (the 2026-09-26 run) failed: the root pnpm-workspace.yaml made
+  # Dependabot treat /cockpit/mcp and /plugins/starlight-intelligence as pnpm
+  # workspace members (misconfigured_tooling), /console resolved the parent
+  # workspace and could not write its own lockfile (NoChangeError), and the
+  # one combined PR mixed five package managers' worth of risk. Per-directory
+  # groups keep each PR reviewable and let one directory fail alone.
+  #
+  # Root PRs: package.json and package-lock.json are in the Foundry validator
+  # source closure (foundry/validators/toolchain.lock.v1.json). Any root bump
+  # needs a follow-up commit refreshing those two digests after
+  # `npm run test:foundry` passes; CI will stay red
+  # on contracts-and-compiler / harness until then, by design.
   - package-ecosystem: "npm"
-    directories:
-      - "/"
-      - "/site"
-      - "/console"
-      - "/cockpit/mcp"
-      - "/plugins/starlight-intelligence"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -48,9 +54,110 @@ updates:
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
+    # Foundry-pinned validator toolchain. foundry/validators/toolchain.lock.v1.json
+    # pins these exact versions and integrities; its policy is that CI never
+    # floats them, so a bump is a reviewed lock refresh, not a Dependabot PR.
+    ignore:
+      - dependency-name: "ajv"
+      - dependency-name: "semver"
+      - dependency-name: "yaml"
+      - dependency-name: "fast-xml-parser"
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
-      npm-minor-patch:
+      npm-root-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "npm"
+    directory: "/site"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "supply-chain"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "framer-motion"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+    groups:
+      npm-site-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "npm"
+    directory: "/console"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "supply-chain"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+    groups:
+      npm-console-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "npm"
+    directory: "/cockpit/mcp"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "supply-chain"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    open-pull-requests-limit: 3
+    groups:
+      npm-cockpit-mcp-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "npm"
+    directory: "/plugins/starlight-intelligence"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "supply-chain"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+    groups:
+      npm-plugin-minor-patch:
         update-types:
           - "minor"
           - "patch"

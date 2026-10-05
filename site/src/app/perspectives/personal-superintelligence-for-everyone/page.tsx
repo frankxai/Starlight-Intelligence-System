@@ -65,10 +65,10 @@ export default function PersonalSuperintelligencePerspective() {
       />
       <header className="border-b border-white/[0.08] px-5 py-24 sm:px-6 md:py-36">
         <div className="mx-auto max-w-7xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-300">
+          <p className="font-mono text-[11px] normal-case tracking-wider text-cyan-300">
             Starlight perspective · 12 August 2026
           </p>
-          <h1 className="mt-8 max-w-6xl font-serif text-6xl font-semibold leading-[0.91] tracking-[-0.055em] sm:text-7xl lg:text-8xl">
+          <h1 className="mt-8 max-w-6xl font-serif text-[clamp(2rem,10vw,3.75rem)] font-semibold leading-[0.91] tracking-[-0.055em] sm:text-7xl lg:text-8xl">
             Personal superintelligence
             <br />
             <em className="font-normal text-violet-300">for everyone.</em>
@@ -82,7 +82,7 @@ export default function PersonalSuperintelligencePerspective() {
 
       <section className="border-b border-white/[0.08] px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[180px_minmax(0,760px)] lg:justify-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-600">
+          <p className="font-mono text-[10px] normal-case tracking-wider text-slate-600">
             The moment
           </p>
           <div className="space-y-6 text-lg leading-8 text-slate-300">
@@ -110,7 +110,7 @@ export default function PersonalSuperintelligencePerspective() {
       <section className="border-b border-white/[0.08] bg-[#0b1018] px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto max-w-7xl">
           <header className="max-w-3xl">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+            <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
               A plural ecosystem
             </p>
             <h2 className="mt-6 font-serif text-4xl font-semibold tracking-[-0.04em] md:text-6xl">
@@ -142,7 +142,7 @@ export default function PersonalSuperintelligencePerspective() {
       <section className="border-b border-white/[0.08] px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.6fr_1fr]">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+            <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
               The extension
             </p>
             <h2 className="mt-6 font-serif text-4xl font-semibold leading-tight tracking-[-0.04em] md:text-6xl">
@@ -179,7 +179,7 @@ export default function PersonalSuperintelligencePerspective() {
       <section className="border-b border-white/[0.08] bg-[#0b1018] px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.6fr_1fr]">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+            <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
               What comes next
             </p>
             <h2 className="mt-6 font-serif text-4xl font-semibold tracking-[-0.04em] md:text-6xl">
@@ -225,7 +225,7 @@ export default function PersonalSuperintelligencePerspective() {
 
       <section className="px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+          <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
             Primary sources
           </p>
           <div className="mt-8 divide-y divide-white/[0.08] border-y border-white/[0.08]">

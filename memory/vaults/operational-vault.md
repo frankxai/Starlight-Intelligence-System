@@ -870,3 +870,14 @@ Validation: 33 focused tests passed across swarm, instruction compilation and Qu
 Runbook: `docs/operations/queen-session.md`. Demo: `tools/queen/session-demo.ts`. Private fixture receipts are not committed. Public coordination service is developed separately in `production-agent-patterns` using its existing Railway operator.
 
 Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+
+## 2026-09-30 — Narrative, human experience and community proposal
+
+Extended operational PR #217 with `docs/strategy/2026-09-30-starlight-narrative-experience-and-community.md` and linked it from the existing vision. The proposal maps reviewed portfolio principles to product behavior, implementation requirements and acceptance evidence; connects cinematic design and directed image generation with the existing storage decisions and AI etiquette; and builds on the Starlight Communities creation-cell toolkit and pilot kit.
+
+Checked current portfolio STRATEGY, SIS AGENTS/CREATOR and community README/AGENTS/pilot-kit. Verified the new document byte-for-byte on the branch. Generated one editorial preview image; it is not a deployed asset or approved identity. Shared Design Taste Kernel sources referenced by SIS were inaccessible at the checked locations and remain an implementation/release dependency.
+
+State: documentation proposal, not founder ratification, product admission, live community, model evaluation or partnership. The current community toolkit lacks hosted member UI, production authentication, tenancy and enabled live adapters. Next bounded action is experience storyboarding and an admitted artifact/pilot slice under existing WIP limits; human review and actual runtime evidence are still required.
+
+Built on SIP — operational proposal record.

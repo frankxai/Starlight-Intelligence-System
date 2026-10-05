@@ -115,7 +115,7 @@ function AccordPrism() {
       <span className="absolute left-[53%] top-1/2 h-px w-3/4 origin-left -rotate-[6deg] bg-violet-300/70" />
       <span className="absolute left-[53%] top-1/2 h-px w-3/4 origin-left rotate-[6deg] bg-emerald-300/70" />
       <span className="absolute left-[53%] top-1/2 h-px w-3/4 origin-left rotate-[18deg] bg-amber-200/70" />
-      <span className="absolute bottom-6 left-6 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-600">
+      <span className="absolute bottom-6 left-6 font-mono text-[10px] normal-case tracking-wider text-slate-600">
         One constitution / several operating expressions
       </span>
     </div>
@@ -154,7 +154,7 @@ export default function ConstitutionPage() {
         <GalaxyField still="veil" />
         <div className="relative mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1.08fr_.92fr] lg:items-end">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-cyan-300">
+            <p className="font-mono text-[11px] normal-case tracking-wider text-cyan-300">
               The Starlight Accord · Version 1.0
             </p>
             <h1 className="mt-8 max-w-5xl font-serif text-6xl font-semibold leading-[0.9] tracking-[-0.055em] sm:text-7xl lg:text-8xl">
@@ -168,7 +168,7 @@ export default function ConstitutionPage() {
               A public constraint on what we are willing to build—and an
               invitation to test whether the work honors it.
             </p>
-            <div className="mt-8 flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-slate-400">
+            <div className="mt-8 flex flex-wrap gap-2 font-mono text-[10px] normal-case tracking-wider text-slate-400">
               <span className="border border-white/10 px-3 py-2">
                 Published 12 August 2026
               </span>
@@ -186,7 +186,7 @@ export default function ConstitutionPage() {
 
       <section className="border-b border-white/[0.08] px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[180px_minmax(0,760px)] lg:justify-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-600">
+          <p className="font-mono text-[10px] normal-case tracking-wider text-slate-600">
             The short answer
           </p>
           <div>
@@ -206,7 +206,7 @@ export default function ConstitutionPage() {
       <section className="border-b border-white/[0.08] bg-[#0b1018] px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.6fr_1fr]">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+            <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
               The premise
             </p>
             <h2 className="mt-6 font-serif text-4xl font-semibold leading-tight tracking-[-0.04em] md:text-6xl">
@@ -255,7 +255,7 @@ export default function ConstitutionPage() {
       <section className="border-b border-white/[0.08] px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto max-w-7xl">
           <header className="max-w-3xl">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+            <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
               The nine commitments
             </p>
             <h2 className="mt-6 font-serif text-4xl font-semibold tracking-[-0.04em] md:text-6xl">
@@ -281,7 +281,7 @@ export default function ConstitutionPage() {
                 </h3>
                 <p className="leading-7 text-slate-400">{principle.body}</p>
                 <p className="border-l border-emerald-300/30 pl-5 text-sm leading-6 text-slate-400">
-                  <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.14em] text-emerald-300">
+                  <span className="mb-2 block font-mono text-[10px] normal-case tracking-wider text-emerald-300">
                     Product test
                   </span>
                   {principle.test}
@@ -296,7 +296,7 @@ export default function ConstitutionPage() {
         <div className="mx-auto max-w-7xl">
           <header className="grid gap-8 lg:grid-cols-2">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+              <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
                 Constitutional inheritance
               </p>
               <h2 className="mt-6 font-serif text-4xl font-semibold tracking-[-0.04em] md:text-6xl">
@@ -325,7 +325,7 @@ export default function ConstitutionPage() {
                   <strong className="block font-serif text-xl text-white">
                     {venture.name}
                   </strong>
-                  <small className="mt-1 block font-mono text-[10px] uppercase tracking-[0.12em] text-slate-600">
+                  <small className="mt-1 block font-mono text-[10px] normal-case tracking-wider text-slate-600">
                     {venture.promise}
                   </small>
                 </span>
@@ -347,7 +347,7 @@ export default function ConstitutionPage() {
       <section className="border-b border-white/[0.08] px-5 py-20 sm:px-6 md:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.6fr_1fr]">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+            <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
               The evidence rule
             </p>
             <h2 className="mt-6 font-serif text-4xl font-semibold tracking-[-0.04em] md:text-6xl">
@@ -380,7 +380,7 @@ export default function ConstitutionPage() {
       <section className="relative overflow-hidden px-5 py-24 text-center sm:px-6 md:py-36">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.11),transparent_55%)]" />
         <div className="relative mx-auto max-w-5xl">
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300">
+          <p className="font-mono text-[10px] normal-case tracking-wider text-cyan-300">
             A living accord
           </p>
           <h2 className="mt-7 font-serif text-5xl font-semibold leading-[1.02] tracking-[-0.04em] md:text-7xl">
@@ -391,8 +391,8 @@ export default function ConstitutionPage() {
             </em>
           </h2>
           <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-slate-400">
-            This is not a claim that every tension is solved. It is a public
-            standard against which the work can be judged.
+            Not every tension is solved. This is a public standard against
+            which the work can be judged.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link

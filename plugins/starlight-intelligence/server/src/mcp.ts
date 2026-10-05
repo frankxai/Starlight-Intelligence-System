@@ -6,6 +6,7 @@ import decisionSkill from "../../skills/starlight-decision-ledger/SKILL.md";
 import executionSkill from "../../skills/starlight-execution/SKILL.md";
 import knowledgeSkill from "../../skills/starlight-knowledge/SKILL.md";
 import { StarlightError, StarlightStore } from "./store.js";
+import { registerReviewTools } from "./review-tools.js";
 import type { RecordType } from "./types.js";
 
 const TEMPLATE_URI = "ui://starlight/command-center/v2.html";
@@ -482,6 +483,7 @@ export function createStarlightServer(options: {
   registerDataTools(server, options.store, options.actor);
   registerCommandCenter(server, options.store);
   registerSkills(server);
+  registerReviewTools(server);
   return server;
 }
 
@@ -496,6 +498,8 @@ export const starlightToolNames = [
   "record_decision",
   "register_evidence",
   "render_command_center",
+  "get_agent_interfaces",
+  "prepare_review_handoff",
 ] as const;
 
 export type StarlightRecordType = RecordType;
