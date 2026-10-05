@@ -68,7 +68,7 @@ export default function PersonalSuperintelligencePerspective() {
           <p className="font-mono text-[11px] normal-case tracking-wider text-cyan-300">
             Starlight perspective · 12 August 2026
           </p>
-          <h1 className="mt-8 max-w-6xl font-serif text-6xl font-semibold leading-[0.91] tracking-[-0.055em] sm:text-7xl lg:text-8xl">
+          <h1 className="mt-8 max-w-6xl font-serif text-[clamp(2rem,10vw,3.75rem)] font-semibold leading-[0.91] tracking-[-0.055em] sm:text-7xl lg:text-8xl">
             Personal superintelligence
             <br />
             <em className="font-normal text-violet-300">for everyone.</em>

@@ -29,7 +29,7 @@ export function Footer() {
               <p className="text-[11px] font-medium tracking-wider text-slate-400">
                 {group.label}
               </p>
-              <nav className="mt-3 flex flex-col gap-2" aria-label={`${group.label} navigation`}>
+              <nav className="mt-3 flex flex-col" aria-label={`${group.label} navigation`}>
                 {group.items.map((it) => (
                   <FooterLink key={it.href} href={it.href}>
                     {it.label}
@@ -42,7 +42,7 @@ export function Footer() {
           {/* Connect — external + newcomer */}
           <div className="lg:col-span-2">
             <p className="text-[11px] font-medium tracking-wider text-slate-400">Connect</p>
-            <nav className="mt-3 flex flex-col gap-2" aria-label="Connect navigation">
+            <nav className="mt-3 flex flex-col" aria-label="Connect navigation">
               <FooterLink href="/brand">Brand identity</FooterLink>
               {CONNECT_LINKS.map((l) => (
                 <FooterLink key={l.href} href={l.href} external={l.external}>
@@ -74,7 +74,7 @@ function FooterLink({
   children: React.ReactNode;
   external?: boolean;
 }) {
-  const cls = "text-[13px] text-slate-400 transition-micro hover:text-white";
+  const cls = "flex min-h-8 items-center text-[13px] text-slate-400 transition-micro hover:text-white";
   if (external) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
