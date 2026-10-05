@@ -33,7 +33,7 @@ export default async function CosmosPage() {
       <section className="relative overflow-hidden border-b border-white/[0.04]">
         <GalaxyField still="spiral" />
         <div className="relative mx-auto max-w-5xl px-6 py-24 md:py-36">
-          <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-violet-300">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-300">
             Starlight Cosmos
           </p>
           <h1 className="mt-4 max-w-3xl font-serif text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] tracking-tight text-white">
@@ -71,7 +71,7 @@ export default async function CosmosPage() {
       {/* ── Four views, one entry ── */}
       <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             One entry, four views
           </h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -115,7 +115,7 @@ export default async function CosmosPage() {
       {apod && (
         <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
           <div className="mx-auto max-w-5xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Astronomy picture of the day
               <span className="ml-2 font-mono normal-case tracking-normal text-slate-500">
                 {apod.date}
@@ -158,7 +158,7 @@ export default async function CosmosPage() {
       <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               From the knowledge library
             </h2>
             <Link
@@ -179,7 +179,7 @@ export default async function CosmosPage() {
       {/* ── Prompts to explore ── */}
       <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Prompts to explore
           </h2>
           <p className="mt-3 max-w-2xl text-[14px] leading-[1.8] text-slate-400">
@@ -213,7 +213,7 @@ export default async function CosmosPage() {
                 href={`/cosmos/cards/${p.slug}`}
                 className="group rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 transition-std hover:border-violet-500/[0.3] hover:bg-violet-500/[0.04]"
               >
-                <p className="font-mono text-[11px] uppercase tracking-widest text-violet-300">
+                <p className="font-mono text-[11px] normal-case tracking-wider text-violet-300">
                   {p.from}
                 </p>
                 <p className="mt-3 text-[13px] leading-[1.75] text-slate-300">
@@ -229,7 +229,7 @@ export default async function CosmosPage() {
       {launches.length > 0 && (
         <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
           <div className="mx-auto max-w-5xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Next launches
               <span className="ml-2 normal-case tracking-normal text-slate-500">
                 via Launch Library 2
@@ -269,7 +269,7 @@ export default async function CosmosPage() {
       <section className="px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 md:p-8">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Built in the open
             </p>
             <p className="mt-3 max-w-2xl text-[14px] leading-[1.8] text-slate-300">

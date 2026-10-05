@@ -60,7 +60,7 @@ export default function ChangelogPage() {
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400">
             Public changelog
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-5xl">
@@ -87,7 +87,7 @@ export default function ChangelogPage() {
       {/* ── Source-of-truth banner ── */}
       <section className="border-b border-white/[0.08] bg-white/[0.01] px-6 py-4">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-slate-400">
-          <span className="text-[10px] uppercase tracking-widest text-slate-400">
+          <span className="text-[10px] normal-case tracking-wider text-slate-400">
             Canonical source
           </span>
           <span className="text-slate-700">·</span>

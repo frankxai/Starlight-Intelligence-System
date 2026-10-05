@@ -18,7 +18,7 @@ export default function PalacePage() {
     <div className="relative min-h-screen overflow-hidden bg-[#060609] pb-24 pt-8 text-[#e2e8f0]">
       <GalaxyField still="veil" />
       <div className="relative mx-auto max-w-5xl px-6">
-        <div className="mb-8 flex items-center gap-3 text-xs uppercase tracking-[3px] text-white/50">
+        <div className="mb-8 flex items-center gap-3 text-xs normal-case tracking-wider text-white/50">
           <Link href="/" className="hover:text-white/80 transition">Starlight</Link>
           <span>/</span>
           <span>EXPERIENCE LAYER</span>
@@ -61,7 +61,7 @@ export default function PalacePage() {
         <div className="mt-10 text-center">
           <Link
             href="/vaults"
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-[2px] text-white/60 hover:text-white"
+            className="inline-flex items-center gap-2 text-xs normal-case tracking-wider text-white/60 hover:text-white"
           >
             Explore the raw vaults → 
           </Link>
