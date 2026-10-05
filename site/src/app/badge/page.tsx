@@ -98,7 +98,7 @@ export default async function BadgePage() {
         {/* Sizes preview */}
         <Section eyebrow="01 / Preview" heading="Renders cleanly at any width">
           <div className="space-y-6 rounded-xl border border-white/[0.08] bg-[#0c0c12] p-6">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Image
                 unoptimized
                 src={`/badge/${version}`}
@@ -111,7 +111,7 @@ export default async function BadgePage() {
                 native (28px)
               </span>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Image
                 unoptimized
                 src={`/badge/${version}`}
@@ -124,7 +124,7 @@ export default async function BadgePage() {
                 small (20px)
               </span>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Image
                 unoptimized
                 src={`/badge/${version}`}
@@ -137,7 +137,7 @@ export default async function BadgePage() {
                 large (40px)
               </span>
             </div>
-            <div className="flex items-center gap-4 rounded-lg bg-white p-4">
+            <div className="flex flex-wrap items-center gap-4 rounded-lg bg-white p-4">
               <Image
                 unoptimized
                 src={`/badge/${version}?theme=light`}

@@ -130,7 +130,7 @@ export function MemoryPalace() {
       <div className="relative rounded-3xl border border-white/[0.08] bg-[#060609]/80 p-8 pb-10 backdrop-blur-2xl" style={{ backgroundImage: 'url(/assets/visuals/queen-premium/35.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'multiply', opacity: 0.95 }}>
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <div className="text-xs uppercase tracking-[3px] text-white/50">LIVING MEMORY SUBSTRATE</div>
+            <div className="text-xs normal-case tracking-wider text-white/50">Living memory substrate</div>
             <div className="text-3xl font-semibold tracking-tighter text-white">Starlight Memory Palace</div>
           </div>
           <button
@@ -277,10 +277,10 @@ export function MemoryPalace() {
         {/* Interactive HUD — glass, alive, Jarvis */}
         <div className="mx-auto max-w-[620px] rounded-2xl border border-white/[0.08] bg-black/40 p-5 text-sm backdrop-blur-xl">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 text-xs uppercase tracking-[2px] text-white/50">
+            <div className="flex items-center gap-3 text-xs normal-case tracking-wider text-white/50">
               <div>Built on SIP</div>
               <div className="h-px w-3 bg-white/20" />
-              <div>6 VAULTS LIVE</div>
+              <div>6 vaults live</div>
               <div className="h-px w-3 bg-white/20" />
               <div>RRF 61.5%</div>
             </div>
@@ -299,8 +299,8 @@ export function MemoryPalace() {
           <div className="mt-4 min-h-[92px] rounded-xl border border-white/[0.06] bg-white/[0.015] p-4 text-[13px] leading-relaxed text-white/85">
             {current ? (
               <>
-                <div className="mb-1 text-[10px] uppercase tracking-[2px]" style={{ color: current.accent }}>
-                  {current.label} VAULT — {current.confidence} CONFIDENCE
+                <div className="mb-1 text-[10px] normal-case tracking-wider" style={{ color: current.accent }}>
+                  {current.label} vault — {current.confidence} confidence
                 </div>
                 <div>{current.excerpt}</div>
               </>
