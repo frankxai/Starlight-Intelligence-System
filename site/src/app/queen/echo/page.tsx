@@ -97,7 +97,7 @@ export default function EchoPage() {
     <div className="min-h-screen bg-[#060609] pb-24 pt-8 text-[#e2e8f0]">
       <div className="mx-auto max-w-6xl px-6">
         {/* Navigation Breadcrumb */}
-        <div className="mb-8 flex items-center gap-3 text-xs uppercase tracking-[3px] text-white/50">
+        <div className="mb-8 flex items-center gap-3 text-xs normal-case tracking-wider text-white/50">
           <Link href="/" className="hover:text-white transition">Starlight</Link>
           <span>/</span>
           <Link href="/queen" className="hover:text-white transition">Queen Swarms</Link>
@@ -120,7 +120,7 @@ export default function EchoPage() {
             <button
               onClick={triggerIngest}
               disabled={ingestStatus === "scanning"}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-xs font-semibold tracking-widest uppercase text-white hover:bg-white/10 transition disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-xs font-semibold tracking-wider normal-case text-white hover:bg-white/10 transition disabled:opacity-50"
             >
               {ingestStatus === "scanning" ? (
                 <>
@@ -194,7 +194,7 @@ export default function EchoPage() {
 
             {/* Quick Metrics */}
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
-              <div className="text-xs uppercase tracking-[2px] text-white/40 mb-4">Live Telemetry</div>
+              <div className="text-xs normal-case tracking-wider text-white/40 mb-4">Live Telemetry</div>
               <div className="space-y-4">
                 <div>
                   <div className="text-xs text-white/55">Memory Health Index</div>
@@ -232,7 +232,7 @@ export default function EchoPage() {
                       className="rounded-3xl border border-white/5 bg-white/[0.01] p-6 hover:border-white/10 transition relative overflow-hidden"
                     >
                       <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <span className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] font-mono uppercase text-white/60">
+                        <span className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] font-mono normal-case text-white/60">
                           {item.sourceVault} &rarr; {item.targetVault}
                         </span>
                         <span className="text-[10px] text-violet-400 font-mono">
@@ -291,7 +291,7 @@ export default function EchoPage() {
                     >
                       <div className="flex flex-wrap items-center gap-2 mb-3">
                         {item.vaults.map((v) => (
-                          <span key={v} className="rounded-md bg-cyan-400/5 border border-cyan-400/10 px-2 py-0.5 text-[10px] font-mono uppercase text-cyan-300">
+                          <span key={v} className="rounded-md bg-cyan-400/5 border border-cyan-400/10 px-2 py-0.5 text-[10px] font-mono normal-case text-cyan-300">
                             {v}
                           </span>
                         ))}
@@ -301,7 +301,7 @@ export default function EchoPage() {
                       <p className="text-sm text-white/70 mb-5 leading-relaxed">{item.description}</p>
 
                       <div className="space-y-2">
-                        <div className="text-xs uppercase tracking-widest text-cyan-400 mb-2">Resolution Options</div>
+                        <div className="text-xs normal-case tracking-wider text-cyan-400 mb-2">Resolution Options</div>
                         {item.resolutionOptions.map((option, index) => (
                           <button
                             key={index}

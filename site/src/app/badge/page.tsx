@@ -44,14 +44,14 @@ export default async function BadgePage() {
       <section className="relative overflow-hidden border-b border-white/[0.04]">
         <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400">
             Attestation badge
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-5xl">
             Built on SIP
           </h1>
-          <p className="mt-4 font-mono text-[13px] uppercase tracking-widest text-slate-500">
-            current canonical · {version}
+          <p className="mt-4 font-mono text-[13px] normal-case tracking-wider text-slate-500">
+            Current canonical · {version}
           </p>
           <p className="mt-6 max-w-xl text-[15px] leading-[1.8] text-slate-400">
             A visual signal that your project composes the Starlight
@@ -80,7 +80,7 @@ export default async function BadgePage() {
       <div className="mx-auto max-w-3xl px-6 py-16 md:py-20">
         {/* Important note — what the badge is, what it isn't */}
         <section className="rounded-2xl border border-amber-500/[0.18] bg-amber-500/[0.04] p-6">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-amber-300/80">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-amber-300/80">
             Important
           </p>
           <p className="mt-3 text-[14px] leading-[1.8] text-slate-300">
@@ -159,7 +159,7 @@ export default async function BadgePage() {
             The most common shape. GitHub, GitLab, npm, and crates.io all
             render it identically.
           </p>
-          <CodeBlock label="markdown">{markdownSnippet}</CodeBlock>
+          <CodeBlock label="Markdown">{markdownSnippet}</CodeBlock>
           <p className="mt-4 text-[13px] leading-[1.7] text-slate-500">
             Pin to a specific version so the badge reflects what you actually
             built against. The protocol uses SemVer; the badge does too.
@@ -176,7 +176,7 @@ export default async function BadgePage() {
             if you want the badge to always reflect the current canonical SIP
             version. Trades pin precision for zero maintenance.
           </p>
-          <CodeBlock label="markdown">{latestSnippet}</CodeBlock>
+          <CodeBlock label="Markdown">{latestSnippet}</CodeBlock>
         </Section>
 
         {/* HTML snippet */}
@@ -184,7 +184,7 @@ export default async function BadgePage() {
           <p className="text-[14px] leading-[1.85] text-slate-400">
             Sites, docs platforms, anywhere markdown isn&apos;t the substrate.
           </p>
-          <CodeBlock label="html">{htmlSnippet}</CodeBlock>
+          <CodeBlock label="HTML">{htmlSnippet}</CodeBlock>
         </Section>
 
         {/* Shields.io snippet */}
@@ -193,7 +193,7 @@ export default async function BadgePage() {
             For adopters who prefer the shields.io style or already standardise
             on it across their stack. Same meaning, different chrome.
           </p>
-          <CodeBlock label="markdown">{shieldsSnippet}</CodeBlock>
+          <CodeBlock label="Markdown">{shieldsSnippet}</CodeBlock>
         </Section>
 
         {/* What the URL accepts */}
@@ -227,7 +227,7 @@ export default async function BadgePage() {
         {/* CTA back to protocol */}
         <section className="mt-24">
           <div className="rounded-2xl border border-violet-500/[0.18] bg-gradient-to-br from-violet-500/[0.06] via-transparent to-fuchsia-500/[0.05] p-8">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400/80">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400/80">
               Next
             </p>
             <h2 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
@@ -259,7 +259,7 @@ export default async function BadgePage() {
             </div>
           </div>
 
-          <p className="mt-10 text-[11px] uppercase tracking-widest text-slate-600">
+          <p className="mt-10 text-[11px] normal-case tracking-wider text-slate-600">
             Built on SIP &middot; {version} &middot; MIT
           </p>
         </section>
@@ -279,7 +279,7 @@ function Section({
 }) {
   return (
     <section className="mt-16 first:mt-0">
-      <p className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+      <p className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
         {eyebrow}
       </p>
       <h2 className="mt-3 text-2xl font-semibold text-white md:text-3xl">
@@ -300,7 +300,7 @@ function CodeBlock({
   return (
     <div className="mt-4 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
       <div className="border-b border-white/[0.06] px-4 py-2">
-        <code className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
+        <code className="font-mono text-[10px] normal-case tracking-wider text-slate-600">
           {label}
         </code>
       </div>
