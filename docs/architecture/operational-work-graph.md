@@ -133,6 +133,24 @@ import { parseWorkGraphJsonl, projectWorkGraph } from "@arcanea/starlight-intell
 
 The CLI exits non-zero for malformed input, conflicting event IDs, or a premature completion attempt.
 
+## Session continuity import
+
+The private collector in `frankxai/agentic-ops` (`lifecycle/sis-continuity.js`) exports explicit user intent from harness sessions as checksummed bundles of `intent.captured` events. A manifest proves file integrity, not who produced the claims. `src/continuity-import.ts` adds the trust decisions this graph leaves to its operator, without changing the event contract:
+
+- **Integrity and shape.** The manifest checksums are recomputed, every event passes `parseWorkGraphJsonl`, and a bundle may contain only `intent.captured`. A bundle claiming execution, admission or completion is refused.
+- **Trust policy** (`starlight.continuity-trust.v1`, private, at `~/.starlight/continuity/trust-policy.json`). It lists supported SIS source revisions, collector harnesses with their source-reference prefixes, known operators, and registered works with their single owner and optional bound origin/branch. Each event is bound to exactly one observation (same session key, work, request digest and checkout head), and its claims must be well formed: a known reported state, `collector-claimed` source verification, and a `source.system` that matches the harness. Events that fail a check are quarantined with a reason (`unregistered-work`, `untrusted-collector`, `unknown-operator`, `checkout-mismatch`, `observation-ambiguous`, `claim-invalid` and others), not dropped silently.
+- **Idempotence.** Re-importing a manifest is a no-op. Observations are written before events and events before the receipt, so an interrupted import replays: stored events count as duplicates, missing observations are backfilled, and quarantined events are recorded once. An event whose ID matches a stored event or a stored (possibly orphaned) observation must carry identical claims; otherwise the whole bundle is refused. A bundle that repeats an event ID is refused. A lock owned by `{pid, host, token}` serializes writers. A live holder is never preempted, whatever its age. Only a lock whose holder process on this host has exited is reclaimed, under a separate exclusive reclaim mutex that re-checks the owner. Locks from another host and unreadable locks need an operator, and every write first checks that the lock is still held. Torn final lines are ignored on read and trimmed before the next append. A corrupt complete line is reported as corruption to restore from backup, not as replayable. A reused event ID with different content refuses the whole bundle. Fresh observations of the same request count as one request across harnesses.
+- **Admission stays human.** Import never admits, runs or completes work. `reconcileWork` is the only path to `work.admitted`. Only the registered owner may decide; a second claim is refused; any reported state other than `active`, including unknown, needs explicit acknowledgement; and admitted work must require verification proof. The `starlight-continuity reconcile` CLI asks the owner to type the work ID in an interactive terminal and refuses pipes and agents. This is a presence check, not authentication. Reconciliation is deliberately not exposed through MCP, where a caller can claim any actor identity.
+- **Read model.** `continuityStatus` projects the store through `projectWorkGraph` into A2A-aligned states: `submitted`, `input-required`, `working`, `blocked` and `completed`. It reports captured intent, the bound checkout and uncommitted-work flag, the owner, admission and missing proofs. Completion stays proof-gated, and `mayAutomaticallyResume` is always false.
+
+```bash
+starlight-continuity import <absolute-bundle-dir>
+starlight-continuity status [--json]
+starlight-continuity reconcile --work <id> --actor <owner> --decision admit|block --reason <text> [--acknowledge-paused]
+```
+
+MCP: `sis_continuity_status` (read) and `sis_continuity_import`. Signed collector attestation remains a protocol change under the SIP Board process. Until then, the trust policy and private store location are the boundary, and imported claims keep `sourceVerification: collector-claimed`.
+
 ## Adoption sequence
 
 1. **Kernel (this change):** schema, parser, idempotent projector, proof gates, CLI, tests.
