@@ -37,7 +37,7 @@ export default function QueenPage() {
               <Link href="https://github.com/frankxai/Starlight-Intelligence-System" className="inline-flex items-center gap-2 rounded-2xl border border-white/20 px-7 py-4 text-sm tracking-widest hover:bg-white/5">
                 View the live system
               </Link>
-              <a href="https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/queen-motion/index.html" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-white tracking-wider">Standalone motion HTML (reference) →</a>
+              <a href="https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/queen-motion/index.html" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-8 items-center text-sm text-zinc-400 hover:text-white tracking-wider">Standalone motion HTML (reference) →</a>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function QueenPage() {
                 <div className="overflow-hidden rounded-3xl border border-white/10">
                   <img src="/assets/visuals/15-queen-loop.jpg" alt="Queen continuous loop" className="w-full h-auto" />
                 </div>
-                <div className="mt-2 text-[10px] text-white/40 tracking-wider">L99 route — Grok Imagine • wired</div>
+                <div className="mt-2 text-[10px] text-white/50 tracking-wider">L99 route — Grok Imagine • wired</div>
               </div>
             </div>
 
@@ -107,7 +107,7 @@ export default function QueenPage() {
                 <div className="overflow-hidden rounded-3xl border border-white/10">
                   <img src="/assets/visuals/02-starlight-queen-closed-loop-dashboard.jpg" alt="Measure with parallel swarms and visual eval" className="w-full h-auto" />
                 </div>
-                <div className="mt-2 text-[10px] text-white/40 tracking-wider">Parallel measure — live swarm visuals</div>
+                <div className="mt-2 text-[10px] text-white/50 tracking-wider">Parallel measure — live swarm visuals</div>
               </div>
               <div className="md:col-span-5 order-1 md:order-2">
                 <div className="text-xs tracking-wider text-cyan-400">02 — Measure</div>
@@ -128,7 +128,7 @@ export default function QueenPage() {
                 <div className="overflow-hidden rounded-3xl border border-white/10">
                   <img src="/assets/visuals/06-self-advancing-sis-constellation.jpg" alt="Self-advancing system" className="w-full h-auto" />
                 </div>
-                <div className="mt-2 text-[10px] text-white/40 tracking-wider">Synthesis + ledger — attested visual atoms</div>
+                <div className="mt-2 text-[10px] text-white/50 tracking-wider">Synthesis + ledger — attested visual atoms</div>
               </div>
             </div>
           </div>
@@ -191,12 +191,12 @@ export default function QueenPage() {
               <div className="mt-3 text-sm text-white/60 max-w-[42ch] mx-auto">A self-contained animated page — scroll and the swarms respond. Fork the config inside to produce ledger, palace, or vertical variants of the same visual.</div>
               <div className="mt-5 inline-flex items-center gap-2 text-xs tracking-wider text-amber-300/80 group-hover:text-amber-300">Open → /queen-vision.html</div>
             </a>
-            <div className="mt-3 text-[10px] text-white/40 text-center">Also: <code className="font-mono text-amber-300/70">/starlight-queen ledger --visual</code> • <a href="https://github.com/frankxai/Starlight-Intelligence-System/tree/main/docs/queen-motion" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/70">deep standalone narrative</a> • skill definition in <code>skills/vision/queen-swarms-visual.md</code></div>
+            <div className="mt-3 text-[10px] text-white/50 text-center">Also: <code className="font-mono text-amber-300/70">/starlight-queen ledger --visual</code> • <a href="https://github.com/frankxai/Starlight-Intelligence-System/tree/main/docs/queen-motion" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/70">deep standalone narrative</a> • skill definition in <code>skills/vision/queen-swarms-visual.md</code></div>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-white/10 py-12 text-center text-xs text-white/40">
+      <footer className="border-t border-white/10 py-12 text-center text-xs text-white/50">
         Built on SIP · Queen orchestration loop · All visuals generated with Grok Imagine.
       </footer>
     </div>

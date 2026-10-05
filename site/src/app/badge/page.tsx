@@ -146,7 +146,7 @@ export default async function BadgePage() {
                 height={28}
                 style={{ height: 28, width: "auto" }}
               />
-              <span className="font-mono text-[11px] text-slate-500">
+              <span className="font-mono text-[11px] text-slate-700">
                 ?theme=light (for light README backgrounds)
               </span>
             </div>

@@ -12,7 +12,7 @@ export function Footer() {
             <Link
               href="/"
               aria-label="Starlight Intelligence — home"
-              className="inline-flex items-center gap-2.5 transition-micro hover:opacity-80"
+              className="inline-flex min-h-11 items-center gap-2.5 transition-micro hover:opacity-80"
             >
               <StarlightMark size={18} />
               <span className="text-[15px] font-semibold tracking-tight text-white">Starlight</span>

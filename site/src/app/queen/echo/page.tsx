@@ -194,7 +194,7 @@ export default function EchoPage() {
 
             {/* Quick Metrics */}
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
-              <div className="text-xs normal-case tracking-wider text-white/40 mb-4">Live Telemetry</div>
+              <div className="text-xs normal-case tracking-wider text-white/50 mb-4">Live Telemetry</div>
               <div className="space-y-4">
                 <div>
                   <div className="text-xs text-white/55">Memory Health Index</div>
@@ -202,7 +202,7 @@ export default function EchoPage() {
                 </div>
                 <div>
                   <div className="text-xs text-white/55">RRF Unification Precision</div>
-                  <div className="text-2xl font-semibold text-cyan-300">+61% <span className="text-[10px] text-white/40">vs lexical</span></div>
+                  <div className="text-2xl font-semibold text-cyan-300">+61% <span className="text-[10px] text-white/50">vs lexical</span></div>
                 </div>
                 <div>
                   <div className="text-xs text-white/55">Total Active Vault Atoms</div>
@@ -222,7 +222,7 @@ export default function EchoPage() {
                 </div>
 
                 {promotions.length === 0 ? (
-                  <div className="rounded-3xl border border-white/5 bg-white/[0.01] p-12 text-center text-white/40">
+                  <div className="rounded-3xl border border-white/5 bg-white/[0.01] p-12 text-center text-white/50">
                     No pending promotions. Your cognitive vaults are consolidated and in sync.
                   </div>
                 ) : (
@@ -246,7 +246,7 @@ export default function EchoPage() {
                       <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex gap-1.5">
                           {item.tags.map((tag) => (
-                            <span key={tag} className="text-[10px] text-white/40 bg-white/[0.02] border border-white/5 px-2.5 py-0.5 rounded-full">
+                            <span key={tag} className="text-[10px] text-white/50 bg-white/[0.02] border border-white/5 px-2.5 py-0.5 rounded-full">
                               #{tag}
                             </span>
                           ))}
@@ -280,7 +280,7 @@ export default function EchoPage() {
                 </div>
 
                 {contradictions.length === 0 ? (
-                  <div className="rounded-3xl border border-white/5 bg-white/[0.01] p-12 text-center text-white/40">
+                  <div className="rounded-3xl border border-white/5 bg-white/[0.01] p-12 text-center text-white/50">
                     No vault contradictions found.
                   </div>
                 ) : (

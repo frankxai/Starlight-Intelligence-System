@@ -50,10 +50,10 @@ export default function PalacePage() {
             The full team brief lives at <Link href="https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/superpowers/specs/2026-06-12-jarvis-memory-palace-team-brief.md" className="underline hover:text-white">docs/superpowers/specs/2026-06-12-jarvis-memory-palace-team-brief.md</Link>. 
             It specifies r3f + custom shaders + real gateway data + desire-proof loops + swarm topology for the production 3D experience.
           </p>
-          <p className="mt-3 text-[10px] text-white/40">
+          <p className="mt-3 text-[10px] text-white/50">
             Built on SIP • Visuals as first-class ledger artifacts
           </p>
-          <p className="mt-4 text-xs text-white/40">
+          <p className="mt-4 text-xs text-white/50">
             Premium dark technical aesthetic. Real memory data. The substrate made visible and interactive.
           </p>
         </div>
