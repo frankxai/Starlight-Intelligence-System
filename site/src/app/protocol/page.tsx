@@ -211,7 +211,7 @@ export default function ProtocolPage() {
             href={SIP_GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-slate-400 transition-std hover:text-violet-300"
+            className="inline-flex min-h-8 items-center font-mono text-slate-400 transition-std hover:text-violet-300"
           >
             frankxai/Starlight-Intelligence-System
           </a>

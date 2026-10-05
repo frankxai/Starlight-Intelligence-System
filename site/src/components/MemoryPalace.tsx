@@ -259,7 +259,7 @@ export function MemoryPalace() {
                   >
                     {vault.label}
                   </div>
-                  <div className="mt-0.5 text-[9px] text-white/40 group-hover:text-white/60">{vault.confidence}</div>
+                  <div className="mt-0.5 text-[9px] text-white/50 group-hover:text-white/60">{vault.confidence}</div>
                 </div>
 
                 {/* Extra life when voice or focus */}
@@ -307,12 +307,12 @@ export function MemoryPalace() {
             ) : (
               <div className="text-white/50">
                 Tap any orb to surface memory. Or speak an intention. The palace responds.
-                <div className="mt-2 text-[10px] text-white/30">This is the L99 seed. Full 3D r3f + real gateway data in the 21-person build.</div>
+                <div className="mt-2 text-[10px] text-white/50">This is the L99 seed. Full 3D r3f + real gateway data in the 21-person build.</div>
               </div>
             )}
           </div>
 
-          <div className="mt-3 flex items-center justify-between text-[10px] text-white/40">
+          <div className="mt-3 flex items-center justify-between text-[10px] text-white/50">
             <div>{CURRENT_METRICS.registeredAgents} agent definitions • local-first • {CURRENT_METRICS.vaults} semantic vaults</div>
             <a
               href="https://github.com/frankxai/Starlight-Intelligence-System"
@@ -324,7 +324,7 @@ export function MemoryPalace() {
           </div>
         </div>
 
-        <div className="mx-auto mt-4 max-w-[620px] text-center text-[10px] text-white/35">
+        <div className="mx-auto mt-4 max-w-[620px] text-center text-[10px] text-white/50">
           Obsidian is live now (open <span className="font-mono">memory/</span> as vault + use the new starlight-network.base). 
           This is the custom visualization path. See the full team brief in docs/superpowers/specs/.
         </div>
