@@ -114,14 +114,14 @@ export default function ResearchIndexPage() {
       <section className="border-b border-white/[0.08] px-6 py-16 bg-[#050507]">
         <div className="mx-auto max-w-5xl">
           <div className="grid items-center gap-8 md:grid-cols-2">
-            <div>
+            <div className="min-w-0">
               <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/[0.25] bg-cyan-500/[0.06] px-3 py-1 text-[10px] normal-case tracking-wider text-cyan-300">
                 Visual Intelligence
               </div>
               <h2 className="mt-4 font-serif text-4xl tracking-[-1.5px] text-white md:text-5xl">
                 Starlight Queen<br />Visual Intelligence
               </h2>
-              <p className="mt-4 text-[15px] leading-[1.75] text-slate-400">
+              <p className="mt-4 break-words text-[15px] leading-[1.75] text-slate-400">
                 The living heart of the system: a scroll-optimized visual narrative of the Queen v0.2 closed loop, her parallel swarms, ROUTE→MEASURE→LEARN→RATIFY→LEDGER choreography, and the first-class visual artifacts that now ledger every advance.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
