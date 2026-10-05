@@ -274,8 +274,10 @@ function reclaimAbandoned(lock: string, me: LockOwner): void {
     writeFileSync(mutex, JSON.stringify(me), { flag: "wx" });
   } catch {
     const other = readLockOwner(mutex);
-    // A reclaimer that crashed leaves its mutex; clear it only when that process is gone.
-    if (other && other.host === me.host && !processAlive(other.pid) && readLockOwner(mutex)?.token === other.token) rmSync(mutex, { force: true });
+    // Clearing a crashed reclaimer's mutex automatically would itself race; leave it to an operator.
+    if (other && other.host === me.host && !processAlive(other.pid)) {
+      throw new ContinuityRefusal(`A crashed lock reclaimer left ${mutex}; remove it and ${lock} after confirming no import is running`);
+    }
     throw busy();
   }
   try {

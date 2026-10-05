@@ -230,7 +230,7 @@ describe("round four: orphaned observations and the reclaim mutex", () => {
     assert.equal(importContinuityBundle(writeBundle([active]), s, policy).status, "imported");
   });
 
-  it("serializes reclaimers and clears a crashed reclaimer's mutex", () => {
+  it("serializes reclaimers and leaves a crashed reclaimer's mutex to an operator", () => {
     const s = store();
     mkdirSync(s, { recursive: true });
     const lock = join(s, ".import.lock");
@@ -239,8 +239,9 @@ describe("round four: orphaned observations and the reclaim mutex", () => {
     assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
     assert.ok(existsSync(lock), "a live reclaimer's target is left alone");
     writeFileSync(`${lock}.reclaim`, lockOwnedBy(deadPid()));
-    assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
-    assert.equal(existsSync(`${lock}.reclaim`), false, "a crashed reclaimer's mutex is cleared");
+    assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /crashed lock reclaimer left .*remove it/);
+    assert.ok(existsSync(`${lock}.reclaim`), "never cleared automatically");
+    rmSync(`${lock}.reclaim`);
     assert.equal(importContinuityBundle(writeBundle([capture()]), s, policy).status, "imported");
     assert.equal(existsSync(lock), false);
   });
