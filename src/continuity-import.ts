@@ -19,9 +19,9 @@ import {
   openSync,
   readFileSync,
   readSync,
-  renameSync,
   rmSync,
   truncateSync,
+  writeFileSync,
   writeSync,
 } from "node:fs";
 import { hostname } from "node:os";
@@ -257,9 +257,39 @@ function processAlive(pid: number): boolean {
 }
 
 /**
+ * Removes the lock only if its holder process on this host has exited. Reclaimers
+ * serialize on a separate exclusive mutex and re-read the owner inside it, so a lock
+ * taken by a fresh holder in the meantime is never removed.
+ */
+function reclaimAbandoned(lock: string, me: LockOwner): void {
+  const busy = () => new ContinuityRefusal("Another continuity import is in progress; retry after it finishes");
+  const holder = readLockOwner(lock);
+  if (holder === null) {
+    if (!existsSync(lock)) return;
+    throw new ContinuityRefusal(`The import lock at ${lock} is unreadable; remove it only after confirming no import is running`);
+  }
+  if (holder.host !== me.host || processAlive(holder.pid)) throw busy();
+  const mutex = `${lock}.reclaim`;
+  try {
+    writeFileSync(mutex, JSON.stringify(me), { flag: "wx" });
+  } catch {
+    const other = readLockOwner(mutex);
+    // A reclaimer that crashed leaves its mutex; clear it only when that process is gone.
+    if (other && other.host === me.host && !processAlive(other.pid) && readLockOwner(mutex)?.token === other.token) rmSync(mutex, { force: true });
+    throw busy();
+  }
+  try {
+    const current = readLockOwner(lock);
+    if (current && current.token === holder.token) rmSync(lock, { force: true });
+    else if (current) throw busy();
+  } finally {
+    if (readLockOwner(mutex)?.token === me.token) rmSync(mutex, { force: true });
+  }
+}
+/**
  * Synchronous exclusive lock owned by `{pid, host, token}`. A live holder is never
  * preempted however long it runs; only a lock whose holder process on this host has
- * exited is reclaimed, by renaming it aside so exactly one contender wins. Locks from
+ * exited is reclaimed, under a separate reclaim mutex. Locks from
  * another host, or unreadable ones, are never reclaimed automatically.
  */
 function withStoreLock<T>(storeDirectory: string, run: (assertHeld: () => void) => T): T {
@@ -269,25 +299,9 @@ function withStoreLock<T>(storeDirectory: string, run: (assertHeld: () => void) 
   try {
     acquire();
   } catch {
-    const holder = readLockOwner(lock);
-    const abandoned = holder !== null && holder.host === me.host && !processAlive(holder.pid);
-    if (!abandoned) {
-      throw new ContinuityRefusal(holder === null
-        ? `The import lock at ${lock} is unreadable; remove it only after confirming no import is running`
-        : "Another continuity import is in progress; retry after it finishes");
-    }
-    const aside = `${lock}.abandoned-${me.token}`;
-    try { renameSync(lock, aside); } catch { throw new ContinuityRefusal("Another importer reclaimed the abandoned lock; retry after it finishes"); }
-    // The rename may have raced a fresh holder; only discard what was really abandoned.
-    const taken = readLockOwner(aside);
-    if (!taken || taken.token !== holder.token) {
-      try { renameSync(aside, lock); } catch { /* the newer holder's lock stays aside; it will refuse its own next write */ }
-      throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes");
-    }
-    rmSync(aside, { force: true });
+    reclaimAbandoned(lock, me);
     try { acquire(); } catch { throw new ContinuityRefusal("Another continuity import is in progress; retry after it finishes"); }
-  }
-  const assertHeld = () => {
+  }  const assertHeld = () => {
     if (readLockOwner(lock)?.token !== me.token) {
       throw new ContinuityRefusal("The import lock is no longer held by this import; it stopped before its next write and can be re-run");
     }
@@ -373,7 +387,13 @@ export function importContinuityBundle(
       }
       const stored = new Map<string, string>();
       for (const event of readJsonl(paths.events) as WorkGraphEvent[]) stored.set(event.eventId, canonical(event));
-      const observed = new Set((readJsonl(paths.observations) as { eventId: string }[]).map((o) => o.eventId));
+      // Observations already stored (possibly orphaned by a crash before their event) must
+      // match a replayed event's observation exactly, or the bundle is refused.
+      const observed = new Map<string, string>();
+      for (const o of readJsonl(paths.observations) as Record<string, unknown>[]) {
+        const { importedAt: _importedAt, ...claims } = o;
+        if (!observed.has(String(o.eventId))) observed.set(String(o.eventId), canonical(claims));
+      }
       const alreadyQuarantined = new Set((readJsonl(paths.quarantine) as { eventId: string }[]).map((q) => q.eventId));
       const accepted: WorkGraphEvent[] = [];
       const duplicates: string[] = [];
@@ -390,12 +410,15 @@ export function importContinuityBundle(
           continue;
         }
         const o = outcome.observation;
-        // A replay after a crash backfills the observation its earlier attempt never wrote.
-        if (!observed.has(event.eventId)) {
-          observations.push({ eventId: event.eventId, workId: event.workId, sessionKey: o.sessionKey, requestDigest: o.requestDigest,
-            reportedState: o.reportedState, stateVerification: o.stateVerification, captureCompleteness: o.captureCompleteness,
-            repository: o.repository, importedAt });
+        const claims = { eventId: event.eventId, workId: event.workId, sessionKey: o.sessionKey, requestDigest: o.requestDigest,
+          reportedState: o.reportedState, stateVerification: o.stateVerification, captureCompleteness: o.captureCompleteness,
+          repository: o.repository };
+        const storedClaims = observed.get(event.eventId);
+        if (storedClaims !== undefined && storedClaims !== canonical(claims)) {
+          throw new ContinuityRefusal(`Event ${event.eventId} conflicts with the observation stored by an earlier or interrupted import`);
         }
+        // A replay after a crash backfills the observation its earlier attempt never wrote.
+        if (storedClaims === undefined) observations.push({ ...claims, importedAt });
         if (previous === undefined) accepted.push(event);
         else duplicates.push(event.eventId);
       }

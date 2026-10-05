@@ -211,3 +211,37 @@ describe("round three: real concurrent importers", () => {
     assert.equal(existsSync(join(home, "store", ".import.lock")), false);
   });
 });
+
+describe("round four: orphaned observations and the reclaim mutex", () => {
+  it("refuses a reused event ID whose claims differ from an orphaned observation", () => {
+    const s = store();
+    const active = capture({ reportedState: "active" });
+    importContinuityBundle(writeBundle([active]), s, policy);
+    // Crash after observations but before events: only the observation survives.
+    rmSync(join(s, "events.jsonl"));
+    rmSync(join(s, "imports.jsonl"));
+    const paused = capture({ reportedState: "paused" });
+    paused.event = { ...paused.event, eventId: active.event.eventId };
+    const result = importContinuityBundle(writeBundle([paused]), s, policy);
+    assert.equal(result.status, "refused");
+    assert.match(result.refusal ?? "", /conflicts with the observation stored by an earlier or interrupted import/);
+    assert.equal(existsSync(join(s, "events.jsonl")), false);
+    // The identical replay still completes.
+    assert.equal(importContinuityBundle(writeBundle([active]), s, policy).status, "imported");
+  });
+
+  it("serializes reclaimers and clears a crashed reclaimer's mutex", () => {
+    const s = store();
+    mkdirSync(s, { recursive: true });
+    const lock = join(s, ".import.lock");
+    writeFileSync(lock, lockOwnedBy(deadPid()));
+    writeFileSync(`${lock}.reclaim`, lockOwnedBy(process.pid));
+    assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
+    assert.ok(existsSync(lock), "a live reclaimer's target is left alone");
+    writeFileSync(`${lock}.reclaim`, lockOwnedBy(deadPid()));
+    assert.match(importContinuityBundle(writeBundle([capture()]), s, policy).refusal ?? "", /in progress/);
+    assert.equal(existsSync(`${lock}.reclaim`), false, "a crashed reclaimer's mutex is cleared");
+    assert.equal(importContinuityBundle(writeBundle([capture()]), s, policy).status, "imported");
+    assert.equal(existsSync(lock), false);
+  });
+});
