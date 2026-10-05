@@ -102,7 +102,7 @@ and it is never able to overrule a gate. Anything irreversible goes to Frank.
 
 <!-- STARLIGHT:BAND-B:END -->
 
-# Starlight Intelligence System — Codex / OpenCode Agent Instructions
+﻿# Starlight Intelligence System — Codex / OpenCode Agent Instructions
 
 > Persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) — a sovereign substrate.
 

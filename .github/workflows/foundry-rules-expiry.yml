@@ -1,0 +1,57 @@
+# Built on SIP — Starlight Intelligence Protocol v1.1.0
+# The Foundry compiler refuses expired docs-derived rules (RULES_FRESHNESS). The
+# 2026-10-01 expiry went unnoticed and left the harness check red on main for two
+# days, blocking every PR. This opens one issue before the next expiry instead.
+
+name: Foundry rules expiry watch
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Find the newest rules artifact and its review-by date
+        id: rules
+        run: |
+          node --input-type=module -e '
+            import { readdirSync, readFileSync, appendFileSync } from "node:fs";
+            const dir = "foundry/validators/openai";
+            const rules = readdirSync(dir)
+              .filter((f) => /^plugin-rules\..*\.json$/.test(f))
+              .map((f) => ({ file: f, ...JSON.parse(readFileSync(`${dir}/${f}`, "utf8")) }))
+              .sort((a, b) => String(b.reviewBy).localeCompare(String(a.reviewBy)))[0];
+            if (!rules?.reviewBy) throw new Error("no rules artifact with reviewBy found");
+            const days = Math.floor((Date.parse(`${rules.reviewBy}T23:59:59Z`) - Date.now()) / 86400000);
+            appendFileSync(process.env.GITHUB_OUTPUT, `file=${rules.file}\nreview_by=${rules.reviewBy}\ndays=${days}\n`);
+            console.log(`${rules.file} reviewBy ${rules.reviewBy}: ${days} day(s) left`);
+          '
+
+      - name: Open or refresh the renewal issue
+        if: ${{ fromJSON(steps.rules.outputs.days) <= 10 }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FILE: ${{ steps.rules.outputs.file }}
+          REVIEW_BY: ${{ steps.rules.outputs.review_by }}
+          DAYS: ${{ steps.rules.outputs.days }}
+        run: |
+          title="Foundry OpenAI plugin rules expire ${REVIEW_BY}"
+          body="\`${FILE}\` has ${DAYS} day(s) before its reviewBy date (${REVIEW_BY}). After that the Foundry compiler fails RULES_FRESHNESS and the harness check goes red on main. Renew against current official OpenAI plugin documentation, following docs/foundry/reviews/openai-rules-renewal-2026-10-04.md (new dated rules artifact, validator default path, lock digests, freshness and tamper tests)."
+          existing=$(gh issue list --state open --search "\"${title}\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "Still open: ${DAYS} day(s) left."
+          else
+            gh issue create --title "$title" --body "$body"
+          fi
