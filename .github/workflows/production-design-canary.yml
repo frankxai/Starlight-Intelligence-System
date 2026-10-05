@@ -1,7 +1,8 @@
 # Built on SIP — Starlight Intelligence Protocol v1.1.0
 # Production design canary. After each Production deploy (and daily) a headless Chrome visits the
-# live Protocol site at 320, 390, 768 and 1440 px and fails when a route scrolls sideways or shows
-# forced-uppercase text. A failure opens or updates one issue. Read-only against production.
+# live Protocol site (sitemap routes) at 320, 390, 768 and 1440 px and fails on sideways scrolling,
+# forced or typed capitals, touch targets under 24px, low text contrast and bad keyboard focus.
+# A failure opens or updates one issue. Read-only against production.
 
 name: Production design canary
 
@@ -44,7 +45,7 @@ jobs:
         env:
           CHROME: google-chrome
           NO_SANDBOX: "1"
-        run: node .github/scripts/probe-production.mjs --base https://starlightintelligence.org --out probe-results
+        run: node .github/scripts/probe-production.mjs --base https://starlightintelligence.org --out probe-results --fail-on overflow,uppercase,sourcecaps,touch,contrast,focus
         continue-on-error: true
 
       - name: Upload evidence
@@ -67,7 +68,7 @@ jobs:
             echo "Run: ${RUN_URL}"
             echo "Commit: ${TRIGGER_SHA}"
             echo
-            echo "Violations (overflow over 1px, or forced-uppercase text):"
+            echo "Violations (sideways overflow, forced or typed capitals, touch targets, contrast, focus):"
             echo
             sed 's/^/- /' probe-results/violations.txt
           } > issue-body.md
