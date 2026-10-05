@@ -66,7 +66,11 @@ Source: `ontology/company-registry.json` + `ontology/repo-tiers.json`. Same fenc
 
 Build and test commands. Ports. Local gotchas. Domain contracts that exist only here — the canon gate in `arcanea`, the fail-closed money rule in `payment-intelligence-system`, the homepage preservation contract in `frankx.ai-vercel-website`, the non-clinical boundary in the mind repos.
 
-**Band C outranks Band A and B on any conflict inside its own repo**, and says so in the generated preamble. A generated contract that can silently override a local safety gate is worse than no generated contract.
+**Band C outranks Band A on any conflict inside its own repo**, and the generated preamble says so. A generated contract that can silently override a local safety gate is worse than no generated contract.
+
+It does **not** outrank Band B, and the asymmetry is deliberate. Band A is behaviour, which a repo legitimately localizes — the canon gate in `arcanea`, fail-closed money in `payment-intelligence-system`, the non-clinical boundary in the mind repos. Band B is registry fact: owner, legal entity, accountable seat, brand pin, tier. A repo cannot localize a fact without becoming wrong, so a Band C line contradicting Band B is a defect to fix in `ontology/company-registry.json`, not a local override. Band B already subordinates itself where it should — the seat it names "is never able to overrule a gate."
+
+An earlier draft of this document claimed Band C outranked both while the generated preamble bound only "this section", and the generator's `--init` stub claimed both as well: three statements of the rule, two of them disagreeing with the one that actually ships. A cross-family review on [`arcanea-ai-app#443`](https://github.com/frankxai/arcanea-ai-app/pull/443) caught it. All three now state the asymmetry.
 
 ---
 

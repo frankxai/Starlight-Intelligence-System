@@ -230,7 +230,8 @@ for (const repo of selected) {
       '> Replace this block with: how to build, how to test, what breaks, and any',
       '> contract that exists only here.',
       '',
-      '_Band C outranks the generated bands above on any conflict inside this repo._',
+      '_This section outranks the inherited band above on any conflict inside this repo. It does not',
+      'override the company projection, which carries registry facts rather than instructions._',
     ].join('\n');
   }
 

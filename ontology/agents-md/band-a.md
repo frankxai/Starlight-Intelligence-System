@@ -2,8 +2,14 @@
 
 Identical in every repo in the estate. Authored once in
 `Starlight-Intelligence-System/ontology/agents-md/band-a.md` and projected by
-`scripts/agents-md-project.mjs`. **Band C — everything below the generated
-fences — outranks this section on any conflict inside this repo.**
+`scripts/agents-md-project.mjs`.
+
+**Precedence.** Band C is everything below the generated fences. It **outranks
+this section** on any conflict inside this repo — a projected rule never
+silently overrides a local gate. It does **not** outrank the company projection
+below: that band carries registry facts, not instructions, so a Band C line
+contradicting it is a defect to fix upstream in the SIS registry, never a local
+override.
 
 ### DNA
 
