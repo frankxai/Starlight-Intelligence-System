@@ -1,0 +1,68 @@
+# Session-continuity import, CLI, MCP tools and review regressions.
+# Does not edit package.json (foundry RULES_LOCK). Runs the dedicated test files only.
+name: Continuity gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/continuity-import.ts"
+      - "src/continuity-cli.ts"
+      - "src/mcp-server.ts"
+      - "src/work-graph.ts"
+      - "test/continuity-*.ts"
+      - "test/_lib/continuity-fixture.ts"
+      - "test/mcp-server-smoke.test.ts"
+      - "test/mcp-server-quality.test.ts"
+      - "docs/architecture/operational-work-graph.md"
+      - ".github/workflows/continuity-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/continuity-import.ts"
+      - "src/continuity-cli.ts"
+      - "src/mcp-server.ts"
+      - "src/work-graph.ts"
+      - "test/continuity-*.ts"
+      - "test/_lib/continuity-fixture.ts"
+      - "test/mcp-server-smoke.test.ts"
+      - "test/mcp-server-quality.test.ts"
+      - "docs/architecture/operational-work-graph.md"
+      - ".github/workflows/continuity-gate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: continuity-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  continuity-gate:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build (MCP quality test runs against dist)
+        run: npm run build
+
+      - name: Continuity tests
+        run: node --import tsx --test test/continuity-import.test.ts test/continuity-cli.test.ts test/continuity-mcp.test.ts test/continuity-review-regressions.test.ts
+
+      - name: MCP server contract with the continuity tools
+        run: node --import tsx --test test/mcp-server-smoke.test.ts test/mcp-server-quality.test.ts

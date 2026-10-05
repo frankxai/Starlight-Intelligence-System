@@ -3,9 +3,11 @@
  * Owner CLI for session continuity. Import and status mirror the MCP tools; reconcile
  * is deliberately local-only, because an MCP caller can claim any actor identity.
  *
- *   starlight-continuity import <absolute-bundle-dir>
- *   starlight-continuity status [--json]
- *   starlight-continuity reconcile --work <id> --actor <owner> --decision admit|block --reason <text> [--acknowledge-paused]
+ * Run after `npm run build` as `node dist/continuity-cli.js <command>`; package.json
+ * carries no bin entry because the Foundry RULES_LOCK pins that file.
+ *   import <absolute-bundle-dir>
+ *   status [--json]
+ *   reconcile --work <id> --actor <owner> --decision admit|block --reason <text> [--acknowledge-paused]
  */
 import { readFileSync, readSync } from "node:fs";
 import { homedir } from "node:os";
@@ -89,7 +91,7 @@ export function runContinuityCli(args: string[], terminal: OwnerTerminal = proce
       });
       return { exitCode: 0, stdout: JSON.stringify({ recorded: event.kind, eventId: event.eventId, executionStarted: false }) + "\n", stderr: "" };
     }
-    return { exitCode: 2, stdout: "", stderr: "Usage: starlight-continuity import <dir> | status [--json] | reconcile --work <id> --actor <owner> --decision admit|block --reason <text> [--acknowledge-paused]\n" };
+    return { exitCode: 2, stdout: "", stderr: "Usage: node dist/continuity-cli.js import <dir> | status [--json] | reconcile --work <id> --actor <owner> --decision admit|block --reason <text> [--acknowledge-paused]\n" };
   } catch (error) {
     return { exitCode: 1, stdout: "", stderr: `${error instanceof Error ? error.message : "Continuity command failed"}\n` };
   }
