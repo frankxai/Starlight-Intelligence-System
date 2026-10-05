@@ -21,7 +21,7 @@ export default function PalacePage() {
         <div className="mb-8 flex items-center gap-3 text-xs normal-case tracking-wider text-white/50">
           <Link href="/" className="hover:text-white/80 transition">Starlight</Link>
           <span>/</span>
-          <span>EXPERIENCE LAYER</span>
+          <span>Experience layer</span>
         </div>
 
         <div className="mb-10">

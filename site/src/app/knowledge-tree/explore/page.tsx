@@ -62,7 +62,7 @@ export default function KnowledgeTreeExplorePage() {
             &larr; Knowledge Tree
           </Link>
           <span className="text-slate-700 text-[12px]" aria-hidden="true">·</span>
-          <p className="text-[11px] font-medium uppercase tracking-widest text-cyan-400 truncate">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-cyan-400 truncate">
             Constellation Explorer &middot; Stage 1
           </p>
         </div>

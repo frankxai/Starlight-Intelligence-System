@@ -257,7 +257,7 @@ export function MemoryPalace() {
                     className="text-[10px] font-medium tracking-[1.5px] text-white/80"
                     style={{ color: isFocused ? "#fff" : vault.accent }}
                   >
-                    {vault.label.toUpperCase()}
+                    {vault.label}
                   </div>
                   <div className="mt-0.5 text-[9px] text-white/40 group-hover:text-white/60">{vault.confidence}</div>
                 </div>
@@ -290,7 +290,7 @@ export function MemoryPalace() {
               disabled={voiceActive}
               className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-1 text-xs text-white/80 transition hover:bg-white/5 disabled:opacity-60"
             >
-              {voiceActive ? "LISTENING..." : "SPEAK TO FOCUS"}
+              {voiceActive ? "Listening..." : "Speak to focus"}
               <span aria-hidden>⟐</span>
             </button>
           </div>

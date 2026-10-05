@@ -122,11 +122,11 @@ export default async function ResearchDetailPage({
           </Link>
           <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px]">
             <span
-              className={`rounded-full border px-2.5 py-1 uppercase tracking-widest ${accentChip}`}
+              className={`rounded-full border px-2.5 py-1 normal-case tracking-wider ${accentChip}`}
             >
               {TIER_LABEL[r.tier]}
             </span>
-            <span className="rounded-full border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 uppercase tracking-widest text-slate-400">
+            <span className="rounded-full border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 normal-case tracking-wider text-slate-400">
               {STATUS_LABEL[r.status]}
             </span>
             <time
@@ -169,7 +169,7 @@ export default async function ResearchDetailPage({
       {r.primarySources && r.primarySources.length > 0 && (
         <section className="border-b border-white/[0.04] px-6 py-16">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Primary sources
             </h2>
             <ul className="mt-4 space-y-2">
@@ -194,7 +194,7 @@ export default async function ResearchDetailPage({
       <section className="px-6 py-16">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Attestation
             </p>
             <p className="mt-3 text-[14px] leading-[1.7] text-slate-300">

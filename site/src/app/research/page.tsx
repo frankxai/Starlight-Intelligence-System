@@ -122,7 +122,7 @@ export default function ResearchIndexPage() {
                 Starlight Queen<br />Visual Intelligence
               </h2>
               <p className="mt-4 break-words text-[15px] leading-[1.75] text-slate-400">
-                The living heart of the system: a scroll-optimized visual narrative of the Queen v0.2 closed loop, her parallel swarms, ROUTE→MEASURE→LEARN→RATIFY→LEDGER choreography, and the first-class visual artifacts that now ledger every advance.
+                The living heart of the system: a scroll-optimized visual narrative of the Queen v0.2 closed loop, her parallel swarms, route → measure → learn → ratify → ledger choreography, and the first-class visual artifacts that now ledger every advance.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
@@ -145,14 +145,14 @@ export default function ResearchIndexPage() {
             <div className="relative aspect-[16/9] overflow-hidden rounded-3xl border border-white/[0.08] bg-black/60">
               <div className="absolute inset-0 bg-[radial-gradient(#c084fc_0.8px,transparent_1px)] bg-[length:6px_6px] flex items-center justify-center" style={{backgroundColor: '#050507'}}>
                 <div className="text-center">
-                  <div className="text-[10px] tracking-[3px] text-cyan-400/70 mb-1">L99 VISUAL</div>
+                  <div className="text-[10px] tracking-[3px] text-cyan-400/70 mb-1">L99 visual</div>
                   <div className="text-xl text-white/70">Queen + Swarms (Grok Imagine)</div>
                   <a href="/queen" className="text-[10px] underline text-cyan-400/80 hover:text-cyan-400">/queen experience →</a>
                 </div>
               </div>
               <div className="absolute inset-0 bg-gradient-to-r from-[#050507] via-[#050507]/70 to-transparent" />
               <div className="absolute bottom-6 left-6 text-xs normal-case tracking-wider text-cyan-300/90">
-                THE CONTINUOUS ORCHESTRATOR
+                The continuous orchestrator
               </div>
             </div>
           </div>
