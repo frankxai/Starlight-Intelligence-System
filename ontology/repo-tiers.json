@@ -105,8 +105,10 @@
       "company": "company:gencreator",
       "tier": "T1",
       "agents_md": {
-        "state": "handwritten",
-        "lines": 31
+        "state": "generated",
+        "lines": 134,
+        "band_c_lines": 31,
+        "projected": "2026-10-06 — bands A+B merged to main via agentic-creator-os#64 (squash 71191a0); band A sha=b4a7e18fed75, band B sha=5c35a8ecb312; the 31-line hand-written file preserved below the fences"
       }
     },
     {

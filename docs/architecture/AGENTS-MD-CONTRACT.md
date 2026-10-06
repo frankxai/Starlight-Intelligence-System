@@ -157,7 +157,7 @@ turned on now, `estate:check` would make every PR red on 23 errors it did not
 cause. An earlier version of this section said "fails the build", which was a
 claim about enforcement the repo does not have.
 
-- **INV-6** — a T0 or T1 repo whose `AGENTS.md` is absent or divergent. Measured on 2026-10-06, after `starlight-agent-skills#27` and `GenCreator-Studio#7` merged: **0 errors** and **7 warnings** (T0/T1 repos still fully hand-written: SIS, `claude-skills-library`, `frankx.ai-vercel-website`, `FrankX`, `gencreator.ai`, `agentic-creator-os`, `gencreator-community`). `arcanea-ai-app` was the eighth warning until #443 merged; the two errors were `starlight-agent-skills` and `GenCreator-Studio`, cleared by #27 and #7. A previous version of this line said "3 errors" by counting the hand-written category as an error; it is a warning until step 6 flips it.
+- **INV-6** — a T0 or T1 repo whose `AGENTS.md` is absent or divergent. Measured on 2026-10-06, after `starlight-agent-skills#27` and `GenCreator-Studio#7` merged: **0 errors** and **6 warnings** (T0/T1 repos still fully hand-written: SIS, `claude-skills-library`, `frankx.ai-vercel-website`, `FrankX`, `gencreator.ai`, `gencreator-community`). `arcanea-ai-app` and `agentic-creator-os` were two more until #443 and #64 merged; the two errors were `starlight-agent-skills` and `GenCreator-Studio`, cleared by #27 and #7. A previous version of this line said "3 errors" by counting the hand-written category as an error; it is a warning until step 6 flips it.
 - **INV-1** — a repo owned by zero or two companies.
 - **INV-7** — money, jurisdiction, or credentials leaking into a public projection.
 
@@ -168,12 +168,12 @@ claim about enforcement the repo does not have.
 1. **Repair what is broken.** SIS `AGENTS.md` BOM + mojibake — *done*.
 2. **Write Band C where it is missing.** 16 repos as observed on 2026-09-19, hand-written, one per repo. No generator can invent local build commands. *The two T0/T1 cases are done: `starlight-agent-skills#27` and `GenCreator-Studio#7` both merged 2026-10-06, which is what took INV-6 to zero errors. The remaining 14 are T2/T3 and belong to step 5.*
 3. **Ship the generator.** `scripts/agents-md-project.mjs`, with a `--check` mode suitable for CI — *done*. `npm run agents:project` / `agents:project:check`. Shipping the mode is not wiring it; see step 7.
-4. **Backfill T0/T1** — *projected*, ten repos at band A `sha=b4a7e18fed75`, each verified for byte-identical Band C against a pre-regeneration snapshot. **In production: three.** See *Production state* below — a projection sitting on a branch is not a contract any session reads.
+4. **Backfill T0/T1** — *projected*, ten repos at band A `sha=b4a7e18fed75`, each verified for byte-identical Band C against a pre-regeneration snapshot. **In production: four.** See *Production state* below — a projection sitting on a branch is not a contract any session reads.
 5. **Backfill T2** — eighteen repos still report stale. **Not mechanical**, per the Board's Verifier finding: extend the Band-C-byte-identity harness to T2 and run it there first. `arcanea` is eight lines of Cursor port notes with no Band C to preserve, and a repo in that state needs Band C written before it is projected into, not after. `agentic-ops-hub` is permanently out of scope by `owns_source`.
 6. **Flip INV-6 to error** for handwritten T0/T1 once step 5 completes and the T2 harness is green.
 7. **Wire both checks into CI.** `estate:check` and `agents:project:check` run only by hand today. They go into a workflow once steps 5 and 6 bring the baseline to zero — a gate that is red for reasons the PR did not cause gets ignored, then disabled.
 
-Step 2 is the real work and it does not parallelise well — 16 repos of genuine local knowledge, of which the two that were failing INV-6 are now done and 14 T2/T3 remain. Step 4 is projected and measured, and three of the ten are in `main` — see *Production state*. Step 5 is where the remaining risk sits: ten repos are verified, the other thirty-five are asserted, and calling that stretch "mechanical" is what the Board pushed back on.
+Step 2 is the real work and it does not parallelise well — 16 repos of genuine local knowledge, of which the two that were failing INV-6 are now done and 14 T2/T3 remain. Step 4 is projected and measured, and four of the ten are in `main` — see *Production state*. Step 5 is where the remaining risk sits: ten repos are verified, the other thirty-five are asserted, and calling that stretch "mechanical" is what the Board pushed back on.
 
 ### The generator, as built
 
@@ -201,7 +201,7 @@ A repo with no `AGENTS.md` is skipped with a warning, not invented. Band C is lo
 ## Production state — 2026-10-06
 
 A band projection only becomes a contract when it is on the branch a session clones. Ten repos
-carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **three are in `main`.**
+carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **four are in `main`.**
 
 | Repo | PR | In `main`? | Band B `sha` | Band C lines |
 |---|---|---|---|---|
@@ -212,7 +212,7 @@ carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **three are 
 | `FrankX` | #232 | no — open | `6c4506aaaf9b` | 315 |
 | `gencreator.ai` | #92 | no — label-blocked | `829e8a10457f` | 103 |
 | `gencreator-community` | #9 | no — label-blocked | `9d4533d72545` | 45 |
-| `agentic-creator-os` | #64 | no — open | `5c35a8ecb312` | 31 |
+| `agentic-creator-os` | [#64](https://github.com/frankxai/agentic-creator-os/pull/64) | **yes** — squash `71191a0` | `5c35a8ecb312` | 31 |
 | `starlight-agent-skills` | [#27](https://github.com/frankxai/starlight-agent-skills/pull/27) | **yes** — squash `a214296` | `76f817d3cca1` | 91 — newly written, was absent |
 | `GenCreator-Studio` | [#7](https://github.com/frankxai/GenCreator-Studio/pull/7) | **yes** — squash `cd27e1d` | `58f6cb510b69` | 79 — newly written, was absent |
 
@@ -236,8 +236,9 @@ had an agent contract at all.
 Bookkeeping each merge requires, and which this change carries: `ontology/repo-tiers.json` moves
 the merged repo to `state: "generated"`, and `ontology/estate-graph.json` is rebuilt so
 `sourcesDigest` is not stale (INV-0 fires on exactly that). The estate run has moved
-**23 errors / 12 warnings → 23 / 11 → 22 / 11 → 21 / 11**. `arcanea-ai-app` cleared an INV-6
-*warning*, because it already had a hand-written contract. `starlight-agent-skills` and
+**23 errors / 12 warnings → 23 / 11 → 22 / 11 → 21 / 11 → 21 / 10**. `arcanea-ai-app` and
+`agentic-creator-os` each cleared an INV-6 *warning*, because both already had a hand-written
+contract. `starlight-agent-skills` and
 `GenCreator-Studio` each cleared an INV-6 **error**, because neither had one — and with those two
 merged, **INV-6 reports zero errors for the first time**. That is the whole point of step 2: a
 projected band is worth little on a repo with no local band to project into. The remaining 21
