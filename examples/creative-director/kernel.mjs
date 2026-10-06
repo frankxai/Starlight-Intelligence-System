@@ -14,6 +14,7 @@ export const NODE_TYPES = Object.freeze({
   review: spec({ video: "video", audio: "audio", world: "context" }, { release: "release" }),
   export: spec({ release: "release" }, { manifest: "manifest" }),
   textreview: spec({ article:"text", social:"text", script:"text", identity:"context" }, { release:"release" }),
+  creatorformat: spec({ text:"text", identity:"context" }, { text:"text" }),
   transform: spec({ text: "text" }, { text: "text" })
 });
 const fail = (message) => { throw new Error(message); };

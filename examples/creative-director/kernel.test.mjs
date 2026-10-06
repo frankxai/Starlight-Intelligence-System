@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {validateWorkflow,compileWorkflow,affectedNodes,applyDraftPatch,nodeKeys,compileContext,stableJSON,cloneJSON,VERSION,NODE_TYPES} from "./kernel.mjs";
 const original=JSON.parse(readFileSync(new URL("./world-workflow.json",import.meta.url)));
+const creator=JSON.parse(readFileSync(new URL("./creator-workflow.json",import.meta.url)));
 const records=JSON.parse(readFileSync(new URL("./context-records.json",import.meta.url)));
 const fresh=()=>cloneJSON(original);
 const authority={workflowRevision:1,worldRevision:7,maxCostMinor:1200,currency:"USD",allowedProviders:["xai","gemini","higgsfield"]};
@@ -11,6 +12,13 @@ test("every parent precedes its dependent in the compiled workflow",()=>{
  const p=compileWorkflow(fresh(),authority);const index=new Map(p.order.map((x,i)=>[x,i]));
  for(const e of original.edges) assert.ok(index.get(e.from)<index.get(e.to));
  assert.equal(p.externalDispatchAuthorized,false);assert.equal(p.estimatedMinor,172);
+});
+test("creator voice invalidates every format and its release descendants",async()=>{
+ const before=await nodeKeys(creator),next=applyDraftPatch(creator,{baseRevision:creator.revision,worldRevision:creator.worldRevision,operations:[{kind:"replace-data",nodeId:"identity",data:{voice:"precise",rule:"Source-backed claims only."}}]});
+ const expected=["article","export","identity","review","script","social"];
+ assert.deepEqual(next.affected.slice().sort(),expected);
+ const after=await nodeKeys(next.workflow);assert.deepEqual(Object.keys(after).filter(id=>before[id]!==after[id]).sort(),expected);
+ const unbound=cloneJSON(creator);unbound.edges=unbound.edges.filter(e=>e.id!=="identity-article");assert.throws(()=>validateWorkflow(unbound),/Missing input article.identity/);
 });
 test("rejects type mismatch",()=>{const w=fresh();w.edges[0].output="context";assert.throws(()=>validateWorkflow(w),/Unknown port/);});
 test("rejects duplicate node identities",()=>{const w=fresh();w.nodes.push(w.nodes[0]);assert.throws(()=>validateWorkflow(w),/Duplicate node/);});
