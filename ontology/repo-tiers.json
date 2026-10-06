@@ -42,8 +42,10 @@
       "company": "company:starlight",
       "tier": "T0",
       "agents_md": {
-        "state": "handwritten",
-        "lines": 42
+        "state": "generated",
+        "lines": 145,
+        "band_c_lines": 42,
+        "projected": "2026-10-06 — bands A+B merged to main via claude-skills-library#31 (squash 2b41506); band A sha=b4a7e18fed75, band B sha=4307d160ea40; the 42-line hand-written file preserved below the fences. That PR also carried the repo's absorption pipeline, so the merge is wider than the bands"
       }
     },
     {
