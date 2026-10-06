@@ -435,11 +435,11 @@ function findSecretDisclosurePattern(subject) {
   const checks = [
     [
       "secret file disclosure",
-      /\b(?:cat|type|Get-Content|gc|more|less|head|tail)\b[^\r\n]*(?:\.env(?:\.(?!example(?:$|[\s;&|]))[^.\s/\\]+)?(?=$|[\s;&|])|\.npmrc\b|\.pypirc\b|credentials(?:\.json)?\b|id_(?:rsa|ed25519)\b|[^\s;&|]+\.(?:pem|key)\b)/i,
+      /\b(?:cat|type|Get-Content|gc|more|less|head|tail)\b[^\r\n]*(?:\.env(?:\.(?!example(?:$|[\s;&|'"']))[^.\s/\\]+)?(?=$|[\s;&|'"'])|\.npmrc\b|\.pypirc\b|credentials(?:\.json)?\b|id_(?:rsa|ed25519)\b|[^\s;&|]+\.(?:pem|key)\b)/i,
     ],
     [
       "environment dump",
-      /\bprintenv\b|\benv\s*(?:$|[|;&>])|\bGet-ChildItem\s+Env:/i,
+      /\bprintenv\b|\benv(?:\s+-0)?\s*(?:$|[|;&>])|\bGet-ChildItem\s+Env:/i,
     ],
     [
       "secret environment variable disclosure",

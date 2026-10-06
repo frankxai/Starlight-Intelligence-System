@@ -174,7 +174,13 @@ test("pre-tool safety still denies destructive commands and secret-file disclosu
   const root = fixture(t);
   const indexPath = path.join(root, "index.json");
   writeIndex(indexPath, { repos: [], skills: [] });
-  for (const command of ["rm -rf ./build", "cat .env"]) {
+  for (const command of [
+    "rm -rf ./build",
+    "cat .env",
+    'cat "$HOME/.env"',
+    "printenv",
+    "env -0",
+  ]) {
     const result = spawnSync(
       process.execPath,
       [routerPath],
@@ -209,4 +215,19 @@ test("pre-tool safety still denies destructive commands and secret-file disclosu
   );
   assert.equal(exampleRead.status, 0, exampleRead.stderr);
   assert.equal(exampleRead.stdout, "");
+});
+
+test("plugin manifest keeps the PR202 layout and bundled hook discovery path", () => {
+  const pluginRoot = path.resolve("plugins/starlight-activation-router");
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(pluginRoot, ".codex-plugin", "plugin.json"), "utf8"),
+  );
+  const hooks = JSON.parse(
+    fs.readFileSync(path.join(pluginRoot, "hooks", "hooks.json"), "utf8"),
+  );
+
+  assert.equal(manifest.version, "0.1.1+codex.20260924");
+  assert.equal(Object.hasOwn(manifest, "hooks"), false);
+  assert.ok(hooks.hooks.UserPromptSubmit);
+  assert.ok(hooks.hooks.PreToolUse);
 });
