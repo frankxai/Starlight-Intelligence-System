@@ -1,0 +1,177 @@
+{
+  "schema": "starlight.creative-draft.v1",
+  "tenantId": "example-creator",
+  "worldId": "creator-pack-example",
+  "worldRevision": 3,
+  "revision": 1,
+  "currency": "USD",
+  "title": "One trusted source to a creator edition",
+  "nodes": [
+    {
+      "id": "source",
+      "type": "source",
+      "label": "Your source",
+      "position": {
+        "x": 30,
+        "y": 30
+      },
+      "data": {
+        "text": "Creative work improves when source, judgment and feedback stay connected. Keep the original words close to the draft. Decide what the work should do, inspect what is missing, and carry that learning into the next release.",
+        "sourceId": "owned-example",
+        "rights": "synthetic-example"
+      }
+    },
+    {
+      "id": "identity",
+      "type": "context",
+      "label": "Voice and rights",
+      "position": {
+        "x": 30,
+        "y": 245
+      },
+      "data": {
+        "snapshot": "creator-pack-fixture-r3",
+        "voice": "clear, precise, warm",
+        "rule": "Only source-backed claims; every output needs review."
+      }
+    },
+    {
+      "id": "article",
+      "type": "transform",
+      "label": "Newsletter draft",
+      "position": {
+        "x": 340,
+        "y": 30
+      },
+      "data": {
+        "format": "newsletter",
+        "instruction": "Keep the source visible; add one concrete example before use.",
+        "draft": "Source: Creative work improves when source, judgment and feedback stay connected.\\n\\nYour example: [add an experience you can substantiate].\\n\\nYour decision: [name the practice the reader can try]."
+      }
+    },
+    {
+      "id": "social",
+      "type": "transform",
+      "label": "Social sequence",
+      "position": {
+        "x": 340,
+        "y": 245
+      },
+      "data": {
+        "format": "social",
+        "draft": "1. Source, judgment and feedback belong together.\\n2. Keep the original words close to the draft.\\n3. Inspect what is missing before release.\\n4. [Add a concrete example and your own ending]."
+      }
+    },
+    {
+      "id": "script",
+      "type": "storyboard",
+      "label": "Short-video outline",
+      "position": {
+        "x": 340,
+        "y": 460
+      },
+      "data": {
+        "shots": 1,
+        "secondsPerShot": 30,
+        "instructionVersion": "creator-fixture-1",
+        "draft": "Hook: Show the gap between one source and scattered drafts.\\nExplain: Keep source, judgment and feedback connected.\\nExample: [Supply your own permitted visual].\\nClose: Name one decision for the viewer."
+      }
+    },
+    {
+      "id": "review",
+      "type": "textreview",
+      "label": "Review the edition",
+      "position": {
+        "x": 680,
+        "y": 140
+      },
+      "data": {
+        "decisionState": "pending",
+        "checks": [
+          "source",
+          "voice",
+          "rights",
+          "proof-gaps"
+        ]
+      }
+    },
+    {
+      "id": "export",
+      "type": "export",
+      "label": "Portable export",
+      "position": {
+        "x": 990,
+        "y": 140
+      },
+      "data": {
+        "state": "draft",
+        "destination": "local-download"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "source-article",
+      "from": "source",
+      "output": "text",
+      "to": "article",
+      "input": "text"
+    },
+    {
+      "id": "source-social",
+      "from": "source",
+      "output": "text",
+      "to": "social",
+      "input": "text"
+    },
+    {
+      "id": "source-script",
+      "from": "source",
+      "output": "text",
+      "to": "script",
+      "input": "brief"
+    },
+    {
+      "id": "identity-script",
+      "from": "identity",
+      "output": "context",
+      "to": "script",
+      "input": "world"
+    },
+    {
+      "id": "article-review",
+      "from": "article",
+      "output": "text",
+      "to": "review",
+      "input": "article"
+    },
+    {
+      "id": "social-review",
+      "from": "social",
+      "output": "text",
+      "to": "review",
+      "input": "social"
+    },
+    {
+      "id": "script-review",
+      "from": "script",
+      "output": "text",
+      "to": "review",
+      "input": "script"
+    },
+    {
+      "id": "identity-review",
+      "from": "identity",
+      "output": "context",
+      "to": "review",
+      "input": "identity"
+    },
+    {
+      "id": "review-export",
+      "from": "review",
+      "output": "release",
+      "to": "export",
+      "input": "release"
+    }
+  ]
+}
