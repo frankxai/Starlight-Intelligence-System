@@ -149,7 +149,13 @@ The `gencreator.ai` row is drift, not a design. `266aa2b` gave its `CLAUDE.md` a
 
 ## What this makes enforceable
 
-`scripts/estate-graph.mjs` fails the build on:
+`scripts/estate-graph.mjs` exits non-zero on the following. **It is not yet a CI
+gate** — no workflow in `.github/workflows/` runs `estate:check` or
+`agents:project:check`, so today these are checks a session runs, not a build that
+fails. Wiring them is step 7 below, and it has to wait for the baseline to clear:
+turned on now, `estate:check` would make every PR red on 23 errors it did not
+cause. An earlier version of this section said "fails the build", which was a
+claim about enforcement the repo does not have.
 
 - **INV-6** — a T0 or T1 repo whose `AGENTS.md` is absent or divergent. Measured on 2026-10-06: **2 errors** (`starlight-agent-skills`, `GenCreator-Studio` — both absent) and **7 warnings** (T0/T1 repos still fully hand-written: SIS, `claude-skills-library`, `frankx.ai-vercel-website`, `FrankX`, `gencreator.ai`, `agentic-creator-os`, `gencreator-community`). `arcanea-ai-app` was the eighth warning until #443 merged. A previous version of this line said "3 errors" by counting the hand-written category as an error; it is a warning until step 6 flips it.
 - **INV-1** — a repo owned by zero or two companies.
@@ -161,10 +167,11 @@ The `gencreator.ai` row is drift, not a design. `266aa2b` gave its `CLAUDE.md` a
 
 1. **Repair what is broken.** SIS `AGENTS.md` BOM + mojibake — *done*.
 2. **Write Band C where it is missing.** 16 repos, hand-written, one per repo. No generator can invent local build commands. *In flight: `starlight-agent-skills#27`, `GenCreator-Studio#7`.*
-3. **Ship the generator.** `scripts/agents-md-project.mjs`, with `--check` for CI — *done*. `npm run agents:project` / `agents:project:check`.
+3. **Ship the generator.** `scripts/agents-md-project.mjs`, with a `--check` mode suitable for CI — *done*. `npm run agents:project` / `agents:project:check`. Shipping the mode is not wiring it; see step 7.
 4. **Backfill T0/T1** — *projected*, ten repos at band A `sha=b4a7e18fed75`, each verified for byte-identical Band C against a pre-regeneration snapshot. **In production: one.** See *Production state* below — a projection sitting on a branch is not a contract any session reads.
 5. **Backfill T2** — eighteen repos still report stale. **Not mechanical**, per the Board's Verifier finding: extend the Band-C-byte-identity harness to T2 and run it there first. `arcanea` is eight lines of Cursor port notes with no Band C to preserve, and a repo in that state needs Band C written before it is projected into, not after. `agentic-ops-hub` is permanently out of scope by `owns_source`.
 6. **Flip INV-6 to error** for handwritten T0/T1 once step 5 completes and the T2 harness is green.
+7. **Wire both checks into CI.** `estate:check` and `agents:project:check` run only by hand today. They go into a workflow once steps 5 and 6 bring the baseline to zero — a gate that is red for reasons the PR did not cause gets ignored, then disabled.
 
 Step 2 is the real work and it does not parallelise well — it is 16 repos of genuine local knowledge. Step 4 is projected and measured, and one of the ten is in `main` — see *Production state*. Step 5 is where the remaining risk sits: ten repos are verified, the other thirty-five are asserted, and calling that stretch "mechanical" is what the Board pushed back on.
 
