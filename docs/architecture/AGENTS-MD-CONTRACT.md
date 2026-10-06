@@ -245,6 +245,14 @@ projected band is worth little on a repo with no local band to project into. The
 errors are the documented INV-10 and INV-11 baseline (14 near-identical agent-card clusters, 7
 agents claiming an untracked upstream), which this model neither caused nor addresses.
 
+**`mergeable_state: "clean"` does not mean up to date.** GitHub reports `behind` only where the
+repo carries a require-branches-up-to-date rule. `FrankX` carries none, so #232 read `clean` while
+sitting 22 commits behind `main` — its one green check had been measured against a stale base across
+several check-ins before anyone looked. Corrected by merging `main` forward (`a3cbac5`); none of the
+22 commits touch `AGENTS.md`, so both fences survived byte for byte (A `b4a7e18fed75`,
+B `6c4506aaaf9b`). The per-repo check that means anything is the explicit behind-count, never the
+state field.
+
 `observed_at` stays `2026-09-19`: moving it would assert a fresh reading of all 45 repos that was
 not taken. The newer date lives in the rows it describes, with the prior observation kept in a
 `was` field rather than deleted.
