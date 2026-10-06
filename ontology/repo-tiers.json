@@ -123,10 +123,11 @@
       "company": "company:gencreator",
       "tier": "T1",
       "agents_md": {
-        "state": "absent",
-        "lines": 0,
-        "defect": "T1 repo with no agent contract",
-        "fix_in_flight": "frankxai/GenCreator-Studio#7"
+        "state": "generated",
+        "lines": 182,
+        "band_c_lines": 79,
+        "projected": "2026-10-06 — bands A+B merged to main via GenCreator-Studio#7 (squash cd27e1d); band A sha=b4a7e18fed75, band B sha=58f6cb510b69. Band C was written by that PR, not preserved: this repo had no AGENTS.md at all, which was the second of the two INV-6 errors",
+        "was": "absent — T1 repo with no agent contract, observed 2026-09-19"
       }
     },
     {
