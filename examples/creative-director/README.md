@@ -5,7 +5,7 @@ An operational Starlight example for typed creative workflows and governed conte
 ## Run
 
 ```sh
-npm run test:creative-draft
+node --test examples/creative-director/kernel.test.mjs
 node examples/creative-director/plan.mjs
 node examples/creative-director/plan.mjs --workflow examples/creative-director/creator-workflow.json
 ```

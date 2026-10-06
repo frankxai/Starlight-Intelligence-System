@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: '24'
-      - run: npm run test:creative-draft
+      - run: node --test examples/creative-director/kernel.test.mjs
       - run: node examples/creative-director/plan.mjs --workflow examples/creative-director/creator-workflow.json --output "${{ runner.temp }}/creator-plan.json"
       - run: node examples/creative-director/generate-labs.mjs --out "${{ runner.temp }}/creative-labs" --check
   interactive-labs:
