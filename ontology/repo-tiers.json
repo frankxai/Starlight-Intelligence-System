@@ -92,8 +92,10 @@
       "company": "company:arcanea",
       "tier": "T1",
       "agents_md": {
-        "state": "handwritten",
-        "lines": 178
+        "state": "generated",
+        "lines": 284,
+        "band_c_lines": 179,
+        "projected": "2026-10-06 — bands A+B merged to main via arcanea-ai-app#443 (squash add2fca); band A sha=b4a7e18fed75, band B sha=8821700dff0c. Band C region is 179 lines: the 178-line hand-written file preserved byte-for-byte, plus the generator's blank separator"
       },
       "deploys": "surface:arcanea.ai"
     },
