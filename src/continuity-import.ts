@@ -98,7 +98,10 @@ interface BundleObservation {
   reportedState: string;
   stateVerification: string;
   captureCompleteness: string;
-  repository: BundleRepository;
+  /** Null for a workspace session, which ran outside any checkout. */
+  repository: BundleRepository | null;
+  scope?: "workspace";
+  workspace?: { root: string };
 }
 
 export class ContinuityRefusal extends Error {}
@@ -205,9 +208,12 @@ export function readContinuityBundle(bundleDirectory: string): {
   }
   const foreign = parsed.events.find((e) => e.kind !== "intent.captured");
   if (foreign) throw new ContinuityRefusal(`Collectors may only supply intent.captured, not ${foreign.kind}`);
-  const observations = (bundle.observations as unknown[]).filter((o): o is BundleObservation =>
-    isRecord(o) && typeof o.sessionKey === "string" && typeof o.workId === "string" && typeof o.requestDigest === "string" && isRecord(o.repository)
-    && typeof o.repository.origin === "string" && typeof o.repository.branch === "string" && typeof o.repository.head === "string");
+  const observations = (bundle.observations as unknown[]).filter((o): o is BundleObservation => {
+    if (!isRecord(o) || typeof o.sessionKey !== "string" || typeof o.workId !== "string" || typeof o.requestDigest !== "string") return false;
+    if (o.scope === "workspace") return o.repository === null && isRecord(o.workspace) && typeof o.workspace.root === "string";
+    return o.scope === undefined && isRecord(o.repository) && typeof o.repository.origin === "string"
+      && typeof o.repository.branch === "string" && typeof o.repository.head === "string";
+  });
   return { digest: sha256(manifestBytes), sourceRevision: bundle.sisSourceRevision, events: parsed.events, observations };
 }
 
@@ -233,12 +239,14 @@ function trustDecision(event: WorkGraphEvent, observations: BundleObservation[],
   if (!policy.operators.includes(event.actorId)) return { reason: "unknown-operator" };
   const sessionKey = JSON.stringify([harness, event.source.sourceId]);
   const matches = observations.filter((o) => o.sessionKey === sessionKey && o.workId === event.workId
-    && o.requestDigest === data.requestDigest && o.repository.head === data.repositoryHead);
+    && o.requestDigest === data.requestDigest && o.scope === data.scope
+    && (o.repository ? o.repository.head === data.repositoryHead : data.repositoryHead === null));
   if (matches.length === 0) return { reason: "observation-missing" };
   if (matches.length > 1) return { reason: "observation-ambiguous" };
   const [observation] = matches;
   if (observation.reportedState !== data.reportedState || observation.stateVerification !== data.stateVerification) return { reason: "claim-invalid" };
-  if (work.checkout && (work.checkout.origin !== observation.repository.origin || work.checkout.branch !== observation.repository.branch)) {
+  // A work registered with a checkout only accepts observations from that checkout.
+  if (work.checkout && (!observation.repository || work.checkout.origin !== observation.repository.origin || work.checkout.branch !== observation.repository.branch)) {
     return { reason: "checkout-mismatch" };
   }
   return { observation };
@@ -417,7 +425,7 @@ export function importContinuityBundle(
         const o = outcome.observation;
         const claims = { eventId: event.eventId, workId: event.workId, sessionKey: o.sessionKey, requestDigest: o.requestDigest,
           reportedState: o.reportedState, stateVerification: o.stateVerification, captureCompleteness: o.captureCompleteness,
-          repository: o.repository };
+          repository: o.repository, ...(o.scope === "workspace" ? { scope: o.scope, workspace: o.workspace } : {}) };
         const storedClaims = observed.get(event.eventId);
         if (storedClaims !== undefined && storedClaims !== canonical(claims)) {
           throw new ContinuityRefusal(`Event ${event.eventId} conflicts with the observation stored by an earlier or interrupted import`);
@@ -466,7 +474,10 @@ export interface ContinuityWorkStatus {
   };
   /** Labels from the collector or the harness goal store; never a verified lifecycle transition. */
   reportedState: { value: string; verification: "operator-supplied" | "native-goal-store" } | null;
+  /** workspace sessions ran outside any checkout, so they have no checkout or dirty state. */
+  scope: "checkout" | "workspace" | null;
   checkout: { origin: string; branch: string; head: string; dirty: boolean } | null;
+  workspace: { root: string } | null;
   admission: { admitted: boolean; byActorId: string | null; requirements: CompletionRequirements | null };
   delivery: { proofEventIds: Record<ProofKind, string[]>; missingProofs: ProofKind[]; readyToComplete: boolean; completed: boolean };
   quarantined: number;
@@ -525,7 +536,9 @@ export function continuityStatus(storeDirectory: string, policyInput?: unknown):
         goalAuthority: [...new Set(data.map((d) => String(d.goalAuthority)))].sort(),
       },
       reportedState: latest ? { value: latest.reportedState, verification: latest.stateVerification === "native-goal-store" ? "native-goal-store" : "operator-supplied" } : null,
-      checkout: latest ? { origin: latest.repository.origin, branch: latest.repository.branch, head: latest.repository.head, dirty: latest.repository.dirty } : null,
+      scope: latest ? (latest.scope === "workspace" ? "workspace" : "checkout") : null,
+      checkout: latest?.repository ? { origin: latest.repository.origin, branch: latest.repository.branch, head: latest.repository.head, dirty: latest.repository.dirty } : null,
+      workspace: latest?.scope === "workspace" && latest.workspace ? { root: latest.workspace.root } : null,
       admission: { admitted: item.admitted, byActorId: admittedEvent?.actorId ?? null, requirements: item.admitted ? item.requirements : null },
       delivery: { proofEventIds: item.proofEventIds, missingProofs: item.missingProofs, readyToComplete: item.readyToComplete, completed: item.completed },
       quarantined: quarantine.filter((q) => q.workId === item.workId).length,
