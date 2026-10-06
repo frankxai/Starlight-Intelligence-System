@@ -17,7 +17,7 @@
 
 version: 0.2.0
 generated_by: scripts/mesh-generate.mjs
-generated_at: "2026-09-06"
+generated_at: "2026-10-05"
 curated_source: context/empire/mesh.curated.json
 maintainer: Starlight-Intelligence-System/context/empire/
 
@@ -37,12 +37,12 @@ repos:
     measured:
       skills: 88
       skills_unrooted: 16
-      installed_skills: 5
+      installed_skills: 6
       agents: 144
       commands: 28
       installed_commands: 121
       schemas: 1
-      measured_at: "2026-09-06"
+      measured_at: "2026-10-05"
   - name: agentic-creator-os
     section: substrate
     role: os-reference-build
@@ -50,11 +50,12 @@ repos:
     depends_on: [Starlight-Intelligence-System]
     note: "CLAUDE.md advertises 75+ skills / 67 agents / 35+ commands and ships far more — reconcile the docs against the measured block, not the reverse"
     measured:
-      skills: 19
-      installed_skills: 178
+      skills: 20
+      skills_unrooted: 5
+      installed_skills: 180
       installed_agents: 134
-      installed_commands: 165
-      measured_at: "2026-08-07"
+      installed_commands: 167
+      measured_at: "2026-10-05"
   # ── Fleet operations & operator surfaces ──────────────────────
   - name: agentic-ops-hub
     section: operations
@@ -64,9 +65,9 @@ repos:
     canonical_source: agentic-ops
     note: "public templates and doctrine sync only; private fleet state, ledgers, and receipts belong in agentic-ops"
     measured:
-      installed_skills: 1
+      installed_skills: 2
       installed_commands: 1
-      measured_at: "2026-08-12"
+      measured_at: "2026-10-05"
   # ── Substrate & orchestration ─────────────────────────────────
   - name: starlight-agentic-os
     section: substrate
@@ -92,28 +93,28 @@ repos:
     provides: [typed-memory-api, provider-router, local-core, mcp, projection-contracts]
     note: "public implementation and projection plane; SIS owns policy/contracts and the private vault owns evidence/deletion truth"
     measured:
-      measured_at: "2026-08-12"
+      measured_at: "2026-10-05"
   - name: starlight-private-memory
     section: memory
     role: private-evidence-vault
     visibility: private
     provides: [consent, acl, retention, deletion-ledger, allowlisted-projections]
     measured:
-      measured_at: never
+      measured_at: "2026-10-05"
   - name: starlight-memory-vault
     section: memory
     role: machine-episodic-memory
     visibility: private
     note: "cross-machine coding-agent memory; namespace separately from human-curated and hard-private evidence"
     measured:
-      measured_at: never
+      measured_at: "2026-10-05"
   - name: second-brain-vault
     section: memory
     role: human-curated-knowledge-instance
     visibility: private
     depends_on: [second-brain-os]
     measured:
-      measured_at: never
+      measured_at: "2026-10-05"
   - name: starlight-knowledge-tree
     section: memory
     role: knowledge-graph-projection
@@ -128,9 +129,10 @@ repos:
     canonical_source: agentic-creator-os
     note: "public MIT mirror; 54 skill names shared with the canonical source"
     measured:
-      skills: 110
-      skills_unrooted: 14
-      measured_at: "2026-08-07"
+      skills: 114
+      skills_unrooted: 17
+      installed_skills: 4
+      measured_at: "2026-10-05"
   - name: agentic-creator-skills
     section: skills-libraries
     role: plugin-marketplace-pack
@@ -146,8 +148,9 @@ repos:
     overlap: {agentic-creator-os: 7}
     note: entire space vertical duplicated from agentic-creator-os
     measured:
-      skills: 27
-      measured_at: "2026-08-12"
+      skills: 41
+      skills_unrooted: 6
+      measured_at: "2026-10-05"
   - name: mind-palace-agent-skills
     section: skills-libraries
     role: domain-skills
@@ -157,14 +160,14 @@ repos:
     measured:
       skills: 13
       commands: 6
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: marine-agent-skills
     section: skills-libraries
     role: domain-skills
     overlap: {}
     measured:
       skills: 6
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: agentic-mind-os
     section: skills-libraries
     role: lived-os-reference
@@ -175,7 +178,7 @@ repos:
       skills: 4
       agents: 4
       commands: 4
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   # ── Code-runtime engines ──────────────────────────────────────
   - name: starlight-cosmos-engine
     section: runtime
@@ -186,7 +189,7 @@ repos:
       agents_code: 9
     note: "definitions live in code, not markdown — outside the markdown counting contract"
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: starlight-gravity-engine
     section: runtime
     role: domain-community-engine
@@ -200,8 +203,8 @@ repos:
     note: "queen/worker topology in src/swarm/ — the executing mesh, distinct from this registry"
     measured:
       skills_unrooted: 1
-      installed_skills: 14
-      measured_at: "2026-08-12"
+      installed_skills: 15
+      measured_at: "2026-10-05"
   - name: starlight-evals
     section: runtime
     role: eval-harness
@@ -209,7 +212,8 @@ repos:
     status: promote-to-independent-authority
     note: "refresh public scorecards; SIS should consume versioned eval releases and retain migration receipts"
     measured:
-      measured_at: "2026-08-07"
+      skills_unrooted: 1
+      measured_at: "2026-10-05"
   - name: second-brain-os
     section: runtime
     role: second-brain-experience
@@ -217,9 +221,9 @@ repos:
     depends_on: [Starlight-Intelligence-System, starlight-memory]
     note: "human knowledge product and public template; not a competing memory provider or evidence authority"
     measured:
-      installed_skills: 5
+      installed_skills: 2
       installed_commands: 5
-      measured_at: "2026-08-12"
+      measured_at: "2026-10-05"
   - name: starlight-agent-lab
     section: runtime
     role: quarantined-upstream-lab
@@ -313,7 +317,7 @@ repos:
     provides: [naming-doctrine, human-mind-model, repo-mesh]
     note: "carries its own repo-mesh.yaml for the mind cluster; the two manifests are parallel and not yet unified"
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: human-mind-intelligence-system
     section: canon
     role: engineered-system
@@ -321,7 +325,7 @@ repos:
     provides: [cognitive-schemas, ontology, response-prediction-primitives]
     measured:
       schemas: 15
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: starlight-mind-os-pro
     section: canon
     role: distribution-surface
@@ -329,50 +333,50 @@ repos:
     depends_on: [agentic-mind-os, mind-intelligence-systems]
     status: charter-only-by-design
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: bless
     section: canon
     role: protocol-spec
     provides: [blessing-protocol]
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: agentic-intelligence-system
     section: canon
     role: discovery-substrate
     note: "ais-profile.yaml / llms.txt standard — reconcile with reality.md + CLAUDE.md conventions"
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   # ── Discovery lists (should be generated, not hand-written) ───
   - name: awesome-mind-agent-skills
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: awesome-music-agent-skills
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: awesome-manifestation-skills
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: awesome-agentic-income
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: awesome-payment-agent-skills
     section: discovery
     role: discovery-list
     generated: false
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   # ── Income / business cluster ─────────────────────────────────
   - name: agenticincome
     section: income
@@ -381,10 +385,10 @@ repos:
     checkout: {provider: polar, wired: false}
     measured:
       skills: 4
-      installed_skills: 14
+      installed_skills: 15
       agents: 4
       commands: 7
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: agenticpassiveincome
     section: income
     role: commerce-spoke
@@ -392,11 +396,11 @@ repos:
     checkout: {provider: polar, wired: false}
     measured:
       skills: 4
-      installed_skills: 14
+      installed_skills: 15
       agents: 4
       commands: 6
       schemas: 1
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: agentic-business-os
     section: income
     role: os-family
@@ -405,90 +409,91 @@ repos:
     measured:
       skills_unrooted: 4
       installed_commands: 1
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: agentic-income-skills
     section: income
     role: schema-brain
     measured:
-      skills: 2
+      skills: 3
       schemas: 1
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: agentic-income-template
     section: income
     role: public-shell
     status: freeze-when-feature-complete
     measured:
-      installed_skills: 14
-      measured_at: "2026-08-07"
+      installed_skills: 15
+      measured_at: "2026-10-05"
   - name: payment-intelligence-system
     section: income
     role: payments-governance
     status: unaudited-no-live-funds
     measured:
       agents: 5
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   # ── Verticals ─────────────────────────────────────────────────
   - name: blue-life-commons
     section: verticals
     role: marine-commons
     verdict: flagship
     measured:
-      installed_skills: 14
-      measured_at: "2026-08-07"
+      installed_skills: 15
+      measured_at: "2026-10-05"
   - name: ocean-intelligence-system
     section: verticals
     role: marine-agents
     verdict: flagship
     measured:
       agents: 2
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: marine-mcp
     section: verticals
     role: marine-serving
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: realityarchitect
     section: verticals
     role: method-site
     verdict: flagship
     measured:
-      installed_skills: 14
-      measured_at: "2026-08-07"
+      skills_unrooted: 9
+      installed_skills: 15
+      measured_at: "2026-10-05"
   - name: frankx-palace
     section: verticals
     role: creative-3d-surface
     measured:
-      installed_skills: 14
-      measured_at: "2026-08-07"
+      installed_skills: 15
+      measured_at: "2026-10-05"
   - name: frankx-mind-palace
     section: verticals
     role: palace-data-layer
     depends_on: [mind-palace-agent-skills, bless]
     provides: [blessing-ledger, rooms]
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: music-intelligence-systems
     section: verticals
     role: charter-only
     status: pre-code
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: ai-music-academy
     section: verticals
     role: stale-vertical
     status: needs-decision
     note: "hype voice + unverified metrics; redirect assets to music-intelligence-systems"
     measured:
-      installed_skills: 14
+      installed_skills: 15
       agents: 2
       installed_commands: 10
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: vibe-os
     section: verticals
     role: out-of-scope-product
     status: stale-since-2026-01
     measured:
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   # ── GenCreator cluster ────────────────────────────────────────
   - name: gencreator.ai
     section: gencreator
@@ -497,11 +502,11 @@ repos:
     status: unaudited
     note: "registered 2026-07-30; missing from the 2026-07-25 audit sweep and therefore ungraded"
     measured:
-      skills_unrooted: 7
-      installed_skills: 14
-      installed_agents: 9
+      skills_unrooted: 21
+      installed_skills: 38
+      installed_agents: 18
       installed_commands: 3
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: gencreator-community
     section: gencreator
     role: community-site
@@ -510,16 +515,16 @@ repos:
     note: "registered 2026-07-30; missing from the 2026-07-25 audit sweep and therefore ungraded"
     measured:
       skills: 1
-      installed_skills: 14
-      measured_at: "2026-08-07"
+      installed_skills: 15
+      measured_at: "2026-10-05"
   - name: GenCreator-Studio
     section: gencreator
     role: studio-surface
     status: unaudited
     note: "registered 2026-07-30; missing from the 2026-07-25 audit sweep and therefore ungraded"
     measured:
-      installed_skills: 14
-      measured_at: "2026-08-07"
+      installed_skills: 15
+      measured_at: "2026-10-05"
   # ── Production websites ───────────────────────────────────────
   - name: frankx.ai-vercel-website
     section: websites
@@ -530,47 +535,47 @@ repos:
       pages: 501
       route_dirs: 214
     measured:
-      skills_unrooted: 14
-      installed_skills: 199
+      skills_unrooted: 17
+      installed_skills: 207
       agents: 7
       installed_agents: 153
-      installed_commands: 167
-      measured_at: "2026-08-07"
+      installed_commands: 170
+      measured_at: "2026-10-05"
   - name: FrankX
     section: websites
     role: private-dev-authoring
     note: "syncs TO frankx.ai-vercel-website; carries 3 ACOS variants needing reconciliation"
     measured:
-      skills_unrooted: 11
-      installed_skills: 217
+      skills_unrooted: 45
+      installed_skills: 223
       agents: 7
       installed_agents: 217
-      installed_commands: 244
+      installed_commands: 248
       schemas: 1
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: arcanea-ai-app
     section: websites
     role: arcanea-production
     note: "no custom apex on a healthy Vercel project; arcanea-ai-appx sits in ERROR state"
     measured:
-      skills: 3
-      skills_unrooted: 52
-      installed_skills: 195
+      skills: 4
+      skills_unrooted: 69
+      installed_skills: 198
       installed_agents: 15
       installed_commands: 38
       schemas: 1
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
   - name: arcanea
     section: websites
     role: arcanea-oss
     measured:
       skills: 2
-      skills_unrooted: 50
-      installed_skills: 178
+      skills_unrooted: 51
+      installed_skills: 181
       agents: 6
       installed_agents: 139
       installed_commands: 160
-      measured_at: "2026-08-07"
+      measured_at: "2026-10-05"
 
 gaps:
   no_skill_coverage: [legal-compliance, crypto-depth, testing-qa, data-engineering, incident-response, i18n-localization]
