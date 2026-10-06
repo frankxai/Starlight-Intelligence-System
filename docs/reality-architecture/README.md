@@ -38,4 +38,21 @@ Requires `jsonschema` (Python).
 - Command Center #10  
 - Swarm #18  
 - Reality Architect #19  
-- Arcanea #103  
+- Arcanea #103
+
+## Consuming the kernel
+
+Verticals pin a revision rather than tracking `main`:
+
+```text
+https://raw.githubusercontent.com/frankxai/Starlight-Intelligence-System/<tag-or-commit>/docs/reality-architecture/type-registry.v0.json
+https://raw.githubusercontent.com/frankxai/Starlight-Intelligence-System/<tag-or-commit>/docs/reality-architecture/schemas/reality-object.schema.json
+```
+
+Proposed tag on merge: `reality-architecture-v0.1.2` (a maintainer creates it; tags are a release action). The
+registry grows additively only, so a pinned consumer never breaks.
+
+## Projections
+
+- **Reality Architect** (`frankxai/realityarchitect`) projects a person's open files into this kernel: see
+  [`verticals/reality-architect/`](../../verticals/reality-architect/README.md).
