@@ -37,7 +37,7 @@
     },
     {
       "id": "article",
-      "type": "transform",
+      "type": "creatorformat",
       "label": "Newsletter draft",
       "position": {
         "x": 340,
@@ -46,12 +46,12 @@
       "data": {
         "format": "newsletter",
         "instruction": "Keep the source visible; add one concrete example before use.",
-        "draft": "Source: Creative work improves when source, judgment and feedback stay connected.\\n\\nYour example: [add an experience you can substantiate].\\n\\nYour decision: [name the practice the reader can try]."
+        "draft": "Source: Creative work improves when source, judgment and feedback stay connected.\n\nYour example: [add an experience you can substantiate].\n\nYour decision: [name the practice the reader can try]."
       }
     },
     {
       "id": "social",
-      "type": "transform",
+      "type": "creatorformat",
       "label": "Social sequence",
       "position": {
         "x": 340,
@@ -59,7 +59,7 @@
       },
       "data": {
         "format": "social",
-        "draft": "1. Source, judgment and feedback belong together.\\n2. Keep the original words close to the draft.\\n3. Inspect what is missing before release.\\n4. [Add a concrete example and your own ending]."
+        "draft": "1. Source, judgment and feedback belong together.\n2. Keep the original words close to the draft.\n3. Inspect what is missing before release.\n4. [Add a concrete example and your own ending]."
       }
     },
     {
@@ -74,7 +74,7 @@
         "shots": 1,
         "secondsPerShot": 30,
         "instructionVersion": "creator-fixture-1",
-        "draft": "Hook: Show the gap between one source and scattered drafts.\\nExplain: Keep source, judgment and feedback connected.\\nExample: [Supply your own permitted visual].\\nClose: Name one decision for the viewer."
+        "draft": "Hook: Show the gap between one source and scattered drafts.\nExplain: Keep source, judgment and feedback connected.\nExample: [Supply your own permitted visual].\nClose: Name one decision for the viewer."
       }
     },
     {
@@ -172,6 +172,20 @@
       "output": "release",
       "to": "export",
       "input": "release"
+    },
+    {
+      "id": "identity-article",
+      "from": "identity",
+      "output": "context",
+      "to": "article",
+      "input": "identity"
+    },
+    {
+      "id": "identity-social",
+      "from": "identity",
+      "output": "context",
+      "to": "social",
+      "input": "identity"
     }
   ]
 }

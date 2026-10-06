@@ -32,4 +32,4 @@ Read AGENTS.md, SKILL.md and team.json here for the scoped handoff. The global `
 
 ## Evidence
 
-`kernel.test.mjs` covers graph topology, data shape, serialization bounds, revision binding, safe quotes, invalidation, namespace boundaries and context filtering. The `Creative director proof` workflow runs these tests and captures existing public reference pages at 375/768/1440 before web implementation. A passing capture job is not a visual verdict; inspect the uploaded images.
+`kernel.test.mjs` covers graph topology, data shape, serialization bounds, revision binding, safe quotes, invalidation, namespace boundaries and context filtering. The `Creative director proof` workflow runs these tests, checks generated projections and exercises all three HTTP-served labs at 375/768/1440. Browser regressions cover actual downloads, newer edits during export, malformed restore, saved planning settings, preserved creator writing and voice dependencies. Existing public pages are captured separately as design references. Inspect the uploaded images alongside the recorded checks.
