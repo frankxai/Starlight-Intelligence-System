@@ -13,7 +13,8 @@ const server=createServer(async(req,res)=>{const brand=new URL(req.url,'http://l
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const BASE='http://127.0.0.1:'+server.address().port;
 const port=9600+Math.floor(Math.random()*300),profile=await mkdtemp(join(tmpdir(),'creative-proof-'));
-const chrome=spawn(process.env.CHROME_BIN||'google-chrome',['--headless=new','--no-sandbox','--disable-gpu','--disable-background-networking','--no-first-run','--remote-debugging-port='+port,'--user-data-dir='+profile,'about:blank'],{stdio:'ignore'});
+const chrome=spawn(process.env.CHROME_BIN||'google-chrome',['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--disable-background-networking','--no-first-run','--remote-debugging-address=127.0.0.1','--remote-debugging-port='+port,'--user-data-dir='+profile,'about:blank'],{stdio:['ignore','ignore','pipe']});
+let chromeLog='';chrome.stderr.on('data',chunk=>chromeLog=(chromeLog+chunk).slice(-4000));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const rows=[],errors=[];
 async function connect(){
@@ -26,7 +27,7 @@ async function connect(){
  return {send,evaluate,exceptions,requests,close:async()=>{ws.close();await fetch('http://127.0.0.1:'+port+'/json/close/'+tab.id);}};
 }
 try{
- let started=false;for(let i=0;i<60;i++){try{if((await fetch('http://127.0.0.1:'+port+'/json/version')).ok){started=true;break;}}catch{}await sleep(250);}assert(started,'Chrome must start');
+ let started=false,lastStartError='';for(let i=0;i<120;i++){try{if((await fetch('http://127.0.0.1:'+port+'/json/version')).ok){started=true;break;}}catch(e){lastStartError=e.message+': '+e.cause?.message;}if(chrome.exitCode!==null)break;await sleep(250);}assert(started,'Chrome must start. Exit '+chrome.exitCode+'; '+lastStartError+'; '+chromeLog);
  for(const brand of ['starlight','arcanea','gencreator'])for(const width of [375,768,1440]){
   const c=await connect();const row={brand,width,sourceHead:process.env.SOURCE_HEAD_SHA||null,checks:[]};
   try{
