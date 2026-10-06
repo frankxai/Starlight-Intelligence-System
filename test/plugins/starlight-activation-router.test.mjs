@@ -80,6 +80,20 @@ test("filesystem absence supersedes a stale positive cache and rechecks after mu
   assert.match(context, /AGENTS\.md cached=true \(stale; conflicts with filesystem\)/);
 });
 
+test("an unknown cached AGENTS value is not coerced to false", (t) => {
+  const root = fixture(t);
+  const repoPath = path.join(root, "repo");
+  fs.mkdirSync(repoPath);
+  fs.writeFileSync(path.join(repoPath, "AGENTS.md"), "fixture");
+  const indexPath = path.join(root, "index.json");
+  writeIndex(indexPath, repoIndex(repoPath, null));
+
+  const context = runPrompt("/si route this task", repoPath, indexPath);
+  assert.match(context, /AGENTS\.md cached=unknown/);
+  assert.match(context, /AGENTS\.md=present \(fresh check/);
+  assert.doesNotMatch(context, /AGENTS\.md cached=unknown \(stale/);
+});
+
 test("cwd overrides the process directory and nested worktree rows win by path depth", (t) => {
   const root = fixture(t);
   const outer = path.join(root, "outer");
