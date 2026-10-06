@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-brand="__BRAND__"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="__BG__"><meta name="robots" content="noindex,nofollow">
+<title>__TITLE__</title><style>
+__CSS__
+</style></head><body>
+<a class="skip" href="#work">Skip to the draft</a>
+<header class="topbar"><a class="brand" href="/">__NAME__<span class="brand-divider"></span><span class="lab-name">Creative director</span></a><span class="local-label">Local draft lab</span><a class="back" href="/">Back to __NAME__</a></header>
+<main id="work">
+<div class="intro"><div><p class="eyebrow">__EYEBROW__</p><h1>__HEADLINE__</h1><p class="intro-text">__INTRO__</p></div><div class="intro-note"><span class="note-rule"></span><p>__NOTE__</p></div></div>
+<section class="studio" aria-label="Creative workflow draft editor">
+<div class="studio-bar"><div><strong id="work-title"></strong><span id="revision-label"></span></div><div class="actions"><button id="save">Save locally</button><button id="restore">Restore</button><button id="export" class="primary">Export draft</button></div></div>
+<div class="workspace">
+<aside class="rail" aria-label="Draft inputs">
+<nav class="rail-nav" aria-label="Draft panels"><button data-pane="source" aria-pressed="true">Source</button><button data-pane="context" aria-pressed="false">Context</button><button data-pane="team" aria-pressed="false">Team</button></nav>
+<div id="source-pane" class="rail-pane"><label for="intent" id="intent-label">Your brief</label><textarea id="intent" name="creative_source" autocomplete="off" maxlength="16000" spellcheck="true" rows="7"></textarea><button id="apply-source" class="full">Update draft</button><p class="small">Your text stays in this browser. Update the source, then inspect what needs another pass.</p><div class="divider"></div><label for="planning-cap">Planning cap · USD</label><input id="planning-cap" name="planning_cap" type="number" inputmode="decimal" min="0" max="1000" step="0.01" value="12" autocomplete="off"><button id="validate" class="full">Validate graph</button><p id="cost-label" class="small"></p><p class="small">Example quotes are synthetic. Validation checks the draft.</p><button id="add-step" class="full">Add a text step</button><button id="undo" class="full" disabled>Undo last edit</button></div>
+<div id="context-pane" class="rail-pane" hidden><h2>Context for this work</h2><p class="small">__CONTEXTINTRO__</p><label for="context-budget">Context estimate cap</label><input id="context-budget" name="context_budget" type="number" inputmode="numeric" min="1" max="10000" value="500" autocomplete="off"><button id="compile-context" class="full">Inspect selection</button><div id="context-list"></div><p class="small" id="context-summary"></p><p class="small">The estimate uses bytes and framing. A connected run needs its model's complete prompt count.</p></div>
+<div id="team-pane" class="rail-pane" hidden><h2>Roles for this work</h2><p class="small">Capability briefs for the next connected run.</p><div id="team-list"></div></div>
+</aside>
+<div class="graph-column"><div class="graph-bar"><p id="graph-caption"></p><label class="visually-hidden" for="jump-node">Select a node</label><select id="jump-node" name="selected_node" aria-label="Select a node"></select><div class="graph-controls"><button id="zoom-out" aria-label="Zoom out">−</button><output id="zoom-value" aria-label="Canvas zoom"></output><button id="zoom-in" aria-label="Zoom in">+</button><button id="fit">Fit</button><button id="center">Centre</button></div></div>
+<div id="canvas" class="canvas" role="region" aria-label="Workflow canvas. Arrow keys pan, plus and minus zoom, Home fits the graph." tabindex="0"><div id="plane" class="plane"><svg id="edges" aria-hidden="true" width="1900" height="1000" viewBox="0 0 1900 1000"></svg><div id="nodes"></div></div></div><div class="graph-footer"><span id="impact-label">Select a node to inspect it.</span><span class="desktop-hint">Drag the canvas · keyboard arrows also work</span></div></div>
+<aside class="inspector" aria-label="Selected node"><p class="eyebrow">Selected work</p><h2 id="node-title"></h2><p id="node-detail" class="small"></p><label for="node-data">Editable node settings</label><textarea id="node-data" name="node_settings" autocomplete="off" rows="11" spellcheck="false"></textarea><p id="node-error" class="error" aria-live="polite"></p><button id="save-node" class="full">Save node edit</button><details><summary>Connections and identity</summary><div id="ports" class="small"></div><p id="key-label" class="hash"></p></details><div class="divider"></div><h3>Draft proof</h3><dl class="proof"><div><dt>Graph</dt><dd id="proof-graph">Checking…</dd></div><div><dt>Revision</dt><dd id="proof-revision"></dd></div><div><dt>Context</dt><dd id="proof-context"></dd></div><div><dt>External actions</dt><dd>None</dd></div></dl><p class="small">The connected product will bind approved work to its sources, rights and provider receipts.</p></aside>
+</div><p id="status" class="status" role="status" aria-live="polite"></p>
+</section>
+<section class="handoff"><div><p class="eyebrow">__ENDINGLABEL__</p><h2>__ENDING__</h2><p>__ENDINGTEXT__</p></div><div class="handoff-actions"><button id="export-markdown">Export a readable plan</button><a href="__SOURCEURL__" target="_blank" rel="noopener noreferrer">Inspect the shared source</a></div></section>
+<footer><span>__NAME__ · Built on Starlight</span><span>Draft editing and export work locally. Media execution is a next connected slice.</span></footer>
+</main><noscript><p>This editor needs JavaScript. You can inspect the shared source and run its local plan command.</p></noscript>
+<script type="module">
+__KERNEL__
+const CONFIG=__CONFIG__;
+const INITIAL=__FIXTURE__;
+const CONTEXT_RECORDS=__CONTEXT__;
+const TEAM=__TEAM__;
+__APP__
+</script></body></html>

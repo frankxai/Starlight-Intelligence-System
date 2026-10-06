@@ -25,6 +25,29 @@ jobs:
           node-version: '24'
       - run: npm run test:creative-draft
       - run: node examples/creative-director/plan.mjs --workflow examples/creative-director/creator-workflow.json --output "${{ runner.temp }}/creator-plan.json"
+      - run: node examples/creative-director/generate-labs.mjs --out "${{ runner.temp }}/creative-labs" --check
+  interactive-labs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+      - run: node examples/creative-director/generate-labs.mjs --out creative-labs --check
+      - run: node examples/creative-director/prove-labs.mjs --root creative-labs --out creative-ui-proof
+        env:
+          CHROME_BIN: google-chrome
+          SOURCE_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: creative-ui-proof
+          path: creative-ui-proof
+          retention-days: 14
   visual-baseline:
     runs-on: ubuntu-latest
     timeout-minutes: 10
