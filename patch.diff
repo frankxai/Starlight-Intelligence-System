@@ -1,0 +1,110 @@
+--- src/retrieval.ts
++++ src/retrieval.ts
+@@ -193,6 +193,7 @@
+    */
+   async hybridSearch(query: string, options?: {
+     vaults?: VaultType[];
++    scope?: string;
+     limit?: number;
+     minConfidence?: string;
+     includeExpired?: boolean;
+@@ -251,48 +252,51 @@
+   private rankByVector(
+     queryVec: number[],
+     limit: number,
+-    options?: { vaults?: VaultType[]; includeExpired?: boolean },
++    options?: { vaults?: VaultType[]; scope?: string; includeExpired?: boolean },
+   ): string[] {
+     if (queryVec.length === 0) return [];
+
+     const now = new Date().toISOString();
+     const vaultSet = options?.vaults?.length ? new Set(options.vaults) : null;
++    let allowedIds: Set<string> | null = null;
+
+-    const scored: Array<[string, number]> = [];
+-    for (const [id, vec] of this.vectorIndex) {
+-      const sim = this.embeddingProvider.similarity(queryVec, vec);
+-      if (sim <= 0) continue;
+-
+-      // Apply vault + expiry filters without a second DB lookup:
+-      // we do a targeted check only for filtered queries
+-      scored.push([id, sim]);
+-    }
+-
+-    scored.sort((a, b) => b[1] - a[1]);
+-    let ids = scored.slice(0, limit * 2).map(([id]) => id);
+-
+-    // Apply vault / expiry filters if requested (single batch DB lookup)
+-    if (vaultSet || !(options?.includeExpired)) {
++    if (vaultSet || options?.scope || !options?.includeExpired) {
+       const where: string[] = [];
++      const params: unknown[] = [];
+       if (vaultSet) {
+         const vaults = Array.from(vaultSet);
+         where.push(`vault IN (${vaults.map(() => '?').join(',')})`);
++        params.push(...vaults);
++      }
++      if (options?.scope) {
++        where.push(`EXISTS (
++          SELECT 1 FROM json_each(entries.tags)
++          WHERE json_each.value IN ('company', ?)
++        )`);
++        params.push(options.scope);
+       }
+       if (!options?.includeExpired) {
+-        where.push(`(valid_until IS NULL OR valid_until >= ?)`);
++        where.push('(valid_until IS NULL OR valid_until >= ?)');
++        params.push(now);
+       }
+-      const params: unknown[] = [
+-        ...(vaultSet ? Array.from(vaultSet) : []),
+-        ...(!options?.includeExpired ? [now] : []),
+-      ];
+-      const sql = `SELECT id FROM entries WHERE id IN (${ids.map(() => '?').join(',')}) AND ${where.join(' AND ')}`;
+-      const allowed = new Set(
+-        (this.db.prepare(sql).all([...ids, ...params]) as Array<{ id: string }>).map(r => r.id)
++      allowedIds = new Set(
++        (this.db.prepare(`SELECT id FROM entries WHERE ${where.join(' AND ')}`).all(params) as Array<{ id: string }>)
++          .map(row => row.id),
+       );
+-      ids = ids.filter(id => allowed.has(id));
+     }
+
+-    return ids.slice(0, limit);
++    const scored: Array<[string, number]> = [];
++    for (const [id, vec] of this.vectorIndex) {
++      // Filter before ranking and slicing so an out-of-scope row cannot use
++      // the candidate window that belongs to an eligible result.
++      if (allowedIds && !allowedIds.has(id)) continue;
++      const sim = this.embeddingProvider.similarity(queryVec, vec);
++      if (sim <= 0) continue;
++      scored.push([id, sim]);
++    }
++
++    scored.sort((a, b) => b[1] - a[1]);
++    return scored.slice(0, limit).map(([id]) => id);
+   }
+
+   /** Drop all rows and re-ingest every *.jsonl file in vaultDir. Returns entry count. */
+@@ -349,6 +353,7 @@
+   /** FTS5 keyword search with optional vault/confidence filtering. */
+   search(query: string, options?: {
+     vaults?: VaultType[];
++    scope?: string;
+     limit?: number;
+     minConfidence?: string;
+     includeExpired?: boolean;
+@@ -372,6 +377,13 @@
+       conds.push('e.confidence = @minConf');
+       params.minConf = options.minConfidence;
+     }
++    if (options?.scope) {
++      conds.push(`EXISTS (
++        SELECT 1 FROM json_each(e.tags)
++        WHERE json_each.value IN ('company', @scope)
++      )`);
++      params.scope = options.scope;
++    }
+     if (!(options?.includeExpired)) {
+       conds.push('(e.valid_until IS NULL OR e.valid_until >= @now)');
+       params.now = now;
