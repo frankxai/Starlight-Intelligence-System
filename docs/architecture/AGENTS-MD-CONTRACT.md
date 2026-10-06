@@ -157,7 +157,7 @@ turned on now, `estate:check` would make every PR red on 23 errors it did not
 cause. An earlier version of this section said "fails the build", which was a
 claim about enforcement the repo does not have.
 
-- **INV-6** — a T0 or T1 repo whose `AGENTS.md` is absent or divergent. Measured on 2026-10-06: **2 errors** (`starlight-agent-skills`, `GenCreator-Studio` — both absent) and **7 warnings** (T0/T1 repos still fully hand-written: SIS, `claude-skills-library`, `frankx.ai-vercel-website`, `FrankX`, `gencreator.ai`, `agentic-creator-os`, `gencreator-community`). `arcanea-ai-app` was the eighth warning until #443 merged. A previous version of this line said "3 errors" by counting the hand-written category as an error; it is a warning until step 6 flips it.
+- **INV-6** — a T0 or T1 repo whose `AGENTS.md` is absent or divergent. Measured on 2026-10-06, after `starlight-agent-skills#27` merged: **1 error** (`GenCreator-Studio`, absent) and **7 warnings** (T0/T1 repos still fully hand-written: SIS, `claude-skills-library`, `frankx.ai-vercel-website`, `FrankX`, `gencreator.ai`, `agentic-creator-os`, `gencreator-community`). `arcanea-ai-app` was the eighth warning until #443 merged, and `starlight-agent-skills` the second error until #27 merged. A previous version of this line said "3 errors" by counting the hand-written category as an error; it is a warning until step 6 flips it.
 - **INV-1** — a repo owned by zero or two companies.
 - **INV-7** — money, jurisdiction, or credentials leaking into a public projection.
 
@@ -166,7 +166,7 @@ claim about enforcement the repo does not have.
 ## Migration, in order
 
 1. **Repair what is broken.** SIS `AGENTS.md` BOM + mojibake — *done*.
-2. **Write Band C where it is missing.** 16 repos, hand-written, one per repo. No generator can invent local build commands. *In flight: `starlight-agent-skills#27`, `GenCreator-Studio#7`.*
+2. **Write Band C where it is missing.** 16 repos, hand-written, one per repo. No generator can invent local build commands. *`starlight-agent-skills#27` merged 2026-10-06; `GenCreator-Studio#7` still in flight.*
 3. **Ship the generator.** `scripts/agents-md-project.mjs`, with a `--check` mode suitable for CI — *done*. `npm run agents:project` / `agents:project:check`. Shipping the mode is not wiring it; see step 7.
 4. **Backfill T0/T1** — *projected*, ten repos at band A `sha=b4a7e18fed75`, each verified for byte-identical Band C against a pre-regeneration snapshot. **In production: one.** See *Production state* below — a projection sitting on a branch is not a contract any session reads.
 5. **Backfill T2** — eighteen repos still report stale. **Not mechanical**, per the Board's Verifier finding: extend the Band-C-byte-identity harness to T2 and run it there first. `arcanea` is eight lines of Cursor port notes with no Band C to preserve, and a repo in that state needs Band C written before it is projected into, not after. `agentic-ops-hub` is permanently out of scope by `owns_source`.
@@ -201,7 +201,7 @@ A repo with no `AGENTS.md` is skipped with a warning, not invented. Band C is lo
 ## Production state — 2026-10-06
 
 A band projection only becomes a contract when it is on the branch a session clones. Ten repos
-carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **one is in `main`.**
+carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **two are in `main`.**
 
 | Repo | PR | In `main`? | Band B `sha` | Band C lines |
 |---|---|---|---|---|
@@ -213,7 +213,7 @@ carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **one is in 
 | `gencreator.ai` | #92 | no — label-blocked | `829e8a10457f` | 103 |
 | `gencreator-community` | #9 | no — label-blocked | `9d4533d72545` | 45 |
 | `agentic-creator-os` | #64 | no — open | `5c35a8ecb312` | 31 |
-| `starlight-agent-skills` | #27 | no — open | `76f817d3cca1` | 91 — newly written, was absent |
+| `starlight-agent-skills` | [#27](https://github.com/frankxai/starlight-agent-skills/pull/27) | **yes** — squash `a214296` | `76f817d3cca1` | 91 — newly written, was absent |
 | `GenCreator-Studio` | #7 | no — open | `58f6cb510b69` | 79 — newly written, was absent |
 
 Band A is `b4a7e18fed75` in all ten — that is the point of Band A. Band B differs per repo because
@@ -225,16 +225,25 @@ which is the hand-written file plus the generator's blank separator.
 the gate working as designed: both PRs change the Surface Guard workflow itself, and a gate a PR
 can edit is not a gate. Neither can be unblocked by an agent, and neither should be.
 
-**`add2fca` introduced 106 lines into one file and nothing else** — verified against its parent
-`04933ad`. The 38-file delta between the PR head and the merge commit is base drift from PRs that
-landed on `main` in the meantime (#528, #445, #464, #524), not scope that rode in with the bands.
+**Both merges touched exactly one file.** `add2fca` added 106 lines to `arcanea-ai-app`'s existing
+`AGENTS.md` and nothing else, verified against its parent `04933ad`; the 38-file delta between that
+PR head and the merge commit is base drift from PRs that landed on `main` in the meantime (#528,
+#445, #464, #524), not scope that rode in with the bands. `a214296` added `AGENTS.md` to
+`starlight-agent-skills` at 194 lines, verified against `0dfeaef` — a new file, because that T0
+repo had no agent contract at all.
 
-Bookkeeping the merge requires, and which this change carries: `ontology/repo-tiers.json` moves
-`repo:arcanea-ai-app` from `state: "handwritten"` to `state: "generated"`, and
-`ontology/estate-graph.json` is rebuilt so `sourcesDigest` is not stale (INV-0). The estate run
-goes from 23 errors / 12 warnings to **23 errors / 11 warnings** — the cleared warning is exactly
-`arcanea-ai-app`'s INV-6. `observed_at` stays `2026-09-19`: moving it would assert a fresh reading
-of all 45 repos that was not taken. The newer date lives in the one row it describes.
+Bookkeeping each merge requires, and which this change carries: `ontology/repo-tiers.json` moves
+the merged repo to `state: "generated"`, and `ontology/estate-graph.json` is rebuilt so
+`sourcesDigest` is not stale (INV-0 fires on exactly that). The estate run has moved
+**23 errors / 12 warnings → 23 / 11 → 22 / 11**: `arcanea-ai-app` cleared an INV-6 *warning*,
+because it already had a hand-written contract; `starlight-agent-skills` cleared an INV-6
+**error**, because it had none. That is the first error this model has removed rather than
+reclassified, and it is the whole point of step 2 — a projected band is worth little on a repo
+with no local band to project into.
+
+`observed_at` stays `2026-09-19`: moving it would assert a fresh reading of all 45 repos that was
+not taken. The newer date lives in the rows it describes, with the prior observation kept in a
+`was` field rather than deleted.
 
 ---
 
