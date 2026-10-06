@@ -24,6 +24,10 @@
  *
  * T3 is excluded unless named with --tier, because T3 is a consolidation proposal
  * awaiting Frank's call and gets nothing until then.
+ *
+ * A repo whose `agents_md.owns_source` is true is never written, at any tier: its
+ * AGENTS.md is the hand-edited source of its own fan-out, so projecting into it
+ * would put two generators on one file pointing opposite ways.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -177,12 +181,25 @@ let unchanged = 0;
 let skipped = 0;
 const stale = [];
 const tampered = [];
+const ownsSource = [];
 
 for (const repo of selected) {
   const name = repo.id.replace(/^repo:/, '');
   const company = companyById.get(repo.company);
   if (!company) {
     fail(`${name}: company ${repo.company} is not in the registry`);
+    continue;
+  }
+
+  // Declared in ontology/repo-tiers.json, not hardcoded by name: any repo that
+  // generates FROM its AGENTS.md owns that file, and this generator stays out.
+  // agentic-ops-hub is the first — scripts/sync-agent-rules.mjs reads its
+  // AGENTS.md and fans it out to every tool format, with --check in CI. Raised
+  // as REVISE-2 by /starlight-board 2026-10-05, before the T2 backfill made it
+  // a silent clobber.
+  if (repo.agents_md?.owns_source) {
+    ownsSource.push(name);
+    skipped++;
     continue;
   }
 
@@ -260,6 +277,7 @@ console.log('agents-md-project', CHECK_ONLY ? '(check only)' : `→ ${TREE}/<rep
 console.log(`  band A: ${BAND_A_SRC} sha=${sha12(bandABody)}`);
 console.log(`  tiers: ${TIERS.join(',')}  selected: ${selected.length}`);
 console.log(`  ${CHECK_ONLY ? 'up to date' : 'written'}: ${CHECK_ONLY ? unchanged : written}   unchanged: ${unchanged}   skipped: ${skipped}`);
+for (const n of ownsSource) console.log(`  SKIP  ${n}: owns its AGENTS.md as a generation source — not projected into, by declaration`);
 for (const p of warns) console.log(`  WARN  ${p.msg}`);
 for (const p of errors) console.log(`  ERROR ${p.msg}`);
 console.log(`  ${errors.length} error(s), ${warns.length} warning(s)`);

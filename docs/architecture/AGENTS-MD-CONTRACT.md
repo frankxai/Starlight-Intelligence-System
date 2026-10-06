@@ -74,6 +74,43 @@ An earlier draft of this document claimed Band C outranked both while the genera
 
 ---
 
+## Standing against SIP Layer 1
+
+This change was flagged substrate-tier because it touches the SIP § 1 file contract, and an earlier draft of this document never quoted the row it touches. SIP v1.1.1 § 1 says:
+
+| File | Purpose | Required |
+|------|---------|----------|
+| `SKILL.md` | Behavior definition — what the AI adopts when this context is loaded | yes |
+| `AGENTS.md` | Voices / agent definitions | yes if >1 agent |
+
+Band A is behaviour, and it lands in `AGENTS.md`. Read strictly, the spec puts behaviour in `SKILL.md` and reserves `AGENTS.md` for voices. **The three-band model does not amend SIP § 1, and this is deliberate.**
+
+Three reasons it does not need to:
+
+1. **§ 1 constrains which files exist and which are required — not exhaustively what may be written inside one.** Bands A, B and C are a projection *into* a file the spec already requires; no new file, no changed requirement, no removed row.
+2. **The two files answer different questions.** `SKILL.md` is the behaviour of a *capability* once loaded. `AGENTS.md` is the contract of a *working tree* — what an agent reads because it is sitting in this checkout. Measured across the twenty repos carrying both files, that is already how the estate uses it, and the `CLAUDE.md` vs `AGENTS.md` section below has the count.
+3. **Amending the row is test-coupled and belongs in its own change.** `src/version.ts::getSipVersion()` parses SIP.md's `Version:` line as the single source, and `test/v80-platform-prompts.test.ts` reads that same line and fails any platform prompt claiming a different `SIP vX.Y.Z`. Changing the row's meaning without a version bump leaves two readers of "v1.1.1" seeing different specs; bumping it requires updating `SIP_VERSION_FALLBACK` and every `SIP v1.1.1` claim across the adapters and platform prompts in the same commit, or the drift detector goes red. That is a different change, with a different blast radius, and it gets its own board pass.
+
+**Registered as a SIP amendment candidate, not taken here:** restate § 1's `AGENTS.md` row as the cross-harness working-tree contract, which is what nineteen of twenty repos already use it for. Minor bump — it relaxes rather than restricts, so no adopter file becomes invalid and the 90-day deprecation window for breaking changes does not apply. Cost is the version fan-out in the paragraph above.
+
+**Separate finding, flagged not fixed:** eleven-plus `v1.1.1` strings are hardcoded in attestation blocks across `src/` instead of calling `getSipVersion()`. They are correct today by coincidence. The drift detector only guards platform prompts, not these.
+
+## Board verdict — 2026-10-05
+
+`/starlight-board` on this change, at head `91a642e`, projected into ten T0/T1 repos at band A `sha=b4a7e18fed75`.
+
+**REVISE.** The ten-repo projection was found measured rather than asserted — band hash, idempotency and byte-identical Band C verified in all ten, two cross-family reviews absorbed. Two gaps were named, both landing on the T2 backfill rather than on the T0/T1 merge:
+
+| # | Vector | Finding | Resolution |
+|---|---|---|---|
+| REVISE-1 | Harmonizer | The change never engaged with what SIP § 1 says `AGENTS.md` is for. | *Standing against SIP Layer 1*, above. Deferred explicitly, with the amendment registered and its cost priced. |
+| REVISE-2 | Harmonizer | `agentic-ops-hub` is T2, inside the generator's default scope, and its `AGENTS.md` is the hand-edited source its own `sync-agent-rules.mjs` fans out — with `--check` in CI. The T2 backfill would have put two generators on one file. | `agents_md.owns_source` in `ontology/repo-tiers.json`, enforced in the generator and reported as a named SKIP. Declared in data, not hardcoded by name, so it generalises to the next repo that does this. |
+
+Two further concerns were recorded without blocking the merge, because neither is falsified or fixed by it:
+
+- **Seer:** at 45 repos, Band C — the only part carrying a real local gate — sits below ~100 identical generated lines. The repos most at risk are exactly the ones the model exists to protect: fail-closed money in `payment-intelligence-system`, the non-clinical boundary in the mind repos. Untested, and testable.
+- **Verifier:** ten T0/T1 repos are verified; the other thirty-five are asserted. `--check` reports eighteen T2 repos stale, and nothing yet proves generator output is correct where Band C is absent or divergent — `arcanea` is eight lines of Cursor port notes. Extend the Band-C-byte-identity harness to T2 before flipping INV-6 to error.
+
 ## Direction of generation
 
 ```
@@ -125,10 +162,11 @@ The `gencreator.ai` row is drift, not a design. `266aa2b` gave its `CLAUDE.md` a
 1. **Repair what is broken.** SIS `AGENTS.md` BOM + mojibake — *done*.
 2. **Write Band C where it is missing.** 16 repos, hand-written, one per repo. No generator can invent local build commands. *In flight: `starlight-agent-skills#27`, `GenCreator-Studio#7`.*
 3. **Ship the generator.** `scripts/agents-md-project.mjs`, with `--check` for CI — *done*. `npm run agents:project` / `agents:project:check`.
-4. **Backfill T0/T1 first**, then T2. T3 repos get nothing until Frank rules on consolidation, so the generator's default tier filter is `T0,T1,T2`.
-5. **Flip INV-6 to error** for handwritten T0/T1 once step 4 completes.
+4. **Backfill T0/T1** — *done*, ten repos at band A `sha=b4a7e18fed75`, each verified for byte-identical Band C against a pre-regeneration snapshot.
+5. **Backfill T2** — eighteen repos still report stale. **Not mechanical**, per the Board's Verifier finding: extend the Band-C-byte-identity harness to T2 and run it there first. `arcanea` is eight lines of Cursor port notes with no Band C to preserve, and a repo in that state needs Band C written before it is projected into, not after. `agentic-ops-hub` is permanently out of scope by `owns_source`.
+6. **Flip INV-6 to error** for handwritten T0/T1 once step 5 completes and the T2 harness is green.
 
-Step 2 is the real work and it does not parallelise well — it is 16 repos of genuine local knowledge. Steps 3–5 are mechanical.
+Step 2 is the real work and it does not parallelise well — it is 16 repos of genuine local knowledge. Step 4 is done and measured. Step 5 is where the remaining risk sits: ten repos are verified, the other thirty-five are asserted, and calling that stretch "mechanical" is what the Board pushed back on.
 
 ### The generator, as built
 
@@ -149,7 +187,7 @@ Four properties it holds, each verified against the live tree rather than assert
 
 A repo with no `AGENTS.md` is skipped with a warning, not invented. Band C is local knowledge; `--init` writes an explicitly marked `TODO` stub and nothing more.
 
-**Observed on 2026-09-21**, `--tree ..` across the checked-out estate: 29 repos carry an un-banded contract, 8 have none, 0 would leak. That is the size of step 4.
+**Observed on 2026-10-06**, `--tree .. --tier T0,T1,T2 --check`: the ten T0/T1 repos report up to date, eighteen T2 repos report stale, `agentic-ops-hub` reports a named SKIP for `owns_source`, and 0 would leak. That is the size of step 5.
 
 ---
 
