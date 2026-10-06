@@ -17,7 +17,7 @@
 
 version: 0.2.0
 generated_by: scripts/mesh-generate.mjs
-generated_at: "2026-10-05"
+generated_at: "2026-10-06"
 curated_source: context/empire/mesh.curated.json
 maintainer: Starlight-Intelligence-System/context/empire/
 
@@ -38,11 +38,11 @@ repos:
       skills: 88
       skills_unrooted: 16
       installed_skills: 6
-      agents: 144
+      agents: 151
       commands: 28
       installed_commands: 121
       schemas: 1
-      measured_at: "2026-10-05"
+      measured_at: "2026-10-06"
   - name: agentic-creator-os
     section: substrate
     role: os-reference-build
