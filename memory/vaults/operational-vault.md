@@ -881,3 +881,13 @@ Checked current portfolio STRATEGY, SIS AGENTS/CREATOR and community README/AGEN
 State: documentation proposal, not founder ratification, product admission, live community, model evaluation or partnership. The current community toolkit lacks hosted member UI, production authentication, tenancy and enabled live adapters. Next bounded action is experience storyboarding and an admitted artifact/pilot slice under existing WIP limits; human review and actual runtime evidence are still required.
 
 Built on SIP — operational proposal record.
+
+## 2026-10-04 — Connected plugin preparation and portable package repair
+
+Prepared an operational Starlight Intelligence 0.3 source update: Agent Plugins 1.0 root manifest, synchronized legacy interface and unchanged starter prompts, two read-only connected tools, four brand-scoped workflow packets and explicit fullscreen resource preferences. Kept Starlight, GenCreator, Arcanea and FrankX ownership distinct. The public package contains public source receipts only; private workspace snapshots and credentials stay outside it.
+
+Validated four skills, type checks, 21 tests, UI/Worker builds and the Worker smoke check (health 200, anonymous MCP 401). Public Starlight initialize, four-tool discovery and package reading passed; Academy initialize and four-tool discovery passed. The private domain's health probe returned 404, so this source repair does not claim private deployment, OAuth completion, host rendering or publication.
+
+Built a separate private Atlas workspace using the same portable packet contract, owner-scoped durable storage and bounded public MCP checks. Its hosting release and user connection have their own acceptance receipts. Future work must recheck current source, provider access and runtime evidence before executing a prepared packet.
+
+Built on SIP — operational implementation record.
