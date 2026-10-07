@@ -27,7 +27,6 @@
       "name": "FrankX.ai",
       "stage": "operating",
       "thesis": "Founder surface. Advisory, content, and the proof that the systems work.",
-      "routes_through": "entity:starlight-holding",
       "accountable_exec_seat": "agent:starlight-cmo",
       "owns_brands": ["brand:frankx"],
       "operates_repos": ["repo:frankx.ai-vercel-website", "repo:FrankX", "repo:frankx-mind-palace", "repo:frankx-palace", "repo:realityarchitect", "repo:bless", "repo:awesome-manifestation-skills"],

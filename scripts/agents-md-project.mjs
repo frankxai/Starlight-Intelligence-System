@@ -133,7 +133,7 @@ function renderBandB(repo, company) {
     ['Repo', `\`${name}\``],
     ['Company', `${company.name} — _${company.stage}_`],
     ['Thesis', company.thesis],
-    ['Routes through', entity ? `${entity.name} (${entity.role})` : '_unassigned_'],
+    ['Routes through', entity ? `${entity.name} (${entity.role})` : '_unverified — confirm with Frank_'],
     ['Accountable seat', `\`${company.accountable_exec_seat}\``],
     ['Tier', `**${repo.tier} — ${tier.name}** · install: ${tier.install}`],
   ];

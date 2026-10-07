@@ -208,8 +208,8 @@ carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **five are i
 | `arcanea-ai-app` | [#443](https://github.com/frankxai/arcanea-ai-app/pull/443) | **yes** — squash `add2fca` | `8821700dff0c` | 179 |
 | `Starlight-Intelligence-System` | #175 | no — open | `668830d0f25b` | 332 |
 | `claude-skills-library` | [#31](https://github.com/frankxai/claude-skills-library/pull/31) | **yes** — squash `2b41506` | `4307d160ea40` | 42 |
-| `frankx.ai-vercel-website` | #742 | no — open | `f6fcf460d4ff` | 175 |
-| `FrankX` | #232 | no — open | `6c4506aaaf9b` | 315 |
+| `frankx.ai-vercel-website` | #742 | no — open | `280c70377f3f` | 175 |
+| `FrankX` | #232 | no — open | `599ac2faca8d` | 315 |
 | `gencreator.ai` | #92 | no — label-blocked | `829e8a10457f` | 103 |
 | `gencreator-community` | #9 | no — label-blocked | `9d4533d72545` | 45 |
 | `agentic-creator-os` | [#64](https://github.com/frankxai/agentic-creator-os/pull/64) | **yes** — squash `71191a0` | `5c35a8ecb312` | 31 |
@@ -250,12 +250,86 @@ repo carries a require-branches-up-to-date rule. `FrankX` carries none, so #232 
 sitting 22 commits behind `main` — its one green check had been measured against a stale base across
 several check-ins before anyone looked. Corrected by merging `main` forward (`a3cbac5`); none of the
 22 commits touch `AGENTS.md`, so both fences survived byte for byte (A `b4a7e18fed75`,
-B `6c4506aaaf9b`). The per-repo check that means anything is the explicit behind-count, never the
+B `6c4506aaaf9b`, the value at that commit — regenerated since, see the CTO review below).
+The per-repo check that means anything is the explicit behind-count, never the
 state field.
 
 `observed_at` stays `2026-09-19`: moving it would assert a fresh reading of all 45 repos that was
 not taken. The newer date lives in the rows it describes, with the prior observation kept in a
 `was` field rather than deleted.
+
+---
+
+## CTO review — 2026-10-07, `frankx.ai-vercel-website#742`
+
+Frank reviewed the exact head `b01509d` and failed it on **Band B**, passing Band A for estate
+operating truth. Two blocking items. One shipped; one cannot be expressed in this model and is his
+to decide.
+
+### Fixed — the routing entity is no longer asserted for FrankX.ai
+
+Band B carried `Routes through | Starlight Holding BV (holding — substrate and platform IP)`,
+rendered from `company.routes_through` -> `entity:starlight-holding`. The entity record cites
+`source: "REGISTRY.md"`, and that is exactly where the claim fails: `REGISTRY.md` is an **MCP
+server registry**. Its three `owner: Frank Riemer / Starlight Holding BV` lines attribute MCP
+servers whose `repo:` is this one. It never ties a company to a routing entity. The
+company -> entity routing was an inference rendered as a registry fact in agent-facing docs.
+
+`routes_through` is dropped from `company:frankx` only, and the generator's fallback for an unset
+routing now reads `_unverified — confirm with Frank_` instead of `_unassigned_` — Frank's own
+wording, and a line that asserts nothing. Two repos change: this one and `FrankX`, the two
+`company:frankx` repos with an open PR.
+
+Note what this is *not*. The registry's `_privacy` block claims it is public-safe by construction
+with "no jurisdiction," but the schema explicitly permits an entity's `name + role` in the public
+file, and INV-7 passed throughout. This was never a leak. It was an unsourced claim — a different
+defect, and one no invariant checks.
+
+**The same row still renders for the other seven companies**, six to the holding and one to
+Arcanea BV, on the same `REGISTRY.md` sourcing. Removing it estate-wide was tried and reverted:
+dropping the projection from the generator left 23 repos failing `agents:project:check` as stale,
+and it would have rewritten Band B in four PRs Frank did not review. The class defect is real and
+open; closing it is a deliberate change, not a side effect of this one.
+
+### Blocked — `accountable_exec_seat` cannot name the Concierge
+
+Frank's instruction: Product Concierge owns frankx.ai, the CMO owns demand and story, "not product
+accountability." `agent:starlight-concierge` is a real registered seat, so projecting it invents
+nothing. The estate rejects it anyway:
+
+```
+ERROR INV-2  company company:frankx accountable seat agent:starlight-concierge
+             has tier 'core', expected 'executive'
+```
+
+INV-2 is "every company has exactly one executive-tier accountable agent." The Concierge is
+Front-Door Tier — first-contact intake. Setting it took the estate run from **21 errors to 22**, so
+the edit was reverted rather than landed: a regression dressed as a review fix is worse than the
+defect it claims to close. The ontology carries one seat field per company and no product-owner
+concept; `right`, `metric` and INV-4 all presuppose an executive. The relationship Frank described
+is one this model cannot hold.
+
+Three ways out, none an agent's call:
+
+1. **Promote Concierge to `executive`.** Rejects itself — INV-4 would then require it to own a
+   metric, and the Front-Door Tier definition becomes false.
+2. **Add a `product_owner_seat`** to the `company` contract, rendered in Band B, leaving
+   `accountable_exec_seat` as the executive escalation path. This expresses the distinction Frank
+   drew. It changes `ontology/starlight-estate.ontology.v1.json`, a file contract — so
+   `/starlight-board` before commit, per the substrate gate.
+3. **Name a different executive** for the frankx door. Frank ruled the CMO out as accountable but
+   did not say which executive replaces it.
+
+Band B for `frankx.ai-vercel-website` therefore still reads `agent:starlight-cmo`, which Frank has
+said is wrong. That is a known-open defect, not a passed gate: #742 is not ready on his own
+criterion until it is settled.
+
+### The five merged repos carry the old claim
+
+`arcanea-ai-app`, `claude-skills-library`, `agentic-creator-os`, `starlight-agent-skills` and
+`GenCreator-Studio` have the `Routes through ... BV` row in `main` at their original Band B shas.
+Their branches are gone, so clearing it is a separate PR per repo. Flagged, not fixed.
+
 
 ---
 
