@@ -146,7 +146,7 @@ export default async function CosmosPage() {
                     : apod.explanation}
                 </p>
                 <p className="mt-4 text-[11px] text-slate-500">
-                  {apod.copyright ? `© ${apod.copyright} · ` : ""}NASA APOD
+                  {apod.copyright ? `© ${apod.copyright} · ` : ""}NASA astronomy picture of the day
                 </p>
               </div>
             </div>
