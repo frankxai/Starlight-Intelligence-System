@@ -65,8 +65,15 @@
       "company": "company:frankx",
       "tier": "T1",
       "agents_md": {
-        "state": "handwritten",
-        "lines": 174
+        "state": "divergent",
+        "lines": 278,
+        "band_c_lines": 175,
+        "defect": "band B was hand-edited in the PR and no longer matches the projection. The committed region is sha=135f4b7e0dd9 naming agent:product-concierge, a seat that appears in no registry, no agent card and no graph node; the generator writes sha=280c70377f3f naming agent:starlight-cmo. `npm run agents:project:check` reports this repo stale. Clears when the registry carries the seat, which is blocked on INV-2 because accountable_exec_seat requires an executive-tier seat, or when the next generator run overwrites band B.",
+        "projected": "2026-10-07 - bands A+B merged to main via frankx.ai-vercel-website#742 (squash d4467e9); band A sha=b4a7e18fed75. Band C is 175 lines, hand-written, preserved byte-for-byte - it was truncated to 0-2 bytes four times during review and restored from b01509d",
+        "was": {
+          "state": "handwritten",
+          "lines": 174
+        }
       },
       "deploys": "surface:frankx.ai"
     },

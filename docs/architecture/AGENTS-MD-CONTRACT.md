@@ -201,14 +201,14 @@ A repo with no `AGENTS.md` is skipped with a warning, not invented. Band C is lo
 ## Production state — 2026-10-06
 
 A band projection only becomes a contract when it is on the branch a session clones. Ten repos
-carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **five are in `main`.**
+carry the projection on `claude/agent-docs-structure-roles-k0fv2d`; **six are in `main`.**
 
 | Repo | PR | In `main`? | Band B `sha` | Band C lines |
 |---|---|---|---|---|
 | `arcanea-ai-app` | [#443](https://github.com/frankxai/arcanea-ai-app/pull/443) | **yes** — squash `add2fca` | `8821700dff0c` | 179 |
 | `Starlight-Intelligence-System` | #175 | no — open | `668830d0f25b` | 332 |
 | `claude-skills-library` | [#31](https://github.com/frankxai/claude-skills-library/pull/31) | **yes** — squash `2b41506` | `4307d160ea40` | 42 |
-| `frankx.ai-vercel-website` | #742 | no — open | `280c70377f3f` | 175 |
+| `frankx.ai-vercel-website` | [#742](https://github.com/frankxai/frankx.ai-vercel-website/pull/742) | **yes** — squash `d4467e9` | `135f4b7e0dd9` — hand-written, **divergent** | 175 |
 | `FrankX` | #232 | no — open | `599ac2faca8d` | 315 |
 | `gencreator.ai` | #92 | no — label-blocked | `829e8a10457f` | 103 |
 | `gencreator-community` | #9 | no — label-blocked | `9d4533d72545` | 45 |
@@ -236,7 +236,7 @@ had an agent contract at all.
 Bookkeeping each merge requires, and which this change carries: `ontology/repo-tiers.json` moves
 the merged repo to `state: "generated"`, and `ontology/estate-graph.json` is rebuilt so
 `sourcesDigest` is not stale (INV-0 fires on exactly that). The estate run has moved
-**23 errors / 12 warnings → 23 / 11 → 22 / 11 → 21 / 11 → 21 / 10 → 21 / 9**. `arcanea-ai-app`,
+**23 errors / 12 warnings → 23 / 11 → 22 / 11 → 21 / 11 → 21 / 10 → 21 / 9 → 22 / 8**. `arcanea-ai-app`,
 `agentic-creator-os` and `claude-skills-library` each cleared an INV-6 *warning*, because all three
 already had a hand-written contract. `starlight-agent-skills` and
 `GenCreator-Studio` each cleared an INV-6 **error**, because neither had one — and with those two
@@ -323,6 +323,35 @@ Three ways out, none an agent's call:
 Band B for `frankx.ai-vercel-website` therefore still reads `agent:starlight-cmo`, which Frank has
 said is wrong. That is a known-open defect, not a passed gate: #742 is not ready on his own
 criterion until it is settled.
+
+### Outcome — merged as `d4467e9`, and divergent
+
+Frank re-reviewed `b6f16f6` and passed it: "Band B — prior FAIL cleared", with
+`agent:product-concierge` as the accountable seat. He squashed it as `d4467e9`. The contract
+landed whole — 19,627 bytes, both fences, Band A `b4a7e18fed75`, Band C 175 lines byte-for-byte.
+
+He accepted the seat after being shown twice that it resolves to nothing, so the estate now records
+what is true rather than what is tidy. `repo:frankx.ai-vercel-website` moves to
+`agents_md.state: "divergent"` with the defect named, and the estate run goes **21 errors / 9
+warnings → 22 / 8**: one INV-6 warning became an INV-6 error, because `handwritten` is a warning and
+`divergent` is not. `npm run agents:project:check` independently reports the repo stale, 18 errors
+→ 19.
+
+That error is the mechanism working. The committed Band B is `sha=135f4b7e0dd9` naming
+`agent:product-concierge`; the generator writes `sha=280c70377f3f` naming `agent:starlight-cmo`.
+Whichever of those is right, they cannot both be, and the next `npm run agents:project` resolves it
+by overwriting Band B from the registry — silently undoing the seat Frank just merged. It clears
+properly only when the registry carries the seat, which is still blocked on INV-2.
+
+A note on how the file survived. During review `AGENTS.md` was destroyed four times:
+`07fe722` (11 bytes), `e49bf32` (18, `<!-- probe -->\nok`), `f3d2fac` (33,
+`LOAD_FROM_FILE:/tmp/AGENTS.new.md`), `4c573aa` (47,
+`@file:///workspace/mcp-args-agents-restore.json`), and `0e33e60` restored Bands A+B but left Band C
+empty. The last two committed their own file-reference placeholder as the body: the write channel
+stores the literal string instead of expanding the indirection. Band C is hand-written and existed
+nowhere but git history, so each loss was recoverable only from `b01509d`. Restored three times by
+new commits on top — never a force-push, never a rewrite of anyone's history.
+
 
 ### The five merged repos carry the old claim
 
