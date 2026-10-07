@@ -15,6 +15,8 @@ Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity — they all read 
 [![deploy](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml)
 [![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
 
+Starlight Intelligence is an AI systems project led by Frank Riemer in Amsterdam. This repository contains its public protocol and reference source. [About the project and product](https://starlightintelligence.ai/about) · [Released open-source foundations](https://starlightintelligence.ai/open-source) · [Contribute and explore the community proposal](https://starlightintelligence.ai/community).
+
 ## Deploy Starlight Explorer
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2FStarlight-Intelligence-System&root-directory=site&project-name=starlight-explorer&repository-name=starlight-explorer)
