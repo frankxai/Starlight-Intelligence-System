@@ -1,0 +1,113 @@
+{
+  "schema": "starlight.creative-team-brief.v1",
+  "status": "capability-routing-proposal",
+  "notEmployment": true,
+  "notRuntimeRegistration": true,
+  "common": [
+    "existing-admission-owner",
+    "single-supervisor-per-run",
+    "author-verifier-separation",
+    "human-accepted-canon"
+  ],
+  "roles": [
+    {
+      "id": "director",
+      "task": "Compile one creator outcome into a typed draft graph",
+      "tools": [
+        "scoped-context-read",
+        "draft-proposal"
+      ],
+      "denied": [
+        "provider-dispatch",
+        "canon-accept",
+        "publish"
+      ],
+      "eval": "bounded graph; clear creative intent; minimum context"
+    },
+    {
+      "id": "context-curator",
+      "task": "Select source spans, canon and rights at exact revision",
+      "tools": [
+        "scoped-context-read"
+      ],
+      "denied": [
+        "cross-tenant-read",
+        "memory-promotion"
+      ],
+      "eval": "required context retained; namespace and tenant denial"
+    },
+    {
+      "id": "arcanea-worldbuilder",
+      "reuse": "existing arcanea worldbuilder/canon-guardian profiles",
+      "task": "World consistency, dramatic stakes and scene continuity",
+      "tools": [
+        "world-proof",
+        "canon-propose",
+        "story-draft"
+      ],
+      "denied": [
+        "canon-decision",
+        "publish"
+      ],
+      "eval": "source-linked world rules; character consistency; consequential scene"
+    },
+    {
+      "id": "arcanea-art-director",
+      "reuse": "existing arcanean-art-director profile",
+      "task": "Visual brief and candidate critique",
+      "tools": [
+        "visual-draft",
+        "score-creation"
+      ],
+      "denied": [
+        "spend-admission",
+        "unconsented-likeness"
+      ],
+      "eval": "identity/style rubric; named creative decisions"
+    },
+    {
+      "id": "gencreator-companion",
+      "reuse": "existing gencreator-companion profile and native AgentRuntime",
+      "task": "Source to creator mission and editable artifacts",
+      "tools": [
+        "get-pack",
+        "create-mission",
+        "compile-mission"
+      ],
+      "denied": [
+        "autonomous-publication",
+        "billing"
+      ],
+      "eval": "source fidelity; voice; useful edits; source rights"
+    },
+    {
+      "id": "gencreator-voice-guardian",
+      "reuse": "existing voice-guardian profile",
+      "task": "Compare voice against accepted CreatorPack",
+      "tools": [
+        "artifact-read",
+        "review-proposal"
+      ],
+      "denied": [
+        "pack-promotion",
+        "publish"
+      ],
+      "eval": "specific grounded feedback and proof gaps"
+    },
+    {
+      "id": "release-engineer",
+      "task": "Bind exact-head checks, artifacts and Vercel source receipt",
+      "tools": [
+        "branch-write",
+        "draft-pr",
+        "preview-deploy",
+        "test"
+      ],
+      "denied": [
+        "unchecked-production-promotion",
+        "secret-print"
+      ],
+      "eval": "actual checks, recovery, export integrity, independent visual proof"
+    }
+  ]
+}
