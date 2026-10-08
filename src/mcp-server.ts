@@ -87,6 +87,8 @@ export class ToolError extends Error {
 const MS_PER_DAY = 86_400_000;
 const VAULT_TYPES = ['strategic', 'technical', 'creative', 'operational', 'wisdom', 'horizon'] as const;
 const CONTRADICTIONS = 'contradictions';
+const LEGACY_VAULTS = new Set(['operations', 'ops']);
+const PROVENANCE_SLUG = /^[a-z][a-z0-9-]{0,31}$/;
 /** Newest first; the client's version when we speak it. */
 const PROTOCOL_VERSIONS = ['2025-06-18', '2025-03-26', '2024-11-05'];
 
@@ -101,6 +103,24 @@ function isLink(path: string): boolean {
 }
 
 /** A vault file path that stays in the vault directory: a planted symlink would redirect writes elsewhere. */
+function rememberProvenance(entry: RawEntry, label: 'agent' | 'brand' | 'domain', value: unknown): void {
+  if (value == null || value === '') return;
+  const slug = String(value);
+  if (!PROVENANCE_SLUG.test(slug)) {
+    throw new ToolError(`${label} must be a short slug.`, 'Use a lowercase letter, then up to 31 letters, numbers, or hyphens.');
+  }
+  entry[label] = slug;
+  const tags = entry.tags ?? [];
+  const tag = `${label}:${slug}`;
+  if (!tags.includes(tag)) tags.push(tag);
+  // Scope matches the tag "unit:<slug>", not "agent:<slug>".
+  if (label === 'agent') {
+    const unit = `unit:${slug}`;
+    if (!tags.includes(unit)) tags.push(unit);
+  }
+  entry.tags = tags;
+}
+
 function vaultFile(vaultDir: string, name: string): string {
   const path = join(vaultDir, `${name}.jsonl`);
   if (isLink(path)) throw new ToolError(`Vault file ${name}.jsonl is a symlink; refusing to follow it.`, 'Replace the link with a regular file inside the vault directory.');
@@ -340,22 +360,30 @@ export class StarlightMcpServer {
         tags: { type: 'array', maxItems: 20, items: { type: 'string', maxLength: 64 }, description: 'Keywords that boost this entry in sis_search.' },
         confidence: { type: 'string', enum: ['low', 'medium', 'high'], description: 'How sure the source is (default medium); sets how fast confidence decays.' },
         category: { type: 'string', pattern: '^[a-z][a-z0-9_-]{0,31}$', description: 'Kind of entry (default insight); standard: pattern, decision, insight, error, preference.' },
+        agent: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$', description: 'Optional agent slug. Stored on the entry, as tag agent:<slug>, and as unit:<slug> so scope can see it.' },
+        brand: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$', description: 'Optional brand slug. Stored on the entry and as tag brand:<slug>.' },
+        domain: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$', description: 'Optional domain slug. Stored on the entry and as tag domain:<slug>.' },
       }, ['vault', 'content']),
       outputSchema: output({ success: { type: 'boolean' }, id: { type: 'string' }, vault: { type: 'string' } }),
       annotations: APPEND,
     }, (p) => {
       const vault = String(p.vault), now = new Date().toISOString();
       if (vault === CONTRADICTIONS) throw new ToolError('"contradictions" is reserved.', 'Flag conflicts with sis_contradict instead.');
+      if (LEGACY_VAULTS.has(vault)) throw new ToolError(`Vault "${vault}" is not a write target.`, 'Use strategic, technical, creative, operational, wisdom, or horizon. The legacy operations and ops files stay where they are.');
       const conf = p.confidence === 'high' ? 0.9 : p.confidence === 'low' ? 0.3 : 0.6;
+      const tags = Array.isArray(p.tags) ? p.tags.map(String) : [];
       const entry: RawEntry = {
         id: `sis_${Date.now()}_${randomUUID().slice(0, 8)}`,
         content: String(p.content), vault,
-        tags: Array.isArray(p.tags) ? p.tags.map(String) : [],
+        tags,
         confidence: p.confidence ? String(p.confidence) : 'medium',
         category: p.category ? String(p.category) : 'insight',
         createdAt: now,
         temporal: { validFrom: now, validUntil: null, lastConfirmed: now, confidenceDecay: conf },
       };
+      rememberProvenance(entry, 'agent', p.agent);
+      rememberProvenance(entry, 'brand', p.brand);
+      rememberProvenance(entry, 'domain', p.domain);
       appendFileSync(vaultFile(this.vaultDir, vault), JSON.stringify(entry) + '\n', 'utf-8');
       return { success: true, id: entry.id, vault };
     });
