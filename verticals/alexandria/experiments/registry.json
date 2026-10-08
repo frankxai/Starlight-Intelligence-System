@@ -1,0 +1,70 @@
+{
+  "$comment": "Forge registry. Every experiment names one metric, one falsifier, a budget with a unit, an owner and a close date. proven/falsified require receipt ids. Validated by src/alexandria/experiments.ts and test/v93-alexandria.test.ts.",
+  "experiments": [
+    {
+      "id": "exp-2026-10-08-catalogue-recall",
+      "house": "library",
+      "hypothesis": "Deterministic lexical routing over the curated tag vocabulary resolves at least 80% of the first 50 real agent needs to the capability a human would have picked.",
+      "metric": "share of logged needs where alexandria_plan.recommended equals the human pick",
+      "falsifier": "below 60% after 50 logged needs: replace lexical routing with Firecrawl semantic find-tools as the primary planner and keep lexical as the tie-breaker",
+      "budget": "0 credits (planning is free); 2 hours labelling",
+      "owner": "frank",
+      "status": "running",
+      "openedAt": "2026-10-08",
+      "closesBy": "2026-11-08",
+      "receipts": []
+    },
+    {
+      "id": "exp-2026-10-08-whale-brief-receipts",
+      "house": "synthesis",
+      "hypothesis": "A weekly whale-tracking brief built only from receipted records (gmgn-ai wallet_rank + wallet_profile, fiscal-ai institutional-holders) is read end to end by at least three of five pilot readers.",
+      "metric": "pilot readers who confirm they read the brief end to end, out of five",
+      "falsifier": "fewer than three of five after four weekly issues: the brief format fails; fall back to per-wallet alerts and reopen under scribe",
+      "budget": "400 credits over four issues",
+      "owner": "frank",
+      "status": "proposed",
+      "openedAt": "2026-10-08",
+      "closesBy": "2026-11-15",
+      "receipts": []
+    },
+    {
+      "id": "exp-2026-10-08-pass-through-margin",
+      "house": "exchange",
+      "hypothesis": "A receipted pass-through endpoint (one capability, one price, one signed receipt) finds at least one paying external caller at a margin above Firecrawl's per-call credit cost within 30 days of listing.",
+      "metric": "paid external calls with margin above provider cost, counted from Polar orders",
+      "falsifier": "zero paid calls at day 30: the standalone pass-through has no pull; fold records into the brief subscription and park",
+      "budget": "200 credits of demo calls; 6 hours build",
+      "owner": "frank",
+      "status": "proposed",
+      "openedAt": "2026-10-08",
+      "closesBy": "2026-11-30",
+      "receipts": []
+    },
+    {
+      "id": "exp-2026-10-08-generation-lane-bakeoff",
+      "house": "forge",
+      "hypothesis": "For one fixed creator brief, a three-lane bakeoff (Seedance via fal, Veo via Gemini, Kling via Higgsfield) produces one lane whose output the design verifier passes on first render at least twice in three runs.",
+      "metric": "first-render passes per lane out of three runs, judged by the design-verifier agent",
+      "falsifier": "no lane passes twice: hold the routing decision, keep Higgsfield default, re-run with a narrower brief",
+      "budget": "9 renders; EUR cost capped at the three lanes' listed per-render price times nine",
+      "owner": "frank",
+      "status": "proposed",
+      "openedAt": "2026-10-08",
+      "closesBy": "2026-11-01",
+      "receipts": []
+    },
+    {
+      "id": "exp-2026-10-08-allocator-pilot",
+      "house": "treasury",
+      "hypothesis": "Two allocators (one crypto-native, one traditional) agree to a paid 30-day pilot of the weekly brief plus one bespoke receipted deep-dive after a single call.",
+      "metric": "signed pilots out of ten warm introductions",
+      "falsifier": "zero signed pilots from ten introductions: the offer is wrong for allocators; reposition to operators and founders",
+      "budget": "10 introductions; 10 hours",
+      "owner": "frank",
+      "status": "proposed",
+      "openedAt": "2026-10-08",
+      "closesBy": "2026-12-01",
+      "receipts": []
+    }
+  ]
+}

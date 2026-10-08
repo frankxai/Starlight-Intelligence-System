@@ -2,6 +2,17 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## Unreleased — Starlight Alexandria (domain sub-stack v0.1)
+
+**Catalogued intelligence with receipts: `verticals/alexandria/` + `src/alexandria/`, built to `dist/alexandria/`. A package `exports` entry is deferred because package.json is digest-pinned by the Foundry toolchain lock.**
+
+- **Catalogue:** `catalog/providers.json` — 19 providers (4 native: vaults, metrics ledger, research notes, vertical registry; 15 from Firecrawl's Alexandria catalogue) with real per-call credit prices reconciled against the catalogue digest on 2026-10-08, required-option groups and a routing tag vocabulary. `catalog/connectors.json` — 24 runtimes, generation lanes, distribution and money rails with credential env-var names only.
+- **Runtime:** deterministic `Library` routing (tag 3 / name 2 / description 1, cost tie-break), `Alexandria` router with a fail-closed session budget restored from the ledger, `FirecrawlTransport` (injectable fetch), `NativeTransport` (free corpus reads), receipts with key-order-independent sha256 and an earned "Built on SIP" block, append-only JSONL ledger, Forge experiment registry whose status machine refuses `proven`/`falsified` without receipt ids.
+- **MCP:** `src/alexandria/mcp.ts` — `alexandria_find`, `alexandria_plan`, `alexandria_execute`, `alexandria_receipts`, `alexandria_experiments` over stdio; unknown arguments rejected before any handler. `node dist/alexandria/mcp.js`.
+- **Docs:** 7-file contract plus ARCHITECTURE, SDLC, SWARM, REVENUE, CAPITAL, SUB-SYSTEMS, PROPOSAL, six House cards, Board record (PROCEED, three conditions).
+- **Tests:** `test/v93-alexandria.test.ts` (`.github/workflows/alexandria.yml`; `npm test` picks it up at the next toolchain relock); `alexandria` added to v79 declared-live sub-stacks.
+- **Known placeholders:** Similarweb and Firecrawl Trends capability paths are unreconciled (provider agreements unavailable at fetch time); recorded in `verticals/alexandria/MEMORY.md`.
+
 ## Unreleased — vault MCP server hardening
 
 **`dist/mcp-server.js` (the `starlight-mcp` bin): vault names can no longer escape the vault directory, and the 13 `sis_*` tools meet the mcp-doctor quality bar (21% → 93%).**

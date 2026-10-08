@@ -1,0 +1,76 @@
+# Starlight Alexandria — catalogue, router, receipts, experiments, MCP server.
+#
+# Runs the vertical's conformance suite on every PR that touches it. It is a
+# separate workflow rather than a `test:alexandria` script because root
+# package.json is digest-pinned by the Foundry OpenAI toolchain lock
+# (foundry/validators/toolchain.lock.v1.json); adding the script there is an
+# independently reviewed relock, deferred (verticals/alexandria/MEMORY.md).
+#
+# Built on SIP — Starlight Intelligence Protocol
+# Layers used: [file-contract, attestation]
+
+name: Alexandria
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/alexandria.yml"
+      - "src/alexandria/**"
+      - "verticals/alexandria/**"
+      - "test/v93-alexandria.test.ts"
+      - "test/v79-vertical-coverage.test.ts"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/alexandria.yml"
+      - "src/alexandria/**"
+      - "verticals/alexandria/**"
+      - "test/v93-alexandria.test.ts"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: alexandria-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  alexandria:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (tsc --noEmit)
+        run: npm run lint
+
+      - name: Catalogue and experiment registry parse
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('verticals/alexandria/catalog/providers.json','utf8'))"
+          node -e "JSON.parse(require('fs').readFileSync('verticals/alexandria/catalog/connectors.json','utf8'))"
+          node -e "JSON.parse(require('fs').readFileSync('verticals/alexandria/experiments/registry.json','utf8'))"
+
+      - name: Alexandria conformance
+        run: node --import tsx --test test/v93-alexandria.test.ts
+
+      - name: Vertical coverage (7-file contract)
+        run: node --import tsx --test test/v79-vertical-coverage.test.ts
+
+      - name: Build and smoke the MCP server over stdio
+        run: |
+          npm run build
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' \
+            | ALEXANDRIA_LEDGER="$(mktemp -d)/receipts.jsonl" node dist/alexandria/mcp.js \
+            | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const r=JSON.parse(s.trim().split('\n')[0]);const n=r.result.tools.map(t=>t.name);if(n.length!==5)process.exit(1);console.log(n.join(' '))})"
