@@ -42,7 +42,7 @@ export function validateExperiment(e: Partial<Experiment>): ExperimentProblem[] 
   if (!ID_RE.test(id)) problems.push({ id, message: 'id must look like exp-YYYY-MM-DD-slug' });
   if (!HOUSES.includes(e.house as (typeof HOUSES)[number])) problems.push({ id, message: `house must be one of ${HOUSES.join('|')}` });
   for (const key of ['hypothesis', 'metric', 'falsifier', 'budget'] as const) {
-    if (typeof e[key] !== 'string' || e[key]!.trim().length < 8) problems.push({ id, message: `${key} must be a sentence, not a stub` });
+    if (typeof e[key] !== 'string' || e[key]!.trim().length < 8) problems.push({ id, message: `${key} must be a full sentence of at least 8 characters` });
   }
   if (typeof e.owner !== 'string' || !/^[a-z][a-z0-9-]*$/.test(e.owner)) problems.push({ id, message: 'owner must be a lower-case slug' });
   if (!STATUSES.includes(e.status as ExperimentStatus)) problems.push({ id, message: `status must be one of ${STATUSES.join('|')}` });

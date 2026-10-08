@@ -96,7 +96,7 @@ export class Alexandria {
     const hit = this.resolve(req);
     const options = req.options ?? {};
     if (hit.provider.kind === 'connector') {
-      throw new AlexandriaError('connector_not_executable', `${hit.capability.id} is a connector, not a data capability`, 'Connectors are called by the swarm runtime. See verticals/alexandria/catalog/connectors.json.');
+      throw new AlexandriaError('connector_not_executable', `${hit.capability.id} is a connector and cannot be executed as a data capability`, 'Connectors are called by the swarm runtime. See verticals/alexandria/catalog/connectors.json.');
     }
     const unmet = this.library.unmetRequirement(hit.capability.id, options);
     if (unmet) throw new AlexandriaError('unmet_requirement', `${hit.capability.id} needs one of: ${unmet.join(', ')}`, 'Supply one of the listed options and call again; nothing was charged.');

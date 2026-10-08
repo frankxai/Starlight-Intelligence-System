@@ -7,7 +7,7 @@
  * cannot point at receipts is an opinion, and the Exchange only resells what
  * has one.
  *
- * The "Built on SIP" block is earned, not blanket (per ATTESTATIONS.md, 2026-09-19):
+ * The "Built on SIP" block is earned per receipt (per ATTESTATIONS.md, 2026-09-19):
  * it is emitted only when the caller declares which SIP layers the record
  * actually composed. A declared block is a label; a receipt someone else can
  * re-check needs `protocol/sign.mjs` (the proposed SIP graph extension).
