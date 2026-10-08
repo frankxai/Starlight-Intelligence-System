@@ -1,0 +1,28 @@
+{
+  "schema": "starlight.creative-lab-projection.v1",
+  "kernelDigest": "a305e3dff932c291d63a655533b0e623b4b894039845b8330e74421ab9238910",
+  "sourceRepository": "frankxai/Starlight-Intelligence-System",
+  "kernelRef": "ba5971e79eaff6d0991729d8d1081e156475a12c",
+  "inputs": {
+    "template": "0ecb48974ebae57cc8bd93ba44519b278cb5b181f1d0487a46272b39cdce3c0d",
+    "css": "6ce0ae3b767483cef90c49320596b644743871c49e224ddee67e535eaef54da2",
+    "app": "9c966980338df32fe7bbaf8b17081dbe9030754f28e3735a6985a7f99f9297b3"
+  },
+  "products": {
+    "starlight": {
+      "htmlDigest": "b8d64e923e3da24700d90108007906bc9e43930889c90b52f031222810398503",
+      "nodes": 13,
+      "edges": 16
+    },
+    "arcanea": {
+      "htmlDigest": "f86db8b3562edaa1cafbe21389db45ce767c7cd19058be22fff3f4ab4b73eeea",
+      "nodes": 13,
+      "edges": 16
+    },
+    "gencreator": {
+      "htmlDigest": "b31ad884e95c1547e260f596e5444a11e72f4bb2a72087b4b6425325f1573a5a",
+      "nodes": 7,
+      "edges": 11
+    }
+  }
+}

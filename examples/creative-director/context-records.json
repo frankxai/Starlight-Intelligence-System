@@ -1,0 +1,57 @@
+[
+  {
+    "id": "law",
+    "tenantId": "demo-studio",
+    "worldId": "glass-tide",
+    "worldRevision": 7,
+    "namespace": "Creative/canon",
+    "state": "accepted",
+    "visibility": "private",
+    "tokens": 14,
+    "text": "Light costs one memory. No free magic."
+  },
+  {
+    "id": "mara",
+    "tenantId": "demo-studio",
+    "worldId": "glass-tide",
+    "worldRevision": 7,
+    "namespace": "Creative/characters",
+    "state": "accepted",
+    "visibility": "private",
+    "tokens": 16,
+    "text": "Mara wears a silver coat. Her lighthouse silhouette is fixed."
+  },
+  {
+    "id": "coast",
+    "tenantId": "demo-studio",
+    "worldId": "glass-tide",
+    "worldRevision": 7,
+    "namespace": "Creative/locations",
+    "state": "source",
+    "visibility": "private",
+    "tokens": 12,
+    "text": "The coastal city has limestone terraces and glass tide gates."
+  },
+  {
+    "id": "candidate",
+    "tenantId": "demo-studio",
+    "worldId": "glass-tide",
+    "worldRevision": 7,
+    "namespace": "Creative/canon",
+    "state": "proposal",
+    "visibility": "private",
+    "tokens": 7,
+    "text": "Maybe light can become free."
+  },
+  {
+    "id": "other",
+    "tenantId": "another-tenant",
+    "worldId": "glass-tide",
+    "worldRevision": 7,
+    "namespace": "Creative/canon",
+    "state": "accepted",
+    "visibility": "private",
+    "tokens": 5,
+    "text": "Another customer's private source."
+  }
+]
