@@ -17,6 +17,7 @@ import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
 import { GoalOrchestrator } from './goal.js';
 import { continuityStatus, importContinuityBundle } from './continuity-import.js';
+import { RetrievalIndex } from './retrieval.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpToolAnnotations {
@@ -383,6 +384,7 @@ export class StarlightMcpServer {
       inputSchema: input({
         query: { type: 'string', minLength: 1, maxLength: 500, description: 'Words to look for.' },
         vaults: { type: 'array', maxItems: 20, items: vaultName('Vault name.'), description: 'Only search these vaults.' },
+        scope: { type: 'string', pattern: '^(company|unit:[a-z0-9-]+)$', description: 'Limit results to entries tagged "company" or this specific unit (e.g. unit:name).' },
         limit: limit(10, 100),
         includeExpired: { type: 'boolean', description: 'Include entries past their validUntil (default false).' },
       }, ['query']),
@@ -390,22 +392,39 @@ export class StarlightMcpServer {
       annotations: READ,
     }, (p) => {
       const q = String(p.query), lim = Number(p.limit ?? 10);
-      const vf = Array.isArray(p.vaults) ? new Set(p.vaults.map(String)) : null;
-      let entries = allEntries(this.vaultDir);
-      if (vf) entries = entries.filter(e => vf.has(e._vault));
-      if (!p.includeExpired) entries = entries.filter(e => !isExpired(e));
-      const terms = q.toLowerCase().split(/\s+/).filter(w => w.length > 1);
-      const results = entries.map(e => {
-        const base = wordScore(q, textOf(e));
-        const tagBoost = (e.tags ?? []).some(t => terms.includes(t.toLowerCase())) ? 0.15 : 0;
-        const penalty = isStale(e, 30) ? 0.1 : 0;
-        return { e, score: Math.min(1, Math.max(0, base + tagBoost - penalty)) };
-      }).filter(r => r.score > 0).sort((a, b) => b.score - a.score).slice(0, lim)
-        .map(({ e: { _vault, ...r }, score }) => ({
-          ...r, vault: _vault, score: Math.round(score * 1000) / 1000,
-          matchedTerms: terms.filter(w => textOf(r as RawEntry).toLowerCase().includes(w)),
-        }));
-      return { results };
+      const scope = p.scope ? String(p.scope) : undefined;
+      const index = new RetrievalIndex(':memory:');
+      try {
+        index.rebuildFromVaults(this.vaultDir);
+        const searchResults = index.search(q, {
+          limit: lim,
+          vaults: Array.isArray(p.vaults) ? (p.vaults as any) : undefined,
+          scope,
+          includeExpired: Boolean(p.includeExpired),
+        });
+
+        const rawEntries = allEntries(this.vaultDir);
+        const rawMap = new Map<string, RawEntry & { _vault: string }>();
+        for (const e of rawEntries) rawMap.set(e.id, e);
+
+        const terms = q.toLowerCase().split(/\s+/).filter(w => w.length > 1);
+
+        const results = searchResults.map(sr => {
+          const raw = rawMap.get(sr.entry.id);
+          if (!raw) return null;
+          const { _vault, ...r } = raw;
+          return {
+            ...r,
+            vault: _vault,
+            score: Math.round(sr.score * 1000) / 1000,
+            matchedTerms: terms.filter(w => textOf(r as RawEntry).toLowerCase().includes(w)),
+          };
+        }).filter(r => r !== null);
+
+        return { results };
+      } finally {
+        index.close();
+      }
     }, 'results');
 
     this.reg({
