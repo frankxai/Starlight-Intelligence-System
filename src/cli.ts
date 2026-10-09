@@ -24,6 +24,7 @@
 
 import { parseArgs } from "node:util";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
@@ -1454,6 +1455,13 @@ async function cmdGoal(
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
+  if (process.argv[2] === "team") {
+    const script = fileURLToPath(new URL("../foundry/agent-ontology/team-cli.mjs", import.meta.url));
+    const result = spawnSync(process.execPath, [script, ...process.argv.slice(3)], { stdio: "inherit" });
+    if (result.error) throw result.error;
+    process.exitCode = result.status ?? 2;
+    return;
+  }
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {
