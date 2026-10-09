@@ -29,7 +29,8 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node: ["18", "20", "22"]
+        # Test the declared lower bound and current supported runtime.
+        node: ["18", "22"]
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
