@@ -1,0 +1,11 @@
+import {readFile,writeFile} from "node:fs/promises";
+import {resolve} from "node:path";
+import {fileURLToPath} from "node:url";
+import {compileWorkflow,nodeKeys,sha256} from "./kernel.mjs";
+const args=process.argv.slice(2),option=name=>{const i=args.indexOf(name);return i>=0?args[i+1]:undefined;};
+const path=option("--workflow")?resolve(option("--workflow")):fileURLToPath(new URL("./world-workflow.json",import.meta.url));
+const workflow=JSON.parse(await readFile(path,"utf8"));
+const authority={workflowRevision:workflow.revision,worldRevision:workflow.worldRevision,currency:workflow.currency,maxCostMinor:1200,allowedProviders:["xai","gemini","higgsfield"]};
+const manifest={schema:"starlight.creative-plan.v1",kind:"local-draft",workflow,plan:compileWorkflow(workflow,authority),semanticKeys:await nodeKeys(workflow),workflowDigest:await sha256(workflow),authorization:null};
+const json=JSON.stringify(manifest,null,2)+"\n";
+const output=option("--output");if(output)await writeFile(resolve(output),json);else process.stdout.write(json);
