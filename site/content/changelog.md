@@ -4,7 +4,7 @@ All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separat
 
 ## Merged on main - 2026-05-30 to 2026-10-08
 
-Each line is a merged pull request or commit on `main`, dated by its merge date and cited by number or short SHA.
+Each line is a merged pull request or commit on `main`, dated by its merge date and cited by number or short SHA. Dates are merge dates in Europe/Berlin time.
 
 ### October 2026
 
@@ -22,7 +22,7 @@ Each line is a merged pull request or commit on `main`, dated by its merge date 
 ### September 2026
 
 - 2026-09-28 - Vault path traversal fixed in the MCP server, and the `sis_*` tools brought to the quality bar (#215).
-- 2026-09-24 - Portable agent ontology and governed compiler (#194).
+- 2026-09-24 - Agent ontology and compiler (#194).
 - 2026-09-19 - /verify page for SIS's own signed SIP receipt (#173); SIP schemas served at their type and `$id` URLs (#174); SIS's own SIP graph profile attested on every push to main (#170).
 - 2026-09-19 - Proposed SIP layer 7: evidence graph with signed, re-checkable receipts (#166).
 - 2026-09-19 - Next.js upgraded to 16.3.5 in site and console as a security fix (#168).
@@ -36,8 +36,8 @@ Each line is a merged pull request or commit on `main`, dated by its merge date 
 
 - 2026-08-29 - Agent discovery entry point (#110).
 - 2026-08-27 - Vault count on the public site corrected (#105), following the public vault count fix of 2026-08-18 (#92).
-- 2026-08-24 - Vercel deploy page (#103, #104).
-- 2026-08-15 - Homepage calls to action describe source-only distribution (#83).
+- 2026-08-25 - Vercel deploy page (#103, #104).
+- 2026-08-16 - Homepage calls to action describe source-only distribution (#83).
 - 2026-08-12 - Starlight Accord and cross-lab perspective published (#80).
 - 2026-08-05 - Constellation star maps and encyclopedia wave on /cosmos (#37).
 
@@ -60,6 +60,7 @@ Each line is a merged pull request or commit on `main`, dated by its merge date 
 
 - 2026-05-31 - v8.2.0: first-run hardening, vault seeding, retrieval labeling and measured recall (#15).
 - 2026-05-30 - Harness drift guard, CI, STATUS and MCP smoke test (#14).
+
 ## Unreleased — 2026-09-19
 
 - **Attestation is earned, not blanket.** The "Built on SIP" block is emitted only on artifacts that compose a SIP element, and is described as a declared label; verifiable claims use signed receipts (`protocol/sign.mjs`). Supersedes the v7.4 ambient-attestation stance (see `ATTESTATIONS.md`).
