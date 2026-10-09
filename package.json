@@ -14,6 +14,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
+    "./runtime-bridge": {
+      "types": "./dist/runtime-bridge/index.d.ts",
+      "import": "./dist/runtime-bridge/index.js"
+    },
+    "./terminal-runtime": {
+      "types": "./dist/terminal-runtime.d.ts",
+      "import": "./dist/terminal-runtime.js"
+    },
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -116,6 +124,7 @@
     }
   },
   "scripts": {
+    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts",
     "build": "tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",
