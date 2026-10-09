@@ -157,6 +157,21 @@ This is the **public registry**. Active alliances and private verticals (Family 
 - **SIP commands:** `/gravity-capture` · `/gravity-brief` · `/gravity-publish` · `/gravity-room` · `/gravity-follow-through` · `/gravity-review`.
 - **Compounds:** FrankX (protocol-adoption narrative + consulting surface) + the engine's own catalog and any future managed tier.
 
+### Reality Architect
+- **Class:** sovereign vertical (operated, public)
+- **Domain:** The open practice for architecting a life — the `reality.md` + `soul.md` format, Reality Studio (local-first), the honest Library, and a read-only engine that projects a person's files into the Reality Architecture kernel. Meaning and mechanism, always labeled.
+- **Owner:** Frank Riemer.
+- **Status:** `active — standard v0.2, Studio, Library and engine live`.
+- **Primary repo:** [`frankxai/realityarchitect`](https://github.com/frankxai/realityarchitect) (PUBLIC, MIT).
+- **Public surface:** `realityarchitect.ai`.
+- **Canon:** **declines** — no canon layer; teacher names live only in its Library data, and Arcanea proper nouns stay out (register boundary).
+- **Composition (built ON SIP, never inside it):** A standalone vertical built on SIP. It **composes with** — but never requires — SIS. Its engine emits this kernel's `ra:<type>:<key>` IDs, registry types (v0.1.2) and relations, so a person's graph projects into SIS on consent. The kernel (GENESIS, ADR-000, schemas) stays here as doctrine; the format and engine stay in the vertical's repo.
+- **Mapping:** Bridge → FutureBranch + ActualizationPlan · Atlas gap → RealityDiff · Witness entry → self-reported ActualizationReceipt · approved snapshot → `world_state`.
+- **SIP attestation:** Reality Cards from `/threshold` carry `Built on SIP`.
+- **Substrate home (in-repo surface):** `verticals/reality-architect/` — pointer only (links out; no implementation).
+- **SIP commands:** the `reality-architect` plugin skills — `reality-onboard` · `reality-daily` · `reality-witness` · `reality-bridge` · `reality-snapshot` · `reality-decide` · `reality-vision-board` · `reality-library` · `reality-loop`.
+- **Compounds:** FrankX (the practice narrative) + Reality Architect's paid tiers (sync, renders, guides, school).
+
 ### Starlight Intelligence (the substrate)
 - **Class:** sovereign substrate (the substrate itself, not a vertical)
 - **Domain:** SIP protocol, SIS substrate, Alliance forging method, Starlight Console, canonical registry. Hosts the master **Starlight Orchestrator** layer at `core/orchestrator/` that routes the other nine universal IS.

@@ -54,7 +54,7 @@ export function renderStatus(status: ContinuityStatus): string {
     `${w.workId}  [${w.state}]  owner ${w.ownerActorId ?? "unregistered"}`,
     `  intent: ${w.intent.distinctRequests} request(s) seen ${w.intent.observations} time(s) via ${w.intent.harnesses.join(", ")}; capture ${w.intent.captureCompleteness.join("/") || "unknown"}`,
     `  reported: ${w.reportedState ? `${w.reportedState.value} (${w.reportedState.verification})` : "unknown"}`,
-    `  checkout: ${w.checkout ? `${w.checkout.origin} ${w.checkout.branch} @ ${w.checkout.head.slice(0, 12)}${w.checkout.dirty ? " with uncommitted work" : ""}` : "unknown"}`,
+    `  checkout: ${w.checkout ? `${w.checkout.origin} ${w.checkout.branch} @ ${w.checkout.head.slice(0, 12)}${w.checkout.dirty ? " with uncommitted work" : ""}` : w.workspace ? `none (workspace session in ${w.workspace.root})` : "unknown"}`,
     `  admission: ${w.admission.admitted ? `admitted by ${w.admission.byActorId}` : "not admitted"}`,
     `  delivery: ${w.delivery.completed ? "completed with proof" : w.admission.admitted ? `missing ${w.delivery.missingProofs.join(", ") || "nothing"}` : "not started"}`,
     w.quarantined ? `  quarantined: ${w.quarantined} untrusted event(s)` : "",

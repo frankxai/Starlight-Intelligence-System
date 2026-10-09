@@ -258,3 +258,36 @@ describe("follow-up: operator-facing lock messages", () => {
     assert.ok(existsSync(`${lock}.reclaim`));
   });
 });
+
+describe("workspace sessions outside any checkout", () => {
+  const workspaceCapture = (over: Parameters<typeof capture>[0] = {}) => {
+    const part = capture({ reportedState: "blocked", stateVerification: "native-goal-store", ...over });
+    part.event = { ...part.event, data: { ...part.event.data, scope: "workspace", repositoryHead: null } };
+    const { repository: _repository, ...rest } = part.observation;
+    return { event: part.event, observation: { ...rest, repository: null, scope: "workspace", workspace: { root: "C:/Users/frank" } } as unknown as typeof part.observation };
+  };
+  const workspacePolicy = { ...policy, works: [{ workId: "work:continuity", projectId: "project:sis", ownerActorId: "actor:frank" }] };
+
+  it("imports a workspace session for a work registered without a checkout", () => {
+    const s = store();
+    const result = importContinuityBundle(writeBundle([workspaceCapture()]), s, workspacePolicy);
+    assert.equal(result.accepted.length, 1);
+    const [work] = continuityStatus(s, workspacePolicy).works;
+    assert.deepEqual([work.scope, work.checkout, work.workspace, work.state], ["workspace", null, { root: "C:/Users/frank" }, "input-required"]);
+    assert.deepEqual(work.reportedState, { value: "blocked", verification: "native-goal-store" });
+  });
+
+  it("refuses a workspace session for a work registered with a checkout, and scope disagreements", () => {
+    assert.equal(importContinuityBundle(writeBundle([workspaceCapture()]), store(), policy).quarantined[0]?.reason, "checkout-mismatch");
+    const mixed = workspaceCapture();
+    mixed.event = { ...mixed.event, data: { ...mixed.event.data, scope: undefined } };
+    assert.equal(importContinuityBundle(writeBundle([mixed]), store(), workspacePolicy).quarantined[0]?.reason, "observation-missing");
+  });
+
+  it("reports checkout scope for ordinary sessions", () => {
+    const s = store();
+    importContinuityBundle(writeBundle([capture()]), s, policy);
+    const [work] = continuityStatus(s, policy).works;
+    assert.deepEqual([work.scope, work.workspace], ["checkout", null]);
+  });
+});
