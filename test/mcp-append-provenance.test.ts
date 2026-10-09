@@ -115,6 +115,69 @@ test('an agent without brand or unit adds no unit scope', () => {
   });
 });
 
+test('an entry never carries two unit tags: conflicting unit tags are rejected', () => {
+  withVault('sis-provenance-conflict-', (vaultDir, server) => {
+    const conflicts: Array<Record<string, unknown>> = [
+      { tags: ['unit:frankx'], unit: 'arcanea' },
+      { tags: ['unit:frankx'], brand: 'arcanea' },
+      { tags: ['unit:frankx', 'unit:arcanea'] },
+      { tags: ['unit:frankx', 'unit:arcanea'], unit: 'arcanea' },
+    ];
+    for (const [i, extra] of conflicts.entries()) {
+      const response = call(server, i + 1, 'sis_append_entry', { vault: 'strategic', content: 'cross unit leak probe', ...extra });
+      assert.equal(isError(response), true, JSON.stringify(extra));
+    }
+    assert.throws(() => readFileSync(join(vaultDir, 'strategic.jsonl'), 'utf8'), 'a rejected append writes nothing');
+    assert.deepEqual(ids(server, 10, 'cross unit leak probe', 'unit:frankx'), []);
+    assert.deepEqual(ids(server, 11, 'cross unit leak probe', 'unit:arcanea'), []);
+  });
+});
+
+test('matching and duplicate unit tags collapse to one; scoped recall misses every other unit', () => {
+  withVault('sis-provenance-dupes-', (vaultDir, server) => {
+    const id = appendedId(call(server, 1, 'sis_append_entry', {
+      vault: 'strategic',
+      content: 'arcanea roadmap checkpoint',
+      tags: ['unit:arcanea', 'unit:arcanea', 'roadmap'],
+      unit: 'arcanea',
+      brand: 'frankx',
+      agent: 'gencreator',
+    }));
+    const [stored] = storedLines(vaultDir, 'strategic');
+    assert.deepEqual(stored.tags.filter(tag => tag.startsWith('unit:')), ['unit:arcanea']);
+    assert.equal(stored.tags.filter(tag => tag === 'roadmap').length, 1);
+    assert.equal(stored.unit, 'arcanea');
+    assert.deepEqual(ids(server, 2, 'arcanea roadmap checkpoint', 'unit:arcanea'), [id]);
+    for (const [n, stale] of ['unit:frankx', 'unit:gencreator'].entries()) {
+      assert.deepEqual(ids(server, 3 + n, 'arcanea roadmap checkpoint', stale), [], stale);
+    }
+  });
+});
+
+test('a caller unit tag with no unit or brand stays the single unit (pre-#318 scoping)', () => {
+  withVault('sis-provenance-legacy-', (vaultDir, server) => {
+    const id = appendedId(call(server, 1, 'sis_append_entry', {
+      vault: 'technical',
+      content: 'legacy scoped note',
+      tags: ['unit:arcanea'],
+      agent: 'gencreator',
+    }));
+    const [stored] = storedLines(vaultDir, 'technical');
+    assert.equal(stored.unit, 'arcanea');
+    assert.deepEqual(stored.tags.filter(tag => tag.startsWith('unit:')), ['unit:arcanea']);
+    assert.deepEqual(ids(server, 2, 'legacy scoped note', 'unit:arcanea'), [id]);
+    assert.deepEqual(ids(server, 3, 'legacy scoped note', 'unit:gencreator'), []);
+
+    const sameBrand = appendedId(call(server, 4, 'sis_append_entry', {
+      vault: 'technical',
+      content: 'brand agrees with tag',
+      tags: ['unit:frankx'],
+      brand: 'frankx',
+    }));
+    assert.deepEqual(ids(server, 5, 'brand agrees with tag', 'unit:frankx'), [sameBrand]);
+  });
+});
+
 test('registered agent names are normalized to slugs; unusable values are refused', () => {
   withVault('sis-provenance-slug-', (vaultDir, server) => {
     appendedId(call(server, 1, 'sis_append_entry', {

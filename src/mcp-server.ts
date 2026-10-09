@@ -125,14 +125,44 @@ function addTag(entry: RawEntry, tag: string): void {
 
 /**
  * Records who wrote an entry and which unit it belongs to. `agent` is author
- * provenance only (tag agent:<slug>). The scope tag unit:<slug> comes from an
- * explicit `unit`, else from `brand`; it is never derived from the agent.
+ * provenance only (tag agent:<slug>); it never sets the unit.
+ *
+ * An entry belongs to at most one unit, because sis_search scope admits an
+ * entry when ANY tag equals "unit:<x>" (or "company"): a second unit tag would
+ * leak the entry into another unit's recall. The unit comes from, in order, an
+ * explicit `unit`, a caller-supplied unit:<x> tag (the pre-#318 way to scope),
+ * or `brand`. Every source that is present must agree; a disagreement is
+ * rejected rather than silently rewritten, so a memory is never filed under a
+ * unit its caller did not intend. Repeated identical tags are collapsed.
  */
 function rememberProvenance(entry: RawEntry, p: Record<string, unknown>): void {
   const agent = provenanceSlug('agent', p.agent);
   const brand = provenanceSlug('brand', p.brand);
   const domain = provenanceSlug('domain', p.domain);
-  const unit = provenanceSlug('unit', p.unit) ?? brand;
+  const explicitUnit = provenanceSlug('unit', p.unit);
+  const tags = [...new Set(entry.tags ?? [])];
+  entry.tags = tags;
+  const taggedUnits = [...new Set(tags.filter(tag => tag.startsWith('unit:')).map(tag => tag.slice('unit:'.length)))];
+  if (taggedUnits.length > 1) {
+    throw new ToolError(
+      `tags name more than one unit (${taggedUnits.map(u => `unit:${u}`).join(', ')}).`,
+      'An entry belongs to one unit. Keep a single unit:<slug> tag, or pass `unit` and drop the unit tags.',
+    );
+  }
+  const taggedUnit = taggedUnits[0];
+  if (explicitUnit && taggedUnit && explicitUnit !== taggedUnit) {
+    throw new ToolError(
+      `unit "${explicitUnit}" conflicts with tag unit:${taggedUnit}.`,
+      'An entry belongs to one unit. Drop the unit:<slug> tag or make it match `unit`.',
+    );
+  }
+  if (!explicitUnit && taggedUnit && brand && brand !== taggedUnit) {
+    throw new ToolError(
+      `brand "${brand}" would set unit:${brand}, which conflicts with tag unit:${taggedUnit}.`,
+      'Pass `unit` explicitly to file the entry under a unit other than its brand, and drop the conflicting unit tag.',
+    );
+  }
+  const unit = explicitUnit ?? taggedUnit ?? brand;
   if (agent) { entry.agent = agent; addTag(entry, `agent:${agent}`); }
   if (brand) { entry.brand = brand; addTag(entry, `brand:${brand}`); }
   if (domain) { entry.domain = domain; addTag(entry, `domain:${domain}`); }
@@ -382,7 +412,7 @@ export class StarlightMcpServer {
         agent: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional author (agent) name. Normalized to a slug and stored on the entry and as tag agent:<slug>. Author provenance only; it does not set the unit scope.' },
         brand: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional brand name. Normalized to a slug and stored on the entry and as tag brand:<slug>. Also the unit scope (unit:<slug>) when no unit is given.' },
         domain: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional domain name. Normalized to a slug and stored on the entry and as tag domain:<slug>.' },
-        unit: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional unit name. Normalized to a slug and stored as tag unit:<slug>, which sis_search scope matches. Wins over brand.' },
+        unit: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional unit name. Normalized to a slug and stored as tag unit:<slug>, which sis_search scope matches. Wins over brand. An entry has one unit: a unit:<slug> tag in tags that disagrees with unit (or with brand when unit is absent) is rejected.' },
       }, ['vault', 'content']),
       outputSchema: output({ success: { type: 'boolean' }, id: { type: 'string' }, vault: { type: 'string' } }),
       annotations: APPEND,
