@@ -1,0 +1,133 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "designer-research-pilot",
+  "kind": "agent",
+  "objective": "Prepare source-backed technical research briefs within a recurring operator-owned research mandate.",
+  "deliverables": [
+    {
+      "id": "agent-specification",
+      "description": "A compiled research agent specification and bounded policy handoff.",
+      "artifactType": "agent-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "research",
+    "audience": "Operators making consequential product and business decisions",
+    "artifactTypes": [
+      "decision-brief",
+      "evidence-receipt"
+    ],
+    "references": [
+      "foundry/designer/skill/references/constitution.md"
+    ]
+  },
+  "stakes": {
+    "impact": "medium",
+    "reversibility": "reversible",
+    "rationale": "The generated skill guides research but does not publish or mutate external systems."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "public-release",
+      "permission-expansion"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Distinguish facts, inferences, unknowns, and recommendations.",
+      "Prefer current primary sources for unstable claims."
+    ],
+    "mustNot": [
+      "Invent citations or claim research was performed when it was not."
+    ],
+    "budget": {
+      "maxCostUsd": 5,
+      "maxLatencyMs": 300000,
+      "maxToolCalls": 40,
+      "maxAgentTurns": 16,
+      "maxParallelWorkers": 4
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "current",
+    "requirePrimarySources": true,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "security"
+    ],
+    "minimumIndependentJudges": 1
+  },
+  "permissions": {
+    "tools": {
+      "allow": [
+        "node",
+        "web-search",
+        "primary-source-reader"
+      ],
+      "deny": [
+        "shell",
+        "external-write"
+      ]
+    },
+    "memory": {
+      "read": [
+        "project:public-research"
+      ],
+      "write": [
+        "session:research-drafts"
+      ]
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [
+      "intelligence/hermes-search",
+      "intelligence/strategic-reasoning"
+    ],
+    "preferred": [],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "tasteProfile": "decision-brief",
+  "completionTests": [
+    {
+      "id": "agent-definition",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "agent/AGENT.md"
+    },
+    {
+      "id": "policy-definition",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "agent/policy.json"
+    },
+    {
+      "id": "research-behavior",
+      "lane": "behavioral",
+      "type": "manual",
+      "required": true,
+      "instructions": "Run realistic source-grounded briefs; verify citations, uncertainty and usefulness."
+    },
+    {
+      "id": "runtime-security",
+      "lane": "security",
+      "type": "manual",
+      "required": true,
+      "instructions": "Verify actual tenant scope, budget aggregation, deduplication, revocation and recovery in the target runtime."
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "codex"
+    ]
+  }
+}

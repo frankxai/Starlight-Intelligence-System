@@ -1,0 +1,37 @@
+name: Agent Designer checks
+on:
+  pull_request:
+    paths:
+      - 'foundry/designer/**'
+      - 'plugins/starlight-agent-designer/**'
+      - 'skills/foundry/**'
+      - 'tools/foundry/lib/**'
+      - 'foundry/contracts/**'
+      - 'scripts/sync-agent-designer-plugin.mjs'
+      - 'test/agent-designer.test.mjs'
+      - '.github/workflows/agent-designer.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'foundry/designer/**'
+      - 'plugins/starlight-agent-designer/**'
+      - 'scripts/sync-agent-designer-plugin.mjs'
+      - 'test/agent-designer.test.mjs'
+      - '.github/workflows/agent-designer.yml'
+permissions:
+  contents: read
+jobs:
+  reference-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node scripts/sync-agent-designer-plugin.mjs --check
+      - run: node --test test/agent-designer.test.mjs
+      - run: node tools/foundry/cli.mjs conformance plugins/starlight-agent-designer
+      - run: node .claude/ci/estate-guard-scan.mjs --root .
