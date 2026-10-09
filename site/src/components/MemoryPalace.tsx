@@ -281,8 +281,6 @@ export function MemoryPalace() {
               <div>Built on SIP</div>
               <div className="h-px w-3 bg-white/20" />
               <div>6 vaults live</div>
-              <div className="h-px w-3 bg-white/20" />
-              <div>RRF 61.5%</div>
             </div>
 
             <button
@@ -290,7 +288,7 @@ export function MemoryPalace() {
               disabled={voiceActive}
               className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-1 text-xs text-white/80 transition hover:bg-white/5 disabled:opacity-60"
             >
-              {voiceActive ? "Listening..." : "Speak to focus"}
+              {voiceActive ? "Stepping through vaults..." : "Speak to focus"}
               <span aria-hidden>⟐</span>
             </button>
           </div>
@@ -306,7 +304,7 @@ export function MemoryPalace() {
               </>
             ) : (
               <div className="text-white/50">
-                Tap any orb to surface memory. Or speak an intention. The palace responds.
+                Tap any orb to read its note, or use Speak to focus to step through the vaults.
                 <div className="mt-2 text-[10px] text-white/50">This is the L99 seed. Full 3D r3f + real gateway data in the 21-person build.</div>
               </div>
             )}

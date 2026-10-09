@@ -9,7 +9,7 @@ export const metadata = {
   openGraph: {
     title: "Starlight Memory Palace — Living Intelligence Visualization",
     description:
-      "Six vaults. Compound intelligence. Voice-reactive. SIP-attested. The beautiful animated experience layer for the Starlight Intelligence Protocol.",
+      "Six vault orbs around a central core. Click an orb to read a short note for that vault.",
   },
 };
 
@@ -27,8 +27,8 @@ export default function PalacePage() {
         <div className="mb-10">
           <div className="text-5xl font-semibold tracking-tighter">Memory Palace</div>
           <p className="mt-3 max-w-2xl text-lg text-white/70">
-            Six permanent semantic vaults. Real excerpts from live memory. Animated constellation. 
-            Speak or click to focus. The substrate you can see and feel.
+            Six vaults arranged as a constellation. Click an orb to read a short note for that vault,
+            or use Speak to focus to step through all six.
           </p>
           <div className="mt-4 flex flex-wrap gap-2 text-xs">
             <div className="rounded-full border border-white/10 px-3 py-1 text-white/60">Obsidian bridge live now</div>
@@ -48,7 +48,6 @@ export default function PalacePage() {
           <p className="mt-4">
             <strong className="text-white/80">Own visualization long-term.</strong> This palace (pure SVG + CSS + existing BrainHero/Starfield idioms) is the zero-dep seed. 
             The full team brief lives at <Link href="https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/superpowers/specs/2026-06-12-jarvis-memory-palace-team-brief.md" className="underline hover:text-white">docs/superpowers/specs/2026-06-12-jarvis-memory-palace-team-brief.md</Link>. 
-            It specifies r3f + custom shaders + real gateway data + desire-proof loops + swarm topology for the production 3D experience.
           </p>
           <p className="mt-3 text-[10px] text-white/50">
             Built on SIP • Visuals as first-class ledger artifacts
