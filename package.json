@@ -163,6 +163,10 @@
     "prepublishOnly": "npm run build && npm run test:substrate",
     "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts",
     "test:queen-session": "node --import tsx --test test/queen-session.test.ts",
+    "estate:graph": "node scripts/estate-graph.mjs",
+    "estate:check": "node scripts/estate-graph.mjs --check",
+    "agents:project": "node scripts/agents-md-project.mjs --tree ..",
+    "agents:project:check": "node scripts/agents-md-project.mjs --tree .. --check",
     "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs"
   },
   "files": [

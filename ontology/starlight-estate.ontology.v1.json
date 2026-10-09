@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/ontology/starlight-estate.ontology.v1.json",
+  "schema": "starlight.estate-ontology.v1",
+  "title": "Starlight Estate Ontology",
+  "status": "proposed — requires /starlight-board before tag",
+  "_role": "Vocabulary, not storage. This file names the node kinds, edge relations, and invariants of the estate accountability graph. It is a PROJECTION over existing sources (agents/*.md frontmatter, ontology/company-registry.json, ontology/repo-tiers.json, skills/skill-rules.json). It is not a fifth graph under docs/graph-engineering/CONTRACT.md, not an SSOT, and not per-agent — one graph holds every agent. It extends foundry/contracts/capability-graph.schema.json with the accountability dimension that schema lacks.",
+  "_supersedes_nothing": true,
+
+  "nodeKinds": {
+    "company": {
+      "doc": "An accountable business unit. Has a P&L or an explicit no-revenue declaration. Owns brands and repos. NOT a legal entity — see 'entity'.",
+      "idPattern": "^company:[a-z0-9][a-z0-9-]{1,63}$",
+      "required": ["id", "name", "stage", "accountable_exec_seat", "owns_brands", "operates_repos"],
+      "money": "never here — see private/business-registry.json"
+    },
+    "entity": {
+      "doc": "A legal entity (BV, Ltd, sole trader). Zero or more companies route through one entity. Public file carries name + role only; jurisdiction, cash, and tax posture stay private.",
+      "idPattern": "^entity:[a-z0-9][a-z0-9-]{1,63}$",
+      "required": ["id", "name", "role"]
+    },
+    "brand": {
+      "doc": "A register — a voice, a palette, a claims posture. A company may hold several. VOICES.md is authority for voice; this node only binds brand to company and to its COPY.md pin.",
+      "idPattern": "^brand:[a-z0-9][a-z0-9-]{1,63}$",
+      "required": ["id", "name", "register", "company"]
+    },
+    "repo": {
+      "doc": "A git repository. Exactly one company owns it. Carries a tier (T0-T3) that decides whether a session installs it.",
+      "idPattern": "^repo:[a-z0-9][a-z0-9._-]{1,99}$",
+      "required": ["id", "company", "tier", "agents_md"]
+    },
+    "surface": {
+      "doc": "A place the estate meets a human — a domain, a storefront, a channel, a community.",
+      "idPattern": "^surface:[a-z0-9][a-z0-9.:/-]{1,99}$",
+      "required": ["id", "company", "kind"]
+    },
+    "agent": {
+      "doc": "A registered agent card under agents/. Mirrors the capability-graph 'agent' node and adds accountability edges.",
+      "idPattern": "^agent:[a-z0-9][a-z0-9/-]{1,127}$",
+      "required": ["id", "tier", "domain"]
+    },
+    "skill": {
+      "doc": "Encoded expertise. Mirrors the capability-graph 'skill' node unchanged.",
+      "idPattern": "^skill:[a-z0-9][a-z0-9/-]{1,127}$"
+    },
+    "decision-right": {
+      "doc": "A named authority to decide. The unit that makes an executive seat real. Every decision-right is held by exactly one seat and names its human gate.",
+      "idPattern": "^right:[a-z0-9][a-z0-9-]{1,63}$",
+      "required": ["id", "held_by", "human_gate", "reversible"]
+    },
+    "metric": {
+      "doc": "A number a seat is answerable for. A seat without a metric is decoration.",
+      "idPattern": "^metric:[a-z0-9][a-z0-9-]{1,63}$",
+      "required": ["id", "owner_seat", "source", "cadence"]
+    },
+    "vault": {
+      "doc": "One of the six SIS memory vaults. Layer B per docs/graph-engineering/CONTRACT.md. Referenced, never duplicated.",
+      "idPattern": "^vault:[a-z-]+$"
+    }
+  },
+
+  "edgeRelations": {
+    "owns":            { "from": ["company"], "to": ["brand", "repo", "surface"], "cardinality": "1:N", "doc": "Ownership is exclusive. Two companies never own one repo." },
+    "routes-through":  { "from": ["company"], "to": ["entity"], "cardinality": "N:1", "doc": "Commercial routing. Public graph records the edge, never the terms." },
+    "accountable-for": { "from": ["agent"], "to": ["company", "brand", "repo", "metric"], "doc": "The accountability edge the capability-graph has no word for. Only executive-tier agents may originate it." },
+    "escalates-to":    { "from": ["agent"], "to": ["agent", "human"], "doc": "Must terminate at human. Cycles are a build failure." },
+    "holds":           { "from": ["agent"], "to": ["decision-right"], "cardinality": "1:N" },
+    "instantiates":    { "from": ["company"], "to": ["agent"], "doc": "A C-suite seat is a definition instantiated per company, not a global singleton. company:arcanea instantiates agent:starlight-cmo scoped to arcanea." },
+    "activates":       { "from": ["agent", "skill"], "to": ["skill"], "doc": "Inherited from capability-graph.v1 unchanged." },
+    "depends-on":      { "from": ["agent", "skill", "repo"], "to": ["agent", "skill", "repo"] },
+    "default-for":     { "from": ["skill"], "to": ["agent"], "doc": "Inherited from capability-graph.v1 unchanged." },
+    "publishes-to":    { "from": ["repo", "agent"], "to": ["surface"] },
+    "reads":           { "from": ["agent"], "to": ["vault"] },
+    "writes":          { "from": ["agent"], "to": ["vault"], "doc": "A write edge without a matching human_gate on an irreversible decision-right is a build failure." },
+    "measures":        { "from": ["metric"], "to": ["company", "brand", "repo", "surface"] }
+  },
+
+  "invariants": [
+    { "id": "INV-1", "rule": "Every repo node has exactly one owning company.", "severity": "error" },
+    { "id": "INV-2", "rule": "Every company has exactly one agent holding accountable-for on it, and that agent's tier is 'executive'.", "severity": "error" },
+    { "id": "INV-3", "rule": "escalates-to forms a DAG terminating at a human node. No cycles.", "severity": "error" },
+    { "id": "INV-4", "rule": "Every executive seat owns at least one metric. A seat with zero metrics is decoration and fails the build.", "severity": "error" },
+    { "id": "INV-5", "rule": "Every decision-right marked reversible:false names a human_gate.", "severity": "error" },
+    { "id": "INV-6", "rule": "Every repo with tier T0 or T1 has agents_md.state == 'generated' — hand-written AGENTS.md is allowed only at T2/T3.", "severity": "error" },
+    { "id": "INV-7", "rule": "No node carries a monetary amount, jurisdiction, counterparty name, or credential. Those live in private/ and are never graphed.", "severity": "error" },
+    { "id": "INV-8", "rule": "Every brand names the COPY.md pin it is governed by.", "severity": "warn" },
+    { "id": "INV-9", "rule": "Every agent in agents/ appears in the graph, or is explicitly listed in unregistered[] with a reason.", "severity": "warn" }
+  ],
+
+  "non_goals": [
+    "A second orchestrator. Hermes/Queen remains schedule and lease authority.",
+    "A graph per agent, per skill, or per domain. One estate graph.",
+    "A memory product. Layer B stays the six vaults.",
+    "Storage of anything in private/."
+  ]
+}

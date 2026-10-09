@@ -1,0 +1,471 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/ontology/starlight-estate.ontology.v1.json",
+  "schema": "starlight.repo-tiers.v1",
+  "status": "proposed — requires /starlight-board before tag",
+  "observed_at": "2026-09-19",
+  "_doc": "What a session installs, and what it does not. Tier is a decision about attention and context budget, not about value. T0 is always cloned; T1 when working that company; T2 on demand; T3 is a consolidation candidate awaiting Frank's call. agents_md.state is OBSERVED from the working tree on observed_at, not aspirational — 'absent' and 'divergent' are defects this file exists to make visible.",
+  "tiers": {
+    "T0": {
+      "name": "substrate",
+      "install": "always — every session, every harness",
+      "rule": "Carries a contract other repos read. Losing it breaks the estate."
+    },
+    "T1": {
+      "name": "revenue surface",
+      "install": "when working that company",
+      "rule": "Deploys to a live domain or holds a paying product."
+    },
+    "T2": {
+      "name": "vertical",
+      "install": "on demand",
+      "rule": "Real work, bounded scope, no live deploy of its own."
+    },
+    "T3": {
+      "name": "consolidation candidate",
+      "install": "never by default",
+      "rule": "No AGENTS.md, no CLAUDE.md, no distinct claim. Fold into a parent or archive. Frank decides — an agent never archives a repo."
+    }
+  },
+  "repos": [
+    {
+      "id": "repo:Starlight-Intelligence-System",
+      "company": "company:starlight",
+      "tier": "T0",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 331,
+        "repaired": "2026-09-19 — BOM stripped, 170 cp1252 double-encodings repaired; band split still pending"
+      }
+    },
+    {
+      "id": "repo:claude-skills-library",
+      "company": "company:starlight",
+      "tier": "T0",
+      "agents_md": {
+        "state": "generated",
+        "lines": 145,
+        "band_c_lines": 42,
+        "projected": "2026-10-06 — bands A+B merged to main via claude-skills-library#31 (squash 2b41506); band A sha=b4a7e18fed75, band B sha=4307d160ea40; the 42-line hand-written file preserved below the fences. That PR also carried the repo's absorption pipeline, so the merge is wider than the bands"
+      }
+    },
+    {
+      "id": "repo:starlight-agent-skills",
+      "company": "company:starlight",
+      "tier": "T0",
+      "agents_md": {
+        "state": "generated",
+        "lines": 194,
+        "band_c_lines": 91,
+        "projected": "2026-10-06 — bands A+B merged to main via starlight-agent-skills#27 (squash a214296); band A sha=b4a7e18fed75, band B sha=76f817d3cca1. Band C was written by that PR, not preserved: this repo had no AGENTS.md at all, which was one of the two INV-6 errors",
+        "was": "absent — T0 repo with no agent contract, observed 2026-09-19"
+      }
+    },
+    {
+      "id": "repo:frankx.ai-vercel-website",
+      "company": "company:frankx",
+      "tier": "T1",
+      "agents_md": {
+        "state": "divergent",
+        "lines": 278,
+        "band_c_lines": 175,
+        "defect": "band B was hand-edited in the PR and no longer matches the projection. The committed region is sha=135f4b7e0dd9 naming agent:product-concierge, a seat that appears in no registry, no agent card and no graph node; the generator writes sha=280c70377f3f naming agent:starlight-cmo. `npm run agents:project:check` reports this repo stale. Clears when the registry carries the seat, which is blocked on INV-2 because accountable_exec_seat requires an executive-tier seat, or when the next generator run overwrites band B.",
+        "projected": "2026-10-07 - bands A+B merged to main via frankx.ai-vercel-website#742 (squash d4467e9); band A sha=b4a7e18fed75. Band C is 175 lines, hand-written, preserved byte-for-byte - it was truncated to 0-2 bytes four times during review and restored from b01509d",
+        "was": {
+          "state": "handwritten",
+          "lines": 174
+        }
+      },
+      "deploys": "surface:frankx.ai"
+    },
+    {
+      "id": "repo:FrankX",
+      "company": "company:frankx",
+      "tier": "T1",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 314
+      },
+      "note": "private authoring trunk; ports to the website repo, never bulk-copies"
+    },
+    {
+      "id": "repo:gencreator.ai",
+      "company": "company:gencreator",
+      "tier": "T1",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 92
+      },
+      "deploys": "surface:gencreator.ai"
+    },
+    {
+      "id": "repo:arcanea-ai-app",
+      "company": "company:arcanea",
+      "tier": "T1",
+      "agents_md": {
+        "state": "generated",
+        "lines": 284,
+        "band_c_lines": 179,
+        "projected": "2026-10-06 — bands A+B merged to main via arcanea-ai-app#443 (squash add2fca); band A sha=b4a7e18fed75, band B sha=8821700dff0c. Band C region is 179 lines: the 178-line hand-written file preserved byte-for-byte, plus the generator's blank separator"
+      },
+      "deploys": "surface:arcanea.ai"
+    },
+    {
+      "id": "repo:agentic-creator-os",
+      "company": "company:gencreator",
+      "tier": "T1",
+      "agents_md": {
+        "state": "generated",
+        "lines": 134,
+        "band_c_lines": 31,
+        "projected": "2026-10-06 — bands A+B merged to main via agentic-creator-os#64 (squash 71191a0); band A sha=b4a7e18fed75, band B sha=5c35a8ecb312; the 31-line hand-written file preserved below the fences"
+      }
+    },
+    {
+      "id": "repo:gencreator-community",
+      "company": "company:gencreator",
+      "tier": "T1",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 44
+      }
+    },
+    {
+      "id": "repo:GenCreator-Studio",
+      "company": "company:gencreator",
+      "tier": "T1",
+      "agents_md": {
+        "state": "generated",
+        "lines": 182,
+        "band_c_lines": 79,
+        "projected": "2026-10-06 — bands A+B merged to main via GenCreator-Studio#7 (squash cd27e1d); band A sha=b4a7e18fed75, band B sha=58f6cb510b69. Band C was written by that PR, not preserved: this repo had no AGENTS.md at all, which was the second of the two INV-6 errors",
+        "was": "absent — T1 repo with no agent contract, observed 2026-09-19"
+      }
+    },
+    {
+      "id": "repo:arcanea",
+      "company": "company:arcanea",
+      "tier": "T2",
+      "agents_md": {
+        "state": "divergent",
+        "lines": 8,
+        "defect": "contains only Cursor Cloud port notes — no DNA, no voice, no branch protocol, no canon gate"
+      }
+    },
+    {
+      "id": "repo:starlight-evals",
+      "company": "company:starlight",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 48
+      }
+    },
+    {
+      "id": "repo:starlight-swarm",
+      "company": "company:starlight",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 37
+      }
+    },
+    {
+      "id": "repo:starlight-cosmos-engine",
+      "company": "company:starlight",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 67
+      }
+    },
+    {
+      "id": "repo:starlight-mind-os-pro",
+      "company": "company:starlight",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 47
+      }
+    },
+    {
+      "id": "repo:agentic-ops-hub",
+      "company": "company:starlight",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 67,
+        "owns_source": true
+      },
+      "note": "already runs its own sync-agent-rules.mjs fan-out — the working prior art for the generator, and the reason owns_source exists: its AGENTS.md is the hand-edited SOURCE that script reads, so projecting bands into it would have two generators writing one file in opposite directions"
+    },
+    {
+      "id": "repo:second-brain-os",
+      "company": "company:starlight",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 49
+      }
+    },
+    {
+      "id": "repo:payment-intelligence-system",
+      "company": "company:agentic-income",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 61
+      }
+    },
+    {
+      "id": "repo:agentic-intelligence-system",
+      "company": "company:agentic-income",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 59
+      }
+    },
+    {
+      "id": "repo:agenticincome",
+      "company": "company:agentic-income",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 39
+      }
+    },
+    {
+      "id": "repo:agentic-income-template",
+      "company": "company:agentic-income",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 35
+      }
+    },
+    {
+      "id": "repo:agentic-income-skills",
+      "company": "company:agentic-income",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 30
+      }
+    },
+    {
+      "id": "repo:agentic-business-os",
+      "company": "company:agentic-income",
+      "tier": "T2",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      }
+    },
+    {
+      "id": "repo:agentic-creator-skills",
+      "company": "company:gencreator",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 42
+      }
+    },
+    {
+      "id": "repo:vibe-os",
+      "company": "company:gencreator",
+      "tier": "T2",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      }
+    },
+    {
+      "id": "repo:human-mind-intelligence-system",
+      "company": "company:mind",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 39
+      }
+    },
+    {
+      "id": "repo:mind-intelligence-systems",
+      "company": "company:mind",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 35
+      }
+    },
+    {
+      "id": "repo:agentic-mind-os",
+      "company": "company:mind",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 64
+      }
+    },
+    {
+      "id": "repo:mind-palace-agent-skills",
+      "company": "company:mind",
+      "tier": "T2",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      }
+    },
+    {
+      "id": "repo:ocean-intelligence-system",
+      "company": "company:blue",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 41
+      }
+    },
+    {
+      "id": "repo:blue-life-commons",
+      "company": "company:blue",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 62
+      }
+    },
+    {
+      "id": "repo:marine-mcp",
+      "company": "company:blue",
+      "tier": "T2",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      }
+    },
+    {
+      "id": "repo:marine-agent-skills",
+      "company": "company:blue",
+      "tier": "T2",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      }
+    },
+    {
+      "id": "repo:ai-music-academy",
+      "company": "company:sound",
+      "tier": "T2",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      }
+    },
+    {
+      "id": "repo:music-intelligence-systems",
+      "company": "company:sound",
+      "tier": "T2",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      }
+    },
+    {
+      "id": "repo:realityarchitect",
+      "company": "company:frankx",
+      "tier": "T2",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 94
+      }
+    },
+    {
+      "id": "repo:frankx-palace",
+      "company": "company:frankx",
+      "tier": "T2",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      }
+    },
+    {
+      "id": "repo:agenticpassiveincome",
+      "company": "company:agentic-income",
+      "tier": "T3",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 19
+      },
+      "review": "consolidate into repo:agenticincome — near-duplicate claim"
+    },
+    {
+      "id": "repo:awesome-agentic-income",
+      "company": "company:agentic-income",
+      "tier": "T3",
+      "agents_md": {
+        "state": "handwritten",
+        "lines": 42
+      },
+      "review": "link-list; fold into agentic-income-skills or keep as pure public index"
+    },
+    {
+      "id": "repo:awesome-payment-agent-skills",
+      "company": "company:agentic-income",
+      "tier": "T3",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      },
+      "review": "no contract, no CLAUDE.md"
+    },
+    {
+      "id": "repo:awesome-mind-agent-skills",
+      "company": "company:mind",
+      "tier": "T3",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      },
+      "review": "no contract, no CLAUDE.md"
+    },
+    {
+      "id": "repo:awesome-music-agent-skills",
+      "company": "company:sound",
+      "tier": "T3",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      },
+      "review": "no contract, no CLAUDE.md"
+    },
+    {
+      "id": "repo:awesome-manifestation-skills",
+      "company": "company:frankx",
+      "tier": "T3",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      },
+      "review": "no contract, no CLAUDE.md"
+    },
+    {
+      "id": "repo:bless",
+      "company": "company:frankx",
+      "tier": "T3",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      },
+      "review": "no contract, no CLAUDE.md, unclear claim"
+    },
+    {
+      "id": "repo:frankx-mind-palace",
+      "company": "company:frankx",
+      "tier": "T3",
+      "agents_md": {
+        "state": "absent",
+        "lines": 0
+      },
+      "review": "overlaps repo:frankx-palace and repo:mind-palace-agent-skills — three palaces, one idea"
+    }
+  ]
+}

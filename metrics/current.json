@@ -18,8 +18,8 @@
   "last_updated": "2026-08-17",
   "metrics": {
     "registered_agents": {
-      "value": 144,
-      "last_verified": "2026-07-27",
+      "value": 151,
+      "last_verified": "2026-10-06",
       "source": "scripts/check-agent-harness.mjs and test/v87-agent-registry.test.ts (agents/*.md plus one sub-tier, excluding registry indexes)",
       "ownership": "built",
       "stale": false,
