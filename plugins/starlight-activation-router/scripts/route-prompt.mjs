@@ -24,15 +24,19 @@ const defaultIndexPath = path.join(
 );
 
 const registryPath = process.env.STARLIGHT_ACTIVATION_INDEX || defaultIndexPath;
-const input = readHookInput();
-const eventName = detectEventName(input);
+let eventName = "SessionStart";
 
-if (eventName === "PreToolUse") {
-  handlePreToolUse(input);
-} else if (eventName === "UserPromptSubmit") {
-  handleUserPromptSubmit(input);
-} else {
-  handleSessionStart(input);
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  const input = readHookInput();
+  eventName = detectEventName(input);
+
+  if (eventName === "PreToolUse") {
+    handlePreToolUse(input);
+  } else if (eventName === "UserPromptSubmit") {
+    handleUserPromptSubmit(input);
+  } else {
+    handleSessionStart(input);
+  }
 }
 
 function readHookInput() {
@@ -66,11 +70,11 @@ function detectEventName(payload) {
 }
 
 function handleSessionStart(payload) {
-  const index = loadActivationIndex();
+  const { value: index } = loadActivationIndex();
   const counts = index?.counts;
   const estate =
     counts && typeof counts.gitRepos === "number"
-      ? ` Estate baseline: ${counts.gitRepos} git repos, ${counts.withAgentsMd ?? "?"} AGENTS.md, ${counts.withAgentHarness ?? "?"} harness files.`
+      ? ` Cached registry baseline (${indexSnapshot(index)}): ${counts.gitRepos} git repos, ${counts.withAgentsMd ?? "?"} AGENTS.md, ${counts.withAgentHarness ?? "?"} harness files.`
       : "";
   emitContext(
     [
@@ -92,7 +96,8 @@ function handleUserPromptSubmit(payload) {
   const cwd = String(payload.cwd || process.cwd());
   const lower = prompt.toLowerCase();
   const hints = [];
-  const index = loadActivationIndex();
+  const indexState = loadActivationIndex();
+  const index = indexState.value;
   const repo = findRepoForPath(index, cwd);
   const soMatched = matchesSo(lower);
   const swarmMatched = matchesSwarm(lower);
@@ -136,14 +141,21 @@ function handleUserPromptSubmit(payload) {
     );
   }
   if (repo && hints.length > 0) {
+    hints.push(formatRepoEvidence(repo, index, cwd));
+  } else if (hints.length > 0) {
+    const evidence = probeAgentsMd(cwd);
+    const indexDescription =
+      indexState.status === "available"
+        ? "available, but no matching repository row"
+        : indexState.status;
     hints.push(
-      `Repo hint: ${repo.name} (${repo.path}). AGENTS.md=${yesNo(repo.agentsMd)}, harness=${yesNo(repo.agentHarness)}, Claude commands=${repo.claudeCommandsCount ?? 0}, Claude hooks=${repo.claudeHooksCount ?? 0}, skills=${yesNo(repo.skillsDir)}.`,
+      `Repo filesystem evidence at ${cwd}: AGENTS.md=${evidence.status} (fresh check). Repository index=${indexDescription}.`,
     );
   }
 
   const selected = topInstalledSignals(index, lower);
   if (selected.length > 0) {
-    hints.push(`Relevant installed capabilities: ${selected.join(", ")}.`);
+    hints.push(`Relevant indexed capabilities (availability not verified): ${selected.join(", ")}.`);
   }
 
   if (hints.length === 0) {
@@ -159,15 +171,17 @@ function handlePreToolUse(payload) {
   const command = String(toolInput.command || toolInput.cmd || toolInput.script || "");
   const subject = `${toolName}\n${command}`;
   const destructive = findDestructivePattern(subject);
+  const secretDisclosure = findSecretDisclosurePattern(subject);
   const hints = [];
 
-  if (destructive) {
+  if (destructive || secretDisclosure) {
+    const blockedPattern = destructive || secretDisclosure;
     console.log(
       JSON.stringify({
         hookSpecificOutput: {
           hookEventName: "PreToolUse",
           permissionDecision: "deny",
-          permissionDecisionReason: `Starlight Activation Router blocked a high-risk command (${destructive}). Ask Frank for explicit approval or use a scoped, audited alternative.`,
+          permissionDecisionReason: `Starlight Activation Router blocked a high-risk command (${blockedPattern}). Ask Frank for explicit approval or use a scoped, audited alternative.`,
         },
       }),
     );
@@ -417,25 +431,117 @@ function findDestructivePattern(subject) {
   return found?.[0] || null;
 }
 
+function findSecretDisclosurePattern(subject) {
+  const checks = [
+    [
+      "secret file disclosure",
+      /\b(?:cat|type|Get-Content|gc|more|less|head|tail)\b[^\r\n]*(?:\.env(?:\.(?!example(?:$|[\s;&|'"']))[^.\s/\\]+)?(?=$|[\s;&|'"'])|\.npmrc\b|\.pypirc\b|credentials(?:\.json)?\b|id_(?:rsa|ed25519)\b|[^\s;&|]+\.(?:pem|key)\b)/i,
+    ],
+    [
+      "environment dump",
+      /\bprintenv\b|\benv(?:\s+-0)?\s*(?:$|[|;&>])|\bGet-ChildItem\s+Env:/i,
+    ],
+    [
+      "secret environment variable disclosure",
+      /\b(?:echo|printf|Write-Output)\b[^\r\n]*\$(?:[A-Z0-9_]*(?:KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL)[A-Z0-9_]*)\b/i,
+    ],
+  ];
+  const found = checks.find(([, pattern]) => pattern.test(subject));
+  return found?.[0] || null;
+}
+
 function loadActivationIndex() {
   try {
     const raw = fs.readFileSync(registryPath, "utf8");
-    return JSON.parse(raw);
-  } catch {
-    return null;
+    const value = JSON.parse(raw);
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      return { value: null, status: "malformed" };
+    }
+    return { value, status: "available" };
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      return { value: null, status: "absent" };
+    }
+    if (error instanceof SyntaxError) {
+      return { value: null, status: "malformed" };
+    }
+    return { value: null, status: "inaccessible" };
   }
 }
 
 function findRepoForPath(index, cwd) {
-  if (!index || !Array.isArray(index.repos)) {
+  if (!index || !Array.isArray(index.repos) || !isAbsolutePath(cwd)) {
     return null;
   }
+  const cwdIsWindows = isWindowsPath(cwd);
   const normalizedCwd = normalizePath(cwd);
   return index.repos
-    .filter((repo) => repo && typeof repo.path === "string")
+    .filter(
+      (repo) =>
+        repo &&
+        typeof repo.path === "string" &&
+        isWindowsPath(repo.path) === cwdIsWindows &&
+        isAbsolutePath(repo.path),
+    )
     .map((repo) => ({ ...repo, normalizedPath: normalizePath(repo.path) }))
-    .filter((repo) => normalizedCwd === repo.normalizedPath || normalizedCwd.startsWith(`${repo.normalizedPath}/`))
+    .filter((repo) => {
+      const prefix = repo.normalizedPath.endsWith("/") ? repo.normalizedPath : `${repo.normalizedPath}/`;
+      return normalizedCwd === repo.normalizedPath || normalizedCwd.startsWith(prefix);
+    })
     .sort((a, b) => b.normalizedPath.length - a.normalizedPath.length)[0] || null;
+}
+
+function formatRepoEvidence(repo, index, cwd) {
+  const evidence = probeAgentsMd(repo.path);
+  const cached =
+    typeof repo.agentsMd === "boolean" ? String(repo.agentsMd) : "unknown";
+  const conflicts =
+    (evidence.status === "present" && repo.agentsMd === false) ||
+    (evidence.status === "absent" && repo.agentsMd === true);
+  const cachedStatus = conflicts ? `${cached} (stale; conflicts with filesystem)` : cached;
+  const name = typeof repo.name === "string" ? repo.name : "unnamed repository";
+  const location = typeof repo.path === "string" ? repo.path : cwd;
+  const cachedInventory = [
+    `harness=${yesNo(repo.agentHarness)}`,
+    `Claude commands=${repo.claudeCommandsCount ?? 0}`,
+    `Claude hooks=${repo.claudeHooksCount ?? 0}`,
+    `skills=${yesNo(repo.skillsDir)}`,
+  ].join(", ");
+  return `Repo index snapshot (${indexSnapshot(index)}): ${name} (${location}); AGENTS.md cached=${cachedStatus}, ${cachedInventory}. Repo filesystem evidence: AGENTS.md=${evidence.status} (fresh check at ${joinPath(repo.path, "AGENTS.md")}).`;
+}
+
+function probeAgentsMd(repoPath, statSync = fs.statSync) {
+  if (
+    typeof repoPath !== "string" ||
+    !isAbsolutePath(repoPath) ||
+    isWindowsPath(repoPath) !== (process.platform === "win32")
+  ) {
+    return { status: "unknown" };
+  }
+  let repoStat;
+  try {
+    repoStat = statSync(repoPath);
+  } catch (error) {
+    if (["EACCES", "EPERM", "ENOTDIR"].includes(error?.code)) {
+      return { status: "inaccessible" };
+    }
+    return { status: "unknown" };
+  }
+  if (!repoStat.isDirectory()) {
+    return { status: "unknown" };
+  }
+  try {
+    const markerStat = statSync(joinPath(repoPath, "AGENTS.md"));
+    return { status: markerStat.isFile() ? "present" : "unknown" };
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      return { status: "absent" };
+    }
+    if (["EACCES", "EPERM", "ENOTDIR"].includes(error?.code)) {
+      return { status: "inaccessible" };
+    }
+    return { status: "unknown" };
+  }
 }
 
 function topInstalledSignals(index, lower) {
@@ -469,7 +575,28 @@ function topInstalledSignals(index, lower) {
 }
 
 function normalizePath(rawPath) {
-  return path.resolve(rawPath).replace(/\\/g, "/").toLowerCase();
+  if (isWindowsPath(rawPath)) {
+    return path.win32.resolve(rawPath).replace(/\\/g, "/").toLowerCase();
+  }
+  return path.resolve(rawPath);
+}
+
+function isWindowsPath(rawPath) {
+  return typeof rawPath === "string" && (/^[a-z]:[\\/]/i.test(rawPath) || /^(?:\\\\|\/\/)[^\\/]+[\\/]/.test(rawPath));
+}
+
+function isAbsolutePath(rawPath) {
+  return isWindowsPath(rawPath) ? path.win32.isAbsolute(rawPath) : path.isAbsolute(rawPath);
+}
+
+function joinPath(root, child) {
+  return isWindowsPath(root) ? path.win32.join(root, child) : path.join(root, child);
+}
+
+function indexSnapshot(index) {
+  return typeof index?.generatedAt === "string"
+    ? `generated ${index.generatedAt}; cached, not live`
+    : "generation time unknown; cached, not live";
 }
 
 function yesNo(value) {
@@ -490,3 +617,5 @@ function emitContext(additionalContext) {
     }),
   );
 }
+
+export { findRepoForPath, normalizePath, probeAgentsMd };
