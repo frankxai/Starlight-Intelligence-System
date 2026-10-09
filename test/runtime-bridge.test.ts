@@ -233,6 +233,12 @@ test("real HTTP transport round trip, body cap, content type, and redirect refus
     if (req.url === "/huge") { res.end('"' + "x".repeat(70_000) + '"'); return; }
     let data = ""; for await (const chunk of req) data += chunk;
     const body = JSON.parse(data);
+    if (req.url === "/invalid-utf8") {
+      const response = JSON.stringify(completed(body.taskId, "MARKER"));
+      const [prefix, suffix] = response.split("MARKER");
+      res.end(Buffer.concat([Buffer.from(prefix), Buffer.from([255]), Buffer.from(suffix)]));
+      return;
+    }
     res.end(JSON.stringify(completed(body.taskId, body.input)));
   });
   server.listen(0, "127.0.0.1");
@@ -241,8 +247,8 @@ test("real HTTP transport round trip, body cap, content type, and redirect refus
     const address = server.address(); assert.ok(address && typeof address === "object");
     const runtime = (path: string) => createHttpWorkerRuntime({ id: "http", endpoint: `http://127.0.0.1:${address.port}/${path}`, allowLoopbackHttp: true });
     assert.equal((await setup(runtime("invoke")).run(request())).output, request().input);
-    for (const path of ["redirect", "html", "huge"]) assert.equal((await setup(runtime(path)).run(request())).status, "unknown");
-    assert.equal(hits, 4); // A redirect must not cause a fifth request.
+    for (const path of ["redirect", "html", "huge", "invalid-utf8"]) assert.equal((await setup(runtime(path)).run(request())).status, "unknown");
+    assert.equal(hits, 5); // A redirect must not cause a sixth request.
   } finally {
     server.closeAllConnections();
     await new Promise<void>(resolve => server.close(() => resolve()));
