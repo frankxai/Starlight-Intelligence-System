@@ -73,6 +73,8 @@ updates:
           - "minor"
           - "patch"
 
+  # site/ is pnpm-only: pnpm-lock.yaml is its one lockfile and its overrides live in
+  # site/pnpm-workspace.yaml (Dependabot's npm ecosystem covers pnpm).
   - package-ecosystem: "npm"
     directory: "/site"
     schedule:
