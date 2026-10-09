@@ -25,7 +25,7 @@ export default function PalacePage() {
         </div>
 
         <div className="mb-10">
-          <div className="text-5xl font-semibold tracking-tighter">Memory Palace</div>
+          <h1 className="text-5xl font-semibold tracking-tighter">Memory Palace</h1>
           <p className="mt-3 max-w-2xl text-lg text-white/70">
             Six permanent semantic vaults. Real excerpts from live memory. Animated constellation. 
             Speak or click to focus. The substrate you can see and feel.
