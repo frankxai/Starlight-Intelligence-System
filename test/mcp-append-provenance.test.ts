@@ -1,10 +1,16 @@
 import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { test } from 'node:test';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { StarlightMcpServer } from '../src/mcp-server.js';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+type Stored = { agent?: string; brand?: string; domain?: string; unit?: string; source?: string; tags: string[] };
 
 function call(server: StarlightMcpServer, id: number, name: string, args: Record<string, unknown>) {
   return server.handleRequest({
@@ -15,69 +21,147 @@ function call(server: StarlightMcpServer, id: number, name: string, args: Record
   });
 }
 
-function results(response: ReturnType<StarlightMcpServer['handleRequest']>) {
-  return (response?.result as { structuredContent?: { results?: Array<{ id: string }> }; isError?: boolean })?.structuredContent?.results;
+function isError(response: ReturnType<StarlightMcpServer['handleRequest']>) {
+  return (response?.result as { isError?: boolean } | undefined)?.isError;
 }
 
-test('append stores provenance and the scope filter can see the agent', () => {
-  const vaultDir = mkdtempSync(join(tmpdir(), 'sis-provenance-'));
+function appendedId(response: ReturnType<StarlightMcpServer['handleRequest']>) {
+  assert.equal(isError(response), undefined, JSON.stringify(response));
+  return (response?.result as { structuredContent: { id: string } }).structuredContent.id;
+}
+
+function ids(server: StarlightMcpServer, id: number, query: string, scope?: string) {
+  const response = call(server, id, 'sis_search', { query, ...(scope ? { scope } : {}), limit: 10 });
+  const rows = (response?.result as { structuredContent?: { results?: Array<{ id: string }> } })?.structuredContent?.results;
+  assert.ok(rows, JSON.stringify(response));
+  return rows.map(row => row.id);
+}
+
+function storedLines(vaultDir: string, vault: string): Stored[] {
+  return readFileSync(join(vaultDir, `${vault}.jsonl`), 'utf8').trim().split(/\r?\n/).map(line => JSON.parse(line) as Stored);
+}
+
+function withVault(prefix: string, run: (vaultDir: string, server: StarlightMcpServer) => void) {
+  const vaultDir = mkdtempSync(join(tmpdir(), prefix));
   try {
-    const server = new StarlightMcpServer(vaultDir);
-    const appended = call(server, 1, 'sis_append_entry', {
+    run(vaultDir, new StarlightMcpServer(vaultDir));
+  } finally {
+    rmSync(vaultDir, { recursive: true, force: true });
+  }
+}
+
+test('agent is author provenance only; brand sets the unit scope', () => {
+  withVault('sis-provenance-', (vaultDir, server) => {
+    const id = appendedId(call(server, 1, 'sis_append_entry', {
       vault: 'strategic',
       content: 'shared launch plan for the studio',
       agent: 'gencreator',
       brand: 'frankx',
-    });
-    assert.equal((appended?.result as { isError?: boolean }).isError, undefined);
-    const body = (appended?.result as { structuredContent: { id: string } }).structuredContent;
-    const line = readFileSync(join(vaultDir, 'strategic.jsonl'), 'utf8').trim();
-    const stored = JSON.parse(line) as { agent?: string; brand?: string; source?: string; tags: string[] };
+      domain: 'marketing',
+    }));
+    const [stored] = storedLines(vaultDir, 'strategic');
     assert.equal(stored.agent, 'gencreator');
     assert.equal(stored.brand, 'frankx');
+    assert.equal(stored.domain, 'marketing');
+    assert.equal(stored.unit, 'frankx');
     assert.equal(stored.source, undefined);
     assert.ok(stored.tags.includes('agent:gencreator'));
     assert.ok(stored.tags.includes('brand:frankx'));
-    assert.ok(stored.tags.includes('unit:gencreator'));
+    assert.ok(stored.tags.includes('domain:marketing'));
+    assert.ok(stored.tags.includes('unit:frankx'));
+    assert.ok(!stored.tags.includes('unit:gencreator'), 'the author must not become a unit scope');
 
-    const hit = call(server, 2, 'sis_search', {
-      query: 'shared launch plan',
-      scope: 'unit:gencreator',
-      limit: 10,
-    });
-    assert.deepEqual(results(hit)?.map(row => row.id), [body.id]);
+    assert.deepEqual(ids(server, 2, 'shared launch plan', 'unit:frankx'), [id]);
+    assert.deepEqual(ids(server, 3, 'shared launch plan', 'unit:gencreator'), []);
+    assert.deepEqual(ids(server, 4, 'shared launch plan', 'unit:arcanea'), []);
+  });
+});
 
-    const miss = call(server, 3, 'sis_search', {
-      query: 'shared launch plan',
-      scope: 'unit:arcanea',
-      limit: 10,
-    });
-    assert.deepEqual(results(miss), []);
-  } finally {
-    rmSync(vaultDir, { recursive: true, force: true });
-  }
+test('an explicit unit wins over brand and differs from the agent; scoped recall follows the unit', () => {
+  withVault('sis-provenance-unit-', (vaultDir, server) => {
+    const id = appendedId(call(server, 1, 'sis_append_entry', {
+      vault: 'technical',
+      content: 'render pipeline decision for the lab',
+      agent: 'gencreator',
+      brand: 'frankx',
+      unit: 'arcanea',
+    }));
+    const [stored] = storedLines(vaultDir, 'technical');
+    assert.equal(stored.agent, 'gencreator');
+    assert.equal(stored.unit, 'arcanea');
+    assert.ok(stored.tags.includes('unit:arcanea'));
+    assert.ok(!stored.tags.includes('unit:gencreator'));
+    assert.ok(!stored.tags.includes('unit:frankx'));
+
+    assert.deepEqual(ids(server, 2, 'render pipeline decision', 'unit:arcanea'), [id]);
+    assert.deepEqual(ids(server, 3, 'render pipeline decision', 'unit:gencreator'), []);
+    assert.deepEqual(ids(server, 4, 'render pipeline decision', 'unit:frankx'), []);
+    assert.deepEqual(ids(server, 5, 'render pipeline decision'), [id]);
+  });
+});
+
+test('an agent without brand or unit adds no unit scope', () => {
+  withVault('sis-provenance-agent-', (vaultDir, server) => {
+    const id = appendedId(call(server, 1, 'sis_append_entry', {
+      vault: 'creative',
+      content: 'moodboard notes from the author',
+      agent: 'gencreator',
+    }));
+    const [stored] = storedLines(vaultDir, 'creative');
+    assert.equal(stored.unit, undefined);
+    assert.deepEqual(stored.tags.filter(tag => tag.startsWith('unit:')), []);
+    assert.deepEqual(ids(server, 2, 'moodboard notes', 'unit:gencreator'), []);
+    assert.deepEqual(ids(server, 3, 'moodboard notes'), [id]);
+  });
+});
+
+test('registered agent names are normalized to slugs; unusable values are refused', () => {
+  withVault('sis-provenance-slug-', (vaultDir, server) => {
+    appendedId(call(server, 1, 'sis_append_entry', {
+      vault: 'operational',
+      content: 'voice and video handoff',
+      agent: 'starlight-voice-&-video-is',
+    }));
+    const [stored] = storedLines(vaultDir, 'operational');
+    assert.equal(stored.agent, 'starlight-voice-video-is');
+    assert.ok(stored.tags.includes('agent:starlight-voice-video-is'));
+
+    for (const agent of ['---', '9lives', 'a'.repeat(40)]) {
+      assert.equal(isError(call(server, 2, 'sis_append_entry', { vault: 'strategic', content: 'bad slug', agent })), true, agent);
+    }
+    assert.equal(isError(call(server, 3, 'sis_append_entry', { vault: 'strategic', content: 'bad unit', unit: '&&' })), true);
+  });
 });
 
 test('legacy operations and ops vaults are refused and the six vaults still append', () => {
-  const vaultDir = mkdtempSync(join(tmpdir(), 'sis-provenance-vaults-'));
-  try {
-    const server = new StarlightMcpServer(vaultDir);
+  withVault('sis-provenance-vaults-', (_vaultDir, server) => {
     for (const vault of ['operations', 'ops']) {
-      const refused = call(server, 1, 'sis_append_entry', { vault, content: 'do not write the legacy file' });
-      assert.equal((refused?.result as { isError?: boolean }).isError, true);
+      assert.equal(isError(call(server, 1, 'sis_append_entry', { vault, content: 'do not write the legacy file' })), true);
     }
     for (const vault of ['strategic', 'technical', 'creative', 'operational', 'wisdom', 'horizon']) {
       const ok = call(server, 2, 'sis_append_entry', { vault, content: `kept in ${vault}` });
-      assert.equal((ok?.result as { isError?: boolean }).isError, undefined);
+      assert.equal(isError(ok), undefined);
       assert.equal((ok?.result as { structuredContent: { vault: string } }).structuredContent.vault, vault);
     }
-    const bad = call(server, 3, 'sis_append_entry', {
-      vault: 'strategic',
-      content: 'bad slug',
-      agent: 'Not A Slug',
-    });
-    assert.equal((bad?.result as { isError?: boolean }).isError, true);
-  } finally {
-    rmSync(vaultDir, { recursive: true, force: true });
-  }
+  });
+});
+
+test('importing the server module does not start the stdio server', async () => {
+  const moduleUrl = pathToFileURL(join(ROOT, 'src', 'mcp-server.ts')).href;
+  const child = spawn(process.execPath, ['--import', 'tsx', '--input-type=module', '-e', `await import(${JSON.stringify(moduleUrl)});`], {
+    cwd: ROOT,
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
+  let stderr = '';
+  child.stderr.on('data', chunk => { stderr += String(chunk); });
+  // stdin stays open: a server listening on it would keep the process alive.
+  const code = await new Promise<number | null>((resolveExit, reject) => {
+    const timer = setTimeout(() => {
+      child.kill();
+      reject(new Error(`import kept the process alive; stderr: ${stderr}`));
+    }, 30_000);
+    child.on('exit', exitCode => { clearTimeout(timer); resolveExit(exitCode); });
+  });
+  assert.equal(code, 0, stderr);
+  assert.ok(!stderr.includes('MCP server started'), stderr);
 });

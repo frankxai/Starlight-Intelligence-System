@@ -86,6 +86,8 @@ export interface MemoryEntry {
   agent?: string;
   brand?: string;
   domain?: string;
+  /** Unit scope slug (explicit unit, else brand). Never derived from agent. */
+  unit?: string;
 }
 
 export interface MemorySearchOptions {

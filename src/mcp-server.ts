@@ -8,8 +8,9 @@
  * Usage: node dist/mcp-server.js [--vault-dir ~/.starlight/vaults]
  */
 import { createInterface } from 'node:readline';
-import { readFileSync, writeFileSync, appendFileSync, readdirSync, existsSync, mkdirSync, lstatSync } from 'node:fs';
+import { readFileSync, writeFileSync, appendFileSync, readdirSync, existsSync, mkdirSync, lstatSync, realpathSync } from 'node:fs';
 import { join, basename } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { randomUUID } from 'node:crypto';
 import type { TemporalMeta, ContradictionRecord } from './types.js';
@@ -102,25 +103,43 @@ function isLink(path: string): boolean {
   return existsSync(path) && lstatSync(path).isSymbolicLink();
 }
 
-/** A vault file path that stays in the vault directory: a planted symlink would redirect writes elsewhere. */
-function rememberProvenance(entry: RawEntry, label: 'agent' | 'brand' | 'domain', value: unknown): void {
-  if (value == null || value === '') return;
-  const slug = String(value);
+/**
+ * Provenance values are stored as short slugs. Registered agent names can carry
+ * punctuation (e.g. "starlight-voice-&-video-is"), so normalize first: lowercase,
+ * collapse every run of other characters to one hyphen, trim hyphens.
+ */
+function provenanceSlug(label: string, value: unknown): string | undefined {
+  if (value == null || value === '') return undefined;
+  const slug = String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   if (!PROVENANCE_SLUG.test(slug)) {
     throw new ToolError(`${label} must be a short slug.`, 'Use a lowercase letter, then up to 31 letters, numbers, or hyphens.');
   }
-  entry[label] = slug;
+  return slug;
+}
+
+function addTag(entry: RawEntry, tag: string): void {
   const tags = entry.tags ?? [];
-  const tag = `${label}:${slug}`;
   if (!tags.includes(tag)) tags.push(tag);
-  // Scope matches the tag "unit:<slug>", not "agent:<slug>".
-  if (label === 'agent') {
-    const unit = `unit:${slug}`;
-    if (!tags.includes(unit)) tags.push(unit);
-  }
   entry.tags = tags;
 }
 
+/**
+ * Records who wrote an entry and which unit it belongs to. `agent` is author
+ * provenance only (tag agent:<slug>). The scope tag unit:<slug> comes from an
+ * explicit `unit`, else from `brand`; it is never derived from the agent.
+ */
+function rememberProvenance(entry: RawEntry, p: Record<string, unknown>): void {
+  const agent = provenanceSlug('agent', p.agent);
+  const brand = provenanceSlug('brand', p.brand);
+  const domain = provenanceSlug('domain', p.domain);
+  const unit = provenanceSlug('unit', p.unit) ?? brand;
+  if (agent) { entry.agent = agent; addTag(entry, `agent:${agent}`); }
+  if (brand) { entry.brand = brand; addTag(entry, `brand:${brand}`); }
+  if (domain) { entry.domain = domain; addTag(entry, `domain:${domain}`); }
+  if (unit) { entry.unit = unit; addTag(entry, `unit:${unit}`); }
+}
+
+/** A vault file path that stays in the vault directory: a planted symlink would redirect writes elsewhere. */
 function vaultFile(vaultDir: string, name: string): string {
   const path = join(vaultDir, `${name}.jsonl`);
   if (isLink(path)) throw new ToolError(`Vault file ${name}.jsonl is a symlink; refusing to follow it.`, 'Replace the link with a regular file inside the vault directory.');
@@ -360,9 +379,10 @@ export class StarlightMcpServer {
         tags: { type: 'array', maxItems: 20, items: { type: 'string', maxLength: 64 }, description: 'Keywords that boost this entry in sis_search.' },
         confidence: { type: 'string', enum: ['low', 'medium', 'high'], description: 'How sure the source is (default medium); sets how fast confidence decays.' },
         category: { type: 'string', pattern: '^[a-z][a-z0-9_-]{0,31}$', description: 'Kind of entry (default insight); standard: pattern, decision, insight, error, preference.' },
-        agent: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$', description: 'Optional agent slug. Stored on the entry, as tag agent:<slug>, and as unit:<slug> so scope can see it.' },
-        brand: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$', description: 'Optional brand slug. Stored on the entry and as tag brand:<slug>.' },
-        domain: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$', description: 'Optional domain slug. Stored on the entry and as tag domain:<slug>.' },
+        agent: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional author (agent) name. Normalized to a slug and stored on the entry and as tag agent:<slug>. Author provenance only; it does not set the unit scope.' },
+        brand: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional brand name. Normalized to a slug and stored on the entry and as tag brand:<slug>. Also the unit scope (unit:<slug>) when no unit is given.' },
+        domain: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional domain name. Normalized to a slug and stored on the entry and as tag domain:<slug>.' },
+        unit: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional unit name. Normalized to a slug and stored as tag unit:<slug>, which sis_search scope matches. Wins over brand.' },
       }, ['vault', 'content']),
       outputSchema: output({ success: { type: 'boolean' }, id: { type: 'string' }, vault: { type: 'string' } }),
       annotations: APPEND,
@@ -381,9 +401,7 @@ export class StarlightMcpServer {
         createdAt: now,
         temporal: { validFrom: now, validUntil: null, lastConfirmed: now, confidenceDecay: conf },
       };
-      rememberProvenance(entry, 'agent', p.agent);
-      rememberProvenance(entry, 'brand', p.brand);
-      rememberProvenance(entry, 'domain', p.domain);
+      rememberProvenance(entry, p);
       appendFileSync(vaultFile(this.vaultDir, vault), JSON.stringify(entry) + '\n', 'utf-8');
       return { success: true, id: entry.id, vault };
     });
@@ -715,4 +733,15 @@ function main(): void {
   server.start();
 }
 
-main();
+/** True only when this file is the process entry point (node dist/mcp-server.js or the starlight-mcp bin link), so importing it never starts the stdio server. */
+function isEntryPoint(): boolean {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return realpathSync(entry) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isEntryPoint()) main();
