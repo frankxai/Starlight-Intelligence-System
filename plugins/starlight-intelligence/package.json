@@ -18,7 +18,7 @@
     "validate": "node scripts/validate-plugin.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/server": "2.3.0",
+    "@modelcontextprotocol/server": "2.0.0",
     "@supabase/supabase-js": "2.117.2",
     "agents": "0.26.0",
     "jose": "6.2.12",
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20261003.1",
-    "@modelcontextprotocol/sdk": "1.32.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
     "@types/node": "24.19.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
