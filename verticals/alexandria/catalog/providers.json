@@ -1,0 +1,1218 @@
+{
+  "$comment": "Starlight Alexandria provider catalogue. Firecrawl entries were reconciled against the live catalogue (catalogueVersion below) on reconciledAt; credit costs are Firecrawl's published per-call prices on that date and must be re-reconciled, never guessed. Native entries are Starlight's own corpus and are free. Add a provider = add an entry here + a tag vocabulary; the Library validates shape on load (src/alexandria/catalog.ts).",
+  "version": "0.1.0",
+  "catalogueVersion": "sha256:a16c4fc47b1fef17c5211cb971caeef6c1e5aabeac3e27bee1691bf054ae13cd",
+  "reconciledAt": "2026-10-08",
+  "providers": [
+    {
+      "id": "sis-vaults",
+      "kind": "native",
+      "name": "Starlight vaults",
+      "description": "The six semantic vaults (strategic, technical, creative, operational, wisdom, horizon) under memory/vaults. Decisions, patterns, lessons, state.",
+      "categories": [
+        "knowledge",
+        "memory"
+      ],
+      "source": "memory/vaults/*.md (this repository)",
+      "capabilities": [
+        {
+          "id": "sis-vaults/search",
+          "capability": "search",
+          "name": "Vault search",
+          "description": "Lexical search across the six vaults; returns vault, line and matching text.",
+          "creditsCost": 0,
+          "perRecord": false,
+          "options": [
+            {
+              "name": "query",
+              "type": "string",
+              "about": "Terms to match."
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "default": 10
+            }
+          ],
+          "tags": [
+            "vault",
+            "memory",
+            "decision",
+            "lesson",
+            "pattern",
+            "starlight",
+            "internal",
+            "prior",
+            "context"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sis-metrics",
+      "kind": "native",
+      "name": "Metrics ledger",
+      "description": "metrics/current.json — the living ledger of public claims with last_verified dates and sources (METRICS_TRUTH.md).",
+      "categories": [
+        "knowledge",
+        "metrics"
+      ],
+      "source": "metrics/current.json (this repository)",
+      "capabilities": [
+        {
+          "id": "sis-metrics/current",
+          "capability": "current",
+          "name": "Current metrics",
+          "description": "Every metric with value, last_verified, source and ownership verb. Filter by key.",
+          "creditsCost": 0,
+          "perRecord": false,
+          "options": [
+            {
+              "name": "key",
+              "type": "string",
+              "about": "Metric key, e.g. registered_agents."
+            }
+          ],
+          "tags": [
+            "metric",
+            "count",
+            "claim",
+            "verified",
+            "ledger",
+            "agent",
+            "skill",
+            "public",
+            "number"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sis-research",
+      "kind": "native",
+      "name": "Research surface",
+      "description": "Rubric-locked, board-gated research notes under docs/research (memory foundations, predictive cognition, JEPA extract, and later).",
+      "categories": [
+        "research",
+        "knowledge"
+      ],
+      "source": "docs/research/*.md (this repository)",
+      "capabilities": [
+        {
+          "id": "sis-research/list",
+          "capability": "list",
+          "name": "List research notes",
+          "description": "Research notes whose slug matches the query.",
+          "creditsCost": 0,
+          "perRecord": false,
+          "options": [
+            {
+              "name": "query",
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "research",
+            "note",
+            "memory",
+            "cognition",
+            "substrate",
+            "internal",
+            "paper",
+            "extract"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sis-registry",
+      "kind": "native",
+      "name": "Vertical registry",
+      "description": "Verticals present on disk and whether each carries the 7-file contract.",
+      "categories": [
+        "knowledge",
+        "registry"
+      ],
+      "source": "verticals/* (this repository)",
+      "capabilities": [
+        {
+          "id": "sis-registry/verticals",
+          "capability": "verticals",
+          "name": "List verticals",
+          "description": "Every verticals/<slug> with contract completeness.",
+          "creditsCost": 0,
+          "perRecord": false,
+          "tags": [
+            "vertical",
+            "registry",
+            "stack",
+            "intelligence",
+            "system",
+            "contract",
+            "internal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gmgn-ai",
+      "kind": "firecrawl-alexandria",
+      "name": "GMGN",
+      "description": "On-chain trading intelligence for sol, eth, base, bsc, tron, monad: wallet PnL, token holders, traders, trending tokens, developer history.",
+      "categories": [
+        "finance",
+        "crypto"
+      ],
+      "source": "gmgn.ai via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "gmgn-ai/crypto/wallet_profile",
+          "capability": "crypto/wallet_profile",
+          "name": "Wallet profile",
+          "description": "PnL, win rate, holdings, tags, funding source and social binding for one wallet over 1d/7d/30d/all.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "address",
+              "url"
+            ]
+          ],
+          "options": [
+            {
+              "name": "address",
+              "type": "string",
+              "about": "Wallet address on chain."
+            },
+            {
+              "name": "chain",
+              "type": "string",
+              "default": "sol",
+              "oneOf": [
+                "sol",
+                "eth",
+                "base",
+                "bsc",
+                "tron",
+                "monad"
+              ]
+            },
+            {
+              "name": "period",
+              "type": "string",
+              "default": "7d",
+              "oneOf": [
+                "1d",
+                "7d",
+                "30d",
+                "all"
+              ]
+            },
+            {
+              "name": "url",
+              "type": "string",
+              "about": "gmgn.ai address page URL instead of chain+address."
+            }
+          ],
+          "tags": [
+            "wallet",
+            "whale",
+            "pnl",
+            "profile",
+            "solana",
+            "crypto",
+            "onchain",
+            "trader",
+            "address"
+          ]
+        },
+        {
+          "id": "gmgn-ai/crypto/wallet_rank",
+          "capability": "crypto/wallet_rank",
+          "name": "Wallet rank",
+          "description": "Top-performing wallets on a chain to inspect with wallet_profile.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "wallet",
+            "whale",
+            "rank",
+            "top",
+            "crypto",
+            "onchain",
+            "smart-money",
+            "leaderboard"
+          ]
+        },
+        {
+          "id": "gmgn-ai/crypto/token_holders",
+          "capability": "crypto/token_holders",
+          "name": "Token holders",
+          "description": "Holder concentration and who holds a token.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "token",
+            "holder",
+            "concentration",
+            "crypto",
+            "onchain",
+            "whale",
+            "distribution"
+          ]
+        },
+        {
+          "id": "gmgn-ai/crypto/token_trades",
+          "capability": "crypto/token_trades",
+          "name": "Token trades",
+          "description": "Who is buying and selling a token, in what size.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "token",
+            "trade",
+            "flow",
+            "buy",
+            "sell",
+            "crypto",
+            "onchain",
+            "signal"
+          ]
+        },
+        {
+          "id": "gmgn-ai/crypto/trending_tokens",
+          "capability": "crypto/trending_tokens",
+          "name": "Trending tokens",
+          "description": "What is trading most right now on a chain.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "token",
+            "trending",
+            "discovery",
+            "crypto",
+            "onchain",
+            "momentum"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "defillama-com",
+      "kind": "firecrawl-alexandria",
+      "name": "DefiLlama",
+      "description": "Stablecoin liquidity by chain and protocol-level DeFi aggregates.",
+      "categories": [
+        "finance",
+        "crypto"
+      ],
+      "source": "defillama.com via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "defillama-com/crypto/stablecoin_chains",
+          "capability": "crypto/stablecoin_chains",
+          "name": "Stablecoin chains",
+          "description": "Stablecoin value per chain; compare chains by liquidity.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "stablecoin",
+            "chain",
+            "liquidity",
+            "defi",
+            "crypto",
+            "tvl",
+            "macro"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fiscal-ai",
+      "kind": "firecrawl-alexandria",
+      "name": "Fiscal.ai",
+      "description": "Institutional ownership (13F), insider holdings and transactions, and professional investors' fund-letter theses.",
+      "categories": [
+        "finance",
+        "companies"
+      ],
+      "source": "fiscal.ai via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "fiscal-ai/ownership/institutional-holders",
+          "capability": "ownership/institutional-holders",
+          "name": "Institutional holders",
+          "description": "Who institutionally owns a company and who moved last quarter (13F, with the lag visible).",
+          "creditsCost": 15,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "fscl",
+              "companyKey",
+              "ticker",
+              "cusip",
+              "isin",
+              "figi",
+              "cik"
+            ]
+          ],
+          "tags": [
+            "institution",
+            "holder",
+            "ownership",
+            "13f",
+            "fund",
+            "whale",
+            "equity",
+            "ticker",
+            "allocator"
+          ]
+        },
+        {
+          "id": "fiscal-ai/ownership/holder-holdings",
+          "capability": "ownership/holder-holdings",
+          "name": "Holdings by institution",
+          "description": "What a fund holds and how it is weighted.",
+          "creditsCost": 15,
+          "perRecord": false,
+          "tags": [
+            "fund",
+            "holding",
+            "portfolio",
+            "institution",
+            "13f",
+            "allocator",
+            "whale",
+            "position"
+          ]
+        },
+        {
+          "id": "fiscal-ai/ownership/holders-list",
+          "capability": "ownership/holders-list",
+          "name": "Institution directory",
+          "description": "Resolve an institution's name to the holder id holder-holdings needs. Free.",
+          "creditsCost": 0,
+          "perRecord": false,
+          "tags": [
+            "institution",
+            "directory",
+            "fund",
+            "resolve",
+            "id"
+          ]
+        },
+        {
+          "id": "fiscal-ai/ownership/insider-transactions",
+          "capability": "ownership/insider-transactions",
+          "name": "Insider transactions",
+          "description": "Insider activity over time; read transactionType before concluding.",
+          "creditsCost": 15,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "fscl",
+              "companyKey",
+              "ticker",
+              "cusip",
+              "isin",
+              "figi",
+              "cik"
+            ]
+          ],
+          "tags": [
+            "insider",
+            "transaction",
+            "officer",
+            "director",
+            "equity",
+            "ticker",
+            "sale",
+            "purchase"
+          ]
+        },
+        {
+          "id": "fiscal-ai/fund-letters/company",
+          "capability": "fund-letters/company",
+          "name": "Theses on a company",
+          "description": "The qualitative case on a company as professional investors put it, with stance and conviction.",
+          "creditsCost": 15,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "fscl",
+              "companyKey",
+              "ticker",
+              "cusip",
+              "isin",
+              "figi",
+              "cik"
+            ]
+          ],
+          "tags": [
+            "thesis",
+            "fund-letter",
+            "investor",
+            "conviction",
+            "company",
+            "ticker",
+            "narrative",
+            "sentiment"
+          ]
+        },
+        {
+          "id": "fiscal-ai/fund-letters/investor",
+          "capability": "fund-letters/investor",
+          "name": "Investor profile",
+          "description": "How a firm invests, derived from its own letters.",
+          "creditsCost": 15,
+          "perRecord": false,
+          "tags": [
+            "investor",
+            "profile",
+            "fund",
+            "style",
+            "letter",
+            "allocator",
+            "diligence"
+          ]
+        },
+        {
+          "id": "fiscal-ai/fund-letters/investors",
+          "capability": "fund-letters/investors",
+          "name": "Fund letter investors",
+          "description": "Find investorIds by style or sector focus; most-covered first.",
+          "creditsCost": 15,
+          "perRecord": false,
+          "tags": [
+            "investor",
+            "fund",
+            "sector",
+            "style",
+            "search",
+            "allocator"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sec-gov",
+      "kind": "firecrawl-alexandria",
+      "name": "SEC EDGAR",
+      "description": "Primary filings from the US Securities and Exchange Commission.",
+      "categories": [
+        "finance",
+        "companies",
+        "government"
+      ],
+      "source": "sec.gov via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "sec-gov/filings/holdings_13f",
+          "capability": "filings/holdings_13f",
+          "name": "13F holdings",
+          "description": "Every position from a manager's 13F-HR information table, latest or by quarter.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "13f",
+            "filing",
+            "holding",
+            "manager",
+            "sec",
+            "institution",
+            "position",
+            "primary-source"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fireround",
+      "kind": "firecrawl-alexandria",
+      "name": "Fireround",
+      "description": "Startup funding rounds with investors and sources; trending rounds ranked by X, press and Hacker News attention.",
+      "categories": [
+        "companies",
+        "finance"
+      ],
+      "source": "Fireround via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "fireround/rounds/search",
+          "capability": "rounds/search",
+          "name": "Search funding rounds",
+          "description": "Rounds by stage, sector, date, size or investor name.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "funding",
+            "round",
+            "startup",
+            "investor",
+            "series",
+            "venture",
+            "raise",
+            "sector"
+          ]
+        },
+        {
+          "id": "fireround/companies/rounds",
+          "capability": "companies/rounds",
+          "name": "A company's funding rounds",
+          "description": "Every round on record for one company, newest first.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "funding",
+            "history",
+            "company",
+            "round",
+            "investor",
+            "raise"
+          ]
+        },
+        {
+          "id": "fireround/rounds/trending",
+          "capability": "rounds/trending",
+          "name": "Trending funding rounds",
+          "description": "Rounds first seen in the last three days with the most discussion.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "funding",
+            "trending",
+            "round",
+            "attention",
+            "startup",
+            "momentum",
+            "news"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "apollo",
+      "kind": "firecrawl-alexandria",
+      "name": "Apollo",
+      "description": "Company enrichment, info and news by domain or Apollo id.",
+      "categories": [
+        "companies"
+      ],
+      "source": "Apollo via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "apollo/companies/enrich",
+          "capability": "companies/enrich",
+          "name": "Company enrichment",
+          "description": "The company behind a domain or LinkedIn company URL.",
+          "creditsCost": 30,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "domain",
+              "linkedin_url"
+            ]
+          ],
+          "tags": [
+            "company",
+            "enrich",
+            "domain",
+            "firmographic",
+            "headcount",
+            "linkedin"
+          ]
+        },
+        {
+          "id": "apollo/companies/news",
+          "capability": "companies/news",
+          "name": "Company news search",
+          "description": "News about known Apollo companies, by category and date.",
+          "creditsCost": 30,
+          "perRecord": false,
+          "tags": [
+            "company",
+            "news",
+            "event",
+            "press",
+            "signal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fullenrich",
+      "kind": "firecrawl-alexandria",
+      "name": "FullEnrich",
+      "description": "People search by role, employer, location, skills and work history.",
+      "categories": [
+        "companies",
+        "people"
+      ],
+      "source": "FullEnrich via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "fullenrich/people/search",
+          "capability": "people/search",
+          "name": "People search",
+          "description": "Find people by role, employer, location, skills or history; paged, billed per record.",
+          "creditsCost": 5,
+          "perRecord": true,
+          "tags": [
+            "people",
+            "person",
+            "role",
+            "employer",
+            "search",
+            "founder",
+            "executive",
+            "prospect"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "people-data-labs",
+      "kind": "firecrawl-alexandria",
+      "name": "People Data Labs",
+      "description": "Company firmographics, funding and headcount; company search by attribute.",
+      "categories": [
+        "companies"
+      ],
+      "source": "People Data Labs via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "people-data-labs/company/enrich",
+          "capability": "company/enrich",
+          "name": "Company enrichment",
+          "description": "Firmographics, funding and headcount for one company; prefer a domain, ticker or profile over a bare name.",
+          "creditsCost": 50,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "pdl_id",
+              "name",
+              "ticker",
+              "website",
+              "profile"
+            ]
+          ],
+          "tags": [
+            "company",
+            "enrich",
+            "firmographic",
+            "funding",
+            "headcount"
+          ]
+        },
+        {
+          "id": "people-data-labs/company/search",
+          "capability": "company/search",
+          "name": "Company search",
+          "description": "Companies by industry, headcount, funding stage or location; billed per returned company.",
+          "creditsCost": 50,
+          "perRecord": true,
+          "requiresOneOf": [
+            [
+              "query",
+              "sql"
+            ]
+          ],
+          "tags": [
+            "company",
+            "search",
+            "industry",
+            "stage",
+            "location",
+            "list"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "semanticscholar-org",
+      "kind": "firecrawl-alexandria",
+      "name": "Semantic Scholar",
+      "description": "Papers, forward and backward citation expansion, author lists.",
+      "categories": [
+        "research"
+      ],
+      "source": "semanticscholar.org via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "semanticscholar-org/papers/search_papers",
+          "capability": "papers/search_papers",
+          "name": "Search papers",
+          "description": "Discover papers on a topic before get_paper, get_citations or get_references.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "research",
+            "science",
+            "topic",
+            "search",
+            "citation",
+            "literature"
+          ]
+        },
+        {
+          "id": "semanticscholar-org/papers/get_citations",
+          "capability": "papers/get_citations",
+          "name": "Get citations",
+          "description": "Who built on this paper, newest first.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "citation",
+            "forward",
+            "impact",
+            "research",
+            "science"
+          ]
+        },
+        {
+          "id": "semanticscholar-org/papers/get_references",
+          "capability": "papers/get_references",
+          "name": "Get references",
+          "description": "The bibliography of a paper with the citing sentences.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "reference",
+            "bibliography",
+            "backward",
+            "research"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arxiv-org",
+      "kind": "firecrawl-alexandria",
+      "name": "arXiv",
+      "description": "Preprints by topic, category or identifier; bulk harvest with licence.",
+      "categories": [
+        "research"
+      ],
+      "source": "arxiv.org via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "arxiv-org/papers/search_papers",
+          "capability": "papers/search_papers",
+          "name": "Search arXiv",
+          "description": "Papers by topic, title, author or category.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "preprint",
+            "arxiv",
+            "research",
+            "science",
+            "ai",
+            "ml",
+            "frontier"
+          ]
+        },
+        {
+          "id": "arxiv-org/papers/list_category",
+          "capability": "papers/list_category",
+          "name": "List category",
+          "description": "What was announced in a category, or a month's submissions.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "preprint",
+            "arxiv",
+            "category",
+            "daily",
+            "announce",
+            "feed"
+          ]
+        },
+        {
+          "id": "arxiv-org/papers/harvest_records",
+          "capability": "papers/harvest_records",
+          "name": "Harvest records",
+          "description": "Bulk or incremental metadata sync by date window; the only surface that states a paper's licence.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "harvest",
+            "bulk",
+            "licence",
+            "arxiv",
+            "sync",
+            "corpus"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "firecrawl-research-index",
+      "kind": "firecrawl-alexandria",
+      "name": "Firecrawl research index",
+      "description": "Free paper search, related-paper expansion and abstract inspection over Firecrawl's research index.",
+      "categories": [
+        "research"
+      ],
+      "source": "Firecrawl research index via Alexandria",
+      "capabilities": [
+        {
+          "id": "firecrawl-research-index/search",
+          "capability": "search",
+          "name": "Search papers (free)",
+          "description": "Scientific papers for a research question; paperIds feed follow-ups.",
+          "creditsCost": 0,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "research",
+            "science",
+            "question",
+            "search",
+            "free"
+          ]
+        },
+        {
+          "id": "firecrawl-research-index/related",
+          "capability": "related",
+          "name": "Related papers (free)",
+          "description": "Similar work and citing papers for a seed, ranked for the question.",
+          "creditsCost": 0,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "related",
+            "similar",
+            "citation",
+            "research",
+            "free"
+          ]
+        },
+        {
+          "id": "firecrawl-research-index/inspect",
+          "capability": "inspect",
+          "name": "Inspect paper (free)",
+          "description": "Metadata and abstract without full text.",
+          "creditsCost": 0,
+          "perRecord": false,
+          "tags": [
+            "paper",
+            "abstract",
+            "metadata",
+            "inspect",
+            "research",
+            "free"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "federalreserve-gov",
+      "kind": "firecrawl-alexandria",
+      "name": "Federal Reserve",
+      "description": "Statistical release series (H.15 rates, H.10 FX, G.19 consumer credit, Z.1 financial accounts) as numbers.",
+      "categories": [
+        "finance",
+        "government"
+      ],
+      "source": "federalreserve.gov via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "federalreserve-gov/central-bank-communications/data_series",
+          "capability": "central-bank-communications/data_series",
+          "name": "Fed data series",
+          "description": "Federal Reserve release data as series rather than scraped tables.",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "rate",
+            "macro",
+            "fed",
+            "series",
+            "interest",
+            "fx",
+            "credit",
+            "regime",
+            "primary-source"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oriane",
+      "kind": "firecrawl-alexandria",
+      "name": "Oriane",
+      "description": "Indexed Instagram and TikTok profiles and posts: bios, follower counts, engagement.",
+      "categories": [
+        "marketing",
+        "digital-intelligence"
+      ],
+      "source": "Oriane via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "oriane/instagram/profiles-search",
+          "capability": "instagram/profiles-search",
+          "name": "Search Instagram profiles",
+          "description": "Indexed Instagram profiles, bios and follower counts. Not a live feed; empty results cost zero. Projection basic/default/full prices 20/30/40.",
+          "creditsCost": 30,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "handle",
+              "displayName",
+              "bio"
+            ]
+          ],
+          "tags": [
+            "instagram",
+            "creator",
+            "profile",
+            "follower",
+            "influencer",
+            "social",
+            "audience",
+            "bio"
+          ]
+        },
+        {
+          "id": "oriane/tiktok/profiles-search",
+          "capability": "tiktok/profiles-search",
+          "name": "Search TikTok profiles",
+          "description": "Indexed TikTok profiles, bios and follower counts. Not a live feed; empty results cost zero.",
+          "creditsCost": 30,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "handle",
+              "displayName",
+              "bio"
+            ]
+          ],
+          "tags": [
+            "tiktok",
+            "creator",
+            "profile",
+            "follower",
+            "influencer",
+            "social",
+            "audience",
+            "bio"
+          ]
+        },
+        {
+          "id": "oriane/tiktok/posts-search",
+          "capability": "tiktok/posts-search",
+          "name": "Search TikTok videos",
+          "description": "Indexed TikTok posts, captions and engagement by handle or caption.",
+          "creditsCost": 30,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "handle",
+              "caption"
+            ]
+          ],
+          "tags": [
+            "tiktok",
+            "video",
+            "post",
+            "caption",
+            "engagement",
+            "short-form",
+            "creator",
+            "viral"
+          ]
+        },
+        {
+          "id": "oriane/instagram/posts-search",
+          "capability": "instagram/posts-search",
+          "name": "Search Instagram posts and reels",
+          "description": "Indexed Instagram posts, captions and engagement by handle or caption.",
+          "creditsCost": 30,
+          "perRecord": false,
+          "requiresOneOf": [
+            [
+              "handle",
+              "caption"
+            ]
+          ],
+          "tags": [
+            "instagram",
+            "reel",
+            "post",
+            "caption",
+            "engagement",
+            "creator",
+            "viral"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "particle",
+      "kind": "firecrawl-alexandria",
+      "name": "Particle",
+      "description": "Podcast intelligence: speaker-labelled transcripts, show and episode search, guests, sponsors and advertisers, charts, brand suitability.",
+      "categories": [
+        "marketing",
+        "digital-intelligence"
+      ],
+      "source": "Particle via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "particle/advertising/sponsors/trending",
+          "capability": "advertising/sponsors/trending",
+          "name": "Trending sponsors",
+          "description": "Advertisers ramping podcast spend right now, by airdate.",
+          "creditsCost": 25,
+          "perRecord": false,
+          "tags": [
+            "podcast",
+            "sponsor",
+            "advertiser",
+            "trending",
+            "spend",
+            "media",
+            "buyer"
+          ]
+        },
+        {
+          "id": "particle/advertising/sponsor/shows",
+          "capability": "advertising/sponsor/shows",
+          "name": "Shows a sponsor buys",
+          "description": "Where an advertiser buys: the footprint of one sponsor or a whole company across its brands.",
+          "creditsCost": 25,
+          "perRecord": false,
+          "tags": [
+            "podcast",
+            "sponsor",
+            "show",
+            "placement",
+            "advertiser",
+            "footprint",
+            "distribution"
+          ]
+        },
+        {
+          "id": "particle/advertising/show/prospects",
+          "capability": "advertising/show/prospects",
+          "name": "Sponsors a show could pitch",
+          "description": "Prospect list for a show selling its own inventory: who buys shows like it and has not bought it.",
+          "creditsCost": 25,
+          "perRecord": false,
+          "tags": [
+            "podcast",
+            "sponsor",
+            "prospect",
+            "pitch",
+            "show",
+            "inventory",
+            "monetize"
+          ]
+        },
+        {
+          "id": "particle/charts/chart",
+          "capability": "charts/chart",
+          "name": "Entity chart edition",
+          "description": "What podcasts talk about most this week in one domain, with movement since last edition.",
+          "creditsCost": 50,
+          "perRecord": false,
+          "tags": [
+            "podcast",
+            "chart",
+            "trending",
+            "guest",
+            "mention",
+            "topic",
+            "culture",
+            "zeitgeist"
+          ]
+        },
+        {
+          "id": "particle/companies/competitors",
+          "capability": "companies/competitors",
+          "name": "Company competitors",
+          "description": "A company's competitive set with the reason each is on it.",
+          "creditsCost": 25,
+          "perRecord": false,
+          "tags": [
+            "company",
+            "competitor",
+            "set",
+            "market",
+            "podcast",
+            "positioning"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "similarweb",
+      "kind": "firecrawl-alexandria",
+      "name": "Similarweb",
+      "description": "Website traffic, audiences and search intelligence.",
+      "categories": [
+        "marketing",
+        "digital-intelligence"
+      ],
+      "attribution": "Insights by Similarweb (https://www.similarweb.com)",
+      "source": "Similarweb via Firecrawl Alexandria",
+      "capabilities": [
+        {
+          "id": "similarweb/traffic/overview",
+          "capability": "traffic/overview",
+          "name": "Traffic overview",
+          "description": "Visits, audience and sources for a domain (capability path per the live Similarweb contract; reconcile before first execution).",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "website",
+            "traffic",
+            "domain",
+            "audience",
+            "visit",
+            "competitor",
+            "digital",
+            "seo"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "firecrawl-trends",
+      "kind": "firecrawl-alexandria",
+      "name": "Firecrawl Trends",
+      "description": "Search interest over time and by region, related and rising queries, what is trending now.",
+      "categories": [
+        "marketing"
+      ],
+      "source": "Firecrawl Trends via Alexandria",
+      "capabilities": [
+        {
+          "id": "firecrawl-trends/trends/interest",
+          "capability": "trends/interest",
+          "name": "Search interest",
+          "description": "Interest over time and by region for a query (capability path per the live Trends contract; reconcile before first execution).",
+          "creditsCost": 5,
+          "perRecord": false,
+          "tags": [
+            "trend",
+            "search",
+            "interest",
+            "keyword",
+            "rising",
+            "demand",
+            "topic",
+            "timing"
+          ]
+        }
+      ]
+    }
+  ]
+}

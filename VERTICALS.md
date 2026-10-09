@@ -236,6 +236,20 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **Board verdict:** REVISE close-out 2026-05-17 — `docs/boards/2026-05-17-crypto-investment-spawn.md` (5 items closed same-session per v7.5.1 recovery precedent).
 - **Genius prerequisite gate:** CLOSED via `genius/profile-frankx.md` + `genius/freedom-path-frankx.md` (Path A in-repo corpus excavation, 2026-05-17).
 
+### Alexandria (Starlight Alexandria)
+- **Class:** sovereign domain sub-stack (reference vertical) — fourth reference; first to ship runtime before commands because the budget gate is the product.
+- **Domain:** Catalogued intelligence with receipts — typed capabilities under published contracts (Firecrawl Alexandria + the estate's own corpus), deterministic routing, price-before-run, receipt-after-run, earned SIP attestation, signed resale. Six Houses (Library · Scribe · Synthesis · Exchange · Forge · Treasury).
+- **Owner:** open reference (forkable). Composes under Second Brain IS; composes with Wealth IS (Crypto IS Houses), Creator IS, Code IS, Starlight Orchestrator.
+- **Status:** `v0.1 — runtime (src/alexandria), catalogue (19 providers / 44 capabilities / 24 connectors), MCP server (5 tools), 6 House cards, 5 Forge experiments, /alexandria command. No revenue, partnership or pilot claimed.`
+- **Primary repo:** `verticals/alexandria/` + `src/alexandria/` in `frankxai/Starlight-Intelligence-System` (extraction target on Exchange proof: `github.com/frankxai/starlight-alexandria`).
+- **Canon:** declines.
+- **Compounds:** receipt graph (verifiable records) + catalogue curation + every downstream IS that cites records.
+- **SIP commands (v0.1):** `/alexandria`. **v0.2 gated on Forge proof-pass:** 23 House commands per `verticals/alexandria/SUB-SYSTEMS.md`.
+- **Synthesis edge:** Enterprise reference-architecture discipline × a working multi-vertical estate that already consumes the records × SIP attestation built for exactly this × creator distribution that turns receipted research into audience.
+- **Falsifier:** `exp-2026-10-08-catalogue-recall` (routing) and `exp-2026-10-08-pass-through-margin` (Exchange). If routing recall is under 60% after 50 needs, the planner flips to Firecrawl semantic find-tools; if zero paid pass-through calls at day 30, the Exchange folds into the brief subscription.
+- **Board verdict:** PROCEED 2026-10-08 — `docs/boards/2026-10-08-starlight-alexandria.md` (three conditions carried into MEMORY.md).
+- **Tests:** `test/v93-alexandria.test.ts` (`node --import tsx --test test/v93-alexandria.test.ts`).
+
 ---
 
 ## Registry rules

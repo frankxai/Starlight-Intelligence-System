@@ -1,0 +1,21 @@
+# Mesh manifest — Starlight Alexandria (domain sub-stack)
+name: alexandria
+version: 0.1.0
+tier: domain-sub-stack
+composes_under: secondbrain
+composes_with: [wealth, crypto-intelligence, creator, code, orchestrator]
+provides:
+  - catalogued-capabilities        # catalog/providers.json
+  - budget-gated-router            # src/alexandria/router.ts
+  - receipts-ledger                # src/alexandria/receipts.ts
+  - experiment-registry            # experiments/registry.json
+  - mcp-server                     # src/alexandria/mcp.ts (5 tools)
+depends_on:
+  - firecrawl-alexandria           # transport; FIRECRAWL_API_KEY
+  - protocol/sign.mjs              # signed receipts before resale
+houses: [library, scribe, synthesis, exchange, forge, treasury]
+commands_shipped: [alexandria]
+tests: [test/v93-alexandria.test.ts]
+board: docs/boards/2026-10-08-starlight-alexandria.md
+canon: declines
+license: MIT
