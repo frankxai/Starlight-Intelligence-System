@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createProcessWorkerRuntime, WORKER_PROTOCOL, type WorkerRuntime } from "../src/runtime-bridge/index.js";
@@ -81,6 +81,7 @@ describe("terminal execution and portable recovery", () => {
     const result = await store.execute(packet(), { ...options(interrupted), timeoutMs: 10 });
     assert.equal(result.state, "unknown");
     assert.equal(result.receipt?.errorCode, "timeout");
+    assert.ok(existsSync(join(store.directory, "run-one.json.lock")));
     let calls = 0;
     const resumed = await new TerminalRunJournal(store.directory).execute(packet(), options({
       id: "another-harness", invoke: async () => { calls++; throw new Error("must not dispatch"); },
@@ -101,6 +102,46 @@ describe("terminal execution and portable recovery", () => {
     destination.importHandoff(store.handoff("run-one"));
     await destination.execute(packet(), { ...options(), admit: async () => { admitted = true; return admission(); } });
     assert.equal(admitted, false);
+  });
+
+  it("retains the writer marker when output cannot be committed after dispatch", async () => {
+    const store = journal();
+    const task = packet();
+    task.sourceRefs = Array.from({ length: 32 }, (_, i) => `source-${i}` + "\0".repeat(1050));
+    let calls = 0;
+    const worker: WorkerRuntime = { id: "large-artifact", invoke: async request => {
+      calls++;
+      return { protocol: WORKER_PROTOCOL, taskId: request.taskId, status: "completed", output: "a".repeat(64000) };
+    } };
+    await assert.rejects(store.execute(task, options(worker)), /Journal record exceeds/);
+    assert.equal(store.inspect(task.runId)?.state, "running");
+    assert.ok(existsSync(join(store.directory, task.runId + ".json.lock")));
+    assert.equal((await new TerminalRunJournal(store.directory).execute(task, options(worker))).state, "running");
+    assert.equal(calls, 1);
+  });
+
+  it("does not remove a replaced writer marker after confirmed output", async () => {
+    const store = journal();
+    const lock = join(store.directory, "run-one.json.lock");
+    const worker: WorkerRuntime = { ...runtime, invoke: async (...args) => {
+      writeFileSync(lock, "another owner");
+      return runtime.invoke(...args);
+    } };
+    assert.equal((await store.execute(packet(), options(worker))).state, "produced");
+    assert.equal(readFileSync(lock, "utf8"), "another owner");
+  });
+
+  it("rejects imported artifacts over the UTF-8 bound and non-object receipts", async () => {
+    const store = journal();
+    await store.execute(packet(), options());
+    const value = JSON.parse(store.handoff("run-one"));
+    value.record.receipt.output = "é".repeat(32769);
+    value.record.outputSha256 = createHash("sha256").update(value.record.receipt.output).digest("hex");
+    value.recordSha256 = terminalDigest(value.record);
+    assert.throws(() => journal().importHandoff(JSON.stringify(value)), /integrity/);
+    value.record.receipt = [];
+    assert.throws(() => journal().importHandoff(JSON.stringify(value)), /receipt/);
+    assert.equal(terminalDigest({ n: -0 }), terminalDigest({ n: 0 }));
   });
 
   it("hands editable output to another journal and rejects altered evidence", async () => {
@@ -201,6 +242,7 @@ describe("terminal CLI", () => {
     const packetPath = join(source.directory, "packet-input.json");
     const hostPath = join(source.directory, "host-input.json");
     const task = packet();
+    task.request.context = { negativeZero: -0 };
     writeFileSync(packetPath, JSON.stringify(task));
     writeFileSync(hostPath, JSON.stringify({ version: "starlight.terminal-host.v1", packetSha256: terminalDigest(task),
       timeoutMs: 1000, admission: admission(), runtime: { kind: "process", id: "local-node",
@@ -209,6 +251,7 @@ describe("terminal CLI", () => {
     const start = await runTerminalCli(["run", "start", "--file", packetPath, "--host", hostPath, "--authorize", "--journal", source.directory]);
     assert.equal(start.exitCode, 0, start.stderr);
     assert.equal(JSON.parse(start.stdout).state, "produced");
+    assert.equal(JSON.parse(start.stdout).fingerprint, terminalDigest(parseTerminalPacket(task)));
     assert.equal((await runTerminalCli(["run", "inspect", task.runId, "--journal", source.directory])).exitCode, 0);
     const handoff = await runTerminalCli(["run", "resume", task.runId, "--journal", source.directory]);
     const path = join(source.directory, "handoff.json");

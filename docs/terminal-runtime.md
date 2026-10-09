@@ -92,7 +92,9 @@ workspace isolation and containment of descendants. Killing the spawned child
 does not establish that all its effects or descendants stopped.
 
 HTTP bindings use `kind: "http"`, `id`, and `endpoint`. HTTPS is required unless
-the operator explicitly permits loopback HTTP. `tokenEnv` names a host environment
+the operator explicitly permits numeric loopback HTTP at `127.0.0.1` or `[::1]`.
+Hostnames and other loopback addresses are excluded from this exception.
+`tokenEnv` names a host environment
 variable for a bearer token; credentials stay out of portable packets. The SDK
 also accepts an already connected, host-owned MCP client. These are worker
 transports; they do not make MCP, ACP, A2A or native harness protocols equivalent.
@@ -113,7 +115,10 @@ Empty/malformed output, timeout or transport loss becomes `unknown`. Reopening
 the journal returns existing evidence without redispatch, including `running`
 or `unknown` evidence imported from another harness.
 
-A crash can retain a writer lock. Never remove it by age. Its owner must reconcile
+A crash, unknown outcome or failed receipt save retains a writer lock with a
+unique owner marker. Read-only inspection and deduplication remain available.
+Successful or explicitly failed outcomes release only their own unchanged marker.
+Never remove a retained lock by age. Its owner must reconcile
 the original worker and authorize any distinct attempt through the existing
 admission system. There is no automatic retry or reconciliation API in this slice.
 Atomic rename and file fsync protect normal interruption; durability across power

@@ -75,8 +75,8 @@ export function createMcpWorkerRuntime(options: {
     async invoke(request, signal) {
       const args = mapArguments ? mapArguments(request) : { ...request };
       if (!record(args)) throw new Error("MCP arguments must be an object");
-      boundedJson(args);
-      const result = await callTool({ name: tool, arguments: args }, signal);
+      const argumentsSnapshot = JSON.parse(boundedJson(args)) as Record<string, unknown>;
+      const result = await callTool({ name: tool, arguments: argumentsSnapshot }, signal);
       if (!record(result) || Object.hasOwn(result, "task")
         || (result.isError !== undefined && typeof result.isError !== "boolean")) {
         throw new Error("Invalid MCP tool result");

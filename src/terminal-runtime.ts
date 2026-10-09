@@ -158,6 +158,25 @@ export class TerminalRunJournal {
     return join(this.directory, id + ".json");
   }
 
+  private acquire(id: string): { path: string; fd: number; owner: string } {
+    const path = this.path(id) + ".lock";
+    const fd = openSync(path, "wx", 0o600);
+    const owner = canonical({ version: "starlight.writer-lock.v1", token: randomUUID(),
+      pid: process.pid, createdAt: new Date().toISOString() });
+    try { writeFileSync(fd, owner); fsyncSync(fd); }
+    catch (error) { closeSync(fd); throw error; }
+    return { path, fd, owner };
+  }
+
+  private release(lock: { path: string; fd: number; owner: string }, retain: boolean): void {
+    closeSync(lock.fd);
+    if (retain || !existsSync(lock.path)) return;
+    const stat = lstatSync(lock.path);
+    // Another writer's replacement is never ours to remove.
+    if (stat.isFile() && !stat.isSymbolicLink() && stat.size < 4096
+      && readFileSync(lock.path, "utf8") === lock.owner) unlinkSync(lock.path);
+  }
+
   inspect(id: string): TerminalRunRecord | undefined {
     const file = this.path(id);
     if (!existsSync(file)) return undefined;
@@ -188,12 +207,18 @@ export class TerminalRunJournal {
     admit: (packet: TerminalWorkPacket, runtimeId: string) => Promise<TerminalAdmission>;
   }): Promise<TerminalRunRecord> {
     const packet = parseTerminalPacket(value);
+    const fingerprint = terminalDigest(packet);
+    const existing = this.inspect(packet.runId);
+    if (existing) {
+      if (existing.fingerprint !== fingerprint) throw new Error("Run ID is bound to another packet");
+      return existing; // Read-only recovery works while an unresolved lock remains.
+    }
     // Keep precisely the outbound packet. No hidden memories cross by default.
     const runtime = { id: options.runtime.id, invoke: options.runtime.invoke.bind(options.runtime) };
     const bridge = new RuntimeBridge({ runtimes: [runtime], routes: { [packet.request.agent]: runtime.id },
       maxConcurrency: 1, maxRuns: 1, timeoutMs: options.timeoutMs, contextKeys: options.contextKeys });
-    const lock = this.path(packet.runId) + ".lock";
-    const fd = openSync(lock, "wx", 0o600);
+    const lock = this.acquire(packet.runId);
+    let retainLock = false;
     try {
       const previous = this.inspect(packet.runId);
       if (previous) {
@@ -209,6 +234,7 @@ export class TerminalRunJournal {
       let record: TerminalRunRecord = { version: TERMINAL_RUN_VERSION, packet, fingerprint: terminalDigest(packet),
         runtimeId: runtime.id, state: "running", admission, verification: "pending", usage: "unknown" };
       this.save(record); // Durable before dispatch; loss cannot silently resubmit.
+      retainLock = true; // Dispatch or receipt-save uncertainty retains ownership.
       let receipt = await bridge.run(packet.request, options.signal);
       if (receipt.status === "completed" && !receipt.output?.trim()) {
         const { output: _output, ...identity } = receipt;
@@ -217,10 +243,10 @@ export class TerminalRunJournal {
       record = { ...record, receipt, state: receipt.status === "completed" ? "produced" : receipt.status,
         ...(receipt.status === "completed" ? { outputSha256: createHash("sha256").update(receipt.output!).digest("hex") } : {}) };
       this.save(record);
+      retainLock = receipt.status === "unknown";
       return this.inspect(packet.runId)!;
     } finally {
-      closeSync(fd);
-      unlinkSync(lock); // Only the lock exclusively created by this call.
+      this.release(lock, retainLock);
     }
   }
 
@@ -242,12 +268,11 @@ export class TerminalRunJournal {
     }
     const record = parseRecord(value.record);
     if (value.recordSha256 !== terminalDigest(record)) throw new Error("Handoff integrity mismatch");
-    const lock = this.path(record.packet.runId) + ".lock";
-    const fd = openSync(lock, "wx", 0o600);
+    const lock = this.acquire(record.packet.runId);
     try {
       if (this.inspect(record.packet.runId)) throw new Error("Destination run already exists");
       this.save(record);
       return this.inspect(record.packet.runId)!;
-    } finally { closeSync(fd); unlinkSync(lock); }
+    } finally { this.release(lock, false); }
   }
 }

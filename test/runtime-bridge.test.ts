@@ -195,6 +195,27 @@ test("MCP binds tool name, checks errors, and accepts structured identity-bound 
   assert.equal((await setup(plain).run(request())).status, "unknown");
 });
 
+test("MCP passes a validated snapshot and denies malformed arguments before the host call", async () => {
+  const original = { source: { value: "owned" } };
+  const worker = createMcpWorkerRuntime({ id: "mcp", tool: "fixed_tool", mapArguments: () => original,
+    callTool: async params => {
+      assert.notEqual(params.arguments, original);
+      assert.notEqual(params.arguments.source, original.source);
+      original.source.value = "changed";
+      assert.equal((params.arguments.source as { value: string }).value, "owned");
+      return { structuredContent: completed("task-1", "artifact") };
+    } });
+  assert.equal((await setup(worker).run(request())).status, "completed");
+  const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;
+  for (const args of [{ n: NaN }, cyclic, { text: "x".repeat(65536) }]) {
+    let called = false;
+    const bad = createMcpWorkerRuntime({ id: "mcp", tool: "fixed_tool", mapArguments: () => args,
+      callTool: async () => { called = true; return {}; } });
+    assert.equal((await setup(bad).run(request())).status, "unknown");
+    assert.equal(called, false);
+  }
+});
+
 test("HTTP rejects unsafe endpoint configuration", () => {
   for (const endpoint of ["http://example.com/run", "file:///tmp/worker", "https://user:pass@example.com", "https://example.com/run?token=x", "https://example.com/#x"]) {
     assert.throws(() => createHttpWorkerRuntime({ id: "http", endpoint }));
