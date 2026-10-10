@@ -35,6 +35,7 @@ Landed:
 | --- | --- | --- |
 | #334 | `sharp` 0.35.5 in `/console` | harness, scan, design, editorial green |
 | #326 | Starlight Agent Designer, skills-only | harness, contracts, scan, reference-checks green. No runtime deployed |
+| #51 in starlight-command-center | Account-aware capacity reservations | typecheck, observatory, journey and daemon green. Dispatch stays disabled |
 
 Already on `main` from the 6 October pass: #277 plugin 0.3, #291 workspace scope, #280 Reality Architect pointer, #296 `ip-address` 10.7.3, #305 `source-map-js` 1.2.2, #297 `hono` 4.13.13.
 
@@ -46,13 +47,13 @@ Held:
 | #27 in starlight-memory | Clean and `verify` green. Author requires `pr-gate.mjs` on that exact head. |
 | #175 and drafts #324 #325 | Ontology and AGENTS.md contract. Not this pass. |
 | #340 #330 #328 | Drafts. Memory isolation and context capture stay draft until marked ready. |
-| Command Center #65 #66 #68 | Still drafts. #51 was not line-reviewed this hour. |
+| Command Center #65 #66 #68 | Still drafts. Capacity #51 landed separately. |
 
 ## Next, in order
 
 1. After Dependabot rebases #298, merge it if harness and contracts are green again.
 2. Sign starlight-memory #27 with `pr-gate.mjs`, then squash.
-3. Read one Command Center Home draft, mark it ready only if the diff stays inside Home, then merge that one.
+3. Mark one Command Center Home draft ready only if the diff stays inside Home, then merge that one.
 4. Leave grouped bumps #331–#333 and #335–#338 until each lockfile is read on its own.
 5. Do not stack another plugin lockfile change on the same day as a designer merge.
 
@@ -64,5 +65,6 @@ Run the check the path owns. Do not invent a green result.
 - Plugin cloud package: `npm test` inside `plugins/starlight-intelligence`.
 - Foundry lockfile: `contracts-and-compiler` must be green.
 - Memory projection: `node --test test/continuity-recall.test.mjs`, then the repo `verify` job, then `pr-gate.mjs` when the pull requires it.
+- Command Center capacity: the fixture build and the daemon test file named by the pull.
 
 Built on SIP. A merged pull is evidence of source. It is not evidence of production.
