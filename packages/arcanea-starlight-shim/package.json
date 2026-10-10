@@ -1,0 +1,22 @@
+{
+  "name": "@arcanea/starlight-intelligence-system",
+  "version": "8.3.0",
+  "description": "[MIGRATED] Starlight Intelligence System has moved to @starlight-intelligence/system. This shim maintains backward compatibility.",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "starlight": "bin/starlight.js"
+  },
+  "dependencies": {
+    "@starlight-intelligence/system": "^8.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frankxai/Starlight-Intelligence-System.git"
+  },
+  "license": "MIT"
+}
