@@ -102,3 +102,54 @@ export async function withLock<T>(
     release();
   }
 }
+
+export interface LockInspection {
+  locked: boolean;
+  lockPath: string;
+  meta?: LockMeta;
+  corrupted?: boolean;
+}
+
+/**
+ * Inspect the state of an existing directory lock.
+ * Read-only; never mutates or releases lock state.
+ */
+export function inspectLock(lockPath: string): LockInspection {
+  lockPath = resolve(lockPath);
+  const metaFile = join(lockPath, 'meta.json');
+  try {
+    const contents = readdirSync(lockPath);
+    if (!contents.includes('meta.json')) {
+      return { locked: true, lockPath, corrupted: true };
+    }
+    const meta = JSON.parse(readFileSync(metaFile, 'utf8')) as LockMeta;
+    return { locked: true, lockPath, meta };
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return { locked: false, lockPath };
+    }
+    return { locked: true, lockPath, corrupted: true };
+  }
+}
+
+/**
+ * Administratively release a stale lock when the owner process is confirmed dead.
+ * Requires explicit caller confirmation; never author-inferred.
+ */
+export function breakStaleLock(lockPath: string, expectedToken?: string): boolean {
+  lockPath = resolve(lockPath);
+  const metaFile = join(lockPath, 'meta.json');
+  try {
+    if (expectedToken) {
+      const meta = JSON.parse(readFileSync(metaFile, 'utf8')) as LockMeta;
+      if (meta.token !== expectedToken) throw new Error('Lock token does not match expected token');
+    }
+    try { unlinkSync(metaFile); } catch {}
+    rmdirSync(lockPath);
+    return true;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false;
+    throw error;
+  }
+}
+

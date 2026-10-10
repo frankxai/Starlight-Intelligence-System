@@ -4,7 +4,8 @@ import { mkdtempSync, writeFileSync, rmSync, readFileSync, appendFileSync } from
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { ContextBridge, type ContextRecord } from '../src/context-bridge.js';
+import { ContextBridge, DurableJournal, type ContextRecord } from '../src/context-bridge.js';
+import { acquireLock, inspectLock, breakStaleLock } from '../src/gateway/lock.js';
 import { ReviewQueue, type ReviewJob, type ReviewBinding } from '../src/review-queue.js';
 import { RuntimeBridge } from '../src/runtime-bridge/bridge.js';
 import { WORKER_PROTOCOL } from '../src/runtime-bridge/contracts.js';
@@ -384,3 +385,49 @@ test('Live acceptance: Jev Router policy evaluation, refusal behavior, and basel
   // transmission occurred and OpenRouter billed the request.
   assert.equal(unapprovedReceipt.authority, 'untrusted-provider-report');
 });
+
+test('Live recovery: Lock inspection, administrative release, and journal temp cleanup', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'sis-recovery-test-'));
+  const lockDir = join(root, 'test-resource.lock');
+  const journalPath = join(root, 'journal.jsonl');
+
+  try {
+    // 1. Lock inspection when unlocked
+    const preCheck = inspectLock(lockDir);
+    assert.equal(preCheck.locked, false);
+
+    // 2. Lock acquire and inspection while locked
+    const release = await acquireLock(lockDir, { timeoutMs: 1000 });
+    const midCheck = inspectLock(lockDir);
+    assert.equal(midCheck.locked, true);
+    assert.equal(typeof midCheck.meta?.token, 'string');
+    assert.equal(midCheck.meta?.pid, process.pid);
+
+    // 3. Simulating dead process / orphaned lock breaking
+    // We break the lock administratively without calling normal release()
+    const broken = breakStaleLock(lockDir, midCheck.meta?.token);
+    assert.equal(broken, true);
+    const postBreak = inspectLock(lockDir);
+    assert.equal(postBreak.locked, false);
+
+    // 4. Verify orphaned .tmp file cleanup in DurableJournal
+    // Create an orphaned .tmp scratch file simulating a crash during atomic rename
+    const orphanedTmp = join(root, 'journal.jsonl.deadbeef-1234-5678.tmp');
+    writeFileSync(orphanedTmp, '{"simulated":"crash-content"}\n');
+
+    // Instantiating DurableJournal should automatically garbage-collect orphaned .tmp files
+    const journal = new DurableJournal(journalPath);
+    await journal.update(frames => ({ frames: [...frames, { recovered: true }], result: 'ok' }));
+
+    const records = journal.read();
+    assert.equal(records.length, 1);
+    assert.equal(records[0].recovered, true);
+
+    // Assert the orphaned .tmp file was cleaned up
+    const { existsSync } = await import('node:fs');
+    assert.equal(existsSync(orphanedTmp), false);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+

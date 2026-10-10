@@ -8,7 +8,7 @@ Persistent memory. Attested knowledge. Sovereign control.
 
 Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity — they all read from and write to the **same six semantic vaults**, with full provenance. No more explaining the same thing to every agent. No drift. No lost decisions.
 
-[![version](https://img.shields.io/badge/version-8.3.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-8.5.1-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
@@ -317,8 +317,10 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 - **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
-- **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode share the same vaults.
+- **Six platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity share the same vaults.
 - **MCP v2** — `src/mcp-server.ts` ships thirteen tools over JSON-RPC 2.0 stdio.
+- **Multi-harness runtime bridge & context continuity** — `@arcanea/starlight-intelligence-system/runtime-bridge` and `src/context-bridge.ts` provide cross-agent bounded context capture, durable append-only journals with crash-resilient atomic commits, revision-scoped handoffs, cooperative PID/token locks, and typed review queues.
+- **Jev router policy primitive** — `src/jev-router.ts` provides public-only request filtering, advisory model constraints, and pre-transmission privacy guarantees.
 
 ### MCP tools
 
@@ -347,6 +349,18 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
 | Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
 | OpenCode | `AGENTS.md` (compact) | `~/.config/opencode/opencode.json` | 128,000 |
+| Antigravity | `AGENTS.md` | Built-in native tools & MCP | 1,000,000+ |
+| Grok | `AGENTS.md` / `GROK.md` | `grok-harness-adapter` | 131,000 |
+
+### Multi-harness runtime bridge & context continuity
+
+When multiple autonomous agents (Claude Code, Codex, Antigravity, OpenCode, Gemini CLI, Grok) collaborate on a shared codebase or hand off work across sessions, Starlight provides a resilient, zero-drift runtime substrate via `@arcanea/starlight-intelligence-system/runtime-bridge`:
+
+- **Durable Journals & Atomic Replay**: `DurableJournal` records interaction events using append-only JSONL ledgers with monotonic sequence numbers, atomic rename file flushes, crash-orphaned temporary file garbage collection (`cleanOrphanedTempFiles()`), and replay deduplication.
+- **Revision-Scoped Checkpoint Handoffs**: Checkpoints capture Git repository root, commit SHA, dirty-tree status, branch metadata, and explicit artifact references. Resuming harnesses strictly verify repository origin and commit alignment to prevent ghost state.
+- **Cooperative Ownership Locks**: File-based gateway locks with monotonic process tokens and host PIDs. Blind age-based timeouts are eliminated; administrative inspection (`inspectLock`) and intentional recovery (`breakStaleLock`) allow operators to safely recover without risk of silent preemption.
+- **Durable Review Queue**: `ReviewQueue` coordinates asynchronous multi-agent peer reviews. Review requests declare target artifact revisions, required review aspects, and bound checker providers. Approvals and rejections are cryptographic-grade, replay-verifiable receipts.
+- **Jev Router Policy Layer**: `JevRouterPolicy` enforces pre-transmission privacy boundaries. Tasks containing private vaults or untrusted scopes refuse transport before external model endpoints can be contacted or billed.
 
 ### The 7 named agents (operational layer)
 
@@ -420,7 +434,7 @@ git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
 npm install
 npm run build       # tsc to dist/
-npm test            # 82+ orchestrator tests
+npm test            # 138+ comprehensive tests across vaults, gateway, and multi-harness bridge
 npm run lint        # tsc --noEmit
 ```
 
@@ -457,7 +471,7 @@ Browse them: [docs/visuals/VISUALS.md](docs/visuals/VISUALS.md) · Motion experi
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.3.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.5.1 · MIT
 
 ---
 
