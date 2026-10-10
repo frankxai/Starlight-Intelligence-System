@@ -3,6 +3,19 @@
 Status: implementation branch; publication and acceptance gates remain open.
 Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-System/issues/329).
 
+10 October follow-up: adversarial fixtures reproduced acceptance of unterminated
+archives and ambiguous paths in the release/static-audit parser. The parser now
+requires complete padded blocks and two zero terminator blocks, rejects concealed
+trailing members, malformed octal fields, control/colon/empty path segments and
+directory payloads, and counts directories toward the existing200-member budget.
+Legitimate dotted filenames remain accepted. All13 release/audit tests pass, and
+the three existing actual package archives still parse. These checks cover the
+parser change; fresh hosted artifact consumers and exact-revision independent
+review remain required. Local build admission is HOLD7222MB/8192required; no new
+build or independent reviewer was launched. Prior hosted results retain their
+earlier revision boundaries. Both npm-production environments now exist with
+owner approval and main-only policies; default admin bypass remains enabled.
+
 ## Decision and boundaries
 
 Extract shared contracts and context projection into dependency-free core. Build

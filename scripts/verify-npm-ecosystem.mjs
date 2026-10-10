@@ -22,27 +22,48 @@ export function pnpmInvocation(cli) {
 
 /** Parse only regular tar entries and directories; links, traversal and oversized archives fail closed. */
 export function readTar(bytes) {
+  if (bytes.length > 2_000_000) throw new Error('Compressed tar budget exceeded');
   const tar = gunzipSync(bytes, { maxOutputLength: 2_000_000 });
+  if (tar.length % 512 !== 0) throw new Error('Incomplete tar block');
   const entries = new Map();
+  const seen = new Set();
+  let ended = false;
   for (let offset = 0; offset + 512 <= tar.length;) {
     const header = tar.subarray(offset, offset + 512);
-    if (header.every(byte => byte === 0)) break;
+    if (header.every(byte => byte === 0)) {
+      if (offset + 1024 > tar.length || !tar.subarray(offset).every(byte => byte === 0)) throw new Error('Invalid tar terminator or trailing members');
+      ended = true;
+      break;
+    }
     const field = (a, b) => header.subarray(a, b).toString().replace(/\0.*$/s, '');
     const name = [field(345, 500), field(0, 100)].filter(Boolean).join('/');
-    if (!name.startsWith('package/') || name.includes('..') || name.includes('\\') || name.startsWith('/')) throw new Error('Unsafe tar path');
-    const expected = parseInt(field(148, 156).trim(), 8);
+    const type = field(156, 157);
+    const path = type === '5' ? name.replace(/\/$/, '') : name;
+    if (!name.startsWith('package/') || path.split('/').some(part => !part || part === '..' || part === '.') || /[\\:\x00-\x1f\x7f]/.test(name)) throw new Error('Unsafe tar path');
+    const octal = (a, b) => {
+      const value = field(a, b).trim();
+      if (!/^[0-7]+$/.test(value)) throw new Error('Invalid tar numeric field');
+      const number = Number.parseInt(value, 8);
+      if (!Number.isSafeInteger(number)) throw new Error('Invalid tar numeric field');
+      return number;
+    };
+    const expected = octal(148, 156);
     const checksum = header.reduce((sum, byte, index) => sum + (index >= 148 && index < 156 ? 32 : byte), 0);
     if (expected !== checksum) throw new Error('Invalid tar checksum');
-    const size = parseInt(field(124, 136).trim(), 8);
-    if (!Number.isSafeInteger(size) || size < 0 || offset + 512 + size > tar.length) throw new Error('Invalid tar size');
-    const type = field(156, 157);
+    const size = octal(124, 136);
+    const next = offset + 512 + Math.ceil(size / 512) * 512;
+    if (next > tar.length) throw new Error('Invalid tar size');
     if (type !== '0' && type !== '' && type !== '5') throw new Error('Unsupported tar entry');
+    if (type === '5' && size !== 0) throw new Error('Invalid tar directory payload');
+    if (seen.has(path) || seen.size >= 200) throw new Error('Duplicate or excessive tar entries');
+    seen.add(path);
+    if (!tar.subarray(offset + 512 + size, next).every(byte => byte === 0)) throw new Error('Invalid tar padding');
     if (type !== '5') {
-      if (entries.has(name) || entries.size >= 200) throw new Error('Duplicate or excessive tar entries');
       entries.set(name, tar.subarray(offset + 512, offset + 512 + size));
     }
-    offset += 512 + Math.ceil(size / 512) * 512;
+    offset = next;
   }
+  if (!ended) throw new Error('Missing tar terminator');
   return entries;
 }
 

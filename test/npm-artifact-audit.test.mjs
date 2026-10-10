@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { gzipSync } from 'node:zlib';
+import { gzipSync, gunzipSync } from 'node:zlib';
+import { readTar } from '../scripts/verify-npm-ecosystem.mjs';
 import { inspectArtifact, registryUrl, checkIntegrity, auditArtifacts } from '../scripts/audit-npm-artifacts.mjs';
 
 function archive(manifest, extra = []) {
@@ -21,6 +22,29 @@ function archive(manifest, extra = []) {
 const manifest = { name: '@starlight-intelligence/fixture', version: '1.0.0', main: 'dist/index.js' };
 const identity = bytes => ({ name: manifest.name, version: manifest.version,
   integrity: 'sha512-' + createHash('sha512').update(bytes).digest('base64') });
+
+test('release parser refuses missing terminators, incomplete padding and concealed trailing members', () => {
+  const raw = gunzipSync(archive(manifest));
+  assert.throws(() => readTar(gzipSync(raw.subarray(0, -1024))), /tar/);
+  assert.throws(() => readTar(gzipSync(raw.subarray(0, -512))), /tar/);
+  assert.throws(() => readTar(gzipSync(raw.subarray(0, -1025))), /tar/);
+  assert.throws(() => readTar(gzipSync(Buffer.concat([raw, raw]))), /tar/);
+  const padding = Buffer.from(raw);
+  padding[512 + Buffer.byteLength(JSON.stringify(manifest))] = 1;
+  assert.throws(() => readTar(gzipSync(padding)), /tar/);
+});
+
+test('release parser denies ambiguous paths and numeric fields without rejecting ordinary dotted names', () => {
+  for (const path of ['package/./index.js', 'package//index.js', 'package/x:y', 'package/x\u0001y', 'package/x\u007fy']) {
+    assert.throws(() => readTar(archive(manifest, [[path, Buffer.from('fixture')]])), /tar/);
+  }
+  assert.ok(readTar(archive(manifest, [['package/v1..v2.js', Buffer.from('fixture')]])).has('package/v1..v2.js'));
+  const raw = gunzipSync(archive(manifest));
+  raw.write('0000000001x\0', 124);
+  raw.fill(32, 148, 156);
+  raw.write(raw.subarray(0, 512).reduce((n, byte) => n + byte, 0).toString(8).padStart(6, '0') + '\0 ', 148);
+  assert.throws(() => readTar(gzipSync(raw)), /tar/);
+});
 
 test('artifact identity and digest are verified before scanning untrusted contents', () => {
   const bytes = archive(manifest);
