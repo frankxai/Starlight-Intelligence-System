@@ -1,12 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateEntries, readTar, digest, targets } from '../scripts/verify-npm-ecosystem.mjs';
+import { validateEntries, readTar, digest, targets, pnpmInvocation } from '../scripts/verify-npm-ecosystem.mjs';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { validateReceipt, publishEcosystem } from '../scripts/publish-npm-ecosystem.mjs';
 import { auditEstate, summarizePackage } from '../scripts/audit-npm-estate.mjs';
+
+test('packing supports pnpm JavaScript and native launchers without accepting arbitrary shells', () => {
+  const native = join(process.cwd(), 'pnpm');
+  assert.deepEqual(pnpmInvocation(native), { command: native, prefix: [] });
+  const js = join(process.cwd(), 'pnpm.mjs');
+  assert.deepEqual(pnpmInvocation(js), { command: process.execPath, prefix: [js] });
+  const exe = join(process.cwd(), 'pnpm.exe');
+  assert.deepEqual(pnpmInvocation(exe), { command: exe, prefix: [] });
+  for (const value of [undefined, 'pnpm', join(process.cwd(), 'npm-cli.js'), join(process.cwd(), 'pnpm.ps1')]) {
+    assert.throws(() => pnpmInvocation(value));
+  }
+});
 
 test('estate inventory refuses incomplete indexes and mismatched package identities', async () => {
   const json = value => new Response(JSON.stringify(value), { headers: { 'content-type': 'application/json' } });

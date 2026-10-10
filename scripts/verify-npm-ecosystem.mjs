@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
-import { resolve, dirname, join } from 'node:path';
+import { resolve, dirname, join, basename, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gunzipSync } from 'node:zlib';
 
@@ -11,6 +11,14 @@ export const targets = [
   ['mcp-server', '@starlight-intelligence/mcp'],
 ];
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+
+/** npm_execpath can name pnpm's executable symlink instead of its JavaScript file. */
+export function pnpmInvocation(cli) {
+  if (typeof cli !== 'string' || !isAbsolute(cli) || !/^pnpm(?:\.[cm]?js|\.exe)?$/.test(basename(cli))) {
+    throw new Error('Run through pnpm run verify:packages with an absolute pnpm launcher');
+  }
+  return /\.[cm]?js$/.test(cli) ? { command: process.execPath, prefix: [cli] } : { command: cli, prefix: [] };
+}
 
 /** Parse only regular tar entries and directories; links, traversal and oversized archives fail closed. */
 export function readTar(bytes) {
@@ -70,8 +78,7 @@ export function validateEntries(entries, expectedName) {
 }
 
 export function verifyEcosystem(root = resolve(dirname(fileURLToPath(import.meta.url)), '..')) {
-  const cli = process.env.npm_execpath;
-  if (!cli || !/pnpm\.[cm]?js$/.test(cli)) throw new Error('Run through pnpm run verify:packages');
+  const invocation = pnpmInvocation(process.env.npm_execpath);
   const out = join(root, 'artifacts', 'npm-ecosystem');
   mkdirSync(out, { recursive: true });
   const sourceSha = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
@@ -82,7 +89,7 @@ export function verifyEcosystem(root = resolve(dirname(fileURLToPath(import.meta
     const pkg = JSON.parse(readFileSync(join(cwd, 'package.json')));
     const file = name.replace('@', '').replace('/', '-') + '-' + pkg.version + '.tgz';
     const path = join(out, file);
-    execFileSync(process.execPath, [cli, 'pack', '--out', path], { cwd, stdio: 'pipe',
+    execFileSync(invocation.command, [...invocation.prefix, 'pack', '--out', path], { cwd, stdio: 'pipe',
       env: { ...process.env, npm_config_ignore_scripts: 'true' }, timeout: 60_000 });
     const bytes = readFileSync(path);
     const entries = readTar(bytes);
