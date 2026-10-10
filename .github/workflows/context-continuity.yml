@@ -51,4 +51,4 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --ignore-scripts --include=dev
       - name: Verify handoff, review, privacy and recovery
-        run: node --import tsx --test --test-concurrency=1 test/context-bridge.test.ts test/context-continuity.test.ts test/review-queue.test.ts test/gateway-lock-safety.test.ts test/v89-session-store.test.ts test/v90-gateway.test.ts test/v90-gateway-privacy.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/terminal-runtime.test.ts test/jev-router.test.ts
+        run: node --import tsx --test --test-concurrency=1 test/context-bridge.test.ts test/context-continuity.test.ts test/review-queue.test.ts test/gateway-lock-safety.test.ts test/v89-session-store.test.ts test/v90-gateway.test.ts test/v90-gateway-privacy.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/terminal-runtime.test.ts test/jev-router.test.ts test/live-cross-harness-acceptance.test.ts
