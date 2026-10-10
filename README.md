@@ -110,6 +110,30 @@ Restart your client. Every agent now shares the same memory. Thirteen `sis_*` to
 
 ---
 
+## Universal Knowledge Tree & Starlight Queen (v8.3+)
+
+Starlight equips your AI fleet with deep epistemic reasoning and autonomous swarm leadership:
+
+- **Universal Knowledge Tree (`src/knowledge/`)**: Bi-temporal truth graph spanning 10 universal domains with real-time dialectical tension detection and hypothesis discovery.
+- **Starlight Queen Meta-Orchestrator (`src/queen/`)**: Observes and routes tasks across 10 developer harnesses (Claude Code, Codex, Grok, Hermes, Antigravity, OpenCode, Cursor, Gemini, Kilo, Qwen Code). Synthesizes specialized swarms (`phd_research_deep`, `staff_eng_hyper`, `luxury_creative_cinema`, `autonomous_revenue_ops`) and enforces the Santa Adversarial Convergence Loop.
+- **Infinite Visual Canvas (`starlight-agent-canvas`)**: 2D spatial DAG processing layer for visual nodes, image iterations, video scene cuts, and multimodal URL ingestion.
+- **Multi-Tenant NPM Suites (`registry.npmjs.org`)**: `@gencreator/*`, `@anime-legends/*`, `@agentic-income/*`, `@reality-architect/*`.
+
+```bash
+# Explore the Universal Knowledge Tree
+starlight knowledge list-domains
+starlight knowledge query "quantum computing" --domain physics_cosmology
+starlight knowledge discover formal_logic "Axiomatic Extension" "Proven hypothesis..."
+
+# Meta-Orchestration & Swarm Topologies
+starlight queen status
+starlight queen briefing
+starlight queen synthesize "Build distributed vector cache" --topology staff_eng_hyper
+starlight queen santa "OAuth2 security refactor"
+```
+
+---
+
 ## Two layers, one repo
 
 | Layer              | What it is                                                                 | Best for |

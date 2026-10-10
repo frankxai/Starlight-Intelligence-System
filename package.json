@@ -120,6 +120,14 @@
     "./memory-provider": {
       "types": "./dist/memory-provider/index.d.ts",
       "import": "./dist/memory-provider/index.js"
+    },
+    "./knowledge": {
+      "types": "./dist/knowledge/index.d.ts",
+      "import": "./dist/knowledge/index.js"
+    },
+    "./queen": {
+      "types": "./dist/queen/index.d.ts",
+      "import": "./dist/queen/index.js"
     }
   },
   "scripts": {
