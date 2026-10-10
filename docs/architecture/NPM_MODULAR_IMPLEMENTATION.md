@@ -88,7 +88,11 @@ Consumer runs remain in ignored artifacts for inspection.
 
 CI checks Linux/Windows on Node 22/24 and runs tarball verification on Linux.
 Core also has a Node 18 compatibility job to preserve the legacy SIS runtime floor.
-These are configured checks, not evidence of a successful hosted run.
+All six jobs passed in hosted run
+[38023639393](https://github.com/frankxai/Starlight-Intelligence-System/actions/runs/38023639393)
+for PR head `5a977a1db747a84459d2fcdc6c8f507619206b06`.
+PR jobs check GitHub's merge revision; their artifact receipt identifies the actual
+source revision. Changes after this head require their own hosted verification.
 `npm-ecosystem-release.yml` is manual and main-only. Verification creates the
 tarballs before the separate `npm-production` environment job. The publish job
 has OIDC permission, uses pinned npm 11.10.0, and publishes the same bytes with
@@ -133,7 +137,7 @@ masked before recursively processing values. Literal replacement text cannot
 reinsert a secret, and data property names cannot invoke prototype setters.
 See the updated coverage contract for remaining gaps. These changes passed six
 core tests and 24 legacy sanitizer coverage tests. All 14 package integration
-tests and five release tests pass. Current core JavaScript is 8,642 bytes;
+tests and six release tests pass. Current core JavaScript is 8,642 bytes;
 the compressed tarball is 12,483 bytes, including the preserved schemas.
 
 The full workspace audit, including development dependencies, returned zero
@@ -143,10 +147,31 @@ reports their sharp and MCP OAuth alerts; those need their own source and
 runtime verification before fixes are claimed. Forty-five registry metadata
 records remain inventory coverage rather than forty-five verified releases.
 
-Independent provider review and hosted CI remain open. Claude and Gemini attempts
+Independent provider review remains open. Claude and Gemini attempts
 returned errors, not verdicts. The commercial/platform proposal in
 `NPM_PLATFORM_VALUE_MAP.md` preserves unresolved authority and demand evidence.
 Historical working-tree/admission evidence follows.
+
+### Published artifact audit, 10 October 2026
+
+`audit-npm-artifacts.mjs` checks the exact registry tarballs from the complete
+45-package maintainer inventory. It verifies identity and integrity before static
+entrypoint, dependency, state-path and redacted secret scans. Requests are registry-only
+HTTPS without redirects; archive parsing and aggregate response bytes are bounded.
+No package or lifecycle code executes. Five adversarial fixture tests join the six
+release tests in `test:packages`; all eleven passed locally.
+
+The observed scan inspected 42 archives and left three uninspected within its
+budgets. Three published packages retained local workspace dependencies:
+`@arcanea/library-pipeline`, `@arcanea/mcp-server`, and
+`@starlight-intelligence/creator-mcp`. `arcanea-soul` advertises declarations absent
+from its tarball. Two packages produced scanner findings requiring private triage;
+these are not confirmed credential leaks. See `NPM_ARTIFACT_AUDIT.md` for exact
+versions, coverage and limits. These findings invalidate blanket estate-wide
+installation readiness, while leaving the separately verified three new candidates
+as their own evidence set. Repairs belong to each source repository's owner.
+
+### Historical local verification
 
 Update, 10 October 2026: build admission recovered. Frozen installation, all three
 package builds, 13 package integration tests, actual tarball allowlists and Gitleaks
