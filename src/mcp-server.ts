@@ -17,6 +17,14 @@ import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
 import { GoalOrchestrator } from './goal.js';
 import { telemetry } from './telemetry/index.js';
+import {
+  SovereignBlockchainAnchor,
+  RobotContinuityKernel,
+  StarlightQueen,
+  MarketplaceCatalog,
+} from './index.js';
+import type { VaultSnapshotItem } from './durability/blockchain-anchor.js';
+import type { RobotActuatorCommand } from './robotics/continuity-kernel.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -344,6 +352,122 @@ export class StarlightMcpServer {
       const type = p.type ? String(p.type) : 'info';
       orchestrator.addLog(type, message);
       return { success: true, message, type };
+    });
+
+    // 14. sis_durability_anchor
+    this.reg({
+      name: 'sis_durability_anchor',
+      description: 'Anchor vault entries to decentralized blockchain storage (Arweave/IPFS) and generate a verified Merkle root proof-of-state receipt',
+      inputSchema: {
+        type: 'object',
+        required: ['items'],
+        properties: {
+          items: {
+            type: 'array',
+            items: {
+              type: 'object',
+              required: ['id', 'vault', 'content'],
+              properties: {
+                id: { type: 'string' },
+                vault: { type: 'string' },
+                content: { type: 'string' },
+                tags: { type: 'array', items: { type: 'string' } },
+              },
+            },
+          },
+          target: { type: 'string', enum: ['arweave', 'ipfs', 'filecoin', 'mock-substrate'] },
+        },
+      },
+    }, (p) => {
+      const rawItems = (p.items ?? []) as any[];
+      const items: VaultSnapshotItem[] = rawItems.map((item) => ({
+        id: String(item.id),
+        vault: item.vault as any,
+        content: String(item.content),
+        timestamp: new Date().toISOString(),
+        tags: Array.isArray(item.tags) ? item.tags.map(String) : [],
+      }));
+      const target = (p.target as any) ?? 'arweave';
+      const receipt = SovereignBlockchainAnchor.anchorSnapshot(items, target, 'blockchain_anchored');
+      return receipt;
+    });
+
+    // 15. sis_robot_continuity_dispatch
+    this.reg({
+      name: 'sis_robot_continuity_dispatch',
+      description: 'Dispatch an actuator command to robot fleet (ROS2/Zenoh) with fail-closed safety checking against declared hazard zones',
+      inputSchema: {
+        type: 'object',
+        required: ['robotId', 'action'],
+        properties: {
+          robotId: { type: 'string' },
+          action: { type: 'string', enum: ['navigate', 'manipulate', 'capture_sensor', 'hold', 'emergency_stop'] },
+          targetCoordinates: {
+            type: 'object',
+            properties: {
+              x: { type: 'number' },
+              y: { type: 'number' },
+              z: { type: 'number' },
+              frameId: { type: 'string' },
+            },
+          },
+          safetyEnvelopeRadiusMeters: { type: 'number' },
+        },
+      },
+    }, (p) => {
+      const kernel = new RobotContinuityKernel();
+      kernel.registerNode({
+        robotId: String(p.robotId),
+        name: `Node-${p.robotId}`,
+        model: 'generic-actuator',
+        middleware: 'zenoh',
+        status: 'idle',
+        safetyLocked: false,
+        lastHeartbeat: new Date().toISOString(),
+      });
+      const cmd: RobotActuatorCommand = {
+        commandId: `cmd_${Date.now()}`,
+        robotId: String(p.robotId),
+        action: p.action as any,
+        targetCoordinates: p.targetCoordinates as any,
+        safetyEnvelopeRadiusMeters: Number(p.safetyEnvelopeRadiusMeters ?? 1.0),
+        requiresHumanSupervision: false,
+        issuedAt: new Date().toISOString(),
+      };
+      return kernel.dispatchCommand(cmd);
+    });
+
+    // 16. sis_queen_autonomic_cycle
+    this.reg({
+      name: 'sis_queen_autonomic_cycle',
+      description: 'Trigger Starlight Queen autonomic health sweep and memory consolidation loop',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          nodesCount: { type: 'number' },
+          memoryEntries: { type: 'number' },
+        },
+      },
+    }, (p) => {
+      const queen = new StarlightQueen();
+      const nodesCount = Number(p.nodesCount ?? 1);
+      const memoryEntries = Number(p.memoryEntries ?? 10);
+      return queen.runAutonomicCycle(nodesCount, memoryEntries);
+    });
+
+    // 17. sis_marketplace_list
+    this.reg({
+      name: 'sis_marketplace_list',
+      description: 'List curated and community packs from the Sovereign Marketplace catalog',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          licenseTier: { type: 'string', enum: ['free', 'subscription', 'enterprise'] },
+        },
+      },
+    }, (p) => {
+      const catalog = new MarketplaceCatalog();
+      return catalog.listItems(p.licenseTier as any);
     });
   }
 
