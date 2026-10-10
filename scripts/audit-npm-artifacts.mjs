@@ -27,8 +27,9 @@ async function fetchBytes(url, fetchImpl, budget) {
       const { done, value } = await reader.read();
       if (done) break;
       size += value.byteLength;
-      if (value.byteLength > budget.remaining) throw new Error('estate-transfer-budget-exceeded');
-      budget.remaining -= value.byteLength;
+      const exceedsRemaining = value.byteLength > budget.remaining;
+      budget.remaining = Math.max(0, budget.remaining - value.byteLength);
+      if (exceedsRemaining) throw new Error('estate-transfer-budget-exceeded');
       if (size > 2_000_000) throw new Error('archive-budget-exceeded');
       chunks.push(value);
     }

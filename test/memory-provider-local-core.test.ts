@@ -62,4 +62,15 @@ describe("InMemoryLocalCoreProvider", () => {
     assert.equal(provider.capabilities.process_model, "embedded_lightweight");
     assert.equal(provider.capabilities.per_agent_instance_allowed, true);
   });
+
+  it('filters workspace before ranking and limiting so other workspaces cannot starve recall', async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    await provider.remember({ ...record('other-high', 'memory query'), workspace_id: 'other', importance: 1 });
+    await provider.remember({ ...record('allowed-low', 'memory'), workspace_id: 'selected', importance: 0.1 });
+    await provider.remember(record('legacy-high', 'memory query'));
+    const results = await provider.recall({ tenant_id: 'tenant_frank', workspace_id: 'selected', query: 'memory query', limit: 1 });
+    assert.deepEqual(results.map(row => row.record.memory_id), ['allowed-low']);
+    const tenantWide = await provider.recall({ tenant_id: 'tenant_frank', query: 'memory query', limit: 1 });
+    assert.deepEqual(tenantWide.map(row => row.record.memory_id), ['other-high']);
+  });
 });

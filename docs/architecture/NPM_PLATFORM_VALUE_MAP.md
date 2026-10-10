@@ -217,3 +217,11 @@ client must implement authoritative lookup and tenant authorization. The existin
 in-memory write queue is not durable; retention enforcement, restart recovery and
 delete/write races require live-provider acceptance before that adapter is used
 as a production memory store.
+
+Codex's exact `471077cf` review reported no major issues. Copilot review
+`5478863478` at that same revision found two previously missed defects: local
+workspace filtering happened after provider ranking/limits, and an oversized
+received audit chunk did not exhaust the remaining aggregate budget. The next
+repair filters workspace before ranking and exhausts the budget before rejection,
+with starvation and stream-cancellation regressions. Its final review and fresh
+CI remain required; the earlier clear Codex result does not approve new bytes.

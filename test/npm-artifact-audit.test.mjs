@@ -125,3 +125,19 @@ test('aggregate response budget includes metadata and failed requests and stops 
   assert.equal(result.packages[1].reason, 'estate-transfer-budget-exceeded');
   await assert.rejects(auditArtifacts(inventory, undefined, undefined, 64_000_001), /transfer-budget-invalid/);
 });
+
+test('an oversized received chunk exhausts aggregate budget and cancels later package transfers', async () => {
+  const row = identity(archive(manifest));
+  let calls = 0;
+  let cancelled = false;
+  const result = await auditArtifacts({ complete: true, packages: [row, { ...row, version: '2.0.0' }] }, async () => {
+    calls++;
+    return new Response(new ReadableStream({ start(controller) {
+      controller.enqueue(Buffer.alloc(60)); controller.enqueue(Buffer.alloc(60));
+    }, cancel() { cancelled = true; } }));
+  }, () => 'clear', 100);
+  assert.equal(calls, 1);
+  assert.equal(cancelled, true);
+  assert.equal(result.transferredBytes, 100);
+  assert.deepEqual(result.packages.map(row => row.reason), ['estate-transfer-budget-exceeded', 'estate-transfer-budget-exceeded']);
+});

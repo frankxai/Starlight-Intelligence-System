@@ -24,7 +24,8 @@ export class InMemoryLocalCoreProvider implements MemoryProvider {
     const minScore = request.min_score ?? 0;
 
     return Array.from(this.records.values())
-      .filter((record) => record.tenant_id === request.tenant_id)
+      .filter((record) => record.tenant_id === request.tenant_id
+        && (request.workspace_id === undefined || record.workspace_id === request.workspace_id))
       .map((record) => scoreRecord(record, queryTerms))
       .filter((result) => result.score > minScore)
       .sort((a, b) => b.score - a.score || b.record.importance - a.record.importance)
