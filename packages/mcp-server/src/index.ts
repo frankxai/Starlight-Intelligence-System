@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import { readFileSync } from 'node:fs';
 import * as z from 'zod/v4';
-import { recallContext, SanitizationGateway, type RecallOptions, type MemoryProvider } from '@starlight-intelligence/core';
+import { projectRecall, recallContext, SanitizationGateway, type RecallOptions, type MemoryProvider } from '@starlight-intelligence/core';
 
 // package.json is also included in installed tarballs; Changesets owns this version.
 const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { version: string };
@@ -15,8 +15,12 @@ export interface StarlightMcpOptions extends RecallOptions {
 /** Caller identity and provider authority come from the host, never from tool arguments. */
 export function createStarlightMcpServer(options: StarlightMcpOptions): McpServer {
   options = Object.freeze({ ...options });
-  if (!options.tenantId.trim()) throw new Error('A tenant scope is required');
-  if (options.allowDelete && options.workspaceId !== undefined) {
+  // Check host configuration before registering any capability, including writes.
+  projectRecall([], options);
+  if ([options.allowWrite, options.allowDelete].some(value => value !== undefined && typeof value !== 'boolean')) {
+    throw new Error('Memory capability grants must be booleans');
+  }
+  if (options.allowDelete === true && options.workspaceId !== undefined) {
     throw new Error('The provider deletion contract does not authorize workspace-scoped deletion');
   }
   const server = new McpServer({ name: 'starlight-memory', version });
@@ -33,7 +37,7 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
       return { isError: true, content: [{ type: 'text' as const, text: 'Memory recall unavailable or denied' }] };
     }
   });
-  if (options.allowWrite && options.memory.remember) {
+  if (options.allowWrite === true && options.memory.remember) {
     server.registerTool('starlight_memory_remember', {
       description: 'Store a sanitized fact through the host provider. The caller supplies a stable ID; retries are not automatic.',
       inputSchema: z.strictObject({ id: z.string().min(1).max(256), fact: z.string().trim().min(1).max(16_000) }),
@@ -55,7 +59,7 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
       }
     });
   }
-  if (options.allowDelete && options.memory.forget) {
+  if (options.allowDelete === true && options.memory.forget) {
     server.registerTool('starlight_memory_forget', {
       description: 'Delete a memory through the explicitly authorized host provider.',
       inputSchema: z.strictObject({ id: z.string().min(1).max(256) }),

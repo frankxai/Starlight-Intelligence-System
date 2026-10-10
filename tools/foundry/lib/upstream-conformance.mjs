@@ -4,6 +4,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
+import { readPnpmDependencyLock } from "./dependency-lock.mjs";
 import {
   assertNoSymlinkPath,
   hashFile,
@@ -22,11 +23,12 @@ const DEFAULT_VENDOR_DIRECTORY = join(
   "1.0.0",
 );
 const DEFAULT_TOOLCHAIN_LOCK = join(ROOT, "foundry", "validators", "toolchain.lock.v1.json");
-const NPM_LOCK_PATH = join(ROOT, "package-lock.json");
+const NPM_LOCK_PATH = join(ROOT, "pnpm-lock.yaml");
 const IMPLEMENTATION_PATH = fileURLToPath(import.meta.url);
 const SOURCE_CLOSURE_PATHS = [
-  "package-lock.json",
+  "pnpm-lock.yaml",
   "package.json",
+  "tools/foundry/lib/dependency-lock.mjs",
   "tools/foundry/lib/io.mjs",
   "tools/foundry/lib/upstream-conformance.mjs",
 ];
@@ -80,7 +82,7 @@ export function verifyAgentPluginSchemaCache(
   }
   const provenance = readJson(provenancePath);
   const toolchain = readJson(resolve(toolchainLockPath));
-  const npmLock = readJson(NPM_LOCK_PATH);
+  const npmLock = readPnpmDependencyLock(NPM_LOCK_PATH);
   const ajvLock = npmLock.packages?.["node_modules/ajv"];
   const portableLock = toolchain.portable;
   const sourceClosure = verifyFileDigestClosure(
@@ -166,6 +168,7 @@ export function verifyAgentPluginSchemaCache(
       integrity: ajvLock.integrity,
       implementationSha256,
       packageLockSha256: hashFile(NPM_LOCK_PATH).sha256,
+      packageLockPath: "pnpm-lock.yaml",
       sourceClosure,
     },
     records,

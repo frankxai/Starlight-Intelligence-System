@@ -42,6 +42,8 @@ serveStdio(() => createStarlightMcpServer({ memory, tenantId: 'team-a' }));
 ```
 
 The host chooses scope and tools. `starlight_memory_recall` is always available.
+Host sharing/write/delete grants must be booleans. Malformed grants and blank
+workspace configuration are rejected before any tools are registered.
 `allowWrite` plus a `remember` implementation enables sanitized fact storage with
 a caller-supplied stable ID and 90-day retention metadata. `allowDelete` plus
 `forget` enables tenant-scoped deletion. Workspace-scoped deletion is rejected

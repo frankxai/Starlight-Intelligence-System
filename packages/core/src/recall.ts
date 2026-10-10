@@ -25,6 +25,7 @@ export function projectRecall(results: RecallResult[], options: RecallOptions, n
   const limit = options.limit ?? 5;
   const budget = options.maxCharacters ?? 8_000;
   if (!options.tenantId.trim() || (options.workspaceId !== undefined && !options.workspaceId.trim())
+      || (options.allowShareable !== undefined && typeof options.allowShareable !== 'boolean')
       || !Number.isInteger(limit) || limit < 1 || limit > 100
       || !Number.isInteger(budget) || budget < 1 || budget > 100_000) {
     throw new Error('Invalid memory scope or context budget');
@@ -37,7 +38,7 @@ export function projectRecall(results: RecallResult[], options: RecallOptions, n
     const record = result?.record;
     if (!record || record.tenant_id !== options.tenantId
         || (options.workspaceId !== undefined && record.workspace_id !== options.workspaceId)
-        || (record.privacy_class !== 'public' && !(options.allowShareable && record.privacy_class === 'private-shareable'))
+        || (record.privacy_class !== 'public' && !(options.allowShareable === true && record.privacy_class === 'private-shareable'))
         || typeof record.memory_id !== 'string' || !record.memory_id || seen.has(record.memory_id)
         || !Number.isFinite(result.score)) continue;
     if (record.retention_policy === 'delete_by' && record.retention_until === undefined) continue;

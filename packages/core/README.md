@@ -20,8 +20,10 @@ const context = await recallContext('Project constraints', {
 
 The host supplies an authenticated provider and trusted scope. Records must match
 that scope and be public, or private-shareable with explicit `allowShareable: true`.
-Private, secret, regulated, expired, and malformed records are excluded. Context
-contains only sanitized facts or summaries, bounded by `limit`, `maxCharacters`,
+Private, secret, regulated, expired, and malformed records are excluded.
+Sharing grants must be actual booleans; strings such as `"false"` are rejected
+before the provider is called.
+Context contains only sanitized facts or summaries, bounded by `limit`, `maxCharacters`,
 and `timeoutMs`. Raw content and provider metadata are excluded. Recall failures
 stop the request with a fixed message. Cancellation reaches cooperative providers;
 the timeout also bounds waiting for providers that ignore cancellation.

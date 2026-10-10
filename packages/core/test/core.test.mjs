@@ -59,6 +59,19 @@ test('sanitize, deduplicate, and bound context; never inject raw-only records', 
   assert.throws(() => projectRecall([hit('a')], { ...options, sanitizer: { sanitize() { throw new Error('denied'); } } }));
 });
 
+test('untyped host grants never coerce strings, numbers or objects into sharing authority', async () => {
+  let calls = 0;
+  const memory = { recall: async () => { calls++; return [hit('shared', { privacy_class: 'private-shareable' })]; } };
+  for (const allowShareable of ['false', 'true', 0, 1, null, [], {}]) {
+    const config = { ...options, memory, allowShareable };
+    assert.throws(() => projectRecall([hit('shared', { privacy_class: 'private-shareable' })], config));
+    await assert.rejects(recallContext('query', config));
+  }
+  assert.equal(calls, 0);
+  assert.equal((await recallContext('query', { ...options, memory, allowShareable: false })).length, 0);
+  assert.equal((await recallContext('query', { ...options, memory, allowShareable: true })).length, 1);
+});
+
 test('provider expiry values must be strings; malformed neighbors never enter recalled context', async () => {
   const malformed = [2099, ['2099-01-01'], null, {}, true, '', 'unknown'];
   const results = [hit('retained', { retention_until: '2099-01-01' }),

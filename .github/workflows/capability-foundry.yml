@@ -15,6 +15,7 @@ on:
       - "test/foundry-conformance.test.ts"
       - "package.json"
       - "package-lock.json"
+      - "pnpm-lock.yaml"
       - ".github/workflows/capability-foundry.yml"
   push:
     branches: [main]
@@ -29,6 +30,7 @@ on:
       - "test/foundry-conformance.test.ts"
       - "package.json"
       - "package-lock.json"
+      - "pnpm-lock.yaml"
       - ".github/workflows/capability-foundry.yml"
   schedule:
     - cron: "17 6 * * 1"

@@ -58,6 +58,23 @@ test('writes and deletion require host grants; stored text is sanitized and erro
   } finally { await connection.close(); }
 });
 
+test('factory rejects malformed host grants and blank workspace before registering tools', async () => {
+  let calls = 0;
+  const memory = { recall: async () => [], remember: async () => { calls++; return record; }, forget: async () => { calls++; return true; } };
+  for (const name of ['allowShareable', 'allowWrite', 'allowDelete']) {
+    for (const value of ['false', 'true', 0, 1, null, [], {}]) {
+      assert.throws(() => createStarlightMcpServer({ tenantId: 'a', memory, [name]: value }));
+    }
+  }
+  assert.throws(() => createStarlightMcpServer({ tenantId: 'a', workspaceId: ' ', memory, allowWrite: true }));
+  const connection = await connected({ tenantId: 'a', memory, allowWrite: false, allowDelete: false });
+  try {
+    assert.deepEqual((await connection.client.listTools()).tools.map(tool => tool.name), ['starlight_memory_recall']);
+    await assert.rejects(connection.client.callTool({ name: 'starlight_memory_remember', arguments: { id: 'x', fact: 'x' } }), /not found/);
+    assert.equal(calls, 0);
+  } finally { await connection.close(); }
+});
+
 test('standalone installed CLI speaks stdio to the official client and reconnects to the same gateway', { timeout: 25_000 }, async () => {
   const http = createServer((request, response) => {
     if (request.headers.authorization !== 'Bearer synthetic-test-token') { response.writeHead(401); response.end('{}'); return; }

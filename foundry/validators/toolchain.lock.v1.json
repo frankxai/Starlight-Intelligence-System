@@ -23,12 +23,13 @@
       "version": "8.20.0",
       "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==",
       "implementationPath": "tools/foundry/lib/upstream-conformance.mjs",
-      "implementationSha256": "4c6fc13625d140805ca306f46d7132ae2117acecdd66c90d23a284644ab222c5",
+      "implementationSha256": "195f68ad4546108c78fc1006ea7597063281dbe79461f356fbda13426bc76365",
       "sourceClosure": {
-        "package-lock.json": "4b9101efd449c8f98da01e0f9ac1737d7f18504e6d333ac896b76566ed204966",
-        "package.json": "0457747f9c35d98f014aeb44bd57f3e5bb14d75f355424a7689902444194c2a2",
+        "pnpm-lock.yaml": "c7e0c6f1c07266e8c03feadc64db5eee7ccc047322425144b91c9d90fbe158de",
+        "package.json": "ee791ed2a4ae909f82177fda91cde24ffcdca2766db6418392341f4aae35ac96",
+        "tools/foundry/lib/dependency-lock.mjs": "f958ff7a2dd17c41734590c5db2085131dce2693675fd848c412b092e99dce91",
         "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
-        "tools/foundry/lib/upstream-conformance.mjs": "4c6fc13625d140805ca306f46d7132ae2117acecdd66c90d23a284644ab222c5"
+        "tools/foundry/lib/upstream-conformance.mjs": "195f68ad4546108c78fc1006ea7597063281dbe79461f356fbda13426bc76365"
       }
     }
   },
@@ -40,13 +41,14 @@
       "authority": "docs-derived-preflight",
       "validator": {
         "implementationPath": "tools/foundry/lib/openai-preflight.mjs",
-        "implementationSha256": "088627eafaafa3ae21aaaf37914579cd1729f8e868bfc9d68649982f06eda212",
+        "implementationSha256": "643fc275a5b47b9f309004c1a9b074c6a7cc065a8deec2fe529b07a1a32ced56",
         "sourceClosure": {
           "foundry/contracts/openai-submission-profile.schema.json": "67aecad66f6faa969b766eb6aa00a1864aaccb4560f283a39166b35167c66038",
-          "package-lock.json": "4b9101efd449c8f98da01e0f9ac1737d7f18504e6d333ac896b76566ed204966",
-          "package.json": "0457747f9c35d98f014aeb44bd57f3e5bb14d75f355424a7689902444194c2a2",
+          "pnpm-lock.yaml": "c7e0c6f1c07266e8c03feadc64db5eee7ccc047322425144b91c9d90fbe158de",
+          "package.json": "ee791ed2a4ae909f82177fda91cde24ffcdca2766db6418392341f4aae35ac96",
+          "tools/foundry/lib/dependency-lock.mjs": "f958ff7a2dd17c41734590c5db2085131dce2693675fd848c412b092e99dce91",
           "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
-          "tools/foundry/lib/openai-preflight.mjs": "088627eafaafa3ae21aaaf37914579cd1729f8e868bfc9d68649982f06eda212",
+          "tools/foundry/lib/openai-preflight.mjs": "643fc275a5b47b9f309004c1a9b074c6a7cc065a8deec2fe529b07a1a32ced56",
           "tools/foundry/lib/package-payload.mjs": "0a195f6a1aeb04ec4f37386038335b6da2be53fa68b83207b3244fd7b070c309",
           "tools/foundry/lib/schema.mjs": "8e401876b38e271734084cb5dbf2e6f2312344413e67495a5fdecb4462d1b94b"
         }
