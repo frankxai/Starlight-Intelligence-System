@@ -224,4 +224,16 @@ workspace filtering happened after provider ranking/limits, and an oversized
 received audit chunk did not exhaust the remaining aggregate budget. The next
 repair filters workspace before ranking and exhausts the budget before rejection,
 with starvation and stream-cancellation regressions. Its final review and fresh
-CI remain required; the earlier clear Codex result does not approve new bytes.
+CI remain separate gates.
+
+The next exact-head Copilot review (`5478887558` on `8abeea2a`) found failed
+HTTP response bodies that were left open in estate metadata, artifact inspection
+and the MCP gateway, plus an incorrect Node 18 claim for the native root runtime.
+These paths now cancel rejected bodies; metadata fetches deny redirects. The
+operational root declares only the tested Node 22 and 24 lines. The portable core
+retains its independent Node 18 consumer test. Only the two package-manifest
+source digests in the Foundry lock changed; historical review provenance did not.
+
+Review job logs for the latest creator Copilot review disclose GPT-5.6 Sol. That
+is an independent agent/service, but does not establish a different model provider
+from Codex. A model-selected external review is still required before merge.

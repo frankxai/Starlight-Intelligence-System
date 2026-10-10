@@ -85,7 +85,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
       const actual = npmLock.packages[`node_modules/${name}`];
       assert.deepEqual([actual?.version, actual?.integrity], [expected.version, expected.integrity], name);
     }
-    assert.equal(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).engines.node, ">=18.0.0");
+    assert.equal(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).engines.node, "22.x || 24.x");
     assert.equal(
       JSON.parse(readFileSync(join(ROOT, "foundry", "validators", "native", "package.json"), "utf8")).engines.node,
       ">=22.0.0",

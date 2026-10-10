@@ -98,6 +98,17 @@ test('standalone installed CLI speaks stdio to the official client and reconnect
   } finally { http.closeAllConnections(); await new Promise(resolve => http.close(resolve)); }
 });
 
+test('gateway cancels failed upstream bodies before rejecting recall', async () => {
+  const previous = globalThis.fetch;
+  let cancelled = false;
+  globalThis.fetch = async () => new Response(new ReadableStream({ cancel() { cancelled = true; } }), { status: 403 });
+  try {
+    const memory = createGatewayReader({ url: 'https://gateway.example', token: 'synthetic', tenantId: 'a' });
+    await assert.rejects(memory.recall({ tenant_id: 'a', query: 'fixture' }), /Gateway recall denied/);
+    assert.equal(cancelled, true);
+  } finally { globalThis.fetch = previous; }
+});
+
 test('gateway denies cross-tenant reads, credentials in URL and plaintext remote transport', async () => {
   assert.throws(() => createGatewayReader({ url: 'http://remote.example', tenantId: 'a', token: 'synthetic' }));
   assert.throws(() => createGatewayReader({ url: 'https://user:password@remote.example', tenantId: 'a', token: 'synthetic' }));

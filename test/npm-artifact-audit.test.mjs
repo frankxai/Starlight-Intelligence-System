@@ -126,6 +126,15 @@ test('aggregate response budget includes metadata and failed requests and stops 
   await assert.rejects(auditArtifacts(inventory, undefined, undefined, 64_000_001), /transfer-budget-invalid/);
 });
 
+test('failed registry responses cancel unconsumed streams', async () => {
+  let cancelled = false;
+  const row = identity(archive(manifest));
+  const result = await auditArtifacts({ complete: true, packages: [row] }, async () =>
+    new Response(new ReadableStream({ cancel() { cancelled = true; } }), { status: 503 }), () => 'clear');
+  assert.equal(cancelled, true);
+  assert.equal(result.packages[0].reason, 'registry-request-failed');
+});
+
 test('an oversized received chunk exhausts aggregate budget and cancels later package transfers', async () => {
   const row = identity(archive(manifest));
   let calls = 0;

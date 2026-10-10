@@ -8,8 +8,11 @@ const validName = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/;
 const validVersion = /^\d+\.\d+\.\d+(?:-[a-z0-9.-]+)?(?:\+[a-z0-9.-]+)?$/i;
 
 async function readJson(url, fetchImpl) {
-  const response = await fetchImpl(url, { signal: AbortSignal.timeout(20_000), headers: { accept: 'application/json' } });
-  if (!response.ok || !response.body) throw new Error(`Registry request failed (${response.status})`);
+  const response = await fetchImpl(url, { redirect: 'error', signal: AbortSignal.timeout(20_000), headers: { accept: 'application/json' } });
+  if (!response.ok || !response.body) {
+    await response.body?.cancel().catch(() => {});
+    throw new Error(`Registry request failed (${response.status})`);
+  }
   const reader = response.body.getReader();
   const chunks = [];
   let size = 0;

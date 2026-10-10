@@ -31,7 +31,10 @@ export function createGatewayReader(options: GatewayOptions): Pick<MemoryProvide
         headers: { authorization: `Bearer ${options.token}`, 'content-type': 'application/json' },
         body: JSON.stringify({ query: request.query, limit: request.limit }),
       });
-      if (!response.ok) throw new Error('Gateway recall denied');
+      if (!response.ok) {
+        await response.body?.cancel().catch(() => {});
+        throw new Error('Gateway recall denied');
+      }
       // Bound an untrusted upstream response before parsing it.
       if (!response.body) throw new Error('Invalid gateway response');
       const reader = response.body.getReader();

@@ -18,7 +18,10 @@ export function registryUrl(value) {
 async function fetchBytes(url, fetchImpl, budget) {
   if (budget.remaining <= 0) throw new Error('estate-transfer-budget-exceeded');
   const response = await fetchImpl(registryUrl(url).href, { redirect: 'error', signal: AbortSignal.timeout(20_000) });
-  if (!response.ok || !response.body) throw new Error('registry-request-failed');
+  if (!response.ok || !response.body) {
+    await response.body?.cancel().catch(() => {});
+    throw new Error('registry-request-failed');
+  }
   const reader = response.body.getReader();
   const chunks = [];
   let size = 0;

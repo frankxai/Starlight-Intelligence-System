@@ -36,6 +36,16 @@ test('estate inventory refuses incomplete indexes and mismatched package identit
   assert.ok(summary.findings.includes('provenance-unadvertised'));
 });
 
+test('registry metadata denies redirects and cancels failed response streams', async () => {
+  let cancelled = false;
+  await assert.rejects(auditEstate(async (url, options) => {
+    assert.equal(new URL(url).origin, 'https://registry.npmjs.org');
+    assert.equal(options.redirect, 'error');
+    return new Response(new ReadableStream({ cancel() { cancelled = true; } }), { status: 503 });
+  }), /Registry request failed/);
+  assert.equal(cancelled, true);
+});
+
 function fixture() {
   const pkg = { name: '@starlight-intelligence/core', version: '0.1.0', exports: { '.': './dist/index.js' }, types: './dist/index.d.ts' };
   return new Map([['package/package.json', Buffer.from(JSON.stringify(pkg))], ['package/dist/index.js', Buffer.from('export const version = 1;')],
