@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import { projectRecall, recallContext, SanitizationGateway } from '../dist/index.js';
 
 const memory = { recall: async () => [] };
@@ -83,11 +84,33 @@ test('abort and timeout deny hung reads; sensitive provider errors stay private'
   await assert.rejects(recallContext('query', failing), error => !error.message.includes('credential-in-error'));
 });
 
-test('portable runtime imports without Node globals and has zero dependencies', async () => {
+test('portable runtime cold-imports and recalls without Node globals and has zero dependencies', async () => {
   const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));
   assert.equal(Object.keys(pkg.dependencies ?? {}).length, 0);
   assert.equal(Object.keys(pkg.peerDependencies ?? {}).length, 0);
-  const previous = globalThis.process;
-  try { globalThis.process = undefined; assert.equal(new SanitizationGateway().sanitize('a@example.org'), '[REDACTED]'); }
-  finally { globalThis.process = previous; }
+  // A fresh module graph catches Node globals used during module initialization.
+  // The consumer runner resolves this same specifier against the installed tarball.
+  const entry = import.meta.resolve('../dist/index.js');
+  const script = `
+    globalThis.process = undefined;
+    globalThis.Buffer = undefined;
+    globalThis.global = undefined;
+    const { SanitizationGateway, recallContext } = await import(${JSON.stringify(entry)});
+    if (new SanitizationGateway().sanitize('a@example.org') !== '[REDACTED]') throw new Error('Sanitizer failed');
+    let calls = 0;
+    const memory = { recall: async request => {
+      calls++;
+      if (request.tenant_id !== 'tenant-a' || request.workspace_id !== 'workspace-a') throw new Error('Scope lost');
+      return [];
+    }};
+    const result = await recallContext('query', { memory, tenantId: 'tenant-a', workspaceId: 'workspace-a' });
+    if (calls !== 1 || result.length !== 0) throw new Error('Recall failed');
+    const controller = new AbortController();
+    controller.abort();
+    let denied = false;
+    try { await recallContext('query', { memory, tenantId: 'tenant-a' }, controller.signal); }
+    catch { denied = true; }
+    if (!denied || calls !== 1) throw new Error('Cancellation failed');
+  `;
+  execFileSync(process.execPath, ['--input-type=module', '--eval', script], { timeout: 10_000, stdio: 'pipe' });
 });

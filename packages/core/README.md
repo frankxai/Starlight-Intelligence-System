@@ -38,7 +38,10 @@ a stricter `VeilSanitizer`; a sanitizer failure never permits unsanitized output
 Retrieved facts remain untrusted data and can contain prompt injection.
 
 The portable runtime is suitable for standard browser and edge module environments.
-CI checks dependency and import restrictions and runs Node tests. Browser/edge
+CI checks dependency and import restrictions and cold-imports the runtime in a
+fresh Node process after removing `process`, `Buffer`, and `global`. That check
+exercises sanitization, scoped recall, and cancellation using standard web APIs.
+It does not execute a browser or edge worker. Browser/edge
 provider deployments require their own integration checks. This package ships no
 database, credentials, private vault, or local filesystem implementation.
 
