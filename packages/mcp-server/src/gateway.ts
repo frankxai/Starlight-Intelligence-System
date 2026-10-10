@@ -65,7 +65,9 @@ export function createGatewayReader(options: GatewayOptions): Pick<MemoryProvide
         const tags = Array.isArray(entry.tags) ? entry.tags.map(tag => (tag as string).trim()) : [];
         const privateTagged = tags.some(t => /^(?:privacy:)?(?:private|secret|regulated)$/i.test(t));
         // Unclassified operational gateway memories are shareable only with explicit host opt-in.
-        const privacy = privateTagged ? 'private' : tags.some(t => /^(?:privacy:)?public$/i.test(t)) ? 'public' : 'private-shareable';
+        const shareableTagged = tags.some(t => /^(?:privacy:)?private-shareable$/i.test(t));
+        const privacy = privateTagged ? 'private' : shareableTagged ? 'private-shareable'
+          : tags.some(t => /^(?:privacy:)?public$/i.test(t)) ? 'public' : 'private-shareable';
         return [{ score: row.score, matched_terms: [], record: {
           memory_id: entry.id, tenant_id: options.tenantId,
           source: { system: 'sis-gateway' }, modality: 'text', memory_type: 'semantic',

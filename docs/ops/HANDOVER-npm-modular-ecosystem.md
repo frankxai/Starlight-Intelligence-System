@@ -4,24 +4,28 @@ Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-Sys
 Estate record: [hub draft PR 217](https://github.com/frankxai/agentic-ops-hub/pull/217).
 Date: 10 October 2026. Owner: this Codex session.
 
-Current pickup: implementation checkpoint `5f3375d90efe0e4ab7ae7394d988237a48630b11`
-and integration `efccc9c2916d6d16614d69d393f27a51a0390c41` are pushed on this lane.
-Integration preserves main's 8.5.0 terminal/creator SDK and its organization
-candidate. Root lint/build and 69 terminal/creator tests passed. Subsequent core
-credential/prototype/replacement hardening passes six core and 24 sanitizer tests;
-14 package integration and five release-safety tests pass. Core is now 8,642 bytes
-of JavaScript and 12,483 bytes compressed with schemas. Full workspace dependency
-audit reports zero vulnerabilities after esbuild/fast-uri patch overrides.
-Separate plugin/site alerts remain open and are not covered by that audit.
+Current pickup: [ready PR 342](https://github.com/frankxai/Starlight-Intelligence-System/pull/342).
+Checkpoint `2d3a2270e83085dca74416727be7ca1726469a5f` preserves accepted main's
+Agent Designer/console work and passed all twelve hosted workflows. Follow-up
+`7b2bb1789954974aca728cd6b3af86d0dc83de80` addresses seven Codex review findings.
+GitHub Copilot's separate review then identified eight findings; the next
+remediation keeps recalled text in user context, fixes restrictive privacy tags,
+bootstraps core for root development, preserves Mem0 workspace/retention metadata,
+and makes lifecycle hooks visible in artifact follow-up. Current package candidates
+are 0.2.0. Exact-revision review and fresh hosted artifact consumers remain required.
+Use their source-bound manifest for sizes, not measurements from an older checkpoint.
+No package has been published by this lane. Separate plugin/site alerts remain
+outside the modular package audit.
 
-Next: finish the clean-revision artifact/installed-consumer receipt, open the draft
-product PR, obtain independent provider review and hosted checks, then configure
-first publication/OIDC. No package was published by this session. Do not retry
+Next: finish review reconciliation, exact-revision hosted checks and artifact/consumer
+receipts, then merge the accepted revision and verify first publication/OIDC.
+No package was published by this session. Do not retry
 publishing ambiguous versions or treat failed reviewer authentication as approval.
 The value proposal and 45-package catalog retain their limited evidence coverage.
 
-Earlier continuation evidence follows; its sizes and held-admission status are
-historical and are superseded by the current pickup above.
+Earlier continuation evidence follows. Its versions, measurements, commit status,
+review availability and admission snapshots are historical and are superseded by
+the current pickup above.
 
 Continuation: package builds, 13 integration tests, real tarball Gitleaks/allowlist
 audits, separate installed-consumer declaration checks and 13 integration tests now

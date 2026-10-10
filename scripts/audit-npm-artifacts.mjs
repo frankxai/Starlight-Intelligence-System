@@ -84,10 +84,12 @@ export function inspectArtifact(bytes, expected, scan = scanSecrets) {
   const scanResult = scan(Buffer.concat([...entries.values()]));
   if (scanResult !== 'clear' && scanResult !== 'findings') throw new Error('secret-scan-unavailable');
   if (scanResult === 'findings') findings.push('secret-scan-findings');
+  const installLifecycleScripts = ['preinstall', 'install', 'postinstall'].filter(name => manifest.scripts?.[name]);
+  if (installLifecycleScripts.length) findings.push('install-lifecycle-needs-review');
   return { name: manifest.name, version: manifest.version, status: 'inspected', findings, missingEntries, localDependencies, statePaths,
     memberCount: entries.size, compressedBytes: bytes.length, unpackedBytes: [...entries.values()].reduce((n, value) => n + value.length, 0),
     sha256: createHash('sha256').update(bytes).digest('hex'), integrity: expected.integrity,
-    secretScan: scanResult, installLifecycleScripts: ['preinstall', 'install', 'postinstall'].filter(name => manifest.scripts?.[name]) };
+    secretScan: scanResult, installLifecycleScripts };
 }
 
 function scanSecrets(bytes) {

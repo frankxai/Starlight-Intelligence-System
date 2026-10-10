@@ -10,7 +10,7 @@ import type {
 
 export interface Mem0Client {
   addMemory(input: { text: string; user_id?: string; agent_id?: string; metadata: Record<string, unknown> }): Promise<{ id: string }>;
-  searchMemories(input: { query: string; user_id?: string; agent_id?: string; limit: number; metadata?: Record<string, unknown> }): Promise<Array<{ id: string; text: string; score?: number; metadata?: Record<string, unknown> }>>;
+  searchMemories(input: { query: string; user_id?: string; agent_id?: string; limit: number; metadata?: Record<string, unknown>; signal?: AbortSignal }): Promise<Array<{ id: string; text: string; score?: number; metadata?: Record<string, unknown> }>>;
   deleteMemory(input: { id: string }): Promise<boolean>;
 }
 
@@ -68,20 +68,36 @@ export class Mem0RemoteProvider implements MemoryProvider {
   }
 
   async recall(request: RecallRequest): Promise<RecallResult[]> {
+    if (!request.tenant_id.trim() || (request.workspace_id !== undefined && !request.workspace_id.trim())) throw new Error('Invalid Mem0 scope');
+    if (request.signal?.aborted) throw new DOMException('Memory recall cancelled', 'AbortError');
     const rows = await this.client.searchMemories({
       query: request.query,
       limit: Math.max(1, request.limit ?? 10),
-      metadata: { tenant_id: request.tenant_id },
+      metadata: { tenant_id: request.tenant_id, ...(request.workspace_id !== undefined ? { workspace_id: request.workspace_id } : {}) },
+      signal: request.signal,
     });
 
     const minScore = request.min_score ?? 0;
-    return rows
+    return rows.slice(0, 1_000)
+      // Enforce returned identity as well as requesting the upstream filter.
+      // Missing legacy scope metadata requires migration, never request relabeling.
+      .filter(row => row.metadata?.tenant_id === request.tenant_id
+        && (request.workspace_id === undefined || row.metadata.workspace_id === request.workspace_id)
+        && (row.metadata.workspace_id === undefined || (typeof row.metadata.workspace_id === 'string' && !!row.metadata.workspace_id.trim()))
+        && typeof row.metadata.privacy_class === 'string' && ['public', 'private-shareable', 'private', 'secret', 'regulated'].includes(row.metadata.privacy_class)
+        && (row.metadata.retention_policy === undefined || (typeof row.metadata.retention_policy === 'string' && ['ephemeral', 'rolling_90d', 'permanent', 'append_only', 'delete_by'].includes(row.metadata.retention_policy)))
+        && (row.metadata.retention_until === undefined || (typeof row.metadata.retention_until === 'string' && Number.isFinite(Date.parse(row.metadata.retention_until))))
+        && (row.metadata.retention_policy !== 'delete_by' || row.metadata.retention_until !== undefined)
+        && typeof row.id === 'string' && row.id.length > 0 && row.id.length <= 256
+        && typeof row.text === 'string' && row.text.length <= 100_000
+        && Number.isFinite(row.score ?? 0))
       .map((row) => {
         const score = row.score ?? 0;
         const sisId = typeof row.metadata?.sis_memory_id === "string" ? row.metadata.sis_memory_id : `mem0_shadow_${row.id}`;
         const record: SISMemoryRecord = {
           memory_id: sisId,
-          tenant_id: request.tenant_id,
+          tenant_id: row.metadata!.tenant_id as string,
+          ...(typeof row.metadata?.workspace_id === 'string' ? { workspace_id: row.metadata.workspace_id } : {}),
           source: { system: "mem0", event_id: row.id },
           modality: "text",
           memory_type: "semantic",
@@ -91,8 +107,11 @@ export class Mem0RemoteProvider implements MemoryProvider {
           importance: score,
           confidence: score || 0.5,
           trust: 0.5,
-          privacy_class: "private-shareable",
-          retention_policy: "permanent",
+          privacy_class: row.metadata!.privacy_class as SISMemoryRecord['privacy_class'],
+          // Older SIS mirror entries omitted retention; retain the older policy
+          // only when there is no explicit deadline or restrictive retention value.
+          retention_policy: (row.metadata?.retention_policy ?? 'permanent') as SISMemoryRecord['retention_policy'],
+          ...(typeof row.metadata?.retention_until === 'string' ? { retention_until: row.metadata.retention_until } : {}),
           provenance: [{ event_id: row.id, transform: "provider_imported", at: new Date().toISOString() }],
           provider_shadow_refs: {
             mem0: {
@@ -150,6 +169,8 @@ function metadataFor(record: SISMemoryRecord): Record<string, unknown> {
     memory_type: record.memory_type,
     vault: record.vault,
     privacy_class: record.privacy_class,
+    retention_policy: record.retention_policy,
+    ...(record.retention_until !== undefined ? { retention_until: record.retention_until } : {}),
     importance: record.importance,
     confidence: record.confidence,
     trust: record.trust,

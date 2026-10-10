@@ -136,7 +136,7 @@
     "build": "pnpm run build:core && tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",
-    "dev": "tsc --watch",
+    "dev": "pnpm run build:core && tsc --watch",
     "clean": "rm -rf dist",
     "setup:gemini": "pwsh ./scripts/install-gemini-mcp.ps1",
     "agents:harness-check": "node scripts/check-agent-harness.mjs",

@@ -190,3 +190,22 @@ test('gateway privacy tags with surrounding whitespace override public tags befo
     }
   } finally { globalThis.fetch = previous; }
 });
+
+test('private-shareable overrides public and still requires an explicit host sharing grant', { timeout: 15_000 }, async () => {
+  const previous = globalThis.fetch;
+  globalThis.fetch = async () => Response.json({ ok: true, results: [
+    { score: 1, entry: { id: 'shared', content: 'shareable fixture', tags: ['public', ' privacy:PRIVATE-SHAREABLE '] } },
+    { score: 1, entry: { id: 'restricted', content: 'private fixture', tags: ['public', 'private-shareable', 'private'] } },
+  ] });
+  try {
+    const memory = createGatewayReader({ url: 'https://gateway.example', token: 'synthetic', tenantId: 'a' });
+    for (const allowShareable of [false, true]) {
+      const connection = await connected({ memory, tenantId: 'a', allowShareable });
+      try {
+        const result = await connection.client.callTool({ name: 'starlight_memory_recall', arguments: { query: 'query' } });
+        assert.deepEqual(result.structuredContent.memories.map(row => row.id), allowShareable ? ['shared'] : []);
+        assert.ok(!JSON.stringify(result).includes('private fixture'));
+      } finally { await connection.close(); }
+    }
+  } finally { globalThis.fetch = previous; }
+});

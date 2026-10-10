@@ -4,7 +4,7 @@
 > If a pattern is not in the "Covered" list, do not assume it is masked.
 > Board verdict 2026-05-11 (REVISE-A.1) requires this document to ship with the v8.0 wave.
 
-**Version:** modular core candidate 0.1.0
+**Version:** modular core candidate 0.2.0
 **Last reviewed:** 2026-10-10 (local implementation/tests; independent review pending)
 **Revisit cadence:** quarterly + on every new secret format that lands in the wild
 

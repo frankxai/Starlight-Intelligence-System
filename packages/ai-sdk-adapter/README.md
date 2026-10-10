@@ -25,7 +25,9 @@ In a Next.js server route, derive scope from authenticated session claims, never
 from untrusted request fields. Construct a separate wrapped model for each scope.
 Do not send provider credentials to the browser. The adapter reads the most recent
 user text, recalls through the host's provider, and adds bounded sanitized facts
-as labeled untrusted reference data. It performs no implicit memory writes.
+as labeled untrusted reference data in that user message. Host system instructions
+retain their existing role; recalled content never adds a system message.
+It performs no implicit memory writes.
 User text exceeding the 16,000-character retrieval budget skips recall while
 preserving the complete original model prompt. It is not truncated across a
 possible secret. Shorter queries are sanitized before provider egress.

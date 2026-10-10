@@ -189,3 +189,21 @@ The in-process factory still accepts independently authorized scoped providers.
 Twenty-six core, AI SDK and official MCP client tests passed locally after these
 changes. This receipt does not attest a live remote provider or approve the new
 revision. Fresh CI and exact-revision independent review remain required.
+
+GitHub Copilot review `5478795909` inspected `725914cee74e9884a6ca33edcde7f0474418252b`
+and returned eight findings, including untrusted memory assigned a system role,
+shareable privacy tags losing precedence to public tags, and incomplete workspace
+support in the injected Mem0 adapter. Reconciliation preserves the existing host
+system message, attaches recalled data only to the latest user message, requests
+and verifies returned Mem0 tenant/workspace metadata, preserves restrictive privacy
+and retention, and exposes install hooks as explicit static follow-up. The review
+is from GitHub's separate service; its underlying model was not disclosed.
+It is a findings report, not an approval of subsequent fixes.
+
+Focused local suites after these changes passed 24 adapter/MCP/artifact tests and
+29 Mem0/Foundry tests. The creator repair is separately assigned to hosted Copilot
+session `cfad75da-ca44-4b47-b38f-30756c601c54` in creator PR 7, based on PR 6's
+immutable `d4eb90502fdeee0ccd9c3c431cb030324b39ba09`. The first Codex implementation
+request could not start because no cloud environment was configured for that repo.
+No new local worker or paid generation was started. Policy documents were loaded;
+they are not runtime enforcement or proof of deployment.

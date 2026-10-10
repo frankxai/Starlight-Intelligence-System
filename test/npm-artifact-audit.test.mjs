@@ -85,6 +85,16 @@ test('registry requests deny external hosts, credentials, redirects and partial 
   assert.equal(calls.length, 2); assert.ok(calls.every(call => call.redirect === 'error'));
 });
 
+test('install hooks require explicit follow-up without executing or exposing their contents', () => {
+  for (const name of ['preinstall', 'install', 'postinstall']) {
+    const bytes = archive({ ...manifest, scripts: { [name]: 'synthetic private hook text' } });
+    const result = inspectArtifact(bytes, identity(bytes), () => 'clear');
+    assert.deepEqual(result.installLifecycleScripts, [name]);
+    assert.deepEqual(result.findings, ['install-lifecycle-needs-review']);
+    assert.ok(!JSON.stringify(result).includes('synthetic private hook text'));
+  }
+});
+
 test('changed registry evidence cannot silently substitute an artifact; malformed bodies stay isolated', async () => {
   const row = identity(archive(manifest));
   let calls = 0;

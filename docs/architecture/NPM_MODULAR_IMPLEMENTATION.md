@@ -3,6 +3,13 @@
 Status: implementation branch; publication and acceptance gates remain open.
 Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-System/issues/329).
 
+Current review gate: [PR 342](https://github.com/frankxai/Starlight-Intelligence-System/pull/342).
+The packages remain 0.2.0 candidates. Final measurements belong to the hosted
+artifact manifest and consumer receipt for the exact accepted revision; sizes in
+the historical checkpoints below must not be reused as current release evidence.
+Codex and GitHub Copilot reviews exposed production defects despite passing CI.
+The fixes and remaining deployment/provider/account gaps are tracked in the PR.
+
 10 October follow-up: adversarial fixtures reproduced acceptance of unterminated
 archives and ambiguous paths in the release/static-audit parser. The parser now
 requires complete padded blocks and two zero terminator blocks, rejects concealed
@@ -68,7 +75,8 @@ the deadline also bounds waiting on uncooperative providers.
 
 The gateway bridge talks to the existing single-tenant SIS search endpoint. That
 endpoint has no multi-tenant authorization contract. The bridge labels results
-with the configured dedicated tenant/workspace; it cannot establish those labels
+with the configured dedicated tenant; workspace mode is rejected because its
+search endpoint cannot enforce workspace isolation. It cannot establish tenant labels
 from independent upstream identity. Never use one unsegregated gateway for several
 tenants. The programmatic provider integration can enforce real upstream tenant
 and workspace policies.
@@ -145,7 +153,7 @@ documentation pages can lag the current major.
 
 ## Evidence and remaining acceptance
 
-Current continuation: accepted main `fe964d5a9449704c841cad821f8f2e6d02c9551b`
+Historical checkpoint: accepted main `fe964d5a9449704c841cad821f8f2e6d02c9551b`
 was integrated at `efccc9c2916d6d16614d69d393f27a51a0390c41`. Root identity remains
 the accepted legacy package at 8.5.0; its terminal/creator exports and workflows
 are preserved. Root lint/build and all 69 terminal/creator tests passed after
@@ -159,8 +167,10 @@ masked before recursively processing values. Literal replacement text cannot
 reinsert a secret, and data property names cannot invoke prototype setters.
 See the updated coverage contract for remaining gaps. These changes passed six
 core tests and 24 legacy sanitizer coverage tests. All 14 package integration
-tests and six release tests pass. Current core JavaScript is 8,642 bytes;
-the compressed tarball is 12,483 bytes, including the preserved schemas.
+tests and six release tests passed at that checkpoint. Its core JavaScript was
+8,642 bytes and its compressed archive was 12,483 bytes. Subsequent changes
+invalidate those sizes as final release measurements; use the source-bound
+hosted artifact manifest for the accepted revision.
 
 The full workspace audit, including development dependencies, returned zero
 reported vulnerabilities after locking esbuild 0.28.2 and fast-uri 3.1.8.
