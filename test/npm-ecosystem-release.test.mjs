@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { validateEntries, readTar, digest, targets, pnpmInvocation } from '../scripts/verify-npm-ecosystem.mjs';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
-import { mkdirSync, mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, writeFileSync, readFileSync, copyFileSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 import { validateReceipt, publishEcosystem, validateConsumerReceipt, consumerChecks,
   assertPublishingContext, createNpmRuntime } from '../scripts/publish-npm-ecosystem.mjs';
@@ -159,4 +159,31 @@ test('publication npm runtime isolates inherited configuration and process optio
   // Read-only, offline npm command confirms the parent project's registry is not inherited.
   assert.equal(execFileSync(runtime.command, [...runtime.prefix, 'config', 'get', 'registry'], runtime.options).trim(), 'https://registry.npmjs.org/');
   assert.throws(() => createNpmRuntime(root, 'npm', {}), /pinned npm CLI/);
+});
+
+
+test('actual consumer entrypoint invalidates stale success before missing, malformed or rejected manifest', () => {
+  const parent = join(process.cwd(), 'artifacts', 'consumer-recovery-tests');
+  mkdirSync(parent, { recursive: true });
+  for (const manifest of [undefined, '{invalid-json', JSON.stringify({ schemaVersion: 1,
+    sourceSha: '0'.repeat(40), dirty: false, packages: [] })]) {
+    const root = mkdtempSync(join(parent, 'run-'));
+    mkdirSync(join(root, 'scripts'));
+    const directory = join(root, 'artifacts', 'npm-ecosystem');
+    mkdirSync(directory, { recursive: true });
+    for (const name of ['test-npm-consumer.mjs', 'verify-npm-ecosystem.mjs', 'publish-npm-ecosystem.mjs']) {
+      copyFileSync(new URL('../scripts/' + name, import.meta.url), join(root, 'scripts', name));
+    }
+    writeFileSync(join(directory, 'consumer.json'), JSON.stringify({ schemaVersion: 1,
+      sourceSha: 'a'.repeat(40), manifestSha256: 'b'.repeat(64), passed: true, checks: consumerChecks }));
+    if (manifest !== undefined) writeFileSync(join(directory, 'manifest.json'), manifest);
+    const result = spawnSync(process.execPath, [join(root, 'scripts', 'test-npm-consumer.mjs')],
+      { cwd: root, encoding: 'utf8', timeout: 10_000 });
+    assert.equal(result.error, undefined);
+    assert.notEqual(result.status, 0);
+    const receipt = JSON.parse(readFileSync(join(directory, 'consumer.json')));
+    assert.equal(receipt.passed, false, 'failed manifest preflight must invalidate the previous success');
+    assert.deepEqual(receipt.checks, []);
+    assert.throws(() => validateConsumerReceipt(receipt, Buffer.from('fixture'), 'a'.repeat(40)));
+  }
 });

@@ -8,11 +8,15 @@ import { validateReceipt, consumerChecks } from './publish-npm-ecosystem.mjs';
 // Install actual release bytes outside workspace resolution. Leave bounded evidence in ignored artifacts.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const directory = join(root, 'artifacts', 'npm-ecosystem');
+// Invalidate old evidence before reading or validating any release inputs.
+mkdirSync(directory, { recursive: true });
+writeFileSync(join(directory, 'consumer.json'), JSON.stringify({ schemaVersion: 1,
+  passed: false, checks: [] }, null, 2) + '\n');
 const manifestBytes = readFileSync(join(directory, 'manifest.json'));
 const receipt = JSON.parse(manifestBytes);
 const sourceSha = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
 const tarballs = validateReceipt(receipt, sourceSha, directory, false).map(row => join(directory, row.file));
-// Invalidate a previous success before any fallible install or behavioral check.
+// Bind the failed receipt once source and manifest identity have been validated.
 writeFileSync(join(directory, 'consumer.json'), JSON.stringify({ schemaVersion: 1, sourceSha,
   manifestSha256: digest(manifestBytes), passed: false, checks: [] }, null, 2) + '\n');
 mkdirSync(join(root, 'artifacts', 'npm-consumers'), { recursive: true });
