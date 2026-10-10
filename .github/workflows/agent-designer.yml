@@ -10,6 +10,9 @@ on:
       - 'scripts/sync-agent-designer-plugin.mjs'
       - 'test/agent-designer.test.mjs'
       - '.github/workflows/agent-designer.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
   push:
     branches: [main]
     paths:
@@ -18,19 +21,24 @@ on:
       - 'scripts/sync-agent-designer-plugin.mjs'
       - 'test/agent-designer.test.mjs'
       - '.github/workflows/agent-designer.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
 permissions:
   contents: read
 jobs:
   reference-checks:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: '22'
-      - run: npm ci --ignore-scripts --no-audit --no-fund
+          node-version: '24'
+      - run: npm install --global pnpm@11.5.0
+      - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: node scripts/sync-agent-designer-plugin.mjs --check
       - run: node --test test/agent-designer.test.mjs
       - run: node tools/foundry/cli.mjs conformance plugins/starlight-agent-designer

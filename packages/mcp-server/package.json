@@ -1,0 +1,55 @@
+{
+  "name": "@starlight-intelligence/mcp",
+  "version": "0.2.0",
+  "private": false,
+  "type": "module",
+  "license": "MIT",
+  "description": "Official MCP SDK server for scoped Starlight memory.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frankxai/Starlight-Intelligence-System.git",
+    "directory": "packages/mcp-server"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "prepack": "pnpm run build"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "24.0.0",
+    "@modelcontextprotocol/client": "2.3.1"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./gateway": {
+      "types": "./dist/gateway.d.ts",
+      "import": "./dist/gateway.js"
+    }
+  },
+  "dependencies": {
+    "@starlight-intelligence/core": "workspace:^",
+    "@modelcontextprotocol/server": "2.3.1",
+    "zod": "4.6.5"
+  },
+  "bin": {
+    "starlight-memory-mcp": "./dist/cli.js"
+  }
+}

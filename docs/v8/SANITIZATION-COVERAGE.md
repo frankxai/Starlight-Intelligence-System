@@ -4,8 +4,8 @@
 > If a pattern is not in the "Covered" list, do not assume it is masked.
 > Board verdict 2026-05-11 (REVISE-A.1) requires this document to ship with the v8.0 wave.
 
-**Version:** v8.0.0
-**Last reviewed:** 2026-05-11
+**Version:** modular core candidate 0.2.0
+**Last reviewed:** 2026-10-10 (local implementation/tests; independent review pending)
 **Revisit cadence:** quarterly + on every new secret format that lands in the wild
 
 ---
@@ -16,11 +16,24 @@ These regex families are masked when `scrubSecrets: true` (default) or `scrubPII
 
 ### Secrets (`scrubSecrets: true`)
 
+Additional covered families in modular core 0.2.0:
+
+| Family | Scope |
+| --- | --- |
+| Anthropic keys | Recognized provider prefix with a 20+ character suffix including separators |
+| Stripe secret/restricted keys | Live/test secret or restricted prefixes with a 16+ alphanumeric suffix; public keys excluded |
+| AWS access key IDs | AKIA or ASIA prefix and 16 uppercase alphanumeric characters; arbitrary secret/session values need recognized context fields |
+| Hugging Face tokens | Recognized prefix and 20+ alphanumeric characters |
+| npm and webhook tokens | Recognized npm or webhook signing prefixes and 20+ alphanumeric characters |
+| Database connection URIs | PostgreSQL, MySQL, MongoDB and Redis URI content through whitespace or quote/angle delimiters |
+| PEM private-key blocks | Complete blocks and incomplete blocks through end-of-input; PGP PRIVATE KEY BLOCK excluded |
+| Named secret context fields | Password, secret, token, API/auth/access/refresh/private-key/client-secret/AWS-secret-access-key variants; `sanitizeContext` masks values recursively by field name, separately from plain-string sanitization |
+
 | Pattern | Example matched | Notes |
 |---|---|---|
-| OpenAI-style keys | `sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` | 48-char base alpha-numeric tail |
+| OpenAI-style keys | `sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` | 48+ character tail, including project-key separators |
 | Slack tokens | `xoxb-…`, `xoxp-…`, `xoxa-…`, `xoxr-…`, `xoxs-…` | 10–48 char tail |
-| GitHub tokens | `ghp_…`, `github_pat_…` | 36-char tail |
+| GitHub tokens | `ghp_…`, `github_pat_…` | 36+ character tail; full suffix masked |
 | Google API keys | `AIza…` | 35-char fixed |
 | JWTs | `eyJ…header.eyJ…payload.signature` | Three-segment base64 |
 | Bearer tokens | `Bearer <opaque>` | Case-insensitive |
@@ -39,20 +52,15 @@ These regex families are masked when `scrubSecrets: true` (default) or `scrubPII
 
 ## Known-NOT-covered patterns (DO NOT assume safety)
 
-The following are **deliberately not in scope as of v8.0.0**. Anyone piping these through the gateway will receive an *unmasked* string back. Plan upstream redaction if your input may contain them.
+The following remain outside the current configured coverage. Anyone piping these through the gateway will receive an *unmasked* string back. Plan upstream redaction if your input may contain them.
 
 | Category | Examples |
 |---|---|
-| **Stripe** | `sk_live_…`, `sk_test_…`, `pk_live_…`, `rk_live_…`, `whsec_…` |
-| **AWS** | `AKIA…` (access keys), `aws_secret_access_key=…`, session tokens, IAM role ARNs |
+| **Stripe public keys** | Public key identifiers are not secret credentials |
+| **AWS other data** | Unstructured secret access keys/session tokens without a recognized context field; IAM role ARNs |
 | **GCP service-account JSON** | full SA JSON blobs, `client_email`, `private_key_id` |
 | **Azure** | `DefaultEndpointsProtocol=…`, connection strings, SAS tokens, account keys |
-| **HuggingFace** | `hf_…` tokens |
-| **Anthropic** | `sk-ant-…` (yes, even our own) |
-| **npm tokens** | `npm_…` |
 | **Cloudflare** | API tokens (no standard prefix), R2 keys |
-| **Database URIs** | `postgres://user:pass@host/db`, `mysql://…`, `mongodb+srv://…` |
-| **SSH private keys** | `-----BEGIN OPENSSH PRIVATE KEY-----` blocks |
 | **PGP private keys** | `-----BEGIN PGP PRIVATE KEY BLOCK-----` blocks |
 | **Bank account / IBAN** | `NL91 ABNA 0417 1643 00`, US routing+account combos |
 | **Credit card numbers** | 13–19 digit PAN with Luhn validity |
@@ -91,16 +99,21 @@ A best-effort prepass to scrub *common, structured* secrets before string conten
 
 ## How to extend coverage
 
-1. Add a new regex pattern to `SECRET_PATTERNS` or `PII_PATTERNS` in `src/sanitization.ts`.
+1. Add a new regex pattern to `SECRET_PATTERNS` or `PII_PATTERNS` in `packages/core/src/veil.ts` (re-exported by `src/sanitization.ts`).
 2. Add a matching test case to `test/v8-sanitization-coverage.test.ts` under "Covered."
 3. Remove the corresponding row from the Known-NOT-covered table here.
 4. Bump this doc's `Last reviewed` date.
 
-## Roadmap
+## Remaining work
 
-- **v8.1** — Stripe + AWS + Anthropic + HuggingFace token prefixes (highest-frequency reports)
-- **v8.2** — DB URIs + SSH/PGP private-key block detectors
-- **v8.3** — Optional local SLM-based semantic PII scrubbing (names, addresses) behind opt-in flag
+- Independent review of the new patterns and context-field handling.
+- Provider-specific opaque credentials require host-side policy or named-field redaction.
+- Semantic PII, banking identifiers and PGP blocks require separate coverage before use.
+- This change does not establish compliance or prompt-injection resistance.
+
+Mask strings are inserted literally; replacement syntax cannot reinsert matched secrets.
+Context data keys cannot invoke inherited prototype setters. Existing recursion and
+cycle bounds remain. Inputs outside these documented shapes still need upstream controls.
 
 ---
 

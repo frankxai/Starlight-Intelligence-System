@@ -17,7 +17,9 @@ on:
       - "test/instruction-compiler.test.ts"
       - "test/work-graph*.test.ts"
       - "package.json"
-      - "package-lock.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "packages/core/**"
   push:
     branches: [main]
     paths:
@@ -30,7 +32,9 @@ on:
       - "test/instruction-compiler.test.ts"
       - "test/work-graph*.test.ts"
       - "package.json"
-      - "package-lock.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "packages/core/**"
 
 permissions:
   contents: read
@@ -50,11 +54,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: "24"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install --global pnpm@11.5.0
+          pnpm install --frozen-lockfile
+          pnpm run build:core
 
       - name: Lint
         run: npm run lint

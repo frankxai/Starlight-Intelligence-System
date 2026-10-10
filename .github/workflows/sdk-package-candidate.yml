@@ -8,8 +8,15 @@ on:
     paths:
       - package.json
       - package-lock.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - packages/core/**
       - tools/package-organization.mjs
       - src/ecosystem.ts
+      - src/sanitization.ts
+      - src/types.ts
+      - src/memory.ts
+      - src/memory-provider/**
       - test/ecosystem.test.ts
       - .github/workflows/sdk-package-candidate.yml
   push:
@@ -17,8 +24,15 @@ on:
     paths:
       - package.json
       - package-lock.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - packages/core/**
       - tools/package-organization.mjs
       - src/ecosystem.ts
+      - src/sanitization.ts
+      - src/types.ts
+      - src/memory.ts
+      - src/memory-provider/**
       - test/ecosystem.test.ts
       - .github/workflows/sdk-package-candidate.yml
 
@@ -46,9 +60,11 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
-          cache: npm
       - name: Install locked dependencies
-        run: npm ci
+        run: |
+          npm install --global pnpm@11.5.0
+          pnpm install --frozen-lockfile
+          pnpm run build:core
       - name: Check types and instruction displays
         run: npm run lint && npm run agents:harness-check
       - name: Build and run prepublication checks
@@ -61,7 +77,7 @@ jobs:
           candidate_dir="$RUNNER_TEMP/sdk-candidate"
           consumer_dir="$RUNNER_TEMP/sdk-consumer"
           mkdir -p "$candidate_dir" "$consumer_dir"
-          npm pack --json --pack-destination "$candidate_dir" > "$candidate_dir/package-report.json"
+          npm pack --ignore-scripts --json --pack-destination "$candidate_dir" > "$candidate_dir/package-report.json"
           package_filename=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))[0].filename)" "$candidate_dir/package-report.json")
           npm install --prefix "$consumer_dir" --omit=dev --no-audit --no-fund "$candidate_dir/$package_filename"
           SDK_CONSUMER="$consumer_dir" SDK_CANDIDATE="$candidate_dir" node --input-type=module <<'NODE'

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import semver from "semver";
 import { parse as parseYaml } from "yaml";
+import { readPnpmDependencyLock } from "./dependency-lock.mjs";
 import {
   assertNoSymlinkPath,
   hashFile,
@@ -21,7 +22,7 @@ const DEFAULT_RULES = fileURLToPath(
 const DEFAULT_TOOLCHAIN_LOCK = fileURLToPath(
   new URL("../../../foundry/validators/toolchain.lock.v1.json", import.meta.url),
 );
-const DEFAULT_NPM_LOCK = fileURLToPath(new URL("../../../package-lock.json", import.meta.url));
+const DEFAULT_NPM_LOCK = fileURLToPath(new URL("../../../pnpm-lock.yaml", import.meta.url));
 const DEFAULT_CONTRACTS = fileURLToPath(new URL("../../../foundry/contracts", import.meta.url));
 const IMPLEMENTATION_PATH = fileURLToPath(import.meta.url);
 const ROOT = resolve(dirname(IMPLEMENTATION_PATH), "..", "..", "..");
@@ -29,8 +30,9 @@ const FORBIDDEN_TEXT = /[\u0000-\u001f\u007f-\u009f\u061c\u200b-\u200f\u2028-\u2
 const IMPLEMENTATION_PACKAGES = ["fast-xml-parser", "semver", "yaml"];
 const SOURCE_CLOSURE_PATHS = [
   "foundry/contracts/openai-submission-profile.schema.json",
-  "package-lock.json",
+  "pnpm-lock.yaml",
   "package.json",
+  "tools/foundry/lib/dependency-lock.mjs",
   "tools/foundry/lib/io.mjs",
   "tools/foundry/lib/openai-preflight.mjs",
   "tools/foundry/lib/package-payload.mjs",
@@ -429,7 +431,7 @@ export function validateOpenAIPluginPackage(
 
   const rules = readJson(resolve(rulesPath));
   const toolchain = readJson(resolve(toolchainLockPath));
-  const npmLock = readJson(DEFAULT_NPM_LOCK);
+  const npmLock = readPnpmDependencyLock(DEFAULT_NPM_LOCK);
   const rulesDigest = hashFile(resolve(rulesPath)).sha256;
   const checks = [];
   const implementation = toolchain.openai?.rules?.implementation ?? {};
@@ -481,6 +483,7 @@ export function validateOpenAIPluginPackage(
     {
       toolchainLockSha256: hashFile(resolve(toolchainLockPath)).sha256,
       packageLockSha256: hashFile(DEFAULT_NPM_LOCK).sha256,
+      packageLockPath: "pnpm-lock.yaml",
       sourceClosure,
       sourceClosureError,
     },
@@ -820,6 +823,7 @@ export function validateOpenAIPluginPackage(
       implementationSha256: validatorImplementationSha256,
       sourceClosure,
       packageLockSha256: hashFile(DEFAULT_NPM_LOCK).sha256,
+      packageLockPath: "pnpm-lock.yaml",
       toolchainLockSha256: hashFile(resolve(toolchainLockPath)).sha256,
       packages: IMPLEMENTATION_PACKAGES.map((name) => ({ name, ...implementation[name] })),
     },

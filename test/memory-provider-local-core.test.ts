@@ -31,6 +31,14 @@ function record(id: string, content: string, tags: string[] = []): SISMemoryReco
 }
 
 describe("InMemoryLocalCoreProvider", () => {
+  it('namespaces identical memory IDs by tenant so another tenant cannot overwrite or delete them', async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    await provider.remember(record('shared-id', 'first tenant memory'));
+    await provider.remember({ ...record('shared-id', 'second tenant memory'), tenant_id: 'tenant_other' });
+    assert.equal((await provider.recall({ tenant_id: 'tenant_frank', query: 'memory' }))[0]?.record.normalized_fact, 'first tenant memory');
+    assert.equal(await provider.forget({ tenant_id: 'tenant_other', memory_id: 'shared-id' }), true);
+    assert.equal((await provider.recall({ tenant_id: 'tenant_frank', query: 'memory' })).length, 1);
+  });
   it("stores and recalls records without external provider state", async () => {
     const provider = new InMemoryLocalCoreProvider();
     await provider.remember(record("m1", "SIS memory gateway batches writes for dozens of agents", ["SIS"]));
@@ -61,5 +69,16 @@ describe("InMemoryLocalCoreProvider", () => {
     assert.equal(provider.name, "local_core");
     assert.equal(provider.capabilities.process_model, "embedded_lightweight");
     assert.equal(provider.capabilities.per_agent_instance_allowed, true);
+  });
+
+  it('filters workspace before ranking and limiting so other workspaces cannot starve recall', async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    await provider.remember({ ...record('other-high', 'memory query'), workspace_id: 'other', importance: 1 });
+    await provider.remember({ ...record('allowed-low', 'memory'), workspace_id: 'selected', importance: 0.1 });
+    await provider.remember(record('legacy-high', 'memory query'));
+    const results = await provider.recall({ tenant_id: 'tenant_frank', workspace_id: 'selected', query: 'memory query', limit: 1 });
+    assert.deepEqual(results.map(row => row.record.memory_id), ['allowed-low']);
+    const tenantWide = await provider.recall({ tenant_id: 'tenant_frank', query: 'memory query', limit: 1 });
+    assert.deepEqual(tenantWide.map(row => row.record.memory_id), ['other-high']);
   });
 });

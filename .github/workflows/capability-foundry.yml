@@ -15,6 +15,7 @@ on:
       - "test/foundry-conformance.test.ts"
       - "package.json"
       - "package-lock.json"
+      - "pnpm-lock.yaml"
       - ".github/workflows/capability-foundry.yml"
   push:
     branches: [main]
@@ -29,6 +30,7 @@ on:
       - "test/foundry-conformance.test.ts"
       - "package.json"
       - "package-lock.json"
+      - "pnpm-lock.yaml"
       - ".github/workflows/capability-foundry.yml"
   schedule:
     - cron: "17 6 * * 1"
@@ -71,10 +73,12 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "24"
-          cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install --global pnpm@11.5.0
+          pnpm install --frozen-lockfile
+          pnpm run build:core
 
       - name: Install isolated native host validators
         run: npm ci --prefix foundry/validators/native

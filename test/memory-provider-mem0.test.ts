@@ -86,7 +86,7 @@ describe("Mem0RemoteProvider", () => {
       async addMemory() { return { id: "unused" }; },
       async searchMemories(input) {
         assert.equal(input.query, "batched remote");
-        return [{ id: "mem0_1", text: "Batched remote memory", score: 0.77, metadata: { sis_memory_id: "sis_remote" } }];
+        return [{ id: "mem0_1", text: "Batched remote memory", score: 0.77, metadata: { sis_memory_id: "sis_remote", tenant_id: 'tenant_frank', privacy_class: 'private-shareable' } }];
       },
       async deleteMemory() { return true; },
     };
@@ -108,5 +108,74 @@ describe("Mem0RemoteProvider", () => {
     const provider = new Mem0RemoteProvider({ client });
     assert.equal(provider.capabilities.process_model, "remote_api");
     assert.equal(provider.capabilities.per_agent_instance_allowed, false);
+  });
+
+  it('filters tenant and workspace upstream, validates returned identity and preserves restrictive metadata', async () => {
+    let request: Parameters<Mem0Client['searchMemories']>[0] | undefined;
+    const metadata = { sis_memory_id: 'allowed', tenant_id: 'tenant_frank', workspace_id: 'workspace-a', privacy_class: 'private-shareable', retention_policy: 'rolling_90d', retention_until: '2099-01-01' };
+    const base = { id: 'remote-1', text: 'scoped fixture', score: 1, metadata };
+    const client: Mem0Client = {
+      async addMemory() { return { id: 'unused' }; }, async deleteMemory() { return true; },
+      async searchMemories(input) {
+        request = input;
+        return [base, ...[{ tenant_id: 'other' }, { workspace_id: 'workspace-b' }, { workspace_id: undefined },
+          { privacy_class: 'unknown' }, { retention_until: 2099 }, { retention_policy: 'unknown' }]
+          .map((change, i) => ({ ...base, id: 'denied-' + i, metadata: { ...metadata, ...change } })),
+          { ...base, id: 'missing-scope', metadata: {} },
+          { ...base, id: 'secret', metadata: { ...metadata, privacy_class: 'secret' } }];
+      },
+    };
+    const provider = new Mem0RemoteProvider({ client });
+    const controller = new AbortController();
+    const results = await provider.recall({ tenant_id: 'tenant_frank', workspace_id: 'workspace-a', query: 'scope', signal: controller.signal });
+    assert.deepEqual(request?.metadata, { tenant_id: 'tenant_frank', workspace_id: 'workspace-a' });
+    assert.equal(request?.signal, controller.signal);
+    assert.deepEqual(results.map(result => result.record.source.event_id), ['remote-1', 'secret']);
+    assert.equal(results[0].record.workspace_id, 'workspace-a');
+    assert.equal(results[0].record.retention_until, '2099-01-01');
+    assert.equal(results[1].record.privacy_class, 'secret');
+  });
+
+  it('writes retention metadata to the remote mirror rather than turning deadlines permanent on recall', async () => {
+    let metadata: Record<string, unknown> | undefined;
+    const client: Mem0Client = { async addMemory(input) { metadata = input.metadata; return { id: 'remote' }; },
+      async searchMemories() { return []; }, async deleteMemory() { return true; } };
+    const provider = new Mem0RemoteProvider({ client });
+    await provider.remember({ ...record('retained'), workspace_id: 'w', retention_policy: 'delete_by', retention_until: '2099-01-01' });
+    await provider.flush();
+    assert.equal(metadata?.workspace_id, 'w');
+    assert.equal(metadata?.retention_policy, 'delete_by');
+    assert.equal(metadata?.retention_until, '2099-01-01');
+  });
+
+  it('fails closed before deletion without an authoritative scoped identity resolver', async () => {
+    let deletes = 0;
+    const client: Mem0Client = { async addMemory() { return { id: 'unused' }; },
+      async searchMemories() { return []; }, async deleteMemory() { deletes++; return true; } };
+    await assert.rejects(new Mem0RemoteProvider({ client }).forget({ tenant_id: 'tenant_frank', memory_id: 'sis_1' }), /authoritative scoped identity resolver/);
+    assert.equal(deletes, 0);
+  });
+
+  it('resolves SIS IDs and validates both returned identities before remote deletion', async () => {
+    const deleted: string[] = [];
+    let resolved: Awaited<ReturnType<NonNullable<Mem0Client['resolveMemory']>>> = null;
+    const client: Mem0Client = { async addMemory() { return { id: 'unused' }; },
+      async searchMemories() { return []; }, async deleteMemory(input) { deleted.push(input.id); return true; },
+      async resolveMemory(input) { assert.deepEqual(input, { tenant_id: 'tenant_frank', memory_id: 'sis_1' }); return resolved; } };
+    const provider = new Mem0RemoteProvider({ client });
+    const request = { tenant_id: 'tenant_frank', memory_id: 'sis_1' };
+    assert.equal(await provider.forget(request), false);
+    for (const change of [{ tenant_id: 'other' }, { sis_memory_id: 'sis_other' }, { tenant_id: undefined }]) {
+      resolved = { id: 'remote_7', metadata: { tenant_id: 'tenant_frank', sis_memory_id: 'sis_1', ...change } };
+      await assert.rejects(provider.forget(request), /identity could not be verified/);
+    }
+    resolved = { id: '', metadata: { tenant_id: 'tenant_frank', sis_memory_id: 'sis_1' } };
+    await assert.rejects(provider.forget(request), /identity could not be verified/);
+    assert.deepEqual(deleted, []);
+    resolved = { id: 'remote_7', metadata: { tenant_id: 'tenant_frank', sis_memory_id: 'sis_1' } };
+    assert.equal(await provider.forget(request), true);
+    assert.deepEqual(deleted, ['remote_7']);
+    await assert.rejects(provider.forget({ ...request, tenant_id: '' }), /Invalid Mem0 deletion scope/);
+    assert.deepEqual(deleted, ['remote_7']);
   });
 });

@@ -180,7 +180,14 @@
     "prepublishOnly": "npm run build && npm run test:substrate",
     "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts",
     "test:queen-session": "node --import tsx --test test/queen-session.test.ts",
-    "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs"
+    "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs",
+    "build:core": "pnpm --filter @starlight-intelligence/core build",
+    "build:packages": "turbo run build --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1",
+    "test:packages": "pnpm run build:packages && turbo run test --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1 && node --test test/npm-ecosystem-release.test.mjs test/npm-artifact-audit.test.mjs",
+    "verify:packages": "pnpm run test:packages && node scripts/verify-npm-ecosystem.mjs",
+    "changeset": "changeset",
+    "version:packages": "changeset version",
+    "release:packages": "node scripts/publish-npm-ecosystem.mjs"
   },
   "files": [
     "dist/",
@@ -209,7 +216,9 @@
     "semver": "7.8.5",
     "tsx": "^4.23.15",
     "typescript": "^5.7.0",
-    "yaml": "2.9.0"
+    "yaml": "2.9.0",
+    "turbo": "2.11.7",
+    "@changesets/cli": "3.0.3"
   },
   "peerDependencies": {
     "@arcanea/memory-system": ">=0.1.0",
@@ -224,7 +233,7 @@
     }
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "22.x || 24.x"
   },
   "bin": {
     "starlight": "dist/cli.js",
@@ -233,5 +242,6 @@
   },
   "dependencies": {
     "better-sqlite3": "12.8.0"
-  }
+  },
+  "packageManager": "pnpm@11.5.0"
 }

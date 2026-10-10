@@ -95,7 +95,7 @@ cd Starlight-Intelligence-System && npm install && npm run build
 node dist/cli.js init --vaults
 ```
 
-> **Note:** npm currently serves v6.0.1 of `@arcanea/starlight-intelligence-system` — two major versions behind this repo. Use the git path above until v8.x is published.
+> npm serves `@arcanea/starlight-intelligence-system@8.5.1` as checked on 10 October 2026. This checkout uses Node 22 or 24. The modular packages are release candidates; the operational SDK keeps its own contracts and sanitizer until a separately versioned root migration is published.
 
 Then add to your MCP config (Claude Code, Cursor, Codex, Gemini, etc.), pointing at the `dist/mcp-server.js` inside your clone:
 
