@@ -11,6 +11,17 @@
   },
   "upstreams": [
     {
+      "id": "ecc",
+      "class": "reference_harness",
+      "repository": "https://github.com/affaan-m/ECC",
+      "track": "4eb71d92a39cab44ad40ac9d8a6a5ccb4029d6c2",
+      "verified_at": "2026-10-10",
+      "adoption": "lab",
+      "owner": "starlight-agent-lab",
+      "primitive": "Reviewed core profile plus workflow-quality, agentic-patterns, and security. Vendored in claude-code-config. Eight procedures re-expressed in claude-skills-library.",
+      "security_notes": "MIT. Lab watch only. No full profile, no observe hook, no second orchestrator. Hermes guard is watch, not earned."
+    },
+    {
       "id": "ruflo",
       "class": "reference_harness",
       "repository": "https://github.com/ruvnet/ruflo",
