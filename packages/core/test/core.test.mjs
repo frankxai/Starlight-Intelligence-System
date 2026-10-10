@@ -59,6 +59,20 @@ test('sanitize, deduplicate, and bound context; never inject raw-only records', 
   assert.throws(() => projectRecall([hit('a')], { ...options, sanitizer: { sanitize() { throw new Error('denied'); } } }));
 });
 
+test('provider expiry values must be strings; malformed neighbors never enter recalled context', async () => {
+  const malformed = [2099, ['2099-01-01'], null, {}, true, '', 'unknown'];
+  const results = [hit('retained', { retention_until: '2099-01-01' }),
+    hit('without-expiry'), hit('expired', { retention_until: '2000-01-01' }),
+    hit('missing-delete-deadline', { retention_policy: 'delete_by' }),
+    ...malformed.map((retention_until, index) => hit(`malformed-${index}`, { retention_until }))];
+  assert.deepEqual(projectRecall(results, options).map(record => record.id), ['retained', 'without-expiry']);
+  const requests = [];
+  const recalled = await recallContext('retention constraints', { ...options,
+    memory: { recall: async request => { requests.push(request); return results; } } });
+  assert.equal(requests.length, 1);
+  assert.deepEqual(recalled.map(record => record.id), ['retained', 'without-expiry']);
+});
+
 test('invalid budgets and scope deny work before invoking provider', async () => {
   let calls = 0;
   const configured = { ...options, memory: { recall: async () => { calls++; return []; } }, limit: 0 };

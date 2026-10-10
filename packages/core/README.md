@@ -26,6 +26,11 @@ and `timeoutMs`. Raw content and provider metadata are excluded. Recall failures
 stop the request with a fixed message. Cancellation reaches cooperative providers;
 the timeout also bounds waiting for providers that ignore cancellation.
 
+An optional `retention_until` must be a parseable string. Present numbers, arrays,
+null and other malformed values exclude the record rather than letting JavaScript
+coerce them into dates. A `delete_by` record requires a deadline. Invalid records
+do not prevent valid neighboring records from being recalled.
+
 Exports include `VaultEntry`, `VaultType`, `MemoryEvent`, `SIPAttestation`,
 `HarnessContract`, `VeilSanitizer`, `MemoryProvider`, and `SISMemoryRecord`.
 Existing schema subpaths remain available. Attestation and harness types describe

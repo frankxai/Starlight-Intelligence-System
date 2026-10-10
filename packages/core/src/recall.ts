@@ -42,6 +42,7 @@ export function projectRecall(results: RecallResult[], options: RecallOptions, n
         || !Number.isFinite(result.score)) continue;
     if (record.retention_policy === 'delete_by' && record.retention_until === undefined) continue;
     if (record.retention_until !== undefined) {
+      if (typeof record.retention_until !== 'string') continue;
       const expiry = Date.parse(record.retention_until);
       if (!Number.isFinite(expiry) || expiry <= now) continue;
     }
