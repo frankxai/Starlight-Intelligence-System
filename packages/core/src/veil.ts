@@ -27,7 +27,7 @@ export class SanitizationGateway {
     /(?:github_pat|ghp)_[a-zA-Z0-9_]{36,}/g, // Mask the complete token suffix
     /\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|rediss?):\/\/[^\s"'<>]+/gi,
     /(?:AIza[0-9A-Za-z-_]{35})/g, // Google API keys
-    /\beyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/g, // JWTs; only start at a token boundary
+    /(?<![A-Za-z0-9_=-])eyJ[A-Za-z0-9_=-]+\.[A-Za-z0-9_=-]+(?:\.[A-Za-z0-9_=-]+)?/g, // JWT base64url token boundaries
     /bearer\s+[a-zA-Z0-9\-\._~]+/gi, // Bearer tokens
     /password["']?\s*:\s*["']([^"']+)["']/gi, // Passwords in JSON/objects
     /private_key["']?\s*:\s*["']([^"']+)["']/gi, // Private keys

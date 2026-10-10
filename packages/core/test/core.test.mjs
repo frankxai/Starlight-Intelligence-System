@@ -11,7 +11,7 @@ test('adversarial non-email and token runs finish within a bounded subprocess de
   const entry = import.meta.resolve('../dist/index.js');
   const script = `import { SanitizationGateway } from ${JSON.stringify(entry)};
     const veil = new SanitizationGateway();
-    for (const input of ['a'.repeat(100000), 'eyJ'.repeat(33333), 'a@' + 'a.'.repeat(50000)]) veil.sanitize(input);
+    for (const input of ['a'.repeat(100000), 'eyJ'.repeat(33333), '-eyJ'.repeat(25000), '=eyJ'.repeat(25000), '@eyJ'.repeat(25000), 'a@' + 'a.'.repeat(50000)]) veil.sanitize(input);
     if (veil.sanitize('name+tag@example.org') !== '[REDACTED]') throw Error('Email leaked');`;
   execFileSync(process.execPath, ['--input-type=module', '--eval', script], { timeout: 5000, stdio: 'pipe' });
 });
