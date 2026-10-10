@@ -30,6 +30,7 @@ HOSTS = {
     'cursor': ('.cursor/mcp.json', '.cursor/skills', None),
 }
 SAFE_NAME = re.compile(r'^[\w./:@ +()-]{1,120}$')
+MAX_INPUT_BYTES = 4 * 1024 * 1024
 
 
 def utcnow():
@@ -51,10 +52,16 @@ def names(values):
     return sorted({v for v in values if isinstance(v, str) and SAFE_NAME.fullmatch(v)})
 
 
-def read_json(path):
-    if path.stat().st_size > 4 * 1024 * 1024:
+def bounded_bytes(path):
+    with path.open('rb') as handle:
+        raw = handle.read(MAX_INPUT_BYTES + 1)
+    if len(raw) > MAX_INPUT_BYTES:
         raise ValueError('input exceeds 4 MiB')
-    return json.loads(path.read_text(encoding='utf-8-sig'))
+    return raw
+
+
+def read_json(path):
+    return json.loads(bounded_bytes(path))
 
 
 def config_summary(path):
@@ -62,9 +69,7 @@ def config_summary(path):
     if path is None or not path.is_file():
         return {'state': 'not-inspected', 'models': [], 'mcp': []}
     try:
-        raw = path.read_bytes()
-        if len(raw) > 4 * 1024 * 1024:
-            raise ValueError('oversize')
+        raw = bounded_bytes(path)
         data = tomllib.loads(raw.decode('utf-8-sig')) if path.suffix == '.toml' else json.loads(raw)
         models = names(data.get(k) for k in ('model', 'small_model'))
         servers = data.get('mcp_servers', data.get('mcpServers', data.get('mcp', {})))
@@ -212,6 +217,8 @@ def collect(home, now=None, usage_path=None):
     machine['observed_at'] = now.isoformat()
     machine['free_disk_bytes'] = shutil.disk_usage(home).free
     memory = footprints(processes)
+    for value in memory.values():
+        value['state'] = 'measured' if machine.get('state') == 'measured' else 'unknown'
     hosts = []
     for host, (config, skills, provider) in HOSTS.items():
         command = shutil.which(host)
@@ -237,9 +244,12 @@ def render(snapshot):
     for host in snapshot['hosts']:
         foot, pool = host['footprint'], host['pool']
         pct = pool['remaining_percent']
+        measured = foot.get('state') == 'measured'
+        processes = str(foot['processes']) if measured else 'unknown'
+        ram = f"{foot['working_set_bytes']/2**30:.3f}" if measured else '--'
+        private = f"{foot['private_bytes']/2**30:.3f}" if measured else '--'
         lines.append(f"| {host['id']} | {'found' if host['command_available'] else 'not found'} "
-                     f"| {foot['processes']} | {foot['working_set_bytes']/2**30:.3f} "
-                     f"| {foot['private_bytes']/2**30:.3f} | {pool['state']}"
+                     f"| {processes} | {ram} | {private} | {pool['state']}"
                      f"{'' if pct is None else ' '+str(pct)+'%'} | {len(host['config']['mcp'])} |")
     lines.extend(['', *('- ' + limitation for limitation in snapshot['limits'])])
     return '\n'.join(lines) + '\n'
@@ -276,6 +286,9 @@ def main():
         parser.error('output must be below --home/.starlight/reports/harness-fleet')
     if output.suffix != '.json':
         parser.error('use a .json report')
+    quota_source = (args.quota or args.home / '.starlight/cli-capacity/usage-snapshot-latest.json').resolve()
+    if quota_source in (output, output.with_suffix('.md')):
+        parser.error('quota input must differ from both report outputs')
     snapshot = collect(args.home, usage_path=args.quota)
     atomic_write(output, json.dumps(snapshot, indent=2, allow_nan=False) + '\n')
     atomic_write(output.with_suffix('.md'), render(snapshot))

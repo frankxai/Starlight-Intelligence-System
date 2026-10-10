@@ -3,7 +3,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
+import contextlib
+import io
+import sys
 
 import fleet
 
@@ -122,6 +125,45 @@ class FleetTests(unittest.TestCase):
                 result = fleet.collect(Path(directory), NOW, path)
             grok = next(h for h in result['hosts'] if h['id'] == 'grok')
             self.assertEqual(grok['pool']['remaining_percent'], 83)
+
+    def test_bounded_read_requests_limit_before_allocating(self):
+        opener = mock_open(read_data=b'{}')
+        with patch.object(Path, 'open', opener):
+            self.assertEqual(fleet.read_json(Path('input.json')), {})
+        opener().read.assert_called_once_with(fleet.MAX_INPUT_BYTES + 1)
+
+    def test_oversize_quota_and_config_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'input.json'
+            path.write_bytes(b' ' * (fleet.MAX_INPUT_BYTES + 1))
+            with self.assertRaises(ValueError):
+                fleet.read_json(path)
+            self.assertEqual(fleet.config_summary(path)['state'], 'parse-unverified')
+
+    def test_quota_output_collision_preserves_source(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            output = home/'.starlight/reports/harness-fleet/report.json'
+            output.parent.mkdir(parents=True)
+            for source in (output, output.with_suffix('.md')):
+                source.write_text(json.dumps(self.quota([100])))
+                original = source.read_bytes()
+                with patch.object(sys, 'argv', ['fleet', '--home', str(home), '--quota', str(source),
+                                               '--output', str(output)]), \
+                        patch('fleet.windows_observation') as observe, \
+                        contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit) as raised:
+                        fleet.main()
+                self.assertEqual(raised.exception.code, 2)
+                self.assertEqual(source.read_bytes(), original)
+                observe.assert_not_called()
+
+    def test_failed_process_measurement_is_unknown_not_zero(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with patch('fleet.windows_observation', return_value=({'state': 'unavailable'}, [])):
+                snapshot = fleet.collect(Path(directory), NOW)
+            self.assertTrue(all(h['footprint']['state'] == 'unknown' for h in snapshot['hosts']))
+            self.assertIn('| unknown | -- | -- |', fleet.render(snapshot))
 
 
 if __name__ == '__main__':

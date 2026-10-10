@@ -20,6 +20,8 @@ and restricted to `.starlight/reports/harness-fleet/`; source configuration and
 quota snapshots remain untouched. Commands, environment values, URLs, account
 identifiers, authentication files and chat content are excluded. Configuration
 hashes allow local drift comparison without copying configuration contents.
+Quota input cannot equal either output path. Configuration and quota reads are
+bounded to 4 MiB plus one overflow byte before parsing or allocating a larger file.
 
 ## Coverage and uncertainty
 
@@ -36,6 +38,8 @@ processes, not proof that no related application exists. Shell text mentioning a
 harness does not count as a running harness. Non-Windows platforms report process
 measurement as unsupported. Process command lines are used temporarily for
 classification and are never written to the report.
+Unavailable measurements display as unknown with blank memory values; matched
+process count zero is used only after a successful process observation.
 
 Configuration inspection covers explicit leaves for Codex, Claude, Grok, Gemini,
 Antigravity, OpenCode, Kilo and Cursor. Hermes configuration is not inspected.
