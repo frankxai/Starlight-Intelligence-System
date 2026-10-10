@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { fileURLToPath } from 'node:url';
+import { readFile } from 'node:fs/promises';
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
@@ -24,6 +25,8 @@ test('official client initializes, lists read-only tools, calls sanitized recall
   let calls = 0;
   const connection = await connected({ tenantId: 'a', memory: { recall: async () => { calls++; return [{ record, score: 1 }]; } } });
   try {
+    const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));
+    assert.deepEqual(connection.client.getServerVersion(), { name: 'starlight-memory', version: pkg.version });
     assert.deepEqual((await connection.client.listTools()).tools.map(tool => tool.name), ['starlight_memory_recall']);
     const result = await connection.client.callTool({ name: 'starlight_memory_recall', arguments: { query: 'Contact?' } });
     assert.ok(JSON.stringify(result).includes('[REDACTED]'));
@@ -81,4 +84,21 @@ test('gateway denies cross-tenant reads, credentials in URL and plaintext remote
   assert.throws(() => createGatewayReader({ url: 'https://user:password@remote.example', tenantId: 'a', token: 'synthetic' }));
   const reader = createGatewayReader({ url: 'http://localhost:1', tenantId: 'a', token: 'synthetic' });
   await assert.rejects(reader.recall({ tenant_id: 'b', query: 'denied' }), /Tenant denied/);
+});
+
+test('exported gateway validates workspace and query budgets before calling HTTP', async () => {
+  let requests = 0;
+  const previous = globalThis.fetch;
+  globalThis.fetch = async () => { requests++; return Response.json({ ok: true, results: [] }); };
+  try {
+    const reader = createGatewayReader({ url: 'https://gateway.example', tenantId: 'a', workspaceId: 'w', token: 'synthetic' });
+    for (const change of [{ workspace_id: 'other' }, { workspace_id: undefined },
+      { query: '' }, { query: ' ' }, { query: 'x'.repeat(16_001) }, { limit: 0 }, { limit: 101 }, { limit: 1.5 }]) {
+      await assert.rejects(reader.recall({ tenant_id: 'a', workspace_id: 'w', query: 'recall', ...change }));
+    }
+    assert.equal(requests, 0);
+    assert.deepEqual(await reader.recall({ tenant_id: 'a', workspace_id: 'w', query: 'recall', limit: 5 }), []);
+    assert.equal(requests, 1);
+    assert.throws(() => createGatewayReader({ url: 'https://gateway.example', tenantId: 'a', workspaceId: ' ', token: 'synthetic' }));
+  } finally { globalThis.fetch = previous; }
 });

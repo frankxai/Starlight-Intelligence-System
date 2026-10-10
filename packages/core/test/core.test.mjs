@@ -65,6 +65,16 @@ test('invalid budgets and scope deny work before invoking provider', async () =>
   assert.equal(calls, 0);
 });
 
+test('recall forwards the host-selected workspace so providers can deny wrong-scope work', async () => {
+  const requests = [];
+  const scoped = { ...options, memory: { recall: async request => { requests.push(request); return [hit('allowed')]; } } };
+  assert.equal((await recallContext('query', scoped)).length, 1);
+  assert.equal(requests[0].tenant_id, options.tenantId);
+  assert.equal(requests[0].workspace_id, options.workspaceId);
+  await recallContext('query', { ...scoped, workspaceId: undefined });
+  assert.equal(requests[1].workspace_id, undefined);
+});
+
 test('abort and timeout deny hung reads; sensitive provider errors stay private', async () => {
   const controller = new AbortController(); controller.abort();
   await assert.rejects(recallContext('query', options, controller.signal));

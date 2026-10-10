@@ -117,6 +117,8 @@ export interface ProviderCapabilities {
 
 export interface RecallRequest {
   tenant_id: string;
+    /** Host-selected scope; providers must enforce their own access policy. */
+    workspace_id?: string;
   query: string;
   limit?: number;
   min_score?: number;

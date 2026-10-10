@@ -28,7 +28,8 @@ for (const [folder, name] of targets) {
   let test = readFileSync(join(root, 'packages', folder, 'test', file), 'utf8');
   test = test.replaceAll("'../dist/index.js'", JSON.stringify(name))
     .replaceAll("'../dist/gateway.js'", JSON.stringify(name + '/gateway'));
-  if (folder === 'core') test = test.replace("new URL('../package.json', import.meta.url)", "new URL('./node_modules/@starlight-intelligence/core/package.json', import.meta.url)");
+  if (folder === 'core' || folder === 'mcp-server') test = test.replace("new URL('../package.json', import.meta.url)",
+    "new URL('../package.json', import.meta.resolve(" + JSON.stringify(name) + "))");
   if (folder === 'mcp-server') test = test.replace("new URL('../dist/cli.js', import.meta.url)", "new URL('./cli.js', import.meta.resolve('@starlight-intelligence/mcp'))");
   writeFileSync(join(cwd, folder + '.test.mjs'), test);
 }

@@ -79,7 +79,8 @@ export async function recallContext(query: string, options: RecallOptions, signa
     rejectWait(new Error('Memory recall timed out'));
   }, timeoutMs);
   try {
-    const request: RecallRequest = { tenant_id: options.tenantId, query, limit: options.limit ?? 5, signal: controller.signal };
+    const request: RecallRequest = { tenant_id: options.tenantId, workspace_id: options.workspaceId,
+      query, limit: options.limit ?? 5, signal: controller.signal };
     const results = await Promise.race([Promise.resolve().then(() => options.memory.recall(request)), cancelled]);
     if (controller.signal.aborted) throw new Error('Memory recall cancelled');
     return projectRecall(results, options);

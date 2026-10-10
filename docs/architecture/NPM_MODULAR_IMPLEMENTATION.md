@@ -260,3 +260,20 @@ version denial, consumer evidence mismatch, workflow identity and configuration
 isolation. Earlier hosted run 38028360568 passed all six jobs for `fdb1e47`; it does
 not verify the subsequent publisher edits. Fresh CI and provider review must be
 recorded for the resulting revision before release.
+
+## Workspace request boundary and MCP release identity
+
+Regression tests reproduced two public-package gaps after the0.2.0 versioning:
+the MCP handshake still advertised0.1.0, and the exported gateway reader accepted
+requests outside its configured workspace. The handshake now reads its installed
+package version, and the gateway denies tenant/workspace mismatch and invalid
+query/result budgets before HTTP. Core's optional `RecallRequest.workspace_id`
+carries the host-selected workspace to providers instead of applying it only to
+returned records. Providers continue to own actual authorization; the single-tenant
+gateway adapter does not add multi-tenant authorization to the operational gateway.
+
+The official client and installed-archive consumer tests verify server identity,
+scope denial before HTTP and a valid matching request. Core tests verify workspace
+propagation. A local build was held at5597MB/8192required, so fresh compilation and
+installed-consumer verification run in hosted CI. Earlier green results retain
+their earlier source boundaries; this edit requires a new exact-revision review.

@@ -16,6 +16,12 @@ scope to its results. `--workspace` similarly labels that dedicated gateway scop
 Use separate gateways or an independently authorized provider for multiple scopes.
 The sample port is illustrative; pass the actual gateway origin.
 
+The exported gateway reader requires request tenant/workspace to match its
+host-configured scope before sending HTTP. Core forwards the host-selected
+workspace in `RecallRequest.workspace_id`; providers still own access control.
+Blank or oversized queries and invalid result limits are rejected before HTTP.
+The MCP initialization version follows the installed package's Changesets version.
+
 The CLI serves read-only JSON-RPC MCP over stdio. It writes no operational logs
 to stdout. HTTP is permitted only for loopback origins; remote gateways require
 HTTPS. Redirects, URL credentials, paths, and oversized responses are rejected.

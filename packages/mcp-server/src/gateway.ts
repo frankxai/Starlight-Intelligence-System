@@ -14,10 +14,16 @@ export function createGatewayReader(options: GatewayOptions): Pick<MemoryProvide
   const local = ['localhost', '127.0.0.1', '[::1]'].includes(base.hostname);
   if (base.username || base.password || base.search || base.hash || base.pathname !== '/'
       || (base.protocol !== 'https:' && !(local && base.protocol === 'http:'))
-      || !options.token.trim() || !options.tenantId.trim()) throw new Error('Invalid gateway configuration');
+      || !options.token.trim() || !options.tenantId.trim()
+      || (options.workspaceId !== undefined && !options.workspaceId.trim())) throw new Error('Invalid gateway configuration');
   return {
     async recall(request): Promise<RecallResult[]> {
       if (request.tenant_id !== options.tenantId) throw new Error('Tenant denied');
+      if (request.workspace_id !== options.workspaceId) throw new Error('Workspace denied');
+      if (typeof request.query !== 'string' || !request.query.trim() || request.query.length > 16_000
+          || (request.limit !== undefined && (!Number.isInteger(request.limit) || request.limit < 1 || request.limit > 100))) {
+        throw new Error('Invalid gateway query or result budget');
+      }
       const response = await fetch(new URL('/v1/memory/search', base), {
         method: 'POST', redirect: 'error', signal: request.signal,
         headers: { authorization: `Bearer ${options.token}`, 'content-type': 'application/json' },

@@ -1,6 +1,10 @@
 import { McpServer } from '@modelcontextprotocol/server';
+import { readFileSync } from 'node:fs';
 import * as z from 'zod/v4';
 import { recallContext, SanitizationGateway, type RecallOptions, type MemoryProvider } from '@starlight-intelligence/core';
+
+// package.json is also included in installed tarballs; Changesets owns this version.
+const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { version: string };
 
 export interface StarlightMcpOptions extends RecallOptions {
   memory: Pick<MemoryProvider, 'recall'> & Partial<Pick<MemoryProvider, 'remember' | 'forget'>>;
@@ -15,7 +19,7 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
   if (options.allowDelete && options.workspaceId !== undefined) {
     throw new Error('The provider deletion contract does not authorize workspace-scoped deletion');
   }
-  const server = new McpServer({ name: 'starlight-memory', version: '0.1.0' });
+  const server = new McpServer({ name: 'starlight-memory', version });
   const sanitizer = options.sanitizer ?? new SanitizationGateway();
   server.registerTool('starlight_memory_recall', {
     description: 'Recall sanitized memory in the host-authorized tenant and workspace. Private, secret and regulated records are excluded.',
