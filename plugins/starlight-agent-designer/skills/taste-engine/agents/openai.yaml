@@ -1,0 +1,6 @@
+interface:
+  display_name: "Taste Engine"
+  short_description: "Turn qualitative intent into grounded, independent evaluation."
+  default_prompt: "Use $taste-engine to define hard gates and a grounded judge loop for this artifact."
+policy:
+  allow_implicit_invocation: true

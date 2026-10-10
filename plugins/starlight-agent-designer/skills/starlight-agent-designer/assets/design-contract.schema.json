@@ -1,0 +1,306 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "status",
+    "purpose",
+    "owner",
+    "legal",
+    "authority",
+    "tools",
+    "memory",
+    "budget",
+    "quality",
+    "runtime"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9:/_.-]{0,159}$"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "pilot"
+      ]
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 12
+    },
+    "owner": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 3
+    },
+    "legal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "jurisdictions",
+        "actorRole",
+        "riskClass",
+        "reviewRef",
+        "obligations",
+        "notes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "unknown",
+            "screened",
+            "prohibited"
+          ]
+        },
+        "jurisdictions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "actorRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "riskClass": {
+          "enum": [
+            "unknown",
+            "not-applicable",
+            "limited",
+            "high",
+            "prohibited"
+          ]
+        },
+        "reviewRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 3
+        },
+        "obligations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 12
+        }
+      }
+    },
+    "authority": {
+      "enum": [
+        "observe",
+        "prepare",
+        "reversible-execute"
+      ]
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "effect",
+          "resources"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9:/_.-]{0,159}$"
+          },
+          "effect": {
+            "enum": [
+              "read",
+              "prepare",
+              "write",
+              "destructive"
+            ]
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9:/_.-]{0,159}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        }
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "read",
+        "write",
+        "retentionDays",
+        "purpose"
+      ],
+      "properties": {
+        "read": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9:/_.-]{0,159}$"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "write": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9:/_.-]{0,159}$"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "retentionDays": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3650
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxCalls",
+        "maxCostMicros",
+        "maxElapsedMs",
+        "maxDelegates"
+      ],
+      "properties": {
+        "maxCalls": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "maxCostMicros": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "maxElapsedMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400000
+        },
+        "maxDelegates": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acceptanceTests",
+        "requiredEvidence",
+        "stopConditions"
+      ],
+      "properties": {
+        "acceptanceTests": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "requiredEvidence": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "contract",
+              "behavioral",
+              "artifact",
+              "security",
+              "economic",
+              "legal",
+              "integration"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "stopConditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "policyGateway",
+        "budgetLedger",
+        "revocation",
+        "notes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "unintegrated",
+            "reference"
+          ]
+        },
+        "policyGateway": {
+          "type": "string",
+          "minLength": 1
+        },
+        "budgetLedger": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revocation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 20
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Starlight Agent Designer Contract",
+  "description": "A design/pilot contract; structural validity is not permission or compliance."
+}
