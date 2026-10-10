@@ -57,6 +57,9 @@ export function createGatewayReader(options: GatewayOptions): Pick<MemoryProvide
         const row = item as { entry?: Record<string, unknown>; score?: number };
         const entry = row.entry;
         if (!entry || typeof entry.id !== 'string' || typeof entry.content !== 'string' || typeof row.score !== 'number') return [];
+        // Invalid metadata must not erase retention or turn malformed private tags into shareable facts.
+        if (entry.tags !== undefined && (!Array.isArray(entry.tags) || entry.tags.some(tag => typeof tag !== 'string'))) return [];
+        if (entry.expiresAt !== undefined && (typeof entry.expiresAt !== 'string' || !Number.isFinite(Date.parse(entry.expiresAt)))) return [];
         const tags = Array.isArray(entry.tags) ? entry.tags.filter((t): t is string => typeof t === 'string') : [];
         const privateTagged = tags.some(t => /^(?:privacy:)?(?:private|secret|regulated)$/i.test(t));
         // Unclassified operational gateway memories are shareable only with explicit host opt-in.

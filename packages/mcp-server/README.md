@@ -28,6 +28,9 @@ HTTPS. Redirects, URL credentials, paths, and oversized responses are rejected.
 Only public-tagged records are returned by default. `--allow-shareable` permits
 unclassified gateway facts after host review. Private/secret/regulated tags and
 expired entries remain excluded. Records are projected and sanitized by core.
+Present expiry values must be parseable strings, and present tags must be arrays
+of strings. Malformed metadata drops the record even when shareable recall is
+authorized; it cannot silently remove retention or erase a private tag.
 
 For an in-process provider:
 

@@ -104,3 +104,25 @@ test('exported gateway validates workspace and query budgets before calling HTTP
     assert.throws(() => createGatewayReader({ url: 'https://gateway.example', tenantId: 'a', workspaceId: ' ', token: 'synthetic' }));
   } finally { globalThis.fetch = previous; }
 });
+
+test('gateway excludes malformed expiry and privacy tags even when shareable recall is authorized', { timeout: 15_000 }, async () => {
+  const previous = globalThis.fetch;
+  const base = { id: 'valid', content: 'reviewed fixture', tags: ['public'] };
+  const entries = [base, { ...base, id: 'unclassified', tags: undefined },
+    ...[null, 42, true, {}, '', 'not-a-date'].map((expiresAt, i) => ({ ...base, id: 'invalid-expiry-' + i, expiresAt })),
+    ...[null, 'private', {}, ['public', 42]].map((tags, i) => ({ ...base, id: 'invalid-tags-' + i, tags })),
+    { ...base, id: 'private', tags: ['public', 'private'] },
+    { ...base, id: 'expired', expiresAt: '2000-01-01T00:00:00Z' }];
+  globalThis.fetch = async () => Response.json({ ok: true, results: entries.map(entry => ({ score: 1, entry })) });
+  let connection;
+  try {
+    const memory = createGatewayReader({ url: 'https://gateway.example', token: 'synthetic', tenantId: 'a', workspaceId: 'w' });
+    const rows = await memory.recall({ tenant_id: 'a', workspace_id: 'w', query: 'query' });
+    assert.deepEqual(rows.map(row => row.record.memory_id), ['valid', 'unclassified', 'private', 'expired']);
+    assert.equal(rows.find(row => row.record.memory_id === 'expired').record.retention_until, '2000-01-01T00:00:00Z');
+    connection = await connected({ memory, tenantId: 'a', workspaceId: 'w', allowShareable: true });
+    const result = await connection.client.callTool({ name: 'starlight_memory_recall', arguments: { query: 'query' } });
+    assert.notEqual(result.isError, true);
+    assert.deepEqual(result.structuredContent.memories.map(row => row.id), ['valid', 'unclassified']);
+  } finally { if (connection) await connection.close(); globalThis.fetch = previous; }
+});
