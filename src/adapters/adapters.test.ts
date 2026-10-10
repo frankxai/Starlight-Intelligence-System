@@ -119,6 +119,15 @@ describe('regression: no phantom MCP servers', () => {
     });
   });
 
+  it('antigravity generated guidance does not advertise unverified runtime activation', () => {
+    const adapter = createAdapter('antigravity');
+    const files = adapter.generateAllAdapterFiles!(ENTRIES);
+    const output = files.map(file => file.content + (file.description ?? '')).join('\n');
+    assert.doesNotMatch(output, /define_subagent|invoke_subagent|browser_control|Swarm-aware|executable multi-agent|dynamically discovered|STARLIGHT_MCP_SWARM/);
+    assert.match(output, /does not grant permissions/);
+    assert.match(output, /does not discover or activate native tools/);
+  });
+
   it('grok getMcpConfig declares only starlight-substrate (no never-built servers)', () => {
     const cfg = createAdapter('grok').getMcpConfig('dist/mcp-server.js') as { mcpServers: Record<string, unknown> };
     const servers = Object.keys(cfg.mcpServers);
