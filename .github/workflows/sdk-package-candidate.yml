@@ -52,7 +52,7 @@ jobs:
       - name: Check types and instruction displays
         run: npm run lint && npm run agents:harness-check
       - name: Build and run prepublication checks
-        run: npm run build && npm run test:substrate && npm run test:terminal
+        run: npm run build && npm run test:substrate && npm run test:terminal && node --import tsx --test src/adapters/adapters.test.ts
       - name: Pack and verify an independent installation
         shell: bash
         run: |
@@ -74,6 +74,10 @@ jobs:
           const installed = join(process.env.SDK_CONSUMER, 'node_modules/@arcanea/starlight-intelligence-system');
           const manifest = JSON.parse(readFileSync(join(installed, 'package.json'), 'utf8'));
           if (manifest.version !== report.version || manifest.name !== report.name) throw new Error('Installed package identity differs');
+          const { createAdapter } = await import(pathToFileURL(join(installed, manifest.exports['./adapters'].import)).href);
+          const adapter = createAdapter('antigravity');
+          if (JSON.stringify(adapter.getMcpConfig('')) !== JSON.stringify({ mcpServers: {} })) throw new Error('Installed default MCP config is active');
+          if (JSON.stringify(adapter.getMcpConfig('entry point.js')) !== JSON.stringify({ mcpServers: { 'starlight-substrate': { command: 'node', args: ['entry point.js'] } } })) throw new Error('Installed explicit MCP entry differs');
           for (const name of ['runtime-bridge', 'terminal-runtime', 'creator-workspace', 'ecosystem']) {
             await import(pathToFileURL(join(installed, manifest.exports['./' + name].import)).href);
           }
@@ -110,6 +114,10 @@ jobs:
           const installed = join(process.env.SDK_CONSUMER, 'node_modules/@starlight-intelligence/system');
           const manifest = JSON.parse(readFileSync(join(installed, 'package.json'), 'utf8'));
           if (manifest.name !== '@starlight-intelligence/system' || manifest.version !== report.version) throw new Error('Organization identity differs');
+          const { createAdapter } = await import(pathToFileURL(join(installed, manifest.exports['./adapters'].import)).href);
+          const adapter = createAdapter('antigravity');
+          if (JSON.stringify(adapter.getMcpConfig('')) !== JSON.stringify({ mcpServers: {} })) throw new Error('Installed organization default MCP config is active');
+          if (JSON.stringify(adapter.getMcpConfig('entry point.js')) !== JSON.stringify({ mcpServers: { 'starlight-substrate': { command: 'node', args: ['entry point.js'] } } })) throw new Error('Installed organization MCP entry differs');
           for (const name of ['runtime-bridge', 'terminal-runtime', 'creator-workspace', 'ecosystem']) {
             await import(pathToFileURL(join(installed, manifest.exports['./' + name].import)).href);
           }
