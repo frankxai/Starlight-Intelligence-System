@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "attestation": "Built on SIP",
+  "templates": [
+    {
+      "id": "template_solopreneur_founder",
+      "name": "Solopreneur Founder Fleet",
+      "version": "1.0.0",
+      "tier": "sovereign",
+      "target_user": "Solo founders, technical bootstrappers, one-person companies",
+      "core_agents": [
+        "starlight-orchestrator",
+        "starlight-prime",
+        "starlight-architect",
+        "starlight-sentinel",
+        "starlight-business",
+        "starlight-visionary"
+      ],
+      "autonomic_layer": "starlight-queen",
+      "storage_tiers": ["local", "blockchain_anchored"],
+      "thin_overlays": ["langfuse", "openrouter"],
+      "license": "MIT"
+    },
+    {
+      "id": "template_creative_media_studio",
+      "name": "Creative Media & Content Fleet",
+      "version": "1.0.0",
+      "tier": "sovereign",
+      "target_user": "AI-native creators, filmmakers, audio producers, publishing houses",
+      "core_agents": [
+        "starlight-envoy",
+        "starlight-weaver",
+        "starlight-social-visual-director",
+        "starlight-composition",
+        "starlight-production"
+      ],
+      "autonomic_layer": "starlight-queen",
+      "storage_tiers": ["local", "managed_cloud"],
+      "thin_overlays": ["openrouter", "fal_ai", "runway"],
+      "license": "MIT"
+    },
+    {
+      "id": "template_embodied_robotics",
+      "name": "Embodied Robot & Physical Fleet",
+      "version": "1.0.0",
+      "tier": "subscription",
+      "target_user": "Robotics researchers, autonomous hardware builders, industrial operators",
+      "core_agents": [
+        "starlight-orchestrator",
+        "starlight-sentinel",
+        "starlight-robotics-bridge"
+      ],
+      "autonomic_layer": "starlight-queen",
+      "actuator_middleware": ["ros2", "zenoh"],
+      "safety_envelope": "fail_closed_emergency_stop",
+      "storage_tiers": ["local", "blockchain_anchored"],
+      "license": "Sovereign Plus"
+    }
+  ]
+}

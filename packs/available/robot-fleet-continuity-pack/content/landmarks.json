@@ -1,0 +1,14 @@
+[
+  {
+    "id": "lm_home_dock",
+    "name": "Central Charging & Recovery Dock",
+    "category": "charging_station",
+    "coordinates": { "x": 0.0, "y": 0.0, "z": 0.0, "frameId": "map" }
+  },
+  {
+    "id": "lm_hazard_furnace",
+    "name": "High-Temperature Thermal Boundary",
+    "category": "hazard_zone",
+    "coordinates": { "x": 12.5, "y": 8.0, "z": 0.0, "frameId": "map" }
+  }
+]

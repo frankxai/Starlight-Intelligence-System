@@ -122,26 +122,48 @@ const SUPPORTER_TIERS: Tier[] = [
   },
 ];
 
+const IMMERSION_URL = "mailto:hello@starlightintelligence.org?subject=Solo%20Founder%20Immersion%20Ticket";
+
 const COMMERCIAL: Tier[] = [
   {
-    eyebrow: "Open-core · self-serve",
-    name: "Pro",
-    price: "$25",
-    cadence: "per seat / month",
+    eyebrow: "Modular Kernel Subscription",
+    name: "Sovereign Plus Packs",
+    price: "$29",
+    cadence: "per month · self-serve",
     blurb:
-      "For teams that want the substrate hosted. Gates only the multiplayer + marginal-cost features — never your local memory.",
+      "Subscription modular packs for sovereign builders who adapt fast. Private package updates, enhanced human gates, and durability extensions.",
     features: [
-      "Hosted shared-vault sync across the team",
-      "Managed Hermes runners (governed execution)",
-      "SSO + team governance",
-      "Semantic search (sqlite-vec) as it ships",
-      "Export everything, always — zero lock-in",
+      "Durable Blockchain Vault Pack (Arweave/IPFS Merkle anchoring)",
+      "Starlight Queen Autonomic Engine (dreaming loops & fail-closed gates)",
+      "Robot Fleet Continuity Bridge (ROS2 & Zenoh actuator overlay)",
+      "Thin observability hooks (Langfuse EU & OpenRouter routing)",
+      "Private npm & GitHub releases with verified SIP attestation",
     ],
-    cta: "Join the Pro waitlist",
+    cta: "Subscribe to Modular Packs",
     href: PRO_WAITLIST_URL,
     accentText: "text-fuchsia-300",
     accentBorder: "border-fuchsia-500/[0.22]",
     accentBg: "bg-fuchsia-500/[0.04]",
+  },
+  {
+    eyebrow: "Productized 1-Day Immersion",
+    name: "One Person, One Attested Fleet",
+    price: "$997",
+    cadence: "self-paced · $2,497 live cohort",
+    blurb:
+      "Go from solo builder to commanding a 100-agent sovereign estate in one intensive day. No enterprise handholding, pure self-serve leverage.",
+    features: [
+      "Complete 4-layer blueprint + 144-agent registry composition",
+      "Full local-first memory palace setup & dreaming loop wiring",
+      "Thin infrastructure checklist (local vs cloud vs robot nodes)",
+      "Fail-closed safety gates & cryptographic run receipts",
+      "Lifetime access to session recordings + community harness updates",
+    ],
+    cta: "Get Immersion Access",
+    href: IMMERSION_URL,
+    accentText: "text-cyan-300",
+    accentBorder: "border-cyan-500/[0.22]",
+    accentBg: "bg-cyan-500/[0.04]",
   },
   {
     eyebrow: "Done-for-you · high-touch",
@@ -297,21 +319,20 @@ export default function PricingPage() {
 
       {/* Commercial / bigger */}
       <section className="relative border-b border-white/[0.08]">
-        <div className="mx-auto max-w-5xl px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
           <div className="mb-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-fuchsia-300">
-              Building something bigger?
+              Modular Packs & Immersions
             </p>
             <h2 className="mt-3 font-[family-name:var(--font-fraunces)] text-[28px] font-semibold text-white md:text-[34px]">
-              Host it, or have us build it.
+              Sovereign packs, immersions, or custom estates.
             </h2>
             <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-slate-400">
-              The supporter license keeps the lights on. These are the
-              commercial layers — for teams that want the substrate managed, or
-              principals who want a sovereign estate commissioned end-to-end.
+              The supporter license keeps the lights on. These are the productized
+              leverage layers for solopreneurs who command their own attested fleets.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {COMMERCIAL.map((t) => (
               <TierCard key={t.name} tier={t} />
             ))}

@@ -1,0 +1,14 @@
+{
+  "id": "starlight-queen-orchestrator-pack",
+  "name": "Starlight Queen Orchestrator Pack",
+  "version": "0.1.0",
+  "kind": "agent",
+  "permissions": [
+    "fs:read:repo",
+    "fs:write:repo",
+    "task-scheduler:register",
+    "network:fetch:telemetry"
+  ],
+  "licenseTier": "subscription",
+  "manifestSha": "21fb138836afe99f30c54497022d3e03c39cfdbbcb6cacbc136c91a905b6b45d"
+}

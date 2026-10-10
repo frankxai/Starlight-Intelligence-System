@@ -452,4 +452,40 @@ export type {
   ExperimentRunReport,
 } from './telemetry/index.js';
 
+// v9.0 — Sovereign Durability, Robot Fleet Continuity & Crystalite Queen
+export { SovereignBlockchainAnchor } from './durability/blockchain-anchor.js';
+export type {
+  StorageDurabilityTier,
+  VaultSnapshotItem,
+  BlockchainAnchorReceipt,
+} from './durability/blockchain-anchor.js';
+
+export { RobotContinuityKernel } from './robotics/continuity-kernel.js';
+export type {
+  RobotFleetNode,
+  RobotActuatorCommand,
+  SpatialLandmark,
+  SpatialCoordinates,
+  ActuatorMiddleware,
+  ActuatorStatus,
+  SafetyInvariantResult,
+} from './robotics/continuity-kernel.js';
+
+export { StarlightQueen } from './orchestration/starlight-queen.js';
+export type {
+  QueenTaskAction,
+  QueenEscalationGate,
+  AutonomicCycleReport,
+  ActionRiskTier,
+  ThinTelemetryHook,
+} from './orchestration/starlight-queen.js';
+
+export { MarketplaceCatalog } from './marketplace/catalog.js';
+export type {
+  MarketplacePackItem,
+  MarketplaceLicenseTier,
+  MarketplaceValidationResult,
+} from './marketplace/catalog.js';
+
+
 

@@ -36,6 +36,46 @@
       ],
       "licenseTier": "free",
       "manifestSha": "7e39ceef388c746dd9d18b114b672cf0e92aa39846881a9d94e8b4c7971dbbd8"
+    },
+    {
+      "id": "durable-blockchain-vault-pack",
+      "name": "Durable Blockchain Vault Pack",
+      "version": "0.1.0",
+      "kind": "claw",
+      "permissions": [
+        "fs:read:repo",
+        "fs:write:vaults",
+        "network:fetch:blockchain-rpc"
+      ],
+      "licenseTier": "subscription",
+      "manifestSha": "ade34f36d23fd7027c231309e281bd1cc453b277c8c03c0e46aa9db0948ad9a4"
+    },
+    {
+      "id": "robot-fleet-continuity-pack",
+      "name": "Robot Fleet Continuity Pack",
+      "version": "0.1.0",
+      "kind": "claw",
+      "permissions": [
+        "fs:read:repo",
+        "network:fetch:robot-middleware",
+        "task-scheduler:register"
+      ],
+      "licenseTier": "subscription",
+      "manifestSha": "ab2f779daf9afc7f5d6ef53e3daa7feaa9ff8319580040b892aa39a773f6c3f2"
+    },
+    {
+      "id": "starlight-queen-orchestrator-pack",
+      "name": "Starlight Queen Orchestrator Pack",
+      "version": "0.1.0",
+      "kind": "agent",
+      "permissions": [
+        "fs:read:repo",
+        "fs:write:repo",
+        "task-scheduler:register",
+        "network:fetch:telemetry"
+      ],
+      "licenseTier": "subscription",
+      "manifestSha": "21fb138836afe99f30c54497022d3e03c39cfdbbcb6cacbc136c91a905b6b45d"
     }
   ]
 }

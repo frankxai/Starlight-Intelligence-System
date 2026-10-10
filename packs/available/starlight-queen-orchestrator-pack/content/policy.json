@@ -1,0 +1,15 @@
+{
+  "protocol": "SIP/v1.0",
+  "tier": "subscription",
+  "autonomic_interval_minutes": 15,
+  "fail_closed_categories": [
+    "money_movement",
+    "credential_access",
+    "deployment"
+  ],
+  "autonomous_categories": [
+    "memory_consolidation",
+    "health_sweep"
+  ],
+  "attestation": "Built on SIP"
+}

@@ -1,0 +1,48 @@
+{
+  "title": "Starlight Intelligence System — Sovereign GTM & Modular Expansion",
+  "owner": "frankxai",
+  "repository": "frankxai/Starlight-Intelligence-System",
+  "columns": [
+    "Backlog / Triage",
+    "Spec & Architecture",
+    "In Progress (Open-Core & Packs)",
+    "Human Gate / Attestation",
+    "Done / Shipped"
+  ],
+  "items": [
+    {
+      "issue_number": 348,
+      "title": "[Epic] Sovereign Vault Durability: Local, Managed Cloud, and Blockchain-Anchored Permanence",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/issues/348",
+      "column": "In Progress (Open-Core & Packs)"
+    },
+    {
+      "issue_number": 349,
+      "title": "[Epic] Robot Fleet Continuity: Unified Starlight Kernel for Embodied & Autonomous Agent Fleets",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/issues/349",
+      "column": "In Progress (Open-Core & Packs)"
+    },
+    {
+      "issue_number": 350,
+      "title": "[Epic] Starlight Queen Orchestration: Autonomous Single-Operator Fleet Engine & Fail-Closed Gateways",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/issues/350",
+      "column": "In Progress (Open-Core & Packs)"
+    },
+    {
+      "issue_number": 351,
+      "title": "[Epic] Starlight Sovereign Marketplace: Curated Hub for Third-Party Skills, Harness Configs & Attested Packs",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/issues/351",
+      "column": "In Progress (Open-Core & Packs)"
+    },
+    {
+      "issue_number": 352,
+      "title": "[Epic] Subscription-Facing Modular Packs: Managed Durability, Fleet Mesh & Enterprise Benevolence Governance",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/issues/352",
+      "column": "In Progress (Open-Core & Packs)"
+    }
+  ],
+  "human_gate": {
+    "required_scope": "project,read:project",
+    "command": "gh auth refresh -s project,read:project"
+  }
+}

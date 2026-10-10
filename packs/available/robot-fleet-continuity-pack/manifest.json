@@ -1,0 +1,13 @@
+{
+  "id": "robot-fleet-continuity-pack",
+  "name": "Robot Fleet Continuity Pack",
+  "version": "0.1.0",
+  "kind": "claw",
+  "permissions": [
+    "fs:read:repo",
+    "network:fetch:robot-middleware",
+    "task-scheduler:register"
+  ],
+  "licenseTier": "subscription",
+  "manifestSha": "ab2f779daf9afc7f5d6ef53e3daa7feaa9ff8319580040b892aa39a773f6c3f2"
+}

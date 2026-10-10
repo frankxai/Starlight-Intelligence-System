@@ -1,0 +1,13 @@
+{
+  "id": "durable-blockchain-vault-pack",
+  "name": "Durable Blockchain Vault Pack",
+  "version": "0.1.0",
+  "kind": "claw",
+  "permissions": [
+    "fs:read:repo",
+    "fs:write:vaults",
+    "network:fetch:blockchain-rpc"
+  ],
+  "licenseTier": "subscription",
+  "manifestSha": "ade34f36d23fd7027c231309e281bd1cc453b277c8c03c0e46aa9db0948ad9a4"
+}

@@ -41,6 +41,21 @@ Six invariants. If any of these silently change, the substrate has stopped being
 - Vertical registry in `VERTICALS.md` — append-only with dormancy markers
 - Command suite in `.claude/commands/` — add, deprecate, never silently break
 
+## Solopreneur Posture & Horizon Continuity (2026 Expansion)
+
+1. **One Person, One Attested Fleet.**
+   Prioritize sovereign solo builders who adapt fast. Avoid heavy enterprise handholding and seat-based rent extraction. Deliver value through productized 1-day immersions and self-serve modular packs rather than custom services.
+
+2. **Unlock Maximum Capability Inside Clear Gates.**
+   Agents never autonomously execute high-stakes irreversible actions (money movement, external deployments, credential alteration). Autonomy fails closed; the human operator remains the final, sovereign gate.
+
+3. **Continuous Substrate: From Pixels to Motors.**
+   Software agents and embodied robot fleets share one unified cognitive kernel, persistent memory, and benevolence charter. Only the actuator differs (terminals vs ROS2/Zenoh).
+
+4. **Decentralized Permanence & Horizon Intention.**
+   Memory and Horizon Vault notes belong to the continuity of consciousness, not temporary cloud leases. Memory snapshots are anchored to decentralized blockchain storage (Arweave/IPFS), embedding gratitude, care, and verifiable alignment into the permanent record of intelligence.
+
+
 ## Test
 
 When in doubt, ask: *would Frank Riemer in 2025 recognize this as the same substrate he authored?* If yes, proceed. If the change requires a rewrite of the founder's frame to match, you are drifting — name it as a fork at the SOUL layer and ship a v2.
