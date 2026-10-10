@@ -28,7 +28,7 @@ export class SanitizationGateway {
     /\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|rediss?):\/\/[^\s"'<>]+/gi,
     /(?:AIza[0-9A-Za-z-_]{35})/g, // Google API keys
     /(?<![A-Za-z0-9_=-])eyJ[A-Za-z0-9_=-]+\.[A-Za-z0-9_=-]+(?:\.[A-Za-z0-9_=-]+)?/g, // JWT base64url token boundaries
-    /bearer\s+[a-zA-Z0-9\-\._~]+/gi, // Bearer tokens
+    /bearer\s+[a-zA-Z0-9._~+\/-]+=*/gi, // RFC 6750 b64token, including padding
     /password["']?\s*:\s*["']([^"']+)["']/gi, // Passwords in JSON/objects
     /private_key["']?\s*:\s*["']([^"']+)["']/gi, // Private keys
   ];
@@ -98,7 +98,7 @@ export class SanitizationGateway {
     }
     seen.add(context);
 
-    const sanitized: Record<string, unknown> = {};
+    const sanitized = (Array.isArray(context) ? new Array<unknown>(context.length) : {}) as unknown as Record<string, unknown>;
     for (const [key, value] of Object.entries(context)) {
       let next: unknown;
       if (this.options.scrubSecrets && SanitizationGateway.SECRET_FIELD.test(key)) {

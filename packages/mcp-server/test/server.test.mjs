@@ -202,6 +202,26 @@ test('gateway privacy tags with surrounding whitespace override public tags befo
   } finally { globalThis.fetch = previous; }
 });
 
+test('unknown privacy classifications remain private despite explicit sharing permission', { timeout: 15_000 }, async () => {
+  const previous = globalThis.fetch;
+  globalThis.fetch = async () => Response.json({ ok: true, results: [
+    { score: 1, entry: { id: 'public', content: 'public fixture', tags: ['privacy:public'] } },
+    ...['privacy:secret-v2', 'privacy: private', 'privacy: public', 'PRIVACY:future-class'].map((tag, i) => ({
+      score: 1, entry: { id: 'restricted-' + i, content: 'restricted fixture', tags: ['public', 'private-shareable', tag] },
+    })),
+  ] });
+  try {
+    const memory = createGatewayReader({ url: 'https://gateway.example', token: 'synthetic', tenantId: 'a' });
+    const connection = await connected({ memory, tenantId: 'a', allowShareable: true });
+    try {
+      const result = await connection.client.callTool({ name: 'starlight_memory_recall', arguments: { query: 'query' } });
+      assert.notEqual(result.isError, true);
+      assert.deepEqual(result.structuredContent.memories.map(row => row.id), ['public']);
+      assert.ok(!JSON.stringify(result).includes('restricted fixture'));
+    } finally { await connection.close(); }
+  } finally { globalThis.fetch = previous; }
+});
+
 test('private-shareable overrides public and still requires an explicit host sharing grant', { timeout: 15_000 }, async () => {
   const previous = globalThis.fetch;
   globalThis.fetch = async () => Response.json({ ok: true, results: [

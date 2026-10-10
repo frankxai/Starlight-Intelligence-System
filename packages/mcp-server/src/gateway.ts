@@ -66,7 +66,10 @@ export function createGatewayReader(options: GatewayOptions): Pick<MemoryProvide
         if (entry.tags !== undefined && (!Array.isArray(entry.tags) || entry.tags.some(tag => typeof tag !== 'string'))) return [];
         if (entry.expiresAt !== undefined && (typeof entry.expiresAt !== 'string' || !Number.isFinite(Date.parse(entry.expiresAt)))) return [];
         const tags = Array.isArray(entry.tags) ? entry.tags.map(tag => (tag as string).trim()) : [];
-        const privateTagged = tags.some(t => /^(?:privacy:)?(?:private|secret|regulated)$/i.test(t));
+        // Unknown or malformed privacy classifications must never gain sharing permission.
+        const unknownPrivacy = tags.some(t => /^privacy:/i.test(t)
+          && !/^privacy:(?:public|private-shareable|private|secret|regulated)$/i.test(t));
+        const privateTagged = unknownPrivacy || tags.some(t => /^(?:privacy:)?(?:private|secret|regulated)$/i.test(t));
         // Unclassified operational gateway memories are shareable only with explicit host opt-in.
         const shareableTagged = tags.some(t => /^(?:privacy:)?private-shareable$/i.test(t));
         const privacy = privateTagged ? 'private' : shareableTagged ? 'private-shareable'

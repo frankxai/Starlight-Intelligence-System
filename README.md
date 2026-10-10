@@ -236,7 +236,7 @@ First, seed your vault directory so the system has somewhere to read from
 (a fresh install has no `~/.starlight/vaults` yet):
 
 ```bash
-# From a git clone of this repo (npm registry is at stale v6.0.1 — see note above):
+# From a git clone of this repo:
 node dist/cli.js init --vaults
 # → seeds the six JSONL vaults in ~/.starlight/vaults (welcome entry + public examples)
 ```
@@ -267,7 +267,7 @@ Restart Claude Code. You now have thirteen `sis_*` tools available in every sess
 **Option 2: As a library**
 
 ```bash
-npm install @arcanea/starlight-intelligence-system  # registry serves v6.0.1 — for v8.x, install from the git clone until republished
+npm install @arcanea/starlight-intelligence-system@8.5.1
 ```
 
 ```ts

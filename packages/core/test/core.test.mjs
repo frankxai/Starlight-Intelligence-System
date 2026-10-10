@@ -7,6 +7,25 @@ import { projectRecall, recallContext, SanitizationGateway } from '../dist/index
 const memory = { recall: async () => [] };
 const options = { memory, tenantId: 'tenant-a', workspaceId: 'workspace-a' };
 
+test('bearer redaction consumes the complete RFC 6750 token alphabet and padding', () => {
+  const sanitizer = new SanitizationGateway();
+  for (const token of ['+fixture/fixture==', 'fixture+fixture/fixture==', 'fixture._~-fixture/+=']) {
+    assert.equal(sanitizer.sanitize(`Authorization: Bearer ${token}`), 'Authorization: [REDACTED]');
+  }
+});
+
+test('context sanitization preserves nested arrays, sparse lengths and cycle safety', () => {
+  const sparse = new Array(3); sparse[0] = 'fixture@example.org';
+  const cycle = []; cycle.push(cycle);
+  const result = new SanitizationGateway().sanitizeContext({
+    items: ['safe', { token: 'fixture', nested: [false, 42, null] }], sparse, cycle,
+  });
+  assert.deepEqual(result.items, ['safe', { token: '[REDACTED]', nested: [false, 42, null] }]);
+  assert.ok(Array.isArray(result.sparse)); assert.equal(result.sparse.length, 3);
+  assert.equal(result.sparse[0], '[REDACTED]'); assert.equal(1 in result.sparse, false);
+  assert.deepEqual(result.cycle, [{ __circular: true }]);
+});
+
 test('adversarial non-email and token runs finish within a bounded subprocess deadline', () => {
   const entry = import.meta.resolve('../dist/index.js');
   const script = `import { SanitizationGateway } from ${JSON.stringify(entry)};

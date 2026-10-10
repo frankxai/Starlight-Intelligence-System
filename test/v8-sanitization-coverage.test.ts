@@ -27,6 +27,19 @@ import { SanitizationGateway } from "../src/sanitization.js";
 
 const MASK = "[REDACTED]";
 
+test('legacy bearer redaction consumes padding and preserves sanitized array shapes', () => {
+  const sanitizer = new SanitizationGateway();
+  for (const token of ['+fixture/fixture==', 'fixture+fixture/fixture==']) {
+    assert.equal(sanitizer.sanitize(`Authorization: Bearer ${token}`), 'Authorization: [REDACTED]');
+  }
+  const sparse = new Array(3); sparse[0] = 'fixture@example.org';
+  const result = sanitizer.sanitizeContext({ items: [false, { token: 'fixture' }, ['safe']], sparse });
+  assert.deepEqual(result.items, [false, { token: MASK }, ['safe']]);
+  assert.ok(Array.isArray(result.sparse));
+  assert.equal((result.sparse as unknown[]).length, 3);
+  assert.equal((result.sparse as unknown[])[0], MASK);
+});
+
 function expectScrubbed(label: string, input: string): void {
   const g = new SanitizationGateway({ maskString: MASK });
   const out = g.sanitize(input);
