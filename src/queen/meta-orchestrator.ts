@@ -211,6 +211,17 @@ export class StarlightQueen {
       });
     }
 
+    // Always ensure connection to Infinite Agent Canvas
+    if (!connectors.some((c) => c.name === 'starlight_agent_canvas')) {
+      connectors.push({
+        name: 'starlight_agent_canvas',
+        protocol: 'mcp_stdio',
+        endpointOrCommand: 'starlight-agent-canvas/packages/mcp/dist/cli.js',
+        description: 'Infinite visual research and multimodal DAG workflow canvas for spatial reasoning and video/image graph assembly',
+        permissions: ['read_fs', 'write_fs', 'exec_cmd'],
+      });
+    }
+
     return connectors;
   }
 
