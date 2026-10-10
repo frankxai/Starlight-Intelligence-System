@@ -14,7 +14,7 @@ export class InMemoryLocalCoreProvider implements MemoryProvider {
   private readonly records = new Map<string, SISMemoryRecord>();
 
   async remember(record: SISMemoryRecord): Promise<SISMemoryRecord> {
-    this.records.set(record.memory_id, record);
+    this.records.set(JSON.stringify([record.tenant_id, record.memory_id]), record);
     return record;
   }
 
@@ -33,9 +33,10 @@ export class InMemoryLocalCoreProvider implements MemoryProvider {
   }
 
   async forget(request: ForgetRequest): Promise<boolean> {
-    const record = this.records.get(request.memory_id);
+    const key = JSON.stringify([request.tenant_id, request.memory_id]);
+    const record = this.records.get(key);
     if (!record || record.tenant_id !== request.tenant_id) return false;
-    return this.records.delete(request.memory_id);
+    return this.records.delete(key);
   }
 }
 

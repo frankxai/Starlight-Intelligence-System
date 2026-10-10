@@ -13,6 +13,10 @@ on:
       - packages/core/**
       - tools/package-organization.mjs
       - src/ecosystem.ts
+      - src/sanitization.ts
+      - src/types.ts
+      - src/memory.ts
+      - src/memory-provider/**
       - test/ecosystem.test.ts
       - .github/workflows/sdk-package-candidate.yml
   push:
@@ -25,6 +29,10 @@ on:
       - packages/core/**
       - tools/package-organization.mjs
       - src/ecosystem.ts
+      - src/sanitization.ts
+      - src/types.ts
+      - src/memory.ts
+      - src/memory-provider/**
       - test/ecosystem.test.ts
       - .github/workflows/sdk-package-candidate.yml
 
@@ -69,20 +77,9 @@ jobs:
           candidate_dir="$RUNNER_TEMP/sdk-candidate"
           consumer_dir="$RUNNER_TEMP/sdk-consumer"
           mkdir -p "$candidate_dir" "$consumer_dir"
-          pnpm --filter @starlight-intelligence/core pack --out "$candidate_dir/starlight-core.tgz"
-          pnpm pack --json --pack-destination "$candidate_dir" > "$candidate_dir/pnpm-report.json"
-          node --input-type=module - "$candidate_dir" <<'NODE'
-          import { readFileSync, writeFileSync } from 'node:fs';
-          import { join, basename } from 'node:path';
-          import { createHash } from 'node:crypto';
-          const directory = process.argv[2];
-          const report = JSON.parse(readFileSync(join(directory, 'pnpm-report.json'), 'utf8'));
-          report.filename = basename(report.filename);
-          report.integrity = 'sha512-' + createHash('sha512').update(readFileSync(join(directory, report.filename))).digest('base64');
-          writeFileSync(join(directory, 'package-report.json'), JSON.stringify([report]));
-          NODE
+          npm pack --ignore-scripts --json --pack-destination "$candidate_dir" > "$candidate_dir/package-report.json"
           package_filename=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))[0].filename)" "$candidate_dir/package-report.json")
-          npm install --prefix "$consumer_dir" --omit=dev --no-audit --no-fund "$candidate_dir/starlight-core.tgz" "$candidate_dir/$package_filename"
+          npm install --prefix "$consumer_dir" --omit=dev --no-audit --no-fund "$candidate_dir/$package_filename"
           SDK_CONSUMER="$consumer_dir" SDK_CANDIDATE="$candidate_dir" node --input-type=module <<'NODE'
           import { readFileSync, writeFileSync } from 'node:fs';
           import { join } from 'node:path';
@@ -118,7 +115,7 @@ jobs:
           node tools/package-organization.mjs "$source_dir/$filename" "$organization_dir"
           filename=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))[0].filename)" "$organization_dir/package-report.json")
           consumer_dir="$RUNNER_TEMP/organization-consumer"
-          npm install --prefix "$consumer_dir" --omit=dev --no-audit --no-fund "$source_dir/starlight-core.tgz" "$organization_dir/$filename"
+          npm install --prefix "$consumer_dir" --omit=dev --no-audit --no-fund "$organization_dir/$filename"
           SDK_CONSUMER="$consumer_dir" SDK_CANDIDATE="$organization_dir" node --input-type=module <<'NODE'
           import { readFileSync, writeFileSync } from 'node:fs';
           import { join } from 'node:path';

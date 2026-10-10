@@ -48,7 +48,7 @@ export function projectRecall(results: RecallResult[], options: RecallOptions, n
       if (!Number.isFinite(expiry) || expiry <= now) continue;
     }
     const text = record.normalized_fact ?? record.summary;
-    if (typeof text !== 'string' || !text.trim() || text.length > 100_000) continue;
+    if (typeof text !== 'string' || text.length > 16_000 || !text.trim()) continue;
     // A throwing sanitizer aborts the request; never fall back to unsanitized text.
     const content = sanitizer.sanitize(text).slice(0, remaining);
     if (!content.trim()) continue;

@@ -133,10 +133,10 @@
   },
   "scripts": {
     "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/creator-workspace.test.ts test/ecosystem.test.ts",
-    "build": "pnpm run build:core && tsc",
+    "build": "tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",
-    "dev": "pnpm run build:core && tsc --watch",
+    "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "setup:gemini": "pwsh ./scripts/install-gemini-mcp.ps1",
     "agents:harness-check": "node scripts/check-agent-harness.mjs",
@@ -159,7 +159,7 @@
     "test:foundry": "node --import tsx --test test/v92-foundry.test.ts test/foundry-conformance.test.ts",
     "blueprints:validate": "node blueprints/validate.mjs",
     "test:blueprints": "node --test test/architecture-blueprint.test.mjs",
-    "test": "pnpm run build:core && npm run test:operational && npm run test:substrate && npm run test:v01-evals",
+    "test": "npm run test:operational && npm run test:substrate && npm run test:v01-evals",
     "test:v01-evals": "npm run build && node tools/run-v01-evals.mjs",
     "test:evals": "npm run build && node tools/run-v01-evals.mjs",
     "eval:retrieval": "node --import tsx --test test/retrieval-eval.test.ts",
@@ -169,7 +169,7 @@
     "test:community": "node --import tsx --test test/community.test.ts",
     "test:operational": "npm run test:community && node --import tsx --test src/adapters/adapters.test.ts && node --import tsx --test src/orchestrator.test.ts && node --import tsx --test src/temporal.test.ts && node --import tsx --test src/swarm.test.ts && node --import tsx --test src/yolo/yolo.test.ts && node --import tsx --test src/yolo/finance-bridge.test.ts && node --import tsx --test src/infra/infra.test.ts && node --import tsx --test src/finance/finance.test.ts && node --import tsx --test test/core-regressions.test.ts && node --import tsx --test test/v92-foundry.test.ts && node --import tsx --test test/mcp-server-smoke.test.ts && node --import tsx --test test/mcp-server-quality.test.ts && node --import tsx --test test/mcp-search-scope.test.ts && node --import tsx --test test/mcp-append-provenance.test.ts && node --import tsx --test test/smoke-quickstart.test.ts && node --import tsx --test test/estate-factory-smoke.test.ts && node --import tsx --test test/swarm.test.ts && node --import tsx --test test/goal.test.ts && npm run test:blueprints && npm run test:work-graph && npm run test:graph-engineering && npm run test:queen-session",
     "generate-context": "node dist/cli.js generate",
-    "lint": "pnpm run build:core && tsc --noEmit",
+    "lint": "tsc --noEmit",
     "lint:site": "npm --prefix site run lint",
     "lint:console": "npm --prefix console run lint",
     "verify": "npm run lint && npm run agents:harness-check && npm run upstreams:check && npm run mesh:check && node scripts/validate-agentskills.mjs && node scripts/check-identity-drift.mjs && node scripts/validate-agents.mjs && npm test && npm run build && npm run lint:site && npm run build:site && npm run lint:console && npm run build:console",
@@ -241,8 +241,7 @@
     "starlight-substrate-mcp": "dist/starlight-mcp.js"
   },
   "dependencies": {
-    "better-sqlite3": "12.8.0",
-    "@starlight-intelligence/core": "workspace:^"
+    "better-sqlite3": "12.8.0"
   },
   "packageManager": "pnpm@11.5.0"
 }

@@ -1,5 +1,3 @@
-import type { MemoryEntry, VaultType } from "@starlight-intelligence/core";
-export type { MemoryEntry, VaultType, VaultEntry, VaultSearchResult } from "@starlight-intelligence/core";
 /**
  * Starlight Intelligence System v2.0 — Type Definitions
  *
@@ -76,6 +74,21 @@ export interface SkillDefinition {
 
 // ── Memory Layer ────────────────────────────────────────────
 
+export interface MemoryEntry {
+  id: string;
+  content: string;
+  category: "pattern" | "decision" | "insight" | "error" | "preference";
+  tags: string[];
+  confidence: number;
+  createdAt: string;
+  source?: string;
+  /** Provenance slugs. `source` stays the existing field. */
+  agent?: string;
+  brand?: string;
+  domain?: string;
+  /** Unit scope slug (explicit unit, else brand). Never derived from agent. */
+  unit?: string;
+}
 
 export interface MemorySearchOptions {
   query: string;
@@ -246,8 +259,22 @@ export interface SystemStats {
 // ── Starlight Vault Layer (v5.0) ────────────────────────────
 
 /** The six semantic vault categories for Starlight Memory */
+export type VaultType =
+  | 'strategic'    // Decisions, architecture, roadmaps
+  | 'technical'    // Patterns, solutions, code insights
+  | 'creative'     // Voice, style, narrative patterns
+  | 'operational'  // Recent context, session state
+  | 'wisdom'       // Meta-patterns, cross-domain insights
+  | 'horizon';     // Benevolent intentions (append-only)
 
 /** A vault-classified memory entry */
+export interface VaultEntry extends MemoryEntry {
+  vault: VaultType;
+  summary?: string;
+  updatedAt: string;
+  expiresAt?: string;
+  metadata?: Record<string, unknown>;
+}
 
 /** Horizon Vault entry — append-only benevolent wish */
 export interface HorizonEntry {
@@ -269,6 +296,15 @@ export interface VaultSearchOptions extends MemorySearchOptions {
 }
 
 /** Vault search result with relevance score */
+export interface VaultSearchResult {
+  entry: VaultEntry;
+  score: number;
+  matchedTerms: string[];
+  channels?: {
+    lexicalRank?: number;
+    semanticRank?: number;
+  };
+}
 
 /** Vault statistics */
 export interface VaultStats {

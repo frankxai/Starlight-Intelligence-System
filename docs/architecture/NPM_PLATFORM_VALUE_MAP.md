@@ -237,3 +237,17 @@ source digests in the Foundry lock changed; historical review provenance did not
 Review job logs for the latest creator Copilot review disclose GPT-5.6 Sol. That
 is an independent agent/service, but does not establish a different model provider
 from Codex. A model-selected external review is still required before merge.
+
+Anthropic Claude Opus 5.5 reviewed exact `e91a49dc` in hosted session
+`650449fc-40ce-43e5-87d7-d0d8f144c3e4`. It reproduced quadratic email
+sanitization, broken root npm installation through an unpublished workspace
+dependency, and Turbo editing agent instructions. The repair constrains email
+and JWT scan starts, rejects facts above 16,000 characters before sanitizer work,
+disables Turbo agent guidance, and restores the operational SDK's self-contained
+contracts/sanitizer. Its build/dev/test/lint no longer require pnpm. Root migration
+stays separately versioned and is not published by the modular release workflow.
+The SDK candidate now packs through npm and installs without a core tarball;
+that test must pass rather than masking an unpublished dependency with a local
+package. Local memory IDs are also namespaced by tenant to prevent overwrites.
+The existing npm root version is 8.5.1 as verified on 10 October; this branch does
+not republish or downgrade it. Fresh CI and exact-revision review are required.

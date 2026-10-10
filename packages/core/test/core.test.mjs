@@ -7,6 +7,23 @@ import { projectRecall, recallContext, SanitizationGateway } from '../dist/index
 const memory = { recall: async () => [] };
 const options = { memory, tenantId: 'tenant-a', workspaceId: 'workspace-a' };
 
+test('adversarial non-email and token runs finish within a bounded subprocess deadline', () => {
+  const entry = import.meta.resolve('../dist/index.js');
+  const script = `import { SanitizationGateway } from ${JSON.stringify(entry)};
+    const veil = new SanitizationGateway();
+    for (const input of ['a'.repeat(100000), 'eyJ'.repeat(33333), 'a@' + 'a.'.repeat(50000)]) veil.sanitize(input);
+    if (veil.sanitize('name+tag@example.org') !== '[REDACTED]') throw Error('Email leaked');`;
+  execFileSync(process.execPath, ['--input-type=module', '--eval', script], { timeout: 5000, stdio: 'pipe' });
+});
+
+test('oversized facts never reach a host sanitizer before the per-record budget check', () => {
+  const inputs = [];
+  const result = projectRecall([hit('large', { normalized_fact: 'a'.repeat(16001) }), hit('small')],
+    { ...options, sanitizer: { sanitize(text) { inputs.push(text); return text; } } });
+  assert.deepEqual(result.map(item => item.id), ['small']);
+  assert.ok(inputs.every(text => text.length <= 16000));
+});
+
 test('sanitizer masks complete credentials, literal replacement text and named context secrets', () => {
   const veil = new SanitizationGateway({ scrubPII: false });
   const frame = (action, kind) => '-'.repeat(5) + action + ' ' + kind + ' PRIVATE KEY' + '-'.repeat(5);

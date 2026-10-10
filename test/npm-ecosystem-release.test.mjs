@@ -46,6 +46,15 @@ test('registry metadata denies redirects and cancels failed response streams', a
   assert.equal(cancelled, true);
 });
 
+test('legacy npm setup stays self-contained until a separately versioned root migration', () => {
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
+  for (const range of Object.values(pkg.dependencies ?? {})) assert.ok(!/^(?:workspace:|file:|link:)/.test(range));
+  for (const name of ['build', 'dev', 'lint', 'test']) assert.ok(!pkg.scripts[name].includes('pnpm'));
+  for (const file of ['src/types.ts', 'src/memory.ts', 'src/memory-provider/types.ts', 'src/sanitization.ts'])
+    assert.ok(!readFileSync(new URL('../' + file, import.meta.url), 'utf8').includes('@starlight-intelligence/core'));
+  assert.equal(JSON.parse(readFileSync(new URL('../turbo.json', import.meta.url))).agentGuidance, false);
+});
+
 function fixture() {
   const pkg = { name: '@starlight-intelligence/core', version: '0.1.0', exports: { '.': './dist/index.js' }, types: './dist/index.d.ts' };
   return new Map([['package/package.json', Buffer.from(JSON.stringify(pkg))], ['package/dist/index.js', Buffer.from('export const version = 1;')],
