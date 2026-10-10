@@ -20,7 +20,8 @@ const tarballs = targets.map(([, name]) => {
 });
 mkdirSync(join(root, 'artifacts', 'npm-consumers'), { recursive: true });
 const cwd = mkdtempSync(join(root, 'artifacts', 'npm-consumers', 'run-'));
-const npmCli = process.env.NPM_CLI_PATH ?? join(dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+const npmCli = process.env.NPM_CLI_PATH ?? join(dirname(process.execPath),
+  process.platform === 'win32' ? 'node_modules' : '../lib/node_modules', 'npm', 'bin', 'npm-cli.js');
 writeFileSync(join(cwd, 'package.json'), JSON.stringify({ name: 'starlight-artifact-consumer', private: true, type: 'module' }));
 execFileSync(process.execPath, [npmCli, 'install', '--ignore-scripts', '--no-audit', '--no-fund',
   ...tarballs, 'ai@7.0.130', 'zod@4.6.5', '@modelcontextprotocol/client@2.3.1', 'typescript@5.9.3', '@types/node@24.0.0'],
