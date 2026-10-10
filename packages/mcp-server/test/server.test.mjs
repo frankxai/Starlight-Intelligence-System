@@ -10,7 +10,7 @@ import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { createStarlightMcpServer } from '../dist/index.js';
 import { createGatewayReader } from '../dist/gateway.js';
 
-const record = { memory_id: 'fact', tenant_id: 'a', privacy_class: 'public', normalized_fact: 'Contact test@example.org' };
+const record = { memory_id: 'fact', tenant_id: 'a', workspace_id: 'w', privacy_class: 'public', normalized_fact: 'Contact test@example.org' };
 
 async function connected(options) {
   const server = createStarlightMcpServer(options);
@@ -23,7 +23,9 @@ async function connected(options) {
 
 test('official client initializes, lists read-only tools, calls sanitized recall, and denies injected scope', { timeout: 15_000 }, async () => {
   let calls = 0;
-  const connection = await connected({ tenantId: 'a', memory: { recall: async () => { calls++; return [{ record, score: 1 }]; } } });
+  const connection = await connected({ tenantId: 'a', workspaceId: 'w', memory: { recall: async request => {
+    assert.equal(request.workspace_id, 'w'); calls++; return [{ record, score: 1 }];
+  } } });
   try {
     const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));
     assert.deepEqual(connection.client.getServerVersion(), { name: 'starlight-memory', version: pkg.version });
@@ -68,7 +70,7 @@ test('standalone installed CLI speaks stdio to the official client and reconnect
     for (let run = 0; run < 2; run++) {
       const client = new Client({ name: 'stdio-test', version: '1.0.0' });
       const transport = new StdioClientTransport({ command: process.execPath,
-        args: [fileURLToPath(new URL('../dist/cli.js', import.meta.url)), '--gateway', gateway, '--tenant', 'a'],
+        args: [fileURLToPath(new URL('../dist/cli.js', import.meta.url)), '--gateway', gateway, '--tenant', 'a', '--workspace', 'w'],
         env: { ...process.env, STARLIGHT_GATEWAY_TOKEN: 'synthetic-test-token' }, stderr: 'pipe' });
       try {
         await client.connect(transport);
