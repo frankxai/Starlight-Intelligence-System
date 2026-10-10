@@ -106,9 +106,42 @@ test('recall forwards the host-selected workspace so providers can deny wrong-sc
 test('abort and timeout deny hung reads; sensitive provider errors stay private', async () => {
   const controller = new AbortController(); controller.abort();
   await assert.rejects(recallContext('query', options, controller.signal));
-  await assert.rejects(recallContext('query', { ...options, timeoutMs: 10, memory: { recall: () => new Promise(() => {}) } }), /unavailable or denied/);
+  await assert.rejects(recallContext('query', { ...options, timeoutMs: 10, memory: { recall: () => new Promise(() => {}) } }), { name: 'TimeoutError' });
   const failing = { ...options, memory: { recall: async () => { throw new Error('credential-in-error'); } } };
   await assert.rejects(recallContext('query', failing), error => !error.message.includes('credential-in-error'));
+});
+
+test('privacy sanitization precedes provider egress and a failed sanitizer performs no reads', async () => {
+  const requests = [];
+  const configured = { ...options, memory: { recall: async request => { requests.push(request); return []; } } };
+  const credential = 'sk-' + 'a'.repeat(60);
+  await recallContext('Contact person@example.org with ' + credential, configured);
+  assert.equal(requests[0].query, 'Contact [REDACTED] with [REDACTED]');
+  await assert.rejects(recallContext('query', { ...configured, sanitizer: { sanitize() { throw new Error('denied'); } } }));
+  await assert.rejects(recallContext('query', { ...configured, sanitizer: { sanitize() { return 'x'.repeat(16_001); } } }));
+  assert.equal(requests.length, 1);
+});
+
+test('oversized provider identifiers are rejected before any sanitizer work', () => {
+  const inputs = [];
+  const sanitizer = { sanitize(value) { inputs.push(value); return value; } };
+  const result = projectRecall([hit('x'.repeat(257)), hit('safe')], { ...options, sanitizer });
+  assert.deepEqual(result.map(item => item.id), ['safe']);
+  assert.ok(inputs.every(value => value.length <= 256));
+});
+
+test('pending cancellation stays recognizable and never exposes a caller reason', async () => {
+  const controller = new AbortController();
+  let providerSignal;
+  let started;
+  const ready = new Promise(resolve => { started = resolve; });
+  const result = recallContext('query', { ...options, memory: { recall(request) {
+    providerSignal = request.signal; started(); return new Promise(() => {});
+  } } }, controller.signal);
+  await ready;
+  controller.abort('private cancellation reason');
+  await assert.rejects(result, error => error.name === 'AbortError' && !error.message.includes('private'));
+  assert.equal(providerSignal.aborted, true);
 });
 
 test('portable runtime cold-imports and recalls without Node globals and has zero dependencies', async () => {

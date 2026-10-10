@@ -26,6 +26,9 @@ from untrusted request fields. Construct a separate wrapped model for each scope
 Do not send provider credentials to the browser. The adapter reads the most recent
 user text, recalls through the host's provider, and adds bounded sanitized facts
 as labeled untrusted reference data. It performs no implicit memory writes.
+User text exceeding the 16,000-character retrieval budget skips recall while
+preserving the complete original model prompt. It is not truncated across a
+possible secret. Shorter queries are sanitized before provider egress.
 
 The core projection excludes private, secret, regulated, expired, cross-tenant,
 and cross-workspace records. `allowShareable: true` permits private-shareable facts

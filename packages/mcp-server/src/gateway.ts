@@ -10,12 +10,14 @@ export interface GatewayOptions {
 /** Bridge to an operator-owned, single-tenant SIS gateway; no second memory database. */
 export function createGatewayReader(options: GatewayOptions): Pick<MemoryProvider, 'recall'> {
   options = Object.freeze({ ...options });
+  // The existing gateway has no workspace predicate. Never relabel tenant-wide
+  // results as workspace-authorized records. Scoped providers can use the factory.
+  if (options.workspaceId !== undefined) throw new Error('Gateway workspace isolation is not supported');
   const base = new URL(options.url);
   const local = ['localhost', '127.0.0.1', '[::1]'].includes(base.hostname);
   if (base.username || base.password || base.search || base.hash || base.pathname !== '/'
       || (base.protocol !== 'https:' && !(local && base.protocol === 'http:'))
-      || !options.token.trim() || !options.tenantId.trim()
-      || (options.workspaceId !== undefined && !options.workspaceId.trim())) throw new Error('Invalid gateway configuration');
+      || !options.token.trim() || !options.tenantId.trim()) throw new Error('Invalid gateway configuration');
   return {
     async recall(request): Promise<RecallResult[]> {
       if (request.tenant_id !== options.tenantId) throw new Error('Tenant denied');
@@ -65,7 +67,7 @@ export function createGatewayReader(options: GatewayOptions): Pick<MemoryProvide
         // Unclassified operational gateway memories are shareable only with explicit host opt-in.
         const privacy = privateTagged ? 'private' : tags.some(t => /^(?:privacy:)?public$/i.test(t)) ? 'public' : 'private-shareable';
         return [{ score: row.score, matched_terms: [], record: {
-          memory_id: entry.id, tenant_id: options.tenantId, workspace_id: options.workspaceId,
+          memory_id: entry.id, tenant_id: options.tenantId,
           source: { system: 'sis-gateway' }, modality: 'text', memory_type: 'semantic',
           normalized_fact: entry.content, vault: entry.vault as VaultType | undefined,
           entities: [], relations: [], importance: 0.5, confidence: 0.5, trust: 0.5,

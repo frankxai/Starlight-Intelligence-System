@@ -25,6 +25,10 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
   }
   const server = new McpServer({ name: 'starlight-memory', version });
   const sanitizer = options.sanitizer ?? new SanitizationGateway();
+  const idSanitizer = new SanitizationGateway();
+  const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const opaqueId = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/)
+    .refine(id => uuid.test(id) || idSanitizer.sanitize(id) === id, 'A safe opaque memory ID is required');
   server.registerTool('starlight_memory_recall', {
     description: 'Recall sanitized memory in the host-authorized tenant and workspace. Private, secret and regulated records are excluded.',
     inputSchema: z.strictObject({ query: z.string().trim().min(1).max(16_000) }),
@@ -40,7 +44,7 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
   if (options.allowWrite === true && options.memory.remember) {
     server.registerTool('starlight_memory_remember', {
       description: 'Store a sanitized fact through the host provider. The caller supplies a stable ID; retries are not automatic.',
-      inputSchema: z.strictObject({ id: z.string().min(1).max(256), fact: z.string().trim().min(1).max(16_000) }),
+      inputSchema: z.strictObject({ id: opaqueId, fact: z.string().trim().min(1).max(16_000) }),
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     }, async ({ id, fact }) => {
       try {
@@ -62,7 +66,7 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
   if (options.allowDelete === true && options.memory.forget) {
     server.registerTool('starlight_memory_forget', {
       description: 'Delete a memory through the explicitly authorized host provider.',
-      inputSchema: z.strictObject({ id: z.string().min(1).max(256) }),
+      inputSchema: z.strictObject({ id: opaqueId }),
       annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
     }, async ({ id }) => {
       try {

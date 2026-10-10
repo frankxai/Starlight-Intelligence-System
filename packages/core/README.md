@@ -23,9 +23,13 @@ that scope and be public, or private-shareable with explicit `allowShareable: tr
 Private, secret, regulated, expired, and malformed records are excluded.
 Sharing grants must be actual booleans; strings such as `"false"` are rejected
 before the provider is called.
+The retrieval query is sanitized before being sent to the provider. Provider IDs
+longer than 256 characters are rejected before sanitizer work.
 Context contains only sanitized facts or summaries, bounded by `limit`, `maxCharacters`,
 and `timeoutMs`. Raw content and provider metadata are excluded. Recall failures
-stop the request with a fixed message. Cancellation reaches cooperative providers;
+stop the request with a fixed message. Caller cancellation has error name
+`AbortError`; a recall timeout has error name `TimeoutError`. Caller reasons and
+provider exception details are not disclosed. Cancellation reaches cooperative providers;
 the timeout also bounds waiting for providers that ignore cancellation.
 
 An optional `retention_until` must be a parseable string. Present numbers, arrays,

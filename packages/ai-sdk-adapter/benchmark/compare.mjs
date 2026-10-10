@@ -85,7 +85,8 @@ export async function compareMemoryAdapters(iterations = 100) {
       const model = wrap(failingModel, { tenantId: 'team', workspaceId: 'project', timeoutMs: 10,
         memory: { recall: request => { failureProviderReads++; return recall(request); } } });
       await assert.rejects(generateText({ model, instructions, messages, maxRetries: 0 }),
-        error => /Memory recall unavailable or denied/.test(error.message) && !error.message.includes('PROVIDER_DETAIL_SENTINEL'));
+        error => (check === 'hung-provider' ? error.name === 'TimeoutError' : /Memory recall unavailable or denied/.test(error.message))
+          && !error.message.includes('PROVIDER_DETAIL_SENTINEL'));
       item.checks.push(check);
     }
     assert.equal(failureModelCalls, 0);

@@ -173,3 +173,19 @@ Production sequence:
 
 Passing local fixtures or the package matrix does not close the later deployment,
 live-provider, independent-review or commercial acceptance steps.
+
+### Review reconciliation
+
+All twelve hosted workflows passed at `2d3a2270e83085dca74416727be7ca1726469a5f`.
+The separate Codex cloud review of earlier `07b430790f9fb88427f9b1815455490d7c6c7728`
+identified seven findings. Its lockfile finding was fixed in `725914c`. The next
+remediation sanitizes retrieval queries before provider egress, bounds provider IDs
+before regex work, rejects sensitive caller IDs before writes/deletes, preserves
+recognizable cancellation and timeout errors, and skips retrieval for oversized
+model prompts while preserving model execution. The existing gateway rejects
+workspace mode because its search endpoint cannot enforce workspace isolation.
+The in-process factory still accepts independently authorized scoped providers.
+
+Twenty-six core, AI SDK and official MCP client tests passed locally after these
+changes. This receipt does not attest a live remote provider or approve the new
+revision. Fresh CI and exact-revision independent review remain required.

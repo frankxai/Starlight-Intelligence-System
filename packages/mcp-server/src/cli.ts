@@ -11,7 +11,8 @@ try {
   } });
   if (values.help) {
     process.stdout.write('Usage: starlight-memory-mcp --gateway <origin> --tenant <id> [--workspace <id>] [--allow-shareable]\n'
-      + 'Requires STARLIGHT_GATEWAY_TOKEN. Serves read-only MCP over stdio. The gateway must be dedicated to this tenant.\n');
+      + 'Requires STARLIGHT_GATEWAY_TOKEN. Serves read-only MCP over stdio. The gateway must be dedicated to this tenant.\n'
+      + 'Workspace mode is rejected: this gateway does not enforce workspace isolation. Use the factory with an authorized scoped provider.\n');
   } else {
     const options = { url: values.gateway ?? '', tenantId: values.tenant ?? '', workspaceId: values.workspace,
       token: process.env.STARLIGHT_GATEWAY_TOKEN ?? '' };

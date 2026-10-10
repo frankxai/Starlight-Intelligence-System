@@ -12,12 +12,15 @@ starlight-memory-mcp --gateway http://127.0.0.1:7777 --tenant team-a
 Set `STARLIGHT_GATEWAY_TOKEN` through the client's secret environment mechanism.
 The gateway must be dedicated to that tenant. Its existing search endpoint does
 not implement multi-tenant authorization; the bridge assigns the host-configured
-scope to its results. `--workspace` similarly labels that dedicated gateway scope.
+tenant to its results. Workspace mode is rejected because the existing gateway
+does not enforce workspace isolation. The bridge never relabels tenant-wide
+results as workspace-authorized records.
 Use separate gateways or an independently authorized provider for multiple scopes.
 The sample port is illustrative; pass the actual gateway origin.
 
 The exported gateway reader requires request tenant/workspace to match its
-host-configured scope before sending HTTP. Core forwards the host-selected
+host-configured scope before sending HTTP, and rejects any workspace request.
+With an independently authorized scoped provider, core forwards the host-selected
 workspace in `RecallRequest.workspace_id`; providers still own access control.
 Blank or oversized queries and invalid result limits are rejected before HTTP.
 The MCP initialization version follows the installed package's Changesets version.
@@ -45,7 +48,10 @@ The host chooses scope and tools. `starlight_memory_recall` is always available.
 Host sharing/write/delete grants must be booleans. Malformed grants and blank
 workspace configuration are rejected before any tools are registered.
 `allowWrite` plus a `remember` implementation enables sanitized fact storage with
-a caller-supplied stable ID and 90-day retention metadata. `allowDelete` plus
+a caller-supplied stable opaque ID and 90-day retention metadata. IDs must start
+with an ASCII letter or digit, use only letters, digits, underscores and hyphens,
+and contain at most 128 characters. IDs matching known secret or PII patterns are
+rejected before write/delete dispatch. `allowDelete` plus
 `forget` enables tenant-scoped deletion. Workspace-scoped deletion is rejected
 because the existing provider deletion contract cannot authorize it. Tool arguments
 cannot change tenant or workspace. An authenticated host must approve write/delete

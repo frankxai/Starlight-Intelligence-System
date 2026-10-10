@@ -87,7 +87,7 @@ test('standalone installed CLI speaks stdio to the official client and reconnect
     for (let run = 0; run < 2; run++) {
       const client = new Client({ name: 'stdio-test', version: '1.0.0' });
       const transport = new StdioClientTransport({ command: process.execPath,
-        args: [fileURLToPath(new URL('../dist/cli.js', import.meta.url)), '--gateway', gateway, '--tenant', 'a', '--workspace', 'w'],
+        args: [fileURLToPath(new URL('../dist/cli.js', import.meta.url)), '--gateway', gateway, '--tenant', 'a'],
         env: { ...process.env, STARLIGHT_GATEWAY_TOKEN: 'synthetic-test-token' }, stderr: 'pipe' });
       try {
         await client.connect(transport);
@@ -105,18 +105,19 @@ test('gateway denies cross-tenant reads, credentials in URL and plaintext remote
   await assert.rejects(reader.recall({ tenant_id: 'b', query: 'denied' }), /Tenant denied/);
 });
 
-test('exported gateway validates workspace and query budgets before calling HTTP', async () => {
+test('exported gateway rejects unsupported workspace isolation and validates budgets before HTTP', async () => {
   let requests = 0;
   const previous = globalThis.fetch;
   globalThis.fetch = async () => { requests++; return Response.json({ ok: true, results: [] }); };
   try {
-    const reader = createGatewayReader({ url: 'https://gateway.example', tenantId: 'a', workspaceId: 'w', token: 'synthetic' });
-    for (const change of [{ workspace_id: 'other' }, { workspace_id: undefined },
+    assert.throws(() => createGatewayReader({ url: 'https://gateway.example', tenantId: 'a', workspaceId: 'w', token: 'synthetic' }), /isolation is not supported/);
+    const reader = createGatewayReader({ url: 'https://gateway.example', tenantId: 'a', token: 'synthetic' });
+    for (const change of [{ workspace_id: 'other' },
       { query: '' }, { query: ' ' }, { query: 'x'.repeat(16_001) }, { limit: 0 }, { limit: 101 }, { limit: 1.5 }]) {
-      await assert.rejects(reader.recall({ tenant_id: 'a', workspace_id: 'w', query: 'recall', ...change }));
+      await assert.rejects(reader.recall({ tenant_id: 'a', query: 'recall', ...change }));
     }
     assert.equal(requests, 0);
-    assert.deepEqual(await reader.recall({ tenant_id: 'a', workspace_id: 'w', query: 'recall', limit: 5 }), []);
+    assert.deepEqual(await reader.recall({ tenant_id: 'a', query: 'recall', limit: 5 }), []);
     assert.equal(requests, 1);
     assert.throws(() => createGatewayReader({ url: 'https://gateway.example', tenantId: 'a', workspaceId: ' ', token: 'synthetic' }));
   } finally { globalThis.fetch = previous; }
@@ -133,15 +134,36 @@ test('gateway excludes malformed expiry and privacy tags even when shareable rec
   globalThis.fetch = async () => Response.json({ ok: true, results: entries.map(entry => ({ score: 1, entry })) });
   let connection;
   try {
-    const memory = createGatewayReader({ url: 'https://gateway.example', token: 'synthetic', tenantId: 'a', workspaceId: 'w' });
-    const rows = await memory.recall({ tenant_id: 'a', workspace_id: 'w', query: 'query' });
+    const memory = createGatewayReader({ url: 'https://gateway.example', token: 'synthetic', tenantId: 'a' });
+    const rows = await memory.recall({ tenant_id: 'a', query: 'query' });
     assert.deepEqual(rows.map(row => row.record.memory_id), ['valid', 'unclassified', 'private', 'expired']);
     assert.equal(rows.find(row => row.record.memory_id === 'expired').record.retention_until, '2000-01-01T00:00:00Z');
-    connection = await connected({ memory, tenantId: 'a', workspaceId: 'w', allowShareable: true });
+    connection = await connected({ memory, tenantId: 'a', allowShareable: true });
     const result = await connection.client.callTool({ name: 'starlight_memory_recall', arguments: { query: 'query' } });
     assert.notEqual(result.isError, true);
     assert.deepEqual(result.structuredContent.memories.map(row => row.id), ['valid', 'unclassified']);
   } finally { if (connection) await connection.close(); globalThis.fetch = previous; }
+});
+
+test('sensitive and malformed caller IDs never reach write or delete providers', { timeout: 15_000 }, async () => {
+  let writes = 0;
+  let deletes = 0;
+  const connection = await connected({ tenantId: 'a', allowWrite: true, allowDelete: true, memory: {
+    recall: async () => [], remember: async entry => { writes++; return entry; }, forget: async () => { deletes++; return true; },
+  } });
+  try {
+    for (const id of ['person@example.org', 'sk-' + 'a'.repeat(60), 'npm_' + 'a'.repeat(36),
+      'github_pat_' + 'a'.repeat(80), 'x'.repeat(129), 'with spaces', '../outside']) {
+      for (const name of ['starlight_memory_remember', 'starlight_memory_forget']) {
+        const result = await connection.client.callTool({ name, arguments: { id, ...(name.endsWith('remember') ? { fact: 'safe fact' } : {}) } });
+        assert.equal(result.isError, true);
+      }
+    }
+    assert.equal(writes, 0); assert.equal(deletes, 0);
+    await connection.client.callTool({ name: 'starlight_memory_remember', arguments: { id: '550e8400-e29b-41d4-a716-446655440000', fact: 'safe' } });
+    await connection.client.callTool({ name: 'starlight_memory_forget', arguments: { id: 'stable_id-1' } });
+    assert.equal(writes, 1); assert.equal(deletes, 1);
+  } finally { await connection.close(); }
 });
 
 

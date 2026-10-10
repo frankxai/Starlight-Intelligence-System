@@ -39,7 +39,7 @@ export function projectRecall(results: RecallResult[], options: RecallOptions, n
     if (!record || record.tenant_id !== options.tenantId
         || (options.workspaceId !== undefined && record.workspace_id !== options.workspaceId)
         || (record.privacy_class !== 'public' && !(options.allowShareable === true && record.privacy_class === 'private-shareable'))
-        || typeof record.memory_id !== 'string' || !record.memory_id || seen.has(record.memory_id)
+        || typeof record.memory_id !== 'string' || !record.memory_id || record.memory_id.length > 256 || seen.has(record.memory_id)
         || !Number.isFinite(result.score)) continue;
     if (record.retention_policy === 'delete_by' && record.retention_until === undefined) continue;
     if (record.retention_until !== undefined) {
@@ -69,24 +69,32 @@ export async function recallContext(query: string, options: RecallOptions, signa
   if (!Number.isFinite(timeoutMs) || timeoutMs < 1 || timeoutMs > 60_000) throw new Error('Invalid recall timeout');
   // Validate configuration before asking the provider to perform any work.
   projectRecall([], options);
-  if (signal?.aborted) throw new Error('Memory recall cancelled');
+  if (signal?.aborted) throw new DOMException('Memory recall cancelled', 'AbortError');
+  // Privacy applies before provider egress as well as before context injection.
+  const sanitizedQuery = (options.sanitizer ?? new SanitizationGateway()).sanitize(query);
+  if (!sanitizedQuery.trim() || sanitizedQuery.length > 16_000) throw new Error('Invalid sanitized recall query');
+  if (signal?.aborted) throw new DOMException('Memory recall cancelled', 'AbortError');
   const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let timedOut = false;
   let rejectWait: (reason: Error) => void = () => {};
   const cancelled = new Promise<never>((_, reject) => { rejectWait = reject; });
-  const abort = () => { controller.abort(); rejectWait(new Error('Memory recall cancelled')); };
+  const abort = () => { controller.abort(); rejectWait(new DOMException('Memory recall cancelled', 'AbortError')); };
   signal?.addEventListener('abort', abort, { once: true });
   timer = setTimeout(() => {
+    timedOut = true;
     controller.abort();
     rejectWait(new Error('Memory recall timed out'));
   }, timeoutMs);
   try {
     const request: RecallRequest = { tenant_id: options.tenantId, workspace_id: options.workspaceId,
-      query, limit: options.limit ?? 5, signal: controller.signal };
+      query: sanitizedQuery, limit: options.limit ?? 5, signal: controller.signal };
     const results = await Promise.race([Promise.resolve().then(() => options.memory.recall(request)), cancelled]);
     if (controller.signal.aborted) throw new Error('Memory recall cancelled');
     return projectRecall(results, options);
   } catch {
+    if (signal?.aborted) throw new DOMException('Memory recall cancelled', 'AbortError');
+    if (timedOut) throw new DOMException('Memory recall timed out', 'TimeoutError');
     // Provider error messages may contain credentials, paths or raw memory.
     throw new Error('Memory recall unavailable or denied');
   } finally {

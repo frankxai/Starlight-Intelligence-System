@@ -57,3 +57,22 @@ test('empty recall leaves the original request usable', async () => {
   await generateText({ model: wrapped, prompt: 'Empty?', maxRetries: 0 });
   assert.ok(!seen.prompt.some(message => message.role === 'system' && message.content.includes('Retrieved memory')));
 });
+
+test('long and multipart prompts preserve model execution while skipping bounded retrieval', async () => {
+  let reads = 0;
+  const seen = [];
+  const model = new MockLanguageModelV4({ doGenerate: async params => {
+    seen.push(params); return { content: [{ type: 'text', text: 'ok' }], usage, finishReason, warnings: [] };
+  } });
+  const wrapped = withStarlightMemory(model, { tenantId: 'a', memory: { recall: async () => { reads++; return []; } } });
+  const prompt = 'x'.repeat(16_001);
+  assert.equal((await generateText({ model: wrapped, prompt, maxRetries: 0 })).text, 'ok');
+  await generateText({ model: wrapped, messages: [{ role: 'user', content: [
+    { type: 'text', text: 'x'.repeat(8_000) }, { type: 'text', text: 'y'.repeat(8_000) },
+  ] }], maxRetries: 0 });
+  assert.equal(reads, 0);
+  assert.equal(seen[0].prompt[0].content[0].text, prompt);
+  assert.equal(seen[1].prompt[0].content[1].text.length, 8_000);
+  await generateText({ model: wrapped, prompt: 'x'.repeat(16_000), maxRetries: 0 });
+  assert.equal(reads, 1);
+});

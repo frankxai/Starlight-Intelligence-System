@@ -9,7 +9,15 @@ export function starlightMemoryMiddleware(options: RecallOptions): LanguageModel
     async transformParams({ params }) {
       const lastUser = [...params.prompt].reverse().find(message => message.role === 'user');
       if (!lastUser || lastUser.role !== 'user') return params;
-      const query = lastUser.content.filter(part => part.type === 'text').map(part => part.text).join('\n');
+      // Retrieval has its own budget; preserve the complete model prompt.
+      let query = '';
+      for (const part of lastUser.content) {
+        if (part.type !== 'text') continue;
+        const separator = query ? '\n' : '';
+        // Skip retrieval instead of truncating a secret across the boundary.
+        if (separator.length + part.text.length > 16_000 - query.length) return params;
+        query += separator + part.text;
+      }
       if (!query.trim()) return params;
       const memories = await recallContext(query, options, params.abortSignal);
       if (memories.length === 0) return params;
