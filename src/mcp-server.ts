@@ -8,8 +8,9 @@
  * Usage: node dist/mcp-server.js [--vault-dir ~/.starlight/vaults]
  */
 import { createInterface } from 'node:readline';
-import { readFileSync, writeFileSync, appendFileSync, readdirSync, existsSync, mkdirSync, lstatSync } from 'node:fs';
+import { readFileSync, writeFileSync, appendFileSync, readdirSync, existsSync, mkdirSync, lstatSync, realpathSync } from 'node:fs';
 import { join, basename } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { randomUUID } from 'node:crypto';
 import type { TemporalMeta, ContradictionRecord } from './types.js';
@@ -87,6 +88,8 @@ export class ToolError extends Error {
 const MS_PER_DAY = 86_400_000;
 const VAULT_TYPES = ['strategic', 'technical', 'creative', 'operational', 'wisdom', 'horizon'] as const;
 const CONTRADICTIONS = 'contradictions';
+const LEGACY_VAULTS = new Set(['operations', 'ops']);
+const PROVENANCE_SLUG = /^[a-z][a-z0-9-]{0,31}$/;
 /** Newest first; the client's version when we speak it. */
 const PROTOCOL_VERSIONS = ['2025-06-18', '2025-03-26', '2024-11-05'];
 
@@ -98,6 +101,72 @@ function ensureDir(dir: string): void {
 
 function isLink(path: string): boolean {
   return existsSync(path) && lstatSync(path).isSymbolicLink();
+}
+
+/**
+ * Provenance values are stored as short slugs. Registered agent names can carry
+ * punctuation (e.g. "starlight-voice-&-video-is"), so normalize first: lowercase,
+ * collapse every run of other characters to one hyphen, trim hyphens.
+ */
+function provenanceSlug(label: string, value: unknown): string | undefined {
+  if (value == null || value === '') return undefined;
+  const slug = String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  if (!PROVENANCE_SLUG.test(slug)) {
+    throw new ToolError(`${label} must be a short slug.`, 'Use a lowercase letter, then up to 31 letters, numbers, or hyphens.');
+  }
+  return slug;
+}
+
+function addTag(entry: RawEntry, tag: string): void {
+  const tags = entry.tags ?? [];
+  if (!tags.includes(tag)) tags.push(tag);
+  entry.tags = tags;
+}
+
+/**
+ * Records who wrote an entry and which unit it belongs to. `agent` is author
+ * provenance only (tag agent:<slug>); it never sets the unit.
+ *
+ * An entry belongs to at most one unit, because sis_search scope admits an
+ * entry when ANY tag equals "unit:<x>" (or "company"): a second unit tag would
+ * leak the entry into another unit's recall. The unit comes from, in order, an
+ * explicit `unit`, a caller-supplied unit:<x> tag (the pre-#318 way to scope),
+ * or `brand`. Every source that is present must agree; a disagreement is
+ * rejected rather than silently rewritten, so a memory is never filed under a
+ * unit its caller did not intend. Repeated identical tags are collapsed.
+ */
+function rememberProvenance(entry: RawEntry, p: Record<string, unknown>): void {
+  const agent = provenanceSlug('agent', p.agent);
+  const brand = provenanceSlug('brand', p.brand);
+  const domain = provenanceSlug('domain', p.domain);
+  const explicitUnit = provenanceSlug('unit', p.unit);
+  const tags = [...new Set(entry.tags ?? [])];
+  entry.tags = tags;
+  const taggedUnits = [...new Set(tags.filter(tag => tag.startsWith('unit:')).map(tag => tag.slice('unit:'.length)))];
+  if (taggedUnits.length > 1) {
+    throw new ToolError(
+      `tags name more than one unit (${taggedUnits.map(u => `unit:${u}`).join(', ')}).`,
+      'An entry belongs to one unit. Keep a single unit:<slug> tag, or pass `unit` and drop the unit tags.',
+    );
+  }
+  const taggedUnit = taggedUnits[0];
+  if (explicitUnit && taggedUnit && explicitUnit !== taggedUnit) {
+    throw new ToolError(
+      `unit "${explicitUnit}" conflicts with tag unit:${taggedUnit}.`,
+      'An entry belongs to one unit. Drop the unit:<slug> tag or make it match `unit`.',
+    );
+  }
+  if (!explicitUnit && taggedUnit && brand && brand !== taggedUnit) {
+    throw new ToolError(
+      `brand "${brand}" would set unit:${brand}, which conflicts with tag unit:${taggedUnit}.`,
+      'Pass `unit` explicitly to file the entry under a unit other than its brand, and drop the conflicting unit tag.',
+    );
+  }
+  const unit = explicitUnit ?? taggedUnit ?? brand;
+  if (agent) { entry.agent = agent; addTag(entry, `agent:${agent}`); }
+  if (brand) { entry.brand = brand; addTag(entry, `brand:${brand}`); }
+  if (domain) { entry.domain = domain; addTag(entry, `domain:${domain}`); }
+  if (unit) { entry.unit = unit; addTag(entry, `unit:${unit}`); }
 }
 
 /** A vault file path that stays in the vault directory: a planted symlink would redirect writes elsewhere. */
@@ -340,22 +409,29 @@ export class StarlightMcpServer {
         tags: { type: 'array', maxItems: 20, items: { type: 'string', maxLength: 64 }, description: 'Keywords that boost this entry in sis_search.' },
         confidence: { type: 'string', enum: ['low', 'medium', 'high'], description: 'How sure the source is (default medium); sets how fast confidence decays.' },
         category: { type: 'string', pattern: '^[a-z][a-z0-9_-]{0,31}$', description: 'Kind of entry (default insight); standard: pattern, decision, insight, error, preference.' },
+        agent: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional author (agent) name. Normalized to a slug and stored on the entry and as tag agent:<slug>. Author provenance only; it does not set the unit scope.' },
+        brand: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional brand name. Normalized to a slug and stored on the entry and as tag brand:<slug>. Also the unit scope (unit:<slug>) when no unit is given.' },
+        domain: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional domain name. Normalized to a slug and stored on the entry and as tag domain:<slug>.' },
+        unit: { type: 'string', minLength: 1, maxLength: 64, description: 'Optional unit name. Normalized to a slug and stored as tag unit:<slug>, which sis_search scope matches. Wins over brand. An entry has one unit: a unit:<slug> tag in tags that disagrees with unit (or with brand when unit is absent) is rejected.' },
       }, ['vault', 'content']),
       outputSchema: output({ success: { type: 'boolean' }, id: { type: 'string' }, vault: { type: 'string' } }),
       annotations: APPEND,
     }, (p) => {
       const vault = String(p.vault), now = new Date().toISOString();
       if (vault === CONTRADICTIONS) throw new ToolError('"contradictions" is reserved.', 'Flag conflicts with sis_contradict instead.');
+      if (LEGACY_VAULTS.has(vault)) throw new ToolError(`Vault "${vault}" is not a write target.`, 'Use strategic, technical, creative, operational, wisdom, or horizon. The legacy operations and ops files stay where they are.');
       const conf = p.confidence === 'high' ? 0.9 : p.confidence === 'low' ? 0.3 : 0.6;
+      const tags = Array.isArray(p.tags) ? p.tags.map(String) : [];
       const entry: RawEntry = {
         id: `sis_${Date.now()}_${randomUUID().slice(0, 8)}`,
         content: String(p.content), vault,
-        tags: Array.isArray(p.tags) ? p.tags.map(String) : [],
+        tags,
         confidence: p.confidence ? String(p.confidence) : 'medium',
         category: p.category ? String(p.category) : 'insight',
         createdAt: now,
         temporal: { validFrom: now, validUntil: null, lastConfirmed: now, confidenceDecay: conf },
       };
+      rememberProvenance(entry, p);
       appendFileSync(vaultFile(this.vaultDir, vault), JSON.stringify(entry) + '\n', 'utf-8');
       return { success: true, id: entry.id, vault };
     });
@@ -687,4 +763,15 @@ function main(): void {
   server.start();
 }
 
-main();
+/** True only when this file is the process entry point (node dist/mcp-server.js or the starlight-mcp bin link), so importing it never starts the stdio server. */
+function isEntryPoint(): boolean {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return realpathSync(entry) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isEntryPoint()) main();
