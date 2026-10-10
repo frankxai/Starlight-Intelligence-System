@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # Starlight Intelligence System — Premium Antigravity CLI Integration
 # ==============================================================================
 # Built on SIP · Idempotent · Windows-optimized
@@ -58,6 +58,9 @@ if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
         deepagent  = "deepagent"
         da         = "deepagent"
         agenticops = "agentic-ops"
+        products   = "digital-product-forge"
+        prod       = "digital-product-forge"
+        forge      = "digital-product-forge"
     }
 }
 
@@ -234,6 +237,18 @@ function agy-dpi {
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
+function agy-products {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "products"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-forge {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "forge"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
 # Alias for convenience
 Set-Alias -Name arcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agysis -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
@@ -249,6 +264,9 @@ Set-Alias -Name agyg -Value agy-g -Scope Global -Force -ErrorAction SilentlyCont
 Set-Alias -Name agyvc -Value agy-vc -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyani -Value agy-ani -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agydpi -Value agy-dpi -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyprod -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyproducts -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyforge -Value agy-forge -Scope Global -Force -ErrorAction SilentlyContinue
 
 # ------------------------------------------------------------------------------
 # Generalized Fuzzy Conductor
