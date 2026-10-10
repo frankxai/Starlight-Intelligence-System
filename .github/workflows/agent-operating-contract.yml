@@ -1,0 +1,40 @@
+name: Agent operating contract
+on:
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'docs/architecture/agents-md/**'
+      - 'docs/architecture/AGENTS-MD-CONTRACT.md'
+      - 'scripts/agents-md-project.mjs'
+      - 'test/agents-md-contract.test.mjs'
+      - 'foundry/agent-ontology/defaults/KERNEL.md'
+      - '.github/workflows/agent-operating-contract.yml'
+permissions:
+  contents: read
+concurrency:
+  group: agent-operating-contract-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test test/agents-md-contract.test.mjs
+      - name: Fetch pinned operating source
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          import { ownedSpan } from './scripts/agents-md-project.mjs';
+          const match = ownedSpan(readFileSync('AGENTS.md', 'utf8'), 'BAND-A')?.text.match(/ source=([0-9a-f]{40}) /);
+          if (match) execFileSync('git', ['fetch', '--no-tags', '--depth=1', 'origin', match[1]], { stdio: 'inherit' });
+          JS
+      - run: node scripts/agents-md-project.mjs
+      - run: node foundry/agent-ontology/tests/portable.test.mjs
+      - run: node .claude/ci/estate-guard-scan.mjs --root .
