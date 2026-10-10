@@ -16,6 +16,19 @@ These regex families are masked when `scrubSecrets: true` (default) or `scrubPII
 
 ### Secrets (`scrubSecrets: true`)
 
+Additional covered families in modular core 0.2.0:
+
+| Family | Scope |
+| --- | --- |
+| Anthropic keys | Recognized provider prefix with a 20+ character suffix including separators |
+| Stripe secret/restricted keys | Live/test secret or restricted prefixes with a 16+ alphanumeric suffix; public keys excluded |
+| AWS access key IDs | AKIA or ASIA prefix and 16 uppercase alphanumeric characters; arbitrary secret/session values need recognized context fields |
+| Hugging Face tokens | Recognized prefix and 20+ alphanumeric characters |
+| npm and webhook tokens | Recognized npm or webhook signing prefixes and 20+ alphanumeric characters |
+| Database connection URIs | PostgreSQL, MySQL, MongoDB and Redis URI content through whitespace or quote/angle delimiters |
+| PEM private-key blocks | Complete blocks and incomplete blocks through end-of-input; PGP PRIVATE KEY BLOCK excluded |
+| Named secret context fields | Password, secret, token, API/auth/access/refresh/private-key/client-secret/AWS-secret-access-key variants; `sanitizeContext` masks values recursively by field name, separately from plain-string sanitization |
+
 | Pattern | Example matched | Notes |
 |---|---|---|
 | OpenAI-style keys | `sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` | 48+ character tail, including project-key separators |

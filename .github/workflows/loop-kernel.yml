@@ -17,7 +17,9 @@ on:
       - "test/instruction-compiler.test.ts"
       - "test/work-graph*.test.ts"
       - "package.json"
-      - "package-lock.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "packages/core/**"
   push:
     branches: [main]
     paths:
@@ -30,7 +32,9 @@ on:
       - "test/instruction-compiler.test.ts"
       - "test/work-graph*.test.ts"
       - "package.json"
-      - "package-lock.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "packages/core/**"
 
 permissions:
   contents: read
