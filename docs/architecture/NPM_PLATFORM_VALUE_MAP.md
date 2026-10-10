@@ -86,6 +86,22 @@ claims against LangGraph or Mastra.
 
 ## Ordered engineering work
 
+Installed-consumer CI now runs an executable adapter comparison against direct AI
+SDK middleware using the same core privacy/scope policy, model fixture, memory
+provider and multi-turn messages. It alternates invocation order, excludes warmups,
+records median/p95 end-to-end SDK latency, and verifies identical prompt projection,
+one provider read, workspace forwarding, denied records and unavailable/hung-provider
+failure behavior. `benchmark.json` binds results to exact source and archive manifest.
+The comparator is `packages/ai-sdk-adapter/benchmark/compare.mjs`.
+
+This is a deterministic integration comparison, not a retrieval-quality benchmark.
+Token usage and completed-task cost are null because the model is a fixture. Both
+variants use the same core policy rather than comparing a guarded implementation
+against an unsafe baseline. Runner timing is noisy and establishes no speed advantage.
+Deployment, live models, real query relevance, streaming latency, repair effort and
+customer willingness to pay still require separate evidence. The baseline uses the
+[official AI SDK middleware interface](https://ai-sdk.dev/docs/ai-sdk-core/middleware).
+
 1. Finish independent review and hosted checks for the three modular packages.
    Resolve first-publication/trusted-publisher configuration and release exact
    verified bytes. Keep legacy SDK packaging and new organization candidates working.
