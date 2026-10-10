@@ -86,12 +86,19 @@ export interface ContradictionReport {
   suggestedFalsifier?: string;
 }
 
+export type KnowledgeDomainId = KnowledgeDomain;
+export type EpistemicTruthState = NodeKind;
+export type TruthState = NodeKind;
+
 export interface KnowledgeQuery {
   domains?: KnowledgeDomain[];
+  domain?: KnowledgeDomain;
   kinds?: NodeKind[];
   queryText?: string;
+  search?: string;
   tags?: string[];
   maxNodes?: number;
+  limit?: number;
   minConfidence?: number;
   activeOnly?: boolean; // filter out invalidated nodes
   asOfDate?: string; // temporal point-in-time query

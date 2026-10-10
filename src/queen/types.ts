@@ -60,11 +60,30 @@ export interface ToolConnectorSpec {
   permissions: Array<'read_fs' | 'write_fs' | 'exec_cmd' | 'network_read' | 'network_write'>;
 }
 
+export type SwarmTopologyType =
+  | 'phd_research_deep'
+  | 'staff_eng_hyper'
+  | 'luxury_creative_cinema'
+  | 'autonomous_revenue_ops';
+
+export interface SwarmAgentSpec {
+  name: string;
+  role: SwarmRole;
+  harness: HarnessId;
+  modelTier: string;
+  specialization: string;
+  skills: string[];
+}
+
 export interface SwarmTopologySpec {
   id: string;
   name: string;
   mission: string;
   roles: SwarmRole[];
+  topology?: SwarmTopologyType | string;
+  leadAgent?: string;
+  agents?: SwarmAgentSpec[];
+  santaConvergenceRequired?: boolean;
   harnessPreferences: Partial<Record<SwarmRole, HarnessId>>;
   memoryNamespace: string;
   dynamicToolConnectors: ToolConnectorSpec[];
@@ -73,14 +92,30 @@ export interface SwarmTopologySpec {
   aestheticStandard: BrandAestheticStandard;
 }
 
+export interface SantaLoopFinding {
+  gate: string;
+  issue: string;
+  severity: 'blocker' | 'warning' | 'info';
+  resolved: boolean;
+}
+
+export interface SantaLoopSummary {
+  converged: boolean;
+  rounds: number;
+  finalScore: number;
+  findings: SantaLoopFinding[];
+}
+
 export interface SwarmExecutionResult {
   swarmId: string;
   mission: string;
   status: 'converged_passed' | 'review_blocked' | 'in_progress' | 'failed';
   generatorOutput: string;
+  output?: string;
   reviewerCritique?: string;
   iterations: number;
   artifactsProduced: string[];
   verifiedGates: string[];
   durationMs: number;
+  santaLoop?: SantaLoopSummary;
 }

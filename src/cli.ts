@@ -27,7 +27,13 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
-import { StarlightIntelligence } from "./index.js";
+import {
+  StarlightIntelligence,
+  UniversalKnowledgeTree,
+  StarlightQueen,
+  type SwarmTopologyType,
+  type KnowledgeDomainId,
+} from "./index.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
@@ -152,6 +158,13 @@ Commands:
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
   vault search <query>            Search memories
+  knowledge list-domains          List all 10 universal knowledge domains
+  knowledge query <query>         Search universal knowledge & report dialectical tensions (--domain)
+  knowledge discover <d> <t> <s>  Discover and assert an epistemic proposition
+  queen status                    Inspect 10-harness telemetry and active swarms
+  queen briefing                  Generate executive founder cockpit briefing
+  queen synthesize <mission>      Synthesize dynamic sub-swarm (--topology, --domain)
+  queen santa <task>              Execute Santa adversarial convergence loop
   orchestrate <intent>            Run an orchestration (prints JSON result)
   stats                           Show system statistics
   version                         Print version
@@ -163,6 +176,7 @@ Commands:
   goal checkpoint                 Backup local changes to git branch
   goal audit                      Verify workspace builds and tests (--no-tests)
   goal rollback                   Rollback local edits to recover clean workspace
+
 
 Options:
   --help, -h                      Show this help message
@@ -196,6 +210,8 @@ Options:
   --no-tests                      Skip test execution during goal audit
   --privacy <boundary>            Route boundary: workspace or remote-ok
   --no-free-preference            Do not boost free-eligible lanes
+  --topology <type>               Swarm topology: phd_research_deep, staff_eng_hyper, luxury_creative_cinema, autonomous_revenue_ops
+  --domain <id>                   Universal Knowledge domain ID (e.g. physics_cosmology, agi_cognitive_arch)
 
 Examples:
   starlight init
@@ -216,6 +232,12 @@ Examples:
   starlight project sync-all
   starlight vault set my-pattern "Always use server components" --category pattern --tags react,next
   starlight vault search "server components"
+  starlight knowledge list-domains
+  starlight knowledge query "quantum gravity" --domain physics_cosmology
+  starlight queen status
+  starlight queen briefing
+  starlight queen synthesize "Build ultra-low latency memory layer" --topology staff_eng_hyper
+  starlight queen santa "Implement fail-closed OAuth token gate"
   starlight orchestrate "Design a new authentication system"
   starlight stats
 `);
@@ -1484,6 +1506,154 @@ async function cmdGoal(
   }
 }
 
+function cmdKnowledge(action: string, args: string[], options: { domain?: string; limit?: string }): void {
+  const tree = new UniversalKnowledgeTree();
+  switch (action) {
+    case "list-domains": {
+      console.log(`[starlight] Universal Knowledge Tree — 10 Universal Domains:\n`);
+      for (const d of tree.listDomains()) {
+        const nodes = tree.getDomainNodes(d.id);
+        const avgConfidence = nodes.length > 0
+          ? (nodes.reduce((sum, n) => sum + n.confidence, 0) / nodes.length).toFixed(2)
+          : "N/A";
+        console.log(`  ✦ [${d.id.padEnd(24)}] ${d.name} (${nodes.length} nodes, avg confidence: ${avgConfidence})`);
+        console.log(`    ${d.description}`);
+        console.log(`    Sub-disciplines: ${d.subDisciplines.slice(0, 4).join(", ")}...`);
+        console.log("");
+      }
+      break;
+    }
+    case "query": {
+      const search = args.join(" ");
+      const domain = options.domain as KnowledgeDomainId | undefined;
+      const limit = options.limit ? Number(options.limit) : 10;
+      const results = tree.query({ domain, search: search || undefined, limit });
+      console.log(`[starlight] Knowledge Query: "${search || (domain ?? "all domains")}" (${results.length} results):\n`);
+      for (const node of results) {
+        console.log(`  ✦ [${node.domain}] ${node.title} (kind: ${node.kind}, confidence: ${node.confidence})`);
+        console.log(`    "${node.statement}"`);
+        console.log(`    tags: ${node.tags.join(", ")} | valid: ${node.temporal.validFrom}`);
+        console.log("");
+      }
+      const tensions = tree.detectContradictions();
+      if (tensions.length > 0) {
+        console.log(`[starlight] Dialectical Tensions Detected (${tensions.length}):`);
+        for (const t of tensions) {
+          console.log(`  ⚡ ${t.nodeA.id} ↔ ${t.nodeB.id}: ${t.nature} (${t.description})`);
+        }
+      }
+      break;
+    }
+    case "discover": {
+      const domain = args[0] as KnowledgeDomainId;
+      const title = args[1];
+      const statement = args.slice(2).join(" ");
+      if (!domain || !title || !statement) {
+        console.error("[starlight] Error: knowledge discover requires <domain> <title> <statement>");
+        console.error("  Example: starlight knowledge discover physics_cosmology 'Holographic Bound' 'Information content is proportional to boundary area.'");
+        process.exitCode = 1;
+        return;
+      }
+      const node = tree.discover({
+        domain,
+        title,
+        statement,
+        kind: "hypothesis",
+        confidence: 0.85,
+        justification: "Discovered via empirical agent investigation",
+        tags: ["frontier", "discovery"],
+      });
+      console.log(`[starlight] Discovered new epistemic node [${node.id}] in domain "${domain}":`);
+      console.log(`  Title: ${node.title}`);
+      console.log(`  Statement: ${node.statement}`);
+      console.log(`  Kind: ${node.kind} | Confidence: ${node.confidence}`);
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown knowledge action: "${action}"`);
+      console.error("  Available actions: list-domains, query, discover");
+      process.exitCode = 1;
+  }
+}
+
+async function cmdQueen(action: string, args: string[], options: { topology?: string; task?: string; domain?: string }): Promise<void> {
+  const tree = new UniversalKnowledgeTree();
+  const queen = new StarlightQueen(tree);
+  switch (action) {
+    case "status": {
+      const status = queen.getMetaHarnessStatus();
+      console.log(`[starlight] Starlight Queen Meta-Orchestrator — Harness Telemetry:\n`);
+      console.log(`Active Harnesses (${status.activeHarnessCount}/${status.harnesses.length}):`);
+      for (const h of status.harnesses) {
+        const mark = h.connected ? "●" : "○";
+        console.log(`  ${mark} ${h.name.padEnd(16)} | status: ${h.status.padEnd(8)} | primary: ${h.primaryScope} | memory: ${h.memoryNamespace}`);
+      }
+      console.log(`\nActive Sub-Swarms: ${status.activeSwarms.length}`);
+      for (const s of status.activeSwarms) {
+        console.log(`  ✦ [${s.id}] ${s.name} (${s.agents.length} agents, lead: ${s.leadAgent}, topology: ${s.topology})`);
+      }
+      console.log(`\nDynamic Tool Connectors: ${status.dynamicToolConnectors.length}`);
+      for (const tc of status.dynamicToolConnectors) {
+        console.log(`  🛠️ ${tc.name} [${tc.protocol}] for ${tc.targetSwarmId}: ${tc.capabilities.join(", ")}`);
+      }
+      console.log(`\nCDP Multiplexer Hub: ${status.cdpMultiplexerHub.status} (${status.cdpMultiplexerHub.wsEndpoint})`);
+      break;
+    }
+    case "briefing": {
+      const briefing = queen.generateFounderBriefing();
+      console.log(briefing);
+      break;
+    }
+    case "synthesize": {
+      const mission = args.join(" ") || "General Autonomous Operations";
+      const topology = (options.topology ?? "staff_eng_hyper") as SwarmTopologyType;
+      const domain = options.domain as KnowledgeDomainId | undefined;
+      const swarm = queen.synthesizeSubSwarm(mission, topology, domain);
+      console.log(`[starlight] Synthesized Sub-Swarm: "${swarm.name}" [${swarm.id}]:`);
+      console.log(`  Topology: ${swarm.topology}`);
+      console.log(`  Lead Agent: ${swarm.leadAgent}`);
+      console.log(`  Mission: ${swarm.mission}`);
+      console.log(`  Memory Namespace: ${swarm.memoryNamespace}`);
+      console.log(`  Santa Convergence Required: ${swarm.santaConvergenceRequired}`);
+      console.log(`\nAgents (${swarm.agents.length}):`);
+      for (const ag of swarm.agents) {
+        console.log(`    ✦ ${ag.name} (${ag.harness}/${ag.modelTier}) — ${ag.specialization}`);
+        console.log(`      skills: ${ag.skills.join(", ")}`);
+      }
+      break;
+    }
+    case "santa": {
+      const task = args.join(" ") || options.task;
+      if (!task) {
+        console.error("[starlight] Error: queen santa requires a task description.");
+        process.exitCode = 1;
+        return;
+      }
+      console.log(`[starlight] Initiating Santa Adversarial Convergence Loop for: "${task}"...`);
+      const result = await queen.executeMission({
+        title: "Santa Convergence Task",
+        task,
+        requiredTopology: (options.topology ?? "staff_eng_hyper") as SwarmTopologyType,
+        santaConvergenceRequired: true,
+      });
+      console.log(`\nSanta Convergence Result:`);
+      console.log(`  Converged: ${result.santaLoop?.converged ? "YES (CONSENSUS REACHED)" : "NO"}`);
+      console.log(`  Rounds: ${result.santaLoop?.rounds}`);
+      console.log(`  Final Score: ${result.santaLoop?.finalScore}/10`);
+      console.log(`  Findings (${result.santaLoop?.findings.length ?? 0}):`);
+      for (const f of result.santaLoop?.findings ?? []) {
+        console.log(`    - [${f.gate}] (${f.severity}) ${f.issue} (resolved: ${f.resolved})`);
+      }
+      console.log(`\nSynthesized Output:\n${result.output}`);
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown queen action: "${action}"`);
+      console.error("  Available actions: status, briefing, synthesize, santa");
+      process.exitCode = 1;
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -1522,6 +1692,8 @@ async function main(): Promise<void> {
       "no-tests": { type: "boolean" },
       privacy: { type: "string" },
       "no-free-preference": { type: "boolean" },
+      topology: { type: "string" },
+      domain: { type: "string" },
     },
     strict: false,
   });
@@ -1624,6 +1796,35 @@ async function main(): Promise<void> {
         category: asString(values.category),
         confidence: asString(values.confidence),
         tags: asString(values.tags),
+      });
+      break;
+    }
+
+    case "knowledge": {
+      const action = positionals[1];
+      if (!action) {
+        console.error("[starlight] Error: knowledge requires an action (list-domains, query, discover).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdKnowledge(action, positionals.slice(2), {
+        domain: asString(values.domain),
+        limit: asString(values.limit),
+      });
+      break;
+    }
+
+    case "queen": {
+      const action = positionals[1];
+      if (!action) {
+        console.error("[starlight] Error: queen requires an action (status, briefing, synthesize, santa).");
+        process.exitCode = 1;
+        return;
+      }
+      await cmdQueen(action, positionals.slice(2), {
+        topology: asString(values.topology),
+        domain: asString(values.domain),
+        task: asString(values.task),
       });
       break;
     }

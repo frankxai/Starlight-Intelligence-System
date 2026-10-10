@@ -16,6 +16,14 @@ import type { TemporalMeta, ContradictionRecord } from './types.js';
 import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
 import { GoalOrchestrator } from './goal.js';
+import {
+  UniversalKnowledgeTree,
+  StarlightQueen,
+  type KnowledgeDomainId,
+  type SwarmTopologyType,
+  type EpistemicTruthState,
+} from './index.js';
+
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -114,16 +122,20 @@ function defaultTemporal(e: RawEntry): TemporalMeta {
 
 // ── Server ────────────────────────────────────────────────────
 export class StarlightMcpServer {
-  private tools = new Map<string, { definition: McpTool; handler: (p: Record<string, unknown>) => unknown }>();
+  private tools = new Map<string, { definition: McpTool; handler: (p: Record<string, unknown>) => unknown | Promise<unknown> }>();
   private vaultDir: string;
+  private knowledgeTree: UniversalKnowledgeTree;
+  private queen: StarlightQueen;
 
   constructor(vaultDir: string) {
     this.vaultDir = vaultDir;
     ensureDir(this.vaultDir);
+    this.knowledgeTree = new UniversalKnowledgeTree();
+    this.queen = new StarlightQueen(this.knowledgeTree);
     this.registerTools();
   }
 
-  private reg(def: McpTool, handler: (p: Record<string, unknown>) => unknown): void {
+  private reg(def: McpTool, handler: (p: Record<string, unknown>) => unknown | Promise<unknown>): void {
     this.tools.set(def.name, { definition: def, handler });
   }
 
@@ -344,10 +356,92 @@ export class StarlightMcpServer {
       orchestrator.addLog(type, message);
       return { success: true, message, type };
     });
+
+    // 14. sis_knowledge_query
+    this.reg({
+      name: 'sis_knowledge_query', description: 'Query the Universal Knowledge Tree across 10 universal domains with dialectical tension detection',
+      inputSchema: { type: 'object', required: ['query'], properties: {
+        query: { type: 'string' }, domain: { type: 'string' }, limit: { type: 'number' },
+      }},
+    }, (p) => {
+      const q = String(p.query ?? '');
+      const dom = p.domain ? (String(p.domain) as KnowledgeDomainId) : undefined;
+      const lim = Number(p.limit ?? 10);
+      const matches = this.knowledgeTree.query({ domain: dom, search: q || undefined, limit: lim });
+      const tensions = this.knowledgeTree.detectContradictions();
+      return { count: matches.length, matches, dialecticalTensions: tensions };
+    });
+
+    // 15. sis_knowledge_discover
+    this.reg({
+      name: 'sis_knowledge_discover', description: 'Assert and record a new epistemic proposition into the Universal Knowledge Tree',
+      inputSchema: { type: 'object', required: ['domain', 'title', 'statement'], properties: {
+        domain: { type: 'string' }, title: { type: 'string' }, statement: { type: 'string' },
+        state: { type: 'string', enum: ['ground_truth', 'empirical_axiom', 'active_hypothesis', 'falsified_hypothesis', 'aesthetic_canon', 'dialectical_synthesis'] },
+        confidence: { type: 'number' }, justification: { type: 'string' }, tags: { type: 'array', items: { type: 'string' } },
+      }},
+    }, (p) => {
+      const domain = String(p.domain) as KnowledgeDomainId;
+      const title = String(p.title);
+      const statement = String(p.statement);
+      const state = (p.state as EpistemicTruthState) ?? 'active_hypothesis';
+      const confidence = typeof p.confidence === 'number' ? p.confidence : 0.8;
+      const justification = p.justification ? String(p.justification) : undefined;
+      const tags = Array.isArray(p.tags) ? p.tags.map(String) : [];
+      const node = this.knowledgeTree.discover({ domain, title, statement, state, confidence, justification, tags });
+      return { success: true, node };
+    });
+
+    // 16. sis_queen_telemetry
+    this.reg({
+      name: 'sis_queen_telemetry', description: 'Get live telemetry across all 10 developer harnesses and dynamic swarms',
+      inputSchema: { type: 'object', properties: {} },
+    }, () => this.queen.getMetaHarnessStatus());
+
+    // 17. sis_queen_synthesize_swarm
+    this.reg({
+      name: 'sis_queen_synthesize_swarm', description: 'Dynamically synthesize a specialized sub-swarm for complex multi-agent execution',
+      inputSchema: { type: 'object', required: ['mission'], properties: {
+        mission: { type: 'string' },
+        topology: { type: 'string', enum: ['phd_research_deep', 'staff_eng_hyper', 'luxury_creative_cinema', 'autonomous_revenue_ops'] },
+        domain: { type: 'string' },
+      }},
+    }, (p) => {
+      const mission = String(p.mission);
+      const topology = (p.topology as SwarmTopologyType) ?? 'staff_eng_hyper';
+      const domain = p.domain ? (String(p.domain) as KnowledgeDomainId) : undefined;
+      const swarm = this.queen.synthesizeSubSwarm(mission, topology, domain);
+      return { success: true, swarm };
+    });
+
+    // 18. sis_queen_santa_convergence
+    this.reg({
+      name: 'sis_queen_santa_convergence', description: 'Run an adversarial Santa loop convergence between Generator and Reviewer across the 10 Gates',
+      inputSchema: { type: 'object', required: ['task'], properties: {
+        task: { type: 'string' },
+        topology: { type: 'string' },
+      }},
+    }, async (p) => {
+      const task = String(p.task);
+      const topology = (p.topology as SwarmTopologyType) ?? 'staff_eng_hyper';
+      const result = await this.queen.executeMission({
+        title: 'Santa Loop Task',
+        task,
+        requiredTopology: topology,
+        santaConvergenceRequired: true,
+      });
+      return result;
+    });
+
+    // 19. sis_founder_briefing
+    this.reg({
+      name: 'sis_founder_briefing', description: 'Generate an executive high-status Founder Cockpit Briefing',
+      inputSchema: { type: 'object', properties: {} },
+    }, () => ({ briefing: this.queen.generateFounderBriefing() }));
   }
 
   // ── JSON-RPC Dispatch ───────────────────────────────────────
-  handleRequest(request: JsonRpcRequest): JsonRpcResponse | null {
+  async handleRequest(request: JsonRpcRequest): Promise<JsonRpcResponse | null> {
     const { method, params, id } = request;
     if (method === 'notifications/initialized') return null;
     const rpcId = id ?? null;
@@ -370,8 +464,8 @@ export class StarlightMcpServer {
       const tool = this.tools.get(name);
       if (!tool) return { jsonrpc: '2.0', id: rpcId, error: { code: -32601, message: `Unknown tool: ${name}` } };
       try {
-        const result = tool.handler(args);
-        return { jsonrpc: '2.0', id: rpcId, result: { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] } };
+        const result = await tool.handler(args);
+        return { jsonrpc: '2.0', id: rpcId, result: { content: [{ type: 'text', text: typeof result === 'string' ? result : JSON.stringify(result, null, 2) }] } };
       } catch (err) {
         return { jsonrpc: '2.0', id: rpcId, result: {
           content: [{ type: 'text', text: JSON.stringify({ error: err instanceof Error ? err.message : String(err) }) }],
@@ -385,14 +479,14 @@ export class StarlightMcpServer {
   // ── Start ───────────────────────────────────────────────────
   start(): void {
     const rl = createInterface({ input: process.stdin, terminal: false });
-    rl.on('line', (line) => {
+    rl.on('line', async (line) => {
       if (!line.trim()) return;
       let request: JsonRpcRequest;
       try { request = JSON.parse(line); } catch {
         process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } }) + '\n');
         return;
       }
-      const response = this.handleRequest(request);
+      const response = await this.handleRequest(request);
       if (response) process.stdout.write(JSON.stringify(response) + '\n');
     });
     process.stderr.write(`[starlight-sis] MCP server started, vault: ${this.vaultDir}\n`);

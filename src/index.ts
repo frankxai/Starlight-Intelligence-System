@@ -458,3 +458,10 @@ export type {
   LoopNode,
   LoopShape,
 } from './loop-graph.js';
+
+// Universal Knowledge Tree & Epistemic Graph
+export * from './knowledge/index.js';
+
+// Starlight Queen Meta-Orchestrator
+export * from './queen/index.js';
+

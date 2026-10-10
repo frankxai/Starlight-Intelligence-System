@@ -7,9 +7,11 @@ import { UNIVERSAL_DOMAINS } from './domains.js';
 import type {
   ContradictionReport,
   EpistemicProvenance,
+  KnowledgeDomain,
   KnowledgeEdge,
   KnowledgeNode,
   KnowledgeQuery,
+  NodeKind,
   SubgraphProjection,
 } from './types.js';
 
@@ -134,8 +136,11 @@ export class UniversalKnowledgeTree {
     });
 
     // 2. Domain filter
-    if (options.domains && options.domains.length > 0) {
-      const domainSet = new Set(options.domains);
+    const targetDomains = options.domains && options.domains.length > 0
+      ? options.domains
+      : options.domain ? [options.domain] : undefined;
+    if (targetDomains && targetDomains.length > 0) {
+      const domainSet = new Set(targetDomains);
       results = results.filter((node) => domainSet.has(node.domain));
     }
 
@@ -156,8 +161,9 @@ export class UniversalKnowledgeTree {
     }
 
     // 6. Text search
-    if (options.queryText && options.queryText.trim()) {
-      const terms = options.queryText.toLowerCase().split(/\s+/);
+    const searchText = options.queryText || options.search;
+    if (searchText && searchText.trim()) {
+      const terms = searchText.toLowerCase().split(/\s+/);
       results = results.filter((node) => {
         const text = `${node.title} ${node.statement} ${node.tags.join(' ')}`.toLowerCase();
         return terms.every((term) => text.includes(term));
@@ -165,8 +171,9 @@ export class UniversalKnowledgeTree {
     }
 
     // 7. Limit
-    if (options.maxNodes && options.maxNodes > 0) {
-      results = results.slice(0, options.maxNodes);
+    const limit = options.maxNodes ?? options.limit;
+    if (limit && limit > 0) {
+      results = results.slice(0, limit);
     }
 
     return results;
@@ -326,5 +333,70 @@ export class UniversalKnowledgeTree {
 
   public getNode(id: string): KnowledgeNode | undefined {
     return this.nodes.get(id);
+  }
+
+  public listDomains(): Array<{
+    id: KnowledgeDomain;
+    name: string;
+    description: string;
+    tagline: string;
+    firstPrinciples: string[];
+    subDisciplines: string[];
+    nodeCount: number;
+  }> {
+    return (Object.entries(UNIVERSAL_DOMAINS) as Array<[KnowledgeDomain, (typeof UNIVERSAL_DOMAINS)[KnowledgeDomain]]>).map(([id, def]) => {
+      const domainNodes = this.query({ domain: id });
+      return {
+        id,
+        name: def.name,
+        description: def.tagline,
+        tagline: def.tagline,
+        firstPrinciples: def.firstPrinciples,
+        subDisciplines: def.scientificGrandChallenges || [],
+        nodeCount: domainNodes.length,
+      };
+    });
+  }
+
+  public getDomainNodes(domain: KnowledgeDomain): KnowledgeNode[] {
+    return this.query({ domain });
+  }
+
+  public discover(params: {
+    domain: KnowledgeDomain;
+    title: string;
+    statement: string;
+    kind?: NodeKind;
+    state?: NodeKind;
+    confidence?: number;
+    falsificationCriteria?: string;
+    justification?: string;
+    tags?: string[];
+    creator?: string;
+  }): KnowledgeNode {
+    const kind = params.kind || params.state || 'hypothesis';
+    const falsifier = params.falsificationCriteria ||
+      (params.justification ? `Falsified if counter-evidence disproves: ${params.justification}` : 'Falsified by rigorous empirical counter-example.');
+    return this.addNode({
+      id: `disc:${params.domain}:${Date.now()}`,
+      domain: params.domain,
+      kind,
+      title: params.title,
+      statement: params.statement,
+      falsificationCriteria: falsifier,
+      confidence: params.confidence ?? 0.85,
+      certaintyCapped: false,
+      provenance: {
+        creator: params.creator || 'agent:starlight-queen',
+        method: 'deductive_inference',
+        sourceUri: 'starlight://discovery/v1',
+      },
+      temporal: {
+        validFrom: new Date().toISOString(),
+        validUntil: null,
+        assertedAt: new Date().toISOString(),
+      },
+      tags: params.tags || ['frontier', 'discovery'],
+    });
   }
 }
