@@ -2,6 +2,65 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## Merged on main - 2026-05-30 to 2026-10-08
+
+Each line is a merged pull request or commit on `main`, dated by its merge date and cited by number or short SHA. Dates are merge dates in Europe/Berlin time.
+
+### October 2026
+
+- 2026-10-08 - `sis_search` supports scope filtering (#314).
+- 2026-10-08 - Scoped recall behavior restored (#311).
+- 2026-10-08 - Shared creative draft kernel and three branded lab projections (#309).
+- 2026-10-06 - Workspace sessions can be imported, and their scope is reported (#291).
+- 2026-10-06 - Reality Architect registered as an external SIP vertical (#280).
+- 2026-10-06 - Portable Starlight plugin repaired and connected to capability workflows (#277).
+- 2026-10-05 - Trusted session-continuity import, status and owner reconciliation (#273).
+- 2026-10-05 - Production design canary after each production deploy (#284), extended with sitemap coverage plus capitals, touch, contrast and focus checks (#287), and set to fail on all six checks (#290).
+- 2026-10-04 to 2026-10-05 - Site accessibility and layout fixes: WCAG AA contrast for secondary text and touch targets (#289); 320px overflow fixes (#271, #282, #283); /queen phone overflow (#281); sentence-case labels (#275, #278, #279, #288).
+- 2026-10-01 - Audit pass on site build, lockfiles, frontmatter, encoding and stale counts (#254).
+
+### September 2026
+
+- 2026-09-28 - Vault path traversal fixed in the MCP server, and the `sis_*` tools brought to the quality bar (#215).
+- 2026-09-24 - Agent ontology and compiler (#194).
+- 2026-09-19 - /verify page for SIS's own signed SIP receipt (#173); SIP schemas served at their type and `$id` URLs (#174); SIS's own SIP graph profile attested on every push to main (#170).
+- 2026-09-19 - Proposed SIP layer 7: evidence graph with signed, re-checkable receipts (#166).
+- 2026-09-19 - Next.js upgraded to 16.3.5 in site and console as a security fix (#168).
+- 2026-09-14 - Reviewed loop kernel integrated and hardened (#156).
+- 2026-09-09 - Remembering a memory no longer executes code inside it (#135).
+- 2026-09-06 - SIS contracts consolidated, and the community creation loop added (#133).
+- 2026-09-02 - Vault pages stay available when GitHub content requests time out or hang (#127, #130).
+- 2026-09-01 - Cinematic deep-field visual system for the site (#118).
+
+### August 2026
+
+- 2026-08-29 - Agent discovery entry point (#110).
+- 2026-08-27 - Vault count on the public site corrected (#105), following the public vault count fix of 2026-08-18 (#92).
+- 2026-08-25 - Vercel deploy page (#103, #104).
+- 2026-08-16 - Homepage calls to action describe source-only distribution (#83).
+- 2026-08-12 - Starlight Accord and cross-lab perspective published (#80).
+- 2026-08-05 - Constellation star maps and encyclopedia wave on /cosmos (#37).
+
+### July 2026
+
+- 2026-07-27 - Homepage repositioned as a multi-agent architecture surface (#59), with release-integrity follow-ups (#60).
+- 2026-07-25 - Public install instructions repaired (#51).
+- 2026-07-06 - Dead calls to action, private-repo links and internal-note copy repaired on production pages (#31).
+
+### June 2026
+
+- 2026-06-24 - Knowledge Tree explorer: 3D hero, 2D fallback and graph data model (#29).
+- 2026-06-12 - v8.3.0 release finalized (48a1cdc).
+- 2026-06-11 - SIS Memory Gateway v0.1 (fd0dc2d).
+- 2026-06-11 - Memory Engine v0.2: pluggable embedding provider and RRF hybrid search (4c41ec1).
+- 2026-06-11 - /cosmos and /asteroids pages (f5da2b1).
+- 2026-06-08 - /knowledge-tree page (#18).
+
+### May 2026
+
+- 2026-05-31 - v8.2.0: first-run hardening, vault seeding, retrieval labeling and measured recall (#15).
+- 2026-05-30 - Harness drift guard, CI, STATUS and MCP smoke test (#14).
+
 ## Unreleased — 2026-09-19
 
 - **Attestation is earned, not blanket.** The "Built on SIP" block is emitted only on artifacts that compose a SIP element, and is described as a declared label; verifiable claims use signed receipts (`protocol/sign.mjs`). Supersedes the v7.4 ambient-attestation stance (see `ATTESTATIONS.md`).

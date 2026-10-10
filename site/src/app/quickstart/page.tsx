@@ -164,7 +164,7 @@ node dist/cli.js init --vaults`}
         </Terminal>
         <div className="mt-5 rounded-xl border border-amber-500/[0.16] bg-amber-500/[0.05] p-5">
           <p className="text-[13px] leading-relaxed text-slate-300">
-            Distribution note: as verified on July 24, 2026, npm serves
+            Distribution note: as verified on October 9, 2026, npm serves
             v6.0.1 while this repository is v8.3.0. Use the source path above
             for the current system.
           </p>

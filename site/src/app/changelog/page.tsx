@@ -46,7 +46,7 @@ function loadChangelogSource(): string {
   }
   // Strip the leading "# Changelog" + preamble line (the page renders its own H1)
   const lines = raw.split("\n");
-  const firstVersionIdx = lines.findIndex((l) => /^##\s+v/.test(l));
+  const firstVersionIdx = lines.findIndex((l) => /^##\s+/.test(l));
   if (firstVersionIdx === -1) return raw;
   return lines.slice(firstVersionIdx).join("\n").trim();
 }

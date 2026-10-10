@@ -307,7 +307,7 @@ export function MemoryPalace() {
             ) : (
               <div className="text-white/50">
                 Tap any orb to surface memory. Or speak an intention. The palace responds.
-                <div className="mt-2 text-[10px] text-white/50">This is the L99 seed. Full 3D r3f + real gateway data in the 21-person build.</div>
+                <div className="mt-2 text-[10px] text-white/50">Excerpts are fixed text on this page. Speak to focus steps through the six vaults in turn; it doesn&apos;t use your microphone.</div>
               </div>
             )}
           </div>
