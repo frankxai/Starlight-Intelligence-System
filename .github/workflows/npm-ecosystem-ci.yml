@@ -34,7 +34,7 @@ jobs:
       - run: npm install --global pnpm@11.5.0
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm run test:packages
-      - run: pnpm exec changeset status --since=origin/main
+      - run: pnpm exec changeset publish-plan
 
   artifacts:
     runs-on: ubuntu-latest

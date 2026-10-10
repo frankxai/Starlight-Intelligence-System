@@ -29,8 +29,17 @@ database, memory router, or vault filesystem.
 | `@starlight-intelligence/ai-sdk` | AI SDK model middleware for generation and streaming | Core; AI SDK 7 peer |
 | `@starlight-intelligence/mcp` | Official MCP SDK v2 server factory and read-only stdio gateway bridge | Core, official MCP server, Zod |
 
-All three candidates start at 0.1.0. The initial minor Changeset proposes 0.2.0;
-review and run the version command before choosing the first registry release.
+All three candidates are now versioned at0.2.0 using the initial minor Changeset.
+Changesets3.0.3 generated their changelogs and consumed that completed Changeset;
+the root8.5.0 manifest and lockfile are unchanged. Its read-only publish-plan
+confirms only core, AI SDK and MCP, in dependency order, are unpublished candidates.
+CI checks this plan after versioning; status reports no pending Changeset once it
+has been consumed. Actual archive/installed-consumer checks and source-bound OIDC
+publication remain the release gates. No registry publication occurs through the
+plan command. Exact-revision review/account bootstrap and fresh hosted acceptance
+remain open. Local build admission remains HOLD7334MB/8192required; the version
+command made text changes and its automatic pnpm update found the lockfile already
+up to date without dependency resolution or new installs.
 Public code and retained schemas use MIT. No creative canon or private instance
 state is included.
 

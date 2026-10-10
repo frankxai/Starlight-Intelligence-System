@@ -1,6 +1,6 @@
 {
   "name": "@starlight-intelligence/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "description": "Portable SIS memory and protocol contracts with local sanitization.",
   "type": "module",
