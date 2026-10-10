@@ -1,0 +1,160 @@
+# Modular npm implementation
+
+Status: implementation branch; publication and acceptance gates remain open.
+Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-System/issues/329).
+
+## Decision and boundaries
+
+Extract shared contracts and context projection into dependency-free core. Build
+AI SDK middleware and an official MCP SDK server against those contracts. Keep
+the operational SIS runtime as their host/provider rather than duplicating its
+database, memory router, or vault filesystem.
+
+| Package | Responsibility | Runtime dependencies |
+| --- | --- | --- |
+| `@starlight-intelligence/core` | Protocol/provider types, existing Veil sanitizer, scoped context projection | None |
+| `@starlight-intelligence/ai-sdk` | AI SDK model middleware for generation and streaming | Core; AI SDK 7 peer |
+| `@starlight-intelligence/mcp` | Official MCP SDK v2 server factory and read-only stdio gateway bridge | Core, official MCP server, Zod |
+
+All three candidates start at 0.1.0. The initial minor Changeset proposes 0.2.0;
+review and run the version command before choosing the first registry release.
+Public code and retained schemas use MIT. No creative canon or private instance
+state is included.
+
+The alternative was a separate new memory engine inside each adapter. That would
+duplicate retention, indexing, tenant policy, and provider configuration. These
+packages reuse the existing provider contract and add a shared safe projection.
+The existing root imports the extracted contracts and sanitizer, so core is used
+by SIS as well as the new integrations.
+
+The root legacy package name remains unchanged on this branch to preserve the
+other session's scope-migration lane. Its subpath exports and binaries are retained.
+The `packages/core` schema subpaths are retained under the new core scope. No
+shim, deprecation, or first publication is performed here. Reconcile the root
+scope rename and Changesets ignore entry before integrating that separate lane.
+
+## Trust and lifecycle
+
+Hosts supply authenticated providers and fixed tenant/workspace scope. Projection
+checks that returned records match scope before exposing sanitized facts. It
+excludes raw content, private/secret/regulated records, invalid or expired retention,
+duplicate IDs, and nonfinite scores. Public records are permitted; private-shareable
+records require explicit host authorization. Query, record count, text budget,
+and recall waiting are bounded. Sanitizer/provider failures stop recall without
+credential-bearing messages. Cancellation reaches cooperative providers, while
+the deadline also bounds waiting on uncooperative providers.
+
+The gateway bridge talks to the existing single-tenant SIS search endpoint. That
+endpoint has no multi-tenant authorization contract. The bridge labels results
+with the configured dedicated tenant/workspace; it cannot establish those labels
+from independent upstream identity. Never use one unsegregated gateway for several
+tenants. The programmatic provider integration can enforce real upstream tenant
+and workspace policies.
+
+MCP is read-only by default. Writes/deletes require host grants and provider methods.
+The existing deletion contract supports tenant/ID only, so workspace-scoped deletion
+is rejected. Provider implementations own actual write cancellation, idempotency,
+and retention enforcement. Sanitizer regexes and untrusted-reference prompt labels
+do not guarantee complete secret detection or prompt-injection resistance.
+Attestation and harness types declare contracts; they do not verify signatures or
+enforce machine admission.
+
+## Development and release
+
+The root and these three packages form the pnpm workspace. Other nested apps,
+plugins, native validators, and repositories keep their own dependency lanes.
+`pnpm-lock.yaml` is authoritative for this workspace; the stale root npm lock was
+removed. Root workflows install pnpm
+11.5.0 and use the frozen lock. Turbo builds core before dependents, with local
+package tasks bounded to concurrency one. Avoid root `npm ci` with workspace protocols.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm run test:packages
+pnpm run verify:packages
+node scripts/test-npm-consumer.mjs
+pnpm exec changeset status
+pnpm run version:packages
+```
+
+`verify:packages` audits actual pnpm-generated tarballs, not dry-run listings.
+It rejects unapproved members, links/traversal, missing export/bin targets,
+unresolved workspace dependencies, core runtime dependencies and external imports,
+and core JavaScript of 20,000 bytes or more. Gitleaks scans all regular file contents.
+Receipts record source revision, dirtiness, SHA-256, SHA-512 integrity, and sizes.
+Consumer verification installs these bytes outside workspace resolution, compiles
+public declarations, and runs the package integration tests against installed exports.
+Consumer runs remain in ignored artifacts for inspection.
+
+CI checks Linux/Windows on Node 22/24 and runs tarball verification on Linux.
+Core also has a Node 18 compatibility job to preserve the legacy SIS runtime floor.
+These are configured checks, not evidence of a successful hosted run.
+`npm-ecosystem-release.yml` is manual and main-only. Verification creates the
+tarballs before the separate `npm-production` environment job. The publish job
+has OIDC permission, uses pinned npm 11.10.0, and publishes the same bytes with
+provenance. It rejects dirty receipts, altered digests/integrity, token-based
+credentials, and conflicting registry versions. Existing identical versions are
+reconciled before publishing missing packages in core-first order. An ambiguous
+publication failure stops; rerun checks registry integrity before retrying.
+Publishing several npm packages is not atomic.
+
+Account setup required before release:
+
+1. Confirm ownership/access for each new package in the npm organization.
+2. Configure a trusted publisher for `frankxai/Starlight-Intelligence-System`,
+   workflow `npm-ecosystem-release.yml`, environment `npm-production`, allowing
+   direct publish. New-package initialization may have a time-limited first-publish
+   window; check the account's current setup immediately before release.
+3. Configure GitHub `npm-production` protection with a required reviewer and main
+   branch restriction. A YAML environment reference alone does not enforce approval.
+4. Verify public repository/package eligibility for provenance and publish permissions.
+5. Obtain exact-revision independent provider review and passing hosted checks.
+6. Approve the concrete receipt/version set and dispatch the release workflow.
+
+Source references: [AI SDK middleware](https://ai-sdk.dev/docs/ai-sdk-core/middleware),
+[official MCP TypeScript SDK v2](https://ts.sdk.modelcontextprotocol.io/v2/), and
+[npm trusted publishing](https://docs.npmjs.com/trusted-publishers/).
+Implementation was checked against installed upstream types because examples on
+documentation pages can lag the current major.
+
+## Evidence and remaining acceptance
+
+Update, 10 October 2026: build admission recovered. Frozen installation, all three
+package builds, 13 package integration tests, actual tarball allowlists and Gitleaks
+scans, and installation into a separate consumer directory passed. The installed
+consumer also passed strict TypeScript declaration checks and 13 integration tests.
+This exposed a missing upstream JSON Schema declaration dependency in the AI adapter;
+`@types/json-schema` is now a published dependency rather than a workspace-only fix.
+Core JavaScript is 7,568 bytes and its compressed package is 11,923 bytes, including
+the preserved schemas. Root lint/build and 43 native/provider/sanitizer tests passed.
+Tracked sparse-checkout fixtures were materialized; the six previously failing
+symmetry test files then passed all 53 tests. Mandatory hooks remain enabled.
+
+These are working-tree results, not a clean publication receipt. Current main has
+advanced to `fe964d5a9449704c841cad821f8f2e6d02c9551b`, including terminal SDK and
+creator workflows. Integration and new verification against that revision are open.
+Claude review returned a quota error; Gemini review returned a client eligibility
+error. Neither attempt produced a review verdict. The live maintainer metadata
+inventory now contains 45 packages; see `NPM_RELEASE_CATALOG.md` for exact coverage.
+The earlier held-admission record below remains historical evidence.
+
+Earlier local builds and 13 package tests passed on Node 24.16.0 before the final
+release-hardening edits. Afterwards, 35 legacy provider/sanitizer and release-safety
+tests passed, along with five tests against the current core source through tsx.
+Both new workflow files parsed as YAML. Changesets status correctly identified the
+three minor releases. Subsequent build admission was held below the 8,192 MB reserve
+and later measured only 3,283 MB free, below the 4 GiB floor. Final-revision build,
+tarball scan, consumer installation, root regressions, and independent review
+remain pending until their recorded results are added to the handover.
+
+The requested competitive position is an objective. This implementation supplies
+modular integrations; it does not prove superiority over Vercel AI SDK, MCP,
+LangGraph, or Mastra. A fair comparison needs scoped workloads, latency/size/cost
+measurements, failure recovery tests, and buyer evidence. Browser/edge deployment,
+live model providers, production gateway behavior, and multi-tenant provider
+authorization also need deployment-specific validation.
+
+Source blueprint inspected in the primary checkout:
+`docs/architecture/NPM_ECOSYSTEM_STRATEGY.md`, SHA-256
+`13FB83D2A50F3A10C7F83B99252405658919EAFF5E29DC5C923F416C74A6B2A6`.
+Its prior audit claims are supplied context; this branch records its own evidence.

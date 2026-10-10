@@ -17,9 +17,8 @@ import type {
 import { withJsonlLock } from "./jsonl-lock.js";
 
 // Event Types for Event Sourcing
-export type MemoryEvent =
-  | { type: "add"; payload: MemoryEntry; timestamp: number }
-  | { type: "remove"; id: string; timestamp: number };
+import type { MemoryEvent } from "@starlight-intelligence/core";
+export type { MemoryEvent } from "@starlight-intelligence/core";
 
 // ── Word Index ──────────────────────────────────────────────
 

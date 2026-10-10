@@ -1,0 +1,50 @@
+{
+  "name": "@starlight-intelligence/ai-sdk",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "license": "MIT",
+  "description": "Scoped Starlight memory middleware for Vercel AI SDK.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frankxai/Starlight-Intelligence-System.git",
+    "directory": "packages/ai-sdk-adapter"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "prepack": "pnpm run build"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "ai": "7.0.130",
+    "zod": "4.6.5"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@starlight-intelligence/core": "workspace:^",
+    "@types/json-schema": "7.0.15"
+  },
+  "peerDependencies": {
+    "ai": "^7.0.130"
+  }
+}

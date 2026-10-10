@@ -1,3 +1,8 @@
+packages:
+  - packages/core
+  - packages/ai-sdk-adapter
+  - packages/mcp-server
+
 autoInstallPeers: false
 
 # better-sqlite3 backs the ledgers and retrieval index and needs its native

@@ -116,7 +116,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm run build:core && tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",
     "dev": "tsc --watch",
@@ -142,7 +142,7 @@
     "test:foundry": "node --import tsx --test test/v92-foundry.test.ts test/foundry-conformance.test.ts",
     "blueprints:validate": "node blueprints/validate.mjs",
     "test:blueprints": "node --test test/architecture-blueprint.test.mjs",
-    "test": "npm run test:operational && npm run test:substrate && npm run test:v01-evals",
+    "test": "pnpm run build:core && npm run test:operational && npm run test:substrate && npm run test:v01-evals",
     "test:v01-evals": "npm run build && node tools/run-v01-evals.mjs",
     "test:evals": "npm run build && node tools/run-v01-evals.mjs",
     "eval:retrieval": "node --import tsx --test test/retrieval-eval.test.ts",
@@ -152,7 +152,7 @@
     "test:community": "node --import tsx --test test/community.test.ts",
     "test:operational": "npm run test:community && node --import tsx --test src/adapters/adapters.test.ts && node --import tsx --test src/orchestrator.test.ts && node --import tsx --test src/temporal.test.ts && node --import tsx --test src/swarm.test.ts && node --import tsx --test src/yolo/yolo.test.ts && node --import tsx --test src/yolo/finance-bridge.test.ts && node --import tsx --test src/infra/infra.test.ts && node --import tsx --test src/finance/finance.test.ts && node --import tsx --test test/core-regressions.test.ts && node --import tsx --test test/v92-foundry.test.ts && node --import tsx --test test/mcp-server-smoke.test.ts && node --import tsx --test test/mcp-server-quality.test.ts && node --import tsx --test test/smoke-quickstart.test.ts && node --import tsx --test test/estate-factory-smoke.test.ts && node --import tsx --test test/swarm.test.ts && node --import tsx --test test/goal.test.ts && npm run test:blueprints && npm run test:work-graph && npm run test:graph-engineering && npm run test:queen-session",
     "generate-context": "node dist/cli.js generate",
-    "lint": "tsc --noEmit",
+    "lint": "pnpm run build:core && tsc --noEmit",
     "lint:site": "npm --prefix site run lint",
     "lint:console": "npm --prefix console run lint",
     "verify": "npm run lint && npm run agents:harness-check && npm run upstreams:check && npm run mesh:check && node scripts/validate-agentskills.mjs && node scripts/check-identity-drift.mjs && node scripts/validate-agents.mjs && npm test && npm run build && npm run lint:site && npm run build:site && npm run lint:console && npm run build:console",
@@ -163,7 +163,14 @@
     "prepublishOnly": "npm run build && npm run test:substrate",
     "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts",
     "test:queen-session": "node --import tsx --test test/queen-session.test.ts",
-    "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs"
+    "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs",
+    "build:core": "pnpm --filter @starlight-intelligence/core build",
+    "build:packages": "turbo run build --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1",
+    "test:packages": "pnpm run build:packages && turbo run test --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1 && node --test test/npm-ecosystem-release.test.mjs",
+    "verify:packages": "pnpm run test:packages && node scripts/verify-npm-ecosystem.mjs",
+    "changeset": "changeset",
+    "version:packages": "changeset version",
+    "release:packages": "node scripts/publish-npm-ecosystem.mjs"
   },
   "files": [
     "dist/",
@@ -192,7 +199,9 @@
     "semver": "7.8.5",
     "tsx": "^4.23.15",
     "typescript": "^5.7.0",
-    "yaml": "2.9.0"
+    "yaml": "2.9.0",
+    "turbo": "2.11.7",
+    "@changesets/cli": "3.0.3"
   },
   "peerDependencies": {
     "@arcanea/memory-system": ">=0.1.0",
@@ -215,6 +224,8 @@
     "starlight-substrate-mcp": "dist/starlight-mcp.js"
   },
   "dependencies": {
-    "better-sqlite3": "12.8.0"
-  }
+    "better-sqlite3": "12.8.0",
+    "@starlight-intelligence/core": "workspace:^"
+  },
+  "packageManager": "pnpm@11.5.0"
 }
