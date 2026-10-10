@@ -53,3 +53,19 @@ Limits: 2 MB transfer per response, 2 MB decoded tar, 200 regular members, regis
 | storage-intelligence | 1.0.1 | inspected | No static flags |
 
 Detailed sanitized evidence is in ignored artifacts/npm-estate/artifact-audit.json. Static flags do not authorize changing or republishing another repository.
+
+## 10 October finding triage
+
+Re-fetched both flagged package versions, confirmed the same SHA256/SHA512 bytes,
+and mapped fully redacted scanner spans to their exact archive members. The two
+matches in `arcanea@3.4.0` cover pairs of empty environment assignments in
+`agents/arcanea-ai-specialist.md` at lines 720–721 and 722–723. Those specific
+matches contain no supplied credential. This does not establish that the whole
+package is secret-free or safe at runtime.
+
+The match in `@arcanea/skills@1.0.0`, `skills/api-design/SKILL.md` line 404, remains
+unresolved. Documentation context and a header name alone do not establish that
+its value is a placeholder. No credential was tested, revoked or exposed in the
+report. Raw package bytes remained in memory; sanitized finding locations, source
+line hashes and classifications are in ignored `artifacts/npm-estate/secret-triage.json`.
+The original table preserves the scanner observation before triage.
