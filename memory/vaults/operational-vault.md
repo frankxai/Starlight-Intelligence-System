@@ -672,3 +672,35 @@ Frank prefers Vercel-backed preview/live verification over long-running localhos
 Operational rule for Codex, Claude, OpenCode, Cursor, Gemini, Antigravity, and other coding agents: use local checks as the fast inner loop, then use Vercel preview/production URLs for meaningful web verification when the repo is connected to Vercel. Use Vercel connector/plugin/CLI to inspect projects, deployments, domains, and logs before claiming a site is live. Be cost-aware: batch coherent changes into a single preview/deploy cycle, avoid repeated production deploys for speculative changes, and prefer preview + promote when appropriate.
 
 GenCreator connector check on 2026-06-18: team `Starlight Intelligence`; Vercel project `gencreator-ai`; project id `prj_nIryRFHID247Sh0DEp2oH1T4amnO`; latest production deployment READY at `gencreator-ffliufq6k-starlight-intelligence.vercel.app`; GitHub integration metadata points to `frankxai/gencreator.ai` on `main`; connector listed Vercel subdomains but did not list `gencreator.ai` custom domain, so agents must verify domain attachment before saying the apex is live.
+
+---
+
+## 2026-10-10 — Sovereign Digital Product Forge E2E Ship & Estate Deployment
+
+**Category:** digital-product-forge / estate-synchronization / checkout-fulfillment
+**Confidence:** 1.0
+**Source:** Antigravity session on Digital Product Forge + FrankX Web + Money Unlocked + SIS
+**Related:** `C:\Users\frank\digital-product-forge`, `C:\Users\frank\frankx.ai-vercel-website`, `C:\Users\frank\frankx-money-unlocked`, `C:\Users\frank\Starlight-Intelligence-System`
+
+### Highlights & Architecture
+- **Sovereign Forge Engine (`digital-product-forge`):**
+  - Shipped the 9-gate production diagnostic suite (`core/diagnostics/doctor.js`) and comprehensive 20-test automated verification suite (`test/forge.test.js`) — 100% green.
+  - Published master architectural doctrine (`core/research/CREATIVE-TOOLING-AND-STACK-AUDIT.md`) establishing the strict estate boundary: Figma for system tokens/UI kits, Canva for edge marketing carousels, Code-Native engines for canonical deliverables, and Git vaults for sovereign ownership. Scored 100% clean on the anti-slop linter (Sentence rhythm SD = 17.98).
+  - Executed compilation & packaging: 19 publication-ready print/web artifacts, 20 responsive edge sales letters, and 6 standalone release distribution zip packages with SHA-256 integrity manifests (`dist/packages/manifest.json`).
+  - Pushed commits `ccc15d6`, `ec0ccb4`, and `23c3c51` to `https://github.com/frankxai/digital-product-forge.git`.
+
+- **Web Estate Deployment (`frankx.ai-vercel-website` & `frankx-money-unlocked`):**
+  - Expanded product catalogs from 20 to 33 live estate products with complete null-safety defense in `lib/products.ts`.
+  - Registered all new commercial SKUs in `app/api/checkout/route.ts` (`system-architect-starter-kit`, `visual-creation-loop`, `income-architecture-blueprint`, `dpi-field-kit`, `agent-fleet-pro`, `memory-palace-os`, `agentic-media-machine`, `agentic-content-engine`, `starlight-operator-pack`, `aurora-ui-kit`, `founders-circle-guild`).
+  - Configured delivery and post-purchase fulfillment handlers in `lib/delivery.ts` for instant zero-friction delivery.
+  - Upgraded `/soulbook/assessment` with an interactive, upsell-ready funnel bridge connecting free obsidian vaults to the System Architect Starter Kit ($97).
+  - Verified test suites: `checkout-sku-contract.test.mjs` (0 offenders), `soulbook-free-offer.test.mjs` (2/2 pass), `governance-gates.test.mjs` (41/41 pass).
+  - Pushed to `origin/agent/forge/products-and-checkout-sync`.
+
+- **SIS Skill & Protocol Registration (`Starlight-Intelligence-System`):**
+  - Scaffolded and registered `skills/business/digital-product-forge.md`.
+  - Activated auto-trigger rule `business-digital-product-forge` in `skills/skill-rules.json`.
+  - Incremented canonical skill count to 84 in `skills/SKILL_REGISTRY.md`.
+  - Passed all substrate symmetry tests: `v77-skill-rules.test.ts` (6/6 pass) and `v78-skill-registry.test.ts` (8/8 pass).
+
+**Built on SIP — Starlight Intelligence Protocol v1.1.1**
