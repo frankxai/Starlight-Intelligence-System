@@ -5,3 +5,4 @@ export type { WorkerRequest, WorkerResponse, WorkerRuntime, JsonValue } from "./
 export { createHttpWorkerRuntime, createMcpWorkerRuntime } from "./transports.js";
 export type { McpToolCaller } from "./transports.js";
 export { createProcessWorkerRuntime } from "./process.js";
+export { createOpenCodeRuntime } from "./opencode.js";

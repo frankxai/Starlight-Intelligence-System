@@ -14,6 +14,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
+    "./creator-workspace": {
+      "types": "./dist/creator-workspace.d.ts",
+      "import": "./dist/creator-workspace.js"
+    },
     "./runtime-bridge": {
       "types": "./dist/runtime-bridge/index.d.ts",
       "import": "./dist/runtime-bridge/index.js"
@@ -124,7 +128,7 @@
     }
   },
   "scripts": {
-    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts",
+    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/creator-workspace.test.ts",
     "build": "tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",

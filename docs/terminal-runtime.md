@@ -1,5 +1,44 @@
 # Terminal execution and private handoffs
 
+## OpenCode and creator operations
+
+The runtime bridge now connects to an operator-owned OpenCode 1.18.35 server.
+It checks the version, creates a session with tools denied and saves the session ID
+before prompting. It uses the installed version's structured-output schema and
+requires the returned model/session identity to match. Configure a private host
+binding with `kind: "opencode"`, `id`, `endpoint`, `expectedVersion: "1.18.35"`,
+`providerID` and `modelID`. Numeric loopback HTTP requires `allowLoopbackHttp: true`.
+For Basic auth with the default `opencode` username, provide `passwordEnv` naming
+the environment variable containing the server password. Credentials stay in the
+host. CLI session receipts are saved as `<run-id>.opencode-session.json` in the
+private journal. Version drift fails before session creation. The SDK requires a
+durable `onSession` callback. No server is started by these commands.
+
+The creator workspace keeps immutable source-bound editorial revisions:
+
+```text
+starlight creator packet --file <absolute-brief.json> --work-ref issue:144
+starlight run start --file <absolute-packet.json> --host <absolute-host.json> --authorize
+starlight creator capture <run-id> --file <absolute-brief.json> --workspace <absolute-directory>
+starlight creator inspect <run-id> --workspace <absolute-directory>
+starlight creator edit <run-id> --file <absolute-draft.json> --expected <current-sha256> --workspace <absolute-directory>
+starlight creator export <run-id> --workspace <absolute-directory>
+```
+
+A brief has `version: "starlight.creator-brief.v1"`, `id`, `audience`, `intent`
+and `sources: [{id,title,text,url?}]`. Source URLs require HTTPS. Packet creation
+does not execute a worker. The worker returns a JSON draft as its output string:
+`version: "starlight.creator-draft.v1"`, `title`, `body` (Markdown),
+`claims: [{text,sourceIds}]`, `channels: [{channel,text,sourceIds}]` and
+`reviewNotes: [string]`. Channels are `linkedin`, `newsletter` or `x`.
+Capture checks the exact brief against the run fingerprint. Edits require the
+current revision hash; original content remains. Export prints JSON containing
+Markdown and a provenance manifest, with verification pending and usage unknown.
+It does not publish content. Source mapping is structural, not a fact-check.
+Treat exported Markdown as untrusted content before rendering it in a website.
+
+See [integration research and actual evidence limits](harness-integration-research.md).
+
 This operational SDK slice records a work attempt before dispatch, preserves its
 result for editing, and exports evidence to another harness. It does not replace
 the estate queue, fleet admission, product workflows or native conversations.

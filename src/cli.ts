@@ -1462,7 +1462,7 @@ async function cmdGoal(
 
 async function main(): Promise<void> {
   const terminalArgs = process.argv.slice(2);
-  if (["domain", "harness", "run"].includes(terminalArgs[0])) {
+  if (["domain", "harness", "run", "creator"].includes(terminalArgs[0])) {
     const result = await runTerminalCli(terminalArgs);
     if (result.stdout) console.log(result.stdout);
     if (result.stderr) console.error(result.stderr);
