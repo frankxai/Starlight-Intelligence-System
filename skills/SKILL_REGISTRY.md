@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 83 skills across 16 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 84 skills across 16 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 
@@ -42,12 +42,13 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 
 ## Registry
 
-### business (2)
+### business (3)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
 | business/entity-architecture | business-entity-architecture | SIS | 2026-05-06 | stable |
 | business/revenue-modeling | business-revenue-modeling | SIS | 2026-05-06 | stable |
+| business/digital-product-forge | business-digital-product-forge | SIS | 2026-10-10 | stable |
 
 ### energy-intelligence (7)
 

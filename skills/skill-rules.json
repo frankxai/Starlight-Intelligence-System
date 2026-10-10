@@ -2761,6 +2761,38 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "business-digital-product-forge",
+      "skill": "business/digital-product-forge",
+      "triggers": {
+        "keywords": [
+          "digital product",
+          "digital products",
+          "lead magnet",
+          "product forge",
+          "forge",
+          "funnel",
+          "agy-products",
+          "lemon squeezy",
+          "whop",
+          "product catalog"
+        ],
+        "agents": [
+          "starlight-business",
+          "starlight-orchestrator",
+          "starlight-navigator",
+          "starlight-genius"
+        ],
+        "intents": [
+          "digital_products",
+          "funnel_architecture",
+          "monetization",
+          "release_engineering"
+        ]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {
