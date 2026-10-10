@@ -26,7 +26,7 @@
       "implementationSha256": "4c6fc13625d140805ca306f46d7132ae2117acecdd66c90d23a284644ab222c5",
       "sourceClosure": {
         "package-lock.json": "624797bbf53c5378920c9dfe2ef436dbeff84eaa05d0306c479394231f7f1973",
-        "package.json": "50afa842c86bcc32699e3cccf5b7e8534c6f5e67bc1ba64c023fedbc2294d28c",
+        "package.json": "11d40b8569c04460ac1ea46424c195776c7180ebd8956b0ccca35690ce8206b8",
         "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
         "tools/foundry/lib/upstream-conformance.mjs": "4c6fc13625d140805ca306f46d7132ae2117acecdd66c90d23a284644ab222c5"
       }
@@ -44,7 +44,7 @@
         "sourceClosure": {
           "foundry/contracts/openai-submission-profile.schema.json": "67aecad66f6faa969b766eb6aa00a1864aaccb4560f283a39166b35167c66038",
           "package-lock.json": "624797bbf53c5378920c9dfe2ef436dbeff84eaa05d0306c479394231f7f1973",
-          "package.json": "50afa842c86bcc32699e3cccf5b7e8534c6f5e67bc1ba64c023fedbc2294d28c",
+          "package.json": "11d40b8569c04460ac1ea46424c195776c7180ebd8956b0ccca35690ce8206b8",
           "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
           "tools/foundry/lib/openai-preflight.mjs": "088627eafaafa3ae21aaaf37914579cd1729f8e868bfc9d68649982f06eda212",
           "tools/foundry/lib/package-payload.mjs": "0a195f6a1aeb04ec4f37386038335b6da2be53fa68b83207b3244fd7b070c309",

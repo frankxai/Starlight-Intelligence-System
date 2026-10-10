@@ -82,6 +82,12 @@ export interface MemoryEntry {
   confidence: number;
   createdAt: string;
   source?: string;
+  /** Provenance slugs. `source` stays the existing field. */
+  agent?: string;
+  brand?: string;
+  domain?: string;
+  /** Unit scope slug (explicit unit, else brand). Never derived from agent. */
+  unit?: string;
 }
 
 export interface MemorySearchOptions {
