@@ -3,9 +3,11 @@ import assert from 'node:assert/strict';
 import { validateEntries, readTar, digest, targets, pnpmInvocation } from '../scripts/verify-npm-ecosystem.mjs';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
-import { validateReceipt, publishEcosystem } from '../scripts/publish-npm-ecosystem.mjs';
+import { validateReceipt, publishEcosystem, validateConsumerReceipt, consumerChecks,
+  assertPublishingContext, createNpmRuntime } from '../scripts/publish-npm-ecosystem.mjs';
 import { auditEstate, summarizePackage } from '../scripts/audit-npm-estate.mjs';
 
 test('packing supports pnpm JavaScript and native launchers without accepting arbitrary shells', () => {
@@ -91,6 +93,10 @@ test('publication validates real artifact bytes and rejects forged registry inte
   });
   const receipt = { schemaVersion: 1, sourceSha: 'a'.repeat(40), dirty: false, packages };
   assert.equal(validateReceipt(receipt, receipt.sourceSha, run).length, 3);
+  const malformed = { ...receipt, packages: packages.map((row, index) => index ? row : {
+    ...row, version: '../outside', file: 'starlight-intelligence-core-../outside.tgz',
+  }) };
+  assert.throws(() => validateReceipt(malformed, receipt.sourceSha, run), /Invalid artifact identity/);
   receipt.packages[0].integrity = 'sha512-forged';
   assert.throws(() => validateReceipt(receipt, receipt.sourceSha, run), /integrity mismatch/);
 });
@@ -99,4 +105,58 @@ test('dirty, mismatched or incomplete receipts and local publication cannot pass
   assert.throws(() => validateReceipt({ schemaVersion: 1, dirty: true, packages: [] }, 'a'.repeat(40), '.'));
   assert.throws(() => validateReceipt({ schemaVersion: 1, dirty: false, packages: [] }, 'a'.repeat(40), '.'));
   assert.throws(() => publishEcosystem(), /approved main-branch OIDC/);
+});
+
+test('publication requires the exact manual main workflow and rejects token fallback', () => {
+  const sha = 'a'.repeat(40);
+  const env = { GITHUB_ACTIONS: 'true', GITHUB_REPOSITORY: 'frankxai/Starlight-Intelligence-System',
+    GITHUB_REF: 'refs/heads/main', GITHUB_SHA: sha, GITHUB_EVENT_NAME: 'workflow_dispatch',
+    GITHUB_WORKFLOW_REF: 'frankxai/Starlight-Intelligence-System/.github/workflows/npm-ecosystem-release.yml@refs/heads/main',
+    ACTIONS_ID_TOKEN_REQUEST_URL: 'https://example.invalid', ACTIONS_ID_TOKEN_REQUEST_TOKEN: 'fixture' };
+  assert.doesNotThrow(() => assertPublishingContext(env, sha, ['--execute']));
+  for (const change of [{ GITHUB_ACTIONS: 'false' }, { GITHUB_REPOSITORY: 'other/repository' },
+    { GITHUB_REF: 'refs/heads/feature' }, { GITHUB_SHA: 'b'.repeat(40) }, { GITHUB_EVENT_NAME: 'push' },
+    { GITHUB_WORKFLOW_REF: 'other-workflow' }, { ACTIONS_ID_TOKEN_REQUEST_URL: '' },
+    { ACTIONS_ID_TOKEN_REQUEST_TOKEN: '' }, { NPM_TOKEN: 'fixture' }, { NODE_AUTH_TOKEN: 'fixture' }]) {
+    assert.throws(() => assertPublishingContext({ ...env, ...change }, sha, ['--execute']), /approved main-branch OIDC/);
+  }
+  for (const args of [[], ['--execute', '--force'], ['--dry-run']]) {
+    assert.throws(() => assertPublishingContext(env, sha, args));
+  }
+});
+
+test('consumer evidence binds every completed check to exact manifest bytes and source', () => {
+  const bytes = Buffer.from('{"fixture":true}\n');
+  const sha = 'a'.repeat(40);
+  const receipt = { schemaVersion: 1, sourceSha: sha, manifestSha256: digest(bytes), passed: true, checks: consumerChecks };
+  assert.doesNotThrow(() => validateConsumerReceipt(receipt, bytes, sha));
+  for (const change of [{ schemaVersion: 2 }, { sourceSha: 'b'.repeat(40) }, { passed: false },
+    { manifestSha256: '0'.repeat(64) }, { checks: consumerChecks.slice(1) }, { checks: [...consumerChecks].reverse() }]) {
+    assert.throws(() => validateConsumerReceipt({ ...receipt, ...change }, bytes, sha), /consumer evidence/);
+  }
+  assert.throws(() => validateConsumerReceipt(receipt, Buffer.concat([bytes, Buffer.from(' ')]), sha));
+  assert.throws(() => validateConsumerReceipt(undefined, bytes, sha));
+});
+
+test('publication npm runtime isolates inherited configuration and process options', () => {
+  const root = join(process.cwd(), 'artifacts', 'release-unit-tests');
+  mkdirSync(join(root, 'artifacts'), { recursive: true });
+  writeFileSync(join(root, 'package.json'), '{"private":true}');
+  writeFileSync(join(root, '.npmrc'), 'registry=https://example.invalid\n');
+  const npmCli = join(process.execPath, '..', process.platform === 'win32' ? 'node_modules' : '../lib/node_modules', 'npm/bin/npm-cli.js');
+  const runtime = createNpmRuntime(root, npmCli, { ...process.env,
+    npm_config_registry: 'https://example.invalid', NPM_CONFIG_USERCONFIG: 'invalid',
+    NODE_OPTIONS: '--require=invalid', NPM_TOKEN: 'fixture', PROVIDER_API_KEY: 'fixture',
+    GITHUB_REF: 'refs/heads/main', GITHUB_REPOSITORY_OWNER_ID: '123', RUNNER_ENVIRONMENT: 'github-hosted' });
+  for (const key of ['npm_config_registry', 'NPM_CONFIG_USERCONFIG', 'NODE_OPTIONS', 'NPM_TOKEN', 'PROVIDER_API_KEY']) {
+    assert.equal(runtime.options.env[key], undefined);
+  }
+  assert.equal(JSON.parse(readFileSync(join(runtime.options.cwd, 'package.json'))).private, true);
+  assert.equal(runtime.options.env.GITHUB_REF, 'refs/heads/main');
+  assert.equal(runtime.options.env.GITHUB_REPOSITORY_OWNER_ID, '123');
+  assert.equal(runtime.options.env.RUNNER_ENVIRONMENT, 'github-hosted');
+  for (const file of ['.npmrc', 'user.npmrc', 'global.npmrc']) assert.equal(readFileSync(join(runtime.options.cwd, file), 'utf8'), '');
+  // Read-only, offline npm command confirms the parent project's registry is not inherited.
+  assert.equal(execFileSync(runtime.command, [...runtime.prefix, 'config', 'get', 'registry'], runtime.options).trim(), 'https://registry.npmjs.org/');
+  assert.throws(() => createNpmRuntime(root, 'npm', {}), /pinned npm CLI/);
 });

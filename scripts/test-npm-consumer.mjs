@@ -2,22 +2,19 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, mkdtempSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { targets, digest, readTar, validateEntries } from './verify-npm-ecosystem.mjs';
+import { targets, digest } from './verify-npm-ecosystem.mjs';
+import { validateReceipt, consumerChecks } from './publish-npm-ecosystem.mjs';
 
 // Install actual release bytes outside workspace resolution. Leave bounded evidence in ignored artifacts.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const directory = join(root, 'artifacts', 'npm-ecosystem');
-const receipt = JSON.parse(readFileSync(join(directory, 'manifest.json')));
-if (receipt.packages?.length !== targets.length) throw new Error('Incomplete release receipt');
-const tarballs = targets.map(([, name]) => {
-  const row = receipt.packages.find(item => item.name === name);
-  if (!row || row.file !== name.replace('@', '').replace('/', '-') + '-' + row.version + '.tgz') throw new Error('Invalid consumer artifact');
-  const path = join(directory, row.file);
-  const bytes = readFileSync(path);
-  if (digest(bytes) !== row.sha256) throw new Error('Consumer artifact digest mismatch');
-  validateEntries(readTar(bytes), name);
-  return path;
-});
+const manifestBytes = readFileSync(join(directory, 'manifest.json'));
+const receipt = JSON.parse(manifestBytes);
+const sourceSha = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+const tarballs = validateReceipt(receipt, sourceSha, directory, false).map(row => join(directory, row.file));
+// Invalidate a previous success before any fallible install or behavioral check.
+writeFileSync(join(directory, 'consumer.json'), JSON.stringify({ schemaVersion: 1, sourceSha,
+  manifestSha256: digest(manifestBytes), passed: false, checks: [] }, null, 2) + '\n');
 mkdirSync(join(root, 'artifacts', 'npm-consumers'), { recursive: true });
 const cwd = mkdtempSync(join(root, 'artifacts', 'npm-consumers', 'run-'));
 const npmCli = process.env.NPM_CLI_PATH ?? join(dirname(process.execPath),
@@ -50,4 +47,6 @@ execFileSync(process.execPath, [join(cwd, 'node_modules', 'typescript', 'bin', '
 { cwd, stdio: 'inherit', timeout: 60_000 });
 execFileSync(process.execPath, ['--test', ...targets.map(([folder]) => folder + '.test.mjs')],
 { cwd, stdio: 'inherit', timeout: 60_000 });
+writeFileSync(join(directory, 'consumer.json'), JSON.stringify({ schemaVersion: 1, sourceSha,
+  manifestSha256: digest(manifestBytes), passed: true, checks: consumerChecks }, null, 2) + '\n');
 console.log('Tarball consumer imports, declarations and protocol tests passed');

@@ -234,3 +234,29 @@ Source blueprint inspected in the primary checkout:
 `docs/architecture/NPM_ECOSYSTEM_STRATEGY.md`, SHA-256
 `13FB83D2A50F3A10C7F83B99252405658919EAFF5E29DC5C923F416C74A6B2A6`.
 Its prior audit claims are supplied context; this branch records its own evidence.
+
+## Publication evidence and configuration isolation
+
+The publisher requires a clean checkout at the exact manual main-branch release
+workflow SHA. It verifies artifact identities and both digests before publishing.
+Versions must be stable numeric semver before they enter filesystem paths.
+Installed consumer checks write `consumer.json`, bound to the exact manifest bytes
+and source SHA. A new attempt invalidates its earlier success before installing or
+testing; publication rejects failed, partial or mismatched consumer evidence.
+
+npm runs from a private temporary package directory with empty project, user and
+global configuration and an environment allowlist. The allowlist retains GitHub
+OIDC and provenance metadata while dropping inherited npm configuration, publishing
+tokens, provider credentials and Node process options. A read-only npm test verifies
+that the parent project's registry configuration is not inherited.
+
+These checks prevent accidental execution outside the intended release path. npm's
+signed OIDC trust configuration supplies account authorization. Environment strings
+and consumer receipts alone do not establish independent review or human approval.
+The protected `npm-production` environment and exact-revision review remain required.
+
+On 10 October 2026, 16 release/artifact tests passed locally, including malformed
+version denial, consumer evidence mismatch, workflow identity and configuration
+isolation. Earlier hosted run 38028360568 passed all six jobs for `fdb1e47`; it does
+not verify the subsequent publisher edits. Fresh CI and provider review must be
+recorded for the resulting revision before release.
