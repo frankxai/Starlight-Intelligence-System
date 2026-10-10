@@ -179,9 +179,9 @@ export async function runTerminalCli(argv: string[]): Promise<{ exitCode: number
       const observation = parseOpenCodeUsage(evidence.observation);
       const session = object(load(join(journalPath,id + ".opencode-session.json")));
       if (Object.keys(evidence).length !== 3 || evidence.packetSha256 !== record.fingerprint
-        || evidence.sha256 !== terminalDigest(observation) || observation.taskId !== id
+        || evidence.sha256 !== terminalDigest(observation) || observation.taskId !== record.packet.request.taskId
         || observation.runtimeId !== record.runtimeId || observation.outputSha256 !== record.outputSha256
-        || session.version !== "starlight.opencode-session.v1" || session.taskId !== id
+        || session.version !== "starlight.opencode-session.v1" || session.taskId !== record.packet.request.taskId
         || session.runtimeId !== record.runtimeId || session.sessionId !== observation.sessionId) {
         throw new Error("OpenCode usage evidence does not match this local run");
       }

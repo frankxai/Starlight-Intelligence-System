@@ -35,30 +35,35 @@ async function fixture(change: (path: string, value: any) => any = (_p, v) => v)
   return { calls, sessions, options };
 }
 describe("OpenCode version-bound worker", () => {
-  it("runs through a private CLI binding and saves the actual session ID", async () => {
+  it("binds usage to the worker task when the journal run ID differs", async () => {
+    const runId="attempt-1";
     const f=await fixture(), root=mkdtempSync(join(tmpdir(),"sis-opencode-cli-"));
     try {
-      const packet={version:"starlight.terminal-run.v1",runId:request.taskId,domain:"gencreator",workRef:"issue:144",sourceRefs:["fixture-only"],request};
+      const packet={version:"starlight.terminal-run.v1",runId,domain:"gencreator",workRef:"issue:144",sourceRefs:["fixture-only"],request};
       const file=join(root,"packet.json"), host=join(root,"host.json"); writeFileSync(file,JSON.stringify(packet));
       writeFileSync(host,JSON.stringify({version:"starlight.terminal-host.v1",packetSha256:terminalDigest(packet),timeoutMs:1000,
         admission:{authorityRef:"fixture",reservationRef:"fixture",budgetCeilingCents:0,expiresAt:new Date(Date.now()+60_000).toISOString()},
         runtime:{kind:"opencode",...f.options,onSession:undefined}}));
       const result=await runTerminalCli(["run","start","--file",file,"--host",host,"--authorize","--journal",join(root,"journal")]);
       assert.equal(result.exitCode,0,result.stderr);
-      assert.equal(JSON.parse(readFileSync(join(root,"journal",request.taskId+".opencode-session.json"),"utf8")).sessionId,"ses_fixture");
+      assert.equal(JSON.parse(readFileSync(join(root,"journal",runId+".opencode-session.json"),"utf8")).sessionId,"ses_fixture");
       assert.equal(JSON.parse(result.stdout).verification,"pending");
-      const usage = await runTerminalCli(["run","usage",request.taskId,"--journal",join(root,"journal")]);
+      const usage = await runTerminalCli(["run","usage",runId,"--journal",join(root,"journal")]);
       assert.equal(usage.exitCode,0,usage.stderr);
       const evidence = JSON.parse(usage.stdout);
+      assert.equal(evidence.observation.taskId,request.taskId);
       assert.equal(evidence.observation.tokens.cacheRead,30);
       assert.equal(evidence.observation.providerReportedCostUSD,0.002);
       assert.equal(evidence.observation.actualBilledCost,"unknown");
       const repeated = await runTerminalCli(["run","start","--file",file,"--host",host,"--authorize","--journal",join(root,"journal")]);
       assert.equal(repeated.exitCode,0); assert.equal(f.calls.length,3);
-      const usagePath = join(root,"journal",request.taskId+".opencode-usage.json");
-      const damaged = JSON.parse(readFileSync(usagePath,"utf8")); damaged.observation.tokens.input++;
+      const usagePath = join(root,"journal",runId+".opencode-usage.json");
+      const wrongTask=structuredClone(evidence); wrongTask.observation.taskId=runId;
+      wrongTask.sha256=terminalDigest(wrongTask.observation); writeFileSync(usagePath,JSON.stringify(wrongTask));
+      assert.equal((await runTerminalCli(["run","usage",runId,"--journal",join(root,"journal")])).exitCode,1);
+      const damaged = structuredClone(evidence); damaged.observation.tokens.input++;
       writeFileSync(usagePath,JSON.stringify(damaged));
-      assert.equal((await runTerminalCli(["run","usage",request.taskId,"--journal",join(root,"journal")])).exitCode,1);
+      assert.equal((await runTerminalCli(["run","usage",runId,"--journal",join(root,"journal")])).exitCode,1);
     } finally { rmSync(root,{recursive:true,force:true}); }
   });
   it("pins the server, creates a denied session and records it before structured prompting", async () => {
