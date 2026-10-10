@@ -163,18 +163,17 @@ describe("OrchestrationEngine", () => {
       assert.ok(engine instanceof OrchestrationEngine);
     });
 
-    it("should construct without an explicit executor (uses default)", async () => {
+    it("refuses execution without an executor before recording memory", async () => {
       const agents = createTestAgents();
       const memory = createTestMemory();
       const router = new AgentRouter(agents);
       const engine = new OrchestrationEngine({ memory, router });
 
-      const result = await engine.execute({
+      await assert.rejects(engine.execute({
         intent: "build a new component for the page",
-      });
-
+      }), /No executor configured/);
+      const result = await engine.execute({ intent: "build a component" }, mockExecutor);
       assert.ok(result.executions.length > 0);
-      assert.ok(result.executions[0].output.includes("Processed:"));
     });
 
     it("should allow setting executor after construction", async () => {

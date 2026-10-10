@@ -6,6 +6,12 @@ export interface MemoryEntry {
   confidence: number;
   createdAt: string;
   source?: string;
+  /** Provenance slugs; source remains the existing field. */
+  agent?: string;
+  brand?: string;
+  domain?: string;
+  /** Explicit unit scope, otherwise brand; never inferred from agent. */
+  unit?: string;
 }
 
 export type VaultType =

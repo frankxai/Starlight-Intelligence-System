@@ -320,7 +320,7 @@ Full rule and ownership-verb definitions: `metrics/METRICS_TRUTH.md`. Living led
 
 ---
 
-*Starlight Intelligence System v8.3.0 — Horizons + Composition Layer + Crypto IS*
+*Starlight Intelligence System v8.5.0 — Horizons + Composition Layer + Crypto IS*
 
 ---
 

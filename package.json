@@ -1,6 +1,6 @@
 {
   "name": "@arcanea/starlight-intelligence-system",
-  "version": "8.3.0",
+  "version": "8.5.0",
   "description": "Starlight Intelligence System \u2014 substrate (SIP protocol, alliance forging method, attestation) + reference operational layer (6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, MCP server, platform adapters, sanitization gateway, empirical sandbox, active healing)",
   "repository": {
     "type": "git",
@@ -14,6 +14,18 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
+    "./creator-workspace": {
+      "types": "./dist/creator-workspace.d.ts",
+      "import": "./dist/creator-workspace.js"
+    },
+    "./runtime-bridge": {
+      "types": "./dist/runtime-bridge/index.d.ts",
+      "import": "./dist/runtime-bridge/index.js"
+    },
+    "./terminal-runtime": {
+      "types": "./dist/terminal-runtime.d.ts",
+      "import": "./dist/terminal-runtime.js"
+    },
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -113,9 +125,14 @@
     "./queen-session": {
       "types": "./dist/queen-session.d.ts",
       "import": "./dist/queen-session.js"
+    },
+    "./ecosystem": {
+      "types": "./dist/ecosystem.d.ts",
+      "import": "./dist/ecosystem.js"
     }
   },
   "scripts": {
+    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/creator-workspace.test.ts test/ecosystem.test.ts",
     "build": "pnpm run build:core && tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",
@@ -150,7 +167,7 @@
     "test:work-graph": "node --import tsx --test test/work-graph.test.ts test/work-graph-cli.test.ts test/loop-graph.test.ts test/loop-engine.test.ts test/loop-safety.test.ts test/instruction-compiler.test.ts",
     "test:graph-engineering": "node scripts/validate-graph-engineering.mjs",
     "test:community": "node --import tsx --test test/community.test.ts",
-    "test:operational": "npm run test:community && node --import tsx --test src/adapters/adapters.test.ts && node --import tsx --test src/orchestrator.test.ts && node --import tsx --test src/temporal.test.ts && node --import tsx --test src/swarm.test.ts && node --import tsx --test src/yolo/yolo.test.ts && node --import tsx --test src/yolo/finance-bridge.test.ts && node --import tsx --test src/infra/infra.test.ts && node --import tsx --test src/finance/finance.test.ts && node --import tsx --test test/core-regressions.test.ts && node --import tsx --test test/v92-foundry.test.ts && node --import tsx --test test/mcp-server-smoke.test.ts && node --import tsx --test test/mcp-server-quality.test.ts && node --import tsx --test test/smoke-quickstart.test.ts && node --import tsx --test test/estate-factory-smoke.test.ts && node --import tsx --test test/swarm.test.ts && node --import tsx --test test/goal.test.ts && npm run test:blueprints && npm run test:work-graph && npm run test:graph-engineering && npm run test:queen-session",
+    "test:operational": "npm run test:community && node --import tsx --test src/adapters/adapters.test.ts && node --import tsx --test src/orchestrator.test.ts && node --import tsx --test src/temporal.test.ts && node --import tsx --test src/swarm.test.ts && node --import tsx --test src/yolo/yolo.test.ts && node --import tsx --test src/yolo/finance-bridge.test.ts && node --import tsx --test src/infra/infra.test.ts && node --import tsx --test src/finance/finance.test.ts && node --import tsx --test test/core-regressions.test.ts && node --import tsx --test test/v92-foundry.test.ts && node --import tsx --test test/mcp-server-smoke.test.ts && node --import tsx --test test/mcp-server-quality.test.ts && node --import tsx --test test/mcp-search-scope.test.ts && node --import tsx --test test/mcp-append-provenance.test.ts && node --import tsx --test test/smoke-quickstart.test.ts && node --import tsx --test test/estate-factory-smoke.test.ts && node --import tsx --test test/swarm.test.ts && node --import tsx --test test/goal.test.ts && npm run test:blueprints && npm run test:work-graph && npm run test:graph-engineering && npm run test:queen-session",
     "generate-context": "node dist/cli.js generate",
     "lint": "pnpm run build:core && tsc --noEmit",
     "lint:site": "npm --prefix site run lint",
