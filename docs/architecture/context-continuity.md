@@ -35,6 +35,23 @@ Evidence: observed, proposed, accepted, verified. These are source-declared
 labels, never authenticated authority. Every returned record and packet carries
 `authority: untrusted-data`. No captured record grants tool or write permission.
 
+For a resume, the host supplies a canonical repository identifier and a full
+40- or 64-character revision to `bridge.handoff(taskId, repo, revision)`.
+The bridge selects only that scope, starting at its latest checkpoint. Missing
+checkpoints and oversized continuations fail closed; a resume never silently
+truncates its checkpoint. `excluded` counts other repositories/revisions and
+`omitted` counts earlier scoped records. The unscoped `packet()` remains a
+diagnostic read. Neither method authenticates source claims or checks Git HEAD.
+The host must verify the checkout and permissions before executing any work.
+
+```powershell
+node --import tsx tools/poly-bridge.mjs --journal <private-task-path>/context.jsonl --packet task-1 --repo github.com/frankxai/Starlight-Intelligence-System --revision <full-commit-sha>
+```
+
+Native transcripts supply observations, not trusted checkpoints. A host must
+append an explicit normalized checkpoint after verifying its task scope; an
+export alone cannot establish resume readiness.
+
 Private-class records are refused. Known secret/PII patterns are scrubbed and
 unknown fields are dropped. Pattern scrubbing cannot establish public safety;
 journals and exports stay private and never enter the repository or cloud
@@ -80,13 +97,17 @@ execution slot across restarts. Failed reviews have a bounded retry budget.
 receipt before unresolved capacity can be reused; it never infers termination
 from elapsed time.
 
-`queue.run(id, admittedRuntimeBridge, checkerAgent, signal)` invokes the existing
+`queue.run(id, admittedRuntimeBridge, { agent, provider }, signal)` invokes the existing
 runtime bridge. The checker returns JSON containing `verdict` and a receipt with
 `revision`, `commands`, `findings`, and `limitations`. A pass requires matching
 revision and nonempty reported execution evidence. Malformed results, timeouts,
 and uncertain transport failures remain unresolved. Receipt contents are
 source claims; actual command execution, authentication, sandbox enforcement,
 and cryptographic signing require host evidence and are not certified by JSON.
+The host binding must match the queued checker provider before dispatch or a
+state change. This guards accidental provider selection; the binding remains
+a host declaration, not transport attestation. Callers of the earlier string
+agent argument must migrate to the binding object.
 
 No PR watcher, recurring job, auto-merge, deployment, provider subscription,
 model download, or tournament is enabled by these modules. Bind them to the
@@ -99,6 +120,19 @@ records, privacy filtering, two-instance serialization, native adapter shapes,
 queue supersession, retry ceilings, unresolved execution, and owned lock release.
 Existing gateway, privacy, session-store, and runtime-bridge tests provide
 compatibility coverage.
+
+The continuity acceptance tests launch separate CLI processes to capture,
+restart, select a scoped checkpoint and replay without duplicate records. They
+also exercise an interrupted source write, rejected private/malformed inputs,
+wrong scope, packet exhaustion and source-instruction taint. These are synthetic
+task records and actual local CLI executions; they do not establish a live
+second-provider task completion or a sandbox review.
+
+`.github/workflows/context-continuity.yml` runs the targeted suite on Linux and
+Windows with one matrix job at a time. It covers PRs targeting both `main` and
+the current integration base, `codex/consolidate`, with a read-only token and
+pinned actions. Workflow conventions follow the
+[GitHub Actions syntax reference](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
 
 One sanitized existing OpenCode session export supplied 101 observations;
 replaying that same export captured zero duplicates. This proves that adapter

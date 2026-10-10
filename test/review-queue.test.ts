@@ -53,9 +53,31 @@ test('host-bound runtime executes the review and malformed output remains unreso
     const bridge = new RuntimeBridge({ runtimes:[{ id:'checker',async invoke(request) {
       return { protocol:WORKER_PROTOCOL,taskId:request.taskId,status:'completed',output:JSON.stringify({ verdict:'passed',receipt:{ revision:job.head,commands:['test'],findings:[],limitations:['Synthetic fixture'] } }) };
     } }],routes:{ review:'checker' },maxConcurrency:1,maxRuns:2,timeoutMs:1000 });
-    assert.equal((await queue.run(first.id,bridge,'review')).state,'passed');
+    await assert.rejects(queue.run(first.id,bridge,{ agent:'review',provider:'openai' }),/binding/);
+    assert.equal(queue.list()[0].state,'queued');
+    assert.equal(bridge.snapshot().submitted,0);
+    assert.equal((await queue.run(first.id,bridge,{ agent:'review',provider:'ANTHROPIC' })).state,'passed');
     const second = await queue.enqueue({ ...job,head:'b'.repeat(40) });
-    assert.equal((await queue.run(second.id,bridge,'review')).state,'unknown');
+    assert.equal((await queue.run(second.id,bridge,{ agent:'review',provider:'anthropic' })).state,'unknown');
     assert.equal(new ReviewQueue(join(root,'queue.jsonl')).list().find(j=>j.id===second.id)?.state,'unknown');
+  } finally { rmSync(root,{ recursive:true,force:true }); }
+});
+test('runtime timeout keeps durable capacity reserved until host reconciliation', async () => {
+  const root = mkdtempSync(join(tmpdir(),'sis-review-'));
+  try {
+    const path = join(root,'queue.jsonl'); const queue = new ReviewQueue(path);
+    const first = await queue.enqueue(job);
+    const bridge = new RuntimeBridge({ runtimes:[{ id:'checker',async invoke() { return new Promise(()=>{}); } }],
+      routes:{ review:'checker' },maxConcurrency:1,maxRuns:1,timeoutMs:25 });
+    assert.equal((await queue.run(first.id,bridge,{ agent:'review',provider:'anthropic' })).state,'unknown');
+    assert.equal(bridge.snapshot().reservedCalls,1);
+    const resumed = new ReviewQueue(path);
+    const second = await resumed.enqueue({ ...job,head:'b'.repeat(40) });
+    await assert.rejects(resumed.transition(second.id,'running'),/capacity/);
+    await resumed.reconcileStopped(first.id,'synthetic-host-confirmed-termination');
+    assert.equal((await resumed.transition(second.id,'running')).state,'running');
+    // The process-local bridge is deliberately still reserved; queue reconciliation
+    // cannot establish transport termination or reset a runtime's own admission.
+    assert.equal(bridge.snapshot().reservedCalls,1);
   } finally { rmSync(root,{ recursive:true,force:true }); }
 });

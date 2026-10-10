@@ -197,4 +197,18 @@ export class ContextBridge {
     const records = this.journal.read().flatMap(f => f.records).filter(r => r.taskId === taskId);
     return { taskId, authority: 'untrusted-data', records: records.slice(-maxRecords), omitted: Math.max(0, records.length - maxRecords) };
   }
+  /** Host selects the exact scope. A resume starts at its latest complete checkpoint. */
+  handoff(taskId: string, repo: string, revision: string, maxRecords = 50) {
+    if (!identifier(taskId) || !/^github\.com\/[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(repo)
+      || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(revision)
+      || !Number.isInteger(maxRecords) || maxRecords < 1 || maxRecords > 200) throw new Error('Invalid handoff scope');
+    const taskRecords = this.journal.read().flatMap(frame => frame.records).filter(record => record.taskId === taskId);
+    const scoped = taskRecords.filter(record => record.repo === repo && record.revision === revision);
+    const checkpoint = scoped.map(record => record.kind).lastIndexOf('checkpoint');
+    if (checkpoint < 0) throw new Error('No checkpoint for exact repository and revision');
+    const records = scoped.slice(checkpoint);
+    if (records.length > maxRecords) throw new Error('Handoff exceeds packet capacity; create a new checkpoint');
+    return { taskId, repo, revision, checkpointId: records[0].id, authority: 'untrusted-data' as const,
+      records, omitted: checkpoint, excluded: taskRecords.length - scoped.length };
+  }
 }

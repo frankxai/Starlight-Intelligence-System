@@ -5,6 +5,7 @@ import type { RuntimeBridge } from './runtime-bridge/bridge.js';
 import { WORKER_PROTOCOL } from './runtime-bridge/contracts.js';
 export interface ReviewJob { repo: string; head: string; policy: string; makerProvider: string; checkerProvider: string; }
 export interface ReviewReceipt { revision: string; commands: string[]; findings: string[]; limitations: string[]; }
+export interface ReviewBinding { agent: string; provider: string; }
 export interface ReviewState extends ReviewJob {
   id: string; state: 'queued' | 'running' | 'passed' | 'failed' | 'unknown' | 'superseded';
   attempts: number; receipt?: ReviewReceipt;
@@ -58,7 +59,15 @@ export class ReviewQueue {
     });
   }
   /** Host supplies the admitted route; source content cannot select an executor. */
-  async run(id: string, bridge: RuntimeBridge, agent: string, signal?: AbortSignal): Promise<ReviewState> {
+  async run(id: string, bridge: RuntimeBridge, binding: ReviewBinding, signal?: AbortSignal): Promise<ReviewState> {
+    const assigned = this.list().find(job => job.id === id);
+    if (!assigned) throw new Error('Unknown review job');
+    if (!binding || Object.keys(binding).sort().join(',') !== 'agent,provider'
+      || typeof binding.agent !== 'string' || !/^[a-zA-Z0-9._-]{1,64}$/.test(binding.agent)
+      || typeof binding.provider !== 'string' || binding.provider.toLowerCase() !== assigned.checkerProvider.toLowerCase()) {
+      throw new Error('Host binding must match the assigned checker provider');
+    }
+    const agent = binding.agent;
     const job = await this.transition(id,'running');
     try {
       const response = await bridge.run({ protocol:WORKER_PROTOCOL,taskId:`review-${job.id}-${job.attempts}`,agent,

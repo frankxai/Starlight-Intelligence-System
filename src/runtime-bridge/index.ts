@@ -7,4 +7,4 @@ export type { McpToolCaller } from "./transports.js";
 export { ContextBridge } from '../context-bridge.js';
 export type { ContextRecord, CapturedRecord, CaptureOptions } from '../context-bridge.js';
 export { ReviewQueue } from '../review-queue.js';
-export type { ReviewJob, ReviewState, ReviewReceipt } from '../review-queue.js';
+export type { ReviewJob, ReviewState, ReviewReceipt, ReviewBinding } from '../review-queue.js';

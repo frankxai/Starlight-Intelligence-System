@@ -14,7 +14,13 @@ const bridge = new ContextBridge(flags.get('--journal'));
 const duration = Number(flags.get('--duration-ms') ?? 0);
 if (!Number.isInteger(duration) || duration < 0 || duration > 300000) throw new Error('Duration must be 0..300000ms');
 try {
-  if (flags.has('--packet')) console.log(JSON.stringify(bridge.packet(flags.get('--packet'))));
+  if (flags.has('--packet')) {
+    if (flags.has('--repo') !== flags.has('--revision')) throw new Error('Scoped packets require both --repo and --revision');
+    const packet = flags.has('--repo')
+      ? bridge.handoff(flags.get('--packet'),flags.get('--repo'),flags.get('--revision'))
+      : bridge.packet(flags.get('--packet'));
+    console.log(JSON.stringify(packet));
+  }
   else {
     if (!flags.get('--input') || !flags.get('--source')) throw new Error('--input and --source are required');
     const end = Date.now() + duration;
