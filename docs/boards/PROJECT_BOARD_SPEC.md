@@ -68,4 +68,21 @@ gh project item-add <PROJECT_NUMBER> --owner frankxai --url "https://github.com/
 
 ---
 
+## 4. Linear & Notion Integration & Alignment Mapping
+
+Per the SIP truth architecture (and as reaffirmed in `verticals/music-is/SOUL.md`), external platforms are observers/trackers, while git and the local vaults remain the authoritative system-of-record.
+
+| Ecosystem Surface | System Role | Mapping to SIS Sprint / Project Board |
+|---|---|---|
+| **GitHub Issues & PRs** | Sovereign Code & RFC Registry | Epics #348-#352 & Draft PR #353 |
+| **GitHub Projects v2** | Primary Execution Board | Columns: Backlog ➔ Spec ➔ In Progress ➔ Human Gate ➔ Shipped |
+| **Linear** | Tactical Sprint & Cycle Tracking | Team `SIS` / Project `Sovereign GTM`: issues bi-directionally linked to GitHub PR #353; state synced to `In Progress` / `In Review` |
+| **Notion** | Executive Roadmaps & Knowledge Tree | Database `Starlight Roadmaps`: linked to Epics and Horizon Vault inscriptions; mirrors milestone deliveries without overriding local truth |
+
+### Bi-directional Sync Protocol
+1. **Linear Webhook / GitHub Integration**: Any Linear issue titled `SIS-348` through `SIS-352` automatically closes upon merge of PR #353 to `main`.
+2. **Notion Mirroring**: The Next.js dashboard at `starlightintelligence.org` exports public milestone states to Notion API via `starlight-notion-bridge` during Starlight Queen autonomic cycles.
+
+---
+
 *Attested: Built on SIP · 2026-10-10*
