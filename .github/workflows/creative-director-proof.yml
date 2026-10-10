@@ -24,6 +24,7 @@ jobs:
         with:
           node-version: '24'
       - run: node --test examples/creative-director/kernel.test.mjs
+      - run: node --test examples/creative-director/capture-reference.test.mjs
       - run: node examples/creative-director/plan.mjs --workflow examples/creative-director/creator-workflow.json --output "${{ runner.temp }}/creator-plan.json"
       - run: node examples/creative-director/generate-labs.mjs --out "${{ runner.temp }}/creative-labs" --check
   interactive-labs:
