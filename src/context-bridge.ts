@@ -1,8 +1,8 @@
 /** Local, bounded context capture. Source claims remain untrusted data. Built on SIP. */
 import { createHash, randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, statSync, openSync, readSync, closeSync,
-  writeFileSync, fsyncSync, renameSync, unlinkSync, fstatSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+  writeFileSync, fsyncSync, renameSync, unlinkSync, fstatSync, readdirSync } from 'node:fs';
+import { dirname, resolve, basename, join } from 'node:path';
 import { withLock } from './gateway/lock.js';
 import { SanitizationGateway } from './sanitization.js';
 
@@ -49,7 +49,23 @@ function parseRecord(raw: unknown): ContextRecord {
 /** Atomic replacement under an owned lock. Failed writes preserve the last complete state. */
 export class DurableJournal<T> {
   readonly path: string;
-  constructor(path: string) { this.path = resolve(path); mkdirSync(dirname(this.path), { recursive: true }); }
+  constructor(path: string) {
+    this.path = resolve(path);
+    mkdirSync(dirname(this.path), { recursive: true });
+  }
+  private cleanOrphanedTempFiles(): void {
+    try {
+      const dir = dirname(this.path);
+      const base = basename(this.path);
+      const prefix = `${base}.`;
+      for (const entry of readdirSync(dir)) {
+        const suffix = entry.slice(prefix.length);
+        if (entry.startsWith(prefix) && /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\.tmp$/i.test(suffix)) {
+          try { unlinkSync(join(dir, entry)); } catch {}
+        }
+      }
+    } catch {}
+  }
   read(): T[] {
     if (!existsSync(this.path)) return [];
     if (statSync(this.path).size > MAX_JOURNAL) throw new Error('Journal capacity reached');
@@ -59,6 +75,8 @@ export class DurableJournal<T> {
   }
   async update<R>(fn: (frames: T[]) => { frames: T[]; result: R }): Promise<R> {
     return withLock(`${this.path}.lock`, () => {
+      // Constructors must not unlink an active writer's scratch file.
+      this.cleanOrphanedTempFiles();
       const before = this.read();
       const update = fn(before);
       if (update.frames === before) return update.result;

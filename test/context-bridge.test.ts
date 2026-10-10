@@ -1,13 +1,31 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, appendFileSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, appendFileSync, readFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ContextBridge, type ContextRecord } from '../src/context-bridge.js';
+import { ContextBridge, DurableJournal, type ContextRecord } from '../src/context-bridge.js';
+import { acquireLock } from '../src/gateway/lock.js';
 
 const event = (id: string, extra: Partial<ContextRecord> = {}): ContextRecord => ({
   id, taskId:'mission',harness:'codex',sessionId:'session',kind:'checkpoint',text:'Resume after verification',
   repo:'github.com/frankxai/Starlight-Intelligence-System',revision:'a'.repeat(40),evidence:'observed',privacy:'internal',...extra,
+});
+
+test('journal construction preserves a pending writer and cleanup waits for ownership', async () => {
+  const root = mkdtempSync(join(tmpdir(),'sis-capture-')); const path = join(root,'journal.jsonl');
+  const scratch = `${path}.00000000-0000-4000-8000-000000000001.tmp`;
+  const unrelated = `${path}.user-notes.tmp`;
+  try {
+    const release = await acquireLock(`${path}.lock`);
+    writeFileSync(scratch,'writer snapshot'); writeFileSync(unrelated,'authored notes');
+    const journal = new DurableJournal(path);
+    try { assert.equal(readFileSync(scratch,'utf8'),'writer snapshot'); }
+    finally { release(); }
+    await journal.update(() => ({ frames:[{ saved:true }],result:undefined }));
+    assert.equal(existsSync(scratch),false);
+    assert.equal(readFileSync(unrelated,'utf8'),'authored notes');
+    assert.deepEqual(journal.read(),[{ saved:true }]);
+  } finally { rmSync(root,{ recursive:true,force:true }); }
 });
 test('BOM and CRLF retain byte offsets; rewriting consumed bytes is refused', async () => {
   const f = fixture();

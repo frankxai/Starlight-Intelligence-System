@@ -7,8 +7,9 @@
  * Built on SIP — operational tier (memory gateway v0.1)
  */
 
-import { mkdirSync, rmdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync, lstatSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
+import { hostname } from 'node:os';
 import { join, resolve } from 'node:path';
 
 export interface LockOptions {
@@ -24,6 +25,7 @@ interface LockMeta {
   pid: number;
   ts: number;
   token: string;
+  host?: string;
 }
 
 /**
@@ -64,7 +66,7 @@ export async function acquireLock(
       mkdirSync(lockPath, { recursive: false });
       // Keep owner metadata for explicit recovery; age never authorizes takeover.
       try {
-        const meta: LockMeta = { pid: process.pid, ts: Date.now(), token };
+        const meta: LockMeta = { pid: process.pid, ts: Date.now(), token, host: hostname() };
         writeFileSync(metaFile, JSON.stringify(meta), { encoding:'utf-8',flag:'wx' });
       } catch (error) { try { rmdirSync(lockPath); } catch { /* Preserve unexpected content. */ } throw error; }
       return true;
@@ -101,4 +103,81 @@ export async function withLock<T>(
   } finally {
     release();
   }
+}
+
+export interface LockInspection {
+  locked: boolean;
+  lockPath: string;
+  meta?: LockMeta;
+  corrupted?: boolean;
+}
+
+function readLockMeta(metaFile: string): LockMeta {
+  const stat = lstatSync(metaFile);
+  if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 4096) throw new Error('Invalid lock metadata');
+  const meta = JSON.parse(readFileSync(metaFile,'utf8')) as LockMeta;
+  if (!meta || Array.isArray(meta) || !Number.isSafeInteger(meta.pid) || meta.pid < 1
+    || !Number.isFinite(meta.ts) || meta.ts < 0 || typeof meta.token !== 'string'
+    || !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(meta.token)
+    || (meta.host !== undefined && (typeof meta.host !== 'string' || !meta.host || meta.host.length > 255))) {
+    throw new Error('Invalid lock metadata');
+  }
+  return meta;
+}
+
+/**
+ * Inspect the state of an existing directory lock.
+ * Read-only; never mutates or releases lock state.
+ */
+export function inspectLock(lockPath: string): LockInspection {
+  lockPath = resolve(lockPath);
+  const metaFile = join(lockPath, 'meta.json');
+  let directoryExists = false;
+  try {
+    const stat = lstatSync(lockPath);
+    directoryExists = true;
+    if (!stat.isDirectory() || stat.isSymbolicLink()) return { locked:true,lockPath,corrupted:true };
+    const contents = readdirSync(lockPath);
+    if (contents.length !== 1 || contents[0] !== 'meta.json') {
+      return { locked: true, lockPath, corrupted: true };
+    }
+    const meta = readLockMeta(metaFile);
+    return { locked: true, lockPath, meta };
+  } catch (error) {
+    if (!directoryExists && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return { locked: false, lockPath };
+    }
+    return { locked: true, lockPath, corrupted: true };
+  }
+}
+
+/**
+ * Explicit recovery of an inspected local lock. Age never authorizes takeover.
+ * Unknown hosts, live owners and uncertain liveness preserve the evidence.
+ */
+export function breakStaleLock(lockPath: string, expectedToken: string): boolean {
+  if (typeof expectedToken !== 'string' || !expectedToken) throw new Error('Inspected lock token required');
+  lockPath = resolve(lockPath);
+  const metaFile = join(lockPath, 'meta.json');
+  const inspection = inspectLock(lockPath);
+  if (!inspection.locked) return false;
+  if (inspection.corrupted || !inspection.meta) throw new Error('Lock recovery evidence is incomplete or corrupted');
+  const meta = inspection.meta;
+  if (meta.token !== expectedToken) throw new Error('Lock token does not match expected token');
+  if (meta.host !== hostname()) throw new Error('Lock owner host is unknown or remote; preserved lock');
+  let dead = false;
+  try { process.kill(meta.pid,0); }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw new Error('Lock owner liveness is uncertain; preserved lock');
+    dead = true;
+  }
+  if (!dead) throw new Error('Lock owner is still alive; preserved lock');
+  const current = inspectLock(lockPath);
+  if (current.corrupted || !current.meta || current.meta.token !== meta.token
+    || current.meta.pid !== meta.pid || current.meta.ts !== meta.ts || current.meta.host !== meta.host) {
+    throw new Error('Lock recovery evidence changed; preserved lock');
+  }
+  unlinkSync(metaFile);
+  rmdirSync(lockPath);
+  return true;
 }

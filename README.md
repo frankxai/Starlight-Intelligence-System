@@ -8,7 +8,7 @@ Persistent memory. Attested knowledge. Sovereign control.
 
 Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity — they all read from and write to the **same six semantic vaults**, with full provenance. No more explaining the same thing to every agent. No drift. No lost decisions.
 
-[![version](https://img.shields.io/badge/version-8.3.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-8.5.1-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
@@ -317,8 +317,10 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 - **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
-- **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode share the same vaults.
+- **Six platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity share the same vaults.
 - **MCP v2** — `src/mcp-server.ts` ships thirteen tools over JSON-RPC 2.0 stdio.
+- **Multi-harness runtime bridge & context continuity** — `@arcanea/starlight-intelligence-system/runtime-bridge` and `src/context-bridge.ts` provide bounded context capture, atomic journal replacement, revision-scoped handoffs, cooperative PID/token locks, and typed review queues.
+- **Jev router policy primitive** — `src/runtime-bridge/jev-router.ts` prepares public-only requests from a host-supplied classification and model pool. Post-response checks cannot undo transmission or certify cost.
 
 ### MCP tools
 
@@ -347,6 +349,20 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
 | Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
 | OpenCode | `AGENTS.md` (compact) | `~/.config/opencode/opencode.json` | 128,000 |
+| Antigravity | `AGENTS.md` | Built-in native tools & MCP | 1,000,000+ |
+| Grok | `AGENTS.md` / `GROK.md` | `grok-harness-adapter` | 131,000 |
+
+### Multi-harness runtime bridge & context continuity
+
+The `@arcanea/starlight-intelligence-system/runtime-bridge` export provides `ContextBridge` and `ReviewQueue` for bounded context capture and revision-bound handoffs. The host owns scheduling, provider admission and verification of the receiving checkout.
+
+- Journal writes retain prior events and replace the JSONL file atomically under an owned lock. UUID scratch-file cleanup runs under that same lock; constructing a reader cannot delete a pending writer's file.
+- Handoffs select the latest checkpoint for the requested repository and revision. Captured records remain untrusted data; they do not authenticate a repository or establish the receiving checkout's state.
+- Cooperative local locks retain a random ownership token, host and PID. Recovery requires the inspected token and an exited local owner. Live, remote and unverifiable owners remain protected; age is never takeover authority.
+- Review requests bind the repository, revision, policy and distinct maker/checker providers. Receipts record reported commands, findings and limitations. They are not cryptographically signed or independent proof that those commands ran.
+- Jev requests require a host-approved public classification and current model pool. Returned metadata is an untrusted provider report; policy preparation alone does not prove data classification, routing or billed cost.
+
+The source recovery changes require a subsequent root release. Published root `8.5.1` is immutable; merging source does not update its registry archive.
 
 ### The 7 named agents (operational layer)
 
@@ -420,7 +436,7 @@ git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
 npm install
 npm run build       # tsc to dist/
-npm test            # 82+ orchestrator tests
+npm test            # operational, substrate and v0.1 evaluation suites
 npm run lint        # tsc --noEmit
 ```
 
@@ -457,7 +473,7 @@ Browse them: [docs/visuals/VISUALS.md](docs/visuals/VISUALS.md) · Motion experi
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.3.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.5.1 · MIT
 
 ---
 
