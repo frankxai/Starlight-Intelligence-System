@@ -70,7 +70,7 @@ impl AstInvariantChecker {
         let mut parser = Parser::new();
         let language = tree_sitter_typescript::language_typescript();
         parser
-            .set_language(&language)
+            .set_language(language)
             .map_err(|e| format!("Failed to load TypeScript grammar: {}", e))?;
         Ok(Self { ts_parser: parser })
     }
@@ -212,7 +212,7 @@ impl AstInvariantChecker {
         "#;
 
         let language = tree_sitter_typescript::language_typescript();
-        if let Ok(query) = Query::new(&language, query_str) {
+        if let Ok(query) = Query::new(language, query_str) {
             let mut cursor = QueryCursor::new();
             let matches = cursor.matches(&query, tree.root_node(), source.as_bytes());
 

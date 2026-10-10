@@ -7,7 +7,7 @@ use clap::{Parser, Subcommand};
 use starlight_invariants::{
     AstInvariantChecker, LeaseManager, VaultMesh, VaultNamespace, VaultNode,
     VirtualMcpRouter, VirtualTool, ToolScope, AgentContextEnvelope,
-    EpistemicTier, DecayPolicy, EdgeKind,
+    EpistemicTier, DecayPolicy,
 };
 use chrono::Utc;
 use std::collections::HashSet;

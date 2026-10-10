@@ -1,8 +1,8 @@
 // tests/invariant_tests.rs
 use chrono::{Duration, Utc};
 use starlight_invariants::{
-    AgentContextEnvelope, AgentDescriptor, AgentId, AstInvariantChecker, DecayPolicy, EdgeKind,
-    EpistemicTier, InvariantRule, LeaseManager, Priority, ResourcePath, ToolScope, VaultMesh,
+    AgentContextEnvelope, AgentDescriptor, AgentId, AstInvariantChecker, DecayPolicy,
+    EpistemicTier, InvariantRule, Priority, ResourcePath, ToolScope, VaultMesh,
     VaultNamespace, VaultNode, VirtualMcpRouter, VirtualTool, WaitForGraph,
 };
 use std::collections::HashSet;

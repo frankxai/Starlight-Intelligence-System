@@ -3,7 +3,7 @@
 //! Moves beyond static 6-vault ontologies into an infinite-dimensional, dynamically
 //! namespaced epistemic memory mesh with mathematical confidence decay and cross-vault graph edges.
 
-use chrono::{DateTime, Duration, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 
