@@ -1,11 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { projectRecall, recallContext, SanitizationGateway } from '../dist/index.js';
 
 const memory = { recall: async () => [] };
 const options = { memory, tenantId: 'tenant-a', workspaceId: 'workspace-a' };
+
+test('every shipped core schema is available through a public package subpath', async () => {
+  const directory = new URL('../schemas/', import.meta.url);
+  const files = (await readdir(directory)).filter(file => file.endsWith('.schema.json'));
+  assert.ok(files.length > 0);
+  for (const file of files) {
+    const specifier = `@starlight-intelligence/core/schemas/${file.slice(0, -'.schema.json'.length)}`;
+    const entry = import.meta.resolve(specifier);
+    assert.equal(entry, new URL(file, directory).href);
+    assert.equal(typeof JSON.parse(await readFile(new URL(entry))), 'object');
+  }
+});
 
 test('bearer redaction consumes the complete RFC 6750 token alphabet and padding', () => {
   const sanitizer = new SanitizationGateway();
