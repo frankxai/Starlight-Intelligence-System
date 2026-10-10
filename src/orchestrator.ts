@@ -30,15 +30,15 @@ import type {
 // ── Default Executor ────────────────────────────────────────
 
 /**
- * Fallback executor when no LLM is wired up.
- * Returns a structured placeholder indicating the agent was invoked.
+ * Execution requires an explicit host-owned executor. Discovery and routing
+ * remain available without one; simulated text cannot establish execution.
  */
 const DEFAULT_EXECUTOR: AgentExecutor = async (
-  agent: string,
-  input: string,
+  _agent: string,
+  _input: string,
   _context: Record<string, unknown>
 ): Promise<string> => {
-  return `[${agent}] Processed: ${input.slice(0, 200)}${input.length > 200 ? "..." : ""}`;
+  throw new Error("No executor configured. Bind a host-owned executor before orchestration.");
 };
 
 // ── Complexity Keywords ─────────────────────────────────────
@@ -111,6 +111,10 @@ export class OrchestrationEngine {
   ): Promise<OrchestrationResult> {
     const startTime = Date.now();
     const activeExecutor = executor ?? this.executor;
+    // Refuse before routing, memory recall or writeback, including empty routes.
+    if (activeExecutor === DEFAULT_EXECUTOR) {
+      throw new Error("No executor configured. Bind a host-owned executor before orchestration.");
+    }
     this.pipeline = [];
 
     // ── Layer 1: Perception ──

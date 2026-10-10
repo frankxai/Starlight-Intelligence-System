@@ -27,6 +27,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
+import { runTerminalCli } from "./terminal-cli.js";
 import { StarlightIntelligence } from "./index.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
@@ -112,6 +113,12 @@ Usage:
   starlight <command> [options]
 
 Commands:
+  domain list                     List domain descriptors and their status
+  harness doctor                  Show transport capabilities and unprobed harnesses
+  run start                       Execute an explicitly authorized work packet
+  run inspect <id>                Inspect durable execution evidence
+  run handoff <id>                 Export private evidence for another harness
+  run import                      Import evidence without dispatching a worker
   init                            Initialize .starlight/ in current project
   init --vaults                   Seed the six JSONL memory vaults the MCP server reads
   generate                        Generate context file from .starlight/ config
@@ -1454,6 +1461,14 @@ async function cmdGoal(
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
+  const terminalArgs = process.argv.slice(2);
+  if (["domain", "harness", "run", "creator"].includes(terminalArgs[0])) {
+    const result = await runTerminalCli(terminalArgs);
+    if (result.stdout) console.log(result.stdout);
+    if (result.stderr) console.error(result.stderr);
+    process.exitCode = result.exitCode;
+    return;
+  }
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {

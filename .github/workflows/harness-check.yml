@@ -64,3 +64,6 @@ jobs:
 
       - name: Tests
         run: npm test
+
+      - name: Terminal execution and recovery
+        run: npm run test:terminal
