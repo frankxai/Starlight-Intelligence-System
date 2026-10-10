@@ -1,9 +1,8 @@
 /**
  * Starlight Intelligence System — Antigravity Adapter
  *
- * Formats vault context for Google Antigravity (agent-first IDE with native agent swarm support).
- * Leverages Gemini's high context window + Antigravity primitives (define_subagent, invoke_subagent,
- * Agent Manager, browser control, async progress artifacts).
+ * Formats vault context for Antigravity. Generated files are configuration
+ * proposals; they do not establish native CLI/IDE capabilities or permissions.
  *
  * Part of the multi-platform adapter set (Claude Code, Cursor, Cline, Codex, Gemini CLI, OpenCode, Antigravity).
  * See .antigravity/instructions.md (full), swarm-protocol.md, mcp-config.json, allowlisted-tools.md.
@@ -32,14 +31,14 @@ export class AntigravityAdapter implements PlatformAdapter {
     const lines: string[] = [
       '# Starlight Intelligence System — Antigravity Context',
       '',
-      '> Persistent context for Google Antigravity native agentic runtime.',
-      '> the agent registry + skills dynamically discovered from agents/, verticals/, skills/.',
+      '> Formatted vault context for an Antigravity host.',
+      '> This adapter does not discover or activate native tools, agents or skills.',
       `> Loaded ${filtered.length} entries across ${new Set(filtered.map(e => e.vault)).size} vaults.`,
       '',
       'Reference: .antigravity/instructions.md (full sovereign mandate + registry),',
-      '.antigravity/swarm-protocol.md (executable multi-agent orchestration),',
-      '.antigravity/mcp-config.json and allowlisted-tools.md (MCP + permissions).',
-      'When acting as orchestrator swarm harness: core/orchestrator/harnesses/antigravity/.',
+      '.antigravity/swarm-protocol.md (coordination reference),',
+      '.antigravity/mcp-config.json and allowlisted-tools.md (configuration proposals).',
+      'The host must verify references, native capabilities and permissions before execution.',
       '',
       '*Built on the sovereign substrate of the Starlight Intelligence Protocol (SIP v1.1.1)*',
       '',
@@ -73,28 +72,18 @@ export class AntigravityAdapter implements PlatformAdapter {
   }
 
   getMcpConfig(serverCommand: string): Record<string, unknown> {
-    // Rich Antigravity-aware MCP config. Matches .antigravity/mcp-config.json shape.
-    // Swarm children default read-only + progress; conductor under scope for writes.
+    // Empty scaffolding must not start an ambient Node process. The host selects
+    // an entry point explicitly and configures permissions in its own harness.
+    if (typeof serverCommand !== 'string' || serverCommand.includes('\0')) {
+      throw new Error('Invalid Antigravity MCP entry point');
+    }
+    if (!serverCommand.trim()) return { mcpServers: {} };
     return {
       mcpServers: {
         'starlight-substrate': {
-          _role: 'canonical — always loaded for agent swarms',
-          _purpose: 'vaults, agent registry, skills, attestation, memory graph, IS namespaces',
           command: 'node',
           args: [serverCommand],
-          env: {
-            STARLIGHT_MCP_MODE: 'swarm-aware',
-            STARLIGHT_MCP_BREADTH: 'full',
-            STARLIGHT_MCP_SWARM: 'true',
-          },
         },
-      },
-      _antigravity_swarm: {
-        define_subagent_support: true,
-        invoke_subagent_support: true,
-        agent_manager_hooks: ['on_subagent_start', 'on_progress', 'on_complete', 'on_error'],
-        progress_artifacts: ['todo', 'report', 'trace', 'browser-capture'],
-        read_heavy_for_children: true,
       },
     };
   }
@@ -114,8 +103,8 @@ export class AntigravityAdapter implements PlatformAdapter {
     const content = [
       '# Starlight Intelligence System — Antigravity Agent Swarm Protocol',
       '',
-      '> Authoritative copy lives at `.antigravity/swarm-protocol.md`.',
-      '> This is the executable manual for define_subagent / invoke_subagent of the agent swarm.',
+      '> Coordination reference only; this file does not start agents.',
+      '> Verify the receiving host\'s supported tools and admission before delegation.',
       '',
       'See `.antigravity/instructions.md` for identity + registry.',
       'See `core/orchestrator/harnesses/antigravity/system-prompt.md` for orchestrator framing.',
@@ -125,7 +114,7 @@ export class AntigravityAdapter implements PlatformAdapter {
     return { filename: '.antigravity/swarm-protocol.md', content };
   }
 
-  /** Generate Antigravity MCP config file (matches the checked-in .antigravity/mcp-config.json). */
+  /** Generate an opt-in Antigravity MCP configuration proposal. */
   generateMcpConfigFile(serverCommand: string): { filename: string; content: string } {
     const config = this.getMcpConfig(serverCommand);
     const content = JSON.stringify(config, null, 2) + '\n';
@@ -137,9 +126,9 @@ export class AntigravityAdapter implements PlatformAdapter {
     const content = [
       '# Antigravity Swarm — allowlisted tools (Starlight Intelligence System)',
       '',
-      '> See `.antigravity/allowlisted-tools.md` (authoritative, hand-curated for excellence-grade fidelity).',
-      '> Contains native primitives (define_subagent, invoke_subagent, Agent Manager, browser_control)',
-      '> plus substrate tools, MCP verbs, per-child vs conductor scoping, escalation, and SIP rules.',
+      '> Tool-scope reference only; this file does not grant permissions.',
+      '> Discover native tools in the installed host and configure its permission engine.',
+      '> Verify each agent\'s scope and recovery behavior before execution.',
       '',
       'When Antigravity runs as orchestrator harness, also consult',
       '`core/orchestrator/harnesses/antigravity/allowlisted-tools.md` (overlay if present).',
@@ -161,7 +150,7 @@ export class AntigravityAdapter implements PlatformAdapter {
     return [
       { ...this.generateMemoryFile(entries), description: 'Antigravity memory / instructions surface' },
       { ...this.generateSwarmProtocolFile(), description: 'agent swarm protocol' },
-      { ...this.generateMcpConfigFile(serverCommand), description: 'Swarm-aware MCP scope' },
+      { ...this.generateMcpConfigFile(serverCommand), description: 'Opt-in MCP configuration proposal' },
       { ...this.generateAllowlistedToolsFile(), description: 'Allowlisted tools + escalation' },
       { filename: '.antigravity/context-injection.md', content: ctx.content, description: 'Vault context injection' },
     ];
