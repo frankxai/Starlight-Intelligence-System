@@ -9,6 +9,8 @@ on:
       - "phase0/agentdb_smoke.py"
       - "phase0/test_agentdb_substrate.py"
       - ".github/workflows/agentdb-recall.yml"
+      - "src/memory-provider/**"
+      - "test/memory-provider-*.test.ts"
   push:
     branches: [main]
     paths:
@@ -17,6 +19,8 @@ on:
       - "phase0/agentdb_smoke.py"
       - "phase0/test_agentdb_substrate.py"
       - ".github/workflows/agentdb-recall.yml"
+      - "src/memory-provider/**"
+      - "test/memory-provider-*.test.ts"
 
 permissions:
   contents: read
@@ -45,3 +49,9 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
         run: python phase0/agentdb_smoke.py
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "24.16.0"
+      - name: Check memory provider isolation and routing
+        run: npm exec --yes --package=tsx@4.23.15 -- tsx --test test/memory-provider-local-core.test.ts test/memory-provider-router.test.ts test/memory-provider-mem0.test.ts
