@@ -1,0 +1,92 @@
+name: SDK package candidate
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - package.json
+      - package-lock.json
+      - .github/workflows/sdk-package-candidate.yml
+  push:
+    branches: [main]
+    paths:
+      - package.json
+      - package-lock.json
+      - .github/workflows/sdk-package-candidate.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-package-candidate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CANDIDATE_SHA: ${{ github.sha }}
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check types and instruction displays
+        run: npm run lint && npm run agents:harness-check
+      - name: Build and run prepublication checks
+        run: npm run build && npm run test:substrate && npm run test:terminal
+      - name: Pack and verify an independent installation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+          candidate_dir="$RUNNER_TEMP/sdk-candidate"
+          consumer_dir="$RUNNER_TEMP/sdk-consumer"
+          mkdir -p "$candidate_dir" "$consumer_dir"
+          npm pack --json --pack-destination "$candidate_dir" > "$candidate_dir/package-report.json"
+          package_filename=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))[0].filename)" "$candidate_dir/package-report.json")
+          npm install --prefix "$consumer_dir" --omit=dev --no-audit --no-fund "$candidate_dir/$package_filename"
+          SDK_CONSUMER="$consumer_dir" SDK_CANDIDATE="$candidate_dir" node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          import { createHash } from 'node:crypto';
+          import { pathToFileURL } from 'node:url';
+          import { execFileSync } from 'node:child_process';
+          const report = JSON.parse(readFileSync(join(process.env.SDK_CANDIDATE, 'package-report.json'), 'utf8'))[0];
+          const installed = join(process.env.SDK_CONSUMER, 'node_modules/@arcanea/starlight-intelligence-system');
+          const manifest = JSON.parse(readFileSync(join(installed, 'package.json'), 'utf8'));
+          if (manifest.version !== report.version || manifest.name !== report.name) throw new Error('Installed package identity differs');
+          for (const name of ['runtime-bridge', 'terminal-runtime', 'creator-workspace']) {
+            await import(pathToFileURL(join(installed, manifest.exports['./' + name].import)).href);
+          }
+          const domains = JSON.parse(execFileSync(process.execPath, [join(installed, 'dist/cli.js'), 'domain', 'list'], { encoding: 'utf8', timeout: 15000 }));
+          if (domains.length !== 6 || domains.some(domain => domain.status !== 'descriptor-only')) throw new Error('Installed CLI discovery differs');
+          const tarball = readFileSync(join(process.env.SDK_CANDIDATE, report.filename));
+          const integrity = 'sha512-' + createHash('sha512').update(tarball).digest('base64');
+          if (integrity !== report.integrity) throw new Error('Package integrity differs');
+          writeFileSync(join(process.env.SDK_CANDIDATE, 'release-receipt.json'), JSON.stringify({
+            sourceCommit: process.env.CANDIDATE_SHA, package: manifest.name, version: manifest.version,
+            filename: report.filename, integrity, sha256: createHash('sha256').update(tarball).digest('hex'),
+            nodeVersion: process.version, installedExports: ['runtime-bridge', 'terminal-runtime', 'creator-workspace'],
+            installedCliDomains: domains.length, publication: 'not-published'
+          }, null, 2) + '\n');
+          NODE
+      - name: Upload verified package candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sdk-package-${{ github.sha }}
+          path: ${{ runner.temp }}/sdk-candidate/
+          if-no-files-found: error
+          retention-days: 14

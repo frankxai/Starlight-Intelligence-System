@@ -1,5 +1,25 @@
 # Terminal execution and private handoffs
 
+## SDK 8.4.0
+
+This release adds the `runtime-bridge`, `terminal-runtime` and `creator-workspace`
+exports and terminal CLI commands. Hosts still supply worker bindings, admission,
+credentials and containment. Six domain entries remain descriptors.
+
+A source-only native Grok CLI run exercised the process adapter, creator capture,
+reopening, immutable edits, export checksum and private handoff import. Its original
+non-JSON attempt remains retained; a distinct structured attempt followed inspection
+of the completed native result. The article received a lead editorial refinement.
+User acceptance, invoices and native conversation migration are not established.
+The separate native OpenCode anonymous attempt was refused with HTTP 403.
+
+The SDK package candidate workflow installs locked dependencies, runs lint/build,
+substrate and terminal tests, packs the result and tests installation from the
+tarball on Node 24. It records the source commit and package integrity. Publication
+is a separate operator action; the workflow has no registry token or publish step.
+File fsync protects the demonstrated process-recovery path. Directory fsync,
+power-loss recovery and multi-machine filesystem behavior remain uncertified.
+
 ## OpenCode and creator operations
 
 The runtime bridge now connects to an operator-owned OpenCode 1.18.35 server.
