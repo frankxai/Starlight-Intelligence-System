@@ -106,38 +106,38 @@ test("v8 sanitization: US SSN is scrubbed", () => {
 
 // ── Known-NOT-covered patterns (coverage-drift guards) ───────────
 
-test("v8 sanitization: Stripe live keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: Stripe live keys are scrubbed", () => {
   // Prefix built piecewise so the contiguous literal never appears in source.
   // Also avoids 10-digit substrings (phone-regex false positive per docs).
   const stripePrefix = "sk" + "_" + "live" + "_";
-  expectUntouched("stripe-live", "key=" + stripePrefix + "a".repeat(40));
+  expectScrubbed("stripe-live", "key=" + stripePrefix + "a".repeat(40));
 });
 
-test("v8 sanitization: AWS access keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: AWS access keys are scrubbed", () => {
   // AKIA + repeated low-entropy chars.
-  expectUntouched("aws-access", "aws_access_key_id=AKIA" + "Z".repeat(16));
+  expectScrubbed("aws-access", "aws_access_key_id=AKIA" + "Z".repeat(16));
 });
 
-test("v8 sanitization: Anthropic sk-ant keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: Anthropic sk-ant keys are scrubbed", () => {
   // Prefix split to avoid Anthropic-prefix secret scanner.
   const antPrefix = "sk" + "-" + "ant" + "-" + "api03_";
-  expectUntouched("sk-ant", "ANTHROPIC_API_KEY=" + antPrefix + "a".repeat(40));
+  expectScrubbed("sk-ant", "ANTHROPIC_API_KEY=" + antPrefix + "a".repeat(40));
 });
 
-test("v8 sanitization: HuggingFace hf_ tokens are NOT covered (documented gap)", () => {
-  expectUntouched("hf", "HF_TOKEN=hf_" + "a".repeat(34));
+test("v8 sanitization: HuggingFace hf_ tokens are scrubbed", () => {
+  expectScrubbed("hf", "HF_TOKEN=hf_" + "a".repeat(34));
 });
 
-test("v8 sanitization: Postgres URIs are NOT covered (documented gap)", () => {
+test("v8 sanitization: Postgres URIs are scrubbed", () => {
   // Fixture avoids `user@host` (email-regex false positive on user:secret@host pattern).
-  expectUntouched(
+  expectScrubbed(
     "postgres-uri",
     "DATABASE_URL=postgres://localhost:5432/myapp"
   );
 });
 
-test("v8 sanitization: SSH private key blocks are NOT covered (documented gap)", () => {
-  expectUntouched(
+test("v8 sanitization: SSH private key blocks are scrubbed", () => {
+  expectScrubbed(
     "ssh-key",
     "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNz...\n-----END OPENSSH PRIVATE KEY-----"
   );

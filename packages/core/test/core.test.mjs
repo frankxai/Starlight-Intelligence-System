@@ -5,6 +5,32 @@ import { projectRecall, recallContext, SanitizationGateway } from '../dist/index
 
 const memory = { recall: async () => [] };
 const options = { memory, tenantId: 'tenant-a', workspaceId: 'workspace-a' };
+
+test('sanitizer masks complete credentials, literal replacement text and named context secrets', () => {
+  const veil = new SanitizationGateway({ scrubPII: false });
+  const frame = (action, kind) => '-'.repeat(5) + action + ' ' + kind + ' PRIVATE KEY' + '-'.repeat(5);
+  const fixtures = [
+    'sk-' + 'proj-' + 'a'.repeat(100),
+    'sk-' + 'ant-api03_' + 'a'.repeat(40),
+    'sk_' + 'live_' + 'a'.repeat(40),
+    'github_' + 'pat_' + 'a'.repeat(80),
+    'ASIA' + 'A'.repeat(16), 'hf_' + 'a'.repeat(34),
+    'npm_' + 'a'.repeat(36), 'whsec_' + 'a'.repeat(32),
+    'postgres://example:opaque@localhost/project',
+    frame('BEGIN', 'OPENSSH') + '\nsynthetic fixture\n' + frame('END', 'OPENSSH'),
+    frame('BEGIN', 'RSA') + '\nsynthetic incomplete fixture',
+  ];
+  for (const secret of fixtures) assert.equal(veil.sanitize('before ' + secret + ' after'), secret.includes('incomplete') ? 'before [REDACTED]' : 'before [REDACTED] after');
+  assert.equal(new SanitizationGateway({ scrubPII: false, maskString: '$&' }).sanitize(fixtures[0]), '$&');
+  const context = veil.sanitizeContext(JSON.parse('{"password":"opaque","api_key":"opaque","nested":{"client_secret":"opaque"},"__proto__":{"safe":true}}'));
+  assert.equal(context.password, '[REDACTED]');
+  assert.equal(context.api_key, '[REDACTED]');
+  assert.equal(context.nested.client_secret, '[REDACTED]');
+  assert.equal(Object.getPrototypeOf(context), Object.prototype);
+  assert.equal(Object.hasOwn(context, '__proto__'), true);
+  assert.equal({}.safe, undefined);
+  assert.equal(new SanitizationGateway({ scrubSecrets: false, scrubPII: false }).sanitize(fixtures[0]), fixtures[0]);
+});
 function hit(id, extra = {}) {
   return { score: 0.9, record: { memory_id: id, tenant_id: 'tenant-a', workspace_id: 'workspace-a',
     privacy_class: 'public', normalized_fact: 'Use the reviewed release artifact.', ...extra } };

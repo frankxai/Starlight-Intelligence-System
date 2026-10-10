@@ -4,6 +4,25 @@ Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-Sys
 Estate record: [hub draft PR 217](https://github.com/frankxai/agentic-ops-hub/pull/217).
 Date: 10 October 2026. Owner: this Codex session.
 
+Current pickup: implementation checkpoint `5f3375d90efe0e4ab7ae7394d988237a48630b11`
+and integration `efccc9c2916d6d16614d69d393f27a51a0390c41` are pushed on this lane.
+Integration preserves main's 8.5.0 terminal/creator SDK and its organization
+candidate. Root lint/build and 69 terminal/creator tests passed. Subsequent core
+credential/prototype/replacement hardening passes six core and 24 sanitizer tests;
+14 package integration and five release-safety tests pass. Core is now 8,642 bytes
+of JavaScript and 12,483 bytes compressed with schemas. Full workspace dependency
+audit reports zero vulnerabilities after esbuild/fast-uri patch overrides.
+Separate plugin/site alerts remain open and are not covered by that audit.
+
+Next: finish the clean-revision artifact/installed-consumer receipt, open the draft
+product PR, obtain independent provider review and hosted checks, then configure
+first publication/OIDC. No package was published by this session. Do not retry
+publishing ambiguous versions or treat failed reviewer authentication as approval.
+The value proposal and 45-package catalog retain their limited evidence coverage.
+
+Earlier continuation evidence follows; its sizes and held-admission status are
+historical and are superseded by the current pickup above.
+
 Continuation: package builds, 13 integration tests, real tarball Gitleaks/allowlist
 audits, separate installed-consumer declaration checks and 13 integration tests now
 pass. Root lint/build and 43 native regression tests pass. The AI adapter now

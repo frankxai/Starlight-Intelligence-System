@@ -31,8 +31,9 @@ Exports include `VaultEntry`, `VaultType`, `MemoryEvent`, `SIPAttestation`,
 Existing schema subpaths remain available. Attestation and harness types describe
 contracts; hosts implement signature verification and authorization.
 
-`SanitizationGateway` preserves SIS's existing regex-based sanitizer. It handles
-configured patterns, not every possible secret or personal datum. Hosts can supply
+`SanitizationGateway` extends SIS's regex sanitizer with common provider tokens,
+database URIs, private-key blocks and named secret fields in context objects.
+It handles configured patterns, not every possible secret or personal datum. Hosts can supply
 a stricter `VeilSanitizer`; a sanitizer failure never permits unsanitized output.
 Retrieved facts remain untrusted data and can contain prompt injection.
 

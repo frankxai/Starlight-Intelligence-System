@@ -119,6 +119,35 @@ documentation pages can lag the current major.
 
 ## Evidence and remaining acceptance
 
+Current continuation: accepted main `fe964d5a9449704c841cad821f8f2e6d02c9551b`
+was integrated at `efccc9c2916d6d16614d69d393f27a51a0390c41`. Root identity remains
+the accepted legacy package at 8.5.0; its terminal/creator exports and workflows
+are preserved. Root lint/build and all 69 terminal/creator tests passed after
+integration. The SDK candidate workflow now packs with pnpm and installs the core
+candidate alongside each SDK identity, avoiding unresolved workspace dependencies
+and an accidental dependency on an unpublished registry version.
+
+The core sanitizer now masks complete common credential formats, database URIs
+and complete/incomplete private-key blocks. Named context secret fields are
+masked before recursively processing values. Literal replacement text cannot
+reinsert a secret, and data property names cannot invoke prototype setters.
+See the updated coverage contract for remaining gaps. These changes passed six
+core tests and 24 legacy sanitizer coverage tests. All 14 package integration
+tests and five release tests pass. Current core JavaScript is 8,642 bytes;
+the compressed tarball is 12,483 bytes, including the preserved schemas.
+
+The full workspace audit, including development dependencies, returned zero
+reported vulnerabilities after locking esbuild 0.28.2 and fast-uri 3.1.8.
+This does not cover the separate site/plugin dependency graphs. GitHub still
+reports their sharp and MCP OAuth alerts; those need their own source and
+runtime verification before fixes are claimed. Forty-five registry metadata
+records remain inventory coverage rather than forty-five verified releases.
+
+Independent provider review and hosted CI remain open. Claude and Gemini attempts
+returned errors, not verdicts. The commercial/platform proposal in
+`NPM_PLATFORM_VALUE_MAP.md` preserves unresolved authority and demand evidence.
+Historical working-tree/admission evidence follows.
+
 Update, 10 October 2026: build admission recovered. Frozen installation, all three
 package builds, 13 package integration tests, actual tarball allowlists and Gitleaks
 scans, and installation into a separate consumer directory passed. The installed
