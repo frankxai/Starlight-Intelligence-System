@@ -64,9 +64,30 @@ if (Get-Command eza -ErrorAction SilentlyContinue) {
 # --- uv: fast Python package manager ---
 # No init needed; uv works standalone. Just announce it's available.
 
+# --- Starlight Sovereign Kernel & Memory Gateway ---
+function Start-StarlightDaemon {
+    param([switch]$Detached)
+    Write-Host "Starting Starlight Sovereign Kernel daemon..." -ForegroundColor Cyan
+    & starlightd daemon start
+}
+
+function Start-SisGateway {
+    param([int]$Port = 4400, [string]$StorageRoot = "C:\Users\frank\Starlight-Intelligence-System")
+    Write-Host "Starting SIS Memory Gateway on port $Port..." -ForegroundColor Cyan
+    $cmd = "npx tsx src/gateway/daemon.ts `"$StorageRoot`" $Port"
+    Start-Process pwsh -ArgumentList "-NoExit", "-Command", "cd `"$StorageRoot`"; $cmd" -WindowStyle Minimized
+}
+
+function Get-StarlightStatus {
+    & starlightd status
+    & starlightd vault stats
+}
+Set-Alias -Name st-status -Value Get-StarlightStatus -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name st-kernel -Value starlightd -Scope Global -Force -ErrorAction SilentlyContinue
+
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
     # ASCII separator (`|`) instead of middle-dot to render correctly even
     # when the console is misconfigured (some terminals decode UTF-8 multibyte
     # chars as their CP1252 component letters → "Â·" garbling).
-    Write-Host 'Starlight tools loaded: zoxide(z) | mise | bat(cat) | lazygit(lg) | eza(ll/tree) | uv | restic' -ForegroundColor DarkCyan
+    Write-Host 'Starlight tools loaded: zoxide(z) | mise | bat(cat) | lazygit(lg) | eza(ll/tree) | uv | restic | starlightd' -ForegroundColor DarkCyan
 }
