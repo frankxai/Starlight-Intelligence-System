@@ -6,12 +6,23 @@
   "_loaded_when": "Complex multi-perspective work (4-10 complexity), parallel agent orchestration, browser-heavy tasks, async long-running flows, when Antigravity YOLO or Agent Manager is the velocity lever. Full Hive (13-96) for cross-IS or vertical-wide intents.",
   "_write_policy": "Swarm children: read + progress artifacts only. Conductor / prime / sentinel: scoped writes to intel/ outputs, vault entries under memory/vaults/, and agent-manager artifacts. Substrate-tier writes still require /starlight-board pre-pass and ultimately route through Claude Code primary harness unless explicitly scoped.",
   "mcpServers": {
+    "starlight-memory": {
+      "_role": "canonical — vault operations, SAGE loops, and persistent memory",
+      "_purpose": "Direct search, append, and contradiction resolution across the 6 vaults (Strategic, Technical, Creative, Operational, Wisdom, Horizon)",
+      "command": "node",
+      "args": [
+        "C:\\Users\\frank\\Starlight-Intelligence-System\\dist\\mcp-server.js"
+      ],
+      "env": {
+        "STARLIGHT_MCP_MODE": "full"
+      }
+    },
     "starlight-substrate": {
       "_role": "canonical — always loaded for swarm context, memory, attestation, IS namespace",
       "_purpose": "Vault reads (strategic/technical/creative/operational), agent registry discovery, skill activation lookup, attestation generation for every swarm artifact, memory graph queries for historical patterns across the agent registry",
       "command": "node",
       "args": [
-        "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
+        "C:\\Users\\frank\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
       ],
       "env": {
         "STARLIGHT_MCP_MODE": "swarm-aware",
