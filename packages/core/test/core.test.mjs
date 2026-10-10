@@ -8,7 +8,7 @@ const memory = { recall: async () => [] };
 const options = { memory, tenantId: 'tenant-a', workspaceId: 'workspace-a' };
 
 test('every shipped core schema is available through a public package subpath', async () => {
-  const directory = new URL('../schemas/', import.meta.url);
+  const directory = new URL('.', import.meta.resolve('@starlight-intelligence/core/schemas/work-packet'));
   const files = (await readdir(directory)).filter(file => file.endsWith('.schema.json'));
   assert.ok(files.length > 0);
   for (const file of files) {
