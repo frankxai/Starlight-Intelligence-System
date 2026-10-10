@@ -48,11 +48,11 @@ execFileSync(process.execPath, [join(cwd, 'node_modules', 'typescript', 'bin', '
 { cwd, stdio: 'inherit', timeout: 60_000 });
 execFileSync(process.execPath, ['--test', ...targets.map(([folder]) => folder + '.test.mjs')],
 { cwd, stdio: 'inherit', timeout: 60_000 });
-writeFileSync(join(directory, 'consumer.json'), JSON.stringify({ schemaVersion: 1, sourceSha,
-  manifestSha256: digest(manifestBytes), passed: true, checks: consumerChecks }, null, 2) + '\n');
 console.log('Tarball consumer imports, declarations and protocol tests passed');
 const benchmark = readFileSync(join(root, 'packages', 'ai-sdk-adapter', 'benchmark', 'compare.mjs'), 'utf8')
   .replace("'../dist/index.js'", JSON.stringify('@starlight-intelligence/ai-sdk'));
 writeFileSync(join(cwd, 'benchmark.mjs'), benchmark);
 execFileSync(process.execPath, ['benchmark.mjs', join(directory, 'benchmark.json'), sourceSha, digest(manifestBytes)],
   { cwd, stdio: 'inherit', timeout: 60_000 });
+writeFileSync(join(directory, 'consumer.json'), JSON.stringify({ schemaVersion: 1, sourceSha,
+  manifestSha256: digest(manifestBytes), passed: true, checks: consumerChecks }, null, 2) + '\n');
