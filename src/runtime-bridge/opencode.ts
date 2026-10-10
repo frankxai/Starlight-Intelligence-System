@@ -1,5 +1,40 @@
+import { createHash } from "node:crypto";
 import { boundedJson, identifier, MAX_PAYLOAD_BYTES, parseWorkerRequest, parseWorkerResponse, record,
   WORKER_PROTOCOL, type WorkerRuntime } from "./contracts.js";
+
+export interface OpenCodeUsage {
+  version: "starlight.opencode-usage.v1";
+  scope: "final-assistant-message";
+  taskId: string; sessionId: string; runtimeId: string; messageId: string;
+  providerID: string; modelID: string; outputSha256: string;
+  providerReportedCostUSD: number;
+  tokens: { input: number; output: number; reasoning: number; cacheRead: number; cacheWrite: number; total?: number };
+  actualBilledCost: "unknown";
+}
+
+/** Provider observations are not invoices, quota measurements or whole-run totals. */
+export function parseOpenCodeUsage(value: unknown): OpenCodeUsage {
+  const keys = ["version", "scope", "taskId", "sessionId", "runtimeId", "messageId", "providerID", "modelID",
+    "outputSha256", "providerReportedCostUSD", "tokens", "actualBilledCost"];
+  if (!record(value) || Object.keys(value).length !== keys.length || !keys.every(k => Object.hasOwn(value, k))
+    || value.version !== "starlight.opencode-usage.v1" || value.scope !== "final-assistant-message"
+    || ![value.taskId, value.runtimeId, value.providerID, value.modelID].every(identifier)
+    || typeof value.sessionId !== "string" || !/^ses_[a-zA-Z0-9_-]{1,128}$/.test(value.sessionId)
+    || typeof value.messageId !== "string" || !/^msg[a-zA-Z0-9_-]{1,128}$/.test(value.messageId)
+    || typeof value.outputSha256 !== "string" || !/^[a-f0-9]{64}$/.test(value.outputSha256)
+    || typeof value.providerReportedCostUSD !== "number" || !Number.isFinite(value.providerReportedCostUSD)
+    || value.providerReportedCostUSD < 0 || value.actualBilledCost !== "unknown" || !record(value.tokens)) {
+    throw new Error("Invalid OpenCode usage observation");
+  }
+  const tokens = value.tokens;
+  const tokenKeys = ["input", "output", "reasoning", "cacheRead", "cacheWrite"];
+  if (Object.keys(tokens).length !== tokenKeys.length + (Object.hasOwn(tokens, "total") ? 1 : 0)
+    || !tokenKeys.every(k => Object.hasOwn(tokens, k))
+    || !Object.values(tokens).every(n => Number.isSafeInteger(n) && (n as number) >= 0)) {
+    throw new Error("Invalid OpenCode token observation");
+  }
+  return JSON.parse(boundedJson(value)) as OpenCodeUsage;
+}
 
 /** HTTP contract verified against OpenCode v1.18.35, source 53d1eabb61e2.
  * Connects an operator-owned server. Never starts one or changes its config. */
@@ -8,6 +43,8 @@ export function createOpenCodeRuntime(options: {
   providerID: string; modelID: string; headers?: Record<string, string>; allowLoopbackHttp?: boolean;
   /** Must durably record this owned session before a model request is sent. */
   onSession: (receipt: { taskId: string; sessionId: string; runtimeId: string }) => Promise<void>;
+  /** When supplied, receipt persistence must complete before output is accepted. */
+  onUsage?: (usage: OpenCodeUsage) => Promise<void>;
 }): WorkerRuntime {
   if (![options.id, options.providerID, options.modelID].every(identifier)
     || options.expectedVersion !== "1.18.35" || typeof options.onSession !== "function") {
@@ -18,7 +55,8 @@ export function createOpenCodeRuntime(options: {
     || (endpoint.protocol !== "https:" && !(endpoint.protocol === "http:" && options.allowLoopbackHttp
       && ["127.0.0.1", "[::1]"].includes(endpoint.hostname)))) throw new Error("Invalid OpenCode server endpoint");
   const base = endpoint.origin;
-  const { id, providerID, modelID, expectedVersion, onSession } = options;
+  if (options.onUsage !== undefined && typeof options.onUsage !== "function") throw new Error("Invalid OpenCode usage observer");
+  const { id, providerID, modelID, expectedVersion, onSession, onUsage } = options;
   const headers = new Headers(options.headers);
   headers.set("accept", "application/json"); headers.set("content-type", "application/json");
   async function call(path: string, signal: AbortSignal, body?: unknown): Promise<unknown> {
@@ -74,6 +112,22 @@ export function createOpenCodeRuntime(options: {
       throw new Error("OpenCode result identity, completion or tool boundary rejected");
     }
     // v1.18.35 uses info.structured, not the documentation's structured_output.
-    return parseWorkerResponse(result.info.structured, request.taskId);
+    const response = parseWorkerResponse(result.info.structured, request.taskId);
+    if (onUsage) {
+      const tokens = result.info.tokens;
+      if (response.status !== "completed" || !record(tokens) || !record(tokens.cache)) {
+        throw new Error("OpenCode usage observation missing");
+      }
+      const usage = parseOpenCodeUsage({ version: "starlight.opencode-usage.v1", scope: "final-assistant-message",
+        taskId: request.taskId, sessionId: session.id, runtimeId: id, messageId: result.info.id,
+        providerID, modelID, outputSha256: createHash("sha256").update(response.output).digest("hex"),
+        providerReportedCostUSD: result.info.cost, actualBilledCost: "unknown",
+        tokens: { input: tokens.input, output: tokens.output, reasoning: tokens.reasoning,
+          cacheRead: tokens.cache.read, cacheWrite: tokens.cache.write,
+          ...(Object.hasOwn(tokens, "total") ? { total: tokens.total } : {}) } });
+      await onUsage(usage);
+    }
+    signal.throwIfAborted();
+    return response;
   } };
 }

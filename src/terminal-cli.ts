@@ -2,6 +2,7 @@ import { closeSync, fsyncSync, openSync, readFileSync, writeFileSync } from "nod
 import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import { createHttpWorkerRuntime, createOpenCodeRuntime, createProcessWorkerRuntime, type WorkerRuntime } from "./runtime-bridge/index.js";
+import { parseOpenCodeUsage } from "./runtime-bridge/opencode.js";
 import { CreatorWorkspace, createCreatorPacket } from "./creator-workspace.js";
 import { parseTerminalPacket, TERMINAL_DOMAINS, TerminalRunJournal, terminalDigest,
   type TerminalAdmission } from "./terminal-runtime.js";
@@ -11,6 +12,7 @@ const USAGE = `Terminal operations:
   starlight harness doctor
   starlight run start --file <absolute-packet> --host <absolute-host-binding> --authorize
   starlight run inspect <run-id>
+  starlight run usage <run-id>  (local OpenCode final-message observation)
   starlight run handoff <run-id>
   starlight run resume <run-id>  (exports state; destination admission is required)
   starlight run import --file <absolute-handoff>
@@ -87,10 +89,10 @@ export async function runTerminalCli(argv: string[]): Promise<{ exitCode: number
         context: "explicit-allowlist", fleetAdmission: "host-owned", usage: "unknown",
       }, null, 2), stderr: "" };
     }
-    if (command !== "run" || !["start", "inspect", "handoff", "resume", "import"].includes(action)) {
+    if (command !== "run" || !["start", "inspect", "usage", "handoff", "resume", "import"].includes(action)) {
       return { exitCode: 2, stdout: "", stderr: USAGE };
     }
-    const expected = ["inspect", "handoff", "resume"].includes(action) ? 3 : 2;
+    const expected = ["inspect", "usage", "handoff", "resume"].includes(action) ? 3 : 2;
     if (args.length !== expected) throw new Error("Unexpected or missing command arguments");
     const journalPath = typeof flags.journal === "string" ? flags.journal : join(homedir(), ".starlight", "runs", "terminal");
     if (action === "start") {
@@ -145,6 +147,10 @@ export async function runTerminalCli(argv: string[]): Promise<{ exitCode: number
             const fd = openSync(join(journalPath,packet.runId + ".opencode-session.json"), "wx", 0o600);
             try { writeFileSync(fd,JSON.stringify({version:"starlight.opencode-session.v1",...session})); fsyncSync(fd); }
             finally { closeSync(fd); }
+          }, onUsage: async observation => {
+            const fd = openSync(join(journalPath,packet.runId + ".opencode-usage.json"), "wx", 0o600);
+            try { writeFileSync(fd,JSON.stringify({packetSha256:terminalDigest(packet),observation,sha256:terminalDigest(observation)})); fsyncSync(fd); }
+            finally { closeSync(fd); }
           } });
       } else throw new Error("Unsupported host transport");
       const admission = host.admission as TerminalAdmission;
@@ -167,6 +173,20 @@ export async function runTerminalCli(argv: string[]): Promise<{ exitCode: number
     }
     const record = journal.inspect(id);
     if (!record) throw new Error("Run not found");
+    if (action === "usage") {
+      if (record.state !== "produced") throw new Error("Usage requires a produced local run; reconcile unknown outcomes with the host");
+      const evidence = object(load(join(journalPath,id + ".opencode-usage.json")));
+      const observation = parseOpenCodeUsage(evidence.observation);
+      const session = object(load(join(journalPath,id + ".opencode-session.json")));
+      if (Object.keys(evidence).length !== 3 || evidence.packetSha256 !== record.fingerprint
+        || evidence.sha256 !== terminalDigest(observation) || observation.taskId !== id
+        || observation.runtimeId !== record.runtimeId || observation.outputSha256 !== record.outputSha256
+        || session.version !== "starlight.opencode-session.v1" || session.taskId !== id
+        || session.runtimeId !== record.runtimeId || session.sessionId !== observation.sessionId) {
+        throw new Error("OpenCode usage evidence does not match this local run");
+      }
+      return { exitCode: 0, stdout: JSON.stringify(evidence,null,2), stderr: "" };
+    }
     return { exitCode: 0, stdout: JSON.stringify(record, null, 2), stderr: "" };
   } catch (error) {
     return { exitCode: 1, stdout: "", stderr: error instanceof Error ? error.message : "Terminal operation failed" };

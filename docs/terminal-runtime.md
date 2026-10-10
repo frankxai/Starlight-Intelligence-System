@@ -14,6 +14,19 @@ host. CLI session receipts are saved as `<run-id>.opencode-session.json` in the
 private journal. Version drift fails before session creation. The SDK requires a
 durable `onSession` callback. No server is started by these commands.
 
+`starlight run usage <run-id>` reads the local OpenCode observation after a
+produced run. It checks the packet, session, runtime and output bindings and the
+observation checksum. CLI execution preserves the observation before accepting
+output; a failed usage save leaves an unknown run for host reconciliation.
+SDK hosts may supply `onUsage` for the same persistence boundary. Negative,
+fractional, missing or unsafe token counts and invalid cost values are rejected.
+Input, output, reasoning and cache read/write counts stay separate; a provider
+total is retained only when supplied. The scope is the final assistant message,
+not the entire run or auxiliary title/summary requests. Provider-reported USD
+cost is not an invoice or measured subscription allowance. Actual billing remains
+unknown. Usage observations are private local sidecars and are not transferred
+by handoff or promoted into creator export claims.
+
 The creator workspace keeps immutable source-bound editorial revisions:
 
 ```text
