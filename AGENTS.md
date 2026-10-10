@@ -302,7 +302,7 @@ Cross-repo memory recall via Cross-Repo Indexer (520+ atoms across 22 `~/.claude
 - Operational layer: `@arcanea/starlight-intelligence-system` v8.4.0
 - License: MIT (code + spec docs); Arcanea canon (if composed) CC-BY-NC
 
-*Starlight Intelligence System v8.4.0 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-06-12*
+*Starlight Intelligence System v8.4.0 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-10-10*
 
 ## Design Taste Kernel
 
