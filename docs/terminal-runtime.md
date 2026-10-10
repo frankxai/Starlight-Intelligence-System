@@ -196,3 +196,16 @@ This branch starts from `421c873533ea68791b38a37378f28f0c88b709a2`.
 Run `npm run test:terminal`, `npm run lint`, `npm run build`, and the orchestrator
 regression tests. The fail-closed default executor rejects orchestration without
 an explicitly bound executor instead of emitting a fabricated processed result.
+
+The package exports and terminal test script change `package.json`. The candidate
+therefore updates its two source-closure hashes in the Foundry toolchain lock.
+Rule versions, dependency integrities and review dates are preserved. The updated
+lock requires independent review before release; recomputing a hash is not review
+approval. The current source closure passes preflight, and a deliberately altered
+package hash still fails the same gate.
+
+An isolated worktree's default mesh check inspects its sibling worktrees as a
+portfolio. For a CI-equivalent check, use the documented `--portfolio-root` option
+with an owned projection containing this checkout under its canonical repository
+name. This measures SIS and carries the other repositories' previous observations
+forward. It does not certify a fresh estate-wide inventory.
