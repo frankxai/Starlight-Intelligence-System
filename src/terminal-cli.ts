@@ -7,7 +7,11 @@ import { CreatorWorkspace, createCreatorPacket } from "./creator-workspace.js";
 import { parseTerminalPacket, TERMINAL_DOMAINS, TerminalRunJournal, terminalDigest,
   type TerminalAdmission } from "./terminal-runtime.js";
 
+import { ECOSYSTEM_PACKAGES, inspectEcosystem } from "./ecosystem.js";
+
 const USAGE = `Terminal operations:
+  starlight ecosystem list
+  starlight ecosystem doctor  (bounded public npm metadata; no installation)
   starlight domain list
   starlight harness doctor
   starlight run start --file <absolute-packet> --host <absolute-host-binding> --authorize
@@ -57,6 +61,12 @@ export async function runTerminalCli(argv: string[]): Promise<{ exitCode: number
       else args.push(arg);
     }
     const [command, action, id] = args;
+    if (command === "ecosystem") {
+      if (args.length !== 2 || Object.keys(flags).length || !["list", "doctor"].includes(action)) throw new Error("Expected ecosystem list or doctor without options");
+      const result = action === "list" ? ECOSYSTEM_PACKAGES : await inspectEcosystem();
+      return { exitCode: action === "doctor" && "packages" in result && result.packages.some(item => item.status !== "manifest-checked") ? 1 : 0,
+        stdout: JSON.stringify(result, null, 2), stderr: "" };
+    }
     if (command === "creator") {
       if (action === "packet" && args.length === 2 && typeof flags["work-ref"] === "string") {
         return { exitCode: 0, stdout: JSON.stringify(createCreatorPacket(load(flags.file as string | undefined), flags["work-ref"]), null, 2), stderr: "" };
