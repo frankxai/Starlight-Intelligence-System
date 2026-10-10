@@ -1,4 +1,4 @@
-﻿<!-- STARLIGHT:BAND-A:BEGIN v2 sha=4eab548b8354 -->
+﻿<!-- STARLIGHT:BAND-A:BEGIN v2 sha=4eab548b8354 source=794db1e51a55a128816f7aa266eb0ac1dbd452c3 -->
 
 ## Inherited — Starlight estate contract
 
