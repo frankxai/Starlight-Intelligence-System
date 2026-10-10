@@ -416,3 +416,37 @@ export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';
 // v8.8 — SAGE Autonomous Goal Execution (Autonomous Loops)
 export { GoalOrchestrator } from './goal.js';
 export type { GoalTask, GoalLog, GoalState, AuditResult } from './goal.js';
+
+// v2.0 / v8.9 — Sovereign Kernel & Infinite Hyper-Vault Mesh
+export type {
+  CanonicalVaultType,
+  DynamicVaultNamespace,
+  EpistemicTier,
+  DecayPolicy,
+} from './types.js';
+
+// Telemetry, Observability & Experiments — Langfuse Cloud (EU)
+export {
+  StarlightTelemetry,
+  telemetry,
+  StarlightExperimentRunner,
+  runExperiments,
+} from './telemetry/index.js';
+export type {
+  LangfuseConfig,
+  TelemetryDiagnostic,
+  TraceAgentOptions,
+  TraceHarnessOptions,
+  TraceMcpToolCallOptions,
+  TraceMemoryQueryOptions,
+  TraceOrchestrationOptions,
+  TraceSwarmTaskOptions,
+  TraceCouncilDispatchOptions,
+  TraceGenerationOptions,
+  TraceScoreOptions,
+  EvalSummaryReceipt,
+  ArenaRunReceipt,
+  RetrievalBenchmarkResult,
+  ExperimentRunReport,
+} from './telemetry/index.js';
+

@@ -12,7 +12,10 @@
       "args": ["dist/mcp-server.js"],
       "env": {
         "STARLIGHT_MCP_MODE": "read-write",
-        "STARLIGHT_VAULT_DIR": "memory/vaults"
+        "STARLIGHT_VAULT_DIR": "memory/vaults",
+        "LANGFUSE_PUBLIC_KEY": "${LANGFUSE_PUBLIC_KEY}",
+        "LANGFUSE_SECRET_KEY": "${LANGFUSE_SECRET_KEY}",
+        "LANGFUSE_BASEURL": "${LANGFUSE_BASEURL:-https://cloud.langfuse.com}"
       }
     }
   },

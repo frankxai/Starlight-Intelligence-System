@@ -16,6 +16,7 @@ import type { TemporalMeta, ContradictionRecord } from './types.js';
 import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
 import { GoalOrchestrator } from './goal.js';
+import { telemetry } from './telemetry/index.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -369,10 +370,27 @@ export class StarlightMcpServer {
       const name = String(p.name ?? ''), args = (p.arguments ?? {}) as Record<string, unknown>;
       const tool = this.tools.get(name);
       if (!tool) return { jsonrpc: '2.0', id: rpcId, error: { code: -32601, message: `Unknown tool: ${name}` } };
+      const start = Date.now();
       try {
         const result = tool.handler(args);
+        telemetry.traceMcpToolCall({
+          toolName: name,
+          args,
+          result,
+          durationMs: Date.now() - start,
+          success: true,
+          serverName: 'starlight-sis',
+        });
         return { jsonrpc: '2.0', id: rpcId, result: { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] } };
       } catch (err) {
+        telemetry.traceMcpToolCall({
+          toolName: name,
+          args,
+          error: err instanceof Error ? err.message : String(err),
+          durationMs: Date.now() - start,
+          success: false,
+          serverName: 'starlight-sis',
+        });
         return { jsonrpc: '2.0', id: rpcId, result: {
           content: [{ type: 'text', text: JSON.stringify({ error: err instanceof Error ? err.message : String(err) }) }],
           isError: true,

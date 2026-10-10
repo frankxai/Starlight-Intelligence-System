@@ -24,13 +24,16 @@
 - **Existing test suite** — `npm run test:operational` (100% pass) + `npm run test:substrate` (100% pass across v73–v91 suites).
 - **Harness & Drift Guards** — `npm run agents:harness-check` (agents=144, skills=83, version=v8.3.0) + `validate-agentskills.mjs` + `check-identity-drift.mjs` all green.
 - **Memory Provider Router** — `test/memory-provider-*` 14/14 pass (including new Mem0 remote provider hardening suite with TTL cache, retries, auto-flush).
+- **Langfuse Cloud (EU) Observability & Experiments** — Sovereign telemetry wired into all 8 harnesses (Claude Code, Antigravity, Codex, Gemini, Grok, OpenCode, Cursor, Hermes), MCP servers (`dist/mcp-server.js` and `dist/starlight-mcp.js`), Orchestrator 7-layer pipeline, memory vaults, and experiment runner (`tools/run-experiments.ts`). Configured for EU Cloud (Frankfurt data residency: `https://cloud.langfuse.com` / `https://eu.cloud.langfuse.com`). Automated testing in `test/langfuse-telemetry.test.ts` (100% pass).
 
 ## Run it
 
 ```bash
 npm run build                     # clean green build, emits to dist/
-npm run test:operational          # operational test suite
+npm run test:operational          # operational test suite (includes telemetry)
 npm run test:substrate            # substrate conformance test suite
+npm run test:telemetry            # Langfuse Cloud EU telemetry & experiments suite
+npm run experiment                # run experiments & push evals/retrieval/arena to Langfuse EU
 npm run test:memory-provider       # memory provider router + mem0 hardening
 node dist/mcp-server.js           # JSON-RPC 2.0 over stdio, 10 sis_* tools
 ```

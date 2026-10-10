@@ -1,0 +1,25 @@
+{
+  "name": "@starlight/remote-voice-starter",
+  "version": "0.1.0",
+  "description": "Starlight Remote Voice Starter - WebRTC audio agent integration using LiveKit React",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server/index.ts",
+    "build": "tsc",
+    "test": "tsx --test tests/**/*.test.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@livekit/components-react": "^2.6.4",
+    "livekit-client": "^2.6.0",
+    "livekit-server-sdk": "^2.9.1",
+    "lucide-react": "^0.460.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

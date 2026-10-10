@@ -16,7 +16,10 @@
       "env": {
         "STARLIGHT_MCP_MODE": "swarm-aware",
         "STARLIGHT_MCP_BREADTH": "full",
-        "STARLIGHT_MCP_SWARM": "true"
+        "STARLIGHT_MCP_SWARM": "true",
+        "LANGFUSE_PUBLIC_KEY": "${LANGFUSE_PUBLIC_KEY}",
+        "LANGFUSE_SECRET_KEY": "${LANGFUSE_SECRET_KEY}",
+        "LANGFUSE_BASEURL": "${LANGFUSE_BASEURL:-https://cloud.langfuse.com}"
       }
     },
     "arcanea-mcp": {

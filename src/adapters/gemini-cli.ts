@@ -55,6 +55,11 @@ export class GeminiCliAdapter implements PlatformAdapter {
         'starlight-sis': {
           command: 'node',
           args: [serverCommand],
+          env: {
+            LANGFUSE_PUBLIC_KEY: process.env.LANGFUSE_PUBLIC_KEY || '${LANGFUSE_PUBLIC_KEY}',
+            LANGFUSE_SECRET_KEY: process.env.LANGFUSE_SECRET_KEY || '${LANGFUSE_SECRET_KEY}',
+            LANGFUSE_BASEURL: process.env.LANGFUSE_BASEURL || 'https://cloud.langfuse.com',
+          },
         },
       },
     };

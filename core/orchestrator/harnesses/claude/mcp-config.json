@@ -12,7 +12,11 @@
       "args": [
         "C:\\Users\\frank\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
       ],
-      "env": {}
+      "env": {
+        "LANGFUSE_PUBLIC_KEY": "${LANGFUSE_PUBLIC_KEY}",
+        "LANGFUSE_SECRET_KEY": "${LANGFUSE_SECRET_KEY}",
+        "LANGFUSE_BASEURL": "${LANGFUSE_BASEURL:-https://cloud.langfuse.com}"
+      }
     },
     "arcanea-mcp": {
       "_role": "canon-work scoped — load when editing Arcanea canon, Guardians, Vel'Tara archetypes, or vibeclubs.ai surfaces",

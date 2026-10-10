@@ -14,7 +14,10 @@
       ],
       "env": {
         "STARLIGHT_MCP_MODE": "read-write",
-        "STARLIGHT_EXCELLENCE": "grok-harness"
+        "STARLIGHT_EXCELLENCE": "grok-harness",
+        "LANGFUSE_PUBLIC_KEY": "${LANGFUSE_PUBLIC_KEY}",
+        "LANGFUSE_SECRET_KEY": "${LANGFUSE_SECRET_KEY}",
+        "LANGFUSE_BASEURL": "${LANGFUSE_BASEURL:-https://cloud.langfuse.com}"
       }
     },
     "excellence-audit-mcp": {

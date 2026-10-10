@@ -58,4 +58,22 @@ for (const file of evals) {
 
 console.log(`\nTotal: ${totalPass} pass · ${totalFail} fail · ${totalTodo} todo across ${evals.length} evals\n`);
 
+try {
+  const { telemetry } = await import('../dist/telemetry/index.js').catch(() => ({}));
+  if (telemetry?.active) {
+    console.log('Publishing eval receipt to Langfuse Cloud EU...');
+    await telemetry.recordEvalSummary({
+      suiteName: 'Track D v0.1 — 7 risk-dimension evals',
+      totalPass,
+      totalFail,
+      totalTodo,
+      durationSeconds: Number(summary.reduce((acc, s) => acc + Number(s.elapsed), 0).toFixed(2)),
+      details: summary,
+    });
+    console.log('[✓] Eval receipt recorded to Langfuse Cloud EU successfully.');
+  }
+} catch {
+  // Non-blocking
+}
+
 process.exit(anyFail ? 1 : 0);

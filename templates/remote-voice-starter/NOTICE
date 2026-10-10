@@ -1,0 +1,9 @@
+Starlight Remote Voice Starter
+Copyright (c) 2026 Frank Riemer / Starlight Intelligence System
+
+This software incorporates components and patterns from:
+1. LiveKit Agent Starter React (https://github.com/livekit-examples/agent-starter-react)
+   Licensed under the MIT License.
+   Copyright (c) 2024-2026 LiveKit, Inc.
+2. LiveKit Components React (https://github.com/livekit/components-js)
+   Licensed under Apache License 2.0.

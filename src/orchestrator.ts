@@ -14,6 +14,7 @@
 import { MemoryManager } from "./memory.js";
 import { AgentRouter } from "./agents.js";
 import { SanitizationGateway } from "./sanitization.js";
+import { telemetry } from "./telemetry/index.js";
 import type { AgentRecommendation } from "./agents.js";
 import type {
   AgentExecutor,
@@ -230,13 +231,24 @@ export class OrchestrationEngine {
     const memoryWritten = this.writeToMemory(cleanTask, pattern, executions, synthesis, overallConfidence);
     this.completeStage(writeStage, { written: memoryWritten });
 
+    const duration = Date.now() - startTime;
+    telemetry.traceOrchestration({
+      intent: cleanTask.intent,
+      pattern,
+      complexity,
+      executionsCount: executions.length,
+      confidence: overallConfidence,
+      durationMs: duration,
+      memoryRecalled: recalledMemories.length,
+    });
+
     return {
       pattern,
       executions,
       synthesis,
       confidence: overallConfidence,
       memoryWritten,
-      duration: Date.now() - startTime,
+      duration,
       complexity,
       memoryRecalled: recalledMemories.length,
     };

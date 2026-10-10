@@ -2,7 +2,8 @@
  * Vault-Aware Memory Manager — Extends Starlight Memory with Semantic Vaults
  *
  * Adds the six Starlight Vaults on top of the existing MemoryManager:
- * Strategic, Technical, Creative, Operational, Wisdom, Horizon
+ * Strategic, Technical, Creative, Operational, Wisdom, Horizon, plus support
+ * for dynamic infinite namespaces in Starlight v6.0 Infinite Vault Mesh.
  *
  * Works entirely through the public API of MemoryManager so that private
  * internals remain encapsulated.
@@ -11,6 +12,7 @@
 import { MemoryManager } from './memory.js';
 import type {
   VaultType,
+  CanonicalVaultType,
   VaultEntry,
   VaultSearchOptions,
   VaultSearchResult,
@@ -23,10 +25,11 @@ import { readFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { EmpiricalSandbox } from './sandbox.js';
 import { HashingTFProvider, rrfMerge, type RRFOptions } from './embedding.js';
+import { telemetry } from './telemetry/index.js';
 
 // ── Vault classification keywords ──────────────────────────
 
-const VAULT_KEYWORDS: Record<VaultType, string[]> = {
+const VAULT_KEYWORDS: Record<CanonicalVaultType, string[]> = {
   strategic: [
     'architecture', 'decision', 'roadmap', 'strategy', 'plan',
     'phase', 'milestone', 'business', 'revenue',
@@ -88,7 +91,7 @@ export class VaultMemory extends MemoryManager {
    */
   classifyVault(content: string): VaultType {
     const lower = content.toLowerCase();
-    const scores: Record<VaultType, number> = {
+    const scores: Record<CanonicalVaultType, number> = {
       strategic: 0,
       technical: 0,
       creative: 0,
@@ -97,7 +100,7 @@ export class VaultMemory extends MemoryManager {
       horizon: 0,
     };
 
-    for (const [vault, keywords] of Object.entries(VAULT_KEYWORDS) as [VaultType, string[]][]) {
+    for (const [vault, keywords] of Object.entries(VAULT_KEYWORDS) as [CanonicalVaultType, string[]][]) {
       for (const keyword of keywords) {
         if (lower.includes(keyword)) {
           scores[vault]++;
@@ -107,7 +110,7 @@ export class VaultMemory extends MemoryManager {
 
     let bestVault: VaultType = this.vaultConfig.defaultVault;
     let bestScore = 0;
-    for (const [vault, score] of Object.entries(scores) as [VaultType, number][]) {
+    for (const [vault, score] of Object.entries(scores) as [CanonicalVaultType, number][]) {
       if (score > bestScore) {
         bestVault = vault;
         bestScore = score;
@@ -139,8 +142,8 @@ export class VaultMemory extends MemoryManager {
       const codeBlocks = EmpiricalSandbox.extractCodeBlocks(content);
       if (codeBlocks.length > 0) {
         let allSuccess = true;
-        let validationLogs = [];
-        
+        const validationLogs: string[] = [];
+
         for (const block of codeBlocks) {
           const result = EmpiricalSandbox.validatePattern(block.code, block.language);
           if (!result.success) {
@@ -150,7 +153,7 @@ export class VaultMemory extends MemoryManager {
             validationLogs.push(`[Validation Passed for ${block.language} in ${result.durationMs}ms]`);
           }
         }
-        
+
         if (allSuccess) {
           finalConfidence = Math.min(1.0, finalConfidence + 0.3);
         } else {
@@ -276,7 +279,15 @@ export class VaultMemory extends MemoryManager {
       results.sort((a, b) => b.score - a.score || b.entry.createdAt.localeCompare(a.entry.createdAt));
     }
 
-    return results.slice(0, limit);
+    const finalResults = results.slice(0, limit);
+    telemetry.traceMemoryQuery({
+      query: options.query,
+      vault: options.vaults?.join(','),
+      resultsCount: finalResults.length,
+      retrievalMode: options.retrievalMode ?? 'hybrid',
+    });
+
+    return finalResults;
   }
 
   // ── Horizon Ledger ──────────────────────────────────────
@@ -340,9 +351,11 @@ export class VaultMemory extends MemoryManager {
     for (const entry of all) {
       const vault = this.vaultIndex.get(entry.id) ?? this.classifyVault(entry.content);
       const bucket = buckets.get(vault)!;
-      bucket.entries.push(entry);
-      for (const tag of entry.tags) {
-        bucket.tags.set(tag, (bucket.tags.get(tag) ?? 0) + 1);
+      if (bucket) {
+        bucket.entries.push(entry);
+        for (const tag of entry.tags) {
+          bucket.tags.set(tag, (bucket.tags.get(tag) ?? 0) + 1);
+        }
       }
     }
 
@@ -376,7 +389,7 @@ function hashingEmbedSync(provider: HashingTFProvider, text: string): number[] {
 }
 
 function vaultToCategory(vault: VaultType): MemoryEntry['category'] {
-  const map: Record<VaultType, MemoryEntry['category']> = {
+  const map: Record<string, MemoryEntry['category']> = {
     strategic: 'decision',
     technical: 'pattern',
     creative: 'insight',
@@ -384,7 +397,7 @@ function vaultToCategory(vault: VaultType): MemoryEntry['category'] {
     wisdom: 'insight',
     horizon: 'insight',
   };
-  return map[vault];
+  return map[vault] ?? 'insight';
 }
 
 function isPrivateEntry(entry: MemoryEntry): boolean {
@@ -403,4 +416,3 @@ function isPrivateEntry(entry: MemoryEntry): boolean {
 function rrfScore(ranks: Array<number | undefined>, k = 60): number {
   return ranks.reduce<number>((sum, rank) => sum + (rank ? 1 / (k + rank) : 0), 0);
 }
-

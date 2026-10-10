@@ -15,7 +15,10 @@
         "C:\\Users\\frank\\Starlight-Intelligence-System\\dist\\starlight-mcp.js"
       ],
       "env": {
-        "STARLIGHT_MCP_MODE": "read-only"
+        "STARLIGHT_MCP_MODE": "read-only",
+        "LANGFUSE_PUBLIC_KEY": "${LANGFUSE_PUBLIC_KEY}",
+        "LANGFUSE_SECRET_KEY": "${LANGFUSE_SECRET_KEY}",
+        "LANGFUSE_BASEURL": "${LANGFUSE_BASEURL:-https://cloud.langfuse.com}"
       }
     },
     "arcanea-mcp": {

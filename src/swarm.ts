@@ -3,6 +3,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { AgentRouter } from "./agents.js";
+import { telemetry } from "./telemetry/index.js";
 
 export interface SwarmTask {
   id: string;
@@ -142,6 +143,14 @@ export async function runSwarm(
 
       results[index] = result;
       options.onResult?.(result);
+      telemetry.traceSwarmTask({
+        taskId: task.id,
+        prompt: task.prompt,
+        ok: result.ok,
+        durationMs: result.durationMs,
+        exitCode: result.exitCode,
+        error: result.error,
+      });
     }
   }
 
