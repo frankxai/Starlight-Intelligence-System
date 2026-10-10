@@ -21,7 +21,7 @@ import tomllib
 HOSTS = {
     'codex': ('.codex/config.toml', '.codex/skills', 'Codex'),
     'claude': ('.claude/settings.json', '.claude/skills', 'Claude'),
-    'grok': ('.grok/config.toml', '.grok/skills', 'Grok'),
+    'grok': ('.grok/config.toml', '.grok/skills', 'Grok Build'),
     'gemini': ('.gemini/settings.json', '.gemini/skills', None),
     'agy': ('.gemini/antigravity-cli/settings.json', None, None),
     'opencode': ('.config/opencode/opencode.json', '.config/opencode/skills', None),
@@ -66,7 +66,7 @@ def config_summary(path):
         if len(raw) > 4 * 1024 * 1024:
             raise ValueError('oversize')
         data = tomllib.loads(raw.decode('utf-8-sig')) if path.suffix == '.toml' else json.loads(raw)
-        models = names(data.get(k) for k in ('model', 'small_model', 'model_reasoning_effort'))
+        models = names(data.get(k) for k in ('model', 'small_model'))
         servers = data.get('mcp_servers', data.get('mcpServers', data.get('mcp', {})))
         if not isinstance(servers, dict):
             raise ValueError('invalid MCP map')
@@ -74,7 +74,7 @@ def config_summary(path):
                 or value.get('disabled') is True else 'configured-unverified'}
                for key, value in servers.items() if names([key]) and isinstance(value, dict)]
         return {'state': 'inspected', 'sha256': hashlib.sha256(raw).hexdigest(),
-                'models': models, 'mcp': mcp}
+                'models': models, 'reasoning_effort': names([data.get('model_reasoning_effort')]), 'mcp': mcp}
     except (ValueError, OSError, TypeError, AttributeError):
         # JSONC/YAML need host-native inspection; never guess after a parse failure.
         return {'state': 'parse-unverified', 'models': [], 'mcp': []}
@@ -199,9 +199,9 @@ def windows_observation():
         return {'state': 'unavailable'}, []
 
 
-def collect(home, now=None):
+def collect(home, now=None, usage_path=None):
     now = now or utcnow()
-    usage_path = home / '.starlight/cli-capacity/usage-snapshot-latest.json'
+    usage_path = usage_path or home / '.starlight/cli-capacity/usage-snapshot-latest.json'
     try:
         usage = read_json(usage_path)
         if not isinstance(usage, dict):
@@ -266,6 +266,8 @@ def main():
     parser.add_argument('--home', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True,
                         help='Private JSON report path; companion Markdown is also written.')
+    parser.add_argument('--quota', type=Path,
+                        help='Optional refreshed capacity-format quota observation (ts/live_quota).')
     args = parser.parse_args()
     # Raw fleet evidence belongs outside the public checkout and source config leaves.
     private_root = (args.home / '.starlight/reports/harness-fleet').resolve()
@@ -274,7 +276,7 @@ def main():
         parser.error('output must be below --home/.starlight/reports/harness-fleet')
     if output.suffix != '.json':
         parser.error('use a .json report')
-    snapshot = collect(args.home)
+    snapshot = collect(args.home, usage_path=args.quota)
     atomic_write(output, json.dumps(snapshot, indent=2, allow_nan=False) + '\n')
     atomic_write(output.with_suffix('.md'), render(snapshot))
     print(json.dumps({'output': str(output), 'hosts': len(snapshot['hosts']),

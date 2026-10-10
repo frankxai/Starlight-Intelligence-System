@@ -45,11 +45,13 @@ class FleetTests(unittest.TestCase):
     def test_configuration_does_not_export_environment_or_url(self):
         with tempfile.TemporaryDirectory() as directory:
             config = Path(directory) / 'config.toml'
-            config.write_text('model="gpt-test"\n[mcp_servers.example]\nurl="https://secret.invalid"\n'
+            config.write_text('model="gpt-test"\nmodel_reasoning_effort="medium"\n[mcp_servers.example]\nurl="https://secret.invalid"\n'
                               '[mcp_servers.example.env]\nAPI_KEY="secret-sentinel"\n')
             summary = fleet.config_summary(config)
             self.assertEqual(summary['mcp'], [{'name': 'example', 'state': 'configured-unverified'}])
             self.assertNotIn('secret', json.dumps(summary))
+            self.assertEqual(summary['models'], ['gpt-test'])
+            self.assertEqual(summary['reasoning_effort'], ['medium'])
 
     def test_disabled_mcp_remains_disabled(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -109,6 +111,17 @@ class FleetTests(unittest.TestCase):
             self.assertEqual(len(result['hosts']), 9)
             self.assertTrue(all(h['pool']['state'] == 'unknown' for h in result['hosts']))
             self.assertTrue(all(h['authentication'] == 'unverified' for h in result['hosts']))
+
+    def test_native_grok_pool_and_explicit_refresh_source(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'quota.json'
+            doc = self.quota([83])
+            doc['live_quota']['providers'][0]['provider'] = 'Grok Build'
+            path.write_text(json.dumps(doc))
+            with patch('fleet.windows_observation', return_value=({'state': 'unavailable'}, [])):
+                result = fleet.collect(Path(directory), NOW, path)
+            grok = next(h for h in result['hosts'] if h['id'] == 'grok')
+            self.assertEqual(grok['pool']['remaining_percent'], 83)
 
 
 if __name__ == '__main__':

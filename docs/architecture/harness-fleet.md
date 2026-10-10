@@ -51,6 +51,10 @@ weekly pool at zero overrides a model-family allowance above zero. Duplicate,
 malformed or nonnumeric pool observations fail closed. The current direct
 provider mappings are Codex, Claude and Grok; other model/account mappings require
 explicit receipts. Installing multiple harnesses does not create extra quota.
+The native Grok provider label is `Grok Build`. `--quota <file>` can supply a
+separate refreshed observation in the existing `ts`/`live_quota` format, leaving
+the shared capacity writer untouched. This is operator-supplied evidence and
+does not authenticate an account or refresh quota automatically.
 
 ## Extend the existing Starlight owners
 
