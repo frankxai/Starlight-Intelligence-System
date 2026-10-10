@@ -76,6 +76,10 @@ The skills-only `starlight-foundry` plugin works as the portable ChatGPT Work/Co
 
 [Read the Foundry architecture](docs/architecture/STARLIGHT-INTELLIGENCE-FOUNDRY.md) · [Inspect the contracts](foundry/contracts/) · [Run the demo](foundry/examples/)
 
+## Starlight Agent Designer
+
+The skills-only [Agent Designer plugin](plugins/starlight-agent-designer) turns a human job into a value case, architecture, scoped contract, activation prompt and evaluation plan. Its constitutional foundations include human agency, truthfulness, craftsmanship, privacy, stewardship, creativity and scientific rigor. A tested in-process gateway reference demonstrates bounded preparation; live runtime enforcement remains a separate integration. [Read the design and activation guide](docs/architecture/STARLIGHT-AGENT-DESIGNER.md).
+
 ## Usefulness
 
 - **Humans:** portable sovereign memory + multi-agent fleet that compounds.

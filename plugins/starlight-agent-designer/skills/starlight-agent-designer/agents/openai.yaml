@@ -1,0 +1,4 @@
+interface:
+  display_name: "Starlight Agent Designer"
+  short_description: "Design capable, governed agents"
+  default_prompt: "Use $starlight-agent-designer to design a valuable agent with bounded authority and verifiable outcomes."
