@@ -239,8 +239,8 @@ function agy-dpi {
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
-# Alias for convenience
-Set-Alias -Name arcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
+# Retired alias: 'arcanea' belongs to the sovereign ecosystem gateway, not a single harness
+# Set-Alias -Name arcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agysis -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyfx -Value agy-fx -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyarc -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
