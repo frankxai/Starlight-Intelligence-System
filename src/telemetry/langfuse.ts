@@ -27,6 +27,10 @@
 
 import { Langfuse } from 'langfuse';
 import { randomUUID } from 'node:crypto';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as os from 'node:os';
+import { spawnSync } from 'node:child_process';
 
 export interface LangfuseConfig {
   publicKey?: string;
@@ -39,12 +43,22 @@ export interface LangfuseConfig {
   flushAt?: number;
 }
 
+export interface DiscoveredCredentials {
+  publicKey?: string;
+  secretKey?: string;
+  baseUrl?: string;
+  source: 'config' | 'process.env' | 'env_file' | 'infisical' | 'none';
+  envFilePath?: string;
+}
+
 export interface TelemetryDiagnostic {
   active: boolean;
   baseUrl: string;
   region: string;
   publicKeyPreview: string | null;
   secretKeyConfigured: boolean;
+  credentialSource: string;
+  envFilePath?: string;
   release: string;
   environment: string;
 }
@@ -217,6 +231,189 @@ function resolveBaseUrl(rawUrl?: string, region?: string): string {
 }
 
 /**
+ * Parses simple .env format (KEY=VALUE) safely if process.loadEnvFile is not used.
+ */
+function parseEnvFile(filePath: string): Record<string, string> {
+  const result: Record<string, string> = {};
+  try {
+    if (!fs.existsSync(filePath)) return result;
+    const content = fs.readFileSync(filePath, 'utf8');
+    const lines = content.split(/\r?\n/);
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line || line.startsWith('#')) continue;
+      const eqIdx = line.indexOf('=');
+      if (eqIdx <= 0) continue;
+      const key = line.substring(0, eqIdx).trim();
+      let val = line.substring(eqIdx + 1).trim();
+      if (
+        (val.startsWith('"') && val.endsWith('"')) ||
+        (val.startsWith("'") && val.endsWith("'"))
+      ) {
+        val = val.substring(1, val.length - 1);
+      }
+      result[key] = val;
+    }
+  } catch {
+    // Ignore read errors
+  }
+  return result;
+}
+
+/**
+ * Attempts to load environment variables from candidate local and global .env files.
+ * Priority:
+ * 1. Current working directory .env
+ * 2. Current working directory .env.local
+ * 3. Machine-wide ~/.starlight/.env
+ * 4. Machine-wide ~/.starlight/keys/langfuse.env
+ */
+function tryLoadEnvFiles(): { loadedPath?: string; vars: Record<string, string> } {
+  const candidates = [
+    path.resolve(process.cwd(), '.env'),
+    path.resolve(process.cwd(), '.env.local'),
+    path.join(os.homedir(), '.starlight', '.env'),
+    path.join(os.homedir(), '.starlight', 'keys', 'langfuse.env'),
+  ];
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      try {
+        const proc = process as unknown as { loadEnvFile?: (p: string) => void };
+        if (typeof proc.loadEnvFile === 'function') {
+          proc.loadEnvFile(candidate);
+        }
+      } catch {
+        // Fall back to manual parser if process.loadEnvFile is not supported or encounters syntax issues
+      }
+      const vars = parseEnvFile(candidate);
+      for (const [k, v] of Object.entries(vars)) {
+        if (!process.env[k]) {
+          process.env[k] = v;
+        }
+      }
+      if (vars.LANGFUSE_PUBLIC_KEY || vars.LANGFUSE_SECRET_KEY) {
+        return { loadedPath: candidate, vars };
+      }
+    }
+  }
+
+  return { vars: {} };
+}
+
+/**
+ * Attempts to query a secret from Infisical CLI safely with a strict timeout.
+ */
+function tryInfisicalSecret(key: string): string | undefined {
+  try {
+    const projectId = process.env.INFISICAL_PROJECT_ID;
+    const env = process.env.INFISICAL_ENV || 'prod';
+    const args = ['secrets', 'get', key, '--silent'];
+    if (projectId) {
+      args.push('--projectId', projectId, '--env', env);
+    }
+    const result = spawnSync('infisical', args, {
+      encoding: 'utf8',
+      timeout: 1200,
+      windowsHide: true,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    if (result.status === 0 && result.stdout) {
+      const val = result.stdout.trim();
+      if (
+        val &&
+        !val.includes('Error') &&
+        !val.includes('not found') &&
+        !val.includes('No login profiles')
+      ) {
+        return val;
+      }
+    }
+  } catch {
+    // Ignore CLI execution errors
+  }
+  return undefined;
+}
+
+/**
+ * Discovers Langfuse credentials using sovereign multi-tier resolution:
+ * 1. Explicit config parameters
+ * 2. process.env environment variables
+ * 3. Local & global .env files (.env, .env.local, ~/.starlight/.env)
+ * 4. Infisical CLI query (if configured)
+ */
+export function discoverLangfuseCredentials(config?: LangfuseConfig): DiscoveredCredentials {
+  if (config?.publicKey && config?.secretKey) {
+    return {
+      publicKey: config.publicKey,
+      secretKey: config.secretKey,
+      baseUrl: config.baseUrl,
+      source: 'config',
+    };
+  }
+
+  let pub = process.env.LANGFUSE_PUBLIC_KEY;
+  let sec = process.env.LANGFUSE_SECRET_KEY;
+  let base =
+    process.env.LANGFUSE_BASEURL ||
+    process.env.LANGFUSE_HOST ||
+    process.env.LANGFUSE_BASE_URL;
+
+  if (pub && sec) {
+    return {
+      publicKey: pub,
+      secretKey: sec,
+      baseUrl: base,
+      source: 'process.env',
+    };
+  }
+
+  // Tier 3: Search local and global env files
+  const { loadedPath, vars } = tryLoadEnvFiles();
+  pub = pub || vars.LANGFUSE_PUBLIC_KEY || process.env.LANGFUSE_PUBLIC_KEY;
+  sec = sec || vars.LANGFUSE_SECRET_KEY || process.env.LANGFUSE_SECRET_KEY;
+  base =
+    base ||
+    vars.LANGFUSE_BASEURL ||
+    vars.LANGFUSE_HOST ||
+    process.env.LANGFUSE_BASEURL;
+
+  if (pub && sec) {
+    return {
+      publicKey: pub,
+      secretKey: sec,
+      baseUrl: base,
+      source: 'env_file',
+      envFilePath: loadedPath,
+    };
+  }
+
+  // Tier 4: Infisical secret store
+  const infisicalPub = tryInfisicalSecret('LANGFUSE_PUBLIC_KEY');
+  const infisicalSec = tryInfisicalSecret('LANGFUSE_SECRET_KEY');
+  if (infisicalPub && infisicalSec) {
+    process.env.LANGFUSE_PUBLIC_KEY = infisicalPub;
+    process.env.LANGFUSE_SECRET_KEY = infisicalSec;
+    const infisicalBase = tryInfisicalSecret('LANGFUSE_BASEURL');
+    if (infisicalBase) process.env.LANGFUSE_BASEURL = infisicalBase;
+
+    return {
+      publicKey: infisicalPub,
+      secretKey: infisicalSec,
+      baseUrl: infisicalBase || base,
+      source: 'infisical',
+    };
+  }
+
+  return {
+    publicKey: pub,
+    secretKey: sec,
+    baseUrl: base,
+    source: 'none',
+  };
+}
+
+/**
  * Resilient chainable mock object for offline / no-credential execution.
  */
 class NoOpTraceHandle {
@@ -264,11 +461,18 @@ export class StarlightTelemetry {
   private environment: string;
   private publicKey: string | null = null;
   private secretKey: string | null = null;
+  private credentialSource: string = 'none';
+  private envFilePath?: string;
 
   constructor(config?: LangfuseConfig) {
+    const creds = discoverLangfuseCredentials(config);
+    this.credentialSource = creds.source;
+    this.envFilePath = creds.envFilePath;
+
     this.region = config?.region || process.env.LANGFUSE_REGION || 'eu';
     this.baseUrl = resolveBaseUrl(
       config?.baseUrl ||
+        creds.baseUrl ||
         process.env.LANGFUSE_BASEURL ||
         process.env.LANGFUSE_HOST ||
         process.env.LANGFUSE_BASE_URL,
@@ -277,17 +481,15 @@ export class StarlightTelemetry {
     this.release = config?.release || process.env.LANGFUSE_RELEASE || 'v8.3.0';
     this.environment = config?.environment || process.env.LANGFUSE_ENV || 'development';
 
-    const pubKey = config?.publicKey || process.env.LANGFUSE_PUBLIC_KEY;
-    const secKey = config?.secretKey || process.env.LANGFUSE_SECRET_KEY;
     const enabledSetting = config?.enabled ?? (process.env.LANGFUSE_ENABLED !== 'false');
 
-    if (pubKey && secKey && enabledSetting) {
-      this.publicKey = pubKey;
-      this.secretKey = secKey;
+    if (creds.publicKey && creds.secretKey && enabledSetting) {
+      this.publicKey = creds.publicKey;
+      this.secretKey = creds.secretKey;
       try {
         this.client = new Langfuse({
-          publicKey: pubKey,
-          secretKey: secKey,
+          publicKey: creds.publicKey,
+          secretKey: creds.secretKey,
           baseUrl: this.baseUrl,
           release: this.release,
           environment: this.environment,
@@ -317,6 +519,8 @@ export class StarlightTelemetry {
       region: this.baseUrl.includes('us.') ? 'US' : 'EU (Frankfurt)',
       publicKeyPreview: this.publicKey ? `${this.publicKey.substring(0, 8)}...` : null,
       secretKeyConfigured: Boolean(this.secretKey),
+      credentialSource: this.credentialSource,
+      envFilePath: this.envFilePath,
       release: this.release,
       environment: this.environment,
     };

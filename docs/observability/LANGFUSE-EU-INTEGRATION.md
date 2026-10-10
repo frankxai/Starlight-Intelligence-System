@@ -16,32 +16,102 @@ Starlight Intelligence System utilizes **Langfuse Cloud (EU)** as its persistent
 
 ---
 
-## 2. Configuration & Environment Variables
+## 2. Zero-Typing Sovereign Credential Strategy
 
-To activate live telemetry to your Langfuse Cloud EU project, set the following environment variables:
+> **Do you need to type the keys manually every session?**  
+> **No.** Langfuse uses API credentials (`pk-lf-...` / `sk-lf-...`) because it is a headless telemetry ingest plane for agent runtimes and background scripts (browser interactive OAuth is only for the human web UI at `cloud.langfuse.com`, not for autonomous agent subprocesses).  
+> Starlight Intelligence System resolves your keys automatically via **4-Tier Sovereign Auto-Discovery** with zero typing required.
 
-```bash
-# In PowerShell (Windows)
-$env:LANGFUSE_PUBLIC_KEY = "pk-lf-..."
-$env:LANGFUSE_SECRET_KEY = "sk-lf-..."
-$env:LANGFUSE_BASEURL    = "https://cloud.langfuse.com" # or https://eu.cloud.langfuse.com
-$env:LANGFUSE_REGION     = "eu"
-$env:LANGFUSE_ENV        = "production" # or "development"
+### Credential Resolution Hierarchy
+```
+1. Explicit in-code config (options passed to StarlightTelemetry)
+   ↓
+2. process.env environment variables
+   ↓
+3. Local & Global .env files (.env, .env.local, ~/.starlight/.env)
+   ↓
+4. Infisical CLI secret store (if configured)
+   ↓
+5. Safe Passive Mock (offline fallback — never crashes)
 ```
 
-```bash
-# In POSIX bash / zsh
-export LANGFUSE_PUBLIC_KEY="pk-lf-..."
-export LANGFUSE_SECRET_KEY="sk-lf-..."
-export LANGFUSE_BASEURL="https://cloud.langfuse.com"
-export LANGFUSE_REGION="eu"
-export LANGFUSE_ENV="production"
+---
+
+### Option A: Infisical (Sovereign Secret Vault — Recommended for Fleets)
+
+Infisical CLI is already installed on your machine (`infisical version 0.43.138`).
+
+1. **One-time interactive login:**
+   ```bash
+   npm run infisical:login
+   # Or directly:
+   infisical login
+   ```
+   This opens your browser for a one-time OAuth authentication with Infisical.
+
+2. **Add the Langfuse keys to your Infisical project:**
+   * `LANGFUSE_PUBLIC_KEY`: `pk-lf-...`
+   * `LANGFUSE_SECRET_KEY`: `sk-lf-...`
+   * `LANGFUSE_BASEURL`: `https://cloud.langfuse.com`
+
+3. **Run commands with injected secrets (Zero disk writes, zero typing):**
+   ```bash
+   npm run infisical:run -- npm run experiment
+   # Or export directly to a local .env:
+   npm run infisical:export
+   ```
+
+---
+
+### Option B: Machine-Wide Global Vault (`~/.starlight/.env`) — Zero Typing Across All Repos
+
+If you want Langfuse telemetry active across **all repos on this machine** (Arcanea, FrankX, SIS, Agentic Creator OS) without creating `.env` files in each one:
+
+Add the credentials once to `C:\Users\frank\.starlight\.env`:
+```ini
+LANGFUSE_PUBLIC_KEY=pk-lf-...
+LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_BASEURL=https://cloud.langfuse.com
+LANGFUSE_REGION=eu
+LANGFUSE_ENV=production
 ```
 
-### Diagnostic Command
-You can verify your configuration at any time by running:
+Starlight's telemetry client automatically scans `~/.starlight/.env` on startup via native Node `loadEnvFile()` and applies it to all harnesses.
+
+---
+
+### Option C: Repo-Scoped `.env` (Local-First)
+
+Add them to `C:\Users\frank\Starlight-Intelligence-System\.env`:
+```ini
+LANGFUSE_PUBLIC_KEY=pk-lf-...
+LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_BASEURL=https://cloud.langfuse.com
+LANGFUSE_REGION=eu
+LANGFUSE_ENV=development
+```
+*(This file is strictly ignored by `.gitignore` and will never be committed).*
+
+---
+
+### Diagnostic Verification
+
+Verify the active credential source and EU endpoint at any time:
 ```bash
 npx tsx scripts/test-langfuse.ts
+```
+Expected output:
+```json
+{
+  "active": true,
+  "baseUrl": "https://cloud.langfuse.com",
+  "region": "EU (Frankfurt)",
+  "publicKeyPreview": "pk-lf-91...",
+  "secretKeyConfigured": true,
+  "credentialSource": "file:~/.starlight/.env",
+  "release": "v8.3.0",
+  "environment": "production"
+}
 ```
 
 ---

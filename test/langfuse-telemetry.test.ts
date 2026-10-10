@@ -18,6 +18,7 @@ import {
   StarlightTelemetry,
   telemetry,
   StarlightExperimentRunner,
+  discoverLangfuseCredentials,
   type ArenaRunReceipt,
   type EvalSummaryReceipt,
 } from '../src/index.js';
@@ -184,3 +185,44 @@ describe('Starlight Experiment Runner', () => {
     assert.equal(bench.results.length, 10);
   });
 });
+
+describe('Langfuse Multi-Tier Credential Discovery', () => {
+  it('identifies explicit configuration', () => {
+    const creds = discoverLangfuseCredentials({
+      publicKey: 'pk-lf-explicit',
+      secretKey: 'sk-lf-explicit',
+      baseUrl: 'https://cloud.langfuse.com',
+    });
+    assert.equal(creds.source, 'config');
+    assert.equal(creds.publicKey, 'pk-lf-explicit');
+    assert.equal(creds.secretKey, 'sk-lf-explicit');
+    assert.equal(creds.baseUrl, 'https://cloud.langfuse.com');
+  });
+
+  it('identifies environment variables', () => {
+    const origPub = process.env.LANGFUSE_PUBLIC_KEY;
+    const origSec = process.env.LANGFUSE_SECRET_KEY;
+    try {
+      process.env.LANGFUSE_PUBLIC_KEY = 'pk-lf-env-test';
+      process.env.LANGFUSE_SECRET_KEY = 'sk-lf-env-test';
+
+      const creds = discoverLangfuseCredentials();
+      assert.equal(creds.source, 'process.env');
+      assert.equal(creds.publicKey, 'pk-lf-env-test');
+      assert.equal(creds.secretKey, 'sk-lf-env-test');
+    } finally {
+      if (origPub) process.env.LANGFUSE_PUBLIC_KEY = origPub;
+      else delete process.env.LANGFUSE_PUBLIC_KEY;
+
+      if (origSec) process.env.LANGFUSE_SECRET_KEY = origSec;
+      else delete process.env.LANGFUSE_SECRET_KEY;
+    }
+  });
+
+  it('reports source in TelemetryDiagnostic', () => {
+    const t = new StarlightTelemetry({ enabled: false });
+    const diag = t.getDiagnostic();
+    assert.ok(typeof diag.credentialSource === 'string');
+  });
+});
+

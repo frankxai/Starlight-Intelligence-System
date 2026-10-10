@@ -431,9 +431,11 @@ export {
   telemetry,
   StarlightExperimentRunner,
   runExperiments,
+  discoverLangfuseCredentials,
 } from './telemetry/index.js';
 export type {
   LangfuseConfig,
+  DiscoveredCredentials,
   TelemetryDiagnostic,
   TraceAgentOptions,
   TraceHarnessOptions,
@@ -449,4 +451,5 @@ export type {
   RetrievalBenchmarkResult,
   ExperimentRunReport,
 } from './telemetry/index.js';
+
 

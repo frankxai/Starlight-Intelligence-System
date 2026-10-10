@@ -17,6 +17,7 @@ async function main() {
   console.log(`Region:              ${diag.region}`);
   console.log(`Public Key Present:  ${Boolean(diag.publicKeyPreview)} ${diag.publicKeyPreview ? `(${diag.publicKeyPreview})` : ''}`);
   console.log(`Secret Key Present:  ${diag.secretKeyConfigured}`);
+  console.log(`Credential Source:   ${diag.credentialSource}${diag.envFilePath ? ` (${diag.envFilePath})` : ''}`);
   console.log(`Release:             ${diag.release}`);
   console.log(`Environment:         ${diag.environment}`);
   console.log(`Telemetry Active:    ${diag.active ? 'YES' : 'NO (fallback mock mode)'}`);
