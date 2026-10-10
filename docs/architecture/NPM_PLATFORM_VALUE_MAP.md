@@ -207,3 +207,13 @@ immutable `d4eb90502fdeee0ccd9c3c431cb030324b39ba09`. The first Codex implementa
 request could not start because no cloud environment was configured for that repo.
 No new local worker or paid generation was started. Policy documents were loaded;
 they are not runtime enforcement or proof of deployment.
+
+The retained Mem0 adapter also passed a SIS memory ID directly to remote deletion
+and ignored tenant ownership. Deletion now requires a host-injected authoritative
+tenant/SIS identity resolver, verifies both returned identities, and deletes the
+resolved remote ID. Clients without that resolver fail closed. This is an injected
+client contract tested with fixtures, not a verified Mem0 SDK integration. A real
+client must implement authoritative lookup and tenant authorization. The existing
+in-memory write queue is not durable; retention enforcement, restart recovery and
+delete/write races require live-provider acceptance before that adapter is used
+as a production memory store.

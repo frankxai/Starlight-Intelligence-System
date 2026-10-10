@@ -12,6 +12,11 @@ export interface Mem0Client {
   addMemory(input: { text: string; user_id?: string; agent_id?: string; metadata: Record<string, unknown> }): Promise<{ id: string }>;
   searchMemories(input: { query: string; user_id?: string; agent_id?: string; limit: number; metadata?: Record<string, unknown>; signal?: AbortSignal }): Promise<Array<{ id: string; text: string; score?: number; metadata?: Record<string, unknown> }>>;
   deleteMemory(input: { id: string }): Promise<boolean>;
+  /** Resolve a SIS identity through the host's authoritative tenant-scoped index.
+   * Search ranking or a caller-supplied remote ID is not sufficient authority.
+   * Clients without this capability support recall/writes but cannot delete.
+   */
+  resolveMemory?(input: { tenant_id: string; memory_id: string }): Promise<{ id: string; metadata: Record<string, unknown> } | null>;
 }
 
 export interface Mem0RemoteProviderOptions {
@@ -127,7 +132,18 @@ export class Mem0RemoteProvider implements MemoryProvider {
   }
 
   async forget(request: ForgetRequest): Promise<boolean> {
-    return this.client.deleteMemory({ id: request.memory_id });
+    if (typeof request.tenant_id !== 'string' || !request.tenant_id.trim()
+      || typeof request.memory_id !== 'string' || !request.memory_id.trim() || request.memory_id.length > 256) {
+      throw new Error('Invalid Mem0 deletion scope');
+    }
+    if (!this.client.resolveMemory) throw new Error('Mem0 deletion requires an authoritative scoped identity resolver');
+    const resolved = await this.client.resolveMemory({ tenant_id: request.tenant_id, memory_id: request.memory_id });
+    if (resolved === null) return false;
+    if (typeof resolved.id !== 'string' || !resolved.id.trim() || resolved.id.length > 256
+      || resolved.metadata?.tenant_id !== request.tenant_id || resolved.metadata?.sis_memory_id !== request.memory_id) {
+      throw new Error('Mem0 deletion identity could not be verified');
+    }
+    return this.client.deleteMemory({ id: resolved.id });
   }
 
   async flush(): Promise<{ attempted: number; written: number; failed: number }> {

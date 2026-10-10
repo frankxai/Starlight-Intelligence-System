@@ -147,4 +147,35 @@ describe("Mem0RemoteProvider", () => {
     assert.equal(metadata?.retention_policy, 'delete_by');
     assert.equal(metadata?.retention_until, '2099-01-01');
   });
+
+  it('fails closed before deletion without an authoritative scoped identity resolver', async () => {
+    let deletes = 0;
+    const client: Mem0Client = { async addMemory() { return { id: 'unused' }; },
+      async searchMemories() { return []; }, async deleteMemory() { deletes++; return true; } };
+    await assert.rejects(new Mem0RemoteProvider({ client }).forget({ tenant_id: 'tenant_frank', memory_id: 'sis_1' }), /authoritative scoped identity resolver/);
+    assert.equal(deletes, 0);
+  });
+
+  it('resolves SIS IDs and validates both returned identities before remote deletion', async () => {
+    const deleted: string[] = [];
+    let resolved: Awaited<ReturnType<NonNullable<Mem0Client['resolveMemory']>>> = null;
+    const client: Mem0Client = { async addMemory() { return { id: 'unused' }; },
+      async searchMemories() { return []; }, async deleteMemory(input) { deleted.push(input.id); return true; },
+      async resolveMemory(input) { assert.deepEqual(input, { tenant_id: 'tenant_frank', memory_id: 'sis_1' }); return resolved; } };
+    const provider = new Mem0RemoteProvider({ client });
+    const request = { tenant_id: 'tenant_frank', memory_id: 'sis_1' };
+    assert.equal(await provider.forget(request), false);
+    for (const change of [{ tenant_id: 'other' }, { sis_memory_id: 'sis_other' }, { tenant_id: undefined }]) {
+      resolved = { id: 'remote_7', metadata: { tenant_id: 'tenant_frank', sis_memory_id: 'sis_1', ...change } };
+      await assert.rejects(provider.forget(request), /identity could not be verified/);
+    }
+    resolved = { id: '', metadata: { tenant_id: 'tenant_frank', sis_memory_id: 'sis_1' } };
+    await assert.rejects(provider.forget(request), /identity could not be verified/);
+    assert.deepEqual(deleted, []);
+    resolved = { id: 'remote_7', metadata: { tenant_id: 'tenant_frank', sis_memory_id: 'sis_1' } };
+    assert.equal(await provider.forget(request), true);
+    assert.deepEqual(deleted, ['remote_7']);
+    await assert.rejects(provider.forget({ ...request, tenant_id: '' }), /Invalid Mem0 deletion scope/);
+    assert.deepEqual(deleted, ['remote_7']);
+  });
 });
