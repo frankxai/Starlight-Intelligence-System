@@ -47,7 +47,7 @@ export async function acquireLock(
 
   const deadline = Date.now() + timeoutMs;
 
-  /** Atomically remove the lock directory (recursive to handle meta.json). */
+  /** Remove only our metadata and an otherwise empty directory. */
   const releaseLock = () => {
     if (released) return;
     const meta = JSON.parse(readFileSync(metaFile, 'utf8')) as LockMeta;
@@ -62,7 +62,7 @@ export async function acquireLock(
   const tryAcquire = (): boolean => {
     try {
       mkdirSync(lockPath, { recursive: false });
-      // Write PID + timestamp for staleness detection
+      // Keep owner metadata for explicit recovery; age never authorizes takeover.
       try {
         const meta: LockMeta = { pid: process.pid, ts: Date.now(), token };
         writeFileSync(metaFile, JSON.stringify(meta), { encoding:'utf-8',flag:'wx' });

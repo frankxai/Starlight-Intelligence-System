@@ -7,6 +7,18 @@ import { ReviewQueue, type ReviewJob } from '../src/review-queue.js';
 import { RuntimeBridge } from '../src/runtime-bridge/bridge.js';
 import { WORKER_PROTOCOL } from '../src/runtime-bridge/contracts.js';
 const job: ReviewJob = { repo:'github.com/frankxai/SIS',head:'a'.repeat(40),policy:'review-v1',makerProvider:'openai',checkerProvider:'anthropic' };
+
+test('review identity refuses abbreviated and intermediate-length revisions', async () => {
+  const root = mkdtempSync(join(tmpdir(),'sis-review-'));
+  try {
+    const queue = new ReviewQueue(join(root,'queue.jsonl'));
+    for (const length of [7,39,41,63,65]) {
+      await assert.rejects(queue.enqueue({ ...job,head:'a'.repeat(length) }),/Invalid/);
+    }
+    assert.equal(queue.list().length,0);
+    assert.equal((await queue.enqueue({ ...job,head:'b'.repeat(64) })).head.length,64);
+  } finally { rmSync(root,{ recursive:true,force:true }); }
+});
 test('deduplication survives restart and newer revisions supersede queued work', async () => {
   const root = mkdtempSync(join(tmpdir(),'sis-review-'));
   try {

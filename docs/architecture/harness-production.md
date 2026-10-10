@@ -48,6 +48,8 @@ for the exact provider, subscription, revision and workload.
 | Self-hosted model proxy | LiteLLM | Consider when centralized routing and operational ownership justify another service. |
 | Agent checkpoints and interrupts | LangGraph | Compare on the same interrupted task before expanding our local journal into a workflow engine. |
 | Durable work across hosts | Temporal | Adopt when persistent remote execution is required; external effects still need idempotency. |
+| Organization, assignments and budgets | Paperclip | Evaluate as an integration when a team needs these workflows; avoid a competing business queue. |
+| Issue-to-PR worker supervision | Composio Agent Orchestrator | Compare its existing worktree and worker lifecycle before adding a new scheduler. |
 | Coding interaction and tools | OpenCode, Kilo, Codex, Claude Code | Preserve native execution; use dedicated process or API adapters. |
 | General agent memory | Hermes native memory plus the SIS provider | Retain native session compatibility; promote only reviewed, scoped knowledge. |
 | Portable SIS/MCP packaging | SIS PR 342 | Reuse the owning slice's AI SDK adapter and packaging work; do not duplicate it. |
@@ -57,6 +59,8 @@ Primary references: [Vercel AI Gateway](https://vercel.com/docs/ai-gateway),
 [LiteLLM routing](https://docs.litellm.ai/docs/proxy/load_balancing),
 [LangGraph persistence](https://docs.langchain.com/oss/python/langgraph/persistence),
 [Temporal evaluation](https://docs.temporal.io/evaluate),
+[Paperclip](https://github.com/paperclipai/paperclip),
+[Agent Orchestrator](https://github.com/ComposioHQ/agent-orchestrator),
 [OpenCode providers](https://opencode.ai/docs/providers/).
 These vendors cover broad routing, execution or persistence needs. Our proposed
 differentiation is evidence and recovery across existing harnesses. No comparison
