@@ -26,8 +26,8 @@ function directMiddleware(baseModel, options) {
 const usage = { inputTokens: { total: 1, noCache: 1, cacheRead: 0, cacheWrite: 0 },
   outputTokens: { total: 1, text: 1, reasoning: 0 } };
 const finishReason = { unified: 'stop', raw: 'stop' };
-const messages = [{ role: 'system', content: 'Preserve approved release controls.' },
-  { role: 'user', content: 'Earlier context' }, { role: 'assistant', content: 'Recorded.' },
+const instructions = 'Preserve approved release controls.';
+const messages = [{ role: 'user', content: 'Earlier context' }, { role: 'assistant', content: 'Recorded.' },
   { role: 'user', content: 'How should we release?' }];
 const fact = { memory_id: 'allowed', tenant_id: 'team', workspace_id: 'project',
   privacy_class: 'public', normalized_fact: 'Use inspected archives. Contact owner@example.org', raw_content: 'RAW_SENTINEL' };
@@ -62,7 +62,7 @@ export async function compareMemoryAdapters(iterations = 100) {
   for (let round = -20; round < iterations; round++) {
     for (const name of round % 2 ? [...names].reverse() : names) {
       const item = state[name]; const started = performance.now();
-      const output = await generateText({ model: item.model, messages, maxRetries: 0 });
+      const output = await generateText({ model: item.model, instructions, messages, maxRetries: 0 });
       const elapsed = performance.now() - started;
       assert.equal(output.text, 'fixture-output');
       if (round >= 0) item.samples.push(elapsed);
@@ -78,14 +78,18 @@ export async function compareMemoryAdapters(iterations = 100) {
     assert.equal(item.providerReads, iterations + 20); assert.equal(item.modelCalls, iterations + 20);
     item.checks.push('multi-turn-query', 'workspace-forwarding', 'scope-privacy-retention-denial', 'sanitized-projection', 'one-read-per-invocation');
     let failureModelCalls = 0;
+    let failureProviderReads = 0;
     const failingModel = new MockLanguageModelV4({ doGenerate: async () => { failureModelCalls++; throw new Error('Unexpected model call'); } });
     for (const [check, recall] of [['provider-error', async () => { throw new Error('PROVIDER_DETAIL_SENTINEL'); }],
       ['hung-provider', () => new Promise(() => {})]]) {
-      const model = wrap(failingModel, { tenantId: 'team', workspaceId: 'project', timeoutMs: 10, memory: { recall } });
-      await assert.rejects(generateText({ model, messages, maxRetries: 0 }), error => !error.message.includes('PROVIDER_DETAIL_SENTINEL'));
+      const model = wrap(failingModel, { tenantId: 'team', workspaceId: 'project', timeoutMs: 10,
+        memory: { recall: request => { failureProviderReads++; return recall(request); } } });
+      await assert.rejects(generateText({ model, instructions, messages, maxRetries: 0 }),
+        error => /Memory recall unavailable or denied/.test(error.message) && !error.message.includes('PROVIDER_DETAIL_SENTINEL'));
       item.checks.push(check);
     }
     assert.equal(failureModelCalls, 0);
+    assert.equal(failureProviderReads, 2);
   }
   return { schemaVersion: 1, kind: 'synthetic-installed-adapter-comparison', environment: { node: process.version, platform: process.platform, arch: process.arch },
     workload: { measuredInvocationsPerVariant: iterations, warmupsPerVariant: 20, executionOrder: 'alternating', model: 'MockLanguageModelV4',
