@@ -126,3 +126,28 @@ test('gateway excludes malformed expiry and privacy tags even when shareable rec
     assert.deepEqual(result.structuredContent.memories.map(row => row.id), ['valid', 'unclassified']);
   } finally { if (connection) await connection.close(); globalThis.fetch = previous; }
 });
+
+
+test('gateway privacy tags with surrounding whitespace override public tags before MCP projection', { timeout: 15_000 }, async () => {
+  const previous = globalThis.fetch;
+  const sensitiveTags = [' private ', '\tprivacy:SECRET\n', '\u00a0regulated\u00a0'];
+  globalThis.fetch = async () => Response.json({ ok: true, results: [
+    { score: 1, entry: { id: 'public', content: 'public fixture', tags: [' public '] } },
+    ...sensitiveTags.map((tag, i) => ({ score: 1, entry: { id: 'restricted-' + i,
+      content: 'restricted fixture', tags: ['public', tag] } })),
+  ] });
+  try {
+    const memory = createGatewayReader({ url: 'https://gateway.example', token: 'synthetic', tenantId: 'a' });
+    const rows = await memory.recall({ tenant_id: 'a', query: 'query' });
+    assert.deepEqual(rows.map(row => row.record.privacy_class), ['public', 'private', 'private', 'private']);
+    for (const allowShareable of [false, true]) {
+      const connection = await connected({ memory, tenantId: 'a', allowShareable });
+      try {
+        const result = await connection.client.callTool({ name: 'starlight_memory_recall', arguments: { query: 'query' } });
+        assert.notEqual(result.isError, true);
+        assert.deepEqual(result.structuredContent.memories.map(row => row.id), ['public']);
+        assert.ok(!JSON.stringify(result).includes('restricted fixture'));
+      } finally { await connection.close(); }
+    }
+  } finally { globalThis.fetch = previous; }
+});
