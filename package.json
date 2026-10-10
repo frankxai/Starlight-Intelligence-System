@@ -1,6 +1,6 @@
 {
   "name": "@arcanea/starlight-intelligence-system",
-  "version": "8.4.0",
+  "version": "8.5.0",
   "description": "Starlight Intelligence System \u2014 substrate (SIP protocol, alliance forging method, attestation) + reference operational layer (6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, MCP server, platform adapters, sanitization gateway, empirical sandbox, active healing)",
   "repository": {
     "type": "git",
@@ -125,10 +125,14 @@
     "./queen-session": {
       "types": "./dist/queen-session.d.ts",
       "import": "./dist/queen-session.js"
+    },
+    "./ecosystem": {
+      "types": "./dist/ecosystem.d.ts",
+      "import": "./dist/ecosystem.js"
     }
   },
   "scripts": {
-    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/creator-workspace.test.ts",
+    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/creator-workspace.test.ts test/ecosystem.test.ts",
     "build": "tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",

@@ -20,6 +20,36 @@ is a separate operator action; the workflow has no registry token or publish ste
 File fsync protects the demonstrated process-recovery path. Directory fsync,
 power-loss recovery and multi-machine filesystem behavior remain uncertified.
 
+## Organization connection and package health
+
+The existing organization package `@starlight-intelligence/system` and Arcanea
+compatibility package share the same built SDK payload. The organization artifact
+changes package identity and omits source-directory development scripts. Both
+artifacts receive independent installation checks before operator publication.
+
+```text
+npm install @starlight-intelligence/system@8.5.0
+starlight ecosystem list
+starlight ecosystem doctor
+```
+
+`ecosystem doctor` reads current public npm metadata for the system, memory,
+creator MCP and compatibility packages. It checks identity, SHA512 metadata,
+required SDK exports and published local/workspace dependencies. Requests use
+fixed registry URLs, no credentials, no redirects, a ten-second timeout and a
+128KiB per-response cap. A failed or blocked package gives exit1 with a JSON report;
+one failure does not hide other observations. It installs nothing and starts no
+agent or MCP server. Passing metadata is not installation, transitive dependency
+security, membership or provider authentication evidence.
+
+The creator MCP0.1.0 publication was observed with `workspace:*` dependencies.
+Repair belongs to its existing product repository; do not activate it based on
+package presence alone. The memory package retains its separate owner. Compared
+with manually visiting npm settings and checking exports, this command gives a
+repeatable bounded report. No measured time saving or broad product acceptance
+is claimed. Trusted publishing configuration remains separate from these artifact
+builds and has not been activated.
+
 ## OpenCode and creator operations
 
 The runtime bridge now connects to an operator-owned OpenCode 1.18.35 server.
@@ -85,8 +115,7 @@ Build with `npm run build`, then run `node dist/cli.js domain list` or
 native harnesses as `not-probed`; it does not certify installation or credentials.
 
 The SDK exports are `@arcanea/starlight-intelligence-system/runtime-bridge` and
-`@arcanea/starlight-intelligence-system/terminal-runtime`. The package is not
-published by this change.
+`@arcanea/starlight-intelligence-system/terminal-runtime`. Version8.4.0 was published from reviewed main.
 
 A work packet is plain JSON:
 

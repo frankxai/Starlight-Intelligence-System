@@ -8,12 +8,18 @@ on:
     paths:
       - package.json
       - package-lock.json
+      - tools/package-organization.mjs
+      - src/ecosystem.ts
+      - test/ecosystem.test.ts
       - .github/workflows/sdk-package-candidate.yml
   push:
     branches: [main]
     paths:
       - package.json
       - package-lock.json
+      - tools/package-organization.mjs
+      - src/ecosystem.ts
+      - test/ecosystem.test.ts
       - .github/workflows/sdk-package-candidate.yml
 
 permissions:
@@ -68,7 +74,7 @@ jobs:
           const installed = join(process.env.SDK_CONSUMER, 'node_modules/@arcanea/starlight-intelligence-system');
           const manifest = JSON.parse(readFileSync(join(installed, 'package.json'), 'utf8'));
           if (manifest.version !== report.version || manifest.name !== report.name) throw new Error('Installed package identity differs');
-          for (const name of ['runtime-bridge', 'terminal-runtime', 'creator-workspace']) {
+          for (const name of ['runtime-bridge', 'terminal-runtime', 'creator-workspace', 'ecosystem']) {
             await import(pathToFileURL(join(installed, manifest.exports['./' + name].import)).href);
           }
           const domains = JSON.parse(execFileSync(process.execPath, [join(installed, 'dist/cli.js'), 'domain', 'list'], { encoding: 'utf8', timeout: 15000 }));
@@ -79,14 +85,55 @@ jobs:
           writeFileSync(join(process.env.SDK_CANDIDATE, 'release-receipt.json'), JSON.stringify({
             sourceCommit: process.env.CANDIDATE_SHA, package: manifest.name, version: manifest.version,
             filename: report.filename, integrity, sha256: createHash('sha256').update(tarball).digest('hex'),
-            nodeVersion: process.version, installedExports: ['runtime-bridge', 'terminal-runtime', 'creator-workspace'],
+            nodeVersion: process.version, installedExports: ['runtime-bridge', 'terminal-runtime', 'creator-workspace', 'ecosystem'],
             installedCliDomains: domains.length, publication: 'not-published'
+          }, null, 2) + '\n');
+          NODE
+      - name: Pack and verify organization package
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_dir="$RUNNER_TEMP/sdk-candidate"
+          organization_dir="$source_dir/organization"
+          filename=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))[0].filename)" "$source_dir/package-report.json")
+          node tools/package-organization.mjs "$source_dir/$filename" "$organization_dir"
+          filename=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))[0].filename)" "$organization_dir/package-report.json")
+          consumer_dir="$RUNNER_TEMP/organization-consumer"
+          npm install --prefix "$consumer_dir" --omit=dev --no-audit --no-fund "$organization_dir/$filename"
+          SDK_CONSUMER="$consumer_dir" SDK_CANDIDATE="$organization_dir" node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          import { createHash } from 'node:crypto';
+          import { pathToFileURL } from 'node:url';
+          import { execFileSync } from 'node:child_process';
+          const report = JSON.parse(readFileSync(join(process.env.SDK_CANDIDATE, 'package-report.json'), 'utf8'))[0];
+          const installed = join(process.env.SDK_CONSUMER, 'node_modules/@starlight-intelligence/system');
+          const manifest = JSON.parse(readFileSync(join(installed, 'package.json'), 'utf8'));
+          if (manifest.name !== '@starlight-intelligence/system' || manifest.version !== report.version) throw new Error('Organization identity differs');
+          for (const name of ['runtime-bridge', 'terminal-runtime', 'creator-workspace', 'ecosystem']) {
+            await import(pathToFileURL(join(installed, manifest.exports['./' + name].import)).href);
+          }
+          const domains = JSON.parse(execFileSync(process.execPath, [join(installed, 'dist/cli.js'), 'domain', 'list'], { encoding: 'utf8', timeout: 15000 }));
+          const catalog = JSON.parse(execFileSync(process.execPath, [join(installed, 'dist/cli.js'), 'ecosystem', 'list'], { encoding: 'utf8', timeout: 15000 }));
+          if (domains.length !== 6 || domains.some(domain => domain.status !== 'descriptor-only') || catalog.length !== 4) throw new Error('Organization CLI discovery differs');
+          const bytes = readFileSync(join(process.env.SDK_CANDIDATE, report.filename));
+          const integrity = 'sha512-' + createHash('sha512').update(bytes).digest('base64');
+          if (integrity !== report.integrity) throw new Error('Organization integrity differs');
+          writeFileSync(join(process.env.SDK_CANDIDATE, 'release-receipt.json'), JSON.stringify({
+            sourceCommit: process.env.CANDIDATE_SHA, package: manifest.name, version: manifest.version,
+            filename: report.filename, integrity, sha256: createHash('sha256').update(bytes).digest('hex'),
+            nodeVersion: process.version, installedExports: ['runtime-bridge', 'terminal-runtime', 'creator-workspace', 'ecosystem'],
+            installedCliDomains: domains.length, ecosystemPackages: catalog.length, publication: 'not-published'
           }, null, 2) + '\n');
           NODE
       - name: Upload verified package candidate
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sdk-package-${{ github.sha }}
-          path: ${{ runner.temp }}/sdk-candidate/
+          path: |
+            ${{ runner.temp }}/sdk-candidate/*.tgz
+            ${{ runner.temp }}/sdk-candidate/*.json
+            ${{ runner.temp }}/sdk-candidate/organization/*.tgz
+            ${{ runner.temp }}/sdk-candidate/organization/*.json
           if-no-files-found: error
           retention-days: 14
