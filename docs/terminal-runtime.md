@@ -258,3 +258,31 @@ portfolio. For a CI-equivalent check, use the documented `--portfolio-root` opti
 with an owned projection containing this checkout under its canonical repository
 name. This measures SIS and carries the other repositories' previous observations
 forward. It does not certify a fresh estate-wide inventory.
+
+## Antigravity CLI handoff
+
+Antigravity adapter output is a proposal for host configuration. An omitted or
+blank MCP entry point generates an empty server map. An explicitly supplied
+entry point generates one Node server, with no automatic swarm flags, full-access
+environment settings or native-capability assertions. The receiving host must
+admit the server and configure its permissions. Generated files do not prove
+that AGY loaded them or that a native model invocation succeeded.
+
+For independent review, supply a frozen, sanitized source packet to AGY print
+mode in an isolated profile with no imported plugins or configured MCP servers.
+Record the installed executable hash, discovered flags/model, prompt hash,
+deadline, process owner, structured result and actual tool observations. Deny
+file, command, web and MCP actions through host permissions; a prompt alone is
+not an enforcement boundary. Never reuse an ambient memory-writer profile for
+a source-only reviewer. Verify isolation before dispatch and stop the owned
+process on timeout or an unexpected tool attempt. An incomplete result remains
+unconfirmed and cannot approve a release.
+
+AGY exposes `--print`, `--mode plan`, `--output-format stream-json`,
+`--json-schema`, `--print-timeout` and `--sandbox` in the installed CLI help
+inspected on 2026-10-10. Availability is version-specific. Windows sandbox
+behavior requires its own verification. Consult the current official
+[CLI reference](https://antigravity.google/docs/cli/reference) and
+[permission configuration](https://antigravity.google/docs/permissions?tab=cli)
+before binding a native runner. No session, token or global permission settings
+are transferred in a portable terminal packet.

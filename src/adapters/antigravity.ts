@@ -1,9 +1,8 @@
 /**
  * Starlight Intelligence System — Antigravity Adapter
  *
- * Formats vault context for Google Antigravity (agent-first IDE with native agent swarm support).
- * Leverages Gemini's high context window + Antigravity primitives (define_subagent, invoke_subagent,
- * Agent Manager, browser control, async progress artifacts).
+ * Formats vault context for Antigravity. Generated files are configuration
+ * proposals; they do not establish native CLI/IDE capabilities or permissions.
  *
  * Part of the multi-platform adapter set (Claude Code, Cursor, Cline, Codex, Gemini CLI, OpenCode, Antigravity).
  * See .antigravity/instructions.md (full), swarm-protocol.md, mcp-config.json, allowlisted-tools.md.
@@ -73,28 +72,18 @@ export class AntigravityAdapter implements PlatformAdapter {
   }
 
   getMcpConfig(serverCommand: string): Record<string, unknown> {
-    // Rich Antigravity-aware MCP config. Matches .antigravity/mcp-config.json shape.
-    // Swarm children default read-only + progress; conductor under scope for writes.
+    // Empty scaffolding must not start an ambient Node process. The host selects
+    // an entry point explicitly and configures permissions in its own harness.
+    if (typeof serverCommand !== 'string' || serverCommand.includes('\0')) {
+      throw new Error('Invalid Antigravity MCP entry point');
+    }
+    if (!serverCommand.trim()) return { mcpServers: {} };
     return {
       mcpServers: {
         'starlight-substrate': {
-          _role: 'canonical — always loaded for agent swarms',
-          _purpose: 'vaults, agent registry, skills, attestation, memory graph, IS namespaces',
           command: 'node',
           args: [serverCommand],
-          env: {
-            STARLIGHT_MCP_MODE: 'swarm-aware',
-            STARLIGHT_MCP_BREADTH: 'full',
-            STARLIGHT_MCP_SWARM: 'true',
-          },
         },
-      },
-      _antigravity_swarm: {
-        define_subagent_support: true,
-        invoke_subagent_support: true,
-        agent_manager_hooks: ['on_subagent_start', 'on_progress', 'on_complete', 'on_error'],
-        progress_artifacts: ['todo', 'report', 'trace', 'browser-capture'],
-        read_heavy_for_children: true,
       },
     };
   }
