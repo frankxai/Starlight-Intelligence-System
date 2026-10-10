@@ -96,4 +96,44 @@ export class MarketplaceCatalog {
     }
     return all;
   }
+
+  /**
+   * Searches the catalog by text query across name, description, author, and ID.
+   */
+  public search(query: string, tier?: MarketplaceLicenseTier): MarketplacePackItem[] {
+    const q = query.toLowerCase();
+    const pool = this.listItems(tier);
+    return pool.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q) ||
+        item.id.toLowerCase().includes(q) ||
+        item.author.toLowerCase().includes(q)
+    );
+  }
+
+  /**
+   * Audits permission requests of a pack against sovereign security policy.
+   */
+  public static auditPermissions(permissions: string[]): {
+    safe: boolean;
+    requiresUserAck: boolean;
+    reasons: string[];
+  } {
+    const reasons: string[] = [];
+    let safe = true;
+    let requiresUserAck = false;
+
+    for (const p of permissions) {
+      if (p.includes("*") || p.startsWith("fs:write:/") || p.startsWith("env:write")) {
+        safe = false;
+        reasons.push(`Dangerous wildcard or root write permission: ${p}`);
+      } else if (p.startsWith("filesystem:write") || p.startsWith("network:") || p.startsWith("exec:")) {
+        requiresUserAck = true;
+        reasons.push(`Elevated capability requiring explicit operator acknowledgment: ${p}`);
+      }
+    }
+
+    return { safe, requiresUserAck, reasons };
+  }
 }

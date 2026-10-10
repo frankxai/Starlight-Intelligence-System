@@ -452,12 +452,14 @@ export type {
   ExperimentRunReport,
 } from './telemetry/index.js';
 
-// v9.0 — Sovereign Durability, Robot Fleet Continuity & Crystalite Queen
+// v9.0 — Sovereign Durability, Robot Fleet Continuity & Starlight Queen
 export { SovereignBlockchainAnchor } from './durability/blockchain-anchor.js';
 export type {
   StorageDurabilityTier,
   VaultSnapshotItem,
   BlockchainAnchorReceipt,
+  MerkleProofStep,
+  ItemInclusionProof,
 } from './durability/blockchain-anchor.js';
 
 export { RobotContinuityKernel } from './robotics/continuity-kernel.js';
@@ -469,6 +471,7 @@ export type {
   ActuatorMiddleware,
   ActuatorStatus,
   SafetyInvariantResult,
+  RobotTelemetryPacket,
 } from './robotics/continuity-kernel.js';
 
 export { StarlightQueen } from './orchestration/starlight-queen.js';

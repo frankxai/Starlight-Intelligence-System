@@ -55,4 +55,29 @@ describe("Starlight Sovereign Marketplace Catalog", () => {
     const freePacks = catalog.listItems("free");
     assert.equal(freePacks.length, 0);
   });
+
+  it("searches catalog items by keyword across fields", () => {
+    const catalog = new MarketplaceCatalog();
+    catalog.registerItem(validPack);
+
+    const matches = catalog.search("liability");
+    assert.equal(matches.length, 1);
+    assert.equal(matches[0].id, "community-legal-guardian-pack");
+
+    const noMatches = catalog.search("cryptocurrency");
+    assert.equal(noMatches.length, 0);
+  });
+
+  it("audits permissions flagging elevated capabilities", () => {
+    const auditSafe = MarketplaceCatalog.auditPermissions(["fs:read:repo"]);
+    assert.equal(auditSafe.safe, true);
+    assert.equal(auditSafe.requiresUserAck, false);
+
+    const auditElevated = MarketplaceCatalog.auditPermissions(["filesystem:write_user", "network:outbound"]);
+    assert.equal(auditElevated.safe, true);
+    assert.equal(auditElevated.requiresUserAck, true);
+
+    const auditWildcard = MarketplaceCatalog.auditPermissions(["fs:write:*"]);
+    assert.equal(auditWildcard.safe, false);
+  });
 });

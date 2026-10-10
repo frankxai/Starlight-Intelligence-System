@@ -47,6 +47,15 @@ export interface SafetyInvariantResult {
   reason?: string;
 }
 
+export interface RobotTelemetryPacket {
+  robotId: string;
+  batteryPercent: number;
+  position: SpatialCoordinates;
+  velocityMetersPerSec?: number;
+  hardwareEStopTriggered?: boolean;
+  timestamp: string;
+}
+
 export interface RobotFleetNode {
   robotId: string;
   name: string;
@@ -67,7 +76,7 @@ export class RobotContinuityKernel {
    * Registers a robot node into the continuity mesh.
    */
   public registerNode(node: RobotFleetNode): void {
-    this.nodes.set(node.robotId, { ...node, lastHeartbeat: new Date().toISOString() });
+    this.nodes.set(node.robotId, { ...node, lastHeartbeat: node.lastHeartbeat || new Date().toISOString() });
   }
 
   /**
@@ -167,5 +176,91 @@ export class RobotContinuityKernel {
     node.safetyLocked = false;
     node.status = "idle";
     return true;
+  }
+
+  /**
+   * Ingests real-time physical telemetry from an embodied node.
+   * Immediately trips to fail-closed e-stop if hardware safety triggers are flagged.
+   */
+  public ingestTelemetry(packet: RobotTelemetryPacket): {
+    accepted: boolean;
+    nodeStatus: ActuatorStatus;
+  } {
+    const node = this.nodes.get(packet.robotId);
+    if (!node) {
+      return { accepted: false, nodeStatus: "disconnected" };
+    }
+
+    node.lastHeartbeat = packet.timestamp;
+    node.currentPosition = packet.position;
+
+    if (packet.hardwareEStopTriggered) {
+      node.safetyLocked = true;
+      node.status = "e-stopped";
+      return { accepted: true, nodeStatus: "e-stopped" };
+    }
+
+    return { accepted: true, nodeStatus: node.status };
+  }
+
+  /**
+   * Evaluates deadman timeout across all nodes.
+   * If a node ceases publishing heartbeats within timeoutMs, marks it disconnected and safe.
+   */
+  public checkDeadman(timeoutMs: number = 10000): { disconnectedRobots: string[] } {
+    const now = Date.now();
+    const disconnected: string[] = [];
+
+    for (const [id, node] of this.nodes.entries()) {
+      const elapsed = now - new Date(node.lastHeartbeat).getTime();
+      if (elapsed > timeoutMs && node.status !== "disconnected") {
+        node.status = "disconnected";
+        node.safetyLocked = true;
+        disconnected.push(id);
+      }
+    }
+
+    return { disconnectedRobots: disconnected };
+  }
+
+  /**
+   * Formats a standard ROS2 / Zenoh message payload for physical dispatch.
+   */
+  public formatRos2Message(command: RobotActuatorCommand): {
+    topic: string;
+    messageType: string;
+    payload: Record<string, unknown>;
+  } {
+    if (command.action === "emergency_stop") {
+      return {
+        topic: `/fleet/${command.robotId}/emergency_stop`,
+        messageType: "std_msgs/msg/Bool",
+        payload: { data: true, timestamp: command.issuedAt },
+      };
+    }
+
+    if (command.action === "navigate" && command.targetCoordinates) {
+      return {
+        topic: `/fleet/${command.robotId}/goal_pose`,
+        messageType: "geometry_msgs/msg/PoseStamped",
+        payload: {
+          header: { frame_id: command.targetCoordinates.frameId, stamp: command.issuedAt },
+          pose: {
+            position: {
+              x: command.targetCoordinates.x,
+              y: command.targetCoordinates.y,
+              z: command.targetCoordinates.z,
+            },
+            orientation: { w: 1.0, x: 0.0, y: 0.0, z: 0.0 },
+          },
+        },
+      };
+    }
+
+    return {
+      topic: `/fleet/${command.robotId}/cmd`,
+      messageType: "std_msgs/msg/String",
+      payload: { action: command.action, payload: command.payload ?? {} },
+    };
   }
 }

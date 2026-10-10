@@ -57,4 +57,34 @@ describe("Starlight Queen Single-Operator Autonomic Engine", () => {
     assert.equal(report.memoryEntriesConsolidated, 42);
     assert.equal(report.status, "healthy");
   });
+
+  it("enqueues actions and drains queue according to risk tiers", () => {
+    const queen = new StarlightQueen();
+    queen.enqueueAction({
+      id: "act_low",
+      name: "Sweep Log",
+      category: "health_sweep",
+      riskTier: "low_autonomous",
+      params: {},
+    });
+    queen.enqueueAction({
+      id: "act_high",
+      name: "Deploy Production Container",
+      category: "deployment",
+      riskTier: "high_irreversible_gate",
+      params: {},
+    });
+
+    const drain = queen.drainQueue();
+    assert.equal(drain.executed.length, 1);
+    assert.equal(drain.gated.length, 1);
+    assert.equal(drain.gated[0].actionId, "act_high");
+  });
+
+  it("tracks operator active liveness and heartbeat", () => {
+    const queen = new StarlightQueen();
+    assert.equal(queen.isOperatorActive(60000), true);
+    queen.recordOperatorHeartbeat("ack_frank_01");
+    assert.equal(queen.isOperatorActive(60000), true);
+  });
 });

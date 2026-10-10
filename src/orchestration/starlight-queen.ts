@@ -53,6 +53,8 @@ export interface ThinTelemetryHook {
 export class StarlightQueen {
   private openGates: Map<string, QueenEscalationGate> = new Map();
   private telemetryHooks: ThinTelemetryHook[] = [];
+  private actionQueue: QueenTaskAction[] = [];
+  private lastOperatorHeartbeat: number = Date.now();
 
   constructor(telemetry?: ThinTelemetryHook[]) {
     if (telemetry) {
@@ -144,6 +146,51 @@ export class StarlightQueen {
     };
     this.emitTelemetry("autonomic_cycle_complete", { ...report });
     return report;
+  }
+
+  /**
+   * Enqueues a task for the next autonomic batch sweep.
+   */
+  public enqueueAction(action: QueenTaskAction): void {
+    this.actionQueue.push(action);
+  }
+
+  /**
+   * Drains the action queue according to fail-closed governance:
+   * Low/medium actions execute autonomously; high risk actions open escalation gates.
+   */
+  public drainQueue(): { executed: string[]; gated: QueenEscalationGate[] } {
+    const executed: string[] = [];
+    const gated: QueenEscalationGate[] = [];
+
+    while (this.actionQueue.length > 0) {
+      const action = this.actionQueue.shift()!;
+      const res = this.handleAction(action);
+      if (res.executed && res.receipt) {
+        executed.push(res.receipt);
+      } else if (res.gateOpened) {
+        gated.push(res.gateOpened);
+      }
+    }
+
+    return { executed, gated };
+  }
+
+  /**
+   * Inscribes an operator keepalive signal to keep the autonomic loop active.
+   */
+  public recordOperatorHeartbeat(receipt: string): void {
+    if (receipt.length > 0) {
+      this.lastOperatorHeartbeat = Date.now();
+      this.emitTelemetry("operator_heartbeat", { receipt, timestamp: new Date().toISOString() });
+    }
+  }
+
+  /**
+   * Checks whether operator has been active within maxInactivityMs (default 1 hour).
+   */
+  public isOperatorActive(maxInactivityMs: number = 3600000): boolean {
+    return Date.now() - this.lastOperatorHeartbeat <= maxInactivityMs;
   }
 
   private emitTelemetry(event: string, payload: Record<string, unknown>): void {

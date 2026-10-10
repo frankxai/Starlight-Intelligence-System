@@ -61,4 +61,20 @@ describe("Sovereign Durability & Blockchain Anchor Engine", () => {
     const verified = SovereignBlockchainAnchor.verifyReceipt(receipt, tampered);
     assert.equal(verified, false);
   });
+
+  it("generates and verifies selective disclosure Merkle proof for individual item", () => {
+    const proof = SovereignBlockchainAnchor.generateMerkleProof(sampleItems, 0, "sip_proof_0");
+    assert.equal(proof.itemIndex, 0);
+    assert.equal(proof.verified, true);
+    assert.ok(proof.proofPath.length > 0);
+
+    // Tampered item hash fails proof verification
+    const tamperedHash = "deadbeef".repeat(8);
+    const fakeValid = SovereignBlockchainAnchor.verifyMerkleProof(
+      tamperedHash,
+      proof.proofPath,
+      proof.merkleRoot
+    );
+    assert.equal(fakeValid, false);
+  });
 });

@@ -28,6 +28,20 @@ export interface MerkleNode {
   right?: MerkleNode;
 }
 
+export interface MerkleProofStep {
+  siblingHash: string;
+  position: "left" | "right";
+}
+
+export interface ItemInclusionProof {
+  receiptId: string;
+  itemIndex: number;
+  itemHash: string;
+  merkleRoot: string;
+  proofPath: MerkleProofStep[];
+  verified: boolean;
+}
+
 export interface BlockchainAnchorReceipt {
   receiptId: string;
   protocol: "SIP/v1.0" | "SIP/v2.0";
@@ -137,5 +151,86 @@ export class SovereignBlockchainAnchor {
       .digest("hex");
 
     return snapshotDigest === receipt.vaultSnapshotSha256;
+  }
+
+  /**
+   * Generates a selective disclosure Merkle inclusion proof for a single item by index.
+   * Enables verifying knowledge existence without disclosing full vault contents.
+   */
+  public static generateMerkleProof(
+    items: VaultSnapshotItem[],
+    targetIndex: number,
+    receiptId: string = "sip_proof"
+  ): ItemInclusionProof {
+    if (targetIndex < 0 || targetIndex >= items.length) {
+      throw new Error(`Item index ${targetIndex} out of range [0, ${items.length - 1}]`);
+    }
+
+    const itemHashes = items.map((item) => this.hashItem(item));
+    const targetHash = itemHashes[targetIndex];
+    const proofPath: MerkleProofStep[] = [];
+
+    let currentLevel = [...itemHashes];
+    let currentIndex = targetIndex;
+
+    while (currentLevel.length > 1) {
+      const isEven = currentIndex % 2 === 0;
+      const siblingIndex = isEven ? currentIndex + 1 : currentIndex - 1;
+
+      if (siblingIndex < currentLevel.length) {
+        proofPath.push({
+          siblingHash: currentLevel[siblingIndex],
+          position: isEven ? "right" : "left",
+        });
+      } else {
+        // Odd node duplicated as its own sibling
+        proofPath.push({
+          siblingHash: currentLevel[currentIndex],
+          position: "right",
+        });
+      }
+
+      const nextLevel: string[] = [];
+      for (let i = 0; i < currentLevel.length; i += 2) {
+        const left = currentLevel[i];
+        const right = i + 1 < currentLevel.length ? currentLevel[i + 1] : currentLevel[i];
+        const combined = createHash("sha256").update(`${left}:${right}`, "utf-8").digest("hex");
+        nextLevel.push(combined);
+      }
+
+      currentLevel = nextLevel;
+      currentIndex = Math.floor(currentIndex / 2);
+    }
+
+    const merkleRoot = currentLevel[0];
+    const verified = this.verifyMerkleProof(targetHash, proofPath, merkleRoot);
+
+    return {
+      receiptId,
+      itemIndex: targetIndex,
+      itemHash: targetHash,
+      merkleRoot,
+      proofPath,
+      verified,
+    };
+  }
+
+  /**
+   * Verifies an inclusion proof for an individual item against the expected Merkle root.
+   */
+  public static verifyMerkleProof(
+    itemHash: string,
+    proofPath: MerkleProofStep[],
+    merkleRoot: string
+  ): boolean {
+    let current = itemHash;
+    for (const step of proofPath) {
+      if (step.position === "right") {
+        current = createHash("sha256").update(`${current}:${step.siblingHash}`, "utf-8").digest("hex");
+      } else {
+        current = createHash("sha256").update(`${step.siblingHash}:${current}`, "utf-8").digest("hex");
+      }
+    }
+    return current === merkleRoot;
   }
 }

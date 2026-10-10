@@ -1,0 +1,31 @@
+name = "starlight-cloud-worker"
+main = "src/index.ts"
+compatibility_date = "2026-10-10"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+DEFAULT_HALF_LIFE_DAYS = "90"
+API_VERSION = "v1"
+
+[[vectorize]]
+binding = "STARLIGHT_VECTORS"
+index_name = "starlight-memories-768"
+
+[[d1_databases]]
+binding = "STARLIGHT_DB"
+database_name = "starlight-production-db"
+database_id = "starlight-db-prod-01"
+
+[[kv_namespaces]]
+binding = "STARLIGHT_KV"
+id = "starlight_kv_prod_01"
+
+[durable_objects]
+bindings = [
+  { name = "SWARM_COORDINATOR", class_name = "SwarmCoordinator" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["SwarmCoordinator"]
