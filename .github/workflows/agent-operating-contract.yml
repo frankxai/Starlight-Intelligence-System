@@ -26,6 +26,15 @@ jobs:
         with:
           node-version: 22
       - run: node --test test/agents-md-contract.test.mjs
+      - name: Fetch pinned operating source
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          import { ownedSpan } from './scripts/agents-md-project.mjs';
+          const match = ownedSpan(readFileSync('AGENTS.md', 'utf8'), 'BAND-A')?.text.match(/ source=([0-9a-f]{40}) /);
+          if (match) execFileSync('git', ['fetch', '--no-tags', '--depth=1', 'origin', match[1]], { stdio: 'inherit' });
+          JS
       - run: node scripts/agents-md-project.mjs
       - run: node foundry/agent-ontology/tests/portable.test.mjs
       - run: node .claude/ci/estate-guard-scan.mjs --root .
