@@ -130,7 +130,7 @@ export function MemoryPalace() {
       <div className="relative rounded-3xl border border-white/[0.08] bg-[#060609]/80 p-8 pb-10 backdrop-blur-2xl" style={{ backgroundImage: 'url(/assets/visuals/queen-premium/35.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'multiply', opacity: 0.95 }}>
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <div className="text-xs normal-case tracking-wider text-white/50">Living memory substrate</div>
+            <div className="text-xs normal-case tracking-wider text-white/50">Memory substrate</div>
             <div className="text-3xl font-semibold tracking-tighter text-white">Starlight Memory Palace</div>
           </div>
           <button
@@ -280,9 +280,7 @@ export function MemoryPalace() {
             <div className="flex items-center gap-3 text-xs normal-case tracking-wider text-white/50">
               <div>Built on SIP</div>
               <div className="h-px w-3 bg-white/20" />
-              <div>6 vaults live</div>
-              <div className="h-px w-3 bg-white/20" />
-              <div>RRF 61.5%</div>
+              <div>6 vaults</div>
             </div>
 
             <button
@@ -290,7 +288,7 @@ export function MemoryPalace() {
               disabled={voiceActive}
               className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-1 text-xs text-white/80 transition hover:bg-white/5 disabled:opacity-60"
             >
-              {voiceActive ? "Listening..." : "Speak to focus"}
+              {voiceActive ? "Stepping through vaults..." : "Speak to focus"}
               <span aria-hidden>⟐</span>
             </button>
           </div>
@@ -306,7 +304,7 @@ export function MemoryPalace() {
               </>
             ) : (
               <div className="text-white/50">
-                Tap any orb to surface memory. Or speak an intention. The palace responds.
+                Tap any orb to read its note, or use Speak to focus to step through the vaults.
                 <div className="mt-2 text-[10px] text-white/50">This is the L99 seed. Full 3D r3f + real gateway data in the 21-person build.</div>
               </div>
             )}
