@@ -63,7 +63,7 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 **What you have access to:**
 
 - **144 Agents** — 144 named agents across Core, Universal, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
-- **83 Skills** — Auto-activate via `skills/skill-rules.json` across 16 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`).
+- **84 Skills** — Auto-activate via `skills/skill-rules.json` across 16 domains (intelligence, orchestration, memory, integration, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`).
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
 - **Commands** — substrate commands in-repo + additional commands available per-environment installation (varies by user); covers universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
@@ -164,7 +164,7 @@ Memory consolidation merges duplicates, elevates patterns, archives stale data, 
 
 ## Skills
 
-83 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
+84 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
 
 | Domain | Skills |
 |--------|--------|
