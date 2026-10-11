@@ -33,10 +33,16 @@ const EXPECTED_TOOLS = [
   "sis_confirm",
   "sis_contradict",
   "sis_entry_types",
+  "sis_founder_briefing",
   "sis_goal_log",
   "sis_goal_status",
   "sis_goal_update",
   "sis_invalidate",
+  "sis_knowledge_discover",
+  "sis_knowledge_query",
+  "sis_queen_santa_convergence",
+  "sis_queen_synthesize_swarm",
+  "sis_queen_telemetry",
   "sis_recent_entries",
   "sis_search",
   "sis_stale",
@@ -111,7 +117,7 @@ function driveServer(
 }
 
 describe("operational MCP server (dist/mcp-server.js) — end-to-end", () => {
-  it("responds to initialize and lists exactly the thirteen sis_* tools", async () => {
+  it("responds to initialize and lists the nineteen sis_* tools", async () => {
     const responses = await driveServer(
       [
         { jsonrpc: "2.0", id: 1, method: "initialize", params: {} },
@@ -128,7 +134,7 @@ describe("operational MCP server (dist/mcp-server.js) — end-to-end", () => {
     assert.deepEqual(
       names,
       EXPECTED_TOOLS,
-      `tools/list did not return the thirteen documented sis_* tools (got ${names.length})`,
+      `tools/list did not return the expected sis_* tools (got ${names.length})`,
     );
   });
 });

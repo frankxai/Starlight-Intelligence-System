@@ -50,6 +50,13 @@ export class StarlightMarketplace {
   }
 
   /**
+   * Get all items in the marketplace catalog.
+   */
+  public getAll(): MarketplaceItem[] {
+    return [...this.items];
+  }
+
+  /**
    * Get an item by its unique ID.
    */
   public getItem(id: string): MarketplaceItem | undefined {

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 import { GITHUB_URL } from "@/lib/nav";
+import { CloudClient } from "./CloudClient";
 
 export const metadata: Metadata = {
   title: "Starlight Cloud — Sovereign Managed Intelligence",
@@ -33,82 +34,6 @@ export const metadata: Metadata = {
     url: "/cloud",
   },
 };
-
-interface PlanTier {
-  id: string;
-  name: string;
-  price: string;
-  cadence: string;
-  badge?: string;
-  description: string;
-  highlighted?: boolean;
-  features: string[];
-  ctaLabel: string;
-  ctaHref: string;
-}
-
-const PLANS: PlanTier[] = [
-  {
-    id: "sovereign",
-    name: "Sovereign Local",
-    price: "$0",
-    cadence: "Free forever",
-    description:
-      "Full open-source substrate running entirely on your machine. Your private memory never leaves your hardware.",
-    features: [
-      "All 6 semantic memory vaults (Strategic, Technical, Creative, Operational, Wisdom, Horizon)",
-      "Local hybrid SQLite FTS5 index & fast full-text vector search",
-      "Universal Knowledge Tree with 40+ pre-seeded epistemic axioms",
-      "Starlight Queen meta-orchestrator & Santa adversarial review loop",
-      "10 harness presets (Claude Code, Cursor, Codex, Grok, Antigravity)",
-      "Standard Starlight MCP server & local CLI",
-      "BYOK (Bring Your Own Key) directly to model providers",
-    ],
-    ctaLabel: "Download source",
-    ctaHref: "/download",
-  },
-  {
-    id: "pro",
-    name: "Pro Cloud",
-    price: "$29",
-    cadence: "per month",
-    badge: "Most popular",
-    highlighted: true,
-    description:
-      "Automated encrypted cloud backups, seamless cross-device synchronization, and pooled frontier LLM routing.",
-    features: [
-      "Everything in Sovereign Local",
-      "Zero-knowledge client-side encrypted vault & knowledge tree backups",
-      "Multi-device peer-to-peer sync relay across laptops, workstations & servers",
-      "Frontier LLM API credit pooling via Vercel AI SDK (Claude 3.5 Sonnet, GPT-4o, Gemini 1.5 Pro)",
-      "Cloudflare D1 & Vectorize edge database connector for sub-10ms global query caching",
-      "Hosted web cockpit telemetry & token velocity monitoring",
-      "Priority community support & early access to new skill packs",
-    ],
-    ctaLabel: "Get started with Pro",
-    ctaHref: "#pricing-contact",
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise Mesh",
-    price: "$199",
-    cadence: "per month / seat",
-    badge: "Dedicated fleet",
-    description:
-      "High-concurrency PostgreSQL pgvector clusters, automated GitHub PR review bots, and compliance audit trails.",
-    features: [
-      "Everything in Pro Cloud",
-      "Dedicated PostgreSQL pgvector cluster with multi-tenant workspace isolation",
-      "Automated Santa review bot running on GitHub PRs and CI/CD pipelines",
-      "Bi-temporal audit trails, cryptographic event ledgers & GDPR/SOC2 compliance exports",
-      "Custom domain vertical stack orchestration (Sound, People, Energy, Finance)",
-      "Private MCP server mesh routing with role-based permission boundaries",
-      "Dedicated SLA & 1-on-1 architecture design review",
-    ],
-    ctaLabel: "Contact architecture team",
-    ctaHref: "#pricing-contact",
-  },
-];
 
 export default function CloudPage() {
   return (
@@ -210,58 +135,8 @@ export default function CloudPage() {
             </p>
           </div>
 
-          <div className="mt-14 grid gap-8 lg:grid-cols-3">
-            {PLANS.map((plan) => (
-              <div
-                key={plan.id}
-                className={`relative flex flex-col justify-between border p-8 backdrop-blur-xl transition ${
-                  plan.highlighted
-                    ? "border-cyan-400/40 bg-[#0d0d1a] shadow-[0_0_50px_rgba(6,182,212,0.12)]"
-                    : "border-white/[0.08] bg-[#090910]/80"
-                }`}
-              >
-                {plan.badge && (
-                  <span className="absolute -top-3 left-8 rounded-full bg-cyan-400 px-3 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-black">
-                    {plan.badge}
-                  </span>
-                )}
-
-                <div>
-                  <h3 className="text-xl font-medium text-white">{plan.name}</h3>
-                  <div className="mt-4 flex items-baseline gap-2">
-                    <span className="text-4xl font-semibold text-white">{plan.price}</span>
-                    <span className="text-xs text-slate-400">/{plan.cadence}</span>
-                  </div>
-                  <p className="mt-4 text-sm text-slate-300">{plan.description}</p>
-
-                  <div className="mt-6 border-t border-white/[0.06] pt-6">
-                    <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Included capabilities:</p>
-                    <ul className="mt-3 space-y-2.5 text-xs text-slate-300">
-                      {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2">
-                          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-8 border-t border-white/[0.06] pt-6">
-                  <a
-                    href={plan.ctaHref}
-                    className={`inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold transition ${
-                      plan.highlighted
-                        ? "bg-white text-black hover:bg-cyan-50"
-                        : "border border-white/[0.14] text-white hover:bg-white/[0.05]"
-                    }`}
-                  >
-                    {plan.ctaLabel}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
-                </div>
-              </div>
-            ))}
+          <div className="mt-14">
+            <CloudClient />
           </div>
 
           <div id="pricing-contact" className="mt-16 border border-white/[0.08] bg-[#0b0b14]/70 p-8 text-center backdrop-blur-xl">

@@ -18,38 +18,7 @@ import {
 } from "lucide-react";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 import { GITHUB_URL } from "@/lib/nav";
-
-export const metadata: Metadata = {
-  title: "Marketplace & Hub — Starlight Intelligence",
-  description:
-    "Curated registry of verified Skill Packs, MCP Servers, and Harness Profiles built on the Starlight Intelligence Protocol.",
-  alternates: {
-    canonical: "/marketplace",
-  },
-  openGraph: {
-    title: "Starlight Marketplace & Hub — Starlight Intelligence",
-    description:
-      "Curated registry of verified Skill Packs, MCP Servers, and Harness Profiles built on the Starlight Intelligence Protocol.",
-    type: "website",
-    url: "/marketplace",
-  },
-};
-
-interface MarketplaceCard {
-  id: string;
-  name: string;
-  version: string;
-  kind: "Skill pack" | "MCP server" | "Harness profile" | "Cloud service" | "Vertical stack";
-  category: string;
-  author: string;
-  description: string;
-  pricing: "Free" | "Freemium" | "Pro" | "Enterprise";
-  featured?: boolean;
-  installCommand: string;
-  tags: string[];
-  capabilities: string[];
-  permissions: string[];
-}
+import { MarketplaceClient, type MarketplaceCard } from "./MarketplaceClient";
 
 const FEATURED_ITEMS: MarketplaceCard[] = [
   {
@@ -181,6 +150,22 @@ const FEATURED_ITEMS: MarketplaceCard[] = [
   },
 ];
 
+export const metadata: Metadata = {
+  title: "Marketplace & Hub — Starlight Intelligence",
+  description:
+    "Curated registry of verified Skill Packs, MCP Servers, and Harness Profiles built on the Starlight Intelligence Protocol.",
+  alternates: {
+    canonical: "/marketplace",
+  },
+  openGraph: {
+    title: "Starlight Marketplace & Hub — Starlight Intelligence",
+    description:
+      "Curated registry of verified Skill Packs, MCP Servers, and Harness Profiles built on the Starlight Intelligence Protocol.",
+    type: "website",
+    url: "/marketplace",
+  },
+};
+
 export default function MarketplacePage() {
   return (
     <div className="min-h-screen overflow-hidden bg-[#060609] text-slate-100">
@@ -277,71 +262,7 @@ export default function MarketplacePage() {
             </div>
           </div>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {FEATURED_ITEMS.map((item) => (
-              <div
-                key={item.id}
-                className="group relative flex flex-col justify-between border border-white/[0.08] bg-[#0b0b12]/90 p-6 shadow-lg backdrop-blur-xl transition hover:border-cyan-500/40"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="rounded bg-white/[0.06] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-slate-300">
-                          {item.kind}
-                        </span>
-                        <span className="rounded bg-cyan-400/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-cyan-300">
-                          {item.pricing}
-                        </span>
-                        {item.featured && (
-                          <span className="rounded bg-amber-400/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-300">
-                            ★ Featured
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="mt-2 text-xl font-medium text-white">{item.name}</h3>
-                      <p className="font-mono text-xs text-slate-500">
-                        v{item.version} · by {item.author} · {item.category}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="mt-4 text-sm leading-6 text-slate-300">{item.description}</p>
-
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {item.tags.map((t) => (
-                      <span key={t} className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[11px] text-slate-400">
-                        #{t}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 border-t border-white/[0.06] pt-4">
-                    <p className="font-mono text-[11px] uppercase tracking-wider text-slate-500">Capabilities:</p>
-                    <div className="mt-1 flex flex-wrap gap-1">
-                      {item.capabilities.map((c) => (
-                        <span key={c} className="font-mono text-[11px] text-slate-400">
-                          {c} ·
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 border-t border-white/[0.06] pt-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">Install snippet</span>
-                    <span className="flex items-center gap-1 font-mono text-[10px] text-emerald-400">
-                      <CheckCircle2 className="h-3 w-3" /> SIP verified
-                    </span>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between rounded border border-white/[0.06] bg-[#07070c] px-3 py-2 font-mono text-xs text-cyan-200">
-                    <span className="truncate">{item.installCommand}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <MarketplaceClient items={FEATURED_ITEMS} />
 
           {/* Publishing instructions */}
           <div className="mt-16 border border-white/[0.10] bg-[#0c0c16]/80 p-8 backdrop-blur-xl">

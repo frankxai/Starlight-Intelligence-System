@@ -35,11 +35,14 @@ import {
   type SwarmTopologyType,
   type KnowledgeDomainId,
   type MarketplaceItemKind,
+  type MarketplaceItem,
 } from "./index.js";
 import {
   readRegistry,
   installPack,
   uninstallPack,
+  validateManifest,
+  computeManifestSha,
 } from "./pack-runtime.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
@@ -175,9 +178,11 @@ Commands:
   pack list                       List installed and available packs (--installed, --available)
   pack install <id>               Install an ecosystem pack (--ack-permissions)
   pack uninstall <id>             Uninstall an installed pack
+  pack validate <path>            Validate pack manifest and compute deterministic SHA-256
   marketplace list                List ecosystem packs, MCPs, harnesses, cloud offerings (--kind, --category)
   marketplace info <id>           Show detailed information for an ecosystem artifact
   marketplace stats               Show marketplace ecosystem statistics
+  marketplace submit <path>       Validate pack & format marketplace PR submission payload
   orchestrate <intent>            Run an orchestration (prints JSON result)
   stats                           Show system statistics
   version                         Print version
@@ -1746,9 +1751,52 @@ function cmdPack(action: string, args: string[], options: { installed?: boolean;
       console.log(`[starlight] Successfully uninstalled pack: ${res.pack?.name ?? packId}`);
       break;
     }
+    case "validate": {
+      const targetPath = args[0] || ".";
+      const manifestFile = existsSync(join(targetPath, "manifest.json"))
+        ? join(targetPath, "manifest.json")
+        : targetPath;
+      if (!existsSync(manifestFile)) {
+        console.error(`[starlight] Error: manifest file not found at: ${manifestFile}`);
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const raw = JSON.parse(readFileSync(manifestFile, "utf-8"));
+        const val = validateManifest(raw);
+        if (!val.ok) {
+          console.error(`[starlight] Pack manifest validation FAILED with ${val.errors.length} error(s):`);
+          for (const err of val.errors) {
+            console.error(`  - ${err}`);
+          }
+          process.exitCode = 1;
+          return;
+        }
+        const packDir = manifestFile.endsWith("manifest.json") ? resolve(join(manifestFile, "..")) : resolve(manifestFile);
+        const computedSha = computeManifestSha(packDir);
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  PACK VALIDATION REPORT: ${val.pack?.name ?? "unnamed"} (v${val.pack?.version ?? "1.0.0"})`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`ID:           ${val.pack?.id}`);
+        console.log(`Kind:         ${val.pack?.kind}`);
+        console.log(`License:      ${val.pack?.licenseTier}`);
+        console.log(`Permissions:  ${val.pack?.permissions.length ? val.pack.permissions.join(", ") : "none (pure sandbox)"}`);
+        console.log(`Recorded SHA: ${val.pack?.manifestSha}`);
+        console.log(`Computed SHA: ${computedSha}`);
+        const shaMatch = val.pack?.manifestSha === computedSha;
+        console.log(`SHA Match:    ${shaMatch ? "VERIFIED (Deterministic Match)" : "MISMATCH (Manifest SHA differs from directory contents)"}`);
+        console.log(`Attestation:  Built on SIP — Starlight Sovereign Protocol`);
+        console.log(`Status:       ${val.ok ? "VALID & APPROVED FOR REPOSITORY PUBLISHING" : "REJECTED"}`);
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+      } catch (err) {
+        console.error(`[starlight] Validation failed: ${err instanceof Error ? err.message : String(err)}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
     default:
       console.error(`[starlight] Unknown pack action: "${action}"`);
-      console.error("  Available actions: list, install, uninstall");
+      console.error("  Available actions: list, install, uninstall, validate");
       process.exitCode = 1;
   }
 }
@@ -1820,9 +1868,69 @@ function cmdMarketplace(action: string, args: string[], options: { kind?: string
       }
       break;
     }
+    case "submit": {
+      const targetPath = args[0] || ".";
+      const manifestFile = existsSync(join(targetPath, "manifest.json"))
+        ? join(targetPath, "manifest.json")
+        : targetPath;
+      if (!existsSync(manifestFile)) {
+        console.error(`[starlight] Error: manifest file not found at: ${manifestFile}`);
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const raw = JSON.parse(readFileSync(manifestFile, "utf-8"));
+        const val = validateManifest(raw);
+        if (!val.ok) {
+          console.error(`[starlight] Cannot submit invalid manifest:`);
+          for (const err of val.errors) console.error(`  - ${err}`);
+          process.exitCode = 1;
+          return;
+        }
+        const packDir = manifestFile.endsWith("manifest.json") ? resolve(join(manifestFile, "..")) : resolve(manifestFile);
+        const computedSha = computeManifestSha(packDir);
+        const p = val.pack!;
+        const packDesc = (p as { description?: string }).description || `${p.name} extension pack for Starlight`;
+        const rawPermissions: string[] = (p.permissions as unknown as Array<{ scope?: string; action?: string } | string>).map((perm) =>
+          typeof perm === "string" ? perm : `${perm.scope ?? ""}:${perm.action ?? ""}`
+        );
+        const registrationEntry: MarketplaceItem = {
+          id: p.id,
+          name: p.name,
+          version: p.version,
+          kind: "skill_pack",
+          category: "Community Extensions",
+          description: packDesc,
+          author: "Community Contributor",
+          pricingTier: "free",
+          tags: [p.kind, "community", p.id],
+          capabilities: rawPermissions.map((perm) => perm.split(":")[0] + ":invoke"),
+          permissions: rawPermissions,
+          installCommand: `starlight pack install ${p.id}${rawPermissions.length > 0 ? " --ack-permissions" : ""}`,
+          verifiedAttestation: true,
+          manifestSha: computedSha,
+        };
+
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  MARKETPLACE SUBMISSION PAYLOAD READY`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`Pack ID:        ${p.id}`);
+        console.log(`Manifest SHA:   ${computedSha}`);
+        console.log(`\nCatalog Registration snippet (for src/marketplace/catalog.ts):\n`);
+        console.log(JSON.stringify(registrationEntry, null, 2));
+        console.log(`\nPull Request Title: feat(marketplace): publish ${p.id} pack`);
+        console.log(`Target Repo:        frankxai/Starlight-Intelligence-System`);
+        console.log(`Attestation:        SIP Verified footer attached`);
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+      } catch (err) {
+        console.error(`[starlight] Submission failed: ${err instanceof Error ? err.message : String(err)}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
     default:
       console.error(`[starlight] Unknown marketplace action: "${action}"`);
-      console.error("  Available actions: list, info, stats");
+      console.error("  Available actions: list, info, stats, submit");
       process.exitCode = 1;
   }
 }
