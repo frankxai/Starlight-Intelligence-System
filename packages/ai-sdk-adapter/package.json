@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "typescript": "5.9.3",
-    "ai": "7.0.130",
+    "ai": "7.0.133",
     "zod": "4.6.5"
   },
   "exports": {
