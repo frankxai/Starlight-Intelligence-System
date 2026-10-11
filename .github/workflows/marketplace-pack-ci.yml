@@ -1,0 +1,96 @@
+name: Marketplace Pack Submission & Attestation CI
+
+on:
+  pull_request:
+    paths:
+      - 'packs/**'
+      - 'src/marketplace/**'
+      - 'src/skills/**'
+      - 'src/cloud/**'
+      - 'src/packs.ts'
+      - 'test/marketplace*.ts'
+      - 'test/cloud-sync-billing.test.ts'
+      - '.github/workflows/marketplace-pack-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'packs/**'
+      - 'src/marketplace/**'
+      - 'src/skills/**'
+      - 'src/cloud/**'
+      - 'src/packs.ts'
+      - 'test/marketplace*.ts'
+      - 'test/cloud-sync-billing.test.ts'
+      - '.github/workflows/marketplace-pack-ci.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-packs:
+    name: Validate Community Packs & Attestation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Verify TypeScript Compilation
+        run: npm run build
+
+      - name: Run Marketplace & Cloud Test Suites
+        run: |
+          node --import tsx --test test/marketplace.test.ts
+          node --import tsx --test test/marketplace-e2e.test.ts
+          node --import tsx --test test/skill-valuation-allocator.test.ts
+          node --import tsx --test test/cloud-sync-billing.test.ts
+
+      - name: Validate Registry Manifests
+        run: |
+          node --import tsx -e "
+            import { existsSync, readdirSync, statSync, readFileSync } from 'node:fs';
+            import { join } from 'node:path';
+            import { validateManifest, computeManifestSha } from './src/packs.js';
+
+            const availableDir = join(process.cwd(), 'packs', 'available');
+            if (existsSync(availableDir)) {
+              const entries = readdirSync(availableDir);
+              for (const entry of entries) {
+                const fullPath = join(availableDir, entry);
+                if (statSync(fullPath).isDirectory()) {
+                  const manifestPath = join(fullPath, 'manifest.json');
+                  if (!existsSync(manifestPath)) {
+                    console.error('Missing manifest.json in pack directory: ' + entry);
+                    process.exit(1);
+                  }
+                  const raw = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+                  const res = validateManifest(raw);
+                  if (!res.ok) {
+                    console.error('Validation failed for ' + entry + ':', res.errors);
+                    process.exit(1);
+                  }
+                  const computedSha = computeManifestSha(fullPath);
+                  if (raw.manifestSha && raw.manifestSha !== computedSha) {
+                    console.error('SHA mismatch in ' + entry + ': recorded ' + raw.manifestSha + ' != computed ' + computedSha);
+                    process.exit(1);
+                  }
+                  console.log('✓ Validated pack: ' + raw.name + ' (' + entry + ') [SHA: ' + computedSha.slice(0, 16) + '...]');
+                }
+              }
+            }
+          "
+
+      - name: Substrate Symmetry Suite Gate
+        run: npm run test:substrate

@@ -1,0 +1,42 @@
+# ─────────────────────────────────────────────────────────────
+# Starlight Intelligence System — Cloudflare Edge Mesh Config
+#
+# Production edge bindings for:
+# - D1 Distributed SQLite Edge Replicas
+# - Vectorize ANN Semantic Memory Search
+# - AI Gateway Semantic Caching & Rate-Limiting
+# - R2 Zero-Egress Media Storage
+# ─────────────────────────────────────────────────────────────
+
+name = "starlight-edge-mesh"
+main = "src/app/api/cloud/route.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+STARLIGHT_CORE_TENANT = "starlight-primary"
+MAX_CONCURRENT_SWARMS = "50"
+VECTORIZE_DIMENSIONS = "1536"
+VECTORIZE_METRIC = "cosine"
+
+# 1. Cloudflare D1 Distributed SQLite Edge Database
+[[d1_databases]]
+binding = "STARLIGHT_D1_VAULT"
+database_name = "starlight-edge-vault"
+database_id = "d1-vault-prod-2026"
+
+# 2. Cloudflare Vectorize ANN Vector Search Index
+[[vectorize]]
+binding = "STARLIGHT_VECTORIZE_INDEX"
+index_name = "starlight-memory-vectorize"
+
+# 3. Cloudflare R2 Zero-Egress Asset Storage Bucket
+[[r2_buckets]]
+binding = "STARLIGHT_R2_MEDIA"
+bucket_name = "starlight-media-assets"
+
+# 4. Cloudflare AI Gateway
+# Provides sub-5ms semantic caching and cross-provider automatic fallback
+[ai]
+binding = "AI"
