@@ -8,6 +8,9 @@
 import { EdgeVeil } from './edge-veil.js';
 import { HybridRanker } from './rrf.js';
 import { EdgeVirtualMcpRouter } from './vmcp.js';
+import { UniversalVectorRouter } from './providers/universal-vector.js';
+import { DualTelemetryDispatcher } from './telemetry/dual-dispatcher.js';
+import { UnifiedAiGateway, type ChatCompletionRequest } from './llm/ai-gateway.js';
 import type { 
   MemoryAtom, 
   IngestionRequest, 
@@ -25,6 +28,7 @@ export interface Env {
   STARLIGHT_VECTORS?: any; // Cloudflare Vectorize binding
   STARLIGHT_DB?: any;      // Cloudflare D1 binding
   STARLIGHT_KV?: any;      // Cloudflare KV binding
+  AI?: any;                // Cloudflare Workers AI binding
   DEFAULT_HALF_LIFE_DAYS?: string;
 }
 
@@ -104,8 +108,26 @@ export class StarlightCloudWorker {
       // 6. Route Query: POST /v1/memory/query
       if (url.pathname === '/v1/memory/query' && method === 'POST') {
         const body = (await request.json()) as QueryRequest;
-        const result = await this.handleQuery(tenant, body, env);
+        const result = await this.handleQuery(tenant, body, env, request.headers);
         return new Response(JSON.stringify(result, null, 2), { status: 200, headers: this.CORS_HEADERS });
+      }
+
+      // 7. Route Unified AI Gateway & Semantic Cache: POST /v1/chat/completions
+      if ((url.pathname === '/v1/chat/completions' || url.pathname === '/chat/completions') && method === 'POST') {
+        const body = (await request.json()) as ChatCompletionRequest;
+        const tenantMemories = (MEMORY_INDEX.get(tenant.tenantId) || []).slice(-5).map(m => m.content);
+        const completion = await UnifiedAiGateway.complete(body, env, request.headers, tenantMemories);
+
+        DualTelemetryDispatcher.dispatch({
+          traceId: completion.id,
+          name: 'starlight-ai-gateway',
+          userId: tenant.tenantId,
+          input: body.messages,
+          output: completion.choices[0]?.message?.content,
+          metadata: { model: completion.model, cached: completion.cached },
+        }, env, request.headers);
+
+        return new Response(JSON.stringify(completion, null, 2), { status: 200, headers: this.CORS_HEADERS });
       }
 
       // 7. Route vMCP Synthesis: POST /v1/vmcp/synthesize
@@ -216,7 +238,8 @@ export class StarlightCloudWorker {
   private static async handleQuery(
     tenant: TenantContext,
     req: QueryRequest,
-    env: Env
+    env: Env,
+    headers?: Headers
   ): Promise<QueryResponse> {
     const start = performance.now();
     const atoms = MEMORY_INDEX.get(tenant.tenantId) || [];
@@ -257,6 +280,16 @@ export class StarlightCloudWorker {
     }).slice(0, req.limit || 10);
 
     const latencyMs = Math.round((performance.now() - start) * 100) / 100;
+
+    DualTelemetryDispatcher.dispatch({
+      traceId: `trace_query_${Date.now()}`,
+      name: 'starlight-vault-query',
+      userId: tenant.tenantId,
+      input: req.query,
+      output: { count: results.length, topScore: results[0]?.combinedScore },
+      latencyMs,
+      metadata: { tier: req.tier, namespace: req.namespace },
+    }, env, headers);
 
     return {
       query: req.query,
@@ -440,6 +473,30 @@ export class StarlightCloudWorker {
   </script>
 </body>
 </html>`;
+  }
+}
+
+export class SwarmCoordinator {
+  private state: any;
+  private env: Env;
+
+  constructor(state: any, env: Env) {
+    this.state = state;
+    this.env = env;
+  }
+
+  async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname.endsWith('/lease/acquire')) {
+      return new Response(JSON.stringify({ status: 'acquired', timestamp: new Date().toISOString() }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    return new Response(JSON.stringify({ status: 'active', role: 'SwarmCoordinator' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
 

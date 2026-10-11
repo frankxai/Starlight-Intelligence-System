@@ -219,4 +219,85 @@ describe('Starlight Managed Cloud & Service Mesh E2E', () => {
     assert.ok(html.includes('STARLIGHT HYPER-VAULT PALACE'));
     assert.ok(html.includes('canvas-container'));
   });
+
+  it('10. AI Gateway routes /v1/chat/completions with semantic edge caching and context injection', async () => {
+    const chatReq1 = new Request(`${BASE_URL}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TEST_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'starlight-edge',
+        messages: [{ role: 'user', content: 'What are the core invariants of Starlight?' }],
+      }),
+    });
+    const res1 = await StarlightCloudWorker.handleRequest(chatReq1);
+    assert.equal(res1.status, 200);
+    const body1 = await res1.json() as any;
+    assert.equal(body1.object, 'chat.completion');
+    assert.equal(body1.cached, false);
+    assert.ok(body1.choices[0]?.message?.content);
+
+    // Second call with identical payload must hit edge cache
+    const chatReq2 = new Request(`${BASE_URL}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TEST_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'starlight-edge',
+        messages: [{ role: 'user', content: 'What are the core invariants of Starlight?' }],
+      }),
+    });
+    const res2 = await StarlightCloudWorker.handleRequest(chatReq2);
+    assert.equal(res2.status, 200);
+    const body2 = await res2.json() as any;
+    assert.equal(body2.cached, true);
+  });
+
+  it('11. Universal Vector Router resolves Vectorize, Pinecone, and Qdrant dynamically', async () => {
+    const { UniversalVectorRouter } = await import('../services/starlight-cloud-worker/src/providers/universal-vector.js');
+
+    // Default: Vectorize
+    const defaultProvider = UniversalVectorRouter.resolveProvider({});
+    assert.equal(defaultProvider.name, 'cloudflare_vectorize');
+
+    // Pinecone BYO
+    const pineconeHeaders = new Headers({
+      'X-Starlight-Vector-Provider': 'pinecone',
+      'X-Pinecone-Key': 'pc_test_key_12345',
+      'X-Pinecone-Host': 'https://starlight-index.svc.us-east1.pinecone.io',
+    });
+    const pineconeProvider = UniversalVectorRouter.resolveProvider({}, pineconeHeaders);
+    assert.equal(pineconeProvider.name, 'pinecone');
+
+    // Qdrant BYO
+    const qdrantHeaders = new Headers({
+      'X-Starlight-Vector-Provider': 'qdrant',
+      'X-Qdrant-Url': 'https://qdrant-cluster.starlight.internal:6333',
+    });
+    const qdrantProvider = UniversalVectorRouter.resolveProvider({}, qdrantHeaders);
+    assert.equal(qdrantProvider.name, 'qdrant');
+  });
+
+  it('12. Dual Telemetry Dispatcher formats events for Langfuse EU and LangSmith without throwing', async () => {
+    const { DualTelemetryDispatcher } = await import('../services/starlight-cloud-worker/src/telemetry/dual-dispatcher.js');
+
+    assert.doesNotThrow(() => {
+      DualTelemetryDispatcher.dispatch({
+        traceId: 'test_trace_001',
+        name: 'test-execution',
+        userId: 'tenant_frank',
+        input: 'Test input context',
+        output: 'Test output result',
+        latencyMs: 15.4,
+      }, {
+        LANGFUSE_PUBLIC_KEY: 'pk_lf_mock',
+        LANGFUSE_SECRET_KEY: 'sk_lf_mock',
+        LANGCHAIN_API_KEY: 'ls_mock_key',
+      });
+    });
+  });
 });

@@ -29,3 +29,6 @@ bindings = [
 [[migrations]]
 tag = "v1"
 new_classes = ["SwarmCoordinator"]
+
+[ai]
+binding = "AI"
