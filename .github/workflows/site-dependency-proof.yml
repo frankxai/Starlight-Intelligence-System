@@ -53,7 +53,7 @@ jobs:
           }
           const fromNext = createRequire(require.resolve('next/package.json'));
           const sharp = fromNext('sharp');
-          const sharpVersion = fromNext('sharp/package.json').version;
+          const sharpVersion = sharp.versions.sharp;
           assert.equal(sharpVersion, '0.35.5');
           const rsvg = /^(\d+)\.(\d+)\.(\d+)$/.exec(sharp.versions.rsvg);
           assert(rsvg, 'Native librsvg version must be reported');
