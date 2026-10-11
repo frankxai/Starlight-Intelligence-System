@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
@@ -136,7 +137,9 @@ export default function CloudPage() {
           </div>
 
           <div className="mt-14">
-            <CloudClient />
+            <Suspense fallback={<div className="min-h-[400px]" />}>
+              <CloudClient />
+            </Suspense>
           </div>
 
           <div id="pricing-contact" className="mt-16 border border-white/[0.08] bg-[#0b0b14]/70 p-8 text-center backdrop-blur-xl">

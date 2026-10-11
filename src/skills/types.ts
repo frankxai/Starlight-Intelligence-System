@@ -85,6 +85,8 @@ export interface SkillMatrix {
   warnings: string[];
 }
 
+export type SkillPricingTier = "free" | "builder" | "pro" | "team" | "enterprise";
+
 export type HarnessTarget =
   | "claude-code"
   | "codex"

@@ -14,3 +14,5 @@ export * from "./skill-scanner.js";
 export * from "./valuation-pricing-engine.js";
 export * from "./marketplace-syndicator.js";
 export * from "./legacy-bridge.js";
+export * from "./harness-sync.js";
+export * from "./skill-publisher.js";

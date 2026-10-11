@@ -100,10 +100,10 @@ export function auditSkillValuation(
   const baseMSRP = Math.max(19, Math.round(valuationIndex * 1.5));
   const suggestedPricing: SuggestedPricingTiers = {
     freeCommunityMSRP: 0,
-    builderTierMSRP: Math.min(49, Math.max(19, Math.round(baseMSRP * 0.5))),
-    proTierMSRP: Math.min(199, Math.max(49, baseMSRP)),
-    teamTierMonthly: Math.min(499, Math.max(99, Math.round(baseMSRP * 2.5))),
-    enterpriseAnnual: Math.min(9600, Math.max(1200, Math.round(annualLaborSavingsUSD * 0.15))),
+    builderTierMSRP: Math.min(49, Math.max(29, Math.round(baseMSRP * 0.5))),
+    proTierMSRP: Math.min(199, Math.max(79, baseMSRP)),
+    teamTierMonthly: Math.min(499, Math.max(199, Math.round(baseMSRP * 2.5))),
+    enterpriseAnnual: Math.min(9600, Math.max(999, Math.round(annualLaborSavingsUSD * 0.15))),
   };
 
   // 8. Breakdown Contributions

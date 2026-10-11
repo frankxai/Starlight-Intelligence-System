@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
   ArrowRight,
@@ -12,6 +13,9 @@ import {
   Server,
   Layers,
   Sparkles,
+  Loader2,
+  AlertCircle,
+  Terminal,
 } from "lucide-react";
 
 interface PlanTier {
@@ -47,7 +51,7 @@ const PLANS: PlanTier[] = [
       "BYOK (Bring Your Own Key) directly to model providers",
     ],
     ctaLabel: "Download source",
-    ctaHref: "/download",
+    ctaHref: "https://github.com/frankxai/Starlight-Intelligence-System",
   },
   {
     id: "pro",
@@ -69,7 +73,7 @@ const PLANS: PlanTier[] = [
       "Priority community support & early access to new skill packs",
     ],
     ctaLabel: "Get started with Pro",
-    ctaHref: "#pricing-contact",
+    ctaHref: "/checkout?tier=pro",
   },
   {
     id: "enterprise",
@@ -89,8 +93,8 @@ const PLANS: PlanTier[] = [
       "Private MCP server mesh routing with role-based permission boundaries",
       "Dedicated SLA & 1-on-1 architecture design review",
     ],
-    ctaLabel: "Contact architecture team",
-    ctaHref: "#pricing-contact",
+    ctaLabel: "Get started with Enterprise",
+    ctaHref: "/checkout?tier=enterprise",
   },
 ];
 
@@ -134,15 +138,93 @@ const STORAGE_OPTIONS = [
 ];
 
 export function CloudClient() {
+  const searchParams = useSearchParams();
+  const sessionStatus = searchParams.get("session");
+
   const [annualBilling, setAnnualBilling] = useState(false);
   const [fleetSize, setFleetSize] = useState(5);
   const [selectedStorage, setSelectedStorage] = useState("sqlite");
+  const [loadingPlanId, setLoadingPlanId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const estimatedTokens = fleetSize * 450; // k tokens/day
   const estimatedSnapshots = fleetSize * 24; // snapshots/day
 
+  const handleSelectPlan = async (plan: PlanTier) => {
+    if (plan.id === "sovereign") {
+      window.open(plan.ctaHref, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    try {
+      setLoadingPlanId(plan.id);
+      setError(null);
+
+      const res = await fetch("/api/cloud/billing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tier: plan.id,
+          annualBilling,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.ok || !data.checkoutUrl) {
+        throw new Error(data.error || "Failed to initialize checkout session");
+      }
+
+      window.location.href = data.checkoutUrl;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Checkout error occurred");
+      setLoadingPlanId(null);
+    }
+  };
+
   return (
     <div className="space-y-16">
+      {/* Session Success or Cancel Notification */}
+      {sessionStatus === "success" && (
+        <div className="rounded-2xl border border-cyan-400/40 bg-cyan-950/20 p-6 shadow-[0_0_50px_rgba(6,182,212,0.12)] backdrop-blur-xl">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/30">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-white">Managed Cloud Subscription Active</h4>
+                <p className="mt-0.5 text-xs text-slate-300">
+                  Your cryptographic license is active. Run{" "}
+                  <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-cyan-300">
+                    starlight cloud sync
+                  </code>{" "}
+                  in your terminal to start synchronizing with the Cloudflare edge mesh.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-3 py-1 font-mono text-xs text-emerald-300 ring-1 ring-emerald-400/30">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Edge Mesh Connected
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {sessionStatus === "cancelled" && (
+        <div className="rounded-xl border border-white/[0.1] bg-[#0c0c16] p-4 text-xs text-slate-400">
+          Checkout was cancelled. Your local sovereign vaults remain unaffected.
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-950/20 p-4 text-xs text-red-300">
+          <AlertCircle className="h-4 w-4 shrink-0 text-red-400" />
+          <span>{error}</span>
+        </div>
+      )}
+
       {/* Billing Cadence Toggle */}
       <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
         <div className="flex items-center rounded-full border border-white/[0.1] bg-[#0c0c16] p-1">
@@ -173,6 +255,7 @@ export function CloudClient() {
         {PLANS.map((plan) => {
           const price = annualBilling ? plan.annualPrice : plan.monthlyPrice;
           const displayPrice = plan.monthlyPrice === 0 ? "$0" : `$${price}`;
+          const isCurrentLoading = loadingPlanId === plan.id;
 
           return (
             <div
@@ -218,17 +301,39 @@ export function CloudClient() {
               </div>
 
               <div className="mt-8 border-t border-white/[0.06] pt-6">
-                <a
-                  href={plan.ctaHref}
-                  className={`inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold transition ${
-                    plan.highlighted
-                      ? "bg-white text-black hover:bg-cyan-50"
-                      : "border border-white/[0.14] text-white hover:bg-white/[0.05]"
-                  }`}
-                >
-                  {plan.ctaLabel}
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </a>
+                {plan.id === "sovereign" ? (
+                  <a
+                    href={plan.ctaHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/[0.14] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-white/[0.05]"
+                  >
+                    {plan.ctaLabel}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => handleSelectPlan(plan)}
+                    disabled={loadingPlanId !== null}
+                    className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold transition disabled:opacity-50 ${
+                      plan.highlighted
+                        ? "bg-white text-black hover:bg-cyan-50"
+                        : "border border-white/[0.14] text-white hover:bg-white/[0.05]"
+                    }`}
+                  >
+                    {isCurrentLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Initializing Checkout...</span>
+                      </>
+                    ) : (
+                      <>
+                        {plan.ctaLabel}
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           );
@@ -334,11 +439,17 @@ export function CloudClient() {
               </div>
               <p className="mt-3 text-sm leading-6 text-slate-300">{current.desc}</p>
               <div className="mt-4 flex flex-wrap gap-4 border-t border-white/[0.06] pt-4 font-mono text-xs text-slate-400">
-                <span>Target Latency: <strong className="text-white">{current.latency}</strong></span>
+                <span>
+                  Target Latency: <strong className="text-white">{current.latency}</strong>
+                </span>
                 <span>•</span>
-                <span>Fleet Scale: <strong className="text-white">{current.scale}</strong></span>
+                <span>
+                  Fleet Scale: <strong className="text-white">{current.scale}</strong>
+                </span>
                 <span>•</span>
-                <span>Recommended Tier: <strong className="text-cyan-300">{current.recommendedTier}</strong></span>
+                <span>
+                  Recommended Tier: <strong className="text-cyan-300">{current.recommendedTier}</strong>
+                </span>
               </div>
             </div>
           );

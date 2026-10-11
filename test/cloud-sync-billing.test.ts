@@ -247,5 +247,18 @@ describe("Cloud Managed Subsystem & Edge Mirror", () => {
       assert.equal(result.license?.tier, "enterprise");
       assert.ok(result.license?.features.includes("unlimited_agents"));
     });
+
+    it("handles checkout fulfillment and sandbox issuance with unique accounts", () => {
+      const proLicense = billing.issueLicenseToken("acc_dev_sandbox", "pro", 30);
+      assert.equal(proLicense.accountId, "acc_dev_sandbox");
+      assert.equal(proLicense.tier, "pro");
+      assert.ok(proLicense.features.includes("allocated_agents:10"));
+
+      const entLicense = billing.issueLicenseToken("acc_enterprise_fleet", "enterprise", 365);
+      assert.equal(entLicense.accountId, "acc_enterprise_fleet");
+      assert.equal(entLicense.tier, "enterprise");
+      assert.ok(entLicense.features.includes("unlimited_agents"));
+      assert.ok(entLicense.features.includes("sla_9999"));
+    });
   });
 });

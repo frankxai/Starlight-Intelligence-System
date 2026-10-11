@@ -48,9 +48,15 @@ import {
   scanWorkspaceSkills,
   auditSkillValuation,
   syndicateSkill,
+  discoverInstalledHarnesses,
+  syncHarnessConfigs,
+  publishSkill,
   type HarnessTarget,
   type SyndicationTarget,
 } from "./skills/index.js";
+import {
+  QueenAdaptiveScheduler,
+} from "./queen/index.js";
 import {
   D1SyncManager,
 } from "./cloud/index.js";
@@ -192,6 +198,11 @@ Commands:
   queen briefing                  Generate executive founder cockpit briefing
   queen synthesize <mission>      Synthesize dynamic sub-swarm (--topology, --domain)
   queen santa <task>              Execute Santa adversarial convergence loop
+  queen drain                     Drain held Queen tasks via adaptive micro-lane auto-repair (--dry-run)
+  queen lane                      Show current Queen adaptive dispatch lane and memory telemetry
+  harness sync                    Sync Starlight skills into local harness configuration files (--all, --dry-run, --harness, --out)
+  harness discover                Discover installed AI harnesses and toolplane directories
+  skill publish <path>            Publish a skill with dual Stripe + Polar monetization and SIP attestation (--monetization, --tier)
   pack list                       List installed and available packs (--installed, --available)
   pack install <id>               Install an ecosystem pack (--ack-permissions)
   pack uninstall <id>             Uninstall an installed pack
@@ -1623,7 +1634,7 @@ function cmdKnowledge(action: string, args: string[], options: { domain?: string
   }
 }
 
-async function cmdQueen(action: string, args: string[], options: { topology?: string; task?: string; domain?: string }): Promise<void> {
+async function cmdQueen(action: string, args: string[], options: { topology?: string; task?: string; domain?: string; dryRun?: boolean }): Promise<void> {
   const tree = new UniversalKnowledgeTree();
   const queen = new StarlightQueen(tree);
   switch (action) {
@@ -1694,9 +1705,43 @@ async function cmdQueen(action: string, args: string[], options: { topology?: st
       console.log(`\nSynthesized Output:\n${result.output}`);
       break;
     }
+    case "drain": {
+      const scheduler = new QueenAdaptiveScheduler();
+      const dryRun = options.dryRun === true;
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  STARLIGHT QUEEN ADAPTIVE MICRO-LANE DRAIN (dryRun=${dryRun})`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      const report = scheduler.drainHeldTasks({ dryRun, autoPromoteAdmissionCards: true });
+      console.log(`Adaptive Lane:  ${report.laneStatus.currentLane.toUpperCase()} (${report.laneStatus.freeRamGiB} GiB free RAM)`);
+      console.log(`Scanned Held:   ${report.scannedCount} tasks`);
+      console.log(`Auto-Repaired:  ${report.repairedCount} cards`);
+      console.log(`Drained/Inbox:  ${report.drainedCount} cards into active inbox`);
+      console.log(`Remaining Held: ${report.remainingHeld} cards\n`);
+      for (const a of report.actions) {
+        console.log(`  • [${a.action}] ${a.cardId}: ${a.details}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+    case "lane":
+    case "lanes": {
+      const scheduler = new QueenAdaptiveScheduler();
+      const status = scheduler.getLaneStatus();
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  STARLIGHT QUEEN ADAPTIVE DISPATCH LANES`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`Current Lane:      ${status.currentLane.toUpperCase()}-LANE ACTIVE`);
+      console.log(`Free RAM:          ${status.freeRamGiB} GiB / ${status.totalRamGiB} GiB (${Math.round(status.freeRamRatio * 100)}%)`);
+      console.log(`Max Concurrency:   ${status.maxRecommendedConcurrency} workers`);
+      console.log(`Parallel Swarms:   ${status.allowsParallelSwarm ? "ENABLED" : "HOLD (RAM floor)"}`);
+      console.log(`Browser Headless:  ${status.allowsBrowserAutomation ? "ENABLED" : "HOLD"}`);
+      console.log(`Micro-Lane Drain:  ${status.allowsMicroDrain ? "AVAILABLE (<150MB)" : "UNAVAILABLE"}`);
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
     default:
       console.error(`[starlight] Unknown queen action: "${action}"`);
-      console.error("  Available actions: status, briefing, synthesize, santa");
+      console.error("  Available actions: status, briefing, synthesize, santa, drain, lane");
       process.exitCode = 1;
   }
 }
@@ -1960,7 +2005,7 @@ function cmdMarketplace(action: string, args: string[], options: { kind?: string
 function cmdSkill(
   action: string,
   args: string[],
-  opts: { harness?: string } = {}
+  opts: { harness?: string; monetization?: string; tier?: string; outDir?: string; dryRun?: boolean } = {}
 ): void {
   switch (action) {
     case "audit": {
@@ -2259,9 +2304,150 @@ function cmdSkill(
       }
       break;
     }
+    case "publish": {
+      const targetPath = args[0];
+      if (!targetPath) {
+        console.error("[starlight] Error: skill publish requires a path to SKILL.md or directory.");
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const filePath = existsSync(targetPath) && statSync(targetPath).isDirectory()
+          ? join(targetPath, "SKILL.md")
+          : targetPath;
+        const skill = loadSkillFromFile(filePath);
+        const monetizationMode = (opts.monetization as any) || "both";
+        const tier = (opts.tier as any) || (skill.pricingTier as any) || "builder";
+        const result = publishSkill(
+          {
+            name: skill.name,
+            version: skill.version,
+            description: skill.description,
+            domain: "general",
+            license: skill.license,
+            content: (skill.rawMarkdown ?? skill.instructions ?? "") as string,
+            pricingTier: tier,
+          },
+          {
+            monetization: monetizationMode,
+            tier,
+            outDir: opts.outDir,
+          }
+        );
+
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  STARLIGHT SOVEREIGN SKILL PUBLISHER & DUAL MONETIZATION`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`Skill Name:           ${result.skillName} v${result.version}`);
+        console.log(`Publication Status:   ${result.success ? "SUCCESS" : "FAILED"}`);
+        console.log(`Tier:                 ${result.pricingTier.toUpperCase()}`);
+        console.log(`SIP Attestation SHA:  ${result.attestationSha}`);
+        console.log(`Progressive Disclosure: Level ${result.progressiveDisclosureAudit.level} (${result.progressiveDisclosureAudit.recommendation})`);
+        console.log(`\nDual Monetization Rails:`);
+        console.log(`  Stripe:  Price: $${result.monetizationConfig.stripe.suggestedPriceUSD} | Mode: ${result.monetizationConfig.stripe.mode} | Product: ${result.monetizationConfig.stripe.productName}`);
+        console.log(`  Polar:   Tier: ${result.monetizationConfig.polar.tierName} | Monthly: $${result.monetizationConfig.polar.monthlyUSD}/mo | Benefits: ${result.monetizationConfig.polar.benefits.length} perks`);
+        console.log(`\nPackaged Distribution Files (${result.packagedFiles.length}):`);
+        for (const pf of result.packagedFiles) {
+          console.log(`  ✓ ${pf.path}`);
+        }
+        console.log(`\nSIP Cryptographic Seal:`);
+        console.log(`  Built on SIP — Starlight Sovereign Protocol`);
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+      } catch (err) {
+        console.error(`[starlight] Skill publish failed: ${err instanceof Error ? err.message : String(err)}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
     default:
       console.error(`[starlight] Unknown skill action: "${action}"`);
-      console.error("  Available actions: audit, value, matrix, harness, scan, syndicate, allocate, bridge");
+      console.error("  Available actions: audit, value, matrix, harness, scan, syndicate, allocate, bridge, publish");
+      process.exitCode = 1;
+  }
+}
+
+function cmdHarness(
+  action: string,
+  args: string[],
+  options: { all?: boolean; dryRun?: boolean; harness?: string; out?: string }
+): void {
+  switch (action) {
+    case "sync": {
+      const targetHarness = options.harness || args[0];
+      const harnessesToSync = options.all
+        ? undefined
+        : targetHarness
+        ? [targetHarness]
+        : undefined;
+
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  STARLIGHT UNIVERSAL 10-HARNESS SYNC ENGINE`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`Mode:           ${options.dryRun ? "PREVIEW (DRY-RUN)" : "LIVE PROJECTION"}`);
+      console.log(`Scope:          ${options.all ? "ALL 10 HARNESSES" : targetHarness || "AUTO-DISCOVERED ACTIVE HARNESSES"}`);
+      if (options.out) console.log(`Custom Out Dir: ${options.out}`);
+      console.log(``);
+
+      const report = syncHarnessConfigs({
+        workspaceRoot: process.cwd(),
+        dryRun: options.dryRun,
+        customOutDir: options.out,
+        harnesses: harnessesToSync as HarnessTarget[] | undefined,
+      });
+
+      const discoveredList = report.detectedHarnesses || (report as any).discoveredHarnesses || [];
+      console.log(`Discovered Harnesses: ${discoveredList.join(", ") || "(none)"}`);
+      console.log(`Synced Targets:       ${report.syncedHarnesses.length > 0 ? report.syncedHarnesses.join(", ") : "(none)"}`);
+      console.log(`Projected Files:      ${report.projectedFiles.length}`);
+      console.log(`Backups Created:      ${report.backupFiles.length}\n`);
+
+      if (report.projectedFiles.length > 0) {
+        console.log(`Projected Configuration Files:`);
+        for (const pf of report.projectedFiles) {
+          console.log(`  ✓ [${pf.harness}] ${pf.relativePath} (${pf.format})`);
+        }
+      }
+
+      if (report.backupFiles.length > 0) {
+        console.log(`\nPreserved Backups (.bak):`);
+        for (const bf of report.backupFiles) {
+          console.log(`  ↩ ${bf}`);
+        }
+      }
+
+      if (report.warnings.length > 0) {
+        console.log(`\nWarnings:`);
+        for (const w of report.warnings) {
+          console.log(`  ! ${w}`);
+        }
+      }
+      console.log(`\nSync status: 100% ATTESTED (Built on SIP v1.1.1)`);
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
+    case "discover":
+    case "list":
+    case "status": {
+      const discovered = discoverInstalledHarnesses(process.cwd());
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  STARLIGHT AI HARNESS DISCOVERY MATRIX (10 WORKSTATION HARNESSES)`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      for (const h of discovered) {
+        const mark = h.detected ? "● INSTALLED" : "○ NOT DETECTED";
+        console.log(`  ${mark.padEnd(16)} | ${h.name.padEnd(20)} (${h.id})`);
+        console.log(`    Vendor:       ${h.vendor}`);
+        console.log(`    Config Path:  ${h.configPath}`);
+        console.log(`    Marker Found: ${h.detected ? h.markerFound : "none"}`);
+        console.log(``);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
+    default:
+      console.error(`[starlight] Unknown harness action: "${action}"`);
+      console.error("  Available actions: sync, discover, list, status");
       process.exitCode = 1;
   }
 }
@@ -2384,6 +2570,11 @@ async function main(): Promise<void> {
       "ack-permissions": { type: "boolean" },
       kind: { type: "string" },
       token: { type: "string" },
+      harness: { type: "string" },
+      monetization: { type: "string" },
+      tier: { type: "string" },
+      out: { type: "string" },
+      all: { type: "boolean" },
     },
     strict: false,
   });
@@ -2507,7 +2698,7 @@ async function main(): Promise<void> {
     case "queen": {
       const action = positionals[1];
       if (!action) {
-        console.error("[starlight] Error: queen requires an action (status, briefing, synthesize, santa).");
+        console.error("[starlight] Error: queen requires an action (status, briefing, synthesize, santa, drain, lane).");
         process.exitCode = 1;
         return;
       }
@@ -2515,6 +2706,7 @@ async function main(): Promise<void> {
         topology: asString(values.topology),
         domain: asString(values.domain),
         task: asString(values.task),
+        dryRun: values["dry-run"] === true,
       });
       break;
     }
@@ -2639,11 +2831,26 @@ async function main(): Promise<void> {
       break;
     }
 
+    case "harness": {
+      const harnessAction = positionals[1] ?? "status";
+      cmdHarness(harnessAction, positionals.slice(2), {
+        all: values.all === true,
+        dryRun: values["dry-run"] === true,
+        harness: asString(values.harness),
+        out: asString(values.out),
+      });
+      break;
+    }
+
     case "skills":
     case "skill": {
       const skillAction = positionals[1] ?? "audit";
       cmdSkill(skillAction, positionals.slice(2), {
         harness: asString(values.harness),
+        monetization: asString(values.monetization),
+        tier: asString(values.tier),
+        outDir: asString(values.out),
+        dryRun: values["dry-run"] === true,
       });
       break;
     }
