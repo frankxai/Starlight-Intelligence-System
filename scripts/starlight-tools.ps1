@@ -127,9 +127,16 @@ Set-Alias -Name st-cloud-query  -Value Invoke-StarlightCloudQuery -Scope Global 
 Set-Alias -Name st-cloud-append -Value Add-StarlightCloudMemory -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name st-cloud-palace -Value Open-StarlightMemoryPalace -Scope Global -Force -ErrorAction SilentlyContinue
 
+# --- Starlight Sovereign Git Protocol (SSGP) & Agent Hygiene ---
+$agentGitScript = Join-Path $PSScriptRoot "starlight-agent-git.ps1"
+if (Test-Path $agentGitScript) {
+    . $agentGitScript
+    Invoke-McpProcessReap -Silent
+}
+
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
     # ASCII separator (`|`) instead of middle-dot to render correctly even
     # when the console is misconfigured (some terminals decode UTF-8 multibyte
     # chars as their CP1252 component letters → "Â·" garbling).
-    Write-Host 'Starlight tools loaded: zoxide(z) | mise | bat(cat) | lazygit(lg) | eza(ll/tree) | uv | restic | starlightd | st-cloud' -ForegroundColor DarkCyan
+    Write-Host 'Starlight tools loaded: zoxide(z) | mise | bat(cat) | lazygit(lg) | eza(ll/tree) | uv | restic | starlightd | st-cloud | st-workspace | st-lease | st-attest' -ForegroundColor DarkCyan
 }
