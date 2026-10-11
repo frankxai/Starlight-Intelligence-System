@@ -211,3 +211,23 @@ diff --git a/components/modal.tsx b/components/modal.tsx
   assert.ok(review.feedback.some(f => f.includes('Accessibility violation')));
 });
 
+test('Sage Memory retrieves proven architectural patterns from technical-vault.md', () => {
+  const memories = consultSageMemory('frankxai/arcanea-ai-app', ['pattern', 'architecture', 'visual']);
+  assert.ok(Array.isArray(memories));
+  assert.ok(memories.length > 0);
+  assert.ok(memories.some(m => m.type === 'proven_pattern' || m.type === 'operational_lesson'));
+});
+
+test('Telemetry Server metrics format conforms to live HUD schema', async () => {
+  const { getTelemetryMetrics } = await import('../telemetry-server.mjs');
+  const metrics = getTelemetryMetrics();
+
+  assert.ok(metrics.timestamp);
+  assert.ok(typeof metrics.ram.rssMb === 'number');
+  assert.ok(typeof metrics.slots.active === 'number');
+  assert.equal(metrics.throughput.dailyTarget, 300);
+  assert.ok(Array.isArray(metrics.recentPRs));
+  assert.ok(['HEALTHY', 'HIGH_MEMORY', 'DEGRADED'].includes(metrics.health));
+});
+
+

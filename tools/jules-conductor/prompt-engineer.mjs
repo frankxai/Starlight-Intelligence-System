@@ -206,8 +206,12 @@ export function engineerJulesPrompt({
   // 2. Select Starlight Persona
   const persona = selectPersona(taskType, taskDescription, repoProfile);
 
-  // 3. Sage Memory Retrieval
-  const pastMemories = consultSageMemory(repo);
+  // 3. Sage Memory Retrieval (Operational & Technical Vaults)
+  const taskKeywords = [
+    repoProfile.type || '',
+    ...(taskDescription.toLowerCase().match(/\b(nextjs|react|tailwind|sqlite|mcp|accessibility|keyboard|button|cls|hydration|performance|seo|cache|gateway|palace|blueprint)\b/g) || [])
+  ];
+  const pastMemories = consultSageMemory(repo, taskKeywords);
 
   let prompt = `# Jules Autonomous Execution Card: ${repoName}\n`;
   prompt += `> Assigned Council Lead: **${arch.assignedLead}** | Persona: **${persona.title}** | Task Mode: **${taskType.toUpperCase()}**\n\n`;
@@ -250,9 +254,13 @@ export function engineerJulesPrompt({
   }
 
   if (pastMemories && pastMemories.length > 0) {
-    prompt += `## Institutional Memory (Sage Vault Insights)\n`;
+    prompt += `## Institutional Memory & Proven Patterns (Sage Vaults)\n`;
     for (const mem of pastMemories) {
-      prompt += `- Past lesson (${mem.action}): ${mem.summary}\n`;
+      if (mem.type === 'proven_pattern') {
+        prompt += `- **Proven Architectural Pattern**: ${mem.summary}\n`;
+      } else {
+        prompt += `- **Operational Lesson** (${mem.action}): ${mem.summary}\n`;
+      }
     }
     prompt += `\n`;
   }

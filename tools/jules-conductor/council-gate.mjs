@@ -17,14 +17,16 @@ const VAULT_DIR = join(ROOT, 'memory', 'vaults');
 // ── SAGE: Institutional Memory Retrieval ────────────────────────
 export function consultSageMemory(repo, keywords = []) {
   const hits = [];
-  const vaultFiles = ['operational.jsonl', 'technical.jsonl'];
+  const searchTerms = [
+    repo.toLowerCase(),
+    ...keywords.map(k => k.toLowerCase()).filter(Boolean)
+  ];
 
-  for (const file of vaultFiles) {
-    const fullPath = join(VAULT_DIR, file);
-    if (!existsSync(fullPath)) continue;
-
+  // 1. Scan operational.jsonl for historical execution records and lessons
+  const opJsonlPath = join(VAULT_DIR, 'operational.jsonl');
+  if (existsSync(opJsonlPath)) {
     try {
-      const content = readFileSync(fullPath, 'utf8');
+      const content = readFileSync(opJsonlPath, 'utf8');
       const lines = content.split('\n');
 
       for (const line of lines) {
@@ -32,12 +34,13 @@ export function consultSageMemory(repo, keywords = []) {
         try {
           const entry = JSON.parse(line);
           const text = JSON.stringify(entry).toLowerCase();
-          const repoLower = repo.toLowerCase();
 
-          if (text.includes(repoLower)) {
+          const matches = searchTerms.some(term => text.includes(term));
+          if (matches) {
             hits.push({
+              type: 'operational_lesson',
               action: entry.action || entry.type || 'lesson',
-              summary: entry.summary || entry.task || entry.details || JSON.stringify(entry).slice(0, 120),
+              summary: entry.summary || entry.task || entry.details || JSON.stringify(entry).slice(0, 140),
               timestamp: entry.timestamp || entry.createdAt,
             });
           }
@@ -46,8 +49,57 @@ export function consultSageMemory(repo, keywords = []) {
     } catch {}
   }
 
-  // Return up to 3 most relevant recent memories
-  return hits.slice(-3);
+  // 2. Scan technical-vault.md for proven architectural patterns
+  const techMdPath = join(VAULT_DIR, 'technical-vault.md');
+  if (existsSync(techMdPath)) {
+    try {
+      const mdContent = readFileSync(techMdPath, 'utf8');
+      const sections = mdContent.split(/(?=^###\s+\[)/m);
+
+      for (const section of sections) {
+        if (!section.startsWith('### [')) continue;
+        const sectionLower = section.toLowerCase();
+
+        const matches = searchTerms.some(term => term.length > 2 && sectionLower.includes(term));
+        if (matches) {
+          const titleMatch = section.match(/^###\s+\[[^\]]+\]\s+([^\n\r]+)/);
+          const title = titleMatch ? titleMatch[1].trim() : 'Proven Architecture Pattern';
+          const patternSnippet = section
+            .replace(/^###[^\n\r]+/, '')
+            .replace(/\*\*Source:\*\*.*$/gm, '')
+            .replace(/\*\*Related:\*\*.*$/gm, '')
+            .trim()
+            .split('\n')
+            .filter(l => l.trim().length > 0)
+            .slice(0, 3)
+            .join(' ')
+            .slice(0, 200);
+
+          hits.push({
+            type: 'proven_pattern',
+            action: 'architecture-pattern',
+            summary: `${title}: ${patternSnippet}`,
+            timestamp: new Date().toISOString()
+          });
+        }
+      }
+    } catch {}
+  }
+
+  // Deduplicate and return most recent / relevant memories
+  const seen = new Set();
+  const deduped = [];
+  for (let i = hits.length - 1; i >= 0; i--) {
+    const item = hits[i];
+    const key = item.summary.slice(0, 60);
+    if (!seen.has(key)) {
+      seen.add(key);
+      deduped.push(item);
+      if (deduped.length >= 4) break;
+    }
+  }
+
+  return deduped;
 }
 
 // ── ARCHITECT: Pre-Flight Approach Gate ─────────────────────────

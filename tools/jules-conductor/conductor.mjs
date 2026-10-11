@@ -13,7 +13,7 @@
  * Built on SIP — Starlight Intelligence Protocol.
  */
 
-import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync, appendFileSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync, appendFileSync, rmSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -23,6 +23,7 @@ import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
 import { performMakerCheckerReview } from './maker-checker.mjs';
 import { harvestIssues } from './issue-harvester.mjs';
+import { recordContentMoment, broadcastEvent, startTelemetryServer, getTelemetryMetrics } from './telemetry-server.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -122,6 +123,25 @@ function runJules(args, options = {}) {
 
 function runGh(args, options = {}) {
   return runDirect('gh', args, options);
+}
+
+export function cleanupStaleWorktrees() {
+  const tempBase = tmpdir();
+  try {
+    const entries = readdirSync(tempBase, { withFileTypes: true });
+    const now = Date.now();
+    for (const entry of entries) {
+      if (entry.isDirectory() && entry.name.startsWith('jules_ship_')) {
+        const full = join(tempBase, entry.name);
+        try {
+          const stats = statSync(full);
+          if (now - stats.mtimeMs > 3600 * 1000) { // older than 1 hr
+            rmSync(full, { recursive: true, force: true });
+          }
+        } catch {}
+      }
+    }
+  } catch {}
 }
 
 function getRepoProfile(repo, config) {
@@ -337,7 +357,7 @@ Attestation: Built on SIP`;
 
     // 5. Push branch to GitHub
     log(`[AUTO-SHIP PUSH] Pushing ${branchName} to origin...`);
-    const pushRes = runDirect('git', ['-C', tempWt, 'push', '-u', 'origin', branchName]);
+    const pushRes = runDirect('git', ['-C', tempWt, 'push', '-u', 'origin', branchName, '--force-with-lease']);
     if (pushRes.code !== 0) {
       log(`[STAGE ERROR] git push failed: ${pushRes.stderr}`);
       return false;
@@ -372,6 +392,15 @@ Built on SIP — Starlight Intelligence Protocol v1.1.1.`;
       prNum = prMatch ? prMatch[1] : null;
 
       if (prNum) {
+        session.prCreated = true;
+        session.prNumber = prNum;
+        recordContentMoment({
+          event: 'PR_CREATED',
+          repo: session.repo,
+          sessionId: id,
+          prNumber: prNum,
+          title: cleanTitle
+        });
         // Post Starlight Council Quality Scorecard on the GitHub PR
         const scorecardComment = `## Starlight Council Quality Scorecard
 
@@ -405,6 +434,12 @@ Built on SIP — Starlight Intelligence Protocol v1.1.1.`;
             log(`[AUTO-MERGE SUCCESS] PR #${prNum} is set to auto-merge upon CI pass!`);
             session.merged = true;
             session.mergedPr = prNum;
+            recordContentMoment({
+              event: 'AUTO_MERGE_SUCCESS',
+              repo: session.repo,
+              sessionId: id,
+              prNumber: prNum
+            });
           } else {
             // If --auto fails because protected branch rules are missing, merge directly!
             const directMerge = runDirect('gh', [
@@ -417,6 +452,12 @@ Built on SIP — Starlight Intelligence Protocol v1.1.1.`;
               log(`[DIRECT SQUASH MERGE] PR #${prNum} on ${session.repo} merged directly to main!`);
               session.merged = true;
               session.mergedPr = prNum;
+              recordContentMoment({
+                event: 'AUTO_MERGE_SUCCESS',
+                repo: session.repo,
+                sessionId: id,
+                prNumber: prNum
+              });
             } else {
               log(`Auto-merge note on PR #${prNum}: ${mergeRes.stderr || mergeRes.stdout}`);
             }
@@ -452,6 +493,7 @@ Built on SIP — Starlight Intelligence Protocol v1.1.1.`;
 // ── Core Operations ─────────────────────────────────────────────
 
 export async function tick() {
+  cleanupStaleWorktrees();
   const config = loadJSON(CONFIG_PATH, {});
   const ledger = loadJSON(LEDGER_PATH, { lastTick: null, sessions: {}, metrics: { dispatched: 0, completed: 0, merged: 0, quarantined: 0 } });
   const backlog = loadJSON(BACKLOG_PATH, { queue: [] });
@@ -640,7 +682,7 @@ export async function tick() {
   // 2B. Auto-Ship Verified Unmerged Sessions
   if (config.automation?.autoMerge) {
     const verifiedUnmerged = Object.entries(ledger.sessions)
-      .filter(([_, s]) => s.verified && !s.merged && !s.quarantined && s.repo)
+      .filter(([_, s]) => s.verified && !s.merged && !s.prCreated && !s.quarantined && s.repo)
       .slice(0, 2);
 
     for (const [id, s] of verifiedUnmerged) {
@@ -655,7 +697,9 @@ export async function tick() {
           const matchedPr = prs.find(p => p.title.includes(id) || p.headRefName.includes(id));
           if (matchedPr) {
             log(`[PR ALREADY TRACKED] Session ${id} has PR #${matchedPr.number} (${matchedPr.state}) on ${s.repo}.`);
-            if (matchedPr.state.toUpperCase() === 'MERGED') {
+            s.prCreated = true;
+            s.prNumber = matchedPr.number;
+            if (matchedPr.state.toUpperCase() === 'MERGED' || matchedPr.state.toUpperCase() === 'CLOSED') {
               s.merged = true;
               s.mergedPr = matchedPr.number;
             }
@@ -678,6 +722,79 @@ export async function tick() {
         }
       }
     }
+  }
+
+  // 2C. CI Ratchet Watcher & Self-Healing
+  const activePrSessions = Object.entries(ledger.sessions)
+    .filter(([_, s]) => s.prCreated && !s.merged && !s.closed && s.prNumber && s.repo)
+    .slice(0, 3);
+
+  for (const [id, s] of activePrSessions) {
+    try {
+      const viewRes = runGh(['pr', 'view', String(s.prNumber), '--repo', s.repo, '--json', 'state,statusCheckRollup']);
+      if (viewRes.code === 0 && viewRes.stdout) {
+        const prData = JSON.parse(viewRes.stdout);
+        if (prData.state === 'MERGED') {
+          log(`[CI RATCHET] PR #${s.prNumber} on ${s.repo} has MERGED!`);
+          s.merged = true;
+          s.mergedPr = s.prNumber;
+          ledger.metrics.merged++;
+          recordContentMoment({ event: 'AUTO_MERGED', repo: s.repo, prNumber: s.prNumber });
+          continue;
+        } else if (prData.state === 'CLOSED') {
+          s.closed = true;
+          continue;
+        }
+
+        // Check if CI failed
+        const checks = prData.statusCheckRollup || [];
+        const failedCheck = checks.find(c => c.conclusion === 'FAILURE' || c.conclusion === 'ERROR' || (c.status === 'COMPLETED' && c.conclusion === 'TIMED_OUT'));
+        if (failedCheck && !s.ciHealingAttempted) {
+          log(`[CI RATCHET FAILURE] PR #${s.prNumber} on ${s.repo} failed check "${failedCheck.name || 'test'}". Initiating Queen Autonomic Healing...`);
+          s.ciHealingAttempted = true;
+
+          // Attempt to harvest failure log
+          let failedLog = '';
+          const runListRes = runGh(['run', 'list', '--repo', s.repo, '--branch', `agent/jules/${id}`, '--limit', '1', '--json', 'databaseId,conclusion']);
+          if (runListRes.code === 0) {
+            try {
+              const runs = JSON.parse(runListRes.stdout || '[]');
+              if (runs.length > 0 && runs[0].databaseId) {
+                const runLogRes = runGh(['run', 'view', String(runs[0].databaseId), '--repo', s.repo, '--log-failed']);
+                if (runLogRes.code === 0) {
+                  failedLog = (runLogRes.stdout || '').slice(-2000);
+                }
+              }
+            } catch {}
+          }
+
+          // Formulate healing prompt
+          const healPrompt = engineerSelfHealingPrompt({
+            repo: s.repo,
+            taskDescription: `Resolve CI check failure on PR #${s.prNumber}:\n${failedLog || failedCheck.name}`,
+            violations: [`CI check failure: ${failedCheck.name || 'Lint/Build failure'}`],
+            repoProfile: getRepoProfile(s.repo, config),
+            retryCount: (s.retryCount || 0) + 1
+          });
+
+          backlog.queue.unshift({
+            id: `ci_heal_${id}_${Date.now()}`,
+            repo: s.repo,
+            title: `[CI-Heal] Fix ${failedCheck.name || 'check'} on PR #${s.prNumber}`,
+            description: healPrompt,
+            type: 'bugfix',
+            parentSessionId: id
+          });
+
+          recordContentMoment({
+            event: 'CI_HEALING_DISPATCHED',
+            repo: s.repo,
+            prNumber: s.prNumber,
+            failedCheck: failedCheck.name
+          });
+        }
+      }
+    } catch {}
   }
 
   // 3. Process Backlog Queue
@@ -767,6 +884,11 @@ export async function tick() {
 
   ledger.lastTick = new Date().toISOString();
   saveJSON(LEDGER_PATH, ledger);
+
+  try {
+    broadcastEvent('tick', getTelemetryMetrics());
+  } catch {}
+
   log(`[TICK COMPLETE]\n`);
 }
 
@@ -825,7 +947,20 @@ export async function runDaemon() {
   process.on('SIGINT', () => { cleanupPid(); process.exit(0); });
   process.on('SIGTERM', () => { cleanupPid(); process.exit(0); });
 
-  console.log(`Starting Starlight Jules Conductor Daemon v2.0 (Interval: ${config.runtime?.pollIntervalSeconds}s)...`);
+  process.on('uncaughtException', (err) => {
+    log(`[UNCAUGHT EXCEPTION] ${err?.stack || err?.message || err}`);
+  });
+  process.on('unhandledRejection', (reason) => {
+    log(`[UNHANDLED REJECTION] ${reason?.stack || reason?.message || reason}`);
+  });
+
+  try {
+    startTelemetryServer();
+  } catch (err) {
+    log(`Telemetry server note: ${err.message}`);
+  }
+
+  console.log(`Starting Starlight Jules Conductor Daemon v2.1 (Interval: ${config.runtime?.pollIntervalSeconds}s)...`);
   log(`Daemon started in Low-RAM Mode (PID: ${process.pid}). Process RSS: ${getMemoryMetrics().rssMb} MB.`);
 
   try {
@@ -834,9 +969,15 @@ export async function runDaemon() {
     log(`Initial tick error: ${err.message}`);
   }
 
+  let tickCount = 0;
   setInterval(async () => {
     try {
       await tick();
+      tickCount++;
+      if (tickCount % 10 === 0) {
+        log('[QUEEN AUTONOMIC] Executing scheduled Queen memory consolidation cycle across fleet nodes...');
+        appendVault({ action: 'queen_autonomic_consolidation_cycle', timestamp: new Date().toISOString() });
+      }
     } catch (err) {
       log(`Tick execution error: ${err.message}`);
     }
