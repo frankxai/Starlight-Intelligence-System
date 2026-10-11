@@ -24,7 +24,7 @@
 
 import { parseArgs } from "node:util";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import {
@@ -37,6 +37,20 @@ import {
   type MarketplaceItemKind,
   type MarketplaceItem,
 } from "./index.js";
+import {
+  evaluateSkill,
+  loadSkillFromFile,
+  allocateSkillsForAgent,
+  generateCrossMarketplaceManifests,
+  type SupportedHarness,
+  resolveSkillMatrix,
+  generateHarnessConfig,
+  scanWorkspaceSkills,
+  auditSkillValuation,
+  syndicateSkill,
+  type HarnessTarget,
+  type SyndicationTarget,
+} from "./skills/index.js";
 import {
   readRegistry,
   installPack,
@@ -1935,6 +1949,119 @@ function cmdMarketplace(action: string, args: string[], options: { kind?: string
   }
 }
 
+// ── Skill Economy & Allocation ─────────────────────────────
+
+function cmdSkill(
+  action: string,
+  args: string[],
+  opts: { harness?: string } = {}
+): void {
+  switch (action) {
+    case "audit": {
+      const targetPath = args[0];
+      if (!targetPath) {
+        console.error("[starlight] Error: skill audit requires a path to SKILL.md or pack directory.");
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const filePath = existsSync(targetPath) && statSync(targetPath).isDirectory()
+          ? join(targetPath, "SKILL.md")
+          : targetPath;
+        const skill = loadSkillFromFile(filePath);
+        const report = evaluateSkill(skill);
+
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  STARLIGHT SKILL VALUATION & FAIR MARKET AUDIT`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`Skill ID:          ${report.skillId}`);
+        console.log(`Overall Score:     ${report.overallScore}/100`);
+        console.log(`Quality Score:     ${report.qualityScore}/100`);
+        console.log(`Complexity Score:  ${report.complexityScore}/100`);
+        console.log(`Uniqueness Score:  ${report.uniquenessScore}/100`);
+        console.log(`Token ROI Score:   ${report.roiScore}/100`);
+        console.log(`\nRecommended Tier:  ${report.recommendedTier.toUpperCase()}`);
+        console.log(`Suggested Monthly: $${report.suggestedMonthlyUsd}/month`);
+        console.log(`Suggested One-Off: $${report.suggestedOneOffUsd} perpetual license`);
+        console.log(`\nKey Value Strengths:`);
+        for (const r of report.rationale) console.log(`  + ${r}`);
+        if (report.improvementGaps.length > 0) {
+          console.log(`\nImprovement Gaps:`);
+          for (const g of report.improvementGaps) console.log(`  ! ${g}`);
+        }
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+      } catch (err) {
+        console.error(`[starlight] Skill audit failed: ${err instanceof Error ? err.message : String(err)}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+    case "allocate": {
+      const agentId = args[0] || "orchestrator";
+      const targetHarness = (opts.harness as SupportedHarness) || "claude-code";
+      const res = allocateSkillsForAgent(agentId, { targetHarness });
+
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  MULTI-AGENT SKILL ALLOCATION (NECESSITY-GATED)`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`Agent:            ${res.agentRole} (${res.agentId})`);
+      console.log(`Tier:             ${res.tier.toUpperCase()}`);
+      console.log(`Target Harness:   ${targetHarness}`);
+      console.log(`Active Token Est: ${res.totalEstimatedTokens} tokens\n`);
+      console.log(`Allocated Skills (${res.allocatedSkills.length}):`);
+      for (const s of res.allocatedSkills) {
+        console.log(`  ✓ ${s.id} — ${s.reason}`);
+      }
+      if (res.excludedSkills.length > 0) {
+        console.log(`\nExcluded to Prevent Context Bloat (${res.excludedSkills.length}):`);
+        for (const e of res.excludedSkills) {
+          console.log(`  ✕ ${e.id} — ${e.reason}`);
+        }
+      }
+      console.log(`\nGenerated Configuration Snippet:\n`);
+      console.log(res.harnessConfigSnippet);
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+    case "bridge": {
+      const targetPath = args[0];
+      if (!targetPath) {
+        console.error("[starlight] Error: skill bridge requires a path to SKILL.md or pack directory.");
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const filePath = existsSync(targetPath) && statSync(targetPath).isDirectory()
+          ? join(targetPath, "SKILL.md")
+          : targetPath;
+        const skill = loadSkillFromFile(filePath);
+        const manifests = generateCrossMarketplaceManifests(skill);
+
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  CROSS-MARKETPLACE ECOSYSTEM BRIDGE: ${skill.id}`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`\n1. Starlight Native Catalog Registration:`);
+        console.log(JSON.stringify(manifests.starlightCatalogEntry, null, 2));
+        console.log(`\n2. Smithery YAML Manifest (smithery.yaml):`);
+        console.log(manifests.smitheryYaml);
+        console.log(`\n3. Glama MCP JSON Descriptor (glama.json):`);
+        console.log(JSON.stringify(manifests.glamaJson, null, 2));
+        console.log(`\n4. Cursor / Claude Rule Snippet:`);
+        console.log(manifests.cursorRuleSnippet);
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+      } catch (err) {
+        console.error(`[starlight] Skill bridge failed: ${err instanceof Error ? err.message : String(err)}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown skill action: "${action}"`);
+      console.error("  Available actions: audit, allocate, bridge");
+      process.exitCode = 1;
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -2230,6 +2357,14 @@ async function main(): Promise<void> {
       cmdMarketplace(marketAction, positionals.slice(2), {
         kind: asString(values.kind),
         category: asString(values.category),
+      });
+      break;
+    }
+
+    case "skill": {
+      const skillAction = positionals[1] ?? "audit";
+      cmdSkill(skillAction, positionals.slice(2), {
+        harness: asString(values.harness),
       });
       break;
     }

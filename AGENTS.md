@@ -1,4 +1,4 @@
-﻿# Starlight Intelligence System â€” Codex / OpenCode Agent Instructions
+# Starlight Intelligence System â€” Codex / OpenCode Agent Instructions
 
 > Persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) â€” a sovereign substrate.
 
@@ -85,7 +85,7 @@ And configure its activation rule inside `skills/skill-rules.json`:
 
 ## What you have access to
 
-- **144 named agents** across Core, Universal, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
+- **150 named agents** across Core, Universal, Skill Council, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
 - **88 auto-activating skill rules** across 17 domains (intelligence Â· orchestration Â· memory Â· integration Â· **foundry** Â· business Â· vision Â· health Â· relational Â· people-intelligence Â· sound-intelligence Â· music-is Â· energy Â· machine Â· crypto-intelligence Â· **safety** Â· **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, system packaging, taste evaluation, and evidence receipts. Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic â—† Â· Technical â¬¡ Â· Creative âœ¦ Â· Operational â–¸ Â· Wisdom â—Ž Â· Horizon â†—) â€” Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion. SIS Memory Gateway v0.1 (SessionStore + per-harness loopback daemon + RRF hybrid unification, privacy drop on private tags) + Memory Engine v0.2 (pluggable embeddings). See memory/README.md, VAULT_ARCHITECTURE.md, src/gateway/*, src/embedding.ts. Dreaming pipeline + CONSOLIDATION_LOG + PROMOTION_QUEUE for observable compounding. Private mount: separate starlight-private-memory repo (2026-06-11). **2026-06-12:** Queen (via driver + surfaces) now drives visual palace recall + consolidation; gateway SessionStore as Queen loop state; 5 image_gen visuals (loop/gateway/palace/arch/heatmap/receipt) integrated as first-class artifacts. See operational-vault Queen Advance + tools/queen/queen-advance-2026-06-12.json.
 - **Sanitization Gateway (The Veil)** â€” Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.

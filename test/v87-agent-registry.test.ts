@@ -57,6 +57,9 @@ function numberToHeadlineWord(n: number): string {
   if (n === 144) {
     return "One-hundred-forty-four";
   }
+  if (n === 150) {
+    return "One-hundred-fifty";
+  }
   const TENS: Record<number, string> = {
     40: "Forty",
     50: "Fifty",

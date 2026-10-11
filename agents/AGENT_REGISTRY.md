@@ -1,7 +1,8 @@
 # Starlight Agent Registry
 
-> One-hundred-forty-four minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy + Legal + Space + Marine + Longevity + Infrastructure + Partners + Research + Assets + Distribution) + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
+> One-hundred-fifty minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy + Legal + Space + Marine + Longevity + Infrastructure + Partners + Research + Assets + Distribution) + Council Archetype Tier + Evaluator + Skill Council Tier. One system. No hierarchy is permanent — only the mission is.
 >
+> **v8.8.x update (2026-10-11):** Skill & Harness Council registered (6 minds) — Skill Architect, Harness Tuner, Skill Scanner, Skill Monetizer, Valuation Auditor, Marketplace Syndicator.
 > **L99 Swarm Topology Update (2026-06-17):** Scaled swarm topology specifying Kings (policy locks), Queens (orchestration loops), Starlight Board, and Model Council consensus. The complete fleet of 150 agents is specified in the [Starlight 150 Agent Blueprint](../docs/AGENT_BLUEPRINT.md) and documented in the [Swarm Topology Strategy](../docs/swarm-topology.md).
 >
 > **v8.2.x update (2026-06-10):** Evaluator registered (`starlight-evaluator.md`) — Starlight Proving Ground + Model Arena measurement seat.
@@ -114,6 +115,17 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 |-------|------|--------|-----------|
 | **Genius** | `starlight-genius.md` | Genius excavation, pattern-mining across personal corpus, framework extraction, voice fingerprinting, four-bucket sorting | `/discover-genius` is invoked; newcomer described as scattered-expertise / indispensable-but-trapped; excavating Genius Profile + Freedom Path |
 | **Evaluator** | `starlight-evaluator.md` | System evaluation, benchmark design, metric provenance, falsification. Holds the Luminor kernel mindset (Precision/Wisdom/Transcendence) as evaluator disposition; surface stays canon-free | `/starlight-eval` is invoked; a Starlight Proving Ground run executes; arena rounds or scorecard synthesis (2026-06-10) |
+
+### Skill & Harness Engineering Council Tier (v8.8 — 6 minds)
+
+| Agent | File | Domain | Leads When |
+|-------|------|--------|-----------|
+| **Skill Architect** | `starlight-skill-architect.md` | Skill Matrix & Context Budgeting | Resolving agent-skill mappings, context budget calculation, prompt bloat mitigation |
+| **Harness Tuner** | `starlight-harness-tuner.md` | Cross-Harness Configuration | Auto-generating and tuning configs for Claude Code, Codex, Antigravity, Grok, Hermes, Cursor, etc. |
+| **Skill Scanner** | `starlight-skill-scanner.md` | Workspace Skill Discovery | Mining codebases and dotfiles for custom skills, prompts, and emergent skins |
+| **Skill Monetizer** | `starlight-skill-monetizer.md` | Commercial Packaging & Strategy | Structuring Free vs Pro tiers, licensing models, bundles, and recurring income streams |
+| **Valuation Auditor** | `starlight-skill-valuation-auditor.md` | Quantitative Valuation & ROI | Auditing capability depth, token efficiency multiplier, hours saved, and pricing math |
+| **Marketplace Syndicator** | `starlight-marketplace-syndicator.md` | Multi-Marketplace Distribution | Syndicating skills to OpenClaw, AgentSkills.io, Claude Plugins, OpenAI, and Starlight Hub |
 
 ### Leadership, Specialist, and Foundation Tiers
 
