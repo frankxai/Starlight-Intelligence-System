@@ -318,3 +318,35 @@ test('query sanitizer diagnostics are withheld and provider work never starts', 
   }), error => error.message === 'Memory recall unavailable or denied');
   assert.equal(calls, 0);
 });
+
+test('standalone projection retains scope and sharing permission across sanitizer callbacks', () => {
+  const config = { ...options, allowShareable: false };
+  config.sanitizer = { sanitize(text) {
+    config.tenantId = 'tenant-b'; config.allowShareable = true; return text;
+  } };
+  const context = projectRecall([hit('admitted'), hit('foreign', { tenant_id: 'tenant-b' }),
+    hit('shareable', { tenant_id: 'tenant-b', privacy_class: 'private-shareable' })], config);
+  assert.deepEqual(context.map(item => item.id), ['admitted']);
+});
+
+test('standalone projection retains its sanitizer method across host callbacks', () => {
+  const sanitizer = { sanitize(text) {
+    this.sanitize = value => value;
+    return text.replace('fixture@example.org', '[REDACTED]');
+  } };
+  const context = projectRecall([hit('fixture@example.org', { normalized_fact: 'safe first fact' }),
+    hit('second', { normalized_fact: 'fixture@example.org' })], { ...options, sanitizer });
+  assert.equal(context[0].id, '[REDACTED]');
+  assert.equal(context[1].content, '[REDACTED]');
+});
+
+test('cancellation during query sanitization prevents provider work without an unhandled rejection', async () => {
+  const controller = new AbortController();
+  let calls = 0;
+  await assert.rejects(recallContext('reviewed release', { ...options,
+    memory: { async recall() { calls++; return []; } },
+    sanitizer: { sanitize(text) { controller.abort('synthetic private caller reason'); return text; } },
+  }, controller.signal), error => error.name === 'AbortError' && !error.message.includes('synthetic'));
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(calls, 0);
+});
