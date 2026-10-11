@@ -85,9 +85,51 @@ function Get-StarlightStatus {
 Set-Alias -Name st-status -Value Get-StarlightStatus -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name st-kernel -Value starlightd -Scope Global -Force -ErrorAction SilentlyContinue
 
+# --- Starlight Cloud Worker & Edge Service Mesh ---
+function Get-StarlightCloudStatus {
+    $url = if ($env:STARLIGHT_CLOUD_URL) { $env:STARLIGHT_CLOUD_URL } else { "https://starlight-cloud-worker.frankxai.workers.dev" }
+    Write-Host "Querying Starlight Edge Cloud Mesh at $url/v1/health..." -ForegroundColor Cyan
+    try {
+        $res = Invoke-RestMethod -Uri "$url/v1/health" -Method Get
+        $res | ConvertTo-Json -Depth 4 | Write-Host -ForegroundColor Green
+    } catch {
+        Write-Error "Failed to reach Starlight Cloud Worker: $_"
+    }
+}
+
+function Invoke-StarlightCloudQuery {
+    param([Parameter(Mandatory=$true)][string]$Query, [string]$Tier = "technical")
+    $url = if ($env:STARLIGHT_CLOUD_URL) { $env:STARLIGHT_CLOUD_URL } else { "https://starlight-cloud-worker.frankxai.workers.dev" }
+    $token = if ($env:STARLIGHT_API_KEY) { $env:STARLIGHT_API_KEY } else { "starlight_live_frank_master_001" }
+    $headers = @{ "Authorization" = "Bearer $token"; "Content-Type" = "application/json" }
+    $body = @{ query = $Query; tier = $Tier } | ConvertTo-Json
+    $res = Invoke-RestMethod -Uri "$url/v1/memory/query" -Method Post -Headers $headers -Body $body
+    $res | ConvertTo-Json -Depth 5 | Write-Host -ForegroundColor Cyan
+}
+
+function Add-StarlightCloudMemory {
+    param([Parameter(Mandatory=$true)][string]$Content, [string]$Tier = "operational")
+    $url = if ($env:STARLIGHT_CLOUD_URL) { $env:STARLIGHT_CLOUD_URL } else { "https://starlight-cloud-worker.frankxai.workers.dev" }
+    $token = if ($env:STARLIGHT_API_KEY) { $env:STARLIGHT_API_KEY } else { "starlight_live_frank_master_001" }
+    $headers = @{ "Authorization" = "Bearer $token"; "Content-Type" = "application/json" }
+    $body = @{ content = $Content; tier = $Tier } | ConvertTo-Json
+    $res = Invoke-RestMethod -Uri "$url/v1/memory/append" -Method Post -Headers $headers -Body $body
+    $res | ConvertTo-Json -Depth 4 | Write-Host -ForegroundColor Green
+}
+
+function Open-StarlightMemoryPalace {
+    $url = if ($env:STARLIGHT_CLOUD_URL) { $env:STARLIGHT_CLOUD_URL } else { "https://starlight-cloud-worker.frankxai.workers.dev" }
+    Start-Process "$url/palace"
+}
+
+Set-Alias -Name st-cloud-status -Value Get-StarlightCloudStatus -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name st-cloud-query  -Value Invoke-StarlightCloudQuery -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name st-cloud-append -Value Add-StarlightCloudMemory -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name st-cloud-palace -Value Open-StarlightMemoryPalace -Scope Global -Force -ErrorAction SilentlyContinue
+
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
     # ASCII separator (`|`) instead of middle-dot to render correctly even
     # when the console is misconfigured (some terminals decode UTF-8 multibyte
     # chars as their CP1252 component letters → "Â·" garbling).
-    Write-Host 'Starlight tools loaded: zoxide(z) | mise | bat(cat) | lazygit(lg) | eza(ll/tree) | uv | restic | starlightd' -ForegroundColor DarkCyan
+    Write-Host 'Starlight tools loaded: zoxide(z) | mise | bat(cat) | lazygit(lg) | eza(ll/tree) | uv | restic | starlightd | st-cloud' -ForegroundColor DarkCyan
 }
