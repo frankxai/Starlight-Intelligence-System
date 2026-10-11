@@ -17,6 +17,7 @@ permissions:
   pull-requests: read
   issues: read
   checks: write
+  statuses: write
 
 concurrency:
   group: merge-review-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr }}

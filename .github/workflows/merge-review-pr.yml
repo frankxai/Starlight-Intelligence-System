@@ -21,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # Native eligibility is paired with the separate same-name commit status
+      # emitted by the trusted default-branch controller. This PR-owned job is
+      # never sufficient evidence on its own; fork tokens cannot set that status.
       # Execute only the immutable trusted base, never PR source or instructions.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
