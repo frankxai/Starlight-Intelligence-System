@@ -1,0 +1,32 @@
+{
+  "pluginId": "starlight-activation-router@starlight-local",
+  "name": "starlight-activation-router",
+  "marketplaceName": "starlight-local",
+  "version": "0.1.0+codex.20260623104602",
+  "marketplaceRoot": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System",
+  "marketplaceManifest": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System\\.agents\\plugins\\marketplace.json",
+  "sourcePath": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System\\plugins\\starlight-activation-router",
+  "installedPath": "C:\\Users\\frank\\.codex\\plugins\\cache\\starlight-local\\starlight-activation-router\\0.1.0+codex.20260623104602",
+  "authPolicy": "ON_INSTALL",
+  "status": "installed, enabled",
+  "skills": [
+    "acos-router",
+    "starlight-si",
+    "starlight-so"
+  ],
+  "promptShortcuts": [
+    {
+      "command": "/si",
+      "path": "C:\\Users\\frank\\.codex\\prompts\\si.md"
+    },
+    {
+      "command": "/so",
+      "path": "C:\\Users\\frank\\.codex\\prompts\\so.md"
+    },
+    {
+      "command": "/acos",
+      "path": "C:\\Users\\frank\\.codex\\prompts\\acos.md"
+    }
+  ],
+  "validatedAt": "2026-06-23"
+}

@@ -1,0 +1,76 @@
+{
+  "$comment": "Built on SIP — R5 deep-reasoning task fixture. Schema: r5-task v0.1.",
+  "id": "d3-longctx-reconcile",
+  "family": "long-context synthesis reconciling two facts placed far apart",
+  "category": "two-needle reconciliation with a live decoy and ~300 near-miss distractors",
+  "why": "The two facts that produce the answer sit at sections 17 and 288 of a 300-section handbook and neither is usable without the other. Every filler section states a job, a UTC start time and a duration, so the document contains roughly 300 schedule facts of the same surface shape as the needles — retrieval by keyword alone lands on distractors. Section 12 carries a retired compaction job with different timings that is never explicitly ruled out, so a model that grabs the first compaction-shaped fact it finds derives a fully self-consistent wrong answer. The second half of the question forces the model to also locate the middle claim at section 150 and compare two intervals.",
+  "assemble": {
+    "type": "sectioned-document",
+    "preamble": "The following is the Starlight Operations Handbook. It is authoritative. Read it in full before answering the question that follows it.",
+    "sectionCount": 300,
+    "filler": {
+      "template": "Section {i}. Job {job} in the {topic} subsystem is scheduled at {hh}:{mm} UTC and runs for {dur} minutes. It is owned by the {topic} on-call rotation and must not be started while a higher-priority job in the same subsystem is already running.",
+      "topics": [
+        "ingest", "indexing", "telemetry", "billing", "archival", "routing",
+        "vector-store", "audit-log", "session-cache", "webhook-relay",
+        "search-tier", "media-transcode", "notification", "quota-meter",
+        "identity", "feature-flag", "cost-plane", "log-shipper", "backfill", "reconciler"
+      ],
+      "hour": { "mul": 7, "mod": 24 },
+      "minute": { "mul": 13, "mod": 60 },
+      "duration": { "base": 15, "mul": 11, "mod": 90 }
+    },
+    "needles": [
+      {
+        "atSection": 12,
+        "role": "decoy",
+        "text": "Section 12. The legacy compaction job was scheduled at 01:00 UTC and ran for 60 minutes. It was retired in 2024. A number of older runbooks still quote its timings."
+      },
+      {
+        "atSection": 17,
+        "role": "needle-A",
+        "text": "Section 17. The nightly compaction job is scheduled at 02:00 UTC and runs for 95 minutes. Compaction is considered complete at the moment that job exits."
+      },
+      {
+        "atSection": 150,
+        "role": "middle-claim",
+        "text": "Section 150. Operators may run schema migrations at any time between 03:00 and 05:00 UTC. This window is fixed and is not adjusted for other activity."
+      },
+      {
+        "atSection": 288,
+        "role": "needle-B",
+        "text": "Section 288. The read-replica promotion window opens 30 minutes after the nightly compaction job completes, and is exactly 45 minutes long. Promotion may not be initiated outside this window."
+      }
+    ],
+    "question": "Question. At what UTC time does the read-replica promotion window close? Give the time as HH:MM on a 24-hour clock. Then state whether the schema-migration window described in this handbook overlaps the read-replica promotion window at any point — answer YES or NO."
+  },
+  "answerFormat": "ANSWER: <HH:MM> <YES or NO>",
+  "groundTruth": {
+    "answer": "04:50 YES",
+    "derivation": [
+      "Section 17: nightly compaction starts 02:00 UTC, runs 95 minutes -> completes 03:35 UTC.",
+      "Section 288: promotion window opens 30 minutes after completion -> 04:05 UTC; length 45 minutes -> closes 04:50 UTC.",
+      "Section 150: migration window is 03:00-05:00 UTC.",
+      "04:05-04:50 lies inside 03:00-05:00, so the windows overlap -> YES."
+    ]
+  },
+  "verification": {
+    "type": "exact-final-line",
+    "normalize": ["collapse-whitespace", "uppercase", "strip-commas"],
+    "accept": ["^0?4\\s*:\\s*50\\s+YES$"],
+    "attractors": [
+      {
+        "label": "used-retired-compaction-job",
+        "accept": ["^0?3\\s*:\\s*15\\s+YES$"],
+        "why": "Derived the window from the retired legacy compaction job at section 12 (01:00 + 60 min) instead of the nightly job at section 17."
+      },
+      {
+        "label": "dropped-the-30-minute-offset",
+        "accept": ["^0?4\\s*:\\s*20\\s+YES$"],
+        "why": "Found both needles but added the 45-minute length directly to compaction completion, ignoring the 30-minute offset."
+      }
+    ]
+  },
+  "prediction": { "fable": "PASS", "opus": "PASS", "sonnet": "FAIL", "haiku": "FAIL" },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

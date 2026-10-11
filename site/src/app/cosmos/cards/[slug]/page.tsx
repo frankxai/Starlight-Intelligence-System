@@ -16,6 +16,7 @@ import {
   KIND_LABEL,
 } from "@/lib/cosmos/cards";
 import { CardTile } from "@/components/cosmos/CardTile";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -79,10 +80,7 @@ export default async function CosmosCardPage({
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-        </div>
+        <GalaxyField still="deepField" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
           <Link
             href="/cosmos/cards"
@@ -92,7 +90,7 @@ export default async function CosmosCardPage({
           </Link>
           <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px]">
             <span
-              className={`rounded-full border px-2.5 py-1 uppercase tracking-widest ${ACCENT_CHIP[accent]}`}
+              className={`rounded-full border px-2.5 py-1 normal-case tracking-wider ${ACCENT_CHIP[accent]}`}
             >
               {KIND_LABEL[card.kind]}
             </span>
@@ -124,7 +122,7 @@ export default async function CosmosCardPage({
       {/* ── Facts panel ── */}
       <section className="border-b border-white/[0.04] px-6 py-12">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             The data
           </h2>
           <dl className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2">
@@ -133,7 +131,7 @@ export default async function CosmosCardPage({
                 key={f.label}
                 className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-3"
               >
-                <dt className="text-[11px] uppercase tracking-wider text-slate-500">
+                <dt className="text-[11px] normal-case tracking-wider text-slate-500">
                   {f.label}
                 </dt>
                 <dd className={`mt-1 text-[14px] font-medium ${ACCENT_TEXT_LIGHT[accent]}`}>
@@ -157,7 +155,7 @@ export default async function CosmosCardPage({
       {/* ── Prompts to explore ── */}
       <section className="border-b border-white/[0.04] px-6 py-16">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Prompts to explore
           </h2>
           <p className="mt-3 text-[13px] leading-[1.75] text-slate-400">
@@ -188,7 +186,7 @@ export default async function CosmosCardPage({
       {related.length > 0 && (
         <section className="border-b border-white/[0.04] px-6 py-16">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Related cards
             </h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -205,7 +203,7 @@ export default async function CosmosCardPage({
         <div className="mx-auto max-w-3xl">
           {card.sources.length > 0 && (
             <>
-              <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+              <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
                 Primary sources
               </h2>
               <ul className="mt-4 space-y-2">
@@ -225,7 +223,7 @@ export default async function CosmosCardPage({
             </>
           )}
           <div className="mt-10 rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Built on SIP
             </p>
             <p className="mt-3 text-[14px] leading-[1.7] text-slate-300">

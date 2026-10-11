@@ -186,7 +186,7 @@ Every routing change is appended here: date · class · old→new · evidence ·
 
 These are the gaps the Queen's loop should close next, in priority order:
 
-1. **R4 deep-reasoning lane** — the one task-class routed on doctrine, not evidence.
+1. **R5 deep-reasoning lane** (landed 2026-08-28; R4 was the work-samples card) — the one task-class routed on doctrine, not evidence.
    Until measured, "Opus for reasoning" is a guess. Highest priority.
 2. **Cross-family judge + cross-family routing** — add GPT-5 (OpenRouter) as both a
    bias-free judge and a cost-arbitrage routing target.

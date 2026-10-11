@@ -14,8 +14,6 @@ export class InMemoryLocalCoreProvider implements MemoryProvider {
   private readonly records = new Map<string, SISMemoryRecord>();
 
   async remember(record: SISMemoryRecord): Promise<SISMemoryRecord> {
-    // Composite encoding prevents tenant/id delimiter collisions. Snapshot both
-    // boundaries so a caller cannot change another recall's identity or content.
     this.records.set(recordKey(record.tenant_id, record.memory_id), structuredClone(record));
     return structuredClone(record);
   }
@@ -26,7 +24,8 @@ export class InMemoryLocalCoreProvider implements MemoryProvider {
     const minScore = request.min_score ?? 0;
 
     return Array.from(this.records.values())
-      .filter((record) => record.tenant_id === request.tenant_id)
+      .filter((record) => record.tenant_id === request.tenant_id
+        && (request.workspace_id === undefined || record.workspace_id === request.workspace_id))
       .map((record) => scoreRecord(record, queryTerms))
       .filter((result) => result.score > minScore)
       .sort((a, b) => b.score - a.score || b.record.importance - a.record.importance)
@@ -35,7 +34,10 @@ export class InMemoryLocalCoreProvider implements MemoryProvider {
   }
 
   async forget(request: ForgetRequest): Promise<boolean> {
-    return this.records.delete(recordKey(request.tenant_id, request.memory_id));
+    const key = recordKey(request.tenant_id, request.memory_id);
+    const record = this.records.get(key);
+    if (!record || record.tenant_id !== request.tenant_id) return false;
+    return this.records.delete(key);
   }
 }
 

@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/work-graph-event.schema.json",
+  "title": "SIS Operational Work Graph Event",
+  "description": "Harness-neutral, evidence-backed event connecting intent, execution, changes, checks, deployments, and verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "workId",
+    "correlationId",
+    "projectId",
+    "kind",
+    "source",
+    "actorId",
+    "occurredAt",
+    "observedAt",
+    "evidenceRefs",
+    "visibility",
+    "retention",
+    "summary"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "eventId": { "type": "string", "minLength": 1 },
+    "workId": { "type": "string", "minLength": 1 },
+    "correlationId": { "type": "string", "minLength": 1 },
+    "projectId": { "type": "string", "minLength": 1 },
+    "kind": {
+      "enum": [
+        "intent.captured",
+        "work.admitted",
+        "run.started",
+        "artifact.produced",
+        "change.opened",
+        "check.passed",
+        "deployment.succeeded",
+        "verification.passed",
+        "work.blocked",
+        "work.completed"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "sourceId"],
+      "properties": {
+        "system": {
+          "enum": [
+            "human",
+            "hermes",
+            "telegram",
+            "codex",
+            "claude",
+            "antigravity",
+            "github",
+            "ci",
+            "deployment",
+            "observatory",
+            "other"
+          ]
+        },
+        "sourceId": { "type": "string", "minLength": 1 },
+        "uri": { "type": "string", "minLength": 1 }
+      }
+    },
+    "actorId": { "type": "string", "minLength": 1 },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "observedAt": { "type": "string", "format": "date-time" },
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "visibility": { "enum": ["public", "internal", "private", "restricted"] },
+    "retention": { "enum": ["ephemeral", "operational", "audit"] },
+    "summary": { "type": "string", "minLength": 1 },
+    "data": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "work.admitted" } } },
+      "then": {
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["requirements"],
+            "properties": {
+              "requirements": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["artifact", "change", "checks", "deployment", "verification"],
+                "properties": {
+                  "artifact": { "type": "boolean" },
+                  "change": { "type": "boolean" },
+                  "checks": { "type": "boolean" },
+                  "deployment": { "type": "boolean" },
+                  "verification": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

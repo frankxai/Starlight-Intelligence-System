@@ -1,0 +1,13 @@
+interface:
+  display_name: "Starlight Web Production"
+  short_description: "Direct distinctive, production-proven web releases"
+  default_prompt: "Use $starlight-web-production to direct and ship this web surface."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "refero"
+      description: "Refero design styles, product screens, and user flows"
+      transport: "streamable_http"
+      url: "https://api.refero.design/mcp"
+policy:
+  allow_implicit_invocation: true

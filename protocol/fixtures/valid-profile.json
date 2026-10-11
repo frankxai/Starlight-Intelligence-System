@@ -1,0 +1,355 @@
+{
+  "sipGraphVersion": "0.1.0",
+  "profile": {
+    "id": "sip:profile:reference-adopter",
+    "subject": "github.com/example/research-agent",
+    "declaredBy": "sip:identity:example-lab",
+    "generatedAt": "2026-09-02T09:00:00Z",
+    "note": "Reference conformance fixture. Every value is synthetic. It exists to exercise the rule set end to end, not to describe a real deployment."
+  },
+  "nodes": [
+    {
+      "id": "sip:identity:example-lab",
+      "type": "Identity",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-01-04T10:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:identity-self-consistent", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Example Lab",
+      "body": { "kind": "org", "publicKeyRef": "https://example.org/.well-known/sip-keys.json#lab-2026" }
+    },
+    {
+      "id": "sip:identity:operator-a",
+      "type": "Identity",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "alliance",
+      "provenance": { "origin": "authored", "at": "2026-01-04T10:05:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:identity-self-consistent", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Operator A",
+      "body": { "kind": "person" }
+    },
+    {
+      "id": "sip:agent:retrieval-analyst",
+      "type": "Agent",
+      "version": "2.1.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-06-11T08:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:agent-declares-capabilities", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Retrieval analyst",
+      "body": { "harness": "claude-code", "role": "reads sources and drafts claims for review" }
+    },
+    {
+      "id": "sip:capability:read-public-corpus",
+      "type": "Capability",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-06-11T08:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:capability-scope-bounded", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Read the public corpus",
+      "body": { "action": "read", "scope": "corpus/public/**" }
+    },
+    {
+      "id": "sip:source:corpus-note-114",
+      "type": "Source",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "imported", "at": "2026-08-20T14:12:00Z", "method": "corpus ingest", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:source-locator-resolves", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Corpus note 114",
+      "body": { "locator": "https://example.org/corpus/notes/114", "retrievedAt": "2026-08-20T14:12:00Z" }
+    },
+    {
+      "id": "sip:source:internal-log-7",
+      "type": "Source",
+      "version": "1.0.0",
+      "owner": "sip:identity:operator-a",
+      "visibility": "private",
+      "provenance": { "origin": "observed", "at": "2026-08-20T14:20:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:source-locator-resolves", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Internal run log 7",
+      "body": { "locator": "file:///vault/runs/7.jsonl" },
+      "private": { "operatorNotes": "contains unredacted participant handles" }
+    },
+    {
+      "id": "sip:memory-record:corpus-114-summary",
+      "type": "MemoryRecord",
+      "version": "1.1.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-08-20T14:30:00Z", "method": "summarize", "sources": ["sip:source:corpus-note-114"] },
+      "evaluation": { "rule": "sip:evaluation:memory-has-retention", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Summary of corpus note 114",
+      "body": { "retention": "P2Y", "contentRef": "memory/public/corpus-114-summary.md" }
+    },
+    {
+      "id": "sip:claim:retrieval-latency-improved",
+      "type": "Claim",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-08-21T09:00:00Z", "method": "analysis", "sources": ["sip:memory-record:corpus-114-summary"] },
+      "evaluation": { "rule": "sip:evaluation:claim-has-supporting-source", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Retrieval latency improved after the index rebuild",
+      "body": { "statement": "Median retrieval latency fell from 840ms to 310ms after the 2026-08 index rebuild, measured over the public corpus." }
+    },
+    {
+      "id": "sip:policy:public-claims-need-two-sources",
+      "type": "Policy",
+      "version": "1.2.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-03-02T11:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:policy-is-enforceable", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Public claims need two independent sources",
+      "body": { "rule": "A Claim projected to a public audience must derive from at least two Source or MemoryRecord nodes with distinct provenance.origin.", "enforcement": "blocking" }
+    },
+    {
+      "id": "sip:decision:publish-latency-claim",
+      "type": "Decision",
+      "version": "1.0.0",
+      "owner": "sip:identity:operator-a",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-08-22T16:40:00Z", "sources": ["sip:policy:public-claims-need-two-sources"] },
+      "evaluation": { "rule": "sip:evaluation:decision-cites-policy", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Publish the latency claim",
+      "body": { "outcome": "allow", "rationale": "Two sources with distinct origin (imported corpus note, observed run log). The observed source stays private; the claim is publishable without it." }
+    },
+    {
+      "id": "sip:artifact:latency-report-2026-08",
+      "type": "Artifact",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-08-22T17:00:00Z", "method": "render", "sources": ["sip:claim:retrieval-latency-improved"] },
+      "evaluation": { "rule": "sip:evaluation:artifact-locator-resolves", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Retrieval latency report, August 2026",
+      "body": { "locator": "https://example.org/reports/2026-08-latency", "mediaType": "text/html" }
+    },
+    {
+      "id": "sip:evaluation:latency-replication",
+      "type": "Evaluation",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "observed", "at": "2026-08-25T12:00:00Z", "method": "replication run", "sources": ["sip:source:corpus-note-114"] },
+      "evaluation": { "rule": "sip:evaluation:eval-is-reproducible", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Independent replication of the latency measurement",
+      "body": { "method": "re-ran the benchmark on a cold index, 30 trials", "result": "pass", "observed": "median 318ms" }
+    },
+    {
+      "id": "sip:attestation:latency-report-signed",
+      "type": "Attestation",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-08-26T09:15:00Z", "sources": ["sip:evaluation:latency-replication"] },
+      "evaluation": { "rule": "sip:evaluation:attestation-signature-resolves", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Built on SIP attestation for the latency report",
+      "body": { "statementType": "built-on-sip", "sipVersion": "1.1.1", "signatureRef": "https://example.org/attestations/2026-08-26-latency.sig" }
+    },
+    {
+      "id": "sip:projection:public",
+      "type": "Projection",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-09-02T09:00:00Z", "method": "projection", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:projection-is-closed", "result": "pass", "at": "2026-09-02T09:00:00Z" },
+      "label": "Public projection",
+      "body": {
+        "audience": "public",
+        "include": [
+          "sip:projection:public",
+          "sip:identity:example-lab",
+          "sip:agent:retrieval-analyst",
+          "sip:capability:read-public-corpus",
+          "sip:source:corpus-note-114",
+          "sip:memory-record:corpus-114-summary",
+          "sip:claim:retrieval-latency-improved",
+          "sip:policy:public-claims-need-two-sources",
+          "sip:artifact:latency-report-2026-08",
+          "sip:evaluation:latency-replication",
+          "sip:attestation:latency-report-signed"
+        ],
+        "redacted": [
+          "sip:edge:claim-derives-internal-log",
+          "sip:edge:decision-decides-claim",
+          "sip:edge:decision-under-policy"
+        ],
+        "redactFields": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "sip:edge:lab-grants-read",
+      "type": "grants",
+      "from": "sip:identity:example-lab",
+      "to": "sip:capability:read-public-corpus",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-06-11T08:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:grant-is-scoped" }
+    },
+    {
+      "id": "sip:edge:analyst-exercises-read",
+      "type": "exercises",
+      "from": "sip:agent:retrieval-analyst",
+      "to": "sip:capability:read-public-corpus",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "observed", "at": "2026-08-20T14:12:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:exercise-within-grant" }
+    },
+    {
+      "id": "sip:edge:analyst-asserts-claim",
+      "type": "asserts",
+      "from": "sip:agent:retrieval-analyst",
+      "to": "sip:claim:retrieval-latency-improved",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "observed", "at": "2026-08-21T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:assertion-has-agent" }
+    },
+    {
+      "id": "sip:edge:claim-derives-summary",
+      "type": "derivedFrom",
+      "from": "sip:claim:retrieval-latency-improved",
+      "to": "sip:memory-record:corpus-114-summary",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-08-21T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:derivation-resolves" }
+    },
+    {
+      "id": "sip:edge:claim-derives-corpus-note",
+      "type": "derivedFrom",
+      "from": "sip:claim:retrieval-latency-improved",
+      "to": "sip:source:corpus-note-114",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-08-21T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:derivation-resolves" }
+    },
+    {
+      "id": "sip:edge:claim-derives-internal-log",
+      "type": "derivedFrom",
+      "from": "sip:claim:retrieval-latency-improved",
+      "to": "sip:source:internal-log-7",
+      "version": "1.0.0",
+      "owner": "sip:identity:operator-a",
+      "visibility": "private",
+      "provenance": { "origin": "derived", "at": "2026-08-21T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:derivation-resolves" }
+    },
+    {
+      "id": "sip:edge:summary-derives-corpus-note",
+      "type": "derivedFrom",
+      "from": "sip:memory-record:corpus-114-summary",
+      "to": "sip:source:corpus-note-114",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-08-20T14:30:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:derivation-resolves" }
+    },
+    {
+      "id": "sip:edge:claim-governed-by-policy",
+      "type": "governedBy",
+      "from": "sip:claim:retrieval-latency-improved",
+      "to": "sip:policy:public-claims-need-two-sources",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-08-21T09:05:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:governance-resolves" }
+    },
+    {
+      "id": "sip:edge:decision-decides-claim",
+      "type": "decides",
+      "from": "sip:decision:publish-latency-claim",
+      "to": "sip:claim:retrieval-latency-improved",
+      "version": "1.0.0",
+      "owner": "sip:identity:operator-a",
+      "visibility": "alliance",
+      "provenance": { "origin": "authored", "at": "2026-08-22T16:40:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:decision-resolves" }
+    },
+    {
+      "id": "sip:edge:decision-under-policy",
+      "type": "underPolicy",
+      "from": "sip:decision:publish-latency-claim",
+      "to": "sip:policy:public-claims-need-two-sources",
+      "version": "1.0.0",
+      "owner": "sip:identity:operator-a",
+      "visibility": "alliance",
+      "provenance": { "origin": "authored", "at": "2026-08-22T16:40:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:decision-cites-policy" }
+    },
+    {
+      "id": "sip:edge:analyst-produces-report",
+      "type": "produces",
+      "from": "sip:agent:retrieval-analyst",
+      "to": "sip:artifact:latency-report-2026-08",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "observed", "at": "2026-08-22T17:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:production-resolves" }
+    },
+    {
+      "id": "sip:edge:replication-evaluates-claim",
+      "type": "evaluates",
+      "from": "sip:evaluation:latency-replication",
+      "to": "sip:claim:retrieval-latency-improved",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "observed", "at": "2026-08-25T12:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:evaluation-resolves" }
+    },
+    {
+      "id": "sip:edge:replication-supports-claim",
+      "type": "supports",
+      "from": "sip:evaluation:latency-replication",
+      "to": "sip:claim:retrieval-latency-improved",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "observed", "at": "2026-08-25T12:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:support-resolves" }
+    },
+    {
+      "id": "sip:edge:attestation-attests-claim",
+      "type": "attests",
+      "from": "sip:attestation:latency-report-signed",
+      "to": "sip:claim:retrieval-latency-improved",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-08-26T09:15:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:attestation-resolves" }
+    },
+    {
+      "id": "sip:edge:public-projection-projects-claim",
+      "type": "projects",
+      "from": "sip:projection:public",
+      "to": "sip:claim:retrieval-latency-improved",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-09-02T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:projection-is-closed" }
+    }
+  ]
+}

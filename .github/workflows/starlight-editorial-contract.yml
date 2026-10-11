@@ -1,0 +1,11 @@
+name: Starlight editorial contract
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  editorial-contract:
+    uses: frankxai/starlight-design-intelligence/.github/workflows/editorial-contract.yml@50ae34c7ac06e6c083f277ca96c3bde8f0a39b43

@@ -1,0 +1,15 @@
+# Default accountable reviewer until role-specific GitHub teams are created.
+* @frankxai
+
+# Capability Foundry governance boundaries.
+/.github/workflows/capability-foundry.yml @frankxai
+/foundry/contracts/ @frankxai
+/foundry/platforms/ @frankxai
+/foundry/validators/ @frankxai
+/foundry/vendor/ @frankxai
+/tools/foundry/ @frankxai
+/plugins/starlight-foundry/ @frankxai
+/skills/foundry/ @frankxai
+/docs/runbooks/openai-plugin-submission.md @frankxai
+/docs/specs/2026-08-31-starlight-capability-foundry.md @frankxai
+/docs/handovers/2026-08-31-starlight-capability-foundry-codex.md @frankxai

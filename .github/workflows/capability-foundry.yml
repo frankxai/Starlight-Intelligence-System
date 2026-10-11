@@ -1,0 +1,127 @@
+name: Capability Foundry
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "foundry/**"
+      - "tools/foundry/**"
+      - "skills/foundry/**"
+      - "plugins/starlight-foundry/**"
+      - ".agents/plugins/marketplace.json"
+      - "scripts/sync-foundry-plugin.mjs"
+      - "test/v92-foundry.test.ts"
+      - "test/foundry-conformance.test.ts"
+      - "package.json"
+      - "package-lock.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/capability-foundry.yml"
+  push:
+    branches: [main]
+    paths:
+      - "foundry/**"
+      - "tools/foundry/**"
+      - "skills/foundry/**"
+      - "plugins/starlight-foundry/**"
+      - ".agents/plugins/marketplace.json"
+      - "scripts/sync-foundry-plugin.mjs"
+      - "test/v92-foundry.test.ts"
+      - "test/foundry-conformance.test.ts"
+      - "package.json"
+      - "package-lock.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/capability-foundry.yml"
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: capability-foundry-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  agent-ontology-portable:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      - name: Verify public-checkout isolation and compiler
+        run: node foundry/agent-ontology/tests/portable.test.mjs
+
+  contracts-and-compiler:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: |
+          npm install --global pnpm@11.5.0
+          pnpm install --frozen-lockfile
+          pnpm run build:core
+
+      - name: Install isolated native host validators
+        run: npm ci --prefix foundry/validators/native
+
+      - name: Check checked-in Foundry plugin skill parity
+        run: npm run foundry:plugin:check
+
+      - name: Validate portable Agent Plugin against pinned upstream schemas
+        run: >-
+          node tools/foundry/cli.mjs conformance plugins/starlight-foundry
+          --out "${RUNNER_TEMP}/agent-plugin-conformance.json"
+
+      - name: Validate OpenAI submission profile and docs-derived package preflight
+        run: |
+          node tools/foundry/cli.mjs validate \
+            plugins/starlight-foundry/submission/openai/profile.json \
+            --schema openai-submission-profile
+          node tools/foundry/cli.mjs preflight-openai \
+            plugins/starlight-foundry \
+            --out "${RUNNER_TEMP}/openai-plugin-preflight.json"
+
+      - name: Run pinned official Codex loader lifecycle
+        run: >-
+          node tools/foundry/codex-loader-smoke.mjs
+          --out "${RUNNER_TEMP}/codex-loader-smoke.json"
+
+      - name: Run pinned Claude native strict validator
+        run: >-
+          node tools/foundry/claude-validator-smoke.mjs
+          --out "${RUNNER_TEMP}/claude-validator-smoke.json"
+
+      - name: Validate Foundry contracts, compiler, proof, and receipts
+        run: npm run test:foundry
+
+      - name: Upload portable conformance evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: agent-plugin-conformance-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/agent-plugin-conformance.json
+            ${{ runner.temp }}/openai-plugin-preflight.json
+            ${{ runner.temp }}/codex-loader-smoke.json
+            ${{ runner.temp }}/claude-validator-smoke.json
+          if-no-files-found: warn
+          retention-days: 45

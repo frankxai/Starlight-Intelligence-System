@@ -1,5 +1,11 @@
 node_modules/
+.turbo/
 .starlight/
+!.starlight/
+.starlight/*
+!.starlight/design-contract.json
+!.starlight/release-evidence/
+!.starlight/release-evidence/**
 .hearth/
 .umwelt/
 .machine/
@@ -115,3 +121,10 @@ agent-tools/*.md
 terminals/
 _cto-packs/
 mcps/
+
+# Arena run-local eval receipts (a reviewed run is promoted to tools/arena/runs/ by hand)
+tools/arena/out/
+
+# estate-guard pack — per-machine files, never tracked
+.claude/settings.local.json
+.claude/ci/estate-guard/last-scan.json

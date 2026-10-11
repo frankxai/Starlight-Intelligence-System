@@ -1,0 +1,30 @@
+{
+  "schema": "starlight.loop-graph.v1",
+  "id": "diamond-review",
+  "title": "Fan-out review, code reduce, independent verify",
+  "layer": "A",
+  "shape": "diamond",
+  "executorRole": "maker",
+  "supervisorRole": "checker",
+  "supervisorMustDifferFromExecutor": true,
+  "brakes": {
+    "maxTurns": 8,
+    "maxCostUnits": 20,
+    "emptyRoundsToStop": 2,
+    "allowedActions": ["external-send", "spend", "destroy"],
+    "requireWriteback": true
+  },
+  "nodes": [
+    { "id": "scan-a", "role": "maker", "kind": "agent", "costUnits": 2, "outputContract": "findings-a" },
+    { "id": "scan-b", "role": "maker", "kind": "agent", "costUnits": 2, "outputContract": "findings-b" },
+    { "id": "reduce", "role": "system", "kind": "code", "costUnits": 0, "outputContract": "merged-findings" },
+    { "id": "synthesize", "role": "maker", "kind": "agent", "costUnits": 4, "outputContract": "report" },
+    { "id": "verify", "role": "checker", "kind": "agent", "costUnits": 3, "outputContract": "verdict" }
+  ],
+  "edges": [
+    { "from": "scan-a", "to": "reduce", "contract": "findings-a" },
+    { "from": "scan-b", "to": "reduce", "contract": "findings-b" },
+    { "from": "reduce", "to": "synthesize", "contract": "merged-findings" },
+    { "from": "synthesize", "to": "verify", "contract": "report" }
+  ]
+}

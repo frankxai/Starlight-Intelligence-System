@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "starlight-intelligence-mcp",
+  "main": "server/src/worker.ts",
+  "compatibility_date": "2026-08-31",
+  "compatibility_flags": ["nodejs_compat"],
+  "rules": [
+    {
+      "type": "Text",
+      "globs": ["**/*.html", "**/*.md"],
+      "fallthrough": true
+    }
+  ],
+  "workers_dev": true,
+  "vars": {
+    "STARLIGHT_TENANT_SLUG": "starlight-intelligence",
+    "STARLIGHT_MCP_HOST": "mcp.starlightintelligence.ai"
+  },
+  "secrets": {
+    "required": [
+      "SUPABASE_URL",
+      "SUPABASE_SECRET_KEY",
+      "CF_ACCESS_TEAM_DOMAIN",
+      "CF_ACCESS_AUD",
+      "STARLIGHT_ALLOWED_EMAILS"
+    ]
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "dev": {
+    "port": 8788
+  }
+}

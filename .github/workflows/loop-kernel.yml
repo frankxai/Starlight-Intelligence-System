@@ -1,0 +1,72 @@
+# Fast deterministic gate for loop/graph/instruction-kernel changes.
+# Unlike the full Harness check, this runs on draft PRs so a draft can carry
+# machine-verifiable receipts before a human decides it is ready for review.
+name: Loop kernel
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/loop-kernel.yml"
+      - "src/loop-*.ts"
+      - "src/instruction-compiler.ts"
+      - "src/work-graph*.ts"
+      - "src/index.ts"
+      - "test/loop-*.test.ts"
+      - "test/instruction-compiler.test.ts"
+      - "test/work-graph*.test.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "packages/core/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/loop-kernel.yml"
+      - "src/loop-*.ts"
+      - "src/instruction-compiler.ts"
+      - "src/work-graph*.ts"
+      - "src/index.ts"
+      - "test/loop-*.test.ts"
+      - "test/instruction-compiler.test.ts"
+      - "test/work-graph*.test.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "packages/core/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: loop-kernel-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  loop-kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: |
+          npm install --global pnpm@11.5.0
+          pnpm install --frozen-lockfile
+          pnpm run build:core
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Loop kernel tests
+        run: npm run test:work-graph
+
+      - name: Build
+        run: npm run build

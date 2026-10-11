@@ -1,0 +1,14 @@
+{
+  "name": "@starlight/foundry-native-validators",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Isolated, exact native host validator toolchain for Starlight Capability Foundry release evidence.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "@anthropic-ai/claude-code": "2.1.252",
+    "@openai/codex": "0.152.0"
+  }
+}

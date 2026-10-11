@@ -41,7 +41,7 @@ If Arcanea-run-graph stays separately governed, suggest a parallel LICENSE there
 ```
 MIT License
 
-Copyright (c) 2026 Arcanea BV / FrankX <frank@frankx.ai>
+Copyright (c) 2026 Frank Riemer <frank@frankx.ai>
 
 [ same MIT text as above ]
 ```

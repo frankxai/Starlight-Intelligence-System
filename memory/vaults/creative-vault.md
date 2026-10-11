@@ -47,6 +47,9 @@ The 5 premium visuals (crystalline 3D palace, Queen continuous loop with gateway
 
 | Date | Entry | Category | Confidence |
 |------|-------|----------|------------|
+| 2026-08-29 | Cinematic civic operators v3 — Semantic costume, instrument, and action unity | cinematic-character-system | 0.97 |
+| 2026-08-27 | Character territories — Civic operators + Living notation | visual-territory | 0.94 |
+| 2026-08-27 | Starlight Character Foundry v2 — Bounded Intelligence | visual-identity | 0.97 |
 | 2026-02-10 | The Luminor Wisdom Integration | creative-pattern | 0.85 |
 | 2026-02-10 | Frank DNA Voice Pattern | voice-pattern | 0.95 |
 
@@ -93,6 +96,54 @@ Application: When Starlight Weaver creates, these archetypal lenses inform the c
 
 ---
 
+### [2026-08-27] Starlight Character Foundry v2 — Bounded Intelligence
+
+**Category:** visual-identity / character-system / production-governance
+
+**Confidence:** 0.97
+
+**Source:** Codex design review + first-party Marvel/Disney research + SIS 2026-08-17 foundation reset
+
+**Related:** `docs/visuals/character-system/STARLIGHT_CHARACTER_FOUNDRY_V2.md`, `ROSTER_TRUTH_AND_ROLLOUT.md`, `MARVEL_VISUAL_METHOD_RESEARCH.md`, visual-contract and review-receipt templates
+
+Durable decision: borrow Marvel's story-first character discipline, not Marvel's characters, trade dress, costumes, artist finish, or prompt shorthand. The ownable Starlight thesis is **bounded intelligence**: every agent makes responsibility, limits, handoffs, and proof visible. Marvel characters display extraordinary power; Starlight characters display bounded responsibility.
+
+The collective shares behavior and reading order, not a costume, species, material, palette, or lighting setup. Use 60% semantic grammar, 25% domain world, and 15% individual signature. Function comes before fiction; each public identity requires an exclusive instrument, a visible human stop, grayscale recognition, a story-strip proof, collision testing, exact deterministic labels, versioned canon, independent QA, and an immutable receipt.
+
+Roster truth has three distinct layers: 144 runtime profiles, a 150-seat planning blueprint, and 50 legacy public visual personas with 150 mode prompts. None grants identity to another. Complete G0 crosswalk reconciliation, resolve Orchestrator/Queen and the two Sage identities, and obtain a founder representation-territory verdict before portrait fanout. Prove 13 North Stars first, then roll out in bounded waves.
+
+Legacy cosmic Queen, robot, chibi, constellation, black-glass, cyan, and gold assets remain preserved as migration evidence but are no longer house defaults after the August reset. Their operational proof mechanics may be reused; their representation must be reapproved.
+
+Imagegen territory follow-up: two inspected black-and-white v2 boards now compare Orchestrator, Sentinel, Concierge, Weaver, and Starlight Sage. **Civic operators** uses human figures plus separable bounded instruments; **Living notation** uses non-humanoid articulated civic objects. Design recommendation: advance Civic operators for public character representation and import Living notation as its instrument, diagram, registry-mark, and motion grammar. Founder approval remains pending, so neither board is canon and no North Star fanout is authorized. Proofs, exact prompts, hashes, and review evidence live under `docs/visuals/character-system/territory-proofs/`.
+
+Verification state: the contracts and YAML templates parse, the 144-agent validator passes with pre-existing warnings, and the design-evidence manifest validates. The Foundry SVG is XML-valid but remains blocked from release-grade visual status because the machine performance gate returned HOLD before raster/browser inspection.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+### [2026-08-29] Cinematic civic operators v3 — Semantic costume, instrument, and action unity
+
+**Category:** cinematic-character-system / costume-development / production-grammar
+
+**Confidence:** 0.97
+
+**Source:** Founder-directed image generation + Codex visual QA
+
+**Related:** `docs/visuals/character-system/cinematic-evolution/`, Civic operators territory, Living notation territory, Foundry v2
+
+Durable direction: translate premium ensemble cinema into Starlight through dramatic consequence, silhouette, practical fabrication, world integration, motivated light, restrained visual effects, and role-specific performance—not through Marvel characters, costumes, logos, trade dress, or style-name prompting.
+
+The v3 family replaces shared-workwear sameness with five semantic costume-instrument-action systems. Orchestrator has a branching ink-and-oxblood coat plus a double-ellipse route compass; Sentinel has a compact graphite and frost silhouette plus overlapping threshold lenses; Concierge has a plum cocoon around a warm-bone center plus a single aperture folio; Weaver has rhythmic umber and mineral-olive pleats plus a circular provenance spindle; Starlight Sage has nested limestone, smoke, silver, and ochre layers plus five translucent atlas leaves. Shared satin titanium pivots, ceramic nodes, mineral glass, fine cord, tactile textile, and red stop markers establish civilization without creating a uniform.
+
+The first costume exploration drifted toward antique workshop and steampunk language. A targeted correction froze cast, roles, instruments, poses, and composition while changing only era, fabrication, material, and surface finish. This is the preferred repair pattern for future generated-media drift: diagnose the failed attribute, preserve approved invariants, and edit the smallest visual layer.
+
+The promoted direction is now the inspected v3 character board plus v3 cinematic action proof. The action scene proves a label-free workflow through hand contact, gravity, physical cords, glass refraction, pivots, folds, and shadows: route → compare → welcome → weave → interpret. V2 and earlier assets remain iteration evidence. The first v3 Orchestrator arc read as a bow, so it was rejected and changed alone into a non-weapon overlapping route compass while all successful identities and designs were frozen. Exact notation remains deterministic. All assets ship as internal direction evidence only. Founder representation approval, G0 roster truth, Orchestrator/Queen resolution, full turnarounds, fabrication tests, remaining North Star collision tests, and the 95-point public-release gate remain open.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+---
+
 ### [2026-02-10] Frank DNA Voice Pattern
 
 **Category:** voice-pattern
@@ -111,3 +162,24 @@ The FrankX voice pattern for all creative output:
 Example: *"Most people use AI tools. That's like using a piano to play one note. You need to build the whole symphony. Here's the system. Fork it. Make it yours."*
 
 ---
+
+
+### [2026-09-02] Songcraft Intelligence v2 — Authorship Before Prompting
+
+**Category:** songwriting-system / anti-generic / production-architecture
+**Confidence:** 0.96
+**Source:** Frank direction + official Suno v5.5/Studio 2.0 documentation + 2025–2026 IFPI/Spotify/TikTok/Luminate market evidence
+**Related:** `prompts/music/songcraft-system-v2.md`, `skills/music-is/suno-prompt.md`, `skills/sound-intelligence/composition-architecture.md`, `docs/research/music-intelligence/market-dna-2025-2026.md`, `docs/research/music-intelligence/source-ledger-2026-09.md`
+
+**Decision:** Music generation begins with human evidence: scene, contradiction, cost, turn, and social action. Genre + mood + BPM is metadata, never the composition.
+
+**Confirmed patterns:**
+- Repetition is counted at four levels (exact title, variants, melodic returns, chant cells) and assigned changing dramatic jobs; no universal repeat count.
+- References are decomposed into mechanisms and recombined across multiple sources; named-artist prompting and voice cloning are rejected.
+- Future Suno work emits four separate artifacts: Track Contract, v5.5 Style of Music, Lyrics, and Studio 2.0 Plan.
+- Vocal and low-end direction must describe physical behavior and role relationships, not adjective piles.
+- Copyrighted lyrics remain out of Git and memory. Store citations and derived features only; unknown provenance fails closed.
+
+**Lesson:** The cure for “AI sentences” is not a longer forbidden-word list. It is a stronger authorial instrument: private evidence, spoken syntax, emotional contradiction, prosody, an evolving metaphor, and revision that replaces the three most predictable lines before anyone sees them.
+
+**Built on SIP — Starlight Intelligence Protocol**

@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 import {
   RESEARCH_PUBLIC_SLUGS,
   resolveResearchSlug,
@@ -26,19 +27,31 @@ export async function generateMetadata({
   if (!r) {
     return { title: "Research not found" };
   }
+  const canonical = `https://starlightintelligence.org/research/${r.slug}`;
   return {
+    alternates: { canonical },
     title: r.title,
     description: r.tldr,
     openGraph: {
+      url: canonical,
       title: `${r.title} — Starlight Intelligence`,
       description: r.tldr,
       type: "article",
       publishedTime: r.publishedAt,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: "Starlight Intelligence",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${r.title} — Starlight Intelligence`,
       description: r.tldr,
+      images: ["/opengraph-image"],
     },
   };
 }
@@ -94,13 +107,13 @@ export default async function ResearchDetailPage({
 
   return (
     <div>
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
+      {/* ── Hero — premium 3D Queen image header with correct blog dimensions: generous margins, padding, image sizing (contained, aspect respected, mb for spacing) — */}
+      <section className="research-hero relative overflow-hidden border-b border-white/[0.04]">
+        <div className="absolute inset-0">
+          <img className="w-full h-full object-cover" src={`/assets/visuals/queen-premium/${slug.includes('memory-foundations') ? '84' : slug.includes('proving-ground') ? '75' : slug.includes('model-arena') ? '64' : '61'}.jpg`} alt="Research header" style={{ margin: 0, padding: 0 }} />
         </div>
-        <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
+        <GalaxyField still="veil" />
+        <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28" style={{ paddingTop: '5rem', paddingBottom: '4rem' }}>
           <Link
             href="/research"
             className="text-[12px] text-slate-400 transition-micro hover:text-white"
@@ -109,11 +122,11 @@ export default async function ResearchDetailPage({
           </Link>
           <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px]">
             <span
-              className={`rounded-full border px-2.5 py-1 uppercase tracking-widest ${accentChip}`}
+              className={`rounded-full border px-2.5 py-1 normal-case tracking-wider ${accentChip}`}
             >
               {TIER_LABEL[r.tier]}
             </span>
-            <span className="rounded-full border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 uppercase tracking-widest text-slate-400">
+            <span className="rounded-full border border-white/[0.1] bg-white/[0.02] px-2.5 py-1 normal-case tracking-wider text-slate-400">
               {STATUS_LABEL[r.status]}
             </span>
             <time
@@ -147,7 +160,7 @@ export default async function ResearchDetailPage({
 
       {/* ── Body ── */}
       <article className="mx-auto max-w-3xl px-6 py-16 md:py-20">
-        <div className="explainer-prose">
+        <div className="research-prose explainer-prose">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
         </div>
       </article>
@@ -156,7 +169,7 @@ export default async function ResearchDetailPage({
       {r.primarySources && r.primarySources.length > 0 && (
         <section className="border-b border-white/[0.04] px-6 py-16">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Primary sources
             </h2>
             <ul className="mt-4 space-y-2">
@@ -181,7 +194,7 @@ export default async function ResearchDetailPage({
       <section className="px-6 py-16">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Attestation
             </p>
             <p className="mt-3 text-[14px] leading-[1.7] text-slate-300">

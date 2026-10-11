@@ -1,5 +1,5 @@
 Starlight Intelligence System
-Copyright (c) 2026 Frank Riemer / Starlight Holding
+Copyright (c) 2026 Frank Riemer
 
 This product is licensed under the MIT License (see LICENSE).
 
@@ -37,7 +37,7 @@ Substrate spec documents (SIP.md and the file-contract files listed above):
 
 Arcanea canon (Guardian names, Vel'Tara archetypes, Hz grounding, realm
 and essence vocabulary — when present in forks that opt-in to it):
-    CC-BY-NC 4.0, © Arcanea BV. Lives in a separate repo
+    CC-BY-NC 4.0, © Frank Riemer. Lives in a separate repo
     (frankxai/arcanea-ecosystem). Compose-only; canon is not redistributed
     under the MIT license of this repository.
 
@@ -45,8 +45,9 @@ and essence vocabulary — when present in forks that opt-in to it):
 Trademarks
 ================================================================================
 
-ARCANEA, FRANKX, STARLIGHT INTELLIGENCE — registered or in registration.
-All rights reserved.
+ARCANEA, FRANKX, and STARLIGHT INTELLIGENCE are brand identifiers claimed by
+Frank Riemer. Registration status is not asserted here. No trademark rights
+are granted by this repository.
 
 "Built on SIP" is an attestation phrase, not a trademark. Use of the
 phrase requires actual SIP composition per /sip-attest rules.

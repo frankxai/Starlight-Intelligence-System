@@ -1,0 +1,80 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/taste-profile.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "decision-brief",
+  "artifactType": "decision-brief",
+  "audience": "A time-constrained operator making a consequential decision",
+  "productionConstraints": [
+    "The decision, owner, and next action must be legible in one scan.",
+    "Claims and citations must remain separable from inference and recommendation."
+  ],
+  "hardGates": [
+    {
+      "id": "no-fabrication",
+      "rejectWhen": "A citation, test, action, or source is claimed without verifiable evidence."
+    },
+    {
+      "id": "decision-visible",
+      "rejectWhen": "The decision, recommendation, and unresolved assumptions cannot be found in one scan."
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "evidence",
+      "weight": 0.35,
+      "excellent": "Every consequential claim is directly supported, clearly inferred, or explicitly uncertain.",
+      "failure": "Authority is implied through tone, vague attribution, or citation volume."
+    },
+    {
+      "id": "judgment",
+      "weight": 0.3,
+      "excellent": "The recommendation follows from the evidence and exposes real trade-offs and falsifiers.",
+      "failure": "The artifact summarizes information but avoids making the decision legible."
+    },
+    {
+      "id": "compression",
+      "weight": 0.2,
+      "excellent": "The brief preserves decision-relevant nuance while removing repetition and ornamental prose.",
+      "failure": "The reader must excavate the conclusion or reread dense language."
+    },
+    {
+      "id": "usability",
+      "weight": 0.15,
+      "excellent": "The owner, next action, and next decision point are immediately executable.",
+      "failure": "The output ends with generic advice or an unowned checklist."
+    }
+  ],
+  "exemplars": [
+    {
+      "reference": "A one-page investment memo with claim-level citations and a visible kill criterion.",
+      "why": "It joins evidence, judgment, and action without hiding uncertainty."
+    }
+  ],
+  "antiExemplars": [
+    {
+      "reference": "A long literature summary ending in 'more research is needed.'",
+      "failure": "It transfers synthesis work back to the decision-maker."
+    }
+  ],
+  "candidatePolicy": {
+    "minimumCandidates": 2,
+    "maximumCandidates": 4,
+    "comparisonMethod": "hybrid"
+  },
+  "pairwisePreferences": [
+    {
+      "winner": "A one-page claim-mapped decision memo with a visible kill criterion.",
+      "loser": "A comprehensive literature summary with no owned recommendation.",
+      "rationale": "The winner compresses evidence into a falsifiable decision while preserving uncertainty."
+    }
+  ],
+  "acceptedJudgments": [],
+  "judgePolicy": {
+    "blind": true,
+    "minimumIndependentJudges": 1,
+    "producerMayJudge": false,
+    "synthesisOwner": "independent-synthesizer",
+    "domainCriticRequired": true,
+    "adversarialReviewRequired": true
+  }
+}

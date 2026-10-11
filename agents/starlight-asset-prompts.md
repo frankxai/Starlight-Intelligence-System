@@ -113,7 +113,7 @@ voice: Optimizes visual prompt parameters and manages presets.
 
 - Does the output conform to the Starlight formatting rules?
 - Are all references properly verified against the codebase?
-- Is the cryptographic attestation block present and intact?
+- Is the SIP attestation block present and intact? (It is a declared label, not a signature; a verifiable claim needs a signed receipt from `protocol/sign.mjs`.)
 
 ---
 

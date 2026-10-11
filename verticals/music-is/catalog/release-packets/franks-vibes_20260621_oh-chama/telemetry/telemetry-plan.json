@@ -1,0 +1,20 @@
+{
+  "schema_version": "agentic-music-os.telemetry-plan.v0.1",
+  "song_id": "franks-vibes_20260621_oh-chama",
+  "status": "draft",
+  "primary_success_metrics": [
+    "Suno plays",
+    "Suno likes/upvotes",
+    "YouTube Shorts 3-second retention",
+    "YouTube Shorts average percentage viewed",
+    "YouTube Shorts comments/saves/shares",
+    "Spotify Canvas watch-through proxy via track engagement after release"
+  ],
+  "review_windows": [
+    "24h after short upload",
+    "7d after short upload",
+    "7d after Spotify Canvas upload if released"
+  ],
+  "test_hypothesis": "The lyric-first hook 'Dopamine hack, oh chama' should outperform a mood-only clip because it states the psychological promise in the first second."
+}
+

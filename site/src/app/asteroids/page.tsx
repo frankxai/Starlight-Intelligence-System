@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Starfield } from "@/components/cosmos/Starfield";
 import { CardTile } from "@/components/cosmos/CardTile";
 import { miningCards } from "@/lib/cosmos/cards";
 import { getNeoFeed } from "@/lib/cosmos/nasa";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 21600;
 
@@ -28,11 +28,7 @@ export default async function AsteroidsPage() {
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <Starfield seed={2182} count={120} />
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-24 top-0 h-[380px] w-[380px] rounded-full bg-rose-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-24 h-[300px] w-[300px] rounded-full bg-amber-500/[0.04] blur-[80px]" />
-        </div>
+        <GalaxyField still="nursery" />
         <div className="relative mx-auto max-w-5xl px-6 py-24 md:py-32">
           <Link
             href="/cosmos"
@@ -71,7 +67,7 @@ export default async function AsteroidsPage() {
       {/* ── Close approaches ── */}
       <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Close approaches
           </h2>
           <p className="mt-3 max-w-2xl text-[13px] leading-[1.75] text-slate-400">
@@ -94,7 +90,7 @@ export default async function AsteroidsPage() {
                       {neo.name}
                     </h3>
                     {neo.hazardous && (
-                      <span className="rounded-full border border-rose-500/[0.3] bg-rose-500/[0.08] px-2 py-0.5 text-[10px] uppercase tracking-widest text-rose-300">
+                      <span className="rounded-full border border-rose-500/[0.3] bg-rose-500/[0.08] px-2 py-0.5 text-[10px] normal-case tracking-wider text-rose-300">
                         PHA
                       </span>
                     )}
@@ -112,7 +108,7 @@ export default async function AsteroidsPage() {
                   <span className="font-serif text-[22px] font-semibold tracking-tight text-rose-200">
                     {neo.missDistanceLunar ?? "—"}
                   </span>
-                  <span className="text-[11px] uppercase tracking-widest text-slate-500">
+                  <span className="text-[11px] normal-case tracking-wider text-slate-500">
                     LD miss
                   </span>
                 </div>
@@ -130,7 +126,7 @@ export default async function AsteroidsPage() {
       {/* ── The mining lens ── */}
       <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             The mining lens
           </h2>
           <div className="mt-6 grid gap-8 lg:grid-cols-[2fr_3fr]">
@@ -174,7 +170,7 @@ export default async function AsteroidsPage() {
       {/* ── Run the numbers ── */}
       <section className="border-b border-white/[0.04] px-6 py-16 md:py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Run the numbers — prompts for builders
           </h2>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -227,7 +223,7 @@ export default async function AsteroidsPage() {
       <section className="px-6 py-16">
         <div className="mx-auto max-w-5xl">
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 md:p-8">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
               Where this is going
             </p>
             <p className="mt-3 max-w-2xl text-[14px] leading-[1.8] text-slate-300">

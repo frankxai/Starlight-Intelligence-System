@@ -1,0 +1,325 @@
+id: starlight-communities
+name: Starlight Communities
+status: foundation-spec
+version: 0.1.0
+date: 2026-06-23
+canonical_repo: Starlight-Intelligence-System
+summary: Agentic creation cells for people building freedom systems, mind systems, content, events, and intelligent lives.
+
+positioning:
+  category: community-operating-loop
+  product_thesis: The weekly ritual and member memory are the product; chat platforms are interchangeable surfaces.
+  promise: Help small groups turn identity, accountability, and social belonging into shipped weekly artifacts.
+  non_goals:
+    - Generic Discord community
+    - Passive course library
+    - Shame-based accountability group
+    - Platform-first community build
+
+source_repos:
+  Starlight-Intelligence-System:
+    role: Canonical memory, agent doctrine, privacy, gateway, evidence trail.
+  agentic-creator-os:
+    role: Quest-to-artifact workflows, content packaging, trajectory memory, human gates.
+  agentic-life-os:
+    role: Member rhythm, personal goals, private operating loops, offering spine.
+  Agent-Intelligence-System:
+    role: Capability discovery, routing metadata, emitted manifests.
+  starlight-swarm:
+    role: Community Steward topology, worker agents, escalation ladder.
+  frankx.ai-vercel-website:
+    role: Future public front door, admin UI, member dashboard, auth, payments, email.
+  starlight-agent-config:
+    role: Cross-repo ledger, cost gate, progress reporting.
+  agentic-ops-hub:
+    role: Agent permissions and external-action guardrails.
+
+creation_cell:
+  size:
+    min: 3
+    max: 5
+  required_elements:
+    - shared_theme
+    - weekly_mission
+    - individual_build_goals
+    - team_challenge
+    - artifact_shipped
+    - reflection_captured
+    - next_commitment
+
+weekly_loop:
+  monday:
+    system_action: Send weekly quest and personal prompt.
+    human_effect: direction
+    output: Quest card and personal commitment.
+  tuesday:
+    system_action: Propose 1:1 or pair spark calls.
+    human_effect: intimacy_and_momentum
+    output: Pair agenda and next micro-step.
+  wednesday:
+    system_action: Run deep creation lab.
+    human_effect: artifact
+    output: Draft, map, prompt, post, event plan, or agent.
+  thursday:
+    system_action: Request async voice or video updates.
+    human_effect: social_proof
+    output: Proof note, blocker, and next move.
+  friday:
+    system_action: Run demo, reflection, and recognition.
+    human_effect: dopamine_and_closure
+    output: Artifact record, reflection, next commitment.
+  weekend:
+    system_action: Offer salon, walk, or event prompt.
+    human_effect: community_and_beauty
+    output: Story, connection note, or event artifact.
+
+agents:
+  community_steward:
+    role: Runs cadence, safety, gates, synthesis, and handoffs.
+    layer: queen
+    gates:
+      - external_send
+      - public_publish
+      - sensitive_recognition
+  circle_architect:
+    role: Forms groups by goal, energy, skills, rhythm, and consent.
+    layer: worker
+    outputs:
+      - cell_map
+      - matching_rationale
+      - alternate_pairings
+  quest_designer:
+    role: Turns themes into weekly challenges and personal prompts.
+    layer: worker
+    outputs:
+      - quest_card
+      - personal_prompt
+      - team_challenge
+  invitation_agent:
+    role: Drafts warm personalized invites and follow-ups.
+    layer: worker
+    requires_human_gate: true
+    outputs:
+      - invite_draft
+      - follow_up_draft
+      - rsvp_tracker
+  accountability_agent:
+    role: Requests proof, voice notes, blockers, and next moves.
+    layer: worker
+    tone_rule: No shame language.
+    outputs:
+      - nudge_draft
+      - proof_checklist
+      - blocker_route
+  artifact_agent:
+    role: Turns sessions into posts, docs, maps, prompts, and event plans.
+    layer: worker
+    requires_human_gate: true
+    outputs:
+      - artifact_draft
+      - title
+      - distribution_variant
+  memory_agent:
+    role: Captures profile deltas, reflections, commitments, and insights.
+    layer: worker
+    privacy_default: private
+    outputs:
+      - profile_delta
+      - memory_record
+      - reflection_summary
+
+objects:
+  CommunityMemberProfile:
+    owner: SIS local_core
+    privacy_default: private
+    fields:
+      - member_id
+      - display_name
+      - timezone
+      - goals
+      - skills
+      - current_project
+      - preferred_rhythm
+      - social_energy
+      - growth_edge
+      - channels
+      - consent_flags
+      - privacy_class
+      - weekly_commitments
+      - artifacts_shipped
+      - reflections
+      - matching_notes
+  CreationCell:
+    fields:
+      - cell_id
+      - name
+      - theme
+      - member_ids
+      - week_id
+      - status
+      - matching_rationale
+      - shared_mission
+      - team_challenge
+      - risk_notes
+      - steward_agent
+  Quest:
+    fields:
+      - quest_id
+      - week_id
+      - challenge_type
+      - theme
+      - title
+      - prompt
+      - personal_prompt
+      - expected_artifact
+      - proof_type
+      - difficulty
+      - created_by
+      - gates
+  WeeklyCommitment:
+    fields:
+      - commitment_id
+      - member_id
+      - cell_id
+      - week_id
+      - individual_build_goal
+      - team_role
+      - due_day
+      - proof_uri
+      - status
+      - next_commitment
+  Artifact:
+    fields:
+      - artifact_id
+      - member_id
+      - cell_id
+      - week_id
+      - type
+      - title
+      - uri
+      - visibility
+      - source_session
+      - attestation_status
+      - publish_gate
+  Reflection:
+    fields:
+      - reflection_id
+      - member_id
+      - cell_id
+      - week_id
+      - wins
+      - friction
+      - insight
+      - next_move
+      - profile_delta
+      - privacy_class
+
+quest_types:
+  - id: mind_map
+    name: Mind Map Quest
+    artifact: Model, diagram, essay, or tldraw board.
+  - id: freedom_system
+    name: Freedom System Quest
+    artifact: Income or lifestyle lever map.
+  - id: voice
+    name: Voice Quest
+    artifact: Two-minute truth, lesson, or story.
+  - id: offer_seed
+    name: Offer Seed Quest
+    artifact: Offer sketch, landing copy, or pitch.
+  - id: event_spark
+    name: Event Spark Quest
+    artifact: Five-person salon plan.
+  - id: ai_companion
+    name: AI Companion Quest
+    artifact: Prompt, agent, workflow, or script.
+
+event_flow:
+  - member_intake_captured
+  - profile_memory_written
+  - cells_proposed
+  - steward_review_completed
+  - quest_cards_generated
+  - invitation_drafts_created
+  - human_send_approval_received
+  - weekly_prompts_sent
+  - pair_sparks_completed
+  - artifact_proof_submitted
+  - friday_reflection_captured
+  - profile_delta_written
+  - next_week_run_sheet_generated
+
+gates:
+  human_required:
+    - external_invite_send
+    - direct_message_send
+    - public_artifact_publish
+    - calendar_event_with_external_attendees
+    - raw_voice_or_video_storage
+    - leaderboard_publication
+    - paid_service_or_subscription
+  agent_allowed:
+    - draft_invites
+    - draft_prompts
+    - propose_cells
+    - create_run_sheets
+    - summarize_reflections
+    - package_artifact_drafts
+    - write_private_memory_with_scope
+
+pilot:
+  phase: concierge
+  target_members:
+    min: 5
+    max: 15
+  target_cells:
+    min: 2
+    max: 4
+  first_theme: visible_proof
+  success_metric: At least 70 percent of active pilot members ship one artifact or submit one proof object in week one.
+  deliverables:
+    - intake_template
+    - cell_map_template
+    - six_quest_cards
+    - monday_to_friday_prompt_templates
+    - artifact_reflection_tracker
+    - weekly_run_sheet
+
+platform_strategy:
+  canonical_data: SIS local_core first.
+  first_surface: Existing low-cost channel or email-first pilot.
+  optional_surfaces:
+    circle:
+      use_when: Polished paid community and embedded member experience matter.
+      notes: Admin, Headless, and Data APIs are available on higher plan tiers.
+    discord:
+      use_when: Voice, stage, forum, bot, and high-social-energy loops matter.
+      notes: Keep SIS canonical; Discord is an interaction layer.
+    slack:
+      use_when: Professional, private, or team-oriented cells matter.
+      notes: Strong workflow and webhook surface.
+    skool:
+      use_when: Creator-course-market shell is more important than deep automation.
+      notes: Do not make it canonical until API coverage is proven.
+
+metrics:
+  activation:
+    - monday_commitment_rate
+    - tuesday_pair_completion_rate
+    - wednesday_artifact_draft_rate
+    - thursday_proof_submission_rate
+    - friday_reflection_completion_rate
+  quality:
+    - artifacts_shipped_per_active_member
+    - helpful_peer_touches
+    - week_over_week_member_retention
+    - member_reported_felt_seen
+    - member_reported_made_progress
+  anti_metrics:
+    - raw_message_volume
+    - forced_public_posting
+    - leaderboard_anxiety
+    - agent_over_nudging
+
+next_build_step:
+  Create the Phase 1 concierge pilot kit before any platform integration.

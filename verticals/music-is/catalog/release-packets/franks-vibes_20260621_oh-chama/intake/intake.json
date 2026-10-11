@@ -1,0 +1,25 @@
+{
+  "schema_version": "agentic-music-os.intake.v0.1",
+  "song_id": "franks-vibes_20260621_oh-chama",
+  "title": "Oh Chama",
+  "public_artist": "FrankX",
+  "working_label": "franks-vibes",
+  "working_persona": "FrankX",
+  "persona_status": "pending_music_is_lock",
+  "source_type": "suno_url",
+  "source_url": "https://suno.com/s/pUf7ombE6iEmY0qO",
+  "canonical_url": "https://suno.com/song/9d3887b5-8184-462e-8b5a-8a7dfb2b1f00",
+  "suno_clip_id": "9d3887b5-8184-462e-8b5a-8a7dfb2b1f00",
+  "suno_short_id": "pUf7ombE6iEmY0qO",
+  "audio_url": "https://cdn1.suno.ai/9d3887b5-8184-462e-8b5a-8a7dfb2b1f00.mp3",
+  "video_url": "https://cdn1.suno.ai/9d3887b5-8184-462e-8b5a-8a7dfb2b1f00.mp4",
+  "source_image_url": "https://cdn2.suno.ai/image_large_9d3887b5-8184-462e-8b5a-8a7dfb2b1f00.jpeg",
+  "model": "suno v5.5 / chirp-fenix",
+  "created_at_suno": "2026-06-21T17:50:15.711Z",
+  "duration_seconds": 274.48,
+  "explicit": false,
+  "display_tags": "progressive house, euphoric electronic, glossy dance-pop",
+  "commercial_rights_observed": "Suno page ownership.reason=subscribed; still requires Frank confirmation before external distribution",
+  "external_uploads_performed": false
+}
+

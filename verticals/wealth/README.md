@@ -45,6 +45,13 @@ Wealth IS at composition-layer tier is the toolbox; five are the daily hands:
 
 The other 3-5 future commands (cycle thesis, tax sanity cross-asset, divestiture discipline) are toolbox-tier — bring in when the season demands.
 
+## Active Implementations & Substrates
+
+Wealth IS is implemented across the following repositories in the Starlight ecosystem:
+- **`dpi` Substrate** (`github.com/frankxai/dpi`): The open creator-facing wealth layer. Contains ledger schemas (`private/ledger.json`), platforms indices, MCP servers, and proactive challenge generator tools.
+- **Sovereign Creator Architecture (SCA)**: Unifies the ACOS execution engine and the `dpi` substrate with the `realityarchitect.ai` curriculum.
+- **`agenticincome` Network** (`github.com/frankxai/agenticincome`): The affiliate monetization spoke engine. Consumes the `affiliate-agent-skills` comparison engine to generate passive cash flows.
+
 ---
 
 ## Composition with the rest of the 10-IS stack

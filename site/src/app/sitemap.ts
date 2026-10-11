@@ -6,14 +6,19 @@ const BASE = "https://starlightintelligence.org";
 
 const STATIC_ROUTES = [
   "",
+  "/constitution",
+  "/perspectives/personal-superintelligence-for-everyone",
   "/protocol",
+  "/verify",
   "/download",
+  "/deploy",
   "/quickstart",
   "/architecture",
   "/explainer",
   "/verticals",
   "/research",
   "/knowledge-tree",
+  "/knowledge-tree/explore",
   "/cockpit",
   "/docs",
   "/vaults",
@@ -23,6 +28,7 @@ const STATIC_ROUTES = [
   "/cosmos",
   "/cosmos/gallery",
   "/cosmos/cards",
+  "/cosmos/constellations",
   "/asteroids",
   "/queen",
   "/palace",
@@ -45,7 +51,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === ""
         ? 1.0
-        : path === "/protocol" || path === "/download" || path === "/quickstart" || path === "/research"
+        : path === "/protocol" || path === "/download" || path === "/deploy" || path === "/quickstart" || path === "/research"
           ? 0.9
           : 0.7,
   }));

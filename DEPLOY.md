@@ -51,16 +51,28 @@ If those return 200 against the SHA you just pushed, the deploy is live.
 
 ---
 
+## Two Vercel projects (do not dual-build)
+
+| Project | Role | Status |
+|---------|------|--------|
+| `site` (`prj_wDNGrb1R1rB5PJOG9cUEICSER887`) | Canonical public site → `starlightintelligence.org` | Production source of truth |
+| `starlight-intelligence-system` | Accidental GitHub connection at **repo root** | Must not build |
+
+The repo-root project runs `pnpm run build` (`tsc` only) then fails with `No Output Directory named "public"`. That red check (`Vercel – starlight-intelligence-system`) is **not** a site regression. The `site` project stays READY.
+
+Root `vercel.json` therefore sets `ignoreCommand` to skip when `public/` is absent (library root). Do **not** point the duplicate project at `site/` — that would double-deploy and burn Vercel minutes. Prefer disconnecting it in the dashboard once ignoreCommand is on `main`.
+
+---
+
 ## Reactivating Vercel's native GitHub integration (alternative)
 
 If you want to retire the GHA workflow and restore native auto-deploys:
 
-1. Go to https://vercel.com/dashboard → starlight-intelligence-system project → Settings → Git.
-2. Disconnect the existing GitHub integration (if still connected).
-3. Reconnect via "Connect Git Repository" → select `frankxai/Starlight-Intelligence-System`.
-4. Set production branch = `main`, root directory = `site/`.
-5. Test by pushing a trivial site change and verifying it propagates without manual `vercel --prod`.
-6. Once verified, you can delete `.github/workflows/vercel-deploy.yml` (or leave it as a fallback).
+1. Go to https://vercel.com/dashboard → **`site`** project (not the duplicate root project) → Settings → Git.
+2. Confirm production branch = `main`, root directory = `site/`.
+3. Test by pushing a trivial site change and verifying it propagates without manual `vercel --prod`.
+4. Once verified, you can delete `.github/workflows/vercel-deploy.yml` (or leave it as a fallback).
+5. Keep `starlight-intelligence-system` disconnected or ignored so PRs do not dual-build.
 
 The GHA path is the recommended default until that integration proves reliable across multiple consecutive deploys.
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Starlight Execution"
+  short_description: "Create and move governed venture work"
+  default_prompt: "Use $starlight-execution to turn this objective into accountable work."

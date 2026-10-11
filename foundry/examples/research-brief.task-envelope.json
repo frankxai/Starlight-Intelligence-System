@@ -1,0 +1,130 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/foundry/task-envelope.schema.json",
+  "schemaVersion": "1.0.0",
+  "id": "research-brief-forge",
+  "kind": "skill",
+  "objective": "Compile a portable skill that turns a research question into a concise, source-grounded decision brief.",
+  "deliverables": [
+    {
+      "id": "portable-skill",
+      "description": "An Agent Skills-compatible SKILL.md package with an OpenAI interface manifest.",
+      "artifactType": "skill-package",
+      "required": true
+    }
+  ],
+  "context": {
+    "vertical": "research",
+    "audience": "Operators making consequential product and business decisions",
+    "artifactTypes": [
+      "decision-brief",
+      "evidence-receipt"
+    ],
+    "references": [
+      "skills/intelligence/hermes-search.md"
+    ]
+  },
+  "stakes": {
+    "impact": "medium",
+    "reversibility": "reversible",
+    "rationale": "The generated skill guides research but does not publish or mutate external systems."
+  },
+  "autonomy": {
+    "level": "draft",
+    "approvalRequiredBefore": [
+      "external-write",
+      "public-release",
+      "permission-expansion"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Distinguish facts, inferences, unknowns, and recommendations.",
+      "Prefer current primary sources for unstable claims."
+    ],
+    "mustNot": [
+      "Invent citations or claim research was performed when it was not."
+    ],
+    "budget": {
+      "maxCostUsd": 5,
+      "maxLatencyMs": 300000,
+      "maxToolCalls": 40,
+      "maxAgentTurns": 16,
+      "maxParallelWorkers": 4
+    }
+  },
+  "evidencePolicy": {
+    "freshness": "current",
+    "requirePrimarySources": true,
+    "requiredLanes": [
+      "static",
+      "behavioral",
+      "artifact"
+    ],
+    "minimumIndependentJudges": 0
+  },
+  "permissions": {
+    "tools": {
+      "allow": [
+        "node",
+        "web-search",
+        "primary-source-reader"
+      ],
+      "deny": [
+        "shell",
+        "external-write"
+      ]
+    },
+    "memory": {
+      "read": [
+        "technical-vault",
+        "strategic-vault"
+      ],
+      "write": []
+    },
+    "externalWrites": false,
+    "destructiveActions": false
+  },
+  "capabilitySelection": {
+    "required": [
+      "intelligence/hermes-search"
+    ],
+    "preferred": [
+      "intelligence/strategic-reasoning"
+    ],
+    "forbidden": [],
+    "allowCreation": true
+  },
+  "tasteProfile": "decision-brief",
+  "completionTests": [
+    {
+      "id": "skill-file-present",
+      "lane": "static",
+      "type": "file-exists",
+      "required": true,
+      "path": "skill/SKILL.md"
+    },
+    {
+      "id": "proof-language-present",
+      "lane": "behavioral",
+      "type": "contains",
+      "required": true,
+      "path": "skill/SKILL.md",
+      "value": "facts, inferences, unknowns"
+    },
+    {
+      "id": "independent-taste-review",
+      "lane": "taste",
+      "type": "judge",
+      "required": false,
+      "instructions": "Blindly compare the generated skill against the decision-brief taste profile."
+    }
+  ],
+  "deployment": {
+    "targets": [
+      "chatgpt",
+      "chatgpt-work",
+      "codex",
+      "plugin"
+    ]
+  }
+}

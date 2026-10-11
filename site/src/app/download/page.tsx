@@ -1,30 +1,42 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { BrainHero } from "@/components/BrainHero";
 import {
-  SIP_STARTER_ASSET_BASE,
-  SIP_STARTER_DOWNLOADS,
-  SIP_STARTER_INCLUDED,
-  SIP_STARTER_MODULE_NAME,
-  SIP_STARTER_RELEASE_URL,
-  SIP_STARTER_TAG,
+  Download,
+  Terminal as TerminalIcon,
+  ShieldCheck,
+  Coins,
+  Cpu,
+  Workflow,
+  BookOpen,
+  ArrowRight,
+  Sparkles,
+  Layers,
+  Eye,
+  FileText
+} from "lucide-react";
+import {
+  SIP_STARTER_REPO,
+  SIP_STARTER_SOURCE_URL,
+  SIP_STARTER_LABEL,
 } from "@/lib/sip-download";
 import {
-  PLUGIN_STARTER_DOWNLOADS,
+  PLUGIN_MODULES_ASSET_BASE,
+  PLUGIN_STARTER_ASSET_BASE,
   PLUGIN_STARTER_MODULE_NAME,
-  PLUGIN_STARTER_PLUGINS,
   PLUGIN_STARTER_SHA256,
   PLUGIN_STARTER_TAG,
 } from "@/lib/plugin-starter-download";
 
 export const metadata: Metadata = {
-  title: "Download",
+  title: "Download - Starlight Intelligence",
   description:
-    "Download open-core Starlight modules: the SIP Starter and the public Codex plugin starter with release assets, checksums, and validation guidance.",
+    "Access current Starlight source and published, checksum-backed plugin modules.",
   openGraph: {
     title: "Download — Starlight Intelligence",
     description:
-      "Open-core SIP Starter release package for adopting Starlight Intelligence Protocol in any repo or workspace.",
+      "Current Starlight source plus the published, checksum-backed plugin modules.",
     type: "article",
     images: [
       {
@@ -39,283 +51,477 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Download — Starlight Intelligence",
     description:
-      "Download the open-core SIP Starter with checksums and validation guidance.",
+      "Current Starlight source plus published, checksum-backed modules.",
     images: ["/opengraph-image"],
   },
 };
 
 export default function DownloadPage() {
   return (
-    <div className="overflow-x-clip">
-      <section className="relative overflow-hidden border-b border-white/[0.08]">
-        <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
-        <BrainHero
-          className="pointer-events-none absolute right-[-80px] top-8 hidden h-[440px] w-[440px] opacity-40 lg:block"
-        />
-        <div className="relative mx-auto grid max-w-5xl gap-10 px-6 py-20 md:grid-cols-[1.1fr_0.9fr] md:py-28">
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
-              Open-core intelligence module
-            </p>
-            <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
-              Download the SIP Starter.
-            </h1>
-            <p className="mt-6 max-w-2xl text-[15px] leading-[1.8] text-slate-400">
-              A portable Starlight Intelligence Protocol starter for any repo
-              or workspace. Start with the sovereign file contract, public
-              vault seeds, release manifest, checksums, and validation guide.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href={`${SIP_STARTER_ASSET_BASE}/${SIP_STARTER_MODULE_NAME}.zip`}
-                className="rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.2)]"
-              >
-                Download ZIP
-              </a>
-              <a
-                href={SIP_STARTER_RELEASE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-white/[0.12] px-6 py-3 text-[14px] font-medium text-white transition-std hover:border-white/[0.24] hover:bg-white/[0.04]"
-              >
-                GitHub Release
-              </a>
-            </div>
+    <div className="min-h-screen bg-[#020205] text-slate-100 selection:bg-cyan-500/20 selection:text-cyan-200">
+      {/* 1. Header Hero */}
+      <section className="relative overflow-hidden border-b border-white/[0.04] bg-gradient-to-b from-[#080812] to-[#020205] py-20 md:py-28">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(167,139,250,0.06),transparent_50%)]" />
+        <BrainHero className="pointer-events-none absolute right-[-80px] top-8 hidden h-[440px] w-[440px] opacity-25 lg:block" />
+        
+        <div className="relative mx-auto max-w-5xl px-6">
+          <span className="inline-flex items-center gap-x-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-[11px] font-semibold normal-case tracking-wider text-cyan-400">
+            <Sparkles className="h-3 w-3 animate-pulse" />
+            Starlight Distribution
+          </span>
+          <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
+            <span className="block">Start from</span>{" "}
+            <span className="block bg-gradient-to-r from-cyan-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">verified source.</span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-[15px] leading-[1.8] text-slate-400">
+            Build the current system from its public source. Download only the
+            modules that have a published release, checksum, and inspectable
+            artifact.
+          </p>
+        </div>
+      </section>
+
+      {/* 2. Flagship Core Downloads (Bento Grid Section) */}
+      <section className="relative px-6 py-20 border-b border-white/[0.04]">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-12">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">01 / Foundation</p>
+            <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Core Protocol & SDKs</h2>
           </div>
 
-          <div className="self-end rounded-xl border border-white/[0.08] bg-white/[0.02] p-5">
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
-              Latest
-            </p>
-            <p className="mt-2 break-all font-mono text-[22px] font-semibold text-white">
-              {SIP_STARTER_MODULE_NAME}
-            </p>
-            <dl className="mt-5 grid gap-3 text-[12px]">
-              <Row label="Conformance" value="SIP Core" />
-              <Row label="Version" value={SIP_STARTER_TAG} />
-              <Row label="License" value="MIT" />
-              <Row label="Canonical host" value="GitHub Releases" />
-            </dl>
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* Card 1: SIP Starter */}
+            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090911]/60 backdrop-blur-md transition-all hover:border-cyan-500/30 hover:shadow-[0_0_40px_rgba(34,211,238,0.08)]">
+              <div className="aspect-[16/9] w-full relative overflow-hidden bg-slate-950 border-b border-white/[0.04]">
+                <Image
+                  src="/assets/visuals/sip_starter_cover.png"
+                  alt="SIP Starter Cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#090911] via-transparent to-transparent" />
+              </div>
+              <div className="p-6">
+                <span className="px-2.5 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono rounded-full normal-case">
+                  SIP Core • {SIP_STARTER_LABEL}
+                </span>
+                <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">SIP Starter Source</h3>
+                <p className="mt-2.5 text-xs text-slate-400 leading-relaxed">
+                  The v8.3.0 source is public. A checksum-backed SIP Starter
+                  archive has not been published for this version, so this
+                  surface routes to source instead of manufacturing a release.
+                </p>
+                <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/[0.05] pt-4">
+                  <span className="text-[11px] text-slate-500 font-mono">License: MIT</span>
+                  <div className="flex gap-x-2">
+                    <a
+                      href={SIP_STARTER_SOURCE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-x-1.5 rounded-full bg-white px-4 py-2 text-[12px] font-semibold text-slate-950 hover:bg-cyan-100 transition-all"
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                      Inspect source
+                    </a>
+                    <Link
+                      href="/quickstart"
+                      className="inline-flex items-center gap-x-1.5 rounded-full border border-white/[0.12] px-4 py-2 text-[12px] font-medium text-white hover:bg-white/[0.04] transition-all"
+                    >
+                      <TerminalIcon className="h-3.5 w-3.5" />
+                      Build current source
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Codex Plugin Starter */}
+            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090911]/60 backdrop-blur-md transition-all hover:border-violet-500/30 hover:shadow-[0_0_40px_rgba(167,139,250,0.08)]">
+              <div className="aspect-[16/9] w-full relative overflow-hidden bg-slate-950 border-b border-white/[0.04]">
+                <Image
+                  src="/assets/visuals/codex_starter_cover.png"
+                  alt="Codex Plugin Starter Cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#090911] via-transparent to-transparent" />
+              </div>
+              <div className="p-6">
+                <span className="px-2.5 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[10px] font-mono rounded-full normal-case">
+                  Codex SDK • {PLUGIN_STARTER_TAG}
+                </span>
+                <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">Codex Plugin Starter</h3>
+                <p className="mt-2.5 text-xs text-slate-400 leading-relaxed">
+                  Prerelease bundle containing 4 developer plugins for enterprise AI Center of Excellence, health safety, prompt testing, and audio frequency automation.
+                </p>
+                <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/[0.05] pt-4">
+                  <span className="text-[11px] text-slate-500 font-mono truncate max-w-[150px]" title={PLUGIN_STARTER_SHA256}>
+                    SHA256: {PLUGIN_STARTER_SHA256.substring(0, 12)}...
+                  </span>
+                  <div className="flex gap-x-2">
+                    <a
+                      href={`${PLUGIN_STARTER_ASSET_BASE}/${PLUGIN_STARTER_MODULE_NAME}.zip`}
+                      className="inline-flex items-center gap-x-1.5 rounded-full bg-white px-4 py-2 text-[12px] font-semibold text-slate-950 hover:bg-violet-100 transition-all"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      Get ZIP
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-white/[0.08] px-6 py-16">
+      {/* 3. Starlight Intelligence Modules (6 plugin kits) */}
+      <section className="px-6 py-20 border-b border-white/[0.04] bg-[#040409]/30">
         <div className="mx-auto max-w-5xl">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
-                Release assets
+              <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">02 / Swarm Modules</p>
+              <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Intelligence Wrapper Kits</h2>
+              <p className="mt-2 text-slate-400 text-sm font-light">
+                Six public-ready wrappers for orchestrating command, revenue, system builds, world engines, and products.
               </p>
-              <h2 className="mt-3 text-2xl font-semibold text-white">
-                Download from the source of truth.
-              </h2>
             </div>
             <Link
               href="/download/latest.json"
-              className="text-[13px] text-violet-300 transition-std hover:text-violet-200"
+              className="text-[13px] text-cyan-400 hover:text-cyan-300 font-semibold transition-colors flex items-center gap-1"
             >
-              Machine-readable latest.json &rarr;
+              API Metadata JSON <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
-          <div className="mt-8 grid gap-3 md:grid-cols-2">
-            {SIP_STARTER_DOWNLOADS.map((download) => (
-              <a
-                key={download.filename}
-                href={download.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-xl border border-white/[0.08] bg-[#0c0c12] p-5 transition-std hover:border-violet-400/[0.35] hover:bg-white/[0.04]"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <p className="text-[13px] font-semibold text-white">
-                    {download.label}
-                  </p>
-                  <span className="text-[13px] text-violet-300 transition-micro group-hover:translate-x-0.5">
-                    &rarr;
-                  </span>
+          {/* Grid Layout of the 6 kits */}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                title: "Founder Command Kit",
+                file: "starlight-founder-command-kit-2026-06-19.zip",
+                img: "/assets/visuals/queen-premium/26.jpg",
+                icon: Cpu,
+                color: "text-cyan-400 border-cyan-500/10 hover:border-cyan-500/30",
+                desc: "Orchestrate executive decisions and harness system overrides.",
+              },
+              {
+                title: "Revenue Engine Kit",
+                file: "starlight-revenue-engine-kit-2026-06-19.zip",
+                img: "/assets/visuals/queen-premium/12.jpg",
+                icon: Coins,
+                color: "text-emerald-400 border-emerald-500/10 hover:border-emerald-500/30",
+                desc: "Manage value computational paths and transaction ledgers.",
+              },
+              {
+                title: "Starlight System Module",
+                file: "starlight-system-module-2026-06-19.zip",
+                img: "/assets/visuals/queen-premium/68.jpg",
+                icon: Layers,
+                color: "text-violet-400 border-violet-500/10 hover:border-violet-500/30",
+                desc: "Manage workspace meshes, naming doctrines, and schemas.",
+              },
+              {
+                title: "Arcanea World Engine",
+                file: "arcanea-world-engine-kit-2026-06-19.zip",
+                img: "/assets/visuals/queen-premium/45.jpg",
+                icon: Workflow,
+                color: "text-rose-400 border-rose-500/10 hover:border-rose-500/30",
+                desc: "Generative creative writing pipelines and worldbuilding swarms.",
+              },
+              {
+                title: "Enterprise AI Kit",
+                file: "starlight-enterprise-ai-kit-2026-06-19.zip",
+                img: "/assets/visuals/queen-premium/78.jpg",
+                icon: ShieldCheck,
+                color: "text-blue-400 border-blue-500/10 hover:border-blue-500/30",
+                desc: "Production model orchestration, security gates, and benchmarks.",
+              },
+              {
+                title: "Creator Product Kit",
+                file: "starlight-creator-product-kit-2026-06-19.zip",
+                img: "/assets/visuals/queen-premium/84.jpg",
+                icon: Sparkles,
+                color: "text-amber-400 border-amber-500/10 hover:border-amber-500/30",
+                desc: "Packaging templates and visual monetization engines.",
+              },
+            ].map((kit) => {
+              const Icon = kit.icon;
+              return (
+                <div
+                  key={kit.title}
+                  className={`group relative overflow-hidden rounded-xl border bg-[#090912]/80 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 ${kit.color}`}
+                >
+                  <div className="aspect-[4/3] w-full relative overflow-hidden bg-slate-950">
+                    <Image
+                      src={kit.img}
+                      alt={kit.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#090912] via-transparent to-transparent" />
+                  </div>
+                  
+                  <div className="p-5">
+                    <div className="flex items-center gap-x-2 text-white font-semibold text-lg">
+                      <Icon className="h-5 w-5 opacity-85 shrink-0" />
+                      <span>{kit.title}</span>
+                    </div>
+                    <p className="mt-2 text-xs text-slate-400 leading-relaxed font-light">
+                      {kit.desc}
+                    </p>
+                    <code className="mt-4 block break-all font-mono text-[10px] text-slate-500">
+                      {kit.file}
+                    </code>
+                    
+                    <a
+                      href={`${PLUGIN_MODULES_ASSET_BASE}/${kit.file}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-5 inline-flex w-full items-center justify-between rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] px-4 py-2.5 text-xs font-semibold text-white transition-all"
+                    >
+                      <span>Download wrapper</span>
+                      <span>&rarr;</span>
+                    </a>
+                  </div>
                 </div>
-                <code className="mt-3 block break-all font-mono text-[12px] text-slate-400">
-                  {download.filename}
-                </code>
-              </a>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <section
-        id="codex-plugin-starter"
-        className="border-b border-white/[0.08] px-6 py-16"
-      >
-        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-widest text-cyan-300">
-              Codex plugin starter
+      {/* 4. Books & Theoretical Foundations (Handbook & Specification) */}
+      <section className="px-6 py-20 border-b border-white/[0.04]">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-12">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">03 / Knowledge</p>
+            <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Books &amp; Guides</h2>
+            <p className="mt-2 text-slate-400 text-sm font-light">
+              Understand the core mechanics, cognitive psychology concepts, and protocol standards.
             </p>
-            <h2 className="mt-3 text-2xl font-semibold text-white">
-              Four public-safe operating plugins for builders.
-            </h2>
-            <p className="mt-4 text-[14px] leading-[1.8] text-slate-400">
-              A prerelease bundle for enterprise AI CoE work, health
-              intelligence safety, prompt evaluation, and Vibe OS audio/product
-              workflows. The full private suite stays internal until every
-              plugin passes publication sanitization.
-            </p>
-            <dl className="mt-6 grid gap-3 text-[12px]">
-              <Row label="Release" value={PLUGIN_STARTER_TAG} />
-              <Row label="Plugins" value="4 public starter plugins" />
-              <Row label="SHA256" value={PLUGIN_STARTER_SHA256} />
-            </dl>
           </div>
 
-          <div className="grid gap-4">
-            <div className="grid gap-3 sm:grid-cols-3">
-              {PLUGIN_STARTER_DOWNLOADS.map((download) => (
-                <a
-                  key={download.filename}
-                  href={download.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group rounded-xl border border-white/[0.08] bg-[#0c0c12] p-4 transition-std hover:border-cyan-300/[0.35] hover:bg-white/[0.04]"
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* Book 1 */}
+            <div className="glass-panel p-6 rounded-2xl flex flex-col sm:flex-row gap-6 items-center">
+              <div className="w-32 h-44 relative rounded-lg overflow-hidden border border-white/[0.08] bg-slate-900 shrink-0">
+                <Image
+                  src="/assets/visuals/queen/5.jpg"
+                  alt="Lived OS Handbook Cover"
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <span className="text-[10px] font-mono text-cyan-400 normal-case tracking-wider">Digital Guide</span>
+                <h3 className="mt-2 font-bold text-lg text-white">Lived OS Handbook</h3>
+                <p className="mt-2 text-xs text-slate-400 leading-relaxed font-light">
+                  A comprehensive guide to adopting active recall, capturing daily workflows, and building a sovereign second brain.
+                </p>
+                <Link
+                  href="/docs"
+                  className="mt-4 inline-flex items-center gap-x-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300"
                 >
-                  <p className="text-[13px] font-semibold text-white">
-                    {download.label}
-                  </p>
-                  <code className="mt-3 block break-all font-mono text-[11px] text-slate-400">
-                    {download.filename}
-                  </code>
-                  <span className="mt-4 block text-[13px] text-cyan-200 transition-micro group-hover:translate-x-0.5">
-                    Open &rarr;
-                  </span>
-                </a>
-              ))}
+                  <BookOpen className="h-4 w-4" />
+                  Read online
+                </Link>
+              </div>
             </div>
 
-            <Terminal>
-              <span className="text-emerald-400">$</span>{" "}
-              <span className="text-slate-400">unzip</span>{" "}
-              <span className="text-violet-300">
-                {`${PLUGIN_STARTER_MODULE_NAME}.zip`}
-              </span>
-              {"\n"}
-              <span className="text-emerald-400">$</span>{" "}
-              <span className="text-slate-400">codex plugin marketplace add</span>{" "}
-              <span className="text-violet-300">
-                {"<path-to-extracted-bundle>"}
-              </span>
-              {"\n"}
-              {PLUGIN_STARTER_PLUGINS.map((plugin, index) => (
-                <span key={plugin}>
-                  <span className="text-emerald-400">$</span>{" "}
-                  <span className="text-slate-400">codex plugin add</span>{" "}
-                  <span className="text-violet-300">
-                    {plugin}@starlight-public
-                  </span>
-                  {index < PLUGIN_STARTER_PLUGINS.length - 1 ? "\n" : ""}
-                </span>
-              ))}
-            </Terminal>
-            <p className="rounded-lg border border-cyan-300/[0.14] bg-cyan-300/[0.06] px-4 py-3 text-[12px] leading-relaxed text-cyan-100/80">
-              The private 29-plugin suite is packaged separately for internal
-              operators. Public distribution starts here so builders get a clean,
-              verifiable install path without exposing private business logic.
-              {" "}
-              <Link
-                href="/download/plugins/latest.json"
-                className="font-medium text-cyan-50 underline decoration-cyan-200/40 underline-offset-4 transition-std hover:text-white"
-              >
-                Machine-readable plugin manifest
-              </Link>
-              .
-            </p>
+            {/* Book 2 */}
+            <div className="glass-panel p-6 rounded-2xl flex flex-col sm:flex-row gap-6 items-center">
+              <div className="w-32 h-44 relative rounded-lg overflow-hidden border border-white/[0.08] bg-slate-900 shrink-0">
+                <Image
+                  src="/assets/visuals/queen/8.jpg"
+                  alt="Starlight Protocol Spec Cover"
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <span className="text-[10px] font-mono text-violet-400 normal-case tracking-wider">Specification</span>
+                <h3 className="mt-2 font-bold text-lg text-white">Starlight Protocol Spec</h3>
+                <p className="mt-2 text-xs text-slate-400 leading-relaxed font-light">
+                  Technical standard documentation covering multi-agent lifecycle events, attestations, and schemas.
+                </p>
+                <Link
+                  href="/protocol"
+                  className="mt-4 inline-flex items-center gap-x-1.5 text-xs font-semibold text-violet-400 hover:text-violet-300"
+                >
+                  <FileText className="h-4 w-4" />
+                  View Specification
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-white/[0.08] px-6 py-16">
-        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-[0.95fr_1.05fr]">
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
-              Install
-            </p>
-            <h2 className="mt-3 text-2xl font-semibold text-white">
-              Start with files. Upgrade when ready.
-            </h2>
-            <p className="mt-4 text-[14px] leading-[1.8] text-slate-400">
-              The starter is not the whole runtime. It gives teams the portable
-              SIP contract first: memory, agents, canon, stack, attestation,
-              and public vault seeds.
-            </p>
-          </div>
-          <Terminal>
-            <span className="text-emerald-400">$</span>{" "}
-            <span className="text-slate-400">curl -LO</span>{" "}
-            <span className="text-violet-300">
-              {`${SIP_STARTER_ASSET_BASE}/${SIP_STARTER_MODULE_NAME}.tar.gz`}
-            </span>
-            {"\n"}
-            <span className="text-emerald-400">$</span>{" "}
-            <span className="text-slate-400">tar -xzf</span>{" "}
-            <span className="text-violet-300">{`${SIP_STARTER_MODULE_NAME}.tar.gz`}</span>
-            {"\n"}
-            <span className="text-emerald-400">$</span>{" "}
-            <span className="text-slate-400">sh</span>{" "}
-            <span className="text-violet-300">
-              {`${SIP_STARTER_MODULE_NAME}/install.sh`}
-            </span>{" "}
-            <span className="text-slate-400">/path/to/your/repo</span>
-          </Terminal>
-        </div>
-      </section>
-
-      <section className="border-b border-white/[0.08] px-6 py-16">
+      {/* 5. Software Agent Packs & Intelligence Systems */}
+      <section className="px-6 py-20 border-b border-white/[0.04] bg-[#040409]/30">
         <div className="mx-auto max-w-5xl">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
-            Package contents
-          </p>
-          <h2 className="mt-3 text-2xl font-semibold text-white">
-            Everything needed for a clean SIP Core start.
-          </h2>
-          <div className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {SIP_STARTER_INCLUDED.map((item) => (
+          <div className="mb-12">
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">04 / Runtimes</p>
+            <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Intelligence System Packs</h2>
+            <p className="mt-2 text-slate-400 text-sm font-light">
+              Deploy specialized cognitive environments built on structured schemas and reproducible pipelines.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {[
+              {
+                title: "Neuroscience Research Pack",
+                desc: "Contains standardized BIDS validators, NWB mapping datasets, and active MNE analytics scripts for bio-signal data.",
+                img: "/assets/visuals/queen-premium/50.jpg",
+                badge: "Neuro-Lobe",
+                repo: "https://github.com/frankxai/neuroscience-research-intelligence-system",
+              },
+              {
+                title: "Psychology Construct System",
+                desc: "Includes psychometrics verification algorithms, construct mapping schema, and qualitative analysis modules.",
+                img: "/assets/visuals/01-10is-visual-composition-constellation.jpg",
+                badge: "Psych-Lobe",
+                repo: "https://github.com/frankxai/psychology-research-intelligence-system",
+              },
+              {
+                title: "Agentic Ops Hub",
+                desc: "Runbooks, cockpit design docs, and guarded 24/7 runtime patterns for operating a multi-brand Hermes agent fleet.",
+                img: "/assets/visuals/02-starlight-queen-closed-loop-dashboard.jpg",
+                badge: "Control Plane",
+                repo: "https://github.com/frankxai/agentic-ops-hub",
+              },
+              {
+                title: "Memory Palace Vault Seeds",
+                desc: "Pre-configured Obsidian vault seeds with concept maps, identity logs, and spacial indexing templates.",
+                img: "/assets/visuals/03-advanced-3d-memory-palace-v2.jpg",
+                badge: "Lived OS Vault",
+                repo: "https://github.com/frankxai/agentic-mind-os",
+              },
+            ].map((pack) => (
               <div
-                key={item}
-                className="rounded-lg border border-white/[0.07] bg-white/[0.02] px-4 py-3"
+                key={pack.title}
+                className="glass-panel rounded-2xl overflow-hidden flex flex-col sm:flex-row hover:border-white/[0.15] transition-all group"
               >
-                <code className="font-mono text-[12px] text-slate-300">
-                  {item}
-                </code>
+                <div className="w-full sm:w-2/5 aspect-[4/3] sm:aspect-auto relative bg-slate-900 overflow-hidden shrink-0">
+                  <Image
+                    src={pack.img}
+                    alt={pack.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 200px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-6 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border border-white/[0.08] bg-white/[0.04] text-slate-400">
+                      {pack.badge}
+                    </span>
+                    <h3 className="mt-3 font-bold text-white text-lg">{pack.title}</h3>
+                    <p className="mt-2 text-xs text-slate-400 leading-relaxed font-light">
+                      {pack.desc}
+                    </p>
+                  </div>
+                  <a
+                    href={pack.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 inline-flex items-center gap-x-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+                  >
+                    <span>Inspect repo</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </a>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="px-6 py-16">
-        <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-3">
+      {/* 6. Quickstart Terminal Instruction */}
+      <section className="px-6 py-20 border-b border-white/[0.04]">
+        <div className="mx-auto max-w-5xl grid gap-12 md:grid-cols-2 items-center">
+          <div>
+            <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">05 / Setup</p>
+            <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">
+              Build what is current.
+            </h2>
+            <p className="mt-4 text-slate-400 text-sm leading-relaxed font-light">
+              Until a v8.3.0 Starter archive is published, the repository is
+              the only current distribution path.
+            </p>
+          </div>
+          <Terminal>
+            {`git clone ${SIP_STARTER_REPO}.git
+cd Starlight-Intelligence-System
+npm install
+npm run build
+node dist/cli.js init --vaults`}
+          </Terminal>
+        </div>
+      </section>
+
+      {/* 7. Distribution state */}
+      <section className="px-6 py-20 border-b border-white/[0.04] bg-[#040409]/30">
+        <div className="mx-auto max-w-5xl">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">06 / Distribution state</p>
+          <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">
+            Source is open. The archive is not published.
+          </h2>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-400">
+            No release page, ZIP, TAR.GZ, manifest, or checksum is claimed for
+            SIP Starter v8.3.0. The machine-readable endpoint reports the same
+            source-only state.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href={SIP_STARTER_SOURCE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-white/[0.1] px-5 py-2.5 text-[13px] font-medium text-white transition-all hover:border-white/[0.2] hover:bg-white/[0.04]"
+            >
+              Inspect main source
+            </a>
+            <Link
+              href="/download/latest.json"
+              className="rounded-full border border-white/[0.1] px-5 py-2.5 text-[13px] font-medium text-white transition-all hover:border-white/[0.2] hover:bg-white/[0.04]"
+            >
+              Read distribution JSON
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Validation Cards */}
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-5xl grid gap-6 sm:grid-cols-3">
           <ValidationStep
             n="01"
-            title="Verify checksums"
-            body="Download the SHA256 file and compare it against the archive before unpacking."
+            title="Inspect source"
+            body="Review the public repository, license, and current main history before adopting it."
           />
           <ValidationStep
             n="02"
-            title="Read the manifest"
-            body="Use release-manifest.json and starlight-module.json to confirm version, conformance, and included files."
+            title="Build locally"
+            body="Install dependencies and compile the checked-out source; do not substitute the stale npm package."
           />
           <ValidationStep
             n="03"
-            title="Move into runtime"
-            body="When the file contract is working, install the full Starlight MCP runtime through npm."
+            title="Verify the boundary"
+            body="Call tools/list over JSON-RPC and confirm the current 13-tool MCP surface."
           />
         </div>
-        <div className="mx-auto mt-12 max-w-5xl rounded-xl border border-violet-500/[0.18] bg-violet-500/[0.05] p-6">
-          <p className="text-[13px] leading-relaxed text-slate-300">
-            Core downloads stay ungated. FrankX can offer operator guides,
-            implementation reviews, and premium excellence bundles around this
-            open protocol without blocking adoption.
+        
+        <div className="mx-auto mt-12 max-w-5xl rounded-xl border border-violet-500/[0.15] bg-violet-500/[0.03] p-6 text-center">
+          <p className="text-[13px] leading-relaxed text-slate-400">
+            Open-core downloads stay ungated. FrankX offers guidepacks, security audits, and premium support bundles around this protocol.
           </p>
         </div>
       </section>
@@ -323,29 +529,18 @@ export default function DownloadPage() {
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-4 border-t border-white/[0.06] pt-3">
-      <dt className="shrink-0 text-slate-500">{label}</dt>
-      <dd className="min-w-0 break-all text-right font-mono text-slate-300">
-        {value}
-      </dd>
-    </div>
-  );
-}
-
 function Terminal({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
+    <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#07070d]">
       <div className="flex items-center gap-1.5 border-b border-white/[0.06] px-4 py-3">
-        <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-slate-800" />
+        <span className="h-2.5 w-2.5 rounded-full bg-slate-800" />
+        <span className="h-2.5 w-2.5 rounded-full bg-slate-800" />
         <code className="ml-3 font-mono text-[11px] text-slate-500">
           terminal
         </code>
       </div>
-      <pre className="overflow-x-auto whitespace-pre-wrap break-words p-4 font-mono text-[12px] leading-[1.8] text-slate-300 [overflow-wrap:anywhere]">
+      <pre className="overflow-x-auto whitespace-pre-wrap break-words p-4 font-mono text-[11px] leading-[1.8] text-slate-300">
         {children}
       </pre>
     </div>
@@ -362,10 +557,10 @@ function ValidationStep({
   body: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5">
-      <p className="font-mono text-[11px] text-violet-300">{n}</p>
-      <h3 className="mt-3 text-[16px] font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-[13px] leading-relaxed text-slate-400">{body}</p>
+    <div className="rounded-xl border border-white/[0.08] bg-white/[0.01] p-5">
+      <p className="font-mono text-xs text-violet-400">{n}</p>
+      <h3 className="mt-3 text-[15px] font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-xs leading-relaxed text-slate-400 font-light">{body}</p>
     </div>
   );
 }

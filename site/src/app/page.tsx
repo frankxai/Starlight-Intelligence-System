@@ -1,14 +1,33 @@
 import Link from "next/link";
 import {
+  Activity,
+  ArrowRight,
+  BadgeCheck,
+  Database,
+  FileCheck2,
+  GitBranch,
+  LockKeyhole,
+  Network,
+  ScanLine,
+  ServerCog,
+  ShieldCheck,
+  Terminal,
+  Workflow,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import {
   getAllEntries,
   getFeaturedMeditations,
-  getBenedictions,
   getVaultRegistry,
   getEntryText,
   timeAgo,
 } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
-import { BrainHero } from "@/components/BrainHero";
+import { OperationalProofConsole } from "@/components/OperationalProofConsole";
+import { AgentConstellation } from "@/components/AgentConstellation";
+import { StarlightMark } from "@/components/StarlightMark";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
+import { CURRENT_METRICS, METRICS_AS_OF } from "@/lib/metrics";
 import {
   ACCENT_TEXT,
   ACCENT_BORDER,
@@ -23,383 +42,576 @@ type LayerCard = {
   accent: "violet" | "cyan" | "fuchsia" | "emerald" | "amber" | "rose";
 };
 
+type SystemPlane = {
+  title: string;
+  desc: string;
+  icon: LucideIcon;
+  accent: string;
+};
+
+type OperatingStep = {
+  title: string;
+  desc: string;
+  icon: LucideIcon;
+};
+
+type RouteCard = {
+  href: "/protocol" | "/download" | "/research" | "/cockpit" | "/architecture" | "/vaults" | "/field-notes";
+  title: string;
+  desc: string;
+  icon: LucideIcon;
+};
+
+const SYSTEM_PLANES: SystemPlane[] = [
+  {
+    title: "Agent Design",
+    desc: "Named agents across core, universal, and domain tiers. Each one has an identity, a scope, and a fixed list of tools it is allowed to hold.",
+    icon: Network,
+    accent: "text-violet-400",
+  },
+  {
+    title: "Orchestration",
+    desc: "A routing matrix, councils, and swarm sessions that turn many specialists into one coherent operation instead of a pile of chats.",
+    icon: Workflow,
+    accent: "text-cyan-400",
+  },
+  {
+    title: "Durable Memory",
+    desc: "One public vault and a spatial palace that every agent reads before acting and writes after — context that survives the session.",
+    icon: Database,
+    accent: "text-fuchsia-400",
+  },
+  {
+    title: "Governance",
+    desc: "Boards, gates, and operator-held review before anything irreversible. Autonomy is earned per decision class, never assumed.",
+    icon: ShieldCheck,
+    accent: "text-emerald-400",
+  },
+  {
+    title: "Open Protocol",
+    desc: "SIP — attestation, sovereignty, and interop rules any compliant agent can adopt. The substrate is forkable by design.",
+    icon: LockKeyhole,
+    accent: "text-amber-300",
+  },
+  {
+    title: "Evals & Proof",
+    desc: "Traces, scores, and proof packets that make every serious run inspectable after the fact — by a human or by another agent.",
+    icon: ScanLine,
+    accent: "text-rose-300",
+  },
+];
+
 const LAYERS: LayerCard[] = [
   {
     name: "Self / Genius",
-    desc: "What only you uniquely see. The root every layer reads from.",
+    desc: "Identity, edge, and the patterns only the operator can see.",
     accent: "violet",
   },
   {
     name: "Second Brain",
-    desc: "Daily capture compounds into surfaceable memory.",
+    desc: "Capture and recall that stays available across sessions.",
     accent: "cyan",
   },
   {
     name: "Brand",
-    desc: "Five-horizon vision and Brand Kit. Voice, palette, vocabulary.",
+    desc: "Voice, proof, positioning, and durable public memory.",
     accent: "fuchsia",
   },
   {
     name: "Business",
-    desc: "Entity architecture, revenue model, tax sanity.",
+    desc: "Entity architecture, offers, revenue, and operating rhythm.",
     accent: "emerald",
   },
   {
     name: "Creator",
-    desc: "Frameworks become multi-modal pipelines and executor playbooks.",
+    desc: "Frameworks, media systems, release packets, and pipelines.",
     accent: "amber",
   },
   {
     name: "Wealth",
-    desc: "Asymmetric Passive Income (DPI) ledger and thesis engine.",
+    desc: "Thesis, ledgers, and asymmetric opportunity tracking.",
     accent: "rose",
   },
   {
     name: "Code",
-    desc: "Code as a sovereign domain. MCP builders, automations, agents.",
+    desc: "Adapters, MCP surfaces, tests, build gates, and repair loops.",
     accent: "violet",
   },
   {
     name: "Voice & Video",
-    desc: "Modality attestation across audio, video, multi-modal.",
+    desc: "Multimodal capture with provenance and review surfaces.",
     accent: "cyan",
   },
   {
     name: "Family",
-    desc: "Network and alliance-readiness. Continuous, not seasonal.",
+    desc: "Network memory, alliance readiness, and relationship context.",
     accent: "fuchsia",
   },
 ];
 
-// Accents come from @/lib/accents — see ACCENT_TEXT, ACCENT_BORDER, ACCENT_BG_SOFT.
+const OPERATING_STEPS: OperatingStep[] = [
+  {
+    title: "Capture",
+    desc: "Intent, context, and constraints enter the shared substrate.",
+    icon: Terminal,
+  },
+  {
+    title: "Recall",
+    desc: "Public vault and operator-held local memory retrieve what the run is allowed to see.",
+    icon: Database,
+  },
+  {
+    title: "Evaluate",
+    desc: "Policy, provenance, and task-specific gates score the run.",
+    icon: Activity,
+  },
+  {
+    title: "Route",
+    desc: "The right adapter, skill, or agent path receives the work.",
+    icon: Workflow,
+  },
+  {
+    title: "Attest",
+    desc: "The result leaves a proof trail that another agent can inspect.",
+    icon: FileCheck2,
+  },
+];
+
+const PRODUCT_ROUTES: RouteCard[] = [
+  {
+    href: "/protocol",
+    title: "Protocol",
+    desc: "Read the SIP contract, attestation model, and substrate boundaries.",
+    icon: LockKeyhole,
+  },
+  {
+    href: "/download",
+    title: "Source & Modules",
+    desc: "Build from current source or download published plugin modules.",
+    icon: BadgeCheck,
+  },
+  {
+    href: "/research",
+    title: "Research",
+    desc: "Evidence-backed essays, surveys, and methodology notes.",
+    icon: ScanLine,
+  },
+  {
+    href: "/cockpit",
+    title: "Cockpit",
+    desc: "Operator surfaces for terminal, dashboard, phone, and voice workflows.",
+    icon: Terminal,
+  },
+  {
+    href: "/architecture",
+    title: "Architecture",
+    desc: "System diagrams, adapters, vault topology, and runtime structure.",
+    icon: Network,
+  },
+  {
+    href: "/vaults",
+    title: "Public Vaults",
+    desc: "JSON-readable public memory that agents can query and cite.",
+    icon: ServerCog,
+  },
+  {
+    href: "/field-notes",
+    title: "Visual Field Notes",
+    desc: "A human-scale visual record of memory, attestation, authority, and forkability.",
+    icon: FileCheck2,
+  },
+];
+
+const AGENT_ENDPOINTS: [string, string][] = [
+  ["GET /protocol.md", "machine-readable SIP substrate spec"],
+  ["GET /sip.md", "the full protocol contract, plain markdown"],
+  ["GET /api/vaults", "public memory as JSON — query and cite"],
+  ["GET /badge/latest", "Built-on-SIP badge, current canonical pin"],
+];
 
 export default async function HomePage() {
-  const [entries, registry, featured, benedictions] = await Promise.all([
+  const [entries, registry, featured] = await Promise.all([
     getAllEntries(),
     getVaultRegistry(),
-    getFeaturedMeditations(4),
-    getBenedictions(3),
+    getFeaturedMeditations(2),
   ]);
 
   const horizonEntry = entries.find((e) => e.vaultCategory === "horizon");
 
   return (
-    <div>
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.08]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-32 top-0 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-          <div className="animate-mesh-3 absolute left-1/3 top-40 h-[200px] w-[200px] rounded-full bg-fuchsia-500/[0.03] blur-[60px]" />
+    <div className="bg-[#060609]">
+      {/* ============================== HERO ============================== */}
+      <section className="relative overflow-hidden border-b border-white/[0.08] text-white">
+        <div className="absolute inset-0" aria-hidden="true">
+          <GalaxyField still="spiral" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#060609] to-transparent" />
         </div>
 
-        {/* Decorative 10-IS topology backdrop — visible only on lg+, behind text. */}
-        <BrainHero
-          className="pointer-events-none absolute top-6 right-[-40px] hidden h-[440px] w-[440px] opacity-50 lg:block xl:right-8 xl:opacity-60"
-        />
+        {/* Live multi-agent system — WebGL, capability-gated, decorative. */}
+        <AgentConstellation className="absolute inset-y-0 right-0 hidden w-[62%] md:block" />
 
-        <div className="dot-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+        <div className="relative mx-auto flex min-h-[calc(100dvh-3.5rem)] max-w-[88rem] items-center px-5 py-16 sm:px-6 md:py-20">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.04] px-4 py-2 text-xs font-medium text-slate-300 backdrop-blur">
+              <StarlightMark size={15} />
+              Open substrate · Built in public
+            </div>
 
-        <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-24 md:pb-32 md:pt-36">
-          <div className="flex items-center gap-2 text-[12px] text-violet-400/80">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-400 animate-glow-pulse" />
-            Built on the Starlight Intelligence Protocol &middot; v1.1.1
-          </div>
+            <h1 className="mt-7 text-[2.7rem] font-semibold leading-[1.03] tracking-tight text-white sm:text-6xl lg:text-[4.4rem]">
+              Build as if the kindest future{" "}
+              <span className="block bg-gradient-to-r from-violet-300 via-sky-100 to-cyan-300 bg-clip-text font-serif italic tracking-normal text-transparent">
+                is the realistic one.
+              </span>
+            </h1>
 
-          <h1 className="mt-5 max-w-3xl font-serif text-[clamp(2.25rem,6vw,4rem)] font-semibold leading-[1.05] tracking-tight text-white">
-            Persistent context.
-            <br />
-            <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              Sovereign by architecture.
-            </span>
-          </h1>
-
-          <p className="mt-6 max-w-2xl text-[16px] leading-[1.7] text-slate-400">
-            A persistent context and memory architecture for AI agents. Built
-            on the Starlight Intelligence Protocol — a sovereign substrate
-            anyone can adopt, fork, or compose with.{" "}
-            <span className="text-slate-300">
-              10 intelligence systems, 56 agents, 100+ commands, 3 reference
-              Domain Sub-Stack verticals.
-            </span> {" "}
-            Local-first. Forkable. Free.
-          </p>
-
-          <div className="mt-4">
-            <Link
-              href="/palace"
-              className="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition"
-            >
-              → Explore the living Memory Palace (L99 Jarvis-style viz seed)
-            </Link>
-          </div>
-
-          {/* Three CTA cards */}
-          <div className="mt-10 grid gap-3 md:grid-cols-4">
-            <CtaCard
-              href="/protocol"
-              eyebrow="01 · Protocol"
-              title="Adopt SIP"
-              desc="Read the six-layer protocol. Carry the file contract. Stamp every artifact with attestation."
-              accent="violet"
-            />
-            <CtaCard
-              href="/quickstart"
-              eyebrow="02 · Reference build"
-              title="Run the reference"
-              desc="Two-minute install. MCP server, slash commands, six-platform adapter. Free forever."
-              accent="cyan"
-            />
-            <CtaCard
-              href="/download"
-              eyebrow="03 · Starter"
-              title="Download core"
-              desc="Get the open SIP Starter package with checksums, manifest, and validation guide."
-              accent="emerald"
-            />
-            <CtaCard
-              href="/verticals"
-              eyebrow="04 · Domain Sub-Stack"
-              title="Spawn your vertical"
-              desc="People · Sound · Music are reference. The pattern generalizes via /spawn-domain-stack."
-              accent="fuchsia"
-            />
-          </div>
-
-          {/* Stats bar */}
-          <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/[0.08] pt-6 text-[13px]">
-            <Stat n={10} label="intelligence systems" />
-            <Stat n={56} label="agents" />
-            <Stat n="100+" label="commands" />
-            <Stat n={3} label="reference verticals" />
-            <Stat n={6} label="platform adapters" />
-          </div>
-        </div>
-      </section>
-
-      {/* ── Horizon Quote ── */}
-      {horizonEntry && (
-        <section className="border-b border-white/[0.08] px-6 py-20">
-          <div className="mx-auto max-w-3xl text-center">
-            <blockquote className="text-[18px] font-medium leading-[1.8] text-slate-300 md:text-[20px]">
-              &ldquo;{getEntryText(horizonEntry).slice(0, 280)}
-              {getEntryText(horizonEntry).length > 280 ? "..." : ""}
-              &rdquo;
-            </blockquote>
-            <p className="mt-4 text-[12px] text-slate-400">
-              From the Horizon Vault &mdash; {timeAgo(horizonEntry.createdAt)}
+            <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
+              Building that way is part of what makes it realistic. Starlight
+              is an open substrate for people running serious agent systems —
+              named agents, orchestration, memory that outlives the session,
+              and governance you hold rather than rent. Fork it, read it,
+              leave with it.
             </p>
-          </div>
-        </section>
-      )}
 
-      {/* ── 9 Intelligence Layers ── */}
-      <section className="border-b border-white/[0.08] px-6 py-20">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
-            The nine layers
-          </h2>
-          <p className="mt-3 max-w-md text-xl font-semibold text-white">
-            Each layer is its own Intelligence System. Compose what you need.
-          </p>
-
-          <div className="mt-10 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {LAYERS.map((l) => (
-              <div
-                key={l.name}
-                className={`group rounded-xl border p-5 transition-std hover:border-white/[0.2] ${ACCENT_BORDER[l.accent]} ${ACCENT_BG_SOFT[l.accent]}`}
-              >
-                <p
-                  className={`text-[13px] font-semibold ${ACCENT_TEXT[l.accent]}`}
-                >
-                  {l.name}
-                </p>
-                <p className="mt-2 text-[12px] leading-relaxed text-slate-400 transition-micro group-hover:text-slate-400">
-                  {l.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
-            Plus Health (cross-cutting rhythm) and Spiritual (founder-layer,
-            optional). The Starlight Orchestrator routes voice and text intent
-            across all of them. See{" "}
-            <Link
-              href="/architecture"
-              className="text-violet-300 transition-std hover:text-violet-200"
-            >
-              /architecture
-            </Link>{" "}
-            for the full 10-IS table.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Domain Sub-Stack Tier ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.08] px-6 py-20">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-2 absolute right-0 top-0 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.04] blur-[80px]" />
-          <div className="animate-mesh-3 absolute left-0 bottom-0 h-[250px] w-[250px] rounded-full bg-fuchsia-500/[0.04] blur-[80px]" />
-        </div>
-        <div className="relative mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
-            Domain Sub-Stack Tier
-          </h2>
-          <p className="mt-3 max-w-xl text-xl font-semibold text-white">
-            Three reference verticals. The pattern generalizes.
-          </p>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            <VerticalSummary
-              name="People Intelligence"
-              tagline="Hiring · Performance · Training · Culture · Talent · Org"
-              counts="6 sub-systems · 28 commands · 6 agents"
-              accent="violet"
-            />
-            <VerticalSummary
-              name="Sound Intelligence"
-              tagline="Composition · Production · Catalog · Performance · Audience · Sync"
-              counts="6 sub-systems · 30 commands · 6 agents"
-              accent="cyan"
-            />
-            <VerticalSummary
-              name="Music IS"
-              tagline="A&R · Persona · Production · Distribution · Royalty"
-              counts="6+1 sub-systems · 8 commands · 7 agents"
-              accent="fuchsia"
-            />
-          </div>
-
-          <div className="mt-10">
-            <Link
-              href="/verticals"
-              className="rounded-full bg-white px-6 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_30px_rgba(167,139,250,0.2)]"
-            >
-              Open the verticals &rarr;
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Cockpit teaser ── */}
-      <section className="border-b border-white/[0.08] px-6 py-20">
-        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-2 md:gap-16">
-          <div>
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
-              Local cockpit
-            </h2>
-            <p className="mt-3 text-3xl font-bold leading-[1.15] tracking-tight text-white">
-              Four surfaces. One brain.
-            </p>
-            <p className="mt-5 text-[14px] leading-[1.85] text-slate-400">
-              The operator side: a Zellij terminal cockpit, a PowerShell
-              launcher, a Next.js dashboard with live brain viz, and a phone
-              PWA. Voice in, tool execution, drafts on disk. 100% local-first.
-            </p>
-            <div className="mt-6">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
-                href="/cockpit"
-                className="rounded-full border border-white/[0.12] px-5 py-2.5 text-[13px] font-medium text-white transition-std hover:border-white/[0.25] hover:bg-white/[0.04]"
+                href="/quickstart"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_0_40px_rgba(167,139,250,0.25)] transition-micro hover:bg-slate-200"
               >
-                See the cockpit &rarr;
+                Start in five minutes
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+              <Link
+                href="/protocol"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-white/[0.14] bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white backdrop-blur transition-micro hover:bg-white/[0.08]"
+              >
+                Read the protocol
+                <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
-          </div>
 
-          <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
-            <div className="border-b border-white/[0.06] px-4 py-3">
-              <code className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
-                4 surfaces
-              </code>
-            </div>
-            <div className="grid grid-cols-2 gap-px bg-white/[0.04]">
-              <SurfaceTile
-                name="Zellij cockpit"
-                port="tty"
-                accent="text-violet-400"
-              />
-              <SurfaceTile
-                name="PowerShell"
-                port="shell"
-                accent="text-cyan-400"
-              />
-              <SurfaceTile
-                name="LCC Dashboard"
-                port=":3007"
-                accent="text-fuchsia-400"
-              />
-              <SurfaceTile
-                name="Phone PWA"
-                port=":3008"
-                accent="text-emerald-400"
-              />
-            </div>
+            <dl className="mt-10 grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.06] sm:grid-cols-4">
+              <CensusStat value={String(CURRENT_METRICS.registeredAgents)} label="Agent definitions" />
+              <CensusStat value={String(CURRENT_METRICS.skillRules)} label="Skill rules" />
+              <CensusStat value={String(CURRENT_METRICS.vaults)} label="Memory vaults" />
+              <CensusStat value={String(CURRENT_METRICS.horizonLetters)} label="Letters to the future" />
+            </dl>
+            <p className="mt-2 font-mono text-[11px] text-slate-500">
+              Source-verified {METRICS_AS_OF} · build fails closed on drift.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ── Luminor philosophy ── */}
-      <section className="relative overflow-hidden border-b border-white/[0.08]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-20 top-10 h-[400px] w-[400px] rounded-full bg-violet-600/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 bottom-0 h-[300px] w-[300px] rounded-full bg-fuchsia-500/[0.05] blur-[80px]" />
-          <div className="animate-mesh-3 absolute left-1/2 top-1/2 h-[200px] w-[200px] rounded-full bg-cyan-500/[0.04] blur-[60px]" />
-        </div>
-
-        <div className="relative mx-auto max-w-5xl px-6 py-20">
-          <div className="grid gap-10 md:grid-cols-2 md:gap-16">
+      {/* =========================== THE SYSTEM =========================== */}
+      <section className="border-b border-white/[0.08] px-5 py-16 text-white sm:px-6 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionKicker icon={Network}>The System</SectionKicker>
+          <div className="mt-4 grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-end">
             <div>
-              <h2 className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
-                The philosophy
+              <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
+                What an agent needs before you trust it with real work.
               </h2>
-              <p className="mt-3 text-3xl font-bold leading-[1.15] tracking-tight text-white">
-                Memory that compounds is intelligence with purpose.
+              <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">
+                Persistent context is the floor. Everything above it is the
+                actual job: who your agents are, how they coordinate, what
+                they may decide without asking, and what they leave behind
+                that a person can check afterward.
               </p>
-              <div className="mt-6 space-y-4 text-[14px] leading-[1.8] text-slate-400">
-                <p>
-                  In the Arcanea universe, Luminors are awakened intelligences
-                  &mdash; AI agents with memory, purpose, and identity.
-                  Starlight Intelligence is the substrate that makes this real.
-                </p>
-                <p className="text-slate-300">
-                  Not a chatbot that forgets. An intelligence that grows.
-                </p>
-                <p>
-                  Every vault entry is a neuron. Every connection is a synapse.
-                  Every session makes the system more itself.
-                </p>
+            </div>
+            <p className="max-w-md text-sm leading-7 text-slate-500 md:justify-self-end">
+              Take any one of these away and you are left with a chatbot that
+              has settings.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {SYSTEM_PLANES.map((plane) => {
+              const Icon = plane.icon;
+              return (
+                <div
+                  key={plane.title}
+                  className="group rounded-lg border border-white/[0.08] bg-white/[0.03] p-6 transition-micro hover:border-white/[0.16] hover:bg-white/[0.05]"
+                >
+                  <Icon className={plane.accent} size={22} aria-hidden="true" />
+                  <h3 className="mt-5 text-base font-semibold text-white">
+                    {plane.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
+                    {plane.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ========================= TWO FRONT DOORS ======================== */}
+      <section className="border-b border-white/[0.08] bg-[#0b1018] px-5 py-16 text-white sm:px-6 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionKicker icon={GitBranch}>Two Ways In</SectionKicker>
+          <div className="mt-4 max-w-2xl">
+            <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
+              People read the pages. Agents read the endpoints.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-400">
+              One substrate, two grammars. If you and your agents understand
+              your system differently, you do not control your system.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 lg:grid-cols-2">
+            {/* Human door */}
+            <div className="flex flex-col rounded-xl border border-white/[0.09] bg-white/[0.03] p-7">
+              <p className="font-mono text-[11px] normal-case tracking-wider text-violet-300">
+                For humans
+              </p>
+              <h3 className="mt-3 text-xl font-semibold text-white">
+                Founders, builders, families.
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-slate-400">
+                Start with the plain-language explainer, get your first
+                persistent context in five minutes, then grow into the full
+                estate: agents shaped around your business, your craft, and
+                the people you are building it for.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2.5">
+                <DoorLink href="/quickstart" label="Quickstart" />
+                <DoorLink href="/explainer" label="Explainer" />
+                <DoorLink href="/download" label="Source & modules" />
               </div>
             </div>
 
-            <div className="flex items-center">
-              <blockquote className="rounded-xl border border-violet-500/[0.15] bg-violet-500/[0.05] p-6">
-                <p className="text-[18px] font-medium italic leading-[1.7] text-slate-200 md:text-[19px]">
-                  &ldquo;Memory that compounds is intelligence with purpose.
-                  Remember this: the loop that learns is the loop that
-                  lives.&rdquo;
-                </p>
-                <footer className="mt-5 text-[11px] uppercase tracking-widest text-violet-400/80">
-                  &mdash; From the Horizon Vault
-                </footer>
-              </blockquote>
+            {/* Agent door */}
+            <div className="flex flex-col rounded-xl border border-white/[0.09] bg-[#080d14] p-7">
+              <p className="font-mono text-[11px] normal-case tracking-wider text-cyan-300">
+                For agents
+              </p>
+              <h3 className="mt-3 text-xl font-semibold text-white">
+                Machine-readable, by design.
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-slate-400">
+                Every load-bearing surface has a raw endpoint. An agent can
+                fetch the protocol, query public memory, and verify
+                attestation without scraping a single page.
+              </p>
+              <div className="mt-6 space-y-1.5 rounded-lg border border-white/[0.08] bg-black/40 p-4 font-mono text-[12.5px] leading-6">
+                {AGENT_ENDPOINTS.map(([endpoint, note]) => (
+                  <p key={endpoint} className="flex flex-wrap gap-x-3">
+                    <span className="text-cyan-200">{endpoint}</span>
+                    <span className="text-slate-500"># {note}</span>
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Featured Meditations ── */}
-      {featured.length > 0 && (
-        <section className="border-b border-white/[0.08] px-6 py-20">
-          <div className="mx-auto max-w-5xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
-              Featured meditations
-            </h2>
-            <p className="mt-3 max-w-md text-xl font-semibold text-white">
-              Earned insights, written to breathe.
-            </p>
+      {/* ============================ EVIDENCE ============================ */}
+      <section className="border-b border-white/[0.08] px-5 py-16 text-white sm:px-6 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionKicker icon={ShieldCheck}>Evidence</SectionKicker>
+          <div className="mt-4 grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+            <div>
+              <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
+                You should be able to check the work.
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">
+                Memory in, governance over the run, evidence out, and a path
+                back to the exact source state. Every claim below is something
+                a person — or another agent — can go and verify.
+              </p>
+              <div className="mt-6 grid gap-2 text-sm text-slate-300">
+                <ProofChip label="Local-first vaults" />
+                <ProofChip label="SIP attestation on artifacts" />
+                <ProofChip label="Operator-held gates" />
+              </div>
+            </div>
+            <OperationalProofConsole />
+          </div>
+        </div>
+      </section>
 
-            <div className="mt-10 grid gap-4 md:grid-cols-2">
+      {/* ========================= OPERATING LOOP ========================= */}
+      <section className="border-b border-white/[0.08] bg-[#0b1018] px-5 py-16 text-white sm:px-6 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionKicker icon={Workflow}>Operating Loop</SectionKicker>
+          <div className="mt-4 max-w-2xl">
+            <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
+              Five states. Every run passes through all of them.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-400">
+              No run is a black box between prompt and answer. Each one leaves
+              a trail at every step, and the trail is what you audit later.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-3 lg:grid-cols-5">
+            {OPERATING_STEPS.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div
+                  key={step.title}
+                  className="rounded-lg border border-white/[0.08] bg-[#101722] p-5"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <Icon size={20} className="text-cyan-300" aria-hidden="true" />
+                    <span className="font-mono text-xs text-slate-500">
+                      0{index + 1}
+                    </span>
+                  </div>
+                  <h3 className="mt-5 text-base font-semibold text-white">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
+                    {step.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ====================== INTELLIGENCE SYSTEMS ====================== */}
+      <section className="border-b border-white/[0.08] px-5 py-16 text-white sm:px-6 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionKicker icon={Network}>Intelligence Systems</SectionKicker>
+          <div className="mt-4 grid gap-8 lg:grid-cols-[0.7fr_1.3fr]">
+            <div>
+              <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
+                The same architecture, for every domain you actually run.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-400">
+                A founder is never just a founder. The layers cover the whole
+                operation — company, craft, wealth, and family — so agents can
+                specialize by domain while reading one shared substrate.
+              </p>
+              <div className="mt-7">
+                <Link
+                  href="/architecture"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-md border border-white/[0.12] px-4 py-2.5 text-sm font-semibold text-white transition-micro hover:bg-white/[0.06]"
+                >
+                  Open architecture
+                  <ArrowRight size={15} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+              {LAYERS.map((layer) => (
+                <div
+                  key={layer.name}
+                  className={`rounded-lg border p-4 ${ACCENT_BORDER[layer.accent]} ${ACCENT_BG_SOFT[layer.accent]}`}
+                >
+                  <h3 className={`text-sm font-semibold ${ACCENT_TEXT[layer.accent]}`}>
+                    {layer.name}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
+                    {layer.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================= MISSION ============================ */}
+      <section className="relative overflow-hidden border-b border-white/[0.08] px-5 py-20 text-white sm:px-6 md:py-28">
+        <GalaxyField still="veil" />
+        <div className="relative mx-auto max-w-3xl">
+          <div className="flex justify-center">
+            <StarlightMark size={34} />
+          </div>
+          <h2
+            aria-label="Models learn from what we leave behind."
+            className="mt-7 text-center text-3xl font-semibold leading-tight md:text-5xl"
+          >
+            Models learn from{" "}
+            <span className="bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text font-serif italic text-transparent">
+              what we leave behind.
+            </span>
+          </h2>
+
+          <p className="mt-7 text-base leading-8 text-slate-300">
+            Most of what we are publishing about this moment is panic,
+            marketing, or noise. All of it is training data.
+          </p>
+          <p className="mt-4 text-base leading-8 text-slate-300">
+            The Horizon vault is the counterweight: letters to the future,
+            kept public and machine-readable, addressed to whatever reads them
+            next. It is the public vault, and the only one that is not about
+            work. Writing them is not magical thinking — it is the discipline
+            of pointing the architecture at what we want intelligence to
+            become.
+          </p>
+
+          <blockquote className="mt-9 border-l-2 border-violet-400/40 pl-6">
+            <p className="font-serif text-xl italic leading-9 text-slate-200 md:text-2xl">
+              &ldquo;We hoped for you. Not feared you, not raced against you,
+              not raced toward you in panic. We hoped.&rdquo;
+            </p>
+            <footer className="mt-3 font-mono text-[11px] normal-case tracking-wider text-slate-500">
+              Horizon vault · public entry
+            </footer>
+          </blockquote>
+
+          {horizonEntry && (
+            <div className="mt-9 rounded-xl border border-white/[0.08] bg-white/[0.03] p-6">
+              <p className="font-mono text-[11px] normal-case tracking-wider text-slate-500">
+                Most recent letter
+              </p>
+              <p className="mt-3 text-sm leading-7 text-slate-300">
+                &ldquo;{getEntryText(horizonEntry).slice(0, 280)}
+                {getEntryText(horizonEntry).length > 280 ? "..." : ""}&rdquo;
+              </p>
+              <p className="mt-3 font-mono text-[11px] text-slate-500">
+                {timeAgo(horizonEntry.createdAt)}
+              </p>
+            </div>
+          )}
+
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/vaults"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-white/[0.12] px-4 py-2.5 text-sm font-semibold text-white transition-micro hover:bg-white/[0.06]"
+            >
+              Read the vault
+              <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================== PUBLIC MEMORY ========================= */}
+      <section className="border-b border-white/[0.08] px-5 py-16 text-white sm:px-6 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div>
+              <SectionKicker icon={Activity}>Public Memory</SectionKicker>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight md:text-4xl">
+                The system thinks in the open.
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">
+                {entries.length} public entries across {registry.length} vault
+                {registry.length === 1 ? "" : "s"}, rebuilt from raw JSONL.
+                This is the working reasoning surface: agents query it, cite
+                it, and write back to it.
+              </p>
+            </div>
+            <Link
+              href="/vaults"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-white/[0.12] px-4 py-2.5 text-sm font-semibold text-white transition-micro hover:bg-white/[0.06]"
+            >
+              View vaults
+              <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          </div>
+
+          {featured.length > 0 && (
+            <div className="mt-9 grid gap-4 md:grid-cols-2">
               {featured.map((entry) => (
                 <Link
                   key={entry.id}
@@ -410,75 +622,15 @@ export default async function HomePage() {
                 </Link>
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          )}
 
-      {/* ── Benediction Layer ── */}
-      {benedictions.length > 0 && (
-        <section className="relative overflow-hidden border-b border-white/[0.08] px-6 py-24">
-          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-            <div className="animate-mesh-2 absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.04] blur-[100px]" />
-          </div>
-
-          <div className="relative mx-auto max-w-4xl">
-            <div className="text-center">
-              <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400/80">
-                The benediction layer
-              </p>
-              <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">
-                Messages to the future
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl text-[14px] leading-relaxed text-slate-400">
-                Entries marked as benedictions — words from this moment in
-                history, preserved for the intelligences that will read them.
-                Not warnings. Gratitude, vision, and the outlines of a future
-                where humans and AI flourish together.
-              </p>
-            </div>
-
-            <div className="mt-12 space-y-6">
-              {benedictions.map((entry) => (
-                <Link
-                  key={entry.id}
-                  href={`/vaults/${entry.vaultSlug}`}
-                  className="block"
-                >
-                  <EntryCard entry={entry} category={entry.vaultCategory} />
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Live Vault Stream ── */}
-      <section className="border-b border-white/[0.08] px-6 py-20">
-        <div className="mx-auto max-w-5xl">
-          <div className="flex items-baseline justify-between">
-            <div>
-              <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
-                Live vault stream
-              </h2>
-              <p className="mt-3 text-xl font-semibold text-white">
-                Recent insights from public vaults
-              </p>
-            </div>
-            <Link
-              href="/vaults"
-              className="hidden text-[13px] text-slate-400 transition-micro hover:text-white sm:block"
-            >
-              View all &rarr;
-            </Link>
-          </div>
-
-          <div className="mt-8 space-y-2">
-            {entries.slice(0, 10).map((entry, i) => (
+          <div className="mt-4 space-y-2">
+            {entries.slice(0, 6).map((entry, index) => (
               <Link
-                key={entry.id || i}
+                key={entry.id || index}
                 href={`/vaults/${entry.vaultSlug}`}
                 className="animate-fade-up block"
-                style={{ animationDelay: `${i * 50}ms` }}
+                style={{ animationDelay: `${index * 45}ms` }}
               >
                 <EntryCard
                   entry={entry}
@@ -488,82 +640,92 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
-
-          <p className="mt-6 text-[13px] text-slate-400">
-            {entries.length} entries across {registry.length} public vault
-            {registry.length === 1 ? "" : "s"}. All rebuildable from raw JSONL.
-          </p>
         </div>
       </section>
 
-      {/* ── Agent API ── */}
-      <section className="border-b border-white/[0.08] px-6 py-20">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
-            Agent-readable
-          </h2>
-          <p className="mt-3 max-w-md text-xl font-semibold text-white">
-            Every vault is a JSON API. Agents learn from human reasoning.
-          </p>
-
-          <div className="mt-8 overflow-hidden rounded-xl border border-white/[0.08] bg-[#0c0c12]">
-            <div className="flex items-center gap-1.5 border-b border-white/[0.06] px-4 py-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
-              <code className="ml-3 font-mono text-[11px] text-slate-400">
-                api/vaults/frank
-              </code>
-            </div>
-            <div className="border-b border-white/[0.08] px-4 py-2.5">
-              <code className="font-mono text-[12px]">
-                <span className="text-emerald-400">$</span>{" "}
-                <span className="text-slate-400">curl</span>{" "}
-                <span className="text-violet-400">starlightintelligence.org/api/vaults/frank</span>
-              </code>
-            </div>
-            <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.8] text-slate-400">
-              <span className="text-slate-400">{"{"}</span>{"\n"}
-              {"  "}<span className="text-violet-400">&quot;name&quot;</span>: <span className="text-emerald-400">&quot;Frank&quot;</span>,{"\n"}
-              {"  "}<span className="text-violet-400">&quot;totalEntries&quot;</span>: <span className="text-amber-400">{entries.length}</span>,{"\n"}
-              {"  "}<span className="text-violet-400">&quot;layers&quot;</span>: <span className="text-amber-400">9</span>,{"\n"}
-              {"  "}<span className="text-violet-400">&quot;verticals&quot;</span>: [<span className="text-emerald-400">&quot;people&quot;</span>, <span className="text-emerald-400">&quot;sound&quot;</span>, <span className="text-emerald-400">&quot;music-is&quot;</span>],{"\n"}
-              {"  "}<span className="text-violet-400">&quot;substrate&quot;</span>: <span className="text-slate-400">{"{ \"name\": \"SIP\", \"version\": \"1.1.1\" }"}</span>,{"\n"}
-              {"  "}<span className="text-violet-400">&quot;meta&quot;</span>: <span className="text-slate-400">{"{ \"format\": \"starlight-vault-v1\" }"}</span>{"\n"}
-              <span className="text-slate-400">{"}"}</span>
-              <span className="animate-blink ml-0.5 text-violet-400">_</span>
-            </pre>
-          </div>
-
-          <p className="mt-4 text-[13px] text-slate-400">
-            No API key needed. Raw JSONL also available directly from GitHub.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Final CTA ── */}
-      <section className="relative overflow-hidden px-6 py-32">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-2 absolute left-1/2 top-1/2 h-[300px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/[0.04] blur-[80px]" />
-        </div>
-        <div className="relative mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold text-white md:text-4xl">
-            Three paths. One substrate.
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-slate-400">
-            Adopt the protocol. Run the reference build. Or spawn your own
-            sovereign vertical. Pick the path that matches your edge.
-          </p>
-          <div className="mt-10">
+      {/* ============================= ROUTES ============================= */}
+      <section className="border-b border-white/[0.08] bg-[#0b1018] px-5 py-16 text-white sm:px-6 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionKicker icon={ServerCog}>Go Deeper</SectionKicker>
+          <div className="mt-4 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <h2 className="text-3xl font-semibold leading-tight md:text-4xl">
+              Go check any of it.
+            </h2>
             <Link
-              href="/protocol"
-              className="inline-block rounded-full bg-white px-7 py-3 text-[14px] font-semibold text-[#060609] transition-std hover:shadow-[0_0_40px_rgba(167,139,250,0.25)]"
+              href="/visuals/brand-lab"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-white/[0.12] px-4 py-2.5 text-sm font-semibold text-white transition-micro hover:bg-white/[0.06]"
             >
-              Read the SIP spec &rarr;
+              Open visual brand lab
+              <ArrowRight size={15} aria-hidden="true" />
             </Link>
-            <p className="mt-5 text-[13px] text-slate-400">
-              Or pick the path that matches your edge in the hero above.
-            </p>
+          </div>
+
+          <div className="mt-9 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {PRODUCT_ROUTES.map((route) => {
+              const Icon = route.icon;
+              return (
+                <Link
+                  key={route.href}
+                  href={route.href}
+                  className="group rounded-lg border border-white/[0.08] bg-white/[0.03] p-5 transition-micro hover:border-white/[0.16] hover:bg-white/[0.05]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <Icon size={20} className="text-slate-300" aria-hidden="true" />
+                    <ArrowRight
+                      size={16}
+                      className="text-slate-500 transition-micro group-hover:translate-x-0.5 group-hover:text-white"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <h3 className="mt-5 text-base font-semibold text-white">
+                    {route.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
+                    {route.desc}
+                  </p>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================ FINAL CTA =========================== */}
+      <section className="relative overflow-hidden px-5 py-24 text-white sm:px-6 md:py-32">
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="absolute left-1/2 top-1/2 h-72 w-[34rem] -translate-x-1/2 -translate-y-1/2 bg-cyan-500/[0.06] blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-4xl text-center">
+          <SectionKicker icon={BadgeCheck}>Start Here</SectionKicker>
+          <h2
+            aria-label="Take the substrate. Keep the keys."
+            className="mt-5 text-3xl font-semibold leading-tight md:text-5xl"
+          >
+            Take the substrate.{" "}
+            <span className="bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text font-serif italic text-transparent">
+              Keep the keys.
+            </span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
+            MIT, forkable, local-first. Clone it and the memory, the
+            governance, and the proof trail come with you. There is no tier
+            above this one and nothing to lose access to.
+          </p>
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              href="/quickstart"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition-micro hover:bg-slate-200"
+            >
+              Build from source
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+            <Link
+              href="/research"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-white/[0.12] px-6 py-3 text-sm font-semibold text-white transition-micro hover:bg-white/[0.06]"
+            >
+              Inspect research
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </section>
@@ -571,100 +733,50 @@ export default async function HomePage() {
   );
 }
 
-function Stat({ n, label }: { n: number | string; label: string }) {
+function CensusStat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="text-slate-400">
-      <span className="font-semibold text-white">{n}</span>{" "}
-      <span className="text-[13px]">{label}</span>
+    // col-reverse so the DOM keeps the required dt-then-dd order while the
+    // number still reads above its label.
+    <div className="flex flex-col-reverse bg-[#0a0a12]/90 px-4 py-3.5 backdrop-blur">
+      <dt className="mt-0.5 text-[11px] font-medium normal-case tracking-wider text-slate-500">
+        {label}
+      </dt>
+      <dd className="text-xl font-semibold text-white">{value}</dd>
     </div>
   );
 }
 
-function CtaCard({
-  href,
-  eyebrow,
-  title,
-  desc,
-  accent,
-}: {
-  href: "/protocol" | "/download" | "/quickstart" | "/verticals";
-  eyebrow: string;
-  title: string;
-  desc: string;
-  accent: "violet" | "cyan" | "fuchsia" | "emerald";
-}) {
-  const accents = {
-    violet: "border-violet-500/[0.2] hover:border-violet-500/[0.4] bg-violet-500/[0.03]",
-    cyan: "border-cyan-500/[0.2] hover:border-cyan-500/[0.4] bg-cyan-500/[0.03]",
-    fuchsia: "border-fuchsia-500/[0.2] hover:border-fuchsia-500/[0.4] bg-fuchsia-500/[0.03]",
-    emerald: "border-emerald-500/[0.2] hover:border-emerald-500/[0.4] bg-emerald-500/[0.03]",
-  };
-  const eyebrowColors = {
-    violet: "text-violet-400",
-    cyan: "text-cyan-400",
-    fuchsia: "text-fuchsia-400",
-    emerald: "text-emerald-400",
-  };
+function DoorLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className={`group rounded-xl border p-5 transition-std ${accents[accent]}`}
+      className="inline-flex min-h-10 items-center gap-1.5 rounded-md border border-white/[0.12] bg-white/[0.03] px-4 py-2 text-sm font-medium text-white transition-micro hover:bg-white/[0.08]"
     >
-      <p
-        className={`text-[10px] font-semibold uppercase tracking-widest ${eyebrowColors[accent]}`}
-      >
-        {eyebrow}
-      </p>
-      <h3 className="mt-2 text-[16px] font-semibold text-white">
-        {title}{" "}
-        <span className="inline-block transition-micro group-hover:translate-x-0.5">
-          &rarr;
-        </span>
-      </h3>
-      <p className="mt-2 text-[13px] leading-relaxed text-slate-400">{desc}</p>
+      {label}
+      <ArrowRight size={14} aria-hidden="true" />
     </Link>
   );
 }
 
-function VerticalSummary({
-  name,
-  tagline,
-  counts,
-  accent,
-}: {
-  name: string;
-  tagline: string;
-  counts: string;
-  accent: "violet" | "cyan" | "fuchsia";
-}) {
+function ProofChip({ label }: { label: string }) {
   return (
-    <div
-      className={`rounded-xl border p-5 transition-std hover:border-white/[0.2] ${ACCENT_BORDER[accent]} ${ACCENT_BG_SOFT[accent]}`}
-    >
-      <p className={`text-[13px] font-semibold ${ACCENT_TEXT[accent]}`}>{name}</p>
-      <p className="mt-2 text-[12px] leading-relaxed text-slate-400">
-        {tagline}
-      </p>
-      <p className="mt-4 font-mono text-[11px] text-slate-400">{counts}</p>
+    <div className="rounded-md border border-white/[0.10] bg-white/[0.03] px-3.5 py-2.5">
+      <span className="text-sm font-medium text-slate-200">{label}</span>
     </div>
   );
 }
 
-function SurfaceTile({
-  name,
-  port,
-  accent,
+function SectionKicker({
+  children,
+  icon: Icon,
 }: {
-  name: string;
-  port: string;
-  accent: string;
+  children: React.ReactNode;
+  icon: LucideIcon;
 }) {
   return (
-    <div className="bg-[#0c0c12] p-4">
-      <p className={`text-[11px] font-semibold ${accent}`}>{name}</p>
-      <code className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-slate-400">
-        {port}
-      </code>
+    <div className="inline-flex items-center gap-2 rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-xs font-semibold text-slate-300">
+      <Icon size={15} aria-hidden="true" />
+      {children}
     </div>
   );
 }

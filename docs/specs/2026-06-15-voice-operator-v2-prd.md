@@ -1,5 +1,7 @@
 # Voice Operator v2 — PRD + Final Architecture
 
+> **Provider update (2026-08-24):** The provider choices in this document are superseded where they conflict by [`2026-08-24-voice-provider-architecture-decision.md`](./2026-08-24-voice-provider-architecture-decision.md). The operator architecture, approval gates, workflow contracts, and latency SLO remain active.
+
 > **Status:** Draft for review (2026-06-15). Supersedes the optimistic state in
 > `2026-06-15-jarvis-voice-operator-state-snapshot.md` (Antigravity export) where the two disagree.
 > **Core decision (Frank, 2026-06-15):** harden `starlight-voice` as the engine; pull deepagents/LangGraph in as the

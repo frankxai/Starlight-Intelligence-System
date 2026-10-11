@@ -27,6 +27,19 @@ import { SanitizationGateway } from "../src/sanitization.js";
 
 const MASK = "[REDACTED]";
 
+test('legacy bearer redaction consumes padding and preserves sanitized array shapes', () => {
+  const sanitizer = new SanitizationGateway();
+  for (const token of ['+fixture/fixture==', 'fixture+fixture/fixture==']) {
+    assert.equal(sanitizer.sanitize(`Authorization: Bearer ${token}`), 'Authorization: [REDACTED]');
+  }
+  const sparse = new Array(3); sparse[0] = 'fixture@example.org';
+  const result = sanitizer.sanitizeContext({ items: [false, { token: 'fixture' }, ['safe']], sparse });
+  assert.deepEqual(result.items, [false, { token: MASK }, ['safe']]);
+  assert.ok(Array.isArray(result.sparse));
+  assert.equal((result.sparse as unknown[]).length, 3);
+  assert.equal((result.sparse as unknown[])[0], MASK);
+});
+
 function expectScrubbed(label: string, input: string): void {
   const g = new SanitizationGateway({ maskString: MASK });
   const out = g.sanitize(input);
@@ -106,38 +119,38 @@ test("v8 sanitization: US SSN is scrubbed", () => {
 
 // ── Known-NOT-covered patterns (coverage-drift guards) ───────────
 
-test("v8 sanitization: Stripe live keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: Stripe live keys are scrubbed", () => {
   // Prefix built piecewise so the contiguous literal never appears in source.
   // Also avoids 10-digit substrings (phone-regex false positive per docs).
   const stripePrefix = "sk" + "_" + "live" + "_";
-  expectUntouched("stripe-live", "key=" + stripePrefix + "a".repeat(40));
+  expectScrubbed("stripe-live", "key=" + stripePrefix + "a".repeat(40));
 });
 
-test("v8 sanitization: AWS access keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: AWS access keys are scrubbed", () => {
   // AKIA + repeated low-entropy chars.
-  expectUntouched("aws-access", "aws_access_key_id=AKIA" + "Z".repeat(16));
+  expectScrubbed("aws-access", "aws_access_key_id=AKIA" + "Z".repeat(16));
 });
 
-test("v8 sanitization: Anthropic sk-ant keys are NOT covered (documented gap)", () => {
+test("v8 sanitization: Anthropic sk-ant keys are scrubbed", () => {
   // Prefix split to avoid Anthropic-prefix secret scanner.
   const antPrefix = "sk" + "-" + "ant" + "-" + "api03_";
-  expectUntouched("sk-ant", "ANTHROPIC_API_KEY=" + antPrefix + "a".repeat(40));
+  expectScrubbed("sk-ant", "ANTHROPIC_API_KEY=" + antPrefix + "a".repeat(40));
 });
 
-test("v8 sanitization: HuggingFace hf_ tokens are NOT covered (documented gap)", () => {
-  expectUntouched("hf", "HF_TOKEN=hf_" + "a".repeat(34));
+test("v8 sanitization: HuggingFace hf_ tokens are scrubbed", () => {
+  expectScrubbed("hf", "HF_TOKEN=hf_" + "a".repeat(34));
 });
 
-test("v8 sanitization: Postgres URIs are NOT covered (documented gap)", () => {
+test("v8 sanitization: Postgres URIs are scrubbed", () => {
   // Fixture avoids `user@host` (email-regex false positive on user:secret@host pattern).
-  expectUntouched(
+  expectScrubbed(
     "postgres-uri",
     "DATABASE_URL=postgres://localhost:5432/myapp"
   );
 });
 
-test("v8 sanitization: SSH private key blocks are NOT covered (documented gap)", () => {
-  expectUntouched(
+test("v8 sanitization: SSH private key blocks are scrubbed", () => {
+  expectScrubbed(
     "ssh-key",
     "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNz...\n-----END OPENSSH PRIVATE KEY-----"
   );
@@ -182,4 +195,15 @@ test("v8 sanitization: nested objects are deep-sanitized", () => {
     "sk-" + "a".repeat(48)
   );
   assert.strictEqual((result as { safe: number }).safe, 42);
+});
+
+
+test('shared acyclic context values are sanitized independently while actual cycles stay bounded', () => {
+  const shared = { note: 'safe', token: 'opaque-secret' };
+  const input: Record<string, unknown> = { first: shared, second: shared };
+  input.self = input;
+  const result = new SanitizationGateway().sanitizeContext(input);
+  assert.deepEqual(result.first, { note: 'safe', token: '[REDACTED]' });
+  assert.deepEqual(result.second, result.first);
+  assert.deepEqual(result.self, { __circular: true });
 });

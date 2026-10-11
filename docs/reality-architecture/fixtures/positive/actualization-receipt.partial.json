@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "0.1.1",
+  "id": "ra:receipt:kernel-board-20260816",
+  "action_id": "act1",
+  "plan_id": "ra:plan:empire/revenue-loop-v0",
+  "actor": { "kind": "agent", "id": "hermes-queen" },
+  "tool": "hermes-write_file",
+  "input_ref": "docs/reality-architecture/",
+  "started_at": "2026-08-16T01:25:00Z",
+  "finished_at": "2026-08-16T01:40:00Z",
+  "result": "partial",
+  "verification": {
+    "status": "partial",
+    "criterion": "Kernel schemas + fixtures validate; Diff compiler not yet implemented.",
+    "notes": "Board FIX_NOW complete; product Diff deferred."
+  },
+  "evidence": [
+    {
+      "kind": "artifact",
+      "uri_or_ref": "docs/reality-architecture/schemas/",
+      "content_hash": null
+    },
+    {
+      "kind": "test",
+      "uri_or_ref": "scripts/validate-reality-architecture-kernel.py",
+      "content_hash": null
+    }
+  ],
+  "world_state_update": {
+    "applied": false,
+    "object_ids": [],
+    "event_id": null
+  },
+  "notes": "Failed/partial remains partial — not rewritten as success."
+}

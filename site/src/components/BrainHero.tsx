@@ -78,13 +78,14 @@ export function BrainHero({ className = "", labels = false }: Props): ReactEleme
   });
 
   return (
-    <svg
-      viewBox="0 0 400 400"
-      className={className}
-      aria-hidden="true"
-      role="presentation"
-      preserveAspectRatio="xMidYMid meet"
-    >
+    <div className={`relative ${className}`} style={{ backgroundImage: 'url(/assets/visuals/queen-premium/11.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', borderRadius: '9999px', overflow: 'hidden' }}>
+      <svg
+        viewBox="0 0 400 400"
+        className="relative z-10"
+        aria-hidden="true"
+        role="presentation"
+        preserveAspectRatio="xMidYMid meet"
+      >
       <defs>
         {/* Soft glow filter applied to each node. Keep stdDeviation small to
             stay performant on mid-tier devices. */}
@@ -187,12 +188,14 @@ export function BrainHero({ className = "", labels = false }: Props): ReactEleme
               fontSize={9}
               fontFamily="ui-monospace, SFMono-Regular, monospace"
               textAnchor={anchor}
-              letterSpacing="0.08em"
+              letterSpacing="0.04em"
             >
-              {p.name.toUpperCase()}
+              {p.name}
             </text>
           );
         })}
-    </svg>
+      </svg>
+      <div className="absolute inset-0 bg-black/40" />
+    </div>
   );
 }

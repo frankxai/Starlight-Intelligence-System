@@ -1,0 +1,189 @@
+{
+  "_generated": "by site/scripts/sync-sis-receipt.mjs from protocol/profiles/sis.json; do not edit by hand",
+  "source": {
+    "path": "protocol/profiles/sis.json",
+    "url": "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/protocol/profiles/sis.json",
+    "rawUrl": "https://raw.githubusercontent.com/frankxai/Starlight-Intelligence-System/main/protocol/profiles/sis.json"
+  },
+  "profile": {
+    "id": "sip:profile:starlight-intelligence-system",
+    "subject": "github.com/frankxai/Starlight-Intelligence-System",
+    "declaredBy": "sip:identity:frank-riemer",
+    "declaredByLabel": "Frank Riemer (GitHub: frankxai)"
+  },
+  "attestation": {
+    "statementType": "https://starlightintelligence.org/protocol/receipt/v0.1.0",
+    "signatureRef": "https://github.com/frankxai/Starlight-Intelligence-System/attestations",
+    "signer": "actions/attest@v2 (Sigstore keyless, GitHub OIDC)"
+  },
+  "claims": [
+    {
+      "id": "sip:claim:protocol-ci-node-matrix",
+      "label": "Protocol suite runs on Node 18, 20 and 22",
+      "statement": "CI runs the protocol test suite (protocol/test/conform.test.mjs, protocol/test/sign.test.mjs), the reference-passes/leaky-fails fixture check and an end-to-end sign-and-verify on Node 18, 20 and 22, for pull requests to main and pushes to main that touch protocol/ or the workflow.",
+      "sources": [
+        {
+          "id": "sip:source:protocol-workflow",
+          "label": "Protocol CI workflow",
+          "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/72a84693be9b/.github/workflows/protocol.yml",
+          "commit": "72a84693be9b39d1b7a183d225f1662a8f04703c"
+        }
+      ]
+    },
+    {
+      "id": "sip:claim:sip-block-is-a-label",
+      "label": "The Built on SIP block is a declared label, not a signature",
+      "statement": "The 'Built on SIP' block is a declared label, not a signature, and is emitted only when an artifact composes a SIP element. A claim a stranger can verify needs a signed receipt, checked with protocol/verify.mjs --profile.",
+      "sources": [
+        {
+          "id": "sip:source:attestations-2026-09-19",
+          "label": "ATTESTATIONS.md, entry 2026-09-19",
+          "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/72a84693be9b/ATTESTATIONS.md",
+          "commit": "72a84693be9b39d1b7a183d225f1662a8f04703c"
+        }
+      ]
+    },
+    {
+      "id": "sip:claim:protocol-zero-dependency",
+      "label": "The protocol toolchain has no dependencies",
+      "statement": "protocol/conform.mjs, sign.mjs, verify.mjs and protocol/lib/*.mjs import only node: built-in modules and each other; nothing is installed to run them.",
+      "sources": [
+        {
+          "id": "sip:source:protocol-readme",
+          "label": "protocol/README.md",
+          "locator": "https://github.com/frankxai/Starlight-Intelligence-System/blob/72a84693be9b/protocol/README.md",
+          "commit": "72a84693be9b39d1b7a183d225f1662a8f04703c"
+        }
+      ]
+    }
+  ],
+  "receipt": {
+    "receiptVersion": "0.1.0",
+    "tool": "sip-conform@0.1.0",
+    "sipGraphVersion": "0.1.0",
+    "declaredGraphVersion": "0.1.0",
+    "subject": "github.com/frankxai/Starlight-Intelligence-System",
+    "profileId": "sip:profile:starlight-intelligence-system",
+    "profileSha256": "acac2fd23be17010ac9a4ea853aa40ef97c2fb0b4583f66b0cfe056ca5c5fd8a",
+    "checkedAt": "2026-09-19T04:41:01.762Z",
+    "counts": {
+      "nodes": 14,
+      "edges": 10,
+      "projections": 1,
+      "byType": {
+        "Identity": 1,
+        "Claim": 3,
+        "Source": 5,
+        "Attestation": 1,
+        "Artifact": 2,
+        "Evaluation": 1,
+        "Projection": 1
+      }
+    },
+    "verdict": "PASS",
+    "rules": [
+      {
+        "id": "C1",
+        "title": "Declared graph version is compatible",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G1",
+        "title": "Every node and edge carries the governance envelope",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G2",
+        "title": "Ids are namespaced and match their type",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G3",
+        "title": "Ids are unique across nodes and edges",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G4",
+        "title": "Node types are drawn from the declared set",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G5",
+        "title": "Edge types are drawn from the declared set",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G6",
+        "title": "Edge endpoints resolve to declared nodes",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G7",
+        "title": "Edge endpoints match the legal type matrix",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G8",
+        "title": "Every element is owned by a declared Identity",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G9",
+        "title": "Provenance sources resolve inside the graph",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G10",
+        "title": "derivedFrom contains no cycles",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "G11",
+        "title": "Node bodies carry their type's required fields",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "P1",
+        "title": "Projections never widen a node or edge past its visibility",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "P2",
+        "title": "Boundary-crossing edges are declared as redacted",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "P3",
+        "title": "Owner-only fields are stripped or explicitly redacted, at any depth",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "P4",
+        "title": "No credential-shaped value reaches a public projection",
+        "status": "pass",
+        "findings": []
+      },
+      {
+        "id": "P5",
+        "title": "Publicly projected nodes name a publicly resolvable owner",
+        "status": "pass",
+        "findings": []
+      }
+    ]
+  }
+}

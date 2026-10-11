@@ -107,7 +107,7 @@ SIS is engineered to enable the orchestration of specialized, autonomous LLM swa
 
 ### 1. What Makes SIS Unique
 * **Shared Cognitive Architecture**: Rather than hardcoding distinct personality specs or memory configurations into each individual agent, agents share the same flat, queryable memory vaults and active skill registries.
-* **Sovereign Substrate (SIP)**: Verifiable attestation footer (`Built on SIP`), cryptographic-friendly credentials scans, and multi-fleet alliance coordination.
+* **Sovereign Substrate (SIP)**: Declared attestation footer (`Built on SIP`), verifiable through signed receipts in `protocol/`, credentials scans, and multi-fleet alliance coordination.
 * **Event-Sourced SQLite Hybrid indexing**: Allows memory sync across P2P networks (like Syncthing) using append-only JSONL files indexed locally in SQLite with full-text search.
 * **SAGE Self-Healing Loops**: Protects agents against context exhaustion, error accumulation, and repeating failures using checklist state serialization, context compression backups, Sentinel test-audits, and automatic git rollbacks.
 
@@ -167,7 +167,7 @@ SIS integrates and aligns with the leading open multi-agent frameworks across th
 ## What you have access to
 
 - **144 named agents** across Core, Universal, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
-- **84 auto-activating skill rules** across 16 domains (intelligence · orchestration · memory · integration · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety** · **marine-intelligence**). Includes `orchestration/yolo-conductor` + `orchestration/yolo-scan` (substrate-tier, drive `/yolo` Hive sessions), `orchestration/cli-tool-router` (`/si` + `/so` multi-CLI/image routing), `orchestration/sage-autonomous-execution` (SAGE engine), `orchestration/hermes-swarm` (Hermes search Swarm), and `crypto-intelligence` + `crypto-intelligence/onchain` (v0.1 proof-of-pattern per `docs/boards/2026-05-17-crypto-investment-spawn.md`). Activation: `skills/skill-rules.json`.
+- **88 auto-activating skill rules** across 17 domains (intelligence · orchestration · memory · integration · **foundry** · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety** · **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, system packaging, taste evaluation, and evidence receipts. Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion. SIS Memory Gateway v0.1 (SessionStore + per-harness loopback daemon + RRF hybrid unification, privacy drop on private tags) + Memory Engine v0.2 (pluggable embeddings). See memory/README.md, VAULT_ARCHITECTURE.md, src/gateway/*, src/embedding.ts. Dreaming pipeline + CONSOLIDATION_LOG + PROMOTION_QUEUE for observable compounding. Private mount: separate starlight-private-memory repo (2026-06-11). **2026-06-12:** Queen (via driver + surfaces) now drives visual palace recall + consolidation; gateway SessionStore as Queen loop state; 5 image_gen visuals (loop/gateway/palace/arch/heatmap/receipt) integrated as first-class artifacts. See operational-vault Queen Advance + tools/queen/queen-advance-2026-06-12.json.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
@@ -213,7 +213,7 @@ Flat council with emergent leadership, fronted by Front-Door + Excavation tiers.
 | **Weaver** | Creative synthesis, narrative, design, pattern weaving |
 | **Hermes** | Search and retrieval — vault lookup, cross-repo search, multi-source synthesis with provenance |
 | **Social Strategist** | Preparing social media campaigns, copywriting, platform-specific thread formatting |
-| **Social Sentinel** | Gating social posts, reviewing brand voice, compliance/secret auditing, cryptographic attestation |
+| **Social Sentinel** | Gating social posts, reviewing brand voice, compliance/secret auditing, SIP attestation |
 | **Social Psychologist** | Auditing audience dynamics, cognitive load, structuring hooks for organic curiosity |
 | **Social Vibe Tracker** | Tracking cultural vibes, trend matching, aligning drafts with brand aesthetic lanes |
 | **Social Fact Checker** | Running searches, verifying claims/citations, checking links and logical math accuracy |
@@ -233,7 +233,7 @@ Flat council with emergent leadership, fronted by Front-Door + Excavation tiers.
 
 **Estate / Agent Army commissioning extensions (post 2026-06-16 Board PROCEED-WITH-REVISE):** When building or operating full sovereign estates, compose the base registry here with the `starlight-estate-os` profile (`templates/estate-os/AGENTS.md`) + client's 4-layer Blueprint (Persona mapping, Topology/swarm shapes from ORCHESTRATION_ENGINE + /si router, Kernel selection, Modules/domain sub-stacks). Hermes, council, and new Steward primitives become central for the production Mesh. See `docs/delivery/estate-army-commissioning-workflow.md`, `estate-blueprint.md`, and `estate-steward.md` commands. Genius grounding and encoded-self boundaries (SIP §5.7) are non-negotiable.
 
-For scaling beyond the core registry to a full **144+ Agent Swarm**, refer to the comprehensive [Starlight 150 Agent Blueprint](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/AGENT_BLUEPRINT.md) and the [Swarm Topology Strategy](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/swarm-topology.md) specifying Kings (policy locks), Queens (domain controllers), Board reviews, and Model Council consensus.
+For scaling beyond the core registry to a full **144+ Agent Swarm**, refer to the comprehensive [Starlight 150 Agent Blueprint](docs/AGENT_BLUEPRINT.md) and the [Swarm Topology Strategy](docs/swarm-topology.md) specifying Kings (policy locks), Queens (domain controllers), Board reviews, and Model Council consensus.
 
 Full per-agent file: `agents/<agent-name>.md`.
 
@@ -241,7 +241,7 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (84 rules). Skill markdown definitions live in `skills/<domain>/<skill-name>.md` (canonical count tracked by v77 + v78 symmetry harnesses). `EXEMPT_PHANTOMS` ledger maintained at goal-state empty per v77 symmetry harness.
+Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (88 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (53 legacy flat files) or `skills/<domain>/<skill-name>/SKILL.md` (35 directory packages), together matching the 88-rule count. New skills use directory packages. `EXEMPT_PHANTOMS` remains empty.
 
 | Domain | Surface (sample) |
 |--------|------------------|
@@ -380,7 +380,33 @@ Cross-repo memory recall via Cross-Repo Indexer (520+ atoms across 22 `~/.claude
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
 - Substrate: starlightintelligence.org/protocol v1.1.1
-- Operational layer: `@arcanea/starlight-intelligence-system` v8.3.0
+- Operational layer: `@arcanea/starlight-intelligence-system` v8.5.1
 - License: MIT (code + spec docs); Arcanea canon (if composed) CC-BY-NC
 
-*Starlight Intelligence System v8.3.0 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-06-12*
+*Starlight Intelligence System v8.5.1 — Horizons + Genius + Domain Sub-Stack Tier + Composition Layer + Crypto IS · 2026-10-10*
+
+## Design Taste Kernel
+
+For any site, app, landing page, dashboard, visual identity, brand, motion, media, social, or frontend task, apply the shared Design Taste Kernel before handoff:
+
+- C:\Users\frank\starlight\repos\DESIGN_TASTE.md
+- C:\Users\frank\starlight\repos\WEB_EXPERIENCE_STANDARD.md
+- C:\Users\frank\starlight\repos\MOTION_TASTE_RUBRIC.md
+- C:\Users\frank\starlight\repos\MULTI_AGENT_DESIGN_COUNCIL.md
+- C:\Users\frank\starlight\repos\VISUAL_QA_GATE.md
+
+When motion, scroll, generated media, GIF/video, or premium polish matters, route through the Motion Design Studio plugin/skills and verify the result visually.
+
+<!-- STARLIGHT-EDITORIAL:START -->
+## Editorial contract
+
+Brand: **Starlight Intelligence Systems** (`sis`)
+
+- Read `CREATOR.md` before changing public or customer-facing copy.
+- Apply the registered brand voice and the shared editorial gate.
+- Reject generated prestige language, rhetorical contrast formulas, invented claims, and abstract labels that hide simple facts.
+- Keep public labels in sentence case.
+- Run the changed-copy editorial audit before release.
+
+Pinned source: https://github.com/frankxai/starlight-design-intelligence/blob/50ae34c7ac06e6c083f277ca96c3bde8f0a39b43/brand-packs/sis/COPY.md
+<!-- STARLIGHT-EDITORIAL:END -->

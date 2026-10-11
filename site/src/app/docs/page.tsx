@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
   title: "Documentation",
@@ -8,11 +9,19 @@ export const metadata: Metadata = {
 
 export default function DocsPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-2xl font-bold text-white">Documentation</h1>
-      <p className="mt-2 text-[14px] text-slate-500">
-        Everything you need to deploy, configure, and connect.
-      </p>
+    <div>
+      <section className="relative overflow-hidden border-b border-white/[0.06]">
+        <GalaxyField still="veil" />
+        <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-24">
+          <h1 className="font-serif text-[clamp(2rem,5vw,3.2rem)] font-semibold tracking-tight text-white">
+            Documentation
+          </h1>
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400">
+            Everything you need to deploy, configure, and connect.
+          </p>
+        </div>
+      </section>
+      <div className="mx-auto max-w-3xl px-6 py-16">
 
       {/* Quick nav */}
       <nav className="mt-8 flex flex-wrap gap-1.5" aria-label="Documentation sections">
@@ -166,7 +175,7 @@ GET /api/vaults/frank    # Full vault data as JSON`}</Code>
 }`}</Code>
 
           <div className="mt-6 rounded-xl border border-violet-500/[0.18] bg-violet-500/[0.04] p-5">
-            <p className="text-[13px] font-medium uppercase tracking-wider text-violet-300">
+            <p className="text-[13px] font-medium normal-case tracking-wider text-violet-300">
               The Benediction Layer
             </p>
             <p className="mt-2 text-[14px] leading-relaxed text-slate-300">
@@ -222,21 +231,32 @@ GET /api/vaults/frank    # Full vault data as JSON`}</Code>
         </Section>
 
         <Section id="mcp-server" title="MCP Server">
-          <P>Connect SIS to Claude Code, Cursor, or any MCP-compatible tool:</P>
-          <Code>{`// Claude Code settings.json
+          <P>
+            Build the current repository first. As verified on July 24, 2026,
+            npm still serves v6.0.1 while the repository is v8.3.0.
+          </P>
+          <Code>{`git clone https://github.com/frankxai/Starlight-Intelligence-System
+cd Starlight-Intelligence-System
+npm install
+npm run build
+node dist/cli.js init --vaults`}</Code>
+          <P>Then connect any MCP-compatible client to the built server:</P>
+          <Code>{`// MCP client configuration
 {
   "mcpServers": {
     "starlight-sis": {
       "command": "node",
-      "args": ["path/to/sis-mcp-server.mjs"]
+      "args": ["/path/to/Starlight-Intelligence-System/dist/mcp-server.js"]
     }
   }
 }`}</Code>
           <P>
-            Tools: <code className="text-slate-300">sis_vault_search</code>,{" "}
+            The current server exposes 13 tools, including{" "}
+            <code className="text-slate-300">sis_vault_search</code>,{" "}
             <code className="text-slate-300">sis_recent_entries</code>,{" "}
             <code className="text-slate-300">sis_append_entry</code>,{" "}
-            <code className="text-slate-300">sis_stats</code>
+            <code className="text-slate-300">sis_stats</code>, and the three{" "}
+            <code className="text-slate-300">sis_goal_*</code> tools.
           </P>
         </Section>
 
@@ -251,6 +271,7 @@ pnpm start`}</Code>
             API rate limits. Otherwise, no env vars needed.
           </P>
         </Section>
+      </div>
       </div>
     </div>
   );
@@ -304,8 +325,8 @@ function Field({
         <span className="font-semibold text-violet-300">{name}</span>
         <span className="text-slate-600">:</span>
         <span className="text-cyan-400/80">{type}</span>
-        <span className="ml-auto text-[10px] uppercase tracking-wider text-slate-600">
-          optional
+        <span className="ml-auto text-[10px] normal-case tracking-wider text-slate-600">
+          Optional
         </span>
       </div>
       <p className="mt-2 text-[13px] leading-relaxed text-slate-400">{desc}</p>

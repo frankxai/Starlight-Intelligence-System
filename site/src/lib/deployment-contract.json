@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "productName": "Starlight Explorer",
+  "repositoryUrl": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "rootDirectory": "site",
+  "projectName": "starlight-explorer",
+  "repositoryName": "starlight-explorer",
+  "requiredEnvironmentVariables": [],
+  "publicSurfaces": [
+    "Protocol, architecture, research, and documentation",
+    "Public knowledge maps, Cosmos, and Memory Palace",
+    "Read-only public vault index and API routes",
+    "Git-connected preview and production deployments"
+  ],
+  "localOnly": [
+    "Private vault contents and operator memory",
+    "MCP server and agent runtime processes",
+    "Credentials, provider keys, and local configuration",
+    "Workers, orchestration, and control-plane services"
+  ],
+  "verificationRoutes": [
+    "/protocol",
+    "/architecture",
+    "/research",
+    "/api/vaults"
+  ]
+}

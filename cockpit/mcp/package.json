@@ -12,7 +12,7 @@
     "test": "node test.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
+    "@modelcontextprotocol/sdk": "^1.31.0"
   },
   "engines": {
     "node": ">=18"
@@ -23,5 +23,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/frankxai/cockpit-continuity"
+  },
+  "overrides": {
+    "fast-uri": "^3.1.6",
+    "hono": "^4.12.25",
+    "ip-address": "^10.3.1"
   }
 }

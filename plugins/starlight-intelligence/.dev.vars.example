@@ -1,0 +1,5 @@
+SUPABASE_URL="https://PROJECT_REF.supabase.co"
+SUPABASE_SECRET_KEY="backend-only-secret-key"
+CF_ACCESS_TEAM_DOMAIN="your-team.cloudflareaccess.com"
+CF_ACCESS_AUD="cloudflare-access-application-audience"
+STARLIGHT_ALLOWED_EMAILS="you@example.com"

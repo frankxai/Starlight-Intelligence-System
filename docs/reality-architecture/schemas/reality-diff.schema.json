@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/reality-diff.v0.1.1.schema.json",
+  "title": "Starlight Reality Diff v0.1.1",
+  "description": "Structured semantic/capability gap between current world and target FutureBranch.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "current_ref", "target_branch_id", "gaps", "generated_at", "method"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.1" },
+    "id": {
+      "type": "string",
+      "pattern": "^ra:diff:[a-zA-Z0-9._~/-]{1,200}$"
+    },
+    "current_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref"],
+      "properties": {
+        "kind": { "enum": ["snapshot", "commit", "event_cursor", "object_set"] },
+        "ref": { "type": "string" },
+        "observed_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "target_branch_id": { "type": "string" },
+    "gaps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "class", "statement", "leverage", "uncertainty"],
+        "properties": {
+          "id": { "type": "string" },
+          "class": {
+            "enum": [
+              "knowledge",
+              "capability",
+              "resource",
+              "coordination",
+              "technology",
+              "permission",
+              "process",
+              "evidence",
+              "time"
+            ]
+          },
+          "statement": { "type": "string", "minLength": 3 },
+          "blocking_object_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "leverage": {
+            "enum": ["critical", "high", "medium", "low", "unknown"]
+          },
+          "uncertainty": {
+            "enum": ["low", "medium", "high", "unknown"]
+          },
+          "suggested_experiment": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "deterministic": { "type": "boolean" },
+        "notes": { "type": ["string", "null"] }
+      }
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "generated_by": { "type": ["string", "null"] },
+    "summary": { "type": ["string", "null"] }
+  }
+}

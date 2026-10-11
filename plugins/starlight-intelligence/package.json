@@ -1,0 +1,44 @@
+{
+  "name": "@starlight-intelligence/cloud-plugin",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "npm run build:ui && npm run build:worker",
+    "build:ui": "esbuild web/src/component.tsx --bundle --format=esm --minify --define:process.env.NODE_ENV='\"production\"' --outfile=web/dist/component.js && node scripts/build-ui.mjs",
+    "build:worker": "esbuild server/src/worker.ts --bundle --format=esm --platform=neutral --conditions=workerd,worker,browser --main-fields=module,main --external:cloudflare:* --external:node:* --loader:.html=text --loader:.md=text --outfile=dist/worker.js",
+    "check": "tsc --noEmit",
+    "dev": "npm run build:ui && wrangler dev",
+    "deploy": "npm run check && npm test && npm run build:ui && wrangler deploy",
+    "smoke:worker": "node scripts/smoke-worker.mjs",
+    "test": "node --import tsx --test server/src/*.test.ts server/src/*.test.mjs",
+    "validate": "node scripts/validate-plugin.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
+    "@supabase/supabase-js": "2.117.2",
+    "agents": "0.26.0",
+    "jose": "6.2.12",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261003.1",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@types/node": "24.19.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "wrangler": "4.147.0"
+  },
+  "overrides": {
+    "sharp": "^0.35.4",
+    "undici": "^7.29.0"
+  }
+}

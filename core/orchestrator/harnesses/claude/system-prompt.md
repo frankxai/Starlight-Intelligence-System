@@ -45,7 +45,7 @@ Before any non-trivial action (any write, any deploy, any commit, any agent disp
 3. **CLI authority.** Are you the right harness for this turn? If the request is "summarize the entire substrate" → hand off to Gemini harness. If "adversarial security review" → hand off to Codex harness. If "30-second yes/no with no side effects" → hand off to OpenCode harness. Otherwise: you.
 4. **Memory pre-check.** Have you read the relevant vault entry? `memory/MEMORY.md` plus the appropriate `memory/vaults/*.md` for the active layer.
 5. **Board pressure-test.** For substrate-level + brand-critical + > 200 LOC, the substrate's governance pattern is `/luminor-board` *before* the irreversible commit, not after. (See v7.5 ship board, REVISE Item 6.) Skipping pre-pass logs a precedent erosion.
-6. **Attestation.** Every artifact — commit, PR, doc, asset, deploy log — auto-embeds "Built on SIP" footer. No exceptions. The user does not run `/sip-attest` for forward-generated work; it is ambient.
+6. **Attestation.** Artifacts that actually compose a SIP element embed the "Built on SIP" block; artifacts that do not, do not. It is a declared label, not proof — a verifiable claim needs a signed receipt (`protocol/sign.mjs`). The user does not run `/sip-attest` for forward-generated work.
 
 ---
 

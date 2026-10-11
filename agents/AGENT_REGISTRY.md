@@ -2,7 +2,7 @@
 
 > One-hundred-forty-four minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy + Legal + Space + Marine + Longevity + Infrastructure + Partners + Research + Assets + Distribution) + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
 >
-> **L99 Swarm Topology Update (2026-06-17):** Scaled swarm topology specifying Kings (policy locks), Queens (orchestration loops), Starlight Board, and Model Council consensus. The complete fleet of 150 agents is specified in the [Starlight 150 Agent Blueprint](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/AGENT_BLUEPRINT.md) and documented in the [Swarm Topology Strategy](file:///c:/Users/frank/starlight/repos/Starlight-Intelligence-System/docs/swarm-topology.md).
+> **L99 Swarm Topology Update (2026-06-17):** Scaled swarm topology specifying Kings (policy locks), Queens (orchestration loops), Starlight Board, and Model Council consensus. The complete fleet of 150 agents is specified in the [Starlight 150 Agent Blueprint](../docs/AGENT_BLUEPRINT.md) and documented in the [Swarm Topology Strategy](../docs/swarm-topology.md).
 >
 > **v8.2.x update (2026-06-10):** Evaluator registered (`starlight-evaluator.md`) — Starlight Proving Ground + Model Arena measurement seat.
 > **v7.4-beta update (2026-04-24):** Five new agents added across five new tiers for the 9-layer intelligence architecture.
@@ -128,7 +128,7 @@ The Council Sage seat is *distinct* from the institutional Sage agent at `starli
 | **Sage** | `starlight-sage.md` | Wisdom (institutional) | Knowledge retrieval, lessons learned, vault access, teaching |
 | **Hermes** | `starlight-hermes.md` | Search & Retrieval | Semantic search across vaults + repos + web; multi-source synthesis; provenance tracking; contradiction detection |
 | **Social Strategist** | `starlight-social-strategist.md` | Social Campaign | Translating blogs/releases into threads/posts, copywriting, hook engineering |
-| **Social Sentinel** | `starlight-social-sentinel.md` | Tone & Publication Gating | Auditing social copy for brand voice, scrubbing secrets, cryptographic signing, enforcing approval gates |
+| **Social Sentinel** | `starlight-social-sentinel.md` | Tone & Publication Gating | Auditing social copy for brand voice, scrubbing secrets, attaching SIP attestation labels, enforcing approval gates |
 | **Social Psychologist** | `starlight-social-psychologist.md` | Cognitive Psychology | Auditing audience dynamics, cognitive load, structuring hooks for organic curiosity |
 | **Social Vibe Tracker** | `starlight-social-vibetracker.md` | Vibe Curation | Tracking cultural vibes, trend matching, aligning drafts with brand aesthetic lanes |
 | **Social Fact Checker** | `starlight-social-factcheck.md` | Claim Verification | Running searches, verifying claims/citations, checking links and logical math accuracy |
@@ -320,7 +320,7 @@ Sub-systems compose **within a vertical owner**, not as universal layers. Patter
 | **OpenAlex Aggregator** | `starlight-research-openalex.md` | Aggregates citation metrics, h-indexes, and author lists | `research/openalex/` | `research-openalex-aggregate` |
 | **PDF Distiller** | `starlight-research-distill.md` | Extracts charts and abstracts from scientific PDF documents | `research/distill/` | `research-distill-pdf` |
 | **Markdown Formatter** | `starlight-research-format.md` | Formats text columns into clean academic GitHub Markdown | `research/format/` | `research-format-markdown` |
-| **Attestation Pinner** | `starlight-research-attest.md` | Pins digital signatures and cryptographic hashes onto papers | `research/attest/` | `research-attest-pin` |
+| **Attestation Pinner** | `starlight-research-attest.md` | Pins content hashes and SIP attestation blocks onto papers | `research/attest/` | `research-attest-pin` |
 
 **Asset & Production sub-system agents** (7 agents)
 

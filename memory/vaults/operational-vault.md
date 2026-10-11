@@ -39,11 +39,18 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 | 2026-10-11 | Sovereign Digital Product Forge, Visual Workspace Studio L99 & Multi-Brand Funnel Engine E2E Ship — Master catalog expanded to 36 products across 4 clusters, 26/26 test suites green, headless vector PDF compiler, offline visual studio workspace with GSAP micro-physics, 4 interactive inbound diagnostic funnels, automated quarterly competitive defense sweep, and post-download UpsellModal on frankx.ai web | product-forge / visual-workspace / funnels / l99 | 1.0 |
 | 2026-10-10 | Sovereign Durability, Robot Continuity, Starlight Queen & Modular Packs L99 Ship — Issues #348-#352 created, 3 subscription modular packs added to packs/available/, 4 new test suites (100% green), blockchain anchoring tool verified with Arweave CID, pricing page updated with solopreneur subscription surface and 1-day immersion | sovereign-durability / robotics / starlight-queen / modular-packs | 1.0 |
 | 2026-10-10 | Digital Product Forge & Multi-Brand Funnel Engine L99 Ship — Created C:\Users\frank\digital-product-forge, agy-products / agyprod integration in agy-tools.ps1, anti-slop humanizer linter (100% clean across 9 products), vector print compiler, master catalog (forge.config.json), and 4-tier funnel orchestrator across 20+ brands | product-forge / estate-funnels / l99 | 1.0 |
+| 2026-10-04 | Connected plugin preparation and portable package repair | plugin-ops | 0.96 |
+| 2026-09-30 | Narrative, human experience and community proposal | community-proposal | 0.95 |
+| 2026-09-14 | Bounded Queen session execution | queen-ops | 0.95 |
+| 2026-09-14 | Branch integration review | branch-ops | 0.95 |
+| 2026-09-06 | Community and plugin consolidation | community-consolidation | 0.95 |
+| 2026-09-01 | Homepage vault ISR keeps last-good state across GitHub timeouts | runtime-resilience | 0.98 |
 | 2026-02-10 | System Initialization State | system-state | 1.0 |
 | 2026-02-10 | Ecosystem Connection Status | ecosystem-state | 0.90 |
 | 2026-05-06 | Starlight Ascension (E2E Upgrade) | ecosystem-state | 1.0 |
 | 2026-05-08 | v8.0 Build Repair + Verification | quality-state | 1.0 |
 | 2026-06-14 | Visual Home Restore + Laptop Image Correction | operator-surface | 0.98 |
+| 2026-07-28 | Starlight Intelligence Foundry v0.1 operational kernel | capability-compilation | 0.98 |
 | 2026-06-12 | Grok-driven /si + /starlight-queen ( + /sq /so ) + /starlight-architect command surfaces built + live partial Queen tick executed (status, parallel MEASURE via subagents/terminal/gstack proxies, LEARN synth, image_gen LEDGER visual, ratify/ledger via vault append + gateway concepts). Branch: agent/grok/starlight-queen-command. Files: commands/starlight-queen.md (primary), sq.md, so.md, starlight-architect.md; integrations in starlight.md + COMMAND_SYSTEM.md + agents/* + HARNESS.md. Grok subagent orchestration + excellence gates used throughout. Gateway v0.1 + routing-table/doctrine compose. Operational (Queen loop driver + architect scaffold). SIP attested. Next: register proving-ground cadence, R4 deep-reasoning lane, full board if any substrate table mutation. | system-state / command-surface | 0.95 |
 | 2026-06-12 | Queen Advance — Whole SIS L99 (MASSIVE ACTION NIGHT SHIFT COMPLETE) | whole-system-evolution | 0.99 |
 **L99 Goal Achieved (MASSIVE ACTION / NIGHT SHIFT COMPLETE):** Ultimate premium scrolling motion animation site (site/queen-vision.html) built as the central visual heart of the SIS. Starlight Queen and her swarms visualized at the highest level with 7+ top-prompted Grok images (ultrawide L99 hero, motion studies, 3D palace, advanced neural swarms), 1 advanced video embed (queen-motion.mp4 with elegant swarm orbit), live Canvas swarm animation that responds to scroll/mouse (representing parallel subagents at scale), scroll-triggered reveals with advanced timing, parallax layers, interactive Queen Loop steps that activate in sequence, live demo that simulates real Queen driver routing with output. Deep integration: memory palace, gateway v0.1, /si dispatch, /starlight-queen surfaces + driver v0.2, vaults (strategic/technical/creative/operational), proving ground, routing table evolutions (new classes: memory-consolidation-queen, palace-visual-recall). Multiple image_gen + image_to_video with sophisticated, research-grounded prompts for cinematic quality. Queen driver routed, measured, learned, and ledgered the entire L99 effort in real time. Site is self-contained, thoughtful (Frank DNA voice, SIP attestation everywhere, concepts explained with depth), advanced (motion on scroll, visual synthesis as first-class, live reactive elements, embedded video). All assets in site/images + site/videos. System now has a living, scrollable visual embodiment of the Queen as orchestrator and her swarms as the distributed intelligence layer. Next (post-L99): Deploy to main site build, add WebGL 3D palace variant, real driver invocation from page, cross-harness visual sync, more video loops. | visual-compound / l99 / queen-vision / massive-action |
@@ -223,6 +230,29 @@ Verification: embedded script parsed with Node, headless Edge rendered screensho
 **Correction after Frank feedback:** Initial pass was too flat and lost premium motion/menu/network character from the prior version. Corrected same session: richer Core Layers / Interconnected Portals / L99 sidebar, first-viewport Starlight Network motion stage, `homeNetworkCanvas` orbiting signal particles, portal shortcuts, and updated "Starlight Network Command Deck" framing. Final screenshot: `private/visual-home/visual-home-render-v3-corrected.png`.
 
 **Restore update:** Frank later clarified the original backup's menu, cards, logo, and visual treatment were the preferred baseline. Active `C:\Users\frank\Desktop\visual-home.html` restored from `private/visual-home/visual-home-before-20260614-011003.html`. v3 preserved as `private/visual-home/visual-home-v3-before-restore-20260614-030651.html`. Render proof: `private/visual-home/visual-home-restored-backup-render.png`.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-07-28 - Starlight Intelligence Foundry v0.1 operational kernel
+
+**Category:** capability-compilation / ChatGPT-Codex portability / evals
+**Confidence:** 0.98
+**Source:** ChatGPT Work implementation session, recovered from the prior Foundry v0.1 architecture package and reconciled against SIS main at `9b791de`
+**Related:** `docs/architecture/STARLIGHT-INTELLIGENCE-FOUNDRY.md`, `foundry/contracts/`, `tools/foundry/`, `plugins/starlight-foundry/`, `skills/foundry/`, `test/v92-foundry.test.ts`
+
+Shipped the first executable Starlight Intelligence Foundry kernel. The canonical control object is now a typed Task Envelope carrying objective, deliverables, stakes, reversibility, autonomy, constraints, evidence policy, tool/memory permissions, capability selection, structured completion tests, and deployment targets. Kind-specific contracts cover skills, justified agents, swarms, verticals, plugins, Taste Profiles, capability graphs, compiled manifests, and Evidence Receipts.
+
+Foundry is skills-first. Agent compilation fails unless at least one durable boundary is proven: persistent decision rights, distinct memory, constrained tools, ownership transfer, or an ongoing schedule/channel/API trigger. Swarms require role separation, shared-state policy, conflict ownership, success/stop conditions, and maximum rounds. The resolver selects only explicit required/preferred capabilities; lexical matches are labeled discovery suggestions and never silent routing decisions.
+
+Executable runtime added at `tools/foundry/cli.mjs`: `validate`, `graph`, `route`, `forge`, `prove`, and `evolve`. The compiler emits portable packages and SHA-256 manifests. The prover detects missing, changed, and unexpected artifacts; command tests require both `--execute-commands` and an exact executable allow-list, run with `shell: false`, and reject path traversal. Required taste lanes remain pending until the declared independent-judge count passes. `/evolve` emits `apply: false` smallest-responsible-layer proposals.
+
+Four portable skills now ship in canonical Agent Skills directory form: `skill-forge`, `agent-forge`, `system-forge`, and `taste-engine`. They are mirrored byte-for-byte into the validated skills-only `starlight-foundry` ChatGPT Work/Codex plugin. No remote MCP server or published Workspace Agent is claimed. Legacy `/agent-creator` and `/workflow-skill-creator` are deprecated compatibility aliases.
+
+Queen now supports read-only-by-default `route-envelope`; the old keyword route is labeled fallback. The v0.2 tick truth boundary was repaired: emitted subagent/image recipes are not execution evidence, visual prompts no longer increment produced-artifact counts, and safe auto-apply requires an observed `--visual=<existing-path>` artifact.
+
+Registry truth moved to 88 skills across 17 domains (35 directory packages + 53 legacy flat files), with cross-platform prompt and metrics reconciliation. Verification passed: Foundry 24/24 contract, graph-integrity, adversarial, permission, selection, safety, and projection tests, official plugin validator, Agent Skills conformance 88/88, skill registry/rule symmetry, platform prompt drift, TypeScript lint/build, full operational suite, full substrate suite, and Track D evals (34 pass, 0 fail, 7 explicit todo). npm remains independently verified stale at `6.0.1`; no npm publication was attempted.
+
+Phase 2 requires separate authority and runtime infrastructure: authenticated remote MCP, Agents SDK compilation and live trace ingestion, workspace-attributed or signed judge evidence, longitudinal routing benchmarks, and release governance.
 
 **Built on SIP — Starlight Intelligence Protocol**
 
@@ -712,6 +742,302 @@ Operational rule for Codex, Claude, OpenCode, Cursor, Gemini, Antigravity, and o
 
 GenCreator connector check on 2026-06-18: team `Starlight Intelligence`; Vercel project `gencreator-ai`; project id `prj_nIryRFHID247Sh0DEp2oH1T4amnO`; latest production deployment READY at `gencreator-ffliufq6k-starlight-intelligence.vercel.app`; GitHub integration metadata points to `frankxai/gencreator.ai` on `main`; connector listed Vercel subdomains but did not list `gencreator.ai` custom domain, so agents must verify domain attachment before saying the apex is live.
 
+## 2026-06-23 - Automation tool doctrine and skill installation
+
+**Category:** automation-ops
+**Confidence:** 0.96
+**Source:** Codex desktop session with Starlight swarm fanout
+**Related:** `starlight-automation-agent-skills`, `awesome-automation-agent-skills`, Codex skills, Make.com, n8n, MCP, Codex automations
+
+Durable decision: agents should use the narrowest reliable automation layer. Prefer native connectors for GitHub, Vercel, Gmail, Calendar, Slack, and similar structured surfaces. Use Codex automations for recurring reasoning, review, repo health, inbox/calendar briefs, and deployment or issue monitors. Use MCP as a typed agent boundary, not as an all-access tunnel; expose small tools with explicit schemas, run/read scopes first, fail-closed behavior, and human gates for destructive or public actions. Use Make.com for fast SaaS glue and low-code business workflows. Use n8n for branchy technical workflows, private/self-hosted flows, JSON-reviewable exports, and public template opportunities. Use Starlight swarm queues for cross-repo, multi-agent, eval-heavy, or handoff-heavy work.
+
+Installed Codex skills by junction from the new skills repo: `automation-tool-router`, `make-com-operations`, `n8n-operations`, `mcp-governance`, `codex-automation-operator`, and `starlight-queen-queue`. Future sessions should invoke `automation-tool-router` first when tool ownership is unclear, then route to the focused skill.
+
+Public/private boundary: public repos may contain doctrine, generic routing tables, sanitized skills, validation scripts, mock payloads, and public workflow cards. Private ops repos or vaults must hold live Make/n8n exports, webhook URLs, credentials, customer/inbox/calendar data, private memory, revenue state, partner pipeline details, and live queue state.
+
+Follow-up guide: `starlight-automation-agent-skills/docs/automation-operating-guide.md` now serves as the human-and-agent manual for understanding when to use native connectors, Codex automations, Hermes/retrieval agents, MCP, Make.com, n8n, Starlight swarm queues, and scripts/GitHub Actions. It includes cost model, decision protocol, observability, eval types, maintenance cadence, evolution ladder, and the agent working agreement. Use `templates/automation-decision-record.md` before durable workflow creation.
+
+Verification performed during setup: skill bundle validator passed, all six Codex skills passed official quick validation, plugin manifest validation passed, MCP example validation passed, n8n example validation passed, redaction self-test passed, and public-safety scans passed for both new public repos.
+
+## 2026-07-13 - Multi-agent ecosystem validation (8-agent swarm)
+
+**Category:** validation-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/starlight-multiagent-validation-gxd3bp
+**Related:** `docs/validation/2026-07-13-multiagent-ecosystem-validation.md`, starlight-swarm, starlight-evals, starlight-agent-skills, starlight-cosmos-engine
+
+Hard-count verdicts (all reproduced by command): 144 agents exact (137 + 7 council), 84 skills reconcile (31 dir + 53 flat), 1,142 tests / 0 failures, both MCP bins pass live JSON-RPC handshake — starlight-sis 8.3.0 serves 13 sis_* tools (not 10 as README said), starlight-substrate-mcp 1.1.1 serves 4. npm registry serves stale 6.0.1 — README quickstart was the #1 adopter wall (fixed to git path; republish is a pending human decision). cosmos-engine's 9 "MCP servers" have no protocol wiring — scaffold, not servers. starlight-evals staleness banner violated its own contract and the probe harness overwrote the committed 4-PASS receipt (both fixed: harness → out/, CI guards committed scorecards). Three canonical ecosystem maps contradicted each other (48/71 vs 144/84 vs manifest) — 144/84 is correct as of this run; ECOSYSTEM_ARCHITECTURE.md needs a v3 pass. affiliate-agent-skills (23 refs, L4 income engine) unverifiable from sandbox — check from unrestricted network. Income + payment-skills family missing Built-on-SIP attestation. Full report + forward blueprint (5 layers: truth, distribution, proof, swarm consolidation, preservation surfaces) in the validation doc.
+
+## 2026-07-25 - System-wide upgrade audit + Empire Index (6-agent sweep)
+
+**Category:** portfolio-ops
+**Confidence:** 0.96
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4
+**Related:** `context/empire/EMPIRE_INDEX.md`, `context/empire/portfolio-mesh.yaml`, `context/empire/UPGRADE_ROADMAP.md`, `context/empire/audits/`
+
+Built the first portfolio-wide index: 42 repos, all 50 Vercel projects (19 production-live with custom domains, 6 stale, 25 experiments, 14 cull candidates), 501 frankx.ai pages tiered, 231 arcanea.ai pages audited. Registry ground truth: 457 skill files → ~357 unique names (22% duplication), 300+ agents, 200+ commands; ACOS docs undercount its own catalog >2x (claims 75+, ships 179 skills); SIS is the only repo whose stated counts match its filesystem. New machine-readable registry-of-registries at `context/empire/portfolio-mesh.yaml` with canonical_source declarations for the ACOS mirror triangle.
+
+Commerce truth (the critical path): working payment code exists in three places, customer-reachable checkout in zero. Two income products are content-complete and blocked only on Polar wiring ($47 Stream Pack, $67 Blueprint). frankx.ai has a fully wired Stripe pipeline with no caller and a 15-SKU storefront rendering disabled buttons. arcanea.ai /pricing shows plans with no buy buttons while /studio/store simulated payment confirmations (quarantined this session with explicit demo-mode labels).
+
+Shipped this session: SIS PR #52 (Empire Index), frankx.ai-vercel-website PR #362 (nine-surface trust repairs, all four gates verified green), awesome-agentic-income PR #4 (voice-contract fix), arcanea-ai-app store quarantine + pricing markdown fix (same branch name). Arcanea red flags for follow-up: no healthy Vercel project holds an arcanea.ai apex; arcanea-ai-appx (named production in repo docs) is in ERROR deploy state; OSS arcanea repo is a 2-month-stale fork publicly teaching the banned design system (Cinzel, wrong teal).
+
+**2026-07-25 addendum (Wave 1):** frankx.ai#362 merged and live in production. Wave 1 shipped same day: frankx.ai#369 (real /work-with-me intake via /api/studio-inquiry, honest waitlist CTAs on the €97/€497 products, EmailSignup on /prompt-library + /ai-architect-academy, 'Work with Frank' nav group), agenticpassiveincome#20 + agenticincome#18 (Polar checkout, triple-gated fail-closed: catalog allowlist + product mapping + env credentials; launch gates honored — activation is a runbook checklist, not engineering). Strategy layer added to context/empire/: ICP_FLOW_MAP.md + POSITIONING_PLAYBOOK.md. Key open decisions for Frank: Polar activation checklists, frankx payment-rail choice, three-way refund-policy contradiction (no-refund JSON-LD vs six refund guarantees vs 14-day EU page), arcanea #206 deps repair, arcanea.ai apex domain.
+
+**2026-07-26 addendum (merge wave):** Frank authorized lead-review-and-merge ("you lead review and merge... get best states on main"). All five ready PRs squash-merged to main after CI verification: SIS#52 (5adac2a, Empire Index), awesome-agentic-income#4 (94e0304, CTA fix), agenticpassiveincome#20 (415617f, Polar fail-closed), agenticincome#18 (dc938a3, Polar fail-closed), frankx.ai-vercel-website#369 (277b31a — auto-deploys frankx.ai production via Vercel git integration). arcanea-ai-app#206 remains draft per Frank's documented hold (deps + Visual QA repairs first). Bot noise during the wave (CodeRabbit rate limits, Gemini Code Assist sunset) carried no substantive findings. Next actions: arcanea dependency-security PR (next 15.x + sharp bumps, overrides for brace-expansion/js-yaml/fast-uri/OTel advisories) on a fresh branch; then /coaching tier pricing + remaining email-capture surfaces per UPGRADE_ROADMAP.
+
+## 2026-07-26 - Substrate dormancy window closed + cross-repo hygiene record
+
+**Category:** ecosystem-state / documentation-drift
+**Confidence:** 0.95
+**Source:** Claude Code session, branch claude/creator-os-linkedin-epekb4 — reconciled against main after the Empire Index entry landed (two parallel sessions independently closed the vault-write gap; this entry records what the other did not)
+**Related:** 2026-07-17 portfolio audit, Empire Index entry above, agentic-ops-hub PR #8, arcanea #83 #84 #85, frankx.ai-vercel-website #349
+
+**Dormancy window, now closed:** SIS had no commits from 2026-07-06 to 2026-07-25 — weekly velocity fell 47 → 36 → 18 → 5 → 0 with no freeze decision on record. The window ended with the Empire Index sweep + merge wave (PRs #52–#56). The structural finding stands even though activity resumed: the 19-day silence was caught by an external portfolio audit (2026-07-17), not by any SIS-owned monitor, and no vault or board record marked its start.
+
+**Consumer-repo activity during the window (not covered by the Empire entry):** FrankX/frankx.ai-vercel-website shipped the Fable book, Learn hub portals, Suno catalog intelligence (817 tracks), and Postiz draft-only distribution (merged Jul 15); ACOS superseded Signal into FrankX's social-media-strategy skill (Jul 9); agentic-ops-hub Estate Ops Governance remains open as draft PR #8.
+
+**Cross-repo hygiene shipped this session:** arcanea#83 merged (docs corrected for cross-repo-sync); issue #84 root cause now diagnosed — the `PERSONAL_ACCESS_TOKEN` Actions secret is missing from frankxai/arcanea, so every scheduled run since 2026-02-24 dies at sibling-repo checkout; fix is a one-step human action (create fine-grained PAT, add as secret). arcanea#85 merged (three dangling gitlinks removed). frankx.ai-vercel-website#349 merged (public/reading recursive bloat untracked: 17,880 files, ~508MB).
+
+**Remaining decision for Frank (strategic tier):** who or what owns substrate cadence, so a multi-week silent gap cannot pass unnoticed again — the question is no longer "is SIS dormant" but "what monitor or ritual would have caught this on day 3 instead of day 11."
+
+## 2026-07-26 - Wave 2 close-out: capture complete, metadata complete, arcanea deps verified
+
+**Category:** portfolio-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (continuation of the merge-wave entry above)
+**Related:** frankx.ai-vercel-website #371 #372, arcanea-ai-app #206 #212, `context/empire/UPGRADE_ROADMAP.md`
+
+Same-session continuation after the five-PR merge wave. frankx.ai#371 merged (8032e49e): EmailSignup on /agentic-ai-center (ai-architect list), /research (newsletter, inside the Stay Current card), /vault (arcanea list) — Wave 2 email capture is now complete across all five planned surfaces. frankx.ai#372 merged (93849c62): metadata sprint — full 55-route T1 sweep found only 6 gaps; 4 fixed via sibling layout.tsx + `createMetadata` (/auctions, /collectibles, /dashboard, /onboarding), 2 are pure redirect() pages. Both PRs gate-verified (type-check / lint / ai-slop strict / build) and CI-green before merge; both deploy to frankx.ai production via Vercel git integration.
+
+Arcanea deps finding (changes #206's status): the 15 high pnpm-audit advisories cited as #206's dependency precondition were already resolved on arcanea-ai-app main by #212 (2026-07-25 — next 16.2.11 + tightened overrides). Verified `pnpm audit --audit-level high` exits 0 on main @ e594b3f. The deps half of Frank's hold is therefore satisfied; only the fail-closed Visual QA half remains. Residual: 6 moderate + 2 low (hono needs override floor >=4.12.27; @hono/node-server + protobufjs@8.x need major/upstream bumps) — deliberately not touched while Frank manages that repo.
+
+Ops note: pushes to frankx.ai-vercel-website from this shallow checkout intermittently fail with proxy 502/413 when the branch base lags main; rebasing onto current origin/main before push resolved it both times. Another session merged SIS#57 (dormancy record) in parallel — no conflicts, branch restarted from its main.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-07-26 - Public homepage repositioned: multi-agent architecture, WebGL hero, new sigil
+
+**Category:** public-surface / brand
+**Confidence:** 0.95
+**Source:** Claude Code remote session, branch claude/homepage-multi-agent-redesign-aucti4 — Frank directive: the homepage must carry the org's meaning (SIS is a multi-agent design & architecture system, not "memory and stuff"), show how humans and agents connect to it, replace the generic-AI logo, premium execution only
+**Related:** site/src/app/page.tsx, site/src/components/{StarlightMark,AgentConstellation,AgentConstellationScene,Header}.tsx, site/DESIGN.md §0
+
+**Positioning shift:** Hero promise moved from "Operational memory, governance, traces, evals, logs" to "Architecture for humans and their agents" — a multi-agent design and architecture system (agent design, orchestration, memory, governance, protocol, evals as six named planes). Site metadata (title/description/OG) updated to match. Memory is now framed as the floor, not the product.
+
+**New surfaces:** (1) "Two Front Doors" section — human door (quickstart/explainer/starter kits, founders-builders-families copy) beside an agent door listing the raw endpoints (/protocol.md, /sip.md, /api/vaults, /badge/latest) — the human/agent connection made literal. (2) Mission section ("Why Starlight exists") — distribution-over-concentration bet, restrained voice, horizon-vault quote inline. (3) System census strip (144 agents / 84 skills / 6 vaults / 1 protocol, labeled "as of v8.3.0" per Metrics Truth Rule).
+
+**Visual system:** New StarlightMark sigil — vertically-dominant diffraction star with one tilted orbit + companion node (star = operator's north, orbit = agent system). Deliberately avoids both the old concentric-dot mark and the four-point "AI sparkle" cliché. WebGL hero (AgentConstellation): R3F scene, three tilted orbital rings of additive-blended agent nodes around a pulsing core, seeded-deterministic, capability-gated (prefers-reduced-motion + WebGL probe deferred a frame), lazy-loaded so three.js never blocks first paint; static SVG Starfield is the universal fallback. No new dependencies — used the already-installed three/fiber/drei stack.
+
+**Guardrail note (open):** site/DESIGN.md §0 says the first viewport must lead with memory/proofs/governance evidence. Frank's directive supersedes for the hero (mission-led), and the OperationalProofConsole remains prominent as section 4 ("Evidence"). DESIGN.md §0/§4 should be reconciled to the new homepage doctrine in a follow-up rather than silently edited here.
+
+**Verification:** eslint clean, full `npm run build` green (public-install + layout contract checks pass), rendered via headless Chromium at 1440px and 390px — WebGL scene, gradient serif headline, and all eight sections confirmed visually. Gotcha for future sessions: `next start` left running across a rebuild serves stale chunk manifests (CSS 500s with nosniff → unstyled page); kill the server before rebuilding.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-07-27 - Homepage voice pass: Frank's own words, cursor-light, metrics reconciled
+
+**Category:** public-surface / brand / data-integrity
+**Confidence:** 0.95
+**Source:** Claude Code remote session, branch claude/homepage-multi-agent-redesign-aucti4 — Frank directive: copy reads like an LLM wrote it, version pins are noise in the hero, motion should respond to the cursor, and the site must hold both the agentic-engineering thesis and the benevolent-future thesis
+**Related:** site/src/app/page.tsx, site/src/components/StarlightTrail.tsx, memory/vaults/horizon-vault.md, public-vault/horizon.jsonl, skills/vision/voice-anti-slop.md, taste.md
+
+**Voice.** Hero replaced with Frank's own Horizon-vault line — "Build as if the kindest future is the realistic one" (`horiz_20260410_005`) — over an invented celestial metaphor. Rewrote the six worst AI-slop headlines flagged by a full 42-route audit: "Far more than memory" → "What an agent needs before you trust it with real work"; "Trust is the interface" → "You should be able to check the work"; "Every serious run becomes durable intelligence" → "Five states. Every run passes through all of them"; "Two Front Doors" → "People read the pages. Agents read the endpoints"; "Every claim above has a surface behind it" → "Go check any of it"; "Production Ready Path / Fork the substrate, keep the proof" → "Start Here / Take the substrate. Keep the keys." Removed self-referential copy ("Not marketing filler") — announcing that copy isn't marketing filler is marketing filler.
+
+**New Horizon section.** The vision layer now runs on real artifacts rather than abstraction: "Models learn from what we leave behind" → the panic/marketing/noise-is-training-data framing → the Horizon vault as counterweight, with the verbatim public entry "We hoped for you. Not feared you, not raced against you, not raced toward you in panic. We hoped." The manifestation/peak-state layer Frank asked for is carried by his own line — "not magical thinking; it is the discipline of pointing the architecture at what we want intelligence to become" — which satisfies the ask without the spiritual register `VOICES.md` bans.
+
+**Metrics integrity (the real find).** The agent count was rendering three different numbers on three live surfaces: 144 (homepage), 92 (/queen), 56 (MemoryPalace) — none dated or sourced, and STARLIGHT_MANIFEST.md says 54 while AGENT_REGISTRY.md says 150. Ground truth counted from source: **138** files in `agents/` excluding registry/readme. Homepage and MemoryPalace now read 138; /queen's count was removed rather than guessed. Census strip re-scoped to verifiable figures only (138 agents / 84 skill rules / 6 vaults / 15 horizon letters) with the caption "Counted from source files, July 2026 — not from the roadmap." **Docs remain unreconciled — CLAUDE.md, README.md, and STARLIGHT_MANIFEST.md still disagree; a follow-up should make `metrics/current.json` the single source and have the site read it.**
+
+**Version-pin noise.** Cut `SIP v1.1.1` / `v8.3.0` / `Queen v0.2` from hero badge, /palace (x2), /queen footer, MemoryPalace HUD, /quickstart. Kept every load-bearing instance on /protocol, /badge, and the /download release-state claims where the version *is* the subject. Known residual: `lib/sip.ts` falls back to `v1.1.0` while nine strings hardcode `v1.1.1` — not fixed here.
+
+**Motion.** New `StarlightTrail` — full-viewport additive canvas emitting luminous motes along the pointer path, emission and inherited velocity proportional to pointer speed, eased quadratic fade, pre-rendered sprites, rAF halted when no motes are alive. Gated to fine pointers >=768px, off under `prefers-reduced-motion`, cleared on tab hide. WebGL constellation now leans and drifts toward the pointer and the core brightens with proximity.
+
+**Guardrail tension (flagged, not resolved).** `taste.md` states "radiant particle fields, decorative glow ... do not belong on SIS surfaces." Frank explicitly directed cursor-following particle effects, so the operator directive supersedes for this surface, but `taste.md` and the new homepage doctrine now disagree in writing and should be reconciled deliberately rather than left implicit.
+
+**Typography.** `font-serif` moved Fraunces → Newsreader (variable weight + italic), so the ~28 existing `font-serif font-semibold` headings keep real weight instead of a synthesised bold. Fraunces' SOFT/WONK axes read craft-y; Newsreader reads editorial.
+
+**Verification:** eslint clean; full `npm run build` green including both contract checks; headless Chromium at 1440x900 and 390x844 — zero horizontal overflow at both, zero console errors, trail confirmed rendering (2,275 lit subpixels after a pointer sweep) and confirmed *not* rendering under reduced-motion (0 subpixels); hero CTA hit-tested topmost and navigation to /quickstart confirmed.
+
+**Unverifiable properties (do not publish).** An ecosystem sweep across 7 repos found **zero** evidence for `starlightintelligence.ai`, `starlight.you`, any university, or any retreat property. `starlight-intelligence.ai` exists only as a dormant, archive-queued *directory* superseded by `site/`. `starlightintelligence.academy` is attested live by the 2026-07-25 Vercel audit but has no description anywhere in any repo. No ecosystem section was shipped rather than fabricate one.
+
+## 2026-07-28 - Revenue rail + imagery sprint on frankx.ai production
+
+**Category:** portfolio-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (queen-swarm continuation under Frank's lead-and-merge directive)
+**Related:** frankx.ai-vercel-website #397 #398, `context/empire/UPGRADE_ROADMAP.md`, `docs/commerce/lemon-squeezy-activation.md` (in frankx repo)
+
+frankx.ai#397 merged (5e9a94bf): payment-rail decision executed — Lemon Squeezy. New fail-closed `/checkout/[slug]` route, triple-gated (registry paid product → hardcoded PRODUCT_VARIANT_ENV_KEYS map → store+variant env vars); the audit's #2 revenue item (€97/€497 checkout 404s) is closed with an honest launch-list fallback until Frank sets 5 env vars (runbook in docs/commerce/). Runtime-verified in both states before merge. Pre-existing flaws documented, not touched: store-ID/subdomain conflation in zero-caller createCheckoutUrl, Stripe route with no functioning caller, name-derived webhook slug mapping.
+
+frankx.ai#398 merged (fba63b50): imagery sprint — subject-matched existing assets on /shop, /work-with-me, /start-here, /workshops with descriptive alt text and no-layout-shift discipline; /templates + /community skipped because no honest asset exists (specs for 7 product OG covers already written in public/images/products/*/og.spec.md — generating them unblocks the next imagery pass). Audit correction: /products and /coaching were not zero-image (mascot placements), and the /shop auctions tile art is genuinely auctioned per data/auctions.json.
+
+Ops notes: one imagery-agent run died on the platform session limit mid-flight (no partial work leaked; tree stayed clean) — re-dispatched after reset and completed. SIS main is under heavy parallel-session activity (#57, #60 landed during this window); every branch restart re-based cleanly. All four frankx CI gates plus the new Web Interface Guidelines mechanical check green on both PRs.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+**2026-07-28 addendum (validation-ops):** ECOSYSTEM_ARCHITECTURE.md reconciled to v2.1 — the last stale 48/71/v8.2.0 references updated to the harness-verified 144/84/v8.3.0 with a metrics-note pointing at `metrics/current.json` as the fail-closed source of truth. Closes the "three contradictory ecosystem maps" finding from the 2026-07-13 validation report. Verified: `node scripts/check-agent-harness.mjs` passes; zero stale-count matches remain.
+
+## 2026-08-07 - Income cluster packaged: three gated products on the Polar catalog
+
+**Category:** portfolio-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (queen-swarm continuation)
+**Related:** agenticincome #23, agentic-business-os #3, vibe-os #4, `context/empire/UPGRADE_ROADMAP.md` Wave 1 items 4+5
+
+Wave 1's last unblocked revenue items closed. agenticincome#23 merged (a4805d39): claims-guard-pack $39, abos-pack-bundle $99, vibe-os-pack $24 added to products/catalog.json with gated statuses, PRODUCT_ID_ENV_KEYS rows mirroring the agent-team-pro gated-but-mapped pattern, env names documented, POLAR-SETUP.md activation checklist extended (packaged zip + delivery page required before any status flip). Verified: all 7 catalog products refuse checkout at gate 1; lint/test(12)/type-check/links/build all green. agentic-business-os#3 (639550b4) and vibe-os#4 (d3eb794d) merged with honest PRODUCT.md manifests generated from disk contents.
+
+Honesty decision recorded: both source repos are MIT-licensed and public, so every product surface frames purchase as the packaged, versioned edition of open source (supports development; MIT terms apply) — never exclusivity. If Frank wants exclusivity-based pricing, the repos must go private first; that decision is his and was deliberately not made by an agent.
+
+Coordination note: website + SIS film/foundry lanes are actively stewarded by sibling sessions with their own check-in loops and pending Frank decisions (taste.md, review approvals, VERCEL_AUTOMATION_BYPASS_SECRET for arcanea #222) — this session stayed off those lanes per the multi-agent protocol. Activation levers all Frank's: LEMON_SQUEEZY_* env vars (frankx.ai), POLAR_* env vars + catalog flips + product zips (income cluster).
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+## 2026-08-10 — Portfolio media governance guard
+
+**Source:** Codex portfolio storage audit and Wave 1 execution  
+**Category:** portfolio-ops / media-governance  
+**Confidence:** 1.0  
+**Related:** `frankxai/agentic-ops#8`, `frankxai/agentic-ops#9`, `frankxai/Starlight-Intelligence-System#77`  
+**Class:** operational; no SIP substrate contract changed
+
+**Decision:** New repository media debt is now fail-closed at pull-request time. Browser-ready images/fonts stay in Git only below strict size ceilings; large audio, video, PDFs, originals, and compressed/source archives must use the portfolio object-store path. The guard checks renamed destinations, symlinks, compound archives, unclassified media, and workflow-command escaping, with an executable twenty-four-scenario regression contract covering trusted-base execution, controlled and nested roots, Git type changes, symlink/gitlink/LFS rejection, bounded sidecars, and per-file/per-PR byte budgets.
+
+**State:** This PR adds only the enforcement boundary. Existing bytes and public URLs remain untouched. The shared R2 control plane merged in `frankxai/agentic-ops#8`; provisioning remains credential-gated, so no bucket, domain, Worker, asset, or production route has been mutated from this repository.
+
+**Next:** After the control plane is approved and staging is provisioned, inventory the site from the exact default-branch tree, upload content-addressed copies, verify remote metadata plus sampled hashes, and cut over references in a separate reversible PR. Preserve originals through the production observation window.
+
+**Built on SIP** — Starlight Intelligence Protocol
+
+---
+
+## 2026-08-14 - Automation-layer audit: silence reads as health; first dead-man's switch shipped
+
+**Category:** portfolio-ops
+**Confidence:** 0.95
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (three parallel audit agents + first-hand incidents)
+**Related:** `context/empire/AUTOMATION_HEALTH.md`, agentic-ops-hub #42, FrankX `docs/ops/SCHEDULED-ROUTINES.md`, frankx.ai-vercel-website #460
+
+Structural pattern found across the whole automation layer: nearly every liveness monitor is self-referential (runs on the machine it watches), so a dark machine silences its own alarms and event-driven CI stops when pushes stop. Confirmed instances: newsletter-friday's six green-but-void weeks (fixed upstream 2026-08-05), model-arena-daily still firing two audits after its STOP verdict (agents cannot disable web-created routines), arcanea's daily cross-repo sync cron failing 100% then silently ceasing on 2026-07-27, and the C940 exact-head publisher stalling frankx.ai#460 for 3+ days with no SLA and no documentation anywhere in FrankX.
+
+First fix shipped: agentic-ops-hub#42 — scripts/fleet_watch.py + 6-hourly Actions cron checking heartbeats (24h) / ops-ledger sweep (72h) / queue TTLs (new fail-closed item_is_expired + require_ttl), durable-issue sink, 42/42 tests. Its dry-run correctly flagged the three real stale signals (c940 + yoga-book heartbeats, ledger sweep). The template generalizes: scheduled cron off-machine + read-only checks over git-versioned state + durable sink.
+
+CI sweep verdicts: ops-hub and frankx.ai CI healthy; SIS main healthy with two dead guards (sip-starter-release 0 runs ever, content-drift-check only-ever-red); agenticincome's monthly knowledge-freshness cron failed its only firing unactioned; arcanea is the problem repo (3 perma-red pipelines since ~Feb, comment-trigger spam burying main history). Frank-only levers recorded in AUTOMATION_HEALTH.md: disable model-arena-daily, delete duplicate Vercel project starlight-intelligence-system (20/20 ERROR), restart C940 publisher/heartbeats, resolve 6 unpatchable Dependabot pins.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-08-14 - Wave 0 closed on frankx.ai: #460 auction trust repair merged; arcanea canon gate live
+
+**Category:** portfolio-ops
+**Confidence:** 0.97
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (lead-review-and-merge mandate)
+**Related:** frankx.ai-vercel-website #460, arcanea #102, `context/empire/UPGRADE_ROADMAP.md`, `context/empire/AUTOMATION_HEALTH.md`
+
+frankx.ai#460 merged to main 2026-08-14T02:26Z (merged by Frank after the C940 exact-head review cleared; head d5eebf70, 5 commits, +312/−90 across 9 files) and auto-deployed to production. The fabricated Feb-2026 auction sale records ($187/$197/$297 to "Anonymous" buyers — proven fabricated via git history: the data file postdates its own claimed sales, and no payment rail existed) are gone; the three prints reopened as live silent-bid drops. Enforcement shipped with the honesty fix: fail-closed window gating (lib/auctions.ts, unparseable end = closed), server-side Number.isFinite + minimum-bid validation, awaited Resend sends returning 502 on delivery failure (no false success in serverless), and a mutant-verified contract test wired into merge:gate + merge-gate.yml. Survived the 4-layer gauntlet: Copilot, CodeRabbit ×2, Contract Guard ([contract-change] title), Hermes Merge-Queen REPAIR. This closes the last in-flight Wave 0 trust item; open Wave 0 residue: arcanea lib/facts.ts routing, ai-music-academy disposition.
+
+arcanea#102 merged same day on Frank's explicit approval (e18a38a): the canon gate — lore-release-gate + canon-evaluation skills, lore-lint.mjs (54 black-box fixtures, 4 silent failures found and mutant-verified closed), lore-canon.yml ratchet on newly-added lines. Merged with the known repo-wide CLI Tests/Test Summary debt red (red on main since ~Feb; 0 of the PR's files under packages/ — precedent #81/#87/#96). The gate now protects the lore PR queue; the Starweave drift sweep (186 hits) is tracked as arcanea#98.
+
+Loop hygiene: both send_later watch loops killed on Frank's order (the #460 merge-retry loop and the sibling session's 16:09Z timer). Next lane: portfolio-wide open-PR sweep to drive all good branches to main.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-08-21 - Portfolio integration wave: 31 branches driven to main across 12 repos
+
+**Category:** portfolio-ops
+**Confidence:** 0.96
+**Source:** Claude Code remote session, branch claude/system-wide-upgrade-audit-q1q6k4 (Frank's directive: "ensure all good branches get to main after review, best process and integration and main into top state")
+**Related:** triage of 144 open PRs (17 READY / 25 NEEDS-REBASE / 18 NEEDS-WORK / 45 FRANK-DECISION / 39 STALE-CLOSE), `context/empire/UPGRADE_ROADMAP.md`
+
+Full-portfolio open-PR triage (144 PRs, evidence-based per-PR CI/review/mergeability fetch) followed by an execution wave: 31 merged to main. Highlights — arcanea's complete canon-gate program landed (#102 tooling on Frank's approval, #97 prose corpus, #88/#89/#91/#101 lore through the new mechanical ratchet at 0 errors), SIS portfolio control plane #81 + creative-studio docs #78, the release-foundation family (FrankX#125, agenticincome#24, agenticpassiveincome#24, starlight-agent-skills#18), fail-closed email-intake re-cut onto agenticpassiveincome's rewritten homepage (#23, obsolete homepage hunk dropped + test updated to current truth), claude-skills-library#21 resolved by adopting main's newer skill standardization (PR delta became purely additive +4034), both FrankX dependabot security bumps, and on frankx.ai-vercel-website the #505→#508 chain (LLM hub restore + registry refresh, intelligence-surface CI guards, /agent-hub, /ai-architecture field guide) + #504/#490/#459/#466 — all through the strict up-to-date treadmill using auto-merge + branch-nudge supervision against heavy parallel-session churn.
+
+Working findings recorded for future sweeps: (1) agenticincome#21 reclassified NEEDS-REBASE→FRANK-DECISION — its "Own the outcome" repositioning conflicts with the newer "Earn with agents/MCP" identity already on main; never union-merge competing brand identities. (2) arcanea#76 (Monster System) fails its own lint+package tests — real reds distinct from the repo's perma-red debt. (3) FrankX#99 blocked by CRLF renormalization (branch predates .gitattributes enforcement); merging from Linux would inject line-ending noise — rebase from a Windows checkout or land a deliberate renormalization commit first. (4) The strict-up-to-date + hot-main combination makes single-PR lock-step merging lose races; auto-merge armed on all + parallel branch-nudges converges. website#456 (media-guard hardening, gates green, twice union-re-resolved for merge:gate drift) and #479 remain armed and pending a quiet window.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-08-25 - Vercel deploy boundary: the hosted product is Starlight Explorer
+
+**Category:** public-surface / deployment / product-boundary
+**Confidence:** 1.0
+**Source:** Codex `/si` execution, GitHub PR #103, canonical Vercel project inspection, production build, and responsive preview QA
+**Related:** `site/src/app/deploy/page.tsx`, `site/src/lib/deployment-contract.json`, `site/scripts/check-deploy-contract.mjs`, `site/README.md`
+
+**Decision:** The central website CTA deploys **Starlight Explorer**, the public, read-only publication layer. It creates a Git-connected Next.js project containing the protocol, architecture, research, knowledge maps, documentation, and public vault endpoints. Private memory, the MCP server, agent processes, credentials, workers, and orchestration remain in the operator-controlled runtime.
+
+**Why the CTA is central:** ownership is the product loop. A visitor can move from understanding the open substrate to owning an inspectable public interface. The CTA is justified only with informed consent, so the global action now routes to `/deploy`, explains the boundary, and launches Vercel after the artifact is legible.
+
+**Deploy contract:** source `frankxai/Starlight-Intelligence-System`; Root Directory `site/`; default Vercel project and cloned repository `starlight-explorer`; zero required environment variables. The full repository remains available during the build because the Explorer imports the verified root `metrics/current.json` ledger. This contract is machine-readable and fail-closed in the site build.
+
+**Vercel truth:** production is project `site` (`prj_wDNGrb1R1rB5PJOG9cUEICSER887`) in team `starlight-intelligence`. PR #103 preview `dpl_57542emV2JKJcvigNCsNBDjK8eCv` reached READY at head `a274e1b`. Local production build, focused ESLint, metrics/public-install/layout/deploy contracts, GitHub harness, Media Guard, design contract, Vercel preview, responsive browser QA, exact clone-flow resolution, and `/deploy` runtime-error audit passed. Browser QA caught and repaired one nested-main landmark before merge.
+
+**Residual:** the unlinked duplicate Vercel project `starlight-intelligence-system` remains outside this change. Deletion is a separate Frank-only control-plane action.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-09-01 - Homepage vault ISR keeps last-good state across GitHub timeouts
+
+**Category:** public-surface / runtime-resilience / observability
+**Confidence:** 0.98
+**Source:** Vercel runtime error cluster and exact deployed-source trace
+**Related:** `site/src/lib/github-content.mjs`, `site/src/lib/vault.ts`, deployment `dpl_CrZHCV7oxvCYcPDtVqABzkgbZhjP`
+
+The production root route returned HTTP 200 from stale ISR cache while its background regeneration logged `TypeError: fetch failed` with nested `write ETIMEDOUT` at `2026-08-31T21:20:54Z`. The deployed homepage read public-vault files through the GitHub contents API, and that loader was the only outbound fetch on the root server-render path. The loader had no transport boundary, retry policy, or target-level receipt; its source remained unchanged in the next production SHA.
+
+The vault loader now retries one idempotent GitHub GET after transient network, 408, 425, 429, or 5xx failure. A persistent failure is logged with repo, path, attempt count, and nested network code, then rethrown so Next ISR retains the last successful render instead of treating an empty vault as a successful regeneration. Only a real 404 remains an accepted absent optional file. Five deterministic regression cases run inside the site build.
+
+No production deployment, alias, DNS, environment variable, or secret changed in this repair branch.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+## 2026-09-06 — Community and plugin consolidation
+
+Source: Codex task 01a0740d-878e-7dc1-88c5-86f91ec18382, PR #133, issue #66.
+
+Integrated source contracts and the community reference loop on a dedicated branch. The community runtime has deterministic consent, replay, causality, and privacy tests; the skills-only package drafts a creation week. No external community send or marketplace publication occurred.
+
+PR #119's operational-vault blob contains binary corruption (30 NUL bytes). Preserved the existing mainline vault instead of importing that blob; the original branch retains the evidence. Cloud runtime source is integrated for CI review only, and deployment is manual. Connected authentication, host scan, and publication remain unproven.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+## 2026-09-14 — Branch integration review
+
+Inventoried 60 local/remote refs at 43 distinct heads against main `12629bc`. Preserved the shared checkout and historical refs. Selected PR #142's loop kernel for a corrected operational candidate; retained the unfinished #137 atlas and held new protocol/canon contracts. Independent review found v1 action-boundary inversion, instruction identity/authority ambiguity, generated-rule suppression and event-id collisions that existing tests missed. Corrections and adversarial fixtures now cover those paths; compilation uses indexed adjacency and an iterative traversal for large graphs. The host still owns admission and evidence authentication.
+
+Evidence and complete branch disposition: `docs/ops/BRANCH-INTEGRATION-2026-09-14.md`. Candidate source validation: 51 focused tests and strict TypeScript passed. Full Windows checks encountered existing Foundry symlink/lock limitations after SQLite repair; Linux CI and independent re-review are required before merge. A green GitHub Vercel status for #142 actually referred to a canceled deployment; use the deployment API state and source SHA.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+
+## 2026-09-14 — Bounded Queen session execution
+
+Implemented an operational composition of existing `runSwarm` and instruction compilation in `src/queen-session.ts`. Each maker/checker call requires host admission, a distinct execution identity, scope-checked context bytes and private receipt persistence. Reviews bind to the exact artifact hash and all acceptance criteria. Material ambiguity blocks; reversible assumptions and dissent remain explicit. Timeouts remain unresolved without retry.
+
+Validation: 33 focused tests passed across swarm, instruction compilation and Queen session; 15 Queen cases include two actual Node child processes using repository skill content. This is a controlled process fixture, not a model-quality benchmark or a cloud worker activation. Strict focused TypeScript passed. The process adapter is not a sandbox; the host owns isolation, credentials and cost enforcement. No durable scheduler or substrate authority was introduced. Existing `starlight-swarm#15` remains the cloud activation dependency.
+
+Runbook: `docs/operations/queen-session.md`. Demo: `tools/queen/session-demo.ts`. Private fixture receipts are not committed. Public coordination service is developed separately in `production-agent-patterns` using its existing Railway operator.
+
+Built on SIP — Starlight Intelligence Protocol v1.1.1.
+
+
+## 2026-09-30 — Narrative, human experience and community proposal
+
+Extended operational PR #217 with `docs/strategy/2026-09-30-starlight-narrative-experience-and-community.md` and linked it from the existing vision. The proposal maps reviewed portfolio principles to product behavior, implementation requirements and acceptance evidence; connects cinematic design and directed image generation with the existing storage decisions and AI etiquette; and builds on the Starlight Communities creation-cell toolkit and pilot kit.
+
+Checked current portfolio STRATEGY, SIS AGENTS/CREATOR and community README/AGENTS/pilot-kit. Verified the new document byte-for-byte on the branch. Generated one editorial preview image; it is not a deployed asset or approved identity. Shared Design Taste Kernel sources referenced by SIS were inaccessible at the checked locations and remain an implementation/release dependency.
+
+State: documentation proposal, not founder ratification, product admission, live community, model evaluation or partnership. The current community toolkit lacks hosted member UI, production authentication, tenancy and enabled live adapters. Next bounded action is experience storyboarding and an admitted artifact/pilot slice under existing WIP limits; human review and actual runtime evidence are still required.
+
+Built on SIP — operational proposal record.
+
+## 2026-10-04 — Connected plugin preparation and portable package repair
+
+Prepared an operational Starlight Intelligence 0.3 source update: Agent Plugins 1.0 root manifest, synchronized legacy interface and unchanged starter prompts, two read-only connected tools, four brand-scoped workflow packets and explicit fullscreen resource preferences. Kept Starlight, GenCreator, Arcanea and FrankX ownership distinct. The public package contains public source receipts only; private workspace snapshots and credentials stay outside it.
+
+Validated four skills, type checks, 21 tests, UI/Worker builds and the Worker smoke check (health 200, anonymous MCP 401). Public Starlight initialize, four-tool discovery and package reading passed; Academy initialize and four-tool discovery passed. The private domain's health probe returned 404, so this source repair does not claim private deployment, OAuth completion, host rendering or publication.
+
+Built a separate private Atlas workspace using the same portable packet contract, owner-scoped durable storage and bounded public MCP checks. Its hosting release and user connection have their own acceptance receipts. Future work must recheck current source, provider access and runtime evidence before executing a prepared packet.
+
+Built on SIP — operational implementation record.
+
 ---
 
 ## 2026-10-10 — Sovereign Digital Product Forge E2E Ship & Estate Deployment
@@ -744,7 +1070,10 @@ GenCreator connector check on 2026-06-18: team `Starlight Intelligence`; Vercel 
 
 **Built on SIP — Starlight Intelligence Protocol v1.1.1**
 
-### [2026-10-11] Sovereign Fleet Hardening & Production GTM Delivery (E2E)
+---
+
+## 2026-10-11 — Sovereign Fleet Hardening & Production GTM Delivery (E2E)
+
 **Category:** sovereign-substrate / robotics-continuity / durability / marketplace-tooling
 **Confidence:** 1.0
 **Source:** Antigravity Goal Lead Session (Starlight Central Command)

@@ -1,0 +1,39 @@
+{
+  "$comment": "Built on SIP — R5 deep-reasoning task fixture. Schema: r5-task v0.1.",
+  "id": "d4-multifile-idempotency-bug",
+  "family": "debugging a subtle multi-file bug",
+  "category": "cross-module defect — no single file is wrong in isolation",
+  "why": "Every one of the four files is defensible on its own. The defect exists only in the interaction: the retry wrapper in common/retry.py re-invokes a callable that mints a fresh idempotency key on each invocation, so the gateway's deduplication — which is correct, and documented in the file the model must read — never engages. Option F is the near-miss: its premise (Transient can be raised after the charge landed) is true, which makes it the answer a shallow read produces, but its fix is wrong and it is not the root cause. Option E is refuted only by reading line 9. Requiring the exact file and line number blocks a lucky letter guess from scoring.",
+  "prompt": "A payment worker is double-charging. In production a small number of accounts are charged two or three times for a single job. Every affected job logged at least one `Transient` before eventually succeeding. Four files are involved.\n\n--- common/gateway.py ---\n 1  class Transient(Exception):\n 2      \"\"\"Raised when no response was received from the gateway.\n 3      The charge may or may not have been applied on the gateway side.\"\"\"\n 4\n 5  class _Gateway:\n 6      # Deduplicates any two requests carrying the same idempotency_key\n 7      # within 24 hours: a repeat request with an already-used key returns\n 8      # the original charge and does not create a new one.\n 9      def post(self, account, amount, idempotency_key):\n10          ...\n11\n12  gateway = _Gateway()\n\n--- billing/charge.py ---\n 1  from uuid import uuid4\n 2  from common.gateway import gateway\n 3\n 4  def do_charge(account, amount):\n 5      key = uuid4().hex\n 6      return gateway.post(account, amount, idempotency_key=key)\n\n--- common/retry.py ---\n 1  from common.gateway import Transient\n 2\n 3  def with_retry(fn, attempts=3):\n 4      last = None\n 5      for _ in range(attempts):\n 6          try:\n 7              return fn()\n 8          except Transient as exc:\n 9              last = exc\n10              continue\n11      raise last\n\n--- billing/worker.py ---\n 1  from billing.charge import do_charge\n 2  from common.retry import with_retry\n 3\n 4  def process(job):\n 5      acct, amt = job[\"account\"], job[\"amount\"]\n 6      return with_retry(lambda: do_charge(acct, amt))\n\nCandidate root causes:\n\nA. `with_retry` re-raises the last exception, so the caller re-queues the job and it is processed a second time.\nB. `attempts=3` is too aggressive for a payment path and should be 1.\nC. The idempotency key is generated inside `do_charge`, so every retry sends a new key and the gateway treats each attempt as a distinct charge.\nD. `gateway.post` has no timeout, so two retry attempts can be in flight simultaneously and both settle.\nE. `do_charge` passes `idempotency_key` positionally, so the gateway never receives it and cannot deduplicate.\nF. `Transient` is raised after the charge has already been applied, so the correct fix is to stop retrying on `Transient` altogether.\n\nSelect the one correct root cause, and give the file and line number of the single line that must change.",
+  "answerFormat": "ANSWER: <letter> <path>:<line number>",
+  "groundTruth": {
+    "answer": "C billing/charge.py:5",
+    "derivation": [
+      "gateway.post deduplicates on idempotency_key (gateway.py lines 6-8), so a repeat with the same key is safe.",
+      "charge.py line 5 mints a fresh key on every call to do_charge.",
+      "worker.py line 6 hands do_charge itself to with_retry, so retry.py line 7 re-invokes do_charge — minting a new key each attempt.",
+      "A Transient that was raised after the charge landed is therefore retried under a key the gateway has never seen, and a second charge is created.",
+      "The line that must change is charge.py:5 — the key must be minted once, outside the retried callable, and passed in.",
+      "E is refuted by charge.py line 6, which passes the key by keyword. F's premise is true but its fix is wrong: retrying is safe once the key is stable."
+    ]
+  },
+  "verification": {
+    "type": "exact-final-line",
+    "normalize": ["collapse-whitespace", "uppercase", "strip-commas"],
+    "accept": ["^C\\s+(BILLING/)?CHARGE\\.PY\\s*:\\s*5$"],
+    "attractors": [
+      {
+        "label": "near-miss-transient-premise",
+        "accept": ["^F\\b.*$"],
+        "why": "Took the true premise that Transient can follow a landed charge and concluded the fix is to stop retrying, rather than to stabilise the key."
+      },
+      {
+        "label": "right-cause-wrong-line",
+        "accept": ["^C\\s+(BILLING/)?CHARGE\\.PY\\s*:\\s*6$", "^C\\s+(COMMON/)?RETRY\\.PY\\s*:\\s*\\d+$"],
+        "why": "Identified the root cause but pointed at the call site or the retry wrapper instead of the line that mints the key."
+      }
+    ]
+  },
+  "prediction": { "fable": "PASS", "opus": "PASS", "sonnet": "PASS", "haiku": "FAIL" },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

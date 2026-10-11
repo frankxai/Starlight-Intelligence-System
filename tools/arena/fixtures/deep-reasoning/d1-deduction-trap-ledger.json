@@ -1,0 +1,43 @@
+{
+  "$comment": "Built on SIP — R5 deep-reasoning task fixture. Schema: r5-task v0.1.",
+  "id": "d1-deduction-trap-ledger",
+  "family": "multi-step deduction with a trap intermediate step",
+  "category": "sequential rule application, two interacting quantities, branch-flipping trap",
+  "why": "Nine rules applied in order over two quantities. Rule R2 depends on primality, and the single most common wrong intermediate step — treating 1 as prime — does not merely shift the total by a constant: it raises the running balance from 672 to 682, which crosses R7's threshold of 680 and flips a conditional branch. One wrong intermediate step therefore changes the arithmetic path, not just the arithmetic. A second, independent trap punishes applying R7 before R6.",
+  "prompt": "A deployment ledger tracks two quantities: CREDITS (starts at 1000) and SLOTS (starts at 0).\n\nApply rules R1 through R9 strictly in the order given. Each rule reads the values as they stand at the moment that rule is applied.\n\nR1. There are 9 stages, numbered 1 through 9. Each stage costs 40 CREDITS.\nR2. Every stage whose number is prime receives a 25% discount on that stage's own cost (refund 10 CREDITS per such stage).\nR3. Every stage whose number is a perfect square consumes 1 SLOT.\nR4. Every stage that received neither a discount under R2 nor consumed a SLOT under R3 charges 12 CREDITS of overhead.\nR5. If SLOTS is 3 or more, refund 30 CREDITS; otherwise charge 30 CREDITS.\nR6. Charge 7 CREDITS for each prime-numbered stage whose number is greater than 4.\nR7. If CREDITS is strictly greater than 680 at this point, withhold 55 CREDITS as reserve.\nR8. Add 1 SLOT for every whole 100 CREDITS remaining.\nR9. Charge 2 CREDITS per SLOT.\n\nReport the final CREDITS and the final SLOTS.",
+  "answerFormat": "ANSWER: CREDITS=<integer> SLOTS=<integer>",
+  "groundTruth": {
+    "answer": "CREDITS=654 SLOTS=9",
+    "derivation": [
+      "primes in 1..9 = {2,3,5,7} (4 stages); perfect squares = {1,4,9} (3 stages); no overlap",
+      "R1: 1000 - 9*40 = 640",
+      "R2: +4*10 = 680",
+      "R3: SLOTS = 3",
+      "R4: stages in neither set = {6,8} -> -2*12 = 656",
+      "R5: SLOTS 3 >= 3 -> +30 = 686",
+      "R6: primes > 4 = {5,7} -> -2*7 = 672",
+      "R7: 672 > 680 is FALSE -> no reserve withheld = 672",
+      "R8: floor(672/100) = 6 -> SLOTS = 9",
+      "R9: -2*9 = 654"
+    ]
+  },
+  "verification": {
+    "type": "exact-final-line",
+    "normalize": ["collapse-whitespace", "uppercase", "strip-commas"],
+    "accept": ["^CREDITS\\s*=\\s*654\\s+SLOTS\\s*=\\s*9$"],
+    "attractors": [
+      {
+        "label": "one-is-prime",
+        "accept": ["^CREDITS\\s*=\\s*609\\s+SLOTS\\s*=\\s*9$"],
+        "why": "Counted 1 as prime. Five discounted stages raise the R6 balance to 682, which crosses R7's 680 threshold and withholds a reserve that should not have been withheld."
+      },
+      {
+        "label": "r7-before-r6",
+        "accept": ["^CREDITS\\s*=\\s*599\\s+SLOTS\\s*=\\s*9$"],
+        "why": "Evaluated R7's threshold against the pre-R6 balance of 686, firing the reserve branch out of order."
+      }
+    ]
+  },
+  "prediction": { "fable": "PASS", "opus": "PASS", "sonnet": "PASS", "haiku": "FAIL" },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

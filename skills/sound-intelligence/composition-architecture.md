@@ -1,156 +1,141 @@
 ---
 name: sound-intelligence/composition-architecture
-description: Designs the songwriting and arrangement instrument — score, lyric, arrangement, demo, transition — using music-theory and cognitive-science direction. Refuses "fix it in the mix" for upstream-defaultable failures and refuses generic-pretty lyric language. Use when architecting a song structure, drafting or critiquing lyrics, designing an arrangement, building a demo, or composing a transition between song sections. Sub-system 1 of 6 in the Sound Intelligence reference vertical.
+description: Designs authored songs across premise, lyric, melody, harmony, hook behavior, arrangement, vocal instrument, low end, demo, and transition. Rejects generic-pretty language, unearned repetition, artist imitation, and “fix it in the mix.” Use for songwriting, lyric critique, composition, arranging, production architecture, or song DNA analysis.
 ---
 
 # Skill: sound-intelligence/composition-architecture
 
-> Designs the songwriting and arrangement instrument — score, lyric, arrangement, demo, transition — using music-theory and cognitive-science direction. Refuses "fix it in the mix" for upstream-defaultable failures and refuses generic-pretty lyric language. Sub-system 1 of 6 in the Sound Intelligence reference vertical.
+> A song is a staged human contradiction carried by a repeatable musical action. Genre and mood are metadata, not architecture.
 
-**Domain:** Sound Intelligence
-**Vertical:** Sound Intelligence (sub-system: Composition)
-**Voice:** the practitioner's voice (composed via Genius layer) — warm, theory-precise, refuses producer-influencer hand-waving.
-**Disclaimer:** Composition decisions touch rights territory (sample clearance, AI-vocal license, co-writer splits). This skill produces system architecture, not legal advice. Validate jurisdiction- and PRO-specific compliance with qualified music counsel.
+**Domain:** Sound Intelligence  
+**Vertical:** Sound Intelligence / Composition  
+**Voice:** warm, exact, authorial; theory serves the ear  
+**Boundary:** architecture, not legal advice. Surface samples, collaborators, AI involvement, performer consent, and split/ownership unknowns for Catalog and qualified counsel.
 
----
+## Activation
 
-## Activation Triggers
+Songwriting, composition, lyrics, melody, harmony, hook, chorus, refrain, prosody, arrangement, transition, demo, reference track, vocal direction, bass design, song DNA, originality, or anti-generic editing.
 
-**Keywords:** songwriting, composition, compose, arrange, arrangement, lyric, lyrics, melody, harmony, chord progression, chord, modulation, key change, modal, song form, verse, chorus, bridge, pre-chorus, outro, intro, transition, drop, build, breakdown, demo, reference track, prosody, tension and release, expectation and reward.
+Primary commands: `/sound-composition-score`, `/sound-composition-lyric`, `/sound-composition-arrange`, `/sound-composition-demo`, `/sound-composition-transition`.
 
-**Agents:** `starlight-sound-composition` (primary), `starlight-genius` (voice composition for lyric), `starlight-prime` (synthesis when arrangement / lyric / transition tensions surface).
+## Research direction
 
-**Intents:** composition-architecture, lyric-architecture, arrangement-design, demo-planning, transition-design.
+- Huron / ITPRA: expectation, prediction, violation, and reward.
+- Margulis: repetition as structural participation and changed attention, not a fixed count.
+- Patel: music-language coupling and prosody.
+- Bregman: auditory-stream parsing and arrangement legibility.
+- Witek and later groove research: pleasure emerges around prediction and syncopation, not maximal quantization.
+- Open Music Theory: inspectable form, harmony, rhythm, meter, popular-music, jazz, and orchestration concepts.
 
-**Commands:** `/sound-composition-score`, `/sound-composition-lyric`, `/sound-composition-arrange`, `/sound-composition-demo`, `/sound-composition-transition`.
+These sources provide directions, not hit guarantees. Never invent effect sizes, brain-frequency claims, or certainty from correlation.
 
----
+## Protocol — nine decisions
 
-## Research grounding
+### 1. Stage
 
-This skill is grounded in published cognitive-science and music-theory literature. Claims are not invented; they reference direction.
+Mark idea / sketch / song-ready / demo / production / release. Apply only the decisions this stage can prove.
 
-- **Levitin — *This Is Your Brain on Music*:** music perception as the listener's nervous system parsing pitch, rhythm, timbre, melody, harmony, and meter; relevance for arrangement decisions about what listener can parse simultaneously.
-- **Huron — *Sweet Anticipation*:** expectation-and-reward as the engine of musical pleasure; ITPRA model (Imagination, Tension, Prediction, Reaction, Appraisal); relevance for tension-and-release design across the song and across the set.
-- **Margulis — *On Repeat*:** repetition as load-bearing structure in music; the second listen makes load-bearing what the first listen felt indulgent.
-- **Patel — *Music, Language, and the Brain*:** shared cognitive substrate of music and language; relevance for lyric prosody — stresses of lyric line align with melodic stresses or fight them with intent.
-- **Pohjannoro on composition cognition:** what composers actually do during composition — protocol-analyzed; relevance for the working state the practitioner is inside.
-- **Bregman — *Auditory Scene Analysis*:** how the listener parses simultaneous streams; relevance for arrangement density curves (most listeners parse 4-7 simultaneous elements before overload — cite as direction not fixed number).
-- **Bertin-Mahieux et al. and Pachet on hit prediction:** research-disputed; named here to surface that hit-prediction is unreliable and the vertical optimizes for catalog architecture, not viral-hit-likelihood.
+### 2. Human engine
 
-This skill cites direction, not specific numbers — cognitive-science effect sizes shift across replication waves and methodological refinements. The frameworks (ITPRA, prosody, density curve, expectation-reward) are stable.
+Name:
 
----
+- the observable scene;
+- what the narrator wants;
+- what they refuse to admit;
+- the interpersonal cost;
+- what changes by the end;
+- what the listener can do with the song socially.
 
-## Protocol — 7 steps
+If those are missing, do not decorate the concept.
 
-### Step 1: Sort song stage
+### 3. Hook behavior
 
-Before anything: idea / sketch / demo-ready / demo-done / in-production. Different stages need different commands. Mismatch is the most common error.
+Separate:
 
-### Step 2: Name the expectation-and-reward arc
+- lyric hook;
+- title phrase;
+- melodic hook;
+- rhythmic/phonetic cell;
+- production motif;
+- social action.
 
-What is this song's arc (Huron framework)? Where does tension peak? Where does prediction get violated (the surprise) and where does it get confirmed (the satisfaction)? If the song has neither surprise nor satisfaction, it is a loop, not a song. Name the arc; write toward it.
+Count exact title hits, variants, melodic returns, and consecutive chant cells. Choose a low, medium, high, or extreme repetition regime based on function. Each return must establish, implicate, fracture, or pay off. Repetition without changed context is a loop; repetition with consequence is form.
 
-### Step 3: Score architecture
+### 4. Authorial lyric
 
-- **Key and mode** — why this key, why this mode (not the default of C major just because the DAW opens there). Modal awareness: writing in dorian gives different tonal palette than aeolian; mixing modes is fine with intent but creates collisions without it.
-- **Harmonic motion** — functional (V-I cadences central) / modal (color-shift over functional return) / static-with-color (drone-based, color through voicing) / chromatic (chromatic chord motion as primary). Pick the class with intent.
-- **Form** — verse-chorus / through-composed / AABA / loop-based. Each carries different listener-expectation defaults.
-- **Tempo and time signature** — with rationale ("96bpm not 100 because the lyric prosody needs the slightly-slower stress pattern"; "7/8 because the rhythmic surprise is load-bearing").
+- One premise; more than one emotional truth.
+- One evolving metaphor system; no pile of poetic nouns.
+- Specific objects, actions, locations, bodies, timing, and private evidence.
+- Spoken syntax, contractions, fragments, subtext, and unequal line lengths.
+- A knowledge turn in every verse and an admission turn in the bridge.
+- Semantic, slant, internal, delayed, or multisyllabic rhyme; no forced perfect-rhyme filler.
+- Prosodic stresses align with musical stresses unless conflict expresses character.
+- Mark the three lines any competent model would predict; replace them.
 
-### Step 4: Lyric architecture (when in lyric scope)
+Scarce vocabulary includes generic cosmic and motivational defaults—light within, rise, destiny, fire, shadows, wings, break the chains, rewrite the stars, born to, universe, awaken. A scarce word is allowed only when concrete evidence earns it.
 
-- **Premise** — the one sentence the song is about. If it cannot be said in one sentence, the song does not yet have a premise.
-- **Perspective** — first-person / second-person / third-person / mixed. With rationale.
-- **Persona** — same as the practitioner / constructed persona.
-- **Structural form** — AABA lyric / verse-chorus lyric / through-composed / list-form / narrative-form.
-- **Prosody check** — Patel's framework. Stresses of lyric line align with melodic stresses, or intentionally fight them for effect. Mismatches without intent reduce both signals.
-- **Refrain design** — the line that earns the seventh repetition. The refrain is where Margulis's repetition research lands — the line that becomes load-bearing through return.
-- **Specific imagery** — the named-thing (a specific chair in a specific room) replaces the vague-pretty (a sad place). Generic-pretty is refused.
+### 5. Musical score
 
-### Step 5: Arrangement architecture
+Declare key/mode, tempo, meter, harmonic-motion class, phrase lengths, melodic contour, hook tessitura/vowels, tension peak, violated prediction, confirmed prediction, and one motif able to migrate between voice and instrument.
 
-- **Instrumentation choices** — named with reasoning. "Acoustic guitar V1, piano chorus is wrong because the piano has been carrying the melodic motif since bar 5; switch the polarity."
-- **Density curve** — across the song, plot the simultaneous-element count. Default: low V1 (2-3 elements), medium pre-chorus (4-5), peak chorus (5-7), lower V2 with new texture (3-4), higher pre-chorus 2 (5-6), peak-plus chorus 2 (6-7+), bridge low or new-element (3-4), peak chorus 3 with new element (6-8). Violate with intent.
-- **Contrast logic** — timbral, dynamic, rhythmic, harmonic. Each section contrasts with neighbors on at least one axis.
-- **Automation foreshadowing** — what gets introduced quietly in V1 (a synth pad at -18 dB) to land at the bridge (the same pad at 0 dB).
-- **Negative-space discipline** — what is removed in the final chorus to make the climax land. The most common arrangement failure is additive density without subtractive moments.
+Use theory to make audible choices. Complexity that the listener cannot hear is documentation, not composition.
 
-### Step 6: Demo planning
+### 6. Vocal instrument
 
-What does this demo need to prove? Different demos prove different things:
+Specify role, point of view, comfortable tessitura, register changes, onset, breath, vowel/formant color, consonant attack, vibrato onset/rate behavior, microtiming, intimacy/room, doubles, harmonies, countervoice, ad-libs, and strategic solitude. Never accept adjective-only vocal direction.
 
-- **Vocal melody and lyric** → one-take vocal-and-instrument (guitar / piano) demo.
-- **Harmonic motion and form** → rough-multitrack-on-DAW with placeholder instruments.
-- **Arrangement viability** → near-final-arrangement demo with placeholder mix.
-- **Tempo and feel** → click-and-instrument demo to test pocket.
+### 7. Low end and groove
 
-Capture method matched to what's being proven. Reference-track grounding: 2-3 reference tracks the demo is in conversation with — not to copy, to position.
+Specify kick role/weight, bass sub/body/texture layers, octave ownership, note length, glide, saturation, mono policy, kick-bass sidechain timing, swing/push/pull, ghost notes, and negative space. Test phone, headphones, small speaker, car, and full-range/sub playback. Frequency numbers are hypotheses and adapt to source/key/system.
 
-### Step 7: Transition design
+### 8. Arrangement and transition
 
-Each section boundary: what transition move? Why? What does it serve in the expectation-and-reward arc?
+For each section, name bars or time, narrative job, density, motif owner, new/removed element, contrast axis, and transition. A climax can be subtractive. Reject default fade and additive-only final choruses.
 
-Transition moves named:
+Transition vocabulary: drop, build, breakdown, modulation, reharmonization, meter displacement, instrumental hand-off, lyrical pivot, false end, tag-out, silence.
 
-- **Drop** — sudden density reduction (chorus to V2 drop; build to drop).
-- **Build** — additive density (V to pre-chorus; pre-chorus to chorus).
-- **Breakdown** — extended low-density (bridge often).
-- **Modulation** — key change at structural moment (often final chorus).
-- **Instrumental hand-off** — motif passes between instruments (guitar V1 → piano V2, same melodic motif).
-- **Lyrical pivot** — perspective or mode shifts at section boundary.
-- **False-end** — apparent ending followed by return.
-- **Tag-out** — final chorus extends and fragments.
+### 9. Proof and revision
 
-Fade-in / fade-out as default is refused. If used, named as deliberate (with rationale).
+Choose the smallest demo that proves the current risk: lyric/melody, harmony/form, pocket, vocal identity, or arrangement. Compare 2–3 references by derived mechanisms, never by imitation. Then score with `prompts/music/songcraft-system-v2.md`; revise until >=85 with no hard failure.
 
----
+## Reference-analysis receipt
 
-## Rules
+Do not retain copyrighted lyrics. Store only:
 
-1. **Theory and cognition cited by direction.** Schmidt-Hunter-style invented-stat-without-source is refused. Numbers are sourced or named-as-uncertain.
-2. **Sort song stage before applying commands.** Mismatch is the most common error.
-3. **Name the expectation-and-reward arc.** Songs without surprise-and-satisfaction are loops, not songs.
-4. **Prosody check non-negotiable.** Lyric stresses align with melodic stresses, or fight them with intent.
-5. **Density curve plotted across the song.** Default low-medium-peak-low-medium-peak-low-peak; violate with intent.
-6. **Specific imagery over generic-pretty in lyric.** Named-thing replaces vague-pretty.
-7. **Demo plan names what the demo proves vs. what it does not need to prove yet.** Going straight from idea to full production without proof is refused.
-8. **Transitions designed explicitly, not defaulted.** Fade-in / fade-out as default is refused.
-9. **Rights flags surfaced for downstream.** Sample sources, co-writer involvement, AI involvement — surfaced here, adjudicated in Catalog and Sync.
-10. **Compose with Genius for voice in lyric.** No generic-pretty pop-trope language.
-11. **"Fix it in the mix" refused at composition stage.** Upstream-defaultable failures are upstream-fixed.
-12. **Every artifact ends with "Built on SIP" attestation.**
+```yaml
+source_and_version: ""
+authorized_source: ""
+first_hook_seconds: 0
+exact_title_hits: 0
+title_variants: 0
+melodic_returns: 0
+chant_cell_max: 0
+sentence_shape_pattern: []
+perspective_turns: []
+concrete_objects: []
+social_action: ""
+harmonic_motion: ""
+groove: ""
+vocal_arc: ""
+low_end_roles: ""
+density_mutations: []
+rights_scope: derived-features-only
+```
 
----
+## Hard refusals
 
-## Output Artifacts
+1. “Fix it in the mix” for a premise, melody, prosody, form, or arrangement failure.
+2. Generic-pretty or therapeutic-summary language as a finished lyric.
+3. A universal repetition count or chorus copied three times by default.
+4. Named-artist imitation, signature-voice cloning, or recognizable melodic/lyric borrowing.
+5. Genre + mood + BPM presented as a complete production design.
+6. Unsourced cognition numbers, tuning mysticism, or hit prediction dressed as science.
+7. Hidden rights uncertainty.
 
-| Artifact | Command | Storage |
-|----------|---------|---------|
-| Score architecture | `/sound-composition-score` | `sound-intelligence/composition/score-<song-slug>-<date>.md` |
-| Lyric architecture | `/sound-composition-lyric` | `sound-intelligence/composition/lyric-<song-slug>-<date>.md` |
-| Arrangement architecture | `/sound-composition-arrange` | `sound-intelligence/composition/arrange-<song-slug>-<date>.md` |
-| Demo plan | `/sound-composition-demo` | `sound-intelligence/composition/demo-<song-slug>-<date>.md` |
-| Transition design | `/sound-composition-transition` | `sound-intelligence/composition/transition-<song-slug>-<date>.md` |
+## Output
 
----
-
-## Related Skills
-
-- `intelligence/decision-framework` — form, key, tempo, transition decisions
-- `intelligence/pattern-recognition` — catalog signature recognition; reference-track positioning
-- `intelligence/systems-thinking` — density curve as system; expectation-and-reward as architecture
-- `memory/knowledge-synthesis` — composing the per-song record across score / lyric / arrangement / demo / transition
+Composition artifacts follow the four-block contract in `prompts/music/songcraft-system-v2.md`: Track Contract, Style of Music, Lyrics, Studio 2.0 Plan. Standalone analysis may instead return the reference-analysis receipt plus decisions and evidence.
 
 ---
 
-— Sound Composition Intelligence — part of the Sound Intelligence reference vertical —
-
----
-**Built on SIP** — Starlight Intelligence Protocol
-- Substrate: starlightintelligence.org/protocol v1.1.0
-- Layers used: [file-contract, attestation, commands, sovereignty]
-- Verticals: starlight-intelligence-system@v7.5.1 (Sound Intelligence reference vertical — Composition sub-system)
-- Generated: 2026-04-26
----
+**Built on SIP** — Starlight Intelligence Protocol · Sound Intelligence / Composition · v0.2 · verified 2026-09-02

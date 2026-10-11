@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/actualization-receipt.v0.1.1.schema.json",
+  "title": "Starlight Actualization Receipt v0.1.1",
+  "description": "Binds action -> actor/agent -> tool -> input ref -> output/evidence -> timestamp -> verification. NOT Foundry package evidence-receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "action_id",
+    "plan_id",
+    "actor",
+    "tool",
+    "started_at",
+    "finished_at",
+    "result",
+    "verification",
+    "evidence"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.1.1" },
+    "id": {
+      "type": "string",
+      "pattern": "^ra:receipt:[a-zA-Z0-9._~/-]{1,200}$"
+    },
+    "action_id": { "type": "string" },
+    "plan_id": { "type": "string" },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "enum": ["human", "agent", "team"] },
+        "id": { "type": "string" }
+      }
+    },
+    "tool": { "type": "string" },
+    "input_ref": { "type": ["string", "null"] },
+    "started_at": { "type": "string", "format": "date-time" },
+    "finished_at": { "type": "string", "format": "date-time" },
+    "result": {
+      "enum": ["success", "partial", "failed", "skipped", "unverifiable"]
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "criterion"],
+      "properties": {
+        "status": {
+          "enum": ["passed", "failed", "partial", "not_run", "unverifiable"]
+        },
+        "criterion": { "type": "string" },
+        "notes": { "type": ["string", "null"] }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "uri_or_ref"],
+        "properties": {
+          "kind": {
+            "enum": ["log", "artifact", "url", "commit", "metric", "screenshot", "test", "other"]
+          },
+          "uri_or_ref": { "type": "string" },
+          "content_hash": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "world_state_update": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "applied": { "type": "boolean" },
+        "object_ids": { "type": "array", "items": { "type": "string" } },
+        "event_id": { "type": ["string", "null"] }
+      }
+    },
+    "notes": { "type": ["string", "null"] }
+  }
+}

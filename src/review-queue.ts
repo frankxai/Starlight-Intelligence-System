@@ -14,7 +14,7 @@ interface QueueEvent { job: ReviewState; }
 function validate(job: ReviewJob): void {
   if (Object.keys(job).sort().join(',') !== 'checkerProvider,head,makerProvider,policy,repo'
     || !/^github\.com\/[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(job.repo)
-    || !/^[a-f0-9]{40,64}$/.test(job.head) || !/^[a-zA-Z0-9._-]{1,128}$/.test(job.policy)
+    || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(job.head) || !/^[a-zA-Z0-9._-]{1,128}$/.test(job.policy)
     || !/^[a-zA-Z0-9._-]{1,64}$/.test(job.makerProvider) || !/^[a-zA-Z0-9._-]{1,64}$/.test(job.checkerProvider)
     || job.makerProvider.toLowerCase() === job.checkerProvider.toLowerCase()) throw new Error('Invalid independent review job');
 }

@@ -20,7 +20,7 @@ If either vignette lands, read on. SIS was designed with people like you in the 
 
 ---
 
-## How it works — the five phases
+## How it works — the journey
 
 Five phases. You don't have to commit to all of them. You just have to start.
 
@@ -34,7 +34,7 @@ This is the one that surprises people.
 
 You drag in three to five sources of your scattered material. A Canva export folder. A Google Drive subtree. A local directory. A Notion page export. Twenty screenshots. Whatever you have. SIS's Genius agent reads across all of it and produces two documents:
 
-**Your Genius Profile.** The frameworks you keep rebuilding without realizing it. Your distinctive vocabulary — the words you use that nobody else in your field uses quite that way. Your cross-domain synthesis edge — where your psychology background meets your ops instinct meets your aesthetic taste. Voice samples. The shape of your actual thinking, extracted from your own work.
+**Your Genius Profile.** The frameworks you keep rebuilding without realizing it. Your distinctive vocabulary — the words you use that nobody else in your field uses quite that way. Your cross-domain synthesis edge — the overlap of your psychology background, your ops instinct, and your aesthetic taste. Voice samples. The shape of your actual thinking, extracted from your own work.
 
 **Your Freedom Path.** Every recurring activity in your work, sorted into four buckets: **KEEP** (only you can do this), **DELEGATE** (anyone trained properly can do this), **AUTOMATE** (a workflow or an AI can do this), **KILL** (stop doing this; it was never worth the time).
 
@@ -61,7 +61,7 @@ Each layer is an **Intelligence System** — your own. You own it. You take it a
 
 ### Phase 5 — Compound
 
-Every artifact you ship carries a "Built on SIP" attestation. This is not a badge you earn. It's an ambient mark the system writes for you automatically when a real composition happens. A blog post, a deck, a track, a product brief, a book chapter — the attestation rides along, pins which substrate version you used, names which canon you composed with, and logs the ship.
+Every artifact you ship carries a "Built on SIP" attestation. The system writes it for you automatically, as an ambient mark, when a real composition happens. A blog post, a deck, a track, a product brief, a book chapter — the attestation rides along, pins which substrate version you used, names which canon you composed with, and logs the ship.
 
 As your ledger grows, your work compounds into a visible body of sovereign practice. Not a subscription. Not a vendor lock-in. A public trail of real compositions under your own name.
 
@@ -130,9 +130,9 @@ Spiritual IS is explicitly optional and never imposed. Founder-layer practice st
 
 SIS is not a product with a price sheet. The substrate is free. What we ask in return is reciprocity, not payment.
 
-- **Attribution.** Cross-party artifacts carry "Built on SIP." Silent composition — using SIP elements without the block — is a breach of trust, not a legal issue, and we treat it accordingly.
+- **Attribution.** Cross-party artifacts carry "Built on SIP." Silent composition — using SIP elements without the block — is a breach of trust rather than a legal matter, and we treat it accordingly.
 - **Sovereignty clause.** Your work is yours. You can leave anytime. Your vaults stay on your machine. Attribution history remains immutable because it's how the whole protocol compounds.
-- **Optional: feed learnings back.** If SIS helps you, help the protocol evolve. Pressure-test it via Luminor Board sessions. Submit substrate contributions. Or just write about what worked. Abundance attracts abundance; transactional filters itself out.
+- **Optional: feed learnings back.** If SIS helps you, help the protocol evolve. Pressure-test it via Starlight Board sessions. Submit substrate contributions. Or just write about what worked. Abundance attracts abundance; transactional filters itself out.
 
 **Paid tier (limited):** Frank runs pilot sessions and custom advisory. No pricing list — terms are artifact-shaped (named deliverables by named dates), not hour-shaped. Frank's time is the bottleneck, not substrate capacity. Contact via the site tab if you want to explore.
 
@@ -142,7 +142,7 @@ SIS is not a product with a price sheet. The substrate is free. What we ask in r
 
 If you're technical and want the architecture view:
 
-- **Protocol:** SIP v1.1.0 — six layers: file contract (SKILL.md, AGENTS.md, MEMORY.md, CANON.md, SOUL.md, STACK.md, `.claude/commands/`), attestation protocol, MCP registry standard, command taxonomy, sovereignty clause, optional archetype extension.
+- **Protocol:** SIP v1.1.1 — six layers: file contract (SKILL.md, AGENTS.md, MEMORY.md, CANON.md, SOUL.md, STACK.md, `.claude/commands/`), attestation protocol, MCP registry standard, command taxonomy, sovereignty clause, optional archetype extension.
 - **Stack:** Markdown + JSONL vaults + TypeScript MCP server (`@arcanea/starlight-intelligence-system`) + Claude Code commands as reference implementation. Zero runtime deps outside `better-sqlite3`.
 - **Runtime coverage:** Claude Code (first-class), Cursor, Codex, Gemini CLI, Cline, Antigravity, OpenCode. Workspace exports (v7.4) for Claude Projects, ChatGPT Projects, Gemini Gems, Cowork. Modality attestation (v7.5) for Suno, Udio, Imagen, Midjourney, ElevenLabs.
 - **Test harness:** 35 substrate conformance assertions + 19 v7.3 newcomer-surface assertions. Reference build runs clean.
@@ -165,11 +165,11 @@ You already have it. Let's organize it.
 
 **Built on SIP** — Starlight Intelligence Protocol
 
-Substrate: starlightintelligence.org/protocol v1.1.0
+Substrate: starlightintelligence.org/protocol v1.1.1
 Layers used: [file-contract, attestation, commands, sovereignty]
 
 Verticals:
 - starlight-intelligence-system@v7.3 · public explainer surface
 
-Generated: 2026-04-24
+Generated: 2026-04-24 · re-attested: 2026-05-26 (drift sweep — SIP pin bumped after v1.1.1 spec ship)
 Attestation is compounding, not credit transfer: every composition strengthens every node.

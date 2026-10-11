@@ -1,7 +1,12 @@
 {
   "name": "@arcanea/starlight-intelligence-system",
+<<<<<<< HEAD
   "version": "8.3.0",
   "description": "Starlight Intelligence System — substrate (SIP protocol, alliance forging method, attestation) + reference operational layer (6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, MCP server, platform adapters, sanitization gateway, empirical sandbox, active healing)",
+=======
+  "version": "8.5.1",
+  "description": "Starlight Intelligence System \u2014 substrate (SIP protocol, alliance forging method, attestation) + reference operational layer (6 semantic vaults, SQLite hybrid retrieval, temporal reasoning, MCP server, platform adapters, sanitization gateway, empirical sandbox, active healing)",
+>>>>>>> origin/main
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frankxai/Starlight-Intelligence-System.git"
@@ -14,6 +19,18 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
+    "./creator-workspace": {
+      "types": "./dist/creator-workspace.d.ts",
+      "import": "./dist/creator-workspace.js"
+    },
+    "./runtime-bridge": {
+      "types": "./dist/runtime-bridge/index.d.ts",
+      "import": "./dist/runtime-bridge/index.js"
+    },
+    "./terminal-runtime": {
+      "types": "./dist/terminal-runtime.d.ts",
+      "import": "./dist/terminal-runtime.js"
+    },
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -109,9 +126,18 @@
     "./memory-provider": {
       "types": "./dist/memory-provider/index.d.ts",
       "import": "./dist/memory-provider/index.js"
+    },
+    "./queen-session": {
+      "types": "./dist/queen-session.d.ts",
+      "import": "./dist/queen-session.js"
+    },
+    "./ecosystem": {
+      "types": "./dist/ecosystem.d.ts",
+      "import": "./dist/ecosystem.js"
     }
   },
   "scripts": {
+    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/creator-workspace.test.ts test/ecosystem.test.ts",
     "build": "tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",
@@ -128,6 +154,21 @@
     "jules:tick": "node tools/jules-conductor/conductor.mjs tick",
     "jules:status": "node tools/jules-conductor/conductor.mjs status",
     "jules:daemon": "node tools/jules-conductor/conductor.mjs daemon",
+    "foundry": "node tools/foundry/cli.mjs",
+    "foundry:graph": "node tools/foundry/cli.mjs graph",
+    "foundry:demo": "node tools/foundry/demo.mjs",
+    "foundry:plugin:sync": "node scripts/sync-foundry-plugin.mjs",
+    "foundry:plugin:check": "node scripts/sync-foundry-plugin.mjs --check",
+    "foundry:conformance": "node tools/foundry/cli.mjs conformance plugins/starlight-foundry",
+    "foundry:preflight:openai": "node tools/foundry/cli.mjs preflight-openai plugins/starlight-foundry",
+    "foundry:submission:check": "node tools/foundry/cli.mjs validate plugins/starlight-foundry/submission/openai/profile.json --schema openai-submission-profile && npm run foundry:preflight:openai",
+    "foundry:toolchain:install": "npm ci --prefix foundry/validators/native",
+    "foundry:loader:codex": "node tools/foundry/codex-loader-smoke.mjs",
+    "foundry:validator:claude": "node tools/foundry/claude-validator-smoke.mjs",
+    "test:foundry:conformance": "node --import tsx --test test/foundry-conformance.test.ts",
+    "test:foundry": "node --import tsx --test test/v92-foundry.test.ts test/foundry-conformance.test.ts",
+    "blueprints:validate": "node blueprints/validate.mjs",
+    "test:blueprints": "node --test test/architecture-blueprint.test.mjs",
     "test": "npm run test:operational && npm run test:substrate && npm run test:v01-evals",
     "test:v01-evals": "npm run build && node tools/run-v01-evals.mjs",
     "test:evals": "npm run build && node tools/run-v01-evals.mjs",
@@ -141,7 +182,10 @@
     "infisical:export": "infisical export --format=dotenv > .env",
     "infisical:run": "infisical run --",
     "test:substrate": "node --import tsx --test test/substrate.test.ts && node --import tsx --test test/starlight-substrate-mcp-smoke.test.ts && node --import tsx --test test/v73.test.ts && node --import tsx --test test/v74.test.ts && node --import tsx --test test/v741.test.ts && node --import tsx --test test/v75.test.ts && node --import tsx --test test/v76.test.ts && node --import tsx --test test/v77-skill-rules.test.ts && node --import tsx --test test/v78-skill-registry.test.ts && node --import tsx --test test/v79-vertical-coverage.test.ts && node --import tsx --test test/v80-platform-prompts.test.ts && node --import tsx --test test/v81-yolo.test.ts && node --import tsx --test test/v01-schemas.test.ts && node --import tsx --test test/v01-ledgers.test.ts && node --import tsx --test test/v01-mcp-tools.test.ts && node --import tsx --test test/v01-pack-runtime.test.ts && node --import tsx --test test/v82-cost-plane.test.ts && node --import tsx --test test/v01-vault-loop-privacy.test.ts && node --import tsx --test test/v83-finance-business.test.ts && node --import tsx --test test/v84-modules.test.ts && node --import tsx --test test/v85-shipping-discipline.test.ts && node --import tsx --test test/sis-forge/clusterer.test.ts && node --import tsx --test test/sis-forge/density-classifier.test.ts && node --import tsx --test test/sis-forge/cluster-stability.test.ts && node --import tsx --test test/sis-forge/atom-budget.test.ts && node --import tsx --test test/v86-sis-forge-coverage.test.ts && node --import tsx --test test/v87-claw-conformance.test.ts && node --import tsx --test test/v87-agent-registry.test.ts && node --import tsx --test test/v88-agentskills-conformance.test.ts && node --import tsx --test test/v91-identity-drift.test.ts && node --import tsx --test test/v8-sanitization-coverage.test.ts && node --import tsx --test test/retrieval-eval.test.ts && node --import tsx --test test/retrieval-embedding.test.ts && node --import tsx --test test/phase0-concurrent-write-smoke.test.ts && node --import tsx --test test/harness-self-check.test.ts && node --import tsx --test test/v89-session-store.test.ts && node --import tsx --test test/v90-gateway.test.ts && node --import tsx --test test/v90-gateway-http.test.ts && node --import tsx --test test/v90-gateway-privacy.test.ts && npm run test:memory-provider",
-    "test:operational": "node --import tsx --test test/agents-md-contract.test.ts && node --import tsx --test src/adapters/adapters.test.ts && node --import tsx --test src/orchestrator.test.ts && node --import tsx --test src/temporal.test.ts && node --import tsx --test src/swarm.test.ts && node --import tsx --test src/yolo/yolo.test.ts && node --import tsx --test src/yolo/finance-bridge.test.ts && node --import tsx --test src/infra/infra.test.ts && node --import tsx --test src/finance/finance.test.ts && node --import tsx --test test/core-regressions.test.ts && node --import tsx --test test/mcp-server-smoke.test.ts && node --import tsx --test test/smoke-quickstart.test.ts && node --import tsx --test test/estate-factory-smoke.test.ts && node --import tsx --test test/swarm.test.ts && node --import tsx --test test/goal.test.ts && node --import tsx --test test/langfuse-telemetry.test.ts && npm run agents-md:check && npm run test:sovereign",
+    "test:work-graph": "node --import tsx --test test/work-graph.test.ts test/work-graph-cli.test.ts test/loop-graph.test.ts test/loop-engine.test.ts test/loop-safety.test.ts test/instruction-compiler.test.ts",
+    "test:graph-engineering": "node scripts/validate-graph-engineering.mjs",
+    "test:community": "node --import tsx --test test/community.test.ts",
+    "test:operational": "npm run test:community && node --import tsx --test src/adapters/adapters.test.ts && node --import tsx --test src/orchestrator.test.ts && node --import tsx --test src/temporal.test.ts && node --import tsx --test src/swarm.test.ts && node --import tsx --test src/yolo/yolo.test.ts && node --import tsx --test src/yolo/finance-bridge.test.ts && node --import tsx --test src/infra/infra.test.ts && node --import tsx --test src/finance/finance.test.ts && node --import tsx --test test/core-regressions.test.ts && node --import tsx --test test/v92-foundry.test.ts && node --import tsx --test test/mcp-server-smoke.test.ts && node --import tsx --test test/mcp-server-quality.test.ts && node --import tsx --test test/mcp-search-scope.test.ts && node --import tsx --test test/mcp-append-provenance.test.ts && node --import tsx --test test/smoke-quickstart.test.ts && node --import tsx --test test/estate-factory-smoke.test.ts && node --import tsx --test test/swarm.test.ts && node --import tsx --test test/goal.test.ts && npm run test:blueprints && npm run test:work-graph && npm run test:graph-engineering && npm run test:queen-session && npm run test:sovereign",
     "test:sovereign": "node --import tsx --test test/sovereign-durability.test.ts test/robot-continuity.test.ts test/starlight-queen.test.ts test/marketplace.test.ts test/cloud-worker-e2e.test.ts test/durability-transports.test.ts test/robotics-zenoh-bridge.test.ts test/marketplace-pack-manager.test.ts test/starlightd.test.ts",
     "test:durability": "node --import tsx --test test/sovereign-durability.test.ts test/durability-transports.test.ts",
     "test:robotics": "node --import tsx --test test/robot-continuity.test.ts test/robotics-zenoh-bridge.test.ts",
@@ -154,17 +198,25 @@
     "lint": "tsc --noEmit",
     "lint:site": "npm --prefix site run lint",
     "lint:console": "npm --prefix console run lint",
-    "verify": "npm run lint && npm run agents:harness-check && node scripts/validate-agentskills.mjs && node scripts/check-identity-drift.mjs && node scripts/validate-agents.mjs && npm test && npm run build && npm run lint:site && npm run build:site && npm run lint:console && npm run build:console",
+    "verify": "npm run lint && npm run agents:harness-check && npm run upstreams:check && npm run mesh:check && node scripts/validate-agentskills.mjs && node scripts/check-identity-drift.mjs && node scripts/validate-agents.mjs && npm test && npm run build && npm run lint:site && npm run build:site && npm run lint:console && npm run build:console",
     "package:sip-starter": "node scripts/package-sip-starter.mjs",
     "package:sip-starter:check": "node scripts/package-sip-starter.mjs --check",
     "release:module:dry-run": "node scripts/package-sip-starter.mjs --dry-run",
     "prepare": "node -e \"try{require('child_process').execSync('git config core.hooksPath tools/git-hooks')}catch(e){}\"",
     "prepublishOnly": "npm run build && npm run test:substrate",
-    "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts && node --import tsx --test test/memory-provider-mem0-hardening.test.ts"
+    "test:memory-provider": "node --import tsx --test test/memory-provider-router.test.ts && node --import tsx --test test/memory-provider-local-core.test.ts && node --import tsx --test test/memory-provider-mem0.test.ts && node --import tsx --test test/memory-provider-mem0-hardening.test.ts",
+    "test:queen-session": "node --import tsx --test test/queen-session.test.ts",
+    "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs",
+    "build:core": "pnpm --filter @starlight-intelligence/core build",
+    "build:packages": "turbo run build --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1",
+    "test:packages": "pnpm run build:packages && turbo run test --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1 && node --test test/npm-ecosystem-release.test.mjs test/npm-artifact-audit.test.mjs",
+    "verify:packages": "pnpm run test:packages && node scripts/verify-npm-ecosystem.mjs",
+    "changeset": "changeset",
+    "version:packages": "changeset version",
+    "release:packages": "node scripts/publish-npm-ecosystem.mjs"
   },
   "files": [
     "dist/",
-    "context/",
     "public-vault/",
     "README.md"
   ],
@@ -180,13 +232,19 @@
     "gemini-cli",
     "platform-adapters"
   ],
-  "author": "FrankX <frank@frankx.ai>",
+  "author": "Frank Riemer <frank@frankx.ai>",
   "license": "MIT",
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^25.2.3",
-    "tsx": "^4.21.0",
-    "typescript": "^5.7.0"
+    "@types/node": "^24.19.1",
+    "ajv": "8.20.0",
+    "fast-xml-parser": "5.11.1",
+    "semver": "7.8.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.0",
+    "yaml": "2.9.0",
+    "turbo": "2.11.7",
+    "@changesets/cli": "3.0.3"
   },
   "peerDependencies": {
     "@arcanea/memory-system": ">=0.1.0",
@@ -201,7 +259,7 @@
     }
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "22.x || 24.x"
   },
   "bin": {
     "starlight": "dist/cli.js",
@@ -210,8 +268,8 @@
     "starlight-genius-mcp": "dist/mcp-genius.js"
   },
   "dependencies": {
-    "@starlight-intelligence/memory": "file:../starlight-memory",
     "better-sqlite3": "12.8.0",
     "langfuse": "^3.39.2"
-  }
+  },
+  "packageManager": "pnpm@11.5.0"
 }

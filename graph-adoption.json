@@ -1,0 +1,16 @@
+{
+  "schema": "starlight.graph-adoption.v1",
+  "owner": "SIS maintainers",
+  "role": "reference",
+  "sources": ["AGENTS.md", "CLAUDE.md", "tools/graph-adoption/README.md"],
+  "workflows": [{
+    "id": "independent-review",
+    "graph": "docs/graph-engineering/loops/diamond-review.v1.json",
+    "maker": "example:maker",
+    "checker": "example:independent-checker",
+    "mode": "report-only",
+    "contextByteBudget": 70000,
+    "checks": ["node --test tools/graph-adoption/core.test.mjs", "npm run test:work-graph"],
+    "humanGates": ["publish", "spend", "credentials", "destructive"]
+  }]
+}

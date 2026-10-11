@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "upstream": "agentplugins/agent-plugins-spec",
+  "upstreamCommit": "ff8ab5e392cc87bd88d87c060815a87490e51003",
+  "specificationVersion": "1.0.0",
+  "retrievedAt": "2026-09-01",
+  "license": {
+    "spdx": "Apache-2.0",
+    "notice": "Schemas are software material licensed under Apache-2.0 by the Agent Plugins project.",
+    "source": "https://github.com/agentplugins/agent-plugins-spec/blob/main/LICENSE.md",
+    "licenseText": "LICENSE.apache-2.0.txt",
+    "upstreamLicenseText": "https://github.com/agentplugins/agent-plugins-spec/blob/ff8ab5e392cc87bd88d87c060815a87490e51003/LICENSES/Apache-2.0.txt"
+  },
+  "updatePolicy": "Changes require a reviewed version-or-digest bump, refreshed negative fixtures, and a passing Foundry conformance run. Never replace a pinned schema in place.",
+  "schemas": {
+    "plugin.schema.json": {
+      "source": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+      "immutableSource": "https://github.com/agentplugins/agent-plugins-spec/blob/ff8ab5e392cc87bd88d87c060815a87490e51003/schemas/1.0.0/plugin.schema.json",
+      "gitBlob": "8fed0e1fe45d0464aee880d3fbab228b71ecfc1e",
+      "sha256": "0a4aad95ce337878ad38802ebf0daa3fde76abe3f65400c86bcbb1ec0b3ab883",
+      "bytes": 1805
+    },
+    "mcp.schema.json": {
+      "source": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+      "immutableSource": "https://github.com/agentplugins/agent-plugins-spec/blob/ff8ab5e392cc87bd88d87c060815a87490e51003/schemas/1.0.0/mcp.schema.json",
+      "gitBlob": "a9139a4259b932c60b5351c8d9da6a5c60c97646",
+      "sha256": "6539175bfcdf43085855183e86da40ea94b166547a72b47ae9a0a390516d3acb",
+      "bytes": 3408
+    }
+  }
+}

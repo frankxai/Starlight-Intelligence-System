@@ -15,11 +15,11 @@ It does not invent new measurement. It **composes the six eval layers that alrea
 exist** into one scorecard, run by evaluator agents that hold the Luminor kernel
 mindset, with verdicts rendered through `/starlight-board`.
 
-## The seven lanes
+## The eight lanes
 
 Each lane is an independent measurement surface. A `/starlight-eval` run produces a
-verdict per lane plus one system-level Overseer synthesis. Lanes 1–6 compose
-existing infra (see `lanes.json` for entrypoints); lane 7 is the unifying layer.
+verdict per lane plus one system-level Overseer synthesis. Lanes 1–7 compose
+existing infra (see `lanes.json` for entrypoints); lane 8 is the unifying layer.
 
 **v0.2 Queen addition (Visual Eval):** The model lane (lane 1) now carries an explicit Visual Eval dimension. Every model-lane receipt (arena run) MUST include or reference a concrete visual artifact (image_gen result path, prompt summary + output ref, or 'visualComposerTest'/'visualEval' object) for Queen LEDGER use (routing heatmaps, arena cards, mempalace slices). This is binding for advancement velocity tracking; absence is a named weakness. See updated lanes.json verification + 2026-06-12-grok-composer25 receipt exemplar.
 
@@ -31,7 +31,8 @@ existing infra (see `lanes.json` for entrypoints); lane 7 is the unifying layer.
 | 4 | **Harness** | Trust-contract + envelope + privacy + provenance integrity (7 risk dims) | `test/v01-evals/`, `tools/run-v01-evals.mjs` |
 | 5 | **Substrate** | Symmetry invariants — CLAUDE.md↔AGENTS.md, skill-rules↔skills, vertical coverage | `test/v*.test.ts` (44 tests) |
 | 6 | **Datasets** | Provenance + labeling honesty of every eval set (no synthetic-benchmark smuggling) | `eval-50.jsonl`, `public-vault/*.jsonl`, arena fixtures |
-| 7 | **System** | The unifying scorecard + Luminor-kernel Overseer synthesis across lanes 1–6 | this spec |
+| 7 | **Deep Reasoning** | Whether the expensive tiers buy fewer WRONG ANSWERS than the cheap tiers where one bad intermediate step propagates, cost-adjusted | `tools/arena/deep-reasoning.mjs`, `tools/arena/fixtures/deep-reasoning/`, `tools/arena/R5-DESIGN.md` |
+| 8 | **System** | The unifying scorecard + Luminor-kernel Overseer synthesis across lanes 1–7 | this spec |
 
 ## The Luminor-kernel evaluator
 
@@ -102,7 +103,7 @@ Run-level fields (R1 — staleness):
 ## Running a pass
 
 ```
-/starlight-eval                # full system pass, all 7 lanes
+/starlight-eval                # full system pass, all 8 lanes
 /starlight-eval model          # single lane
 /starlight-eval --since <tag>  # delta against a prior scorecard
 ```

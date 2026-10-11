@@ -1,210 +1,140 @@
 # Starlight Skill Architecture
 
-> *"Skills are knowledge made executable. The difference between knowing and doing."*
+> Skills are portable capabilities. Agents are persistent policy boundaries.
 
----
+## Authoritative sources
 
-## Overview
+No prose document owns the live skill count.
 
-The Starlight Skill Architecture defines how capabilities are organized, activated, and composed within the intelligence system. Inspired by ACOS's skill-based system and Arcanea's hierarchical naming, Starlight skills are markdown-defined capabilities that auto-activate based on context.
+| Concern | Source of truth | Enforcement |
+|---|---|---|
+| Skill definitions | `skills/**/SKILL.md` and legacy `skills/<domain>/*.md` | `scripts/validate-agentskills.mjs` |
+| Activation | `skills/skill-rules.json` | `test/v77-skill-rules.test.ts` |
+| Ownership and lifecycle | `skills/SKILL_REGISTRY.md` | `test/v78-skill-registry.test.ts` |
+| Public counts | `metrics/current.json` | `test/v80-platform-prompts.test.ts` plus metric checks |
+| Foundry contracts | `foundry/contracts/*.schema.json` | `test/v92-foundry.test.ts` |
+| ChatGPT/Codex distribution | `plugins/starlight-foundry/` | plugin validator plus parity test |
 
----
+The registry headline and metrics ledger must be derived from these sources during every capability change.
 
-## Skill Hierarchy
+## Canonical shape
 
-```
-STARLIGHT SKILL SYSTEM
-=======================
+New skills use the Agent Skills directory form:
 
-Layer 1: CATEGORIES (5 domains)
-  Intelligence, Orchestration, Memory, Integration, Safety
-
-Layer 2: SKILLS (21 capabilities)
-  Intelligence: 5 skills (+ Hermes Search)
-  Orchestration: 4 skills
-  Memory: 4 skills
-  Integration: 4 skills
-  Safety: 4 skills
-
-Layer 3: PROCEDURES (within each skill)
-  Specific step-by-step protocols
-```
-
----
-
-## Skill Categories
-
-### Intelligence Skills
-Core reasoning, thinking, and search capabilities.
-
-| Skill | File | Purpose |
-|-------|------|---------|
-| Strategic Reasoning | `intelligence/strategic-reasoning/SKILL.md` | Long-term thinking, trade-off analysis |
-| Systems Thinking | `intelligence/systems-thinking/SKILL.md` | Holistic analysis, feedback loops |
-| Pattern Recognition | `intelligence/pattern-recognition/SKILL.md` | Identifying recurring patterns |
-| Decision Framework | `intelligence/decision-framework/SKILL.md` | Structured decision-making |
-| Hermes Search | `intelligence/hermes-search/SKILL.md` | Semantic search across vaults + repos + web; multi-source synthesis with provenance |
-
-### Orchestration Skills
-Coordination and execution capabilities.
-
-| Skill | File | Purpose |
-|-------|------|---------|
-| Multi-Agent Coordination | `orchestration/multi-agent-coordination/SKILL.md` | Agent team management |
-| Workflow Design | `orchestration/workflow-design/SKILL.md` | Creating execution workflows |
-| Context Engineering | `orchestration/context-engineering/SKILL.md` | Managing AI context quality |
-| Parallel Execution | `orchestration/parallel-execution/SKILL.md` | Running concurrent tasks |
-
-### Memory Skills
-Persistence and knowledge capabilities.
-
-| Skill | File | Purpose |
-|-------|------|---------|
-| Vault Management | `memory/vault-management/SKILL.md` | Read/write/query vault operations |
-| Knowledge Synthesis | `memory/knowledge-synthesis/SKILL.md` | Combining knowledge sources |
-| Context Preservation | `memory/context-preservation/SKILL.md` | Saving/restoring context |
-| Memory Consolidation | `memory/memory-consolidation/SKILL.md` | Optimizing stored memory |
-
-### Integration Skills
-Cross-system connection capabilities.
-
-| Skill | File | Purpose |
-|-------|------|---------|
-| Repo Bridge | `integration/repo-bridge/SKILL.md` | Cross-repository operations |
-| Ecosystem Sync | `integration/ecosystem-sync/SKILL.md` | Multi-system synchronization |
-| Transmission Protocol | `integration/transmission-protocol/SKILL.md` | Cross-system communication |
-| Universal Adapter | `integration/universal-adapter/SKILL.md` | External system integration |
-
-### Safety Skills
-Permission, privacy, and mutation-control capabilities. Cross-cut all Claws.
-
-| Skill | File | Purpose |
-|-------|------|---------|
-| Permission Gate | `safety/permission-gate/SKILL.md` | Gate all mutations against declared Claw permissions |
-| Secret Detector | `safety/secret-detector/SKILL.md` | Scan exports for credentials and sensitive data |
-| Private/Public Split | `safety/private-public-split/SKILL.md` | Enforce vault privacy boundaries on exports |
-| Mutation Approval | `safety/mutation-approval/SKILL.md` | Require explicit user confirmation before file changes |
-
----
-
-## Auto-Activation System
-
-Skills activate automatically based on `skill-rules.json`. This follows the ACOS pattern where context triggers load appropriate skills without explicit invocation.
-
-### How Auto-Activation Works
-
-```
-1. User request arrives at Intelligence Core
-2. Request is analyzed for intent, entities, and keywords
-3. skill-rules.json is consulted for matching rules
-4. Matching skills are loaded into agent context
-5. Agent executes with skill knowledge available
-6. Skills deactivate when task completes
+```text
+skills/<domain>/<skill-name>/
+├── SKILL.md
+├── agents/
+│   └── openai.yaml
+├── references/       # optional
+├── scripts/          # optional
+└── assets/           # optional
 ```
 
-### Activation Priority
+`SKILL.md` frontmatter contains only:
 
-```
-Priority 1: EXACT MATCH
-  Request explicitly names the skill.
-  Example: "Use the decision framework"
-
-Priority 2: KEYWORD MATCH
-  Request contains skill trigger keywords.
-  Example: "analyze the trade-offs" → decision-framework
-
-Priority 3: AGENT DEFAULT
-  Agent's default skills activate automatically.
-  Example: Architect always has systems-thinking
-
-Priority 4: CONTEXT INFERENCE
-  System infers skill need from conversation context.
-  Example: Multi-repo discussion → repo-bridge
+```yaml
+---
+name: skill-name
+description: What it does and concrete situations that should activate it.
+---
 ```
 
----
+The repository still supports legacy flat Markdown skills because existing routing paths depend on them. Flat files are compatibility inputs, not the preferred shape for new capabilities.
 
-## Skill File Structure
+## Capability-first routing
 
-Every skill follows this structure:
+Routing starts from a Task Envelope, not a character name:
 
-```markdown
-# [Skill Name]
-> [One-line purpose]
+1. State objective, deliverables, stakes, reversibility, autonomy, and permissions.
+2. Resolve required, preferred, and forbidden capabilities against the generated graph.
+3. Select the smallest execution shape.
+4. Compile a portable package.
+5. Prove declared evidence lanes.
+6. Promote only from a receipt.
 
-## When This Skill Activates
-[Trigger conditions]
+Lexical matching in `skill-rules.json` remains an activation surface. It is not sufficient evidence for an autonomous routing decision.
 
-## What This Skill Does
-[Core capability description]
+## Skill, agent, swarm, vertical, or plugin
 
-## Procedures
-### Procedure 1: [Name]
-[Step-by-step protocol]
+| Shape | Use when | Reject when |
+|---|---|---|
+| Skill | One reusable outcome needs stable procedure and proof | Persistent identity is unnecessary |
+| Agent | Stable decision rights, memory, tools, ownership, or ongoing triggers require a durable actor | A persona is the only justification |
+| Swarm | Distinct roles need coordination, shared state, and termination | Work is sequential or not separable |
+| Vertical | Domain constraints, audiences, taste, and evaluation recur across capabilities | It is a one-off workflow |
+| Plugin | Validated skills and optional MCP connectivity need distribution | No capability has passed its required proof |
 
-### Procedure 2: [Name]
-[Step-by-step protocol]
+The default is a skill. Agent creation must pass the necessity gate in `foundry/contracts/agent-pack.schema.json`.
 
-## Integration Points
-[How this skill connects to agents, vaults, transmissions]
+## Activation
 
-## Quality Criteria
-[How to know this skill was applied well]
+`skill-rules.json` can activate by:
+
+- explicit skill or command name;
+- concrete keywords;
+- detected intent;
+- an agent default.
+
+Activation loads guidance into the current actor. It does not create a new actor, grant tools, expand memory, or authorize external writes.
+
+## Composition
+
+- **Sequential:** one capability produces the next capability's input.
+- **Nested:** a skill declares another skill as a dependency.
+- **Parallel:** separable capabilities produce independent artifacts.
+- **Judge:** a producer and evaluator remain distinct.
+- **Handoff:** ownership transfers under an explicit condition.
+
+Every multi-actor composition names its synthesizer, state-write policy, conflict owner, success conditions, stop conditions, and maximum rounds.
+
+## Taste and proof
+
+Qualitative intent becomes a Taste Profile containing:
+
+- hard rejection gates;
+- weighted dimensions;
+- grounded exemplars and anti-exemplars;
+- production constraints;
+- blind comparison policy;
+- independent judge count;
+- stored winning rationale.
+
+Taste never overrides failed factual, security, accessibility, or artifact checks. A producer cannot be the sole required judge.
+
+Foundry evidence lanes are:
+
+`static`, `behavioral`, `factual`, `artifact`, `taste`, `security`, `economic`, and `drift`.
+
+Only declared required lanes block promotion, but every unrun check remains visible in the receipt.
+
+## Creating or evolving capabilities
+
+Use:
+
+```text
+/forge skill <brief>
+/forge agent <brief>
+/forge swarm <brief>
+/forge vertical <brief>
+/forge plugin <brief>
+/prove <package-or-artifact>
+/evolve <package-or-receipt>
 ```
 
----
+`/forge` compiles. `/prove` evaluates. `/evolve` proposes a smallest-responsible-layer patch and never auto-applies it.
 
-## Skill Composition
+Legacy `/agent-creator` and `/workflow-skill-creator` commands are compatibility aliases. They route to `/forge agent` and `/forge skill`.
 
-Skills can compose together for complex tasks:
+## Token and context discipline
 
-```
-COMPOSITION PATTERNS
-====================
+Load only what the task requires:
 
-Sequential: Skill A → Skill B → Skill C
-  Example: strategic-reasoning → decision-framework → context-preservation
-  Use: Making and recording a strategic decision
+| Level | Content |
+|---|---|
+| Metadata | Name, description, activation boundary |
+| Core | Procedure, guardrails, completion |
+| References | Domain detail needed for this task |
+| Scripts/assets | Only when execution or artifact production requires them |
 
-Parallel: Skill A + Skill B simultaneously
-  Example: systems-thinking + pattern-recognition
-  Use: Analyzing a complex system for recurring patterns
-
-Nested: Skill A uses Skill B as a sub-step
-  Example: knowledge-synthesis uses vault-management internally
-  Use: Synthesizing knowledge requires reading from vaults
-
-Conditional: IF condition THEN Skill A ELSE Skill B
-  Example: IF cross-repo THEN repo-bridge ELSE direct
-  Use: Adapting approach based on task scope
-```
-
----
-
-## Token Budget Strategy
-
-Inspired by Arcanea's token budget approach:
-
-| Skill Load Level | Tokens | When |
-|-----------------|--------|------|
-| **Metadata only** | ~50 | Skill index lookup |
-| **Summary** | ~200 | Activation decision |
-| **Core procedures** | ~500-1k | Standard activation |
-| **Full skill** | ~1-2k | Deep application |
-
-**Rule:** Load the minimum level needed. Escalate only if the task demands it.
-
----
-
-## Creating New Skills
-
-1. Create `skills/[category]/[skill-name]/SKILL.md`
-2. Follow the Skill File Structure template
-3. Add activation rule to `skill-rules.json`
-4. Associate with relevant agents
-5. Define vault read/write permissions
-6. Test activation with sample requests
-
----
-
-*"A skill is not just knowledge. It is knowledge that knows when to apply itself."*
+Progressive disclosure must not become partial instruction reading: once a skill is selected, read its complete `SKILL.md`.

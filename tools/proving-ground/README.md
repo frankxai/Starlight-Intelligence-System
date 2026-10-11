@@ -6,7 +6,7 @@
 
 System evals, not just model evals. A model arena answers "which model wins." The
 Proving Ground answers **"is the Starlight Intelligence System actually good — and
-where is it weak?"** across seven lanes, with receipts, published, on a cadence.
+where is it weak?"** across eight lanes, with receipts, published, on a cadence.
 
 ## Files
 
@@ -22,7 +22,7 @@ where is it weak?"** across seven lanes, with receipts, published, on a cadence.
 ## Run
 
 ```
-/starlight-eval              # full pass — all 7 lanes
+/starlight-eval              # full pass — all 8 lanes
 /starlight-eval <lane>       # single lane
 /starlight-eval --since <runId>   # delta against a prior scorecard
 ```

@@ -19,6 +19,12 @@ The IS owns:
 - **Catalog architecture** — for creator domains where catalog compounds (music, courses, books, art).
 - **Voice fidelity discipline** — every artifact runs through Genius voice samples; no generic creator-tech tone leaks.
 
+## Active Implementations & Frameworks
+
+Creator IS is implemented via:
+- **Sovereign Creator Architecture (SCA)**: Unifies content-creation pipelines, productization templates (`/ra-product`), and agentic affiliate loops under a unified visual Next.js app shell.
+- **Agent Service Bureau (HaaStA)**: The human-in-the-loop validation loop where creators act as verifiers/oracles for their active agent swarms, unlocking agent capabilities (approving checkouts, auditing code, signing content releases).
+
 ---
 
 ## Composition with the rest of the 10-IS stack

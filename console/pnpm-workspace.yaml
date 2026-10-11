@@ -1,0 +1,14 @@
+# The console is its own pnpm root, not a member of the repository-root
+# workspace. Without this file pnpm (and Dependabot) resolve the parent
+# pnpm-workspace.yaml and cannot update console/pnpm-lock.yaml.
+packages:
+  - "."
+
+# Mirrors package.json "pnpm.overrides", which pnpm 11 no longer reads.
+overrides:
+  brace-expansion@1: ^1.1.18
+  brace-expansion@5: ^5.0.9
+  browserslist: ^4.28.7
+  js-yaml@4: ^4.3.2
+  nanoid@3: ^3.3.18
+  postcss: ^8.5.28

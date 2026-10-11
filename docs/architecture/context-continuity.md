@@ -152,6 +152,7 @@ Remaining rollout gates:
 - Privacy/scope and lifecycle integration required by SIS issue 49 remain open;
   local capture does not ratify or promote memory into canonical vaults.
 
-The implementation worktree starts from existing SIS revision
-`b6bfebb4efb1a5565df3c657857218b125562492` to preserve the inspected runtime bridge.
-It is an isolated change, not a claim that every base-branch change is merged.
+The production integration starts from main revision
+`bc73db9bd3c9febdba842ecd63684c47b08e7d47`, preserving its process and OpenCode
+runtime exports. The older integration branch and PR 330 remain available as
+provenance; unrelated integration-branch changes are not included.

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Starlight Foundry</title>
+  <defs>
+    <linearGradient id="space" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17132f"/>
+      <stop offset="1" stop-color="#090812"/>
+    </linearGradient>
+    <linearGradient id="star" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#67e8f9"/>
+      <stop offset="0.55" stop-color="#8b7cff"/>
+      <stop offset="1" stop-color="#c5a46e"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#space)"/>
+  <path d="M256 82 298 214 430 256 298 298 256 430 214 298 82 256 214 214Z" fill="url(#star)"/>
+  <circle cx="256" cy="256" r="40" fill="#fff" opacity=".96"/>
+</svg>

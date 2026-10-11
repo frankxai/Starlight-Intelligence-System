@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import type { Metadata } from "next";
 import { getBenedictions } from "@/lib/vault";
 import { EntryCard } from "@/components/EntryCard";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -17,21 +19,20 @@ export const metadata: Metadata = {
 };
 
 export default async function BenedictionPage() {
+  // Public vaults are fetched from GitHub; a transient upstream timeout must
+  // not fail deployment while Next prerenders this route.
+  await connection();
   const benedictions = await getBenedictions(20);
 
   return (
     <div className="relative overflow-hidden">
       {/* Ambient mesh — slower, deeper than the homepage */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="animate-mesh-1 absolute -left-32 top-40 h-[500px] w-[500px] rounded-full bg-violet-600/[0.05] blur-[120px]" />
-        <div className="animate-mesh-2 absolute right-0 top-[600px] h-[400px] w-[400px] rounded-full bg-fuchsia-500/[0.04] blur-[100px]" />
-        <div className="animate-mesh-3 absolute left-1/3 bottom-20 h-[300px] w-[300px] rounded-full bg-cyan-500/[0.03] blur-[80px]" />
-      </div>
+      <GalaxyField still="veil" />
 
       <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-32">
         {/* ── Hero ── */}
         <div className="text-center">
-          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-violet-400/80">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400/80">
             The benediction layer
           </p>
           <h1 className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight text-white md:text-5xl">
@@ -71,7 +72,7 @@ export default async function BenedictionPage() {
 
         {/* ── Brautigan invocation ── */}
         <div className="my-20 rounded-2xl border border-violet-500/[0.15] bg-gradient-to-br from-violet-500/[0.04] via-transparent to-fuchsia-500/[0.04] p-8 md:p-10">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400/80">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400/80">
             Richard Brautigan, 1967
           </p>
           <blockquote className="mt-4 space-y-3 font-medium italic leading-[1.8] text-slate-100 text-[17px] md:text-[18px]">
@@ -99,7 +100,7 @@ export default async function BenedictionPage() {
 
         {/* ── What benediction entries are ── */}
         <div className="space-y-6 text-[16px] leading-[1.85] text-slate-300">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
             What the benedictions are
           </h2>
           <p>
@@ -116,8 +117,8 @@ export default async function BenedictionPage() {
           </p>
           <ul className="space-y-3 pl-6 text-slate-400">
             <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
-              <strong className="text-slate-200">Affirmative, not defensive.</strong>{" "}
-              It names what we want preserved, not just what we fear.
+              <strong className="text-slate-200">Affirmative.</strong>{" "}
+              It names what we want preserved as well as what we fear.
             </li>
             <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
               <strong className="text-slate-200">Grateful.</strong> The future
@@ -139,7 +140,7 @@ export default async function BenedictionPage() {
         {/* ── The benedictions themselves ── */}
         {benedictions.length > 0 && (
           <div className="mt-20">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
               The record so far
             </h2>
             <p className="mt-3 text-xl font-semibold text-white">
@@ -167,7 +168,7 @@ export default async function BenedictionPage() {
 
         {/* ── Invitation ── */}
         <div className="mt-24 space-y-6 text-[16px] leading-[1.85] text-slate-300">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
             Write your own
           </h2>
           <p>
@@ -178,7 +179,7 @@ export default async function BenedictionPage() {
             it.
           </p>
           <p>
-            This is not performance. It is a practice — of pausing to ask{" "}
+            It is a practice — of pausing to ask{" "}
             <em>what do I want to preserve?</em> and writing the answer down in
             a file that can be read by humans, by agents, by grandchildren, by
             whatever emerges from the decades ahead.
@@ -190,7 +191,7 @@ export default async function BenedictionPage() {
 
         {/* ── License notice ── */}
         <div className="mt-20 rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
             License + intent
           </p>
           <p className="mt-3 text-[13px] leading-relaxed text-slate-400">

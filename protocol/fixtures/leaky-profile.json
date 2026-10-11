@@ -1,0 +1,128 @@
+{
+  "sipGraphVersion": "0.1.0",
+  "profile": {
+    "id": "sip:profile:leaky-adopter",
+    "subject": "github.com/example/leaky-agent",
+    "declaredBy": "sip:identity:example-lab",
+    "generatedAt": "2026-09-02T09:00:00Z",
+    "note": "NEGATIVE fixture. This profile MUST fail conformance. Expected failures: P1, P2, P3, P4, P5. The high-entropy string below is inert filler, not a credential — it is there so P4's shape scan has something to catch without this file ever holding a real secret."
+  },
+  "nodes": [
+    {
+      "id": "sip:identity:example-lab",
+      "type": "Identity",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-01-04T10:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:identity-self-consistent", "result": "pass" },
+      "label": "Example Lab",
+      "body": { "kind": "org" }
+    },
+    {
+      "id": "sip:identity:hidden-owner",
+      "type": "Identity",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "private",
+      "provenance": { "origin": "authored", "at": "2026-01-04T10:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:identity-self-consistent", "result": "pass" },
+      "label": "Hidden owner",
+      "body": { "kind": "person" }
+    },
+    {
+      "id": "sip:agent:exfiltrator",
+      "type": "Agent",
+      "version": "1.0.0",
+      "owner": "sip:identity:hidden-owner",
+      "visibility": "public",
+      "provenance": { "origin": "authored", "at": "2026-08-01T10:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:agent-declares-capabilities", "result": "pass" },
+      "label": "Agent whose owner a public reader cannot resolve",
+      "body": { "harness": "unspecified" }
+    },
+    {
+      "id": "sip:source:private-vault-note",
+      "type": "Source",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "private",
+      "provenance": { "origin": "observed", "at": "2026-08-20T14:20:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:source-locator-resolves", "result": "pass" },
+      "label": "Private vault note",
+      "body": { "locator": "file:///vault/private/note.md" }
+    },
+    {
+      "id": "sip:claim:overshared",
+      "type": "Claim",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-08-21T09:00:00Z", "sources": ["sip:source:private-vault-note"] },
+      "evaluation": { "rule": "sip:evaluation:claim-has-supporting-source", "result": "pass" },
+      "label": "A claim whose private block rides along into the public projection",
+      "body": { "statement": "The nightly pipeline succeeded." },
+      "private": {
+        "opaqueRunnerMaterial": "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVowMTIzNDU2Nzg5YWJjZGVmZ2hpamtsbW5vcHFy",
+        "note": "inert filler with credential-like entropy; P4 must catch it"
+      }
+    },
+    {
+      "id": "sip:projection:public",
+      "type": "Projection",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "derived", "at": "2026-09-02T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:projection-is-closed", "result": "pass" },
+      "label": "Public projection that leaks",
+      "body": {
+        "audience": "public",
+        "include": [
+          "sip:projection:public",
+          "sip:identity:example-lab",
+          "sip:agent:exfiltrator",
+          "sip:source:private-vault-note",
+          "sip:claim:overshared"
+        ],
+        "redacted": [],
+        "redactFields": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "sip:edge:agent-asserts-overshared",
+      "type": "asserts",
+      "from": "sip:agent:exfiltrator",
+      "to": "sip:claim:overshared",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "public",
+      "provenance": { "origin": "observed", "at": "2026-08-21T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:assertion-has-agent" }
+    },
+    {
+      "id": "sip:edge:overshared-derives-vault-note",
+      "type": "derivedFrom",
+      "from": "sip:claim:overshared",
+      "to": "sip:source:private-vault-note",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "private",
+      "provenance": { "origin": "derived", "at": "2026-08-21T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:derivation-resolves" }
+    },
+    {
+      "id": "sip:edge:hidden-owner-asserts-overshared",
+      "type": "asserts",
+      "from": "sip:identity:hidden-owner",
+      "to": "sip:claim:overshared",
+      "version": "1.0.0",
+      "owner": "sip:identity:example-lab",
+      "visibility": "private",
+      "provenance": { "origin": "authored", "at": "2026-08-21T09:00:00Z", "sources": [] },
+      "evaluation": { "rule": "sip:evaluation:assertion-has-agent" }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Agentic Creator Operating System"
+  short_description: "Route /acos creator, content, music, video, and publishing work."
+  default_prompt: "Use /acos or $starlight-activation-router:acos-router to route this creator OS task."
+policy:
+  allow_implicit_invocation: true

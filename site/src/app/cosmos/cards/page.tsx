@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CardTile } from "@/components/cosmos/CardTile";
 import { cardsByKind, COSMOS_CARDS, KIND_LABEL } from "@/lib/cosmos/cards";
+import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const revalidate = 3600;
 
@@ -24,10 +25,7 @@ export default function CardsIndexPage() {
     <div>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.04]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="animate-mesh-1 absolute -left-24 top-0 h-[360px] w-[360px] rounded-full bg-cyan-500/[0.06] blur-[100px]" />
-          <div className="animate-mesh-2 absolute right-0 top-16 h-[280px] w-[280px] rounded-full bg-violet-600/[0.05] blur-[80px]" />
-        </div>
+        <GalaxyField still="deepField" />
         <div className="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
           <Link
             href="/cosmos"

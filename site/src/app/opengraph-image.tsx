@@ -3,118 +3,54 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Starlight Intelligence — Memory that compounds";
+export const alt = "Starlight Intelligence — Build as if the kindest future is the realistic one";
 
-export default async function Image() {
+export default function Image() {
   return new ImageResponse(
     (
       <div
         style={{
           background: "#060609",
           backgroundImage:
-            "radial-gradient(circle at 20% 20%, rgba(167, 139, 250, 0.22) 0%, rgba(167, 139, 250, 0.05) 32%, rgba(6, 6, 9, 0) 60%), radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.1) 0%, rgba(6, 6, 9, 0) 50%)",
+            "radial-gradient(circle at 78% 32%, rgba(167,139,250,.22), transparent 36%), radial-gradient(circle at 24% 80%, rgba(34,211,238,.12), transparent 34%)",
           width: "100%",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "80px",
+          padding: "72px 80px",
           color: "white",
           fontFamily: "sans-serif",
         }}
       >
-        {/* Top: brand mark + label */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "14px",
-          }}
-        >
-          <div
-            style={{
-              width: "14px",
-              height: "14px",
-              borderRadius: "9999px",
-              background: "#a78bfa",
-              boxShadow: "0 0 28px rgba(167, 139, 250, 0.9)",
-              display: "flex",
-            }}
-          />
-          <span
-            style={{
-              fontSize: "20px",
-              fontWeight: 600,
-              letterSpacing: "0.24em",
-              textTransform: "uppercase",
-              color: "#a78bfa",
-            }}
-          >
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <svg width="48" height="48" viewBox="0 0 64 64">
+            <ellipse cx="32" cy="32" rx="25" ry="9.5" transform="rotate(-24 32 32)" fill="none" stroke="#a78bfa" strokeWidth="1.8" />
+            <circle cx="11.5" cy="42" r="3" fill="#22d3ee" />
+            <path d="M10 32c12-1.3 17.5-2 22-2s10 .7 22 2c-12 1.3-17.5 2-22 2s-10-.7-22-2Z" fill="#c4b5fd" opacity=".9" />
+            <path d="M32 3c2 16 3 23 7 29c-4 6-5 13-7 29c-2-16-3-23-7-29c4-6 5-13 7-29Z" fill="#f8fafc" />
+            <circle cx="32" cy="32" r="4" fill="#fff" />
+          </svg>
+          <span style={{ fontSize: 22, fontWeight: 650, letterSpacing: ".18em", textTransform: "uppercase", color: "#c4b5fd" }}>
             Starlight Intelligence
           </span>
         </div>
 
-        {/* Middle: headline */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            maxWidth: "1020px",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "88px",
-              fontWeight: 600,
-              lineHeight: 1.02,
-              letterSpacing: "-0.02em",
-              color: "white",
-            }}
-          >
-            Memory that compounds.
+        <div style={{ display: "flex", flexDirection: "column", maxWidth: 1000 }}>
+          <span style={{ fontSize: 78, fontWeight: 620, lineHeight: 1.04, letterSpacing: "-.035em" }}>
+            Build as if the kindest future
           </span>
-          <span
-            style={{
-              fontSize: "88px",
-              fontWeight: 600,
-              lineHeight: 1.02,
-              letterSpacing: "-0.02em",
-              color: "rgba(255, 255, 255, 0.55)",
-              marginTop: "8px",
-            }}
-          >
-            Intelligence that grows.
+          <span style={{ fontSize: 78, fontWeight: 520, lineHeight: 1.04, letterSpacing: "-.035em", color: "#a5f3fc" }}>
+            is the realistic one.
           </span>
         </div>
 
-        {/* Bottom: tagline */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "20px",
-              color: "rgba(255, 255, 255, 0.45)",
-            }}
-          >
-            Public vaults. Open schema. Owned by you.
-          </span>
-          <span
-            style={{
-              fontSize: "18px",
-              color: "rgba(167, 139, 250, 0.8)",
-              fontFamily: "monospace",
-            }}
-          >
-            starlightintelligence.org
-          </span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 20 }}>
+          <span style={{ color: "rgba(255,255,255,.55)" }}>Multi-agent architecture · memory · governance · proof</span>
+          <span style={{ color: "#c4b5fd", fontFamily: "monospace" }}>starlightintelligence.org</span>
         </div>
       </div>
     ),
-    size
+    size,
   );
 }

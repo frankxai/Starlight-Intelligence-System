@@ -1,6 +1,6 @@
 /**
  * Sanitization Gateway (The Censor / The Veil)
- * 
+ *
  * Implements a local-first sanitization layer to scrub PII, secrets,
  * and sensitive data before it enters the Starlight Memory Graph
  * or is sent to cloud APIs.
@@ -14,20 +14,31 @@ export interface SanitizationOptions {
 
 export class SanitizationGateway {
   private static readonly SECRET_PATTERNS = [
+    // Complete PEM blocks, or incomplete blocks through end-of-input.
+    /-{5}BEGIN (?:[A-Z0-9]+ )?PRIVATE KEY-{5}[\s\S]*?(?:-{5}END (?:[A-Z0-9]+ )?PRIVATE KEY-{5}|$)/g,
     // Common API Keys, Tokens, Secrets
-    /sk-[a-zA-Z0-9]{48}/g, // OpenAI-style keys
-    /xox[baprs]-[0-9a-zA-Z]{10,48}/g, // Slack tokens
-    /(?:github_pat|ghp)_[a-zA-Z0-9]{36}/g, // GitHub tokens
+    /\bsk-[a-zA-Z0-9_-]{48,}\b/g, // OpenAI-style keys, including longer project keys
+    /\bsk-ant-[a-zA-Z0-9_-]{20,}\b/g,
+    /\b(?:sk|rk)_(?:live|test)_[a-zA-Z0-9]{16,}\b/g,
+    /\b(?:npm|whsec)_[a-zA-Z0-9]{20,}\b/g,
+    /\b(?:AKIA|ASIA)[A-Z0-9]{16}\b/g,
+    /\bhf_[a-zA-Z0-9]{20,}\b/g,
+    /xox[baprs]-[0-9a-zA-Z-]{10,}/g,
+    /(?:github_pat|ghp)_[a-zA-Z0-9_]{36,}/g, // Mask the complete token suffix
+    /\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|rediss?):\/\/[^\s"'<>]+/gi,
     /(?:AIza[0-9A-Za-z-_]{35})/g, // Google API keys
-    /eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/g, // JWTs
-    /bearer\s+[a-zA-Z0-9\-\._~]+/gi, // Bearer tokens
+    /(?<![A-Za-z0-9_=-])eyJ[A-Za-z0-9_=-]+\.[A-Za-z0-9_=-]+(?:\.[A-Za-z0-9_=-]+)?/g, // JWT base64url token boundaries
+    /bearer\s+[a-zA-Z0-9._~+\/-]+=*/gi, // RFC 6750 b64token, including padding
     /password["']?\s*:\s*["']([^"']+)["']/gi, // Passwords in JSON/objects
     /private_key["']?\s*:\s*["']([^"']+)["']/gi, // Private keys
   ];
 
+  private static readonly SECRET_FIELD = /^(?:password|passwd|secret|token|(?:access|refresh|auth)[_-]?token|api[_-]?key|private[_-]?key|client[_-]?secret|aws[_-]?secret[_-]?access[_-]?key)$/i;
+
   private static readonly PII_PATTERNS = [
     // Emails
-    /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+    // Start once per local-part run, avoiding quadratic retries on long non-emails.
+    /(?<![a-zA-Z0-9._%+-])[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
     // Phone numbers (US/Intl basic)
     /(?:\+\d{1,3}[- ]?)?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}/g,
     // SSN / Basic ID patterns (very simplified)
@@ -54,13 +65,13 @@ export class SanitizationGateway {
 
     if (this.options.scrubSecrets) {
       for (const pattern of SanitizationGateway.SECRET_PATTERNS) {
-        scrubbed = scrubbed.replace(pattern, this.options.maskString);
+        scrubbed = scrubbed.replace(pattern, () => this.options.maskString);
       }
     }
 
     if (this.options.scrubPII) {
       for (const pattern of SanitizationGateway.PII_PATTERNS) {
-        scrubbed = scrubbed.replace(pattern, this.options.maskString);
+        scrubbed = scrubbed.replace(pattern, () => this.options.maskString);
       }
     }
 
@@ -79,7 +90,13 @@ export class SanitizationGateway {
     depth = 0,
     seen: WeakSet<object> = new WeakSet()
   ): Record<string, unknown> {
-    if (depth > 64) {
+    return this.sanitizeContextBounded(context, depth, seen, { remaining: 4096 });
+  }
+
+  private sanitizeContextBounded(
+    context: Record<string, unknown>, depth: number, seen: WeakSet<object>, budget: { remaining: number }
+  ): Record<string, unknown> {
+    if (depth > 64 || budget.remaining-- <= 0) {
       return { __truncated: true } as Record<string, unknown>;
     }
     if (seen.has(context)) {
@@ -87,20 +104,28 @@ export class SanitizationGateway {
     }
     seen.add(context);
 
-    const sanitized: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(context)) {
-      if (typeof value === 'string') {
-        sanitized[key] = this.sanitize(value);
-      } else if (typeof value === 'object' && value !== null) {
-        sanitized[key] = this.sanitizeContext(
-          value as Record<string, unknown>,
-          depth + 1,
-          seen
-        );
-      } else {
-        sanitized[key] = value; // keep numbers, booleans, etc.
+    try {
+      const sanitized = (Array.isArray(context) ? new Array<unknown>(context.length) : {}) as unknown as Record<string, unknown>;
+      for (const [key, value] of Object.entries(context)) {
+        let next: unknown;
+        if (this.options.scrubSecrets && SanitizationGateway.SECRET_FIELD.test(key)) {
+          next = this.options.maskString;
+        } else if (typeof value === 'string') {
+          next = this.sanitize(value);
+        } else if (typeof value === 'object' && value !== null) {
+          next = this.sanitizeContextBounded(
+            value as Record<string, unknown>,
+            depth + 1,
+            seen,
+            budget
+          );
+        } else {
+          next = value; // keep numbers, booleans, etc.
+        }
+        // Data keys such as __proto__ must not invoke inherited object setters.
+        Object.defineProperty(sanitized, key, { value: next, enumerable: true, writable: true, configurable: true });
       }
-    }
-    return sanitized;
+      return sanitized;
+    } finally { seen.delete(context); }
   }
 }

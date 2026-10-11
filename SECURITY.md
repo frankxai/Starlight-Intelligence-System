@@ -1,7 +1,7 @@
-# Security Policy — Starlight Intelligence System
+# Security policy — Starlight Intelligence System
 
-> Reporting a vulnerability? Don't open a public issue. Use one of the
-> private channels below — we'll respond within 72 hours.
+> Do not open a public issue for a suspected vulnerability. Use GitHub's
+> private vulnerability reporting form so report details stay private.
 
 ---
 
@@ -31,33 +31,22 @@ sovereignty-clause violations.
 
 ---
 
-## Reporting channels (in order of preference)
+## Report a vulnerability
 
-### 1. GitHub Security Advisories (recommended)
+Submit a report through the repository's
+[private vulnerability reporting form](https://github.com/frankxai/Starlight-Intelligence-System/security/advisories/new).
+GitHub sends the report privately to the repository maintainers and supports
+private discussion while the report is assessed.
 
-Open a private advisory at:
-**https://github.com/frankxai/Starlight-Intelligence-System/security/advisories/new**
-
-This is the preferred channel because it:
-- Stays private until you and we agree to publish
-- Lets us coordinate a fix branch privately
-- Issues CVE numbers automatically if assigned
-
-### 2. Email
-
-If GitHub Advisories isn't an option:
-**security@starlightintelligence.org** (PGP-friendly — request the public
-key in your initial message if you want to encrypt).
-
-Backup: open a GitHub issue titled `Security report — please contact me`
-without disclosing the vulnerability; we'll reach out via the email on
-your GitHub profile.
+Do not include vulnerability details, secrets, private data, or proof-of-concept
+payloads in a public issue or discussion. Private reporting requires a GitHub
+account, and no alternative private email channel is currently verified.
 
 ---
 
 ## What to include in your report
 
-Make our response fast:
+Include:
 
 1. **Affected versions / commit SHAs** — the closer to a specific tag the
    better.
@@ -68,19 +57,6 @@ Make our response fast:
 4. **Suggested fix** — optional, but appreciated.
 5. **Disclosure preferences** — coordinated disclosure timeline, whether
    you want credit, whether you want a CVE.
-
----
-
-## Our response commitment
-
-- **72 hours**: initial acknowledgement (often much faster).
-- **7 days**: triage verdict — confirmed / not-reproducible /
-  duplicate / out-of-scope, with rationale.
-- **30 days**: fix shipped for confirmed issues, OR a detailed update on
-  why it's taking longer.
-- **90 days**: default coordinated-disclosure timeline. We'll work with
-  you on shorter (if actively exploited) or longer (if a complex fix is
-  in progress) timelines.
 
 ---
 

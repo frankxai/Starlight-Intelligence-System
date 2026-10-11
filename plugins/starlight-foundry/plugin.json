@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "starlight-foundry",
+  "version": "0.1.0",
+  "description": "Design portable skills and bounded agent systems, with an optional compile-and-proof handoff to a Starlight Foundry runtime.",
+  "author": {
+    "name": "Starlight Intelligence",
+    "url": "https://starlightintelligence.org"
+  },
+  "homepage": "https://starlightintelligence.org",
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "agents",
+    "evaluation",
+    "starlight"
+  ]
+}

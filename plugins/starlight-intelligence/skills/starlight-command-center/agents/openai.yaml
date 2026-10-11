@@ -1,0 +1,4 @@
+interface:
+  display_name: "Starlight Command Center"
+  short_description: "Inspect portfolio pressure and render the control plane"
+  default_prompt: "Use $starlight-command-center to show the portfolio posture and binding constraint."

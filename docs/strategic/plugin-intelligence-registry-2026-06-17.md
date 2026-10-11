@@ -1,7 +1,7 @@
 # Plugin Intelligence Registry
 
 Date: 2026-06-17
-Updated: 2026-06-18
+Updated: 2026-06-19
 Owner: FrankX AI / Starlight Intelligence
 Marketplace: `C:\Users\frank\.agents\plugins\marketplace.json`
 Plugin source root: `C:\Users\frank\plugins`
@@ -25,14 +25,14 @@ All six are installed from `plugins-cli` as `0.1.0+codex.20260617165242`.
 
 ## Continuation Result
 
-The plugin estate has been expanded and consolidated into a 45-entry `plugins-cli` marketplace suite: 44 FrankX/Starlight personal plugins plus the external `vercel-plugin`.
+The plugin estate has been expanded and consolidated into a 53-entry `plugins-cli` marketplace suite: 52 FrankX/Starlight personal plugins plus the external `vercel-plugin`.
 
 - The 15 original personal plugins were source-validated, installed, and installed-cache validated.
 - The first six strategic plugins remain installed and enabled.
 - Eight additional high-leverage plugins were created, documented, source-validated, installed, enabled, and installed-cache validated.
 - Five final operating-system plugins were created, documented, source-validated, installed, enabled, and installed-cache validated.
 - One graph-level intelligence plugin was created, documented, source-validated, installed, enabled, installed-cache validated, and used to rebuild the ecosystem graph registry.
-- `C:\Users\frank\.agents\plugins\marketplace.json` now contains 45 plugin entries.
+- `C:\Users\frank\.agents\plugins\marketplace.json` now contains 53 plugin entries.
 - `C:\Users\frank\plugins\ecosystem-intelligence.registry.json` now records the 255-repo GitHub census, 61 local git repos, 158 active GitHub repos not cloned locally, domain/business evidence, and plugin coverage.
 - The public plugin starter now has a GitHub prerelease, a Starlight download section, a FrankX download-router card, and a machine-readable Starlight manifest endpoint.
 - The Starlight download UI was browser-verified at 1366x900 and 390x844 with no page-width overflow, visible SHA-256, and all four plugin install commands rendered.
@@ -84,6 +84,47 @@ Graph intelligence plugin:
 | `arcanea-canon-director` | Arcanea original IP | Story, character, Seven Pillars world logic, visual DNA, continuity |
 | `arcanea-claw-media-ops` | ArcaneaClaw media operations | Scan, classify, dedupe, TASTE score, upload, social prep, command center |
 | `arcanea-creator-forge-ops` | Arcanea Layer 2 creator/pro forge | Creator products, agent packs, assets, marketplace offers, launch systems |
+
+2026-06-19 naming elevation pass:
+
+| Result | Value |
+| --- | --- |
+| Product-facing plugin manifests updated | 35 |
+| Personal plugins source-validated | 45 |
+| Edited installed-cache plugins validated | 35 |
+| Product display names ending in `Ops` | 0 |
+| Product display names containing `Ops` | 1, intentionally `Agentic Ops Harness` |
+| Naming registry | `C:\Users\frank\plugins\plugin-naming.registry.json` |
+| Naming architecture doc | `docs/strategic/plugin-naming-architecture-2026-06-19.md` |
+| Product system doctrine | `docs/strategic/plugin-product-system-doctrine-2026-06-19.md` |
+
+2026-06-19 public wrapper and bundle wave:
+
+| Plugin | Product line | Primary use |
+| --- | --- | --- |
+| `founder-command-kit` | Founder Command Kit | Founder briefs, priorities, decisions, and execution waves |
+| `revenue-engine-kit` | Revenue Engine Kit | Offer architecture, pricing ladders, checkout, growth, and customer success |
+| `starlight-system-module` | Starlight Intelligence System | Memory, evals, release artifacts, proof, and distribution discipline |
+| `arcanea-world-engine` | Arcanea World Engine | Public-safe worldbuilding, canon, characters, and creator packs |
+| `enterprise-ai-kit` | Enterprise AI Kit | AI readiness, CoE, governance, migration planning, and proof assets |
+| `creator-product-kit` | Creator Product Kit | Creator products, templates, launch kits, and audience monetization |
+
+Validation:
+
+| Gate | Result |
+| --- | --- |
+| Source plugin validation | Passed for all six public wrapper plugins |
+| Skill validation | Passed for all six public wrapper skills |
+| Installed-cache validation | Passed for all six installed wrapper plugins |
+| `codex plugin list` | All six wrapper plugins installed and enabled |
+| Public suite checksum | `D37133C3CB60A32D578984E30EF34711FAA6B4F45456321F0127FBCA6804AD30` |
+| Private suite checksum | `60C9C39AD7ABB19D370A2F2AEDCA061139A864A96ED6A54FD47E7105579ACF34` |
+
+Existing product-grade plugin discovery:
+
+| Plugin | Status | Primary use |
+| --- | --- | --- |
+| `agentic-music-os` | Validated, installed, private-suite included | Suno-native music production, release operations, artist/persona strategy, asset pipelines, and label automation |
 
 ## Portfolio Map
 
@@ -148,6 +189,7 @@ These plugins keep each major business line coherent:
 | `arcanea-canon-director` | new | Story, character, Seven Pillars world logic, continuity, and anti-trope review |
 | `arcanea-claw-media-ops` | new | ArcaneaClaw media pipeline, TASTE scoring, publish prep, and command center |
 | `arcanea-creator-forge-ops` | new | Creator products, pro offers, agent packs, and world-to-business launch paths |
+| `motion-design-studio` | new | Product motion, scroll choreography, animation systems, and visual identity polish |
 
 ### Protection and Leverage Layer
 
@@ -168,10 +210,10 @@ The first six, the next eight, the final five, the graph-level intelligence plug
 
 | Candidate | Trigger evidence | Why it matters |
 | --- | --- | --- |
-| `arcanea-fabric-api-ops` | repeated Layer 3 API/SDK and orchestration boundary decisions | Packages World Graph, memory, orchestration, and SDK/API readiness once Fabric stabilizes |
-| `arcanea-proof-rail-ops` | repeated provenance, content-hash, proof, and royalty questions | Makes proof rails real without forcing blockchain friction into user experience |
-| `arcanea-education-residency-ops` | repeated creator residency, course, or cohort design | Turns Arcanea learning and production programs into repeatable curriculum and operations |
-| `arcanea-game-kit-ops` | repeated quests, playable prototypes, and world-to-game exports | Converts repo-canonical worlds into game kits, quests, and playable proof artifacts |
+| `arcanea-fabric` | repeated Layer 3 API/SDK and orchestration boundary decisions | Packages World Graph, memory, orchestration, and SDK/API readiness once Fabric stabilizes |
+| `arcanea-proof-rail` | repeated provenance, content-hash, proof, and royalty questions | Makes proof rails real without forcing blockchain friction into user experience |
+| `arcanea-residency` | repeated creator residency, course, or cohort design | Turns Arcanea learning and production programs into repeatable curriculum and production operations |
+| `arcanea-game-kit` | repeated quests, playable prototypes, and world-to-game exports | Converts repo-canonical worlds into game kits, quests, and playable proof artifacts |
 
 ## Distribution Architecture
 
@@ -202,14 +244,24 @@ Recommended public flow:
 | Starlight download section | `https://starlightintelligence.org/download#codex-plugin-starter` | Human install path with release links, checksum, and four plugin install commands |
 | Plugin starter latest manifest | `https://starlightintelligence.org/download/plugins/latest.json` | Machine-readable release index for automation, docs, and downstream sites |
 | FrankX download router | `https://frankx.ai/downloads` | Business/founder download card routing users into the Starlight install path |
-| Private 44-plugin suite | `dist/plugins/starlight-private-plugin-suite-2026-06-18-44.zip` | Private bundle, 44 FrankX/Starlight plugin manifests, one local marketplace, one private README |
-| Private suite checksum | `dist/plugins/starlight-private-plugin-suite-2026-06-18-44.zip.sha256` | SHA-256: `6F750B23524F0F8718CE51B35D2AF2612BB87A591A2BE1B951554AF046AE197E` |
+| Superseded private 45-plugin suite | `dist/plugins/starlight-private-plugin-suite-2026-06-19-45.zip` | Superseded by the private 52-plugin suite after the public wrapper and music-plugin discovery waves |
+| Private suite checksum | `dist/plugins/starlight-private-plugin-suite-2026-06-19-45.zip.sha256` | SHA-256: `9F28B5F6E396EF2519FE713DB503756A735EA4E156DE5BC6856E898583F439F5` |
+| Public six-module suite | `dist/plugins/starlight-intelligence-modules-public-suite-2026-06-19.zip` | Public wrapper suite, six installable product-line modules, one local marketplace, README, release notes, and bundle manifest |
+| Public six-module suite checksum | `dist/plugins/starlight-intelligence-modules-public-suite-2026-06-19.zip.sha256` | SHA-256: `D37133C3CB60A32D578984E30EF34711FAA6B4F45456321F0127FBCA6804AD30` |
+| Public six-module GitHub prerelease | `https://github.com/frankxai/Starlight-Intelligence-System/releases/tag/starlight-intelligence-modules-2026-06-19` | Public prerelease with 15 assets: six product-kit ZIPs, six checksums, public suite ZIP, public suite checksum, and bundle registry |
+| Private 52-plugin suite | `dist/plugins/starlight-private-plugin-suite-2026-06-19-52.zip` | Private bundle, 52 FrankX/Starlight plugin manifests, one local marketplace, README, release notes, and bundle manifest |
+| Private 52-plugin suite checksum | `dist/plugins/starlight-private-plugin-suite-2026-06-19-52.zip.sha256` | SHA-256: `60C9C39AD7ABB19D370A2F2AEDCA061139A864A96ED6A54FD47E7105579ACF34` |
+| Plugin bundle registry | `dist/plugins/starlight-plugin-bundles-2026-06-19.registry.json` | Machine-readable registry for six product-kit ZIPs, public suite, private suite, checksums, status, and site placement |
+| Plugin bundle distribution plan | `docs/strategic/plugin-bundle-distribution-2026-06-19.md` | Human release plan for product kits, public suite, private suite, site placement, and next GitHub prerelease move |
+| Plugin naming registry | `C:\Users\frank\plugins\plugin-naming.registry.json` | Machine-readable naming architecture, display names, future slug candidates, and migration risk |
+| Plugin naming architecture | `docs/strategic/plugin-naming-architecture-2026-06-19.md` | Human naming doctrine for future plugin and skill creation |
+| Plugin product system doctrine | `docs/strategic/plugin-product-system-doctrine-2026-06-19.md` | Portfolio-level doctrine for founder appeal, brand boundaries, plugin-vs-skill naming, bundles, distribution, and future roadmap |
 | Ecosystem intelligence registry | `C:\Users\frank\plugins\ecosystem-intelligence.registry.json` | Private graph registry generated by `ecosystem-graph-ops`; not public-safe as-is |
 | Plugin portfolio changelog | `C:\Users\frank\plugins\CHANGELOG.md` | Living release ledger for plugin portfolio changes, validation notes, and distribution artifacts |
 
 The public starter includes `enterprise-ai-coe-ops`, `health-intelligence-ops`, `prompt-eval-lab`, and `vibe-os-frequency-lab`. `anime-legends-studio` and `agentic-ops-harness` stay private until franchise/IP and operational references are sanitized.
 
-The private suite includes all 44 FrankX/Starlight personal plugin source folders and excludes `vercel-plugin`. It is not public-safe as-is: publication sanitizer found intentional local source attribution and private operating references, so the correct status is `private-only`.
+The current private suite includes all 52 FrankX/Starlight personal plugin source folders and excludes `vercel-plugin`. It is not public-safe as-is: publication sanitizer found intentional local source attribution and private operating references, so the correct status is `private-only`.
 
 ## Guide Experience
 
@@ -263,7 +315,7 @@ Before any plugin becomes public:
 ### Wave 3: Intelligence System Module
 
 - Package a full Starlight Intelligence System module containing install docs, plugin bundle, sample workflows, validation logs, and site download assets.
-- Use the 44-plugin private suite as the internal module source and the four-plugin public starter as the public onboarding surface.
+- Use the 52-plugin private suite as the internal module source and the six-module public wrapper suite as the primary public onboarding surface.
 - Keep `ecosystem-intelligence.registry.json` private, and publish only sanitized summaries or public-safe manifests.
 - Add evals for critical workflows: business command, revenue offer, repo QA, memory/privacy review, and release packaging.
 

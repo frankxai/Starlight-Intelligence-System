@@ -124,4 +124,13 @@ When file contract or skills change:
 
 ---
 
+## 2026-06-19 — Methodology evolution
+
+- Change: Added `workflows/agentic-music-os-first-release-packet.md` as the Phase 0/1 report for the first real Agentic Music OS release packet.
+- Reason: Convert the build plan into an exact local packet contract: stable folder convention, appended catalog fields, proof manifest, audio-analysis script requirements, and evidence-backed A&R schema.
+- /luminor-board pass: not run; no commit/tag requested in this session.
+- Migration impact: Future `/music-release` and catalog tooling should stop claiming external DistroKid/Canvas completion locally. External rails are `prepared_local_only` until Frank manually uploads and IDs are backfilled.
+
+---
+
 **Built on SIP** — `verticals/music-is/MEMORY.md` · Append-only · v0.1 · 2026-04-29 · First entry: Phase 0 spawn

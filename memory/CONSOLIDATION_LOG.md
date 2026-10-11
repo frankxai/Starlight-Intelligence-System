@@ -45,26 +45,19 @@
 - 2026-06-16T02:02:05.420Z · insights: 13 · contradictions: 0 · promotions: 4 · queued: 2 · processed: 8 · decayed: 0 · archived: 0
 - 2026-06-17T02:00:46.796Z · insights: 13 · contradictions: 0 · promotions: 4 · queued: 0 · processed: 8 · decayed: 0 · archived: 0
 - 2026-06-18T02:00:03.641Z · insights: 16 · contradictions: 0 · promotions: 4 · processed: 10 · decayed: 0 · archived: 0
-- 2026-07-01T11:00:09.506Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0
-- 2026-07-01T11:13:04.946Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 18 · sb_contradictions: 0
-- 2026-07-11T12:24:56.391Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 18 · sb_contradictions: 0
-- 2026-07-11T12:27:00.243Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 18 · sb_contradictions: 0
-- 2026-07-12T02:15:03.876Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_contradictions: 0
-- 2026-07-12T04:26:08.825Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 22 · sb_contradictions: 0
-- 2026-07-12T04:26:18.426Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-07-13T02:15:02.692Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-07-14T02:15:03.061Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-07-15T02:15:02.833Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-07-16T02:15:04.729Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-07-17T02:15:02.769Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-07-17T09:08:52.512Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0
-- 2026-07-18T02:16:15.026Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-07-19T02:16:53.927Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-08-08T09:02:56.872Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0
-- 2026-08-09T09:12:12.759Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0
-- 2026-08-25T09:03:38.129Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0
-- 2026-08-26T02:15:02.704Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-08-27T02:15:02.579Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-08-28T02:16:06.757Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-08-29T02:15:02.602Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
-- 2026-08-30T02:15:02.913Z · insights: 58 · contradictions: 0 · promotions: 4 · processed: 24 · decayed: 0 · archived: 0 · sb_dirs: 5 · sb_promotions: 22 · sb_new: 0 · sb_contradictions: 0
+- 2026-06-19T09:18:02.178Z · insights: 18 · contradictions: 0 · promotions: 4 · processed: 11 · decayed: 0 · archived: 0
+- 2026-06-20T02:00:03.283Z · insights: 19 · contradictions: 0 · promotions: 4 · processed: 12 · decayed: 0 · archived: 0
+- 2026-06-21T02:00:03.354Z · insights: 19 · contradictions: 0 · promotions: 4 · processed: 12 · decayed: 0 · archived: 0
+- 2026-08-26T02:00:03.161Z · insights: 101 · contradictions: 0 · promotions: 4 · processed: 59 · decayed: 0 · archived: 0
+- 2026-08-27T02:00:31.243Z · insights: 102 · contradictions: 0 · promotions: 4 · processed: 60 · decayed: 0 · archived: 0
+- 2026-08-28T02:00:04.146Z · insights: 102 · contradictions: 0 · promotions: 4 · processed: 60 · decayed: 0 · archived: 0
+- 2026-08-29T02:00:03.629Z · insights: 104 · contradictions: 0 · promotions: 4 · processed: 61 · decayed: 0 · archived: 0
+- 2026-08-30T02:27:10.647Z · insights: 106 · contradictions: 0 · promotions: 4 · processed: 62 · decayed: 0 · archived: 0
+- 2026-08-30T16:23:36.472Z · insights: 106 · contradictions: 0 · promotions: 4 · queued: 4 · processed: 62 · decayed: 0 · archived: 0
+- 2026-08-30T16:25:27.557Z · insights: 106 · contradictions: 0 · promotions: 2 · queued: 2 · processed: 62 · decayed: 0 · archived: 0
+- 2026-08-31T02:00:04.097Z · insights: 108 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 63 · decayed: 0 · archived: 0
+- 2026-09-01T02:00:04.388Z · insights: 110 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 64 · decayed: 0 · archived: 0
+- 2026-09-05T07:40:29.609Z · insights: 110 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 64 · decayed: 0 · archived: 0
+- 2026-09-06T02:00:02.140Z · insights: 112 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 65 · decayed: 0 · archived: 0
+- 2026-09-07T02:00:02.477Z · insights: 113 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 66 · decayed: 0 · archived: 0
+- 2026-09-10T02:00:02.704Z · insights: 115 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 67 · decayed: 0 · archived: 0

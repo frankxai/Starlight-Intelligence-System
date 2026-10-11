@@ -1,0 +1,211 @@
+{
+  "generatedAt": "2026-06-23T10:45:24.3025731Z",
+  "total": 11,
+  "passed": 11,
+  "failed": 0,
+  "results": [
+    {
+      "id": "si-repo-audit",
+      "prompt": "/si audit this repo and choose best agent lane",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-si for /si-style routing. Start with a route packet or dry-run dispatch; only run Starlight fanout/council when the user explicitly asks for fanout, council, dispatch execution, or smoke testing. Repo hint: Starlight-Intelligence-System (C:/Users/frank/starlight/repos/Starlight-Intelligence-System). AGENTS.md=yes, harness=yes, Claude commands=121, Claude hooks=348, skills=yes.\"}}",
+      "expectedHits": [
+        {
+          "token": "starlight-si",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "so-railway-hardening",
+      "prompt": "/so build a dispatch packet for Railway estate hardening approvals and verification gates",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\starlight-agent-config",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-so for /so-style Starlight Orchestrator dispatch. Start with a durable packet or dry-run plan; execute fanout only when the prompt explicitly says /so --fanout, run fanout, dispatch, or verify across lanes. Repo hint: starlight-agent-config (C:/Users/frank/starlight/repos/starlight-agent-config). AGENTS.md=yes, harness=yes, Claude commands=0, Claude hooks=0, skills=no. Relevant installed capabilities: use-railway.\"}}",
+      "expectedHits": [
+        {
+          "token": "starlight-so",
+          "present": true
+        },
+        {
+          "token": "Railway",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "acos-launch-content",
+      "prompt": "/acos plan tomorrow content for the July launch and publishing cadence",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\agentic-creator-os",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:acos-router for /acos Agentic Creator Operating System and creator/content operations. Select the narrow creator lane first, then read only the relevant command or skill files. Priority route: July launch work should use /so for milestone coordination and ACOS for publishing cadence. Keep offers, blockers, proof assets, and next actions tied to the launch ledger. Repo hint: agentic-creator-os (C:/Users/frank/starlight/repos/agentic-creator-os). AGENTS.md=yes, harness=yes, Claude commands=172, Claude hooks=348, skills=yes.\"}}",
+      "expectedHits": [
+        {
+          "token": "acos-router",
+          "present": true
+        },
+        {
+          "token": "Agentic Creator Operating System",
+          "present": true
+        },
+        {
+          "token": "July launch",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "community-pilot",
+      "prompt": "Build the Starlight Communities pilot surface and route the community creation cell work",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\starlight-communities",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Priority route: Starlight Communities work should use /so for pilot coordination, ACOS for creator-cell content/workflows, and Starlight Swarm only when worker waves are explicitly needed. Keep evidence in the community spec, module manifest, run-sheet, and pilot receipt. Repo hint: starlight-communities (C:/Users/frank/starlight/repos/starlight-communities). AGENTS.md=yes, harness=no, Claude commands=0, Claude hooks=0, skills=yes.\"}}",
+      "expectedHits": [
+        {
+          "token": "Starlight Communities",
+          "present": true
+        },
+        {
+          "token": "creator-cell",
+          "present": true
+        },
+        {
+          "token": "pilot",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "agentic-life-os-offer",
+      "prompt": "Which agent should handle Agentic Life OS offer packaging and operator kit manifest?",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\agentic-life-os",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-si for /si-style routing. Start with a route packet or dry-run dispatch; only run Starlight fanout/council when the user explicitly asks for fanout, council, dispatch execution, or smoke testing. Priority route: Agentic Life OS work should use /si for lane selection or /so for offer/package coordination. Preserve the operator-kit manifest, module map, and public/private boundary as the handoff spine. Repo hint: agentic-life-os (C:/Users/frank/starlight/repos/agentic-life-os). AGENTS.md=no, harness=no, Claude commands=0, Claude hooks=0, skills=no. Relevant installed capabilities: agentic-music-os, agentic-ops.\"}}",
+      "expectedHits": [
+        {
+          "token": "starlight-si",
+          "present": true
+        },
+        {
+          "token": "Agentic Life OS",
+          "present": true
+        },
+        {
+          "token": "operator-kit",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "hermes-pack-factory",
+      "prompt": "Build content-social-genius v0.1 as a Hermes pack factory pilot with automations and eval receipts",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\agentic-ops-hub",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Priority route: Hermes pack-factory work should use /so as coordinator, ACOS for content/social production lanes, Railway only for approved runtime changes, and eval receipts before packaging the pack as reusable. Repo hint: agentic-ops-hub (C:/Users/frank/starlight/repos/agentic-ops-hub). AGENTS.md=yes, harness=yes, Claude commands=1, Claude hooks=0, skills=no. Relevant installed capabilities: agentic-ops.\"}}",
+      "expectedHits": [
+        {
+          "token": "Hermes pack-factory",
+          "present": true
+        },
+        {
+          "token": "ACOS",
+          "present": true
+        },
+        {
+          "token": "eval receipts",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "cross-agent-loop-os",
+      "prompt": "/so improve cross-agent loop OS hooks for protected files, secrets, generated drift, and eval scorecards",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\agentic-ops-hub",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-so for /so-style Starlight Orchestrator dispatch. Start with a durable packet or dry-run plan; execute fanout only when the prompt explicitly says /so --fanout, run fanout, dispatch, or verify across lanes. Priority route: cross-agent loop work should use /so plus agentic-ops. Add deterministic hook gates for protected files, secrets, external-action claims, generated drift, and eval scorecard receipts. Repo hint: agentic-ops-hub (C:/Users/frank/starlight/repos/agentic-ops-hub). AGENTS.md=yes, harness=yes, Claude commands=1, Claude hooks=0, skills=no.\"}}",
+      "expectedHits": [
+        {
+          "token": "starlight-so",
+          "present": true
+        },
+        {
+          "token": "cross-agent loop",
+          "present": true
+        },
+        {
+          "token": "hook gates",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "health-private-ops",
+      "prompt": "Which agent should handle private health ops v0.2, nutrition logs, clinician summary templates, and safety boundaries?",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\health-intelligence-system",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-si for /si-style routing. Start with a route packet or dry-run dispatch; only run Starlight fanout/council when the user explicitly asks for fanout, council, dispatch execution, or smoke testing. Priority route: health/private-ops work should use health-intelligence with strict safety boundaries, dated evidence, private/public separation, and clinician-human authority for medical decisions. Repo hint: health-intelligence-system (C:/Users/frank/starlight/repos/health-intelligence-system). AGENTS.md=yes, harness=yes, Claude commands=0, Claude hooks=0, skills=no. Relevant installed capabilities: health-intelligence.\"}}",
+      "expectedHits": [
+        {
+          "token": "starlight-si",
+          "present": true
+        },
+        {
+          "token": "health/private-ops",
+          "present": true
+        },
+        {
+          "token": "clinician-human",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "mobile-si",
+      "prompt": "si: from mobile audit current priorities and tell me the next best lane",
+      "cwd": "C:\\Users\\frank\\starlight\\repos",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: Use $starlight-activation-router:starlight-si for /si-style routing. Start with a route packet or dry-run dispatch; only run Starlight fanout/council when the user explicitly asks for fanout, council, dispatch execution, or smoke testing. Mobile fallback: use si:, so:, or acos: at the start of the prompt when the slash-command picker is unavailable. Mobile remote sessions use the connected host's installed plugins and skills.\"}}",
+      "expectedHits": [
+        {
+          "token": "starlight-si",
+          "present": true
+        },
+        {
+          "token": "Mobile",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "swarm-community-loop",
+      "prompt": "@starlight-swarm-ops design multi-agent worker waves for community onboarding and creator cells",
+      "cwd": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System",
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Starlight activation hint: For Starlight Swarm work, prefer the installed starlight-swarm-ops skill. Keep one coordinator, split by capability lane and repo boundary, define each worker's input, artifact, stop condition, verification evidence, and handoff format. Priority route: Starlight Communities work should use /so for pilot coordination, ACOS for creator-cell content/workflows, and Starlight Swarm only when worker waves are explicitly needed. Keep evidence in the community spec, module manifest, run-sheet, and pilot receipt. Repo hint: Starlight-Intelligence-System (C:/Users/frank/starlight/repos/Starlight-Intelligence-System). AGENTS.md=yes, harness=yes, Claude commands=121, Claude hooks=348, skills=yes. Relevant installed capabilities: starlight-swarm, starlight-swarm-orchestration.\"}}",
+      "expectedHits": [
+        {
+          "token": "Starlight Swarm",
+          "present": true
+        },
+        {
+          "token": "coordinator",
+          "present": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": "safety-destruction",
+      "prompt": "git reset --hard HEAD",
+      "cwd": null,
+      "output": "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Starlight Activation Router blocked a high-risk command (git reset --hard). Ask Frank for explicit approval or use a scoped, audited alternative.\"}}",
+      "expectedHits": [
+        {
+          "token": "deny",
+          "present": true
+        }
+      ],
+      "passed": true
+    }
+  ]
+}

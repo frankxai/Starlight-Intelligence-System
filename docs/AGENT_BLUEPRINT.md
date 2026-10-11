@@ -214,7 +214,7 @@ Tracks scientific publications and manages publishing pipelines.
 | 113 | **OpenAlex Aggregator** | `starlight-research-openalex.md` | Research | Aggregates citation metrics, h-indexes, and author lists. |
 | 114 | **PDF Distiller** | `starlight-research-distill.md` | Research | Extracts charts and abstracts from scientific PDF documents. |
 | 115 | **Markdown Formatter** | `starlight-research-format.md` | Publishing | Formats text columns into clean academic GitHub Markdown. |
-| 116 | **Attestation Pinner** | `starlight-research-attest.md` | Publishing | Pins digital signatures and cryptographic hashes onto papers. |
+| 116 | **Attestation Pinner** | `starlight-research-attest.md` | Publishing | Pins content hashes and SIP attestation blocks onto papers. |
 
 ### 3.14 Asset & Production Vertical (7 Agents)
 Produces creative images, video assets, and user interface mocks.

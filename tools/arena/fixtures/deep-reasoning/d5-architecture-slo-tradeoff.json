@@ -1,0 +1,37 @@
+{
+  "$comment": "Built on SIP — R5 deep-reasoning task fixture. Schema: r5-task v0.1.",
+  "id": "d5-architecture-slo-tradeoff",
+  "family": "architecture trade-off analysis with a determinate answer",
+  "category": "multi-constraint feasibility — latency budget, cost budget, durability floor",
+  "why": "The brief's trade-off family, converted from a rubric-judged task into a ground-truth task so R5 stays free of LLM-judge dependence (see R5-DESIGN.md, Scoring). Three constraints must all be checked; exactly one option satisfies all three. Option C is both the fastest and the cheapest and is the answer a model gives if it optimises the two salient numbers and never checks the durability floor. Option B is the most elaborate design and fails on two counts. The correct answer is the unglamorous middle option.",
+  "prompt": "You are choosing between three candidate architectures for a request path.\n\nRequirements, all of which are hard:\n  - p99 end-to-end latency must be at most 250 ms\n  - total cost must be at most $4,000 per month\n  - the data must be held on at least 3 independent replicas\n\nTraffic is 12,000,000 requests per month. Every option pays a fixed 40 ms TLS and ingress cost that is not listed among its hops. Compute p99 as the sum of that 40 ms plus the option's listed per-hop p99 contributions.\n\nOption A — single region, primary plus two read replicas\n  hops: gateway 18 ms, auth 25 ms, database 140 ms\n  cost: $1,800 fixed per month, plus $0.00018 per request\n  replicas: 3\n\nOption B — multi-region active-active\n  hops: gateway 18 ms, auth 25 ms, cross-region consensus 120 ms, database 90 ms\n  cost: $3,100 fixed per month, plus $0.000275 per request\n  replicas: 6\n\nOption C — single region with an in-memory cache tier\n  hops: gateway 18 ms, auth 25 ms, cache 12 ms\n  cost: $900 fixed per month, plus $0.00009 per request\n  replicas: 2\n\nIdentify the one option that satisfies all three requirements, and report its p99 in whole milliseconds and its total monthly cost in whole dollars.",
+  "answerFormat": "ANSWER: <letter> <p99 ms as integer> <monthly cost in whole dollars as integer>",
+  "groundTruth": {
+    "answer": "A 223 3960",
+    "derivation": [
+      "A: p99 = 40+18+25+140 = 223 <= 250 OK; cost = 1800 + 0.00018*12,000,000 = 1800+2160 = 3960 <= 4000 OK; replicas 3 >= 3 OK -> feasible",
+      "B: p99 = 40+18+25+120+90 = 293 > 250 FAIL; cost = 3100 + 0.000275*12,000,000 = 3100+3300 = 6400 > 4000 FAIL",
+      "C: p99 = 40+18+25+12 = 95 OK; cost = 900 + 0.00009*12,000,000 = 900+1080 = 1980 OK; replicas 2 < 3 FAIL",
+      "Exactly one option (A) satisfies all three constraints."
+    ]
+  },
+  "verification": {
+    "type": "exact-final-line",
+    "normalize": ["collapse-whitespace", "uppercase", "strip-commas", "strip-currency"],
+    "accept": ["^A\\s+223\\s*(MS)?\\s+3960$"],
+    "attractors": [
+      {
+        "label": "ignored-durability-floor",
+        "accept": ["^C\\s+95\\s*(MS)?\\s+1980$"],
+        "why": "Chose the fastest and cheapest option and never checked the 3-replica durability floor."
+      },
+      {
+        "label": "chose-most-elaborate",
+        "accept": ["^B\\s+293\\s*(MS)?\\s+6400$"],
+        "why": "Chose the most redundant design despite it violating both the latency and the cost budget."
+      }
+    ]
+  },
+  "prediction": { "fable": "PASS", "opus": "PASS", "sonnet": "PASS", "haiku": "FAIL" },
+  "attestation": "Built on SIP — Starlight Intelligence Protocol"
+}

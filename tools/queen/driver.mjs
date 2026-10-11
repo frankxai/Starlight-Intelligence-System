@@ -1,20 +1,23 @@
 #!/usr/bin/env node
 /**
- * Queen Driver v0.2 — executable runtime for the *closed* ROUTE→MEASURE(parallel subagent)→LEARN(synth+patches)→RATIFY(A1/A2 gates)→LEDGER(visual+text+vault+github) loop.
- * Backing for /starlight-queen (/sq /so queen posture) + "queen-tick". Grok-native: prints spawn_subagent recipes (explore/plan/best-of-n/check-work) for MEASURE/LEARN; image_gen prompts for mandatory visuals; excellence/gstack concepts.
- * Enforces Visual Eval (model lane receipts), Composer formalization, advancement velocity (tick deltas, visuals/cycle), safe-only patches (A1 low-stakes + A2 >=2 rounds), anti-Goodhart, SIP attestation on every output.
+ * Queen Driver v0.2 + Foundry envelopes — typed capability routing plus a local
+ * ROUTE→MEASURE(recipe)→LEARN→RATIFY→LEDGER planning loop.
+ * The tick emits external-harness recipes; it does not claim those recipes ran.
+ * Visual artifacts count only when supplied with --visual=<existing-path>.
  * Loads: routing-table.json (+advancement), ROUTING-DOCTRINE.md v0.2, scorecards/arena, queen/state+ledger, operational-vault.
  *
  * Usage: node tools/queen/driver.mjs <subcommand> [args]
  *        npm run queen -- <subcommand> ...
- *        tick | queen-tick  : full v0.2 closed loop (recommended for self-advancement)
+ *        tick | queen-tick  : local planning and ledger loop
  *
  * Built on SIP — Starlight Intelligence Protocol.
  */
 
 import { readFileSync, writeFileSync, appendFileSync, existsSync, readdirSync, mkdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildCapabilityGraph, resolveCapabilities } from '../foundry/lib/graph.mjs';
+import { assertValid, getContract, loadContractRegistry } from '../foundry/lib/schema.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -26,6 +29,7 @@ const QUEEN_DIR = join(ROOT, 'tools', 'queen');
 const STATE_PATH = join(QUEEN_DIR, 'state.json');
 const LEDGER_PATH = join(QUEEN_DIR, 'ledger.jsonl');
 const VAULT_PATH = join(ROOT, 'memory', 'vaults', 'operational-vault.md');
+const FOUNDRY_CONTRACTS = join(ROOT, 'foundry', 'contracts');
 
 mkdirSync(QUEEN_DIR, { recursive: true });
 
@@ -35,6 +39,7 @@ function saveJSON(p, o) { writeFileSync(p, JSON.stringify(o, null, 2)); }
 function appendLine(p, line) { appendFileSync(p, line + '\n'); }
 
 const table = loadJSON(TABLE_PATH);
+const foundryContracts = loadContractRegistry(FOUNDRY_CONTRACTS);
 const doctrineHead = loadText(DOCTRINE_PATH).split('\n').slice(0, 30).join('\n');
 const state = existsSync(STATE_PATH) ? loadJSON(STATE_PATH) : { lastTick: null, lastSub: null, lastClass: null, proposals: [], visualsProduced: 0, lastMeasureTs: null, tickHistory: [] };
 
@@ -54,7 +59,7 @@ function getClassInfo(cls) {
 }
 
 function cmdStatus() {
-  console.log('STARLIGHT QUEEN STATUS (driver v0.1)');
+  console.log('STARLIGHT QUEEN STATUS (driver v0.2 + Foundry envelopes)');
   console.log('Table version:', table.version, 'lastDerivedFrom:', table.lastDerivedFrom);
   console.log('killSwitch:', table.killSwitch, 'safeDefault:', table.safeDefault);
   console.log('Recent classes (Grok-highlighted):');
@@ -77,6 +82,7 @@ function cmdRoute(desc) {
   if (table.killSwitch) { console.log('killSwitch active →', table.safeDefault); return; }
   const cls = classify(desc);
   const info = getClassInfo(cls);
+  console.log('routingMode: legacy-keyword-fallback (prefer route-envelope <task-envelope.json>)');
   console.log(`ROUTE for "${desc}" → class=${cls}`);
   console.log(`  target: ${info.route} (conf=${info.confidence}, autoApply=${info.autoApply}, stakes=${info.stakes}, rounds=${info.rounds})`);
   console.log(`  evidence: ${info.evidence?.slice(0,120)}...`);
@@ -85,6 +91,67 @@ function cmdRoute(desc) {
   console.log('**Built on SIP — Starlight Intelligence Protocol**');
   state.lastClass = cls;
   saveJSON(STATE_PATH, state);
+}
+
+function cmdRouteEnvelope(envelopePath, args) {
+  if (!envelopePath || envelopePath.startsWith('--')) {
+    throw new Error('route-envelope requires a Task Envelope JSON path');
+  }
+  const absoluteEnvelope = resolve(envelopePath);
+  const envelope = loadJSON(absoluteEnvelope);
+  assertValid(
+    envelope,
+    getContract(foundryContracts, 'task-envelope'),
+    foundryContracts,
+    'Task Envelope',
+  );
+
+  const graphArg = args.find((arg) => arg.startsWith('--graph='));
+  const graph = graphArg
+    ? loadJSON(resolve(graphArg.slice('--graph='.length)))
+    : buildCapabilityGraph(ROOT);
+  assertValid(
+    graph,
+    getContract(foundryContracts, 'capability-graph'),
+    foundryContracts,
+    'Capability Graph',
+  );
+
+  const resolution = resolveCapabilities(envelope, graph);
+  const foundrySkill = {
+    skill: 'foundry/skill-forge',
+    agent: 'foundry/agent-forge',
+    swarm: 'foundry/system-forge',
+    vertical: 'foundry/system-forge',
+    plugin: 'foundry/system-forge',
+  }[envelope.kind];
+  const route = {
+    routingMode: 'typed-task-envelope',
+    envelope: {
+      id: envelope.id,
+      kind: envelope.kind,
+      stakes: envelope.stakes,
+      autonomy: envelope.autonomy,
+    },
+    foundrySkill,
+    resolution,
+    gates: {
+      operatorApprovalBefore: envelope.autonomy.approvalRequiredBefore,
+      externalWritesAllowed: envelope.permissions.externalWrites,
+      destructiveActionsAllowed: envelope.permissions.destructiveActions,
+      requiredEvidenceLanes: envelope.evidencePolicy.requiredLanes,
+      agentNecessityProofRequired: envelope.kind === 'agent',
+    },
+  };
+
+  const outputArg = args.find((arg) => arg.startsWith('--out='));
+  if (outputArg) saveJSON(resolve(outputArg.slice('--out='.length)), route);
+  console.log(JSON.stringify(route, null, 2));
+  if (args.includes('--record')) {
+    state.lastClass = `foundry-${envelope.kind}`;
+    state.lastEnvelope = envelope.id;
+    saveJSON(STATE_PATH, state);
+  }
 }
 
 function cmdMeasure(lane) {
@@ -127,16 +194,16 @@ function cmdRatify(cls) {
   } else if (info.rounds < 2) {
     console.log('  A2: rounds <2 — suggestion only, no autoApply');
   } else {
-    console.log('  OK for low-stakes autoApply');
+    console.log('  Eligible for low-stakes review; this local command does not apply changes.');
   }
   console.log('**Built on SIP — Starlight Intelligence Protocol**');
 }
 
-// v0.2 closed-loop tick: ROUTE→MEASURE(parallel subagent)→LEARN(synth)→RATIFY(gates)→LEDGER(visual mandatory + velocity)
-function cmdTick(full) {
+// v0.2 local planning/ledger tick. External subagent and image work needs receipts.
+function cmdTick(full, args = []) {
   const startTs = Date.now();
   const tickId = `queen-tick-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}`;
-  console.log(`QUEEN v0.2 TICK START ${tickId} (full=${!!full})`);
+  console.log(`QUEEN v0.2 LOCAL TICK START ${tickId} (full=${!!full})`);
   console.log('**Built on SIP — Starlight Intelligence Protocol**');
 
   // 1. ROUTE (use recent or default)
@@ -162,8 +229,16 @@ function cmdTick(full) {
   const visualPrompt = `Clean technical infographic (dark premium tech aesthetic, precise sans labels, high legibility): Starlight Queen v0.2 Self-Advancement Tick ${tickId}. Show closed loop ROUTE→MEASURE→LEARN→RATIFY→LEDGER with subagent dispatch icons. Highlight new: Visual Eval dimension on Proving Ground model lane (mandatory image artifact per receipt); Composer 2.5 preferred for agentic-composer-long + visual-synthesis + parallel-harness-measure. Table excerpt (top classes: agentic-composer-long→grok/Composer, visual-synthesis→grok image_gen, parallel-harness-measure→grok subagent). Advancement velocity box: last tick delta, visuals/cycle >=1, anti-Goodhart note. SIP footer "Built on SIP — Starlight Intelligence Protocol v0.2 Queen". Minimalist, no slop, exact class names.`;
   console.log('\n  VISUAL PROMPT (execute via image_gen / Imagine in harness; ref the output path in LEDGER):');
   console.log('  ', visualPrompt.slice(0, 280) + '...');
-  // Count as produced (real run captures path)
-  state.visualsProduced = (state.visualsProduced || 0) + 1;
+  const visualArg = args.find((arg) => arg.startsWith('--visual='));
+  const visualPath = visualArg ? resolve(visualArg.slice('--visual='.length)) : null;
+  const visualObservedThisTick = !!visualPath && existsSync(visualPath);
+  state.visualPromptsEmitted = (state.visualPromptsEmitted || 0) + 1;
+  if (visualObservedThisTick) state.visualsProduced = (state.visualsProduced || 0) + 1;
+  console.log(
+    visualObservedThisTick
+      ? `  Observed visual artifact: ${visualPath}`
+      : '  Prompt emitted only; no visual artifact receipt supplied. This does not count as produced.',
+  );
 
   // 3. LEARN — synthesis proposals (A2 applied)
   console.log('\nLEARN (receipt synthesis → table deltas + doctrine patches; best-of-n + check-work):');
@@ -182,25 +257,20 @@ function cmdTick(full) {
 
   // 4. RATIFY (A1/A2 gates, drift, substrate split)
   console.log('\nRATIFY (A1 low-stakes auto only if rounds>=2 && !irreversible; A2 floor; drift detect):');
-  const canAuto = info.stakes !== 'irreversible' && info.rounds >= 2 && !table.killSwitch && info.autoApply;
-  if (canAuto && cls !== 'substrate-governance') {
-    console.log(`  LOW-STAKES: safe to auto-apply for ${cls} (per table). Driver will light-patch lastDerivedFrom only (full class bumps via manual or future router).`);
-    // Surgical safe update example (lastDerived + advancement; reversible via queen backups)
-    const nowNote = `${tickId} v0.2 tick`;
-    if (!table.lastDerivedFrom.includes(nowNote)) {
-      table.lastDerivedFrom.push(nowNote);
-      if (table.advancement) {
-        table.advancement.lastQueenTick = tickId;
-        table.advancement.visualsThisCycle = state.visualsProduced;
-      }
-      saveJSON(TABLE_PATH, table);
-      const backup = join(QUEEN_DIR, `table-backup-${Date.now()}.json`);
-      saveJSON(backup, loadJSON(TABLE_PATH));
-      console.log('  Applied safe lastDerived/advancement patch (backup created).');
-    }
-  } else {
-    console.log('  NOT auto-applied (A1/A2 or stakes or rounds<2 or killSwitch). Proposal only. For irreversible/substrate: route to /starlight-board + Frank ack. Use AskUserQuestion equivalent for ack.');
-  }
+  const eligibleForAuto =
+    info.stakes !== 'irreversible' &&
+    info.rounds >= 2 &&
+    !table.killSwitch &&
+    info.autoApply &&
+    visualObservedThisTick &&
+    cls !== 'substrate-governance';
+  const canAuto = false;
+  console.log(
+    eligibleForAuto
+      ? '  Proposal is eligible for external receipt review, but the local tick never auto-applies.'
+      : '  Proposal only (gates, evidence, stakes, rounds, or kill switch prevent eligibility).',
+  );
+  console.log('  Any substrate or irreversible implication routes to /starlight-board and explicit operator approval.');
 
   // 5. LEDGER (text + visual ref + vault + velocity)
   const endTs = Date.now();
@@ -209,7 +279,8 @@ function cmdTick(full) {
     tickId,
     start: new Date(startTs).toISOString(),
     durationMs,
-    visuals: state.visualsProduced,
+    visualArtifacts: visualObservedThisTick ? 1 : 0,
+    visualPromptsEmitted: 1,
     measureToLedgerDeltaMs: endTs - new Date(measureStart).getTime(),
     class: cls,
     proposals: proposals.length,
@@ -219,9 +290,9 @@ function cmdTick(full) {
   saveJSON(STATE_PATH, state);
 
   console.log('\nLEDGER (mandatory visual + text + vault + github option + SIP):');
-  console.log('  Visual ref: (harness executes image_gen with prompt above; record resultPath here + in vault note).');
+  console.log(`  Visual ref: ${visualObservedThisTick ? visualPath : 'prompt-only; no execution evidence'}.`);
   console.log('  Velocity snapshot:', velocityEntry);
-  console.log('  Falsifier check: visuals>=1?', state.visualsProduced >= 1, '; A1/A2 honored?', !canAuto || info.rounds>=2);
+  console.log('  Falsifier check: observed visual this tick?', visualObservedThisTick, '; A1/A2 honored?', !canAuto || info.rounds>=2);
   // Queen rec (excellence + skill integration): on every tick/ledger, after visual, invoke memory/mempalace-obsidian-bridge (the visual-tied new skill) + /curate-recall pattern to auto-offer palace card / curated note from the visual receipt + vault excerpt. Ties Queen visuals directly to Obsidian graph + palace recall. Driver emits the prompt; harness + skill close the human+auto loop. See skills/memory/mempalace-obsidian-bridge.md and operational-vault Queen entries.
 
   // Always append ledger entry (even without --append for tick)
@@ -231,16 +302,16 @@ function cmdTick(full) {
     class: cls,
     tickId,
     velocity: velocityEntry,
-    visualPromptRef: 'see above (or harness image output)',
-    note: `v0.2 closed Queen tick. MEASURE parallel subagents + Visual Eval enforced. ${canAuto ? 'Safe low-stakes patch applied' : 'No auto patch (gates)'}. Advancement velocity captured. Composer formalization + model lane visual req active. Grok harness excellence + SIP.`,
+    visualPromptRef: visualObservedThisTick ? visualPath : 'prompt-only; no execution evidence',
+    note: 'v0.2 local Queen tick. MEASURE recipes emitted; external execution is not implied. No patch auto-applied. Advancement timing captured. SIP.',
     reversible: true
   };
   appendLine(LEDGER_PATH, JSON.stringify(ledgerEntry));
-  const vaultNote = `\n### [${ledgerEntry.ts.slice(0,10)}] Queen v0.2 tick ${tickId}\n**Velocity:** duration ${durationMs}ms, measure-to-ledger ${velocityEntry.measureToLedgerDeltaMs}ms, visuals ${state.visualsProduced}\n**Class:** ${cls} (auto=${canAuto})\n**Visual:** image_gen prompt executed in harness (see driver output + image path). Arena/model receipts now carry visual per v0.2 lanes/SPEC.\n**Proposals:** ${proposals.length}\n**Falsifiers passed:** visuals>=1, A-gates, SIP.\n**Built on SIP — Starlight Intelligence Protocol (Queen v0.2 driver)**\n`;
+  const vaultNote = `\n### [${ledgerEntry.ts.slice(0,10)}] Queen v0.2 local tick ${tickId}\n**Timing:** duration ${durationMs}ms, measure-to-ledger ${velocityEntry.measureToLedgerDeltaMs}ms\n**Class:** ${cls} (auto=${canAuto})\n**Visual:** ${visualObservedThisTick ? `observed artifact ${visualPath}` : 'prompt emitted only; no artifact receipt'}\n**Proposals:** ${proposals.length}\n**Truth boundary:** external subagent/image recipes are not recorded as executed without receipts.\n**Built on SIP — Starlight Intelligence Protocol (Queen v0.2 driver)**\n`;
   appendFileSync(VAULT_PATH, vaultNote);
   console.log('  Appended to queen/ledger.jsonl + operational-vault.md');
 
-  console.log(`\nQUEEN v0.2 TICK COMPLETE ${tickId}. Duration: ${durationMs}ms. See state.json for history. Run with --full for richer lanes. Next: cross-harness R5 for hardening.`);
+  console.log(`\nQUEEN v0.2 LOCAL TICK COMPLETE ${tickId}. Duration: ${durationMs}ms. See state.json for history. Run with --full for richer planned lanes.`);
   console.log('**Built on SIP — Starlight Intelligence Protocol**');
 }
 
@@ -280,24 +351,33 @@ function cmdLedger(append) {
 function main() {
   const [,, sub = 'help', ...args] = process.argv;
   const argStr = args.join(' ');
-  state.lastSub = sub;
-  state.lastTick = new Date().toISOString();
-  saveJSON(STATE_PATH, state);
+  const mutatesQueenState =
+    sub === 'route' ||
+    sub === 'learn' ||
+    ['tick', 'queen-tick', 'full-tick'].includes(sub) ||
+    (sub === 'ledger' && args.includes('--append')) ||
+    (sub === 'route-envelope' && args.includes('--record'));
+  if (mutatesQueenState) {
+    state.lastSub = sub;
+    state.lastTick = new Date().toISOString();
+    saveJSON(STATE_PATH, state);
+  }
 
   if (sub === 'status' || sub === 'stat') return cmdStatus();
+  if (sub === 'route-envelope') return cmdRouteEnvelope(args[0], args.slice(1));
   if (sub === 'route') return cmdRoute(argStr || 'build the queen driver');
   if (sub === 'measure') return cmdMeasure(args[0]);
   if (sub === 'learn') return cmdLearn();
   if (sub === 'ratify') return cmdRatify(args.find(a => a.startsWith('--class='))?.split('=')[1]);
   if (sub === 'ledger') return cmdLedger(args.includes('--append'));
-  if (sub === 'tick' || sub === 'queen-tick' || sub === 'full-tick') return cmdTick(args.includes('--full') || sub === 'full-tick');
+  if (sub === 'tick' || sub === 'queen-tick' || sub === 'full-tick') return cmdTick(args.includes('--full') || sub === 'full-tick', args);
   if (sub === 'help' || sub === '--help') {
-    console.log('Queen driver subs: status | route <desc> | measure [--lane=] | learn | ratify [--class=] | ledger [--append] | tick [--full] | queen-tick');
-    console.log('v0.2: tick runs the full closed self-improving loop (subagent recipes for Grok, mandatory visual, velocity, safe A1/A2 patches only).');
-    console.log('Grok: use native spawn_subagent for the MEASURE/LEARN parallel dispatches printed by tick.');
+    console.log('Queen driver subs: status | route-envelope <task-envelope.json> [--graph=<json>] [--out=<json>] [--record] | route <desc> (legacy) | measure [--lane=] | learn | ratify [--class=] | ledger [--append] | tick [--full] [--visual=<existing-path>] | queen-tick');
+    console.log('v0.2: tick runs a local planning/ledger loop and never treats emitted recipes as execution evidence.');
+    console.log('A capable harness may execute the printed MEASURE/LEARN recipes and return real receipts for separate proof.');
     return;
   }
-  console.log('Unknown sub. Try: status, route "build...", measure, learn, ratify, ledger --append, tick [--full]');
+  console.log('Unknown sub. Try: status, route-envelope <task-envelope.json>, route "build..." (legacy), measure, learn, ratify, ledger --append, tick [--full]');
 }
 
 main();

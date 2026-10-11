@@ -69,7 +69,10 @@ import { EmpiricalSandbox } from "../../src/sandbox.js";
 test("Forged Pattern Validation: ${id}", async () => {
   ${blocks.map((block, i) => `
   // Validating block ${i} (${block.language})
-  const result${i} = EmpiricalSandbox.validatePattern(\`${block.code.replace(/`/g, "\\`").replace(/\${/g, "\\${")}\`, "${block.language}");
+  // allowExecution is explicit and lives in the generated file on purpose: a forged test is
+  // an operator-created artifact committed to this repo, so the decision to run this code is
+  // reviewable in the diff rather than inherited from a default.
+  const result${i} = EmpiricalSandbox.validatePattern(\`${block.code.replace(/`/g, "\\`").replace(/\${/g, "\\${")}\`, "${block.language}", { allowExecution: true });
   assert.strictEqual(result${i}.success, true, \`Pattern block ${i} failed execution: \${result${i}.output}\`);
   `).join("\n")}
 });

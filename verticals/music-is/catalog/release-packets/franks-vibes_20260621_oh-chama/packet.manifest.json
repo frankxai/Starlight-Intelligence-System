@@ -1,0 +1,91 @@
+{
+  "schema_version": "agentic-music-os.release-packet.v0.1",
+  "song_id": "franks-vibes_20260621_oh-chama",
+  "title": "Oh Chama",
+  "public_artist": "FrankX",
+  "label": "franks-vibes",
+  "persona": "FrankX",
+  "persona_status": "pending_music_is_lock",
+  "packet_state": "asset_ready_local_only",
+  "created_at": "2026-06-22T00:00:00+02:00",
+  "updated_at": "2026-06-22T00:00:00+02:00",
+  "external_action_policy": {
+    "distrokid_upload": "not_performed",
+    "spotify_upload": "not_performed",
+    "youtube_upload": "not_performed",
+    "bandcamp_upload": "not_performed",
+    "social_posting": "not_performed",
+    "allowed_status": "prepared_local_only"
+  },
+  "source": {
+    "source_type": "suno_url",
+    "source_url": "https://suno.com/s/pUf7ombE6iEmY0qO",
+    "canonical_url": "https://suno.com/song/9d3887b5-8184-462e-8b5a-8a7dfb2b1f00",
+    "engine": "suno",
+    "model_version": "v5.5 / chirp-fenix",
+    "prompt_path": "intake/prompt.txt",
+    "lyrics_path": "intake/lyrics.txt",
+    "source_audio": "audio/source-suno.mp3",
+    "source_video": "audio/source-suno-video.mp4"
+  },
+  "analysis_summary": {
+    "duration_seconds": 274.479979,
+    "codec": "mp3",
+    "sample_rate_hz": 48000,
+    "channels": 2,
+    "lufs_integrated": -13.0,
+    "true_peak_dbtp": -0.2,
+    "lra_lu": 4.7,
+    "artifact_flags": [
+      "mp3_source_only",
+      "true_peak_close_to_zero_review_before_distribution_master"
+    ]
+  },
+  "rights_summary": {
+    "ai_disclosure_status": "present",
+    "sample_clearance_status": "none_declared_needs_frank_confirmation",
+    "vocal_source": "suno",
+    "vocal_consent_status": "needs_confirmation_no_external_clone",
+    "rights_status": "needs_frank_confirmation_for_distribution"
+  },
+  "assets_summary": {
+    "cover": "prepared",
+    "canvas": "prepared",
+    "short_9x16": "prepared",
+    "gif": "prepared",
+    "visualizer_16x9": "not_started"
+  },
+  "preferred_asset_paths": {
+    "cover_master": "assets/cover/oh-chama-cover-3000x3000.jpg",
+    "spotify_canvas": "assets/motion/oh-chama-spotify-canvas-loop-6s-1080x1920.mp4",
+    "short_9x16": "assets/motion/oh-chama-youtube-shorts-hook-24s-1080x1920-v2.mp4",
+    "teaser_gif": "assets/motion/oh-chama-canvas-teaser-4s-320x568-optimized.gif"
+  },
+  "distribution_summary": {
+    "distrokid_packet": "prepared_local_only",
+    "spotify_artists_packet": "prepared_local_only",
+    "youtube_packet": "prepared_local_only",
+    "suno_hooks_packet": "prepared_local_only"
+  },
+  "ar_summary": {
+    "decision": "REVISE",
+    "decision_date": "2026-06-22",
+    "hard_gate_failures": [
+      "rights_confirmation_pending",
+      "artist_persona_lock_pending",
+      "distribution_wav_or_master_pending",
+      "human_listen_of_hook_cut_pending"
+    ],
+    "open_revisions": [
+      "Confirm Suno commercial rights and no external samples/voice clone.",
+      "Lock public artist/persona for catalog/distribution.",
+      "Listen to 00:50 Shorts hook cut before upload.",
+      "Export WAV/mastered WAV before distributor upload."
+    ]
+  },
+  "attestation": {
+    "checksums_path": "checksums.sha256",
+    "external_uploads_performed": false
+  }
+}
+

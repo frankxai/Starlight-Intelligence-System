@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/foundry/taste-profile.schema.json",
+  "title": "Starlight Foundry Taste Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "artifactType",
+    "audience",
+    "productionConstraints",
+    "hardGates",
+    "dimensions",
+    "exemplars",
+    "antiExemplars",
+    "candidatePolicy",
+    "pairwisePreferences",
+    "acceptedJudgments",
+    "judgePolicy"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "artifactType": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 80
+    },
+    "audience": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 300
+    },
+    "productionConstraints": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 500
+      }
+    },
+    "hardGates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "rejectWhen"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+          },
+          "rejectWhen": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "weight",
+          "excellent",
+          "failure"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "excellent": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 700
+          },
+          "failure": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 700
+          }
+        }
+      }
+    },
+    "exemplars": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reference",
+          "why"
+        ],
+        "properties": {
+          "reference": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "why": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      }
+    },
+    "antiExemplars": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reference",
+          "failure"
+        ],
+        "properties": {
+          "reference": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "failure": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      }
+    },
+    "candidatePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimumCandidates",
+        "maximumCandidates",
+        "comparisonMethod"
+      ],
+      "properties": {
+        "minimumCandidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "maximumCandidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "comparisonMethod": {
+          "enum": [
+            "rubric",
+            "blind-pairwise",
+            "hybrid"
+          ]
+        }
+      }
+    },
+    "pairwisePreferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "winner",
+          "loser",
+          "rationale"
+        ],
+        "properties": {
+          "winner": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "loser": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1500
+          },
+          "evidenceReference": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "acceptedJudgments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "decision",
+          "rationale",
+          "status"
+        ],
+        "properties": {
+          "decision": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1500
+          },
+          "status": {
+            "enum": [
+              "seed",
+              "receipt-backed",
+              "superseded"
+            ]
+          },
+          "evidenceReference": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
+    },
+    "judgePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "blind",
+        "minimumIndependentJudges",
+        "producerMayJudge",
+        "synthesisOwner",
+        "domainCriticRequired",
+        "adversarialReviewRequired"
+      ],
+      "properties": {
+        "blind": {
+          "type": "boolean"
+        },
+        "minimumIndependentJudges": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "producerMayJudge": {
+          "type": "boolean"
+        },
+        "synthesisOwner": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "domainCriticRequired": {
+          "type": "boolean"
+        },
+        "adversarialReviewRequired": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

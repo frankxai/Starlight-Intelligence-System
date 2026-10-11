@@ -214,7 +214,7 @@ function runBaseline() {
       console.log(`  SKIP  ${rel} (not found)`);
       continue;
     }
-    const content = readFileSync(abs, "utf-8");
+    const content = readFileSync(abs, "utf-8").replace(/^\uFEFF/, "");
     const hash = sha256(content);
     const vector = semanticFingerprint(content);
     baseline.files[rel] = { hash, vector, timestamp: new Date().toISOString() };
@@ -263,7 +263,7 @@ function runCheck() {
       continue;
     }
 
-    const content = readFileSync(abs, "utf-8");
+    const content = readFileSync(abs, "utf-8").replace(/^\uFEFF/, "");
     const hash = sha256(content);
 
     if (!baselineKeys.has(rel)) {

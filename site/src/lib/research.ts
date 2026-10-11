@@ -40,12 +40,12 @@ const RESEARCH_LIST: Research[] = [
     tier: "substrate",
     status: "in-progress",
     tldr:
-      "Whole-system evaluation across seven lanes (model, memory, retrieval, harness, substrate, datasets, system), run by Luminor-kernel evaluator agents, verdicts via the Starlight Board. First run caught its own unregistered agent; load-bearing weakness is memory precision@10 = 0.20.",
+      "Whole-system evaluation across seven lanes (model, memory, retrieval, harness, substrate, datasets, system), run by evaluator agents, verdicts via the Starlight Board. First run caught its own unregistered agent; load-bearing weakness is memory precision@10 = 0.20.",
     contentFile: "starlight-proving-ground-2026-06.md",
     tags: [
       "system evaluation",
       "Proving Ground",
-      "Luminor kernel",
+      "evaluator agents",
       "Starlight Board",
       "precision@10",
       "model arena",

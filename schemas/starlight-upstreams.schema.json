@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/starlight-upstreams.schema.json",
+  "title": "Starlight Upstream Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema_version", "audit_cutoff", "owner", "policy", "upstreams"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "1.0.0" },
+    "audit_cutoff": { "type": "string", "format": "date" },
+    "owner": { "type": "string", "minLength": 1 },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["standards", "runtime_dependency", "reference_harness", "memory_provider"],
+      "properties": {
+        "standards": { "type": "string", "minLength": 1 },
+        "runtime_dependency": { "type": "string", "minLength": 1 },
+        "reference_harness": { "type": "string", "minLength": 1 },
+        "memory_provider": { "type": "string", "minLength": 1 }
+      }
+    },
+    "upstreams": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "class", "repository", "track", "verified_at", "adoption", "owner", "primitive", "security_notes"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "class": { "enum": ["standards", "runtime_dependency", "reference_harness", "memory_provider"] },
+          "repository": { "type": "string", "pattern": "^https://github\\.com/" },
+          "track": { "type": "string", "minLength": 1 },
+          "verified_at": { "type": "string", "format": "date" },
+          "adoption": { "enum": ["candidate", "conformance", "lab", "pattern", "shadow"] },
+          "owner": { "type": "string", "minLength": 1 },
+          "primitive": { "type": "string", "minLength": 1 },
+          "security_notes": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

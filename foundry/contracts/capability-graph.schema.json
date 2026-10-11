@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/foundry/capability-graph.schema.json",
+  "title": "Starlight Foundry Capability Graph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "source",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "skillRules",
+        "agentRegistry"
+      ],
+      "properties": {
+        "skillRules": {
+          "type": "string"
+        },
+        "agentRegistry": {
+          "type": "string"
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "path",
+          "provides"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(skill|agent):[a-z0-9][a-z0-9/-]{1,127}$"
+          },
+          "kind": {
+            "enum": [
+              "skill",
+              "agent"
+            ]
+          },
+          "status": {
+            "enum": [
+              "stable",
+              "experimental",
+              "deprecated",
+              "registered"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "description": {
+            "type": "string"
+          },
+          "provides": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "aliases": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^(skill|agent):[a-z0-9][a-z0-9/-]{1,127}$"
+            }
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to",
+          "relation"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "pattern": "^(skill|agent):[a-z0-9][a-z0-9/-]{1,127}$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^(skill|agent):[a-z0-9][a-z0-9/-]{1,127}$"
+          },
+          "relation": {
+            "enum": [
+              "activates",
+              "depends-on",
+              "default-for"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

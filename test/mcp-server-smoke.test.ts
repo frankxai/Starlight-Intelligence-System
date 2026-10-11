@@ -1,13 +1,13 @@
 /**
  * Operational MCP server — end-to-end JSON-RPC smoke test.
  *
- * The README's #1 install path is `node dist/mcp-server.js` exposing ten
+ * The README's #1 install path is `node dist/mcp-server.js` exposing thirteen
  * `sis_*` tools over JSON-RPC 2.0 stdio. That path previously had NO automated
- * end-to-end proof (the v0.1 server in mcp-server-v01.ts is a different, 13
+ * end-to-end proof (the v0.1 server in mcp-server-v01.ts is a different
  * `sis.*`-tool surface). This test spawns the operational server, drives the
  * real stdin/stdout protocol, and asserts:
  *   - `initialize` returns serverInfo
- *   - `tools/list` returns exactly the ten documented `sis_*` tools
+ *   - `tools/list` returns exactly the thirteen documented `sis_*` tools
  *
  * The server is spawned from src/ via the tsx loader so the test does not
  * depend on build order within `npm test`; src/mcp-server.ts is the exact code
@@ -31,6 +31,8 @@ const SERVER = join(REPO_ROOT, "src", "mcp-server.ts");
 const EXPECTED_TOOLS = [
   "sis_append_entry",
   "sis_confirm",
+  "sis_continuity_import",
+  "sis_continuity_status",
   "sis_contradict",
   "sis_durability_anchor",
   "sis_entry_types",

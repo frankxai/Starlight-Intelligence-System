@@ -178,6 +178,10 @@ export async function searchNasaImages(
         render?: string;
       }[];
       const medium = links.find((l) => l.href.includes("~medium")) ?? links[0];
+      const large =
+        links.find((l) => l.href.includes("~orig")) ??
+        links.find((l) => l.href.includes("~large")) ??
+        medium;
       const thumb = links.find((l) => l.rel === "preview") ?? medium;
       if (!meta || !medium) continue;
       items.push({
@@ -186,7 +190,7 @@ export async function searchNasaImages(
         description: (meta.description ?? "").slice(0, 300),
         dateCreated: (meta.date_created ?? "").slice(0, 10),
         credit: meta.secondary_creator || meta.center || "NASA",
-        imageUrl: medium.href,
+        imageUrl: large.href,
         thumbUrl: thumb?.href ?? medium.href,
       });
     }
