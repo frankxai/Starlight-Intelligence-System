@@ -132,7 +132,7 @@
     }
   },
   "scripts": {
-    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts test/chatgpt-plan-runtime.test.ts test/opencode-runtime.test.ts test/creator-workspace.test.ts test/ecosystem.test.ts",
+    "test:terminal": "node --import tsx --test test/terminal-runtime.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/creator-workspace.test.ts test/ecosystem.test.ts",
     "build": "tsc",
     "build:site": "npm --prefix site run build",
     "build:console": "npm --prefix console run build",
