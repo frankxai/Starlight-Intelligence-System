@@ -163,7 +163,7 @@ class NativeCheckTests(unittest.TestCase):
                     calls.append(json.loads(kwargs['input']))
                 output = StringIO()
                 with patch.dict(gate.os.environ, {'GITHUB_REPOSITORY': self.repository, 'GITHUB_EVENT_PATH': 'event.json'}, clear=True), \
-                     patch('builtins.open', mock_open(read_data=json.dumps({'issue': {'number': 110, 'pull_request': {}}}))), \
+                     patch('builtins.open', mock_open(read_data=json.dumps({'issue': {'number': 110, 'pull_request': {'url': 'https://api.github.com/repos/frankxai/Starlight-Intelligence-System/pulls/110'}}}))), \
                      patch.object(gate, 'native_review_check', return_value={'id': 41}), \
                      patch.object(gate, 'api', side_effect=api), \
                      patch.object(gate.subprocess, 'run', side_effect=run), redirect_stdout(output):
