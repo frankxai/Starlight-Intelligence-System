@@ -36,7 +36,8 @@ function saveJSON(p, obj) {
 const SURGICAL_KEYWORDS = [
   'fix', 'bug', 'layout shift', 'cls', 'validator', 'security', 'rce', 
   'dependencies', 'temp dir', 'cleanup', 'test', 'schema', 'pin', 
-  'export', 'shim', 'data leak', 'idempotent', 'refund'
+  'export', 'shim', 'data leak', 'idempotent', 'refund', 'ui', 'component',
+  'guide', 'seo', 'docs', 'a11y', 'contrast'
 ];
 
 const REJECT_PATTERNS = [
@@ -47,6 +48,26 @@ const REJECT_PATTERNS = [
   /canon questions/i,
   /proposal:/i
 ];
+
+function determineTaskType(issue) {
+  const text = `${issue.title} ${issue.body || ''}`.toLowerCase();
+  if (text.includes('security') || text.includes('rce') || text.includes('data leak') || text.includes('dependencies')) {
+    return 'security';
+  }
+  if (text.includes('ui') || text.includes('css') || text.includes('layout shift') || text.includes('cls') || text.includes('component') || text.includes('a11y')) {
+    return 'frontend_excellence';
+  }
+  if (text.includes('seo') || text.includes('guide') || text.includes('blog') || text.includes('copy') || text.includes('post')) {
+    return 'technical_content_seo';
+  }
+  if (text.includes('test') || text.includes('coverage') || text.includes('fixture')) {
+    return 'overflow_testing_qa';
+  }
+  if (text.includes('ontology') || text.includes('vault') || text.includes('graph')) {
+    return 'knowledge_graph_ontology';
+  }
+  return 'bugfix';
+}
 
 function isAutonomousCandidate(issue) {
   const text = `${issue.title} ${issue.body || ''}`.toLowerCase();
@@ -61,7 +82,11 @@ function isAutonomousCandidate(issue) {
   return hasKeyword;
 }
 
-export function harvestIssues() {
+import { promisify } from 'node:util';
+import { execFile } from 'node:child_process';
+const execFileAsync = promisify(execFile);
+
+export async function harvestIssues() {
   const config = loadJSON(CONFIG_PATH, {});
   const ledger = loadJSON(LEDGER_PATH, { sessions: {} });
   const backlog = loadJSON(BACKLOG_PATH, { queue: [] });
@@ -72,11 +97,11 @@ export function harvestIssues() {
   const harvested = [];
   const repos = config.monitoredRepos || Object.keys(config.repoProfiles || {}).filter(k => k !== 'default');
 
-  console.log(`[HARVESTER] Scanning GitHub issues across ${repos.length} repositories...`);
+  console.log(`[HARVESTER] Scanning GitHub issues across ${repos.length} repositories in parallel...`);
 
-  for (const repo of repos) {
+  const sweeps = repos.map(async (repo) => {
     try {
-      const res = spawnSync('gh', [
+      const { stdout } = await execFileAsync('gh', [
         'issue', 'list',
         '--repo', repo,
         '--limit', '10',
@@ -85,41 +110,45 @@ export function harvestIssues() {
       ], {
         encoding: 'utf8',
         windowsHide: true,
-        timeout: 15000
+        timeout: 20000
       });
 
-      if (res.status !== 0 || !res.stdout) continue;
+      return { repo, issues: JSON.parse(stdout || '[]') };
+    } catch {
+      return { repo, issues: [] };
+    }
+  });
 
-      const issues = JSON.parse(res.stdout || '[]');
-      for (const issue of issues) {
-        const key = `${repo}#${issue.number}`;
-        if (queuedIssueKeys.has(key)) continue;
+  const results = await Promise.all(sweeps);
 
-        // Check if already executed in ledger
-        const alreadyRan = existingSessionDescriptions.some(desc => 
-          desc.includes(repo.toLowerCase()) && desc.includes(String(issue.number))
-        );
-        if (alreadyRan) continue;
+  for (const { repo, issues } of results) {
+    for (const issue of issues) {
+      const key = `${repo}#${issue.number}`;
+      if (queuedIssueKeys.has(key)) continue;
 
-        if (isAutonomousCandidate(issue)) {
-          const task = {
-            id: `task_${Date.now()}_${issue.number}`,
-            repo,
-            issueNumber: issue.number,
-            title: issue.title,
-            description: `Issue #${issue.number}: ${issue.title}\n\n${(issue.body || '').slice(0, 500)}`,
-            type: issue.title.toLowerCase().includes('security') ? 'security' : 'bugfix',
-            harvestedAt: new Date().toISOString()
-          };
+      // Check if already executed in ledger
+      const alreadyRan = existingSessionDescriptions.some(desc => 
+        desc.includes(repo.toLowerCase()) && desc.includes(String(issue.number))
+      );
+      if (alreadyRan) continue;
 
-          harvested.push(task);
-          backlog.queue.push(task);
-          queuedIssueKeys.add(key);
-          console.log(`  + Harvested [${key}]: ${issue.title.slice(0, 60)}...`);
-        }
+      if (isAutonomousCandidate(issue)) {
+        const taskType = determineTaskType(issue);
+        const task = {
+          id: `task_${Date.now()}_${issue.number}`,
+          repo,
+          issueNumber: issue.number,
+          title: issue.title,
+          description: `Issue #${issue.number}: ${issue.title}\n\n${(issue.body || '').slice(0, 500)}`,
+          type: taskType,
+          harvestedAt: new Date().toISOString()
+        };
+
+        harvested.push(task);
+        backlog.queue.push(task);
+        queuedIssueKeys.add(key);
+        console.log(`  + Harvested [${key}] [Type: ${taskType}]: ${issue.title.slice(0, 55)}...`);
       }
-    } catch (err) {
-      console.error(`  - Failed to harvest issues for ${repo}: ${err.message}`);
     }
   }
 
