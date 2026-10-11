@@ -1,6 +1,6 @@
 # Queen ChatGPT plan worker
 
-Status: implemented transport with synthetic checks; sign-in integration, live inference and independent review remain open. This is operational SIS code. It changes no SIP governance, canonical identity, credential authority or deployment policy.
+Status: implemented transport with synthetic checks; sign-in integration and live inference remain open. Exact-revision independent review is tracked in [PR358](https://github.com/frankxai/Starlight-Intelligence-System/pull/358). This is operational SIS code. It changes no SIP governance, canonical identity, credential authority or deployment policy.
 
 The creator job is to connect an eligible ChatGPT account, choose a current model, and let an existing Starlight team produce an editable artifact with a visible review and recovery record. The worker here supplies text inference to the existing runtime bridge. It does not yet deliver that complete creator journey.
 
