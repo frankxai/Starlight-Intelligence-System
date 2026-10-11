@@ -76,7 +76,7 @@
         "foundry/validators/native/package-lock.json": "40939a89c67977d995358442d218575ba00f193864e67a56ff53d250adfd7d98",
         "foundry/validators/native/package.json": "e55b7118d8516c2fc6536dc603475eff9b34df1098e2ee02eb80e2b78b1039c9",
         "tools/foundry/codex-loader-smoke.mjs": "e3ebf332b80e440ceb62c05410c8415ead21f08d369ede9bbfa93dfb7c561c22",
-        "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
+        "tools/foundry/lib/io.mjs": "0cbb6aada3bd9072dac68e74f9b0b25f01fcd0e0aa3d502190348afb38b16718",
         "tools/foundry/lib/package-payload.mjs": "0a195f6a1aeb04ec4f37386038335b6da2be53fa68b83207b3244fd7b070c309"
       },
       "platformPackages": {
@@ -106,7 +106,7 @@
         "foundry/validators/native/package-lock.json": "40939a89c67977d995358442d218575ba00f193864e67a56ff53d250adfd7d98",
         "foundry/validators/native/package.json": "e55b7118d8516c2fc6536dc603475eff9b34df1098e2ee02eb80e2b78b1039c9",
         "tools/foundry/claude-validator-smoke.mjs": "4504c82703f0c551ad97f8d55dc863d8063ecb56380e70a2a75f22cad05fc2fd",
-        "tools/foundry/lib/io.mjs": "aaae3443eef8d55761ee0bb3481dfb209358e2dff50e9a71695d03180becd1b1",
+        "tools/foundry/lib/io.mjs": "0cbb6aada3bd9072dac68e74f9b0b25f01fcd0e0aa3d502190348afb38b16718",
         "tools/foundry/lib/package-payload.mjs": "0a195f6a1aeb04ec4f37386038335b6da2be53fa68b83207b3244fd7b070c309"
       },
       "platformPackages": {
