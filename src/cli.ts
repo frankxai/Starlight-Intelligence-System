@@ -31,9 +31,16 @@ import {
   StarlightIntelligence,
   UniversalKnowledgeTree,
   StarlightQueen,
+  StarlightMarketplace,
   type SwarmTopologyType,
   type KnowledgeDomainId,
+  type MarketplaceItemKind,
 } from "./index.js";
+import {
+  readRegistry,
+  installPack,
+  uninstallPack,
+} from "./pack-runtime.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
 import { syncACOSToSIS } from "./sync.js";
@@ -165,6 +172,12 @@ Commands:
   queen briefing                  Generate executive founder cockpit briefing
   queen synthesize <mission>      Synthesize dynamic sub-swarm (--topology, --domain)
   queen santa <task>              Execute Santa adversarial convergence loop
+  pack list                       List installed and available packs (--installed, --available)
+  pack install <id>               Install an ecosystem pack (--ack-permissions)
+  pack uninstall <id>             Uninstall an installed pack
+  marketplace list                List ecosystem packs, MCPs, harnesses, cloud offerings (--kind, --category)
+  marketplace info <id>           Show detailed information for an ecosystem artifact
+  marketplace stats               Show marketplace ecosystem statistics
   orchestrate <intent>            Run an orchestration (prints JSON result)
   stats                           Show system statistics
   version                         Print version
@@ -212,10 +225,19 @@ Options:
   --no-free-preference            Do not boost free-eligible lanes
   --topology <type>               Swarm topology: phd_research_deep, staff_eng_hyper, luxury_creative_cinema, autonomous_revenue_ops
   --domain <id>                   Universal Knowledge domain ID (e.g. physics_cosmology, agi_cognitive_arch)
+  --installed                     Filter pack list to installed packs
+  --available                     Filter pack list to available packs
+  --ack-permissions               Acknowledge required pack permissions during install
+  --kind <kind>                   Marketplace item kind (skill_pack, mcp_server, harness_profile, cloud_service, vertical_stack)
 
 Examples:
   starlight init
   starlight init --vaults
+  starlight pack list
+  starlight pack install dashboard-cockpit-pack --ack-permissions
+  starlight marketplace list --kind mcp_server
+  starlight marketplace info starlight-agent-canvas
+  starlight marketplace stats
   starlight init --vaults --vault-dir ~/.starlight/vaults
   starlight generate --target cursor --output .cursorrules
   starlight guidance --project frankx --acos-path ~/.claude/trajectories
@@ -1654,6 +1676,157 @@ async function cmdQueen(action: string, args: string[], options: { topology?: st
   }
 }
 
+function cmdPack(action: string, args: string[], options: { installed?: boolean; available?: boolean; ackPermissions?: boolean }): void {
+  const root = getPackageRoot();
+  switch (action) {
+    case "list": {
+      const reg = readRegistry(root);
+      if (!options.available) {
+        console.log(`[starlight] Installed Packs (${reg.installed.length}):\n`);
+        if (reg.installed.length === 0) {
+          console.log("  (none currently installed)");
+        } else {
+          for (const p of reg.installed) {
+            console.log(`  ✦ [${p.id}] ${p.name} v${p.version} (${p.kind})`);
+            console.log(`    Permissions: ${p.permissions.length > 0 ? p.permissions.join(", ") : "none"}`);
+            console.log(`    SHA: ${p.manifestSha.slice(0, 16)}...`);
+            console.log("");
+          }
+        }
+      }
+      if (!options.installed) {
+        console.log(`[starlight] Available Packs (${reg.available.length}):\n`);
+        if (reg.available.length === 0) {
+          console.log("  (none available)");
+        } else {
+          for (const p of reg.available) {
+            console.log(`  ✦ [${p.id}] ${p.name} v${p.version} (${p.kind})`);
+            console.log(`    Permissions: ${p.permissions.length > 0 ? p.permissions.join(", ") : "none"}`);
+            console.log(`    Install: starlight pack install ${p.id}${p.permissions.length > 0 ? " --ack-permissions" : ""}`);
+            console.log("");
+          }
+        }
+      }
+      break;
+    }
+    case "install": {
+      const packId = args[0];
+      if (!packId) {
+        console.error("[starlight] Error: pack install requires a pack ID.");
+        process.exitCode = 1;
+        return;
+      }
+      const res = installPack(root, packId, {
+        permissions_acked: options.ackPermissions,
+        caller: "starlight-cli",
+      });
+      if (!res.ok) {
+        console.error(`[starlight] Pack installation failed: ${res.error}`);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(`[starlight] Successfully installed pack: ${res.pack?.name ?? packId} v${res.pack?.version ?? "1.0.0"}`);
+      console.log(`  Path: ${res.installPath}`);
+      console.log(`  SHA: ${res.pack?.manifestSha ?? "computed"}`);
+      break;
+    }
+    case "uninstall": {
+      const packId = args[0];
+      if (!packId) {
+        console.error("[starlight] Error: pack uninstall requires a pack ID.");
+        process.exitCode = 1;
+        return;
+      }
+      const res = uninstallPack(root, packId, { caller: "starlight-cli" });
+      if (!res.ok) {
+        console.error(`[starlight] Pack uninstallation failed: ${res.error}`);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(`[starlight] Successfully uninstalled pack: ${res.pack?.name ?? packId}`);
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown pack action: "${action}"`);
+      console.error("  Available actions: list, install, uninstall");
+      process.exitCode = 1;
+  }
+}
+
+function cmdMarketplace(action: string, args: string[], options: { kind?: string; category?: string; query?: string }): void {
+  const marketplace = new StarlightMarketplace();
+  switch (action) {
+    case "list": {
+      const kind = options.kind as MarketplaceItemKind | undefined;
+      const category = options.category;
+      const query = args.join(" ");
+      const items = marketplace.search({ kind, category, query: query || undefined });
+      console.log(`[starlight] Starlight Marketplace & Hub (${items.length} items):\n`);
+      for (const item of items) {
+        const feat = item.featured ? " ★" : "";
+        console.log(`  ✦ [${item.id}] ${item.name}${feat} (v${item.version} | ${item.kind} | ${item.pricingTier})`);
+        console.log(`    Category: ${item.category} | Author: ${item.author}`);
+        console.log(`    ${item.description}`);
+        console.log(`    Command: ${item.installCommand}`);
+        console.log(`    Tags: ${item.tags.join(", ")}`);
+        console.log("");
+      }
+      break;
+    }
+    case "info": {
+      const id = args[0];
+      if (!id) {
+        console.error("[starlight] Error: marketplace info requires an item ID.");
+        process.exitCode = 1;
+        return;
+      }
+      const item = marketplace.getItem(id);
+      if (!item) {
+        console.error(`[starlight] Item not found: "${id}"`);
+        process.exitCode = 1;
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  ${item.name} (v${item.version}) ${item.featured ? "★ FEATURED" : ""}`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`ID:           ${item.id}`);
+      console.log(`Kind:         ${item.kind}`);
+      console.log(`Category:     ${item.category}`);
+      console.log(`Pricing:      ${item.pricingTier.toUpperCase()}`);
+      console.log(`Author:       ${item.author}`);
+      if (item.npmPackage) console.log(`NPM Package:  ${item.npmPackage}`);
+      if (item.homepage) console.log(`Homepage:     ${item.homepage}`);
+      if (item.repository) console.log(`Repository:   ${item.repository}`);
+      console.log(`\nDescription:\n  ${item.description}`);
+      console.log(`\nCapabilities:\n  - ${item.capabilities.join("\n  - ")}`);
+      console.log(`\nPermissions Required:\n  ${item.permissions.length > 0 ? item.permissions.join(", ") : "none (sandboxed)"}`);
+      console.log(`\nInstall Command:\n  ${item.installCommand}`);
+      console.log(`\nAttestation:\n  SIP Verified: ${item.verifiedAttestation ? "YES" : "NO"} | SHA: ${item.manifestSha.slice(0, 16)}...`);
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+    case "stats": {
+      const stats = marketplace.getStats();
+      console.log(`[starlight] Marketplace Ecosystem Statistics:\n`);
+      console.log(`  Total Catalog Items:      ${stats.totalItems}`);
+      console.log(`  Skill Packs:              ${stats.skillPacksCount}`);
+      console.log(`  MCP Servers:              ${stats.mcpServersCount}`);
+      console.log(`  Harness Profiles:         ${stats.harnessProfilesCount}`);
+      console.log(`  Cloud Services:           ${stats.cloudServicesCount}`);
+      console.log(`  Domain Vertical Stacks:   ${stats.verticalStacksCount}`);
+      console.log(`\nCategories available:`);
+      for (const cat of marketplace.listCategories()) {
+        console.log(`  - ${cat}`);
+      }
+      break;
+    }
+    default:
+      console.error(`[starlight] Unknown marketplace action: "${action}"`);
+      console.error("  Available actions: list, info, stats");
+      process.exitCode = 1;
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -1694,6 +1867,10 @@ async function main(): Promise<void> {
       "no-free-preference": { type: "boolean" },
       topology: { type: "string" },
       domain: { type: "string" },
+      installed: { type: "boolean" },
+      available: { type: "boolean" },
+      "ack-permissions": { type: "boolean" },
+      kind: { type: "string" },
     },
     strict: false,
   });
@@ -1926,6 +2103,25 @@ async function main(): Promise<void> {
         findings: asString(values.findings),
         summary: asString(values.summary),
         "no-tests": values["no-tests"] === true,
+      });
+      break;
+    }
+
+    case "pack": {
+      const packAction = positionals[1] ?? "list";
+      cmdPack(packAction, positionals.slice(2), {
+        installed: values.installed === true,
+        available: values.available === true,
+        ackPermissions: values["ack-permissions"] === true,
+      });
+      break;
+    }
+
+    case "marketplace": {
+      const marketAction = positionals[1] ?? "list";
+      cmdMarketplace(marketAction, positionals.slice(2), {
+        kind: asString(values.kind),
+        category: asString(values.category),
       });
       break;
     }

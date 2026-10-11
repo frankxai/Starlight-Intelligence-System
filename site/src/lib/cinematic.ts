@@ -46,4 +46,6 @@ export const PAGE_STILLS: Record<string, CinematicStill> = {
   "/badge": "veil",
   "/benediction": "veil",
   "/featured": "deepField",
+  "/marketplace": "deepField",
+  "/cloud": "nursery",
 };

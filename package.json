@@ -128,6 +128,10 @@
     "./queen": {
       "types": "./dist/queen/index.d.ts",
       "import": "./dist/queen/index.js"
+    },
+    "./marketplace": {
+      "types": "./dist/marketplace/index.d.ts",
+      "import": "./dist/marketplace/index.js"
     }
   },
   "scripts": {

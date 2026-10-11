@@ -465,3 +465,6 @@ export * from './knowledge/index.js';
 // Starlight Queen Meta-Orchestrator
 export * from './queen/index.js';
 
+// Starlight Marketplace & Hub
+export * from './marketplace/index.js';
+

@@ -36,6 +36,8 @@ export const NAV_GROUPS: NavGroup[] = [
     visual: NAV_GROUP_STILLS.Build,
     items: [
       { href: "/deploy", label: "Deploy Explorer", desc: "Own the public Starlight interface" },
+      { href: "/marketplace", label: "Marketplace & Hub", desc: "Skill packs, MCP servers & harnesses" },
+      { href: "/cloud", label: "Starlight Cloud", desc: "Managed vaults, storage & frontier models" },
       { href: "/quickstart", label: "Quickstart", desc: "Five minutes to first context" },
       { href: "/download", label: "Source & Modules", desc: "Build SIP source or get modules" },
       { href: "/cockpit", label: "Cockpit", desc: "The spec-trace console" },
