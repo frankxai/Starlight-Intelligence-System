@@ -151,7 +151,7 @@ export class StarlightCloudWorker {
       if (url.pathname === '/v1/swarm/lease/release' && method === 'POST') {
         const { leaseId } = (await request.json()) as { leaseId: string };
         ACTIVE_LEASES.delete(leaseId);
-        return new Response(JSON.stringify({ success: true, released: leaseId }), { status: 200, headers: this.CORS_HEADERS });
+        return new Response(JSON.stringify({ success: true, status: 'released', released: leaseId }), { status: 200, headers: this.CORS_HEADERS });
       }
 
       // 10. Route Model Context Protocol (MCP) SSE Transport Handshake

@@ -77,8 +77,8 @@ export class EdgeVirtualMcpRouter {
    * Synthesizes the optimal toolset dynamically just-in-time for the agent's context envelope.
    */
   public synthesize(req: VmcpRequest): VmcpResponse {
-    const intentLower = req.activeIntent.toLowerCase();
-    const fileLower = (req.activeFilePath || '').toLowerCase();
+    const intentLower = (req?.activeIntent || (req as any)?.taskIntent || (req as any)?.intent || '').toLowerCase();
+    const fileLower = (req?.activeFilePath || (req as any)?.activeFiles?.[0] || (req as any)?.file || '').toLowerCase();
 
     const selectedScopes = new Set<string>();
 
