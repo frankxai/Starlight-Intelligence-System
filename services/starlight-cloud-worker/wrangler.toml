@@ -15,11 +15,11 @@ index_name = "starlight-memories-768"
 [[d1_databases]]
 binding = "STARLIGHT_DB"
 database_name = "starlight-production-db"
-database_id = "starlight-db-prod-01"
+database_id = "175513dc-1a47-4ba3-961f-78c54603af16"
 
 [[kv_namespaces]]
 binding = "STARLIGHT_KV"
-id = "starlight_kv_prod_01"
+id = "5dab9ccc89a04a6a964fd3bc7ef12288"
 
 [durable_objects]
 bindings = [
@@ -28,7 +28,7 @@ bindings = [
 
 [[migrations]]
 tag = "v1"
-new_classes = ["SwarmCoordinator"]
+new_sqlite_classes = ["SwarmCoordinator"]
 
 [ai]
 binding = "AI"

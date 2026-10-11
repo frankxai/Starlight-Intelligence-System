@@ -224,6 +224,41 @@ export class StarlightCloudWorker {
     }
     tenantList.push(atom);
 
+    // Persist to Edge D1 Relational SQLite if bound
+    if (env?.STARLIGHT_DB) {
+      try {
+        await env.STARLIGHT_DB.prepare(`
+          INSERT INTO memory_atoms (id, tenant_id, tier, namespace, content, metadata, tags, is_encrypted, half_life_days, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          atom.id,
+          atom.tenantId,
+          atom.tier,
+          atom.namespace,
+          atom.content,
+          JSON.stringify(atom.metadata || {}),
+          JSON.stringify(atom.tags || []),
+          atom.isEncrypted ? 1 : 0,
+          atom.halfLifeDays || 90,
+          atom.createdAt,
+          atom.updatedAt
+        ).run();
+      } catch (err) {
+        console.error('[STARLIGHT:D1] Failed to persist atom:', err);
+      }
+    }
+
+    // Persist to Edge KV if bound
+    if (env?.STARLIGHT_KV) {
+      try {
+        await env.STARLIGHT_KV.put(`atom:${atom.id}`, JSON.stringify(atom), {
+          expirationTtl: (atom.halfLifeDays || 90) * 86400,
+        });
+      } catch (err) {
+        console.error('[STARLIGHT:KV] Failed to cache atom:', err);
+      }
+    }
+
     return {
       success: true,
       id: atom.id,
@@ -242,15 +277,55 @@ export class StarlightCloudWorker {
     headers?: Headers
   ): Promise<QueryResponse> {
     const start = performance.now();
-    const atoms = MEMORY_INDEX.get(tenant.tenantId) || [];
     const queryTerms = req.query.toLowerCase().split(/\s+/).filter(Boolean);
+    let candidates: MemoryAtom[] = [];
 
-    // Filter by namespace and tier if specified
-    const candidates = atoms.filter(a => {
-      if (req.tier && a.tier !== req.tier) return false;
-      if (req.namespace && a.namespace !== req.namespace) return false;
-      return true;
-    });
+    // 1. Fetch from Edge D1 SQLite if bound
+    if (env?.STARLIGHT_DB) {
+      try {
+        let sql = `SELECT * FROM memory_atoms WHERE tenant_id = ?`;
+        const params: any[] = [tenant.tenantId];
+
+        if (req.tier) {
+          sql += ` AND tier = ?`;
+          params.push(req.tier);
+        }
+        if (req.namespace) {
+          sql += ` AND namespace = ?`;
+          params.push(req.namespace);
+        }
+        sql += ` ORDER BY created_at DESC LIMIT 100`;
+
+        const d1Result = await env.STARLIGHT_DB.prepare(sql).bind(...params).all();
+        if (d1Result.results && d1Result.results.length > 0) {
+          candidates = d1Result.results.map((r: any) => ({
+            id: r.id,
+            tenantId: r.tenant_id,
+            tier: r.tier,
+            namespace: r.namespace,
+            content: r.content,
+            metadata: r.metadata ? JSON.parse(r.metadata) : undefined,
+            tags: r.tags ? JSON.parse(r.tags) : [],
+            isEncrypted: Boolean(r.is_encrypted),
+            createdAt: r.created_at,
+            updatedAt: r.updated_at,
+            halfLifeDays: r.half_life_days || 90,
+          }));
+        }
+      } catch (err) {
+        console.error('[STARLIGHT:D1] Query error, falling back to memory index:', err);
+      }
+    }
+
+    // 2. Fallback to in-memory index
+    if (candidates.length === 0) {
+      const atoms = MEMORY_INDEX.get(tenant.tenantId) || [];
+      candidates = atoms.filter(a => {
+        if (req.tier && a.tier !== req.tier) return false;
+        if (req.namespace && a.namespace !== req.namespace) return false;
+        return true;
+      });
+    }
 
     // Simulate vector similarity + text matching
     const vectorMatches: Array<{ atom: MemoryAtom; score: number }> = [];
