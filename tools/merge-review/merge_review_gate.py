@@ -38,10 +38,12 @@ def evaluate(repository, number, head, files, comments):
                 or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}):
             continue
         body = comment.get('body', '')
-        if not body.startswith(MARKER) or len(body) > 60000:
+        # Accept the Windows delimiter without rewriting the hashed report.
+        marker = MARKER if body.startswith(MARKER) else MARKER.replace('\n', '\r\n')
+        if not body.startswith(marker) or len(body) > 60000:
             continue
         try:
-            receipt = json.loads(body[len(MARKER):])
+            receipt = json.loads(body[len(marker):])
             if receipt.get('headSha') != head:
                 continue
             report = receipt['review']

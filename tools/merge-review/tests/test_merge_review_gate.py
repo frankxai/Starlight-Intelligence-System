@@ -31,6 +31,20 @@ class MergeReviewTests(unittest.TestCase):
         self.assertFalse(self.evaluate([]))
         self.assertTrue(self.evaluate([receipt()]))
 
+    def test_windows_marker_preserves_report_digest(self):
+        report = ('PASS: Independently inspected the complete supplied security source.\r\n'
+                  'Windows report line endings remain part of the verified report digest.')
+        comment = receipt(review=report, reviewSha256=hashlib.sha256(report.encode()).hexdigest())
+        comment['body'] = comment['body'].replace(gate.MARKER, gate.MARKER.replace('\n', '\r\n'), 1)
+        self.assertTrue(self.evaluate([comment]))
+
+    def test_invalid_marker_separators_deny(self):
+        for separator in ['\r', ' \n', '\r\r\n', '\\n']:
+            with self.subTest(separator=separator):
+                comment = receipt()
+                comment['body'] = comment['body'].replace(gate.MARKER, gate.MARKER.rstrip('\n') + separator, 1)
+                self.assertFalse(self.evaluate([comment]))
+
     def test_routine_plain_text_passes_without_review(self):
         self.assertTrue(self.evaluate([], [{'filename': 'docs/notes/update.md',
                                            'status': 'modified', 'mode': '100644'}]))
