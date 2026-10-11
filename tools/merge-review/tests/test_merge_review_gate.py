@@ -3,9 +3,6 @@ import importlib.util
 from pathlib import Path
 import json
 import unittest
-from contextlib import redirect_stdout
-from io import StringIO
-from unittest.mock import mock_open, patch
 
 spec = importlib.util.spec_from_file_location('gate', Path(__file__).parents[1] / 'merge_review_gate.py')
 gate = importlib.util.module_from_spec(spec)
@@ -89,66 +86,6 @@ class MergeReviewTests(unittest.TestCase):
         self.assertFalse(self.evaluate([receipt(), receipt(verdict='FAIL')]))
         self.assertFalse(self.evaluate([receipt(), receipt(blockingFindings=['unfixed'])]))
 
-
-
-class TrustedStatusTests(unittest.TestCase):
-    repository = 'frankxai/Starlight-Intelligence-System'
-
-    def exercise(self, scenario, event_name='issue_comment'):
-        statuses, diagnostics, pr_reads = [], [], 0
-        def api(endpoint, payload=None, paginate=False):
-            nonlocal pr_reads
-            if '/statuses/' in endpoint:
-                self.assertEqual(endpoint, f'repos/{self.repository}/statuses/{HEAD}')
-                self.assertEqual(payload['context'], gate.CHECK_NAME)
-                statuses.append(payload['state'])
-                return {'state': payload['state']}
-            if endpoint.endswith('/check-runs'):
-                self.assertEqual(payload['head_sha'], HEAD)
-                return {'id': 41}
-            if endpoint.endswith('/pulls/110'):
-                pr_reads += 1
-                head = 'c' * 40 if scenario == 'head-changed' and pr_reads > 1 else HEAD
-                return {'state': 'open', 'head': {'sha': head}, 'base': {'sha': 'b' * 40}, 'changed_files': 1}
-            if '/files?' in endpoint:
-                if scenario == 'fetch-error': raise RuntimeError('Synthetic API failure')
-                return FILES
-            if '/comments?' in endpoint:
-                value = receipt(repository=self.repository)
-                return [value, receipt(repository=self.repository, verdict='FAIL')] if scenario == 'revoked' else [value]
-            self.fail('Unexpected API: ' + endpoint)
-        def run(args, **kwargs):
-            self.assertIn(f'repos/{self.repository}/check-runs/41', args)
-            self.assertEqual(args[args.index('--method') + 1], 'PATCH')
-            diagnostics.append(json.loads(kwargs['input']))
-        output = StringIO()
-        with patch.dict(gate.os.environ, {'GITHUB_REPOSITORY': self.repository,
-                         'GITHUB_EVENT_PATH': 'event.json', 'GITHUB_EVENT_NAME': event_name}, clear=True), \
-             patch('builtins.open', mock_open(read_data=json.dumps({'issue': {'number': 110,
-                   'pull_request': {'url': 'https://api.github.com/pulls/110'}}}))), \
-             patch.object(gate, 'api', side_effect=api), \
-             patch.object(gate.subprocess, 'run', side_effect=run), redirect_stdout(output):
-            gate.main()
-        result = json.loads(output.getvalue())
-        accepted = scenario == 'accepted'
-        self.assertEqual(result['passed'], accepted)
-        self.assertEqual(diagnostics[-1]['conclusion'], 'success' if accepted else 'failure')
-        return statuses, result
-
-    def test_trusted_controller_denies_failures_with_separate_status(self):
-        for event_name in ['pull_request_target', 'issue_comment', 'workflow_dispatch']:
-            for scenario in ['accepted', 'revoked', 'fetch-error', 'head-changed']:
-                with self.subTest(event_name=event_name, scenario=scenario):
-                    statuses, result = self.exercise(scenario, event_name)
-                    self.assertTrue(result['trustedStatus'])
-                    self.assertEqual(statuses, ['pending', 'success' if scenario == 'accepted' else 'failure'])
-
-    def test_pr_job_does_not_publish_authoritative_status(self):
-        for scenario in ['accepted', 'revoked']:
-            with self.subTest(scenario=scenario):
-                statuses, result = self.exercise(scenario, 'pull_request')
-                self.assertFalse(result['trustedStatus'])
-                self.assertEqual(statuses, [])
 
 if __name__ == '__main__':
     unittest.main()

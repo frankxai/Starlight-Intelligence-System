@@ -98,15 +98,6 @@ def main():
     if pr['state'] != 'open':
         return
     head = pr['head']['sha']
-    # The default-branch target/comment controller publishes a separate commit
-    # status. A fork's PR job cannot overwrite it with a later successful check.
-    # The PR job itself only supplies native workflow eligibility/diagnostics.
-    trusted_controller = os.environ.get('GITHUB_EVENT_NAME') in {
-        'pull_request_target', 'issue_comment', 'workflow_dispatch'}
-    status_endpoint = f'repos/{repository}/statuses/{head}'
-    if trusted_controller:
-        api(status_endpoint, {'state': 'pending', 'context': CHECK_NAME,
-                              'description': 'Trusted exact-head review evaluation in progress.'})
     check = api(f'repos/{repository}/check-runs', {
         'name': CHECK_NAME, 'head_sha': head, 'status': 'in_progress',
         'external_id': f'merge-review:{number}:{head}'})
@@ -133,11 +124,6 @@ def main():
             ok, summary = False, 'PR head changed during evaluation; rerun for the new head.'
     except Exception as error:
         summary = f'Review evaluation failed closed ({type(error).__name__}).'
-    if trusted_controller:
-        # GitHub requires BOTH the same-name commit status and native check.
-        # Publish denial before a diagnostic PATCH that may itself fail.
-        api(status_endpoint, {'state': 'success' if ok else 'failure',
-                              'context': CHECK_NAME, 'description': summary[:140]})
     # PATCH this run, never create a competing successful run after a failed run.
     args = ['gh', 'api', f'repos/{repository}/check-runs/{check["id"]}',
             '--method', 'PATCH', '--input', '-']
@@ -145,7 +131,7 @@ def main():
         'status': 'completed', 'conclusion': 'success' if ok else 'failure',
         'output': {'title': CHECK_NAME, 'summary': summary}}),
         capture_output=True, text=True, timeout=90, check=True)
-    print(json.dumps({'head': head, 'passed': ok, 'summary': summary, 'trustedStatus': trusted_controller}))
+    print(json.dumps({'head': head, 'passed': ok, 'summary': summary}))
 
 
 if __name__ == '__main__':
