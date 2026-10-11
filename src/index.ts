@@ -471,3 +471,6 @@ export * from './marketplace/index.js';
 // Starlight Skill Economy & Management
 export * from './skills/index.js';
 
+// Starlight Managed Cloud & Edge Mirror
+export * from './cloud/index.js';
+
