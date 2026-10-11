@@ -37,6 +37,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/deploy", label: "Deploy Explorer", desc: "Own the public Starlight interface" },
       { href: "/marketplace", label: "Marketplace & Hub", desc: "Skill packs, MCP servers & harnesses" },
+      { href: "/skills", label: "Skill Economy & Studio", desc: "Value, tune for 10 harnesses & syndicate skills" },
       { href: "/cloud", label: "Starlight Cloud", desc: "Managed vaults, storage & frontier models" },
       { href: "/quickstart", label: "Quickstart", desc: "Five minutes to first context" },
       { href: "/download", label: "Source & Modules", desc: "Build SIP source or get modules" },
