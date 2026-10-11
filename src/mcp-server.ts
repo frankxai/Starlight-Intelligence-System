@@ -679,6 +679,7 @@ export class StarlightMcpServer {
       inputSchema: input({
         items: {
           type: 'array',
+          description: 'Array of memory entries to anchor to decentralized storage.',
           items: {
             type: 'object',
             required: ['id', 'vault', 'content'],
@@ -690,7 +691,7 @@ export class StarlightMcpServer {
             },
           },
         },
-        target: { type: 'string', enum: ['arweave', 'ipfs', 'filecoin', 'mock-substrate'] },
+        target: { type: 'string', enum: ['arweave', 'ipfs', 'filecoin', 'mock-substrate'], description: 'Target decentralized storage network (arweave, ipfs, filecoin, mock-substrate).' },
       }, ['items']),
       outputSchema: output({
         anchorId: { type: 'string' },
@@ -719,10 +720,11 @@ export class StarlightMcpServer {
       title: 'Dispatch robot actuator command',
       description: 'Dispatch an actuator command to robot fleet (ROS2/Zenoh) with fail-closed safety checking against declared hazard zones',
       inputSchema: input({
-        robotId: { type: 'string', minLength: 1, maxLength: 200 },
-        action: { type: 'string', enum: ['navigate', 'manipulate', 'capture_sensor', 'hold', 'emergency_stop'] },
+        robotId: { type: 'string', minLength: 1, maxLength: 200, description: 'Unique identifier of the robot hardware or virtual node.' },
+        action: { type: 'string', enum: ['navigate', 'manipulate', 'capture_sensor', 'hold', 'emergency_stop'], description: 'Actuator action to execute (navigate, manipulate, capture_sensor, hold, emergency_stop).' },
         targetCoordinates: {
           type: 'object',
+          description: 'Target 3D spatial coordinates and reference frame.',
           properties: {
             x: { type: 'number' },
             y: { type: 'number' },
@@ -730,7 +732,7 @@ export class StarlightMcpServer {
             frameId: { type: 'string' },
           },
         },
-        safetyEnvelopeRadiusMeters: { type: 'number' },
+        safetyEnvelopeRadiusMeters: { type: 'number', description: 'Allowed safety bubble radius in meters for navigation bounds.' },
       }, ['robotId', 'action']),
       outputSchema: output({
         success: { type: 'boolean' },
@@ -764,10 +766,10 @@ export class StarlightMcpServer {
     this.reg({
       name: 'sis_queen_autonomic_cycle',
       title: 'Trigger Starlight Queen autonomic sweep',
-      description: 'Trigger Starlight Queen autonomic health sweep and memory consolidation loop',
+      description: 'Trigger Starlight Queen autonomic health sweep, maintenance checks, and memory consolidation loop across all active nodes',
       inputSchema: input({
-        nodesCount: { type: 'number' },
-        memoryEntries: { type: 'number' },
+        nodesCount: { type: 'number', description: 'Number of active swarm nodes to poll during the health sweep.' },
+        memoryEntries: { type: 'number', description: 'Number of candidate memory entries to evaluate for consolidation.' },
       }),
       outputSchema: output({
         cycleId: { type: 'string' },
@@ -785,9 +787,9 @@ export class StarlightMcpServer {
     this.reg({
       name: 'sis_marketplace_list',
       title: 'List Sovereign Marketplace catalog items',
-      description: 'List curated and community packs from the Sovereign Marketplace catalog',
+      description: 'List curated, certified, and community-published capability packs from the Starlight Sovereign Marketplace catalog',
       inputSchema: input({
-        licenseTier: { type: 'string', enum: ['free', 'subscription', 'enterprise'] },
+        licenseTier: { type: 'string', enum: ['free', 'subscription', 'enterprise'], description: 'Filter catalog packs by license tier: free, subscription, or enterprise.' },
       }),
       outputSchema: output({
         items: { type: 'array' },

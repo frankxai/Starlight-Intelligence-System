@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 88 skills across 17 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 89 skills across 17 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 

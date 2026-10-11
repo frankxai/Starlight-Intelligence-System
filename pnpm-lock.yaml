@@ -15,6 +15,9 @@ importers:
       better-sqlite3:
         specifier: 12.8.0
         version: 12.8.0
+      langfuse:
+        specifier: ^3.39.2
+        version: 3.39.2
     devDependencies:
       '@changesets/cli':
         specifier: 3.0.3
@@ -570,6 +573,14 @@ packages:
   jsonc-parser@3.3.1:
     resolution: {integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==}
 
+  langfuse-core@3.39.2:
+    resolution: {integrity: sha512-+NkjTBF6mX3Z1muFhevxdZPksh7ZF2XvW0LoeCzNgmLrwpLml6g9mZQQEO1GXTbtd5kqB2PmZnkTCziZVOpOBA==}
+    engines: {node: '>=18'}
+
+  langfuse@3.39.2:
+    resolution: {integrity: sha512-GEn2EFkLUkaf19wewu5TuMFoiiY5AZwhuWl7jvtXrf4JASa54c5ObTGTCG71XGIjNw3PhomD/xD4ZRi6JX8EcQ==}
+    engines: {node: '>=18'}
+
   launch-editor@2.14.2:
     resolution: {integrity: sha512-NHJEb30MGBCkmZXLZwz25t37QR4aY03ZzPYUJXOJaOa92uWwExI9SBQUuIznBYc1xkD7cJNGX7oc3Nl3sq2kQQ==}
 
@@ -582,6 +593,10 @@ packages:
 
   mkdirp-classic@0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
+
+  mustache@4.2.0:
+    resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
+    hasBin: true
 
   napi-build-utils@2.0.0:
     resolution: {integrity: sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==}
@@ -1192,6 +1207,14 @@ snapshots:
 
   jsonc-parser@3.3.1: {}
 
+  langfuse-core@3.39.2:
+    dependencies:
+      mustache: 4.2.0
+
+  langfuse@3.39.2:
+    dependencies:
+      langfuse-core: 3.39.2
+
   launch-editor@2.14.2:
     dependencies:
       picocolors: 1.1.1
@@ -1202,6 +1225,8 @@ snapshots:
   minimist@1.2.8: {}
 
   mkdirp-classic@0.5.3: {}
+
+  mustache@4.2.0: {}
 
   napi-build-utils@2.0.0: {}
 

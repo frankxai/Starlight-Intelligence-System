@@ -167,7 +167,7 @@ SIS integrates and aligns with the leading open multi-agent frameworks across th
 ## What you have access to
 
 - **144 named agents** across Core, Universal, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
-- **88 auto-activating skill rules** across 17 domains (intelligence · orchestration · memory · integration · **foundry** · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety** · **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, system packaging, taste evaluation, and evidence receipts. Activation: `skills/skill-rules.json`.
+- **89 auto-activating skill rules** across 17 domains (intelligence · orchestration · memory · integration · **foundry** · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety** · **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, system packaging, taste evaluation, and evidence receipts. Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion. SIS Memory Gateway v0.1 (SessionStore + per-harness loopback daemon + RRF hybrid unification, privacy drop on private tags) + Memory Engine v0.2 (pluggable embeddings). See memory/README.md, VAULT_ARCHITECTURE.md, src/gateway/*, src/embedding.ts. Dreaming pipeline + CONSOLIDATION_LOG + PROMOTION_QUEUE for observable compounding. Private mount: separate starlight-private-memory repo (2026-06-11). **2026-06-12:** Queen (via driver + surfaces) now drives visual palace recall + consolidation; gateway SessionStore as Queen loop state; 5 image_gen visuals (loop/gateway/palace/arch/heatmap/receipt) integrated as first-class artifacts. See operational-vault Queen Advance + tools/queen/queen-advance-2026-06-12.json.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
@@ -241,7 +241,7 @@ Full per-agent file: `agents/<agent-name>.md`.
 
 ## Skills (auto-activating)
 
-Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (88 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (53 legacy flat files) or `skills/<domain>/<skill-name>/SKILL.md` (35 directory packages), together matching the 88-rule count. New skills use directory packages. `EXEMPT_PHANTOMS` remains empty.
+Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (89 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (54 legacy flat files) or `skills/<domain>/<skill-name>/SKILL.md` (35 directory packages), together matching the 89-rule count. New skills use directory packages. `EXEMPT_PHANTOMS` remains empty.
 
 | Domain | Surface (sample) |
 |--------|------------------|

@@ -36,7 +36,7 @@ describe("Mem0RemoteProvider hardening", () => {
       async addMemory() { return { id: "m1" }; },
       async searchMemories() {
         searchCalls++;
-        return [{ id: "m1", text: "cached result", score: 0.9, metadata: { sis_memory_id: "sis_cached" } }];
+        return [{ id: "m1", text: "cached result", score: 0.9, metadata: { sis_memory_id: "sis_cached", tenant_id: "tenant_frank", privacy_class: "private-shareable" } }];
       },
       async deleteMemory() { return true; },
     };
