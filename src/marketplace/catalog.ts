@@ -25,7 +25,7 @@ export const MARKETPLACE_CATALOG: MarketplaceItem[] = [
     installCommand: 'starlight pack install starlight-foundry',
     permissions: ['fs:read:repo', 'fs:write:skills'],
     pricingTier: 'free',
-    manifestSha: 'c518309b31261fcb857bac576988b188698c899a78a7db5d15034da4f368',
+    manifestSha: 'c518309b31261fcb857bac576988b188698c899a78a7db5d15034da4f368c518',
     verifiedAttestation: true,
     tags: ['foundry', 'compiler', 'codex', 'claude-code', 'agentskills'],
     capabilities: ['task-envelope-compilation', 'necessity-gate', 'evidence-receipts'],

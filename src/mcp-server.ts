@@ -12,6 +12,7 @@ import { readFileSync, writeFileSync, appendFileSync, readdirSync, existsSync, m
 import { join, basename } from 'node:path';
 import { homedir } from 'node:os';
 import { randomUUID } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 import type { TemporalMeta, ContradictionRecord } from './types.js';
 import { getPackageVersion } from './version.js';
 import { seedVaults, vaultsAreEmpty } from './seed.js';
@@ -517,4 +518,15 @@ function main(): void {
   server.start();
 }
 
-main();
+function isDirectExecution(): boolean {
+  const entry = process.argv[1];
+  return Boolean(entry) && (
+    import.meta.url === pathToFileURL(entry).href ||
+    entry.endsWith('mcp-server.ts') ||
+    entry.endsWith('mcp-server.js')
+  );
+}
+
+if (isDirectExecution()) {
+  main();
+}
