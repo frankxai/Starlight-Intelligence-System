@@ -482,3 +482,21 @@ Browse them: [docs/visuals/VISUALS.md](docs/visuals/VISUALS.md) · Motion experi
 For organizations and sovereign operators who want a full production intelligence estate (not just tools), Starlight provides a complete repeatable delivery system — Mind + Mesh + Steward — with high reuse across engagements.
 
 See `docs/delivery/estate-army-commissioning-workflow.md` and the `templates/estate-os/` profile for the current approach.
+
+### Local persistence and recovery limits
+
+Memory saves replay the committed JSONL log under its advisory lock before
+compaction, preserving other writers' records. Save replacements are written to
+exclusive sibling files, flushed and renamed. The legacy JSON snapshot is a
+derivative and is migrated only when no JSONL log exists, so an older snapshot
+cannot resurrect deleted entries. A malformed log stops save without overwriting
+its bytes. These are local cooperative filesystem safeguards, not distributed
+transaction or whole-filesystem power-loss guarantees.
+
+Administrative stale-lock recovery is serialized by a sibling `.recovery` guard.
+An interrupted recoverer leaves its guard and metadata for explicit inspection;
+a competing or unverified guard is preserved. Age never permits deletion. PID
+reuse, hostile filesystem mutation and other implementations ignoring the guard
+remain outside this cooperative protocol. The separate JSONL append lock also
+remains intact after an interrupted writer; automatic orphan-lock cleanup is not
+implemented here. Exact-revision review and hosted recovery checks remain required.

@@ -118,3 +118,11 @@ cycle bounds remain. Inputs outside these documented shapes still need upstream 
 ---
 
 **Built on SIP** · SanitizationGateway coverage contract · 2026-05-11
+
+## 11 October candidate refinement
+
+Shared acyclic object references are sanitized in each branch rather than marked
+as cycles. Actual recursion cycles remain masked. Traversal is bounded to 64 levels
+and 4,096 object visits per public call; excess branches return `__truncated`.
+The legacy runtime and modular core use the same behavior. Exact-revision hosted
+consumer and independent review remain required for this candidate refinement.

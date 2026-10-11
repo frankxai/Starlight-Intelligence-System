@@ -158,26 +158,48 @@ export function inspectLock(lockPath: string): LockInspection {
 export function breakStaleLock(lockPath: string, expectedToken: string): boolean {
   if (typeof expectedToken !== 'string' || !expectedToken) throw new Error('Inspected lock token required');
   lockPath = resolve(lockPath);
-  const metaFile = join(lockPath, 'meta.json');
-  const inspection = inspectLock(lockPath);
-  if (!inspection.locked) return false;
-  if (inspection.corrupted || !inspection.meta) throw new Error('Lock recovery evidence is incomplete or corrupted');
-  const meta = inspection.meta;
-  if (meta.token !== expectedToken) throw new Error('Lock token does not match expected token');
-  if (meta.host !== hostname()) throw new Error('Lock owner host is unknown or remote; preserved lock');
-  let dead = false;
-  try { process.kill(meta.pid,0); }
+  const guardPath = `${lockPath}.recovery`;
+  const guardMeta = join(guardPath, 'meta.json');
+  const guardToken = randomUUID();
+  try { mkdirSync(guardPath); }
   catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw new Error('Lock owner liveness is uncertain; preserved lock');
-    dead = true;
+    if ((error as NodeJS.ErrnoException).code === 'EEXIST') throw new Error('Lock recovery is active or unverified; preserved lock');
+    throw error;
   }
-  if (!dead) throw new Error('Lock owner is still alive; preserved lock');
-  const current = inspectLock(lockPath);
-  if (current.corrupted || !current.meta || current.meta.token !== meta.token
-    || current.meta.pid !== meta.pid || current.meta.ts !== meta.ts || current.meta.host !== meta.host) {
-    throw new Error('Lock recovery evidence changed; preserved lock');
+  let initialized = false;
+  try {
+    writeFileSync(guardMeta, JSON.stringify({ pid:process.pid,ts:Date.now(),token:guardToken,host:hostname() }), { encoding:'utf8',flag:'wx' });
+    initialized = true;
+    const metaFile = join(lockPath, 'meta.json');
+    const inspection = inspectLock(lockPath);
+    if (!inspection.locked) return false;
+    if (inspection.corrupted || !inspection.meta) throw new Error('Lock recovery evidence is incomplete or corrupted');
+    const meta = inspection.meta;
+    if (meta.token !== expectedToken) throw new Error('Lock token does not match expected token');
+    if (meta.host !== hostname()) throw new Error('Lock owner host is unknown or remote; preserved lock');
+    let dead = false;
+    try { process.kill(meta.pid,0); }
+    catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw new Error('Lock owner liveness is uncertain; preserved lock');
+      dead = true;
+    }
+    if (!dead) throw new Error('Lock owner is still alive; preserved lock');
+    const current = inspectLock(lockPath);
+    if (current.corrupted || !current.meta || current.meta.token !== meta.token
+      || current.meta.pid !== meta.pid || current.meta.ts !== meta.ts || current.meta.host !== meta.host) {
+      throw new Error('Lock recovery evidence changed; preserved lock');
+    }
+    unlinkSync(metaFile);
+    rmdirSync(lockPath);
+    return true;
+  } finally {
+    if (initialized) {
+      if (readLockMeta(guardMeta).token !== guardToken) throw new Error('Recovery guard ownership changed; preserved evidence');
+      const contents = readdirSync(guardPath);
+      if (contents.length !== 1 || contents[0] !== 'meta.json') throw new Error('Unexpected recovery guard contents; preserved evidence');
+      unlinkSync(guardMeta);
+    }
+    // An interrupted recoverer leaves this guard intact. Never remove it by age.
+    rmdirSync(guardPath);
   }
-  unlinkSync(metaFile);
-  rmdirSync(lockPath);
-  return true;
 }

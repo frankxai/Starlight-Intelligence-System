@@ -90,7 +90,13 @@ export class SanitizationGateway {
     depth = 0,
     seen: WeakSet<object> = new WeakSet()
   ): Record<string, unknown> {
-    if (depth > 64) {
+    return this.sanitizeContextBounded(context, depth, seen, { remaining: 4096 });
+  }
+
+  private sanitizeContextBounded(
+    context: Record<string, unknown>, depth: number, seen: WeakSet<object>, budget: { remaining: number }
+  ): Record<string, unknown> {
+    if (depth > 64 || budget.remaining-- <= 0) {
       return { __truncated: true } as Record<string, unknown>;
     }
     if (seen.has(context)) {
@@ -98,25 +104,28 @@ export class SanitizationGateway {
     }
     seen.add(context);
 
-    const sanitized = (Array.isArray(context) ? new Array<unknown>(context.length) : {}) as unknown as Record<string, unknown>;
-    for (const [key, value] of Object.entries(context)) {
-      let next: unknown;
-      if (this.options.scrubSecrets && SanitizationGateway.SECRET_FIELD.test(key)) {
-        next = this.options.maskString;
-      } else if (typeof value === 'string') {
-        next = this.sanitize(value);
-      } else if (typeof value === 'object' && value !== null) {
-        next = this.sanitizeContext(
-          value as Record<string, unknown>,
-          depth + 1,
-          seen
-        );
-      } else {
-        next = value; // keep numbers, booleans, etc.
+    try {
+      const sanitized = (Array.isArray(context) ? new Array<unknown>(context.length) : {}) as unknown as Record<string, unknown>;
+      for (const [key, value] of Object.entries(context)) {
+        let next: unknown;
+        if (this.options.scrubSecrets && SanitizationGateway.SECRET_FIELD.test(key)) {
+          next = this.options.maskString;
+        } else if (typeof value === 'string') {
+          next = this.sanitize(value);
+        } else if (typeof value === 'object' && value !== null) {
+          next = this.sanitizeContextBounded(
+            value as Record<string, unknown>,
+            depth + 1,
+            seen,
+            budget
+          );
+        } else {
+          next = value; // keep numbers, booleans, etc.
+        }
+        // Data keys such as __proto__ must not invoke inherited object setters.
+        Object.defineProperty(sanitized, key, { value: next, enumerable: true, writable: true, configurable: true });
       }
-      // Data keys such as __proto__ must not invoke inherited object setters.
-      Object.defineProperty(sanitized, key, { value: next, enumerable: true, writable: true, configurable: true });
-    }
-    return sanitized;
+      return sanitized;
+    } finally { seen.delete(context); }
   }
 }

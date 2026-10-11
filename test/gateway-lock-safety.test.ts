@@ -104,3 +104,21 @@ test('administrative recovery preserves remote, legacy and malformed ownership e
     release();
   } finally { rmSync(root,{ recursive:true,force:true }); }
 });
+
+
+test('an existing recovery guard prevents a second recoverer from deleting dead-owner evidence', () => {
+  const root = mkdtempSync(join(tmpdir(),'sis-lock-')); const lock = join(root,'writer.lock');
+  try {
+    const moduleUrl = new URL('../src/gateway/lock.ts',import.meta.url).href;
+    const child = spawnSync(process.execPath,['--import','tsx','--input-type=module','-e',
+      `import { acquireLock } from ${JSON.stringify(moduleUrl)}; await acquireLock(${JSON.stringify(lock)});`],
+      { encoding:'utf8',timeout:10000 });
+    assert.equal(child.status,0,child.stderr);
+    const before = readFileSync(join(lock,'meta.json'),'utf8');
+    const meta = inspectLock(lock).meta!;
+    mkdirSync(lock+'.recovery');
+    assert.throws(() => breakStaleLock(lock,meta.token),/recovery.*active|recovery.*unverified/i);
+    assert.equal(readFileSync(join(lock,'meta.json'),'utf8'),before);
+    assert.ok(existsSync(lock+'.recovery'));
+  } finally { rmSync(root,{ recursive:true,force:true }); }
+});

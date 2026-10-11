@@ -196,3 +196,14 @@ test("v8 sanitization: nested objects are deep-sanitized", () => {
   );
   assert.strictEqual((result as { safe: number }).safe, 42);
 });
+
+
+test('shared acyclic context values are sanitized independently while actual cycles stay bounded', () => {
+  const shared = { note: 'safe', token: 'opaque-secret' };
+  const input: Record<string, unknown> = { first: shared, second: shared };
+  input.self = input;
+  const result = new SanitizationGateway().sanitizeContext(input);
+  assert.deepEqual(result.first, { note: 'safe', token: '[REDACTED]' });
+  assert.deepEqual(result.second, result.first);
+  assert.deepEqual(result.self, { __circular: true });
+});

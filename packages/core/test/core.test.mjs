@@ -222,3 +222,13 @@ test('portable runtime cold-imports and recalls without Node globals and has zer
   `;
   execFileSync(process.execPath, ['--input-type=module', '--eval', script], { timeout: 10_000, stdio: 'pipe' });
 });
+
+
+test('shared acyclic context branches are retained and repeated traversal stays bounded', () => {
+ const shared={ note:'safe', token:'opaque-secret' };
+ const result=new SanitizationGateway().sanitizeContext({ first:shared,second:shared });
+ assert.deepEqual(result.first,{note:'safe',token:'[REDACTED]'});assert.deepEqual(result.second,result.first);
+ let dag={ note:'safe' };for(let i=0;i<20;i++)dag={left:dag,right:dag};
+ const bounded=new SanitizationGateway().sanitizeContext(dag);
+ assert.ok(JSON.stringify(bounded).includes('__truncated'));
+});
