@@ -2055,9 +2055,171 @@ function cmdSkill(
       }
       break;
     }
+    case "scan": {
+      const rootPath = args[0] || process.cwd();
+      const result = scanWorkspaceSkills(rootPath);
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  STARLIGHT WORKSPACE SKILL & SKIN DISCOVERY SCAN`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`Scanned Path:   ${result.rootPath}`);
+      console.log(`Files Scanned:  ${result.filesScanned}`);
+      console.log(`Skills Found:   ${result.skillsFound.length}\n`);
+      console.log(`Maturity Stage Breakdown:`);
+      console.log(`  Stage 0 (Scratchpad/Raw Prompt): ${result.stageSummary.stage0_scratchpad}`);
+      console.log(`  Stage 1 (Local Validated Skill): ${result.stageSummary.stage1_workspace_skill}`);
+      console.log(`  Stage 2 (Team Swarm Asset):      ${result.stageSummary.stage2_team_swarm}`);
+      console.log(`  Stage 3 (Community Open Pack):   ${result.stageSummary.stage3_community_pack}`);
+      console.log(`  Stage 4 (Sovereign Premium):     ${result.stageSummary.stage4_sovereign_premium}\n`);
+      if (result.skillsFound.length > 0) {
+        console.log(`Discovered Skills:`);
+        for (const s of result.skillsFound) {
+          console.log(`  • ${s.name} [${s.stageLabel}] — ${s.domain} (${s.estimatedTokens} tokens)`);
+          if (s.suggestedMSRPUSD) {
+            console.log(`    ↳ Suggested MSRP: $${s.suggestedMSRPUSD} | Commercial Readiness: ${s.commercialReadinessScore}%`);
+          }
+        }
+      }
+      if (result.recommendations.length > 0) {
+        console.log(`\nRecommendations:`);
+        for (const r of result.recommendations) console.log(`  → ${r}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+    case "value": {
+      const targetPath = args[0];
+      if (!targetPath) {
+        console.error("[starlight] Error: skill value requires a path to SKILL.md or directory.");
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const filePath = existsSync(targetPath) && statSync(targetPath).isDirectory()
+          ? join(targetPath, "SKILL.md")
+          : targetPath;
+        const skill = loadSkillFromFile(filePath);
+        const report = auditSkillValuation({
+          name: skill.name,
+          version: skill.version,
+          description: skill.description,
+          domain: "general",
+          content: skill.rawMarkdown ?? skill.instructions,
+        });
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  STARLIGHT EMPIRICAL VALUATION & VALUE-BASED PRICING`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`Skill Name:              ${report.skillName}`);
+        console.log(`Maturity Stage:          Stage ${report.maturityStage}`);
+        console.log(`Capability Depth Score:  ${report.metrics.capabilityDepthScore}/100`);
+        console.log(`Execution Complexity:    ${report.metrics.executionComplexityMultiplier}x`);
+        console.log(`Token Efficiency Ratio:  ${report.metrics.tokenEfficiencyRatio}x`);
+        console.log(`Est. Weekly Hours Saved: ${report.metrics.estimatedWeeklyHoursSaved} hrs/week`);
+        console.log(`Annual Labor Value:      $${report.metrics.annualLaborSavingsUSD.toLocaleString()} USD`);
+        console.log(`Valuation Index:         ${report.valuationIndex}\n`);
+        console.log(`Suggested Pricing Tiers:`);
+        console.log(`  Community Free Tier:   $${report.suggestedPricing.freeCommunityMSRP} (Open ecosystem viral reach)`);
+        console.log(`  Builder / Indie Tier:  $${report.suggestedPricing.builderTierMSRP} (Single developer license)`);
+        console.log(`  Pro / Agency Tier:     $${report.suggestedPricing.proTierMSRP} (Advanced toolplane & evals)`);
+        console.log(`  Team Swarm Monthly:    $${report.suggestedPricing.teamTierMonthly}/mo (Multi-agent fleet access)`);
+        console.log(`  Enterprise Sovereign:  $${report.suggestedPricing.enterpriseAnnual}/yr (SLA & private deployment)\n`);
+        console.log(`Recommended License:     ${report.commercialStrategy.recommendedLicense}`);
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+      } catch (err) {
+        console.error(`[starlight] Skill value failed: ${err instanceof Error ? err.message : String(err)}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+    case "matrix":
+    case "resolve": {
+      const agentsList = ["orchestrator", "prime", "architect", "sentinel", "weaver", "sage"];
+      const matrix = resolveSkillMatrix(agentsList, [
+        { name: "systematic-debugging", version: "1.0.0", description: "Systematic root cause debugging", domain: "code-intelligence", contextBudgetTokens: 1200 },
+        { name: "multi-agent-coordination", version: "1.0.0", description: "Hierarchical multi-agent coordination", domain: "orchestration", contextBudgetTokens: 1400 },
+        { name: "vault-management", version: "1.0.0", description: "Direct vault access and memory search", domain: "memory", contextBudgetTokens: 800 },
+        { name: "secret-detector", version: "1.0.0", description: "Zero-trust PII & secret scrubbing", domain: "safety", contextBudgetTokens: 600 },
+      ]);
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  STARLIGHT AGENT-SKILL MATRIX & CONTEXT HEADROOM`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`Fleet Token Health: ${matrix.overallTokenHealth.toUpperCase()}`);
+      console.log(`Registered Skills:  ${matrix.totalRegisteredSkills}\n`);
+      for (const [agent, b] of Object.entries(matrix.bindings)) {
+        console.log(`Agent: ${agent}`);
+        console.log(`  Assigned: ${b.assignedSkills.join(", ") || "(none)"}`);
+        console.log(`  Context Headroom: ${b.contextHeadroomPercent}% (${b.totalStaticTokens}/${b.tokenBudgetLimit} tokens)`);
+        for (const w of b.warnings) console.log(`  ! ${w}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+    case "harness": {
+      const targetHarness = (args[0] as HarnessTarget) || "claude-code";
+      const config = generateHarnessConfig(targetHarness, [
+        { name: "systematic-debugging", version: "1.0.0", description: "Systematic debugging and root cause investigation", domain: "code-intelligence" },
+        { name: "multi-agent-coordination", version: "1.0.0", description: "Multi-agent swarm coordination", domain: "orchestration" },
+      ]);
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  STARLIGHT HARNESS CONFIGURATION: ${targetHarness.toUpperCase()}`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`Validation Status: ${config.validationStatus.toUpperCase()}`);
+      console.log(`Active Skills:     ${config.activeSkillsCount}\n`);
+      for (const file of config.outputFiles) {
+        console.log(`File: ${file.relativePath} (${file.format})`);
+        console.log(`------------------------------------------------------------------`);
+        console.log(file.content.slice(0, 300) + (file.content.length > 300 ? "\n..." : ""));
+        console.log(`------------------------------------------------------------------\n`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+    case "syndicate": {
+      const targetPath = args[0];
+      if (!targetPath) {
+        console.error("[starlight] Error: skill syndicate requires a path to SKILL.md or directory.");
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const filePath = existsSync(targetPath) && statSync(targetPath).isDirectory()
+          ? join(targetPath, "SKILL.md")
+          : targetPath;
+        const skill = loadSkillFromFile(filePath);
+        const targetsList: SyndicationTarget[] = ["openclaw", "agentskills", "claude", "openai", "starlight"];
+        const result = syndicateSkill(
+          {
+            name: skill.name,
+            version: skill.version,
+            description: skill.description,
+            domain: "general",
+            license: skill.license,
+            content: skill.rawMarkdown ?? skill.instructions,
+          },
+          targetsList
+        );
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  STARLIGHT MULTI-MARKETPLACE SYNDICATION BUNDLER`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`Skill Name:      ${result.skillName} v${result.version}`);
+        console.log(`Syndication:     ${result.success ? "SUCCESS" : "FAILED"}`);
+        console.log(`Attestation SHA: ${result.attestationSha}`);
+        console.log(`Targets:         ${result.publishedTargets.join(", ")}\n`);
+        console.log(`Generated Distribution Artifacts (${result.bundle.exportedFiles.length}):`);
+        for (const f of result.bundle.exportedFiles) {
+          console.log(`  ✓ ${f.relativePath}`);
+        }
+        console.log(`\nSIP Attestation Seal:`);
+        console.log(result.bundle.sipAttestation);
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+      } catch (err) {
+        console.error(`[starlight] Skill syndicate failed: ${err instanceof Error ? err.message : String(err)}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
     default:
       console.error(`[starlight] Unknown skill action: "${action}"`);
-      console.error("  Available actions: audit, allocate, bridge");
+      console.error("  Available actions: audit, value, matrix, harness, scan, syndicate, allocate, bridge");
       process.exitCode = 1;
   }
 }
@@ -2361,6 +2523,7 @@ async function main(): Promise<void> {
       break;
     }
 
+    case "skills":
     case "skill": {
       const skillAction = positionals[1] ?? "audit";
       cmdSkill(skillAction, positionals.slice(2), {

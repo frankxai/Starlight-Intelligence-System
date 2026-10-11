@@ -126,7 +126,7 @@ export function scanWorkspaceSkills(
             continue;
           }
 
-          const { frontmatter, body } = parseFrontmatter(content);
+          const { frontmatter } = parseFrontmatter(content);
           const hasFm = Object.keys(frontmatter).length > 0;
           const name =
             frontmatter.name ??

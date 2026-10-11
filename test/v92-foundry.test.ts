@@ -436,7 +436,7 @@ describe("v9.2 Foundry capability graph and routing", () => {
   it("derives every registered skill and source-counted agent", () => {
     const graph = buildCapabilityGraph(ROOT);
     assert.equal(graph.nodes.filter((node: any) => node.kind === "skill").length, 88);
-    assert.equal(graph.nodes.filter((node: any) => node.kind === "agent").length, 144);
+    assert.equal(graph.nodes.filter((node: any) => node.kind === "agent").length, 150);
     const nodeIds = new Set(graph.nodes.map((node: any) => node.id));
     assert.equal(nodeIds.size, graph.nodes.length);
     assert.ok(graph.edges.every((edge: any) => nodeIds.has(edge.from) && nodeIds.has(edge.to)));
