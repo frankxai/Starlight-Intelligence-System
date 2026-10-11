@@ -1,0 +1,64 @@
+# Merge review and npm release
+
+The `independent-review-policy` check evaluates a PR's current source identity and
+review receipt. A passing check establishes the recorded review's acceptance by
+the evaluator. Package publication and production readiness require separate
+evidence.
+
+## Submit a review
+
+For a Codex-made change, obtain an independent review from an admitted
+Antigravity, Grok, Claude or Gemini reviewer. Supply the exact commit and every
+changed file. Preserve blocking findings, failed checks and limitations. A source
+change requires a fresh exact-head review; an older passing report is insufficient.
+
+The trusted attestor posts a PR comment beginning with
+`STARLIGHT-INDEPENDENT-REVIEW-V1` followed by a newline and a JSON receipt.
+The evaluator accepts LF or CRLF after the marker and preserves the report's
+UTF-8 bytes for SHA-256 verification. See the [evaluator](../tools/merge-review/merge_review_gate.py)
+and its [regression tests](../tools/merge-review/tests/test_merge_review_gate.py).
+
+The receipt contains `repository`, numeric `pr`, full `headSha`, `maker: "codex"`,
+`provider`, `verdict`, `blockingFindings`, all `reviewedFiles`, the complete
+`review`, its `reviewSha256`, the review packet's `packetSha256` and a nonempty
+`resolution`. Use `PASS` or `WARN` only after resolving every blocking finding;
+do not translate an incomplete review into approval. The report must contain at
+least 80 characters. Hash the actual report and the actual supplied packet.
+
+The attestor must be `frankxai` with GitHub association `OWNER`, `MEMBER` or
+`COLLABORATOR`. This is an identity-based attestation: the check cannot authenticate
+the model or judge the report's quality. The attestor must inspect the evidence.
+
+## Recover a failed or missing check
+
+Inspect the check summary and compare the receipt with the current PR head and
+complete changed-file list. Repair missing or invalid evidence, resolve findings,
+then post the corrected receipt. The workflow evaluates PR comment changes and
+PR source changes. A newer parsed, current-head invalid or blocking receipt revokes
+an earlier pass. Stale-head receipts and comments without a recognized marker are
+skipped. Never overwrite a historical failed report to conceal the failure.
+
+If the event was missed, dispatch `merge-review.yml` on `main` with the PR number.
+The workflow runs trusted default-branch code and reads PR metadata; it never
+executes PR source. Inspect the named check's conclusion: the enclosing workflow
+can succeed after publishing a failing review check. Closed PRs are not evaluated.
+
+The only routine exemption is ordinary `100644` `.md` or `.txt` files below
+`docs/notes/` or `docs/handovers/`, excluding instruction files and unsafe paths.
+Renames, executable files, symlinks and other paths require a receipt. Normal CI
+still applies. Do not move substantive work into these directories to evade review.
+
+Administrators must verify real hosted denial and acceptance before requiring
+the check. Preserve existing protection, CI and security rules; bind required
+checks to the observed GitHub Actions app. A merged workflow alone does not prove
+that branch protection requires its result. Inspect the live repository rules.
+
+## Release remains a separate decision
+
+Before npm publication, verify legitimate package-level publisher authority,
+the accepted source revision, actual tarball digests and clean installed consumers
+on the supported runtime matrix. Publish the tested artifact with the reviewed
+OIDC workflow and verify registry integrity, provenance and installation afterward.
+Reconcile registry state before retrying an ambiguous publication. Preserve
+reserved versions and required release-environment review. A successful pack,
+merge check or CI run does not establish publication or customer acceptance.
