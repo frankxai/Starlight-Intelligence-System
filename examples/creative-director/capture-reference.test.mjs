@@ -41,6 +41,24 @@ test('browser render inspection rejects hidden ancestors and viewport-external h
  parent.style={...style,opacity:'0'};assert.equal(inspect().headingVisible,false);
  parent.style=style;heading.getBoundingClientRect=()=>({width:320,height:96,top:1000,bottom:1096,left:24,right:344});assert.equal(inspect().headingVisible,false);
 });
+test('failed render diagnostics distinguish absent headings from hidden ancestors without accepting either',async()=>{
+ const style={display:'block',visibility:'visible',opacity:'1'};
+ const parent={tagName:'SECTION',style:{...style,opacity:'0'}};
+ const heading={tagName:'H1',innerText:'Hidden public hero',style,parentElement:parent,getBoundingClientRect:()=>({x:24,y:120,width:320,height:96,top:120,bottom:216,left:24,right:344})};
+ let headings=[];
+ const context={innerHeight:900,innerWidth:1440,getComputedStyle:element=>element.style,location:{href:'https://example.com/error?diagnostic=private#fragment'},document:{title:'Unavailable',readyState:'complete',fonts:{status:'loaded'},querySelectorAll:selector=>selector.startsWith('h1')?headings:[]}};
+ const inspect=()=>runInNewContext('('+inspectRender.toString()+')()',context);
+ const absent=inspect();assert.equal(absent.headingVisible,false);assert.equal(absent.diagnostics.url,'https://example.com/error');assert.equal(absent.diagnostics.title,'Unavailable');assert.equal(absent.diagnostics.headingCount,0);
+ headings=[heading];const hidden=inspect();assert.equal(hidden.headingVisible,false);assert.equal(hidden.diagnostics.headings[0].text,'Hidden public hero');assert.equal(hidden.diagnostics.headings[0].blocker.reason,'opacity');assert.equal(hidden.diagnostics.headings[0].blocker.ancestorDepth,1);assert.equal(hidden.diagnostics.headings[0].blocker.tagName,'SECTION');
+ const s=schedule([hidden]);await assert.rejects(waitForRenderable(s.read,s.options),error=>error.lastState.diagnostics.headings[0].blocker.reason==='opacity');
+});
+test('render diagnostics bound public DOM text and heading samples and explain offscreen geometry',()=>{
+ const style={display:'block',visibility:'visible',opacity:'1'};
+ const heading={tagName:'H1',innerText:'h'.repeat(500),style,getBoundingClientRect:()=>({x:24,y:1000,width:320,height:96,top:1000,bottom:1096,left:24,right:344})};
+ const context={innerHeight:900,innerWidth:375,getComputedStyle:element=>element.style,location:{href:'https://example.com/'+'p'.repeat(3000)},document:{title:'t'.repeat(500),readyState:'complete',querySelectorAll:selector=>selector.startsWith('h1')?Array(100).fill(heading):[]}};
+ const state=runInNewContext('('+inspectRender.toString()+')()',context);
+ assert.equal(state.headingVisible,false);assert.equal(state.diagnostics.headingCount,100);assert.equal(state.diagnostics.headings.length,5);assert.equal(state.diagnostics.url.length,2048);assert.equal(state.diagnostics.title.length,240);assert.equal(state.diagnostics.headings[0].text.length,240);assert.equal(state.diagnostics.headings[0].blocker.reason,'outside-viewport');assert.equal(state.diagnostics.headings[0].geometry[1],1000);
+});
 test('PNG checks reject missing signature, truncated data and wrong viewport',()=>{
  const bytes=Buffer.alloc(24);Buffer.from([137,80,78,71,13,10,26,10]).copy(bytes);bytes.writeUInt32BE(375,16);bytes.writeUInt32BE(900,20);
  assert.deepEqual(validatePng(bytes,375),{observedWidth:375,observedHeight:900});

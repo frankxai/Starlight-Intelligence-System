@@ -46,15 +46,26 @@ export async function stopOwnedChild(child,{graceMs=2000,killMs=2000}={}){
 }
 
 export function inspectRender(){
- const visible=element=>{
+ const visibility=element=>{
   const rect=element.getBoundingClientRect();
-  if(rect.width<=0||rect.height<=0||rect.bottom<=0||rect.top>=innerHeight||rect.right<=0||rect.left>=innerWidth)return false;
-  for(let node=element;node;node=node.parentElement){const style=getComputedStyle(node);if(style.display==='none'||style.visibility!=='visible'||Number(style.opacity)<0.9)return false;}
-  return true;
+  const geometry=[rect.x,rect.y,rect.width,rect.height].map(Math.round);
+  if(rect.width<=0||rect.height<=0)return {visible:false,geometry,blocker:{reason:'zero-dimensions'}};
+  if(rect.bottom<=0||rect.top>=innerHeight||rect.right<=0||rect.left>=innerWidth)return {visible:false,geometry,blocker:{reason:'outside-viewport'}};
+  let ancestorDepth=0;
+  for(let node=element;node;node=node.parentElement,ancestorDepth++){
+   const style=getComputedStyle(node);
+   const reason=style.display==='none'?'display':style.visibility!=='visible'?'visibility':Number(style.opacity)<0.9?'opacity':null;
+   if(reason)return {visible:false,geometry,blocker:{reason,ancestorDepth,tagName:node.tagName?.slice(0,40)??'',value:String(style[reason]).slice(0,32)}};
+  }
+  return {visible:true,geometry,blocker:null};
  };
- const heading=[...document.querySelectorAll('h1,[role="heading"][aria-level="1"]')].find(element=>visible(element)&&element.innerText.trim());
+ const visible=element=>visibility(element).visible;
+ const headings=[...document.querySelectorAll('h1,[role="heading"][aria-level="1"]')];
+ const heading=headings.find(element=>visible(element)&&element.innerText.trim());
  const rect=heading?.getBoundingClientRect();
- return {readyState:document.readyState,fontsLoaded:!document.fonts||document.fonts.status==='loaded',heading:heading?.innerText.slice(0,240)??'',headingVisible:!!heading,loading:[...document.querySelectorAll('[role="progressbar"],[aria-busy="true"]')].some(visible),geometry:rect?[rect.x,rect.y,rect.width,rect.height].map(Math.round):null};
+ // Public-reference diagnostics are bounded; query strings and fragments are omitted.
+ const diagnostics={url:(globalThis.location?.href??'').split(/[?#]/)[0].slice(0,2048),title:(document.title??'').slice(0,240),headingCount:headings.length,headings:headings.slice(0,5).map(element=>({text:element.innerText.slice(0,240),...visibility(element)}))};
+ return {readyState:document.readyState,fontsLoaded:!document.fonts||document.fonts.status==='loaded',heading:heading?.innerText.slice(0,240)??'',headingVisible:!!heading,loading:[...document.querySelectorAll('[role="progressbar"],[aria-busy="true"]')].some(visible),geometry:rect?[rect.x,rect.y,rect.width,rect.height].map(Math.round):null,diagnostics};
 }
 
 async function connect(endpoint,signal){
@@ -105,7 +116,15 @@ async function capture(brand,url,width,out){
   const screenshot=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false,clip:{x:0,y:0,width,height:900,scale:1}});
   const png=Buffer.from(screenshot.data,'base64');Object.assign(row,validatePng(png,width));
   row.file=brand+'-'+width+'.png';await writeFile(join(out,row.file),png);row.captureSucceeded=true;
- }catch(error){row.captureSucceeded=false;row.error=error.message;if(error.lastState)row.lastRenderState=error.lastState;row.stderr=stderr.slice(-1200);}
+ }catch(error){
+  row.captureSucceeded=false;row.error=error.message;
+  if(error.lastState)row.lastRenderState=error.lastState;
+  else if(cdp&&!controller.signal.aborted){
+   try{const result=await cdp.send('Runtime.evaluate',{expression:'('+inspectRender.toString()+')()',returnByValue:true});if(result.exceptionDetails)throw new Error('Failure render inspection failed');row.lastRenderState=result.result.value;}
+   catch(diagnosticError){row.diagnosticError=diagnosticError.message;}
+  }
+  row.stderr=stderr.slice(-1200);
+ }
  finally{
   clearTimeout(timer);row.timedOut=controller.signal.aborted||/deadline/i.test(row.error??'');
   if(cdp){try{await cdp.send('Browser.close');}catch{/* Closing Chrome can disconnect before its response. */}cdp.close();}
