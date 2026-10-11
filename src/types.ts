@@ -375,6 +375,7 @@ export interface VaultMemoryConfig {
   enableHorizon?: boolean;
   horizonAuthor?: string;
   defaultVault?: VaultType;
+  executeCodeBlocks?: boolean;
 }
 
 // ── Temporal Layer (v6.0) ──────────────────────────────────

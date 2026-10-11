@@ -20,6 +20,10 @@ import { GoalOrchestrator } from './goal.js';
 import { telemetry } from './telemetry/index.js';
 import { continuityStatus, importContinuityBundle } from './continuity-import.js';
 import { RetrievalIndex } from './retrieval.js';
+import { SovereignBlockchainAnchor, type VaultSnapshotItem } from './durability/blockchain-anchor.js';
+import { RobotContinuityKernel, type RobotActuatorCommand } from './robotics/continuity-kernel.js';
+import { StarlightQueen } from './orchestration/starlight-queen.js';
+import { MarketplaceCatalog } from './marketplace/catalog.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpToolAnnotations {
@@ -670,27 +674,31 @@ export class StarlightMcpServer {
     // 14. sis_durability_anchor
     this.reg({
       name: 'sis_durability_anchor',
+      title: 'Anchor vault entries to decentralized storage',
       description: 'Anchor vault entries to decentralized blockchain storage (Arweave/IPFS) and generate a verified Merkle root proof-of-state receipt',
-      inputSchema: {
-        type: 'object',
-        required: ['items'],
-        properties: {
+      inputSchema: input({
+        items: {
+          type: 'array',
           items: {
-            type: 'array',
-            items: {
-              type: 'object',
-              required: ['id', 'vault', 'content'],
-              properties: {
-                id: { type: 'string' },
-                vault: { type: 'string' },
-                content: { type: 'string' },
-                tags: { type: 'array', items: { type: 'string' } },
-              },
+            type: 'object',
+            required: ['id', 'vault', 'content'],
+            properties: {
+              id: { type: 'string' },
+              vault: { type: 'string' },
+              content: { type: 'string' },
+              tags: { type: 'array', items: { type: 'string' } },
             },
           },
-          target: { type: 'string', enum: ['arweave', 'ipfs', 'filecoin', 'mock-substrate'] },
         },
-      },
+        target: { type: 'string', enum: ['arweave', 'ipfs', 'filecoin', 'mock-substrate'] },
+      }, ['items']),
+      outputSchema: output({
+        anchorId: { type: 'string' },
+        merkleRoot: { type: 'string' },
+        target: { type: 'string' },
+        status: { type: 'string' },
+      }),
+      annotations: APPEND,
     }, (p) => {
       const rawItems = (p.items ?? []) as any[];
       const items: VaultSnapshotItem[] = rawItems.map((item) => ({
@@ -702,31 +710,33 @@ export class StarlightMcpServer {
       }));
       const target = (p.target as any) ?? 'arweave';
       const receipt = SovereignBlockchainAnchor.anchorSnapshot(items, target, 'blockchain_anchored');
-      return receipt;
+      return receipt as unknown as Record<string, unknown>;
     });
 
     // 15. sis_robot_continuity_dispatch
     this.reg({
       name: 'sis_robot_continuity_dispatch',
+      title: 'Dispatch robot actuator command',
       description: 'Dispatch an actuator command to robot fleet (ROS2/Zenoh) with fail-closed safety checking against declared hazard zones',
-      inputSchema: {
-        type: 'object',
-        required: ['robotId', 'action'],
-        properties: {
-          robotId: { type: 'string' },
-          action: { type: 'string', enum: ['navigate', 'manipulate', 'capture_sensor', 'hold', 'emergency_stop'] },
-          targetCoordinates: {
-            type: 'object',
-            properties: {
-              x: { type: 'number' },
-              y: { type: 'number' },
-              z: { type: 'number' },
-              frameId: { type: 'string' },
-            },
+      inputSchema: input({
+        robotId: { type: 'string', minLength: 1, maxLength: 200 },
+        action: { type: 'string', enum: ['navigate', 'manipulate', 'capture_sensor', 'hold', 'emergency_stop'] },
+        targetCoordinates: {
+          type: 'object',
+          properties: {
+            x: { type: 'number' },
+            y: { type: 'number' },
+            z: { type: 'number' },
+            frameId: { type: 'string' },
           },
-          safetyEnvelopeRadiusMeters: { type: 'number' },
         },
-      },
+        safetyEnvelopeRadiusMeters: { type: 'number' },
+      }, ['robotId', 'action']),
+      outputSchema: output({
+        success: { type: 'boolean' },
+        status: { type: 'string' },
+      }),
+      annotations: APPEND,
     }, (p) => {
       const kernel = new RobotContinuityKernel();
       kernel.registerNode({
@@ -747,40 +757,46 @@ export class StarlightMcpServer {
         requiresHumanSupervision: false,
         issuedAt: new Date().toISOString(),
       };
-      return kernel.dispatchCommand(cmd);
+      return kernel.dispatchCommand(cmd) as unknown as Record<string, unknown>;
     });
 
     // 16. sis_queen_autonomic_cycle
     this.reg({
       name: 'sis_queen_autonomic_cycle',
+      title: 'Trigger Starlight Queen autonomic sweep',
       description: 'Trigger Starlight Queen autonomic health sweep and memory consolidation loop',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          nodesCount: { type: 'number' },
-          memoryEntries: { type: 'number' },
-        },
-      },
+      inputSchema: input({
+        nodesCount: { type: 'number' },
+        memoryEntries: { type: 'number' },
+      }),
+      outputSchema: output({
+        cycleId: { type: 'string' },
+        status: { type: 'string' },
+      }),
+      annotations: APPEND,
     }, (p) => {
       const queen = new StarlightQueen();
       const nodesCount = Number(p.nodesCount ?? 1);
       const memoryEntries = Number(p.memoryEntries ?? 10);
-      return queen.runAutonomicCycle(nodesCount, memoryEntries);
+      return queen.runAutonomicCycle(nodesCount, memoryEntries) as unknown as Record<string, unknown>;
     });
 
     // 17. sis_marketplace_list
     this.reg({
       name: 'sis_marketplace_list',
+      title: 'List Sovereign Marketplace catalog items',
       description: 'List curated and community packs from the Sovereign Marketplace catalog',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          licenseTier: { type: 'string', enum: ['free', 'subscription', 'enterprise'] },
-        },
-      },
+      inputSchema: input({
+        licenseTier: { type: 'string', enum: ['free', 'subscription', 'enterprise'] },
+      }),
+      outputSchema: output({
+        items: { type: 'array' },
+      }),
+      annotations: READ,
     }, (p) => {
       const catalog = new MarketplaceCatalog();
-      return catalog.listItems(p.licenseTier as any);
+      const items = catalog.listItems(p.licenseTier as any);
+      return { items } as Record<string, unknown>;
     });
   }
 
