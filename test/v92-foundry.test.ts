@@ -829,10 +829,11 @@ describe("v9.2 Foundry compilation and proof", () => {
     try {
       const sourceRoot = join(temp, "source-root");
       mkdirSync(sourceRoot, { recursive: true });
+      const dirLinkType = process.platform === "win32" ? "junction" : "dir";
       symlinkSync(
         join(ROOT, "skills", "foundry"),
         join(sourceRoot, "linked-parent"),
-        "dir",
+        dirLinkType,
       );
       const sourceGraph: any = structuredClone(buildCapabilityGraph(ROOT));
       sourceGraph.nodes.find(
@@ -873,12 +874,22 @@ describe("v9.2 Foundry compilation and proof", () => {
       const output = join(temp, "package");
       compileDemo(output);
       const linkedManifest = join(output, "linked-foundry-manifest.json");
-      symlinkSync(join(output, "foundry-manifest.json"), linkedManifest);
-      assert.throws(
-        () => provePackage({ packageDirectory: output, registry }),
-        /Refusing symbolic link in artifact tree: linked-foundry-manifest.json/,
-      );
-      rmSync(linkedManifest, { force: true });
+      let fileSymlinkCreated = false;
+      try {
+        symlinkSync(join(output, "foundry-manifest.json"), linkedManifest);
+        fileSymlinkCreated = true;
+      } catch (err: any) {
+        if (process.platform !== "win32" || (err.code !== "EPERM" && err.code !== "EACCES")) {
+          throw err;
+        }
+      }
+      if (fileSymlinkCreated) {
+        assert.throws(
+          () => provePackage({ packageDirectory: output, registry }),
+          /Refusing symbolic link in artifact tree: linked-foundry-manifest.json/,
+        );
+        rmSync(linkedManifest, { force: true });
+      }
 
       mkdirSync(join(output, "node_modules"), { recursive: true });
       writeFileSync(join(output, "node_modules", "unexpected.txt"), "not declared\n");

@@ -192,17 +192,42 @@ function assertOutputCanBeReplaced({ output, packageId, force, registry, root })
   }
 }
 
+function safeRename(source, destination) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      renameSync(source, destination);
+      return;
+    } catch (error) {
+      if (
+        process.platform === "win32" &&
+        (error.code === "EPERM" || error.code === "EBUSY" || error.code === "EACCES") &&
+        attempt < 4
+      ) {
+        const end = Date.now() + 50 * (attempt + 1);
+        while (Date.now() < end) {}
+        continue;
+      }
+      if (process.platform === "win32" && (error.code === "EPERM" || error.code === "EXDEV")) {
+        cpSync(source, destination, { recursive: true });
+        rmSync(source, { recursive: true, force: true });
+        return;
+      }
+      throw error;
+    }
+  }
+}
+
 function promoteStagedOutput(staging, output) {
   if (!existsSync(output)) {
-    renameSync(staging, output);
+    safeRename(staging, output);
     return;
   }
   const backup = join(dirname(output), `.${basename(output)}-backup-${randomUUID()}`);
-  renameSync(output, backup);
+  safeRename(output, backup);
   try {
-    renameSync(staging, output);
+    safeRename(staging, output);
   } catch (error) {
-    renameSync(backup, output);
+    safeRename(backup, output);
     throw error;
   }
   rmSync(backup, { recursive: true, force: true });

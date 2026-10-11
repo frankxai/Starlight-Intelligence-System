@@ -502,7 +502,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
       unlinkSync(join(temp, "assets", "logo.svg"));
 
-      const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-10-02" });
+      const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-11-02" });
       assert.equal(result.status, "fail");
       for (const id of ["rules-freshness", "short-description", "starter-prompts", "logo"]) {
         assert.equal(result.checks.find((check: any) => check.id === id)?.status, "fail", id);
