@@ -232,3 +232,89 @@ test('shared acyclic context branches are retained and repeated traversal stays 
  const bounded=new SanitizationGateway().sanitizeContext(dag);
  assert.ok(JSON.stringify(bounded).includes('__truncated'));
 });
+
+// The host may reuse its configuration while a provider read is pending.
+async function pendingRecall(configure, mutate, results) {
+  let started, finish;
+  const entered = new Promise(resolve => { started = resolve; });
+  const response = new Promise(resolve => { finish = resolve; });
+  const provider = { recall(request) { started(request); return response; } };
+  const config = { memory: provider, tenantId: 'tenant-a', workspaceId: 'workspace-a', ...configure };
+  const pending = recallContext('reviewed release', config);
+  const request = await entered;
+  try { mutate(config); } finally { finish(results); }
+  return { request, context: await pending };
+}
+
+test('in-flight recall retains the admitted tenant when caller configuration changes', async () => {
+  const { request, context } = await pendingRecall({}, config => { config.tenantId = 'tenant-b'; },
+    [hit('admitted'), hit('other', { tenant_id: 'tenant-b' })]);
+  assert.equal(request.tenant_id, 'tenant-a');
+  assert.deepEqual(context.map(item => item.id), ['admitted']);
+});
+
+test('in-flight recall retains the admitted workspace when caller configuration changes', async () => {
+  const { request, context } = await pendingRecall({}, config => { config.workspaceId = 'workspace-b'; },
+    [hit('admitted'), hit('other', { workspace_id: 'workspace-b' })]);
+  assert.equal(request.workspace_id, 'workspace-a');
+  assert.deepEqual(context.map(item => item.id), ['admitted']);
+});
+
+test('in-flight recall never expands its admitted sharing grant', async () => {
+  const { context } = await pendingRecall({ allowShareable: false }, config => { config.allowShareable = true; },
+    [hit('shareable', { privacy_class: 'private-shareable' }), hit('public')]);
+  assert.deepEqual(context.map(item => item.id), ['public']);
+});
+
+test('in-flight recall retains the admitted result limit', async () => {
+  const { context } = await pendingRecall({ limit: 1 }, config => { config.limit = 2; }, [hit('first'), hit('second')]);
+  assert.deepEqual(context.map(item => item.id), ['first']);
+});
+
+test('in-flight recall retains the admitted character budget', async () => {
+  const { context } = await pendingRecall({ maxCharacters: 5 }, config => { config.maxCharacters = 100; }, [hit('first')]);
+  assert.equal(context[0].content, 'Use t');
+});
+
+test('in-flight recall retains default sanitization when the caller replaces its sanitizer', async () => {
+  const { context } = await pendingRecall({}, config => { config.sanitizer = { sanitize: text => text }; },
+    [hit('contact', { normalized_fact: 'fixture@example.org' })]);
+  assert.equal(context[0].content, '[REDACTED]');
+});
+
+test('recall selects its provider method before yielding and preserves its receiver', async () => {
+  let originalCalls = 0, replacementCalls = 0;
+  const provider = { marker: 'original', async recall() {
+    assert.equal(this.marker, 'original'); originalCalls++; return [hit('original')];
+  } };
+  const pending = recallContext('reviewed release', { ...options, memory: provider });
+  provider.recall = async () => { replacementCalls++; return [hit('replacement')]; };
+  assert.deepEqual((await pending).map(item => item.id), ['original']);
+  assert.equal(originalCalls, 1); assert.equal(replacementCalls, 0);
+});
+
+test('in-flight recall selects one sanitizer method and preserves its receiver', async () => {
+  const sanitizer = { marker: 'original', sanitize(text) {
+    assert.equal(this.marker, 'original'); return text.replace('fixture@example.org', '[REDACTED]');
+  } };
+  const { context } = await pendingRecall({ sanitizer }, () => { sanitizer.sanitize = text => text; },
+    [hit('contact', { normalized_fact: 'fixture@example.org' })]);
+  assert.equal(context[0].content, '[REDACTED]');
+});
+
+test('a query sanitizer cannot change the admitted scope before provider egress', async () => {
+  const config = { ...options, memory: { async recall(request) {
+    assert.equal(request.tenant_id, 'tenant-a'); return [hit('admitted')];
+  } } };
+  config.sanitizer = { sanitize(text) { config.tenantId = 'tenant-b'; return text; } };
+  assert.deepEqual((await recallContext('reviewed release', config)).map(item => item.id), ['admitted']);
+});
+
+test('query sanitizer diagnostics are withheld and provider work never starts', async () => {
+  let calls = 0;
+  await assert.rejects(recallContext('reviewed release', { ...options,
+    memory: { async recall() { calls++; return []; } },
+    sanitizer: { sanitize() { throw new Error('synthetic private host diagnostic'); } },
+  }), error => error.message === 'Memory recall unavailable or denied');
+  assert.equal(calls, 0);
+});
