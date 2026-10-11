@@ -132,7 +132,7 @@ export class StarlightQueen {
   /**
    * Runs an autonomic cycle sweep.
    */
-  public runAutonomicCycle(nodesCount: number, memoryEntries: number): AutonomicCycleReport {
+  public runAutonomicCycle(nodesCount: number = 0, memoryEntries: number = 0): AutonomicCycleReport {
     const openGateCount = this.getOpenGates().length;
     const cycleId = `cycle_${Date.now()}`;
     const report: AutonomicCycleReport = {

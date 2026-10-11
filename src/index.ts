@@ -490,5 +490,42 @@ export type {
   MarketplaceValidationResult,
 } from './marketplace/catalog.js';
 
+export { PackManager } from './marketplace/pack-manager.js';
+export type {
+  PackAuditReport,
+  PackInstallReceipt,
+} from './marketplace/pack-manager.js';
+
+export { SovereignEnvelopeEncryption } from './durability/envelope.js';
+export type { EncryptedVaultEnvelope } from './durability/envelope.js';
+
+export {
+  SovereignStorageDispatcher,
+  IrysArweaveTransport,
+  PinataIpfsTransport,
+} from './durability/transports.js';
+export type {
+  UploadResult,
+  DecentralizedStorageProvider,
+  AnchoringOptions,
+  DispatchedAnchorResult,
+} from './durability/transports.js';
+
+export {
+  TrapezoidVelocityProfiler,
+  SpatialPointCloudSemanticExtractor,
+  ZenohRealtimeBridge,
+} from './robotics/zenoh-bridge.js';
+export type {
+  VelocityTwist,
+  VelocityProfileConfig,
+  DetectedObjectCluster,
+  ZenohBridgeConfig,
+} from './robotics/zenoh-bridge.js';
+
+export { StarlightDaemon } from './daemon/starlightd.js';
+export type { StarlightDaemonStatus } from './daemon/starlightd.js';
+
+
 
 

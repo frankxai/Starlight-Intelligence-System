@@ -704,3 +704,47 @@ GenCreator connector check on 2026-06-18: team `Starlight Intelligence`; Vercel 
   - Passed all substrate symmetry tests: `v77-skill-rules.test.ts` (6/6 pass) and `v78-skill-registry.test.ts` (8/8 pass).
 
 **Built on SIP — Starlight Intelligence Protocol v1.1.1**
+
+### [2026-10-11] Sovereign Fleet Hardening & Production GTM Delivery (E2E)
+**Category:** sovereign-substrate / robotics-continuity / durability / marketplace-tooling
+**Confidence:** 1.0
+**Source:** Antigravity Goal Lead Session (Starlight Central Command)
+**Related:** `src/durability/`, `src/robotics/`, `src/orchestration/`, `src/marketplace/`, `src/daemon/`, `site/`
+
+### Engineering Delivered:
+1. **Decentralized Storage Transports & Zero-Knowledge Envelopes (`src/durability/`):**
+   - Shipped `SovereignEnvelopeEncryption` with client-side `AES-256-GCM` (PBKDF2-SHA256, 100,000 iterations) protecting memory atoms before dispatch to public decentralized nodes.
+   - Shipped `IrysArweaveTransport` and `PinataIpfsTransport` supporting real API dispatch when secrets exist, falling back to deterministic offline Merkle roots & CIDs.
+   - Comprehensive test suite `test/durability-transports.test.ts` (4/4 pass).
+
+2. **Real-Time Robotics Network Bridge & Actuation Profiler (`src/robotics/`):**
+   - Shipped `TrapezoidVelocityProfiler` preventing physical actuator jerk, motor wear, and robot tip-over.
+   - Shipped `SpatialPointCloudSemanticExtractor` converting 3D perception bounding boxes into semantic landmarks (docking stations, human zones, hazard zones).
+   - Shipped `ZenohRealtimeBridge` connecting to ROS2/Zenoh message buses with fail-closed safety zeroing.
+   - Comprehensive test suite `test/robotics-zenoh-bridge.test.ts` (3/3 pass).
+
+3. **Starlight CLI Pack Tooling & Sandboxed Installation (`src/marketplace/`):**
+   - Shipped `PackManager` with commands: `starlight pack list`, `starlight pack audit <id>`, `starlight pack install <id>`.
+   - Automated capability & permission auditing: flags elevated permissions (`network:`, `exec:`, `fs:write`) and rejects dangerous wildcards (`*`).
+   - Pack installation writes immutable `PackInstallReceipt` carrying `Built on SIP`.
+   - Comprehensive test suite `test/marketplace-pack-manager.test.ts` (3/3 pass).
+
+4. **Next.js Web Surface & Interactive Browser Explorers (`site/`):**
+   - Built `/sovereign` route explaining the 4 architectural pillars, 3-tier durability, robot continuity, and 1-day founder immersion ($2,500).
+   - Shipped client-side `MerkleProofExplorer.tsx` running Web Crypto SHA-256 calculations directly in the browser with selective disclosure path visualization.
+   - Shipped client-side `VMCPTokenCalculator.tsx` computing dynamic context window token reductions (-78.8% savings).
+   - Linked `/sovereign` across desktop, tablet, and mobile navigation in `Header.tsx`.
+   - Verified clean static compilation (75/75 pages generated, 0 errors).
+
+5. **Starlight Autonomic Background Daemon (`src/daemon/starlightd.ts`):**
+   - Shipped `StarlightDaemon` coordinating background health sweeps, deadman timeouts, and prioritized queue draining.
+   - Emits heartbeat status receipts to `~/.starlight/starlightd.json`.
+   - Comprehensive test suite `test/starlightd.test.ts` (1/1 pass).
+
+6. **Test Verification & System Conformance:**
+   - 41/41 passing tests in `npm run test:sovereign` (9 suites).
+   - Full `npm test` 100% green across all operational, substrate, memory-provider, and Track D risk-dimension evals.
+   - TypeScript compilation (`npm run build`) 100% clean with zero type errors.
+
+**Built on SIP — Starlight Intelligence Protocol v1.1.1**
+

@@ -46,6 +46,7 @@ import {
   inspectSwarmRepos,
   formatAgyToolCalls,
 } from "./swarm.js";
+import { PackManager } from "./marketplace/pack-manager.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
@@ -160,6 +161,9 @@ Commands:
   goal checkpoint                 Backup local changes to git branch
   goal audit                      Verify workspace builds and tests (--no-tests)
   goal rollback                   Rollback local edits to recover clean workspace
+  pack list                       List available marketplace packs & local installations
+  pack audit <id>                 Audit pack capabilities, security policy, and attestation
+  pack install <id>               Install validated pack into ~/.starlight/packs/ (--force)
 
 Options:
   --help, -h                      Show this help message
@@ -1450,6 +1454,73 @@ async function cmdGoal(
   }
 }
 
+function cmdPack(action: string, args: string[], options: { force?: boolean } = {}): void {
+  const manager = new PackManager();
+  switch (action) {
+    case "list": {
+      const available = manager.listAvailablePacks();
+      console.log(`[starlight] Available packs (${available.length}):`);
+      for (const p of available) {
+        console.log(`  - ${p.id} (v${p.version}) [${p.licenseTier}]: ${p.description}`);
+      }
+      const installed = manager.listInstalledPacks();
+      console.log(`\n[starlight] Installed packs (${installed.length}):`);
+      for (const p of installed) {
+        console.log(`  - ${p.packId} (v${p.version}) at ${p.installPath}`);
+      }
+      break;
+    }
+
+    case "audit": {
+      const packIdOrPath = args[0];
+      if (!packIdOrPath) {
+        console.error("[starlight] Error: pack audit requires pack ID or path.");
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const report = manager.auditPack(packIdOrPath);
+        console.log(`[starlight] Pack Audit for: ${report.name} (${report.packId} v${report.version})`);
+        console.log(`  Attestation: ${report.attestationValid ? "PASSED (Built on SIP)" : "FAILED"}`);
+        console.log(`  Security Status: ${report.securitySafe ? "SAFE" : "FLAGGED / ELEVATED"}`);
+        console.log(`  Requires Operator Ack: ${report.requiresUserAck ? "YES" : "NO"}`);
+        console.log(`  Permissions: ${report.permissions.join(", ") || "none"}`);
+        if (report.reasons.length > 0) {
+          console.log(`  Audit Notes:\n    - ${report.reasons.join("\n    - ")}`);
+        }
+      } catch (err: any) {
+        console.error(`[starlight] Audit failed: ${err.message}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "install": {
+      const packId = args[0];
+      if (!packId) {
+        console.error("[starlight] Error: pack install requires pack ID.");
+        process.exitCode = 1;
+        return;
+      }
+      try {
+        const receipt = manager.installPack(packId, { force: options.force });
+        console.log(`[starlight] Pack '${packId}' installed successfully.`);
+        console.log(`  Receipt: ${receipt.receiptId}`);
+        console.log(`  Path: ${receipt.installPath}`);
+        console.log(`  Attestation: ${receipt.attestation}`);
+      } catch (err: any) {
+        console.error(`[starlight] Installation failed: ${err.message}`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    default:
+      console.error(`[starlight] Unknown pack action: "${action}". Available: list, audit, install`);
+      process.exitCode = 1;
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -1677,6 +1748,17 @@ async function main(): Promise<void> {
         summary: asString(values.summary),
         "no-tests": values["no-tests"] === true,
       });
+      break;
+    }
+
+    case "pack": {
+      const packAction = positionals[1];
+      if (!packAction) {
+        console.error("[starlight] Error: pack requires an action (list, audit, install).");
+        process.exitCode = 1;
+        return;
+      }
+      cmdPack(packAction, positionals.slice(2), { force: values.force === true });
       break;
     }
 

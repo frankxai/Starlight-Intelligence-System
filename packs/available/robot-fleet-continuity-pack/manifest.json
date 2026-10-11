@@ -3,11 +3,15 @@
   "name": "Robot Fleet Continuity Pack",
   "version": "0.1.0",
   "kind": "claw",
+  "author": "FrankX / Starlight Intelligence",
+  "description": "Robotics continuity kernel with ROS2/Zenoh middleware adapter, spatial hazard safety envelopes, and fail-closed E-Stop.",
   "permissions": [
     "fs:read:repo",
     "network:fetch:robot-middleware",
     "task-scheduler:register"
   ],
   "licenseTier": "subscription",
+  "attestation": "Built on SIP",
+  "publishedAt": "2026-10-10T12:00:00Z",
   "manifestSha": "ab2f779daf9afc7f5d6ef53e3daa7feaa9ff8319580040b892aa39a773f6c3f2"
 }
