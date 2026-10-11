@@ -10,7 +10,7 @@ This adapter implements tier 1. Per-agent SQLite file with:
 - `atoms` table with `attestation TEXT NOT NULL` (A1 SCHEMA-enforced)
 - `atoms_fts` FTS5 virtual table for full-text search
 - WAL journal mode for concurrent reads (cross-tab semantics)
-- Plain SQLite file = `cp memory.db backup.db` to fork (A4)
+- Fork live WAL databases with SQLite's online backup API, including WAL state (A4)
 - Stdlib `sqlite3` only — no external memory framework deps
 
 Implements the same SIS-native Substrate ABC from sovereign_substrate.py
@@ -38,11 +38,11 @@ class AgentDBSubstrate(Substrate):
     """Tier-1 per-agent substrate over SQLite + FTS5.
 
     File layout:
-        <db_path>           — single SQLite file (cp to fork)
+        <db_path>           — SQLite database; active writes can live in its WAL
 
     Schema invariants (A1 + A2 SCHEMA-enforced):
     - `attestation TEXT NOT NULL` → A1 fails closed at write time (constraint check)
-    - SQLite file IS a single durable artifact (A2 satisfied as "fork-survives-engine-death" via cp)
+    - SQLite online backup produces a durable snapshot, including committed WAL writes.
       Note: SQLite is binary; for `cat`-readable A2, pair with sovereign_substrate.py
       tier-3 substrate. Tier-1's role is per-agent durable state, not Obsidian canon.
     """
@@ -166,10 +166,18 @@ class AgentDBSubstrate(Substrate):
         limit: int = 10,
         offset: int = 0,
     ) -> list[Atom]:
+        if limit < 0 or offset < 0:
+            raise ValueError("limit and offset must be non-negative")
+        if limit == 0:
+            return []
         cur = self._conn.cursor()
+        ns_clause, ns_args = self._namespace_prefix_clause(namespace_prefix)
+        # Filter arbitrary metadata with the existing Python equality semantics.
+        # Iterate lazily and paginate matching rows, rather than dropping matches
+        # after SQL pagination or materializing the entire database.
+        page_clause = "" if filter else "LIMIT ? OFFSET ?"
+        page_args = () if filter else (limit, offset)
         if query:
-            # Hybrid: FTS5 ranking + namespace + filter
-            ns_clause, ns_args = self._namespace_prefix_clause(namespace_prefix)
             rows = cur.execute(
                 f"""
                 SELECT a.key, a.namespace, a.value_json, a.created_at
@@ -178,40 +186,51 @@ class AgentDBSubstrate(Substrate):
                 WHERE atoms_fts MATCH ?
                   AND a.agent_id = ?
                   AND a.tombstoned_at IS NULL
+                  {_LATEST_ROW}
                   {ns_clause}
-                ORDER BY rank
-                LIMIT ? OFFSET ?
+                ORDER BY rank, a.rowid ASC
+                {page_clause}
                 """,
-                (query, self.agent_id, *ns_args, limit, offset),
-            ).fetchall()
+                (query, self.agent_id, *ns_args, *page_args),
+            )
         else:
             # No semantic query — fall back to namespace prefix + filter scan.
             # Use the same `atoms AS a` alias so _namespace_prefix_clause works.
-            ns_clause, ns_args = self._namespace_prefix_clause(namespace_prefix)
             rows = cur.execute(
                 f"""
                 SELECT a.key, a.namespace, a.value_json, a.created_at
                 FROM atoms AS a
                 WHERE a.agent_id = ?
                   AND a.tombstoned_at IS NULL
+                  {_LATEST_ROW}
                   {ns_clause}
-                ORDER BY a.created_at DESC
-                LIMIT ? OFFSET ?
+                ORDER BY a.created_at DESC, a.rowid DESC
+                {page_clause}
                 """,
-                (self.agent_id, *ns_args, limit, offset),
-            ).fetchall()
+                (self.agent_id, *ns_args, *page_args),
+            )
 
         atoms = []
-        for r in rows:
-            value = json.loads(r[2])
-            if filter and not _filter_matches(value, filter):
-                continue
-            atoms.append(Atom(
-                key=r[0],
-                namespace=tuple(r[1].split("/")) if r[1] else (),
-                value=value,
-                created_at=_parse_dt(r[3]),
-            ))
+        skipped = 0
+        try:
+            for r in rows:
+                value = json.loads(r[2])
+                if filter:
+                    if not _filter_matches(value, filter):
+                        continue
+                    if skipped < offset:
+                        skipped += 1
+                        continue
+                atoms.append(Atom(
+                    key=r[0],
+                    namespace=tuple(r[1].split("/")) if r[1] else (),
+                    value=value,
+                    created_at=_parse_dt(r[3]),
+                ))
+                if len(atoms) == limit:
+                    break
+        finally:
+            cur.close()
         return atoms
 
     def delete(self, namespace: tuple[str, ...], key: str) -> None:
@@ -232,7 +251,7 @@ class AgentDBSubstrate(Substrate):
     def health(self) -> dict[str, Any]:
         cur = self._conn.cursor()
         atom_count = cur.execute(
-            "SELECT COUNT(*) FROM atoms WHERE agent_id = ? AND tombstoned_at IS NULL",
+            f"SELECT COUNT(*) FROM atoms AS a WHERE a.agent_id = ? AND a.tombstoned_at IS NULL {_LATEST_ROW}",
             (self.agent_id,),
         ).fetchone()[0]
         tombstoned = cur.execute(
@@ -255,13 +274,30 @@ class AgentDBSubstrate(Substrate):
         if not prefix:
             return "", ()
         prefix_str = "/".join(prefix)
-        return "AND (a.namespace = ? OR a.namespace LIKE ?)", (prefix_str, prefix_str + "/%")
+        descendant_prefix = prefix_str + "/"
+        # Literal, case-sensitive matching. LIKE treats '%' and '_' as wildcards
+        # and folds ASCII case, which can cross namespace boundaries.
+        return "AND (a.namespace = ? OR substr(a.namespace, 1, ?) = ?)", (
+            prefix_str, len(descendant_prefix), descendant_prefix,
+        )
 
     def close(self) -> None:
         self._conn.close()
 
 
 # ─── Helpers (mirrored from sovereign_substrate to keep modules independent) ──
+
+
+# Superseded rows remain as history, but must never participate in recall.
+# A newer tombstone also supersedes an earlier row; do not resurrect old values.
+_LATEST_ROW = """
+AND NOT EXISTS (
+    SELECT 1 FROM atoms AS newer
+    WHERE newer.agent_id = a.agent_id
+      AND newer.namespace = a.namespace AND newer.key = a.key
+      AND newer.rowid > a.rowid
+)
+"""
 
 
 def _parse_dt(s: str | None) -> datetime:
