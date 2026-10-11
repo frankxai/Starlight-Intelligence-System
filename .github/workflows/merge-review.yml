@@ -12,11 +12,9 @@ on:
         required: true
         type: string
 
+# Checkout uses the ordinary read-only token; only the installed App writes checks.
 permissions:
   contents: read
-  pull-requests: read
-  issues: read
-  checks: write
 
 concurrency:
   group: merge-review-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr }}
@@ -24,19 +22,37 @@ concurrency:
 
 jobs:
   evaluate:
-    if: github.event_name != 'issue_comment' || github.event.issue.pull_request
+    if: >-
+      (github.event_name != 'issue_comment' || github.event.issue.pull_request) &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Owner setup must restrict this environment to the actual default branch.
+    environment: merge-review-writer
     steps:
-      # This is trusted default-branch code. Never check out or execute PR code.
+      # Execute the exact trusted workflow revision, never PR source or floating main.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ github.workflow_sha }}
           persist-credentials: false
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
+      - name: Verify trusted checkout
+        run: test "$(git rev-parse HEAD)" = "$GITHUB_WORKFLOW_SHA"
+      - name: Create repository-scoped review token
+        id: writer
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.MERGE_REVIEW_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MERGE_REVIEW_APP_PRIVATE_KEY }}
+          permission-checks: write
+          permission-contents: read
+          permission-issues: read
+          permission-pull-requests: read
+          # Omit owner/repositories to scope to this repository; post-step revokes.
       - name: Evaluate source paths and review receipt
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.writer.outputs.token }}
+          MERGE_REVIEW_APP_ID: ${{ vars.MERGE_REVIEW_APP_ID }}
         run: python tools/merge-review/merge_review_gate.py

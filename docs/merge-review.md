@@ -40,8 +40,9 @@ skipped. Never overwrite a historical failed report to conceal the failure.
 
 If the event was missed, dispatch `merge-review.yml` on `main` with the PR number.
 The workflow runs trusted default-branch code and reads PR metadata; it never
-executes PR source. Inspect the named check's conclusion: the enclosing workflow
-can succeed after publishing a failing review check. Closed PRs are not evaluated.
+executes PR source. Inspect the named check and the job: this writer exits nonzero
+when review is denied. The older implementation could publish a failing review
+check while its job succeeded. Closed PRs are not evaluated.
 
 The only routine exemption is ordinary `100644` `.md` or `.txt` files below
 `docs/notes/` or `docs/handovers/`, excluding instruction files and unsafe paths.
@@ -50,8 +51,8 @@ still applies. Do not move substantive work into these directories to evade revi
 
 Administrators must verify real hosted denial and acceptance before requiring
 the check. Preserve existing protection, CI and security rules; bind required
-checks to the observed GitHub Actions app. A merged workflow alone does not prove
-that branch protection requires its result. Inspect the live repository rules.
+checks to the observed distinct writer App after the activation proof below.
+A merged workflow alone does not prove that branch protection requires its result. Inspect the live repository rules.
 
 ## Release remains a separate decision
 
@@ -62,3 +63,44 @@ OIDC workflow and verify registry integrity, provenance and installation afterwa
 Reconcile registry state before retrying an ambiguous publication. Preserve
 reserved versions and required release-environment review. A successful pack,
 merge check or CI run does not establish publication or customer acceptance.
+
+## Distinct writer setup and activation
+
+The writer candidate uses the official `actions/create-github-app-token` v3.2.0,
+pinned to its verified commit. Its installation token is limited to this repository,
+requests Checks write plus Contents, Issues and Pull requests read, and is revoked
+by the action's post-step. The ordinary workflow token has Contents read only.
+The trusted workflow checks out its immutable `github.workflow_sha`; it never
+checks out or runs PR source. The read-only fixture workflow uses no App secrets.
+
+Owner setup is required before activation. Register a private GitHub App with only
+those repository permissions and install it only on this repository. Disable its
+webhook unless an accepted service needs one. No OAuth user tokens, PAT fallback,
+paid hosting, new daemon or model-provider credentials are required. Create the
+`merge-review-writer` environment with a deployment branch rule allowing only the
+actual default branch. Store the App private key only in that environment's
+`MERGE_REVIEW_APP_PRIVATE_KEY` secret; configure its actual client ID as
+`MERGE_REVIEW_APP_CLIENT_ID` and numeric App ID as `MERGE_REVIEW_APP_ID`. Never
+paste keys into a task, report, issue, local harness profile or repository.
+The evaluator rejects missing/invalid IDs and the shared Actions App15368, and
+checks the actual created check's App ID before it can report success.
+
+The current server rejects normal SIS364 merging even though all visible checks
+pass. This candidate is not an installed writer or a proven repair of that server
+behavior. Changing an expected App ID without an actual passing installed check
+would create another missing gate. Preserve the current protections and failures.
+A trusted, independently reviewed activation path must first run the exact
+reviewed evaluator under the legitimately installed App without executing PR
+source or weakening the required check. That bootstrap dependency remains open.
+
+Before rebinding required review checks, observe real hosted denial for missing,
+stale, incomplete, untrusted and revoked receipts; then exact-head acceptance.
+Verify wrong/shared writer rejection, source updates during a delayed evaluation,
+comment edit/deletion reevaluation, environment denial on an untrusted branch,
+post-job token retirement and a normal protected merge. Bind the required context
+to the observed actual App ID only after those observations. The Python fixtures
+mock GitHub transport; they do not prove these hosted permissions, environment,
+token lifecycle, branch rules or merge behavior. Never call fixture PASS a live
+activation. Other required CI, npm authority and production gates stay separate.
+
+Supported interfaces: [official token action](https://github.com/actions/create-github-app-token/tree/bcd2ba49218906704ab6c1aa796996da409d3eb1), [workflow variables](https://docs.github.com/en/actions/reference/workflows-and-actions/variables) and [environment branch restrictions](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments).

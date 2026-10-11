@@ -84,7 +84,8 @@ def main():
     repository = os.environ['GITHUB_REPOSITORY']
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repository):
         raise ValueError('Invalid repository')
-    event = json.loads(open(os.environ['GITHUB_EVENT_PATH'], encoding='utf8').read())
+    with open(os.environ['GITHUB_EVENT_PATH'], encoding='utf8') as event_file:
+        event = json.load(event_file)
     value = (event.get('pull_request', {}).get('number')
              or (event.get('issue', {}).get('number') if event.get('issue', {}).get('pull_request') else None)
              or event.get('inputs', {}).get('pr'))
@@ -93,6 +94,10 @@ def main():
     number = int(value)
     if number < 1:
         raise ValueError('Invalid PR number')
+    writer = os.environ.get('MERGE_REVIEW_APP_ID', '')
+    if not re.fullmatch(r'[1-9][0-9]{0,11}', writer) or int(writer) == 15368:
+        raise ValueError('A distinct configured GitHub App writer is required')
+    writer = int(writer)
     endpoint = f'repos/{repository}/pulls/{number}'
     pr = api(endpoint)
     if pr['state'] != 'open':
@@ -104,6 +109,8 @@ def main():
     ok = False
     summary = 'Review evaluation failed closed.'
     try:
+        if check.get('app', {}).get('id') != writer:
+            raise ValueError('Unexpected check writer identity')
         files = api(endpoint + '/files?per_page=100', paginate=True)
         if len(files) != pr['changed_files']:
             raise ValueError('Incomplete changed-file listing')
@@ -131,8 +138,9 @@ def main():
         'status': 'completed', 'conclusion': 'success' if ok else 'failure',
         'output': {'title': CHECK_NAME, 'summary': summary}}),
         capture_output=True, text=True, timeout=90, check=True)
-    print(json.dumps({'head': head, 'passed': ok, 'summary': summary}))
+    print(json.dumps({'head': head, 'passed': ok, 'summary': summary, 'writerAppId': writer}))
+    return 0 if ok else 1
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())
