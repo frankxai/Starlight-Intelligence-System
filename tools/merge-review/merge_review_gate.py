@@ -80,6 +80,31 @@ def api(endpoint, payload=None, paginate=False):
     return [item for page in data for item in page] if paginate else data
 
 
+def native_review_check(repository, head):
+    """Find the eligible Actions job; a lookalike API-created check is insufficient."""
+    listing = api(f'repos/{repository}/commits/{head}/check-runs?per_page=100')
+    if listing['total_count'] > len(listing['check_runs']):
+        raise ValueError('Incomplete native check listing')
+    pattern = re.compile(r'https://github\.com/' + re.escape(repository)
+                         + r'/actions/runs/([1-9][0-9]*)/job/([1-9][0-9]*)')
+    for check in sorted(listing['check_runs'], key=lambda item: item['id'], reverse=True):
+        if (check.get('name') != CHECK_NAME or check.get('head_sha') != head
+                or check.get('app', {}).get('id') != 15368):
+            continue
+        match = pattern.fullmatch(check.get('details_url') or '')
+        if not match or int(match[2]) != check['id']:
+            continue
+        job = api(f'repos/{repository}/actions/jobs/{match[2]}')
+        run = api(f'repos/{repository}/actions/runs/{match[1]}')
+        if (job['id'] == check['id'] and job['name'] == CHECK_NAME
+                and job['head_sha'] == head and job['run_id'] == int(match[1])
+                and run['id'] == int(match[1]) and run['head_sha'] == head
+                and run['event'] == 'pull_request'
+                and run['path'] == '.github/workflows/merge-review-pr.yml'):
+            return check
+    return None
+
+
 def main():
     repository = os.environ['GITHUB_REPOSITORY']
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repository):
@@ -98,9 +123,19 @@ def main():
     if pr['state'] != 'open':
         return
     head = pr['head']['sha']
-    check = api(f'repos/{repository}/check-runs', {
-        'name': CHECK_NAME, 'head_sha': head, 'status': 'in_progress',
-        'external_id': f'merge-review:{number}:{head}'})
+    check = native_review_check(repository, head)
+    native = check is not None
+    if native:
+        # Comment/dispatch reevaluations update the same eligible job's check.
+        # A new API-created success can be visible but still not satisfy a ruleset.
+        subprocess.run(['gh', 'api', f'repos/{repository}/check-runs/{check["id"]}',
+                        '--method', 'PATCH', '--input', '-'],
+                       input=json.dumps({'status': 'in_progress'}),
+                       capture_output=True, text=True, timeout=90, check=True)
+    else:
+        check = api(f'repos/{repository}/check-runs', {
+            'name': CHECK_NAME, 'head_sha': head, 'status': 'in_progress',
+            'external_id': f'merge-review:{number}:{head}'})
     ok = False
     summary = 'Review evaluation failed closed.'
     try:
@@ -131,7 +166,7 @@ def main():
         'status': 'completed', 'conclusion': 'success' if ok else 'failure',
         'output': {'title': CHECK_NAME, 'summary': summary}}),
         capture_output=True, text=True, timeout=90, check=True)
-    print(json.dumps({'head': head, 'passed': ok, 'summary': summary}))
+    print(json.dumps({'head': head, 'passed': ok, 'summary': summary, 'nativeCheck': native}))
 
 
 if __name__ == '__main__':
