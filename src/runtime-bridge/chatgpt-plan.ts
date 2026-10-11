@@ -32,6 +32,7 @@ class PlanError extends Error {
 }
 function fail(code: string): never { throw new PlanError(code); }
 const bytes = (value: string) => Buffer.byteLength(value, "utf8");
+const MAX_STREAM_BYTES = 2_097_152;
 
 function recoveryCode(value: unknown): string {
   if (value === "subscription_sharing_usage_limit_exceeded") return "usage_limit_manage_usage";
@@ -272,7 +273,7 @@ async function readInference(response: Response, signal: AbortSignal, maxOutputB
       const chunk = await reader.read();
       if (chunk.done) { buffer += decoder.decode(); break; }
       received += chunk.value.byteLength;
-      if (received > 2_097_152) fail("stream_limit_unknown");
+      if (received > MAX_STREAM_BYTES) fail("stream_limit_unknown");
       buffer += decoder.decode(chunk.value, { stream: true });
       let boundary: RegExpExecArray | null;
       while ((boundary = /\r\n\r\n|\n\n|\r\r/.exec(buffer))) {

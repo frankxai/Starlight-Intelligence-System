@@ -147,13 +147,13 @@ test("HTTP auth and usage errors are safe failures; transport errors remain unkn
     assert.equal(result.status, "failed");
     assert.equal(JSON.stringify(result).includes("test-private-token"), false);
   }
-  let calls = 0;
+  const calls: string[] = [];
   const { runtime } = setup({ transport: async (url: string) => {
-    calls++; if (url.endsWith("/models")) return catalog();
+    calls.push(url); if (url.endsWith("/models")) return catalog();
     throw new Error("test-private-token");
   } });
   await assert.rejects(runtime.invoke(request(), new AbortController().signal), error => !String(error).includes("test-private-token"));
-  assert.equal(calls, 2);
+  assert.deepEqual(calls, ["https://api.openai.com/v1/models", "https://api.openai.com/v1/responses"]);
 });
 
 test("local output limit aborts reading and rejects as unresolved; never claims a token spending cap", async () => {
@@ -166,8 +166,14 @@ test("duplicate catalog and malformed token usage fail closed", async () => {
     { slug: "model-a", display_name: "A", visibility: "list" }, { slug: "model-a", display_name: "A", visibility: "list" },
   ] }), { headers: { "content-type": "application/json" } }) });
   assert.equal((await runtime.invoke(request(), new AbortController().signal)).status, "failed");
-  const other = setup({}, [{ ...terminal(), response: { ...terminal().response, usage: { input_tokens: -1, output_tokens: 4, total_tokens: 3 } } }]);
-  await assert.rejects(other.runtime.invoke(request(), new AbortController().signal), /invalid_usage/);
+  for (const usage of [{ input_tokens: -1, output_tokens: 4, total_tokens: 3 },
+    { input_tokens: null, output_tokens: 4, total_tokens: 4 },
+    { input_tokens: 10, output_tokens: 4.5, total_tokens: 14.5 },
+    { input_tokens: 10, output_tokens: 4, total_tokens: 100 },
+    { output_tokens: 4, total_tokens: 14 }]) {
+    const other = setup({}, [{ ...terminal(), response: { ...terminal().response, usage } }]);
+    await assert.rejects(other.runtime.invoke(request(), new AbortController().signal), /invalid_usage/);
+  }
 });
 
 test("missing usage stays unknown; failed host usage recording retains execution capacity", async () => {
@@ -194,5 +200,34 @@ test("invalid JSON, invalid UTF-8 and conflicting terminal events are unresolved
     const { runtime } = setup({ transport: async (url: string) => url.endsWith("/models") ? catalog()
       : new Response(payload, { headers: { "content-type": "text/event-stream" } }) });
     await assert.rejects(runtime.invoke(request(), new AbortController().signal), /chatgpt_plan:/);
+  }
+});
+
+test("provider model aliases are recorded; indexed deltas reconcile multiple messages and content parts", async () => {
+  const usage: { model: string }[] = [];
+  const output = [{ type: "reasoning" },
+    { type: "message", content: [{ type: "output_text", text: "First" }, { type: "output_text", text: "Second" }] },
+    { type: "message", content: [{ type: "output_text", text: "Third" }] }];
+  const { runtime } = setup({ onUsage: (value: { model: string }) => usage.push(value) }, [
+    { type: "response.output_text.delta", output_index: 2, content_index: 0, delta: "Third" },
+    { type: "response.output_text.delta", output_index: 1, content_index: 1, delta: "Second" },
+    { type: "response.output_text.delta", output_index: 1, content_index: 0, delta: "First" },
+    { ...terminal(), response: { ...terminal().response, model: "provider-model-alias", output } },
+  ]);
+  const result = await runtime.invoke(request(), new AbortController().signal);
+  assert.equal(result.status, "completed");
+  assert.equal(result.output, "First\nSecond\nThird");
+  assert.equal(usage[0].model, "provider-model-alias");
+});
+
+test("frame and whole-stream limits are separate; bounded metadata cannot create unbounded execution", async () => {
+  const comment = ": " + "x".repeat(40_000) + "\n\n";
+  for (const [payload, accepted] of [[comment.repeat(3) + event(terminal()), true],
+    [": " + "x".repeat(65_536) + "\n\n" + event(terminal()), false],
+    [comment.repeat(53) + event(terminal()), false]] as const) {
+    const { runtime } = setup({ transport: async (url: string) => url.endsWith("/models") ? catalog()
+      : new Response(payload, { headers: { "content-type": "text/event-stream" } }) });
+    if (accepted) assert.equal((await runtime.invoke(request(), new AbortController().signal)).status, "completed");
+    else await assert.rejects(runtime.invoke(request(), new AbortController().signal), /stream_limit_unknown/);
   }
 });
