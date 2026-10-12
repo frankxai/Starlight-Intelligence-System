@@ -7,7 +7,7 @@ evidence.
 
 ## Submit a review
 
-For a Codex-made change, obtain an independent review from an admitted
+For a Codex or Jules-made change, obtain an independent review from an admitted
 Antigravity, Grok, Claude or Gemini reviewer. Supply the exact commit and every
 changed file. Preserve blocking findings, failed checks and limitations. A source
 change requires a fresh exact-head review; an older passing report is insufficient.
@@ -18,14 +18,14 @@ The evaluator accepts LF or CRLF after the marker and preserves the report's
 UTF-8 bytes for SHA-256 verification. See the [evaluator](../tools/merge-review/merge_review_gate.py)
 and its [regression tests](../tools/merge-review/tests/test_merge_review_gate.py).
 
-The receipt contains `repository`, numeric `pr`, full `headSha`, `maker: "codex"`,
+The receipt contains `repository`, numeric `pr`, full `headSha`, `maker: "codex"` or `"jules"`,
 `provider`, `verdict`, `blockingFindings`, all `reviewedFiles`, the complete
 `review`, its `reviewSha256`, the review packet's `packetSha256` and a nonempty
 `resolution`. Use `PASS` or `WARN` only after resolving every blocking finding;
 do not translate an incomplete review into approval. The report must contain at
 least 80 characters. Hash the actual report and the actual supplied packet.
 
-The attestor must be `frankxai` with GitHub association `OWNER`, `MEMBER` or
+The attestor must be `frankxai` or `frankx-eth` with GitHub association `OWNER`, `MEMBER` or
 `COLLABORATOR`. This is an identity-based attestation: the check cannot authenticate
 the model or judge the report's quality. The attestor must inspect the evidence.
 

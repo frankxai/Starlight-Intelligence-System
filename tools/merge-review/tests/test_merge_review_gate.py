@@ -30,6 +30,13 @@ class MergeReviewTests(unittest.TestCase):
     def test_sensitive_requires_real_receipt(self):
         self.assertFalse(self.evaluate([]))
         self.assertTrue(self.evaluate([receipt()]))
+        self.assertTrue(self.evaluate([receipt(maker='jules')]))
+
+    def test_trusted_attestors_pass(self):
+        for user_login in ['frankxai', 'frankx-eth']:
+            comment = receipt()
+            comment['user']['login'] = user_login
+            self.assertTrue(self.evaluate([comment]))
 
     def test_windows_marker_preserves_report_digest(self):
         report = ('PASS: Independently inspected the complete supplied security source.\r\n'
@@ -63,7 +70,7 @@ class MergeReviewTests(unittest.TestCase):
     def test_stale_incomplete_tampered_or_blocked_receipts_deny(self):
         for change in [{'headSha': 'c' * 40}, {'reviewedFiles': []},
                        {'blockingFindings': ['unfixed']}, {'reviewSha256': 'd' * 64},
-                       {'provider': 'codex'}, {'verdict': 'FAIL'}, {'pr': 111},
+                       {'provider': 'codex'}, {'maker': 'untrusted_maker'}, {'verdict': 'FAIL'}, {'pr': 111},
                        {'repository': 'attacker/repo'}, {'packetSha256': 'invalid'},
                        {'resolution': ''}, {'review': ''}]:
             with self.subTest(change=change):
