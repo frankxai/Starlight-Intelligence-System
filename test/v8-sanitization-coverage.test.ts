@@ -27,6 +27,26 @@ import { SanitizationGateway } from "../src/sanitization.js";
 
 const MASK = "[REDACTED]";
 
+test('legacy Supabase server keys are fully masked while publishable keys and host options are preserved', () => {
+  const secret = 'sb_' + 'secret_' + 'fixture-safe_-';
+  const publishable = 'sb_' + 'publishable_' + 'fixture-safe_-';
+  const sanitizer = new SanitizationGateway({ scrubPII: false });
+  assert.equal(sanitizer.sanitize(`key=${secret}; public=${publishable}`), `key=${MASK}; public=${publishable}`);
+  assert.equal(sanitizer.sanitize(`${secret} ${secret}`), `${MASK} ${MASK}`);
+  assert.equal(new SanitizationGateway({ scrubPII: false, maskString: '$&' }).sanitize(secret), '$&');
+  assert.equal(new SanitizationGateway({ scrubSecrets: false, scrubPII: false }).sanitize(secret), secret);
+});
+
+test('legacy Supabase server-key fields are masked in nested contexts without mutating the input', () => {
+  const fields = ['SUPABASE_SECRET_KEY', 'SUPABASE_SERVICE_ROLE_KEY', 'supabase_secret_key', 'supabase_service_role_key'];
+  const input = { items: fields.map((field) => ({ [field]: 'opaque-fixture' })), NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_fixture' };
+  const expected = { items: fields.map((field) => ({ [field]: MASK })), NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_fixture' };
+  const sanitizer = new SanitizationGateway({ scrubPII: false });
+  assert.deepEqual(sanitizer.sanitizeContext(input), expected);
+  assert.ok(input.items.every((item) => Object.values(item)[0] === 'opaque-fixture'));
+  assert.deepEqual(new SanitizationGateway({ scrubSecrets: false, scrubPII: false }).sanitizeContext(input), input);
+});
+
 test('legacy bearer redaction consumes padding and preserves sanitized array shapes', () => {
   const sanitizer = new SanitizationGateway();
   for (const token of ['+fixture/fixture==', 'fixture+fixture/fixture==']) {
