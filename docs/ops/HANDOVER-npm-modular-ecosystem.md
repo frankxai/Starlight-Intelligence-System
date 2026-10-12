@@ -1,25 +1,31 @@
 # Modular npm ecosystem pickup
 
 Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-System/issues/329).
-Estate record: [Ops309](https://github.com/frankxai/agentic-ops-hub/pull/309).
+Estate record: [Ops313](https://github.com/frankxai/agentic-ops-hub/pull/313).
 Date: 12 October 2026. This release preparation uses accepted source
-`3ff9a5a9309c8ed43bc72c73d15f81faab85af41`.
+`c120706cdc56825044583550af7a03c7ee98bcf2`.
 
-Core364, MCP366 and archive-metric367 fixes are merged normally. Receiving
-[38197731330](https://github.com/frankxai/Starlight-Intelligence-System/actions/runs/38197731330)
+Core364, MCP366, archive-metric367, malformed privacy namespace370 and plugin
+dependency369 fixes are merged normally. PR370 receiving
+[38207137360](https://github.com/frankxai/Starlight-Intelligence-System/actions/runs/38207137360)
 passes six jobs; all four Linux/Windows Node22/24 matrices pass 31 core, 6 AI, 16 MCP and 25 release
 tests with zero failures/skips. Reviewed-identical actual archives and installed
 consumers are verified at that exact 0.2.0 source. This evidence does not attest
-new 0.2.1 archive bytes, public publication or a live managed service.
+new release archive bytes, public publication or a live managed service.
+PR369 receiving verification remains pending; its exact candidate passes the
+fresh independent Google source review, six npm execution jobs and 21 plugin tests.
 
-The current candidate prepares core, AI SDK and MCP at 0.2.1 through Changesets 3.0.3.
-It consumes the accepted pending adapter update and a core/MCP recall release
-note. Runtime source, dependency resolutions, schemas, root package and OIDC
-workflow remain unchanged. All three earlier 0.2.0 registry stages are still
+The current candidate prepares core and AI SDK at 0.2.1 and MCP at 0.2.2 through
+Changesets 3.0.3. It consumes the accepted adapter update, core/MCP recall note
+and MCP privacy patch. It integrates actual accepted main source and plugin
+dependencies. Workspace dependency resolutions, schemas, root package and OIDC
+workflow are unchanged by release preparation. All three earlier 0.2.0 registry stages are still
 reserved; preserve them and their receipts.
 
 Next obtain exact-current-candidate review, hosted installed tarball consumers
-with core dependency ranges at 0.2.1, normal protected merge and receiving proof.
+with core dependency ranges at 0.2.1 and hardened MCP at 0.2.2, normal protected
+merge and receiving proof. The previous 89333693 review and archive proofs remain
+historical and do not attest this updated candidate.
 Then verify legitimate publisher mappings and publish through the accepted
 workflow or a separately reviewed staged-publishing workflow. Public registry
 currently exposes only 0.0.0-stage placeholders. Native account authentication

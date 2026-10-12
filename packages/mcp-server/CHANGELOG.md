@@ -1,5 +1,13 @@
 # @starlight-intelligence/mcp
 
+## 0.2.2
+
+### Patch Changes
+
+- Reject malformed privacy namespace separators in gateway results before projection,
+  including whitespace before the colon. Invalid privacy tags override public or
+  shareable tags.
+
 ## 0.2.1
 
 ### Patch Changes

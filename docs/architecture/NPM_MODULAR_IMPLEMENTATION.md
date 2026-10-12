@@ -1,21 +1,26 @@
 # Modular npm implementation
 
-Status: accepted core, AI SDK and MCP implementation; 0.2.1 release preparation.
+Status: accepted implementation; core/AI SDK 0.2.1 and MCP 0.2.2 release preparation.
 Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-System/issues/329).
 
-The 12 October accepted source is `3ff9a5a9309c8ed43bc72c73d15f81faab85af41`.
+The 12 October accepted source is `c120706cdc56825044583550af7a03c7ee98bcf2`.
 Core recall [PR364](https://github.com/frankxai/Starlight-Intelligence-System/pull/364),
 MCP method bindings [PR366](https://github.com/frankxai/Starlight-Intelligence-System/pull/366)
 and archive measurements [PR367](https://github.com/frankxai/Starlight-Intelligence-System/pull/367)
-are merged. Exact-source independent reviews and receiving archive/consumer checks
-are recorded in issue 329. These establish package-fixture acceptance, not live
-browser/edge/provider behavior or customer outcomes.
+are merged. Gateway privacy namespace hardening
+[PR370](https://github.com/frankxai/Starlight-Intelligence-System/pull/370) and plugin
+dependency updates [PR369](https://github.com/frankxai/Starlight-Intelligence-System/pull/369)
+also merged normally. PR370 receiving archives and installed consumers are verified;
+PR369 receiving verification remains pending. These establish package-fixture
+acceptance, not live browser/edge/provider behavior or customer outcomes.
 
-Changesets 3.0.3 prepares all three packages at 0.2.1, consuming the pending adapter
-development update and the core/MCP recall changeset. Source, dependency versions,
-lockfile, protocol schemas, root package and publication workflow are unchanged.
+Changesets 3.0.3 prepares core and AI SDK at 0.2.1 and MCP at 0.2.2. It consumes
+the adapter development update, core/MCP recall changeset and accepted gateway
+privacy patch. Runtime source matches the accepted main revision, including its
+privacy fix and plugin dependency graph. Workspace dependency resolutions, protocol
+schemas, root package and publication workflow are unchanged by release preparation.
 The 0.2.0 registry stages remain intact and reserve their version numbers. Fresh
-0.2.1 source review, hosted tarball/installed-consumer evidence, normal protected
+candidate source review, hosted tarball/installed-consumer evidence, normal protected
 merge and receiving verification are required before publication.
 
 Public registry reads on 12 October show only 0.0.0-stage placeholders for these three
