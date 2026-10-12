@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export type NodeStatus = "idle" | "executing" | "holding" | "e-stopped";
 
@@ -34,12 +34,20 @@ export function RobotFleetContinuityExplorer() {
   const [timestamp, setTimestamp] = useState<string>("2026-05-29T12:00:00.000Z");
 
   useEffect(() => {
-    setTimestamp(new Date().toISOString());
+    let active = true;
+    Promise.resolve().then(() => {
+      if (active) {
+        setTimestamp(new Date().toISOString());
+      }
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const activeNode = useMemo(() => nodes.find((n) => n.id === selectedId) || nodes[0], [nodes, selectedId]);
+  const activeNode = nodes.find((n) => n.id === selectedId) || nodes[0];
 
-  const safetyEvaluation = useMemo(() => {
+  const safetyEvaluation = (() => {
     if (!activeNode) return { passed: false, reason: "No active node" };
     if (activeNode.safetyLocked || activeNode.status === "e-stopped") {
       return { passed: false, reason: `Node ${activeNode.id} safety-locked. Human inspection receipt required.` };
@@ -51,9 +59,9 @@ export function RobotFleetContinuityExplorer() {
       }
     }
     return { passed: true, reason: "Benevolent spatial envelope verified safe." };
-  }, [activeNode, targetPos]);
+  })();
 
-  const wireMessage = useMemo(() => {
+  const wireMessage = (() => {
     if (activeNode.status === "e-stopped") {
       return {
         topic: `/fleet/${activeNode.id}/e_stop`,
@@ -66,7 +74,7 @@ export function RobotFleetContinuityExplorer() {
       msgType: activeNode.middleware === "ros2" ? "geometry_msgs/PoseStamped" : "zenoh/spatial_goal",
       payload: { header: { frame_id: "map", stamp: timestamp }, pose: { x: targetPos.x, y: targetPos.y, z: 0.0 } },
     };
-  }, [activeNode, targetPos, timestamp]);
+  })();
 
   const handleDispatch = () => {
     if (!safetyEvaluation.passed) {
