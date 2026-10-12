@@ -3,7 +3,7 @@
 **Date:** 2026-10-08
 **Status:** Proposed. Operational-tier decision with one substrate-adjacent item (§4 runtime contract) that goes to `/starlight-board` before any `SIP.md`/`STACK.md` edit. Nothing here changes the 10-IS taxonomy.
 **Decision owner:** Frank
-**Reference implementation:** `frankxai/starlight-swarm` `src/managed-runtime/` (shipped with this proposal, dry-run only)
+**Reference implementation:** `frankxai/starlight-swarm` `src/managed-runtime/` (companion open draft [starlight-swarm#38](https://github.com/frankxai/starlight-swarm/pull/38), dry-run only; this document does not merge it)
 **Scope:** Turn the estate from a portfolio of well-governed repos into a production company that ships assets, meters usage, and compounds recurring revenue on several fronts at once, without weakening the fail-closed rules the estate already has.
 
 ---
@@ -18,7 +18,7 @@ Build one **production spine** with five planes and run every revenue stream on 
 4. **Data and asset plane (one proposed `STACK.md` L2 addition).** Supabase Postgres with row-level security for runtime state, Git for durable `MEMORY.md` state, Notion for intent, all as `STACK.md` L2 already says. Cloudflare R2 as the media store is new and is proposed here, not established.
 5. **Money plane: fail-closed, verify-only.** `payment-intelligence-system` verifies AP2 mandates and spend caps; rails (x402, ACP, MPP, card networks) settle elsewhere; humans approve capital. No agent in this architecture holds a transfer tool. This is non-negotiable and already encoded.
 
-The moat is not a model. It is **attested memory plus receipts plus governance plus distribution**, compounding across every stream the spine runs. A competitor can rent the same models tomorrow. They cannot rent four years of attested receipts, a registry of streams with kill criteria that fired, or an audience that trusts the receipts.
+The moat is not a model. It is **attested memory plus receipts plus governance plus distribution**, compounding across every stream the spine runs. A competitor can rent the same models tomorrow. They cannot rent the estate's receipt history (declared attestation labels since the first public SIP ship on 2026-04-22 per `SOUL.md`, signed and independently verifiable receipts since 2026-09-19 per `ATTESTATIONS.md`), a registry of streams with kill criteria that fired, or an audience that trusts the receipts.
 
 ---
 
@@ -71,7 +71,7 @@ Gaps the inventory exposes: no provider-neutral runtime contract above GenCreato
    │ DISTRIBUTION + METERING                                                       │
    │ frankx.ai · arcanea.ai · gencreator.ai · starlightintelligence.org            │
    │ YouTube · TikTok · Spotify/Suno catalog · LinkedIn · newsletter               │
-   │ MCP endpoints (marine-mcp, payments-mcp verify-only) · x402 pay-per-call      │
+   │ MCP endpoints (ocean partner gateway, payments verify-only) · x402 per call   │
    └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -147,7 +147,7 @@ intent (Notion, MEMORY.md) → stream or experiment entry → draft PR on agent/
 - **Web release gate** for any UI: audit findings plus before and after captures at 375, 768, 1440.
 - **Integrity guard** before anything public: brand, claims, voice, schema.
 - **Durable-output-sink law** for routines: a run that leaves no registered durable output (a PR, a committed file, or a Slack DM, per the agent operations contract) must not report green.
-- **Human gate** for the hard stops: force-push to production main, newsletter blasts, auto-posting, key rotation, irreversible migrations, money movement.
+- **Human gate** for the hard stops: force-push to production main, `/papa/` edits, newsletter blasts, auto-posting, key rotation, irreversible migrations, money movement.
 
 ### 5.3 Media production SDLC (the content factory)
 
@@ -162,7 +162,7 @@ Shot classes decide the model, the budget, and the gate:
 
 Pricing as of September and October 2026 from provider and aggregator pages (confirm before budgeting): Seedance 2.0 at roughly $0.15 per second at 720p direct on BytePlus ModelArk and roughly $0.30 per second on fal.ai; Kling 3.0 at roughly $0.08 to $0.14 per second; Veo 3.1 Lite at $0.05 per second with audio at 720p; Veo 3.1 full at $0.40 per second with audio. Sources: Teamday provider comparison (September 2026), Overchat model comparison (July 2026), SaaS CRM Review (October 2026). These are not our numbers; they are inputs to the per-shot budget field.
 
-Every published asset carries provenance (model, prompt hash, references, rights check) in its sidecar. The visual intelligence registry already indexes sidecars.
+Every published asset carries provenance (model, prompt hash, references, rights check) in its sidecar. A provenance index that verifies those four fields is a prerequisite for this gate and is proposed, not built: `docs/visuals/VISUALS.md` lists SHA and prompt-hash provenance as future work, and `docs/visuals/MOTION_REGISTRY.md` points to two motion attestation sidecars with no rights-check field. The first non-motion asset cannot pass the publish gate until that index exists.
 
 ---
 
@@ -177,11 +177,11 @@ Ranking rule: recurring before one-off, owned asset before platform-dependent, v
 | R3 | Agentic OS installs (Foundry) | Evaluated installs of `agentic-business-os` and siblings, template plus packs | GitHub template, `downstreams.json`, Stripe | Second registered downstream beyond Damfrost | Fewer than two installs by Q1 2027 |
 | R4 | GenCreator Companion | Source to Creator Mission to review to export; CreatorPack | gencreator.ai, Supabase, Companion alpha gates | Alpha gates pass; merchant of record chosen | Companion alpha fails its own ADR-010 gates |
 | R5 | Media production engine | Shorts, lyric videos, cinematic reels from the catalog and the research hub; ad revenue, sync, sponsorship | Seedance, Kling, Veo via fal or BytePlus, Suno, YouTube, TikTok Symphony, Spotify | Twelve weeks of weekly output with receipts; first sync or sponsorship inquiry logged | Output cadence breaks for four consecutive weeks |
-| R6 | Metered agent services | MCP endpoints and APIs sold per call to agents: marine knowledge, research, payments verification; x402 pay-per-call, API keys for Web2 | marine-mcp, payments-mcp verify-only, Cloudflare Workers, x402 | One external agent paying per call in a pilot | No external paying caller within 60 days of the pilot going live |
+| R6 | Metered agent services | MCP endpoints and APIs sold per call to agents: research, payments verification, and the private marine partner gateway (`ocean-intelligence-system`). The Blue Life Commons corpus that marine-mcp serves stays free per `VERTICALS.md`; what is metered is gateway capacity and integration, never access to ocean knowledge. x402 pay-per-call, API keys for Web2 | ocean-intelligence-system gateway (consumes marine-mcp), payments-mcp verify-only, Cloudflare Workers, x402 | One external agent paying per call in a pilot | No external paying caller within 60 days of the pilot going live |
 | R7 | Memberships and retreats | GenCreator community, Vibeclubs formats, co-creation retreats | Whop or Skool, Circle, Resend | Cohort filled with delivery evidence complete | Cohort under minimum viable size |
 | R8 | Digital products and templates | Prompt library, packs, courses, books | LemonSqueezy, frankx.ai product routes | Product page passes integrity guard | Under threshold units in 90 days (owner sets) |
 | R9 | Agentic income network | Affiliate comparison engine, bound links, and drafted posts queued under the queen gate; a human schedules and publishes every post (posting is a hard stop, so Pilot for this stream means an approved queue, never an agent-sent post) | agenticincome, Postiz | Affiliate queen at Pilot with a human-published queue | Payout below an owner-set minimum floor (dated, in the registry) for two consecutive quarters |
-| R10 | Capital and deal intelligence architecture for principals | Non-personalized system architecture for HNW and crypto-native principals: thesis frameworks, DPI ledger design, gate ladders, sovereignty and custody architecture, built on Wealth IS and Investment IS. Any individualized recommendation and the client's decision sit with a licensed practitioner named in the SOW. Never custody, never money movement | `/wealth-thesis-review`, Investment IS, SOW | One principal retains the architecture service with a licensed practitioner named in the SOW | No retained engagement after two quarters |
+| R10 | Capital and deal intelligence architecture for principals | Non-personalized system architecture for HNW and crypto-native principals: thesis frameworks, DPI ledger design, gate ladders, sovereignty and custody architecture, built on Wealth IS as it ships today. Investment IS is planned and held until the Crypto proof-pass per `VERTICALS.md` and `verticals/wealth/README.md`; it stays out of any SOW until it exists. Any individualized recommendation and the client's decision sit with a licensed practitioner named in the SOW. Never custody, never money movement | `/wealth-thesis-review`, SOW; Investment IS (planned, future) | One principal retains the architecture service with a licensed practitioner named in the SOW, scoped to what Wealth IS ships today | No retained engagement after two quarters |
 
 Portfolio rule: at most three streams in Pilot at once. The founder board decides which three. Everything else stays in dry-run or shadow and keeps writing receipts.
 
@@ -209,13 +209,13 @@ The buyers who move the portfolio are principals: founders, crypto-native operat
 | Google for Startups Cloud | $2,000 (Start tier) | up to $200,000; up to $350,000 for AI-first startups between Seed and Series A (Scale tier) | Start: 1 year. Scale: 2 years, year two reimburses 20 percent | Gemini managed agents, Vertex |
 | Cloudflare for Startups | $10,000 | $100,000 or $350,000 ($350,000 tier requires $5M+ raised from an affiliated partner; Workers AI capped at $50,000 inside it) | 1 year | Workflows, Workers, R2, the durable execution plane |
 | AWS Activate | up to $5,000 | up to $200,000 Portfolio tier via an Activate Provider | up to 2 years | Bedrock access to Claude where a client needs AWS |
-| Microsoft for Startups | up to $5,000 | $100,000 to $150,000 via Investor Network | 1 year | Foundry access to Claude for enterprise clients |
+| Microsoft for Startups | milestone-based: up to $200 at sign-up, $5,000 after business verification, $25,000 at 5+ Azure workloads sustained about 60 days, $50,000 at 7+, $150,000 at 10+ workloads with about $3,000 per month sustained usage | up to $200,000 for eligible Investor Network-backed startups | unlocks by milestone, no separate application; one-time two-year extension at the $25,000 milestone | Foundry access to Claude for enterprise clients |
 | Vercel for Startups | — | up to $30,000, approved partner, Series A or less; AI Accelerator cohorts separate | cohort-based | Web surfaces |
 | Claude for Startups | — | requires institutional equity funding, company under four years old, no prior credits | — | Managed Agents |
 | OpenAI for Startups | — | referral code from a partner VC; no published amount | — | Agents SDK |
 | Oracle for Startups | — | discount persists as you scale | ongoing | Enterprise lane; keep independence disclaimer |
 
-The bootstrapped stack totals up to $22,000 across the four self-serve tiers; two of the four are "up to" awards, so there is no guaranteed floor. The partner door changes the order of magnitude. Decision: apply to every self-serve tier this month; take the partner door only through an investor or accelerator that sits in the Google, Cloudflare, and AWS partner networks.
+The bootstrapped stack totals up to $22,000 across the four self-serve tiers; two of the four are "up to" awards (Microsoft's $5,000 also needs business verification), so there is no guaranteed floor. The partner door changes the order of magnitude. Decision: apply to every self-serve tier this month; take the partner door only through an investor or accelerator that sits in the Google, Cloudflare, and AWS partner networks.
 
 ### 8.2 Entity and investor posture
 
@@ -234,7 +234,7 @@ Owner names are the Agent OS General roster in `agentic-creator-os/.claude/agent
 | Days 8–30 | First shadow run: Anthropic Managed Agents repo steward on one bounded repo, outcomes rubric, session budget with margin, environment `networking: limited` (no unrestricted egress), toolset scoped so read-only inspection (file reads, search, read-only checks inside the mount) runs under `always_allow`, web search and fetch disabled, and every tool that can write outside the sandbox or reach the network set to `always_ask` with every confirmation answered `deny`; repository mounted read-only with no push token | `general-cto` | Receipts, no side effects (enforced by the egress and permission settings, not declared) |
 | Days 8–30 | Media engine shadow: twelve shots across three shot classes with provenance sidecars; nothing published | `visual-design-gods`, `music-producer` | Visual council pass |
 | Days 15–45 | R1 pipeline: three qualified estate conversations, SOW template v0.2 | `general-ceo` | One signed SOW |
-| Days 30–60 | R6 pilot: marine-mcp metered endpoint behind Cloudflare Workers with API keys; x402 as optional rail | `general-cto` | One external caller paying per call (same bar as the R6 promotion gate; free or subsidized callers do not count) |
+| Days 30–60 | R6 pilot: ocean-intelligence-system partner gateway metered behind Cloudflare Workers with API keys (the marine-mcp corpus stays free); x402 as optional rail | `general-cto` | One external caller paying per call (same bar as the R6 promotion gate; free or subsidized callers do not count) |
 | Days 30–60 | Pick the three Pilot streams at `/starlight-board` | Frank | Board verdict recorded |
 | Days 45–90 | Promote one stream to Standing with scheduled deployment, budget, kill switch | `general-coo` | Four weekly receipts |
 | Day 90 | Portfolio review against kill criteria; kill at least one stream that missed | `general-ceo` | Ledger entry |
