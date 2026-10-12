@@ -112,13 +112,13 @@ Reference implementation: `starlight-swarm/src/managed-runtime/`. Dry-run only. 
 | `tool-orchestration`, `multi-agent-handoff`, `customer-chat` | OpenAI Agents SDK | operational tier | Handoffs, guardrails, hosted tools, tracing |
 | `bulk-extraction`, `classification`, `research-scan`, `sandbox-research` | Gemini managed agents | flash tier | Lowest cost per sandboxed loop, free tier for experiments |
 | `volume-creator-work` | Anthropic or OpenAI by live cost | small tier | Router picks by measured cost per completed task, not per request |
-| `offline-sovereign` | self-hosted Llama or Mistral | n/a | Air-gapped canon work |
+| `offline-sovereign` | self-hosted Llama or Mistral, routed outside `ManagedAgentRuntime` | n/a | Air-gapped canon work. The port has adapters for Anthropic, OpenAI, and Gemini only; no local adapter implements `provision`, `run`, budgets, or the receipt yet, so the router names the route and the port fails closed on it. Until a local adapter lands with the same receipt and budget shape, this class stays a human-run process whose outputs are sealed with the same receipt tooling by hand |
 
 Rules the router enforces: no provider receives raw vault content; every run carries a microdollar ceiling; a run that would exceed its ceiling escalates to `founder-board` through the swarm's `classify()`; a provider outage degrades to the next provider in the same class only for reversible work, and only when the run carries an idempotency key and the original run's outcome is known; an ambiguous outcome (side effect possibly completed, result not returned) fails closed and waits rather than replaying.
 
 ### 4.3 Evals and experiments
 
-Every stream runs on hypotheses, not opinions. An **experiment** has a hypothesis, one primary metric, a baseline, a threshold, a kill criterion with a date, and a status. The runtime refuses to promote a stream past `pilot` without a passing experiment. `starlight-evals` stays the independent proof plane; the experiment ledger (`src/managed-runtime/experiments.ts`) is the registry that points at its runs.
+Every stream runs on hypotheses, not opinions. An **experiment** has a hypothesis, one primary metric, a baseline, a threshold, a kill criterion with a date, and a status. The runtime refuses to promote a stream into `pilot` or beyond without a passing experiment; only `dry-run → shadow` is free, because shadow is where the first measurement comes from (`canPromote()` in the experiment ledger encodes exactly this). `starlight-evals` stays the independent proof plane; the experiment ledger (`src/managed-runtime/experiments.ts`) is the registry that points at its runs.
 
 Promotion ladder, same as the swarm's: `dry-run → shadow → pilot → standing`. Shadow means the agent runs and writes receipts but a human performs the side effect. Pilot means the agent performs reversible side effects under cap. Standing means scheduled, budgeted, kill-switched.
 
@@ -210,7 +210,7 @@ The buyers who move the portfolio are principals: founders, crypto-native operat
 | Cloudflare for Startups | $10,000 | $100,000 or $350,000 ($350,000 tier requires $5M+ raised from an affiliated partner; Workers AI capped at $50,000 inside it) | 1 year | Workflows, Workers, R2, the durable execution plane |
 | AWS Activate | up to $5,000 | up to $200,000 Portfolio tier via an Activate Provider | up to 2 years | Bedrock access to Claude where a client needs AWS |
 | Microsoft for Startups | milestone-based: up to $200 at sign-up, $5,000 after business verification, $25,000 at 5+ Azure workloads sustained about 60 days, $50,000 at 7+, $150,000 at 10+ workloads with about $3,000 per month sustained usage | up to $200,000 for eligible Investor Network-backed startups | unlocks by milestone, no separate application; one-time two-year extension at the $25,000 milestone | Foundry access to Claude for enterprise clients |
-| Vercel for Startups | — | up to $30,000, approved partner, Series A or less; AI Accelerator cohorts separate | cohort-based | Web surfaces |
+| Vercel for Startups | — | up to $30,000 flexible commitment, approved partner, Series A or less, applied within 12 months of the last round; at most 50 percent usable on AI Gateway; AI Accelerator cohorts separate | 1 year from activation or until used; unused amount expires at the anniversary and cannot be postponed | Web surfaces |
 | Claude for Startups | — | requires institutional equity funding, company under four years old, no prior credits | — | Managed Agents |
 | OpenAI for Startups | — | referral code from a partner VC; no published amount | — | Agents SDK |
 | Oracle for Startups | — | discount persists as you scale | ongoing | Enterprise lane; keep independence disclaimer |
@@ -237,7 +237,7 @@ Owner names are the Agent OS General roster in `agentic-creator-os/.claude/agent
 | Days 30–60 | R6 pilot: ocean-intelligence-system partner gateway metered behind Cloudflare Workers with API keys (the marine-mcp corpus stays free); x402 as optional rail | `general-cto` | One external caller paying per call (same bar as the R6 promotion gate; free or subsidized callers do not count) |
 | Days 30–60 | Pick the three Pilot streams at `/starlight-board` | Frank | Board verdict recorded |
 | Days 45–90 | Promote one stream to Standing with scheduled deployment, budget, kill switch | `general-coo` | Four weekly receipts |
-| Day 90 | Portfolio review against kill criteria; kill at least one stream that missed | `general-ceo` | Ledger entry |
+| Day 90 | Portfolio review against kill criteria; kill every stream whose dated criterion has matured and failed; a no-kill entry is valid when no criterion has matured yet (R1's clock starts at the third conversation, R6's at pilot go-live, R3 runs to Q1 2027, R9 and R10 need two quarters) | `general-ceo` | Ledger entry naming each stream, its criterion, and matured or not |
 
 ---
 
