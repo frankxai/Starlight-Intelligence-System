@@ -64,6 +64,14 @@ fixed errors without credential-bearing exception messages. The CLI has no write
 HTTP MCP listener, or OAuth service. Hosts may attach the factory to official SDK
 transports after implementing their own authentication and lifecycle controls.
 
+The factory captures the selected provider and sanitizer methods at creation,
+including their original receivers. Replacing methods on the caller's objects
+does not redirect an existing server's recall, write, delete, or sanitization.
+The original objects remain writable; their methods still own internal state,
+authentication and permission checks. Recreate the server to change its method
+configuration. Capture does not revoke credentials or disable a provider whose
+internal authorization changes.
+
 Tests exercise official client handshakes, tool calls, strict scope rejection,
 redaction, optional writes, and repeated stdio connections. They use a local gateway
 fixture, not a production gateway. Code: MIT.

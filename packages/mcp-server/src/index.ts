@@ -23,8 +23,16 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
   if (options.allowDelete === true && options.workspaceId !== undefined) {
     throw new Error('The provider deletion contract does not authorize workspace-scoped deletion');
   }
-  const server = new McpServer({ name: 'starlight-memory', version });
+  const provider = options.memory;
+  const remember = options.allowWrite === true ? provider.remember?.bind(provider) : undefined;
+  const forget = options.allowDelete === true ? provider.forget?.bind(provider) : undefined;
   const sanitizer = options.sanitizer ?? new SanitizationGateway();
+  const sanitize = sanitizer.sanitize.bind(sanitizer);
+  // Keep the configured dispatch boundary stable without freezing host-owned state.
+  options = Object.freeze({ ...options,
+    memory: { recall: provider.recall.bind(provider) }, sanitizer: { sanitize },
+  });
+  const server = new McpServer({ name: 'starlight-memory', version });
   const idSanitizer = new SanitizationGateway();
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const opaqueId = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/)
@@ -41,7 +49,7 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
       return { isError: true, content: [{ type: 'text' as const, text: 'Memory recall unavailable or denied' }] };
     }
   });
-  if (options.allowWrite === true && options.memory.remember) {
+  if (remember) {
     server.registerTool('starlight_memory_remember', {
       description: 'Store a sanitized fact through the host provider. The caller supplies a stable ID; retries are not automatic.',
       inputSchema: z.strictObject({ id: opaqueId, fact: z.string().trim().min(1).max(16_000) }),
@@ -49,10 +57,10 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
     }, async ({ id, fact }) => {
       try {
         const at = new Date().toISOString();
-        await options.memory.remember!({
+        await remember({
           memory_id: id, tenant_id: options.tenantId, workspace_id: options.workspaceId,
           source: { system: 'starlight-mcp' }, modality: 'text', memory_type: 'semantic',
-          normalized_fact: sanitizer.sanitize(fact), entities: [], relations: [], importance: 0.5,
+          normalized_fact: sanitize(fact), entities: [], relations: [], importance: 0.5,
           confidence: 0.5, trust: 0.5, privacy_class: 'private-shareable', retention_policy: 'rolling_90d',
           retention_until: new Date(Date.now() + 90 * 86_400_000).toISOString(),
           provenance: [{ event_id: id, transform: 'redacted', at }], provider_shadow_refs: {},
@@ -63,14 +71,14 @@ export function createStarlightMcpServer(options: StarlightMcpOptions): McpServe
       }
     });
   }
-  if (options.allowDelete === true && options.memory.forget) {
+  if (forget) {
     server.registerTool('starlight_memory_forget', {
       description: 'Delete a memory through the explicitly authorized host provider.',
       inputSchema: z.strictObject({ id: opaqueId }),
       annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
     }, async ({ id }) => {
       try {
-        const deleted = await options.memory.forget!({ tenant_id: options.tenantId, memory_id: id });
+        const deleted = await forget({ tenant_id: options.tenantId, memory_id: id });
         return { content: [{ type: 'text' as const, text: JSON.stringify({ deleted }) }] };
       } catch {
         return { isError: true, content: [{ type: 'text' as const, text: 'Memory deletion unavailable or denied' }] };
