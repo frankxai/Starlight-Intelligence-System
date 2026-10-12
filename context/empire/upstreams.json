@@ -11,6 +11,17 @@
   },
   "upstreams": [
     {
+      "id": "ecc",
+      "class": "reference_harness",
+      "repository": "https://github.com/affaan-m/ECC",
+      "track": "4eb71d92a39cab44ad40ac9d8a6a5ccb4029d6c2",
+      "verified_at": "2026-10-10",
+      "adoption": "lab",
+      "owner": "starlight-agent-lab",
+      "primitive": "Reviewed core profile plus workflow-quality, agentic-patterns, and security. Vendored in claude-code-config. Eight procedures re-expressed in claude-skills-library.",
+      "security_notes": "MIT. Lab watch only. No full profile, no observe hook, no second orchestrator. Hermes guard is watch, not earned."
+    },
+    {
       "id": "ruflo",
       "class": "reference_harness",
       "repository": "https://github.com/ruvnet/ruflo",
@@ -174,6 +185,28 @@
       "owner": "starlight-agent-skills",
       "primitive": "versioned procedural-memory extraction, correction, and deprecation",
       "security_notes": "Never promote learned procedures without repeated success, tests, provenance, and review"
+    },
+    {
+      "id": "music-intelligence-os",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/frankxai/music-intelligence-os",
+      "track": "PR #4 October operated studio source",
+      "verified_at": "2026-10-10",
+      "adoption": "conformance",
+      "owner": "Starlight-Intelligence-System",
+      "primitive": "October operated studio core engine and studio workflow runtime",
+      "security_notes": "Retain label policies and Notion bindings in SIS; point studio execution to operated core without runtime duplication"
+    },
+    {
+      "id": "agentic-music-producer-os",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/frankxai/agentic-music-producer-os",
+      "track": "October distribution core",
+      "verified_at": "2026-10-10",
+      "adoption": "candidate",
+      "owner": "Starlight-Intelligence-System",
+      "primitive": "portable execution and customer distribution runtime",
+      "security_notes": "Retain registries and canon in SIS; delegate portable distribution execution without runtime duplication"
     }
   ]
 }

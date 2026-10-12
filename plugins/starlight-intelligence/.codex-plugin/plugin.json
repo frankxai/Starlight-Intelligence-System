@@ -1,6 +1,6 @@
 {
   "name": "starlight-intelligence",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A governed venture control plane for portfolio intelligence, execution, evidence, and decisions.",
   "author": {
     "name": "Starlight Intelligence Systems",
@@ -17,7 +17,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Starlight Intelligence",
-    "shortDescription": "Govern ventures, decisions, evidence, and execution.",
+    "shortDescription": "Build, inspect, and connect.",
     "longDescription": "Turn fragmented venture work into a governed operating graph: inspect portfolio state, create and transition work, preserve evidence, record decisions, and render a command-center view.",
     "developerName": "Starlight Intelligence Systems",
     "category": "Productivity",

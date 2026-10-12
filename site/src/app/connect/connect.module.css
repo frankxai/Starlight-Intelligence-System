@@ -1,6 +1,6 @@
 .main { max-width: 1120px; margin: 0 auto; padding: 110px 28px 90px; }
 .intro { max-width: 900px; margin-bottom: 60px; }
-.eyebrow { color: #5eead4; font-size: 12px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; margin-bottom: 16px; }
+.eyebrow { color: #5eead4; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: none; margin-bottom: 16px; }
 .intro h1 { font-size: clamp(32px, 4.2vw, 52px); letter-spacing: -.045em; line-height: 1.12; font-weight: 600; margin: 0 0 24px; }
 .lead { font-size: 18px; line-height: 1.7; color: #b8c5d4; max-width: 820px; }
 .status { display: flex; align-items: center; gap: 9px; color: #b0c2cd; font-size: 12px; margin-top: 26px; flex-wrap: wrap; }

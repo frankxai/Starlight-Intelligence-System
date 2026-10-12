@@ -1,11 +1,15 @@
 # Starlight Intelligence Cloud Plugin
 
-Starlight is a governed venture control plane for ChatGPT and Codex. Version 0.2 runs as an authenticated remote MCP server on Cloudflare Workers and stores authoritative workspace state in the existing Starlight Platform Supabase project. Users connect to one HTTPS endpoint; no plugin download or local Codex runtime is required.
+Starlight provides four portable skills and a governed MCP implementation for portfolio intelligence, execution, evidence and decisions. Version 0.3 adds a portable root manifest, connected capability discovery and four brand-scoped workflow handoffs.
+
+The private Worker implementation requires Cloudflare Access and tenant-scoped Supabase setup. Its public `/healthz` probe returned 404 on 4 October 2026; source verification does not establish a live private service. The separate public planning MCP and Academy MCP responded to initialize and four-tool discovery; a public Starlight catalog read also passed.
+
+`plugin.json` follows Agent Plugins 1.0. Skills use the fixed `skills/` directory, and the OpenAI interface lives under `extensions.com.openai`. The existing `.codex-plugin/plugin.json` remains synchronized for legacy hosts. Existing starter prompts are preserved. No unverified connection is activated by the portable manifest.
 
 ## Architecture
 
 - Four portable skills: command center, execution, decision ledger, and knowledge retrieval.
-- Twelve MCP tools, including standard read-only `search` and `fetch`, public native-interface references, and offline review preparation.
+- Fourteen MCP tools, including standard read-only `search` and `fetch`, interface references, review preparation, capability discovery and connected workflow preparation.
 - A decoupled MCP Apps UI: `get_portfolio_snapshot` returns authoritative data and `render_command_center` renders the complete, model-checked snapshot.
 - Stateless Cloudflare `createMcpHandler()` transport at `/mcp` using MCP SDK v2.
 - Cloudflare Access JWT validation plus an explicit email allowlist on every MCP request.
@@ -28,6 +32,10 @@ The local SIS vaults are not exposed. This service owns only the cloud-safe vent
 | `record_decision` | Preserve choice, tradeoffs, evidence, and owner | Yes |
 | `register_evidence` | Register and link a source or observation | Yes |
 | `render_command_center` | Render a complete inspected snapshot | No |
+| `get_agent_interfaces` | Read dated public interface references | No |
+| `prepare_review_handoff` | Prepare a pinned review without dispatch | No |
+| `get_capability_catalog` | Find source-backed capability and setup references | No |
+| `prepare_connected_workflow` | Prepare a brand-scoped portable workflow packet | No |
 
 Transitions to `done` or `cancelled`, and decisions recorded as `approved` or `rejected`, require explicit user confirmation. Every mutation records the authenticated Access identity in the audit event.
 
@@ -58,5 +66,7 @@ The code, migration, tests, and CI are automated. These account-bound values mus
 6. In ChatGPT developer mode, connect `https://mcp.starlightintelligence.ai/mcp`, complete OAuth, scan tools, and run the cases in `evals/golden-cases.json`.
 
 See [cloud-deployment.md](docs/cloud-deployment.md) for the exact release sequence and rollback boundary.
+
+See [connected-workspace.md](docs/connected-workspace.md) for the workflow contract and the boundary between source, public runtime checks and private connections.
 
 Built on SIP — Starlight Intelligence Protocol.

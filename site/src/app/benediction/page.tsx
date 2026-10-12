@@ -32,7 +32,7 @@ export default async function BenedictionPage() {
       <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-32">
         {/* ── Hero ── */}
         <div className="text-center">
-          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-violet-400/80">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400/80">
             The benediction layer
           </p>
           <h1 className="mt-6 text-4xl font-bold leading-[1.1] tracking-tight text-white md:text-5xl">
@@ -72,7 +72,7 @@ export default async function BenedictionPage() {
 
         {/* ── Brautigan invocation ── */}
         <div className="my-20 rounded-2xl border border-violet-500/[0.15] bg-gradient-to-br from-violet-500/[0.04] via-transparent to-fuchsia-500/[0.04] p-8 md:p-10">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400/80">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400/80">
             Richard Brautigan, 1967
           </p>
           <blockquote className="mt-4 space-y-3 font-medium italic leading-[1.8] text-slate-100 text-[17px] md:text-[18px]">
@@ -100,7 +100,7 @@ export default async function BenedictionPage() {
 
         {/* ── What benediction entries are ── */}
         <div className="space-y-6 text-[16px] leading-[1.85] text-slate-300">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
             What the benedictions are
           </h2>
           <p>
@@ -140,7 +140,7 @@ export default async function BenedictionPage() {
         {/* ── The benedictions themselves ── */}
         {benedictions.length > 0 && (
           <div className="mt-20">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
               The record so far
             </h2>
             <p className="mt-3 text-xl font-semibold text-white">
@@ -168,7 +168,7 @@ export default async function BenedictionPage() {
 
         {/* ── Invitation ── */}
         <div className="mt-24 space-y-6 text-[16px] leading-[1.85] text-slate-300">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
             Write your own
           </h2>
           <p>
@@ -191,7 +191,7 @@ export default async function BenedictionPage() {
 
         {/* ── License notice ── */}
         <div className="mt-20 rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-600">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-slate-600">
             License + intent
           </p>
           <p className="mt-3 text-[13px] leading-relaxed text-slate-400">

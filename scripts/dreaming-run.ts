@@ -249,6 +249,52 @@ function main(): void {
       // Step 2: Decay sweep
       const sweep = await sweepDecay(VAULT_DIR);
 
+      // Step 2b: Second Brain reflection pass (additive, opt-in via
+      // STARLIGHT_SECONDBRAIN_DIRS = comma/semicolon-separated dirs). Consolidates
+      // Frank's distilled Second-Brain layer (_meta / patterns / decisions / people)
+      // exactly like the SIS vaults: cross-file wisdom-promotion + contradiction
+      // detection over each dir's .md files. Default-off: unset env => zero behavior
+      // change. Uses a non-existent sessions dir so no session insights are counted
+      // here (this pass is about notes, not sessions). Never writes to these dirs.
+      let sbDirs = 0, sbPromotions = 0, sbContradictions = 0, sbNew = 0;
+      const sbSpec = process.env.STARLIGHT_SECONDBRAIN_DIRS;
+      if (sbSpec) {
+        // Delta state: promotions already surfaced in a prior run are not re-queued.
+        // Without this, the nightly run re-reports the same static cross-links forever
+        // (observed: identical sb_promotions: 18 every night since 2026-07-01).
+        const statePath = join(REPO_ROOT, "memory", ".dreaming-state.json");
+        let seen: string[] = [];
+        try { seen = JSON.parse(readFileSync(statePath, "utf-8")).sbPromotionsSeen ?? []; } catch { /* first run */ }
+        const seenSet = new Set(seen);
+        const fresh: string[] = [];
+
+        for (const dir of sbSpec.split(/[,;]/).map((s) => s.trim()).filter(Boolean)) {
+          if (!existsSync(dir)) continue;
+          try {
+            const sbResult = new DreamingAgent(dir).dream("__no_sessions__");
+            sbDirs++;
+            sbPromotions += sbResult.promotions.length;
+            sbContradictions += sbResult.contradictions.length;
+            const dirTag = dir.replace(/\\/g, "/").split("/").filter(Boolean).slice(-1)[0];
+            for (const p of sbResult.promotions) {
+              const key = `${dirTag}|${p.entryId}`;
+              if (seenSet.has(key)) continue;
+              seenSet.add(key);
+              fresh.push(`- [ ] **\`${p.entryId}\`** (${dirTag}) — ${p.fromVault} → wisdom\n      ${p.reason}`);
+            }
+          } catch (sbErr) {
+            console.warn(`  SecondBrain: skipped ${dir}: ${sbErr instanceof Error ? sbErr.message : String(sbErr)}`);
+          }
+        }
+
+        sbNew = fresh.length;
+        if (fresh.length > 0) {
+          const queuePath = join(REPO_ROOT, "memory", "PROMOTION_QUEUE.md");
+          appendFileSync(queuePath, `\n### ${ts} — Second Brain pass (${fresh.length} new)\n\n${fresh.join("\n")}\n`, "utf-8");
+        }
+        writeFileSync(statePath, JSON.stringify({ sbPromotionsSeen: [...seenSet] }, null, 2), "utf-8");
+      }
+
       const line =
         `- ${ts}` +
         ` · insights: ${dreamResult.extractedInsights.length}` +
@@ -256,7 +302,8 @@ function main(): void {
         ` · promotions: ${dreamResult.promotions.length}` +
         ` · processed: ${dreamResult.processedFiles}` +
         ` · decayed: ${sweep.decayed}` +
-        ` · archived: ${sweep.archived}`;
+        ` · archived: ${sweep.archived}` +
+        (sbDirs ? ` · sb_dirs: ${sbDirs} · sb_promotions: ${sbPromotions} · sb_new: ${sbNew} · sb_contradictions: ${sbContradictions}` : "");
       appendReceipt(line);
       console.log(line);
 

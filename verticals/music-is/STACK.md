@@ -59,6 +59,8 @@ Per-Agent dispatch: `model:` set explicitly per `feedback_model_routing_discipli
 
 **Workflow orchestration:**
 
+- **`frankxai/music-intelligence-os` (PR #4)** — operated studio source engine and studio execution core (PR261 execution target)
+- **`frankxai/agentic-music-producer-os`** — portable customer distribution runtime
 - **n8n** — primary workflow runner (asset pipeline, social drops, fan-list automations, royalty observation)
 - **Blotato** — cross-platform publishing primitives (the Claws compose against)
 - **Remotion** — programmatic video render pipeline (runs as Node service, called from n8n)

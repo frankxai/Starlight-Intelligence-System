@@ -1,0 +1,17 @@
+{
+  "id": "durable-blockchain-vault-pack",
+  "name": "Durable Blockchain Vault Pack",
+  "version": "0.1.0",
+  "kind": "claw",
+  "author": "FrankX / Starlight Intelligence",
+  "description": "3-Tier durability engine with deterministic Merkle root state anchoring and selective disclosure proofs for Arweave and IPFS.",
+  "permissions": [
+    "fs:read:repo",
+    "fs:write:vaults",
+    "network:fetch:blockchain-rpc"
+  ],
+  "licenseTier": "subscription",
+  "attestation": "Built on SIP",
+  "publishedAt": "2026-10-10T12:00:00Z",
+  "manifestSha": "ade34f36d23fd7027c231309e281bd1cc453b277c8c03c0e46aa9db0948ad9a4"
+}

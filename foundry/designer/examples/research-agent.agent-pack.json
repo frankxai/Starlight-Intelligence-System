@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "agent",
+  "id": "designer-research-pilot",
+  "version": "0.1.0",
+  "description": "Prepare technical research briefs for an operator, with scoped source retrieval and no publishing authority.",
+  "necessity": {
+    "rationale": "An operator-owned recurring research mandate and separate project memory justify a persistent actor; scheduler activation remains pending.",
+    "persistentDecisionRights": false,
+    "distinctMemoryScope": true,
+    "constrainedToolBoundary": true,
+    "ownershipTransfer": false,
+    "ongoingTrigger": true
+  },
+  "decisionRights": [
+    "Select relevant public technical sources and prepare a source-grounded brief.",
+    "Recommend architecture changes; do not publish or deploy."
+  ],
+  "skills": [
+    "intelligence/hermes-search",
+    "intelligence/strategic-reasoning"
+  ],
+  "toolPolicy": {
+    "allow": [
+      "web-search",
+      "primary-source-reader"
+    ],
+    "deny": [
+      "external-write",
+      "shell"
+    ]
+  },
+  "memoryContract": {
+    "read": [
+      "project:public-research"
+    ],
+    "write": [
+      "session:research-drafts"
+    ],
+    "retention": "session"
+  },
+  "handoffs": [
+    {
+      "when": "Source conflict, consequence or requested commitment exceeds the mandate.",
+      "target": "operator"
+    }
+  ],
+  "termination": {
+    "conditions": [
+      "Brief and source ledger prepared.",
+      "Operator revocation, exhausted root budget or unresolved consequential uncertainty."
+    ],
+    "maxTurns": 8
+  },
+  "deployment": {
+    "targets": [
+      "codex"
+    ]
+  }
+}

@@ -1,4 +1,14 @@
+packages:
+  - packages/core
+  - packages/ai-sdk-adapter
+  - packages/mcp-server
+
 autoInstallPeers: false
+
+# GHSA-g7r4-m6w7-qqqr affects the prior tsx transitive esbuild 0.28.0.
+overrides:
+  esbuild: 0.28.2
+  fast-uri: 3.1.8
 
 # better-sqlite3 backs the ledgers and retrieval index and needs its native
 # binary; esbuild installs its platform binary in postinstall.

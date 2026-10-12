@@ -7,6 +7,7 @@ import executionSkill from "../../skills/starlight-execution/SKILL.md";
 import knowledgeSkill from "../../skills/starlight-knowledge/SKILL.md";
 import { StarlightError, StarlightStore } from "./store.js";
 import { registerReviewTools } from "./review-tools.js";
+import { registerConnectedTools } from "./connected-tools.js";
 import type { RecordType } from "./types.js";
 
 const TEMPLATE_URI = "ui://starlight/command-center/v2.html";
@@ -378,7 +379,8 @@ function registerCommandCenter(server: McpServer, store: StarlightStore): void {
       },
     },
     async () => ({
-      contents: [{ uri: TEMPLATE_URI, mimeType: RESOURCE_MIME_TYPE, text: commandCenterHtml }],
+      contents: [{ uri: TEMPLATE_URI, mimeType: RESOURCE_MIME_TYPE, text: commandCenterHtml,
+        _meta: { "openai/ui": { availableDisplayModes: ["fullscreen"], preferredDisplayMode: "fullscreen" } } }],
     }),
   );
 
@@ -471,7 +473,7 @@ export function createStarlightServer(options: {
   actor: ActorContext;
 }): McpServer {
   const server = new McpServer(
-    { name: "starlight-intelligence", version: "0.2.0" },
+    { name: "starlight-intelligence", version: "0.3.0" },
     {
       instructions:
         "Read authoritative state before mutation. Fetch an existing record before changing it and preserve its version. Terminal work states and approved/rejected decisions require explicit user confirmation. Use get_portfolio_snapshot to analyze state; render_command_center re-reads authoritative data using the same venture filters. Never infer completion, approval, or evidence.",
@@ -484,6 +486,7 @@ export function createStarlightServer(options: {
   registerCommandCenter(server, options.store);
   registerSkills(server);
   registerReviewTools(server);
+  registerConnectedTools(server);
   return server;
 }
 
@@ -500,6 +503,8 @@ export const starlightToolNames = [
   "render_command_center",
   "get_agent_interfaces",
   "prepare_review_handoff",
+  "get_capability_catalog",
+  "prepare_connected_workflow",
 ] as const;
 
 export type StarlightRecordType = RecordType;

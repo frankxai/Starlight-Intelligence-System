@@ -32,6 +32,8 @@ This is **not** a public reference vertical. Sovereign sound practitioners forki
 | Layer | Composes from | Why |
 |---|---|---|
 | **Substrate** | SIP (this repo) — file contract, attestation, sovereignty clause | All artifacts ship with "Built on SIP" attestation; royalty graph references SIP attestation chain |
+| **Studio Execution Core** | `frankxai/music-intelligence-os` (PR #4) | October operated studio source and execution engine; SIS points execution here without runtime duplication |
+| **Portable Distribution Core** | `frankxai/agentic-music-producer-os` | Portable customer distribution runtime; SIS points distribution execution here |
 | **Sound Intelligence (public reference)** | `verticals/sound-intelligence/` | Composition architecture, sync brief-fit, metadata discipline imported as patterns; not duplicated |
 | **Voice & Video IS** | `verticals/voice-video/` | Music videos, talking-head explainers, persona voice clones (with consent disclosure per persona) |
 | **Genius IS (universal)** | substrate | Per-persona voice canon for social drops, fan emails, sync pitches |
@@ -105,6 +107,16 @@ See `STRATEGY.md` for the full 6-phase plan. Headline:
 - **P4 multi-label scaling + dashboard** (Q4 2026, 8w) — 2nd label proven, frankx.ai/music/studio live
 - **P5 productize Music IS template** (Q1 2027, 12w) — sell to musicians/labels
 - **P6 monetization sovereignty** (Q2 2027 onward) — NFT/limited, sync direct, fan tiers, royalty cascade
+
+---
+
+## PR261 Reconciliation & Execution Routing
+
+Label operating PR #261 is reconciled with October studio source without duplicating runtimes:
+- **Registry & Canon Authority**: Retain label policies, Notion bindings (AI Musicians Hub & Vibe OS), catalog truth (`catalog/master.csv`), A&R gates, and canon here in `Starlight-Intelligence-System` (`verticals/music-is/`).
+- **Operated Studio Execution**: Pointed to `frankxai/music-intelligence-os` (PR #4 operated studio source).
+- **Portable Customer Distribution**: Pointed to `frankxai/agentic-music-producer-os`.
+- **Truthful Safeguards**: No duplicate runtime logic or fake gate simulations added to SIS.
 
 ---
 

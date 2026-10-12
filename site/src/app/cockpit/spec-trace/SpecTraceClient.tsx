@@ -141,7 +141,7 @@ function DaemonOfflineCTA({ onRetry, error }: { onRetry: () => void; error: stri
   return (
     <div className="console-panel" role="status" aria-live="polite">
       <div className="console-panel-head">
-        <span className="console-display">DAEMON OFFLINE</span>
+        <span className="console-display">Daemon offline</span>
         <span className="console-mono-xs text-[#EF4444]">●</span>
       </div>
       <div className="px-4 py-5 console-mono-sm leading-relaxed text-[#E8E2D5]/80">
@@ -567,7 +567,7 @@ function TraceStrip({
   return (
     <div className="console-trace-strip" aria-live="polite" aria-label="Live trace stream">
       <div className="console-trace-head">
-        <span className="console-display">LIVE TRACE</span>
+        <span className="console-display">Live trace</span>
         <span className="console-mono-xs text-[#E8E2D5]/40">
           {events.length}/64 · SSE
         </span>
