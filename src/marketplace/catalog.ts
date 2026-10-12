@@ -94,7 +94,7 @@ export class MarketplaceCatalog {
     const payload = MarketplaceCatalog.getCanonicalPayload(item);
 
     try {
-      if (keyToUse.includes("BEGIN PUBLIC KEY") || keyToUse.includes("BEGIN RSA PUBLIC KEY")) {
+      if (keyToUse.includes("-----BEGIN")) {
         const verifier = createVerify("SHA256");
         verifier.update(payload);
         verifier.end();
