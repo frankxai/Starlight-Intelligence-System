@@ -290,7 +290,9 @@ test('unknown privacy classifications remain private despite explicit sharing pe
   const previous = globalThis.fetch;
   globalThis.fetch = async () => Response.json({ ok: true, results: [
     { score: 1, entry: { id: 'public', content: 'public fixture', tags: ['privacy:public'] } },
-    ...['privacy:secret-v2', 'privacy: private', 'privacy: public', 'PRIVACY:future-class'].map((tag, i) => ({
+    ...['privacy:secret-v2', 'privacy: private', 'privacy: public', 'PRIVACY:future-class',
+      'privacy :secret', 'privacy\t:private', 'privacy\u00a0:regulated',
+      'privacy :public', 'privacy :private-shareable', 'PRIVACY\u2028:future-class'].map((tag, i) => ({
       score: 1, entry: { id: 'restricted-' + i, content: 'restricted fixture', tags: ['public', 'private-shareable', tag] },
     })),
   ] });
