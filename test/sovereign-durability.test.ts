@@ -361,4 +361,117 @@ We ensure benevolent human value persistence across all autonomous agent tiers.
     const badAttestationReceipt = { ...receipt, attestation: "Unverified Vendor" };
     assert.equal(SovereignBlockchainAnchor.verifyReceipt(badAttestationReceipt, sampleItems), false);
   });
+
+  it("handles even-sized Merkle trees (4 items) and verifies proofs for all indices", () => {
+    const even4: VaultSnapshotItem[] = Array.from({ length: 4 }, (_, idx) => ({
+      id: `even_4_${idx}`,
+      vault: "technical",
+      content: `Technical vault item ${idx}`,
+      timestamp: "2026-10-10T00:00:00Z",
+      tags: ["even", `tag_${idx}`],
+    }));
+
+    const receipt = SovereignBlockchainAnchor.anchorSnapshot(even4, "arweave", "blockchain_anchored");
+    assert.equal(receipt.itemCount, 4);
+    assert.equal(SovereignBlockchainAnchor.verifyReceipt(receipt, even4), true);
+
+    for (let i = 0; i < 4; i++) {
+      const proof = SovereignBlockchainAnchor.generateMerkleProof(even4, i);
+      assert.equal(proof.itemIndex, i);
+      assert.equal(proof.verified, true);
+      assert.equal(proof.merkleRoot, receipt.merkleRoot);
+    }
+  });
+
+  it("handles large snapshot payload (100 items) Merkle tree computation and inclusion proofs", () => {
+    const large100: VaultSnapshotItem[] = Array.from({ length: 100 }, (_, idx) => ({
+      id: `large_100_${idx}`,
+      vault: "operational",
+      content: `Operational log stream record ${idx}`,
+      timestamp: "2026-10-10T00:00:00Z",
+      tags: ["bulk", `idx_${idx}`],
+    }));
+
+    const receipt = SovereignBlockchainAnchor.anchorSnapshot(large100, "arweave", "blockchain_anchored");
+    assert.equal(receipt.itemCount, 100);
+    assert.equal(SovereignBlockchainAnchor.verifyReceipt(receipt, large100), true);
+
+    // Verify proofs at boundary and arbitrary interior indices (0, 49, 99)
+    for (const testIdx of [0, 49, 99]) {
+      const proof = SovereignBlockchainAnchor.generateMerkleProof(large100, testIdx);
+      assert.equal(proof.itemIndex, testIdx);
+      assert.equal(proof.verified, true);
+      assert.equal(proof.merkleRoot, receipt.merkleRoot);
+    }
+  });
+
+  it("generates and verifies Merkle proof for single-item snapshot boundary", () => {
+    const single: VaultSnapshotItem[] = [
+      {
+        id: "single_1",
+        vault: "wisdom",
+        content: "Single element leaf root invariant.",
+        timestamp: "2026-10-10T00:00:00Z",
+        tags: ["single"],
+      },
+    ];
+
+    const proof = SovereignBlockchainAnchor.generateMerkleProof(single, 0);
+    assert.equal(proof.itemIndex, 0);
+    assert.equal(proof.verified, true);
+    assert.equal(proof.proofPath.length, 0);
+  });
+
+  it("detects tampered sibling hash or position in Merkle proof verification", () => {
+    const items4: VaultSnapshotItem[] = Array.from({ length: 4 }, (_, idx) => ({
+      id: `tamper_proof_${idx}`,
+      vault: "strategic",
+      content: `Invariant text ${idx}`,
+      timestamp: "2026-10-10T00:00:00Z",
+      tags: ["tamper"],
+    }));
+
+    const proof = SovereignBlockchainAnchor.generateMerkleProof(items4, 1);
+    assert.equal(proof.verified, true);
+
+    // Modify siblingHash
+    const tamperedPath1 = [...proof.proofPath];
+    tamperedPath1[0] = { ...tamperedPath1[0], siblingHash: "f".repeat(64) };
+    assert.equal(
+      SovereignBlockchainAnchor.verifyMerkleProof(proof.itemHash, tamperedPath1, proof.merkleRoot),
+      false
+    );
+
+    // Modify position
+    const tamperedPath2 = [...proof.proofPath];
+    tamperedPath2[0] = {
+      ...tamperedPath2[0],
+      position: tamperedPath2[0].position === "left" ? "right" : "left",
+    };
+    assert.equal(
+      SovereignBlockchainAnchor.verifyMerkleProof(proof.itemHash, tamperedPath2, proof.merkleRoot),
+      false
+    );
+  });
+
+  it("gracefully falls back to offline calculation when live transport fetch throws or returns non-200", async () => {
+    const origKey = process.env.IRYS_PRIVATE_KEY;
+    process.env.IRYS_PRIVATE_KEY = "invalid-key-for-network-failure-test";
+
+    try {
+      const result = await SovereignStorageDispatcher.dispatchSnapshot(sampleItems, {
+        provider: "irys-arweave",
+      });
+      assert.ok(result.receipt);
+      assert.ok(result.upload);
+      assert.equal(result.upload.provider, "irys-arweave");
+      assert.ok(result.upload.contentIdentifier.startsWith("ar://"));
+    } finally {
+      if (origKey) {
+        process.env.IRYS_PRIVATE_KEY = origKey;
+      } else {
+        delete process.env.IRYS_PRIVATE_KEY;
+      }
+    }
+  });
 });
