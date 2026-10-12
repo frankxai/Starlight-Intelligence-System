@@ -108,9 +108,9 @@ const VERDICTS: RunReceiptVerdict[] = ["PASS", "FAIL", "PARTIAL"];
 const STAGE_STATUSES: StageStatus[] = ["ok", "failed", "skipped"];
 const DECIDED_BY: DecisionBy[] = ["human", "agent", "policy"];
 const OUTCOMES: DecisionOutcome[] = ["approved", "rejected", "deferred"];
-/** Rounding tolerance when checking totals against stage sums: half of the 4-decimal rounding unit, or 0.5 percent of the stage sum, whichever is larger. */
-function eurTolerance(stageSum: number): number {
-  return Math.max(0.00005, stageSum * 0.005);
+/** Rounding tolerance when checking totals.costEur against the stage sum: half of the 4-decimal rounding unit for each priced stage and for the total. It covers rounding only, so it does not grow with spend. */
+function eurTolerance(pricedStages: number): number {
+  return 0.00005 * (pricedStages + 1);
 }
 /** DSSE issuers emit one or a few signatures. Above this count the envelope is refused before any signature is checked, which bounds the verification cost a caller can impose. */
 export const MAX_SIGNATURES = 8;
@@ -236,7 +236,7 @@ export function receiptProblems(receipt: unknown): string[] {
   let latencyMax = 0;
   let inSum = 0;
   let outSum = 0;
-  let anyCost = false;
+  let pricedStages = 0;
   if (!Array.isArray(r.stages) || r.stages.length === 0) {
     problems.push("receipt lists no stages");
   } else {
@@ -256,7 +256,7 @@ export function receiptProblems(receipt: unknown): string[] {
       }
       if (isNonNegative(stage.costEur)) {
         costSum += stage.costEur;
-        anyCost = true;
+        pricedStages += 1;
       }
       if (isNonNegative(stage.latencyMs)) latencyMax = Math.max(latencyMax, stage.latencyMs);
       if (isCount(stage.inputTokens)) inSum += stage.inputTokens;
@@ -276,7 +276,7 @@ export function receiptProblems(receipt: unknown): string[] {
       problems.push("totals.tokens.input and totals.tokens.output are required non-negative integers");
     }
     // Cost and token totals may exceed the stage sums (overhead, untracked steps) but never fall short of them.
-    if (anyCost && isNonNegative(t.costEur) && t.costEur + eurTolerance(costSum) < costSum) {
+    if (pricedStages > 0 && isNonNegative(t.costEur) && t.costEur + eurTolerance(pricedStages) < costSum) {
       problems.push(`totals.costEur ${t.costEur} is below the stage sum ${costSum.toFixed(4)}`);
     }
     // Stages can overlap (a constellation runs lanes in parallel), so wall time
@@ -300,6 +300,7 @@ export function receiptProblems(receipt: unknown): string[] {
       if (typeof d.actorId !== "string" || !d.actorId.trim()) problems.push(`decision ${d.gate ?? i} has no actorId`);
       if (!OUTCOMES.includes(d.outcome as DecisionOutcome)) problems.push(`decision ${d.gate ?? i}.outcome is ${JSON.stringify(d.outcome)}`);
       if (!isDate(d.at)) problems.push(`decision ${d.gate ?? i}.at is not a date-time`);
+      else if (isDate(r.issuedAt) && Date.parse(d.at) > Date.parse(r.issuedAt)) problems.push(`decision ${d.gate ?? i}.at is after issuedAt`);
     });
   }
 
