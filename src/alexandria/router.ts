@@ -122,17 +122,23 @@ export class Alexandria {
       this.lock = new SessionLock(opts.ledger.path, sessionId);
       this.lock.acquire();
     }
-    // A resumed session keeps the ceiling it was opened with. Raising it would be an unrecorded
-    // authorisation of more spend under the same session; open a new session for a new ceiling.
-    const recorded = opts.ledger ? opts.ledger.sessionCeiling(sessionId) : undefined;
-    if (recorded !== undefined && opts.maxCredits > recorded) {
+    // Everything after the lock is taken runs under a release-on-failure guard: a corrupt ledger
+    // or a refused ceiling must not leave the session locked for the rest of this process.
+    try {
+      // A resumed session keeps the ceiling it was opened with. Raising it would be an unrecorded
+      // authorisation of more spend under the same session; open a new session for a new ceiling.
+      const recorded = opts.ledger ? opts.ledger.sessionCeiling(sessionId) : undefined;
+      if (recorded !== undefined && opts.maxCredits > recorded) {
+        throw new Error(`Budget session ${sessionId} was opened with a ceiling of ${recorded} credits; resuming it with ${opts.maxCredits} would raise the ceiling. Resume with at most ${recorded}, or start a new session.`);
+      }
+      this.budget = { sessionId, maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent(sessionId) : 0 };
+      if (opts.ledger) {
+        for (const [id, hold] of opts.ledger.heldReservations(sessionId)) this.held.set(id, hold);
+        for (const id of opts.ledger.suspendedCapabilities(opts.library.catalog.reconciledAt)) this.suspended.add(id);
+      }
+    } catch (err) {
       this.lock?.release();
-      throw new Error(`Budget session ${sessionId} was opened with a ceiling of ${recorded} credits; resuming it with ${opts.maxCredits} would raise the ceiling. Resume with at most ${recorded}, or start a new session.`);
-    }
-    this.budget = { sessionId, maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent(sessionId) : 0 };
-    if (opts.ledger) {
-      for (const [id, hold] of opts.ledger.heldReservations(sessionId)) this.held.set(id, hold);
-      for (const id of opts.ledger.suspendedCapabilities()) this.suspended.add(id);
+      throw err;
     }
     for (const t of opts.transports) this.transports.set(t.kind, t);
     this.ledger = opts.ledger;
@@ -187,7 +193,7 @@ export class Alexandria {
       throw new AlexandriaError('connector_not_executable', `${hit.capability.id} is a connector and cannot be executed as a data capability`, 'Connectors are called by the swarm runtime. See verticals/alexandria/catalog/connectors.json.');
     }
     if (this.suspended.has(hit.capability.id)) {
-      throw new AlexandriaError('capability_suspended', `${hit.capability.id} is suspended: its provider once charged more than was reserved (see the overrun receipt in the ledger)`, 'Reconcile the capability price and record-limit contract in verticals/alexandria/catalog/providers.json, then start a new ledger session for it; the overrun receipt is the evidence.');
+      throw new AlexandriaError('capability_suspended', `${hit.capability.id} is suspended: its provider once charged more than was reserved (see the overrun receipt in the ledger)`, 'Reconcile the capability price and record-limit contract in verticals/alexandria/catalog/providers.json and bump the catalogue reconciledAt past the overrun date; the overrun receipt is the evidence and the reconciliation is the audit record that clears it.');
     }
     if (hit.capability.status === 'unreconciled') {
       throw new AlexandriaError('unreconciled_capability', `${hit.capability.id} is catalogued but its path and terms are not yet reconciled against the live contract`, 'Reconcile the capability in verticals/alexandria/catalog/providers.json (see MEMORY.md, open reconciliation) and clear its status before executing it.');
@@ -302,14 +308,18 @@ export class Alexandria {
     // process and, through the overrun receipt, in every later one, until the catalogue is fixed.
     const overrun = actual > reserved;
     if (overrun) this.suspended.add(hit.capability.id);
-    const receipt = receiptFor(result, { sipLayers: req.sipLayers ?? [], overrun });
+    const receipt = receiptFor(result, { sipLayers: req.sipLayers ?? [], overrun, catalogueReconciledAt: this.library.catalog.reconciledAt });
     try {
       this.ledger?.append(receipt);
     } catch (err) {
-      // The charge happened; the in-memory budget keeps it and the pending line keeps the
-      // reservation held in the ledger. The caller gets the request id and the receipt back.
+      // The charge happened but is not recorded. The ledger's pending line still holds the
+      // reservation, so the in-memory state is put back to match it: the hold is restored and
+      // the budget returns to the reserved amount. A retry with the same request id and call
+      // then reuses the hold, and the provider's idempotency returns the same outcome.
+      this.budget.spent += reserved - actual;
+      this.held.set(requestId, { amount: reserved, fingerprint });
       const message = err instanceof Error ? err.message : String(err);
-      throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the call completed (${actual} credits) but the receipt could not be appended to the ledger (${message})`, `Keep requestId ${requestId} and receipt ${receipt.id}; the spend is counted in this process and the pending line holds ${reserved} credits until a receipt with this request id lands. Fix the ledger path (${this.ledger?.path ?? 'none'}) before the next call.`, requestId);
+      throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the call completed (${actual} credits) but the receipt could not be appended to the ledger (${message})`, `The reservation of ${reserved} credits is held again, in this process and by the pending line in the ledger. Fix the ledger path (${this.ledger?.path ?? 'none'}), then retry with requestId ${requestId} and the same options to settle it.`, requestId);
     }
     const response: ExecuteResponse = { hit, result, receipt, budget: { ...this.budget } };
     if (overrun) response.overrun = true;

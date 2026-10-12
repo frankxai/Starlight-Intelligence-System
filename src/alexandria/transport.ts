@@ -30,6 +30,15 @@ interface FirecrawlAlexandriaEntry {
   data?: unknown;
   records?: unknown[];
   error?: { code?: string; message?: string };
+  /** When the provider observed the record, if it says. */
+  observedAt?: unknown;
+}
+
+/** A provider-supplied observation time when it is a parseable date-time; otherwise the fallback. */
+function observationTime(candidate: unknown, fallback: string): string {
+  if (typeof candidate !== 'string' || candidate.trim() === '') return fallback;
+  const t = Date.parse(candidate);
+  return Number.isFinite(t) ? new Date(t).toISOString() : fallback;
 }
 
 export class FirecrawlTransport implements Transport {
@@ -49,7 +58,6 @@ export class FirecrawlTransport implements Transport {
   async execute(calls: readonly AlexandriaCall[]): Promise<CallResult[]> {
     if (calls.length === 0) return [];
     if (calls.length > 10) throw new Error('Firecrawl accepts at most 10 Alexandria capabilities per request');
-    const observedAt = new Date().toISOString();
     // One request id per batch: Firecrawl bills an uncertain retry only once when it reuses
     // the identical payload and request id. The id travels in the `x-request-id` header,
     // which is the v2 API's client idempotency key; the body carries only the `alexandria`
@@ -63,6 +71,9 @@ export class FirecrawlTransport implements Transport {
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.apiKey}`, 'x-request-id': requestId },
       body,
     });
+    // The observation time is when the answer arrived, never when the request was sent; a
+    // provider-supplied time on an entry is preferred over it.
+    const observedAt = new Date().toISOString();
     if (!res.ok) {
       // A terms gate (403 THIRD_PARTY_DATA_TERMS_REQUIRED with `requiresAction`) must reach the
       // human who can accept it; it is surfaced as data and never accepted here.
@@ -82,17 +93,23 @@ export class FirecrawlTransport implements Transport {
     const payload = (await res.json()) as { data?: { alexandria?: FirecrawlAlexandriaEntry[] } };
     const entries = payload.data?.alexandria ?? [];
     return calls.map((c, i) => {
-      const entry = entries[i] ?? entries.find((e) => e.provider === c.provider && e.capability === c.capability);
-      if (!entry) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error: { code: 'missing_result', message: 'Firecrawl returned no entry for this capability' } };
+      // The positional entry is taken only when it names this call; otherwise the entry is found
+      // by identity, so a reordered response can never assign records or charges to the wrong call.
+      const sameCall = (e: FirecrawlAlexandriaEntry | undefined) => e !== undefined && e.provider === c.provider && e.capability === c.capability;
+      const entry = sameCall(entries[i]) ? entries[i] : entries.find(sameCall);
+      // A 2xx without this call's entry says nothing about whether the provider ran and billed it,
+      // so it is an uncertain outcome: the reservation stays held and the retry reuses the id.
+      if (!entry) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error: { code: 'uncertain_outcome', message: 'Firecrawl answered 2xx but returned no entry for this capability; the provider may still have billed it' } };
       if (entry.error) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error: { code: entry.error.code ?? 'provider_error', message: entry.error.message ?? 'provider error' } };
       const records = Array.isArray(entry.records) ? entry.records : Array.isArray(entry.data) ? entry.data : entry.data === undefined ? [] : [entry.data];
+      const observed = observationTime(entry.observedAt, observedAt);
       // A success that reports no usable charge is not treated as free: the router keeps the
       // reservation for it rather than refunding credits the provider may well have taken.
       const charge = entry.creditsCost;
       if (typeof charge !== 'number' || !Number.isFinite(charge) || charge < 0) {
-        return { provider: c.provider, capability: c.capability, records, creditsCost: 0, chargeUnknown: true, observedAt, requestId };
+        return { provider: c.provider, capability: c.capability, records, creditsCost: 0, chargeUnknown: true, observedAt: observed, requestId };
       }
-      return { provider: c.provider, capability: c.capability, records, creditsCost: charge, observedAt, requestId };
+      return { provider: c.provider, capability: c.capability, records, creditsCost: charge, observedAt: observed, requestId };
     });
   }
 }

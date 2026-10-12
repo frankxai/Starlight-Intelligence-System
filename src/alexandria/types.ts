@@ -152,6 +152,8 @@ export interface Receipt {
   maxCredits: number;
   /** True when the provider charged more than was reserved. The capability is suspended estate-wide until reconciled. */
   overrun?: boolean;
+  /** `reconciledAt` of the catalogue in force. An overrun's suspension clears once the catalogue is reconciled after it. */
+  catalogueReconciledAt?: string;
   /**
    * Credits charged to the session. Greater than `reserved` means the declared record ceiling
    * was exceeded. An `uncertain_outcome` receipt holds `reserved` here until a retry with the

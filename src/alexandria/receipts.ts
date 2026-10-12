@@ -17,8 +17,8 @@
  */
 
 import { createHash, randomUUID } from 'node:crypto';
-import { appendFileSync, closeSync, existsSync, linkSync, mkdirSync, openSync, readFileSync, renameSync, truncateSync, unlinkSync, writeFileSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, truncateSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import type { CallResult, Provider, Receipt } from './types.js';
 
 export const SIP_VERSION = '1.1.1';
@@ -76,9 +76,11 @@ export interface ReceiptInput {
   maxCredits: number;
   /** The provider charged more than was reserved. */
   overrun?: boolean;
+  /** `reconciledAt` of the catalogue in force, recorded on overruns so a later reconciliation clears them. */
+  catalogueReconciledAt?: string;
 }
 
-export function buildReceipt({ result, provider, options, sessionId, reserved, sipLayers = [], now, pending = false, maxCredits, overrun = false }: ReceiptInput): Receipt {
+export function buildReceipt({ result, provider, options, sessionId, reserved, sipLayers = [], now, pending = false, maxCredits, overrun = false, catalogueReconciledAt }: ReceiptInput): Receipt {
   const receipt: Receipt = {
     id: `rcpt_${randomUUID()}`,
     issuedAt: now ? now() : new Date().toISOString(),
@@ -101,7 +103,10 @@ export function buildReceipt({ result, provider, options, sessionId, reserved, s
     sipLayers,
   };
   if (pending) receipt.pending = true;
-  if (!pending && overrun) receipt.overrun = true;
+  if (!pending && overrun) {
+    receipt.overrun = true;
+    if (catalogueReconciledAt) receipt.catalogueReconciledAt = catalogueReconciledAt;
+  }
   if (!pending && !result.error && result.chargeUnknown) receipt.chargeUnknown = true;
   if (result.requestId) receipt.requestId = result.requestId;
   if (provider.attribution) receipt.attribution = provider.attribution;
@@ -183,6 +188,9 @@ export class ReceiptLedger {
     if (!existsSync(this.path)) return { receipts: [], truncatedTail: false };
     const raw = this.locked(() => readFileSync(this.path, 'utf8'));
     const lines = raw.split('\n').filter((line) => line.trim().length > 0);
+    // Only a final line with no terminating newline can be a cut-off write. A complete last line
+    // that does not parse is corruption like any other and is refused, never dropped from the tally.
+    const unterminated = raw.length > 0 && !raw.endsWith('\n');
     const receipts: Receipt[] = [];
     let truncatedTail = false;
     lines.forEach((line, i) => {
@@ -190,7 +198,7 @@ export class ReceiptLedger {
       try {
         parsed = JSON.parse(line);
       } catch (err) {
-        if (i === lines.length - 1) { truncatedTail = true; return; }
+        if (i === lines.length - 1 && unterminated) { truncatedTail = true; return; }
         throw new Error(`Receipt ledger ${this.path} is corrupt at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`);
       }
       // A line that parses but cannot be tallied would poison the budget (NaN compares false
@@ -233,10 +241,20 @@ export class ReceiptLedger {
     return ceiling;
   }
 
-  /** Capabilities whose provider once charged more than was reserved, across every session: suspended until reconciled. */
-  suspendedCapabilities(): Set<string> {
+  /**
+   * Capabilities whose provider once charged more than was reserved, across every session. An
+   * overrun suspends its capability until the catalogue is reconciled after it: an overrun
+   * recorded under catalogue `reconciledAt` X clears once the catalogue in force carries a later
+   * `reconciledAt` (the reconciliation is the audit record). An overrun with no recorded
+   * catalogue date never clears by date.
+   */
+  suspendedCapabilities(catalogueReconciledAt?: string): Set<string> {
     const out = new Set<string>();
-    for (const r of this.read()) if (r.overrun) out.add(`${r.provider}/${r.capability}`);
+    for (const r of this.read()) {
+      if (!r.overrun) continue;
+      const cleared = catalogueReconciledAt !== undefined && r.catalogueReconciledAt !== undefined && catalogueReconciledAt > r.catalogueReconciledAt;
+      if (!cleared) out.add(`${r.provider}/${r.capability}`);
+    }
     return out;
   }
 
@@ -283,7 +301,6 @@ export function receiptProblem(value: unknown): string | null {
 /** Lock paths this process holds, so a second instance in the same process cannot share a lock. */
 const heldInProcess = new Set<string>();
 
-const IN_PROGRESS_RETRIES = 20;
 const RETRY_MS = 10;
 
 function pause(ms: number): void {
@@ -291,13 +308,13 @@ function pause(ms: number): void {
 }
 
 /**
- * Exclusive pid lock on a file. Ownership is published atomically: the pid is written to a
- * private temp file and `link`ed to the lock path, so the lock either does not exist or carries
- * its owner; a contender never sees an empty file it could mistake for a stale one. (Where hard
- * links are refused the fallback is create-then-write, and an empty lock is treated as an
- * acquisition in progress, not as stale.) A lock whose pid is no longer alive is stale and is
- * claimed by atomic rename, so of two recovering processes exactly one wins. Two instances in
- * one process cannot share a lock either.
+ * Exclusive pid lock. The lock is a directory holding an `owner` file with the pid. Ownership is
+ * published atomically on every filesystem: the owner file is written into a private temp
+ * directory first, and that directory is renamed to the lock path. Rename refuses to replace a
+ * non-empty directory, so the lock either does not exist or carries its owner; there is no
+ * create-then-write window and no timer deciding whether an incomplete lock is stale. A lock
+ * whose pid is no longer alive is stale and is claimed by atomic rename, so of two recovering
+ * processes exactly one wins. Two instances in one process cannot share a lock either.
  */
 export class FileLock {
   private held = false;
@@ -312,71 +329,61 @@ export class FileLock {
     }
     mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
     const deadline = Date.now() + (opts.waitMs ?? 0);
-    let emptySeen = 0;
     for (let attempt = 0; attempt < 10_000; attempt++) {
-      if (this.tryCreate()) { this.held = true; heldInProcess.add(this.path); return; }
-      let contents: string;
-      try { contents = readFileSync(this.path, 'utf8').trim(); } catch { continue; /* removed between our create and read; retry */ }
-      if (contents === '') {
-        // Create-then-write fallback in another process: ownership is being published. Wait for
-        // it; only a lock that stays empty well past any write is a crash between the two steps.
-        if (++emptySeen <= IN_PROGRESS_RETRIES) { pause(RETRY_MS); continue; }
-      } else {
-        const owner = Number(contents);
-        // Our own pid but not in heldInProcess: a leftover from an earlier life of this pid, so stale.
-        if (owner !== process.pid && isAlive(owner)) {
-          if (Date.now() < deadline) { pause(RETRY_MS); continue; }
-          throw new Error(`${this.path} is held by process ${owner}`);
-        }
+      if (this.tryPublish()) { this.held = true; heldInProcess.add(this.path); return; }
+      let owner: number;
+      try { owner = Number(readFileSync(join(this.path, 'owner'), 'utf8').trim()); } catch {
+        // Gone between our rename and this read (released or claimed), or not a lock we wrote:
+        // a lock without an owner file was never published by this code, so it is stale.
+        if (!existsSync(this.path)) continue;
+        owner = Number.NaN;
       }
-      // Stale: claim it by rename (atomic), so a losing claimant can never unlink a fresh lock.
+      // Our own pid but not in heldInProcess: a leftover from an earlier life of this pid, so stale.
+      if (owner !== process.pid && isAlive(owner)) {
+        if (Date.now() < deadline) { pause(RETRY_MS); continue; }
+        throw new Error(`${this.path} is held by process ${owner}`);
+      }
+      // Stale: claim it by rename (atomic), so a losing claimant can never remove a fresh lock.
       const claim = `${this.path}.stale.${process.pid}.${attempt}`;
-      try { renameSync(this.path, claim); unlinkSync(claim); } catch { /* another process claimed it; the retry sees their fresh lock */ }
-      emptySeen = 0;
+      try { renameSync(this.path, claim); rmSync(claim, { recursive: true, force: true }); } catch { /* another process claimed it; the retry sees their fresh lock */ }
     }
     throw new Error(`Could not acquire ${this.path}`);
   }
 
-  /** Publishes the lock with its owner in one step. False when the lock exists. */
-  private tryCreate(): boolean {
-    const tmp = `${this.path}.${process.pid}.${randomUUID()}.tmp`;
-    writeFileSync(tmp, String(process.pid), { encoding: 'utf8', mode: FILE_MODE, flag: 'wx' });
+  /** Publishes the lock with its owner in one rename. False when a lock already exists. */
+  private tryPublish(): boolean {
+    const staging = `${this.path}.${process.pid}.${randomUUID()}.tmp`;
+    mkdirSync(staging, { mode: DIR_MODE });
+    writeFileSync(join(staging, 'owner'), String(process.pid), { encoding: 'utf8', mode: FILE_MODE });
     try {
-      linkSync(tmp, this.path);
+      renameSync(staging, this.path);
       return true;
     } catch (err) {
       const code = (err as NodeJS.ErrnoException).code;
-      if (code === 'EEXIST') return false;
-      // Hard links refused by the filesystem: create exclusively, then write. Contenders treat the
-      // empty window as an acquisition in progress (above).
-      try {
-        const fd = openSync(this.path, 'wx', FILE_MODE);
-        writeFileSync(fd, String(process.pid), 'utf8');
-        closeSync(fd);
-        return true;
-      } catch (fallbackErr) {
-        if ((fallbackErr as NodeJS.ErrnoException).code === 'EEXIST') return false;
-        throw fallbackErr;
-      }
+      if (code === 'ENOTEMPTY' || code === 'EEXIST' || code === 'EPERM' || code === 'EACCES') return false;
+      throw err;
     } finally {
-      try { unlinkSync(tmp); } catch { /* already gone */ }
+      rmSync(staging, { recursive: true, force: true });
     }
+  }
+
+  /** The pid recorded in a lock, or undefined when there is no lock. */
+  static owner(path: string): number | undefined {
+    try { return Number(readFileSync(join(path, 'owner'), 'utf8').trim()); } catch { return undefined; }
   }
 
   release(): void {
     if (!this.held) return;
     this.held = false;
     heldInProcess.delete(this.path);
-    try {
-      if (Number(readFileSync(this.path, 'utf8').trim()) === process.pid) unlinkSync(this.path);
-    } catch { /* already gone */ }
+    if (FileLock.owner(this.path) === process.pid) rmSync(this.path, { recursive: true, force: true });
   }
 }
 
 /**
  * Exclusive lock on a budget session. Two processes resuming the same session would each reserve
  * against their own in-memory copy of the spend, so a resumed session is held by exactly one live
- * process, and by exactly one instance within it. The lock is a file beside the ledger.
+ * process, and by exactly one instance within it. The lock is a directory beside the ledger.
  */
 export class SessionLock extends FileLock {
   constructor(ledgerPath: string, readonly sessionId: string) {

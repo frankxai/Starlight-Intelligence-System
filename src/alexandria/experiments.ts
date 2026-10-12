@@ -92,8 +92,18 @@ export function canTransition(from: ExperimentStatus, to: ExperimentStatus): boo
   return TRANSITIONS[from].includes(to);
 }
 
-/** Returns the updated experiment or throws; never mutates the input. */
-export function transition(e: Experiment, to: ExperimentStatus, evidence: { receipts?: readonly string[]; closesBy?: string; notes?: string; today?: string } = {}): Experiment {
+/** What a verdict's evidence must be checked against: the ledger (or any lookup over it). */
+export interface ReceiptLookup {
+  /** A settled receipt by id, or undefined. `ReceiptLedger.read()` entries qualify. */
+  (id: string): { id: string; pending?: boolean; error?: unknown } | undefined;
+}
+
+/**
+ * Returns the updated experiment or throws; never mutates the input. A verdict (`proven`,
+ * `falsified`) is accepted only with receipts, and every receipt it cites must be looked up:
+ * it has to exist as a settled, successful receipt. A well-formed id alone is not evidence.
+ */
+export function transition(e: Experiment, to: ExperimentStatus, evidence: { receipts?: readonly string[]; closesBy?: string; notes?: string; today?: string; lookup?: ReceiptLookup } = {}): Experiment {
   if (!canTransition(e.status, to)) throw new Error(`${e.id}: cannot move from ${e.status} to ${to}`);
   if (e.status === 'parked' && to === 'running') {
     // Reopening is a fresh commitment: it needs a new deadline later than the one it parked
@@ -104,7 +114,18 @@ export function transition(e: Experiment, to: ExperimentStatus, evidence: { rece
     if (evidence.closesBy <= today) throw new Error(`${e.id}: the new closesBy must be after today (${today})`);
   }
   const receipts = [...e.receipts, ...(evidence.receipts ?? [])];
-  if ((to === 'proven' || to === 'falsified') && receipts.length === 0) throw new Error(`${e.id}: ${to} needs a receipt`);
+  if (to === 'proven' || to === 'falsified') {
+    if (receipts.length === 0) throw new Error(`${e.id}: ${to} needs a receipt`);
+    const malformed = receipts.find((id) => !RECEIPT_ID_RE.test(id));
+    if (malformed !== undefined) throw new Error(`${e.id}: every receipt must be a ledger receipt id (rcpt_<uuid>); got ${JSON.stringify(malformed)}`);
+    if (!evidence.lookup) throw new Error(`${e.id}: ${to} needs a receipt lookup against the ledger; an id alone is not evidence`);
+    for (const id of receipts) {
+      const found = evidence.lookup(id);
+      if (!found) throw new Error(`${e.id}: receipt ${id} is not in the ledger`);
+      if (found.pending) throw new Error(`${e.id}: receipt ${id} is a pending line and has no outcome yet`);
+      if (found.error) throw new Error(`${e.id}: receipt ${id} is a failed call and cannot evidence a verdict`);
+    }
+  }
   const next: Experiment = { ...e, status: to, receipts };
   if (evidence.closesBy) next.closesBy = evidence.closesBy;
   if (evidence.notes) next.notes = evidence.notes;
