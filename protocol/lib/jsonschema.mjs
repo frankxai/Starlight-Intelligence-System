@@ -28,6 +28,9 @@ const KNOWN_KEYWORDS = new Set([
   "items",
   "pattern",
   "format",
+  "minLength",
+  "minimum",
+  "maximum",
   "minItems",
   "uniqueItems",
   "allOf",
@@ -141,11 +144,23 @@ export function validate(schema, data, opts = {}) {
   }
 
   if (typeof data === "string") {
+    if (typeof schema.minLength === "number" && data.length < schema.minLength) {
+      errors.push(`${path}: length ${data.length} is shorter than minimum ${schema.minLength}`);
+    }
     if (schema.pattern && !new RegExp(schema.pattern).test(data)) {
       errors.push(`${path}: "${data}" does not match /${schema.pattern}/`);
     }
     if (schema.format === "date-time" && !DATE_TIME.test(data)) {
       errors.push(`${path}: "${data}" is not an RFC3339 date-time`);
+    }
+  }
+
+  if (typeof data === "number") {
+    if (typeof schema.minimum === "number" && data < schema.minimum) {
+      errors.push(`${path}: ${data} is less than minimum ${schema.minimum}`);
+    }
+    if (typeof schema.maximum === "number" && data > schema.maximum) {
+      errors.push(`${path}: ${data} is greater than maximum ${schema.maximum}`);
     }
   }
 
