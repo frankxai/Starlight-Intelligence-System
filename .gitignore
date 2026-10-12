@@ -24,6 +24,7 @@ noosphere/
 # Local Claude Code settings + worktrees (per-machine)
 .claude/settings.local.json
 .claude/worktrees/
+/.worktrees/
 .claude/scheduled_tasks.lock
 
 # Obsidian vault config (per-machine)
