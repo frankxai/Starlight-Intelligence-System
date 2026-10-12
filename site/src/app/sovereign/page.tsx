@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MerkleProofExplorer } from "@/components/sovereign/MerkleProofExplorer";
 import { VMCPTokenCalculator } from "@/components/sovereign/VMCPTokenCalculator";
+import { RobotFleetContinuityExplorer } from "@/components/sovereign/RobotFleetContinuityExplorer";
 
 export const metadata: Metadata = {
   title: "Sovereign Fleet Substrate — Starlight Intelligence",
@@ -61,6 +62,7 @@ export default function SovereignPage() {
           </div>
 
           <MerkleProofExplorer />
+          <RobotFleetContinuityExplorer />
           <VMCPTokenCalculator />
         </div>
       </section>
@@ -170,7 +172,7 @@ export default function SovereignPage() {
               </p>
               <ul className="text-xs font-mono text-slate-400 space-y-2">
                 <li className="flex items-center gap-2 text-amber-300">
-                  <span>✓</span> Non-waivable 'Built on SIP' cryptographic attestation
+                  <span>✓</span> Non-waivable &apos;Built on SIP&apos; cryptographic attestation
                 </li>
                 <li className="flex items-center gap-2 text-amber-300">
                   <span>✓</span> CLI pack manager with sandboxed installation

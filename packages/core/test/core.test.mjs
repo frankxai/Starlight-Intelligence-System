@@ -7,6 +7,45 @@ import { projectRecall, recallContext, SanitizationGateway } from '../dist/index
 const memory = { recall: async () => [] };
 const options = { memory, tenantId: 'tenant-a', workspaceId: 'workspace-a' };
 
+test('Supabase secret keys are fully redacted while publishable keys remain usable', () => {
+  const veil = new SanitizationGateway({ scrubPII: false });
+  for (const suffix of ['fixture_' + 'a'.repeat(32), 'fixture-' + 'a'.repeat(32) + '-_']) {
+    const key = 'sb_secret_' + suffix;
+    assert.equal(veil.sanitize('before ' + key + ' after'), 'before [REDACTED] after');
+    assert.equal(new SanitizationGateway({ scrubPII: false, maskString: '$&' }).sanitize(key), '$&');
+    assert.equal(new SanitizationGateway({ scrubPII: false, scrubSecrets: false }).sanitize(key), key);
+  }
+  const publicKey = 'sb_publishable_fixture_' + 'a'.repeat(32);
+  assert.equal(veil.sanitize(publicKey), publicKey);
+});
+
+test('named Supabase server-key fields mask opaque values in nested contexts', () => {
+  const veil = new SanitizationGateway({ scrubPII: false });
+  const result = veil.sanitizeContext({ SUPABASE_SECRET_KEY: 'opaque-fixture', nested: {
+    supabase_secret_key: 'opaque-fixture', SUPABASE_SERVICE_ROLE_KEY: 'opaque-fixture',
+    supabase_service_role_key: 'opaque-fixture', NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-fixture',
+  } });
+  assert.equal(result.SUPABASE_SECRET_KEY, '[REDACTED]');
+  for (const name of ['supabase_secret_key', 'SUPABASE_SERVICE_ROLE_KEY', 'supabase_service_role_key']) {
+    assert.equal(result.nested[name], '[REDACTED]');
+  }
+  assert.equal(result.nested.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, 'public-fixture');
+});
+
+test('Supabase credentials cannot leave recall through the provider query or returned context', async () => {
+  const secret = 'sb_secret_' + 'fixture_' + 'a'.repeat(32);
+  const requests = [];
+  const recalled = await recallContext('Find ' + secret, { ...options, memory: {
+    recall: async request => {
+      requests.push(request);
+      return [hit(secret, { normalized_fact: 'Credential ' + secret })];
+    },
+  } });
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].query, 'Find [REDACTED]');
+  assert.deepEqual(recalled, [{ id: '[REDACTED]', content: 'Credential [REDACTED]', score: 0.9 }]);
+});
+
 test('every shipped core schema is available through a public package subpath', async () => {
   const directory = new URL('.', import.meta.resolve('@starlight-intelligence/core/schemas/work-packet'));
   const files = (await readdir(directory)).filter(file => file.endsWith('.schema.json'));

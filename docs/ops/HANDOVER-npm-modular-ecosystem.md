@@ -1,27 +1,44 @@
 # Modular npm ecosystem pickup
 
 Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-System/issues/329).
-Estate record: [hub draft PR 217](https://github.com/frankxai/agentic-ops-hub/pull/217).
-Date: 10 October 2026. Owner: this Codex session.
+Estate record: [Ops313](https://github.com/frankxai/agentic-ops-hub/pull/313).
+Date: 12 October 2026. This release preparation uses accepted source
+`c120706cdc56825044583550af7a03c7ee98bcf2`.
 
-Current pickup: [ready PR 342](https://github.com/frankxai/Starlight-Intelligence-System/pull/342).
-Checkpoint `2d3a2270e83085dca74416727be7ca1726469a5f` preserves accepted main's
-Agent Designer/console work and passed all twelve hosted workflows. Follow-up
-`7b2bb1789954974aca728cd6b3af86d0dc83de80` addresses seven Codex review findings.
-GitHub Copilot's separate review then identified eight findings; the next
-remediation keeps recalled text in user context, fixes restrictive privacy tags,
-bootstraps core for root development, preserves Mem0 workspace/retention metadata,
-and makes lifecycle hooks visible in artifact follow-up. Current package candidates
-are 0.2.0. Exact-revision review and fresh hosted artifact consumers remain required.
-Use their source-bound manifest for sizes, not measurements from an older checkpoint.
-No package has been published by this lane. Separate plugin/site alerts remain
-outside the modular package audit.
+Core364, MCP366, archive-metric367, malformed privacy namespace370 and plugin
+dependency369 fixes are merged normally. PR370 receiving
+[38207137360](https://github.com/frankxai/Starlight-Intelligence-System/actions/runs/38207137360)
+passes six jobs; all four Linux/Windows Node22/24 matrices pass 31 core, 6 AI, 16 MCP and 25 release
+tests with zero failures/skips. Reviewed-identical actual archives and installed
+consumers are verified at that exact 0.2.0 source. This evidence does not attest
+new release archive bytes, public publication or a live managed service.
+PR369 receiving verification remains pending; its exact candidate passes the
+fresh independent Google source review, six npm execution jobs and 21 plugin tests.
 
-Next: finish review reconciliation, exact-revision hosted checks and artifact/consumer
-receipts, then merge the accepted revision and verify first publication/OIDC.
-No package was published by this session. Do not retry
-publishing ambiguous versions or treat failed reviewer authentication as approval.
-The value proposal and 45-package catalog retain their limited evidence coverage.
+The current candidate prepares core and AI SDK at 0.2.1 and MCP at 0.2.2 through
+Changesets 3.0.3. It consumes the accepted adapter update, core/MCP recall note
+and MCP privacy patch. It integrates actual accepted main source and plugin
+dependencies. Workspace dependency resolutions, schemas, root package and OIDC
+workflow are unchanged by release preparation. All three earlier 0.2.0 registry stages are still
+reserved; preserve them and their receipts.
+
+Next obtain exact-current-candidate review, hosted installed tarball consumers
+with core dependency ranges at 0.2.1 and hardened MCP at 0.2.2, normal protected
+merge and receiving proof. The previous 89333693 review and archive proofs remain
+historical and do not attest this updated candidate.
+Then verify legitimate publisher mappings and publish through the accepted
+workflow or a separately reviewed staged-publishing workflow. Public registry
+currently exposes only 0.0.0-stage placeholders. Native account authentication
+and readable stage lists do not establish trust-management access. Preserve
+2FA/proof-of-presence and human production approvals; no global token or gate
+changes are part of this candidate.
+
+Managed subscriptions remain a separate open implementation/acceptance front:
+canonical Auth and tenant denial, isolated database rehearsal and restore,
+eligible merchant, durable grants/webhooks/reconciliation, usage reservations
+and settlement, refunds/cancellation/seats and preserved legacy buyer access.
+Complete real create/edit/reopen/export acceptance before claiming customer value
+or superiority. The existing Supabase preview-cost reply remains pending.
 
 Earlier continuation evidence follows. Its versions, measurements, commit status,
 review availability and admission snapshots are historical and are superseded by
