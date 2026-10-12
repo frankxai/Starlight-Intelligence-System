@@ -31,7 +31,7 @@ Every layer has one file as source of truth:
 | L2 Library | `catalog/providers.json`, `catalog/connectors.json` | Validated on load; native is free; ids are `<provider>/<capability>`; prices reconciled against `catalogueVersion`, never guessed |
 | L3 Transports | `src/alexandria/transport.ts` | One transport per provider kind; connectors never execute through a transport |
 | L4 Router | `src/alexandria/router.ts` | Fail-closed on budget and required options; the transport is touched only after both pass |
-| L5 Receipts | `src/alexandria/receipts.ts` | Hash is key-order independent; errors are recorded but never billed; the SIP block is emitted only with declared layers |
+| L5 Receipts | `src/alexandria/receipts.ts` | Hash is key-order independent (an own `__proto__` key hashes as a key); a definite failure is never billed, an uncertain outcome holds its reservation until a retry with the same request id settles it; files are owner-only; the SIP block is emitted only with declared layers |
 | L6 Synthesis | `houses/synthesis/agent.md` | An artifact lists the receipt ids it rests on, or it is a draft |
 | L7 Exchange | `REVENUE.md`, `houses/exchange/agent.md` | Only signed receipts (`protocol/sign.mjs`) are resold; money movement is human-gated |
 

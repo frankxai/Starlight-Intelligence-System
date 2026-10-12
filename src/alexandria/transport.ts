@@ -79,7 +79,13 @@ export class FirecrawlTransport implements Transport {
       if (!entry) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error: { code: 'missing_result', message: 'Firecrawl returned no entry for this capability' } };
       if (entry.error) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error: { code: entry.error.code ?? 'provider_error', message: entry.error.message ?? 'provider error' } };
       const records = Array.isArray(entry.records) ? entry.records : Array.isArray(entry.data) ? entry.data : entry.data === undefined ? [] : [entry.data];
-      return { provider: c.provider, capability: c.capability, records, creditsCost: entry.creditsCost ?? 0, observedAt, requestId };
+      // A success that reports no usable charge is not treated as free: the router keeps the
+      // reservation for it rather than refunding credits the provider may well have taken.
+      const charge = entry.creditsCost;
+      if (typeof charge !== 'number' || !Number.isFinite(charge) || charge < 0) {
+        return { provider: c.provider, capability: c.capability, records, creditsCost: 0, chargeUnknown: true, observedAt, requestId };
+      }
+      return { provider: c.provider, capability: c.capability, records, creditsCost: charge, observedAt, requestId };
     });
   }
 }
@@ -164,8 +170,10 @@ export class NativeTransport implements Transport {
   private verticals(): unknown[] {
     const dir = join(this.repoRoot, 'verticals');
     if (!existsSync(dir)) return [];
+    // Sorted by name: readdir order differs across filesystems, and the receipt hash preserves array order.
     return readdirSync(dir, { withFileTypes: true })
       .filter((d) => d.isDirectory() && !d.name.startsWith('_'))
+      .sort((a, b) => a.name.localeCompare(b.name))
       .map((d) => ({ slug: d.name, hasContract: ['README.md', 'SKILL.md', 'AGENTS.md', 'MEMORY.md', 'STACK.md', 'CANON.md', 'SOUL.md'].every((f) => existsSync(join(dir, d.name, f))) }));
   }
 }
@@ -181,7 +189,9 @@ export class MemoryTransport implements Transport {
       this.calls.push(c);
       const s = this.scripted[`${c.provider}/${c.capability}`];
       if (!s) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, error: { code: 'unscripted', message: 'no scripted result' } };
+      // Mirrors the Firecrawl contract: a scripted success without a charge is an unknown charge, not a free one.
       const result: CallResult = { provider: c.provider, capability: c.capability, records: s.records, creditsCost: s.creditsCost ?? 0, observedAt };
+      if (s.creditsCost === undefined && !s.error) result.chargeUnknown = true;
       if (c.requestId) result.requestId = c.requestId;
       if (s.error) result.error = s.error;
       return result;

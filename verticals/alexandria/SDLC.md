@@ -42,7 +42,7 @@
 | `test/v79-vertical-coverage.test.ts` | `alexandria` is a declared-live domain sub-stack with the 7-file contract |
 | `npm run lint` (`tsc --noEmit`) | strict TypeScript across `src/alexandria/` |
 
-`node --import tsx --test test/v93-alexandria.test.ts` runs the first. `npm run test:operational` includes it.
+`node --import tsx --test test/v93-alexandria.test.ts` runs the first. It is not yet part of `npm test`: adding a `test:alexandria` script means relocking the Foundry toolchain digest on `package.json`, which is a separately reviewed step (`MEMORY.md`, open reconciliation). Until then `.github/workflows/alexandria.yml` runs it on every pull request that touches `src/alexandria/`, `verticals/alexandria/`, the suite itself, or the shared toolchain (`package.json`, `pnpm-lock.yaml`, `tsconfig*.json`).
 
 ---
 

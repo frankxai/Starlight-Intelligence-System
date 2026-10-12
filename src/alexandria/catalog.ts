@@ -70,6 +70,7 @@ export function validateCatalog(raw: unknown): CatalogProblem[] {
       for (const key of ['name', 'description'] as const) {
         if (typeof cap[key] !== 'string' || !cap[key]) problems.push({ path: `${cb}.${key}`, message: `${key} must be a non-empty string` });
       }
+      if (cap.status !== undefined && cap.status !== 'live' && cap.status !== 'unreconciled') problems.push({ path: `${cb}.status`, message: 'status must be live or unreconciled' });
     });
   });
   return problems;
@@ -135,6 +136,8 @@ export interface FindOptions {
   limit?: number;
   /** Exclude capabilities whose per-call cost exceeds this. */
   maxCredits?: number;
+  /** Also list capabilities marked `unreconciled`. They are never executable; this is for catalogue maintenance. */
+  includeUnreconciled?: boolean;
 }
 
 export class Library {
@@ -163,12 +166,13 @@ export class Library {
     return hit ? { ...hit } : undefined;
   }
 
-  /** Deterministic ranking. Ties break on lower cost, then on id. */
+  /** Deterministic ranking. Ties break on lower cost, then on id. Unreconciled capabilities are left out. */
   find(need: string, opts: FindOptions = {}): FindHit[] {
     const kinds = opts.kinds ?? ['firecrawl-alexandria', 'native'];
     const hits: FindHit[] = [];
     for (const hit of this.byCapability.values()) {
       if (!kinds.includes(hit.provider.kind)) continue;
+      if (hit.capability.status === 'unreconciled' && !opts.includeUnreconciled) continue;
       if (opts.maxCredits !== undefined && hit.capability.creditsCost > opts.maxCredits) continue;
       const score = scoreCapability(need, hit.capability, hit.provider);
       if (score > 0) hits.push({ ...hit, score });

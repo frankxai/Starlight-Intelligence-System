@@ -104,7 +104,12 @@ export class AlexandriaMcpServer {
         if (typeof args.need === 'string') req.need = args.need;
         if (args.options && typeof args.options === 'object') req.options = args.options as Record<string, unknown>;
         if (typeof args.expectedRecords === 'number') req.expectedRecords = args.expectedRecords;
-        if (Array.isArray(args.sipLayers)) req.sipLayers = args.sipLayers.map(String);
+        if (Array.isArray(args.sipLayers)) {
+          // Layer names are validated again by the router (slug shape); here only the type is pinned
+          // so a number or object is refused instead of coerced into an attestation block.
+          if (!args.sipLayers.every((l): l is string => typeof l === 'string')) throw new AlexandriaError('invalid_sip_layer', 'sipLayers must be an array of strings', 'Name the SIP layers the record composes, per SIP.md, or omit sipLayers; nothing was charged.');
+          req.sipLayers = args.sipLayers;
+        }
         if (typeof args.requestId === 'string') req.requestId = args.requestId;
         const res = await this.alexandria.execute(req);
         return { capabilityId: res.hit.capability.id, records: res.result.records, receipt: res.receipt, budget: res.budget };
@@ -158,8 +163,17 @@ export class AlexandriaMcpServer {
     return { jsonrpc: '2.0', id: rpcId, error: { code: -32601, message: `Method not found: ${method}` } };
   }
 
+  private rl?: ReturnType<typeof createInterface>;
+
+  /** Stops reading requests. After this no call can be admitted. */
+  stop(): void {
+    this.rl?.close();
+    this.rl = undefined;
+  }
+
   start(): void {
     const rl = createInterface({ input: process.stdin, terminal: false });
+    this.rl = rl;
     rl.on('line', (line) => {
       if (!line.trim()) return;
       let request: unknown;
@@ -198,8 +212,14 @@ export function createDefaultServer(env: NodeJS.ProcessEnv = process.env): Alexa
   const options: AlexandriaOptions = { library: Library.fromFile(), transports, maxCredits: parseMaxCredits(env.ALEXANDRIA_MAX_CREDITS), ledger };
   if (env.ALEXANDRIA_SESSION) options.sessionId = env.ALEXANDRIA_SESSION;
   const alexandria = new Alexandria(options);
-  for (const signal of ['exit', 'SIGINT', 'SIGTERM'] as const) process.once(signal, () => alexandria.close());
-  return new AlexandriaMcpServer({ alexandria, ledger });
+  const server = new AlexandriaMcpServer({ alexandria, ledger });
+  process.once('exit', () => alexandria.close());
+  // A signal must end the process, not only drop the lock: a server that kept reading requests
+  // after releasing its session would spend beside whichever process took the session over.
+  for (const [signal, code] of [['SIGINT', 130], ['SIGTERM', 143]] as const) {
+    process.once(signal, () => { server.stop(); alexandria.close(); process.exit(code); });
+  }
+  return server;
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];

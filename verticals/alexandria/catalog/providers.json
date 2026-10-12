@@ -1180,7 +1180,8 @@
             "competitor",
             "digital",
             "seo"
-          ]
+          ],
+          "status": "unreconciled"
         }
       ]
     },
@@ -1210,7 +1211,8 @@
             "demand",
             "topic",
             "timing"
-          ]
+          ],
+          "status": "unreconciled"
         }
       ]
     }

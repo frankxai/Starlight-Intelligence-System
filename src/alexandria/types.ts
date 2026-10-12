@@ -44,6 +44,12 @@ export interface Capability {
   options?: readonly CapabilityOption[];
   /** Routing vocabulary. Lower-case single words or hyphenated phrases. */
   tags: readonly string[];
+  /**
+   * `unreconciled` marks a capability whose path or terms were not verified against the live
+   * contract. It stays in the catalogue for the record but is kept out of routing and refused
+   * by the router until the catalogue note is cleared. Absent means live.
+   */
+  status?: 'live' | 'unreconciled';
 }
 
 export interface Provider {
@@ -89,6 +95,8 @@ export interface CallResult {
   /** Typed records, as the provider's contract describes them. */
   records: unknown[];
   creditsCost: number;
+  /** True when a successful response carried no usable charge. The router then keeps the reservation rather than refunding it. */
+  chargeUnknown?: boolean;
   observedAt: string;
   requestId?: string;
   error?: CallError;
@@ -116,8 +124,14 @@ export interface Receipt {
   contentHash: string;
   /** Credits reserved against the budget before the call ran. */
   reserved: number;
-  /** Credits the provider actually charged. Greater than `reserved` means the declared record ceiling was exceeded. */
+  /**
+   * Credits charged to the session. Greater than `reserved` means the declared record ceiling
+   * was exceeded. An `uncertain_outcome` receipt holds `reserved` here until a retry with the
+   * same `requestId` settles it; a successful call whose charge the provider did not report
+   * (`chargeUnknown`) keeps the reservation as well.
+   */
   creditsCost: number;
+  chargeUnknown?: boolean;
   source: string;
   attribution?: string;
   /** SIP layers the record composed. Empty means no attestation block is emitted. */

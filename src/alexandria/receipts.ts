@@ -32,11 +32,10 @@ export function canonicalJson(value: unknown): string {
 function sortKeys(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(sortKeys);
   if (value && typeof value === 'object') {
-    const out: Record<string, unknown> = {};
-    for (const key of Object.keys(value as Record<string, unknown>).sort()) {
-      out[key] = sortKeys((value as Record<string, unknown>)[key]);
-    }
-    return out;
+    // Built from entries, not by assignment: a provider record with an own `__proto__` key
+    // must hash as that key, not silently re-parent the accumulator and vanish.
+    const source = value as Record<string, unknown>;
+    return Object.fromEntries(Object.keys(source).sort().map((key) => [key, sortKeys(source[key])]));
   }
   return value;
 }
@@ -80,10 +79,13 @@ export function buildReceipt({ result, provider, options, sessionId, reserved, s
     recordCount: result.records.length,
     contentHash: hashRecords(result.records),
     reserved,
-    creditsCost: result.error ? 0 : result.creditsCost,
+    // A definite failure is not billed. An uncertain outcome holds the reservation until a retry
+    // with the same request id settles it; a success with no reported charge holds it too.
+    creditsCost: result.error ? (result.error.code === 'uncertain_outcome' ? reserved : 0) : result.chargeUnknown ? reserved : result.creditsCost,
     source: provider.source,
     sipLayers,
   };
+  if (!result.error && result.chargeUnknown) receipt.chargeUnknown = true;
   if (result.requestId) receipt.requestId = result.requestId;
   if (provider.attribution) receipt.attribution = provider.attribution;
   // Earned, never decorative: a failed or empty call composed nothing.
@@ -100,14 +102,18 @@ export interface LedgerRead {
   truncatedTail: boolean;
 }
 
-/** Append-only JSONL ledger. One line per receipt; never rewritten. */
+/** Owner-only: receipts carry client inputs (addresses, handles, queries). */
+const FILE_MODE = 0o600;
+const DIR_MODE = 0o700;
+
+/** Append-only JSONL ledger. One line per receipt; never rewritten. Files are created owner-only. */
 export class ReceiptLedger {
   constructor(readonly path: string) {}
 
   append(receipt: Receipt): void {
-    mkdirSync(dirname(this.path), { recursive: true });
+    mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
     this.quarantinePartialTail();
-    appendFileSync(this.path, JSON.stringify(receipt) + '\n', 'utf8');
+    appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
   }
 
   /** Where a cut-off final line is moved before the next append. */
@@ -127,8 +133,8 @@ export class ReceiptLedger {
     if (content.length === 0 || content.endsWith('\n')) return false;
     const cut = content.lastIndexOf('\n') + 1;
     const fragment = content.slice(cut);
-    appendFileSync(this.quarantinePath, `${new Date().toISOString()}\t${fragment}\n`, 'utf8');
-    writeFileSync(this.path, content.slice(0, cut), 'utf8');
+    appendFileSync(this.quarantinePath, `${new Date().toISOString()}\t${fragment}\n`, { encoding: 'utf8', mode: FILE_MODE });
+    writeFileSync(this.path, content.slice(0, cut), { encoding: 'utf8', mode: FILE_MODE });
     return true;
   }
 
@@ -157,19 +163,48 @@ export class ReceiptLedger {
     return this.readDetailed().receipts;
   }
 
-  /** Credits spent in one session (errors excluded; a failed call is not billed). Without a session id: the whole ledger. */
+  /**
+   * Credits spent or still held in one session. A definite failure is not billed. An
+   * `uncertain_outcome` receipt holds its reservation until a later receipt in the same session
+   * carries the same request id (the retry that settled it). Without a session id: the whole ledger.
+   */
   spent(sessionId?: string): number {
-    return this.read()
-      .filter((r) => !r.error && (sessionId === undefined || r.sessionId === sessionId))
-      .reduce((sum, r) => sum + r.creditsCost, 0);
+    const { settled, held } = this.tally(sessionId);
+    let total = settled;
+    for (const amount of held.values()) total += amount;
+    return total;
+  }
+
+  /** Reservations still held by uncertain calls in a session, keyed by request id. */
+  heldReservations(sessionId?: string): Map<string, number> {
+    return this.tally(sessionId).held;
+  }
+
+  private tally(sessionId?: string): { settled: number; held: Map<string, number> } {
+    let settled = 0;
+    const held = new Map<string, number>();
+    for (const r of this.read()) {
+      if (sessionId !== undefined && r.sessionId !== sessionId) continue;
+      if (r.error?.code === 'uncertain_outcome') {
+        if (r.requestId) held.set(r.requestId, r.creditsCost);
+        continue;
+      }
+      if (r.requestId) held.delete(r.requestId);
+      if (!r.error) settled += r.creditsCost;
+    }
+    return { settled, held };
   }
 }
+
+/** Lock paths this process holds, so a second instance in the same process cannot share a session. */
+const heldInProcess = new Set<string>();
 
 /**
  * Exclusive lock on a budget session. Two processes resuming the same session would each
  * reserve against their own in-memory copy of the spend, so a resumed session is held by
  * exactly one live process. The lock is a file beside the ledger holding the owner's pid;
- * a lock whose pid is no longer alive is stale and is taken over. Re-entrant within one process.
+ * a lock whose pid is no longer alive is stale and is taken over. Two instances in one process
+ * would have separate in-memory budgets too, so the second owner is refused as well.
  */
 export class SessionLock {
   readonly path: string;
@@ -182,19 +217,23 @@ export class SessionLock {
 
   acquire(): void {
     if (this.held) return;
-    mkdirSync(dirname(this.path), { recursive: true });
+    if (heldInProcess.has(this.path)) {
+      throw new Error(`Budget session ${this.sessionId} is already held by another Alexandria instance in this process (${this.path}); reuse that instance or choose another session`);
+    }
+    mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
-        const fd = openSync(this.path, 'wx');
+        const fd = openSync(this.path, 'wx', FILE_MODE);
         writeFileSync(fd, String(process.pid), 'utf8');
         closeSync(fd);
         this.held = true;
+        heldInProcess.add(this.path);
         return;
       } catch (err) {
         if ((err as NodeJS.ErrnoException).code !== 'EEXIST') throw err;
         const owner = Number(readFileSync(this.path, 'utf8').trim());
-        if (owner === process.pid) { this.held = true; return; }
-        if (isAlive(owner)) throw new Error(`Budget session ${this.sessionId} is held by process ${owner} (${this.path}); resume it from that process or choose another session`);
+        // Our own pid but not in heldInProcess: a leftover from an earlier life of this pid, so stale.
+        if (owner !== process.pid && isAlive(owner)) throw new Error(`Budget session ${this.sessionId} is held by process ${owner} (${this.path}); resume it from that process or choose another session`);
         try { unlinkSync(this.path); } catch { /* lost the race; retry once */ }
       }
     }
@@ -204,6 +243,7 @@ export class SessionLock {
   release(): void {
     if (!this.held) return;
     this.held = false;
+    heldInProcess.delete(this.path);
     try {
       if (Number(readFileSync(this.path, 'utf8').trim()) === process.pid) unlinkSync(this.path);
     } catch { /* already gone */ }

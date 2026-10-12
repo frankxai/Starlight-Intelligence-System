@@ -15,6 +15,10 @@
  *     reservation is that ceiling times the per-record price;
  *   - reservations are taken synchronously, so concurrent calls cannot both
  *     pass the gate on the same credits;
+ *   - a call whose outcome is uncertain (the transport failed after the request
+ *     may have reached the provider) keeps its reservation until a retry with
+ *     the same request id settles it, so other calls cannot spend those credits;
+ *   - a success whose charge the provider did not report keeps its reservation;
  *   - spend is restored per session from the ledger, never across sessions.
  *
  * Built on SIP — operational tier (Domain Sub-Stack: Alexandria).
@@ -34,7 +38,10 @@ export type AlexandriaErrorCode =
   | 'over_budget'
   | 'no_transport'
   | 'connector_not_executable'
-  | 'uncertain_outcome';
+  | 'unreconciled_capability'
+  | 'invalid_sip_layer'
+  | 'uncertain_outcome'
+  | 'receipt_persist_failed';
 
 export class AlexandriaError extends Error {
   constructor(readonly code: AlexandriaErrorCode, message: string, readonly hint: string, readonly requestId?: string) {
@@ -82,6 +89,9 @@ export interface AlexandriaOptions {
   now?: () => string;
 }
 
+/** SIP layer names as they appear in attestation blocks: lower-case slugs, nothing that could break the rendered block. */
+const SIP_LAYER_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
+
 export class Alexandria {
   readonly library: Library;
   readonly budget: Budget;
@@ -89,6 +99,8 @@ export class Alexandria {
   private readonly ledger?: ReceiptLedger;
   private readonly lock?: SessionLock;
   private readonly now?: () => string;
+  /** Reservations held by uncertain calls, keyed by request id. Part of `budget.spent` until settled. */
+  private readonly held = new Map<string, number>();
 
   constructor(opts: AlexandriaOptions) {
     if (typeof opts.maxCredits !== 'number' || !Number.isFinite(opts.maxCredits) || opts.maxCredits < 0) {
@@ -101,6 +113,7 @@ export class Alexandria {
       this.lock.acquire();
     }
     this.budget = { sessionId, maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent(sessionId) : 0 };
+    if (opts.ledger) for (const [id, amount] of opts.ledger.heldReservations(sessionId)) this.held.set(id, amount);
     for (const t of opts.transports) this.transports.set(t.kind, t);
     this.ledger = opts.ledger;
     this.now = opts.now;
@@ -142,12 +155,23 @@ export class Alexandria {
     return hit;
   }
 
-  /** Everything that must hold before a credit is reserved. Throws an AlexandriaError; charges nothing. */
-  private admit(req: ExecuteRequest): { hit: FindHit; options: Record<string, unknown>; price: number; transport: Transport } {
+  /**
+   * Everything that must hold before a credit is reserved. Throws an AlexandriaError; charges
+   * nothing. `alreadyHeld` is the reservation an uncertain earlier call with the same request id
+   * still holds; only the difference has to fit in the budget.
+   */
+  private admit(req: ExecuteRequest, alreadyHeld = 0): { hit: FindHit; options: Record<string, unknown>; price: number; transport: Transport } {
     const hit = this.resolve(req);
     const options = req.options ?? {};
     if (hit.provider.kind === 'connector') {
       throw new AlexandriaError('connector_not_executable', `${hit.capability.id} is a connector and cannot be executed as a data capability`, 'Connectors are called by the swarm runtime. See verticals/alexandria/catalog/connectors.json.');
+    }
+    if (hit.capability.status === 'unreconciled') {
+      throw new AlexandriaError('unreconciled_capability', `${hit.capability.id} is catalogued but its path and terms are not yet reconciled against the live contract`, 'Reconcile the capability in verticals/alexandria/catalog/providers.json (see MEMORY.md, open reconciliation) and clear its status before executing it.');
+    }
+    const badLayer = (req.sipLayers ?? []).find((layer) => typeof layer !== 'string' || !SIP_LAYER_RE.test(layer));
+    if (badLayer !== undefined) {
+      throw new AlexandriaError('invalid_sip_layer', `sipLayers must be lower-case slugs such as file-contract or attestation; got ${JSON.stringify(badLayer)}`, 'Name the SIP layers the record composes, per SIP.md, or omit sipLayers; nothing was charged.');
     }
     const problems = this.library.validateOptions(hit.capability.id, options);
     if (problems.length > 0) {
@@ -162,7 +186,7 @@ export class Alexandria {
       records = req.expectedRecords as number;
     }
     const price = this.library.estimate(hit.capability.id, records);
-    if (this.budget.spent + price > this.budget.maxCredits) {
+    if (this.budget.spent + price - alreadyHeld > this.budget.maxCredits) {
       throw new AlexandriaError('over_budget', `Call would cost ${price} credits; ${this.budget.maxCredits - this.budget.spent} remain of ${this.budget.maxCredits}`, 'Raise maxCredits for this session or pick a cheaper capability from alexandria_plan.');
     }
     const transport = this.transports.get(hit.provider.kind);
@@ -171,33 +195,51 @@ export class Alexandria {
   }
 
   async execute(req: ExecuteRequest): Promise<ExecuteResponse> {
-    const { hit, options, price, transport } = this.admit(req);
+    // A retry of an uncertain call reuses its reservation instead of taking a second one.
+    const alreadyHeld = req.requestId ? this.held.get(req.requestId) ?? 0 : 0;
+    const { hit, options, price, transport } = this.admit(req, alreadyHeld);
     // Reserve synchronously: no await sits between the gate and the reservation, so two
     // concurrent calls cannot both be admitted against the same remaining credits.
-    this.budget.spent += price;
+    this.budget.spent += price - alreadyHeld;
     // The idempotency key is minted here, before the transport, so it survives a transport
     // failure: the caller gets it back and retries with the same id instead of paying twice.
     const requestId = req.requestId ?? randomUUID();
+    this.held.delete(requestId);
     const call: AlexandriaCall = { provider: hit.provider.id, capability: hit.capability.capability, options, requestId };
     let result: CallResult;
     try {
       [result] = await transport.execute([call]);
     } catch (err) {
-      this.budget.spent -= price;
+      // The provider may have taken the request and billed it, so the reservation stays held:
+      // releasing it would let an unrelated call spend credits this one may already have cost.
+      // Only a retry with the same request id settles the hold.
+      this.held.set(requestId, price);
       const message = err instanceof Error ? err.message : String(err);
-      const failed: CallResult = { provider: hit.provider.id, capability: hit.capability.capability, records: [], creditsCost: 0, observedAt: this.now ? this.now() : new Date().toISOString(), requestId, error: { code: 'transport_failure', message } };
+      const failed: CallResult = { provider: hit.provider.id, capability: hit.capability.capability, records: [], creditsCost: 0, observedAt: this.now ? this.now() : new Date().toISOString(), requestId, error: { code: 'uncertain_outcome', message: `transport failed after the request may have reached the provider: ${message}` } };
       const receiptInput: Parameters<typeof buildReceipt>[0] = { result: failed, provider: hit.provider, options, sessionId: this.budget.sessionId, reserved: price, sipLayers: [] };
       if (this.now) receiptInput.now = this.now;
-      this.ledger?.append(buildReceipt(receiptInput));
-      throw new AlexandriaError('uncertain_outcome', `${hit.capability.id}: transport failed after the request may have reached the provider (${message})`, `The provider may have billed this call. Retry with requestId ${requestId} so the provider treats it as the same request; the id is on the receipt in the ledger.`, requestId);
+      let persisted = '';
+      try { this.ledger?.append(buildReceipt(receiptInput)); } catch (persistErr) { persisted = ` The receipt could not be written (${persistErr instanceof Error ? persistErr.message : String(persistErr)}); keep this id yourself.`; }
+      throw new AlexandriaError('uncertain_outcome', `${hit.capability.id}: transport failed after the request may have reached the provider (${message})`, `The provider may have billed this call; ${price} credits stay reserved. Retry with requestId ${requestId} so the provider treats it as the same request and the reservation is reused.${persisted}`, requestId);
     }
-    // Reconcile: a failed call is not billed; a successful one is billed at what the provider charged.
-    const actual = result.error ? 0 : result.creditsCost;
+    // Reconcile: a failed call is not billed; a successful one is billed at what the provider
+    // charged. A success with no usable charge keeps the reservation (never refunded on a guess).
+    if (!result.error && (result.chargeUnknown || typeof result.creditsCost !== 'number' || !Number.isFinite(result.creditsCost) || result.creditsCost < 0)) {
+      result = { ...result, creditsCost: 0, chargeUnknown: true };
+    }
+    const actual = result.error ? 0 : result.chargeUnknown ? price : result.creditsCost;
     this.budget.spent += actual - price;
     const receiptInput: Parameters<typeof buildReceipt>[0] = { result, provider: hit.provider, options, sessionId: this.budget.sessionId, reserved: price, sipLayers: req.sipLayers ?? [] };
     if (this.now) receiptInput.now = this.now;
     const receipt = buildReceipt(receiptInput);
-    this.ledger?.append(receipt);
+    try {
+      this.ledger?.append(receipt);
+    } catch (err) {
+      // The charge happened; the in-memory budget keeps it. What is lost is durability, so the
+      // caller gets the request id and the receipt back rather than a generic error.
+      const message = err instanceof Error ? err.message : String(err);
+      throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the call completed (${actual} credits) but the receipt could not be appended to the ledger (${message})`, `Keep requestId ${requestId} and receipt ${receipt.id}; the spend is counted in this process but will not be restored from the ledger after a restart. Fix the ledger path (${this.ledger?.path ?? 'none'}) before the next call.`, requestId);
+    }
     return { hit, result, receipt, budget: { ...this.budget } };
   }
 }
