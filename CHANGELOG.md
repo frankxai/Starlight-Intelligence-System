@@ -2,6 +2,13 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## 8.5.2 (prepared)
+
+- Redact Supabase `sb_secret_` server keys and `supabase_secret_key` / `supabase_service_role_key` context values in System sanitization.
+- Verify all three cases against actual installed legacy and organization packages during candidate qualification.
+
+This patch includes the accepted sanitizer repair. Publication and registry verification remain separate release steps.
+
 ## Unreleased — vault MCP server hardening
 
 **`dist/mcp-server.js` (the `starlight-mcp` bin): vault names can no longer escape the vault directory, and the 13 `sis_*` tools meet the mcp-doctor quality bar (21% → 93%).**

@@ -90,6 +90,12 @@ jobs:
           const installed = join(process.env.SDK_CONSUMER, 'node_modules/@arcanea/starlight-intelligence-system');
           const manifest = JSON.parse(readFileSync(join(installed, 'package.json'), 'utf8'));
           if (manifest.version !== report.version || manifest.name !== report.name) throw new Error('Installed package identity differs');
+          const { SanitizationGateway } = await import(pathToFileURL(join(installed, manifest.exports['./sanitization'].import)).href);
+          const sanitizer = new SanitizationGateway();
+          const syntheticKey = 'sb_secret_' + 'X'.repeat(32) + '-';
+          if (sanitizer.sanitize(syntheticKey) !== '[REDACTED]') throw new Error('Installed Supabase server-key redaction failed');
+          const namedSecrets = sanitizer.sanitizeContext({ supabase_secret_key: 'synthetic-authority', supabase_service_role_key: 'synthetic-authority' });
+          if (Object.values(namedSecrets).some(value => value !== '[REDACTED]')) throw new Error('Installed Supabase secret-field redaction failed');
           const { createAdapter } = await import(pathToFileURL(join(installed, manifest.exports['./adapters'].import)).href);
           const adapter = createAdapter('antigravity');
           if (JSON.stringify(adapter.getMcpConfig('')) !== JSON.stringify({ mcpServers: {} })) throw new Error('Installed default MCP config is active');
@@ -105,6 +111,7 @@ jobs:
           writeFileSync(join(process.env.SDK_CANDIDATE, 'release-receipt.json'), JSON.stringify({
             sourceCommit: process.env.CANDIDATE_SHA, package: manifest.name, version: manifest.version,
             filename: report.filename, integrity, sha256: createHash('sha256').update(tarball).digest('hex'),
+            supabaseSanitizationCases: 3,
             nodeVersion: process.version, installedExports: ['runtime-bridge', 'terminal-runtime', 'creator-workspace', 'ecosystem'],
             installedCliDomains: domains.length, publication: 'not-published'
           }, null, 2) + '\n');
@@ -130,6 +137,12 @@ jobs:
           const installed = join(process.env.SDK_CONSUMER, 'node_modules/@starlight-intelligence/system');
           const manifest = JSON.parse(readFileSync(join(installed, 'package.json'), 'utf8'));
           if (manifest.name !== '@starlight-intelligence/system' || manifest.version !== report.version) throw new Error('Organization identity differs');
+          const { SanitizationGateway } = await import(pathToFileURL(join(installed, manifest.exports['./sanitization'].import)).href);
+          const sanitizer = new SanitizationGateway();
+          const syntheticKey = 'sb_secret_' + 'X'.repeat(32) + '-';
+          if (sanitizer.sanitize(syntheticKey) !== '[REDACTED]') throw new Error('Installed Supabase server-key redaction failed');
+          const namedSecrets = sanitizer.sanitizeContext({ supabase_secret_key: 'synthetic-authority', supabase_service_role_key: 'synthetic-authority' });
+          if (Object.values(namedSecrets).some(value => value !== '[REDACTED]')) throw new Error('Installed Supabase secret-field redaction failed');
           const { createAdapter } = await import(pathToFileURL(join(installed, manifest.exports['./adapters'].import)).href);
           const adapter = createAdapter('antigravity');
           if (JSON.stringify(adapter.getMcpConfig('')) !== JSON.stringify({ mcpServers: {} })) throw new Error('Installed organization default MCP config is active');
@@ -146,6 +159,7 @@ jobs:
           writeFileSync(join(process.env.SDK_CANDIDATE, 'release-receipt.json'), JSON.stringify({
             sourceCommit: process.env.CANDIDATE_SHA, package: manifest.name, version: manifest.version,
             filename: report.filename, integrity, sha256: createHash('sha256').update(bytes).digest('hex'),
+            supabaseSanitizationCases: 3,
             nodeVersion: process.version, installedExports: ['runtime-bridge', 'terminal-runtime', 'creator-workspace', 'ecosystem'],
             installedCliDomains: domains.length, ecosystemPackages: catalog.length, publication: 'not-published'
           }, null, 2) + '\n');
