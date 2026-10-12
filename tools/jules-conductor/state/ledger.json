@@ -1,5 +1,5 @@
 {
-  "lastTick": "2026-10-10T04:31:33.774Z",
+  "lastTick": "2026-10-12T13:09:34.387Z",
   "sessions": {
     "309247804006537799": {
       "id": "309247804006537799",
@@ -9,7 +9,7 @@
       "firstSeen": "2026-10-10T00:00:33.369Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z"
+      "lastSeen": "2026-10-11T17:49:00.946Z"
     },
     "4398207944531000014": {
       "id": "4398207944531000014",
@@ -19,7 +19,7 @@
       "firstSeen": "2026-10-10T00:00:33.369Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z"
+      "lastSeen": "2026-10-11T17:49:00.946Z"
     },
     "9804747023800150292": {
       "id": "9804747023800150292",
@@ -29,7 +29,7 @@
       "firstSeen": "2026-10-10T00:00:33.369Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z"
+      "lastSeen": "2026-10-11T16:54:06.117Z"
     },
     "9437816735464882566": {
       "id": "9437816735464882566",
@@ -39,7 +39,7 @@
       "firstSeen": "2026-10-10T00:00:33.369Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z"
+      "lastSeen": "2026-10-11T16:54:06.117Z"
     },
     "13078439365851827779": {
       "id": "13078439365851827779",
@@ -141,195 +141,15 @@
       "merged": false,
       "lastSeen": "2026-10-10T04:13:20.115Z"
     },
-    "5783770401862462382": {
-      "id": "5783770401862462382",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.115Z",
-      "stats": {
-        "filesChanged": 3,
-        "linesAdded": 53,
-        "linesRemoved": 33
-      }
-    },
-    "9450685798074328664": {
-      "id": "9450685798074328664",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.115Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 210,
-        "linesRemoved": 53
-      }
-    },
-    "9963113013640626923": {
-      "id": "9963113013640626923",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.115Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 81,
-        "linesRemoved": 23
-      }
-    },
-    "5544506439141560826": {
-      "id": "5544506439141560826",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.115Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 115,
-        "linesRemoved": 50
-      }
-    },
-    "16438482540707394912": {
-      "id": "16438482540707394912",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:04:23.496Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 351,
-        "linesRemoved": 93
-      }
-    },
-    "1799194017414445331": {
-      "id": "1799194017414445331",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T03:43:28.376Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 262,
-        "linesRemoved": 64
-      }
-    },
-    "10101577166301232925": {
-      "id": "10101577166301232925",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T03:00:42.974Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 34,
-        "linesRemoved": 1
-      }
-    },
-    "6611394424913140827": {
-      "id": "6611394424913140827",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T03:00:42.974Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 126,
-        "linesRemoved": 29
-      }
-    },
-    "8032672200113375566": {
-      "id": "8032672200113375566",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T02:59:17.105Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 182,
-        "linesRemoved": 67
-      }
-    },
-    "13977279627487010720": {
-      "id": "13977279627487010720",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T00:57:01.930Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 69,
-        "linesRemoved": 19
-      }
-    },
-    "7213854487316264116": {
-      "id": "7213854487316264116",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T00:00:33.370Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T00:57:01.930Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 174,
-        "linesRemoved": 50
-      }
-    },
     "6079188775199604796": {
       "id": "6079188775199604796",
       "repo": "frankxai/vibeclubs",
       "description": "# Jules Autonomous Execution Card: vibeclubs> Assigned Coun…",
-      "status": "Awaiting User F",
+      "status": "Unknown",
       "firstSeen": "2026-10-10T01:08:22.559Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "1101339362447368045": {
-      "id": "1101339362447368045",
-      "repo": "frankxai/vibeclubs",
-      "description": "Verify package dependencies in package.json",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T01:08:22.559Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z",
-      "stats": {
-        "filesChanged": 3,
-        "linesAdded": 23,
-        "linesRemoved": 78
-      }
+      "lastSeen": "2026-10-11T18:23:17.024Z"
     },
     "11902473003942827911": {
       "id": "11902473003942827911",
@@ -339,325 +159,341 @@
       "firstSeen": "2026-10-10T03:00:42.974Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "6274071472334412465": {
-      "id": "6274071472334412465",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:12:21.978Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z",
-      "stats": {
-        "filesChanged": 3,
-        "linesAdded": 21,
-        "linesRemoved": 3
-      }
-    },
-    "10936045112427965577": {
-      "id": "10936045112427965577",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:12:21.978Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z",
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 3,
-        "linesRemoved": 86
-      }
-    },
-    "17879686830503058346": {
-      "id": "17879686830503058346",
-      "repo": "frankxai/starlight-in…",
-      "description": "Repository frankxai/starlight-intelligence-academy, startin…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:16:28.697Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z",
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 30,
-        "linesRemoved": 0
-      }
-    },
-    "2845687034554054432": {
-      "id": "2845687034554054432",
-      "repo": "frankxai/ai-architect…",
-      "description": "Repository frankxai/ai-architect-academy, starting from mai…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:19:00.352Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 66,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "17030092975895115035": {
-      "id": "17030092975895115035",
-      "repo": "frankxai/realityarchi…",
-      "description": "Repository frankxai/realityarchitect, starting from main.Go…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:22:11.727Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 24,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "1886180627521383905": {
-      "id": "1886180627521383905",
-      "repo": "frankxai/agenticpassi…",
-      "description": "Repository frankxai/agenticpassiveincome, starting from mai…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:25:38.443Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 28,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "4621629507291935430": {
-      "id": "4621629507291935430",
-      "repo": "frankxai/gencreator-c…",
-      "description": "Repository frankxai/gencreator-community, starting from mai…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:28:53.246Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 23,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "14820081748321042661": {
-      "id": "14820081748321042661",
-      "repo": "frankxai/starlightint…",
-      "description": "Repository frankxai/starlightintelligence.ai, starting from…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:31:18.313Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 26,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "894457029302747451": {
-      "id": "894457029302747451",
-      "repo": "frankxai/vibeclubs",
-      "description": "Repository frankxai/vibeclubs, starting from main.Goal: thi…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:34:19.069Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 24,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "2374223917489162822": {
-      "id": "2374223917489162822",
-      "repo": "frankxai/agenticincome",
-      "description": "Repository frankxai/agenticincome, starting from main.Goal:…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:37:14.807Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 24,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "14634534802688325915": {
-      "id": "14634534802688325915",
-      "repo": "frankxai/agentic-ops",
-      "description": "Repository frankxai/agentic-ops, starting from main.Goal: c…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:40:19.313Z",
-      "verified": false,
-      "merged": false,
-      "quarantined": true,
-      "quarantineReasons": [
-        "Sentinel veto: Modification to GitHub Actions workflows requires explicit human operator sign-off."
-      ],
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "15988225633832712138": {
-      "id": "15988225633832712138",
-      "repo": "frankxai/gencreator.ai",
-      "description": "Review only. Pull request: frankxai/gencreator.ai#153. Do n…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:43:28.376Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 0,
-        "linesAdded": 0,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
+      "lastSeen": "2026-10-11T18:25:16.993Z"
     },
     "1499477756452750459": {
       "id": "1499477756452750459",
       "repo": "frankxai/frankx.ai-vercel-website",
       "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "In Progress",
+      "status": "Failed",
       "firstSeen": "2026-10-10T03:50:30.196Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "8998759807188121288": {
-      "id": "8998759807188121288",
-      "repo": "frankxai/arcanea-ai-app",
-      "description": "Review only. Pull request: frankxai/arcanea-ai-app#502. Do …",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T03:50:30.196Z",
-      "verified": false,
-      "merged": false,
-      "quarantined": true,
-      "quarantineReasons": [
-        "File count exceeded: 104 > 25",
-        "Diff lines exceeded: 32419 > 1500",
-        "Sentinel veto: Modification to GitHub Actions workflows requires explicit human operator sign-off."
-      ],
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "451967060728370157": {
-      "id": "451967060728370157",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "Review only. Pull request: frankxai/frankx.ai-vercel-websit…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T04:01:05.916Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 0,
-        "linesAdded": 0,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-10T04:13:20.114Z"
-    },
-    "17541864690492810072": {
-      "id": "17541864690492810072",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "Review only. Pull request: frankxai/agentic-creator-os#86. …",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T04:01:05.916Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 10,
-        "linesAdded": 22,
-        "linesRemoved": 127
-      },
-      "lastSeen": "2026-10-10T04:13:20.115Z"
-    },
-    "15804363122472551758": {
-      "id": "15804363122472551758",
-      "repo": "frankxai/gencreator.ai",
-      "description": "Issue 151: intermittent layout shift, CLS 0.328, on the hom…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T04:04:23.496Z",
-      "verified": true,
-      "merged": true,
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 27,
-        "linesRemoved": 0
-      },
-      "mergedPr": 189,
-      "lastSeen": "2026-10-10T04:13:20.115Z"
-    },
-    "13694605709609008066": {
-      "id": "13694605709609008066",
-      "repo": "frankxai/arcanea-ai-app",
-      "description": "From origin/main, implement only these three heals. Do not …",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T04:04:23.496Z",
-      "verified": false,
-      "merged": false,
-      "quarantined": true,
-      "quarantineReasons": [
-        "Diff lines exceeded: 3008 > 1500"
-      ],
-      "lastSeen": "2026-10-10T04:13:20.115Z"
-    },
-    "11702978882232114782": {
-      "id": "11702978882232114782",
-      "repo": "frankxai/vibeclubs",
-      "description": "# Jules Autonomous Execution Card: vibeclubs> Assigned Coun…",
-      "status": "Planning",
-      "firstSeen": "2026-10-10T04:13:20.114Z",
-      "verified": false,
-      "merged": false
-    },
-    "15599957084386631565": {
-      "id": "15599957084386631565",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "From origin/main only. On /library the music player is a co…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T04:13:20.115Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 34,
-        "linesRemoved": 11
-      }
-    },
-    "10129428578924111414": {
-      "id": "10129428578924111414",
-      "repo": "frankxai/frankx.ai-vercel-website",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-10T04:13:20.115Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 142,
-        "linesRemoved": 44
-      }
+      "lastSeen": "2026-10-11T18:36:31.598Z"
     },
     "9706640058732225263": {
       "id": "9706640058732225263",
       "repo": "frankxai/arcanea-ai-app",
       "description": "Issue #517: Publish one canonical Arcanea MCP server to npm and the official MCP Registry\n\n## Outcome\r\nFree discovery. The registry lists no Arcanea or FrankX server today and the package exists in four repos at four versions.\r\n\r\n## Exit proof\r\nnpx install works; server listed in the official registry\r\n\r\n## Done when\r\n- [ ] Decide the canonical package and repo\r\n- [ ] server.json added\r\n- [ ] Published from CI with provenance\r\n- [ ] Install tested on a clean machine\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): grok (pr-gate)\r\n\r\n## Suggested team\r\nsteward-releas",
-      "status": "Planning",
+      "status": "Unknown",
       "firstSeen": "2026-10-10T04:29:26.199Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T18:48:01.036Z"
+    },
+    "6627997099637246078": {
+      "id": "6627997099637246078",
+      "repo": "frankxai/mcp-doctor",
+      "description": "# Jules working cardYou are the overflow tester for one Git…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.116Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T20:17:17.867Z"
+    },
+    "6287848142287521486": {
+      "id": "6287848142287521486",
+      "repo": "frankxai/mcp-doctor",
+      "description": "# Jules working cardYou are the overflow tester for one Git…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.116Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T20:15:17.927Z"
+    },
+    "13332043938857520813": {
+      "id": "13332043938857520813",
+      "repo": "frankxai/starlight-genesis",
+      "description": "# Jules working cardYou are the overflow tester for one Git…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.116Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T20:09:18.166Z"
+    },
+    "413104525792581296": {
+      "id": "413104525792581296",
+      "repo": "frankxai/starlight-genesis",
+      "description": "# Jules working cardYou are the overflow tester for one Git…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.116Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T20:03:18.750Z"
+    },
+    "18065976277210152428": {
+      "id": "18065976277210152428",
+      "repo": "frankxai/mcp-doctor",
+      "description": "# Jules working cardYou are the overflow tester for one Git…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.116Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T20:03:18.750Z"
+    },
+    "14432828663529136879": {
+      "id": "14432828663529136879",
+      "repo": "frankxai/mcp-doctor",
+      "description": "# Jules working cardYou are the overflow tester for one Git…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.116Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T19:59:17.772Z"
+    },
+    "2536320996174217098": {
+      "id": "2536320996174217098",
+      "repo": "frankxai/starlight-cr…",
+      "description": "Independent Google cloud review of Creator MCP release cand…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.116Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T19:17:17.246Z"
+    },
+    "2696073694805992151": {
+      "id": "2696073694805992151",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules working cardYou are the overflow tester for one Git…",
+      "status": "Failed",
+      "firstSeen": "2026-10-11T16:54:06.117Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T18:48:01.036Z"
+    },
+    "12607652143719975560": {
+      "id": "12607652143719975560",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "# Jules Autonomous Execution Card: arcanea-ai-app> Assigned…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.117Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T18:48:01.036Z"
+    },
+    "9469114578292549326": {
+      "id": "9469114578292549326",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "# Jules Autonomous Execution Card: arcanea-ai-app> Assigned…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T16:54:06.117Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T18:48:01.036Z"
+    },
+    "6423379922387895427": {
+      "id": "6423379922387895427",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-11T18:50:00.931Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-11T22:31:09.094Z"
+    },
+    "10881363876796302813": {
+      "id": "10881363876796302813",
+      "repo": "frankxai/mcp-doctor",
+      "description": "# Jules working cardYou are the overflow tester for one Git…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-12T04:26:10.210Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T12:31:11.521Z"
+    },
+    "13625632843727286142": {
+      "id": "13625632843727286142",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "description": "Independent release-verifier review only. Source repo frank…",
+      "status": "Unknown",
+      "firstSeen": "2026-10-12T10:32:22.959Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T12:21:11.827Z"
+    },
+    "11415483428588867338": {
+      "id": "11415483428588867338",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Starlight Queen Autonomic Self-Healing Card: frankxai/frankx.ai-vercel-website\n> Attempt 1 | Lead: Principal Design Technologist & Frontend Architect (@impeccable)\n\n## Objective\nFix previous quarantine failures and complete the original task:\nResolve CI check failure on PR #1000:\nContract Guard\n\n## Mandatory Corrective Directives (Must Comply)\n- Fix: CI check failure: Contract Guard\n\n## Non-Negotiable Invariants\n1. Do NOT modify any files in .github/workflows/\n2. Limit edits to maximum 3 files and <= 300 total diff lines\n3. Conventional Commits format: fix(scope): description [Built on SIP]\n4. Adhere to technical anchors:\n   - Next.js 15/16 + React 19: All page/route `params` and `searchParams` are async promises and MUST be awaited: `const { slug } = await params`.\n   - Server Actions & Transitions: Prefer Server Actions with `useActionState` and `useTransition` for non-blocking UI mutations.\n   - Server Component Hygiene: Keep \"use client\" boundaries minimal at leaf components; never leak server secrets to client bundles.\n   - Tailwind v4 & Tokens: Use Tailwind v4 `@theme` CSS variables and tactile dark obsidian palette (`#08090C`, `#0E1015`, accent `#6366F1`).\n   - Lucide React Icons: Always use individual named imports (e.g. `import { ArrowRight, Trophy } from \"lucide-react\"`) to avoid bundle bloat.\n   - Core Web Vitals & CLS: Zero Cumulative Layout Shift (CLS); declare exact dimensions or aspect-ratio slots on all media/containers.\n   - Accessibility & A11y: Visible focus rings (`focus-visible:ring-2`), semantic HTML first, touch targets >= 44x44px, and `aria-live=\"polite\"` on dynamic regions.\n   - Keyboard Accessibility Invariant: NEVER use `<div>` or `<span>` with `onClick` without a keyboard path. ALWAYS use `<button type=\"button\">` for actions, or `<a>`/`<Link>` for navigation, with proper keyboard handlers and ARIA attributes.\n   - SEO & Structured Data: Inject JSON-LD `<script type=\"application/ld+json\">` for articles and entities; declare OpenGraph and Twitter card metadata.\n",
+      "status": "Unknown",
+      "firstSeen": "2026-10-12T11:35:39.502Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T13:09:22.714Z"
+    },
+    "9811976515064445619": {
+      "id": "9811976515064445619",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Starlight Queen Autonomic Self-Healing Card: frankxai/frankx.ai-vercel-website\n> Attempt 1 | Lead: Principal Design Technologist & Frontend Architect (@impeccable)\n\n## Objective\nFix previous quarantine failures and complete the original task:\nResolve CI check failure on PR #977:\nCI\n\n## Mandatory Corrective Directives (Must Comply)\n- Fix: CI check failure: CI\n\n## Non-Negotiable Invariants\n1. Do NOT modify any files in .github/workflows/\n2. Limit edits to maximum 3 files and <= 300 total diff lines\n3. Conventional Commits format: fix(scope): description [Built on SIP]\n4. Adhere to technical anchors:\n   - Next.js 15/16 + React 19: All page/route `params` and `searchParams` are async promises and MUST be awaited: `const { slug } = await params`.\n   - Server Actions & Transitions: Prefer Server Actions with `useActionState` and `useTransition` for non-blocking UI mutations.\n   - Server Component Hygiene: Keep \"use client\" boundaries minimal at leaf components; never leak server secrets to client bundles.\n   - Tailwind v4 & Tokens: Use Tailwind v4 `@theme` CSS variables and tactile dark obsidian palette (`#08090C`, `#0E1015`, accent `#6366F1`).\n   - Lucide React Icons: Always use individual named imports (e.g. `import { ArrowRight, Trophy } from \"lucide-react\"`) to avoid bundle bloat.\n   - Core Web Vitals & CLS: Zero Cumulative Layout Shift (CLS); declare exact dimensions or aspect-ratio slots on all media/containers.\n   - Accessibility & A11y: Visible focus rings (`focus-visible:ring-2`), semantic HTML first, touch targets >= 44x44px, and `aria-live=\"polite\"` on dynamic regions.\n   - Keyboard Accessibility Invariant: NEVER use `<div>` or `<span>` with `onClick` without a keyboard path. ALWAYS use `<button type=\"button\">` for actions, or `<a>`/`<Link>` for navigation, with proper keyboard handlers and ARIA attributes.\n   - SEO & Structured Data: Inject JSON-LD `<script type=\"application/ld+json\">` for articles and entities; declare OpenGraph and Twitter card metadata.\n",
+      "status": "Unknown",
+      "firstSeen": "2026-10-12T12:10:11.860Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T13:09:22.714Z"
+    },
+    "14134481200233383555": {
+      "id": "14134481200233383555",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "# Starlight Queen Autonomic Self-Healing Card: frankxai/arcanea-ai-app\n> Attempt 1 | Lead: Principal Design Technologist & Frontend Architect (@impeccable)\n\n## Objective\nFix previous quarantine failures and complete the original task:\n# Jules Autonomous Execution Card: arcanea-ai-app> Assigned…\n\n## Mandatory Corrective Directives (Must Comply)\n- CASE HYGIENE: Convert all Markdown headings (#, ##, ###) and UI button labels to Sentence case (e.g. \"# Sandersonian magic toll evaluator\", NOT \"# Sandersonian Magic Toll Evaluator\").\n\n## Non-Negotiable Invariants\n1. Do NOT modify any files in .github/workflows/\n2. Limit edits to maximum 3 files and <= 300 total diff lines\n3. Conventional Commits format: fix(scope): description [Built on SIP]\n4. Adhere to technical anchors:\n   - Next.js 15/16 + React 19: All page/route `params` and `searchParams` are async promises and MUST be awaited: `const { slug } = await params`.\n   - Server Actions & Transitions: Prefer Server Actions with `useActionState` and `useTransition` for non-blocking UI mutations.\n   - Server Component Hygiene: Keep \"use client\" boundaries minimal at leaf components; never leak server secrets to client bundles.\n   - Tailwind v4 & Tokens: Use Tailwind v4 `@theme` CSS variables and tactile dark obsidian palette (`#08090C`, `#0E1015`, accent `#6366F1`).\n   - Lucide React Icons: Always use individual named imports (e.g. `import { ArrowRight, Trophy } from \"lucide-react\"`) to avoid bundle bloat.\n   - Core Web Vitals & CLS: Zero Cumulative Layout Shift (CLS); declare exact dimensions or aspect-ratio slots on all media/containers.\n   - Accessibility & A11y: Visible focus rings (`focus-visible:ring-2`), semantic HTML first, touch targets >= 44x44px, and `aria-live=\"polite\"` on dynamic regions.\n   - Keyboard Accessibility Invariant: NEVER use `<div>` or `<span>` with `onClick` without a keyboard path. ALWAYS use `<button type=\"button\">` for actions, or `<a>`/`<Link>` for navigation, with proper keyboard handlers and ARIA attributes.\n   - SEO & Structured Data: Inject JSON-LD `<script type=\"application/ld+json\">` for articles and entities; declare OpenGraph and Twitter card metadata.\n",
+      "status": "In Progress",
+      "firstSeen": "2026-10-12T12:53:07.396Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T13:09:22.714Z"
+    },
+    "7967601734376621378": {
+      "id": "7967601734376621378",
+      "repo": "frankxai/gencreator.ai",
+      "description": "Issue #136: Tools and usage: connected subscriptions, capability evidence and bounded API bundles\n\n## Product job and status — 2 October 2026\n\nMatilde and other creators want one GenCreator workspace to understand their existing creative subscriptions and execute a source-to-story-to-media workflow through supported tools. They should see what is connected, which actions work, who pays and what remains manual.\n\nStatus: implementation proposal, not shipped functionality or a public paid offer. Extends #119/#96 and the merged story/agency PRD/spec from #124; #122 owns story composition, #123 ow",
+      "status": "In Progress",
+      "firstSeen": "2026-10-12T13:01:33.636Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T13:09:22.714Z"
+    },
+    "10111753558202591287": {
+      "id": "10111753558202591287",
+      "repo": "frankxai/gencreator.ai",
+      "description": "# Jules Autonomous Execution Card: gencreator.ai> Assigned …",
+      "status": "In Progress",
+      "firstSeen": "2026-10-12T13:04:02.950Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T13:09:22.714Z"
+    },
+    "6834506921304401785": {
+      "id": "6834506921304401785",
+      "repo": "frankxai/gencreator.ai",
+      "description": "Issue #125: Ship SOURCE free edition: guide, reusable skill, comment delivery and first-user proof\n\n## Decision and user job\nBuild the first free edition as a real reusable asset, with Frank as user 0. Audience: an expert-led creator with a source recording or article who wants credible output they can review and share. A first win is one source-linked artifact the creator edits, approves and exports. Align to ADR-007/010 and the current brand system; this is an acquisition and activation slice, not a competing product thesis.\n\n[Portfolio operating plan in Notion](https://app.notion.com/p/3ea2",
+      "status": "Planning",
+      "firstSeen": "2026-10-12T13:07:10.656Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T13:09:22.714Z"
+    },
+    "10688683593405460961": {
+      "id": "10688683593405460961",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "18066706302186475663": {
+      "id": "18066706302186475663",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "6601719060582331677": {
+      "id": "6601719060582331677",
+      "repo": "frankxai/mcp-doctor",
+      "description": "# Jules Autonomous Execution Card: mcp-doctor> Assigned Cou…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "7055608791374142570": {
+      "id": "7055608791374142570",
+      "repo": "frankxai/second-brain…",
+      "description": "# Jules Autonomous Execution Card: second-brain-os> Assigne…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "3688602510947104542": {
+      "id": "3688602510947104542",
+      "repo": "frankxai/second-brain…",
+      "description": "# Jules Autonomous Execution Card: second-brain-os> Assigne…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "15888719351011498743": {
+      "id": "15888719351011498743",
+      "repo": "frankxai/agenticincome",
+      "description": "# Jules Autonomous Execution Card: agenticincome> Assigned …",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "3853859075492843427": {
+      "id": "3853859075492843427",
+      "repo": "frankxai/agenticincome",
+      "description": "# Jules Autonomous Execution Card: agenticincome> Assigned …",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "2297738107478541920": {
+      "id": "2297738107478541920",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "527229580151746830": {
+      "id": "527229580151746830",
+      "repo": "frankxai/vibeclubs",
+      "description": "# Jules Autonomous Execution Card: vibeclubs> Assigned Coun…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "15481418139384162669": {
+      "id": "15481418139384162669",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "7679145339409964194": {
+      "id": "7679145339409964194",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "16773392511957633366": {
+      "id": "16773392511957633366",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
+      "verified": false,
+      "merged": false
+    },
+    "3802165034538471665": {
+      "id": "3802165034538471665",
+      "repo": "frankxai/gencreator.ai",
+      "description": "# Jules Autonomous Execution Card: gencreator.ai> Assigned …",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T13:09:22.714Z",
       "verified": false,
       "merged": false
     }
   },
   "metrics": {
-    "dispatched": 9,
-    "completed": 46,
-    "merged": 2,
-    "quarantined": 20
+    "dispatched": 95,
+    "completed": 331,
+    "merged": 177,
+    "quarantined": 54
   },
-  "lastRemoteScan": "2026-10-10T04:13:20.115Z"
+  "lastRemoteScan": "2026-10-12T13:09:22.714Z"
 }

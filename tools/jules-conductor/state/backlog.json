@@ -1,69 +1,6 @@
 {
   "queue": [
     {
-      "id": "task_1791600984198_516",
-      "repo": "frankxai/arcanea-ai-app",
-      "issueNumber": 516,
-      "title": "Pillar guide 2: AI disclosure and canon provenance for novelists and game developers",
-      "description": "Issue #516: Pillar guide 2: AI disclosure and canon provenance for novelists and game developers\n\n## Outcome\r\nThe most useful practical page on the topic, with every rule sourced.\r\n\r\n## Exit proof\r\nPublished guide citing current Steam, KDP and Copyright Office positions with dates\r\n\r\n## Done when\r\n- [ ] Each platform rule linked to its source and dated\r\n- [ ] Worked example using the canon-state workflow\r\n- [ ] Capture link and UTM\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\nResearch Librarian, steward-arcanea, content-polisher\r\n\r\nBoard: h",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:24.198Z"
-    },
-    {
-      "id": "task_1791600984198_515",
-      "repo": "frankxai/arcanea-ai-app",
-      "issueNumber": 515,
-      "title": "Stage the day-1 library: four templates and a World Proof Lab outline",
-      "description": "Issue #515: Stage the day-1 library: four templates and a World Proof Lab outline\n\n## Outcome\r\nA world builder gets working canon tooling on day one.\r\n\r\n## Exit proof\r\nSeries Bible, Campaign Ledger, Quest Kit and VN Branch Kit each with a worked example\r\n\r\n## Done when\r\n- [ ] Four templates with a worked example each\r\n- [ ] Canon provenance fields included\r\n- [ ] Sourced claims only\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\nsteward-arcanea, Master Story Architect, canon-guardian skill\r\n\r\nBoard: https://github.com/users/fra",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:24.198Z"
-    },
-    {
-      "id": "task_1791600992533_147",
-      "repo": "frankxai/gencreator.ai",
-      "issueNumber": 147,
-      "title": "Creator operations: one multi-brand plan and supplied SaaS audit across native plugin and MCP",
-      "description": "Issue #147: Creator operations: one multi-brand plan and supplied SaaS audit across native plugin and MCP\n\nFrank's weekly job is to turn owned source and reviewed research into distinct brand editions, route each exact social destination through one publishing owner, and review subscription exposure without losing IP lineage or claiming unverified connections.\n\nExtends #119 and #68 under the #5 product outcome record. Base candidate: PR #139, commit 3161f5f31340f5bf1ac7c7e4060e032ea25faf2f. Current decision: GenCreator owns source/evidence/revisions/review/results; publishing and research providers r",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.533Z"
-    },
-    {
-      "id": "task_1791600992533_143",
-      "repo": "frankxai/gencreator.ai",
-      "issueNumber": 143,
-      "title": "Track the executable craft check",
-      "description": "Issue #143: Track the executable craft check\n\nDraft pull request https://github.com/frankxai/gencreator.ai/pull/142 (head 1cf5d19) adds scripts/craft-check.cjs and two fixtures. It does not change Territory B or open a checkout.\n\nRun: node --test scripts/tests/test_craft_check.cjs\n\nThe emoji fixture must exit 1. The sentence-case fixture must exit 0. Leave the pull request draft until a reviewer other than the author approves it. Pull request 93 stays held. Estate record: https://github.com/frankxai/agentic-ops-hub/pull/107\r\n",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.533Z"
-    },
-    {
-      "id": "task_1791600992537_136",
-      "repo": "frankxai/gencreator.ai",
-      "issueNumber": 136,
-      "title": "Tools and usage: connected subscriptions, capability evidence and bounded API bundles",
-      "description": "Issue #136: Tools and usage: connected subscriptions, capability evidence and bounded API bundles\n\n## Product job and status — 2 October 2026\n\nMatilde and other creators want one GenCreator workspace to understand their existing creative subscriptions and execute a source-to-story-to-media workflow through supported tools. They should see what is connected, which actions work, who pays and what remains manual.\n\nStatus: implementation proposal, not shipped functionality or a public paid offer. Extends #119/#96 and the merged story/agency PRD/spec from #124; #122 owns story composition, #123 ow",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.537Z"
-    },
-    {
-      "id": "task_1791600992537_133",
-      "repo": "frankxai/gencreator.ai",
-      "issueNumber": 133,
-      "title": "Science documentary pilot: source-bound film, Shorts, evaluations and cost proof",
-      "description": "Issue #133: Science documentary pilot: source-bound film, Shorts, evaluations and cost proof\n\n## User outcome\nFrank wants a repeatable, truthful science documentary workflow: one 8–12 minute film, three independently coherent Shorts, cited research notes, editable masters and a portable production packet. It must preserve sources, caveats, rights, creator voice, exact revisions and costs.\n\nThis is a bounded documentary capability proposal under #96, using story work from #122 and publication/outcome work from #68. #5 still owns persistence/activation prerequisites. It is not a new produc",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.538Z"
-    },
-    {
-      "id": "task_1791600992538_125",
-      "repo": "frankxai/gencreator.ai",
-      "issueNumber": 125,
-      "title": "Ship SOURCE free edition: guide, reusable skill, comment delivery and first-user proof",
-      "description": "Issue #125: Ship SOURCE free edition: guide, reusable skill, comment delivery and first-user proof\n\n## Decision and user job\nBuild the first free edition as a real reusable asset, with Frank as user 0. Audience: an expert-led creator with a source recording or article who wants credible output they can review and share. A first win is one source-linked artifact the creator edits, approves and exports. Align to ADR-007/010 and the current brand system; this is an acquisition and activation slice, not a competing product thesis.\n\n[Portfolio operating plan in Notion](https://app.notion.com/p/3ea2",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.538Z"
-    },
-    {
       "id": "task_1791600992538_123",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 123,

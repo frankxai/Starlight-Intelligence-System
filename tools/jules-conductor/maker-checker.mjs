@@ -65,19 +65,56 @@ export function performMakerCheckerReview(diffText, options = {}) {
     return result;
   }
 
-  const diffLower = diffText.toLowerCase();
+  // Parse diff into per-file chunks of added lines
+  const fileChunks = [];
+  const rawFiles = diffText.split(/^diff --git a\//m);
+  for (const rf of rawFiles) {
+    if (!rf.trim()) continue;
+    const headerEnd = rf.indexOf('\n');
+    const filePath = headerEnd !== -1 ? rf.slice(0, headerEnd).split(' ')[0] : '';
+    // Extract only added lines (skip diff metadata lines starting with +++)
+    const addedLines = rf
+      .split('\n')
+      .filter(line => line.startsWith('+') && !line.startsWith('+++'))
+      .map(line => line.slice(1))
+      .join('\n');
+    fileChunks.push({ path: filePath, addedText: addedLines });
+  }
 
-  // 1. Humanizer / Anti-Slop Audit
+  // 1. Humanizer / Anti-Slop Audit (scan only added lines on non-test, non-checker files)
   const humanizerIssues = [];
-  for (const slop of SLOP_TERMS) {
-    if (diffLower.includes(slop)) {
-      humanizerIssues.push(`Anti-slop violation: detected AI prestige term "${slop}".`);
+  for (const chunk of fileChunks) {
+    const isTestOrTool = chunk.path.includes('.test.') || 
+                         chunk.path.includes('/tests/') || 
+                         chunk.path.includes('maker-checker') ||
+                         chunk.path.includes('audit-') ||
+                         chunk.path.includes('.jsonl');
+    if (isTestOrTool) continue;
+
+    const addedLower = chunk.addedText.toLowerCase();
+    for (const slop of SLOP_TERMS) {
+      if (addedLower.includes(slop)) {
+        humanizerIssues.push(`Anti-slop violation in ${chunk.path}: detected AI prestige term "${slop}".`);
+      }
+    }
+
+    // Detect unbacked public metrics (e.g. 99.99% uptime, 10,000+ users without verified evidence)
+    if (/\b\d{1,3}(,\d{3})*\+\s*(users|customers|songs|requests)\b/i.test(chunk.addedText)) {
+      humanizerIssues.push(`Metrics truth violation in ${chunk.path}: Plus-suffixed unbacked count detected without evidence marker.`);
     }
   }
 
-  // Detect unbacked public metrics (e.g. 99.99% uptime, 10,000+ users without verified evidence)
-  if (/\b\d{1,3}(,\d{3})*\+\s*(users|customers|songs|requests)\b/i.test(diffText)) {
-    humanizerIssues.push('Metrics truth violation: Plus-suffixed unbacked count detected without evidence marker.');
+  // If no file chunks parsed (e.g. synthetic snippet passed directly in unit test), evaluate directly
+  if (fileChunks.length === 0) {
+    const diffLower = diffText.toLowerCase();
+    for (const slop of SLOP_TERMS) {
+      if (diffLower.includes(slop)) {
+        humanizerIssues.push(`Anti-slop violation: detected AI prestige term "${slop}".`);
+      }
+    }
+    if (/\b\d{1,3}(,\d{3})*\+\s*(users|customers|songs|requests)\b/i.test(diffText)) {
+      humanizerIssues.push('Metrics truth violation: Plus-suffixed unbacked count detected without evidence marker.');
+    }
   }
 
   if (humanizerIssues.length > 0) {
@@ -90,15 +127,19 @@ export function performMakerCheckerReview(diffText, options = {}) {
   if (isFrontend) {
     const designIssues = [];
 
-    for (const flag of DESIGN_RED_FLAGS) {
-      if (flag.pattern.test(diffText)) {
-        designIssues.push(flag.rule);
-      }
-    }
+    for (const chunk of (fileChunks.length > 0 ? fileChunks : [{ path: 'snippet', addedText: diffText }])) {
+      if (chunk.path.includes('maker-checker') || chunk.path.includes('.test.')) continue;
 
-    // Hardcoded white background in dark luxury context without dark variant
-    if (diffText.includes('bg-white') && !diffText.includes('dark:bg-') && !diffText.includes('bg-white/')) {
-      designIssues.push('Light theme hardcoding detected without dark mode variant. Follow dark tactile luxury register.');
+      for (const flag of DESIGN_RED_FLAGS) {
+        if (flag.pattern.test(chunk.addedText)) {
+          designIssues.push(`${flag.rule} in ${chunk.path}`);
+        }
+      }
+
+      // Hardcoded white background in dark luxury context without dark variant
+      if (chunk.addedText.includes('bg-white') && !chunk.addedText.includes('dark:bg-') && !chunk.addedText.includes('bg-white/')) {
+        designIssues.push(`Light theme hardcoding detected without dark mode variant in ${chunk.path}. Follow dark tactile luxury register.`);
+      }
     }
 
     if (designIssues.length > 0) {
@@ -110,15 +151,18 @@ export function performMakerCheckerReview(diffText, options = {}) {
 
   // 3. Modern Frontier Architecture Audit
   const archIssues = [];
+  for (const chunk of (fileChunks.length > 0 ? fileChunks : [{ path: 'snippet', addedText: diffText }])) {
+    if (chunk.path.includes('maker-checker') || chunk.path.includes('.test.')) continue;
 
-  // Detect React 19 / Next.js 16 async params violation: e.g. ({ params }: { params: { slug: string } })
-  if (isFrontend && diffText.includes('params: {') && !diffText.includes('Promise<') && !diffText.includes('await params')) {
-    archIssues.push('Next.js 16 / React 19 invariant: Page params and searchParams must be typed as Promise and awaited.');
-  }
+    // Detect React 19 / Next.js 16 async params violation: e.g. ({ params }: { params: { slug: string } })
+    if (isFrontend && chunk.addedText.includes('params: {') && !chunk.addedText.includes('Promise<') && !chunk.addedText.includes('await params')) {
+      archIssues.push(`Next.js 16 / React 19 invariant in ${chunk.path}: Page params and searchParams must be typed as Promise and awaited.`);
+    }
 
-  // Detect deprecated React compiler manual memoization if React Compiler is active
-  if (diffText.includes('useMemo(') && diffText.includes('useCallback(') && diffText.includes('"react-compiler"')) {
-    archIssues.push('Redundant manual memoization with React Compiler active.');
+    // Detect deprecated React compiler manual memoization if React Compiler is active
+    if (chunk.addedText.includes('useMemo(') && chunk.addedText.includes('useCallback(') && chunk.addedText.includes('"react-compiler"')) {
+      archIssues.push(`Redundant manual memoization with React Compiler active in ${chunk.path}.`);
+    }
   }
 
   if (archIssues.length > 0) {
