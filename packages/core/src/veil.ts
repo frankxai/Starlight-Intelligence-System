@@ -21,6 +21,7 @@ export class SanitizationGateway {
     /\bsk-ant-[a-zA-Z0-9_-]{20,}\b/g,
     /\b(?:sk|rk)_(?:live|test)_[a-zA-Z0-9]{16,}\b/g,
     /\b(?:npm|whsec)_[a-zA-Z0-9]{20,}\b/g,
+    /\bsb_secret_[a-zA-Z0-9_-]+/g, // Supabase server keys, including the complete suffix
     /\b(?:AKIA|ASIA)[A-Z0-9]{16}\b/g,
     /\bhf_[a-zA-Z0-9]{20,}\b/g,
     /xox[baprs]-[0-9a-zA-Z-]{10,}/g,
@@ -33,7 +34,7 @@ export class SanitizationGateway {
     /private_key["']?\s*:\s*["']([^"']+)["']/gi, // Private keys
   ];
 
-  private static readonly SECRET_FIELD = /^(?:password|passwd|secret|token|(?:access|refresh|auth)[_-]?token|api[_-]?key|private[_-]?key|client[_-]?secret|aws[_-]?secret[_-]?access[_-]?key)$/i;
+  private static readonly SECRET_FIELD = /^(?:password|passwd|secret|token|(?:access|refresh|auth)[_-]?token|api[_-]?key|private[_-]?key|client[_-]?secret|aws[_-]?secret[_-]?access[_-]?key|supabase_(?:secret|service_role)_key)$/i;
 
   private static readonly PII_PATTERNS = [
     // Emails
