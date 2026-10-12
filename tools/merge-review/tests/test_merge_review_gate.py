@@ -76,6 +76,11 @@ class MergeReviewTests(unittest.TestCase):
             comment['author_association'] = association
             self.assertFalse(self.evaluate([comment]))
 
+    def test_jules_maker_and_frankx_eth_attestor_pass(self):
+        comment = receipt(maker='jules', pr='110')
+        comment['user']['login'] = 'frankx-eth'
+        self.assertTrue(self.evaluate([comment]))
+
     def test_malformed_comment_and_empty_listing_deny(self):
         comment = receipt()
         comment['body'] = gate.MARKER + '{bad json'
