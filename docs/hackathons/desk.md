@@ -142,8 +142,9 @@ Optional: `NEBIUS_BASE_URL` (defaults to the Token Factory endpoint),
 `TAVILY_URL`, `DESK_ISSUER`, `DESK_NAMESPACE`, `DESK_DAILY_RUN_LIMIT`,
 `DESK_DAILY_TOKEN_BUDGET`, `DESK_RUN_DEADLINE_MS`.
 
-Tests: `pnpm run test:desk` (144 tests, every provider and Redis call mocked)
-runs on Node 20 and 22 with no flag: `site/scripts/test/ts-resolve-hooks.mjs`
+Tests: `pnpm run test:desk` (161 tests; provider calls are mocked, and the
+token meter's scripts also run against a real Redis) runs on Node 20 and 22
+with no flag: `site/scripts/test/ts-resolve-hooks.mjs`
 turns TypeScript into JavaScript with the site's own `typescript`
 devDependency. `.github/workflows/desk-tests.yml` runs it, `test:vault-fetch`
 and `tsc --noEmit` on a Node 20 and 22 matrix for every pull request that

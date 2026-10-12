@@ -17,7 +17,7 @@ on:
       - "site/src/app/desk/**"
       - "site/scripts/test/**"
       - "site/package.json"
-      - "site/package-lock.json"
+      - "site/pnpm-lock.yaml"
       - ".github/workflows/desk-tests.yml"
   push:
     branches: [main]
@@ -27,7 +27,7 @@ on:
       - "site/src/app/desk/**"
       - "site/scripts/test/**"
       - "site/package.json"
-      - "site/package-lock.json"
+      - "site/pnpm-lock.yaml"
       - ".github/workflows/desk-tests.yml"
 
 permissions:
@@ -67,12 +67,10 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
-          cache: npm
-          cache-dependency-path: site/package-lock.json
-      # site/package-lock.json is the lockfile Dependabot keeps current.
-      # site/pnpm-lock.yaml on main is behind site/package.json (it has no
-      # overrides block), so a frozen pnpm install stops before any test runs.
-      - run: npm ci --no-audit --no-fund
-      - run: npm run test:desk
-      - run: npm run test:vault-fetch
-      - run: npx tsc --noEmit
+      # site/pnpm-lock.yaml is the site's only lockfile; install it the way
+      # site-dependency-proof.yml does.
+      - run: npm install --global pnpm@10.28.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test:desk
+      - run: pnpm run test:vault-fetch
+      - run: pnpm exec tsc --noEmit
