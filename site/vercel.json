@@ -1,4 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm run build",
   "ignoreCommand": "bash scripts/should-deploy.sh"
 }
