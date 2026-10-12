@@ -3,20 +3,40 @@
  *
  * `Alexandria.execute()` is the one door every agent walks through to get a
  * catalogued record. It: resolves a need to a capability (or takes an explicit
- * id), checks the contract's required options, prices the call against the
- * session budget *before* making it, hands the call to the transport for the
- * provider's kind, and returns records plus a receipt that is also appended to
- * the ledger. Budget is enforced fail-closed: an over-budget call never runs.
+ * id), validates options against the contract, prices the call, reserves the
+ * price against the session budget *before* the transport is touched, hands
+ * the call to the transport for the provider's kind, reconciles the
+ * reservation with what the provider charged, and returns records plus a
+ * receipt that is also appended to the ledger.
+ *
+ * Fail-closed rules:
+ *   - an over-budget call never runs;
+ *   - a per-record capability runs only with a declared record ceiling, and the
+ *     reservation is that ceiling times the per-record price;
+ *   - reservations are taken synchronously, so concurrent calls cannot both
+ *     pass the gate on the same credits;
+ *   - spend is restored per session from the ledger, never across sessions.
  *
  * Built on SIP — operational tier (Domain Sub-Stack: Alexandria).
  */
 
+import { randomUUID } from 'node:crypto';
 import { Library } from './catalog.js';
 import { buildReceipt, ReceiptLedger } from './receipts.js';
 import type { AlexandriaCall, Budget, CallResult, FindHit, ProviderKind, Receipt, Transport } from './types.js';
 
+export type AlexandriaErrorCode =
+  | 'unknown_capability'
+  | 'no_match'
+  | 'unmet_requirement'
+  | 'invalid_option'
+  | 'unbounded_records'
+  | 'over_budget'
+  | 'no_transport'
+  | 'connector_not_executable';
+
 export class AlexandriaError extends Error {
-  constructor(readonly code: 'unknown_capability' | 'no_match' | 'unmet_requirement' | 'over_budget' | 'no_transport' | 'connector_not_executable', message: string, readonly hint: string) {
+  constructor(readonly code: AlexandriaErrorCode, message: string, readonly hint: string) {
     super(message);
   }
 }
@@ -26,10 +46,12 @@ export interface ExecuteRequest {
   need?: string;
   capabilityId?: string;
   options?: Record<string, unknown>;
-  /** Expected record count, only used to price per-record capabilities up front. */
+  /** Record ceiling for per-record capabilities. Required for them; the reservation is this times the per-record price. */
   expectedRecords?: number;
   /** SIP layers the resulting record composes. Empty = no attestation block. */
   sipLayers?: readonly string[];
+  /** Reuse the id of an uncertain earlier call so the provider treats the retry as the same request. */
+  requestId?: string;
 }
 
 export interface ExecuteResponse {
@@ -46,6 +68,17 @@ export interface Plan {
   recommended?: string;
 }
 
+export interface AlexandriaOptions {
+  library: Library;
+  transports: readonly Transport[];
+  /** Hard ceiling in credits for this session. Must be a finite, non-negative number. */
+  maxCredits: number;
+  /** Budget session. Defaults to a fresh id, so a new process starts with a fresh allowance; pass the old id to resume one. */
+  sessionId?: string;
+  ledger?: ReceiptLedger;
+  now?: () => string;
+}
+
 export class Alexandria {
   readonly library: Library;
   readonly budget: Budget;
@@ -53,9 +86,13 @@ export class Alexandria {
   private readonly ledger?: ReceiptLedger;
   private readonly now?: () => string;
 
-  constructor(opts: { library: Library; transports: readonly Transport[]; maxCredits: number; ledger?: ReceiptLedger; now?: () => string }) {
+  constructor(opts: AlexandriaOptions) {
+    if (typeof opts.maxCredits !== 'number' || !Number.isFinite(opts.maxCredits) || opts.maxCredits < 0) {
+      throw new Error(`maxCredits must be a finite, non-negative number; got ${String(opts.maxCredits)}`);
+    }
     this.library = opts.library;
-    this.budget = { maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent() : 0 };
+    const sessionId = opts.sessionId ?? randomUUID();
+    this.budget = { sessionId, maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent(sessionId) : 0 };
     for (const t of opts.transports) this.transports.set(t.kind, t);
     this.ledger = opts.ledger;
     this.now = opts.now;
@@ -92,24 +129,52 @@ export class Alexandria {
     return hit;
   }
 
-  async execute(req: ExecuteRequest): Promise<ExecuteResponse> {
+  /** Everything that must hold before a credit is reserved. Throws an AlexandriaError; charges nothing. */
+  private admit(req: ExecuteRequest): { hit: FindHit; options: Record<string, unknown>; price: number; transport: Transport } {
     const hit = this.resolve(req);
     const options = req.options ?? {};
     if (hit.provider.kind === 'connector') {
       throw new AlexandriaError('connector_not_executable', `${hit.capability.id} is a connector and cannot be executed as a data capability`, 'Connectors are called by the swarm runtime. See verticals/alexandria/catalog/connectors.json.');
     }
-    const unmet = this.library.unmetRequirement(hit.capability.id, options);
-    if (unmet) throw new AlexandriaError('unmet_requirement', `${hit.capability.id} needs one of: ${unmet.join(', ')}`, 'Supply one of the listed options and call again; nothing was charged.');
-    const price = this.library.estimate(hit.capability.id, req.expectedRecords ?? 1);
+    const problems = this.library.validateOptions(hit.capability.id, options);
+    if (problems.length > 0) {
+      const code = problems[0].startsWith('needs one of') ? 'unmet_requirement' : 'invalid_option';
+      throw new AlexandriaError(code, `${hit.capability.id}: ${problems.join('; ')}`, 'Fix the options per the capability contract and call again; nothing was charged.');
+    }
+    let records = 1;
+    if (hit.capability.perRecord) {
+      if (!Number.isInteger(req.expectedRecords) || (req.expectedRecords as number) < 1) {
+        throw new AlexandriaError('unbounded_records', `${hit.capability.id} bills per record; declare expectedRecords so the maximum charge can be reserved`, 'Pass expectedRecords (a positive integer) and, where the provider offers one, a matching page-size option.');
+      }
+      records = req.expectedRecords as number;
+    }
+    const price = this.library.estimate(hit.capability.id, records);
     if (this.budget.spent + price > this.budget.maxCredits) {
       throw new AlexandriaError('over_budget', `Call would cost ${price} credits; ${this.budget.maxCredits - this.budget.spent} remain of ${this.budget.maxCredits}`, 'Raise maxCredits for this session or pick a cheaper capability from alexandria_plan.');
     }
     const transport = this.transports.get(hit.provider.kind);
     if (!transport) throw new AlexandriaError('no_transport', `No transport registered for ${hit.provider.kind}`, 'Register a transport for this provider kind (FirecrawlTransport needs FIRECRAWL_API_KEY).');
+    return { hit, options, price, transport };
+  }
+
+  async execute(req: ExecuteRequest): Promise<ExecuteResponse> {
+    const { hit, options, price, transport } = this.admit(req);
+    // Reserve synchronously: no await sits between the gate and the reservation, so two
+    // concurrent calls cannot both be admitted against the same remaining credits.
+    this.budget.spent += price;
     const call: AlexandriaCall = { provider: hit.provider.id, capability: hit.capability.capability, options };
-    const [result] = await transport.execute([call]);
-    if (!result.error) this.budget.spent += result.creditsCost;
-    const receiptInput: Parameters<typeof buildReceipt>[0] = { result, provider: hit.provider, options, sipLayers: req.sipLayers ?? [] };
+    if (req.requestId) call.requestId = req.requestId;
+    let result: CallResult;
+    try {
+      [result] = await transport.execute([call]);
+    } catch (err) {
+      this.budget.spent -= price;
+      throw err;
+    }
+    // Reconcile: a failed call is not billed; a successful one is billed at what the provider charged.
+    const actual = result.error ? 0 : result.creditsCost;
+    this.budget.spent += actual - price;
+    const receiptInput: Parameters<typeof buildReceipt>[0] = { result, provider: hit.provider, options, sessionId: this.budget.sessionId, reserved: price, sipLayers: req.sipLayers ?? [] };
     if (this.now) receiptInput.now = this.now;
     const receipt = buildReceipt(receiptInput);
     this.ledger?.append(receipt);

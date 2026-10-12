@@ -33,6 +33,8 @@ const TRANSITIONS: Record<ExperimentStatus, readonly ExperimentStatus[]> = {
 };
 const ID_RE = /^exp-\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+/** Ledger receipt ids are `rcpt_` + a v4 UUID (src/alexandria/receipts.ts). */
+export const RECEIPT_ID_RE = /^rcpt_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 export interface ExperimentProblem { id: string; message: string }
 
@@ -50,7 +52,10 @@ export function validateExperiment(e: Partial<Experiment>): ExperimentProblem[] 
   if (typeof e.closesBy !== 'string' || !DATE_RE.test(e.closesBy)) problems.push({ id, message: 'closesBy must be YYYY-MM-DD' });
   else if (typeof e.openedAt === 'string' && e.closesBy < e.openedAt) problems.push({ id, message: 'closesBy must not precede openedAt' });
   if (!Array.isArray(e.receipts)) problems.push({ id, message: 'receipts must be an array (may be empty while proposed/running)' });
-  else if ((e.status === 'proven' || e.status === 'falsified') && e.receipts.length === 0) problems.push({ id, message: `${e.status} needs at least one receipt id` });
+  else {
+    if (!e.receipts.every((r) => typeof r === 'string' && RECEIPT_ID_RE.test(r))) problems.push({ id, message: 'every receipt must be a ledger receipt id (rcpt_<uuid>)' });
+    if ((e.status === 'proven' || e.status === 'falsified') && e.receipts.length === 0) problems.push({ id, message: `${e.status} needs at least one receipt id` });
+  }
   return problems;
 }
 
@@ -83,6 +88,11 @@ export function canTransition(from: ExperimentStatus, to: ExperimentStatus): boo
 /** Returns the updated experiment or throws; never mutates the input. */
 export function transition(e: Experiment, to: ExperimentStatus, evidence: { receipts?: readonly string[]; closesBy?: string; notes?: string } = {}): Experiment {
   if (!canTransition(e.status, to)) throw new Error(`${e.id}: cannot move from ${e.status} to ${to}`);
+  if (e.status === 'parked' && to === 'running') {
+    // Reopening is a fresh commitment: it needs a new deadline later than the one it parked with.
+    if (!evidence.closesBy || !DATE_RE.test(evidence.closesBy)) throw new Error(`${e.id}: reopening a parked experiment needs a new closesBy (YYYY-MM-DD)`);
+    if (evidence.closesBy <= e.closesBy) throw new Error(`${e.id}: the new closesBy must be later than ${e.closesBy}`);
+  }
   const receipts = [...e.receipts, ...(evidence.receipts ?? [])];
   if ((to === 'proven' || to === 'falsified') && receipts.length === 0) throw new Error(`${e.id}: ${to} needs a receipt`);
   const next: Experiment = { ...e, status: to, receipts };

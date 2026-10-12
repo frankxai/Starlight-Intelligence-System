@@ -13,10 +13,11 @@
  * Built on SIP — operational tier (Domain Sub-Stack: Alexandria).
  */
 
+import { randomUUID } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { tokenize } from './catalog.js';
-import type { AlexandriaCall, CallResult, Transport } from './types.js';
+import type { AlexandriaCall, CallError, CallResult, Transport } from './types.js';
 
 export const FIRECRAWL_SCRAPE_URL = 'https://api.firecrawl.dev/v2/scrape';
 
@@ -49,23 +50,34 @@ export class FirecrawlTransport implements Transport {
     if (calls.length === 0) return [];
     if (calls.length > 10) throw new Error('Firecrawl accepts at most 10 Alexandria capabilities per request');
     const observedAt = new Date().toISOString();
-    const body = JSON.stringify({ alexandria: calls.map((c) => ({ provider: c.provider, capability: c.capability, options: c.options ?? {}, ...(c.version ? { version: c.version } : {}) })) });
+    // One request id per batch: Firecrawl bills an uncertain retry only once when it reuses
+    // the identical payload and requestId, so the id is minted before sending and kept on
+    // every result and receipt.
+    const requestId = calls.find((c) => c.requestId)?.requestId ?? randomUUID();
+    if (calls.some((c) => c.requestId && c.requestId !== requestId)) throw new Error('All calls in one Firecrawl batch must share the same requestId');
+    const body = JSON.stringify({ requestId, alexandria: calls.map((c) => ({ provider: c.provider, capability: c.capability, options: c.options ?? {}, ...(c.version ? { version: c.version } : {}) })) });
     const res = await this.fetchImpl(this.url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.apiKey}` },
       body,
     });
     if (!res.ok) {
-      return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, error: { code: `http_${res.status}`, message: `Firecrawl returned HTTP ${res.status}` } }));
+      // A terms gate (403 THIRD_PARTY_DATA_TERMS_REQUIRED with `requiresAction`) must reach the
+      // human who can accept it; it is surfaced as data and never accepted here.
+      let parsed: { code?: string; error?: string; message?: string; requiresAction?: unknown } = {};
+      try { parsed = (await res.json()) as typeof parsed; } catch { /* non-JSON body */ }
+      const error: CallError = { code: parsed.code ?? `http_${res.status}`, message: parsed.error ?? parsed.message ?? `Firecrawl returned HTTP ${res.status}` };
+      if (parsed.requiresAction !== undefined) error.details = { status: res.status, requiresAction: parsed.requiresAction };
+      return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error }));
     }
     const payload = (await res.json()) as { data?: { alexandria?: FirecrawlAlexandriaEntry[] } };
     const entries = payload.data?.alexandria ?? [];
     return calls.map((c, i) => {
       const entry = entries[i] ?? entries.find((e) => e.provider === c.provider && e.capability === c.capability);
-      if (!entry) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, error: { code: 'missing_result', message: 'Firecrawl returned no entry for this capability' } };
-      if (entry.error) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, error: { code: entry.error.code ?? 'provider_error', message: entry.error.message ?? 'provider error' } };
+      if (!entry) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error: { code: 'missing_result', message: 'Firecrawl returned no entry for this capability' } };
+      if (entry.error) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error: { code: entry.error.code ?? 'provider_error', message: entry.error.message ?? 'provider error' } };
       const records = Array.isArray(entry.records) ? entry.records : Array.isArray(entry.data) ? entry.data : entry.data === undefined ? [] : [entry.data];
-      return { provider: c.provider, capability: c.capability, records, creditsCost: entry.creditsCost ?? 0, observedAt };
+      return { provider: c.provider, capability: c.capability, records, creditsCost: entry.creditsCost ?? 0, observedAt, requestId };
     });
   }
 }
@@ -129,10 +141,20 @@ export class NativeTransport implements Transport {
     const dir = join(this.repoRoot, 'docs', 'research');
     if (!existsSync(dir)) return [];
     const terms = tokenize(query);
-    return readdirSync(dir)
-      .filter((f) => f.endsWith('.md'))
-      .map((f) => ({ path: `docs/research/${f}`, slug: f.replace(/\.md$/, '') }))
-      .filter((r) => terms.length === 0 || terms.some((t) => r.slug.includes(t)));
+    const files: string[] = [];
+    const walk = (current: string): void => {
+      for (const entry of readdirSync(current, { withFileTypes: true })) {
+        const full = join(current, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (entry.isFile() && entry.name.endsWith('.md')) files.push(full);
+      }
+    };
+    walk(dir);
+    return files
+      .map((full) => relative(this.repoRoot, full).split('\\').join('/'))
+      .sort()
+      .map((path) => ({ path, slug: path.replace(/^docs\/research\//, '').replace(/\.md$/, '') }))
+      .filter((r) => terms.length === 0 || terms.some((t) => r.slug.toLowerCase().includes(t)));
   }
 
   private verticals(): unknown[] {
@@ -156,6 +178,7 @@ export class MemoryTransport implements Transport {
       const s = this.scripted[`${c.provider}/${c.capability}`];
       if (!s) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, error: { code: 'unscripted', message: 'no scripted result' } };
       const result: CallResult = { provider: c.provider, capability: c.capability, records: s.records, creditsCost: s.creditsCost ?? 0, observedAt };
+      if (c.requestId) result.requestId = c.requestId;
       if (s.error) result.error = s.error;
       return result;
     });

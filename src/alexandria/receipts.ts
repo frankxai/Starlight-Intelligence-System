@@ -2,15 +2,16 @@
  * Starlight Alexandria — receipts.
  *
  * Every executed call leaves a receipt: what was asked, where the records came
- * from, a sha256 over the canonical JSON of the records, and what it cost.
- * The receipt is the unit of trust for the whole vertical: a synthesis that
- * cannot point at receipts is an opinion, and the Exchange only resells what
- * has one.
+ * from, a sha256 over the canonical JSON of the records, what was reserved and
+ * what it cost, and which budget session it was charged to. The receipt is the
+ * unit of trust for the whole vertical: a synthesis that cannot point at
+ * receipts is an opinion, and the Exchange only resells what has one.
  *
  * The "Built on SIP" block is earned per receipt (per ATTESTATIONS.md, 2026-09-19):
  * it is emitted only when the caller declares which SIP layers the record
- * actually composed. A declared block is a label; a receipt someone else can
- * re-check needs `protocol/sign.mjs` (the proposed SIP graph extension).
+ * actually composed, and only for a successful call that returned records.
+ * A declared block is a label; a receipt someone else can re-check needs
+ * `protocol/sign.mjs` (the proposed SIP graph extension).
  *
  * Built on SIP — operational tier (Domain Sub-Stack: Alexandria).
  */
@@ -60,27 +61,42 @@ export interface ReceiptInput {
   result: CallResult;
   provider: Provider;
   options: Record<string, unknown>;
+  sessionId: string;
+  /** Credits reserved before the call ran. */
+  reserved: number;
   sipLayers?: readonly string[];
   now?: () => string;
 }
 
-export function buildReceipt({ result, provider, options, sipLayers = [], now }: ReceiptInput): Receipt {
+export function buildReceipt({ result, provider, options, sessionId, reserved, sipLayers = [], now }: ReceiptInput): Receipt {
   const receipt: Receipt = {
     id: `rcpt_${randomUUID()}`,
     issuedAt: now ? now() : new Date().toISOString(),
+    sessionId,
     provider: result.provider,
     capability: result.capability,
     options,
     recordCount: result.records.length,
     contentHash: hashRecords(result.records),
-    creditsCost: result.creditsCost,
+    reserved,
+    creditsCost: result.error ? 0 : result.creditsCost,
     source: provider.source,
     sipLayers,
   };
+  if (result.requestId) receipt.requestId = result.requestId;
   if (provider.attribution) receipt.attribution = provider.attribution;
-  if (sipLayers.length > 0) receipt.attestation = attestationBlock(sipLayers, provider, result.capability);
+  // Earned, never decorative: a failed or empty call composed nothing.
+  if (sipLayers.length > 0 && !result.error && result.records.length > 0) {
+    receipt.attestation = attestationBlock(sipLayers, provider, result.capability);
+  }
   if (result.error) receipt.error = result.error;
   return receipt;
+}
+
+export interface LedgerRead {
+  receipts: Receipt[];
+  /** True when the file ends in a partial line (a write was cut off). The intact prefix is still returned. */
+  truncatedTail: boolean;
 }
 
 /** Append-only JSONL ledger. One line per receipt; never rewritten. */
@@ -92,16 +108,35 @@ export class ReceiptLedger {
     appendFileSync(this.path, JSON.stringify(receipt) + '\n', 'utf8');
   }
 
-  read(): Receipt[] {
-    if (!existsSync(this.path)) return [];
-    return readFileSync(this.path, 'utf8')
-      .split('\n')
-      .filter((line) => line.trim().length > 0)
-      .map((line) => JSON.parse(line) as Receipt);
+  /**
+   * Reads the ledger. A cut-off final line is reported, not fatal; a malformed line anywhere
+   * else means the file was edited or corrupted and is refused, because a ledger that is
+   * silently wrong is worse than one that is loudly unreadable.
+   */
+  readDetailed(): LedgerRead {
+    if (!existsSync(this.path)) return { receipts: [], truncatedTail: false };
+    const lines = readFileSync(this.path, 'utf8').split('\n').filter((line) => line.trim().length > 0);
+    const receipts: Receipt[] = [];
+    let truncatedTail = false;
+    lines.forEach((line, i) => {
+      try {
+        receipts.push(JSON.parse(line) as Receipt);
+      } catch (err) {
+        if (i === lines.length - 1) truncatedTail = true;
+        else throw new Error(`Receipt ledger ${this.path} is corrupt at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`);
+      }
+    });
+    return { receipts, truncatedTail };
   }
 
-  /** Credits spent across the ledger, errors excluded (a failed call is not billed). */
-  spent(): number {
-    return this.read().filter((r) => !r.error).reduce((sum, r) => sum + r.creditsCost, 0);
+  read(): Receipt[] {
+    return this.readDetailed().receipts;
+  }
+
+  /** Credits spent in one session (errors excluded; a failed call is not billed). Without a session id: the whole ledger. */
+  spent(sessionId?: string): number {
+    return this.read()
+      .filter((r) => !r.error && (sessionId === undefined || r.sessionId === sessionId))
+      .reduce((sum, r) => sum + r.creditsCost, 0);
   }
 }

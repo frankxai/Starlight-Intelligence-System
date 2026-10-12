@@ -13,8 +13,10 @@
  *   alexandria_experiments — list the Forge registry, overdue first
  *
  * Env: FIRECRAWL_API_KEY (optional; without it only native providers run),
- *      ALEXANDRIA_MAX_CREDITS (default 200), ALEXANDRIA_LEDGER (default
- *      ~/.starlight/alexandria/receipts.jsonl).
+ *      ALEXANDRIA_MAX_CREDITS (default 200; must be a finite non-negative number,
+ *      startup fails otherwise), ALEXANDRIA_LEDGER (default
+ *      ~/.starlight/alexandria/receipts.jsonl), ALEXANDRIA_SESSION (optional;
+ *      a process starts a fresh budget session unless it is told to resume one).
  *
  * Built on SIP — operational tier (Domain Sub-Stack: Alexandria).
  */
@@ -27,6 +29,7 @@ import { Library, REPO_ROOT } from './catalog.js';
 import { loadExperiments, overdue } from './experiments.js';
 import { ReceiptLedger } from './receipts.js';
 import { Alexandria, AlexandriaError } from './router.js';
+import type { AlexandriaOptions } from './router.js';
 import { FirecrawlTransport, NativeTransport } from './transport.js';
 import type { Transport } from './types.js';
 
@@ -79,7 +82,7 @@ export class AlexandriaMcpServer {
     this.tools = [
       { name: 'alexandria_find', title: 'Find capabilities', description: 'Rank catalogued capabilities for a plain-language need. Free; no provider is called.', inputSchema: { type: 'object', properties: { need: { type: 'string', description: 'What you need, e.g. "wallet profile on solana" or "funding rounds for a company".' }, limit: { type: 'number', description: 'Max hits (default 10).' }, maxCredits: { type: 'number', description: 'Exclude capabilities costing more per call.' } }, required: ['need'], additionalProperties: false }, annotations: ro },
       { name: 'alexandria_plan', title: 'Plan a call', description: 'Candidates with price, required options and the recommended capability. Free.', inputSchema: { type: 'object', properties: { need: { type: 'string', description: 'The need to plan for.' } }, required: ['need'], additionalProperties: false }, annotations: ro },
-      { name: 'alexandria_execute', title: 'Execute a capability', description: 'Run one catalogued capability under the session credit budget. Over-budget calls are refused before any charge. Returns records and a receipt.', inputSchema: { type: 'object', properties: { capabilityId: { type: 'string', description: '<provider>/<capability>, from alexandria_plan.' }, need: { type: 'string', description: 'Alternative to capabilityId: resolve the need first.' }, options: { type: 'object', description: 'Provider options per the contract.' }, expectedRecords: { type: 'number', description: 'For per-record pricing: how many records you expect.' }, sipLayers: { type: 'array', description: 'SIP layers this record composes; emits the attestation block only when non-empty.' } }, additionalProperties: false }, annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true } },
+      { name: 'alexandria_execute', title: 'Execute a capability', description: 'Run one catalogued capability under the session credit budget. Options are validated and the price reserved before any charge; over-budget calls are refused. Returns records and a receipt.', inputSchema: { type: 'object', properties: { capabilityId: { type: 'string', description: '<provider>/<capability>, from alexandria_plan.' }, need: { type: 'string', description: 'Alternative to capabilityId: resolve the need first.' }, options: { type: 'object', description: 'Provider options per the contract.' }, expectedRecords: { type: 'number', description: 'Required for per-record pricing: the record ceiling to reserve credits for.' }, sipLayers: { type: 'array', description: 'SIP layers this record composes; emits the attestation block only on a successful call with records.' }, requestId: { type: 'string', description: 'Reuse the id of an uncertain earlier call to make the retry idempotent at the provider.' } }, additionalProperties: false }, annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true } },
       { name: 'alexandria_receipts', title: 'Read receipts', description: 'Receipts from the session ledger, newest first, with total credits spent.', inputSchema: { type: 'object', properties: { limit: { type: 'number', description: 'Max receipts (default 20).' } }, additionalProperties: false }, annotations: ro },
       { name: 'alexandria_experiments', title: 'List experiments', description: 'The Forge registry: open experiments with metric, falsifier, budget and close date. Overdue first.', inputSchema: { type: 'object', properties: { status: { type: 'string', description: 'Filter by status.' } }, additionalProperties: false }, annotations: ro },
     ];
@@ -101,13 +104,15 @@ export class AlexandriaMcpServer {
         if (args.options && typeof args.options === 'object') req.options = args.options as Record<string, unknown>;
         if (typeof args.expectedRecords === 'number') req.expectedRecords = args.expectedRecords;
         if (Array.isArray(args.sipLayers)) req.sipLayers = args.sipLayers.map(String);
+        if (typeof args.requestId === 'string') req.requestId = args.requestId;
         const res = await this.alexandria.execute(req);
         return { capabilityId: res.hit.capability.id, records: res.result.records, receipt: res.receipt, budget: res.budget };
       }
       case 'alexandria_receipts': {
-        const all = this.ledger.read().reverse();
+        const { receipts, truncatedTail } = this.ledger.readDetailed();
         const limit = typeof args.limit === 'number' ? args.limit : 20;
-        return { spent: this.ledger.spent(), receipts: all.slice(0, Math.max(1, limit)) };
+        const sessionId = this.alexandria.budget.sessionId;
+        return { sessionId, spentThisSession: this.ledger.spent(sessionId), spentAllSessions: this.ledger.spent(), truncatedTail, receipts: receipts.reverse().slice(0, Math.max(1, limit)) };
       }
       case 'alexandria_experiments': {
         const list = loadExperiments(this.experimentsPath);
@@ -167,16 +172,29 @@ export class AlexandriaMcpServer {
         .catch((err: unknown): JsonRpcResponse => ({ jsonrpc: '2.0', id: (request as JsonRpcRequest).id ?? null, error: { code: -32603, message: err instanceof Error ? err.message : String(err) } }))
         .then((response) => { if (response) process.stdout.write(JSON.stringify(response) + '\n'); });
     });
-    process.stderr.write(`[starlight-alexandria] MCP server started, budget ${this.alexandria.budget.maxCredits} credits, ledger ${this.ledger.path}\n`);
+    process.stderr.write(`[starlight-alexandria] MCP server started, session ${this.alexandria.budget.sessionId}, budget ${this.alexandria.budget.maxCredits} credits (${this.alexandria.budget.spent} spent), ledger ${this.ledger.path}\n`);
   }
 }
 
-export function createDefaultServer(): AlexandriaMcpServer {
-  const ledger = new ReceiptLedger(process.env.ALEXANDRIA_LEDGER ?? join(homedir(), '.starlight', 'alexandria', 'receipts.jsonl'));
+/** Parses ALEXANDRIA_MAX_CREDITS. A typo must stop the server, not silently disable the gate. */
+export function parseMaxCredits(raw: string | undefined, fallback = 200): number {
+  if (raw === undefined || raw.trim() === '') return fallback;
+  const value = Number(raw);
+  if (!/^\s*\d+(\.\d+)?\s*$/.test(raw) || !Number.isFinite(value) || value < 0) {
+    throw new Error(`ALEXANDRIA_MAX_CREDITS must be a non-negative number; got ${JSON.stringify(raw)}`);
+  }
+  return value;
+}
+
+export function createDefaultServer(env: NodeJS.ProcessEnv = process.env): AlexandriaMcpServer {
+  const ledger = new ReceiptLedger(env.ALEXANDRIA_LEDGER ?? join(homedir(), '.starlight', 'alexandria', 'receipts.jsonl'));
+  if (ledger.readDetailed().truncatedTail) process.stderr.write(`[starlight-alexandria] ledger ${ledger.path} ends in a cut-off line; it is ignored and the intact receipts are kept\n`);
   const transports: Transport[] = [new NativeTransport(REPO_ROOT)];
-  if (process.env.FIRECRAWL_API_KEY) transports.push(new FirecrawlTransport());
+  if (env.FIRECRAWL_API_KEY) transports.push(new FirecrawlTransport({ apiKey: env.FIRECRAWL_API_KEY }));
   else process.stderr.write('[starlight-alexandria] FIRECRAWL_API_KEY not set: only native providers will execute\n');
-  const alexandria = new Alexandria({ library: Library.fromFile(), transports, maxCredits: Number(process.env.ALEXANDRIA_MAX_CREDITS ?? 200), ledger });
+  const options: AlexandriaOptions = { library: Library.fromFile(), transports, maxCredits: parseMaxCredits(env.ALEXANDRIA_MAX_CREDITS), ledger };
+  if (env.ALEXANDRIA_SESSION) options.sessionId = env.ALEXANDRIA_SESSION;
+  const alexandria = new Alexandria(options);
   return new AlexandriaMcpServer({ alexandria, ledger });
 }
 

@@ -13,7 +13,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Capability, Catalog, FindHit, Provider, ProviderKind } from './types.js';
+import type { Capability, CapabilityOption, Catalog, FindHit, Provider, ProviderKind } from './types.js';
 
 type Loose<T> = { [K in keyof T]?: unknown };
 
@@ -102,7 +102,8 @@ function singular(t: string): string {
 export function scoreCapability(need: string, cap: Capability, provider: Provider): number {
   const terms = new Set(tokenize(need).map(singular));
   if (terms.size === 0) return 0;
-  const tagSet = new Set(cap.tags.map(singular));
+  // Tags are normalised exactly like the need, so `smart-money` meets "smart money".
+  const tagSet = new Set(cap.tags.flatMap((tag) => tokenize(tag)).map(singular));
   const nameSet = new Set(tokenize(cap.name).map(singular));
   const descSet = new Set(tokenize(`${cap.description} ${provider.description} ${provider.categories.join(' ')}`).map(singular));
   let score = 0;
@@ -112,6 +113,21 @@ export function scoreCapability(need: string, cap: Capability, provider: Provide
     else if (descSet.has(t)) score += 1;
   }
   return score / terms.size;
+}
+
+function isPresent(value: unknown): boolean {
+  return value !== undefined && value !== null && value !== '';
+}
+
+function matchesType(value: unknown, type: CapabilityOption['type']): boolean {
+  switch (type) {
+    case 'string': return typeof value === 'string';
+    case 'number': return typeof value === 'number' && Number.isFinite(value);
+    case 'boolean': return typeof value === 'boolean';
+    case 'string[]': return Array.isArray(value) && value.every((v) => typeof v === 'string');
+    case 'object': return typeof value === 'object' && value !== null && !Array.isArray(value);
+    default: return true;
+  }
 }
 
 export interface FindOptions {
@@ -171,13 +187,33 @@ export class Library {
     return hit.capability.perRecord ? hit.capability.creditsCost * Math.max(1, records) : hit.capability.creditsCost;
   }
 
-  /** Checks `requiresOneOf` groups. Returns the first unmet group, or null. */
+  /** Checks `requiresOneOf` groups. `null`, `undefined` and `''` count as missing. Returns the first unmet group, or null. */
   unmetRequirement(capabilityId: string, options: Record<string, unknown>): readonly string[] | null {
     const hit = this.byCapability.get(capabilityId);
     if (!hit) throw new Error(`Unknown capability: ${capabilityId}`);
     for (const group of hit.capability.requiresOneOf ?? []) {
-      if (!group.some((name) => options[name] !== undefined && options[name] !== '')) return group;
+      if (!group.some((name) => isPresent(options[name]))) return group;
     }
     return null;
+  }
+
+  /**
+   * Validates supplied options against the capability contract before anything is charged:
+   * required groups, declared types and `oneOf` values. Options the contract does not declare
+   * pass through, because the catalogue lists a provider's options selectively.
+   */
+  validateOptions(capabilityId: string, options: Record<string, unknown>): string[] {
+    const hit = this.byCapability.get(capabilityId);
+    if (!hit) throw new Error(`Unknown capability: ${capabilityId}`);
+    const problems: string[] = [];
+    const unmet = this.unmetRequirement(capabilityId, options);
+    if (unmet) problems.push(`needs one of: ${unmet.join(', ')}`);
+    for (const opt of hit.capability.options ?? []) {
+      const value = options[opt.name];
+      if (!isPresent(value)) continue;
+      if (!matchesType(value, opt.type)) problems.push(`${opt.name} must be ${opt.type}`);
+      else if (opt.oneOf && !opt.oneOf.includes(String(value))) problems.push(`${opt.name} must be one of ${opt.oneOf.join('|')}`);
+    }
+    return problems;
   }
 }

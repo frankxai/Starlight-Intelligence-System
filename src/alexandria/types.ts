@@ -72,6 +72,15 @@ export interface AlexandriaCall {
   capability: string;
   options?: Record<string, unknown>;
   version?: string;
+  /** Idempotency key. A retry of an uncertain call reuses the same id and payload. */
+  requestId?: string;
+}
+
+export interface CallError {
+  code: string;
+  message: string;
+  /** Safe provider metadata, e.g. Firecrawl's `requiresAction` for a terms gate. Never acted on automatically. */
+  details?: unknown;
 }
 
 export interface CallResult {
@@ -81,7 +90,8 @@ export interface CallResult {
   records: unknown[];
   creditsCost: number;
   observedAt: string;
-  error?: { code: string; message: string };
+  requestId?: string;
+  error?: CallError;
 }
 
 export interface Transport {
@@ -92,12 +102,19 @@ export interface Transport {
 export interface Receipt {
   id: string;
   issuedAt: string;
+  /** Budget session the call was charged to. Spend is restored per session, never across the whole ledger. */
+  sessionId: string;
+  /** Idempotency key sent to the provider, when the transport supports one. */
+  requestId?: string;
   provider: string;
   capability: string;
   options: Record<string, unknown>;
   recordCount: number;
   /** sha256 over the canonical JSON of the records. */
   contentHash: string;
+  /** Credits reserved against the budget before the call ran. */
+  reserved: number;
+  /** Credits the provider actually charged. Greater than `reserved` means the declared record ceiling was exceeded. */
   creditsCost: number;
   source: string;
   attribution?: string;
@@ -105,13 +122,15 @@ export interface Receipt {
   sipLayers: readonly string[];
   /** The declared "Built on SIP" block, present only when `sipLayers` is non-empty. */
   attestation?: string;
-  error?: { code: string; message: string };
+  error?: CallError;
 }
 
 export interface Budget {
+  /** Identifies the session whose spend this budget tracks. */
+  sessionId: string;
   /** Hard ceiling in Firecrawl credits for this session. */
   maxCredits: number;
-  /** Credits already spent in this session. */
+  /** Credits spent or reserved in this session. */
   spent: number;
 }
 

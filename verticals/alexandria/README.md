@@ -10,15 +10,15 @@
 
 ## What this vertical is
 
-Agents are only as good as what they can look up and prove. Today the estate looks things up through forty ad-hoc tools and proves nothing: a brief cites "on-chain data" with no record, a claim about a company has no filing behind it, a research synthesis names papers nobody fetched. Alexandria replaces that with one door:
+Agents are only as good as what they can look up and prove. Before this vertical, no path in this repository attached a record-level receipt to a looked-up fact: a brief could cite "on-chain data" with no record, a claim about a company could have no filing behind it, a research synthesis could name papers nobody fetched (the metrics ledger in `metrics/current.json` is the one surface that already carries `last_verified` and a source, and it is the first native provider here). Alexandria gives those lookups one door:
 
 ```
 need ──▶ Library.plan() ──▶ price ──▶ budget gate ──▶ transport ──▶ records + receipt ──▶ ledger
 ```
 
-- **Library** — `verticals/alexandria/catalog/providers.json`. Nineteen providers today: four native (vaults, metrics ledger, research notes, vertical registry) and fifteen from Firecrawl's Alexandria catalogue (on-chain trading, 13F and insider ownership, fund-letter theses, funding rounds, company and people enrichment, arXiv and Semantic Scholar, Federal Reserve series, Instagram/TikTok index, podcast advertising, web traffic, search trends). Each capability carries its real per-call credit price, its required options and a tag vocabulary the router scores against.
-- **Router** — `src/alexandria/router.ts`. Resolves a need to a capability deterministically, checks required options, prices the call, refuses anything over the session budget *before* a transport is touched, and returns records plus a receipt.
-- **Receipts** — `src/alexandria/receipts.ts`. sha256 over canonical JSON of the records, provider source, attribution, cost, and an earned "Built on SIP" block only when the caller declares the layers the record composed. Append-only JSONL ledger; the budget resumes from it.
+- **Library** — `verticals/alexandria/catalog/providers.json`. Twenty providers and forty-seven capabilities as of 2026-10-12 (the conformance test asserts these figures against the file): four native (vaults, metrics ledger, research notes, vertical registry) and sixteen from Firecrawl's Alexandria catalogue (on-chain trading, 13F and insider ownership, fund-letter theses, funding rounds, company and people enrichment, arXiv and Semantic Scholar, Federal Reserve series, Instagram/TikTok index, podcast advertising, web traffic, search trends). Each capability carries its real per-call credit price, its required options and a tag vocabulary the router scores against.
+- **Router** — `src/alexandria/router.ts`. Resolves a need to a capability deterministically, validates options against the contract, prices the call and reserves that price against the session budget *before* a transport is touched (per-record capabilities must declare a record ceiling), reconciles the reservation with what the provider charged, and returns records plus a receipt. Spend is restored per budget session from the ledger; a new process starts a fresh session unless `ALEXANDRIA_SESSION` names one to resume.
+- **Receipts** — `src/alexandria/receipts.ts`. sha256 over canonical JSON of the records, provider source, attribution, reserved and charged credits, the provider request id, and an earned "Built on SIP" block only when the caller declares the layers the record composed and the call succeeded with records. Append-only JSONL ledger; a cut-off final line is reported and skipped, never fatal.
 - **Forge** — `verticals/alexandria/experiments/registry.json`. Every product line, provider and revenue claim starts as an experiment with one metric, one falsifier, a budget with a unit and a close date. `proven` and `falsified` require receipt ids.
 - **MCP server** — `src/alexandria/mcp.ts`. Five tools (`alexandria_find`, `alexandria_plan`, `alexandria_execute`, `alexandria_receipts`, `alexandria_experiments`) over stdio, so Claude Code, Codex, Gemini CLI and managed agents all go through the same budget gate.
 
@@ -51,19 +51,22 @@ Applied here: (a) the catalogue is curated by someone who runs the downstream sy
 ```bash
 # plan and execute from any MCP client
 node --import tsx src/alexandria/mcp.ts          # or dist/alexandria/mcp.js after npm run build
-# env: FIRECRAWL_API_KEY (optional), ALEXANDRIA_MAX_CREDITS (default 200), ALEXANDRIA_LEDGER
+# env: FIRECRAWL_API_KEY (optional), ALEXANDRIA_MAX_CREDITS (default 200), ALEXANDRIA_LEDGER, ALEXANDRIA_SESSION (resume a budget session)
 ```
 
 From code:
 
 ```ts
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 import { Alexandria, Library, NativeTransport, FirecrawlTransport, ReceiptLedger } from './dist/alexandria/index.js'; // package export deferred to the next Foundry toolchain relock
 
 const alexandria = new Alexandria({
   library: Library.fromFile(),
   transports: [new NativeTransport(repoRoot), new FirecrawlTransport()],
   maxCredits: 100,
-  ledger: new ReceiptLedger('~/.starlight/alexandria/receipts.jsonl'),
+  // Node does not expand `~`; build the path from the home directory.
+  ledger: new ReceiptLedger(join(homedir(), '.starlight', 'alexandria', 'receipts.jsonl')),
 });
 const plan = alexandria.plan('whale wallets on solana this week');
 const { result, receipt } = await alexandria.execute({ capabilityId: plan.recommended!, options: { chain: 'sol' }, sipLayers: ['attestation'] });

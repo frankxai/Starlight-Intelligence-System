@@ -240,7 +240,7 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **Class:** sovereign domain sub-stack (reference vertical) — fourth reference; first to ship runtime before commands because the budget gate is the product.
 - **Domain:** Catalogued intelligence with receipts — typed capabilities under published contracts (Firecrawl Alexandria + the estate's own corpus), deterministic routing, price-before-run, receipt-after-run, earned SIP attestation, signed resale. Six Houses (Library · Scribe · Synthesis · Exchange · Forge · Treasury).
 - **Owner:** open reference (forkable). Composes under Second Brain IS; composes with Wealth IS (Crypto IS Houses), Creator IS, Code IS, Starlight Orchestrator.
-- **Status:** `v0.1 — runtime (src/alexandria), catalogue (19 providers / 44 capabilities / 24 connectors), MCP server (5 tools), 6 House cards, 5 Forge experiments, /alexandria command. No revenue, partnership or pilot claimed.`
+- **Status:** `v0.1 — runtime (src/alexandria), catalogue (20 providers / 47 capabilities / 24 connectors, counted from the file by test/v93-alexandria.test.ts, as of 2026-10-12), MCP server (5 tools), 6 House cards, 5 Forge experiments, /alexandria command. No revenue, partnership or pilot claimed.`
 - **Primary repo:** `verticals/alexandria/` + `src/alexandria/` in `frankxai/Starlight-Intelligence-System` (extraction target on Exchange proof: `github.com/frankxai/starlight-alexandria`).
 - **Canon:** declines.
 - **Compounds:** receipt graph (verifiable records) + catalogue curation + every downstream IS that cites records.
