@@ -47,10 +47,10 @@ Google Jules executes inside Google's cloud sandboxes. To make Jules autonomous,
                              Council Ratified (100% Green)
                                          ▼
                   ┌──────────────────────────────────────────────┐
-                  │         Autonomous Auto-Merge & Vault        │
-                  │   - gh pr merge --squash --delete-branch     │
-                  │   - Close GitHub Issue with Attestation      │
-                  │   - Append Receipt to Starlight Vault        │
+                  │              Review, then land               │
+                  │   - Record the pull request. Do not undraft  │
+                  │   - Merge only after accept and live checks  │
+                  │   - frankx.ai production stays protected     │
                   └──────────────────────────────────────────────┘
 ```
 
