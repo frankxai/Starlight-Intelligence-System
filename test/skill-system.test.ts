@@ -213,6 +213,15 @@ describe("Starlight Universal Skill Engine", () => {
 
       assert.ok(report.commercialStrategy.freeTierFeatures.length > 0);
       assert.ok(report.commercialStrategy.proTierFeatures.length > 0);
+
+      // Creator Revenue Share (85/15) & Net MoR Payouts
+      assert.equal(report.revenueShare.creatorSharePercent, 85);
+      assert.equal(report.revenueShare.platformSharePercent, 15);
+      assert.ok(report.revenueShare.netCreatorPayoutUSD.builderTier > 0);
+      assert.ok(report.revenueShare.netCreatorPayoutUSD.proTier > report.revenueShare.netCreatorPayoutUSD.builderTier);
+      assert.ok(report.revenueShare.netCreatorPayoutUSD.teamMonthly > 50);
+      assert.ok(report.revenueShare.projectedMonthlyRevenueUSD.conservative50Users > 0);
+      assert.ok(report.revenueShare.projectedMonthlyRevenueUSD.scale1000Users > report.revenueShare.projectedMonthlyRevenueUSD.conservative50Users);
     });
   });
 

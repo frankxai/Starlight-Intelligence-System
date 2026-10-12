@@ -164,6 +164,26 @@ export interface SuggestedPricingTiers {
   enterpriseAnnual: number;  // e.g. $2,400/yr
 }
 
+export interface CreatorRevenueShare {
+  creatorSharePercent: number; // e.g. 85
+  platformSharePercent: number; // e.g. 15
+  polarMoRFeePercent: number; // e.g. 4.0
+  polarMoRFeeFixedUSD: number; // e.g. 0.40
+  stripeFeePercent: number; // e.g. 2.9
+  stripeFeeFixedUSD: number; // e.g. 0.30
+  netCreatorPayoutUSD: {
+    builderTier: number;
+    proTier: number;
+    teamMonthly: number;
+    enterpriseAnnual: number;
+  };
+  projectedMonthlyRevenueUSD: {
+    conservative50Users: number;
+    moderate250Users: number;
+    scale1000Users: number;
+  };
+}
+
 export interface ValuationReport {
   skillName: string;
   evaluatedAt: string;
@@ -171,6 +191,7 @@ export interface ValuationReport {
   metrics: ValuationMetrics;
   valuationIndex: number;
   suggestedPricing: SuggestedPricingTiers;
+  revenueShare: CreatorRevenueShare;
   valueBreakdown: {
     depthScoreContribution: number;
     complexityMultiplier: number;

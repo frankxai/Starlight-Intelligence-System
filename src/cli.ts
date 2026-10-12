@@ -2173,6 +2173,15 @@ function cmdSkill(
         console.log(`  Pro / Agency Tier:     $${report.suggestedPricing.proTierMSRP} (Advanced toolplane & evals)`);
         console.log(`  Team Swarm Monthly:    $${report.suggestedPricing.teamTierMonthly}/mo (Multi-agent fleet access)`);
         console.log(`  Enterprise Sovereign:  $${report.suggestedPricing.enterpriseAnnual}/yr (SLA & private deployment)\n`);
+        console.log(`Creator Economics (${report.revenueShare.creatorSharePercent}% Net Split / Polar MoR):`);
+        console.log(`  Net Payout (Builder):  $${report.revenueShare.netCreatorPayoutUSD.builderTier} / sale`);
+        console.log(`  Net Payout (Pro):      $${report.revenueShare.netCreatorPayoutUSD.proTier} / sale`);
+        console.log(`  Net Payout (Team):     $${report.revenueShare.netCreatorPayoutUSD.teamMonthly} / mo`);
+        console.log(`  Net Payout (Ent):      $${report.revenueShare.netCreatorPayoutUSD.enterpriseAnnual.toLocaleString()} / yr\n`);
+        console.log(`Projected Recurring Income:`);
+        console.log(`  50 Active Users:       $${report.revenueShare.projectedMonthlyRevenueUSD.conservative50Users.toLocaleString()} / mo`);
+        console.log(`  250 Active Users:      $${report.revenueShare.projectedMonthlyRevenueUSD.moderate250Users.toLocaleString()} / mo`);
+        console.log(`  1,000 Active Users:    $${report.revenueShare.projectedMonthlyRevenueUSD.scale1000Users.toLocaleString()} / mo\n`);
         console.log(`Recommended License:     ${report.commercialStrategy.recommendedLicense}`);
         console.log(`══════════════════════════════════════════════════════════════════\n`);
       } catch (err) {

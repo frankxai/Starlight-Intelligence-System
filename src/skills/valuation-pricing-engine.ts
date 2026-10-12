@@ -13,6 +13,7 @@ import type {
   ValuationReport,
   ValuationMetrics,
   SuggestedPricingTiers,
+  CreatorRevenueShare,
   SkillMaturityStage,
 } from "./types.js";
 import { estimateTokenCount } from "./skill-matrix.js";
@@ -106,7 +107,51 @@ export function auditSkillValuation(
     enterpriseAnnual: Math.min(9600, Math.max(999, Math.round(annualLaborSavingsUSD * 0.15))),
   };
 
-  // 8. Breakdown Contributions
+  // 8. Creator Revenue Share & MoR Take-Home Calculation (85 / 15 Split)
+  const creatorSharePercent = 85;
+  const platformSharePercent = 15;
+  const polarMoRFeePercent = 4.0;
+  const polarMoRFeeFixedUSD = 0.40;
+  const stripeFeePercent = 2.9;
+  const stripeFeeFixedUSD = 0.30;
+
+  const calcNetCreator = (grossUSD: number, isMoR: boolean = true): number => {
+    if (grossUSD <= 0) return 0;
+    const procFee = isMoR
+      ? grossUSD * (polarMoRFeePercent / 100) + polarMoRFeeFixedUSD
+      : grossUSD * (stripeFeePercent / 100) + stripeFeeFixedUSD;
+    const netAfterProc = Math.max(0, grossUSD - procFee);
+    const creatorNet = netAfterProc * (creatorSharePercent / 100);
+    return Number(creatorNet.toFixed(2));
+  };
+
+  const netCreatorPayoutUSD = {
+    builderTier: calcNetCreator(suggestedPricing.builderTierMSRP, true),
+    proTier: calcNetCreator(suggestedPricing.proTierMSRP, true),
+    teamMonthly: calcNetCreator(suggestedPricing.teamTierMonthly, true),
+    enterpriseAnnual: calcNetCreator(suggestedPricing.enterpriseAnnual, false),
+  };
+
+  const avgNetPerUser = (netCreatorPayoutUSD.proTier * 0.7) + (netCreatorPayoutUSD.teamMonthly * 0.3);
+
+  const projectedMonthlyRevenueUSD = {
+    conservative50Users: Math.round(50 * avgNetPerUser),
+    moderate250Users: Math.round(250 * avgNetPerUser),
+    scale1000Users: Math.round(1000 * avgNetPerUser),
+  };
+
+  const revenueShare: CreatorRevenueShare = {
+    creatorSharePercent,
+    platformSharePercent,
+    polarMoRFeePercent,
+    polarMoRFeeFixedUSD,
+    stripeFeePercent,
+    stripeFeeFixedUSD,
+    netCreatorPayoutUSD,
+    projectedMonthlyRevenueUSD,
+  };
+
+  // 9. Breakdown Contributions
   const valueBreakdown = {
     depthScoreContribution: capabilityDepthScore,
     complexityMultiplier: executionComplexityMultiplier,
@@ -114,7 +159,7 @@ export function auditSkillValuation(
     tokenEfficiencyBonus: tokenEfficiencyRatio,
   };
 
-  // 9. Commercial Packaging Recommendations
+  // 10. Commercial Packaging Recommendations
   const commercialStrategy = {
     freeTierFeatures: [
       "Core instructions and single-step prompt triggers",
@@ -145,6 +190,7 @@ export function auditSkillValuation(
     metrics,
     valuationIndex,
     suggestedPricing,
+    revenueShare,
     valueBreakdown,
     commercialStrategy,
   };
