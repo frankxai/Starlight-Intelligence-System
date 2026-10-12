@@ -1,5 +1,5 @@
 {
-  "lastTick": "2026-10-12T10:40:37.193Z",
+  "lastTick": "2026-10-12T11:33:23.999Z",
   "sessions": {
     "309247804006537799": {
       "id": "309247804006537799",
@@ -291,550 +291,6 @@
       "merged": false,
       "lastSeen": "2026-10-11T22:31:09.094Z"
     },
-    "3708283880110590357": {
-      "id": "3708283880110590357",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "Issue #98: P4: cross-family review gate as a mesh member, plus #86 follow-ups\n\n**Goal:** every NEEDS-CROSS-FAMILY PR gets a second-family verdict automatically, with a receipt.\n\n**Do (after #86 merges):**\n- Add a `review` mesh member that picks lean local Codex when 2.5 GiB or more is free, otherwise Grok in plan mode with no tools. Prototype: `frankxai/agentic-ops/scripts/review/grok-review.sh`.\n- Post `CROSS-FAMILY REVIEW … head=<sha>` and write a receipt to the dispatch dir.\n- For PRs with more than 300 files, use a risky-paths patch pack, because the diff API returns 4",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:33:36.081Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 3,
-        "linesAdded": 243,
-        "linesRemoved": 0
-      },
-      "prCreated": true,
-      "prNumber": 109,
-      "mergedPr": 109
-    },
-    "16530575980327879605": {
-      "id": "16530575980327879605",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "Revise previous implementation for Issue #103: GenCreator Social: integrate ACOS routing, native Producer and recoverable editions\n\nKeep one GenCreator creator experience with reusable ACOS commands and portable methods owned by gencreator-skills. The current ACOS company projection already belongs to GenCreator; repository consolidation and URL renaming are outside this slice.\n\nImplement the existing `/generate-social` workflow using the installed GenCreator Producer, source-linked complete drafts, exact-revision checks and a durable unsent packet. Replace fixed machine paths, universal posting times and invented completion.\n\nPREVIOUS QUARANTINE VIOLATIONS (YOU MUST RESOLVE THESE):\n- Diff lines exceeded: 1557 > 1500\n\nSTRICT INSTRUCTIONS: Do not modify .github/workflows. Keep diff strictly under 300 lines and max 4 files.",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:37:25.891Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 3,
-        "linesAdded": 216,
-        "linesRemoved": 0
-      },
-      "prCreated": true,
-      "prNumber": "112",
-      "mergedPr": "112"
-    },
-    "5390133822303183052": {
-      "id": "5390133822303183052",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "Issue #97: Agent OS: eval harness v2 — fresh-session runs, cross-family grading, regression gate\n\n## Outcome\nAgent changes are graded like code. Each eval case runs in a fresh headless session and is graded by a different model family. Results land in a log, and CI blocks a change that lowers an agent's last passing score.\n\n## Why\nThe first native runs (logged in `evals/agents/RESULTS.md`) exposed three problems:\n- A running session caches each agent definition at first load, so three \"native\" re-runs tested the old prompt. A fresh session per case avoids that.\n- Grading was done by the same",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:43:30.321Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 180,
-        "linesRemoved": 0
-      },
-      "mergedPr": "110"
-    },
-    "5108873403655975592": {
-      "id": "5108873403655975592",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:44:08.948Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 50,
-        "linesRemoved": 1
-      },
-      "prCreated": true,
-      "prNumber": "113",
-      "mergedPr": "113"
-    },
-    "14274449559310235274": {
-      "id": "14274449559310235274",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:44:08.948Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 3,
-        "linesAdded": 278,
-        "linesRemoved": 1
-      }
-    },
-    "1303407866400358288": {
-      "id": "1303407866400358288",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "Issue #96: Agent OS: adopter path in CI (init → compile → audit → render)\n\n## Outcome\nThe adopter path stays green: a CI job does what a new user does (create an instance, compile Generals, audit, render) and fails when any step breaks.\n\n## Why\n`docs/agent-os/ADOPT.md` promises \"from a clone to your own Generals in about ten minutes\". Nothing checks that promise end to end. Today the template only compiles inside the unit tests' temp folders.\n\n## Task contract\n- **Repo:** frankxai/agentic-creator-os\n- **Issue:** this one\n- **Owner lane:** Agent OS (frank-f1); executed ",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:46:40.837Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 48,
-        "linesRemoved": 1
-      }
-    },
-    "4252540181859075286": {
-      "id": "4252540181859075286",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "Issue #95: Agent OS: visual-check v2 — accessibility tree, WCAG 2.5.8 target size, contrast, persistent-finding watch\n\n## Outcome\n`scripts/visual-check.mjs` stops guessing. Accessible names and visibility come from the browser's accessibility tree. Target size follows WCAG 2.2 2.5.8, exceptions included. Text contrast is measured. The weekly watch files an issue only for findings that persist.\n\n## Why\nThe first live runs over 7 brand sites hit two false positives, both from heuristics:\n- a visually hidden skip link reported as covered (fixed in `cb02621`);\n- links inside a closed `<details>` menu reported as unn",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:49:29.399Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 219,
-        "linesRemoved": 11
-      },
-      "prCreated": true,
-      "prNumber": "114",
-      "mergedPr": "114"
-    },
-    "4784341197799628294": {
-      "id": "4784341197799628294",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "Issue #87: Package Agentic Creator OS as a downloadable product with licence keys\n\n## Outcome\r\nA buyer installs it into their own Claude Code and reaches a working result in under 15 minutes.\r\n\r\n## Exit proof\r\nPolar product with files and licence-key benefit; install verified on a clean machine\r\n\r\n## Done when\r\n- [ ] Release zip built from a tagged commit; README install path tested on a clean profile\r\n- [ ] Version SSOT and doctor pass (see #40)\r\n- [ ] Polar draft product gets files and licence-key benefit attached\r\n- [ ] Buyer-simulation transcript filed; every defect fixed ",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:51:28.003Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "quarantined": true,
-      "quarantineReasons": [
-        "Heading appears to use Title Case instead of Sentence Case: \"Buyer Simulation Transcript: Agentic Creator OS Installation\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 1: Fulfillment & Artifact Delivery\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 2: Unpacking Package in Clean Environment\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 3: Dry-Run Preflight Inspection\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 5: System Health Check & Mesh Doctor\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 6: Public Surface & Version SSOT Verification\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Polar Product Specification: Agentic Creator OS\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"4. Buyer Onboarding & Installation Path\""
-      ]
-    },
-    "9391852566450233834": {
-      "id": "9391852566450233834",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "description": "Issue #351: [Epic] Starlight Sovereign Marketplace: Curated Hub for Third-Party Skills, Harness Configs & Attested Packs\n\n## Summary\nArchitect and implement the Starlight Marketplace distribution model:\n- Community publishing protocol for harness configurations (Claude Code, Grok, Windsurf, Cursor, Antigravity), agent skills, and vertical packs.\n- Sovereign verification: SIP § 1 attestation validation, cryptographic signature verification, and security linting before inclusion.\n- Starlight curation & distribution registry with tier flags (free / open-core vs verified paid/subscription packs).\n\n### Rationale & SOUL ",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:55:25.106Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:36:07.619Z",
-      "stats": {
-        "filesChanged": 4,
-        "linesAdded": 336,
-        "linesRemoved": 25
-      },
-      "prCreated": true,
-      "prNumber": "376",
-      "mergedPr": "376"
-    },
-    "9198500201680787735": {
-      "id": "9198500201680787735",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "description": "Issue #350: [Epic] Starlight Queen Orchestration: Autonomous Single-Operator Fleet Engine & Fail-Closed Gateways\n\n## Summary\nImplement Crystalite Queen as the practical single-operator layer that handles background operations the human is not thinking about:\n- Continuous proactive health monitoring across fleet nodes.\n- Automated memory consolidation, dreaming loops, and promotion triage.\n- Cross-runtime task routing (Claude Code, Grok, Codex, Antigravity, OpenAgent).\n- Fail-closed escalation when irreversible actions (money, high-risk code, external deployments) are encountered.\n\n### Rationale & SOUL Invar",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T20:57:26.897Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:36:07.619Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 325,
-        "linesRemoved": 2
-      },
-      "prCreated": true,
-      "prNumber": "377",
-      "mergedPr": "377"
-    },
-    "4567846760345840955": {
-      "id": "4567846760345840955",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "Revise previous implementation for Issue #87: Package Agentic Creator OS as a downloadable product with licence keys\n\n## Outcome\r\nA buyer installs it into their own Claude Code and reaches a working result in under 15 minutes.\r\n\r\n## Exit proof\r\nPolar product with files and licence-key benefit; install verified on a clean machine\r\n\r\n## Done when\r\n- [ ] Release zip built from a tagged commit; README install path tested on a clean profile\r\n- [ ] Version SSOT and doctor pass (see #40)\r\n- [ ] Polar draft product gets files and licence-key benefit attached\r\n- [ ] Buyer-simulation transcript filed; every defect fixed .\n\nPREVIOUS QUARANTINE VIOLATIONS (YOU MUST RESOLVE THESE):\n- Heading appears to use Title Case instead of Sentence Case: \"Buyer Simulation Transcript: Agentic Creator OS Installation\"\n- Heading appears to use Title Case instead of Sentence Case: \"Step 1: Fulfillment & Artifact Delivery\"\n- Heading appears to use Title Case instead of Sentence Case: \"Step 2: Unpacking Package in Clean Environment\"\n- Heading appears to use Title Case instead of Sentence Case: \"Step 3: Dry-Run Preflight Inspection\"\n- Heading appears to use Title Case instead of Sentence Case: \"Step 5: System Health Check & Mesh Doctor\"\n- Heading appears to use Title Case instead of Sentence Case: \"Step 6: Public Surface & Version SSOT Verification\"\n- Heading appears to use Title Case instead of Sentence Case: \"Polar Product Specification: Agentic Creator OS\"\n- Heading appears to use Title Case instead of Sentence Case: \"4. Buyer Onboarding & Installation Path\"\n\nSTRICT INSTRUCTIONS: Do not modify .github/workflows. Keep diff strictly under 300 lines and max 4 files.",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T21:00:20.247Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 4,
-        "linesAdded": 185,
-        "linesRemoved": 4
-      },
-      "mergedPr": "111"
-    },
-    "7621117991654474164": {
-      "id": "7621117991654474164",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T21:01:18.441Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 4,
-        "linesAdded": 217,
-        "linesRemoved": 2
-      }
-    },
-    "16869413129102491994": {
-      "id": "16869413129102491994",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "description": "Issue #349: [Epic] Robot Fleet Continuity: Unified Starlight Kernel for Embodied & Autonomous Agent Fleets\n\n## Summary\nBridge multi-agent cognitive fleets and physical/robotic fleets as a continuous state and knowledge problem:\n- Same core cognitive kernel (SIP, memory vaults, goal checklists, Sentinel audit).\n- Actuator abstraction: virtual agents (code, text, browser) vs physical actuators (ROS2, Zenoh, embedded GPIO, spatial teleoperation).\n- Spatial/state memory preservation across agent handoffs and physical embodiment shifts.\n\n### Rationale & SOUL Invariants\n- Invariant 1: *Sovereignty before co",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T21:09:26.966Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:36:07.619Z",
-      "stats": {
-        "filesChanged": 3,
-        "linesAdded": 276,
-        "linesRemoved": 0
-      }
-    },
-    "12545854460286962616": {
-      "id": "12545854460286962616",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "description": "Issue #348: [Epic] Sovereign Vault Durability: Local, Managed Cloud, and Blockchain-Anchored Permanence\n\n## Summary\nIntegrate 3-tier sovereign storage durability into the Starlight Intelligence System:\n1. **Tier 1 - Sovereign Local**: Local SQLite FTS5 + append-only JSONL event logs (zero network dependency).\n2. **Tier 2 - Managed Cloud**: Encrypted multi-node sync and high-availability backup with continuous replication.\n3. **Tier 3 - Blockchain-Anchored Permanence**: Immutable decentralized storage (Arweave / IPFS / Filecoin) and cryptographic proof-of-state anchoring for Horizon and Memory Vault",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T21:10:40.622Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:36:07.619Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 215,
-        "linesRemoved": 21
-      }
-    },
-    "15477291931593447694": {
-      "id": "15477291931593447694",
-      "repo": "frankxai/suno-mcp-ser…",
-      "description": "# Jules working cardThere is one Queen. Codex reviews sourc…",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T22:16:08.958Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "quarantined": true,
-      "quarantineReasons": [
-        "Heading appears to use Title Case instead of Sentence Case: \"Independent Release Orchestration Review Report: @frankxai/suno-mcp-server PR #9\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Reconciliation of Prior Rejection Claims\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Static Review Findings & Architecture Analysis\""
-      ]
-    },
-    "2061604662235795010": {
-      "id": "2061604662235795010",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "description": "Issue #329: Release: verify SIS scope migration and sequence the three-namespace npm strategy\n\n## Outcome\n\nPrepare a safe, reproducible first release of @starlight-intelligence/system and its legacy migration, then advance the three-scope package strategy by dependency order. This issue records the checked plan; it does not establish publish readiness or authorize unattended ecosystem releases.\n\nSource: Frank's comprehensive npm audit and architecture request, 10 October 2026.\n\n## Verified baseline\n\nPublic npm registry queried directly on 10 October 2026:\n- maintainer:frankxai returns 40 ",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T22:31:41.405Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:36:07.619Z",
-      "stats": {
-        "filesChanged": 0,
-        "linesAdded": 0,
-        "linesRemoved": 0
-      }
-    },
-    "15477529563547739293": {
-      "id": "15477529563547739293",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "description": "Issue #323: Reconcile label PR261 with October studio source without duplicating runtimes\n\nCurrent read: label operating PR #261 remains draft/unmerged and reports mergeable=false; October operated studio source lives in frankxai/music-intelligence-os PR #4 and portable execution/customer distribution in frankxai/agentic-music-producer-os.\n\nAcceptance:\n- Inspect current main and resolve PR261 conflicts in an isolated checkout, preserving registries, canon and truthful no-simulation safeguards.\n- Retain label policies/Notion bindings here; point execution to the existing operated core ",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T22:31:48.008Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:36:07.619Z",
-      "stats": {
-        "filesChanged": 4,
-        "linesAdded": 98,
-        "linesRemoved": 0
-      }
-    },
-    "7391754930379430169": {
-      "id": "7391754930379430169",
-      "repo": "frankxai/starlight-memory",
-      "description": "Independent Google Jules review for frankxai/starlight-memo…",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T22:49:18.689Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "quarantined": true,
-      "quarantineReasons": [
-        "Heading appears to use Title Case instead of Sentence Case: \"Code Review Report: Frontmatter Escaping & Metadata Integrity (`c300983`)\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"2. Examination of Critical Attack Vectors & Edge Cases\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"5. Summary Verdict & Remaining Release Gates\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Remaining Gates Prior to Production Release:\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Frontmatter Test Execution and Verification Report: Commit `c300983`\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"3. Seven Native Suite Executions\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"4. Execution Limitations & Host Environment\""
-      ]
-    },
-    "12036481859216697405": {
-      "id": "12036481859216697405",
-      "repo": "frankxai/starlight-memory",
-      "description": "Independent report-only review for frankxai/starlight-memor…",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T22:55:18.672Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 215,
-        "linesRemoved": 0
-      },
-      "prCreated": true,
-      "prNumber": "34",
-      "mergedPr": "34"
-    },
-    "10778572441099824374": {
-      "id": "10778572441099824374",
-      "repo": "frankxai/starlight-memory",
-      "description": "Corrective independent Google Jules report-only review of f…",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T23:01:18.645Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 5,
-        "linesAdded": 1366,
-        "linesRemoved": 6
-      },
-      "prCreated": true,
-      "prNumber": "35",
-      "mergedPr": "35"
-    },
-    "3833834989643048305": {
-      "id": "3833834989643048305",
-      "repo": "frankxai/starlight-memory",
-      "description": "Corrective independent Google Jules review of frankxai/star…",
-      "status": "Completed",
-      "firstSeen": "2026-10-11T23:11:19.296Z",
-      "verified": true,
-      "merged": true,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 293,
-        "linesRemoved": 0
-      },
-      "prCreated": true,
-      "prNumber": "36",
-      "mergedPr": "36"
-    },
-    "6238701602501703783": {
-      "id": "6238701602501703783",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 5,
-        "linesAdded": 182,
-        "linesRemoved": 8
-      },
-      "lastSeen": "2026-10-12T10:40:11.848Z"
-    },
-    "3732313024570368075": {
-      "id": "3732313024570368075",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 4,
-        "linesAdded": 36,
-        "linesRemoved": 12
-      },
-      "lastSeen": "2026-10-12T10:40:11.848Z"
-    },
-    "6523706335395928713": {
-      "id": "6523706335395928713",
-      "repo": "frankxai/agentic-creator-os",
-      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": false,
-      "merged": false,
-      "quarantined": true,
-      "quarantineReasons": [
-        "Diff lines exceeded: 1557 > 1500",
-        "Banned AI prestige word/slop detected: \"game-changer\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Content Generation Process & Exact Revision Linking\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 1: Analyze Source Article & Capture Revision\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 2: Check Existing Packet & Recoverability\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 3: Generate Platform Content\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 4: Package Durable Unsent Packet\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"📱 Social Content Generation System Activated\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 1: Scan Ready Articles & Exact Revision Checks\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 2: Load Learning Data & Recoverable Editions\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 3: Generate Twitter Content\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 4: Generate LinkedIn Content\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 5: Generate Instagram Content\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Instagram Carousel Post: AI Music Production\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step 6: Create Durable Unsent Packet Metadata File\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Social Unsent Packet Complete ✅\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Core Concepts & Portable Methods\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Source Linking & Durable Unsent Packet Schema\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Dynamic Posting Slot Resolution\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Step-by-Step Process & Revision Checks\""
-      ],
-      "lastSeen": "2026-10-12T10:40:11.848Z"
-    },
-    "5100320235092655056": {
-      "id": "5100320235092655056",
-      "repo": "frankxai/agentic-ops",
-      "description": "# Jules Autonomous Execution Card: agentic-ops> Assigned Co…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "stats": {
-        "filesChanged": 4,
-        "linesAdded": 17,
-        "linesRemoved": 0
-      },
-      "lastSeen": "2026-10-12T10:40:11.848Z"
-    },
-    "11932501982891281190": {
-      "id": "11932501982891281190",
-      "repo": "frankxai/agentic-ops",
-      "description": "# Jules Autonomous Execution Card: agentic-ops> Assigned Co…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 152,
-        "linesRemoved": 0
-      }
-    },
-    "528044379154095204": {
-      "id": "528044379154095204",
-      "repo": "frankxai/agentic-ops",
-      "description": "# Jules Autonomous Execution Card: agentic-ops> Assigned Co…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 104,
-        "linesRemoved": 0
-      }
-    },
-    "18219692826625146564": {
-      "id": "18219692826625146564",
-      "repo": "frankxai/suno-mcp-server",
-      "description": "# Jules working cardYou are the overflow tester for one Git…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 240,
-        "linesRemoved": 0
-      }
-    },
-    "2776832947259097941": {
-      "id": "2776832947259097941",
-      "repo": "frankxai/agentic-ops",
-      "description": "# Jules Autonomous Execution Card: agentic-ops> Assigned Co…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 1,
-        "linesAdded": 81,
-        "linesRemoved": 0
-      }
-    },
-    "15847562123413249984": {
-      "id": "15847562123413249984",
-      "repo": "frankxai/agentic-ops",
-      "description": "# Jules Autonomous Execution Card: agentic-ops> Assigned Co…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 3,
-        "linesAdded": 81,
-        "linesRemoved": 1
-      }
-    },
-    "13298842282605317633": {
-      "id": "13298842282605317633",
-      "repo": "frankxai/agentic-ops",
-      "description": "# Jules Autonomous Execution Card: agentic-ops> Assigned Co…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "stats": {
-        "filesChanged": 2,
-        "linesAdded": 115,
-        "linesRemoved": 0
-      }
-    },
-    "17014621862489308886": {
-      "id": "17014621862489308886",
-      "repo": "frankxai/agentic-ops",
-      "description": "# Jules Autonomous Execution Card: agentic-ops> Assigned Co…",
-      "status": "Completed",
-      "firstSeen": "2026-10-12T00:04:38.743Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
-      "quarantined": true,
-      "quarantineReasons": [
-        "Heading appears to use Title Case instead of Sentence Case: \"2. Lawful Data Statement & Provenance\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"4. Profiled Resource Request Record\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Compute & Hardware Allocation Profile\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Acceptance Criteria 1: Technical Abstract\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Acceptance Criteria 2: Lawful Data\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Acceptance Criteria 3: Qualified Lead\"",
-        "Heading appears to use Title Case instead of Sentence Case: \"Acceptance Criteria 4: Profiled Resource Request Record\""
-      ]
-    },
     "11311652795909798024": {
       "id": "11311652795909798024",
       "repo": "frankxai/suno-mcp-server",
@@ -842,13 +298,16 @@
       "status": "Completed",
       "firstSeen": "2026-10-12T00:04:38.743Z",
       "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
+      "merged": true,
+      "lastSeen": "2026-10-12T10:53:10.802Z",
       "stats": {
         "filesChanged": 2,
         "linesAdded": 229,
         "linesRemoved": 0
-      }
+      },
+      "prCreated": true,
+      "prNumber": 10,
+      "mergedPr": 10
     },
     "16408512953727152996": {
       "id": "16408512953727152996",
@@ -858,12 +317,15 @@
       "firstSeen": "2026-10-12T00:04:38.743Z",
       "verified": true,
       "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
+      "lastSeen": "2026-10-12T10:49:10.907Z",
       "stats": {
         "filesChanged": 3,
         "linesAdded": 221,
         "linesRemoved": 0
-      }
+      },
+      "prCreated": true,
+      "prNumber": 222,
+      "ciHealingAttempted": true
     },
     "5169765904843279011": {
       "id": "5169765904843279011",
@@ -873,12 +335,15 @@
       "firstSeen": "2026-10-12T00:04:38.743Z",
       "verified": true,
       "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
+      "lastSeen": "2026-10-12T10:42:11.623Z",
       "stats": {
         "filesChanged": 2,
         "linesAdded": 133,
         "linesRemoved": 10
-      }
+      },
+      "prCreated": true,
+      "prNumber": 221,
+      "ciHealingAttempted": true
     },
     "158122056419833402": {
       "id": "158122056419833402",
@@ -887,13 +352,16 @@
       "status": "Completed",
       "firstSeen": "2026-10-12T00:04:38.743Z",
       "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
+      "merged": true,
+      "lastSeen": "2026-10-12T10:39:11.338Z",
       "stats": {
         "filesChanged": 5,
         "linesAdded": 274,
         "linesRemoved": 0
-      }
+      },
+      "prCreated": true,
+      "prNumber": 219,
+      "mergedPr": 219
     },
     "11050437875870853547": {
       "id": "11050437875870853547",
@@ -902,8 +370,8 @@
       "status": "Completed",
       "firstSeen": "2026-10-12T00:04:38.743Z",
       "verified": true,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
+      "merged": true,
+      "lastSeen": "2026-10-12T10:39:11.338Z",
       "stats": {
         "filesChanged": 0,
         "linesAdded": 0,
@@ -917,13 +385,16 @@
       "status": "Completed",
       "firstSeen": "2026-10-12T00:04:38.743Z",
       "verified": true,
-      "merged": false,
+      "merged": true,
       "lastSeen": "2026-10-12T10:32:22.960Z",
       "stats": {
         "filesChanged": 3,
         "linesAdded": 30,
         "linesRemoved": 2
-      }
+      },
+      "prCreated": true,
+      "prNumber": 31,
+      "mergedPr": 31
     },
     "9510256027468939024": {
       "id": "9510256027468939024",
@@ -938,7 +409,9 @@
         "filesChanged": 5,
         "linesAdded": 164,
         "linesRemoved": 43
-      }
+      },
+      "prCreated": true,
+      "prNumber": 986
     },
     "3927785541854993311": {
       "id": "3927785541854993311",
@@ -953,7 +426,9 @@
         "filesChanged": 2,
         "linesAdded": 123,
         "linesRemoved": 6
-      }
+      },
+      "prCreated": true,
+      "prNumber": 1000
     },
     "11881737086248206982": {
       "id": "11881737086248206982",
@@ -968,7 +443,9 @@
         "filesChanged": 2,
         "linesAdded": 130,
         "linesRemoved": 0
-      }
+      },
+      "prCreated": true,
+      "prNumber": 1001
     },
     "9607587237413840318": {
       "id": "9607587237413840318",
@@ -977,13 +454,16 @@
       "status": "Completed",
       "firstSeen": "2026-10-12T00:04:38.743Z",
       "verified": true,
-      "merged": false,
+      "merged": true,
       "lastSeen": "2026-10-12T10:32:22.960Z",
       "stats": {
         "filesChanged": 5,
         "linesAdded": 299,
         "linesRemoved": 4
-      }
+      },
+      "prCreated": true,
+      "prNumber": 985,
+      "mergedPr": 985
     },
     "9980189054392649049": {
       "id": "9980189054392649049",
@@ -1012,7 +492,9 @@
         "filesChanged": 6,
         "linesAdded": 280,
         "linesRemoved": 0
-      }
+      },
+      "prCreated": true,
+      "prNumber": 978
     },
     "15391625345383825315": {
       "id": "15391625345383825315",
@@ -1021,13 +503,16 @@
       "status": "Completed",
       "firstSeen": "2026-10-12T00:04:38.743Z",
       "verified": true,
-      "merged": false,
+      "merged": true,
       "lastSeen": "2026-10-12T01:15:19.177Z",
       "stats": {
         "filesChanged": 5,
         "linesAdded": 133,
         "linesRemoved": 69
-      }
+      },
+      "prCreated": true,
+      "prNumber": "1002",
+      "mergedPr": "1002"
     },
     "7748270465657776047": {
       "id": "7748270465657776047",
@@ -1042,7 +527,9 @@
         "filesChanged": 2,
         "linesAdded": 11,
         "linesRemoved": 11
-      }
+      },
+      "prCreated": true,
+      "prNumber": 977
     },
     "6765635592643304708": {
       "id": "6765635592643304708",
@@ -1052,7 +539,7 @@
       "firstSeen": "2026-10-12T00:06:38.510Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
+      "lastSeen": "2026-10-12T11:33:21.337Z",
       "quarantined": true,
       "quarantineReasons": [
         "Banned AI prestige word/slop detected: \"seamlessly\"",
@@ -1090,7 +577,7 @@
       "firstSeen": "2026-10-12T01:58:38.744Z",
       "verified": true,
       "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z",
+      "lastSeen": "2026-10-12T11:33:21.337Z",
       "stats": {
         "filesChanged": 2,
         "linesAdded": 111,
@@ -1105,7 +592,7 @@
       "firstSeen": "2026-10-12T04:26:10.210Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z"
+      "lastSeen": "2026-10-12T11:33:21.337Z"
     },
     "13625632843727286142": {
       "id": "13625632843727286142",
@@ -1115,7 +602,7 @@
       "firstSeen": "2026-10-12T10:32:22.959Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-12T10:36:07.619Z"
+      "lastSeen": "2026-10-12T11:31:11.219Z"
     },
     "7864056930652071506": {
       "id": "7864056930652071506",
@@ -1124,13 +611,16 @@
       "status": "Completed",
       "firstSeen": "2026-10-12T10:32:22.959Z",
       "verified": true,
-      "merged": false,
+      "merged": true,
       "stats": {
         "filesChanged": 2,
         "linesAdded": 448,
         "linesRemoved": 0
       },
-      "lastSeen": "2026-10-12T10:36:07.619Z"
+      "lastSeen": "2026-10-12T11:31:11.219Z",
+      "prCreated": true,
+      "prNumber": "385",
+      "mergedPr": "385"
     },
     "4386970191181241793": {
       "id": "4386970191181241793",
@@ -1145,7 +635,9 @@
         "linesAdded": 188,
         "linesRemoved": 0
       },
-      "lastSeen": "2026-10-12T10:36:07.619Z"
+      "lastSeen": "2026-10-12T11:31:11.219Z",
+      "prCreated": true,
+      "prNumber": 386
     },
     "15386719175190652998": {
       "id": "15386719175190652998",
@@ -1160,7 +652,9 @@
         "linesAdded": 170,
         "linesRemoved": 0
       },
-      "lastSeen": "2026-10-12T10:36:07.619Z"
+      "lastSeen": "2026-10-12T11:31:11.219Z",
+      "prCreated": true,
+      "prNumber": 387
     },
     "5662886427690672911": {
       "id": "5662886427690672911",
@@ -1181,68 +675,777 @@
       "id": "17743741664162014493",
       "repo": "frankxai/Starlight-Intelligence-System",
       "description": "Issue #312: Production design canary is failing\n\nRun: https://github.com/frankxai/Starlight-Intelligence-System/actions/runs/37578221166\nCommit: 7b33f3a228bf407e447e9b061a5d133622e39f81\n\nViolations (sideways overflow, forced or typed capitals, touch targets, contrast, focus):\n\n- [sourcecaps] /cosmos @320: 1 element(s) typed in capitals, e.g. \"NASA APOD\"\n- [sourcecaps] /cosmos @1440: 1 element(s) typed in capitals, e.g. \"NASA APOD\"",
-      "status": "In Progress",
+      "status": "Completed",
       "firstSeen": "2026-10-12T10:32:38.098Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:36:07.619Z"
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:31:11.219Z",
+      "stats": {
+        "filesChanged": 1,
+        "linesAdded": 1,
+        "linesRemoved": 1
+      },
+      "prCreated": true,
+      "prNumber": "378",
+      "mergedPr": "378"
     },
     "8512169050764758476": {
       "id": "8512169050764758476",
       "repo": "frankxai/Starlight-Intelligence-System",
       "description": "Issue #302: Validator: add minLength, minimum and maximum to protocol/lib/jsonschema.mjs (upstream from Reality Architect)\n\n## Outcome\nSIS's dependency-free JSON Schema validator (`protocol/lib/jsonschema.mjs`) supports `minLength`, `minimum` and `maximum`.\n\nThe reality-architecture kernel schemas use these keywords. The validator deliberately refuses any keyword it does not know, so today it cannot check those schemas without ajv. Check how kernel CI validates them now, and say so in the PR.\n\n## Context\n- Reality Architect vendors this validator, pinned to SIS commit `5d4312c96b803d749f8ebefc68a91bd8f2299c5a`.\n- It ",
-      "status": "In Progress",
+      "status": "Completed",
       "firstSeen": "2026-10-12T10:32:45.083Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:36:07.619Z"
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:31:11.219Z",
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 47,
+        "linesRemoved": 0
+      },
+      "prCreated": true,
+      "prNumber": "379",
+      "mergedPr": "379"
     },
     "897329978947748398": {
       "id": "897329978947748398",
       "repo": "frankxai/Starlight-Intelligence-System",
       "description": "Issue #300: Repair activation-router repository evidence and stale index claims\n\nRepair activation-router repository evidence and index freshness without expanding automatic dispatch.\n\nParent: https://github.com/frankxai/Starlight-Intelligence-System/issues/123\nSource assessment: https://github.com/frankxai/starlightintelligence.ai/issues/82#issuecomment-5994762546\nInstalled source: PR202 / commit 439654e35b9a6ec914082295dd5f06227a04f43b, plugin 0.1.1+codex.20260924.\nCurrent main observed 2026-10-06: c462fc7b0f0565dfdaa906ac5ef0021e76980eaa.\n\nObserved installed behavior: /si",
-      "status": "Planning",
+      "status": "Completed",
       "firstSeen": "2026-10-12T10:32:52.576Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:36:07.619Z"
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:31:11.219Z",
+      "stats": {
+        "filesChanged": 4,
+        "linesAdded": 224,
+        "linesRemoved": 12
+      },
+      "mergedPr": 381
     },
     "2027856499436786215": {
       "id": "2027856499436786215",
       "repo": "frankxai/arcanea-ai-app",
       "description": "Issue #533: Fix-forward blocked PRs: #447 chat history, #448 media analyze, #490 browser proof (cross-family findings posted)\n\n**Goal:** turn the cross-family BLOCKs into FIXED; the findings are posted on each PR.\n- **#447:** `chat/sessions` GET hardcodes `messageCount: 0`; give `created_at` cursor paging a unique tie-break; a stale cursor must not surface as a 503.\n- **#448:** the `media/analyze` skip lookup is an unordered `limit=2000` read, so batches roll back and later runs return 502. Also: `force=true` doesn't send `on_conflict`; unvalidated filters in `media/taste`; `public_url` is sent to the model without a ho",
-      "status": "Planning",
+      "status": "Completed",
       "firstSeen": "2026-10-12T10:32:59.205Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z"
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 5,
+        "linesAdded": 287,
+        "linesRemoved": 207
+      },
+      "mergedPr": 619
     },
     "5763313057218637442": {
       "id": "5763313057218637442",
       "repo": "frankxai/arcanea-ai-app",
       "description": "Issue #532: Creation Engine P2: durable video with Vercel Workflow (Veo 3.1 / Wan via AI Gateway)\n\n**Goal:** phase P2. Video no longer polls a provider inside a request.\n\n**Do:**\n- Build a Workflow (`\"use workflow\"` and `\"use step\"`) with the steps admit → debit (idempotent) → generate (`experimental_generateVideo`: `google/veo-3.1-generate-001` and `alibaba/wan-v2.6-i2v-flash`; Kling via fal.ai only as a fallback) → store (MediaStore) → link (asset) → notify, plus refund on failure.\n- Add a `generation_jobs` table.\n- Stream progress to the UI so the gallery updates live and survives a reload",
-      "status": "In Progress",
+      "status": "Completed",
       "firstSeen": "2026-10-12T10:33:05.921Z",
-      "verified": false,
-      "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z"
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 5,
+        "linesAdded": 346,
+        "linesRemoved": 209
+      },
+      "prCreated": true,
+      "prNumber": "618",
+      "mergedPr": "618"
     },
     "16007732625107813557": {
       "id": "16007732625107813557",
       "repo": "frankxai/arcanea-ai-app",
       "description": "Issue #531: Creation Engine P1: AI Gateway model registry, assets graph, MediaStore adapter (R2)\n\n**Goal:** phase P1 of `docs/architecture/CREATION-ENGINE-2026-10.md` (#528).\n\n**Do:**\n1. Create `lib/models/registry.ts`, the single source for models: capability, Gateway id, inputs, unit cost and credit price. Prices are placeholders, flagged for Frank.\n2. Port image generation to AI SDK 7 `generateImage` through AI Gateway (OIDC on Vercel), with a fallback chain through `providerOptions.gateway.models`. Remove direct xAI, OpenRouter and Gemini calls from the request path.\n3. Add Supabase tabl",
-      "status": "In Progress",
+      "status": "Completed",
       "firstSeen": "2026-10-12T10:33:12.367Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 5,
+        "linesAdded": 503,
+        "linesRemoved": 41
+      },
+      "prCreated": true,
+      "prNumber": "620",
+      "mergedPr": "620"
+    },
+    "15736893736189960298": {
+      "id": "15736893736189960298",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "Issue #529: P0 trust: atomic idempotent credit debit, refund on provider failure, BotID on paid routes\n\n**Goal:** make a credit spend a real, single, refundable debit, and keep bots off paid generation.\n\n**Why:**\n- `/api/credits/spend` writes `purchased`, `daily_used`, `daily_reset` and `is_forge`, but the migration `supabase/migrations/20260324000001_credits_system.sql` defines `purchased_credits`, `daily_credits_remaining`, `daily_credits_reset_at` and `is_forge_subscriber`.\n- It ignores upsert errors, so `success: true` is not a debit receipt (see #449's state note).\n- #449 (image) and #524 (vi",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T10:40:54.807Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 4,
+        "linesAdded": 197,
+        "linesRemoved": 0
+      },
+      "mergedPr": 623
+    },
+    "15235833709021267195": {
+      "id": "15235833709021267195",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "Issue #527: Evaluate Arcanea Build setup-planning hypothesis alongside the creative platform\n\nPreserve and evaluate the founder's 5-6 October discussion. Naming and product direction remain proposals.\r\n\r\nDocumentation commit: https://github.com/frankxai/arcanea-ai-app/commit/94b5e0a1dc7b47b09df9f5410d0f92ae7def7e95\r\nDraft review: https://github.com/frankxai/arcanea-ai-app/pull/526\r\n\r\nNext bounded work: choose one intended user outcome, compare a serious existing alternative on the same task, resolve overlap with accepted products, and define useful output plus recovery acceptance. Preser",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T10:41:01.391Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 265,
+        "linesRemoved": 0
+      },
+      "prCreated": true,
+      "prNumber": "621",
+      "mergedPr": "621"
+    },
+    "13139760879978262878": {
+      "id": "13139760879978262878",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "# Jules Autonomous Execution Card: arcanea-ai-app> Assigned…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T10:43:10.818Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 1,
+        "linesAdded": 99,
+        "linesRemoved": 0
+      },
+      "mergedPr": 605
+    },
+    "534695207165452035": {
+      "id": "534695207165452035",
+      "repo": "frankxai/agentic-ops",
+      "description": "# Starlight Queen Autonomic Self-Healing Card: frankxai/agentic-ops\n> Attempt 1 | Lead: Staff Product Architect (Starlight Prime)\n\n## Objective\nFix previous quarantine failures and complete the original task:\nResolve CI check failure on PR #225:\nclaude-review\n\n## Mandatory Corrective Directives (Must Comply)\n- Fix: CI check failure: claude-review\n\n## Non-Negotiable Invariants\n1. Do NOT modify any files in .github/workflows/\n2. Limit edits to maximum 3 files and <= 300 total diff lines\n3. Conventional Commits format: fix(scope): description [Built on SIP]\n4. Adhere to technical anchors:\n   - Node.js 24 + SIP v1.1.1: Use native Node primitives (node:fs/promises, node:child_process, node:crypto, node:test).\n   - Event-Sourcing Invariants: All persistent state changes must append immutable JSONL event records before indexing.\n   - Async Safety: Zero unhandled promise rejections; all child process executions must specify deterministic timeouts and buffer caps.\n",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T10:49:24.875Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 3,
+        "linesRemoved": 3
+      },
+      "mergedPr": "229"
+    },
+    "14689285636365819305": {
+      "id": "14689285636365819305",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "Issue #517: Publish one canonical Arcanea MCP server to npm and the official MCP Registry\n\n## Outcome\r\nFree discovery. The registry lists no Arcanea or FrankX server today and the package exists in four repos at four versions.\r\n\r\n## Exit proof\r\nnpx install works; server listed in the official registry\r\n\r\n## Done when\r\n- [ ] Decide the canonical package and repo\r\n- [ ] server.json added\r\n- [ ] Published from CI with provenance\r\n- [ ] Install tested on a clean machine\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): grok (pr-gate)\r\n\r\n## Suggested team\r\nsteward-releas",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T10:54:02.099Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 5,
+        "linesAdded": 46,
+        "linesRemoved": 5
+      },
+      "mergedPr": "624"
+    },
+    "3802165034538471665": {
+      "id": "3802165034538471665",
+      "repo": "frankxai/gencreator.ai",
+      "description": "Issue #150: Pillar guide 3: a creator workflow that turns raw footage into posts\n\n## Outcome\r\nA concrete result a non-technical creator can copy.\r\n\r\n## Exit proof\r\nPublished guide plus a short screen recording of the workflow\r\n\r\n## Done when\r\n- [ ] Run on real media\r\n- [ ] Time saved measured, not estimated\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\ngencreator-product-lead, social-content-generator\r\n\r\nBoard: https://github.com/users/frankxai/projects/10 · Contract: maker is not checker; exit proof or it is not done.\r\n",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T10:57:59.995Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 3,
+        "linesAdded": 191,
+        "linesRemoved": 1
+      },
+      "mergedPr": 219
+    },
+    "16773392511957633366": {
+      "id": "16773392511957633366",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "Issue #927: Soulbook price/guarantee data still ships in the client bundle via lib/soulbook/soulbook-data.ts\n\n## Problem\n`/soulbook` no longer renders paid prices or guarantees (#899), but the data still ships to the browser. `lib/soulbook/soulbook-data.ts` holds the `lifeBooks` price/guarantee fields and `pricingTiers` (97-897), and three client components import from it:\n\n- `app/soulbook/page.tsx` (`'use client'`) imports `philosophyStatements`\n- `components/soulbook/LifeBookSelector.tsx` (`'use client'`)\n- `components/soulbook/TestimonialsSection.tsx` (client) imports `lifeBooks`\n\nSince the module is",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T10:58:06.545Z",
+      "verified": true,
+      "merged": false,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 64,
+        "linesRemoved": 67
+      },
+      "prCreated": true,
+      "prNumber": 1003
+    },
+    "7679145339409964194": {
+      "id": "7679145339409964194",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:03:11.133Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 1,
+        "linesAdded": 3,
+        "linesRemoved": 2
+      },
+      "mergedPr": 1002
+    },
+    "15481418139384162669": {
+      "id": "15481418139384162669",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "description": "# Jules Autonomous Execution Card: frankx.ai-vercel-website…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:07:11.157Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 4,
+        "linesAdded": 422,
+        "linesRemoved": 50
+      },
+      "mergedPr": 1002
+    },
+    "527229580151746830": {
+      "id": "527229580151746830",
+      "repo": "frankxai/vibeclubs",
+      "description": "Issue #21: U1 security: land #20 (critical Next.js RCE fix), then Next 16.3.8, React 19.3, Node 24\n\n**Goal:** close GHSA-2xp9-vwfh-vxw4 (critical RCE in the image optimizer) plus 7 high and medium Next.js advisories, then reach the baseline.\n\n**Now:**\n- #20 (Dependabot, next 16.2.10 → 16.3.6) builds on Vercel.\n- CI failed only on pnpm `minimumReleaseAge`: `nanoid@3.3.20` and `postcss@8.5.29` were published 2026-10-05 09:30 UTC. Re-run CI after **2026-10-06 09:45 UTC**, then Frank merges.\n\n**Then (new PR):**\n- next and eslint-config-next to 16.3.8, react and react-dom to 19.3.\n- `.nvmrc` and `e",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:11:30.284Z",
       "verified": false,
       "merged": false,
-      "lastSeen": "2026-10-12T10:40:11.848Z"
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "quarantined": true,
+      "quarantineReasons": [
+        "Diff lines exceeded: 2512 > 1500"
+      ]
+    },
+    "2297738107478541920": {
+      "id": "2297738107478541920",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "Issue #101: tests: agent-os and mesh suites leave temp dirs behind (196 dirs on one machine)\n\n## Outcome\n`node --test test/*.test.mjs` leaves nothing behind in the temp folder.\n\n## Evidence (2026-10-06)\n196 leftover folders (16 MB) on one workstation from repeated local runs. The prefixes come from `test/agent-os.test.mjs` (`acos-evil-`, `acos-audit-`) and `test/mesh.test.mjs` (`acos-mesh-`, `acos-shim-`, `acos-adopt-`, `acos-org-`). They were all removed by hand. `test/visual.test.mjs` already does this correctly after #92: it collects each `mkdtempSync` result and removes it in `after(",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:11:37.095Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 15,
+        "linesRemoved": 0
+      },
+      "mergedPr": "116"
+    },
+    "3853859075492843427": {
+      "id": "3853859075492843427",
+      "repo": "frankxai/agenticincome",
+      "description": "Issue #48: Activate Blueprint checkout: Polar product, env vars, live test purchase\n\n## Outcome\r\nThe Blueprint can take money end to end: pay, receive files, receive licence key.\r\n\r\n## Exit proof\r\nPolar order receipt for a real test purchase plus test-purchase-probe PASS\r\n\r\n## Done when\r\n- [ ] Merge the claims-copy fix (PR #47) and re-run the claims audit\r\n- [ ] Polar production product created from catalog.json; org chosen\r\n- [ ] POLAR_ACCESS_TOKEN, POLAR_PRODUCT_ID_BLUEPRINT, POLAR_SUCCESS_URL set in Vercel Production\r\n- [ ] Catalog status flipped; probe expects checkout, not ",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:14:00.409Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 46,
+        "linesRemoved": 1
+      },
+      "mergedPr": 60
+    },
+    "10512443184715133648": {
+      "id": "10512443184715133648",
+      "repo": "frankxai/agenticincome",
+      "description": "Issue #38: Keep the x402 and MPP meter off until one fiat offer is activated.\n\nThe settlement rail on `agent/grok/settlement-rail-2026-09-26` now admits five outcomes: merchant account, signed receipt, `machine-payment`, `on-chain-right`, and refuse.\n\n`machine-payment` is the 2026 agent rail:\n\n- Protocol `x402` (Coinbase, contributed to the Linux Foundation; per-request USDC, EIP-3009) or `mpp` (Stripe and Tempo, session with a cap).\n- Asset `usdc` or `eurc`. Chains `base`, `solana`, or `tempo`.\n- Unit `request` or `session`.\n- `spendCap` above zero, period `day` or `month",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:14:06.355Z",
+      "verified": true,
+      "merged": false,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 5,
+        "linesAdded": 350,
+        "linesRemoved": 5
+      },
+      "prCreated": true,
+      "prNumber": 61
+    },
+    "16530575980327879605": {
+      "id": "16530575980327879605",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:14:12.147Z",
+      "verified": true,
+      "merged": true,
+      "stats": {
+        "filesChanged": 3,
+        "linesAdded": 216,
+        "linesRemoved": 0
+      },
+      "lastSeen": "2026-10-12T11:26:12.052Z",
+      "prCreated": true,
+      "prNumber": 112,
+      "mergedPr": 112
+    },
+    "3708283880110590357": {
+      "id": "3708283880110590357",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:14:12.147Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 3,
+        "linesAdded": 243,
+        "linesRemoved": 0
+      },
+      "lastSeen": "2026-10-12T11:26:12.052Z"
+    },
+    "5390133822303183052": {
+      "id": "5390133822303183052",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:15:21.761Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 180,
+        "linesRemoved": 0
+      },
+      "lastSeen": "2026-10-12T11:31:11.219Z"
+    },
+    "5108873403655975592": {
+      "id": "5108873403655975592",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:15:21.761Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 1,
+        "linesAdded": 50,
+        "linesRemoved": 1
+      },
+      "lastSeen": "2026-10-12T11:31:11.219Z"
+    },
+    "1303407866400358288": {
+      "id": "1303407866400358288",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:16:11.720Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 1,
+        "linesAdded": 48,
+        "linesRemoved": 1
+      },
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "14274449559310235274": {
+      "id": "14274449559310235274",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:16:11.720Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 3,
+        "linesAdded": 278,
+        "linesRemoved": 1
+      },
+      "lastSeen": "2026-10-12T11:27:11.633Z"
+    },
+    "4784341197799628294": {
+      "id": "4784341197799628294",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:17:21.648Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 5,
+        "linesAdded": 303,
+        "linesRemoved": 2
+      },
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "4252540181859075286": {
+      "id": "4252540181859075286",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:17:21.648Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 219,
+        "linesRemoved": 11
+      },
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "9198500201680787735": {
+      "id": "9198500201680787735",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "description": "# Jules Autonomous Execution Card: Starlight-Intelligence-S…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:19:11.126Z",
+      "verified": true,
+      "merged": true,
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 325,
+        "linesRemoved": 2
+      },
+      "mergedPr": 387,
+      "lastSeen": "2026-10-12T11:31:11.219Z"
+    },
+    "9391852566450233834": {
+      "id": "9391852566450233834",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "description": "# Jules Autonomous Execution Card: Starlight-Intelligence-S…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:19:11.126Z",
+      "verified": true,
+      "merged": true,
+      "stats": {
+        "filesChanged": 4,
+        "linesAdded": 336,
+        "linesRemoved": 25
+      },
+      "mergedPr": 387,
+      "lastSeen": "2026-10-12T11:31:11.219Z"
+    },
+    "4567846760345840955": {
+      "id": "4567846760345840955",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:20:11.994Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 4,
+        "linesAdded": 185,
+        "linesRemoved": 4
+      },
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "7621117991654474164": {
+      "id": "7621117991654474164",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:20:11.994Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 4,
+        "linesAdded": 217,
+        "linesRemoved": 2
+      },
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "5595969298016813737": {
+      "id": "5595969298016813737",
+      "repo": "frankxai/agenticincome",
+      "description": "# Jules Autonomous Execution Card: agenticincome> Assigned …",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:23:11.187Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 1,
+        "linesAdded": 13,
+        "linesRemoved": 0
+      },
+      "prCreated": true,
+      "prNumber": "62",
+      "mergedPr": "62"
+    },
+    "12293695267355152786": {
+      "id": "12293695267355152786",
+      "repo": "frankxai/agenticincome",
+      "description": "# Jules Autonomous Execution Card: agenticincome> Assigned …",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:23:11.187Z",
+      "verified": true,
+      "merged": false,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 3,
+        "linesAdded": 29,
+        "linesRemoved": 4
+      }
+    },
+    "12545854460286962616": {
+      "id": "12545854460286962616",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "description": "# Jules Autonomous Execution Card: Starlight-Intelligence-S…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:23:11.188Z",
+      "verified": true,
+      "merged": true,
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 215,
+        "linesRemoved": 21
+      },
+      "mergedPr": 387,
+      "lastSeen": "2026-10-12T11:31:11.219Z"
+    },
+    "16869413129102491994": {
+      "id": "16869413129102491994",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "description": "# Jules Autonomous Execution Card: Starlight-Intelligence-S…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:23:11.188Z",
+      "verified": true,
+      "merged": true,
+      "stats": {
+        "filesChanged": 3,
+        "linesAdded": 276,
+        "linesRemoved": 0
+      },
+      "mergedPr": 387,
+      "lastSeen": "2026-10-12T11:31:11.219Z"
+    },
+    "7391754930379430169": {
+      "id": "7391754930379430169",
+      "repo": "frankxai/starlight-memory",
+      "description": "Independent Google Jules review for frankxai/starlight-memo…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:24:12.067Z",
+      "verified": false,
+      "merged": false,
+      "quarantined": true,
+      "quarantineReasons": [
+        "Heading appears to use Title Case instead of Sentence Case: \"Code Review Report: Frontmatter Escaping & Metadata Integrity (`c300983`)\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"2. Examination of Critical Attack Vectors & Edge Cases\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"5. Summary Verdict & Remaining Release Gates\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"Remaining Gates Prior to Production Release:\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"Frontmatter Test Execution and Verification Report: Commit `c300983`\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"3. Seven Native Suite Executions\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"4. Execution Limitations & Host Environment\""
+      ],
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "15477291931593447694": {
+      "id": "15477291931593447694",
+      "repo": "frankxai/suno-mcp-ser…",
+      "description": "# Jules working cardThere is one Queen. Codex reviews sourc…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:24:12.067Z",
+      "verified": false,
+      "merged": false,
+      "quarantined": true,
+      "quarantineReasons": [
+        "Heading appears to use Title Case instead of Sentence Case: \"Independent Release Orchestration Review Report: @frankxai/suno-mcp-server PR #9\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"Reconciliation of Prior Rejection Claims\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"Static Review Findings & Architecture Analysis\""
+      ],
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "10778572441099824374": {
+      "id": "10778572441099824374",
+      "repo": "frankxai/starlight-memory",
+      "description": "Corrective independent Google Jules report-only review of f…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:25:21.399Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 5,
+        "linesAdded": 1366,
+        "linesRemoved": 6
+      },
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "12036481859216697405": {
+      "id": "12036481859216697405",
+      "repo": "frankxai/starlight-memory",
+      "description": "Independent report-only review for frankxai/starlight-memor…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:25:21.399Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 215,
+        "linesRemoved": 0
+      },
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "3833834989643048305": {
+      "id": "3833834989643048305",
+      "repo": "frankxai/starlight-memory",
+      "description": "Corrective independent Google Jules review of frankxai/star…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:26:12.052Z",
+      "verified": false,
+      "merged": false,
+      "quarantined": true,
+      "quarantineReasons": [
+        "Heading appears to use Title Case instead of Sentence Case: \"1. Verified Blob Hashes and File Inventory (add7454)\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"2. Corrections to Source Claims & Detailed Analysis\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"2.1 Publication Generation and Snapshot Object Structure\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"2.5 Freshness, Expiry, and Trusted Caller Boundaries\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"3. Concurrency, Locking, and Edge Case Inspection\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"1. Test Suite Execution Summary\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"1.2 Execution Limitations & Missing Package Diagnostics\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"2. Isolated Synthetic Discriminatory Test Suite\"",
+        "Heading appears to use Title Case instead of Sentence Case: \"3. Findings Summary & Verification Directives\""
+      ],
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "6238701602501703783": {
+      "id": "6238701602501703783",
+      "repo": "frankxai/agentic-creator-os",
+      "description": "# Jules Autonomous Execution Card: agentic-creator-os> Assi…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:26:12.052Z",
+      "verified": true,
+      "merged": false,
+      "stats": {
+        "filesChanged": 5,
+        "linesAdded": 182,
+        "linesRemoved": 8
+      }
+    },
+    "6991646185494174666": {
+      "id": "6991646185494174666",
+      "repo": "frankxai/starlight-memory",
+      "description": "Revise previous implementation for Corrective independent Google Jules review of frankxai/star….\n\nPREVIOUS QUARANTINE VIOLATIONS (YOU MUST RESOLVE THESE):\n- Heading appears to use Title Case instead of Sentence Case: \"1. Verified Blob Hashes and File Inventory (add7454)\"\n- Heading appears to use Title Case instead of Sentence Case: \"2. Corrections to Source Claims & Detailed Analysis\"\n- Heading appears to use Title Case instead of Sentence Case: \"2.1 Publication Generation and Snapshot Object Structure\"\n- Heading appears to use Title Case instead of Sentence Case: \"2.5 Freshness, Expiry, and Trusted Caller Boundaries\"\n- Heading appears to use Title Case instead of Sentence Case: \"3. Concurrency, Locking, and Edge Case Inspection\"\n- Heading appears to use Title Case instead of Sentence Case: \"1. Test Suite Execution Summary\"\n- Heading appears to use Title Case instead of Sentence Case: \"1.2 Execution Limitations & Missing Package Diagnostics\"\n- Heading appears to use Title Case instead of Sentence Case: \"2. Isolated Synthetic Discriminatory Test Suite\"\n- Heading appears to use Title Case instead of Sentence Case: \"3. Findings Summary & Verification Directives\"\n\nSTRICT INSTRUCTIONS: Do not modify .github/workflows. Keep diff strictly under 300 lines and max 4 files.",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:27:02.554Z",
+      "verified": true,
+      "merged": false,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 2,
+        "linesAdded": 19,
+        "linesRemoved": 19
+      }
+    },
+    "11592956222863893228": {
+      "id": "11592956222863893228",
+      "repo": "frankxai/agenticincome",
+      "description": "# Jules Autonomous Execution Card: agenticincome> Assigned …",
+      "status": "In Progress",
+      "firstSeen": "2026-10-12T11:27:11.633Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "14905393413528868233": {
+      "id": "14905393413528868233",
+      "repo": "frankxai/starlight-memory",
+      "description": "# Jules Autonomous Execution Card: starlight-memory> Assign…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:27:11.633Z",
+      "verified": true,
+      "merged": true,
+      "lastSeen": "2026-10-12T11:33:21.337Z",
+      "stats": {
+        "filesChanged": 3,
+        "linesAdded": 4,
+        "linesRemoved": 4
+      },
+      "mergedPr": "37"
+    },
+    "15477529563547739293": {
+      "id": "15477529563547739293",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "description": "# Jules Autonomous Execution Card: Starlight-Intelligence-S…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:27:11.633Z",
+      "verified": true,
+      "merged": true,
+      "stats": {
+        "filesChanged": 4,
+        "linesAdded": 98,
+        "linesRemoved": 0
+      },
+      "mergedPr": 387,
+      "lastSeen": "2026-10-12T11:31:11.219Z"
+    },
+    "2061604662235795010": {
+      "id": "2061604662235795010",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "description": "# Jules Autonomous Execution Card: Starlight-Intelligence-S…",
+      "status": "Completed",
+      "firstSeen": "2026-10-12T11:27:11.633Z",
+      "verified": true,
+      "merged": true,
+      "stats": {
+        "filesChanged": 0,
+        "linesAdded": 0,
+        "linesRemoved": 0
+      },
+      "mergedPr": 387,
+      "lastSeen": "2026-10-12T11:31:11.219Z"
+    },
+    "4635060833393049829": {
+      "id": "4635060833393049829",
+      "repo": "frankxai/agentic-ops",
+      "description": "# Starlight Queen Autonomic Self-Healing Card: frankxai/agentic-ops\n> Attempt 1 | Lead: Staff Product Architect (Starlight Prime)\n\n## Objective\nFix previous quarantine failures and complete the original task:\nResolve CI check failure on PR #224:\nclaude-review\n\n## Mandatory Corrective Directives (Must Comply)\n- Fix: CI check failure: claude-review\n\n## Non-Negotiable Invariants\n1. Do NOT modify any files in .github/workflows/\n2. Limit edits to maximum 3 files and <= 300 total diff lines\n3. Conventional Commits format: fix(scope): description [Built on SIP]\n4. Adhere to technical anchors:\n   - Node.js 24 + SIP v1.1.1: Use native Node primitives (node:fs/promises, node:child_process, node:crypto, node:test).\n   - Event-Sourcing Invariants: All persistent state changes must append immutable JSONL event records before indexing.\n   - Async Safety: Zero unhandled promise rejections; all child process executions must specify deterministic timeouts and buffer caps.\n",
+      "status": "In Progress",
+      "firstSeen": "2026-10-12T11:27:38.854Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "12154368445785581275": {
+      "id": "12154368445785581275",
+      "repo": "frankxai/vibeclubs",
+      "description": "Revise previous implementation for Issue #21: U1 security: land #20 (critical Next.js RCE fix), then Next 16.3.8, React 19.3, Node 24\n\n**Goal:** close GHSA-2xp9-vwfh-vxw4 (critical RCE in the image optimizer) plus 7 high and medium Next.js advisories, then reach the baseline.\n\n**Now:**\n- #20 (Dependabot, next 16.2.10 → 16.3.6) builds on Vercel.\n- CI failed only on pnpm `minimumReleaseAge`: `nanoid@3.3.20` and `postcss@8.5.29` were published 2026-10-05 09:30 UTC. Re-run CI after **2026-10-06 09:45 UTC**, then Frank merges.\n\n**Then (new PR):**\n- next and eslint-config-next to 16.3.8, react and react-dom to 19.3.\n- `.nvmrc` and `e.\n\nPREVIOUS QUARANTINE VIOLATIONS (YOU MUST RESOLVE THESE):\n- Diff lines exceeded: 2512 > 1500\n\nSTRICT INSTRUCTIONS: Do not modify .github/workflows. Keep diff strictly under 300 lines and max 4 files.",
+      "status": "Planning",
+      "firstSeen": "2026-10-12T11:31:49.722Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T11:33:21.337Z"
+    },
+    "6064918627369242558": {
+      "id": "6064918627369242558",
+      "repo": "frankxai/agenticincome",
+      "description": "Issue #12: [Portal v0] Build the Frank-only Income Command Center\n\nParent: https://github.com/frankxai/frankx-domain-command/issues/31\n\n## Outcome\n\nBuild the single-tenant **Income Command Center** for Frank and the operating agents. This is the dogfood precursor to any multi-tenant member portal.\n\n## Product boundary\n\n- Private/operator-only surface inside the existing AgenticIncome system.\n- No new root domain, public SaaS promise, community feed, payout custody, or arbitrary-code execution.\n- Repositories remain the artifact source of truth; commercial/custo",
+      "status": "Planning",
+      "firstSeen": "2026-10-12T11:31:56.423Z",
+      "verified": false,
+      "merged": false,
+      "lastSeen": "2026-10-12T11:33:21.337Z"
     }
   },
   "metrics": {
-    "dispatched": 62,
-    "completed": 146,
-    "merged": 65,
-    "quarantined": 39
+    "dispatched": 76,
+    "completed": 187,
+    "merged": 96,
+    "quarantined": 43
   },
-  "lastRemoteScan": "2026-10-12T10:40:11.848Z"
+  "lastRemoteScan": "2026-10-12T11:33:21.337Z"
 }

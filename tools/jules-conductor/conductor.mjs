@@ -410,6 +410,7 @@ Built on SIP — Starlight Intelligence Protocol v1.1.1.`;
 | **Starlight Sentinel** | Zero Secrets & Dependency Safety | Passed |
 | **Starlight Weaver** | @impeccable Design & A11y Standards | Passed |
 | **Maker / Checker** | @humanizer Editorial & React 19 / Next.js 16 | Ratified |
+| **CEO Executive Gate** | Truth, Audience Value & Zero-Slop Standard | Ratified |
 
 > **Attestation**: Built on SIP — Starlight Intelligence Protocol v1.1.1.
 > **Session**: \`${id}\` | Lead: \`${profile.primaryAgent || 'starlight-architect'}\``;

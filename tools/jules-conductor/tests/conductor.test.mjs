@@ -230,4 +230,34 @@ test('Telemetry Server metrics format conforms to live HUD schema', async () => 
   assert.ok(['HEALTHY', 'HIGH_MEMORY', 'DEGRADED'].includes(metrics.health));
 });
 
+test('Maker/Checker CEO Truth Gate blocks unverified partner claims and badges', () => {
+  const fakeClaimsDiff = `
+diff --git a/components/partner.tsx b/components/partner.tsx
+--- a/components/partner.tsx
++++ b/components/partner.tsx
+@@ -1,5 +1,6 @@
++export function PartnerCard() {
++  return (
++    <div>
++      <span className="badge">Verified Workbench</span>
++      <a href="/go/tool">Official Partner Link</a>
++    </div>
++  );
++}
++`;
+
+  const review = performMakerCheckerReview({
+    repo: 'frankxai/frankx.ai-vercel-website',
+    taskDescription: 'Add partner component',
+    diffText: fakeClaimsDiff,
+    repoProfile: { type: 'fullstack-nextjs' },
+  });
+
+  assert.equal(review.approved, false);
+  assert.equal(review.ceo.passed, false);
+  assert.ok(review.feedback.some(f => f.includes('CEO Truth Veto')));
+  assert.ok(review.feedback.some(f => f.includes('Verified Workbench')));
+  assert.ok(review.feedback.some(f => f.includes('Official Partner')));
+});
+
 

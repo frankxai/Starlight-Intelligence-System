@@ -137,18 +137,41 @@ export function performMakerCheckerReview({ repo, taskDescription, diffText, rep
     result.score -= archIssues.length * 15;
   }
 
+  // 4. CEO & Commercial Truth Audit (FrankX / Starlight Truth Standard)
+  const ceoIssues = [];
+  const truthDisallowedPatterns = [
+    { pattern: /official\s+partner(\s+link)?/i, reason: 'Unverified "Official Partner" claim detected. Disclose affiliate referrals accurately.' },
+    { pattern: /verified\s+workbench/i, reason: 'Unverified "Verified Workbench" accreditation claim detected without empirical certification.' },
+    { pattern: /official\s+portal/i, reason: 'Affiliate or third-party redirect must not be labeled as an "Official Portal".' },
+  ];
+
+  for (const check of truthDisallowedPatterns) {
+    if (check.pattern.test(diffText)) {
+      ceoIssues.push(`CEO Truth Veto: ${check.reason}`);
+    }
+  }
+
+  if (ceoIssues.length > 0) {
+    result.ceo = { passed: false, issues: ceoIssues };
+    result.score -= ceoIssues.length * 35; // Immediate failure for truth violations
+  } else {
+    result.ceo = { passed: true, issues: [] };
+  }
+
   // Synthesize feedback
   result.score = Math.max(0, result.score);
   result.feedback = [
     ...result.humanizer.issues,
     ...result.impeccable.issues,
     ...result.architecture.issues,
+    ...result.ceo.issues,
   ];
 
   const hasA11yViolation = result.impeccable.issues.some(i => i.toLowerCase().includes('accessibility violation'));
+  const hasCeoViolation = result.ceo && !result.ceo.passed;
 
-  // Pass threshold: score >= 75, zero architecture violations, and zero accessibility violations
-  result.approved = result.score >= 75 && result.architecture.issues.length === 0 && !hasA11yViolation;
+  // Pass threshold: score >= 75, zero architecture violations, zero accessibility violations, zero CEO truth violations
+  result.approved = result.score >= 75 && result.architecture.issues.length === 0 && !hasA11yViolation && !hasCeoViolation;
 
   return result;
 }
