@@ -236,8 +236,9 @@ assert a total the Desk cannot vouch for".
 
 An unsigned draft records the run; it proves nothing about who ran it. With the
 key and a cost-complete run the route returns a DSSE envelope whose keyid
-matches the registry entry, so the same receipt verifies at
-`starlightintelligence.ai/verify` from a phone.
+matches the registry entry, so the receipt verifies with `sis.receipt.verify`
+and the registry key. The site's `/verify` page does not read run receipts
+yet.
 
 ## Prices
 

@@ -146,6 +146,11 @@ function isNonNegative(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value) && value >= 0;
 }
 
+/** Token counts are whole numbers. */
+function isCount(value: unknown): value is number {
+  return isNonNegative(value) && Number.isInteger(value);
+}
+
 /** sha256 of a string or buffer, hex. */
 export function sha256Hex(input: string | Uint8Array): string {
   return createHash("sha256").update(input).digest("hex");
@@ -225,7 +230,7 @@ export function receiptProblems(receipt: unknown): string[] {
   }
 
   let costSum = 0;
-  let latencySum = 0;
+  let latencyMax = 0;
   let inSum = 0;
   let outSum = 0;
   let anyCost = false;
@@ -240,16 +245,19 @@ export function receiptProblems(receipt: unknown): string[] {
       for (const k of unknownKeys(stage, KEYS.stage)) problems.push(`unknown property stages[${i}].${k}`);
       if (typeof stage.name !== "string" || !stage.name.trim()) problems.push(`stage ${i} has no name`);
       if (!STAGE_STATUSES.includes(stage.status as StageStatus)) problems.push(`stage ${stage.name ?? i} has status ${JSON.stringify(stage.status)}`);
-      for (const k of ["inputTokens", "outputTokens", "costEur", "latencyMs"]) {
+      for (const k of ["costEur", "latencyMs"]) {
         if (stage[k] !== undefined && !isNonNegative(stage[k])) problems.push(`stage ${stage.name ?? i}.${k} is not a non-negative number`);
+      }
+      for (const k of ["inputTokens", "outputTokens"]) {
+        if (stage[k] !== undefined && !isCount(stage[k])) problems.push(`stage ${stage.name ?? i}.${k} is not a non-negative integer`);
       }
       if (isNonNegative(stage.costEur)) {
         costSum += stage.costEur;
         anyCost = true;
       }
-      if (isNonNegative(stage.latencyMs)) latencySum += stage.latencyMs;
-      if (isNonNegative(stage.inputTokens)) inSum += stage.inputTokens;
-      if (isNonNegative(stage.outputTokens)) outSum += stage.outputTokens;
+      if (isNonNegative(stage.latencyMs)) latencyMax = Math.max(latencyMax, stage.latencyMs);
+      if (isCount(stage.inputTokens)) inSum += stage.inputTokens;
+      if (isCount(stage.outputTokens)) outSum += stage.outputTokens;
     });
   }
 
@@ -261,16 +269,18 @@ export function receiptProblems(receipt: unknown): string[] {
     if (isRecord(t.tokens)) for (const k of unknownKeys(t.tokens, KEYS.tokens)) problems.push(`unknown property totals.tokens.${k}`);
     if (!isNonNegative(t.costEur)) problems.push("totals.costEur is not a non-negative number");
     if (!isNonNegative(t.latencyMs)) problems.push("totals.latencyMs is not a non-negative number");
-    if (!isRecord(t.tokens) || !isNonNegative(t.tokens.input) || !isNonNegative(t.tokens.output)) {
-      problems.push("totals.tokens.input and totals.tokens.output are required");
+    if (!isRecord(t.tokens) || !isCount(t.tokens.input) || !isCount(t.tokens.output)) {
+      problems.push("totals.tokens.input and totals.tokens.output are required non-negative integers");
     }
-    // Totals may exceed the stage sums (overhead, untracked steps) but never fall short of them.
+    // Cost and token totals may exceed the stage sums (overhead, untracked steps) but never fall short of them.
     if (anyCost && isNonNegative(t.costEur) && t.costEur + eurTolerance(costSum) < costSum) {
       problems.push(`totals.costEur ${t.costEur} is below the stage sum ${costSum.toFixed(4)}`);
     }
-    if (isNonNegative(t.latencyMs) && t.latencyMs < latencySum) problems.push(`totals.latencyMs ${t.latencyMs} is below the stage sum ${latencySum}`);
-    if (isRecord(t.tokens) && isNonNegative(t.tokens.input) && t.tokens.input < inSum) problems.push(`totals.tokens.input ${t.tokens.input} is below the stage sum ${inSum}`);
-    if (isRecord(t.tokens) && isNonNegative(t.tokens.output) && t.tokens.output < outSum) problems.push(`totals.tokens.output ${t.tokens.output} is below the stage sum ${outSum}`);
+    // Stages can overlap (a constellation runs lanes in parallel), so wall time
+    // is bounded below by the longest stage, not by the sum of stage times.
+    if (isNonNegative(t.latencyMs) && t.latencyMs < latencyMax) problems.push(`totals.latencyMs ${t.latencyMs} is below the longest stage ${latencyMax}`);
+    if (isRecord(t.tokens) && isCount(t.tokens.input) && t.tokens.input < inSum) problems.push(`totals.tokens.input ${t.tokens.input} is below the stage sum ${inSum}`);
+    if (isRecord(t.tokens) && isCount(t.tokens.output) && t.tokens.output < outSum) problems.push(`totals.tokens.output ${t.tokens.output} is below the stage sum ${outSum}`);
   }
 
   if (!Array.isArray(r.decisions)) {
@@ -306,6 +316,11 @@ export function receiptProblems(receipt: unknown): string[] {
   }
 
   if (!VERDICTS.includes(r.verdict as RunReceiptVerdict)) problems.push(`verdict is ${JSON.stringify(r.verdict)}`);
+  if (r.verdict === "PASS" && Array.isArray(r.stages)) {
+    for (const stage of r.stages) {
+      if (isRecord(stage) && stage.status === "failed") problems.push(`verdict is PASS but stage ${stage.name ?? "?"} failed`);
+    }
+  }
 
   return problems;
 }
