@@ -44,6 +44,8 @@ export type AlexandriaErrorCode =
   | 'unreconciled_capability'
   | 'invalid_sip_layer'
   | 'retry_mismatch'
+  | 'invalid_request_id'
+  | 'capability_suspended'
   | 'uncertain_outcome'
   | 'receipt_persist_failed';
 
@@ -71,6 +73,8 @@ export interface ExecuteResponse {
   result: CallResult;
   receipt: Receipt;
   budget: Budget;
+  /** The provider charged more than was reserved; the capability is now suspended. */
+  overrun?: boolean;
 }
 
 export interface Plan {
@@ -105,6 +109,8 @@ export class Alexandria {
   private readonly now?: () => string;
   /** Reservations held by pending or uncertain calls, keyed by request id. Part of `budget.spent` until settled. */
   private readonly held = new Map<string, { amount: number; fingerprint: string }>();
+  /** Capabilities whose provider once charged more than was reserved. Refused until the catalogue is reconciled. */
+  private readonly suspended = new Set<string>();
 
   constructor(opts: AlexandriaOptions) {
     if (typeof opts.maxCredits !== 'number' || !Number.isFinite(opts.maxCredits) || opts.maxCredits < 0) {
@@ -116,8 +122,18 @@ export class Alexandria {
       this.lock = new SessionLock(opts.ledger.path, sessionId);
       this.lock.acquire();
     }
+    // A resumed session keeps the ceiling it was opened with. Raising it would be an unrecorded
+    // authorisation of more spend under the same session; open a new session for a new ceiling.
+    const recorded = opts.ledger ? opts.ledger.sessionCeiling(sessionId) : undefined;
+    if (recorded !== undefined && opts.maxCredits > recorded) {
+      this.lock?.release();
+      throw new Error(`Budget session ${sessionId} was opened with a ceiling of ${recorded} credits; resuming it with ${opts.maxCredits} would raise the ceiling. Resume with at most ${recorded}, or start a new session.`);
+    }
     this.budget = { sessionId, maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent(sessionId) : 0 };
-    if (opts.ledger) for (const [id, hold] of opts.ledger.heldReservations(sessionId)) this.held.set(id, hold);
+    if (opts.ledger) {
+      for (const [id, hold] of opts.ledger.heldReservations(sessionId)) this.held.set(id, hold);
+      for (const id of opts.ledger.suspendedCapabilities()) this.suspended.add(id);
+    }
     for (const t of opts.transports) this.transports.set(t.kind, t);
     this.ledger = opts.ledger;
     this.now = opts.now;
@@ -170,6 +186,9 @@ export class Alexandria {
     if (hit.provider.kind === 'connector') {
       throw new AlexandriaError('connector_not_executable', `${hit.capability.id} is a connector and cannot be executed as a data capability`, 'Connectors are called by the swarm runtime. See verticals/alexandria/catalog/connectors.json.');
     }
+    if (this.suspended.has(hit.capability.id)) {
+      throw new AlexandriaError('capability_suspended', `${hit.capability.id} is suspended: its provider once charged more than was reserved (see the overrun receipt in the ledger)`, 'Reconcile the capability price and record-limit contract in verticals/alexandria/catalog/providers.json, then start a new ledger session for it; the overrun receipt is the evidence.');
+    }
     if (hit.capability.status === 'unreconciled') {
       throw new AlexandriaError('unreconciled_capability', `${hit.capability.id} is catalogued but its path and terms are not yet reconciled against the live contract`, 'Reconcile the capability in verticals/alexandria/catalog/providers.json (see MEMORY.md, open reconciliation) and clear its status before executing it.');
     }
@@ -210,6 +229,11 @@ export class Alexandria {
   }
 
   async execute(req: ExecuteRequest): Promise<ExecuteResponse> {
+    // A blank id would be dropped from the receipt and its hold could never be restored, so it
+    // is refused rather than silently replaced.
+    if (req.requestId !== undefined && (typeof req.requestId !== 'string' || req.requestId.trim() === '')) {
+      throw new AlexandriaError('invalid_request_id', 'requestId must be a non-empty string when given', 'Omit requestId for a new call, or pass the exact id returned by the uncertain call you are retrying; nothing was charged.');
+    }
     // A retry of a held call reuses its reservation instead of taking a second one, and only
     // for the same call: the hold is bound to the capability and options it was taken for.
     const hold = req.requestId ? this.held.get(req.requestId) : undefined;
@@ -219,9 +243,12 @@ export class Alexandria {
       throw new AlexandriaError('retry_mismatch', `requestId ${req.requestId} belongs to a different call (capability or options differ); its ${hold.amount} reserved credits stay held`, 'Retry with exactly the capability and options of the original call, or mint a new request for a different call.', req.requestId);
     }
     const alreadyHeld = hold?.amount ?? 0;
+    // The reservation never shrinks on a retry: the original request may already have been
+    // billed at the old price, so the hold stays at least that large until a charge is known.
+    const reserved = Math.max(price, alreadyHeld);
     // Reserve synchronously: no await sits between the gate and the reservation, so two
     // concurrent calls cannot both be admitted against the same remaining credits.
-    this.budget.spent += price - alreadyHeld;
+    this.budget.spent += reserved - alreadyHeld;
     // The idempotency key is minted here, before the transport, so it survives a transport
     // failure: the caller gets it back and retries with the same id instead of paying twice.
     const requestId = req.requestId ?? randomUUID();
@@ -229,18 +256,18 @@ export class Alexandria {
     const observedAt = this.now ? this.now() : new Date().toISOString();
     const blank: CallResult = { provider: hit.provider.id, capability: hit.capability.capability, records: [], creditsCost: 0, observedAt, requestId };
     const receiptFor = (result: CallResult, extra: Partial<Parameters<typeof buildReceipt>[0]> = {}) => {
-      const input: Parameters<typeof buildReceipt>[0] = { result, provider: hit.provider, options, sessionId: this.budget.sessionId, reserved: price, sipLayers: [], ...extra };
+      const input: Parameters<typeof buildReceipt>[0] = { result, provider: hit.provider, options, sessionId: this.budget.sessionId, reserved, maxCredits: this.budget.maxCredits, sipLayers: [], ...extra };
       if (this.now) input.now = this.now;
       return buildReceipt(input);
     };
     // Durable before paid: the pending line holds the reservation in the ledger, so a crash
     // between the provider call and its receipt is restored as a hold, never as free credits.
     // If it cannot be written the call does not run; nothing has reached the provider yet.
-    if (price > 0 && this.ledger) {
+    if (reserved > 0 && this.ledger) {
       try {
         this.ledger.append(receiptFor(blank, { pending: true }));
       } catch (err) {
-        this.budget.spent -= price - alreadyHeld;
+        this.budget.spent -= reserved - alreadyHeld;
         if (hold) this.held.set(requestId, hold);
         const message = err instanceof Error ? err.message : String(err);
         throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the pending receipt could not be written, so the call was not sent (${message})`, `Fix the ledger path (${this.ledger.path}) and call again; nothing was charged.`, requestId);
@@ -258,27 +285,34 @@ export class Alexandria {
       // The provider may have taken the request and billed it, so the reservation stays held:
       // releasing it would let an unrelated call spend credits this one may already have cost.
       // Only a retry with the same request id and the same call settles the hold.
-      this.held.set(requestId, { amount: price, fingerprint });
+      this.held.set(requestId, { amount: reserved, fingerprint });
       let persisted = '';
       try { this.ledger?.append(receiptFor({ ...result, requestId })); } catch (persistErr) { persisted = ` The receipt could not be written (${persistErr instanceof Error ? persistErr.message : String(persistErr)}); the pending line still holds the reservation.`; }
-      throw new AlexandriaError('uncertain_outcome', `${hit.capability.id}: ${result.error.message}`, `The provider may have billed this call; ${price} credits stay reserved. Retry with requestId ${requestId} and the same options so the provider treats it as the same request and the reservation is reused.${persisted}`, requestId);
+      throw new AlexandriaError('uncertain_outcome', `${hit.capability.id}: ${result.error.message}`, `The provider may have billed this call; ${reserved} credits stay reserved. Retry with requestId ${requestId} and the same options so the provider treats it as the same request and the reservation is reused.${persisted}`, requestId);
     }
     // Reconcile: a failed call is not billed; a successful one is billed at what the provider
     // charged. A success with no usable charge keeps the reservation (never refunded on a guess).
     if (!result.error && (result.chargeUnknown || typeof result.creditsCost !== 'number' || !Number.isFinite(result.creditsCost) || result.creditsCost < 0)) {
       result = { ...result, creditsCost: 0, chargeUnknown: true };
     }
-    const actual = result.error ? 0 : result.chargeUnknown ? price : result.creditsCost;
-    this.budget.spent += actual - price;
-    const receipt = receiptFor(result, { sipLayers: req.sipLayers ?? [] });
+    const actual = result.error ? 0 : result.chargeUnknown ? reserved : result.creditsCost;
+    this.budget.spent += actual - reserved;
+    // A provider that charges more than was reserved has broken the contract the reservation
+    // rests on. The charge is recorded as it happened; the capability is then suspended, in this
+    // process and, through the overrun receipt, in every later one, until the catalogue is fixed.
+    const overrun = actual > reserved;
+    if (overrun) this.suspended.add(hit.capability.id);
+    const receipt = receiptFor(result, { sipLayers: req.sipLayers ?? [], overrun });
     try {
       this.ledger?.append(receipt);
     } catch (err) {
       // The charge happened; the in-memory budget keeps it and the pending line keeps the
       // reservation held in the ledger. The caller gets the request id and the receipt back.
       const message = err instanceof Error ? err.message : String(err);
-      throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the call completed (${actual} credits) but the receipt could not be appended to the ledger (${message})`, `Keep requestId ${requestId} and receipt ${receipt.id}; the spend is counted in this process and the pending line holds ${price} credits until a receipt with this request id lands. Fix the ledger path (${this.ledger?.path ?? 'none'}) before the next call.`, requestId);
+      throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the call completed (${actual} credits) but the receipt could not be appended to the ledger (${message})`, `Keep requestId ${requestId} and receipt ${receipt.id}; the spend is counted in this process and the pending line holds ${reserved} credits until a receipt with this request id lands. Fix the ledger path (${this.ledger?.path ?? 'none'}) before the next call.`, requestId);
     }
-    return { hit, result, receipt, budget: { ...this.budget } };
+    const response: ExecuteResponse = { hit, result, receipt, budget: { ...this.budget } };
+    if (overrun) response.overrun = true;
+    return response;
   }
 }

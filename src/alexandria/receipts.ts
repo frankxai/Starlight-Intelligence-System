@@ -17,7 +17,7 @@
  */
 
 import { createHash, randomUUID } from 'node:crypto';
-import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
+import { appendFileSync, closeSync, existsSync, linkSync, mkdirSync, openSync, readFileSync, renameSync, truncateSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type { CallResult, Provider, Receipt } from './types.js';
 
@@ -72,9 +72,13 @@ export interface ReceiptInput {
   now?: () => string;
   /** Write the pre-call line: holds `reserved` in the ledger until the outcome receipt settles it. */
   pending?: boolean;
+  /** The session ceiling in force. */
+  maxCredits: number;
+  /** The provider charged more than was reserved. */
+  overrun?: boolean;
 }
 
-export function buildReceipt({ result, provider, options, sessionId, reserved, sipLayers = [], now, pending = false }: ReceiptInput): Receipt {
+export function buildReceipt({ result, provider, options, sessionId, reserved, sipLayers = [], now, pending = false, maxCredits, overrun = false }: ReceiptInput): Receipt {
   const receipt: Receipt = {
     id: `rcpt_${randomUUID()}`,
     issuedAt: now ? now() : new Date().toISOString(),
@@ -87,6 +91,7 @@ export function buildReceipt({ result, provider, options, sessionId, reserved, s
     recordCount: result.records.length,
     contentHash: hashRecords(result.records),
     reserved,
+    maxCredits,
     // A pending line holds the reservation. A definite failure is not billed. An uncertain
     // outcome holds the reservation until a retry with the same request id settles it; a success
     // with no reported charge holds it too.
@@ -96,6 +101,7 @@ export function buildReceipt({ result, provider, options, sessionId, reserved, s
     sipLayers,
   };
   if (pending) receipt.pending = true;
+  if (!pending && overrun) receipt.overrun = true;
   if (!pending && !result.error && result.chargeUnknown) receipt.chargeUnknown = true;
   if (result.requestId) receipt.requestId = result.requestId;
   if (provider.attribution) receipt.attribution = provider.attribution;
@@ -117,14 +123,32 @@ export interface LedgerRead {
 const FILE_MODE = 0o600;
 const DIR_MODE = 0o700;
 
-/** Append-only JSONL ledger. One line per receipt; never rewritten. Files are created owner-only. */
+/**
+ * Append-only JSONL ledger. One line per receipt; never rewritten except to move a cut-off tail
+ * into quarantine. Files are created owner-only. Every read and every append holds the ledger's
+ * write lock, so two processes sharing a ledger cannot interleave a quarantine with an append
+ * and a reader never sees a half-truncated file.
+ */
 export class ReceiptLedger {
   constructor(readonly path: string) {}
 
+  /** The ledger-wide lock. Short-lived: held only for the duration of one read or one append. */
+  private writeLock(): FileLock {
+    return new FileLock(`${this.path}.write.lock`);
+  }
+
+  private locked<T>(fn: () => T): T {
+    const lock = this.writeLock();
+    lock.acquire({ waitMs: 5000 });
+    try { return fn(); } finally { lock.release(); }
+  }
+
   append(receipt: Receipt): void {
     mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
-    this.quarantinePartialTail();
-    appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
+    this.locked(() => {
+      this.quarantinePartialTail();
+      appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
+    });
   }
 
   /** Where a cut-off final line is moved before the next append. */
@@ -145,7 +169,8 @@ export class ReceiptLedger {
     const cut = content.lastIndexOf('\n') + 1;
     const fragment = content.slice(cut);
     appendFileSync(this.quarantinePath, `${new Date().toISOString()}\t${fragment}\n`, { encoding: 'utf8', mode: FILE_MODE });
-    writeFileSync(this.path, content.slice(0, cut), { encoding: 'utf8', mode: FILE_MODE });
+    // Truncate in place rather than rewriting the prefix: the intact lines are never re-written.
+    truncateSync(this.path, Buffer.byteLength(content.slice(0, cut), 'utf8'));
     return true;
   }
 
@@ -156,7 +181,8 @@ export class ReceiptLedger {
    */
   readDetailed(): LedgerRead {
     if (!existsSync(this.path)) return { receipts: [], truncatedTail: false };
-    const lines = readFileSync(this.path, 'utf8').split('\n').filter((line) => line.trim().length > 0);
+    const raw = this.locked(() => readFileSync(this.path, 'utf8'));
+    const lines = raw.split('\n').filter((line) => line.trim().length > 0);
     const receipts: Receipt[] = [];
     let truncatedTail = false;
     lines.forEach((line, i) => {
@@ -197,6 +223,23 @@ export class ReceiptLedger {
     return this.tally(sessionId).held;
   }
 
+  /** The lowest ceiling ever recorded for a session, or undefined when it has no receipts. A resume may not exceed it. */
+  sessionCeiling(sessionId: string): number | undefined {
+    let ceiling: number | undefined;
+    for (const r of this.read()) {
+      if (r.sessionId !== sessionId) continue;
+      ceiling = ceiling === undefined ? r.maxCredits : Math.min(ceiling, r.maxCredits);
+    }
+    return ceiling;
+  }
+
+  /** Capabilities whose provider once charged more than was reserved, across every session: suspended until reconciled. */
+  suspendedCapabilities(): Set<string> {
+    const out = new Set<string>();
+    for (const r of this.read()) if (r.overrun) out.add(`${r.provider}/${r.capability}`);
+    return out;
+  }
+
   private tally(sessionId?: string): { settled: number; held: Map<string, HeldReservation> } {
     let settled = 0;
     const held = new Map<string, HeldReservation>();
@@ -231,57 +274,93 @@ export function receiptProblem(value: unknown): string | null {
   if (typeof r.sessionId !== 'string' || !r.sessionId) return 'sessionId missing';
   if (!isCredits(r.creditsCost)) return `creditsCost is not a finite non-negative number (${JSON.stringify(r.creditsCost)})`;
   if (!isCredits(r.reserved)) return `reserved is not a finite non-negative number (${JSON.stringify(r.reserved)})`;
+  if (!isCredits(r.maxCredits)) return `maxCredits is not a finite non-negative number (${JSON.stringify(r.maxCredits)})`;
   if (r.requestId !== undefined && typeof r.requestId !== 'string') return 'requestId is not a string';
   if (typeof r.callFingerprint !== 'string') return 'callFingerprint missing';
   return null;
 }
 
-/** Lock paths this process holds, so a second instance in the same process cannot share a session. */
+/** Lock paths this process holds, so a second instance in the same process cannot share a lock. */
 const heldInProcess = new Set<string>();
 
+const IN_PROGRESS_RETRIES = 20;
+const RETRY_MS = 10;
+
+function pause(ms: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
 /**
- * Exclusive lock on a budget session. Two processes resuming the same session would each
- * reserve against their own in-memory copy of the spend, so a resumed session is held by
- * exactly one live process. The lock is a file beside the ledger holding the owner's pid;
- * a lock whose pid is no longer alive is stale and is taken over. Two instances in one process
- * would have separate in-memory budgets too, so the second owner is refused as well.
+ * Exclusive pid lock on a file. Ownership is published atomically: the pid is written to a
+ * private temp file and `link`ed to the lock path, so the lock either does not exist or carries
+ * its owner; a contender never sees an empty file it could mistake for a stale one. (Where hard
+ * links are refused the fallback is create-then-write, and an empty lock is treated as an
+ * acquisition in progress, not as stale.) A lock whose pid is no longer alive is stale and is
+ * claimed by atomic rename, so of two recovering processes exactly one wins. Two instances in
+ * one process cannot share a lock either.
  */
-export class SessionLock {
-  readonly path: string;
+export class FileLock {
   private held = false;
 
-  constructor(ledgerPath: string, readonly sessionId: string) {
-    const safe = sessionId.replace(/[^A-Za-z0-9_.-]/g, '_');
-    this.path = `${ledgerPath}.${safe}.lock`;
-  }
+  constructor(readonly path: string) {}
 
-  acquire(): void {
+  /** `waitMs`: how long to wait on a live owner before giving up (0 = refuse at once). */
+  acquire(opts: { waitMs?: number } = {}): void {
     if (this.held) return;
     if (heldInProcess.has(this.path)) {
-      throw new Error(`Budget session ${this.sessionId} is already held by another Alexandria instance in this process (${this.path}); reuse that instance or choose another session`);
+      throw new Error(`${this.path} is already held by another instance in this process`);
     }
     mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
-    for (let attempt = 0; attempt < 3; attempt++) {
+    const deadline = Date.now() + (opts.waitMs ?? 0);
+    let emptySeen = 0;
+    for (let attempt = 0; attempt < 10_000; attempt++) {
+      if (this.tryCreate()) { this.held = true; heldInProcess.add(this.path); return; }
+      let contents: string;
+      try { contents = readFileSync(this.path, 'utf8').trim(); } catch { continue; /* removed between our create and read; retry */ }
+      if (contents === '') {
+        // Create-then-write fallback in another process: ownership is being published. Wait for
+        // it; only a lock that stays empty well past any write is a crash between the two steps.
+        if (++emptySeen <= IN_PROGRESS_RETRIES) { pause(RETRY_MS); continue; }
+      } else {
+        const owner = Number(contents);
+        // Our own pid but not in heldInProcess: a leftover from an earlier life of this pid, so stale.
+        if (owner !== process.pid && isAlive(owner)) {
+          if (Date.now() < deadline) { pause(RETRY_MS); continue; }
+          throw new Error(`${this.path} is held by process ${owner}`);
+        }
+      }
+      // Stale: claim it by rename (atomic), so a losing claimant can never unlink a fresh lock.
+      const claim = `${this.path}.stale.${process.pid}.${attempt}`;
+      try { renameSync(this.path, claim); unlinkSync(claim); } catch { /* another process claimed it; the retry sees their fresh lock */ }
+      emptySeen = 0;
+    }
+    throw new Error(`Could not acquire ${this.path}`);
+  }
+
+  /** Publishes the lock with its owner in one step. False when the lock exists. */
+  private tryCreate(): boolean {
+    const tmp = `${this.path}.${process.pid}.${randomUUID()}.tmp`;
+    writeFileSync(tmp, String(process.pid), { encoding: 'utf8', mode: FILE_MODE, flag: 'wx' });
+    try {
+      linkSync(tmp, this.path);
+      return true;
+    } catch (err) {
+      const code = (err as NodeJS.ErrnoException).code;
+      if (code === 'EEXIST') return false;
+      // Hard links refused by the filesystem: create exclusively, then write. Contenders treat the
+      // empty window as an acquisition in progress (above).
       try {
         const fd = openSync(this.path, 'wx', FILE_MODE);
         writeFileSync(fd, String(process.pid), 'utf8');
         closeSync(fd);
-        this.held = true;
-        heldInProcess.add(this.path);
-        return;
-      } catch (err) {
-        if ((err as NodeJS.ErrnoException).code !== 'EEXIST') throw err;
-        let owner: number;
-        try { owner = Number(readFileSync(this.path, 'utf8').trim()); } catch { continue; /* removed between our open and read; retry */ }
-        // Our own pid but not in heldInProcess: a leftover from an earlier life of this pid, so stale.
-        if (owner !== process.pid && isAlive(owner)) throw new Error(`Budget session ${this.sessionId} is held by process ${owner} (${this.path}); resume it from that process or choose another session`);
-        // Claim the stale file by renaming it: rename is atomic, so of two processes recovering the
-        // same stale lock only one succeeds, and neither can unlink a lock the other just created.
-        const claim = `${this.path}.stale.${process.pid}.${attempt}`;
-        try { renameSync(this.path, claim); unlinkSync(claim); } catch { /* another process claimed it; the retry sees their fresh lock */ }
+        return true;
+      } catch (fallbackErr) {
+        if ((fallbackErr as NodeJS.ErrnoException).code === 'EEXIST') return false;
+        throw fallbackErr;
       }
+    } finally {
+      try { unlinkSync(tmp); } catch { /* already gone */ }
     }
-    throw new Error(`Could not acquire the lock for budget session ${this.sessionId} (${this.path})`);
   }
 
   release(): void {
@@ -291,6 +370,28 @@ export class SessionLock {
     try {
       if (Number(readFileSync(this.path, 'utf8').trim()) === process.pid) unlinkSync(this.path);
     } catch { /* already gone */ }
+  }
+}
+
+/**
+ * Exclusive lock on a budget session. Two processes resuming the same session would each reserve
+ * against their own in-memory copy of the spend, so a resumed session is held by exactly one live
+ * process, and by exactly one instance within it. The lock is a file beside the ledger.
+ */
+export class SessionLock extends FileLock {
+  constructor(ledgerPath: string, readonly sessionId: string) {
+    super(`${ledgerPath}.${sessionId.replace(/[^A-Za-z0-9_.-]/g, '_')}.lock`);
+  }
+
+  override acquire(): void {
+    try {
+      super.acquire({ waitMs: 0 });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (message.includes('another instance in this process')) throw new Error(`Budget session ${this.sessionId} is already held by another Alexandria instance in this process (${this.path}); reuse that instance or choose another session`);
+      if (message.includes('is held by process')) throw new Error(`Budget session ${this.sessionId} ${message.slice(message.indexOf('is held by process'))} (${this.path}); resume it from that process or choose another session`);
+      throw err;
+    }
   }
 }
 

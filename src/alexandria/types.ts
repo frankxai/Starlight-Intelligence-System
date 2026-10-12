@@ -148,6 +148,10 @@ export interface Receipt {
   contentHash: string;
   /** Credits reserved against the budget before the call ran. */
   reserved: number;
+  /** The session ceiling in force when the receipt was written. A resumed session may not raise it. */
+  maxCredits: number;
+  /** True when the provider charged more than was reserved. The capability is suspended estate-wide until reconciled. */
+  overrun?: boolean;
   /**
    * Credits charged to the session. Greater than `reserved` means the declared record ceiling
    * was exceeded. An `uncertain_outcome` receipt holds `reserved` here until a retry with the

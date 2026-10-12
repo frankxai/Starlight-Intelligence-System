@@ -33,6 +33,13 @@ const TRANSITIONS: Record<ExperimentStatus, readonly ExperimentStatus[]> = {
 };
 const ID_RE = /^exp-\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/** A real calendar date, not only the shape: `2026-02-31` round-trips to `2026-03-03` and is refused. */
+export function isCalendarDate(value: unknown): value is string {
+  if (typeof value !== 'string' || !DATE_RE.test(value)) return false;
+  const t = Date.parse(`${value}T00:00:00Z`);
+  return Number.isFinite(t) && new Date(t).toISOString().slice(0, 10) === value;
+}
 /** Ledger receipt ids are `rcpt_` + a v4 UUID (src/alexandria/receipts.ts). */
 export const RECEIPT_ID_RE = /^rcpt_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -48,8 +55,8 @@ export function validateExperiment(e: Partial<Experiment>): ExperimentProblem[] 
   }
   if (typeof e.owner !== 'string' || !/^[a-z][a-z0-9-]*$/.test(e.owner)) problems.push({ id, message: 'owner must be a lower-case slug' });
   if (!STATUSES.includes(e.status as ExperimentStatus)) problems.push({ id, message: `status must be one of ${STATUSES.join('|')}` });
-  if (typeof e.openedAt !== 'string' || !DATE_RE.test(e.openedAt)) problems.push({ id, message: 'openedAt must be YYYY-MM-DD' });
-  if (typeof e.closesBy !== 'string' || !DATE_RE.test(e.closesBy)) problems.push({ id, message: 'closesBy must be YYYY-MM-DD' });
+  if (!isCalendarDate(e.openedAt)) problems.push({ id, message: 'openedAt must be a real calendar date (YYYY-MM-DD)' });
+  if (!isCalendarDate(e.closesBy)) problems.push({ id, message: 'closesBy must be a real calendar date (YYYY-MM-DD)' });
   else if (typeof e.openedAt === 'string' && e.closesBy < e.openedAt) problems.push({ id, message: 'closesBy must not precede openedAt' });
   if (!Array.isArray(e.receipts)) problems.push({ id, message: 'receipts must be an array (may be empty while proposed/running)' });
   else {
@@ -92,7 +99,7 @@ export function transition(e: Experiment, to: ExperimentStatus, evidence: { rece
     // Reopening is a fresh commitment: it needs a new deadline later than the one it parked
     // with and still ahead of today, or it would reopen straight into the overdue list.
     const today = evidence.today ?? new Date().toISOString().slice(0, 10);
-    if (!evidence.closesBy || !DATE_RE.test(evidence.closesBy)) throw new Error(`${e.id}: reopening a parked experiment needs a new closesBy (YYYY-MM-DD)`);
+    if (!isCalendarDate(evidence.closesBy)) throw new Error(`${e.id}: reopening a parked experiment needs a new closesBy (a real calendar date, YYYY-MM-DD)`);
     if (evidence.closesBy <= e.closesBy) throw new Error(`${e.id}: the new closesBy must be later than ${e.closesBy}`);
     if (evidence.closesBy <= today) throw new Error(`${e.id}: the new closesBy must be after today (${today})`);
   }

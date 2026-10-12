@@ -266,9 +266,12 @@ describe("v93 — router, budget and receipts", () => {
     assert.equal(transport.calls.length, 1);
   });
 
-  it("per-record capabilities need a declared ceiling, reserve ceiling times price, and record an overrun", async () => {
+  it("per-record capabilities need a declared ceiling, reserve ceiling times price, and an overrun suspends the capability", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-overrun-"));
+    const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
     const transport = new MemoryTransport("firecrawl-alexandria", { "fullenrich/people/search": { records: [{}, {}, {}, {}, {}, {}, {}], creditsCost: 35 } });
-    const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 25 });
+    const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 25, ledger, lock: false, sessionId: "session-overrun" });
+    try {
     await assert.rejects(alexandria.execute({ capabilityId: "fullenrich/people/search" }), (err: unknown) => err instanceof AlexandriaError && err.code === "unbounded_records");
     await assert.rejects(alexandria.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 6 }), (err: unknown) => err instanceof AlexandriaError && err.code === "over_budget");
     assert.equal(transport.calls.length, 0);
@@ -281,9 +284,79 @@ describe("v93 — router, budget and receipts", () => {
     assert.equal(res.receipt.reserved, 25);
     assert.equal(res.receipt.creditsCost, 35, "a provider that ignores its own limit is recorded as an overrun, never hidden");
     assert.equal(res.budget.spent, 35);
+    assert.equal(res.overrun, true);
+    assert.equal(res.receipt.overrun, true);
+    await assert.rejects(alexandria.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 1 }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended", "an overrun suspends the capability in this process");
+    const later = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, lock: false });
+    await assert.rejects(later.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 1 }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended", "and, through the overrun receipt, in every later process on this ledger");
+    assert.equal(transport.calls.length, 1);
     const bare = new Library({ ...library.catalog, providers: [{ ...library.get("fullenrich/people/search")!.provider, capabilities: library.get("fullenrich/people/search")!.provider.capabilities.map((c) => { const { recordLimitOption: _drop, ...rest } = c; return rest; }) }] });
     const unbounded = new Alexandria({ library: bare, transports: [transport], maxCredits: 100 });
     await assert.rejects(unbounded.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 2 }), (err: unknown) => err instanceof AlexandriaError && err.code === "unbounded_records", "without a declared record-limit option a per-record capability does not run");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("refuses a blank request id before anything is reserved", async () => {
+    const transport = new MemoryTransport("firecrawl-alexandria", { "gmgn-ai/crypto/wallet_rank": { records: [{ a: 1 }], creditsCost: 5 } });
+    const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 10 });
+    await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank", requestId: "" }), (err: unknown) => err instanceof AlexandriaError && err.code === "invalid_request_id");
+    await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank", requestId: "   " }), (err: unknown) => err instanceof AlexandriaError && err.code === "invalid_request_id");
+    assert.equal(transport.calls.length, 0);
+    assert.equal(alexandria.budget.spent, 0);
+  });
+
+  it("never shrinks a held reservation when the price drops before the retry", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-shrink-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      let fail = true;
+      const transport = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: readonly { provider: string; capability: string; requestId?: string }[]) => {
+          if (fail) throw new Error("socket hang up");
+          return [{ provider: calls[0].provider, capability: calls[0].capability, records: [{ a: 1 }], creditsCost: 3, observedAt: fixedNow(), requestId: calls[0].requestId }];
+        },
+      };
+      const first = new Alexandria({ library, transports: [transport], maxCredits: 8, ledger, lock: false, sessionId: "session-shrink" });
+      let caught: unknown;
+      try { await first.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }); } catch (err) { caught = err; }
+      const requestId = (caught as AlexandriaError).requestId ?? "";
+      assert.equal(first.budget.spent, 5);
+      const cheaper = new Library({ ...library.catalog, providers: library.catalog.providers.map((p) => p.id !== "gmgn-ai" ? p : { ...p, capabilities: p.capabilities.map((c) => c.id === "gmgn-ai/crypto/wallet_rank" ? { ...c, creditsCost: 3 } : c) }) });
+      const resumed = new Alexandria({ library: cheaper, transports: [transport], maxCredits: 8, ledger, lock: false, sessionId: "session-shrink" });
+      assert.equal(resumed.budget.spent, 5);
+      fail = false;
+      const settled = await resumed.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank", requestId });
+      const pendingLines = ledger.read().filter((r) => r.pending);
+      assert.equal(pendingLines[pendingLines.length - 1].reserved, 5, "the retry's pending line keeps the original hold, not the lower price");
+      assert.equal(settled.receipt.reserved, 5);
+      assert.equal(settled.receipt.creditsCost, 3);
+      assert.equal(settled.budget.spent, 3, "the hold is released only once the provider reports the charge");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps a resumed session's ceiling and refuses to raise it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-ceiling-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      const native = new NativeTransport(REPO_ROOT);
+      const opened = new Alexandria({ library, transports: [native], maxCredits: 10, ledger, sessionId: "session-cap" });
+      await opened.execute({ capabilityId: "sis-metrics/current" });
+      opened.close();
+      assert.throws(() => new Alexandria({ library, transports: [native], maxCredits: 100, ledger, sessionId: "session-cap" }), /would raise the ceiling/);
+      assert.ok(!existsSync(`${ledger.path}.session-cap.lock`), "a refused resume does not leave the session locked");
+      const lowered = new Alexandria({ library, transports: [native], maxCredits: 5, ledger, sessionId: "session-cap" });
+      assert.equal(lowered.budget.maxCredits, 5, "lowering is allowed");
+      lowered.close();
+      assert.equal(ledger.sessionCeiling("session-cap"), 10);
+      assert.ok(!existsSync(`${ledger.path}.write.lock`), "the ledger write lock is held only for the duration of a read or append");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   it("on a transport failure: keeps the reservation held, persists the request id, and a retry with that id reuses the hold", async () => {
@@ -390,8 +463,10 @@ describe("v93 — router, budget and receipts", () => {
       const path = join(dir, "receipts.jsonl");
       writeFileSync(path, '{"id":"rcpt_x","sessionId":"s","creditsCost":"5","reserved":5,"callFingerprint":"sha256:0"}\n', "utf8");
       assert.throws(() => new ReceiptLedger(path).spent("s"), /corrupt at line 1: creditsCost/);
-      writeFileSync(path, '{"id":"rcpt_x","sessionId":"s","creditsCost":5,"reserved":5,"callFingerprint":"sha256:0"}\n{"id":"rcpt_y","sessionId":"s","reserved":5,"callFingerprint":"sha256:0"}\n', "utf8");
+      writeFileSync(path, '{"id":"rcpt_x","sessionId":"s","creditsCost":5,"reserved":5,"maxCredits":10,"callFingerprint":"sha256:0"}\n{"id":"rcpt_y","sessionId":"s","reserved":5,"callFingerprint":"sha256:0"}\n', "utf8");
       assert.throws(() => new ReceiptLedger(path).spent("s"), /corrupt at line 2/);
+      writeFileSync(path, '{"id":"rcpt_x","sessionId":"s","creditsCost":5,"reserved":5,"callFingerprint":"sha256:0"}\n', "utf8");
+      assert.throws(() => new ReceiptLedger(path).spent("s"), /corrupt at line 1: maxCredits/);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -497,6 +572,12 @@ describe("v93 — router, budget and receipts", () => {
       const again = new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "session-x" });
       assert.equal(again.budget.sessionId, "session-x", "after close the session can be held again");
       again.close();
+      writeFileSync(lockPath, "", "utf8"); // ownership being published by a create-then-write fallback, or a crash in between
+      const started = Date.now();
+      const claimed = new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "session-x" });
+      assert.ok(Date.now() - started >= 150, "an empty lock is waited on as an acquisition in progress before it is treated as stale");
+      assert.equal(readFileSync(lockPath, "utf8"), String(process.pid));
+      claimed.close();
       const unlocked = new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "session-y", lock: false });
       assert.ok(!existsSync(`${ledger.path}.session-y.lock`), "lock: false opts out for in-process use");
       unlocked.close();
@@ -586,6 +667,9 @@ describe("v93 — Forge experiments", () => {
     assert.throws(() => transition(parked, "running", { closesBy: "2026-11-08", today: "2026-10-12" }), /later than/);
     assert.throws(() => transition(parked, "running", { closesBy: "2026-12-01", today: "2027-01-01" }), /after today/);
     assert.equal(transition(parked, "running", { closesBy: "2026-12-01", today: "2026-10-12" }).closesBy, "2026-12-01");
+    assert.throws(() => transition(parked, "running", { closesBy: "2027-02-30", today: "2026-10-12" }), /real calendar date/);
+    assert.ok(validateRegistry({ experiments: [{ ...base, closesBy: "2026-02-31" }] }).some((p) => p.message.includes("real calendar date")), "a shape-correct impossible date is refused");
+    assert.ok(validateRegistry({ experiments: [{ ...base, openedAt: "2026-99-99" }] }).some((p) => p.message.includes("real calendar date")));
   });
 });
 
@@ -623,6 +707,9 @@ describe("v93 — MCP server", () => {
       const badLayers = await server.handleRequest({ method: "tools/call", id: 9, params: { name: "alexandria_execute", arguments: { capabilityId: "gmgn-ai/crypto/wallet_rank", sipLayers: [42] } } });
       assert.equal((badLayers?.result as { isError: boolean }).isError, true, "a non-string layer is refused, not coerced");
       assert.equal(transport.calls.length, 1, "and nothing was charged for it");
+      const blankId = await server.handleRequest({ method: "tools/call", id: 10, params: { name: "alexandria_execute", arguments: { capabilityId: "gmgn-ai/crypto/wallet_rank", requestId: "" } } });
+      assert.ok((blankId?.result as { isError: boolean; content: { text: string }[] }).content[0].text.includes("requestId must be a non-empty string"));
+      assert.equal(transport.calls.length, 1, "a blank request id is refused before any charge");
       const exps = await server.handleRequest({ method: "tools/call", id: 5, params: { name: "alexandria_experiments", arguments: { status: "running" } } });
       assert.ok((exps?.result as { structuredContent: { experiments: unknown[] } }).structuredContent.experiments.length >= 1);
       const unknown = await server.handleRequest({ method: "nope", id: 6 });

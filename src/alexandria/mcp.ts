@@ -110,9 +110,10 @@ export class AlexandriaMcpServer {
           if (!args.sipLayers.every((l): l is string => typeof l === 'string')) throw new AlexandriaError('invalid_sip_layer', 'sipLayers must be an array of strings', 'Name the SIP layers the record composes, per SIP.md, or omit sipLayers; nothing was charged.');
           req.sipLayers = args.sipLayers;
         }
-        if (typeof args.requestId === 'string') req.requestId = args.requestId;
+        if (typeof args.requestId === 'string') req.requestId = args.requestId; // the router refuses a blank one
         const res = await this.alexandria.execute(req);
-        return { capabilityId: res.hit.capability.id, records: res.result.records, receipt: res.receipt, budget: res.budget };
+        if (res.overrun) process.stderr.write(`[starlight-alexandria] OVERRUN: ${res.hit.capability.id} charged ${res.receipt.creditsCost} against ${res.receipt.reserved} reserved; the capability is suspended (receipt ${res.receipt.id})\n`);
+        return { capabilityId: res.hit.capability.id, records: res.result.records, receipt: res.receipt, budget: res.budget, ...(res.overrun ? { overrun: true } : {}) };
       }
       case 'alexandria_receipts': {
         const { receipts, truncatedTail } = this.ledger.readDetailed();
