@@ -130,7 +130,7 @@ export function MemoryPalace() {
       <div className="relative rounded-3xl border border-white/[0.08] bg-[#060609]/80 p-8 pb-10 backdrop-blur-2xl" style={{ backgroundImage: 'url(/assets/visuals/queen-premium/35.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'multiply', opacity: 0.95 }}>
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <div className="text-xs uppercase tracking-[3px] text-white/50">LIVING MEMORY SUBSTRATE</div>
+            <div className="text-xs normal-case tracking-wider text-white/50">Living memory substrate</div>
             <div className="text-3xl font-semibold tracking-tighter text-white">Starlight Memory Palace</div>
           </div>
           <button
@@ -257,9 +257,9 @@ export function MemoryPalace() {
                     className="text-[10px] font-medium tracking-[1.5px] text-white/80"
                     style={{ color: isFocused ? "#fff" : vault.accent }}
                   >
-                    {vault.label.toUpperCase()}
+                    {vault.label}
                   </div>
-                  <div className="mt-0.5 text-[9px] text-white/40 group-hover:text-white/60">{vault.confidence}</div>
+                  <div className="mt-0.5 text-[9px] text-white/50 group-hover:text-white/60">{vault.confidence}</div>
                 </div>
 
                 {/* Extra life when voice or focus */}
@@ -277,10 +277,10 @@ export function MemoryPalace() {
         {/* Interactive HUD — glass, alive, Jarvis */}
         <div className="mx-auto max-w-[620px] rounded-2xl border border-white/[0.08] bg-black/40 p-5 text-sm backdrop-blur-xl">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 text-xs uppercase tracking-[2px] text-white/50">
+            <div className="flex items-center gap-3 text-xs normal-case tracking-wider text-white/50">
               <div>Built on SIP</div>
               <div className="h-px w-3 bg-white/20" />
-              <div>6 VAULTS LIVE</div>
+              <div>6 vaults live</div>
               <div className="h-px w-3 bg-white/20" />
               <div>RRF 61.5%</div>
             </div>
@@ -290,7 +290,7 @@ export function MemoryPalace() {
               disabled={voiceActive}
               className="flex items-center gap-2 rounded-full border border-white/15 px-4 py-1 text-xs text-white/80 transition hover:bg-white/5 disabled:opacity-60"
             >
-              {voiceActive ? "LISTENING..." : "SPEAK TO FOCUS"}
+              {voiceActive ? "Listening..." : "Speak to focus"}
               <span aria-hidden>⟐</span>
             </button>
           </div>
@@ -299,20 +299,20 @@ export function MemoryPalace() {
           <div className="mt-4 min-h-[92px] rounded-xl border border-white/[0.06] bg-white/[0.015] p-4 text-[13px] leading-relaxed text-white/85">
             {current ? (
               <>
-                <div className="mb-1 text-[10px] uppercase tracking-[2px]" style={{ color: current.accent }}>
-                  {current.label} VAULT — {current.confidence} CONFIDENCE
+                <div className="mb-1 text-[10px] normal-case tracking-wider" style={{ color: current.accent }}>
+                  {current.label} vault — {current.confidence} confidence
                 </div>
                 <div>{current.excerpt}</div>
               </>
             ) : (
               <div className="text-white/50">
                 Tap any orb to surface memory. Or speak an intention. The palace responds.
-                <div className="mt-2 text-[10px] text-white/30">This is the L99 seed. Full 3D r3f + real gateway data in the 21-person build.</div>
+                <div className="mt-2 text-[10px] text-white/50">This is the L99 seed. Full 3D r3f + real gateway data in the 21-person build.</div>
               </div>
             )}
           </div>
 
-          <div className="mt-3 flex items-center justify-between text-[10px] text-white/40">
+          <div className="mt-3 flex items-center justify-between text-[10px] text-white/50">
             <div>{CURRENT_METRICS.registeredAgents} agent definitions • local-first • {CURRENT_METRICS.vaults} semantic vaults</div>
             <a
               href="https://github.com/frankxai/Starlight-Intelligence-System"
@@ -324,7 +324,7 @@ export function MemoryPalace() {
           </div>
         </div>
 
-        <div className="mx-auto mt-4 max-w-[620px] text-center text-[10px] text-white/35">
+        <div className="mx-auto mt-4 max-w-[620px] text-center text-[10px] text-white/50">
           Obsidian is live now (open <span className="font-mono">memory/</span> as vault + use the new starlight-network.base). 
           This is the custom visualization path. See the full team brief in docs/superpowers/specs/.
         </div>

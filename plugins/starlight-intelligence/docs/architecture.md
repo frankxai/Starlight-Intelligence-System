@@ -62,7 +62,13 @@ Business state never lives only in the iframe. The UI can refresh read state and
 
 Replacing storage must not weaken these semantics. The database is an implementation detail; the governance contract is the product.
 
-## Deliberate exclusions from v0.2
+## Connected preparation in v0.3
+
+The capability catalog contains public source and endpoint observations with explicit setup requirements. Workflow preparation returns the portable `starlight.workflow_packet.v1` contract: title, owning brand, source revision and receipts, stages, acceptance criteria and nullable evidence. It performs no external work. Starlight, GenCreator, Arcanea and FrankX retain distinct ownership. Private repository snapshots and account credentials are excluded from this public package.
+
+The command-center resource declares a fullscreen preference. Host rendering remains a separate acceptance check.
+
+## Deliberate exclusions retained in v0.3
 
 - No generic “run my whole company” tool.
 - No direct external-system writes.

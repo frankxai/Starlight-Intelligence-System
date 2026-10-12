@@ -2,7 +2,7 @@
 name: compose-stack
 description: Compose a sequenced Intelligence Stack Plan for a sovereign person. Analyzes their Genius Profile + Freedom Path + stated priorities + life stage, then sequences which of the 9 layers activate first, second, third. Produces a 90-day sprint plan for building their full intelligence stack. For humans with Genius Profile already in hand.
 allowed-tools: Read, Write, Grep, Glob
-argument-hint: <person-name> [priority: freedom|revenue|vision|compound] [horizon: 90-day|180-day|year]
+argument-hint: "<person-name> [priority: freedom|revenue|vision|compound] [horizon: 90-day|180-day|year]"
 ---
 
 # /compose-stack

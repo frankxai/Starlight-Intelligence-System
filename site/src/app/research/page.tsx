@@ -69,7 +69,7 @@ export default function ResearchIndexPage() {
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-28">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400">
             Research
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-5xl">
@@ -114,15 +114,15 @@ export default function ResearchIndexPage() {
       <section className="border-b border-white/[0.08] px-6 py-16 bg-[#050507]">
         <div className="mx-auto max-w-5xl">
           <div className="grid items-center gap-8 md:grid-cols-2">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/[0.25] bg-cyan-500/[0.06] px-3 py-1 text-[10px] uppercase tracking-[2px] text-cyan-300">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/[0.25] bg-cyan-500/[0.06] px-3 py-1 text-[10px] normal-case tracking-wider text-cyan-300">
                 Visual Intelligence
               </div>
               <h2 className="mt-4 font-serif text-4xl tracking-[-1.5px] text-white md:text-5xl">
                 Starlight Queen<br />Visual Intelligence
               </h2>
-              <p className="mt-4 text-[15px] leading-[1.75] text-slate-400">
-                The living heart of the system: a scroll-optimized visual narrative of the Queen v0.2 closed loop, her parallel swarms, ROUTE→MEASURE→LEARN→RATIFY→LEDGER choreography, and the first-class visual artifacts that now ledger every advance.
+              <p className="mt-4 break-words text-[15px] leading-[1.75] text-slate-400">
+                The living heart of the system: a scroll-optimized visual narrative of the Queen v0.2 closed loop, her parallel swarms, route → measure → learn → ratify → ledger choreography, and the first-class visual artifacts that now ledger every advance.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
@@ -145,14 +145,14 @@ export default function ResearchIndexPage() {
             <div className="relative aspect-[16/9] overflow-hidden rounded-3xl border border-white/[0.08] bg-black/60">
               <div className="absolute inset-0 bg-[radial-gradient(#c084fc_0.8px,transparent_1px)] bg-[length:6px_6px] flex items-center justify-center" style={{backgroundColor: '#050507'}}>
                 <div className="text-center">
-                  <div className="text-[10px] tracking-[3px] text-cyan-400/70 mb-1">L99 VISUAL</div>
+                  <div className="text-[10px] tracking-[3px] text-cyan-400/70 mb-1">L99 visual</div>
                   <div className="text-xl text-white/70">Queen + Swarms (Grok Imagine)</div>
                   <a href="/queen" className="text-[10px] underline text-cyan-400/80 hover:text-cyan-400">/queen experience →</a>
                 </div>
               </div>
               <div className="absolute inset-0 bg-gradient-to-r from-[#050507] via-[#050507]/70 to-transparent" />
-              <div className="absolute bottom-6 left-6 text-xs uppercase tracking-[3px] text-cyan-300/90">
-                THE CONTINUOUS ORCHESTRATOR
+              <div className="absolute bottom-6 left-6 text-xs normal-case tracking-wider text-cyan-300/90">
+                The continuous orchestrator
               </div>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function ResearchIndexPage() {
       {/* ── Research cards ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Artifacts
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -179,7 +179,7 @@ export default function ResearchIndexPage() {
                   className={`flex flex-col rounded-2xl border ${a.border} ${a.bg} p-6 transition-std hover:border-white/[0.2]`}
                 >
                   <header>
-                    <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-widest">
+                    <div className="flex flex-wrap items-center gap-2 text-[10px] normal-case tracking-wider">
                       <span className={`rounded-full border px-2.5 py-1 ${a.chip}`}>
                         {TIER_LABEL[r.tier]}
                       </span>
@@ -238,7 +238,7 @@ export default function ResearchIndexPage() {
       {/* ── Why a research surface ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Why a research surface
           </p>
           <h2 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">

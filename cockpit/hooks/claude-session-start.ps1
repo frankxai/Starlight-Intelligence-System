@@ -33,13 +33,8 @@ try {
     if (-not $sessionId) { $sessionId = "unknown-$(Get-Random)" }
     if (-not $cwd) { $cwd = (Get-Location).Path }
 
-    # Claude's actual PID is our parent (the hook runs as a child process of Claude)
-    $hookPid = $PID
-    $claudePid = $hookPid
-    try {
-        $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$hookPid" -ErrorAction Stop
-        if ($proc.ParentProcessId -gt 0) { $claudePid = [int]$proc.ParentProcessId }
-    } catch {}
+    # Skip WMI/CIM. Get-CimInstance regularly exceeds the 2s global hook budget on Windows.
+    $claudePid = $PID
 
     Write-CockpitSessionEvent `
         -Event 'start' `

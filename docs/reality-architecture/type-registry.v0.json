@@ -1,6 +1,6 @@
 {
   "$comment": "Open registry for RealityObject.type — extend additively; do not encode display names into IDs.",
-  "schemaVersion": "0.1.1",
+  "schemaVersion": "0.1.2",
   "idPattern": "^ra:[a-z][a-z0-9_-]*:[a-zA-Z0-9._~/-]{1,200}$",
   "idExamples": [
     "ra:repo:frankxai/Starlight-Intelligence-System",
@@ -36,6 +36,9 @@
     "fictional_entity",
     "fictional_place",
     "world_state",
+    "life_domain",
+    "practice",
+    "witness_entry",
     "other"
   ],
   "relationTypes": [

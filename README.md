@@ -8,12 +8,14 @@ Persistent memory. Attested knowledge. Sovereign control.
 
 Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity — they all read from and write to the **same six semantic vaults**, with full provenance. No more explaining the same thing to every agent. No drift. No lost decisions.
 
-[![version](https://img.shields.io/badge/version-8.3.0-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
+[![version](https://img.shields.io/badge/version-8.5.1-7fffd4?style=flat-square&labelColor=0d1117)](https://github.com/frankxai/Starlight-Intelligence-System/releases)
 [![protocol](https://img.shields.io/badge/SIP-v1.1.1-c084fc?style=flat-square&labelColor=0d1117)](SIP.md)
 [![license](https://img.shields.io/badge/license-MIT-white?style=flat-square&labelColor=0d1117)](LICENSE)
 [![protocol page](https://img.shields.io/badge/protocol-starlightintelligence.org%2Fprotocol-78a6ff?style=flat-square&labelColor=0d1117)](https://starlightintelligence.org/protocol)
 [![deploy](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/frankxai/Starlight-Intelligence-System/actions/workflows/vercel-deploy.yml)
 [![github stars](https://img.shields.io/github/stars/frankxai/Starlight-Intelligence-System?style=flat-square&labelColor=0d1117&color=ffd700)](https://github.com/frankxai/Starlight-Intelligence-System/stargazers)
+
+Starlight Intelligence is an AI systems project led by Frank Riemer in Amsterdam. This repository contains its public protocol and reference source. [About the project and product](https://starlightintelligence.ai/about) · [Released open-source foundations](https://starlightintelligence.ai/open-source) · [Contribute and explore the community proposal](https://starlightintelligence.ai/community).
 
 ## Deploy Starlight Explorer
 
@@ -74,6 +76,10 @@ The skills-only `starlight-foundry` plugin works as the portable ChatGPT Work/Co
 
 [Read the Foundry architecture](docs/architecture/STARLIGHT-INTELLIGENCE-FOUNDRY.md) · [Inspect the contracts](foundry/contracts/) · [Run the demo](foundry/examples/)
 
+## Starlight Agent Designer
+
+The skills-only [Agent Designer plugin](plugins/starlight-agent-designer) turns a human job into a value case, architecture, scoped contract, activation prompt and evaluation plan. Its constitutional foundations include human agency, truthfulness, craftsmanship, privacy, stewardship, creativity and scientific rigor. A tested in-process gateway reference demonstrates bounded preparation; live runtime enforcement remains a separate integration. [Read the design and activation guide](docs/architecture/STARLIGHT-AGENT-DESIGNER.md).
+
 ## Usefulness
 
 - **Humans:** portable sovereign memory + multi-agent fleet that compounds.
@@ -89,7 +95,7 @@ cd Starlight-Intelligence-System && npm install && npm run build
 node dist/cli.js init --vaults
 ```
 
-> **Note:** npm currently serves v6.0.1 of `@arcanea/starlight-intelligence-system` — two major versions behind this repo. Use the git path above until v8.x is published.
+> npm serves `@arcanea/starlight-intelligence-system@8.5.1` as checked on 10 October 2026. This checkout uses Node 22 or 24. The modular packages are release candidates; the operational SDK keeps its own contracts and sanitizer until a separately versioned root migration is published.
 
 Then add to your MCP config (Claude Code, Cursor, Codex, Gemini, etc.), pointing at the `dist/mcp-server.js` inside your clone:
 
@@ -230,7 +236,7 @@ First, seed your vault directory so the system has somewhere to read from
 (a fresh install has no `~/.starlight/vaults` yet):
 
 ```bash
-# From a git clone of this repo (npm registry is at stale v6.0.1 — see note above):
+# From a git clone of this repo:
 node dist/cli.js init --vaults
 # → seeds the six JSONL vaults in ~/.starlight/vaults (welcome entry + public examples)
 ```
@@ -261,7 +267,7 @@ Restart Claude Code. You now have thirteen `sis_*` tools available in every sess
 **Option 2: As a library**
 
 ```bash
-npm install @arcanea/starlight-intelligence-system  # registry serves v6.0.1 — for v8.x, install from the git clone until republished
+npm install @arcanea/starlight-intelligence-system@8.5.1
 ```
 
 ```ts
@@ -311,8 +317,10 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 - **Temporal reasoning** — `src/temporal.ts` adds validity windows and a 90-day confidence half-life.
 - **Contradiction detection** — `src/contradiction.ts` finds conflicting entries via word-trigram Jaccard with opposing-signal boosting.
 - **Dreaming** — `src/dreaming.ts` processes session transcripts in the background.
-- **Five platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode share the same vaults.
+- **Six platform adapters** — Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity share the same vaults.
 - **MCP v2** — `src/mcp-server.ts` ships thirteen tools over JSON-RPC 2.0 stdio.
+- **Multi-harness runtime bridge & context continuity** — `@arcanea/starlight-intelligence-system/runtime-bridge` and `src/context-bridge.ts` provide bounded context capture, atomic journal replacement, revision-scoped handoffs, cooperative PID/token locks, and typed review queues.
+- **Jev router policy primitive** — `src/runtime-bridge/jev-router.ts` prepares public-only requests from a host-supplied classification and model pool. Post-response checks cannot undo transmission or certify cost.
 
 ### MCP tools
 
@@ -341,6 +349,20 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Codex | `AGENTS.md` | `~/.codex/config.toml` | 192,000 |
 | Gemini CLI | `GEMINI.md` | `~/.gemini/settings.json` | 1,000,000 |
 | OpenCode | `AGENTS.md` (compact) | `~/.config/opencode/opencode.json` | 128,000 |
+| Antigravity | `AGENTS.md` | Built-in native tools & MCP | 1,000,000+ |
+| Grok | `AGENTS.md` / `GROK.md` | `grok-harness-adapter` | 131,000 |
+
+### Multi-harness runtime bridge & context continuity
+
+The `@arcanea/starlight-intelligence-system/runtime-bridge` export provides `ContextBridge` and `ReviewQueue` for bounded context capture and revision-bound handoffs. The host owns scheduling, provider admission and verification of the receiving checkout.
+
+- Journal writes retain prior events and replace the JSONL file atomically under an owned lock. UUID scratch-file cleanup runs under that same lock; constructing a reader cannot delete a pending writer's file.
+- Handoffs select the latest checkpoint for the requested repository and revision. Captured records remain untrusted data; they do not authenticate a repository or establish the receiving checkout's state.
+- Cooperative local locks retain a random ownership token, host and PID. Recovery requires the inspected token and an exited local owner. Live, remote and unverifiable owners remain protected; age is never takeover authority.
+- Review requests bind the repository, revision, policy and distinct maker/checker providers. Receipts record reported commands, findings and limitations. They are not cryptographically signed or independent proof that those commands ran.
+- Jev requests require a host-approved public classification and current model pool. Returned metadata is an untrusted provider report; policy preparation alone does not prove data classification, routing or billed cost.
+
+The source recovery changes require a subsequent root release. Published root `8.5.1` is immutable; merging source does not update its registry archive.
 
 ### The 7 named agents (operational layer)
 
@@ -414,7 +436,7 @@ git clone https://github.com/frankxai/Starlight-Intelligence-System.git
 cd Starlight-Intelligence-System
 npm install
 npm run build       # tsc to dist/
-npm test            # 82+ orchestrator tests
+npm test            # operational, substrate and v0.1 evaluation suites
 npm run lint        # tsc --noEmit
 ```
 
@@ -451,7 +473,7 @@ Browse them: [docs/visuals/VISUALS.md](docs/visuals/VISUALS.md) · Motion experi
 
 ---
 
-**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.3.0 · MIT
+**Built on SIP** · Starlight Intelligence Protocol · v1.1.1 · v8.5.1 · MIT
 
 ---
 
@@ -460,3 +482,21 @@ Browse them: [docs/visuals/VISUALS.md](docs/visuals/VISUALS.md) · Motion experi
 For organizations and sovereign operators who want a full production intelligence estate (not just tools), Starlight provides a complete repeatable delivery system — Mind + Mesh + Steward — with high reuse across engagements.
 
 See `docs/delivery/estate-army-commissioning-workflow.md` and the `templates/estate-os/` profile for the current approach.
+
+### Local persistence and recovery limits
+
+Memory saves replay the committed JSONL log under its advisory lock before
+compaction, preserving other writers' records. Save replacements are written to
+exclusive sibling files, flushed and renamed. The legacy JSON snapshot is a
+derivative and is migrated only when no JSONL log exists, so an older snapshot
+cannot resurrect deleted entries. A malformed log stops save without overwriting
+its bytes. These are local cooperative filesystem safeguards, not distributed
+transaction or whole-filesystem power-loss guarantees.
+
+Administrative stale-lock recovery is serialized by a sibling `.recovery` guard.
+An interrupted recoverer leaves its guard and metadata for explicit inspection;
+a competing or unverified guard is preserved. Age never permits deletion. PID
+reuse, hostile filesystem mutation and other implementations ignoring the guard
+remain outside this cooperative protocol. The separate JSONL append lock also
+remains intact after an interrupted writer; automatic orphan-lock cleanup is not
+implemented here. Exact-revision review and hosted recovery checks remain required.

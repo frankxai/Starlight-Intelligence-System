@@ -7,11 +7,13 @@ const nextConfig: NextConfig = {
   // (e.g. troika-three-text) hit interop issues.
   reactStrictMode: true,
 
-  // Pin Turbopack root to this directory — there are multiple lockfiles
-  // higher up the tree (parent repo + sibling site/) and Next would
-  // otherwise infer the wrong root.
+  // Local Operator is opened via 127.0.0.1 and localhost.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
+
+  // Pin Turbopack root to this directory — multiple lockfiles higher up
+  // the tree would otherwise make Next infer the wrong root.
   turbopack: {
-    root: path.resolve("."),
+    root: path.resolve(__dirname),
   },
 };
 

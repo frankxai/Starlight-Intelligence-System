@@ -122,8 +122,8 @@ export default function BrandLabPage() {
             Brand character studies
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-            These are exploratory and belong to the visual system, not the first
-            viewport of the operational product.
+            These are exploratory and belong to the visual system. They stay out
+            of the first viewport of the operational product.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

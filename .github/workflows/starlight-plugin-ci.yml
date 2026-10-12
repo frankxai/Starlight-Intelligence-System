@@ -4,11 +4,15 @@ on:
   pull_request:
     paths:
       - "plugins/starlight-intelligence/**"
+      - "site/src/app/connect/**"
+      - "scripts/build-connect-catalog.mjs"
       - ".github/workflows/starlight-plugin-ci.yml"
   push:
     branches: [main]
     paths:
       - "plugins/starlight-intelligence/**"
+      - "site/src/app/connect/**"
+      - "scripts/build-connect-catalog.mjs"
       - ".github/workflows/starlight-plugin-ci.yml"
 
 permissions:
@@ -22,11 +26,14 @@ jobs:
         working-directory: plugins/starlight-intelligence
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: plugins/starlight-intelligence/package-lock.json
+      - name: Verify generated connect catalog
+        working-directory: .
+        run: node scripts/build-connect-catalog.mjs --check
       - run: npm ci
       - run: npm run validate
       - run: npm run check

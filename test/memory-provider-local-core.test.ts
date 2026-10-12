@@ -31,6 +31,14 @@ function record(id: string, content: string, tags: string[] = []): SISMemoryReco
 }
 
 describe("InMemoryLocalCoreProvider", () => {
+  it('namespaces identical memory IDs by tenant so another tenant cannot overwrite or delete them', async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    await provider.remember(record('shared-id', 'first tenant memory'));
+    await provider.remember({ ...record('shared-id', 'second tenant memory'), tenant_id: 'tenant_other' });
+    assert.equal((await provider.recall({ tenant_id: 'tenant_frank', query: 'memory' }))[0]?.record.normalized_fact, 'first tenant memory');
+    assert.equal(await provider.forget({ tenant_id: 'tenant_other', memory_id: 'shared-id' }), true);
+    assert.equal((await provider.recall({ tenant_id: 'tenant_frank', query: 'memory' })).length, 1);
+  });
   it("stores and recalls records without external provider state", async () => {
     const provider = new InMemoryLocalCoreProvider();
     await provider.remember(record("m1", "SIS memory gateway batches writes for dozens of agents", ["SIS"]));
@@ -61,5 +69,55 @@ describe("InMemoryLocalCoreProvider", () => {
     assert.equal(provider.name, "local_core");
     assert.equal(provider.capabilities.process_model, "embedded_lightweight");
     assert.equal(provider.capabilities.per_agent_instance_allowed, true);
+  });
+
+  it("keeps equal memory IDs independent across tenants and during forget", async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    await provider.remember(record("same", "Frank memory"));
+    await provider.remember({ ...record("same", "Other memory"), tenant_id: "tenant_other" });
+    assert.equal((await provider.recall({ tenant_id: "tenant_frank", query: "memory" }))[0]?.record.raw_content, "Frank memory");
+    assert.equal(await provider.forget({ tenant_id: "tenant_frank", memory_id: "same" }), true);
+    assert.equal((await provider.recall({ tenant_id: "tenant_other", query: "memory" }))[0]?.record.raw_content, "Other memory");
+    assert.equal(await provider.forget({ tenant_id: "tenant_frank", memory_id: "same" }), false);
+  });
+
+  it("does not alias tenant/id pairs that contain delimiters", async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    await provider.remember({ ...record("b:c", "First memory"), tenant_id: "a" });
+    await provider.remember({ ...record("c", "Second memory"), tenant_id: "a:b" });
+    assert.equal((await provider.recall({ tenant_id: "a", query: "memory" }))[0]?.record.raw_content, "First memory");
+    assert.equal((await provider.recall({ tenant_id: "a:b", query: "memory" }))[0]?.record.raw_content, "Second memory");
+  });
+
+  it("does not let input or remember-result mutation change stored identity", async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    const input = record("m1", "Original memory");
+    const returned = await provider.remember(input);
+    input.tenant_id = "attacker";
+    returned.raw_content = "Altered memory";
+    assert.deepEqual(await provider.recall({ tenant_id: "attacker", query: "memory" }), []);
+    assert.equal((await provider.recall({ tenant_id: "tenant_frank", query: "memory" }))[0]?.record.raw_content, "Original memory");
+  });
+
+  it("does not let recall-result mutation change stored nested values", async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    await provider.remember(record("m1", "Original memory", ["Original"]));
+    const result = (await provider.recall({ tenant_id: "tenant_frank", query: "memory" }))[0];
+    result.record.tenant_id = "attacker";
+    result.record.entities[0].name = "Altered";
+    const again = (await provider.recall({ tenant_id: "tenant_frank", query: "memory" }))[0];
+    assert.equal(again?.record.entities[0].name, "Original");
+    assert.deepEqual(await provider.recall({ tenant_id: "attacker", query: "memory" }), []);
+  });
+
+  it('filters workspace before ranking and limiting so other workspaces cannot starve recall', async () => {
+    const provider = new InMemoryLocalCoreProvider();
+    await provider.remember({ ...record('other-high', 'memory query'), workspace_id: 'other', importance: 1 });
+    await provider.remember({ ...record('allowed-low', 'memory'), workspace_id: 'selected', importance: 0.1 });
+    await provider.remember(record('legacy-high', 'memory query'));
+    const results = await provider.recall({ tenant_id: 'tenant_frank', workspace_id: 'selected', query: 'memory query', limit: 1 });
+    assert.deepEqual(results.map(row => row.record.memory_id), ['allowed-low']);
+    const tenantWide = await provider.recall({ tenant_id: 'tenant_frank', query: 'memory query', limit: 1 });
+    assert.deepEqual(tenantWide.map(row => row.record.memory_id), ['other-high']);
   });
 });

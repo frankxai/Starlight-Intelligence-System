@@ -131,7 +131,7 @@ export default function VerifyPage() {
       {/* ── Intro ── */}
       <section className="border-b border-white/[0.08]">
         <div className="mx-auto max-w-3xl px-6 pb-12 pt-20 md:pt-28">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">Verify</p>
+          <p className="text-[11px] font-medium normal-case tracking-wider text-violet-400">Verify</p>
           <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.25rem)] font-semibold leading-[1.08] tracking-tight text-white">
             Check what this system says about itself
           </h1>
@@ -155,10 +155,10 @@ export default function VerifyPage() {
           className="overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0c12]"
         >
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-5 py-4">
-            <h2 id="receipt-heading" className="font-mono text-[11px] uppercase tracking-widest text-slate-400">
+            <h2 id="receipt-heading" className="font-mono text-[11px] normal-case tracking-wider text-slate-400">
               Receipt · {receipt?.tool ?? "sip-conform"}
             </h2>
-            <span className={`rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-widest ${stateCopy.tone}`}>
+            <span className={`rounded-full border px-3 py-1 font-mono text-[11px] normal-case tracking-wider ${stateCopy.tone}`}>
               {stateCopy.chip}
             </span>
           </header>
@@ -179,7 +179,7 @@ export default function VerifyPage() {
               </p>
               <div className="mt-3 flex items-start gap-3">
                 <p className="min-w-0 flex-1">
-                  <span className="block font-mono text-[10px] uppercase tracking-widest text-slate-400">sha256</span>
+                  <span className="block font-mono text-[10px] normal-case tracking-wider text-slate-400">sha256</span>
                   <code className="mt-1 block select-all break-all font-mono text-[12px] leading-[1.6] text-slate-200">
                     {receipt?.profileSha256 ?? "(not computed)"}
                   </code>
@@ -303,7 +303,7 @@ export default function VerifyPage() {
             {rules.map((rule) => (
               <li key={rule.id} className="flex gap-3 px-4 py-3 text-[13px]">
                 <span
-                  className={`w-10 shrink-0 font-mono text-[11px] font-semibold uppercase ${
+                  className={`w-10 shrink-0 font-mono text-[11px] font-semibold normal-case ${
                     rule.status === "pass" ? "text-emerald-300" : "text-rose-300"
                   }`}
                 >
@@ -402,7 +402,7 @@ export default function VerifyPage() {
 function Row({ term, children }: { term: string; children: React.ReactNode }) {
   return (
     <div className="grid gap-1 px-5 py-4 sm:grid-cols-[9.5rem_minmax(0,1fr)] sm:gap-4">
-      <dt className="font-mono text-[10px] uppercase tracking-widest text-slate-400 sm:pt-[3px]">{term}</dt>
+      <dt className="font-mono text-[10px] normal-case tracking-wider text-slate-400 sm:pt-[3px]">{term}</dt>
       <dd className="min-w-0 text-[14px] leading-[1.7] text-slate-200">{children}</dd>
     </div>
   );
@@ -412,7 +412,7 @@ function Command({ label, value }: { label: string; value: string }) {
   return (
     <div className="overflow-hidden rounded-lg border border-white/[0.08] bg-[#08080d]">
       <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] pl-4 pr-1">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">{label}</span>
+        <span className="font-mono text-[10px] normal-case tracking-wider text-slate-400">{label}</span>
         <CopyButton value={value} label={label} />
       </div>
       <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.7] text-slate-200">
@@ -455,7 +455,7 @@ function Section({
 }) {
   return (
     <section id={id} aria-labelledby={`${id}-heading`} className="mt-16 scroll-mt-24">
-      <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">{eyebrow}</p>
+      <p className="text-[11px] font-medium normal-case tracking-wider text-slate-400">{eyebrow}</p>
       <h2 id={`${id}-heading`} className="mt-3 text-2xl font-semibold text-white md:text-3xl">
         {heading}
       </h2>

@@ -1,0 +1,74 @@
+name: Feature request
+description: Propose a user need before prescribing an implementation.
+title: "feature: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Start with the operator or contributor need. A clear scenario helps maintainers evaluate the smallest useful change.
+
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Proposed layer
+      description: Substrate proposals require a `/starlight-board` pre-pass before implementation.
+      options:
+        - Operational build
+        - SIP substrate or file contract
+        - Documentation or community surface
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: need
+    attributes:
+      label: User need
+      description: Who needs this, what are they trying to do, and what blocks them today?
+      placeholder: As a… I need… because today…
+    validations:
+      required: true
+
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Concrete scenario
+      description: Walk through one real workflow from trigger to desired outcome.
+      placeholder: When… I currently… With this change…
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Success criteria
+      description: What observable result would show that the need is met?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Possible approach
+      description: Optional. Suggest an implementation shape, alternatives, or trade-offs without treating it as fixed.
+
+  - type: textarea
+    id: privacy_security
+    attributes:
+      label: Privacy and security considerations
+      description: Note new data, permissions, external services, or security boundaries. Do not include secrets or private data.
+      placeholder: None known, or describe the considerations.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Proposal check
+      options:
+        - label: I searched existing issues for a similar proposal.
+          required: true
+        - label: I have not included secrets or private data.
+          required: true
