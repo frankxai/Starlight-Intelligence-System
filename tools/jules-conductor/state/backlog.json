@@ -1,60 +1,6 @@
 {
   "queue": [
     {
-      "id": "task_1791737572993_312",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "issueNumber": 312,
-      "title": "Production design canary is failing",
-      "description": "Issue #312: Production design canary is failing\n\nRun: https://github.com/frankxai/Starlight-Intelligence-System/actions/runs/37578221166\nCommit: 7b33f3a228bf407e447e9b061a5d133622e39f81\n\nViolations (sideways overflow, forced or typed capitals, touch targets, contrast, focus):\n\n- [sourcecaps] /cosmos @320: 1 element(s) typed in capitals, e.g. \"NASA APOD\"\n- [sourcecaps] /cosmos @1440: 1 element(s) typed in capitals, e.g. \"NASA APOD\"",
-      "type": "security",
-      "harvestedAt": "2026-10-11T16:52:52.993Z"
-    },
-    {
-      "id": "task_1791737572993_302",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "issueNumber": 302,
-      "title": "Validator: add minLength, minimum and maximum to protocol/lib/jsonschema.mjs (upstream from Reality Architect)",
-      "description": "Issue #302: Validator: add minLength, minimum and maximum to protocol/lib/jsonschema.mjs (upstream from Reality Architect)\n\n## Outcome\nSIS's dependency-free JSON Schema validator (`protocol/lib/jsonschema.mjs`) supports `minLength`, `minimum` and `maximum`.\n\nThe reality-architecture kernel schemas use these keywords. The validator deliberately refuses any keyword it does not know, so today it cannot check those schemas without ajv. Check how kernel CI validates them now, and say so in the PR.\n\n## Context\n- Reality Architect vendors this validator, pinned to SIS commit `5d4312c96b803d749f8ebefc68a91bd8f2299c5a`.\n- It ",
-      "type": "security",
-      "harvestedAt": "2026-10-11T16:52:52.993Z"
-    },
-    {
-      "id": "task_1791737572993_300",
-      "repo": "frankxai/Starlight-Intelligence-System",
-      "issueNumber": 300,
-      "title": "Repair activation-router repository evidence and stale index claims",
-      "description": "Issue #300: Repair activation-router repository evidence and stale index claims\n\nRepair activation-router repository evidence and index freshness without expanding automatic dispatch.\n\nParent: https://github.com/frankxai/Starlight-Intelligence-System/issues/123\nSource assessment: https://github.com/frankxai/starlightintelligence.ai/issues/82#issuecomment-5994762546\nInstalled source: PR202 / commit 439654e35b9a6ec914082295dd5f06227a04f43b, plugin 0.1.1+codex.20260924.\nCurrent main observed 2026-10-06: c462fc7b0f0565dfdaa906ac5ef0021e76980eaa.\n\nObserved installed behavior: /si",
-      "type": "security",
-      "harvestedAt": "2026-10-11T16:52:52.993Z"
-    },
-    {
-      "id": "task_1791737577119_533",
-      "repo": "frankxai/arcanea-ai-app",
-      "issueNumber": 533,
-      "title": "Fix-forward blocked PRs: #447 chat history, #448 media analyze, #490 browser proof (cross-family findings posted)",
-      "description": "Issue #533: Fix-forward blocked PRs: #447 chat history, #448 media analyze, #490 browser proof (cross-family findings posted)\n\n**Goal:** turn the cross-family BLOCKs into FIXED; the findings are posted on each PR.\n- **#447:** `chat/sessions` GET hardcodes `messageCount: 0`; give `created_at` cursor paging a unique tie-break; a stale cursor must not surface as a 503.\n- **#448:** the `media/analyze` skip lookup is an unordered `limit=2000` read, so batches roll back and later runs return 502. Also: `force=true` doesn't send `on_conflict`; unvalidated filters in `media/taste`; `public_url` is sent to the model without a ho",
-      "type": "security",
-      "harvestedAt": "2026-10-11T16:52:57.119Z"
-    },
-    {
-      "id": "task_1791737577120_532",
-      "repo": "frankxai/arcanea-ai-app",
-      "issueNumber": 532,
-      "title": "Creation Engine P2: durable video with Vercel Workflow (Veo 3.1 / Wan via AI Gateway)",
-      "description": "Issue #532: Creation Engine P2: durable video with Vercel Workflow (Veo 3.1 / Wan via AI Gateway)\n\n**Goal:** phase P2. Video no longer polls a provider inside a request.\n\n**Do:**\n- Build a Workflow (`\"use workflow\"` and `\"use step\"`) with the steps admit → debit (idempotent) → generate (`experimental_generateVideo`: `google/veo-3.1-generate-001` and `alibaba/wan-v2.6-i2v-flash`; Kling via fal.ai only as a fallback) → store (MediaStore) → link (asset) → notify, plus refund on failure.\n- Add a `generation_jobs` table.\n- Stream progress to the UI so the gallery updates live and survives a reload",
-      "type": "security",
-      "harvestedAt": "2026-10-11T16:52:57.120Z"
-    },
-    {
-      "id": "task_1791737577120_531",
-      "repo": "frankxai/arcanea-ai-app",
-      "issueNumber": 531,
-      "title": "Creation Engine P1: AI Gateway model registry, assets graph, MediaStore adapter (R2)",
-      "description": "Issue #531: Creation Engine P1: AI Gateway model registry, assets graph, MediaStore adapter (R2)\n\n**Goal:** phase P1 of `docs/architecture/CREATION-ENGINE-2026-10.md` (#528).\n\n**Do:**\n1. Create `lib/models/registry.ts`, the single source for models: capability, Gateway id, inputs, unit cost and credit price. Prices are placeholders, flagged for Frank.\n2. Port image generation to AI SDK 7 `generateImage` through AI Gateway (OIDC on Vercel), with a fallback chain through `providerOptions.gateway.models`. Remove direct xAI, OpenRouter and Gemini calls from the request path.\n3. Add Supabase tabl",
-      "type": "security",
-      "harvestedAt": "2026-10-11T16:52:57.120Z"
-    },
-    {
       "id": "task_1791737577120_529",
       "repo": "frankxai/arcanea-ai-app",
       "issueNumber": 529,
