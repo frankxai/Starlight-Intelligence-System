@@ -24,8 +24,8 @@ def receipt(**changes):
 
 
 class MergeReviewTests(unittest.TestCase):
-    def evaluate(self, comments, files=FILES):
-        return gate.evaluate('frankxai/starlight-agent-config', 110, HEAD, files, comments)[0]
+    def evaluate(self, comments, files=FILES, auto_merge=None):
+        return gate.evaluate('frankxai/starlight-agent-config', 110, HEAD, files, comments, auto_merge)[0]
 
     def test_sensitive_requires_real_receipt(self):
         self.assertFalse(self.evaluate([]))
@@ -55,6 +55,45 @@ class MergeReviewTests(unittest.TestCase):
                      'LICENSE', '.env.example', 'tools/merge-review/merge_review_gate.py',
                      'tools/jules-conductor/config.json', '.github/workflows/ci.yml',
                      'src/marketplace/catalog.ts']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_cto_authored_high_risk_needs_another_admitted_seat(self):
+        path = 'tools/merge-review/merge_review_gate.py'
+        files = [{'filename': path, 'status': 'modified'}]
+        for provider in ['codex', 'claude-code', 'antigravity']:
+            with self.subTest(provider=provider):
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], maker='cto', provider=provider)], files))
+        self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], maker='cto', provider='cto')], files))
+
+    def test_armed_auto_merge_fails_high_risk(self):
+        path = 'src/payments/checkout.ts'
+        files = [{'filename': path, 'status': 'modified'}]
+        good = [receipt(reviewedFiles=[path], provider='cto')]
+        self.assertTrue(self.evaluate(good, files))
+        self.assertFalse(self.evaluate(good, files, auto_merge={'merge_method': 'squash'}))
+        # Low-risk with auto-merge armed is still allowed after a separate PASS.
+        self.assertTrue(self.evaluate([receipt()], auto_merge={'merge_method': 'squash'}))
+
+    def test_instruction_files_are_high_risk(self):
+        for path in ['AGENTS.md', 'CLAUDE.md', 'skills/foo/SKILL.md', 'docs/notes/AGENTS.md']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified', 'mode': '100644'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_high_risk_notes_lose_routine_exemption(self):
+        for path in ['docs/notes/auth.md', 'docs/handovers/release.txt', 'docs/notes/payment.md']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified', 'mode': '100644'}]
+                self.assertFalse(self.evaluate([], files))
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_dependency_manifests_are_high_risk(self):
+        for path in ['package.json', 'packages/x/package.json', 'package-lock.json', 'pnpm-lock.yaml', 'yarn.lock']:
             with self.subTest(path=path):
                 files = [{'filename': path, 'status': 'modified'}]
                 self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))

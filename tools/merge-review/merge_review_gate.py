@@ -40,15 +40,36 @@ def routine_file(item):
             and parsed.name.lower() not in INSTRUCTION_NAMES)
 
 
+# Dependency manifests and lockfiles can carry major bumps, scripts or publishConfig.
+# The gate cannot verify a patch-only bump, so they are always high risk.
+MANIFEST_NAMES = {'package.json', 'package-lock.json', 'npm-shrinkwrap.json', 'pnpm-lock.yaml',
+                  'pnpm-workspace.yaml', 'yarn.lock', 'bun.lockb', 'bun.lock', '.npmrc'}
+INDEPENDENT_OF_CTO = {'codex', 'claude-code', 'antigravity'}
+
+
 def high_risk(path):
     lowered = str(path).lower()
-    return any(re.search(pattern, lowered) for pattern in HIGH_RISK_PATTERNS)
+    name = PurePosixPath(lowered).name
+    return (name in INSTRUCTION_NAMES or name in MANIFEST_NAMES
+            or any(re.search(pattern, lowered) for pattern in HIGH_RISK_PATTERNS))
 
 
-def evaluate(repository, number, head, files, comments):
+def reviewer_allowed(maker, provider, risky):
+    if provider not in REVIEW_PROVIDERS or provider == maker:
+        return False  # A self-review never counts.
+    if not risky:
+        return True
+    # High risk needs CTO; a CTO-authored change needs another admitted seat instead.
+    return provider in INDEPENDENT_OF_CTO if maker == 'cto' else provider == 'cto'
+
+
+def evaluate(repository, number, head, files, comments, auto_merge=None):
     if not re.fullmatch(r'[0-9a-f]{40}', head) or not files:
         return False, 'Missing or invalid source identity or changed files.'
-    if all(routine_file(item) for item in files):
+    risky = any(high_risk(item.get('filename', '')) for item in files)
+    if risky and auto_merge:
+        return False, 'High-risk change has auto-merge armed; disable it. High-risk PRs never auto-merge.'
+    if not risky and all(routine_file(item) for item in files):
         return True, 'Routine plain-text notes only; required CI still applies.'
     expected_paths = {item['filename'] for item in files}
     for comment in reversed(comments):
@@ -70,10 +91,7 @@ def evaluate(repository, number, head, files, comments):
                 and type(receipt['pr']) is int and receipt['pr'] == number
                 and receipt['headSha'] == head
                 and receipt['maker'] in MAKERS
-                and receipt['provider'] in REVIEW_PROVIDERS
-                # A self-review never counts: reviewer seat must differ from author seat.
-                and receipt['provider'] != receipt['maker']
-                and (receipt['provider'] == 'cto' or not any(high_risk(p) for p in expected_paths))
+                and reviewer_allowed(receipt['maker'], receipt['provider'], risky)
                 and receipt['verdict'] == 'PASS'
                 and receipt['blockingFindings'] == []
                 and set(receipt['reviewedFiles']) == expected_paths
@@ -142,7 +160,7 @@ def main():
                     if revision == wanted:
                         item['mode'] = modes.get(item['filename'])
         comments = api(f'repos/{repository}/issues/{number}/comments?per_page=100', paginate=True)
-        ok, summary = evaluate(repository, number, head, files, comments)
+        ok, summary = evaluate(repository, number, head, files, comments, pr.get('auto_merge'))
         if api(endpoint)['head']['sha'] != head:
             ok, summary = False, 'PR head changed during evaluation; rerun for the new head.'
     except Exception as error:
