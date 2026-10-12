@@ -7,8 +7,11 @@ evidence.
 
 ## Submit a review
 
-For a Codex or Jules-made change, obtain an independent review from an admitted
-Antigravity, Grok, Claude or Gemini reviewer. Supply the exact commit and every
+A PR merges only with a PASS from a different seat or model than its author.
+Valid reviewers are Codex (`codex`), Claude Code (`claude-code`), Antigravity
+(`antigravity`) and CTO (`cto`). A self-review never counts: the receipt's
+`provider` must differ from its `maker`. Jules is never a reviewer and opens
+drafts only; the Jules conductor never merges or enables auto-merge. Supply the exact commit and every
 changed file. Preserve blocking findings, failed checks and limitations. A source
 change requires a fresh exact-head review; an older passing report is insufficient.
 
@@ -18,16 +21,26 @@ The evaluator accepts LF or CRLF after the marker and preserves the report's
 UTF-8 bytes for SHA-256 verification. See the [evaluator](../tools/merge-review/merge_review_gate.py)
 and its [regression tests](../tools/merge-review/tests/test_merge_review_gate.py).
 
-The receipt contains `repository`, numeric or string `pr`, full `headSha`, `maker: "codex"` or `"jules"`,
+The receipt contains `repository`, numeric `pr`, full `headSha`, `maker` (the author seat:
+`codex`, `claude-code`, `antigravity`, `cto` or `jules`),
 `provider`, `verdict`, `blockingFindings`, all `reviewedFiles`, the complete
 `review`, its `reviewSha256`, the review packet's `packetSha256` and a nonempty
-`resolution`. Use `PASS` or `WARN` only after resolving every blocking finding;
+`resolution`. Only `PASS` counts. Use it only after resolving every blocking finding;
 do not translate an incomplete review into approval. The report must contain at
 least 80 characters. Hash the actual report and the actual supplied packet.
 
-The attestor must be `frankxai` or `frankx-eth` with GitHub association `OWNER`, `MEMBER` or
+The attestor must be `frankxai` with GitHub association `OWNER`, `MEMBER` or
 `COLLABORATOR`. This is an identity-based attestation: the check cannot authenticate
 the model or judge the report's quality. The attestor must inspect the evidence.
+
+## High-risk changes and auto-merge
+
+Changes touching money, publish, secrets, auth, licensing, or the gate and policy
+files themselves (`tools/merge-review/`, `tools/jules-conductor/`, `.github/`,
+this document) need a CTO PASS and never auto-merge. Auto-merge is allowed only
+for low-risk changes (docs, copy, patch-level dependency bumps) after a separate
+exact-head PASS and green checks. No tool in this repository posts a receipt or
+enables auto-merge on its own behalf.
 
 ## Recover a failed or missing check
 

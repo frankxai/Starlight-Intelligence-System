@@ -8,9 +8,21 @@ import subprocess
 
 MARKER = 'STARLIGHT-INDEPENDENT-REVIEW-V1\n'
 CHECK_NAME = 'independent-review-policy'
-TRUSTED_ATTESTORS = {'frankxai', 'frankx-eth'}
-TRUSTED_MAKERS = {'codex', 'jules'}
-REVIEW_PROVIDERS = {'antigravity', 'grok', 'claude', 'gemini'}
+# Only the repository owner may post a receipt. frankx-eth and jules are not trusted.
+TRUSTED_ATTESTORS = {'frankxai'}
+# Seats or models that may author a change. The reviewer must be a different one.
+MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules'}
+# Valid separate reviewers. Jules is never a reviewer.
+REVIEW_PROVIDERS = {'codex', 'claude-code', 'antigravity', 'cto'}
+# Paths that touch money, publish, secrets, auth, licensing or the gate itself.
+# These never auto-merge and need a CTO PASS.
+HIGH_RISK_PATTERNS = [
+    r'(^|/)\.github/', r'(^|/)tools/merge-review/', r'(^|/)tools/jules-conductor/',
+    r'(^|/)docs/merge-review\.md$', r'(^|/)(codeowners|license|licence|notice)(\.[a-z]+)?$',
+    r'licens', r'(pay|billing|stripe|checkout|price|pricing|invoice|money|wallet|marketplace)',
+    r'(publish|release|deploy|npm-|vercel)', r'(secret|credential|token|\.env|\.pem$|\.key$)',
+    r'(auth|login|session|oauth|permission|rbac|security)',
+]
 INSTRUCTION_NAMES = {'agents.md', 'agents.override.md', 'skill.md', 'skills.md',
                      'soul.md', 'rules.md', 'claude.md', 'gemini.md', 'grok.md'}
 
@@ -26,6 +38,11 @@ def routine_file(item):
     return (path.startswith(('docs/notes/', 'docs/handovers/'))
             and parsed.suffix in {'.md', '.txt'}
             and parsed.name.lower() not in INSTRUCTION_NAMES)
+
+
+def high_risk(path):
+    lowered = str(path).lower()
+    return any(re.search(pattern, lowered) for pattern in HIGH_RISK_PATTERNS)
 
 
 def evaluate(repository, number, head, files, comments):
@@ -49,11 +66,15 @@ def evaluate(repository, number, head, files, comments):
                 continue
             report = receipt['review']
             valid = (
-                receipt['repository'] == repository and int(receipt['pr']) == number
+                receipt['repository'] == repository
+                and type(receipt['pr']) is int and receipt['pr'] == number
                 and receipt['headSha'] == head
-                and receipt['maker'] in TRUSTED_MAKERS
+                and receipt['maker'] in MAKERS
                 and receipt['provider'] in REVIEW_PROVIDERS
-                and receipt['verdict'] in {'PASS', 'WARN'}
+                # A self-review never counts: reviewer seat must differ from author seat.
+                and receipt['provider'] != receipt['maker']
+                and (receipt['provider'] == 'cto' or not any(high_risk(p) for p in expected_paths))
+                and receipt['verdict'] == 'PASS'
                 and receipt['blockingFindings'] == []
                 and set(receipt['reviewedFiles']) == expected_paths
                 and isinstance(report, str) and len(report) >= 80
@@ -64,7 +85,8 @@ def evaluate(repository, number, head, files, comments):
         except (KeyError, TypeError, ValueError):
             valid = False
         if valid:
-            return True, f'Exact-head independent review attested in comment {comment["id"]}.'
+            return True, (f'Exact-head PASS by {receipt["provider"]} (maker {receipt["maker"]}) '
+                          f'at {head} in comment {comment["id"]}.')
         return False, 'Latest trusted review receipt is invalid or reports blocking findings.'
     return False, 'Sensitive or unknown paths require a trusted exact-head independent review receipt.'
 
