@@ -175,6 +175,7 @@ Use `remember` equivalent (write + index) or direct vault edit + attest.
 
 ## 9. Failure Modes & Anti-Patterns (Refuse These)
 
+- **Bash for PowerShell on Windows** → Antigravity Bash uses WSL; `pwsh` is missing there; commands hang and sessions look cut off. Use `command(powershell)` per `.antigravity/instructions.md` § Windows Shell Routing. Abort Bash attempt and retry natively.
 - Spawning a mind without first view_file'ing its definition → cached-belief violation. Abort.
 - Granting full write tools to 20+ leaf agents → blast radius. Scope tightly.
 - Treating subagent outputs as ground truth without sentinel/prime QA on compound work.

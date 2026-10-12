@@ -169,7 +169,7 @@ export class GoalOrchestrator {
   }
 
   private addLogToDisk(type: string, message: string): void {
-    console.log(`[SAGE][${type.toUpperCase()}] ${message}`);
+    console.error(`[SAGE][${type.toUpperCase()}] ${message}`);
   }
 
   // ── 2. Dynamic Context Compression & Vault Consolidation ───

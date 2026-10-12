@@ -56,12 +56,12 @@ export function QueenSwarm({ className = "", phase = "conduct", interactive = tr
 
     const resize = () => {
       const rect = container.getBoundingClientRect();
-      width = Math.max(560, Math.floor(rect.width));
-      height = Math.max(420, Math.floor(rect.height));
+      width = Math.max(1, Math.floor(rect.width));
+      height = Math.max(1, Math.floor(rect.height));
       canvas.width = width * window.devicePixelRatio;
       canvas.height = height * window.devicePixelRatio;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
       ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
       queenRef.current.x = width * 0.5;
       queenRef.current.y = height * 0.5;

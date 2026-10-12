@@ -36,6 +36,99 @@
       ],
       "licenseTier": "free",
       "manifestSha": "7e39ceef388c746dd9d18b114b672cf0e92aa39846881a9d94e8b4c7971dbbd8"
+    },
+    {
+      "id": "durable-blockchain-vault-pack",
+      "name": "Durable Blockchain Vault Pack",
+      "version": "0.1.0",
+      "kind": "claw",
+      "permissions": [
+        "fs:read:repo",
+        "fs:write:vaults",
+        "network:fetch:blockchain-rpc"
+      ],
+      "licenseTier": "subscription",
+      "manifestSha": "ade34f36d23fd7027c231309e281bd1cc453b277c8c03c0e46aa9db0948ad9a4"
+    },
+    {
+      "id": "robot-fleet-continuity-pack",
+      "name": "Robot Fleet Continuity Pack",
+      "version": "0.1.0",
+      "kind": "claw",
+      "permissions": [
+        "fs:read:repo",
+        "network:fetch:robot-middleware",
+        "task-scheduler:register"
+      ],
+      "licenseTier": "subscription",
+      "manifestSha": "ab2f779daf9afc7f5d6ef53e3daa7feaa9ff8319580040b892aa39a773f6c3f2"
+    },
+    {
+      "id": "starlight-queen-orchestrator-pack",
+      "name": "Starlight Queen Orchestrator Pack",
+      "version": "0.1.0",
+      "kind": "agent",
+      "permissions": [
+        "fs:read:repo",
+        "fs:write:repo",
+        "task-scheduler:register",
+        "network:fetch:telemetry"
+      ],
+      "licenseTier": "subscription",
+      "manifestSha": "21fb138836afe99f30c54497022d3e03c39cfdbbcb6cacbc136c91a905b6b45d"
+    },
+    {
+      "id": "managed-durability-pack",
+      "name": "Managed Durability Pack",
+      "version": "0.1.0",
+      "kind": "claw",
+      "author": "FrankX / Starlight Intelligence",
+      "description": "Automatic multi-region replication, continuous snapshot backup, and Arweave/IPFS archival anchoring.",
+      "permissions": [
+        "fs:read:repo",
+        "fs:write:vaults",
+        "network:fetch:replication-api",
+        "network:fetch:blockchain-rpc"
+      ],
+      "licenseTier": "subscription",
+      "attestation": "Built on SIP",
+      "publishedAt": "2026-10-11T00:00:00Z",
+      "manifestSha": "f467df3d93c50ab16e136792d3cf6d9cfd16c03b9b8f12cc05fdcde74e09a925"
+    },
+    {
+      "id": "fleet-mesh-overlay-pack",
+      "name": "Fleet Mesh Overlay Pack",
+      "version": "0.1.0",
+      "kind": "agent",
+      "author": "FrankX / Starlight Intelligence",
+      "description": "Distributed multi-node agent orchestration, cross-machine blackboard synchronization, and Langfuse/OpenRouter telemetry hooks.",
+      "permissions": [
+        "fs:read:repo",
+        "network:fetch:fleet-mesh",
+        "network:fetch:telemetry",
+        "task-scheduler:register"
+      ],
+      "licenseTier": "subscription",
+      "attestation": "Built on SIP",
+      "publishedAt": "2026-10-11T00:00:00Z",
+      "manifestSha": "90381004a86f0ce90b36d7fc0bd43eb55a6a7267bdd50961d4eb81a0e5712cfa"
+    },
+    {
+      "id": "benevolence-governance-pack",
+      "name": "Benevolence Governance Pack",
+      "version": "0.1.0",
+      "kind": "agent",
+      "author": "FrankX / Starlight Intelligence",
+      "description": "Executable charter enforcement, real-time GUARDRAILS emission, and fail-closed safety gates.",
+      "permissions": [
+        "fs:read:repo",
+        "fs:write:vaults",
+        "task-scheduler:register"
+      ],
+      "licenseTier": "subscription",
+      "attestation": "Built on SIP",
+      "publishedAt": "2026-10-11T00:00:00Z",
+      "manifestSha": "1ee7ef5817427217f4ba7889fcfa97d8cea4ce6386f21a5e0565389ef14031a4"
     }
   ]
 }

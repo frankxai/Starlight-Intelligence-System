@@ -1,0 +1,15 @@
+{
+  "protocol": "SIP/v1.0",
+  "tier": "subscription",
+  "default_target": "arweave",
+  "gateways": {
+    "arweave": "https://arweave.net",
+    "ipfs": "https://ipfs.io/ipfs/"
+  },
+  "auto_anchor_vaults": [
+    "horizon",
+    "strategic",
+    "wisdom"
+  ],
+  "attestation": "Built on SIP"
+}

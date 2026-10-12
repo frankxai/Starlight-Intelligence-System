@@ -1,0 +1,18 @@
+{
+  "id": "managed-durability-pack",
+  "name": "Managed Durability Pack",
+  "version": "0.1.0",
+  "kind": "claw",
+  "author": "FrankX / Starlight Intelligence",
+  "description": "Automatic multi-region replication, continuous snapshot backup, and Arweave/IPFS archival anchoring.",
+  "permissions": [
+    "fs:read:repo",
+    "fs:write:vaults",
+    "network:fetch:replication-api",
+    "network:fetch:blockchain-rpc"
+  ],
+  "licenseTier": "subscription",
+  "attestation": "Built on SIP",
+  "publishedAt": "2026-10-11T00:00:00Z",
+  "manifestSha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

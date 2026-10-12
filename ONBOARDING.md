@@ -59,7 +59,7 @@ Every inbound fits exactly one of these. Pick before you run anything.
 ### D. Sovereign spawn
 
 - **Who:** You want the whole SIS as your starting point. Your own substrate-aware system. Your own registry. Your own MCP server. Frank advises; doesn't own.
-- **What you get:** A clean fork of the full reference build — 7 agents, 6 vaults, 16 skills, the substrate docs, the MCP server, the multi-platform adapters. Rewired to your entity. MIT.
+- **What you get:** A clean fork of the full reference build — 144 agents, 6 vaults, 88 skills (counts as of 2026-09-29, checked by `npm run agents:harness-check`), the substrate docs, the MCP server, the multi-platform adapters. Rewired to your entity. MIT.
 - **What you commit:** Attribution to SIP as protocol author. Your vaults stay yours. Your canon stays yours. Every artifact you ship under your new substrate carries "Built on SIP" per the layer 2 format.
 - **First command:** `/sovereign-spawn <your-substrate-name>` — **shipping in v7.3 alongside this doc**. Generates a forked repo with your entity name wired into every file.
 

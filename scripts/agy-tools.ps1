@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # Starlight Intelligence System — Premium Antigravity CLI Integration
 # ==============================================================================
 # Built on SIP · Idempotent · Windows-optimized
@@ -59,6 +59,9 @@ if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
         deepagent  = "deepagent"
         da         = "deepagent"
         agenticops = "agentic-ops"
+        products   = "digital-product-forge"
+        prod       = "digital-product-forge"
+        forge      = "digital-product-forge"
     }
 }
 
@@ -239,6 +242,18 @@ function agy-dpi {
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
+function agy-products {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "products"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-forge {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "forge"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
 # Alias for convenience
 Set-Alias -Name arcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agysis -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
@@ -254,6 +269,9 @@ Set-Alias -Name agyg -Value agy-g -Scope Global -Force -ErrorAction SilentlyCont
 Set-Alias -Name agyvc -Value agy-vc -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyani -Value agy-ani -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agydpi -Value agy-dpi -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyprod -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyproducts -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyforge -Value agy-forge -Scope Global -Force -ErrorAction SilentlyContinue
 
 # ------------------------------------------------------------------------------
 # Generalized Fuzzy Conductor
@@ -984,8 +1002,71 @@ function starlight-status-all {
 }
 
 function starlight-cockpit {
-    Write-Host "📊 Generating live Starlight Fleet Cockpit..." -ForegroundColor Cyan
-    node "C:\Users\frank\agentic-ops\lifecycle\generate-dashboard.js"
+    param(
+        [Parameter(Position=0)] [string]$Action,
+        [Parameter(Position=1, ValueFromRemainingArguments=$true)] $ActionArgs
+    )
+
+    $cockpitDir = "C:\Users\frank\starlight-command-center"
+
+    switch ($Action) {
+        { $_ -in @('app', 'desktop', 'start', 'launch') } {
+            Write-Host "🚀 Launching Starlight Command Center Desktop Shell..." -ForegroundColor Cyan
+            if (Test-Path $cockpitDir) {
+                Start-Process -FilePath "pnpm" -ArgumentList "start" -WorkingDirectory $cockpitDir -WindowStyle Hidden
+                Write-Host "Starlight Cockpit launched in background. Use Ctrl+Alt+C to toggle." -ForegroundColor Green
+            } else {
+                Write-Host "Command Center directory not found at $cockpitDir" -ForegroundColor Red
+            }
+        }
+        { $_ -in @('web', 'browser') } {
+            Write-Host "🌐 Opening Starlight Observatory in browser..." -ForegroundColor Cyan
+            Start-Process "http://localhost:4321"
+        }
+        { $_ -in @('status', 'list') } {
+            if (Get-Command Invoke-CockpitStatus -ErrorAction SilentlyContinue) {
+                Invoke-CockpitStatus
+            } elseif (Get-Command starlight -ErrorAction SilentlyContinue) {
+                starlight status
+            } else {
+                Write-Host "Cockpit status not available." -ForegroundColor Yellow
+            }
+        }
+        { $_ -in @('doctor') } {
+            if (Get-Command starlight -ErrorAction SilentlyContinue) {
+                starlight doctor
+            } elseif (Get-Command Invoke-CockpitDoctor -ErrorAction SilentlyContinue) {
+                Invoke-CockpitDoctor
+            }
+        }
+        { $_ -in @('snapshot', 'rehydrate', 'save', 'load', 'workspaces', 'gc') } {
+            if (Get-Command arc -ErrorAction SilentlyContinue) {
+                arc $Action @ActionArgs
+            }
+        }
+        { $_ -in @('help', '-h', '--help') } {
+            Write-Host "`n🌟 Starlight Cockpit CLI Commands:" -ForegroundColor Cyan
+            Write-Host "  cockpit               Display live agent sessions overview" -ForegroundColor White
+            Write-Host "  cockpit app           Launch always-on desktop tray app (Ctrl+Alt+C)" -ForegroundColor White
+            Write-Host "  cockpit web           Open Observatory web console (http://localhost:4321)" -ForegroundColor White
+            Write-Host "  cockpit status        Show active agent processes and sessions" -ForegroundColor White
+            Write-Host "  cockpit snapshot      Take a continuity snapshot of all terminal panes" -ForegroundColor White
+            Write-Host "  cockpit rehydrate     Restore saved terminal sessions and panes" -ForegroundColor White
+            Write-Host "  cockpit doctor        Run system and environment diagnostic checks" -ForegroundColor White
+        }
+        default {
+            Write-Host "`n🌟 Starlight Cockpit — Central Command Plane" -ForegroundColor Cyan
+            Write-Host "------------------------------------------------------------" -ForegroundColor DarkGray
+            if (Get-Command Invoke-CockpitStatus -ErrorAction SilentlyContinue) {
+                Invoke-CockpitStatus
+            }
+            Write-Host "`nQuick actions:" -ForegroundColor DarkGray
+            Write-Host "  cockpit app      Launch always-on desktop tray app (Ctrl+Alt+C)" -ForegroundColor DarkGray
+            Write-Host "  cockpit web      Open Observatory in browser" -ForegroundColor DarkGray
+            Write-Host "  cockpit doctor   Run full system diagnostics" -ForegroundColor DarkGray
+            Write-Host "  cockpit snapshot Capture current terminal panes" -ForegroundColor DarkGray
+        }
+    }
 }
 
 Set-Alias -Name checkpoint -Value asph-cp -Scope Global -Force -ErrorAction SilentlyContinue

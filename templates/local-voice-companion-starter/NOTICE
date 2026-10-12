@@ -1,0 +1,11 @@
+Starlight Local Voice Companion Starter
+Copyright (c) 2026 Frank Riemer / Starlight Intelligence System
+
+This software incorporates components and design patterns from:
+1. Pipecat AI (https://github.com/pipecat-ai/pipecat)
+   Licensed under the BSD 2-Clause License.
+   Copyright (c) 2024-2026 Daily, Inc.
+2. Pipecat UI (https://github.com/pipecat-ai/pipecat-ui)
+   Licensed under the BSD 2-Clause License.
+3. Tauri (https://github.com/tauri-apps/tauri)
+   Dual-licensed under Apache-2.0 and MIT.

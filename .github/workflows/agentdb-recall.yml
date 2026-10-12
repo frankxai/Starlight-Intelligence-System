@@ -1,0 +1,57 @@
+name: AgentDB recall correctness
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "phase0/agentdb_substrate.py"
+      - "phase0/sovereign_substrate.py"
+      - "phase0/agentdb_smoke.py"
+      - "phase0/test_agentdb_substrate.py"
+      - ".github/workflows/agentdb-recall.yml"
+      - "src/memory-provider/**"
+      - "test/memory-provider-*.test.ts"
+  push:
+    branches: [main]
+    paths:
+      - "phase0/agentdb_substrate.py"
+      - "phase0/sovereign_substrate.py"
+      - "phase0/agentdb_smoke.py"
+      - "phase0/test_agentdb_substrate.py"
+      - ".github/workflows/agentdb-recall.yml"
+      - "src/memory-provider/**"
+      - "test/memory-provider-*.test.ts"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agentdb-recall-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  recall:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Check recall, isolation and recovery
+        run: python -m unittest discover -s phase0 -p test_agentdb_substrate.py -v
+      - name: Run existing adapter smoke
+        env:
+          PYTHONIOENCODING: utf-8
+        run: python phase0/agentdb_smoke.py
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "24.16.0"
+      - name: Check memory provider isolation and routing
+        run: npm exec --yes --package=tsx@4.23.15 -- tsx --test test/memory-provider-local-core.test.ts test/memory-provider-router.test.ts test/memory-provider-mem0.test.ts

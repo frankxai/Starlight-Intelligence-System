@@ -1,0 +1,105 @@
+{
+  "version": "2.0.0",
+  "name": "Starlight Jules Autonomous Conductor",
+  "attestation": "Built on SIP",
+  "engine": "frontier-council",
+  "runtime": {
+    "pollIntervalSeconds": 180,
+    "maxConcurrentSessions": 3,
+    "maxLedgerActiveEntries": 50,
+    "lowRamMode": true,
+    "memoryCapMb": 100
+  },
+  "automation": {
+    "autoMerge": true,
+    "mergeMethod": "squash",
+    "deleteBranchAfterMerge": true,
+    "requireChecksPassing": true
+  },
+  "council": {
+    "architectPreflight": true,
+    "sentinelSecurityAudit": true,
+    "weaverTasteReview": true,
+    "sageMemoryInjection": true
+  },
+  "repoProfiles": {
+    "frankxai/Starlight-Intelligence-System": {
+      "type": "substrate-core",
+      "primaryAgent": "starlight-architect",
+      "qualityGate": "npm run lint",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "tools/**", "test/**", "memory/**", "docs/**"]
+    },
+    "frankxai/arcanea-ai-app": {
+      "type": "fullstack-nextjs",
+      "primaryAgent": "starlight-weaver",
+      "qualityGate": "npm run lint && npm run build",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "app/**", "components/**", "lib/**"]
+    },
+    "frankxai/gencreator.ai": {
+      "type": "fullstack-nextjs",
+      "primaryAgent": "starlight-weaver",
+      "qualityGate": "npm run lint",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "app/**", "components/**", "lib/**"]
+    },
+    "frankxai/frankx.ai-vercel-website": {
+      "type": "fullstack-nextjs",
+      "primaryAgent": "starlight-weaver",
+      "qualityGate": "npm run lint",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "app/**", "components/**", "content/**"]
+    },
+    "frankxai/vibeclubs": {
+      "type": "community-platform",
+      "primaryAgent": "starlight-weaver",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "components/**", "lib/**"]
+    },
+    "frankxai/agentic-ops": {
+      "type": "agent-runtime",
+      "primaryAgent": "starlight-architect",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "workers/**", "scripts/**"]
+    },
+    "frankxai/agentic-creator-os": {
+      "type": "creator-os",
+      "primaryAgent": "starlight-navigator",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "modules/**", "templates/**"]
+    },
+    "frankxai/agenticincome": {
+      "type": "commercial-rails",
+      "primaryAgent": "starlight-business",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "app/**", "lib/**"]
+    },
+    "default": {
+      "type": "generic",
+      "primaryAgent": "starlight-architect",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["*"]
+    }
+  },
+  "safetyRules": {
+    "maxChangedFiles": 25,
+    "maxDiffLines": 1500,
+    "disallowedPaths": [
+      ".env",
+      ".env.local",
+      ".env.production",
+      "private/**",
+      "memory/_audit/**",
+      "**/*.pem",
+      "**/*.key",
+      "**/*credentials*",
+      ".git/**"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "starlight-agent-designer",
+  "version": "0.1.0",
+  "description": "Design valuable Starlight agents with constitutional foundations, architecture decisions, activation prompts, scoped contracts and verifiable evidence. Includes Foundry design workflows and an in-process guardrail reference; production runtime integration is separate.",
+  "author": { "name": "Starlight Intelligence", "url": "https://starlightintelligence.org" },
+  "repository": "https://github.com/frankxai/Starlight-Intelligence-System",
+  "license": "MIT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Starlight Agent Designer",
+        "shortDescription": "Design valuable agents",
+        "longDescription": "Turn a valuable human job into the smallest capable agent architecture, prompt, permissions, evaluation plan and activation workflow. Applies Starlight ethical, creative and scientific foundations. Checks current official docs and separates tested reference controls from live runtime enforcement.",
+        "developerName": "Starlight Intelligence",
+        "category": "Productivity",
+        "capabilities": ["Interactive"],
+        "defaultPrompt": "Design a Starlight agent for this goal. Inspect the current project, propose three value opportunities, select a bounded pilot, verify official docs and produce architecture, contracts, activation prompts and evaluation gates."
+      }
+    }
+  }
+}

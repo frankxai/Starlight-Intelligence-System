@@ -2,7 +2,7 @@
 name: creator-pipeline
 description: Generate a multi-modal content pipeline from a person's Genius Profile. Produces content calendar, per-piece production plan across text/audio/image/video/podcast, and attestation routing. Composes with existing modality commands + ACOS pipeline where available.
 allowed-tools: Read, Write, Grep, Glob
-argument-hint: <person-name> [cadence: daily|weekly|biweekly] [modalities: text,audio,image,video,podcast — default: text,image]
+argument-hint: "<person-name> [cadence: daily|weekly|biweekly] [modalities: text,audio,image,video,podcast — default: text,image]"
 ---
 
 # /creator-pipeline

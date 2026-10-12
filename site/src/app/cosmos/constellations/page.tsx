@@ -24,7 +24,7 @@ export default function ConstellationsPage() {
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.04]">        <GalaxyField still="veil" />
         <div className="relative mx-auto max-w-5xl px-6 py-20 md:py-28">
-          <p className="text-[11px] font-medium uppercase tracking-[0.25em] text-cyan-300">
+          <p className="text-[11px] font-medium normal-case tracking-wider text-cyan-300">
             Starlight Cosmos · Constellations
           </p>
           <h1 className="mt-4 max-w-3xl font-serif text-[clamp(2.2rem,5.5vw,3.8rem)] font-semibold leading-[1.05] tracking-tight text-white">
@@ -73,19 +73,19 @@ export default function ConstellationsPage() {
                 </p>
                 <dl className="mt-4 space-y-3 text-[13px] leading-[1.7]">
                   <div>
-                    <dt className="text-[10px] font-medium uppercase tracking-[0.2em] text-amber-300">
+                    <dt className="text-[10px] font-medium normal-case tracking-wider text-amber-300">
                       Science
                     </dt>
                     <dd className="mt-1 text-slate-300">{c.science}</dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] font-medium uppercase tracking-[0.2em] text-violet-300">
+                    <dt className="text-[10px] font-medium normal-case tracking-wider text-violet-300">
                       Myth
                     </dt>
                     <dd className="mt-1 text-slate-300">{c.myth}</dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] font-medium uppercase tracking-[0.2em] text-cyan-300">
+                    <dt className="text-[10px] font-medium normal-case tracking-wider text-cyan-300">
                       Navigation
                     </dt>
                     <dd className="mt-1 text-slate-300">{c.navigation}</dd>

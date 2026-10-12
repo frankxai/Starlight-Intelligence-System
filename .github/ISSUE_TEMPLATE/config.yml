@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/frankxai/Starlight-Intelligence-System/security/advisories/new
+    about: Send suspected vulnerabilities privately to the repository maintainers.

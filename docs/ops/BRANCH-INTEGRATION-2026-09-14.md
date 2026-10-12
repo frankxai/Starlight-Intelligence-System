@@ -1,7 +1,7 @@
-# Branch integration review â€” 2026-09-14
+# Branch integration review — 2026-09-14
 
 Target: `frankxai/Starlight-Intelligence-System`, base `12629bc74c5b60d842fa2688f44502151dc0597c`.
-Source: Frankâ€™s request in Codex task `01a09d83-5ecf-7051-9a20-c6eb8d16de3c` to evaluate branches and integrate ready work into main.
+Source: Frank’s request in Codex task `01a09d83-5ecf-7051-9a20-c6eb8d16de3c` to evaluate branches and integrate ready work into main.
 
 ## Decision
 
@@ -91,7 +91,7 @@ Vercel connector verified project `site` / `prj_wDNGrb1R1rB5PJOG9cUEICSER887`, t
 
 **Recommendation:** PROCEED with the operational review candidate commit. Main merge remains held until independent re-review and full clean-checkout checks pass; this does not approve the held protocol/canon branches.
 
-**Built on SIP â€” Starlight Intelligence Protocol v1.1.1.**
+**Built on SIP — Starlight Intelligence Protocol v1.1.1.**
 
 ### CI reconciliation
 

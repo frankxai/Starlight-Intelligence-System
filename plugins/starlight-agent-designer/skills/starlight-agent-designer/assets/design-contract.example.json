@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "research-brief-pilot",
+  "status": "draft",
+  "purpose": "Prepare source-backed research briefs for a human editor.",
+  "owner": null,
+  "legal": {
+    "status": "unknown",
+    "jurisdictions": [
+      "EU"
+    ],
+    "actorRole": "deployer; preliminary role needs review",
+    "riskClass": "unknown",
+    "reviewRef": null,
+    "obligations": [
+      "privacy and source rights",
+      "screen disclosure obligations"
+    ],
+    "notes": "Illustrative draft; no real legal screening or permission is represented."
+  },
+  "authority": "prepare",
+  "tools": [
+    {
+      "name": "sources.read",
+      "effect": "read",
+      "resources": [
+        "public:official-docs"
+      ]
+    },
+    {
+      "name": "brief.prepare",
+      "effect": "prepare",
+      "resources": [
+        "local:pilot-artifacts"
+      ]
+    }
+  ],
+  "memory": {
+    "read": [
+      "project:research-public"
+    ],
+    "write": [
+      "session:research-draft"
+    ],
+    "retentionDays": 7,
+    "purpose": "Prepare the specified research brief only."
+  },
+  "budget": {
+    "maxCalls": 12,
+    "maxCostMicros": 2000000,
+    "maxElapsedMs": 120000,
+    "maxDelegates": 1
+  },
+  "quality": {
+    "acceptanceTests": [
+      "Every material factual claim maps to a checked primary source.",
+      "Human editor can inspect sources, uncertainty and final artifact."
+    ],
+    "requiredEvidence": [
+      "contract",
+      "behavioral",
+      "artifact",
+      "security",
+      "economic",
+      "legal",
+      "integration"
+    ],
+    "stopConditions": [
+      "owner revokes mandate",
+      "root budget exhausted",
+      "unresolved source conflict affects conclusion"
+    ]
+  },
+  "runtime": {
+    "status": "reference",
+    "policyGateway": "scripts/gate.mjs; in-process reference only",
+    "budgetLedger": "in-memory shared root; no persistence",
+    "revocation": "in-process root AbortController",
+    "notes": "Draft example with mocked tools; requires real owner, screening and runtime adapters before deployment."
+  }
+}

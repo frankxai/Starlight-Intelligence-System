@@ -142,11 +142,11 @@ const LAYERS: Layer[] = [
 ];
 
 const STATUS_LABEL: Record<Layer["status"], string> = {
-  substrate: "substrate",
-  core: "core",
-  "cross-cutting": "cross-cutting",
-  optional: "optional",
-  master: "master",
+  substrate: "Substrate",
+  core: "Core",
+  "cross-cutting": "Cross-cutting",
+  optional: "Optional",
+  master: "Master",
 };
 
 const STATUS_CLASS: Record<Layer["status"], string> = {
@@ -198,7 +198,7 @@ export default function ArchitecturePage() {
         />
 
         <div className="relative mx-auto max-w-3xl px-6 py-20">
-          <p className="text-[11px] font-medium uppercase tracking-widest text-violet-400">
+          <p className="text-[11px] font-medium normal-case tracking-widest text-violet-400">
             10-IS composition
           </p>
           <h1 className="mt-3 font-serif text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
@@ -221,7 +221,7 @@ export default function ArchitecturePage() {
       {/* ── Foundation: JSONL truth ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-widest text-slate-400">
             Foundation
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -265,7 +265,7 @@ export default function ArchitecturePage() {
       {/* ── 10-IS table ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-widest text-slate-400">
             The ten Intelligence Systems
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -277,22 +277,22 @@ export default function ArchitecturePage() {
               <table className="w-full border-collapse text-left text-[13px]">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] normal-case tracking-widest text-slate-300">
                       #
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] normal-case tracking-widest text-slate-300">
                       Layer
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] normal-case tracking-widest text-slate-300">
                       Tier
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] normal-case tracking-widest text-slate-300">
                       Purpose
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] normal-case tracking-widest text-slate-300">
                       Vault
                     </th>
-                    <th scope="col" className="px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-slate-300">
+                    <th scope="col" className="px-4 py-3 font-mono text-[11px] normal-case tracking-widest text-slate-300">
                       Posture
                     </th>
                   </tr>
@@ -324,7 +324,7 @@ export default function ArchitecturePage() {
                       </td>
                       <td className="px-4 py-3 align-top">
                         <span
-                          className={`inline-block rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wider ${STATUS_CLASS[l.status]}`}
+                          className={`inline-block rounded-full border px-2 py-0.5 text-[10px] normal-case tracking-wider ${STATUS_CLASS[l.status]}`}
                         >
                           {STATUS_LABEL[l.status]}
                         </span>
@@ -354,7 +354,7 @@ export default function ArchitecturePage() {
       {/* ── Domain Sub-Stack Tier ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-widest text-slate-400">
             Domain Sub-Stack Tier
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -389,11 +389,11 @@ export default function ArchitecturePage() {
       {/* ── Composition rules ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-widest text-slate-400">
             Composition rules
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
-            The graph is a reinforcement network, not a hierarchy.
+            The graph is a reinforcement network.
           </p>
           <ul className="mt-6 space-y-4 pl-6 text-[14px] leading-[1.85] text-slate-400">
             <li className="relative before:absolute before:-left-5 before:top-[0.9em] before:h-px before:w-3 before:bg-violet-400/40">
@@ -430,11 +430,11 @@ export default function ArchitecturePage() {
       {/* ── Developmental phases ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-widest text-slate-400">
             Developmental phases
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
-            The substrate evolves like a living system, not a release schedule.
+            The substrate evolves like a living system.
           </p>
           <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-slate-400">
             SIS&apos;s version history mirrors what computational neuroscience
@@ -500,7 +500,7 @@ export default function ArchitecturePage() {
       {/* ── Cross-tool compounding ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-widest text-slate-400">
             Cross-tool compounding
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -523,16 +523,16 @@ export default function ArchitecturePage() {
               ))}
             </div>
 
-            <div className="font-mono text-[11px] uppercase tracking-widest text-slate-400">
-              &darr; all read &darr;
+            <div className="font-mono text-[11px] normal-case tracking-widest text-slate-400">
+              &darr; All read &darr;
             </div>
 
             <div className="rounded-xl border border-violet-500/[0.2] bg-violet-500/[0.05] px-6 py-4">
               <code className="font-mono text-[13px] text-violet-300">
                 starlight-sis
               </code>
-              <p className="mt-1 text-[11px] uppercase tracking-widest text-slate-400">
-                one shared memory
+              <p className="mt-1 text-[11px] normal-case tracking-widest text-slate-400">
+                One shared memory
               </p>
             </div>
           </div>
@@ -542,19 +542,19 @@ export default function ArchitecturePage() {
       {/* ── Extension model ── */}
       <section className="border-b border-white/[0.08] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-widest text-slate-400">
             Extension
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
-            Adding an 11th IS is a named procedure, not a refactor.
+            Adding an 11th IS follows a named procedure.
           </p>
           <p className="mt-5 text-[14px] leading-[1.85] text-slate-400">
             Every new layer requires: one agent · 1–2 skills · 2–3 commands ·
             knowledge templates · /compose-stack sequencing update ·
             ARCHITECTURE.md entry · /luminor-board pressure-test before merge ·
             /openclaw-audit adversarial pass. Extension is welcome. Sprawl is
-            not. If a layer&apos;s use case is already covered by an existing
-            layer&apos;s commands, it&apos;s a command, not a layer.
+            not. If an existing layer&apos;s commands already cover a use case,
+            add a command instead of a layer.
           </p>
         </div>
       </section>
@@ -668,9 +668,9 @@ function PhaseCard({
       </span>
       <h3 className="mt-2 text-[14px] font-semibold text-white">{name}</h3>
       <span
-        className={`mt-2 inline-block rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wider ${PHASE_STATUS_PILL[status]}`}
+        className={`mt-2 inline-block rounded-full border px-2 py-0.5 text-[10px] normal-case tracking-wider ${PHASE_STATUS_PILL[status]}`}
       >
-        {status}
+        {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
       <p className="mt-3 text-[12px] leading-relaxed text-slate-400">
         {invariant}

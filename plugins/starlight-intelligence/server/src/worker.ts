@@ -32,7 +32,7 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === "GET" && url.pathname === "/healthz") {
-      return json({ status: "ok", service: "starlight-intelligence", version: "0.2.0" });
+      return json({ status: "ok", service: "starlight-intelligence", version: "0.3.0" });
     }
     if (url.pathname !== "/mcp") return json({ error: "not_found" }, 404);
 
