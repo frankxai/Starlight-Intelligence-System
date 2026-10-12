@@ -21,6 +21,90 @@ async function connected(options) {
   return { client, server, close: async () => { await client.close(); await server.close(); } };
 }
 
+test('factory binds recall to the selected provider method and original receiver', { timeout: 15_000 }, async () => {
+  let replacements = 0;
+  const memory = {
+    calls: 0,
+    async recall(request) {
+      assert.equal(this, memory);
+      assert.equal(request.tenant_id, 'a');
+      this.calls++;
+      return [{ record, score: 1 }];
+    },
+  };
+  const connection = await connected({ tenantId: 'a', workspaceId: 'w', memory });
+  try {
+    memory.recall = async () => { replacements++; return []; };
+    const result = await connection.client.callTool({ name: 'starlight_memory_recall', arguments: { query: 'Contact?' } });
+    assert.notEqual(result.isError, true);
+    assert.equal(memory.calls, 1);
+    assert.equal(replacements, 0);
+    assert.deepEqual(result.structuredContent.memories.map(row => row.id), ['fact']);
+  } finally { await connection.close(); }
+});
+
+test('factory binds writes without freezing provider state', { timeout: 15_000 }, async () => {
+  let replacements = 0;
+  const memory = {
+    stored: [],
+    recall: async () => [],
+    async remember(entry) { assert.equal(this, memory); this.stored.push(entry); return entry; },
+  };
+  const connection = await connected({ tenantId: 'a', workspaceId: 'w', allowWrite: true, memory });
+  try {
+    memory.remember = async entry => { replacements++; return entry; };
+    const result = await connection.client.callTool({ name: 'starlight_memory_remember', arguments: { id: 'stable', fact: 'Contact test@example.org' } });
+    assert.notEqual(result.isError, true);
+    assert.equal(replacements, 0);
+    assert.equal(memory.stored.length, 1);
+    assert.equal(memory.stored[0].tenant_id, 'a');
+    assert.equal(memory.stored[0].workspace_id, 'w');
+    assert.equal(memory.stored[0].normalized_fact, 'Contact [REDACTED]');
+  } finally { await connection.close(); }
+});
+
+test('factory binds deletion to the selected method and original receiver', { timeout: 15_000 }, async () => {
+  let replacements = 0;
+  const memory = {
+    deleted: [],
+    recall: async () => [],
+    async forget(request) { assert.equal(this, memory); this.deleted.push(request); return true; },
+  };
+  const connection = await connected({ tenantId: 'a', allowDelete: true, memory });
+  try {
+    memory.forget = async () => { replacements++; return false; };
+    const result = await connection.client.callTool({ name: 'starlight_memory_forget', arguments: { id: 'stable' } });
+    assert.notEqual(result.isError, true);
+    assert.equal(replacements, 0);
+    assert.deepEqual(memory.deleted, [{ tenant_id: 'a', memory_id: 'stable' }]);
+    assert.deepEqual(JSON.parse(result.content[0].text), { deleted: true });
+  } finally { await connection.close(); }
+});
+
+test('factory binds sanitizer for both provider egress and writes with its receiver', { timeout: 15_000 }, async () => {
+  let stored;
+  let queried;
+  const sanitizer = {
+    calls: 0,
+    sanitize(text) { assert.equal(this, sanitizer); this.calls++; return text.replaceAll('fixture-private', '[REDACTED]'); },
+  };
+  const memory = {
+    recall: async request => { queried = request.query; return []; },
+    remember: async entry => { stored = entry; return entry; },
+  };
+  const connection = await connected({ tenantId: 'a', allowWrite: true, memory, sanitizer });
+  try {
+    sanitizer.sanitize = text => text;
+    const read = await connection.client.callTool({ name: 'starlight_memory_recall', arguments: { query: 'fixture-private' } });
+    const write = await connection.client.callTool({ name: 'starlight_memory_remember', arguments: { id: 'stable', fact: 'fixture-private' } });
+    assert.notEqual(read.isError, true);
+    assert.notEqual(write.isError, true);
+    assert.equal(queried, '[REDACTED]');
+    assert.equal(stored.normalized_fact, '[REDACTED]');
+    assert.equal(sanitizer.calls, 2);
+  } finally { await connection.close(); }
+});
+
 test('official client initializes, lists read-only tools, calls sanitized recall, and denies injected scope', { timeout: 15_000 }, async () => {
   let calls = 0;
   const connection = await connected({ tenantId: 'a', workspaceId: 'w', memory: { recall: async request => {
