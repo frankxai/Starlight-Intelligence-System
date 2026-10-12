@@ -34,7 +34,7 @@ function receipt(): RunReceipt {
   return {
     schema: 'starlight.run-receipt.v1',
     receiptId: 'rr_test_0001',
-    issuedAt: '2026-09-22T00:00:00Z',
+    issuedAt: '2026-09-22T00:00:10Z',
     issuer: { name: 'Test issuer' },
     run: { id: 'run_1', kind: 'desk.brief', host: 'claude-code', startedAt: '2026-09-22T00:00:00Z', endedAt: '2026-09-22T00:00:09Z' },
     subject: { name: 'brief.md', digest: { sha256: 'a'.repeat(64) } },

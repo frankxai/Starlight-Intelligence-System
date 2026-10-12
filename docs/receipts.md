@@ -10,8 +10,8 @@ The format is a DSSE v1 envelope around an in-toto Statement v1, signed with Ed2
 |---|---|
 | `schema` | Always `starlight.run-receipt.v1`. |
 | `receiptId`, `issuedAt` | Set by the issuer (`rcpt_…`, ISO date-time). |
-| `issuer` | `name`, plus `keyid` (sha256 of the signing public key's SPKI DER) once signed. |
-| `run` | `id`, `kind` (e.g. `desk.brief`, `publish`), `host` (e.g. `claude-code`), `startedAt`, `endedAt`, optional `correlationId`. |
+| `issuer` | `name`, plus `keyid` (sha256 of the signing public key's SPKI DER) once signed. The verifier refuses a receipt whose `keyid` names a key other than the one that signed it. |
+| `run` | `id`, `kind` (e.g. `desk.brief`, `publish`), `host` (e.g. `claude-code`), `startedAt`, `endedAt`, optional `correlationId`. `endedAt` is not before `startedAt`, and `issuedAt` is not before `endedAt`. |
 | `subject` | The artifact the run produced: `name` and `digest.sha256`. The digest is what the signature names. |
 | `stages` | Ordered list of `{ name, status, model?, provider?, inputTokens?, outputTokens?, costEur?, latencyMs?, note? }`. At least one. |
 | `totals` | `costEur`, `latencyMs`, `tokens.input`, `tokens.output`. Cost and tokens may exceed the stage sums (overhead), never fall below them. `latencyMs` is wall time: stages can overlap, so it is never below the longest stage. Token counts are whole numbers. |

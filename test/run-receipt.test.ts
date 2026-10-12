@@ -159,6 +159,12 @@ describe('run receipt — receiptProblems', () => {
     assert.ok(problems.some((p) => p.includes('totals.tokens.input and totals.tokens.output are required non-negative integers')), problems.join('; '));
   });
 
+  it('refuses a receipt issued before its run ended', () => {
+    const base = receipt();
+    const problems = receiptProblems({ ...base, issuedAt: '2026-01-01T00:00:00.000Z', run: { ...base.run, startedAt: '2026-01-01T00:00:00.000Z', endedAt: '2026-01-01T00:00:05.000Z' } });
+    assert.ok(problems.includes('issuedAt is before run.endedAt'), problems.join('; '));
+  });
+
   it('refuses a PASS verdict when a stage failed', () => {
     const stages: RunReceiptStage[] = [
       { name: 'retrieve', status: 'ok', latencyMs: 10 },
