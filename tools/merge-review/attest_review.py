@@ -20,10 +20,10 @@ def run_cmd(args):
     return res.stdout.strip()
 
 def get_pr_details(repo, pr_num):
-    out = run_cmd(['gh', 'pr', 'view', str(pr_num), '--repo', repo, '--json', 'number,headRefOid,files,title,state,mergeable'])
+    out = run_cmd(['gh', 'pr', 'view', str(pr_num), '--repo', repo, '--json', 'number,headRefOid,headRefName,files,title,state,mergeable'])
     return json.loads(out)
 
-def attest_pr(repo, pr_num, provider='antigravity', verdict='PASS'):
+def attest_pr(repo, pr_num, provider='antigravity', verdict='PASS', maker=None):
     data = get_pr_details(repo, pr_num)
     if data['state'] != 'OPEN':
         print(f"[-] PR #{pr_num} is {data['state']}, skipping.")
@@ -32,8 +32,16 @@ def attest_pr(repo, pr_num, provider='antigravity', verdict='PASS'):
     head_sha = data['headRefOid']
     files = [f['path'] for f in data['files']]
     title = data.get('title', '')
+    head_branch = data.get('headRefName', '')
+
+    if not maker:
+        if 'jules' in head_branch.lower() or 'jules' in title.lower():
+            maker = 'jules'
+        else:
+            maker = 'codex'
 
     print(f"[*] Attesting PR #{pr_num}: '{title}'")
+    print(f"    Maker: {maker} | Provider: {provider} | Verdict: {verdict}")
     print(f"    Head SHA: {head_sha}")
     print(f"    Files ({len(files)}): {', '.join(files[:3])}{'...' if len(files) > 3 else ''}")
 
@@ -53,7 +61,7 @@ def attest_pr(repo, pr_num, provider='antigravity', verdict='PASS'):
         'repository': repo,
         'pr': int(pr_num),
         'headSha': head_sha,
-        'maker': 'codex',
+        'maker': maker,
         'provider': provider,
         'verdict': verdict,
         'blockingFindings': [],

@@ -109,3 +109,66 @@ diff --git a/src/feature.ts b/src/feature.ts
   assert.equal(weaverReport.approved, false);
   assert.ok(weaverReport.warnings.some(w => w.includes('slop/placeholder')));
 });
+
+test('Maker / Checker Quality Engine detects AI prestige buzzwords', async () => {
+  const { performMakerCheckerReview } = await import('../maker-checker.mjs');
+  const badDiff = `
+diff --git a/app/page.tsx b/app/page.tsx
++ export function Intro() {
++   return <p>Let us delve into this rich tapestry that will revolutionize your workflow.</p>;
++ }
+`;
+  const review = performMakerCheckerReview(badDiff, { isFrontend: true });
+  assert.equal(review.humanizer.passed, false);
+  assert.ok(review.humanizer.issues.some(i => i.includes('delve')));
+  assert.ok(review.humanizer.issues.some(i => i.includes('tapestry')));
+  assert.ok(review.humanizer.issues.some(i => i.includes('revolutionize')));
+  assert.ok(review.score < 80);
+});
+
+test('Maker / Checker flags frozen lockfile break when dependencies are touched without lockfile', async () => {
+  const { performMakerCheckerReview } = await import('../maker-checker.mjs');
+  const depDiff = `
+diff --git a/package.json b/package.json
++ "dependencies": {
++   "some-lib": "^2.0.0"
++ }
+`;
+  const review = performMakerCheckerReview(depDiff, {
+    files: ['package.json'],
+  });
+  assert.equal(review.ceoGuardrails.passed, false);
+  assert.ok(review.ceoGuardrails.fatal.some(f => f.includes('Frozen Lockfile Violation')));
+  assert.equal(review.approved, false);
+});
+
+test('Maker / Checker allows package.json script additions without lockfile modification', async () => {
+  const { performMakerCheckerReview } = await import('../maker-checker.mjs');
+  const scriptDiff = `
+diff --git a/package.json b/package.json
++ "scripts": {
++   "test:noopener": "node scripts/tests/noopener.test.mjs"
++ }
+`;
+  const review = performMakerCheckerReview(scriptDiff, {
+    files: ['package.json', 'scripts/tests/noopener.test.mjs'],
+  });
+  assert.equal(review.ceoGuardrails.passed, true);
+  assert.equal(review.ceoGuardrails.fatal.length, 0);
+  assert.equal(review.approved, true);
+});
+
+test('Maker / Checker catches React 19 / Next.js 16 async params violation', async () => {
+  const { performMakerCheckerReview } = await import('../maker-checker.mjs');
+  const badParamDiff = `
+diff --git a/app/posts/[slug]/page.tsx b/app/posts/[slug]/page.tsx
++ export default function Page({ params }: { params: { slug: string } }) {
++   return <div>{params.slug}</div>;
++ }
+`;
+  const review = performMakerCheckerReview(badParamDiff, { isFrontend: true });
+  assert.equal(review.architecture.passed, false);
+  assert.ok(review.architecture.issues.some(i => i.includes('Next.js 16 / React 19 invariant')));
+  assert.equal(review.approved, false);
+});
+

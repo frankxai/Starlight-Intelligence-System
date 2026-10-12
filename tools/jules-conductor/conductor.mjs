@@ -20,6 +20,7 @@ import { spawnSync } from 'node:child_process';
 import { engineerJulesPrompt } from './prompt-engineer.mjs';
 import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
+import { sweepPullRequests } from './ceo-pr-review.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -360,7 +361,14 @@ export async function tick() {
     }
   }
 
-  // 3. Process Backlog Queue
+  // 3. Autonomous CEO PR Review & Estate Merge Sweep
+  try {
+    sweepPullRequests();
+  } catch (err) {
+    log(`CEO PR sweep notice: ${err.message}`);
+  }
+
+  // 4. Process Backlog Queue
   const activeCount = Object.values(ledger.sessions).filter(s => {
     if (s.merged || s.quarantined) return false;
     const st = (s.status || '').toLowerCase();
