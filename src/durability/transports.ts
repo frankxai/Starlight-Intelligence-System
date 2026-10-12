@@ -167,8 +167,9 @@ export class PinataIpfsTransport implements DecentralizedStorageProvider {
 
 export interface AnchoringOptions {
   provider?: "irys-arweave" | "pinata-ipfs";
+  storageTarget?: BlockchainAnchorReceipt["storageTarget"];
   passphrase?: string; // If provided, encrypts with Zero-Knowledge AES-256-GCM
-  targetTier?: "managed_cloud" | "blockchain_anchored";
+  targetTier?: "managed_cloud" | "blockchain_anchored" | "local";
 }
 
 export interface DispatchedAnchorResult {
@@ -201,7 +202,7 @@ export class SovereignStorageDispatcher {
       payloadString = JSON.stringify(items);
     }
 
-    const storageTarget = providerName === "pinata-ipfs" ? "ipfs" : "arweave";
+    const storageTarget = options.storageTarget ?? (providerName === "pinata-ipfs" ? "ipfs" : "arweave");
     const baseReceipt = SovereignBlockchainAnchor.anchorSnapshot(
       items,
       storageTarget,

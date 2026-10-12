@@ -68,10 +68,11 @@ function detectEventName(payload) {
 function handleSessionStart(payload) {
   const index = loadActivationIndex();
   const counts = index?.counts;
+  const freshness = getIndexFreshness(index);
   const estate =
     counts && typeof counts.gitRepos === "number"
-      ? ` Estate baseline: ${counts.gitRepos} git repos, ${counts.withAgentsMd ?? "?"} AGENTS.md, ${counts.withAgentHarness ?? "?"} harness files.`
-      : "";
+      ? ` Estate baseline: ${counts.gitRepos} git repos, ${counts.withAgentsMd ?? "?"} AGENTS.md, ${counts.withAgentHarness ?? "?"} harness files. Index status: ${freshness}.`
+      : ` Estate baseline: live repo detection fallback. Index status: ${freshness}.`;
   emitContext(
     [
       "Starlight Activation Router is installed.",
@@ -85,6 +86,23 @@ function handleSessionStart(payload) {
       .filter(Boolean)
       .join(" "),
   );
+}
+
+function getIndexFreshness(index) {
+  if (!index) {
+    return "not found (live detection fallback)";
+  }
+  const dateStr = index.generatedAt || index.timestamp || index.updatedAt || index.date;
+  if (dateStr) {
+    return `fresh (${dateStr})`;
+  }
+  try {
+    const stat = fs.statSync(registryPath);
+    const mtime = stat.mtime.toISOString().split("T")[0];
+    return `fresh (${mtime})`;
+  } catch {
+    return "active";
+  }
 }
 
 function handleUserPromptSubmit(payload) {
@@ -427,15 +445,98 @@ function loadActivationIndex() {
 }
 
 function findRepoForPath(index, cwd) {
-  if (!index || !Array.isArray(index.repos)) {
-    return null;
-  }
   const normalizedCwd = normalizePath(cwd);
-  return index.repos
-    .filter((repo) => repo && typeof repo.path === "string")
-    .map((repo) => ({ ...repo, normalizedPath: normalizePath(repo.path) }))
-    .filter((repo) => normalizedCwd === repo.normalizedPath || normalizedCwd.startsWith(`${repo.normalizedPath}/`))
-    .sort((a, b) => b.normalizedPath.length - a.normalizedPath.length)[0] || null;
+  if (index && Array.isArray(index.repos)) {
+    const matched = index.repos
+      .filter((repo) => repo && typeof repo.path === "string")
+      .map((repo) => ({ ...repo, normalizedPath: normalizePath(repo.path) }))
+      .filter((repo) => normalizedCwd === repo.normalizedPath || normalizedCwd.startsWith(`${repo.normalizedPath}/`))
+      .sort((a, b) => b.normalizedPath.length - a.normalizedPath.length)[0];
+    if (matched) {
+      return matched;
+    }
+  }
+  return inspectLocalRepo(cwd);
+}
+
+function inspectLocalRepo(startPath) {
+  let current = path.resolve(startPath);
+  let repoRoot = null;
+  while (current) {
+    if (
+      fs.existsSync(path.join(current, ".git")) ||
+      fs.existsSync(path.join(current, "AGENTS.md")) ||
+      fs.existsSync(path.join(current, ".agent-harness.json"))
+    ) {
+      repoRoot = current;
+      break;
+    }
+    const parent = path.dirname(current);
+    if (parent === current) {
+      break;
+    }
+    current = parent;
+  }
+  if (!repoRoot) {
+    repoRoot = path.resolve(startPath);
+  }
+
+  let name = path.basename(repoRoot) || "workspace";
+  const pkgPath = path.join(repoRoot, "package.json");
+  if (fs.existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+      if (typeof pkg.name === "string" && pkg.name) {
+        const cleaned = pkg.name.replace(/^@[^/]+\//, "");
+        if (cleaned) {
+          name = cleaned;
+        }
+      }
+    } catch {}
+  }
+  const agentsMd = fs.existsSync(path.join(repoRoot, "AGENTS.md"));
+  const agentHarness =
+    fs.existsSync(path.join(repoRoot, ".agent-harness.json")) ||
+    fs.existsSync(path.join(repoRoot, ".agent-harness")) ||
+    fs.existsSync(path.join(repoRoot, "harness"));
+
+  let claudeCommandsCount = 0;
+  const claudeCmdDir = path.join(repoRoot, ".claude", "commands");
+  if (fs.existsSync(claudeCmdDir)) {
+    try {
+      claudeCommandsCount = fs.readdirSync(claudeCmdDir).length;
+    } catch {
+      claudeCommandsCount = 0;
+    }
+  }
+
+  let claudeHooksCount = 0;
+  const claudeHooksDir = path.join(repoRoot, ".claude", "hooks");
+  const claudeHooksJson = path.join(repoRoot, ".claude", "hooks.json");
+  if (fs.existsSync(claudeHooksDir)) {
+    try {
+      claudeHooksCount = fs.readdirSync(claudeHooksDir).length;
+    } catch {
+      claudeHooksCount = 0;
+    }
+  } else if (fs.existsSync(claudeHooksJson)) {
+    claudeHooksCount = 1;
+  }
+
+  const skillsDir =
+    fs.existsSync(path.join(repoRoot, "skills")) ||
+    fs.existsSync(path.join(repoRoot, "plugins")) ||
+    fs.existsSync(path.join(repoRoot, ".agents", "skills"));
+
+  return {
+    name,
+    path: repoRoot,
+    agentsMd,
+    agentHarness,
+    claudeCommandsCount,
+    claudeHooksCount,
+    skillsDir,
+  };
 }
 
 function topInstalledSignals(index, lower) {

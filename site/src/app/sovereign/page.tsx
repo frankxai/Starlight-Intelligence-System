@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MerkleProofExplorer } from "@/components/sovereign/MerkleProofExplorer";
 import { VMCPTokenCalculator } from "@/components/sovereign/VMCPTokenCalculator";
+import { RobotFleetContinuityExplorer } from "@/components/sovereign/RobotFleetContinuityExplorer";
 
 export const metadata: Metadata = {
   title: "Sovereign Fleet Substrate — Starlight Intelligence",
@@ -61,6 +62,7 @@ export default function SovereignPage() {
           </div>
 
           <MerkleProofExplorer />
+          <RobotFleetContinuityExplorer />
           <VMCPTokenCalculator />
         </div>
       </section>
