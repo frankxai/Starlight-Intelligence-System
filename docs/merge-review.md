@@ -7,7 +7,7 @@ evidence.
 
 ## Submit a review
 
-For a Codex-made change, obtain an independent review from an admitted
+For a Codex or Jules-made change, obtain an independent review from an admitted
 Antigravity, Grok, Claude or Gemini reviewer. Supply the exact commit and every
 changed file. Preserve blocking findings, failed checks and limitations. A source
 change requires a fresh exact-head review; an older passing report is insufficient.
