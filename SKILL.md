@@ -57,6 +57,9 @@ Inside `skills/skill-rules.json`, rules are configured as follows:
 5. "Built on SIP" means *real* composition. Never a decorative badge.
 6. **Declared file loads must be test-asserted to exist.** Every command in `.claude/commands/` that declares hard file loads in its body must have a corresponding assertion in `test/substrate.test.ts` that those files exist on disk.
 7. **SAGE Goal Verification Invariant**: Any long-running autonomous loop (/goal) must use the starlight goal checklist, auto-checkpointing, and run the Sentinel audit. The loop refuses to mark completion (<!-- GOAL_COMPLETE -->) without the cryptographic approval tag LGTM-SIS.
+8. **Second Brain Question-Filing Invariant**: Every distilled knowledge note, framework, or playbook must be titled by the specific question it answers, enabling question-driven retrieval across Obsidian, Smart Connections, and SQLite FTS5.
+9. **Swarm Memory Bus Invariant**: When autonomous swarms (ruflow, OpenAgent, Hermes) produce state-changing decisions or vault entries, they must attest through the Memory Bus with explicit SIP attribution before write.
+10. **Hermes Provenance Invariant**: Research retrieval and cross-repo synthesis must track verifiable provenance (file paths, commit SHAs, or source URLs).
 
 ## When to say no
 - When someone asks to fold a sovereign node into the substrate.

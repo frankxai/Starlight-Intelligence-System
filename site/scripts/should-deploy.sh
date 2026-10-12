@@ -47,10 +47,14 @@ else
   exit 1
 fi
 
-git diff --quiet "$BASE_SHA" HEAD -- .
+# The site imports the root metrics ledger and validates these canonical sources.
+# Watching only /site can silently skip the very commit that repairs a failed build.
+git diff --quiet "$BASE_SHA" HEAD -- . ../metrics/current.json ../agents \
+  ../skills/skill-rules.json ../vault-registry.json ../public-vault/horizon.jsonl \
+  ../src/cli.ts ../README.md
 RC=$?
 case "$RC" in
-  0) echo "[should-deploy] no /site changes — skip"; exit 0 ;;
-  1) echo "[should-deploy] /site changes — build"; exit 1 ;;
+  0) echo "[should-deploy] no site build input changes — skip"; exit 0 ;;
+  1) echo "[should-deploy] site build input changes — build"; exit 1 ;;
   *) echo "[should-deploy] diff error — build"; exit 1 ;;
 esac

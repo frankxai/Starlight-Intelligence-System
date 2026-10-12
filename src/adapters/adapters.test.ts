@@ -101,6 +101,33 @@ describe('optional multi-file harness surface', () => {
 });
 
 describe('regression: no phantom MCP servers', () => {
+  it('antigravity scaffolding is inert until the host selects an MCP entry point', () => {
+    const adapter = createAdapter('antigravity');
+    for (const entry of ['', '  \t\n']) {
+      assert.deepEqual(adapter.getMcpConfig(entry), { mcpServers: {} });
+    }
+    const files = adapter.generateAllAdapterFiles!(ENTRIES);
+    const config = files.find(file => file.filename.endsWith('/mcp-config.json'))!;
+    assert.deepEqual(JSON.parse(config.content), { mcpServers: {} });
+    assert.throws(() => adapter.getMcpConfig('bad\0entry'), /Invalid/);
+  });
+
+  it('antigravity uses the explicit entry point without claiming swarm or access grants', () => {
+    const path = 'a directory/mcp-server.js';
+    assert.deepEqual(createAdapter('antigravity').getMcpConfig(path), {
+      mcpServers: { 'starlight-substrate': { command: 'node', args: [path] } },
+    });
+  });
+
+  it('antigravity generated guidance does not advertise unverified runtime activation', () => {
+    const adapter = createAdapter('antigravity');
+    const files = adapter.generateAllAdapterFiles!(ENTRIES);
+    const output = files.map(file => file.content + (file.description ?? '')).join('\n');
+    assert.doesNotMatch(output, /define_subagent|invoke_subagent|browser_control|Swarm-aware|executable multi-agent|dynamically discovered|STARLIGHT_MCP_SWARM/);
+    assert.match(output, /does not grant permissions/);
+    assert.match(output, /does not discover or activate native tools/);
+  });
+
   it('grok getMcpConfig declares only starlight-substrate (no never-built servers)', () => {
     const cfg = createAdapter('grok').getMcpConfig('dist/mcp-server.js') as { mcpServers: Record<string, unknown> };
     const servers = Object.keys(cfg.mcpServers);

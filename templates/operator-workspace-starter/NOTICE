@@ -1,0 +1,11 @@
+Starlight Operator Workspace Starter
+Copyright (c) 2026 Frank Riemer / Starlight Intelligence System
+
+This software incorporates components and design patterns from:
+1. Agent Client Protocol (ACP) Specification & Reference Implementations
+   Licensed under Apache License 2.0 / MIT.
+2. assistant-ui (https://github.com/assistant-ui/assistant-ui)
+   Licensed under the MIT License.
+   Copyright (c) 2024-2026 assistant-ui contributors.
+3. Lucide Icons (https://lucide.dev)
+   Licensed under the ISC License.

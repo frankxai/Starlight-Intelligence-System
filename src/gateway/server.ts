@@ -20,6 +20,7 @@
 import { join } from 'node:path';
 import { VaultMemory } from '../vault-memory.js';
 import { SessionStore } from '../session-store.js';
+import { telemetry } from '../telemetry/index.js';
 import type { VaultType, VaultSearchResult } from '../types.js';
 import type { SessionItem } from '../session-store.js';
 import {
@@ -79,6 +80,11 @@ export class SisGatewayCore {
         case 'session.addItems': {
           const sessionId = route.params['id']!;
           const harness = req.auth?.harness ?? 'default';
+          telemetry.traceHarnessSession({
+            harness,
+            sessionId,
+            task: 'gateway:session.addItems',
+          });
           return this.handleSessionAddItems(harness, sessionId, req.body as SessionAddBody | undefined);
         }
 

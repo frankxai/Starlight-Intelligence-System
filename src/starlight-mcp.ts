@@ -29,6 +29,7 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getSipVersion } from './version.js';
+import { telemetry } from './telemetry/index.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpTool {
@@ -503,10 +504,27 @@ export class StarlightSubstrateMcpServer {
       const name = String(p.name ?? ''), args = (p.arguments ?? {}) as Record<string, unknown>;
       const tool = this.tools.get(name);
       if (!tool) return { jsonrpc: '2.0', id: rpcId, error: { code: -32601, message: `Unknown tool: ${name}` } };
+      const start = Date.now();
       try {
         const result = tool.handler(args);
+        telemetry.traceMcpToolCall({
+          toolName: name,
+          args,
+          result,
+          durationMs: Date.now() - start,
+          success: true,
+          serverName: 'starlight-substrate',
+        });
         return { jsonrpc: '2.0', id: rpcId, result: { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] } };
       } catch (err) {
+        telemetry.traceMcpToolCall({
+          toolName: name,
+          args,
+          error: err instanceof Error ? err.message : String(err),
+          durationMs: Date.now() - start,
+          success: false,
+          serverName: 'starlight-substrate',
+        });
         return { jsonrpc: '2.0', id: rpcId, result: {
           content: [{ type: 'text', text: JSON.stringify({ error: err instanceof Error ? err.message : String(err) }) }],
           isError: true,

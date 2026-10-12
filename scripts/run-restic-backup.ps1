@@ -1,82 +1,87 @@
 # Daily restic backup of the SIS substrate.
-#
-# Repo target: $env:STARLIGHT_RESTIC_REPO (default: C:\Users\frank\.starlight\restic-repo)
-# Password:    $env:STARLIGHT_RESTIC_PASSWORD_FILE (default: ~\.starlight\restic-password.txt)
-#
-# To switch to Backblaze B2:
-#   $env:STARLIGHT_RESTIC_REPO = 'b2:bucket-name:/path'
-#   $env:B2_ACCOUNT_ID = 'xxx'
-#   $env:B2_ACCOUNT_KEY = 'yyy'
-#
-# Idempotent. Run as often as needed; restic dedupes.
+[CmdletBinding()]
+param(
+    [switch]$ValidateOnly
+)
 
 $ErrorActionPreference = 'Stop'
 
-$Repo         = if ($env:STARLIGHT_RESTIC_REPO) { $env:STARLIGHT_RESTIC_REPO } else { Join-Path $HOME '.starlight\restic-repo' }
+$Repo = if ($env:STARLIGHT_RESTIC_REPO) { $env:STARLIGHT_RESTIC_REPO } else { Join-Path $HOME '.starlight\restic-repo' }
 $PasswordFile = if ($env:STARLIGHT_RESTIC_PASSWORD_FILE) { $env:STARLIGHT_RESTIC_PASSWORD_FILE } else { Join-Path $HOME '.starlight\restic-password.txt' }
-$SisRoot      = 'C:\Users\frank\starlight\repos\Starlight-Intelligence-System'
+$SisRoot = Join-Path $HOME 'Starlight-Intelligence-System'
+$StarlightRoot = Join-Path $HOME '.starlight'
+$isRemoteRepo = ($Repo -match '^[a-z][a-z0-9+.-]+:') -and ($Repo -notmatch '^[A-Za-z]:[\\/]')
 
-# Ensure parent dirs exist for local repo + password file
-foreach ($p in @((Split-Path $PasswordFile), $Repo)) {
-    if ($p -and -not $p.StartsWith('b2:') -and -not $p.StartsWith('s3:')) {
-        $null = New-Item -ItemType Directory -Force -Path $p -ErrorAction SilentlyContinue
-    }
-}
-
-# Generate password if missing (one-time setup)
-if (-not (Test-Path $PasswordFile)) {
-    Write-Host "[restic] Generating password file at $PasswordFile" -ForegroundColor Cyan
-    $bytes = New-Object byte[] 32
-    [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
-    $password = [Convert]::ToBase64String($bytes)
-    $password | Out-File -FilePath $PasswordFile -Encoding ascii -NoNewline
-    Write-Host "[restic] *** SAVE THIS PASSWORD SOMEWHERE SAFE — without it the backup is unrecoverable ***" -ForegroundColor Yellow
-    Write-Host "[restic] Password file: $PasswordFile" -ForegroundColor Yellow
-}
-
-# Init repo if missing (first run)
-$env:RESTIC_REPOSITORY = $Repo
-$env:RESTIC_PASSWORD_FILE = $PasswordFile
-
-$repoExists = $false
-try {
-    & restic cat config 2>&1 | Out-Null
-    if ($LASTEXITCODE -eq 0) { $repoExists = $true }
-} catch { }
-
-if (-not $repoExists) {
-    Write-Host "[restic] Initializing new repo at $Repo" -ForegroundColor Cyan
-    & restic init
-    if ($LASTEXITCODE -ne 0) { throw "restic init failed" }
-}
-
-# Backup targets — substrate, vaults, instance state
 $targets = @(
     (Join-Path $SisRoot 'memory'),
-    (Join-Path $HOME '.starlight'),
+    $StarlightRoot,
     (Join-Path $SisRoot 'private\voice-operator\config'),
     (Join-Path $SisRoot 'private\voice-operator\models'),
     (Join-Path $SisRoot 'private\voice-operator\logs'),
     (Join-Path $SisRoot 'private\memory-bus')
-) | Where-Object { Test-Path $_ }
+) | Where-Object { Test-Path -LiteralPath $_ }
 
-$excludes = @(
-    '--exclude', '*__pycache__*',
-    '--exclude', '*.pytest_cache*',
-    '--exclude', '*.ruff_cache*',
-    '--exclude', '*node_modules*',
-    '--exclude', '*.next*',
-    '--exclude', $PasswordFile  # never backup the password itself
-)
+if (-not (Test-Path -LiteralPath $SisRoot -PathType Container)) {
+    Write-Error "SIS root missing: $SisRoot"
+    exit 2
+}
+if ($targets.Count -eq 0) {
+    Write-Error 'Backup has zero existing source paths. Refusing false-green success.'
+    exit 2
+}
+if (-not (Get-Command restic -ErrorAction SilentlyContinue)) {
+    Write-Error 'restic CLI not found in PATH'
+    exit 2
+}
 
-Write-Host "[restic] Backing up $($targets.Count) paths..." -ForegroundColor Cyan
+if ($ValidateOnly) {
+    [pscustomobject]@{
+        valid = $true
+        sisRoot = $SisRoot
+        repository = $Repo
+        repositoryIsRemote = $isRemoteRepo
+        sourceCount = $targets.Count
+        sources = $targets
+        selfRepositoryExcluded = (-not $isRemoteRepo)
+        passwordExists = (Test-Path -LiteralPath $PasswordFile -PathType Leaf)
+    } | ConvertTo-Json -Depth 4
+    exit 0
+}
+
+if (-not $isRemoteRepo) {
+    New-Item -ItemType Directory -Path $Repo -Force | Out-Null
+}
+New-Item -ItemType Directory -Path (Split-Path $PasswordFile) -Force | Out-Null
+
+if (-not (Test-Path -LiteralPath $PasswordFile -PathType Leaf)) {
+    $bytes = New-Object byte[] 32
+    [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+    [Convert]::ToBase64String($bytes) | Out-File -FilePath $PasswordFile -Encoding ascii -NoNewline
+    Write-Warning "Generated a new restic password file at $PasswordFile. Back it up separately."
+}
+
+$env:RESTIC_REPOSITORY = $Repo
+$env:RESTIC_PASSWORD_FILE = $PasswordFile
+
+& restic cat config 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    & restic init
+    if ($LASTEXITCODE -ne 0) { throw 'restic init failed' }
+}
+
+# The local repository lives under ~/.starlight, which is also a source. Exclude
+# both the repository and password explicitly to prevent recursive self-backup.
+$excludes = @('--exclude', $Repo, '--exclude', $PasswordFile, '--exclude', '*__pycache__*', '--exclude', '*.pytest_cache*', '--exclude', '*.ruff_cache*', '--exclude', '*node_modules*', '--exclude', '*.next*', '--exclude', '*.turbo*')
 $tag = "daily-$(Get-Date -Format 'yyyy-MM-dd')"
-& restic backup --tag $tag @excludes $targets
-if ($LASTEXITCODE -ne 0) { throw "restic backup failed" }
+Write-Host "[restic] Backing up $($targets.Count) validated paths..."
+& restic backup --tag daily --tag $tag @excludes $targets
+if ($LASTEXITCODE -ne 0) { throw 'restic backup failed' }
 
-# Prune old snapshots: keep 14 daily, 8 weekly, 6 monthly
-Write-Host "[restic] Applying retention policy..." -ForegroundColor Cyan
+# Verify the repository has a readable latest snapshot before retention.
+& restic snapshots --latest 1
+if ($LASTEXITCODE -ne 0) { throw 'restic latest-snapshot verification failed' }
+
 & restic forget --tag daily --keep-daily 14 --keep-weekly 8 --keep-monthly 6 --prune
-if ($LASTEXITCODE -ne 0) { Write-Warning "restic forget failed (non-fatal)" }
+if ($LASTEXITCODE -ne 0) { throw 'restic retention/prune failed' }
 
-Write-Host "[restic] Backup complete." -ForegroundColor Green
+Write-Host '[restic] Backup and snapshot verification complete.' -ForegroundColor Green

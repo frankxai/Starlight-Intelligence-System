@@ -13,6 +13,13 @@ All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separat
 - **Tests:** `test/v93-alexandria.test.ts` (`.github/workflows/alexandria.yml`; `npm test` picks it up at the next toolchain relock); `alexandria` added to v79 declared-live sub-stacks.
 - **Known placeholders:** Similarweb and Firecrawl Trends capability paths are unreconciled (provider agreements unavailable at fetch time); recorded in `verticals/alexandria/MEMORY.md`.
 
+## 8.5.2 (prepared)
+
+- Redact Supabase `sb_secret_` server keys and `supabase_secret_key` / `supabase_service_role_key` context values in System sanitization.
+- Verify all three cases against actual installed legacy and organization packages during candidate qualification.
+
+This patch includes the accepted sanitizer repair. Publication and registry verification remain separate release steps.
+
 ## Unreleased — vault MCP server hardening
 
 **`dist/mcp-server.js` (the `starlight-mcp` bin): vault names can no longer escape the vault directory, and the 13 `sis_*` tools meet the mcp-doctor quality bar (21% → 93%).**

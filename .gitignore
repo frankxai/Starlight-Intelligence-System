@@ -1,4 +1,5 @@
 node_modules/
+.turbo/
 .starlight/
 !.starlight/
 .starlight/*
@@ -105,6 +106,7 @@ tools/arena/workdir/
 
 # Starlight/ACOS temporary files
 .agent/
+.agents/
 .system_generated/
 .next-backup/
 temp-*.json
@@ -113,6 +115,12 @@ link-checker-report.txt
 
 # Starlight/ACOS temporary files
 .gemini/
+
+# Local dispatch scratch & MCP tool schemas
+agent-tools/*.md
+terminals/
+_cto-packs/
+mcps/
 
 # Arena run-local eval receipts (a reviewed run is promoted to tools/arena/runs/ by hand)
 tools/arena/out/

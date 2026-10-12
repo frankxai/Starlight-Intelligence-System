@@ -12,6 +12,7 @@ import {
 } from "../tools/foundry/lib/upstream-conformance.mjs";
 import { validateOpenAIPluginPackage } from "../tools/foundry/lib/openai-preflight.mjs";
 import { verifyFileDigestClosure } from "../tools/foundry/lib/io.mjs";
+import { readPnpmDependencyLock } from "../tools/foundry/lib/dependency-lock.mjs";
 import { getContract, loadContractRegistry, validateValue } from "../tools/foundry/lib/schema.mjs";
 
 const ROOT = repoRootFromTestFile(import.meta.url);
@@ -49,9 +50,9 @@ describe("Foundry upstream Agent Plugins conformance", () => {
     assert.ok(cache.records.every((record: any) => record.cacheVerified));
   });
 
-  it("keeps validator versions and package integrities synchronized with the npm lock", () => {
+  it("keeps validator versions and package integrities synchronized with their authoritative locks", () => {
     const lock = JSON.parse(readFileSync(TOOLCHAIN_LOCK, "utf8"));
-    const npmLock = JSON.parse(readFileSync(join(ROOT, "package-lock.json"), "utf8"));
+    const npmLock = readPnpmDependencyLock(join(ROOT, "pnpm-lock.yaml"));
     const nativeLock = JSON.parse(
       readFileSync(join(ROOT, "foundry", "validators", "native", "package-lock.json"), "utf8"),
     );
@@ -84,7 +85,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
       const actual = npmLock.packages[`node_modules/${name}`];
       assert.deepEqual([actual?.version, actual?.integrity], [expected.version, expected.integrity], name);
     }
-    assert.equal(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).engines.node, ">=18.0.0");
+    assert.equal(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).engines.node, "22.x || 24.x");
     assert.equal(
       JSON.parse(readFileSync(join(ROOT, "foundry", "validators", "native", "package.json"), "utf8")).engines.node,
       ">=22.0.0",
@@ -106,8 +107,9 @@ describe("Foundry upstream Agent Plugins conformance", () => {
         label: "Portable Agent Plugins validator",
         value: lock.portable.validator.sourceClosure,
         paths: [
-          "package-lock.json",
+          "pnpm-lock.yaml",
           "package.json",
+          "tools/foundry/lib/dependency-lock.mjs",
           "tools/foundry/lib/io.mjs",
           "tools/foundry/lib/upstream-conformance.mjs",
         ],
@@ -117,8 +119,9 @@ describe("Foundry upstream Agent Plugins conformance", () => {
         value: lock.openai.rules.validator.sourceClosure,
         paths: [
           "foundry/contracts/openai-submission-profile.schema.json",
-          "package-lock.json",
+          "pnpm-lock.yaml",
           "package.json",
+          "tools/foundry/lib/dependency-lock.mjs",
           "tools/foundry/lib/io.mjs",
           "tools/foundry/lib/openai-preflight.mjs",
           "tools/foundry/lib/package-payload.mjs",

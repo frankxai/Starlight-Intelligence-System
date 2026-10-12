@@ -135,23 +135,23 @@ if (-not $latestScan) {
 } elseif ($latestScan.LastWriteTime -lt $Now.AddHours(-48)) {
     Add-Finding 'RED' 'secrets' "Secret scan stale -- latest output $($latestScan.Name) from $($latestScan.LastWriteTime)"
 } else {
-    $leakLines = Select-String -Path $latestScan.FullName -Pattern 'leaks found: (\d+)' -AllMatches
-    $total = 0
-    if ($leakLines) {
-        $matches = @()
-        foreach ($line in $leakLines) {
-            if ($line.Matches) {
-                foreach ($m in $line.Matches) {
-                    $matches += [int]$m.Groups[1].Value
-                }
-            }
-        }
-        if ($matches.Count -gt 0) {
-            $total = ($matches | Measure-Object -Sum).Sum
-        }
+    $scanText = Get-Content -LiteralPath $latestScan.FullName -Raw
+    $blockingMatch = [regex]::Match($scanText, '(?m)^Blocking findings across .*?:\s*(\d+)\s*$')
+    $historicalMatch = [regex]::Match($scanText, '(?m)^Historical findings across .*?:\s*(\d+)\s*$')
+    $legacyTotalMatch = [regex]::Match($scanText, '(?m)^(?:leaks found:|Total findings across .*?:)\s*(\d+)\s*$')
+    $blocking = if ($blockingMatch.Success) { [int]$blockingMatch.Groups[1].Value } else { 0 }
+    $historical = if ($historicalMatch.Success) {
+        [int]$historicalMatch.Groups[1].Value
+    } elseif ($legacyTotalMatch.Success) {
+        [int]$legacyTotalMatch.Groups[1].Value
+    } else {
+        0
     }
-    if ($total -gt 0) {
-        Add-Finding 'YELLOW' 'secrets' "Latest scan ($($latestScan.Name)) reports $total leak finding(s) -- triage required"
+    if ($blocking -gt 0) {
+        Add-Finding 'RED' 'secrets' "Latest scan ($($latestScan.Name)) reports $blocking blocking uncommitted/staged finding(s)"
+    }
+    if ($historical -gt 0) {
+        Add-Finding 'YELLOW' 'secrets' "Latest scan ($($latestScan.Name)) reports $historical historical finding(s) -- rotation/cleanup debt"
     }
 }
 

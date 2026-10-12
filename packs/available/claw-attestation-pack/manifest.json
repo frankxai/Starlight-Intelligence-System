@@ -3,9 +3,13 @@
   "name": "Claw Attestation Pack",
   "version": "0.1.0",
   "kind": "claw",
+  "author": "FrankX / Starlight Intelligence",
+  "description": "Verifies, formats, and enforces the ambient Starlight Intelligence Protocol (SIP) attestation footer.",
   "permissions": [
     "fs:read:repo"
   ],
   "licenseTier": "free",
+  "attestation": "Built on SIP",
+  "publishedAt": "2026-10-10T12:00:00Z",
   "manifestSha": "7e39ceef388c746dd9d18b114b672cf0e92aa39846881a9d94e8b4c7971dbbd8"
 }
