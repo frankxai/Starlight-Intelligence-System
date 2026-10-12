@@ -62,6 +62,26 @@ function fixture() {
     ['package/schemas/agent-event.schema.json', Buffer.from('{}')]]);
 }
 
+for (const [, name] of targets) {
+  test(`package audit measures archived JavaScript bytes for ${name}`, () => {
+    const entries = fixture();
+    const pkg = JSON.parse(entries.get('package/package.json')); pkg.name = name;
+    entries.set('package/package.json', Buffer.from(JSON.stringify(pkg)));
+    const index = Buffer.from('export const label = "\u2605";');
+    const helper = name.endsWith('/core') ? Buffer.from('// helper') : Buffer.alloc(20_001, 32);
+    entries.set('package/dist/index.js', index);
+    entries.set('package/dist/internal/helper.js', helper);
+    // Declaration and schema bytes contribute to the archive, not runtime JavaScript.
+    entries.set('package/dist/index.d.ts', Buffer.alloc(25_000, 32));
+    entries.set('package/schemas/agent-event.schema.json', Buffer.from('{"title":"fixture"}'));
+    const parsed = readTar(tar(entries));
+    const measured = validateEntries(parsed, name);
+    assert.equal(measured.runtimeBytes, index.length + helper.length);
+    assert.ok(index.length > index.toString().length, 'measurement uses UTF-8 bytes');
+    assert.equal(measured.unpackedBytes, [...entries.values()].reduce((sum, bytes) => sum + bytes.length, 0));
+  });
+}
+
 test('package audit fails on private files, missing exports, nonportable imports and unresolved dependencies', () => {
   assert.equal(validateEntries(fixture(), '@starlight-intelligence/core').version, '0.1.0');
   const privateFile = fixture(); privateFile.set('package/memory/private.json', Buffer.from('{}'));
