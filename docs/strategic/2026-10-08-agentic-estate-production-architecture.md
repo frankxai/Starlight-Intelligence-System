@@ -136,7 +136,7 @@ Caches first (stable prefixes, deterministic tool lists), then effort, then mode
 intent (Notion, MEMORY.md) → stream or experiment entry → draft PR on agent/<harness>/<scope>
 → gates (estate-guard scan · type · lint · tests · evals · visual proof where UI)
 → independent review on the exact head (Grok or Claude, text-only, receipt in ops ledger)
-→ merge by Frank or merge-steward under repo rules → deploy by git integration (Vercel) or workflow
+→ merge by Frank, or by an interactive agent holding explicit per-request merge authority (unattended agents never merge, per the agent operations contract) → deploy by git integration (Vercel) or workflow
 → receipts (usage, attestation, ops ledger) → experiment evaluated → promote or kill
 ```
 
@@ -146,7 +146,7 @@ intent (Notion, MEMORY.md) → stream or experiment entry → draft PR on agent/
 - **Merge gate** (`pnpm merge:gate`) on web repos: claims, strict language, internal links.
 - **Web release gate** for any UI: audit findings plus before and after captures at 375, 768, 1440.
 - **Integrity guard** before anything public: brand, claims, voice, schema.
-- **Durable-output-sink law** for routines: a run that commits nothing must not report green.
+- **Durable-output-sink law** for routines: a run that leaves no registered durable output (a PR, a committed file, or a Slack DM, per the agent operations contract) must not report green.
 - **Human gate** for the hard stops: force-push to production main, newsletter blasts, auto-posting, key rotation, irreversible migrations, money movement.
 
 ### 5.3 Media production SDLC (the content factory)
@@ -177,17 +177,17 @@ Ranking rule: recurring before one-off, owned asset before platform-dependent, v
 | R3 | Agentic OS installs (Foundry) | Evaluated installs of `agentic-business-os` and siblings, template plus packs | GitHub template, `downstreams.json`, Stripe | Second registered downstream beyond Damfrost | Fewer than two installs by Q1 2027 |
 | R4 | GenCreator Companion | Source to Creator Mission to review to export; CreatorPack | gencreator.ai, Supabase, Companion alpha gates | Alpha gates pass; merchant of record chosen | Companion alpha fails its own ADR-010 gates |
 | R5 | Media production engine | Shorts, lyric videos, cinematic reels from the catalog and the research hub; ad revenue, sync, sponsorship | Seedance, Kling, Veo via fal or BytePlus, Suno, YouTube, TikTok Symphony, Spotify | Twelve weeks of weekly output with receipts; first sync or sponsorship inquiry logged | Output cadence breaks for four consecutive weeks |
-| R6 | Metered agent services | MCP endpoints and APIs sold per call to agents: marine knowledge, research, payments verification; x402 pay-per-call, API keys for Web2 | marine-mcp, payments-mcp verify-only, Cloudflare Workers, x402 | One external agent paying per call in a pilot | No external caller within 60 days of the pilot going live |
+| R6 | Metered agent services | MCP endpoints and APIs sold per call to agents: marine knowledge, research, payments verification; x402 pay-per-call, API keys for Web2 | marine-mcp, payments-mcp verify-only, Cloudflare Workers, x402 | One external agent paying per call in a pilot | No external paying caller within 60 days of the pilot going live |
 | R7 | Memberships and retreats | GenCreator community, Vibeclubs formats, co-creation retreats | Whop or Skool, Circle, Resend | Cohort filled with delivery evidence complete | Cohort under minimum viable size |
 | R8 | Digital products and templates | Prompt library, packs, courses, books | LemonSqueezy, frankx.ai product routes | Product page passes integrity guard | Under threshold units in 90 days (owner sets) |
-| R9 | Agentic income network | Affiliate comparison engine, bound links, scheduled posts under queen gate | agenticincome, Postiz | Affiliate queen at Pilot | Payout below an owner-set minimum floor (dated, in the registry) for two consecutive quarters |
-| R10 | Capital and deal intelligence for principals | Advisory and co-investment theses for HNW and crypto-native principals, built on Wealth IS and Investment IS; never custody, never money movement | `/wealth-thesis-review`, Investment IS, SOW | One principal retains the thesis service | Thesis service produces no decision the principal acts on in two quarters |
+| R9 | Agentic income network | Affiliate comparison engine, bound links, and drafted posts queued under the queen gate; a human schedules and publishes every post (posting is a hard stop, so Pilot for this stream means an approved queue, never an agent-sent post) | agenticincome, Postiz | Affiliate queen at Pilot with a human-published queue | Payout below an owner-set minimum floor (dated, in the registry) for two consecutive quarters |
+| R10 | Capital and deal intelligence architecture for principals | Non-personalized system architecture for HNW and crypto-native principals: thesis frameworks, DPI ledger design, gate ladders, sovereignty and custody architecture, built on Wealth IS and Investment IS. Any individualized recommendation and the client's decision sit with a licensed practitioner named in the SOW. Never custody, never money movement | `/wealth-thesis-review`, Investment IS, SOW | One principal retains the architecture service with a licensed practitioner named in the SOW | No retained engagement after two quarters |
 
 Portfolio rule: at most three streams in Pilot at once. The founder board decides which three. Everything else stays in dry-run or shadow and keeps writing receipts.
 
 ### 6.1 Whales, principals, and the pass-through model
 
-The buyers who move the portfolio are principals: founders, crypto-native operators, HNW families, funds. They buy three things: a sovereign estate they own (R1, R2), theses they can act on (R10), and metered access to intelligence their own agents can call (R6). The pass-through model is honest: our runtime routes their workloads to the best provider under their budget, carries their attestation, and meters the call. We never hold their keys in a sandbox (vault credentials, injected at egress) and we never move their money (verify-only). That is the pitch, and it is also already the architecture.
+The buyers who move the portfolio are principals: founders, crypto-native operators, HNW families, funds. They buy three things: a sovereign estate they own (R1, R2), the architecture to run their own theses, with a licensed practitioner on the decisions (R10), and metered access to intelligence their own agents can call (R6). The pass-through model is honest: our runtime routes their workloads to the best provider under their budget, carries their attestation, and meters the call. We never hold their keys in a sandbox (vault credentials, injected at egress) and we never move their money (verify-only). That is the pitch, and it is also already the architecture.
 
 ---
 
@@ -206,7 +206,7 @@ The buyers who move the portfolio are principals: founders, crypto-native operat
 
 | Program | Self-serve | Partner or funded tier | Validity | Fit |
 |---|---|---|---|---|
-| Google for Startups Cloud | $2,000 | up to $200,000; up to $350,000 for AI-first startups between Seed and Series A | 2 years, year two reimburses 20 percent | Gemini managed agents, Vertex |
+| Google for Startups Cloud | $2,000 (Start tier) | up to $200,000; up to $350,000 for AI-first startups between Seed and Series A (Scale tier) | Start: 1 year. Scale: 2 years, year two reimburses 20 percent | Gemini managed agents, Vertex |
 | Cloudflare for Startups | $10,000 | $100,000 or $350,000 ($350,000 tier requires $5M+ raised from an affiliated partner; Workers AI capped at $50,000 inside it) | 1 year | Workflows, Workers, R2, the durable execution plane |
 | AWS Activate | up to $5,000 | up to $200,000 Portfolio tier via an Activate Provider | up to 2 years | Bedrock access to Claude where a client needs AWS |
 | Microsoft for Startups | up to $5,000 | $100,000 to $150,000 via Investor Network | 1 year | Foundry access to Claude for enterprise clients |
@@ -231,7 +231,7 @@ Owner names are the Agent OS General roster in `agentic-creator-os/.claude/agent
 |---|---|---|---|
 | Days 1–7 | Runtime port merged in starlight-swarm ([starlight-swarm#38](https://github.com/frankxai/starlight-swarm/pull/38), open draft; this document does not merge it), stream and experiment registries populated with placeholders set by Frank | `general-cto`, `general-cfo` | Tests green, estate-guard clean |
 | Days 1–14 | Apply to all self-serve credit tiers; record approvals in the ops ledger | `general-cfo` | Receipts in ledger |
-| Days 8–30 | First shadow run: Anthropic Managed Agents repo steward on one bounded repo, outcomes rubric, session budget with margin, environment `networking: limited` (no unrestricted egress), toolset `permission_policy: always_ask` with every confirmation answered `deny`, repository mounted read-only with no push token | `general-cto` | Receipts, no side effects (enforced by the egress and permission settings, not declared) |
+| Days 8–30 | First shadow run: Anthropic Managed Agents repo steward on one bounded repo, outcomes rubric, session budget with margin, environment `networking: limited` (no unrestricted egress), toolset scoped so read-only inspection (file reads, search, read-only checks inside the mount) runs under `always_allow`, web search and fetch disabled, and every tool that can write outside the sandbox or reach the network set to `always_ask` with every confirmation answered `deny`; repository mounted read-only with no push token | `general-cto` | Receipts, no side effects (enforced by the egress and permission settings, not declared) |
 | Days 8–30 | Media engine shadow: twelve shots across three shot classes with provenance sidecars; nothing published | `visual-design-gods`, `music-producer` | Visual council pass |
 | Days 15–45 | R1 pipeline: three qualified estate conversations, SOW template v0.2 | `general-ceo` | One signed SOW |
 | Days 30–60 | R6 pilot: marine-mcp metered endpoint behind Cloudflare Workers with API keys; x402 as optional rail | `general-cto` | One external caller paying per call (same bar as the R6 promotion gate; free or subsidized callers do not count) |
@@ -247,7 +247,7 @@ Target state. This copy becomes publishable only when Standing receipts back eve
 
 We run an estate of intelligence systems on an open protocol. Every agent that works for us or for a client leaves a receipt: what ran, where, what it cost, what it changed, and who approved it. Money never moves without a human. The same spine that writes our music videos verifies a client's payment mandate and stewards a repository overnight. You can fork the protocol for free. You pay us to build and run the estate you own.
 
-That is the whole story. No guru claims, no revolution, no metaphysics. Receipts.
+That is the whole story, and every claim in it points to a receipt.
 
 ---
 
@@ -256,7 +256,7 @@ That is the whole story. No guru claims, no revolution, no metaphysics. Receipts
 - If no stream reaches Pilot with a passing experiment by day 60, the runtime port is premature; keep the governance kernel and drop the multi-provider layer.
 - If the three providers cannot be exercised through one port without leaking provider-specific shape above it within two weeks of implementation, the abstraction is wrong; collapse to Anthropic Managed Agents plus one.
 - If credits applications return nothing by day 30, the capital section is wishful; re-plan on cash.
-- If the ops ledger shows a routine reporting green with no committed output, the SDLC section has not been enforced; stop adding streams until it is.
+- If the ops ledger shows a routine reporting green with no registered durable output, the SDLC section has not been enforced; stop adding streams until it is.
 
 ---
 
