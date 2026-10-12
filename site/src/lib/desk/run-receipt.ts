@@ -216,6 +216,9 @@ export function receiptProblems(receipt: unknown): string[] {
     if (isDate(r.run.startedAt) && isDate(r.run.endedAt) && Date.parse(r.run.endedAt) < Date.parse(r.run.startedAt)) {
       problems.push("run.endedAt is before run.startedAt");
     }
+    if (isDate(r.issuedAt) && isDate(r.run.endedAt) && Date.parse(r.issuedAt) < Date.parse(r.run.endedAt)) {
+      problems.push("issuedAt is before run.endedAt");
+    }
   }
 
   if (!isRecord(r.subject) || typeof r.subject.name !== "string" || !r.subject.name.trim()) {
