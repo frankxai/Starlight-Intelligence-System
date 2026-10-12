@@ -53,7 +53,7 @@ export function evaluatePullRequest(repo, prNumber) {
   const viewRes = runCmd('gh', [
     'pr', 'view', String(prNumber),
     '--repo', repo,
-    '--json', 'number,title,body,headRefName,headRefOid,isDraft,mergeable,state,files,statusCheckRollup,autoMergeRequest'
+    '--json', 'number,title,body,headRefName,headRefOid,isDraft,mergeable,mergeStateStatus,state,files,statusCheckRollup,autoMergeRequest,reviews'
   ]);
 
   if (viewRes.code !== 0) {
@@ -100,6 +100,30 @@ export function evaluatePullRequest(repo, prNumber) {
     return { ok: false, fatal: check.ceoGuardrails.fatal };
   }
 
+  // Post official GitHub Review if not already reviewed for this headRefOid
+  const alreadyReviewed = (pr.reviews || []).some(r => r.commit?.oid === pr.headRefOid);
+  if (!alreadyReviewed && pr.headRefOid) {
+    const verdict = check.score >= 85 && check.approved ? 'APPROVE' : 'COMMENT';
+    const scorecard = [
+      `### Starlight Maker/Checker Quality Audit`,
+      `- **Score**: ${check.score}/100`,
+      `- **Status**: ${check.approved ? '✅ Approved' : '⚠️ Action Required'}`,
+      `- **Humanizer Editorial**: ${check.humanizer.passed ? '✅ Pass' : '❌ ' + check.humanizer.issues.join('; ')}`,
+      `- **Impeccable Design**: ${check.impeccable.passed ? '✅ Pass' : '❌ ' + check.impeccable.issues.join('; ')}`,
+      `- **Frontier Architecture**: ${check.architecture.passed ? '✅ Pass' : '❌ ' + check.architecture.issues.join('; ')}`,
+      `- **Lockfile Integrity**: ${check.ceoGuardrails.fatal.length === 0 ? '✅ Pass' : '❌ ' + check.ceoGuardrails.fatal.join('; ')}`,
+      ``,
+      `*Attestation: Built on SIP — Starlight Intelligence Protocol v1.1.1.*`
+    ].join('\n');
+
+    console.log(`[*] Posting official Starlight PR review (${verdict}) on PR #${prNumber}...`);
+    if (verdict === 'APPROVE') {
+      runCmd('gh', ['pr', 'review', String(prNumber), '--repo', repo, '--approve', '-b', scorecard]);
+    } else {
+      runCmd('gh', ['pr', 'review', String(prNumber), '--repo', repo, '--comment', '-b', scorecard]);
+    }
+  }
+
   // 2. Handle Contract Guard Couplings
   if (check.ceoGuardrails.issues.some(i => i.includes('Contract Guard Notice'))) {
     if (!pr.title.includes('[contract-change]')) {
@@ -113,9 +137,10 @@ export function evaluatePullRequest(repo, prNumber) {
   const checks = pr.statusCheckRollup || [];
   const hasFailures = checks.some(c => (c.conclusion || c.state || '').toUpperCase() === 'FAILURE');
   const behindError = pr.mergeable === 'CONFLICTING' || checks.some(c => (c.conclusion || c.state) === 'FAILURE' && (c.name || '').includes('branch'));
+  const isBehind = pr.mergeStateStatus === 'BEHIND' || behindError;
 
-  if (behindError) {
-    console.log(`[*] PR #${prNumber} branch is behind base or conflicting. Attempting update-branch...`);
+  if (isBehind) {
+    console.log(`[*] PR #${prNumber} branch is behind base (${pr.mergeStateStatus || 'BEHIND'}). Updating branch...`);
     const updateRes = runCmd('gh', ['pr', 'update-branch', String(prNumber), '--repo', repo]);
     if (updateRes.code === 0) {
       console.log(`[+] Branch updated successfully with base.`);
