@@ -86,12 +86,15 @@ export function canTransition(from: ExperimentStatus, to: ExperimentStatus): boo
 }
 
 /** Returns the updated experiment or throws; never mutates the input. */
-export function transition(e: Experiment, to: ExperimentStatus, evidence: { receipts?: readonly string[]; closesBy?: string; notes?: string } = {}): Experiment {
+export function transition(e: Experiment, to: ExperimentStatus, evidence: { receipts?: readonly string[]; closesBy?: string; notes?: string; today?: string } = {}): Experiment {
   if (!canTransition(e.status, to)) throw new Error(`${e.id}: cannot move from ${e.status} to ${to}`);
   if (e.status === 'parked' && to === 'running') {
-    // Reopening is a fresh commitment: it needs a new deadline later than the one it parked with.
+    // Reopening is a fresh commitment: it needs a new deadline later than the one it parked
+    // with and still ahead of today, or it would reopen straight into the overdue list.
+    const today = evidence.today ?? new Date().toISOString().slice(0, 10);
     if (!evidence.closesBy || !DATE_RE.test(evidence.closesBy)) throw new Error(`${e.id}: reopening a parked experiment needs a new closesBy (YYYY-MM-DD)`);
     if (evidence.closesBy <= e.closesBy) throw new Error(`${e.id}: the new closesBy must be later than ${e.closesBy}`);
+    if (evidence.closesBy <= today) throw new Error(`${e.id}: the new closesBy must be after today (${today})`);
   }
   const receipts = [...e.receipts, ...(evidence.receipts ?? [])];
   if ((to === 'proven' || to === 'falsified') && receipts.length === 0) throw new Error(`${e.id}: ${to} needs a receipt`);

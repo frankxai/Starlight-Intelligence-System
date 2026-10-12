@@ -2,7 +2,7 @@
 name: alexandria
 description: Catalogued intelligence with receipts — plan a need against the Alexandria catalogue, price it, execute it inside the session budget, and return records plus a receipt. The one door for any record an artifact will cite.
 allowed-tools: Read, Bash, Grep, Glob
-argument-hint: "<need in plain language> [--capability <provider/capability>] [--options '{json}'] [--max-credits N] [--sip-layers attestation,file-contract]"
+argument-hint: "<need in plain language> [--capability <provider/capability>] [--options '{json}'] [--expected-records N] [--max-credits N] [--sip-layers attestation,file-contract]"
 ---
 
 # /alexandria
@@ -16,8 +16,8 @@ $ARGUMENTS
 
 1. **Plan.** Run `node --import tsx -e` against `src/alexandria` (or call the MCP tool `alexandria_plan`) with the need. Show the candidates: capability id, provider, score, credits, per-record flag, required options.
 2. **Gate.** If the recommended price exceeds the remaining session budget (default 200 credits, `ALEXANDRIA_MAX_CREDITS`), stop and show the cheaper candidates. Never raise the budget without an experiment id from `verticals/alexandria/experiments/registry.json`.
-3. **Options.** If the capability has `requiresOneOf`, ask for one of the named options or read it from the arguments. Nothing runs until it is satisfied.
-4. **Execute once.** `alexandria_execute` with `capabilityId`, `options`, and `sipLayers` only when the artifact that will use the record genuinely composes SIP elements.
+3. **Options.** If the capability has `requiresOneOf`, ask for one of the named options or read it from the arguments. If the plan marks it `perRecord`, a record ceiling is required: take it from `--expected-records` or ask for it; the reservation is ceiling times the per-record price. Nothing runs until both are satisfied.
+4. **Execute once.** `alexandria_execute` with `capabilityId`, `options`, `expectedRecords` for per-record capabilities, and `sipLayers` only when the artifact that will use the record genuinely composes SIP elements. If the result is `uncertain_outcome`, retry once with the returned `requestId`; never mint a new one.
 5. **Return.** Records (summarised, never dumped past 20 rows), the receipt (`id`, `contentHash`, `creditsCost`, `source`, `attribution` if any), and the updated budget.
 6. **Record.** If the call served an experiment, append the receipt id to it. If a decision followed, write the vault entry.
 

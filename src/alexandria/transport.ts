@@ -51,14 +51,16 @@ export class FirecrawlTransport implements Transport {
     if (calls.length > 10) throw new Error('Firecrawl accepts at most 10 Alexandria capabilities per request');
     const observedAt = new Date().toISOString();
     // One request id per batch: Firecrawl bills an uncertain retry only once when it reuses
-    // the identical payload and requestId, so the id is minted before sending and kept on
-    // every result and receipt.
+    // the identical payload and request id. The id travels in the `x-request-id` header,
+    // which is the v2 API's client idempotency key; the body carries only the `alexandria`
+    // array, per the contract. The router mints the id before calling, so it survives a
+    // transport failure; this is a fallback for direct callers.
     const requestId = calls.find((c) => c.requestId)?.requestId ?? randomUUID();
     if (calls.some((c) => c.requestId && c.requestId !== requestId)) throw new Error('All calls in one Firecrawl batch must share the same requestId');
-    const body = JSON.stringify({ requestId, alexandria: calls.map((c) => ({ provider: c.provider, capability: c.capability, options: c.options ?? {}, ...(c.version ? { version: c.version } : {}) })) });
+    const body = JSON.stringify({ alexandria: calls.map((c) => ({ provider: c.provider, capability: c.capability, options: c.options ?? {}, ...(c.version ? { version: c.version } : {}) })) });
     const res = await this.fetchImpl(this.url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.apiKey}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.apiKey}`, 'x-request-id': requestId },
       body,
     });
     if (!res.ok) {
@@ -90,10 +92,12 @@ export class NativeTransport implements Transport {
   async execute(calls: readonly AlexandriaCall[]): Promise<CallResult[]> {
     const observedAt = new Date().toISOString();
     return calls.map((c) => {
+      const base: CallResult = { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt };
+      if (c.requestId) base.requestId = c.requestId;
       try {
-        return { provider: c.provider, capability: c.capability, records: this.run(c), creditsCost: 0, observedAt };
+        return { ...base, records: this.run(c) };
       } catch (err) {
-        return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, error: { code: 'native_error', message: err instanceof Error ? err.message : String(err) } };
+        return { ...base, error: { code: 'native_error', message: err instanceof Error ? err.message : String(err) } };
       }
     });
   }

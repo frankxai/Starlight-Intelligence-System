@@ -22,6 +22,7 @@ import assert from "node:assert/strict";
 import { appendFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { spawn } from "node:child_process";
 import { repoRootFromTestFile } from "./_lib/repo.js";
 import {
   Alexandria,
@@ -202,6 +203,7 @@ describe("v93 — router, budget and receipts", () => {
     const metrics = await alexandria.execute({ capabilityId: "sis-metrics/current", options: { key: "registered_agents" } });
     assert.equal(metrics.result.records.length, 1);
     assert.equal(metrics.budget.spent, 0);
+    assert.match(metrics.receipt.requestId ?? "", /^[0-9a-f-]{36}$/, "native receipts carry the request id too");
     const verticals = await alexandria.execute({ need: "list verticals registry" });
     assert.ok((verticals.result.records as { slug: string }[]).some((r) => r.slug === "alexandria"));
     const research = await alexandria.execute({ capabilityId: "sis-research/list", options: { query: "memory foundations" } });
@@ -211,16 +213,18 @@ describe("v93 — router, budget and receipts", () => {
   });
 
   it("Firecrawl transport posts an alexandria body with a request id and maps entries back by position", async () => {
-    let seen: { url: string; body: { requestId?: string; alexandria: unknown[] }; auth: string } | undefined;
+    let seen: { url: string; body: { requestId?: string; alexandria: unknown[] }; auth: string; requestHeader: string } | undefined;
     const transport = new FirecrawlTransport({ apiKey: "test-key", fetchImpl: async (url, init) => {
-      seen = { url, body: JSON.parse(init.body), auth: init.headers.Authorization };
+      seen = { url, body: JSON.parse(init.body), auth: init.headers.Authorization, requestHeader: init.headers["x-request-id"] };
       return { ok: true, status: 200, json: async () => ({ data: { alexandria: [{ provider: "gmgn-ai", capability: "crypto/wallet_rank", creditsCost: 5, records: [{ a: 1 }, { a: 2 }] }] } }) };
     } });
     const [result] = await transport.execute([{ provider: "gmgn-ai", capability: "crypto/wallet_rank", options: { chain: "sol" }, requestId: "retry-7" }]);
     assert.equal(result.records.length, 2);
     assert.equal(result.creditsCost, 5);
     assert.equal(result.requestId, "retry-7");
-    assert.equal(seen?.body.requestId, "retry-7", "the idempotency key rides the request body");
+    assert.equal(seen?.requestHeader, "retry-7", "the idempotency key is the x-request-id header");
+    assert.equal(seen?.body.requestId, undefined, "the body carries only the contract's keys");
+    assert.deepEqual(Object.keys(seen?.body ?? {}), ["alexandria"]);
     assert.equal(seen?.auth, "Bearer test-key");
     assert.deepEqual(seen?.body.alexandria, [{ provider: "gmgn-ai", capability: "crypto/wallet_rank", options: { chain: "sol" } }]);
     const minted = new FirecrawlTransport({ apiKey: "k", fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({ data: { alexandria: [] } }) }) });
@@ -262,11 +266,56 @@ describe("v93 — router, budget and receipts", () => {
     assert.equal(res.budget.spent, 35);
   });
 
-  it("releases the reservation when the transport throws", async () => {
-    const transport = { kind: "firecrawl-alexandria" as const, execute: async () => { throw new Error("network down"); } };
-    const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 10 });
-    await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), /network down/);
-    assert.equal(alexandria.budget.spent, 0);
+  it("on a transport failure: releases the reservation, keeps the request id on a failed receipt, and returns it for an idempotent retry", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-uncertain-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      const seen: string[] = [];
+      const transport = { kind: "firecrawl-alexandria" as const, execute: async (calls: readonly { requestId?: string }[]) => { seen.push(calls[0].requestId ?? ""); throw new Error("network down"); } };
+      const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 10, ledger });
+      let caught: unknown;
+      try { await alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }); } catch (err) { caught = err; }
+      assert.ok(caught instanceof AlexandriaError && caught.code === "uncertain_outcome" && caught.message.includes("network down"));
+      const requestId = (caught as AlexandriaError).requestId ?? "";
+      assert.match(requestId, /^[0-9a-f-]{36}$/, "the id was minted before the transport ran");
+      assert.equal(seen[0], requestId, "the transport received the same id");
+      assert.equal(alexandria.budget.spent, 0);
+      const [receipt] = ledger.read();
+      assert.equal(receipt.requestId, requestId, "the id is persisted on a failed receipt");
+      assert.equal(receipt.error?.code, "transport_failure");
+      assert.equal(receipt.creditsCost, 0);
+      await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank", requestId }), (err: unknown) => err instanceof AlexandriaError && err.requestId === requestId);
+      assert.equal(seen[1], requestId, "a retry with the returned id reuses it instead of minting another");
+      alexandria.close();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("holds a resumed session exclusively across processes and takes over a stale lock", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-lock-"));
+    const child = spawn(process.execPath, ["-e", "setTimeout(() => {}, 20000)"], { stdio: "ignore" });
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      const lockPath = `${ledger.path}.session-x.lock`;
+      await new Promise((r) => setTimeout(r, 50));
+      writeFileSync(lockPath, String(child.pid), "utf8");
+      assert.throws(() => new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "session-x" }), /held by process/);
+      child.kill();
+      await new Promise<void>((r) => child.once("exit", () => r()));
+      const taken = new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "session-x" });
+      assert.equal(readFileSync(lockPath, "utf8"), String(process.pid), "a dead owner's lock is taken over");
+      const reentrant = new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "session-x" });
+      assert.equal(reentrant.budget.sessionId, "session-x", "the same process may hold its session again");
+      taken.close();
+      assert.ok(!existsSync(lockPath), "close releases the lock");
+      const unlocked = new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "session-y", lock: false });
+      assert.ok(!existsSync(`${ledger.path}.session-y.lock`), "lock: false opts out for in-process use");
+      unlocked.close();
+    } finally {
+      if (!child.killed) child.kill();
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   it("restores spend per budget session and tolerates a cut-off ledger line", async () => {
@@ -284,9 +333,16 @@ describe("v93 — router, budget and receipts", () => {
       assert.equal(detailed.receipts.length, 2);
       const resumed = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "session-a" });
       assert.equal(resumed.budget.spent, 10, "the same session resumes its spend");
+      const third = await resumed.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
+      assert.equal(third.receipt.observedAt, third.result.observedAt, "the receipt keeps the provider observation time");
+      const after = ledger.readDetailed();
+      assert.equal(after.truncatedTail, false, "the cut-off tail was moved out before the append");
+      assert.equal(after.receipts.length, 3);
+      assert.ok(readFileSync(ledger.quarantinePath, "utf8").includes('"rcpt_partial"'), "the fragment is kept in quarantine");
+      assert.equal(resumed.budget.spent, 15);
       const fresh = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger });
       assert.equal(fresh.budget.spent, 0, "a new session starts with a fresh allowance");
-      assert.equal(ledger.spent(), 10);
+      assert.equal(ledger.spent(), 15);
       assert.ok(ledger.read().every((r) => r.sessionId === "session-a"));
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -336,8 +392,9 @@ describe("v93 — Forge experiments", () => {
     assert.ok(validateRegistry({ experiments: [{ ...base, status: "falsified", receipts: [""] }] }).some((p) => p.message.includes("ledger receipt id")));
     const parked = transition(base, "parked");
     assert.throws(() => transition(parked, "running"), /needs a new closesBy/);
-    assert.throws(() => transition(parked, "running", { closesBy: "2026-11-08" }), /later than/);
-    assert.equal(transition(parked, "running", { closesBy: "2026-12-01" }).closesBy, "2026-12-01");
+    assert.throws(() => transition(parked, "running", { closesBy: "2026-11-08", today: "2026-10-12" }), /later than/);
+    assert.throws(() => transition(parked, "running", { closesBy: "2026-12-01", today: "2027-01-01" }), /after today/);
+    assert.equal(transition(parked, "running", { closesBy: "2026-12-01", today: "2026-10-12" }).closesBy, "2026-12-01");
   });
 });
 
@@ -359,12 +416,18 @@ describe("v93 — MCP server", () => {
       const ok = await server.handleRequest({ method: "tools/call", id: 3, params: { name: "alexandria_execute", arguments: { capabilityId: "gmgn-ai/crypto/wallet_rank" } } });
       const content = ok?.result as { structuredContent: { receipt: { creditsCost: number }; budget: { spent: number } } };
       assert.equal(content.structuredContent.budget.spent, 5);
+      ledger.append({ ...ledger.read()[0], id: "rcpt_other", sessionId: "someone-else", options: { address: "private" } });
       const receipts = await server.handleRequest({ method: "tools/call", id: 4, params: { name: "alexandria_receipts", arguments: {} } });
-      const rc = (receipts?.result as { structuredContent: { spentThisSession: number; spentAllSessions: number; truncatedTail: boolean; sessionId: string } }).structuredContent;
+      const rc = (receipts?.result as { structuredContent: { spentThisSession: number; spentAllSessions: number; truncatedTail: boolean; sessionId: string; receipts: { sessionId: string }[] } }).structuredContent;
       assert.equal(rc.spentThisSession, 5);
-      assert.equal(rc.spentAllSessions, 5);
+      assert.equal(rc.spentAllSessions, 10);
       assert.equal(rc.truncatedTail, false);
       assert.equal(rc.sessionId, alexandria.budget.sessionId);
+      assert.ok(rc.receipts.every((r) => r.sessionId === alexandria.budget.sessionId), "other sessions' receipts stay out by default");
+      const audit = await server.handleRequest({ method: "tools/call", id: 7, params: { name: "alexandria_receipts", arguments: { allSessions: true } } });
+      assert.equal((audit?.result as { structuredContent: { receipts: unknown[] } }).structuredContent.receipts.length, 2);
+      const badFlag = await server.handleRequest({ method: "tools/call", id: 8, params: { name: "alexandria_receipts", arguments: { allSessions: "yes" } } });
+      assert.equal((badFlag?.result as { isError: boolean }).isError, true);
       const exps = await server.handleRequest({ method: "tools/call", id: 5, params: { name: "alexandria_experiments", arguments: { status: "running" } } });
       assert.ok((exps?.result as { structuredContent: { experiments: unknown[] } }).structuredContent.experiments.length >= 1);
       const unknown = await server.handleRequest({ method: "nope", id: 6 });

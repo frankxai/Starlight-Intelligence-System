@@ -12,7 +12,7 @@
 export * from './types.js';
 export { Library, loadCatalog, validateCatalog, scoreCapability, tokenize, DEFAULT_CATALOG_PATH, REPO_ROOT } from './catalog.js';
 export { FirecrawlTransport, NativeTransport, MemoryTransport, FIRECRAWL_SCRAPE_URL } from './transport.js';
-export { buildReceipt, hashRecords, canonicalJson, attestationBlock, ReceiptLedger, SIP_VERSION, SIP_SUBSTRATE } from './receipts.js';
+export { buildReceipt, hashRecords, canonicalJson, attestationBlock, ReceiptLedger, SessionLock, SIP_VERSION, SIP_SUBSTRATE } from './receipts.js';
 export type { LedgerRead, ReceiptInput } from './receipts.js';
 export { Alexandria, AlexandriaError } from './router.js';
 export type { ExecuteRequest, ExecuteResponse, Plan, AlexandriaOptions, AlexandriaErrorCode } from './router.js';

@@ -104,8 +104,10 @@ export interface Receipt {
   issuedAt: string;
   /** Budget session the call was charged to. Spend is restored per session, never across the whole ledger. */
   sessionId: string;
-  /** Idempotency key sent to the provider, when the transport supports one. */
+  /** Idempotency key sent to the provider. Reuse it to retry a call whose outcome was uncertain. */
   requestId?: string;
+  /** When the provider observed the record (from the transport), as distinct from when the receipt was issued. */
+  observedAt: string;
   provider: string;
   capability: string;
   options: Record<string, unknown>;

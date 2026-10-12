@@ -61,6 +61,7 @@ function validateArgs(schema: ToolDef['inputSchema'], raw: unknown): string | nu
     if (v === undefined) continue;
     const type = (def as { type: string }).type;
     if (type === 'string' && typeof v !== 'string') return `${key} must be a string`;
+    if (type === 'boolean' && typeof v !== 'boolean') return `${key} must be a boolean`;
     if (type === 'number' && typeof v !== 'number') return `${key} must be a number`;
     if (type === 'object' && (!v || typeof v !== 'object' || Array.isArray(v))) return `${key} must be an object`;
     if (type === 'array' && !Array.isArray(v)) return `${key} must be an array`;
@@ -83,7 +84,7 @@ export class AlexandriaMcpServer {
       { name: 'alexandria_find', title: 'Find capabilities', description: 'Rank catalogued capabilities for a plain-language need. Free; no provider is called.', inputSchema: { type: 'object', properties: { need: { type: 'string', description: 'What you need, e.g. "wallet profile on solana" or "funding rounds for a company".' }, limit: { type: 'number', description: 'Max hits (default 10).' }, maxCredits: { type: 'number', description: 'Exclude capabilities costing more per call.' } }, required: ['need'], additionalProperties: false }, annotations: ro },
       { name: 'alexandria_plan', title: 'Plan a call', description: 'Candidates with price, required options and the recommended capability. Free.', inputSchema: { type: 'object', properties: { need: { type: 'string', description: 'The need to plan for.' } }, required: ['need'], additionalProperties: false }, annotations: ro },
       { name: 'alexandria_execute', title: 'Execute a capability', description: 'Run one catalogued capability under the session credit budget. Options are validated and the price reserved before any charge; over-budget calls are refused. Returns records and a receipt.', inputSchema: { type: 'object', properties: { capabilityId: { type: 'string', description: '<provider>/<capability>, from alexandria_plan.' }, need: { type: 'string', description: 'Alternative to capabilityId: resolve the need first.' }, options: { type: 'object', description: 'Provider options per the contract.' }, expectedRecords: { type: 'number', description: 'Required for per-record pricing: the record ceiling to reserve credits for.' }, sipLayers: { type: 'array', description: 'SIP layers this record composes; emits the attestation block only on a successful call with records.' }, requestId: { type: 'string', description: 'Reuse the id of an uncertain earlier call to make the retry idempotent at the provider.' } }, additionalProperties: false }, annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true } },
-      { name: 'alexandria_receipts', title: 'Read receipts', description: 'Receipts from the session ledger, newest first, with total credits spent.', inputSchema: { type: 'object', properties: { limit: { type: 'number', description: 'Max receipts (default 20).' } }, additionalProperties: false }, annotations: ro },
+      { name: 'alexandria_receipts', title: 'Read receipts', description: 'Receipts of the active budget session, newest first, with credits spent. Receipt options can carry client inputs (addresses, handles), so other sessions are listed only with allSessions, the audit mode.', inputSchema: { type: 'object', properties: { limit: { type: 'number', description: 'Max receipts (default 20).' }, allSessions: { type: 'boolean', description: 'Audit mode: include every session in the ledger, not only the active one.' } }, additionalProperties: false }, annotations: ro },
       { name: 'alexandria_experiments', title: 'List experiments', description: 'The Forge registry: open experiments with metric, falsifier, budget and close date. Overdue first.', inputSchema: { type: 'object', properties: { status: { type: 'string', description: 'Filter by status.' } }, additionalProperties: false }, annotations: ro },
     ];
   }
@@ -112,7 +113,9 @@ export class AlexandriaMcpServer {
         const { receipts, truncatedTail } = this.ledger.readDetailed();
         const limit = typeof args.limit === 'number' ? args.limit : 20;
         const sessionId = this.alexandria.budget.sessionId;
-        return { sessionId, spentThisSession: this.ledger.spent(sessionId), spentAllSessions: this.ledger.spent(), truncatedTail, receipts: receipts.reverse().slice(0, Math.max(1, limit)) };
+        const allSessions = args.allSessions === true;
+        const visible = allSessions ? receipts : receipts.filter((r) => r.sessionId === sessionId);
+        return { sessionId, allSessions, spentThisSession: this.ledger.spent(sessionId), spentAllSessions: this.ledger.spent(), truncatedTail, receipts: visible.reverse().slice(0, Math.max(1, limit)) };
       }
       case 'alexandria_experiments': {
         const list = loadExperiments(this.experimentsPath);
@@ -195,6 +198,7 @@ export function createDefaultServer(env: NodeJS.ProcessEnv = process.env): Alexa
   const options: AlexandriaOptions = { library: Library.fromFile(), transports, maxCredits: parseMaxCredits(env.ALEXANDRIA_MAX_CREDITS), ledger };
   if (env.ALEXANDRIA_SESSION) options.sessionId = env.ALEXANDRIA_SESSION;
   const alexandria = new Alexandria(options);
+  for (const signal of ['exit', 'SIGINT', 'SIGTERM'] as const) process.once(signal, () => alexandria.close());
   return new AlexandriaMcpServer({ alexandria, ledger });
 }
 

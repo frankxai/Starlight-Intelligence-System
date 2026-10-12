@@ -17,7 +17,7 @@ need ──▶ Library.plan() ──▶ price ──▶ budget gate ──▶ tr
 ```
 
 - **Library** — `verticals/alexandria/catalog/providers.json`. Twenty providers and forty-seven capabilities as of 2026-10-12 (the conformance test asserts these figures against the file): four native (vaults, metrics ledger, research notes, vertical registry) and sixteen from Firecrawl's Alexandria catalogue (on-chain trading, 13F and insider ownership, fund-letter theses, funding rounds, company and people enrichment, arXiv and Semantic Scholar, Federal Reserve series, Instagram/TikTok index, podcast advertising, web traffic, search trends). Each capability carries its real per-call credit price, its required options and a tag vocabulary the router scores against.
-- **Router** — `src/alexandria/router.ts`. Resolves a need to a capability deterministically, validates options against the contract, prices the call and reserves that price against the session budget *before* a transport is touched (per-record capabilities must declare a record ceiling), reconciles the reservation with what the provider charged, and returns records plus a receipt. Spend is restored per budget session from the ledger; a new process starts a fresh session unless `ALEXANDRIA_SESSION` names one to resume.
+- **Router** — `src/alexandria/router.ts`. Resolves a need to a capability deterministically, validates options against the contract, prices the call and reserves that price against the session budget *before* a transport is touched (per-record capabilities must declare a record ceiling), reconciles the reservation with what the provider charged, and returns records plus a receipt. Spend is restored per budget session from the ledger; a new process starts a fresh session unless `ALEXANDRIA_SESSION` names one to resume, and a resumed session is locked to one live process so two processes cannot reserve against the same credits. If the transport fails after the request may have reached the provider, the reservation is released, a failed receipt with the request id is written, and the error returns that id for an idempotent retry.
 - **Receipts** — `src/alexandria/receipts.ts`. sha256 over canonical JSON of the records, provider source, attribution, reserved and charged credits, the provider request id, and an earned "Built on SIP" block only when the caller declares the layers the record composed and the call succeeded with records. Append-only JSONL ledger; a cut-off final line is reported and skipped, never fatal.
 - **Forge** — `verticals/alexandria/experiments/registry.json`. Every product line, provider and revenue claim starts as an experiment with one metric, one falsifier, a budget with a unit and a close date. `proven` and `falsified` require receipt ids.
 - **MCP server** — `src/alexandria/mcp.ts`. Five tools (`alexandria_find`, `alexandria_plan`, `alexandria_execute`, `alexandria_receipts`, `alexandria_experiments`) over stdio, so Claude Code, Codex, Gemini CLI and managed agents all go through the same budget gate.
@@ -59,17 +59,19 @@ From code:
 ```ts
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { Alexandria, Library, NativeTransport, FirecrawlTransport, ReceiptLedger } from './dist/alexandria/index.js'; // package export deferred to the next Foundry toolchain relock
+import { Alexandria, Library, NativeTransport, FirecrawlTransport, ReceiptLedger, REPO_ROOT } from './dist/alexandria/index.js'; // package export deferred to the next Foundry toolchain relock
 
 const alexandria = new Alexandria({
   library: Library.fromFile(),
-  transports: [new NativeTransport(repoRoot), new FirecrawlTransport()],
+  transports: [new NativeTransport(REPO_ROOT), new FirecrawlTransport()], // REPO_ROOT: this checkout; pass another absolute path for a different corpus
   maxCredits: 100,
   // Node does not expand `~`; build the path from the home directory.
   ledger: new ReceiptLedger(join(homedir(), '.starlight', 'alexandria', 'receipts.jsonl')),
 });
 const plan = alexandria.plan('whale wallets on solana this week');
 const { result, receipt } = await alexandria.execute({ capabilityId: plan.recommended!, options: { chain: 'sol' }, sipLayers: ['attestation'] });
+// per-record capabilities (perRecord: true in the plan) also need expectedRecords, the ceiling the reservation covers
+alexandria.close(); // releases the session lock
 ```
 
 Commands: `/alexandria` (plan → execute → receipt in one pass). House commands land per Forge proof-pass (see `SUB-SYSTEMS.md` § Daily-5).

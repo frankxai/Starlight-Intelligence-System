@@ -22,7 +22,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { Library } from './catalog.js';
-import { buildReceipt, ReceiptLedger } from './receipts.js';
+import { buildReceipt, ReceiptLedger, SessionLock } from './receipts.js';
 import type { AlexandriaCall, Budget, CallResult, FindHit, ProviderKind, Receipt, Transport } from './types.js';
 
 export type AlexandriaErrorCode =
@@ -33,10 +33,11 @@ export type AlexandriaErrorCode =
   | 'unbounded_records'
   | 'over_budget'
   | 'no_transport'
-  | 'connector_not_executable';
+  | 'connector_not_executable'
+  | 'uncertain_outcome';
 
 export class AlexandriaError extends Error {
-  constructor(readonly code: AlexandriaErrorCode, message: string, readonly hint: string) {
+  constructor(readonly code: AlexandriaErrorCode, message: string, readonly hint: string, readonly requestId?: string) {
     super(message);
   }
 }
@@ -76,6 +77,8 @@ export interface AlexandriaOptions {
   /** Budget session. Defaults to a fresh id, so a new process starts with a fresh allowance; pass the old id to resume one. */
   sessionId?: string;
   ledger?: ReceiptLedger;
+  /** Hold an exclusive lock on the session beside the ledger (default true when a ledger is given), so two processes cannot reserve against the same credits. */
+  lock?: boolean;
   now?: () => string;
 }
 
@@ -84,6 +87,7 @@ export class Alexandria {
   readonly budget: Budget;
   private readonly transports = new Map<ProviderKind, Transport>();
   private readonly ledger?: ReceiptLedger;
+  private readonly lock?: SessionLock;
   private readonly now?: () => string;
 
   constructor(opts: AlexandriaOptions) {
@@ -92,10 +96,19 @@ export class Alexandria {
     }
     this.library = opts.library;
     const sessionId = opts.sessionId ?? randomUUID();
+    if (opts.ledger && (opts.lock ?? true)) {
+      this.lock = new SessionLock(opts.ledger.path, sessionId);
+      this.lock.acquire();
+    }
     this.budget = { sessionId, maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent(sessionId) : 0 };
     for (const t of opts.transports) this.transports.set(t.kind, t);
     this.ledger = opts.ledger;
     this.now = opts.now;
+  }
+
+  /** Releases the session lock. Call when the process is done with the session. */
+  close(): void {
+    this.lock?.release();
   }
 
   plan(need: string, limit = 5): Plan {
@@ -162,14 +175,21 @@ export class Alexandria {
     // Reserve synchronously: no await sits between the gate and the reservation, so two
     // concurrent calls cannot both be admitted against the same remaining credits.
     this.budget.spent += price;
-    const call: AlexandriaCall = { provider: hit.provider.id, capability: hit.capability.capability, options };
-    if (req.requestId) call.requestId = req.requestId;
+    // The idempotency key is minted here, before the transport, so it survives a transport
+    // failure: the caller gets it back and retries with the same id instead of paying twice.
+    const requestId = req.requestId ?? randomUUID();
+    const call: AlexandriaCall = { provider: hit.provider.id, capability: hit.capability.capability, options, requestId };
     let result: CallResult;
     try {
       [result] = await transport.execute([call]);
     } catch (err) {
       this.budget.spent -= price;
-      throw err;
+      const message = err instanceof Error ? err.message : String(err);
+      const failed: CallResult = { provider: hit.provider.id, capability: hit.capability.capability, records: [], creditsCost: 0, observedAt: this.now ? this.now() : new Date().toISOString(), requestId, error: { code: 'transport_failure', message } };
+      const receiptInput: Parameters<typeof buildReceipt>[0] = { result: failed, provider: hit.provider, options, sessionId: this.budget.sessionId, reserved: price, sipLayers: [] };
+      if (this.now) receiptInput.now = this.now;
+      this.ledger?.append(buildReceipt(receiptInput));
+      throw new AlexandriaError('uncertain_outcome', `${hit.capability.id}: transport failed after the request may have reached the provider (${message})`, `The provider may have billed this call. Retry with requestId ${requestId} so the provider treats it as the same request; the id is on the receipt in the ledger.`, requestId);
     }
     // Reconcile: a failed call is not billed; a successful one is billed at what the provider charged.
     const actual = result.error ? 0 : result.creditsCost;

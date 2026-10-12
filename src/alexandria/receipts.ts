@@ -17,7 +17,7 @@
  */
 
 import { createHash, randomUUID } from 'node:crypto';
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type { CallResult, Provider, Receipt } from './types.js';
 
@@ -72,6 +72,7 @@ export function buildReceipt({ result, provider, options, sessionId, reserved, s
   const receipt: Receipt = {
     id: `rcpt_${randomUUID()}`,
     issuedAt: now ? now() : new Date().toISOString(),
+    observedAt: result.observedAt,
     sessionId,
     provider: result.provider,
     capability: result.capability,
@@ -105,7 +106,30 @@ export class ReceiptLedger {
 
   append(receipt: Receipt): void {
     mkdirSync(dirname(this.path), { recursive: true });
+    this.quarantinePartialTail();
     appendFileSync(this.path, JSON.stringify(receipt) + '\n', 'utf8');
+  }
+
+  /** Where a cut-off final line is moved before the next append. */
+  get quarantinePath(): string {
+    return `${this.path}.quarantine`;
+  }
+
+  /**
+   * A write that was cut off leaves bytes after the last newline. Appending to them would
+   * glue a valid receipt onto the fragment and, one append later, turn the fragment into
+   * mid-file corruption. The fragment is moved to the quarantine file (never deleted) and
+   * the ledger is truncated back to its last complete line.
+   */
+  quarantinePartialTail(): boolean {
+    if (!existsSync(this.path)) return false;
+    const content = readFileSync(this.path, 'utf8');
+    if (content.length === 0 || content.endsWith('\n')) return false;
+    const cut = content.lastIndexOf('\n') + 1;
+    const fragment = content.slice(cut);
+    appendFileSync(this.quarantinePath, `${new Date().toISOString()}\t${fragment}\n`, 'utf8');
+    writeFileSync(this.path, content.slice(0, cut), 'utf8');
+    return true;
   }
 
   /**
@@ -139,4 +163,54 @@ export class ReceiptLedger {
       .filter((r) => !r.error && (sessionId === undefined || r.sessionId === sessionId))
       .reduce((sum, r) => sum + r.creditsCost, 0);
   }
+}
+
+/**
+ * Exclusive lock on a budget session. Two processes resuming the same session would each
+ * reserve against their own in-memory copy of the spend, so a resumed session is held by
+ * exactly one live process. The lock is a file beside the ledger holding the owner's pid;
+ * a lock whose pid is no longer alive is stale and is taken over. Re-entrant within one process.
+ */
+export class SessionLock {
+  readonly path: string;
+  private held = false;
+
+  constructor(ledgerPath: string, readonly sessionId: string) {
+    const safe = sessionId.replace(/[^A-Za-z0-9_.-]/g, '_');
+    this.path = `${ledgerPath}.${safe}.lock`;
+  }
+
+  acquire(): void {
+    if (this.held) return;
+    mkdirSync(dirname(this.path), { recursive: true });
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const fd = openSync(this.path, 'wx');
+        writeFileSync(fd, String(process.pid), 'utf8');
+        closeSync(fd);
+        this.held = true;
+        return;
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code !== 'EEXIST') throw err;
+        const owner = Number(readFileSync(this.path, 'utf8').trim());
+        if (owner === process.pid) { this.held = true; return; }
+        if (isAlive(owner)) throw new Error(`Budget session ${this.sessionId} is held by process ${owner} (${this.path}); resume it from that process or choose another session`);
+        try { unlinkSync(this.path); } catch { /* lost the race; retry once */ }
+      }
+    }
+    throw new Error(`Could not acquire the lock for budget session ${this.sessionId} (${this.path})`);
+  }
+
+  release(): void {
+    if (!this.held) return;
+    this.held = false;
+    try {
+      if (Number(readFileSync(this.path, 'utf8').trim()) === process.pid) unlinkSync(this.path);
+    } catch { /* already gone */ }
+  }
+}
+
+function isAlive(pid: number): boolean {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try { process.kill(pid, 0); return true; } catch (err) { return (err as NodeJS.ErrnoException).code === 'EPERM'; }
 }
