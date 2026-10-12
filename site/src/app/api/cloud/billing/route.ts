@@ -6,12 +6,14 @@ export const runtime = "nodejs";
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as {
-      tier?: "pro" | "enterprise";
+      tier?: "pro" | "team" | "enterprise";
       annualBilling?: boolean;
       customerEmail?: string;
+      merchant?: "polar" | "stripe";
     };
 
-    const tier = body.tier === "enterprise" ? "enterprise" : "pro";
+    const tier =
+      body.tier === "enterprise" ? "enterprise" : body.tier === "team" ? "team" : "pro";
     const annualBilling = !!body.annualBilling;
 
     const billingService = new StripeBillingService();
@@ -19,6 +21,7 @@ export async function POST(request: Request) {
       tier,
       annualBilling,
       customerEmail: body.customerEmail,
+      merchant: body.merchant,
       successUrl: "https://starlightintelligence.org/cloud?session=success",
       cancelUrl: "https://starlightintelligence.org/cloud?session=cancelled",
     });

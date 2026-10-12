@@ -104,6 +104,36 @@ export interface StripeWebhookEvent {
   };
 }
 
+export interface PolarBillingConfig {
+  accessToken?: string;
+  webhookSecret?: string;
+  appBaseUrl?: string;
+}
+
+export interface PolarWebhookEvent {
+  type: string;
+  timestamp?: string;
+  data: {
+    id?: string;
+    customer_id?: string;
+    customer?: {
+      id?: string;
+      email?: string;
+      name?: string;
+    };
+    metadata?: Record<string, any>;
+    product?: {
+      id?: string;
+      name?: string;
+    };
+    subscription_tier?: string;
+    status?: string;
+    amount?: number;
+    currency?: string;
+    [key: string]: any;
+  };
+}
+
 export interface CloudLicenseToken {
   licenseId: string;
   accountId: string;

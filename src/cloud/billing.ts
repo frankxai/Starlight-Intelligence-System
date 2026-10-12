@@ -11,6 +11,8 @@ import { createHmac, randomBytes } from "node:crypto";
 import type {
   CloudAccountTier,
   CloudLicenseToken,
+  PolarBillingConfig,
+  PolarWebhookEvent,
   StripeCheckoutRequest,
   StripeCheckoutResponse,
   StripeWebhookEvent,
@@ -112,8 +114,10 @@ export class StripeBillingService {
       case "checkout.session.completed": {
         const session = event.data.object;
         const accountId = session.client_reference_id || `acc_${randomBytes(8).toString("hex")}`;
-        const tier: CloudAccountTier = session.metadata?.tier === "enterprise" ? "enterprise" : "pro";
-        const license = this.issueLicenseToken(accountId, tier);
+        const tierMeta = session.metadata?.tier;
+        const tier: CloudAccountTier =
+          tierMeta === "enterprise" ? "enterprise" : tierMeta === "team" ? "team" : "pro";
+        const license = this.issueLicenseToken(accountId, tier, 30, "stripe");
         return { action: "license_granted", license };
       }
       case "customer.subscription.deleted": {
@@ -194,3 +198,145 @@ export class StripeBillingService {
     return expiresAt > Date.now();
   }
 }
+
+export class PolarBillingService {
+  private config: PolarBillingConfig;
+
+  constructor(config: PolarBillingConfig = {}) {
+    this.config = {
+      accessToken: config.accessToken || process.env.POLAR_ACCESS_TOKEN,
+      webhookSecret: config.webhookSecret || process.env.POLAR_WEBHOOK_SECRET || "whsec_test_polar_secret",
+      appBaseUrl: config.appBaseUrl || "https://starlightintelligence.org",
+    };
+  }
+
+  /**
+   * Verifies Polar.sh Webhook signature using Standard Webhooks format.
+   * Standard Webhooks header format:
+   * webhook-id: <unique-id>
+   * webhook-timestamp: <timestamp-seconds>
+   * webhook-signature: v1,<base64-signature> (or space-delimited list of signatures)
+   */
+  public verifyWebhookSignature(
+    rawBody: string,
+    headers: {
+      webhookId?: string;
+      webhookTimestamp?: string;
+      webhookSignature?: string;
+      polarSignature?: string;
+    },
+    toleranceSeconds = 300
+  ): boolean {
+    const webhookSecret = this.config.webhookSecret;
+    if (!webhookSecret) return false;
+
+    // Direct Polar signature fallback
+    if (headers.polarSignature && !headers.webhookSignature) {
+      const computed = createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
+      return computed === headers.polarSignature;
+    }
+
+    const id = headers.webhookId;
+    const timestamp = headers.webhookTimestamp;
+    const signature = headers.webhookSignature;
+
+    if (!id || !timestamp || !signature) {
+      return false;
+    }
+
+    // Check timestamp tolerance
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const eventTime = parseInt(timestamp, 10);
+    if (isNaN(eventTime) || Math.abs(nowSeconds - eventTime) > toleranceSeconds) {
+      return false;
+    }
+
+    // Standard Webhook signed payload: <id>.<timestamp>.<rawBody>
+    const signedPayload = `${id}.${timestamp}.${rawBody}`;
+
+    // Clean secret if prefixed with whsec_
+    const secretKey = webhookSecret.startsWith("whsec_")
+      ? Buffer.from(webhookSecret.slice(6), "base64")
+      : Buffer.from(webhookSecret);
+
+    const expectedHmacBase64 = createHmac("sha256", secretKey)
+      .update(signedPayload)
+      .digest("base64");
+
+    const expectedHmacHex = createHmac("sha256", secretKey)
+      .update(signedPayload)
+      .digest("hex");
+
+    // signature header can contain multiple signatures: "v1,sig1 v1,sig2"
+    const passedSignatures = signature.split(" ").map((s) => s.trim());
+
+    for (const sig of passedSignatures) {
+      const value = sig.startsWith("v1,") ? sig.slice(3) : sig;
+      if (value === expectedHmacBase64 || value === expectedHmacHex) {
+        return true;
+      }
+    }
+
+    // Also support fallback with raw string secret if base64 decoding was used above
+    const rawExpectedBase64 = createHmac("sha256", webhookSecret)
+      .update(signedPayload)
+      .digest("base64");
+    const rawExpectedHex = createHmac("sha256", webhookSecret)
+      .update(signedPayload)
+      .digest("hex");
+
+    for (const sig of passedSignatures) {
+      const value = sig.startsWith("v1,") ? sig.slice(3) : sig;
+      if (value === rawExpectedBase64 || value === rawExpectedHex) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Parses and processes a verified Polar.sh webhook event.
+   */
+  public processWebhookEvent(event: PolarWebhookEvent): { action: string; license?: CloudLicenseToken } {
+    switch (event.type) {
+      case "order.created":
+      case "subscription.created":
+      case "subscription.active":
+      case "subscription.updated": {
+        const data = event.data || {};
+        const accountId =
+          data.metadata?.accountId ||
+          data.customer?.email ||
+          data.customer_id ||
+          data.customer?.id ||
+          `acc_polar_${randomBytes(6).toString("hex")}`;
+
+        const tierMeta = (
+          (data.metadata?.tier as string) ||
+          data.subscription_tier ||
+          data.product?.name ||
+          ""
+        ).toLowerCase();
+
+        let tier: CloudAccountTier = "pro";
+        if (tierMeta.includes("enterprise")) {
+          tier = "enterprise";
+        } else if (tierMeta.includes("team")) {
+          tier = "team";
+        }
+
+        const stripeService = new StripeBillingService({ webhookSecret: this.config.webhookSecret });
+        const license = stripeService.issueLicenseToken(accountId, tier, 30, "polar");
+        return { action: "license_granted", license };
+      }
+      case "subscription.canceled":
+      case "subscription.revoked": {
+        return { action: "license_revoked" };
+      }
+      default:
+        return { action: "ignored" };
+    }
+  }
+}
+
