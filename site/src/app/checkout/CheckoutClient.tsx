@@ -24,13 +24,16 @@ import type { CloudLicenseToken } from "../../../../../src/cloud/types";
 export function CheckoutClient() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id") || "cs_starlight_demo";
-  const tierParam = (searchParams.get("tier") || "pro") as "pro" | "enterprise";
+  const tierParam = (searchParams.get("tier") || "pro") as "pro" | "team" | "enterprise";
   const cadenceParam = searchParams.get("cadence") || "monthly";
+  const merchantParam = searchParams.get("merchant") as "polar" | "stripe" | null;
 
   const isAnnual = cadenceParam === "annual";
+  const isTeam = tierParam === "team";
   const isEnterprise = tierParam === "enterprise";
+  const resolvedMerchant = merchantParam || (isEnterprise ? "stripe" : "polar");
 
-  const basePrice = isEnterprise ? 199 : 29;
+  const basePrice = isEnterprise ? 199 : isTeam ? 99 : 29;
   const annualTotal = Math.round(basePrice * 12 * 0.8);
   const amountDue = isAnnual ? annualTotal : basePrice;
 
@@ -68,6 +71,7 @@ export function CheckoutClient() {
           tier: tierParam,
           accountId,
           customerEmail: email,
+          merchant: resolvedMerchant,
         }),
       });
 
@@ -242,12 +246,17 @@ export function CheckoutClient() {
                 <div>
                   <span className="font-mono text-[10px] uppercase tracking-wider text-cyan-300">Order Summary</span>
                   <h3 className="mt-1 text-xl font-bold text-white">
-                    {isEnterprise ? "Enterprise Mesh" : "Pro Cloud"}
+                    {isEnterprise ? "Enterprise Mesh" : isTeam ? "Team Studio" : "Pro Cloud"}
                   </h3>
                 </div>
-                <span className="rounded bg-cyan-400/10 px-2.5 py-1 font-mono text-xs font-semibold text-cyan-300">
-                  {isAnnual ? "Annual (-20%)" : "Monthly"}
-                </span>
+                <div className="flex flex-col items-end gap-1">
+                  <span className="rounded bg-cyan-400/10 px-2.5 py-1 font-mono text-xs font-semibold text-cyan-300">
+                    {isAnnual ? "Annual (-20%)" : "Monthly"}
+                  </span>
+                  <span className="rounded bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] text-slate-300 uppercase">
+                    MoR: {resolvedMerchant}
+                  </span>
+                </div>
               </div>
 
               {/* Price Details */}
@@ -280,23 +289,37 @@ export function CheckoutClient() {
                 </div>
               </div>
 
-              {/* Value & Guarantees */}
-              <div className="mt-6 space-y-2.5 rounded-xl border border-white/[0.06] bg-[#08080f] p-4 text-xs text-slate-300">
+              {/* Free Verified Pack Inclusions */}
+              <div className="mt-5 rounded-xl border border-emerald-500/20 bg-emerald-950/20 p-3.5 text-xs">
+                <div className="flex items-center gap-1.5 font-mono text-[11px] font-semibold text-emerald-300">
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
+                  <span>Free Verified Inclusions (Included with Sub)</span>
+                </div>
+                <ul className="mt-2 space-y-1 font-mono text-[11px] text-slate-300">
+                  <li>• safety/secret-detector (Local PII scrubber)</li>
+                  <li>• orchestration/multi-agent-coordination (Swarm router)</li>
+                  <li>• memory/vault-management (SQLite FTS5 hybrid engine)</li>
+                </ul>
+              </div>
+
+              {/* Pro Superpowers & Guarantees */}
+              <div className="mt-4 space-y-2.5 rounded-xl border border-white/[0.06] bg-[#08080f] p-4 text-xs text-slate-300">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-cyan-300">Included Superpowers</span>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
-                  <span>Client-side zero-knowledge encrypted backups (AES-256-GCM)</span>
+                  <span><strong>Edge Semantic Mirror:</strong> Sub-10ms lookup via Cloudflare D1 shadow replica</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
-                  <span>Sub-10ms edge memory lookup via Cloudflare D1 shadow replica</span>
+                  <span><strong>Universal Twin Everywhere:</strong> Real-time reality.md sync across Cursor, Claude Code, Codex, Antigravity</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
-                  <span>Frontier LLM credit pool via Vercel AI SDK or BYOK freedom</span>
+                  <span><strong>Queen Swarm Autopilot:</strong> Adaptive memory lanes & automated git rollback checkpoints</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
-                  <span>Local memory vaults remain sovereign ground truth forever</span>
+                  <span><strong>Smart Semantic Cache:</strong> Up to 40%–60% token savings across 10 developer harnesses</span>
                 </div>
               </div>
             </div>

@@ -7,7 +7,8 @@
  * Built on SIP — Starlight Intelligence Protocol v1.1.1
  */
 
-export type CloudAccountTier = "community" | "pro" | "enterprise";
+export type CloudAccountTier = "community" | "pro" | "team" | "enterprise";
+export type MerchantOfRecord = "polar" | "stripe";
 
 export type CloudSyncState = "idle" | "syncing" | "synced" | "degraded" | "error";
 
@@ -20,6 +21,7 @@ export interface CloudAccountProfile {
   allocatedAgents: number;
   monthlyVectorQueryLimit: number;
   usedVectorQueries: number;
+  merchant?: MerchantOfRecord;
 }
 
 export interface D1SyncRecord {
@@ -76,11 +78,12 @@ export interface VectorizeQueryResult {
 }
 
 export interface StripeCheckoutRequest {
-  tier: "pro" | "enterprise";
+  tier: "pro" | "team" | "enterprise";
   successUrl: string;
   cancelUrl: string;
   customerEmail?: string;
   annualBilling?: boolean;
+  merchant?: MerchantOfRecord;
 }
 
 export interface StripeCheckoutResponse {
@@ -89,6 +92,7 @@ export interface StripeCheckoutResponse {
   tier: CloudAccountTier;
   amountUsd: number;
   billingCadence: "monthly" | "annual";
+  merchant?: MerchantOfRecord;
 }
 
 export interface StripeWebhookEvent {
@@ -108,4 +112,5 @@ export interface CloudLicenseToken {
   expiresAt: string;
   features: string[];
   signature: string;
+  merchant?: MerchantOfRecord;
 }

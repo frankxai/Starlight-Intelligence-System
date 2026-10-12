@@ -24,10 +24,10 @@ import {
   publishSkill,
   auditProgressiveDisclosure,
   SUPPORTED_HARNESS_REGISTRY,
-} from '../src/skills/index.js';
+} from '../dist/skills/index.js';
 import {
   QueenAdaptiveScheduler,
-} from '../src/queen/index.js';
+} from '../dist/queen/index.js';
 
 describe('Universal 10-Harness Sync Engine', () => {
   it('identifies all 10 supported workstation harnesses in the registry', () => {

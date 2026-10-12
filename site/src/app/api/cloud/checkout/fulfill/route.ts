@@ -9,9 +9,10 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as {
       sessionId?: string;
-      tier?: "pro" | "enterprise";
+      tier?: "pro" | "team" | "enterprise";
       accountId?: string;
       customerEmail?: string;
+      merchant?: "polar" | "stripe";
     };
 
     if (!body.sessionId) {
@@ -21,11 +22,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const tier: CloudAccountTier = body.tier === "enterprise" ? "enterprise" : "pro";
+    const tier: CloudAccountTier =
+      body.tier === "enterprise" ? "enterprise" : body.tier === "team" ? "team" : "pro";
     const accountId = body.accountId?.trim() || `acc_${randomBytes(6).toString("hex")}`;
+    const merchant = body.merchant || (tier === "enterprise" ? "stripe" : "polar");
 
     const billingService = new StripeBillingService();
-    const license = billingService.issueLicenseToken(accountId, tier);
+    const license = billingService.issueLicenseToken(accountId, tier, 30, merchant);
 
     return NextResponse.json({
       ok: true,

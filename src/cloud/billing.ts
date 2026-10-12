@@ -35,13 +35,19 @@ export class StripeBillingService {
 
   /**
    * Creates a checkout session for Starlight Managed Cloud.
+   * Defaults to Polar.sh (Developer MoR with automated EU VAT) for Pro & Team,
+   * and Stripe for Enterprise Mesh.
    */
   public async createCheckoutSession(request: StripeCheckoutRequest): Promise<StripeCheckoutResponse> {
     const isAnnual = !!request.annualBilling;
     let baseMonthlyUsd = 29;
-    if (request.tier === "enterprise") {
+    if (request.tier === "team") {
+      baseMonthlyUsd = 99;
+    } else if (request.tier === "enterprise") {
       baseMonthlyUsd = 199;
     }
+
+    const merchant = request.merchant || (request.tier === "enterprise" ? "stripe" : "polar");
 
     // 20% annual discount
     const amountUsd = isAnnual
@@ -49,7 +55,7 @@ export class StripeBillingService {
       : baseMonthlyUsd;
 
     const sessionId = `cs_starlight_${randomBytes(12).toString("hex")}`;
-    const checkoutUrl = `${this.config.appBaseUrl}/checkout?session_id=${sessionId}&tier=${request.tier}&cadence=${isAnnual ? "annual" : "monthly"}`;
+    const checkoutUrl = `${this.config.appBaseUrl}/checkout?session_id=${sessionId}&tier=${request.tier}&cadence=${isAnnual ? "annual" : "monthly"}&merchant=${merchant}`;
 
     return {
       sessionId,
@@ -57,6 +63,7 @@ export class StripeBillingService {
       tier: request.tier,
       amountUsd,
       billingCadence: isAnnual ? "annual" : "monthly",
+      merchant,
     };
   }
 
@@ -119,17 +126,38 @@ export class StripeBillingService {
 
   /**
    * Mints a cryptographically signed license token for client-side authentication.
+   * Empowers Starlight Pro with edge semantic mirroring, cross-device twin sync,
+   * Queen swarm autopilot, semantic caching, and free verified pack entitlements.
    */
-  public issueLicenseToken(accountId: string, tier: CloudAccountTier, durationDays = 30): CloudLicenseToken {
+  public issueLicenseToken(
+    accountId: string,
+    tier: CloudAccountTier,
+    durationDays = 30,
+    merchant?: "polar" | "stripe"
+  ): CloudLicenseToken {
     const licenseId = `lic_${randomBytes(10).toString("hex")}`;
     const now = new Date();
     const expires = new Date(now.getTime() + durationDays * 24 * 60 * 60 * 1000);
+    const resolvedMerchant = merchant || (tier === "enterprise" ? "stripe" : "polar");
 
     const features = [
       "d1_edge_sync",
       "vectorize_ann_search",
-      tier === "enterprise" ? "unlimited_agents" : "allocated_agents:10",
-      tier === "enterprise" ? "sla_9999" : "community_sla",
+      tier === "enterprise" ? "unlimited_agents" : (tier === "team" ? "allocated_agents:50" : "allocated_agents:10"),
+      tier === "enterprise" ? "sla_9999" : (tier === "team" ? "team_sla" : "community_sla"),
+      // Starlight Pro & Team Superpowers
+      "edge_semantic_mirror",
+      "twin_cloud_sync",
+      "queen_autopilot",
+      "semantic_cache",
+      // Verified Pack Inclusions (Free Value)
+      "pack:safety/secret-detector",
+      "pack:orchestration/multi-agent-coordination",
+      "pack:memory/vault-management",
+      // Tier-specific expansions
+      ...(tier !== "community" ? ["pro_packs_access", "marketplace_publishing_unlocked"] : []),
+      ...(tier === "team" || tier === "enterprise" ? ["shared_team_vaults", "team_rbac"] : []),
+      ...(tier === "enterprise" ? ["dedicated_edge_tenant", "fail_closed_sentinel_mesh"] : []),
     ];
 
     const payload = `${licenseId}:${accountId}:${tier}:${now.toISOString()}:${expires.toISOString()}`;
@@ -145,6 +173,7 @@ export class StripeBillingService {
       expiresAt: expires.toISOString(),
       features,
       signature,
+      merchant: resolvedMerchant,
     };
   }
 

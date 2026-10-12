@@ -14,7 +14,7 @@ import {
   D1SyncManager,
   VectorizeClient,
   StripeBillingService,
-} from "../src/cloud/index.js";
+} from "../dist/cloud/index.js";
 
 describe("Cloud Managed Subsystem & Edge Mirror", () => {
   describe("Cloudflare D1 Edge Replica Sync", () => {
