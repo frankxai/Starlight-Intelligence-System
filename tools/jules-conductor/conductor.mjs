@@ -21,7 +21,7 @@ import os from 'node:os';
 import { engineerJulesPrompt } from './prompt-engineer.mjs';
 import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
-import { capacityAllowsDispatch, claimDaemonLock, matchPullRequest } from './merge-gate.mjs';
+import { capacityAllowsDispatch, claimDaemonLock, julesDraftAction, matchPullRequest } from './merge-gate.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -263,8 +263,15 @@ function recordOrLand(session, config, ledger) {
   // auto-merge. A separate reviewer (Codex, Claude Code, Antigravity or CTO)
   // stamps a PASS at the exact head, and CTO lands it outside this tool.
   log(`[PR OPEN] ${session.repo}#${matched.number} draft=${matched.isDraft === true} awaiting separate-reviewer PASS`);
-  if (matched.isDraft !== true) {
-    log(`[PR NOT DRAFT] ${session.repo}#${matched.number} Jules output must stay a draft until reviewed`);
+  if (julesDraftAction(matched) === 'convert-to-draft') {
+    const undo = runGh(['pr', 'ready', String(matched.number), '--repo', session.repo, '--undo']);
+    if (undo.code === 0) {
+      log(`[PR REDRAFTED] ${session.repo}#${matched.number} Jules output converted back to draft`);
+      appendVault({ action: 'jules_pr_redrafted', sessionId: session.id, repo: session.repo, prNumber: matched.number });
+    } else {
+      session.quarantined = true;
+      log(`[PR REDRAFT FAILED] ${session.repo}#${matched.number} quarantined: ${undo.stderr || undo.stdout}`);
+    }
   }
 }
 

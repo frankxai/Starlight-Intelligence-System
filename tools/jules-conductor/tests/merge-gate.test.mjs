@@ -6,6 +6,7 @@ import {
   classifyChecks,
   classifyRisk,
   decideLand,
+  julesDraftAction,
   reviewCounts,
   matchPullRequest,
 } from '../merge-gate.mjs';
@@ -135,4 +136,11 @@ test('capacity and the process lock fail closed', () => {
   assert.equal(claimDaemonLock({ existingPid: 26176, existingAlive: true }).take, false);
   assert.equal(claimDaemonLock({ existingPid: 26176, existingAlive: false }).take, true);
   assert.equal(claimDaemonLock({}).take, true);
+});
+
+test('a ready Jules pull request is converted back to draft', () => {
+  assert.equal(julesDraftAction({ state: 'OPEN', isDraft: false }), 'convert-to-draft');
+  assert.equal(julesDraftAction({ isDraft: false }), 'convert-to-draft');
+  assert.equal(julesDraftAction({ state: 'OPEN', isDraft: true }), 'none');
+  assert.equal(julesDraftAction({ state: 'MERGED', isDraft: false }), 'none');
 });

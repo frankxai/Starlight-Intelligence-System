@@ -114,6 +114,12 @@ export function claimDaemonLock({ existingPid = null, existingAlive = false } = 
   return { take: true, reason: 'no lock' };
 }
 
+/** Jules output must stay a draft. Returns the corrective action for a matched PR. */
+export function julesDraftAction(pr) {
+  if (!pr || String(pr.state || 'OPEN').toUpperCase() !== 'OPEN') return 'none';
+  return pr.isDraft === true ? 'none' : 'convert-to-draft';
+}
+
 export function decideLand(pr, options = {}) {
   const repo = String(pr?.repo || options.repo || '');
   const number = Number(pr?.number || 0);
