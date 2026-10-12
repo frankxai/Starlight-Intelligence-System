@@ -21,8 +21,7 @@ import os from 'node:os';
 import { engineerJulesPrompt } from './prompt-engineer.mjs';
 import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
-import { capacityAllowsDispatch, claimDaemonLock, decideLand, matchPullRequest } from './merge-gate.mjs';
-import { sweepPullRequests } from './ceo-pr-review.mjs';
+import { capacityAllowsDispatch, claimDaemonLock, matchPullRequest } from './merge-gate.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -260,75 +259,13 @@ function recordOrLand(session, config, ledger) {
     return;
   }
   session.pullRequest = matched.url || matched.number;
-  if (!config.automation?.autoMerge || session.accepted !== true) {
-    log(`[PR OPEN] ${session.repo}#${matched.number} awaiting review`);
-    return;
+  // Jules opens drafts only. The conductor never merges and never enables
+  // auto-merge. A separate reviewer (Codex, Claude Code, Antigravity or CTO)
+  // stamps a PASS at the exact head, and CTO lands it outside this tool.
+  log(`[PR OPEN] ${session.repo}#${matched.number} draft=${matched.isDraft === true} awaiting separate-reviewer PASS`);
+  if (matched.isDraft !== true) {
+    log(`[PR NOT DRAFT] ${session.repo}#${matched.number} Jules output must stay a draft until reviewed`);
   }
-  const view = runGh([
-    'pr', 'view', String(matched.number), '--repo', session.repo,
-    '--json', 'number,state,isDraft,mergeable,mergeStateStatus,baseRefName,headRefOid,statusCheckRollup,title,url',
-  ]);
-  if (view.code !== 0) {
-    log(`[PR VIEW] ${session.repo}#${matched.number}: ${view.stderr || view.stdout}`);
-    return;
-  }
-  let full;
-  try {
-    full = JSON.parse(view.stdout);
-  } catch (err) {
-    log(`[PR VIEW] ${session.repo}#${matched.number} parse error: ${err.message}`);
-    return;
-  }
-  full.repo = session.repo;
-  const decision = decideLand(full, {
-    autoMerge: true,
-    owned: session.owned === true,
-    accepted: session.accepted === true,
-    defaultBranch: profile.targetBranch || 'main',
-    holds: config.holds || [],
-    protectedRepos: config.automation?.protectedRepos || [],
-    repo: session.repo,
-  });
-  log(`[LAND] ${session.repo}#${matched.number} ${decision.decision} ${decision.reason}`);
-  if (decision.decision === 'merged') {
-    session.merged = true;
-    session.mergedPr = matched.number;
-    session.mergedSha = decision.reason;
-    return;
-  }
-  if (decision.decision !== 'merge') return;
-
-  const merge = runGh([
-    'pr', 'merge', String(matched.number), '--repo', session.repo,
-    '--squash', '--match-head-commit', decision.reason,
-  ]);
-  if (merge.code !== 0) {
-    log(`[LAND FAILED] ${session.repo}#${matched.number}: ${merge.stderr || merge.stdout}`);
-    return;
-  }
-  const confirmed = runGh(['pr', 'view', String(matched.number), '--repo', session.repo, '--json', 'state']);
-  let state = '';
-  try {
-    state = JSON.parse(confirmed.stdout || '{}').state || '';
-  } catch {
-    state = '';
-  }
-  if (String(state).toUpperCase() !== 'MERGED') {
-    log(`[LAND UNCONFIRMED] ${session.repo}#${matched.number}`);
-    return;
-  }
-  session.merged = true;
-  session.mergedPr = matched.number;
-  session.mergedSha = decision.reason;
-  ledger.metrics.merged = (ledger.metrics.merged || 0) + 1;
-  log(`[MERGED] ${session.repo}#${matched.number} ${decision.reason}`);
-  appendVault({
-    action: 'gated_pr_merged',
-    sessionId: session.id,
-    repo: session.repo,
-    prNumber: matched.number,
-    sha: decision.reason,
-  });
 }
 
 // ── Core Operations ─────────────────────────────────────────────
@@ -509,13 +446,6 @@ export async function tick() {
     saveJSON(BACKLOG_PATH, backlog);
   }
 
-  // 4. Autonomous CEO PR Review & Estate Merge Sweep
-  try {
-    sweepPullRequests();
-  } catch (err) {
-    log(`CEO PR sweep notice: ${err.message}`);
-  }
-
   // Memory & state hygiene
   pruneLedger(ledger, config.runtime?.maxLedgerActiveEntries || 50);
 
@@ -661,8 +591,8 @@ if (cmd === 'tick') {
   console.log(`Starlight Jules Conductor v2.2
 Commands:
   status                               Show ledger status and RAM
-  tick                                 One scan. Lands nothing unless autoMerge is on and the session was accepted
-  accept <session-id>                  Mark one owned session accepted. Does not merge by itself
+  tick                                 One scan. Records Jules draft PRs. Never merges
+  accept <session-id>                  Mark one owned session accepted. Never merges
   dispatch <repo> "<desc>" [type]      Send one task when disk and RAM are above the floor
   daemon                               One background loop. A second start exits
 `);
