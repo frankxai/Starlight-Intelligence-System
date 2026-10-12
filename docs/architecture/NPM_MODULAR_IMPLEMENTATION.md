@@ -19,6 +19,11 @@ the adapter development update, core/MCP recall changeset and accepted gateway
 privacy patch. Runtime source matches the accepted main revision, including its
 privacy fix and plugin dependency graph. Workspace dependency resolutions, protocol
 schemas, root package and publication workflow are unchanged by release preparation.
+The recall release note was authored and consumed locally by Changesets before
+the initial release commit, so it has no tracked deletion in this PR. Its behavior
+is covered by accepted PR364 and PR366. The development update in commit `72dbb8f`
+changed root `@types/node` to `^24.19.1` and adapter `ai` to `7.0.133`; these were
+already accepted before release preparation.
 The 0.2.0 registry stages remain intact and reserve their version numbers. Fresh
 candidate source review, hosted tarball/installed-consumer evidence, normal protected
 merge and receiving verification are required before publication.
@@ -59,8 +64,10 @@ database, memory router, or vault filesystem.
 | `@starlight-intelligence/ai-sdk` | AI SDK model middleware for generation and streaming | Core; AI SDK 7 peer |
 | `@starlight-intelligence/mcp` | Official MCP SDK v2 server factory and read-only stdio gateway bridge | Core, official MCP server, Zod |
 
-All three candidates are now versioned at 0.2.0 using the initial minor Changeset.
-Changesets 3.0.3 generated their changelogs and consumed that completed Changeset.
+The initial minor-release checkpoint prepared all three packages at 0.2.0.
+Changesets 3.0.3 generated those changelogs and consumed that initial Changeset.
+The current 12 October preparation advances core/AI SDK to 0.2.1 and MCP to 0.2.2,
+as recorded above; the following 0.2.0 measurements retain their original scope.
 The accepted root is 8.5.1, with pnpm as its lockfile authority and a standalone
 legacy sanitizer that does not depend on unpublished core. The read-only publish-plan
 confirms only core, AI SDK and MCP, in dependency order, are unpublished candidates.
