@@ -189,7 +189,7 @@ export class MemoryTransport implements Transport {
       this.calls.push(c);
       const s = this.scripted[`${c.provider}/${c.capability}`];
       if (!s) return { provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, error: { code: 'unscripted', message: 'no scripted result' } };
-      // Mirrors the Firecrawl contract: a scripted success without a charge is an unknown charge, not a free one.
+      // Mirrors the Firecrawl contract: a scripted success with no charge given counts as an unknown charge and keeps its reservation.
       const result: CallResult = { provider: c.provider, capability: c.capability, records: s.records, creditsCost: s.creditsCost ?? 0, observedAt };
       if (s.creditsCost === undefined && !s.error) result.chargeUnknown = true;
       if (c.requestId) result.requestId = c.requestId;
