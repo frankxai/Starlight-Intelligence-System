@@ -28,7 +28,9 @@
 
 | Capability | State | Proof |
 |---|---|---|
-| 6 JSONL semantic vaults | ✅ | `memory/vaults/`, `src/vault-memory.ts` |
+| 6 JSONL semantic vaults + Dynamic Infinite Mesh | ✅ | `memory/vaults/`, `src/vault-memory.ts`, `crates/starlight-invariants/src/vault.rs` |
+| Layer-0 Sovereign Kernel (`starlight-invariants`) | ✅ | `crates/starlight-invariants/` (Tree-sitter AST invariants, WFG cycles, worktree leases, vMCP) |
+| Virtual MCP (vMCP) Context Compression Engine | ✅ | `crates/starlight-invariants/src/vmcp.rs`, `tests/invariant_tests.rs` |
 | SQLite + FTS5 hybrid retrieval | ✅ | `src/retrieval.ts`, `test/core-regressions.test.ts` |
 | Retrieval recall@k baseline (keyword/bm25) | ✅ | `test/retrieval-eval.test.ts`, `npm run eval:retrieval` |
 | First-run vault seeding (`init --vaults` + MCP auto-seed) | ✅ | `src/seed.ts`, `test/smoke-quickstart.test.ts` |
@@ -41,6 +43,8 @@
 | Agents (count derived from `agents/*.md`) | ✅ | `agents/AGENT_REGISTRY.md`, `test/v76.test.ts` |
 | Auto-activating skills (count derived from `skill-rules.json`) | ✅ | `skills/skill-rules.json`, `test/v77-skill-rules.test.ts`, `test/v78-skill-registry.test.ts` |
 | Slash commands | ✅ | `.claude/commands/`, `commands/` |
+| Fleet Operations Cockpit (Visualizer) | ✅ | `agentic-ops/docs/starlight-fleet-cockpit.html` |
+| Langfuse Cloud (EU) Observability & Experiments | ✅ | `src/telemetry/`, `test/langfuse-telemetry.test.ts`, `tools/run-experiments.ts` |
 
 ## Substrate (SIP)
 

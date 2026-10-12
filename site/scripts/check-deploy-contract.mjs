@@ -38,6 +38,12 @@ for (const relativePath of [
   expect(existsSync(resolve(repoRoot, relativePath)), `missing deploy source: ${relativePath}`);
 }
 
+const vercelConfig = JSON.parse(read("site/vercel.json"));
+expect(
+  vercelConfig.buildCommand === "pnpm run build",
+  "Vercel buildCommand must invoke the site build directly",
+);
+
 const deploymentSource = read("site/src/lib/deployment.ts");
 for (const parameter of ["repository-url", "root-directory", "project-name", "repository-name"]) {
   expect(deploymentSource.includes(parameter), `deployment URL is missing ${parameter}`);

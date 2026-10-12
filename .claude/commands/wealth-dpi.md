@@ -2,7 +2,7 @@
 name: wealth-dpi
 description: Disruptive Passive Income ledger + thesis engine. Tracks DPI sources, compounding curves, diversification, and gate-to-gate progression. Reference implementation for Wealth IS vertical.
 allowed-tools: Read, Write, WebSearch, mcp__notion
-argument-hint: <command: status | add <source> | thesis <hypothesis> | project <horizon>>
+argument-hint: "<command: status | add <source> | thesis <hypothesis> | project <horizon>>"
 ---
 
 # /wealth-dpi

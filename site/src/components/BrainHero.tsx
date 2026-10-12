@@ -188,9 +188,9 @@ export function BrainHero({ className = "", labels = false }: Props): ReactEleme
               fontSize={9}
               fontFamily="ui-monospace, SFMono-Regular, monospace"
               textAnchor={anchor}
-              letterSpacing="0.08em"
+              letterSpacing="0.04em"
             >
-              {p.name.toUpperCase()}
+              {p.name}
             </text>
           );
         })}

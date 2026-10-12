@@ -39,7 +39,23 @@ function Invoke-StarlightAoFallback {
 }
 
 function arc {
-    param([string]$Project)
+    param(
+        [Parameter(Position=0)] [string]$Project,
+        [Parameter(Position=1, ValueFromRemainingArguments=$true)] $RemainingArgs
+    )
+
+    $cockpitSubcommands = @(
+        'snapshot', 'rehydrate', 'status', 'install', 'uninstall', 'doctor', 'gc',
+        'save', 'load', 'workspaces', 'rm-workspace', 'undo', 'history', 'tui', 'events',
+        'help', 'version'
+    )
+    if ($cockpitSubcommands -contains $Project) {
+        $cockpitScript = Join-Path $PSScriptRoot '..\..\cockpit\scripts\arc-cockpit.ps1'
+        if (Test-Path $cockpitScript) {
+            . $cockpitScript
+            return (arc $Project @RemainingArgs)
+        }
+    }
 
     if (-not (Test-StarlightZellij)) {
         Invoke-StarlightAoFallback -Project $Project -Start

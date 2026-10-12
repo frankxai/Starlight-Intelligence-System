@@ -31,6 +31,7 @@
 
 ## Changelog
 
+- `v0.1.1` · `2026-07-16` · Ingested Alina Pak 4-step reel (drop → extract → direct → automate). Mapped onto estate surfaces. Playbook: `playbooks/2026-07-16-operationalize-drop-extract-direct-automate.md`. Raw: `_inbox/document/2026-07-16/`. Intake: `memory/intake/intake-2026-07-16-alinapak-second-brain-4-steps.md`.
 - `v0.1` · `2026-04-26` · Spawned as v7.5.1 OpenClaw CRITICAL-1 remediation. Agent + commands shipped in v7.4-beta; this directory closes the substrate-canon gap.
 
 ### Reference lineage SHAs

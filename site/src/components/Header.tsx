@@ -49,7 +49,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
         <Link
           href="/"
           aria-label="Starlight Intelligence — home"
-          className="flex items-center gap-2.5 transition-micro hover:opacity-80"
+          className="flex min-h-11 items-center gap-2.5 transition-micro hover:opacity-80"
         >
           <StarlightMark size={19} />
           <span className="text-[15px] font-semibold tracking-tight text-white">Starlight</span>
@@ -95,7 +95,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
                   className={`absolute top-full z-50 w-[22.5rem] pt-2 transition-micro ${
                     alignPanelRight ? "right-0" : "left-0"
                   } ${
-                    open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+                    open ? "visible pointer-events-auto opacity-100" : "invisible pointer-events-none opacity-0"
                   }`}
                 >
                   <div className="overflow-hidden rounded-xl border border-white/[0.10] bg-[#0c0c12]/95 shadow-2xl backdrop-blur-xl">
@@ -129,7 +129,7 @@ function HeaderContent({ pathname }: { pathname: string }) {
                             >
                               {it.label}
                             </span>
-                            <span className="text-[11px] leading-snug text-slate-500">{it.desc}</span>
+                            <span className="text-[11px] leading-snug text-slate-400">{it.desc}</span>
                           </Link>
                         );
                       })}

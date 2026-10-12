@@ -2,7 +2,7 @@
 name: spawn-domain-stack
 description: Spawn a domain-specific intelligence sub-stack for a sovereign person. Analyzes their Genius Profile + Freedom Path KEEP bucket + named domain expertise, proposes 4-7 functional sub-systems with agent/skill/command structure, then scaffolds the full vertical scaffold under verticals/<vertical-slug>/. Generalizes the pattern proven by the People Intelligence reference vertical. For sovereigns who want to productize their genius into a vertical with sub-system architecture.
 allowed-tools: Read, Write, Grep, Glob, Bash
-argument-hint: <person-name> <domain-name> [optional: --sub-systems "name1,name2,name3,..."] [optional: --auto-scaffold] [optional: --public-corpus]
+argument-hint: "<person-name> <domain-name> [optional: --sub-systems \"name1,name2,name3,...\"] [optional: --auto-scaffold] [optional: --public-corpus]"
 ---
 
 # /spawn-domain-stack

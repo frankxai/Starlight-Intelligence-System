@@ -27,6 +27,17 @@ $RepoRoot = Split-Path -Parent $PSScriptRoot
 Push-Location $RepoRoot
 
 try {
+    # Second Brain distilled layer — nightly reflection input (additive; consumed by
+    # dreaming-run.ts Step 2b). Cross-checks Frank's _meta/patterns/decisions/people
+    # notes for contradictions + promotable wisdom. Comment out to disable.
+    $env:STARLIGHT_SECONDBRAIN_DIRS = @(
+        'C:\Users\frank\OneDrive\Dokumente\Vault\Second Brain\_meta',
+        'C:\Users\frank\OneDrive\Dokumente\Vault\Second Brain\_meta\psychometrics',
+        'C:\Users\frank\OneDrive\Dokumente\Vault\Second Brain\patterns',
+        'C:\Users\frank\OneDrive\Dokumente\Vault\Second Brain\decisions',
+        'C:\Users\frank\OneDrive\Dokumente\Vault\Second Brain\people'
+    ) -join ','
+
     # tsx is a devDependency in this repo's package.json.
     # The --import flag wires it as a Node loader for TS extensions.
     & node --import tsx scripts/dreaming-run.ts

@@ -1,0 +1,268 @@
+{
+  "format": "starlight.capability_catalog.v1",
+  "observed_at": "2026-10-04",
+  "scope": "Public source and connection references. Source availability does not establish deployment, account access, or operational authority.",
+  "capabilities": [
+    {
+      "id": "portfolio",
+      "name": "Portfolio and accountable work",
+      "brand": "starlight",
+      "category": "operate",
+      "state": "setup-required",
+      "description": "Inspect ventures, track work and decisions, and preserve evidence in a tenant workspace.",
+      "source": "https://github.com/frankxai/Starlight-Intelligence-System/tree/9a139db9159bb592c84a65540251c40a9077c8a2/plugins/starlight-intelligence",
+      "surface": "https://starlightintelligence.ai/platform",
+      "tools": [
+        "get_portfolio_snapshot",
+        "create_work_item",
+        "record_decision",
+        "register_evidence"
+      ],
+      "requires": [
+        "Deploy the private MCP Worker",
+        "Verify Access identity and tenant storage"
+      ],
+      "verification": "Cloud plugin source inspected. The private /healthz probe returned 404 on 4 October; authenticated calls remain unverified."
+    },
+    {
+      "id": "portable-skills",
+      "name": "Portable Starlight workflows",
+      "brand": "starlight",
+      "category": "build",
+      "state": "source",
+      "description": "Use the four existing skills for portfolio status, execution, decisions, and knowledge retrieval.",
+      "source": "https://github.com/frankxai/Starlight-Intelligence-System/tree/9a139db9159bb592c84a65540251c40a9077c8a2/plugins/starlight-intelligence/skills",
+      "surface": "https://starlightintelligence.org",
+      "tools": [],
+      "requires": [
+        "Install in a supported host",
+        "Connect the workspace MCP for private records"
+      ],
+      "verification": "Four source skills inspected; host installation is a separate check."
+    },
+    {
+      "id": "package-planning",
+      "name": "Department package planning",
+      "brand": "starlight",
+      "category": "build",
+      "state": "public-tools",
+      "description": "Inspect public package truth and compile a deterministic installation plan.",
+      "source": "https://starlightintelligence.ai/developers",
+      "surface": "https://starlightintelligence.ai/mcp",
+      "tools": [
+        "list_department_packages",
+        "get_department_package",
+        "recommend_department",
+        "compile_install_plan"
+      ],
+      "requires": [
+        "Connect the public planning MCP"
+      ],
+      "verification": "Public MCP initialize, discovery of four tools, and list_department_packages passed on 4 October. Host connection and private account operations remain separate."
+    },
+    {
+      "id": "foundry",
+      "name": "Skill and agent foundry",
+      "brand": "starlight",
+      "category": "build",
+      "state": "source",
+      "description": "Compile skills, justified agents, bounded systems, and evidence using the existing Foundry source.",
+      "source": "https://github.com/frankxai/Starlight-Intelligence-System/tree/9a139db9159bb592c84a65540251c40a9077c8a2/plugins/starlight-foundry",
+      "surface": "https://starlightintelligence.org",
+      "tools": [],
+      "requires": [
+        "Install the Foundry package",
+        "Validate the output in its target host"
+      ],
+      "verification": "Foundry package present on inspected main; no hosted worker is implied."
+    },
+    {
+      "id": "learning",
+      "name": "Academy practice",
+      "brand": "starlight",
+      "category": "learn",
+      "state": "public-tools",
+      "description": "Practice teaching methods and challenges while preserving attempts, critique, and transfer.",
+      "source": "https://github.com/frankxai/starlight-academy-plugin/tree/062a857275697ffeda44234831be15b8448e4b46/plugins/starlight-academy",
+      "surface": "https://starlightintelligence.academy/academy/connect",
+      "tools": [
+        "get_academy",
+        "get_teacher",
+        "get_challenge",
+        "get_feedback_guide"
+      ],
+      "requires": [
+        "Connect the Academy MCP",
+        "Verify a practice loop in the host"
+      ],
+      "verification": "Public MCP initialize and discovery of four Academy tools passed on 4 October. A completed practice loop remains unverified; no credential is awarded."
+    },
+    {
+      "id": "creator-studios",
+      "name": "Creator studio skills",
+      "brand": "gencreator",
+      "category": "create",
+      "state": "source",
+      "description": "Compose production workflows from the shared studio skills while keeping the creator's output and distribution separate.",
+      "source": "https://github.com/frankxai/starlight-agent-skills/tree/0dfeaef31cf01b2fdcf17d9f3e4c75921f0f00ee/plugins/starlight-product-studios",
+      "surface": "https://gencreator.ai",
+      "tools": [],
+      "requires": [
+        "Read the selected studio skill",
+        "Resolve the creator's actual source and export target"
+      ],
+      "verification": "Studio package present on inspected main; website availability is not a production-job claim."
+    }
+  ],
+  "workflows": [
+    {
+      "id": "visual-release",
+      "name": "Review a website change",
+      "brands": [
+        "starlight",
+        "gencreator",
+        "arcanea",
+        "frankx"
+      ],
+      "capability_ids": [
+        "portfolio",
+        "creator-studios"
+      ],
+      "stages": [
+        "Resolve the owning repository and current PR",
+        "Build the exact commit in a preview",
+        "Capture required routes on desktop and mobile",
+        "Review checks and release evidence"
+      ],
+      "connections": [
+        "GitHub",
+        "Vercel",
+        "Private artifact store"
+      ],
+      "evidence_fields": [
+        "repository",
+        "branch",
+        "commit_sha",
+        "deployment_id",
+        "deployment_url",
+        "route",
+        "viewport",
+        "captured_at",
+        "assertions"
+      ],
+      "acceptance": "Screenshots, assertions, and deployment identify the same commit. A capture alone does not establish functional success."
+    },
+    {
+      "id": "creator-edition",
+      "name": "Create a finished edition",
+      "brands": [
+        "gencreator",
+        "frankx"
+      ],
+      "capability_ids": [
+        "creator-studios"
+      ],
+      "stages": [
+        "Select the source and the reader",
+        "Assemble the creation packet",
+        "Make and review the draft",
+        "Export the signed edition and distribution draft"
+      ],
+      "connections": [
+        "GenCreator source",
+        "Asset storage",
+        "Selected publication channel"
+      ],
+      "evidence_fields": [
+        "source_id",
+        "brand",
+        "brief",
+        "artifact_ids",
+        "review_state",
+        "export_target"
+      ],
+      "acceptance": "The export can be opened and reused; brand, source lineage, and human review remain attached."
+    },
+    {
+      "id": "world-production",
+      "name": "Build an Arcanea asset",
+      "brands": [
+        "arcanea"
+      ],
+      "capability_ids": [
+        "creator-studios"
+      ],
+      "stages": [
+        "Read the relevant Arcanea canon",
+        "Prepare the character or environment specification",
+        "Create and inspect the asset",
+        "Register provenance and prepare the gallery release"
+      ],
+      "connections": [
+        "Arcanea canon source",
+        "Media generator",
+        "Private and public asset storage"
+      ],
+      "evidence_fields": [
+        "canon_revision",
+        "prompt",
+        "model",
+        "creator_input",
+        "artifact_id",
+        "review_state"
+      ],
+      "acceptance": "The asset matches the selected canon and visual direction, with a retained source and generation record."
+    },
+    {
+      "id": "learn-build",
+      "name": "Practice and build a package",
+      "brands": [
+        "starlight"
+      ],
+      "capability_ids": [
+        "learning",
+        "foundry",
+        "package-planning"
+      ],
+      "stages": [
+        "Choose a practice mission",
+        "Preserve the first attempt",
+        "Inspect feedback and revise",
+        "Build and test the portable package"
+      ],
+      "connections": [
+        "Starlight Academy",
+        "Foundry",
+        "Target agent host"
+      ],
+      "evidence_fields": [
+        "mission_id",
+        "first_attempt",
+        "assistance",
+        "artifact",
+        "critique",
+        "revision",
+        "transfer"
+      ],
+      "acceptance": "A fresh host can use the package on a real task; the result and remaining limitations are recorded."
+    }
+  ],
+  "revision": "2026-10-04.1",
+  "sources": [
+    {
+      "repository": "frankxai/Starlight-Intelligence-System",
+      "commit": "9a139db9159bb592c84a65540251c40a9077c8a2",
+      "inspected": "Cloud plugin source and tests"
+    },
+    {
+      "repository": "frankxai/starlight-agent-skills",
+      "commit": "0dfeaef31cf01b2fdcf17d9f3e4c75921f0f00ee",
+      "inspected": "Product studio package located"
+    },
+    {
+      "repository": "frankxai/starlight-academy-plugin",
+      "commit": "062a857275697ffeda44234831be15b8448e4b46",
+      "inspected": "Portable package and remote catalog discovery"
+    }
+  ]
+}

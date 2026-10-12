@@ -1,0 +1,44 @@
+# Reality Architecture kernel: schemas, the type registry and fixtures validate on every change, so the kernel
+# stays a contract that verticals (Reality Architect) can project into.
+name: Reality Architecture kernel
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/reality-architecture-kernel.yml"
+      - "docs/reality-architecture/**"
+      - "scripts/validate-reality-architecture-kernel.py"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/reality-architecture-kernel.yml"
+      - "docs/reality-architecture/**"
+      - "scripts/validate-reality-architecture-kernel.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reality-architecture-kernel-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install the validator's one dependency
+        run: python -m pip install --disable-pip-version-check "jsonschema>=4.21,<5"
+
+      - name: Validate schemas, the type registry and fixtures
+        run: python scripts/validate-reality-architecture-kernel.py

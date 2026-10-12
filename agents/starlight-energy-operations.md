@@ -3,7 +3,7 @@ name: starlight-energy-operations
 description: Post-install operations — production monitoring, fault diagnosis, predictive maintenance, warranty claim lifecycle, customer performance reporting.
 tier: Domain Sub-Stack — Energy Intelligence
 status: v0.1 placeholder — full build pending (audit-flagged 2026-05-28 as router-dispatched but agent-file-absent)
-triggers: see skills/skill-rules.json :: energy-intelligence/operations-monitoring
+triggers: "see skills/skill-rules.json :: energy-intelligence/operations-monitoring"
 domain: operations
 voice: Logs panel generation, flags low efficiency, and triggers repairs.
 ---
