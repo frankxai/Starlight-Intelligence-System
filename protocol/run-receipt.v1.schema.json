@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://starlightintelligence.ai/schemas/starlight.run_receipt.v1.json",
   "title": "Starlight run receipt v1",
-  "description": "The unit of proof for agent work: what a run did, what it cost, how long it took, who decided at each gate, and which evidence remains. Signed as a DSSE v1 envelope around an in-toto Statement v1 with Ed25519; predicateType https://starlightintelligence.ai/protocol/run-receipt/v1. Issued locally by the Starlight Intelligence System (sis.receipt.issue) and verifiable at https://starlightintelligence.ai/verify or POST /api/v1/receipts/verify. Rules the schema cannot express and the verifier enforces: run.endedAt is not before run.startedAt; totals are never below the stage sums; a DSSE envelope carries at most 8 signatures; the in-toto statement names exactly one subject whose name and sha256 equal the receipt's subject.",
+  "description": "The unit of proof for agent work: what a run did, what it cost, how long it took, who decided at each gate, and which evidence remains. Signed as a DSSE v1 envelope around an in-toto Statement v1 with Ed25519; predicateType https://starlightintelligence.ai/protocol/run-receipt/v1. The reference implementation is src/run-receipt.ts in the Starlight Intelligence System (signRunReceipt, verifyRunReceipt), exposed as the sis.receipt.issue and sis.receipt.verify MCP tools. protocol/sign.mjs and protocol/verify.mjs handle the SIP conformance receipt only, and no public verifier reads this predicate yet. Rules the schema cannot express and the verifier enforces: run.endedAt is not before run.startedAt; cost and token totals are never below the stage sums; totals.latencyMs is never below the longest stage; verdict PASS is refused when any stage failed; a DSSE envelope carries at most 8 signatures; the in-toto statement names exactly one subject whose name and sha256 equal the receipt's subject.",
   "type": "object",
   "required": [
     "schema",
@@ -143,11 +143,11 @@
             "type": "string"
           },
           "inputTokens": {
-            "type": "number",
+            "type": "integer",
             "minimum": 0
           },
           "outputTokens": {
-            "type": "number",
+            "type": "integer",
             "minimum": 0
           },
           "costEur": {
@@ -172,7 +172,7 @@
         "tokens"
       ],
       "additionalProperties": false,
-      "description": "Never below the stage sums. May exceed them when the issuer tracks overhead.",
+      "description": "Cost and tokens are never below the stage sums and may exceed them when the issuer tracks overhead. latencyMs is wall time: stages can overlap, so it is never below the longest stage.",
       "properties": {
         "costEur": {
           "type": "number",
@@ -191,11 +191,11 @@
           "additionalProperties": false,
           "properties": {
             "input": {
-              "type": "number",
+              "type": "integer",
               "minimum": 0
             },
             "output": {
-              "type": "number",
+              "type": "integer",
               "minimum": 0
             }
           }
