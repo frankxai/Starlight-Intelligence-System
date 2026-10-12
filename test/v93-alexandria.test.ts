@@ -20,6 +20,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawn } from "node:child_process";
@@ -33,6 +34,7 @@ import {
   MemoryTransport,
   NativeTransport,
   ReceiptLedger,
+  SessionLock,
   canTransition,
   hashRecords,
   parseMaxCredits,
@@ -172,8 +174,14 @@ describe("v93 — router, budget and receipts", () => {
       assert.equal(res.budget.spent, 5);
       assert.equal(res.receipt.contentHash, hashRecords([{ pnl: 0.42, address: "abc" }]), "hash must be key-order independent");
       assert.equal(res.receipt.attestation, undefined, "no layers declared, no block");
-      assert.equal(ledger.read().length, 1);
-      assert.equal(ledger.spent(), 5);
+      assert.equal(res.receipt.redistribution, "not-cleared", "no provider is cleared for resale until its terms say so");
+      assert.match(res.receipt.callFingerprint, /^sha256:[0-9a-f]{64}$/);
+      const lines = ledger.read();
+      assert.equal(lines.length, 2, "a pending line before the paid call and the outcome receipt after it");
+      assert.equal(lines[0].pending, true);
+      assert.equal(lines[0].requestId, res.receipt.requestId, "the pending line carries the request id the outcome settles");
+      assert.equal(lines[0].creditsCost, 5, "the pending line holds the reservation");
+      assert.equal(ledger.spent(), 5, "a settled pending line is not counted twice");
       assert.equal(res.receipt.sessionId, "session-hash");
       assert.equal(res.receipt.reserved, 5);
       alexandria.close();
@@ -260,14 +268,22 @@ describe("v93 — router, budget and receipts", () => {
 
   it("per-record capabilities need a declared ceiling, reserve ceiling times price, and record an overrun", async () => {
     const transport = new MemoryTransport("firecrawl-alexandria", { "fullenrich/people/search": { records: [{}, {}, {}, {}, {}, {}, {}], creditsCost: 35 } });
-    const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 30 });
+    const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 25 });
     await assert.rejects(alexandria.execute({ capabilityId: "fullenrich/people/search" }), (err: unknown) => err instanceof AlexandriaError && err.code === "unbounded_records");
-    await assert.rejects(alexandria.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 7 }), (err: unknown) => err instanceof AlexandriaError && err.code === "over_budget");
+    await assert.rejects(alexandria.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 6 }), (err: unknown) => err instanceof AlexandriaError && err.code === "over_budget");
+    assert.equal(transport.calls.length, 0);
+    await assert.rejects(alexandria.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 5, options: { limit: 6 } }), (err: unknown) => err instanceof AlexandriaError && err.code === "unbounded_records", "a supplied limit above the ceiling is refused");
+    await assert.rejects(alexandria.execute({ capabilityId: "people-data-labs/company/search", expectedRecords: 101, options: { sql: "SELECT * FROM company WHERE name = 'x'" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "invalid_option", "a ceiling above the provider's maximum is refused");
     assert.equal(transport.calls.length, 0);
     const res = await alexandria.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 5 });
+    assert.equal(transport.calls[0].options?.limit, 5, "the ceiling is sent to the provider as its record-limit option");
+    assert.equal(res.receipt.options.limit, 5);
     assert.equal(res.receipt.reserved, 25);
-    assert.equal(res.receipt.creditsCost, 35, "the provider's actual charge is recorded, and exceeds the reservation");
+    assert.equal(res.receipt.creditsCost, 35, "a provider that ignores its own limit is recorded as an overrun, never hidden");
     assert.equal(res.budget.spent, 35);
+    const bare = new Library({ ...library.catalog, providers: [{ ...library.get("fullenrich/people/search")!.provider, capabilities: library.get("fullenrich/people/search")!.provider.capabilities.map((c) => { const { recordLimitOption: _drop, ...rest } = c; return rest; }) }] });
+    const unbounded = new Alexandria({ library: bare, transports: [transport], maxCredits: 100 });
+    await assert.rejects(unbounded.execute({ capabilityId: "fullenrich/people/search", expectedRecords: 2 }), (err: unknown) => err instanceof AlexandriaError && err.code === "unbounded_records", "without a declared record-limit option a per-record capability does not run");
   });
 
   it("on a transport failure: keeps the reservation held, persists the request id, and a retry with that id reuses the hold", async () => {
@@ -292,11 +308,15 @@ describe("v93 — router, budget and receipts", () => {
       assert.match(requestId, /^[0-9a-f-]{36}$/, "the id was minted before the transport ran");
       assert.equal(seen[0], requestId, "the transport received the same id");
       assert.equal(alexandria.budget.spent, 5, "the reservation stays held: the provider may have billed it");
-      const [receipt] = ledger.read();
+      const [pendingLine, receipt] = ledger.read();
+      assert.equal(pendingLine.pending, true, "the pending line was written before the transport ran");
+      assert.equal(pendingLine.requestId, requestId);
       assert.equal(receipt.requestId, requestId, "the id is persisted on the uncertain receipt");
       assert.equal(receipt.error?.code, "uncertain_outcome");
       assert.equal(receipt.creditsCost, 5, "the receipt carries the held reservation");
       await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "over_budget", "an unrelated call cannot spend the held credits");
+      await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank", requestId, options: { period: "7d" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "retry_mismatch", "the hold is bound to the original call, not to the id alone");
+      assert.equal(alexandria.budget.spent, 5, "a mismatched retry leaves the hold in place");
       assert.equal(seen.length, 1);
       const resumed = new Alexandria({ library, transports: [transport], maxCredits: 8, ledger, sessionId: "session-uncertain", lock: false });
       assert.equal(resumed.budget.spent, 5, "a restart restores the hold from the ledger");
@@ -325,18 +345,86 @@ describe("v93 — router, budget and receipts", () => {
     assert.equal(result.chargeUnknown, true, "the transport flags a missing creditsCost instead of treating it as zero");
   });
 
-  it("surfaces the request id when the receipt cannot be persisted after a charge", async () => {
+  it("refuses to call the provider when the pending line cannot be written, and surfaces the request id when the outcome receipt cannot", async () => {
     const dir = mkdtempSync(join(tmpdir(), "alexandria-persist-"));
     try {
       const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
       const transport = new MemoryTransport("firecrawl-alexandria", { "gmgn-ai/crypto/wallet_rank": { records: [{ a: 1 }], creditsCost: 5 } });
       const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 10, ledger, lock: false });
       mkdirSync(ledger.path); // the ledger path is now a directory: every append fails
+      await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed");
+      assert.equal(transport.calls.length, 0, "nothing reached the provider");
+      assert.equal(alexandria.budget.spent, 0, "nothing was reserved");
+      // The outcome receipt fails after the charge: the pending line keeps the hold durable.
+      class Flaky extends ReceiptLedger { writes = 0; override append(r: Parameters<ReceiptLedger["append"]>[0]) { if (++this.writes === 2) throw new Error("disk full"); super.append(r); } }
+      const flaky = new Flaky(join(dir, "flaky", "receipts.jsonl"));
+      const second = new Alexandria({ library, transports: [transport], maxCredits: 10, ledger: flaky, lock: false, sessionId: "session-flaky" });
       let caught: unknown;
-      try { await alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }); } catch (err) { caught = err; }
+      try { await second.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }); } catch (err) { caught = err; }
       assert.ok(caught instanceof AlexandriaError && caught.code === "receipt_persist_failed");
-      assert.match((caught as AlexandriaError).requestId ?? "", /^[0-9a-f-]{36}$/, "the id is returned so a retry is not a fresh charge");
-      assert.equal(alexandria.budget.spent, 5, "the charge stays counted in this process");
+      const requestId = (caught as AlexandriaError).requestId ?? "";
+      assert.match(requestId, /^[0-9a-f-]{36}$/, "the id is returned so a retry is not a fresh charge");
+      assert.equal(second.budget.spent, 5, "the charge stays counted in this process");
+      assert.equal(flaky.heldReservations("session-flaky").get(requestId)?.amount, 5, "the pending line keeps the reservation held in the ledger");
+      assert.equal(new Alexandria({ library, transports: [transport], maxCredits: 10, ledger: flaky, lock: false, sessionId: "session-flaky" }).budget.spent, 5, "a restart restores it as a hold");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("treats a Firecrawl 5xx as an uncertain outcome and keeps the reservation", async () => {
+    const firecrawl = new FirecrawlTransport({ apiKey: "k", fetchImpl: async () => ({ ok: false, status: 502, json: async () => ({ error: "bad gateway" }) }) });
+    const alexandria = new Alexandria({ library, transports: [firecrawl], maxCredits: 8 });
+    await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "uncertain_outcome" && err.message.includes("502"));
+    assert.equal(alexandria.budget.spent, 5, "a gateway failure after the request may have reached the provider holds the credits");
+    const refused = new FirecrawlTransport({ apiKey: "k", fetchImpl: async () => ({ ok: false, status: 400, json: async () => ({ error: "bad request" }) }) });
+    const definite = new Alexandria({ library, transports: [refused], maxCredits: 8 });
+    const res = await definite.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
+    assert.equal(res.receipt.error?.code, "http_400");
+    assert.equal(res.budget.spent, 0, "a 4xx is a definite refusal and is not billed");
+  });
+
+  it("refuses a ledger line that parses but cannot be tallied", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-tally-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      writeFileSync(path, '{"id":"rcpt_x","sessionId":"s","creditsCost":"5","reserved":5,"callFingerprint":"sha256:0"}\n', "utf8");
+      assert.throws(() => new ReceiptLedger(path).spent("s"), /corrupt at line 1: creditsCost/);
+      writeFileSync(path, '{"id":"rcpt_x","sessionId":"s","creditsCost":5,"reserved":5,"callFingerprint":"sha256:0"}\n{"id":"rcpt_y","sessionId":"s","reserved":5,"callFingerprint":"sha256:0"}\n', "utf8");
+      assert.throws(() => new ReceiptLedger(path).spent("s"), /corrupt at line 2/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("validates the nested option contract when the catalogue loads", () => {
+    const base = { version: "1", reconciledAt: "2026-10-08" };
+    const cap = (extra: Record<string, unknown>) => ({ id: "p/x", capability: "x", name: "X", description: "d", creditsCost: 1, perRecord: false, tags: ["t"], ...extra });
+    const prov = (extra: Record<string, unknown>) => ({ ...base, providers: [{ id: "p", kind: "firecrawl-alexandria", name: "P", description: "d", source: "s", categories: ["c"], capabilities: [cap(extra)] }] });
+    assert.deepEqual(validateCatalog(prov({ options: { name: "q" } })).map((p) => p.path), ["$.providers[0].capabilities[0].options"]);
+    assert.deepEqual(validateCatalog(prov({ requiresOneOf: "query" })).map((p) => p.path), ["$.providers[0].capabilities[0].requiresOneOf"]);
+    assert.deepEqual(validateCatalog(prov({ options: [{ name: "q", type: "text" }] })).map((p) => p.path), ["$.providers[0].capabilities[0].options[0].type"]);
+    assert.deepEqual(validateCatalog(prov({ perRecord: true })).map((p) => p.path), ["$.providers[0].capabilities[0].recordLimitOption"]);
+    assert.deepEqual(validateCatalog(prov({ perRecord: true, recordLimitOption: "limit", options: [{ name: "limit", type: "string" }] })).map((p) => p.path), ["$.providers[0].capabilities[0].recordLimitOption"]);
+    assert.equal(validateCatalog(prov({ perRecord: true, recordLimitOption: "limit", options: [{ name: "limit", type: "number", min: 1, max: 6 }] })).length, 0);
+    const cleared = { ...prov({}), providers: [{ ...prov({}).providers[0], redistribution: { policy: "cleared" } }] };
+    assert.deepEqual(validateCatalog(cleared).map((p) => p.path), ["$.providers[0].redistribution.termsVersion"], "a cleared provider must name the terms that clear it");
+    assert.ok(loadCatalog().providers.every((p) => p.redistribution === undefined || p.redistribution.policy === "not-cleared"), "no provider in the shipped catalogue is cleared for resale");
+  });
+
+  it("lets exactly one of two concurrent processes take over a stale lock", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-stale-"));
+    try {
+      const ledgerPath = join(dir, "receipts.jsonl");
+      writeFileSync(`${ledgerPath}.race.lock`, "999999", "utf8"); // a pid that is not alive
+      const script = `import { SessionLock } from ${JSON.stringify(join(REPO_ROOT, "src", "alexandria", "receipts.ts"))}; const l = new SessionLock(${JSON.stringify(ledgerPath)}, "race"); try { l.acquire(); console.log("acquired"); setTimeout(() => l.release(), 400); } catch (e) { console.log("refused: " + e.message); }`;
+      const results = [0, 1].map(() => spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "-e", script], { cwd: REPO_ROOT, encoding: "utf8" }));
+      const outputs = results.map((r) => r.stdout.trim());
+      assert.ok(outputs.every((o) => o === "acquired" || o.startsWith("refused: Budget session race is held by process")), `unexpected: ${JSON.stringify(outputs)} ${results.map((r) => r.stderr).join("")}`);
+      assert.ok(!existsSync(`${ledgerPath}.race.lock`), "the lock is released at the end");
+      // The two processes ran one after the other here; the atomic claim is the rename, which
+      // either succeeds once or fails: a losing claimant can never unlink a lock it did not win.
+      assert.equal(new SessionLock(ledgerPath, "race").path, `${ledgerPath}.race.lock`);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -430,7 +518,7 @@ describe("v93 — router, budget and receipts", () => {
       appendFileSync(path, '{"id":"rcpt_partial","sessionId":"session-a","credits', "utf8");
       const detailed = ledger.readDetailed();
       assert.equal(detailed.truncatedTail, true);
-      assert.equal(detailed.receipts.length, 2);
+      assert.equal(detailed.receipts.filter((r) => !r.pending).length, 2);
       first.close();
       const resumed = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "session-a" });
       assert.equal(resumed.budget.spent, 10, "the same session resumes its spend");
@@ -438,7 +526,7 @@ describe("v93 — router, budget and receipts", () => {
       assert.equal(third.receipt.observedAt, third.result.observedAt, "the receipt keeps the provider observation time");
       const after = ledger.readDetailed();
       assert.equal(after.truncatedTail, false, "the cut-off tail was moved out before the append");
-      assert.equal(after.receipts.length, 3);
+      assert.equal(after.receipts.filter((r) => !r.pending).length, 3);
       assert.ok(readFileSync(ledger.quarantinePath, "utf8").includes('"rcpt_partial"'), "the fragment is kept in quarantine");
       assert.equal(resumed.budget.spent, 15);
       const fresh = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger });
@@ -519,7 +607,7 @@ describe("v93 — MCP server", () => {
       const ok = await server.handleRequest({ method: "tools/call", id: 3, params: { name: "alexandria_execute", arguments: { capabilityId: "gmgn-ai/crypto/wallet_rank" } } });
       const content = ok?.result as { structuredContent: { receipt: { creditsCost: number }; budget: { spent: number } } };
       assert.equal(content.structuredContent.budget.spent, 5);
-      ledger.append({ ...ledger.read()[0], id: "rcpt_other", sessionId: "someone-else", options: { address: "private" } });
+      ledger.append({ ...ledger.read().find((r) => !r.pending)!, id: "rcpt_other", sessionId: "someone-else", options: { address: "private" } });
       const receipts = await server.handleRequest({ method: "tools/call", id: 4, params: { name: "alexandria_receipts", arguments: {} } });
       const rc = (receipts?.result as { structuredContent: { spentThisSession: number; spentAllSessions: number; truncatedTail: boolean; sessionId: string; receipts: { sessionId: string }[] } }).structuredContent;
       assert.equal(rc.spentThisSession, 5);
@@ -527,6 +615,7 @@ describe("v93 — MCP server", () => {
       assert.equal(rc.truncatedTail, false);
       assert.equal(rc.sessionId, alexandria.budget.sessionId);
       assert.ok(rc.receipts.every((r) => r.sessionId === alexandria.budget.sessionId), "other sessions' receipts stay out by default");
+      assert.equal(rc.receipts.length, 1, "a settled pending line is not listed");
       const audit = await server.handleRequest({ method: "tools/call", id: 7, params: { name: "alexandria_receipts", arguments: { allSessions: true } } });
       assert.equal((audit?.result as { structuredContent: { receipts: unknown[] } }).structuredContent.receipts.length, 2);
       const badFlag = await server.handleRequest({ method: "tools/call", id: 8, params: { name: "alexandria_receipts", arguments: { allSessions: "yes" } } });

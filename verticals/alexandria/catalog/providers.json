@@ -666,7 +666,18 @@
             "founder",
             "executive",
             "prospect"
-          ]
+          ],
+          "options": [
+            {
+              "name": "limit",
+              "type": "number",
+              "about": "Records per page, 1 to 6; each returned record costs 5 credits. The router sets it to expectedRecords.",
+              "default": 2,
+              "min": 1,
+              "max": 6
+            }
+          ],
+          "recordLimitOption": "limit"
         }
       ]
     },
@@ -724,7 +735,28 @@
             "stage",
             "location",
             "list"
-          ]
+          ],
+          "options": [
+            {
+              "name": "query",
+              "type": "object",
+              "about": "Elasticsearch query object over the company schema. Send this or sql, never both."
+            },
+            {
+              "name": "sql",
+              "type": "string",
+              "about": "SELECT * FROM company WHERE ... Send this or query, never both."
+            },
+            {
+              "name": "size",
+              "type": "number",
+              "about": "Companies per call; each returned company costs 50 credits. The router sets it to expectedRecords.",
+              "default": 1,
+              "min": 1,
+              "max": 100
+            }
+          ],
+          "recordLimitOption": "size"
         }
       ]
     },

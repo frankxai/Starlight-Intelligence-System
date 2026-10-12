@@ -27,6 +27,9 @@ export interface CapabilityOption {
   about?: string;
   default?: string | number | boolean;
   oneOf?: readonly string[];
+  /** Inclusive bounds for number options, as the provider contract states them. */
+  min?: number;
+  max?: number;
 }
 
 export interface Capability {
@@ -42,6 +45,12 @@ export interface Capability {
   /** Groups of option names of which at least one must be supplied. */
   requiresOneOf?: readonly (readonly string[])[];
   options?: readonly CapabilityOption[];
+  /**
+   * For per-record capabilities: the declared number option that bounds how many records the
+   * provider returns. The router sets it to the caller's record ceiling, so the reservation is
+   * enforced at the provider, and refuses per-record execution when no such option exists.
+   */
+  recordLimitOption?: string;
   /** Routing vocabulary. Lower-case single words or hyphenated phrases. */
   tags: readonly string[];
   /**
@@ -60,6 +69,11 @@ export interface Provider {
   categories: readonly string[];
   /** Required source attribution text, when the provider mandates one. */
   attribution?: string;
+  /**
+   * Whether the provider's terms clear its records for redistribution. Absent means not cleared:
+   * the receipt carries `redistribution: not-cleared` and the Exchange may not resell it.
+   */
+  redistribution?: { policy: 'not-cleared' | 'cleared'; termsVersion?: string; termsUrl?: string };
   /** Where the records come from; shown on every receipt. */
   source: string;
   capabilities: readonly Capability[];
@@ -107,13 +121,23 @@ export interface Transport {
   execute(calls: readonly AlexandriaCall[]): Promise<CallResult[]>;
 }
 
+export type RedistributionPolicy = 'not-cleared' | 'cleared';
+
 export interface Receipt {
   id: string;
   issuedAt: string;
+  /**
+   * True for the line written before a paid provider call runs: it holds the reservation in
+   * the ledger so a crash between the call and its receipt cannot lose the spend. The receipt
+   * written after the outcome carries the same `requestId` and settles it.
+   */
+  pending?: boolean;
   /** Budget session the call was charged to. Spend is restored per session, never across the whole ledger. */
   sessionId: string;
   /** Idempotency key sent to the provider. Reuse it to retry a call whose outcome was uncertain. */
   requestId?: string;
+  /** sha256 over the capability id and canonical options. A retry reuses a hold only when it matches. */
+  callFingerprint: string;
   /** When the provider observed the record (from the transport), as distinct from when the receipt was issued. */
   observedAt: string;
   provider: string;
@@ -134,6 +158,8 @@ export interface Receipt {
   chargeUnknown?: boolean;
   source: string;
   attribution?: string;
+  /** From the provider's terms in the catalogue. `not-cleared` receipts may not enter the Exchange. */
+  redistribution: RedistributionPolicy;
   /** SIP layers the record composed. Empty means no attestation block is emitted. */
   sipLayers: readonly string[];
   /** The declared "Built on SIP" block, present only when `sipLayers` is non-empty. */

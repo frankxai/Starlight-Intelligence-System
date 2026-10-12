@@ -23,8 +23,48 @@ export const REPO_ROOT = join(HERE, '..', '..');
 export const DEFAULT_CATALOG_PATH = join(REPO_ROOT, 'verticals', 'alexandria', 'catalog', 'providers.json');
 
 const PROVIDER_KINDS: readonly ProviderKind[] = ['firecrawl-alexandria', 'native', 'connector'];
+const OPTION_TYPES: readonly CapabilityOption['type'][] = ['string', 'number', 'boolean', 'string[]', 'object'];
 const ID_RE = /^[a-z0-9][a-z0-9-]*$/;
 const CAP_RE = /^[a-z0-9][a-z0-9_-]*(\/[a-z0-9][a-z0-9_-]*)*$/;
+const OPTION_NAME_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
+function isPrimitive(v: unknown): boolean {
+  return typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean';
+}
+
+/** The nested option contract: what `validateOptions` relies on at call time, checked once at load. */
+function validateOptionContract(cap: Loose<Capability>, cb: string, problems: CatalogProblem[]): void {
+  const declared = new Map<string, CapabilityOption['type']>();
+  if (cap.options !== undefined) {
+    if (!Array.isArray(cap.options)) problems.push({ path: `${cb}.options`, message: 'options must be an array' });
+    else (cap.options as Loose<CapabilityOption>[]).forEach((opt, k) => {
+      const ob = `${cb}.options[${k}]`;
+      if (!opt || typeof opt !== 'object' || Array.isArray(opt)) { problems.push({ path: ob, message: 'option must be an object' }); return; }
+      if (typeof opt.name !== 'string' || !OPTION_NAME_RE.test(opt.name)) problems.push({ path: `${ob}.name`, message: 'name must be an identifier' });
+      else if (declared.has(opt.name)) problems.push({ path: `${ob}.name`, message: `duplicate option ${opt.name}` });
+      if (!OPTION_TYPES.includes(opt.type as CapabilityOption['type'])) problems.push({ path: `${ob}.type`, message: `type must be one of ${OPTION_TYPES.join('|')}` });
+      else if (typeof opt.name === 'string') declared.set(opt.name, opt.type as CapabilityOption['type']);
+      if (opt.about !== undefined && typeof opt.about !== 'string') problems.push({ path: `${ob}.about`, message: 'about must be a string' });
+      if (opt.default !== undefined && !isPrimitive(opt.default)) problems.push({ path: `${ob}.default`, message: 'default must be a string, number or boolean' });
+      if (opt.oneOf !== undefined && (!Array.isArray(opt.oneOf) || opt.oneOf.length === 0 || (opt.oneOf as unknown[]).some((v) => typeof v !== 'string'))) problems.push({ path: `${ob}.oneOf`, message: 'oneOf must be a non-empty array of strings' });
+      for (const bound of ['min', 'max'] as const) {
+        if (opt[bound] !== undefined && (typeof opt[bound] !== 'number' || !Number.isFinite(opt[bound]))) problems.push({ path: `${ob}.${bound}`, message: `${bound} must be a finite number` });
+      }
+      if (typeof opt.min === 'number' && typeof opt.max === 'number' && opt.min > opt.max) problems.push({ path: `${ob}.min`, message: 'min must not exceed max' });
+    });
+  }
+  if (cap.requiresOneOf !== undefined) {
+    if (!Array.isArray(cap.requiresOneOf)) problems.push({ path: `${cb}.requiresOneOf`, message: 'requiresOneOf must be an array of option-name groups' });
+    else (cap.requiresOneOf as unknown[]).forEach((group, g) => {
+      if (!Array.isArray(group) || group.length === 0 || group.some((n) => typeof n !== 'string' || !OPTION_NAME_RE.test(n))) problems.push({ path: `${cb}.requiresOneOf[${g}]`, message: 'each group must be a non-empty array of option names' });
+    });
+  }
+  if (cap.recordLimitOption !== undefined) {
+    if (typeof cap.recordLimitOption !== 'string' || declared.get(cap.recordLimitOption) !== 'number') problems.push({ path: `${cb}.recordLimitOption`, message: 'recordLimitOption must name a declared number option' });
+  } else if (cap.perRecord === true) {
+    problems.push({ path: `${cb}.recordLimitOption`, message: 'per-record capabilities must declare the option that bounds the record count' });
+  }
+}
 
 export interface CatalogProblem { path: string; message: string }
 
@@ -52,6 +92,11 @@ export function validateCatalog(raw: unknown): CatalogProblem[] {
       if (typeof p[key] !== 'string' || !p[key]) problems.push({ path: `${base}.${key}`, message: `${key} must be a non-empty string` });
     }
     if (!Array.isArray(p.categories) || (p.categories as unknown[]).length === 0) problems.push({ path: `${base}.categories`, message: 'categories must be a non-empty array' });
+    if (p.redistribution !== undefined) {
+      const r = p.redistribution as Loose<NonNullable<Provider['redistribution']>>;
+      if (!r || typeof r !== 'object' || (r.policy !== 'not-cleared' && r.policy !== 'cleared')) problems.push({ path: `${base}.redistribution`, message: 'redistribution.policy must be not-cleared or cleared' });
+      else if (r.policy === 'cleared' && (typeof r.termsVersion !== 'string' || !r.termsVersion)) problems.push({ path: `${base}.redistribution.termsVersion`, message: 'a cleared provider must name the terms version that clears it' });
+    }
     if (!Array.isArray(p.capabilities)) { problems.push({ path: `${base}.capabilities`, message: 'capabilities must be an array' }); return; }
     if (p.kind !== 'connector' && (p.capabilities as unknown[]).length === 0) problems.push({ path: `${base}.capabilities`, message: 'data providers need at least one capability' });
     (p.capabilities as Loose<Capability>[]).forEach((cap: Loose<Capability>, j: number) => {
@@ -71,6 +116,7 @@ export function validateCatalog(raw: unknown): CatalogProblem[] {
         if (typeof cap[key] !== 'string' || !cap[key]) problems.push({ path: `${cb}.${key}`, message: `${key} must be a non-empty string` });
       }
       if (cap.status !== undefined && cap.status !== 'live' && cap.status !== 'unreconciled') problems.push({ path: `${cb}.status`, message: 'status must be live or unreconciled' });
+      validateOptionContract(cap, cb, problems);
     });
   });
   return problems;
@@ -217,6 +263,7 @@ export class Library {
       if (!isPresent(value)) continue;
       if (!matchesType(value, opt.type)) problems.push(`${opt.name} must be ${opt.type}`);
       else if (opt.oneOf && !opt.oneOf.includes(String(value))) problems.push(`${opt.name} must be one of ${opt.oneOf.join('|')}`);
+      else if (opt.type === 'number' && ((opt.min !== undefined && (value as number) < opt.min) || (opt.max !== undefined && (value as number) > opt.max))) problems.push(`${opt.name} must be between ${opt.min ?? '-inf'} and ${opt.max ?? 'inf'}`);
     }
     return problems;
   }

@@ -17,7 +17,7 @@
  */
 
 import { createHash, randomUUID } from 'node:crypto';
-import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type { CallResult, Provider, Receipt } from './types.js';
 
@@ -44,6 +44,11 @@ export function hashRecords(records: unknown[]): string {
   return 'sha256:' + createHash('sha256').update(canonicalJson(records)).digest('hex');
 }
 
+/** Identifies one call: a held reservation is reused only by a retry of the same capability with the same options. */
+export function callFingerprint(capabilityId: string, options: Record<string, unknown>): string {
+  return 'sha256:' + createHash('sha256').update(canonicalJson([capabilityId, options])).digest('hex');
+}
+
 export function attestationBlock(layers: readonly string[], provider: Provider, capability: string): string {
   return [
     '**Built on SIP** — Starlight Intelligence Protocol',
@@ -65,9 +70,11 @@ export interface ReceiptInput {
   reserved: number;
   sipLayers?: readonly string[];
   now?: () => string;
+  /** Write the pre-call line: holds `reserved` in the ledger until the outcome receipt settles it. */
+  pending?: boolean;
 }
 
-export function buildReceipt({ result, provider, options, sessionId, reserved, sipLayers = [], now }: ReceiptInput): Receipt {
+export function buildReceipt({ result, provider, options, sessionId, reserved, sipLayers = [], now, pending = false }: ReceiptInput): Receipt {
   const receipt: Receipt = {
     id: `rcpt_${randomUUID()}`,
     issuedAt: now ? now() : new Date().toISOString(),
@@ -76,20 +83,24 @@ export function buildReceipt({ result, provider, options, sessionId, reserved, s
     provider: result.provider,
     capability: result.capability,
     options,
+    callFingerprint: callFingerprint(`${result.provider}/${result.capability}`, options),
     recordCount: result.records.length,
     contentHash: hashRecords(result.records),
     reserved,
-    // A definite failure is not billed. An uncertain outcome holds the reservation until a retry
-    // with the same request id settles it; a success with no reported charge holds it too.
-    creditsCost: result.error ? (result.error.code === 'uncertain_outcome' ? reserved : 0) : result.chargeUnknown ? reserved : result.creditsCost,
+    // A pending line holds the reservation. A definite failure is not billed. An uncertain
+    // outcome holds the reservation until a retry with the same request id settles it; a success
+    // with no reported charge holds it too.
+    creditsCost: pending ? reserved : result.error ? (result.error.code === 'uncertain_outcome' ? reserved : 0) : result.chargeUnknown ? reserved : result.creditsCost,
     source: provider.source,
+    redistribution: provider.redistribution?.policy ?? 'not-cleared',
     sipLayers,
   };
-  if (!result.error && result.chargeUnknown) receipt.chargeUnknown = true;
+  if (pending) receipt.pending = true;
+  if (!pending && !result.error && result.chargeUnknown) receipt.chargeUnknown = true;
   if (result.requestId) receipt.requestId = result.requestId;
   if (provider.attribution) receipt.attribution = provider.attribution;
-  // Earned, never decorative: a failed or empty call composed nothing.
-  if (sipLayers.length > 0 && !result.error && result.records.length > 0) {
+  // Earned, never decorative: a pending, failed or empty call composed nothing.
+  if (!pending && sipLayers.length > 0 && !result.error && result.records.length > 0) {
     receipt.attestation = attestationBlock(sipLayers, provider, result.capability);
   }
   if (result.error) receipt.error = result.error;
@@ -149,12 +160,18 @@ export class ReceiptLedger {
     const receipts: Receipt[] = [];
     let truncatedTail = false;
     lines.forEach((line, i) => {
+      let parsed: unknown;
       try {
-        receipts.push(JSON.parse(line) as Receipt);
+        parsed = JSON.parse(line);
       } catch (err) {
-        if (i === lines.length - 1) truncatedTail = true;
-        else throw new Error(`Receipt ledger ${this.path} is corrupt at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`);
+        if (i === lines.length - 1) { truncatedTail = true; return; }
+        throw new Error(`Receipt ledger ${this.path} is corrupt at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`);
       }
+      // A line that parses but cannot be tallied would poison the budget (NaN compares false
+      // against every ceiling), so it is refused rather than summed.
+      const problem = receiptProblem(parsed);
+      if (problem) throw new Error(`Receipt ledger ${this.path} is corrupt at line ${i + 1}: ${problem}`);
+      receipts.push(parsed as Receipt);
     });
     return { receipts, truncatedTail };
   }
@@ -171,22 +188,22 @@ export class ReceiptLedger {
   spent(sessionId?: string): number {
     const { settled, held } = this.tally(sessionId);
     let total = settled;
-    for (const amount of held.values()) total += amount;
+    for (const hold of held.values()) total += hold.amount;
     return total;
   }
 
-  /** Reservations still held by uncertain calls in a session, keyed by request id. */
-  heldReservations(sessionId?: string): Map<string, number> {
+  /** Reservations still held (pending lines without an outcome, uncertain outcomes), keyed by request id. */
+  heldReservations(sessionId?: string): Map<string, HeldReservation> {
     return this.tally(sessionId).held;
   }
 
-  private tally(sessionId?: string): { settled: number; held: Map<string, number> } {
+  private tally(sessionId?: string): { settled: number; held: Map<string, HeldReservation> } {
     let settled = 0;
-    const held = new Map<string, number>();
+    const held = new Map<string, HeldReservation>();
     for (const r of this.read()) {
       if (sessionId !== undefined && r.sessionId !== sessionId) continue;
-      if (r.error?.code === 'uncertain_outcome') {
-        if (r.requestId) held.set(r.requestId, r.creditsCost);
+      if (r.pending || r.error?.code === 'uncertain_outcome') {
+        if (r.requestId) held.set(r.requestId, { amount: r.creditsCost, fingerprint: r.callFingerprint });
         continue;
       }
       if (r.requestId) held.delete(r.requestId);
@@ -194,6 +211,29 @@ export class ReceiptLedger {
     }
     return { settled, held };
   }
+}
+
+export interface HeldReservation {
+  amount: number;
+  /** The call the hold belongs to; a retry must match it to reuse the hold. */
+  fingerprint: string;
+}
+
+function isCredits(v: unknown): v is number {
+  return typeof v === 'number' && Number.isFinite(v) && v >= 0;
+}
+
+/** Why a parsed line cannot be a receipt, or null. Only the fields the tally depends on are checked. */
+export function receiptProblem(value: unknown): string | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return 'not an object';
+  const r = value as Partial<Receipt>;
+  if (typeof r.id !== 'string' || !r.id.startsWith('rcpt_')) return 'id is not a receipt id';
+  if (typeof r.sessionId !== 'string' || !r.sessionId) return 'sessionId missing';
+  if (!isCredits(r.creditsCost)) return `creditsCost is not a finite non-negative number (${JSON.stringify(r.creditsCost)})`;
+  if (!isCredits(r.reserved)) return `reserved is not a finite non-negative number (${JSON.stringify(r.reserved)})`;
+  if (r.requestId !== undefined && typeof r.requestId !== 'string') return 'requestId is not a string';
+  if (typeof r.callFingerprint !== 'string') return 'callFingerprint missing';
+  return null;
 }
 
 /** Lock paths this process holds, so a second instance in the same process cannot share a session. */
@@ -221,7 +261,7 @@ export class SessionLock {
       throw new Error(`Budget session ${this.sessionId} is already held by another Alexandria instance in this process (${this.path}); reuse that instance or choose another session`);
     }
     mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
-    for (let attempt = 0; attempt < 2; attempt++) {
+    for (let attempt = 0; attempt < 3; attempt++) {
       try {
         const fd = openSync(this.path, 'wx', FILE_MODE);
         writeFileSync(fd, String(process.pid), 'utf8');
@@ -231,10 +271,14 @@ export class SessionLock {
         return;
       } catch (err) {
         if ((err as NodeJS.ErrnoException).code !== 'EEXIST') throw err;
-        const owner = Number(readFileSync(this.path, 'utf8').trim());
+        let owner: number;
+        try { owner = Number(readFileSync(this.path, 'utf8').trim()); } catch { continue; /* removed between our open and read; retry */ }
         // Our own pid but not in heldInProcess: a leftover from an earlier life of this pid, so stale.
         if (owner !== process.pid && isAlive(owner)) throw new Error(`Budget session ${this.sessionId} is held by process ${owner} (${this.path}); resume it from that process or choose another session`);
-        try { unlinkSync(this.path); } catch { /* lost the race; retry once */ }
+        // Claim the stale file by renaming it: rename is atomic, so of two processes recovering the
+        // same stale lock only one succeeds, and neither can unlink a lock the other just created.
+        const claim = `${this.path}.stale.${process.pid}.${attempt}`;
+        try { renameSync(this.path, claim); unlinkSync(claim); } catch { /* another process claimed it; the retry sees their fresh lock */ }
       }
     }
     throw new Error(`Could not acquire the lock for budget session ${this.sessionId} (${this.path})`);

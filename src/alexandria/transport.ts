@@ -68,7 +68,14 @@ export class FirecrawlTransport implements Transport {
       // human who can accept it; it is surfaced as data and never accepted here.
       let parsed: { code?: string; error?: string; message?: string; requiresAction?: unknown } = {};
       try { parsed = (await res.json()) as typeof parsed; } catch { /* non-JSON body */ }
-      const error: CallError = { code: parsed.code ?? `http_${res.status}`, message: parsed.error ?? parsed.message ?? `Firecrawl returned HTTP ${res.status}` };
+      const message = parsed.error ?? parsed.message ?? `Firecrawl returned HTTP ${res.status}`;
+      // A 5xx or a timeout says nothing about whether the upstream provider accepted and billed
+      // the request, so it is an uncertain outcome: the router keeps the reservation and the
+      // retry reuses the request id. A 4xx is definite: the request was refused.
+      const uncertain = res.status >= 500 || res.status === 408;
+      const error: CallError = uncertain
+        ? { code: 'uncertain_outcome', message: `Firecrawl returned HTTP ${res.status} after the request may have reached the provider: ${message}`, details: { status: res.status } }
+        : { code: parsed.code ?? `http_${res.status}`, message };
       if (parsed.requiresAction !== undefined) error.details = { status: res.status, requiresAction: parsed.requiresAction };
       return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [], creditsCost: 0, observedAt, requestId, error }));
     }

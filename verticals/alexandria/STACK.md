@@ -19,7 +19,7 @@ Receipts ledger: `~/.starlight/alexandria/receipts.jsonl` (local, append-only) �
 Firecrawl (search, scrape, Alexandria execution; `FIRECRAWL_API_KEY`) · native corpus (free) · partner catalogues (planned). Generation lanes and distribution rails are connectors (`catalog/connectors.json`), never transports.
 
 ### L6 — Trust
-Declared receipt → signed receipt (`protocol/sign.mjs`, Ed25519/DSSE) → third-party re-check (`protocol/verify.mjs`). Exchange resells signed only.
+Declared receipt today; signed receipt and third-party re-check are the next two steps and neither exists for Alexandria yet. `protocol/sign.mjs` signs SIP conformance receipts (`sip-conform` profile) and refuses an Alexandria receipt as written, so an Alexandria signing profile or adapter is an open Board condition (`MEMORY.md`, open reconciliation). Until it lands the Exchange resells nothing: every receipt also carries `redistribution: not-cleared` unless the provider's terms in the catalogue clear it.
 
 ### L7 — Money (new row for this vertical)
 Polar (subscriptions, usage) · Stripe when eligible · x402/AP2 verify-only via payment-intelligence-system. No autonomous money movement.

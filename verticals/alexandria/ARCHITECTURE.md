@@ -30,10 +30,10 @@ Every layer has one file as source of truth:
 |---|---|---|
 | L2 Library | `catalog/providers.json`, `catalog/connectors.json` | Validated on load; native is free; ids are `<provider>/<capability>`; prices reconciled against `catalogueVersion`, never guessed |
 | L3 Transports | `src/alexandria/transport.ts` | One transport per provider kind; connectors never execute through a transport |
-| L4 Router | `src/alexandria/router.ts` | Fail-closed on budget and required options; the transport is touched only after both pass |
-| L5 Receipts | `src/alexandria/receipts.ts` | Hash is key-order independent (an own `__proto__` key hashes as a key); a definite failure is never billed, an uncertain outcome holds its reservation until a retry with the same request id settles it; files are owner-only; the SIP block is emitted only with declared layers |
+| L4 Router | `src/alexandria/router.ts` | Fail-closed on budget and required options; a per-record ceiling is sent to the provider as its declared record-limit option or the call does not run; a retry reuses a hold only for the same capability and options; the transport is touched only after the pending line is durable |
+| L5 Receipts | `src/alexandria/receipts.ts` | Hash is key-order independent (an own `__proto__` key hashes as a key); a pending line holds the reservation before a paid call runs; a definite failure is never billed, an uncertain outcome (transport failure or a 5xx) holds its reservation until a retry of the same call with the same request id settles it; a ledger line that cannot be tallied is refused; files are owner-only; every receipt carries the provider's `redistribution` policy; the SIP block is emitted only with declared layers |
 | L6 Synthesis | `houses/synthesis/agent.md` | An artifact lists the receipt ids it rests on, or it is a draft |
-| L7 Exchange | `REVENUE.md`, `houses/exchange/agent.md` | Only signed receipts (`protocol/sign.mjs`) are resold; money movement is human-gated |
+| L7 Exchange | `REVENUE.md`, `houses/exchange/agent.md` | Only signed, `redistribution: cleared` receipts may be resold; no signing profile exists for Alexandria receipts yet, so the Exchange is closed; money movement is human-gated |
 
 ---
 
@@ -89,7 +89,7 @@ Runtime assignment is a routing table, not a loyalty: `SWARM.md` § Runtime tabl
 ## 5. Trust chain
 
 1. **Declared** — the receipt carries `sipLayers` and the block. Cheap, local, honest about being a label.
-2. **Signed** — `protocol/sign.mjs` turns the receipt's profile into a DSSE/in-toto envelope (Ed25519, offline). Required before Exchange resale.
+2. **Signed** — a DSSE/in-toto envelope (Ed25519, offline) over the receipt. Required before Exchange resale. Not available yet: `protocol/sign.mjs` accepts only the `sip-conform` receipt profile (`receiptVersion`, `tool`, `checkedAt`, `profileSha256`, `rules`, `verdict`) and refuses an Alexandria receipt. An Alexandria profile or adapter is a Board condition recorded in `MEMORY.md`.
 3. **Re-checked** — `protocol/verify.mjs` by a third party against the same provider call. The compounding mechanism: a stranger can prove the brief was built on what it says.
 
 ---
