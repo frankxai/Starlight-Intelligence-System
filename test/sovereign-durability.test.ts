@@ -15,23 +15,24 @@ import { SovereignEnvelopeEncryption } from "../src/durability/envelope.js";
 import { SovereignStorageDispatcher } from "../src/durability/transports.js";
 import { runHorizonAnchor } from "../tools/anchor-horizon.js";
 
+const sampleItems: VaultSnapshotItem[] = [
+  {
+    id: "item_1",
+    vault: "horizon",
+    content: "Human values must persist across generations of intelligence.",
+    timestamp: "2026-10-10T00:00:00Z",
+    tags: ["alignment", "benevolence"],
+  },
+  {
+    id: "item_2",
+    vault: "strategic",
+    content: "Sovereignty before convenience. Never bend for vendor lock-in.",
+    timestamp: "2026-10-10T01:00:00Z",
+    tags: ["governance", "invariants"],
+  },
+];
+
 describe("Sovereign Durability — Tier 1: Sovereign Local & Boundary Invariants", () => {
-  const sampleItems: VaultSnapshotItem[] = [
-    {
-      id: "item_1",
-      vault: "horizon",
-      content: "Human values must persist across generations of intelligence.",
-      timestamp: "2026-10-10T00:00:00Z",
-      tags: ["alignment", "benevolence"],
-    },
-    {
-      id: "item_2",
-      vault: "strategic",
-      content: "Sovereignty before convenience. Never bend for vendor lock-in.",
-      timestamp: "2026-10-10T01:00:00Z",
-      tags: ["governance", "invariants"],
-    },
-  ];
 
   it("computes deterministic Merkle root across identical inputs", () => {
     const hashes = sampleItems.map((i) => SovereignBlockchainAnchor.hashItem(i));
