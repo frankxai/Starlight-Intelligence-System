@@ -24,8 +24,11 @@ export interface PackAuditReport {
   packId: string;
   name: string;
   version: string;
+  kind?: string;
+  harnessTarget?: string;
   licenseTier: string;
   attestationValid: boolean;
+  signatureValid?: boolean;
   securitySafe: boolean;
   requiresUserAck: boolean;
   permissions: string[];
@@ -112,6 +115,11 @@ export class PackManager {
 
     const validation: MarketplaceValidationResult = MarketplaceCatalog.validatePack(pack);
     const permissionAudit = MarketplaceCatalog.auditPermissions(pack.permissions || []);
+    const signatureValid = pack.signature ? MarketplaceCatalog.verifySignature(pack) : undefined;
+
+    if (pack.signature && signatureValid === false) {
+      validation.errors.push("Invalid cryptographic signature on pack manifest.");
+    }
 
     const manifestDigest = createHash("sha256").update(rawContent, "utf-8").digest("hex");
 
@@ -119,9 +127,12 @@ export class PackManager {
       packId: pack.id,
       name: pack.name,
       version: pack.version,
+      kind: pack.kind,
+      harnessTarget: pack.harnessTarget,
       licenseTier: pack.licenseTier,
       attestationValid: Boolean(pack.attestation && pack.attestation.includes("Built on SIP")),
-      securitySafe: validation.valid && permissionAudit.safe,
+      signatureValid,
+      securitySafe: validation.valid && permissionAudit.safe && (pack.signature ? signatureValid === true : true),
       requiresUserAck: permissionAudit.requiresUserAck,
       permissions: pack.permissions || [],
       reasons: [...validation.errors, ...permissionAudit.reasons],
