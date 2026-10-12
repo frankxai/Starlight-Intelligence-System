@@ -165,6 +165,27 @@ describe('run receipt — receiptProblems', () => {
     assert.ok(problems.includes('issuedAt is before run.endedAt'), problems.join('; '));
   });
 
+  it('allows rounding in cost totals but not an understatement that grows with spend', () => {
+    const stages: RunReceiptStage[] = [
+      { name: 'a', status: 'ok', costEur: 0.1 },
+      { name: 'b', status: 'ok', costEur: 0.2 },
+    ];
+    const rounded = { costEur: 0.3, latencyMs: 0, tokens: { input: 0, output: 0 } };
+    assert.deepEqual(receiptProblems(receipt({ stages, totals: rounded })), []);
+    const big: RunReceiptStage[] = [{ name: 'a', status: 'ok', costEur: 100000 }];
+    const short = receiptProblems(receipt({ stages: big, totals: { ...rounded, costEur: 99500 } }));
+    assert.ok(short.some((p) => p.includes('totals.costEur 99500 is below the stage sum')), short.join('; '));
+  });
+
+  it('refuses a decision dated after the receipt was issued', () => {
+    const base = receipt();
+    const problems = receiptProblems({
+      ...base,
+      decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', at: '2026-09-21T11:00:00.000Z' }],
+    });
+    assert.ok(problems.includes('decision publish.at is after issuedAt'), problems.join('; '));
+  });
+
   it('refuses a PASS verdict when a stage failed', () => {
     const stages: RunReceiptStage[] = [
       { name: 'retrieve', status: 'ok', latencyMs: 10 },

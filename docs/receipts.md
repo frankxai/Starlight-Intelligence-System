@@ -14,8 +14,8 @@ The format is a DSSE v1 envelope around an in-toto Statement v1, signed with Ed2
 | `run` | `id`, `kind` (e.g. `desk.brief`, `publish`), `host` (e.g. `claude-code`), `startedAt`, `endedAt`, optional `correlationId`. `endedAt` is not before `startedAt`, and `issuedAt` is not before `endedAt`. |
 | `subject` | The artifact the run produced: `name` and `digest.sha256`. The digest is what the signature names. |
 | `stages` | Ordered list of `{ name, status, model?, provider?, inputTokens?, outputTokens?, costEur?, latencyMs?, note? }`. At least one. |
-| `totals` | `costEur`, `latencyMs`, `tokens.input`, `tokens.output`. Cost and tokens may exceed the stage sums (overhead), never fall below them. `latencyMs` is wall time: stages can overlap, so it is never below the longest stage. Token counts are whole numbers. |
-| `decisions` | Gates crossed: `{ gate, decidedBy: human\|agent\|policy, actorId, outcome: approved\|rejected\|deferred, at }`. Empty list allowed. |
+| `totals` | `costEur`, `latencyMs`, `tokens.input`, `tokens.output`. Cost and tokens may exceed the stage sums (overhead), never fall below them; cost is compared allowing only for rounding, 0.00005 EUR per priced stage plus one for the total. `latencyMs` is wall time: stages can overlap, so it is never below the longest stage. Token counts are whole numbers. |
+| `decisions` | Gates crossed: `{ gate, decidedBy: human\|agent\|policy, actorId, outcome: approved\|rejected\|deferred, at }`. `at` is not after `issuedAt`. Empty list allowed. |
 | `evidence` | `{ kind, ref, sha256? }` a verifier can go and look at. Empty list allowed. |
 | `verdict` | `PASS`, `FAIL`, or `PARTIAL`. `PASS` is refused when any stage failed. A `FAIL` receipt is signable; a signed record of a failed run is still proof. |
 
